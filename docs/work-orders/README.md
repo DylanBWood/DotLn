@@ -4,15 +4,26 @@
 
 ## Proposed order
 
+- [ ] [WO-184] — Seams the vertical inherits, settled first · **queued**
+- [ ] [WO-185] — No order can exhaust the host · **queued**
 - [ ] [WO-123] — dotln vertical composition · **queued**
+- [ ] [WO-186] — Gate time follows the change · **queued**
 - [ ] [WO-112] — The loop from core · **queued**
+- [ ] [WO-187] — Verification attacks and reviews · **queued**
 - [ ] [WO-074] — Launchpad export kit · **queued**
+- [ ] [WO-188] — Twenty-four boarded machinery items · **queued**
 - [ ] [WO-075] — Kit runtime and harness bundle in the export · **queued**
+- [ ] [WO-189] — The front page, rewritten once and guarded · **queued**
 - [ ] [WO-072] — Target worktree lifecycle · **queued**
+- [ ] [WO-190] — Index and roadmap lead with the work ahead · **queued**
 - [ ] [WO-073] — Repository class and profile documents · **queued**
+- [ ] [WO-191] — Reader profiles for published text · **queued**
 - [ ] [WO-076] — Instance build overlay · **queued**
 - [ ] [WO-077] — Launchpad export update · **queued**
 - [ ] [WO-078] — Sibling registry and export receipts · **queued**
+- [ ] [WO-192] — A router drives an order through its lifecycle · **queued**
+- [ ] [WO-193] — Capability requests from an instance · **queued**
+- [ ] [WO-194] — Private predecessor map · **queued**
 - [ ] [WO-118] — The resident-owned loop from a starter instance · **queued**
 - [ ] [WO-183] — Intent declaration and the stranger test · **queued**
 - [ ] [WO-113] — Work-order files are stable contracts · **queued**
@@ -30,6 +41,7 @@
 - [ ] [WO-095] — Full-set scenario and set tooltip render · **queued**
 - [ ] [WO-088] — One source for the phrase table · **queued**
 - [ ] [WO-089] — Capability table fold · **queued**
+- [ ] [WO-014] — Approval-burden baseline · **queued**
 
 Order and short labels come from [the proposed sequence](../planning/sequence.md).
 Checks mean passing final review; release evidence and its limits are below.
@@ -41,7 +53,6 @@ Edit sequence.md's marked sequence to change the plan; do not cross off entries 
 
 ## Other open work
 
-- [WO-014] — Approval-burden baseline, remediation, and fresh-session acceptance (version assigned at activation)
 - [WO-033] — The starter is a compiled export: one configuration root, registered target repositories, a launchpad export that carries the saved build, and a lane-sync helper (version assigned at activation)
 - [WO-034] — Cross-repository workstream pilot: one outcome, several target repositories, driven from a launchpad fork that runs the compiled build (version assigned at activation)
 - [WO-035] — Documentation structure reset: one ledger order, a spec/receipt boundary, generated release history, and a shorter cold start (version assigned at activation)
@@ -212,8 +223,8 @@ None.
 - Release: none recorded.
 - Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Track: unknown
-- Cost: adds a class declaration (its checks and supports) and its application where a registered profile is applied today (&#96;scripts/lib/authority-grants.mjs&#96;), a profile convention with its document root, an activation refusal for an unreadable profile in &#96;scripts/resume.mjs&#96;, one sentence in the role procedure (&#96;packages/skeleton/src/loadouts/contributor.ts&#96;) and the regenerated bundle, fixtures, and at most 300 bytes in product 03 and 400 in product 07. Removes the opaque class name every registration must declare today and nothing reads. WO-083 depends on it. Re-mints: deterministic, the authority, feedback and harness editions that &#96;contributor.ts&#96; stales and the regenerated bundle; the feedback edition by carry, since that file is not among the sources the feedback verifier judges; no live episode. &#96;scripts/lib/config.mjs&#96; is excluded from every inventory with a recorded reason. A class check compiled in &#96;packages/compiler/src/verification.ts&#96; or &#96;feedback.ts&#96;, which the verifier judges, would owe a live episode the executor runs; the Design keeps the checks in the host adapter. Wall-clock, tokens and context bytes are unknown until run.
+- Track: delivery
+- Cost: adds a class declaration (its checks and supports) and its application where a registered profile is applied today (&#96;scripts/lib/authority-grants.mjs&#96;), a profile convention with its document root, an activation refusal for an unreadable profile in &#96;scripts/resume.mjs&#96;, one sentence in the role procedure (&#96;packages/skeleton/src/loadouts/contributor.ts&#96;) and the regenerated bundle, fixtures, one write-back each in product 03 and product 07, and two optional declarations on a registration, machine-user logins and admitted link hosts, read by the pull-request observer through the target request (&#96;scripts/lib/pull-request-observer.mjs&#96;, &#96;scripts/lib/target-publish.mjs&#96;). Removes the opaque class name every registration must declare today and nothing reads, and the stop a repository's review bots cause when they run as user accounts or link to another host. WO-083 depends on it. Re-mints: deterministic, the authority, feedback and harness editions that &#96;contributor.ts&#96; stales and the regenerated bundle; the feedback edition by carry, since that file is not among the sources the feedback verifier judges; no live episode. &#96;scripts/lib/config.mjs&#96; is excluded from every inventory with a recorded reason. A class check compiled in &#96;packages/compiler/src/verification.ts&#96; or &#96;feedback.ts&#96;, which the verifier judges, would owe a live episode the executor runs; the Design keeps the checks in the host adapter. Wall-clock, tokens and context bytes are unknown until run.
 - Authority: [docs/work-orders/WO-073-repository-class-and-profile.md](WO-073-repository-class-and-profile.md)
 
 ### WO-074
@@ -598,15 +609,15 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-052: hard (met) — the source-change host; WO-054: hard (met) — verification over the worktree; WO-055: hard (met) — the repair continuation; WO-059: hard (met) — browser witnesses; WO-061: hard (met) — the contract from an issue; WO-062: hard (met) — the issue adapter; WO-124: hard (met) — surfaces from the contract; WO-063: hard (met) — the outward lint the publish step runs; WO-064: hard (met) — publish; WO-065: hard (met) — observation; WO-066: hard (met) — resolution; WO-180: hard (met) — the baseline witness episode the composition sequences before the change; WO-181: hard (met) — the independent review episode sequenced after verification; WO-182: hard (met) — the deliverable-ready conjunction the run requires before publication; WO-068: hard (met) — the resident that admits the intent and dispatches the first step; WO-120: hard (met) — the filed intent and the derived order's durable identity; WO-100: hard (met) — the portfolio contract the intent class extends; WO-042: hard (met) — admitted grants and the effective envelope the run is bound to; WO-167: hard (met) — product 07 has 9 bytes of headroom until the fold resets its ceiling.
+- Dependencies: typed; blocked on WO-184.
+- References: WO-052: hard (met) — the source-change host; WO-054: hard (met) — verification over the worktree; WO-055: hard (met) — the repair continuation; WO-059: hard (met) — browser witnesses; WO-061: hard (met) — the contract from an issue; WO-062: hard (met) — the issue adapter; WO-124: hard (met) — surfaces from the contract; WO-063: hard (met) — the outward lint the publish step runs; WO-064: hard (met) — publish; WO-065: hard (met) — observation; WO-066: hard (met) — resolution; WO-180: hard (met) — the baseline witness episode the composition sequences before the change; WO-181: hard (met) — the independent review episode sequenced after verification; WO-182: hard (met) — the deliverable-ready conjunction the run requires before publication; WO-068: hard (met) — the resident that admits the intent and dispatches the first step; WO-120: hard (met) — the filed intent and the derived order's durable identity; WO-100: hard (met) — the portfolio contract the intent class extends; WO-042: hard (met) — admitted grants and the effective envelope the run is bound to; WO-167: hard (met) — product 07 has 9 bytes of headroom until the fold resets its ceiling; WO-184: hard (unmet) — room in the reactor under the capsule bound, the review notice and the primitive seams the composition would otherwise meet.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
 - Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Track: unknown
-- Cost: adds the vertical continuation in the executable subset; &#96;admitIntent&#96; and its two events, &#96;IntentAdmitted&#96; and &#96;IntentHeld&#96;, among the resident's event types in &#96;packages/skeleton/src/resident-state.ts&#96;; the &#96;intent&#96; portfolio class in &#96;packages/skeleton/src/portfolio.ts&#96; and &#96;scripts/lib/config.mjs&#96;; the &#96;dotln vertical &lt;issue&gt;&#96; command in &#96;packages/skeleton/src/dotln.ts&#96;; a refusal of variant-spelled paths before any containment comparison in &#96;packages/skeleton/src/source-change-worktree.ts&#96;, &#96;packages/skeleton/src/source-change-environment.ts&#96; and &#96;packages/beacons/src/beacon-io.mjs&#96;; fixtures with doubles and a fake clock; at most 500 bytes in product 07 and 300 in product 03. Removes the gap that no command and no resident path runs the loop end to end, and the worktree, branch and registration a variant-spelled parent leaves behind (register row FUP-8369f2b4284e70a8). It unblocks WO-112 and then WO-118 (gate V of the critical path). Re-mints: &#96;resident-state.ts&#96;, &#96;portfolio.ts&#96;, &#96;source-change-worktree.ts&#96; and &#96;source-change-environment.ts&#96; are registered sources of every evidence edition (&#96;scripts/lib/evidence-sources.mjs&#96;), so each edition they stale is re-minted deterministically, and a new module a registered source imports is registered there or excluded with a reason; &#96;resident-state.ts&#96; and the two source-change files are also judged by the feedback verifier (&#96;FEEDBACK_SOURCE_PATHS&#96; in &#96;packages/skeleton/src/feedback-audit.ts&#96;), so the executor runs one live feedback self-host episode on Codex &#96;gpt-6.1-sol&#96; at &#96;max&#96; or Claude Code &#96;claude-opus-5-5&#96; at &#96;xhigh&#96;, which needs no authorization and whose cost is accepted; &#96;beacon-io.mjs&#96;, &#96;dotln.ts&#96; and &#96;scripts/lib/config.mjs&#96; are in no edition. Wall-clock, tokens and context bytes are unknown until run.
+- Track: delivery
+- Cost: adds the vertical continuation in the executable subset, in a module of its own (&#96;reactor.ts&#96; gains at most its dispatch); &#96;admitIntent&#96; and its two events, &#96;IntentAdmitted&#96; and &#96;IntentHeld&#96;, among the resident's event types in &#96;packages/skeleton/src/resident-state.ts&#96;; the &#96;intent&#96; portfolio class in &#96;packages/skeleton/src/portfolio.ts&#96; and &#96;scripts/lib/config.mjs&#96;; the &#96;dotln vertical &lt;issue&gt;&#96; command in &#96;packages/skeleton/src/dotln.ts&#96;; a refusal of variant-spelled paths before any containment comparison in &#96;packages/skeleton/src/source-change-worktree.ts&#96;, &#96;packages/skeleton/src/source-change-environment.ts&#96; and &#96;packages/beacons/src/beacon-io.mjs&#96;; the step that writes the delivery preparation the readiness table reads; fixtures with doubles and a fake clock; write-backs in products 07 and 03. Removes the gap that no command and no resident path runs the loop end to end, and the worktree, branch and registration a variant-spelled parent leaves behind (register row FUP-8369f2b4284e70a8). It unblocks WO-112 and then WO-118 (gate V of the critical path). Re-mints: &#96;resident-state.ts&#96;, &#96;portfolio.ts&#96;, &#96;source-change-worktree.ts&#96; and &#96;source-change-environment.ts&#96; are registered sources of every evidence edition (&#96;scripts/lib/evidence-sources.mjs&#96;), so each edition they stale is re-minted deterministically, and a new module a registered source imports is registered there or excluded with a reason; &#96;resident-state.ts&#96; and the two source-change files are also judged by the feedback verifier (&#96;FEEDBACK_SOURCE_PATHS&#96; in &#96;packages/skeleton/src/feedback-audit.ts&#96;), so the executor runs one live feedback self-host episode on Codex &#96;gpt-6.1-sol&#96; at &#96;max&#96; or Claude Code &#96;claude-opus-5-5&#96; at &#96;xhigh&#96;, which needs no authorization and whose cost is accepted; &#96;beacon-io.mjs&#96;, &#96;dotln.ts&#96; and &#96;scripts/lib/config.mjs&#96; are in no edition. Wall-clock, tokens and context bytes are unknown until run.
 - Authority: [docs/work-orders/WO-123-vertical-composition.md](WO-123-vertical-composition.md)
 
 ### WO-183
@@ -625,6 +636,194 @@ None.
 - Track: unknown
 - Cost: adds &#96;dotln intent "&lt;prose&gt;" &#91;--target &lt;registered repository&gt;&#93;&#96; in &#96;packages/skeleton/src/dotln.ts&#96; (and the parity contract's loopback form, product 04 §Console parity contract v1) that admits the intent under the portfolio's &#96;intent&#96; class (WO-123), interprets it into a StoryContract with a labeled inference episode (WO-061), materializes the durable derived order (WO-120) and returns a receipt naming the order, where its progress can be watched (the live console, WO-117) and the one question the loop may ask; one &#96;IntentDeclared&#96; event; fixtures with doubles; one witnessed run by a non-author on the starter instance WO-118 exports, recorded with shapes and the person's own words paraphrased; at most 300 bytes in product 06 §v1.0.0 and 200 in product 04 in place. Removes: the hand-written work order as the only way an intent enters this repository (the map's candidate since 2026-09-06), and the absence of any order for the &#96;v1.0.0&#96; exit. Re-mints: &#96;dotln.ts&#96; and the parity contract's sources are registered evidence sources (deterministic re-mint); the executor checks &#96;FEEDBACK_SOURCE_PATHS&#96;. Wall-clock, tokens and context bytes are unknown until run.
 - Authority: [docs/work-orders/WO-183-intent-declaration-and-the-stranger-test.md](WO-183-intent-declaration-and-the-stranger-test.md)
+
+### WO-184
+
+[WO-184 — The seams the vertical inherits are settled in one order before it is composed (version assigned at activation)](WO-184-seams-before-the-vertical.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-124: satisfied-by-close (met) — the surface derivation whose three seams items 1 to 3 settle; WO-061: satisfied-by-close (met) — the contract compile whose seams items 4 to 6 settle; WO-065: satisfied-by-close (met) — the pull-request observer item 7 hardens; WO-066: satisfied-by-close (met) — the review loop whose outcome defects item 9 repairs; WO-182: satisfied-by-close (met) — the readiness table and publish flag item 8 completes; WO-180: satisfied-by-close (met) — the verification protocol the baseline episode shares with items 13 and 14; WO-181: satisfied-by-close (met) — the review episode items 12 and 13 make reachable in a live stream; WO-175: satisfied-by-close (met) — the entropy protocol and launch item 16 corrects; WO-159: satisfied-by-close (met) — the Codex launcher whose supervisor item 17 completes.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer any.
+- Track: delivery
+- Cost: nineteen items in three units, each a boarded follow-up whose deadline or seam is this point, combined so the fixed costs are paid once: one compiler release with a deterministic re-mint of all five editions and a carried feedback edition (&#96;story-contract.ts&#96; is a registered source the feedback verifier does not judge; the WO-124 D004 precedent), one skeleton release with one live feedback self-host episode after the last edit to a judged source, one live verification-and-review proof on Claude for item 13, and one harness bundle re-emit. Adds, by the re-observation's estimates and not by measurement, about 60 source lines in the compiler, about 80 in &#96;scripts/lib&#96;, one leaf module split out of &#96;reactor.ts&#96; byte-for-byte, about 150 lines across ten judged skeleton sources, and their fixtures. Removes: the refusal the next reactor edit would meet (99,655 of 100,000 characters); a live composition that stops at human attention before the review can run (two of three Claude verifier attempts in WO-181); a compile that throws on an admitted bundle; response bytes echoed on an error; a publish that reports success over an unready recorded head; four outcome defects in the review loop; and nineteen register rows, seven of the nine whose deadline is WO-123's activation and twelve whose seam this order opens (the other two go to WO-123's own text and to WO-073). Wall-clock of the whole re-mint is recorded by criterion 20 beside WO-175's 384 s figure; tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-184-seams-before-the-vertical.md](WO-184-seams-before-the-vertical.md)
+
+### WO-185
+
+[WO-185 — No order can exhaust the host: memory budgets for every DotLn-launched process tree and one set of gate lanes per machine (version assigned at activation)](WO-185-no-order-can-exhaust-the-host.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-107: satisfied-by-close (met) — the bounded wrapper and its sampling this order reuses; WO-174: satisfied-by-close (met) — the runner and product read guard as they stand.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer any.
+- Track: machinery
+- Cost: adds a host guard (&#96;scripts/host-guard.mjs&#96;, started by the dispatch command every harness already runs, one live instance per machine under the Git common directory) that samples every process descended from a registered agent session and from a running gate and kills the offending process group; per-task and per-gate footprint budgets in &#96;scripts/test-runner.mjs&#96; with the measured peak recorded on every gate row; termination handling and a cap on captured output in the runner; a lane count shared by every worktree of this repository; &#96;harness bounded -- &lt;command&gt;&#96; as the one-line wrapper for a probe run outside a gate; bounded comparisons in &#96;corpus/harness/wo102-*.test.mjs&#96; and one shared helper; one role sentence. Removes: the only control that ended the 2026-10-01 incident was another agent noticing and killing a sibling session's processes; a gate left running without limit when its runner dies; three or more full gates overlapping on sixteen cores (24% of post-reuse gate wall time overlapped another order's gate). Sampling overhead is unknown until measured (criterion 2 bounds it). Re-mints: &#96;scripts/test-runner.mjs&#96; and &#96;scripts/resume.mjs&#96; are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff; the session is registered from &#96;scripts/resume.mjs&#96;, which every harness runs at dispatch, so no generated hook and no registered evidence source changes; if the executor finds that path cannot see the agent process and registers from &#96;packages/skeleton/src/harness-host.ts&#96; instead, the decisions say why, the harness bundle is regenerated and the editions it stales are re-minted deterministically; no file the feedback verifier judges is edited (&#96;gate-deadlines.mjs&#96; is out of scope), so no live episode. Wall-clock, tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-185-no-order-can-exhaust-the-host.md](WO-185-no-order-can-exhaust-the-host.md)
+
+### WO-186
+
+[WO-186 — Gate time goes where the change is: three slow cases fixed at their cause, a rerun runs only what has no passing result, a fresh worktree reuses main's row, and a role writes its records while the gate runs (version assigned at activation)](WO-186-gate-time-follows-the-change.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-185.
+- References: WO-185: hard (unmet) — the runner's budgets, signal handling and shared lanes, edited first; WO-173: satisfied-by-close (met) — whole-row reuse at a code identity, which this order refines to tasks; WO-174: satisfied-by-close (met) — the product read guard and the excluded-input findings this order closes; WO-179: satisfied-by-close (met) — the verifier consumes the executor's row; its D015 is the selection base this order fixes.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer any.
+- Track: machinery
+- Cost: adds task-level reuse at an unchanged code identity (&#96;scripts/test-runner.mjs&#96;, &#96;scripts/lib/gate-reuse.mjs&#96;, &#96;scripts/lib/suite-evidence.mjs&#96;), untracked code in the identity (&#96;packages/skeleton/src/gate-evidence.mjs&#96;), a read-only lookup of the main checkout's rows from a worktree, the merge base as the review selection's base, the narrowed live-gate refusal (&#96;packages/skeleton/src/harness-host.ts&#96;), per-case durations on the gate row, five condition rows at planning entry (&#96;scripts/lib/planning-conditions.mjs&#96;), and repairs in three test files. Removes, by the record: about 180 s that one harness-fixture case has gained since 2026-09-08 (2.77 s then), in a suite that holds every lane; about 150 s that the integration suite gained between 2026-09-29 and 2026-09-30; a lock-matrix case of 170 s that the skeleton suite runs on every gate; full reruns at an identity that already has passing results (14 rerun pairs, 8,384 s of wall-clock, of which 9% to 36% of task time needed running); full first gates in a worktree whose code equals main's; and the minutes a role cannot write its own report while its gate runs. What the plain and review gates take afterwards is measured by criterion 9, not promised here. Re-mints: &#96;gate-evidence.mjs&#96; and &#96;harness-host.ts&#96; are registered evidence sources in three editions, re-minted deterministically, and the harness bundle is re-emitted; neither is judged by the feedback verifier, so no live episode; &#96;scripts/test-runner.mjs&#96; is a declared machinery source, so &#96;npm test -- --review&#96; runs before handoff. Wall-clock, tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-186-gate-time-follows-the-change.md](WO-186-gate-time-follows-the-change.md)
+
+### WO-187
+
+[WO-187 — Verification attacks the change and reviews the implementation; the executor self-reviews first; what final review still finds is counted (version assigned at activation)](WO-187-verification-attacks-and-reviews.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-179: satisfied-by-close (met) — the gate-row rule and the in-surface defect rule this order builds on; WO-173: satisfied-by-close (met) — the handoff ledger the self-review line joins; WO-172: satisfied-by-close (met) — plan failures, which gains the escape count.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer any.
+- Track: machinery
+- Cost: adds to &#96;packages/skeleton/src/loadouts/contributor.ts&#96; four verifier sentences and one executor sentence; a lens catalog in product 07 that the verifier reads at verify time, not at cold start; the order's known issues and carry-ins in the verify briefing (&#96;scripts/resume.mjs&#96;); a &#96;class&#96; on each final-review finding line (&#96;escape&#96;, &#96;integration&#96;, &#96;new-scope&#96;) read at &#96;final-review-result&#96; and counted by &#96;plan failures&#96; and &#96;plan start&#96; (&#96;scripts/lib/plan-failures.mjs&#96;); a &#96;self-review:&#96; line in the executor's handoff; one generated agent definition for spawned workers, carrying the pinned model and effort, emitted with the harness bundle (&#96;packages/compiler/src/harness.ts&#96;). Removes: defects that were already in the verified subject and were first met at final review (14 of the 18 blocking findings in the record; 71 boarded items and 21 reviewer self-fixes at the passing reviews of the last 40 orders), and with each failed final review a median 1.8 h to the passing one. Verification will take longer (median 842 s after WO-173; by how much is unknown until run) and each executor completion pays one sub-agent. Re-mints: &#96;contributor.ts&#96; and &#96;packages/compiler/src/harness.ts&#96; are registered evidence sources (the second in all five editions), so the editions they stale, the harness bundle among them, are re-minted deterministically; &#96;contributor.ts&#96; and &#96;scripts/resume.mjs&#96; are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff; no file the feedback verifier judges changes, so no live episode. Cold-start bytes for the executor and verifier roots rise; the acceptance route applies (criterion 6). Wall-clock, tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-187-verification-attacks-and-reviews.md](WO-187-verification-attacks-and-reviews.md)
+
+### WO-188
+
+[WO-188 — Twenty-four boarded machinery items in one order: scratch repositories and release close, the harness host, the document gate, release preparation, the planning feed, three role rituals and the release text (version assigned at activation)](WO-188-boarded-machinery-items.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-187.
+- References: WO-176: satisfied-by-close (met) — the release close, material rows and recovery this order simplifies; WO-178: satisfied-by-close (met) — the close admission, the prompt journal and the operator-word check items 2, 6, 7, 10 and 13 complete; WO-150: satisfied-by-close (met) — the experiment support item 22 re-cuts; WO-187: hard (unmet) — the same loadout source and harness bundle, edited first.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer any.
+- Track: machinery
+- Cost: twenty-four items, each small, each already recorded with its seam and its reproduction, combined because they share fixed costs that one order pays once: a deterministic re-mint of all five editions (&#96;scripts/lib/paths.mjs&#96; and &#96;packages/compiler/src/harness.ts&#96; are in every edition; &#96;harness-host.ts&#96; and the loadout sources are in three), one harness bundle re-emit, and one review gate that already selects the two exclusive machinery suites. Adds a comment check with a baseline, a home-path screen with a baseline, one registered host event and their fixtures. Removes: a release close that stops at, preserves or asks about a scratch repository; retry commands the admission does not admit; fourteen further boarded release, integration, document-gate and feed defects; an experiment record demanded before any alternative is visible (33 of 64 such records were declines, 19 of the last 25); an eight-lens paragraph on every decision (21 of 25 restated the order); comments that cite a report's finding label where an explanation belongs (48 lines in 27 files, and no rule); 74 to 81 &#96;unavailable&#96; cells in each pull-request body, relative links that do not resolve on the forge, and an order title printed five times on each Release page. No file the feedback verifier judges is edited, so no live episode. Wall-clock, tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-188-boarded-machinery-items.md](WO-188-boarded-machinery-items.md)
+
+### WO-189
+
+[WO-189 — The front page is rewritten once from what it already says well, chosen by the operator from three candidates, and then guarded so that an order cannot append to it (version assigned at activation)](WO-189-front-page.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-068: satisfied-by-close (met) — the release block, its markers and the fifteen-sentence rule this order replaces with a mechanism; WO-086: satisfied-by-close (met) — the generated release history the front page links instead of restating.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer any.
+- Track: machinery
+- Cost: adds a paragraph inventory of &#96;README.md&#96;, three complete candidate front pages with a reader score each, the chosen one as the new &#96;README.md&#96;, a release block that holds only the generated version line (&#96;scripts/lib/release-preparation.mjs&#96;, &#96;scripts/release.mjs&#96; &#96;releaseBlockRule&#96;), a refusal of README changes outside its generated blocks for an order whose criteria do not name the file (&#96;scripts/docs-check.mjs&#96;), and a sentence budget for the section that says what runs. Removes: the release block's 7,894 bytes and about 46 sentences against a fifteen-sentence rule that only prose stated; the duty that made 138 of 181 merged pull requests touch the front page; about 10.4 KB of receipts and implementation inventory on the page most visitors read; three stale statements (a map that lists three of six packages, a console called read-only, a link to a plan of 2026-09-06 as the way ahead). Re-mints: none; &#96;scripts/release.mjs&#96; is a declared source of the harness-fixture and process-debt suites, so &#96;npm test -- --review&#96; runs before handoff. Three writing episodes and three reader episodes are sub-agent work of unmeasured cost. Wall-clock, tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-189-front-page.md](WO-189-front-page.md)
+
+### WO-190
+
+[WO-190 — The work-order index and the roadmap lead with the work ahead, in one sequence; history moves to a companion page (version assigned at activation)](WO-190-index-and-roadmap-show-the-work-ahead.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-158: satisfied-by-close (met) — withdrawn orders and the rule that settled entries leave the sequence; WO-086: satisfied-by-close (met) — the generated release history block this order moves below the rungs.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor high; verifier high; reviewer any.
+- Track: machinery
+- Cost: adds a generated companion page for settled orders (&#96;docs/work-orders/HISTORY.md&#96;), an &#96;umbrella&#96; reading of the order header used by the index and by activation, one refusal in &#96;index --check&#96; for an open order that has no place in the sequence (&#96;scripts/work-orders.mjs&#96;, &#96;scripts/resume.mjs&#96;), and the companion as a second source of the console's work view (&#96;packages/console/src&#96;). Removes from the page a reader opens to see what is next: 309,934 bytes of closed cards, a 284,852-byte hidden tag record and six superseded records shown as open work (of 685,899 bytes, about 76,000 remain); from the roadmap, the 63,915 bytes a reader passes before the first rung that is still ahead, and the umbrella records its pending rungs name as carriers. Re-mints: none of the edited files is a registered evidence source or a file the feedback verifier judges; &#96;scripts/work-orders.mjs&#96; and &#96;scripts/resume.mjs&#96; are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff. Wall-clock, tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-190-index-and-roadmap-show-the-work-ahead.md](WO-190-index-and-roadmap-show-the-work-ahead.md)
+
+### WO-191
+
+[WO-191 — What DotLn publishes is written to a committed reader profile per surface, chosen from examples and scored by fresh readers (version assigned at activation)](WO-191-reader-profiles.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-188.
+- References: WO-188: hard (unmet) — item 24 repairs the pull-request body and Release page defects the examples would otherwise copy; WO-126: satisfied-by-close (met) — the headline rule and the series print shown while a title is written.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier high; reviewer any.
+- Track: machinery
+- Cost: adds &#96;docs/control/reader-profiles.json&#96; (five surfaces, five dimensions, three positions each), an examples library under &#96;docs/publication/examples/&#96;, &#96;npm run reader -- profile&#124;preview&#124;score&#96; (&#96;scripts/reader.mjs&#96;), the profile's guidance printed by &#96;worktree publish&#96; and &#96;release prepare&#96; beside the draft (&#96;scripts/worktree.mjs&#96;, &#96;scripts/release.mjs&#96;), one sentence in the reviewer role and one in the planner role (&#96;packages/skeleton/src/loadouts/contributor.ts&#96;), a score file (&#96;docs/publication/reader-scores.jsonl&#96;) and one line at &#96;plan start&#96;. Removes: the operator's only present way to change how published text reads, which is a correction after the fact repeated per surface (three dated corrections on titles and commit style in product 08, on 2026-09-05, 2026-09-07 and 2026-09-09). Each standard planning pass pays one reader agent over the releases not yet scored. Re-mints: &#96;contributor.ts&#96; is a registered evidence source, so the editions it stales are re-minted deterministically; it, &#96;scripts/release.mjs&#96; and &#96;scripts/worktree.mjs&#96; are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff; no file the feedback verifier judges changes. Cold-start bytes of the reviewer and planner roots rise by one sentence each; the acceptance route applies. The examples are sub-agent work of unmeasured cost. Wall-clock, tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-191-reader-profiles.md](WO-191-reader-profiles.md)
+
+### WO-192
+
+[WO-192 — One session drives an order through its whole lifecycle: a router that only routes starts a fresh worker for each phase and hands it nothing but the phrase (version assigned at activation)](WO-192-router-drives-an-order.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-187.
+- References: WO-187: hard (unmet) — the generated agent definition with a pinned model and effort, extended here to one per lifecycle role; WO-139: satisfied-by-close (met) — the sub-agent counter this order keys by spawning worker; WO-135: satisfied-by-close (met) — the writer reservation this order keys by session and agent; WO-130: satisfied-by-close (met) — phrase dispatch and the briefing a worker receives; WO-158: satisfied-by-close (met) — the off-ramps and recovery controls the router stops for.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor max; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds a &#96;router&#96; role and the phrase &#96;drive: WO-NNN&#96; to the Contributor build (&#96;packages/skeleton/src/loadouts/contributor.ts&#96;), one generated agent definition per lifecycle role and effort an open order names (&#96;packages/compiler/src/harness.ts&#96;), a session record, role and writer reservation keyed by session and agent (&#96;packages/skeleton/src/harness-host.ts&#96;), a sub-agent count kept per spawning worker (&#96;packages/skeleton/src/subagent-budget.ts&#96;), a refusal of any router spawn whose prompt is not a lifecycle phrase, a worktree root grant for the worker whose order owns that worktree, and a &#96;route&#96; reading of the canonical status (&#96;scripts/resume.mjs&#96;). Removes: the operator typing one phrase per phase into a separate terminal and carrying each handoff by hand (at least four sessions for an order that passes first time: execute, verify, final review and release close; more for each repair), and on a host that meters only the main thread, the phase work itself, which then runs in workers. The router's own context holds statuses, not work. Re-mints: &#96;harness-host.ts&#96;, &#96;subagent-budget.ts&#96;, &#96;harness.ts&#96; and &#96;contributor.ts&#96; are registered evidence sources, so the editions they stale are re-minted deterministically; none is a file the feedback verifier judges, so no live feedback episode; all are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff. One live driven order is paid in worker tokens (criterion 9). Cold-start bytes: a new root for the router; the other roots are unchanged. Wall-clock, tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-192-router-drives-an-order.md](WO-192-router-drives-an-order.md)
+
+### WO-193
+
+[WO-193 — An instance asks core for a capability in a standard way: a generic request the operator writes and files, read into planning here, and reported back through the update (version assigned at activation)](WO-193-instance-capability-requests.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-074, WO-077, WO-078.
+- References: WO-074: hard (unmet) — the kit file set and manifest the request command joins; WO-077: hard (unmet) — the update and the instance-actions note that reports fulfilled requests; WO-078: hard (unmet) — the sibling receipt that gains request identifiers; WO-062: satisfied-by-close (met) — the read-only screened issue reader used by the planning intake; WO-063: satisfied-by-close (met) — the outward lint run over a draft before it may be filed; WO-060: satisfied-by-close (met) — the declared screen run over a draft and over each fetched issue.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Cost: adds to the kit &#96;npm run request -- draft&#124;check&#124;file&#96; (&#96;scripts/request.mjs&#96;), a request template, an instance-owned ignored drafts lane and an instance-owned request ledger, the configuration key &#96;requests.route&#96; (&#96;none&#96;, &#96;manual&#96; or &#96;direct&#96;; default &#96;none&#96;), and a deployment-decision template for the instance; adds to core &#96;npm run plan -- requests&#96; (labelled issues read through the existing issue reader into register candidates), a &#96;**Requests:**&#96; header field on work orders, the request identifiers in the sibling receipt and in the update's instance-actions note, and one line at &#96;plan start&#96;. Removes: the only route a need found in an instance has today, which is the operator remembering it until a planning pass at home. Re-mints: unknown until the export orders land and fix which kit files are registered sources; &#96;scripts/refute-plan.mjs&#96; and &#96;scripts/work-orders.mjs&#96; are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff. One live issue is created in this repository under the operator's grant (criterion 8). Wall-clock, tokens and context bytes are unknown until run.
+- Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Authority: [docs/work-orders/WO-193-instance-capability-requests.md](WO-193-instance-capability-requests.md)
+
+### WO-194
+
+[WO-194 — An instance keeps a private map from what its predecessors did to what carries it now, and can say when it is at least as capable; core ships the mechanism and never sees a row (version assigned at activation)](WO-194-private-predecessor-map.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-074, WO-076, WO-193.
+- References: WO-074: hard (unmet) — the kit file set and manifest the parity command joins; WO-076: hard (unmet) — the instance-owned files and emitted build a row's carrier is checked against; WO-193: hard (unmet) — the request draft that an unmapped row prefills with its generic statement.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Cost: adds to the kit &#96;npm run parity -- init&#124;add&#124;check&#124;report&#124;request&#96; (&#96;scripts/parity.mjs&#96;), a row schema with the six mapping statuses product 10 proposes, an instance-owned rows file, an ignored registry of where predecessor material can be read on that host, a seed of the generic behaviors product 12 and the critical path already state, and a summary by predecessor generation. Removes: the absence of any place where an instance records what its predecessors did and whether its own build does it yet, so that "at least as capable" is a count, not an impression. Core gains no reader of any instance row: its tests run on synthetic rows only. Re-mints: unknown until the export orders fix which kit files are registered sources. Wall-clock, tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-194-private-predecessor-map.md](WO-194-private-predecessor-map.md)
 
 ## Closed
 
@@ -3575,3 +3774,14 @@ See [the human planning map](../planning/work-order-map.md) for recommendation, 
 [WO-181]: WO-181-independent-review-episode.md
 [WO-182]: WO-182-deliverable-ready-conjunction.md
 [WO-183]: WO-183-intent-declaration-and-the-stranger-test.md
+[WO-184]: WO-184-seams-before-the-vertical.md
+[WO-185]: WO-185-no-order-can-exhaust-the-host.md
+[WO-186]: WO-186-gate-time-follows-the-change.md
+[WO-187]: WO-187-verification-attacks-and-reviews.md
+[WO-188]: WO-188-boarded-machinery-items.md
+[WO-189]: WO-189-front-page.md
+[WO-190]: WO-190-index-and-roadmap-show-the-work-ahead.md
+[WO-191]: WO-191-reader-profiles.md
+[WO-192]: WO-192-router-drives-an-order.md
+[WO-193]: WO-193-instance-capability-requests.md
+[WO-194]: WO-194-private-predecessor-map.md

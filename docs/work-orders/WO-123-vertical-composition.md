@@ -3,11 +3,13 @@
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** delivery
 **Release classification:** minor. One continuation with two entries, one
 admission decision, one portfolio class and one command, and a
 path-identity refusal in the source-change and beacon guards; no new
 primitive. Assigned at activation under the standing opt-out default.
-**Cost:** adds the vertical continuation in the executable subset;
+**Cost:** adds the vertical continuation in the executable subset, in a
+module of its own (`reactor.ts` gains at most its dispatch);
 `admitIntent` and its two events, `IntentAdmitted` and `IntentHeld`, among
 the resident's event types in `packages/skeleton/src/resident-state.ts`;
 the `intent` portfolio class in `packages/skeleton/src/portfolio.ts` and
@@ -16,8 +18,9 @@ the `intent` portfolio class in `packages/skeleton/src/portfolio.ts` and
 before any containment comparison in
 `packages/skeleton/src/source-change-worktree.ts`,
 `packages/skeleton/src/source-change-environment.ts` and
-`packages/beacons/src/beacon-io.mjs`; fixtures with doubles and a fake
-clock; at most 500 bytes in product 07 and 300 in product 03. Removes the
+`packages/beacons/src/beacon-io.mjs`; the step that writes the delivery
+preparation the readiness table reads; fixtures with doubles and a fake
+clock; write-backs in products 07 and 03. Removes the
 gap that no command and no resident path runs the loop end to end, and
 the worktree, branch and registration a variant-spelled parent leaves
 behind (register row FUP-8369f2b4284e70a8). It unblocks WO-112 and then
@@ -51,7 +54,16 @@ records what the filed draft and the portfolio contract hold today,
 names its re-mints and the live episode, and bounds its write-backs
 behind WO-167
 ([planning document](../planning/failures-across-phases-2026-09-28.md)
-§10).
+§10). Amended by the 2026-10-02 planning pass, which re-observed the
+order on `main` at `08845c71`: every dependency filed before that date
+has closed; the primitive seams their reviews boarded for the
+composition are WO-184's, now a hard dependency; the composition's own
+decisions on those seams are in the Design and criterion 5; every duty
+that sat on the catalog row or in a planning receipt is under Known
+issues and carry-ins; the two review-loop defects it carried move to
+WO-184; and the write-backs state what they say, with the document
+ceilings that pass set as their only bound
+([planning document](../planning/standard-pass-2026-10-02.md) §9).
 **Depends on:** WO-052 merged (the source-change host; closed, v0.28.0);
 WO-054 and WO-055 merged (verification and repair; closed, v0.30.0 and
 v0.31.0); WO-059 merged (browser witnesses); WO-061 and WO-062 merged (the
@@ -64,18 +76,20 @@ intent and dispatches the first step; closed, v0.23.0); WO-120 merged
 v0.41.0); WO-100 merged (the portfolio contract the `intent` class
 extends; closed, v0.44.0); WO-042 merged (admitted grants and the
 effective envelope the run is bound to; closed, v0.16.0); WO-167 merged
-(product 07 has 9 bytes of headroom until the fold resets its ceiling).
-**Recommended placement:** in the serial run after WO-062 and before
-WO-112. This order edits `packages/skeleton/src/` (the continuation,
+(the product 07 fold; closed); WO-184 merged (the reactor's room under
+the capsule bound, the review notice, and the derivation, compile,
+observer, publish and review-loop seams).
+**Recommended placement:** the delivery lane of the second pair, after
+WO-184 and before WO-112. This order edits `packages/skeleton/src/` (the continuation,
 `resident-state.ts`, `portfolio.ts`, `dotln.ts`,
 `source-change-worktree.ts` and `source-change-environment.ts`),
 `packages/beacons/src/beacon-io.mjs`, `scripts/lib/config.mjs`, the
 evidence-source registry if a new module needs it, their fixtures, the
-editions it re-mints and products 07 and 03. Neither neighbour edits
-these files: WO-062 adds a source adapter and WO-112 writes documents
-only. WO-116, earlier in the sequence, also edits `dotln.ts`, and WO-073,
-later, edits `scripts/lib/config.mjs`. A recommendation, not a
-dependency token.
+editions it re-mints and products 07 and 03. WO-184, before it, edits
+`resident-state.ts` and `scripts/lib/config.mjs`; WO-186, beside it,
+edits the runner and three test files; WO-112, after it, writes
+documents only; WO-073, later, edits `scripts/lib/config.mjs`. A
+recommendation, not a dependency token.
 
 <!-- dotln-dependencies:start -->
 [
@@ -173,6 +187,11 @@ dependency token.
     "workOrderId": "WO-167",
     "relation": "hard",
     "reason": "product 07 has 9 bytes of headroom until the fold resets its ceiling"
+  },
+  {
+    "workOrderId": "WO-184",
+    "relation": "hard",
+    "reason": "room in the reactor under the capsule bound, the review notice and the primitive seams the composition would otherwise meet"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -195,7 +214,13 @@ register row FUP-8369f2b4284e70a8 (the path-identity defect, its
 reproduction and its checks); `scripts/lib/evidence-sources.mjs` and
 `packages/skeleton/src/feedback-audit.ts` (`FEEDBACK_SOURCE_PATHS`); the
 [2026-09-28 planning document](../planning/failures-across-phases-2026-09-28.md)
-§10.1; the other orders named in Depends on.
+§10.1; `docs/work-orders/WO-184-seams-before-the-vertical.md` (the
+primitives as this order composes them);
+`docs/evidence/WO-180/decisions.md` D013,
+`docs/evidence/WO-181/decisions.md` D012 and D014 and
+`docs/evidence/WO-182/decisions.md` D006 (the composition decisions made
+below); `docs/evidence/WO-182/artifact-contract.md` (the delivery
+preparation's fields); the other orders named in Depends on.
 
 **Objective:** The vertical continuation sequences: bundle (WO-062) →
 contract (WO-061) → surfaces (WO-124) → derived order (WO-120) →
@@ -203,7 +228,8 @@ source-change episode (WO-052) → browser witnesses (WO-059) → verification
 and repair (WO-054, WO-055) → lint and publish (WO-063, WO-064) →
 observation and resolution (WO-065, WO-066) to a terminal state, with the
 baseline witness before the change (WO-180), the independent review after
-verification (WO-181) and the deliverable-ready conjunction before
+verification (WO-181), the delivery preparation the composition writes
+and the deliverable-ready conjunction it then requires before
 publication (WO-182), recording
 each step's receipt under the order. It has two entries that persist the
 same continuation. The resident (WO-068) admits a filed intent (the draft
@@ -221,14 +247,20 @@ order adds no primitive, and every step's failure is a typed stop with the
 step named.
 
 **Observed gap (dated 2026-09-28, `main` at `5f3849ec`; first observed
-2026-09-08 at `33e2c25`):**
+2026-09-08 at `33e2c25`; re-observed 2026-10-02 at `08845c71`):**
 
 - No command runs the loop end to end. The `dotln` entrypoint's actions
   are `intent`, `presence`, `handoff`, `resident`, `status`, `demo`,
   `verify-demo` and `feedback-audit`, and nothing in `packages/` or
   `scripts/` defines a vertical continuation, `admitIntent`,
-  `IntentAdmitted` or `IntentHeld`. The closed primitives each have their
-  own entry; WO-059, WO-061, WO-062, WO-124, WO-065 and WO-066 are open.
+  `IntentAdmitted` or `IntentHeld`. Every primitive has its own entry and
+  has closed; WO-184 is the one open dependency.
+- Nothing writes `delivery-preparation.json`, which three rows of the
+  readiness table read; a run that requires readiness refuses on all
+  three until a step writes it (WO-182 D006).
+- The baseline primitive takes a story's class from its caller and
+  records no source for it; a defect story classed new is walked and
+  skips the non-reproduction stop (WO-180 D013).
 - Nothing lets the resident admit a filed intent under standing
   authority. `dotln intent` files a draft and activates nothing; the draft
   names `repo: self`, `baseCommit: unassigned`, no surfaces, one
@@ -256,15 +288,44 @@ step named.
   argument reaches it, though no variant was driven through the CLI
   (WO-162 D004, reproduced by its VER-001 and again in its repair;
   register row FUP-8369f2b4284e70a8, open).
-- Product 07 holds 188,390 of its 188,399 counted bytes and product 03
-  has 3,284 bytes of headroom at `5f3849ec`; the executor re-measures both
-  at its base.
+- `packages/skeleton/src/reactor.ts` holds 99,655 of the 100,000
+  characters a judged file may have at `08845c71`; WO-184 brings it to
+  at most 92,000.
 
 **Design (scope discipline):**
 
 - The continuation is in the executable subset so a killed host or a
   restarted resident resumes it at the step it reached; both entries
-  persist the same program under the derived order's identity.
+  persist the same program under the derived order's identity. It lives
+  in a module of its own; the reactor gains at most its dispatch, and
+  the module is registered as an evidence source and a feedback source
+  as WO-184's leaf module is.
+- Surfaces: the composition calls `deriveSurfaces` with its default
+  threshold. A `NeedsHuman` result holds the intent with the reason and
+  dispatches nothing.
+- Baseline: the composition takes the story's class from the
+  StoryContract (a contract that names a failing behavior is a defect
+  story) and records the class and its source with the baseline
+  receipt. A contract that names a failing behavior and is classed new
+  is a finding. A baseline that does not reproduce is a typed stop that
+  returns `NeedsHuman`; this order supplies no waiver.
+- Review: a review-enabled stream is opened with WO-184's review notice,
+  and after a repair the review runs only when every criterion is
+  verified at the repaired revision (WO-184 item 12). A review episode
+  that fails, times out or is unavailable is attempted once more as a
+  fresh attempt; a second failure is a typed stop naming the review
+  step, and nothing is published.
+- Delivery preparation: after verification and review and before
+  publication, the composition writes `delivery-preparation.json` with
+  the unresolved material ambiguities from the contract's open
+  decisions, the `tests` selection from the passing host-run evidence
+  of the order's named tests, `build` and `lint` from the same where
+  the order names them and otherwise `not-applicable` with that reason
+  (WO-184 item 8), and the resident as the monitoring owner. The
+  publish step runs with `--require-deliverable-ready`.
+- The admission record states that standing authorization supersedes
+  the draft's human-review constraint, and whether surface derivation
+  ran before the admission decision and under which authority.
 - `admitIntent(draft, portfolio, grants)` is pure: it returns the accepted
   contract binding or `NeedsHuman` with the reason, and the resident records
   the decision as an event (`IntentAdmitted` or `IntentHeld`) before the
@@ -306,8 +367,9 @@ step named.
 
 **Deliverables:** the continuation, the admission decision and its events,
 the `intent` portfolio class, the command, the path-identity refusal,
-fixtures with doubles and a fake clock, the re-mints, the write-backs
-below.
+the delivery-preparation step, the baseline class and review-failure
+handling, fixtures with doubles and a fake clock, the re-mints, the
+write-backs below.
 
 **Acceptance criteria (all required)**
 
@@ -353,20 +415,28 @@ below.
    host's filesystem, and the criterion is judged on the kinds
    constructed. The criterion is judged against the declared set; a case
    outside it is a follow-up, not a failure.
-5. Write-backs land, each in place with no dated paragraph: 07 §Derived
+5. The composition's own decisions hold in fixtures with doubles: a
+   review episode that fails once is attempted again and the run
+   continues, and one that fails twice stops with the review step named
+   and no publication; the baseline receipt records the story's class
+   and its source, a contract that names a failing behavior and is
+   classed new is reported as a finding, and a baseline that does not
+   reproduce stops `NeedsHuman`; before publication the run writes the
+   delivery preparation from the contract's open decisions and the
+   order's named commands and publishes with the readiness requirement,
+   and a fixture with one unresolved material ambiguity refuses before
+   any remote call; a derivation that returns `NeedsHuman` holds the
+   intent with the reason and dispatches nothing; the admission record
+   carries the two statements the Design names. The criterion is judged
+   against the declared set; a case outside it is a follow-up, not a
+   failure.
+6. Write-backs land, each in place with no dated paragraph: 07 §Derived
    work and intent (the command and the admission) and §Declaring a
-   portfolio (the `intent` class), at most 500 bytes added to product 07,
-   against 9 bytes of headroom on 2026-09-28, which WO-167's fold resets;
-   03 §Operator-presence policy (the resident's admission; at most 300
-   bytes added, against 3,284 bytes of headroom on 2026-09-28); the
-   decisions file; the publication locks refreshed. Other open orders
-   write these documents (product 07: WO-173, WO-172, WO-086, WO-113,
-   WO-072, WO-073 and WO-080; product 03: WO-060, WO-059, WO-062, WO-124,
-   WO-073, WO-074 and WO-075): the executor re-measures the headroom at
-   its base; where the bound does not fit, it consolidates the section it
-   edits in the same change; a ceiling is raised only by a
-   planning-document decision.
-6. The re-mints the Cost line names are recorded: each edition the edited
+   portfolio (the `intent` class); 03 §Operator-presence policy (the
+   resident's admission); the decisions file; the publication locks
+   refreshed. The document ceilings as the 2026-10-02 pass set them cover
+   these write-backs; no byte figure bounds them.
+7. The re-mints the Cost line names are recorded: each edition the edited
    registered sources stale is re-minted deterministically, a new module a
    registered source imports is registered or excluded with a reason, and
    after the last edit to a judged source the executor re-mints the
@@ -375,7 +445,7 @@ below.
    `npm run evidence:feedback -- --record-selfhost <directory>`); the
    decisions record the configuration. A repair that edits a judged source
    again runs another the same way.
-7. `npm test -- --review` and `npm run test:docs` green;
+8. `npm test -- --review` and `npm run test:docs` green;
    `git diff --check` clean; no new dependency.
 
 **Evidence gate:** the fixture transcripts, including the path-identity
@@ -385,9 +455,47 @@ before `implementation-ready`, because
 `packages/skeleton/src/resident-state.ts` is a declared source of the
 authority, artifact, verification, feedback and harness evidence suites,
 and again at final review. The live row: the executor's live feedback
-self-host episode over the edited judged sources (criterion 6).
+self-host episode over the edited judged sources (criterion 7).
 
-**Write-back duty:** as listed in criterion 5.
+**Write-back duty:** as listed in criterion 6.
+
+**Known issues and carry-ins:** every duty this order owes that is not a
+criterion, gathered from its catalog row, the planning receipts and the
+primitives' reviews, so no reader needs another document to find one.
+
+- A restart after a completed step proves persisted progression, not
+  the window in which an external effect succeeds before its receipt is
+  durably recorded (receipt 033). Reopen when a kill after a named
+  external effect and before that step's durable completion makes the
+  resumed vertical repeat the effect, lose its outcome or need manual
+  identity reconstruction.
+- The review's `should` and `nit` findings are carried as known items of
+  the deliverable; a `blocking` finding goes to bounded repair and
+  re-verification (WO-181's consumer contract).
+- The review context carries no derived surfaces, so a reviewer may
+  report a scope finding on a file the derivation named (WO-181 D012).
+  The composition records such a finding with the derivation beside it;
+  carrying surfaces into the review is a later protocol change.
+- A requirement or question that encloses a struck span compiles as
+  fragment drafts (WO-061 D011, seam 3). The composition does not repair
+  them; a run that meets one records it, and enclosing a strike in one
+  statement stays a contract change for a later order.
+- The observer stores a bot comment that links to another host as
+  refused, and classes a machine account registered as a user as a
+  human reviewer (WO-065 D015). A refused item stops the loop with a
+  typed stop. The repository profile's declaration of machine logins
+  and link hosts is WO-073's; a run against a repository with such
+  bots before then stops there, as built.
+- The screen admits C1 control characters and bidirectional overrides
+  (WO-065 D014). No decision is made here; an issue the operator did
+  not write should not reach WO-118's unattended run before one is.
+- The verification state keeps an append-only `repairPlans` list no
+  production code reads; replacing it re-keys three identity streams
+  and is left.
+- The composition's model invocations (source change, verification,
+  review) are the first to consume a screened bundle. The executor
+  records, per step, what the step's model input can carry; no exposure
+  guarantee or plan primitive is added (register row FUP-0113).
 
 **Non-goals:** the live proof (WO-112); the resident-owned run from a
 starter (WO-118); deriving work from discovery candidates (WO-100); the
@@ -395,7 +503,9 @@ human review of a draft no authorization covers (WO-120); a change to
 what `dotln intent` files; merging the three containment helpers or
 changing the string check in `worker-protocol.ts`; path-identity cases
 outside the declared set (a case-sensitive volume, another operating
-system), each a follow-up.
+system), each a follow-up; the primitive corrections of WO-184; a
+waiver of a baseline that does not reproduce; machine-user logins and
+link hosts (WO-073); derived surfaces in the review context.
 
 **Operator-review assumptions**
 
@@ -414,3 +524,14 @@ system), each a follow-up.
 5. The path-identity refusal lands here because the register row's
    condition is an order that adds a production source-change host
    caller; a path the guard cannot read is refused, never passed.
+6. A baseline that does not reproduce stops for a human; the per-run
+   waiver WO-180 assumed is not built, because a waived run could still
+   not pass its defect criterion under the comparison rule. The operator
+   may ask for one after a run stops on a baseline they judge
+   irreproducible by nature.
+7. A failed review is attempted once more and then stops; with
+   readiness required, a run never publishes without a completed
+   review.
+8. A target order that names no build or lint command records those
+   two as not applicable with that reason; its tests are always
+   evidence.

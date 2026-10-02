@@ -1244,8 +1244,12 @@ is that a standing prompt with a recorded answer replaces an operator reminder
 and the per-trial equipment step that let the third trial run unequipped. The
 reopening observation is behavioral, not configurational: ten equipped executor
 dispatches after merge, each recording an experiment or a kept-current decline,
-and fewer than half doing either reconsiders the flip. The adaptive modifier and
-the broken-window pressure signal remain unimplemented.
+and fewer than half doing either reconsiders the flip. Read on 2026-10-02: all
+64 dispatches since recorded one, 33 as declines; 15 adopted something and 8 of
+those measured both arms. An experiment named before implementation has no
+alternative in view, so the timing fails and the equipment does not; WO-188
+moves the trigger to the point where the work shows a fork. The adaptive
+modifier and the broken-window pressure signal remain unimplemented.
 
 
 

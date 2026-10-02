@@ -20,7 +20,11 @@ docs/publication/  audience/status index, audience outlines, shared sample,
                    implementation overlay template, and staleness proof
 docs/planning/     capability inventory, human recommendation/preflight map,
                    dated planning-pass plans, and immutable blinded refutation
-                   receipts under refutations/ (npm run plan -- refute)
+                   receipts under refutations/ (npm run plan -- refute);
+                   sequence.md — the proposed order, the one input to the
+                   index and the refutation subject;
+                   followups.json — the follow-up register, followups.md how
+                   to read it; cost-table.json — generated plan costs
                    entropy-reviews/ — generated accepted-finding rows per
                    Entropy Reducer review; archive/ — retired planning snapshots
 docs/lineage/      idea-ledger.md — append-only idea history;
@@ -35,9 +39,17 @@ docs/work-orders/  stable scope addresses + generated README evidence index
 docs/verifications/ immutable numbered verifier reports, grouped by work order
 docs/final-reviews/ immutable numbered closeout reports and PR handoffs
 docs/control/       legacy resume log, per-order segments, generated overview,
-                    and the separate plan-refutations.jsonl override log
+                    and the separate plan-refutations.jsonl override log;
+                    entropy-reducer.jsonl — the Entropy Reducer review log;
+                    budgets.json — caps, cold-start ceilings and acceptances;
+                    doc-ceilings.json and doc-baseline.json — the document
+                    gate's ceilings and activation baseline;
+                    outward-vocabulary.json — the outward lint's commit types
+                    and refused terms
 docs/control/local/ ignored gate/session/usage observations, private terms and opaque account-label meanings
-docs/evidence/      bounded executor comparisons and fixture transcripts
+docs/evidence/      per-order decisions, handoffs, evidence editions, bounded
+                    comparisons and fixture transcripts; current.json — the
+                    edition each evidence kind currently reads
 docs/releases/     historical v0.2.0 records + forward tag-manifest template;
                    later immutable manifests/notes live in annotated tags
 docs/discovery/    labeled machine-audit outputs, runtime target maps, and the
@@ -66,8 +78,9 @@ The [roadmap](product/06-roadmap.md) holds the release ladder, exit criteria and
 generated release history; its candidate and capability-policy sections live in
 the [planning map](planning/work-order-map.md#moved-from-the-roadmap-2026-09-30)
 with their slugs and register history preserved (WO-087).
-[Ceilings](control/doc-ceilings.json) count UTF-8 bytes with two per cent initial
-headroom, excluding one registered generated block: the roadmap's release
+[Ceilings](control/doc-ceilings.json) count UTF-8 bytes, set by a planning pass
+from each document's size and its queued write-backs, excluding one registered
+generated block: the roadmap's release
 history between its `dotln-release-history` markers, whose rows the check
 compares with their recorded tags. Any other marker pair exempts nothing.
 A higher ceiling requires a cited planning
