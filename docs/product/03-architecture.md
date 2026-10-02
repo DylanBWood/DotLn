@@ -1627,8 +1627,10 @@ text, never the default channel for state you own in structured form.
   requirement-coverage confidence (default 1). A **source revision guard**
   watches the artifact's revision: a material mid-cycle change invalidates
   exactly the downstream contract/plan/evidence derived from the changed
-  portion. Enterprise ticket trackers are one future adapter; GitHub Issues is
-  the nearer personal one.
+  portion. Enterprise ticket trackers remain a future adapter. `fetchIssueBundle`
+  is the first, for GitHub Issues: `gh` reads, forge-host-only allowlist, hash
+  storage and a text-free omission receipt whose typed stop the consumer must
+  honor. Image markup keeps spans; unavailable byte hashes are explicit.
 - **Model input boundary**: every compiled model call can expose a local
   `ModelInputPlan` before invocation. It identifies the destination as a
   deterministic local processor, local model, or provider-hosted remote model
