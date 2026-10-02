@@ -1,0 +1,33 @@
+{
+  "profile": {
+    "architecture": [
+      { "noun": "parser", "directories": ["src/parser"] },
+      { "noun": "queue", "directories": ["src/queue"] }
+    ],
+    "commands": [
+      { "command": "node --test test/parser.test.mjs", "directories": ["src/parser"] },
+      { "command": "npm test -- --scope shared", "directories": ["src/shared"] },
+      { "command": "node test/other.mjs", "directories": ["src/parser-other"] },
+      { "command": "npm run check", "directories": ["."] }
+    ]
+  },
+  "files": [
+    { "path": "src/parser/read.ts", "contents": "export const read = 'π';\n" },
+    { "path": "src/parser/write.ts", "contents": "export const write = true;\n" },
+    { "path": "src/shared/cache.ts", "contents": "export const cache = new Map();\n" },
+    { "path": "src/parser-other/trap.ts", "contents": "export const trap = true;\n" }
+  ],
+  "cases": [
+    { "name": "explicit", "requirements": ["Change `src/parser/read.ts`."], "surfaces": ["src/parser/read.ts"], "confidence": 1, "kind": "DerivedSurfaces" },
+    { "name": "architecture", "requirements": ["The Parser handles values."], "surfaces": ["src/parser/read.ts", "src/parser/write.ts"], "confidence": 1, "kind": "DerivedSurfaces" },
+    { "name": "inferred", "requirements": ["Cache records remain consistent."], "inferences": [{ "requirement": 0, "path": "src/shared/cache.ts", "rationale": "Fixture inference double: cache consistency touches the shared cache." }], "surfaces": ["src/shared/cache.ts"], "confidence": 1, "kind": "DerivedSurfaces" },
+    { "name": "missing-path", "requirements": ["Change `src/missing.ts`."], "surfaces": [], "confidence": 0, "kind": "NeedsHuman" },
+    { "name": "unmapped", "requirements": ["Preserve an unknown subsystem."], "surfaces": [], "confidence": 0, "kind": "NeedsHuman" },
+    { "name": "partial", "requirements": ["Change src/parser/read.ts.", "Change `src/missing.ts`."], "surfaces": ["src/parser/read.ts"], "confidence": 0.5, "kind": "NeedsHuman" },
+    { "name": "partial-at-half", "requirements": ["Change src/parser/read.ts.", "Change `src/missing.ts`."], "threshold": 0.5, "surfaces": ["src/parser/read.ts"], "confidence": 0.5, "kind": "DerivedSurfaces" },
+    { "name": "covered-with-candidate", "requirements": ["Change parser and `src/missing.ts`."], "surfaces": ["src/parser/read.ts", "src/parser/write.ts"], "confidence": 1, "kind": "DerivedSurfaces" },
+    { "name": "empty-directory", "requirements": ["The queue drains."], "surfaces": [], "confidence": 0, "kind": "NeedsHuman" },
+    { "name": "noun-boundary", "requirements": ["The parserish component handles values."], "surfaces": [], "confidence": 0, "kind": "NeedsHuman" },
+    { "name": "directory-reference", "requirements": ["Change `src/parser/`."], "surfaces": ["src/parser/read.ts", "src/parser/write.ts"], "confidence": 1, "kind": "DerivedSurfaces" }
+  ]
+}

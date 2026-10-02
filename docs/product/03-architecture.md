@@ -1621,7 +1621,10 @@ text, never the default channel for state you own in structured form.
   open questions, pinned source revision); an **ImpactMap** is the structured
   change-surface map a read-only cartographer episode produces (entry points,
   state ownership, shared consumers, existing tests, similar prior
-  implementations) — never a prose repo summary. A **source revision guard**
+  implementations) — never a prose repo summary. WO-124's pure `deriveSurfaces`
+  resolves contract paths/profile nouns against a snapshot index, retains
+  rule/inferred origins and whole test commands, and returns `NeedsHuman` below
+  requirement-coverage confidence (default 1). A **source revision guard**
   watches the artifact's revision: a material mid-cycle change invalidates
   exactly the downstream contract/plan/evidence derived from the changed
   portion. Enterprise ticket trackers are one future adapter; GitHub Issues is
