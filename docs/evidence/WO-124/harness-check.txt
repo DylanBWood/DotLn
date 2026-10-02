@@ -1,0 +1,6 @@
+
+> harness
+> node scripts/harness-entry.mjs check
+
+Built browser-evidence, compiler, console, kernel, skeleton with atomic file replacement; installed harness snapshots remain immutable
+harness check: 32 generated surfaces; local-terms list: unavailable

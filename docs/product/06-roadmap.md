@@ -662,7 +662,8 @@ runtime defects, repaired in that order: the verifier had never been told the
 finding contract the host enforces, and Codex could not launch in the
 files-only snapshot. This is one synthetic two-clause repository, as executor
 evidence awaiting independent verification. The remaining personal-flavor vertical is planned: GitHub Issue → SourceBundle →
-StoryContract → RepoProfile + ImpactMap → **Live Witness baseline** (reproduce
+StoryContract → RepoProfile + ImpactMap (fixture-proven surfaces/tests;
+low coverage hands off) → **Live Witness baseline** (reproduce
 before changing; preserve baseline evidence) → implementation episode → blinded
 behavior verification **and** independent code review (two separate episodes) →
 evidence-grounded PR on a personal repo (the deliverable-ready conjunction

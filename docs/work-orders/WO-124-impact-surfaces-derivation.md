@@ -1,4 +1,4 @@
-# WO-124 — Impact surfaces derivation: the implementation order's surfaces and tests are derived from the contract, the repository profile and a worktree snapshot, labeled by origin, with a confidence gate that hands off instead of guessing (version assigned at activation)
+# WO-124 — Impact surfaces derivation: the implementation order's surfaces and tests are derived from the contract, the repository profile and a worktree snapshot, labeled by origin, with a confidence gate that hands off instead of guessing (v0.64.0)
 
 **Model:** any capable model for the derivation; the inference slot is a
 labeled double in tests. State the model and effort actually run

@@ -1,0 +1,5 @@
+
+> build
+> node scripts/build.mjs
+
+Built browser-evidence, compiler, console, kernel, skeleton with atomic file replacement; installed harness snapshots remain immutable

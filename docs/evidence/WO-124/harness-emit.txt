@@ -1,0 +1,6 @@
+
+> harness
+> node scripts/harness-entry.mjs emit
+
+Built browser-evidence, compiler, console, kernel, skeleton with atomic file replacement; installed harness snapshots remain immutable
+harness emit: 32 generated surfaces; local-terms list: unavailable

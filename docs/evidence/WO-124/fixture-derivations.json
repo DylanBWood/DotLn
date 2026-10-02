@@ -1,0 +1,1329 @@
+{
+  "fixtureProvenance": "Synthetic SourceBundles/profile/files and supplied inference doubles; no model episode.",
+  "profile": {
+    "architecture": [
+      {
+        "noun": "parser",
+        "directories": [
+          "src/parser"
+        ]
+      },
+      {
+        "noun": "queue",
+        "directories": [
+          "src/queue"
+        ]
+      }
+    ],
+    "commands": [
+      {
+        "command": "node --test test/parser.test.mjs",
+        "directories": [
+          "src/parser"
+        ]
+      },
+      {
+        "command": "npm test -- --scope shared",
+        "directories": [
+          "src/shared"
+        ]
+      },
+      {
+        "command": "node test/other.mjs",
+        "directories": [
+          "src/parser-other"
+        ]
+      },
+      {
+        "command": "npm run check",
+        "directories": [
+          "."
+        ]
+      }
+    ]
+  },
+  "snapshotIndex": [
+    {
+      "path": "src/parser/read.ts",
+      "size": 26,
+      "hash": "d8d3bf4d3c40800d0b7636c445b528dcf7f67a531874fd4b37ab8323c775cb75"
+    },
+    {
+      "path": "src/parser/write.ts",
+      "size": 27,
+      "hash": "28bd97c01a004d77aee2c320bef3bb58483ad6cecd7346a274672ba8670e5882"
+    },
+    {
+      "path": "src/shared/cache.ts",
+      "size": 32,
+      "hash": "2432a90919545edb7bbfea356ff93ed7cc95d888dd3676f009052c9fc30829c3"
+    },
+    {
+      "path": "src/parser-other/trap.ts",
+      "size": 26,
+      "hash": "5e57d97694a0fb787dc9af88e267a1e51867889daf95b3eb0a8c7a622f6ee08b"
+    }
+  ],
+  "cases": [
+    {
+      "name": "explicit",
+      "contract": {
+        "contractVersion": "story-contract-v1",
+        "contractId": "contract:44cc775eb16c8a6b",
+        "bundleId": "wo124-synthetic-issue",
+        "bundleHash": "fnv1a64:6e56d640c4ed8559",
+        "revisionId": "r1",
+        "statements": [
+          {
+            "statementId": "statement:3c03265a8544770c",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 28
+            },
+            "text": "Change `src/parser/read.ts`.",
+            "class": "requirement",
+            "origin": "inferred",
+            "rationale": "Synthetic requirement classification supplied by the fixture double.",
+            "status": "active"
+          }
+        ],
+        "criteria": [
+          {
+            "criterionId": "criterion:f9a46d99df9044e9",
+            "statementId": "statement:3c03265a8544770c",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 28
+            },
+            "description": "Change `src/parser/read.ts`.",
+            "claimType": "behavior",
+            "evidenceSource": "live",
+            "status": "active"
+          }
+        ],
+        "relations": [],
+        "openDecisions": [],
+        "sourceUnits": [
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 28
+            },
+            "fingerprint": "unit:ea02c77170e9acfc"
+          }
+        ],
+        "inferences": [
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 28
+            },
+            "class": "requirement",
+            "rationale": "Synthetic requirement classification supplied by the fixture double."
+          }
+        ]
+      },
+      "options": {
+        "inferences": []
+      },
+      "result": {
+        "surfaces": [
+          {
+            "path": "src/parser/read.ts",
+            "origins": [
+              {
+                "origin": "rule",
+                "rule": "named-path",
+                "statementId": "statement:3c03265a8544770c",
+                "reference": "src/parser/read.ts"
+              }
+            ]
+          }
+        ],
+        "tests": [
+          {
+            "command": "node --test test/parser.test.mjs",
+            "origin": "rule",
+            "surfaces": [
+              "src/parser/read.ts"
+            ]
+          },
+          {
+            "command": "npm run check",
+            "origin": "rule",
+            "surfaces": [
+              "src/parser/read.ts"
+            ]
+          }
+        ],
+        "candidates": [],
+        "confidence": 1,
+        "threshold": 1,
+        "uncoveredStatementIds": [],
+        "kind": "DerivedSurfaces"
+      }
+    },
+    {
+      "name": "architecture",
+      "contract": {
+        "contractVersion": "story-contract-v1",
+        "contractId": "contract:26ba5b77a3c2e028",
+        "bundleId": "wo124-synthetic-issue",
+        "bundleHash": "fnv1a64:bf09fa348f850ae4",
+        "revisionId": "r1",
+        "statements": [
+          {
+            "statementId": "statement:a0bd0d8cfe465933",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 26
+            },
+            "text": "The Parser handles values.",
+            "class": "requirement",
+            "origin": "inferred",
+            "rationale": "Synthetic requirement classification supplied by the fixture double.",
+            "status": "active"
+          }
+        ],
+        "criteria": [
+          {
+            "criterionId": "criterion:8893405b120f8ae5",
+            "statementId": "statement:a0bd0d8cfe465933",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 26
+            },
+            "description": "The Parser handles values.",
+            "claimType": "behavior",
+            "evidenceSource": "live",
+            "status": "active"
+          }
+        ],
+        "relations": [],
+        "openDecisions": [],
+        "sourceUnits": [
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 26
+            },
+            "fingerprint": "unit:78f8166c6c5728a3"
+          }
+        ],
+        "inferences": [
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 26
+            },
+            "class": "requirement",
+            "rationale": "Synthetic requirement classification supplied by the fixture double."
+          }
+        ]
+      },
+      "options": {
+        "inferences": []
+      },
+      "result": {
+        "surfaces": [
+          {
+            "path": "src/parser/read.ts",
+            "origins": [
+              {
+                "origin": "rule",
+                "rule": "architecture",
+                "statementId": "statement:a0bd0d8cfe465933",
+                "reference": "parser"
+              }
+            ]
+          },
+          {
+            "path": "src/parser/write.ts",
+            "origins": [
+              {
+                "origin": "rule",
+                "rule": "architecture",
+                "statementId": "statement:a0bd0d8cfe465933",
+                "reference": "parser"
+              }
+            ]
+          }
+        ],
+        "tests": [
+          {
+            "command": "node --test test/parser.test.mjs",
+            "origin": "rule",
+            "surfaces": [
+              "src/parser/read.ts",
+              "src/parser/write.ts"
+            ]
+          },
+          {
+            "command": "npm run check",
+            "origin": "rule",
+            "surfaces": [
+              "src/parser/read.ts",
+              "src/parser/write.ts"
+            ]
+          }
+        ],
+        "candidates": [],
+        "confidence": 1,
+        "threshold": 1,
+        "uncoveredStatementIds": [],
+        "kind": "DerivedSurfaces"
+      }
+    },
+    {
+      "name": "inferred",
+      "contract": {
+        "contractVersion": "story-contract-v1",
+        "contractId": "contract:ccbfcf35716bcebf",
+        "bundleId": "wo124-synthetic-issue",
+        "bundleHash": "fnv1a64:a03eee5c3c814446",
+        "revisionId": "r1",
+        "statements": [
+          {
+            "statementId": "statement:fed6ed81b5083a44",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 32
+            },
+            "text": "Cache records remain consistent.",
+            "class": "requirement",
+            "origin": "inferred",
+            "rationale": "Synthetic requirement classification supplied by the fixture double.",
+            "status": "active"
+          }
+        ],
+        "criteria": [
+          {
+            "criterionId": "criterion:e990931ec30d3316",
+            "statementId": "statement:fed6ed81b5083a44",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 32
+            },
+            "description": "Cache records remain consistent.",
+            "claimType": "behavior",
+            "evidenceSource": "live",
+            "status": "active"
+          }
+        ],
+        "relations": [],
+        "openDecisions": [],
+        "sourceUnits": [
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 32
+            },
+            "fingerprint": "unit:43fb9a64b6c3539d"
+          }
+        ],
+        "inferences": [
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 32
+            },
+            "class": "requirement",
+            "rationale": "Synthetic requirement classification supplied by the fixture double."
+          }
+        ]
+      },
+      "options": {
+        "inferences": [
+          {
+            "statementId": "statement:fed6ed81b5083a44",
+            "path": "src/shared/cache.ts",
+            "rationale": "Fixture inference double: cache consistency touches the shared cache."
+          }
+        ]
+      },
+      "result": {
+        "surfaces": [
+          {
+            "path": "src/shared/cache.ts",
+            "origins": [
+              {
+                "origin": "inferred",
+                "statementId": "statement:fed6ed81b5083a44",
+                "rationale": "Fixture inference double: cache consistency touches the shared cache."
+              }
+            ]
+          }
+        ],
+        "tests": [
+          {
+            "command": "npm run check",
+            "origin": "rule",
+            "surfaces": [
+              "src/shared/cache.ts"
+            ]
+          },
+          {
+            "command": "npm test -- --scope shared",
+            "origin": "rule",
+            "surfaces": [
+              "src/shared/cache.ts"
+            ]
+          }
+        ],
+        "candidates": [],
+        "confidence": 1,
+        "threshold": 1,
+        "uncoveredStatementIds": [],
+        "kind": "DerivedSurfaces"
+      }
+    },
+    {
+      "name": "missing-path",
+      "contract": {
+        "contractVersion": "story-contract-v1",
+        "contractId": "contract:d3bf8b6eca298f60",
+        "bundleId": "wo124-synthetic-issue",
+        "bundleHash": "fnv1a64:66626c32b74d7e25",
+        "revisionId": "r1",
+        "statements": [
+          {
+            "statementId": "statement:d7c72d1bafd78254",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 24
+            },
+            "text": "Change `src/missing.ts`.",
+            "class": "requirement",
+            "origin": "inferred",
+            "rationale": "Synthetic requirement classification supplied by the fixture double.",
+            "status": "active"
+          }
+        ],
+        "criteria": [
+          {
+            "criterionId": "criterion:34da15b89884b2cf",
+            "statementId": "statement:d7c72d1bafd78254",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 24
+            },
+            "description": "Change `src/missing.ts`.",
+            "claimType": "behavior",
+            "evidenceSource": "live",
+            "status": "active"
+          }
+        ],
+        "relations": [],
+        "openDecisions": [],
+        "sourceUnits": [
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 24
+            },
+            "fingerprint": "unit:54b5e2a63c536974"
+          }
+        ],
+        "inferences": [
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 24
+            },
+            "class": "requirement",
+            "rationale": "Synthetic requirement classification supplied by the fixture double."
+          }
+        ]
+      },
+      "options": {
+        "inferences": []
+      },
+      "result": {
+        "surfaces": [],
+        "tests": [],
+        "candidates": [
+          {
+            "path": "src/missing.ts",
+            "statementId": "statement:d7c72d1bafd78254",
+            "reason": "not-in-snapshot",
+            "provenance": {
+              "origin": "rule",
+              "rule": "named-path",
+              "statementId": "statement:d7c72d1bafd78254",
+              "reference": "src/missing.ts"
+            }
+          }
+        ],
+        "confidence": 0,
+        "threshold": 1,
+        "uncoveredStatementIds": [
+          "statement:d7c72d1bafd78254"
+        ],
+        "kind": "NeedsHuman",
+        "reason": "requirement coverage below declared confidence threshold"
+      }
+    },
+    {
+      "name": "unmapped",
+      "contract": {
+        "contractVersion": "story-contract-v1",
+        "contractId": "contract:3e82d19132775ec3",
+        "bundleId": "wo124-synthetic-issue",
+        "bundleHash": "fnv1a64:2cb4d9813ca4717a",
+        "revisionId": "r1",
+        "statements": [
+          {
+            "statementId": "statement:d7df584bb447c9a6",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 30
+            },
+            "text": "Preserve an unknown subsystem.",
+            "class": "requirement",
+            "origin": "inferred",
+            "rationale": "Synthetic requirement classification supplied by the fixture double.",
+            "status": "active"
+          }
+        ],
+        "criteria": [
+          {
+            "criterionId": "criterion:4b7e85017592f28e",
+            "statementId": "statement:d7df584bb447c9a6",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 30
+            },
+            "description": "Preserve an unknown subsystem.",
+            "claimType": "behavior",
+            "evidenceSource": "live",
+            "status": "active"
+          }
+        ],
+        "relations": [],
+        "openDecisions": [],
+        "sourceUnits": [
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 30
+            },
+            "fingerprint": "unit:fd7be15763f60f51"
+          }
+        ],
+        "inferences": [
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 30
+            },
+            "class": "requirement",
+            "rationale": "Synthetic requirement classification supplied by the fixture double."
+          }
+        ]
+      },
+      "options": {
+        "inferences": []
+      },
+      "result": {
+        "surfaces": [],
+        "tests": [],
+        "candidates": [
+          {
+            "path": null,
+            "statementId": "statement:d7df584bb447c9a6",
+            "reason": "unmapped-requirement",
+            "provenance": null
+          }
+        ],
+        "confidence": 0,
+        "threshold": 1,
+        "uncoveredStatementIds": [
+          "statement:d7df584bb447c9a6"
+        ],
+        "kind": "NeedsHuman",
+        "reason": "requirement coverage below declared confidence threshold"
+      }
+    },
+    {
+      "name": "partial",
+      "contract": {
+        "contractVersion": "story-contract-v1",
+        "contractId": "contract:899cc811f0a07f99",
+        "bundleId": "wo124-synthetic-issue",
+        "bundleHash": "fnv1a64:654433be161ec1aa",
+        "revisionId": "r1",
+        "statements": [
+          {
+            "statementId": "statement:aa5514461a835496",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 26
+            },
+            "text": "Change src/parser/read.ts.",
+            "class": "requirement",
+            "origin": "inferred",
+            "rationale": "Synthetic requirement classification supplied by the fixture double.",
+            "status": "active"
+          },
+          {
+            "statementId": "statement:4c4cb49fdebdc775",
+            "span": {
+              "sectionId": "s-1",
+              "start": 0,
+              "end": 24
+            },
+            "text": "Change `src/missing.ts`.",
+            "class": "requirement",
+            "origin": "inferred",
+            "rationale": "Synthetic requirement classification supplied by the fixture double.",
+            "status": "active"
+          }
+        ],
+        "criteria": [
+          {
+            "criterionId": "criterion:39217d990950f638",
+            "statementId": "statement:aa5514461a835496",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 26
+            },
+            "description": "Change src/parser/read.ts.",
+            "claimType": "behavior",
+            "evidenceSource": "live",
+            "status": "active"
+          },
+          {
+            "criterionId": "criterion:94e9c8ebaa6d7060",
+            "statementId": "statement:4c4cb49fdebdc775",
+            "span": {
+              "sectionId": "s-1",
+              "start": 0,
+              "end": 24
+            },
+            "description": "Change `src/missing.ts`.",
+            "claimType": "behavior",
+            "evidenceSource": "live",
+            "status": "active"
+          }
+        ],
+        "relations": [],
+        "openDecisions": [],
+        "sourceUnits": [
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 26
+            },
+            "fingerprint": "unit:5370a4105ce08336"
+          },
+          {
+            "span": {
+              "sectionId": "s-1",
+              "start": 0,
+              "end": 24
+            },
+            "fingerprint": "unit:afdc9b8df32c9cea"
+          }
+        ],
+        "inferences": [
+          {
+            "span": {
+              "sectionId": "s-1",
+              "start": 0,
+              "end": 24
+            },
+            "class": "requirement",
+            "rationale": "Synthetic requirement classification supplied by the fixture double."
+          },
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 26
+            },
+            "class": "requirement",
+            "rationale": "Synthetic requirement classification supplied by the fixture double."
+          }
+        ]
+      },
+      "options": {
+        "inferences": []
+      },
+      "result": {
+        "surfaces": [
+          {
+            "path": "src/parser/read.ts",
+            "origins": [
+              {
+                "origin": "rule",
+                "rule": "named-path",
+                "statementId": "statement:aa5514461a835496",
+                "reference": "src/parser/read.ts"
+              }
+            ]
+          }
+        ],
+        "tests": [
+          {
+            "command": "node --test test/parser.test.mjs",
+            "origin": "rule",
+            "surfaces": [
+              "src/parser/read.ts"
+            ]
+          },
+          {
+            "command": "npm run check",
+            "origin": "rule",
+            "surfaces": [
+              "src/parser/read.ts"
+            ]
+          }
+        ],
+        "candidates": [
+          {
+            "path": "src/missing.ts",
+            "statementId": "statement:4c4cb49fdebdc775",
+            "reason": "not-in-snapshot",
+            "provenance": {
+              "origin": "rule",
+              "rule": "named-path",
+              "statementId": "statement:4c4cb49fdebdc775",
+              "reference": "src/missing.ts"
+            }
+          }
+        ],
+        "confidence": 0.5,
+        "threshold": 1,
+        "uncoveredStatementIds": [
+          "statement:4c4cb49fdebdc775"
+        ],
+        "kind": "NeedsHuman",
+        "reason": "requirement coverage below declared confidence threshold"
+      }
+    },
+    {
+      "name": "partial-at-half",
+      "contract": {
+        "contractVersion": "story-contract-v1",
+        "contractId": "contract:899cc811f0a07f99",
+        "bundleId": "wo124-synthetic-issue",
+        "bundleHash": "fnv1a64:654433be161ec1aa",
+        "revisionId": "r1",
+        "statements": [
+          {
+            "statementId": "statement:aa5514461a835496",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 26
+            },
+            "text": "Change src/parser/read.ts.",
+            "class": "requirement",
+            "origin": "inferred",
+            "rationale": "Synthetic requirement classification supplied by the fixture double.",
+            "status": "active"
+          },
+          {
+            "statementId": "statement:4c4cb49fdebdc775",
+            "span": {
+              "sectionId": "s-1",
+              "start": 0,
+              "end": 24
+            },
+            "text": "Change `src/missing.ts`.",
+            "class": "requirement",
+            "origin": "inferred",
+            "rationale": "Synthetic requirement classification supplied by the fixture double.",
+            "status": "active"
+          }
+        ],
+        "criteria": [
+          {
+            "criterionId": "criterion:39217d990950f638",
+            "statementId": "statement:aa5514461a835496",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 26
+            },
+            "description": "Change src/parser/read.ts.",
+            "claimType": "behavior",
+            "evidenceSource": "live",
+            "status": "active"
+          },
+          {
+            "criterionId": "criterion:94e9c8ebaa6d7060",
+            "statementId": "statement:4c4cb49fdebdc775",
+            "span": {
+              "sectionId": "s-1",
+              "start": 0,
+              "end": 24
+            },
+            "description": "Change `src/missing.ts`.",
+            "claimType": "behavior",
+            "evidenceSource": "live",
+            "status": "active"
+          }
+        ],
+        "relations": [],
+        "openDecisions": [],
+        "sourceUnits": [
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 26
+            },
+            "fingerprint": "unit:5370a4105ce08336"
+          },
+          {
+            "span": {
+              "sectionId": "s-1",
+              "start": 0,
+              "end": 24
+            },
+            "fingerprint": "unit:afdc9b8df32c9cea"
+          }
+        ],
+        "inferences": [
+          {
+            "span": {
+              "sectionId": "s-1",
+              "start": 0,
+              "end": 24
+            },
+            "class": "requirement",
+            "rationale": "Synthetic requirement classification supplied by the fixture double."
+          },
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 26
+            },
+            "class": "requirement",
+            "rationale": "Synthetic requirement classification supplied by the fixture double."
+          }
+        ]
+      },
+      "options": {
+        "inferences": [],
+        "threshold": 0.5
+      },
+      "result": {
+        "surfaces": [
+          {
+            "path": "src/parser/read.ts",
+            "origins": [
+              {
+                "origin": "rule",
+                "rule": "named-path",
+                "statementId": "statement:aa5514461a835496",
+                "reference": "src/parser/read.ts"
+              }
+            ]
+          }
+        ],
+        "tests": [
+          {
+            "command": "node --test test/parser.test.mjs",
+            "origin": "rule",
+            "surfaces": [
+              "src/parser/read.ts"
+            ]
+          },
+          {
+            "command": "npm run check",
+            "origin": "rule",
+            "surfaces": [
+              "src/parser/read.ts"
+            ]
+          }
+        ],
+        "candidates": [
+          {
+            "path": "src/missing.ts",
+            "statementId": "statement:4c4cb49fdebdc775",
+            "reason": "not-in-snapshot",
+            "provenance": {
+              "origin": "rule",
+              "rule": "named-path",
+              "statementId": "statement:4c4cb49fdebdc775",
+              "reference": "src/missing.ts"
+            }
+          }
+        ],
+        "confidence": 0.5,
+        "threshold": 0.5,
+        "uncoveredStatementIds": [
+          "statement:4c4cb49fdebdc775"
+        ],
+        "kind": "DerivedSurfaces"
+      }
+    },
+    {
+      "name": "covered-with-candidate",
+      "contract": {
+        "contractVersion": "story-contract-v1",
+        "contractId": "contract:8bce3216d86dbfe7",
+        "bundleId": "wo124-synthetic-issue",
+        "bundleHash": "fnv1a64:3c8beb09cdf87d9f",
+        "revisionId": "r1",
+        "statements": [
+          {
+            "statementId": "statement:dd5ce28502c41f91",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 35
+            },
+            "text": "Change parser and `src/missing.ts`.",
+            "class": "requirement",
+            "origin": "inferred",
+            "rationale": "Synthetic requirement classification supplied by the fixture double.",
+            "status": "active"
+          }
+        ],
+        "criteria": [
+          {
+            "criterionId": "criterion:39c036b056a079b6",
+            "statementId": "statement:dd5ce28502c41f91",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 35
+            },
+            "description": "Change parser and `src/missing.ts`.",
+            "claimType": "behavior",
+            "evidenceSource": "live",
+            "status": "active"
+          }
+        ],
+        "relations": [],
+        "openDecisions": [],
+        "sourceUnits": [
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 35
+            },
+            "fingerprint": "unit:d05208b131469208"
+          }
+        ],
+        "inferences": [
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 35
+            },
+            "class": "requirement",
+            "rationale": "Synthetic requirement classification supplied by the fixture double."
+          }
+        ]
+      },
+      "options": {
+        "inferences": []
+      },
+      "result": {
+        "surfaces": [
+          {
+            "path": "src/parser/read.ts",
+            "origins": [
+              {
+                "origin": "rule",
+                "rule": "architecture",
+                "statementId": "statement:dd5ce28502c41f91",
+                "reference": "parser"
+              }
+            ]
+          },
+          {
+            "path": "src/parser/write.ts",
+            "origins": [
+              {
+                "origin": "rule",
+                "rule": "architecture",
+                "statementId": "statement:dd5ce28502c41f91",
+                "reference": "parser"
+              }
+            ]
+          }
+        ],
+        "tests": [
+          {
+            "command": "node --test test/parser.test.mjs",
+            "origin": "rule",
+            "surfaces": [
+              "src/parser/read.ts",
+              "src/parser/write.ts"
+            ]
+          },
+          {
+            "command": "npm run check",
+            "origin": "rule",
+            "surfaces": [
+              "src/parser/read.ts",
+              "src/parser/write.ts"
+            ]
+          }
+        ],
+        "candidates": [
+          {
+            "path": "src/missing.ts",
+            "statementId": "statement:dd5ce28502c41f91",
+            "reason": "not-in-snapshot",
+            "provenance": {
+              "origin": "rule",
+              "rule": "named-path",
+              "statementId": "statement:dd5ce28502c41f91",
+              "reference": "src/missing.ts"
+            }
+          }
+        ],
+        "confidence": 1,
+        "threshold": 1,
+        "uncoveredStatementIds": [],
+        "kind": "DerivedSurfaces"
+      }
+    },
+    {
+      "name": "empty-directory",
+      "contract": {
+        "contractVersion": "story-contract-v1",
+        "contractId": "contract:68b2e47f4322da62",
+        "bundleId": "wo124-synthetic-issue",
+        "bundleHash": "fnv1a64:d353c82d1821c768",
+        "revisionId": "r1",
+        "statements": [
+          {
+            "statementId": "statement:26e2b2aa9e30a60f",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 17
+            },
+            "text": "The queue drains.",
+            "class": "requirement",
+            "origin": "inferred",
+            "rationale": "Synthetic requirement classification supplied by the fixture double.",
+            "status": "active"
+          }
+        ],
+        "criteria": [
+          {
+            "criterionId": "criterion:7afc9f6209a74111",
+            "statementId": "statement:26e2b2aa9e30a60f",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 17
+            },
+            "description": "The queue drains.",
+            "claimType": "behavior",
+            "evidenceSource": "live",
+            "status": "active"
+          }
+        ],
+        "relations": [],
+        "openDecisions": [],
+        "sourceUnits": [
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 17
+            },
+            "fingerprint": "unit:c6befd8f45e37035"
+          }
+        ],
+        "inferences": [
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 17
+            },
+            "class": "requirement",
+            "rationale": "Synthetic requirement classification supplied by the fixture double."
+          }
+        ]
+      },
+      "options": {
+        "inferences": []
+      },
+      "result": {
+        "surfaces": [],
+        "tests": [],
+        "candidates": [
+          {
+            "path": "src/queue",
+            "statementId": "statement:26e2b2aa9e30a60f",
+            "reason": "not-in-snapshot",
+            "provenance": {
+              "origin": "rule",
+              "rule": "architecture",
+              "statementId": "statement:26e2b2aa9e30a60f",
+              "reference": "queue"
+            }
+          }
+        ],
+        "confidence": 0,
+        "threshold": 1,
+        "uncoveredStatementIds": [
+          "statement:26e2b2aa9e30a60f"
+        ],
+        "kind": "NeedsHuman",
+        "reason": "requirement coverage below declared confidence threshold"
+      }
+    },
+    {
+      "name": "noun-boundary",
+      "contract": {
+        "contractVersion": "story-contract-v1",
+        "contractId": "contract:c3add9b5cddcf8a1",
+        "bundleId": "wo124-synthetic-issue",
+        "bundleHash": "fnv1a64:9565a39b0c1623bd",
+        "revisionId": "r1",
+        "statements": [
+          {
+            "statementId": "statement:41a7f498275cf886",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 39
+            },
+            "text": "The parserish component handles values.",
+            "class": "requirement",
+            "origin": "inferred",
+            "rationale": "Synthetic requirement classification supplied by the fixture double.",
+            "status": "active"
+          }
+        ],
+        "criteria": [
+          {
+            "criterionId": "criterion:8cb6148867928f03",
+            "statementId": "statement:41a7f498275cf886",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 39
+            },
+            "description": "The parserish component handles values.",
+            "claimType": "behavior",
+            "evidenceSource": "live",
+            "status": "active"
+          }
+        ],
+        "relations": [],
+        "openDecisions": [],
+        "sourceUnits": [
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 39
+            },
+            "fingerprint": "unit:0de5202ac598dade"
+          }
+        ],
+        "inferences": [
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 39
+            },
+            "class": "requirement",
+            "rationale": "Synthetic requirement classification supplied by the fixture double."
+          }
+        ]
+      },
+      "options": {
+        "inferences": []
+      },
+      "result": {
+        "surfaces": [],
+        "tests": [],
+        "candidates": [
+          {
+            "path": null,
+            "statementId": "statement:41a7f498275cf886",
+            "reason": "unmapped-requirement",
+            "provenance": null
+          }
+        ],
+        "confidence": 0,
+        "threshold": 1,
+        "uncoveredStatementIds": [
+          "statement:41a7f498275cf886"
+        ],
+        "kind": "NeedsHuman",
+        "reason": "requirement coverage below declared confidence threshold"
+      }
+    },
+    {
+      "name": "directory-reference",
+      "contract": {
+        "contractVersion": "story-contract-v1",
+        "contractId": "contract:7e475ae67ce91d3c",
+        "bundleId": "wo124-synthetic-issue",
+        "bundleHash": "fnv1a64:6c380ddf0d0ea6d3",
+        "revisionId": "r1",
+        "statements": [
+          {
+            "statementId": "statement:7da28f04a5efdac0",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 21
+            },
+            "text": "Change `src/parser/`.",
+            "class": "requirement",
+            "origin": "inferred",
+            "rationale": "Synthetic requirement classification supplied by the fixture double.",
+            "status": "active"
+          }
+        ],
+        "criteria": [
+          {
+            "criterionId": "criterion:f02486c024247d6f",
+            "statementId": "statement:7da28f04a5efdac0",
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 21
+            },
+            "description": "Change `src/parser/`.",
+            "claimType": "behavior",
+            "evidenceSource": "live",
+            "status": "active"
+          }
+        ],
+        "relations": [],
+        "openDecisions": [],
+        "sourceUnits": [
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 21
+            },
+            "fingerprint": "unit:4e9af28bd7aed46c"
+          }
+        ],
+        "inferences": [
+          {
+            "span": {
+              "sectionId": "s-0",
+              "start": 0,
+              "end": 21
+            },
+            "class": "requirement",
+            "rationale": "Synthetic requirement classification supplied by the fixture double."
+          }
+        ]
+      },
+      "options": {
+        "inferences": []
+      },
+      "result": {
+        "surfaces": [
+          {
+            "path": "src/parser/read.ts",
+            "origins": [
+              {
+                "origin": "rule",
+                "rule": "named-path",
+                "statementId": "statement:7da28f04a5efdac0",
+                "reference": "src/parser"
+              }
+            ]
+          },
+          {
+            "path": "src/parser/write.ts",
+            "origins": [
+              {
+                "origin": "rule",
+                "rule": "named-path",
+                "statementId": "statement:7da28f04a5efdac0",
+                "reference": "src/parser"
+              }
+            ]
+          }
+        ],
+        "tests": [
+          {
+            "command": "node --test test/parser.test.mjs",
+            "origin": "rule",
+            "surfaces": [
+              "src/parser/read.ts",
+              "src/parser/write.ts"
+            ]
+          },
+          {
+            "command": "npm run check",
+            "origin": "rule",
+            "surfaces": [
+              "src/parser/read.ts",
+              "src/parser/write.ts"
+            ]
+          }
+        ],
+        "candidates": [],
+        "confidence": 1,
+        "threshold": 1,
+        "uncoveredStatementIds": [],
+        "kind": "DerivedSurfaces"
+      }
+    }
+  ],
+  "unavailableSnapshot": {
+    "surfaces": [],
+    "tests": [],
+    "candidates": [
+      {
+        "path": "src/parser/read.ts",
+        "statementId": "statement:3c03265a8544770c",
+        "reason": "not-in-snapshot",
+        "provenance": {
+          "origin": "rule",
+          "rule": "named-path",
+          "statementId": "statement:3c03265a8544770c",
+          "reference": "src/parser/read.ts"
+        }
+      }
+    ],
+    "confidence": 0,
+    "threshold": 1,
+    "uncoveredStatementIds": [
+      "statement:3c03265a8544770c"
+    ],
+    "kind": "NeedsHuman",
+    "reason": "snapshot unavailable: requires 1 to 100 regular UTF-8 files, at most 100,000 bytes each; symlinks, submodules and binary files are unsupported"
+  }
+}

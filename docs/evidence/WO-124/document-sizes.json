@@ -1,0 +1,16 @@
+[
+  {
+    "file": "03-architecture.md",
+    "addedBytes": 232,
+    "bytes": 174551,
+    "ceiling": 176132,
+    "headroom": 1581
+  },
+  {
+    "file": "06-roadmap.md",
+    "addedBytes": 56,
+    "bytes": 40705,
+    "ceiling": 40775,
+    "headroom": 70
+  }
+]

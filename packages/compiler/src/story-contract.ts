@@ -5,7 +5,11 @@ import {
   type SourceBundle,
   type SourceSpan,
 } from "./source-bundle.js";
-import { verificationLine, type AcceptanceCriterion } from "./verification.js";
+import {
+  repositoryPath,
+  verificationLine,
+  type AcceptanceCriterion,
+} from "./verification.js";
 
 /** StoryContract v1 (WO-061) consumes an already decoded SourceBundle.
  * No model, clock, IO or ambient policy is consulted. Classification rules
@@ -643,4 +647,447 @@ export function revise(
       ),
     },
   });
+}
+
+/** WO-124's typed input, independent of the future role-loaded profile document.
+ * Directories are repository-relative; '.' explicitly covers the snapshot root.
+ * Commands are selected verbatim, never interpreted or executed here.
+ */
+export interface RepoSurfaceProfile {
+  readonly architecture: readonly {
+    readonly noun: string;
+    readonly directories: readonly string[];
+  }[];
+  readonly commands: readonly {
+    readonly command: string;
+    readonly directories: readonly string[];
+  }[];
+}
+export interface SnapshotIndexEntry {
+  readonly path: string;
+  /** UTF-8 byte length, not character count. */
+  readonly size: number;
+  /** Lowercase SHA-256 of the file's bytes; an equality receipt. */
+  readonly hash: string;
+}
+export type SnapshotIndex = readonly SnapshotIndexEntry[];
+export interface SurfaceInference {
+  readonly statementId: string;
+  readonly path: string;
+  readonly rationale: string;
+}
+export type SurfaceOrigin =
+  | {
+      readonly origin: "rule";
+      readonly rule: "named-path" | "architecture";
+      readonly statementId: string;
+      readonly reference: string;
+    }
+  | {
+      readonly origin: "inferred";
+      readonly statementId: string;
+      readonly rationale: string;
+    };
+export interface DerivedSurface {
+  readonly path: string;
+  /** Retain every distinct proof, including inferred/rule overlap. */
+  readonly origins: readonly SurfaceOrigin[];
+}
+export interface SurfaceCandidate {
+  readonly path: string | null;
+  readonly statementId: string;
+  readonly reason: "not-in-snapshot" | "unmapped-requirement";
+  readonly provenance: SurfaceOrigin | null;
+}
+export interface DerivedSurfaceTest {
+  readonly command: string;
+  readonly origin: "rule";
+  readonly surfaces: readonly string[];
+}
+export interface SurfaceDerivationOptions {
+  readonly threshold?: number;
+  /** Supplied model choices; fixtures use a labeled double. */
+  readonly inferences?: readonly SurfaceInference[];
+}
+interface SurfaceDerivationBody {
+  readonly surfaces: readonly DerivedSurface[];
+  readonly tests: readonly DerivedSurfaceTest[];
+  readonly candidates: readonly SurfaceCandidate[];
+  readonly confidence: number;
+  readonly threshold: number;
+  readonly uncoveredStatementIds: readonly string[];
+}
+export type SurfaceDerivation = SurfaceDerivationBody &
+  (
+    | { readonly kind: "DerivedSurfaces" }
+    | { readonly kind: "NeedsHuman"; readonly reason: string }
+  );
+
+/** These are declared syntax, not a general language/path parser. Quote root
+ * filenames with backticks. Bare paths contain a slash; final prose punctuation
+ * is removed. Nouns match literal text, case-insensitively, at Unicode word
+ * boundaries. Directory references expand only to files held by the index.
+ */
+export const SURFACE_RULE_PATTERNS = Object.freeze({
+  quotedPath: Object.freeze({
+    pattern: String.raw`\x60([^\x60\r\n]+)\x60`,
+    flags: "gu",
+  }),
+  barePath: Object.freeze({
+    pattern: String.raw`(?<![\p{L}\p{N}_./-])[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)+/?`,
+    flags: "gu",
+  }),
+  noun: Object.freeze({
+    match: "case-insensitive-literal",
+    boundary: String.raw`[\p{L}\p{N}_]`,
+    flags: "iu",
+  }),
+});
+export const SURFACE_SNAPSHOT_BOUND =
+  "snapshot unavailable: requires 1 to 100 regular UTF-8 files, at most 100,000 bytes each; symlinks, submodules and binary files are unsupported";
+const surfaceRefuse = (field: string, reason: string): never => {
+  throw new Error(`surface derivation: ${field}: ${reason}`);
+};
+const surfaceObject = (
+  value: unknown,
+  fields: readonly string[],
+  field: string,
+): Record<string, unknown> => {
+  if (!value || typeof value !== "object" || Array.isArray(value))
+    return surfaceRefuse(field, "expected an object");
+  const record = value as Record<string, unknown>;
+  for (const key of Object.keys(record))
+    if (!fields.includes(key))
+      surfaceRefuse(`${field}.${key}`, "unknown field");
+  return record;
+};
+const surfaceList = (value: unknown, field: string): unknown[] => {
+  if (!Array.isArray(value)) return surfaceRefuse(field, "expected an array");
+  // Mapping a sparse array skips its absent positions; validate each slot.
+  return Array.from(value);
+};
+const surfaceDirectory = (value: unknown): value is string =>
+  value === "." || repositoryPath(value);
+const surfaceDirectories = (value: unknown, field: string): string[] => {
+  const values = surfaceList(value, field);
+  if (!values.length) surfaceRefuse(field, "expected at least one directory");
+  const seen = new Set<string>();
+  return values
+    .map((directory, i) => {
+      if (!surfaceDirectory(directory))
+        return surfaceRefuse(
+          `${field}[${i}]`,
+          "expected a repository directory",
+        );
+      if (seen.has(directory))
+        surfaceRefuse(`${field}[${i}]`, "duplicate directory");
+      seen.add(directory);
+      return directory;
+    })
+    .sort();
+};
+
+export function decodeRepoSurfaceProfile(value: unknown): RepoSurfaceProfile {
+  const root = surfaceObject(value, ["architecture", "commands"], "$.profile");
+  const nouns = new Set<string>(),
+    commands = new Set<string>();
+  return freeze({
+    architecture: surfaceList(root.architecture, "$.profile.architecture").map(
+      (entry, i) => {
+        const field = `$.profile.architecture[${i}]`;
+        const row = surfaceObject(entry, ["noun", "directories"], field);
+        if (!verificationLine(row.noun) || !row.noun.trim())
+          return surfaceRefuse(
+            `${field}.noun`,
+            "expected a nonempty single-line noun",
+          );
+        const noun = row.noun.trim();
+        if (nouns.has(noun.toLowerCase()))
+          surfaceRefuse(`${field}.noun`, "duplicate noun");
+        nouns.add(noun.toLowerCase());
+        return {
+          noun,
+          directories: surfaceDirectories(
+            row.directories,
+            `${field}.directories`,
+          ),
+        };
+      },
+    ),
+    commands: surfaceList(root.commands, "$.profile.commands").map(
+      (entry, i) => {
+        const field = `$.profile.commands[${i}]`;
+        const row = surfaceObject(entry, ["command", "directories"], field);
+        if (!verificationLine(row.command) || !row.command.trim())
+          return surfaceRefuse(
+            `${field}.command`,
+            "expected a nonempty single-line command",
+          );
+        if (commands.has(row.command))
+          surfaceRefuse(`${field}.command`, "duplicate command");
+        commands.add(row.command);
+        return {
+          command: row.command,
+          directories: surfaceDirectories(
+            row.directories,
+            `${field}.directories`,
+          ),
+        };
+      },
+    ),
+  });
+}
+
+export function decodeSnapshotIndex(value: unknown): SnapshotIndex {
+  const rows = surfaceList(value, "$.snapshotIndex");
+  if (!rows.length || rows.length > 100)
+    surfaceRefuse(
+      "$.snapshotIndex",
+      "expected 1 to 100 files; unavailable snapshots use null",
+    );
+  const paths = new Set<string>();
+  return freeze(
+    rows
+      .map((entry, i) => {
+        const field = `$.snapshotIndex[${i}]`;
+        const row = surfaceObject(entry, ["path", "size", "hash"], field);
+        if (!repositoryPath(row.path))
+          return surfaceRefuse(
+            `${field}.path`,
+            "expected a repository file path",
+          );
+        if (paths.has(row.path))
+          surfaceRefuse(`${field}.path`, "duplicate file path");
+        paths.add(row.path);
+        if (
+          typeof row.size !== "number" ||
+          !Number.isSafeInteger(row.size) ||
+          row.size < 0 ||
+          row.size > 100_000
+        )
+          return surfaceRefuse(
+            `${field}.size`,
+            "expected 0 to 100,000 UTF-8 bytes",
+          );
+        if (typeof row.hash !== "string" || !/^[a-f0-9]{64}$/u.test(row.hash))
+          return surfaceRefuse(
+            `${field}.hash`,
+            "expected a lowercase SHA-256 digest",
+          );
+        return { path: row.path, size: row.size, hash: row.hash };
+      })
+      .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0)),
+  );
+}
+const surfaceWithin = (directory: string, path: string): boolean =>
+  directory === "." || path === directory || path.startsWith(`${directory}/`);
+const surfaceCanonicalOrder = <T>(values: readonly T[]): T[] =>
+  [
+    ...new Map(
+      values.map((value) => [canonicalStringify(value), value]),
+    ).entries(),
+  ]
+    .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+    .map(([, value]) => value);
+
+/** Pure proposal, not an authority grant. Confidence is requirement coverage,
+ * not a probability that a model's scope is correct. Missing explicit paths stay
+ * candidates even when another rule covers that same requirement. A caller's
+ * lower threshold deliberately admits uncovered requirements, never those paths.
+ */
+export function deriveSurfaces(
+  contract: StoryContract,
+  profile: RepoSurfaceProfile,
+  snapshotIndex: SnapshotIndex | null,
+  options: SurfaceDerivationOptions = {},
+): SurfaceDerivation {
+  const decoded = decodeRepoSurfaceProfile(profile);
+  const files =
+    snapshotIndex === null ? [] : decodeSnapshotIndex(snapshotIndex);
+  surfaceObject(options, ["threshold", "inferences"], "$.options");
+  const threshold = options.threshold === undefined ? 1 : options.threshold;
+  if (
+    typeof threshold !== "number" ||
+    !Number.isFinite(threshold) ||
+    threshold < 0 ||
+    threshold > 1
+  )
+    surfaceRefuse("$.options.threshold", "expected a confidence from 0 to 1");
+  const requirements = contract.statements.filter(
+    (statement) =>
+      statement.class === "requirement" && statement.status === "active",
+  );
+  const byId = new Map(
+    requirements.map((statement) => [statement.statementId, statement]),
+  );
+  const origins = new Map<string, SurfaceOrigin[]>();
+  const covered = new Set<string>();
+  const candidates: SurfaceCandidate[] = [];
+  const add = (path: string, provenance: SurfaceOrigin) => {
+    const matches = files.filter((file) => surfaceWithin(path, file.path));
+    if (!matches.length) {
+      candidates.push({
+        path,
+        statementId: provenance.statementId,
+        reason: "not-in-snapshot",
+        provenance,
+      });
+      return;
+    }
+    covered.add(provenance.statementId);
+    for (const file of matches)
+      origins.set(file.path, [...(origins.get(file.path) ?? []), provenance]);
+  };
+  for (const statement of requirements) {
+    const named = new Set<string>();
+    // Strip quoted regions before the bare scan so quoted punctuation is exact.
+    const unquoted = statement.text.replace(
+      new RegExp(
+        SURFACE_RULE_PATTERNS.quotedPath.pattern,
+        SURFACE_RULE_PATTERNS.quotedPath.flags,
+      ),
+      (_whole, path: string) => {
+        named.add(path.endsWith("/") ? path.slice(0, -1) : path);
+        return " ";
+      },
+    );
+    const nounText = unquoted.replace(
+      new RegExp(
+        SURFACE_RULE_PATTERNS.barePath.pattern,
+        SURFACE_RULE_PATTERNS.barePath.flags,
+      ),
+      (path) => {
+        named.add(path.replace(/[.,;:!?]+$/u, "").replace(/\/$/u, ""));
+        return " ";
+      },
+    );
+    for (const path of named)
+      if (repositoryPath(path))
+        add(path, {
+          origin: "rule",
+          rule: "named-path",
+          statementId: statement.statementId,
+          reference: path,
+        });
+      else
+        candidates.push({
+          path,
+          statementId: statement.statementId,
+          reason: "not-in-snapshot",
+          provenance: {
+            origin: "rule",
+            rule: "named-path",
+            statementId: statement.statementId,
+            reference: path,
+          },
+        });
+    for (const mapping of decoded.architecture) {
+      const escaped = mapping.noun.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
+      const boundary = SURFACE_RULE_PATTERNS.noun.boundary;
+      if (
+        new RegExp(
+          `(?<!${boundary})${escaped}(?!${boundary})`,
+          SURFACE_RULE_PATTERNS.noun.flags,
+        ).test(nounText)
+      )
+        for (const directory of mapping.directories)
+          add(directory, {
+            origin: "rule",
+            rule: "architecture",
+            statementId: statement.statementId,
+            reference: mapping.noun,
+          });
+    }
+  }
+  for (const [i, value] of surfaceList(
+    options.inferences === undefined ? [] : options.inferences,
+    "$.options.inferences",
+  ).entries()) {
+    const field = `$.options.inferences[${i}]`;
+    const entry = surfaceObject(
+      value,
+      ["statementId", "path", "rationale"],
+      field,
+    );
+    if (typeof entry.statementId !== "string" || !byId.has(entry.statementId))
+      surfaceRefuse(
+        `${field}.statementId`,
+        "expected an active requirement statement",
+      );
+    if (!repositoryPath(entry.path))
+      surfaceRefuse(`${field}.path`, "expected a repository path");
+    if (!verificationLine(entry.rationale) || !entry.rationale.trim())
+      surfaceRefuse(
+        `${field}.rationale`,
+        "expected a nonempty single-line rationale",
+      );
+    add(entry.path as string, {
+      origin: "inferred",
+      statementId: entry.statementId as string,
+      rationale: entry.rationale as string,
+    });
+  }
+  const surfaces = [...origins]
+    .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+    .map(([path, provenance]) => ({
+      path,
+      origins: surfaceCanonicalOrder(provenance),
+    }));
+  const tests = decoded.commands
+    .flatMap(({ command, directories }) => {
+      const selected = surfaces
+        .filter((surface) =>
+          directories.some((directory) =>
+            surfaceWithin(directory, surface.path),
+          ),
+        )
+        .map((surface) => surface.path);
+      return selected.length
+        ? [{ command, origin: "rule" as const, surfaces: selected }]
+        : [];
+    })
+    .sort((a, b) =>
+      a.command < b.command ? -1 : a.command > b.command ? 1 : 0,
+    );
+  const uncoveredStatementIds = requirements
+    .filter((statement) => !covered.has(statement.statementId))
+    .map((statement) => statement.statementId)
+    .sort();
+  for (const statementId of uncoveredStatementIds)
+    if (!candidates.some((candidate) => candidate.statementId === statementId))
+      candidates.push({
+        path: null,
+        statementId,
+        reason: "unmapped-requirement",
+        provenance: null,
+      });
+  const confidence = requirements.length
+    ? covered.size / requirements.length
+    : 0;
+  const body = {
+    surfaces,
+    tests,
+    candidates: surfaceCanonicalOrder(candidates),
+    confidence,
+    threshold,
+    uncoveredStatementIds,
+  };
+  return freeze(
+    snapshotIndex === null
+      ? { ...body, kind: "NeedsHuman", reason: SURFACE_SNAPSHOT_BOUND }
+      : !requirements.length
+        ? {
+            ...body,
+            kind: "NeedsHuman",
+            reason: "no active requirement statements",
+          }
+        : confidence < threshold
+          ? {
+              ...body,
+              kind: "NeedsHuman",
+              reason:
+                "requirement coverage below declared confidence threshold",
+            }
+          : { ...body, kind: "DerivedSurfaces" },
+  );
 }
