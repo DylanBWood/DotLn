@@ -359,7 +359,9 @@ write-back states and where, without a count. A pass that files or keeps
 a write-back to a bounded document sets that document's ceiling to cover
 it. A duty an order owes beyond its criteria is written in that order,
 under `Known issues and carry-ins`, where the verify briefing will print
-it. The bound stays, as the operator asked; its basis is now the plan.
+it; a known issue from a pass's last receipt goes on the order's catalog
+row, because a judged order is frozen. The bound stays, as the operator
+asked; its basis is now the plan.
 
 ## 7. Public surfaces: the front page, operator words, the lists, published text
 
