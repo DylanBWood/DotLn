@@ -893,3 +893,40 @@ section: the planner's role sentence on repairs after a judgment reads
 as leave to repair, which is how the first pass came to edit judged
 text. It is a role-text change and waits for an order that edits the
 planner procedure.
+
+Receipt 039 (`2026-10-02-planning-9471b224202aeb77-039`) is the amended
+subject's judgment. A second fresh worker with no inherited
+conversation read only the canonical prompt, rendered as before, and
+judged the eight orders whose judged text changed (WO-184, WO-185,
+WO-123, WO-187, WO-188, WO-073, WO-191 and WO-192) and the sequence.
+Plan verdict: aligned-with-findings, no hold; all eight are aligned with
+findings; 30 unchanged verdicts are carried by hash. The worker ran
+1,260 s and used 302,683 tokens; dispatch to filed receipt took
+1,337.3 s.
+
+Its twenty-three findings are known issues, each with a reopening
+observation. This is the pass's own judgment, so no judged text is
+edited after it: the findings are on the eight orders' catalog rows in
+the map. The ones a later pass or an executor should weigh first:
+
+- WO-185: one guard serves every clone while each clone keeps its own
+  budget file, so whose figures apply is unstated; a tree the resident
+  launches before any session has dispatched has no started guard; a
+  live lane holder that has stalled keeps every gate on the host
+  waiting.
+- WO-073: its criterion 2 still allows a cold-start ceiling raise of
+  the kind WO-187 and WO-188 now forbid themselves.
+- WO-192: the router is a second lifecycle driver beside the resident,
+  and its new root has no cold-start ceiling.
+- WO-184: no arm of criterion 13 shows a behavior defect still failing
+  verification with the review notice present.
+- WO-188: release close removes a repository an earlier completion
+  declared kept; the record keeps evidence of the loss, not the
+  content.
+
+The register after this pass: 865 rows, 168 pending (167 deferred and
+the one open row), none untriaged; the new candidate is deferred with
+its reopening condition.
+
+Cost of this pass: one sub-agent (twelve of the cap of twenty used in
+the session); no code suite; the document gate.
