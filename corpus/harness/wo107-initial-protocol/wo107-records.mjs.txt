@@ -1,0 +1,430 @@
+import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
+
+export const BASE = "2bae7d407af2d5d07d16c5b15dc63134e277eabd";
+export const SEEDS = ["wo107-base-a-20261002", "wo107-base-b-20261002"];
+export const digest = (value) =>
+  createHash("sha256").update(value).digest("hex");
+export const METRICS = {
+  wallMs: "ms; complete invocation/batch, including awaited child",
+  monotonicMs: "ms; independent hrtime clock over the same invocation",
+  supervisorUserCpuMs: "ms; harness process only, excludes children",
+  supervisorSystemCpuMs: "ms; harness process only, excludes children",
+  supervisorRssAfterBytes: "bytes; harness after boundary, not a peak",
+  supervisorHeapUsedAfterBytes: "bytes; harness after boundary, not a peak",
+  supervisorHeapDeltaBytes: "bytes; signed after-minus-before, GC included",
+  unitsPerSecond: "scenario units / second, calculated per repetition",
+};
+
+export function distribution(values) {
+  assert.ok(values.length > 0 && values.every(Number.isFinite));
+  const sorted = [...values].sort((a, b) => a - b);
+  const quantile = (p) => {
+    const index = (sorted.length - 1) * p;
+    const lower = Math.floor(index);
+    return (
+      sorted[lower] +
+      (sorted[Math.ceil(index)] - sorted[lower]) * (index - lower)
+    );
+  };
+  const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
+  return {
+    count: values.length,
+    min: sorted[0],
+    p25: quantile(0.25),
+    p50: quantile(0.5),
+    p90: quantile(0.9),
+    max: sorted.at(-1),
+    mean,
+    stddev: Math.sqrt(
+      values.reduce((sum, value) => sum + (value - mean) ** 2, 0) /
+        values.length,
+    ),
+  };
+}
+
+// FNV-1a seed fold, then a uint32 LCG and Fisher-Yates. Each round visits
+// each eligible scenario once; warm-ups are separate from measured rounds.
+export function schedule(registry, seed) {
+  let state = 2166136261;
+  for (const byte of Buffer.from(seed))
+    state = Math.imul(state ^ byte, 16777619) >>> 0;
+  const draw = () =>
+    (state = (Math.imul(state, 1664525) + 1013904223) >>> 0) / 0x100000000;
+  const plan = [];
+  for (const phase of ["warmup", "measured"]) {
+    const field = phase === "warmup" ? "warmups" : "repetitions";
+    for (
+      let round = 0;
+      round < Math.max(...registry.map((s) => s[field]));
+      round++
+    ) {
+      const eligible = registry
+        .filter((s) => s[field] > round)
+        .map((s) => s.id);
+      for (let i = eligible.length - 1; i > 0; i--) {
+        const j = Math.floor(draw() * (i + 1));
+        [eligible[i], eligible[j]] = [eligible[j], eligible[i]];
+      }
+      for (const scenarioId of eligible)
+        plan.push({ index: plan.length, phase, round, scenarioId });
+    }
+  }
+  return plan;
+}
+
+export async function execute(registry, seed, measure, observe = () => {}) {
+  assert.equal(new Set(registry.map((s) => s.id)).size, registry.length);
+  const samples = new Map(registry.map((s) => [s.id, []]));
+  for (const entry of schedule(registry, seed)) {
+    const scenario = registry.find((s) => s.id === entry.scenarioId);
+    observe({ event: "start", ...entry });
+    const sample = { ...entry, ...(await measure(scenario, entry)) };
+    samples.get(scenario.id).push(sample);
+    observe({ event: "finish", ...sample });
+    if (sample.outcome?.status === "failed")
+      throw new Error(
+        "Failed sample retained in transcript; campaign stopped before another invocation",
+      );
+  }
+  return samples;
+}
+
+export function summarize(samples) {
+  const measured = samples.filter((s) => s.phase === "measured");
+  return Object.fromEntries(
+    Object.keys(METRICS).map((key) => [
+      key,
+      distribution(measured.map((s) => s.resources[key])),
+    ]),
+  );
+}
+
+const iso = (value) =>
+  typeof value === "string" && new Date(value).toISOString() === value;
+const hash = (value) =>
+  typeof value === "string" && /^[a-f0-9]{64}$/.test(value);
+function boundary(sample) {
+  assert.ok(iso(sample.at));
+  assert.equal(sample.kind, "boundary-sample");
+  assert.equal(sample.loadavg.length, 3);
+  assert.ok(sample.loadavg.every((n) => Number.isFinite(n) && n >= 0));
+  for (const key of [
+    "freeMemoryBytes",
+    "totalMemoryBytes",
+    "usedMemoryFraction",
+  ])
+    assert.ok(Number.isFinite(sample[key]));
+  assert.ok(
+    sample.freeMemoryBytes >= 0 &&
+      sample.freeMemoryBytes <= sample.totalMemoryBytes,
+  );
+  assert.equal(
+    sample.usedMemoryFraction,
+    1 - sample.freeMemoryBytes / sample.totalMemoryBytes,
+  );
+  for (const key of [
+    "rss",
+    "heapTotal",
+    "heapUsed",
+    "external",
+    "arrayBuffers",
+  ])
+    assert.ok(
+      Number.isFinite(sample.processMemory[key]) &&
+        sample.processMemory[key] >= 0,
+    );
+  assert.equal(
+    sample.pressureInterpretation,
+    "occupancy proxy plus macOS pressure level and swap boundary samples",
+  );
+  assert.ok([1, 2, 4].includes(sample.nativeMemory.memoryPressure));
+  assert.ok(
+    Number.isFinite(sample.nativeMemory.swapUsedMiB) &&
+      sample.nativeMemory.swapUsedMiB >= 0,
+  );
+}
+
+export function validateRecords(
+  records,
+  { expectedRegistry, pair = true } = {},
+) {
+  assert.ok(records.length > 0, "observations must not be empty");
+  const groups = new Map();
+  for (const row of records) {
+    assert.equal(row.schemaVersion, "WO-107-provisional-1");
+    assert.equal(row.baseCommit, BASE);
+    assert.ok(hash(row.protocolHash) && hash(row.sourceIdentity));
+    assert.deepEqual(row.metricDefinitions, METRICS);
+    assert.deepEqual(row.unmeasured, [
+      "child CPU and memory",
+      "energy",
+      "operator attention",
+      "model tokens",
+      "monetary cost",
+    ]);
+    const execution = row.execution;
+    assert.ok(
+      hash(execution.id) &&
+        typeof execution.seed === "string" &&
+        execution.seed.length > 0,
+    );
+    assert.ok(iso(execution.startedAt) && iso(execution.finishedAt));
+    assert.ok(execution.finishedAt >= execution.startedAt);
+    assert.equal(
+      execution.id,
+      digest(`${row.baseCommit}:${execution.seed}:${execution.startedAt}`),
+    );
+    assert.ok(row.registry.length > 0);
+    assert.equal(
+      new Set(row.registry.map((s) => s.id)).size,
+      row.registry.length,
+    );
+    if (expectedRegistry) assert.deepEqual(row.registry, expectedRegistry);
+    for (const scenario of row.registry) {
+      for (const key of ["id", "family", "description", "unit"])
+        assert.ok(
+          typeof scenario[key] === "string" && scenario[key].length > 0,
+        );
+      assert.ok(Number.isInteger(scenario.warmups) && scenario.warmups > 0);
+      assert.ok(
+        Number.isInteger(scenario.repetitions) && scenario.repetitions >= 2,
+      );
+      assert.ok(Number.isInteger(scenario.units) && scenario.units > 0);
+      assert.ok(Array.isArray(scenario.command));
+    }
+    const scenario = row.registry.find((s) => s.id === row.scenarioId);
+    assert.ok(scenario);
+    assert.equal(row.repetitionCount, scenario.repetitions);
+    assert.equal(row.warmupCount, scenario.warmups);
+    assert.ok(
+      typeof row.environment.os.platform === "string" &&
+        row.environment.os.platform.length > 0,
+    );
+    for (const key of ["release", "arch"])
+      assert.ok(
+        typeof row.environment.os[key] === "string" &&
+          row.environment.os[key].length > 0,
+      );
+    assert.ok(
+      row.environment.cpus.count > 0 &&
+        row.environment.cpus.models.length > 0 &&
+        row.environment.cpus.models.every(
+          (s) => typeof s === "string" && s.length > 0,
+        ),
+    );
+    for (const key of ["node", "npm", "tsc"])
+      assert.match(row.environment.toolchain[key], /\d+\.\d+\.\d+/);
+    assert.ok(hash(row.environment.lockfileSha256));
+    boundary(execution.before);
+    boundary(execution.after);
+    const wanted = schedule(row.registry, execution.seed).filter(
+      (s) => s.scenarioId === row.scenarioId,
+    );
+    assert.equal(row.samples.length, wanted.length);
+    row.samples.forEach((sample, index) => {
+      const { index: ordinal, phase, round, scenarioId } = sample;
+      assert.deepEqual(
+        { index: ordinal, phase, round, scenarioId },
+        wanted[index],
+      );
+      boundary(sample.before);
+      boundary(sample.after);
+      assert.ok(
+        sample.before.at >= execution.startedAt &&
+          sample.after.at <= execution.finishedAt &&
+          sample.after.at >= sample.before.at,
+      );
+      assert.deepEqual(
+        Object.keys(sample.resources).sort(),
+        Object.keys(METRICS).sort(),
+      );
+      for (const [key, value] of Object.entries(sample.resources))
+        assert.ok(
+          Number.isFinite(value) &&
+            (key === "supervisorHeapDeltaBytes" || value >= 0),
+        );
+      assert.ok(
+        sample.resources.wallMs > 0 && sample.resources.monotonicMs > 0,
+      );
+      assert.equal(
+        sample.resources.unitsPerSecond,
+        (scenario.units * 1000) / sample.resources.wallMs,
+      );
+      assert.equal(
+        sample.resources.supervisorRssAfterBytes,
+        sample.after.processMemory.rss,
+      );
+      assert.equal(
+        sample.resources.supervisorHeapUsedAfterBytes,
+        sample.after.processMemory.heapUsed,
+      );
+      assert.equal(
+        sample.resources.supervisorHeapDeltaBytes,
+        sample.after.processMemory.heapUsed -
+          sample.before.processMemory.heapUsed,
+      );
+      assert.ok(["completed", "failed"].includes(sample.outcome.status));
+      if (sample.outcome.status === "failed")
+        assert.ok(typeof sample.outcome.error === "string");
+      else assert.ok(hash(sample.outcome.checksum));
+    });
+    assert.deepEqual(
+      row.distributions,
+      summarize(row.samples),
+      "statistics retain every measured sample including outliers/failures",
+    );
+    const group = groups.get(execution.id) ?? [];
+    group.push(row);
+    groups.set(execution.id, group);
+  }
+  for (const group of groups.values()) {
+    const first = group[0];
+    assert.deepEqual(
+      group.map((r) => r.scenarioId).sort(),
+      first.registry.map((s) => s.id).sort(),
+      "one complete registry per execution",
+    );
+    for (const row of group)
+      for (const key of [
+        "execution",
+        "registry",
+        "environment",
+        "protocolHash",
+        "sourceIdentity",
+      ])
+        assert.deepEqual(row[key], first[key]);
+    const ordered = group
+      .flatMap((r) => r.samples)
+      .sort((a, b) => a.index - b.index);
+    for (let i = 1; i < ordered.length; i++)
+      assert.ok(
+        ordered[i].before.at >= ordered[i - 1].after.at,
+        "serial measurements",
+      );
+  }
+  if (pair) {
+    assert.equal(groups.size, 2, "two complete independent executions");
+    const [a, b] = [...groups.values()].map((g) => g[0]);
+    assert.notEqual(a.execution.seed, b.execution.seed);
+    for (const key of [
+      "registry",
+      "sourceIdentity",
+      "protocolHash",
+      "environment",
+    ])
+      assert.deepEqual(a[key], b[key]);
+    assert.ok(
+      a.execution.finishedAt <= b.execution.startedAt ||
+        b.execution.finishedAt <= a.execution.startedAt,
+    );
+  }
+  return groups;
+}
+
+export function parseRecords(text) {
+  assert.ok(text.endsWith("\n"), "JSONL requires a final newline");
+  return text
+    .slice(0, -1)
+    .split("\n")
+    .map((line) => {
+      assert.ok(line.trim());
+      return JSON.parse(line);
+    });
+}
+
+export function comparison(records) {
+  const groups = [...validateRecords(records).values()];
+  const fmt = (n) => Number(n.toPrecision(8)).toString();
+  const cells = (s) =>
+    [s.count, s.min, s.p25, s.p50, s.p90, s.max, s.mean, s.stddev]
+      .map(fmt)
+      .join(" | ");
+  const lines = [
+    "# WO-107 baseline comparison",
+    "",
+    "Provisional, non-normative observations. Two executions on one host; descriptive overlap and variance only. No verdicts, thresholds, confidence intervals or significance claims. All measured repetitions, including outliers and failures, are retained. Quantiles use linear interpolation; standard deviation uses the population divisor N.",
+    "",
+    `Base: \`${records[0].baseCommit}\`. Protocol: \`${records[0].protocolHash}\`.`,
+    "",
+    "## Environment and boundary-sampled load",
+    "",
+    `Environment: \`${JSON.stringify(records[0].environment)}\``,
+    "",
+    "Load and memory below are boundary samples, not distributions or peaks. Occupancy is a memory-pressure proxy; native macOS pressure levels (1 normal, 2 warning, 4 critical) and swap use are recorded at the same boundaries. CPU and memory resource distributions describe the harness process only; child-process wall time is included, child CPU/memory is unknown.",
+    "",
+  ];
+  groups.forEach((group, i) => {
+    const e = group[0].execution;
+    lines.push(
+      `Execution ${i + 1}: seed \`${e.seed}\`, ${e.startedAt} to ${e.finishedAt}.`,
+      "",
+      `Run boundaries: \`${JSON.stringify({ before: e.before, after: e.after })}\``,
+      "",
+    );
+  });
+  for (const scenario of records[0].registry) {
+    const rows = groups.map((g) => g.find((r) => r.scenarioId === scenario.id));
+    lines.push(
+      `## ${scenario.id}`,
+      "",
+      scenario.description,
+      "",
+      `Units per sample: ${scenario.units} ${scenario.unit}. Warm-ups per execution: ${scenario.warmups}; measured repetitions: ${scenario.repetitions}.`,
+      "",
+    );
+    for (const [metric, definition] of Object.entries(METRICS)) {
+      lines.push(
+        `### ${metric}`,
+        "",
+        definition,
+        "",
+        "| Execution | N | min | p25 | p50 | p90 | max | mean | stddev |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+        ...rows.map(
+          (r, i) => `| ${i + 1} | ${cells(r.distributions[metric])} |`,
+        ),
+        "",
+      );
+      const [a, b] = rows.map((r) => r.distributions[metric]);
+      // Every derived difference uses the full cross-product, never a
+      // fabricated pairing of independently randomized repetitions.
+      const differences = rows[1].samples
+        .filter((s) => s.phase === "measured")
+        .flatMap((bSample) =>
+          rows[0].samples
+            .filter((s) => s.phase === "measured")
+            .map(
+              (aSample) =>
+                bSample.resources[metric] - aSample.resources[metric],
+            ),
+        );
+      lines.push(
+        "Between-execution differences (execution 2 minus execution 1): all pairwise differences; correlated descriptive values, not independent samples or a confidence interval.",
+        "",
+        "| Derived set | N | min | p25 | p50 | p90 | max | mean | stddev |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+        `| All pairs | ${cells(distribution(differences))} |`,
+        "",
+        `Observed min–max ranges ${Math.max(a.min, b.min) <= Math.min(a.max, b.max) ? "overlap" : "are disjoint"}; central p25–p90 ranges ${Math.max(a.p25, b.p25) <= Math.min(a.p90, b.p90) ? "overlap" : "are disjoint"}.`,
+        "",
+      );
+    }
+    lines.push(
+      "### Per-invocation boundary samples",
+      "",
+      "Includes the labeled warm-up boundaries; the JSONL retains their resources separately from measured distributions.",
+      "",
+      "| Execution | Phase / round | Load before → after (1/5/15 min) | Free bytes before → after | Used fraction before → after | Harness RSS before → after | Native pressure before → after | Swap MiB before → after | Outcome |",
+      "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+      ...rows.flatMap((r, i) =>
+        r.samples.map(
+          (s) =>
+            `| ${i + 1} | ${s.phase} / ${s.round} | ${s.before.loadavg.map(fmt).join(" / ")} → ${s.after.loadavg.map(fmt).join(" / ")} | ${s.before.freeMemoryBytes} → ${s.after.freeMemoryBytes} | ${fmt(s.before.usedMemoryFraction)} → ${fmt(s.after.usedMemoryFraction)} | ${s.before.processMemory.rss} → ${s.after.processMemory.rss} | ${s.before.nativeMemory.memoryPressure} → ${s.after.nativeMemory.memoryPressure} | ${s.before.nativeMemory.swapUsedMiB} → ${s.after.nativeMemory.swapUsedMiB} | ${s.outcome.status} |`,
+        ),
+      ),
+      "",
+    );
+  }
+  return `${lines.join("\n")}\n`;
+}

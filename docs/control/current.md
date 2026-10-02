@@ -1,22 +1,22 @@
 # Current control state
 
-## WO-124
+## WO-107
 
-- Work order: WO-124
-- Work-order path: docs/work-orders/WO-124-impact-surfaces-derivation.md
+- Work order: WO-107
+- Work-order path: docs/work-orders/WO-107-profiling-baseline.md
 - Phase: closed
 - Latest verification: VER-001
-- Verification path: docs/verifications/WO-124/VER-001.md
+- Verification path: docs/verifications/WO-107/VER-001.md
 - Latest verdict: pass
 - Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-124/FINAL-001.md
+- Final-review path: docs/final-reviews/WO-107/FINAL-001.md
 - Latest attestation: harness claude-code; version 2.1.287; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable
 - Effort drift: max -> xhigh
-- Latest recordedAt: 2026-10-02T00:37:38.969Z
-- Elapsed implementation: 2019288 ms
-- Elapsed verification: 328079 ms
-- Elapsed finalReview: 1345582 ms
-- Latest checkpoint: 2abeeb08d2661a4809dba2c738fe1b2772c4926d (restore: `git checkout refs/dotln/checkpoint/WO-124/7 -- .`)
+- Latest recordedAt: 2026-10-02T03:01:28.029Z
+- Elapsed implementation: 6333719 ms
+- Elapsed verification: 496270 ms
+- Elapsed finalReview: 1117113 ms
+- Latest checkpoint: 4b3c7d70dd7e7ebd3396c2d8ce5d269f6aa27a49 (restore: `git checkout refs/dotln/checkpoint/WO-107/7 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct
 

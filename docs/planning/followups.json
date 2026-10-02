@@ -1092,6 +1092,14 @@
           "reopenWhen": "WO-107 activation or a second observable surface (the pass's suggestion; the source states none)",
           "targets": [],
           "at": "2026-09-19T01:19:46.163Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Reopened by WO-107's final review (docs/final-reviews/WO-107/FINAL-001.md): the recorded deferral trigger, WO-107 activation, occurred, and WO-107 delivers the profiling cell this candidate would reuse (corpus/harness/profile.mjs and its provisional schema). The source's own precondition also holds: product 03 lists three real WorkOrderTransport adapters. Whether to allocate the comparison, which surfaces it covers and what it costs remain a planning decision; this disposition allocates nothing.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-02T02:58:41.170Z"
         }
       ]
     },
@@ -25787,6 +25795,43 @@
           "ref": "docs/evidence/WO-124/decisions.md#wo-124-d015--final-review-removes-the-operators-home-path-from-two-public-transcripts",
           "title": "WO-124-D015: Planner, low priority, one pass over the corpus policy: decide whether committed records may carry the operator's absolute home path. If not, decide how immutable VER and FINAL reports ar",
           "summary": "{ \"id\": \"WO-124-D015\", \"date\": \"2026-10-02\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"correction\", \"decision\": \"Replace the operator's absolute worktree prefix with '<worktree>/' in this order's two public transcript copies, changing no other byte, and keep the raw copies in the ignored local control lane, as D010 did for trailing spaces. Nominate, without editing, the older tracked records that hold the same absolute home path, because many are immutable verification and final-review reports and a sweep needs a planning decision.\", \"misread\": \"D010 normalized the two public transcript copies for trailing spaces only and treated them as publishable; no earlier record of this o",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-8f0561e50754114f",
+      "key": "decision:docs/evidence/WO-107/decisions.md#wo-107-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "545fff0f82d0f5b60ebc2889364baba978274bce2ae7b83c235657ff5ad5899d",
+          "ref": "docs/evidence/WO-107/decisions.md#wo-107-d010--final-review-the-lanes-own-checks-are-keyed-to-this-orders-bytes",
+          "title": "WO-107-D010: Next order that edits the WO-107 lane, or the corpus-policy pass FUP-d093f77bd927f9dc names: decide this lane's after-base rule together with WO-105's. Archive the second collector revisi",
+          "summary": "{ \"id\": \"WO-107-D010\", \"date\": \"2026-10-02\", \"dispatch\": \"resume: final review; FINAL-001\", \"decision\": \"Pass the order and board the lane's after-base behavior with WO-105's. Every criterion holds at the subject, and the order pins its measurements to its base. Three of the lane's own checks are keyed to this order's bytes rather than to the evidence they protect, so ordinary later changes make them fail with messages that do not name the cause. (1) The self-test 'harness classification exception is exact' requires packages/kernel/test/fixtures/jsonl-protocols.json to hash to its WO-107 bytes (335e66e7…). The next order that declares its own JSONL there fails it, although WO-107's entry is ",
+          "missing": false
+        },
+        {
+          "hash": "f7437878d9468d2e4d7f286a37b4b2b41bc433b36be39443006fdc67b584dff6",
+          "ref": "docs/evidence/WO-107/decisions.md#wo-107-d010--final-review-the-lanes-own-checks-are-keyed-to-this-orders-bytes",
+          "title": "WO-107-D010: Next order that edits the WO-107 lane, or the corpus-policy pass FUP-d093f77bd927f9dc names: decide this lane's after-base rule together with WO-105's. Archive the second collector revisi",
+          "summary": "{ \"id\": \"WO-107-D010\", \"date\": \"2026-10-02\", \"dispatch\": \"resume: final review; FINAL-001\", \"decision\": \"Pass the order and board the lane's after-base behavior with WO-105's. Every criterion holds at the subject, and the order pins its measurements to its base. Three of the lane's own checks are keyed to this order's bytes rather than to the evidence they protect, so ordinary later changes make them fail with messages that do not name the cause. (1) The self-test 'harness classification exception is exact' requires packages/kernel/test/fixtures/jsonl-protocols.json to hash to its WO-107 bytes (335e66e7…). The next order that declares its own JSONL there fails it, although WO-107's entry is ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-def7dd3b4f48a6fb",
+      "key": "decision:docs/evidence/WO-107/decisions.md#wo-107-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9ca3bac9468ff6a0cb25c79166907667cf5a7ed0ab2752f0e1bc17ab798d04fe",
+          "ref": "docs/evidence/WO-107/decisions.md#wo-107-d011--final-review-the-lifecycle-whitespace-check-never-reads-new-files",
+          "title": "WO-107-D011: Planner: make the lifecycle whitespace check read what the order adds. Either check the order's diff against its base with untracked files included, or check untracked files directly. Dec",
+          "summary": "{ \"id\": \"WO-107-D011\", \"date\": \"2026-10-02\", \"dispatch\": \"resume: final review; FINAL-001\", \"decision\": \"Board a lifecycle gap that lies outside this order's criteria and surfaces: the inline whitespace check run by every lifecycle completion never reads new files. scripts/lib/lifecycle-evidence.mjs runs git diff --check with no base and no --cached, which compares the worktree with the index. An order's new files stay untracked through implementation and verification, and are staged before the reviewer's result, so the check passes whatever they contain. For WO-107, the handoff, VER-001 and every completion row record git diff --check as clean. After staging, git diff --cached --check repor",
           "missing": false
         }
       ],
