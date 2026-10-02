@@ -1,5 +1,6 @@
 {
   "nonEventPaths": {
+    "corpus/baselines/observations-2bae7d407af2d5d07d16c5b15dc63134e277eabd.jsonl": "WO-107 provisional profiling observations; validated by corpus/harness/wo107-schema.test.mjs",
     "corpus/manifests/WO-105-observations.jsonl": "WO-105 crash-corpus classified observations",
     "corpus/fixtures/ids/command-id-vectors.jsonl": "ID vectors",
     "corpus/fixtures/ids/stable-hash-vectors.jsonl": "ID vectors",
