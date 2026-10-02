@@ -239,6 +239,11 @@ episode requirement. The tradeoff is continued human judgment over
 qualitative triggers and no automatic timeout warning. The recurrence
 conditions make that choice reversible rather than a completeness claim.
 
+Platform lens: the changes use the existing public receipt, register and
+sequence contracts. Their provenance and reopening observations remain
+readable without this session or its private host state. No new runtime
+interface or export capability is claimed.
+
 The two entropy episodes cost 1,519.235 s in total (25 min 19 s) and
 USD 9.3190456, from their result envelopes; their filed receipts label
 token counts unknown. Their two findings produce three corrected
@@ -263,5 +268,25 @@ edition source locks were refreshed. `node scripts/docs-check.mjs`
 passed with 15 product documents and zero failures; `entropy check`
 passed with no interrupted filings. The prior document timing runs all
 passed; they are measurement evidence, not a claim that the final edited
-subject passed. The final document gate and independent planning receipt
-are recorded here after the committed subject is judged.
+subject passed.
+
+[Receipt 037](refutations/2026-10-02-planning-b6a75e642e5c3605-037.md)
+binds committed subject `23f8a4c7`. Its scope is this pass: zero new or
+changed orders and the sequence, with 26 unchanged order verdicts carried
+by hash. One fresh background worker received only the canonical prompt,
+goal card and schema. It returned `aligned`, no findings and no holds;
+the filed aggregate is `aligned-with-findings` because it retains those
+26 orders' earlier judgments. No fresh full-horizon certification is
+claimed. Dispatch to filing took 151.025 s. The launch requested Codex
+`gpt-6.1-sol` at `max`; the direct receipt truthfully records effective
+settings as unknown. One formatting follow-up replaced an absolute host
+path in the statement with the relative prompt path; the frozen judgment
+was unchanged and was not rerolled.
+
+The canonical receipt helper committed the pair and passed `plan check`:
+judged, committed and workspace subject hashes were equal, with no hold
+or continuation update. Completion uses `npm run test:docs` over this
+branch after receipt filing; the handoff reports its executed verdict.
+All three planned workers have completed. The final usage observation
+stays in the ignored session receipt and handoff, as required by the
+process-cost rule.
