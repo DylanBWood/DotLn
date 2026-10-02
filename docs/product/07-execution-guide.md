@@ -665,7 +665,7 @@ Verification judges its recorded subject. When upstream moves, the integrating a
 
 Run the affected executable checks and release/publication preflights on the integrated tree. Feedback evidence uses its declared dependency projection, so workspace release versions and license labels do not demand another live audit. Source, executable configuration, dependency, contract, or acceptance changes still need evidence for the claims they affect. If an integration resolution requires new behavioral code, or a check reveals an actual acceptance defect, return that bounded finding through repair and fresh independent verification; unchanged claims are carried forward with their original evidence. A reviewer never writes a behavioral fix and certifies it. Integration bookkeeping alone must not create a new `VER-NNN`, a failed `FINAL-NNN`, or a repair event.
 
-The existing resume phrases remain the operator interface. The actor performing a handoff completes authorized integration chores within that session. `npm run release -- prepare` handles a colliding target, the README claim, and the integration decision under the recorded release classification. It uses origin's tag observation; `--local` deliberately uses only the fetched local tag snapshot. It never publishes, alters component versions, or appends control events. A missing component bump against the verified branch baseline remains an executor defect. A component bump that was valid at verification may be retimed during integration if upstream consumed the same version, preserving its already-declared compatibility impact and recording that evidence; this is distinct from omitting the original bump. `npm test` runs `check-surfaces --local` before expensive suites against annotated local releases in the subject's own `HEAD` ancestry. Worktrees share tag refs, so an unintegrated sibling's newer tag is excluded from this verification baseline. `worktree publish` / `release close` retain the authoritative remote check on the integrated result. No command acquires authority from a sibling's phase.
+The existing resume phrases remain the operator interface. The actor performing a handoff completes authorized integration chores within that session. `npm run release -- prepare` handles a colliding target, the README claim, and the integration decision under the recorded release classification. It uses origin's tag observation; `--local` deliberately uses only the fetched local tag snapshot. It never publishes, alters component versions, or appends control events. A missing component bump against the verified branch baseline remains an executor defect. A component bump that was valid at verification may be retimed during integration if upstream consumed the same version, preserving its already-declared compatibility impact and recording that evidence; this is distinct from omitting the original bump. `npm run test:docs` runs `check-surfaces --local` as a preflight against annotated local releases in the subject's own `HEAD` ancestry. Worktrees share tag refs, so an unintegrated sibling's newer tag is excluded from this verification baseline. `worktree publish` / `release close` retain the authoritative remote check on the integrated result. No command acquires authority from a sibling's phase.
 
 Run `npm run worktree -- integrate WO-NNN` inside the matching worktree
 ([WO-079](../work-orders/WO-079-worktree-sync.md), the successor to WO-033's
@@ -1214,9 +1214,16 @@ Standard artifacts, all doc-only:
 - `npm run work-orders -- index` regenerated and `npm run test:docs` green.
   A document-only pass runs no code suite.
 
-A byte figure an order or a pass states for a document is a reported target
-under the ceiling rule (`docs/control/doc-ceilings.json`), never a bound a role
-trims reviewed text to meet [2026-09-30 pass; WO-172 theme 14].
+An acceptance criterion says what a write-back states and where, without a
+byte count; a figure in an order filed earlier is the planner's estimate, never
+a bound a role trims reviewed text to meet [2026-09-30 pass; WO-172 theme 14].
+A pass that files or keeps a write-back to a bounded document sets that
+document's ceiling (`docs/control/doc-ceilings.json`) to cover it and cites its
+planning document. A duty an order owes beyond its criteria (a carry-in, a
+boarded item it takes, a known issue an earlier receipt named) is written in
+that order under `Known issues and carry-ins`; a known issue from the pass's
+own receipt, which finds the order frozen, goes on its catalog row until a
+later pass amends the order [2026-10-02 pass].
 
 An order gives the executor every step the executor can perform (operator
 direction, 2026-09-28): none is marked operator-run or routed to the

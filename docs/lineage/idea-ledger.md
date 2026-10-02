@@ -40,6 +40,170 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-02 — Planning pass: operator answer (receipt 038's amendments applied to twelve orders and the sequence)
+
+Source: the operator's question after the first report and the dispatch
+`planning: apply the receipt 038 amendments on this branch`, captured
+verbatim in ignored intake
+(`docs/intake/notes/2026-10-02-receipt-038-amendments-planning.md`,
+SHA-256 `22b8af28fb783cdf27b559c2f2a694481508f428191d45c12242ade3e187e5d9`);
+receipt 038's twenty findings; the repair commit the first pass prepared
+and reverted. Planner synthesis over repository records; the clean-room
+screen found no stop condition. The record is
+[the planning document](../planning/standard-pass-2026-10-02.md) §19 and
+§20.
+
+- **A judged order is amended by a new pass, never by its own receipt** `adopted`
+  - The first pass edited judged orders and the sequence after its one
+    judgment, reading the rule on repairs as leave to repair. The plan
+    check refused, the edits were reverted, and the known issues went
+    to the catalog rows. The operator's answer opens this pass, as the
+    answer of 2026-09-27 did, and the amended subject gets its own
+    judgment. Product 07 already says where a receipt's known issues are
+    written. Reopen: a pass again edits judged text after its judgment.
+- **Receipt 038's amendments** `adopted`
+  - Fourteen findings change text. WO-184: the live proof needs all
+    three attempts. WO-185: one guard and one lane count per user on the
+    host. WO-123: the first criterion states what its Design already
+    said about the intent's target and the review constraint. WO-187:
+    the verifier's duty sentence is replaced and its detail read at
+    verify time, with no new ceiling acceptance; an unclassed finding is
+    counted and never refused. WO-188: the close record names what it
+    removed; the comment sentence is the executor's alone. WO-073: a
+    profile is declared per registration and optional; its figures are
+    re-read. WO-191: a reader runs after a profile change or at the
+    operator's word. WO-192: a ceiling for a driven session; one
+    generator of agent definitions. The sequence: WO-118 ahead of the
+    three instance orders. Six findings are recorded in their orders as
+    they stand. Provenance: receipt 038; the operator's direction.
+- **The planner's sentence on repairs reads as leave to repair** `candidate`
+  - Recorded as candidate 11 of the map's section of this date: the
+    role text says to reuse the judgment after repairs, and the check
+    admits a change to judged text only through a hold's disposition or
+    an authorized amendment. Reopen: the next order that edits the
+    planner procedure, or a second pass misreads it.
+
+## 2026-10-02 — Planning pass: the operator's seventeen notes measured against the record, with a 5S inventory (WO-184 to WO-194)
+
+Source: the operator's dispatch `planning: standard planning + 5s +
+personal notes` and one mid-turn message carrying the notes, captured
+verbatim in ignored intake
+(`docs/intake/notes/2026-10-02-standard-5s-operator-notes-planning.md`,
+SHA-256 `bcf6ad611c4c07ea5169d23143705455a99bc0619872779c6cce63b7dc8e081a`);
+the repository's own records: the control segments, the gate index, the
+verification and final-review reports, the decisions, the register, the
+role text and its source, the runner, the front page's history; the
+host's documentation for spawned agents, read that day. Shape-First
+Synthesis over the notes in paraphrase; the clean-room screen found no
+stop condition: the notes name a constrained managed host and the
+predecessor's generations only in generic terms, and nothing about
+either is recorded. The record is
+[the planning document](../planning/standard-pass-2026-10-02.md).
+
+- **Verification is the review and the attack; final review is acceptance** `candidate`
+  - Fourteen of eighteen blocking final-review findings sat in the
+    subject the last passing verification judged. Verifiers probe (39 of
+    40 recent reports) but are asked only to judge criteria; 3 of 40 say
+    anything about design. Filed as WO-187: the verifier attacks along
+    named variations, reviews the whole diff with three routes for what
+    it finds, and uses one fresh adversary; the executor self-reviews
+    first; final review keeps its duties and classes each finding so
+    planning can count what still escapes. Provenance: the operator's
+    note 6; the thirteen failed final reviews. Reopen: ten orders after
+    WO-187 show no fall in escapes, or verification's median time more
+    than doubles.
+- **Gate time follows the change, and affected-only selection is not the lever** `candidate`
+  - Gates are 22.5% of phase time. A replay of thirty orders shows that
+    choosing suites by what a change affects leaves 99% of task time for
+    the median order: the shell suites copy every script, one suite is
+    dominated by one case, one clones the repository. Filed as WO-186:
+    three slow cases repaired at their cause, reuse per task at an
+    unchanged identity, an identity that covers every byte that runs,
+    rows read across worktrees, records written while a gate runs. The
+    per-task memo is `deferred` with the replay as its reopening test.
+    Provenance: the operator's note 9; WO-173 D018; WO-174 D013;
+    WO-179 D015.
+- **No order can exhaust the host** `candidate`
+  - A reviewer's hand-run probe grew past the machine's memory and was
+    stopped by another agent. Resident-size watchdogs miss compressed
+    growth. Filed as WO-185: a guard outside the agent that measures
+    footprint and stops the process group, budgets as shares of physical
+    memory, bounded assertions, a bounded wrapper for probes.
+    Provenance: the operator's note 7; WO-102 D010; WO-105 D006.
+- **A lens is written when it changes the choice; an experiment happens when a fork appears** `candidate`
+  - Twenty-one of twenty-five goal-alignment records restate their
+    order; 33 of 64 pre-registered experiments are declines, 19 of the
+    last 25. The rule's timing fails, not its idea: nothing can be
+    compared before the work shows two ways. WO-188 item 22 changes both
+    sentences. Provenance: the operator's notes 5 and 11; the 64 records
+    since WO-150. Reopen: ten orders after the change record no
+    experiment at all.
+- **A byte figure has a basis and a duty lives in its order** `adopted`
+  - Document ceilings were the size on the landing day plus two per
+    cent, and forty figures in queued orders rested on headroom long
+    spent; 29 records in 19 orders were caused by a byte bound. Three
+    planning rules are added in place to product 07: a criterion says
+    what a write-back states, without a count; a pass sets each ceiling
+    from the write-backs it queues; a duty an order owes is written in
+    that order. The ceilings are reset on that basis. Provenance: the
+    operator's note 13; WO-172 theme 14.
+- **Small items are combined where they share a fixed cost, each with its own criterion** `candidate`
+  - Filed as WO-184 (nineteen seams in the primitives the vertical
+    composes) and WO-188 (twenty-four machinery items, the scratch rule
+    the operator left to the planner among them). Every item was
+    re-observed at the pass's base before it was admitted, and five
+    boarded questions are decided without code. Provenance: the
+    operator's note 10; the decisions named beside each item.
+- **Comments explain code** `candidate`
+  - 565 of 3,336 comment blocks cite a process identifier and no rule
+    says what a comment is for. WO-188 item 23: the role text, a check
+    against a baseline, and the cleanup in files that owe no re-mint.
+    Provenance: the operator's note 2; WO-173 D016.
+- **The front page is owned** `candidate`
+  - The release block was pruned twice and is three times its pruned
+    size; three writers each add to it and none sees its length. Filed
+    as WO-189: an inventory, three candidates scored by fresh readers,
+    the operator's choice, one generated line, and a check that refuses
+    an order's edit unless its criteria name the page. Provenance: the
+    operator's note 3; WO-068 D004, whose reopening condition occurred.
+- **Lists show the work ahead** `candidate`
+  - The index is 686 KB of which the queue is 2 KB; six superseded
+    records read as open work; the roadmap's first pending rung follows
+    64 KB of history. Filed as WO-190. In this pass the sequence gives
+    every open order a place and regains its lane pairs. Provenance:
+    the operator's note 8.
+- **Published text is written to a chosen reader profile** `candidate`
+  - Style is set today by dated corrections, one surface at a time.
+    Filed as WO-191: a committed profile per surface over five
+    dimensions, examples to choose from, guidance at the moment of
+    writing, a score from fresh readers; nothing is refused or
+    rewritten. A scheduled polish job is `rejected` until two profile
+    revisions have scores that differ. Provenance: the operator's note
+    17; product 08's audience editions.
+- **One session drives an order; a worker is handed only the phrase** `candidate`
+  - The founding ledger preserved a main thread that only directs
+    traffic and dispatch through sub-agents where a host meters the main
+    thread. Filed as WO-192 after the export orders, at the operator's
+    stated timing: a router role, a fresh worker per phase with its own
+    identity and sub-agent budget, a probe of the host first and one
+    separate session per phase as the fallback. Provenance: the
+    operator's notes 1, 12 and 16; WO-139 D003.
+- **An instance asks core in generic words, and its private map stays private** `candidate`
+  - Filed as WO-193 (a request the operator writes and files, read into
+    planning here, reported back through the update; the route is off
+    until the instance's operator sets it) and WO-194 (a row per
+    predecessor behavior with what carries it; core ships the mechanism
+    and synthetic rows only). The settled rule holds: an instance's
+    content never flows back. Provenance: the operator's notes 15 and
+    16; product 12; ADR-0001.
+- **Whether the operator supervises less is the measure, and it is not yet moving** `open`
+  - The operator reports supervising terminals and supplying planning
+    input more than before. The week of 2026-09-28 holds 31 orders,
+    75.4 hours of recorded phase time and 16.6 hours of gates. The
+    orders above aim at the causes the record shows; none is proven to
+    move the measure. The next standard pass reads the same figures.
+    Provenance: the operator's note 12.
+
 ## 2026-10-02 — Planning pass: REVIEW-005 consumed, stale triggers re-disposed, no new machinery order
 
 Source: the operator's `planning: entropy reducer` dispatch and direction

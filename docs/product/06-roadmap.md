@@ -639,7 +639,13 @@ own launchpads, so this rung is where the ladder's personal-machine
 assumption stops holding: each fork's first order is bounded environment
 truth for its own host, harness, and gateway, extended with the harness
 smoke, and the licensing decision in `docs/LEGAL.md` precedes the first
-external fork. The 2026-09-06 redirect superseded the first draft of this
+external fork. Once the starter exists, three orders make an instance
+workable on a constrained managed host: one session that drives an order
+through its lifecycle with a fresh worker for each phase (WO-192), a
+generic capability request an instance's operator files and planning
+reads here (WO-193), and an instance-private map from predecessor
+behavior to what carries it (WO-194) [operator direction, 2026-10-02].
+The 2026-09-06 redirect superseded the first draft of this
 rung, which exported the process kit with no build in it.
 
 ## Application version pending — Pattern workshop v1

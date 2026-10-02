@@ -55,12 +55,13 @@ artificial sandbox escape, so the baseline is not dominated by an
 already-understood defect; closed, `v0.3.1`); WO-006 merged (the runbook,
 ADR-0003 through ADR-0005 and the deferral this order discharges; closed,
 `v0.2.3`).
-**Recommended placement:** outside the sequence; the planning map keeps it
-a floating option when approval friction is the constraint
-(`docs/planning/work-order-map.md`). Before a pass sequences it, the pass
-finds approval friction recorded as a constraint under the posture
-recorded on 2026-09-17 and reaffirmed on 2026-09-25, no host sandbox in
-Claude Code, Codex or Copilot (operator-review assumption 1). It edits
+**Recommended placement:** last in the sequence (placed there by the
+2026-10-02 planning pass, so that every open order has a position and
+none floats beside the list). It moves up when a pass finds approval
+friction recorded as a constraint under the posture recorded on
+2026-09-17 and reaffirmed on 2026-09-25, no host sandbox in Claude Code,
+Codex or Copilot (operator-review assumption 1); the pass that reaches
+it re-observes that gap and withdraws the order if it is absent. It edits
 `docs/AI-HARNESS-SECURITY.md`, the Amendments of ADR-0003 and ADR-0004,
 `docs/discovery/`, a synthetic fixture under `scripts/` and the scripts
 its baseline names. A recommendation, not a dependency token.
@@ -347,6 +348,15 @@ fresh sessions per harness, the verifier's reproduction and the
 operator-witnessed run.
 
 **Write-back duty:** as listed in criterion 17.
+
+**Known issues and carry-ins:**
+
+- Receipt 038: the order commits to baselines, final runs on three
+  harnesses, a verifier reproduction and two witnessed runs before any
+  baseline shows a burden to remove, under a posture it was not written
+  for. The pass that reaches it re-observes the gap first. Reopen its
+  remaining scope if the baseline matrices record no approval in
+  scenarios A to C on all three harnesses with scenario D unscored.
 
 **Non-goals:** eliminating approval for genuine network, credential,
 account, deployment, publication, or unrelated-filesystem effects;
