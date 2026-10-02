@@ -33,7 +33,7 @@
       "executor": 29246,
       "verifier": 25151,
       "reviewer": 28884,
-      "release-close": 16384,
+      "release-close": 21266,
       "planner": 24576,
       "refuter": null
     },
@@ -44,6 +44,14 @@
     "passRefutationMs": 120000
   },
   "acceptances": [
+    {
+      "date": "2026-10-01",
+      "metric": "coldStartBytes.release-close",
+      "scope": null,
+      "dispatch": "executor",
+      "ceiling": 21266,
+      "reason": "WO-179 VER-001 F1 repair measured 17,170 bytes in each installed release-close root (CLAUDE.md 6,610 plus skill 10,560), up from the incomplete projection's 15,716, against 16,384. The compact target now carries the eight reviewed shared corrections: routine questions within authority, operator-aim interpretation, command/output and search-boundary evidence, in-session authority requests, runnable commands and purposeful questions, current-identity gates and retained reviewed fixes, stopping owned monitors, and stopping after two consecutive provider safeguard refusals; it also carries the reviewed blocker/denial remedy without repeating publication or choosing material disposition. Under product 07's standing 2026-09-17 route, preserve the rules and set only this ceiling to the measured 17,170 plus 4,096, 21,266. The other bounded roles remain within their ceilings; refuter remains unset. Reassess when another reviewed rule needs more. Decision: docs/evidence/WO-179/decisions.md#wo-179-d013."
+    },
     {
       "date": "2026-09-29",
       "metric": "coldStartBytes.reviewer",

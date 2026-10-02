@@ -46,9 +46,9 @@
     },
     "07-execution-guide.md": {
       "nonExemptBytesAtLanding": 154129,
-      "ceiling": 157212,
-      "date": "2026-09-28",
-      "decision": "docs/evidence/WO-167/decisions.md#wo-167-d007"
+      "ceiling": 157603,
+      "date": "2026-10-01",
+      "decision": "docs/planning/standard-pass-2026-09-30.md#9-the-orders"
     },
     "08-publication-compiler.md": {
       "nonExemptBytesAtLanding": 22552,

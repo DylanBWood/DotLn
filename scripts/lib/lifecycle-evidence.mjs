@@ -24,6 +24,7 @@ export async function requireLifecycleEvidence(
     await import("./gate-evidence.mjs");
   const treeHash = gateTreeHash(root);
   const executor = ["implementation-ready", "repair-complete"].includes(action);
+  const checksClaims = executor || action === "verification-result";
   const advisories = [];
   const advise = (message) => {
     advisories.push(message);
@@ -69,7 +70,7 @@ export async function requireLifecycleEvidence(
   } catch (error) {
     // A parse error quotes the damaged bytes; an advisory is one line.
     gateIndexError = error.message.replace(/\s+/gu, " ").trim();
-    if (!executor)
+    if (!checksClaims)
       advise(
         `Gate index unavailable: ${gateIndexError}; the git diff --check row is not recorded.`,
       );
@@ -186,6 +187,6 @@ export async function requireLifecycleEvidence(
     ...(executor ? { material } : {}),
     ...(productGate ? { productGate } : {}),
     advisories,
-    ...(executor && gateIndexError ? { gateIndexError } : {}),
+    ...(checksClaims && gateIndexError ? { gateIndexError } : {}),
   };
 }

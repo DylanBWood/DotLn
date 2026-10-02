@@ -1465,7 +1465,7 @@ claim evidence or releases it does not have.
   Receipts](05-pattern-library.md#executor-supports-adjacent-repair-and-decision-receipts)
   independently [operator default, 2026-09-08]. Adjacent Repair prefers a bounded fix to an encountered bug;
   neither pre-existing origin nor omission from the original assignment is by
-  itself a reason to defer. Decision Receipts records the chosen option,
+  itself a reason to defer. A repairable defect in the order's declared surfaces stays in the order and may fail a criterion it breaks; outside both criteria and surfaces, board its reproduction. Decision Receipts records the chosen option,
   evidence, rationale, rejected options and reasons, plus the reversal condition
   for a deferral. Decide and continue within the authorized effects; ordinary
   scope judgment is not a new operator approval step. The existing bounded Boy
@@ -1480,6 +1480,7 @@ claim evidence or releases it does not have.
   indefinitely for approval. The current queue is observed with
   `npm run adjacent -- list`; its chat and channel observations are actor-attested.
   Equipped duties run at entry, including the initial Intent to Act announcement.
+  Settle routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority; ask when the answer changes scope or authority [WO-179, 2026-10-01].
   Ordinary `next`/`fix` projects installed equipment and queue state without
   requiring a named-support prompt. Completion advises about queued/running items;
   complete them or record an explicit disposition, with a public FUP for deferrals.

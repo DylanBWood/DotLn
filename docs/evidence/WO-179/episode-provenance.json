@@ -1,0 +1,214 @@
+{
+  "formatVersion": 1,
+  "subject": "WO-179 criterion 5 direct provenance for WO-172 themes 3 and 18",
+  "method": "Read only retained classifier StructuredOutput records; extract episode/theme fields and source digests. No operator message, classifier subject wording, provider session identifier or private path is copied. The mappings are the survey classifiers reading, under WO-172-D022, not new operator classifications.",
+  "sources": [
+    {
+      "key": "classifier-1",
+      "sha256": "ad1c75f22c7a5e1c911e6e7a96ce89df5b25f11b971032facf25802d28ca6245",
+      "resultLine": 90,
+      "recordedAt": "2026-09-29T04:19:58.558Z",
+      "surface": "retained WO-172 classifier StructuredOutput result; private source locator remains in the host transcript"
+    },
+    {
+      "key": "classifier-2",
+      "sha256": "4aab06e48fe111354f1cf0dd53984006424642ac4b9325c2a6bd05a8638a1c81",
+      "resultLine": 92,
+      "recordedAt": "2026-09-29T04:18:45.269Z",
+      "surface": "retained WO-172 classifier StructuredOutput result; private source locator remains in the host transcript"
+    }
+  ],
+  "themes": [
+    {
+      "number": 3,
+      "key": "misread-operator-intent",
+      "episodes": [
+        "E0059",
+        "E0127",
+        "E0162",
+        "E0220",
+        "E0245",
+        "E0284",
+        "E0370",
+        "E0616",
+        "E0649",
+        "E0667",
+        "E0752",
+        "E0794",
+        "E0859",
+        "E0890",
+        "E0943",
+        "E0988"
+      ],
+      "count": 16,
+      "selectedCatalogCount": 16
+    },
+    {
+      "number": 18,
+      "key": "redundant-stage-testing",
+      "episodes": [
+        "E0575",
+        "E0608",
+        "E0697",
+        "E0747",
+        "E0928",
+        "E0966",
+        "E0979",
+        "E0981"
+      ],
+      "count": 8,
+      "selectedCatalogCount": 8
+    }
+  ],
+  "records": [
+    {
+      "episode": "E0059",
+      "theme": "misread-operator-intent",
+      "themeNumber": 3,
+      "source": "classifier-1"
+    },
+    {
+      "episode": "E0127",
+      "theme": "misread-operator-intent",
+      "themeNumber": 3,
+      "source": "classifier-1"
+    },
+    {
+      "episode": "E0162",
+      "theme": "misread-operator-intent",
+      "themeNumber": 3,
+      "source": "classifier-1"
+    },
+    {
+      "episode": "E0220",
+      "theme": "misread-operator-intent",
+      "themeNumber": 3,
+      "source": "classifier-1"
+    },
+    {
+      "episode": "E0245",
+      "theme": "misread-operator-intent",
+      "themeNumber": 3,
+      "source": "classifier-1"
+    },
+    {
+      "episode": "E0284",
+      "theme": "misread-operator-intent",
+      "themeNumber": 3,
+      "source": "classifier-1"
+    },
+    {
+      "episode": "E0370",
+      "theme": "misread-operator-intent",
+      "themeNumber": 3,
+      "source": "classifier-1"
+    },
+    {
+      "episode": "E0616",
+      "theme": "misread-operator-intent",
+      "themeNumber": 3,
+      "source": "classifier-2"
+    },
+    {
+      "episode": "E0649",
+      "theme": "misread-operator-intent",
+      "themeNumber": 3,
+      "source": "classifier-2"
+    },
+    {
+      "episode": "E0667",
+      "theme": "misread-operator-intent",
+      "themeNumber": 3,
+      "source": "classifier-2"
+    },
+    {
+      "episode": "E0752",
+      "theme": "misread-operator-intent",
+      "themeNumber": 3,
+      "source": "classifier-2"
+    },
+    {
+      "episode": "E0794",
+      "theme": "misread-operator-intent",
+      "themeNumber": 3,
+      "source": "classifier-2"
+    },
+    {
+      "episode": "E0859",
+      "theme": "misread-operator-intent",
+      "themeNumber": 3,
+      "source": "classifier-2"
+    },
+    {
+      "episode": "E0890",
+      "theme": "misread-operator-intent",
+      "themeNumber": 3,
+      "source": "classifier-2"
+    },
+    {
+      "episode": "E0943",
+      "theme": "misread-operator-intent",
+      "themeNumber": 3,
+      "source": "classifier-2"
+    },
+    {
+      "episode": "E0988",
+      "theme": "misread-operator-intent",
+      "themeNumber": 3,
+      "source": "classifier-2"
+    },
+    {
+      "episode": "E0575",
+      "theme": "redundant-stage-testing",
+      "themeNumber": 18,
+      "source": "classifier-2"
+    },
+    {
+      "episode": "E0608",
+      "theme": "redundant-stage-testing",
+      "themeNumber": 18,
+      "source": "classifier-2"
+    },
+    {
+      "episode": "E0697",
+      "theme": "redundant-stage-testing",
+      "themeNumber": 18,
+      "source": "classifier-2"
+    },
+    {
+      "episode": "E0747",
+      "theme": "redundant-stage-testing",
+      "themeNumber": 18,
+      "source": "classifier-2"
+    },
+    {
+      "episode": "E0928",
+      "theme": "redundant-stage-testing",
+      "themeNumber": 18,
+      "source": "classifier-2"
+    },
+    {
+      "episode": "E0966",
+      "theme": "redundant-stage-testing",
+      "themeNumber": 18,
+      "source": "classifier-2"
+    },
+    {
+      "episode": "E0979",
+      "theme": "redundant-stage-testing",
+      "themeNumber": 18,
+      "source": "classifier-2"
+    },
+    {
+      "episode": "E0981",
+      "theme": "redundant-stage-testing",
+      "themeNumber": 18,
+      "source": "classifier-2"
+    }
+  ],
+  "checks": {
+    "directRecordMembership": true,
+    "uniqueEpisodeThemePairs": true,
+    "countsMatchSelectedPublicCatalog": true
+  }
+}

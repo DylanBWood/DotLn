@@ -9294,6 +9294,14 @@
             "WO-179"
           ],
           "at": "2026-09-30T15:30:45.451Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-179's final review: sentence (4) is in every emitted role in both roots. A claim of cause, blocker, unreachable service or finished work names the command and output it rests on, and a partial search names its boundary. [WO-179 final review (docs/final-reviews/WO-179/FINAL-001.md)]",
+          "reopenWhen": "a claim asserted from a partial search after WO-179 closes",
+          "targets": [],
+          "at": "2026-10-02T00:02:23.711Z"
         }
       ]
     },
@@ -9522,6 +9530,14 @@
             "WO-179"
           ],
           "at": "2026-09-30T15:30:45.415Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "Settled by WO-179's final review: sentence (14) is in every emitted role in both roots. A stale gate row is answered by running the gate at the current identity, never by restoring bytes to match it, and a reviewed fix is never removed to pass a check. [WO-179 final review (docs/final-reviews/WO-179/FINAL-001.md)]",
+          "reopenWhen": "a rewind or a trim to pass a check after WO-179 closes",
+          "targets": [],
+          "at": "2026-10-02T00:02:23.746Z"
         }
       ]
     },
@@ -9637,6 +9653,14 @@
             "WO-179"
           ],
           "at": "2026-09-30T15:30:45.486Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-179's final review: verification-result applies WO-173's claim check. A criterion recorded met that names npm test or npm run test:docs refuses without that gate's passing row at the subject or a passing inline run, and the fixture fails against b51a58a8. The verify and final-review briefings carry the gate-claim sentence. [WO-179 final review (docs/final-reviews/WO-179/FINAL-001.md)]",
+          "reopenWhen": "a pass recorded before a gate's row after WO-179 closes",
+          "targets": [],
+          "at": "2026-10-02T00:02:23.676Z"
         }
       ]
     },
@@ -22817,6 +22841,14 @@
             "WO-179"
           ],
           "at": "2026-09-30T15:30:44.554Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-179's final review: WO-116-D016's trial shape, a wait spent on bounded listed work or quiet, is the wait sentence in every emitted role in both roots. The progressive-absence ceiling and cutoff stay with product 03's candidate. [WO-179 final review (docs/final-reviews/WO-179/FINAL-001.md)]",
+          "reopenWhen": "a wait is again spent polling or narrating after WO-179 closes, or a planning pass places the progressive-absence curve for waits",
+          "targets": [],
+          "at": "2026-10-02T00:02:23.602Z"
         }
       ]
     },
@@ -22843,6 +22875,14 @@
             "WO-179"
           ],
           "at": "2026-09-30T15:30:45.024Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-179's final review: the wait sentence (theme 16) is in every emitted role in both roots. A role awaits a gate or background task through evidence --wait in the background or the host's completion signal, then does bounded listed work or stays quiet, and never polls or narrates the wait. The meter's utilization measure stays a candidate, as the allocation recorded. [WO-179 final review (docs/final-reviews/WO-179/FINAL-001.md)]",
+          "reopenWhen": "another order records polling or narrating a wait after WO-179 closes, or a planning pass places the meter's utilization measure",
+          "targets": [],
+          "at": "2026-10-02T00:02:23.562Z"
         }
       ]
     },
@@ -23637,6 +23677,14 @@
             "WO-179"
           ],
           "at": "2026-09-30T15:30:45.168Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-179's final review: sentence (29) is in every emitted role in both roots. After a second consecutive provider safeguard refusal a role stops retrying, records the stop as a decision naming phase and model, and resumes in a fresh session. [WO-179 final review (docs/final-reviews/WO-179/FINAL-001.md)]",
+          "reopenWhen": "another provider safeguard retry loop after WO-179 closes",
+          "targets": [],
+          "at": "2026-10-02T00:02:23.641Z"
         }
       ]
     },
@@ -25638,6 +25686,45 @@
           "ref": "docs/evidence/WO-061/decisions.md#wo-061-d011--final-review-pass-and-four-compile-seams-outside-the-declared-fixtures",
           "title": "WO-061-D011: Planner, for WO-124 (the next order that edits packages/compiler/src/story-contract.ts), or WO-062 if it lands first: (1) decide whether an image whose referencedBy covers only whitespace",
           "summary": "{ \"id\": \"WO-061-D011\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Pass WO-061 on all eight criteria against the original order. The basis is VER-001, this review's reading of the full diff, a rerun of the nine WO-061 tests and the fixture-diff check on a fresh build, direct edition, console, harness and publication checks, and the passing product row at the unchanged code identity. main had not moved past the executor's base (v0.62.0, 3a4aa82a), so no integration was needed and v0.63.0 stays the target. Board four seams that the order's fixtures do not reach, without failing the order. (1) compileStoryContract throws 'span must resolv",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ab8499c6d47996b0",
+      "key": "decision:docs/evidence/WO-179/decisions.md#wo-179-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "54d7e26c4e911e78233431a7c59add7b662aaf9220ad549bf102b55b0d26014d",
+          "ref": "docs/evidence/WO-179/decisions.md#wo-179-d007",
+          "title": "WO-179-D007: Recover reproducible direct episode-to-theme identifiers for WO-172 themes 3 (misread-operator-intent) and 18 (redundant-stage-testing), then replace WO-179-D003's explicitly related exem",
+          "summary": "{ \"id\": \"WO-179-D007\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: next\", \"decision\": \"Hand the implemented corrections and passing review evidence to independent verification, recording criterion 5 unmet because the selected survey sources do not supply direct episode identifiers for themes 3 and 18. Keep the related exemplars explicitly labelled; this is neither an invented mapping nor an executor waiver. The provenance allocations remain attached to WO-179 for the declared close-time disposition.\", \"evidence\": [ \"npm test -- --review: 39 passed, zero failed, 84 fresh tasks, 890.368 seconds; passing row recorded at 2026-10-01T21:16:40.184Z, codeIdentity c6c63c068d2b1e11c84fa00ec612cd631a552",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-179-D011 completes the source recovery in this order: episode-provenance.json records 16 direct theme-3 and eight direct theme-18 memberships with source digests and matching public catalog counts. The attempted deferral remains an execution failure in D009.",
+          "reopenWhen": "A direct membership or source digest cannot be reproduced, or the survey theme reading is corrected.",
+          "targets": [],
+          "at": "2026-10-01T21:49:41.317Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-986fa3905beb0695",
+      "key": "decision:docs/evidence/WO-179/decisions.md#wo-179-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "395b19201247a89d3490f0a66b95f6029d7fd9b4767de9ff1b572b34daa6d518",
+          "ref": "docs/evidence/WO-179/decisions.md#wo-179-d015--verification-a-siblings-merge-widens-the-review-selection-at-an-unchanged-identity",
+          "title": "WO-179-D015: Next order editing changedMachinery in scripts/test-runner.mjs or the review-selection read in scripts/lib/handoff-ledger.mjs (priority medium; gate cost, fails safe). Compute a worktree'",
+          "summary": "{ \"id\": \"WO-179-D015\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002 and board one defect outside WO-179's declared criteria and surfaces. A worktree's review selection is computed against the moving origin/main tip (scripts/test-runner.mjs changedMachinery, base \\\"origin/main\\\"), so paths a sibling order changed on main count as this worktree's change. When main advances after a passing review row, the selection gains machinery suites at an unchanged code identity, and the verification-result claim check this order added refuses a met npm test -- --review criterion until the whole review gate runs again. The verifier leaves the imp",
           "missing": false
         }
       ],
