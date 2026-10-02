@@ -25836,6 +25836,61 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-516f42831f87de8a",
+      "key": "decision:docs/evidence/WO-062/decisions.md#wo-062-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "11283074138ba1641af250a29fc7fade26fc3865e46283f681f53534d46dd261",
+          "ref": "docs/evidence/WO-062/decisions.md#wo-062-d003--api-fields-missing-evidence-and-observed-smoke",
+          "title": "WO-062-D003: Read named GraphQL issue/comment fields and their userContentEdits, paginating every connection independently. Include first edit pages in the source query; request further pages only whe",
+          "summary": "{ \"id\": \"WO-062-D003\", \"date\": \"2026-10-02\", \"dispatch\": \"resume: next\", \"decision\": \"Read named GraphQL issue/comment fields and their userContentEdits, paginating every connection independently. Include first edit pages in the source query; request further pages only when pageInfo says more. Bracket the read with equal issue/discussion snapshots before storage. Preserve edit summaries as screened sections and record whole retained subject spans as conservative change coverage, never as reconstructed byte-level diffs. Preserve inline Markdown/HTML image markup and spans in the receipt; the declared API has no image-byte hash, so images[] stays empty rather than hashing a URL. A missing auth",
+          "missing": false
+        },
+        {
+          "hash": "62802e5e8f94ae338d31a886a59024f7022c46277c0c8e2f0e524875f6be1074",
+          "ref": "docs/evidence/WO-062/decisions.md#wo-062-d003--api-fields-missing-evidence-and-observed-smoke",
+          "title": "WO-062-D003: Read named GraphQL issue/comment fields and their userContentEdits, paginating every connection independently. Include first edit pages in the source query and request further pages only ",
+          "summary": "{ \"id\": \"WO-062-D003\", \"date\": \"2026-10-02\", \"dispatch\": \"resume: next\", \"decision\": \"Read named GraphQL issue/comment fields and their userContentEdits, paginating every connection independently. Include first edit pages in the source query and request further pages only when pageInfo says more. Bracket the read with equal issue/discussion snapshots before storage. As corrected by D008/D011, diff carries full versions in the observed API, newest first with the newest equal to current text. Screen versions without storing their text; record text-free history and conservative whole retained subject spans in current coordinates. Keep only current title/body/comments in sections and discussion.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-062 repair implements D008/D011: current text only, text-free history, conservative current spans and one receipt per unknown-role comment. All 14 focused tests and the repaired two-fetch public smoke pass; D003 is corrected. Independent re-verification remains the next lifecycle phase.",
+          "reopenWhen": "Fresh verification finds historical text stored as current content, a role omission unnamed, withheld text restored, or a mismatch with observed API semantics.",
+          "targets": [],
+          "at": "2026-10-02T01:17:12.421Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-817d50c71c3d3c53",
+      "key": "decision:docs/evidence/WO-062/decisions.md#wo-062-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "222dd3a99cddb88a9eeafd7daf87371567842650b93423465408bb6a74a863b1",
+          "ref": "docs/evidence/WO-062/decisions.md#wo-062-d008--verification-edit-history-carries-full-versions-so-the-mapping-is-repaired-in-the-order",
+          "title": "WO-062-D008: Executor, in WO-062's repair (resume: fix after VER-001). The repair must hold five rules. (1) The bundle's sections and discussion hold only the issue's current title, body and comments.",
+          "summary": "{ \"id\": \"WO-062-D008\", \"kind\": \"correction\", \"date\": \"2026-10-02\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail VER-001 so that WO-062 repairs its edit-history mapping in the order. This applies the operator's rule that a repairable defect inside an order's declared surfaces is fixed in the order (WO-179 item 15). All six criteria are met on their stated properties. GitHub's UserContentEdit.diff holds the full text of each version, and the newest one equals the current text. The adapter stores each retained diff as a document-order section. As a result the bundle duplicates current text, presents prior full versions as current sections, and keeps a withheld comment's current text through ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-062 repair implements D008/D011: current text only, text-free history, conservative current spans and one receipt per unknown-role comment. All 14 focused tests and the repaired two-fetch public smoke pass; D003 is corrected. Independent re-verification remains the next lifecycle phase.",
+          "reopenWhen": "Fresh verification finds historical text stored as current content, a role omission unnamed, withheld text restored, or a mismatch with observed API semantics.",
+          "targets": [],
+          "at": "2026-10-02T01:17:12.460Z"
+        }
+      ]
     }
   ]
 }

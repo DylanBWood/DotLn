@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-02T00:30:54.354Z",
+  "runner": "executor; codex-cli 0.160.0; gpt-6.1-sol; max; codex-session-readback",
+  "node": "v26.9.0",
+  "gh": "2.98.0",
+  "operation": "read-only public issue fetch; no forge mutation or model invocation",
+  "target": {
+    "repository": "github.com/<owner>/<public-repository>",
+    "issue": "positive-integer",
+    "namedComment": "issuecomment-positive-integer",
+    "public": true
+  },
+  "fetches": 2,
+  "wallSeconds": 7.028072,
+  "hashShape": "fnv1a64:hex-16",
+  "hashStable": true,
+  "receiptStable": true,
+  "bundleDecodes": true,
+  "revisionShape": "UTC-timestamp",
+  "status": "stopped",
+  "sections": 31,
+  "retainedComments": 79,
+  "sourceCommentCount": 100,
+  "namedCommentObserved": true,
+  "refusals": 47,
+  "refusalShapes": [
+    "scheme-authority"
+  ],
+  "absentFields": 0,
+  "editRecords": 40,
+  "imageReferences": 11,
+  "imageByteHashes": "not supplied by the declared API fields",
+  "spansResolved": 181
+}

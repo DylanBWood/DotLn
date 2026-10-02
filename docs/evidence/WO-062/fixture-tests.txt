@@ -1,0 +1,19 @@
+✔ WO-062 criterion 1: recorded JSON produces canonical stable rich input, resolving spans and role labels through the fake CLI (402.779375ms)
+✔ WO-062 criterion 2: every declared shape/form is omitted from bodies, comments and edit summaries, without persisted text (4075.707375ms)
+✔ WO-062 the parsed forge is the whole allowlist and automation also recognizes the Bot actor type (302.392959ms)
+✔ WO-062 criterion 3: absent CLI, authentication, failing CLI and unreadable JSON refuse without stores or echoed diagnostics (430.526583ms)
+✔ WO-062 malformed fields report their API paths and write nothing, including failure after a paginated edit read (878.944667ms)
+✔ WO-062 criterion 3: missing declared fields are absent receipts, with no invented body, author or history (281.142708ms)
+✔ WO-062 pagination consumes every independent connection, rejects non-advancing cursors and never stores a partial read (419.831292ms)
+✔ WO-062 changed issue or discussion during fetch refuses and stores nothing (288.296834ms)
+✔ WO-062 the existing screen's declared limits pass unchanged (167.419459ms)
+✔ WO-062 immutable hash storage refuses a collision or symlink without replacing bytes (435.402ms)
+✔ WO-062 invalid caller arguments refuse before reading or writing (5.089792ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7743.916417
