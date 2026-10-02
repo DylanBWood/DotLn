@@ -306,6 +306,13 @@ sources, and again at final review. No live row.
   cold-start figures, which the executor records.
 - A reviewer's gate that stages new files no longer changes the
   identity, but it still runs everything.
+- Receipt 038: the identity covers code and the documents suites read,
+  not the environment a row was produced in (runtime and tool versions,
+  environment variables, host state). A row reused from another shell,
+  session or worktree could report a pass that would not reproduce; the
+  reviewer's full run is the backstop. Reopen if a reviewer's full gate
+  fails a task that a reused row at the same identity reported passing,
+  or a verification passes on a reused row that a rerun fails.
 
 **Non-goals:** a per-task input memo; removing, sampling or weakening
 any test; the document gate's cost; the exclusive scheduling of the two

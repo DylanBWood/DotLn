@@ -15,8 +15,8 @@ once: one compiler release with a deterministic re-mint of all five
 editions and a carried feedback edition (`story-contract.ts` is a
 registered source the feedback verifier does not judge; the WO-124 D004
 precedent), one skeleton release with one live feedback self-host
-episode after the last edit to a judged source, one live
-verification-and-review proof on Claude for item 13, and one harness
+episode after the last edit to a judged source, three live
+verification-and-review attempts on Claude for item 13, and one harness
 bundle re-emit. Adds, by the re-observation's estimates and not by
 measurement, about 60 source lines in the compiler, about 80 in
 `scripts/lib`, one leaf module split out of `reactor.ts`
@@ -381,12 +381,15 @@ below.
     the review without throwing.
 13. With the notice, the compiled verifier instruction names the review
     and the two defect kinds it owns; without it, the compiled command
-    is byte-identical to today's for the WO-181 fixture stream. One
-    live row: a Claude verifier on a review-enabled stream with WO-181's
-    two planted review defects passes both behavior criteria without
-    requesting human attention, and the reviewer then reports both
-    defects. If three attempts each stop at attention, the criterion is
-    unmet and the receipts are kept as failures.
+    is byte-identical to today's for the WO-181 fixture stream. Three
+    live attempts are recorded, each a Claude verifier on a
+    review-enabled stream with WO-181's two planted review defects: in
+    all three the verifier passes both behavior criteria without
+    requesting human attention over either planted defect, and the
+    reviewer then reports both. One stop over a planted defect makes the
+    criterion unmet, since one pass in three is the rate WO-181 already
+    recorded; an attempt that stops for another reason is recorded with
+    that reason and repeated once. Every receipt is kept.
 14. For a capsule whose criteria carry two claim types, the emitted
     schema's claim-type enumeration holds exactly those two; the
     admission check that refuses a mismatched pair is unchanged; the test
@@ -429,8 +432,8 @@ below.
 22. `npm test -- --review` and `npm run test:docs` green;
     `git diff --check` clean; no new dependency.
 
-**Evidence gate:** each item's fixture transcript; the live row of
-criterion 13 with its receipts, failures included; the re-mint records
+**Evidence gate:** each item's fixture transcript; the three live
+attempts of criterion 13 with their receipts, failures included; the re-mint records
 and timings of criterion 20; `npm test -- --review` before
 `implementation-ready`, because `worker-transport.ts`,
 `entropy-review-protocol.ts` and the evidence-source registry are
@@ -451,6 +454,16 @@ declared sources of machinery suites, and again at final review.
 - Item 15 is a security boundary: the verifier attacks it first.
 - `resident-state.ts` and `scripts/lib/config.mjs` are edited again by
   WO-123; this order lands first.
+- Receipt 038: criterion 13 first accepted one passing attempt in three,
+  the rate the order cites as the defect; it now requires all three.
+  Reopen if WO-123's executor or WO-112 records a Claude verifier
+  stopping at attention on a review-enabled stream.
+- Receipt 038: the purity check passes with two host imports still
+  inside the reactor's import closure (`discovery-sandbox.ts` and
+  `gate-deadlines.mjs`); whether either is reachable from a decision
+  path is not shown. Reopen if a live and a replay identity differ or a
+  nondeterministic decision is traced to either module, or a later
+  order adds a third exclusion instead of removing one.
 
 **Non-goals:** the composition itself (WO-123); the live proof of the
 loop (WO-112); which step writes the delivery preparation (WO-123); a

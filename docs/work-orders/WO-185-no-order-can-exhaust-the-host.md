@@ -10,12 +10,14 @@ assertions in one corpus lane; no lifecycle phase and no new refusal of a
 tool call.
 **Cost:** adds a host guard (`scripts/host-guard.mjs`, started by the
 dispatch command every harness already runs, one live instance per
-machine under the Git common directory) that samples every process
+user on the host, shared by every clone and exported instance) that
+samples every process
 descended from a registered agent session and from a running gate and
 kills the offending process group; per-task and per-gate footprint
 budgets in `scripts/test-runner.mjs` with the measured peak recorded on
 every gate row; termination handling and a cap on captured output in the
-runner; a lane count shared by every worktree of this repository;
+runner; a lane count shared by every worktree of every clone on the
+host;
 `harness bounded -- <command>` as the one-line wrapper for a probe run
 outside a gate; bounded comparisons in `corpus/harness/wo102-*.test.mjs`
 and one shared helper; one role sentence. Removes: the only control that
@@ -155,10 +157,17 @@ its source.
   its task groups on interrupt, termination and hang-up, sweeps for
   surviving task processes when the gate ends, and keeps a bounded tail
   of each task's output with the dropped byte count.
-- **Lanes are shared.** The four-lane cap becomes a machine-wide count
-  under the Git common directory: a gate takes lanes as they free up and
-  prints that it is waiting and for which worktree. Final review's gate
-  takes its lanes like any other.
+- **Lanes are shared.** The four-lane cap becomes a host-wide count: a
+  gate takes lanes as they free up and prints that it is waiting and for
+  which worktree. Final review's gate takes its lanes like any other.
+- **One guard and one lane count per user on the host.** Their lock and
+  count are resolved from a location that depends neither on the
+  repository nor on a session's environment; the system's per-user
+  temporary root is the first candidate, and the executor records the
+  choice. A second clone, an exported instance or a scratch clone on the
+  same host finds the same guard and the same lanes. Where that location
+  lies outside every root a role is granted, the grant is added with its
+  source.
 - **A probe outside a gate runs under `harness bounded -- <command>`**,
   which applies the task budget and prints the typed stop. The role text
   says so in one sentence; the guard still covers a session that ignores
@@ -216,11 +225,13 @@ role sentence; fixtures; the write-backs below.
    leaves a detached child alive fails the gate with the child named;
    captured output above the cap is cut to its tail with the dropped
    byte count, and a failing task's diagnostic lines still print.
-4. Two gates started in two worktrees of one repository never hold more
-   lanes together than the machine-wide count; the second prints that it
-   waits and for whom, and both pass. A stale lane holder whose process
-   no longer exists is reclaimed without a human. A fixture pins each
-   case.
+4. Two gates started in two worktrees of one repository, and two
+   started in two separate clones on the same host, never hold more
+   lanes together than the host-wide count; the second prints that it
+   waits and for whom, and both pass. A bare child of a session
+   registered from the second clone is stopped by the one live guard. A
+   stale lane holder whose process no longer exists is reclaimed without
+   a human. A fixture pins each case.
 5. With one planted drift over the full grid, each `wo102` test file
    fails in bounded time and memory under the task budget, reporting the
    total, the kept findings and the digest, and passes unchanged on the
@@ -250,9 +261,23 @@ again at final review. No live row.
 
 **Write-back duty:** as listed in criterion 7.
 
-**Known issues and carry-ins:** none at filing. The order's own tests
-must never run an unbounded allocation: every fixture carries its own
-ceiling (criterion 1).
+**Known issues and carry-ins:**
+
+- The order's own tests must never run an unbounded allocation: every
+  fixture carries its own ceiling (criterion 1).
+- Receipt 038: the guard and the lanes were first scoped to one
+  repository's Git directory while the title promised the machine; the
+  Design and criterion 4 now make both host-wide. Reopen if a gate in a
+  second repository overlaps a gate here beyond the host-wide count, or
+  a memory incident's process tree belongs to a repository other than
+  the one whose guard is live.
+- Receipt 038: `harness bounded` is added to no allow list in any
+  harness. Where a harness asks before running a command, it asks for
+  the wrapped command as it would for the bare one, and WO-014 measures
+  the approval surface with the wrapper present. Reopen if an
+  approval-surface matrix records a prompt the wrapper added, or any
+  configuration gains an allow rule matching the wrapper followed by an
+  arbitrary command.
 
 **Non-goals:** changing which suites a gate runs or reusing their results
 (WO-186); a guard for processes no DotLn session or gate started; a

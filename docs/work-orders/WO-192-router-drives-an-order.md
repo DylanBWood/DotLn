@@ -12,7 +12,8 @@ opt-out default.
 **Cost:** adds a `router` role and the phrase `drive: WO-NNN` to the
 Contributor build (`packages/skeleton/src/loadouts/contributor.ts`), one
 generated agent definition per lifecycle role and effort an open order
-names (`packages/compiler/src/harness.ts`), a session record, role and
+names, from the generator and check rule WO-187 adds for spawned workers
+(`packages/compiler/src/harness.ts`), a session record, role and
 writer reservation keyed by session and agent
 (`packages/skeleton/src/harness-host.ts`), a sub-agent count kept per
 spawning worker (`packages/skeleton/src/subagent-budget.ts`), a refusal
@@ -53,9 +54,11 @@ workers, which this order extends to one per role); WO-139 merged (the
 sub-agent counter; closed); WO-135 merged (the writer reservation;
 closed); WO-130 merged (the phrase records its own dispatch; closed);
 WO-158 merged (off-ramps the router stops for; closed).
-**Recommended placement:** after WO-078, first of the three orders that
+**Recommended placement:** after WO-118, first of the three orders that
 make a starter instance workable on a constrained managed host; the
-operator's notes ask for it once the starter exists. It has no
+operator's notes ask for it once the starter exists, and the loop from a
+starter instance is placed ahead so that no instance order waits in
+front of the product exit. It has no
 dependency on the export orders: a build that already carries the
 router is exported with it, and an earlier export receives it through
 WO-077's update. It may move into the machinery lane after WO-188 at
@@ -187,7 +190,9 @@ own sub-agent budget and records its own completion.
 - **A budget per worker.** A spawn is counted against the agent whose
   tool call made it. Each phase worker has the configured cap for its
   own descendants; the router has its own count of phase workers. The
-  root-wide total stays reported.
+  root-wide total is bounded as well: `docs/control/budgets.json` gains
+  a ceiling for a driven session, by default the cap times the four
+  lifecycle phases, and a drive that reaches it stops.
 - **Where work happens.** The router runs in the main checkout. A worker
   for an order with a worktree is granted that worktree's root by a
   grant kind derived from the order's recorded worktree, never from the
@@ -254,7 +259,8 @@ status reading; one live driven order; the write-backs below.
    records no lifecycle transition of its own; the generated router root
    states the whole procedure; `npm run harness -- check` is green and
    fails when a generated agent definition's model, effort or skill is
-   edited by hand.
+   edited by hand. One generator and one check rule produce and validate
+   every agent definition in the bundle, WO-187's among them.
 4. A spawn from the router role whose prompt is not exactly a lifecycle
    phrase with the order identifier is refused with a typed reason; a
    spawn with the phrase is admitted; a worker's own spawns are not
@@ -267,8 +273,9 @@ status reading; one live driven order; the write-backs below.
    agent.
 6. A spawn made by a worker counts against that worker; a worker at its
    cap is refused while the router and another worker are not; the
-   root-wide total is still reported; the unattributable case is counted
-   as a stated minimum, as today.
+   root-wide total is reported and refused at the driven-session
+   ceiling; the unattributable case is counted as a stated minimum, as
+   today.
 7. A worker for an order with a recorded worktree may write under that
    worktree's root and is refused under another order's; the grant
    appears in the worker's role record with its source.
@@ -314,6 +321,13 @@ deterministic re-mints; `npm test -- --review` before
   preloaded skill is the same root and changes nothing there.
 - WO-187's single agent definition for spawned workers stays for
   adversaries, readers and research workers.
+- Receipt 038: budgets per worker alone would leave a driven session's
+  total unbounded; criterion 6 adds the ceiling. Reopen if a drive
+  records a root-wide total above it, or a host usage limit stops a
+  drive.
+- Receipt 038: WO-187 and this order both generate agent definitions in
+  one source file; criterion 3 requires one generator and one check
+  rule. Reopen if the bundle holds definitions from two generators.
 
 **Non-goals:** merging a pull request; driving more than one order per
 phrase; any scheduler or queue; observing or naming what a particular
@@ -332,5 +346,6 @@ portfolio or target orders; a control event for release close.
 4. If the host does not expose what the design needs, the fallback of
    one separate session per phase is delivered instead, and the order
    says which.
-5. This order is placed after WO-078 because the notes ask for it once
-   the starter exists; nothing in it depends on the export.
+5. This order is placed after WO-118 because the notes ask for it once
+   the starter exists and the product exit should not wait behind it;
+   nothing in it depends on the export.

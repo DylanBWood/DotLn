@@ -7,11 +7,12 @@
 **Release classification:** patch. Role text for two roles, one section the
 verifier reads on demand, one briefing addition, one generated agent
 definition, one finding class on the final-review report and its count;
-no lifecycle phase, no new refusal of a completion beyond one unclassed
-blocking finding.
-**Cost:** adds to `packages/skeleton/src/loadouts/contributor.ts` four
-verifier sentences and one executor sentence; a lens catalog in product
-07 that the verifier reads at verify time, not at cold start; the
+no lifecycle phase and no new refusal.
+**Cost:** replaces the verifier's duty sentence in
+`packages/skeleton/src/loadouts/contributor.ts` with one that names
+three duties and cites a section, adds a read directive for that
+section and one executor sentence; the duties' detail and a lens catalog
+in product 07, read at verify time and not at cold start; the
 order's known issues and carry-ins in the verify briefing
 (`scripts/resume.mjs`); a `class` on each final-review finding line
 (`escape`, `integration`, `new-scope`) read at `final-review-result` and
@@ -31,8 +32,10 @@ second in all five editions), so the editions they stale, the harness
 bundle among them, are re-minted deterministically; `contributor.ts` and
 `scripts/resume.mjs` are declared machinery sources, so
 `npm test -- --review` runs before handoff; no file the feedback verifier
-judges changes, so no live episode. Cold-start bytes for the executor
-and verifier roots rise; the acceptance route applies (criterion 6).
+judges changes, so no live episode. Cold-start bytes: the verifier root has 363 bytes of headroom (24,788
+of 25,151) and the executor 956; the change fits both ceilings as they
+stand, and what does not fit moves to the section read at verify time
+(criterion 6).
 Wall-clock, tokens and context bytes are unknown until run.
 **Nomination provenance:** the operator's notes of 2026-10-02, item 6
 (captured in ignored intake; SHA-256 in the ledger section of that
@@ -143,6 +146,12 @@ count the next planning pass reads.
 
 **Design (scope discipline):**
 
+- **The root stays small.** The verifier's one duty sentence is
+  replaced, not added to: it names the three duties below and the
+  section that holds them, and a read directive loads that section when
+  the role is dispatched. The variation axes, the review's questions,
+  the three routes, the re-verification rule and the lens catalog live
+  in that section of product 07. The executor root gains one sentence.
 - **Verifier, in this order.** (a) *Attack the change.* For each
   criterion, vary what the executor's fixtures held constant and say
   which variations were tried and which do not apply: the state of the
@@ -190,7 +199,8 @@ count the next planning pass reads.
   what verification is told to examine), `integration` (arose from
   integrating main or preparing the release) or `new-scope`.
   `final-review-result` records the counts; a blocking finding with no
-  class refuses with the line named. `plan failures` counts escapes per
+  class is counted as `unclassed` and named in one advisory, and the
+  result is recorded all the same. `plan failures` counts escapes per
   order and `plan start` prints escapes per final review over the last
   ten orders.
 - **Declined alternatives, recorded:** a review phase of its own between
@@ -212,10 +222,13 @@ counts; the handoff line and advisory; fixtures; the write-backs below.
 **Acceptance criteria (all required)**
 
 1. The generated verifier root (`.claude/skills/dotln-verifier/SKILL.md`
-   and its `.agents` twin) carries the attack, the implementation review
-   with its three routes, the fresh adversary, the re-verification rule
-   and the completed gate sentence; the executor root carries the
-   self-review sentence; `npm run harness -- check` is green.
+   and its `.agents` twin) carries one duty sentence naming the attack,
+   the implementation review and the fresh adversary, a read directive
+   for the product 07 section that holds their detail, and the completed
+   gate sentence; that section holds the variation axes, the review's
+   questions and three routes, the re-verification rule and the lens
+   catalog; the executor root carries the self-review sentence;
+   `npm run harness -- check` is green.
 2. `npm run resume -- verify` on a fixture order that has a `Known
    issues and carry-ins` section and a planning receipt naming one known
    issue prints both in the briefing; the fixture fails against
@@ -224,11 +237,11 @@ counts; the handoff line and advisory; fixtures; the write-backs below.
    `self-review:` line prints one advisory naming the line and records;
    with the line it prints none.
 4. `final-review-result` on a fixture report records the three class
-   counts in the event; a report with a blocking finding line that
-   carries no class refuses and names the line; `plan failures` prints
-   escapes per order and `plan start` prints the last-ten figure over a
-   synthetic control log. The class set is the three named; a line with
-   another word is refused as unclassed.
+   counts in the event; a blocking finding line that carries no class,
+   or another word, is counted as `unclassed` and named in one advisory,
+   and the result is recorded all the same; `plan failures` prints
+   escapes and unclassed findings per order and `plan start` prints the
+   last-ten figure over a synthetic control log.
 5. Product 07 holds the lens catalog as one section the verifier's text
    cites by name, its §Model-specific notes says that a spawned Claude
    worker's effort comes from the generated agent definition, and
@@ -238,10 +251,11 @@ counts; the handoff line and advisory; fixtures; the write-backs below.
    edited by hand; one probe row records a worker spawned by that type
    from a root at another effort, with the effort the host reports for
    it, or records that the host reports none.
-6. Cold-start bytes of every role root are measured after regeneration
-   and recorded in the decisions; a ceiling met has a dated acceptance in
-   `docs/control/budgets.json` naming the sentences, under the standing
-   route.
+6. Cold-start bytes of every role root are measured before and after
+   regeneration and recorded in the decisions; the verifier and executor
+   roots fit the ceilings in force at this order's base with no new
+   acceptance, and text that does not fit is moved to the section read
+   at verify time.
 7. Write-backs: the decisions file with each sentence and the finding it
    answers; the decisions index; register rows FUP-19cd701c25446383 and
    FUP-e62d0d2771185a38 retargeted at close.
@@ -257,7 +271,17 @@ duties, and the final review says whether it did.
 
 **Write-back duty:** as listed in criteria 5 and 7.
 
-**Known issues and carry-ins:** none at filing.
+**Known issues and carry-ins:**
+
+- Receipt 038: at filing the verifier root had 363 bytes of headroom and
+  every bounded role's ceiling had been raised two or three times since
+  2026-09-17. This order is not one more raise (criterion 6). Reopen if,
+  after regeneration, the verifier or executor measure exceeds its
+  ceiling and an acceptance is recorded.
+- Receipt 038: a finding's class must never block recording a final
+  review; criterion 4 counts an unclassed line and advises. Reopen if a
+  final-review result is refused, or needs a new report or an operator
+  correction, over a finding's class.
 
 **Non-goals:** a new lifecycle phase; any change to what final review
 does beyond classing its findings; changing the product gate's
