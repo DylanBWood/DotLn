@@ -81,6 +81,86 @@ test("WO-133 every generated role preserves supplied actor values and checks edi
     }
   }
 });
+
+test("WO-179 every emitted role carries its assigned corrections across support settings", () => {
+  const sharedRules = [
+    "Settle routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority; ask when the answer changes scope or authority.",
+    "Before acting on an operator message, state its aim in one line and act on that reading; ask one focused question if the reading is doubtful.",
+    "A claim of cause, blocker, unreachable service or finished work names the command and output it rests on; a partial search names its boundary.",
+    "Request needed authority in this session through the host permission flow; never hand the operator a command to run in your place unless the order or role names that fallback.",
+    "A command given to the operator is copy-paste runnable with real paths and no placeholders; a question says what it decides and why in plain words.",
+    "Answer a stale gate row by running the gate at the current identity, never by restoring bytes to match it; never remove a reviewed fix to pass a check.",
+    "Stop the background monitors you started before recording your result.",
+    "After a second consecutive provider safeguard refusal, stop retrying, record the stop as a decision naming phase and model, and resume in a fresh session.",
+    "Await a gate or background task through `node scripts/harness.mjs evidence --wait [--timeout <seconds>]` in the background or the host's completion signal, then do bounded listed work or stay quiet; never poll or narrate the wait.",
+    "Never guess: an unobserved value is `unknown`, `untested` or `blocked`; name the readable source tried before writing `unknown`, and correct an unfiled report in place instead of appending a correction.",
+  ];
+  for (const economy of [true, false]) {
+    const program = contributorConfiguredProgram({
+      "tinkerer-economy": economy,
+    });
+    for (const profile of contributorProfiles) {
+      const target = {
+        ...profile,
+        runtime: {
+          ...profile.runtime,
+          files: [
+            "packages/compiler/dist/src/feedback.js",
+            "packages/skeleton/dist/src/feedback-boundary.js",
+            "packages/skeleton/dist/src/feedback-source-comments.js",
+            "packages/skeleton/dist/src/harness-host.js",
+            "packages/skeleton/dist/src/reactor.js",
+          ].map((path) => ({ path, hash: "fnv1a64:0000000000000000" })),
+        },
+      };
+      const bundle = lowerToHarness(
+        program,
+        personalFeedback(),
+        program.loadout.authorityEnvelope,
+        target,
+      );
+      const roles = bundle.files.filter((file) =>
+        file.path.endsWith("/SKILL.md"),
+      );
+      assert.equal(roles.length, 6);
+      for (const role of roles) {
+        const subject = `${profile.profileId} ${role.path} economy=${economy}`;
+        for (const rule of sharedRules)
+          assert.equal(
+            role.contents.split(rule).length - 1,
+            1,
+            `${subject}: assigned rule ${rule}`,
+          );
+        if (role.path.endsWith("dotln-release-close/SKILL.md")) {
+          assert.match(
+            role.contents,
+            /report a cleanup blocker or host denial once with the exact operator remedy \(`--material`, `!` or `\/permissions` retry\), then finish remaining work without repeating publication or deciding to move, copy, delete or preserve material/,
+            subject,
+          );
+          assert.doesNotMatch(role.contents, /Report refusals;/, subject);
+        } else if (role.path.endsWith("dotln-executor/SKILL.md")) {
+          assert.match(
+            role.contents,
+            /Declare each scratch repository the order creates with `npm run worktree -- material` before completion/,
+            subject,
+          );
+        } else if (role.path.endsWith("dotln-verifier/SKILL.md")) {
+          assert.match(
+            role.contents,
+            /Consume the executor's recorded passing `npm test` row when its code identity matches the subject/,
+            subject,
+          );
+          assert.doesNotMatch(
+            role.contents,
+            /Run the product gate with `npm test`/,
+            subject,
+          );
+        }
+      }
+    }
+  }
+});
+
 const text = (id: string) =>
   executorSupports
     .find((support) => support.supportFacetId === id)!

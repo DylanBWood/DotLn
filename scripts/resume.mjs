@@ -42,6 +42,7 @@ import {
   describeHandoff,
   handoffLedgerPath,
   readHandoffLedger,
+  readReportGateClaims,
   requireGateClaims,
 } from "./lib/handoff-ledger.mjs";
 import {
@@ -1043,7 +1044,13 @@ const repairSentence =
   "A repair closes the class the finding names: state the rule the repaired code holds and add a case the report did not quote.";
 const offRampSentence =
   "A recorded off-ramp whose capture hash matches is judged from the record and never put back to the operator.";
-const verifySentence = `A finding names its class and the rule a repair must hold; a defect outside the declared criteria is boarded with its reproduction, not failed. ${offRampSentence}`;
+const defectBoundarySentence =
+  "A repairable defect within the order's declared surfaces is repaired in the order through Adjacent Repair and may fail a criterion it breaks; a defect outside both its declared criteria and surfaces is boarded with its reproduction.";
+const operatorMessageSentence =
+  "A question, complaint or stale operator message is not an instruction to stop, narrow or widen work; only an explicit pause, stop or scope prefix changes it.";
+const gateClaimSentence =
+  "A met criterion naming npm test or npm run test:docs stands on that gate's passing row at the subject or an inline run.";
+const verifySentence = `A finding names its class and the rule a repair must hold. ${defectBoundarySentence} ${offRampSentence} ${operatorMessageSentence} ${gateClaimSentence}`;
 // A criterion the record already waives needs neither route.
 const unmetBriefing = (state) => {
   const waived = new Set(
@@ -1064,7 +1071,7 @@ const repairBriefing = (state) =>
 const verificationBriefing = (state, reportPath) =>
   `Verify ${state.workOrderPath}; write the immutable report to ${reportPath}. ${costLineBriefing}\n${verifySentence}${unmetBriefing(state)}`;
 const finalReviewBriefing = (state, reportPath) =>
-  `Final-review ${state.workOrderPath}, the complete verification sequence, and ideation receipt; write ${reportPath}. ${costLineBriefing}\n${offRampSentence}${unmetBriefing(state)}`;
+  `Final-review ${state.workOrderPath}, the complete verification sequence, and ideation receipt; write ${reportPath}. ${costLineBriefing}\n${defectBoundarySentence} ${offRampSentence} ${operatorMessageSentence} ${gateClaimSentence}${unmetBriefing(state)}`;
 // The advisories and rows the handoff produced ride on the completion's
 // evidence, beside the diff check's.
 const completionHandoff = (evidence, handoff, gates) => {
@@ -1404,12 +1411,21 @@ const run = async (argv) => {
         state,
         verdict,
       );
-      const evidence = await requireLifecycleEvidence(
+      const claims = readReportGateClaims(
+        repoRoot,
+        state,
+        state.latestVerificationPath,
+      );
+      const { gateIndexError, ...evidence } = await requireLifecycleEvidence(
         repoRoot,
         action,
         verdict,
         state.workOrderId,
       );
+      const gates = await requireGateClaims(repoRoot, claims, {
+        gateIndexError,
+      });
+      completionHandoff(evidence, claims, gates);
       appendTransition(action, {
         type: "VerificationCompleted",
         ...(evidence ? { evidence } : {}),

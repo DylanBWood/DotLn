@@ -340,10 +340,18 @@ assert.match(
 assert.equal(matrix(), "ready-to-verify");
 // WO-173 criterion 5: the three sentences, pinned, and the unmet disclosure
 // with both routes; no briefing grows by more than 400 bytes.
-const verifySentence =
+const originalVerifySentence =
   "A finding names its class and the rule a repair must hold; a defect outside the declared criteria is boarded with its reproduction, not failed. A recorded off-ramp whose capture hash matches is judged from the record and never put back to the operator.";
 const offRampSentence =
   "A recorded off-ramp whose capture hash matches is judged from the record and never put back to the operator.";
+const defectBoundarySentence =
+  "A repairable defect within the order's declared surfaces is repaired in the order through Adjacent Repair and may fail a criterion it breaks; a defect outside both its declared criteria and surfaces is boarded with its reproduction.";
+const operatorMessageSentence =
+  "A question, complaint or stale operator message is not an instruction to stop, narrow or widen work; only an explicit pause, stop or scope prefix changes it.";
+const gateClaimSentence =
+  "A met criterion naming npm test or npm run test:docs stands on that gate's passing row at the subject or an inline run.";
+const verifySentence = `A finding names its class and the rule a repair must hold. ${defectBoundarySentence} ${offRampSentence} ${operatorMessageSentence} ${gateClaimSentence}`;
+const finalReviewSentences = `${defectBoundarySentence} ${offRampSentence} ${operatorMessageSentence} ${gateClaimSentence}`;
 const repairSentence =
   "A repair closes the class the finding names: state the rule the repaired code holds and add a case the report did not quote.";
 const ledgerSentence = (id, before) =>
@@ -356,7 +364,8 @@ for (const [name, growth] of Object.entries({
   fix:
     bytes(` ${repairSentence}`) +
     bytes(ledgerSentence("WO-099", "repair-complete")),
-  verify: bytes(`\n${verifySentence}`),
+  // WO-173's bounded addition remains measured separately from WO-179's rules.
+  verify: bytes(`\n${originalVerifySentence}`),
   "final-review": bytes(`\n${offRampSentence}`),
 }))
   assert.ok(growth <= 400, `the ${name} briefing grows ${growth} bytes`);
@@ -1099,7 +1108,9 @@ on101(["verification-result", "pass", ...agentFlags]);
 assert.equal(status("WO-101").latestVerdict, "pass");
 const finalBriefing101 = on101(["final-review"]);
 assert.ok(
-  finalBriefing101.includes(`refuse a bare unknown.\n${offRampSentence}\n`),
+  finalBriefing101.includes(
+    `refuse a bare unknown.\n${finalReviewSentences}\n`,
+  ),
   finalBriefing101,
 );
 assert.doesNotMatch(
@@ -1512,14 +1523,23 @@ report("docs/verifications/WO-103/VER-001.md", [
   "**Criterion 3:** met.",
   "**Criterion 4:** met.",
 ]);
+// WO-179: changing an unmet judgment to met needs the current gate evidence.
+recordGateChecks(root, [
+  claimRow("host-gate:verified-103:npm test", {
+    requiredSuites: ["build", "alpha", "stub-machinery"],
+  }),
+]);
+plantRunner();
+stubDocumentGate(0, ["npm run test:docs: 1 passed; 0 failed; 0.01 s"]);
 on("WO-103")(["verification-result", "pass", ...agentFlags]);
 const finalBriefing103 = on("WO-103")(["final-review"]);
 assert.ok(
   finalBriefing103.includes(
-    `${offRampSentence}\nThe executor recorded criteria 1, 2, 3 unmet in docs/evidence/WO-103/handoff.md. A waiver this session records from the operator's capture (npm run resume -- waive <criterion> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor flags> --work-order WO-103) or an authorized amendment (npm run plan -- amend-order) spares the cycle; without either the criterion is judged as it stands.\n`,
+    `${finalReviewSentences}\nThe executor recorded criteria 1, 2, 3 unmet in docs/evidence/WO-103/handoff.md. A waiver this session records from the operator's capture (npm run resume -- waive <criterion> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor flags> --work-order WO-103) or an authorized amendment (npm run plan -- amend-order) spares the cycle; without either the criterion is judged as it stands.\n`,
   ),
   finalBriefing103,
 );
+rmSync(stubRunner);
 writeFileSync(join(root, ".gitignore"), ignoreBytes102);
 assert.equal(gateCodeIdentity(root), identity);
 // A gate that cannot start, a review selection without a runner and a gate
@@ -1686,7 +1706,7 @@ const failVerification = (id, kind) => {
     assert.match(
       run.stderr,
       literal(
-        `Advisory: Gate index unavailable: ${causes[kind]}; the git diff --check row is not recorded.`,
+        `Advisory: Gate index unavailable: ${causes[kind]}; the git diff --check row is not recorded, and the npm test claim of criterion 2 is recorded as stated.`,
       ),
     );
   } else on(id)(["verification-result", "fail", ...agentFlags]);

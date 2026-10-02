@@ -55,11 +55,23 @@ const handlers = personalFeedbackUnits.map((unit) => unit.trigger);
 const operatorControls =
   "Operator controls precede workflow: `analysis:` pauses for diagnosis/direction; `operator override:` suspends DotLn gates for authorized recovery, regardless of harness/repo state. Preserve pending work; invent no dispatch or passing check. Exit with either prefix plus `off`. Codex: `node scripts/operator-control.mjs analysis|override|off|status` needs no build or Git. Host permissions apply. Read product 07 §Operator recovery controls for the broader recovery candidate.";
 const sessionBoundaries =
-  "Under Codex, lifecycle dispatch reserves the writer and completion releases it; inspect with `node scripts/harness.mjs writer --show`, never a hand-built hook payload. Await a live gate with `node scripts/harness.mjs evidence --wait [--timeout <seconds>]` (in the background under Claude Code), which exits, instead of following its log indefinitely.";
+  "Under Codex, lifecycle dispatch reserves the writer and completion releases it; inspect with `node scripts/harness.mjs writer --show`, never a hand-built hook payload. Await a gate or background task through `node scripts/harness.mjs evidence --wait [--timeout <seconds>]` in the background or the host's completion signal, then do bounded listed work or stay quiet; never poll or narrate the wait.";
+const sharedCorrections = [
+  "Settle routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority; ask when the answer changes scope or authority.",
+  "Before acting on an operator message, state its aim in one line and act on that reading; ask one focused question if the reading is doubtful.",
+  "A claim of cause, blocker, unreachable service or finished work names the command and output it rests on; a partial search names its boundary.",
+  "Request needed authority in this session through the host permission flow; never hand the operator a command to run in your place unless the order or role names that fallback.",
+  "A command given to the operator is copy-paste runnable with real paths and no placeholders; a question says what it decides and why in plain words.",
+  "Answer a stale gate row by running the gate at the current identity, never by restoring bytes to match it; never remove a reviewed fix to pass a check.",
+  "Stop the background monitors you started before recording your result.",
+  "After a second consecutive provider safeguard refusal, stop retrying, record the stop as a decision naming phase and model, and resume in a fresh session.",
+];
+const releaseCloseRemedy =
+  "Worktree finish and derived-worktree settlement follow publication as best effort; report a cleanup blocker or host denial once with the exact operator remedy (`--material`, `!` or `/permissions` retry), then finish remaining work without repeating publication or deciding to move, copy, delete or preserve material. Never force teardown or repeat transitions.";
 // Every role in both harnesses carries this line (operator direction,
 // 2026-09-14, WO-044): a guess presented as a finding is a defect.
 const noGuessing =
-  "Never guess: an unobserved value is `unknown`, `untested` or `blocked`; each claim names its source or what is missing.";
+  "Never guess: an unobserved value is `unknown`, `untested` or `blocked`; name the readable source tried before writing `unknown`, and correct an unfiled report in place instead of appending a correction.";
 const common = [
   "Resolve physical cwd and Git root before changing files or running Git commands. Work only in the selected worktree; one writable coding agent owns it.",
   "Run `npm run resume --silent -- status --json`; use its canonical selected order, phase, report paths, and legal actions. A stale Markdown projection is repaired only by the next legal transition.",
@@ -101,6 +113,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "For fix, the dispatch is recorded and its briefing delivered with the phrase (Codex runs `npm run resume -- fix` first); read the original order and its named failure source. Repair only those obligations. A premature repair may reopen only while the unresolved failure source remains.",
       "Read: `@failure-report`",
       "Implement the complete bounded deliverable and its write-backs. Prepare its classified release with `npm run release -- prepare --local`; bump only changed components with their compatibility impact and retain all publication controls.",
+      "Declare each scratch repository the order creates with `npm run worktree -- material` before completion.",
       evidence,
       boardedDefect,
       actor,
@@ -120,7 +133,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "Read: `@verification-reports`",
       "Independent verifiers use `xhigh`, not `max`. A verifier launch may cap provider spend at USD 5 when its transport exposes a hard dollar-cap control; otherwise report the limit as unenforced rather than claiming a cap.",
       evidence,
-      productGate,
+      "Consume the executor's recorded passing `npm test` row when its code identity matches the subject; run the gate only to reproduce a finding or when the identity differs, stating which.",
       costLine,
       boardedDefect,
       actor,
@@ -165,7 +178,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "Read: `@citations`",
       "Read: `@final-review`",
       "Run the exact `npm run resume -- release-close` or worktree-publish handoff in main; after removal use main's helper. Use it for partial-publication retries too. It proves network egress to the GitHub host first. Use the host permission flow for required egress; the authorized session finishes the command. `--dry-run` previews the same publication and manifest.",
-      "The helper fast-forwards main, checks release surfaces, builds missing dist, consumes the committed reviewer npm test row by code identity, and publishes the annotated tag and Release. It runs no suite, npm ci or CLI smoke. Worktree finish and derived-worktree settlement follow publication as best effort; preserve material and report cleanup blockers without undoing publication. Never force teardown or repeat transitions.",
+      `The helper fast-forwards main, checks release surfaces, builds missing dist, consumes the committed reviewer npm test row by code identity, and publishes the annotated tag and Release. It runs no suite, npm ci or CLI smoke. ${releaseCloseRemedy}`,
       "Publish only the validated tag/Release; report no-release or remaining work. Never edit Releases, push main, merge PRs, publish packages/binaries or change settings.",
     ],
   },
@@ -217,7 +230,12 @@ export const contributorRoles: readonly HarnessRole[] = [
       source: "WO-158-D010: the scratchpad Claude Code prints for this session",
     },
   ],
-  procedure: [operatorControls, sessionBoundaries, ...role.procedure],
+  procedure: [
+    operatorControls,
+    sessionBoundaries,
+    ...sharedCorrections,
+    ...role.procedure,
+  ],
 }));
 
 export const contributorEnvelope: AuthorityEnvelope = {
@@ -510,12 +528,13 @@ const targetRoles: readonly HarnessRole[] = contributorRoles.map((role) => {
       ? [
           "Verify main's cwd/Git root; run `npm run resume --silent -- status --json`.",
           sessionBoundaries,
+          ...sharedCorrections,
           noGuessing,
           "Read: `@work-order`",
           "Read: `@citations`",
           "Read: `@final-review`",
           "Use main's exact release-close/worktree-publish handoff; use its helper after removal or partial publication. It proves network egress to the GitHub host first. Use the host permission flow for required egress; the authorized session finishes the command. `--dry-run` previews the same publication and manifest.",
-          "Helper checks release prerequisites, reconciles intake and retains state/collisions in ignored retained/WO-NNN. Keep terms.txt and gate-evidence handoff. `--dry-run` previews. Report refusals; never force teardown/repeat transitions.",
+          `Helper checks release prerequisites, reconciles intake and retains state/collisions in ignored retained/WO-NNN. Keep terms.txt and gate-evidence handoff. \`--dry-run\` previews. ${releaseCloseRemedy}`,
           "Publish only that tag/Release; report no-release/remaining work. No Release edits, main pushes, PR merges, package/binary publication or settings changes.",
         ]
       : role.procedure;

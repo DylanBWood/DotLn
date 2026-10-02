@@ -52,6 +52,41 @@ const GATE_NAMES = [
 const named = (ids) =>
   `${ids.length === 1 ? "criterion" : "criteria"} ${ids.join(", ")}`;
 
+const readDeclaredCriteria = (root, state) => {
+  try {
+    return declaredCriteria(
+      readFileSync(
+        workOrderAuthorityPath(root, state.workOrderId, state.workOrderPath),
+        "utf8",
+      ),
+    );
+  } catch {
+    return null;
+  }
+};
+
+const criterionGateClaims = (declared, met) => {
+  const claims = { document: [], review: [], plain: [] };
+  for (const { id, text } of declared ?? [])
+    if (met.includes(id))
+      for (const [gate, pattern] of GATE_NAMES)
+        if (pattern.test(text)) claims[gate].push(id);
+  return claims;
+};
+
+/** The verifier's met judgments use the executor's existing gate semantics. */
+export function readReportGateClaims(root, state, reportPath) {
+  const declared = readDeclaredCriteria(root, state);
+  const met = criterionJudgments(readFileSync(join(root, reportPath), "utf8"))
+    .filter((judgment) => judgment.met)
+    .map((judgment) => judgment.criterionId);
+  return {
+    checked: declared !== null,
+    claims: criterionGateClaims(declared, met),
+    advisories: [],
+  };
+}
+
 /**
  * Read the ledger against the order's declared criteria. Throws a refusal
  * that names the identifiers and the accepted forms for an absent ledger, a
@@ -61,17 +96,7 @@ const named = (ids) =>
  */
 export function readHandoffLedger(root, state) {
   const path = handoffLedgerPath(root, state.workOrderId);
-  let declared = null;
-  try {
-    declared = declaredCriteria(
-      readFileSync(
-        workOrderAuthorityPath(root, state.workOrderId, state.workOrderPath),
-        "utf8",
-      ),
-    );
-  } catch {
-    declared = null;
-  }
+  const declared = readDeclaredCriteria(root, state);
   if (!declared)
     return {
       checked: false,
@@ -114,11 +139,7 @@ export function readHandoffLedger(root, state) {
   if (problems.length) refuse(problems.join("; "));
   const met = ids.filter((id) => seen.get(id).met);
   const unmet = ids.filter((id) => !seen.get(id).met);
-  const claims = { document: [], review: [], plain: [] };
-  for (const { id, text } of declared)
-    if (seen.get(id).met)
-      for (const [gate, pattern] of GATE_NAMES)
-        if (pattern.test(text)) claims[gate].push(id);
+  const claims = criterionGateClaims(declared, met);
   return { checked: true, path, declared, met, unmet, claims, advisories: [] };
 }
 
