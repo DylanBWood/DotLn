@@ -96,10 +96,11 @@ paths.").
 
 **Objective:** A registered repository names a class (the loader requires
 `repositoryClass`); a class declares the supports every member equips and
-the checks every member order's compiled `requiredEvidence` includes; each
-registered repository has one profile document (purpose and the standards
-to emulate, commands, local application startup, branch and pull-request
-policy, demonstrated architecture, and a pinned upstream-references list of
+the checks every member order's compiled `requiredEvidence` includes; a
+registered repository may declare one profile document (purpose and the
+standards to emulate, commands, local application startup, branch and
+pull-request policy, demonstrated architecture, and a pinned
+upstream-references list of
 `owner/repo@tag path#anchor` entries with one line each on why the section
 matters) treated as repo-native authority and loaded on demand by the role
 skill for the active order, never at cold start; policy layers launchpad →
@@ -120,10 +121,10 @@ states them.
   field; a registered profile is applied by a host adapter that unions its
   `requiredEvidence` into the envelope and only narrows.
 - The checked context measure is cold-start bytes per role, the installed
-  `CLAUDE.md` plus the role skill: the executor's is 6,220 + 20,066 =
-  26,286 bytes against a ceiling of 29,246, and the reviewer's has 405
-  bytes of headroom. Any sentence added to a role skill raises it; the
-  executor re-measures at its base.
+  `CLAUDE.md` plus the role skill. Re-read on 2026-10-02: the executor's
+  is 28,290 bytes against a ceiling of 29,246, the verifier's 24,788
+  against 25,151 and the reviewer's 26,070 against 28,884. Any sentence
+  added to a role skill raises it; the executor re-measures at its base.
 - `docs/repositories/` does not exist and has no root key; the
   configuration-root suite refuses a quoted `docs/` path in any script but
   `scripts/lib/config.mjs`.
@@ -150,9 +151,12 @@ states them.
   list, and a document root needs a root key in `scripts/lib/config.mjs`
   (`repositories` already names the registration section); product 07
   states both lists.
-- A profile path that is absent, not a contained regular file, or
-  unreadable refuses activation of an order against the repository, naming
-  the path; activation judges no profile content.
+- A registration declares its profile's path. A declared path that is
+  absent, not a contained regular file, or unreadable refuses activation
+  of an order against the repository, naming the path; activation judges
+  no profile content. A registration that declares no profile activates
+  as it does today, with one advisory naming the missing profile, so a
+  repository registered before this order keeps working.
 - A profile is authored by a read-only observation order for an
   established repository or by the order that establishes a new one, in the
   launchpad that registers it. The convention keeps a place for WO-119's
@@ -196,11 +200,13 @@ change, fixtures, the write-backs below.
    (`npm run meta`); a role that would breach its ceiling in
    `docs/control/budgets.json` follows product 07 §Discipline's cold-start
    route in the same change.
-3. A registered repository whose profile is absent, not a contained regular
-   file, or unreadable refuses activation of an order against it, naming
-   the path; an order against a repository whose profile reads activates.
-   The criterion is judged against the declared set; a case outside it is
-   a follow-up, not a failure.
+3. A registered repository whose declared profile is absent, not a
+   contained regular file, or unreadable refuses activation of an order
+   against it, naming the path; an order against a repository whose
+   profile reads activates; an order against a repository that declares
+   no profile activates with one advisory, as every repository registered
+   before this order does. The criterion is judged against the declared
+   set; a case outside it is a follow-up, not a failure.
 4. Observer fixtures: an item by a declared machine login is stored as
    automated review and one by an undeclared user account as human
    review; a bot comment linking a declared host is stored and one
@@ -239,6 +245,16 @@ harness-fixtures, and again at final review. No live row.
   edits the same file after it.
 - The screen still admits C1 control characters and bidirectional
   overrides (WO-065 D014); no declaration here changes that.
+- Receipt 038: a profile was first required of every registration,
+  which would have refused orders against repositories registered
+  before this order, the scratch target of WO-112 among them. A profile
+  is now declared per registration and optional (criterion 3). Reopen if
+  an activation against an earlier registration is refused for a missing
+  profile.
+- Receipt 038: the cold-start figures in the observed gap were from
+  2026-09-28 and are re-read above. Reopen if the executor's measure
+  after this order's sentence exceeds 29,246 and an acceptance is
+  recorded for it.
 
 **Non-goals:** authoring any target application's profile (the fork's
 planning pass does); the export (WO-074); workstreams (WO-080); a class

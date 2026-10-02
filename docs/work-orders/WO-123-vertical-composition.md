@@ -376,10 +376,14 @@ write-backs below.
 1. A resident integration fixture, with doubles for every external actor
    and a fake clock, starts from a draft filed as WO-120's `dotln intent`
    files it, under an explicit standing authorization (a fixture portfolio
-   entry of the `intent` class declaring the target and the surfaces
-   ceiling, and admitted fixture grants for the remote effects): the
+   entry of the `intent` class declaring a registered target and the
+   surfaces ceiling, and admitted fixture grants for the remote effects;
+   the entry, not the draft, supplies the target, so the draft's
+   `repo: self` is never bound and `dotln intent` is unchanged): the
    resident admits the intent with no `dotln vertical` invocation and no
-   manual activation, records `IntentAdmitted`, persists the accepted
+   manual activation, records `IntentAdmitted` with the statement that
+   the standing authorization supersedes the draft's human-review
+   constraint, persists the accepted
    contract and the vertical continuation as events, dispatches the first
    step itself, and runs to the terminal state writing one receipt per
    step; a resident restart after any step resumes the continuation at the
@@ -492,6 +496,13 @@ primitives' reviews, so no reader needs another document to find one.
 - The verification state keeps an append-only `repairPlans` list no
   production code reads; replacing it re-keys three identity streams
   and is left.
+- Receipt 038: criterion 1's fixture starts from a draft that names
+  `repo: self` and asks for human review before activation, and a
+  portfolio for `self` is refused at bind. The criterion now says that
+  the `intent` entry supplies the target and that the admission record
+  states why the review constraint does not apply. Reopen if the
+  executor cannot build the fixture from an unmodified draft without
+  retargeting it or binding a `self` portfolio.
 - The composition's model invocations (source change, verification,
   review) are the first to consume a screened bundle. The executor
   records, per step, what the step's model input can carry; no exposure

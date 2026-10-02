@@ -40,6 +40,49 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-02 — Planning pass: operator answer (receipt 038's amendments applied to twelve orders and the sequence)
+
+Source: the operator's question after the first report and the dispatch
+`planning: apply the receipt 038 amendments on this branch`, captured
+verbatim in ignored intake
+(`docs/intake/notes/2026-10-02-receipt-038-amendments-planning.md`,
+SHA-256 `22b8af28fb783cdf27b559c2f2a694481508f428191d45c12242ade3e187e5d9`);
+receipt 038's twenty findings; the repair commit the first pass prepared
+and reverted. Planner synthesis over repository records; the clean-room
+screen found no stop condition. The record is
+[the planning document](../planning/standard-pass-2026-10-02.md) §19 and
+§20.
+
+- **A judged order is amended by a new pass, never by its own receipt** `adopted`
+  - The first pass edited judged orders and the sequence after its one
+    judgment, reading the rule on repairs as leave to repair. The plan
+    check refused, the edits were reverted, and the known issues went
+    to the catalog rows. The operator's answer opens this pass, as the
+    answer of 2026-09-27 did, and the amended subject gets its own
+    judgment. Product 07 already says where a receipt's known issues are
+    written. Reopen: a pass again edits judged text after its judgment.
+- **Receipt 038's amendments** `adopted`
+  - Fourteen findings change text. WO-184: the live proof needs all
+    three attempts. WO-185: one guard and one lane count per user on the
+    host. WO-123: the first criterion states what its Design already
+    said about the intent's target and the review constraint. WO-187:
+    the verifier's duty sentence is replaced and its detail read at
+    verify time, with no new ceiling acceptance; an unclassed finding is
+    counted and never refused. WO-188: the close record names what it
+    removed; the comment sentence is the executor's alone. WO-073: a
+    profile is declared per registration and optional; its figures are
+    re-read. WO-191: a reader runs after a profile change or at the
+    operator's word. WO-192: a ceiling for a driven session; one
+    generator of agent definitions. The sequence: WO-118 ahead of the
+    three instance orders. Six findings are recorded in their orders as
+    they stand. Provenance: receipt 038; the operator's direction.
+- **The planner's sentence on repairs reads as leave to repair** `candidate`
+  - Recorded as candidate 11 of the map's section of this date: the
+    role text says to reuse the judgment after repairs, and the check
+    admits a change to judged text only through a hold's disposition or
+    an authorized amendment. Reopen: the next order that edits the
+    planner procedure, or a second pass misreads it.
+
 ## 2026-10-02 — Planning pass: the operator's seventeen notes measured against the record, with a 5S inventory (WO-184 to WO-194)
 
 Source: the operator's dispatch `planning: standard planning + 5s +

@@ -21,13 +21,15 @@ the last pair run one at a time.
 
 Every open order has a place in this list
 ([2026-10-02 pass](standard-pass-2026-10-02.md)). WO-189 depends on no queued
-order and may run as a third lane at any time. WO-192 follows WO-078 because
-the operator asked for it once the starter exists; nothing in it depends on
-the export, so it may move into the machinery lane after WO-188 at the
-operator's word. WO-088 and WO-089 stay near the end under their 2026-09-19
-holds, and the pass that reaches WO-088 re-observes its gap. WO-014 is last
-until a pass finds approval friction recorded as the constraint. The period
-below `v1.0.0` is early access (operator direction, 2026-09-30).
+order and may run as a third lane at any time. WO-192, WO-193 and WO-194
+follow WO-118, the loop from a starter instance: the operator asked for them
+once the starter exists, and the product exit does not wait behind them.
+Nothing in WO-192 depends on the export, so it may move into the machinery
+lane after WO-188 at the operator's word. WO-088 and WO-089 stay near the
+end under their 2026-09-19 holds, and the pass that reaches WO-088
+re-observes its gap. WO-014 is last until a pass finds approval friction
+recorded as the constraint. The period below `v1.0.0` is early access
+(operator direction, 2026-09-30).
 
 <!-- dotln-work-order-sequence:start -->
 - WO-184 — Seams the vertical inherits, settled first
@@ -54,10 +56,10 @@ below `v1.0.0` is early access (operator direction, 2026-09-30).
 - WO-076 — Instance build overlay
 - WO-077 — Launchpad export update
 - WO-078 — Sibling registry and export receipts
+- WO-118 — The resident-owned loop from a starter instance
 - WO-192 — A router drives an order through its lifecycle
 - WO-193 — Capability requests from an instance
 - WO-194 — Private predecessor map
-- WO-118 — The resident-owned loop from a starter instance
 - WO-183 — Intent declaration and the stranger test
 - WO-113 — Work-order files are stable contracts
 - WO-080 — Workstream document and index grouping

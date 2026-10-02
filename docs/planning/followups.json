@@ -27163,6 +27163,30 @@
           "at": "2026-10-02T06:02:37.424Z"
         }
       ]
+    },
+    {
+      "id": "FUP-ec72b2ea596bdc75",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-with-5s-and-the-operators-notes-recorded-2026-10-02::5349e957b2057f7398a931272d942ddecd8baece99307d007deac62d70720d9b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7f9a1b3f23075a0a81d935e5d06e630b1e5cb2c4c6aebe5b4899cbe1fcc82db6",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-with-5s-and-the-operators-notes-recorded-2026-10-02",
+          "title": "The planner's sentence on repairs after a judgment.",
+          "summary": "11. **The planner's sentence on repairs after a judgment.** Added by the operator-answer pass of the same date. The planner procedure says to reuse the judgment after repairs unless observed evidence changed; the plan check freezes judged orders and the sequence and admits a change only through a hold's disposition or an authorized amendment. The pass before read the sentence as leave to repair, applied fourteen edits and reverted them. Reopen: the next order that edits the planner procedure in `packages/skeleton/src/loadouts/contributor.ts`, or a second pass edits judged text after its judgment.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded by the operator-answer pass: the planner procedure says to reuse the judgment after repairs, and the plan check admits a change to judged text only through a disposition of a hold or an authorized amendment; the pass before misread it, applied fourteen edits and reverted them. A role-text change is a code change, so it waits for an order that edits the planner procedure. [2026-10-02 planning pass, operator answer (docs/planning/standard-pass-2026-10-02.md section 20)]",
+          "reopenWhen": "the next order that edits the planner procedure in packages/skeleton/src/loadouts/contributor.ts, or a second pass edits judged text after its judgment",
+          "targets": [],
+          "at": "2026-10-02T14:18:02.788Z"
+        }
+      ]
     }
   ]
 }
