@@ -1,0 +1,1 @@
+Recorded 4 current artifact evidence files in docs/evidence/WO-124/artifact-identity/002; Seiri semantic hash and frozen oracle unchanged; versioned Entropy Reducer matches its current recorded fixture.

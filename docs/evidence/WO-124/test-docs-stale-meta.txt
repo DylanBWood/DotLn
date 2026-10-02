@@ -1,0 +1,64 @@
+
+> test:docs
+> node scripts/test-runner.mjs --document
+
+PROGRESS [build] 0.0 s started
+PASS build 0.62 s
+PROGRESS [format] 0.0 s started
+PROGRESS [release-surfaces] 0.0 s started
+PROGRESS [publication] 0.0 s started
+PROGRESS [docs-check] 0.0 s started
+PASS publication 0.15 s
+PROGRESS [index] 0.0 s started
+PASS release-surfaces 1.86 s
+PROGRESS [lineage] 0.0 s started
+PASS lineage 0.04 s
+PROGRESS [authority-evidence] 0.0 s started
+PASS index 1.77 s
+PROGRESS [harness] 0.0 s started
+PASS harness 0.19 s
+PROGRESS [harness-context] 0.0 s started
+PASS harness-context 0.14 s
+PROGRESS [harness-evidence] 0.0 s started
+PASS authority-evidence 0.74 s
+PROGRESS [artifact-evidence] 0.0 s started
+PASS harness-evidence 0.42 s
+PROGRESS [verification-evidence] 0.0 s started
+PASS artifact-evidence 0.25 s
+PROGRESS [feedback-evidence] 0.0 s started
+PASS verification-evidence 1.28 s
+PROGRESS [meta] 0.0 s started
+FAIL meta 1.07 s
+  [meta] Decisions index is stale; run npm run meta
+FAIL entropy 0.00 s
+  [entropy] Required preflight or fixture preparation failed for entropy: meta
+FAIL plan 0.00 s
+  [plan] Required preflight or fixture preparation failed for plan: meta
+FAIL registrations 0.00 s
+  [registrations] Required preflight or fixture preparation failed for registrations: meta
+FAIL plan-refutation-current 0.00 s
+  [plan-refutation-current] Required preflight or fixture preparation failed for plan-refutation-current: meta
+FAIL console-docs 0.00 s
+  [console-docs] Required preflight or fixture preparation failed for console-docs: meta
+FAIL skeleton-docs 0.00 s
+  [skeleton-docs] Required preflight or fixture preparation failed for skeleton-docs: meta
+FAIL kernel-docs 0.00 s
+  [kernel-docs] Required preflight or fixture preparation failed for kernel-docs: meta
+FAIL lineage-fixtures 0.00 s
+  [lineage-fixtures] Required preflight or fixture preparation failed for lineage-fixtures: meta
+FAIL docs-check-fixtures 0.00 s
+  [docs-check-fixtures] Required preflight or fixture preparation failed for docs-check-fixtures: meta
+PASS format 5.31 s
+PASS feedback-evidence 2.96 s
+PASS docs-check 11.45 s
+introduced meta against aa770898e00d7367255405fcc248fa119adc8037
+unknown entropy against aa770898e00d7367255405fcc248fa119adc8037: current check did not complete an ordinary execution
+unknown plan against aa770898e00d7367255405fcc248fa119adc8037: current check did not complete an ordinary execution
+unknown registrations against aa770898e00d7367255405fcc248fa119adc8037: current check did not complete an ordinary execution
+unknown plan-refutation-current against aa770898e00d7367255405fcc248fa119adc8037: current check did not complete an ordinary execution
+unknown console-docs against aa770898e00d7367255405fcc248fa119adc8037: current check did not complete an ordinary execution
+unknown skeleton-docs against aa770898e00d7367255405fcc248fa119adc8037: current check did not complete an ordinary execution
+unknown kernel-docs against aa770898e00d7367255405fcc248fa119adc8037: current check did not complete an ordinary execution
+unknown lineage-fixtures against aa770898e00d7367255405fcc248fa119adc8037: current check did not complete an ordinary execution
+unknown docs-check-fixtures against aa770898e00d7367255405fcc248fa119adc8037: current check did not complete an ordinary execution
+npm run test:docs: 14 passed; 10 failed; 15.42 s; 15 fresh tasks

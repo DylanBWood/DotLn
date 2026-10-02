@@ -1,0 +1,10 @@
+✔ WO-124 criterion 3: a host-produced snapshot indexes every file's actual bytes, size and hash (366.666834ms)
+ℹ {"fixtureProvenance":"WO-054 host-produced synthetic snapshot","entries":[{"path":"contract-test.mjs","size":17,"hash":"8bd84068849db1cf74863fdff2bc74704c33efb8fafe33347274fc758a63b302"},{"path":"fixture-test.mjs","size":162,"hash":"08666de5547a3e78d5c8b5e3f0c3f70b119498297d2ae7a65ba771a19a6eb8bd"},{"path":"fixture.txt","size":9,"hash":"4b654bd1437066b13498661f3ca14774daf1066d072036beffaf06f0c014250e"},{"path":"unicode.txt","size":3,"hash":"d59279f283574337bf8ff32c34b0d17ead2e8290702ca429e9e4f14200939d56"}]}
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 469.215542

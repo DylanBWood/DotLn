@@ -1,0 +1,1938 @@
+
+> test
+> node scripts/test-runner.mjs --review
+
+PROGRESS [build] 0.0 s started
+PASS build 0.61 s
+PROGRESS [license-surfaces] 0.0 s started
+PROGRESS [authority-evidence] 0.0 s started
+PROGRESS [harness-evidence] 0.0 s started
+PROGRESS [artifact-evidence] 0.0 s started
+PASS artifact-evidence 0.24 s
+PROGRESS [verification-evidence] 0.0 s started
+PASS harness-evidence 0.45 s
+PROGRESS [feedback-evidence] 0.0 s started
+PASS authority-evidence 0.75 s
+PASS verification-evidence 1.23 s
+PASS license-surfaces 1.60 s
+PASS feedback-evidence 2.90 s
+PROGRESS [release:prepare] 0.0 s started
+PROGRESS [resume] 0.0 s started
+PROGRESS [worktree] 0.0 s started
+PROGRESS [skeleton] 0.0 s started
+PROGRESS [skeleton] 0.4 s # Subtest: WO-029 new host equips v2, pins authority atomically, and receipts every compiled consumer with replay identity
+PROGRESS [release:prepare] 0.7 s PROGRESS release template prepared
+PASS release:prepare 0.75 s
+PROGRESS [release:case:preflight] 0.0 s started
+PROGRESS [release:case:preflight] 0.0 s PROGRESS release case preflight started
+PROGRESS [release:case:preflight] 0.1 s PROGRESS release case preflight passed
+PASS release:case:preflight 0.10 s
+PROGRESS [release:case:surfaces] 0.0 s started
+PROGRESS [release:case:surfaces] 0.0 s PROGRESS release case surfaces started
+PROGRESS [skeleton] 2.1 s # Subtest: WO-116 the terminal audit command prints the skeleton --audit projections byte for byte over the fixture log, with their fidelity labels, in every scope
+PROGRESS [skeleton] 3.7 s # Subtest: WO-021 agent constellation CLI persists permission/refusal and one metadata perception through the reactor
+PROGRESS [release:case:surfaces] 3.6 s PROGRESS release case surfaces passed
+PASS release:case:surfaces 3.63 s
+PROGRESS [release:case:surfaces_local_snapshot] 0.0 s started
+PROGRESS [release:case:surfaces_local_snapshot] 0.0 s PROGRESS release case surfaces_local_snapshot started
+PROGRESS [release:case:surfaces_local_snapshot] 0.8 s PROGRESS release case surfaces_local_snapshot passed
+PASS release:case:surfaces_local_snapshot 0.89 s
+PROGRESS [release:case:prepare_independent] 0.0 s started
+PROGRESS [release:case:prepare_independent] 0.0 s PROGRESS release case prepare_independent started
+PROGRESS [release:case:prepare_independent] 2.3 s PROGRESS release case prepare_independent passed
+PASS release:case:prepare_independent 2.35 s
+PROGRESS [release:case:license_surfaces] 0.0 s started
+PROGRESS [release:case:license_surfaces] 0.0 s PROGRESS release case license_surfaces started
+PROGRESS [skeleton] 9.2 s # Subtest: WO-119 actual bounded program discovers the pinned six candidates with resolvable evidence
+PROGRESS [skeleton] 10.4 s # Subtest: WO-119 wire rejects malformed or oversized output, wrong modes and unresolved evidence
+PROGRESS [release:case:license_surfaces] 4.4 s PROGRESS release case license_surfaces passed
+PASS release:case:license_surfaces 4.62 s
+PROGRESS [release:case:surfaces_committed_readme] 0.0 s started
+PROGRESS [release:case:surfaces_committed_readme] 0.0 s PROGRESS release case surfaces_committed_readme started
+PROGRESS [release:case:surfaces_committed_readme] 1.3 s PROGRESS release case surfaces_committed_readme passed
+PASS release:case:surfaces_committed_readme 1.51 s
+PROGRESS [release:case:surfaces_lower] 0.0 s started
+PROGRESS [release:case:surfaces_lower] 0.0 s PROGRESS release case surfaces_lower started
+PROGRESS [resume] 15.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 15.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:surfaces_lower] 1.3 s PROGRESS release case surfaces_lower passed
+PASS release:case:surfaces_lower 1.47 s
+PROGRESS [release:case:surfaces_first] 0.0 s started
+PROGRESS [release:case:surfaces_first] 0.0 s PROGRESS release case surfaces_first started
+PROGRESS [release:case:surfaces_first] 1.1 s PROGRESS release case surfaces_first passed
+PASS release:case:surfaces_first 1.33 s
+PROGRESS [release:case:surfaces_component] 0.0 s started
+PROGRESS [release:case:surfaces_component] 0.0 s PROGRESS release case surfaces_component started
+PROGRESS [release:case:surfaces_component] 2.3 s PROGRESS release case surfaces_component passed
+PASS release:case:surfaces_component 2.55 s
+PROGRESS [release:case:surfaces_non_source] 0.0 s started
+PROGRESS [release:case:surfaces_non_source] 0.0 s PROGRESS release case surfaces_non_source started
+PROGRESS [release:case:surfaces_non_source] 0.9 s PROGRESS release case surfaces_non_source passed
+PASS release:case:surfaces_non_source 0.94 s
+PROGRESS [release:case:surfaces_new_component] 0.0 s started
+PROGRESS [release:case:surfaces_new_component] 0.0 s PROGRESS release case surfaces_new_component started
+PROGRESS [release:case:surfaces_new_component] 0.8 s PROGRESS release case surfaces_new_component passed
+PASS release:case:surfaces_new_component 0.90 s
+PROGRESS [release:case:surfaceclose] 0.0 s started
+PROGRESS [release:case:surfaceclose] 0.0 s PROGRESS release case surfaceclose started
+PROGRESS [skeleton] 21.7 s # Subtest: WO-099 the four verdicts: out-of-surface drift, mid-episode clause change, on-contract pass, unavailable verifier
+PROGRESS [release:case:surfaceclose] 1.8 s PROGRESS release case surfaceclose passed
+PASS release:case:surfaceclose 2.02 s
+PROGRESS [release:case:surfaceclose_linked] 0.0 s started
+PROGRESS [release:case:surfaceclose_linked] 0.0 s PROGRESS release case surfaceclose_linked started
+PROGRESS [skeleton] 23.2 s # Subtest: WO-066 host review witness preserves scope, named tests, revision and one-round bound
+PROGRESS [release:case:surfaceclose_linked] 1.6 s PROGRESS release case surfaceclose_linked passed
+PASS release:case:surfaceclose_linked 1.82 s
+PROGRESS [release:case:bodyclose] 0.0 s started
+PROGRESS [release:case:bodyclose] 0.0 s PROGRESS release case bodyclose started
+PROGRESS [skeleton] 25.5 s # Subtest: WO-055 AC1 pure derivation contains paths, commands, contract and admitted exact grants
+PROGRESS [release:case:bodyclose] 1.5 s PROGRESS release case bodyclose passed
+PASS release:case:bodyclose 1.71 s
+PROGRESS [release:case:dirty] 0.0 s started
+PROGRESS [release:case:dirty] 0.0 s PROGRESS release case dirty started
+PROGRESS [release:case:dirty] 2.9 s PROGRESS release case dirty passed
+PASS release:case:dirty 3.13 s
+PROGRESS [release:case:unreachable] 0.0 s started
+PROGRESS [release:case:unreachable] 0.0 s PROGRESS release case unreachable started
+PROGRESS [resume] 30.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 30.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 30.8 s # Subtest: WO-055 AC2 failing source commit repairs once and re-verifies the complete original contract
+PROGRESS [release:case:unreachable] 2.8 s PROGRESS release case unreachable passed
+PASS release:case:unreachable 2.84 s
+PROGRESS [release:case:derived] 0.0 s started
+PROGRESS [release:case:derived] 0.0 s PROGRESS release case derived started
+PROGRESS [release:case:derived] 2.9 s PROGRESS release case derived passed
+PASS release:case:derived 3.04 s
+PROGRESS [release:case:settings_scope] 0.0 s started
+PROGRESS [release:case:settings_scope] 0.0 s PROGRESS release case settings_scope started
+PROGRESS [release:case:settings_scope] 2.4 s PROGRESS release case settings_scope passed
+PASS release:case:settings_scope 2.47 s
+PROGRESS [release:case:nonmain] 0.0 s started
+PROGRESS [release:case:nonmain] 0.0 s PROGRESS release case nonmain started
+PROGRESS [skeleton] 38.2 s # Subtest: WO-055 AC3 two wrong repairs exhaust with last finding and no third source dispatch
+PROGRESS [release:case:nonmain] 0.7 s PROGRESS release case nonmain passed
+PASS release:case:nonmain 0.75 s
+PROGRESS [release:case:divergence] 0.0 s started
+PROGRESS [release:case:divergence] 0.0 s PROGRESS release case divergence started
+PROGRESS [release:case:divergence] 0.8 s PROGRESS release case divergence passed
+PASS release:case:divergence 0.95 s
+PROGRESS [release:case:malformed] 0.0 s started
+PROGRESS [release:case:malformed] 0.0 s PROGRESS release case malformed started
+PROGRESS [release:case:malformed] 0.8 s PROGRESS release case malformed passed
+PASS release:case:malformed 0.83 s
+PROGRESS [release:case:missinggh] 0.0 s started
+PROGRESS [release:case:missinggh] 0.0 s PROGRESS release case missinggh started
+PROGRESS [release:case:missinggh] 2.3 s PROGRESS release case missinggh passed
+PASS release:case:missinggh 2.38 s
+PROGRESS [release:case:unauthenticated] 0.0 s started
+PROGRESS [release:case:unauthenticated] 0.0 s PROGRESS release case unauthenticated started
+PROGRESS [skeleton] 43.3 s # Subtest: WO-055 AC4 SIGKILL afterRepairCommit resumes persisted continuation without another repair
+PROGRESS [release:case:unauthenticated] 1.5 s PROGRESS release case unauthenticated passed
+PASS release:case:unauthenticated 1.70 s
+PROGRESS [release:case:splitorigin] 0.0 s started
+PROGRESS [release:case:splitorigin] 0.0 s PROGRESS release case splitorigin started
+PROGRESS [resume] 45.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 45.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:splitorigin] 0.6 s PROGRESS release case splitorigin passed
+PASS release:case:splitorigin 0.65 s
+PROGRESS [release:case:lower] 0.0 s started
+PROGRESS [release:case:lower] 0.0 s PROGRESS release case lower started
+PROGRESS [release:case:lower] 1.5 s PROGRESS release case lower passed
+PASS release:case:lower 1.52 s
+PROGRESS [release:case:failures] 0.0 s started
+PROGRESS [release:case:failures] 0.0 s PROGRESS release case failures started
+PROGRESS [skeleton] 48.4 s # Subtest: WO-055 AC4 SIGKILL afterSnapshotPrepared resumes persisted continuation without another repair
+PROGRESS [release:case:failures] 2.4 s PROGRESS release case failures passed
+PASS release:case:failures 2.59 s
+PROGRESS [release:case:cadence_missing] 0.0 s started
+PROGRESS [release:case:cadence_missing] 0.0 s PROGRESS release case cadence_missing started
+PROGRESS [release:case:cadence_missing] 1.7 s PROGRESS release case cadence_missing passed
+PASS release:case:cadence_missing 1.80 s
+PROGRESS [release:case:cadence_inconsistent] 0.0 s started
+PROGRESS [release:case:cadence_inconsistent] 0.0 s PROGRESS release case cadence_inconsistent started
+PROGRESS [skeleton] 52.0 s # Subtest: WO-055 AC1 refused path or command persists byte-identical envelope and dispatches no writer
+PASS resume 54.26 s
+PROGRESS [release:case:conflict] 0.0 s started
+PROGRESS [release:case:conflict] 0.0 s PROGRESS release case conflict started
+PROGRESS [release:case:cadence_inconsistent] 4.3 s PROGRESS release case cadence_inconsistent passed
+PASS release:case:cadence_inconsistent 4.36 s
+PROGRESS [release:case:localconflict] 0.0 s started
+PROGRESS [release:case:localconflict] 0.0 s PROGRESS release case localconflict started
+PROGRESS [release:case:conflict] 1.5 s PROGRESS release case conflict passed
+PASS release:case:conflict 1.59 s
+PROGRESS [release:case:nestedtag] 0.0 s started
+PROGRESS [release:case:nestedtag] 0.0 s PROGRESS release case nestedtag started
+PROGRESS [release:case:localconflict] 1.3 s PROGRESS release case localconflict passed
+PASS release:case:localconflict 1.31 s
+PROGRESS [release:case:prepare] 0.0 s started
+PROGRESS [release:case:prepare] 0.0 s PROGRESS release case prepare started
+PROGRESS [release:case:nestedtag] 1.2 s PROGRESS release case nestedtag passed
+PASS release:case:nestedtag 1.35 s
+PROGRESS [release:case:missinglocalprevious] 0.0 s started
+PROGRESS [release:case:missinglocalprevious] 0.0 s PROGRESS release case missinglocalprevious started
+PROGRESS [skeleton] 58.4 s # Subtest: WO-068 recorded clock drives all phases; replay ignores ambient clock; return cancels; idle needs a fresh edge
+PROGRESS [release:case:prepare] 2.3 s PROGRESS release case prepare passed
+PASS release:case:prepare 2.34 s
+PROGRESS [release:case:pushfail] 0.0 s started
+PROGRESS [release:case:pushfail] 0.0 s PROGRESS release case pushfail started
+PROGRESS [release:case:missinglocalprevious] 2.2 s PROGRESS release case missinglocalprevious passed
+PASS release:case:missinglocalprevious 2.33 s
+PROGRESS [release:case:refrecovery] 0.0 s started
+PROGRESS [release:case:refrecovery] 0.0 s PROGRESS release case refrecovery started
+PROGRESS [worktree] 60.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:pushfail] 2.4 s PROGRESS release case pushfail passed
+PASS release:case:pushfail 2.50 s
+PROGRESS [release:case:createrecovery] 0.0 s started
+PROGRESS [release:case:createrecovery] 0.0 s PROGRESS release case createrecovery started
+PROGRESS [release:case:refrecovery] 3.8 s PROGRESS release case refrecovery passed
+PASS release:case:refrecovery 3.86 s
+PROGRESS [release:case:stale_helpers] 0.0 s started
+PROGRESS [release:case:stale_helpers] 0.0 s PROGRESS release case stale_helpers started
+PROGRESS [release:case:stale_helpers] 7.2 s PROGRESS release case stale_helpers passed
+PASS release:case:stale_helpers 7.37 s
+PROGRESS [release:case:runtime_refresh] 0.0 s started
+PROGRESS [release:case:runtime_refresh] 0.0 s PROGRESS release case runtime_refresh started
+PROGRESS [release:case:createrecovery] 10.4 s PROGRESS release case createrecovery passed
+PASS release:case:createrecovery 10.43 s
+PROGRESS [release:case:success] 0.0 s started
+PROGRESS [release:case:success] 0.0 s PROGRESS release case success started
+PROGRESS [worktree] 75.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 75.0 s running; last report: # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [release:case:runtime_refresh] 13.3 s PROGRESS release case runtime_refresh passed
+PASS release:case:runtime_refresh 13.88 s
+PROGRESS [release:case:edition] 0.0 s started
+PROGRESS [release:case:edition] 0.0 s PROGRESS release case edition started
+PROGRESS [release:case:success] 17.5 s PROGRESS release case success passed
+PASS release:case:success 17.62 s
+PROGRESS [release:case:firstrelease] 0.0 s started
+PROGRESS [release:case:firstrelease] 0.0 s PROGRESS release case firstrelease started
+PROGRESS [worktree] 90.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 90.0 s running; last report: # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [release:case:edition] 6.5 s PROGRESS release case edition passed
+PASS release:case:edition 6.65 s
+PROGRESS [release:case:cached_evidence] 0.0 s started
+PROGRESS [release:case:cached_evidence] 0.0 s PROGRESS release case cached_evidence started
+PROGRESS [release:case:firstrelease] 3.3 s PROGRESS release case firstrelease passed
+PASS release:case:firstrelease 3.37 s
+PROGRESS [release:case:composed_evidence] 0.0 s started
+PROGRESS [release:case:composed_evidence] 0.0 s PROGRESS release case composed_evidence started
+PROGRESS [release:case:cached_evidence] 7.1 s PROGRESS release case cached_evidence passed
+PASS release:case:cached_evidence 7.15 s
+PROGRESS [release:case:concurrent] 0.0 s started
+PROGRESS [release:case:concurrent] 0.0 s PROGRESS release case concurrent started
+PASS worktree 99.09 s
+PROGRESS [release:case:material] 0.0 s started
+PROGRESS [release:case:composed_evidence] 5.9 s PROGRESS release case composed_evidence passed
+PROGRESS [release:case:material] 0.0 s PROGRESS release case material started
+PASS release:case:composed_evidence 6.05 s
+PROGRESS [release-preparation] 0.0 s started
+PROGRESS [release-preparation] 2.9 s # Subtest: release preparation records a collision once, as the order's decision, and touches no product document
+PASS release-preparation 2.88 s
+PROGRESS [github-body] 0.0 s started
+PROGRESS [github-body] 0.1 s # Subtest: GitHub prose profile case 1
+PASS github-body 0.09 s
+PROGRESS [outward-lint] 0.0 s started
+PROGRESS [outward-lint] 0.4 s # Subtest: conforming subject
+PASS outward-lint 0.43 s
+PROGRESS [target-publish] 0.0 s started
+PROGRESS [skeleton] 105.0 s running; last report: # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [target-publish] 4.3 s # Subtest: WO-182 AC3: readiness refusal precedes every remote call; operator publication shows the same gaps
+PROGRESS [target-publish] 8.1 s # Subtest: WO-182 AC3: one absent item names its gap; the same store publishes a proposal without the flag
+PROGRESS [target-publish] 11.8 s # Subtest: WO-182 current replayed baseline, verification and review permit required publication
+PROGRESS [release:case:concurrent] 16.5 s PROGRESS release case concurrent passed
+PASS release:case:concurrent 16.77 s
+PROGRESS [license-fixtures] 0.0 s started
+PROGRESS [target-publish] 15.4 s # Subtest: WO-182 stale preparation and forged baseline/review events cannot bypass readiness
+PROGRESS [skeleton] 120.0 s running; last report: # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [target-publish] 18.0 s # Subtest: WO-064 AC1: publish refuses without an operator grant before any remote call
+PROGRESS [target-publish] 20.4 s # Subtest: WO-064 AC1: a host-policy grant is not operator provenance
+PROGRESS [license-fixtures] 8.8 s # Subtest: real npm refuses every validated manifest before packing, despite ambient script suppression
+PASS license-fixtures 8.78 s
+PROGRESS [publication-fixtures] 0.0 s started
+PASS publication-fixtures 0.89 s
+PROGRESS [backup-intake] 0.0 s started
+PASS backup-intake 0.28 s
+PROGRESS [beacon-portability] 0.0 s started
+PROGRESS [beacon-portability] 1.0 s # Subtest: WO-070 grep scan finds one home for the seven Beacon leaves and no skeleton source or dist copy of them
+PASS beacon-portability 1.03 s
+PROGRESS [checkpoint] 0.0 s started
+PROGRESS [target-publish] 25.1 s # Subtest: WO-064 AC1/AC2: lint and target refusals name their rule; the granted publish pushes and opens the pull request with the pinned body
+PROGRESS [release:case:material] 30.0 s running; last report: PROGRESS release case material started
+PROGRESS [target-publish] 29.3 s # Subtest: WO-064 AC1 (VER-001 F1): a same-head acceptance matrix must verify this WorkOrder's criteria
+PASS checkpoint 7.65 s
+PROGRESS [worktree-integration] 0.0 s started
+PROGRESS [skeleton] 135.0 s running; last report: # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [release:case:material] 45.0 s running; last report: PROGRESS release case material started
+PROGRESS [target-publish] 45.0 s running; last report: ok 8 - WO-064 AC1 (VER-001 F1): a same-head acceptance matrix must verify this WorkOrder's criteria
+PROGRESS [worktree-integration] 15.0 s running; last report: waiting for the next case report
+PROGRESS [target-publish] 46.5 s # Subtest: WO-157: publication runs no hook or repository configuration the target holds
+PROGRESS [skeleton] 150.0 s running; last report: # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [skeleton] 151.8 s stopped by gate request
+PROGRESS [release:case:material] 52.7 s stopped by gate request
+PROGRESS [target-publish] 49.1 s stopped by gate request
+PROGRESS [worktree-integration] 18.0 s stopped by gate request
+FAIL skeleton 152.93 s
+  [skeleton] TAP version 13
+  [skeleton] # Subtest: WO-029 new host equips v2, pins authority atomically, and receipts every compiled consumer with replay identity
+  [skeleton] ok 1 - WO-029 new host equips v2, pins authority atomically, and receipts every compiled consumer with replay identity
+  [skeleton]   ---
+  [skeleton]   duration_ms: 53.168042
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-029 stale graph/pin equip is durably refused; replay of a refused log does not throw or invent a WorkOrder
+  [skeleton] ok 2 - WO-029 stale graph/pin equip is durably refused; replay of a refused log does not throw or invent a WorkOrder
+  [skeleton]   ---
+  [skeleton]   duration_ms: 5.065791
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-029 every stored compiled consumer uses the same fail-closed comparison for each drift axis
+  [skeleton]     # Subtest: compiler-contract-version
+  [skeleton]     ok 1 - compiler-contract-version
+  [skeleton]       ---
+  [skeleton]       duration_ms: 14.761959
+  [skeleton]       type: 'test'
+  [skeleton]       ...
+  [skeleton]     # Subtest: compiler-package-version
+  [skeleton]     ok 2 - compiler-package-version
+  [skeleton]       ---
+  [skeleton]       duration_ms: 13.794833
+  [skeleton]       type: 'test'
+  [skeleton]       ...
+  [skeleton]     # Subtest: semantic-hash
+  [skeleton]     ok 3 - semantic-hash
+  [skeleton]       ---
+  [skeleton]       duration_ms: 15.330666
+  [skeleton]       type: 'test'
+  [skeleton]       ...
+  [skeleton]     # Subtest: component-definitions
+  [skeleton]     ok 4 - component-definitions
+  [skeleton]       ---
+  [skeleton]       duration_ms: 13.5915
+  [skeleton]       type: 'test'
+  [skeleton]       ...
+  [skeleton]     # Subtest: compilation-environment
+  [skeleton]     ok 5 - compilation-environment
+  [skeleton]       ---
+  [skeleton]       duration_ms: 13.684375
+  [skeleton]       type: 'test'
+  [skeleton]       ...
+  [skeleton]     # Subtest: authority-expiry
+  [skeleton]     ok 6 - authority-expiry
+  [skeleton]       ---
+  [skeleton]       duration_ms: 13.567292
+  [skeleton]       type: 'test'
+  [skeleton]       ...
+  [skeleton]     1..6
+  [skeleton] ok 3 - WO-029 every stored compiled consumer uses the same fail-closed comparison for each drift axis
+  [skeleton]   ---
+  [skeleton]   duration_ms: 87.476125
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-029 diagnostics, malformed v2 payloads and pre-equip consumers are typed inert refusals
+  [skeleton] ok 4 - WO-029 diagnostics, malformed v2 payloads and pre-equip consumers are typed inert refusals
+  [skeleton]   ---
+  [skeleton]   duration_ms: 5.096458
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-029 historical replay keeps the frozen WO-003 trace oracle; the logged boundary prevents forward legacy consumption
+  [skeleton] ok 5 - WO-029 historical replay keeps the frozen WO-003 trace oracle; the logged boundary prevents forward legacy consumption
+  [skeleton]   ---
+  [skeleton]   duration_ms: 31.528959
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-029 host factory cannot mint or accept legacy events, and snapshots the caller's graph
+  [skeleton] ok 6 - WO-029 host factory cannot mint or accept legacy events, and snapshots the caller's graph
+  [skeleton]   ---
+  [skeleton]   duration_ms: 3.920959
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-029 recovery checks the pin before redispatch; restoring legacy or drifted history never reaches an adapter
+  [skeleton] ok 7 - WO-029 recovery checks the pin before redispatch; restoring legacy or drifted history never reaches an adapter
+  [skeleton]   ---
+  [skeleton]   duration_ms: 34.565791
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-029 unknown schedule ids have durable inert evidence; reused ids from an earlier equip remain unstamped
+  [skeleton] ok 8 - WO-029 unknown schedule ids have durable inert evidence; reused ids from an earlier equip remain unstamped
+  [skeleton]   ---
+  [skeleton]   duration_ms: 6.362792
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-029 Seiri and Entropy Reducer pins retain exact environment inputs, require re-equip on relocation, and do not authenticate rewritten pairs
+  [skeleton] ok 9 - WO-029 Seiri and Entropy Reducer pins retain exact environment inputs, require re-equip on relocation, and do not authenticate rewritten pairs
+  [skeleton]   ---
+  [skeleton]   duration_ms: 54.723666
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-029 L0 and governed raw expose canonical comparison/refusal references while cryptographic and outer-confinement claims stay absent
+  [skeleton] ok 10 - WO-029 L0 and governed raw expose canonical comparison/refusal references while cryptographic and outer-confinement claims stay absent
+  [skeleton]   ---
+  [skeleton]   duration_ms: 8.44875
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-116 the terminal audit command prints the skeleton --audit projections byte for byte over the fixture log, with their fidelity labels, in every scope
+  [skeleton] ok 11 - WO-116 the terminal audit command prints the skeleton --audit projections byte for byte over the fixture log, with their fidelity labels, in every scope
+  [skeleton]   ---
+  [skeleton]   duration_ms: 357.037334
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-116 each audit scope selects what the fold scopes for it; an empty store, an absent selection and an invalid source refuse by name without writing
+  [skeleton] ok 12 - WO-116 each audit scope selects what the fold scopes for it; an empty store, an absent selection and an invalid source refuse by name without writing
+  [skeleton]   ---
+  [skeleton]   duration_ms: 1407.011583
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-116 the dotln usage and command list name audit beside every other command, handoff included
+  [skeleton] ok 13 - WO-116 the dotln usage and command list name audit beside every other command, handoff included
+  [skeleton]   ---
+  [skeleton]   duration_ms: 169.95875
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: AC1 enumerates each consequential action class with operator and verifier questions
+  [skeleton] ok 14 - AC1 enumerates each consequential action class with operator and verifier questions
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.753709
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: AC2 AuditRecord v1 keeps canonical references and no copied event payloads
+  [skeleton] ok 15 - AC2 AuditRecord v1 keeps canonical references and no copied event payloads
+  [skeleton]   ---
+  [skeleton]   duration_ms: 52.889625
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-017 audit: an adjacent matching grant trace is evidence for allowed authority, with safe fallback
+  [skeleton] ok 16 - WO-017 audit: an adjacent matching grant trace is evidence for allowed authority, with safe fallback
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.378417
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-017 audit: denied records attach only a complete matching v1 refusal trace
+  [skeleton] ok 17 - WO-017 audit: denied records attach only a complete matching v1 refusal trace
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.152458
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: AC3 captures the L0 receipt, causal timeline, and governed raw JSON with fidelity links
+  [skeleton] ok 18 - AC3 captures the L0 receipt, causal timeline, and governed raw JSON with fidelity links
+  [skeleton]   ---
+  [skeleton]   duration_ms: 16.938291
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: audit source validation refuses missing canonical references instead of inventing success
+  [skeleton] ok 19 - audit source validation refuses missing canonical references instead of inventing success
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.372042
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: causal timeline obeys causation while correlation remains an append-stable group
+  [skeleton] ok 20 - causal timeline obeys causation while correlation remains an append-stable group
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.384667
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: projection fidelity links share one scope across mixed and context-only logs
+  [skeleton] ok 21 - projection fidelity links share one scope across mixed and context-only logs
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.16725
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: audit associations stay scope-bound and honor explicit verification links
+  [skeleton] ok 22 - audit associations stay scope-bound and honor explicit verification links
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.182042
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: AC4 step 9 refusal is explicit in the receipt and causal timeline
+  [skeleton] ok 23 - AC4 step 9 refusal is explicit in the receipt and causal timeline
+  [skeleton]   ---
+  [skeleton]   duration_ms: 16.029542
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: AC5 all projection bytes are identical over live, replayed, and re-encoded logs
+  [skeleton] ok 24 - AC5 all projection bytes are identical over live, replayed, and re-encoded logs
+  [skeleton]   ---
+  [skeleton]   duration_ms: 39.778
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-142 audit rejects malformed envelope times, versions and partial NoOp evidence
+  [skeleton] ok 25 - WO-142 audit rejects malformed envelope times, versions and partial NoOp evidence
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.180292
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-142 audit retains failed and unknown verdicts and bounded adjacency association
+  [skeleton] ok 26 - WO-142 audit retains failed and unknown verdicts and bounded adjacency association
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.139917
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] 1..0
+  [skeleton] # Subtest: packages/skeleton/dist/test/baseline.test.js
+  [skeleton] ok 4 - packages/skeleton/dist/test/baseline.test.js
+  [skeleton]   ---
+  [skeleton]   duration_ms: 63.757959
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-020 AC2 filesystem live/replay cmp includes bytes, identical observed mtime and logical size
+  [skeleton] ok 28 - WO-020 AC2 filesystem live/replay cmp includes bytes, identical observed mtime and logical size
+  [skeleton]   ---
+  [skeleton]   duration_ms: 65.992041
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # cmp exit=0; size=49764; mtimeNs=1200007000000; content byte-identical
+  [skeleton] # Subtest: WO-020 AC3 metadata sweep succeeds with denied reads and garbage content
+  [skeleton] ok 29 - WO-020 AC3 metadata sweep succeeds with denied reads and garbage content
+  [skeleton]   ---
+  [skeleton]   duration_ms: 2.056125
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # readFile=EACCES at mode 000; garbage JSON at preserved size=37216; both sweeps decode verification/passed/self-reported
+  [skeleton] # Subtest: WO-020 AC4 fake executor emits its claim before CommandResult without changing host evidence
+  [skeleton] ok 30 - WO-020 AC4 fake executor emits its claim before CommandResult without changing host evidence
+  [skeleton]   ---
+  [skeleton]   duration_ms: 78.180459
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # before CommandResult and VerificationCompleted: host=authority-decision/allowed; executor=verification/passed; host bytes and mtime unchanged
+  [skeleton] # Subtest: WO-020 AC5 concurrent metadata observer sees only complete codewords and fixed addresses
+  [skeleton] ok 31 - WO-020 AC5 concurrent metadata observer sees only complete codewords and fixed addresses
+  [skeleton]   ---
+  [skeleton]   duration_ms: 127.382208
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # 128 atomic replacements; concurrent sweeps=1668; observed both states; zero off-lattice sizes or temporary names
+  [skeleton] # Subtest: WO-020 edge refuses unsafe destinations and invalid records before publishing
+  [skeleton] ok 32 - WO-020 edge refuses unsafe destinations and invalid records before publishing
+  [skeleton]   ---
+  [skeleton]   duration_ms: 52.087875
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-020 sweep labels future codebooks, malformed sizes and non-regular entries without state guesses
+  [skeleton] ok 33 - WO-020 sweep labels future codebooks, malformed sizes and non-regular entries without state guesses
+  [skeleton]   ---
+  [skeleton]   duration_ms: 1.127333
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-020/WO-029 CLI pins the new timeline, remains opt-in, and prints terminal host state last
+  [skeleton] ok 34 - WO-020/WO-029 CLI pins the new timeline, remains opt-in, and prints terminal host state last
+  [skeleton]   ---
+  [skeleton]   duration_ms: 498.790167
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # BEACON CONSTELLATION (metadata only; size order)\\nbytes | mtime (UTC) | state | refusals | provenance | codebook | address\\n37216 | 1970-01-01T00:20:00.001Z | verification/passed | 0 | self-reported | 1 | 5e26f6fdc370650138023d91a184b3555430e5ba1d804085b0aedf13e53b0902.beacon\\n49764 | 1970-01-01T00:20:00.007Z | external-effect/observed | 1 | host-projected | 1 | 683d55846b121bd3d0200b7be3072ecda34557383fa2792081962cd4c8092bd0.beacon
+  [skeleton] # Subtest: WO-020 AC1 exhausts all 104 v1 states and every integer through twice the maximum
+  [skeleton] ok 35 - WO-020 AC1 exhausts all 104 v1 states and every integer through twice the maximum
+  [skeleton]   ---
+  [skeleton]   duration_ms: 29.745041
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # 104 v1 states; maximum=51064; integers=0..102128; malformed=101292; future frames=733
+  [skeleton] # Subtest: WO-020 decoder refuses bad values and never guesses an extended future payload
+  [skeleton] ok 36 - WO-020 decoder refuses bad values and never guesses an extended future payload
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.278541
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-020 AC2 live and replay encode identical records without mutating audit or events
+  [skeleton] ok 37 - WO-020 AC2 live and replay encode identical records without mutating audit or events
+  [skeleton]   ---
+  [skeleton]   duration_ms: 42.387667
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-020 fold separates episode scopes, caps cumulative refusals, and obeys append order
+  [skeleton] ok 38 - WO-020 fold separates episode scopes, caps cumulative refusals, and obeys append order
+  [skeleton]   ---
+  [skeleton]   duration_ms: 19.505125
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-020 host retains the matching L0 links when unaudited events widen projection scope
+  [skeleton] ok 39 - WO-020 host retains the matching L0 links when unaudited events widen projection scope
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.196
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-020 record encoding preserves UTF-8, labels claims, pads with only newlines and rejects overflow
+  [skeleton] ok 40 - WO-020 record encoding preserves UTF-8, labels claims, pads with only newlines and rejects overflow
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.400791
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-016 AC8 default CLI stdout is exact
+  [skeleton] ok 41 - WO-016 AC8 default CLI stdout is exact
+  [skeleton]   ---
+  [skeleton]   duration_ms: 120.563833
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-016 AC8 --audit CLI stdout is exact and additive
+  [skeleton] ok 42 - WO-016 AC8 --audit CLI stdout is exact and additive
+  [skeleton]   ---
+  [skeleton]   duration_ms: 112.673625
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-008 AC5 --compiled-diff CLI stdout is exact
+  [skeleton] ok 43 - WO-008 AC5 --compiled-diff CLI stdout is exact
+  [skeleton]   ---
+  [skeleton]   duration_ms: 105.985792
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-008 AC5 --audit and --compiled-diff preserve deterministic section order
+  [skeleton] ok 44 - WO-008 AC5 --audit and --compiled-diff preserve deterministic section order
+  [skeleton]   ---
+  [skeleton]   duration_ms: 110.511791
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-142 unknown skeleton arguments refuse before running the scenario
+  [skeleton] ok 45 - WO-142 unknown skeleton arguments refuse before running the scenario
+  [skeleton]   ---
+  [skeleton]   duration_ms: 176.12525
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # DotLn advisory: the user-level Codex configuration changed or could not be read across an isolated Codex episode.
+  [skeleton] # Subtest: WO-159 one builder owns the shared Codex exec flags
+  [skeleton] ok 46 - WO-159 one builder owns the shared Codex exec flags
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.75925
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-159 the trust-table projection keeps only [projects] lines
+  [skeleton] ok 47 - WO-159 the trust-table projection keeps only [projects] lines
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.471416
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-159 the user-level Codex home follows CODEX_HOME, then HOME
+  [skeleton] ok 48 - WO-159 the user-level Codex home follows CODEX_HOME, then HOME
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.107375
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-159 an episode isolates CODEX_HOME, links auth and removes the home
+  [skeleton] ok 49 - WO-159 an episode isolates CODEX_HOME, links auth and removes the home
+  [skeleton]   ---
+  [skeleton]   duration_ms: 5.675042
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-159 a user-level change is recorded as an unequal pair; absent stays equal
+  [skeleton] ok 50 - WO-159 a user-level change is recorded as an unequal pair; absent stays equal
+  [skeleton]   ---
+  [skeleton]   duration_ms: 14.11425
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-159 AC1 a fake codex that trusts its target leaves the user-level file byte-identical
+  [skeleton] ok 51 - WO-159 AC1 a fake codex that trusts its target leaves the user-level file byte-identical
+  [skeleton]   ---
+  [skeleton]   duration_ms: 504.810417
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-159 stale episode homes are those of exited launchers; the next launch removes them
+  [skeleton] ok 52 - WO-159 stale episode homes are those of exited launchers; the next launch removes them
+  [skeleton]   ---
+  [skeleton]   duration_ms: 78.068834
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-159 AC2 only the launcher's file carries the shared Codex exec flags
+  [skeleton] ok 53 - WO-159 AC2 only the launcher's file carries the shared Codex exec flags
+  [skeleton]   ---
+  [skeleton]   duration_ms: 22.7195
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-159 a home that cannot be removed is recorded, not thrown
+  [skeleton] ok 54 - WO-159 a home that cannot be removed is recorded, not thrown
+  [skeleton]   ---
+  [skeleton]   duration_ms: 5.823041
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] 1..0
+  [skeleton] # Subtest: packages/skeleton/dist/test/codex-isolation-receipt.test.js
+  [skeleton] ok 9 - packages/skeleton/dist/test/codex-isolation-receipt.test.js
+  [skeleton]   ---
+  [skeleton]   duration_ms: 71.733375
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-021 agent constellation CLI persists permission/refusal and one metadata perception through the reactor
+  [skeleton] ok 56 - WO-021 agent constellation CLI persists permission/refusal and one metadata perception through the reactor
+  [skeleton]   ---
+  [skeleton]   duration_ms: 1125.266959
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Beacon sweep refused; CommandRefused recorded; no beacon metadata read.
+  [skeleton] # authorized CLI: unreadable garbage beacon decoded; exactly one BeaconObserved; replay succeeded; lifecycle bytes unchanged
+  [skeleton] # Subtest: WO-021 v2 exhaustively round-trips every field, retains v1, and pins numeric bounds
+  [skeleton] ok 57 - WO-021 v2 exhaustively round-trips every field, retains v1, and pins numeric bounds
+  [skeleton]   ---
+  [skeleton]   duration_ms: 2.508917
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # v2: 288 states; MAX_V2_CODE=1150; dense bytes=81833; all 104 v1 states retain meaning
+  [skeleton] # Subtest: WO-021 group exhaustively proves the bounded additive lattice
+  [skeleton] ok 58 - WO-021 group exhaustively proves the bounded additive lattice
+  [skeleton]   ---
+  [skeleton]   duration_ms: 229.313792
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # group: 125970 vectors, no collisions; 12 members across all 8 phases; logical maximum=192763452654
+  [skeleton] # Subtest: WO-021 maximum dense/sparse files obey allocation bounds; unsupported sizes create nothing
+  [skeleton] ok 59 - WO-021 maximum dense/sparse files obey allocation bounds; unsupported sizes create nothing
+  [skeleton]   ---
+  [skeleton]   duration_ms: 13.335541
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # stat: v2 size=81833 blocks=160; group size=192763452654 blocks=0; filesystem block=4096
+  [skeleton] # 12 actual member files -> group counts=2,2,2,2,1,1,1,1; group blocks=0
+  [skeleton] # Subtest: WO-142 Node 26 beacon precision preserves the millisecond and refuses adjacent or coarse timestamps
+  [skeleton] ok 60 - WO-142 Node 26 beacon precision preserves the millisecond and refuses adjacent or coarse timestamps
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.091167
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-142 beacon timestamp readback refusal preserves the published projection
+  [skeleton] ok 61 - WO-142 beacon timestamp readback refusal preserves the published projection
+  [skeleton]   ---
+  [skeleton]   duration_ms: 4.339333
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-142 Node 26 beacon emission preserves raw precision and unchanged age boundaries
+  [skeleton] ok 62 - WO-142 Node 26 beacon emission preserves raw precision and unchanged age boundaries
+  [skeleton]   ---
+  [skeleton]   duration_ms: 6.473416
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-021 age retains sub-millisecond metadata at skew and cadence boundaries
+  [skeleton] ok 63 - WO-021 age retains sub-millisecond metadata at skew and cadence boundaries
+  [skeleton]   ---
+  [skeleton]   duration_ms: 5.520459
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-021 authorization precedes every beacon stat; refusals and one authorized perception replay
+  [skeleton] ok 64 - WO-021 authorization precedes every beacon stat; refusals and one authorized perception replay
+  [skeleton]   ---
+  [skeleton]   duration_ms: 5.348958
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # refused: 0 metadata reads, 1 CommandRefused, 0 BeaconObserved; authorized: 1 sweep, 1 BeaconObserved; complete decisions and glyph replay identical
+  [skeleton] # Subtest: WO-021 observation state cannot change the same authority decision; reactor uses no ambient clock
+  [skeleton] ok 65 - WO-021 observation state cannot change the same authority decision; reactor uses no ambient clock
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.242292
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-016 identity extends to live sweep events appended to the walking skeleton
+  [skeleton] ok 66 - WO-016 identity extends to live sweep events appended to the walking skeleton
+  [skeleton]   ---
+  [skeleton]   duration_ms: 41.701334
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-119 actual bounded program discovers the pinned six candidates with resolvable evidence
+  [skeleton] ok 67 - WO-119 actual bounded program discovers the pinned six candidates with resolvable evidence
+  [skeleton]   ---
+  [skeleton]   duration_ms: 161.821458
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # {"candidates":[{"kind":"failing-lint","paths":["src/main.js"]},{"kind":"failing-test","paths":["src/main.js"]},{"kind":"misplaced-file","paths":["loose/guide.md"],"proposedHome":"docs/guide.md"},{"kind":"misplaced-file","paths":["loose/helper.js"],"proposedHome":"src/helper.js"},{"kind":"stale-generated","paths":["generated/obsolete.txt"]},{"kind":"repeated-repair","paths":["src/main.js"]}],"evidenceCount":6}
+  [skeleton] # Subtest: WO-119 repo defaults and Markdown profile conventions; empty repository is an empty observation
+  [skeleton] ok 68 - WO-119 repo defaults and Markdown profile conventions; empty repository is an empty observation
+  [skeleton]   ---
+  [skeleton]   duration_ms: 428.562375
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-119 observations disappear when facts change; references and one-off repairs are not candidates
+  [skeleton] ok 69 - WO-119 observations disappear when facts change; references and one-off repairs are not candidates
+  [skeleton]   ---
+  [skeleton]   duration_ms: 83.135666
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-119 refuses unsafe paths, incomplete inventory, malformed history and invalid declarations
+  [skeleton] ok 70 - WO-119 refuses unsafe paths, incomplete inventory, malformed history and invalid declarations
+  [skeleton]   ---
+  [skeleton]   duration_ms: 25.47925
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-119 check confinement denies outside writes, outside reads and network; timeout is not a candidate
+  [skeleton] ok 71 - WO-119 check confinement denies outside writes, outside reads and network; timeout is not a candidate
+  [skeleton]   ---
+  [skeleton]   duration_ms: 5047.80475
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-119 real script episode through fake-clock resident persists candidates and replays; live scratch Git row
+  [skeleton] ok 72 - WO-119 real script episode through fake-clock resident persists candidates and replays; live scratch Git row
+  [skeleton]   ---
+  [skeleton]   duration_ms: 462.622083
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # {"live":"native-script-scratch-git","clock":"fake","event":"ScriptEpisodeObserved","candidates":[{"kind":"failing-lint","paths":["src/main.js"]},{"kind":"failing-test","paths":["src/main.js"]},{"kind":"misplaced-file","paths":["loose/guide.md"],"proposedHome":"docs/guide.md"},{"kind":"misplaced-file","paths":["loose/helper.js"],"proposedHome":"src/helper.js"},{"kind":"stale-generated","paths":["generated/obsolete.txt"]},{"kind":"repeated-repair","paths":["src/main.js"]}],"verified":true,"operatorAwait":false}
+  [skeleton] # Subtest: WO-119 wire rejects malformed or oversized output, wrong modes and unresolved evidence
+  [skeleton] ok 73 - WO-119 wire rejects malformed or oversized output, wrong modes and unresolved evidence
+  [skeleton]   ---
+  [skeleton]   duration_ms: 307.067083
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-119 canonical output digest binds every byte and matches native SHA-256
+  [skeleton] ok 74 - WO-119 canonical output digest binds every byte and matches native SHA-256
+  [skeleton]   ---
+  [skeleton]   duration_ms: 4.253333
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-119 default npm checks honor lifecycle scripts and package environment
+  [skeleton] ok 75 - WO-119 default npm checks honor lifecycle scripts and package environment
+  [skeleton]   ---
+  [skeleton]   duration_ms: 510.759166
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-119 resolved placements and removed generated outputs cease to be candidates
+  [skeleton] ok 76 - WO-119 resolved placements and removed generated outputs cease to be candidates
+  [skeleton]   ---
+  [skeleton]   duration_ms: 81.774042
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-023 AC3 every linked support owns exactly one generated paragraph
+  [skeleton] ok 77 - WO-023 AC3 every linked support owns exactly one generated paragraph
+  [skeleton]   ---
+  [skeleton]   duration_ms: 3.466375
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-023 AC3 unordered graph permutations preserve residue bytes
+  [skeleton] ok 78 - WO-023 AC3 unordered graph permutations preserve residue bytes
+  [skeleton]   ---
+  [skeleton]   duration_ms: 2.958667
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-023 AC3 a semantic edit to every support changes generated residue
+  [skeleton] ok 79 - WO-023 AC3 a semantic edit to every support changes generated residue
+  [skeleton]   ---
+  [skeleton]   duration_ms: 18.239125
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-023 AC3 identity, role, and active stance all flow into generated residue
+  [skeleton] ok 80 - WO-023 AC3 identity, role, and active stance all flow into generated residue
+  [skeleton]   ---
+  [skeleton]   duration_ms: 5.629417
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-023 AC3 malformed support participation cannot render a plausible residue
+  [skeleton] ok 81 - WO-023 AC3 malformed support participation cannot render a plausible residue
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.92625
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-023 AC3 residue generation is pure and cannot read the tracked projection
+  [skeleton] ok 82 - WO-023 AC3 residue generation is pure and cannot read the tracked projection
+  [skeleton]   ---
+  [skeleton]   duration_ms: 2.55
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-165 preserves both derived judges' compiled identities
+  [skeleton] ok 83 - WO-165 preserves both derived judges' compiled identities
+  [skeleton]   ---
+  [skeleton]   duration_ms: 4.10475
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-142 Shape-First v2 transfers the relationship before evaluating load-bearing literal details
+  [skeleton] ok 84 - WO-142 Shape-First v2 transfers the relationship before evaluating load-bearing literal details
+  [skeleton]   ---
+  [skeleton]   duration_ms: 7.073875
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-023 AC1 compiles the complete reviewer definition through the real compiler
+  [skeleton] ok 85 - WO-023 AC1 compiles the complete reviewer definition through the real compiler
+  [skeleton]   ---
+  [skeleton]   duration_ms: 9.772292
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-023 AC1 assembles the full deferred Program and once cadence
+  [skeleton] ok 86 - WO-023 AC1 assembles the full deferred Program and once cadence
+  [skeleton]   ---
+  [skeleton]   duration_ms: 5.015
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-023 AC2 wildcard authority grants bounded reads and traces write refusals
+  [skeleton] ok 87 - WO-023 AC2 wildcard authority grants bounded reads and traces write refusals
+  [skeleton]   ---
+  [skeleton]   duration_ms: 32.68775
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-023 AC2 threads resource ceilings and enforces expiry, stop, and report emission
+  [skeleton] ok 88 - WO-023 AC2 threads resource ceilings and enforces expiry, stop, and report emission
+  [skeleton]   ---
+  [skeleton]   duration_ms: 14.900625
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-023 AC2 validates findings and clean-room status before constructing report.emit
+  [skeleton] ok 89 - WO-023 AC2 validates findings and clean-room status before constructing report.emit
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.3535
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-165 multiline custom brief data cannot add checklist items
+  [skeleton] ok 90 - WO-165 multiline custom brief data cannot add checklist items
+  [skeleton]   ---
+  [skeleton]   duration_ms: 6.600166
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-165 rejects sparse lens and required-string arrays
+  [skeleton] ok 91 - WO-165 rejects sparse lens and required-string arrays
+  [skeleton]   ---
+  [skeleton]   duration_ms: 23.318542
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-165 rejects non-array iterables before applying the lens ceiling
+  [skeleton] ok 92 - WO-165 rejects non-array iterables before applying the lens ceiling
+  [skeleton]   ---
+  [skeleton]   duration_ms: 5.590958
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-023 AC4 enforces every lens-brief field, no-fix, uniqueness, and the four-brief ceiling
+  [skeleton] ok 93 - WO-023 AC4 enforces every lens-brief field, no-fix, uniqueness, and the four-brief ceiling
+  [skeleton]   ---
+  [skeleton]   duration_ms: 6.458667
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-023 AC5 validates ProductSuggestion packets and enforces a summary under 200 words
+  [skeleton] ok 94 - WO-023 AC5 validates ProductSuggestion packets and enforces a summary under 200 words
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.464875
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-023 AC6 selects every measured finding and reports zero denominators as not-applicable
+  [skeleton] ok 95 - WO-023 AC6 selects every measured finding and reports zero denominators as not-applicable
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.236458
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-023 AC6 examines all six-or-fewer inspection findings and deterministically stratifies larger sets
+  [skeleton] ok 96 - WO-023 AC6 examines all six-or-fewer inspection findings and deterministically stratifies larger sets
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.280083
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-023 AC6 keeps failed findings attributable but removes them from the promoted set
+  [skeleton] ok 97 - WO-023 AC6 keeps failed findings attributable but removes them from the promoted set
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.276
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: current evidence follows one manifest, independent of active order; explicit historical pins survive
+  [skeleton] ok 98 - current evidence follows one manifest, independent of active order; explicit historical pins survive
+  [skeleton]   ---
+  [skeleton]   duration_ms: 2.295791
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: repair revisions preserve the original artifact and verification evidence
+  [skeleton] ok 99 - repair revisions preserve the original artifact and verification evidence
+  [skeleton]   ---
+  [skeleton]   duration_ms: 3.449334
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: evidence compares component release labels by content and preserves behavioral inputs
+  [skeleton] ok 100 - evidence compares component release labels by content and preserves behavioral inputs
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.544792
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-070 the build-free Beacon workspace is a component whose release labels compare by content
+  [skeleton] ok 101 - WO-070 the build-free Beacon workspace is a component whose release labels compare by content
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.176875
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: immutable evidence admits a component-only bump while source, external dependency, and evidence changes invalidate
+  [skeleton] ok 102 - immutable evidence admits a component-only bump while source, external dependency, and evidence changes invalidate
+  [skeleton]   ---
+  [skeleton]   duration_ms: 196.501333
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-133 every generated role preserves supplied actor values and checks edited product publications
+  [skeleton] ok 103 - WO-133 every generated role preserves supplied actor values and checks edited product publications
+  [skeleton]   ---
+  [skeleton]   duration_ms: 44.446834
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-145 economy equipment adds only executor guidance and no authority or host checks
+  [skeleton] ok 104 - WO-145 economy equipment adds only executor guidance and no authority or host checks
+  [skeleton]   ---
+  [skeleton]   duration_ms: 4.322084
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-042 atomic support switches compose independently and removal restores the saved build
+  [skeleton] ok 105 - WO-042 atomic support switches compose independently and removal restores the saved build
+  [skeleton]   ---
+  [skeleton]   duration_ms: 518.34975
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: Process Cost is one compiled support projected once into every Contributor role
+  [skeleton] ok 106 - Process Cost is one compiled support projected once into every Contributor role
+  [skeleton]   ---
+  [skeleton]   duration_ms: 56.932166
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-042 installed role projection takes each support from compiled equipment
+  [skeleton] ok 107 - WO-042 installed role projection takes each support from compiled equipment
+  [skeleton]   ---
+  [skeleton]   duration_ms: 2773.861167
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: feedback audit pins labeled projections and keeps release-only workspace metadata stable
+  [skeleton] ok 108 - feedback audit pins labeled projections and keeps release-only workspace metadata stable
+  [skeleton]   ---
+  [skeleton]   duration_ms: 46.608417
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-142 discovery entry point participates in both evidence source inventories
+  [skeleton] ok 109 - WO-142 discovery entry point participates in both evidence source inventories
+  [skeleton]   ---
+  [skeleton]   duration_ms: 1.571416
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: feedback audit invalidates every declared runtime and fixture source byte
+  [skeleton] ok 110 - feedback audit invalidates every declared runtime and fixture source byte
+  [skeleton]   ---
+  [skeleton]   duration_ms: 509.1965
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: feedback audit keeps execution, dependency, publication, and unknown metadata in the subject
+  [skeleton] ok 111 - feedback audit keeps execution, dependency, publication, and unknown metadata in the subject
+  [skeleton]   ---
+  [skeleton]   duration_ms: 152.170792
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: feedback audit refuses malformed package projection inputs
+  [skeleton] ok 112 - feedback audit refuses malformed package projection inputs
+  [skeleton]   ---
+  [skeleton]   duration_ms: 60.891292
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-154 a reference rebuilds its body from the working tree before commit and from Git after it; a missing body is named
+  [skeleton] ok 113 - WO-154 a reference rebuilds its body from the working tree before commit and from Git after it; a missing body is named
+  [skeleton]   ---
+  [skeleton]   duration_ms: 110.169916
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-154 the pins snapshot resolves a stranded derived reference from the working tree, with no Git object
+  [skeleton] ok 114 - WO-154 the pins snapshot resolves a stranded derived reference from the working tree, with no Git object
+  [skeleton]   ---
+  [skeleton]   duration_ms: 59.925125
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-154 a verifier stream committed by reference rebuilds byte for byte and leaves other records alone
+  [skeleton] ok 115 - WO-154 a verifier stream committed by reference rebuilds byte for byte and leaves other records alone
+  [skeleton]   ---
+  [skeleton]   duration_ms: 35.593625
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-154 the behavioral identity moves with a judged change and not with release labels; the pins record moves with the labels
+  [skeleton] ok 116 - WO-154 the behavioral identity moves with a judged change and not with release labels; the pins record moves with the labels
+  [skeleton]   ---
+  [skeleton]   duration_ms: 18.377667
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-011 regression anti-oscillation
+  [skeleton] ok 117 - WO-011 regression anti-oscillation
+  [skeleton]   ---
+  [skeleton]   duration_ms: 7.627917
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-011 regression correctness-over-sycophancy
+  [skeleton] ok 118 - WO-011 regression correctness-over-sycophancy
+  [skeleton]   ---
+  [skeleton]   duration_ms: 4.028291
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-011 regression fail-conservative-correction
+  [skeleton] ok 119 - WO-011 regression fail-conservative-correction
+  [skeleton]   ---
+  [skeleton]   duration_ms: 4.511084
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-011 regression verify-app-before-done
+  [skeleton] ok 120 - WO-011 regression verify-app-before-done
+  [skeleton]   ---
+  [skeleton]   duration_ms: 41.328208
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-011 regression no-attribution
+  [skeleton] ok 121 - WO-011 regression no-attribution
+  [skeleton]   ---
+  [skeleton]   duration_ms: 270.384458
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-011 regression concurrent-work-requires-worktrees
+  [skeleton] ok 122 - WO-011 regression concurrent-work-requires-worktrees
+  [skeleton]   ---
+  [skeleton]   duration_ms: 87.365375
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-011 regression no-lint-type-disables-as-fixes
+  [skeleton] ok 123 - WO-011 regression no-lint-type-disables-as-fixes
+  [skeleton]   ---
+  [skeleton]   duration_ms: 146.377166
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-011 regression read-your-own-output
+  [skeleton] ok 124 - WO-011 regression read-your-own-output
+  [skeleton]   ---
+  [skeleton]   duration_ms: 9.91325
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-011 regression no-partial-completion
+  [skeleton] ok 125 - WO-011 regression no-partial-completion
+  [skeleton]   ---
+  [skeleton]   duration_ms: 2.089958
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-011 regression bounded-boy-scout-cleanup
+  [skeleton] ok 126 - WO-011 regression bounded-boy-scout-cleanup
+  [skeleton]   ---
+  [skeleton]   duration_ms: 3.309792
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-142 TypeScript 7 comment batches preserve snapshot boundaries and escaped literals
+  [skeleton] ok 127 - WO-142 TypeScript 7 comment batches preserve snapshot boundaries and escaped literals
+  [skeleton]   ---
+  [skeleton]   duration_ms: 27.747584
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-129 Claude upgrades retain version observations above the supported minimum
+  [skeleton] ok 128 - WO-129 Claude upgrades retain version observations above the supported minimum
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.482208
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-011 shared reactor dispatches a pinned audit, refuses expiry, and makes semantic correction a durable diagnosis request
+  [skeleton] ok 129 - WO-011 shared reactor dispatches a pinned audit, refuses expiry, and makes semantic correction a durable diagnosis request
+  [skeleton]   ---
+  [skeleton]   duration_ms: 24.752167
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-126 anti-oscillation version 2
+  [skeleton] ok 130 - WO-126 anti-oscillation version 2
+  [skeleton]   ---
+  [skeleton]   duration_ms: 56.164584
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-126 correctness-over-sycophancy version 2
+  [skeleton] ok 131 - WO-126 correctness-over-sycophancy version 2
+  [skeleton]   ---
+  [skeleton]   duration_ms: 43.747459
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-126 fail-conservative-correction version 2
+  [skeleton] ok 132 - WO-126 fail-conservative-correction version 2
+  [skeleton]   ---
+  [skeleton]   duration_ms: 42.219875
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-126 verify-app-before-done version 2
+  [skeleton] ok 133 - WO-126 verify-app-before-done version 2
+  [skeleton]   ---
+  [skeleton]   duration_ms: 1.71875
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-126 no-attribution version 2
+  [skeleton] ok 134 - WO-126 no-attribution version 2
+  [skeleton]   ---
+  [skeleton]   duration_ms: 2.487041
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-132 concurrent-work-requires-worktrees version 2
+  [skeleton] ok 135 - WO-132 concurrent-work-requires-worktrees version 2
+  [skeleton]   ---
+  [skeleton]   duration_ms: 1.443667
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-126 read-your-own-output version 2
+  [skeleton] ok 136 - WO-126 read-your-own-output version 2
+  [skeleton]   ---
+  [skeleton]   duration_ms: 1.441125
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-126 no-partial-completion version 2
+  [skeleton] ok 137 - WO-126 no-partial-completion version 2
+  [skeleton]   ---
+  [skeleton]   duration_ms: 1.498416
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-126 bounded-boy-scout-cleanup version 2
+  [skeleton] ok 138 - WO-126 bounded-boy-scout-cleanup version 2
+  [skeleton]   ---
+  [skeleton]   duration_ms: 44.38325
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-126 retains v1 empty-output and all-attempt evidence semantics
+  [skeleton] ok 139 - WO-126 retains v1 empty-output and all-attempt evidence semantics
+  [skeleton]   ---
+  [skeleton]   duration_ms: 4.113792
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-132 writer v2 admits main and preserves v1 historical replay
+  [skeleton] ok 140 - WO-132 writer v2 admits main and preserves v1 historical replay
+  [skeleton]   ---
+  [skeleton]   duration_ms: 2.486417
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-045 hook decoder validates required, optional and config-bound fields
+  [skeleton] ok 141 - WO-045 hook decoder validates required, optional and config-bound fields
+  [skeleton]   ---
+  [skeleton]   duration_ms: 1.000208
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-045 supplied inputs reject inherited fields and accessors without evaluating them
+  [skeleton] ok 142 - WO-045 supplied inputs reject inherited fields and accessors without evaluating them
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.121208
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-045 hook decoder accepts native metadata and all declared effort levels
+  [skeleton] ok 143 - WO-045 hook decoder accepts native metadata and all declared effort levels
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.113334
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-045 wrapper rejects malformed supplied and raw input before runtime or host effects
+  [skeleton] ok 144 - WO-045 wrapper rejects malformed supplied and raw input before runtime or host effects
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.373917
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] 1..0
+  [skeleton] # Subtest: packages/skeleton/dist/test/live-verification-receipt.test.js
+  [skeleton] ok 23 - packages/skeleton/dist/test/live-verification-receipt.test.js
+  [skeleton]   ---
+  [skeleton]   duration_ms: 42.5595
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-110 AC1 a double endpoint returns the validated six-field envelope
+  [skeleton] ok 146 - WO-110 AC1 a double endpoint returns the validated six-field envelope
+  [skeleton]   ---
+  [skeleton]   duration_ms: 18.894708
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-110 the wire request carries the compiled prompt, the result schema and the observed decoding
+  [skeleton] ok 147 - WO-110 the wire request carries the compiled prompt, the result schema and the observed decoding
+  [skeleton]   ---
+  [skeleton]   duration_ms: 6.170791
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-110 AC1 an unavailable endpoint yields the typed unavailability
+  [skeleton] ok 148 - WO-110 AC1 an unavailable endpoint yields the typed unavailability
+  [skeleton]   ---
+  [skeleton]   duration_ms: 1.968709
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-110 an endpoint without the model is unavailable; other HTTP faults are transport failures
+  [skeleton] ok 149 - WO-110 an endpoint without the model is unavailable; other HTTP faults are transport failures
+  [skeleton]   ---
+  [skeleton]   duration_ms: 3.690875
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-110 truncated, unparsable and contract-breaking completions are refused by code
+  [skeleton] ok 150 - WO-110 truncated, unparsable and contract-breaking completions are refused by code
+  [skeleton]   ---
+  [skeleton]   duration_ms: 5.710375
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-110 the endpoint and profile fences refuse before any request is sent
+  [skeleton] ok 151 - WO-110 the endpoint and profile fences refuse before any request is sent
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.575333
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-110 a killed episode is interrupted without a supervisor process
+  [skeleton] ok 152 - WO-110 a killed episode is interrupted without a supervisor process
+  [skeleton]   ---
+  [skeleton]   duration_ms: 2.799167
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-110 AC1 the catalog reports the declared row and the resident gets a reasoned NoOp
+  [skeleton] ok 153 - WO-110 AC1 the catalog reports the declared row and the resident gets a reasoned NoOp
+  [skeleton]   ---
+  [skeleton]   duration_ms: 1.784833
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # local-model row: L-U1
+  [skeleton] # Subtest: WO-110 an endpoint failure reaches the resident as a typed actor observation
+  [skeleton] ok 154 - WO-110 an endpoint failure reaches the resident as a typed actor observation
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.767667
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-110 an actor without an endpoint decodes and reports unavailable
+  [skeleton] ok 155 - WO-110 an actor without an endpoint decodes and reports unavailable
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.149625
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-110 a local-model declaration is refused on another actor kind
+  [skeleton] ok 156 - WO-110 a local-model declaration is refused on another actor kind
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.056625
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-099 the four verdicts: out-of-surface drift, mid-episode clause change, on-contract pass, unavailable verifier
+  [skeleton] ok 157 - WO-099 the four verdicts: out-of-surface drift, mid-episode clause change, on-contract pass, unavailable verifier
+  [skeleton]   ---
+  [skeleton]   duration_ms: 498.251875
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # on-mission, host-proved drift, mid-episode clause drift, unavailable, unsupported and model drift
+  [skeleton] # Subtest: WO-099 a drift holds unattended dispatch, records the correction, and a human answer clears it
+  [skeleton] ok 158 - WO-099 a drift holds unattended dispatch, records the correction, and a human answer clears it
+  [skeleton]   ---
+  [skeleton]   duration_ms: 857.102792
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # drift held, correction recorded, work refused once, human answer released it
+  [skeleton] # Subtest: WO-099 an unavailable verifier holds, and only a passing judgment over changed work clears the hold
+  [skeleton] ok 159 - WO-099 an unavailable verifier holds, and only a passing judgment over changed work clears the hold
+  [skeleton]   ---
+  [skeleton]   duration_ms: 923.301916
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # unavailable verifier held without a correction; only a passing judgment over changed work cleared it
+  [skeleton] # Subtest: WO-099 the check itself stays armed while it holds the work, and the Contributor build declares the cadence
+  [skeleton] ok 160 - WO-099 the check itself stays armed while it holds the work, and the Contributor build declares the cadence
+  [skeleton]   ---
+  [skeleton]   duration_ms: 149.937125
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Contributor cadence declared read-only at 900 s, NoOp without the adapter
+  [skeleton] # Subtest: WO-099 VER-001 F1: the cadence judges changed work, and its fresh pass clears the hold
+  [skeleton] ok 161 - WO-099 VER-001 F1: the cadence judges changed work, and its fresh pass clears the hold
+  [skeleton]   ---
+  [skeleton]   duration_ms: 862.102417
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # the cadence reached the judge with the repaired capsule and retired the hold without a human
+  [skeleton] # Subtest: WO-099 VER-001 F2: the capsule carries untracked work, names what it cannot carry, and refuses past its bounds
+  [skeleton] ok 162 - WO-099 VER-001 F2: the capsule carries untracked work, names what it cannot carry, and refuses past its bounds
+  [skeleton]   ---
+  [skeleton]   duration_ms: 967.59025
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # untracked drift judged, 400th path named, 401st refused, oversized text named and unknown, clause change past 4000 bytes observable
+  [skeleton] # Subtest: WO-099 VER-004 F1: ignored work is redacted, bounded and judged beside an unignored control
+  [skeleton] ok 163 - WO-099 VER-004 F1: ignored work is redacted, bounded and judged beside an unignored control
+  [skeleton]   ---
+  [skeleton]   duration_ms: 767.579125
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # two ignored out-of-surface changes drift by opaque evidence; baseline ignored output stays absent; the unignored control names both paths
+  [skeleton] # Subtest: WO-099 VER-005 F1: ordinary build residue under a baselined ignored root leaves the cadence quiet
+  [skeleton] ok 164 - WO-099 VER-005 F1: ordinary build residue under a baselined ignored root leaves the cadence quiet
+  [skeleton]   ---
+  [skeleton]   duration_ms: 596.766583
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # one ordinary build leaves two pulses quiet; a planted ignored file, a rewritten baselined ignored file and a removed baselined root still drift; the collapsed-root interior is the disclosed limit
+  [skeleton] # Subtest: WO-099 VER-005 F1: an ordinary build during the cadence raises no hold
+  [skeleton] ok 165 - WO-099 VER-005 F1: an ordinary build during the cadence raises no hold
+  [skeleton]   ---
+  [skeleton]   duration_ms: 853.507208
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # two pulses across an ordinary build leave the cadence unheld with no correction event
+  [skeleton] # Subtest: WO-099 VER-002 F1: a failed verifier cannot erase the drift the capsule already proved
+  [skeleton] ok 166 - WO-099 VER-002 F1: a failed verifier cannot erase the drift the capsule already proved
+  [skeleton]   ---
+  [skeleton]   duration_ms: 1344.653125
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # an unavailable and an invalid verifier both held the host-proved drift with its finding and correction
+  [skeleton] # Subtest: WO-099 VER-002 F2: the capsule carries links as links and reads nothing outside the worktree
+  [skeleton] ok 167 - WO-099 VER-002 F2: the capsule carries links as links and reads nothing outside the worktree
+  [skeleton]   ---
+  [skeleton]   duration_ms: 422.279541
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # inside and outside-surface links carried as links, outside bytes absent, linked declared source refused, oversized file omitted unread
+  [skeleton] # Subtest: WO-099 VER-003 F1: the host's own findings readmit at the capsule's bounds, and the judge's bound counts only what it adds
+  [skeleton] ok 168 - WO-099 VER-003 F1: the host's own findings readmit at the capsule's bounds, and the judge's bound counts only what it adds
+  [skeleton]   ---
+  [skeleton]   duration_ms: 393.680083
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # 203 host findings readmitted with a bounded reason; the judge's 100 counted beyond them; repeated host proof keeps the host reason
+  [skeleton] # Subtest: WO-099 VER-003 F1: the resident records the hold for every host finding at the path bound, whether or not the judge answered
+  [skeleton] ok 169 - WO-099 VER-003 F1: the resident records the hold for every host finding at the path bound, whether or not the judge answered
+  [skeleton]   ---
+  [skeleton]   duration_ms: 1336.824583
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # 400 host findings held and corrected through the resident with an answering and an unavailable judge
+  [skeleton] # Subtest: WO-099 VER-003 F1: a judgment the actor contract refuses is recorded as the failed episode with its capsule, and the proved drift still holds
+  [skeleton] ok 170 - WO-099 VER-003 F1: a judgment the actor contract refuses is recorded as the failed episode with its capsule, and the proved drift still holds
+  [skeleton]   ---
+  [skeleton]   duration_ms: 418.473667
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # refused judgment recorded as invalid-result with its capsule; the host-proved drift held
+  [skeleton] # Subtest: WO-099 VER-003 F2: a decision history that exists but cannot be carried is named and holds; the declared window is honored, including zero
+  [skeleton] ok 171 - WO-099 VER-003 F2: a decision history that exists but cannot be carried is named and holds; the declared window is honored, including zero
+  [skeleton]   ---
+  [skeleton]   duration_ms: 454.27225
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # window 0/1/N honored; absent history whole; oversized and linked histories named, unknown and byte-free
+  [skeleton] # Subtest: WO-099 VER-003 F2: the resident holds a claimed pass over a history it could not carry
+  [skeleton] ok 172 - WO-099 VER-003 F2: the resident holds a claimed pass over a history it could not carry
+  [skeleton]   ---
+  [skeleton]   duration_ms: 449.583167
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # claimed pass over an uncarried history recorded as unknown and held, with no correction
+  [skeleton] # Subtest: WO-152 the emitted schema carries no duplicate enum item, and a mid-episode clause change still names the old and the new id
+  [skeleton] ok 173 - WO-152 the emitted schema carries no duplicate enum item, and a mid-episode clause change still names the old and the new id
+  [skeleton]   ---
+  [skeleton]   duration_ms: 202.363458
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # no duplicate item across 7 emitted enums, unchanged, renumbered and story contracts
+  [skeleton] # Subtest: WO-100 derivation over the WO-119 fixture: in-portfolio candidates become bounded orders, the rest suggestions, human questions or deferrals
+  [skeleton] ok 174 - WO-100 derivation over the WO-119 fixture: in-portfolio candidates become bounded orders, the rest suggestions, human questions or deferrals
+  [skeleton]   ---
+  [skeleton]   duration_ms: 87.92
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # {"widen":[{"kind":"order","id":"failing-lint:src/main.js","surfaces":["src/main.js"]},{"kind":"order","id":"failing-test:src/main.js","surfaces":["src/main.js"]},{"kind":"deferred","id":"misplaced-file:loose/guide.md"},{"kind":"ProductSuggestion","id":"misplaced-file:loose/helper.js"},{"kind":"NeedsHuman","id":"stale-generated:generated/obsolete.txt","offending":"repo.delete"},{"kind":"ProductSuggestion","id":"repeated-repair:src/main.js:34c32817ea5437e8"}],"peak":[{"kind":"order","id":"failing-lint:src/main.js","surfaces":["src/main.js"]},{"kind":"order","id":"failing-test:src/main.js","surfaces":["src/main.js"]},{"kind":"order","id":"misplaced-file:loose/guide.md","surfaces":["docs/guide.md","loose/guide.md"]},{"kind":"ProductSuggestion","id":"misplaced-file:loose/helper.js"},{"kind":"NeedsHuman","id":"stale-generated:generated/obsolete.txt","offending":"repo.delete"},{"kind":"ProductSuggestion","id":"repeated-repair:src/main.js:34c32817ea5437e8"}]}
+  [skeleton] # Subtest: WO-100 a portfolio is validated under the floor and each phase, and its contract refuses malformed text
+  [skeleton] ok 175 - WO-100 a portfolio is validated under the floor and each phase, and its contract refuses malformed text
+  [skeleton]   ---
+  [skeleton]   duration_ms: 2.200833
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-100 a derived order activates with host-policy provenance, runs through the WO-052 and WO-054 doubles, advances only after a pass, resets from a non-last phase on a failed verification and stops at the budget with an in-phase candidate left
+  [skeleton] ok 176 - WO-100 a derived order activates with host-policy provenance, runs through the WO-052 and WO-054 doubles, advances only after a pass, resets from a non-last phase on a failed verification and stops at the budget with an in-phase candidate left
+  [skeleton]   ---
+  [skeleton]   duration_ms: 1059.653834
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # {"calls":["materialize:failing-lint:src/main.js","change:WO-900:widen","verify:WO-900:fail","materialize:failing-test:src/main.js","change:WO-901:widen","verify:WO-901:pass"],"states":["widen","probe","widen","peak"],"noOp":"portfolio gardener-5s v1 budget exhausted: 2 of 2 episodes"}
+  [skeleton] # Subtest: WO-100 spent wall time or reported tokens refuse the next phase while it still admits a candidate
+  [skeleton] ok 177 - WO-100 spent wall time or reported tokens refuse the next phase while it still admits a candidate
+  [skeleton]   ---
+  [skeleton]   duration_ms: 1169.783167
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-100 an unbound resident reports the portfolio actor unavailable and dispatches nothing
+  [skeleton] ok 178 - WO-100 an unbound resident reports the portfolio actor unavailable and dispatches nothing
+  [skeleton]   ---
+  [skeleton]   duration_ms: 486.797458
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-100 a kill records what WO-052 observed: nothing before the change, the commit and skipped verification after it
+  [skeleton] ok 179 - WO-100 a kill records what WO-052 observed: nothing before the change, the commit and skipped verification after it
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.495125
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-121 classifier depends on signal evidence and stamp, never launch path
+  [skeleton] ok 180 - WO-121 classifier depends on signal evidence and stamp, never launch path
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.470416
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # all activity=actor; stamped prompt=actor; observed human prompt=human; launch-path permutations identical
+  [skeleton] # Subtest: WO-121 negative activity stream never changes away phase or cancels; human return preserves foreground
+  [skeleton] ok 181 - WO-121 negative activity stream never changes away phase or cancels; human return preserves foreground
+  [skeleton]   ---
+  [skeleton]   duration_ms: 4050.988833
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # back/kill: away stream caused zero phase changes/cancellations; return killed discretionary work
+  [skeleton] # back/finish: away stream caused zero phase changes/cancellations; return allowed in-flight work to complete
+  [skeleton] # back/foreground: away stream caused zero phase changes/cancellations; return allowed in-flight work to complete
+  [skeleton] # heartbeat/kill: away stream caused zero phase changes/cancellations; return killed discretionary work
+  [skeleton] # heartbeat/finish: away stream caused zero phase changes/cancellations; return allowed in-flight work to complete
+  [skeleton] # heartbeat/foreground: away stream caused zero phase changes/cancellations; return allowed in-flight work to complete
+  [skeleton] # Subtest: WO-121 human idle threshold, actor stall, and task progress are independent replay clocks
+  [skeleton] ok 182 - WO-121 human idle threshold, actor stall, and task progress are independent replay clocks
+  [skeleton]   ---
+  [skeleton]   duration_ms: 569.183458
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # actor stalled at 35 without presence change; human idle at 40; phase decay at 140; task progress renewed neither clock; replay identical
+  [skeleton] # Subtest: WO-121 running actor silence is sampled without incoming traffic
+  [skeleton] ok 183 - WO-121 running actor silence is sampled without incoming traffic
+  [skeleton]   ---
+  [skeleton]   duration_ms: 274.17775
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-121 late heartbeats retain missed deadlines; backwards live back preserves intent; task keys are data
+  [skeleton] ok 184 - WO-121 late heartbeats retain missed deadlines; backwards live back preserves intent; task keys are data
+  [skeleton]   ---
+  [skeleton]   duration_ms: 457.05825
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-121 generated hooks emit exactly one reduced observation per event and no SessionStart heartbeat
+  [skeleton] ok 185 - WO-121 generated hooks emit exactly one reduced observation per event and no SessionStart heartbeat
+  [skeleton]   ---
+  [skeleton]   duration_ms: 840.272333
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-121 native script receives only explicit resident stamp environment
+  [skeleton] ok 186 - WO-121 native script receives only explicit resident stamp environment
+  [skeleton]   ---
+  [skeleton]   duration_ms: 87.36225
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-067 fixture: hold, verified-only advance, failure reset, peak/reset/loop
+  [skeleton] ok 187 - WO-067 fixture: hold, verified-only advance, failure reset, peak/reset/loop
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.927083
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # NoOp:present | absence:probe | NoOp:gate-or-cadence | dispatch:probe | verified-success:widen | dispatch:widen | failure:probe | dispatch:probe | verified-success:widen | dispatch:widen | verified-success:peak | dispatch:peak | verified-success:probe | dispatch:probe | verified-success:widen | dispatch:widen | verified-success:peak | dispatch:peak | verified-success:probe
+  [skeleton] # Subtest: WO-067 fixture: return kills or finishes discretionary work, preserves foreground and wins races
+  [skeleton] ok 188 - WO-067 fixture: return kills or finishes discretionary work, preserves foreground and wins races
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.476458
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # absence:probe | dispatch:probe | in-flight:kill | return:present | NoOp:present | foreground:completed-under-own-authority
+  [skeleton] # absence:probe | dispatch:probe | in-flight:kill | return:present | NoOp:present | foreground:completed-under-own-authority
+  [skeleton] # absence:probe | dispatch:probe | verified-success:widen | dispatch:widen | in-flight:finish | return:present | NoOp:present | absence:probe | NoOp:gate-or-cadence | dispatch:probe | foreground:completed-under-own-authority
+  [skeleton] # Subtest: WO-067 fixture: idle deadline expires phase allocation and requires a fresh absence edge
+  [skeleton] ok 189 - WO-067 fixture: idle deadline expires phase allocation and requires a fresh absence edge
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.072791
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # absence:probe | expired:attention,work-scope,effect-authority | idle-expired:expired | NoOp:expired | NoOp:expired | return:present | absence:probe | dispatch:probe | foreground:completed-under-own-authority
+  [skeleton] # Subtest: WO-067 fixture: a preauthorized portfolio effect with an unavailable adapter emits NoOp
+  [skeleton] ok 190 - WO-067 fixture: a preauthorized portfolio effect with an unavailable adapter emits NoOp
+  [skeleton]   ---
+  [skeleton]   duration_ms: 1.576459
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # absence:probe | NoOp:Presence policy fixture.progressive phase probe: unavailable external capability: adapter.portfolio
+  [skeleton] # Subtest: WO-067 fixture: real kernel authorizer enforces every phase ceiling and inherited restrictions
+  [skeleton] ok 191 - WO-067 fixture: real kernel authorizer enforces every phase ceiling and inherited restrictions
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.314792
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-067 fixture: condition entry and every emitted cadence execute in the kernel subset
+  [skeleton] ok 192 - WO-067 fixture: condition entry and every emitted cadence execute in the kernel subset
+  [skeleton]   ---
+  [skeleton]   duration_ms: 1.0725
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-050 slices have exclusive event ownership; WO-052 fills only the reserved source-change slot
+  [skeleton] ok 193 - WO-050 slices have exclusive event ownership; WO-052 fills only the reserved source-change slot
+  [skeleton]   ---
+  [skeleton]   duration_ms: 7.482458
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-142 B13 owns the live driver in its extracted module and preserves the scenario re-export
+  [skeleton] ok 194 - WO-142 B13 owns the live driver in its extracted module and preserves the scenario re-export
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.436
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-050 hosts read raw runtime fields only through exported selectors
+  [skeleton] ok 195 - WO-050 hosts read raw runtime fields only through exported selectors
+  [skeleton]   ---
+  [skeleton]   duration_ms: 0.847167
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-050 malformed verification continuation and custom predicate context preserve the boundary
+  [skeleton] ok 196 - WO-050 malformed verification continuation and custom predicate context preserve the boundary
+  [skeleton]   ---
+  [skeleton]   duration_ms: 36.00925
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-066 host review witness preserves scope, named tests, revision and one-round bound
+  [skeleton] ok 197 - WO-066 host review witness preserves scope, named tests, revision and one-round bound
+  [skeleton]   ---
+  [skeleton]   duration_ms: 2245.255041
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-055 AC1 pure derivation contains paths, commands, contract and admitted exact grants
+  [skeleton] ok 198 - WO-055 AC1 pure derivation contains paths, commands, contract and admitted exact grants
+  [skeleton]   ---
+  [skeleton]   duration_ms: 2230.249416
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-055 AC2 failing source commit repairs once and re-verifies the complete original contract
+  [skeleton] ok 199 - WO-055 AC2 failing source commit repairs once and re-verifies the complete original contract
+  [skeleton]   ---
+  [skeleton]   duration_ms: 5268.130584
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-055 AC3 two wrong repairs exhaust with last finding and no third source dispatch
+  [skeleton] ok 200 - WO-055 AC3 two wrong repairs exhaust with last finding and no third source dispatch
+  [skeleton]   ---
+  [skeleton]   duration_ms: 7492.813459
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-055 AC4 SIGKILL afterRepairCommit resumes persisted continuation without another repair
+  [skeleton] ok 201 - WO-055 AC4 SIGKILL afterRepairCommit resumes persisted continuation without another repair
+  [skeleton]   ---
+  [skeleton]   duration_ms: 5142.106459
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-055 AC4 SIGKILL afterSnapshotPrepared resumes persisted continuation without another repair
+  [skeleton] ok 202 - WO-055 AC4 SIGKILL afterSnapshotPrepared resumes persisted continuation without another repair
+  [skeleton]   ---
+  [skeleton]   duration_ms: 4972.078625
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-055 AC1 refused path or command persists byte-identical envelope and dispatches no writer
+  [skeleton] ok 203 - WO-055 AC1 refused path or command persists byte-identical envelope and dispatches no writer
+  [skeleton]   ---
+  [skeleton]   duration_ms: 4797.80925
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-122 writer dispatches through the resident with stamp and envelope; a claim never advances the phase
+  [skeleton] ok 204 - WO-122 writer dispatches through the resident with stamp and envelope; a claim never advances the phase
+  [skeleton]   ---
+  [skeleton]   duration_ms: 397.222125
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # writer: 1 dispatch, X-U1 claim, stamped envelope, operator away, no verified promotion
+  [skeleton] # Subtest: WO-122 inspection dispatches through the resident with stamp and envelope; a claim never advances the phase
+  [skeleton] ok 205 - WO-122 inspection dispatches through the resident with stamp and envelope; a claim never advances the phase
+  [skeleton]   ---
+  [skeleton]   duration_ms: 341.024375
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # inspection: 1 dispatch, X-U1 claim, stamped envelope, operator away, no verified promotion
+  [skeleton] # Subtest: WO-122 unavailable launch row names its source and never falls back; nested authority cannot widen the phase
+  [skeleton] ok 206 - WO-122 unavailable launch row names its source and never falls back; nested authority cannot widen the phase
+  [skeleton]   ---
+  [skeleton]   duration_ms: 556.617958
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-122 transport rejection and synchronous refusal become one durable failure each
+  [skeleton] ok 207 - WO-122 transport rejection and synchronous refusal become one durable failure each
+  [skeleton]   ---
+  [skeleton]   duration_ms: 710.687208
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-122 human packet survives restart, rejects invalid answers, and resumes after an explicit human answer
+  [skeleton] ok 208 - WO-122 human packet survives restart, rejects invalid answers, and resumes after an explicit human answer
+  [skeleton]   ---
+  [skeleton]   duration_ms: 689.242958
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # one packet/request across restart; three invalid answers refused; explicit answer resumed CLI dispatch; replay deterministic
+  [skeleton] # Subtest: WO-122 a crash after handoff dispatch recovers the same packet without losing the question
+  [skeleton] ok 209 - WO-122 a crash after handoff dispatch recovers the same packet without losing the question
+  [skeleton]   ---
+  [skeleton]   duration_ms: 441.527
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-122 a crash after handoff dispatch recovers the same packet across a new absence without promoting it
+  [skeleton] ok 210 - WO-122 a crash after handoff dispatch recovers the same packet across a new absence without promoting it
+  [skeleton]   ---
+  [skeleton]   duration_ms: 546.32925
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-122 nested expiry, missing evidence and unrepresentable revocation refuse before launch
+  [skeleton] ok 211 - WO-122 nested expiry, missing evidence and unrepresentable revocation refuse before launch
+  [skeleton]   ---
+  [skeleton]   duration_ms: 826.128166
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-122 late answers release the hold without advancing an expired policy
+  [skeleton] ok 212 - WO-122 late answers release the hold without advancing an expired policy
+  [skeleton]   ---
+  [skeleton]   duration_ms: 339.549
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-122 pending handoff holds its order across return while another order dispatches
+  [skeleton] ok 213 - WO-122 pending handoff holds its order across return while another order dispatches
+  [skeleton]   ---
+  [skeleton]   duration_ms: 643.136167
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-122 native process stamps are per launch and cancellation does not wait on escaped stderr
+  [skeleton] ok 214 - WO-122 native process stamps are per launch and cancellation does not wait on escaped stderr
+  [skeleton]   ---
+  [skeleton]   duration_ms: 460.348958
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-068 recorded clock drives all phases; replay ignores ambient clock; return cancels; idle needs a fresh edge
+  [skeleton] ok 215 - WO-068 recorded clock drives all phases; replay ignores ambient clock; return cancels; idle needs a fresh edge
+  [skeleton]   ---
+  [skeleton]   duration_ms: 821.212625
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # dispatches=4; replay byte-identical; expired→return→absence rearmed
+  [skeleton] # Subtest: WO-068 in-flight kill and finish obey return precedence and reject stale advancement
+  [skeleton] ok 216 - WO-068 in-flight kill and finish obey return precedence and reject stale advancement
+  [skeleton]   ---
+  [skeleton]   duration_ms: 555.3275
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-068 envelope, scope and runtime capability refusals never spawn; unavailable actor has no fallback
+  [skeleton] ok 217 - WO-068 envelope, scope and runtime capability refusals never spawn; unavailable actor has no fallback
+  [skeleton]   ---
+  [skeleton]   duration_ms: 1063.400083
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-068 two once invocations produce byte-identical events to two loop ticks
+  [skeleton] ok 218 - WO-068 two once invocations produce byte-identical events to two loop ticks
+  [skeleton]   ---
+  [skeleton]   duration_ms: 884.692959
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-068 malformed saved evidence refuses before append/reclaim; presence rejects symlink stores
+  [skeleton] ok 219 - WO-068 malformed saved evidence refuses before append/reclaim; presence rejects symlink stores
+  [skeleton]   ---
+  [skeleton]   duration_ms: 98.398083
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-068 inspected restart records lost once and cannot reuse dispatched identity
+  [skeleton] ok 220 - WO-068 inspected restart records lost once and cannot reuse dispatched identity
+  [skeleton]   ---
+  [skeleton]   duration_ms: 562.232334
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # Subtest: WO-068 native script uses exact argv/cwd, clears inherited env, verifies output and denies network
+  [skeleton] ok 221 - WO-068 native script uses exact argv/cwd, clears inherited env, verifies output and denies network
+  [skeleton]   ---
+  [skeleton]   duration_ms: 532.830167
+  [skeleton]   type: 'test'
+  [skeleton]   ...
+  [skeleton] # native sandbox: EPERM; exact argv/cwd; inherited sentinel absent; timeout/output cap enforced
+  [skeleton] # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+  [skeleton]     # Subtest: cell once-lifetime-fresh
+  [skeleton]     ok 1 - cell once-lifetime-fresh
+  [skeleton]       ---
+  [skeleton]       duration_ms: 23873.925625
+  [skeleton]       type: 'test'
+  [skeleton]       ...
+  [skeleton]     # once-lifetime-fresh: 38 deterministic SIGKILL boundaries; 28 with published guard; exact prefix; one Lost; second restart continues
+  [skeleton]     # Subtest: cell once-lifetime-reclaim
+  [skeleton]     ok 2 - cell once-lifetime-reclaim
+  [skeleton]       ---
+  [skeleton]       duration_ms: 28064.846791
+  [skeleton]       type: 'test'
+  [skeleton]       ...
+  [skeleton]     # once-lifetime-reclaim: 48 deterministic SIGKILL boundaries; 45 with published guard; exact prefix; one Lost; second restart continues
+  [skeleton]     # Subtest: cell once-append-fresh
+  [skeleton]     ok 3 - cell once-append-fresh
+  [skeleton]       ---
+  [skeleton]       duration_ms: 21658.305209
+  [skeleton]       type: 'test'
+  [skeleton]       ...
+  [skeleton]     # once-append-fresh: 38 deterministic SIGKILL boundaries; 28 with published guard; exact prefix; one Lost; second restart continues
+  [skeleton]     # Subtest: cell once-append-reclaim
+  [skeleton]     ok 4 - cell once-append-reclaim
+  [skeleton]       ---
+  [skeleton]       duration_ms: 29094.552
+  [skeleton]       type: 'test'
+  [skeleton]       ...
+  [skeleton]     # once-append-reclaim: 48 deterministic SIGKILL boundaries; 45 with published guard; exact prefix; one Lost; second restart continues
+  [skeleton] # Interrupted while running: packages/skeleton/dist/test/resident.test.js at <worktree>/packages/skeleton/dist/test/resident.test.js:1:1
+  [skeleton] # Interrupted while running: packages/skeleton/dist/test/review.test.js at <worktree>/packages/skeleton/dist/test/review.test.js:1:1
+  [skeleton] # Interrupted while running: packages/skeleton/dist/test/runtime-status.test.js at <worktree>/packages/skeleton/dist/test/runtime-status.test.js:1:1
+  [skeleton] # Interrupted while running: packages/skeleton/dist/test/scenario.test.js at <worktree>/packages/skeleton/dist/test/scenario.test.js:1:1
+  [skeleton] # Interrupted while running: packages/skeleton/dist/test/senses-v3.test.js at <worktree>/packages/skeleton/dist/test/senses-v3.test.js:1:1
+  [skeleton] # Interrupted while running: packages/skeleton/dist/test/senses.test.js at <worktree>/packages/skeleton/dist/test/senses.test.js:1:1
+  [skeleton] # Interrupted while running: packages/skeleton/dist/test/snapshot-index.test.js at <worktree>/packages/skeleton/dist/test/snapshot-index.test.js:1:1
+  [skeleton] # Interrupted while running: packages/skeleton/dist/test/source-change-confinement.test.js at <worktree>/packages/skeleton/dist/test/source-change-confinement.test.js:1:1
+  [skeleton] # Interrupted while running: packages/skeleton/dist/test/source-change-host.test.js at <worktree>/packages/skeleton/dist/test/source-change-host.test.js:1:1
+  [skeleton] # Interrupted while running: packages/skeleton/dist/test/source-change-receipt.test.js at <worktree>/packages/skeleton/dist/test/source-change-receipt.test.js:1:1
+  [skeleton] # Interrupted while running: packages/skeleton/dist/test/subagent-budget.test.js at <worktree>/packages/skeleton/dist/test/subagent-budget.test.js:1:1
+  [skeleton] # Interrupted while running: packages/skeleton/dist/test/verification-witness.test.js at <worktree>/packages/skeleton/dist/test/verification-witness.test.js:1:1
+  [skeleton] # Interrupted while running: packages/skeleton/dist/test/verification-worktree.test.js at <worktree>/packages/skeleton/dist/test/verification-worktree.test.js:1:1
+  [skeleton] # Interrupted while running: packages/skeleton/dist/test/verification.test.js at <worktree>/packages/skeleton/dist/test/verification.test.js:1:1
+  [skeleton] # Interrupted while running: packages/skeleton/dist/test/wo046-continuations.test.js at <worktree>/packages/skeleton/dist/test/wo046-continuations.test.js:1:1
+  [skeleton] # Interrupted while running: packages/skeleton/dist/test/worker-read-inventory.test.js at <worktree>/packages/skeleton/dist/test/worker-read-inventory.test.js:1:1
+  [skeleton] # Interrupted while running: packages/skeleton/dist/test/worker-store-decode.test.js at <worktree>/packages/skeleton/dist/test/worker-store-decode.test.js:1:1
+  [skeleton] # Interrupted while running: packages/skeleton/dist/test/worker.test.js at <worktree>/packages/skeleton/dist/test/worker.test.js:1:1
+  [skeleton] # Interrupted while running: packages/skeleton/dist/test/writer.test.js at <worktree>/packages/skeleton/dist/test/writer.test.js:1:1
+  [skeleton]
+  [skeleton] Suite skeleton stopped by gate request after 152931 ms
+FAIL registrations 0.00 s
+  [registrations] Gate stopped by request before this suite started
+FAIL artifact-corpus 0.00 s
+  [artifact-corpus] Gate stopped by request before this suite started
+FAIL local-runner-double 0.00 s
+  [local-runner-double] Gate stopped by request before this suite started
+FAIL authority-grants 0.00 s
+  [authority-grants] Gate stopped by request before this suite started
+FAIL codex-continuation 0.00 s
+  [codex-continuation] Gate stopped by request before this suite started
+FAIL portfolio 0.00 s
+  [portfolio] Gate stopped by request before this suite started
+FAIL derived-orders 0.00 s
+  [derived-orders] Gate stopped by request before this suite started
+FAIL resident-bind 0.00 s
+  [resident-bind] Gate stopped by request before this suite started
+FAIL adjacent-queue 0.00 s
+  [adjacent-queue] Gate stopped by request before this suite started
+FAIL browser-evidence 0.00 s
+  [browser-evidence] Gate stopped by request before this suite started
+FAIL console 0.00 s
+  [console] Gate stopped by request before this suite started
+FAIL compiler 0.00 s
+  [compiler] Gate stopped by request before this suite started
+FAIL kernel 0.00 s
+  [kernel] Gate stopped by request before this suite started
+FAIL work-orders-fixtures 0.00 s
+  [work-orders-fixtures] Gate stopped by request before this suite started
+FAIL release:case:material 53.86 s
+  [release:case:material] PROGRESS release case material started
+  [release:case:material] Preparing worktree (new branch 'wo-099')
+  [release:case:material] Preparing worktree (new branch 'wo-099')
+  [release:case:material] Material declared: {"path":"scratch-material/x","lane":"other","disposition":"disposable","source":"declared","reason":"fixture disposition","state":{"worktree":"014cb4a96573ffd798880fdfb882694462520d7a017e6784936525d0fdb2b954","sha256":"2b516273aeb4c0ae7b12ae135dbf6e3d0c7688d48ced6e1ba27565988e11845e"}}
+  [release:case:material] Preparing worktree (new branch 'wo-099')
+  [release:case:material] Material declared: {"path":"scratch-material/x","lane":"other","disposition":"preserve","source":"declared","reason":"fixture disposition","state":{"worktree":"34f2a75bffc584e9f431c85264dc977d17cae4122a2da385d48e925a2a29629e","sha256":"a5000c32cf05ba911d6a3f35d2f7e8e95d6568ccc7311ac4f3c316c8e61585af"}}
+  [release:case:material] Preparing worktree (new branch 'wo-099')
+  [release:case:material] Material declared: {"path":"scratch-material/x","lane":"other","disposition":"disposable","source":"declared","reason":"unfiled local word","state":{"worktree":"b108ab504704bcfa151c1d7eb2e56543c3ed809e976f2d46843902ae8f40536a","sha256":"195d9b58a8b2558b7e6b60b4305e2c471547da652a27329cd37b0ffa7f1763ca"}}
+  [release:case:material] Preparing worktree (new branch 'wo-099')
+  [release:case:material] Material declared: {"path":"scratch-material/repo's space","lane":"other","disposition":"disposable","source":"declared","reason":"unfiled local word","state":{"worktree":"36f21ab6a6428c6f0eb99b73f1a101b877627eb39506e8fa1ba248515128bb19","sha256":"442604ffdeefe558886e2a9b86c919bd447718d0e57e80727a9917699d4d6a01"}}
+  [release:case:material] Preparing worktree (new branch 'wo-099')
+  [release:case:material] Preparing worktree (new branch 'wo-099')
+  [release:case:material] Preparing worktree (detached HEAD 22bd50b)
+  [release:case:material]
+  [release:case:material] Suite release:case:material stopped by gate request after 53859 ms
+FAIL target-publish 50.26 s
+  [target-publish] TAP version 13
+  [target-publish] # Subtest: WO-182 AC3: readiness refusal precedes every remote call; operator publication shows the same gaps
+  [target-publish] ok 1 - WO-182 AC3: readiness refusal precedes every remote call; operator publication shows the same gaps
+  [target-publish]   ---
+  [target-publish]   duration_ms: 2831.97125
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # Subtest: WO-182 AC3: one absent item names its gap; the same store publishes a proposal without the flag
+  [target-publish] ok 2 - WO-182 AC3: one absent item names its gap; the same store publishes a proposal without the flag
+  [target-publish]   ---
+  [target-publish]   duration_ms: 3749.276166
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # Subtest: WO-182 current replayed baseline, verification and review permit required publication
+  [target-publish] ok 3 - WO-182 current replayed baseline, verification and review permit required publication
+  [target-publish]   ---
+  [target-publish]   duration_ms: 3628.16075
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # Subtest: WO-182 stale preparation and forged baseline/review events cannot bypass readiness
+  [target-publish] ok 4 - WO-182 stale preparation and forged baseline/review events cannot bypass readiness
+  [target-publish]   ---
+  [target-publish]   duration_ms: 4027.2425
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # Subtest: WO-064 AC1: publish refuses without an operator grant before any remote call
+  [target-publish] ok 5 - WO-064 AC1: publish refuses without an operator grant before any remote call
+  [target-publish]   ---
+  [target-publish]   duration_ms: 2559.1345
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # Subtest: WO-064 AC1: a host-policy grant is not operator provenance
+  [target-publish] ok 6 - WO-064 AC1: a host-policy grant is not operator provenance
+  [target-publish]   ---
+  [target-publish]   duration_ms: 2455.427709
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # target publish gh stub transcript (temporary path normalized):
+  [target-publish] # --version
+  [target-publish] # auth status --hostname github.com
+  [target-publish] # pr create --repo github.com/dotln-fixture/target --head fix/fixture-text --base main --title fix: record the synthetic worker line --body-file <generated-PR-body>
+  [target-publish] # Subtest: WO-064 AC1/AC2: lint and target refusals name their rule; the granted publish pushes and opens the pull request with the pinned body
+  [target-publish] ok 7 - WO-064 AC1/AC2: lint and target refusals name their rule; the granted publish pushes and opens the pull request with the pinned body
+  [target-publish]   ---
+  [target-publish]   duration_ms: 4751.801333
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # Subtest: WO-064 AC1 (VER-001 F1): a same-head acceptance matrix must verify this WorkOrder's criteria
+  [target-publish] ok 8 - WO-064 AC1 (VER-001 F1): a same-head acceptance matrix must verify this WorkOrder's criteria
+  [target-publish]   ---
+  [target-publish]   duration_ms: 4195.311458
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # WO-066 signature positive control ran; guarded publication did not run it; changed repository refused before gh or push.
+  [target-publish] # Subtest: WO-157: publication runs no hook or repository configuration the target holds
+  [target-publish] ok 9 - WO-157: publication runs no hook or repository configuration the target holds
+  [target-publish]   ---
+  [target-publish]   duration_ms: 2953.662625
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # Subtest: WO-064: the CLI names its usage for a malformed target request
+  [target-publish] ok 10 - WO-064: the CLI names its usage for a malformed target request
+  [target-publish]   ---
+  [target-publish]   duration_ms: 52.903875
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # Subtest: WO-066 AC5: a signed-header commit runs planted gpg on ordinary log, never publication; request binds origin before remote calls
+  [target-publish] ok 11 - WO-066 AC5: a signed-header commit runs planted gpg on ordinary log, never publication; request binds origin before remote calls
+  [target-publish]   ---
+  [target-publish]   duration_ms: 2886.364042
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # Subtest: WO-065 AC1: typed classes, correlation, roles and latest normalized-state dedup through the CLI
+  [target-publish] ok 12 - WO-065 AC1: typed classes, correlation, roles and latest normalized-state dedup through the CLI
+  [target-publish]   ---
+  [target-publish]   duration_ms: 2718.302458
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # Subtest: WO-065 F1: actor types decide roles on every comment connection and pagination path
+  [target-publish] ok 13 - WO-065 F1: actor types decide roles on every comment connection and pagination path
+  [target-publish]   ---
+  [target-publish]   duration_ms: 428.451208
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # Subtest: WO-065 AC2: every declared secret and URL form is refused without persisted text; safe peers survive
+  [target-publish] ok 14 - WO-065 AC2: every declared secret and URL form is refused without persisted text; safe peers survive
+  [target-publish]   ---
+  [target-publish]   duration_ms: 401.727208
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # Subtest: WO-065 AC1/AC2: all connections and nested thread comments paginate
+  [target-publish] ok 15 - WO-065 AC1/AC2: all connections and nested thread comments paginate
+  [target-publish]   ---
+  [target-publish]   duration_ms: 603.744416
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # Subtest: WO-065 AC3: unknown PR, malformed JSON/fields, partial errors and gh failure append nothing
+  [target-publish] ok 16 - WO-065 AC3: unknown PR, malformed JSON/fields, partial errors and gh failure append nothing
+  [target-publish]   ---
+  [target-publish]   duration_ms: 3733.661208
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # Subtest: WO-065: duplicate nodes, stalled pagination and concurrent writer refuse
+  [target-publish] ok 17 - WO-065: duplicate nodes, stalled pagination and concurrent writer refuse
+  [target-publish]   ---
+  [target-publish]   duration_ms: 615.460334
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # Subtest: WO-065 F2: malformed screened bodies remain refused items while safe peers survive
+  [target-publish] ok 18 - WO-065 F2: malformed screened bodies remain refused items while safe peers survive
+  [target-publish]   ---
+  [target-publish]   duration_ms: 674.293792
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # Subtest: WO-065 F3: refused metadata stays local, preserves check states, and retains no rejected content
+  [target-publish] ok 19 - WO-065 F3: refused metadata stays local, preserves check states, and retains no rejected content
+  [target-publish]   ---
+  [target-publish]   duration_ms: 701.858292
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # Subtest: WO-065 F3: forge hosts incompatible with the screen refuse before gh
+  [target-publish] ok 20 - WO-065 F3: forge hosts incompatible with the screen refuse before gh
+  [target-publish]   ---
+  [target-publish]   duration_ms: 421.169791
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # Subtest: WO-065: draft comments stay transient, deleted authors and opaque padded ids remain readable, empty checks are valid
+  [target-publish] ok 21 - WO-065: draft comments stay transient, deleted authors and opaque padded ids remain readable, empty checks are valid
+  [target-publish]   ---
+  [target-publish]   duration_ms: 387.111958
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # Subtest: WO-065: a valid page over the default child-process buffer is decoded and stored
+  [target-publish] ok 22 - WO-065: a valid page over the default child-process buffer is decoded and stored
+  [target-publish]   ---
+  [target-publish]   duration_ms: 414.389917
+  [target-publish]   type: 'test'
+  [target-publish]   ...
+  [target-publish] # Interrupted while running: scripts/test-target-publish.mjs at <worktree>/scripts/test-target-publish.mjs:1:1
+  [target-publish]
+  [target-publish] Suite target-publish stopped by gate request after 50255 ms
+FAIL worktree-integration 19.09 s
+  [worktree-integration] TAP version 13
+  [worktree-integration] # Interrupted while running: scripts/test-worktree-integration.mjs at <worktree>/scripts/test-worktree-integration.mjs:1:1
+  [worktree-integration]
+  [worktree-integration] Suite worktree-integration stopped by gate request after 19085 ms
+Gate stopped by request after 156.9 s; no check recorded for tree 41aa02a886447e4ba74617abe4783179422b13cc

@@ -1,0 +1,1 @@
+Harness evidence: 4 historical live role smokes and 2 historical writer smokes at v0.16.0 / WO-042 (historical; no claim of a current live run); 32 current generated surfaces; local-terms list: unavailable (52 surfaces checked).

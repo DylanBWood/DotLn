@@ -25674,7 +25674,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-124 met the trigger: it edited packages/compiler/src/story-contract.ts to add deriveSurfaces and left the follows rule in compileStoryContract unchanged (a non-goal; WO-124-D011). The follows-target choice remains the planner's decision. [WO-124 final review, docs/final-reviews/WO-124/FINAL-001.md; WO-124-D014]",
+          "reopenWhen": "the planning pass before WO-062 or WO-123 activates, or the next order that edits the follows rule in compileStoryContract",
+          "targets": [],
+          "at": "2026-10-02T00:25:50.561Z"
+        }
+      ]
     },
     {
       "id": "FUP-2534f4dc631f5ebc",
@@ -25687,9 +25696,25 @@
           "title": "WO-061-D011: Planner, for WO-124 (the next order that edits packages/compiler/src/story-contract.ts), or WO-062 if it lands first: (1) decide whether an image whose referencedBy covers only whitespace",
           "summary": "{ \"id\": \"WO-061-D011\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Pass WO-061 on all eight criteria against the original order. The basis is VER-001, this review's reading of the full diff, a rerun of the nine WO-061 tests and the fixture-diff check on a fresh build, direct edition, console, harness and publication checks, and the passing product row at the unchanged code identity. main had not moved past the executor's base (v0.62.0, 3a4aa82a), so no integration was needed and v0.63.0 stays the target. Board four seams that the order's fixtures do not reach, without failing the order. (1) compileStoryContract throws 'span must resolv",
           "missing": false
+        },
+        {
+          "hash": "4c5f97845714fc84145e61c2276c5e1945457fbefb813cc0ba3e44b29703075b",
+          "ref": "docs/evidence/WO-061/decisions.md#wo-061-d011--final-review-pass-and-four-compile-seams-outside-the-declared-fixtures",
+          "title": "WO-061-D011: Planner, for WO-124 (the next order that edits packages/compiler/src/story-contract.ts), or WO-062 if it lands first: (1) decide whether an image whose referencedBy covers only whitespace",
+          "summary": "{ \"id\": \"WO-061-D011\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Pass WO-061 on all eight criteria against the original order. The basis is VER-001, this review's reading of the full diff, a rerun of the nine WO-061 tests and the fixture-diff check on a fresh build, direct edition, console, harness and publication checks, and the passing product row at the unchanged code identity. main had not moved past the executor's base (v0.62.0, 3a4aa82a), so no integration was needed and v0.63.0 stays the target. Board four seams that the order's fixtures do not reach, without failing the order. (1) compileStoryContract throws 'span must resolv",
+          "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-124 met the trigger: it edited packages/compiler/src/story-contract.ts to add deriveSurfaces and left compileStoryContract and revise unchanged (a non-goal; WO-124-D011). WO-062 does not edit the module. The four compile seams remain the planner's decision. [WO-124 final review, docs/final-reviews/WO-124/FINAL-001.md; WO-124-D014]",
+          "reopenWhen": "the planning pass before WO-062 or WO-123 activates, or the next order that edits compileStoryContract or revise in packages/compiler/src/story-contract.ts",
+          "targets": [],
+          "at": "2026-10-02T00:25:50.523Z"
+        }
+      ]
     },
     {
       "id": "FUP-ab8499c6d47996b0",
@@ -25725,6 +25750,43 @@
           "ref": "docs/evidence/WO-179/decisions.md#wo-179-d015--verification-a-siblings-merge-widens-the-review-selection-at-an-unchanged-identity",
           "title": "WO-179-D015: Next order editing changedMachinery in scripts/test-runner.mjs or the review-selection read in scripts/lib/handoff-ledger.mjs (priority medium; gate cost, fails safe). Compute a worktree'",
           "summary": "{ \"id\": \"WO-179-D015\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002 and board one defect outside WO-179's declared criteria and surfaces. A worktree's review selection is computed against the moving origin/main tip (scripts/test-runner.mjs changedMachinery, base \\\"origin/main\\\"), so paths a sibling order changed on main count as this worktree's change. When main advances after a passing review row, the selection gains machinery suites at an unchanged code identity, and the verification-result claim check this order added refuses a met npm test -- --review criterion until the whole review gate runs again. The verifier leaves the imp",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ae5eaf150be2b1da",
+      "key": "decision:docs/evidence/WO-124/decisions.md#wo-124-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "48b3ca1e35e8f80f81bbfe1b895774e2894be7b8b41ec09516c662fcac643587",
+          "ref": "docs/evidence/WO-124/decisions.md#wo-124-d014--final-review-passes-and-boards-three-derivation-seams-outside-the-fixtures",
+          "title": "WO-124-D014: Planner, before WO-123 activates (the first composition that turns deriveSurfaces output into a derived order): (1) decide whether a DerivedSurfaces result with no surfaces may become an ",
+          "summary": "{ \"id\": \"WO-124-D014\", \"date\": \"2026-10-02\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Pass WO-124 on all six criteria against the original order, on the integrated tree. Board, without failing the order, three behaviors that probes outside the declared fixtures reach. (1) With a caller threshold of 0, a contract whose requirements yield no surface returns DerivedSurfaces with empty surfaces and tests, not NeedsHuman. (2) A requirement covered only by a supplied inferred entry counts toward confidence, so an inference alone can clear the default gate (the order's union and coverage text admits this; the fixture 'inferred' case pins it). (3) The noun rule'",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-af65972e5491da22",
+      "key": "decision:docs/evidence/WO-124/decisions.md#wo-124-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "27ccf8a9ea2c822acc9e398c3de4a59bd50cdeac23c078dfbb7c4806d0375ec2",
+          "ref": "docs/evidence/WO-124/decisions.md#wo-124-d015--final-review-removes-the-operators-home-path-from-two-public-transcripts",
+          "title": "WO-124-D015: Planner, low priority, one pass over the corpus policy: decide whether committed records may carry the operator's absolute home path. If not, decide how immutable VER and FINAL reports ar",
+          "summary": "{ \"id\": \"WO-124-D015\", \"date\": \"2026-10-02\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"correction\", \"decision\": \"Replace the operator's absolute worktree prefix with '<worktree>/' in this order's two public transcript copies, changing no other byte, and keep the raw copies in the ignored local control lane, as D010 did for trailing spaces. Nominate, without editing, the older tracked records that hold the same absolute home path, because many are immutable verification and final-review reports and a sweep needs a planning decision.\", \"misread\": \"D010's normalization of the two public transcript copies, and VER-001, treated them as clean once trailing spaces were removed; neithe",
+          "missing": false
+        },
+        {
+          "hash": "d9c3315d63a49b201875ca16bcb0837a90ffa78a53a07059b64ef75e0676b06b",
+          "ref": "docs/evidence/WO-124/decisions.md#wo-124-d015--final-review-removes-the-operators-home-path-from-two-public-transcripts",
+          "title": "WO-124-D015: Planner, low priority, one pass over the corpus policy: decide whether committed records may carry the operator's absolute home path. If not, decide how immutable VER and FINAL reports ar",
+          "summary": "{ \"id\": \"WO-124-D015\", \"date\": \"2026-10-02\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"correction\", \"decision\": \"Replace the operator's absolute worktree prefix with '<worktree>/' in this order's two public transcript copies, changing no other byte, and keep the raw copies in the ignored local control lane, as D010 did for trailing spaces. Nominate, without editing, the older tracked records that hold the same absolute home path, because many are immutable verification and final-review reports and a sweep needs a planning decision.\", \"misread\": \"D010 normalized the two public transcript copies for trailing spaces only and treated them as publishable; no earlier record of this o",
           "missing": false
         }
       ],
