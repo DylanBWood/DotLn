@@ -1,4 +1,4 @@
-# WO-179 — Role text carries the corrections the survey confirmed: the shared Contributor text and the lifecycle briefings gain the ten rules WO-172's subject map traced to repeated operator interventions, the verifier consumes the executor's gate row instead of rerunning it, and the release-close and executor roles learn the handoff of scratch material and the report of a blocker or a host denial (version assigned at activation)
+# WO-179 — Role text carries the corrections the survey confirmed: the shared Contributor text and the lifecycle briefings gain the ten rules WO-172's subject map traced to repeated operator interventions, the verifier consumes the executor's gate row instead of rerunning it, and the release-close and executor roles learn the handoff of scratch material and the report of a blocker or a host denial (v0.63.1)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
