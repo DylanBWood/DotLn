@@ -62,6 +62,17 @@ Earlier rationale is preserved in the [planning archive](archive/work-order-map-
 
 **Standard pass (2026-09-30, second):** the operator's `planning: standard planning pass + small additions` (`main` at `b51a58a8`) with eight mid-turn messages: a release close that stopped at a nested scratch repository and then moved it by its own decision; spawned agents pinned to Codex `gpt-6.1-sol` at `max` and Claude `claude-opus-5-5` at `xhigh`; a publish the Claude auto-mode classifier denied and nobody retried; WO-172's subject map as a trove to mine beside the queue and the boarded items; whether product orders are missing after five machinery passes; and that `v1.0.0` is months away and the period until then is early access. The pass routed all 30 themes, took the two entry measurements the map asked for (40 gate rows since WO-173, 12 repeats at a green identity; 3 failed verifications, none only on an undeclared case), checked product coverage against the vision, the critical path and the roadmap, and filed eight orders: WO-180 to WO-183 for the vertical's promised baseline witness, review episode and deliverable-ready conjunction and for the `v1.0.0` exit's shape; WO-176 to WO-179 for the close, the pinned models, the record and the role text. Every pair from the third slot carries a delivery lane. The record is [the planning document](standard-pass-2026-09-30.md).
 
+**Entropy review pass (2026-10-02):** REVIEW-005 and blinded REFUTATION-006
+found two measured minor issues. Both are accepted; neither receives a
+new order. The pass records timeout headroom and explicit reversal
+conditions, re-disposes three fired follow-up triggers from their current
+sources, and declines the proposed four-row prose parser. Fourteen closed
+entries leave the sequence; WO-123 remains next. The document gate's
+39.984 s median and weekly evidence growth are reassessed without claiming
+that a parse cache or evidence ceiling is the remedy; the roadmap table is
+refreshed. Routes and NoOps: [the planning document](entropy-review-005-2026-10-02.md)
+and [the disposition table](#review-005-consumed--dispositions-and-routes-2026-10-02).
+
 **Process debt (2026-09-09):** the operator opened an emergency pass after
 the `v0.16.0` close with eleven observed failures of the lifecycle machinery
 and one direction: one order, first in line, exempt from the one-seam rule.
@@ -1179,7 +1190,16 @@ reopens it. None is allocated; this section grants no activation authority.
 8. **Harness profile re-probe.** The manifest's profile ids name Claude Code
    2.1.263 and Codex CLI 0.153.4; sessions run 2.1.277 and 0.155.0, and all
    seven Codex residue items rest on a 2026-09-07 probe. Needs a live
-   re-probe. Reopen: the next order with a live harness smoke.
+   re-probe. The 2026-10-02 reassessment records that the former trigger,
+   the next live harness smoke, occurred in WO-149 and WO-159. Those
+   records prove dispatch/usage and isolated user settings, respectively;
+   neither re-qualifies all profile capabilities. A broad re-probe is
+   declined for now: no changed hook behavior is observed in those records,
+   and the existing residue stays explicit. Reopen on an observed
+   capability/role-text mismatch on a newer CLI, a change to the harness
+   integration contract, or an operator-directed requalification; review
+   again at the next entropy pass. Evidence and NoOp:
+   [REVIEW-005 planning record](entropy-review-005-2026-10-02.md).
 9. **Unmeasured growth costs.** Index generation reads control state at
    every release tag (`scripts/work-orders.mjs:174`; 61 tags), the console
    collector spawns one status call per order
@@ -3512,6 +3532,34 @@ The measurements, the declined alternatives and the goal alignment are in
 | Packet `reopen-conditions-evaluated-at-planning-entry`                                                  | accepted, filed          | design record for WO-175                                                                                          | the order's decisions                                                                                        |
 | Packet `history-independent-document-checks`                                                            | deferred, not filed      | stays in the REVIEW-004 receipt                                                                                   | ER4-005's condition occurs                                                                                   |
 
+## REVIEW-005 consumed — dispositions and routes (2026-10-02)
+
+[REVIEW-005](../instance/entropy-reducer/runs/REVIEW-005.md) and
+[REFUTATION-006](../instance/entropy-reducer/runs/REFUTATION-006.md)
+cost 1,519.235 s and USD 9.3190456 together. Both measured minor findings
+survived. The [generated review document](entropy-reviews/REVIEW-005.md)
+holds the accepted findings; [the planning document](entropy-review-005-2026-10-02.md)
+§5 holds their completed planning decisions and the NoOpIntent comparisons.
+No work order is filed or amended and no runtime change is claimed.
+
+| Item | Disposition and route | Reopen |
+| --- | --- | --- |
+| ER5-001, timeout headroom | Accepted, new order declined; keep limits and review durations each entropy pass. REVIEW-005 is 58.5% of the review limit after REVIEW-004 at 92.3%. | An observed deadline loss or two successive episodes of one kind above 80% of its limit. |
+| ER5-002, fired follow-up triggers | Accepted; FUP-0086, FUP-0113 and FUP-ec75a4295bf36696 re-disposed below. Parser order declined. | A later pass again leaves a named fired lifecycle trigger unchanged. |
+| Packet `entropy-episode-timeout-headroom-listed` | Deferred, not filed; retained in REVIEW-005, same NoOp as ER5-001. | ER5-001's condition. |
+| Packet `order-lifecycle-reopen-triggers-listed` | Deferred, not filed; retained in REVIEW-005. Four-row coverage does not include the live-smoke trigger. | ER5-002's condition; compare typed conditions with anchored prose. |
+| FUP-0086, authorship assistance | WO-117 landed; the candidate is re-deferred because equip/build authoring left that order. Product 04 records the boundary. | Proposed pattern-workshop/equip/build authoring order or witnessed missing proposal axis. |
+| FUP-0113, exposure plans | WO-062 activated; adopt its D002 deterministic read/store boundary. Product 09 and WO-123's catalog carry the next reading. | First consuming model invocation, including WO-123 preflight, or a proposed private-material reader. |
+| FUP-ec75a4295bf36696, harness re-probe | The smoke trigger occurred in WO-149/WO-159. Broad requalification declined; dated capability limits remain. | Observed capability/role-text mismatch, changed integration contract or operator direction; review next entropy pass. |
+| FUP-fb8cbeabbddef397, document latency | Remains open, with the 39.984 s median and console parity profile; the specific history-cache remedy is declined. | Next standard pass or relevant suite/check edit, with a bounded same-coverage cost comparison. |
+| FUP-8a4e201d861208ad and FUP-be1103fbfdd14653, evidence growth | Weekly trigger occurred; re-deferred after the 12.524 MB path-growth / 9.158 MB distinct-content census. Immutable evidence retained. | Another week above 10 MB, two successive orders above 1 MB distinct blobs, or observed reading/storage harm. |
+
+The earlier assertion that every deferred retirement match had an unoccurred
+condition was wrong for FUP-0086: WO-117 was already closed. This records
+the correction without editing the earlier pass or any immutable receipt.
+The full retirement query in this pass matched 50 pending rows; textual
+matches unrelated to these decisions retain their status and conditions.
+
 ## Direct-draft provenance for the 2026-09-02 batch
 
 WO-016 through WO-022 were supplied by the operator as complete public drafts
@@ -3611,6 +3659,12 @@ keep a labeled conservative token view that does not block. A dependency-ready
 row still needs human preflight and selection.
 
 ## Catalog — human preflight and scope notes
+
+**WO-123 preflight, 2026-10-02:** read WO-062 D002 and product 09
+§Candidate — model-input exposure plans at the first consuming model
+invocation. FUP-0113's former activation trigger occurred and its current
+disposition carries that existing boundary. This is a preflight reading,
+not a new ModelInputPlan implementation criterion or a privacy guarantee.
 
 Consult each linked authority for current Model, Effort, typed dependencies,
 and acceptance. In every row, the activation-preflight column carries human

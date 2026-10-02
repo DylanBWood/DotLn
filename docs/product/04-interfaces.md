@@ -359,6 +359,13 @@ accepted proposal is an ordinary reviewed change. This candidate selects no
 editor, host, or model call; the projection contracts in this document are its
 surfaces, and the pattern workshop rung is its first delivery point.
 
+The 2026-10-02 planning reassessment records that WO-117 supplied the live
+inspection and command host, while equip/build authoring explicitly left
+its scope. That close triggered a review of this candidate, not its
+implementation. Reopen when a pattern-workshop or equip/build authoring
+order is proposed, or a witnessed authoring task identifies a missing
+proposal axis ([planning record](../planning/entropy-review-005-2026-10-02.md)).
+
 ## `προτείνω` — prose as a world action
 
 The operator-named first-party application, specified in

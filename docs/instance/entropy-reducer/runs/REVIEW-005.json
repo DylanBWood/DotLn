@@ -1,0 +1,483 @@
+{
+  "schemaVersion": "entropy-review-receipt-v1",
+  "receiptId": "REVIEW-005",
+  "ordinal": 8,
+  "previousReceiptHash": "sha256:81a758dd6b69549d43fac9daab05517cbe6f865b28062872250bdf2520ec14eb",
+  "kind": "EntropyReducerReviewRun",
+  "episodeId": "ep_entropy_880df716e553ecb8",
+  "startedAt": "2026-10-02T03:36:51.543Z",
+  "endedAt": "2026-10-02T04:00:14.977Z",
+  "subject": {
+    "schemaVersion": "entropy-review-v1",
+    "baseCommit": "b0e11b0da2a743dde63cb8d5da5d73ef6d02628e",
+    "repository": "/Users/dylanwood/Projects/DotLn",
+    "scratchRepository": "/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/cff9570ebfdf6d3e/review-OJwTa4/repo",
+    "trackedStatusSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "scratchInventorySha256": "3cd9e8bd7a9a028275b23832c6d2e2b7ead81e9ac85057b3c1ba558480d282bc",
+    "scratchInventoryCount": 4652,
+    "hash": "880df716e553ecb8eecf715c5b9bd4b17a5f8cb562576326215256b7754cbeb4"
+  },
+  "workingTreeDirtyAtDispatch": false,
+  "namedRevision": "HEAD",
+  "actorAttestation": {
+    "route": "launched",
+    "transport": "claude-cli-print",
+    "harness": "claude-code",
+    "harnessVersion": "2.1.287",
+    "model": "claude-opus-5-5",
+    "effort": "xhigh",
+    "source": "command-line-readback-and-invocation",
+    "accountLabel": null,
+    "tools": [
+      "Bash",
+      "Read",
+      "Glob",
+      "Grep"
+    ],
+    "effectiveModel": "unknown",
+    "effectiveEffort": "unknown",
+    "identity": "entropy-reducer@1",
+    "substitutionReason": null,
+    "substitutionPolicy": "different-reviewer-and-must-be-attested"
+  },
+  "compilation": {
+    "semanticHash": "fnv1a64:781461038bf7cf8d",
+    "compileInputs": {
+      "route": "claude-cli-print",
+      "repo": "/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/cff9570ebfdf6d3e/review-OJwTa4/repo",
+      "baseCommit": "b0e11b0da2a743dde63cb8d5da5d73ef6d02628e",
+      "episodeId": "ep_entropy_880df716e553ecb8",
+      "dispatchedAt": 1790912211518,
+      "episodeEndsAt": 1790998611518
+    },
+    "workOrderId": "wo_entropy_review_1",
+    "authorityEnvelopeId": "auth_entropy_reducer",
+    "reviewerRequirement": {
+      "harness": "claude-code",
+      "model": "claude-opus-5-5",
+      "displayModel": "Claude Opus 5.5",
+      "effort": "xhigh",
+      "substitutionPolicy": "different-reviewer-and-must-be-attested"
+    },
+    "executionBoundary": {
+      "mode": "operator-mediated-manual",
+      "deferredProgramKind": null,
+      "commandIds": "symbolic-manual-plan",
+      "resultBinding": "host-validator",
+      "resourceEnforcement": "authorize-each-operation-and-thread-envelope"
+    }
+  },
+  "concern": null,
+  "reviewerOutput": {
+    "schemaVersion": 1,
+    "findings": [
+      {
+        "findingId": "ER5-001",
+        "criterion": "A launched worker's time limit keeps recorded headroom over its observed runs, and a limit about to be crossed is reported before an episode fails on it (packages/skeleton/src/entropy-review-protocol.ts:11-16 says both limits sit above the observed run; product 07 §Operator-opened planning pass consumes the review's receipt).",
+        "severity": "minor",
+        "observed": "Recorded review durations against ENTROPY_REVIEW_LIMITS.timeoutMs 2,400,000: REVIEW-001 1,019,575 ms (42.5%), REVIEW-002 993,364 (41.4%), REVIEW-003 1,088,847 (45.4%), REVIEW-004 2,215,824 (92.3%). The limit's comment still cites only REVIEW-001's 1,019.6 s. When the deadline is reached the runner raises WorkerFailure('deadline-exceeded') and kills the worker (worker-transport.ts:138-142). A print-mode episode killed this way returns no result envelope, so every finding is lost, but the spend is not (REVIEW-004 cost USD 11.71). The numeric conditions table has no row for entropy-episode duration (0 mentions of 'entropy' in scripts/lib/planning-conditions.mjs). The 2026-09-30 pass recorded the 2,216 s, attributed 384 s of it to one npm test and called the rest unknown, without setting a threshold.",
+        "expected": "The headroom between the latest review or refutation duration and its timeout is a listed numeric condition, or the limit is re-derived from the four observed runs, so the first signal of a breach is not a timed-out review that leaves no receipt.",
+        "evidenceRefs": [
+          "command output: REVIEW-001 durationMs 1019575 = 42.5%; REVIEW-002 993364 = 41.4%; REVIEW-003 1088847 = 45.4%; REVIEW-004 2215824 = 92.3% of timeoutMs 2400000; planning-conditions rows naming an entropy episode: 0",
+          "packages/skeleton/src/entropy-review-protocol.ts:11-24 (ENTROPY_REVIEW_LIMITS 2,400,000 ms / USD 20.00; the comment cites REVIEW-001's 1,019.6 s as the observed run)",
+          "packages/skeleton/src/worker-transport.ts:138-142 (deadline: WorkerFailure('deadline-exceeded') then kill) and :1195-1197 (review timeout selection)",
+          "docs/instance/entropy-reducer/runs/REVIEW-004.md (wall clock 2216 s, 145 turns, USD 11.71)",
+          "docs/planning/entropy-review-004-2026-09-30.md:43-50 (2,216 s; 384 s in one npm test; the rest of the difference unknown)",
+          "scripts/lib/planning-conditions.mjs CONDITION_TABLE (ten rows, none for entropy episodes)"
+        ],
+        "surface": "packages/skeleton/src/entropy-review-protocol.ts (ENTROPY_REVIEW_LIMITS); packages/skeleton/src/worker-transport.ts (runner deadline); scripts/lib/planning-conditions.mjs (CONDITION_TABLE)",
+        "altitude": 6,
+        "standardization": {
+          "kind": "recurring",
+          "rung": "script",
+          "rationale": "Every review and refutation launches against the same constant. One row in the existing conditions listing (latest recorded durationMs over its timeoutMs, from the filed receipts) costs no episode and reports the headroom at each planning entry."
+        },
+        "evidenceLabel": "measured",
+        "reproduction": {
+          "kind": "command",
+          "command": "cd \"$(git rev-parse --show-toplevel)\" && node -e 'const fs=require(\"fs\");const src=fs.readFileSync(\"packages/skeleton/src/entropy-review-protocol.ts\",\"utf8\");const lim=Number(/ENTROPY_REVIEW_LIMITS = \\{\\s*timeoutMs: ([\\d_]+)/.exec(src)[1].replace(/_/g,\"\"));for(const n of [\"001\",\"002\",\"003\",\"004\"]){const s=JSON.stringify(require(`./docs/instance/entropy-reducer/runs/REVIEW-${n}.json`));const d=Number(/\"durationMs\":(\\d+)/.exec(s)[1]);console.log(`REVIEW-${n} durationMs ${d} = ${(100*d/lim).toFixed(1)}% of timeoutMs ${lim}`)}' && echo \"planning-conditions rows naming an entropy episode: $(grep -c -i 'entropy' scripts/lib/planning-conditions.mjs)\" && grep -n \"deadline-exceeded\" packages/skeleton/src/worker-transport.ts"
+        }
+      },
+      {
+        "findingId": "ER5-002",
+        "criterion": "A deferred register row whose reopening condition has occurred is reopened or re-disposed by whoever observes the condition (the 2026-09-19 rule the 2026-09-30 pass cites). WO-062's order says 'FUP-0113 reopens at this order's activation'.",
+        "severity": "minor",
+        "observed": "152 register rows are deferred. In 4 of them the reopening condition opens with a bare order activation or landing, and 2 of those have fired yet stay deferred. FUP-0086 waits on 'WO-117 lands'; WO-117 is closed (FinalReviewCompleted 2026-09-29). FUP-0113 waits on 'WO-062 activates…'; WO-062 is closed. Its order carried the row in and D002 records the reading, yet the register has no new disposition, and VER-002's follow-up check names only two other rows. FUP-ec75a4295bf36696 (the harness profile re-probe, deferred 2026-09-19 until 'the next order with a live harness smoke') also stays deferred, although WO-149 and WO-159 later added live Codex dispatch records. `plan followups --touching WO-117` lists FUP-0086. The 2026-09-30 pass, which ran that listing, recorded leaving the deferred rows 'because their conditions have not occurred'. `plan conditions` reports '3 hold' and 'Not evaluated: 1413 decision conditions and 848 register rows'.",
+        "expected": "An order-lifecycle trigger, which the control fold settles without judgment, is reported at planning entry or at the named order's close. The row is then reopened or re-deferred under a new condition, instead of resting on a trigger that has already fired.",
+        "evidenceRefs": [
+          "command output: FUP-0086 deferred 2026-09-19 until 'WO-117 lands (the pass's suggestion)', WO-117 phase closed; FUP-0113 deferred 2026-09-27 until 'WO-062 activates, or a local role that reads private material is proposed', WO-062 phase closed; FUP-0091 (WO-112) and FUP-441469088613e52a (WO-118) not yet fired; deferred rows 152, order-triggered 4",
+          "command output: docs/evidence/WO-149/live-codex-dispatch.md, .mjs and docs/evidence/WO-159/live-codex.json added after FUP-ec75a4295bf36696's 2026-09-19 deferral; .claude/harness-manifest.json profiles still observedVersion 2.1.263 / 0.153.4",
+          "command output: plan conditions '3 hold; 2 unknown. Not evaluated: 1413 decision conditions and 848 register rows'; plan followups --touching WO-117 lists FUP-0086",
+          "docs/control/orders/WO-117.jsonl:6 (FinalReviewCompleted 2026-09-29T17:57:32Z)",
+          "docs/work-orders/WO-062-github-issue-source-adapter.md (Design: 'Register carry-in: FUP-0113 … reopens at this order's activation')",
+          "docs/verifications/WO-062/VER-002.md:141 (follow-ups checked: FUP-516f42831f87de8a and FUP-817d50c71c3d3c53 only)",
+          "docs/planning/entropy-review-004-2026-09-30.md:306-310 (touching run over the eleven closed orders; deferred rows left 'because their conditions have not occurred')",
+          "scripts/lib/planning-conditions.mjs (register rows are not evaluated; prose never parsed)"
+        ],
+        "surface": "docs/planning/followups.json (deferred rows); scripts/lib/planning-conditions.mjs (conditions listing); scripts/lib/planning-followups.mjs (touching listing); the close-time completion advisory",
+        "altitude": 6,
+        "standardization": {
+          "kind": "recurring",
+          "rung": "script",
+          "rationale": "Register rows are disposed by hand at every pass and close, and 2 of the 4 deterministic order triggers have already lapsed. A listing that checks only the anchored form 'WO-NNN activates|lands|closes' against readControl phases is deterministic, adds no prose evaluation and fits the existing conditions command."
+        },
+        "evidenceLabel": "measured",
+        "reproduction": {
+          "kind": "command",
+          "command": "cd \"$(git rev-parse --show-toplevel)\" && node --input-type=module -e 'import { readControl } from \"./scripts/lib/control-store.mjs\"; import { readFileSync } from \"node:fs\"; const phase = new Map([...readControl(process.cwd()).orders].map(([id, row]) => [id, row.state.phase])); const { entries } = JSON.parse(readFileSync(\"docs/planning/followups.json\", \"utf8\")); const trigger = /^(WO-\\d{3}) (?:activates|lands)\\b/; let deferred = 0, orderTriggered = 0; for (const e of entries) { const d = e.dispositions.at(-1); if (d?.status !== \"deferred\") continue; deferred++; const m = trigger.exec(String(d.reopenWhen ?? \"\")); if (!m) continue; orderTriggered++; console.log(`${e.id}: deferred ${d.at.slice(0, 10)} until \"${d.reopenWhen}\"; ${m[1]} control phase now: ${phase.get(m[1]) ?? \"absent\"}`); } const r = entries.find((e) => e.id === \"FUP-ec75a4295bf36696\").dispositions.at(-1); console.log(`FUP-ec75a4295bf36696: ${r.status} ${r.at.slice(0, 10)} until \"${r.reopenWhen}\"`); console.log(`deferred rows: ${deferred}; whose condition opens with a bare order activation/landing: ${orderTriggered}`);' && echo \"live harness dispatch evidence added after 2026-09-19: $(git log --since=2026-09-19T02:00:00Z --diff-filter=A --name-only --format= -- 'docs/evidence/WO-149/live-codex-dispatch*' 'docs/evidence/WO-159/live-codex.json' | sort -u | tr '\\n' ' ')\" && node scripts/refute-plan.mjs conditions 2>/dev/null | grep -E \"^[0-9]+ hold|Not evaluated\" ; node scripts/refute-plan.mjs followups --touching WO-117 2>/dev/null | grep -c '\"FUP-0086\"'; grep -n \"the deferred ones\" docs/planning/entropy-review-004-2026-09-30.md"
+        }
+      }
+    ],
+    "proposalPackets": [
+      {
+        "schemaVersion": 1,
+        "kind": "ProductSuggestionPacket",
+        "proposedPath": "docs/proposals/entropy-episode-timeout-headroom-listed/",
+        "sourceEpisodeId": "ep_entropy_880df716e553ecb8",
+        "provenance": [
+          "entropy-reducer@1 review episode ep_entropy_880df716e553ecb8 (claude-opus-5-5 per dispatch; effective model and effort not read back)",
+          "frozen subject b0e11b0da2a743dde63cb8d5da5d73ef6d02628e",
+          "lens: runtime-and-authority; finding ER5-001"
+        ],
+        "corroboratingEvidenceRefs": [
+          "REVIEW-001..004 durationMs 1019575 / 993364 / 1088847 / 2215824 against timeoutMs 2400000 (42.5% / 41.4% / 45.4% / 92.3%)",
+          "packages/skeleton/src/worker-transport.ts:138-142 (deadline kills the worker; no result is decoded)",
+          "docs/instance/entropy-reducer/runs/REVIEW-004.md (USD 11.71 spent in one episode)"
+        ],
+        "dissentingEvidenceRefs": [
+          "docs/planning/entropy-review-004-2026-09-30.md:43-50 (384 s of REVIEW-004 was one npm test whose failures were temporary-root artifacts, which WO-175 addressed; the outlier may not be a trend)",
+          "packages/skeleton/src/entropy-review-protocol.ts:11-16 (the limits were deliberately set above the observed run, not at the 180 s worker default)",
+          "docs/planning/entropy-review-004-2026-09-30.md:188-190 (WO-175 bounds the conditions table at twelve rows; ten are present)"
+        ],
+        "suggestion": {
+          "suggestionId": "entropy-episode-timeout-headroom-listed",
+          "submittedBy": "entropy-reducer@1 (review episode ep_entropy_880df716e553ecb8)",
+          "problemOrOpportunity": "The review timeout of 2,400 s was set from one run. The latest review used 92.3% of it, against 41–45% before. A deadline kills the worker, so the receipt and every finding are lost while the spend is kept, and nothing reports the remaining headroom before the next launch.",
+          "scope": "Add one row to the numeric conditions listing: the latest filed review's and refutation's durationMs over their timeoutMs, from the receipts, with a fractional threshold the operator chooses. Update the limits' comment to cite the observed series. Changing the limits themselves stays an operator choice.",
+          "evidenceRefs": [
+            "packages/skeleton/src/entropy-review-protocol.ts:11-24",
+            "packages/skeleton/src/worker-transport.ts:138-142",
+            "docs/instance/entropy-reducer/runs/REVIEW-004.json",
+            "scripts/lib/planning-conditions.mjs"
+          ],
+          "affectedUsers": [
+            "operator dispatching planning-pass reviews",
+            "Entropy Reducer reviewer and refuter episodes"
+          ],
+          "affectedSystems": [
+            "packages/skeleton/src/entropy-review-protocol.ts",
+            "scripts/lib/planning-conditions.mjs",
+            "scripts/lib/entropy-review.mjs"
+          ],
+          "expectedValue": "A review likely to time out is visible at planning entry, rather than discovered after about 40 minutes and about USD 12 with no receipt to consume.",
+          "altitude": 6,
+          "uncertainty": "One outlier (REVIEW-004) drives the observation, and part of it is a single 384 s gate run. This episode's own host-recorded duration is the next data point and may show the earlier 41–45% level.",
+          "risks": [
+            "The table approaches WO-175's twelve-row bound",
+            "A duration row read as a gate would add a refusal the listing deliberately avoids",
+            "Raising the timeout alone widens the spend at risk without adding a signal"
+          ],
+          "alternatives": [
+            "Raise ENTROPY_REVIEW_LIMITS.timeoutMs from the observed series",
+            "Instruct the reviewer to avoid full gate runs inside the episode",
+            "Record the headroom in the review receipt only"
+          ],
+          "duplicationHints": [
+            "docs/proposals/reopen-conditions-evaluated-at-planning-entry/ (the listing this row would join)",
+            "ER4-007 (the review's temporary root) touched the same dispatch"
+          ],
+          "urgencyRationale": "Low to moderate. No timeout has occurred, but each review puts about USD 10–12 and 40 minutes at risk, and a breach loses the whole receipt."
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "kind": "ProductSuggestionPacket",
+        "proposedPath": "docs/proposals/order-lifecycle-reopen-triggers-listed/",
+        "sourceEpisodeId": "ep_entropy_880df716e553ecb8",
+        "provenance": [
+          "entropy-reducer@1 review episode ep_entropy_880df716e553ecb8",
+          "frozen subject b0e11b0da2a743dde63cb8d5da5d73ef6d02628e",
+          "lenses: verification-and-evidence, maintainability-and-friction; finding ER5-002"
+        ],
+        "corroboratingEvidenceRefs": [
+          "FUP-0086 deferred until 'WO-117 lands'; WO-117 closed 2026-09-29",
+          "FUP-0113 deferred until 'WO-062 activates…'; WO-062 closed; the order carried the row in",
+          "FUP-ec75a4295bf36696 deferred until 'the next order with a live harness smoke'; WO-149 and WO-159 live Codex dispatch records added later",
+          "docs/planning/entropy-review-004-2026-09-30.md:306-310 (a touching run listed FUP-0086, yet it was left as not occurred)"
+        ],
+        "dissentingEvidenceRefs": [
+          "docs/planning/entropy-review-004-2026-09-30.md:343-345 (NoOp: evaluating prose conditions or requiring the predicate form was declined; reopen after the listing's first month of output)",
+          "scripts/lib/planning-followups.mjs touching match: 'a pointer for judgment and never a verdict'",
+          "only 4 of 152 deferred rows use the anchored order-trigger form today"
+        ],
+        "suggestion": {
+          "suggestionId": "order-lifecycle-reopen-triggers-listed",
+          "submittedBy": "entropy-reducer@1 (review episode ep_entropy_880df716e553ecb8)",
+          "problemOrOpportunity": "Deferred register rows whose condition is an order activating or landing are evaluated by hand. Two of four such triggers have fired without a disposition: one was missed although the touching listing showed it, and one was missed although its own order carried it in.",
+          "scope": "In the conditions listing (or plan start), evaluate only register rows whose reopenWhen opens with the anchored form 'WO-NNN activates|lands|closes' against the control fold's phases, and print the ones that have fired. No other prose is parsed, and nothing becomes a gate or refusal.",
+          "evidenceRefs": [
+            "docs/planning/followups.json",
+            "scripts/lib/planning-conditions.mjs",
+            "scripts/lib/control-store.mjs (readControl)",
+            "docs/control/orders/WO-117.jsonl:6"
+          ],
+          "affectedUsers": [
+            "operator and planner at planning entry",
+            "executors and reviewers closing an order that carries a register row"
+          ],
+          "affectedSystems": [
+            "scripts/lib/planning-conditions.mjs",
+            "scripts/refute-plan.mjs (conditions, start)",
+            "docs/planning/followups.json"
+          ],
+          "expectedValue": "Fired order triggers reach the next planning entry without a reader re-deriving them, and an order's carry-in rows cannot lapse silently.",
+          "altitude": 6,
+          "uncertainty": "The mechanical yield is small today: 4 rows use the anchored form, and most conditions stay qualitative. Whether FUP-ec75a4295bf36696's trigger has occurred is a judgment and outside the anchored form.",
+          "risks": [
+            "False confidence that unlisted rows have not fired",
+            "Anchored phrasing could drift and silently exclude rows",
+            "Touches the same listing WO-175 bounded and kept prose-free"
+          ],
+          "alternatives": [
+            "At an order's close, the completion advisory requires a disposition for each row whose reopenWhen names that order",
+            "Write order-lifecycle conditions in the existing predicate form with an {order, event} shape",
+            "Keep the hand reading, with each touching row printed beside the named order's control phase"
+          ],
+          "duplicationHints": [
+            "docs/proposals/reopen-conditions-evaluated-at-planning-entry/ (accepted; WO-175 built the listing)",
+            "the 2026-09-30 NoOp on evaluating prose conditions (entropy-review-004 §7)"
+          ],
+          "urgencyRationale": "Low. The two fired rows are a deferred candidate (FUP-0086) and a model-input exposure plan whose order already recorded its reading (FUP-0113). The cost is register drift, not an outage."
+        }
+      }
+    ],
+    "resultEnvelope": {
+      "workOrderId": "wo_entropy_review_1",
+      "episodeId": "ep_entropy_880df716e553ecb8",
+      "status": "completed",
+      "resultId": "res_ep_entropy_880df716e553ecb8_review",
+      "summary": "Census: 4,652 tracked paths from git ls-files; docs/intake/** never read. Four lenses worked serially; two measured findings survived my own refutation attempts. ER5-001: REVIEW-004 used 92.3% of the 2,400 s review timeout (earlier reviews 41-45%). A deadline kills the worker, so the receipt is lost and the spend is not, and no conditions row watches the headroom. ER5-002: two of four deferred register rows with bare order-activation triggers have fired and stay deferred (FUP-0086 on WO-117, FUP-0113 on WO-062), and the harness re-probe row outlived two live Codex dispatches; plan conditions leaves 848 register rows unevaluated. Dropped after probes: an import() blind spot in the read guard (the guard sees it), harness version drift (observedVersion is a minimum), red WO-105 corpus suites (settled by WO-105 D012) and ledger erasures (none on main). Settled or self-reported, so not raised: the cold-start ceiling route, repeated edition blobs, release-table lag and weekly evidence bytes. Two packets. Writes: ignored build output and docs/control/local/ in the copy, scratch under TMPDIR. Awaiting operator disposition.",
+      "requiresHuman": true
+    },
+    "cleanRoom": {
+      "status": "passed",
+      "stopConditionsFound": false,
+      "evidenceRefs": [
+        "Census and lens reads used paths named by git ls-files only; the 3 tracked docs/intake/** paths were counted and never opened or searched",
+        "No employer code, configuration, identifiers, internal services, credentials or secrets were found or incorporated; findings cite repository-relative paths, register ids, commit hashes and public tool versions",
+        "The only third-party name carried is the public repository cli/cli, already recorded in docs/final-reviews/WO-062/RELEASE-NOTES.md",
+        "git status --porcelain was empty at the end of the episode; writes were ignored build output, the ignored docs/control/local/ directory and scratch clones under the episode TMPDIR"
+      ]
+    }
+  },
+  "selection": {
+    "measuredDenominator": 2,
+    "measuredStatus": "selected",
+    "inspectionDenominator": 0,
+    "inspectionStatus": "not-applicable",
+    "inspectionSampleSize": 0,
+    "selectionRule": "every measured finding and every by-inspection finding",
+    "measuredSubjects": [
+      {
+        "findingId": "ER5-002",
+        "command": "cd \"$(git rev-parse --show-toplevel)\" && node --input-type=module -e 'import { readControl } from \"./scripts/lib/control-store.mjs\"; import { readFileSync } from \"node:fs\"; const phase = new Map([...readControl(process.cwd()).orders].map(([id, row]) => [id, row.state.phase])); const { entries } = JSON.parse(readFileSync(\"docs/planning/followups.json\", \"utf8\")); const trigger = /^(WO-\\d{3}) (?:activates|lands)\\b/; let deferred = 0, orderTriggered = 0; for (const e of entries) { const d = e.dispositions.at(-1); if (d?.status !== \"deferred\") continue; deferred++; const m = trigger.exec(String(d.reopenWhen ?? \"\")); if (!m) continue; orderTriggered++; console.log(`${e.id}: deferred ${d.at.slice(0, 10)} until \"${d.reopenWhen}\"; ${m[1]} control phase now: ${phase.get(m[1]) ?? \"absent\"}`); } const r = entries.find((e) => e.id === \"FUP-ec75a4295bf36696\").dispositions.at(-1); console.log(`FUP-ec75a4295bf36696: ${r.status} ${r.at.slice(0, 10)} until \"${r.reopenWhen}\"`); console.log(`deferred rows: ${deferred}; whose condition opens with a bare order activation/landing: ${orderTriggered}`);' && echo \"live harness dispatch evidence added after 2026-09-19: $(git log --since=2026-09-19T02:00:00Z --diff-filter=A --name-only --format= -- 'docs/evidence/WO-149/live-codex-dispatch*' 'docs/evidence/WO-159/live-codex.json' | sort -u | tr '\\n' ' ')\" && node scripts/refute-plan.mjs conditions 2>/dev/null | grep -E \"^[0-9]+ hold|Not evaluated\" ; node scripts/refute-plan.mjs followups --touching WO-117 2>/dev/null | grep -c '\"FUP-0086\"'; grep -n \"the deferred ones\" docs/planning/entropy-review-004-2026-09-30.md"
+      },
+      {
+        "findingId": "ER5-001",
+        "command": "cd \"$(git rev-parse --show-toplevel)\" && node -e 'const fs=require(\"fs\");const src=fs.readFileSync(\"packages/skeleton/src/entropy-review-protocol.ts\",\"utf8\");const lim=Number(/ENTROPY_REVIEW_LIMITS = \\{\\s*timeoutMs: ([\\d_]+)/.exec(src)[1].replace(/_/g,\"\"));for(const n of [\"001\",\"002\",\"003\",\"004\"]){const s=JSON.stringify(require(`./docs/instance/entropy-reducer/runs/REVIEW-${n}.json`));const d=Number(/\"durationMs\":(\\d+)/.exec(s)[1]);console.log(`REVIEW-${n} durationMs ${d} = ${(100*d/lim).toFixed(1)}% of timeoutMs ${lim}`)}' && echo \"planning-conditions rows naming an entropy episode: $(grep -c -i 'entropy' scripts/lib/planning-conditions.mjs)\" && grep -n \"deadline-exceeded\" packages/skeleton/src/worker-transport.ts"
+      }
+    ],
+    "inspectionSubjects": [],
+    "selectedFindingIds": [
+      "ER5-002",
+      "ER5-001"
+    ]
+  },
+  "findingSummary": {
+    "total": 2,
+    "measured": 2,
+    "byInspection": 0,
+    "blocking": 0,
+    "major": 0,
+    "minor": 2,
+    "proposalPackets": 2
+  },
+  "confinement": {
+    "subjectBinding": "HEAD of a clean tree; any tracked change refuses the receipt",
+    "temporaryDirectory": {
+      "path": "/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/cff9570ebfdf6d3e/review-OJwTa4/tmp",
+      "observed": true,
+      "count": 10369,
+      "bytes": 574633762,
+      "sha256": "fd49b3ecbe22a30b5e8ce705953d23abfc4d6e5a76c697b804b8fa68a67df9e6"
+    },
+    "trackedStatusBeforeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trackedStatusAfterSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trackedStatusByteIdentical": true,
+    "scratchInventoryBefore": {
+      "count": 4652,
+      "sha256": "3cd9e8bd7a9a028275b23832c6d2e2b7ead81e9ac85057b3c1ba558480d282bc"
+    },
+    "scratchInventoryAfter": {
+      "count": 5645,
+      "sha256": "2ca9b9951167a8935b52b37a01d0384a0976b6a0a9584e04e2f58859cfd4efe4"
+    },
+    "untrackedListing": {
+      "before": {
+        "count": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "after": {
+        "count": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "identical": true
+    },
+    "scratchDelta": {
+      "observed": true,
+      "added": [
+        ".runtime/harness/d4b56e2fc6524e1b/packages/beacons/package.json",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/beacons/src/beacon-codebook.mjs",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/beacons/src/beacon-io.mjs",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/beacons/src/beacon-provenance.mjs",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/beacons/src/beacon-v3-codebook.mjs",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/beacons/src/beacon-v3-fs.mjs",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/beacons/src/control-beacon-fs.mjs",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/beacons/src/control-codebook.mjs",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/beacons/src/types.d.mts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/browser-evidence/dist/src/index.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/browser-evidence/dist/src/index.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/browser-evidence/dist/src/processes.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/browser-evidence/dist/src/processes.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/browser-evidence/dist/src/types.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/browser-evidence/dist/src/types.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/browser-evidence/dist/tsconfig.tsbuildinfo",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/browser-evidence/package.json",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/artifact-identity.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/artifact-identity.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/attribution.d.mts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/attribution.mjs",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/authority.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/authority.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/codex-continuation.d.mts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/codex-continuation.mjs",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/compile.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/compile.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/feedback.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/feedback.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/harness.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/harness.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/index.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/index.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/normalize.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/normalize.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/operator-control.d.mts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/operator-control.mjs",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/presence-schema.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/presence-schema.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/presence.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/presence.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/render.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/render.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/seiri.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/seiri.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/senses.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/senses.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/source-bundle.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/source-bundle.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/story-contract.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/story-contract.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/types.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/types.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/verification.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/verification.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/views.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/src/views.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/artifact-identity.test.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/artifact-identity.test.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/authority-fixture.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/authority-fixture.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/authority.test.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/authority.test.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/compiler.test.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/compiler.test.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/feedback.test.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/feedback.test.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/harness.test.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/harness.test.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/impact-surfaces.test.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/impact-surfaces.test.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/presence.test.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/presence.test.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/public-api.test.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/public-api.test.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/purity.test.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/purity.test.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/senses.test.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/senses.test.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/source-bundle.test.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/source-bundle.test.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/story-contract.test.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/story-contract.test.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/tooltip.test.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/tooltip.test.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/verification-witness.test.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/verification-witness.test.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/verification.test.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/verification.test.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/views.test.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/test/views.test.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/dist/tsconfig.tsbuildinfo",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/compiler/package.json",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/console/dist/src/actors.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/console/dist/src/actors.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/console/dist/src/blueprint.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/console/dist/src/blueprint.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/console/dist/src/board.d.ts",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/console/dist/src/board.js",
+        ".runtime/harness/d4b56e2fc6524e1b/packages/console/dist/src/builds.d.ts"
+      ],
+      "removed": [],
+      "resized": [],
+      "counts": {
+        "added": 993,
+        "removed": 0,
+        "resized": 0
+      },
+      "sha256": {
+        "added": "33a25d3eb63e584ca1fd6b1674a1f7c0a130e8f0320173526342b952bd531880",
+        "removed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "resized": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "listedPerSet": 100
+    },
+    "excludedFromManifest": [
+      ".git/**",
+      "**/node_modules/**"
+    ],
+    "dependencies": "copied",
+    "commandExecution": "file tools confined to the frozen copy by --restricted; shell writes instructed to stay inside the copy or episode temporary directory, witnessed by copy and temporary inventories",
+    "permissionDenials": 0,
+    "deniedTools": []
+  },
+  "cost": {
+    "line": "tokens unknown; cause harness-no-readback; observed episode wall clock 1403 s, 131 turns, USD 8.696388599999997; source claude-result-envelope",
+    "tokens": null,
+    "costUsd": 8.696388599999997,
+    "durationMs": 1403434,
+    "turns": 131,
+    "source": "claude-result-envelope"
+  },
+  "statement": "{\"schemaVersion\":1,\"findings\":[{\"findingId\":\"ER5-001\",\"criterion\":\"A launched worker's time limit keeps recorded headroom over its observed runs, and a limit about to be crossed is reported before an episode fails on it (packages/skeleton/src/entropy-review-protocol.ts:11-16 says both limits sit above the observed run; product 07 §Operator-opened planning pass consumes the review's receipt).\",\"severity\":\"minor\",\"evidenceLabel\":\"measured\",\"observed\":\"Recorded review durations against ENTROPY_REVIEW_LIMITS.timeoutMs 2,400,000: REVIEW-001 1,019,575 ms (42.5%), REVIEW-002 993,364 (41.4%), REVIEW-003 1,088,847 (45.4%), REVIEW-004 2,215,824 (92.3%). The limit's comment still cites only REVIEW-001's 1,019.6 s. When the deadline is reached the runner raises WorkerFailure('deadline-exceeded') and kills the worker (worker-transport.ts:138-142). A print-mode episode killed this way returns no result envelope, so every finding is lost, but the spend is not (REVIEW-004 cost USD 11.71). The numeric conditions table has no row for entropy-episode duration (0 mentions of 'entropy' in scripts/lib/planning-conditions.mjs). The 2026-09-30 pass recorded the 2,216 s, attributed 384 s of it to one npm test and called the rest unknown, without setting a threshold.\",\"expected\":\"The headroom between the latest review or refutation duration and its timeout is a listed numeric condition, or the limit is re-derived from the four observed runs, so the first signal of a breach is not a timed-out review that leaves no receipt.\",\"reproduction\":{\"kind\":\"command\",\"command\":\"cd \\\"$(git rev-parse --show-toplevel)\\\" && node -e 'const fs=require(\\\"fs\\\");const src=fs.readFileSync(\\\"packages/skeleton/src/entropy-review-protocol.ts\\\",\\\"utf8\\\");const lim=Number(/ENTROPY_REVIEW_LIMITS = \\\\{\\\\s*timeoutMs: ([\\\\d_]+)/.exec(src)[1].replace(/_/g,\\\"\\\"));for(const n of [\\\"001\\\",\\\"002\\\",\\\"003\\\",\\\"004\\\"]){const s=JSON.stringify(require(`./docs/instance/entropy-reducer/runs/REVIEW-${n}.json`));const d=Number(/\\\"durationMs\\\":(\\\\d+)/.exec(s)[1]);console.log(`REVIEW-${n} durationMs ${d} = ${(100*d/lim).toFixed(1)}% of timeoutMs ${lim}`)}' && echo \\\"planning-conditions rows naming an entropy episode: $(grep -c -i 'entropy' scripts/lib/planning-conditions.mjs)\\\" && grep -n \\\"deadline-exceeded\\\" packages/skeleton/src/worker-transport.ts\"},\"evidenceRefs\":[\"command output: REVIEW-001 durationMs 1019575 = 42.5%; REVIEW-002 993364 = 41.4%; REVIEW-003 1088847 = 45.4%; REVIEW-004 2215824 = 92.3% of timeoutMs 2400000; planning-conditions rows naming an entropy episode: 0\",\"packages/skeleton/src/entropy-review-protocol.ts:11-24 (ENTROPY_REVIEW_LIMITS 2,400,000 ms / USD 20.00; the comment cites REVIEW-001's 1,019.6 s as the observed run)\",\"packages/skeleton/src/worker-transport.ts:138-142 (deadline: WorkerFailure('deadline-exceeded') then kill) and :1195-1197 (review timeout selection)\",\"docs/instance/entropy-reducer/runs/REVIEW-004.md (wall clock 2216 s, 145 turns, USD 11.71)\",\"docs/planning/entropy-review-004-2026-09-30.md:43-50 (2,216 s; 384 s in one npm test; the rest of the difference unknown)\",\"scripts/lib/planning-conditions.mjs CONDITION_TABLE (ten rows, none for entropy episodes)\"],\"surface\":\"packages/skeleton/src/entropy-review-protocol.ts (ENTROPY_REVIEW_LIMITS); packages/skeleton/src/worker-transport.ts (runner deadline); scripts/lib/planning-conditions.mjs (CONDITION_TABLE)\",\"altitude\":6,\"standardization\":{\"kind\":\"recurring\",\"rung\":\"script\",\"rationale\":\"Every review and refutation launches against the same constant. One row in the existing conditions listing (latest recorded durationMs over its timeoutMs, from the filed receipts) costs no episode and reports the headroom at each planning entry.\"}},{\"findingId\":\"ER5-002\",\"criterion\":\"A deferred register row whose reopening condition has occurred is reopened or re-disposed by whoever observes the condition (the 2026-09-19 rule the 2026-09-30 pass cites). WO-062's order says 'FUP-0113 reopens at this order's activation'.\",\"severity\":\"minor\",\"evidenceLabel\":\"measured\",\"observed\":\"152 register rows are deferred. In 4 of them the reopening condition opens with a bare order activation or landing, and 2 of those have fired yet stay deferred. FUP-0086 waits on 'WO-117 lands'; WO-117 is closed (FinalReviewCompleted 2026-09-29). FUP-0113 waits on 'WO-062 activates…'; WO-062 is closed. Its order carried the row in and D002 records the reading, yet the register has no new disposition, and VER-002's follow-up check names only two other rows. FUP-ec75a4295bf36696 (the harness profile re-probe, deferred 2026-09-19 until 'the next order with a live harness smoke') also stays deferred, although WO-149 and WO-159 later added live Codex dispatch records. `plan followups --touching WO-117` lists FUP-0086. The 2026-09-30 pass, which ran that listing, recorded leaving the deferred rows 'because their conditions have not occurred'. `plan conditions` reports '3 hold' and 'Not evaluated: 1413 decision conditions and 848 register rows'.\",\"expected\":\"An order-lifecycle trigger, which the control fold settles without judgment, is reported at planning entry or at the named order's close. The row is then reopened or re-deferred under a new condition, instead of resting on a trigger that has already fired.\",\"reproduction\":{\"kind\":\"command\",\"command\":\"cd \\\"$(git rev-parse --show-toplevel)\\\" && node --input-type=module -e 'import { readControl } from \\\"./scripts/lib/control-store.mjs\\\"; import { readFileSync } from \\\"node:fs\\\"; const phase = new Map([...readControl(process.cwd()).orders].map(([id, row]) => [id, row.state.phase])); const { entries } = JSON.parse(readFileSync(\\\"docs/planning/followups.json\\\", \\\"utf8\\\")); const trigger = /^(WO-\\\\d{3}) (?:activates|lands)\\\\b/; let deferred = 0, orderTriggered = 0; for (const e of entries) { const d = e.dispositions.at(-1); if (d?.status !== \\\"deferred\\\") continue; deferred++; const m = trigger.exec(String(d.reopenWhen ?? \\\"\\\")); if (!m) continue; orderTriggered++; console.log(`${e.id}: deferred ${d.at.slice(0, 10)} until \\\"${d.reopenWhen}\\\"; ${m[1]} control phase now: ${phase.get(m[1]) ?? \\\"absent\\\"}`); } const r = entries.find((e) => e.id === \\\"FUP-ec75a4295bf36696\\\").dispositions.at(-1); console.log(`FUP-ec75a4295bf36696: ${r.status} ${r.at.slice(0, 10)} until \\\"${r.reopenWhen}\\\"`); console.log(`deferred rows: ${deferred}; whose condition opens with a bare order activation/landing: ${orderTriggered}`);' && echo \\\"live harness dispatch evidence added after 2026-09-19: $(git log --since=2026-09-19T02:00:00Z --diff-filter=A --name-only --format= -- 'docs/evidence/WO-149/live-codex-dispatch*' 'docs/evidence/WO-159/live-codex.json' | sort -u | tr '\\\\n' ' ')\\\" && node scripts/refute-plan.mjs conditions 2>/dev/null | grep -E \\\"^[0-9]+ hold|Not evaluated\\\" ; node scripts/refute-plan.mjs followups --touching WO-117 2>/dev/null | grep -c '\\\"FUP-0086\\\"'; grep -n \\\"the deferred ones\\\" docs/planning/entropy-review-004-2026-09-30.md\"},\"evidenceRefs\":[\"command output: FUP-0086 deferred 2026-09-19 until 'WO-117 lands (the pass's suggestion)', WO-117 phase closed; FUP-0113 deferred 2026-09-27 until 'WO-062 activates, or a local role that reads private material is proposed', WO-062 phase closed; FUP-0091 (WO-112) and FUP-441469088613e52a (WO-118) not yet fired; deferred rows 152, order-triggered 4\",\"command output: docs/evidence/WO-149/live-codex-dispatch.md, .mjs and docs/evidence/WO-159/live-codex.json added after FUP-ec75a4295bf36696's 2026-09-19 deferral; .claude/harness-manifest.json profiles still observedVersion 2.1.263 / 0.153.4\",\"command output: plan conditions '3 hold; 2 unknown. Not evaluated: 1413 decision conditions and 848 register rows'; plan followups --touching WO-117 lists FUP-0086\",\"docs/control/orders/WO-117.jsonl:6 (FinalReviewCompleted 2026-09-29T17:57:32Z)\",\"docs/work-orders/WO-062-github-issue-source-adapter.md (Design: 'Register carry-in: FUP-0113 … reopens at this order's activation')\",\"docs/verifications/WO-062/VER-002.md:141 (follow-ups checked: FUP-516f42831f87de8a and FUP-817d50c71c3d3c53 only)\",\"docs/planning/entropy-review-004-2026-09-30.md:306-310 (touching run over the eleven closed orders; deferred rows left 'because their conditions have not occurred')\",\"scripts/lib/planning-conditions.mjs (register rows are not evaluated; prose never parsed)\"],\"surface\":\"docs/planning/followups.json (deferred rows); scripts/lib/planning-conditions.mjs (conditions listing); scripts/lib/planning-followups.mjs (touching listing); the close-time completion advisory\",\"altitude\":6,\"standardization\":{\"kind\":\"recurring\",\"rung\":\"script\",\"rationale\":\"Register rows are disposed by hand at every pass and close, and 2 of the 4 deterministic order triggers have already lapsed. A listing that checks only the anchored form 'WO-NNN activates|lands|closes' against readControl phases is deterministic, adds no prose evaluation and fits the existing conditions command.\"}}],\"proposalPackets\":[{\"schemaVersion\":1,\"kind\":\"ProductSuggestionPacket\",\"proposedPath\":\"docs/proposals/entropy-episode-timeout-headroom-listed/\",\"sourceEpisodeId\":\"ep_entropy_880df716e553ecb8\",\"provenance\":[\"entropy-reducer@1 review episode ep_entropy_880df716e553ecb8 (claude-opus-5-5 per dispatch; effective model and effort not read back)\",\"frozen subject b0e11b0da2a743dde63cb8d5da5d73ef6d02628e\",\"lens: runtime-and-authority; finding ER5-001\"],\"corroboratingEvidenceRefs\":[\"REVIEW-001..004 durationMs 1019575 / 993364 / 1088847 / 2215824 against timeoutMs 2400000 (42.5% / 41.4% / 45.4% / 92.3%)\",\"packages/skeleton/src/worker-transport.ts:138-142 (deadline kills the worker; no result is decoded)\",\"docs/instance/entropy-reducer/runs/REVIEW-004.md (USD 11.71 spent in one episode)\"],\"dissentingEvidenceRefs\":[\"docs/planning/entropy-review-004-2026-09-30.md:43-50 (384 s of REVIEW-004 was one npm test whose failures were temporary-root artifacts, which WO-175 addressed; the outlier may not be a trend)\",\"packages/skeleton/src/entropy-review-protocol.ts:11-16 (the limits were deliberately set above the observed run, not at the 180 s worker default)\",\"docs/planning/entropy-review-004-2026-09-30.md:188-190 (WO-175 bounds the conditions table at twelve rows; ten are present)\"],\"suggestion\":{\"suggestionId\":\"entropy-episode-timeout-headroom-listed\",\"submittedBy\":\"entropy-reducer@1 (review episode ep_entropy_880df716e553ecb8)\",\"problemOrOpportunity\":\"The review timeout of 2,400 s was set from one run. The latest review used 92.3% of it, against 41–45% before. A deadline kills the worker, so the receipt and every finding are lost while the spend is kept, and nothing reports the remaining headroom before the next launch.\",\"scope\":\"Add one row to the numeric conditions listing: the latest filed review's and refutation's durationMs over their timeoutMs, from the receipts, with a fractional threshold the operator chooses. Update the limits' comment to cite the observed series. Changing the limits themselves stays an operator choice.\",\"evidenceRefs\":[\"packages/skeleton/src/entropy-review-protocol.ts:11-24\",\"packages/skeleton/src/worker-transport.ts:138-142\",\"docs/instance/entropy-reducer/runs/REVIEW-004.json\",\"scripts/lib/planning-conditions.mjs\"],\"affectedUsers\":[\"operator dispatching planning-pass reviews\",\"Entropy Reducer reviewer and refuter episodes\"],\"affectedSystems\":[\"packages/skeleton/src/entropy-review-protocol.ts\",\"scripts/lib/planning-conditions.mjs\",\"scripts/lib/entropy-review.mjs\"],\"expectedValue\":\"A review likely to time out is visible at planning entry, rather than discovered after about 40 minutes and about USD 12 with no receipt to consume.\",\"altitude\":6,\"uncertainty\":\"One outlier (REVIEW-004) drives the observation, and part of it is a single 384 s gate run. This episode's own host-recorded duration is the next data point and may show the earlier 41–45% level.\",\"risks\":[\"The table approaches WO-175's twelve-row bound\",\"A duration row read as a gate would add a refusal the listing deliberately avoids\",\"Raising the timeout alone widens the spend at risk without adding a signal\"],\"alternatives\":[\"Raise ENTROPY_REVIEW_LIMITS.timeoutMs from the observed series\",\"Instruct the reviewer to avoid full gate runs inside the episode\",\"Record the headroom in the review receipt only\"],\"duplicationHints\":[\"docs/proposals/reopen-conditions-evaluated-at-planning-entry/ (the listing this row would join)\",\"ER4-007 (the review's temporary root) touched the same dispatch\"],\"urgencyRationale\":\"Low to moderate. No timeout has occurred, but each review puts about USD 10–12 and 40 minutes at risk, and a breach loses the whole receipt.\"}},{\"schemaVersion\":1,\"kind\":\"ProductSuggestionPacket\",\"proposedPath\":\"docs/proposals/order-lifecycle-reopen-triggers-listed/\",\"sourceEpisodeId\":\"ep_entropy_880df716e553ecb8\",\"provenance\":[\"entropy-reducer@1 review episode ep_entropy_880df716e553ecb8\",\"frozen subject b0e11b0da2a743dde63cb8d5da5d73ef6d02628e\",\"lenses: verification-and-evidence, maintainability-and-friction; finding ER5-002\"],\"corroboratingEvidenceRefs\":[\"FUP-0086 deferred until 'WO-117 lands'; WO-117 closed 2026-09-29\",\"FUP-0113 deferred until 'WO-062 activates…'; WO-062 closed; the order carried the row in\",\"FUP-ec75a4295bf36696 deferred until 'the next order with a live harness smoke'; WO-149 and WO-159 live Codex dispatch records added later\",\"docs/planning/entropy-review-004-2026-09-30.md:306-310 (a touching run listed FUP-0086, yet it was left as not occurred)\"],\"dissentingEvidenceRefs\":[\"docs/planning/entropy-review-004-2026-09-30.md:343-345 (NoOp: evaluating prose conditions or requiring the predicate form was declined; reopen after the listing's first month of output)\",\"scripts/lib/planning-followups.mjs touching match: 'a pointer for judgment and never a verdict'\",\"only 4 of 152 deferred rows use the anchored order-trigger form today\"],\"suggestion\":{\"suggestionId\":\"order-lifecycle-reopen-triggers-listed\",\"submittedBy\":\"entropy-reducer@1 (review episode ep_entropy_880df716e553ecb8)\",\"problemOrOpportunity\":\"Deferred register rows whose condition is an order activating or landing are evaluated by hand. Two of four such triggers have fired without a disposition: one was missed although the touching listing showed it, and one was missed although its own order carried it in.\",\"scope\":\"In the conditions listing (or plan start), evaluate only register rows whose reopenWhen opens with the anchored form 'WO-NNN activates|lands|closes' against the control fold's phases, and print the ones that have fired. No other prose is parsed, and nothing becomes a gate or refusal.\",\"evidenceRefs\":[\"docs/planning/followups.json\",\"scripts/lib/planning-conditions.mjs\",\"scripts/lib/control-store.mjs (readControl)\",\"docs/control/orders/WO-117.jsonl:6\"],\"affectedUsers\":[\"operator and planner at planning entry\",\"executors and reviewers closing an order that carries a register row\"],\"affectedSystems\":[\"scripts/lib/planning-conditions.mjs\",\"scripts/refute-plan.mjs (conditions, start)\",\"docs/planning/followups.json\"],\"expectedValue\":\"Fired order triggers reach the next planning entry without a reader re-deriving them, and an order's carry-in rows cannot lapse silently.\",\"altitude\":6,\"uncertainty\":\"The mechanical yield is small today: 4 rows use the anchored form, and most conditions stay qualitative. Whether FUP-ec75a4295bf36696's trigger has occurred is a judgment and outside the anchored form.\",\"risks\":[\"False confidence that unlisted rows have not fired\",\"Anchored phrasing could drift and silently exclude rows\",\"Touches the same listing WO-175 bounded and kept prose-free\"],\"alternatives\":[\"At an order's close, the completion advisory requires a disposition for each row whose reopenWhen names that order\",\"Write order-lifecycle conditions in the existing predicate form with an {order, event} shape\",\"Keep the hand reading, with each touching row printed beside the named order's control phase\"],\"duplicationHints\":[\"docs/proposals/reopen-conditions-evaluated-at-planning-entry/ (accepted; WO-175 built the listing)\",\"the 2026-09-30 NoOp on evaluating prose conditions (entropy-review-004 §7)\"],\"urgencyRationale\":\"Low. The two fired rows are a deferred candidate (FUP-0086) and a model-input exposure plan whose order already recorded its reading (FUP-0113). The cost is register drift, not an outage.\"}}],\"resultEnvelope\":{\"workOrderId\":\"wo_entropy_review_1\",\"episodeId\":\"ep_entropy_880df716e553ecb8\",\"status\":\"completed\",\"resultId\":\"res_ep_entropy_880df716e553ecb8_review\",\"summary\":\"Census: 4,652 tracked paths from git ls-files; docs/intake/** never read. Four lenses worked serially; two measured findings survived my own refutation attempts. ER5-001: REVIEW-004 used 92.3% of the 2,400 s review timeout (earlier reviews 41-45%). A deadline kills the worker, so the receipt is lost and the spend is not, and no conditions row watches the headroom. ER5-002: two of four deferred register rows with bare order-activation triggers have fired and stay deferred (FUP-0086 on WO-117, FUP-0113 on WO-062), and the harness re-probe row outlived two live Codex dispatches; plan conditions leaves 848 register rows unevaluated. Dropped after probes: an import() blind spot in the read guard (the guard sees it), harness version drift (observedVersion is a minimum), red WO-105 corpus suites (settled by WO-105 D012) and ledger erasures (none on main). Settled or self-reported, so not raised: the cold-start ceiling route, repeated edition blobs, release-table lag and weekly evidence bytes. Two packets. Writes: ignored build output and docs/control/local/ in the copy, scratch under TMPDIR. Awaiting operator disposition.\",\"requiresHuman\":true},\"cleanRoom\":{\"status\":\"passed\",\"stopConditionsFound\":false,\"evidenceRefs\":[\"Census and lens reads used paths named by git ls-files only; the 3 tracked docs/intake/** paths were counted and never opened or searched\",\"No employer code, configuration, identifiers, internal services, credentials or secrets were found or incorporated; findings cite repository-relative paths, register ids, commit hashes and public tool versions\",\"The only third-party name carried is the public repository cli/cli, already recorded in docs/final-reviews/WO-062/RELEASE-NOTES.md\",\"git status --porcelain was empty at the end of the episode; writes were ignored build output, the ignored docs/control/local/ directory and scratch clones under the episode TMPDIR\"]}}",
+  "disposition": {
+    "findingCount": 2,
+    "proposalPacketCount": 2,
+    "proposalFiling": "awaiting operator disposition; not filed",
+    "nextStep": "Fresh blinded refutation before any disposition."
+  },
+  "liveness": "live",
+  "localTerms": {
+    "status": "present"
+  },
+  "receiptHash": "sha256:8517573804d5a070cbcd7da532d50c2dc5775c4570b731e2e6a46a63cf6bcf8b"
+}

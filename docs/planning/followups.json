@@ -2364,6 +2364,13 @@
           "title": "Candidate — multi-dimensional authorship assistance",
           "summary": "### Candidate — multi-dimensional authorship assistance The operator's open question for the [UIFA roles](13-uifa-roles.md) is what authoring feels like when it is done well: what completion or “intellisense” means in three or four dimensions, and how a person and the platform become more than the sum of the parts without the person leaving flow. The candidate answer is that completion proposes along several axes at once, and every proposal arrives as a compiled diff rather than a silent mutation: - **Structure** — which supports fit this socket, which links are valid, which combination the compiler would refuse and why. - **Time** — what fires next under this cadence, which phase the compos",
           "missing": false
+        },
+        {
+          "hash": "37f3a00aca7098f7d167a1bbcbc457f410fb78f21abc9022ea739509c53e0418",
+          "ref": "docs/product/04-interfaces.md#candidate--multi-dimensional-authorship-assistance",
+          "title": "Candidate — multi-dimensional authorship assistance",
+          "summary": "### Candidate — multi-dimensional authorship assistance The operator's open question for the [UIFA roles](13-uifa-roles.md) is what authoring feels like when it is done well: what completion or “intellisense” means in three or four dimensions, and how a person and the platform become more than the sum of the parts without the person leaving flow. The candidate answer is that completion proposes along several axes at once, and every proposal arrives as a compiled diff rather than a silent mutation: - **Structure** — which supports fit this socket, which links are valid, which combination the compiler would refuse and why. - **Time** — what fires next under this cadence, which phase the compos",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -2374,6 +2381,14 @@
           "reopenWhen": "WO-117 lands (the pass's suggestion)",
           "targets": [],
           "at": "2026-09-19T01:19:51.175Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "The former WO-117 landing trigger occurred. Read the amended order and FINAL-001: the live inspection/audit/command host exists, while equip/build authoring explicitly left scope. Product 04 still names the pattern workshop as the assistance candidate's first delivery point. No new order now; current critical-path work is WO-123's composition. The source paragraph now records this reassessment. [2026-10-02 entropy planning pass, docs/planning/entropy-review-005-2026-10-02.md sections 3 to 6.]",
+          "reopenWhen": "a pattern-workshop/equip/build authoring order is proposed, or a witnessed authoring task identifies a missing proposal axis",
+          "targets": [],
+          "at": "2026-10-02T04:08:21.873Z"
         }
       ]
     },
@@ -3532,6 +3547,13 @@
           "title": "Candidate — model-input exposure plans",
           "summary": "## Candidate — model-input exposure plans “Uses a model” is too coarse a privacy disclosure. Before a possible model invocation crosses its execution boundary, the compiler should be able to emit a **ModelInputPlan** that names the destination class—deterministic local processor, local model, or provider-hosted remote model—and every planned input edge. Each edge identifies purpose, source lineage, data class, retention class, and exposure form: verbatim content; structural shape such as schema, length, or timing; subject identity or tags; a derived summary, embedding, or inference; related or adjacent retrieved context; or material that could travel accidentally through conversation history",
           "missing": false
+        },
+        {
+          "hash": "52c7115a9171f2655e00d88931eb857ec649dc81b48e1065cbe641f480c3223b",
+          "ref": "docs/product/09-audit-resilience-privacy.md#candidate--model-input-exposure-plans",
+          "title": "Candidate — model-input exposure plans",
+          "summary": "## Candidate — model-input exposure plans The 2026-10-02 reassessment adopts WO-062 D002's boundary: its adapter reads and stores deterministically and invokes no model. Its activation trigger has occurred; the candidate now reopens at the first consuming model invocation (including WO-123's composition review) or a proposed private-material reader. Neither the adapter nor its declared screen implements this plan ([decision](../evidence/WO-062/decisions.md#wo-062-d002--contract-and-exposure-boundary)). “Uses a model” is too coarse a privacy disclosure. Before a possible model invocation crosses its execution boundary, the compiler should be able to emit a **ModelInputPlan** that names the de",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -3558,6 +3580,14 @@
           "reopenWhen": "WO-062 activates, or a local role that reads private material is proposed",
           "targets": [],
           "at": "2026-09-27T01:45:57.692Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "The former WO-062 activation trigger occurred. Adopt WO-062 D002: its adapter performs deterministic reads/local storage and invokes no model, so ModelInputPlan stays outside that port's contract. This writes its previously unpropagated registerReading into the register and product 09. WO-123's catalog carries the consuming-boundary preflight; it adds no implementation criterion or privacy guarantee. [2026-10-02 entropy planning pass, docs/planning/entropy-review-005-2026-10-02.md sections 3 to 6.]",
+          "reopenWhen": "the first consuming model invocation, including WO-123 composition preflight, or a proposed private-material reader",
+          "targets": [],
+          "at": "2026-10-02T04:08:21.907Z"
         }
       ]
     },
@@ -12441,6 +12471,13 @@
           "title": "Harness profile re-probe.",
           "summary": "8. **Harness profile re-probe.** The manifest's profile ids name Claude Code 2.1.263 and Codex CLI 0.153.4; sessions run 2.1.277 and 0.155.0, and all seven Codex residue items rest on a 2026-09-07 probe. Needs a live re-probe. Reopen: the next order with a live harness smoke.",
           "missing": false
+        },
+        {
+          "hash": "86529082f2cd6d2b606bccbf58ecb5d5a111834d193c12617ffbc9c7bfa1fbd9",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-cleanup-pass-recorded-2026-09-19",
+          "title": "Harness profile re-probe.",
+          "summary": "8. **Harness profile re-probe.** The manifest's profile ids name Claude Code 2.1.263 and Codex CLI 0.153.4; sessions run 2.1.277 and 0.155.0, and all seven Codex residue items rest on a 2026-09-07 probe. Needs a live re-probe. The 2026-10-02 reassessment records that the former trigger, the next live harness smoke, occurred in WO-149 and WO-159. Those records prove dispatch/usage and isolated user settings, respectively; neither re-qualifies all profile capabilities. A broad re-probe is declined for now: no changed hook behavior is observed in those records, and the existing residue stays explicit. Reopen on an observed capability/role-text mismatch on a newer CLI, a change to the harness in",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -12451,6 +12488,14 @@
           "reopenWhen": "the next order with a live harness smoke",
           "targets": [],
           "at": "2026-09-19T01:20:05.828Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "The former next-live-smoke trigger occurred: WO-149's live dispatch/usage record and WO-159's isolated-settings worker receipt were read. Neither re-qualifies all hooks/profile capabilities and neither records changed hook behavior to repair. Keep the dated observations and explicit residue; a broad live re-probe is declined now with no fresh qualification claim. The map item records the reassessment. [2026-10-02 entropy planning pass, docs/planning/entropy-review-005-2026-10-02.md sections 3 to 6.]",
+          "reopenWhen": "an observed capability/role-text mismatch on a newer CLI, a changed harness integration contract, or operator-directed requalification; reassess at the next entropy pass",
+          "targets": [],
+          "at": "2026-10-02T04:08:21.942Z"
         }
       ]
     },
@@ -12507,6 +12552,14 @@
           "reopenWhen": "two consecutive orders each commit more than 1 MB of distinct blob bytes under docs/evidence, or a week that begins on or after 2026-09-25 adds more than 10 MB of tracked evidence",
           "targets": [],
           "at": "2026-09-30T14:01:27.174Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "This week's 10 MB trigger occurred and is reassessed: positive tracked evidence path growth 12,523,596 bytes since the pre-Monday base 6f949464, distinct new blob content 9,157,936 bytes; these are not Git pack bytes. Latest two closed orders have 45,789 and 97,211 distinct evidence bytes. Retain immutable evidence and decline pruning/ceiling; repeated authority content is 3.627% of evidence, below its separate 10% trigger. The Codex session-identity join remains unexamined. [2026-10-02 entropy planning pass, docs/planning/entropy-review-005-2026-10-02.md sections 3 to 6.]",
+          "reopenWhen": "another week adds more than 10 MB of tracked evidence, two consecutive orders each commit more than 1 MB of distinct evidence blobs, or measured reading/storage harm occurs; preserve the authority writer-edit/10% condition",
+          "targets": [],
+          "at": "2026-10-02T04:08:22.010Z"
         }
       ]
     },
@@ -17976,6 +18029,14 @@
           "reopenWhen": "a week that begins on or after 2026-09-25 adds more than 10 MB of tracked evidence",
           "targets": [],
           "at": "2026-09-28T14:59:04.712Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "This week's 10 MB trigger occurred: 12,523,596 bytes positive path growth, 9,157,936 bytes distinct new content. The census attributes the largest additions to the recent orders, including WO-172's survey. No two latest closed orders breach 1 MB. A ceiling would cap a proxy without removing required evidence; pruning is not authorized, and historical report references stay intact. Reassessed with FUP-8a4e201d861208ad, without claiming the threshold did not fire. [2026-10-02 entropy planning pass, docs/planning/entropy-review-005-2026-10-02.md sections 3 to 6.]",
+          "reopenWhen": "another week adds more than 10 MB of tracked evidence, two consecutive orders each commit more than 1 MB of distinct evidence blobs, or measured reading/storage harm occurs",
+          "targets": [],
+          "at": "2026-10-02T04:08:22.045Z"
         }
       ]
     },
@@ -24619,6 +24680,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-01T19:11:14.551Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "The 30 s document-gate trigger occurred and remains open. Three passing runs in this pass have median 39.984 s; docs-check median 11.883 s and plan check 2.505 s remain below their 15/8 s triggers. A focused console-docs run passed 27 tests in 24.478 s, with four command-parity cases dominant and board collection 0.780 s. Decline the earlier history-parse cache as an unproven repair of this path; keep the broader latency design open for the next standard pass or relevant suite/check edit. WO-174 D012 and WO-178's added lexical scan remain evidence, not a solved claim. [2026-10-02 entropy planning pass, docs/planning/entropy-review-005-2026-10-02.md sections 3 to 6.]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-02T04:08:21.976Z"
         }
       ]
     },
@@ -25889,6 +25958,54 @@
           "reopenWhen": "Fresh verification finds historical text stored as current content, a role omission unnamed, withheld text restored, or a mismatch with observed API semantics.",
           "targets": [],
           "at": "2026-10-02T01:17:12.460Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-bfab19adc5e5eac1",
+      "key": "candidate:docs/planning/entropy-reviews/REVIEW-005.md#candidates--accepted-entropy-reducer-findings-review-review-005-recorded-2026-10-02::9a69ec5208284ba69987428c7b6e7757b3b9c841ac32c4e19e15f102ac125220",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d7b38f09a3941ff1b5634595de5a84bba124ca99ab06dcced21b86aff38afdf0",
+          "ref": "docs/planning/entropy-reviews/REVIEW-005.md#candidates--accepted-entropy-reducer-findings-review-review-005-recorded-2026-10-02",
+          "title": "ER5-001 — A launched worker's time limit keeps recorded headroom over its observed runs, and a limit about to be crossed is reported before an episode fails on it (packag",
+          "summary": "- **ER5-001 — A launched worker's time limit keeps recorded headroom over its observed runs, and a limit about to be crossed is reported before an episode fails on it (packag** Surface `packages/skeleton/src/entropy-review-protocol.ts (ENTROPY_REVIEW_LIMITS); packages/skeleton/src/worker-transport.ts (runner deadline); scripts/lib/planning-conditions.mjs (CONDITION_TABLE)`, severity minor, altitude 6, evidence measured. Observed: Recorded review durations against ENTROPY_REVIEW_LIMITS.timeoutMs 2,400,000: REVIEW-001 1,019,575 ms (42.5%), REVIEW-002 993,364 (41.4%), REVIEW-003 1,088,847 (45.4%), REVIEW-004 2,215,824 (92.3%). The limit's comment still cites only REVIEW-001's 1,019.6 s. When th",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "ER5-001 is accepted as measured after blinded REFUTATION-006. No new order or timeout change: REVIEW-004 used 92.3% and REVIEW-005 58.5% of the review limit; REFUTATION-006 used 6.4% of its limit. No deadline loss is observed in this pass. The NoOp compares a listing, larger limits and restricted review probes; the next entropy pass reviews headroom, including recorded losses without successful receipts. [2026-10-02 entropy planning pass, docs/planning/entropy-review-005-2026-10-02.md sections 3 to 6.]",
+          "reopenWhen": "an observed deadline loss, or two successive episodes of one kind above 80% of their respective timeout; review each entropy pass",
+          "targets": [],
+          "at": "2026-10-02T04:08:21.801Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4b70089b028849f0",
+      "key": "candidate:docs/planning/entropy-reviews/REVIEW-005.md#candidates--accepted-entropy-reducer-findings-review-review-005-recorded-2026-10-02::fc5f19ddab9643de332f012999f7a0bc957955bf0190cf1313be9818241d16df",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7a822ad7d25c2818aeab162846cdb35705ad2784873472342e2f3cd029a703e9",
+          "ref": "docs/planning/entropy-reviews/REVIEW-005.md#candidates--accepted-entropy-reducer-findings-review-review-005-recorded-2026-10-02",
+          "title": "ER5-002 — A deferred register row whose reopening condition has occurred is reopened or re-disposed by whoever observes the condition (the 2026-09-19 rule the 2026-09-30",
+          "summary": "- **ER5-002 — A deferred register row whose reopening condition has occurred is reopened or re-disposed by whoever observes the condition (the 2026-09-19 rule the 2026-09-30 ** Surface `docs/planning/followups.json (deferred rows); scripts/lib/planning-conditions.mjs (conditions listing); scripts/lib/planning-followups.mjs (touching listing); the close-time completion advisory`, severity minor, altitude 6, evidence measured. Observed: 152 register rows are deferred. In 4 of them the reopening condition opens with a bare order activation or landing, and 2 of those have fired yet stay deferred. FUP-0086 waits on 'WO-117 lands'; WO-117 is closed (FinalReviewCompleted 2026-09-29). FUP-0113 waits",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "ER5-002 is accepted after blinded REFUTATION-006. This pass re-disposes all three observed stale triggers, adopting WO-062 D002's already recorded boundary and reassessing authorship and broad harness requalification. No new order for the four-row anchored prose parser: it would omit the live-smoke case and can silently miss wording variants. The rest of the register is not certified correct. Its NoOp compares typed conditions and preserves explicit unknown coverage. [2026-10-02 entropy planning pass, docs/planning/entropy-review-005-2026-10-02.md sections 3 to 6.]",
+          "reopenWhen": "a subsequent planning or close pass again leaves a named fired lifecycle trigger unchanged; compare a typed condition with anchored prose using that example",
+          "targets": [],
+          "at": "2026-10-02T04:08:21.839Z"
         }
       ]
     }

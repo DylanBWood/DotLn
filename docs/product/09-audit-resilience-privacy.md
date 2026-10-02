@@ -538,6 +538,13 @@ any real diagnostic source is connected.
 
 ## Candidate — model-input exposure plans
 
+The 2026-10-02 reassessment adopts WO-062 D002's boundary: its adapter
+reads and stores deterministically and invokes no model. Its activation
+trigger has occurred; the candidate now reopens at the first consuming
+model invocation (including WO-123's composition review) or a proposed
+private-material reader. Neither the adapter nor its declared screen
+implements this plan ([decision](../evidence/WO-062/decisions.md#wo-062-d002--contract-and-exposure-boundary)).
+
 “Uses a model” is too coarse a privacy disclosure. Before a possible model
 invocation crosses its execution boundary, the compiler should be able to emit
 a **ModelInputPlan** that names the destination class—deterministic local
