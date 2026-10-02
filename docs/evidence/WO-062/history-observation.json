@@ -1,0 +1,62 @@
+{
+  "recordedAt": "2026-10-02T01:08:18.018Z",
+  "source": "read-only gh api graphql on public cli/cli; at most 30 recently updated issues, 10 comments per issue, 3 versions per subject",
+  "issuesRead": 30,
+  "editedSubjects": 14,
+  "newestEqualsCurrent": 14,
+  "newestFirst": 14,
+  "olderVersionLengths": [
+    [
+      2917
+    ],
+    [
+      16796,
+      16171
+    ],
+    [
+      687
+    ],
+    [
+      2051,
+      2036
+    ],
+    [
+      298
+    ],
+    [
+      14617,
+      12171
+    ],
+    [
+      17066,
+      15967
+    ],
+    [
+      36394,
+      33909
+    ],
+    [
+      19704,
+      9858
+    ],
+    [
+      861
+    ],
+    [
+      667
+    ],
+    [
+      4177,
+      4169
+    ],
+    [
+      22654,
+      19380
+    ],
+    [
+      1150
+    ]
+  ],
+  "identifiers": "withheld; target retained only in session scratch",
+  "limit": "Observed sample, not a documented guarantee. Source text is neither printed nor saved by this probe."
+}

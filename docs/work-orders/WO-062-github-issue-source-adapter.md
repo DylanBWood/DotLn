@@ -1,4 +1,4 @@
-# WO-062 — GitHub Issue source adapter: a read-only skeleton adapter over the GitHub CLI turns one issue and its discussion into a SourceBundle with a revision id, screened before it is stored (version assigned at activation)
+# WO-062 — GitHub Issue source adapter: a read-only skeleton adapter over the GitHub CLI turns one issue and its discussion into a SourceBundle with a revision id, screened before it is stored (v0.65.0)
 
 **Model:** any capable model; the executor runs the live smoke against a
 public repository's issue. State the model and effort actually run

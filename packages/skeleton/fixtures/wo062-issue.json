@@ -1,0 +1,113 @@
+{
+  "provenance": "Synthetic identifiers and text in the observed GitHub GraphQL response shape. WO-062 history-observation.json and VER-001 record read-only public observations: userContentEdits is newest first, the newest diff equals the current body, and older diffs are full versions. No live source text, account, node ID or credential is copied.",
+  "sourcePages": [
+    {
+      "cursor": null,
+      "data": {
+        "repository": {
+          "nameWithOwner": "dotln-fixture/target",
+          "issue": {
+            "id": "I_fixture_issue",
+            "number": 7,
+            "title": "Fixture issue: preserve rich source",
+            "body": "## Desired behavior\nPreserve ~~old~~ and <span style=\"color:red\">new</span> text.\n🙂 ![source image](https://github.com/dotln-fixture/target/image.png)\nSee https://github.com/dotln-fixture/target/issues/7.",
+            "updatedAt": "2026-09-28T10:05:00Z",
+            "author": {
+              "__typename": "User",
+              "login": "fixture-reporter"
+            },
+            "userContentEdits": {
+              "nodes": [
+                {
+                  "id": "UCE_fixture_issue",
+                  "editedAt": "2026-09-28T10:01:00Z",
+                  "diff": "## Desired behavior\nPreserve ~~old~~ and <span style=\"color:red\">new</span> text.\n🙂 ![source image](https://github.com/dotln-fixture/target/image.png)\nSee https://github.com/dotln-fixture/target/issues/7."
+                },
+                {
+                  "id": "UCE_fixture_issue_prior",
+                  "editedAt": "2026-09-28T10:00:00Z",
+                  "diff": "## Earlier desired behavior\nThis obsolete full body must never become current content.\n![old image](https://github.com/dotln-fixture/target/old.png)"
+                }
+              ],
+              "pageInfo": {
+                "hasNextPage": false,
+                "endCursor": null
+              }
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "id": "IC_fixture_reporter",
+                  "body": "Reporter clarification: keep the original markup.",
+                  "createdAt": "2026-09-28T10:02:00Z",
+                  "updatedAt": "2026-09-28T10:02:00Z",
+                  "author": {
+                    "__typename": "User",
+                    "login": "fixture-reporter"
+                  },
+                  "userContentEdits": {
+                    "nodes": [],
+                    "pageInfo": {
+                      "hasNextPage": false,
+                      "endCursor": null
+                    }
+                  }
+                },
+                {
+                  "id": "IC_fixture_reviewer",
+                  "body": "Reviewer question: does Größe 🙂 retain its UTF-8 span?",
+                  "createdAt": "2026-09-28T10:03:00Z",
+                  "updatedAt": "2026-09-28T10:04:00Z",
+                  "author": {
+                    "__typename": "User",
+                    "login": "fixture-reviewer"
+                  },
+                  "userContentEdits": {
+                    "nodes": [
+                      {
+                        "id": "UCE_fixture_comment",
+                        "editedAt": "2026-09-28T10:04:00Z",
+                        "diff": "Reviewer question: does Größe 🙂 retain its UTF-8 span?"
+                      },
+                      {
+                        "id": "UCE_fixture_comment_prior",
+                        "editedAt": "2026-09-28T10:03:00Z",
+                        "diff": "Earlier reviewer question: keep this full historical version out of current discussion."
+                      }
+                    ],
+                    "pageInfo": {
+                      "hasNextPage": false,
+                      "endCursor": null
+                    }
+                  }
+                },
+                {
+                  "id": "IC_fixture_automation",
+                  "body": "Automated check: the fixture is ready.",
+                  "createdAt": "2026-09-28T10:05:00Z",
+                  "updatedAt": "2026-09-28T10:05:00Z",
+                  "author": {
+                    "__typename": "User",
+                    "login": "fixture-check[bot]"
+                  },
+                  "userContentEdits": {
+                    "nodes": [],
+                    "pageInfo": {
+                      "hasNextPage": false,
+                      "endCursor": null
+                    }
+                  }
+                }
+              ],
+              "pageInfo": {
+                "hasNextPage": false,
+                "endCursor": null
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "editPages": {}
+}

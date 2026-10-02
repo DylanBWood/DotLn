@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "source": "readGateChecks and gateCodeIdentity; canonical harness gate rows",
+  "observedAt": "2026-10-02T00:42:28.479Z",
+  "currentCodeIdentity": "bb3431d1ecd623b10bcf90a31586173ab6062b78597f7fd2443efa046f522115",
+  "gates": [
+    {
+      "checkId": "npm test",
+      "treeHash": "37200ccfee2b6bb53f990da167a56b4df1d0f5e1",
+      "codeIdentity": "bb3431d1ecd623b10bcf90a31586173ab6062b78597f7fd2443efa046f522115",
+      "subject": "37200ccfee2b6bb53f990da167a56b4df1d0f5e1",
+      "durationMs": 421672,
+      "exitCode": 0,
+      "executed": true,
+      "evidenceRef": "host-gate:bb3431d1ecd623b10bcf90a31586173ab6062b78597f7fd2443efa046f522115:npm test",
+      "recordedAt": "2026-10-02T00:40:02.345Z",
+      "executionMode": "fresh",
+      "freshSuites": 74,
+      "reusedSuites": 0,
+      "workOrder": "WO-062",
+      "requiredSuiteCount": 29,
+      "cases": 29,
+      "failedCases": 0
+    },
+    {
+      "checkId": "npm run test:docs",
+      "treeHash": "37200ccfee2b6bb53f990da167a56b4df1d0f5e1",
+      "codeIdentity": "bb3431d1ecd623b10bcf90a31586173ab6062b78597f7fd2443efa046f522115",
+      "subject": "37200ccfee2b6bb53f990da167a56b4df1d0f5e1",
+      "durationMs": 39464,
+      "exitCode": 0,
+      "executed": true,
+      "evidenceRef": "host-gate:bb3431d1ecd623b10bcf90a31586173ab6062b78597f7fd2443efa046f522115:npm run test:docs",
+      "recordedAt": "2026-10-02T00:32:39.643Z",
+      "executionMode": "fresh",
+      "freshSuites": 24,
+      "reusedSuites": 0,
+      "workOrder": "WO-062",
+      "requiredSuiteCount": 24,
+      "cases": 24,
+      "failedCases": 0
+    }
+  ]
+}
