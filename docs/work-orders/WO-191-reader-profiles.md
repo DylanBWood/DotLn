@@ -21,9 +21,9 @@ reviewer role and one in the planner role
 Removes: the operator's only present way to change how published text
 reads, which is a correction after the fact repeated per surface (three
 dated corrections on titles and commit style in product 08, on
-2026-09-05, 2026-09-07 and 2026-09-09). A planning pass pays one reader
-agent only after a profile changes and three releases have followed it,
-or when the operator asks. Re-mints: `contributor.ts` is a
+2026-09-05, 2026-09-07 and 2026-09-09). Each standard planning pass pays
+one reader agent
+over the releases not yet scored. Re-mints: `contributor.ts` is a
 registered evidence source, so the editions it stales are re-minted
 deterministically; it, `scripts/release.mjs` and `scripts/worktree.mjs`
 are declared machinery sources, so `npm test -- --review` runs before
@@ -142,11 +142,8 @@ change.
   checks that every quotation is in the text, computes how far into the
   text each answer sat, and appends one row per release with the
   profile revision. `plan start` prints found answers and median
-  position by profile revision. A planning pass runs the reader once
-  when a profile revision has three or more unscored releases, or at the
-  operator's word; a pass with no profile change since the last score
-  runs none. A correction the operator gives on a surface is recorded
-  beside that surface's score.
+  position by profile revision. A standard planning pass runs the
+  reader once when three or more releases are unscored.
 - **The operator chooses.** The final review presents the three
   examples per surface. Without a recorded choice the committed profile
   is `balanced` on every surface, and the examples stay for a later
@@ -223,15 +220,6 @@ declared machinery sources, and again at final review.
 - A reader can quote a sentence that does not answer the question; the
   score is an indicator the operator reads beside the examples, never a
   gate.
-- Receipt 038: the score measures what a fresh agent can find in the
-  text, not the operator's taste, which stays the reference. Reopen if
-  the operator corrects a surface's style while its score is unchanged
-  or rising, or a profile change raises the score on text the operator
-  rejects.
-- Receipt 038: the corrections this order replaces were three, none
-  after 2026-09-09, so the reader run is tied to a profile change and is
-  not a standing cost on every pass. Reopen if passes record reader runs
-  whose scores change no profile.
 
 **Non-goals:** refusing or rewriting any published text; the product
 documents' audience editions; the front page (WO-189); order titles
@@ -244,8 +232,7 @@ or scheduled polish job.
    more are added by editing the control file.
 2. The operator picks each surface's profile from the examples; without
    a pick the profile is `balanced`.
-3. A score is collected by the planner after a profile change or at the
-   operator's word, never by the final review, whose duties stay as they
-   are.
+3. A score is collected by the planner at a standard pass, never by the
+   final review, whose duties stay as they are.
 4. No published text is ever refused or changed because of a profile or
    a score.

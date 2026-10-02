@@ -144,10 +144,7 @@ Release close and scratch repositories:
   sentence says remove, not declare; a completion that still holds one
   prints an advisory naming it; the final reviewer removes any that
   remain before publication; release close removes any still present
-  with no flag, no declaration and no bundle, and records each removal
-  with the repository's path, its head commit and whether a remote of
-  that repository held the commit. A keep declaration recorded by an
-  earlier completion no longer preserves a repository.
+  with no flag, no declaration and no bundle, and records the removal.
   D034 (a), (b) and (f), D037 (b), (c) and (g) and D033 are then
   re-observed, and each is recorded as gone or still present.
 - (2) One exported function builds the release-close command with the
@@ -252,7 +249,7 @@ Role rituals:
   would change what you do and what you will do about each, and the
   NoOp; where none applies, write nothing; at handoff say whether the
   outcome matched.
-- (23) Comments explain code. The executor's role text says: a comment says
+- (23) Comments explain code. The shared role text says: a comment says
   what the code does or why, in words a reader who has not seen the
   order understands; an order, report, finding or decision identifier
   never leads or replaces that explanation, and a report-local label
@@ -299,10 +296,9 @@ of item 8; the re-mints; the write-backs below.
 **Acceptance criteria (all required)**
 
 1. In the release fixtures, a nested repository with commits outside
-   today's scratch lanes and one that an earlier completion declared
-   kept are each removed at close with no flag and no blocker, and the
-   close record names each with its head commit and whether a remote
-   held it; a repository under the intake lane is preserved; a
+   today's scratch lanes and one under a stale keep declaration are each
+   removed at close with no flag and no blocker, and the close record
+   names them; a repository under the intake lane is preserved; a
    completion with a nested repository present prints one advisory
    naming it. The generated executor root says remove. The decisions
    record, for each of the seven sub-items of D033, D034 and D037 the
@@ -389,16 +385,14 @@ of item 8; the re-mints; the write-backs below.
     executor's briefing. Every generated role root carries the new
     goal-alignment sentence and none asks for all eight lenses. The
     decisions generator still accepts the 64 existing experiment
-    records. The bytes of each generated role root are recorded before
-    and after; the executor root is smaller than at this order's base,
-    and no root needs a new ceiling acceptance.
+    records.
 23. The comment check fails on a new comment line carrying a finding
     label, a bare decision number or a leading order identifier, and
     passes on a comment that explains the same code; today's lines pass
     by baseline; a baselined line that is edited without being fixed
     fails; no file outside every evidence edition holds a finding label
-    in a comment; the generated executor root carries the comment
-    sentence and no other root does.
+    in a comment; every generated role root carries the comment
+    sentence.
 24. The regenerated pull-request body for the last closed order holds no
     `unavailable` cell and one line counting them; every link in it and
     in that order's Release text is absolute or absent; the Release text
@@ -436,22 +430,10 @@ again at final review. No live row.
 - A failed item is repaired alone; verification judges each criterion on
   its own fixture.
 - Cold-start bytes fall for the executor (the experiment paragraph was
-  1,173 bytes) and change for every role by one shared sentence; the
-  comment sentence is the executor's alone, because the check enforces
-  the rule where code is written (receipt 038). Criterion 22 holds the
-  measure.
-- Receipt 038: release close now removes a nested repository whose
-  commits may exist nowhere else, by the operator's amendment of WO-176.
-  The close record keeps its path, its head commit and whether a remote
-  held it. Reopen if a close record names a removed repository whose
-  commits no remote or retained ref held and the operator asks to
-  recover it.
-- Receipt 038: four checks become refusals for later orders (finding
-  labels in comments, absolute home paths, unattributed operator
-  quotations, relative links in a body), and the meter does not count
-  bypasses. Reopen if a later order resolves one of these failures by
-  editing a baseline or suppressing the check instead of fixing the
-  line.
+  1,173 bytes) and change for every role (two shared sentences); the
+  executor measures each root after regeneration and records the
+  figures. No ceiling is expected to be met; if one is, the standing
+  acceptance route applies.
 - Item 1 changes what release close removes. The verifier attacks it
   first: a repository the operator would want kept (intake, a declared
   submodule) must survive every path.

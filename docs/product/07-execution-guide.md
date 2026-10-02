@@ -1220,10 +1220,10 @@ a bound a role trims reviewed text to meet [2026-09-30 pass; WO-172 theme 14].
 A pass that files or keeps a write-back to a bounded document sets that
 document's ceiling (`docs/control/doc-ceilings.json`) to cover it and cites its
 planning document. A duty an order owes beyond its criteria (a carry-in, a
-boarded item it takes, a known issue from a receipt the pass repairs under) is
-written in that order under `Known issues and carry-ins`; a known issue from
-the pass's last receipt, which finds the order frozen, goes on its catalog row
-[2026-10-02 pass].
+boarded item it takes, a known issue an earlier receipt named) is written in
+that order under `Known issues and carry-ins`; a known issue from the pass's
+own receipt, which finds the order frozen, goes on its catalog row until a
+later pass amends the order [2026-10-02 pass].
 
 An order gives the executor every step the executor can perform (operator
 direction, 2026-09-28): none is marked operator-run or routed to the

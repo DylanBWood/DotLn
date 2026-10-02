@@ -290,8 +290,8 @@ Decision: [WO-185](../work-orders/WO-185-no-order-can-exhaust-the-host.md).
 A guard that runs outside the agent, measures footprint, and stops the
 offending process group, never the agent; budgets as shares of the
 host's physical memory with a measured basis; the runner's own budgets,
-signal handling and survivor sweep; one guard and one lane count per
-user on the host, shared by every clone; a bounded wrapper for any probe run outside a gate, with the
+signal handling and survivor sweep; a lane count shared across
+worktrees; a bounded wrapper for any probe run outside a gate, with the
 role sentence that names it; bounded assertions in the corpus tests that
 can produce the diff. The guard is the part that does not depend on an
 agent choosing to use it.
@@ -359,9 +359,10 @@ write-back states and where, without a count. A pass that files or keeps
 a write-back to a bounded document sets that document's ceiling to cover
 it. A duty an order owes beyond its criteria is written in that order,
 under `Known issues and carry-ins`, where the verify briefing will print
-it; a known issue from a pass's last receipt goes on the order's catalog
-row, because a judged order is frozen. The bound stays, as the operator
-asked; its basis is now the plan.
+it; a known issue from the pass's own receipt goes on the order's
+catalog row until a later pass amends the order, because a judged order
+is frozen. The bound stays, as the operator asked; its basis is now the
+plan.
 
 ## 7. Public surfaces: the front page, operator words, the lists, published text
 
@@ -452,9 +453,8 @@ predecessors did.
   fixture is synthetic. An unmapped row can open a request holding its
   generic statement and nothing else.
 
-Placement: after WO-118, the loop from a starter instance, so that the
-product exit does not wait behind them (receipt 038, §19); the notes ask
-for them once the starter exists. WO-192 depends on nothing in
+Placement: after WO-078, as the notes ask; the independent review
+questions their sitting ahead of WO-118 (§19). WO-192 depends on nothing in
 the export and would also end the operator's own phase-by-phase dispatch
 here, so it can move into the machinery lane after WO-188 at the
 operator's word (§18).
@@ -479,7 +479,7 @@ on it.
 | 9 | WO-066 D011, D014 | Four outcome defects of the review loop |
 | 10 | WO-114 D013 | A configuration path that is not a regular file is refused without blocking |
 | 11 | map item, 2026-09-19 | An unreachable guard deleted; three decider-free regions moved byte for byte to a leaf module; one untyped payload typed; the reactor at most 92,000 characters |
-| 12, 13 | WO-181 D014 | A review-enabled stream re-verifies every criterion after an in-stream repair; the verifier is told a review follows, with three live attempts that must all pass |
+| 12, 13 | WO-181 D014 | A review-enabled stream re-verifies every criterion after an in-stream repair; the verifier is told a review follows, with one live proof |
 | 14 | WO-058 D010 | The claim-type enum narrowed to the capsule's own |
 | 15 | WO-066 D012 | A host-owned sandbox profile file; no asterisk in the admitted command text |
 | 16 | WO-175 D012, D013 | The prompt's joining space; the temporary directory in the worker's environment only |
@@ -622,7 +622,7 @@ gate).
 | WO-189 front page | machinery | patch | pair 5, or a third lane at any time | none |
 | WO-190 index and roadmap | machinery | patch | pair 6 | none |
 | WO-191 reader profiles | machinery | patch | pair 7 | WO-188 |
-| WO-192 router | delivery | minor | after WO-118 | WO-187 |
+| WO-192 router | delivery | minor | after WO-078 | WO-187 |
 | WO-193 capability requests | delivery | minor | after WO-192 | WO-074, WO-077, WO-078 |
 | WO-194 predecessor map | delivery | minor | after WO-193 | WO-074, WO-076, WO-193 |
 
@@ -633,7 +633,7 @@ last in the sequence, with the condition under which it moves up).
 The sequence: seven lane pairs, the delivery order first in each
 (WO-184, WO-123, WO-112, WO-074, WO-075, WO-072, WO-073), a machinery
 order beside it (WO-185 to WO-191 in number order), then the serial run
-from WO-076, in which WO-118 precedes the three instance orders. No pair holds a hard edge. Shared files inside a pair are
+from WO-076. No pair holds a hard edge. Shared files inside a pair are
 secondary and named in each order's placement paragraph: WO-072 and
 WO-190 both edit `scripts/resume.mjs`; WO-073 and
 WO-191 both add sentences to the loadout source.
@@ -718,8 +718,10 @@ way.
 | 10 IR compatibility | 25,665 | 950 (WO-076, WO-091, WO-092, WO-097: 800; WO-194: 150) | 26,615 |
 | 12 workstream application | 18,164 | 1,850 (WO-080, WO-082, WO-083, WO-112, WO-118: 1,100; WO-193: 350; WO-194: 400) | 20,014 |
 
-"Bytes now" includes this pass's own edits: 399 bytes in 07, 403 in 06
-and 315 in 05. Unchanged, because their headroom already covers what is
+"Bytes now" includes this pass's own edits at the time the ceilings were
+set: 399 bytes in 07, 403 in 06 and 315 in 05. A later wording
+correction in this pass added 118 bytes to 07 (158,075), inside the same
+ceiling. Unchanged, because their headroom already covers what is
 queued: 00 (WO-118, 250 of 545), 08 (WO-191, 300 of 371), 13 (WO-083 and
 WO-098, 400 of 523), and 01, 09 and both 11 files, which have no queued
 write-back.
@@ -786,7 +788,7 @@ WO-189, WO-192) each name the observation that would show it.
 | WO-189's ownership check | A queued order's front-page sentence is refused, or the operator wants orders to keep writing the page |
 | WO-190's two pages | A reader of the console's work view loses a link it had |
 | WO-191's profiles | The operator finds the examples do not differ in a way that matters |
-| WO-192 after WO-118 | The operator moves it into the machinery lane after WO-188; nothing in it depends on the export |
+| WO-192 after WO-078 | The operator moves it into the machinery lane after WO-188; nothing in it depends on the export. The review's placement finding (§19) would put WO-118 ahead of all three instance orders |
 | WO-192's design | Its probe shows the host does not expose what the design needs; the fallback is delivered |
 | WO-193's default of `none` | not applicable; the route is the instance operator's to set |
 | The machine-login and link-host declaration (WO-073) | The operator wants no declared exceptions to the screen; then the criterion is removed and the loop keeps stopping on such items |
@@ -796,7 +798,8 @@ Questions that are the operator's, reported with the pass: whether the
 session-log metadata reading is admissible; where WO-192 sits; the
 reserved cold-start pass; a safety sentence for unbounded probes in the
 standing instructions until WO-185 lands; the prune apply over 21
-snapshots and 29 stashes.
+snapshots and 29 stashes; whether to open a short pass that applies the
+fourteen prepared amendments of §19 before the head pair is activated.
 
 ## 19. Independent review
 
@@ -809,30 +812,44 @@ findings and two aligned (WO-189, WO-190); 24 unchanged verdicts are
 carried by hash. The worker ran 1,377 s; dispatch to filed receipt took
 1,621.6 s.
 
-Its twenty findings are known issues, each with a reopening
-observation. Fourteen changed an order's text or the sequence, without
-another judgment; six are recorded as they stand. All twenty are written
-in the orders they name under `Known issues and carry-ins`, by the rule
-§6 adds.
+Its twenty findings are known issues, each with a reopening observation.
+They are carried on the orders' catalog rows in the map.
 
-| Finding | Disposition |
+An error of this pass, corrected. The planner first edited the judged
+orders and the sequence to repair fourteen of the findings, reading the
+rule "dispositions settle repairs without another judgment" as leave to
+repair. The plan check refused: a judged order and the sequence are
+frozen by the pass's one judgment; only a hold's disposition or an
+operator-authorized amendment changes judged text; and a second judgment
+needs changed observed evidence (`scripts/lib/plan-continuation.mjs`;
+`requireChangedPlanEvidence` in `scripts/lib/plan-receipts.mjs`). The
+receipt has no hold, so nothing can be disposed. The edits were reverted
+to the judged bytes. The repair commit, `c3226ebc`, stays in this
+branch's history, and the table says what each amendment is, for the
+pass that next amends these orders. Six findings need no amendment.
+
+| Finding | Amendment prepared, or why none |
 | --- | --- |
-| WO-184 criterion 13: one passing attempt in three would meet it, the rate the order cites as the defect | Repaired: three live attempts, and all must pass |
-| WO-184 criterion 19: two host imports stay inside the reactor's import closure | Recorded with its reopening observation |
-| WO-185 criterion 4: the mechanism covered one repository while the title promised the machine | Repaired: one guard and one lane count per user on the host; a fixture with two clones |
-| WO-185 criterion 7: the bounded wrapper against the rule on allow lists | Recorded: the wrapper is added to no allow list; WO-014 measures with it present |
-| WO-123 criterion 1: the fixture's starting draft names `repo: self` and asks for human review | Repaired in the criterion: the portfolio entry supplies the target, and the admission record says why the review constraint does not apply |
-| WO-186 criterion 3: the environment a reused row came from is outside the identity | Recorded; the reviewer's full run is the backstop |
-| WO-187 criterion 6: one more cold-start ceiling raise (the verifier had 363 bytes of headroom) | Repaired: the duty sentence is replaced, the detail is read at verify time, and no new acceptance is allowed |
-| WO-187 criterion 4: an unclassed finding could block recording a final review | Repaired: counted as unclassed and advised, never refused |
-| WO-188 criterion 1: release close removes a repository whose commits may exist nowhere else | Kept, by the operator's amendment of WO-176; the close record now names the head commit and whether a remote held it |
-| WO-188 criterion 23: a comment sentence in every role root | Repaired: the executor's root only; each root's bytes recorded; no new acceptance |
-| WO-188 criterion 13: four new refusals and no count of bypasses | Recorded |
-| WO-073 criterion 3: a registration without a profile would be refused | Repaired: a profile is declared per registration, and one that declares none activates as today |
-| WO-073 criterion 2: cold-start figures from 2026-09-28 | Repaired: re-read on this date |
-| WO-191 criterion 6: a reader agent at every pass, for three corrections none of which is later than 2026-09-09 | Repaired: run after a profile change or at the operator's word |
-| WO-191 criterion 5: the score is an agent's retrieval, not the operator's taste | Recorded; the operator's corrections are kept beside the score |
-| WO-192 criterion 6: no bound on a driven session's total sub-agents | Repaired: a ceiling for a driven session |
-| WO-192 criterion 3: two generators of agent definitions in one file | Repaired: one generator and one check rule |
-| WO-193 and WO-194 criterion 4: instance orders ahead of the product exit | Repaired in the sequence: WO-118 precedes them |
-| WO-014 criterion 3: commitments made before any baseline shows a burden | Recorded; the pass that reaches it re-observes the gap first |
+| WO-184 criterion 13: one passing live attempt in three would meet it, the rate the order cites as the defect | Three live attempts, and all must pass |
+| WO-184 criterion 19: two host imports stay inside the reactor's import closure | None; recorded with its reopening observation |
+| WO-185 criterion 4: the guard and the lanes cover one repository while the title promises the machine | One guard and one lane count per user on the host; a fixture with two clones |
+| WO-185 criterion 7: the bounded wrapper against the rule on allow lists | None; the wrapper is added to no allow list, and WO-014 measures with it present |
+| WO-123 criterion 1: the fixture's starting draft names `repo: self` and asks for human review | The criterion says what the Design already says: the portfolio entry supplies the target, and the admission record states why the review constraint does not apply |
+| WO-186 criterion 3: the environment a reused row came from is outside the identity | None; the reviewer's full run is the backstop |
+| WO-187 criterion 6: one more cold-start ceiling raise (the verifier has 363 bytes of headroom) | The duty sentence is replaced, the detail is read at verify time, and no new acceptance is allowed |
+| WO-187 criterion 4: an unclassed finding could block recording a final review | Counted as unclassed and advised, never refused |
+| WO-188 criterion 1: release close removes a repository whose commits may exist nowhere else | The rule stays, by the operator's amendment of WO-176; the close record names the head commit and whether a remote held it |
+| WO-188 criterion 23: a comment sentence in every role root | The executor's root only; each root's bytes recorded; no new acceptance |
+| WO-188 criterion 13: four new refusals and no count of bypasses | None; recorded |
+| WO-073 criterion 3: a registration without a profile would be refused | A profile is declared per registration, and one that declares none activates as today |
+| WO-073 criterion 2: cold-start figures from 2026-09-28 | The figures re-read on this date |
+| WO-191 criterion 6: a reader agent at every pass, for three corrections none later than 2026-09-09 | The reader runs after a profile change or at the operator's word |
+| WO-191 criterion 5: the score is an agent's retrieval, not the operator's taste | None; the operator's corrections are kept beside the score |
+| WO-192 criterion 6: no bound on a driven session's total sub-agents | A ceiling for a driven session |
+| WO-192 criterion 3: two generators of agent definitions in one file | One generator and one check rule |
+| WO-193 and WO-194 criterion 4: instance orders ahead of the product exit | The sequence: WO-118 ahead of WO-192, WO-193 and WO-194 |
+| WO-014 criterion 3: commitments made before any baseline shows a burden | None; the pass that reaches it re-observes the gap first |
+
+Two of the amendments touch the head pair. WO-184 and WO-185 are the
+first orders the sequence offers, so the amendment pass, or an
+operator's scope expansion at activation, comes before them.

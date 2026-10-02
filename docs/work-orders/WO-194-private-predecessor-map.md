@@ -40,7 +40,7 @@ is the stop condition: stop and flag it.
 **Depends on:** WO-074 (the kit and its manifest); WO-076 (instance-owned
 files that compose over the kit and stay out of the manifest); WO-193
 (the request draft an unmapped row can open).
-**Recommended placement:** after WO-193, which follows WO-118. This order
+**Recommended placement:** after WO-193 and before WO-118. This order
 edits the export's file set, `scripts/parity.mjs` (new), kit templates,
 product 10 and product 12. WO-096, queued later, builds core's own
 migration rows over the operator's intake; the two share only the
@@ -201,9 +201,6 @@ map exists only in an instance and is never evidence here.
   commands never carry a row out.
 - The file names of the export are fixed by WO-074 and WO-076; this
   order follows them as landed.
-- Receipt 038: the order is additive and cites no recorded cost of not
-  having it, and it first sat ahead of the product exit. It is placed
-  after WO-118 and is not activated ahead of it.
 - A capability an instance needs and core lacks, such as reading work
   from a tracker other than the forge's issues, is a row with status
   `unmapped` and then a request; the port for an instance-owned source

@@ -245,11 +245,6 @@ operator's explicit grant at execution; `npm test -- --review` before
   own names to match.
 - Whether a particular managed host permits any outward request is not
   known here and is not this order's to find out.
-- Receipt 038: no record yet quantifies the cost of having no request
-  route, and the order first sat ahead of the product exit. It is placed
-  after WO-118 and is not activated ahead of it. Reopen if a planning
-  capture records an instance need that reached core late for lack of a
-  route, which would establish the cost.
 
 **Non-goals:** moving any instance content to core; reading an
 instance from core; a tracker other than the forge's issues; the

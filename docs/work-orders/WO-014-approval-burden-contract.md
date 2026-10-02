@@ -349,15 +349,6 @@ operator-witnessed run.
 
 **Write-back duty:** as listed in criterion 17.
 
-**Known issues and carry-ins:**
-
-- Receipt 038: the order commits to baselines, final runs on three
-  harnesses, a verifier reproduction and two witnessed runs before any
-  baseline shows a burden to remove, under a posture it was not written
-  for. The pass that reaches it re-observes the gap first. Reopen its
-  remaining scope if the baseline matrices record no approval in
-  scenarios A to C on all three harnesses with scenario D unscored.
-
 **Non-goals:** eliminating approval for genuine network, credential,
 account, deployment, publication, or unrelated-filesystem effects;
 disabling or weakening any sandbox; adding broad command allowlists;
