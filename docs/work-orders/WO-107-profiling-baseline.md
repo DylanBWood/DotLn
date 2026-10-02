@@ -1,4 +1,4 @@
-# WO-107 — Deterministic profiling harness and first baseline observation corpus (version assigned at activation)
+# WO-107 — Deterministic profiling harness and first baseline observation corpus (v0.64.1)
 
 **Model:** Codex (any capable tier); any capable model may substitute. State the
 model and effort actually run in the result (07-execution-guide.md
@@ -158,6 +158,15 @@ later reviewed pass, not this order's authority.
 
 **Design (scope discipline):**
 
+- **Operator-authorized exception, 2026-10-02:** add exactly one entry for
+  this order's observations JSONL to
+  `packages/kernel/test/fixtures/jsonl-protocols.json`. The existing strict
+  EventEnvelope test otherwise misclassifies this new evidence protocol.
+  No runtime or test assertion changes are authorized. Measurements retain
+  the pinned runtime and disclose this classification-only metadata overlay;
+  the first execution and failed attempt remain retained. See
+  [WO-107-D007](../evidence/WO-107/decisions.md#wo-107-d007).
+
 - New files only, under `corpus/harness/`, `corpus/baselines/` and
   `corpus/manifests/runs/`. No existing file is edited apart from the
   records the lifecycle's own commands write: `docs/planning/`,
@@ -232,7 +241,7 @@ later reviewed pass, not this order's authority.
    the declared set; a case outside it is a follow-up, not a failure.
 6. The decisions file records the seeds and the warm-up and repetition
    counts, and no existing file is edited beyond the lifecycle's own
-   records.
+   records and the one classification entry authorized in WO-107-D007.
 7. After `npm run build`,
    `node corpus/harness/profile.mjs --compare corpus/baselines/observations-<commit>.jsonl --check`
    and `node --test corpus/harness/wo107-*.test.mjs` pass; `npm test` and
