@@ -1,0 +1,26 @@
+{"label":"configuration-fixtures","command":["node","--test","scripts/test-configuration-root.mjs"],"startedAt":"2026-10-02T15:56:51.196Z","completedAt":"2026-10-02T15:56:55.132Z","wallSeconds":3.934429542,"exitCode":0,"environment":"suiteEnvironment: canonical offline fixture environment; session metadata excluded"}
+
+Generated records/lineage/README.md
+▶ configuration root
+  ✔ WO-184 criterion 10: a configuration FIFO refuses promptly by path (42.302458ms)
+  ✔ an absent configuration means today's layout (1.584666ms)
+  ✔ a declared root moves its documents and its children (1.494834ms)
+  ✔ registered repositories expose a validated public profile (0.953833ms)
+  ✔ a malformed configuration refuses with its path (3.687792ms)
+  ✔ the launchpad is discovered, and the override wins (3.365625ms)
+  ✔ no control-plane script keeps a literal document root or a second root derivation (19.143042ms)
+  ✔ configured lineage and planning consumers use the launchpad ledger (152.412667ms)
+  ✔ configured follow-up references validate against their roots (11.499042ms)
+  ✔ writing-worker defaults separate tool inputs from configured outputs (20.723875ms)
+  ✔ a fixture launchpad with non-default roots drives the lifecycle (1483.875167ms)
+  ✔ worktree start and finish use the configured roots (2085.354417ms)
+  ✔ every declared root key is reachable (0.694583ms)
+✔ configuration root (3828.850416ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3898.813333

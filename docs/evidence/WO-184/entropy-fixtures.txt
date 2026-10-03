@@ -1,0 +1,13 @@
+{"label":"entropy-fixtures","command":["node","--test","--test-name-pattern=WO-175 launched|WO-165 pinned routes","scripts/test-entropy-review.mjs"],"startedAt":"2026-10-02T15:57:51.828Z","completedAt":"2026-10-02T15:57:52.625Z","wallSeconds":0.79530325,"exitCode":0,"environment":"suiteEnvironment: canonical offline fixture environment; session metadata excluded"}
+
+✔ WO-175 launched review/refutation receive sibling TMPDIR, inventory it and remove read-only trees (271.993625ms)
+Entropy gate: {"receipts":["REVIEW-002","REFUTATION-002","REFUTATION-003","REVIEW-003","REFUTATION-004","REVIEW-004","REFUTATION-005","REVIEW-005","REFUTATION-006"],"preMechanism":["REFUTATION-001","REVIEW-001"],"dispositions":28,"packets":9,"interruptedFilings":[],"status":"ok"}
+✔ WO-165 pinned routes agree on authority, serial checklist, transport tools and receipt (253.090667ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 759.402375

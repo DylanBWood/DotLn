@@ -1,0 +1,23 @@
+{"label":"confinement-fixtures","command":["node","--test","packages/skeleton/dist/test/source-change-confinement.test.js","packages/skeleton/dist/test/writer.test.js"],"startedAt":"2026-10-02T15:57:28.645Z","completedAt":"2026-10-02T15:57:30.893Z","wallSeconds":2.247267833,"exitCode":0,"environment":"suiteEnvironment: canonical offline fixture environment; session metadata excluded"}
+
+✔ WO-066 AC6: host and exact writer command deny direct network, common-Git writes and outside reads (206.084083ms)
+✔ WO-184 criterion 15: the confined writer test cannot alter its hook or host scratch controls (115.649708ms)
+✔ confined npm test leaves committed source clean through host and writer routes (537.537792ms)
+✔ WO-161 the bounded Contributor label retains the writer's authority limits (7.732375ms)
+✔ WO-051 inspection request, validator, parser, prompt and both launch arrays retain activation bytes (0.791875ms)
+✔ WO-051 writer authority, command and environment refuse invalid requests before a launch (107.082292ms)
+✔ WO-051 source-change mount accepts scratch worktrees and rejects root, prefix and symlink escapes (116.325166ms)
+✔ WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes (92.179792ms)
+✔ WO-051 claude subprocess observes committed and C-K1 edited-uncommitted outcomes (379.900792ms)
+✔ WO-051 claude malformed, spoofed and failed vendor output never becomes a writer result (619.947917ms)
+✔ WO-051 codex subprocess observes committed and C-K1 edited-uncommitted outcomes (359.237709ms)
+✔ WO-051 codex malformed, spoofed and failed vendor output never becomes a writer result (395.944125ms)
+✔ WO-051 strict writer parser keeps observations host-owned and validates stored fields (72.70375ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2213.392625

@@ -1,0 +1,5 @@
+{"label":"reactor-identity","command":["node","scripts/reactor-identity.mjs","--check"],"startedAt":"2026-10-02T16:07:42.744Z","completedAt":"2026-10-02T16:07:44.566Z","wallSeconds":1.82095275,"exitCode":0,"environment":"suiteEnvironment: canonical offline fixture environment; session metadata excluded"}
+
+(node:99528) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Verified 18 complete Decision/projection fixtures under recorded compiler identity 0.11.1, without state normalization.

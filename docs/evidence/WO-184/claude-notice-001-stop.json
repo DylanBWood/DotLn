@@ -1,0 +1,14 @@
+{
+  "receipt": "claude-notice-001.json",
+  "phase": "prelaunch-material-registration",
+  "reason": "The material registration was given an absolute native temporary path; the material command requires a repository path relative to the worktree and refused it before either model launched.",
+  "source": "WO-184-D027 records the original failure cause; claude-notice-001.json records sessions null, empty confinement and empty usage. The original failure transcript is unavailable at .runtime/wo184/claude-notice-001-failure.txt in this repair; this companion preserves the prior decision observation, not a new transcript readback.",
+  "modelLaunched": false,
+  "replacementAttempts": [
+    "claude-notice-003.json",
+    "claude-notice-004.json",
+    "claude-notice-005.json"
+  ],
+  "recordedBy": "resume: fix; VER-001 R9",
+  "date": "2026-10-03"
+}

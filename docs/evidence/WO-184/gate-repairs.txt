@@ -1,0 +1,13 @@
+{"label":"gate-repairs","command":["node","--test","--test-name-pattern=duplicate nodes|real target guard|every observer caller","scripts/test-target-publish.mjs","scripts/test-authority-probe.mjs"],"startedAt":"2026-10-03T02:58:27.547Z","completedAt":"2026-10-03T02:58:29.154Z","wallSeconds":1.606131458,"exitCode":0,"environment":"suiteEnvironment: canonical offline fixture environment; session metadata excluded"}
+
+✔ real target guard admits exactly the host grant and rejects it after revocation (1500.158292ms)
+✔ WO-065: duplicate nodes, stalled pagination and concurrent writer refuse (662.780583ms)
+✔ WO-184 criterion 7: every observer caller gets a fixed reason for unexpected errors (0.59825ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1567.356208

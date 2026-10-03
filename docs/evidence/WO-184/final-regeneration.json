@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-184",
+  "dispatch": "resume: final review; FINAL-001",
+  "source": "Host monotonic subprocess timings with UTC endpoints; complete command output retained in ignored execution transcripts",
+  "staleAfterHarnessEmit": [
+    "authority",
+    "feedback"
+  ],
+  "wholeRegeneration": {
+    "startedAt": "2026-10-03T15:22:31.941Z",
+    "completedAt": "2026-10-03T15:24:27.547Z",
+    "wallSeconds": 115.605944041,
+    "commandWallSeconds": 113.65822616699998,
+    "includes": "Sequential installed-harness regeneration, the deterministic editions stale after it, fresh live feedback audit, recording and console re-pin."
+  },
+  "comparison": {
+    "citedWO175Seconds": 384,
+    "interpretation": "WO-175 catalog figure; its measured whole regeneration was not recorded, so this comparison does not establish a speedup."
+  },
+  "commands": [
+    {
+      "label": "harness-regeneration",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "emit"
+      ],
+      "startedAt": "2026-10-03T15:22:31.942Z",
+      "completedAt": "2026-10-03T15:22:32.125Z",
+      "wallSeconds": 0.183073917,
+      "exitCode": 0
+    },
+    {
+      "label": "authority-remint",
+      "command": [
+        "node",
+        "scripts/authority-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-03T15:22:34.071Z",
+      "completedAt": "2026-10-03T15:22:34.744Z",
+      "wallSeconds": 0.6723989580000003,
+      "exitCode": 0
+    },
+    {
+      "label": "feedback-remint",
+      "command": [
+        "node",
+        "scripts/feedback-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-03T15:22:34.744Z",
+      "completedAt": "2026-10-03T15:22:37.340Z",
+      "wallSeconds": 2.5963689589999994,
+      "exitCode": 0
+    },
+    {
+      "label": "feedback-live",
+      "command": [
+        "node",
+        "packages/skeleton/dist/src/dotln.js",
+        "feedback-audit",
+        "--store",
+        ".runtime/wo184/final-feedback-live",
+        "--transport",
+        "codex-cli-exec",
+        "--model",
+        "gpt-6.1-sol",
+        "--effort",
+        "max"
+      ],
+      "startedAt": "2026-10-03T15:22:37.340Z",
+      "completedAt": "2026-10-03T15:24:26.811Z",
+      "wallSeconds": 109.470754959,
+      "exitCode": 0
+    },
+    {
+      "label": "feedback-record",
+      "command": [
+        "node",
+        "scripts/feedback-evidence.mjs",
+        "--record-selfhost",
+        ".runtime/wo184/final-feedback-live"
+      ],
+      "startedAt": "2026-10-03T15:24:26.811Z",
+      "completedAt": "2026-10-03T15:24:27.149Z",
+      "wallSeconds": 0.33817429099998847,
+      "exitCode": 0
+    },
+    {
+      "label": "console-repin",
+      "command": [
+        "node",
+        "scripts/console-fixtures.mjs",
+        "--record-current-selfhost"
+      ],
+      "startedAt": "2026-10-03T15:24:27.150Z",
+      "completedAt": "2026-10-03T15:24:27.547Z",
+      "wallSeconds": 0.3974550829999935,
+      "exitCode": 0
+    }
+  ]
+}

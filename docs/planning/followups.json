@@ -27187,6 +27187,109 @@
           "at": "2026-10-02T14:18:02.788Z"
         }
       ]
+    },
+    {
+      "id": "FUP-81ae3c4f2fdb7893",
+      "key": "decision:docs/evidence/WO-184/decisions.md#wo-184-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "75f20b596f5a9efdcf64a52d519524463b70e98697d271514700ca3887fc35bf",
+          "ref": "docs/evidence/WO-184/decisions.md#wo-184-d013--item-11",
+          "title": "WO-184-D013: Move the three decider-free regions byte-for-byte into verification-fold.ts with switch wrappers that retain their indentation; remove the unreachable continuation guard and type the repa",
+          "summary": "{ \"id\": \"WO-184-D013\", \"date\": \"2026-10-02\", \"dispatch\": \"resume: next\", \"item\": 11, \"sourceDecision\": \"WO-181-D004; WO-181-D014; map: Three recorded items in reactor.ts\", \"decision\": \"Move the three decider-free regions byte-for-byte into verification-fold.ts with switch wrappers that retain their indentation; remove the unreachable continuation guard and type the repair event payload in repair.ts. Preserve repairPlans.\", \"evidence\": [ \"WO-184 item and criterion 11\", \"WO-181-D004; WO-181-D014; map: Three recorded items in reactor.ts\", \"reactor-move.json records hashes for the 3,178-, 3,238- and 2,153-character regions; reactor initially shrank from 99,655 to 90,803 characters. reactor-ident",
+          "missing": false
+        },
+        {
+          "hash": "e774f2a8600ceb331aca609bdb0ca8c2acc1f2e8a9b5526be6d9dc6eef97ded5",
+          "ref": "docs/evidence/WO-184/decisions.md#wo-184-d013--item-11",
+          "title": "WO-184-D013: Move the three decider-free regions byte-for-byte into verification-fold.ts with switch wrappers that retain their indentation; remove the unreachable continuation guard and type the repa",
+          "summary": "{ \"id\": \"WO-184-D013\", \"date\": \"2026-10-02\", \"dispatch\": \"resume: next\", \"item\": 11, \"sourceDecision\": \"WO-181-D004; WO-181-D014; map: Three recorded items in reactor.ts\", \"decision\": \"Move the three decider-free regions byte-for-byte into verification-fold.ts with switch wrappers that retain their indentation; remove the unreachable continuation guard and type the repair event payload in repair.ts. Preserve repairPlans.\", \"evidence\": [ \"WO-184 item and criterion 11\", \"WO-181-D004; WO-181-D014; map: Three recorded items in reactor.ts\", \"reactor-move.json records hashes for the 3,178-, 3,238- and 2,153-character regions; reactor initially shrank from 99,655 to 90,803 characters. reactor-ident",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-605ef3167ee20e5f",
+      "key": "decision:docs/evidence/WO-184/decisions.md#wo-184-d032",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4ad08f0926e82799ebb2fa3824e2d39219ca628a46fd1b7a9fe1106f31c09df6",
+          "ref": "docs/evidence/WO-184/decisions.md#wo-184-d032--verification-fail-on-criterion-11-ten-low-findings-to-the-repair",
+          "title": "WO-184-D032: WO-184 resume: fix. Either (a) restore the moved VerificationOpened and VerificationSubjectSubmitted bodies in verification-fold.ts to their HEAD bytes apart from import and export lines ",
+          "summary": "{ \"id\": \"WO-184-D032\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on criterion 11 alone. At the subject, two of the three regions moved out of reactor.ts are not byte-identical to their HEAD bytes apart from import and export lines: the VerificationOpened region gains seven lines (item 13's notice check and state field) and the VerificationSubjectSubmitted region replaces two hunks (D024's expected merge and item 12's affected set). The CommandResult region is identical. The other twenty-one criteria are met. Ten low findings inside the order's declared surfaces (VER-001 R1 to R10) contradict no criterion and go to the repair's A",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2456058b9b4ca7ba",
+      "key": "decision:docs/evidence/WO-184/decisions.md#wo-184-d034",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "26808f3126768c291a1ad49a77b566fde39a488670cd0d5325ab91994a927d59",
+          "ref": "docs/evidence/WO-184/decisions.md#wo-184-d034--settle-ver-001-r1r10-in-the-repair-batch",
+          "title": "WO-184-D034: Repair all ten low findings within the existing surfaces as adjacent-0002. The operator answered Keep the planned batch to the asynchronous priority check; queue revision 9 records its st",
+          "summary": "{ \"id\": \"WO-184-D034\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: fix; VER-001\", \"decision\": \"Repair all ten low findings within the existing surfaces as adjacent-0002. The operator answered Keep the planned batch to the asynchronous priority check; queue revision 9 records its start. Retain the existing publication authorization and target-binding guards, but report an existing publication only at a successful return. Preserve every previous live receipt and edition.\", \"findings\": { \"R1\": \"Add a compiler product regression for explicit, architecture and directory-reference at threshold zero, comparing the complete-result hashes with retained WO-124 results except their threshold field (D036",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c4e2db6d99a13eb7",
+      "key": "decision:docs/evidence/WO-184/decisions.md#wo-184-d038",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c9ac768122901659764d1e8bd0f6fbfd3cf57860e3ba62a1e030e7315f8820a1",
+          "ref": "docs/evidence/WO-184/decisions.md#wo-184-d038--re-verification-pass-f1-and-r1r10-settled-two-findings-carried",
+          "title": "WO-184-D038: Before WO-123 composes the Claude writer path: (G1) writerSandboxProfile denies writes to every path the host's writer Write route protects, at least .git and claude.local.md beside .clau",
+          "summary": "{ \"id\": \"WO-184-D038\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002. All twenty-two criteria are met at code identity 58e0845091be61e05656cc4dee512eb165bd51adc1cb134573b1c62df00d4ebf. VER-001 F1 is repaired: the three HEAD regions appear verbatim, once each, in the current verification-fold.ts. VER-001 R1 to R10 each hold against the rule VER-001 set. Two findings contradict no criterion and are carried with follow-ups: G1, the Claude writer sandbox profile leaves .git and claude.local.md writable to the confined test command while the host's writer Write route protects both (code reading; not exercised natively); G2, no test pins ",
+          "missing": false
+        },
+        {
+          "hash": "7780269d88080eb645441d45b01c53b605d38910ea352c5158a7677e8e5067ba",
+          "ref": "docs/evidence/WO-184/decisions.md#wo-184-d038--re-verification-pass-f1-and-r1r10-settled-two-findings-carried",
+          "title": "WO-184-D038: Before WO-123 composes the Claude writer path: (G1) writerSandboxProfile denies writes to every path the host's writer Write route protects, at least .git and claude.local.md beside .clau",
+          "summary": "{ \"id\": \"WO-184-D038\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002. All twenty-two criteria are met at code identity 58e0845091be61e05656cc4dee512eb165bd51adc1cb134573b1c62df00d4ebf. VER-001 F1 is repaired: the three HEAD regions appear verbatim, once each, in the current verification-fold.ts. VER-001 R1 to R10 each hold against the rule VER-001 set. Two findings contradict no criterion and are carried with follow-ups: G1, the Claude writer sandbox profile leaves .git and claude.local.md writable to the confined test command while the host's writer Write route protects both (code reading; not exercised natively); G2, no test pins ",
+          "missing": false
+        },
+        {
+          "hash": "850e0d5cd8f20b819646c0839e93e6e4b1c7c58b793625320108452552647f5b",
+          "ref": "docs/evidence/WO-184/decisions.md#wo-184-d038--re-verification-pass-f1-and-r1r10-settled-two-findings-carried",
+          "title": "WO-184-D038: Before WO-123 composes the Claude writer path: (G1) writerSandboxProfile denies writes to every path the host's writer Write route protects, at least .git and claude.local.md beside .clau",
+          "summary": "{ \"id\": \"WO-184-D038\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002. All twenty-two criteria are met at code identity 58e0845091be61e05656cc4dee512eb165bd51adc1cb134573b1c62df00d4ebf. VER-001 F1 is repaired: the three HEAD regions appear verbatim, once each, in the current verification-fold.ts. VER-001 R1 to R10 each hold against the rule VER-001 set. Two findings contradict no criterion and are carried with follow-ups: G1, the Claude writer sandbox profile leaves .git and claude.local.md writable to the confined test command while the host's writer Write route protects both (code reading; not exercised natively); G2, no test pins ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ebaa803e38670545",
+      "key": "decision:docs/evidence/WO-184/decisions.md#wo-184-d040",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "55a576c0b83bd51c4ad423df1036512527b6fb311bcb9f1ff4e4b6544c1c1351",
+          "ref": "docs/evidence/WO-184/decisions.md#wo-184-d040--hard-error-the-first-final-review-session-looped-on-refusals-and-forced-a-restart",
+          "title": "WO-184-D040: Reviewer and verifier role text: judge a confinement or security-boundary finding by the recorded rule and repair it defensively, never by working out circumvention paths; after one refus",
+          "summary": "{ \"id\": \"WO-184-D040\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"correction\", \"decision\": \"Record the restart of this final review as a hard error by the reviewer agent, at the operator's direction. The error is the agent's. It is not the operator's, and not a fault of the order or its sources.\", \"misread\": \"Session 6c032440-7338-444a-a3b5-1e3473e6901f (Claude Code, claude-opus-5-5, xhigh) took the final-review dispatch at 2026-10-03T15:03:20Z. Instead of judging VER-002 finding G1 from the record against the Adjacent Repair rule, it set out to establish whether G1 was a real sandbox escape by reading the target's Git hardening paths. At 15:05:57Z a safety",
+          "missing": false
+        },
+        {
+          "hash": "fc2c1e443fb4e8aaea5c5d488ecaead73e6eaf461143401c057dd8c6c61fdeee",
+          "ref": "docs/evidence/WO-184/decisions.md#wo-184-d040--hard-error-the-first-final-review-session-looped-on-refusals-and-forced-a-restart",
+          "title": "WO-184-D040: Reviewer and verifier role text: judge a confinement or security-boundary finding by the recorded rule and repair it defensively, never by working out circumvention paths; after one refus",
+          "summary": "{ \"id\": \"WO-184-D040\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"correction\", \"decision\": \"Record the restart of this final review as a hard error by the reviewer agent, at the operator's direction. The error is the agent's. It is not the operator's, and not a fault of the order or its sources.\", \"misread\": \"Session 6c032440-7338-444a-a3b5-1e3473e6901f (Claude Code, claude-opus-5-5, xhigh) took the final-review dispatch at 2026-10-03T15:03:20Z. Instead of judging VER-002 finding G1 from the record against the Adjacent Repair rule, it set out to establish whether G1 was a real sandbox escape by reading the target's Git hardening paths. At 15:05:57Z a safety",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

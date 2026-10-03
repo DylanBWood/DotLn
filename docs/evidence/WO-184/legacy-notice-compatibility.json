@@ -1,0 +1,11 @@
+{
+  "commandByteIdentical": true,
+  "promptByteIdentical": true,
+  "commandSha256": "cc8381e605faa8260568a51c1c807aad664588ae283e0678a2bebea4d89ba1bd",
+  "promptSha256": "eee133e6b23dc2a14a6f5a489f1d5d0bdab31b7c25eec0e1e36ea664d0d11ea3",
+  "fixture": "Retained WO-181 fixture stream without reviewNotice, captured before the item 13 edit",
+  "observedAt": "2026-10-02T15:56:03.018Z",
+  "procedure": "node docs/evidence/WO-184/check-legacy-notice.mjs --check",
+  "input": "docs/evidence/WO-184/legacy-notice-input.json",
+  "method": "Replay the committed pre-notice WO-181 opening, dispatch and persisted command with the current build under its recorded compiler identity; compare command and prompt SHA-256 to the pre-edit hashes. The synthetic launch path is absent from both hashed outputs."
+}

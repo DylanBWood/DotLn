@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-184",
+  "source": "Host monotonic subprocess timings and UTC endpoints, retained in ignored execution transcripts",
+  "wholeRegeneration": {
+    "startedAt": "2026-10-02T16:03:52.896000+00:00",
+    "completedAt": "2026-10-02T16:08:00.107000+00:00",
+    "wallSeconds": 247.211,
+    "commandWallSeconds": 79.836902,
+    "includes": "Elapsed wall spans orchestration, source/output review and overlapping criterion-13 work between the first harness regeneration and final console re-pin. The command total includes the fresh feedback audit and its recording."
+  },
+  "comparison": {
+    "citedWO175Seconds": 384,
+    "observedDifferenceSeconds": -136.789,
+    "interpretation": "This is a comparison with WO-175\u2019s cited catalog figure, not a measured speedup. WO-175-D016 records that its actual whole regeneration time was unknown."
+  },
+  "commands": [
+    {
+      "label": "harness-regeneration",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "emit"
+      ],
+      "startedAt": "2026-10-02T16:03:52.896Z",
+      "completedAt": "2026-10-02T16:03:53.083Z",
+      "wallSeconds": 0.185784375,
+      "exitCode": 0
+    },
+    {
+      "label": "authority-remint",
+      "command": [
+        "node",
+        "scripts/authority-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-02T16:04:30.571Z",
+      "completedAt": "2026-10-02T16:04:31.228Z",
+      "wallSeconds": 0.6566209169999999,
+      "exitCode": 0
+    },
+    {
+      "label": "artifact-remint",
+      "command": [
+        "node",
+        "scripts/artifact-identity-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-02T16:04:31.286Z",
+      "completedAt": "2026-10-02T16:04:31.520Z",
+      "wallSeconds": 0.233134166,
+      "exitCode": 0
+    },
+    {
+      "label": "verification-remint",
+      "command": [
+        "node",
+        "scripts/verification-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-02T16:04:31.576Z",
+      "completedAt": "2026-10-02T16:04:32.677Z",
+      "wallSeconds": 1.1000300829999998,
+      "exitCode": 0
+    },
+    {
+      "label": "feedback-remint",
+      "command": [
+        "node",
+        "scripts/feedback-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-02T16:04:32.731Z",
+      "completedAt": "2026-10-02T16:04:35.303Z",
+      "wallSeconds": 2.570862792,
+      "exitCode": 0
+    },
+    {
+      "label": "feedback-live",
+      "command": [
+        "node",
+        "packages/skeleton/dist/src/dotln.js",
+        "feedback-audit",
+        "--store",
+        ".runtime/wo184/feedback-live",
+        "--transport",
+        "codex-cli-exec",
+        "--model",
+        "gpt-6.1-sol",
+        "--effort",
+        "max"
+      ],
+      "startedAt": "2026-10-02T16:05:50.712Z",
+      "completedAt": "2026-10-02T16:07:05.007Z",
+      "wallSeconds": 74.29342000000001,
+      "exitCode": 0
+    },
+    {
+      "label": "feedback-record",
+      "command": [
+        "node",
+        "scripts/feedback-evidence.mjs",
+        "--record-selfhost",
+        ".runtime/wo184/feedback-live"
+      ],
+      "startedAt": "2026-10-02T16:07:59.248Z",
+      "completedAt": "2026-10-02T16:07:59.615Z",
+      "wallSeconds": 0.36560391699999994,
+      "exitCode": 0
+    },
+    {
+      "label": "console-repin",
+      "command": [
+        "node",
+        "scripts/console-fixtures.mjs",
+        "--record-current-selfhost"
+      ],
+      "startedAt": "2026-10-02T16:07:59.674Z",
+      "completedAt": "2026-10-02T16:08:00.107Z",
+      "wallSeconds": 0.431446208,
+      "exitCode": 0
+    }
+  ]
+}

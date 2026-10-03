@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "kind": "order-meter-snapshot",
+  "observedAt": "2026-10-03T05:43:14.197Z",
+  "revision": "53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b",
+  "source": "the order's checkout: 4 session journals, its usage observations, gate rows and the canonical control fold",
+  "orders": [
+    {
+      "workOrder": "WO-184",
+      "phase": "repairing",
+      "metrics": {
+        "elapsedMs": 47821972,
+        "attempts": 2,
+        "failedVerifications": 1,
+        "failedFinalReviews": 0,
+        "repairs": 0,
+        "recordedCorrections": 1,
+        "gateMs": 2212088,
+        "fastGateMs": 726671,
+        "readObligationCount": 4,
+        "readObligationBytes": 94960,
+        "codeDiffBytes": 281520,
+        "readAmplification": 0.3373117362887184,
+        "machineryShare": 0.04690774776079916,
+        "elapsedPerCodeByte": 169.8706024438761,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": 1019,
+        "coldStartBytes": 28290,
+        "subjectCharacters": null,
+        "gateStepCount": 86,
+        "operatorCorrections": 1,
+        "operatorDirections": 0,
+        "guardRefusals": 9,
+        "stopRefusals": 0,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": 418,
+        "bytesReadIntoContext": 219105,
+        "stepCount": 470,
+        "authorshipSnapshots": 881,
+        "authorshipMs": 52919.53832699995,
+        "authorshipBytes": 4232693806,
+        "authorshipCommands": 1762,
+        "authorshipMeanMs": 60.06758039387054,
+        "authorshipPeakBytes": 7061844,
+        "hookRuns": 2865,
+        "hookMs": 336991.4003590005,
+        "hookMeanMs": 117.6235254307157,
+        "hookPeakMs": 3445.464792,
+        "prBodyBytes": 4210
+      },
+      "corrections": {
+        "total": 1,
+        "byPhase": {"verification":1},
+        "byUnit": {"unnamed":1},
+        "byPhaseAndUnit": {"verification":{"unnamed":1}},
+        "source": "session-journal"
+      },
+      "directions": {
+        "total": 0,
+        "byKind": {"scopeExpand":0,"operatorOverride":0,"analysis":0,"conversationOnly":0,"operatorLabel":0,"resumeCorrection":0,"resumeDirection":0,"resumeScopeExpansion":0,"resumeOverride":0,"resumeTakeover":0,"resumeAnswer":0,"OperatorOverrideRecorded":0,"RecordCorrected":0,"CriterionWaived":0},
+        "source": "committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events"
+      },
+      "usageByRole": {
+        "executor": {"dispatches":3,"totalTokens":null,"costUsd":null,"commandsRun":null,"stepCount":null,"durationMs":45444017},
+        "verifier": {"dispatches":4,"totalTokens":11491308,"costUsd":null,"commandsRun":null,"stepCount":null,"durationMs":1994499}
+      },
+      "dispatches": [
+        {"role":"executor","wallClockMs":45578751,"attempts":1,"declaredPromptTokens":1019},
+        {"role":"verifier","wallClockMs":2243221,"attempts":1,"bytesReadIntoContext":219105,"commandsRun":418,"stepCount":470,"authorshipSnapshots":881,"authorshipMs":52919.53832699995,"authorshipBytes":4232693806,"authorshipCommands":1762,"authorshipMeanMs":60.06758039387054,"authorshipPeakBytes":7061844,"hookRuns":2863,"hookMs":336138.98081700044,"hookMeanMs":117.40795697415314,"hookPeakMs":3445.464792,"observedTokens":11491308}
+      ],
+      "declared": {
+        "promptTokens": 1019,
+        "supports": 9,
+        "units": 10,
+        "hooks": 14
+      }
+    }
+  ]
+}

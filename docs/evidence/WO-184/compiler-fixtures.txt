@@ -1,0 +1,27 @@
+{"label":"compiler-fixtures","command":["node","--test","packages/compiler/dist/test/impact-surfaces.test.js","packages/compiler/dist/test/story-contract.test.js"],"startedAt":"2026-10-02T15:56:51.197Z","completedAt":"2026-10-02T15:56:51.327Z","wallSeconds":0.129503083,"exitCode":0,"environment":"suiteEnvironment: canonical offline fixture environment; session metadata excluded"}
+
+✔ WO-124 criterion 1: fixture surfaces, coverage and candidate paths are pinned (11.703125ms)
+✔ WO-124 criteria 1/2: union keeps inferred overlap and tests are whole scoped commands (1.021083ms)
+✔ WO-124 criterion 2: canonical outputs are byte-identical, immutable and input-order independent (4.819916ms)
+✔ WO-124 confidence gate: unavailable snapshot names the bound and retired requirements do not contribute (0.398ms)
+✔ WO-124 criterion 2: invalid profile/index fields refuse with their diagnostic paths (0.626625ms)
+✔ WO-061 criterion 1: pinned rules and inferred classes resolve in UTF-8 and compile byte-identically (16.095666ms)
+✔ WO-061 criterion 1: WO-060's six valid bundles have pinned rule expectations (4.00175ms)
+✔ WO-061 criterion 2: even one overlapping byte refuses and names both spans; touching is allowed (1.189292ms)
+✔ WO-061 criteria 2 and 4: supplied relations attach to ruled questions with evidence and stay inferred (1.011042ms)
+✔ WO-061 criterion 3: one edited section invalidates all its statements/drafts and nothing in unchanged units (3.091875ms)
+✔ WO-061 criterion 3: a new explicit supersession retires an unedited requirement and its dependent claims (2.903583ms)
+✔ WO-061 criterion 4: interleaving, quotations, reversal and unanswered questions have pinned structural facts (2.152041ms)
+✔ WO-184 criterion 4: an admitted whitespace-only image reference has no visual statement (0.333916ms)
+✔ WO-184 criterion 5: identical relation entries deduplicate, duplicate class entries refuse (0.913375ms)
+✔ WO-184 criterion 6: follows skips same-role replies to a question (0.342916ms)
+✔ WO-061 criterion 5: completed behavior and visual drafts pass copyCriterion; long/control descriptions remain open (2.962458ms)
+✔ WO-061 pure boundary: unresolved/invalid inference spans refuse and ambient clocks/randomness are unused (1.466375ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 92.518875
