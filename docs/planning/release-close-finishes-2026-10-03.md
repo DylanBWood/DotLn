@@ -268,3 +268,28 @@ pass). Product 07's ceiling rises by 700 bytes, from 166,207 to
 166,907, to cover them beside the write-backs the 2026-10-02 pass
 already reserved. Reopen: WO-195's write-back lands smaller, and the
 next pass lowers the ceiling to what was used.
+
+## 11. The judgment
+
+Receipt 040 (`2026-10-03-planning-90bdcd90e4af7f16-040`) is this pass's
+judgment. A fresh background worker with no inherited conversation read
+the canonical prompt and the goal card, checked the order's claims in
+the source at `662cf03e`, and judged WO-195 and the sequence. Plan
+verdict: aligned-with-findings, no hold; 37 unchanged verdicts carried
+by hash. Dispatch to filed receipt took 657 s. The worker confirmed the
+two spellings, the fallback that records no dispatch, the branch left
+by the removing run, the two phrases criterion 5 removes and the Cost
+line's edition and suite claims. It could not check the session-record
+counts (6 of 12 closes, 5 denials, 9 of 12 requests, 305 to 342 KB),
+which the prompt does not carry, and left them unknown.
+
+Its six findings are known issues with reopening observations, on
+WO-195's catalog row in the map. The two to weigh first: the admission
+has never fired live, so whether the host honors a DotLn allow over the
+classifier is unobserved until WO-195's own close; and the classifier
+may deny a planning pass's push or pull request as it denied the
+publish, with nothing admitting them. Both are observed at the first
+use after WO-195 lands.
+
+Cost of this pass: one sub-agent (1 of the cap of 20 used in the
+session); no code suite; the document gate.
