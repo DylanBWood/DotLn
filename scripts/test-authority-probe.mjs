@@ -32,7 +32,10 @@ import {
   lockAuthoritySession,
 } from "./lib/authority-probe.mjs";
 import { sourceChangeCommandEffect } from "../packages/skeleton/dist/src/source-change-command.js";
-import { confinedTestCommand } from "../packages/skeleton/dist/src/discovery-sandbox.js";
+import {
+  confinedTestCommand,
+  writerSandboxProfilePath,
+} from "../packages/skeleton/dist/src/discovery-sandbox.js";
 
 const cell = (row, harness = "claude", mode = "off") =>
   cells().find(
@@ -435,7 +438,11 @@ test("payload rejects a nonfixture remote rather than falling back to any config
 test("real target guard admits exactly the host grant and rejects it after revocation", (t) => {
   const f = fixture(t, 9);
   const raw = "node authority-effect.mjs";
-  const command = confinedTestCommand(f.target, raw);
+  const command = confinedTestCommand(
+    f.target,
+    raw,
+    writerSandboxProfilePath(f.launchpad, f.target),
+  );
   assert.equal(
     sourceChangeCommandEffect(f.launchpad, f.target, raw),
     undefined,

@@ -9,7 +9,11 @@ import {
 } from "node:fs";
 import { join, relative, sep } from "node:path";
 import { observedExecFileSync as execFileSync } from "./gate-deadlines.mjs";
-import { confinedTestCommand } from "./discovery-sandbox.js";
+import {
+  confinedTestCommand,
+  writerSandboxProfile,
+  writerSandboxProfilePath,
+} from "./discovery-sandbox.js";
 
 const digest = (value: string) =>
   createHash("sha256").update(value).digest("hex");
@@ -49,8 +53,13 @@ export function installSourceChangeCommands(input: {
   readonly expiresAt: number;
 }): () => void {
   const path = grantPath(input.launchpad, input.target);
+  const profileFile = writerSandboxProfilePath(input.launchpad, input.target);
+  confinedTestCommand(input.target, input.testCommand, profileFile);
   ordinary(input.launchpad, path);
+  ordinary(input.launchpad, profileFile);
   ordinary(input.target, input.messagePath);
+  ordinary(input.target, join(input.target, ".claude/hooks/permissions.mjs"));
+  ordinary(input.target, join(input.target, ".claude/settings.json"));
   const directory = join(path, "..");
   mkdirSync(directory, { recursive: true });
   if (lstatSync(path, { throwIfNoEntry: false })) {
@@ -66,27 +75,47 @@ export function installSourceChangeCommands(input: {
       if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
     }
     unlinkSync(path);
+    if (lstatSync(profileFile, { throwIfNoEntry: false }))
+      unlinkSync(profileFile);
   }
-  writeFileSync(
-    path,
-    JSON.stringify({
-      version: 1,
-      target: digest(input.target),
-      commandId: input.commandId,
-      requestKey: input.requestKey,
-      episodeId: input.episodeId,
-      baseCommit: input.baseCommit,
-      branch: input.branch,
-      testCommand: input.testCommand,
-      messagePath: input.messagePath,
-      messageHash: digest(readFileSync(input.messagePath, "utf8")),
-      expiresAt: input.expiresAt,
-      pid: process.pid,
-    }) + "\n",
-    { flag: "wx", mode: 0o600 },
-  );
+  if (lstatSync(profileFile, { throwIfNoEntry: false })) {
+    if (
+      readFileSync(profileFile, "utf8") !== writerSandboxProfile(input.target)
+    )
+      throw new Error("orphaned source-change sandbox profile drift");
+    unlinkSync(profileFile);
+  }
+  writeFileSync(profileFile, writerSandboxProfile(input.target), {
+    flag: "wx",
+    mode: 0o400,
+  });
+  try {
+    writeFileSync(
+      path,
+      JSON.stringify({
+        version: 1,
+        target: digest(input.target),
+        commandId: input.commandId,
+        requestKey: input.requestKey,
+        episodeId: input.episodeId,
+        baseCommit: input.baseCommit,
+        branch: input.branch,
+        testCommand: input.testCommand,
+        messagePath: input.messagePath,
+        messageHash: digest(readFileSync(input.messagePath, "utf8")),
+        expiresAt: input.expiresAt,
+        pid: process.pid,
+      }) + "\n",
+      { flag: "wx", mode: 0o600 },
+    );
+  } catch (error) {
+    unlinkSync(profileFile);
+    throw error;
+  }
   return () => {
     ordinary(input.launchpad, path);
+    ordinary(input.launchpad, profileFile);
+    unlinkSync(profileFile);
     unlinkSync(path);
   };
 }
@@ -149,6 +178,10 @@ export function sourceChangeCommandEffect(
   )
     throw new Error("source-change command grant is invalid or expired");
   process.kill(Number(value.pid), 0);
+  const profileFile = writerSandboxProfilePath(launchpad, target);
+  ordinary(launchpad, profileFile);
+  if (readFileSync(profileFile, "utf8") !== writerSandboxProfile(target))
+    throw new Error("source-change sandbox profile drift");
   ordinary(target, value.messagePath);
   if (
     realpathSync(value.messagePath) !== value.messagePath ||
@@ -167,7 +200,7 @@ export function sourceChangeCommandEffect(
     ["merge-base", "--is-ancestor", value.baseCommit, "HEAD"],
     { cwd: target, timeout: 5_000, stdio: "pipe" },
   );
-  if (command === confinedTestCommand(target, value.testCommand))
+  if (command === confinedTestCommand(target, value.testCommand, profileFile))
     return "shell.run";
   if (
     command === "git add -A" ||

@@ -45,7 +45,10 @@ import {
 } from "../src/verification-protocol.js";
 
 import { contributorProgram } from "../src/loadouts/contributor.js";
-import { confinedTestCommand } from "../src/discovery-sandbox.js";
+import {
+  confinedTestCommand,
+  writerSandboxProfilePath,
+} from "../src/discovery-sandbox.js";
 
 test("WO-161 the bounded Contributor label retains the writer's authority limits", () => {
   const { authorityEnvelope } = contributorProgram().loadout;
@@ -400,7 +403,15 @@ test("WO-051 source-change mount accepts scratch worktrees and rejects root, pre
 test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", () => {
   const s = scratch();
   try {
-    const confined = confinedTestCommand(s.request.cwd, s.request.testCommand);
+    const profileFile = writerSandboxProfilePath(
+      s.request.profile.launchpadCheckout,
+      s.request.cwd,
+    );
+    const confined = confinedTestCommand(
+      s.request.cwd,
+      s.request.testCommand,
+      profileFile,
+    );
     const pinned = JSON.parse(
       readFileSync(
         new URL("../../fixtures/wo051-writer-args.json", import.meta.url),
@@ -451,6 +462,25 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
     assert.equal(
       args[args.indexOf("--allowedTools") + 1],
       `Edit,Write,Read,Bash(${confined}),Bash(git add -A),Bash(git commit -F ${s.request.commitMessagePath})`,
+    );
+    assert.ok(!args[args.indexOf("--allowedTools") + 1]!.includes("*"));
+    assert.ok(
+      s.request.profile.writableSurfaces.every(
+        (root) => !profileFile.startsWith(`${root}/`),
+      ),
+    );
+    assert.throws(
+      () => confinedTestCommand(s.request.cwd, "node *.mjs", profileFile),
+      /asterisk.*refuses wildcards/u,
+    );
+    assert.throws(
+      () =>
+        canonicalWorkerArgs(
+          "claude-cli-print",
+          { ...s.request, testCommand: "node *.mjs" },
+          "/schema.json",
+        ),
+      /asterisk.*refuses wildcards/u,
     );
     const prompt = JSON.parse(writerPrompt(s.request));
     assert.equal(

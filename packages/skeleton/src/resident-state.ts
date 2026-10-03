@@ -35,6 +35,7 @@ import {
   validateMissionCheckResult,
   type MissionCheckFinding,
   type MissionCheckObserved,
+  type MissionCheckSubject,
 } from "./mission-check-protocol.js";
 import { isWriterRequest } from "./worker-protocol.js";
 import type { DiscoveryReport } from "./work-candidate.js";
@@ -282,7 +283,7 @@ function foldMissionJudgment(
 ) {
   const observation = (payload as { worker?: unknown }).worker as
     { result?: unknown; subject?: unknown; failure?: string } | undefined;
-  const subject = observation?.subject as { hash: string } | undefined;
+  const subject = observation?.subject as MissionCheckSubject | undefined;
   const observed = observation?.result as MissionCheckObserved | undefined;
   const judgment =
     observed ?? (subject ? hostMissionJudgment(observation!.subject) : null);
@@ -306,7 +307,23 @@ function foldMissionJudgment(
             .join("; ")}${
             observed === undefined ? ` (no model judgment: ${failure})` : ""
           }`
-        : `mission check ${episodeId} returned no judgment (${failure})`,
+        : observed !== undefined &&
+            subject &&
+            (subject.observation.diff.omittedPaths.length > 0 ||
+              subject.observation.omittedDecisions !== null)
+          ? `mission check ${episodeId} has an incomplete capsule: ${[
+              ...subject.observation.diff.omittedPaths.map(
+                (path) => `omitted path ${path}`,
+              ),
+              ...(subject.observation.omittedDecisions === null
+                ? []
+                : [
+                    `omitted decisions: ${subject.observation.omittedDecisions}`,
+                  ]),
+            ].join("; ")}`
+          : observed !== undefined
+            ? `mission check ${episodeId} returned an unknown judgment`
+            : `mission check ${episodeId} returned no judgment (${failure})`,
     episodeId,
     subjectHash: subject?.hash ?? "",
     verdict,

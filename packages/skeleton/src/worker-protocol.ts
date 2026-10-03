@@ -10,7 +10,10 @@ import type { Candidate } from "./reactor.js";
 import type { FixtureTree } from "./scenario.js";
 import type { FixtureInspectionProfile } from "./execution-environment.js";
 import type { SourceChangeProfile } from "./execution-environment.js";
-import { confinedTestCommand } from "./discovery-sandbox.js";
+import {
+  confinedTestCommand,
+  writerSandboxProfilePath,
+} from "./discovery-sandbox.js";
 
 export type WorkerTransportName =
   "claude-cli-print" | "codex-cli-exec" | "local-model-http" | "fake";
@@ -270,6 +273,14 @@ const matchesEffect = (pattern: string, effect: string): boolean =>
     : pattern === effect;
 
 export function validateWriterRequest(request: WriterRequest): void {
+  if (
+    typeof request.testCommand === "string" &&
+    request.testCommand.includes("*")
+  )
+    throw new WorkerFailure(
+      "profile-refused",
+      "source-change test command contains an asterisk; the writer profile refuses wildcards",
+    );
   try {
     const { authorityEnvelope: authority, workOrder } = request;
     if (
@@ -487,7 +498,11 @@ export function writerPrompt(request: WriterRequest): string {
     episodeId: request.episodeId,
     resultId: resultId(request.command),
     mount: request.profile.mounts[0],
-    testCommand: confinedTestCommand(request.cwd, request.testCommand),
+    testCommand: confinedTestCommand(
+      request.cwd,
+      request.testCommand,
+      writerSandboxProfilePath(request.profile.launchpadCheckout, request.cwd),
+    ),
     commitCommand: `git commit -F ${request.commitMessagePath}`,
     outputSchema: writerResultSchema(request),
     inspectionInstructions:

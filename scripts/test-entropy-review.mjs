@@ -29,7 +29,6 @@ import {
   readEntropyControl,
   renderReceipt,
   removeEpisodeScratch,
-  launchInTemporaryDirectory,
   runsRoot,
 } from "./lib/entropy-review.mjs";
 import { main as entropy } from "./entropy.mjs";
@@ -44,8 +43,12 @@ import {
   canonicalWorkerArgs,
   ClaudeCliPrintWorkOrderTransport,
   CodexCliExecWorkOrderTransport,
+  runWorkerProcess,
 } from "../packages/skeleton/dist/src/worker-transport.js";
-import { FakeEntropyTransport } from "../packages/skeleton/dist/src/entropy-review-fake.js";
+import {
+  FakeEntropyTransport,
+  cannedReviewerOutput,
+} from "../packages/skeleton/dist/src/entropy-review-fake.js";
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -366,7 +369,7 @@ export async function entropyFixtures() {
       assert.equal(gate.packets, 1);
     });
 
-    await test("WO-175 launched review/refutation receive sibling TMPDIR, inventory it and remove read-only trees", async () => {
+    await test("WO-175 fake review/refutation receive the requested temporary directory, inventory it and remove read-only trees", async () => {
       const repo = fixtureRepository(parent);
       const inherited = process.env.TMPDIR;
       await entropy(["review", "--transport", "fake"], repo);
@@ -391,8 +394,26 @@ export async function entropyFixtures() {
             "utf8",
           ),
         );
-        assert.equal(received.TMPDIR, pending.temporaryDirectory);
+        assert.equal(
+          received.requestedTemporaryDirectory,
+          pending.temporaryDirectory,
+        );
+        assert.ok(
+          !("TMPDIR" in received),
+          "the fake witness makes no environment observation",
+        );
         assert.equal(received.kind, kind);
+        assert.ok(
+          received.outputInstructions.startsWith(
+            "The episode temporary directory is ",
+          ),
+        );
+        assert.ok(
+          received.outputInstructions.includes(
+            kind === "entropy-review" ? "roots. Run one" : "roots. Attempt to",
+          ),
+        );
+        assert.doesNotMatch(received.outputInstructions, /roots\.\s{2}|^\s/u);
         assert.equal(process.env.TMPDIR, inherited);
       };
       checkLaunch(review, "entropy-review");
@@ -462,17 +483,6 @@ export async function entropyFixtures() {
       assert.match(
         warnings[0],
         new RegExp(`Receipt filed; scratch cleanup left ${leftover}`),
-      );
-      assert.equal(
-        launchInTemporaryDirectory(leftover, () => process.env.TMPDIR),
-        leftover,
-      );
-      assert.throws(
-        () =>
-          launchInTemporaryDirectory(leftover, () => {
-            throw new Error("fixture");
-          }),
-        /fixture/,
       );
       assert.equal(process.env.TMPDIR, inherited);
     });
@@ -1334,6 +1344,64 @@ export async function entropyFixtures() {
           },
         };
         const prompt = JSON.parse(entropyReviewPrompt(request));
+        const inherited = process.env.TMPDIR;
+        const probe = join(
+          pending.temporaryDirectory,
+          `real-child-${route}.json`,
+        );
+        const returned = cannedReviewerOutput(request);
+        const stdout =
+          route === "claude-cli-print"
+            ? JSON.stringify({
+                type: "result",
+                subtype: "success",
+                is_error: false,
+                structured_output: returned,
+              })
+            : JSON.stringify({
+                type: "item.completed",
+                item: { type: "agent_message", text: JSON.stringify(returned) },
+              }) +
+              "\n" +
+              JSON.stringify({ type: "turn.completed" });
+        const Transport =
+          route === "claude-cli-print"
+            ? ClaudeCliPrintWorkOrderTransport
+            : CodexCliExecWorkOrderTransport;
+        const real = new Transport(
+          (launch) => {
+            assert.equal(
+              process.env.TMPDIR,
+              inherited,
+              "parent TMPDIR during transport dispatch",
+            );
+            return runWorkerProcess({
+              ...launch,
+              binary: process.execPath,
+              args: [
+                "-e",
+                `const fs=require('node:fs'); fs.writeFileSync(${JSON.stringify(probe)},JSON.stringify({TMPDIR:process.env.TMPDIR,names:fs.readdirSync(process.env.TMPDIR),hostHome:process.env.CODEX_HOME??null})); process.stdout.write(${JSON.stringify(stdout)});`,
+              ],
+            });
+          },
+          route === "claude-cli-print" ? "2.1.270" : "0.154.0",
+        );
+        const launched = real.dispatch(request, () => 100);
+        assert.equal(process.env.TMPDIR, inherited);
+        await launched.completed;
+        const child = JSON.parse(readFileSync(probe, "utf8"));
+        assert.equal(child.TMPDIR, pending.temporaryDirectory);
+        assert.ok(
+          child.names.every(
+            (name) =>
+              !/^dotln-(?:worker-(?:schema|output)|codex-home)-/u.test(name),
+          ),
+        );
+        if (child.hostHome)
+          assert.ok(
+            !child.hostHome.startsWith(`${pending.temporaryDirectory}/`),
+          );
+        assert.equal(process.env.TMPDIR, inherited);
         for (const brief of compiled.lensBriefs) {
           assert.ok(prompt.residue.includes(`- [ ] ${brief.lensId}`));
           for (const value of [

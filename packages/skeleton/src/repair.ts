@@ -10,6 +10,7 @@ import {
   type ReviewFinding,
   type VerificationEvidence,
   type VerificationSubject,
+  type VerificationTask,
   type WorktreeVerificationContract,
 } from "@dotln/compiler";
 import {
@@ -21,6 +22,7 @@ import {
   type JsonValue,
   type WorkOrder,
 } from "@dotln/kernel";
+import type { EvidenceWorkerResult } from "./verification-protocol.js";
 
 export const REPAIR_HOST = "repair-host";
 export const repairEventTypes = [
@@ -40,6 +42,30 @@ export interface RepairOriginal {
   readonly tests: readonly NamedVerificationTest[];
   readonly criteria: readonly AcceptanceCriterion[];
   readonly roundLimit?: number;
+}
+/** Fields consumed by the open repair event envelope; branches validate their
+ * own inputs before admitting them into the state. */
+export interface RepairEventPayload {
+  readonly original: RepairOriginal;
+  readonly grants: RepairGrants;
+  readonly baseline: VerificationSubject;
+  readonly subject: VerificationSubject;
+  readonly continuation: unknown;
+  readonly reviewItem?: {
+    readonly finding: VerificationFinding;
+    readonly witness: ReviewRepairWitness;
+  };
+  readonly command: Command;
+  readonly commandId: string;
+  readonly result: string;
+  readonly capsule: VerificationTask;
+  readonly value: EvidenceWorkerResult;
+  readonly verifierCommand: Command;
+  readonly observation: unknown;
+  readonly tests: unknown;
+  readonly reason: unknown;
+  readonly offending: unknown;
+  readonly derivation: RepairDerivation;
 }
 /** Host-recorded PR item, supplied separately from the triage judgment.
  * It authorizes no expansion and is never verifier evidence. */

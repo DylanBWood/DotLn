@@ -57,6 +57,10 @@ import {
 } from "../src/worker-transport.js";
 import { LEASE_MS, WorkerFailure } from "../src/worker-protocol.js";
 import { WorkerStore } from "../src/worker-store.js";
+import {
+  VerificationDriver,
+  VerificationHost,
+} from "../src/verification-host.js";
 import { projectWorkerStatus } from "../src/worker-status.js";
 import {
   initialVerificationRuntime,
@@ -168,6 +172,26 @@ const requestFor = (state = beforeResult()): EvidenceWorkerRequest => {
     },
   };
 };
+
+test("WO-184 criterion 13: the notice requires a review-enabled opening and the value true", () => {
+  const opening = events.find((event) => event.type === "VerificationOpened")!;
+  for (const payload of [
+    { ...(opening.payload as object), reviewNotice: true },
+    { ...(opening.payload as object), reviewNotice: false },
+  ]) {
+    const store = new WorkerStore(temporary());
+    store.acquire();
+    try {
+      const driver = new VerificationDriver(store, "wo184_invalid_notice");
+      assert.throws(
+        () => driver.record("VerificationOpened", Date.now(), payload),
+        /review notice/u,
+      );
+    } finally {
+      store.release();
+    }
+  }
+});
 
 for (const name of ["claude-cli-print", "codex-cli-exec"] as const) {
   test(`WO-010 AC1/2/3/5 ${name} dispatch → finding → fresh focused repair → re-verification uses the kernel loop`, async () => {

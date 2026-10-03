@@ -2,6 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readdir, readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+import { pathToFileURL } from "node:url";
+import { join } from "node:path";
+import { createRequire, isBuiltin } from "node:module";
 import {
   authorize,
   decodeLog,
@@ -87,6 +90,15 @@ const fixture = JSON.parse(
     "utf8",
   ),
 ) as FixtureTree;
+
+test("[document] WO-184 criterion 11: current extracted bodies retain the original bytes", async () => {
+  const { checkReactorMove } = await import(
+    pathToFileURL(
+      join(process.cwd(), "docs/evidence/WO-184/check-reactor-move.mjs"),
+    ).href
+  );
+  checkReactorMove();
+});
 const wo003DecisionTraces = JSON.parse(
   await readFile(
     fileURLToPath(
@@ -134,6 +146,132 @@ const replacePayload = (
   return { log: encodeLog(events), eventIndex };
 };
 
+test("WO-184 criterion 19: transitive reactor purity has exactly two reasoned host exclusions", async () => {
+  const require = createRequire(import.meta.url);
+  const ts =
+    require("typescript/unstable/ast") as typeof import("typescript/unstable/ast");
+  const { API } =
+    require("typescript/unstable/sync") as typeof import("typescript/unstable/sync");
+  const { createVirtualFileSystem } =
+    require("typescript/unstable/fs") as typeof import("typescript/unstable/fs");
+  const root = fileURLToPath(new URL("../../../../", import.meta.url));
+  const { relativeImports } = await import(
+    pathToFileURL(join(root, "scripts/lib/evidence-sources.mjs")).href
+  );
+  const exclusions = new Map([
+    [
+      "packages/skeleton/src/discovery-sandbox.ts",
+      "worker-protocol imports the existing command spelling helper; native sandbox construction observes executable paths at the host boundary (WO-184 receipt 038)",
+    ],
+    [
+      "packages/skeleton/src/gate-deadlines.mjs",
+      "local-model-transport imports the existing deadline helper with host observation; decision-path reachability is unproved (WO-184 receipt 038)",
+    ],
+  ]);
+  const walk = async (overrides = new Map<string, string>()) => {
+    const pending = ["packages/skeleton/src/reactor.ts"],
+      seen = new Set<string>(),
+      host = new Set<string>(),
+      sources = new Map<string, string>();
+    while (pending.length) {
+      const file = pending.pop()!;
+      if (seen.has(file)) continue;
+      seen.add(file);
+      const source =
+        overrides.get(file) ?? (await readFile(join(root, file), "utf8"));
+      sources.set(`/${file}`, source);
+      pending.push(...relativeImports(root, file));
+    }
+    const virtual = createVirtualFileSystem({
+      "/tsconfig.json": JSON.stringify({
+        compilerOptions: {
+          noLib: true,
+          noResolve: true,
+          allowJs: true,
+          types: [],
+          target: "ESNext",
+        },
+        files: [...sources.keys()],
+      }),
+      ...Object.fromEntries(sources),
+    });
+    const api = new API({
+      cwd: "/",
+      fs: {
+        ...virtual,
+        readFile: (path) => virtual.readFile?.(path) ?? null,
+        getAccessibleEntries: (path) =>
+          virtual.getAccessibleEntries?.(path) ?? {
+            files: [],
+            directories: [],
+          },
+      },
+    });
+    const snapshot = api.updateSnapshot({ openProjects: ["/tsconfig.json"] });
+    try {
+      const project = snapshot.getProject("/tsconfig.json")!;
+      for (const file of seen) {
+        const ast = project.program.getSourceFile(`/${file}`)!;
+        for (const statement of ast.statements) {
+          if (
+            !(
+              ts.isImportDeclaration(statement) ||
+              ts.isExportDeclaration(statement)
+            ) ||
+            !statement.moduleSpecifier ||
+            !ts.isStringLiteral(statement.moduleSpecifier)
+          )
+            continue;
+          if (
+            isBuiltin(statement.moduleSpecifier.text) &&
+            !(ts.isImportDeclaration(statement)
+              ? statement.importClause?.phaseModifier ===
+                ts.SyntaxKind.TypeKeyword
+              : statement.isTypeOnly)
+          )
+            host.add(file);
+        }
+      }
+    } finally {
+      snapshot.dispose();
+      api.close();
+    }
+    for (const file of host)
+      assert.ok(
+        exclusions.has(file),
+        `static host import in reactor closure: ${file}`,
+      );
+    assert.deepEqual([...host].sort(), [...exclusions.keys()].sort());
+    assert.ok([...exclusions.values()].every((reason) => reason.length > 50));
+    return seen;
+  };
+  const closure = await walk();
+  assert.ok(closure.has("packages/skeleton/src/verification-fold.ts"));
+  const fixture = await readFile(
+    join(root, "packages/skeleton/test/fixtures/reactor-host-import.ts"),
+    "utf8",
+  );
+  const leaf = "packages/skeleton/src/verification-fold.ts";
+  await assert.rejects(
+    walk(
+      new Map([[leaf, fixture + (await readFile(join(root, leaf), "utf8"))]]),
+    ),
+    /static host import.*verification-fold/u,
+  );
+  await assert.rejects(
+    walk(
+      new Map([
+        [
+          leaf,
+          fixture.replace('"node:fs"', '"fs"') +
+            (await readFile(join(root, leaf), "utf8")),
+        ],
+      ]),
+    ),
+    /static host import.*verification-fold/u,
+  );
+});
+
 test("WO-016 AC1 one typed reactor and its pure helpers own kernel decisions", async () => {
   const sourceDirectory = fileURLToPath(new URL("../../src/", import.meta.url));
   const sourceFiles = (await readdir(sourceDirectory))
@@ -158,6 +296,7 @@ test("WO-016 AC1 one typed reactor and its pure helpers own kernel decisions", a
   assert.deepEqual(
     [...reactor.matchAll(/from\s+"([^"]+)"/gu)].map((match) => match[1]),
     [
+      "./verification-fold.js",
       "./verification.js",
       "./verification.js",
       "./review.js",
@@ -191,6 +330,7 @@ test("WO-016 AC1 one typed reactor and its pure helpers own kernel decisions", a
     "execution-environment.ts",
     "verification-protocol.ts",
     "verification.ts",
+    "verification-fold.ts",
     "resident-state.ts",
     "source-change-state.ts",
     "repair.ts",
