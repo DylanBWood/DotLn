@@ -495,6 +495,12 @@ export function deliverableReady(artifacts = {}) {
     "Changed paths lack declared scope or a clear ReviewCompleted.",
   );
   const checks = prepared?.checks;
+  const notApplicableChecks = ["build", "lint"].filter(
+    (kind) =>
+      checks?.[kind]?.status === "not-applicable" &&
+      typeof checks[kind].reason === "string" &&
+      checks[kind].reason.trim(),
+  );
   row(
     "checks",
     "Tests/build/lint",
@@ -502,21 +508,26 @@ export function deliverableReady(artifacts = {}) {
       allAccepted &&
       ["tests", "build", "lint"].every(
         (kind) =>
-          Array.isArray(checks?.[kind]) &&
-          checks[kind].length > 0 &&
-          checks[kind].every((id) =>
-            evidence.some(
-              (entry) =>
-                entry.evidenceId === id &&
-                livePassed(entry) &&
-                entry.hostTest?.origin === "host" &&
-                entry.hostTest.exitCode === 0,
-            ),
-          ),
+          notApplicableChecks.includes(kind) ||
+          (Array.isArray(checks?.[kind]) &&
+            checks[kind].length > 0 &&
+            checks[kind].every((id) =>
+              evidence.some(
+                (entry) =>
+                  entry.evidenceId === id &&
+                  livePassed(entry) &&
+                  entry.hostTest?.origin === "host" &&
+                  entry.hostTest.exitCode === 0,
+              ),
+            )),
       ),
     [`${preparation?.ref}#/checks`, verification?.ref],
     "Passing host-run tests/build/lint evidence is missing or stale.",
   );
+  if (rows.at(-1).status === "evidenced" && notApplicableChecks.length)
+    rows.at(-1).reason = notApplicableChecks
+      .map((kind) => `${kind} not-applicable: ${checks[kind].reason.trim()}`)
+      .join("; ");
   row(
     "live-behavior",
     "Live behavior walked",

@@ -88,6 +88,29 @@ const documents = (root, directory = "") => {
 };
 
 await test("configuration root", async (t) => {
+  await t.test(
+    "WO-184 criterion 10: a configuration FIFO refuses promptly by path",
+    () => {
+      temporary("config-fifo", (root) => {
+        const file = join(root, CONFIG_FILENAME);
+        assert.equal(spawnSync("mkfifo", [file]).status, 0);
+        const run = spawnSync(
+          process.execPath,
+          [
+            "--input-type=module",
+            "-e",
+            `import {loadConfig} from ${JSON.stringify(pathToFileURL(join(scriptRoot, "lib/config.mjs")).href)}; loadConfig(process.argv[1]);`,
+            root,
+          ],
+          { encoding: "utf8", timeout: 5000 },
+        );
+        assert.equal(run.status, 1, run.stderr);
+        assert.ok(run.stderr.includes(file));
+        assert.match(run.stderr, /expected a regular file/);
+        assert.equal(run.error, undefined);
+      });
+    },
+  );
   await t.test("an absent configuration means today's layout", () => {
     temporary("config-absent", (root) => {
       const config = loadConfig(root);

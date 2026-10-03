@@ -426,7 +426,7 @@ disposable projection, never a command or authority source. It omits raw event
 payloads, physical paths, endpoints, session identifiers and host details;
 missing launchpads, malformed regular-file configuration and missing, unreadable,
 nonregular or malformed index data leave orders unavailable with a coded cause.
-Special-file configuration can still block startup. The resident CLI binds the
+Configuration, index and binding reads require regular files opened without blocking. The resident CLI binds the
 selected index in private store metadata;
 all helpers and installed harness writers read that same binding. Library hosts
 supply the index path on first start; an absent binding is unavailable. Atomic

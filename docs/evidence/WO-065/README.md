@@ -48,8 +48,12 @@ Any field refusal omits the whole item's body. Refused check names become
 `[refused]` while preserving state, with a refused automation item classified
 `ci-failure` only for a failing state, otherwise `automated-review`.
 
-Unknown shapes outside WO-060's declared set can pass. No raw API failure text
-is logged. Invalid forge hosts refuse through the screen's host rule before
+Unknown shapes outside WO-060's declared set can pass. Response-field refusals
+print a field path and fixed reason. API exit, live-host and changed-head refusals
+print their fixed reason without a field path; unexpected runtime failures also
+print a fixed reason, never the runtime message or response bytes. A screen overflow refuses that item
+as `unscreenable-text` without text, preserving safe peers. Response cursors and
+thread identifiers use a bounded argument grammar before reuse. Invalid forge hosts refuse through the screen's host rule before
 any `gh` call. Structural decode errors, unknown enum values, duplicate nodes,
 stalled pagination or an API failure append nothing. Each `gh` response has
 a 16 MiB buffer bound. Refusal paths address the current response page;

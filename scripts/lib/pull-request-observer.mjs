@@ -14,8 +14,16 @@ export const PULL_REQUEST_OBSERVER = "pull-request-observer";
  * @typedef {{repositoryId: string, number: number, headSha: string,
  * checks: Array<{name: string, state: string}>, comments: ObservedComment[]}} PullRequestStateObserved
  */
+class ObservationRefusal extends Error {}
 const refuse = (reason) =>
-  new Error(`pull request observation refused: ${reason}`);
+  new ObservationRefusal(`pull request observation refused: ${reason}`);
+export const observationErrorMessage = (error) =>
+  error instanceof ObservationRefusal
+    ? error.message
+    : error instanceof Error &&
+        error.message === "worker store already has a live host"
+      ? "pull request observation refused: publication store already has a live host"
+      : "pull request observation refused: observer execution failed";
 const bad = (path, reason) => {
   throw refuse(`${path}: ${reason}`);
 };
@@ -29,6 +37,13 @@ const identifier = (value, path) =>
   string(value, path).length > 0
     ? value
     : bad(path, "expected a node identifier");
+// GraphQL opaque IDs and cursors use a bounded base64/URL-safe alphabet.
+const argumentToken = (value, path) =>
+  typeof value === "string" &&
+  value.length <= 1024 &&
+  /^[A-Za-z0-9_+/=-]+$/u.test(value)
+    ? value
+    : bad(path, "expected a bounded opaque argument token");
 const positive = (value, path) =>
   Number.isSafeInteger(value) && value > 0
     ? value
@@ -116,9 +131,14 @@ function bundle(text, role) {
   };
 }
 function screen(text, role, host, path) {
-  const result = decodeSourceBundle(bundle(text, role), {
-    allowedHosts: [host],
-  });
+  let result;
+  try {
+    result = decodeSourceBundle(bundle(text, role), { allowedHosts: [host] });
+  } catch (error) {
+    if (error instanceof RangeError)
+      return { shape: "unscreenable-text", path };
+    throw error;
+  }
   if (result.ok) return undefined;
   if (result.refusal === "malformed") return { shape: "malformed-text", path };
   const finding = result.findings[0];
@@ -284,9 +304,9 @@ function pages(read, path, consume) {
     const info = object(page.pageInfo, `${path}.pageInfo`);
     const more = bool(info.hasNextPage, `${path}.pageInfo.hasNextPage`);
     if (info.endCursor !== null)
-      string(info.endCursor, `${path}.pageInfo.endCursor`);
+      argumentToken(info.endCursor, `${path}.pageInfo.endCursor`);
     if (!more) return;
-    cursor = string(info.endCursor, `${path}.pageInfo.endCursor`);
+    cursor = argumentToken(info.endCursor, `${path}.pageInfo.endCursor`);
     if (!cursor || seen.has(cursor) || !page.nodes.length)
       bad(`${path}.pageInfo.endCursor`, "pagination did not advance");
     seen.add(cursor);
@@ -335,7 +355,7 @@ function recorded(events, number, repositoryId) {
  * not its publication/ child. Remote state can change between requests; a
  * changed head/author refuses. This is a paged observation, not an atomic
  * GitHub snapshot. The screen is a declared filter, not every-secret detection. */
-export function observePullRequest({
+function observePullRequestInternal({
   cwd = process.cwd(),
   store,
   number,
@@ -499,7 +519,7 @@ export function observePullRequest({
         ).reviewThreads,
       "$.data.repository.pullRequest.reviewThreads",
       (thread, path) => {
-        const id = identifier(thread.id, `${path}.id`);
+        const id = argumentToken(thread.id, `${path}.id`);
         unique(threadIds, id, path);
         const resolved = bool(thread.isResolved, `${path}.isResolved`);
         pages(
@@ -577,5 +597,15 @@ export function observePullRequest({
     return { appended: true, payload };
   } finally {
     publication.release();
+  }
+}
+
+/** Both direct observation and the review loop share the no-echo boundary. */
+export function observePullRequest(options) {
+  try {
+    return observePullRequestInternal(options);
+  } catch (error) {
+    if (error instanceof ObservationRefusal) throw error;
+    throw new ObservationRefusal(observationErrorMessage(error));
   }
 }

@@ -1608,7 +1608,12 @@ await test("WO-065: duplicate nodes, stalled pagination and concurrent writer re
   subject.set(observationFixture);
   subject.publication.acquire();
   try {
-    assert.match(subject.run().stderr, /already has a live host/);
+    const observed = subject.run();
+    assert.equal(observed.status, 1);
+    assert.match(
+      observed.stderr,
+      /pull request observation refused: publication store already has a live host/,
+    );
   } finally {
     subject.publication.release();
   }
@@ -1831,6 +1836,7 @@ async function reviewScenario(
   {
     items = [{ id: "R1", path: "fixture.txt", line: 1, role: "automation" }],
     check = null,
+    repairedCheck = "SUCCESS",
     wrong = false,
   } = {},
 ) {
@@ -1845,6 +1851,7 @@ async function reviewScenario(
     JSON.stringify({
       items,
       check,
+      repairedCheck,
       initialHead: subject.observation.commit,
       resolved: [],
     }),
@@ -1863,7 +1870,7 @@ const author={__typename:'User',login:'fixture-author'};
 const pull={number:7,headRefOid:head,author}; let data;
 if(operation==='DotlnRejectReview') data={addPullRequestReviewThreadReply:{comment:{id:'REPLY_1'}}};
 else if(operation==='DotlnResolveReview') {raw.resolved.push(vars.thread);writeFileSync(process.env.DOTLN_GH_RESPONSES,JSON.stringify(raw));data={resolveReviewThread:{thread:{id:vars.thread,isResolved:true}}};}
-else if(operation==='DotlnChecks') data={repository:{object:{oid:head,statusCheckRollup:{contexts:page(raw.check?[{__typename:'CheckRun',id:'CHECK_1',name:raw.check,status:'COMPLETED',conclusion:head===raw.initialHead?'FAILURE':'SUCCESS'}]:[])}}}};
+else if(operation==='DotlnChecks') data={repository:{object:{oid:head,statusCheckRollup:{contexts:page(raw.check?[{__typename:'CheckRun',id:'CHECK_1',name:raw.check,status:head!==raw.initialHead&&raw.repairedCheck==='IN_PROGRESS'?'IN_PROGRESS':'COMPLETED',conclusion:head===raw.initialHead?'FAILURE':raw.repairedCheck==='IN_PROGRESS'?null:raw.repairedCheck}]:[])}}}};
 else {
  if(operation==='DotlnComments') pull.comments=page([]);
  if(operation==='DotlnReviews') pull.reviews=page([]);
@@ -2354,4 +2361,266 @@ await test("WO-066 AC4: push and every thread disposition require their operator
     writeFileSync(join(childStore.directory, "events.jsonl"), originalLog);
     writeFileSync(receiptPath, originalReceipt);
   }
+});
+
+await test("WO-184 criterion 7: response-derived argument tokens refuse before reuse without echo", (t) => {
+  for (const source of ["cursor", "thread-id"]) {
+    const fixture = structuredClone(observationFixture);
+    const tainted = `response-fixture-${source}\u0000suffix`;
+    if (source === "cursor") {
+      pullOf(fixture, "DotlnComments").comments.pageInfo = {
+        hasNextPage: true,
+        endCursor: tainted,
+      };
+    } else {
+      const thread = pullOf(fixture, "DotlnThreads").reviewThreads.nodes[0];
+      thread.id = tainted;
+      thread.comments.pageInfo = { hasNextPage: true, endCursor: "second" };
+    }
+    const subject = observationScenario(t, fixture);
+    const run = subject.run();
+    assert.equal(run.status, 1);
+    assert.match(
+      run.stderr,
+      source === "cursor"
+        ? /comments\.pageInfo\.endCursor/
+        : /reviewThreads\.nodes\[0\]\.id/,
+    );
+    assert.doesNotMatch(
+      run.stderr,
+      /response-fixture-|ERR_INVALID_ARG|Received/,
+    );
+    assert.equal(subject.events().length, 1);
+    assert.doesNotMatch(subject.calls(), /response-fixture-/);
+    assert.equal(
+      existsSync(join(subject.publication.directory, ".lock")),
+      false,
+    );
+  }
+});
+
+await test("WO-184 criterion 7: screen overflow refuses only the item, preserving its safe peer", (t) => {
+  const fixture = structuredClone(observationFixture);
+  pullOf(fixture, "DotlnComments").comments = pageOf([
+    fixtureComment("overflow-item", "Bearer " + "A".repeat(6_000_000)),
+    fixtureComment("safe-peer", "Safe peer remains readable."),
+  ]);
+  const subject = observationScenario(t, fixture);
+  succeeded(subject.run());
+  assert.equal(subject.events().length, 2);
+  const items = subject.events()[1].payload.comments;
+  const refused = items.find((item) => item.id === "overflow-item");
+  assert.deepEqual(refused.refused, {
+    shape: "unscreenable-text",
+    path: "$.data.repository.pullRequest.comments.nodes[0].body",
+  });
+  assert.equal(refused.text, undefined);
+  assert.equal(
+    items.find((item) => item.id === "safe-peer").text,
+    "Safe peer remains readable.",
+  );
+  assert.doesNotMatch(subject.publication.read(), /AAAAAA/);
+});
+
+await test(
+  "WO-184 criterion 8: required publication rechecks a recorded head without remote calls",
+  { skip: process.platform !== "darwin" },
+  async (t) => {
+    const subject = await scenario(t, { readiness: true });
+    const file = join(subject.root, "store/delivery-preparation.json");
+    const preparation = JSON.parse(readFileSync(file, "utf8"));
+    writeFileSync(
+      file,
+      JSON.stringify({
+        ...preparation,
+        unresolvedMaterialAmbiguities: ["unanswered-choice"],
+      }),
+    );
+    succeeded(subject.publish());
+    const calls = subject.ghCalls().length;
+    const repeat = subject.publish("--require-deliverable-ready");
+    assert.equal(repeat.status, 1);
+    assert.match(repeat.stderr, /No unresolved material ambiguity/);
+    assert.doesNotMatch(repeat.stdout, /Already published/u);
+    assert.equal(subject.ghCalls().length, calls);
+    writeFileSync(file, JSON.stringify(preparation));
+    const ready = subject.publish("--require-deliverable-ready");
+    succeeded(ready);
+    assert.match(ready.stdout, /Already published/u);
+    assert.equal(subject.ghCalls().length, calls);
+    fixtureGit(
+      subject.target,
+      "update-ref",
+      `refs/heads/${BRANCH}`,
+      subject.baseCommit,
+    );
+    const moved = subject.publish("--require-deliverable-ready");
+    assert.equal(moved.status, 1);
+    assert.match(moved.stderr, /no longer names the observed commit/u);
+    assert.doesNotMatch(moved.stdout, /Already published/u);
+    assert.equal(subject.ghCalls().length, calls);
+    assert.equal(subject.remoteBranch(), subject.observation.commit);
+  },
+);
+
+await test(
+  "WO-184 criterion 8: lint not-applicable carries its reason, while tests always require evidence",
+  { skip: process.platform !== "darwin" },
+  async (t) => {
+    const subject = await scenario(t, { readiness: true });
+    const file = join(subject.root, "store/delivery-preparation.json");
+    const preparation = JSON.parse(readFileSync(file, "utf8"));
+    preparation.checks.lint = {
+      status: "not-applicable",
+      reason: "This fixture target has no lint step.",
+    };
+    preparation.checks.tests = {
+      status: "not-applicable",
+      reason: "Attempted bypass.",
+    };
+    writeFileSync(file, JSON.stringify(preparation));
+    refusedBeforeRemote(
+      subject,
+      subject.publish("--require-deliverable-ready"),
+      /invalid typed preparation shape/,
+    );
+    preparation.checks.tests = JSON.parse(
+      readFileSync(file, "utf8"),
+    ).checks.build;
+    writeFileSync(file, JSON.stringify(preparation));
+    succeeded(subject.publish("--require-deliverable-ready"));
+    assert.match(
+      readFileSync(subject.body, "utf8"),
+      /lint not-applicable: This fixture target has no lint step\./,
+    );
+  },
+);
+
+await test("WO-184 criterion 9: pending and cancelled mapped checks stop needs-human with their item", async (t) => {
+  for (const repairedCheck of ["IN_PROGRESS", "CANCELLED"]) {
+    const subject = await reviewScenario(t, {
+      items: [],
+      check: "unit",
+      repairedCheck,
+    });
+    const result = await resolveReviewComments(subject.config);
+    assert.equal(result.status, "needs-human");
+    assert.equal(result.itemId, "ci:CHECK_1");
+    const item = [...replayReviewItems(subject.events()).values()][0];
+    assert.equal(item.terminal.status, "needs-human");
+    assert.equal(subject.launches().length, 1);
+  }
+});
+
+await test("WO-184 criterion 9: interruption after the observer append resumes from the last effect receipt", async (t) => {
+  const subject = await reviewScenario(t);
+  let observations = 0;
+  const observe = () => {
+    const result = observePullRequest({
+      cwd: repoRoot,
+      store: subject.config.store,
+      number: 7,
+      repositoryId: subject.config.repositoryId,
+      now: 20,
+      log() {},
+    });
+    if (++observations === 2)
+      throw new Error("fixture interruption after observer append");
+    return result;
+  };
+  await assert.rejects(
+    resolveReviewComments({ ...subject.config, observe }),
+    /fixture interruption/,
+  );
+  const result = await resolveReviewComments(subject.config);
+  assert.equal(result.status, "resolved");
+  assert.deepEqual(
+    [...replayReviewItems(subject.events()).values()].map(
+      (item) => item.terminal?.status,
+    ),
+    ["resolved"],
+    "the resumed item's terminal resolves, independently of the loop's stop status",
+  );
+  assert.equal(subject.launches().length, 1);
+  assert.equal(
+    subject.events().filter((event) => event.type === "PullRequestRepairPushed")
+      .length,
+    1,
+  );
+  assert.equal(
+    subject
+      .events()
+      .filter((event) => event.type === "PullRequestThreadDisposed").length,
+    1,
+  );
+});
+
+await test("WO-184 criterion 9: missing lines and unmatched required checks end human, allowing later items", async (t) => {
+  const subject = await reviewScenario(t, {
+    items: [
+      { id: "no-line", path: "fixture.txt", role: "automation" },
+      { id: "later", path: "fixture.txt", line: 1, role: "automation" },
+    ],
+  });
+  const result = await resolveReviewComments(subject.config);
+  assert.equal(result.status, "needs-human");
+  assert.equal(result.itemId, "no-line");
+  assert.match(result.reason, /positive integer line/);
+  const items = [...replayReviewItems(subject.events()).values()];
+  assert.equal(
+    items.find((item) => item.item.id === "later").terminal.status,
+    "resolved",
+  );
+  assert.equal(subject.launches().length, 1);
+  const unmatched = await reviewScenario(t);
+  unmatched.config.original = {
+    ...unmatched.config.original,
+    criteria: unmatched.config.original.criteria.map((criterion) => ({
+      ...criterion,
+      requiredChecks: [],
+    })),
+  };
+  const refused = await resolveReviewComments(unmatched.config);
+  assert.equal(refused.status, "needs-human");
+  assert.match(refused.reason, /repair derivation:/);
+  assert.equal(unmatched.launches().length, 0);
+});
+
+await test("WO-184 criterion 9: pushRepairedHead refuses a failing exact-head matrix before any push", async (t) => {
+  const subject = await reviewScenario(t, { wrong: true });
+  const result = await resolveReviewComments(subject.config);
+  assert.equal(result.status, "needs-human");
+  const item = [...replayReviewItems(subject.events()).values()][0];
+  const before = subject.remoteBranch();
+  assert.throws(
+    () =>
+      pushRepairedHead({
+        ...subject.config.publication,
+        itemKey: item.key,
+        ...item.results.repair,
+        now: 20,
+      }),
+    /repaired head is not independently verified/,
+  );
+  assert.equal(subject.remoteBranch(), before);
+  assert.equal(
+    subject.events().filter((event) => event.type === "PullRequestRepairPushed")
+      .length,
+    0,
+  );
+});
+
+test("WO-184 criterion 7: every observer caller gets a fixed reason for unexpected errors", () => {
+  const marker = "synthetic-caller-marker\u0000";
+  assert.throws(
+    () => observePullRequest({ cwd: marker, store: marker, number: 7 }),
+    (error) => {
+      assert.equal(
+        error.message,
+        "pull request observation refused: observer execution failed",
+      );
+      assert.ok(!error.message.includes(marker));
+      return true;
+    },
+  );
 });

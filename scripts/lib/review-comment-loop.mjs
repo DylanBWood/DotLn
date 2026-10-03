@@ -145,6 +145,11 @@ function admittedTriage(item, judgment, observation, original, checkTests) {
     );
   if (item.class === "automated-review" && !item.threadId)
     return human("comment has no actionable review thread");
+  if (
+    item.class === "automated-review" &&
+    (!Number.isSafeInteger(item.line) || item.line < 1)
+  )
+    return human(`comment has no positive integer line: ${item.id}`);
   if (judgment.kind === "reject") {
     if (item.class !== "automated-review")
       return human("a failing check cannot be rejected as a review thread");
@@ -293,6 +298,15 @@ export async function resolveReviewComments(options) {
             !items.has(repairHash([repositoryId, number, item.id])),
         );
         if (!candidate) {
+          const unfinished = [...items.values()].find(
+            (item) => item.terminal?.status !== "resolved",
+          );
+          if (unfinished)
+            return stop(
+              "needs-human",
+              unfinished.terminal?.reason ?? "item requires human attention",
+              unfinished.item.id,
+            );
           const remaining = unresolved[0];
           return remaining
             ? stop(
@@ -367,30 +381,34 @@ export async function resolveReviewComments(options) {
           round: 0,
           reviewItem: triage.witness,
         });
-        if (derivation.kind !== "derived")
-          throw refuse(
-            `repair derivation: ${derivation.reason}: ${derivation.offending}`,
-          );
-        const host = (
-          options.createRepairHost ??
-          ((configuration) => new RepairHost(configuration))
-        )({
-          ...prepared,
-          original: active.original,
-          reviewItem: { witness: triage.witness, finding: triage.finding },
-          episodeNamespace: active.key.slice(8),
-        });
-        const repaired = await host.run();
-        value = {
-          status: repaired.status,
-          headSha: repaired.currentCommit,
-          repairStore: host.sourceHost().options.store.directory,
-          verificationStore: join(host.options.directory, "verification-1"),
-        };
-        if (repaired.status !== "complete") {
-          // A failed verification must terminate, without reaching push.
+        if (derivation.kind !== "derived") {
           result = "human";
-          value.reason = "repair did not independently verify";
+          value = {
+            reason: `repair derivation: ${derivation.reason}: ${derivation.offending}`,
+            itemId: active.item.id,
+          };
+        } else {
+          const host = (
+            options.createRepairHost ??
+            ((configuration) => new RepairHost(configuration))
+          )({
+            ...prepared,
+            original: active.original,
+            reviewItem: { witness: triage.witness, finding: triage.finding },
+            episodeNamespace: active.key.slice(8),
+          });
+          const repaired = await host.run();
+          value = {
+            status: repaired.status,
+            headSha: repaired.currentCommit,
+            repairStore: host.sourceHost().options.store.directory,
+            verificationStore: join(host.options.directory, "verification-1"),
+          };
+          if (repaired.status !== "complete") {
+            // A failed verification must terminate, without reaching push.
+            result = "human";
+            value.reason = "repair did not independently verify";
+          }
         }
       } else if (stage === "push") {
         if (active.results.repair.status !== "complete")
@@ -416,7 +434,16 @@ export async function resolveReviewComments(options) {
           now: now(),
         }).payload;
       } else if (stage === "observe") {
-        const before = events().length;
+        const receipt = events()
+          .filter(
+            (event) =>
+              event.actorId === TARGET_PUBLISH_HOST &&
+              event.payload.itemKey === active.key &&
+              ["PullRequestRepairPushed", "PullRequestThreadDisposed"].includes(
+                event.type,
+              ),
+          )
+          .at(-1);
         await observe();
         const fresh = readObservation();
         const head =
@@ -426,7 +453,8 @@ export async function resolveReviewComments(options) {
         );
         const resolved =
           fresh &&
-          Number(fresh.eventId.slice(4)) > before &&
+          receipt &&
+          Number(fresh.eventId.slice(4)) > Number(receipt.eventId.slice(4)) &&
           fresh.payload.headSha === head &&
           (active.item.class === "ci-failure"
             ? fresh.payload.checks.some(

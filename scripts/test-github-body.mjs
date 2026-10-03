@@ -562,3 +562,66 @@ await test("WO-064 target pull request: contract text naming launchpad vocabular
     ],
   );
 });
+
+await test("WO-184 criterion 8: build/lint not-applicable requires a reason and supplies no evidence", () => {
+  const fixture = readinessFixture();
+  const checks = fixture.artifacts.preparation.value.checks;
+  const verification = fixture.artifacts.verification.value;
+  verification.evidence = verification.evidence.filter(
+    (entry) => entry.checkId !== "lint",
+  );
+  verification.subject.evidence = verification.subject.evidence.filter(
+    (entry) => entry.checkId !== "lint",
+  );
+  for (const row of verification.rows)
+    for (const evaluation of row.evaluations)
+      evaluation.evidenceRefs = evaluation.evidenceRefs.filter(
+        (id) => id !== "lint",
+      );
+  checks.lint = {
+    status: "not-applicable",
+    reason: "No lint step in this target.",
+  };
+  let row = deliverableReady(fixture.artifacts).find(
+    (entry) => entry.id === "checks",
+  );
+  assert.equal(row.status, "evidenced");
+  assert.match(row.reason, /lint not-applicable: No lint step/);
+  assert.ok(!verification.evidence.some((entry) => entry.checkId === "lint"));
+  const complete = structuredClone(verification.evidence);
+  verification.evidence = verification.evidence.filter(
+    (entry) => entry.checkId !== "test",
+  );
+  verification.subject.evidence = verification.subject.evidence.filter(
+    (entry) => entry.checkId !== "test",
+  );
+  assert.equal(
+    deliverableReady(fixture.artifacts).find((entry) => entry.id === "checks")
+      .status,
+    "absent",
+  );
+  verification.evidence = complete;
+  verification.subject.evidence = complete;
+  checks.build = {
+    status: "not-applicable",
+    reason: "No build step in this target.",
+  };
+  row = deliverableReady(fixture.artifacts).find(
+    (entry) => entry.id === "checks",
+  );
+  assert.equal(row.status, "evidenced");
+  assert.match(row.reason, /build not-applicable/);
+  checks.tests = { status: "not-applicable", reason: "Attempted bypass." };
+  assert.equal(
+    deliverableReady(fixture.artifacts).find((entry) => entry.id === "checks")
+      .status,
+    "absent",
+  );
+  checks.tests = ["test"];
+  checks.lint.reason = " ";
+  assert.equal(
+    deliverableReady(fixture.artifacts).find((entry) => entry.id === "checks")
+      .status,
+    "absent",
+  );
+});

@@ -1,4 +1,11 @@
-import { existsSync, readFileSync, statSync } from "node:fs";
+import {
+  closeSync,
+  constants,
+  existsSync,
+  fstatSync,
+  openSync,
+  readFileSync,
+} from "node:fs";
 import { dirname, join, posix, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -614,36 +621,46 @@ const absentConfig = () => ({
   release: Object.fromEntries(RELEASE_KEYS.map((key) => [key, true])),
 });
 
-// One stat per lookup keeps a launchpad that gains, loses or edits its
+// One nonblocking descriptor per lookup keeps a launchpad that gains, loses or edits its
 // configuration mid-process honest while the parsed result is still shared.
 const cache = new Map();
-const cacheKey = (path) => {
-  try {
-    const stat = statSync(path);
-    return `${stat.mtimeMs}:${stat.size}`;
-  } catch {
-    return "absent";
-  }
-};
 
 /** Load the configuration that governs `root`. An absent file means today's
  * defaults; a malformed file refuses by path. */
 export const loadConfig = (root) => {
   const launchpad = resolve(root);
   const path = join(launchpad, CONFIG_FILENAME);
-  const key = cacheKey(path);
-  const cached = cache.get(launchpad);
-  if (cached?.key === key) return cached.config;
-  const config = Object.freeze({
-    launchpad,
-    path: key === "absent" ? null : path,
-    present: key !== "absent",
-    ...(key === "absent"
-      ? absentConfig()
-      : validateConfig(path, readFileSync(path, "utf8"))),
-  });
-  cache.set(launchpad, { key, config });
-  return config;
+  let fd;
+  try {
+    fd = openSync(path, constants.O_RDONLY | constants.O_NONBLOCK);
+  } catch (error) {
+    if (error.code !== "ENOENT")
+      throw refuse(path, "cannot open configuration");
+    cache.delete(launchpad);
+    return Object.freeze({
+      launchpad,
+      path: null,
+      present: false,
+      ...absentConfig(),
+    });
+  }
+  try {
+    const stat = fstatSync(fd);
+    if (!stat.isFile()) throw refuse(path, "expected a regular file");
+    const key = `${stat.dev}:${stat.ino}:${stat.mtimeMs}:${stat.size}`;
+    const cached = cache.get(launchpad);
+    if (cached?.key === key) return cached.config;
+    const config = Object.freeze({
+      launchpad,
+      path,
+      present: true,
+      ...validateConfig(path, readFileSync(fd, "utf8")),
+    });
+    cache.set(launchpad, { key, config });
+    return config;
+  } finally {
+    closeSync(fd);
+  }
 };
 
 const ascend = (from) => {
