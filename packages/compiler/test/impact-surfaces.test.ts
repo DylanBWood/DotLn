@@ -86,6 +86,40 @@ const inputFor = (scenario: Case) => {
   };
 };
 
+test("WO-184 R1: threshold zero retains the pinned pre-edit rule-surface bytes", () => {
+  // SHA-256 of each retained WO-124 fixture-derivations.json result serialized
+  // with threshold: 0. Keep the product suite independent of document inputs.
+  const retained = [
+    [
+      "explicit",
+      "fbf37377633eabd4856dc6454633386c1bd573c3515dda61df27fe1f3f4c08a5",
+    ],
+    [
+      "architecture",
+      "aefeb0e1220170fc9aa312c4cc41252b3411933601efcef29932f235ae3bb944",
+    ],
+    [
+      "directory-reference",
+      "71b48f9b72d09234c19c76a1a127dcc7203c983cac69c4a52cf9b903aefdc005",
+    ],
+  ] as const;
+  for (const [name, expected] of retained) {
+    const scenario = fixture.cases.find((entry) => entry.name === name)!;
+    const { contract, options } = inputFor(scenario);
+    const result = deriveSurfaces(contract, fixture.profile, index, {
+      ...options,
+      threshold: 0,
+    });
+    assert.equal(result.kind, "DerivedSurfaces", name);
+    assert.ok(result.surfaces.length > 0, name);
+    assert.equal(
+      createHash("sha256").update(JSON.stringify(result)).digest("hex"),
+      expected,
+      name,
+    );
+  }
+});
+
 test("WO-124 criterion 1: fixture surfaces, coverage and candidate paths are pinned", () => {
   for (const scenario of fixture.cases) {
     const { contract, options } = inputFor(scenario);
@@ -132,7 +166,7 @@ test("WO-124 criterion 1: fixture surfaces, coverage and candidate paths are pin
           ),
         ),
       );
-    if (scenario.name === "inferred")
+    if (scenario.name === "inferred") {
       assert.deepEqual(result.surfaces[0]!.origins, [
         {
           origin: "inferred",
@@ -140,6 +174,18 @@ test("WO-124 criterion 1: fixture surfaces, coverage and candidate paths are pin
           rationale: options.inferences[0]!.rationale,
         },
       ]);
+      assert.deepEqual(result.uncoveredStatementIds, [
+        contract.statements[0]!.statementId,
+      ]);
+      assert.deepEqual(result.candidates, [
+        {
+          path: "src/shared/cache.ts",
+          statementId: contract.statements[0]!.statementId,
+          reason: "unmapped-requirement",
+          provenance: result.surfaces[0]!.origins[0],
+        },
+      ]);
+    }
   }
   assert.ok(
     Object.isFrozen(SURFACE_RULE_PATTERNS) &&
