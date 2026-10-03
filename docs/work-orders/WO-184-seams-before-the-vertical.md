@@ -1,4 +1,4 @@
-# WO-184 — The seams the vertical inherits are settled in one order before it is composed (version assigned at activation)
+# WO-184 — The seams the vertical inherits are settled in one order before it is composed (v0.66.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
