@@ -20395,6 +20395,14 @@
           "reopenWhen": "a real release close leaves main reserved or reclaims a live session's reservation, or the shell fixture's adapter diverges from the runtime's writer protocol",
           "targets": [],
           "at": "2026-09-30T15:30:44.737Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Read 2026-10-03 (docs/planning/release-close-finishes-2026-10-03.md §7): no close has left main reserved or reclaimed a live reservation; WO-195 adds fixtures in a linked pair for cleanup and the admission, not the writer protocol.",
+          "reopenWhen": "a real release close leaves main reserved or reclaims a live session's reservation, or the shell fixture's adapter diverges from the runtime's writer protocol",
+          "targets": [],
+          "at": "2026-10-03T16:13:47.186Z"
         }
       ]
     },
@@ -22954,6 +22962,14 @@
           "reopenWhen": "an order again appends a dated paragraph to a product document, or the consolidation is allocated",
           "targets": [],
           "at": "2026-09-30T15:30:45.061Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Read 2026-10-03 (docs/planning/release-close-finishes-2026-10-03.md §7): matched only the loadout path; WO-195 adds no dated paragraph to a product document and allocates no consolidation.",
+          "reopenWhen": "an order again appends a dated paragraph to a product document, or the consolidation is allocated",
+          "targets": [],
+          "at": "2026-10-03T16:13:47.300Z"
         }
       ]
     },
@@ -25958,6 +25974,14 @@
           "reopenWhen": "The next release-recovery order edits these seams, a real retry meets moved main, history storage becomes a measured bottleneck, or overlapping closes lose an attempt.",
           "targets": [],
           "at": "2026-10-01T13:14:42.628Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Read 2026-10-03 (docs/planning/release-close-finishes-2026-10-03.md §7): its condition, the next release-recovery order editing these seams, occurs with WO-195, which changes the retry text and leaves ensureExistingRelease as it is; WO-195 carries the moved-main limit as a known issue.",
+          "reopenWhen": "A real retry meets moved main, history storage becomes a measured bottleneck, overlapping closes lose an attempt, or an order changes ensureExistingRelease.",
+          "targets": [],
+          "at": "2026-10-03T16:13:47.123Z"
         }
       ]
     },
@@ -27185,6 +27209,14 @@
           "reopenWhen": "the next order that edits the planner procedure in packages/skeleton/src/loadouts/contributor.ts, or a second pass edits judged text after its judgment",
           "targets": [],
           "at": "2026-10-02T14:18:02.788Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Read 2026-10-03 (docs/planning/release-close-finishes-2026-10-03.md §7): WO-195 adds one sentence to the planner procedure (push and pull request) and leaves the repairs sentence unchanged.",
+          "reopenWhen": "an order edits the planner's sentence on repairs after a judgment, or a second pass edits judged text after its judgment",
+          "targets": [],
+          "at": "2026-10-03T16:13:47.243Z"
         }
       ]
     },

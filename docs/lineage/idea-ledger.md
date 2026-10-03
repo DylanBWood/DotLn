@@ -40,6 +40,44 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-03 — Planning pass: why a Claude release close stops before it is finished (WO-195)
+
+Source: the operator's dispatch `planning:` after the WO-184 close and
+three mid-turn messages, captured verbatim in ignored intake
+(`docs/intake/notes/2026-10-03-release-close-finishes-planning.md`,
+SHA-256 `081e94bb8ca34f94ce5ec149996c1f9015de1827e760179c436bc9c7f13fcb5d`);
+the 14 retained close records, their session journals and transcripts.
+Planner synthesis over repository records and the operator's own
+sessions; the clean-room screen found no stop condition. The record is
+[the planning document](../planning/release-close-finishes-2026-10-03.md).
+
+- **A release close is done when the tag, the Release, the worktree, its directory and its branch are settled** `adopted` `operator-directed`
+  - Six of twelve Claude closes needed the operator. The role sentence
+    named no completion point and told the session to hand a blocker
+    or denial back; the helper's own remedy, a re-run that re-checks an
+    existing Release, read as repeated publication. WO-195 replaces the
+    sentence with the completion condition and makes the re-run the
+    retry. Reopen: a Claude close after WO-195 needs an operator command.
+- **A pre-approval is measured where it is meant to fire** `adopted`
+  - WO-178's admission fired in none of nine closes: the prompt hook's
+    fallback after a runtime-changing merge records no dispatch, and
+    sessions wrapped a 300 KB-output command. WO-195 makes it hold in
+    the stale state and removes the reason to wrap; the next pass reads
+    the first live close's journal. Reopen: no admission row for an
+    exact command after WO-195.
+- **The planning dispatch authorizes its own push and pull request** `adopted` `operator-directed`
+  - The operator asked for it in 9 of 12 planning sessions since
+    2026-09-20, because no role text or product sentence says who opens
+    a planning pull request. WO-195 adds the planner sentence and the
+    product 07 statement; the authorization covers that branch and that
+    pull request only. Reopen: the operator withdraws it.
+- **Sequence position by order number is not urgency** `adopted`
+  - WO-188 sits fourth in a serial machinery lane because the
+    2026-10-02 pass seated orders by number behind a file-collision
+    edge. This pass leaves it there and takes the causes that stopped
+    closes into a small order that runs now. Reopen: a close stops on
+    something WO-188 items 1, 3, 4 or 5 name.
+
 ## 2026-10-02 — Planning pass: operator answer (receipt 038's amendments applied to twelve orders and the sequence)
 
 Source: the operator's question after the first report and the dispatch

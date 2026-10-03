@@ -20,7 +20,10 @@ order at a time passes final review and release close. The entries after
 the last pair run one at a time.
 
 Every open order has a place in this list
-([2026-10-02 pass](standard-pass-2026-10-02.md)). WO-189 depends on no queued
+([2026-10-02 pass](standard-pass-2026-10-02.md)). WO-195 runs now, as a
+third lane beside WO-185: six of the twelve Claude release closes recorded
+from 2026-10-01 to 2026-10-03 needed the operator
+([2026-10-03 pass](release-close-finishes-2026-10-03.md)). WO-189 depends on no queued
 order and may run as a third lane at any time. WO-192, WO-193 and WO-194
 follow WO-118, the loop from a starter instance: the operator asked for them
 once the starter exists, and the product exit does not wait behind them.
@@ -32,7 +35,8 @@ recorded as the constraint. The period below `v1.0.0` is early access
 (operator direction, 2026-09-30).
 
 <!-- dotln-work-order-sequence:start -->
-- WO-184 — Seams the vertical inherits, settled first
+- WO-195 — Roles finish what the operator dispatched
+
 - WO-185 — No order can exhaust the host
 
 - WO-123 — dotln vertical composition

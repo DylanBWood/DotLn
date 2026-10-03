@@ -46,9 +46,9 @@
     },
     "07-execution-guide.md": {
       "nonExemptBytesAtLanding": 157957,
-      "ceiling": 166207,
-      "date": "2026-10-02",
-      "decision": "docs/planning/standard-pass-2026-10-02.md#16-document-ceilings-set-from-declared-write-backs"
+      "ceiling": 166907,
+      "date": "2026-10-03",
+      "decision": "docs/planning/release-close-finishes-2026-10-03.md#10-document-ceiling"
     },
     "08-publication-compiler.md": {
       "nonExemptBytesAtLanding": 22552,
