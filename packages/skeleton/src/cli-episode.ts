@@ -8,6 +8,15 @@ import {
   type MissionSource,
 } from "./mission-check-protocol.js";
 let active: ReturnType<typeof startCliEpisode> | undefined;
+for (const [signal, code] of [
+  ["SIGINT", 130],
+  ["SIGTERM", 143],
+  ["SIGHUP", 129],
+] as const)
+  process.on(signal, () => {
+    active?.kill();
+    process.exit(code);
+  });
 process.on("disconnect", () => {
   if (active) active.kill();
   else process.exit(1);

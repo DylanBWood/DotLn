@@ -495,7 +495,7 @@ test("WO-061 criterion 4: interleaving, quotations, reversal and unanswered ques
         owner(item.span) === "s-unknown" && item.reason === "unclassified",
     ),
   );
-  // Same role immediately after a question establishes no follows edge.
+  // A same-role entry is skipped when locating the first later other role.
   const sameRole = {
     ...fixture.thread.bundle,
     discussion: fixture.thread.bundle.discussion.map((entry, i) =>
@@ -506,6 +506,76 @@ test("WO-061 criterion 4: interleaving, quotations, reversal and unanswered ques
     !compileStoryContract(decode(sameRole)).relations.some(
       (item) => owner(item.span) === "e-q2",
     ),
+  );
+});
+
+test("WO-184 criterion 4: an admitted whitespace-only image reference has no visual statement", () => {
+  const raw = wholeText("Panel text.   More text.");
+  const reference = { sectionId: "s-body", start: 11, end: 14 };
+  const template = sourceFixture.valid.flatMap(
+    (item) => item.bundle.images,
+  )[0]!;
+  const bundle = decode(
+    { ...raw, images: [{ ...template, referencedBy: reference }] },
+    sourceFixture.allowedHosts,
+  );
+  const contract = compileStoryContract(bundle);
+  assert.ok(
+    !contract.statements.some((item) => item.class === "visual annotation"),
+  );
+  assert.equal(
+    JSON.stringify(contract),
+    JSON.stringify(compileStoryContract(bundle)),
+  );
+});
+
+test("WO-184 criterion 5: identical relation entries deduplicate, duplicate class entries refuse", () => {
+  const bundle = decode(fixture.thread.bundle);
+  const relation = fixture.thread.inferences.find(
+    (item) => "relation" in item,
+  )!;
+  const once = compileStoryContract(bundle, [relation]);
+  const twice = compileStoryContract(bundle, [relation, relation]);
+  assert.equal(JSON.stringify(twice), JSON.stringify(once));
+  assert.equal(twice.contractId, once.contractId);
+  const classEntry = classification(bundle, "s-earlier");
+  assert.throws(
+    () => compileStoryContract(bundle, [classEntry, classEntry]),
+    /overlaps inferred span/u,
+  );
+});
+
+test("WO-184 criterion 6: follows skips same-role replies to a question", () => {
+  const discussion = [
+    {
+      id: "e-question",
+      author: "reporter" as const,
+      text: "Should the panel be compact?",
+    },
+    {
+      id: "e-more",
+      author: "reporter" as const,
+      text: "It matters on small screens.",
+    },
+    {
+      id: "e-reply",
+      author: "reviewer" as const,
+      text: "Compact is fine for small screens.",
+    },
+  ].map((entry, i) => ({
+    ...entry,
+    createdAt: `2026-10-02T00:00:0${i}Z`,
+    span: { entryId: entry.id, start: 0, end: byteLength(entry.text) },
+  }));
+  const bundle = decode({ ...wholeText("Panel text."), discussion });
+  const relations = compileStoryContract(bundle).relations;
+  assert.deepEqual(
+    relations.map((item) => [
+      owner(item.span),
+      owner(item.target),
+      item.relation,
+    ]),
+    [["e-reply", "e-question", "follows"]],
   );
 });
 

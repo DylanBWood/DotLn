@@ -476,8 +476,8 @@ test("WO-117 bad launchpad sources remain live, replace old bindings and survive
   }
 });
 
-test("WO-117 FIFO index and binding cannot block the resident CLI", (t) => {
-  for (const source of ["index", "binding"]) {
+test("WO-184 criterion 10: FIFO configuration, index and binding cannot block the resident CLI", (t) => {
+  for (const source of ["configuration", "index", "binding"]) {
     const directory = mkdtempSync(join(tmpdir(), "dotln-index-fifo-"));
     t.after(() => rmSync(directory, { recursive: true, force: true }));
     mkdirSync(join(directory, "orders"));
@@ -492,9 +492,12 @@ test("WO-117 FIFO index and binding cannot block the resident CLI", (t) => {
       JSON.stringify(configuration(store)),
     );
     const target =
-      source === "index"
-        ? join(directory, "orders", "README.md")
-        : join(store, ".runtime-status-source.json");
+      source === "configuration"
+        ? join(directory, "dotln.config.json")
+        : source === "index"
+          ? join(directory, "orders", "README.md")
+          : join(store, ".runtime-status-source.json");
+    if (source === "configuration") rmSync(target);
     assert.equal(spawnSync("mkfifo", [target]).status, 0);
     const cli = spawnSync(
       process.execPath,
@@ -517,7 +520,12 @@ test("WO-117 FIFO index and binding cannot block the resident CLI", (t) => {
     assert.deepEqual(JSON.parse(read(store)).workOrders, {
       status: "unavailable",
       items: [],
-      reason: source === "index" ? "index-not-regular" : "index-unreadable",
+      reason:
+        source === "configuration"
+          ? "configuration-invalid"
+          : source === "index"
+            ? "index-not-regular"
+            : "index-unreadable",
     });
     assert.ok(
       decodeLog(readFileSync(join(store, "events.jsonl"), "utf8")).length > 0,

@@ -1,0 +1,21 @@
+{"label":"skeleton-seams","command":["node","--test","--test-name-pattern=WO-184|one typed reactor|emitted Claude permission hook","packages/skeleton/dist/test/review.test.js","packages/skeleton/dist/test/scenario.test.js","packages/skeleton/dist/test/verification.test.js","packages/skeleton/dist/test/verification-witness.test.js","packages/skeleton/dist/test/source-change-host.test.js","packages/skeleton/dist/test/resident-actors.test.js","packages/skeleton/dist/test/runtime-status.test.js","packages/skeleton/dist/test/source-change-confinement.test.js"],"startedAt":"2026-10-02T15:56:51.197Z","completedAt":"2026-10-02T15:56:56.943Z","wallSeconds":5.745286875,"exitCode":0,"environment":"suiteEnvironment: canonical offline fixture environment; session metadata excluded"}
+
+✔ WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals (1065.0725ms)
+✔ [document] WO-184 criterion 13: persisted notice survives a release-only compiler relabel (685.304417ms)
+✔ [document] WO-184 criteria 12/13: a sealed kernel/driver stream re-verifies every criterion after a one-criterion repair (1365.720875ms)
+✔ [document] WO-184 criterion 19: failed and rejected reviews stay pending and rerun a fresh attempt (1252.526834ms)
+✔ WO-184 criterion 10: FIFO configuration, index and binding cannot block the resident CLI (767.963292ms)
+✔ WO-184 criterion 19: transitive reactor purity has exactly two reasoned host exclusions (233.958458ms)
+✔ WO-016 AC1 one typed reactor and its pure helpers own kernel decisions (4.347958ms)
+✔ WO-184 criterion 15: the confined writer test cannot alter its hook or host scratch controls (209.889ms)
+✔ WO-052 emitted Claude permission hook admits only live host-issued exact commands (5630.523333ms)
+✔ WO-184 criterion 14: the closed result schema exposes only the capsule's claim types (7.065792ms)
+✔ WO-184 criterion 13: the notice requires a review-enabled opening and the value true (489.830375ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5709.619709

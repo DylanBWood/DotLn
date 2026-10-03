@@ -1,10 +1,10 @@
-import type {
-  MatrixEvaluation,
-  AcceptanceEvidenceRow,
-  FindingRecord,
-  VerificationPending,
-  VerificationState,
-} from "./verification.js";
+import {
+  foldVerificationOpening,
+  foldVerificationEvaluation,
+  foldVerificationRepair,
+  type VerificationPayload,
+} from "./verification-fold.js";
+import type { VerificationPending, VerificationState } from "./verification.js";
 export type {
   MatrixEvaluation,
   AcceptanceEvidenceRow,
@@ -15,7 +15,6 @@ export type {
 import {
   reviewCompletedEvent,
   createReviewContext,
-  validateReviewOpening,
   type ReviewCompleted,
 } from "./review.js";
 import {
@@ -30,6 +29,7 @@ import {
   type RepairState,
   type RepairOriginal,
   type RepairGrants,
+  type RepairEventPayload,
 } from "./repair.js";
 import {
   decodeSourceObservation,
@@ -77,14 +77,10 @@ import {
   SEMANTIC_CORRECTIONS,
   type CompiledFeedback,
   type CorrectionState,
-  affectedVerificationCriteria,
   assertVerificationTask,
-  changedVerificationSurfaces,
   compileVerificationTask,
-  copyCriterion,
   copySubject,
   type AcceptanceCriterion,
-  type Evaluation,
   type VerificationEvidence,
   type VerificationFinding,
   type VerificationSubject,
@@ -547,8 +543,6 @@ const programFromState = (state: WalkingSkeletonSlice): ExecutableProgramV1 =>
 const requiredContinuation = (
   decision: ProgramDecision<WalkingSkeletonSlice>,
 ): ExecutableProgramV1 => {
-  if (decision.continuation === undefined)
-    throw new Error("kernel program decision lacks a continuation");
   return decision.continuation;
 };
 
@@ -1788,27 +1782,6 @@ const requireState = (value: unknown, detail: string): void => {
 };
 // EventEnvelope is deliberately open. Each branch checks the fields it consumes;
 // model results cross the stricter, closed schema in parseEvidenceResult.
-type VerificationPayload = {
-  reviewConventionsPath?: string | null;
-  baselineContext?: BaselineContext;
-  criteria: readonly AcceptanceCriterion[];
-  baseline: VerificationSubject;
-  subject: VerificationSubject;
-  implementerEpisodeId: string;
-  episodeNamespace?: string;
-  maxRepairs: number;
-  authority: AuthorityEnvelope;
-  command: Command;
-  commandId: string;
-  workerEpisodeId: string;
-  role: VerificationTask["role"];
-  inputHash: string;
-  leaseExpiresAt: number;
-  mode: string;
-  verificationResultVersion: number;
-  result: string;
-  value: EvidenceWorkerResult;
-};
 
 export function verificationAuthorization(
   state: VerificationState,
@@ -1991,6 +1964,10 @@ function persistedCompilation(
           capsule,
           ...(pending.baseline ? { baseline: pending.baseline } : {}),
           ...(pending.review ? { review: pending.review } : {}),
+          ...((pending.command.intent.payload as { reviewNotice?: true })
+            .reviewNotice
+            ? { reviewNotice: true }
+            : {}),
         }),
       },
     })
@@ -2058,6 +2035,12 @@ function dispatch(state: VerificationState): VerificationState {
         capsule,
         ...(baseline ? { baseline } : {}),
         ...(review ? { review } : {}),
+        ...(state.reviewNotice &&
+        capsule.role === "verifier" &&
+        !review &&
+        baseline?.kind !== "baseline"
+          ? { reviewNotice: state.reviewNotice }
+          : {}),
       }),
     },
   };
@@ -2095,95 +2078,8 @@ function foldVerificationEvent(
   if (event.actorId !== VERIFICATION_HOST) return state;
   const value = event.payload as unknown as VerificationPayload;
   switch (event.type) {
-    case "VerificationOpened": {
-      requireState(state.next === "unopened", "workstream already opened");
-      const criteria = (value.criteria as AcceptanceCriterion[]).map(
-        copyCriterion,
-      );
-      const baseline = copySubject(value.baseline as VerificationSubject);
-      const subject = copySubject(value.subject as VerificationSubject);
-      const capsule = compileVerificationTask("opening", criteria, subject);
-      if (value.reviewConventionsPath !== undefined)
-        validateReviewOpening(
-          value.reviewConventionsPath,
-          baseline,
-          subject,
-          value.baselineContext?.kind,
-        );
-      if (value.baselineContext) {
-        validateBaselineContext(value.baselineContext, capsule);
-        const expected =
-          value.baselineContext.kind === "baseline"
-            ? subject
-            : value.baselineContext.witness.capsule.subject;
-        requireState(same(baseline, expected), "baseline episode identity");
-      }
-      requireState(
-        baseline.repo === subject.repo &&
-          baseline.baseCommit === subject.baseCommit &&
-          baseline.revision === subject.baseCommit,
-        "baseline identity",
-      );
-      requireState(
-        typeof value.implementerEpisodeId === "string" &&
-          value.implementerEpisodeId.length > 0 &&
-          Number.isSafeInteger(value.maxRepairs) &&
-          value.maxRepairs >= 0 &&
-          value.maxRepairs <= 10,
-        "opening policy",
-      );
-      requireState(
-        baseline.evidence.length > 0 &&
-          criteria.every((criterion) =>
-            baseline.evidence.some(
-              (item) => item.criterionId === criterion.criterionId,
-            ),
-          ),
-        "baseline witness coverage",
-      );
-      requireState(
-        value.episodeNamespace === undefined ||
-          /^[a-zA-Z0-9_-]+$/u.test(value.episodeNamespace),
-        "episode namespace",
-      );
-      return {
-        ...state,
-        ...(value.reviewConventionsPath !== undefined
-          ? { reviewConventionsPath: value.reviewConventionsPath }
-          : {}),
-        ...(value.baselineContext
-          ? {
-              baselineContext: JSON.parse(
-                JSON.stringify(value.baselineContext),
-              ) as BaselineContext,
-              ...(value.baselineContext.kind === "comparison"
-                ? {
-                    baselineWitness: JSON.parse(
-                      JSON.stringify(value.baselineContext.witness),
-                    ) as BaselineWitness,
-                  }
-                : {}),
-            }
-          : {}),
-        ...(value.episodeNamespace
-          ? { episodeNamespace: value.episodeNamespace }
-          : {}),
-        criteria,
-        baseline,
-        subject,
-        authority: value.authority as AuthorityEnvelope,
-        maxRepairs: value.maxRepairs,
-        implementerEpisodes: [value.implementerEpisodeId],
-        episodeIds: [value.implementerEpisodeId],
-        rows: criteria.map((criterion) => ({
-          criterion,
-          status: "incomplete",
-          evaluations: [],
-        })),
-        evidence: subject.evidence,
-        next: "verify",
-      };
-    }
+    case "VerificationOpened":
+      return foldVerificationOpening(state, event, value);
     case "ReviewCompleted": {
       requireState(
         state.next === "reviewed" &&
@@ -2432,97 +2328,7 @@ function foldVerificationEvent(
           next: result.envelope.requiresHuman ? "attention" : "apply-repair",
           proposal: result,
         };
-      const rows = state.rows.map((row): AcceptanceEvidenceRow => {
-        const evaluation = result.evaluations.find(
-          (item) => item.criterionId === row.criterion.criterionId,
-        );
-        return evaluation
-          ? {
-              criterion: row.criterion,
-              status:
-                evaluation.verdict === "pass"
-                  ? "verified"
-                  : evaluation.verdict === "fail"
-                    ? "failed"
-                    : "incomplete",
-              evaluations: [
-                ...row.evaluations,
-                {
-                  ...evaluation,
-                  provenance: {
-                    kind: "host-admitted-verifier",
-                    commandId: pending.command.commandId,
-                    inputHash: pending.capsule.inputHash,
-                  },
-                  eventId: event.eventId,
-                  episodeId: result.envelope.episodeId,
-                  subjectRevision: result.subjectRevision,
-                  stale: false,
-                },
-              ],
-            }
-          : row;
-      });
-      const findingRecords: FindingRecord[] = result.findings.map(
-        (finding) => ({
-          finding,
-          eventId: event.eventId,
-          episodeId: result.envelope.episodeId,
-          subjectRevision: result.subjectRevision,
-          status: "open",
-        }),
-      );
-      // A subsequent conclusive verifier assessment supersedes findings for its criteria.
-      const assessed = result.evaluations
-        .filter((item) => item.verdict !== "unverified")
-        .map((item) => item.criterionId);
-      const findings = [
-        ...state.findings.map((record): FindingRecord =>
-          assessed.includes(record.finding.criterionId)
-            ? {
-                ...record,
-                status:
-                  result.evaluations.find(
-                    (item) => item.criterionId === record.finding.criterionId,
-                  )?.verdict === "pass"
-                    ? "resolved"
-                    : "superseded",
-              }
-            : record,
-        ),
-        ...findingRecords,
-      ];
-      const repairPlans = result.findings
-        .filter((finding) => finding.severity === "blocking")
-        .map((finding) => ({
-          findingId: finding.findingId,
-          capsule: compileVerificationTask(
-            `repair_${state.dispatchCount}_${finding.findingId}`,
-            state.criteria.filter(
-              (criterion) => criterion.criterionId === finding.criterionId,
-            ),
-            state.subject!,
-            finding,
-          ),
-        }));
-      return {
-        ...common,
-        ...(result.baselineFindings
-          ? { baselineFindings: result.baselineFindings }
-          : {}),
-        rows,
-        findings,
-        repairPlans: [...state.repairPlans, ...repairPlans],
-        next: result.envelope.requiresHuman
-          ? "attention"
-          : rows.every((row) => row.status === "verified")
-            ? state.reviewConventionsPath !== undefined
-              ? "review"
-              : "complete"
-            : repairPlans.length > 0 && state.repairCount < state.maxRepairs
-              ? "repair"
-              : "attention",
-      };
+      return foldVerificationEvaluation(state, event, pending, result, common);
     }
     case "VerificationContinuation": {
       requireState(
@@ -2539,71 +2345,8 @@ function foldVerificationEvent(
       requireState(step.emitted.length === 1, "kernel continuation emission");
       return { ...state, continuation: step.continuation! };
     }
-    case "VerificationSubjectSubmitted": {
-      requireState(
-        state.next === "apply-repair" &&
-          state.proposal &&
-          state.subject &&
-          state.continuation.kind === "Done",
-        "repair application phase",
-      );
-      const subject = copySubject(value.subject as VerificationSubject);
-      requireState(
-        subject.repo === state.subject!.repo &&
-          subject.baseCommit === state.subject!.baseCommit &&
-          subject.revision !== state.subject!.revision,
-        "repair revision identity",
-      );
-      const expected = state.subject!.files.map(
-        (file) =>
-          state.proposal!.replacements.find(
-            (replacement) => replacement.path === file.path,
-          ) ?? file,
-      );
-      requireState(
-        same(subject.files, expected),
-        "applied repair differs from proposal",
-      );
-      compileVerificationTask("repaired", state.criteria, subject);
-      const changedSurfaces = changedVerificationSurfaces(
-        state.subject!,
-        subject,
-      );
-      requireState(changedSurfaces.length > 0, "repair must change source");
-      const affected = affectedVerificationCriteria(
-        state.criteria,
-        changedSurfaces,
-      );
-      const rows = state.rows.map((row): AcceptanceEvidenceRow =>
-        affected.includes(row.criterion.criterionId)
-          ? {
-              ...row,
-              status: row.evaluations.length > 0 ? "stale" : "incomplete",
-              evaluations: row.evaluations.map((evaluation) => ({
-                ...evaluation,
-                stale: true,
-              })),
-            }
-          : row,
-      );
-      return {
-        ...state,
-        subject,
-        rows,
-        next: "verify",
-        proposal: null,
-        repairCount: state.repairCount + 1,
-        implementerEpisodes: [
-          ...state.implementerEpisodes,
-          state.proposal!.envelope.episodeId,
-        ],
-        evidence: [...state.evidence, ...subject.evidence],
-        staleness: [
-          ...state.staleness,
-          { eventId: event.eventId, changedSurfaces, criterionIds: affected },
-        ],
-      };
-    }
+    case "VerificationSubjectSubmitted":
+      return foldVerificationRepair(state, event, value);
     default:
       return state;
   }
@@ -2898,7 +2641,7 @@ function repairDecision(
 ): SliceDecision<RepairState> {
   if (event.actorId !== REPAIR_HOST)
     throw new Error("repair event requires host actor");
-  const p = event.payload as unknown as Record<string, any>;
+  const p = event.payload as unknown as RepairEventPayload;
   const check = (condition: unknown, detail: string) => {
     if (!condition) throw new Error(`repair state: ${detail}`);
   };

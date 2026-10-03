@@ -306,20 +306,6 @@ export function removeEpisodeScratch(
   }
 }
 
-/** Scope the inherited temporary root to the synchronous transport launch.
- * Child processes receive a snapshot; parent tools regain their own root. */
-export function launchInTemporaryDirectory(directory, launch) {
-  if (!directory) return launch();
-  const previous = process.env.TMPDIR;
-  process.env.TMPDIR = directory;
-  try {
-    return launch();
-  } finally {
-    if (previous === undefined) delete process.env.TMPDIR;
-    else process.env.TMPDIR = previous;
-  }
-}
-
 const scratchDeltaSummary = (delta) =>
   "deltaCount" in delta ? delta.deltaCount : { ...delta.counts };
 
@@ -955,15 +941,23 @@ const transportFor = async (name, onUsage) => {
       cannedReviewerOutput,
       cannedRefutationResult,
     } = await skeleton("entropy-review-fake");
+    const { entropyReviewPrompt, entropyRefutationPrompt } = await skeleton(
+      "entropy-review-protocol",
+    );
     const witness = (request) => {
-      const root = process.env.TMPDIR;
-      if (request.temporaryDirectory && root === request.temporaryDirectory) {
+      const root = request.temporaryDirectory;
+      if (root) {
         writeFileSync(
           join(root, "worker-environment.json"),
           prettyJson({
             kind: request.kind,
-            TMPDIR: root,
+            requestedTemporaryDirectory: root,
             temporaryDirectory: request.temporaryDirectory,
+            outputInstructions: JSON.parse(
+              request.kind === "entropy-review"
+                ? entropyReviewPrompt(request)
+                : entropyRefutationPrompt(request),
+            ).outputInstructions,
           }),
         );
       }
@@ -1017,9 +1011,7 @@ async function runEpisode(root, request, pending, role) {
       /* usage recording is advisory and never fails an episode */
     }
   });
-  const dispatch = launchInTemporaryDirectory(pending.temporaryDirectory, () =>
-    transport.dispatch(request, Date.now),
-  );
+  const dispatch = transport.dispatch(request, Date.now);
   try {
     const accepted = await dispatch.receipt;
     check(

@@ -1,0 +1,44 @@
+{"label":"mission-fixtures","command":["node","--test","packages/skeleton/dist/test/mission-check.test.js"],"startedAt":"2026-10-03T02:58:27.547Z","completedAt":"2026-10-03T02:58:37.554Z","wallSeconds":10.006413292,"exitCode":0,"environment":"suiteEnvironment: canonical offline fixture environment; session metadata excluded"}
+
+✔ WO-099 the four verdicts: out-of-surface drift, mid-episode clause change, on-contract pass, unavailable verifier (626.095833ms)
+ℹ on-mission, host-proved drift, mid-episode clause drift, unavailable, unsupported and model drift
+✔ WO-099 a drift holds unattended dispatch, records the correction, and a human answer clears it (801.707583ms)
+ℹ drift held, correction recorded, work refused once, human answer released it
+✔ WO-099 an unavailable verifier holds, and only a passing judgment over changed work clears the hold (824.190667ms)
+ℹ unavailable verifier held without a correction; only a passing judgment over changed work cleared it
+✔ WO-099 the check itself stays armed while it holds the work, and the Contributor build declares the cadence (178.910375ms)
+ℹ Contributor cadence declared read-only at 900 s, NoOp without the adapter
+✔ WO-099 VER-001 F1: the cadence judges changed work, and its fresh pass clears the hold (711.96825ms)
+ℹ the cadence reached the judge with the repaired capsule and retired the hold without a human
+✔ WO-099 VER-001 F2: the capsule carries untracked work, names what it cannot carry, and refuses past its bounds (612.782875ms)
+ℹ untracked drift judged, 400th path named, 401st refused, oversized text named and unknown, clause change past 4000 bytes observable
+✔ WO-099 VER-004 F1: ignored work is redacted, bounded and judged beside an unignored control (449.914416ms)
+ℹ two ignored out-of-surface changes drift by opaque evidence; baseline ignored output stays absent; the unignored control names both paths
+✔ WO-099 VER-005 F1: ordinary build residue under a baselined ignored root leaves the cadence quiet (398.450667ms)
+ℹ one ordinary build leaves two pulses quiet; a planted ignored file, a rewritten baselined ignored file and a removed baselined root still drift; the collapsed-root interior is the disclosed limit
+✔ WO-099 VER-005 F1: an ordinary build during the cadence raises no hold (696.165417ms)
+ℹ two pulses across an ordinary build leave the cadence unheld with no correction event
+✔ WO-099 VER-002 F1: a failed verifier cannot erase the drift the capsule already proved (1002.982292ms)
+ℹ an unavailable and an invalid verifier both held the host-proved drift with its finding and correction
+✔ WO-099 VER-002 F2: the capsule carries links as links and reads nothing outside the worktree (251.993625ms)
+ℹ inside and outside-surface links carried as links, outside bytes absent, linked declared source refused, oversized file omitted unread
+✔ WO-099 VER-003 F1: the host's own findings readmit at the capsule's bounds, and the judge's bound counts only what it adds (258.511708ms)
+ℹ 203 host findings readmitted with a bounded reason; the judge's 100 counted beyond them; repeated host proof keeps the host reason
+✔ WO-099 VER-003 F1: the resident records the hold for every host finding at the path bound, whether or not the judge answered (1425.641291ms)
+ℹ 400 host findings held and corrected through the resident with an answering and an unavailable judge
+✔ WO-099 VER-003 F1: a judgment the actor contract refuses is recorded as the failed episode with its capsule, and the proved drift still holds (499.782541ms)
+ℹ refused judgment recorded as invalid-result with its capsule; the host-proved drift held
+✔ WO-099 VER-003 F2: a decision history that exists but cannot be carried is named and holds; the declared window is honored, including zero (476.079791ms)
+ℹ window 0/1/N honored; absent history whole; oversized and linked histories named, unknown and byte-free
+✔ WO-099 VER-003 F2: the resident holds a claimed pass over a history it could not carry (452.224334ms)
+ℹ claimed pass over an uncarried history recorded as unknown and held, with no correction
+✔ WO-152 the emitted schema carries no duplicate enum item, and a mid-episode clause change still names the old and the new id (212.014334ms)
+ℹ no duplicate item across 7 emitted enums, unchanged, renumbered and story contracts
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9970.511875

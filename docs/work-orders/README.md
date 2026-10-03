@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-184] — Seams the vertical inherits, settled first · **queued**
+- [x] [WO-184] — Seams the vertical inherits, settled first · **final-reviewed**
 - [ ] [WO-185] — No order can exhaust the host · **queued**
 - [ ] [WO-123] — dotln vertical composition · **queued**
 - [ ] [WO-186] — Gate time follows the change · **queued**
@@ -609,8 +609,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-184.
-- References: WO-052: hard (met) — the source-change host; WO-054: hard (met) — verification over the worktree; WO-055: hard (met) — the repair continuation; WO-059: hard (met) — browser witnesses; WO-061: hard (met) — the contract from an issue; WO-062: hard (met) — the issue adapter; WO-124: hard (met) — surfaces from the contract; WO-063: hard (met) — the outward lint the publish step runs; WO-064: hard (met) — publish; WO-065: hard (met) — observation; WO-066: hard (met) — resolution; WO-180: hard (met) — the baseline witness episode the composition sequences before the change; WO-181: hard (met) — the independent review episode sequenced after verification; WO-182: hard (met) — the deliverable-ready conjunction the run requires before publication; WO-068: hard (met) — the resident that admits the intent and dispatches the first step; WO-120: hard (met) — the filed intent and the derived order's durable identity; WO-100: hard (met) — the portfolio contract the intent class extends; WO-042: hard (met) — admitted grants and the effective envelope the run is bound to; WO-167: hard (met) — product 07 has 9 bytes of headroom until the fold resets its ceiling; WO-184: hard (unmet) — room in the reactor under the capsule bound, the review notice and the primitive seams the composition would otherwise meet.
+- Dependencies: typed; dependency-ready.
+- References: WO-052: hard (met) — the source-change host; WO-054: hard (met) — verification over the worktree; WO-055: hard (met) — the repair continuation; WO-059: hard (met) — browser witnesses; WO-061: hard (met) — the contract from an issue; WO-062: hard (met) — the issue adapter; WO-124: hard (met) — surfaces from the contract; WO-063: hard (met) — the outward lint the publish step runs; WO-064: hard (met) — publish; WO-065: hard (met) — observation; WO-066: hard (met) — resolution; WO-180: hard (met) — the baseline witness episode the composition sequences before the change; WO-181: hard (met) — the independent review episode sequenced after verification; WO-182: hard (met) — the deliverable-ready conjunction the run requires before publication; WO-068: hard (met) — the resident that admits the intent and dispatches the first step; WO-120: hard (met) — the filed intent and the derived order's durable identity; WO-100: hard (met) — the portfolio contract the intent class extends; WO-042: hard (met) — admitted grants and the effective envelope the run is bound to; WO-167: hard (met) — product 07 has 9 bytes of headroom until the fold resets its ceiling; WO-184: hard (met) — room in the reactor under the capsule bound, the review notice and the primitive seams the composition would otherwise meet.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -636,23 +636,6 @@ None.
 - Track: unknown
 - Cost: adds &#96;dotln intent "&lt;prose&gt;" &#91;--target &lt;registered repository&gt;&#93;&#96; in &#96;packages/skeleton/src/dotln.ts&#96; (and the parity contract's loopback form, product 04 §Console parity contract v1) that admits the intent under the portfolio's &#96;intent&#96; class (WO-123), interprets it into a StoryContract with a labeled inference episode (WO-061), materializes the durable derived order (WO-120) and returns a receipt naming the order, where its progress can be watched (the live console, WO-117) and the one question the loop may ask; one &#96;IntentDeclared&#96; event; fixtures with doubles; one witnessed run by a non-author on the starter instance WO-118 exports, recorded with shapes and the person's own words paraphrased; at most 300 bytes in product 06 §v1.0.0 and 200 in product 04 in place. Removes: the hand-written work order as the only way an intent enters this repository (the map's candidate since 2026-09-06), and the absence of any order for the &#96;v1.0.0&#96; exit. Re-mints: &#96;dotln.ts&#96; and the parity contract's sources are registered evidence sources (deterministic re-mint); the executor checks &#96;FEEDBACK_SOURCE_PATHS&#96;. Wall-clock, tokens and context bytes are unknown until run.
 - Authority: [docs/work-orders/WO-183-intent-declaration-and-the-stranger-test.md](WO-183-intent-declaration-and-the-stranger-test.md)
-
-### WO-184
-
-[WO-184 — The seams the vertical inherits are settled in one order before it is composed (version assigned at activation)](WO-184-seams-before-the-vertical.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-124: satisfied-by-close (met) — the surface derivation whose three seams items 1 to 3 settle; WO-061: satisfied-by-close (met) — the contract compile whose seams items 4 to 6 settle; WO-065: satisfied-by-close (met) — the pull-request observer item 7 hardens; WO-066: satisfied-by-close (met) — the review loop whose outcome defects item 9 repairs; WO-182: satisfied-by-close (met) — the readiness table and publish flag item 8 completes; WO-180: satisfied-by-close (met) — the verification protocol the baseline episode shares with items 13 and 14; WO-181: satisfied-by-close (met) — the review episode items 12 and 13 make reachable in a live stream; WO-175: satisfied-by-close (met) — the entropy protocol and launch item 16 corrects; WO-159: satisfied-by-close (met) — the Codex launcher whose supervisor item 17 completes.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer any.
-- Track: delivery
-- Cost: nineteen items in three units, each a boarded follow-up whose deadline or seam is this point, combined so the fixed costs are paid once: one compiler release with a deterministic re-mint of all five editions and a carried feedback edition (&#96;story-contract.ts&#96; is a registered source the feedback verifier does not judge; the WO-124 D004 precedent), one skeleton release with one live feedback self-host episode after the last edit to a judged source, three live verification-and-review attempts on Claude for item 13, and one harness bundle re-emit. Adds, by the re-observation's estimates and not by measurement, about 60 source lines in the compiler, about 80 in &#96;scripts/lib&#96;, one leaf module split out of &#96;reactor.ts&#96; byte-for-byte, about 150 lines across ten judged skeleton sources, and their fixtures. Removes: the refusal the next reactor edit would meet (99,655 of 100,000 characters); a live composition that stops at human attention before the review can run (two of three Claude verifier attempts in WO-181); a compile that throws on an admitted bundle; response bytes echoed on an error; a publish that reports success over an unready recorded head; four outcome defects in the review loop; and nineteen register rows, seven of the nine whose deadline is WO-123's activation and twelve whose seam this order opens (the other two go to WO-123's own text and to WO-073). Wall-clock of the whole re-mint is recorded by criterion 20 beside WO-175's 384 s figure; tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-184-seams-before-the-vertical.md](WO-184-seams-before-the-vertical.md)
 
 ### WO-185
 
@@ -3537,6 +3520,24 @@ None.
 - Cost: adds &#96;deliverableReady(artifacts)&#96; beside &#96;acceptanceStatuses&#96; in &#96;scripts/github-body.mjs&#96;, evaluating the fourteen items from the episode store (current source revision, explicit contract, no unresolved material ambiguity, reproduced baseline, repo-native implementation, no unexplained scope, tests/build/lint, live behavior walked, visual claims visually inspected, every acceptance criterion evidenced, independent verification and review, final diff read, grounded body, monitored loop) as &#96;evidenced &lt;ref&gt;&#96;, &#96;absent &lt;reason&gt;&#96; or &#96;not-applicable &lt;reason&gt;&#96;; a &#96;Deliverable-ready&#96; section of the generated body; a &#96;--require-deliverable-ready&#96; flag on &#96;worktree publish --target&#96; that refuses before the first remote call while any item is &#96;absent&#96;, naming the items; fixtures; at most 400 bytes in product 03 §DeliveryAdapter in place. Removes: the "deliverable-ready" judgment that today lives in prose only, so that a pull request can open with an unreproduced baseline or an unreviewed diff and nothing in the body says so (WO-064 D-record: requiring a passing matrix before publishing was not in that order). Re-mints: &#96;scripts/github-body.mjs&#96; and &#96;scripts/lib/target-publish.mjs&#96; are declared machinery sources and not registered evidence sources; no live episode. Wall-clock, tokens and context bytes are unknown until run.
 - Latest attestation: harness claude-code; version 2.1.287; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable.
 - Authority: [docs/work-orders/WO-182-deliverable-ready-conjunction.md](WO-182-deliverable-ready-conjunction.md)
+
+### WO-184
+
+[WO-184 — The seams the vertical inherits are settled in one order before it is composed (v0.66.0)](WO-184-seams-before-the-vertical.md)
+
+- State: closed.
+- Application target: v0.66.0.
+- Dependencies: typed; activation not applicable.
+- References: WO-124: satisfied-by-close (met) — the surface derivation whose three seams items 1 to 3 settle; WO-061: satisfied-by-close (met) — the contract compile whose seams items 4 to 6 settle; WO-065: satisfied-by-close (met) — the pull-request observer item 7 hardens; WO-066: satisfied-by-close (met) — the review loop whose outcome defects item 9 repairs; WO-182: satisfied-by-close (met) — the readiness table and publish flag item 8 completes; WO-180: satisfied-by-close (met) — the verification protocol the baseline episode shares with items 13 and 14; WO-181: satisfied-by-close (met) — the review episode items 12 and 13 make reachable in a live stream; WO-175: satisfied-by-close (met) — the entropy protocol and launch item 16 corrects; WO-159: satisfied-by-close (met) — the Codex launcher whose supervisor item 17 completes.
+- Verification: [VER-002](../../docs/verifications/WO-184/VER-002.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-184/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer any.
+- Track: delivery
+- Cost: nineteen items in three units, each a boarded follow-up whose deadline or seam is this point, combined so the fixed costs are paid once: one compiler release with a deterministic re-mint of all five editions and a carried feedback edition (&#96;story-contract.ts&#96; is a registered source the feedback verifier does not judge; the WO-124 D004 precedent), one skeleton release with one live feedback self-host episode after the last edit to a judged source, three live verification-and-review attempts on Claude for item 13, and one harness bundle re-emit. Adds, by the re-observation's estimates and not by measurement, about 60 source lines in the compiler, about 80 in &#96;scripts/lib&#96;, one leaf module split out of &#96;reactor.ts&#96; byte-for-byte, about 150 lines across ten judged skeleton sources, and their fixtures. Removes: the refusal the next reactor edit would meet (99,655 of 100,000 characters); a live composition that stops at human attention before the review can run (two of three Claude verifier attempts in WO-181); a compile that throws on an admitted bundle; response bytes echoed on an error; a publish that reports success over an unready recorded head; four outcome defects in the review loop; and nineteen register rows, seven of the nine whose deadline is WO-123's activation and twelve whose seam this order opens (the other two go to WO-123's own text and to WO-073). Wall-clock of the whole re-mint is recorded by criterion 20 beside WO-175's 384 s figure; tokens and context bytes are unknown until run.
+- Latest attestation: harness claude-code; version 2.1.288; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable.
+- Authority: [docs/work-orders/WO-184-seams-before-the-vertical.md](WO-184-seams-before-the-vertical.md)
 
 ## Historical
 

@@ -22,6 +22,8 @@ import {
 } from "../src/verification.js";
 import { routeReview, validateReviewContext } from "../src/review.js";
 import { deriveRepairOrder } from "../src/repair.js";
+import { LEASE_MS } from "../src/worker-protocol.js";
+import { canonicalStringify, fnv1a64 } from "@dotln/compiler";
 
 // Historical fixture inputs belong to the document selection; load only inside its cases.
 const loadFixture = () =>
@@ -29,6 +31,161 @@ const loadFixture = () =>
     pathToFileURL(join(process.cwd(), "docs/evidence/WO-181/fixture.mjs")).href
   );
 const options = { skip: process.platform !== "darwin" };
+
+test("[document] WO-184 R9: committed no-notice replay preserves the pre-edit command and prompt", async () => {
+  const { checkLegacyNotice } = await import(
+    pathToFileURL(
+      join(process.cwd(), "docs/evidence/WO-184/check-legacy-notice.mjs"),
+    ).href
+  );
+  assert.deepEqual(checkLegacyNotice(), {
+    commandByteIdentical: true,
+    promptByteIdentical: true,
+  });
+});
+
+test(
+  "[document] WO-184 criterion 13: persisted notice survives a release-only compiler relabel",
+  options,
+  async () => {
+    const fixture = await import(
+      pathToFileURL(join(process.cwd(), "docs/evidence/WO-184/fixture.mjs"))
+        .href
+    );
+    const target = fixture.createReviewFixture();
+    const session = fixture.openReview(target);
+    try {
+      const changed = decodeLog(session.driver.log).map((event) =>
+        JSON.parse(
+          JSON.stringify(event, (key, value) => {
+            if (key !== "capsule") return value;
+            const { inputHash, ...contents } = value;
+            void inputHash;
+            contents.compilerPackageVersion = "0.0.1";
+            return {
+              ...contents,
+              inputHash: `fnv1a64:${fnv1a64(canonicalStringify(contents))}`,
+            };
+          }),
+        ),
+      );
+      const replayed = replayVerification(changed, session.driver.workstreamId);
+      assert.equal(replayed.pending!.capsule.compilerPackageVersion, "0.0.1");
+      assert.equal(
+        (replayed.pending!.command.intent.payload as { reviewNotice?: true })
+          .reviewNotice,
+        true,
+      );
+      const removed = structuredClone(changed);
+      delete removed.find((event) => event.type === "CommandPersisted").payload
+        .command.intent.payload.reviewNotice;
+      assert.throws(
+        () => replayVerification(removed, session.driver.workstreamId),
+        /persisted compilation drift/u,
+      );
+    } finally {
+      session.store.release();
+    }
+  },
+);
+
+test(
+  "[document] WO-184 criteria 12/13: a sealed kernel/driver stream re-verifies every criterion after a one-criterion repair",
+  options,
+  async () => {
+    const fixture = await import(
+      pathToFileURL(join(process.cwd(), "docs/evidence/WO-184/fixture.mjs"))
+        .href
+    );
+    const result = await fixture.repairReviewDriverFixture();
+    assert.equal(result.allReverified, true);
+    assert.equal(result.reviewDispatched, true);
+    assert.equal(result.nativeSnapshotRepairClaimed, false);
+  },
+);
+
+test(
+  "[document] WO-184 criterion 19: failed and rejected reviews stay pending and rerun a fresh attempt",
+  options,
+  async () => {
+    const fixture = await loadFixture();
+    for (const failure of ["failed", "rejected"] as const) {
+      const target = fixture.createReviewFixture();
+      const session = fixture.openReview(target, { name: `wo184_${failure}` });
+      try {
+        await session.host.run(
+          target.prepared.snapshotPath,
+          "process-double",
+          "unknown",
+        );
+        session.driver.persistNext(Date.now());
+        const failing = {
+          name: "fake" as const,
+          harnessVersion: "not-applicable",
+          dispatch(request: any, now: () => number) {
+            const result = fixture.doubleResult(request);
+            result.envelope.status = "failed";
+            const completed =
+              failure === "failed"
+                ? Promise.resolve(result)
+                : Promise.reject(new Error("fixture rejection"));
+            return {
+              receipt: Promise.resolve({
+                commandId: request.command.commandId,
+                transport: "fake" as const,
+                acceptedAt: now(),
+              }),
+              completed,
+              alive: () => false,
+              kill() {},
+            };
+          },
+        };
+        let at = Date.now();
+        const host = new VerificationHost({
+          driver: session.driver,
+          transport: failing,
+          now: () => at,
+        });
+        const attempt = host.run(
+          target.prepared.snapshotPath,
+          "process-double",
+          "unknown",
+        );
+        if (failure === "failed")
+          assert.equal((await attempt).status, "failed");
+        else await assert.rejects(attempt, /transport-failed/u);
+        const log = decodeLog(session.driver.log);
+        assert.equal(
+          log.filter((event) => event.type === "WorkerInterrupted").length,
+          1,
+        );
+        assert.equal(session.driver.state.next, "review");
+        assert.ok(session.driver.state.pending!.review);
+        assert.equal(
+          log.filter((event) => event.type === "ReviewCompleted").length,
+          0,
+        );
+        const old = log
+          .filter((event) => event.type === "WorkerAttemptStarted")
+          .at(-1)!.payload as any;
+        at += LEASE_MS + 1;
+        await new VerificationHost({
+          driver: session.driver,
+          transport: fixture.doubleTransport(),
+          now: () => at,
+        }).run(target.prepared.snapshotPath, "process-double", "unknown");
+        const fresh = decodeLog(session.driver.log)
+          .filter((event) => event.type === "WorkerAttemptStarted")
+          .at(-1)!.payload as any;
+        assert.notEqual(fresh.workerEpisodeId, old.workerEpisodeId);
+        assert.equal(session.driver.state.next, "reviewed");
+      } finally {
+        session.store.release();
+      }
+    }
+  },
+);
 
 test(
   "[document] WO-181 AC1: independent review finds planted naming and scope defects without changing snapshot or behavior rows",

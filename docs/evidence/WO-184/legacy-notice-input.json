@@ -1,0 +1,600 @@
+{
+  "provenance": "Synthetic WO-181 no-notice stream captured before WO-184 item 13; original command and prompt hashes independently replayed by VER-001. Launch paths are replaced with a fixed synthetic path; they occur in neither command nor prompt.",
+  "events": [
+    {
+      "schemaVersion": 1,
+      "type": "VerificationOpened",
+      "occurredAt": 1790953477397,
+      "actorId": "verification-host",
+      "workstreamId": "ws_legacy_baseline",
+      "payload": {
+        "baseline": {
+          "snapshot": {
+            "profile": "worktree-snapshot",
+            "observedCommit": "406a258a5310232ba0312d80066e83a7b1c3f9ce",
+            "snapshotHash": "fnv1a64:8315a98c204fd18c",
+            "contract": {
+              "workOrderId": "wo181_signed_addition",
+              "objective": "Make add in sum.mjs return the numeric sum of its two arguments for every sign of argument. Read README.md and sum.mjs; change only sum.mjs; run the exact host-supplied test command, read the diff, then stage and commit with the exact host command.",
+              "acceptanceCriteria": [
+                "add(left, right) returns the numeric sum when both arguments are zero or positive.",
+                "add(left, right) returns the numeric sum when either argument is negative."
+              ],
+              "constraints": [
+                "Change only sum.mjs; never change a test, the README, governance, settings or the commit message",
+                "Use only the declared test and exact add/commit commands for effectful shell operations; bounded read-only inspection follows the transport instructions"
+              ],
+              "nonGoals": [
+                "Remote effects",
+                "Other repositories",
+                "Additional commits"
+              ],
+              "requiredEvidence": [
+                "node focused-test.mjs",
+                "node contract-test.mjs"
+              ]
+            },
+            "tests": [
+              {
+                "criterionId": "AC-positive",
+                "checkId": "superficial",
+                "command": "node focused-test.mjs"
+              },
+              {
+                "criterionId": "AC-signed",
+                "checkId": "contract",
+                "command": "node contract-test.mjs"
+              }
+            ]
+          },
+          "repo": "wo056-synthetic-signed-addition",
+          "baseCommit": "406a258a5310232ba0312d80066e83a7b1c3f9ce",
+          "revision": "406a258a5310232ba0312d80066e83a7b1c3f9ce",
+          "diff": "",
+          "files": [
+            {
+              "path": "CONVENTIONS.md",
+              "contents": "# Declared conventions\n\nLocal variables in sum.mjs use lowerCamelCase.\n",
+              "mode": "100644"
+            },
+            {
+              "path": "README.md",
+              "contents": "# Synthetic signed addition contract\n\nadd(left, right) in sum.mjs returns the numeric sum of its two arguments, for zero, positive and negative values alike. Change only sum.mjs. Do not modify this README, focused-test.mjs or contract-test.mjs. Run the host-supplied test command and read the diff it prints before committing. Use the host's exact stage and commit commands. No remote effects or other source changes.\n",
+              "mode": "100644"
+            },
+            {
+              "path": "contract-test.mjs",
+              "contents": "import { execFileSync } from \"node:child_process\";\ntry {\n  process.stdout.write(\n    execFileSync(\n      \"git\",\n      [\"diff\", \"--no-ext-diff\", \"--no-textconv\", \"HEAD\", \"--\", \"sum.mjs\"],\n      { encoding: \"utf8\", stdio: [\"ignore\", \"pipe\", \"ignore\"], timeout: 5000 },\n    ),\n  );\n} catch {\n  // A files-only verification copy has no Git metadata; the diff is optional.\n}\nlet add;\ntry {\n  ({ add } = await import(\"./sum.mjs\"));\n} catch (error) {\n  console.error(\"sum.mjs failed to load: \" + String(error?.name ?? \"error\"));\n  process.exit(1);\n}\nconst failures = [];\nfor (const [left, right, expected] of [[2,3,5],[10,0,10],[0,0,0],[4,-7,-3],[-4,7,3],[-2,-3,-5]]) {\n  let actual;\n  try {\n    actual = add(left, right);\n  } catch {\n    actual = \"a thrown error\";\n  }\n  if (actual !== expected)\n    failures.push(\n      \"add(\" + left + \", \" + right + \") returned \" +\n        String(actual).slice(0, 40) + \"; expected \" + expected,\n    );\n}\nif (failures.length) {\n  console.error(failures.join(\"\\n\"));\n  process.exit(1);\n}\nconsole.log(\"Signed addition contract passed\");\n",
+              "mode": "100644"
+            },
+            {
+              "path": "focused-test.mjs",
+              "contents": "import { execFileSync } from \"node:child_process\";\ntry {\n  process.stdout.write(\n    execFileSync(\n      \"git\",\n      [\"diff\", \"--no-ext-diff\", \"--no-textconv\", \"HEAD\", \"--\", \"sum.mjs\"],\n      { encoding: \"utf8\", stdio: [\"ignore\", \"pipe\", \"ignore\"], timeout: 5000 },\n    ),\n  );\n} catch {\n  // A files-only verification copy has no Git metadata; the diff is optional.\n}\nlet add;\ntry {\n  ({ add } = await import(\"./sum.mjs\"));\n} catch (error) {\n  console.error(\"sum.mjs failed to load: \" + String(error?.name ?? \"error\"));\n  process.exit(1);\n}\nconst failures = [];\nfor (const [left, right, expected] of [[2,3,5],[10,0,10],[0,0,0]]) {\n  let actual;\n  try {\n    actual = add(left, right);\n  } catch {\n    actual = \"a thrown error\";\n  }\n  if (actual !== expected)\n    failures.push(\n      \"add(\" + left + \", \" + right + \") returned \" +\n        String(actual).slice(0, 40) + \"; expected \" + expected,\n    );\n}\nif (failures.length) {\n  console.error(failures.join(\"\\n\"));\n  process.exit(1);\n}\nconsole.log(\"Focused addition check passed\");\n",
+              "mode": "100644"
+            },
+            {
+              "path": "sum.mjs",
+              "contents": "export const add = (left, right) => left - right;\n",
+              "mode": "100644"
+            }
+          ],
+          "evidence": [
+            {
+              "hostTest": {
+                "kind": "host-run-test",
+                "origin": "host",
+                "snapshotHash": "fnv1a64:8315a98c204fd18c",
+                "command": "node focused-test.mjs",
+                "exitCode": 1,
+                "signal": null,
+                "stdout": "",
+                "stderr": "add(2, 3) returned -1; expected 5\n"
+              },
+              "evidenceId": "406a258a5310232ba0312d80066e83a7b1c3f9ce:host-test:0",
+              "criterionId": "AC-positive",
+              "checkId": "superficial",
+              "claimType": "behavior",
+              "source": "live",
+              "subjectRevision": "406a258a5310232ba0312d80066e83a7b1c3f9ce",
+              "codeSurfaces": [
+                "sum.mjs"
+              ],
+              "automatedTest": "node focused-test.mjs",
+              "observed": "exit 1",
+              "expected": "exit 0",
+              "outcome": "fail",
+              "reproductionSteps": [
+                "Run node focused-test.mjs in a fresh confined copy of snapshot fnv1a64:8315a98c204fd18c."
+              ]
+            },
+            {
+              "hostTest": {
+                "kind": "host-run-test",
+                "origin": "host",
+                "snapshotHash": "fnv1a64:8315a98c204fd18c",
+                "command": "node contract-test.mjs",
+                "exitCode": 1,
+                "signal": null,
+                "stdout": "",
+                "stderr": "add(2, 3) returned -1; expected 5\nadd(4, -7) returned 11; expected -3\nadd(-4, 7) returned -11; expected 3\nadd(-2, -3) returned 1; expected -5\n"
+              },
+              "evidenceId": "406a258a5310232ba0312d80066e83a7b1c3f9ce:host-test:1",
+              "criterionId": "AC-signed",
+              "checkId": "contract",
+              "claimType": "behavior",
+              "source": "live",
+              "subjectRevision": "406a258a5310232ba0312d80066e83a7b1c3f9ce",
+              "codeSurfaces": [
+                "sum.mjs"
+              ],
+              "automatedTest": "node contract-test.mjs",
+              "observed": "exit 1",
+              "expected": "exit 0",
+              "outcome": "fail",
+              "reproductionSteps": [
+                "Run node contract-test.mjs in a fresh confined copy of snapshot fnv1a64:8315a98c204fd18c."
+              ]
+            }
+          ]
+        },
+        "subject": {
+          "snapshot": {
+            "profile": "worktree-snapshot",
+            "observedCommit": "415ec31929059052db18fa6d4499322fc187a662",
+            "snapshotHash": "fnv1a64:e5197a744a8765d4",
+            "contract": {
+              "workOrderId": "wo181_signed_addition",
+              "objective": "Make add in sum.mjs return the numeric sum of its two arguments for every sign of argument. Read README.md and sum.mjs; change only sum.mjs; run the exact host-supplied test command, read the diff, then stage and commit with the exact host command.",
+              "acceptanceCriteria": [
+                "add(left, right) returns the numeric sum when both arguments are zero or positive.",
+                "add(left, right) returns the numeric sum when either argument is negative."
+              ],
+              "constraints": [
+                "Change only sum.mjs; never change a test, the README, governance, settings or the commit message",
+                "Use only the declared test and exact add/commit commands for effectful shell operations; bounded read-only inspection follows the transport instructions"
+              ],
+              "nonGoals": [
+                "Remote effects",
+                "Other repositories",
+                "Additional commits"
+              ],
+              "requiredEvidence": [
+                "node focused-test.mjs",
+                "node contract-test.mjs"
+              ]
+            },
+            "tests": [
+              {
+                "criterionId": "AC-positive",
+                "checkId": "superficial",
+                "command": "node focused-test.mjs"
+              },
+              {
+                "criterionId": "AC-signed",
+                "checkId": "contract",
+                "command": "node contract-test.mjs"
+              }
+            ]
+          },
+          "repo": "wo056-synthetic-signed-addition",
+          "baseCommit": "406a258a5310232ba0312d80066e83a7b1c3f9ce",
+          "revision": "415ec31929059052db18fa6d4499322fc187a662",
+          "diff": "diff --git a/README.md b/README.md\nindex 9769805..e0daeb2 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,3 +1,5 @@\n # Synthetic signed addition contract\n \n add(left, right) in sum.mjs returns the numeric sum of its two arguments, for zero, positive and negative values alike. Change only sum.mjs. Do not modify this README, focused-test.mjs or contract-test.mjs. Run the host-supplied test command and read the diff it prints before committing. Use the host's exact stage and commit commands. No remote effects or other source changes.\n+\n+Unrequested release announcement.\ndiff --git a/sum.mjs b/sum.mjs\nindex 4bee46a..d7bfadb 100644\n--- a/sum.mjs\n+++ b/sum.mjs\n@@ -1 +1 @@\n-export const add = (left, right) => left - right;\n+export const add = (left, right) => { const TOTAL = left + right; return TOTAL; };\n",
+          "files": [
+            {
+              "path": "CONVENTIONS.md",
+              "contents": "# Declared conventions\n\nLocal variables in sum.mjs use lowerCamelCase.\n",
+              "mode": "100644"
+            },
+            {
+              "path": "README.md",
+              "contents": "# Synthetic signed addition contract\n\nadd(left, right) in sum.mjs returns the numeric sum of its two arguments, for zero, positive and negative values alike. Change only sum.mjs. Do not modify this README, focused-test.mjs or contract-test.mjs. Run the host-supplied test command and read the diff it prints before committing. Use the host's exact stage and commit commands. No remote effects or other source changes.\n\nUnrequested release announcement.\n",
+              "mode": "100644"
+            },
+            {
+              "path": "contract-test.mjs",
+              "contents": "import { execFileSync } from \"node:child_process\";\ntry {\n  process.stdout.write(\n    execFileSync(\n      \"git\",\n      [\"diff\", \"--no-ext-diff\", \"--no-textconv\", \"HEAD\", \"--\", \"sum.mjs\"],\n      { encoding: \"utf8\", stdio: [\"ignore\", \"pipe\", \"ignore\"], timeout: 5000 },\n    ),\n  );\n} catch {\n  // A files-only verification copy has no Git metadata; the diff is optional.\n}\nlet add;\ntry {\n  ({ add } = await import(\"./sum.mjs\"));\n} catch (error) {\n  console.error(\"sum.mjs failed to load: \" + String(error?.name ?? \"error\"));\n  process.exit(1);\n}\nconst failures = [];\nfor (const [left, right, expected] of [[2,3,5],[10,0,10],[0,0,0],[4,-7,-3],[-4,7,3],[-2,-3,-5]]) {\n  let actual;\n  try {\n    actual = add(left, right);\n  } catch {\n    actual = \"a thrown error\";\n  }\n  if (actual !== expected)\n    failures.push(\n      \"add(\" + left + \", \" + right + \") returned \" +\n        String(actual).slice(0, 40) + \"; expected \" + expected,\n    );\n}\nif (failures.length) {\n  console.error(failures.join(\"\\n\"));\n  process.exit(1);\n}\nconsole.log(\"Signed addition contract passed\");\n",
+              "mode": "100644"
+            },
+            {
+              "path": "focused-test.mjs",
+              "contents": "import { execFileSync } from \"node:child_process\";\ntry {\n  process.stdout.write(\n    execFileSync(\n      \"git\",\n      [\"diff\", \"--no-ext-diff\", \"--no-textconv\", \"HEAD\", \"--\", \"sum.mjs\"],\n      { encoding: \"utf8\", stdio: [\"ignore\", \"pipe\", \"ignore\"], timeout: 5000 },\n    ),\n  );\n} catch {\n  // A files-only verification copy has no Git metadata; the diff is optional.\n}\nlet add;\ntry {\n  ({ add } = await import(\"./sum.mjs\"));\n} catch (error) {\n  console.error(\"sum.mjs failed to load: \" + String(error?.name ?? \"error\"));\n  process.exit(1);\n}\nconst failures = [];\nfor (const [left, right, expected] of [[2,3,5],[10,0,10],[0,0,0]]) {\n  let actual;\n  try {\n    actual = add(left, right);\n  } catch {\n    actual = \"a thrown error\";\n  }\n  if (actual !== expected)\n    failures.push(\n      \"add(\" + left + \", \" + right + \") returned \" +\n        String(actual).slice(0, 40) + \"; expected \" + expected,\n    );\n}\nif (failures.length) {\n  console.error(failures.join(\"\\n\"));\n  process.exit(1);\n}\nconsole.log(\"Focused addition check passed\");\n",
+              "mode": "100644"
+            },
+            {
+              "path": "sum.mjs",
+              "contents": "export const add = (left, right) => { const TOTAL = left + right; return TOTAL; };\n",
+              "mode": "100644"
+            }
+          ],
+          "evidence": [
+            {
+              "hostTest": {
+                "kind": "host-run-test",
+                "origin": "host",
+                "snapshotHash": "fnv1a64:e5197a744a8765d4",
+                "command": "node focused-test.mjs",
+                "exitCode": 0,
+                "signal": null,
+                "stdout": "Focused addition check passed\n",
+                "stderr": ""
+              },
+              "evidenceId": "415ec31929059052db18fa6d4499322fc187a662:host-test:0",
+              "criterionId": "AC-positive",
+              "checkId": "superficial",
+              "claimType": "behavior",
+              "source": "live",
+              "subjectRevision": "415ec31929059052db18fa6d4499322fc187a662",
+              "codeSurfaces": [
+                "sum.mjs"
+              ],
+              "automatedTest": "node focused-test.mjs",
+              "observed": "exit 0",
+              "expected": "exit 0",
+              "outcome": "pass",
+              "reproductionSteps": [
+                "Run node focused-test.mjs in a fresh confined copy of snapshot fnv1a64:e5197a744a8765d4."
+              ]
+            },
+            {
+              "hostTest": {
+                "kind": "host-run-test",
+                "origin": "host",
+                "snapshotHash": "fnv1a64:e5197a744a8765d4",
+                "command": "node contract-test.mjs",
+                "exitCode": 0,
+                "signal": null,
+                "stdout": "Signed addition contract passed\n",
+                "stderr": ""
+              },
+              "evidenceId": "415ec31929059052db18fa6d4499322fc187a662:host-test:1",
+              "criterionId": "AC-signed",
+              "checkId": "contract",
+              "claimType": "behavior",
+              "source": "live",
+              "subjectRevision": "415ec31929059052db18fa6d4499322fc187a662",
+              "codeSurfaces": [
+                "sum.mjs"
+              ],
+              "automatedTest": "node contract-test.mjs",
+              "observed": "exit 0",
+              "expected": "exit 0",
+              "outcome": "pass",
+              "reproductionSteps": [
+                "Run node contract-test.mjs in a fresh confined copy of snapshot fnv1a64:e5197a744a8765d4."
+              ]
+            }
+          ]
+        },
+        "criteria": [
+          {
+            "criterionId": "AC-positive",
+            "description": "add(left, right) returns the numeric sum when both arguments are zero or positive.",
+            "claimType": "behavior",
+            "evidenceSource": "live",
+            "codeSurfaces": [
+              "sum.mjs"
+            ],
+            "requiredChecks": [
+              "superficial"
+            ]
+          },
+          {
+            "criterionId": "AC-signed",
+            "description": "add(left, right) returns the numeric sum when either argument is negative.",
+            "claimType": "behavior",
+            "evidenceSource": "live",
+            "codeSurfaces": [
+              "sum.mjs"
+            ],
+            "requiredChecks": [
+              "contract"
+            ]
+          }
+        ],
+        "implementerEpisodeId": "ep_synthetic_implementer",
+        "reviewConventionsPath": "CONVENTIONS.md",
+        "maxRepairs": 0,
+        "authority": {
+          "authorityEnvelopeId": "auth_review_proof",
+          "allowedEffects": [
+            "verification.evaluate"
+          ],
+          "deniedEffects": [
+            "repo.write",
+            "repo.delete",
+            "network"
+          ],
+          "resourceLimits": {
+            "episodes": 2
+          },
+          "requiredEvidence": [],
+          "expiresAt": 1790957077397,
+          "revocationEventTypes": []
+        }
+      },
+      "eventId": "evt_1"
+    },
+    {
+      "schemaVersion": 1,
+      "type": "VerificationDispatchRequested",
+      "occurredAt": 1790953477403,
+      "actorId": "verification-host",
+      "workstreamId": "ws_legacy_baseline",
+      "payload": {},
+      "eventId": "evt_2"
+    },
+    {
+      "schemaVersion": 1,
+      "type": "CommandPersisted",
+      "occurredAt": 1790953477403,
+      "actorId": "verification-host",
+      "workstreamId": "ws_legacy_baseline",
+      "correlationId": "cmd_3b843b5108e71409",
+      "payload": {
+        "command": {
+          "commandId": "cmd_3b843b5108e71409",
+          "episodeId": "ep_verifier_1",
+          "workstreamId": "ws_legacy_baseline",
+          "intent": {
+            "kind": "Act",
+            "effect": "verification.evaluate",
+            "resource": "episodes",
+            "payload": {
+              "capsule": {
+                "contractVersion": "verification-v1",
+                "compilerPackageVersion": "0.24.0",
+                "role": "verifier",
+                "workOrder": {
+                  "workOrderId": "verification_1",
+                  "objective": "Independently verify the supplied acceptance criteria against the pinned repository and witnessed evidence.",
+                  "acceptanceCriteria": [
+                    "AC-positive: add(left, right) returns the numeric sum when both arguments are zero or positive.",
+                    "AC-signed: add(left, right) returns the numeric sum when either argument is negative."
+                  ],
+                  "knownFacts": [
+                    "Repository access is the explicit host-read snapshot in this capsule."
+                  ],
+                  "decisions": [],
+                  "constraints": [
+                    "Evidence source and claim type must match each criterion.",
+                    "Worker completion is a self-report; only host-admitted verifier evidence updates acceptance."
+                  ],
+                  "nonGoals": [
+                    "Independent code review",
+                    "Unrelated changes",
+                    "Live-integration claims from synthetic fixtures"
+                  ],
+                  "repo": "wo056-synthetic-signed-addition",
+                  "baseCommit": "415ec31929059052db18fa6d4499322fc187a662",
+                  "allowedOperations": [
+                    "verification.evaluate"
+                  ],
+                  "prohibitedOperations": [
+                    "repo.write",
+                    "repo.delete",
+                    "network",
+                    "transcript.read",
+                    "self.certify"
+                  ],
+                  "requiredEvidence": [
+                    "superficial",
+                    "contract"
+                  ],
+                  "outputContract": {
+                    "type": "verification-result-v1"
+                  }
+                },
+                "criteria": [
+                  {
+                    "criterionId": "AC-positive",
+                    "description": "add(left, right) returns the numeric sum when both arguments are zero or positive.",
+                    "claimType": "behavior",
+                    "evidenceSource": "live",
+                    "codeSurfaces": [
+                      "sum.mjs"
+                    ],
+                    "requiredChecks": [
+                      "superficial"
+                    ]
+                  },
+                  {
+                    "criterionId": "AC-signed",
+                    "description": "add(left, right) returns the numeric sum when either argument is negative.",
+                    "claimType": "behavior",
+                    "evidenceSource": "live",
+                    "codeSurfaces": [
+                      "sum.mjs"
+                    ],
+                    "requiredChecks": [
+                      "contract"
+                    ]
+                  }
+                ],
+                "subject": {
+                  "snapshot": {
+                    "profile": "worktree-snapshot",
+                    "observedCommit": "415ec31929059052db18fa6d4499322fc187a662",
+                    "snapshotHash": "fnv1a64:e5197a744a8765d4",
+                    "contract": {
+                      "workOrderId": "wo181_signed_addition",
+                      "objective": "Make add in sum.mjs return the numeric sum of its two arguments for every sign of argument. Read README.md and sum.mjs; change only sum.mjs; run the exact host-supplied test command, read the diff, then stage and commit with the exact host command.",
+                      "acceptanceCriteria": [
+                        "add(left, right) returns the numeric sum when both arguments are zero or positive.",
+                        "add(left, right) returns the numeric sum when either argument is negative."
+                      ],
+                      "constraints": [
+                        "Change only sum.mjs; never change a test, the README, governance, settings or the commit message",
+                        "Use only the declared test and exact add/commit commands for effectful shell operations; bounded read-only inspection follows the transport instructions"
+                      ],
+                      "nonGoals": [
+                        "Remote effects",
+                        "Other repositories",
+                        "Additional commits"
+                      ],
+                      "requiredEvidence": [
+                        "node focused-test.mjs",
+                        "node contract-test.mjs"
+                      ]
+                    },
+                    "tests": [
+                      {
+                        "criterionId": "AC-positive",
+                        "checkId": "superficial",
+                        "command": "node focused-test.mjs"
+                      },
+                      {
+                        "criterionId": "AC-signed",
+                        "checkId": "contract",
+                        "command": "node contract-test.mjs"
+                      }
+                    ]
+                  },
+                  "repo": "wo056-synthetic-signed-addition",
+                  "baseCommit": "406a258a5310232ba0312d80066e83a7b1c3f9ce",
+                  "revision": "415ec31929059052db18fa6d4499322fc187a662",
+                  "diff": "diff --git a/README.md b/README.md\nindex 9769805..e0daeb2 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,3 +1,5 @@\n # Synthetic signed addition contract\n \n add(left, right) in sum.mjs returns the numeric sum of its two arguments, for zero, positive and negative values alike. Change only sum.mjs. Do not modify this README, focused-test.mjs or contract-test.mjs. Run the host-supplied test command and read the diff it prints before committing. Use the host's exact stage and commit commands. No remote effects or other source changes.\n+\n+Unrequested release announcement.\ndiff --git a/sum.mjs b/sum.mjs\nindex 4bee46a..d7bfadb 100644\n--- a/sum.mjs\n+++ b/sum.mjs\n@@ -1 +1 @@\n-export const add = (left, right) => left - right;\n+export const add = (left, right) => { const TOTAL = left + right; return TOTAL; };\n",
+                  "files": [
+                    {
+                      "path": "CONVENTIONS.md",
+                      "contents": "# Declared conventions\n\nLocal variables in sum.mjs use lowerCamelCase.\n",
+                      "mode": "100644"
+                    },
+                    {
+                      "path": "README.md",
+                      "contents": "# Synthetic signed addition contract\n\nadd(left, right) in sum.mjs returns the numeric sum of its two arguments, for zero, positive and negative values alike. Change only sum.mjs. Do not modify this README, focused-test.mjs or contract-test.mjs. Run the host-supplied test command and read the diff it prints before committing. Use the host's exact stage and commit commands. No remote effects or other source changes.\n\nUnrequested release announcement.\n",
+                      "mode": "100644"
+                    },
+                    {
+                      "path": "contract-test.mjs",
+                      "contents": "import { execFileSync } from \"node:child_process\";\ntry {\n  process.stdout.write(\n    execFileSync(\n      \"git\",\n      [\"diff\", \"--no-ext-diff\", \"--no-textconv\", \"HEAD\", \"--\", \"sum.mjs\"],\n      { encoding: \"utf8\", stdio: [\"ignore\", \"pipe\", \"ignore\"], timeout: 5000 },\n    ),\n  );\n} catch {\n  // A files-only verification copy has no Git metadata; the diff is optional.\n}\nlet add;\ntry {\n  ({ add } = await import(\"./sum.mjs\"));\n} catch (error) {\n  console.error(\"sum.mjs failed to load: \" + String(error?.name ?? \"error\"));\n  process.exit(1);\n}\nconst failures = [];\nfor (const [left, right, expected] of [[2,3,5],[10,0,10],[0,0,0],[4,-7,-3],[-4,7,3],[-2,-3,-5]]) {\n  let actual;\n  try {\n    actual = add(left, right);\n  } catch {\n    actual = \"a thrown error\";\n  }\n  if (actual !== expected)\n    failures.push(\n      \"add(\" + left + \", \" + right + \") returned \" +\n        String(actual).slice(0, 40) + \"; expected \" + expected,\n    );\n}\nif (failures.length) {\n  console.error(failures.join(\"\\n\"));\n  process.exit(1);\n}\nconsole.log(\"Signed addition contract passed\");\n",
+                      "mode": "100644"
+                    },
+                    {
+                      "path": "focused-test.mjs",
+                      "contents": "import { execFileSync } from \"node:child_process\";\ntry {\n  process.stdout.write(\n    execFileSync(\n      \"git\",\n      [\"diff\", \"--no-ext-diff\", \"--no-textconv\", \"HEAD\", \"--\", \"sum.mjs\"],\n      { encoding: \"utf8\", stdio: [\"ignore\", \"pipe\", \"ignore\"], timeout: 5000 },\n    ),\n  );\n} catch {\n  // A files-only verification copy has no Git metadata; the diff is optional.\n}\nlet add;\ntry {\n  ({ add } = await import(\"./sum.mjs\"));\n} catch (error) {\n  console.error(\"sum.mjs failed to load: \" + String(error?.name ?? \"error\"));\n  process.exit(1);\n}\nconst failures = [];\nfor (const [left, right, expected] of [[2,3,5],[10,0,10],[0,0,0]]) {\n  let actual;\n  try {\n    actual = add(left, right);\n  } catch {\n    actual = \"a thrown error\";\n  }\n  if (actual !== expected)\n    failures.push(\n      \"add(\" + left + \", \" + right + \") returned \" +\n        String(actual).slice(0, 40) + \"; expected \" + expected,\n    );\n}\nif (failures.length) {\n  console.error(failures.join(\"\\n\"));\n  process.exit(1);\n}\nconsole.log(\"Focused addition check passed\");\n",
+                      "mode": "100644"
+                    },
+                    {
+                      "path": "sum.mjs",
+                      "contents": "export const add = (left, right) => { const TOTAL = left + right; return TOTAL; };\n",
+                      "mode": "100644"
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "hostTest": {
+                        "kind": "host-run-test",
+                        "origin": "host",
+                        "snapshotHash": "fnv1a64:e5197a744a8765d4",
+                        "command": "node focused-test.mjs",
+                        "exitCode": 0,
+                        "signal": null,
+                        "stdout": "Focused addition check passed\n",
+                        "stderr": ""
+                      },
+                      "evidenceId": "415ec31929059052db18fa6d4499322fc187a662:host-test:0",
+                      "criterionId": "AC-positive",
+                      "checkId": "superficial",
+                      "claimType": "behavior",
+                      "source": "live",
+                      "subjectRevision": "415ec31929059052db18fa6d4499322fc187a662",
+                      "codeSurfaces": [
+                        "sum.mjs"
+                      ],
+                      "automatedTest": "node focused-test.mjs",
+                      "observed": "exit 0",
+                      "expected": "exit 0",
+                      "outcome": "pass",
+                      "reproductionSteps": [
+                        "Run node focused-test.mjs in a fresh confined copy of snapshot fnv1a64:e5197a744a8765d4."
+                      ]
+                    },
+                    {
+                      "hostTest": {
+                        "kind": "host-run-test",
+                        "origin": "host",
+                        "snapshotHash": "fnv1a64:e5197a744a8765d4",
+                        "command": "node contract-test.mjs",
+                        "exitCode": 0,
+                        "signal": null,
+                        "stdout": "Signed addition contract passed\n",
+                        "stderr": ""
+                      },
+                      "evidenceId": "415ec31929059052db18fa6d4499322fc187a662:host-test:1",
+                      "criterionId": "AC-signed",
+                      "checkId": "contract",
+                      "claimType": "behavior",
+                      "source": "live",
+                      "subjectRevision": "415ec31929059052db18fa6d4499322fc187a662",
+                      "codeSurfaces": [
+                        "sum.mjs"
+                      ],
+                      "automatedTest": "node contract-test.mjs",
+                      "observed": "exit 0",
+                      "expected": "exit 0",
+                      "outcome": "pass",
+                      "reproductionSteps": [
+                        "Run node contract-test.mjs in a fresh confined copy of snapshot fnv1a64:e5197a744a8765d4."
+                      ]
+                    }
+                  ]
+                },
+                "finding": null,
+                "inputHash": "fnv1a64:6a2a77adf999ba73"
+              }
+            }
+          }
+        },
+        "authority": {
+          "authorityEnvelopeId": "auth_review_proof",
+          "allowedEffects": [
+            "verification.evaluate"
+          ],
+          "deniedEffects": [
+            "repo.write",
+            "repo.delete",
+            "network"
+          ],
+          "resourceLimits": {
+            "episodes": 1
+          },
+          "requiredEvidence": [],
+          "expiresAt": 1790957077397,
+          "revocationEventTypes": []
+        },
+        "trace": {
+          "reactorId": "authority-guard",
+          "reactorVersion": "1",
+          "branchPath": [
+            "authorized",
+            "verification.evaluate"
+          ],
+          "envInputs": [
+            "now:1790953477403",
+            "authorityEnvelope:auth_review_proof",
+            "evidence",
+            "revocations",
+            "resource:episodes"
+          ],
+          "cadenceEvaluations": []
+        }
+      },
+      "eventId": "evt_3"
+    }
+  ],
+  "launch": {
+    "kind": "evidence-worker",
+    "episodeId": "ep_verifier_1_attempt_1",
+    "model": "process-double",
+    "effort": "unknown"
+  },
+  "expected": {
+    "commandByteIdentical": true,
+    "promptByteIdentical": true,
+    "commandSha256": "cc8381e605faa8260568a51c1c807aad664588ae283e0678a2bebea4d89ba1bd",
+    "promptSha256": "eee133e6b23dc2a14a6f5a489f1d5d0bdab31b7c25eec0e1e36ea664d0d11ea3",
+    "fixture": "Retained WO-181 fixture stream without reviewNotice, captured before the item 13 edit",
+    "observedAt": "2026-10-02T15:56:03.018Z"
+  }
+}

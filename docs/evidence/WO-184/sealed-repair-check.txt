@@ -1,0 +1,19 @@
+WO-184 adjacent-0001 executed checks, observed 2026-10-02.
+The build completed successfully before these checks. Output below is the
+completion output retained from each running command, not a new test run.
+
+$ node --test --test-name-pattern='sealed kernel/driver' packages/skeleton/dist/test/review.test.js
+✔ [document] WO-184 criteria 12/13: a sealed kernel/driver stream re-verifies every criterion after a one-criterion repair (1288.975333ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1353.851375
+Exit code: 0
+
+$ node scripts/reactor-identity.mjs --check
+Verified 18 complete Decision/projection fixtures under recorded compiler identity 0.11.1, without state normalization.
+Exit code: 0

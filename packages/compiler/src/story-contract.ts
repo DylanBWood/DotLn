@@ -35,7 +35,9 @@ export const STORY_STATEMENT_CLASSES = Object.freeze([
 export type StoryStatementClass = (typeof STORY_STATEMENT_CLASSES)[number];
 
 /** Specific strike/image spans precede section/question backgrounds. The
- * question pattern declares only a discussion entry ending in '?'. An image
+ * question pattern declares only a discussion entry ending in '?'. Its follows
+ * fact uses the first later entry by another role as its source and the
+ * question as its target. An image
  * declared by the bundle is an annotation even without Markdown syntax.
  * [image:<id>] explicitly refers to that bundle image from a requirement.
  */
@@ -124,7 +126,8 @@ export interface StoryContract {
 }
 export interface StoryContractRevision {
   readonly contract: StoryContract;
-  /** IDs from the previous contract; replacement items have fresh IDs. */
+  /** IDs from the previous contract; an invalidated ID may reappear with a
+   * changed status or claim type. */
   readonly invalidated: {
     readonly statements: readonly string[];
     readonly criteria: readonly string[];
@@ -282,7 +285,10 @@ function ruleSpans(bundle: SourceBundle): RuleSpan[] {
         });
       }
     for (const image of bundle.images)
-      if (unitKey(image.referencedBy) === unitKey(unit.span))
+      if (
+        unitKey(image.referencedBy) === unitKey(unit.span) &&
+        resolveSourceSpan(bundle, image.referencedBy).trim()
+      )
         candidates.push({
           span: copySpan(bundle, image.referencedBy),
           class: "visual annotation",
@@ -337,8 +343,16 @@ export function compileStoryContract(
   inferences: readonly StoryInference[] = [],
 ): StoryContract {
   requireValue(Array.isArray(inferences), "inferences must be an array");
+  const relationKeys = new Set<string>();
   const supplied = inferences
     .map((item) => copyInference(bundle, item))
+    .filter((item) => {
+      if ("class" in item) return true;
+      const key = canonicalStringify(item);
+      if (relationKeys.has(key)) return false;
+      relationKeys.add(key);
+      return true;
+    })
     .sort((a, b) => {
       const left = canonicalStringify(a),
         right = canonicalStringify(b);
@@ -430,16 +444,18 @@ export function compileStoryContract(
     });
   };
   for (const [i, entry] of bundle.discussion.entries()) {
-    const next = bundle.discussion[i + 1];
     if (
-      next &&
-      next.author !== entry.author &&
-      rules.some(
+      !rules.some(
         (rule) =>
           rule.rule === "question" &&
           unitKey(rule.span) === unitKey(entry.span),
       )
     )
+      continue;
+    const next = bundle.discussion.find(
+      (candidate, index) => index > i && candidate.author !== entry.author,
+    );
+    if (next)
       addRelation({
         span: { ...next.span },
         target: { ...entry.span },
@@ -725,8 +741,9 @@ export type SurfaceDerivation = SurfaceDerivationBody &
 
 /** These are declared syntax, not a general language/path parser. Quote root
  * filenames with backticks. Bare paths contain a slash; final prose punctuation
- * is removed. Nouns match literal text, case-insensitively, at Unicode word
- * boundaries. Directory references expand only to files held by the index.
+ * is removed. Nouns match literal text, case-insensitively; Unicode letters,
+ * numbers, underscores and hyphens are boundary characters that prevent a
+ * match inside a larger token. Directory references expand only to indexed files.
  */
 export const SURFACE_RULE_PATTERNS = Object.freeze({
   quotedPath: Object.freeze({
@@ -739,7 +756,7 @@ export const SURFACE_RULE_PATTERNS = Object.freeze({
   }),
   noun: Object.freeze({
     match: "case-insensitive-literal",
-    boundary: String.raw`[\p{L}\p{N}_]`,
+    boundary: String.raw`[\p{L}\p{N}_-]`,
     flags: "iu",
   }),
 });
@@ -890,7 +907,7 @@ const surfaceCanonicalOrder = <T>(values: readonly T[]): T[] =>
     .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
     .map(([, value]) => value);
 
-/** Pure proposal, not an authority grant. Confidence is requirement coverage,
+/** Pure proposal, not an authority grant. Confidence is rule coverage,
  * not a probability that a model's scope is correct. Missing explicit paths stay
  * candidates even when another rule covers that same requirement. A caller's
  * lower threshold deliberately admits uncovered requirements, never those paths.
@@ -934,7 +951,7 @@ export function deriveSurfaces(
       });
       return;
     }
-    covered.add(provenance.statementId);
+    if (provenance.origin === "rule") covered.add(provenance.statementId);
     for (const file of matches)
       origins.set(file.path, [...(origins.get(file.path) ?? []), provenance]);
   };
@@ -1053,7 +1070,19 @@ export function deriveSurfaces(
     .filter((statement) => !covered.has(statement.statementId))
     .map((statement) => statement.statementId)
     .sort();
-  for (const statementId of uncoveredStatementIds)
+  for (const statementId of uncoveredStatementIds) {
+    for (const surface of surfaces)
+      for (const provenance of surface.origins)
+        if (
+          provenance.statementId === statementId &&
+          provenance.origin === "inferred"
+        )
+          candidates.push({
+            path: surface.path,
+            statementId,
+            reason: "unmapped-requirement",
+            provenance,
+          });
     if (!candidates.some((candidate) => candidate.statementId === statementId))
       candidates.push({
         path: null,
@@ -1061,6 +1090,7 @@ export function deriveSurfaces(
         reason: "unmapped-requirement",
         provenance: null,
       });
+  }
   const confidence = requirements.length
     ? covered.size / requirements.length
     : 0;
@@ -1081,13 +1111,19 @@ export function deriveSurfaces(
             kind: "NeedsHuman",
             reason: "no active requirement statements",
           }
-        : confidence < threshold
+        : !surfaces.length
           ? {
               ...body,
               kind: "NeedsHuman",
-              reason:
-                "requirement coverage below declared confidence threshold",
+              reason: "no derived surfaces",
             }
-          : { ...body, kind: "DerivedSurfaces" },
+          : confidence < threshold
+            ? {
+                ...body,
+                kind: "NeedsHuman",
+                reason:
+                  "requirement coverage below declared confidence threshold",
+              }
+            : { ...body, kind: "DerivedSurfaces" },
   );
 }

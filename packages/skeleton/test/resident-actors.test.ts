@@ -1,6 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
+import {
+  readFileSync,
+  readdirSync,
+  mkdirSync,
+  writeFileSync,
+  watch,
+} from "node:fs";
+import { fork, execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { setTimeout as delay } from "node:timers/promises";
 import { join } from "node:path";
 import { decodeLog } from "@dotln/kernel";
@@ -24,6 +32,103 @@ const state = (h: ResidentHost) =>
   replayResident(h.store.read()).state.resident as unknown as ResidentState;
 const events = (h: ResidentHost, type: string) =>
   decodeLog(h.store.read()).filter((e) => e.type === type);
+
+test("WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals", async () => {
+  for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"] as const) {
+    const f = actorFixture("inspection");
+    let group: number | undefined;
+    let supervisor: ReturnType<typeof fork> | undefined;
+    try {
+      const bin = join(f.root, "bin"),
+        ready = join(f.root, "group.json");
+      mkdirSync(bin);
+      writeFileSync(
+        join(bin, "codex"),
+        `#!${process.execPath}
+const {spawn}=require('node:child_process'); const {writeFileSync}=require('node:fs');
+if(process.argv.includes('--version')) { console.log('0.154.0'); process.exit(0); }
+const child=spawn(process.execPath,['-e','setInterval(()=>{},1000)'],{stdio:'ignore'});
+child.once('spawn',()=>writeFileSync(process.env.DOTLN_DOUBLE_READY,JSON.stringify({group:process.pid,child:child.pid})));
+process.stdin.resume(); setInterval(()=>{},1000);
+`,
+        { mode: 0o700 },
+      );
+      const started = new Promise<{ group: number; child: number }>(
+        (resolve, reject) => {
+          const timer = setTimeout(() => {
+            watcher.close();
+            reject(new Error("episode group never started"));
+          }, 5000);
+          const watcher = watch(f.root, () => {
+            try {
+              const value = JSON.parse(readFileSync(ready, "utf8"));
+              clearTimeout(timer);
+              watcher.close();
+              resolve(value);
+            } catch {}
+          });
+        },
+      );
+      supervisor = fork(
+        fileURLToPath(new URL("../src/cli-episode.js", import.meta.url)),
+        [],
+        {
+          execArgv: [],
+          stdio: ["ignore", "ignore", "ignore", "ipc"],
+          env: {
+            ...process.env,
+            PATH: `${bin}:${process.env.PATH}`,
+            TMPDIR: f.root,
+            DOTLN_DOUBLE_READY: ready,
+          },
+        },
+      );
+      const closed = new Promise<void>((resolve) =>
+        supervisor!.once("close", () => resolve()),
+      );
+      supervisor.send({
+        spec: f.configuration.actors.probe!.worker,
+        context: { residentStore: f.directory, episodeId: `wo184_${signal}` },
+      });
+      const observed = await started;
+      group = observed.group;
+      assert.equal(
+        Number(
+          execFileSync("ps", ["-o", "pgid=", "-p", String(observed.child)], {
+            encoding: "utf8",
+          }).trim(),
+        ),
+        group,
+      );
+      supervisor.kill(signal);
+      await closed;
+      let alive = "";
+      for (let attempt = 0; attempt < 50; attempt++) {
+        alive = execFileSync("ps", ["-axo", "pgid=,state="], {
+          encoding: "utf8",
+        })
+          .split("\n")
+          .filter(
+            (line) =>
+              Number(line.trim().split(/\s+/u)[0]) === group &&
+              !line.includes("Z"),
+          )
+          .join("\n");
+        if (!alive) break;
+        await delay(20);
+      }
+      assert.equal(alive, "", `${signal} left an episode group member alive`);
+    } finally {
+      supervisor?.kill("SIGKILL");
+      if (group) {
+        try {
+          process.kill(-group, "SIGKILL");
+        } catch {}
+      }
+      f.dispose();
+    }
+  }
+});
 
 for (const kind of ["writer", "inspection"] as const)
   test(`WO-122 ${kind} dispatches through the resident with stamp and envelope; a claim never advances the phase`, async (t) => {

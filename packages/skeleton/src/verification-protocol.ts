@@ -1006,7 +1006,14 @@ export function evidenceResultSchema(request: EvidenceWorkerRequest): object {
                   (criterion) => criterion.criterionId,
                 ),
               ),
-              claimType: { ...schemaText, enum: [...CLAIM_TYPES] },
+              claimType: {
+                ...schemaText,
+                enum: CLAIM_TYPES.filter((type) =>
+                  request.capsule.criteria.some(
+                    (criterion) => criterion.claimType === type,
+                  ),
+                ),
+              },
               verdict: {
                 ...schemaText,
                 enum: contract.criterionIds.length
@@ -1041,6 +1048,23 @@ export function evidenceResultSchema(request: EvidenceWorkerRequest): object {
           },
         },
   );
+}
+
+function verificationReviewNotice(
+  request: EvidenceWorkerRequest,
+): true | undefined {
+  const notice = (
+    request.command.intent.payload as unknown as { reviewNotice?: unknown }
+  ).reviewNotice;
+  if (notice === undefined) return undefined;
+  if (
+    notice !== true ||
+    request.review ||
+    request.baseline?.kind === "baseline" ||
+    request.capsule.role !== "verifier"
+  )
+    throw new Error("invalid behavior verification review notice");
+  return true;
 }
 
 export function validateTransportRequest(request: TransportRequest): void {
@@ -1085,6 +1109,7 @@ export function validateTransportRequest(request: TransportRequest): void {
           capsule: request.capsule,
           ...(request.review ? { review: request.review } : {}),
           ...(request.baseline ? { baseline: request.baseline } : {}),
+          ...(verificationReviewNotice(request) ? { reviewNotice: true } : {}),
         }) ||
       !/^[a-zA-Z0-9][a-zA-Z0-9._:-]*$/u.test(request.model) ||
       request.model.length > 100 ||
@@ -1168,7 +1193,7 @@ export function transportPrompt(request: TransportRequest): string {
               request.capsule.subject.snapshot
                 ? " Each reproduction step must be that witness's reproduction step copied verbatim or one of the contract's exact named commands; the host runs them and interprets no prose."
                 : ""
-            }${request.baseline?.kind === "comparison" ? ` Copy these host comparison findings exactly into baselineFindings: ${JSON.stringify(compareBaseline(request.baseline, request.capsule))}. A criterion named by a baseline finding cannot pass; use unverified when its candidate tests pass, and explain the missing baseline reproduction in your summary.` : ""} Put your own diagnosis in envelope.summary. Keep envelope.summary to at most 320 characters. Return only the schema object; completion means this evaluation finished, never implementation success.`
+            }${request.baseline?.kind === "comparison" ? ` Copy these host comparison findings exactly into baselineFindings: ${JSON.stringify(compareBaseline(request.baseline, request.capsule))}. A criterion named by a baseline finding cannot pass; use unverified when its candidate tests pass, and explain the missing baseline reproduction in your summary.` : ""}${verificationReviewNotice(request) ? " An independent review follows this behavior verification. Scope and convention defects belong to that review: pass a behavior you have verified and leave those two defect kinds to the reviewer. Still request human attention for anything else you judge unsafe to pass." : ""} Put your own diagnosis in envelope.summary. Keep envelope.summary to at most 320 characters. Return only the schema object; completion means this evaluation finished, never implementation success.`
           : "Propose replacement contents only for the blocking finding's likely surfaces in the pinned repository snapshot. Keep the repair focused. No file writes or other tools are granted; the host applies a validated proposal in its synthetic fixture and dispatches a fresh blinded verifier. Keep envelope.summary to at most 320 characters. Return only the schema object. You cannot certify acceptance.",
   });
 }

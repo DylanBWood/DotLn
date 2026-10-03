@@ -1,0 +1,161 @@
+{
+  "workOrder": "WO-184",
+  "observation": "Latest dispositions at executor source freeze on 2026-10-02; retarget at close as criterion 21 requires. This file does not close a row.",
+  "rows": [
+    {
+      "id": "FUP-f12a1f894923b2b2",
+      "source": "docs/planning/work-order-map.md#candidates--returns-from-the-cleanup-pass-recorded-2026-09-19",
+      "targets": [
+        "WO-184"
+      ],
+      "status": "allocated"
+    },
+    {
+      "id": "FUP-a07f6c1c479e80db",
+      "source": "docs/planning/work-order-map.md#candidates--returns-from-the-cleanup-pass-recorded-2026-09-19",
+      "targets": [
+        "WO-184"
+      ],
+      "status": "allocated"
+    },
+    {
+      "id": "FUP-56b599e15f97e666",
+      "source": "docs/evidence/WO-099/decisions.md#wo-099-d027",
+      "targets": [
+        "WO-184"
+      ],
+      "status": "allocated"
+    },
+    {
+      "id": "FUP-4656197433cb8b3d",
+      "source": "docs/evidence/WO-114/decisions.md#wo-114-d013--ver-002-pass-two-minor-index-source-hardening-defects-boarded-up",
+      "targets": [
+        "WO-184"
+      ],
+      "status": "allocated"
+    },
+    {
+      "id": "FUP-35bc8736fb13c49a",
+      "source": "docs/evidence/WO-159/decisions.md#wo-159-d010",
+      "targets": [
+        "WO-184"
+      ],
+      "status": "allocated"
+    },
+    {
+      "id": "FUP-7a8e67d555cccc01",
+      "source": "docs/evidence/WO-065/decisions.md#wo-065-d014",
+      "targets": [
+        "WO-184"
+      ],
+      "status": "allocated"
+    },
+    {
+      "id": "FUP-f60f7a8727ee2a82",
+      "source": "docs/evidence/WO-066/decisions.md#wo-066-d011",
+      "targets": [
+        "WO-184"
+      ],
+      "status": "allocated"
+    },
+    {
+      "id": "FUP-5474f89208c6bb9f",
+      "source": "docs/evidence/WO-066/decisions.md#wo-066-d012",
+      "targets": [
+        "WO-184"
+      ],
+      "status": "allocated"
+    },
+    {
+      "id": "FUP-24aca90d1fcbc821",
+      "source": "docs/evidence/WO-066/decisions.md#wo-066-d014",
+      "targets": [
+        "WO-184"
+      ],
+      "status": "allocated"
+    },
+    {
+      "id": "FUP-757da8687d847eab",
+      "source": "docs/evidence/WO-058/decisions.md#wo-058-d010",
+      "targets": [
+        "WO-184"
+      ],
+      "status": "allocated"
+    },
+    {
+      "id": "FUP-84e5edb1566a4db1",
+      "source": "docs/evidence/WO-175/decisions.md#wo-175-d012",
+      "targets": [
+        "WO-184"
+      ],
+      "status": "allocated"
+    },
+    {
+      "id": "FUP-e245dc67344b4261",
+      "source": "docs/evidence/WO-175/decisions.md#wo-175-d013",
+      "targets": [
+        "WO-184"
+      ],
+      "status": "allocated"
+    },
+    {
+      "id": "FUP-f3bcdb51a2eb82c2",
+      "source": "docs/evidence/WO-175/decisions.md#wo-175-d016",
+      "targets": [
+        "WO-184"
+      ],
+      "status": "allocated"
+    },
+    {
+      "id": "FUP-57ecd19a26362b1c",
+      "source": "docs/evidence/WO-181/decisions.md#wo-181-d012--verification-board-unrecorded-receipt-036-duties",
+      "targets": [
+        "WO-184",
+        "WO-123"
+      ],
+      "status": "allocated"
+    },
+    {
+      "id": "FUP-06e91517600ce7a7",
+      "source": "docs/evidence/WO-181/decisions.md#wo-181-d014--final-review-pass-and-three-seams-the-composition-inherits",
+      "targets": [
+        "WO-184",
+        "WO-123"
+      ],
+      "status": "allocated"
+    },
+    {
+      "id": "FUP-68937a5651fb775a",
+      "source": "docs/evidence/WO-182/decisions.md#wo-182-d006--final-review-pass-and-two-seams-the-required-runs-inherit",
+      "targets": [
+        "WO-184",
+        "WO-123"
+      ],
+      "status": "allocated"
+    },
+    {
+      "id": "FUP-aa6dbe9c5ad79995",
+      "source": "docs/evidence/WO-061/decisions.md#wo-061-d010--verification-a-same-role-entry-between-a-question-and-its-reply-leaves-no-follows-fact",
+      "targets": [
+        "WO-184"
+      ],
+      "status": "allocated"
+    },
+    {
+      "id": "FUP-2534f4dc631f5ebc",
+      "source": "docs/evidence/WO-061/decisions.md#wo-061-d011--final-review-pass-and-four-compile-seams-outside-the-declared-fixtures",
+      "targets": [
+        "WO-184"
+      ],
+      "status": "allocated"
+    },
+    {
+      "id": "FUP-ae5eaf150be2b1da",
+      "source": "docs/evidence/WO-124/decisions.md#wo-124-d014--final-review-passes-and-boards-three-derivation-seams-outside-the-fixtures",
+      "targets": [
+        "WO-184"
+      ],
+      "status": "allocated"
+    }
+  ]
+}

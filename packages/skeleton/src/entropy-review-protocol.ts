@@ -415,7 +415,7 @@ const temporaryInstruction = (
   request: EntropyReviewRequest | EntropyRefutationRequest,
 ): string =>
   request.temporaryDirectory
-    ? ` The episode temporary directory is ${request.temporaryDirectory}, supplied as TMPDIR; it is the only other writable root. Keep all temporary files there; writes stay inside these two roots.`
+    ? `The episode temporary directory is ${request.temporaryDirectory}, supplied as TMPDIR; it is the only other writable root. Keep all temporary files there; writes stay inside these two roots. `
     : "";
 
 export const entropyReviewPrompt = (request: EntropyReviewRequest): string => {

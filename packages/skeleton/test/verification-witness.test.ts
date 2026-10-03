@@ -386,14 +386,16 @@ test("WO-058 console info/warnings are not errors; unrelated checks retain the e
   admitted(unrelated, resultFor(unrelated), "verified");
 });
 
-test("WO-058 the closed result schema exposes all four claim types", () => {
-  const schema = evidenceResultSchema(requestFor(start())) as {
+test("WO-184 criterion 14: the closed result schema exposes only the capsule's claim types", () => {
+  const schema = evidenceResultSchema(
+    requestFor(start(fixture.subject, fixture.criteria)),
+  ) as {
     properties: {
       evaluations: { items: { properties: { claimType: { enum: string[] } } } };
     };
   };
   assert.deepEqual(
     schema.properties.evaluations.items.properties.claimType.enum,
-    ["state", "behavior", "visual", "network"],
+    ["visual", "network"],
   );
 });

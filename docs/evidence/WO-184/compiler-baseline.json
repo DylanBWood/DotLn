@@ -1,0 +1,142 @@
+{
+  "feature-request": {
+    "admitted": true,
+    "sha256": "51d24ff0c0775e920e9528f0c70760592cf2071c4f6d7c4ecd905bb951904d88"
+  },
+  "bug-report-with-screenshot": {
+    "admitted": true,
+    "sha256": "88abfe88dcf7bc7f75775c521df4e4486721db9398d8272c1ed749b4d5f17882"
+  },
+  "multibyte-text": {
+    "admitted": true,
+    "sha256": "28f35b35499ccc0525a21f27745a9073804644bf8803ce9f12f0f5ee5b615e09"
+  },
+  "one-section": {
+    "admitted": true,
+    "sha256": "856d5898e7e60a44c6cc595b3336125d063d6d9cf5f22d5dc7cfbb564b0bcfc3"
+  },
+  "one-entry": {
+    "admitted": true,
+    "sha256": "a39181e4448da576d09812248d3b9a01f62181b9cc6da4da3abdaf60bc98975c"
+  },
+  "revised-with-supersession": {
+    "admitted": true,
+    "sha256": "5dd353edd0d425a20c401762bbb442d75d878cf2b21d45bf192ffdd0fa2c480b"
+  },
+  "not-an-object": {
+    "admitted": false,
+    "sha256": "5133d4f6298f5cf63890c6ac97ee4b5983975c9dc0e8909044feddf3bd279b1d"
+  },
+  "tracker-specific-field": {
+    "admitted": false,
+    "sha256": "a3db6a8f4b870ac4194a63766420834a6b27d6a062d52d6a7d6d1963c6d45fa8"
+  },
+  "author-is-an-identity": {
+    "admitted": false,
+    "sha256": "35efdcb131ab591e67fbcf73ba202ca2c4e374c02ab84a65f2e3796822968ec6"
+  },
+  "image-carries-bytes": {
+    "admitted": false,
+    "sha256": "a91efc9b232aa3d434857091eb6d522447f5b4d05c27db86b4f3f91d4c009ac2"
+  },
+  "span-beyond-text": {
+    "admitted": false,
+    "sha256": "ca3ad9445943eaeeae0ae67bc0a77db3707c3930d1f0cb278692c81798bb9631"
+  },
+  "span-inside-a-character": {
+    "admitted": false,
+    "sha256": "84534e91697353523b2f9a44c1fe441c814e57de377200f4f78b096bd42ad375"
+  },
+  "duplicate-id-across-kinds": {
+    "admitted": false,
+    "sha256": "4d188c5eaad967dc7b33518888c60aa7c4d6162c7879367c3d70191d21b79067"
+  },
+  "section-span-not-whole": {
+    "admitted": false,
+    "sha256": "24372aeb3bba139b3920ff049fa984a36dd5a9ddb0b63834f7d89d9b9f7f961d"
+  },
+  "private-key-block:screened": {
+    "admitted": false,
+    "sha256": "513a5ac80694a7f0d12b34b6697f4e46a57e90fe4995b4dc9c040d9f08c9c446"
+  },
+  "private-key-block:clean": {
+    "admitted": true,
+    "sha256": "51228d4fe1d7235bd386c9029908ec623a272b88c8d3243b13ae6aaf67ecb1c5"
+  },
+  "bearer-credential:screened": {
+    "admitted": false,
+    "sha256": "a437b57d23cba081247d658f74860bcab84e0029a390e0cc080ce17a6f5646c3"
+  },
+  "bearer-credential:clean": {
+    "admitted": true,
+    "sha256": "e532089c301a226fa84fb884541aedd309ece01196df0ff63f0e02e6135f2667"
+  },
+  "github-personal-access-token:screened": {
+    "admitted": false,
+    "sha256": "e246fea66835bddd15fdc41be70236f89f68b10dac3030e640bcacaa8c5d71f8"
+  },
+  "github-personal-access-token:clean": {
+    "admitted": true,
+    "sha256": "024da8f72f41c84c1676b130f152bdf2fbce3150f8d6588b7522f2bc93fcceec"
+  },
+  "github-fine-grained-personal-access-token:screened": {
+    "admitted": false,
+    "sha256": "07cc2c15db012e80e950efb7c28d53de0e0a59f694ee66d62a526f45bc9d1d1a"
+  },
+  "github-fine-grained-personal-access-token:clean": {
+    "admitted": true,
+    "sha256": "3670b74cc70d884e9eede69d175c8d2c10f0238ec313c195b0ae627405db91e4"
+  },
+  "github-oauth-access-token:screened": {
+    "admitted": false,
+    "sha256": "b6a2a950d2c7de41f733ac0359e2af8f0b220410f267cbc5cbad62f1f5feeb29"
+  },
+  "github-oauth-access-token:clean": {
+    "admitted": true,
+    "sha256": "1edb6e0439b2535e44f7fab7755367f4d8c0e0561df19c86ef29b985f7eef10d"
+  },
+  "github-user-to-server-token:screened": {
+    "admitted": false,
+    "sha256": "4df163e249a79e6bc4d357953c69e801a181d1def7cdb406b638def469d426f2"
+  },
+  "github-user-to-server-token:clean": {
+    "admitted": true,
+    "sha256": "13ae747de5d8f0cb9cebeb02cfef4a632a6e18ab973644a6c52b89d1a0d41fef"
+  },
+  "github-server-to-server-token:screened": {
+    "admitted": false,
+    "sha256": "e54bf6fa0b69ccea5531891425f27ca026c0610bdb7e20d4ea80f8470b9389e0"
+  },
+  "github-server-to-server-token:clean": {
+    "admitted": true,
+    "sha256": "9f8c8a0e023b1613bd4b1d22236952c46a0ff00fced0a3d20cf214cd4bf68153"
+  },
+  "github-refresh-token:screened": {
+    "admitted": false,
+    "sha256": "e08bb2010e8f1037f25f801eec24111c816d66e0c38bd792786de3c2d3740948"
+  },
+  "github-refresh-token:clean": {
+    "admitted": true,
+    "sha256": "fc20ac73b68fdf792257e8b5dd7e89ee760a254357ec6bbabdcd3776f11f5d4f"
+  },
+  "scheme-authority:screened": {
+    "admitted": false,
+    "sha256": "089dec9bd31631109915f71161b09ed42e40daac48bba34f0596469da79703c2"
+  },
+  "scheme-authority:clean": {
+    "admitted": true,
+    "sha256": "08e852f84e02e1ae75738dbc7e55d5a88de3ca0193ef9d0e249bd28e31396605"
+  },
+  "www-autolink:screened": {
+    "admitted": false,
+    "sha256": "dbc2f1730ab7d793af5555628d7acf02c3d50804abcb7b25b72f9c8d5529860f"
+  },
+  "www-autolink:clean": {
+    "admitted": true,
+    "sha256": "8de2697c7bdc0a5b1495a85c5c97aa9692a4c3076ac4614df9d1cefe8a1f3f6d"
+  },
+  "limits": {
+    "admitted": true,
+    "sha256": "7d7a0cc695118c01a413cb914badfecabae56c52ef65e7309bc6d88400f30798"
+  }
+}

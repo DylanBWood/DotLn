@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 2,
+  "kind": "feedback-evidence-edition",
+  "references": {
+    "objectFormat": "sha1",
+    "semantics": "git hash-object over the UTF-8 bytes read; rebuilt from a hash-matching working-tree file or any Git object with that identity"
+  },
+  "subject": "sha256:a07909035790cbf1715adee3e389a80b8576ff9ec935d7d64c52da93dd630c29",
+  "behavior": {
+    "identity": "sha256:7c2d805dd8c74b9fc95af37760c37fd76fb170e45f4b842f068bd1204f653db7",
+    "method": "feedback-behavior-v1: every file the live verifier judged, report excluded, with component release labels normalized (evidenceSourceContent); the regenerated report is compared by value apart from subject and policyHash",
+    "files": 53
+  },
+  "pins": {
+    "identity": "sha256:1946a4b03ef9287deab7a5814569ea7b668df932a3246d1bad3f93b068992743",
+    "components": {
+      "@dotln/beacons": "0.1.0",
+      "@dotln/compiler": "0.25.0",
+      "@dotln/console": "0.4.0",
+      "@dotln/kernel": "0.6.0",
+      "@dotln/skeleton": "0.52.0"
+    }
+  },
+  "liveAudit": {
+    "edition": "docs/evidence/WO-184/feedback-001",
+    "carried": false,
+    "pins": "sha256:1946a4b03ef9287deab7a5814569ea7b668df932a3246d1bad3f93b068992743",
+    "report": {
+      "path": "docs/evidence/WO-184/feedback-001/feedback.json",
+      "blobHash": "73cb1e91c0c47b38feecc28e1fe16edb172601fa",
+      "bytes": 17555
+    },
+    "audit": {
+      "path": "docs/evidence/WO-184/feedback-001/selfhost-audit.jsonl",
+      "blobHash": "60563a3f6fd1eb6a2c23c9e4206cf30089844dfd",
+      "bytes": 36438
+    },
+    "verification": {
+      "path": "docs/evidence/WO-184/feedback-001/selfhost-verification.jsonl",
+      "blobHash": "87f02644b288ace5b1d9359a481d2506ddc88a58",
+      "bytes": 83777
+    }
+  }
+}

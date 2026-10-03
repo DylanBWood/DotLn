@@ -1,0 +1,20 @@
+{"label":"script-seams","command":["node","--test","--test-name-pattern=WO-184","scripts/test-target-publish.mjs","scripts/test-github-body.mjs"],"startedAt":"2026-10-02T15:57:28.645Z","completedAt":"2026-10-02T15:58:09.600Z","wallSeconds":40.954409166000005,"exitCode":0,"environment":"suiteEnvironment: canonical offline fixture environment; session metadata excluded"}
+
+✔ WO-184 criterion 8: build/lint not-applicable requires a reason and supplies no evidence (1.671833ms)
+✔ WO-184 criterion 7: response-derived argument tokens refuse before reuse without echo (639.277333ms)
+✔ WO-184 criterion 7: screen overflow refuses only the item, preserving its safe peer (412.090833ms)
+✔ WO-184 criterion 8: required publication rechecks a recorded head without remote calls (3365.054333ms)
+✔ WO-184 criterion 8: lint not-applicable carries its reason, while tests always require evidence (3150.103959ms)
+✔ WO-184 criterion 9: pending and cancelled mapped checks stop needs-human with their item (11849.426667ms)
+✔ WO-184 criterion 9: interruption after the observer append resumes from the last effect receipt (6520.347708ms)
+✔ WO-184 criterion 9: missing lines and unmatched required checks end human, allowing later items (9430.875209ms)
+✔ WO-184 criterion 9: pushRepairedHead refuses a failing exact-head matrix before any push (5469.994417ms)
+✔ WO-184 criterion 7: every observer caller gets a fixed reason for unexpected errors (0.399084ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 40921.084667

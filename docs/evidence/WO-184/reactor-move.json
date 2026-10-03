@@ -1,0 +1,26 @@
+{
+  "method": "Current leaf bodies checked against the original extraction hashes. Review-notice, metadata-preservation and review-staleness extensions sit outside the three bodies. The CommandResult switch case is a wrapper and is excluded; no body bytes are normalized.",
+  "procedure": "node docs/evidence/WO-184/check-reactor-move.mjs --check",
+  "regions": {
+    "VerificationOpened": {
+      "characters": 3178,
+      "sha256": "4a39bcebe2bbb71bc57bb07b7ad2a5828c47034f57d691d839b8dd7c1838ae56",
+      "byteIdenticalInLeaf": true
+    },
+    "CommandResult-evaluation": {
+      "characters": 3238,
+      "sha256": "8db6185ec1c0fd01d558bada4fbded27a86c398ffa1cc1fe2a46b05c22ed031b",
+      "byteIdenticalInLeaf": true
+    },
+    "VerificationSubjectSubmitted": {
+      "characters": 2153,
+      "sha256": "8e85abee38492a13e4f81f32c2cc827350f89944aa4350c8d0eda82073187f93",
+      "byteIdenticalInLeaf": true
+    }
+  },
+  "reactor": {
+    "beforeCharacters": 99655,
+    "afterCharacters": 90998
+  },
+  "source": "Pre-move body hashes independently confirmed by VER-001 F1; current source files read by this committed check"
+}

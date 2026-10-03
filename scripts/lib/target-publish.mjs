@@ -821,6 +821,13 @@ function readDeliveryPreparation(storePath) {
   const lines = (entries) =>
     Array.isArray(entries) &&
     entries.every((entry) => typeof entry === "string" && entry.trim());
+  const notApplicable = (key, entry) =>
+    ["build", "lint"].includes(key) &&
+    object(entry) &&
+    Object.keys(entry).sort().join(",") === "reason,status" &&
+    entry.status === "not-applicable" &&
+    typeof entry.reason === "string" &&
+    entry.reason.trim();
   const keys = [
     "schemaVersion",
     "workOrderId",
@@ -847,7 +854,8 @@ function readDeliveryPreparation(storePath) {
       (!object(value.checks) ||
         Object.entries(value.checks).some(
           ([key, entries]) =>
-            !["tests", "build", "lint"].includes(key) || !lines(entries),
+            !["tests", "build", "lint"].includes(key) ||
+            (!lines(entries) && !notApplicable(key, entries)),
         ))) ||
     (value.monitoring !== undefined &&
       (!object(value.monitoring) ||
@@ -1060,16 +1068,15 @@ export function publishTargetOrder({
   const { branch, repo, baseCommit } = episode.request;
   const { commit } = episode.observation;
   const publication = new WorkerStore(join(request.store, "publication"));
-  const already = () => {
-    const opened = readPublication(publication, commit);
-    if (opened)
-      log(
-        `Already published ${branch} at ${commit}: pull request #${opened.payload.number} on ${opened.payload.repositoryId}; nothing pushed.`,
-      );
-    return opened?.payload;
+  const already = () => readPublication(publication, commit)?.payload;
+  const reportAlready = (opened) => {
+    log(
+      `Already published ${branch} at ${commit}: pull request #${opened.number} on ${opened.repositoryId}; nothing pushed.`,
+    );
+    return opened;
   };
   const previous = already();
-  if (previous) return previous;
+  if (previous && !requireDeliverableReady) return reportAlready(previous);
   authorizePublication(program, episode, now);
   const boundUrl = pushUrl(repo, { selector: request.repositoryId });
   const target = observeTarget(episode);
@@ -1100,6 +1107,7 @@ export function publishTargetOrder({
     throw refuse(
       `deliverable-ready evidence absent: ${absent.map((row) => row.item).join("; ")}`,
     );
+  if (previous) return reportAlready(previous);
   const { title, body } = generateTargetPullRequest({
     ...bodyInputs,
     matrix: readiness.matrix,
@@ -1118,7 +1126,7 @@ export function publishTargetOrder({
   publication.acquire();
   try {
     const raced = already();
-    if (raced) return raced;
+    if (raced) return reportAlready(raced);
     const repository = ensureGh(repo);
     if (
       repository.selector.toLowerCase() !== request.repositoryId.toLowerCase()

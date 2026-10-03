@@ -210,9 +210,8 @@ private store metadata. Missing launchpads, malformed regular-file configuration
 and missing, unreadable, nonregular or malformed index files leave the resident running with orders unavailable
 and an allowlisted `workOrders.reason`; no local path enters that reason.
 Helpers retain the same failure binding, and a valid restart can replace it.
-Index and binding reads use nonblocking descriptors and require regular files,
-so a FIFO at either path cannot block startup. Configuration reads are not
-covered: a FIFO at `dotln.config.json` can still block startup. Lifetime acquire
+Configuration, index and binding reads use nonblocking descriptors and require regular files,
+so a FIFO at any of those paths cannot block startup. Lifetime acquire
 removes stale `.runtime-status-*.tmp` files. All helper and harness writers use that binding. Library
 hosts supply `workOrderIndexPath` on first start; without a binding, orders are
 unavailable. Elapsed time uses the resident's recorded clock, so rebuilding from

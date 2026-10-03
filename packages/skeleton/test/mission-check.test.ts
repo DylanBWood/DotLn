@@ -373,6 +373,10 @@ test("WO-099 an unavailable verifier holds, and only a passing judgment over cha
   const held = state(host).dispatchHeld;
   assert.ok(held);
   assert.equal(held!.verdict, "unknown");
+  assert.equal(
+    held!.reason,
+    `mission check ${held!.episodeId} returned no judgment (model-unavailable)`,
+  );
   assert.equal(events(host, "MissionDriftObserved").length, 0);
 
   // Re-judging the same bytes cannot retire the hold, however the judgment reads.
@@ -1566,11 +1570,57 @@ test("WO-099 VER-003 F2: the resident holds a claimed pass over a history it cou
   const held = state(host).dispatchHeld;
   assert.ok(held, "an in-surface diff over an uncarried history still holds");
   assert.equal(held!.verdict, "unknown");
+  assert.match(
+    held!.reason,
+    /incomplete capsule.*omitted decisions:.*exceeds 200000 bytes/u,
+  );
   assert.equal(state(host).missionChecks[held!.episodeId]!.verdict, "unknown");
   assert.equal(events(host, "MissionDriftObserved").length, 0);
   t.diagnostic(
     "claimed pass over an uncarried history recorded as unknown and held, with no correction",
   );
+});
+
+test("WO-184 R10: an answered unknown over a complete capsule is not an absent judgment", async (t) => {
+  const fixture = missionFixture({ missionOnly: true });
+  mkdirSync(fixture.directory, { recursive: true });
+  assert.deepEqual(fixture.subject.observation.diff.omittedPaths, []);
+  assert.equal(fixture.subject.observation.omittedDecisions, null);
+  let at = 0;
+  const host = new ResidentHost({
+    directory: fixture.directory,
+    policyId: fixture.configuration.policyId,
+    configuration: fixture.configuration,
+    now: () => at,
+    capabilities: () => ["adapter.fixture"],
+    catalog: {
+      ...actorCatalog,
+      "cli-worker": cliWorkerAdapter({
+        version: "0.154.0",
+        runner: missionRunner(() => ({
+          schemaVersion: "mission-check-v1",
+          verdict: "unknown",
+          findings: [],
+        })),
+      }),
+    },
+  });
+  await host.start();
+  t.after(() => {
+    host.close();
+    fixture.dispose();
+  });
+  await recordPresence(fixture.directory, "away", () => at);
+  at = 10;
+  await host.tick();
+  const held = state(host).dispatchHeld;
+  assert.ok(held);
+  assert.equal(held.verdict, "unknown");
+  assert.equal(
+    held.reason,
+    `mission check ${held.episodeId} returned an unknown judgment`,
+  );
+  assert.equal(events(host, "MissionDriftObserved").length, 0);
 });
 
 test("WO-152 the emitted schema carries no duplicate enum item, and a mid-episode clause change still names the old and the new id", (t) => {

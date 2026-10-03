@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "label": "claude-notice-001",
+  "repository": "WO-056 synthetic signed addition",
+  "actor": {
+    "harness": "claude",
+    "harnessVersion": "2.1.287",
+    "model": "claude-opus-5-5",
+    "effort": "xhigh",
+    "source": "host-launch",
+    "effectiveModel": "unknown",
+    "effectiveEffort": "unknown"
+  },
+  "verifierActor": {
+    "harness": "claude",
+    "harnessVersion": "unknown",
+    "model": "claude-opus-5-5",
+    "effort": "xhigh",
+    "source": "host-launch",
+    "effectiveModel": "unknown",
+    "effectiveEffort": "unknown"
+  },
+  "lastResultObserved": null,
+  "status": "failed",
+  "pendingRow": "review-claude",
+  "failure": {
+    "code": "proof-incomplete",
+    "detail": null
+  },
+  "sessions": null,
+  "reviewCompleted": null,
+  "behaviorRows": null,
+  "baselineRows": null,
+  "candidateRows": null,
+  "snapshotUnchanged": null,
+  "confinement": [],
+  "usage": [],
+  "runtimeIdentity": {
+    "sources": [
+      {
+        "path": "packages/compiler/src/verification.ts",
+        "sha256": "0a1935283973203e6bdd10411a1e975b8f99a300d7bef9ceed36016c4e7a9bcd"
+      },
+      {
+        "path": "packages/skeleton/src/reactor.ts",
+        "sha256": "c71c071288d482b8ac708241b50d0c052ab28e49dde68347f4e2f2a810778c6d"
+      },
+      {
+        "path": "packages/skeleton/src/verification-fold.ts",
+        "sha256": "13e76de63b224245f0e10113926238f050459681182b873b3ae8e3e8ce69de98"
+      },
+      {
+        "path": "packages/skeleton/src/verification-protocol.ts",
+        "sha256": "13e418e90422717a1b5cd84ca0e6bde6ba3b2db23488b500f17c9b7bbc632293"
+      },
+      {
+        "path": "packages/skeleton/src/verification-host.ts",
+        "sha256": "b652a0b560dd516082a02cc39bd130771f42a0e18318ebc18aa4bb4e305c2773"
+      },
+      {
+        "path": "packages/skeleton/src/verification.ts",
+        "sha256": "5051061674cd470955843c486a89dcab70d565005fb0d5e379def765887fb7a8"
+      },
+      {
+        "path": "packages/skeleton/src/verification-worktree.ts",
+        "sha256": "b9f0df9d306eed32858ac192b4f25b3183794c043e45506c71f6fd2bb7edb014"
+      },
+      {
+        "path": "packages/skeleton/src/review.ts",
+        "sha256": "f1b6a3ee7b5789d93eefce81112796014a495ad3854347a369d377d91fa4653a"
+      },
+      {
+        "path": "packages/skeleton/src/repair.ts",
+        "sha256": "4c957a61cb43a76a9e9e4545b9f4e44bc727538bdcfa3a4df748a93c87a71b0b"
+      },
+      {
+        "path": "packages/skeleton/src/worker-store.ts",
+        "sha256": "00dcea7a7c772aca3b79215b7cb99778a11098a67927b4897d2fae1d33d66543"
+      },
+      {
+        "path": "packages/skeleton/src/worker-transport.ts",
+        "sha256": "f7421489010519bd80fbb2bce74dba638511b50c05cb7dc2a42d941cadff02fc"
+      }
+    ]
+  },
+  "wallSeconds": 0.5
+}

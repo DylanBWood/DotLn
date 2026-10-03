@@ -1791,7 +1791,10 @@ text, never the default channel for state you own in structured form.
   (labeled synthetic fixtures, AC-mapped) never counts as live-integration
   proof. In that assurance profile, verifier episodes are **blinded** from the
   implementer's narrative; the implementer never certifies its own work.
-  Verification and review are separate blinded episodes: after behavior passes,
+  Verification and review are separate blinded episodes: an optional review
+  notice tells the behavior verifier to leave scope and convention defects to
+  the following review, pass behavior it verified and retain human attention
+  for anything else unsafe to pass; after behavior passes,
   a fresh read-only reviewer judges the sealed diff, contract and declared
   conventions (absence is explicit); ReviewCompleted records blocking/should/nit
   findings, routing blocking to bounded repair and re-verification and the rest
@@ -1826,7 +1829,9 @@ text, never the default channel for state you own in structured form.
   the completed AcceptanceEvidenceMatrix, and evidence refs. "Deliverable-ready"
   is an explicit conjunction checklist (current source revision, explicit
   contract, no unresolved material ambiguity, reproduced baseline, repo-native
-  implementation, no unexplained scope, tests/build/lint, live behavior walked,
+  implementation, no unexplained scope, tests/build/lint (build or lint may be
+  declared not applicable with the owner's reason, shown in the checks row and
+  supplying no evidence; tests always require evidence), live behavior walked,
   visual claims visually inspected, every AC evidenced, independent verification
   and review, final diff read, grounded body, monitored loop) — no single
   passing signal is ever "done". Target publication evaluates all fourteen items

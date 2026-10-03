@@ -7,9 +7,15 @@ import {
   readdirSync,
   rmSync,
   writeFileSync,
+  chmodSync,
+  linkSync,
+  unlinkSync,
 } from "node:fs";
 import { join } from "node:path";
-import { confinedTestCommand } from "../src/discovery-sandbox.js";
+import {
+  confinedTestCommand,
+  writerSandboxProfilePath,
+} from "../src/discovery-sandbox.js";
 import { decodeLog, replay, type Event } from "@dotln/kernel";
 import {
   outsideWriteEffect,
@@ -480,7 +486,7 @@ test("WO-052 emitted Claude permission hook admits only live host-issued exact c
       false,
       "completed dispatch has revoked its grant",
     );
-    const revoke = installSourceChangeCommands({
+    const grantInput = {
       launchpad,
       target: host.tree.path,
       commandId: host.command.commandId,
@@ -491,13 +497,32 @@ test("WO-052 emitted Claude permission hook admits only live host-issued exact c
       testCommand,
       messagePath: host.tree.messagePath,
       expiresAt: Date.now() + 60_000,
-    });
+    };
+    const revoke = installSourceChangeCommands(grantInput);
+    const profileFile = writerSandboxProfilePath(launchpad, host.tree.path);
+    const confined = confinedTestCommand(
+      host.tree.path,
+      testCommand,
+      profileFile,
+    );
     for (const command of [
-      confinedTestCommand(host.tree.path, testCommand),
+      confined,
       "git add -A",
       `git commit -F ${host.tree.messagePath}`,
     ])
       assert.equal(hook(command), true, command);
+    assert.equal(hook(`${confined}x`), false, "one changed character refuses");
+    assert.equal(
+      hook(profileFile, host.tree.path, "Write"),
+      false,
+      "the writer cannot alter the host profile",
+    );
+    const profile = readFileSync(profileFile, "utf8");
+    chmodSync(profileFile, 0o600);
+    writeFileSync(profileFile, profile + " ");
+    assert.equal(hook(confined), false, "changed profile bytes refuse");
+    writeFileSync(profileFile, profile);
+    chmodSync(profileFile, 0o400);
     assert.equal(
       hook(testCommand),
       false,
@@ -547,7 +572,7 @@ test("WO-052 emitted Claude permission hook admits only live host-issued exact c
       permission.replace(match[1]!, JSON.stringify(config)),
     );
     assert.equal(
-      hook(confinedTestCommand(host.tree.path, testCommand)),
+      hook(confined),
       true,
       "the narrowed target still permits shell.run",
     );
@@ -559,6 +584,28 @@ test("WO-052 emitted Claude permission hook admits only live host-issued exact c
     writeFileSync(permissionPath, permission);
     revoke();
     assert.equal(hook(testCommand), false);
+    const alias = join(root, "hook-alias");
+    linkSync(permissionPath, alias);
+    assert.throws(
+      () => installSourceChangeCommands(grantInput),
+      /not ordinary/u,
+      "a preexisting alias to a governed hook refuses before launch",
+    );
+    unlinkSync(alias);
+    writeFileSync(profileFile, profile, { mode: 0o400 });
+    const recovered = installSourceChangeCommands(grantInput);
+    assert.equal(
+      hook(confined),
+      true,
+      "an exact ordinary orphan profile recovers",
+    );
+    recovered();
+    writeFileSync(profileFile, "changed orphan", { mode: 0o400 });
+    assert.throws(
+      () => installSourceChangeCommands(grantInput),
+      /orphaned.*profile drift/u,
+    );
+    unlinkSync(profileFile);
     host.finish();
   } finally {
     dispose(root);

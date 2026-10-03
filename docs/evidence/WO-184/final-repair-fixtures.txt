@@ -1,0 +1,35 @@
+# FINAL-001 G1/G2 repair fixtures, 2026-10-03T15:22:15Z, v26.9.0, macOS 27.0.1
+$ node --test packages/skeleton/dist/test/source-change-confinement.test.js
+✔ WO-066 AC6: host and exact writer command deny direct network, common-Git writes and outside reads (186.2975ms)
+✔ WO-184 criterion 15: the confined writer test cannot alter its hook, host scratch, Git link or local instruction controls (110.648208ms)
+✔ confined npm test leaves committed source clean through host and writer routes (485.465084ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 839.082917
+$ node --test packages/skeleton/dist/test/review.test.js
+✔ [document] WO-184 R9: committed no-notice replay preserves the pre-edit command and prompt (8.938875ms)
+✔ [document] WO-184 criterion 13: persisted notice survives a release-only compiler relabel (468.648167ms)
+✔ [document] WO-184 criteria 12/13: a sealed kernel/driver stream re-verifies every criterion after a one-criterion repair (1163.461959ms)
+✔ [document] WO-184 criterion 19: failed and rejected reviews stay pending and rerun a fresh attempt (1117.600167ms)
+✔ [document] WO-181 AC1: independent review finds planted naming and scope defects without changing snapshot or behavior rows (563.189875ms)
+✔ [document] WO-181 AC2: file edits, patches, diff and behavior verdicts are refused by closed review admission (550.869792ms)
+✔ [document] WO-181 AC3: only blocking review findings enter real bounded repair and fresh re-verification (2613.633208ms)
+✔ [document] WO-181 scope defects cannot widen repair authority and human attention dispatches nothing (557.581875ms)
+✔ [document] WO-181 absent conventions are explicit and forbid a convention reference (525.753917ms)
+✔ [document] WO-181 unpassed, foreign or narrative-bearing review context refuses (553.208666ms)
+✔ [document] WO-181 cached review recovers its producing identity without another model call and completed recovery is idempotent (583.51825ms)
+✔ [document] WO-181 review completion requires the admitted host result and intact snapshot permissions (571.955666ms)
+✔ [document] WO-181 failed behavior never dispatches a reviewer (487.212209ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9831.130458

@@ -74,6 +74,7 @@ export interface VerificationPending {
   readonly leaseExpired: boolean;
 }
 export interface VerificationState {
+  readonly reviewNotice?: true;
   readonly reviewConventionsPath?: string | null;
   readonly reviewCompleted?: ReviewCompleted;
   readonly baselineContext?: BaselineContext;

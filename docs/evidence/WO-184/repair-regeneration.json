@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-184",
+  "dispatch": "resume: fix; VER-001",
+  "source": "Host monotonic subprocess timings with UTC endpoints; complete command output retained in ignored execution transcripts",
+  "wholeRegeneration": {
+    "startedAt": "2026-10-03T05:16:37.482Z",
+    "completedAt": "2026-10-03T05:17:55.601Z",
+    "wallSeconds": 78.118261875,
+    "commandWallSeconds": 78.116111417,
+    "includes": "Sequential installed-harness regeneration, four deterministic evidence editions, fresh live feedback audit, recording and console re-pin."
+  },
+  "comparison": {
+    "citedWO175Seconds": 384,
+    "interpretation": "WO-175 catalog figure; its measured whole regeneration was not recorded, so this comparison does not establish a speedup."
+  },
+  "commands": [
+    {
+      "label": "harness-regeneration",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "emit"
+      ],
+      "startedAt": "2026-10-03T05:16:37.483Z",
+      "completedAt": "2026-10-03T05:16:37.658Z",
+      "wallSeconds": 0.17516933299999998,
+      "exitCode": 0
+    },
+    {
+      "label": "authority-remint",
+      "command": [
+        "node",
+        "scripts/authority-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-03T05:16:37.658Z",
+      "completedAt": "2026-10-03T05:16:38.282Z",
+      "wallSeconds": 0.623904042,
+      "exitCode": 0
+    },
+    {
+      "label": "artifact-remint",
+      "command": [
+        "node",
+        "scripts/artifact-identity-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-03T05:16:38.282Z",
+      "completedAt": "2026-10-03T05:16:38.510Z",
+      "wallSeconds": 0.22750641700000004,
+      "exitCode": 0
+    },
+    {
+      "label": "verification-remint",
+      "command": [
+        "node",
+        "scripts/verification-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-03T05:16:38.510Z",
+      "completedAt": "2026-10-03T05:16:39.505Z",
+      "wallSeconds": 0.9951461669999999,
+      "exitCode": 0
+    },
+    {
+      "label": "feedback-remint",
+      "command": [
+        "node",
+        "scripts/feedback-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-03T05:16:39.505Z",
+      "completedAt": "2026-10-03T05:16:41.887Z",
+      "wallSeconds": 2.381409708,
+      "exitCode": 0
+    },
+    {
+      "label": "feedback-live",
+      "command": [
+        "node",
+        "packages/skeleton/dist/src/dotln.js",
+        "feedback-audit",
+        "--store",
+        ".runtime/wo184/repair-feedback-live",
+        "--transport",
+        "codex-cli-exec",
+        "--model",
+        "gpt-6.1-sol",
+        "--effort",
+        "max"
+      ],
+      "startedAt": "2026-10-03T05:16:41.887Z",
+      "completedAt": "2026-10-03T05:17:54.897Z",
+      "wallSeconds": 73.010096834,
+      "exitCode": 0
+    },
+    {
+      "label": "feedback-record",
+      "command": [
+        "node",
+        "scripts/feedback-evidence.mjs",
+        "--record-selfhost",
+        ".runtime/wo184/repair-feedback-live"
+      ],
+      "startedAt": "2026-10-03T05:17:54.897Z",
+      "completedAt": "2026-10-03T05:17:55.218Z",
+      "wallSeconds": 0.32050650000000314,
+      "exitCode": 0
+    },
+    {
+      "label": "console-repin",
+      "command": [
+        "node",
+        "scripts/console-fixtures.mjs",
+        "--record-current-selfhost"
+      ],
+      "startedAt": "2026-10-03T05:17:55.218Z",
+      "completedAt": "2026-10-03T05:17:55.600Z",
+      "wallSeconds": 0.3823724159999983,
+      "exitCode": 0
+    }
+  ]
+}

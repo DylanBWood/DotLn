@@ -371,15 +371,19 @@ const main = async () => {
       throw new Error(
         "usage: worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO]",
       );
-    const { observePullRequest } =
+    const { observePullRequest, observationErrorMessage } =
       await import("./lib/pull-request-observer.mjs");
-    observePullRequest({
-      cwd: toolRoot,
-      store: resolve(flags.get("--store")),
-      number: Number(flags.get("--number")),
-      repositoryId: flags.get("--repository"),
-      log: (line) => process.stdout.write(`${line}\n`),
-    });
+    try {
+      observePullRequest({
+        cwd: toolRoot,
+        store: resolve(flags.get("--store")),
+        number: Number(flags.get("--number")),
+        repositoryId: flags.get("--repository"),
+        log: (line) => process.stdout.write(`${line}\n`),
+      });
+    } catch (error) {
+      throw new Error(observationErrorMessage(error));
+    }
     return;
   }
   if (action === "resolve-pr") {
