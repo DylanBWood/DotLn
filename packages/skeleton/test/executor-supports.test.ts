@@ -82,7 +82,7 @@ test("WO-133 every generated role preserves supplied actor values and checks edi
   }
 });
 
-test("WO-179 every emitted role carries its assigned corrections across support settings", () => {
+test("WO-179 and WO-195 emitted roles carry their assigned corrections across support settings", () => {
   const sharedRules = [
     "Settle routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority; ask when the answer changes scope or authority.",
     "Before acting on an operator message, state its aim in one line and act on that reading; ask one focused question if the reading is doubtful.",
@@ -134,10 +134,46 @@ test("WO-179 every emitted role carries its assigned corrections across support 
         if (role.path.endsWith("dotln-release-close/SKILL.md")) {
           assert.match(
             role.contents,
-            /report a cleanup blocker or host denial once with the exact operator remedy \(`--material`, `!` or `\/permissions` retry\), then finish remaining work without repeating publication or deciding to move, copy, delete or preserve material/,
+            /Run the printed helper command exactly as printed, with no redirect, prefix, cd or pipe/,
+            subject,
+          );
+          assert.match(
+            role.contents,
+            /The close is done when the tag and Release exist, git worktree list shows no worktree for the order, its directory is gone and git branch --list wo-NNN is empty/,
+            subject,
+          );
+          assert.match(
+            role.contents,
+            /Diagnose and finish a cleanup blocker in this session; retry by re-running the same command, which re-checks an existing Release and never publishes twice/,
+            subject,
+          );
+          assert.match(
+            role.contents,
+            /Retry a host denial of the exact command once through the host permission flow before handing the operator the printed command for !/,
+            subject,
+          );
+          assert.match(
+            role.contents,
+            /Material dispositions stay the operator's through --material; never force teardown/,
+            subject,
+          );
+          assert.doesNotMatch(
+            role.contents,
+            /repeat transitions|without repeating publication/,
             subject,
           );
           assert.doesNotMatch(role.contents, /Report refusals;/, subject);
+        } else if (role.path.endsWith("dotln-planner/SKILL.md")) {
+          assert.match(
+            role.contents,
+            /After the refutation receipt is filed with its holds answered and npm run test:docs is green, a planning or ideation pass on a planning branch pushes that branch and opens its :memo: pull request/,
+            subject,
+          );
+          assert.match(
+            role.contents,
+            /the dispatch phrase is the operator's authorization for those two effects, and the pass never merges/,
+            subject,
+          );
         } else if (role.path.endsWith("dotln-executor/SKILL.md")) {
           assert.match(
             role.contents,

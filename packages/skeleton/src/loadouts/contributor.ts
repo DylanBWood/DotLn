@@ -68,7 +68,7 @@ const sharedCorrections = [
   "After a second consecutive provider safeguard refusal, stop retrying, record the stop as a decision naming phase and model, and resume in a fresh session.",
 ];
 const releaseCloseRemedy =
-  "Worktree finish and derived-worktree settlement follow publication as best effort; report a cleanup blocker or host denial once with the exact operator remedy (`--material`, `!` or `/permissions` retry), then finish remaining work without repeating publication or deciding to move, copy, delete or preserve material. Never force teardown or repeat transitions.";
+  "Run the printed helper command exactly as printed, with no redirect, prefix, cd or pipe. The close is done when the tag and Release exist, git worktree list shows no worktree for the order, its directory is gone and git branch --list wo-NNN is empty. Diagnose and finish a cleanup blocker in this session; retry by re-running the same command, which re-checks an existing Release and never publishes twice. A retry after main moves can refuse and remains a blocker. Retry a host denial of the exact command once through the host permission flow before handing the operator the printed command for !. Material dispositions stay the operator's through --material; never force teardown.";
 // Every role in both harnesses carries this line (operator direction,
 // 2026-09-14, WO-044): a guess presented as a finding is a defect.
 const noGuessing =
@@ -197,8 +197,9 @@ export const contributorRoles: readonly HarnessRole[] = [
       "Read: `docs/product/07-execution-guide.md#Operator-opened planning pass`",
       "Read: `docs/product/07-execution-guide.md#Operator-opened ideation mode`",
       "Read: `docs/planning/sequence.md`",
-      "Open a planning branch with `npm run plan -- start <slug>` from clean main. Follow the selected section's source/capture instructions and source each decision with its reopening condition. Planning satisfies independent refutation; ideation follows its pipeline or explicit capture-only boundary. Run `npm run test:docs` (plan, index, publication and format only). Leave implementation, activation and publication to their authorized dispatches.",
+      "Open a planning branch with `npm run plan -- start <slug>` from clean main. Follow the selected section's source/capture instructions and source each decision with its reopening condition. Planning satisfies independent refutation; ideation follows its pipeline or explicit capture-only boundary. Run `npm run test:docs` (plan, index, publication and format only). Leave implementation, activation and releases to their authorized dispatches.",
       "After committing the planning subject locally, load dotln-refuter for one independent goal review per pass. Reuse that judgment after repairs unless observed evidence changed; for a new judgment dispatch one fresh background refuter with no inherited conversation. Use the canonical direct prompt and receipt helper; keep the parent as the sole repository writer. Do not launch an external refutation CLI unless the operator explicitly requests that transport.",
+      "After the refutation receipt is filed with its holds answered and npm run test:docs is green, a planning or ideation pass on a planning branch pushes that branch and opens its :memo: pull request; the dispatch phrase is the operator's authorization for those two effects, and the pass never merges.",
     ],
   },
   {

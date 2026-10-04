@@ -3044,9 +3044,13 @@ test("every installed hook is wired to a harness event or the Git commit boundar
   );
   assert.equal(installed.length, new Set(commands).size + 1);
   assert.equal(commands.length, new Set(commands).size + 1);
-  assert.deepEqual(settings.hooks.SessionStart, [
-    { hooks: [settings.hooks.UserPromptSubmit[0].hooks[0]] },
-  ]);
+  const { timeout: startTimeout, ...startHook } =
+    settings.hooks.SessionStart[0].hooks[0];
+  const { timeout: promptTimeout, ...promptHook } =
+    settings.hooks.UserPromptSubmit[0].hooks[0];
+  assert.deepEqual(startHook, promptHook);
+  assert.equal(startTimeout, 15);
+  assert.ok(promptTimeout * 1000 > 4 * 120_000 + 30_000);
   assert.match(
     settings.hooks.UserPromptSubmit[0].hooks[1].command,
     /presence-userpromptsubmit\.mjs/,
@@ -5975,7 +5979,7 @@ test("meter diff bytes include newly authored untracked source", (t) => {
   );
 });
 
-test("WO-145 optional economy support preserves historical snapshots through WO-185 and changes only executor instructions on", () => {
+test("WO-145 optional economy support preserves historical snapshots through WO-195 and changes only executor instructions on", () => {
   const historical = JSON.parse(
     readFileSync(
       join(source, "packages/skeleton/fixtures/wo145-role-baseline.json"),
@@ -5987,25 +5991,38 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
   // common role edits affect both settings, so pin contemporaneous default and
   // opt-out bytes separately and preserve the complete historical chain.
   // WO-157, WO-158, WO-161, WO-166, WO-168, WO-173 and WO-179 shared role edits
-  // and WO-185 follow the same route.
+  // follow the same route. The integrated oracle preserves both WO-185's
+  // upstream snapshot and WO-195's original planner/release-close snapshot.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo185-role-baseline.json"),
+      join(
+        source,
+        "packages/skeleton/fixtures/wo195-integrated-role-baseline.json",
+      ),
       "utf8",
     ),
   );
-  for (let snapshot = baseline; snapshot.historicalBaseline;) {
-    const previousBytes = readFileSync(
-      join(source, "packages/skeleton/fixtures", snapshot.historicalBaseline),
-    );
-    if (snapshot.historicalSha256)
-      assert.equal(
-        createHash("sha256").update(previousBytes).digest("hex"),
-        snapshot.historicalSha256,
-        `${snapshot.historicalBaseline} remains byte-exact`,
+  assert.equal(baseline.upstreamBaseline, "wo185-role-baseline.json");
+  const chains = [
+    baseline,
+    {
+      historicalBaseline: baseline.upstreamBaseline,
+      historicalSha256: baseline.upstreamSha256,
+    },
+  ];
+  for (const chain of chains)
+    for (let snapshot = chain; snapshot.historicalBaseline;) {
+      const previousBytes = readFileSync(
+        join(source, "packages/skeleton/fixtures", snapshot.historicalBaseline),
       );
-    snapshot = JSON.parse(previousBytes);
-  }
+      if (snapshot.historicalSha256)
+        assert.equal(
+          createHash("sha256").update(previousBytes).digest("hex"),
+          snapshot.historicalSha256,
+          `${snapshot.historicalBaseline} remains byte-exact`,
+        );
+      snapshot = JSON.parse(previousBytes);
+    }
   const on = harnessInstallation();
   const explicitOn = harnessInstallation({
     supports: { "tinkerer-economy": true },
@@ -9724,6 +9741,18 @@ test("WO-133 source-only runtime diagnosis never builds and refresh verifies the
   );
   assert.equal(builds, 2);
   assert.equal(readFileSync(join(root, file), "utf8"), "stale runtime\n");
+  const transcript = [];
+  assert.equal(
+    refreshHarnessRuntime(
+      root,
+      () => write(root, file, bytes),
+      (line) => transcript.push(line),
+    ),
+    true,
+  );
+  assert.deepEqual(transcript, [
+    "Refreshing pinned runtime (pins-differ); npm run build.\n",
+  ]);
 });
 
 test("process table names the observed cutoff and evidence sources", () => {
