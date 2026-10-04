@@ -5975,7 +5975,7 @@ test("meter diff bytes include newly authored untracked source", (t) => {
   );
 });
 
-test("WO-145 optional economy support preserves historical snapshots through WO-179 and changes only executor instructions on", () => {
+test("WO-145 optional economy support preserves historical snapshots through WO-185 and changes only executor instructions on", () => {
   const historical = JSON.parse(
     readFileSync(
       join(source, "packages/skeleton/fixtures/wo145-role-baseline.json"),
@@ -5987,10 +5987,10 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
   // common role edits affect both settings, so pin contemporaneous default and
   // opt-out bytes separately and preserve the complete historical chain.
   // WO-157, WO-158, WO-161, WO-166, WO-168, WO-173 and WO-179 shared role edits
-  // follow the same route.
+  // and WO-185 follow the same route.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo179-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo185-role-baseline.json"),
       "utf8",
     ),
   );

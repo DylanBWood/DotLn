@@ -57,6 +57,7 @@ const operatorControls =
 const sessionBoundaries =
   "Under Codex, lifecycle dispatch reserves the writer and completion releases it; inspect with `node scripts/harness.mjs writer --show`, never a hand-built hook payload. Await a gate or background task through `node scripts/harness.mjs evidence --wait [--timeout <seconds>]` in the background or the host's completion signal, then do bounded listed work or stay quiet; never poll or narrate the wait.";
 const sharedCorrections = [
+  "Run a probe outside a gate under `node scripts/harness.mjs bounded -- <command>`, one process at a time; the host guard also watches attributable session descendants.",
   "Settle routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority; ask when the answer changes scope or authority.",
   "Before acting on an operator message, state its aim in one line and act on that reading; ask one focused question if the reading is doubtful.",
   "A claim of cause, blocker, unreachable service or finished work names the command and output it rests on; a partial search names its boundary.",
