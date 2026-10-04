@@ -2,6 +2,22 @@
 import { spawnGit } from "./lib/git.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { spawn } from "node:child_process";
+import { performance } from "node:perf_hooks";
+import { createProcessMonitor } from "./lib/process-monitor.mjs";
+import { acquireHostLanes, inheritedHostLease } from "./lib/host-lanes.mjs";
+import {
+  atomicJson,
+  hostStateRoot,
+  memoryBudgets,
+  registerProcess,
+  taskLauncher,
+  holdTaskDescriptors,
+} from "./lib/host-resources.mjs";
+import {
+  ensureHostGuard,
+  incidentForProcess,
+  registerGuardTree,
+} from "./lib/host-guard-state.mjs";
 import { availableParallelism, tmpdir } from "node:os";
 import { randomUUID } from "node:crypto";
 import {
@@ -151,6 +167,7 @@ const machinerySources = {
     "packages/skeleton/src/loadouts/",
   ],
   harness: [
+    "scripts/lib/bounded-command.mjs",
     // WO-174: direct entry imports and literal first-party script inputs.
     "packages/skeleton/src/usage-observation.mjs",
     "scripts/lib/evidence-preparation.mjs",
@@ -203,6 +220,22 @@ const machinerySources = {
     "scripts/lib/entropy-review.mjs",
   ],
   "runner-fixtures": [
+    "scripts/harness.mjs",
+    "scripts/test-host-guard.test.mjs",
+    "scripts/host-guard.mjs",
+    "scripts/lib/host-resources.mjs",
+    "scripts/lib/host-footprint.c",
+    "scripts/lib/host-lock.c",
+    "scripts/lib/host-guard-state.mjs",
+    "scripts/lib/host-lanes.mjs",
+    "scripts/lib/process-monitor.mjs",
+    "scripts/lib/bounded-command.mjs",
+    "scripts/fixtures/memory-growth.c",
+    "scripts/fixtures/detached-descendant.c",
+    "scripts/lib/plan-failures.mjs",
+    "corpus/harness/bounded-findings.mjs",
+    "corpus/harness/wo102-",
+    "corpus/harness/generate-cadence-corpus.mjs",
     "scripts/lib/machinery-coverage.mjs",
     "scripts/lib/product-read-guard.mjs",
     "scripts/lib/evidence-sources.mjs",
@@ -822,16 +855,21 @@ export function executeSuite(
   signal = undefined,
 ) {
   const started = Date.now();
-  let env = suiteEnvironment(
-    row.executionEnvironment ?? process.env,
-    row.gateContext,
-  );
+  const limits = row.memoryLimits ?? memoryBudgets(repo);
+  const hostDirectory = row.hostDirectory ?? hostStateRoot();
+  let env = row.probe
+    ? { ...(row.executionEnvironment ?? process.env) }
+    : suiteEnvironment(
+        row.executionEnvironment ?? process.env,
+        row.gateContext,
+      );
   const deadline = startDeadline(`suite:${row.name}`, timeoutMs, { env });
   onProgress({ name: row.name, message: "started", elapsedMs: 0 });
   let command;
   let readGuard;
   try {
-    command = expand([...row.command, ...(row.args ?? [])], repo);
+    const argv = [...row.command, ...(row.args ?? [])];
+    command = row.probe ? argv : expand(argv, repo);
     if (row.packageTest && row.product && !row.document) {
       readGuard = productReadEnvironment(repo, env, row.name);
       env = readGuard.env;
@@ -851,25 +889,61 @@ export function executeSuite(
     // Each POSIX suite owns a process group, including descendants inheriting
     // its pipes. Cancellation signals that group, never a scanned process list.
     const grouped = process.platform !== "win32";
-    const child = spawn(command[0], command.slice(1), {
+    const child = spawn(taskLauncher(hostDirectory), ["--launch", ...command], {
       cwd: repo,
-      stdio: ["ignore", "pipe", "pipe"],
+      stdio: ["ignore", "pipe", "pipe", "pipe"],
       env,
       detached: grouped,
     });
-    let output = "";
+    let launchResponse = "";
+    child.stdio[3].on("data", (chunk) => {
+      launchResponse = (launchResponse + chunk.toString()).slice(0, 128);
+      const launchError = /^exec-error (\d+)\n/u.exec(launchResponse);
+      if (launchError)
+        failure ??= `Task launch failed: ${command[0]} (errno ${launchError[1]})`;
+    });
+    child.stdio[3].on("error", (error) => {
+      if (!resourceFailure && !stopped) {
+        failure ??= `Task launch handshake failed: ${error.message}`;
+        cancel();
+      }
+    });
+    let output = Buffer.alloc(0),
+      diagnostics = Buffer.alloc(0),
+      droppedOutputBytes = 0;
+    const diagnosticCap = Math.min(
+      65536,
+      Math.max(256, Math.floor(limits.outputTailBytes / 4)),
+    );
+    const keepDiagnostic = (bytes) => {
+      const joined = Buffer.concat([diagnostics, Buffer.from(bytes)]);
+      diagnostics = joined.subarray(Math.max(0, joined.length - diagnosticCap));
+    };
     let timedOut = false;
     let stopped = false;
     let failure;
     let killTimer;
     let finishTimer;
     let escalated = false;
+    let resourceFailure,
+      resourceDetails,
+      resourceTask,
+      taskRegistration,
+      heldDescriptors;
+    const ownMonitor = !row.resourceMonitor;
+    const monitor =
+      row.resourceMonitor ??
+      createProcessMonitor({ limits, repo, directory: hostDirectory });
     const terminate = (kind) => {
       try {
         if (grouped && child.pid) process.kill(-child.pid, kind);
         else child.kill(kind);
       } catch (error) {
-        if (error.code !== "ESRCH") failure ??= error.message;
+        if (
+          error.code !== "ESRCH" &&
+          !(error.code === "EPERM" && resourceFailure === "memory-budget")
+        )
+          failure ??= error.message;
       }
     };
     const cancel = () => {
@@ -879,8 +953,6 @@ export function executeSuite(
         terminate("SIGKILL");
         // A descendant may deliberately leave the group or the host may deny
         // signalling. Its inherited descriptors must not hold the gate open.
-        child.stdout.destroy();
-        child.stderr.destroy();
         child.unref();
         finishTimer = setTimeout(() => finish(null), 100);
       }, 1000);
@@ -918,27 +990,46 @@ export function executeSuite(
       if (Date.now() - lastProgressAt >= 15_000)
         progress(`running; last report: ${lastMessage}`);
     }, 15_000);
-    const capture = () => {
+    const capture = (stderr = false) => {
       let partial = "";
+      let diagnosticLines = 0;
       return (chunk) => {
-        output += chunk.toString();
+        const bytes = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+        const combined = Buffer.concat([output, bytes]);
+        const dropped = Math.max(0, combined.length - limits.outputTailBytes);
+        droppedOutputBytes += dropped;
+        output = combined.subarray(dropped);
+        if (stderr) keepDiagnostic(bytes);
         partial += chunk.toString();
         const lines = partial.split("\n");
         partial = lines.pop().slice(-1024);
-        for (const line of lines)
-          if (/^(?:PROGRESS |# Subtest:|ok \d+ -|not ok \d+ -)/.test(line)) {
+        for (const line of lines) {
+          if (!stderr) {
+            if (
+              /^(?:\s*not ok \d+|.*(?:AssertionError|Error:|DIAGNOSTIC))/.test(
+                line,
+              )
+            )
+              diagnosticLines = 40;
+            if (diagnosticLines > 0) {
+              keepDiagnostic(line + "\n");
+              diagnosticLines--;
+            }
+          }
+          if (/^\s*(?:PROGRESS |# Subtest:|ok \d+ -|not ok \d+ -)/.test(line)) {
             lastMessage = line.trimEnd().slice(0, 200).trimEnd();
             if (
               !progressCount ||
-              /^(?:PROGRESS |not ok )/.test(line) ||
+              /^\s*(?:PROGRESS |not ok )/.test(line) ||
               Date.now() - lastProgressAt >= 1000
             )
               progress(lastMessage);
           }
+        }
       };
     };
     child.stdout.on("data", capture());
-    child.stderr.on("data", capture());
+    child.stderr.on("data", capture(true));
     child.on("error", (error) => {
       failure = error.message;
     });
@@ -951,6 +1042,57 @@ export function executeSuite(
       clearTimeout(finishTimer);
       clearInterval(heartbeat);
       signal?.removeEventListener("abort", stop);
+      const resources = resourceTask ? monitor.finish(resourceTask) : {};
+      if (ownMonitor) monitor.close();
+      const guardFailure = incidentForProcess(
+        hostDirectory,
+        child.pid,
+        started,
+      );
+      if (
+        ["memory-budget", "monitor-unavailable"].includes(
+          guardFailure?.failureKind,
+        )
+      ) {
+        resourceFailure = guardFailure.failureKind;
+        resourceDetails ??= guardFailure;
+        resources.peakFootprintBytes = Math.max(
+          resources.peakFootprintBytes ?? 0,
+          guardFailure.measuredPeakFootprintBytes,
+        );
+        resources.peakRssBytes = Math.max(
+          resources.peakRssBytes ?? 0,
+          guardFailure.residentBytesAtStop ?? 0,
+        );
+      }
+      let withdrawn = !taskRegistration;
+      try {
+        taskRegistration?.release();
+        withdrawn = true;
+      } catch (error) {
+        failure ??= `Task registration cleanup unavailable: ${error.message}`;
+      }
+      child.stdout.destroy();
+      child.stderr.destroy();
+      // The watch has left the monitor and the registration, so no census can
+      // read it once the kernel recycles this endpoint's identity.
+      if (withdrawn) heldDescriptors?.release();
+      // If withdrawal failed, keep the duplicate until this supervisor exits:
+      // a still-published watch must never point at a recycled endpoint.
+      const survivors = resources.survivingProcesses ?? [];
+      if (survivors.length && !resourceFailure)
+        resourceFailure = "surviving-process";
+      let renderedOutput = output.toString("utf8");
+      if (
+        (code !== 0 || failure || timedOut || stopped || resourceFailure) &&
+        droppedOutputBytes &&
+        diagnostics.length
+      )
+        renderedOutput = `[retained failure diagnostics]\n${diagnostics.toString("utf8")}\n${renderedOutput}`;
+      if (droppedOutputBytes)
+        renderedOutput = `[output tail; dropped ${droppedOutputBytes} bytes]\n${renderedOutput}`;
+      if (resourceFailure)
+        renderedOutput += `\n${resourceFailure} ${JSON.stringify(resourceDetails ?? { survivingProcesses: survivors })}`;
       const durationMs = Date.now() - started;
       deadline.finish();
       let readFailures = [];
@@ -964,26 +1106,31 @@ export function executeSuite(
         }
       }
       if (readFailures.length) {
-        output += `\nProduct read guard: ${readFailures.length} excluded-input observations (${readGuard.log})\n`;
+        renderedOutput += `\nProduct read guard: ${readFailures.length} excluded-input observations (${readGuard.log})\n`;
         for (const event of readFailures)
-          output += `Product read guard: ${event.case} reads ${event.path} (${event.method}); tag the case [document]\n`;
+          renderedOutput += `Product read guard: ${event.case} reads ${event.path} (${event.method}); tag the case [document]\n`;
       }
       resolveRun({
         name: row.name,
         durationMs,
-        ...(failure || timedOut || stopped
+        ...resources,
+        droppedOutputBytes,
+        ...(resourceDetails ? { memoryFailure: resourceDetails } : {}),
+        ...(failure || timedOut || stopped || resourceFailure
           ? {
-              failureKind: failure
-                ? "launch"
-                : timedOut
-                  ? "timeout"
-                  : "stopped",
+              failureKind:
+                resourceFailure ??
+                (failure ? "launch" : timedOut ? "timeout" : "stopped"),
             }
           : {}),
         startedAt: new Date(started).toISOString(),
         finishedAt: new Date().toISOString(),
         exitCode:
-          timedOut || stopped || failure || readFailures.length
+          timedOut ||
+          stopped ||
+          failure ||
+          resourceFailure ||
+          readFailures.length
             ? 1
             : (code ?? 1),
         ...(readGuard
@@ -994,12 +1141,95 @@ export function executeSuite(
           : {}),
         executed: true,
         ...(stopped ? { stopped: true } : {}),
-        output: `${output}${failure ? `\n${failure}` : ""}${timedOut ? `\nSuite ${row.name} timed out after ${durationMs} ms` : ""}${stopped ? `\nSuite ${row.name} stopped by gate request after ${durationMs} ms` : ""}`,
+        output: `${renderedOutput}${failure ? `\n${failure}` : ""}${timedOut ? `\nSuite ${row.name} timed out after ${durationMs} ms` : ""}${stopped ? `\nSuite ${row.name} stopped by gate request after ${durationMs} ms` : ""}`,
       });
     };
     child.on("close", (code) => {
       if (!killTimer || escalated) finish(code);
     });
+    // An escaped descendant can keep pipes open after the root exits. Inspect
+    // at exit as well as close, kill observed survivors and finish promptly.
+    child.on("exit", (code) => {
+      finishTimer ??= setTimeout(() => {
+        finish(code);
+      }, 100);
+    });
+    if (child.pid) {
+      try {
+        taskRegistration = registerProcess(
+          "trees",
+          child.pid,
+          {
+            repo,
+            scope: "task",
+            task: row.name,
+            budgetBytes: limits.taskBytes,
+            limits,
+          },
+          hostDirectory,
+        );
+        const ownershipStarted = performance.now();
+        try {
+          heldDescriptors = holdTaskDescriptors(child.pid, hostDirectory);
+          taskRegistration.record.descriptorOwnership = {
+            key: taskRegistration.record.id,
+            birth: taskRegistration.record.birth,
+            descriptors: heldDescriptors.descriptors,
+          };
+        } finally {
+          monitor.stats.samplingCostMs += performance.now() - ownershipStarted;
+        }
+        atomicJson(taskRegistration.file, taskRegistration.record);
+        row.hostLease?.update({
+          taskRoot: {
+            pid: child.pid,
+            birth: taskRegistration.record.birth,
+            uniqueId: taskRegistration.record.uniqueId,
+          },
+        });
+        let memberIdentity;
+        resourceTask = monitor.add(
+          child.pid,
+          row.name,
+          (kind, details) => {
+            resourceFailure = kind;
+            resourceDetails = details;
+            terminate("SIGKILL");
+          },
+          limits.taskBytes,
+          taskRegistration.record.birth,
+          (members) => {
+            const identities = members.map(
+              ({ pid, birth, pgid, uniqueId }) => ({
+                pid,
+                birth,
+                pgid,
+                uniqueId,
+              }),
+            );
+            const next = JSON.stringify(identities);
+            if (next === memberIdentity) return;
+            Object.assign(taskRegistration.record, { members: identities });
+            atomicJson(taskRegistration.file, taskRegistration.record);
+            row.hostLease?.update({ members: identities });
+            memberIdentity = next;
+          },
+          taskRegistration.record.uniqueId,
+          taskRegistration.record.descriptorOwnership,
+        );
+        if (!resourceFailure && !signal?.aborted) {
+          child.stdio[3].end("g");
+          monitor.launched(resourceTask);
+        } else child.stdio[3].destroy();
+      } catch (error) {
+        child.stdio[3].destroy();
+        if (!error.message.startsWith("Cannot register exited process")) {
+          resourceFailure = "monitor-unavailable";
+          failure = error.message;
+          cancel();
+        }
+      }
+    }
   });
 }
 
@@ -1017,6 +1247,7 @@ export async function scheduleSuites(
     onActiveChange = () => {},
     diagnosticContext = {},
     stopRequested = () => false,
+    hostLanes,
   } = {},
 ) {
   validateSuites(table);
@@ -1031,6 +1262,11 @@ export async function scheduleSuites(
     active: null,
     previous: null,
   }));
+  const parentLease = hostLanes
+    ? hostLanes.parentLease === undefined
+      ? inheritedHostLease(hostLanes.directory)
+      : hostLanes.parentLease
+    : null;
   const executeTask = async (
     row,
     laneIndexes,
@@ -1055,21 +1291,75 @@ export async function scheduleSuites(
       reservedSlots: occupiedSlots,
       slotCapacity: concurrency,
     };
-    const result = await execute({ ...row, gateContext }, repo);
-    const finishedAt = new Date().toISOString();
-    return {
-      ...result,
-      startedAt,
-      finishedAt,
-      concurrentAtStart,
-      predecessors: [...new Set(predecessors.filter(Boolean))],
-      schedulerDurationMs: Date.parse(finishedAt) - Date.parse(startedAt),
-      loadClass: gateContext.loadClass,
-      loadFactor: gateContext.loadFactor,
-      peerCap: gateContext.concurrency - 1,
-      reservedSlots: occupiedSlots,
-      lanes: laneIndexes,
-    };
+    let lease;
+    try {
+      if (hostLanes && row.command.length)
+        lease = await acquireHostLanes({
+          ...hostLanes,
+          parentLease,
+          slots: occupiedSlots,
+          worktree: repo,
+          task: row.name,
+        });
+      if (stopRequested())
+        return {
+          name: row.name,
+          exitCode: 1,
+          executed: false,
+          durationMs: 0,
+          output: "Gate stopped while waiting for host lanes",
+        };
+      const result = await execute(
+        {
+          ...row,
+          gateContext,
+          hostLease: lease,
+          ...(lease
+            ? {
+                executionEnvironment: {
+                  ...(row.executionEnvironment ?? process.env),
+                  DOTLN_HOST_LANE_LEASE: JSON.stringify({
+                    file: lease.file,
+                    directory: hostLanes.directory,
+                  }),
+                },
+              }
+            : {}),
+        },
+        repo,
+      );
+      const finishedAt = new Date().toISOString();
+      return {
+        ...result,
+        startedAt,
+        finishedAt,
+        concurrentAtStart,
+        predecessors: [...new Set(predecessors.filter(Boolean))],
+        schedulerDurationMs: Date.parse(finishedAt) - Date.parse(startedAt),
+        loadClass: gateContext.loadClass,
+        loadFactor: gateContext.loadFactor,
+        peerCap: gateContext.concurrency - 1,
+        reservedSlots: occupiedSlots,
+        lanes: laneIndexes,
+        ...(lease
+          ? {
+              hostLaneWaitMs: lease.waitedMs,
+              hostLaneSlots: lease.record.slots,
+            }
+          : {}),
+      };
+    } catch (error) {
+      if (!stopRequested()) throw error;
+      return {
+        name: row.name,
+        exitCode: 1,
+        executed: false,
+        durationMs: 0,
+        output: error.message,
+      };
+    } finally {
+      await lease?.release();
+    }
   };
   const finish = (result) => {
     results.push(result);
@@ -1224,6 +1514,7 @@ export function expandSuiteTasks(selected, repo, template) {
             args: [
               "scripts/test-release-fixtures.mjs",
               "scripts/test-gate-deadlines.mjs",
+              "scripts/test-host-guard.test.mjs",
             ],
           },
         ];
@@ -1291,12 +1582,20 @@ export async function runGate(
 ) {
   if (args.includes("--list")) return runGateChecks(args, repo, options);
   const active = beginGateRun(repo, "scripts/test-runner.mjs");
+  let registration;
   try {
+    registration = await registerGuardTree(
+      repo,
+      process.pid,
+      { scope: "gate" },
+      options.hostDirectory,
+    );
     return await runGateChecks(args, repo, {
       stopRequested: active.stopRequested,
       ...options,
     });
   } finally {
+    registration?.release();
     active.release();
   }
 }
@@ -1304,7 +1603,12 @@ export async function runGate(
 async function runGateChecks(
   args,
   repo,
-  { stopRequested = () => false, sandbox: sandboxOptions, table = suites } = {},
+  {
+    stopRequested = () => false,
+    sandbox: sandboxOptions,
+    table = suites,
+    hostDirectory = hostStateRoot(),
+  } = {},
 ) {
   let document = false,
     machinery = false,
@@ -1452,12 +1756,62 @@ async function runGateChecks(
   // the gate judges only its own leftovers in the shared temporary directory
   // (WO-157 item 15, WO-063 D005).
   const fixtureTag = randomUUID().slice(0, 8);
+  const inheritedLease = inheritedHostLease(hostDirectory);
   const concurrency = serial
     ? 1
-    : Math.max(1, Math.min(4, Math.floor(availableParallelism() / 2)));
+    : Math.max(
+        1,
+        Math.min(
+          inheritedLease?.record.slots ?? 4,
+          Math.floor(availableParallelism() / 2),
+        ),
+      );
   const tasks = expandSuiteTasks(selected, repo, fixture?.template);
   const stop = new AbortController();
+  const limits = memoryBudgets(repo);
+  let resourceGateFailure;
+  const monitor = createProcessMonitor({
+    limits,
+    gatePid: process.pid,
+    repo,
+    directory: hostDirectory,
+    onGateFailure: (details) => {
+      resourceGateFailure = details;
+      stop.abort();
+    },
+  });
+  let interrupted;
+  const terminateGate = (signal) => {
+    const incident = incidentForProcess(hostDirectory, process.pid, started);
+    if (
+      ["memory-budget", "monitor-unavailable"].includes(incident?.failureKind)
+    ) {
+      resourceGateFailure = incident;
+      monitor.failTasks(incident.failureKind, incident);
+    } else interrupted = signal;
+    stop.abort();
+    monitor.stopTasks();
+  };
+  const handlers = Object.fromEntries(
+    ["SIGINT", "SIGTERM", "SIGHUP"].map((signal) => [
+      signal,
+      () => terminateGate(signal),
+    ]),
+  );
+  for (const [signal, handler] of Object.entries(handlers))
+    process.on(signal, handler);
   const stopping = () => {
+    const incident = incidentForProcess(hostDirectory, process.pid, started);
+    if (
+      ["memory-budget", "monitor-unavailable"].includes(
+        incident?.failureKind,
+      ) &&
+      !resourceGateFailure
+    ) {
+      resourceGateFailure = incident;
+      monitor.failTasks(incident.failureKind, incident);
+      stop.abort();
+    }
     if (stopRequested()) stop.abort();
     return stop.signal.aborted;
   };
@@ -1468,6 +1822,12 @@ async function runGateChecks(
       concurrency,
       stopRequested: stopping,
       diagnosticContext: { peerFile, deadlineLog, fixtureTag },
+      hostLanes: {
+        directory: hostDirectory,
+        capacity: limits.hostLanes,
+        signal: stop.signal,
+        parentLease: inheritedLease,
+      },
       onActiveChange(names) {
         writeFileSync(`${peerFile}.tmp`, JSON.stringify({ tasks: names }));
         renameSync(`${peerFile}.tmp`, peerFile);
@@ -1482,7 +1842,12 @@ async function runGateChecks(
               output: "",
             }
           : executeSuite(
-              row,
+              {
+                ...row,
+                resourceMonitor: monitor,
+                memoryLimits: limits,
+                hostDirectory,
+              },
               cwd,
               900_000,
               ({ name, message, elapsedMs }) =>
@@ -1501,23 +1866,55 @@ async function runGateChecks(
             console.log(`  [${row.name}] ${line}`);
       },
     });
-    if (stopping())
+    if (stopping() && (interrupted || !resourceGateFailure))
       throw new Error(
-        `Gate stopped by request after ${((Date.now() - started) / 1000).toFixed(1)} s; no check recorded for tree ${treeHash}`,
+        `Gate stopped by ${interrupted ?? "request"} after ${((Date.now() - started) / 1000).toFixed(1)} s; no check recorded for tree ${treeHash}`,
       );
     const failureComparisons = document
       ? await classifyDocumentFailures(repo, tasks, taskRows, {
           against,
           signal: stop.signal,
-          execute: (row, cwd, signal) =>
-            executeSuite(row, cwd, 900_000, undefined, signal),
+          execute: async (row, cwd, signal) => {
+            const lease = await acquireHostLanes({
+              directory: hostDirectory,
+              slots: reservedSlots(row, concurrency),
+              worktree: repo,
+              task: `base:${row.name}`,
+              signal,
+              parentLease: inheritedLease,
+            });
+            try {
+              return await executeSuite(
+                {
+                  ...row,
+                  hostLease: lease,
+                  executionEnvironment: {
+                    ...(row.executionEnvironment ?? process.env),
+                    DOTLN_HOST_LANE_LEASE: JSON.stringify({
+                      directory: hostDirectory,
+                      file: lease.file,
+                    }),
+                  },
+                  memoryLimits: limits,
+                  resourceMonitor: monitor,
+                  hostDirectory,
+                },
+                cwd,
+                900_000,
+                undefined,
+                signal,
+              );
+            } finally {
+              await lease.release();
+            }
+          },
         })
       : [];
     for (const observation of failureComparisons)
       console.log(
         `${observation.classification} ${observation.name} against ${observation.base ?? "unavailable"}${observation.reason ? `: ${observation.reason}` : ""}`,
       );
-    if (stopping())
+    if (stopping() && (interrupted || !resourceGateFailure))
       throw new Error("Gate stopped during base comparison; no check recorded");
     const rows = aggregateSuiteRows(selected, tasks, taskRows);
     const unchanged = gateCodeIdentity(repo) === codeIdentity;
@@ -1536,7 +1933,10 @@ async function runGateChecks(
       subject: treeHash,
       durationMs: Date.now() - started,
       exitCode:
-        completeCoverage(tasks, taskRows) && unchanged && !abandoned.length
+        completeCoverage(tasks, taskRows) &&
+        unchanged &&
+        !abandoned.length &&
+        !resourceGateFailure
           ? 0
           : 1,
       executed: true,
@@ -1563,6 +1963,19 @@ async function runGateChecks(
       taskTimeline: taskRows
         .filter((row) => row.startedAt)
         .map(({ output, ...row }) => row),
+      memory: {
+        ...monitor.close(),
+        budgets: limits,
+        ...(resourceGateFailure
+          ? {
+              failure: resourceGateFailure,
+              peakFootprintBytes: Math.max(
+                monitor.stats.peakFootprintBytes,
+                resourceGateFailure.measuredPeakFootprintBytes,
+              ),
+            }
+          : {}),
+      },
       deadlineDiagnostics: existsSync(deadlineLog)
         ? readFileSync(deadlineLog, "utf8")
             .split("\n")
@@ -1581,6 +1994,8 @@ async function runGateChecks(
     } catch {
       /* Standalone fixture. */
     }
+    if (stopping() && (interrupted || !resourceGateFailure))
+      throw new Error("Gate stopped before recording; no check recorded");
     if (!only && !machinery) recordGateChecks(repo, [check]);
     console.log(
       `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(check.durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh tasks${unchanged ? "" : "; code changed"}${abandoned.length ? `; abandoned fixture roots: ${abandoned.join(", ")}` : ""}${confinedPartial ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,
@@ -1588,6 +2003,10 @@ async function runGateChecks(
     return check;
   } finally {
     clearInterval(poll);
+    monitor.stopTasks();
+    monitor.close();
+    for (const [signal, handler] of Object.entries(handlers))
+      process.off(signal, handler);
     fixture?.cleanup();
   }
 }

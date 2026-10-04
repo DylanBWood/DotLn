@@ -225,6 +225,42 @@ The earlier `workspace-write` example below remains another sandboxed option.
 
 ## DotLn hook boundary — WO-144, 2026-09-19
 
+WO-185 adds resource supervision outside the tool-call approval boundary.
+A probe outside a gate runs under `node scripts/harness.mjs bounded -- <command>`,
+one process at a time, with the ordinary host permission decision. Dispatch
+registers a verified agent ancestor; one per-user guard watches attributable
+trees across all clones. The guard and runner use footprint budgets of one
+quarter of physical RAM per task, one half per gate and two thirds across
+attributed DotLn trees, with four shared weighted gate lanes. A breach kills
+the offending groups before attempting incident writes, then reports a typed
+incident and measured peak. An unavailable ledger or membership write cannot
+prevent the runner's stop; unavailable destinations and denied signals are
+named. The bounded wrapper preserves the probe's argv, caller environment,
+working directory and ordinary exit status, with a 900-second deadline and
+bounded output tail; memory-budget stops exit 125. The
+signal interval is one second and the steady footprint interval four seconds,
+with earlier startup, pressure and swap-growth censuses. At the recorded
+3.4 GiB/s rate, nominal interval growth is 3.4/13.6 GiB plus observation and
+cleanup latency; sampling is not a hard memory ceiling (WO-185 D026). The
+wrapper adds no allow-list entry, service installation or account setting.
+The macOS reader uses kernel footprint and process identities, with a native
+compiler required for its small helper; an unavailable ownership census never
+reclaims live reservations by a different identity format. Inherited output
+sockets supplement sampled ancestry for gate and bounded-command descendants
+without reading process environments, arguments or paths. Because the kernel
+recycles a freed socket's identity, a supervisor publishes such a watch only
+while it holds the captured endpoint open and withdraws it before release; the
+guard discards matches from a watch withdrawn during its census. Double forks
+that retain a socket are named and killed, and a recycled socket no longer
+adopts a process the task never started. Closing every mark before any ancestry observation still
+escapes this mechanism, as can an unwrapped bare tree with missing ancestry.
+The bounded-wrapper rule and that limit remain part of this resource posture.
+Fixture incidents and CLI guard roots belong to disposable fixtures. CLI tests
+replace the OS root observation inside their own process; production still
+resolves one per-user root independent of the environment. The seven earlier
+WO-185 test/probe rows are preserved in an ignored archive outside the real-work
+incident count (D012).
+
 DotLn's generated hooks refuse five conditions (WO-135, WO-139 and WO-144): a second live writer
 in the same worktree; a write to gate inputs or the success record during a live
 `npm test`; a classified repository write outside `docs/` and root Markdown

@@ -46,11 +46,16 @@ async function optionalCurrentSession(root, sessionId) {
 }
 
 const usage =
-  "usage: harness emit|check [--loadout contributor] [--profile id] [--out dir] | harness emit|check|remove --target worktree [--runtime-root launchpad] [--profile target-worker-claude|target-worker-codex] | harness evidence [--stop|--fail|--wait [--timeout <seconds>]] | harness usage <session> | harness read-output <path> [--offset <byte>] [--length <bytes>] | harness prune [--apply] | harness writer --show | harness writer --release [--force]";
+  "usage: harness bounded [--budget-bytes <reduced-byte-budget>] -- <command> [args...] | harness emit|check [--loadout contributor] [--profile id] [--out dir] | harness emit|check|remove --target worktree [--runtime-root launchpad] [--profile target-worker-claude|target-worker-codex] | harness evidence [--stop|--fail|--wait [--timeout <seconds>]] | harness usage <session> | harness read-output <path> [--offset <byte>] [--length <bytes>] | harness prune [--apply] | harness writer --show | harness writer --release [--force]";
 try {
   const root = harnessRoot(process.cwd());
   const [action, ...args] = process.argv.slice(2);
-  if (action === "prune") {
+  if (action === "bounded") {
+    const { boundedCommand } = await import("./lib/bounded-command.mjs");
+    const result = await boundedCommand(args, root);
+    process.exitCode =
+      result.failureKind === "memory-budget" ? 125 : result.exitCode;
+  } else if (action === "prune") {
     if (args.length > 1 || (args.length === 1 && args[0] !== "--apply"))
       throw new Error("usage: harness prune [--apply]");
     const { pruneHarness } = await import("./lib/harness-prune.mjs");

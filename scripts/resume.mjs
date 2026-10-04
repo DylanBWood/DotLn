@@ -2059,6 +2059,23 @@ const run = async (argv) => {
         await refreshExecutorIndex(repoRoot);
     }
     const codexDispatchRole = codexDispatchRoles[action];
+    // Every harness dispatches through this build-free command. Registration
+    // verifies ancestry rather than trusting an environment-supplied PID.
+    if (codexDispatchRole && (action !== "next" || state.phase === "active")) {
+      try {
+        const { registerAgentSession } =
+          await import("./lib/host-guard-state.mjs");
+        const registration = await registerAgentSession(repoRoot);
+        if (!registration.available)
+          process.stderr.write(
+            `DotLn guard registration unavailable: ${registration.reason}; gate and bounded-command supervision remain active.\n`,
+          );
+      } catch (error) {
+        process.stderr.write(
+          `DotLn guard registration unavailable: ${error.message}; gate and bounded-command supervision remain active.\n`,
+        );
+      }
+    }
     if (process.env.CODEX_THREAD_ID && codexDispatchRole) {
       if (existsSync(harnessHostPath)) {
         // The transition may already be recorded: a measurement failure is named

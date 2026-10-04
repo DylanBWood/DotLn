@@ -404,6 +404,41 @@ export function failureCounts(items, facts) {
 // without an order is unassigned. The page names the orders with the most
 // rows and counts the rest. A checkout without the index adds nothing.
 const LOCAL_ORDERS = 12;
+function localMemoryStops(root, includes) {
+  const file = join(dirname(checksPath(root)), "memory-incidents.jsonl");
+  if (!existsSync(file)) return null;
+  const byScope = {};
+  const countedStops = new Set();
+  let stops = 0;
+  for (const line of readFileSync(file, "utf8").split("\n")) {
+    if (!line) continue;
+    let row;
+    try {
+      row = JSON.parse(line);
+    } catch {
+      continue;
+    }
+    if (row.failureKind !== "memory-budget" || !includes(row)) continue;
+    // A guard and runner may both witness the same stopped tree. Preserve the
+    // incident attempts, but count its PID/birth identity once in this view.
+    if (typeof row.stopId === "string") {
+      if (countedStops.has(row.stopId)) continue;
+      countedStops.add(row.stopId);
+    }
+    stops++;
+    const scope = ["task", "gate", "host"].includes(row.scope)
+      ? row.scope
+      : "unknown";
+    byScope[scope] = (byScope[scope] ?? 0) + 1;
+  }
+  return {
+    source: "local",
+    counted:
+      "typed memory stops in this checkout's ignored incident ledger; counted only, separate from failed gate rows",
+    stops,
+    byScope,
+  };
+}
 function localGateFailures(root, includes) {
   if (!existsSync(checksPath(root))) return null;
   let rows;
@@ -817,6 +852,7 @@ function selection(root, options) {
   const record = failureRecord(root);
   const items = record.items.filter(view.includes).map(view.shown);
   const local = localGateFailures(root, view.includes);
+  const memory = localMemoryStops(root, view.includes);
   const shell = localShellDiagnostics(root, view.includes);
   const operational = operationalFailures(root, record.control, view.includes);
   return {
@@ -830,6 +866,7 @@ function selection(root, options) {
       record: failureCounts(record.items, record.facts),
     },
     ...(local ? { local } : {}),
+    ...(memory ? { memory } : {}),
     ...(shell ? { shell } : {}),
   };
 }
@@ -858,6 +895,7 @@ export function planningFailures(
     window: chosen.view.public,
     counts: chosen.counts,
     ...(chosen.local ? { localGateFailures: chosen.local } : {}),
+    ...(chosen.memory ? { localMemoryStops: chosen.memory } : {}),
     ...(chosen.shell ? { localShellDiagnostics: chosen.shell } : {}),
     ...Object.fromEntries(
       Object.entries(chosen.operational).filter(
@@ -892,6 +930,7 @@ export function exportFailures(
     window: chosen.view.public,
     counts: chosen.counts,
     ...(chosen.local ? { localGateFailures: chosen.local } : {}),
+    ...(chosen.memory ? { localMemoryStops: chosen.memory } : {}),
     ...(chosen.shell ? { localShellDiagnostics: chosen.shell } : {}),
     ...chosen.operational,
     items: chosen.items.length,
