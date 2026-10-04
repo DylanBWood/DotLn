@@ -1,0 +1,67 @@
+[
+  {
+    "name": "stale-runtime",
+    "revision": "efe62994",
+    "exitCode": 1,
+    "signal": null,
+    "command": [
+      "node",
+      "--test",
+      "--test-name-pattern=^WO-195 stale main",
+      "scripts/test-harness.mjs"
+    ],
+    "normalization": "Host temporary roots and interpreter path replaced with fixture/node labels."
+  },
+  {
+    "name": "printer-admission",
+    "revision": "efe62994",
+    "exitCode": 1,
+    "signal": null,
+    "command": [
+      "node",
+      "--test",
+      "--test-name-pattern=^WO-195 each script",
+      "scripts/test-harness.mjs"
+    ],
+    "normalization": "Host temporary roots and interpreter path replaced with fixture/node labels."
+  },
+  {
+    "name": "branch-preview",
+    "revision": "efe62994",
+    "exitCode": 1,
+    "signal": null,
+    "command": [
+      "bash",
+      "scripts/test-release.sh",
+      "--case",
+      "close_completion"
+    ],
+    "normalization": "Host temporary roots and interpreter path replaced with fixture/node labels."
+  },
+  {
+    "name": "sealed-removal",
+    "revision": "efe62994",
+    "exitCode": 1,
+    "signal": null,
+    "command": [
+      "bash",
+      "scripts/test-release.sh",
+      "--case",
+      "close_sealed"
+    ],
+    "normalization": "Host temporary roots and interpreter path replaced with fixture/node labels."
+  },
+  {
+    "name": "leftover-record",
+    "revision": "efe62994",
+    "exitCode": 1,
+    "signal": null,
+    "command": [
+      "bash",
+      "scripts/test-release.sh",
+      "--case",
+      "close_leftover"
+    ],
+    "normalization": "Host temporary roots and interpreter path replaced with fixture/node labels."
+  }
+]

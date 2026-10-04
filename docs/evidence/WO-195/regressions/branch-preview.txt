@@ -1,0 +1,4 @@
+PROGRESS release case close_completion started
+Material declared: {"path":".runtime/kept","lane":"other","disposition":"preserve","source":"declared","reason":"fixture preservation","state":{"worktree":"c5eb00bd712f7201ef7eba23dcdcf30a0e6d63ec7f0a444ceb09382d3a4ca4c5","sha256":"b2aba78ad19bfb6a3fdf44874203fcceb8c0670e5f172c56d7f30a03aeae4ed3"}}
+Preparing worktree (new branch 'wo-099')
+WO-195 branch deletion preview missing

@@ -1,0 +1,4 @@
+PROGRESS release case close_sealed started
+Material declared: {"path":".runtime/kept","lane":"other","disposition":"preserve","source":"declared","reason":"fixture preservation","state":{"worktree":"00e7a7fadc11fc504e4c368afc3b922f7a496a051320f53190371b9d150c3a88","sha256":"3ddf0aecdce4adf1fddd28670ae7b0909815066e1d986332adfeb67cf1f228d9"}}
+Preparing worktree (new branch 'wo-099')
+WO-195 subject directory remains after sealed removal
