@@ -192,21 +192,21 @@ control = recoveryInput ? await (async function operatorControl(input, event) {
     }
 })({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, event) : null;
 if (control && !control.overrideExit) { process.stdout.write(JSON.stringify(control)); } else {
-const { feedbackBoundary } = await import("../../.runtime/harness/55ea796ea35bc987/packages/skeleton/dist/src/feedback-boundary.js");
-const { runHarnessHook } = await import("../../.runtime/harness/55ea796ea35bc987/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/cc81c1cf2d6c588b/packages/skeleton/dist/src/feedback-boundary.js");
+const { runHarnessHook } = await import("../../.runtime/harness/cc81c1cf2d6c588b/packages/skeleton/dist/src/harness-host.js");
 await runHarnessHook({
-  "compilerPackageVersion": "0.25.0",
+  "compilerPackageVersion": "0.25.1",
   "runtime": {
-    "skeletonVersion": "0.34.2",
+    "skeletonVersion": "0.34.3",
     "boundaryContract": "feedback-v1",
     "files": [
       {
         "path": "packages/compiler/dist/src/artifact-identity.js",
-        "hash": "fnv1a64:0813478a22df6c70"
+        "hash": "fnv1a64:ac7fbdad85693b35"
       },
       {
         "path": "packages/compiler/dist/src/harness.js",
-        "hash": "fnv1a64:7305361a7fabff88"
+        "hash": "fnv1a64:6b0d0daa485c9640"
       },
       {
         "path": "packages/compiler/dist/src/codex-continuation.mjs",
@@ -230,7 +230,7 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:659392a1f79a5b41"
+        "hash": "fnv1a64:a3b12ad4bc4fcfa5"
       },
       {
         "path": "packages/skeleton/dist/src/subagent-budget.js",
@@ -254,7 +254,7 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/version.js",
-        "hash": "fnv1a64:47e6c473f5964c48"
+        "hash": "fnv1a64:84e02c6b8b69e1d9"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
@@ -274,7 +274,7 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/writer-teardown.mjs",
-        "hash": "fnv1a64:ac3366341b79a0d2"
+        "hash": "fnv1a64:1b40a187193a47a0"
       },
       {
         "path": "packages/skeleton/dist/src/reactor.js",
@@ -361,7 +361,7 @@ await runHarnessHook({
         "hash": "fnv1a64:5ad495017c40b9b2"
       }
     ],
-    "snapshot": ".runtime/harness/55ea796ea35bc987"
+    "snapshot": ".runtime/harness/cc81c1cf2d6c588b"
   },
   "event": "PreToolUse",
   "tools": {
@@ -607,12 +607,105 @@ await runHarnessHook({
   ]
 }, feedbackBoundary, input, rawInput, control);
 }
-} catch { if (control?.overrideExit) { const { overrideExit, ...exited } = control; const advisory = "DotLn advisory: the pinned runtime is unavailable, so OperatorOverrideRecorded was not appended. " + overrideExit.advisory; process.stdout.write(JSON.stringify({ systemMessage: exited.systemMessage + " " + advisory, hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: advisory } })); } else { const fs = await import("node:fs");
+} catch { if (control?.overrideExit) { const { overrideExit, ...exited } = control; const advisory = "DotLn advisory: the pinned runtime is unavailable, so OperatorOverrideRecorded was not appended. " + overrideExit.advisory; process.stdout.write(JSON.stringify({ systemMessage: exited.systemMessage + " " + advisory, hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: advisory } })); } else { const recovered = await (async function recoverReleaseClose(root, hook, input, event) {
+    if (event !== "UserPromptSubmit" ||
+        input?.prompt?.trim() !== "resume: release close" ||
+        process.env.COPILOT_PROJECT_DIR ||
+        process.env.COPILOT_AGENT_SESSION_ID)
+        return null;
+    try {
+        const { realpathSync } = await import("node:fs");
+        const { join } = await import("node:path");
+        const { pathToFileURL } = await import("node:url");
+        const { spawnSync } = await import("node:child_process");
+        if (!input.session_id)
+            throw new Error("recorded session identity missing");
+        if (!input.cwd || realpathSync(input.cwd) !== realpathSync(root))
+            throw new Error("cwd is not the main checkout root");
+        if (process.env.DOTLN_RELEASE_CLOSE_PREPARED_ROOT === root)
+            throw new Error("pinned runtime remains unavailable after one preparation");
+        const run = (command, args) => spawnSync(command, args, {
+            cwd: root,
+            encoding: "utf8",
+            timeout: 120_000,
+            maxBuffer: 4 * 1024 * 1024,
+        });
+        const worktrees = run("git", ["worktree", "list", "--porcelain"]);
+        const main = worktrees.stdout
+            ?.split("\n\n")
+            .find((row) => row.split("\n").includes("branch refs/heads/main"))
+            ?.split("\n")[0]
+            ?.replace(/^worktree /, "");
+        if (worktrees.status !== 0 ||
+            !main ||
+            realpathSync(main) !== realpathSync(root))
+            throw new Error("main checkout fact unavailable");
+        const observed = run(process.execPath, [
+            join(root, "scripts/resume.mjs"),
+            "status",
+            "--json",
+        ]);
+        if (observed.status !== 0)
+            throw new Error("canonical release-close status unavailable");
+        let status;
+        try {
+            status = JSON.parse(observed.stdout);
+        }
+        catch {
+            throw new Error("canonical release-close status unreadable");
+        }
+        if (!/^WO-\d{3}$/.test(status.workOrder ?? "") ||
+            !status.legalNextActions?.includes("release-close"))
+            throw new Error("canonical release-close is not legal for the selected order");
+        const { withWriterReservationLock, writerTeardownBlocker } = await import(pathToFileURL(join(root, "packages/skeleton/src/writer-teardown.mjs"))
+            .href);
+        const { activeGateRuns } = await import(pathToFileURL(join(root, "packages/skeleton/src/gate-evidence.mjs")).href);
+        withWriterReservationLock(root, () => {
+            const writer = writerTeardownBlocker(root);
+            if (writer)
+                throw new Error(writer);
+            if (activeGateRuns(root).length)
+                throw new Error("active gate; runtime preparation withheld");
+            for (const [command, args] of [
+                ["npm", ["run", "build", "--silent"]],
+                [process.execPath, [join(root, "scripts/harness.mjs"), "emit"]],
+            ]) {
+                const prepared = run(command, [...args]);
+                if (prepared.status !== 0)
+                    throw new Error(`runtime preparation failed at ${command} ${args.join(" ")}: ${String(prepared.stderr ||
+                        prepared.stdout ||
+                        prepared.error?.message ||
+                        "unknown")
+                        .trim()
+                        .slice(0, 600)}`);
+            }
+        });
+        const replay = spawnSync(process.execPath, [hook], {
+            cwd: root,
+            encoding: "utf8",
+            input: JSON.stringify(input),
+            timeout: 30_000,
+            maxBuffer: 4 * 1024 * 1024,
+            env: { ...process.env, DOTLN_RELEASE_CLOSE_PREPARED_ROOT: root },
+        });
+        if (replay.status !== 0 || !replay.stdout?.trim())
+            throw new Error("prepared normal dispatch hook unavailable");
+        JSON.parse(replay.stdout);
+        return { response: replay.stdout };
+    }
+    catch (error) {
+        return {
+            advisory: `Release-close preparation withheld: ${error instanceof Error ? error.message : String(error)}; no fallback dispatch or admission invented.`,
+        };
+    }
+})((await import("node:url")).fileURLToPath(new URL("../../", import.meta.url)), (await import("node:url")).fileURLToPath(import.meta.url), input, "PreToolUse");
+if (recovered?.response) { process.stdout.write(recovered.response); } else {
+const fs = await import("node:fs");
 const { join } = await import("node:path");
 const { createHash } = await import("node:crypto");
 const { fileURLToPath } = await import("node:url");
 const root = fileURLToPath(new URL("../../", import.meta.url));
-const snapshot = ".runtime/harness/55ea796ea35bc987";
+const snapshot = ".runtime/harness/cc81c1cf2d6c588b";
 let cause = snapshot && !fs.existsSync(join(root, snapshot)) ? "snapshot-missing" : "runtime-unavailable";
 try {
   const hash = (value) => {
@@ -621,7 +714,7 @@ try {
         hash = ((hash ^ BigInt(byte)) * 0x100000001b3n) & 0xffffffffffffffffn;
     return hash.toString(16).padStart(16, "0");
 };
-  for (const file of [{"path":"packages/compiler/dist/src/artifact-identity.js","hash":"fnv1a64:0813478a22df6c70"},{"path":"packages/compiler/dist/src/harness.js","hash":"fnv1a64:7305361a7fabff88"},{"path":"packages/compiler/dist/src/codex-continuation.mjs","hash":"fnv1a64:31bfebf311f308ea"},{"path":"packages/compiler/dist/src/feedback.js","hash":"fnv1a64:aa8277e768c71730"},{"path":"packages/compiler/dist/src/attribution.mjs","hash":"fnv1a64:962a971d8f8f42ac"},{"path":"packages/skeleton/dist/src/feedback-boundary.js","hash":"fnv1a64:d14b87587f87cd52"},{"path":"packages/skeleton/dist/src/feedback-source-comments.js","hash":"fnv1a64:f6ce0c206b559a27"},{"path":"packages/skeleton/dist/src/harness-host.js","hash":"fnv1a64:659392a1f79a5b41"},{"path":"packages/skeleton/dist/src/subagent-budget.js","hash":"fnv1a64:760d2e9ed61981bd"},{"path":"packages/skeleton/dist/src/observed-facts.js","hash":"fnv1a64:42f51218f3c3a4e6"},{"path":"packages/skeleton/dist/src/correction-observation.mjs","hash":"fnv1a64:9de0f1abc1c9c83b"},{"path":"packages/skeleton/dist/src/source-change-command.js","hash":"fnv1a64:823fe16591fa4dba"},{"path":"packages/skeleton/dist/src/source-change-state.js","hash":"fnv1a64:c37242cb80738d4d"},{"path":"packages/skeleton/dist/src/version.js","hash":"fnv1a64:47e6c473f5964c48"},{"path":"packages/skeleton/dist/src/harness-command.js","hash":"fnv1a64:becd80a79da2bdac"},{"path":"packages/skeleton/dist/src/gate-evidence.mjs","hash":"fnv1a64:19e03d06842e5cdb"},{"path":"packages/skeleton/dist/src/gate-deadlines.mjs","hash":"fnv1a64:fed0ae4064c93d4a"},{"path":"packages/skeleton/dist/src/usage-observation.mjs","hash":"fnv1a64:3577a13e2e834daf"},{"path":"packages/skeleton/dist/src/writer-teardown.mjs","hash":"fnv1a64:ac3366341b79a0d2"},{"path":"packages/skeleton/dist/src/reactor.js","hash":"fnv1a64:646c107a37e632d7"},{"path":"packages/skeleton/dist/src/repair.js","hash":"fnv1a64:61d8ccfed3ce0e72"},{"path":"packages/skeleton/dist/src/resident-state.js","hash":"fnv1a64:18e9b19cebe32004"},{"path":"packages/skeleton/dist/src/presence-signals.js","hash":"fnv1a64:2c8021c360896c08"},{"path":"packages/skeleton/dist/src/presence-heartbeat.js","hash":"fnv1a64:d34990f3e67a6180"},{"path":"packages/skeleton/dist/src/resident-store.js","hash":"fnv1a64:339def7a267a6998"},{"path":"packages/skeleton/dist/src/worker-store.js","hash":"fnv1a64:b61e6b191747907a"},{"path":"packages/skeleton/dist/src/verification-protocol.js","hash":"fnv1a64:b1b6c34f37bfa534"},{"path":"packages/skeleton/dist/src/plan-refutation-protocol.js","hash":"fnv1a64:ded0b23c9969f6b5"},{"path":"packages/skeleton/dist/src/worker-protocol.js","hash":"fnv1a64:023351024fb98b7e"},{"path":"packages/skeleton/dist/src/presence-machine.js","hash":"fnv1a64:8c293a04a096332e"},{"path":"packages/skeleton/dist/src/actor-catalog.js","hash":"fnv1a64:50911f5ff72a4f8a"},{"path":"packages/skeleton/dist/src/actor-contract.js","hash":"fnv1a64:ca5ebec3f7b6fe43"},{"path":"packages/skeleton/dist/src/cli-actor-contract.js","hash":"fnv1a64:872502f1ee6a8e10"},{"path":"packages/skeleton/dist/src/handoff-contract.js","hash":"fnv1a64:91441a878612f03f"},{"path":"packages/skeleton/dist/src/work-candidate.js","hash":"fnv1a64:4d2eae3f98d79433"},{"path":"packages/skeleton/dist/src/script-episode.js","hash":"fnv1a64:968721357bd9e006"},{"path":"packages/skeleton/dist/src/discovery-sandbox.js","hash":"fnv1a64:188b307b48660846"},{"path":"packages/skeleton/dist/src/discovery-actor.js","hash":"fnv1a64:22d10e334cd2edfc"},{"path":"packages/skeleton/dist/src/discovery-cli.js","hash":"fnv1a64:5206b2bb4f28940f"},{"path":"packages/skeleton/dist/src/discovery.js","hash":"fnv1a64:5ad495017c40b9b2"}]) {
+  for (const file of [{"path":"packages/compiler/dist/src/artifact-identity.js","hash":"fnv1a64:ac7fbdad85693b35"},{"path":"packages/compiler/dist/src/harness.js","hash":"fnv1a64:6b0d0daa485c9640"},{"path":"packages/compiler/dist/src/codex-continuation.mjs","hash":"fnv1a64:31bfebf311f308ea"},{"path":"packages/compiler/dist/src/feedback.js","hash":"fnv1a64:aa8277e768c71730"},{"path":"packages/compiler/dist/src/attribution.mjs","hash":"fnv1a64:962a971d8f8f42ac"},{"path":"packages/skeleton/dist/src/feedback-boundary.js","hash":"fnv1a64:d14b87587f87cd52"},{"path":"packages/skeleton/dist/src/feedback-source-comments.js","hash":"fnv1a64:f6ce0c206b559a27"},{"path":"packages/skeleton/dist/src/harness-host.js","hash":"fnv1a64:a3b12ad4bc4fcfa5"},{"path":"packages/skeleton/dist/src/subagent-budget.js","hash":"fnv1a64:760d2e9ed61981bd"},{"path":"packages/skeleton/dist/src/observed-facts.js","hash":"fnv1a64:42f51218f3c3a4e6"},{"path":"packages/skeleton/dist/src/correction-observation.mjs","hash":"fnv1a64:9de0f1abc1c9c83b"},{"path":"packages/skeleton/dist/src/source-change-command.js","hash":"fnv1a64:823fe16591fa4dba"},{"path":"packages/skeleton/dist/src/source-change-state.js","hash":"fnv1a64:c37242cb80738d4d"},{"path":"packages/skeleton/dist/src/version.js","hash":"fnv1a64:84e02c6b8b69e1d9"},{"path":"packages/skeleton/dist/src/harness-command.js","hash":"fnv1a64:becd80a79da2bdac"},{"path":"packages/skeleton/dist/src/gate-evidence.mjs","hash":"fnv1a64:19e03d06842e5cdb"},{"path":"packages/skeleton/dist/src/gate-deadlines.mjs","hash":"fnv1a64:fed0ae4064c93d4a"},{"path":"packages/skeleton/dist/src/usage-observation.mjs","hash":"fnv1a64:3577a13e2e834daf"},{"path":"packages/skeleton/dist/src/writer-teardown.mjs","hash":"fnv1a64:1b40a187193a47a0"},{"path":"packages/skeleton/dist/src/reactor.js","hash":"fnv1a64:646c107a37e632d7"},{"path":"packages/skeleton/dist/src/repair.js","hash":"fnv1a64:61d8ccfed3ce0e72"},{"path":"packages/skeleton/dist/src/resident-state.js","hash":"fnv1a64:18e9b19cebe32004"},{"path":"packages/skeleton/dist/src/presence-signals.js","hash":"fnv1a64:2c8021c360896c08"},{"path":"packages/skeleton/dist/src/presence-heartbeat.js","hash":"fnv1a64:d34990f3e67a6180"},{"path":"packages/skeleton/dist/src/resident-store.js","hash":"fnv1a64:339def7a267a6998"},{"path":"packages/skeleton/dist/src/worker-store.js","hash":"fnv1a64:b61e6b191747907a"},{"path":"packages/skeleton/dist/src/verification-protocol.js","hash":"fnv1a64:b1b6c34f37bfa534"},{"path":"packages/skeleton/dist/src/plan-refutation-protocol.js","hash":"fnv1a64:ded0b23c9969f6b5"},{"path":"packages/skeleton/dist/src/worker-protocol.js","hash":"fnv1a64:023351024fb98b7e"},{"path":"packages/skeleton/dist/src/presence-machine.js","hash":"fnv1a64:8c293a04a096332e"},{"path":"packages/skeleton/dist/src/actor-catalog.js","hash":"fnv1a64:50911f5ff72a4f8a"},{"path":"packages/skeleton/dist/src/actor-contract.js","hash":"fnv1a64:ca5ebec3f7b6fe43"},{"path":"packages/skeleton/dist/src/cli-actor-contract.js","hash":"fnv1a64:872502f1ee6a8e10"},{"path":"packages/skeleton/dist/src/handoff-contract.js","hash":"fnv1a64:91441a878612f03f"},{"path":"packages/skeleton/dist/src/work-candidate.js","hash":"fnv1a64:4d2eae3f98d79433"},{"path":"packages/skeleton/dist/src/script-episode.js","hash":"fnv1a64:968721357bd9e006"},{"path":"packages/skeleton/dist/src/discovery-sandbox.js","hash":"fnv1a64:188b307b48660846"},{"path":"packages/skeleton/dist/src/discovery-actor.js","hash":"fnv1a64:22d10e334cd2edfc"},{"path":"packages/skeleton/dist/src/discovery-cli.js","hash":"fnv1a64:5206b2bb4f28940f"},{"path":"packages/skeleton/dist/src/discovery.js","hash":"fnv1a64:5ad495017c40b9b2"}]) {
     if (fs.existsSync(join(root, file.path)) && "fnv1a64:" + hash(fs.readFileSync(join(root, file.path), "utf8")) !== file.hash) {
       cause = "pins-differ";
       break;
@@ -636,7 +729,7 @@ try {
     }
   }
 } catch {}
-const advisory = "DotLn advisory: " + cause + ": built adapter unavailable; run node scripts/bootstrap.mjs to prepare this worktree; host permissions decide.";
+const advisory = "DotLn advisory: " + cause + ": built adapter unavailable; run node scripts/bootstrap.mjs to prepare this worktree; host permissions decide." + (recovered?.advisory ? " " + recovered.advisory : "");
 const response = (function showHarnessAdvisory(sessionId, event, cause, claimMarker) {
     if (event === "PostToolUse")
         return false;
@@ -667,4 +760,4 @@ try {
   if (!fs.existsSync(path) || fs.lstatSync(path).isFile())
     fs.appendFileSync(path, JSON.stringify({ recordedAt: new Date().toISOString(), event: "PreToolUse", advisory, delegated: true }) + "\n", { mode: 0o600 });
 } catch {}
-process.stdout.write(JSON.stringify(response)); } }
+process.stdout.write(JSON.stringify(response)); } } }

@@ -1098,6 +1098,11 @@ missing/current runtime output for the named projection comparisons, without
 the product or machinery fixture suites. The [receipt convention](../planning/refutations/README.md)
 details the result and provenance contracts.
 
+After the refutation receipt is filed with its holds answered and
+`npm run test:docs` is green, a planning or ideation pass on a planning branch
+pushes that branch and opens its `:memo:` pull request. The dispatch phrase is
+the operator's authorization for those two effects; the pass never merges.
+
 The refuter's platform-first standard is the operator's direction of 2026-09-12: the point is to create a platform, not to prove every
 constructible case before filing, and the refutation pass must be made worth
 its cost before a later pass pays it again. New judgments use `aligned`,
@@ -1350,6 +1355,19 @@ exact helper command printed by `resume release-close` in main or `worktree publ
 Run main's helper with main as the working directory; retries use the same
 updated main after the subject is removed.
 
+Run the printed helper exactly as printed, with no redirect, prefix, `cd` or
+pipe. Its stdout is a summary; the full output is retained beside
+`release-close.json` and the summary names that report. A close is done when
+the tag and Release exist, no worktree for the order appears in
+`git worktree list`, its directory is gone and `git branch --list wo-NNN` is
+empty. The lower-version no-release outcome remains explicit. Diagnose and
+finish cleanup blockers in the dispatched session; re-running the same command
+re-checks an existing Release and never publishes twice. A retry after main
+moves can refuse and remains a blocker. Retry a host denial of the exact
+command once through the host permission flow before handing the operator the
+printed command for `!`. Material dispositions remain the operator's through
+`--material`; teardown is never forced.
+
 The command proves origin reachability first, fast-forwards main, checks the
 README release block, component bumps, notes profile and license pins, and
 builds missing skeleton/kernel dist using installed dependencies. It consumes
@@ -1377,6 +1395,24 @@ bundled and verified. Declare with `worktree material <path> --preserve|--dispos
 --reason <text>`. Close's `--material [<absolute-worktree>::]<path>=disposable|preserve`
 settles unknowns by worktree. Attempts record `release-close.json` there;
 record I/O only advises.
+
+After preservation verifies, removal restores write permission on directories
+inside the subject that the current user owns, without following symbolic
+links. A retained receipt binds the original subject path, its contents and
+preserved destinations. A directory Git has already unregistered remains a
+blocker until it is gone; the same helper removes it only after that receipt
+verifies and writer/gate ownership is clear. Once the worktree and directory
+are gone, the run deletes the merged branch. Dry runs show that deletion.
+
+Leftover verification temporarily opens the anchored restricted beacon
+directories and restores their original permissions when they survive. A
+retry follows each path's latest cleanup outcome and resolves only blockers
+bound to the path it removed; every retained row carries a reason and retry.
+If close history is missing or unreadable, the order's retained removal receipts
+can recover candidate paths, whose preservation proofs still decide removal.
+When those receipts cannot distinguish the primary subject from a derivative,
+the branch stays until every recovered candidate is gone. Paths already
+recorded removed are excluded even if their old receipts survive.
 
 `--dry-run` previews the prospective merged revision, manifest and cleanup
 without moving main, registering/removing a worktree or publishing. It fetches

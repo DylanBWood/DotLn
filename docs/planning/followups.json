@@ -11842,6 +11842,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-04T14:19:28.766Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Kept open by WO-195's final review with a new measurement. WO-195 adds 323 bytes to the release-close role and 296 to the planner. node scripts/harness-context.mjs --check reports every role within its ceiling: executor 28,457 of 29,246; verifier 24,955 of 25,151; reviewer 26,237 of 28,884; release-close 17,660 of 21,266; planner 19,478 of 24,576. The refuter has no ceiling. The efficiency redesign this row holds is still undecided. [WO-195 final review (docs/final-reviews/WO-195/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-04T16:21:50.507Z"
         }
       ]
     },
@@ -20419,6 +20427,14 @@
           "reopenWhen": "a real release close leaves main reserved or reclaims a live session's reservation, or the shell fixture's adapter diverges from the runtime's writer protocol",
           "targets": [],
           "at": "2026-10-03T16:13:47.186Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-195's final review. WO-195 changes when release close releases the writer: a close whose cleanup is blocked keeps the dispatched session's reservation for its same-session retry (WO-195-D009). The release fixtures still use the shell adapter, and no real close has run this code. This order's own close from merged main is the first. [WO-195 final review (docs/final-reviews/WO-195/FINAL-001.md)]",
+          "reopenWhen": "a real release close leaves main reserved or reclaims a live session's reservation, or the shell fixture's adapter diverges from the runtime's writer protocol",
+          "targets": [],
+          "at": "2026-10-04T16:21:50.357Z"
         }
       ]
     },
@@ -25998,6 +26014,14 @@
           "reopenWhen": "A real retry meets moved main, history storage becomes a measured bottleneck, overlapping closes lose an attempt, or an order changes ensureExistingRelease.",
           "targets": [],
           "at": "2026-10-03T16:13:47.123Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-195's final review, as the order's known issues require. WO-195 reads retained close history per path and recovers removal receipts, but leaves ensureExistingRelease unchanged, and no real retry has met moved main. The release-close role now names a retry after main moves as a blocker. [WO-195 final review (docs/final-reviews/WO-195/FINAL-001.md)]",
+          "reopenWhen": "A real retry meets moved main, history storage becomes a measured bottleneck, overlapping closes lose an attempt, or an order changes ensureExistingRelease.",
+          "targets": [],
+          "at": "2026-10-04T16:21:50.408Z"
         }
       ]
     },
@@ -27502,9 +27526,25 @@
           "title": "WO-185-D016: Validate worktree publish --target arguments, and any action that needs no launchpad, before resolving the main-branch control-plane worktree in scripts/worktree.mjs, so usage errors and ",
           "summary": "{ \"id\": \"WO-185-D016\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: fix; operator direction at the repair-complete refusal\", \"decision\": \"Hold repair-complete until a complete npm test -- --review row passes for the current selection while a main-branch worktree exists, as the operator directed, and board the worktree CLI's ordering defect as a follow-up instead of repairing it in WO-185.\", \"evidence\": [ \"repair-complete refused shortly after the 2026-10-03T16:02:17Z handoff usage readback: criteria 2 and 8 name npm test -- --review, and the passing 15:52:30.844Z row (40 suites) lacks evidence-sources, artifact-evidence and verification-evidence. origin/main had advanced to efe62994 (WO-184, #",
           "missing": false
+        },
+        {
+          "hash": "42683f072318ebb8f50ec1d7dbaa4d3802222618e9ad7bc8af9b7092695c2f7e",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d016--review-gate-held-for-a-main-branch-worktree",
+          "title": "WO-185-D016: Validate worktree publish --target arguments, and any action that needs no launchpad, before resolving the main-branch control-plane worktree in scripts/worktree.mjs, so usage errors and ",
+          "summary": "{ \"id\": \"WO-185-D016\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: fix; operator direction at the repair-complete refusal\", \"decision\": \"Hold repair-complete until a complete npm test -- --review row passes for the current selection while a main-branch worktree exists, as the operator directed, and board the worktree CLI's ordering defect as a follow-up instead of repairing it in WO-185.\", \"evidence\": [ \"repair-complete refused shortly after the 2026-10-03T16:02:17Z handoff usage readback: criteria 2 and 8 name npm test -- --review, and the passing 15:52:30.844Z row (40 suites) lacks evidence-sources, artifact-evidence and verification-evidence. origin/main had advanced to efe62994 (WO-184, #",
+          "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 5,
+          "status": "deferred",
+          "reason": "Deferred by WO-195's final review in WO-195-D021. worktree publish --target still resolves the main-branch worktree (scripts/worktree.mjs:431) before it checks its arguments (:487-497). WO-195 declares the file but changes neither region, and the defect is unrelated to its criteria. A fix is new behavioral code, which a reviewer may not write and certify. [WO-195 final review (docs/final-reviews/WO-195/FINAL-001.md)]",
+          "reopenWhen": "An order's criteria or design touch scripts/worktree.mjs action dispatch or argument checks, a gate again fails target-publish's usage case while no worktree has main checked out, or an operator meets the misleading error at a real target publish.",
+          "targets": [],
+          "at": "2026-10-04T16:21:50.307Z"
+        }
+      ]
     },
     {
       "id": "FUP-84cf4b296783d303",
@@ -27623,6 +27663,38 @@
           "reopenWhen": "A plan failures count exceeds the stopped trees it reports, a guard-originated SIGTERM ends a gate as an operator stop with no row, a nested gate waits on its own parent's lanes, or a later order edits these guard or runner paths.",
           "targets": [],
           "at": "2026-10-04T14:19:28.618Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-195's final review. WO-195 edits scripts/test-runner.mjs only in its machinery-source table, declaring the order's new and changed close-path sources. It opens none of the five guard or runner paths, and none of their conditions was observed. WO-186 still opens the runner next. [WO-195 final review (docs/final-reviews/WO-195/FINAL-001.md)]",
+          "reopenWhen": "A plan failures count exceeds the stopped trees it reports, a guard-originated SIGTERM ends a gate as an operator stop with no row, a nested gate waits on its own parent's lanes, or a later order edits these guard or runner paths.",
+          "targets": [],
+          "at": "2026-10-04T16:21:50.458Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f9c8560de28a24e0",
+      "key": "decision:docs/evidence/WO-195/decisions.md#wo-195-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "796b74a434f812d063fea343d2c22d10dc64f7934bde37c19ee9fd92b091ad0b",
+          "ref": "docs/evidence/WO-195/decisions.md#wo-195-d012--verification-fail-on-criterion-3-three-findings-to-the-repair",
+          "title": "WO-195-D012: WO-195 resume: fix. (F1) Every line release close writes during a close reaches the retained report, and stdout carries only the summary. Route the no-release refreshHarnessRuntime line t",
+          "summary": "{ \"id\": \"WO-195-D012\", \"date\": \"2026-10-04\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on criterion 3 alone. In a no-release close (the order's version is below the latest release) whose pinned runtime is stale, scripts/release.mjs:2128 calls refreshHarnessRuntime, which writes 'Refreshing pinned runtime (<cause>); npm run build.' straight to process.stdout (scripts/lib/harness-runtime.mjs:199) instead of through writeOutput. That line still reaches stdout ahead of the summary, and the retained full report does not hold it, so the report does not hold what standard output holds today on that path. The other seven criteria are met. Three further findi",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-195's final review. F1 and R1 to R3 were repaired in D013 to D016. VER-002 ran runtime_refresh, close_leftover, close_retry_paths and close_receipt_recovery failing against checkpoint 5 and passing at the integrated subject, and this review's fresh npm test -- --again --review passed them. [WO-195 final review (docs/final-reviews/WO-195/FINAL-001.md)]",
+          "reopenWhen": "A live close writes a close-path line its retained report lacks, a leftover blocker survives a receipt that verifies, or a retry clears a blocker bound to another path.",
+          "targets": [],
+          "at": "2026-10-04T16:21:50.255Z"
         }
       ]
     }

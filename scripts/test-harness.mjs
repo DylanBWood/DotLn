@@ -1,4 +1,12 @@
-import { runGit, shellQuote } from "./lib/git.mjs";
+import * as gitCommands from "./lib/git.mjs";
+const { runGit, shellQuote } = gitCommands;
+// The compatibility spelling lets the new behavioral fixtures execute against
+// the named prior revision, where the exported builder does not exist yet.
+const releaseCloseCommand =
+  gitCommands.releaseCloseCommand ??
+  ((main, order, mode = "--publish") =>
+    `${shellQuote(process.execPath)} ${shellQuote(join(main, "scripts/release.mjs"))} close ${order} ${mode}`);
+import { materialCloseCommand } from "./lib/worktree-material.mjs";
 import { write, json, sha256Hex as sha256 } from "./lib/helpers.mjs";
 import "./test-fixture-temporary.mjs";
 import test from "node:test";
@@ -1259,6 +1267,7 @@ test("WO-178 Stop names only journaled dispatches without terminal observations"
 test("WO-178 exact close helper admission requires the recorded dispatch, main and legal order", () => {
   const root = fixture();
   try {
+    runGit(root, ["switch", "-c", "main"], fixtureGitOptions);
     const status = {
       ...control,
       phase: "closed",
@@ -1350,6 +1359,252 @@ test("WO-178 exact close helper admission requires the recorded dispatch, main a
     assert.notEqual(response.hookSpecificOutput?.permissionDecision, "allow");
   } finally {
     rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-195 stale main prepares the runtime then records the normal release-close dispatch", () => {
+  const root = fixture();
+  try {
+    const settings = JSON.parse(
+      readFileSync(join(root, ".claude/settings.json"), "utf8"),
+    );
+    const sessionHook = settings.hooks.UserPromptSubmit.flatMap(
+      (row) => row.hooks,
+    ).find((row) => row.command.includes(".claude/hooks/session.mjs"));
+    assert.ok(sessionHook.timeout * 1000 > 4 * 120_000 + 30_000);
+    runGit(root, ["switch", "-c", "main"], fixtureGitOptions);
+    write(
+      root,
+      "docs/control/fixture-status.json",
+      json({
+        ...control,
+        phase: "closed",
+        legalNextActions: ["release-close"],
+      }),
+    );
+    cpSync(
+      join(sourceRoot, "packages/skeleton/src"),
+      join(root, "packages/skeleton/src"),
+      { recursive: true },
+    );
+    const host = "packages/skeleton/dist/src/harness-host.js";
+    write(
+      root,
+      ".runtime/saved-host.js",
+      readFileSync(join(root, host), "utf8"),
+    );
+    write(
+      root,
+      "fixture-build.mjs",
+      `import {copyFileSync} from 'node:fs'; copyFileSync('.runtime/saved-host.js', '${host}');`,
+    );
+    const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+    pkg.scripts.build = "node fixture-build.mjs";
+    write(root, "package.json", json(pkg));
+    // A merge supplies new hook pins but main has neither their snapshot nor
+    // the matching built adapter. The build fixture restores the current bytes.
+    rmSync(join(root, ".runtime/harness"), { recursive: true, force: true });
+    appendFileSync(
+      join(root, host),
+      '\nthrow new Error("fixture stale adapter");\n',
+    );
+    const response = invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: release close" }),
+    );
+    assert.match(
+      response.hookSpecificOutput?.additionalContext ??
+        response.systemMessage ??
+        "",
+      /Dispatch recorded by the harness/,
+    );
+    const admitted = invoke(
+      root,
+      "permissions",
+      input(root, "PreToolUse", {
+        tool_name: "Bash",
+        tool_input: { command: releaseCloseCommand(root, "WO-999") },
+      }),
+    );
+    assert.equal(admitted.hookSpecificOutput?.permissionDecision, "allow");
+    const journal = join(
+      root,
+      "docs/control/local/harness",
+      createHash("sha256").update("synthetic-session").digest("hex") + ".jsonl",
+    );
+    const rows = readFileSync(journal, "utf8")
+      .trim()
+      .split("\n")
+      .map(JSON.parse);
+    assert.equal(
+      rows.filter(
+        (row) =>
+          row.dispatch?.action === "release-close" && row.dispatch.recorded,
+      ).length,
+      1,
+    );
+    assert.ok(rows.some((row) => row.releaseCloseAdmission === "WO-999"));
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-195 stale fallback withholds preparation and names a missing admission fact", () => {
+  for (const mode of ["session", "cwd", "main", "legal", "status", "writer"]) {
+    const root = fixture();
+    try {
+      if (mode !== "main")
+        runGit(root, ["switch", "-c", "main"], fixtureGitOptions);
+      cpSync(
+        join(sourceRoot, "packages/skeleton/src"),
+        join(root, "packages/skeleton/src"),
+        { recursive: true },
+      );
+      write(
+        root,
+        "docs/control/fixture-status.json",
+        mode === "status"
+          ? "unreadable"
+          : json({
+              ...control,
+              phase: "closed",
+              legalNextActions: mode === "legal" ? [] : ["release-close"],
+            }),
+      );
+      if (mode === "writer")
+        write(
+          root,
+          "docs/control/local/harness/writer.json",
+          json({ session: "fixture-other-writer" }),
+        );
+      rmSync(join(root, ".runtime/harness"), { recursive: true, force: true });
+      const response = invoke(
+        root,
+        "session",
+        input(root, "UserPromptSubmit", {
+          prompt: "resume: release close",
+          ...(mode === "session" ? { session_id: undefined } : {}),
+          ...(mode === "cwd" ? { cwd: join(root, "docs") } : {}),
+        }),
+      );
+      const fact = {
+        session: /session identity missing/,
+        cwd: /cwd is not/,
+        main: /main checkout fact unavailable/,
+        legal: /canonical release-close is not legal/,
+        status: /canonical release-close status unreadable/,
+        writer: /writer reservation/,
+      }[mode];
+      assert.match(response.systemMessage, fact, mode);
+      assert.notEqual(response.hookSpecificOutput?.permissionDecision, "allow");
+      assert.doesNotMatch(
+        response.hookSpecificOutput?.additionalContext ?? "",
+        /Dispatch recorded by the harness/,
+      );
+    } finally {
+      removeFixture(root, { recursive: true, force: true });
+    }
+  }
+});
+
+test("WO-195 each script printer produces admitted bytes and missing facts are named", () => {
+  const root = fixture();
+  try {
+    runGit(root, ["switch", "-c", "main"], fixtureGitOptions);
+    const status = {
+      ...control,
+      phase: "closed",
+      legalNextActions: ["release-close"],
+    };
+    write(root, "docs/control/fixture-status.json", json(status));
+    const command = releaseCloseCommand(root, "WO-999");
+    const permission = (value, extra = {}) =>
+      invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          tool_name: "Bash",
+          tool_input: { command: value },
+          ...extra,
+        }),
+      );
+    const missingDispatch = permission(command);
+    assert.notEqual(
+      missingDispatch.hookSpecificOutput?.permissionDecision,
+      "allow",
+    );
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: release close" }),
+    );
+    for (const printed of [
+      command,
+      releaseCloseCommand(root, "WO-999", "--dry-run"),
+      materialCloseCommand(root, "WO-999", [
+        { path: "docs/intake/repo's space", worktree: root },
+      ]),
+    ])
+      assert.equal(
+        permission(printed).hookSpecificOutput?.permissionDecision,
+        "allow",
+        printed,
+      );
+    assert.match(
+      missingDispatch.systemMessage,
+      /recorded release-close dispatch missing/,
+    );
+    for (const file of [
+      "scripts/resume.mjs",
+      "scripts/worktree.mjs",
+      "scripts/release.mjs",
+      "scripts/lib/worktree-material.mjs",
+    ]) {
+      const text = readFileSync(join(sourceRoot, file), "utf8");
+      assert.match(text, /releaseCloseCommand\(/, file);
+      assert.doesNotMatch(
+        text,
+        /`node \$\{shellQuote\(join\([^\n]+scripts\/release\.mjs/,
+        file,
+      );
+    }
+    const correctionFile = join(
+      root,
+      "docs/control/local/harness",
+      createHash("sha256").update("synthetic-session").digest("hex") +
+        ".correction.json",
+    );
+    writeFileSync(
+      correctionFile,
+      json({ correctionId: "fixture", observedAt: new Date().toISOString() }),
+    );
+    const corrected = permission(command);
+    assert.notEqual(corrected.hookSpecificOutput?.permissionDecision, "allow");
+    assert.match(corrected.systemMessage, /typed correction/);
+    rmSync(correctionFile);
+    write(
+      root,
+      "docs/control/fixture-status.json",
+      json({ ...status, legalNextActions: [] }),
+    );
+    assert.match(
+      permission(command).systemMessage,
+      /canonical release-close is not legal/,
+    );
+    write(root, "docs/control/fixture-status.json", json(status));
+    const sibling = join(root, "sibling");
+    runGit(
+      root,
+      ["worktree", "add", "--detach", sibling, "HEAD"],
+      fixtureGitOptions,
+    );
+    assert.match(
+      permission(command, { cwd: sibling }).systemMessage,
+      /cwd is not the main checkout root|Hook and worktree roots disagree/,
+    );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
   }
 });
 
@@ -7565,11 +7820,21 @@ test("WO-133 stale generated hooks emit once per session/cause, retain every row
       readFileSync(join(root, ".claude/settings.json"), "utf8"),
     );
     assert.deepEqual(
-      settings.hooks.SessionStart,
+      settings.hooks.SessionStart.map((row) => ({
+        ...row,
+        hooks: row.hooks.map(({ timeout, ...hook }) => hook),
+      })),
       settings.hooks.UserPromptSubmit.map((row) => ({
         ...row,
-        hooks: row.hooks.filter((hook) => !hook.command.includes("/presence-")),
+        hooks: row.hooks
+          .filter((hook) => !hook.command.includes("/presence-"))
+          .map(({ timeout, ...hook }) => hook),
       })),
+    );
+    assert.ok(
+      settings.hooks.SessionStart.every((row) =>
+        row.hooks.every((hook) => hook.timeout === 15),
+      ),
     );
     assert.doesNotMatch(
       JSON.stringify(settings.hooks.SessionStart),

@@ -16,7 +16,13 @@ import {
 import { createHash, randomUUID } from "node:crypto";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import { docPath } from "./config.mjs";
-import { runGit, runGitPathList, shellQuote, spawnGit } from "./git.mjs";
+import {
+  releaseCloseCommand,
+  runGit,
+  runGitPathList,
+  shellQuote,
+  spawnGit,
+} from "./git.mjs";
 import { eventsForOrder, readControl } from "./control-store.mjs";
 import { describeIgnoredMaterial, ignoredLane } from "./paths.mjs";
 
@@ -326,9 +332,7 @@ export const materialCloseCommand = (
   path,
   disposition = "preserve",
 ) =>
-  `node ${shellQuote(join(main, "scripts/release.mjs"))} close ${workOrder} --publish ${(Array.isArray(
-    path,
-  )
+  `${releaseCloseCommand(main, workOrder)} ${(Array.isArray(path)
     ? path
     : [path]
   )

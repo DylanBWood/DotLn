@@ -1,4 +1,4 @@
-# WO-195 — Roles finish what the operator dispatched: a Claude release close runs from publication to a removed worktree and branch in one session, and a planning pass pushes its branch and opens its pull request (version assigned at activation)
+# WO-195 — Roles finish what the operator dispatched: a Claude release close runs from publication to a removed worktree and branch in one session, and a planning pass pushes its branch and opens its pull request (v0.66.2)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

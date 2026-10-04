@@ -1,5 +1,5 @@
 import { execFileSync, spawnSync } from "node:child_process";
-import { resolve } from "node:path";
+import { join, resolve } from "node:path";
 
 export const shellQuote = (value) => `'${value.replaceAll("'", `'\\''`)}'`;
 
@@ -137,4 +137,14 @@ export const removeMergedBranch = (root, branch) => {
   if (upstream.status === 0)
     runGit(root, ["branch", "--unset-upstream", branch]);
   runGit(root, ["branch", "-d", branch]);
+};
+
+/** The sole script printer for the byte-exact, lifecycle-admitted helper. */
+export const releaseCloseCommand = (main, workOrder, mode = "--publish") => {
+  if (
+    !/^WO-\d{3}$/.test(workOrder) ||
+    !["--publish", "--dry-run"].includes(mode)
+  )
+    throw new Error("Invalid release-close command");
+  return `${shellQuote(process.execPath)} ${shellQuote(join(main, "scripts/release.mjs"))} close ${workOrder} ${mode}`;
 };

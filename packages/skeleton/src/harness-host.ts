@@ -950,18 +950,29 @@ function releaseCloseAdmission(
   root: string,
   input: HarnessInput,
   session: HarnessSession,
-): Record<string, unknown> | null {
+): { response?: Record<string, unknown>; advisory?: string } | null {
   const dispatch = session.releaseCloseDispatch;
   if (
     input.tool_name !== "Bash" ||
-    !dispatch ||
-    harnessInputHarness(input) !== "claude-code" ||
-    !/^WO-\d{3}$/.test(dispatch.workOrder)
+    harnessInputHarness(input) !== "claude-code"
   )
     return null;
   const command = input.tool_input?.command;
-  const helper = `${shellWord(process.execPath)} ${shellWord(join(root, "scripts/release.mjs"))} close ${dispatch.workOrder}`;
   if (typeof command !== "string") return null;
+  const prefix = `${shellWord(process.execPath)} ${shellWord(join(root, "scripts/release.mjs"))} close `;
+  if (!command.startsWith(prefix)) return null;
+  const requested = /^WO-\d{3}(?= )/.exec(command.slice(prefix.length))?.[0];
+  if (!requested) return null;
+  const missing = (fact: string) => ({
+    advisory: `Release-close admission withheld: ${fact}; host permissions decide.`,
+  });
+  if (!dispatch || !/^WO-\d{3}$/.test(dispatch.workOrder))
+    return missing("recorded release-close dispatch missing");
+  if (dispatch.workOrder !== requested)
+    return missing("recorded release-close dispatch names a different order");
+  if (session.correction)
+    return missing("typed correction freezes destructive effects");
+  const helper = `${prefix}${dispatch.workOrder}`;
   let exact =
     command === `${helper} --publish` || command === `${helper} --dry-run`;
   // Material paths are one canonical single-quoted shell word, no expansions,
@@ -973,39 +984,48 @@ function releaseCloseAdmission(
         rest,
       );
   }
-  if (!exact) return null;
+  if (!exact) return missing("byte-exact helper spelling missing");
   try {
     const main = git(root, ["worktree", "list", "--porcelain"])
-      .split("\n")[0]
+      .split("\n\n")
+      .find((row) => row.split("\n").includes("branch refs/heads/main"))
+      ?.split("\n")[0]
       ?.replace(/^worktree /, "");
+    if (!main) return missing("main checkout fact unavailable");
     if (
       !main ||
       realpathSync(main) !== realpathSync(root) ||
       realpathSync(input.cwd) !== realpathSync(root)
     )
-      return null;
+      return missing("cwd is not the main checkout root");
     const toolCwd = input.tool_input?.cwd ?? input.tool_input?.workdir;
     if (
       toolCwd !== undefined &&
       (typeof toolCwd !== "string" ||
         realpathSync(resolve(root, toolCwd)) !== realpathSync(root))
     )
-      return null;
+      return missing("tool cwd is not the main checkout root");
     const control = harnessControl(root);
     if (
       control.workOrder !== dispatch.workOrder ||
       !control.legalNextActions?.includes("release-close")
     )
-      return null;
+      return missing(
+        "canonical release-close is not legal for the dispatched order",
+      );
     return {
-      hookSpecificOutput: {
-        hookEventName: "PreToolUse",
-        permissionDecision: "allow",
-        permissionDecisionReason: `DotLn's first admission: exact release-close helper; recorded release-close dispatch for ${dispatch.workOrder}; cwd is main; canonical release-close is legal. Host deny and ask rules still apply.`,
+      response: {
+        hookSpecificOutput: {
+          hookEventName: "PreToolUse",
+          permissionDecision: "allow",
+          permissionDecisionReason: `DotLn's first admission: exact release-close helper; recorded release-close dispatch for ${dispatch.workOrder}; cwd is main; canonical release-close is legal. Host deny and ask rules still apply.`,
+        },
       },
     };
-  } catch {
-    return null;
+  } catch (error) {
+    return missing(
+      `main/cwd or canonical status fact unreadable (${error instanceof Error ? error.message : String(error)})`,
+    );
   }
 }
 interface ProcessRow {
@@ -4398,10 +4418,14 @@ async function evaluateExistingHarnessHook(
     if (scopeResult) return protocolAdvisory(scopeResult.reason);
     const close = releaseCloseAdmission(root, input, session);
     if (close) {
+      if (close.advisory) {
+        record(root, input, { advisory: close.advisory });
+        return protocolAdvisory(close.advisory);
+      }
       record(root, input, {
         releaseCloseAdmission: session.releaseCloseDispatch!.workOrder,
       });
-      return close;
+      return close.response!;
     }
     const effect = permissionEffect(input, root, config.tools, outsideEffect);
     const decision = harnessAuthorization(

@@ -1,23 +1,23 @@
 # Current control state
 
-## WO-185
+## WO-195
 
-- Work order: WO-185
-- Work-order path: docs/work-orders/WO-185-no-order-can-exhaust-the-host.md
+- Work order: WO-195
+- Work-order path: docs/work-orders/WO-195-roles-finish-what-was-dispatched.md
 - Phase: closed
-- Latest verification: VER-004
-- Verification path: docs/verifications/WO-185/VER-004.md
+- Latest verification: VER-002
+- Verification path: docs/verifications/WO-195/VER-002.md
 - Latest verdict: pass
-- Final review: FINAL-002
-- Final-review path: docs/final-reviews/WO-185/FINAL-002.md
+- Final review: FINAL-001
+- Final-review path: docs/final-reviews/WO-195/FINAL-001.md
 - Latest attestation: harness claude-code; version 2.1.289; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable
 - Effort drift: max -> xhigh
-- Latest recordedAt: 2026-10-04T14:28:12.723Z
-- Elapsed implementation: 46960048 ms
-- Elapsed verification: 1024510 ms
-- Elapsed repair: 5828193 ms
-- Elapsed finalReview: 1806208 ms
-- Latest checkpoint: ec75839cfa5515cffb72cc24c93b4a34dd6f3876 (restore: `git checkout refs/dotln/checkpoint/WO-185/21 -- .`)
+- Latest recordedAt: 2026-10-04T16:25:03.320Z
+- Elapsed implementation: 10538866 ms
+- Elapsed verification: 728144 ms
+- Elapsed repair: 6030651 ms
+- Elapsed finalReview: 1674242 ms
+- Latest checkpoint: 94b6eab23dbd8c0ba24ed10f6bf47a25166ee925 (restore: `git checkout refs/dotln/checkpoint/WO-195/11 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct
 

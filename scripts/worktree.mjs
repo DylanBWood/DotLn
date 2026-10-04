@@ -24,6 +24,7 @@ import {
   mainWorktree,
   parseWorktrees,
   removeMergedBranch,
+  releaseCloseCommand,
   runGit,
   runGitPathList,
   spawnGit,
@@ -36,6 +37,10 @@ import {
 import { statusProjection } from "./resume.mjs";
 import { readControl } from "./lib/control-store.mjs";
 import { constellation, prepareBeaconDisposal } from "./lib/beacons.mjs";
+import {
+  recordWorktreeRemoval,
+  restoreOwnedDirectoryWrites,
+} from "./lib/worktree-removal.mjs";
 import { contributionSignoffRules } from "./lib/contributions.mjs";
 import {
   reviewedProductGate,
@@ -150,7 +155,12 @@ const ensureMaterialClean = (root, material) => {
       `working tree is not clean: ${root} (${tracked.split("\n")[0] || untracked[0]})`,
     );
 };
-const removePreservedWorktree = (mainPath, subject, material) => {
+const removePreservedWorktree = (
+  mainPath,
+  subject,
+  material,
+  reconciliation,
+) => {
   // Git sees re-included intake repository directories as untracked. Only
   // these byte-proven units may require --force; writer/gate and dirt checks
   // still hold under the reservation lock immediately before this call.
@@ -167,12 +177,27 @@ const removePreservedWorktree = (mainPath, subject, material) => {
   ]);
   if (untracked.some((path) => !units.has(path)))
     throw new Error("Unpreserved untracked material; source retained");
-  runGit(mainPath, [
-    "worktree",
-    "remove",
-    ...(untracked.length ? ["--force"] : []),
-    subject,
-  ]);
+  const receipt = recordWorktreeRemoval(mainPath, subject, reconciliation);
+  process.stdout.write(
+    `Worktree removal proof: ${JSON.stringify({ subject, receipt })}\n`,
+  );
+  const restoreWrites = restoreOwnedDirectoryWrites(subject);
+  try {
+    runGit(mainPath, [
+      "worktree",
+      "remove",
+      ...(untracked.length ? ["--force"] : []),
+      subject,
+    ]);
+    if (existsSync(subject))
+      throw new Error(`Subject directory remains: ${subject}`);
+  } catch (error) {
+    // Git can unregister a worktree before its filesystem removal fails.
+    // The release helper recovers it under the retained proof in this run or
+    // a retry. Do not report removal or delete the branch here.
+    restoreWrites();
+    throw error;
+  }
 };
 // Derived worktrees: measurement siblings and temporary subjects that name the
 // closing order (WO-044). A detached derivative that is clean and idle has its
@@ -279,7 +304,7 @@ const reconcileDerivedWorktrees = (
           verifyPreservedMaterial(path, mainPath, preserved);
           const restoreBeaconPermissions = prepareBeaconDisposal(path);
           try {
-            removePreservedWorktree(mainPath, path, material);
+            removePreservedWorktree(mainPath, path, material, preserved);
           } catch (error) {
             restoreBeaconPermissions();
             throw error;
@@ -610,7 +635,7 @@ const main = async () => {
       throw new Error(
         `branch pushed but PR creation failed: ${(opened.stderr || opened.stdout).trim()}`,
       );
-    const releaseHandoff = `  cd ${shellQuote(mainPath)}\n  ${shellQuote(process.execPath)} ${shellQuote(join(mainPath, "scripts/release.mjs"))} close ${workOrderId} --publish`;
+    const releaseHandoff = `  Start a session in main (${shellQuote(mainPath)}); run exactly:\n  ${releaseCloseCommand(mainPath, workOrderId)}`;
     process.stdout.write(
       `Pushed ${branch} and opened ${opened.stdout.trim()}\nAfter the operator merges the PR and authorizes resume: release close, run:\n${releaseHandoff}\nThe authorized close needs network egress to the GitHub host; --dry-run proves reachability and host permissions govern execution.\n`,
     );
@@ -741,7 +766,12 @@ const main = async () => {
       verifyPreservedMaterial(subject, mainPath, reconciliation);
       const restoreBeaconPermissions = prepareBeaconDisposal(subject);
       try {
-        removePreservedWorktree(mainPath, subject, mergedMaterial);
+        removePreservedWorktree(
+          mainPath,
+          subject,
+          mergedMaterial,
+          reconciliation,
+        );
       } catch (error) {
         restoreBeaconPermissions();
         throw error;
