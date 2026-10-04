@@ -1,0 +1,374 @@
+WO-185 repair of VER-002 F6: the new fixtures against the pre-repair code
+Host: macOS 27.0.1, Darwin 27.0.0, arm64, 16 logical CPUs, 51539607552 bytes physical memory (sysctl hw.memsize).
+Subject: refs/dotln/checkpoint/WO-185/9 (the code VER-002 judged), extracted without Git metadata into session scratch:
+  git archive refs/dotln/checkpoint/WO-185/9 scripts packages/skeleton/src packages/skeleton/package.json corpus/harness docs/control/budgets.json package.json | tar -x -C <session-scratch>/pre-repair
+  node_modules linked from the worktree; the repaired scripts/test-host-guard.test.mjs copied in with only its guardCensus import removed (that symbol does not exist before the repair; its test is not selected).
+COMMAND (three runs) node scripts/harness.mjs bounded -- node --test --test-name-pattern='held endpoint|docs-shaped' <session-scratch>/pre-repair/scripts/test-host-guard.test.mjs
+Result: the held-endpoint fixture failed 3 of 3 runs; the docs-shaped gate failed 2 of 3 runs. Named survivors include host-footprint- (the census helper), sleep (an adopted sibling), host-lock-1bc60 and node (a concurrent task's launcher and process).
+
+RUN 1
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+PROGRESS [bounded-probe] PROGRESS [build] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-0] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-1] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-2] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-3] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-4] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-5] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-6] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-7] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-8] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-9] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-10] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-11] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-12] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-13] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-14] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-15] 0.0 s started
+✖ WO-185 a task watch stays on its held endpoint through the final census and adopts no sibling on a released descriptor (1055.452334ms)
+PROGRESS [build] 0.0 s started
+PASS build 0.04 s
+PROGRESS [ordinary-0] 0.0 s started
+PROGRESS [ordinary-1] 0.0 s started
+PROGRESS [ordinary-2] 0.0 s started
+PROGRESS [ordinary-3] 0.0 s started
+PASS ordinary-0 0.05 s
+PASS ordinary-1 0.04 s
+PASS ordinary-2 0.04 s
+PROGRESS [ordinary-4] 0.0 s started
+PROGRESS [ordinary-5] 0.0 s started
+PROGRESS [ordinary-6] 0.0 s started
+PASS ordinary-3 0.07 s
+PASS ordinary-4 0.05 s
+PROGRESS [ordinary-7] 0.0 s started
+FAIL ordinary-5 0.05 s
+  [ordinary-5] ok
+  [ordinary-5] 
+  [ordinary-5] surviving-process {"survivingProcesses":[{"pid":87256,"name":"host-footprint-"}]}
+PROGRESS [ordinary-8] 0.0 s started
+PROGRESS [ordinary-9] 0.0 s started
+PASS ordinary-6 0.06 s
+PROGRESS [ordinary-10] 0.0 s started
+PASS ordinary-7 0.05 s
+PASS ordinary-8 0.05 s
+PROGRESS [ordinary-11] 0.0 s started
+PASS ordinary-9 0.05 s
+PROGRESS [ordinary-12] 0.0 s started
+PASS ordinary-10 0.05 s
+PROGRESS [ordinary-13] 0.0 s started
+PROGRESS [ordinary-14] 0.0 s started
+PASS ordinary-11 0.06 s
+PASS ordinary-12 0.06 s
+PROGRESS [ordinary-15] 0.0 s started
+PASS ordinary-13 0.06 s
+PASS ordinary-14 0.05 s
+PASS ordinary-15 0.04 s
+npm test: 16 passed; 1 failed; 0.45 s; 17 fresh tasks
+✖ WO-185 a docs-shaped gate of concurrent tasks that start nothing records no survivor (1003.642666ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2129.331042
+
+✖ failing tests:
+
+test at ../../../..<session-scratch>/pre-repair/scripts/test-host-guard.test.mjs:1276:1
+✖ WO-185 a task watch stays on its held endpoint through the final census and adopts no sibling on a released descriptor (1055.452334ms)
+  AssertionError [ERR_ASSERTION]: 
+  surviving-process {"survivingProcesses":[{"pid":87065,"name":"sleep"}]}
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file://<session-scratch>/pre-repair/scripts/test-host-guard.test.mjs:1368:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../..<session-scratch>/pre-repair/scripts/test-host-guard.test.mjs:1398:1
+✖ WO-185 a docs-shaped gate of concurrent tasks that start nothing records no survivor (1003.642666ms)
+  AssertionError [ERR_ASSERTION]: [{"name":"ordinary-5","durationMs":46,"peakFootprintBytes":11863744,"peakRssBytes":44220416,"memoryBudgetBytes":67108864,"footprintSource":"proc_pid_rusage.ri_phys_footprint","survivingProcesses":[{"pid":87256,"name":"host-footprint-"}],"droppedOutputBytes":0,"failureKind":"surviving-process","startedAt":"2026-10-03T15:24:59.800Z","finishedAt":"2026-10-03T15:24:59.866Z","exitCode":1,"executed":true,"concurrentAtStart":["ordinary-2","ordinary-3","ordinary-4"],"predecessors":["build","ordinary-1"],"schedulerDurationMs":66,"loadClass":"shared","loadFactor":8,"peerCap":3,"reservedSlots":1,"lanes":[1],"hostLaneWaitMs":0,"hostLaneSlots":1}]
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file://<session-scratch>/pre-repair/scripts/test-host-guard.test.mjs:1422:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+bounded-result {"name":"bounded-probe","durationMs":2175,"peakFootprintBytes":100759448,"peakRssBytes":268304384,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-03T15:24:57.995Z","finishedAt":"2026-10-03T15:25:00.170Z","exitCode":1,"executed":true}
+
+
+RUN 2
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+PROGRESS [bounded-probe] PROGRESS [build] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-0] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-1] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-2] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-3] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-4] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-5] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-6] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-7] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-8] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-9] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-10] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-11] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-12] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-13] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-14] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-15] 0.0 s started
+✖ WO-185 a task watch stays on its held endpoint through the final census and adopts no sibling on a released descriptor (1053.319666ms)
+PROGRESS [build] 0.0 s started
+PASS build 0.04 s
+PROGRESS [ordinary-0] 0.0 s started
+PROGRESS [ordinary-1] 0.0 s started
+PROGRESS [ordinary-2] 0.0 s started
+PROGRESS [ordinary-3] 0.0 s started
+PASS ordinary-0 0.05 s
+PASS ordinary-1 0.04 s
+PASS ordinary-2 0.04 s
+PROGRESS [ordinary-4] 0.0 s started
+PROGRESS [ordinary-5] 0.0 s started
+PROGRESS [ordinary-6] 0.0 s started
+PASS ordinary-3 0.07 s
+PASS ordinary-4 0.04 s
+PROGRESS [ordinary-7] 0.0 s started
+PROGRESS [ordinary-8] 0.0 s started
+FAIL ordinary-5 0.05 s
+  [ordinary-5] ok
+  [ordinary-5] 
+  [ordinary-5] surviving-process {"survivingProcesses":[{"pid":87882,"name":"host-lock-1bc60"}]}
+PASS ordinary-6 0.05 s
+PROGRESS [ordinary-9] 0.0 s started
+PROGRESS [ordinary-10] 0.0 s started
+PASS ordinary-7 0.07 s
+PASS ordinary-8 0.06 s
+PROGRESS [ordinary-11] 0.0 s started
+PROGRESS [ordinary-12] 0.0 s started
+PASS ordinary-9 0.05 s
+PASS ordinary-10 0.05 s
+PROGRESS [ordinary-13] 0.0 s started
+PROGRESS [ordinary-14] 0.0 s started
+PASS ordinary-12 0.04 s
+FAIL ordinary-11 0.06 s
+  [ordinary-11] ok
+  [ordinary-11] 
+  [ordinary-11] surviving-process {"survivingProcesses":[{"pid":87956,"name":"host-lock-1bc60"}]}
+PROGRESS [ordinary-15] 0.0 s started
+FAIL ordinary-13 0.06 s
+  [ordinary-13] ok
+  [ordinary-13] 
+  [ordinary-13] surviving-process {"survivingProcesses":[{"pid":87965,"name":"node"}]}
+PASS ordinary-14 0.06 s
+FAIL ordinary-15 0.02 s
+  [ordinary-15] 
+npm test: 13 passed; 4 failed; 0.43 s; 17 fresh tasks
+✖ WO-185 a docs-shaped gate of concurrent tasks that start nothing records no survivor (963.248708ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2086.379
+
+✖ failing tests:
+
+test at ../../../..<session-scratch>/pre-repair/scripts/test-host-guard.test.mjs:1276:1
+✖ WO-185 a task watch stays on its held endpoint through the final census and adopts no sibling on a released descriptor (1053.319666ms)
+  AssertionError [ERR_ASSERTION]: 
+  surviving-process {"survivingProcesses":[{"pid":87687,"name":"sleep"}]}
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file://<session-scratch>/pre-repair/scripts/test-host-guard.test.mjs:1368:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../..<session-scratch>/pre-repair/scripts/test-host-guard.test.mjs:1398:1
+✖ WO-185 a docs-shaped gate of concurrent tasks that start nothing records no survivor (963.248708ms)
+  AssertionError [ERR_ASSERTION]: [{"name":"ordinary-5","durationMs":50,"peakFootprintBytes":8684792,"peakRssBytes":39534592,"memoryBudgetBytes":67108864,"footprintSource":"proc_pid_rusage.ri_phys_footprint","survivingProcesses":[{"pid":87882,"name":"host-lock-1bc60"}],"droppedOutputBytes":0,"failureKind":"surviving-process","startedAt":"2026-10-03T15:25:02.036Z","finishedAt":"2026-10-03T15:25:02.110Z","exitCode":1,"executed":true,"concurrentAtStart":["ordinary-2","ordinary-3","ordinary-4"],"predecessors":["build","ordinary-1"],"schedulerDurationMs":74,"loadClass":"shared","loadFactor":8,"peerCap":3,"reservedSlots":1,"lanes":[1],"hostLaneWaitMs":0,"hostLaneSlots":1},{"name":"ordinary-11","durationMs":63,"peakFootprintBytes":1737232,"peakRssBytes":5898240,"memoryBudgetBytes":67108864,"footprintSource":"proc_pid_rusage.ri_phys_footprint","survivingProcesses":[{"pid":87956,"name":"host-lock-1bc60"}],"droppedOutputBytes":0,"failureKind":"surviving-process","startedAt":"2026-10-03T15:25:02.192Z","finishedAt":"2026-10-03T15:25:02.276Z","exitCode":1,"executed":true,"concurrentAtStart":["ordinary-8","ordinary-9","ordinary-10"],"predecessors":["build","ordinary-7"],"schedulerDurationMs":84,"loadClass":"shared","loadFactor":8,"peerCap":3,"reservedSlots":1,"lanes":[3],"hostLaneWaitMs":0,"hostLaneSlots":1},{"name":"ordinary-13","durationMs":61,"peakFootprintBytes":14059464,"peakRssBytes":54116352,"memoryBudgetBytes":67108864,"footprintSource":"proc_pid_rusage.ri_phys_footprint","survivingProcesses":[{"pid":87965,"name":"node"}],"droppedOutputBytes":0,"failureKind":"surviving-process","startedAt":"2026-10-03T15:25:02.239Z","finishedAt":"2026-10-03T15:25:02.308Z","exitCode":1,"executed":true,"concurrentAtStart":["ordinary-10","ordinary-11","ordinary-12"],"predecessors":["build","ordinary-9"],"schedulerDurationMs":69,"loadClass":"shared","loadFactor":8,"peerCap":3,"reservedSlots":1,"lanes":[1],"hostLaneWaitMs":0,"hostLaneSlots":1},{"name":"ordinary-15","durationMs":24,"peakFootprintBytes":1311080,"peakRssBytes":1785856,"memoryBudgetBytes":67108864,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-03T15:25:02.284Z","finishedAt":"2026-10-03T15:25:02.316Z","exitCode":1,"executed":true,"concurrentAtStart":["ordinary-11","ordinary-13","ordinary-14"],"predecessors":["build","ordinary-12"],"schedulerDurationMs":32,"loadClass":"shared","loadFactor":8,"peerCap":3,"reservedSlots":1,"lanes":[0],"hostLaneWaitMs":0,"hostLaneSlots":1}]
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file://<session-scratch>/pre-repair/scripts/test-host-guard.test.mjs:1422:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+bounded-result {"name":"bounded-probe","durationMs":2132,"peakFootprintBytes":102054000,"peakRssBytes":279969792,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-03T15:25:00.253Z","finishedAt":"2026-10-03T15:25:02.385Z","exitCode":1,"executed":true}
+
+
+RUN 3
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+PROGRESS [bounded-probe] PROGRESS [build] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-1] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-0] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-2] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-3] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-4] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-5] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-6] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-7] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-8] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-9] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-10] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-11] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-12] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-13] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-14] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-15] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [build] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-0] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-1] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-2] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-3] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-4] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-5] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-6] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-7] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-8] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-9] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-10] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-11] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-12] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-13] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-14] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-15] 0.0 s started
+✖ WO-185 a task watch stays on its held endpoint through the final census and adopts no sibling on a released descriptor (1044.4095ms)
+PROGRESS [build] 0.0 s started
+PASS build 0.04 s
+PROGRESS [ordinary-1] 0.0 s started
+PROGRESS [ordinary-0] 0.0 s started
+PROGRESS [ordinary-2] 0.0 s started
+PROGRESS [ordinary-3] 0.0 s started
+PASS ordinary-1 0.05 s
+PASS ordinary-0 0.04 s
+PASS ordinary-2 0.04 s
+PROGRESS [ordinary-4] 0.0 s started
+PROGRESS [ordinary-5] 0.0 s started
+PROGRESS [ordinary-6] 0.0 s started
+PASS ordinary-3 0.07 s
+PASS ordinary-4 0.04 s
+PROGRESS [ordinary-7] 0.0 s started
+PASS ordinary-5 0.04 s
+PROGRESS [ordinary-8] 0.0 s started
+PROGRESS [ordinary-9] 0.0 s started
+PASS ordinary-6 0.05 s
+PROGRESS [ordinary-10] 0.0 s started
+PASS ordinary-7 0.05 s
+PASS ordinary-8 0.05 s
+PROGRESS [ordinary-11] 0.0 s started
+PROGRESS [ordinary-12] 0.0 s started
+PASS ordinary-9 0.05 s
+PASS ordinary-10 0.05 s
+PROGRESS [ordinary-13] 0.0 s started
+PROGRESS [ordinary-14] 0.0 s started
+PASS ordinary-11 0.05 s
+PASS ordinary-12 0.06 s
+PROGRESS [ordinary-15] 0.0 s started
+PASS ordinary-13 0.06 s
+PASS ordinary-14 0.05 s
+PASS ordinary-15 0.04 s
+npm test: 17 passed; 0 failed; 0.44 s; 17 fresh tasks
+PROGRESS [build] 0.0 s started
+PASS build 0.04 s
+PROGRESS [ordinary-0] 0.0 s started
+PROGRESS [ordinary-1] 0.0 s started
+PROGRESS [ordinary-2] 0.0 s started
+PROGRESS [ordinary-3] 0.0 s started
+PASS ordinary-0 0.05 s
+PASS ordinary-1 0.05 s
+PROGRESS [ordinary-4] 0.0 s started
+PASS ordinary-2 0.05 s
+PROGRESS [ordinary-5] 0.0 s started
+PASS ordinary-3 0.06 s
+PROGRESS [ordinary-6] 0.0 s started
+PROGRESS [ordinary-7] 0.0 s started
+PASS ordinary-4 0.05 s
+PROGRESS [ordinary-8] 0.0 s started
+PASS ordinary-5 0.05 s
+PASS ordinary-6 0.06 s
+PROGRESS [ordinary-9] 0.0 s started
+PROGRESS [ordinary-10] 0.0 s started
+PASS ordinary-7 0.05 s
+PASS ordinary-8 0.04 s
+PROGRESS [ordinary-11] 0.0 s started
+PROGRESS [ordinary-12] 0.0 s started
+PASS ordinary-9 0.06 s
+PASS ordinary-10 0.05 s
+PROGRESS [ordinary-13] 0.0 s started
+PROGRESS [ordinary-14] 0.0 s started
+PASS ordinary-12 0.05 s
+PASS ordinary-11 0.06 s
+PROGRESS [ordinary-15] 0.0 s started
+PASS ordinary-13 0.06 s
+PASS ordinary-14 0.04 s
+PASS ordinary-15 0.04 s
+npm test: 17 passed; 0 failed; 0.44 s; 17 fresh tasks
+WO-185 docs-shaped-gate {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"runs":[{"exitCode":0,"tasks":17},{"exitCode":0,"tasks":17}]}
+✔ WO-185 a docs-shaped gate of concurrent tasks that start nothing records no survivor (1501.881959ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2616.769916
+
+✖ failing tests:
+
+test at ../../../..<session-scratch>/pre-repair/scripts/test-host-guard.test.mjs:1276:1
+✖ WO-185 a task watch stays on its held endpoint through the final census and adopts no sibling on a released descriptor (1044.4095ms)
+  AssertionError [ERR_ASSERTION]: 
+  surviving-process {"survivingProcesses":[{"pid":88310,"name":"sleep"}]}
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file://<session-scratch>/pre-repair/scripts/test-host-guard.test.mjs:1368:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+bounded-result {"name":"bounded-probe","durationMs":2664,"peakFootprintBytes":98907624,"peakRssBytes":276594688,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-03T15:25:02.469Z","finishedAt":"2026-10-03T15:25:05.133Z","exitCode":1,"executed":true}
+

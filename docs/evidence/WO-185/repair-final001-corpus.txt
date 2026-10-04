@@ -1,0 +1,35 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+✔ WO-102 literal planted anchors pin next-tick, default origin, throws and hand-computed Backoff (1.025791ms)
+✔ WO-102 tagged numbers preserve nonfinite intervals; absent startAt is actually absent (110.303958ms)
+✔ WO-102 generator parser rejects missing, duplicate and ambiguous options (0.159625ms)
+✔ WO-102 regeneration is byte-identical and seed changes selection without changing the full set (5893.8815ms)
+✔ WO-102 detects planted clamp/threading drift and renders a numbered exact quarantine (0.54925ms)
+✔ WO-102 poison-only violations are exact findings and host functions are restored (0.247625ms)
+✔ WO-185 bounded full-grid equality distinguishes nonfinite swaps beyond its retained rows (943.369333ms)
+✔ WO-185 oversized drift quarantine refuses generation before changing any file (3354.14975ms)
+✔ WO-102 full declared sweep (69389): drift, determinism, clamp, RNG threading, call order, no mutation (1051.509417ms)
+✔ WO-102 no ambient clock or RNG under poisoned Date.now/Math.random (69389 vectors) (459.963ms)
+✔ WO-102 composition enumeration covers every truth mask, version, depth and terminal path (24.62025ms)
+✔ WO-185 replay lane's full-grid findings use bounded diagnostics (1047.433458ms)
+✔ WO-102 fixture corpus/fixtures/cadence/once-001.jsonl hash and exact replay (36 vectors) (0.439375ms)
+✔ WO-102 fixture corpus/fixtures/cadence/after-001.jsonl hash and exact replay (48 vectors) (0.335583ms)
+✔ WO-102 fixture corpus/fixtures/cadence/every-001.jsonl hash and exact replay (256 vectors) (1.870042ms)
+✔ WO-102 fixture corpus/fixtures/cadence/every-002.jsonl hash and exact replay (256 vectors) (1.689792ms)
+✔ WO-102 fixture corpus/fixtures/cadence/every-003.jsonl hash and exact replay (133 vectors) (0.877042ms)
+✔ WO-102 fixture corpus/fixtures/cadence/gate-001.jsonl hash and exact replay (256 vectors) (5.362583ms)
+✔ WO-102 fixture corpus/fixtures/cadence/gate-002.jsonl hash and exact replay (256 vectors) (5.81525ms)
+✔ WO-102 fixture corpus/fixtures/cadence/until-001.jsonl hash and exact replay (256 vectors) (5.161042ms)
+✔ WO-102 fixture corpus/fixtures/cadence/until-002.jsonl hash and exact replay (256 vectors) (5.388792ms)
+✔ WO-102 fixture corpus/fixtures/cadence/backoff-001.jsonl hash and exact replay (256 vectors) (1.549959ms)
+✔ WO-102 fixture corpus/fixtures/cadence/backoff-002.jsonl hash and exact replay (256 vectors) (1.505084ms)
+✔ WO-102 fixture census, counts, registry and explicit boundary classes match manifest (3.241375ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10366.677375
+bounded-result {"name":"bounded-probe","durationMs":10412,"peakFootprintBytes":812316992,"peakRssBytes":950976512,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-03T18:59:22.100Z","finishedAt":"2026-10-03T18:59:32.512Z","exitCode":0,"executed":true}

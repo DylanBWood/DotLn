@@ -1,0 +1,692 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-185",
+  "repair": "VER-002 F6, integrated with main 340a67c9 (D017)",
+  "host": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "physicalBytes": 51539607552
+  },
+  "gate": {
+    "command": "npm test -- --review",
+    "codeIdentity": "c006d5cd65e391efb06fd75f5db91a6d8813123bb9d77ed44aa91df6f0cea06d",
+    "currentCodeIdentity": "c006d5cd65e391efb06fd75f5db91a6d8813123bb9d77ed44aa91df6f0cea06d",
+    "recordedAt": "2026-10-03T16:50:16.684Z",
+    "durationMs": 828780,
+    "exitCode": 0,
+    "suites": 40,
+    "tasks": 85,
+    "freshSuites": 85,
+    "reusedSuites": 0,
+    "selectionMatchesReviewList": true,
+    "tasksWithPeak": 85
+  },
+  "peaks": {
+    "taskFootprintBytes": 694729064,
+    "taskFootprintTask": "worktree-integration",
+    "gateFootprintBytes": 1239508936,
+    "hostFootprintUpperBoundBytes": 1490693040,
+    "hostNote": "The live guard reports only its lifetime maximum (started 2026-10-03T15:38:25.098Z); it did not rise during this gate, so this is an upper bound on the window's host peak."
+  },
+  "budgets": {
+    "taskBytes": 12884901888,
+    "gateBytes": 25769803776,
+    "hostBytes": 34359738368
+  },
+  "budgetToPeakRatios": {
+    "task": 18.546657331152048,
+    "gate": 20.790333193693087,
+    "hostAtLeast": 23.049506133066807
+  },
+  "runner": {
+    "samples": 1906,
+    "footprintSamples": 791,
+    "samplingCostMs": 12831.586837001905,
+    "percentOfGateWall": 1.5482500587613004,
+    "unavailable": [],
+    "basisInForce": {
+      "workOrder": "WO-185",
+      "source": "docs/evidence/WO-185/repair-ver002-gate-measurements.json; full npm test -- --review at 2026-10-03T15:52:30.844Z",
+      "codeIdentity": "579433dde7cd11c418432590ac0d527e310ee5b7044e26099b3e13d70bc6a2b0",
+      "physicalBytes": 51539607552,
+      "taskPeakFootprintBytes": 555600112,
+      "gatePeakFootprintBytes": 1337533840,
+      "hostPeakFootprintBytes": 1436777152,
+      "runnerSamplingPercent": 1.5568139272091024,
+      "guardSamplingPercent": 1.108506927326283
+    }
+  },
+  "guard": {
+    "pid": 65032,
+    "startedAt": "2026-10-03T15:38:25.098Z",
+    "before": {
+      "samples": 6830,
+      "footprintSamples": 1708,
+      "samplingCostMs": 46663.3160129974,
+      "peakFootprintBytes": 1490693040,
+      "incidents": 1,
+      "trackedRegistrations": 1,
+      "trackedProcesses": 2,
+      "observedAt": "2026-10-03T16:36:18.851Z",
+      "unavailable": []
+    },
+    "after": {
+      "samples": 8494,
+      "footprintSamples": 2124,
+      "samplingCostMs": 54692.08125499192,
+      "peakFootprintBytes": 1490693040,
+      "incidents": 1,
+      "trackedRegistrations": 2,
+      "trackedProcesses": 11,
+      "observedAt": "2026-10-03T16:50:22.573Z",
+      "unavailable": []
+    },
+    "samplingCostMs": 8028.7652419945225,
+    "percentOfGateWall": 0.9687450520034898,
+    "window": "2026-10-03T16:36:18.851Z to 2026-10-03T16:50:22.573Z, snapshots taken immediately before the gate started and after it ended; a conservative bound on sampler work during the gate, not causal slowdown.",
+    "incidentsDuringGate": 0
+  },
+  "deadlineHits": [
+    "skeleton",
+    "runner-fixtures",
+    "runner-fixtures",
+    "runner-fixtures"
+  ],
+  "tasks": [
+    {
+      "name": "build",
+      "durationMs": 653,
+      "peakFootprintBytes": 23202480,
+      "peakRssBytes": 71188480,
+      "exitCode": 0
+    },
+    {
+      "name": "harness",
+      "durationMs": 211,
+      "peakFootprintBytes": 35574248,
+      "peakRssBytes": 83886080,
+      "exitCode": 0
+    },
+    {
+      "name": "harness-evidence",
+      "durationMs": 433,
+      "peakFootprintBytes": 76143504,
+      "peakRssBytes": 124469248,
+      "exitCode": 0
+    },
+    {
+      "name": "authority-evidence",
+      "durationMs": 751,
+      "peakFootprintBytes": 90529256,
+      "peakRssBytes": 145506304,
+      "exitCode": 0
+    },
+    {
+      "name": "license-surfaces",
+      "durationMs": 1510,
+      "peakFootprintBytes": 77686480,
+      "peakRssBytes": 207388672,
+      "exitCode": 0
+    },
+    {
+      "name": "feedback-evidence",
+      "durationMs": 2828,
+      "peakFootprintBytes": 139687040,
+      "peakRssBytes": 277200896,
+      "exitCode": 0
+    },
+    {
+      "name": "harness-fixtures",
+      "durationMs": 296735,
+      "peakFootprintBytes": 340990256,
+      "peakRssBytes": 691781632,
+      "exitCode": 0
+    },
+    {
+      "name": "process-debt",
+      "durationMs": 98764,
+      "peakFootprintBytes": 380617088,
+      "peakRssBytes": 775815168,
+      "exitCode": 0
+    },
+    {
+      "name": "release:prepare",
+      "durationMs": 776,
+      "peakFootprintBytes": 24415016,
+      "peakRssBytes": 73351168,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:preflight",
+      "durationMs": 123,
+      "peakFootprintBytes": 1327464,
+      "peakRssBytes": 1802240,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:surfaces",
+      "durationMs": 3682,
+      "peakFootprintBytes": 31838504,
+      "peakRssBytes": 83148800,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:surfaces_local_snapshot",
+      "durationMs": 895,
+      "peakFootprintBytes": 49781288,
+      "peakRssBytes": 146751488,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:prepare_independent",
+      "durationMs": 2365,
+      "peakFootprintBytes": 50092752,
+      "peakRssBytes": 146980864,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:license_surfaces",
+      "durationMs": 4341,
+      "peakFootprintBytes": 93711976,
+      "peakRssBytes": 234061824,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:surfaces_committed_readme",
+      "durationMs": 1339,
+      "peakFootprintBytes": 29413384,
+      "peakRssBytes": 78938112,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:surfaces_lower",
+      "durationMs": 964,
+      "peakFootprintBytes": 29216704,
+      "peakRssBytes": 79134720,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:surfaces_first",
+      "durationMs": 854,
+      "peakFootprintBytes": 49535432,
+      "peakRssBytes": 146472960,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:surfaces_component",
+      "durationMs": 1888,
+      "peakFootprintBytes": 30101632,
+      "peakRssBytes": 80412672,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:surfaces_non_source",
+      "durationMs": 859,
+      "peakFootprintBytes": 24333144,
+      "peakRssBytes": 73269248,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:surfaces_new_component",
+      "durationMs": 962,
+      "peakFootprintBytes": 24496960,
+      "peakRssBytes": 73449472,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:surfaceclose",
+      "durationMs": 2265,
+      "peakFootprintBytes": 48470424,
+      "peakRssBytes": 140607488,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:surfaceclose_linked",
+      "durationMs": 2515,
+      "peakFootprintBytes": 31691000,
+      "peakRssBytes": 81821696,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:bodyclose",
+      "durationMs": 1817,
+      "peakFootprintBytes": 31478080,
+      "peakRssBytes": 81936384,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:dirty",
+      "durationMs": 2980,
+      "peakFootprintBytes": 38343144,
+      "peakRssBytes": 90570752,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:unreachable",
+      "durationMs": 2835,
+      "peakFootprintBytes": 39620928,
+      "peakRssBytes": 91750400,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:derived",
+      "durationMs": 2853,
+      "peakFootprintBytes": 56958248,
+      "peakRssBytes": 154845184,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:settings_scope",
+      "durationMs": 2599,
+      "peakFootprintBytes": 42341176,
+      "peakRssBytes": 102318080,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:nonmain",
+      "durationMs": 1163,
+      "peakFootprintBytes": 23907184,
+      "peakRssBytes": 72826880,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:divergence",
+      "durationMs": 1153,
+      "peakFootprintBytes": 23890752,
+      "peakRssBytes": 72843264,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:malformed",
+      "durationMs": 958,
+      "peakFootprintBytes": 30036144,
+      "peakRssBytes": 84623360,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:missinggh",
+      "durationMs": 2405,
+      "peakFootprintBytes": 83585464,
+      "peakRssBytes": 190021632,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:unauthenticated",
+      "durationMs": 1637,
+      "peakFootprintBytes": 32133512,
+      "peakRssBytes": 82395136,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:splitorigin",
+      "durationMs": 734,
+      "peakFootprintBytes": 23825216,
+      "peakRssBytes": 72777728,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:lower",
+      "durationMs": 1692,
+      "peakFootprintBytes": 31019184,
+      "peakRssBytes": 81346560,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:failures",
+      "durationMs": 2501,
+      "peakFootprintBytes": 31363272,
+      "peakRssBytes": 82165760,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:cadence_missing",
+      "durationMs": 1823,
+      "peakFootprintBytes": 31756680,
+      "peakRssBytes": 86884352,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:cadence_inconsistent",
+      "durationMs": 4131,
+      "peakFootprintBytes": 32903800,
+      "peakRssBytes": 88342528,
+      "exitCode": 0
+    },
+    {
+      "name": "resume",
+      "durationMs": 56188,
+      "peakFootprintBytes": 71966040,
+      "peakRssBytes": 187006976,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:conflict",
+      "durationMs": 1872,
+      "peakFootprintBytes": 31592576,
+      "peakRssBytes": 81510400,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:localconflict",
+      "durationMs": 1583,
+      "peakFootprintBytes": 32215432,
+      "peakRssBytes": 87195648,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:nestedtag",
+      "durationMs": 1307,
+      "peakFootprintBytes": 31920472,
+      "peakRssBytes": 82739200,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:prepare",
+      "durationMs": 2300,
+      "peakFootprintBytes": 39850760,
+      "peakRssBytes": 97714176,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:missinglocalprevious",
+      "durationMs": 2334,
+      "peakFootprintBytes": 41112208,
+      "peakRssBytes": 95698944,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:pushfail",
+      "durationMs": 2467,
+      "peakFootprintBytes": 38818208,
+      "peakRssBytes": 95895552,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:refrecovery",
+      "durationMs": 3903,
+      "peakFootprintBytes": 38556280,
+      "peakRssBytes": 94863360,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:stale_helpers",
+      "durationMs": 7344,
+      "peakFootprintBytes": 43176568,
+      "peakRssBytes": 96206848,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:createrecovery",
+      "durationMs": 10393,
+      "peakFootprintBytes": 47454112,
+      "peakRssBytes": 148701184,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:runtime_refresh",
+      "durationMs": 13868,
+      "peakFootprintBytes": 37179808,
+      "peakRssBytes": 94240768,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:success",
+      "durationMs": 17348,
+      "peakFootprintBytes": 48404216,
+      "peakRssBytes": 131776512,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:edition",
+      "durationMs": 6646,
+      "peakFootprintBytes": 37540016,
+      "peakRssBytes": 93192192,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:firstrelease",
+      "durationMs": 3375,
+      "peakFootprintBytes": 57891920,
+      "peakRssBytes": 157548544,
+      "exitCode": 0
+    },
+    {
+      "name": "worktree",
+      "durationMs": 95577,
+      "peakFootprintBytes": 117291912,
+      "peakRssBytes": 310444032,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:composed_evidence",
+      "durationMs": 6027,
+      "peakFootprintBytes": 49683080,
+      "peakRssBytes": 152158208,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:cached_evidence",
+      "durationMs": 6999,
+      "peakFootprintBytes": 48765024,
+      "peakRssBytes": 140034048,
+      "exitCode": 0
+    },
+    {
+      "name": "release-preparation",
+      "durationMs": 2722,
+      "peakFootprintBytes": 42604352,
+      "peakRssBytes": 141164544,
+      "exitCode": 0
+    },
+    {
+      "name": "github-body",
+      "durationMs": 115,
+      "peakFootprintBytes": 1327464,
+      "peakRssBytes": 1802240,
+      "exitCode": 0
+    },
+    {
+      "name": "outward-lint",
+      "durationMs": 428,
+      "peakFootprintBytes": 38983224,
+      "peakRssBytes": 127582208,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:concurrent",
+      "durationMs": 16574,
+      "peakFootprintBytes": 86780080,
+      "peakRssBytes": 244432896,
+      "exitCode": 0
+    },
+    {
+      "name": "license-fixtures",
+      "durationMs": 8277,
+      "peakFootprintBytes": 95088808,
+      "peakRssBytes": 243744768,
+      "exitCode": 0
+    },
+    {
+      "name": "publication-fixtures",
+      "durationMs": 919,
+      "peakFootprintBytes": 4342600,
+      "peakRssBytes": 10371072,
+      "exitCode": 0
+    },
+    {
+      "name": "backup-intake",
+      "durationMs": 307,
+      "peakFootprintBytes": 6554920,
+      "peakRssBytes": 8699904,
+      "exitCode": 0
+    },
+    {
+      "name": "beacon-portability",
+      "durationMs": 1134,
+      "peakFootprintBytes": 58482392,
+      "peakRssBytes": 186056704,
+      "exitCode": 0
+    },
+    {
+      "name": "checkpoint",
+      "durationMs": 7593,
+      "peakFootprintBytes": 27938272,
+      "peakRssBytes": 77758464,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:material",
+      "durationMs": 77202,
+      "peakFootprintBytes": 76801408,
+      "peakRssBytes": 217546752,
+      "exitCode": 0
+    },
+    {
+      "name": "work-orders-fixtures",
+      "durationMs": 21042,
+      "peakFootprintBytes": 63185056,
+      "peakRssBytes": 167100416,
+      "exitCode": 0
+    },
+    {
+      "name": "console",
+      "durationMs": 17451,
+      "peakFootprintBytes": 214771464,
+      "peakRssBytes": 460505088,
+      "exitCode": 0
+    },
+    {
+      "name": "adjacent-queue",
+      "durationMs": 424,
+      "peakFootprintBytes": 42243808,
+      "peakRssBytes": 135020544,
+      "exitCode": 0
+    },
+    {
+      "name": "resident-bind",
+      "durationMs": 9504,
+      "peakFootprintBytes": 100741816,
+      "peakRssBytes": 243286016,
+      "exitCode": 0
+    },
+    {
+      "name": "derived-orders",
+      "durationMs": 7494,
+      "peakFootprintBytes": 97202080,
+      "peakRssBytes": 235896832,
+      "exitCode": 0
+    },
+    {
+      "name": "target-publish",
+      "durationMs": 143529,
+      "peakFootprintBytes": 216153832,
+      "peakRssBytes": 362758144,
+      "exitCode": 0
+    },
+    {
+      "name": "codex-continuation",
+      "durationMs": 5471,
+      "peakFootprintBytes": 85355920,
+      "peakRssBytes": 220463104,
+      "exitCode": 0
+    },
+    {
+      "name": "authority-grants",
+      "durationMs": 143,
+      "peakFootprintBytes": 48765432,
+      "peakRssBytes": 139771904,
+      "exitCode": 0
+    },
+    {
+      "name": "portfolio",
+      "durationMs": 20041,
+      "peakFootprintBytes": 137642520,
+      "peakRssBytes": 321159168,
+      "exitCode": 0
+    },
+    {
+      "name": "artifact-corpus",
+      "durationMs": 186,
+      "peakFootprintBytes": 58202952,
+      "peakRssBytes": 150601728,
+      "exitCode": 0
+    },
+    {
+      "name": "local-runner-double",
+      "durationMs": 3721,
+      "peakFootprintBytes": 67576520,
+      "peakRssBytes": 203292672,
+      "exitCode": 0
+    },
+    {
+      "name": "configuration-root",
+      "durationMs": 4267,
+      "peakFootprintBytes": 84027856,
+      "peakRssBytes": 231882752,
+      "exitCode": 0
+    },
+    {
+      "name": "plan-refutation",
+      "durationMs": 61140,
+      "peakFootprintBytes": 398262952,
+      "peakRssBytes": 441991168,
+      "exitCode": 0
+    },
+    {
+      "name": "harness-probe",
+      "durationMs": 63041,
+      "peakFootprintBytes": 166714264,
+      "peakRssBytes": 333037568,
+      "exitCode": 0
+    },
+    {
+      "name": "registrations",
+      "durationMs": 560,
+      "peakFootprintBytes": 181432320,
+      "peakRssBytes": 223789056,
+      "exitCode": 0
+    },
+    {
+      "name": "skeleton",
+      "durationMs": 349779,
+      "peakFootprintBytes": 526765072,
+      "peakRssBytes": 714375168,
+      "exitCode": 0
+    },
+    {
+      "name": "kernel",
+      "durationMs": 437,
+      "peakFootprintBytes": 65364200,
+      "peakRssBytes": 196362240,
+      "exitCode": 0
+    },
+    {
+      "name": "compiler",
+      "durationMs": 864,
+      "peakFootprintBytes": 90090656,
+      "peakRssBytes": 234487808,
+      "exitCode": 0
+    },
+    {
+      "name": "runner-fixtures",
+      "durationMs": 37380,
+      "peakFootprintBytes": 442702512,
+      "peakRssBytes": 713605120,
+      "exitCode": 0
+    },
+    {
+      "name": "browser-evidence",
+      "durationMs": 17335,
+      "peakFootprintBytes": 290453168,
+      "peakRssBytes": 647053312,
+      "exitCode": 0
+    },
+    {
+      "name": "worktree-integration",
+      "durationMs": 298915,
+      "peakFootprintBytes": 694729064,
+      "peakRssBytes": 956989440,
+      "exitCode": 0
+    }
+  ]
+}

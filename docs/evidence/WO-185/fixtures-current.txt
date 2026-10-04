@@ -1,0 +1,193 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+PROGRESS [bounded-probe] # Subtest: WO-185 native footprint stops zero-filled and low-resident growth as a gate task, bounded command and bare registered-session child
+PROGRESS [bounded-probe] # Subtest: WO-185 bounded CLI prints typed memory stop and exit 125
+PROGRESS [bounded-probe] # Subtest: WO-185 a gate memory breach records a typed failed row rather than an operator stop
+PROGRESS [bounded-probe] # Subtest: WO-185 a guard retires after its registered owner exits without treating itself as a survivor
+PROGRESS [bounded-probe] # Subtest: WO-185 a guard prunes deleted duplicate repository registrations and preserves its last agent root
+PROGRESS [bounded-probe] # Subtest: WO-185 the long-lived guard drops released registration histories
+PROGRESS [bounded-probe] # Subtest: WO-185 document base comparisons pass their four-lane lease to nested gates
+PROGRESS [bounded-probe] # Subtest: WO-185 interrupt, termination and hang-up end task groups without a gate row
+PROGRESS [bounded-probe] # Subtest: WO-185 independent worktrees and separate clones share lanes, wait, reclaim a dead holder and reuse one guard
+PROGRESS [bounded-probe] # Subtest: WO-185 nested gates suballocate one reservation and a dead runner's live task retains its lanes
+TAP version 13
+# PROGRESS [build] 0.0 s started
+# PASS build 0.04 s
+# PROGRESS [allocation-zero] 0.0 s started
+# FAIL allocation-zero 1.17 s
+#   [allocation-zero] fixture pid=89496 ceiling=6442450944 mode=zero
+#   [allocation-zero] allocation bytes=8388608 footprint=10404296 rss=14450688
+#   [allocation-zero] allocation bytes=16777216 footprint=18809312 rss=22839296
+#   [allocation-zero] allocation bytes=25165824 footprint=27197920 rss=31227904
+#   [allocation-zero] allocation bytes=33554432 footprint=35586528 rss=39616512
+#   [allocation-zero] allocation bytes=41943040 footprint=43975136 rss=48005120
+#   [allocation-zero] allocation bytes=50331648 footprint=52380152 rss=56393728
+#   [allocation-zero] allocation bytes=58720256 footprint=60768760 rss=64782336
+#   [allocation-zero] allocation bytes=67108864 footprint=69157368 rss=73170944
+#   [allocation-zero] 
+#   [allocation-zero] memory-budget {"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T03:38:50.802Z","failureKind":"memory-budget","scope":"task","pid":89496,"repo":"<fixture-root>/repo","process":"memory-growth","task":"allocation-zero","budgetBytes":67108864,"measuredPeakFootprintBytes":69157368,"residentBytesAtStop":73170944,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[{"pid":89496,"name":"memory-growth"}]}
+# npm test: 1 passed; 1 failed; 1.25 s; 2 fresh tasks
+# WO-185 gate-zero {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"row":{"name":"allocation-zero","durationMs":1166,"peakFootprintBytes":69157368,"peakRssBytes":73170944,"memoryBudgetBytes":67108864,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"memoryFailure":{"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T03:38:50.802Z","failureKind":"memory-budget","scope":"task","pid":89496,"repo":"<fixture-root>/repo","process":"memory-growth","task":"allocation-zero","budgetBytes":67108864,"measuredPeakFootprintBytes":69157368,"residentBytesAtStop":73170944,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[{"pid":89496,"name":"memory-growth"}]},"failureKind":"memory-budget","startedAt":"2026-10-03T03:38:49.639Z","finishedAt":"2026-10-03T03:38:50.809Z","exitCode":1,"executed":true,"concurrentAtStart":[],"predecessors":["build"],"schedulerDurationMs":1170,"loadClass":"shared","loadFactor":2,"peerCap":0,"reservedSlots":1,"lanes":[0],"hostLaneWaitMs":0,"hostLaneSlots":1},"gateMemory":{"samples":29,"footprintSamples":13,"samplingCostMs":112.9254600000005,"peakFootprintBytes":128902720,"peakRssBytes":230883328,"source":"proc_pid_rusage.ri_phys_footprint","unavailable":[],"budgets":{"taskShare":0.0013020833333333333,"gateShare":0.5,"hostShare":0.6666666666666666,"signalIntervalMs":50,"footprintIntervalMs":100,"outputTailBytes":1048576,"hostLanes":4,"physicalBytes":51539607552,"taskBytes":67108864,"gateBytes":25769803776,"hostBytes":34359738368}}}
+# WO-185 bounded-zero {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"row":{"name":"bounded-zero","durationMs":1124,"peakFootprintBytes":69157368,"peakRssBytes":73170944,"memoryBudgetBytes":67108864,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"memoryFailure":{"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T03:38:51.955Z","failureKind":"memory-budget","scope":"task","pid":89581,"repo":"<fixture-root>/repo","process":"memory-growth","task":"bounded-zero","budgetBytes":67108864,"measuredPeakFootprintBytes":69157368,"residentBytesAtStop":73170944,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[{"pid":89581,"name":"memory-growth"}]},"failureKind":"memory-budget","startedAt":"2026-10-03T03:38:50.837Z","finishedAt":"2026-10-03T03:38:51.961Z","exitCode":1,"executed":true,"output":"fixture pid=89581 ceiling=6442450944 mode=zero\\nallocation bytes=8388608 footprint=10404296 rss=14450688\\nallocation bytes=16777216 footprint=18792904 rss=22839296\\nallocation bytes=25165824 footprint=27197920 rss=31227904\\nallocation bytes=33554432 footprint=35586528 rss=39616512\\nallocation bytes=41943040 footprint=43975136 rss=48005120\\nallocation bytes=50331648 footprint=52363744 rss=56393728\\nallocation bytes=58720256 footprint=60768760 rss=64782336\\nallocation bytes=67108864 footprint=69157368 rss=73170944\\n\\nmemory-budget {\\"contract\\":\\"host-memory-incident-v1\\",\\"recordedAt\\":\\"2026-10-03T03:38:51.955Z\\",\\"failureKind\\":\\"memory-budget\\",\\"scope\\":\\"task\\",\\"pid\\":89581,\\"repo\\":\\"<fixture-root>/repo\\",\\"process\\":\\"memory-growth\\",\\"task\\":\\"bounded-zero\\",\\"budgetBytes\\":67108864,\\"measuredPeakFootprintBytes\\":69157368,\\"residentBytesAtStop\\":73170944,\\"source\\":\\"proc_pid_rusage.ri_phys_footprint\\",\\"killedProcesses\\":[{\\"pid\\":89581,\\"name\\":\\"memory-growth\\"}]}"}}
+# WO-185 bare-zero {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"guardPid":89412,"incident":{"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T03:38:53.133Z","failureKind":"memory-budget","scope":"task","pid":89648,"repo":"<fixture-root>/repo","process":"memory-growth","budgetBytes":67108864,"measuredPeakFootprintBytes":69091832,"residentBytesAtStop":73089024,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[{"pid":89648,"name":"memory-growth"}]},"output":"fixture pid=89648 ceiling=6442450944 mode=zero\\nallocation bytes=8388608 footprint=10355168 rss=14368768\\nallocation bytes=16777216 footprint=18743776 rss=22757376\\nallocation bytes=25165824 footprint=27132384 rss=31145984\\nallocation bytes=33554432 footprint=35520992 rss=39534592\\nallocation bytes=41943040 footprint=43926008 rss=47923200\\nallocation bytes=50331648 footprint=52314616 rss=56311808\\nallocation bytes=58720256 footprint=60703224 rss=64700416\\nallocation bytes=67108864 footprint=69091832 rss=73089024\\n"}
+# PROGRESS [build] 0.0 s started
+# PASS build 0.04 s
+# PROGRESS [allocation-nonresident] 0.0 s started
+# FAIL allocation-nonresident 1.16 s
+#   [allocation-nonresident] fixture pid=89782 ceiling=6442450944 mode=nonresident
+#   [allocation-nonresident] allocation bytes=8388608 footprint=11108808 rss=8208384
+#   [allocation-nonresident] allocation bytes=16777216 footprint=19497416 rss=8208384
+#   [allocation-nonresident] allocation bytes=25165824 footprint=27886024 rss=8208384
+#   [allocation-nonresident] allocation bytes=33554432 footprint=36291016 rss=8224768
+#   [allocation-nonresident] allocation bytes=41943040 footprint=44696008 rss=8241152
+#   [allocation-nonresident] allocation bytes=50331648 footprint=53084616 rss=8241152
+#   [allocation-nonresident] allocation bytes=58720256 footprint=61473224 rss=8241152
+#   [allocation-nonresident] allocation bytes=67108864 footprint=69861832 rss=8241152
+#   [allocation-nonresident] 
+#   [allocation-nonresident] memory-budget {"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T03:38:54.400Z","failureKind":"memory-budget","scope":"task","pid":89782,"repo":"<fixture-root>/repo","process":"memory-growth","task":"allocation-nonresident","budgetBytes":67108864,"measuredPeakFootprintBytes":69861832,"residentBytesAtStop":8241152,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[{"pid":89782,"name":"memory-growth"}]}
+# npm test: 1 passed; 1 failed; 1.23 s; 2 fresh tasks
+# WO-185 gate-nonresident {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"row":{"name":"allocation-nonresident","durationMs":1157,"peakFootprintBytes":69861832,"peakRssBytes":8241152,"memoryBudgetBytes":67108864,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"memoryFailure":{"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T03:38:54.400Z","failureKind":"memory-budget","scope":"task","pid":89782,"repo":"<fixture-root>/repo","process":"memory-growth","task":"allocation-nonresident","budgetBytes":67108864,"measuredPeakFootprintBytes":69861832,"residentBytesAtStop":8241152,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[{"pid":89782,"name":"memory-growth"}]},"failureKind":"memory-budget","startedAt":"2026-10-03T03:38:53.244Z","finishedAt":"2026-10-03T03:38:54.407Z","exitCode":1,"executed":true,"concurrentAtStart":[],"predecessors":["build"],"schedulerDurationMs":1163,"loadClass":"shared","loadFactor":2,"peerCap":0,"reservedSlots":1,"lanes":[0],"hostLaneWaitMs":0,"hostLaneSlots":1},"gateMemory":{"samples":28,"footprintSamples":13,"samplingCostMs":114.93942000000061,"peakFootprintBytes":141929344,"peakRssBytes":186433536,"source":"proc_pid_rusage.ri_phys_footprint","unavailable":[],"budgets":{"taskShare":0.0013020833333333333,"gateShare":0.5,"hostShare":0.6666666666666666,"signalIntervalMs":50,"footprintIntervalMs":100,"outputTailBytes":1048576,"hostLanes":4,"physicalBytes":51539607552,"taskBytes":67108864,"gateBytes":25769803776,"hostBytes":34359738368}}}
+# WO-185 bounded-nonresident {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"row":{"name":"bounded-nonresident","durationMs":1134,"peakFootprintBytes":69861832,"peakRssBytes":8241152,"memoryBudgetBytes":67108864,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"memoryFailure":{"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T03:38:55.556Z","failureKind":"memory-budget","scope":"task","pid":89866,"repo":"<fixture-root>/repo","process":"memory-growth","task":"bounded-nonresident","budgetBytes":67108864,"measuredPeakFootprintBytes":69861832,"residentBytesAtStop":8241152,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[{"pid":89866,"name":"memory-growth"}]},"failureKind":"memory-budget","startedAt":"2026-10-03T03:38:54.429Z","finishedAt":"2026-10-03T03:38:55.563Z","exitCode":1,"executed":true,"output":"fixture pid=89866 ceiling=6442450944 mode=nonresident\\nallocation bytes=8388608 footprint=11108808 rss=8208384\\nallocation bytes=16777216 footprint=19497416 rss=8208384\\nallocation bytes=25165824 footprint=27886024 rss=8208384\\nallocation bytes=33554432 footprint=36291016 rss=8224768\\nallocation bytes=41943040 footprint=44696008 rss=8241152\\nallocation bytes=50331648 footprint=53084616 rss=8241152\\nallocation bytes=58720256 footprint=61473224 rss=8241152\\nallocation bytes=67108864 footprint=69861832 rss=8241152\\n\\nmemory-budget {\\"contract\\":\\"host-memory-incident-v1\\",\\"recordedAt\\":\\"2026-10-03T03:38:55.556Z\\",\\"failureKind\\":\\"memory-budget\\",\\"scope\\":\\"task\\",\\"pid\\":89866,\\"repo\\":\\"<fixture-root>/repo\\",\\"process\\":\\"memory-growth\\",\\"task\\":\\"bounded-nonresident\\",\\"budgetBytes\\":67108864,\\"measuredPeakFootprintBytes\\":69861832,\\"residentBytesAtStop\\":8241152,\\"source\\":\\"proc_pid_rusage.ri_phys_footprint\\",\\"killedProcesses\\":[{\\"pid\\":89866,\\"name\\":\\"memory-growth\\"}]}"}}
+# WO-185 bare-nonresident {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"guardPid":89412,"incident":{"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T03:38:56.732Z","failureKind":"memory-budget","scope":"task","pid":89932,"repo":"<fixture-root>/repo","process":"memory-growth","budgetBytes":67108864,"measuredPeakFootprintBytes":69861832,"residentBytesAtStop":8241152,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[{"pid":89932,"name":"memory-growth"}]},"output":"fixture pid=89932 ceiling=6442450944 mode=nonresident\\nallocation bytes=8388608 footprint=11108808 rss=8208384\\nallocation bytes=16777216 footprint=19497416 rss=8208384\\nallocation bytes=25165824 footprint=27886024 rss=8208384\\nallocation bytes=33554432 footprint=36291016 rss=8224768\\nallocation bytes=41943040 footprint=44696008 rss=8241152\\nallocation bytes=50331648 footprint=53084616 rss=8241152\\nallocation bytes=58720256 footprint=61473224 rss=8241152\\nallocation bytes=67108864 footprint=69861832 rss=8241152\\n"}
+# Subtest: WO-185 native footprint stops zero-filled and low-resident growth as a gate task, bounded command and bare registered-session child
+ok 1 - WO-185 native footprint stops zero-filled and low-resident growth as a gate task, bounded command and bare registered-session child
+  ---
+  duration_ms: 7784.48525
+  type: 'test'
+  ...
+# WO-185 bounded-cli {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"exitCode":125,"output":"bounded-start {\\"budgetBytes\\":33554432,\\"physicalBytes\\":51539607552}\\nPROGRESS [bounded-probe] started\\nmemory-budget {\\"failureKind\\":\\"memory-budget\\",\\"scope\\":\\"task\\",\\"task\\":\\"bounded-probe\\",\\"repo\\":\\"<project-root>\\",\\"pid\\":90018,\\"process\\":\\"memory-growth\\",\\"budgetBytes\\":33554432,\\"measuredPeakFootprintBytes\\":61473224,\\"residentBytesAtStop\\":8257536,\\"source\\":\\"proc_pid_rusage.ri_phys_footprint\\"}\\nfixture pid=90018 ceiling=6442450944 mode=nonresident\\nallocation bytes=8388608 footprint=11108808 rss=8224768\\nallocation bytes=16777216 footprint=19497416 rss=8224768\\nallocation bytes=25165824 footprint=27886024 rss=8224768\\nallocation bytes=33554432 footprint=36274632 rss=8224768\\nallocation bytes=41943040 footprint=44696008 rss=8257536\\nallocation bytes=50331648 footprint=53084616 rss=8257536\\nallocation bytes=58720256 footprint=61473224 rss=8257536\\n\\nmemory-budget {\\"failureKind\\":\\"memory-budget\\",\\"scope\\":\\"task\\",\\"task\\":\\"bounded-probe\\",\\"repo\\":\\"<project-root>\\",\\"pid\\":90018,\\"process\\":\\"memory-growth\\",\\"budgetBytes\\":33554432,\\"measuredPeakFootprintBytes\\":61473224,\\"residentBytesAtStop\\":8257536,\\"source\\":\\"proc_pid_rusage.ri_phys_footprint\\"}bounded-result {\\"name\\":\\"bounded-probe\\",\\"durationMs\\":1018,\\"peakFootprintBytes\\":61473224,\\"peakRssBytes\\":8257536,\\"memoryBudgetBytes\\":33554432,\\"footprintSource\\":\\"proc_pid_rusage.ri_phys_footprint\\",\\"memoryFailure\\":{\\"failureKind\\":\\"memory-budget\\",\\"scope\\":\\"task\\",\\"task\\":\\"bounded-probe\\",\\"repo\\":\\"<project-root>\\",\\"pid\\":90018,\\"process\\":\\"memory-growth\\",\\"budgetBytes\\":33554432,\\"measuredPeakFootprintBytes\\":61473224,\\"residentBytesAtStop\\":8257536,\\"source\\":\\"proc_pid_rusage.ri_phys_footprint\\"},\\"droppedOutputBytes\\":0,\\"failureKind\\":\\"memory-budget\\",\\"startedAt\\":\\"2026-10-03T03:38:57.002Z\\",\\"finishedAt\\":\\"2026-10-03T03:38:58.020Z\\",\\"exitCode\\":1,\\"executed\\":true}\\n"}
+# Subtest: WO-185 bounded CLI prints typed memory stop and exit 125
+ok 2 - WO-185 bounded CLI prints typed memory stop and exit 125
+  ---
+  duration_ms: 1240.185334
+  type: 'test'
+  ...
+# WO-185 gate-budget-failed-row {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"memory":{"samples":25,"footprintSamples":12,"samplingCostMs":103.48396199999951,"peakFootprintBytes":107520088,"peakRssBytes":204963840,"source":"proc_pid_rusage.ri_phys_footprint","unavailable":[],"failure":{"failureKind":"memory-budget","scope":"gate","pid":90065,"repo":"<fixture-root>/repo","budgetBytes":104857600,"measuredPeakFootprintBytes":107520088,"source":"proc_pid_rusage.ri_phys_footprint"},"budgets":{"taskShare":0.005208333333333333,"gateShare":0.0020345052083333335,"hostShare":0.6666666666666666,"signalIntervalMs":50,"footprintIntervalMs":100,"outputTailBytes":1048576,"hostLanes":4,"physicalBytes":51539607552,"taskBytes":268435456,"gateBytes":104857600,"hostBytes":34359738368}},"localMemoryStops":{"source":"local","counted":"typed memory stops in this checkout's ignored incident ledger; counted only, separate from failed gate rows","stops":1,"byScope":{"gate":1}}}
+# Subtest: WO-185 a gate memory breach records a typed failed row rather than an operator stop
+ok 3 - WO-185 a gate memory breach records a typed failed row rather than an operator stop
+  ---
+  duration_ms: 3727.295
+  type: 'test'
+  ...
+# WO-185 kernel-lock-recovery {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"killedOwnerReleased":true,"peakHolders":1}
+# Subtest: WO-185 kernel locks release a killed owner and serialize racing waiters
+ok 4 - WO-185 kernel locks release a killed owner and serialize racing waiters
+  ---
+  duration_ms: 467.811083
+  type: 'test'
+  ...
+# WO-185 guard-owner-exit {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"retired":true}
+# Subtest: WO-185 a guard retires after its registered owner exits without treating itself as a survivor
+ok 5 - WO-185 a guard retires after its registered owner exits without treating itself as a survivor
+  ---
+  duration_ms: 4121.162125
+  type: 'test'
+  ...
+# WO-185 host-runner-accounting {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"incident":{"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T03:39:07.254Z","failureKind":"memory-budget","scope":"host","pid":90446,"repo":"<fixture-root>/repo","process":"memory-growth","budgetBytes":41943040,"measuredPeakFootprintBytes":43909600,"residentBytesAtStop":47923200,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[]},"signal":"SIGTERM"}
+# Subtest: WO-185 host aggregate counts gate runners and stops an over-budget protected runner
+ok 6 - WO-185 host aggregate counts gate runners and stops an over-budget protected runner
+  ---
+  duration_ms: 983.120458
+  type: 'test'
+  ...
+# WO-185 deleted-duplicate-registration {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"duplicateRetired":true,"lastRootRetained":true}
+# Subtest: WO-185 a guard prunes deleted duplicate repository registrations and preserves its last agent root
+ok 7 - WO-185 a guard prunes deleted duplicate repository registrations and preserves its last agent root
+  ---
+  duration_ms: 733.8645
+  type: 'test'
+  ...
+# WO-185 duplicate-ownership-transfer {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"observedProcesses":3,"incident":{"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T03:39:08.743Z","failureKind":"memory-budget","scope":"task","pid":90589,"repo":"<fixture-root>/repo","process":"node","budgetBytes":67108864,"measuredPeakFootprintBytes":97077120,"residentBytesAtStop":134987776,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[{"pid":90589,"name":"node"}]}}
+# Subtest: WO-185 duplicate pruning preserves an already observed detached descendant
+ok 8 - WO-185 duplicate pruning preserves an already observed detached descendant
+  ---
+  duration_ms: 751.367791
+  type: 'test'
+  ...
+# WO-185 released-registration-histories {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"before":9,"after":1}
+# Subtest: WO-185 the long-lived guard drops released registration histories
+ok 9 - WO-185 the long-lived guard drops released registration histories
+  ---
+  duration_ms: 611.991917
+  type: 'test'
+  ...
+# PROGRESS [nested-base] 0.0 s started
+# PROGRESS [nested-base] 0.1 s PROGRESS [build] 0.0 s started
+# PROGRESS [nested-base] 0.2 s PROGRESS [nested-check] 0.0 s started
+# FAIL nested-base 0.23 s
+#   [nested-base] PROGRESS [build] 0.0 s started
+#   [nested-base] PASS build 0.04 s
+#   [nested-base] PROGRESS [nested-check] 0.0 s started
+#   [nested-base] PASS nested-check 0.04 s
+#   [nested-base] npm test: 2 passed; 0 failed; 0.12 s; 2 fresh tasks
+# inherited nested-base against 1685eb1173634656d0062ad86ae526e69bc698f3
+# npm run test:docs: 1 passed; 1 failed; 0.52 s; 2 fresh tasks
+# WO-185 nested-base-comparison {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"comparison":{"name":"nested-base","base":"1685eb1173634656d0062ad86ae526e69bc698f3","classification":"inherited","baseExitCode":1,"baseExecuted":true,"baseOutput":"PROGRESS [build] 0.0 s started\\nPASS build 0.04 s\\nPROGRESS [nested-check] 0.0 s started\\nPASS nested-check 0.04 s\\nnpm test: 2 passed; 0 failed; 0.12 s; 2 fresh tasks\\n"}}
+# Subtest: WO-185 document base comparisons pass their four-lane lease to nested gates
+ok 10 - WO-185 document base comparisons pass their four-lane lease to nested gates
+  ---
+  duration_ms: 1471.823542
+  type: 'test'
+  ...
+# WO-185 tail-and-survivor {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"droppedBytes":37973,"row":{"name":"escape","durationMs":39,"peakFootprintBytes":1327464,"peakRssBytes":1802240,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","survivingProcesses":[{"pid":91168,"name":"node"}],"droppedOutputBytes":0,"failureKind":"surviving-process","startedAt":"2026-10-03T03:39:11.114Z","finishedAt":"2026-10-03T03:39:11.153Z","exitCode":1,"executed":true,"output":"\\nsurviving-process {\\"survivingProcesses\\":[{\\"pid\\":91168,\\"name\\":\\"node\\"}]}"}}
+# Subtest: WO-185 runner cuts output to a tail and names and kills an escaped descendant
+ok 11 - WO-185 runner cuts output to a tail and names and kills an escaped descendant
+  ---
+  duration_ms: 360.409709
+  type: 'test'
+  ...
+# WO-185 SIGINT {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"taskPid":91312,"output":"PROGRESS [build] 0.0 s started\\nPASS build 0.04 s\\nPROGRESS [hang] 0.0 s started\\nPROGRESS [hang] 0.0 s stopped by gate request\\nFAIL hang 0.16 s\\n  [hang] \\n  [hang] Suite hang stopped by gate request after 157 ms\\nGate stopped by SIGINT after 0.2 s; no check recorded for tree 9abf423bcc0a8e96bc7f0e966df90bbc463d8fd6\\n"}
+# WO-185 SIGTERM {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"taskPid":91426,"output":"PROGRESS [build] 0.0 s started\\nPASS build 0.04 s\\nPROGRESS [hang] 0.0 s started\\nPROGRESS [hang] 0.0 s stopped by gate request\\nFAIL hang 0.15 s\\n  [hang] \\n  [hang] Suite hang stopped by gate request after 155 ms\\nGate stopped by SIGTERM after 0.2 s; no check recorded for tree ad8859c24f6f43a997d4242750184435e7a16b24\\n"}
+# WO-185 SIGHUP {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"taskPid":91537,"output":"PROGRESS [build] 0.0 s started\\nPASS build 0.04 s\\nPROGRESS [hang] 0.0 s started\\nPROGRESS [hang] 0.0 s stopped by gate request\\nFAIL hang 0.15 s\\n  [hang] \\n  [hang] Suite hang stopped by gate request after 154 ms\\nGate stopped by SIGHUP after 0.2 s; no check recorded for tree 6e91e06208e8757ca07c551f77abdd0dc468c1a7\\n"}
+# Subtest: WO-185 interrupt, termination and hang-up end task groups without a gate row
+ok 12 - WO-185 interrupt, termination and hang-up end task groups without a gate row
+  ---
+  duration_ms: 2081.335042
+  type: 'test'
+  ...
+# WO-185 two-worktrees {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"peakLanes":4,"oneGuard":91660,"output":"PROGRESS [build] 0.0 s started\\nWAIT host lanes for <fixture-root>/repo / build; held by <fixture-root>/worktree / build (4)\\nPASS build 0.64 s\\nnpm test: 1 passed; 0 failed; 0.67 s; 1 fresh tasks\\ngate-fixture-result {\\"exitCode\\":0,\\"memory\\":{\\"samples\\":15,\\"footprintSamples\\":8,\\"samplingCostMs\\":58.89820800000001,\\"peakFootprintBytes\\":64168960,\\"peakRssBytes\\":196657152,\\"source\\":\\"proc_pid_rusage.ri_phys_footprint\\",\\"unavailable\\":[],\\"budgets\\":{\\"taskShare\\":0.0013020833333333333,\\"gateShare\\":0.5,\\"hostShare\\":0.6666666666666666,\\"signalIntervalMs\\":50,\\"footprintIntervalMs\\":100,\\"outputTailBytes\\":1048576,\\"hostLanes\\":4,\\"physicalBytes\\":51539607552,\\"taskBytes\\":67108864,\\"gateBytes\\":25769803776,\\"hostBytes\\":34359738368}}}\\nPROGRESS [build] 0.0 s started\\nPASS build 0.65 s\\nnpm test: 1 passed; 0 failed; 1.42 s; 1 fresh tasks\\ngate-fixture-result {\\"exitCode\\":0,\\"memory\\":{\\"samples\\":30,\\"footprintSamples\\":13,\\"samplingCostMs\\":110.77687900000001,\\"peakFootprintBytes\\":42801176,\\"peakRssBytes\\":130875392,\\"source\\":\\"proc_pid_rusage.ri_phys_footprint\\",\\"unavailable\\":[],\\"budgets\\":{\\"taskShare\\":0.0013020833333333333,\\"gateShare\\":0.5,\\"hostShare\\":0.6666666666666666,\\"signalIntervalMs\\":50,\\"footprintIntervalMs\\":100,\\"outputTailBytes\\":1048576,\\"hostLanes\\":4,\\"physicalBytes\\":51539607552,\\"taskBytes\\":67108864,\\"gateBytes\\":25769803776,\\"hostBytes\\":34359738368}}}\\n"}
+# WO-185 separate-clones {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"peakLanes":4,"oneGuard":91660,"output":"PROGRESS [build] 0.0 s started\\nWAIT host lanes for <fixture-root>/clone / build; held by <fixture-root>/repo / build (4)\\nPASS build 0.65 s\\nnpm test: 1 passed; 0 failed; 0.67 s; 1 fresh tasks\\ngate-fixture-result {\\"exitCode\\":0,\\"memory\\":{\\"samples\\":15,\\"footprintSamples\\":8,\\"samplingCostMs\\":60.505123999999824,\\"peakFootprintBytes\\":38573288,\\"peakRssBytes\\":123174912,\\"source\\":\\"proc_pid_rusage.ri_phys_footprint\\",\\"unavailable\\":[],\\"budgets\\":{\\"taskShare\\":0.0013020833333333333,\\"gateShare\\":0.5,\\"hostShare\\":0.6666666666666666,\\"signalIntervalMs\\":50,\\"footprintIntervalMs\\":100,\\"outputTailBytes\\":1048576,\\"hostLanes\\":4,\\"physicalBytes\\":51539607552,\\"taskBytes\\":67108864,\\"gateBytes\\":25769803776,\\"hostBytes\\":34359738368}}}\\nPROGRESS [build] 0.0 s started\\nPASS build 0.65 s\\nnpm test: 1 passed; 0 failed; 1.42 s; 1 fresh tasks\\ngate-fixture-result {\\"exitCode\\":0,\\"memory\\":{\\"samples\\":30,\\"footprintSamples\\":13,\\"samplingCostMs\\":117.41354200000048,\\"peakFootprintBytes\\":41080520,\\"peakRssBytes\\":125435904,\\"source\\":\\"proc_pid_rusage.ri_phys_footprint\\",\\"unavailable\\":[],\\"budgets\\":{\\"taskShare\\":0.0013020833333333333,\\"gateShare\\":0.5,\\"hostShare\\":0.6666666666666666,\\"signalIntervalMs\\":50,\\"footprintIntervalMs\\":100,\\"outputTailBytes\\":1048576,\\"hostLanes\\":4,\\"physicalBytes\\":51539607552,\\"taskBytes\\":67108864,\\"gateBytes\\":25769803776,\\"hostBytes\\":34359738368}}}\\n"}
+# WO-185 reclaimed-and-second-clone-child {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"reclaimed":true,"killedPid":92260}
+# Subtest: WO-185 independent worktrees and separate clones share lanes, wait, reclaim a dead holder and reuse one guard
+ok 13 - WO-185 independent worktrees and separate clones share lanes, wait, reclaim a dead holder and reuse one guard
+  ---
+  duration_ms: 4846.573708
+  type: 'test'
+  ...
+# Subtest: WO-185 PID reuse cannot adopt a new root and unreadable footprint fails supervision
+ok 14 - WO-185 PID reuse cannot adopt a new root and unreadable footprint fails supervision
+  ---
+  duration_ms: 23.732666
+  type: 'test'
+  ...
+# WO-185 short-task-footprint {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"row":{"name":"short-task-footprint","durationMs":401,"peakFootprintBytes":80512920,"peakRssBytes":118325248,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-03T03:39:18.216Z","finishedAt":"2026-10-03T03:39:18.617Z","exitCode":0,"executed":true,"output":"67108864\\n"}}
+# Subtest: WO-185 a short task records executable footprint before the normal sample interval
+ok 15 - WO-185 a short task records executable footprint before the normal sample interval
+  ---
+  duration_ms: 402.06025
+  type: 'test'
+  ...
+# WO-185 nested-and-orphan-lanes {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"suballocationWaited":true,"retainedUntilTaskExit":true}
+# WO-185 assertion-consumers {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"consumers":["wo102-generators.test.mjs","wo102-properties.test.mjs","wo102-replay.test.mjs"]}
+# Subtest: WO-185 nested gates suballocate one reservation and a dead runner's live task retains its lanes
+ok 16 - WO-185 nested gates suballocate one reservation and a dead runner's live task retains its lanes
+  ---
+  duration_ms: 1036.009375
+  type: 'test'
+  ...
+# Subtest: WO-185 host coordination ignores temporary environment, ancestry is verified and corpus assertion guard rejects sweep aliases
+ok 17 - WO-185 host coordination ignores temporary environment, ancestry is verified and corpus assertion guard rejects sweep aliases
+  ---
+  duration_ms: 22.698291
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 30736.609875
+bounded-result {"name":"bounded-probe","durationMs":30781,"peakFootprintBytes":162428488,"peakRssBytes":426164224,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-03T03:38:48.913Z","finishedAt":"2026-10-03T03:39:19.694Z","exitCode":0,"executed":true}

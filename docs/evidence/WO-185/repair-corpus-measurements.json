@@ -1,0 +1,34 @@
+{
+  "command": "node scripts/harness.mjs bounded -- node <session-scratch>/repair-drift.mjs",
+  "budgetBytes": 805306368,
+  "host": {
+    "platform": "darwin",
+    "release": "27.0.0",
+    "architecture": "arm64",
+    "physicalBytes": 51539607552
+  },
+  "mutation": "Backoff rngState: next changed to rngState: env.rngState in a scratch kernel",
+  "runs": [
+    {
+      "name": "properties",
+      "exitCode": 1,
+      "durationMs": 3136,
+      "peakFootprintBytes": 249396184,
+      "summary": "findings total=126792; kept=32; digest=5ff785148829df9845c7982664ab143d3364c080e1e0f4ebbe32841ad60a1359"
+    },
+    {
+      "name": "generators",
+      "exitCode": 1,
+      "durationMs": 4140,
+      "peakFootprintBytes": 288081760,
+      "summary": "findings total=126792; kept=32; digest=5ff785148829df9845c7982664ab143d3364c080e1e0f4ebbe32841ad60a1359"
+    },
+    {
+      "name": "replay",
+      "exitCode": 1,
+      "durationMs": 2593,
+      "peakFootprintBytes": 260473040,
+      "summary": "findings total=126792; kept=32; digest=5ff785148829df9845c7982664ab143d3364c080e1e0f4ebbe32841ad60a1359"
+    }
+  ]
+}

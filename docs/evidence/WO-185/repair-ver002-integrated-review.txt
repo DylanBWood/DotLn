@@ -1,0 +1,94 @@
+WO-185 repair of VER-002 F6: npm test -- --review after integrating main 340a67c9 (D017)
+Code identity: c006d5cd65e391efb06fd75f5db91a6d8813123bb9d77ed44aa91df6f0cea06d (base 340a67c9 plus the uncommitted WO-185 work).
+Host: macOS 27.0.1, Darwin 27.0.0, arm64, 16 logical CPUs, 51539607552 bytes physical memory (sysctl hw.memsize).
+Selection: the 40 suites of node scripts/test-runner.mjs --review --list at this identity; a main-branch worktree (/Users/dylanwood/Projects/DotLn at 340a67c9) existed throughout.
+COMMAND npm test -- --review (recorded 2026-10-03T16:50:16.684Z, 828780 ms, exit 0)
+Excerpt: every PASS/FAIL line and the summary; PROGRESS lines omitted.
+
+PASS build 0.65 s
+PASS harness 0.21 s
+PASS harness-evidence 0.43 s
+PASS authority-evidence 0.75 s
+PASS license-surfaces 1.51 s
+PASS feedback-evidence 2.83 s
+PASS harness-fixtures 296.74 s
+PASS process-debt 98.76 s
+PASS release:prepare 0.78 s
+PASS release:case:preflight 0.12 s
+PASS release:case:surfaces 3.68 s
+PASS release:case:surfaces_local_snapshot 0.90 s
+PASS release:case:prepare_independent 2.37 s
+PASS release:case:license_surfaces 4.34 s
+PASS release:case:surfaces_committed_readme 1.34 s
+PASS release:case:surfaces_lower 0.96 s
+PASS release:case:surfaces_first 0.85 s
+PASS release:case:surfaces_component 1.89 s
+PASS release:case:surfaces_non_source 0.86 s
+PASS release:case:surfaces_new_component 0.96 s
+PASS release:case:surfaceclose 2.27 s
+PASS release:case:surfaceclose_linked 2.52 s
+PASS release:case:bodyclose 1.82 s
+PASS release:case:dirty 2.98 s
+PASS release:case:unreachable 2.83 s
+PASS release:case:derived 2.85 s
+PASS release:case:settings_scope 2.60 s
+PASS release:case:nonmain 1.16 s
+PASS release:case:divergence 1.15 s
+PASS release:case:malformed 0.96 s
+PASS release:case:missinggh 2.40 s
+PASS release:case:unauthenticated 1.64 s
+PASS release:case:splitorigin 0.73 s
+PASS release:case:lower 1.69 s
+PASS release:case:failures 2.50 s
+PASS release:case:cadence_missing 1.82 s
+PASS release:case:cadence_inconsistent 4.13 s
+PASS resume 56.19 s
+PASS release:case:conflict 1.87 s
+PASS release:case:localconflict 1.58 s
+PASS release:case:nestedtag 1.31 s
+PASS release:case:prepare 2.30 s
+PASS release:case:missinglocalprevious 2.33 s
+PASS release:case:pushfail 2.47 s
+PASS release:case:refrecovery 3.90 s
+PASS release:case:stale_helpers 7.34 s
+PASS release:case:createrecovery 10.39 s
+PASS release:case:runtime_refresh 13.87 s
+PASS release:case:success 17.35 s
+PASS release:case:edition 6.65 s
+PASS release:case:firstrelease 3.38 s
+PASS worktree 95.58 s
+PASS release:case:composed_evidence 6.03 s
+PASS release:case:cached_evidence 7.00 s
+PASS release-preparation 2.72 s
+PASS github-body 0.12 s
+PASS outward-lint 0.43 s
+PASS release:case:concurrent 16.57 s
+PASS license-fixtures 8.28 s
+PASS publication-fixtures 0.92 s
+PASS backup-intake 0.31 s
+PASS beacon-portability 1.13 s
+PASS checkpoint 7.59 s
+PASS release:case:material 77.20 s
+PASS work-orders-fixtures 21.04 s
+PASS console 17.45 s
+PASS adjacent-queue 0.42 s
+PASS resident-bind 9.50 s
+PASS derived-orders 7.49 s
+PASS target-publish 143.53 s
+PASS codex-continuation 5.47 s
+PASS authority-grants 0.14 s
+PASS portfolio 20.04 s
+PASS artifact-corpus 0.19 s
+PASS local-runner-double 3.72 s
+PASS configuration-root 4.27 s
+PASS plan-refutation 61.14 s
+PASS harness-probe 63.04 s
+PASS registrations 0.56 s
+PASS skeleton 349.78 s
+PASS kernel 0.44 s
+PASS compiler 0.86 s
+PASS runner-fixtures 37.38 s
+PASS browser-evidence 17.34 s
+PASS worktree-integration 298.92 s
+npm test: 40 passed; 0 failed; 828.78 s; 85 fresh tasks
+exit 0
