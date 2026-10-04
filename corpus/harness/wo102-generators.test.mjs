@@ -9,6 +9,7 @@ import {
   MANIFEST_PATH,
   TOOLCHAIN_PROFILE,
   renderFindings,
+  readCorpusManifest,
 } from "./generate-cadence-corpus.mjs";
 import {
   RECORDED_SEED,
@@ -25,10 +26,9 @@ import {
   shipped,
 } from "./wo102-cadence-lib.mjs";
 import { HAND_COMPUTED_BACKOFF, referenceDraw } from "./wo102-reference.mjs";
+import { assertFindings, summarizeFindings } from "./bounded-findings.mjs";
 
-const manifest = JSON.parse(
-  readFileSync(join(REPO_ROOT, MANIFEST_PATH), "utf8"),
-);
+const manifest = readCorpusManifest();
 test("WO-102 literal planted anchors pin next-tick, default origin, throws and hand-computed Backoff", () => {
   const anchor = (cadence, env, expected) => {
     const row = { cadence, state: {}, env };
@@ -162,11 +162,16 @@ test("WO-102 generator parser rejects missing, duplicate and ambiguous options",
 });
 test("WO-102 regeneration is byte-identical and seed changes selection without changing the full set", () => {
   const first = buildCorpus(RECORDED_SEED);
+  assertFindings(first.findingsSummary, manifest.findings);
   assert.equal(checkCorpus(first), true);
   const repeat = buildCorpus(RECORDED_SEED);
   assert.deepEqual(first.files, repeat.files);
   const alternate = buildCorpus(`${RECORDED_SEED}-alternate`);
-  assert.deepEqual(first.full, alternate.full);
+  assertFindings(
+    summarizeFindings(first.full),
+    summarizeFindings(alternate.full),
+    "Full grid changed",
+  );
   assert.notDeepEqual(
     first.files.filter((file) => file.path.endsWith(".jsonl")),
     alternate.files.filter((file) => file.path.endsWith(".jsonl")),
@@ -220,8 +225,9 @@ test("WO-102 poison-only violations are exact findings and host functions are re
         ambient();
         return shipped(input).result;
       });
-    const findings = inspectPurity([row], evaluator);
-    assert.equal(findings.length, 1);
+    const summary = inspectPurity([row], evaluator);
+    assert.equal(summary.total, 1);
+    const findings = summary.kept;
     assert.equal(findings[0].type, "ambient-source-leakage");
     assert.equal(findings[0].vectorId, row.id);
     assert.deepEqual(findings[0].expected, {
@@ -234,4 +240,132 @@ test("WO-102 poison-only violations are exact findings and host functions are re
     assert.equal(Date.now, now);
     assert.equal(Math.random, random);
   }
+});
+
+test("WO-185 bounded full-grid equality distinguishes nonfinite swaps beyond its retained rows", () => {
+  const full = enumerateGrid();
+  const baseline = summarizeFindings(full);
+  let changed = false;
+  function swap(value) {
+    if (!value || typeof value !== "object") return;
+    for (const [key, child] of Object.entries(value)) {
+      if (typeof child === "number" && !Number.isFinite(child)) {
+        value[key] = Number.isNaN(child) ? Infinity : NaN;
+        changed = true;
+        return;
+      }
+      swap(child);
+      if (changed) return;
+    }
+  }
+  for (const row of full.slice(32)) {
+    swap(row);
+    if (changed) break;
+  }
+  assert.equal(changed, true);
+  assert.throws(
+    () => assertFindings(summarizeFindings(full), baseline),
+    /Full|findings total=/,
+  );
+  assertFindings(
+    summarizeFindings([{ a: 1, b: 1.5 }]),
+    summarizeFindings([{ b: 1.5, a: 1 }]),
+  );
+  // The class also includes JSON's null, signed-zero and missing-value aliases.
+  for (const [left, right] of [
+    [NaN, null],
+    [Infinity, -Infinity],
+    [0, -0],
+    [undefined, null],
+    [{ x: undefined }, {}],
+    [Array(1), [undefined]],
+    [NaN, { $number: "NaN" }],
+  ]) {
+    assert.throws(
+      () =>
+        assertFindings(summarizeFindings([left]), summarizeFindings([right])),
+      /findings total=/,
+    );
+  }
+});
+
+test("WO-185 oversized drift quarantine refuses generation before changing any file", async (t) => {
+  const {
+    mkdtempSync,
+    mkdirSync,
+    cpSync,
+    writeFileSync,
+    rmSync,
+    readdirSync,
+    realpathSync,
+  } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const { execFileSync } = await import("node:child_process");
+  const scratch = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-wo185-quarantine-")),
+  );
+  t.after(() => rmSync(scratch, { recursive: true, force: true }));
+  mkdirSync(join(scratch, "corpus/harness"), { recursive: true });
+  mkdirSync(join(scratch, "packages/kernel"), { recursive: true });
+  for (const name of [
+    "bounded-findings.mjs",
+    "wo102-cadence-lib.mjs",
+    "wo102-reference.mjs",
+    "generate-cadence-corpus.mjs",
+  ])
+    cpSync(
+      join(REPO_ROOT, "corpus/harness", name),
+      join(scratch, "corpus/harness", name),
+    );
+  cpSync(
+    join(REPO_ROOT, "packages/kernel/dist"),
+    join(scratch, "packages/kernel/dist"),
+    { recursive: true },
+  );
+  cpSync(
+    join(REPO_ROOT, "packages/kernel/package.json"),
+    join(scratch, "packages/kernel/package.json"),
+  );
+  const kernel = join(scratch, "packages/kernel/dist/src/core.js");
+  const original = readFileSync(kernel, "utf8");
+  assert.equal(original.split("rngState: next,").length, 2);
+  writeFileSync(
+    kernel,
+    original.replace("rngState: next,", "rngState: env.rngState,"),
+  );
+  mkdirSync(join(scratch, "corpus/manifests"), { recursive: true });
+  const prior = "Preserve the previous exact corpus.\n";
+  writeFileSync(join(scratch, MANIFEST_PATH), prior);
+  let failure;
+  try {
+    execFileSync(
+      process.execPath,
+      [
+        join(scratch, "corpus/harness/generate-cadence-corpus.mjs"),
+        "--seed",
+        RECORDED_SEED,
+        "--write",
+      ],
+      { encoding: "utf8", timeout: 20000, stdio: ["ignore", "pipe", "pipe"] },
+    );
+  } catch (error) {
+    failure = error;
+  }
+  assert.equal(
+    failure?.status,
+    1,
+    String(failure?.stack ?? "generator unexpectedly succeeded"),
+  );
+  assert.match(
+    failure.stderr,
+    /findings-limit:.*findings total=126792; kept=32; digest=/,
+  );
+  assert.equal(readFileSync(join(scratch, MANIFEST_PATH), "utf8"), prior);
+  assert.deepEqual(readdirSync(join(scratch, "corpus")).sort(), [
+    "harness",
+    "manifests",
+  ]);
+  assert.deepEqual(readdirSync(join(scratch, "corpus/manifests")), [
+    "WO-102.json",
+  ]);
 });

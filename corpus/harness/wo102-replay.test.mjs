@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { decodeLog, encodeLog } from "../../packages/kernel/dist/src/index.js";
-import { MANIFEST_PATH } from "./generate-cadence-corpus.mjs";
+import { readCorpusManifest } from "./generate-cadence-corpus.mjs";
 import {
   REPO_ROOT,
   countRows,
@@ -13,10 +13,17 @@ import {
   KINDS,
   GRID,
   REGISTRY,
+  enumerateGrid,
+  inspectGrid,
 } from "./wo102-cadence-lib.mjs";
-const manifest = JSON.parse(
-  readFileSync(join(REPO_ROOT, MANIFEST_PATH), "utf8"),
-);
+import { assertFindings } from "./bounded-findings.mjs";
+const manifest = readCorpusManifest();
+test("WO-185 replay lane's full-grid findings use bounded diagnostics", () => {
+  assertFindings(
+    inspectGrid(enumerateGrid()),
+    manifest.findings.filter((row) => row.type !== "ambient-source-leakage"),
+  );
+});
 const rows = [];
 for (const fixture of manifest.fixtures) {
   const bytes = readFileSync(join(REPO_ROOT, fixture.path), "utf8");

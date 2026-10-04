@@ -2,10 +2,11 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { assertFindings } from "./bounded-findings.mjs";
 import {
-  MANIFEST_PATH,
   FINDINGS_PATH,
   renderFindings,
+  readCorpusManifest,
 } from "./generate-cadence-corpus.mjs";
 import {
   REPO_ROOT,
@@ -16,9 +17,7 @@ import {
   inspectPurity,
   json,
 } from "./wo102-cadence-lib.mjs";
-const manifest = JSON.parse(
-  readFileSync(join(REPO_ROOT, MANIFEST_PATH), "utf8"),
-);
+const manifest = readCorpusManifest();
 const full = enumerateGrid();
 test(`WO-102 full declared sweep (${full.length}): drift, determinism, clamp, RNG threading, call order, no mutation`, () => {
   assert.deepEqual(countRows(full), manifest.counts.full);
@@ -35,7 +34,7 @@ test(`WO-102 full declared sweep (${full.length}): drift, determinism, clamp, RN
     expectedBackoff,
     "Every declared Cartesian cell occurs exactly once",
   );
-  assert.deepEqual(
+  assertFindings(
     inspectGrid(full),
     manifest.findings.filter(
       (finding) => finding.type !== "ambient-source-leakage",
@@ -51,7 +50,7 @@ test(`WO-102 full declared sweep (${full.length}): drift, determinism, clamp, RN
 });
 test(`WO-102 no ambient clock or RNG under poisoned Date.now/Math.random (${full.length} vectors)`, () => {
   const findings = inspectPurity(full);
-  assert.deepEqual(
+  assertFindings(
     findings,
     manifest.findings
       .filter((finding) => finding.type === "ambient-source-leakage")
