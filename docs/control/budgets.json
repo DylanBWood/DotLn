@@ -1,6 +1,26 @@
 {
   "schemaVersion": 1,
   "subagentCap": 20,
+  "memory": {
+    "taskShare": 0.25,
+    "gateShare": 0.5,
+    "hostShare": 0.6666666666666666,
+    "signalIntervalMs": 1000,
+    "footprintIntervalMs": 4000,
+    "outputTailBytes": 1048576,
+    "hostLanes": 4,
+    "basis": {
+      "workOrder": "WO-185",
+      "source": "docs/evidence/WO-185/repair-final001-gate-initial-measurements.json; full npm test -- --review at 2026-10-03T19:17:49.624Z; above-threshold runner sampling directs D026 interval correction and current-identity recheck",
+      "codeIdentity": "bf5bdd3dbafb90b1b9dd25b4de74f82d34ab5d2e440d7d528d1ee70047e0eab0",
+      "physicalBytes": 51539607552,
+      "taskPeakFootprintBytes": 1100039120,
+      "gatePeakFootprintBytes": 1787537328,
+      "hostPeakFootprintBytes": 1721155256,
+      "runnerSamplingPercent": 2.5778002756795977,
+      "guardSamplingPercent": 1.0997731092970733
+    }
+  },
   "source": "WO-126 criteria 10 and 15; operator budget clarification during resume: next on 2026-09-09; operator direction during resume: next on 2026-09-14 (WO-044): artificial caps yield to needed rules and accuracy comes before efficiency, so the cold-start ceilings the shared no-guessing line touches carry real margin; operator direction during the 2026-09-17 vision-into-use planning dispatch (message 12): a cold-start ceiling that a reviewed rule breaches is raised in the same change to the measured bytes plus one 4 KB step with the rule named, or the breach is recorded as a dated acceptance here, never trimmed around and never left advisory across orders; the reviewer (16,587) and release-close (9,941) ceilings were raised on 2026-09-17 under that direction; the fastGateMs ceiling was unset on 2026-09-19 by the second planning pass of that day: 120 s was WO-126's budget for a fast gate that WO-132 removed, the metric has since read the one full product gate (303 to 1,178 s across seventeen final reviews), no acceptance was ever recorded and nothing enforced it, so the ceiling compared two different things; gate duration stays tracked by product 07's cold-gate candidate",
   "dispatches": {
     "executor": {

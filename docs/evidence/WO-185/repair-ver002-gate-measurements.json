@@ -1,0 +1,767 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-185",
+  "repair": "VER-002 F6",
+  "host": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "physicalBytes": 51539607552
+  },
+  "gate": {
+    "command": "npm test -- --review",
+    "codeIdentity": "579433dde7cd11c418432590ac0d527e310ee5b7044e26099b3e13d70bc6a2b0",
+    "recordedAt": "2026-10-03T15:52:30.844Z",
+    "durationMs": 844857,
+    "exitCode": 0,
+    "suites": 40,
+    "tasks": 85,
+    "freshSuites": 85,
+    "reusedSuites": 0
+  },
+  "peaks": {
+    "taskFootprintBytes": 555600112,
+    "gateFootprintBytes": 1337533840,
+    "hostFootprintBytes": 1436777152
+  },
+  "budgets": {
+    "taskBytes": 12884901888,
+    "gateBytes": 25769803776,
+    "hostBytes": 34359738368
+  },
+  "budgetToPeakRatios": {
+    "task": 23.19096344602609,
+    "gate": 19.26665554570193,
+    "host": 23.914452091732596
+  },
+  "runner": {
+    "samples": 1940,
+    "footprintSamples": 771,
+    "samplingCostMs": 13152.851441001007,
+    "peakFootprintBytes": 1337533840,
+    "peakRssBytes": 2010103808,
+    "source": "proc_pid_rusage.ri_phys_footprint",
+    "unavailable": [],
+    "budgets": {
+      "taskShare": 0.25,
+      "gateShare": 0.5,
+      "hostShare": 0.6666666666666666,
+      "signalIntervalMs": 500,
+      "footprintIntervalMs": 2000,
+      "outputTailBytes": 1048576,
+      "hostLanes": 4,
+      "basis": {
+        "workOrder": "WO-185",
+        "source": "docs/evidence/WO-185/repair-gate-measurements.json; full npm test -- --review at 2026-10-03T05:01:48.530Z",
+        "codeIdentity": "d06bba78794691e654afe47b2bfa14509934648741ee5e20dc4eec8210151094",
+        "physicalBytes": 51539607552,
+        "taskPeakFootprintBytes": 668067048,
+        "gatePeakFootprintBytes": 1497849912,
+        "hostPeakFootprintBytes": 1389171024,
+        "runnerSamplingPercent": 1.5535506835136235,
+        "guardSamplingPercent": 0.9792252845576666
+      },
+      "physicalBytes": 51539607552,
+      "taskBytes": 12884901888,
+      "gateBytes": 25769803776,
+      "hostBytes": 34359738368
+    },
+    "percentOfGateWall": 1.5568139272091024
+  },
+  "guard": {
+    "pid": 65032,
+    "startedAt": "2026-10-03T15:38:25.098Z",
+    "samples": 1775,
+    "footprintSamples": 444,
+    "samplingCostMs": 9365.298371001016,
+    "peakFootprintBytes": 1436777152,
+    "incidents": 0,
+    "trackedRegistrations": 2,
+    "trackedProcesses": 6,
+    "observedAt": "2026-10-03T15:53:24.792Z",
+    "unavailable": [],
+    "percentOfGateWall": 1.108506927326283,
+    "window": "Entire lifetime of the guard started from the repaired code at 2026-10-03T15:38:25.098Z, immediately before this gate (the pre-repair guard started at 2026-10-03T04:48:10.445Z was retired by birth-verified SIGTERM first), through 2026-10-03T15:53:24.792Z; includes the post-gate observation delay. Conservative upper bound on sampler work during the gate, not causal slowdown."
+  },
+  "tasks": [
+    {
+      "name": "build",
+      "durationMs": 653,
+      "peakFootprintBytes": 21039696,
+      "peakRssBytes": 67026944,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "harness",
+      "durationMs": 212,
+      "peakFootprintBytes": 35820104,
+      "peakRssBytes": 84066304,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "harness-evidence",
+      "durationMs": 428,
+      "peakFootprintBytes": 94313456,
+      "peakRssBytes": 142786560,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "authority-evidence",
+      "durationMs": 762,
+      "peakFootprintBytes": 124414056,
+      "peakRssBytes": 171393024,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "license-surfaces",
+      "durationMs": 1556,
+      "peakFootprintBytes": 72213360,
+      "peakRssBytes": 172376064,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "feedback-evidence",
+      "durationMs": 2904,
+      "peakFootprintBytes": 134361904,
+      "peakRssBytes": 272039936,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "harness-fixtures",
+      "durationMs": 305393,
+      "peakFootprintBytes": 349789304,
+      "peakRssBytes": 692420608,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "process-debt",
+      "durationMs": 101447,
+      "peakFootprintBytes": 456177752,
+      "peakRssBytes": 831684608,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:prepare",
+      "durationMs": 781,
+      "peakFootprintBytes": 9127232,
+      "peakRssBytes": 39600128,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:preflight",
+      "durationMs": 124,
+      "peakFootprintBytes": 4145800,
+      "peakRssBytes": 5095424,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:surfaces",
+      "durationMs": 3692,
+      "peakFootprintBytes": 52960216,
+      "peakRssBytes": 155729920,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:surfaces_local_snapshot",
+      "durationMs": 942,
+      "peakFootprintBytes": 24038232,
+      "peakRssBytes": 72974336,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:prepare_independent",
+      "durationMs": 2369,
+      "peakFootprintBytes": 33345760,
+      "peakRssBytes": 85196800,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:license_surfaces",
+      "durationMs": 4342,
+      "peakFootprintBytes": 57662496,
+      "peakRssBytes": 160530432,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:surfaces_committed_readme",
+      "durationMs": 1373,
+      "peakFootprintBytes": 33182376,
+      "peakRssBytes": 87375872,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:surfaces_lower",
+      "durationMs": 1102,
+      "peakFootprintBytes": 29888544,
+      "peakRssBytes": 80248832,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:surfaces_first",
+      "durationMs": 959,
+      "peakFootprintBytes": 30953792,
+      "peakRssBytes": 82165760,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:surfaces_component",
+      "durationMs": 1769,
+      "peakFootprintBytes": 29691984,
+      "peakRssBytes": 78954496,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:surfaces_non_source",
+      "durationMs": 841,
+      "peakFootprintBytes": 24284040,
+      "peakRssBytes": 73187328,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:surfaces_new_component",
+      "durationMs": 1014,
+      "peakFootprintBytes": 49175176,
+      "peakRssBytes": 145932288,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:surfaceclose",
+      "durationMs": 2223,
+      "peakFootprintBytes": 35590968,
+      "peakRssBytes": 114376704,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:surfaceclose_linked",
+      "durationMs": 2180,
+      "peakFootprintBytes": 30609632,
+      "peakRssBytes": 80756736,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:bodyclose",
+      "durationMs": 1830,
+      "peakFootprintBytes": 30527592,
+      "peakRssBytes": 80723968,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:dirty",
+      "durationMs": 3055,
+      "peakFootprintBytes": 36507968,
+      "peakRssBytes": 88866816,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:unreachable",
+      "durationMs": 2834,
+      "peakFootprintBytes": 37392584,
+      "peakRssBytes": 89587712,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:derived",
+      "durationMs": 2797,
+      "peakFootprintBytes": 36360944,
+      "peakRssBytes": 88096768,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:settings_scope",
+      "durationMs": 2956,
+      "peakFootprintBytes": 39293488,
+      "peakRssBytes": 92372992,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:nonmain",
+      "durationMs": 1062,
+      "peakFootprintBytes": 24267656,
+      "peakRssBytes": 73170944,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:divergence",
+      "durationMs": 885,
+      "peakFootprintBytes": 27184728,
+      "peakRssBytes": 76021760,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:malformed",
+      "durationMs": 1076,
+      "peakFootprintBytes": 27971280,
+      "peakRssBytes": 78102528,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:missinggh",
+      "durationMs": 2482,
+      "peakFootprintBytes": 30707816,
+      "peakRssBytes": 81608704,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:unauthenticated",
+      "durationMs": 1714,
+      "peakFootprintBytes": 31199408,
+      "peakRssBytes": 81428480,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:splitorigin",
+      "durationMs": 800,
+      "peakFootprintBytes": 25988096,
+      "peakRssBytes": 76759040,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:lower",
+      "durationMs": 1566,
+      "peakFootprintBytes": 32412136,
+      "peakRssBytes": 82984960,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:failures",
+      "durationMs": 2321,
+      "peakFootprintBytes": 31264968,
+      "peakRssBytes": 83689472,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:cadence_missing",
+      "durationMs": 1773,
+      "peakFootprintBytes": 32461240,
+      "peakRssBytes": 87867392,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:cadence_inconsistent",
+      "durationMs": 4362,
+      "peakFootprintBytes": 33313520,
+      "peakRssBytes": 91734016,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "resume",
+      "durationMs": 55950,
+      "peakFootprintBytes": 68967720,
+      "peakRssBytes": 206372864,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:conflict",
+      "durationMs": 1667,
+      "peakFootprintBytes": 30347320,
+      "peakRssBytes": 85868544,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:localconflict",
+      "durationMs": 1616,
+      "peakFootprintBytes": 31674688,
+      "peakRssBytes": 84983808,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:nestedtag",
+      "durationMs": 1319,
+      "peakFootprintBytes": 32920088,
+      "peakRssBytes": 88571904,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:prepare",
+      "durationMs": 2218,
+      "peakFootprintBytes": 40080064,
+      "peakRssBytes": 95993856,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:missinglocalprevious",
+      "durationMs": 2319,
+      "peakFootprintBytes": 38720240,
+      "peakRssBytes": 95928320,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:pushfail",
+      "durationMs": 2468,
+      "peakFootprintBytes": 37195856,
+      "peakRssBytes": 88915968,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:refrecovery",
+      "durationMs": 3905,
+      "peakFootprintBytes": 50288688,
+      "peakRssBytes": 134774784,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:stale_helpers",
+      "durationMs": 7540,
+      "peakFootprintBytes": 38621264,
+      "peakRssBytes": 90701824,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:createrecovery",
+      "durationMs": 10695,
+      "peakFootprintBytes": 62676552,
+      "peakRssBytes": 167608320,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:runtime_refresh",
+      "durationMs": 13990,
+      "peakFootprintBytes": 48928624,
+      "peakRssBytes": 140804096,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:success",
+      "durationMs": 17288,
+      "peakFootprintBytes": 51025824,
+      "peakRssBytes": 135708672,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:edition",
+      "durationMs": 6741,
+      "peakFootprintBytes": 37818808,
+      "peakRssBytes": 95338496,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:firstrelease",
+      "durationMs": 3436,
+      "peakFootprintBytes": 38326952,
+      "peakRssBytes": 91176960,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "worktree",
+      "durationMs": 97377,
+      "peakFootprintBytes": 112326768,
+      "peakRssBytes": 296173568,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:composed_evidence",
+      "durationMs": 6180,
+      "peakFootprintBytes": 49781216,
+      "peakRssBytes": 143212544,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:cached_evidence",
+      "durationMs": 7239,
+      "peakFootprintBytes": 50731152,
+      "peakRssBytes": 143196160,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release-preparation",
+      "durationMs": 2775,
+      "peakFootprintBytes": 41489784,
+      "peakRssBytes": 134201344,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "github-body",
+      "durationMs": 117,
+      "peakFootprintBytes": 1327464,
+      "peakRssBytes": 1802240,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "outward-lint",
+      "durationMs": 446,
+      "peakFootprintBytes": 38901016,
+      "peakRssBytes": 127549440,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:concurrent",
+      "durationMs": 17343,
+      "peakFootprintBytes": 61938816,
+      "peakRssBytes": 168214528,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "license-fixtures",
+      "durationMs": 8646,
+      "peakFootprintBytes": 105280760,
+      "peakRssBytes": 285310976,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "publication-fixtures",
+      "durationMs": 880,
+      "peakFootprintBytes": 21105664,
+      "peakRssBytes": 65421312,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "backup-intake",
+      "durationMs": 328,
+      "peakFootprintBytes": 4441024,
+      "peakRssBytes": 6160384,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "beacon-portability",
+      "durationMs": 1076,
+      "peakFootprintBytes": 45586432,
+      "peakRssBytes": 137265152,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "checkpoint",
+      "durationMs": 8196,
+      "peakFootprintBytes": 26627672,
+      "peakRssBytes": 81526784,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "release:case:material",
+      "durationMs": 79315,
+      "peakFootprintBytes": 69836336,
+      "peakRssBytes": 172883968,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "target-publish",
+      "durationMs": 95681,
+      "peakFootprintBytes": 142067832,
+      "peakRssBytes": 337543168,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "work-orders-fixtures",
+      "durationMs": 21460,
+      "peakFootprintBytes": 62349448,
+      "peakRssBytes": 160628736,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "adjacent-queue",
+      "durationMs": 428,
+      "peakFootprintBytes": 41719352,
+      "peakRssBytes": 135004160,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "resident-bind",
+      "durationMs": 9919,
+      "peakFootprintBytes": 111146640,
+      "peakRssBytes": 253378560,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "console",
+      "durationMs": 17640,
+      "peakFootprintBytes": 206152136,
+      "peakRssBytes": 446087168,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "derived-orders",
+      "durationMs": 7397,
+      "peakFootprintBytes": 96432200,
+      "peakRssBytes": 235110400,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "codex-continuation",
+      "durationMs": 5774,
+      "peakFootprintBytes": 100021472,
+      "peakRssBytes": 276578304,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "authority-grants",
+      "durationMs": 149,
+      "peakFootprintBytes": 48028032,
+      "peakRssBytes": 139149312,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "local-runner-double",
+      "durationMs": 3735,
+      "peakFootprintBytes": 67838496,
+      "peakRssBytes": 203669504,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "artifact-corpus",
+      "durationMs": 203,
+      "peakFootprintBytes": 57285448,
+      "peakRssBytes": 145571840,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "configuration-root",
+      "durationMs": 4526,
+      "peakFootprintBytes": 76769384,
+      "peakRssBytes": 218562560,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "portfolio",
+      "durationMs": 20554,
+      "peakFootprintBytes": 127647464,
+      "peakRssBytes": 276922368,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "harness-probe",
+      "durationMs": 63858,
+      "peakFootprintBytes": 166976816,
+      "peakRssBytes": 333053952,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "plan-refutation",
+      "durationMs": 64721,
+      "peakFootprintBytes": 402964968,
+      "peakRssBytes": 452034560,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "registrations",
+      "durationMs": 550,
+      "peakFootprintBytes": 58464496,
+      "peakRssBytes": 104857600,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "runner-fixtures",
+      "durationMs": 37595,
+      "peakFootprintBytes": 401887904,
+      "peakRssBytes": 679673856,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "skeleton",
+      "durationMs": 346108,
+      "peakFootprintBytes": 520226416,
+      "peakRssBytes": 708509696,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "kernel",
+      "durationMs": 459,
+      "peakFootprintBytes": 50895760,
+      "peakRssBytes": 166920192,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "compiler",
+      "durationMs": 883,
+      "peakFootprintBytes": 93187184,
+      "peakRssBytes": 238174208,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "browser-evidence",
+      "durationMs": 17924,
+      "peakFootprintBytes": 279307800,
+      "peakRssBytes": 597590016,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    },
+    {
+      "name": "worktree-integration",
+      "durationMs": 300092,
+      "peakFootprintBytes": 555600112,
+      "peakRssBytes": 807059456,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint"
+    }
+  ]
+}

@@ -5,7 +5,7 @@
 ## Proposed order
 
 - [ ] [WO-195] — Roles finish what the operator dispatched · **queued**
-- [ ] [WO-185] — No order can exhaust the host · **queued**
+- [x] [WO-185] — No order can exhaust the host · **final-reviewed**
 - [ ] [WO-123] — dotln vertical composition · **queued**
 - [ ] [WO-186] — Gate time follows the change · **queued**
 - [ ] [WO-112] — The loop from core · **queued**
@@ -637,31 +637,14 @@ None.
 - Cost: adds &#96;dotln intent "&lt;prose&gt;" &#91;--target &lt;registered repository&gt;&#93;&#96; in &#96;packages/skeleton/src/dotln.ts&#96; (and the parity contract's loopback form, product 04 §Console parity contract v1) that admits the intent under the portfolio's &#96;intent&#96; class (WO-123), interprets it into a StoryContract with a labeled inference episode (WO-061), materializes the durable derived order (WO-120) and returns a receipt naming the order, where its progress can be watched (the live console, WO-117) and the one question the loop may ask; one &#96;IntentDeclared&#96; event; fixtures with doubles; one witnessed run by a non-author on the starter instance WO-118 exports, recorded with shapes and the person's own words paraphrased; at most 300 bytes in product 06 §v1.0.0 and 200 in product 04 in place. Removes: the hand-written work order as the only way an intent enters this repository (the map's candidate since 2026-09-06), and the absence of any order for the &#96;v1.0.0&#96; exit. Re-mints: &#96;dotln.ts&#96; and the parity contract's sources are registered evidence sources (deterministic re-mint); the executor checks &#96;FEEDBACK_SOURCE_PATHS&#96;. Wall-clock, tokens and context bytes are unknown until run.
 - Authority: [docs/work-orders/WO-183-intent-declaration-and-the-stranger-test.md](WO-183-intent-declaration-and-the-stranger-test.md)
 
-### WO-185
-
-[WO-185 — No order can exhaust the host: memory budgets for every DotLn-launched process tree and one set of gate lanes per machine (version assigned at activation)](WO-185-no-order-can-exhaust-the-host.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-107: satisfied-by-close (met) — the bounded wrapper and its sampling this order reuses; WO-174: satisfied-by-close (met) — the runner and product read guard as they stand.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer any.
-- Track: machinery
-- Cost: adds a host guard (&#96;scripts/host-guard.mjs&#96;, started by the dispatch command every harness already runs, one live instance per user on the host, shared by every clone and exported instance) that samples every process descended from a registered agent session and from a running gate and kills the offending process group; per-task and per-gate footprint budgets in &#96;scripts/test-runner.mjs&#96; with the measured peak recorded on every gate row; termination handling and a cap on captured output in the runner; a lane count shared by every worktree of every clone on the host; &#96;harness bounded -- &lt;command&gt;&#96; as the one-line wrapper for a probe run outside a gate; bounded comparisons in &#96;corpus/harness/wo102-*.test.mjs&#96; and one shared helper; one role sentence. Removes: the only control that ended the 2026-10-01 incident was another agent noticing and killing a sibling session's processes; a gate left running without limit when its runner dies; three or more full gates overlapping on sixteen cores (24% of post-reuse gate wall time overlapped another order's gate). Sampling overhead is unknown until measured (criterion 2 bounds it). Re-mints: &#96;scripts/test-runner.mjs&#96; and &#96;scripts/resume.mjs&#96; are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff; the session is registered from &#96;scripts/resume.mjs&#96;, which every harness runs at dispatch, so no generated hook and no registered evidence source changes; if the executor finds that path cannot see the agent process and registers from &#96;packages/skeleton/src/harness-host.ts&#96; instead, the decisions say why, the harness bundle is regenerated and the editions it stales are re-minted deterministically; no file the feedback verifier judges is edited (&#96;gate-deadlines.mjs&#96; is out of scope), so no live episode. Wall-clock, tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-185-no-order-can-exhaust-the-host.md](WO-185-no-order-can-exhaust-the-host.md)
-
 ### WO-186
 
 [WO-186 — Gate time goes where the change is: three slow cases fixed at their cause, a rerun runs only what has no passing result, a fresh worktree reuses main's row, and a role writes its records while the gate runs (version assigned at activation)](WO-186-gate-time-follows-the-change.md)
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-185.
-- References: WO-185: hard (unmet) — the runner's budgets, signal handling and shared lanes, edited first; WO-173: satisfied-by-close (met) — whole-row reuse at a code identity, which this order refines to tasks; WO-174: satisfied-by-close (met) — the product read guard and the excluded-input findings this order closes; WO-179: satisfied-by-close (met) — the verifier consumes the executor's row; its D015 is the selection base this order fixes.
+- Dependencies: typed; dependency-ready.
+- References: WO-185: hard (met) — the runner's budgets, signal handling and shared lanes, edited first; WO-173: satisfied-by-close (met) — whole-row reuse at a code identity, which this order refines to tasks; WO-174: satisfied-by-close (met) — the product read guard and the excluded-input findings this order closes; WO-179: satisfied-by-close (met) — the verifier consumes the executor's row; its D015 is the selection base this order fixes.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -3555,6 +3538,24 @@ None.
 - Cost: nineteen items in three units, each a boarded follow-up whose deadline or seam is this point, combined so the fixed costs are paid once: one compiler release with a deterministic re-mint of all five editions and a carried feedback edition (&#96;story-contract.ts&#96; is a registered source the feedback verifier does not judge; the WO-124 D004 precedent), one skeleton release with one live feedback self-host episode after the last edit to a judged source, three live verification-and-review attempts on Claude for item 13, and one harness bundle re-emit. Adds, by the re-observation's estimates and not by measurement, about 60 source lines in the compiler, about 80 in &#96;scripts/lib&#96;, one leaf module split out of &#96;reactor.ts&#96; byte-for-byte, about 150 lines across ten judged skeleton sources, and their fixtures. Removes: the refusal the next reactor edit would meet (99,655 of 100,000 characters); a live composition that stops at human attention before the review can run (two of three Claude verifier attempts in WO-181); a compile that throws on an admitted bundle; response bytes echoed on an error; a publish that reports success over an unready recorded head; four outcome defects in the review loop; and nineteen register rows, seven of the nine whose deadline is WO-123's activation and twelve whose seam this order opens (the other two go to WO-123's own text and to WO-073). Wall-clock of the whole re-mint is recorded by criterion 20 beside WO-175's 384 s figure; tokens and context bytes are unknown until run.
 - Latest attestation: harness claude-code; version 2.1.288; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable.
 - Authority: [docs/work-orders/WO-184-seams-before-the-vertical.md](WO-184-seams-before-the-vertical.md)
+
+### WO-185
+
+[WO-185 — No order can exhaust the host: memory budgets for every DotLn-launched process tree and one set of gate lanes per machine (v0.66.1)](WO-185-no-order-can-exhaust-the-host.md)
+
+- State: closed.
+- Application target: v0.66.1.
+- Dependencies: typed; activation not applicable.
+- References: WO-107: satisfied-by-close (met) — the bounded wrapper and its sampling this order reuses; WO-174: satisfied-by-close (met) — the runner and product read guard as they stand.
+- Verification: [VER-004](../../docs/verifications/WO-185/VER-004.md) (pass).
+- Final review: [FINAL-002](../../docs/final-reviews/WO-185/FINAL-002.md) (pass).
+- Release: unreleased.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer any.
+- Track: machinery
+- Cost: adds a host guard (&#96;scripts/host-guard.mjs&#96;, started by the dispatch command every harness already runs, one live instance per user on the host, shared by every clone and exported instance) that samples every process descended from a registered agent session and from a running gate and kills the offending process group; per-task and per-gate footprint budgets in &#96;scripts/test-runner.mjs&#96; with the measured peak recorded on every gate row; termination handling and a cap on captured output in the runner; a lane count shared by every worktree of every clone on the host; &#96;harness bounded -- &lt;command&gt;&#96; as the one-line wrapper for a probe run outside a gate; bounded comparisons in &#96;corpus/harness/wo102-*.test.mjs&#96; and one shared helper; one role sentence. Removes: the only control that ended the 2026-10-01 incident was another agent noticing and killing a sibling session's processes; a gate left running without limit when its runner dies; three or more full gates overlapping on sixteen cores (24% of post-reuse gate wall time overlapped another order's gate). Sampling overhead is unknown until measured (criterion 2 bounds it). Re-mints: &#96;scripts/test-runner.mjs&#96; and &#96;scripts/resume.mjs&#96; are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff; the session is registered from &#96;scripts/resume.mjs&#96;, which every harness runs at dispatch, so no generated hook and no registered evidence source changes; if the executor finds that path cannot see the agent process and registers from &#96;packages/skeleton/src/harness-host.ts&#96; instead, the decisions say why, the harness bundle is regenerated and the editions it stales are re-minted deterministically; no file the feedback verifier judges is edited (&#96;gate-deadlines.mjs&#96; is out of scope), so no live episode. Wall-clock, tokens and context bytes are unknown until run.
+- Latest attestation: harness claude-code; version 2.1.289; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable.
+- Authority: [docs/work-orders/WO-185-no-order-can-exhaust-the-host.md](WO-185-no-order-can-exhaust-the-host.md)
 
 ## Historical
 

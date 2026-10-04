@@ -1,0 +1,91 @@
+WO-185 repair of VER-002 F6: descriptor identity probes (each under node scripts/harness.mjs bounded, one at a time)
+Host: macOS 27.0.1, Darwin 27.0.0, arm64, 16 logical CPUs, 51539607552 bytes physical memory (sysctl hw.memsize).
+Outputs, in order: gen-probe (2000 back-to-back socketpairs; proc_pidfdinfo versus fstat identity), dup-probe (/dev/fd duplicate of a task socket across the stream's close), cloexec-probe (held duplicates absent from a later child).
+Note: a bounded-result peak of 1327464 bytes for the 79 ms dup-probe is the paused launcher's pre-exec sample; the task ended before the first post-launch sample (sampled, not continuous, peaks).
+
+OUTPUT
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+first fd=3 so=3735061203831897342 ino=0 fstat_ino=13339466
+repeat-read stable=1 ino=0
+iterations=2000 address_recycled=1999 recycled_with_same_ino=1999 stat_mismatch=2000
+bounded-result {"name":"bounded-probe","durationMs":277,"peakFootprintBytes":1327464,"peakRssBytes":1802240,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-03T15:56:12.160Z","finishedAt":"2026-10-03T15:56:12.437Z","exitCode":0,"executed":true}
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+{"before":[{"streamFd":12,"streamInode":"13341480","heldFd":13,"heldInode":"13341480"},{"streamFd":14,"streamInode":"13341481","heldFd":15,"heldInode":"13341481"}],"afterClose":[{"streamFd":12,"streamState":"EBADF","heldFd":13,"heldInode":"13341480"},{"streamFd":14,"streamState":"EBADF","heldFd":15,"heldInode":"13341481"}],"afterRelease":[{"heldFd":13,"state":"EBADF"},{"heldFd":15,"state":"EBADF"}]}
+bounded-result {"name":"bounded-probe","durationMs":79,"peakFootprintBytes":1327464,"peakRssBytes":1802240,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-03T15:56:12.525Z","finishedAt":"2026-10-03T15:56:12.604Z","exitCode":0,"executed":true}
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+{"heldFds":[13,15],"childSees":[0,1,2,3,4],"leaked":[]}
+bounded-result {"name":"bounded-probe","durationMs":1067,"peakFootprintBytes":19565304,"peakRssBytes":63209472,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-03T15:56:12.682Z","finishedAt":"2026-10-03T15:56:13.749Z","exitCode":0,"executed":true}
+
+SOURCE gen-probe.c
+#include <libproc.h>
+#include <sys/proc_info.h>
+#include <sys/socket.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdint.h>
+static int info(int fd, struct socket_fdinfo *out) {
+  return proc_pidfdinfo(getpid(), fd, PROC_PIDFDSOCKETINFO, out, sizeof(*out)) == sizeof(*out);
+}
+int main(void) {
+  uint64_t first_so = 0, first_ino = 0; int same_address = 0, same_address_same_ino = 0, mismatched_stat = 0;
+  for (int i = 0; i < 2000; i++) {
+    int pair[2];
+    if (socketpair(AF_UNIX, SOCK_STREAM, 0, pair) != 0) return 1;
+    struct socket_fdinfo a = {0}; struct stat st;
+    if (!info(pair[0], &a) || fstat(pair[0], &st) != 0) return 2;
+    if (a.psi.soi_stat.vst_ino != (uint64_t)st.st_ino) mismatched_stat++;
+    if (i == 0) { first_so = a.psi.soi_so; first_ino = a.psi.soi_stat.vst_ino;
+      printf("first fd=%d so=%llu ino=%llu fstat_ino=%llu\n", pair[0], (unsigned long long)a.psi.soi_so, (unsigned long long)a.psi.soi_stat.vst_ino, (unsigned long long)st.st_ino); }
+    else if (a.psi.soi_so == first_so) { same_address++; if (a.psi.soi_stat.vst_ino == first_ino) same_address_same_ino++; }
+    close(pair[0]); close(pair[1]);
+  }
+  // Second form: a stat-free first observation through proc_pidfdinfo only.
+  int p1[2]; socketpair(AF_UNIX, SOCK_STREAM, 0, p1);
+  struct socket_fdinfo b = {0}, c = {0}; info(p1[0], &b); info(p1[0], &c);
+  printf("repeat-read stable=%d ino=%llu\n", b.psi.soi_stat.vst_ino == c.psi.soi_stat.vst_ino, (unsigned long long)b.psi.soi_stat.vst_ino);
+  printf("iterations=2000 address_recycled=%d recycled_with_same_ino=%d stat_mismatch=%d\n", same_address, same_address_same_ino, mismatched_stat);
+  return 0;
+}
+
+SOURCE dup-probe.mjs
+// Does a held /dev/fd duplicate keep the runner's task socket after the
+// stream's own descriptor closes at EOF? Compares fstat inode numbers.
+import { spawn } from "node:child_process";
+import { fstatSync, mkdirSync, chmodSync } from "node:fs";
+import { join } from "node:path";
+import { once } from "node:events";
+const [repo, scratch] = process.argv.slice(2);
+const { holdTaskDescriptors, taskLauncher } = await import(join(repo, "scripts/lib/host-resources.mjs"));
+const directory = join(scratch, "host");
+mkdirSync(directory, { recursive: true, mode: 0o700 });
+chmodSync(directory, 0o700);
+const identity = (fd) => { try { return String(fstatSync(fd).ino); } catch (error) { return error.code; } };
+const child = spawn(taskLauncher(directory), ["--launch", process.execPath, "-e", ""], { stdio: ["ignore", "pipe", "pipe", "pipe"], detached: true });
+const streams = [child.stdout._handle.fd, child.stderr._handle.fd];
+const held = holdTaskDescriptors(child.pid, directory);
+const before = held.descriptors.map(({ fd }, index) => ({ streamFd: streams[index], streamInode: identity(streams[index]), heldFd: fd, heldInode: identity(fd) }));
+child.stdout.resume(); child.stderr.resume(); child.stdio[3].end("g");
+await once(child, "close");
+const afterClose = held.descriptors.map(({ fd }, index) => ({ streamFd: streams[index], streamState: identity(streams[index]), heldFd: fd, heldInode: identity(fd) }));
+held.release();
+const afterRelease = held.descriptors.map(({ fd }) => ({ heldFd: fd, state: identity(fd) }));
+console.log(JSON.stringify({ before, afterClose, afterRelease }));
+
+SOURCE cloexec-probe.mjs
+import { spawn, execFileSync } from "node:child_process";
+import { mkdirSync, chmodSync } from "node:fs";
+import { join } from "node:path";
+import { once } from "node:events";
+const repo = process.argv[2];
+const { holdTaskDescriptors, taskLauncher } = await import(join(repo, "scripts/lib/host-resources.mjs"));
+const directory = join(process.argv[3], "host");
+mkdirSync(directory, { recursive: true, mode: 0o700 }); chmodSync(directory, 0o700);
+const child = spawn(taskLauncher(directory), ["--launch", "/bin/sleep", "1"], { stdio: ["ignore", "pipe", "pipe", "pipe"], detached: true });
+const held = holdTaskDescriptors(child.pid, directory);
+const heldFds = held.descriptors.map(({ fd }) => fd);
+const inherited = execFileSync("/bin/sh", ["-c", "ls /dev/fd"], { encoding: "utf8" }).trim().split(/\s+/).map(Number);
+console.log(JSON.stringify({ heldFds, childSees: inherited, leaked: heldFds.filter((fd) => inherited.includes(fd)) }));
+child.stdio[3].end("g"); child.stdout.resume(); child.stderr.resume();
+await once(child, "close");
+held.release();

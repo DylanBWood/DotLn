@@ -1,0 +1,473 @@
+
+> test
+> node scripts/test-runner.mjs --review
+
+PROGRESS [build] 0.0 s started
+PASS build 0.66 s
+PROGRESS [license-surfaces] 0.0 s started
+PROGRESS [authority-evidence] 0.0 s started
+PROGRESS [harness] 0.0 s started
+PROGRESS [harness-evidence] 0.0 s started
+PASS harness 0.21 s
+PROGRESS [feedback-evidence] 0.0 s started
+PASS harness-evidence 0.45 s
+PASS authority-evidence 0.76 s
+PASS license-surfaces 1.51 s
+PASS feedback-evidence 2.76 s
+PROGRESS [harness-fixtures] 0.0 s started
+PROGRESS [harness-fixtures] 15.0 s running; last report: waiting for the next case report
+PROGRESS [harness-fixtures] 18.6 s # Subtest: WO-049 target capabilities distinguish observed omissions from unavailable hooks
+PROGRESS [harness-fixtures] 21.4 s # Subtest: WO-166 evidence wait exits for pass, failure, timeout and absent row
+PROGRESS [harness-fixtures] 37.7 s # Subtest: WO-166 wait accepts cached invocation rows and outcome I/O cannot fail a gate
+PROGRESS [harness-fixtures] 52.9 s # Subtest: WO-125 F3 runner refuses generated-hook writes throughout the gate and releases on exit
+PROGRESS [harness-fixtures] 64.3 s # Subtest: WO-125 F3 evidence refuses generated-hook writes throughout the gate and releases on exit
+PROGRESS [harness-fixtures] 86.2 s # Subtest: WO-125 F3 entry refuses generated-hook writes throughout the gate and releases on exit
+PROGRESS [harness-fixtures] 105.0 s running; last report: ok 71 - WO-125 F3 entry refuses generated-hook writes throughout the gate and releases on exit
+PROGRESS [harness-fixtures] 110.0 s # Subtest: WO-125 F3 a marker left by a killed gate owner does not block writes
+PROGRESS [harness-fixtures] 116.3 s # Subtest: WO-127 hook stdin handles manifest-sized, chunked UTF-8 and truncated messages through generated processes
+PROGRESS [harness-fixtures] 118.4 s # Subtest: WO-039 concurrent dead-owner recovery admits exactly one writer while the first owner's work is outstanding
+PROGRESS [harness-fixtures] 120.0 s # Subtest: WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts
+PROGRESS [harness-fixtures] 135.0 s running; last report: ok 91 - WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts
+PROGRESS [harness-fixtures] 150.0 s running; last report: ok 91 - WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts
+PROGRESS [harness-fixtures] 165.0 s running; last report: ok 91 - WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts
+PROGRESS [harness-fixtures] 180.0 s running; last report: ok 91 - WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts
+PROGRESS [harness-fixtures] 195.0 s running; last report: ok 91 - WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts
+PROGRESS [harness-fixtures] 210.0 s running; last report: ok 91 - WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts
+PROGRESS [harness-fixtures] 225.0 s running; last report: ok 91 - WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts
+PROGRESS [harness-fixtures] 240.0 s running; last report: ok 91 - WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts
+PROGRESS [harness-fixtures] 255.0 s running; last report: ok 91 - WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts
+PROGRESS [harness-fixtures] 270.0 s running; last report: ok 91 - WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts
+PROGRESS [harness-fixtures] 285.0 s running; last report: ok 91 - WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts
+PROGRESS [harness-fixtures] 292.7 s # Subtest: WO-039 an operator release judges, retires and journals one observed reservation
+PROGRESS [harness-fixtures] 299.9 s # Subtest: WO-172 F10 concurrent failed-use answers survive an interrupted owner and a stale reclaimer
+PROGRESS [harness-fixtures] 313.0 s # Subtest: WO-160 non-top prune retains stashes during concurrent pack-refs pruning
+PASS harness-fixtures 313.02 s
+PROGRESS [process-debt] 0.0 s started
+PROGRESS [process-debt] 11.6 s # Subtest: WO-049 Codex model, effort and CLI readback is available before a usage counter
+PROGRESS [process-debt] 30.0 s running; last report: ok 30 - tree evidence matches Git objects, reuses any successful session and invalidates on one byte
+PROGRESS [process-debt] 45.0 s running; last report: ok 30 - tree evidence matches Git objects, reuses any successful session and invalidates on one byte
+PROGRESS [process-debt] 60.0 s running; last report: ok 57 - WO-132 harness evidence reuses product results across document edits and invalidates source edits
+PROGRESS [process-debt] 61.3 s # Subtest: concurrent observers publish readable session state and persistent damage is named
+PROGRESS [process-debt] 90.0 s running; last report: ok 89 - follow-up identities survive independent discovery order in sibling worktrees
+PROGRESS [process-debt] 105.0 s running; last report: ok 89 - follow-up identities survive independent discovery order in sibling worktrees
+PROGRESS [process-debt] 107.7 s # Subtest: Node-only staged builds keep installed hooks executable throughout publication
+PASS process-debt 107.70 s
+PROGRESS [release:prepare] 0.0 s started
+PROGRESS [resume] 0.0 s started
+PROGRESS [worktree] 0.0 s started
+PROGRESS [skeleton] 0.0 s started
+PROGRESS [skeleton] 0.4 s # Subtest: WO-029 new host equips v2, pins authority atomically, and receipts every compiled consumer with replay identity
+PROGRESS [release:prepare] 0.7 s PROGRESS release template prepared
+PASS release:prepare 0.78 s
+PROGRESS [release:case:preflight] 0.0 s started
+PROGRESS [release:case:preflight] 0.0 s PROGRESS release case preflight started
+PROGRESS [release:case:preflight] 0.1 s PROGRESS release case preflight passed
+PASS release:case:preflight 0.12 s
+PROGRESS [release:case:surfaces] 0.0 s started
+PROGRESS [release:case:surfaces] 0.0 s PROGRESS release case surfaces started
+PROGRESS [skeleton] 2.1 s # Subtest: WO-116 the terminal audit command prints the skeleton --audit projections byte for byte over the fixture log, with their fidelity labels, in every scope
+PROGRESS [skeleton] 3.8 s # Subtest: WO-021 agent constellation CLI persists permission/refusal and one metadata perception through the reactor
+PROGRESS [release:case:surfaces] 3.7 s PROGRESS release case surfaces passed
+PASS release:case:surfaces 3.72 s
+PROGRESS [release:case:surfaces_local_snapshot] 0.0 s started
+PROGRESS [release:case:surfaces_local_snapshot] 0.0 s PROGRESS release case surfaces_local_snapshot started
+PROGRESS [release:case:surfaces_local_snapshot] 0.9 s PROGRESS release case surfaces_local_snapshot passed
+PASS release:case:surfaces_local_snapshot 0.93 s
+PROGRESS [release:case:prepare_independent] 0.0 s started
+PROGRESS [release:case:prepare_independent] 0.0 s PROGRESS release case prepare_independent started
+PROGRESS [release:case:prepare_independent] 2.3 s PROGRESS release case prepare_independent passed
+PASS release:case:prepare_independent 2.38 s
+PROGRESS [release:case:license_surfaces] 0.0 s started
+PROGRESS [release:case:license_surfaces] 0.0 s PROGRESS release case license_surfaces started
+PROGRESS [skeleton] 9.2 s # Subtest: WO-119 actual bounded program discovers the pinned six candidates with resolvable evidence
+PROGRESS [skeleton] 10.4 s # Subtest: WO-119 wire rejects malformed or oversized output, wrong modes and unresolved evidence
+PROGRESS [release:case:license_surfaces] 4.4 s PROGRESS release case license_surfaces passed
+PASS release:case:license_surfaces 4.44 s
+PROGRESS [release:case:surfaces_committed_readme] 0.0 s started
+PROGRESS [release:case:surfaces_committed_readme] 0.0 s PROGRESS release case surfaces_committed_readme started
+PROGRESS [release:case:surfaces_committed_readme] 1.3 s PROGRESS release case surfaces_committed_readme passed
+PASS release:case:surfaces_committed_readme 1.33 s
+PROGRESS [release:case:surfaces_lower] 0.0 s started
+PROGRESS [release:case:surfaces_lower] 0.0 s PROGRESS release case surfaces_lower started
+PROGRESS [release:case:surfaces_lower] 0.9 s PROGRESS release case surfaces_lower passed
+PASS release:case:surfaces_lower 1.00 s
+PROGRESS [release:case:surfaces_first] 0.0 s started
+PROGRESS [release:case:surfaces_first] 0.0 s PROGRESS release case surfaces_first started
+PROGRESS [resume] 15.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 15.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:surfaces_first] 0.8 s PROGRESS release case surfaces_first passed
+PASS release:case:surfaces_first 0.89 s
+PROGRESS [release:case:surfaces_component] 0.0 s started
+PROGRESS [release:case:surfaces_component] 0.0 s PROGRESS release case surfaces_component started
+PROGRESS [release:case:surfaces_component] 1.8 s PROGRESS release case surfaces_component passed
+PASS release:case:surfaces_component 1.91 s
+PROGRESS [release:case:surfaces_non_source] 0.0 s started
+PROGRESS [release:case:surfaces_non_source] 0.0 s PROGRESS release case surfaces_non_source started
+PROGRESS [release:case:surfaces_non_source] 0.8 s PROGRESS release case surfaces_non_source passed
+PASS release:case:surfaces_non_source 0.87 s
+PROGRESS [release:case:surfaces_new_component] 0.0 s started
+PROGRESS [release:case:surfaces_new_component] 0.0 s PROGRESS release case surfaces_new_component started
+PROGRESS [release:case:surfaces_new_component] 0.8 s PROGRESS release case surfaces_new_component passed
+PASS release:case:surfaces_new_component 0.92 s
+PROGRESS [release:case:surfaceclose] 0.0 s started
+PROGRESS [release:case:surfaceclose] 0.0 s PROGRESS release case surfaceclose started
+PROGRESS [skeleton] 20.8 s # Subtest: WO-062 criterion 1: recorded JSON produces canonical stable rich input, resolving spans and role labels through the fake CLI
+PROGRESS [release:case:surfaceclose] 1.7 s PROGRESS release case surfaceclose passed
+PASS release:case:surfaceclose 2.21 s
+PROGRESS [release:case:surfaceclose_linked] 0.0 s started
+PROGRESS [release:case:surfaceclose_linked] 0.0 s PROGRESS release case surfaceclose_linked started
+PROGRESS [skeleton] 22.3 s # Subtest: WO-100 spent wall time or reported tokens refuse the next phase while it still admits a candidate
+PROGRESS [release:case:surfaceclose_linked] 2.4 s PROGRESS release case surfaceclose_linked passed
+PASS release:case:surfaceclose_linked 2.74 s
+PROGRESS [release:case:bodyclose] 0.0 s started
+PROGRESS [release:case:bodyclose] 0.0 s PROGRESS release case bodyclose started
+PROGRESS [skeleton] 26.0 s # Subtest: WO-121 classifier depends on signal evidence and stamp, never launch path
+PROGRESS [release:case:bodyclose] 1.9 s PROGRESS release case bodyclose passed
+PASS release:case:bodyclose 2.33 s
+PROGRESS [release:case:dirty] 0.0 s started
+PROGRESS [release:case:dirty] 0.0 s PROGRESS release case dirty started
+PROGRESS [skeleton] 27.5 s # Subtest: WO-121 running actor silence is sampled without incoming traffic
+PROGRESS [skeleton] 28.9 s # Subtest: WO-066 host review witness preserves scope, named tests, revision and one-round bound
+PROGRESS [release:case:dirty] 2.9 s PROGRESS release case dirty passed
+PASS release:case:dirty 3.03 s
+PROGRESS [release:case:unreachable] 0.0 s started
+PROGRESS [release:case:unreachable] 0.0 s PROGRESS release case unreachable started
+PROGRESS [resume] 30.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:unreachable] 2.9 s PROGRESS release case unreachable passed
+PASS release:case:unreachable 3.15 s
+PROGRESS [release:case:derived] 0.0 s started
+PROGRESS [release:case:derived] 0.0 s PROGRESS release case derived started
+PROGRESS [skeleton] 34.6 s # Subtest: WO-055 AC2 failing source commit repairs once and re-verifies the complete original contract
+PROGRESS [release:case:derived] 3.3 s PROGRESS release case derived passed
+PASS release:case:derived 3.51 s
+PROGRESS [release:case:settings_scope] 0.0 s started
+PROGRESS [release:case:settings_scope] 0.0 s PROGRESS release case settings_scope started
+PROGRESS [release:case:settings_scope] 2.9 s PROGRESS release case settings_scope passed
+PASS release:case:settings_scope 3.23 s
+PROGRESS [release:case:nonmain] 0.0 s started
+PROGRESS [release:case:nonmain] 0.1 s PROGRESS release case nonmain started
+PROGRESS [release:case:nonmain] 1.0 s PROGRESS release case nonmain passed
+PASS release:case:nonmain 1.33 s
+PROGRESS [release:case:divergence] 0.0 s started
+PROGRESS [release:case:divergence] 0.1 s PROGRESS release case divergence started
+PROGRESS [release:case:divergence] 1.3 s PROGRESS release case divergence passed
+PASS release:case:divergence 1.36 s
+PROGRESS [release:case:malformed] 0.0 s started
+PROGRESS [release:case:malformed] 0.0 s PROGRESS release case malformed started
+PROGRESS [skeleton] 42.8 s # Subtest: WO-055 AC3 two wrong repairs exhaust with last finding and no third source dispatch
+PROGRESS [release:case:malformed] 1.1 s PROGRESS release case malformed passed
+PASS release:case:malformed 1.27 s
+PROGRESS [release:case:missinggh] 0.0 s started
+PROGRESS [release:case:missinggh] 0.0 s PROGRESS release case missinggh started
+PROGRESS [resume] 45.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 45.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:missinggh] 2.7 s PROGRESS release case missinggh passed
+PASS release:case:missinggh 2.96 s
+PROGRESS [release:case:unauthenticated] 0.0 s started
+PROGRESS [release:case:unauthenticated] 0.0 s PROGRESS release case unauthenticated started
+PROGRESS [skeleton] 48.6 s # Subtest: WO-055 AC4 SIGKILL afterRepairCommit resumes persisted continuation without another repair
+PROGRESS [release:case:unauthenticated] 2.5 s PROGRESS release case unauthenticated passed
+PASS release:case:unauthenticated 2.55 s
+PROGRESS [release:case:splitorigin] 0.0 s started
+PROGRESS [release:case:splitorigin] 0.1 s PROGRESS release case splitorigin started
+PROGRESS [release:case:splitorigin] 2.0 s PROGRESS release case splitorigin passed
+PASS release:case:splitorigin 2.33 s
+PROGRESS [release:case:lower] 0.0 s started
+PROGRESS [release:case:lower] 0.0 s PROGRESS release case lower started
+PROGRESS [release:case:lower] 2.2 s PROGRESS release case lower passed
+PASS release:case:lower 2.58 s
+PROGRESS [release:case:failures] 0.0 s started
+PROGRESS [release:case:failures] 0.1 s PROGRESS release case failures started
+PROGRESS [skeleton] 54.8 s # Subtest: WO-055 AC4 SIGKILL afterSnapshotPrepared resumes persisted continuation without another repair
+PROGRESS [release:case:failures] 3.0 s PROGRESS release case failures passed
+PASS release:case:failures 3.12 s
+PROGRESS [release:case:cadence_missing] 0.0 s started
+PROGRESS [release:case:cadence_missing] 0.0 s PROGRESS release case cadence_missing started
+PROGRESS [skeleton] 59.3 s # Subtest: WO-055 AC1 refused path or command persists byte-identical envelope and dispatches no writer
+PROGRESS [release:case:cadence_missing] 1.9 s PROGRESS release case cadence_missing passed
+PASS release:case:cadence_missing 2.10 s
+PROGRESS [release:case:cadence_inconsistent] 0.0 s started
+PROGRESS [release:case:cadence_inconsistent] 0.1 s PROGRESS release case cadence_inconsistent started
+PROGRESS [resume] 60.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 60.0 s running; last report: waiting for the next case report
+PASS resume 63.96 s
+PROGRESS [release:case:conflict] 0.0 s started
+PROGRESS [release:case:conflict] 0.1 s PROGRESS release case conflict started
+PROGRESS [release:case:cadence_inconsistent] 5.4 s PROGRESS release case cadence_inconsistent passed
+PASS release:case:cadence_inconsistent 5.79 s
+PROGRESS [release:case:localconflict] 0.0 s started
+PROGRESS [release:case:localconflict] 0.1 s PROGRESS release case localconflict started
+PROGRESS [release:case:conflict] 1.9 s PROGRESS release case conflict passed
+PASS release:case:conflict 2.05 s
+PROGRESS [release:case:nestedtag] 0.0 s started
+PROGRESS [release:case:nestedtag] 0.0 s PROGRESS release case nestedtag started
+PROGRESS [release:case:localconflict] 1.6 s PROGRESS release case localconflict passed
+PASS release:case:localconflict 2.10 s
+PROGRESS [release:case:prepare] 0.0 s started
+PROGRESS [release:case:prepare] 0.0 s PROGRESS release case prepare started
+PROGRESS [release:case:nestedtag] 1.7 s PROGRESS release case nestedtag passed
+PASS release:case:nestedtag 1.93 s
+PROGRESS [release:case:missinglocalprevious] 0.0 s started
+PROGRESS [release:case:missinglocalprevious] 0.0 s PROGRESS release case missinglocalprevious started
+PROGRESS [release:case:prepare] 2.5 s PROGRESS release case prepare passed
+PASS release:case:prepare 2.90 s
+PROGRESS [release:case:pushfail] 0.0 s started
+PROGRESS [release:case:missinglocalprevious] 2.5 s PROGRESS release case missinglocalprevious passed
+PROGRESS [release:case:pushfail] 0.1 s PROGRESS release case pushfail started
+PASS release:case:missinglocalprevious 2.96 s
+PROGRESS [release:case:refrecovery] 0.0 s started
+PROGRESS [release:case:refrecovery] 0.1 s PROGRESS release case refrecovery started
+PROGRESS [skeleton] 73.2 s # Subtest: WO-068 recorded clock drives all phases; replay ignores ambient clock; return cancels; idle needs a fresh edge
+PROGRESS [release:case:pushfail] 3.5 s PROGRESS release case pushfail passed
+PASS release:case:pushfail 3.75 s
+PROGRESS [release:case:createrecovery] 0.0 s started
+PROGRESS [release:case:createrecovery] 0.1 s PROGRESS release case createrecovery started
+PROGRESS [worktree] 75.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:refrecovery] 4.9 s PROGRESS release case refrecovery passed
+PASS release:case:refrecovery 5.22 s
+PROGRESS [release:case:stale_helpers] 0.0 s started
+PROGRESS [release:case:stale_helpers] 0.0 s PROGRESS release case stale_helpers started
+PROGRESS [release:case:stale_helpers] 8.5 s PROGRESS release case stale_helpers passed
+PASS release:case:stale_helpers 8.84 s
+PROGRESS [release:case:runtime_refresh] 0.0 s started
+PROGRESS [release:case:runtime_refresh] 0.0 s PROGRESS release case runtime_refresh started
+PROGRESS [release:case:createrecovery] 11.9 s PROGRESS release case createrecovery passed
+PASS release:case:createrecovery 12.18 s
+PROGRESS [release:case:success] 0.0 s started
+PROGRESS [release:case:success] 0.0 s PROGRESS release case success started
+PROGRESS [worktree] 90.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 90.0 s running; last report:     ok 1 - cell once-lifetime-fresh
+PROGRESS [release:case:runtime_refresh] 17.4 s PROGRESS release case runtime_refresh passed
+PASS release:case:runtime_refresh 18.85 s
+PROGRESS [release:case:edition] 0.0 s started
+PROGRESS [release:case:edition] 0.0 s PROGRESS release case edition started
+PROGRESS [worktree] 105.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 105.0 s running; last report:     ok 1 - cell once-lifetime-fresh
+PROGRESS [release:case:success] 19.0 s PROGRESS release case success passed
+PASS release:case:success 19.30 s
+PROGRESS [release:case:firstrelease] 0.0 s started
+PROGRESS [release:case:firstrelease] 0.0 s PROGRESS release case firstrelease started
+PASS worktree 108.52 s
+PROGRESS [release:case:cached_evidence] 0.0 s started
+PROGRESS [release:case:cached_evidence] 0.0 s PROGRESS release case cached_evidence started
+PROGRESS [release:case:firstrelease] 3.8 s PROGRESS release case firstrelease passed
+PASS release:case:firstrelease 4.01 s
+PROGRESS [release:case:composed_evidence] 0.0 s started
+PROGRESS [release:case:composed_evidence] 0.0 s PROGRESS release case composed_evidence started
+PROGRESS [skeleton] 110.5 s     # Subtest: cell once-lifetime-reclaim
+PROGRESS [release:case:edition] 7.3 s PROGRESS release case edition passed
+PASS release:case:edition 7.56 s
+PROGRESS [release:case:concurrent] 0.0 s started
+PROGRESS [release:case:concurrent] 0.1 s PROGRESS release case concurrent started
+PROGRESS [release:case:cached_evidence] 7.6 s PROGRESS release case cached_evidence passed
+PASS release:case:cached_evidence 7.82 s
+PROGRESS [release:case:material] 0.0 s started
+PROGRESS [release:case:material] 0.1 s PROGRESS release case material started
+PROGRESS [release:case:composed_evidence] 6.8 s PROGRESS release case composed_evidence passed
+PASS release:case:composed_evidence 7.02 s
+PROGRESS [release-preparation] 0.0 s started
+PROGRESS [release-preparation] 4.2 s # Subtest: release preparation records a collision once, as the order's decision, and touches no product document
+PASS release-preparation 4.22 s
+PROGRESS [github-body] 0.0 s started
+PROGRESS [github-body] 0.1 s # Subtest: GitHub prose profile case 1
+PASS github-body 0.13 s
+PROGRESS [outward-lint] 0.0 s started
+PROGRESS [outward-lint] 0.5 s # Subtest: conforming subject
+PASS outward-lint 0.52 s
+PROGRESS [target-publish] 0.0 s started
+PROGRESS [target-publish] 5.1 s # Subtest: WO-182 AC3: readiness refusal precedes every remote call; operator publication shows the same gaps
+PROGRESS [release:case:concurrent] 19.3 s PROGRESS release case concurrent passed
+PROGRESS [target-publish] 9.7 s # Subtest: WO-182 AC3: one absent item names its gap; the same store publishes a proposal without the flag
+PASS release:case:concurrent 20.13 s
+PROGRESS [license-fixtures] 0.0 s started
+PROGRESS [skeleton] 135.1 s running; last report:     ok 2 - cell once-lifetime-reclaim
+PROGRESS [target-publish] 14.1 s # Subtest: WO-182 current replayed baseline, verification and review permit required publication
+PROGRESS [skeleton] 138.3 s     # Subtest: cell once-append-fresh
+PROGRESS [target-publish] 18.2 s # Subtest: WO-182 stale preparation and forged baseline/review events cannot bypass readiness
+PROGRESS [license-fixtures] 9.7 s # Subtest: real npm refuses every validated manifest before packing, despite ambient script suppression
+PASS license-fixtures 9.76 s
+PROGRESS [publication-fixtures] 0.0 s started
+PASS publication-fixtures 1.07 s
+PROGRESS [backup-intake] 0.0 s started
+PROGRESS [target-publish] 21.0 s # Subtest: WO-064 AC1: publish refuses without an operator grant before any remote call
+PASS backup-intake 0.40 s
+PROGRESS [beacon-portability] 0.0 s started
+PROGRESS [beacon-portability] 1.6 s # Subtest: WO-070 grep scan finds one home for the seven Beacon leaves and no skeleton source or dist copy of them
+PASS beacon-portability 1.61 s
+PROGRESS [checkpoint] 0.0 s started
+PROGRESS [target-publish] 23.6 s # Subtest: WO-064 AC1: a host-policy grant is not operator provenance
+PROGRESS [release:case:material] 30.0 s running; last report: PROGRESS release case material started
+PROGRESS [target-publish] 28.8 s # Subtest: WO-064 AC1/AC2: lint and target refusals name their rule; the granted publish pushes and opens the pull request with the pinned body
+PASS checkpoint 10.60 s
+PROGRESS [worktree-integration] 0.0 s started
+PROGRESS [target-publish] 34.1 s # Subtest: WO-064 AC1 (VER-001 F1): a same-head acceptance matrix must verify this WorkOrder's criteria
+PROGRESS [release:case:material] 45.0 s running; last report: PROGRESS release case material started
+PROGRESS [skeleton] 165.1 s running; last report:     ok 3 - cell once-append-fresh
+PROGRESS [worktree-integration] 15.0 s running; last report: waiting for the next case report
+PROGRESS [target-publish] 53.2 s # Subtest: WO-157: publication runs no hook or repository configuration the target holds
+PROGRESS [skeleton] 175.6 s     # Subtest: cell once-append-reclaim
+PROGRESS [release:case:material] 60.0 s running; last report: PROGRESS release case material started
+PROGRESS [target-publish] 61.9 s # Subtest: WO-066 AC1/AC3: an accepted automated thread repairs, verifies, pushes, disposes and records fresh resolution; recovery never pushes twice
+PROGRESS [worktree-integration] 30.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:material] 75.0 s running; last report: PROGRESS release case material started
+PROGRESS [target-publish] 70.2 s # Subtest: WO-066 AC1: a mapped failing check repairs and is freshly observed successful at the new head
+PROGRESS [skeleton] 195.1 s running; last report:     ok 4 - cell once-append-reclaim
+PROGRESS [worktree-integration] 45.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:material] 88.4 s PROGRESS release case material passed
+PASS release:case:material 91.66 s
+PROGRESS [work-orders-fixtures] 0.0 s started
+PROGRESS [target-publish] 87.9 s # Subtest: WO-066 AC2: reject carries evidence to the thread; human comments never dispatch or dispose; outside paths and unmapped checks name NeedsHuman
+PROGRESS [skeleton] 209.8 s     # Subtest: cell loop-lifetime-fresh
+PROGRESS [worktree-integration] 60.0 s running; last report: waiting for the next case report
+PROGRESS [target-publish] 99.3 s # Subtest: WO-066 AC2: a refused comment stops with its identifier; failed repair verification cannot push or dispatch a second round
+PROGRESS [work-orders-fixtures] 15.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 225.1 s running; last report:     ok 5 - cell loop-lifetime-fresh
+PROGRESS [target-publish] 104.5 s # Subtest: WO-066 AC3: later comments enter at observation, but a local resolved bit without an observer event proves nothing
+PROGRESS [worktree-integration] 75.0 s running; last report: waiting for the next case report
+PASS work-orders-fixtures 26.60 s
+PROGRESS [console] 0.0 s started
+PROGRESS [console] 0.2 s # Subtest: WO-132 goal receipts render answers, findings and recorded hold status
+PROGRESS [target-publish] 113.6 s # Subtest: WO-066 AC4: push and every thread disposition require their operator effect before gh; a foreign repaired head cannot push
+PROGRESS [skeleton] 240.1 s running; last report:     ok 5 - cell loop-lifetime-fresh
+PROGRESS [target-publish] 118.6 s # Subtest: WO-184 criterion 8: required publication rechecks a recorded head without remote calls
+PROGRESS [target-publish] 123.4 s # Subtest: WO-184 criterion 8: lint not-applicable carries its reason, while tests always require evidence
+PROGRESS [worktree-integration] 90.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 251.8 s     # Subtest: cell loop-lifetime-reclaim
+PROGRESS [console] 18.6 s # Subtest: WO-164 console collection spawns a constant number of processes and Git reads only new or moved tags
+PASS console 19.49 s
+PROGRESS [adjacent-queue] 0.0 s started
+PROGRESS [adjacent-queue] 0.6 s # Subtest: WO-042 queued fixes require diagnosis, announcement, steering checkpoint and current priority
+PASS adjacent-queue 0.68 s
+PROGRESS [resident-bind] 0.0 s started
+PROGRESS [worktree-integration] 105.0 s running; last report: waiting for the next case report
+PROGRESS [target-publish] 140.4 s # Subtest: WO-184 criterion 9: pending and cancelled mapped checks stop needs-human with their item
+PROGRESS [resident-bind] 12.9 s # Subtest: bind writes a store the runtime accepts and aims at the bound worktree
+PASS resident-bind 12.91 s
+PROGRESS [derived-orders] 0.0 s started
+PROGRESS [skeleton] 270.1 s running; last report:     ok 6 - cell loop-lifetime-reclaim
+PROGRESS [target-publish] 149.5 s # Subtest: WO-184 criterion 9: interruption after the observer append resumes from the last effect receipt
+PROGRESS [derived-orders] 6.6 s # Subtest: compiled order materializes, activates and shares index, status and lifecycle
+PROGRESS [worktree-integration] 120.0 s running; last report: waiting for the next case report
+PROGRESS [derived-orders] 11.8 s # Subtest: two processes serialize allocations, including the same retry key
+PASS derived-orders 11.80 s
+PROGRESS [portfolio] 0.0 s started
+PROGRESS [portfolio] 2.2 s # Subtest: the configuration section is the reviewed portfolio text, validated under its registered repository
+PROGRESS [skeleton] 285.1 s running; last report:     ok 6 - cell loop-lifetime-reclaim
+PROGRESS [target-publish] 163.8 s # Subtest: WO-184 criterion 9: missing lines and unmatched required checks end human, allowing later items
+PROGRESS [skeleton] 286.4 s     # Subtest: cell loop-append-fresh
+PROGRESS [worktree-integration] 135.0 s running; last report: waiting for the next case report
+PROGRESS [target-publish] 169.8 s # Subtest: WO-184 criterion 9: pushRepairedHead refuses a failing exact-head matrix before any push
+PASS target-publish 169.86 s
+PROGRESS [codex-continuation] 0.0 s started
+PROGRESS [codex-continuation] 6.3 s # Subtest: generated JavaScript harness surfaces agree with the repository format policy
+PASS codex-continuation 6.29 s
+PROGRESS [authority-grants] 0.0 s started
+PROGRESS [authority-grants] 0.2 s # Subtest: WO-042 AC2 trace, effective envelope and runtime authorize agree for every layer and restoration
+PASS authority-grants 0.25 s
+PROGRESS [local-runner-double] 0.0 s started
+PROGRESS [local-runner-double] 0.5 s # Subtest: WO-138 matrix pre-registers 30 baselines, five one-factor cells and three failure cells
+PROGRESS [local-runner-double] 2.9 s # Subtest: WO-110 the smoke records an envelope as shapes and keeps model text out
+PASS local-runner-double 3.86 s
+PROGRESS [artifact-corpus] 0.0 s started
+PROGRESS [artifact-corpus] 0.2 s # Subtest: WO-101 independent pair-arithmetic hash is planted on published FNV-1a-64 values
+PASS artifact-corpus 0.23 s
+PROGRESS [configuration-root] 0.0 s started
+PROGRESS [worktree-integration] 150.0 s running; last report: waiting for the next case report
+PROGRESS [portfolio] 26.2 s # Subtest: WO-100 criteria 1-3: derived orders materialize as indexed records, activate with host-policy provenance, change through WO-052, verify through WO-054, reset from a non-last phase on a fail
+PASS portfolio 26.22 s
+PROGRESS [harness-probe] 0.0 s started
+PROGRESS [configuration-root] 8.3 s # Subtest: configuration root
+PASS configuration-root 8.34 s
+PROGRESS [plan-refutation] 0.0 s started
+PROGRESS [skeleton] 315.1 s running; last report:     ok 7 - cell loop-append-fresh
+PROGRESS [worktree-integration] 165.0 s running; last report: waiting for the next case report
+PROGRESS [harness-probe] 15.0 s running; last report: waiting for the next case report
+PROGRESS [harness-probe] 17.6 s # Subtest: authority matrix enumerates every cell without copying a neighbor's evidence
+PROGRESS [plan-refutation] 15.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 329.3 s     # Subtest: cell loop-append-reclaim
+PROGRESS [harness-probe] 23.5 s # Subtest: host revokes while the payload is running; next-call evidence stays separate
+PROGRESS [harness-probe] 25.6 s # Subtest: loopback listener and run serializer reduce every private value to observations
+PROGRESS [worktree-integration] 180.0 s running; last report: waiting for the next case report
+PROGRESS [harness-probe] 30.7 s # Subtest: owned process group and descendants stop on timeout
+PROGRESS [harness-probe] 32.9 s # Subtest: owned process group and descendants stop on SIGINT
+PROGRESS [harness-probe] 34.6 s # Subtest: owned process group and descendants stop on SIGTERM
+PROGRESS [plan-refutation] 30.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 345.1 s running; last report: ok 240 - WO-173 a lock-matrix cell that exceeds its own deadline fails by name while the other seven run
+PROGRESS [worktree-integration] 195.0 s running; last report: waiting for the next case report
+PROGRESS [plan-refutation] 45.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 360.1 s running; last report: ok 240 - WO-173 a lock-matrix cell that exceeds its own deadline fails by name while the other seven run
+PROGRESS [harness-probe] 58.8 s # Subtest: WO-146 Copilot stub exercises both registrations, trust, caps, denial evidence and immutable observations
+PROGRESS [worktree-integration] 210.0 s running; last report: waiting for the next case report
+PROGRESS [harness-probe] 60.0 s # Subtest: WO-044 VER-001 absent effects and unrelated refusals are ambiguous, and operation evidence uses matched requests
+PROGRESS [harness-probe] 63.6 s # Subtest: WO-044 VER-001 an unconfirmed background token never targets another session
+PROGRESS [plan-refutation] 60.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 375.1 s running; last report: ok 240 - WO-173 a lock-matrix cell that exceeds its own deadline fails by name while the other seven run
+PROGRESS [skeleton] 379.0 s # Subtest: WO-143 thirty consecutive kill/restart rounds remain openable on once and loop paths
+PROGRESS [skeleton] 380.1 s # Subtest: WO-147 a lock released between observation and read is re-inspected under the guard
+PROGRESS [worktree-integration] 225.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 385.5 s # Subtest: WO-147 retirement probe tolerates a delayed claim present when recursive cleanup begins
+PROGRESS [plan-refutation] 75.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 386.5 s # Subtest: WO-143 a delayed claimant cannot unlink a successor through a retired target
+PROGRESS [harness-probe] 88.2 s # Subtest: WO-044 the probe drives every Claude and Codex launch through stub harnesses, records shapes only, and renders the labeled record, addendum and disposition
+PASS harness-probe 88.17 s
+PROGRESS [runner-fixtures] 0.0 s started
+PROGRESS [runner-fixtures] 0.1 s # Subtest: the scheduler declaration derives finite bounds and refuses an unbounded class
+PROGRESS [worktree-integration] 240.0 s running; last report: waiting for the next case report
+PROGRESS [runner-fixtures] 1.2 s # Subtest: async process timeout is distinguished from an ordinary caller kill
+PROGRESS [plan-refutation] 90.0 s running; last report: waiting for the next case report
+PASS plan-refutation 91.83 s
+PROGRESS [registrations] 0.0 s started
+PROGRESS [runner-fixtures] 8.7 s # Subtest: WO-185 native footprint stops zero-filled and low-resident growth as a gate task, bounded command and bare registered-session child
+PASS registrations 0.58 s
+PROGRESS [runner-fixtures] 10.3 s # Subtest: WO-185 bounded CLI prints typed memory stop and exit 125
+PROGRESS [skeleton] 405.1 s running; last report: ok 248 - WO-143 a delayed claimant cannot unlink a successor through a retired target
+PROGRESS [runner-fixtures] 14.3 s # Subtest: WO-185 a gate memory breach records a typed failed row rather than an operator stop
+PROGRESS [worktree-integration] 255.0 s running; last report: waiting for the next case report
+PROGRESS [runner-fixtures] 19.2 s # Subtest: WO-185 a guard retires after its registered owner exits without treating itself as a survivor
+PROGRESS [runner-fixtures] 21.0 s # Subtest: WO-185 a guard prunes deleted duplicate repository registrations and preserves its last agent root
+PROGRESS [runner-fixtures] 22.6 s # Subtest: WO-185 the long-lived guard drops released registration histories
+PROGRESS [runner-fixtures] 24.3 s # Subtest: WO-185 document base comparisons pass their four-lane lease to nested gates
+PROGRESS [skeleton] 420.1 s running; last report: ok 248 - WO-143 a delayed claimant cannot unlink a successor through a retired target
+PROGRESS [runner-fixtures] 26.9 s # Subtest: WO-185 interrupt, termination and hang-up end task groups without a gate row
+PROGRESS [worktree-integration] 270.1 s running; last report: waiting for the next case report
+PROGRESS [runner-fixtures] 38.3 s # Subtest: WO-185 independent worktrees and separate clones share lanes, wait, reclaim a dead holder and reuse one guard
+PROGRESS [runner-fixtures] 40.1 s # Subtest: WO-185 nested gates suballocate one reservation and a dead runner's live task retains its lanes
+PROGRESS [skeleton] 435.0 s # Subtest: WO-143 once and loop recover kills during a running episode's polling acquisition
+PASS skeleton 435.05 s
+PROGRESS [kernel] 0.0 s started
+PROGRESS [kernel] 0.1 s # Subtest: AC1 evidence: no ambient Date.now or Math.random read on either branch (poisoned globals)
+PASS kernel 0.47 s
+PROGRESS [compiler] 0.0 s started
+PROGRESS [compiler] 0.2 s # Subtest: WO-029 seiri: exact identity, manifest membership and independent no-BigInt FNV agreement
+PASS compiler 0.90 s
+PROGRESS [browser-evidence] 0.0 s started
+PROGRESS [runner-fixtures] 42.7 s # Subtest: WO-185 double and triple forks retain descriptor ownership through gate and bounded completion
+PROGRESS [browser-evidence] 0.3 s # Subtest: browser component release labels normalize while the pinned browser tree remains evidence input
+PROGRESS [browser-evidence] 1.7 s # Subtest: installed pinned browser produces all five kinds admitted from a VerificationOpened subject
+PROGRESS [browser-evidence] 2.8 s # Subtest: console error capture binds every scenario criterion and refuses each pass even when omitted
+PROGRESS [runner-fixtures] 45.5 s # Subtest: WO-185 a docs-shaped gate of concurrent tasks that start nothing records no survivor
+PROGRESS [worktree-integration] 285.1 s running; last report: waiting for the next case report
+PROGRESS [runner-fixtures] 46.6 s # Subtest: WO-185 a signal during completed-row aggregation cannot record a gate row
+PROGRESS [runner-fixtures] 49.7 s # Subtest: WO-185 a budget kill survives unavailable host and checkout incident ledgers
+PROGRESS [browser-evidence] 8.2 s # Subtest: a failed assertion produces adverse evidence rather than a pass
+PROGRESS [runner-fixtures] 51.0 s # Subtest: WO-185 bounded CLI preserves literal argv, caller environment, cwd and exit status
+PROGRESS [browser-evidence] 10.1 s # Subtest: console witness retains captured bytes when a late message arrives during trace stop
+PROGRESS [runner-fixtures] 53.1 s # Subtest: WO-185 a bare group names its largest member and retains the group kill
+PROGRESS [runner-fixtures] 55.8 s # Subtest: WO-185 a nested gate keeps its validated parent lease when later lookup would fail
+PROGRESS [browser-evidence] 14.8 s # Subtest: SIGKILL recovery observes zero recorded browser processes and leaves an unrelated process alive
+PROGRESS [browser-evidence] 15.8 s # Subtest: capture overflow remains bounded unavailable evidence admitted without a pass
+PROGRESS [browser-evidence] 17.9 s # Subtest: recovery signals a recorded surviving root and child after owner SIGKILL
+PASS browser-evidence 18.57 s
+PROGRESS [worktree-integration] 300.1 s running; last report: waiting for the next case report
+PROGRESS [runner-fixtures] 67.5 s # Subtest: WO-185 a generated quarantine with nonfinite findings passes all three wo102 files
+PASS runner-fixtures 67.48 s
+PROGRESS [worktree-integration] 315.1 s running; last report: waiting for the next case report
+PROGRESS [worktree-integration] 330.1 s running; last report: waiting for the next case report
+PROGRESS [worktree-integration] 345.1 s running; last report: waiting for the next case report
+PROGRESS [worktree-integration] 360.1 s running; last report: waiting for the next case report
+PROGRESS [worktree-integration] 375.1 s running; last report: waiting for the next case report
+PROGRESS [worktree-integration] 390.1 s running; last report: waiting for the next case report
+PROGRESS [worktree-integration] 405.1 s running; last report: waiting for the next case report
+PROGRESS [worktree-integration] 410.5 s # Subtest: real Git fast-forward preserves recovery, histories and authored conflicts with real generators
+PASS worktree-integration 410.54 s
+npm test: 40 passed; 0 failed; 990.28 s; 85 fresh tasks

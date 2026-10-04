@@ -11834,6 +11834,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-29T23:48:50.395Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Kept open by WO-185's final review with a new measurement. WO-185's shared bounded-probe sentence adds 167 bytes to every role. node scripts/harness-context.mjs --check reports every role within its ceiling: executor 28,457 of 29,246; verifier 24,955 of 25,151, with 196 bytes of headroom; reviewer 26,237 of 28,884; release-close 17,337 of 21,266; planner 19,182 of 24,576. The refuter has no ceiling. The efficiency redesign this row holds is still undecided. [WO-185 final review (docs/final-reviews/WO-185/FINAL-002.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-04T14:19:28.766Z"
         }
       ]
     },
@@ -12981,6 +12989,14 @@
           "reopenWhen": "an order next opens these consumers, a supported input exceeds the batch limit, or a real source-change workload reproduces the reported parser or progress cost",
           "targets": [],
           "at": "2026-09-28T03:29:45.508Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-185's final review. WO-185 opens scripts/test-runner.mjs for memory budgets, signal handling, output tails and indented TAP diagnostic retention. It selects no reporter for suites started through node(), and leaves the other members untouched. [WO-185 final review (docs/final-reviews/WO-185/FINAL-002.md)]",
+          "reopenWhen": "an order next opens these consumers, a supported input exceeds the batch limit, or a real source-change workload reproduces the reported parser or progress cost",
+          "targets": [],
+          "at": "2026-10-04T14:19:28.816Z"
         }
       ]
     },
@@ -26215,6 +26231,14 @@
             "WO-185"
           ],
           "at": "2026-10-02T06:02:34.318Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Retargeted at WO-185's close, as its criterion 7 directs. The wo102 tests compare a sweep's findings through corpus/harness/bounded-findings.mjs (total, the first 32 kept and a digest) and never hand the collection to a structural assertion; a lexical check refuses one in the declared set, and the generator refuses an oversized quarantine as findings-limit. With one planted Backoff drift, each wo102 file failed in 2.8 to 4.3 s at 250 to 294 MB of footprint under an 805,306,368-byte bound at this review. The per-user guard and the runner's budgets bound the same path when the lane is run by hand. [WO-185 final review (docs/final-reviews/WO-185/FINAL-002.md)]",
+          "reopenWhen": "A wo102 file under drift exceeds its task budget or fails without its total, kept findings and digest; a structural equality assertion over a sweep's findings re-enters corpus/harness/; or a DotLn-attributed process tree exhausts the host without a typed stop.",
+          "targets": [],
+          "at": "2026-10-04T14:19:28.312Z"
         }
       ]
     },
@@ -27089,6 +27113,14 @@
           "reopenWhen": "the guard records a kill, or the host reports another low-swap event while this repository's work runs",
           "targets": [],
           "at": "2026-10-02T06:02:37.509Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-disposed by WO-185's final review, because its literal condition occurred only for test trees. The per-user ledger holds 31 memory-budget rows, recorded from 2026-10-02T15:09Z to 2026-10-03T17:47Z. Every one is at a test or confirmation budget of at most 805,306,368 bytes and names a fixture allocator, a probe or a lock helper, and none is newer than the FINAL-001 repair. No stop of real work and no new low-swap event was observed, so the unattributed process is no better understood. [WO-185 final review (docs/final-reviews/WO-185/FINAL-002.md)]",
+          "reopenWhen": "the guard records a stop of a tree outside a fixture or probe repository, or the host reports another low-swap event while this repository's work runs",
+          "targets": [],
+          "at": "2026-10-04T14:19:28.716Z"
         }
       ]
     },
@@ -27322,6 +27354,277 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-d0a9719cc2e4ec55",
+      "key": "decision:docs/evidence/WO-185/decisions.md#wo-185-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "580b307d50a906e134db13063345bf511346cd250f4d19e21404a4aa0f34a1ac",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d006--recorded-survivor-guarantee-limitation",
+          "title": "WO-185-D006: Establish complete ownership for descendants through unobserved intermediate exits, including ignored-wrapper bare commands; compare an inheritable ownership mechanism with an authorized ",
+          "summary": "{ \"id\": \"WO-185-D006\", \"date\": \"2026-10-02\", \"dispatch\": \"resume: next\", \"decision\": \"Record criterion 3 as unmet for the broader detached-descendant guarantee. Do not narrow the order, waive it, or present a polling guard as absolute containment. Preserve the implemented controls and board the missing ownership mechanism for explicit planning.\", \"evidence\": [ \"lineage-limit.c is a zero-allocation native double-fork fixture with a two-second self exit. lineage-limit.txt records a successful root task while its detached grandchild survived; the probe identified and killed that owned fixture afterward.\", \"The child's original-parent unique ID identifies the unobserved intermediate, not the reg",
+          "missing": false
+        },
+        {
+          "hash": "8ffef611010419226417d8f1e2f8cd533d92cd40ece644910331dbc0da08bc8f",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d006--recorded-survivor-guarantee-limitation",
+          "title": "WO-185-D006: Establish complete ownership for descendants through unobserved intermediate exits, including ignored-wrapper bare commands; compare an inheritable ownership mechanism with an authorized ",
+          "summary": "{ \"id\": \"WO-185-D006\", \"date\": \"2026-10-02\", \"dispatch\": \"resume: next\", \"decision\": \"Record criterion 3 as unmet for the broader detached-descendant guarantee. Do not narrow the order, waive it, or present a polling guard as absolute containment. Preserve the implemented controls and board the missing ownership mechanism for explicit planning.\", \"evidence\": [ \"lineage-limit.c is a zero-allocation native double-fork fixture with a two-second self exit. lineage-limit.txt records a successful root task while its detached grandchild survived; the probe identified and killed that owned fixture afterward.\", \"The child's original-parent unique ID identifies the unobserved intermediate, not the reg",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-185 executor D006 records a zero-allocation double-fork counterexample and leaves criterion 3 unmet. Complete ownership needs an independently qualified mechanism within authorized host and clean-room effects; this is high-priority unresolved work, not a waiver.",
+          "reopenWhen": "An authorized complete ownership mechanism is proposed, or WO-185 returns for repair of criterion 3.",
+          "targets": [],
+          "at": "2026-10-02T16:18:59.036Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-185 repair D013 qualifies inherited output-socket ownership through unsampled double/triple forks and fixes the recorded criterion 3 counterexample. Retain the remaining complete-ownership question for processes that lose all descriptor marks before any ancestry observation, and unwrapped bare trees. No waiver or absolute containment claim is made.",
+          "reopenWhen": "A retained-descriptor descendant escapes, a real unattributed memory incident supplies new evidence, or an authorized privacy-preserving mechanism can cover no-mark or unwrapped ancestry gaps.",
+          "targets": [],
+          "at": "2026-10-03T05:04:13.470Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-bf96425734635b32",
+      "key": "decision:docs/evidence/WO-185/decisions.md#wo-185-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "934a95e745e4d86434c556d2cd8632e5888ee7ad2e5abcaeb6c286c8bb85c5c2",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d011--repair-ownership-and-verification-defects",
+          "title": "WO-185-D011: Repair VER-001 F1–F5 within the original surfaces. Identify inherited task output sockets by their live supervisor peer, supplement sampled ancestry with descriptor ownership, preserve lo",
+          "summary": "{ \"id\": \"WO-185-D011\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: fix\", \"decision\": \"Repair VER-001 F1–F5 within the original surfaces. Identify inherited task output sockets by their live supervisor peer, supplement sampled ancestry with descriptor ownership, preserve lossless bounded comparisons, refuse oversized quarantine writes before any file change, isolate fixture incidents, and check interruption immediately before writing a gate row.\", \"evidence\": [ \"VER-001 reproduces a zero-allocation double fork surviving executeSuite, NaN/Infinity digest aliasing, truncated regeneration rejected by its tests and fixture incidents counted as real work; it identifies the final-await interruption ",
+          "missing": false
+        },
+        {
+          "hash": "2a963c11d13bbae5d0b7b72c575de88d39de68240e0303352fadaaa7881b1045",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d011--repair-ownership-and-verification-defects",
+          "title": "WO-185-D011: Repair VER-001 F1–F5 within the original surfaces. Identify inherited task output sockets by their live supervisor peer, supplement sampled ancestry with descriptor ownership, preserve lo",
+          "summary": "{ \"id\": \"WO-185-D011\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: fix\", \"decision\": \"Repair VER-001 F1–F5 within the original surfaces. Identify inherited task output sockets by their live supervisor peer, supplement sampled ancestry with descriptor ownership, preserve lossless bounded comparisons, refuse oversized quarantine writes before any file change, isolate fixture incidents, and check interruption immediately before writing a gate row.\", \"evidence\": [ \"VER-001 reproduces a zero-allocation double fork surviving executeSuite, NaN/Infinity digest aliasing, truncated regeneration rejected by its tests and fixture incidents counted as real work; it identifies the final-await interruption ",
+          "missing": false
+        },
+        {
+          "hash": "8556f41a094c32d3f31e684d625b86c12320c09c88d061cc6b7f4b475443e5d7",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d011--repair-ownership-and-verification-defects",
+          "title": "WO-185-D011: Repair VER-001 F1–F5 within the original surfaces. Identify inherited task output sockets by their live supervisor peer, supplement sampled ancestry with descriptor ownership, preserve lo",
+          "summary": "{ \"id\": \"WO-185-D011\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: fix\", \"decision\": \"Repair VER-001 F1–F5 within the original surfaces. Identify inherited task output sockets by their live supervisor peer, supplement sampled ancestry with descriptor ownership, preserve lossless bounded comparisons, refuse oversized quarantine writes before any file change, isolate fixture incidents, and check interruption immediately before writing a gate row.\", \"evidence\": [ \"VER-001 reproduces a zero-allocation double fork surviving executeSuite, NaN/Infinity digest aliasing, truncated regeneration rejected by its tests and fixture incidents counted as real work; it identifies the final-await interruption ",
+          "missing": false
+        },
+        {
+          "hash": "1ce0bc9cac934439fe910891e986e9732283bb13ced655be43da5174b87c3b54",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d011--repair-ownership-and-verification-defects",
+          "title": "WO-185-D011: Repair VER-001 F1–F5 within the original surfaces. Identify inherited task output sockets by their live supervisor peer, supplement sampled ancestry with descriptor ownership, preserve lo",
+          "summary": "{ \"id\": \"WO-185-D011\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: fix\", \"decision\": \"Repair VER-001 F1–F5 within the original surfaces. Identify inherited task output sockets by their live supervisor peer, supplement sampled ancestry with descriptor ownership, preserve lossless bounded comparisons, refuse oversized quarantine writes before any file change, isolate fixture incidents, and check interruption immediately before writing a gate row.\", \"evidence\": [ \"VER-001 reproduces a zero-allocation double fork surviving executeSuite, NaN/Infinity digest aliasing, truncated regeneration rejected by its tests and fixture incidents counted as real work; it identifies the final-await interruption ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 4,
+          "status": "settled",
+          "reason": "Done inside WO-185. VER-002 judged VER-001 F1 to F5 repaired, D014 corrected the descriptor watch after VER-002 F6, and VER-003, VER-004 and this review's fresh 40-suite gate pass at the final identity. The no-mark ownership remainder stays on FUP-d0a9719cc2e4ec55. [WO-185 final review (docs/final-reviews/WO-185/FINAL-002.md)]",
+          "reopenWhen": "A descendant that keeps a task's output socket survives a gate task or bounded probe unnamed, or a census adopts a process the task did not start.",
+          "targets": [],
+          "at": "2026-10-04T14:19:28.366Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c1a89d52cc314af9",
+      "key": "decision:docs/evidence/WO-185/decisions.md#wo-185-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c3c13cc44836c9427d67e8fd80c518b27f1812c6204144739a14bff5fe5938de",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d014--held-descriptor-watches-and-the-recycled-identity-correction",
+          "title": "WO-185-D014: Decide how a live host guard started from older DotLn code yields to a checkout whose guard rule changed. ensureHostGuard (scripts/lib/host-guard-state.mjs) reuses any live guard regardle",
+          "summary": "{ \"id\": \"WO-185-D014\", \"kind\": \"correction\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: fix (VER-002 F6)\", \"reopens\": { \"decisionId\": \"WO-185-D011\", \"observation\": \"VER-002 F6 met D011's reopening condition, a recycled identity adopting an unrelated process: a census using a watch whose supervisor endpoint had closed tagged the runner's own census helper and a sibling process, and npm run test:docs failed twice at the subject identity on surviving-process host-footprint-.\" }, \"misread\": \"D012 states that re-checking the live supervisor's birth and socket handle before accepting a peer match means disconnected or reused descriptors do not establish ownership. Node closes the runner's ends of ",
+          "missing": false
+        },
+        {
+          "hash": "188b5d25bf1370f74ca9b915ef5bd08e600f7868ade0110b6aa33d3c2ec8ff78",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d014--held-descriptor-watches-and-the-recycled-identity-correction",
+          "title": "WO-185-D014: Decide how a live host guard started from older DotLn code yields to a checkout whose guard rule changed. ensureHostGuard (scripts/lib/host-guard-state.mjs) reuses any live guard regardle",
+          "summary": "{ \"id\": \"WO-185-D014\", \"kind\": \"correction\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: fix (VER-002 F6)\", \"reopens\": { \"decisionId\": \"WO-185-D011\", \"observation\": \"VER-002 F6 met D011's reopening condition, a recycled identity adopting an unrelated process: a census using a watch whose supervisor endpoint had closed tagged the runner's own census helper and a sibling process, and npm run test:docs failed twice at the subject identity on surviving-process host-footprint-.\" }, \"misread\": \"D012 states that re-checking the live supervisor's birth and socket handle before accepting a peer match means disconnected or reused descriptors do not establish ownership. Node closes the runner's ends of ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "Opened for planning by WO-185's final review. The shared per-user guard, pid 65032, started 2026-10-03T15:38:25Z, still runs the code from before FINAL-001's repair. Because ensureHostGuard reuses any live guard, it serves main after the merge until it retires. Fresh fixture guards exercise the current code. How an older guard yields to a changed rule is still undecided. [WO-185 final review (docs/final-reviews/WO-185/FINAL-002.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-04T14:19:28.667Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a5c6ac8cb40bd52a",
+      "key": "decision:docs/evidence/WO-185/decisions.md#wo-185-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7d7c805fd4b48fc28649932bb37b4f68daf33c3558268833f0207de10591f58b",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d016--review-gate-held-for-a-main-branch-worktree",
+          "title": "WO-185-D016: Validate worktree publish --target arguments, and any action that needs no launchpad, before resolving the main-branch control-plane worktree in scripts/worktree.mjs, so usage errors and ",
+          "summary": "{ \"id\": \"WO-185-D016\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: fix; operator direction at the repair-complete refusal\", \"decision\": \"Hold repair-complete until a complete npm test -- --review row passes for the current selection while a main-branch worktree exists, as the operator directed, and board the worktree CLI's ordering defect as a follow-up instead of repairing it in WO-185.\", \"evidence\": [ \"repair-complete refused at 2026-10-03T16:03Z: criteria 2 and 8 name npm test -- --review, and the passing 15:52:30.844Z row (40 suites) lacks evidence-sources, artifact-evidence and verification-evidence. origin/main had advanced to efe62994 (WO-184, #183) at 15:44Z while that gate ran, and r",
+          "missing": false
+        },
+        {
+          "hash": "45258bf77468143c179715b9c64f8e734ddebdedbb67709702026c74fb215a06",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d016--review-gate-held-for-a-main-branch-worktree",
+          "title": "WO-185-D016: Validate worktree publish --target arguments, and any action that needs no launchpad, before resolving the main-branch control-plane worktree in scripts/worktree.mjs, so usage errors and ",
+          "summary": "{ \"id\": \"WO-185-D016\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: fix; operator direction at the repair-complete refusal\", \"decision\": \"Hold repair-complete until a complete npm test -- --review row passes for the current selection while a main-branch worktree exists, as the operator directed, and board the worktree CLI's ordering defect as a follow-up instead of repairing it in WO-185.\", \"evidence\": [ \"repair-complete refused shortly after the 2026-10-03T16:02:17Z handoff usage readback: criteria 2 and 8 name npm test -- --review, and the passing 15:52:30.844Z row (40 suites) lacks evidence-sources, artifact-evidence and verification-evidence. origin/main had advanced to efe62994 (WO-184, #",
+          "missing": false
+        },
+        {
+          "hash": "e9b1f749ace2a19b88f739d8cb061e3e2833d01daae5b46c58df1e34e17d0152",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d016--review-gate-held-for-a-main-branch-worktree",
+          "title": "WO-185-D016: Validate worktree publish --target arguments, and any action that needs no launchpad, before resolving the main-branch control-plane worktree in scripts/worktree.mjs, so usage errors and ",
+          "summary": "{ \"id\": \"WO-185-D016\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: fix; operator direction at the repair-complete refusal\", \"decision\": \"Hold repair-complete until a complete npm test -- --review row passes for the current selection while a main-branch worktree exists, as the operator directed, and board the worktree CLI's ordering defect as a follow-up instead of repairing it in WO-185.\", \"evidence\": [ \"repair-complete refused shortly after the 2026-10-03T16:02:17Z handoff usage readback: criteria 2 and 8 name npm test -- --review, and the passing 15:52:30.844Z row (40 suites) lacks evidence-sources, artifact-evidence and verification-evidence. origin/main had advanced to efe62994 (WO-184, #",
+          "missing": false
+        },
+        {
+          "hash": "deec2521d1608120224e06ec8d3d0640d4f0a264ad535d685108c1c0adba088e",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d016--review-gate-held-for-a-main-branch-worktree",
+          "title": "WO-185-D016: Validate worktree publish --target arguments, and any action that needs no launchpad, before resolving the main-branch control-plane worktree in scripts/worktree.mjs, so usage errors and ",
+          "summary": "{ \"id\": \"WO-185-D016\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: fix; operator direction at the repair-complete refusal\", \"decision\": \"Hold repair-complete until a complete npm test -- --review row passes for the current selection while a main-branch worktree exists, as the operator directed, and board the worktree CLI's ordering defect as a follow-up instead of repairing it in WO-185.\", \"evidence\": [ \"repair-complete refused shortly after the 2026-10-03T16:02:17Z handoff usage readback: criteria 2 and 8 name npm test -- --review, and the passing 15:52:30.844Z row (40 suites) lacks evidence-sources, artifact-evidence and verification-evidence. origin/main had advanced to efe62994 (WO-184, #",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-84cf4b296783d303",
+      "key": "decision:docs/evidence/WO-185/decisions.md#wo-185-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "eac604a6664f0e1a8a37db2acfae66b765c2849378b47045c4e2f093ff00ad5a",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d018--final-review-finding-a-runner-budget-stop-records-before-it-kills-and-a-failed-ledger-write-ends-the-runner-with-the-task-alive",
+          "title": "WO-185-D018: WO-185 resume: fix — in scripts/lib/process-monitor.mjs, kill and fail the task, and on a gate breach every task, before any incident, registration or lease write. Make each record write ",
+          "summary": "{ \"id\": \"WO-185-D018\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Fail FINAL-001 and return this finding to repair. In scripts/lib/process-monitor.mjs the task-scope breach (lines 155-175) and the gate-scope breach (lines 95-109) call appendIncident before task.fail. appendIncident (scripts/lib/host-resources.mjs:453-479) makes three unguarded file writes: the host incidents.jsonl, latest-incidents and the checkout's memory-incidents.jsonl. observe runs from a setInterval tick (process-monitor.mjs:181-189) with no try around that step, and the runner installs no uncaughtException handler. A throwing write therefore ends the runner bef",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Done in WO-185's FINAL-001 repair (D023): a resource stop kills and fails before any incident write, and each write is caught on its own. This review reran FINAL-001's own ledger driver with the checkout ledger blocked. It got a typed memory-budget row naming the unavailable destination, the runner exited 0 after 490 ms, and the allocator wrote no heartbeat after that. [WO-185 final review (docs/final-reviews/WO-185/FINAL-002.md)]",
+          "reopenWhen": "A failed record or membership write leaves an over-budget task or gate member alive, or ends the runner.",
+          "targets": [],
+          "at": "2026-10-04T14:19:28.417Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8934512b05a3c570",
+      "key": "decision:docs/evidence/WO-185/decisions.md#wo-185-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "874d712c8c731cd065a964262df1aeb65c950d213aa704ad37a6a0b9a491ea18",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d019--final-review-finding-the-wo102-tests-decode-the-manifest-so-a-quarantine-with-a-nonfinite-value-no-longer-round-trips",
+          "title": "WO-185-D019: WO-185 resume: fix — make the wo102 manifest readers compare findings in the encoding the sweep produces: do not decode manifest.findings, or re-encode them before assertFindings. Add a f",
+          "summary": "{ \"id\": \"WO-185-D019\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Fail FINAL-001 and return this finding to repair. This order changed the manifest readers in corpus/harness/wo102-properties.test.mjs, wo102-replay.test.mjs and wo102-generators.test.mjs from JSON.parse to decodeNumbers(JSON.parse(...)). Live findings keep nonfinite numbers as tagged {$number} objects: inspectRow and inspectPurity store vector, expected and actual through encodeNumbers. The generator writes manifest.findings with those tags (generate-cadence-corpus.mjs:170). Decoding turns the tags into raw NaN or ±Infinity, which the canonical digest and the kept-row c",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Done in WO-185's FINAL-001 repair (D023): all three wo102 files read the manifest through readCorpusManifest, which decodes the grid and keeps findings in the sweep's encoding. The fixture that generates a nonfinite two-finding quarantine and runs all three files at that kernel passed in this review's gate. [WO-185 final review (docs/final-reviews/WO-185/FINAL-002.md)]",
+          "reopenWhen": "A quarantine the generator writes, nonfinite values included, is rejected by a wo102 file at the same kernel.",
+          "targets": [],
+          "at": "2026-10-04T14:19:28.468Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-81ad883bf1d8c9cc",
+      "key": "decision:docs/evidence/WO-185/decisions.md#wo-185-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3dfc874f605a635584c3a1a24b6c552d5ea0fa20880ea28a9aed541f6f34dbad",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d020--final-review-finding-harness-bounded-cannot-run-ordinary-commands-as-the-role-sentence-directs",
+          "title": "WO-185-D020: WO-185 resume: fix — run a bounded probe's argv verbatim (no test-glob expansion) with the caller's environment, plus only the supervision variables the runner needs. Keep the 15-minute d",
+          "summary": "{ \"id\": \"WO-185-D020\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Fail FINAL-001 and return this finding to repair together with D018 and D019. scripts/lib/bounded-command.mjs runs a probe through executeSuite unchanged, so it inherits the suite runner's test-glob expansion (scripts/test-runner.mjs expand, about lines 832-840) and its suite environment allowlist. The generated role sentence sends every probe outside a gate through this wrapper, and the Design says the wrapper applies the task budget and prints the typed stop, not that it changes the command.\", \"evidence\": [ \"node scripts/harness.mjs bounded -- node -e \\\"console.log(2*",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Done in WO-185's FINAL-001 repair (D023): harness bounded runs the probe's argv verbatim, with the caller's environment and exit status. At this review, node -e \"console.log(2*3)\" printed 6; FOO=visible with printenv FOO printed visible; the arguments '*.mjs', 'a b' and '' arrived literally; and sh -c 'exit 7' exited 7. [WO-185 final review (docs/final-reviews/WO-185/FINAL-002.md)]",
+          "reopenWhen": "harness bounded expands, drops or rewrites a probe's argument or environment variable, or changes its ordinary exit status.",
+          "targets": [],
+          "at": "2026-10-04T14:19:28.519Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-973bf7b53a14f177",
+      "key": "decision:docs/evidence/WO-185/decisions.md#wo-185-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "dca0df62b07fa45ad9546c3096aa0ccf5db3a8cc7a524d3ca0058e78360a9b94",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d021--final-review-lower-findings-and-observations-for-the-repair-to-dispose",
+          "title": "WO-185-D021: WO-185 resume: fix — dispose of D021 items 1-12. Fix items 1-3 within the order's surfaces: add the fixture source; size the lane fixture from the runner's reservation; name the growing p",
+          "summary": "{ \"id\": \"WO-185-D021\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Return these items to the same repair. Each is fixed within the order's surfaces or recorded as left with its own follow-up; none is to stay only as report text. Items 1-3 were confirmed from source by this review. Items 4-12 come from read-only review agents; the root session checked the code fact where it is stated, and none was reproduced.\", \"evidence\": [ \"1 (confirmed). scripts/test-runner.mjs runner-fixtures sources (lines 222-236) list scripts/fixtures/memory-growth.c but not scripts/fixtures/detached-descendant.c. An edit to that fixture alone does not select run",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Done in WO-185's FINAL-001 repair (D025): items 1 to 3 are fixed, and items 4 to 12 are fixed with their own fixtures. VER-004 left five residual low items in D028, now FUP-e8f5399db33d0b5a. runner-fixtures passed in this review's gate. [WO-185 final review (docs/final-reviews/WO-185/FINAL-002.md)]",
+          "reopenWhen": "A D025 fixture fails, or a D021 item recurs at a later identity.",
+          "targets": [],
+          "at": "2026-10-04T14:19:28.568Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e8f5399db33d0b5a",
+      "key": "decision:docs/evidence/WO-185/decisions.md#wo-185-d028",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c8888b36f0a77f8ef8a3415eb02f3ab79e6fbc1f588ac333bc6e44f10b5913e2",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d028--ver-004-residual-low-severity-observations-in-the-repaired-guard-and-runner-left-with-a-follow-up",
+          "title": "WO-185-D028: WO-185 residuals (guard and runner bookkeeping): in scripts/host-guard.mjs mark every revalidated-absent or protected member of a stopped candidate as handled, so one pass never writes a ",
+          "summary": "{ \"id\": \"WO-185-D028\", \"date\": \"2026-10-04\", \"dispatch\": \"resume: verify; VER-004\", \"kind\": \"finding\", \"decision\": \"Pass VER-004 and record these items as left, with one follow-up. None breaks a criterion, prevents a kill, leaves a survivor or changes a typed stop into an untyped one. Each is confirmed from source by the verifying session, and none was reproduced. The fixes are small and lie in the order's declared surfaces. A further repair cycle for them alone would cost one more repair, verification and full gate, which D021's precedent declined for narrow, unreproduced items.\", \"evidence\": [ \"1 (confirmed from source, low). scripts/host-guard.mjs marks a stopped candidate's members from ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Left by WO-185's final review as VER-004 recorded it in D028. The five low-severity bookkeeping items are: a second guard incident for one stopped tree; a guard SIGTERM classified as an operator stop after a failed latest-incident write; one lease lookup per nested gate; lost denial detail; and a withdrawal failure labelled launch. None prevents a kill or leaves a survivor, and none was reproduced. WO-186 opens the runner next, which meets this row's condition. [WO-185 final review (docs/final-reviews/WO-185/FINAL-002.md)]",
+          "reopenWhen": "A plan failures count exceeds the stopped trees it reports, a guard-originated SIGTERM ends a gate as an operator stop with no row, a nested gate waits on its own parent's lanes, or a later order edits these guard or runner paths.",
+          "targets": [],
+          "at": "2026-10-04T14:19:28.618Z"
+        }
+      ]
     }
   ]
 }

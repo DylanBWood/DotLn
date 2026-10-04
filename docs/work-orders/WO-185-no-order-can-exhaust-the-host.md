@@ -1,4 +1,4 @@
-# WO-185 — No order can exhaust the host: memory budgets for every DotLn-launched process tree and one set of gate lanes per machine (version assigned at activation)
+# WO-185 — No order can exhaust the host: memory budgets for every DotLn-launched process tree and one set of gate lanes per machine (v0.66.1)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

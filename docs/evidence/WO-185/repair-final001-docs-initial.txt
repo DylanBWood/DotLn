@@ -1,0 +1,67 @@
+
+> test:docs
+> node scripts/test-runner.mjs --document
+
+PROGRESS [build] 0.0 s started
+PASS build 0.65 s
+PROGRESS [release-surfaces] 0.0 s started
+PROGRESS [format] 0.0 s started
+PROGRESS [publication] 0.0 s started
+PROGRESS [docs-check] 0.0 s started
+PASS publication 0.17 s
+PROGRESS [index] 0.0 s started
+PASS release-surfaces 1.82 s
+PROGRESS [lineage] 0.0 s started
+PASS lineage 0.06 s
+PROGRESS [authority-evidence] 0.0 s started
+PASS index 1.81 s
+PROGRESS [harness] 0.0 s started
+PASS harness 0.21 s
+PROGRESS [harness-context] 0.0 s started
+PASS harness-context 0.16 s
+PROGRESS [harness-evidence] 0.0 s started
+PASS authority-evidence 0.76 s
+PROGRESS [artifact-evidence] 0.0 s started
+PASS harness-evidence 0.43 s
+PROGRESS [verification-evidence] 0.0 s started
+PASS artifact-evidence 0.27 s
+PROGRESS [feedback-evidence] 0.0 s started
+PASS verification-evidence 1.25 s
+PROGRESS [meta] 0.0 s started
+PASS format 5.50 s
+PASS feedback-evidence 2.93 s
+PASS meta 1.79 s
+PASS docs-check 12.14 s
+PROGRESS [docs-check-fixtures] 0.0 s started
+PROGRESS [lineage-fixtures] 0.0 s started
+PROGRESS [kernel-docs] 0.0 s started
+PROGRESS [skeleton-docs] 0.0 s started
+PROGRESS [kernel-docs] 0.1 s # Subtest: packages/kernel/dist/test/ac1-purity.test.js
+PROGRESS [skeleton-docs] 0.1 s # Subtest: packages/skeleton/dist/test/artifact-identity.test.js
+PROGRESS [lineage-fixtures] 0.5 s # Subtest: index counts lead memberships, wrapped labels and prose-only/reference sections
+PASS lineage-fixtures 0.53 s
+PROGRESS [console-docs] 0.0 s started
+PASS kernel-docs 0.86 s
+PROGRESS [plan-refutation-current] 0.0 s started
+PROGRESS [docs-check-fixtures] 3.1 s # Subtest: WO-178 attributed operator words advise by record, with capture and fingerprinted baseline exceptions
+PASS docs-check-fixtures 3.16 s
+PROGRESS [registrations] 0.0 s started
+PASS plan-refutation-current 2.68 s
+PROGRESS [plan] 0.0 s started
+PASS registrations 0.55 s
+PROGRESS [entropy] 0.0 s started
+PASS entropy 0.27 s
+PROGRESS [skeleton-docs] 4.9 s # Subtest: [document] WO-180 AC1: named base failure precedes the repaired candidate and survives replay
+PASS plan 2.96 s
+PROGRESS [console-docs] 7.9 s # Subtest: [document] WO-174 console fixture generator checks the current lazy exports
+PROGRESS [skeleton-docs] 9.1 s # Subtest: [document] WO-011 selfhost executes the real repository audit, recovers its saved result, and independently verifies once
+PROGRESS [console-docs] 12.8 s # Subtest: [document] WO-115 a bound resident serves terminal bytes and events under the terminal's compiled authority, refuses in terminal shape and replays its receipts
+PROGRESS [console-docs] 16.3 s # Subtest: [document] WO-115 the compiled envelope admits or refuses each command by the terminal classifier's effect, through the terminal hooks' decider
+PROGRESS [skeleton-docs] 20.8 s # Subtest: [document] WO-184 R9: committed no-notice replay preserves the pre-edit command and prompt
+PROGRESS [skeleton-docs] 23.2 s # Subtest: [document] WO-125 observed efforts reach the process and durable launch claim without effective readback
+PROGRESS [console-docs] 23.1 s # Subtest: [document] WO-115 every contract command keeps its terminal parser, refusal bytes and events over loopback
+PROGRESS [skeleton-docs] 24.3 s # Subtest: [document] WO-009 AC1/4 one process replaces only the executor; status is read-only and replay is identical
+PASS skeleton-docs 24.35 s
+PROGRESS [console-docs] 25.9 s # Subtest: [document] WO-116 the served audit command returns the terminal's bytes for each store and selection, the text host shows the three labeled projections, and the resident's own store audits
+PASS console-docs 25.94 s
+npm run test:docs: 24 passed; 0 failed; 39.43 s; 24 fresh tasks

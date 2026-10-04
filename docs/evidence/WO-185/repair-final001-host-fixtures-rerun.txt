@@ -1,0 +1,299 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+PROGRESS [bounded-probe] PROGRESS [build] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [allocation-zero] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [build] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [allocation-nonresident] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [nested-base] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [nested-base] 0.1 s PROGRESS [build] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [nested-base] 0.2 s PROGRESS [nested-check] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [build] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [detach] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [build] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [detach] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [build] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-0] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-1] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-2] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-3] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-4] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-5] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-6] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-7] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-8] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-9] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-10] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-11] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-12] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-13] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-14] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-15] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [build] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-0] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-1] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-2] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-3] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-4] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-5] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-6] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-7] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-8] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-9] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-10] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-11] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-12] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-13] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-14] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [ordinary-15] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [build] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [build] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [build] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [build] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [allocation] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [build] 0.0 s started
+PROGRESS [bounded-probe] PROGRESS [nested-task] 0.0 s started
+PROGRESS [build] 0.0 s started
+PASS build 0.05 s
+PROGRESS [allocation-zero] 0.0 s started
+FAIL allocation-zero 1.28 s
+  [allocation-zero] fixture pid=78936 ceiling=251658240 mode=zero
+  [allocation-zero] allocation bytes=8388608 footprint=10404296 rss=14467072
+  [allocation-zero] allocation bytes=16777216 footprint=18809312 rss=22855680
+  [allocation-zero] allocation bytes=25165824 footprint=27197920 rss=31244288
+  [allocation-zero] allocation bytes=33554432 footprint=35586528 rss=39632896
+  [allocation-zero] allocation bytes=41943040 footprint=43975136 rss=48021504
+  [allocation-zero] allocation bytes=50331648 footprint=52380152 rss=56410112
+  [allocation-zero] allocation bytes=58720256 footprint=60768760 rss=64798720
+  [allocation-zero] allocation bytes=67108864 footprint=69157368 rss=73187328
+  [allocation-zero] 
+  [allocation-zero] memory-budget {"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T18:50:21.784Z","failureKind":"memory-budget","scope":"task","pid":78936,"stopId":"78936:1791053420.506916","repo":"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-NgeHVe/repo","process":"memory-growth","processPid":78936,"task":"allocation-zero","budgetBytes":67108864,"measuredPeakFootprintBytes":69157368,"residentBytesAtStop":73187328,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[{"pid":78936,"name":"memory-growth"}]}
+npm test: 1 passed; 1 failed; 1.38 s; 2 fresh tasks
+WO-185 gate-zero {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"row":{"name":"allocation-zero","durationMs":1284,"peakFootprintBytes":69157368,"peakRssBytes":73187328,"memoryBudgetBytes":67108864,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"memoryFailure":{"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T18:50:21.784Z","failureKind":"memory-budget","scope":"task","pid":78936,"stopId":"78936:1791053420.506916","repo":"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-NgeHVe/repo","process":"memory-growth","processPid":78936,"task":"allocation-zero","budgetBytes":67108864,"measuredPeakFootprintBytes":69157368,"residentBytesAtStop":73187328,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[{"pid":78936,"name":"memory-growth"}]},"failureKind":"memory-budget","startedAt":"2026-10-03T18:50:20.501Z","finishedAt":"2026-10-03T18:50:21.790Z","exitCode":1,"executed":true,"concurrentAtStart":[],"predecessors":["build"],"schedulerDurationMs":1289,"loadClass":"shared","loadFactor":2,"peerCap":0,"reservedSlots":1,"lanes":[0],"hostLaneWaitMs":0,"hostLaneSlots":1},"gateMemory":{"samples":31,"footprintSamples":15,"samplingCostMs":120.56045500000027,"peakFootprintBytes":130623136,"peakRssBytes":232800256,"source":"proc_pid_rusage.ri_phys_footprint","unavailable":[],"budgets":{"taskShare":0.0013020833333333333,"gateShare":0.5,"hostShare":0.6666666666666666,"signalIntervalMs":50,"footprintIntervalMs":100,"outputTailBytes":1048576,"hostLanes":4,"physicalBytes":51539607552,"taskBytes":67108864,"gateBytes":25769803776,"hostBytes":34359738368}}}
+WO-185 bounded-zero {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"row":{"name":"bounded-zero","durationMs":1128,"peakFootprintBytes":69157368,"peakRssBytes":73187328,"memoryBudgetBytes":67108864,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"memoryFailure":{"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T18:50:22.935Z","failureKind":"memory-budget","scope":"task","pid":80722,"stopId":"80722:1791053421.816848","repo":"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-NgeHVe/repo","process":"memory-growth","processPid":80722,"task":"bounded-zero","budgetBytes":67108864,"measuredPeakFootprintBytes":69157368,"residentBytesAtStop":73187328,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[{"pid":80722,"name":"memory-growth"}]},"failureKind":"memory-budget","startedAt":"2026-10-03T18:50:21.816Z","finishedAt":"2026-10-03T18:50:22.944Z","exitCode":1,"executed":true,"output":"fixture pid=80722 ceiling=251658240 mode=zero\nallocation bytes=8388608 footprint=10404296 rss=14467072\nallocation bytes=16777216 footprint=18809312 rss=22855680\nallocation bytes=25165824 footprint=27197920 rss=31244288\nallocation bytes=33554432 footprint=35586528 rss=39632896\nallocation bytes=41943040 footprint=43975136 rss=48021504\nallocation bytes=50331648 footprint=52380152 rss=56410112\nallocation bytes=58720256 footprint=60768760 rss=64798720\nallocation bytes=67108864 footprint=69157368 rss=73187328\n\nmemory-budget {\"contract\":\"host-memory-incident-v1\",\"recordedAt\":\"2026-10-03T18:50:22.935Z\",\"failureKind\":\"memory-budget\",\"scope\":\"task\",\"pid\":80722,\"stopId\":\"80722:1791053421.816848\",\"repo\":\"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-NgeHVe/repo\",\"process\":\"memory-growth\",\"processPid\":80722,\"task\":\"bounded-zero\",\"budgetBytes\":67108864,\"measuredPeakFootprintBytes\":69157368,\"residentBytesAtStop\":73187328,\"source\":\"proc_pid_rusage.ri_phys_footprint\",\"killedProcesses\":[{\"pid\":80722,\"name\":\"memory-growth\"}]}"}}
+WO-185 bare-zero {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"guardPid":78596,"incident":{"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T18:50:24.104Z","failureKind":"memory-budget","scope":"task","pid":82428,"stopId":"82428:1791053422.952845","repo":"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-NgeHVe/repo","process":"memory-growth","processPid":82428,"budgetBytes":67108864,"measuredPeakFootprintBytes":69075448,"residentBytesAtStop":73089024,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[{"pid":82428,"name":"memory-growth"}]},"output":"fixture pid=82428 ceiling=251658240 mode=zero\nallocation bytes=8388608 footprint=10338784 rss=14368768\nallocation bytes=16777216 footprint=18727392 rss=22757376\nallocation bytes=25165824 footprint=27116000 rss=31145984\nallocation bytes=33554432 footprint=35504608 rss=39534592\nallocation bytes=41943040 footprint=43909624 rss=47923200\nallocation bytes=50331648 footprint=52298232 rss=56311808\nallocation bytes=58720256 footprint=60686840 rss=64700416\nallocation bytes=67108864 footprint=69075448 rss=73089024\n"}
+PROGRESS [build] 0.0 s started
+PASS build 0.06 s
+PROGRESS [allocation-nonresident] 0.0 s started
+FAIL allocation-nonresident 1.13 s
+  [allocation-nonresident] fixture pid=83401 ceiling=251658240 mode=nonresident
+  [allocation-nonresident] allocation bytes=8388608 footprint=11010504 rss=8110080
+  [allocation-nonresident] allocation bytes=16777216 footprint=19399112 rss=8110080
+  [allocation-nonresident] allocation bytes=25165824 footprint=27787720 rss=8110080
+  [allocation-nonresident] allocation bytes=33554432 footprint=36176328 rss=8110080
+  [allocation-nonresident] allocation bytes=41943040 footprint=44597704 rss=8142848
+  [allocation-nonresident] allocation bytes=50331648 footprint=52986312 rss=8142848
+  [allocation-nonresident] allocation bytes=58720256 footprint=61374920 rss=8142848
+  [allocation-nonresident] allocation bytes=67108864 footprint=69763528 rss=8142848
+  [allocation-nonresident] 
+  [allocation-nonresident] memory-budget {"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T18:50:25.383Z","failureKind":"memory-budget","scope":"task","pid":83401,"stopId":"83401:1791053424.257995","repo":"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-NgeHVe/repo","process":"memory-growth","processPid":83401,"task":"allocation-nonresident","budgetBytes":67108864,"measuredPeakFootprintBytes":69763528,"residentBytesAtStop":8142848,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[{"pid":83401,"name":"memory-growth"}]}
+npm test: 1 passed; 1 failed; 1.24 s; 2 fresh tasks
+WO-185 gate-nonresident {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"row":{"name":"allocation-nonresident","durationMs":1132,"peakFootprintBytes":69763528,"peakRssBytes":8142848,"memoryBudgetBytes":67108864,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"memoryFailure":{"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T18:50:25.383Z","failureKind":"memory-budget","scope":"task","pid":83401,"stopId":"83401:1791053424.257995","repo":"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-NgeHVe/repo","process":"memory-growth","processPid":83401,"task":"allocation-nonresident","budgetBytes":67108864,"measuredPeakFootprintBytes":69763528,"residentBytesAtStop":8142848,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[{"pid":83401,"name":"memory-growth"}]},"failureKind":"memory-budget","startedAt":"2026-10-03T18:50:24.252Z","finishedAt":"2026-10-03T18:50:25.389Z","exitCode":1,"executed":true,"concurrentAtStart":[],"predecessors":["build"],"schedulerDurationMs":1137,"loadClass":"shared","loadFactor":2,"peerCap":0,"reservedSlots":1,"lanes":[0],"hostLaneWaitMs":0,"hostLaneSlots":1},"gateMemory":{"samples":28,"footprintSamples":14,"samplingCostMs":118.90087599999788,"peakFootprintBytes":148500240,"peakRssBytes":193069056,"source":"proc_pid_rusage.ri_phys_footprint","unavailable":[],"budgets":{"taskShare":0.0013020833333333333,"gateShare":0.5,"hostShare":0.6666666666666666,"signalIntervalMs":50,"footprintIntervalMs":100,"outputTailBytes":1048576,"hostLanes":4,"physicalBytes":51539607552,"taskBytes":67108864,"gateBytes":25769803776,"hostBytes":34359738368}}}
+WO-185 bounded-nonresident {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"row":{"name":"bounded-nonresident","durationMs":1127,"peakFootprintBytes":69779912,"peakRssBytes":8159232,"memoryBudgetBytes":67108864,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"memoryFailure":{"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T18:50:26.531Z","failureKind":"memory-budget","scope":"task","pid":85454,"stopId":"85454:1791053425.416751","repo":"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-NgeHVe/repo","process":"memory-growth","processPid":85454,"task":"bounded-nonresident","budgetBytes":67108864,"measuredPeakFootprintBytes":69779912,"residentBytesAtStop":8159232,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[{"pid":85454,"name":"memory-growth"}]},"failureKind":"memory-budget","startedAt":"2026-10-03T18:50:25.416Z","finishedAt":"2026-10-03T18:50:26.543Z","exitCode":1,"executed":true,"output":"fixture pid=85454 ceiling=251658240 mode=nonresident\nallocation bytes=8388608 footprint=11043272 rss=8142848\nallocation bytes=16777216 footprint=19431880 rss=8142848\nallocation bytes=25165824 footprint=27820488 rss=8142848\nallocation bytes=33554432 footprint=36209096 rss=8142848\nallocation bytes=41943040 footprint=44614088 rss=8159232\nallocation bytes=50331648 footprint=53002696 rss=8159232\nallocation bytes=58720256 footprint=61391304 rss=8159232\nallocation bytes=67108864 footprint=69779912 rss=8159232\n\nmemory-budget {\"contract\":\"host-memory-incident-v1\",\"recordedAt\":\"2026-10-03T18:50:26.531Z\",\"failureKind\":\"memory-budget\",\"scope\":\"task\",\"pid\":85454,\"stopId\":\"85454:1791053425.416751\",\"repo\":\"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-NgeHVe/repo\",\"process\":\"memory-growth\",\"processPid\":85454,\"task\":\"bounded-nonresident\",\"budgetBytes\":67108864,\"measuredPeakFootprintBytes\":69779912,\"residentBytesAtStop\":8159232,\"source\":\"proc_pid_rusage.ri_phys_footprint\",\"killedProcesses\":[{\"pid\":85454,\"name\":\"memory-growth\"}]}"}}
+WO-185 bare-nonresident {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"guardPid":78596,"incident":{"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T18:50:27.685Z","failureKind":"memory-budget","scope":"task","pid":88147,"stopId":"88147:1791053426.552792","repo":"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-NgeHVe/repo","process":"memory-growth","processPid":88147,"budgetBytes":67108864,"measuredPeakFootprintBytes":69763528,"residentBytesAtStop":8142848,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[{"pid":88147,"name":"memory-growth"}]},"output":"fixture pid=88147 ceiling=251658240 mode=nonresident\nallocation bytes=8388608 footprint=11010504 rss=8110080\nallocation bytes=16777216 footprint=19399112 rss=8110080\nallocation bytes=25165824 footprint=27787720 rss=8110080\nallocation bytes=33554432 footprint=36176328 rss=8110080\nallocation bytes=41943040 footprint=44597704 rss=8142848\nallocation bytes=50331648 footprint=52986312 rss=8142848\nallocation bytes=58720256 footprint=61374920 rss=8142848\nallocation bytes=67108864 footprint=69763528 rss=8142848\n"}
+✔ WO-185 native footprint stops zero-filled and low-resident growth as a gate task, bounded command and bare registered-session child (7928.221083ms)
+WO-185 bounded-cli {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"exitCode":125,"output":"bounded-start {\"budgetBytes\":33554432,\"physicalBytes\":51539607552}\nPROGRESS [bounded-probe] started\nmemory-budget {\"failureKind\":\"memory-budget\",\"scope\":\"task\",\"task\":\"bounded-probe\",\"repo\":\"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-TA63Z4/repo\",\"pid\":91949,\"stopId\":\"91949:1791053428.457557\",\"process\":\"memory-growth\",\"budgetBytes\":33554432,\"measuredPeakFootprintBytes\":36176328,\"residentBytesAtStop\":8110080,\"source\":\"proc_pid_rusage.ri_phys_footprint\",\"killedProcesses\":[]}\nfixture pid=91949 ceiling=251658240 mode=nonresident\nallocation bytes=8388608 footprint=11010504 rss=8110080\nallocation bytes=16777216 footprint=19399112 rss=8110080\nallocation bytes=25165824 footprint=27787720 rss=8110080\nallocation bytes=33554432 footprint=36176328 rss=8110080\n\nmemory-budget {\"failureKind\":\"memory-budget\",\"scope\":\"task\",\"task\":\"bounded-probe\",\"repo\":\"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-TA63Z4/repo\",\"pid\":91949,\"stopId\":\"91949:1791053428.457557\",\"process\":\"memory-growth\",\"budgetBytes\":33554432,\"measuredPeakFootprintBytes\":36176328,\"residentBytesAtStop\":8110080,\"source\":\"proc_pid_rusage.ri_phys_footprint\",\"killedProcesses\":[]}bounded-result {\"name\":\"bounded-probe\",\"durationMs\":573,\"peakFootprintBytes\":36176328,\"peakRssBytes\":8110080,\"memoryBudgetBytes\":33554432,\"footprintSource\":\"proc_pid_rusage.ri_phys_footprint\",\"memoryFailure\":{\"failureKind\":\"memory-budget\",\"scope\":\"task\",\"task\":\"bounded-probe\",\"repo\":\"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-TA63Z4/repo\",\"pid\":91949,\"stopId\":\"91949:1791053428.457557\",\"process\":\"memory-growth\",\"budgetBytes\":33554432,\"measuredPeakFootprintBytes\":36176328,\"residentBytesAtStop\":8110080,\"source\":\"proc_pid_rusage.ri_phys_footprint\",\"killedProcesses\":[]},\"droppedOutputBytes\":0,\"failureKind\":\"memory-budget\",\"startedAt\":\"2026-10-03T18:50:28.457Z\",\"finishedAt\":\"2026-10-03T18:50:29.030Z\",\"exitCode\":1,\"executed\":true}\n"}
+✔ WO-185 bounded CLI prints typed memory stop and exit 125 (1558.665ms)
+WO-185 gate-budget-failed-row {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"memory":{"samples":25,"footprintSamples":13,"samplingCostMs":121.50545899999958,"peakFootprintBytes":110452944,"peakRssBytes":207912960,"source":"proc_pid_rusage.ri_phys_footprint","unavailable":[],"failure":{"failureKind":"memory-budget","scope":"gate","pid":94044,"process":"node","stopId":"94044:1791053429.574264","repo":"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-Fzxoae/repo","budgetBytes":104857600,"measuredPeakFootprintBytes":110452944,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[{"pid":94577,"name":"memory-growth"},{"pid":94424,"name":"host-lock-1bc60"},{"pid":94337,"name":"node"}]},"budgets":{"taskShare":0.005208333333333333,"gateShare":0.0020345052083333335,"hostShare":0.6666666666666666,"signalIntervalMs":50,"footprintIntervalMs":100,"outputTailBytes":1048576,"hostLanes":4,"physicalBytes":51539607552,"taskBytes":268435456,"gateBytes":104857600,"hostBytes":34359738368}},"localMemoryStops":{"source":"local","counted":"typed memory stops in this checkout's ignored incident ledger; counted only, separate from failed gate rows","stops":1,"byScope":{"gate":1}}}
+✔ WO-185 a gate memory breach records a typed failed row rather than an operator stop (3829.888125ms)
+WO-185 kernel-lock-recovery {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"killedOwnerReleased":true,"peakHolders":1}
+✔ WO-185 kernel locks release a killed owner and serialize racing waiters (480.296417ms)
+WO-185 guard-owner-exit {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"retired":true}
+✔ WO-185 a guard retires after its registered owner exits without treating itself as a survivor (4208.133958ms)
+WO-185 host-runner-accounting {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"incident":{"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T18:50:38.769Z","failureKind":"memory-budget","scope":"host","pid":9249,"stopId":"9249:1791053438.074429","repo":"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-5goqHy/repo","process":"memory-growth","processPid":9249,"budgetBytes":41943040,"measuredPeakFootprintBytes":43909600,"residentBytesAtStop":47939584,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[]},"signal":"SIGTERM"}
+✔ WO-185 host aggregate counts gate runners and stops an over-budget protected runner (976.960458ms)
+WO-185 deleted-duplicate-registration {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"duplicateRetired":true,"lastRootRetained":true}
+✔ WO-185 a guard prunes deleted duplicate repository registrations and preserves its last agent root (787.710208ms)
+WO-185 duplicate-ownership-transfer {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"observedProcesses":3,"incident":{"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T18:50:40.387Z","failureKind":"memory-budget","scope":"task","pid":12621,"stopId":"12621:1791053440.196580","repo":"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-CT06tS/repo","process":"node","processPid":12621,"budgetBytes":67108864,"measuredPeakFootprintBytes":97388488,"residentBytesAtStop":135249920,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[{"pid":12621,"name":"node"}]}}
+✔ WO-185 duplicate pruning preserves an already observed detached descendant (837.404458ms)
+WO-185 released-registration-histories {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"before":9,"after":1}
+✔ WO-185 the long-lived guard drops released registration histories (712.246167ms)
+PROGRESS [nested-base] 0.0 s started
+PROGRESS [nested-base] 0.1 s PROGRESS [build] 0.0 s started
+PROGRESS [nested-base] 0.2 s PROGRESS [nested-check] 0.0 s started
+FAIL nested-base 0.29 s
+  [nested-base] PROGRESS [build] 0.0 s started
+  [nested-base] PASS build 0.05 s
+  [nested-base] PROGRESS [nested-check] 0.0 s started
+  [nested-base] PASS nested-check 0.05 s
+  [nested-base] npm test: 2 passed; 0 failed; 0.15 s; 2 fresh tasks
+inherited nested-base against 50dbc460bb77f7aea97eaebf1a397f698980eb8e
+npm run test:docs: 1 passed; 1 failed; 0.81 s; 2 fresh tasks
+WO-185 nested-base-comparison {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"comparison":{"name":"nested-base","base":"50dbc460bb77f7aea97eaebf1a397f698980eb8e","classification":"inherited","baseExitCode":1,"baseExecuted":true,"baseOutput":"PROGRESS [build] 0.0 s started\nPASS build 0.05 s\nPROGRESS [nested-check] 0.0 s started\nPASS nested-check 0.06 s\nnpm test: 2 passed; 0 failed; 0.15 s; 2 fresh tasks\n"}}
+✔ WO-185 document base comparisons pass their four-lane lease to nested gates (1600.459708ms)
+WO-185 tail-and-survivor {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"droppedBytes":37973,"row":{"name":"escape","durationMs":58,"peakFootprintBytes":1311080,"peakRssBytes":1785856,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","survivingProcesses":[{"pid":16836,"name":"node"}],"droppedOutputBytes":0,"failureKind":"surviving-process","startedAt":"2026-10-03T18:50:43.170Z","finishedAt":"2026-10-03T18:50:43.228Z","exitCode":1,"executed":true,"output":"\nsurviving-process {\"survivingProcesses\":[{\"pid\":16836,\"name\":\"node\"}]}"}}
+✔ WO-185 runner cuts output to a tail and names and kills an escaped descendant (558.872416ms)
+WO-185 SIGINT {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"taskPid":17530,"output":"PROGRESS [build] 0.0 s started\nPASS build 0.05 s\nPROGRESS [hang] 0.0 s started\nPROGRESS [hang] 0.0 s stopped by gate request\nFAIL hang 0.16 s\n  [hang] \n  [hang] Suite hang stopped by gate request after 161 ms\nGate stopped by SIGINT after 0.2 s; no check recorded for tree c41fce658b468e2ecb5865527742c977a5db9ece\n"}
+WO-185 SIGTERM {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"taskPid":18052,"output":"PROGRESS [build] 0.0 s started\nPASS build 0.05 s\nPROGRESS [hang] 0.0 s started\nPROGRESS [hang] 0.1 s stopped by gate request\nFAIL hang 0.17 s\n  [hang] \n  [hang] Suite hang stopped by gate request after 175 ms\nGate stopped by SIGTERM after 0.3 s; no check recorded for tree ad18debd2bb905d4aea4db53bb092b284d3e5f3f\n"}
+WO-185 SIGHUP {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"taskPid":18310,"output":"PROGRESS [build] 0.0 s started\nPASS build 0.07 s\nPROGRESS [hang] 0.0 s started\nPROGRESS [hang] 0.1 s stopped by gate request\nFAIL hang 0.16 s\n  [hang] \n  [hang] Suite hang stopped by gate request after 164 ms\nGate stopped by SIGHUP after 0.3 s; no check recorded for tree 85c79c2b48541c16058085f56f7b858af0883d7b\n"}
+✔ WO-185 interrupt, termination and hang-up end task groups without a gate row (2333.471708ms)
+WO-185 two-worktrees {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"peakLanes":4,"gateSlots":4,"cpuCount":16,"oneGuard":18670,"output":"PROGRESS [build] 0.0 s started\nWAIT host lanes for /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-kCqMBe/repo / build; held by /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-kCqMBe/worktree / build (4)\nPASS build 0.66 s\nnpm test: 1 passed; 0 failed; 0.70 s; 1 fresh tasks\ngate-fixture-result {\"exitCode\":0,\"memory\":{\"samples\":16,\"footprintSamples\":8,\"samplingCostMs\":65.19924999999989,\"peakFootprintBytes\":68707736,\"peakRssBytes\":201572352,\"source\":\"proc_pid_rusage.ri_phys_footprint\",\"unavailable\":[],\"budgets\":{\"taskShare\":0.0013020833333333333,\"gateShare\":0.5,\"hostShare\":0.6666666666666666,\"signalIntervalMs\":50,\"footprintIntervalMs\":100,\"outputTailBytes\":1048576,\"hostLanes\":4,\"physicalBytes\":51539607552,\"taskBytes\":67108864,\"gateBytes\":25769803776,\"hostBytes\":34359738368}}}\nPROGRESS [build] 0.0 s started\nPASS build 0.66 s\nnpm test: 1 passed; 0 failed; 1.44 s; 1 fresh tasks\ngate-fixture-result {\"exitCode\":0,\"memory\":{\"samples\":30,\"footprintSamples\":13,\"samplingCostMs\":112.43950000000018,\"peakFootprintBytes\":45570168,\"peakRssBytes\":133201920,\"source\":\"proc_pid_rusage.ri_phys_footprint\",\"unavailable\":[],\"budgets\":{\"taskShare\":0.0013020833333333333,\"gateShare\":0.5,\"hostShare\":0.6666666666666666,\"signalIntervalMs\":50,\"footprintIntervalMs\":100,\"outputTailBytes\":1048576,\"hostLanes\":4,\"physicalBytes\":51539607552,\"taskBytes\":67108864,\"gateBytes\":25769803776,\"hostBytes\":34359738368}}}\n"}
+WO-185 two-worktrees {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"peakLanes":2,"gateSlots":2,"cpuCount":4,"oneGuard":18670,"output":"PROGRESS [build] 0.0 s started\nWAIT host lanes for /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-kCqMBe/worktree / build; held by /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-kCqMBe/repo / build (2); /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-kCqMBe/repo / fixture-unused-capacity (2)\nPASS build 0.66 s\nnpm test: 1 passed; 0 failed; 0.69 s; 1 fresh tasks\ngate-fixture-result {\"exitCode\":0,\"memory\":{\"samples\":16,\"footprintSamples\":8,\"samplingCostMs\":65.29045700000002,\"peakFootprintBytes\":39507392,\"peakRssBytes\":123912192,\"source\":\"proc_pid_rusage.ri_phys_footprint\",\"unavailable\":[],\"budgets\":{\"taskShare\":0.0013020833333333333,\"gateShare\":0.5,\"hostShare\":0.6666666666666666,\"signalIntervalMs\":50,\"footprintIntervalMs\":100,\"outputTailBytes\":1048576,\"hostLanes\":4,\"physicalBytes\":51539607552,\"taskBytes\":67108864,\"gateBytes\":25769803776,\"hostBytes\":34359738368}}}\nPROGRESS [build] 0.0 s started\nPASS build 0.66 s\nnpm test: 1 passed; 0 failed; 1.44 s; 1 fresh tasks\ngate-fixture-result {\"exitCode\":0,\"memory\":{\"samples\":30,\"footprintSamples\":13,\"samplingCostMs\":111.01662800000011,\"peakFootprintBytes\":44750848,\"peakRssBytes\":132448256,\"source\":\"proc_pid_rusage.ri_phys_footprint\",\"unavailable\":[],\"budgets\":{\"taskShare\":0.0013020833333333333,\"gateShare\":0.5,\"hostShare\":0.6666666666666666,\"signalIntervalMs\":50,\"footprintIntervalMs\":100,\"outputTailBytes\":1048576,\"hostLanes\":4,\"physicalBytes\":51539607552,\"taskBytes\":67108864,\"gateBytes\":25769803776,\"hostBytes\":34359738368}}}\n"}
+WO-185 two-worktrees {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"peakLanes":1,"gateSlots":1,"cpuCount":2,"oneGuard":18670,"output":"PROGRESS [build] 0.0 s started\nWAIT host lanes for /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-kCqMBe/repo / build; held by /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-kCqMBe/repo / fixture-unused-capacity (3); /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-kCqMBe/worktree / build (1)\nPASS build 0.65 s\nnpm test: 1 passed; 0 failed; 0.69 s; 1 fresh tasks\ngate-fixture-result {\"exitCode\":0,\"memory\":{\"samples\":16,\"footprintSamples\":8,\"samplingCostMs\":63.29099999999971,\"peakFootprintBytes\":39933280,\"peakRssBytes\":124403712,\"source\":\"proc_pid_rusage.ri_phys_footprint\",\"unavailable\":[],\"budgets\":{\"taskShare\":0.0013020833333333333,\"gateShare\":0.5,\"hostShare\":0.6666666666666666,\"signalIntervalMs\":50,\"footprintIntervalMs\":100,\"outputTailBytes\":1048576,\"hostLanes\":4,\"physicalBytes\":51539607552,\"taskBytes\":67108864,\"gateBytes\":25769803776,\"hostBytes\":34359738368}}}\nPROGRESS [build] 0.0 s started\nPASS build 0.66 s\nnpm test: 1 passed; 0 failed; 1.44 s; 1 fresh tasks\ngate-fixture-result {\"exitCode\":0,\"memory\":{\"samples\":30,\"footprintSamples\":13,\"samplingCostMs\":120.53766299999995,\"peakFootprintBytes\":45488296,\"peakRssBytes\":133087232,\"source\":\"proc_pid_rusage.ri_phys_footprint\",\"unavailable\":[],\"budgets\":{\"taskShare\":0.0013020833333333333,\"gateShare\":0.5,\"hostShare\":0.6666666666666666,\"signalIntervalMs\":50,\"footprintIntervalMs\":100,\"outputTailBytes\":1048576,\"hostLanes\":4,\"physicalBytes\":51539607552,\"taskBytes\":67108864,\"gateBytes\":25769803776,\"hostBytes\":34359738368}}}\n"}
+WO-185 separate-clones {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"peakLanes":4,"gateSlots":4,"cpuCount":16,"oneGuard":18670,"output":"PROGRESS [build] 0.0 s started\nWAIT host lanes for /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-kCqMBe/repo / build; held by /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-kCqMBe/clone / build (4)\nPASS build 0.65 s\nnpm test: 1 passed; 0 failed; 0.69 s; 1 fresh tasks\ngate-fixture-result {\"exitCode\":0,\"memory\":{\"samples\":16,\"footprintSamples\":8,\"samplingCostMs\":60.6530429999999,\"peakFootprintBytes\":39703952,\"peakRssBytes\":124141568,\"source\":\"proc_pid_rusage.ri_phys_footprint\",\"unavailable\":[],\"budgets\":{\"taskShare\":0.0013020833333333333,\"gateShare\":0.5,\"hostShare\":0.6666666666666666,\"signalIntervalMs\":50,\"footprintIntervalMs\":100,\"outputTailBytes\":1048576,\"hostLanes\":4,\"physicalBytes\":51539607552,\"taskBytes\":67108864,\"gateBytes\":25769803776,\"hostBytes\":34359738368}}}\nPROGRESS [build] 0.0 s started\nPASS build 0.65 s\nnpm test: 1 passed; 0 failed; 1.42 s; 1 fresh tasks\ngate-fixture-result {\"exitCode\":0,\"memory\":{\"samples\":30,\"footprintSamples\":13,\"samplingCostMs\":106.41545699999983,\"peakFootprintBytes\":47618144,\"peakRssBytes\":136019968,\"source\":\"proc_pid_rusage.ri_phys_footprint\",\"unavailable\":[],\"budgets\":{\"taskShare\":0.0013020833333333333,\"gateShare\":0.5,\"hostShare\":0.6666666666666666,\"signalIntervalMs\":50,\"footprintIntervalMs\":100,\"outputTailBytes\":1048576,\"hostLanes\":4,\"physicalBytes\":51539607552,\"taskBytes\":67108864,\"gateBytes\":25769803776,\"hostBytes\":34359738368}}}\n"}
+WO-185 separate-clones {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"peakLanes":2,"gateSlots":2,"cpuCount":4,"oneGuard":18670,"output":"PROGRESS [build] 0.0 s started\nWAIT host lanes for /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-kCqMBe/repo / build; held by /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-kCqMBe/repo / fixture-unused-capacity (2); /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-kCqMBe/clone / build (2)\nPASS build 0.65 s\nnpm test: 1 passed; 0 failed; 0.69 s; 1 fresh tasks\ngate-fixture-result {\"exitCode\":0,\"memory\":{\"samples\":16,\"footprintSamples\":8,\"samplingCostMs\":65.882128,\"peakFootprintBytes\":39359816,\"peakRssBytes\":123863040,\"source\":\"proc_pid_rusage.ri_phys_footprint\",\"unavailable\":[],\"budgets\":{\"taskShare\":0.0013020833333333333,\"gateShare\":0.5,\"hostShare\":0.6666666666666666,\"signalIntervalMs\":50,\"footprintIntervalMs\":100,\"outputTailBytes\":1048576,\"hostLanes\":4,\"physicalBytes\":51539607552,\"taskBytes\":67108864,\"gateBytes\":25769803776,\"hostBytes\":34359738368}}}\nPROGRESS [build] 0.0 s started\nPASS build 0.66 s\nnpm test: 1 passed; 0 failed; 1.46 s; 1 fresh tasks\ngate-fixture-result {\"exitCode\":0,\"memory\":{\"samples\":30,\"footprintSamples\":13,\"samplingCostMs\":115.43837399999958,\"peakFootprintBytes\":48339112,\"peakRssBytes\":136675328,\"source\":\"proc_pid_rusage.ri_phys_footprint\",\"unavailable\":[],\"budgets\":{\"taskShare\":0.0013020833333333333,\"gateShare\":0.5,\"hostShare\":0.6666666666666666,\"signalIntervalMs\":50,\"footprintIntervalMs\":100,\"outputTailBytes\":1048576,\"hostLanes\":4,\"physicalBytes\":51539607552,\"taskBytes\":67108864,\"gateBytes\":25769803776,\"hostBytes\":34359738368}}}\n"}
+WO-185 separate-clones {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"peakLanes":1,"gateSlots":1,"cpuCount":2,"oneGuard":18670,"output":"91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-kCqMBe/repo / build; held by /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-kCqMBe/repo / fixture-unused-capacity (3); /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-kCqMBe/clone / build (1)\nDotLn monitor signal unavailable: original-parent unique identity; other signals remain active\nPASS build 0.65 s\nnpm test: 1 passed; 0 failed; 0.70 s; 1 fresh tasks\ngate-fixture-result {\"exitCode\":0,\"memory\":{\"samples\":16,\"footprintSamples\":8,\"samplingCostMs\":61.89308299999985,\"peakFootprintBytes\":39392680,\"peakRssBytes\":123879424,\"source\":\"proc_pid_rusage.ri_phys_footprint\",\"unavailable\":[],\"budgets\":{\"taskShare\":0.0013020833333333333,\"gateShare\":0.5,\"hostShare\":0.6666666666666666,\"signalIntervalMs\":50,\"footprintIntervalMs\":100,\"outputTailBytes\":1048576,\"hostLanes\":4,\"physicalBytes\":51539607552,\"taskBytes\":67108864,\"gateBytes\":25769803776,\"hostBytes\":34359738368}}}\nPROGRESS [build] 0.0 s started\nPASS build 0.66 s\nnpm test: 1 passed; 0 failed; 1.45 s; 1 fresh tasks\ngate-fixture-result {\"exitCode\":0,\"memory\":{\"samples\":31,\"footprintSamples\":13,\"samplingCostMs\":114.30183200000067,\"peakFootprintBytes\":47224904,\"peakRssBytes\":135626752,\"source\":\"proc_pid_rusage.ri_phys_footprint\",\"unavailable\":[\"original-parent unique identity\"],\"budgets\":{\"taskShare\":0.0013020833333333333,\"gateShare\":0.5,\"hostShare\":0.6666666666666666,\"signalIntervalMs\":50,\"footprintIntervalMs\":100,\"outputTailBytes\":1048576,\"hostLanes\":4,\"physicalBytes\":51539607552,\"taskBytes\":67108864,\"gateBytes\":25769803776,\"hostBytes\":34359738368}}}\n"}
+WO-185 reclaimed-and-second-clone-child {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"reclaimed":true,"killedPid":28237}
+✔ WO-185 independent worktrees and separate clones share lanes, wait, reclaim a dead holder and reuse one guard (11458.516459ms)
+✔ WO-185 PID reuse cannot adopt a new root and unreadable footprint fails supervision (23.868208ms)
+WO-185 short-task-footprint {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"row":{"name":"short-task-footprint","durationMs":406,"peakFootprintBytes":80529328,"peakRssBytes":118325248,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-03T18:50:57.167Z","finishedAt":"2026-10-03T18:50:57.573Z","exitCode":0,"executed":true,"output":"67108864\n"}}
+✔ WO-185 a short task records executable footprint before the normal sample interval (406.058833ms)
+WO-185 nested-and-orphan-lanes {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"suballocationWaited":true,"retainedUntilTaskExit":true}
+WO-185 assertion-consumers {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"consumers":["wo102-generators.test.mjs","wo102-properties.test.mjs","wo102-replay.test.mjs"]}
+✔ WO-185 nested gates suballocate one reservation and a dead runner's live task retains its lanes (1067.988791ms)
+✔ WO-185 host coordination ignores temporary environment, ancestry is verified and corpus assertion guard rejects sweep aliases (23.611416ms)
+PROGRESS [build] 0.0 s started
+PASS build 0.06 s
+PROGRESS [detach] 0.0 s started
+FAIL detach 0.18 s
+  [detach] 
+  [detach] surviving-process {"survivingProcesses":[{"pid":32168,"name":"detached-descen"}]}
+npm test: 1 passed; 1 failed; 0.30 s; 2 fresh tasks
+WO-185 descriptor-gate-2 {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"exitCode":1,"row":{"name":"detach","durationMs":185,"peakFootprintBytes":2032192,"peakRssBytes":2441216,"memoryBudgetBytes":67108864,"footprintSource":"proc_pid_rusage.ri_phys_footprint","survivingProcesses":[{"pid":32168,"name":"detached-descen"}],"droppedOutputBytes":0,"failureKind":"surviving-process","startedAt":"2026-10-03T18:50:59.729Z","finishedAt":"2026-10-03T18:50:59.927Z","exitCode":1,"executed":true,"concurrentAtStart":[],"predecessors":["build"],"schedulerDurationMs":198,"loadClass":"shared","loadFactor":8,"peerCap":3,"reservedSlots":1,"lanes":[0],"hostLaneWaitMs":0,"hostLaneSlots":1},"unrelatedAlive":true}
+PROGRESS [build] 0.0 s started
+PASS build 0.05 s
+PROGRESS [detach] 0.0 s started
+FAIL detach 0.13 s
+  [detach] 
+  [detach] surviving-process {"survivingProcesses":[{"pid":32363,"name":"detached-descen"}]}
+npm test: 1 passed; 1 failed; 0.23 s; 2 fresh tasks
+WO-185 descriptor-gate-3 {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"exitCode":1,"row":{"name":"detach","durationMs":125,"peakFootprintBytes":1327464,"peakRssBytes":1802240,"memoryBudgetBytes":67108864,"footprintSource":"proc_pid_rusage.ri_phys_footprint","survivingProcesses":[{"pid":32363,"name":"detached-descen"}],"droppedOutputBytes":0,"failureKind":"surviving-process","startedAt":"2026-10-03T18:51:00.152Z","finishedAt":"2026-10-03T18:51:00.282Z","exitCode":1,"executed":true,"concurrentAtStart":[],"predecessors":["build"],"schedulerDurationMs":130,"loadClass":"shared","loadFactor":8,"peerCap":3,"reservedSlots":1,"lanes":[0],"hostLaneWaitMs":0,"hostLaneSlots":1},"unrelatedAlive":true}
+WO-185 descriptor-bounded-cli {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"exitCode":1,"output":"bounded-start {\"budgetBytes\":67108864,\"physicalBytes\":51539607552}\nPROGRESS [bounded-probe] started\n\nsurviving-process {\"survivingProcesses\":[{\"pid\":32473,\"name\":\"detached-descen\"}]}bounded-result {\"name\":\"bounded-probe\",\"durationMs\":123,\"peakFootprintBytes\":1327464,\"peakRssBytes\":1802240,\"memoryBudgetBytes\":67108864,\"footprintSource\":\"proc_pid_rusage.ri_phys_footprint\",\"survivingProcesses\":[{\"pid\":32473,\"name\":\"detached-descen\"}],\"droppedOutputBytes\":0,\"failureKind\":\"surviving-process\",\"startedAt\":\"2026-10-03T18:51:00.473Z\",\"finishedAt\":\"2026-10-03T18:51:00.596Z\",\"exitCode\":1,\"executed\":true}\n"}
+✔ WO-185 double and triple forks retain descriptor ownership through gate and bounded completion (2533.911709ms)
+✔ WO-185 budgets refuse a lane count the shared host lanes cannot honor (1.459583ms)
+✔ WO-185 a guard census that straddles a runner's withdrawal keeps no tag from the withdrawn watch (1.139625ms)
+WO-185 held-watch-siblings {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"censuses":18,"siblings":18,"siblingsOnReleasedDescriptors":3,"releasedDescriptors":[14,16,15,45],"rows":[{"name":"closes-outputs-early","exitCode":0},{"name":"exits-at-once","exitCode":0}]}
+✔ WO-185 a task watch stays on its held endpoint through the final census and adopts no sibling on a released descriptor (870.995875ms)
+PROGRESS [build] 0.0 s started
+PASS build 0.05 s
+PROGRESS [ordinary-0] 0.0 s started
+PROGRESS [ordinary-1] 0.0 s started
+PROGRESS [ordinary-2] 0.0 s started
+PROGRESS [ordinary-3] 0.0 s started
+PASS ordinary-0 0.05 s
+PROGRESS [ordinary-4] 0.0 s started
+PASS ordinary-1 0.06 s
+PASS ordinary-2 0.05 s
+PASS ordinary-3 0.06 s
+PROGRESS [ordinary-5] 0.0 s started
+PROGRESS [ordinary-6] 0.0 s started
+PROGRESS [ordinary-7] 0.0 s started
+PASS ordinary-4 0.05 s
+PROGRESS [ordinary-8] 0.0 s started
+PASS ordinary-6 0.06 s
+PASS ordinary-5 0.08 s
+PASS ordinary-7 0.08 s
+PROGRESS [ordinary-9] 0.0 s started
+PROGRESS [ordinary-10] 0.0 s started
+PASS ordinary-8 0.06 s
+PROGRESS [ordinary-11] 0.0 s started
+PROGRESS [ordinary-12] 0.0 s started
+PASS ordinary-10 0.07 s
+PASS ordinary-9 0.08 s
+PASS ordinary-12 0.07 s
+PROGRESS [ordinary-13] 0.0 s started
+PASS ordinary-11 0.09 s
+PROGRESS [ordinary-14] 0.0 s started
+PROGRESS [ordinary-15] 0.0 s started
+PASS ordinary-13 0.07 s
+PASS ordinary-14 0.06 s
+PASS ordinary-15 0.06 s
+npm test: 17 passed; 0 failed; 0.67 s; 17 fresh tasks
+PROGRESS [build] 0.0 s started
+PASS build 0.06 s
+PROGRESS [ordinary-0] 0.0 s started
+PROGRESS [ordinary-1] 0.0 s started
+PROGRESS [ordinary-2] 0.0 s started
+PROGRESS [ordinary-3] 0.0 s started
+PASS ordinary-0 0.07 s
+PASS ordinary-1 0.08 s
+PASS ordinary-2 0.07 s
+PROGRESS [ordinary-4] 0.0 s started
+PROGRESS [ordinary-5] 0.0 s started
+PASS ordinary-3 0.06 s
+PROGRESS [ordinary-6] 0.0 s started
+PROGRESS [ordinary-7] 0.0 s started
+PASS ordinary-4 0.07 s
+PROGRESS [ordinary-8] 0.0 s started
+PASS ordinary-5 0.07 s
+PASS ordinary-6 0.06 s
+PROGRESS [ordinary-9] 0.0 s started
+PROGRESS [ordinary-10] 0.0 s started
+PASS ordinary-7 0.07 s
+PASS ordinary-8 0.05 s
+PROGRESS [ordinary-11] 0.0 s started
+PROGRESS [ordinary-12] 0.0 s started
+PASS ordinary-9 0.07 s
+PASS ordinary-10 0.05 s
+PROGRESS [ordinary-13] 0.0 s started
+PASS ordinary-11 0.06 s
+PROGRESS [ordinary-14] 0.0 s started
+PASS ordinary-12 0.05 s
+PROGRESS [ordinary-15] 0.0 s started
+PASS ordinary-13 0.06 s
+PASS ordinary-14 0.05 s
+PASS ordinary-15 0.05 s
+npm test: 17 passed; 0 failed; 0.59 s; 17 fresh tasks
+WO-185 docs-shaped-gate {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"runs":[{"exitCode":0,"tasks":17},{"exitCode":0,"tasks":17}]}
+✔ WO-185 a docs-shaped gate of concurrent tasks that start nothing records no survivor (2037.805125ms)
+PROGRESS [build] 0.0 s started
+PASS build 0.07 s
+WO-185 late-signal {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"signal":"SIGINT","noRow":true}
+PROGRESS [build] 0.0 s started
+PASS build 0.06 s
+WO-185 late-signal {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"signal":"SIGTERM","noRow":true}
+PROGRESS [build] 0.0 s started
+PASS build 0.05 s
+WO-185 late-signal {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"signal":"SIGHUP","noRow":true}
+✔ WO-185 a signal during completed-row aggregation cannot record a gate row (1097.553583ms)
+DotLn incident ledger unavailable (host incidents): EISDIR: illegal operation on a directory, open '/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-dygm0t/host/incidents.jsonl'; resource stop remains active and its typed details are reported
+DotLn incident ledger unavailable (checkout incidents): ENOTDIR: not a directory, mkdir '/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-dygm0t/repo/docs/control/local/harness'; resource stop remains active and its typed details are reported
+memory-budget {"failureKind":"memory-budget","scope":"task","task":"unwritable-ledgers","repo":"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-dygm0t/repo","pid":36521,"stopId":"36521:1791053465.354872","process":"memory-growth","budgetBytes":67108864,"measuredPeakFootprintBytes":69157368,"residentBytesAtStop":73187328,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[],"recordingUnavailable":[{"destination":"host incidents","code":"EISDIR","reason":"EISDIR: illegal operation on a directory, open '/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-dygm0t/host/incidents.jsonl'"},{"destination":"checkout incidents","code":"ENOTDIR","reason":"ENOTDIR: not a directory, mkdir '/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-dygm0t/repo/docs/control/local/harness'"}]}
+WO-185 unwritable-ledgers {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"row":{"name":"unwritable-ledgers","durationMs":1191,"peakFootprintBytes":69157368,"peakRssBytes":73187328,"memoryBudgetBytes":67108864,"footprintSource":"proc_pid_rusage.ri_phys_footprint","memoryFailure":{"failureKind":"memory-budget","scope":"task","task":"unwritable-ledgers","repo":"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-dygm0t/repo","pid":36521,"stopId":"36521:1791053465.354872","process":"memory-growth","budgetBytes":67108864,"measuredPeakFootprintBytes":69157368,"residentBytesAtStop":73187328,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[],"recordingUnavailable":[{"destination":"host incidents","code":"EISDIR","reason":"EISDIR: illegal operation on a directory, open '/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-dygm0t/host/incidents.jsonl'"},{"destination":"checkout incidents","code":"ENOTDIR","reason":"ENOTDIR: not a directory, mkdir '/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-dygm0t/repo/docs/control/local/harness'"}]},"droppedOutputBytes":0,"failureKind":"memory-budget","startedAt":"2026-10-03T18:51:05.354Z","finishedAt":"2026-10-03T18:51:06.545Z","exitCode":1,"executed":true,"output":"fixture pid=36521 ceiling=251658240 mode=zero\nallocation bytes=8388608 footprint=10404296 rss=14467072\nallocation bytes=16777216 footprint=18792904 rss=22855680\nallocation bytes=25165824 footprint=27197920 rss=31244288\nallocation bytes=33554432 footprint=35586528 rss=39632896\nallocation bytes=41943040 footprint=43975136 rss=48021504\nallocation bytes=50331648 footprint=52363744 rss=56410112\nallocation bytes=58720256 footprint=60768760 rss=64798720\nallocation bytes=67108864 footprint=69157368 rss=73187328\n\nmemory-budget {\"failureKind\":\"memory-budget\",\"scope\":\"task\",\"task\":\"unwritable-ledgers\",\"repo\":\"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-dygm0t/repo\",\"pid\":36521,\"stopId\":\"36521:1791053465.354872\",\"process\":\"memory-growth\",\"budgetBytes\":67108864,\"measuredPeakFootprintBytes\":69157368,\"residentBytesAtStop\":73187328,\"source\":\"proc_pid_rusage.ri_phys_footprint\",\"killedProcesses\":[],\"recordingUnavailable\":[{\"destination\":\"host incidents\",\"code\":\"EISDIR\",\"reason\":\"EISDIR: illegal operation on a directory, open '/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-dygm0t/host/incidents.jsonl'\"},{\"destination\":\"checkout incidents\",\"code\":\"ENOTDIR\",\"reason\":\"ENOTDIR: not a directory, mkdir '/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-dygm0t/repo/docs/control/local/harness'\"}]}"}}
+PROGRESS [build] 0.0 s started
+PASS build 0.10 s
+PROGRESS [allocation] 0.0 s started
+DotLn incident ledger unavailable (checkout incidents): EISDIR: illegal operation on a directory, open '/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-dygm0t/repo/docs/control/local/harness/memory-incidents.jsonl'; resource stop remains active and its typed details are reported
+memory-budget {"failureKind":"memory-budget","scope":"task","task":"allocation","repo":"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-dygm0t/repo","pid":39043,"stopId":"39043:1791053467.100127","process":"memory-growth","budgetBytes":67108864,"measuredPeakFootprintBytes":69157368,"residentBytesAtStop":73187328,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[],"recordingUnavailable":[{"destination":"checkout incidents","code":"EISDIR","reason":"EISDIR: illegal operation on a directory, open '/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-dygm0t/repo/docs/control/local/harness/memory-incidents.jsonl'"}]}
+FAIL allocation 1.16 s
+  [allocation] fixture pid=39043 ceiling=251658240 mode=zero
+  [allocation] allocation bytes=8388608 footprint=10404296 rss=14467072
+  [allocation] allocation bytes=16777216 footprint=18809312 rss=22855680
+  [allocation] allocation bytes=25165824 footprint=27197920 rss=31244288
+  [allocation] allocation bytes=33554432 footprint=35586528 rss=39632896
+  [allocation] allocation bytes=41943040 footprint=43975136 rss=48021504
+  [allocation] allocation bytes=50331648 footprint=52380152 rss=56410112
+  [allocation] allocation bytes=58720256 footprint=60768760 rss=64798720
+  [allocation] allocation bytes=67108864 footprint=69157368 rss=73187328
+  [allocation] 
+  [allocation] memory-budget {"failureKind":"memory-budget","scope":"task","task":"allocation","repo":"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-dygm0t/repo","pid":39043,"stopId":"39043:1791053467.100127","process":"memory-growth","budgetBytes":67108864,"measuredPeakFootprintBytes":69157368,"residentBytesAtStop":73187328,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[],"recordingUnavailable":[{"destination":"checkout incidents","code":"EISDIR","reason":"EISDIR: illegal operation on a directory, open '/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-dygm0t/repo/docs/control/local/harness/memory-incidents.jsonl'"}]}
+npm test: 1 passed; 1 failed; 1.31 s; 2 fresh tasks
+WO-185 unwritable-ledger-gate {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"task":{"name":"allocation","durationMs":1163,"peakFootprintBytes":69157368,"peakRssBytes":73187328,"memoryBudgetBytes":67108864,"footprintSource":"proc_pid_rusage.ri_phys_footprint","memoryFailure":{"failureKind":"memory-budget","scope":"task","task":"allocation","repo":"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-dygm0t/repo","pid":39043,"stopId":"39043:1791053467.100127","process":"memory-growth","budgetBytes":67108864,"measuredPeakFootprintBytes":69157368,"residentBytesAtStop":73187328,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[],"recordingUnavailable":[{"destination":"checkout incidents","code":"EISDIR","reason":"EISDIR: illegal operation on a directory, open '/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-dygm0t/repo/docs/control/local/harness/memory-incidents.jsonl'"}]},"droppedOutputBytes":0,"failureKind":"memory-budget","startedAt":"2026-10-03T18:51:07.094Z","finishedAt":"2026-10-03T18:51:08.263Z","exitCode":1,"executed":true,"concurrentAtStart":[],"predecessors":["build"],"schedulerDurationMs":1169,"loadClass":"shared","loadFactor":2,"peerCap":0,"reservedSlots":1,"lanes":[0],"hostLaneWaitMs":0,"hostLaneSlots":1},"recorded":true}
+✔ WO-185 a budget kill survives unavailable host and checkout incident ledgers (3087.870042ms)
+✔ WO-185 membership publication cannot prevent a task or gate budget stop (11.172792ms)
+WO-185 probe-fidelity {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"observed":{"value":6,"args":["*.mjs","a b",""],"visible":"visible","cwd":"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-crSF3Z/repo"},"exitCode":7}
+✔ WO-185 bounded CLI preserves literal argv, caller environment, cwd and exit status (1024.942ms)
+✔ WO-185 swap escalation resets after a census and catches renewed growth (0.128792ms)
+✔ WO-185 cleanup uses current groups, survives denied signals and targets a late group escape (0.162167ms)
+✔ WO-185 incident attempts retain cleanup errors and count one stopped tree once (239.7105ms)
+✔ WO-185 indented TAP failures remain in stdout diagnostics after head truncation (216.458375ms)
+✔ WO-185 detached fixture changes select runner-fixtures at final review (0.128875ms)
+WO-185 bare-shell-largest-member {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"incident":{"contract":"host-memory-incident-v1","recordedAt":"2026-10-03T18:51:11.464Z","failureKind":"memory-budget","scope":"task","pid":43164,"stopId":"43164:1791053470.336697","repo":"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-wo185-CFLeF3/repo","process":"memory-growth","processPid":43166,"budgetBytes":67108864,"measuredPeakFootprintBytes":70697848,"residentBytesAtStop":75546624,"source":"proc_pid_rusage.ri_phys_footprint","killedProcesses":[{"pid":43166,"name":"memory-growth"},{"pid":43164,"name":"bash"}]}}
+✔ WO-185 a bare group names its largest member and retains the group kill (1814.3805ms)
+PROGRESS [build] 0.0 s started
+PASS build 0.04 s
+PROGRESS [nested-task] 0.0 s started
+PASS nested-task 0.05 s
+npm test: 2 passed; 0 failed; 0.14 s; 2 fresh tasks
+WO-185 cached-parent-lease {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"passed":true,"tasks":2}
+✔ WO-185 a nested gate keeps its validated parent lease when later lookup would fail (818.248167ms)
+WO-185 nonfinite-quarantine-roundtrip {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"target":"cadence-006030","findings":2,"durationMs":9812,"peakFootprintBytes":770581208,"output":"✔ WO-102 literal planted anchors pin next-tick, default origin, throws and hand-computed Backoff (1.108167ms)\n✔ WO-102 tagged numbers preserve nonfinite intervals; absent startAt is actually absent (119.607333ms)\n✔ WO-102 generator parser rejects missing, duplicate and ambiguous options (0.164459ms)\n✔ WO-102 regeneration is byte-identical and seed changes selection without changing the full set (5515.397667ms)\n✔ WO-102 detects planted clamp/threading drift and renders a numbered exact quarantine (0.405792ms)\n✔ WO-102 poison-only violations are exact findings and host functions are restored (0.252167ms)\n✔ WO-185 bounded full-grid equality distinguishes nonfinite swaps beyond its retained rows (902.8885ms)\n✔ WO-185 oversized drift quarantine refuses generation before changing any file (3155.018209ms)\n✔ WO-102 full declared sweep (69389): drift, determinism, clamp, RNG threading, call order, no mutation (1020.521292ms)\n✔ WO-102 no ambient clock or RNG under poisoned Date.now/Math.random (69389 vectors) (449.072083ms)\n✔ WO-102 composition enumeration covers every truth mask, version, depth and terminal path (22.345792ms)\n✔ WO-185 replay lane's full-grid findings use bounded diagnostics (1088.0395ms)\n✔ WO-102 fixture corpus/fixtures/cadence/once-001.jsonl hash and exact replay (36 vectors) (0.499791ms)\n✔ WO-102 fixture corpus/fixtures/cadence/after-001.jsonl hash and exact replay (48 vectors) (0.419125ms)\n✔ WO-102 fixture corpus/fixtures/cadence/every-001.jsonl hash and exact replay (256 vectors) (1.852708ms)\n✔ WO-102 fixture corpus/fixtures/cadence/every-002.jsonl hash and exact replay (256 vectors) (1.757583ms)\n✔ WO-102 fixture corpus/fixtures/cadence/every-003.jsonl hash and exact replay (133 vectors) (0.906917ms)\n✔ WO-102 fixture corpus/fixtures/cadence/gate-001.jsonl hash and exact replay (256 vectors) (6.293708ms)\n✔ WO-102 fixture corpus/fixtures/cadence/gate-002.jsonl hash and exact replay (256 vectors) (5.852291ms)\n✔ WO-102 fixture corpus/fixtures/cadence/until-001.jsonl hash and exact replay (256 vectors) (5.821666ms)\n✔ WO-102 fixture corpus/fixtures/cadence/until-002.jsonl hash and exact replay (256 vectors) (5.309208ms)\n✔ WO-102 fixture corpus/fixtures/cadence/backoff-001.jsonl hash and exact replay (256 vectors) (1.85275ms)\n✔ WO-102 fixture corpus/fixtures/cadence/backoff-002.jsonl hash and exact replay (256 vectors) (1.777958ms)\n✔ WO-102 fixture census, counts, registry and explicit boundary classes match manifest (2.365666ms)\nℹ tests 24\nℹ suites 0\nℹ pass 24\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 9756.442041\n"}
+✔ WO-185 a generated quarantine with nonfinite findings passes all three wo102 files (13512.8885ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 66139.558125
+bounded-result {"name":"bounded-probe","durationMs":66202,"peakFootprintBytes":1089714248,"peakRssBytes":1277952000,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-03T18:50:19.750Z","finishedAt":"2026-10-03T18:51:25.953Z","exitCode":0,"executed":true}

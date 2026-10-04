@@ -1,0 +1,41 @@
+WO-185 repair of VER-002 F6: criterion 5 control at the integrated identity (D017)
+Code identity: c006d5cd65e391efb06fd75f5db91a6d8813123bb9d77ed44aa91df6f0cea06d (base 340a67c9 plus the uncommitted WO-185 work).
+Host: macOS 27.0.1, Darwin 27.0.0, arm64, 16 logical CPUs, 51539607552 bytes physical memory (sysctl hw.memsize).
+Main changed no path under packages/kernel or corpus/ (git diff --name-only 53fc6eb8 340a67c9 -- packages/kernel corpus is empty), so the planted-drift runs in repair-ver002-corpus.txt carry forward unchanged.
+CONTROL node scripts/harness.mjs bounded -- node --test corpus/harness/wo102-generators.test.mjs corpus/harness/wo102-properties.test.mjs corpus/harness/wo102-replay.test.mjs
+
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+✔ WO-102 literal planted anchors pin next-tick, default origin, throws and hand-computed Backoff (1.147792ms)
+✔ WO-102 tagged numbers preserve nonfinite intervals; absent startAt is actually absent (108.506667ms)
+✔ WO-102 generator parser rejects missing, duplicate and ambiguous options (0.148709ms)
+✔ WO-102 regeneration is byte-identical and seed changes selection without changing the full set (5857.489042ms)
+✔ WO-102 detects planted clamp/threading drift and renders a numbered exact quarantine (0.536042ms)
+✔ WO-102 poison-only violations are exact findings and host functions are restored (0.238958ms)
+✔ WO-185 bounded full-grid equality distinguishes nonfinite swaps beyond its retained rows (914.659833ms)
+✔ WO-185 oversized drift quarantine refuses generation before changing any file (3103.45175ms)
+✔ WO-102 full declared sweep (69389): drift, determinism, clamp, RNG threading, call order, no mutation (1063.956042ms)
+✔ WO-102 no ambient clock or RNG under poisoned Date.now/Math.random (69389 vectors) (456.875083ms)
+✔ WO-102 composition enumeration covers every truth mask, version, depth and terminal path (24.164916ms)
+✔ WO-185 replay lane's full-grid findings use bounded diagnostics (1058.4785ms)
+✔ WO-102 fixture corpus/fixtures/cadence/once-001.jsonl hash and exact replay (36 vectors) (0.456709ms)
+✔ WO-102 fixture corpus/fixtures/cadence/after-001.jsonl hash and exact replay (48 vectors) (0.520041ms)
+✔ WO-102 fixture corpus/fixtures/cadence/every-001.jsonl hash and exact replay (256 vectors) (1.72175ms)
+✔ WO-102 fixture corpus/fixtures/cadence/every-002.jsonl hash and exact replay (256 vectors) (1.796833ms)
+✔ WO-102 fixture corpus/fixtures/cadence/every-003.jsonl hash and exact replay (133 vectors) (0.907667ms)
+✔ WO-102 fixture corpus/fixtures/cadence/gate-001.jsonl hash and exact replay (256 vectors) (5.731292ms)
+✔ WO-102 fixture corpus/fixtures/cadence/gate-002.jsonl hash and exact replay (256 vectors) (5.847375ms)
+✔ WO-102 fixture corpus/fixtures/cadence/until-001.jsonl hash and exact replay (256 vectors) (5.079583ms)
+✔ WO-102 fixture corpus/fixtures/cadence/until-002.jsonl hash and exact replay (256 vectors) (5.651333ms)
+✔ WO-102 fixture corpus/fixtures/cadence/backoff-001.jsonl hash and exact replay (256 vectors) (1.5805ms)
+✔ WO-102 fixture corpus/fixtures/cadence/backoff-002.jsonl hash and exact replay (256 vectors) (1.58475ms)
+✔ WO-102 fixture census, counts, registry and explicit boundary classes match manifest (2.453583ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10043.974042
+bounded-result {"name":"bounded-probe","durationMs":10094,"peakFootprintBytes":765028760,"peakRssBytes":906690560,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-03T16:51:55.777Z","finishedAt":"2026-10-03T16:52:05.871Z","exitCode":0,"executed":true}

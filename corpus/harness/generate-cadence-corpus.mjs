@@ -17,6 +17,7 @@ import {
   REGISTRY,
   REPO_ROOT,
   countRows,
+  decodeNumbers,
   encodeNumbers,
   enumerateGrid,
   inspectCorpus,
@@ -37,6 +38,13 @@ export const TOOLCHAIN_PROFILE = {
 };
 export const MANIFEST_PATH = "corpus/manifests/WO-102.json";
 export const FINDINGS_PATH = "corpus/manifests/findings-WO-102.md";
+
+export function readCorpusManifest(root = REPO_ROOT) {
+  const encoded = JSON.parse(readFileSync(join(root, MANIFEST_PATH), "utf8"));
+  // Sweeps emit findings with tagged numbers already encoded. Decode the grid
+  // for executable comparisons, but keep the exact quarantine representation.
+  return { ...decodeNumbers(encoded), findings: encoded.findings };
+}
 
 export function parseArgs(args) {
   let seed;
@@ -63,7 +71,7 @@ export function renderFindings(findings) {
     findings
       .map(
         (finding) =>
-          `## ${finding.number}\n\n\`\`\`json\n${JSON.stringify(finding, null, 2)}\n\`\`\`\n`,
+          `## ${finding.number}\n\n\`\`\`json\n${JSON.stringify(encodeNumbers(finding), null, 2)}\n\`\`\`\n`,
       )
       .join("\n")
   );
@@ -71,7 +79,15 @@ export function renderFindings(findings) {
 export function buildCorpus(seed) {
   const full = enumerateGrid();
   const committed = sampleGrid(full, seed);
-  const findings = inspectCorpus(full);
+  const findingsSummary = inspectCorpus(full);
+  const findings = findingsSummary.kept;
+  if (findingsSummary.total > findings.length) {
+    const error = new Error(
+      `findings-limit: exact quarantine exceeds retention limit; findings total=${findingsSummary.total}; kept=${findings.length}; digest=${findingsSummary.digest}\n${json(findings)}`,
+    );
+    error.code = "findings-limit";
+    throw error;
+  }
   const files = [];
   for (const kind of KINDS) {
     const rows = committed.filter((row) => row.kind === kind);
@@ -163,7 +179,7 @@ export function buildCorpus(seed) {
   });
   if (findings.length)
     files.push({ path: FINDINGS_PATH, bytes: renderFindings(findings) });
-  return { files, manifest, full, committed };
+  return { files, manifest, full, committed, findingsSummary };
 }
 export function checkCorpus(built, root = REPO_ROOT) {
   for (const file of built.files) {

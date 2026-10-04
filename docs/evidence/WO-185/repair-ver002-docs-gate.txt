@@ -1,0 +1,354 @@
+WO-185 repair of VER-002 F6: npm run test:docs at the repair
+Host: macOS 27.0.1, Darwin 27.0.0, arm64, 16 logical CPUs, 51539607552 bytes physical memory (sysctl hw.memsize).
+Runs 1 and 2 (15:34:24.904Z, 15:34:49.099Z) failed 14/10 on the format preflight: Prettier flagged the new fixtures in scripts/test-host-guard.test.mjs; feedback-evidence passed in both. Prettier --write reflowed only lines this repair added.
+Runs 3 and 4 (15:36:04.375Z and 15:36:48.015Z) passed 24/24 with 24 fresh tasks, at the code identity of the passing review row.
+
+RUN 1
+
+> test:docs
+> node scripts/test-runner.mjs --document
+
+PROGRESS [build] 0.0 s started
+PASS build 0.76 s
+PROGRESS [format] 0.0 s started
+PROGRESS [release-surfaces] 0.0 s started
+PROGRESS [publication] 0.0 s started
+PROGRESS [docs-check] 0.0 s started
+PASS publication 0.19 s
+PROGRESS [index] 0.0 s started
+PASS release-surfaces 2.08 s
+PROGRESS [lineage] 0.0 s started
+PASS index 1.90 s
+PROGRESS [authority-evidence] 0.0 s started
+PASS lineage 0.07 s
+PROGRESS [harness] 0.0 s started
+PASS harness 0.24 s
+PROGRESS [harness-context] 0.0 s started
+PASS harness-context 0.18 s
+PROGRESS [harness-evidence] 0.0 s started
+PASS authority-evidence 0.83 s
+PROGRESS [artifact-evidence] 0.0 s started
+PASS harness-evidence 0.47 s
+PROGRESS [verification-evidence] 0.0 s started
+PASS artifact-evidence 0.30 s
+PROGRESS [feedback-evidence] 0.0 s started
+PASS verification-evidence 1.67 s
+PROGRESS [meta] 0.0 s started
+FAIL format 5.77 s
+  [format] Checking formatting...
+  [format] [warn] scripts/test-host-guard.test.mjs
+  [format] [warn] Code style issues found in the above file. Run Prettier with --write to fix.
+FAIL entropy 0.00 s
+  [entropy] Required preflight or fixture preparation failed for entropy: format
+FAIL plan 0.00 s
+  [plan] Required preflight or fixture preparation failed for plan: format
+FAIL registrations 0.00 s
+  [registrations] Required preflight or fixture preparation failed for registrations: format
+FAIL plan-refutation-current 0.00 s
+  [plan-refutation-current] Required preflight or fixture preparation failed for plan-refutation-current: format
+FAIL console-docs 0.00 s
+  [console-docs] Required preflight or fixture preparation failed for console-docs: format
+FAIL skeleton-docs 0.00 s
+  [skeleton-docs] Required preflight or fixture preparation failed for skeleton-docs: format
+FAIL kernel-docs 0.00 s
+  [kernel-docs] Required preflight or fixture preparation failed for kernel-docs: format
+FAIL lineage-fixtures 0.00 s
+  [lineage-fixtures] Required preflight or fixture preparation failed for lineage-fixtures: format
+FAIL docs-check-fixtures 0.00 s
+  [docs-check-fixtures] Required preflight or fixture preparation failed for docs-check-fixtures: format
+PASS feedback-evidence 3.04 s
+PASS meta 1.77 s
+PASS docs-check 13.03 s
+introduced format against 53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b
+unknown entropy against 53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b: current check did not complete an ordinary execution
+unknown plan against 53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b: current check did not complete an ordinary execution
+unknown registrations against 53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b: current check did not complete an ordinary execution
+unknown plan-refutation-current against 53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b: current check did not complete an ordinary execution
+unknown console-docs against 53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b: current check did not complete an ordinary execution
+unknown skeleton-docs against 53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b: current check did not complete an ordinary execution
+unknown kernel-docs against 53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b: current check did not complete an ordinary execution
+unknown lineage-fixtures against 53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b: current check did not complete an ordinary execution
+unknown docs-check-fixtures against 53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b: current check did not complete an ordinary execution
+npm run test:docs: 14 passed; 10 failed; 23.87 s; 15 fresh tasks
+
+
+RUN 2
+
+> test:docs
+> node scripts/test-runner.mjs --document
+
+PROGRESS [build] 0.0 s started
+PASS build 0.92 s
+PROGRESS [format] 0.0 s started
+PROGRESS [release-surfaces] 0.0 s started
+PROGRESS [publication] 0.0 s started
+PROGRESS [docs-check] 0.0 s started
+PASS publication 0.19 s
+PROGRESS [index] 0.0 s started
+PASS release-surfaces 2.07 s
+PROGRESS [lineage] 0.0 s started
+PASS lineage 0.07 s
+PASS index 1.94 s
+PROGRESS [authority-evidence] 0.0 s started
+PROGRESS [harness] 0.0 s started
+PASS harness 0.23 s
+PROGRESS [harness-context] 0.0 s started
+PASS harness-context 0.19 s
+PROGRESS [harness-evidence] 0.0 s started
+PASS authority-evidence 0.83 s
+PROGRESS [artifact-evidence] 0.0 s started
+PASS harness-evidence 0.49 s
+PROGRESS [verification-evidence] 0.0 s started
+PASS artifact-evidence 0.30 s
+PROGRESS [feedback-evidence] 0.0 s started
+PASS verification-evidence 1.50 s
+PROGRESS [meta] 0.0 s started
+FAIL format 5.66 s
+  [format] Checking formatting...
+  [format] [warn] scripts/test-host-guard.test.mjs
+  [format] [warn] Code style issues found in the above file. Run Prettier with --write to fix.
+FAIL entropy 0.00 s
+  [entropy] Required preflight or fixture preparation failed for entropy: format
+FAIL plan 0.00 s
+  [plan] Required preflight or fixture preparation failed for plan: format
+FAIL registrations 0.00 s
+  [registrations] Required preflight or fixture preparation failed for registrations: format
+FAIL plan-refutation-current 0.00 s
+  [plan-refutation-current] Required preflight or fixture preparation failed for plan-refutation-current: format
+FAIL console-docs 0.00 s
+  [console-docs] Required preflight or fixture preparation failed for console-docs: format
+FAIL skeleton-docs 0.00 s
+  [skeleton-docs] Required preflight or fixture preparation failed for skeleton-docs: format
+FAIL kernel-docs 0.00 s
+  [kernel-docs] Required preflight or fixture preparation failed for kernel-docs: format
+FAIL lineage-fixtures 0.00 s
+  [lineage-fixtures] Required preflight or fixture preparation failed for lineage-fixtures: format
+FAIL docs-check-fixtures 0.00 s
+  [docs-check-fixtures] Required preflight or fixture preparation failed for docs-check-fixtures: format
+PASS feedback-evidence 3.01 s
+PASS meta 1.74 s
+PASS docs-check 12.67 s
+introduced format against 53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b
+unknown entropy against 53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b: current check did not complete an ordinary execution
+unknown plan against 53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b: current check did not complete an ordinary execution
+unknown registrations against 53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b: current check did not complete an ordinary execution
+unknown plan-refutation-current against 53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b: current check did not complete an ordinary execution
+unknown console-docs against 53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b: current check did not complete an ordinary execution
+unknown skeleton-docs against 53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b: current check did not complete an ordinary execution
+unknown kernel-docs against 53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b: current check did not complete an ordinary execution
+unknown lineage-fixtures against 53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b: current check did not complete an ordinary execution
+unknown docs-check-fixtures against 53fc6eb8362cfdb76eb55f8bac9c2be3b5573e0b: current check did not complete an ordinary execution
+npm run test:docs: 14 passed; 10 failed; 23.54 s; 15 fresh tasks
+
+
+RUN 3
+
+> test:docs
+> node scripts/test-runner.mjs --document
+
+PROGRESS [build] 0.0 s started
+PASS build 0.82 s
+PROGRESS [format] 0.0 s started
+PROGRESS [release-surfaces] 0.0 s started
+PROGRESS [publication] 0.0 s started
+PROGRESS [docs-check] 0.0 s started
+PASS publication 0.18 s
+PROGRESS [index] 0.0 s started
+PASS release-surfaces 2.03 s
+PROGRESS [lineage] 0.0 s started
+PASS lineage 0.06 s
+PROGRESS [authority-evidence] 0.0 s started
+PASS index 1.93 s
+PROGRESS [harness] 0.0 s started
+PASS harness 0.24 s
+PROGRESS [harness-context] 0.0 s started
+PASS harness-context 0.17 s
+PROGRESS [harness-evidence] 0.0 s started
+PASS authority-evidence 0.83 s
+PROGRESS [artifact-evidence] 0.0 s started
+PASS harness-evidence 0.47 s
+PROGRESS [verification-evidence] 0.0 s started
+PASS artifact-evidence 0.29 s
+PROGRESS [feedback-evidence] 0.0 s started
+PASS verification-evidence 1.56 s
+PROGRESS [meta] 0.0 s started
+PASS format 5.99 s
+PASS feedback-evidence 3.17 s
+PASS meta 1.83 s
+PASS docs-check 12.95 s
+PROGRESS [docs-check-fixtures] 0.0 s started
+PROGRESS [lineage-fixtures] 0.0 s started
+PROGRESS [kernel-docs] 0.0 s started
+PROGRESS [skeleton-docs] 0.0 s started
+PROGRESS [kernel-docs] 0.1 s # Subtest: packages/kernel/dist/test/ac1-purity.test.js
+PROGRESS [skeleton-docs] 0.1 s # Subtest: packages/skeleton/dist/test/artifact-identity.test.js
+PROGRESS [lineage-fixtures] 0.5 s # Subtest: index counts lead memberships, wrapped labels and prose-only/reference sections
+PASS lineage-fixtures 0.56 s
+PROGRESS [console-docs] 0.0 s started
+PASS kernel-docs 0.91 s
+PROGRESS [plan-refutation-current] 0.0 s started
+PASS plan-refutation-current 2.88 s
+PROGRESS [registrations] 0.0 s started
+PROGRESS [docs-check-fixtures] 4.3 s # Subtest: WO-178 attributed operator words advise by record, with capture and fingerprinted baseline exceptions
+PASS docs-check-fixtures 4.31 s
+PROGRESS [plan] 0.0 s started
+PASS registrations 0.66 s
+PROGRESS [entropy] 0.0 s started
+PASS entropy 0.30 s
+PROGRESS [skeleton-docs] 6.0 s # Subtest: [document] WO-180 AC1: named base failure precedes the repaired candidate and survives replay
+PASS plan 3.11 s
+PROGRESS [console-docs] 9.1 s # Subtest: [document] WO-174 console fixture generator checks the current lazy exports
+PROGRESS [skeleton-docs] 10.5 s # Subtest: [document] WO-011 selfhost executes the real repository audit, recovers its saved result, and independently verifies once
+PROGRESS [console-docs] 14.7 s # Subtest: [document] WO-115 a bound resident serves terminal bytes and events under the terminal's compiled authority, refuses in terminal shape and replays its receipts
+PROGRESS [console-docs] 18.6 s # Subtest: [document] WO-115 the compiled envelope admits or refuses each command by the terminal classifier's effect, through the terminal hooks' decider
+PROGRESS [skeleton-docs] 20.0 s # Subtest: [document] WO-181 AC1: independent review finds planted naming and scope defects without changing snapshot or behavior rows
+PROGRESS [skeleton-docs] 23.0 s # Subtest: [document] WO-010 AC4/5 dotln status exposes stale evidence mid-workstream and is read-only
+PROGRESS [skeleton-docs] 25.3 s # Subtest: [document] WO-009 AC1/4 one process replaces only the executor; status is read-only and replay is identical
+PASS skeleton-docs 25.35 s
+PROGRESS [console-docs] 26.4 s # Subtest: [document] WO-115 every contract command keeps its terminal parser, refusal bytes and events over loopback
+PROGRESS [console-docs] 29.7 s # Subtest: [document] WO-116 the served audit command returns the terminal's bytes for each store and selection, the text host shows the three labeled projections, and the resident's own store audits
+PASS console-docs 29.71 s
+npm run test:docs: 24 passed; 0 failed; 44.26 s; 24 fresh tasks
+
+
+RUN 4
+
+> test:docs
+> node scripts/test-runner.mjs --document
+
+PROGRESS [build] 0.0 s started
+PASS build 0.75 s
+PROGRESS [release-surfaces] 0.0 s started
+PROGRESS [format] 0.0 s started
+PROGRESS [docs-check] 0.0 s started
+PROGRESS [publication] 0.0 s started
+PASS publication 0.18 s
+PROGRESS [index] 0.0 s started
+PASS release-surfaces 1.99 s
+PROGRESS [lineage] 0.0 s started
+PASS lineage 0.07 s
+PROGRESS [authority-evidence] 0.0 s started
+PASS index 1.95 s
+PROGRESS [harness] 0.0 s started
+PASS harness 0.23 s
+PROGRESS [harness-context] 0.0 s started
+PASS harness-context 0.17 s
+PROGRESS [harness-evidence] 0.0 s started
+PASS authority-evidence 0.82 s
+PROGRESS [artifact-evidence] 0.0 s started
+PASS harness-evidence 0.48 s
+PROGRESS [verification-evidence] 0.0 s started
+PASS artifact-evidence 0.28 s
+PROGRESS [feedback-evidence] 0.0 s started
+PASS verification-evidence 1.50 s
+PROGRESS [meta] 0.0 s started
+PASS format 5.67 s
+PASS feedback-evidence 3.02 s
+PASS meta 1.73 s
+PASS docs-check 12.80 s
+PROGRESS [docs-check-fixtures] 0.0 s started
+PROGRESS [lineage-fixtures] 0.0 s started
+PROGRESS [kernel-docs] 0.0 s started
+PROGRESS [skeleton-docs] 0.0 s started
+PROGRESS [kernel-docs] 0.1 s # Subtest: packages/kernel/dist/test/ac1-purity.test.js
+PROGRESS [skeleton-docs] 0.1 s # Subtest: packages/skeleton/dist/test/artifact-identity.test.js
+PROGRESS [lineage-fixtures] 0.5 s # Subtest: index counts lead memberships, wrapped labels and prose-only/reference sections
+PASS lineage-fixtures 0.57 s
+PROGRESS [console-docs] 0.0 s started
+PASS kernel-docs 0.93 s
+PROGRESS [plan-refutation-current] 0.0 s started
+PASS plan-refutation-current 2.73 s
+PROGRESS [registrations] 0.0 s started
+PROGRESS [docs-check-fixtures] 4.0 s # Subtest: WO-178 attributed operator words advise by record, with capture and fingerprinted baseline exceptions
+PASS docs-check-fixtures 4.02 s
+PROGRESS [plan] 0.0 s started
+PASS registrations 0.61 s
+PROGRESS [entropy] 0.0 s started
+PASS entropy 0.30 s
+PROGRESS [console-docs] 5.1 s # Subtest: [document] WO-174 console fixture generator checks the current lazy exports
+PROGRESS [skeleton-docs] 5.8 s # Subtest: [document] WO-180 AC1: named base failure precedes the repaired candidate and survives replay
+PASS plan 3.00 s
+PROGRESS [skeleton-docs] 9.8 s # Subtest: [document] WO-011 selfhost executes the real repository audit, recovers its saved result, and independently verifies once
+PROGRESS [skeleton-docs] 11.0 s # Subtest: [document] WO-068 fresh CLI once and presence commands; SIGKILL recovery and dead-owner reclaim
+PROGRESS [console-docs] 14.0 s # Subtest: [document] WO-115 a bound resident serves terminal bytes and events under the terminal's compiled authority, refuses in terminal shape and replays its receipts
+PROGRESS [console-docs] 17.9 s # Subtest: [document] WO-115 the compiled envelope admits or refuses each command by the terminal classifier's effect, through the terminal hooks' decider
+PROGRESS [skeleton-docs] 19.4 s # Subtest: [document] WO-181 AC1: independent review finds planted naming and scope defects without changing snapshot or behavior rows
+PROGRESS [skeleton-docs] 22.9 s # Subtest: [document] WO-010 AC4/5 dotln status exposes stale evidence mid-workstream and is read-only
+PROGRESS [skeleton-docs] 25.1 s # Subtest: [document] WO-009 AC1/4 one process replaces only the executor; status is read-only and replay is identical
+PASS skeleton-docs 25.13 s
+PROGRESS [console-docs] 25.5 s # Subtest: [document] WO-115 every contract command keeps its terminal parser, refusal bytes and events over loopback
+PROGRESS [console-docs] 28.7 s # Subtest: [document] WO-116 the served audit command returns the terminal's bytes for each store and selection, the text host shows the three labeled projections, and the resident's own store audits
+PASS console-docs 28.70 s
+npm run test:docs: 24 passed; 0 failed; 43.02 s; 24 fresh tasks
+
+Run 5 (16:01:13.278Z) passed 24/24 with 24 fresh tasks after the final write-backs, at the same code identity.
+
+RUN 5
+
+> test:docs
+> node scripts/test-runner.mjs --document
+
+PROGRESS [build] 0.0 s started
+PASS build 0.63 s
+PROGRESS [format] 0.0 s started
+PROGRESS [release-surfaces] 0.0 s started
+PROGRESS [publication] 0.0 s started
+PROGRESS [docs-check] 0.0 s started
+PASS publication 0.16 s
+PROGRESS [index] 0.0 s started
+PASS release-surfaces 1.84 s
+PROGRESS [lineage] 0.0 s started
+PASS lineage 0.07 s
+PROGRESS [authority-evidence] 0.0 s started
+PASS index 1.83 s
+PROGRESS [harness] 0.0 s started
+PASS harness 0.21 s
+PROGRESS [harness-context] 0.0 s started
+PASS harness-context 0.16 s
+PROGRESS [harness-evidence] 0.0 s started
+PASS authority-evidence 0.78 s
+PROGRESS [artifact-evidence] 0.0 s started
+PASS harness-evidence 0.44 s
+PROGRESS [verification-evidence] 0.0 s started
+PASS artifact-evidence 0.27 s
+PROGRESS [feedback-evidence] 0.0 s started
+PASS verification-evidence 1.26 s
+PROGRESS [meta] 0.0 s started
+PASS format 5.40 s
+PASS meta 1.68 s
+PASS feedback-evidence 2.96 s
+PASS docs-check 12.17 s
+PROGRESS [docs-check-fixtures] 0.0 s started
+PROGRESS [lineage-fixtures] 0.0 s started
+PROGRESS [kernel-docs] 0.0 s started
+PROGRESS [skeleton-docs] 0.0 s started
+PROGRESS [kernel-docs] 0.1 s # Subtest: packages/kernel/dist/test/ac1-purity.test.js
+PROGRESS [skeleton-docs] 0.1 s # Subtest: packages/skeleton/dist/test/artifact-identity.test.js
+PROGRESS [lineage-fixtures] 0.5 s # Subtest: index counts lead memberships, wrapped labels and prose-only/reference sections
+PASS lineage-fixtures 0.53 s
+PROGRESS [console-docs] 0.0 s started
+PASS kernel-docs 0.86 s
+PROGRESS [plan-refutation-current] 0.0 s started
+PROGRESS [docs-check-fixtures] 3.2 s # Subtest: WO-178 attributed operator words advise by record, with capture and fingerprinted baseline exceptions
+PASS docs-check-fixtures 3.25 s
+PROGRESS [registrations] 0.0 s started
+PASS plan-refutation-current 2.63 s
+PROGRESS [plan] 0.0 s started
+PASS registrations 0.57 s
+PROGRESS [entropy] 0.0 s started
+PASS entropy 0.26 s
+PROGRESS [skeleton-docs] 4.9 s # Subtest: [document] WO-180 AC1: named base failure precedes the repaired candidate and survives replay
+PROGRESS [console-docs] 5.1 s # Subtest: [document] WO-174 console fixture generator checks the current lazy exports
+PASS plan 2.87 s
+PROGRESS [skeleton-docs] 9.2 s # Subtest: [document] WO-011 selfhost executes the real repository audit, recovers its saved result, and independently verifies once
+PROGRESS [console-docs] 12.5 s # Subtest: [document] WO-115 a bound resident serves terminal bytes and events under the terminal's compiled authority, refuses in terminal shape and replays its receipts
+PROGRESS [console-docs] 16.1 s # Subtest: [document] WO-115 the compiled envelope admits or refuses each command by the terminal classifier's effect, through the terminal hooks' decider
+PROGRESS [skeleton-docs] 17.4 s # Subtest: [document] WO-181 AC1: independent review finds planted naming and scope defects without changing snapshot or behavior rows
+PROGRESS [skeleton-docs] 20.3 s # Subtest: [document] WO-010 AC4/5 dotln status exposes stale evidence mid-workstream and is read-only
+PROGRESS [skeleton-docs] 22.0 s # Subtest: [document] WO-009 AC1/4 one process replaces only the executor; status is read-only and replay is identical
+PASS skeleton-docs 21.97 s
+PROGRESS [console-docs] 22.8 s # Subtest: [document] WO-115 every contract command keeps its terminal parser, refusal bytes and events over loopback
+PROGRESS [console-docs] 25.6 s # Subtest: [document] WO-116 the served audit command returns the terminal's bytes for each store and selection, the text host shows the three labeled projections, and the resident's own store audits
+PASS console-docs 25.60 s
+npm run test:docs: 24 passed; 0 failed; 39.11 s; 24 fresh tasks
+

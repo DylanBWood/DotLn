@@ -1,0 +1,35 @@
+{
+  "command": "node scripts/harness.mjs bounded --budget-bytes 805306368 -- node --test <session-scratch>/drift/corpus/harness/wo102-<name>.test.mjs",
+  "budgetBytes": 805306368,
+  "codeIdentity": "579433dde7cd11c418432590ac0d527e310ee5b7044e26099b3e13d70bc6a2b0",
+  "host": {
+    "platform": "darwin",
+    "release": "27.0.0",
+    "architecture": "arm64",
+    "physicalBytes": 51539607552
+  },
+  "mutation": "Backoff rngState: next changed to rngState: env.rngState in a scratch kernel",
+  "runs": [
+    {
+      "name": "properties",
+      "exitCode": 1,
+      "durationMs": 3162,
+      "peakFootprintBytes": 255524928,
+      "summary": "findings total=126792; kept=32; digest=5ff785148829df9845c7982664ab143d3364c080e1e0f4ebbe32841ad60a1359"
+    },
+    {
+      "name": "generators",
+      "exitCode": 1,
+      "durationMs": 4209,
+      "peakFootprintBytes": 347794296,
+      "summary": "findings total=126792; kept=32; digest=5ff785148829df9845c7982664ab143d3364c080e1e0f4ebbe32841ad60a1359"
+    },
+    {
+      "name": "replay",
+      "exitCode": 1,
+      "durationMs": 2695,
+      "peakFootprintBytes": 250461384,
+      "summary": "findings total=126792; kept=32; digest=5ff785148829df9845c7982664ab143d3364c080e1e0f4ebbe32841ad60a1359"
+    }
+  ]
+}

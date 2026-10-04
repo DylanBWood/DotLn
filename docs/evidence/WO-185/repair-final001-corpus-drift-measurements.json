@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "codeIdentity": "85cce5d52bf2d7309145878f6574ee3896c54eba582ffe864c69a2bba47be1cc",
+  "host": {
+    "platform": "darwin",
+    "release": "27.0.0",
+    "architecture": "arm64",
+    "physicalBytes": 51539607552
+  },
+  "source": "current copied corpus and kernel; sequential real bounded CLI results",
+  "startedAt": "2026-10-03T19:29:18.250Z",
+  "finishedAt": "2026-10-03T19:29:28.648Z",
+  "budgetBytes": 805306368,
+  "mutation": "Scratch Backoff RNG result changed from next to env.rngState; production kernel unchanged",
+  "runs": [
+    {
+      "name": "properties",
+      "command": "node scripts/harness.mjs bounded --budget-bytes 805306368 -- node --test <session-scratch>/final001-drift/corpus/harness/wo102-properties.test.mjs",
+      "exitCode": 1,
+      "durationMs": 3147,
+      "peakFootprintBytes": 262144976,
+      "summary": "findings total=126792; kept=32; digest=5ff785148829df9845c7982664ab143d3364c080e1e0f4ebbe32841ad60a1359"
+    },
+    {
+      "name": "generators",
+      "command": "node scripts/harness.mjs bounded --budget-bytes 805306368 -- node --test <session-scratch>/final001-drift/corpus/harness/wo102-generators.test.mjs",
+      "exitCode": 1,
+      "durationMs": 4207,
+      "peakFootprintBytes": 268847736,
+      "summary": "findings total=126792; kept=32; digest=5ff785148829df9845c7982664ab143d3364c080e1e0f4ebbe32841ad60a1359"
+    },
+    {
+      "name": "replay",
+      "command": "node scripts/harness.mjs bounded --budget-bytes 805306368 -- node --test <session-scratch>/final001-drift/corpus/harness/wo102-replay.test.mjs",
+      "exitCode": 1,
+      "durationMs": 2663,
+      "peakFootprintBytes": 235156808,
+      "summary": "findings total=126792; kept=32; digest=5ff785148829df9845c7982664ab143d3364c080e1e0f4ebbe32841ad60a1359"
+    }
+  ]
+}

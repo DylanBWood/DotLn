@@ -1465,6 +1465,47 @@ claim evidence or releases it does not have.
 
 ## Discipline
 
+- **Host resources (WO-185).** Dispatch registers the verified agent ancestor
+  with one detached guard per user, shared across clones and exported instances
+  through the operating system's per-user temporary root. The runner, guard and
+  `node scripts/harness.mjs bounded -- <command>` use physical footprint budgets
+  from `docs/control/budgets.json`: a task gets one quarter of physical RAM, a
+  gate one half, and all attributed DotLn trees two thirds. Breaches kill the
+  offending process groups before writing typed `memory-budget` incidents.
+  Ledger and membership-publication failures are reported without preventing
+  the stop or its task/gate result. Bare stops name the largest member and retain
+  the group identity and cleanup attempts. `plan failures` counts a stopped
+  PID/birth identity once across guard and runner incidents, separately from
+  failed gate rows; historical incidents without that identity count as rows.
+  macOS reads its footprint ledger, including nonresident memory; unavailable
+  signals are named and readable signals remain active. The runner records
+  sampled task and gate peaks, bounds output, retains failure diagnostics and
+  stops its task groups on interrupt, termination and hang-up without recording
+  a gate row. Every gate shares four weighted host lanes; nested gates
+  suballocate the parent reservation validated at gate entry and waits name the
+  holders. Swap growth triggers a footprint census relative to the last such
+  census, so past growth alone does not force a lifetime of fast sampling.
+  Signal ticks are one second and steady footprint censuses four seconds;
+  startup, pressure and swap growth take earlier censuses. At the recorded
+  3.4 GiB/s growth rate those intervals allow nominal growth of 3.4 and
+  13.6 GiB respectively, plus census and cleanup latency (WO-185 D026).
+  Run probes under the bounded wrapper, one process at a time. The wrapper
+  preserves argv, the caller's environment, working directory and ordinary exit
+  status, with the existing 900-second deadline and bounded output tail; a
+  memory-budget stop exits 125. On the measured
+  macOS host, original-parent identities and inherited output-socket identities
+  retain ownership through detached descendants, including unsampled double
+  forks. The kernel recycles a freed socket's identity and descriptor number,
+  so a runner or bounded wrapper publishes a descriptor watch only while it
+  holds the captured endpoint open, and withdraws the watch from its monitor
+  and registration before releasing that endpoint; the guard keeps a census's
+  descriptor matches only for registrations still present after it. The
+  census reads no process environments, arguments or file paths.
+  A process that loses every descriptor mark before any observed ancestry edge,
+  or an unwrapped bare tree with such an edge missing, can still escape polling.
+  WO-185 records this limit; supervision is not absolute containment. Test
+  commands attribute incidents to disposable fixture repositories.
+
 - **Outward artifacts (WO-063).** The [pure lint and stdin CLI](../evidence/WO-063/implementation.md) check conventional commit subjects, PR titles and branch names plus the configured public vocabulary and redacted local-term check, report absent local coverage as `unavailable`, and leave publication integration to WO-064.
 
 - **Compose adjacent repair with decision evidence.** The executor/fixer

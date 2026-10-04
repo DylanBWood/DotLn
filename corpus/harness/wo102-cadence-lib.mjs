@@ -3,6 +3,7 @@ import { isDeepStrictEqual } from "node:util";
 import { fileURLToPath } from "node:url";
 import { evaluateCadence } from "../../packages/kernel/dist/src/index.js";
 import { referenceDraw, referenceEvaluate } from "./wo102-reference.mjs";
+import { findingsCollector } from "./bounded-findings.mjs";
 
 export const REPO_ROOT = fileURLToPath(new URL("../../", import.meta.url));
 export const RECORDED_SEED = "wo102-seed-20261001";
@@ -522,15 +523,21 @@ export function numberFindings(issues) {
   }));
 }
 export function inspectGrid(rows, evaluator = shipped) {
-  return numberFindings(rows.flatMap((row) => inspectRow(row, evaluator)));
+  const findings = findingsCollector({ numbered: true });
+  for (const row of rows)
+    for (const finding of inspectRow(row, evaluator)) findings.add(finding);
+  return findings.finish();
 }
 
 // Poison only the synchronous evaluator window, and always restore the host.
 // Ordinary shipped/reference drift and ambient dependence are separate records.
-export function inspectPurity(rows, evaluator = shipped) {
+export function inspectPurity(
+  rows,
+  evaluator = shipped,
+  collector = findingsCollector(),
+) {
   const originalNow = Date.now;
   const originalRandom = Math.random;
-  const issues = [];
   try {
     Date.now = () => {
       throw new Error("ambient Date.now consulted");
@@ -541,7 +548,7 @@ export function inspectPurity(rows, evaluator = shipped) {
     for (const row of rows) {
       const actual = evaluator(copy(row));
       if (!isDeepStrictEqual(actual, row.expected))
-        issues.push({
+        collector.add({
           type: "ambient-source-leakage",
           vectorId: row.id,
           vector: encodeNumbers(row),
@@ -553,11 +560,11 @@ export function inspectPurity(rows, evaluator = shipped) {
     Date.now = originalNow;
     Math.random = originalRandom;
   }
-  return issues;
+  return collector.finish();
 }
 export function inspectCorpus(rows, evaluator = shipped) {
-  return numberFindings([
-    ...rows.flatMap((row) => inspectRow(row, evaluator)),
-    ...inspectPurity(rows, evaluator),
-  ]);
+  const findings = findingsCollector({ numbered: true });
+  for (const row of rows)
+    for (const finding of inspectRow(row, evaluator)) findings.add(finding);
+  return inspectPurity(rows, evaluator, findings);
 }

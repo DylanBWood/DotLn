@@ -1,0 +1,699 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-185",
+  "repair": "FINAL-001; D023-D026",
+  "source": "fresh host gate row plus before/after shared guard snapshots",
+  "capturedAt": "2026-10-03T19:47:56.986Z",
+  "sourceGateRowSha256": "50f334ce65c7390344ecb8f28c2a46df55854a8beaffe15246b417c95bfc5302",
+  "host": {
+    "platform": "darwin",
+    "release": "27.0.0",
+    "architecture": "arm64",
+    "physicalBytes": 51539607552
+  },
+  "gate": {
+    "command": "npm test -- --review",
+    "codeIdentity": "85cce5d52bf2d7309145878f6574ee3896c54eba582ffe864c69a2bba47be1cc",
+    "currentCodeIdentity": "85cce5d52bf2d7309145878f6574ee3896c54eba582ffe864c69a2bba47be1cc",
+    "recordedAt": "2026-10-03T19:46:16.187Z",
+    "evidenceRef": "host-gate:85cce5d52bf2d7309145878f6574ee3896c54eba582ffe864c69a2bba47be1cc:npm test",
+    "durationMs": 823041,
+    "exitCode": 0,
+    "suites": 40,
+    "tasks": 85,
+    "freshTasks": 85,
+    "reusedTasks": 0,
+    "selectionMatchesReviewList": true,
+    "tasksWithPeak": 85
+  },
+  "peaks": {
+    "taskFootprintBytes": 1076933024,
+    "taskFootprintTask": "runner-fixtures",
+    "gateFootprintBytes": 1424571400,
+    "hostFootprintUpperBoundBytes": 1721155256,
+    "note": "All peaks are sampled. The host figure is the shared guard lifetime maximum, an upper bound on the gate-window maximum."
+  },
+  "budgets": {
+    "taskBytes": 12884901888,
+    "gateBytes": 25769803776,
+    "hostBytes": 34359738368
+  },
+  "budgetToPeakRatios": {
+    "task": 11.964441242726716,
+    "gate": 18.089513643191207,
+    "hostAtLeast": 19.963183593241165
+  },
+  "runner": {
+    "samples": 1075,
+    "footprintSamples": 572,
+    "samplingCostMs": 7630.093117002149,
+    "percentOfGateWall": 0.9270611205276711,
+    "unavailable": []
+  },
+  "guard": {
+    "pid": 65032,
+    "startedAt": "2026-10-03T15:38:25.098Z",
+    "before": {
+      "samples": 27657,
+      "footprintSamples": 6915,
+      "samplingCostMs": 164178.06900017266,
+      "peakFootprintBytes": 1721155256,
+      "incidents": 2,
+      "trackedRegistrations": 2,
+      "trackedProcesses": 8,
+      "observedAt": "2026-10-03T19:32:31.824Z",
+      "unavailable": []
+    },
+    "after": {
+      "samples": 29452,
+      "footprintSamples": 7363,
+      "samplingCostMs": 173282.86515712482,
+      "peakFootprintBytes": 1721155256,
+      "incidents": 2,
+      "trackedRegistrations": 2,
+      "trackedProcesses": 7,
+      "observedAt": "2026-10-03T19:47:56.606Z",
+      "unavailable": []
+    },
+    "samplingCostMs": 9104.796156952158,
+    "percentOfGateWall": 1.1062384689161484,
+    "incidentsInSnapshotWindow": 0,
+    "window": "2026-10-03T19:32:31.824Z to 2026-10-03T19:47:56.606Z; a conservative bound on sampler work during the gate, not causal slowdown.",
+    "codeQualification": "This shared guard predates FINAL-001 repair and keeps its starting code. Current guard behavior is exercised by the disposable fixture guards. The resettable swap helper has deterministic steady-tick coverage; this shared window does not benchmark that new guard code."
+  },
+  "basisInForce": {
+    "workOrder": "WO-185",
+    "source": "docs/evidence/WO-185/repair-final001-gate-initial-measurements.json; full npm test -- --review at 2026-10-03T19:17:49.624Z; above-threshold runner sampling directs D026 interval correction and current-identity recheck",
+    "codeIdentity": "bf5bdd3dbafb90b1b9dd25b4de74f82d34ab5d2e440d7d528d1ee70047e0eab0",
+    "physicalBytes": 51539607552,
+    "taskPeakFootprintBytes": 1100039120,
+    "gatePeakFootprintBytes": 1787537328,
+    "hostPeakFootprintBytes": 1721155256,
+    "runnerSamplingPercent": 2.5778002756795977,
+    "guardSamplingPercent": 1.0997731092970733
+  },
+  "deadlineHits": [
+    "skeleton",
+    "runner-fixtures",
+    "runner-fixtures",
+    "runner-fixtures"
+  ],
+  "tasks": [
+    {
+      "name": "build",
+      "durationMs": 631,
+      "peakFootprintBytes": 46517008,
+      "peakRssBytes": 99811328,
+      "exitCode": 0
+    },
+    {
+      "name": "harness",
+      "durationMs": 210,
+      "peakFootprintBytes": 36196960,
+      "peakRssBytes": 84377600,
+      "exitCode": 0
+    },
+    {
+      "name": "harness-evidence",
+      "durationMs": 431,
+      "peakFootprintBytes": 87218608,
+      "peakRssBytes": 135544832,
+      "exitCode": 0
+    },
+    {
+      "name": "authority-evidence",
+      "durationMs": 733,
+      "peakFootprintBytes": 117745456,
+      "peakRssBytes": 164495360,
+      "exitCode": 0
+    },
+    {
+      "name": "license-surfaces",
+      "durationMs": 1487,
+      "peakFootprintBytes": 83896832,
+      "peakRssBytes": 221609984,
+      "exitCode": 0
+    },
+    {
+      "name": "feedback-evidence",
+      "durationMs": 2690,
+      "peakFootprintBytes": 120383400,
+      "peakRssBytes": 239976448,
+      "exitCode": 0
+    },
+    {
+      "name": "harness-fixtures",
+      "durationMs": 291653,
+      "peakFootprintBytes": 343954824,
+      "peakRssBytes": 644579328,
+      "exitCode": 0
+    },
+    {
+      "name": "process-debt",
+      "durationMs": 100185,
+      "peakFootprintBytes": 678439944,
+      "peakRssBytes": 1036255232,
+      "exitCode": 0
+    },
+    {
+      "name": "release:prepare",
+      "durationMs": 771,
+      "peakFootprintBytes": 12699496,
+      "peakRssBytes": 56475648,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:preflight",
+      "durationMs": 125,
+      "peakFootprintBytes": 1327464,
+      "peakRssBytes": 1802240,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:surfaces",
+      "durationMs": 3649,
+      "peakFootprintBytes": 32149968,
+      "peakRssBytes": 91258880,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:surfaces_local_snapshot",
+      "durationMs": 923,
+      "peakFootprintBytes": 30019592,
+      "peakRssBytes": 80297984,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:prepare_independent",
+      "durationMs": 2352,
+      "peakFootprintBytes": 29954104,
+      "peakRssBytes": 83869696,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:license_surfaces",
+      "durationMs": 4394,
+      "peakFootprintBytes": 68330112,
+      "peakRssBytes": 172900352,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:surfaces_committed_readme",
+      "durationMs": 1309,
+      "peakFootprintBytes": 29937696,
+      "peakRssBytes": 79413248,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:surfaces_lower",
+      "durationMs": 963,
+      "peakFootprintBytes": 28577656,
+      "peakRssBytes": 78856192,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:surfaces_first",
+      "durationMs": 870,
+      "peakFootprintBytes": 50240136,
+      "peakRssBytes": 147046400,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:surfaces_component",
+      "durationMs": 1896,
+      "peakFootprintBytes": 31559784,
+      "peakRssBytes": 83787776,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:surfaces_non_source",
+      "durationMs": 851,
+      "peakFootprintBytes": 24365984,
+      "peakRssBytes": 73187328,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:surfaces_new_component",
+      "durationMs": 935,
+      "peakFootprintBytes": 24021872,
+      "peakRssBytes": 72876032,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:surfaceclose",
+      "durationMs": 2226,
+      "peakFootprintBytes": 33362360,
+      "peakRssBytes": 83607552,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:surfaceclose_linked",
+      "durationMs": 2553,
+      "peakFootprintBytes": 32051688,
+      "peakRssBytes": 82395136,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:bodyclose",
+      "durationMs": 1802,
+      "peakFootprintBytes": 33690232,
+      "peakRssBytes": 87670784,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:dirty",
+      "durationMs": 2791,
+      "peakFootprintBytes": 44618912,
+      "peakRssBytes": 108314624,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:unreachable",
+      "durationMs": 2623,
+      "peakFootprintBytes": 41112160,
+      "peakRssBytes": 94060544,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:derived",
+      "durationMs": 2706,
+      "peakFootprintBytes": 34640552,
+      "peakRssBytes": 87785472,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:settings_scope",
+      "durationMs": 2659,
+      "peakFootprintBytes": 49452672,
+      "peakRssBytes": 132579328,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:nonmain",
+      "durationMs": 1371,
+      "peakFootprintBytes": 24038280,
+      "peakRssBytes": 72876032,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:divergence",
+      "durationMs": 1143,
+      "peakFootprintBytes": 24398704,
+      "peakRssBytes": 73252864,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:malformed",
+      "durationMs": 868,
+      "peakFootprintBytes": 24464216,
+      "peakRssBytes": 73334784,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:missinggh",
+      "durationMs": 2259,
+      "peakFootprintBytes": 36229992,
+      "peakRssBytes": 115671040,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:unauthenticated",
+      "durationMs": 1533,
+      "peakFootprintBytes": 30838792,
+      "peakRssBytes": 80969728,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:splitorigin",
+      "durationMs": 862,
+      "peakFootprintBytes": 23939928,
+      "peakRssBytes": 72810496,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:lower",
+      "durationMs": 1449,
+      "peakFootprintBytes": 24087312,
+      "peakRssBytes": 73007104,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:failures",
+      "durationMs": 2342,
+      "peakFootprintBytes": 33345880,
+      "peakRssBytes": 84197376,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:cadence_missing",
+      "durationMs": 1826,
+      "peakFootprintBytes": 33608360,
+      "peakRssBytes": 89571328,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:cadence_inconsistent",
+      "durationMs": 3935,
+      "peakFootprintBytes": 32280896,
+      "peakRssBytes": 87441408,
+      "exitCode": 0
+    },
+    {
+      "name": "resume",
+      "durationMs": 56040,
+      "peakFootprintBytes": 72244568,
+      "peakRssBytes": 188776448,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:conflict",
+      "durationMs": 1928,
+      "peakFootprintBytes": 32149824,
+      "peakRssBytes": 87097344,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:localconflict",
+      "durationMs": 1492,
+      "peakFootprintBytes": 30265424,
+      "peakRssBytes": 80084992,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:nestedtag",
+      "durationMs": 1463,
+      "peakFootprintBytes": 33706616,
+      "peakRssBytes": 89014272,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:prepare",
+      "durationMs": 2329,
+      "peakFootprintBytes": 41701744,
+      "peakRssBytes": 93945856,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:missinglocalprevious",
+      "durationMs": 2328,
+      "peakFootprintBytes": 39981712,
+      "peakRssBytes": 92798976,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:pushfail",
+      "durationMs": 2469,
+      "peakFootprintBytes": 37245128,
+      "peakRssBytes": 89309184,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:refrecovery",
+      "durationMs": 3844,
+      "peakFootprintBytes": 39359312,
+      "peakRssBytes": 97353728,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:stale_helpers",
+      "durationMs": 7203,
+      "peakFootprintBytes": 35557456,
+      "peakRssBytes": 87408640,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:createrecovery",
+      "durationMs": 10282,
+      "peakFootprintBytes": 53663696,
+      "peakRssBytes": 138100736,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:runtime_refresh",
+      "durationMs": 13957,
+      "peakFootprintBytes": 60365760,
+      "peakRssBytes": 159629312,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:success",
+      "durationMs": 16847,
+      "peakFootprintBytes": 59399080,
+      "peakRssBytes": 158892032,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:edition",
+      "durationMs": 6465,
+      "peakFootprintBytes": 64659088,
+      "peakRssBytes": 167641088,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:firstrelease",
+      "durationMs": 3392,
+      "peakFootprintBytes": 38490864,
+      "peakRssBytes": 93896704,
+      "exitCode": 0
+    },
+    {
+      "name": "worktree",
+      "durationMs": 95796,
+      "peakFootprintBytes": 115243528,
+      "peakRssBytes": 300908544,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:cached_evidence",
+      "durationMs": 6809,
+      "peakFootprintBytes": 43290968,
+      "peakRssBytes": 95535104,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:composed_evidence",
+      "durationMs": 5884,
+      "peakFootprintBytes": 62971248,
+      "peakRssBytes": 168345600,
+      "exitCode": 0
+    },
+    {
+      "name": "release-preparation",
+      "durationMs": 2646,
+      "peakFootprintBytes": 42047032,
+      "peakRssBytes": 134545408,
+      "exitCode": 0
+    },
+    {
+      "name": "github-body",
+      "durationMs": 119,
+      "peakFootprintBytes": 1327464,
+      "peakRssBytes": 1802240,
+      "exitCode": 0
+    },
+    {
+      "name": "outward-lint",
+      "durationMs": 465,
+      "peakFootprintBytes": 38425928,
+      "peakRssBytes": 125878272,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:concurrent",
+      "durationMs": 16676,
+      "peakFootprintBytes": 65919624,
+      "peakRssBytes": 169213952,
+      "exitCode": 0
+    },
+    {
+      "name": "license-fixtures",
+      "durationMs": 8179,
+      "peakFootprintBytes": 88730520,
+      "peakRssBytes": 237092864,
+      "exitCode": 0
+    },
+    {
+      "name": "publication-fixtures",
+      "durationMs": 939,
+      "peakFootprintBytes": 3785400,
+      "peakRssBytes": 5144576,
+      "exitCode": 0
+    },
+    {
+      "name": "backup-intake",
+      "durationMs": 317,
+      "peakFootprintBytes": 5375080,
+      "peakRssBytes": 7487488,
+      "exitCode": 0
+    },
+    {
+      "name": "beacon-portability",
+      "durationMs": 1002,
+      "peakFootprintBytes": 46143392,
+      "peakRssBytes": 137740288,
+      "exitCode": 0
+    },
+    {
+      "name": "checkpoint",
+      "durationMs": 7378,
+      "peakFootprintBytes": 22891616,
+      "peakRssBytes": 71450624,
+      "exitCode": 0
+    },
+    {
+      "name": "release:case:material",
+      "durationMs": 76379,
+      "peakFootprintBytes": 67673816,
+      "peakRssBytes": 170967040,
+      "exitCode": 0
+    },
+    {
+      "name": "work-orders-fixtures",
+      "durationMs": 21380,
+      "peakFootprintBytes": 62611400,
+      "peakRssBytes": 165101568,
+      "exitCode": 0
+    },
+    {
+      "name": "console",
+      "durationMs": 17627,
+      "peakFootprintBytes": 179492488,
+      "peakRssBytes": 376651776,
+      "exitCode": 0
+    },
+    {
+      "name": "adjacent-queue",
+      "durationMs": 457,
+      "peakFootprintBytes": 41653888,
+      "peakRssBytes": 133431296,
+      "exitCode": 0
+    },
+    {
+      "name": "resident-bind",
+      "durationMs": 9671,
+      "peakFootprintBytes": 86699288,
+      "peakRssBytes": 227557376,
+      "exitCode": 0
+    },
+    {
+      "name": "derived-orders",
+      "durationMs": 7548,
+      "peakFootprintBytes": 122994912,
+      "peakRssBytes": 314245120,
+      "exitCode": 0
+    },
+    {
+      "name": "target-publish",
+      "durationMs": 141307,
+      "peakFootprintBytes": 141789064,
+      "peakRssBytes": 314736640,
+      "exitCode": 0
+    },
+    {
+      "name": "codex-continuation",
+      "durationMs": 5546,
+      "peakFootprintBytes": 75540248,
+      "peakRssBytes": 211730432,
+      "exitCode": 0
+    },
+    {
+      "name": "authority-grants",
+      "durationMs": 151,
+      "peakFootprintBytes": 47733144,
+      "peakRssBytes": 138674176,
+      "exitCode": 0
+    },
+    {
+      "name": "portfolio",
+      "durationMs": 20309,
+      "peakFootprintBytes": 131596344,
+      "peakRssBytes": 274268160,
+      "exitCode": 0
+    },
+    {
+      "name": "artifact-corpus",
+      "durationMs": 193,
+      "peakFootprintBytes": 58497840,
+      "peakRssBytes": 150863872,
+      "exitCode": 0
+    },
+    {
+      "name": "local-runner-double",
+      "durationMs": 3716,
+      "peakFootprintBytes": 65313080,
+      "peakRssBytes": 160907264,
+      "exitCode": 0
+    },
+    {
+      "name": "configuration-root",
+      "durationMs": 4491,
+      "peakFootprintBytes": 98906976,
+      "peakRssBytes": 291520512,
+      "exitCode": 0
+    },
+    {
+      "name": "harness-probe",
+      "durationMs": 64194,
+      "peakFootprintBytes": 167910536,
+      "peakRssBytes": 333840384,
+      "exitCode": 0
+    },
+    {
+      "name": "plan-refutation",
+      "durationMs": 61591,
+      "peakFootprintBytes": 395166328,
+      "peakRssBytes": 438927360,
+      "exitCode": 0
+    },
+    {
+      "name": "registrations",
+      "durationMs": 558,
+      "peakFootprintBytes": 202470768,
+      "peakRssBytes": 243974144,
+      "exitCode": 0
+    },
+    {
+      "name": "skeleton",
+      "durationMs": 345150,
+      "peakFootprintBytes": 514657320,
+      "peakRssBytes": 702038016,
+      "exitCode": 0
+    },
+    {
+      "name": "kernel",
+      "durationMs": 450,
+      "peakFootprintBytes": 62234496,
+      "peakRssBytes": 190431232,
+      "exitCode": 0
+    },
+    {
+      "name": "compiler",
+      "durationMs": 874,
+      "peakFootprintBytes": 82029440,
+      "peakRssBytes": 226181120,
+      "exitCode": 0
+    },
+    {
+      "name": "browser-evidence",
+      "durationMs": 17696,
+      "peakFootprintBytes": 255090856,
+      "peakRssBytes": 574767104,
+      "exitCode": 0
+    },
+    {
+      "name": "runner-fixtures",
+      "durationMs": 66593,
+      "peakFootprintBytes": 1076933024,
+      "peakRssBytes": 1272561664,
+      "exitCode": 0
+    },
+    {
+      "name": "worktree-integration",
+      "durationMs": 297100,
+      "peakFootprintBytes": 559229464,
+      "peakRssBytes": 796082176,
+      "exitCode": 0
+    }
+  ],
+  "requiresIntervalReview": false
+}

@@ -1,0 +1,273 @@
+{
+  "host": {
+    "platform": "darwin",
+    "kernel": "27.0.0",
+    "architecture": "arm64",
+    "physicalBytes": 51539607552
+  },
+  "limits": {
+    "taskShare": 0.25,
+    "gateShare": 0.5,
+    "hostShare": 0.6666666666666666,
+    "signalIntervalMs": 50,
+    "footprintIntervalMs": 100,
+    "outputTailBytes": 1048576,
+    "hostLanes": 4,
+    "physicalBytes": 51539607552,
+    "taskBytes": 805306368,
+    "gateBytes": 25769803776,
+    "hostBytes": 34359738368
+  },
+  "summaries": [
+    {
+      "variant": "control",
+      "file": "wo102-properties.test.mjs",
+      "name": "control:wo102-properties.test.mjs",
+      "durationMs": 1751,
+      "peakFootprintBytes": 266651272,
+      "peakRssBytes": 339296256,
+      "memoryBudgetBytes": 805306368,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-02T15:55:22.555Z",
+      "finishedAt": "2026-10-02T15:55:24.306Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "variant": "control",
+      "file": "wo102-generators.test.mjs",
+      "name": "control:wo102-generators.test.mjs",
+      "durationMs": 5478,
+      "peakFootprintBytes": 492823384,
+      "peakRssBytes": 578535424,
+      "memoryBudgetBytes": 805306368,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-02T15:55:24.306Z",
+      "finishedAt": "2026-10-02T15:55:29.784Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "variant": "control",
+      "file": "wo102-replay.test.mjs",
+      "name": "control:wo102-replay.test.mjs",
+      "durationMs": 1202,
+      "peakFootprintBytes": 246562064,
+      "peakRssBytes": 320929792,
+      "memoryBudgetBytes": 805306368,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-02T15:55:29.784Z",
+      "finishedAt": "2026-10-02T15:55:30.986Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "variant": "drift",
+      "file": "wo102-properties.test.mjs",
+      "name": "drift:wo102-properties.test.mjs",
+      "durationMs": 2151,
+      "peakFootprintBytes": 267601064,
+      "peakRssBytes": 340639744,
+      "memoryBudgetBytes": 805306368,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-02T15:55:31.001Z",
+      "finishedAt": "2026-10-02T15:55:33.152Z",
+      "exitCode": 1,
+      "executed": true
+    },
+    {
+      "variant": "drift",
+      "file": "wo102-generators.test.mjs",
+      "name": "drift:wo102-generators.test.mjs",
+      "durationMs": 2357,
+      "peakFootprintBytes": 254869256,
+      "peakRssBytes": 360153088,
+      "memoryBudgetBytes": 805306368,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-02T15:55:33.152Z",
+      "finishedAt": "2026-10-02T15:55:35.509Z",
+      "exitCode": 1,
+      "executed": true
+    },
+    {
+      "variant": "drift",
+      "file": "wo102-replay.test.mjs",
+      "name": "drift:wo102-replay.test.mjs",
+      "durationMs": 1636,
+      "peakFootprintBytes": 255656264,
+      "peakRssBytes": 329318400,
+      "memoryBudgetBytes": 805306368,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-02T15:55:35.509Z",
+      "finishedAt": "2026-10-02T15:55:37.145Z",
+      "exitCode": 1,
+      "executed": true
+    }
+  ],
+  "confirmation": {
+    "command": "node scripts/harness.mjs bounded --budget-bytes 805306368 -- node <scratch>/drift/confirmation.mjs",
+    "name": "legacy-confirmation",
+    "durationMs": 3610,
+    "peakFootprintBytes": 875107688,
+    "peakRssBytes": 880459776,
+    "memoryBudgetBytes": 805306368,
+    "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+    "memoryFailure": {
+      "failureKind": "memory-budget",
+      "scope": "task",
+      "task": "legacy-confirmation",
+      "repo": "<session-scratch>/wo185-corpus/drift",
+      "pid": 73097,
+      "process": "node",
+      "budgetBytes": 805306368,
+      "measuredPeakFootprintBytes": 875107688,
+      "residentBytesAtStop": 880459776,
+      "source": "proc_pid_rusage.ri_phys_footprint"
+    },
+    "droppedOutputBytes": 0,
+    "failureKind": "memory-budget",
+    "startedAt": "2026-10-02T15:55:37.145Z",
+    "finishedAt": "2026-10-02T15:55:40.755Z",
+    "exitCode": 1,
+    "executed": true,
+    "output": "Debugger listening on <temporary inspector endpoint omitted>\nFor help, see: https://nodejs.org/learn/getting-started/debugging\nPROGRESS legacy-ready total=126792\nDebugger attached.\nPROGRESS assertion-start\n\nmemory-budget {\"failureKind\":\"memory-budget\",\"scope\":\"task\",\"task\":\"legacy-confirmation\",\"repo\":\"<session-scratch>/wo185-corpus/drift\",\"pid\":73097,\"process\":\"node\",\"budgetBytes\":805306368,\"measuredPeakFootprintBytes\":875107688,\"residentBytesAtStop\":880459776,\"source\":\"proc_pid_rusage.ri_phys_footprint\"}",
+    "sampledStack": [
+      {
+        "function": "strEscape",
+        "script": "<fixture-or-runtime>",
+        "line": 810
+      },
+      {
+        "function": "formatPrimitive",
+        "script": "<fixture-or-runtime>",
+        "line": 2254
+      },
+      {
+        "function": "formatValue",
+        "script": "<fixture-or-runtime>",
+        "line": 1106
+      },
+      {
+        "function": "formatProperty",
+        "script": "<fixture-or-runtime>",
+        "line": 2555
+      },
+      {
+        "function": "formatArray",
+        "script": "<fixture-or-runtime>",
+        "line": 2369
+      },
+      {
+        "function": "formatRaw",
+        "script": "<fixture-or-runtime>",
+        "line": 1425
+      },
+      {
+        "function": "formatValue",
+        "script": "<fixture-or-runtime>",
+        "line": 1188
+      },
+      {
+        "function": "formatProperty",
+        "script": "<fixture-or-runtime>",
+        "line": 2555
+      },
+      {
+        "function": "formatRaw",
+        "script": "<fixture-or-runtime>",
+        "line": 1441
+      },
+      {
+        "function": "formatValue",
+        "script": "<fixture-or-runtime>",
+        "line": 1188
+      },
+      {
+        "function": "formatProperty",
+        "script": "<fixture-or-runtime>",
+        "line": 2555
+      },
+      {
+        "function": "formatRaw",
+        "script": "<fixture-or-runtime>",
+        "line": 1441
+      },
+      {
+        "function": "formatValue",
+        "script": "<fixture-or-runtime>",
+        "line": 1188
+      },
+      {
+        "function": "formatProperty",
+        "script": "<fixture-or-runtime>",
+        "line": 2555
+      },
+      {
+        "function": "formatArray",
+        "script": "<fixture-or-runtime>",
+        "line": 2369
+      },
+      {
+        "function": "formatRaw",
+        "script": "<fixture-or-runtime>",
+        "line": 1425
+      },
+      {
+        "function": "formatValue",
+        "script": "<fixture-or-runtime>",
+        "line": 1188
+      },
+      {
+        "function": "inspect",
+        "script": "<fixture-or-runtime>",
+        "line": 407
+      },
+      {
+        "function": "inspectValue",
+        "script": "<fixture-or-runtime>",
+        "line": 75
+      },
+      {
+        "function": "createErrDiff",
+        "script": "<fixture-or-runtime>",
+        "line": 190
+      },
+      {
+        "function": "AssertionError",
+        "script": "<fixture-or-runtime>",
+        "line": 291
+      },
+      {
+        "function": "innerFail",
+        "script": "<fixture-or-runtime>",
+        "line": 142
+      },
+      {
+        "function": "deepStrictEqual",
+        "script": "<fixture-or-runtime>",
+        "line": 311
+      },
+      {
+        "function": "<anonymous>",
+        "script": "<fixture-or-runtime>",
+        "line": 9
+      },
+      {
+        "function": "listOnTimeout",
+        "script": "<fixture-or-runtime>",
+        "line": 685
+      },
+      {
+        "function": "processTimers",
+        "script": "<fixture-or-runtime>",
+        "line": 618
+      }
+    ]
+  }
+}

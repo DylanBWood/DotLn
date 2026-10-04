@@ -1,0 +1,17 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+WO-185 gate-budget-failed-row {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"memory":{"samples":24,"footprintSamples":13,"samplingCostMs":83.066708,"peakFootprintBytes":107864176,"peakRssBytes":209305600,"source":"proc_pid_rusage.ri_phys_footprint","unavailable":[],"failure":{"failureKind":"memory-budget","scope":"gate","pid":92805,"repo":"<fixture-root>/repo","budgetBytes":104857600,"measuredPeakFootprintBytes":107864176,"source":"proc_pid_rusage.ri_phys_footprint"},"budgets":{"taskShare":0.005208333333333333,"gateShare":0.0020345052083333335,"hostShare":0.6666666666666666,"signalIntervalMs":50,"footprintIntervalMs":100,"outputTailBytes":1048576,"hostLanes":4,"physicalBytes":51539607552,"taskBytes":268435456,"gateBytes":104857600,"hostBytes":34359738368}},"localMemoryStops":{"source":"local","counted":"typed memory stops in this checkout's ignored incident ledger; counted only, separate from failed gate rows","stops":1,"byScope":{"gate":1}}}
+✔ WO-185 a gate memory breach records a typed failed row rather than an operator stop (3800.194541ms)
+WO-185 kernel-lock-recovery {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"killedOwnerReleased":true,"peakHolders":1}
+✔ WO-185 kernel locks release a killed owner and serialize racing waiters (424.875125ms)
+WO-185 guard-owner-exit {"host":{"platform":"darwin","release":"27.0.0","architecture":"arm64","physicalBytes":51539607552},"retired":true}
+✔ WO-185 a guard retires after its registered owner exits without treating itself as a survivor (4029.372875ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8323.91475
+bounded-result {"name":"bounded-probe","durationMs":8373,"peakFootprintBytes":77096800,"peakRssBytes":214220800,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-02T16:03:05.647Z","finishedAt":"2026-10-02T16:03:14.020Z","exitCode":0,"executed":true}
