@@ -193,12 +193,14 @@ export async function observedFactsReport(root, state, output) {
   }
 }
 
-export function refreshHarnessRuntime(root, build) {
+export function refreshHarnessRuntime(
+  root,
+  build,
+  write = (text) => process.stdout.write(text),
+) {
   const cause = harnessRuntimeCause(root);
   if (!cause) return false;
-  process.stdout.write(
-    `Refreshing pinned runtime (${cause}); npm run build.\n`,
-  );
+  write(`Refreshing pinned runtime (${cause}); npm run build.\n`);
   build();
   const remaining = harnessRuntimeCause(root);
   if (remaining)

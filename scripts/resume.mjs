@@ -20,7 +20,12 @@ import {
   currentHarnessSessionReport,
   observedFactsReport,
 } from "./lib/harness-runtime.mjs";
-import { mainWorktree, runGit, shellQuote } from "./lib/git.mjs";
+import {
+  mainWorktree,
+  releaseCloseCommand,
+  runGit,
+  shellQuote,
+} from "./lib/git.mjs";
 import {
   projectActor,
   renderAttestation,
@@ -2033,7 +2038,7 @@ const run = async (argv) => {
       if (inMain) await reserveCodexDispatch();
       // Main's copy of the helper is the reviewed one once the order is merged,
       // and it survives the removal of the subject worktree the helper performs.
-      const helper = `${shellQuote(process.execPath)} ${shellQuote(join(mainPath, "scripts/release.mjs"))} close ${state.workOrderId} --publish`;
+      const helper = releaseCloseCommand(mainPath, state.workOrderId);
       const egress =
         "The helper needs network egress to the GitHub host for fetch, ls-remote, the tag push and the Release: run it in an authorized session with egress and host approval. --dry-run previews reachability and the publication manifest.";
       message = inMain

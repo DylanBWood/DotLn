@@ -386,8 +386,28 @@ assert_no_candidate_tag() {
   if git --git-dir="$bare" show-ref --verify --quiet "refs/tags/$tag"; then printf 'error: refusal left remote %s\n' "$tag" >&2; exit 1; fi
 }
 
-release_close() {
+release_close_summary() {
   (cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$main/scripts/release.mjs" close "$@")
+}
+
+retained_close_output() {
+  "$node_bin" - "$main" "$1" <<'JS'
+const fs = require('node:fs'), p = require('node:path');
+const report = process.argv[3].match(/^Full report: (.+)$/m)?.[1];
+if (report && fs.existsSync(p.join(process.argv[2], report)) && fs.statSync(p.join(process.argv[2], report)).isFile())
+  process.stdout.write(fs.readFileSync(p.join(process.argv[2], report), 'utf8'));
+else process.stdout.write(process.argv[3] + '\n');
+JS
+}
+
+release_close() {
+  # Existing detailed assertions consume the retained report. The WO-195
+  # summary cases below call the real stdout surface separately.
+  local result=0
+  local summary
+  summary="$(release_close_summary "$@")" || result=$?
+  retained_close_output "$summary"
+  return "$result"
 }
 
 seed_release_close_writer() {
@@ -749,10 +769,20 @@ JS
 # Closing reports the deliberately retained writer; check-surfaces does not.
 # Preserve equality for the whole report, including that one known advisory.
 expected_close_output="$(printf 'Advisory: retained ignored material: docs/control/local/harness/writer.json, docs/control/local/retained/WO-099/release-close.json\n%s' "$surface_failure_output")"
-if [[ "$close_surface_output" != "$expected_close_output" ]]; then
-  diff -u <(printf '%s\n' "$expected_close_output") <(printf '%s\n' "$close_surface_output") >&2
+close_surface_normalized="$(printf '%s' "$close_surface_output" | "$node_bin" -e 'process.stdout.write(require("node:fs").readFileSync(0,"utf8").replace(/, docs\/control\/local\/retained\/WO-099\/release-close-[0-9T-]+Z\.txt/g,""))')"
+if [[ "$close_surface_normalized" != "$expected_close_output" ]]; then
+  diff -u <(printf '%s\n' "$expected_close_output") <(printf '%s\n' "$close_surface_normalized") >&2
   exit 1
 fi
+if summary="$(release_close_summary WO-099 --publish)"; then
+  printf 'error: summary close accepted a stale release block\n' >&2; exit 1
+fi
+grep -Fq 'FAIL release-block: observed v0.2.0; expected exactly one v0.2.1' <<<"$summary"
+helper_node="$("$node_bin" -p 'process.execPath')"
+if ! grep -Fq "Retry: '$helper_node' '$main/scripts/release.mjs' close WO-099 --publish" <<<"$summary"; then
+  printf 'error: refusal summary lacks the canonical helper retry\n%s\n' "$summary" >&2; exit 1
+fi
+grep -Fq 'Full report:' <<<"$summary"
 }
 
 release_case_surfaceclose_linked() {
@@ -861,13 +891,17 @@ grep -Fq "Derived worktree $derived_clean: would remove" <<<"$derived_preview"
 grep -Fq "Derived worktree $derived_dirty: kept (uncommitted changes)" <<<"$derived_preview"
 test -d "$derived_clean"
 derived_output="$(CODEX_THREAD_ID=fixture-close-session release_close WO-099 --publish)"
-test ! -e "$main/docs/control/local/harness/writer.json"
+# A retained dirty derivative is a cleanup blocker, so the dispatch's writer
+# remains until a later retry observes completed cleanup.
+test -f "$main/docs/control/local/harness/writer.json"
 grep -Fq "Derived worktree $derived_clean: removed" <<<"$derived_output"
 grep -Fq "Derived worktree $derived_dirty: kept (uncommitted changes)" <<<"$derived_output"
 grep -Fq 'below latest release v0.2.0' <<<"$derived_output"
 test ! -e "$derived_clean"
 test -f "$derived_dirty/notes.txt"
 git -C "$main" worktree remove --force "$derived_dirty" >/dev/null
+CODEX_THREAD_ID=fixture-close-session release_close WO-099 --publish >/dev/null
+test ! -e "$main/docs/control/local/harness/writer.json"
 printf 'release close settled derived worktrees without a subject worktree\n'
 }
 
@@ -1074,7 +1108,8 @@ commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
 prepare_output="$(release_close WO-099)"
 grep -Fq 'Prepared and validated v0.2.1' <<<"$prepare_output"
-grep -Fq 'npm run release -- close WO-099 --publish' <<<"$prepare_output"
+helper_node="$("$node_bin" -p 'process.execPath')"
+grep -Fq "'$helper_node' '$main/scripts/release.mjs' close WO-099 --publish" <<<"$prepare_output"
 assert_no_candidate_tag "$main" "$origin"
 test "$(git -C "$main" status --porcelain)" = ""
 }
@@ -1204,6 +1239,7 @@ mkdir -p "$main/.claude" "$stale_subject/docs/intake/dist"
 printf 'persistent operator settings\n' >"$main/.claude/settings.local.json"
 printf 'protected staged intake\n' >"$stale_subject/docs/intake/dist/x.md"
 stale_intake_output="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" DOTLN_STALE_RELEASE_MARKER="$stale_release_marker" DOTLN_STALE_WORKTREE_MARKER="$stale_worktree_marker" "$node_bin" "$stale_subject/scripts/release.mjs" close WO-099 --dry-run 2>&1)"
+stale_intake_output="$(retained_close_output "$stale_intake_output")"
 grep -Fq 'docs/intake/dist/x.md' <<<"$stale_intake_output"
 test -f "$main/.claude/settings.local.json"
 test -f "$stale_subject/docs/intake/dist/x.md"
@@ -1213,6 +1249,7 @@ test ! -e "$stale_release_marker"
 test ! -e "$stale_worktree_marker"
 test ! -e "$main/docs/intake/dist/x.md"
 stale_close_output="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" DOTLN_STALE_RELEASE_MARKER="$stale_release_marker" DOTLN_STALE_WORKTREE_MARKER="$stale_worktree_marker" "$node_bin" "$stale_subject/scripts/release.mjs" close WO-099)"
+stale_close_output="$(retained_close_output "$stale_close_output")"
 grep -Fq 'Prepared and validated v0.2.1' <<<"$stale_close_output"
 test -d "$stale_subject"
 test ! -e "$main/docs/intake/dist/x.md"
@@ -1232,9 +1269,9 @@ printf 'reviewed subject helpers preview before fast-forward; cleanup follows pu
 
 release_case_runtime_refresh() {
 # Every scenario fast-forwards the actual main checkout; no external network.
-for scenario in close-changed close-matching finish-changed finish-matching finish-snapshot finish-failed; do
+for scenario in close-changed close-matching close-lower close-lower-snapshot finish-changed finish-matching finish-snapshot finish-failed; do
   make_repo "runtime-$scenario"
-  if [[ "$scenario" == *matching || "$scenario" == finish-snapshot ]]; then
+  if [[ "$scenario" == *matching || "$scenario" == *snapshot ]]; then
     runtime_before='console.log("fixture skeleton bootstrap");'
   else
     runtime_before='console.log("old fixture runtime");'
@@ -1266,7 +1303,11 @@ NODE
   subject="$fixture/project-wo099"
   git -C "$main" worktree add "$subject" -b wo-099 >/dev/null
   runtime_pin "$subject" 'console.log("fixture skeleton bootstrap");' no
-  commit_candidate "$subject" WO-099 v0.2.1
+  if [[ "$scenario" == close-lower* ]]; then
+    commit_candidate "$subject" WO-099 v0.0.2 v0.2.0
+  else
+    commit_candidate "$subject" WO-099 v0.2.1
+  fi
   git -C "$subject" push -u origin wo-099 >/dev/null 2>&1
   git clone -c maintenance.auto=false "$origin" "$fixture/integrator" >"$fixture/integrator-clone.log" 2>&1 || {
     cat "$fixture/integrator-clone.log" >&2
@@ -1279,11 +1320,23 @@ NODE
     # Old metadata would fail the cadence projection; the rebuilt runtime must win.
     cp "$main/packages/kernel/test-fixtures/runtime-inconsistent-evaluable.mjs" "$main/packages/kernel/dist/src/index.js"
   fi
-  if [[ "$scenario" == finish-snapshot ]]; then
+  if [[ "$scenario" == *snapshot ]]; then
     "$node_bin" -e 'require("node:fs").rmSync(process.argv[1],{recursive:true,force:true})' "$main/.runtime/harness"
   fi
   runtime_started="$($node_bin -e 'process.stdout.write(String(Date.now()))')"
-  if [[ "$scenario" == close-* ]]; then
+  if [[ "$scenario" == close-lower* ]]; then
+    summary="$(release_close_summary WO-099 --publish)"
+    printf '%s\n' "$summary" >"$fixture/summary.log"
+    retained_close_output "$summary" >"$fixture/refresh.log"
+    if grep -Fq 'Refreshing pinned runtime' "$fixture/summary.log"; then
+      printf 'WO-195 refresh announcement escaped the retained report\n' >&2; return 1
+    fi
+    grep -Fq 'Refreshing pinned runtime' "$fixture/refresh.log"
+    grep -Fq 'no-release' "$fixture/summary.log"
+    grep -Fq 'Full report:' "$fixture/summary.log"
+    printf 'WO-195 no-release summary bytes %s=%s\n' "$scenario" "$(printf '%s' "$summary" | wc -c | tr -d ' ')"
+    assert_no_candidate_tag "$main" "$origin" v0.0.2
+  elif [[ "$scenario" == close-* ]]; then
     release_close WO-099 --publish >"$fixture/refresh.log"
     test -f "$gh_state/v0.2.1.body"
   elif [[ "$scenario" == finish-failed ]]; then
@@ -1309,7 +1362,7 @@ const root=process.argv[2];
 const {harnessRuntimeCause}=await import(pathToFileURL(root+"/scripts/lib/harness-runtime.mjs"));
 assert.equal(harnessRuntimeCause(root),null);
 NODE
-  if [[ "$scenario" == *changed || "$scenario" == finish-snapshot ]]; then
+  if [[ "$scenario" == *changed || "$scenario" == *snapshot || "$scenario" == close-lower ]]; then
     test "$(grep -c '^build$' "$npm_log")" = 1
   else
     test ! -s "$npm_log"
@@ -1367,6 +1420,7 @@ preview_head="$(git -C "$main" rev-parse HEAD)"
 preview_npm="$(wc -l <"$npm_log")"
 preview_gh="$(wc -l <"$gh_log")"
 preview_output="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$subject/scripts/release.mjs" close WO-099 --publish --dry-run)"
+preview_output="$(retained_close_output "$preview_output")"
 grep -Fq 'collision.md.from-WO-099' <<<"$preview_output"
 test "$(git -C "$main" rev-parse HEAD)" = "$preview_head"
 test "$(wc -l <"$npm_log")" -eq "$((preview_npm + 1))"
@@ -1380,6 +1434,7 @@ test -f "$subject/docs/intake/new.md"
 # reviewed helper from the subject while its working directory is main. The
 # helper may remove the worktree containing its own loaded source.
 success_output="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$subject/scripts/release.mjs" close WO-099 --publish)"
+success_output="$(retained_close_output "$success_output")"
 grep -Fq 'Published annotated v0.2.1' <<<"$success_output"
 grep -Fxq 'retained main terms' "$main/docs/control/local/terms.txt"
 grep -Fxq 'main original' "$main/docs/intake/collision.md"
@@ -1816,6 +1871,8 @@ if (["lane", "disposable"].includes(mode)) {
 JS
   if [[ "$mode" == unknown* ]]; then
     test -d "$nested"
+    printf '%s\n' "$output" >"$fixture/material-output.txt"
+    CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" "$script_dir/test-close-admission.mjs" "$main" WO-099 "$fixture/material-output.txt" "$record"
     # A new unfiled subject declaration cannot silently change the committed word.
     (cd "$subject" && CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" scripts/worktree.mjs material "$material_path" --disposable --reason 'unfiled local word')
     retry_blocked="$(release_close WO-099 --publish)"
@@ -1977,6 +2034,307 @@ done
 printf 'record I/O preserves publication outcome and original errors\n'
 }
 
+
+release_case_close_completion() {
+make_repo close_completion
+subject="$fixture/project-wo099"
+git -C "$main" worktree add "$subject" -b wo-099 main >/dev/null
+mkdir -p "$subject/.runtime/kept" "$subject/.runtime/snapshots/deep" "$fixture/outside"
+printf 'preserved fixture bytes\n' >"$subject/.runtime/kept/saved.txt"
+git -C "$subject/.runtime/kept" init -q
+git -C "$subject/.runtime/kept" add .
+git -C "$subject/.runtime/kept" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'preserved fixture'
+(cd "$subject" && CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" scripts/worktree.mjs material .runtime/kept --preserve --reason 'fixture preservation')
+printf 'sealed disposable snapshot\n' >"$subject/.runtime/snapshots/deep/snapshot.txt"
+ln -s "$fixture/outside" "$subject/.runtime/outside-link"
+DOTLN_FIXTURE_MATERIAL_SOURCE="$subject" commit_candidate "$subject" WO-099 v0.2.1
+git -C "$subject" push origin HEAD:main >/dev/null 2>&1
+chmod 500 "$subject/.runtime/snapshots/deep" "$fixture/outside"
+preview="$(release_close_summary WO-099 --dry-run)"
+if [[ "$selected_case" != close_sealed ]] && ! grep -Fq 'Branch wo-099: would-delete' <<<"$preview"; then
+  chmod 700 "$subject/.runtime/snapshots/deep" "$fixture/outside"
+  printf 'WO-195 branch deletion preview missing\n' >&2; return 1
+fi
+test -d "$subject"
+if [[ "$selected_case" != close_sealed ]]; then
+prepared="$(release_close_summary WO-099)"
+printf '%s\n' "$prepared" >"$fixture/prepared-output.txt"
+CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" "$script_dir/test-close-admission.mjs" "$main" WO-099 "$fixture/prepared-output.txt"
+fi
+output="$(release_close_summary WO-099 --publish)"
+# Undo the fixture's external seal only after measuring the no-follow result.
+external_mode="$($node_bin -e 'console.log((require("node:fs").statSync(process.argv[1]).mode & 511).toString(8))' "$fixture/outside")"
+chmod 700 "$fixture/outside"
+if [[ -d "$subject/.runtime/snapshots/deep" ]]; then chmod 700 "$subject/.runtime/snapshots/deep"; fi
+test "$external_mode" = 500
+if [[ -e "$subject" ]]; then printf 'WO-195 subject directory remains after sealed removal\n' >&2; return 1; fi
+test -z "$(git -C "$main" branch --list wo-099)"
+record="$main/docs/control/local/retained/WO-099/release-close.json"
+"$node_bin" - "$record" "$main" "$output" "$preview" <<'JS'
+const assert=require('node:assert/strict'),fs=require('node:fs'),p=require('node:path');
+const record=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+assert.equal(record.cleanup.outcome,'clean');
+assert.equal(record.cleanup.worktrees[0].outcome,'removed');
+assert.equal(record.cleanup.branch.outcome,'deleted');
+const proof=JSON.parse(fs.readFileSync(p.join(process.argv[3],record.cleanup.subject.preservationReceipt),'utf8'));
+assert.ok(proof.preserved.some(row=>row.path.endsWith('saved.txt') && fs.readFileSync(p.join(process.argv[3],row.path),'utf8')==='preserved fixture bytes\n'));
+const full=fs.readFileSync(p.join(process.argv[3],record.reportPath),'utf8');
+assert.match(full,/Worktree removal proof:/);
+for(const text of process.argv.slice(4)) {assert.match(text,/Full report:/);assert.ok(Buffer.byteLength(text)<16384);}
+console.log('WO-195 summary bytes publish='+Buffer.byteLength(process.argv[4])+' dry-run='+Buffer.byteLength(process.argv[5]));
+JS
+retry="$(release_close_summary WO-099 --publish)"
+grep -Fq 'already-published' <<<"$retry"
+grep -Fq 'Full report:' <<<"$retry"
+printf 'WO-195 summary bytes retry=%s\n' "$(printf '%s' "$retry" | wc -c | tr -d ' ')"
+(cd "$main" && CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" scripts/resume.mjs release-close --work-order WO-099) >"$fixture/briefing-output.txt"
+CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" "$script_dir/test-close-admission.mjs" "$main" WO-099 "$fixture/briefing-output.txt"
+}
+
+release_case_close_sealed() {
+release_case_close_completion
+}
+
+release_case_close_leftover() {
+for subject_kind in primary derivative; do
+for proof_mode in valid corrupt missing; do
+make_repo "close_leftover_${subject_kind}_$proof_mode"
+primary="$fixture/project-wo099"
+git -C "$main" worktree add "$primary" -b wo-099 main >/dev/null
+commit_candidate "$primary" WO-099 v0.2.1
+git -C "$primary" push origin HEAD:main >/dev/null 2>&1
+subject="$primary"
+if [[ "$subject_kind" == derivative ]]; then
+  subject="$fixture/runtime-wo099-derivative"
+  git -C "$main" worktree add --detach "$subject" wo-099 >/dev/null
+fi
+mkdir -p "$subject/docs/intake"
+printf 'original preserved intake\n' >"$subject/docs/intake/kept.md"
+beacon_dir="$subject/.control-beacons/restricted/$(printf '%064d' 0)"
+mkdir -p "$beacon_dir"
+printf 'disposable beacon\n' >"$beacon_dir/signal"
+chmod 111 "$beacon_dir"
+# The child Git fixture models partial removal: administration has gone but
+# source remains. Corrupt a destination to keep the first recovery blocked.
+cp "$bin/git" "$bin/git-original"
+cat >"$bin/git" <<'SH'
+#!/usr/bin/env bash
+set -euo pipefail
+if [[ "${DOTLN_FIXTURE_UNREGISTER:-}" == 1 && "${3:-}" == worktree && "${4:-}" == remove && "${@: -1}" == "${DOTLN_FIXTURE_UNREGISTER_TARGET:-}" ]]; then
+  subject="${@: -1}"
+  node - "$2" "$subject" <<'JS'
+const fs=require('node:fs'),p=require('node:path');
+const main=process.argv[2],subject=process.argv[3],lane=p.join(main,'docs/control/local/retained/WO-099');
+const name=fs.existsSync(lane) ? fs.readdirSync(lane).find(n=>n.startsWith('worktree-removal-') && JSON.parse(fs.readFileSync(p.join(lane,n),'utf8')).subject===subject) : null;
+if(name) {
+ const proof=JSON.parse(fs.readFileSync(p.join(lane,name),'utf8'));
+ const saved=p.join(main,proof.preserved.find(row=>row.path.endsWith('kept.md')).path);
+ fs.writeFileSync(p.join(p.dirname(main),'destination-before-corruption'),fs.readFileSync(saved));
+ fs.writeFileSync(p.join(p.dirname(main),'corrupted-destination-path'),saved);
+ fs.appendFileSync(saved,'fixture corruption\n');
+}
+const admin=fs.readFileSync(p.join(subject,'.git'),'utf8').trim().slice('gitdir: '.length);
+if(!admin.startsWith(main+ '/.git/worktrees/')) throw new Error('fixture administrative path escaped');
+fs.rmSync(admin,{recursive:true});
+JS
+  printf 'fixture partial worktree removal\n' >&2; exit 9
+fi
+exec "$(dirname "$0")/git-original" "$@"
+SH
+chmod +x "$bin/git"
+output="$(DOTLN_FIXTURE_UNREGISTER=1 DOTLN_FIXTURE_UNREGISTER_TARGET="$subject" release_close_summary WO-099 --publish)"
+record="$main/docs/control/local/retained/WO-099/release-close.json"
+printf '%s\n' "$output" >"$fixture/blocker-output.txt"
+"$node_bin" - "$record" "$subject" <<'JS'
+const assert=require('node:assert/strict'),fs=require('node:fs');
+const record=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+assert.ok(fs.existsSync(process.argv[3]));
+assert.equal(record.cleanup.outcome,'blocked');
+assert.equal(record.cleanup.worktrees.find(row=>row.path===process.argv[3]).outcome,'retained');
+assert.ok(record.blockers.some(row=>row.action==='leftover' && row.reason.includes(process.argv[3])));
+JS
+CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" "$script_dir/test-close-admission.mjs" "$main" WO-099 "$fixture/blocker-output.txt" "$record"
+# Restore the saved bytes before varying only the recorded proof.
+if [[ -f "$fixture/corrupted-destination-path" ]]; then
+  cp "$fixture/destination-before-corruption" "$(cat "$fixture/corrupted-destination-path")"
+fi
+"$node_bin" --input-type=module - "$main" "$subject" "$beacon_dir" <<'JS'
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {pathToFileURL} from 'node:url';
+const [main,subject,beacon]=process.argv.slice(2);
+const {verifyWorktreeRemoval}=await import(pathToFileURL(main+'/scripts/lib/worktree-removal.mjs'));
+try {
+ assert.equal(fs.statSync(beacon).mode & 0o777,0o111);
+ verifyWorktreeRemoval(main,subject,'WO-099');
+ assert.equal(fs.statSync(beacon).mode & 0o777,0o111,'verification restores surviving beacon permissions');
+} catch(error) {
+ fs.chmodSync(beacon,0o700); // Restore this synthetic fixture for its exit trap.
+ throw error;
+}
+JS
+if [[ "$proof_mode" != valid ]]; then
+ "$node_bin" - "$main" "$proof_mode" "$subject" <<'JS'
+const fs=require('node:fs'),p=require('node:path'),lane=p.join(process.argv[2],'docs/control/local/retained/WO-099');
+const file=p.join(lane,fs.readdirSync(lane).find(n=>n.startsWith('worktree-removal-') && JSON.parse(fs.readFileSync(p.join(lane,n),'utf8')).subject===process.argv[4]));
+if(process.argv[3]==='missing') fs.unlinkSync(file);
+else {const proof=JSON.parse(fs.readFileSync(file));proof.subject+='-different';fs.writeFileSync(file,JSON.stringify(proof));}
+JS
+fi
+retry="$(release_close_summary WO-099 --publish)"
+"$node_bin" - "$record" "$subject" "$proof_mode" <<'JS'
+const assert=require('node:assert/strict'),fs=require('node:fs');const record=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+assert.equal(fs.existsSync(process.argv[3]),process.argv[4]!=='valid');
+assert.equal(record.cleanup.outcome,process.argv[4]==='valid'?'clean':'blocked');
+if(process.argv[4]==='valid') assert.ok(['deleted','absent'].includes(record.cleanup.branch.outcome));
+else assert.ok(record.blockers.some(row=>row.action==='leftover'));
+JS
+if [[ "$proof_mode" == valid ]]; then test -z "$(git -C "$main" branch --list wo-099)"; fi
+if [[ -e "$beacon_dir" ]]; then
+  test "$("$node_bin" -e 'console.log((require("node:fs").statSync(process.argv[1]).mode & 511).toString(8))' "$beacon_dir")" = 111
+  chmod 700 "$beacon_dir"
+fi
+done
+done
+}
+
+release_case_close_retry_paths() {
+make_repo close_retry_paths
+# A whole-action settle failure must survive recovery of a different path.
+"$node_bin" - "$main/scripts/worktree.mjs" <<'JS'
+const fs=require('node:fs'),file=process.argv[2];
+fs.writeFileSync(file,fs.readFileSync(file,'utf8').replace('\n', '\nif (process.argv[2] === "settle" && process.env.DOTLN_FIXTURE_SETTLE_FAIL === "1") { process.stderr.write("fixture unrelated settle failure\\n"); process.exit(9); }\n'));
+JS
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+git -C "$main" branch wo-099
+first="$fixture/runtime-wo099-first"
+second="$fixture/runtime-wo099-second"
+completed="$fixture/completed-path"
+for subject in "$first" "$second" "$completed"; do
+  git -C "$main" worktree add --detach "$subject" main >/dev/null
+  "$node_bin" --input-type=module - "$main" "$subject" <<'JS'
+import {pathToFileURL} from 'node:url';
+const [main,subject]=process.argv.slice(2);
+const {recordWorktreeRemoval}=await import(pathToFileURL(main+'/scripts/lib/worktree-removal.mjs'));
+recordWorktreeRemoval(main,subject,{workOrder:'WO-099',files:[],directories:[]});
+JS
+done
+git -C "$main" worktree remove "$completed"
+git -C "$main" worktree add "$completed" -b unrelated main >/dev/null
+"$node_bin" - "$main" "$first" "$second" "$completed" <<'JS'
+const fs=require('node:fs'),p=require('node:path');
+const [main,first,second,completed]=process.argv.slice(2);
+for(const subject of [first,second]) {
+ const admin=fs.readFileSync(p.join(subject,'.git'),'utf8').trim().slice('gitdir: '.length);
+ if(!admin.startsWith(main+'/.git/worktrees/')) throw new Error('fixture admin path escaped');
+ fs.rmSync(admin,{recursive:true});
+}
+fs.writeFileSync(p.join(second,'changed.txt'),'unpreserved new bytes\n');
+fs.writeFileSync(p.join(main,'docs/control/local/retained/WO-099/release-close.json'),JSON.stringify({
+ previousAttempts:[{cleanup:{worktrees:[{path:completed,outcome:'retained'}]}}],
+ cleanup:{worktrees:[{path:completed,outcome:'removed'},{path:first,outcome:'retained'},{path:second,outcome:'retained'}]}
+}));
+JS
+output="$(DOTLN_FIXTURE_SETTLE_FAIL=1 release_close_summary WO-099 --publish)"
+record="$main/docs/control/local/retained/WO-099/release-close.json"
+"$node_bin" - "$record" "$first" "$second" "$completed" "$output" <<'JS'
+const assert=require('node:assert/strict'),fs=require('node:fs');
+const [file,first,second,completed,output]=process.argv.slice(2),record=JSON.parse(fs.readFileSync(file));
+assert.equal(fs.existsSync(first),false);
+assert.equal(fs.existsSync(second),true);
+assert.equal(record.cleanup.outcome,'blocked');
+assert.ok(record.blockers.some(row=>row.action==='settle' && !row.resolved && row.reason.includes('fixture unrelated settle failure')),'unrelated blocker survives removal of first leftover');
+assert.match(output,/fixture unrelated settle failure/);
+assert.equal(record.cleanup.worktrees.some(row=>row.path===completed),false,'latest removed outcome excludes older retained row and receipt');
+for(const row of record.cleanup.worktrees.filter(row=>row.outcome==='retained'))
+ assert.ok(row.blockers.length && row.blockers.every(blocker=>blocker.reason && blocker.command));
+JS
+# Reusing a path after its recorded removal must not enroll the new branch.
+git -C "$main" worktree add "$first" -b reused main >/dev/null
+rm "$second/changed.txt"
+retry="$(release_close_summary WO-099 --publish)"
+"$node_bin" - "$record" "$first" "$second" "$completed" <<'JS'
+const assert=require('node:assert/strict'),fs=require('node:fs');
+const [file,first,second,completed]=process.argv.slice(2),record=JSON.parse(fs.readFileSync(file));
+assert.equal(record.cleanup.outcome,'clean');
+assert.equal(fs.existsSync(second),false);
+assert.equal(fs.existsSync(first),true);
+assert.equal(fs.existsSync(completed),true);
+assert.equal(record.cleanup.worktrees.some(row=>[first,completed].includes(row.path)),false);
+JS
+}
+
+release_case_close_receipt_recovery() {
+for history in missing unreadable preview; do
+make_repo "close_receipt_recovery_$history"
+subject="$fixture/project-wo099"
+git -C "$main" worktree add "$subject" -b wo-099 main >/dev/null
+commit_candidate "$subject" WO-099 v0.2.1
+git -C "$subject" push origin HEAD:main >/dev/null 2>&1
+mkdir -p "$subject/docs/intake"
+printf 'receipt recovery bytes\n' >"$subject/docs/intake/kept.md"
+if [[ "$history" == preview ]]; then
+  release_close_summary WO-099 --dry-run >"$fixture/preview.log"
+fi
+cp "$bin/git" "$bin/git-original"
+cat >"$bin/git" <<'SH'
+#!/usr/bin/env bash
+set -euo pipefail
+if [[ "${DOTLN_FIXTURE_UNREGISTER:-}" == 1 && "${3:-}" == worktree && "${4:-}" == remove ]]; then
+  node - "$2" "${@: -1}" <<'JS'
+const fs=require('node:fs'),p=require('node:path'),main=process.argv[2],subject=process.argv[3];
+const admin=fs.readFileSync(p.join(subject,'.git'),'utf8').trim().slice('gitdir: '.length);
+if(!admin.startsWith(main+'/.git/worktrees/')) throw new Error('fixture admin path escaped');
+fs.rmSync(admin,{recursive:true});
+JS
+  printf 'fixture partial removal outside release close\n' >&2; exit 9
+fi
+exec "$(dirname "$0")/git-original" "$@"
+SH
+chmod +x "$bin/git"
+if (cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_FIXTURE_UNREGISTER=1 "$node_bin" scripts/worktree.mjs finish WO-099 >"$fixture/finish.log" 2>&1); then
+  printf 'fixture partial removal unexpectedly succeeded\n' >&2; return 1
+fi
+record="$main/docs/control/local/retained/WO-099/release-close.json"
+if [[ "$history" != preview ]]; then test ! -e "$record"; fi
+if [[ "$history" == unreadable ]]; then printf '{unreadable fixture close record\n' >"$record"; fi
+"$node_bin" - "$main" "$subject" "$fixture" <<'JS'
+const fs=require('node:fs'),p=require('node:path'),[main,subject,fixture]=process.argv.slice(2),lane=p.join(main,'docs/control/local/retained/WO-099');
+const file=fs.readdirSync(lane).find(name=>name.startsWith('worktree-removal-'));
+const proof=JSON.parse(fs.readFileSync(p.join(lane,file),'utf8'));
+if(proof.subject!==subject) throw new Error('fixture proof subject differs');
+const saved=p.join(main,proof.preserved.find(row=>row.path.endsWith('kept.md')).path);
+fs.writeFileSync(p.join(fixture,'saved-path'),saved);
+fs.writeFileSync(p.join(fixture,'saved-bytes'),fs.readFileSync(saved));
+fs.appendFileSync(saved,'fixture corruption\n');
+JS
+output="$(release_close_summary WO-099 --publish)"
+"$node_bin" - "$record" "$subject" "$output" "$history" <<'JS'
+const assert=require('node:assert/strict'),fs=require('node:fs'),[file,subject,output,history]=process.argv.slice(2),record=JSON.parse(fs.readFileSync(file));
+assert.equal(record.cleanup.outcome,'blocked');
+assert.equal(record.cleanup.branch.outcome,'retained','receipt-bound leftover keeps the branch without readable close history');
+assert.equal(record.cleanup.worktrees.find(row=>row.path===subject)?.outcome,'retained');
+assert.ok(record.blockers.some(row=>row.path===subject && row.reason && row.command));
+assert.ok(output.includes(subject));
+if(history==='unreadable') assert.ok(record.previousAttempts.some(row=>row.unreadableRecord));
+JS
+test -n "$(git -C "$main" branch --list wo-099)"
+# Discovery must keep its uncertain subject binding through a still-blocked retry.
+retry_blocked="$(release_close_summary WO-099 --publish)"
+grep -Fq 'Branch wo-099: retained' <<<"$retry_blocked"
+test -n "$(git -C "$main" branch --list wo-099)"
+cp "$fixture/saved-bytes" "$(cat "$fixture/saved-path")"
+retry="$(release_close_summary WO-099 --publish)"
+test ! -e "$subject"
+test -z "$(git -C "$main" branch --list wo-099)"
+"$node_bin" - "$record" <<'JS'
+const assert=require('node:assert/strict'),record=JSON.parse(require('node:fs').readFileSync(process.argv[2]));
+assert.equal(record.cleanup.outcome,'clean');
+assert.equal(record.cleanup.branch.outcome,'deleted');
+JS
+done
+}
 
 if [[ -n "$prepare_template" ]]; then
   if [[ -n "$release_template" || -n "$selected_case" ]]; then exit 64; fi

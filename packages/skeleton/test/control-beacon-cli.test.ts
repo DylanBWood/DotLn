@@ -64,7 +64,11 @@ test("WO-021 agent constellation CLI persists permission/refusal and one metadat
     "dir",
   );
   mkdirSync(join(root, "packages/skeleton/src"));
-  for (const name of ["gate-deadlines.mjs", "gate-evidence.mjs"])
+  for (const name of [
+    "gate-deadlines.mjs",
+    "gate-evidence.mjs",
+    "writer-teardown.mjs",
+  ])
     cpSync(
       join(repository, "packages/skeleton/src", name),
       join(root, "packages/skeleton/src", name),
@@ -136,6 +140,7 @@ test("WO-021 agent constellation CLI persists permission/refusal and one metadat
     assert.match(
       denied.stdout,
       /sweep refused; CommandRefused recorded; no beacon metadata read/,
+      denied.stderr,
     );
     const events = decodeLog(
       readFileSync(join(root, "docs/observations/denied.jsonl"), "utf8"),

@@ -87,7 +87,7 @@
           {
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/session.mjs\"",
-            "timeout": 15
+            "timeout": 600
           },
           {
             "type": "command",

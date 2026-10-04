@@ -62,9 +62,14 @@ export function withWriterRegistration(root, operation) {
  * @template T
  * @param {string} root
  * @param {() => T} operation
+ * @param {{requireGit?: boolean}} [options]
  * @returns {T}
  */
-export function withWriterReservationLock(root, operation) {
+export function withWriterReservationLock(
+  root,
+  operation,
+  { requireGit = true } = {},
+) {
   const { physical, lock, registrations } = transitionPaths(root);
   try {
     mkdirSync(lock, { mode: 0o700 });
@@ -79,7 +84,9 @@ export function withWriterReservationLock(root, operation) {
         `writer registration in progress at ${registrations} (or lease requires inspection)`,
       );
     // A waiter that resolved the path before another teardown cannot recreate it.
-    requireWorktree(root, physical);
+    if (requireGit) requireWorktree(root, physical);
+    else if (realpathSync(root) !== physical)
+      throw new Error("unregistered directory changed during teardown");
     return operation();
   } finally {
     rmdirSync(lock);

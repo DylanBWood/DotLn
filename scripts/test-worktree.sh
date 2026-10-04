@@ -432,8 +432,10 @@ git -C "$subject" update-index --no-assume-unchanged pr-body.md "$notes_path"
 test "$(git -C "$subject" rev-parse wo-099)" = "$(git --git-dir="$test_root/origin.git" rev-parse refs/heads/wo-099)"
 remote_refs="$(git --git-dir="$test_root/origin.git" for-each-ref --format='%(refname)' | LC_ALL=C sort)"
 test "$remote_refs" = $'refs/heads/main\nrefs/heads/wo-099'
-grep -Fq "cd '$main'" <<<"$publish_output"
+grep -Fq "Start a session in main ('$main')" <<<"$publish_output"
 grep -Fq "'$node_bin' '$main/scripts/release.mjs' close WO-099 --publish" <<<"$publish_output"
+printf '%s\n' "$publish_output" >"$test_root/publish-output.txt"
+CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" "$script_dir/test-close-admission.mjs" "$main" WO-099 "$test_root/publish-output.txt"
 grep -Fq 'network egress to the GitHub host' <<<"$publish_output"
 if grep -Fq "'$subject/scripts/release.mjs' close WO-099 --publish" <<<"$publish_output"; then
   printf 'error: post-merge handoff names the helper the close will remove\n' >&2

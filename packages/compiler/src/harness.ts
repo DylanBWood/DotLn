@@ -33,6 +33,101 @@ export function showHarnessAdvisory(
   }
 }
 
+/** Source for the emitted stale-main recovery hook. Generated hook text is
+ * data; the compiler never loads Node built-ins or executes this recovery. */
+const releaseCloseRecovery = `async function recoverReleaseClose(root, hook, input, event) {
+    if (event !== "UserPromptSubmit" ||
+        input?.prompt?.trim() !== "resume: release close" ||
+        process.env.COPILOT_PROJECT_DIR ||
+        process.env.COPILOT_AGENT_SESSION_ID)
+        return null;
+    try {
+        const { realpathSync } = await import("node:fs");
+        const { join } = await import("node:path");
+        const { pathToFileURL } = await import("node:url");
+        const { spawnSync } = await import("node:child_process");
+        if (!input.session_id)
+            throw new Error("recorded session identity missing");
+        if (!input.cwd || realpathSync(input.cwd) !== realpathSync(root))
+            throw new Error("cwd is not the main checkout root");
+        if (process.env.DOTLN_RELEASE_CLOSE_PREPARED_ROOT === root)
+            throw new Error("pinned runtime remains unavailable after one preparation");
+        const run = (command, args) => spawnSync(command, args, {
+            cwd: root,
+            encoding: "utf8",
+            timeout: 120_000,
+            maxBuffer: 4 * 1024 * 1024,
+        });
+        const worktrees = run("git", ["worktree", "list", "--porcelain"]);
+        const main = worktrees.stdout
+            ?.split("\\n\\n")
+            .find((row) => row.split("\\n").includes("branch refs/heads/main"))
+            ?.split("\\n")[0]
+            ?.replace(/^worktree /, "");
+        if (worktrees.status !== 0 ||
+            !main ||
+            realpathSync(main) !== realpathSync(root))
+            throw new Error("main checkout fact unavailable");
+        const observed = run(process.execPath, [
+            join(root, "scripts/resume.mjs"),
+            "status",
+            "--json",
+        ]);
+        if (observed.status !== 0)
+            throw new Error("canonical release-close status unavailable");
+        let status;
+        try {
+            status = JSON.parse(observed.stdout);
+        }
+        catch {
+            throw new Error("canonical release-close status unreadable");
+        }
+        if (!/^WO-\\d{3}$/.test(status.workOrder ?? "") ||
+            !status.legalNextActions?.includes("release-close"))
+            throw new Error("canonical release-close is not legal for the selected order");
+        const { withWriterReservationLock, writerTeardownBlocker } = await import(pathToFileURL(join(root, "packages/skeleton/src/writer-teardown.mjs"))
+            .href);
+        const { activeGateRuns } = await import(pathToFileURL(join(root, "packages/skeleton/src/gate-evidence.mjs")).href);
+        withWriterReservationLock(root, () => {
+            const writer = writerTeardownBlocker(root);
+            if (writer)
+                throw new Error(writer);
+            if (activeGateRuns(root).length)
+                throw new Error("active gate; runtime preparation withheld");
+            for (const [command, args] of [
+                ["npm", ["run", "build", "--silent"]],
+                [process.execPath, [join(root, "scripts/harness.mjs"), "emit"]],
+            ]) {
+                const prepared = run(command, [...args]);
+                if (prepared.status !== 0)
+                    throw new Error(\`runtime preparation failed at \${command} \${args.join(" ")}: \${String(prepared.stderr ||
+                        prepared.stdout ||
+                        prepared.error?.message ||
+                        "unknown")
+                        .trim()
+                        .slice(0, 600)}\`);
+            }
+        });
+        const replay = spawnSync(process.execPath, [hook], {
+            cwd: root,
+            encoding: "utf8",
+            input: JSON.stringify(input),
+            timeout: 30_000,
+            maxBuffer: 4 * 1024 * 1024,
+            env: { ...process.env, DOTLN_RELEASE_CLOSE_PREPARED_ROOT: root },
+        });
+        if (replay.status !== 0 || !replay.stdout?.trim())
+            throw new Error("prepared normal dispatch hook unavailable");
+        JSON.parse(replay.stdout);
+        return { response: replay.stdout };
+    }
+    catch (error) {
+        return {
+            advisory: \`Release-close preparation withheld: \${error instanceof Error ? error.message : String(error)}; no fallback dispatch or admission invented.\`,
+        };
+    }
+}`;
+
 export type HarnessEvent =
   "PreToolUse" | "PostToolUse" | "Stop" | "UserPromptSubmit";
 export interface HarnessObservation {
@@ -600,7 +695,9 @@ export function lowerToHarness(
     // WO-144: the fallback's root is this hook's own project, two levels above
     // its file. The session's directory may be a subdirectory or another
     // repository, and a marker or journal row must never land there.
-    const fallback = `const fs = await import("node:fs");
+    const fallback = `const recovered = await (${releaseCloseRecovery})((await import("node:url")).fileURLToPath(new URL("../../", import.meta.url)), (await import("node:url")).fileURLToPath(import.meta.url), input, ${eventExpression});
+if (recovered?.response) { process.stdout.write(recovered.response); } else {
+const fs = await import("node:fs");
 const { join } = await import("node:path");
 const { createHash } = await import("node:crypto");
 const { fileURLToPath } = await import("node:url");
@@ -624,7 +721,7 @@ try {
     }
   }
 } catch {}
-const advisory = "DotLn advisory: " + cause + ": built adapter unavailable; run node scripts/bootstrap.mjs to prepare this worktree; host permissions decide.";
+const advisory = "DotLn advisory: " + cause + ": built adapter unavailable; run node scripts/bootstrap.mjs to prepare this worktree; host permissions decide." + (recovered?.advisory ? " " + recovered.advisory : "");
 const response = (${showHarnessAdvisory.toString()})(input?.session_id, ${eventExpression}, cause, (key) => {
   const directory = join(root, "docs/control/local/harness");
   fs.mkdirSync(directory, { recursive: true, mode: 0o700 });
@@ -644,7 +741,7 @@ try {
   if (!fs.existsSync(path) || fs.lstatSync(path).isFile())
     fs.appendFileSync(path, JSON.stringify({ recordedAt: new Date().toISOString(), event: ${eventExpression}, advisory, delegated: true }) + "\\n", { mode: 0o600 });
 } catch {}
-process.stdout.write(JSON.stringify(response));`;
+process.stdout.write(JSON.stringify(response)); }`;
 
     emit(
       path,
@@ -938,7 +1035,13 @@ process.stdout.write(JSON.stringify(response));`;
               hooks: paths.map((path) => ({
                 type: "command",
                 command: `node \"$CLAUDE_PROJECT_DIR/${path}\"`,
-                timeout: 15,
+                // Stale-main recovery has four 120 s child bounds and one
+                // 30 s replay. Leave room for guards and normal dispatch.
+                timeout:
+                  event === "UserPromptSubmit" &&
+                  path === ".claude/hooks/session.mjs"
+                    ? 600
+                    : 15,
               })),
             },
           ],
