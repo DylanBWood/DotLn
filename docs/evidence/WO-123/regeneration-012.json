@@ -1,0 +1,380 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-123",
+  "dispatch": "resume: final review; FINAL-001",
+  "source": "Host monotonic subprocess timings and UTC endpoints; complete output retained in ignored local transcripts. Commands were supervised sequentially by harness bounded.",
+  "edition": {
+    "workOrder": "WO-123",
+    "revision": "012"
+  },
+  "liveConfiguration": {
+    "transport": "codex-cli-exec",
+    "model": "gpt-6.1-sol",
+    "effort": "max",
+    "liveWorkers": true
+  },
+  "wholeRegeneration": {
+    "startedAt": "2026-10-05T21:49:39.649Z",
+    "completedAt": "2026-10-05T21:50:48.140Z",
+    "wallSeconds": 68.490545917,
+    "complete": true
+  },
+  "commands": [
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: final review; FINAL-001",
+      "label": "select-012",
+      "command": [
+        "select docs/evidence/current.json WO-123 revision 012"
+      ],
+      "startedAt": "2026-10-05T21:49:39.650Z",
+      "completedAt": "2026-10-05T21:49:39.650Z",
+      "wallSeconds": 0.000306208,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/final-review-012/select-012.log",
+      "source": "host subprocess UTC endpoints and monotonic timing under harness bounded; output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: final review; FINAL-001",
+      "label": "harness-emit",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "emit"
+      ],
+      "startedAt": "2026-10-05T21:49:39.651Z",
+      "completedAt": "2026-10-05T21:49:39.957Z",
+      "wallSeconds": 0.306133458,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/final-review-012/harness-emit.log",
+      "source": "host subprocess UTC endpoints and monotonic timing under harness bounded; output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: final review; FINAL-001",
+      "label": "authority-write",
+      "command": [
+        "node",
+        "scripts/authority-evidence.mjs",
+        "--write",
+        "--edition",
+        "WO-123",
+        "--revision",
+        "012"
+      ],
+      "startedAt": "2026-10-05T21:49:39.957Z",
+      "completedAt": "2026-10-05T21:49:40.816Z",
+      "wallSeconds": 0.859183958,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/final-review-012/authority-write.log",
+      "source": "host subprocess UTC endpoints and monotonic timing under harness bounded; output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: final review; FINAL-001",
+      "label": "artifact-identity-write",
+      "command": [
+        "node",
+        "scripts/artifact-identity-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-05T21:49:40.816Z",
+      "completedAt": "2026-10-05T21:49:41.184Z",
+      "wallSeconds": 0.367664666,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/final-review-012/artifact-identity-write.log",
+      "source": "host subprocess UTC endpoints and monotonic timing under harness bounded; output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: final review; FINAL-001",
+      "label": "verification-write",
+      "command": [
+        "node",
+        "scripts/verification-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-05T21:49:41.184Z",
+      "completedAt": "2026-10-05T21:49:42.528Z",
+      "wallSeconds": 1.343814667,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/final-review-012/verification-write.log",
+      "source": "host subprocess UTC endpoints and monotonic timing under harness bounded; output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: final review; FINAL-001",
+      "label": "feedback-write",
+      "command": [
+        "node",
+        "scripts/feedback-evidence.mjs",
+        "--write",
+        "--edition",
+        "WO-123",
+        "--revision",
+        "012"
+      ],
+      "startedAt": "2026-10-05T21:49:42.528Z",
+      "completedAt": "2026-10-05T21:49:45.496Z",
+      "wallSeconds": 2.968627541,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/final-review-012/feedback-write.log",
+      "source": "host subprocess UTC endpoints and monotonic timing under harness bounded; output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: final review; FINAL-001",
+      "label": "feedback-live",
+      "command": [
+        "npm",
+        "run",
+        "dotln",
+        "--",
+        "feedback-audit",
+        "--store",
+        ".runtime/wo123/feedback-live-012",
+        "--transport",
+        "codex-cli-exec",
+        "--model",
+        "gpt-6.1-sol",
+        "--effort",
+        "max"
+      ],
+      "startedAt": "2026-10-05T21:49:45.496Z",
+      "completedAt": "2026-10-05T21:50:37.595Z",
+      "wallSeconds": 52.098065333,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/final-review-012/feedback-live.log",
+      "source": "host subprocess UTC endpoints and monotonic timing under harness bounded; output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: final review; FINAL-001",
+      "label": "feedback-record",
+      "command": [
+        "node",
+        "scripts/feedback-evidence.mjs",
+        "--record-selfhost",
+        ".runtime/wo123/feedback-live-012",
+        "--edition",
+        "WO-123",
+        "--revision",
+        "012"
+      ],
+      "startedAt": "2026-10-05T21:50:37.595Z",
+      "completedAt": "2026-10-05T21:50:38.053Z",
+      "wallSeconds": 0.4580785,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/final-review-012/feedback-record.log",
+      "source": "host subprocess UTC endpoints and monotonic timing under harness bounded; output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: final review; FINAL-001",
+      "label": "console-record",
+      "command": [
+        "node",
+        "scripts/console-fixtures.mjs",
+        "--record-current-selfhost"
+      ],
+      "startedAt": "2026-10-05T21:50:38.053Z",
+      "completedAt": "2026-10-05T21:50:38.583Z",
+      "wallSeconds": 0.529961959,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/final-review-012/console-record.log",
+      "source": "host subprocess UTC endpoints and monotonic timing under harness bounded; output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: final review; FINAL-001",
+      "label": "console-write",
+      "command": [
+        "node",
+        "scripts/console-fixtures.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-05T21:50:38.583Z",
+      "completedAt": "2026-10-05T21:50:39.159Z",
+      "wallSeconds": 0.575595542,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/final-review-012/console-write.log",
+      "source": "host subprocess UTC endpoints and monotonic timing under harness bounded; output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: final review; FINAL-001",
+      "label": "authority-check",
+      "command": [
+        "node",
+        "scripts/authority-evidence.mjs",
+        "--check",
+        "--edition",
+        "WO-123",
+        "--revision",
+        "012"
+      ],
+      "startedAt": "2026-10-05T21:50:39.159Z",
+      "completedAt": "2026-10-05T21:50:40.015Z",
+      "wallSeconds": 0.855830834,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/final-review-012/authority-check.log",
+      "source": "host subprocess UTC endpoints and monotonic timing under harness bounded; output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: final review; FINAL-001",
+      "label": "artifact-identity-check",
+      "command": [
+        "node",
+        "scripts/artifact-identity-evidence.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-05T21:50:40.015Z",
+      "completedAt": "2026-10-05T21:50:40.376Z",
+      "wallSeconds": 0.361738334,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/final-review-012/artifact-identity-check.log",
+      "source": "host subprocess UTC endpoints and monotonic timing under harness bounded; output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: final review; FINAL-001",
+      "label": "verification-check",
+      "command": [
+        "node",
+        "scripts/verification-evidence.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-05T21:50:40.376Z",
+      "completedAt": "2026-10-05T21:50:41.686Z",
+      "wallSeconds": 1.30941825,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/final-review-012/verification-check.log",
+      "source": "host subprocess UTC endpoints and monotonic timing under harness bounded; output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: final review; FINAL-001",
+      "label": "feedback-check",
+      "command": [
+        "node",
+        "scripts/feedback-evidence.mjs",
+        "--check",
+        "--edition",
+        "WO-123",
+        "--revision",
+        "012"
+      ],
+      "startedAt": "2026-10-05T21:50:41.686Z",
+      "completedAt": "2026-10-05T21:50:44.739Z",
+      "wallSeconds": 3.05311775,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/final-review-012/feedback-check.log",
+      "source": "host subprocess UTC endpoints and monotonic timing under harness bounded; output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: final review; FINAL-001",
+      "label": "console-check",
+      "command": [
+        "node",
+        "scripts/console-fixtures.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-05T21:50:44.739Z",
+      "completedAt": "2026-10-05T21:50:45.335Z",
+      "wallSeconds": 0.595619833,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/final-review-012/console-check.log",
+      "source": "host subprocess UTC endpoints and monotonic timing under harness bounded; output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: final review; FINAL-001",
+      "label": "harness-check",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "check"
+      ],
+      "startedAt": "2026-10-05T21:50:45.335Z",
+      "completedAt": "2026-10-05T21:50:45.635Z",
+      "wallSeconds": 0.300538708,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/final-review-012/harness-check.log",
+      "source": "host subprocess UTC endpoints and monotonic timing under harness bounded; output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: final review; FINAL-001",
+      "label": "publication-check",
+      "command": [
+        "npm",
+        "run",
+        "publication:check"
+      ],
+      "startedAt": "2026-10-05T21:50:45.635Z",
+      "completedAt": "2026-10-05T21:50:45.984Z",
+      "wallSeconds": 0.348596625,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/final-review-012/publication-check.log",
+      "source": "host subprocess UTC endpoints and monotonic timing under harness bounded; output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: final review; FINAL-001",
+      "label": "release-surfaces",
+      "command": [
+        "npm",
+        "run",
+        "release",
+        "--",
+        "check-surfaces",
+        "--local"
+      ],
+      "startedAt": "2026-10-05T21:50:45.984Z",
+      "completedAt": "2026-10-05T21:50:48.140Z",
+      "wallSeconds": 2.156380625,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/final-review-012/release-surfaces.log",
+      "source": "host subprocess UTC endpoints and monotonic timing under harness bounded; output retained in the ignored transcript"
+    }
+  ]
+}

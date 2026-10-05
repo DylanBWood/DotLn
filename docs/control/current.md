@@ -1,23 +1,23 @@
 # Current control state
 
-## WO-186
+## WO-123
 
-- Work order: WO-186
-- Work-order path: docs/work-orders/WO-186-gate-time-follows-the-change.md
+- Work order: WO-123
+- Work-order path: docs/work-orders/WO-123-vertical-composition.md
 - Phase: closed
-- Latest verification: VER-003
-- Verification path: docs/verifications/WO-186/VER-003.md
+- Latest verification: VER-005
+- Verification path: docs/verifications/WO-123/VER-005.md
 - Latest verdict: pass
-- Final review: FINAL-002
-- Final-review path: docs/final-reviews/WO-186/FINAL-002.md
+- Final review: FINAL-001
+- Final-review path: docs/final-reviews/WO-123/FINAL-001.md
 - Latest attestation: harness claude-code; version 2.1.289; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable
-- Effort drift: max -> xhigh (subagents) (raw: ultracode) -> xhigh
-- Latest recordedAt: 2026-10-05T21:11:22.696Z
-- Elapsed implementation: 31708945 ms
-- Elapsed verification: 920000 ms
-- Elapsed repair: 3140553 ms
-- Elapsed finalReview: 2015322 ms
-- Latest checkpoint: 9a449a67150677da6d98efb0d628fc028e4538b9 (restore: `git checkout refs/dotln/checkpoint/WO-186/16 -- .`)
+- Effort drift: max -> xhigh
+- Latest recordedAt: 2026-10-05T23:24:07.289Z
+- Elapsed implementation: 12440994 ms
+- Elapsed verification: 889391 ms
+- Elapsed repair: 5723980 ms
+- Elapsed finalReview: 7394836 ms
+- Latest checkpoint: 687fc683cac9b03ffe910245acdebe1841fc0c6d (restore: `git checkout refs/dotln/checkpoint/WO-123/23 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct
 

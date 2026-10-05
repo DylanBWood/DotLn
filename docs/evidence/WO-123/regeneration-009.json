@@ -1,0 +1,380 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-123",
+  "dispatch": "resume: fix; VER-004",
+  "source": "Host monotonic subprocess timings and UTC endpoints; complete output retained in ignored local transcripts. All eighteen commands were supervised sequentially by harness bounded.",
+  "edition": "WO-123 revision 009",
+  "liveConfiguration": {
+    "transport": "codex-cli-exec",
+    "model": "gpt-6.1-sol",
+    "effort": "max",
+    "liveWorkers": true
+  },
+  "wholeRegeneration": {
+    "startedAt": "2026-10-05T19:41:16.471Z",
+    "completedAt": "2026-10-05T19:42:36.878Z",
+    "wallSeconds": 80.405615459,
+    "complete": true
+  },
+  "commands": [
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: fix; VER-004",
+      "label": "select-current",
+      "command": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "import {readFileSync,writeFileSync} from 'node:fs'; const p='docs/evidence/current.json'; const m=JSON.parse(readFileSync(p,'utf8')); for (const row of Object.values(m.editions)) {row.workOrder='WO-123';row.revision='009';} writeFileSync(p,JSON.stringify(m,null,2)+String.fromCharCode(10));"
+      ],
+      "startedAt": "2026-10-05T19:41:16.503Z",
+      "completedAt": "2026-10-05T19:41:16.651Z",
+      "wallSeconds": 0.146678042,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/repair-009/select-current.log",
+      "source": "host subprocess UTC endpoints and monotonic timing; command output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: fix; VER-004",
+      "label": "harness-regeneration",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "emit"
+      ],
+      "startedAt": "2026-10-05T19:41:16.682Z",
+      "completedAt": "2026-10-05T19:41:16.994Z",
+      "wallSeconds": 0.310371042,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/repair-009/harness-regeneration.log",
+      "source": "host subprocess UTC endpoints and monotonic timing; command output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: fix; VER-004",
+      "label": "authority-remint",
+      "command": [
+        "node",
+        "scripts/authority-evidence.mjs",
+        "--write",
+        "--edition",
+        "WO-123",
+        "--revision",
+        "009"
+      ],
+      "startedAt": "2026-10-05T19:41:17.025Z",
+      "completedAt": "2026-10-05T19:41:17.905Z",
+      "wallSeconds": 0.879284459,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/repair-009/authority-remint.log",
+      "source": "host subprocess UTC endpoints and monotonic timing; command output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: fix; VER-004",
+      "label": "artifact-remint",
+      "command": [
+        "node",
+        "scripts/artifact-identity-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-05T19:41:17.937Z",
+      "completedAt": "2026-10-05T19:41:18.313Z",
+      "wallSeconds": 0.374853875,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/repair-009/artifact-remint.log",
+      "source": "host subprocess UTC endpoints and monotonic timing; command output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: fix; VER-004",
+      "label": "verification-remint",
+      "command": [
+        "node",
+        "scripts/verification-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-05T19:41:18.345Z",
+      "completedAt": "2026-10-05T19:41:19.706Z",
+      "wallSeconds": 1.359350958,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/repair-009/verification-remint.log",
+      "source": "host subprocess UTC endpoints and monotonic timing; command output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: fix; VER-004",
+      "label": "feedback-remint",
+      "command": [
+        "node",
+        "scripts/feedback-evidence.mjs",
+        "--write",
+        "--edition",
+        "WO-123",
+        "--revision",
+        "009"
+      ],
+      "startedAt": "2026-10-05T19:41:19.736Z",
+      "completedAt": "2026-10-05T19:41:22.641Z",
+      "wallSeconds": 2.90488,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/repair-009/feedback-remint.log",
+      "source": "host subprocess UTC endpoints and monotonic timing; command output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: fix; VER-004",
+      "label": "feedback-live",
+      "command": [
+        "npm",
+        "run",
+        "dotln",
+        "--",
+        "feedback-audit",
+        "--store",
+        ".runtime/wo123/feedback-live-009",
+        "--transport",
+        "codex-cli-exec",
+        "--model",
+        "gpt-6.1-sol",
+        "--effort",
+        "max"
+      ],
+      "startedAt": "2026-10-05T19:41:22.673Z",
+      "completedAt": "2026-10-05T19:42:26.694Z",
+      "wallSeconds": 64.01957325,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/repair-009/feedback-live.log",
+      "source": "host subprocess UTC endpoints and monotonic timing; command output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: fix; VER-004",
+      "label": "feedback-record",
+      "command": [
+        "node",
+        "scripts/feedback-evidence.mjs",
+        "--record-selfhost",
+        ".runtime/wo123/feedback-live-009",
+        "--edition",
+        "WO-123",
+        "--revision",
+        "009"
+      ],
+      "startedAt": "2026-10-05T19:42:26.724Z",
+      "completedAt": "2026-10-05T19:42:27.176Z",
+      "wallSeconds": 0.451869208,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/repair-009/feedback-record.log",
+      "source": "host subprocess UTC endpoints and monotonic timing; command output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: fix; VER-004",
+      "label": "console-repin",
+      "command": [
+        "node",
+        "scripts/console-fixtures.mjs",
+        "--record-current-selfhost"
+      ],
+      "startedAt": "2026-10-05T19:42:27.207Z",
+      "completedAt": "2026-10-05T19:42:27.731Z",
+      "wallSeconds": 0.523066666,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/repair-009/console-repin.log",
+      "source": "host subprocess UTC endpoints and monotonic timing; command output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: fix; VER-004",
+      "label": "console-regeneration",
+      "command": [
+        "node",
+        "scripts/console-fixtures.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-05T19:42:27.761Z",
+      "completedAt": "2026-10-05T19:42:28.324Z",
+      "wallSeconds": 0.562009125,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/repair-009/console-regeneration.log",
+      "source": "host subprocess UTC endpoints and monotonic timing; command output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: fix; VER-004",
+      "label": "authority-check",
+      "command": [
+        "node",
+        "scripts/authority-evidence.mjs",
+        "--check",
+        "--edition",
+        "WO-123",
+        "--revision",
+        "009"
+      ],
+      "startedAt": "2026-10-05T19:42:28.353Z",
+      "completedAt": "2026-10-05T19:42:29.115Z",
+      "wallSeconds": 0.761722709,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/repair-009/authority-check.log",
+      "source": "host subprocess UTC endpoints and monotonic timing; command output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: fix; VER-004",
+      "label": "artifact-check",
+      "command": [
+        "node",
+        "scripts/artifact-identity-evidence.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-05T19:42:29.145Z",
+      "completedAt": "2026-10-05T19:42:29.482Z",
+      "wallSeconds": 0.33462145800000004,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/repair-009/artifact-check.log",
+      "source": "host subprocess UTC endpoints and monotonic timing; command output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: fix; VER-004",
+      "label": "verification-check",
+      "command": [
+        "node",
+        "scripts/verification-evidence.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-05T19:42:29.512Z",
+      "completedAt": "2026-10-05T19:42:30.722Z",
+      "wallSeconds": 1.20929,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/repair-009/verification-check.log",
+      "source": "host subprocess UTC endpoints and monotonic timing; command output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: fix; VER-004",
+      "label": "feedback-check",
+      "command": [
+        "node",
+        "scripts/feedback-evidence.mjs",
+        "--check",
+        "--edition",
+        "WO-123",
+        "--revision",
+        "009"
+      ],
+      "startedAt": "2026-10-05T19:42:30.752Z",
+      "completedAt": "2026-10-05T19:42:33.641Z",
+      "wallSeconds": 2.888375125,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/repair-009/feedback-check.log",
+      "source": "host subprocess UTC endpoints and monotonic timing; command output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: fix; VER-004",
+      "label": "console-check",
+      "command": [
+        "node",
+        "scripts/console-fixtures.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-05T19:42:33.672Z",
+      "completedAt": "2026-10-05T19:42:34.241Z",
+      "wallSeconds": 0.568270125,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/repair-009/console-check.log",
+      "source": "host subprocess UTC endpoints and monotonic timing; command output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: fix; VER-004",
+      "label": "harness-check",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "check"
+      ],
+      "startedAt": "2026-10-05T19:42:34.272Z",
+      "completedAt": "2026-10-05T19:42:34.558Z",
+      "wallSeconds": 0.28509074999999995,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/repair-009/harness-check.log",
+      "source": "host subprocess UTC endpoints and monotonic timing; command output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: fix; VER-004",
+      "label": "publication-current",
+      "command": [
+        "npm",
+        "run",
+        "publication:check"
+      ],
+      "startedAt": "2026-10-05T19:42:34.590Z",
+      "completedAt": "2026-10-05T19:42:34.924Z",
+      "wallSeconds": 0.333421292,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/repair-009/publication-current.log",
+      "source": "host subprocess UTC endpoints and monotonic timing; command output retained in the ignored transcript"
+    },
+    {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: fix; VER-004",
+      "label": "release-surfaces",
+      "command": [
+        "npm",
+        "run",
+        "release",
+        "--",
+        "check-surfaces",
+        "--local"
+      ],
+      "startedAt": "2026-10-05T19:42:34.954Z",
+      "completedAt": "2026-10-05T19:42:36.875Z",
+      "wallSeconds": 1.9208694999999998,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/repair-009/release-surfaces.log",
+      "source": "host subprocess UTC endpoints and monotonic timing; command output retained in the ignored transcript"
+    }
+  ]
+}

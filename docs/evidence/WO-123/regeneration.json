@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-123",
+  "dispatch": "resume: next",
+  "source": "Host monotonic subprocess timings and UTC endpoints; full outputs retained in ignored local transcripts.",
+  "edition": "WO-123 revision 001",
+  "liveConfiguration": {
+    "transport": "codex-cli-exec",
+    "model": "gpt-6.1-sol",
+    "effort": "max",
+    "liveWorkers": true
+  },
+  "wholeRegeneration": {
+    "startedAt": "2026-10-05T02:43:52.327Z",
+    "completedAt": "2026-10-05T02:44:59.108Z",
+    "wallSeconds": 66.78009795899999,
+    "complete": true
+  },
+  "commands": [
+    {
+      "label": "harness-regeneration",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "emit"
+      ],
+      "startedAt": "2026-10-05T02:43:52.328Z",
+      "completedAt": "2026-10-05T02:43:52.520Z",
+      "wallSeconds": 0.19115312499999998,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "label": "authority-remint",
+      "command": [
+        "node",
+        "scripts/authority-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-05T02:43:52.520Z",
+      "completedAt": "2026-10-05T02:43:53.206Z",
+      "wallSeconds": 0.68611725,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "label": "artifact-remint",
+      "command": [
+        "node",
+        "scripts/artifact-identity-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-05T02:43:53.206Z",
+      "completedAt": "2026-10-05T02:43:53.443Z",
+      "wallSeconds": 0.23696833300000003,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "label": "verification-remint",
+      "command": [
+        "node",
+        "scripts/verification-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-05T02:43:53.443Z",
+      "completedAt": "2026-10-05T02:43:54.552Z",
+      "wallSeconds": 1.1090705410000001,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "label": "feedback-remint",
+      "command": [
+        "node",
+        "scripts/feedback-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-05T02:43:54.552Z",
+      "completedAt": "2026-10-05T02:43:57.209Z",
+      "wallSeconds": 2.6569517080000002,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "label": "feedback-live",
+      "command": [
+        "npm",
+        "run",
+        "dotln",
+        "--",
+        "feedback-audit",
+        "--store",
+        ".runtime/wo123/feedback-live-001",
+        "--transport",
+        "codex-cli-exec",
+        "--model",
+        "gpt-6.1-sol",
+        "--effort",
+        "max"
+      ],
+      "startedAt": "2026-10-05T02:43:57.209Z",
+      "completedAt": "2026-10-05T02:44:52.260Z",
+      "wallSeconds": 55.050974875,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "label": "feedback-record",
+      "command": [
+        "node",
+        "scripts/feedback-evidence.mjs",
+        "--record-selfhost",
+        ".runtime/wo123/feedback-live-001"
+      ],
+      "startedAt": "2026-10-05T02:44:52.260Z",
+      "completedAt": "2026-10-05T02:44:52.618Z",
+      "wallSeconds": 0.3573862500000032,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "label": "console-repin",
+      "command": [
+        "node",
+        "scripts/console-fixtures.mjs",
+        "--record-current-selfhost"
+      ],
+      "startedAt": "2026-10-05T02:44:52.618Z",
+      "completedAt": "2026-10-05T02:44:53.033Z",
+      "wallSeconds": 0.4155917499999996,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "label": "console-regeneration",
+      "command": [
+        "node",
+        "scripts/console-fixtures.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-05T02:44:53.034Z",
+      "completedAt": "2026-10-05T02:44:53.497Z",
+      "wallSeconds": 0.4633722080000007,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "label": "authority-check",
+      "command": [
+        "node",
+        "scripts/authority-evidence.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-05T02:44:53.497Z",
+      "completedAt": "2026-10-05T02:44:54.169Z",
+      "wallSeconds": 0.6719851249999993,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "label": "artifact-check",
+      "command": [
+        "node",
+        "scripts/artifact-identity-evidence.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-05T02:44:54.169Z",
+      "completedAt": "2026-10-05T02:44:54.421Z",
+      "wallSeconds": 0.251830833,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "label": "verification-check",
+      "command": [
+        "node",
+        "scripts/verification-evidence.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-05T02:44:54.421Z",
+      "completedAt": "2026-10-05T02:44:55.666Z",
+      "wallSeconds": 1.2453258750000022,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "label": "feedback-check",
+      "command": [
+        "node",
+        "scripts/feedback-evidence.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-05T02:44:55.666Z",
+      "completedAt": "2026-10-05T02:44:58.458Z",
+      "wallSeconds": 2.791535041999996,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "label": "console-check",
+      "command": [
+        "node",
+        "scripts/console-fixtures.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-05T02:44:58.458Z",
+      "completedAt": "2026-10-05T02:44:58.923Z",
+      "wallSeconds": 0.4650921249999956,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "label": "harness-check",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "check"
+      ],
+      "startedAt": "2026-10-05T02:44:58.923Z",
+      "completedAt": "2026-10-05T02:44:59.108Z",
+      "wallSeconds": 0.18500954199999978,
+      "exitCode": 0,
+      "signal": null
+    }
+  ]
+}

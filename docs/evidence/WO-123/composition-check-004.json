@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-123",
+  "dispatch": "resume: fix",
+  "source": "Observed bounded command result at the repaired subject; full stdout and host memory/timing receipt retained in ignored local control storage.",
+  "command": "node scripts/test-vertical.mjs",
+  "wrapper": "node scripts/harness.mjs bounded --",
+  "startedAt": "2026-10-05T16:11:36.154Z",
+  "finishedAt": "2026-10-05T16:15:05.861Z",
+  "wallSeconds": 209.707,
+  "exitCode": 0,
+  "tests": 49,
+  "passed": 49,
+  "failed": 0,
+  "peakFootprintBytes": 192622936,
+  "peakRssBytes": 327860224,
+  "actors": "Synthetic external actors and local bare Git remotes; existing production primitive hosts execute.",
+  "pathIdentity": {
+    "platform": "darwin",
+    "filesystem": {
+      "type": "apfs",
+      "volume": "/dev/disk3s5",
+      "caseSensitive": false
+    },
+    "constructed": [
+      "case",
+      "volume",
+      "unicode"
+    ],
+    "guardCoverage": [
+      "source-change-worktree",
+      "source-change-environment",
+      "beacon-io"
+    ],
+    "result": "Each constructed variant refuses before worktree creation without branch or registration residue. Existing mode-000 directories refuse; canonical whitespace-ending directories pass the identity guards. A Git-registered variant yields one named beacon refusal while a healthy row and group cache remain readable. On a second registered worktree, a mode-000 beacon directory, a searchable but unlistable one and a sealed parent each yield that row's refusal with its directory and reason while the healthy row is swept; single-root guards refuse naming the directory."
+  },
+  "passedCases": [
+    "resident admits an actual filed draft and resumes every completed step through the real primitive hosts",
+    "one command repairs a blocking independent review, re-verifies and publishes the repaired lineage",
+    "review failure 1 uses fresh bounded attempts",
+    "review failure 2 uses fresh bounded attempts",
+    "admission holds declared negative inputs before materialization or dispatch; filesystem identity refusals leave no residue",
+    "real issue screening, an undecodable issue and unreadable registered authority produce durable resident holds",
+    "real baseline refusal stops the composed run at its named step",
+    "real capsule refusal stops the composed run at its named step",
+    "real lint refusal stops the composed run at its named step",
+    "real observation refusal stops the composed run at its named step",
+    "publication requires deliverable readiness: absent test evidence stops before any remote call",
+    "publication requires deliverable readiness: fabricated test evidence stops before any remote call",
+    "executable stop branches and completed-step restarts never dispatch later effects",
+    "operator-first restart converges with resident and both entries share the portfolio budget",
+    "exact issue identity, phase resource caps and baseline classification",
+    "composed baseline records the independent class source and holds conflicting failure classification: Uploads fail for files larger than 10 MB: make `fixture.txt` contain changed by synthetic worker. (false)",
+    "composed baseline records the independent class source and holds conflicting failure classification: Uploads fail for files larger than 10 MB: make `fixture.txt` contain changed by synthetic worker. (true)",
+    "composed baseline records the independent class source and holds conflicting failure classification: Saving a document throws a TypeError: make `fixture.txt` contain changed by synthetic worker. (true)",
+    "composed baseline records the independent class source and holds conflicting failure classification: The export endpoint returns HTTP 500: make `fixture.txt` contain changed by synthetic worker. (true)",
+    "composed baseline records the independent class source and holds conflicting failure classification: The image decoder cannot parse JPEGs: make `fixture.txt` contain changed by synthetic worker. (true)",
+    "composed baseline records the independent class source and holds conflicting failure classification: Login isn't working: make `fixture.txt` contain changed by synthetic worker. (false)",
+    "composed baseline records the independent class source and holds conflicting failure classification: Users see a 404 on the settings page: make `fixture.txt` contain changed by synthetic worker. (false)",
+    "composed baseline records the independent class source and holds conflicting failure classification: Login can’t complete: make `fixture.txt` contain changed by synthetic worker. (true)",
+    "composed baseline records the independent class source and holds conflicting failure classification: This should be fixed, uploads fail for large files: make `fixture.txt` contain changed by synthetic worker. (false)",
+    "composed baseline records the independent class source and holds conflicting failure classification: The importer didn’t finish: make `fixture.txt` contain changed by synthetic worker. (true)",
+    "composed baseline records the independent class source and holds conflicting failure classification: The API gives a 503 error: make `fixture.txt` contain changed by synthetic worker. (false)",
+    "composed baseline walks requirement-voice wording without a failing-behavior finding: Show an error message when the upload exceeds 10 MB: make `fixture.txt` contain changed by synthetic worker.",
+    "composed baseline walks requirement-voice wording without a failing-behavior finding: Add retry when the upload fails: make `fixture.txt` contain changed by synthetic worker.",
+    "a requirement the rule reports as failing behavior recovers through a refiled draft with reviewed wording",
+    "operator restart reconciles a durable resident receipt before its settlement",
+    "operator records an expiry stop after a completed-step pause",
+    "resident records an expiry stop after a completed-step pause",
+    "in-flight resident step prevents idle expiry and respects kill",
+    "in-flight resident step prevents idle expiry and respects finish",
+    "in-flight resident step prevents idle expiry and respects revoke",
+    "transport refuses a revoked child before calling the external actor",
+    "failed baselines retain their result and reason; only a completed witness can be non-reproduction",
+    "composed preparation failures identify their own step and dirty targets remain transient",
+    "an undecodable issue is held once and a later draft is still prepared and admitted",
+    "an unpreparable draft backs off, is bounded when its failure is unnamed, and never starves a later draft",
+    "transient preparation exception leaves the draft undecided and retryable",
+    "transient preparation presence leaves the draft undecided and retryable",
+    "transient preparation rearm leaves the draft undecided and retryable",
+    "transient preparation revoke leaves the draft undecided and retryable",
+    "racing entries converge and a live continuation lock defers the tick without a permanent hold",
+    "an admitted run in another phase does not consume every resident tick",
+    "an idle resident tick appends one clock sample however many continuations finished or expired",
+    "authority polls keep a stable log and observe presence, revocation and expiry",
+    "SIGKILL at every durable step preserves identities and repairs a missing receipt projection"
+  ],
+  "mutations": {
+    "source": "DotLn session scratch mutate.mjs under the bounded wrapper, 2026-10-05T16:05:06Z to 16:06:48Z, before the last comment-only and lookup-guard edits; each mutated file was restored and its sha256 compared with the original. A mutation is caught when at least one selected case fails.",
+    "caught": [
+      {
+        "mutation": "publication readiness requirement set false",
+        "selected": 2,
+        "failed": 2
+      },
+      {
+        "mutation": "terminal continuations no longer remembered",
+        "selected": 1,
+        "failed": 1
+      },
+      {
+        "mutation": "settlement samples the clock on every replay",
+        "selected": 1,
+        "failed": 1
+      },
+      {
+        "mutation": "admission predicate removed from the resident's recheck",
+        "selected": 1,
+        "failed": 1
+      },
+      {
+        "mutation": "issue-source decode refusal marked transient",
+        "selected": 3,
+        "failed": 3
+      },
+      {
+        "mutation": "ASCII apostrophe only",
+        "selected": 12,
+        "failed": 3
+      },
+      {
+        "mutation": "modal governs the whole sentence",
+        "selected": 12,
+        "failed": 2
+      },
+      {
+        "mutation": "unreadable beacon identity raised as the bare spawn error",
+        "selected": 1,
+        "failed": 1
+      },
+      {
+        "mutation": "first unpreparable draft ends the tick",
+        "selected": 1,
+        "failed": 1
+      },
+      {
+        "mutation": "every cue in an imperative clause asserts",
+        "selected": 3,
+        "failed": 3
+      }
+    ],
+    "notCaught": []
+  },
+  "restartEvidence": "Real SIGKILL after all 14 durable completed steps and between completion-event append and receipt projection; every restart preserves earlier receipts and command/episode identities, dispatches no effect twice, and restores all 14 receipt files.",
+  "earlierAttempts": [
+    {
+      "result": "13/15 selected classification and composed cases",
+      "reason": "The new table found that a bare verb after 'but' ('should work but fail') was read as an imperative in a requirement statement; the rule now opens an imperative only at a sentence start, after a colon, or after another imperative or a leading condition. The recovery fixture found that the forge double reported one fixed update time; the double now takes it from its fixture file."
+    },
+    {
+      "result": "14/16 selected resident cases",
+      "reason": "Two new fixtures reset the shared fixture clock backwards between modes and one asserted the restart replay on the first idle tick instead of at most once; both fixtures were corrected. No production branch changed for either."
+    }
+  ],
+  "limits": "The SIGKILL driver uses pure execution ports. Production primitive composition and resident entry restarts are separately exercised with synthetic external actors. External success before its durable completion receipt remains outside this recovery guarantee. The backoff and finished-continuation memory are process-local."
+}
