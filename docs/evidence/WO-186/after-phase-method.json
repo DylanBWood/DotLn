@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 2,
+  "recordedAt": "2026-10-05T08:46:54.167Z",
+  "decision": "WO-186-D029",
+  "earlierIdentity": "6bcefed0fcdfc9bd83f47403d016b2ef58f1a5b2b763af117e604bf02f0e46ef",
+  "finalIdentity": "8f77f8bb26e21f212f2f7ffa1a9a098aaaa4a71f9c9d1184539c40f00618ee99",
+  "earlierFile": "ordinary-final-after-6bcefed0fcdf-series.json",
+  "finalFile": "ordinary-final-after-8f77f8bb26e2-series.json",
+  "plainEarlierOrdinals": [
+    1,
+    2,
+    3
+  ],
+  "plainFinalOrdinals": [],
+  "harnessEarlierOrdinals": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "reviewFinalOrdinals": [
+    3,
+    4,
+    5
+  ],
+  "qualification": "Five chronological after-phase plain passes retain three before the browser readiness repair and two after. Five chronological after-phase review passes retain two before the independent host-guard fixture repair and the next three after. Neither pooled gate median is a five-run final-source median. Five unchanged harness observations precede both repairs. Every gate keeps its actual code identity; failed plain/review attempts and diagnostic/repair/retry costs are retained. The source-delta check proves that only scripts/test-host-guard.test.mjs changes from the profile key to final source, so that older-key profile remains applicable to unchanged target source but is never labeled a final-source whole-gate profile.",
+  "supersedes": "after-phase-method-d026.json",
+  "browserIdentity": "af229ba815ff320fcf23943a45afc7c20dc55d7bc6c95d90b4a4e61d2f67a5af",
+  "browserFile": "ordinary-final-after-af229ba815ff-series.json",
+  "plainBrowserOrdinals": [
+    4,
+    5
+  ],
+  "reviewBrowserOrdinals": [
+    1,
+    2
+  ]
+}

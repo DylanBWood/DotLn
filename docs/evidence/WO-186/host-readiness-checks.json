@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-05T08:46:54.102Z",
+  "codeIdentity": "8f77f8bb26e21f212f2f7ffa1a9a098aaaa4a71f9c9d1184539c40f00618ee99",
+  "testSourceSha256": "4c6430dc9ad8ce2bf08ac7e1e6106f3455b96ace89fffdb3f286d02ca886142d",
+  "checks": [
+    {
+      "log": "host-guard-failure-diagnostic.log",
+      "seconds": 0.869,
+      "exitCode": 0,
+      "startedAt": "2026-10-05T08:29:21.889Z",
+      "finishedAt": "2026-10-05T08:29:22.758Z"
+    },
+    {
+      "log": "host-guard-readiness-red.log",
+      "seconds": 3.605,
+      "exitCode": 1,
+      "startedAt": "2026-10-05T08:31:13.380Z",
+      "finishedAt": "2026-10-05T08:31:16.985Z"
+    },
+    {
+      "log": "host-guard-readiness-positive.log",
+      "seconds": 0.878,
+      "exitCode": 0,
+      "startedAt": "2026-10-05T08:36:21.327Z",
+      "finishedAt": "2026-10-05T08:36:22.205Z"
+    },
+    {
+      "log": "host-guard-transfer-control.log",
+      "seconds": 3.652,
+      "exitCode": 1,
+      "startedAt": "2026-10-05T08:37:48.560Z",
+      "finishedAt": "2026-10-05T08:37:52.213Z"
+    },
+    {
+      "log": "host-guard-readiness-suite.log",
+      "seconds": 62.246,
+      "exitCode": 0,
+      "startedAt": "2026-10-05T08:38:31.319Z",
+      "finishedAt": "2026-10-05T08:39:33.565Z"
+    },
+    {
+      "log": "host-guard-transfer-control-final.log",
+      "seconds": 3.727,
+      "exitCode": 1,
+      "startedAt": "2026-10-05T08:41:31.256Z",
+      "finishedAt": "2026-10-05T08:41:34.983Z"
+    },
+    {
+      "log": "host-guard-readiness-suite-final.log",
+      "seconds": 61.894,
+      "exitCode": 0,
+      "startedAt": "2026-10-05T08:42:28.158Z",
+      "finishedAt": "2026-10-05T08:43:30.052Z"
+    },
+    {
+      "log": "host-guard-cleanup-control.log",
+      "seconds": 0.711,
+      "exitCode": 1,
+      "startedAt": "2026-10-05T08:44:29.820Z",
+      "finishedAt": "2026-10-05T08:44:30.531Z"
+    },
+    {
+      "log": "host-readiness-source-delta.log",
+      "seconds": 0.267,
+      "exitCode": 0,
+      "startedAt": "2026-10-05T08:45:02.522Z",
+      "finishedAt": "2026-10-05T08:45:02.789Z"
+    }
+  ],
+  "observedCheckSeconds": 137.84900000000002,
+  "finalSuite": {
+    "tests": 34,
+    "passed": 34,
+    "seconds": 61.894
+  },
+  "transferControl": {
+    "mutation": "Replace the production transfer source history with an empty Map in a scratch module; no repository production edits",
+    "expectedExitCode": 1,
+    "intendedAssertion": "transferred ownership stops the detached descendant",
+    "sourceSha256": "475ed138c12f563e2270c377db9f84db92b3ae623cdf697ac620dab028669f90"
+  },
+  "cleanupControl": {
+    "forcedFailure": "before readiness, after child identities are captured",
+    "allThreeStopped": true,
+    "ownerClosedBeforeRootRemoval": true
+  },
+  "limits": [
+    "The historical third-review failure did not retain its fixture diagnostics; its exact cause remains unknown.",
+    "The scalar-readiness reproduction demonstrates an actual fixture hole; a native census in flight at SIGSTOP limits a universal deterministic scheduling claim.",
+    "Initial positive/full-suite/control executions predate the critics' final cleanup correction and are retained supplemental costs; final-suite and final transfer/cleanup controls use the recorded final source.",
+    "Only private disposable guards and owned fixture processes were stopped; normal work-order concurrency and the shared host guard remain unaffected."
+  ]
+}

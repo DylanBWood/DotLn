@@ -1431,10 +1431,24 @@ writeFileSync(
   join(root, "scripts/declared-untracked.mjs"),
   "export const declared = true;\n",
 );
+// WO-186: introducing the runner and declared untracked source changes the
+// code identity. First prove the old green row cannot satisfy either claim;
+// then record a plain row at the new identity to judge selection coverage.
+const reviewIdentity = gateCodeIdentity(root);
+assert.notEqual(reviewIdentity, identity);
 refuseOn(
   "WO-102",
   new RegExp(
-    `^error: criterion 3 recorded met names npm test -- --review, and no passing complete npm test row at the current code identity ${identity} covers the current review selection: the latest row \\(recorded [^,]+, 0\\.00 s, 2 suites, host-gate:plain:npm test\\) lacks stub-machinery\\. Run npm test -- --review, or ${instead}`,
+    `^error: criteria 2, 3 recorded met names npm test -- --review, and no passing complete npm test row exists at the current code identity ${reviewIdentity}\\. Run npm test -- --review, or ${instead}`,
+    "m",
+  ),
+  completeAgent,
+);
+recordGateChecks(root, [claimRow("host-gate:plain:npm test")]);
+refuseOn(
+  "WO-102",
+  new RegExp(
+    `^error: criterion 3 recorded met names npm test -- --review, and no passing complete npm test row at the current code identity ${reviewIdentity} covers the current review selection: the latest row \\(recorded [^,]+, 0\\.00 s, 2 suites, host-gate:plain:npm test\\) lacks stub-machinery\\. Run npm test -- --review, or ${instead}`,
     "m",
   ),
   completeAgent,
@@ -1489,6 +1503,7 @@ assert.doesNotMatch(on("WO-102")(["verify"]), /The executor recorded/);
 // row, without a runner and while the document stub would fail.
 stubDocumentGate(1, ["FAIL docs-check 0.20 s"]);
 rmSync(stubRunner);
+const runnerAbsentIdentity = gateCodeIdentity(root);
 const ignoreBytes102 = readFileSync(join(root, ".gitignore"));
 writeFileSync(join(root, ".gitignore"), ignoreBytes102 + "# WO-103 identity\n");
 assert.notEqual(gateCodeIdentity(root), identity);
@@ -1524,12 +1539,12 @@ report("docs/verifications/WO-103/VER-001.md", [
   "**Criterion 4:** met.",
 ]);
 // WO-179: changing an unmet judgment to met needs the current gate evidence.
+plantRunner();
 recordGateChecks(root, [
   claimRow("host-gate:verified-103:npm test", {
     requiredSuites: ["build", "alpha", "stub-machinery"],
   }),
 ]);
-plantRunner();
 stubDocumentGate(0, ["npm run test:docs: 1 passed; 0 failed; 0.01 s"]);
 on("WO-103")(["verification-result", "pass", ...agentFlags]);
 const finalBriefing103 = on("WO-103")(["final-review"]);
@@ -1541,7 +1556,16 @@ assert.ok(
 );
 rmSync(stubRunner);
 writeFileSync(join(root, ".gitignore"), ignoreBytes102);
-assert.equal(gateCodeIdentity(root), identity);
+assert.equal(gateCodeIdentity(root), runnerAbsentIdentity);
+assert.notEqual(runnerAbsentIdentity, reviewIdentity);
+// Removing the untracked runner changes the identity too. A historical row
+// at this current identity lets the following cases isolate unavailable
+// review selection and document execution rather than a stale product row.
+recordGateChecks(root, [
+  claimRow("host-gate:absent-runner:npm test", {
+    requiredSuites: ["build", "alpha", "stub-machinery"],
+  }),
+]);
 // A gate that cannot start, a review selection without a runner and a gate
 // index that cannot be read each advise once and record.
 report("docs/verifications/WO-102/VER-001.md", [
@@ -1566,7 +1590,7 @@ const cannotStart = call([
 assert.equal(cannotStart.status, 0, cannotStart.stderr);
 assert.match(
   cannotStart.stderr,
-  /^Advisory: Review selection unavailable \(scripts\/test-runner\.mjs is absent\); the npm test -- --review claim of criterion 3 stands on the plain npm test row \(recorded [^,]+, 0\.00 s, 3 suites, host-gate:review:npm test\)\.$/m,
+  /^Advisory: Review selection unavailable \(scripts\/test-runner\.mjs is absent\); the npm test -- --review claim of criterion 3 stands on the plain npm test row \(recorded [^,]+, 0\.00 s, 3 suites, host-gate:absent-runner:npm test\)\.$/m,
 );
 assert.match(
   cannotStart.stderr,
@@ -1580,7 +1604,7 @@ assert.equal(
 assert.deepEqual(events("WO-102").at(-1).unmetCriteria, []);
 assert.equal(
   events("WO-102").at(-1).evidence.productGate.evidenceRef,
-  "host-gate:review:npm test",
+  "host-gate:absent-runner:npm test",
 );
 on("WO-102")(["verify"]);
 report("docs/verifications/WO-102/VER-002.md", ["**Criterion 2:** unmet."]);

@@ -5979,7 +5979,7 @@ test("meter diff bytes include newly authored untracked source", (t) => {
   );
 });
 
-test("WO-145 optional economy support preserves historical snapshots through WO-195 and changes only executor instructions on", () => {
+test("WO-145 optional economy support preserves historical snapshots through WO-186 and changes only executor instructions on", () => {
   const historical = JSON.parse(
     readFileSync(
       join(source, "packages/skeleton/fixtures/wo145-role-baseline.json"),
@@ -5993,12 +5993,10 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
   // WO-157, WO-158, WO-161, WO-166, WO-168, WO-173 and WO-179 shared role edits
   // follow the same route. The integrated oracle preserves both WO-185's
   // upstream snapshot and WO-195's original planner/release-close snapshot.
+  // WO-186's default-root record admission preserves that integrated snapshot.
   const baseline = JSON.parse(
     readFileSync(
-      join(
-        source,
-        "packages/skeleton/fixtures/wo195-integrated-role-baseline.json",
-      ),
+      join(source, "packages/skeleton/fixtures/wo186-role-baseline.json"),
       "utf8",
     ),
   );
@@ -9618,15 +9616,23 @@ test("WO-131 prompt submission stays open while dispatches retain the ordinary c
       context.includes(`${usage}\n`) || context.endsWith(usage),
       `${session} is given its own usage readback`,
     );
-    return context
-      .replace(usage, "\nDotLn session: <session>. Usage readback: <command>")
-      .slice(context.indexOf("\nRepair docs/"))
-      .split("\nObserved facts at ", 1)[0]
-      .replace(
-        /\n+warning: host beacon projection unavailable; transition recorded, do not retry the transition(?=\n|$)/u,
-        "",
-      )
-      .replace(scratch, "/dotln/<session-key>/scratch. ");
+    return (
+      context
+        .replace(usage, "\nDotLn session: <session>. Usage readback: <command>")
+        .slice(context.indexOf("\nRepair docs/"))
+        .split("\nObserved facts at ", 1)[0]
+        .replace(
+          /\n+warning: host beacon projection unavailable; transition recorded, do not retry the transition(?=\n|$)/u,
+          "",
+        )
+        // So does the guard registration a dispatch attempts: its advisory
+        // appears only where no ancestor of the gate is an agent process.
+        .replace(
+          /\n+DotLn guard registration unavailable: [^\n]*; gate and bounded-command supervision remain active\.(?=\n|$)/u,
+          "",
+        )
+        .replace(scratch, "/dotln/<session-key>/scratch. ")
+    );
   };
   const supportsOf = (message) =>
     /; equipped supports: (.+)\.$/.exec(message)?.[1];

@@ -1,0 +1,26 @@
+
+> plan
+> node scripts/refute-plan.mjs conditions
+
+Reopening conditions at 2026-10-05T06:49:43.581Z; 31.779 s.
+Host load averages: 7.84619140625, 6.52294921875, 5.76611328125; 16 logical CPUs; other activity unknown.
+| Source | Measurement | Value | Threshold | Holds |
+| --- | --- | --- | --- | --- |
+| FUP-fb8cbeabbddef397 (historical: FUP-3dc0266d6b87b939, FUP-ab1746dc9c595d95) | plan-check: median of three fresh plan checks | 2.864508041 s | > 8 | false |
+| WO-086-D006 | release-tags: local annotated release tags absent from the generated table | 3 tags | > 3 | false |
+| FUP-8a4e201d861208ad | order-evidence: distinct blob bytes under each of the last two closed orders' evidence paths at HEAD | [1493614,506434] bytes/order | > 1000000 in 2 consecutive orders | false |
+| FUP-8a4e201d861208ad, FUP-be1103fbfdd14653 | week-evidence: positive tracked evidence size additions since Monday 00:00 UTC | 0 bytes/week | > 10000000 | false |
+| FUP-7f9a27e6ed6c44b3 | collect-sources: median of three fresh console collectSources calls | 0.9300672910000001 s | > 3 | false |
+| FUP-7f9a27e6ed6c44b3 | release-list: median of three fresh release lists, cache disabled without changing it | 3.257777625 s | > 10 | false |
+| FUP-7f9a27e6ed6c44b3 | status-bytes: UTF-8 stdout of status --all --json | 4511873 bytes | > 32000000 | false |
+| FUP-7f9a27e6ed6c44b3 | order-index: median of three readIndex/renderIndex calls, without writing | 1.6785607910000002 s | > 10 | false |
+| FUP-fb8cbeabbddef397 | document-gate: median of three fresh document gates (--slow) | unknown s | > 30 | unknown (not measured; use --slow) |
+| FUP-fb8cbeabbddef397 | docs-check: median of the docs-check tasks in those same three gates (--slow) | unknown s | > 15 | unknown (not measured; use --slow) |
+| FUP-e96221b106cd136a | plain-gate: thirty-day median of fresh complete plain gates; legacy product-only selections inferred from required suites | 294.0575 s | > 360 | false |
+| FUP-e96221b106cd136a | gate-task:harness-fixtures: latest fresh task against its earlier thirty-day median; median 249.95 s (190 samples) | 312.473 s | > 374.92499999999995 | false |
+| FUP-e96221b106cd136a | gate-task:skeleton: latest fresh task against its earlier thirty-day median; median 297.845 s (522 samples) | 229.907 s | > 446.76750000000004 | false |
+| FUP-e96221b106cd136a | gate-task:worktree-integration: latest fresh task against its earlier thirty-day median; median 120.743 s (361 samples) | 226.064 s | > 181.1145 | true |
+| FUP-e96221b106cd136a | gate-task:target-publish: latest fresh task against its earlier thirty-day median; median 14.9725 s (304 samples) | 144.957 s | > 22.458750000000002 | true |
+| FUP-e96221b106cd136a | gate-task:worktree: latest fresh task against its earlier thirty-day median; median 84.022 s (557 samples) | 119.023 s | > 126.03300000000002 | false |
+| WO-150-D003 | coldStartBytes.executor: meter's budget/order measurements; a later reopens record settles it | [29237] metric | > 24576 | true |
+3 hold; 2 unknown. Not evaluated: 1529 decision conditions and 875 register rows.

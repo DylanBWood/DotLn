@@ -24,4 +24,11 @@ export const DOCUMENT_GATE_STUBS = [
   "meta.mjs",
   "check-registrations.mjs",
   "build.mjs",
+  "license-surfaces.mjs",
+  "test-resume.sh",
+  "test-resident-bind.mjs",
+  "probes/local-runner-smoke.test.mjs",
+  "probes/local-runner-load.test.mjs",
+  "probes/local-model-transport-smoke.test.mjs",
+  "probes/local-model-role-qualification.test.mjs",
 ];

@@ -67,15 +67,31 @@ export function suiteEnvironment(env = process.env, gateContext) {
   return child;
 }
 
-/** Every declared task must actually execute and pass exactly once. */
-export function completeCoverage(table, rows) {
+/** Each selected task has one executed pass, fresh or named in a source row. */
+export function completeCoverage(table, rows, codeIdentity) {
   return (
     rows.length === table.length &&
     new Set(rows.map((row) => row.name)).size === rows.length &&
     table.every((job) =>
       rows.some(
         (row) =>
-          row.name === job.name && row.exitCode === 0 && row.executed === true,
+          row.name === job.name &&
+          row.exitCode === 0 &&
+          row.executed === true &&
+          !row.stopped &&
+          !row.failureKind &&
+          !row.timedOut &&
+          (row.partial === undefined || row.partial === false) &&
+          (row.excludedSuites === undefined ||
+            (Array.isArray(row.excludedSuites) &&
+              row.excludedSuites.length === 0)) &&
+          (!row.reused ||
+            (row.sourceRow?.task === row.name &&
+              typeof row.sourceRow.evidenceRef === "string" &&
+              row.sourceRow.evidenceRef.length > 0 &&
+              Number.isFinite(Date.parse(row.sourceRow.recordedAt)) &&
+              typeof codeIdentity === "string" &&
+              row.sourceRow.codeIdentity === codeIdentity)),
       ),
     )
   );

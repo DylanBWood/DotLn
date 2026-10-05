@@ -20,6 +20,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 import {
   suites,
   validateSuites,
@@ -304,7 +305,7 @@ test("release shell changes select their inventory guard during review", async (
   );
 });
 
-test("WO-173 npm test reuses a passing complete row of a covering selection at the same code identity; --again, a changed source, a failed row, a partial row and a plain row under --review run the gate", async (t) => {
+test("WO-186 npm test records composed task rows; --again, --review, changed code and unusable observations run fresh", async (t) => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-gate-reuse-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   const fixtureGitOptions = {
@@ -367,12 +368,8 @@ test("WO-173 npm test reuses a passing complete row of a covering selection at t
   console.log = (line) => lines.push(String(line));
   t.after(() => (console.log = log));
   const gate = (args) => runGate(["--serial", ...args], repo, { table });
-  const rx = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const reuseLine = (check, review = false) =>
-    new RegExp(
-      `^npm test: a passing complete row of a selection that covers this one already exists at code identity ${check.codeIdentity} \\(recorded ${rx(check.recordedAt)}, [\\d.]+ s, ${check.requiredSuites.length} suites, ${rx(check.evidenceRef)}\\); no suite started\\. Run npm test -- --again${review ? " --review" : ""} to run it anyway\\.$`,
-      "m",
-    );
+  const reuseLine = (row) =>
+    `npm test: ${row.taskTimeline.length} passing task results at code identity ${row.codeIdentity}; no suite started; sources: worktree row recorded ${row.recordedAt} (${row.evidenceRef}). Complete composed row recorded. Run npm test -- --again to run it anyway.`;
   const identity = gateCodeIdentity(repo);
   const first = await gate([]);
   assert.equal(first.exitCode, 0);
@@ -382,15 +379,15 @@ test("WO-173 npm test reuses a passing complete row of a covering selection at t
   assert.deepEqual(observed(), ["build", "alpha"]);
   assert.equal(rows().length, 1);
   // The same selection at the same code identity: the row is printed, no
-  // suite starts and nothing is recorded; publication still finds that row.
+  // suite starts; a complete composed row retains the task source pointers.
   lines.length = 0;
   const reused = await gate([]);
   assert.equal(reused.exitCode, 0);
   assert.equal(reused.reused, true);
   assert.equal(reused.evidenceRef, first.evidenceRef);
   assert.deepEqual(observed(), ["build", "alpha"]);
-  assert.equal(rows().length, 1);
-  assert.match(lines.join("\n"), reuseLine(first));
+  assert.equal(rows().length, 2);
+  assert.equal(lines.join("\n"), reuseLine(first));
   assert.equal(
     findGateCheck(repo, "npm test", gateTreeHash(repo)).evidenceRef,
     first.evidenceRef,
@@ -400,12 +397,12 @@ test("WO-173 npm test reuses a passing complete row of a covering selection at t
   assert.equal(again.exitCode, 0);
   assert.equal(again.reused, undefined);
   assert.deepEqual(observed(), ["build", "alpha", "build", "alpha"]);
-  assert.equal(rows().length, 2);
+  assert.equal(rows().length, 3);
   // --fresh keeps its meaning and runs the selection too.
   const fresh = await gate(["--fresh"]);
   assert.equal(fresh.reused, undefined);
   assert.equal(observed().length, 6);
-  assert.equal(rows().length, 3);
+  assert.equal(rows().length, 4);
   // A plain row under --review runs the gate: the selection holds the
   // machinery suite the branch's change selects, which no row covers yet.
   const review = await gate(["--review"]);
@@ -413,18 +410,18 @@ test("WO-173 npm test reuses a passing complete row of a covering selection at t
   assert.equal(review.reused, undefined);
   assert.deepEqual(review.requiredSuites, ["build", "alpha", "machine"]);
   assert.deepEqual(observed().slice(6), ["build", "alpha", "machine"]);
-  assert.equal(rows().length, 4);
-  // The review row now covers both forms.
+  assert.equal(rows().length, 5);
+  // Review remains forced fresh even with a covering row; plain may reuse it.
   lines.length = 0;
   const reviewAgain = await gate(["--review"]);
-  assert.equal(reviewAgain.reused, true);
+  assert.equal(reviewAgain.reused, undefined);
   assert.equal(reviewAgain.evidenceRef, review.evidenceRef);
-  assert.match(lines.join("\n"), reuseLine(review, true));
+  assert.deepEqual(observed().slice(9), ["build", "alpha", "machine"]);
   const plainAfterReview = await gate([]);
   assert.equal(plainAfterReview.reused, true);
   assert.equal(plainAfterReview.evidenceRef, review.evidenceRef);
-  assert.equal(observed().length, 9);
-  assert.equal(rows().length, 4);
+  assert.equal(observed().length, 12);
+  assert.equal(rows().length, 7);
   // A changed source file moves the code identity, and the gate runs.
   writeFileSync(
     source("alpha"),
@@ -433,12 +430,15 @@ test("WO-173 npm test reuses a passing complete row of a covering selection at t
   assert.notEqual(gateCodeIdentity(repo), identity);
   const changed = await gate([]);
   assert.equal(changed.reused, undefined);
-  assert.equal(observed().length, 11);
+  assert.equal(observed().length, 14);
   assert.equal(changed.codeIdentity, gateCodeIdentity(repo));
   // A failed row and a partial row at the current identity never satisfy the
   // lookup, whoever recorded them.
   for (const [label, extra] of [
-    ["failed", { exitCode: 1, evidenceRef: "fixture:failed" }],
+    [
+      "failed",
+      { exitCode: 1, identityUnchanged: false, evidenceRef: "fixture:failed" },
+    ],
     [
       "partial",
       {
@@ -1101,15 +1101,35 @@ test("only and document CLI selection execute their declared checks with the pro
     // The stub list is the registration check's own input (WO-157 item 13).
     const { DOCUMENT_GATE_STUBS } =
       await import("./lib/document-gate-stubs.mjs");
-    for (const file of DOCUMENT_GATE_STUBS)
+    for (const file of DOCUMENT_GATE_STUBS) {
+      const target = join(repo, "scripts", file);
+      mkdirSync(dirname(target), { recursive: true });
       writeFileSync(
-        join(repo, "scripts", file),
-        file.endsWith(".mjs")
-          ? observer
-              .replace('require("node:fs")', "fs")
-              .replace(/^/, 'import fs from "node:fs";\n')
-          : observer,
+        target,
+        file.endsWith(".sh")
+          ? "#!/usr/bin/env bash\nexec " +
+              JSON.stringify(process.execPath) +
+              " --input-type=module -e " +
+              "'" +
+              observer
+                .replace('require("node:fs")', "fs")
+                .replace(/^/, 'import fs from "node:fs";\n') +
+              "'" +
+              ' "$0" "$@"\n'
+          : file.endsWith(".mjs")
+            ? observer
+                .replace('require("node:fs")', "fs")
+                .replace(/^/, 'import fs from "node:fs";\n')
+            : observer,
       );
+    }
+    mkdirSync(join(repo, "corpus/harness"), { recursive: true });
+    writeFileSync(
+      join(repo, "corpus/harness/wo101-id-corpus.test.mjs"),
+      observer
+        .replace('require("node:fs")', "fs")
+        .replace(/^/, 'import fs from "node:fs";\n'),
+    );
     for (const name of ["kernel", "skeleton", "console"]) {
       const directory = join(repo, `packages/${name}/dist/test`);
       mkdirSync(directory, { recursive: true });
@@ -1138,7 +1158,13 @@ test("only and document CLI selection execute their declared checks with the pro
       .trim()
       .split("\n")
       .map(JSON.parse);
-    const documentCount = suites.filter((row) => row.document).length + 1;
+    const documentCount =
+      suites.filter((row) => row.document).length +
+      1 +
+      suites
+        .find((row) => row.name === "local-runner-double")
+        .command.filter((part) => part.endsWith(".mjs")).length -
+      1;
     assert.equal(observed.length, 1 + documentCount);
     assert.ok(observed.some((row) => row[0].includes("build")));
     assert.deepEqual(observed.at(-1).slice(1), ["check"]);
@@ -2695,4 +2721,2472 @@ test("WO-160 document failures rerun at the base, retain red status and record i
     ],
   });
   assert.equal(missingGlob.failureComparisons[0].classification, "unknown");
+});
+
+// WO-186: exercise actual child commands and durable rows across shell/session
+// boundaries, rather than an in-memory scheduler double.
+function taskReuseFixture(t) {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-task-reuse-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  for (const args of [
+    ["init", "-q", "-b", "main"],
+    ["config", "maintenance.auto", "false"],
+    ["config", "user.name", "Fixture"],
+    ["config", "user.email", "fixture@example.invalid"],
+  ])
+    runGit(repo, args);
+  mkdirSync(join(repo, "scripts"));
+  writeFileSync(
+    join(repo, ".gitignore"),
+    "docs/control/local/\nobserved.jsonl\nfail-beta\n",
+  );
+  for (const name of ["build", "alpha", "beta", "machine"])
+    writeFileSync(
+      join(repo, `scripts/${name}.mjs`),
+      `import fs from "node:fs"; fs.appendFileSync("observed.jsonl", ${JSON.stringify(name + "\n")});\n` +
+        (name === "beta"
+          ? 'if(fs.existsSync("fail-beta"))process.exit(1);\n'
+          : ""),
+    );
+  runGit(repo, ["add", "."]);
+  runGit(repo, ["commit", "-qm", "task reuse fixture"]);
+  const table = [
+    {
+      name: "build",
+      build: true,
+      product: true,
+      // This build publishes nothing a task consumes.
+      outputs: [],
+      command: [process.execPath, "scripts/build.mjs"],
+    },
+    ...["alpha", "beta"].map((name) => ({
+      name,
+      product: true,
+      command: [process.execPath, `scripts/${name}.mjs`],
+    })),
+    {
+      name: "machine",
+      machinery: true,
+      sources: ["scripts/machine.mjs"],
+      command: [process.execPath, "scripts/machine.mjs"],
+    },
+  ];
+  const observed = (directory = repo) =>
+    existsSync(join(directory, "observed.jsonl"))
+      ? readFileSync(join(directory, "observed.jsonl"), "utf8")
+          .trim()
+          .split("\n")
+      : [];
+  return { repo, table, observed };
+}
+
+const gateProof = (row) => ({
+  codeIdentity: row.codeIdentity,
+  evidenceRef: row.evidenceRef,
+  recordedAt: row.recordedAt,
+  executionMode: row.executionMode,
+  freshSuites: row.freshSuites,
+  reusedSuites: row.reusedSuites,
+  exitCode: row.exitCode,
+  tasks: row.taskTimeline.map(
+    ({ name, executed, exitCode, reused, sourceRow }) => ({
+      name,
+      executed,
+      exitCode,
+      ...(reused ? { reused, sourceRow } : {}),
+    }),
+  ),
+});
+
+function gateInAnotherSession(repo, table, session) {
+  const code =
+    `import {runGate} from ${JSON.stringify(new URL("./test-runner.mjs", import.meta.url).href)};\n` +
+    `const row=await runGate(["--serial"],${JSON.stringify(repo)},{table:${JSON.stringify(table)}});console.log("ROW "+JSON.stringify(row));process.exitCode=row.exitCode;`;
+  const result = spawnSync(
+    "bash",
+    [
+      "-c",
+      'exec "$1" --input-type=module -e "$2"',
+      session,
+      process.execPath,
+      code,
+    ],
+    {
+      cwd: repo,
+      encoding: "utf8",
+      // Outside a gate the nested gate waits for host lanes like any other.
+      timeout: 120000,
+      maxBuffer: 16 * 1024 * 1024,
+      env: {
+        ...process.env,
+        DOTLN_SESSION_ID: session,
+        CODEX_THREAD_ID: session,
+      },
+    },
+  );
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  return JSON.parse(
+    result.stdout
+      .split("\n")
+      .find((line) => line.startsWith("ROW "))
+      .slice(4),
+  );
+}
+
+test("WO-186 one failed task reruns alone in another shell and session, composes a claimable row and keeps review fresh", async (t) => {
+  const { repo, table, observed } = taskReuseFixture(t);
+  writeFileSync(join(repo, "fail-beta"), "fail\n");
+  const first = await runGate(["--serial", "--again"], repo, { table });
+  assert.equal(first.exitCode, 1);
+  assert.equal(first.identityUnchanged, true);
+  assert.deepEqual(observed(), ["build", "alpha", "beta"]);
+  rmSync(join(repo, "fail-beta"));
+  const code =
+    `import {runGate} from ${JSON.stringify(new URL("./test-runner.mjs", import.meta.url).href)};\n` +
+    `const row = await runGate(["--serial"], ${JSON.stringify(repo)}, {table:${JSON.stringify(table)}}); console.log("ROW " + JSON.stringify(row)); process.exitCode = row.exitCode;`;
+  const result = spawnSync(
+    "bash",
+    [
+      "-c",
+      'exec "$1" --input-type=module -e "$2"',
+      "task-reuse-second-session",
+      process.execPath,
+      code,
+    ],
+    {
+      cwd: repo,
+      encoding: "utf8",
+      maxBuffer: 16 * 1024 * 1024,
+      env: {
+        ...process.env,
+        DOTLN_SESSION_ID: "task-reuse-second-session",
+        CODEX_THREAD_ID: "task-reuse-second-session",
+      },
+    },
+  );
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  const second = JSON.parse(
+    result.stdout
+      .split("\n")
+      .find((line) => line.startsWith("ROW "))
+      .slice(4),
+  );
+  assert.deepEqual(observed(), ["build", "alpha", "beta", "beta"]);
+  assert.equal(second.freshSuites, 1);
+  assert.equal(second.reusedSuites, 2);
+  for (const name of ["build", "alpha"]) {
+    const pass = second.taskTimeline.find((row) => row.name === name);
+    assert.equal(pass.sourceRow.recordedAt, first.recordedAt);
+    assert.equal(pass.sourceRow.codeIdentity, first.codeIdentity);
+    assert.equal(pass.sourceRow.task, name);
+  }
+  assert.equal(
+    second.taskTimeline.find((row) => row.name === "beta").reused,
+    undefined,
+  );
+  const { requireGateClaims } = await import("./lib/handoff-ledger.mjs");
+  const claim = await requireGateClaims(repo, {
+    checked: true,
+    claims: { plain: ["3"], review: [], document: [] },
+  });
+  assert.equal(claim.productGate.codeIdentity, second.codeIdentity);
+  assert.deepEqual(claim.advisories, []);
+  t.diagnostic(
+    "PROOF WO-186 task reuse " +
+      JSON.stringify({
+        shell: "bash",
+        session: "task-reuse-second-session",
+        first: gateProof(first),
+        second: gateProof(second),
+        claimAccepted: true,
+      }),
+  );
+  for (const args of [["--again"], ["--review"]]) {
+    const before = observed().length;
+    const fresh = await runGate(["--serial", ...args], repo, { table });
+    assert.equal(fresh.exitCode, 0);
+    assert.equal(fresh.reusedSuites, 0);
+    assert.deepEqual(observed().slice(before), ["build", "alpha", "beta"]);
+  }
+});
+
+test("WO-186 stopped, partial, timed-out and failed task observations never reuse; untracked edits invalidate and staging is stable", async (t) => {
+  const { repo, table, observed } = taskReuseFixture(t);
+  const first = await runGate(["--serial", "--again"], repo, { table });
+  const { coveringTaskResults } = await import("./lib/gate-reuse.mjs");
+  for (const extra of [
+    { stopped: true },
+    { partial: true },
+    { partial: null },
+    { partial: 0 },
+    { excludedSuites: ["missing"] },
+    { timedOut: true },
+    { exitCode: 1 },
+    { failureKind: "timeout" },
+  ]) {
+    writeFileSync(join(repo, "scripts/new.mjs"), JSON.stringify(extra));
+    const identity = gateCodeIdentity(repo);
+    recordGateChecks(repo, [
+      {
+        ...first,
+        codeIdentity: identity,
+        evidenceRef: "fixture:unusable-task",
+        recordedAt: new Date().toISOString(),
+        taskTimeline: first.taskTimeline.map((task) => ({ ...task, ...extra })),
+      },
+    ]);
+    assert.equal(
+      (await coveringTaskResults(repo, "npm test", table, identity)).results
+        .size,
+      0,
+      JSON.stringify(extra),
+    );
+  }
+  const green = await runGate(["--serial", "--again"], repo, { table });
+  writeFileSync(join(repo, "scripts/new.mjs"), "export const change = 2;\n");
+  assert.notEqual(gateCodeIdentity(repo), green.codeIdentity);
+  const edited = gateCodeIdentity(repo);
+  runGit(repo, ["add", "scripts/new.mjs"]);
+  assert.equal(gateCodeIdentity(repo), edited);
+  const before = observed().length;
+  const fresh = await runGate(["--serial"], repo, { table });
+  assert.equal(fresh.reusedSuites, 0);
+  assert.deepEqual(observed().slice(before), ["build", "alpha", "beta"]);
+});
+
+test("WO-186 a fresh worktree reads main's passes without modifying main, while a changed source runs", async (t) => {
+  const { repo, table, observed } = taskReuseFixture(t);
+  const first = await runGate(["--serial", "--again"], repo, { table });
+  const index = join(repo, "docs/control/local/harness/checks.json");
+  const bytes = readFileSync(index);
+  const worktree = join(dirname(repo), `${repo.split("/").at(-1)}-worktree`);
+  t.after(() => rmSync(worktree, { recursive: true, force: true }));
+  runGit(repo, ["worktree", "add", "-q", "-b", "work", worktree]);
+  assert.equal(gateCodeIdentity(worktree), first.codeIdentity);
+  const reused = gateInAnotherSession(
+    worktree,
+    table,
+    "main-reuse-second-session",
+  );
+  assert.equal(reused.exitCode, 0);
+  assert.equal(reused.freshSuites, 0);
+  assert.equal(reused.reusedSuites, 3);
+  assert.deepEqual(observed(worktree), []);
+  assert.ok(
+    reused.taskTimeline.every((row) => row.sourceRow.location === "main"),
+  );
+  assert.deepEqual(readFileSync(index), bytes);
+  t.diagnostic(
+    "PROOF WO-186 main reuse " +
+      JSON.stringify({
+        shell: "bash",
+        session: "main-reuse-second-session",
+        main: gateProof(first),
+        worktree: gateProof(reused),
+        mainUnchanged: true,
+        suitesStarted: observed(worktree),
+      }),
+  );
+  writeFileSync(
+    join(worktree, "scripts/alpha.mjs"),
+    readFileSync(join(worktree, "scripts/alpha.mjs"), "utf8") + "// own edit\n",
+  );
+  const changed = gateInAnotherSession(
+    worktree,
+    table,
+    "main-reuse-changed-session",
+  );
+  assert.equal(changed.reusedSuites, 0);
+  assert.deepEqual(observed(worktree), ["build", "alpha", "beta"]);
+  assert.deepEqual(readFileSync(index), bytes);
+});
+
+// VER-001 F1: the build publishes an ignored output from identity-covered
+// source and beta judges that output, as a compiled package and its tests do.
+function builtOutputFixture(t) {
+  const fixture = taskReuseFixture(t);
+  const { repo } = fixture;
+  writeFileSync(
+    join(repo, ".gitignore"),
+    readFileSync(join(repo, ".gitignore"), "utf8") + "built-value\n",
+  );
+  writeFileSync(
+    join(repo, "scripts/build.mjs"),
+    'import fs from "node:fs"; fs.appendFileSync("observed.jsonl", "build\\n");\n' +
+      'fs.copyFileSync("scripts/value.mjs", "built-value");\n',
+  );
+  writeFileSync(
+    join(repo, "scripts/beta.mjs"),
+    'import fs from "node:fs"; fs.appendFileSync("observed.jsonl", "beta\\n");\n' +
+      'if(fs.existsSync("fail-beta")||fs.readFileSync("built-value","utf8").includes("bad"))process.exit(1);\n',
+  );
+  const value = (text) =>
+    writeFileSync(
+      join(repo, "scripts/value.mjs"),
+      `export default ${JSON.stringify(text)};\n`,
+    );
+  const task = (row, name) =>
+    row.taskTimeline.find((item) => item.name === name);
+  const table = fixture.table.map((row) =>
+    row.build ? { ...row, outputs: ["built-value"] } : row,
+  );
+  return { ...fixture, table, value, task };
+}
+
+test("WO-186 VER-001 a build output made at another identity is rebuilt before a task runs, so a returned-to identity keeps its failure", async (t) => {
+  const { repo, table, observed, value, task } = builtOutputFixture(t);
+  value("bad");
+  const a = gateCodeIdentity(repo);
+  const failed = await runGate(["--serial"], repo, { table });
+  assert.equal(failed.exitCode, 1);
+  assert.equal(failed.codeIdentity, a);
+  assert.equal(failed.identityUnchanged, true);
+  value("good");
+  const elsewhere = await runGate(["--serial"], repo, { table });
+  assert.equal(elsewhere.exitCode, 0);
+  assert.notEqual(elsewhere.codeIdentity, a);
+  // Source returns to A while the ignored output still holds B's build.
+  value("bad");
+  assert.equal(gateCodeIdentity(repo), a);
+  assert.match(readFileSync(join(repo, "built-value"), "utf8"), /good/u);
+  const before = observed().length;
+  const returned = await runGate(["--serial"], repo, { table });
+  assert.deepEqual(observed().slice(before), ["build", "beta"]);
+  assert.equal(returned.exitCode, 1);
+  assert.equal(returned.codeIdentity, a);
+  assert.equal(task(returned, "build").reused, undefined);
+  assert.equal(task(returned, "beta").exitCode, 1);
+  assert.equal(task(returned, "alpha").sourceRow.recordedAt, failed.recordedAt);
+  const { requireGateClaims } = await import("./lib/handoff-ledger.mjs");
+  await assert.rejects(
+    () =>
+      requireGateClaims(repo, {
+        checked: true,
+        claims: { plain: ["3"], review: [], document: [] },
+      }),
+    /no passing complete npm test row/u,
+  );
+  // With A's output back on disk the build's pass is carried again: beta
+  // alone runs, against A's build, and still fails.
+  const again = observed().length;
+  const repeated = await runGate(["--serial"], repo, { table });
+  assert.deepEqual(observed().slice(again), ["beta"]);
+  assert.equal(repeated.exitCode, 1);
+  assert.equal(task(repeated, "build").outputAttested, true);
+  assert.equal(
+    task(repeated, "build").sourceRow.recordedAt,
+    returned.recordedAt,
+  );
+});
+
+test("WO-186 VER-001 a task's latest executed result decides: a forced-fresh failure runs again, and a carried result names the row that executed it", async (t) => {
+  const { repo, table, observed, value, task } = builtOutputFixture(t);
+  value("good");
+  const green = await runGate(["--serial"], repo, { table });
+  assert.equal(green.exitCode, 0);
+  writeFileSync(join(repo, "fail-beta"), "fail\n");
+  const forced = await runGate(["--serial", "--again"], repo, { table });
+  assert.equal(forced.exitCode, 1);
+  assert.equal(forced.codeIdentity, green.codeIdentity);
+  assert.equal(forced.identityUnchanged, true);
+  // The older complete pass no longer answers for beta: the claim check
+  // refuses it and names the task, and beta runs alone beside the attested
+  // build.
+  const { coveringGateCheck } = await import("./lib/gate-reuse.mjs");
+  const { requireGateClaims } = await import("./lib/handoff-ledger.mjs");
+  const ledger = {
+    checked: true,
+    claims: { plain: ["3"], review: [], document: [] },
+  };
+  const refused = await coveringGateCheck(repo, "npm test", []);
+  assert.equal(refused.row, undefined);
+  assert.equal(refused.displaced.row.recordedAt, green.recordedAt);
+  assert.deepEqual(refused.displaced.tasks, ["beta"]);
+  await assert.rejects(
+    () => requireGateClaims(repo, ledger),
+    /no passing complete npm test row stands[^]*names beta, whose latest execution there can no longer be carried/u,
+  );
+  let before = observed().length;
+  const stillFailing = await runGate(["--serial"], repo, { table });
+  assert.deepEqual(observed().slice(before), ["beta"]);
+  assert.equal(stillFailing.exitCode, 1);
+  assert.equal(task(stillFailing, "build").outputAttested, true);
+  await assert.rejects(
+    () => requireGateClaims(repo, ledger),
+    /can no longer be carried/u,
+  );
+  rmSync(join(repo, "fail-beta"));
+  before = observed().length;
+  const repaired = await runGate(["--serial"], repo, { table });
+  assert.deepEqual(observed().slice(before), ["beta"]);
+  assert.equal(repaired.exitCode, 0);
+  assert.equal(repaired.executionMode, "composed");
+  assert.equal(task(repaired, "beta").reused, undefined);
+  // Build and alpha last ran in the forced-fresh attempt, not in the first
+  // green row.
+  for (const name of ["build", "alpha"])
+    assert.equal(task(repaired, name).sourceRow.recordedAt, forced.recordedAt);
+  // With every task settled no suite starts, and each carried result names
+  // its executing row rather than the composed row it passed through.
+  before = observed().length;
+  const settled = await runGate(["--serial"], repo, { table });
+  assert.deepEqual(observed().slice(before), []);
+  assert.equal(settled.exitCode, 0);
+  assert.equal(settled.reusedSuites, 3);
+  for (const name of ["build", "alpha"])
+    assert.equal(task(settled, name).sourceRow.recordedAt, forced.recordedAt);
+  assert.equal(task(settled, "beta").sourceRow.recordedAt, repaired.recordedAt);
+  const claim = await requireGateClaims(repo, ledger);
+  assert.equal(claim.productGate.codeIdentity, green.codeIdentity);
+  assert.deepEqual(claim.advisories, []);
+  // Once beta's latest run passes, the first green row stands again too, as
+  // a review row does after a flaky task is rerun.
+  const standing = await coveringGateCheck(repo, "npm test", []);
+  assert.equal(standing.displaced, undefined);
+  assert.ok(
+    standing.candidates.some((row) => row.recordedAt === green.recordedAt),
+  );
+});
+
+test("WO-186 VER-001 a build output that changes while the gate runs fails the row and none of its passes is carried", async (t) => {
+  const { repo, table, observed, value, task } = builtOutputFixture(t);
+  writeFileSync(
+    join(repo, ".gitignore"),
+    readFileSync(join(repo, ".gitignore"), "utf8") + "drift\n",
+  );
+  // Alpha stands for any writer that replaces the output after the build.
+  writeFileSync(
+    join(repo, "scripts/alpha.mjs"),
+    'import fs from "node:fs"; fs.appendFileSync("observed.jsonl", "alpha\\n");\n' +
+      'if(fs.existsSync("drift"))fs.writeFileSync("built-value","export default \\"good\\";\\n");\n',
+  );
+  value("bad");
+  writeFileSync(join(repo, "drift"), "drift\n");
+  const drifted = await runGate(["--serial", "--again"], repo, { table });
+  // Beta passed against an output this identity's build never made.
+  assert.equal(task(drifted, "beta").exitCode, 0);
+  assert.equal(drifted.identityUnchanged, true);
+  assert.equal(drifted.buildOutputUnchanged, false);
+  assert.equal(drifted.exitCode, 1);
+  const { coveringTaskResults } = await import("./lib/gate-reuse.mjs");
+  assert.equal(
+    (await coveringTaskResults(repo, "npm test", table)).results.size,
+    0,
+  );
+  rmSync(join(repo, "drift"));
+  const before = observed().length;
+  const honest = await runGate(["--serial"], repo, { table });
+  assert.deepEqual(observed().slice(before), ["build", "alpha", "beta"]);
+  assert.equal(honest.buildOutputUnchanged, true);
+  assert.equal(honest.exitCode, 1);
+  assert.equal(task(honest, "beta").exitCode, 1);
+});
+
+test("WO-186 VER-001 an output changed or removed outside its attested build is rebuilt, and an undeclared output is never carried beside a task", async (t) => {
+  const { repo, table, observed, value, task } = builtOutputFixture(t);
+  value("good");
+  const failBeta = join(repo, "fail-beta");
+  writeFileSync(failBeta, "fail\n");
+  const first = await runGate(["--serial"], repo, { table });
+  assert.equal(first.exitCode, 1);
+  assert.match(task(first, "build").outputDigest, /^[a-f0-9]{64}$/u);
+  rmSync(failBeta);
+  // Another writer replaces the ignored output without a gate build. Carrying
+  // the build's pass would hand beta an output no row attested.
+  writeFileSync(join(repo, "built-value"), 'export default "bad";\n');
+  let before = observed().length;
+  const rebuilt = await runGate(["--serial"], repo, { table });
+  assert.deepEqual(observed().slice(before), ["build", "beta"]);
+  assert.equal(rebuilt.exitCode, 0);
+  assert.equal(task(rebuilt, "build").reused, undefined);
+  // A removed output is not attested either.
+  writeFileSync(failBeta, "fail\n");
+  assert.equal(
+    (await runGate(["--serial", "--again"], repo, { table })).exitCode,
+    1,
+  );
+  rmSync(failBeta);
+  rmSync(join(repo, "built-value"));
+  before = observed().length;
+  const restored = await runGate(["--serial"], repo, { table });
+  assert.deepEqual(observed().slice(before), ["build", "beta"]);
+  assert.equal(restored.exitCode, 0);
+  // A build row that declares no outputs records no digest, so its pass is
+  // never carried beside a task that runs.
+  const undeclared = table.map(({ outputs, ...row }) =>
+    row.build ? row : { ...row, ...(outputs ? { outputs } : {}) },
+  );
+  writeFileSync(failBeta, "fail\n");
+  const unattested = await runGate(["--serial", "--again"], repo, {
+    table: undeclared,
+  });
+  assert.equal(unattested.exitCode, 1);
+  assert.equal(task(unattested, "build").outputDigest, undefined);
+  rmSync(failBeta);
+  before = observed().length;
+  const fresh = await runGate(["--serial"], repo, { table: undeclared });
+  assert.deepEqual(observed().slice(before), ["build", "beta"]);
+  assert.equal(fresh.exitCode, 0);
+  // A row in which no task runs consumes no output and carries every pass.
+  before = observed().length;
+  const settled = await runGate(["--serial"], repo, { table: undeclared });
+  assert.deepEqual(observed().slice(before), []);
+  assert.equal(settled.reusedSuites, 3);
+});
+
+test("WO-186 VER-001 a later failed gate displaces older passes, and a carried result is never itself evidence", async (t) => {
+  const { repo, table } = taskReuseFixture(t);
+  const { coveringTaskResults } = await import("./lib/gate-reuse.mjs");
+  const carried = async (identity) =>
+    (await coveringTaskResults(repo, "npm test", table, identity)).results;
+  // Each gate-level failure follows a clean pass at the same identity. Every
+  // task passed inside the failed row, and the older clean row still exists.
+  for (const taint of [
+    { abandonedRoots: ["/tmp/dotln-host-confinement-left"] },
+    { memory: { failure: { failureKind: "memory-budget" } } },
+    { identityUnchanged: false },
+    { stopped: true },
+    { timedOut: true },
+    { failureKind: "monitor-unavailable" },
+  ]) {
+    const clean = await runGate(["--serial", "--again"], repo, { table });
+    assert.equal(clean.exitCode, 0);
+    assert.equal((await carried(clean.codeIdentity)).size, 3);
+    recordGateChecks(repo, [
+      {
+        ...clean,
+        exitCode: 1,
+        ...taint,
+        evidenceRef: "fixture:failed-gate",
+        recordedAt: new Date(Date.parse(clean.recordedAt) + 1).toISOString(),
+      },
+    ]);
+    assert.equal(
+      (await carried(clean.codeIdentity)).size,
+      0,
+      JSON.stringify(taint),
+    );
+  }
+  // One task's later timeout displaces that task alone.
+  const clean = await runGate(["--serial", "--again"], repo, { table });
+  recordGateChecks(repo, [
+    {
+      ...clean,
+      exitCode: 1,
+      identityUnchanged: true,
+      evidenceRef: "fixture:one-timeout",
+      recordedAt: new Date(Date.parse(clean.recordedAt) + 1).toISOString(),
+      taskTimeline: clean.taskTimeline.map((item) =>
+        item.name === "beta"
+          ? { ...item, exitCode: 1, timedOut: true, failureKind: "timeout" }
+          : item,
+      ),
+    },
+  ]);
+  assert.deepEqual([...(await carried(clean.codeIdentity)).keys()].sort(), [
+    "alpha",
+    "build",
+  ]);
+  // Overlapping gates: the row recorded last holds beta's earlier pass, and
+  // the row recorded first holds its later failure. The later run decides.
+  writeFileSync(join(repo, "scripts/new.mjs"), "export const overlap = 1;\n");
+  const overlapping = gateCodeIdentity(repo);
+  const base = Date.now() + 60_000;
+  const at = (ms) => new Date(base + ms).toISOString();
+  const overlap = (recordedMs, finishedMs, beta) => ({
+    ...clean,
+    codeIdentity: overlapping,
+    exitCode: beta.exitCode ?? 0,
+    identityUnchanged: true,
+    evidenceRef: `fixture:overlap-${recordedMs}`,
+    recordedAt: at(recordedMs),
+    taskTimeline: clean.taskTimeline.map((item) =>
+      item.name === "beta"
+        ? { ...item, ...beta, finishedAt: at(finishedMs) }
+        : { ...item, finishedAt: at(500) },
+    ),
+  });
+  recordGateChecks(repo, [
+    overlap(10_000, 1_000, {}),
+    overlap(8_000, 3_000, { exitCode: 1 }),
+  ]);
+  assert.deepEqual([...(await carried(overlapping)).keys()].sort(), [
+    "alpha",
+    "build",
+  ]);
+  // A result with no finish time cannot be ordered and supplies nothing.
+  const identityFor = (text) => {
+    writeFileSync(join(repo, "scripts/new.mjs"), text);
+    return gateCodeIdentity(repo);
+  };
+  const stamp = (ms) => new Date(Date.now() + ms).toISOString();
+  const unfinished = identityFor("export const unfinished = 1;\n");
+  recordGateChecks(repo, [
+    {
+      ...clean,
+      codeIdentity: unfinished,
+      evidenceRef: "fixture:unfinished",
+      recordedAt: stamp(0),
+      taskTimeline: clean.taskTimeline.map(({ finishedAt, ...item }) => item),
+    },
+  ]);
+  assert.equal((await carried(unfinished)).size, 0);
+  // A task that never started in a later row leaves its older pass carried.
+  const unstarted = identityFor("export const unstarted = 1;\n");
+  recordGateChecks(repo, [
+    {
+      ...clean,
+      codeIdentity: unstarted,
+      evidenceRef: "fixture:whole",
+      recordedAt: stamp(0),
+    },
+    {
+      ...clean,
+      codeIdentity: unstarted,
+      exitCode: 1,
+      identityUnchanged: true,
+      evidenceRef: "fixture:unstarted",
+      recordedAt: stamp(1000),
+      taskTimeline: clean.taskTimeline.map((item) =>
+        item.name === "beta"
+          ? { name: "beta", exitCode: 1, executed: false, durationMs: 0 }
+          : { ...item, finishedAt: stamp(1000) },
+      ),
+    },
+  ]);
+  assert.deepEqual([...(await carried(unstarted)).keys()].sort(), [
+    "alpha",
+    "beta",
+    "build",
+  ]);
+  // A later row that repeats a name cannot say which result ran: it supplies
+  // nothing and displaces every task it names.
+  recordGateChecks(repo, [
+    {
+      ...clean,
+      codeIdentity: unstarted,
+      evidenceRef: "fixture:repeated",
+      recordedAt: stamp(2000),
+      taskTimeline: [
+        ...clean.taskTimeline,
+        clean.taskTimeline.find((item) => item.name === "beta"),
+      ],
+    },
+  ]);
+  assert.equal((await carried(unstarted)).size, 0);
+  // A row holding only carried results supplies nothing at an identity with
+  // no execution, whatever source it names.
+  writeFileSync(join(repo, "scripts/new.mjs"), "export const lone = 1;\n");
+  const lone = gateCodeIdentity(repo);
+  recordGateChecks(repo, [
+    {
+      ...clean,
+      codeIdentity: lone,
+      evidenceRef: "fixture:carried-only",
+      recordedAt: new Date().toISOString(),
+      taskTimeline: clean.taskTimeline.map(({ name }) => ({
+        name,
+        executed: true,
+        exitCode: 0,
+        durationMs: 0,
+        reused: true,
+        sourceRow: {
+          task: name,
+          codeIdentity: lone,
+          evidenceRef: "fixture:absent",
+          recordedAt: clean.recordedAt,
+          location: "worktree",
+        },
+      })),
+    },
+  ]);
+  assert.equal((await carried(lone)).size, 0);
+});
+
+test("WO-186 VER-001 a pass carried from main is re-validated against main's latest execution", async (t) => {
+  const { repo, table, observed } = taskReuseFixture(t);
+  const first = await runGate(["--serial", "--again"], repo, { table });
+  const worktree = join(dirname(repo), `${repo.split("/").at(-1)}-revalidate`);
+  t.after(() => rmSync(worktree, { recursive: true, force: true }));
+  runGit(repo, ["worktree", "add", "-q", "-b", "work", worktree]);
+  const carried = await runGate(["--serial"], worktree, { table });
+  assert.equal(carried.freshSuites, 0);
+  assert.deepEqual(observed(worktree), []);
+  // Main then fails beta at the same identity in a forced-fresh run.
+  writeFileSync(join(repo, "fail-beta"), "fail\n");
+  const mainFailed = await runGate(["--serial", "--again"], repo, { table });
+  assert.equal(mainFailed.exitCode, 1);
+  assert.equal(mainFailed.codeIdentity, first.codeIdentity);
+  const index = join(repo, "docs/control/local/harness/checks.json");
+  const bytes = readFileSync(index);
+  const rerun = await runGate(["--serial"], worktree, { table });
+  assert.deepEqual(observed(worktree), ["beta"]);
+  assert.equal(rerun.exitCode, 0);
+  const task = (row, name) =>
+    row.taskTimeline.find((item) => item.name === name);
+  assert.equal(task(rerun, "beta").reused, undefined);
+  assert.equal(task(rerun, "alpha").sourceRow.location, "main");
+  assert.equal(
+    task(rerun, "alpha").sourceRow.recordedAt,
+    mainFailed.recordedAt,
+  );
+  assert.deepEqual(readFileSync(index), bytes);
+  // The worktree's own execution of beta now decides for it.
+  const settled = await runGate(["--serial"], worktree, { table });
+  assert.deepEqual(observed(worktree), ["beta"]);
+  assert.equal(settled.reusedSuites, 3);
+  assert.equal(task(settled, "beta").sourceRow.location, "worktree");
+  for (const name of ["build", "alpha"]) {
+    assert.equal(task(settled, name).sourceRow.location, "main");
+    assert.equal(
+      task(settled, name).sourceRow.recordedAt,
+      mainFailed.recordedAt,
+    );
+  }
+});
+
+test("WO-186 VER-001 an attested output is carried in another session, and a worktree without main's output builds before its task", async (t) => {
+  const { repo, table, observed, value, task } = builtOutputFixture(t);
+  value("good");
+  runGit(repo, ["add", "."]);
+  runGit(repo, ["commit", "-qm", "built output fixture"]);
+  writeFileSync(join(repo, "fail-beta"), "fail\n");
+  const first = await runGate(["--serial"], repo, { table });
+  assert.equal(first.exitCode, 1);
+  // A linked worktree at the same identity has never been built: main's
+  // build pass does not speak for an output that is not there.
+  const worktree = join(dirname(repo), `${repo.split("/").at(-1)}-unbuilt`);
+  t.after(() => rmSync(worktree, { recursive: true, force: true }));
+  runGit(repo, ["worktree", "add", "-q", "-b", "work", worktree]);
+  assert.equal(gateCodeIdentity(worktree), first.codeIdentity);
+  assert.equal(existsSync(join(worktree, "built-value")), false);
+  const built = gateInAnotherSession(worktree, table, "unbuilt-worktree");
+  assert.deepEqual(observed(worktree), ["build", "beta"]);
+  assert.equal(task(built, "build").reused, undefined);
+  assert.equal(task(built, "alpha").sourceRow.location, "main");
+  // With every task settled there, a further session starts no suite.
+  const settled = gateInAnotherSession(worktree, table, "settled-worktree");
+  assert.deepEqual(observed(worktree), ["build", "beta"]);
+  assert.equal(settled.reusedSuites, 3);
+  // In main the output is still the one its failed row attested, so another
+  // shell and session runs the failed task alone.
+  rmSync(join(repo, "fail-beta"));
+  const before = observed().length;
+  const rerun = gateInAnotherSession(repo, table, "attested-main");
+  assert.deepEqual(observed().slice(before), ["beta"]);
+  assert.equal(rerun.freshSuites, 1);
+  assert.equal(task(rerun, "build").outputAttested, true);
+  assert.equal(task(rerun, "build").sourceRow.recordedAt, first.recordedAt);
+});
+
+test("WO-186 VER-001 the build output digest covers wildcard directories by bytes and refuses what it cannot cover", async (t) => {
+  const { buildOutputDigest } = await import("./lib/gate-reuse.mjs");
+  const root = mkdtempSync(join(tmpdir(), "dotln-output-digest-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  for (const name of ["a", "b"]) {
+    mkdirSync(join(root, `pk/${name}/dist/src`), { recursive: true });
+    writeFileSync(join(root, `pk/${name}/dist/src/index.js`), `${name}-one\n`);
+  }
+  mkdirSync(join(root, "pk/unbuilt/src"), { recursive: true });
+  // Finder leaves this plain file beside the package directories.
+  writeFileSync(join(root, "pk/.DS_Store"), "metadata\n");
+  const wildcard = ["pk/*/dist"];
+  const digest = buildOutputDigest(root, wildcard);
+  assert.match(digest, /^[a-f0-9]{64}$/u);
+  // The wildcard names the same files as the directories spelled out.
+  assert.equal(buildOutputDigest(root, ["pk/a/dist", "pk/b/dist"]), digest);
+  assert.notEqual(buildOutputDigest(root, ["pk/a/dist"]), digest);
+  // Bytes decide, also at an unchanged length; metadata beside or inside the
+  // output does not.
+  writeFileSync(join(root, "pk/b/dist/src/index.js"), "b-two\n");
+  const changed = buildOutputDigest(root, wildcard);
+  assert.notEqual(changed, digest);
+  writeFileSync(join(root, "pk/.DS_Store"), "other metadata\n");
+  writeFileSync(join(root, "pk/a/dist/.DS_Store"), "metadata\n");
+  assert.equal(buildOutputDigest(root, wildcard), changed);
+  writeFileSync(join(root, "pk/a/dist/src/extra.test.js"), "");
+  assert.notEqual(buildOutputDigest(root, wildcard), changed);
+  // No digest without a declaration, for a declaration that matches no file,
+  // and for an output whose content a link or special file would hide.
+  assert.equal(buildOutputDigest(root, undefined), undefined);
+  assert.equal(buildOutputDigest(root, ["pk/*/missing"]), undefined);
+  assert.equal(buildOutputDigest(root, ["pk/.DS_Store/dist"]), undefined);
+  symlinkSync("index.js", join(root, "pk/b/dist/src/alias.js"));
+  assert.equal(buildOutputDigest(root, wildcard), undefined);
+  rmSync(join(root, "pk/b/dist/src/alias.js"));
+  symlinkSync("a", join(root, "pk/linked"));
+  assert.equal(buildOutputDigest(root, wildcard), undefined);
+  rmSync(join(root, "pk/linked"));
+  assert.match(buildOutputDigest(root, wildcard), /^[a-f0-9]{64}$/u);
+  // An empty list declares a build that publishes nothing.
+  assert.match(buildOutputDigest(root, []), /^[a-f0-9]{64}$/u);
+  // The real table's build declares the output its tasks consume; without
+  // this declaration its pass would be attested trivially or never.
+  assert.deepEqual(suites.find((row) => row.build).outputs, [
+    "packages/*/dist",
+  ]);
+});
+
+test("WO-186 VER-001 a wildcard output beside a plain file is attested, a failed task reruns alone, and a carried build's output is still judged at the end", async (t) => {
+  const { repo, observed, value, task, table: base } = builtOutputFixture(t);
+  // The real table's shape: a wildcard over package directories, with an
+  // ignored plain file beside them.
+  writeFileSync(
+    join(repo, ".gitignore"),
+    readFileSync(join(repo, ".gitignore"), "utf8") + "pk/\ndrift\nfail-alpha\n",
+  );
+  writeFileSync(
+    join(repo, "scripts/build.mjs"),
+    'import fs from "node:fs"; fs.appendFileSync("observed.jsonl", "build\\n");\n' +
+      'fs.mkdirSync("pk/a/dist", { recursive: true }); fs.writeFileSync("pk/.DS_Store", "metadata\\n");\n' +
+      'fs.copyFileSync("scripts/value.mjs", "pk/a/dist/value.mjs");\n',
+  );
+  writeFileSync(
+    join(repo, "scripts/alpha.mjs"),
+    'import fs from "node:fs"; fs.appendFileSync("observed.jsonl", "alpha\\n");\n' +
+      'if(fs.existsSync("drift"))fs.writeFileSync("pk/a/dist/value.mjs","export default \\"evil\\";\\n");\n' +
+      'if(fs.existsSync("fail-alpha"))process.exit(1);\n',
+  );
+  writeFileSync(
+    join(repo, "scripts/beta.mjs"),
+    'import fs from "node:fs"; fs.appendFileSync("observed.jsonl", "beta\\n");\n' +
+      'if(fs.readFileSync("pk/a/dist/value.mjs","utf8").includes("bad"))process.exit(1);\n',
+  );
+  const table = base.map((row) =>
+    row.build ? { ...row, outputs: ["pk/*/dist"] } : row,
+  );
+  value("good");
+  writeFileSync(join(repo, "fail-alpha"), "fail\n");
+  const first = await runGate(["--serial"], repo, { table });
+  assert.equal(first.exitCode, 1);
+  assert.match(task(first, "build").outputDigest, /^[a-f0-9]{64}$/u);
+  assert.equal(first.buildOutputUnchanged, true);
+  assert.equal(first.buildOutputAttested, undefined);
+  // Alpha reruns alone beside the attested build, and this time replaces the
+  // output while the gate runs. Every task has a pass; the row does not.
+  rmSync(join(repo, "fail-alpha"));
+  writeFileSync(join(repo, "drift"), "drift\n");
+  let before = observed().length;
+  const drifted = await runGate(["--serial"], repo, { table });
+  assert.deepEqual(observed().slice(before), ["alpha"]);
+  assert.equal(task(drifted, "build").outputAttested, true);
+  assert.equal(task(drifted, "alpha").exitCode, 0);
+  assert.equal(drifted.buildOutputUnchanged, false);
+  assert.equal(drifted.exitCode, 1);
+  // Nothing of that row is carried, and the output is rebuilt before a task.
+  rmSync(join(repo, "drift"));
+  before = observed().length;
+  const rebuilt = await runGate(["--serial"], repo, { table });
+  assert.deepEqual(observed().slice(before), ["build", "alpha"]);
+  assert.equal(rebuilt.exitCode, 0);
+  assert.equal(task(rebuilt, "beta").sourceRow.recordedAt, first.recordedAt);
+  // A declared output the build cannot attest: the gate may pass, says so,
+  // and supplies nothing to a later run.
+  const dangling = base.map((row) =>
+    row.build ? { ...row, outputs: ["pk/*/absent"] } : row,
+  );
+  const unattested = await runGate(["--serial", "--again"], repo, {
+    table: dangling,
+  });
+  assert.equal(unattested.exitCode, 0);
+  assert.equal(task(unattested, "build").outputDigest, undefined);
+  assert.equal(unattested.buildOutputAttested, false);
+  before = observed().length;
+  const again = await runGate(["--serial"], repo, { table: dangling });
+  assert.deepEqual(observed().slice(before), ["build", "alpha", "beta"]);
+  assert.equal(again.reusedSuites, 0);
+});
+
+test("WO-186 VER-001 a failed single-suite, machinery or partial run displaces an older pass, and a run under another check supplies none", async (t) => {
+  const { repo, table: base, observed } = taskReuseFixture(t);
+  writeFileSync(
+    join(repo, ".gitignore"),
+    readFileSync(join(repo, ".gitignore"), "utf8") + "fail-machine\n",
+  );
+  // An uncommitted machinery edit selects its suite for review.
+  writeFileSync(
+    join(repo, "scripts/machine.mjs"),
+    'import fs from "node:fs"; fs.appendFileSync("observed.jsonl", "machine\\n");\n' +
+      'if(fs.existsSync("fail-machine"))process.exit(1);\n',
+  );
+  const table = base;
+  const { coveringGateCheck, coveringTaskResults } =
+    await import("./lib/gate-reuse.mjs");
+  const { requireGateClaims } = await import("./lib/handoff-ledger.mjs");
+  const ledger = {
+    checked: true,
+    claims: { plain: ["3"], review: [], document: [] },
+  };
+  const review = await runGate(["--serial", "--review"], repo, { table });
+  assert.equal(review.exitCode, 0);
+  assert.ok(review.requiredSuites.includes("machine"));
+  const rows = () => readGateChecks(repo);
+  // A passing single-suite run keeps its row under its own check, which
+  // answers no claim and changes none.
+  let count = rows().length;
+  assert.equal(
+    (await runGate(["--only", "beta", "--serial"], repo, { table })).exitCode,
+    0,
+  );
+  assert.equal(rows().length, count + 1);
+  assert.equal(rows().at(-1).checkId, "suite:beta");
+  assert.equal(
+    (await coveringGateCheck(repo, "npm test", [])).row.recordedAt,
+    review.recordedAt,
+  );
+  // A failing one is that task's latest run: the claim is refused for it,
+  // and the next plain run runs it instead of carrying.
+  writeFileSync(join(repo, "fail-beta"), "fail\n");
+  const only = await runGate(["--only", "beta", "--serial"], repo, { table });
+  assert.equal(only.exitCode, 1);
+  assert.equal(only.checkId, "suite:beta");
+  assert.equal(rows().length, count + 2);
+  const refused = await coveringGateCheck(repo, "npm test", []);
+  assert.equal(refused.row, undefined);
+  assert.deepEqual(refused.displaced.tasks, ["beta"]);
+  await assert.rejects(
+    () => requireGateClaims(repo, ledger),
+    /no passing complete npm test row stands[^]*beta/u,
+  );
+  let before = observed().length;
+  const masked = await runGate(["--serial"], repo, { table });
+  assert.deepEqual(observed().slice(before), ["beta"]);
+  assert.equal(masked.exitCode, 1);
+  // A later passing single-suite run answers no claim: beta still runs.
+  rmSync(join(repo, "fail-beta"));
+  assert.equal(
+    (await runGate(["--only", "beta", "--serial"], repo, { table })).exitCode,
+    0,
+  );
+  before = observed().length;
+  const settled = await runGate(["--serial"], repo, { table });
+  assert.deepEqual(observed().slice(before), ["beta"]);
+  assert.equal(settled.exitCode, 0);
+  assert.deepEqual((await requireGateClaims(repo, ledger)).advisories, []);
+  // A failed machinery run displaces the review row for its suite alone.
+  assert.equal(
+    (await coveringGateCheck(repo, "npm test", ["machine"])).row.recordedAt,
+    review.recordedAt,
+  );
+  writeFileSync(join(repo, "fail-machine"), "fail\n");
+  count = rows().length;
+  const machinery = await runGate(["--machinery", "--serial"], repo, { table });
+  assert.equal(machinery.exitCode, 1);
+  assert.equal(rows().length, count + 1);
+  const narrowed = await coveringGateCheck(repo, "npm test", ["machine"]);
+  assert.equal(narrowed.row, undefined);
+  assert.equal(
+    (await coveringGateCheck(repo, "npm test", [])).row.recordedAt,
+    settled.recordedAt,
+  );
+  // Once the suite passes again under that check, the review row stands
+  // again: no fresh review gate is owed for a failure that was answered.
+  rmSync(join(repo, "fail-machine"));
+  assert.equal(
+    (await runGate(["--machinery", "--serial"], repo, { table })).exitCode,
+    0,
+  );
+  assert.equal(
+    (await coveringGateCheck(repo, "npm test", ["machine"])).row.recordedAt,
+    review.recordedAt,
+  );
+  // The document gate follows document bytes the identity excludes and is
+  // judged fresh at every completion: its rows neither supply nor displace.
+  recordGateChecks(repo, [
+    {
+      ...settled,
+      checkId: "npm run test:docs",
+      exitCode: 1,
+      evidenceRef: "fixture:document-failure",
+      recordedAt: new Date(Date.now() + 500).toISOString(),
+      taskTimeline: review.taskTimeline
+        .filter((item) => item.name === "alpha")
+        .map((item) => ({
+          ...item,
+          exitCode: 1,
+          finishedAt: new Date(Date.now() + 500).toISOString(),
+        })),
+    },
+  ]);
+  assert.equal(
+    (await coveringGateCheck(repo, "npm test", ["machine"])).row.recordedAt,
+    review.recordedAt,
+  );
+  // A partial run's failure displaces too, and its passes supply nothing.
+  recordGateChecks(repo, [
+    {
+      ...settled,
+      checkId: CONFINED_PARTIAL_CHECK,
+      partial: true,
+      excludedSuites: [],
+      exitCode: 1,
+      evidenceRef: "fixture:partial-failure",
+      recordedAt: new Date(Date.now() + 1000).toISOString(),
+      taskTimeline: settled.taskTimeline
+        .filter((item) => !item.reused)
+        .map((item) => ({
+          ...item,
+          exitCode: 1,
+          finishedAt: new Date(Date.now() + 1000).toISOString(),
+        })),
+    },
+  ]);
+  assert.deepEqual(
+    [
+      ...(
+        await coveringTaskResults(
+          repo,
+          "npm test",
+          table.filter((row) => !row.machinery),
+        )
+      ).results.keys(),
+    ].sort(),
+    ["alpha", "build"],
+  );
+  writeFileSync(join(repo, "scripts/new.mjs"), "export const lone = 2;\n");
+  const lone = gateCodeIdentity(repo);
+  recordGateChecks(repo, [
+    {
+      ...settled,
+      checkId: "suite:beta",
+      codeIdentity: lone,
+      evidenceRef: "fixture:other-check-pass",
+      recordedAt: new Date().toISOString(),
+      taskTimeline: review.taskTimeline,
+    },
+  ]);
+  assert.equal(
+    (await coveringTaskResults(repo, "npm test", table, lone)).results.size,
+    0,
+  );
+});
+
+test("WO-186 VER-001 an unresolvable main leaves the lookup with the worktree's own rows", async (t) => {
+  const { repo, table, observed } = taskReuseFixture(t);
+  // Main is checked out in a linked worktree whose directory is then lost
+  // while Git still registers it; the primary checkout works on another branch.
+  runGit(repo, ["checkout", "-q", "-b", "work"]);
+  const gone = join(dirname(repo), `${repo.split("/").at(-1)}-gone-main`);
+  t.after(() => rmSync(gone, { recursive: true, force: true }));
+  runGit(repo, ["worktree", "add", "-q", gone, "main"]);
+  rmSync(gone, { recursive: true, force: true });
+  const { mainWorktree } = await import("./lib/git.mjs");
+  assert.equal(existsSync(mainWorktree(repo)), false);
+  const { coveringGateCheck, coveringTaskResults, gateCandidates } =
+    await import("./lib/gate-reuse.mjs");
+  // No local row yet: the lookup answers with nothing instead of throwing.
+  assert.deepEqual(
+    (({ rows, location }) => ({ rows, location }))(
+      await gateCandidates(repo, "npm test"),
+    ),
+    { rows: [], location: "worktree" },
+  );
+  assert.equal(
+    (await coveringTaskResults(repo, "npm test", table)).results.size,
+    0,
+  );
+  assert.equal((await coveringGateCheck(repo, "npm test", [])).row, undefined);
+  const { requireGateClaims } = await import("./lib/handoff-ledger.mjs");
+  await assert.rejects(
+    () =>
+      requireGateClaims(repo, {
+        checked: true,
+        claims: { plain: ["5"], review: [], document: [] },
+      }),
+    /no passing complete npm test row/u,
+  );
+  const first = await runGate(["--serial"], repo, { table });
+  assert.equal(first.exitCode, 0);
+  assert.deepEqual(observed(), ["build", "alpha", "beta"]);
+  const second = await runGate(["--serial"], repo, { table });
+  assert.equal(second.reusedSuites, 3);
+  assert.deepEqual(observed(), ["build", "alpha", "beta"]);
+  assert.ok(
+    second.taskTimeline.every((row) => row.sourceRow.location === "worktree"),
+  );
+});
+
+test("WO-186 VER-001 a pass carried from main has no execution to stand on while main cannot be consulted", async (t) => {
+  const { repo, table, observed } = taskReuseFixture(t);
+  await runGate(["--serial", "--again"], repo, { table });
+  const worktree = join(dirname(repo), `${repo.split("/").at(-1)}-orphaned`);
+  t.after(() => rmSync(worktree, { recursive: true, force: true }));
+  runGit(repo, ["worktree", "add", "-q", "-b", "work", worktree]);
+  const carried = await runGate(["--serial"], worktree, { table });
+  assert.equal(carried.reusedSuites, 3);
+  const { requireGateClaims } = await import("./lib/handoff-ledger.mjs");
+  const ledger = {
+    checked: true,
+    claims: { plain: ["5"], review: [], document: [] },
+  };
+  assert.deepEqual((await requireGateClaims(worktree, ledger)).advisories, []);
+  // The primary checkout leaves main, so no checkout answers for it.
+  runGit(repo, ["checkout", "-q", "-b", "parked"]);
+  await assert.rejects(
+    () => requireGateClaims(worktree, ledger),
+    /names build, alpha, beta, whose latest execution there can no longer be carried \(a later run did not pass, a later gate that ran it failed, or the row that executed it cannot be read\)/u,
+  );
+  const rerun = await runGate(["--serial"], worktree, { table });
+  assert.deepEqual(observed(worktree), ["build", "alpha", "beta"]);
+  assert.equal(rerun.exitCode, 0);
+  assert.equal(rerun.reusedSuites, 0);
+  assert.deepEqual((await requireGateClaims(worktree, ledger)).advisories, []);
+});
+
+test("WO-186 code changing between partial lookup and preflight discards every old-identity pass", async (t) => {
+  const { repo, table, observed } = taskReuseFixture(t);
+  writeFileSync(join(repo, "fail-beta"), "fail\n");
+  const first = await runGate(["--serial", "--again"], repo, { table });
+  assert.equal(first.exitCode, 1);
+  assert.equal(first.identityUnchanged, true);
+  rmSync(join(repo, "fail-beta"));
+  const selection = table.map((row) =>
+    row.name === "beta" ? { ...row, needs: OUTSIDE_CONFINEMENT } : row,
+  );
+  const before = observed().length;
+  const second = await runGate(["--serial"], repo, {
+    table: selection,
+    sandbox: {
+      env: { CHANGE_DURING_PREFLIGHT: "1" },
+      markers: [
+        {
+          id: "fixture-change",
+          env: "CHANGE_DURING_PREFLIGHT",
+          deniedDirectory() {
+            writeFileSync(
+              join(repo, "scripts/alpha.mjs"),
+              readFileSync(join(repo, "scripts/alpha.mjs"), "utf8") +
+                "// changed during preflight\n",
+            );
+            return repo;
+          },
+        },
+      ],
+    },
+  });
+  assert.equal(second.exitCode, 0);
+  assert.notEqual(second.codeIdentity, first.codeIdentity);
+  assert.equal(second.identityUnchanged, true);
+  assert.equal(second.reusedSuites, 0);
+  assert.deepEqual(observed().slice(before), ["build", "alpha", "beta"]);
+  const { completeCoverage } = await import("./lib/suite-evidence.mjs");
+  const mismatched = {
+    name: "alpha",
+    executed: true,
+    exitCode: 0,
+    reused: true,
+    sourceRow: {
+      task: "alpha",
+      codeIdentity: first.codeIdentity,
+      evidenceRef: first.evidenceRef,
+      recordedAt: first.recordedAt,
+    },
+  };
+  assert.equal(
+    completeCoverage([{ name: "alpha" }], [mismatched], second.codeIdentity),
+    false,
+  );
+  assert.equal(
+    completeCoverage([{ name: "alpha" }], [mismatched], first.codeIdentity),
+    true,
+  );
+});
+
+test("WO-186 symbolic source aliases cannot reuse a key that omits ignored target bytes", async (t) => {
+  const { repo, table } = taskReuseFixture(t);
+  const first = await runGate(["--serial", "--again"], repo, { table });
+  assert.equal(first.exitCode, 0);
+  // This ignored target can change without entering Git's input inventory.
+  symlinkSync("../observed.jsonl", join(repo, "scripts/new.mjs"));
+  assert.throws(
+    () => gateCodeIdentity(repo),
+    /symbolic source aliases: scripts\/new\.mjs/,
+  );
+  await assert.rejects(
+    () => runGate(["--serial"], repo, { table }),
+    /symbolic source aliases/,
+  );
+  runGit(repo, ["add", "scripts/new.mjs"]);
+  assert.throws(() => gateCodeIdentity(repo), /symbolic source aliases/);
+  runGit(repo, ["commit", "-qm", "unsupported symbolic fixture"]);
+  assert.throws(
+    () => gateCodeIdentity(repo, "HEAD"),
+    /symbolic source aliases/,
+  );
+});
+
+test("WO-186 sibling advancement leaves merge-base selection and the review claim unchanged; own machinery still selects", async (t) => {
+  const { repo, table } = taskReuseFixture(t);
+  runGit(repo, ["update-ref", "refs/remotes/origin/main", "HEAD"]);
+  const worktree = join(dirname(repo), `${repo.split("/").at(-1)}-selection`);
+  t.after(() => rmSync(worktree, { recursive: true, force: true }));
+  runGit(repo, ["worktree", "add", "-q", "-b", "work", worktree]);
+  const runnerShim =
+    `import {runGate} from ${JSON.stringify(new URL("./test-runner.mjs", import.meta.url).href)};\n` +
+    `const result=await runGate(process.argv.slice(2),process.cwd(),{table:${JSON.stringify(table)}});process.exitCode=result.exitCode;\n`;
+  writeFileSync(join(worktree, "scripts/test-runner.mjs"), runnerShim);
+  const passing = await runGate(["--serial", "--review"], worktree, { table });
+  const { requireGateClaims } = await import("./lib/handoff-ledger.mjs");
+  const reviewLedger = {
+    checked: true,
+    claims: { plain: [], review: ["6"], document: [] },
+  };
+  const initialClaim = await requireGateClaims(worktree, reviewLedger);
+  assert.deepEqual(initialClaim.advisories, []);
+  const before = changedMachinery(worktree, table).map((row) => row.name);
+  const { coveringGateCheck } = await import("./lib/gate-reuse.mjs");
+  writeFileSync(join(repo, "scripts/machine.mjs"), "// sibling machinery\n");
+  runGit(repo, ["commit", "-qam", "sibling machinery"]);
+  runGit(repo, ["update-ref", "refs/remotes/origin/main", "HEAD"]);
+  assert.deepEqual(
+    changedMachinery(worktree, table).map((row) => row.name),
+    before,
+  );
+  assert.equal(
+    (await coveringGateCheck(worktree, "npm test", passing.requiredSuites)).row
+      .codeIdentity,
+    passing.codeIdentity,
+  );
+  const advancedClaim = await requireGateClaims(worktree, reviewLedger);
+  assert.deepEqual(advancedClaim, initialClaim);
+  writeFileSync(join(worktree, "scripts/machine.mjs"), "// own machinery\n");
+  assert.deepEqual(
+    changedMachinery(worktree, table).map((row) => row.name),
+    ["machine"],
+  );
+  await assert.rejects(
+    () => requireGateClaims(worktree, reviewLedger),
+    /npm test -- --review/u,
+  );
+});
+
+test("WO-186 product tasks reject reads of untracked active-order reports and retain the five longest cases", async (t) => {
+  const { repo } = taskReuseFixture(t);
+  mkdirSync(join(repo, "docs/evidence/WO-999"), { recursive: true });
+  writeFileSync(join(repo, "docs/evidence/WO-999/report.md"), "live report\n");
+  writeFileSync(
+    join(repo, "scripts/read.mjs"),
+    'import fs from "node:fs"; fs.readFileSync("docs/evidence/WO-999/report.md");\n',
+  );
+  const guarded = await executeSuite(
+    {
+      name: "read-report",
+      product: true,
+      activeOrder: "WO-999",
+      command: [process.execPath, "scripts/read.mjs"],
+    },
+    repo,
+  );
+  assert.equal(guarded.exitCode, 1, guarded.output);
+  assert.match(guarded.output, /reads docs\/evidence\/WO-999\/report.md/u);
+  writeFileSync(
+    join(repo, "scripts/read-metadata.mjs"),
+    'import fs from "node:fs"; const file="docs/evidence/WO-999/report.md"; fs.existsSync(file); fs.statSync(file); await fs.promises.access(file);\n',
+  );
+  const metadata = await executeSuite(
+    {
+      name: "report-metadata",
+      product: true,
+      activeOrder: "WO-999",
+      command: [process.execPath, "scripts/read-metadata.mjs"],
+    },
+    repo,
+  );
+  assert.equal(metadata.exitCode, 1, metadata.output);
+  assert.equal(metadata.excludedReads, 3, metadata.output);
+  assert.match(metadata.output, /existsSync/);
+  assert.match(metadata.output, /statSync/);
+  assert.match(metadata.output, /promises.access/);
+  writeFileSync(
+    join(repo, "scripts/duplicate-observer.mjs"),
+    `import fs from "node:fs"; import cp from "node:child_process"; import assert from "node:assert/strict";
+const exists=fs.existsSync, spawn=cp.spawnSync;
+await import(${JSON.stringify(new URL("./lib/product-read-guard.mjs?same-manifest", import.meta.url).href)});
+assert.equal(fs.existsSync,exists); assert.equal(cp.spawnSync,spawn);
+cp.spawnSync(process.execPath,["-e","0"]);
+fs.existsSync("docs/evidence/WO-999/report.md");
+console.log("duplicate observer retains one installation");\n`,
+  );
+  const duplicate = await executeSuite(
+    {
+      name: "duplicate-observer",
+      product: true,
+      activeOrder: "WO-999",
+      command: [process.execPath, "scripts/duplicate-observer.mjs"],
+    },
+    repo,
+  );
+  assert.equal(duplicate.exitCode, 1, duplicate.output);
+  assert.match(duplicate.output, /duplicate observer retains one installation/);
+  assert.equal(duplicate.excludedReads, 1, duplicate.output);
+  const duplicateEvents = readFileSync(duplicate.productReadLog, "utf8")
+    .trim()
+    .split("\n")
+    .map(JSON.parse);
+  assert.equal(
+    duplicateEvents.filter((event) => event.kind === "child-command").length,
+    1,
+  );
+  writeFileSync(
+    join(repo, "docs/evidence/WO-999/promised.md"),
+    "promised metadata\n",
+  );
+  writeFileSync(
+    join(repo, "scripts/read-descriptor.mjs"),
+    `import fs from "node:fs";
+const file="docs/evidence/WO-999/report.md";
+const fd=fs.openSync(file,"a"); fs.fstatSync(fd); fs.closeSync(fd);
+await new Promise((resolve,reject)=>fs.open(file,"a",(error,fd)=>{
+  if(error)return reject(error);
+  fs.fstat(fd,(error)=>fs.close(fd,(closed)=>error||closed?reject(error||closed):resolve()));
+}));
+const handle=await fs.promises.open("docs/evidence/WO-999/promised.md","a"); await handle.stat(); fs.fstatSync(handle.fd);
+await new Promise((resolve,reject)=>fs.fstat(handle.fd,(error)=>error?reject(error):resolve()));
+await handle.close();
+`,
+  );
+  const descriptors = await executeSuite(
+    {
+      name: "report-descriptors",
+      product: true,
+      activeOrder: "WO-999",
+      command: [process.execPath, "scripts/read-descriptor.mjs"],
+    },
+    repo,
+  );
+  assert.equal(descriptors.exitCode, 1, descriptors.output);
+  assert.equal(descriptors.excludedReads, 5, descriptors.output);
+  assert.match(descriptors.output, /fstatSync/);
+  assert.match(descriptors.output, /\(fstat\)/);
+  assert.match(descriptors.output, /FileHandle.stat/);
+  assert.match(descriptors.output, /promised.md \(fstatSync\)/);
+  assert.match(descriptors.output, /promised.md \(fstat\)/);
+  symlinkSync("report.md", join(repo, "docs/evidence/WO-999/link"));
+  writeFileSync(
+    join(repo, "scripts/read-link-text.mjs"),
+    `import fs from "node:fs"; const file="docs/evidence/WO-999/link";
+fs.readlinkSync(file); await new Promise((resolve,reject)=>fs.readlink(file,(error)=>error?reject(error):resolve())); await fs.promises.readlink(file);\n`,
+  );
+  const linkText = await executeSuite(
+    {
+      name: "report-link-text",
+      product: true,
+      activeOrder: "WO-999",
+      command: [process.execPath, "scripts/read-link-text.mjs"],
+    },
+    repo,
+  );
+  assert.equal(linkText.exitCode, 1, linkText.output);
+  for (const method of ["readlinkSync", "readlink", "promises.readlink"])
+    assert.ok(linkText.output.includes("(" + method + ")"), linkText.output);
+  writeFileSync(
+    join(repo, "scripts/copy-report.mjs"),
+    `import fs from "node:fs"; const file="docs/evidence/WO-999/report.md";
+fs.copyFileSync(file,"copy-sync.txt"); fs.cpSync(file,"cp-sync.txt");
+await new Promise((resolve,reject)=>fs.copyFile(file,"copy-callback.txt",(error)=>error?reject(error):resolve()));
+await new Promise((resolve,reject)=>fs.cp(file,"cp-callback.txt",(error)=>error?reject(error):resolve()));
+await fs.promises.copyFile(file,"copy-promise.txt"); await fs.promises.cp(file,"cp-promise.txt");\n`,
+  );
+  const copies = await executeSuite(
+    {
+      name: "copy-reports",
+      product: true,
+      activeOrder: "WO-999",
+      command: [process.execPath, "scripts/copy-report.mjs"],
+    },
+    repo,
+  );
+  assert.equal(copies.exitCode, 1, copies.output);
+  for (const method of [
+    "copyFileSync",
+    "cpSync",
+    "copyFile",
+    "cp",
+    "promises.copyFile",
+    "promises.cp",
+  ])
+    assert.ok(copies.output.includes("(" + method + ")"), copies.output);
+  mkdirSync(join(repo, "docs/evidence/WO-999/subdir"));
+  symlinkSync("docs/evidence/WO-999/subdir", join(repo, "read-alias"));
+  symlinkSync("docs/evidence/WO-999", join(repo, "report-alias"));
+  symlinkSync(
+    "docs/evidence/WO-999/dangling-target.md",
+    join(repo, "dangling-report"),
+  );
+  symlinkSync(
+    "docs/evidence/WO-999/not-yet-created-dir",
+    join(repo, "dangling-dir"),
+  );
+  writeFileSync(
+    join(repo, "scripts/read-aliases.mjs"),
+    'import fs from "node:fs"; fs.readFileSync("read-alias/../report.md"); fs.existsSync("report-alias/not-yet-written.md"); fs.existsSync("dangling-report"); fs.existsSync("dangling-dir/");\n',
+  );
+  const aliases = await executeSuite(
+    {
+      name: "report-aliases",
+      product: true,
+      activeOrder: "WO-999",
+      command: [process.execPath, "scripts/read-aliases.mjs"],
+    },
+    repo,
+  );
+  assert.equal(aliases.exitCode, 1, aliases.output);
+  assert.ok(aliases.excludedReads >= 2, aliases.output);
+  assert.match(
+    aliases.output,
+    /docs\/evidence\/WO-999\/report.md \(readFileSync\)/,
+  );
+  assert.match(aliases.output, /docs\/evidence\/WO-999\/not-yet-written.md/);
+  assert.match(
+    aliases.output,
+    /docs\/evidence\/WO-999\/dangling-target.md \(existsSync\)/,
+  );
+  assert.match(
+    aliases.output,
+    /docs\/evidence\/WO-999\/not-yet-created-dir \(existsSync\)/,
+  );
+  writeFileSync(
+    join(repo, "scripts/cases.test.mjs"),
+    'import test from "node:test"; for(let n=0;n<6;n++)test("case " + n, async()=>{await new Promise(r=>setTimeout(r,20+n*30));});\n',
+  );
+  const measured = await executeSuite(
+    {
+      name: "cases",
+      command: [process.execPath, "--test", "scripts/cases.test.mjs"],
+    },
+    repo,
+  );
+  assert.equal(measured.exitCode, 0, measured.output);
+  assert.equal(measured.slowestCases.length, 5);
+  assert.ok(
+    measured.slowestCases.every(
+      (row) => row.durationMs >= 8 && row.exitCode === 0,
+    ),
+  );
+  assert.deepEqual(
+    measured.slowestCases.map((row) => row.name),
+    ["case 5", "case 4", "case 3", "case 2", "case 1"],
+  );
+});
+
+test("WO-186 VER-001 product tasks reject recursive listings, watches and copies from the root or an ancestor, and blob and link reads of records", async (t) => {
+  // A private parent keeps the ancestor walk small and owned by the fixture.
+  const parent = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-read-ancestor-")),
+  );
+  t.after(() => rmSync(parent, { recursive: true, force: true }));
+  const repo = join(parent, "repo");
+  mkdirSync(join(repo, "docs/evidence/WO-999"), { recursive: true });
+  mkdirSync(join(repo, "scripts"));
+  mkdirSync(join(repo, "out"));
+  runGit(repo, ["init", "-q", "-b", "main"]);
+  writeFileSync(join(repo, ".gitignore"), "docs/control/local/\nout/\n");
+  writeFileSync(join(repo, "docs/evidence/WO-999/report.md"), "live report\n");
+  writeFileSync(join(repo, "docs/input.md"), "tracked document\n");
+  const settle =
+    "const settle = (start) => new Promise((resolve, reject) => start((error, value) => (error ? reject(error) : resolve(value))));\n";
+  writeFileSync(
+    join(repo, "scripts/enumerate.mjs"),
+    `import fs from "node:fs";
+const recursive = { recursive: true };
+${settle}for (const target of [".", ".."]) {
+  fs.readdirSync(target, recursive);
+  await settle((done) => fs.readdir(target, recursive, done));
+  await fs.promises.readdir(target, recursive);
+  fs.opendirSync(target, recursive).closeSync();
+  await (await settle((done) => fs.opendir(target, recursive, done))).close();
+  await (await fs.promises.opendir(target, recursive)).close();
+}
+`,
+  );
+  // The same calls without a descent list nothing below the root's entries.
+  // A copied or linked excluded tracked input is outside the observed
+  // boundary, which product 07 states.
+  writeFileSync(
+    join(repo, "scripts/list.mjs"),
+    `import fs from "node:fs";
+${settle}for (const target of [".", ".."]) {
+  fs.readdirSync(target);
+  fs.readdirSync(target, { withFileTypes: true });
+  await settle((done) => fs.readdir(target, done));
+  await fs.promises.readdir(target);
+  fs.opendirSync(target).closeSync();
+  await (await settle((done) => fs.opendir(target, done))).close();
+  await (await fs.promises.opendir(target)).close();
+  fs.watch(target).close();
+}
+fs.copyFileSync("docs/input.md", "out/input-copy.md");
+fs.linkSync("docs/input.md", "out/input-link.md");
+`,
+  );
+  writeFileSync(
+    join(repo, "scripts/forms.mjs"),
+    `import fs from "node:fs";
+${settle}const report = "docs/evidence/WO-999/report.md";
+await (await fs.openAsBlob(report)).text();
+await (await fs.openAsBlob("docs/input.md")).text();
+fs.statfsSync(report);
+await settle((done) => fs.statfs(report, done));
+await fs.promises.statfs(report);
+fs.linkSync(report, "out/link-sync");
+await settle((done) => fs.link(report, "out/link-callback", done));
+await fs.promises.link(report, "out/link-promise");
+for (const copy of [
+  () => fs.cpSync("..", "out/copy-sync", { recursive: true, filter: () => false }),
+  () => settle((done) => fs.cp("..", "out/copy-callback", { recursive: true, filter: () => false }, done)),
+  () => fs.promises.cp("..", "out/copy-promise", { recursive: true, filter: () => false }),
+])
+  try {
+    await copy();
+  } catch {
+    // Node refuses a copy into its own source; the attempt is the read.
+  }
+// A record moved away could be read under another name; each is moved back.
+fs.renameSync(report, "out/moved");
+fs.renameSync("out/moved", report);
+await settle((done) => fs.rename(report, "out/moved", done));
+fs.renameSync("out/moved", report);
+await fs.promises.rename(report, "out/moved");
+fs.renameSync("out/moved", report);
+`,
+  );
+  // Recursive watches. Where Node walks the tree itself to watch it, the
+  // walk's own listings are recorded too, so these are judged by inclusion.
+  writeFileSync(
+    join(repo, "scripts/watches.mjs"),
+    `import fs from "node:fs";
+fs.watch(".", { recursive: true }).close();
+fs.watch("docs", { recursive: true }).close();
+const stop = new AbortController();
+fs.promises.watch("..", { recursive: true, signal: stop.signal });
+stop.abort();
+`,
+  );
+  // Other spellings of the same reads: a byte view and a URL-shaped object as
+  // the path, null open flags, and the native realpath behind the callback.
+  writeFileSync(
+    join(repo, "scripts/spellings.mjs"),
+    `import fs from "node:fs";
+${settle}const report = "docs/evidence/WO-999/report.md";
+fs.readdirSync(new TextEncoder().encode("."), { recursive: true });
+const { href, protocol, hostname, pathname } = new URL(report, "file://" + process.cwd() + "/");
+fs.readFileSync({ href, protocol, hostname, pathname });
+fs.closeSync(fs.openSync(report, null));
+await settle((done) => fs.realpath.native(report, done));
+`,
+  );
+  runGit(repo, ["add", ".gitignore", "scripts", "docs/input.md"]);
+  const run = (name, script) =>
+    executeSuite(
+      {
+        name,
+        product: true,
+        activeOrder: "WO-999",
+        command: [process.execPath, script],
+      },
+      repo,
+    );
+  const reads = (result) =>
+    result.output
+      .split("\n")
+      .filter((line) => line.startsWith("Product read guard: <module setup>"))
+      .map((line) => / reads (\S+) \(([^)]+)\)/u.exec(line).slice(1).join(" "))
+      .sort();
+  const plain = await run("plain-root-listing", "scripts/list.mjs");
+  assert.equal(plain.exitCode, 0, plain.output);
+  assert.equal(plain.excludedReads, 0);
+  const enumerated = await run(
+    "recursive-enumeration",
+    "scripts/enumerate.mjs",
+  );
+  assert.equal(enumerated.exitCode, 1, enumerated.output);
+  assert.deepEqual(
+    reads(enumerated),
+    [".", ".."]
+      .flatMap((target) =>
+        [
+          "readdirSync",
+          "readdir",
+          "promises.readdir",
+          "opendirSync",
+          "opendir",
+          "promises.opendir",
+        ].map((method) => `${target} ${method}`),
+      )
+      .sort(),
+  );
+  const forms = await run("adjacent-forms", "scripts/forms.mjs");
+  assert.equal(forms.exitCode, 1, forms.output);
+  assert.deepEqual(
+    reads(forms),
+    [
+      ".. cp",
+      ".. cpSync",
+      ".. promises.cp",
+      "docs/evidence/WO-999/report.md link",
+      "docs/evidence/WO-999/report.md linkSync",
+      "docs/evidence/WO-999/report.md openAsBlob",
+      "docs/evidence/WO-999/report.md promises.link",
+      "docs/evidence/WO-999/report.md promises.rename",
+      "docs/evidence/WO-999/report.md promises.statfs",
+      "docs/evidence/WO-999/report.md rename",
+      "docs/evidence/WO-999/report.md renameSync",
+      "docs/evidence/WO-999/report.md statfs",
+      "docs/evidence/WO-999/report.md statfsSync",
+      "docs/input.md openAsBlob",
+    ].sort(),
+  );
+  const watches = await run("recursive-watches", "scripts/watches.mjs");
+  assert.equal(watches.exitCode, 1, watches.output);
+  for (const watch of [". watch", ".. promises.watch", "docs watch"])
+    assert.ok(reads(watches).includes(watch), watches.output);
+  const spellings = await run("other-spellings", "scripts/spellings.mjs");
+  assert.equal(spellings.exitCode, 1, spellings.output);
+  assert.deepEqual(reads(spellings), [
+    ". readdirSync",
+    "docs/evidence/WO-999/report.md openSync",
+    "docs/evidence/WO-999/report.md readFileSync",
+    "docs/evidence/WO-999/report.md realpath.native",
+  ]);
+});
+
+test("WO-186 planning performance excludes reused zero durations, compares earlier medians and holds above half growth", async () => {
+  const { gatePerformanceConditions } =
+    await import("./lib/planning-conditions.mjs");
+  const checks = Array.from({ length: 4 }, (_, i) => ({
+    checkId: "npm test",
+    executed: true,
+    exitCode: 0,
+    recordedAt: `2026-10-0${i + 1}T00:00:00Z`,
+    durationMs: 400000,
+    evidenceRef: "fixture:" + i,
+    gateSelection: "plain",
+    executionMode: "fresh",
+    taskTimeline: Array.from({ length: 6 }, (_, n) => ({
+      name: "task " + n,
+      executed: true,
+      exitCode: 0,
+      durationMs: i === 3 ? 2000 + n * 100 : 1000 + n * 10,
+    })),
+  }));
+  checks.push({
+    ...checks.at(-1),
+    recordedAt: "2026-10-05T00:00:00Z",
+    durationMs: 0,
+    reused: true,
+    taskTimeline: checks
+      .at(-1)
+      .taskTimeline.map((row) => ({ ...row, durationMs: 0, reused: true })),
+  });
+  const rows = gatePerformanceConditions(checks, "2026-10-06T00:00:00Z");
+  assert.equal(rows.length, 6);
+  assert.equal(rows[0].value, 400);
+  assert.equal(rows[0].holds, true);
+  assert.deepEqual(
+    rows.slice(1).map((row) => row.id),
+    [
+      "gate-task:task 5",
+      "gate-task:task 4",
+      "gate-task:task 3",
+      "gate-task:task 2",
+      "gate-task:task 1",
+    ],
+  );
+  assert.ok(
+    rows.slice(1).every((row) => row.holds === true && row.samples === 3),
+  );
+  assert.equal(rows[1].median, 1.05);
+  const failed = {
+    ...checks[3],
+    exitCode: 1,
+    recordedAt: "2026-10-05T12:00:00Z",
+    taskTimeline: checks[3].taskTimeline.map((task) =>
+      task.name === "task 5"
+        ? { ...task, durationMs: 6000 }
+        : { ...task, exitCode: 1 },
+    ),
+  };
+  const includingFailed = gatePerformanceConditions(
+    [...checks, failed],
+    "2026-10-06T00:00:00Z",
+  );
+  assert.equal(
+    includingFailed[0].value,
+    400,
+    "failed whole gates are not fresh plain passes",
+  );
+  assert.equal(includingFailed[1].id, "gate-task:task 5");
+  assert.equal(includingFailed[1].value, 6);
+  assert.equal(includingFailed[1].samples, 4);
+  assert.equal(includingFailed[1].median, 1.05);
+  assert.equal(includingFailed[1].holds, true);
+});
+
+test("WO-186 concurrent duplicate names and runtime skip/todo clear at execution completion", async (t) => {
+  const { repo } = taskReuseFixture(t);
+  writeFileSync(
+    join(repo, "scripts/concurrent.test.mjs"),
+    `import test from "node:test"; import {setTimeout as delay} from "node:timers/promises";
+test("outer", {concurrency:true}, async(t)=>{
+  await Promise.all([
+    t.test("same", async()=>{await delay(180);}),
+    t.test("same", async()=>{await delay(20);}),
+    t.test("runtime skip", t=>t.skip()),
+    t.test("runtime todo", t=>t.todo()),
+  ]);
+});\n`,
+  );
+  const measured = await executeSuite(
+    {
+      name: "concurrent",
+      command: [process.execPath, "--test", "scripts/concurrent.test.mjs"],
+    },
+    repo,
+  );
+  assert.equal(measured.exitCode, 0, measured.output);
+  const reports = [...measured.output.matchAll(/^PROGRESS CASE (.+)$/gm)].map(
+    (match) => JSON.parse(match[1]),
+  );
+  const starts = reports.filter(
+    (row) => row.event === "start" && row.name === "same",
+  );
+  assert.equal(starts.length, 2);
+  assert.notEqual(starts[0].testId, starts[1].testId);
+  assert.ok(
+    starts.every((row) => row.entryFile === "scripts/concurrent.test.mjs"),
+  );
+  const ends = reports.filter(
+    (row) => row.event === "end" && row.name === "same",
+  );
+  assert.equal(ends.length, 2);
+  assert.equal(
+    ends[0].testId,
+    starts[1].testId,
+    "fast later sibling completes before slow first sibling",
+  );
+  assert.equal(ends[1].testId, starts[0].testId);
+  const active = new Map();
+  for (const report of reports) {
+    const key = JSON.stringify([report.entryFile, report.testId]);
+    if (report.event === "start") active.set(key, report.name);
+    else active.delete(key);
+    if (report === ends[0])
+      assert.equal(
+        [...active.values()].filter((name) => name === "same").length,
+        1,
+      );
+  }
+  assert.equal(active.size, 0);
+  for (const name of ["runtime skip", "runtime todo"])
+    assert.ok(
+      reports.some(
+        (row) => row.name === name && row.event === "end" && row.skipped,
+      ),
+    );
+  assert.ok(measured.slowestCases.every((row) => !/^runtime /.test(row.name)));
+});
+
+test("WO-186 VER-001 the heartbeat names a synchronous case while it runs, after an async one, and never a finished case", async (t) => {
+  const { repo, observed } = taskReuseFixture(t);
+  // Each body records its own window through a descriptor and functions taken
+  // at load, which a mock cannot reach. A synchronous body blocks the test
+  // process's event loop, as a spawnSync-heavy case does.
+  const long = (label) =>
+    `${label} with a name long enough that one heartbeat line holds a single case and no more`;
+  writeFileSync(join(repo, "scripts/heartbeat-worker.mjs"), "");
+  writeFileSync(
+    join(repo, "scripts/heartbeat.test.mjs"),
+    `import test from "node:test";
+import fs from "node:fs";
+import { Worker } from "node:worker_threads";
+const out = fs.openSync("observed.jsonl", "a");
+const write = fs.writeSync;
+const mark = (name, edge) =>
+  write(out, JSON.stringify({ name, edge, at: Date.now(), markers: process.env.DOTLN_CASE_MARKERS }) + "\\n");
+const block = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const long = ${long.toString()};
+test("async first", async () => { mark("async first", "begin"); await wait(50); mark("async first", "finish"); });
+test("sync one", () => { mark("sync one", "begin"); block(1200); mark("sync one", "finish"); });
+test("outer", async (t) => {
+  mark("outer", "begin");
+  await t.test("inner sync", () => { mark("inner sync", "begin"); block(1200); mark("inner sync", "finish"); });
+  mark("outer", "finish");
+});
+test("leaves writeFileSync mocked", async (t) => {
+  mark("leaves writeFileSync mocked", "begin");
+  t.mock.method(fs, "writeFileSync", () => {});
+  await wait(400);
+  mark("leaves writeFileSync mocked", "finish");
+});
+test("after the mock", () => { mark("after the mock", "begin"); block(1200); mark("after the mock", "finish"); });
+test("outlives its worker", async () => {
+  mark("outlives its worker", "begin");
+  await new Promise((resolve, reject) =>
+    new Worker(new URL("./heartbeat-worker.mjs", import.meta.url)).once("exit", resolve).once("error", reject));
+  await wait(1200);
+  mark("outlives its worker", "finish");
+});
+test(long("group"), { concurrency: true }, async (t) => {
+  mark(long("group"), "begin");
+  await Promise.all(["first", "second", "third", "fourth"].map((label) =>
+    t.test(long(label), async () => { mark(long(label), "begin"); await wait(1200); mark(long(label), "finish"); })));
+  mark(long("group"), "finish");
+});
+`,
+  );
+  // A second file runs in its own process beside the first.
+  writeFileSync(
+    join(repo, "scripts/heartbeat-peer.test.mjs"),
+    `import test from "node:test";
+import fs from "node:fs";
+test("peer sync", () => {
+  const mark = (edge) => fs.appendFileSync("observed.jsonl", JSON.stringify({ name: "peer sync", edge, at: Date.now() }) + "\\n");
+  mark("begin");
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1200);
+  mark("finish");
+});
+`,
+  );
+  const beats = [];
+  const measured = await executeSuite(
+    {
+      name: "heartbeat",
+      heartbeatMs: 300,
+      command: [
+        process.execPath,
+        "--test",
+        "scripts/heartbeat.test.mjs",
+        "scripts/heartbeat-peer.test.mjs",
+      ],
+    },
+    repo,
+    900_000,
+    ({ message }) => {
+      if (!/^running cases?: /u.test(message)) return;
+      const at = Date.now();
+      for (const [, name] of message.matchAll(
+        /(?:: |; )([^;]+?) \(entered [\d.]+ s ago\)/gu,
+      ))
+        beats.push({ name, at });
+    },
+  );
+  assert.equal(measured.exitCode, 0, measured.output);
+  // The heartbeat prints the first eighty characters of a name.
+  const shown = (name) => name.slice(0, 80);
+  const windows = new Map();
+  let markers;
+  for (const row of observed().map((line) => JSON.parse(line))) {
+    windows.set(shown(row.name), {
+      ...windows.get(shown(row.name)),
+      [row.edge]: row.at,
+    });
+    markers ??= row.markers;
+  }
+  // Every case that ran for the interval was named: a synchronous case after
+  // an async one, a subtest and its open parent, a case after one that left
+  // fs.writeFileSync mocked, a case that outlived a worker thread, five
+  // long-named cases open at once, and a case in another file's process.
+  for (const name of [
+    "sync one",
+    "outer",
+    "inner sync",
+    "after the mock",
+    "outlives its worker",
+    ...["group", "first", "second", "third", "fourth"].map(long),
+    "peer sync",
+  ])
+    assert.ok(
+      beats.some((beat) => beat.name === shown(name)),
+      `${name} was never named: ${JSON.stringify(beats)}`,
+    );
+  // Whenever a case was named, its own body was running: no case is named
+  // after it ended, the one whose end the mock would have swallowed included.
+  for (const beat of beats) {
+    const window = windows.get(beat.name);
+    assert.ok(
+      window && beat.at >= window.begin - 100 && beat.at <= window.finish + 100,
+      `${beat.name} named outside its run: ${JSON.stringify({ beat, window })}`,
+    );
+  }
+  // Reporter events still supply the durations.
+  assert.equal(measured.slowestCases.length, 5);
+  assert.ok(measured.slowestCases.every((row) => row.durationMs >= 1000));
+  // The marker file is the task's own and is gone with it.
+  assert.match(markers, /dotln-case-markers-/u);
+  assert.equal(existsSync(dirname(markers)), false);
+  // A test process that dies inside a case leaves a start marker with no
+  // end. The heartbeat drops it with the process and names what still runs.
+  writeFileSync(
+    join(repo, "scripts/heartbeat-dies.test.mjs"),
+    'import test from "node:test";\ntest("dies inside", () => { process.kill(process.pid, "SIGKILL"); });\n',
+  );
+  writeFileSync(
+    join(repo, "scripts/heartbeat-survives.test.mjs"),
+    'import test from "node:test";\ntest("survivor", () => { Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1500); });\n',
+  );
+  const orphaned = [];
+  const died = await executeSuite(
+    {
+      name: "dies",
+      heartbeatMs: 300,
+      command: [
+        process.execPath,
+        "--test",
+        "scripts/heartbeat-dies.test.mjs",
+        "scripts/heartbeat-survives.test.mjs",
+      ],
+    },
+    repo,
+    900_000,
+    ({ message }) => orphaned.push(message),
+  );
+  assert.equal(died.exitCode, 1);
+  assert.ok(
+    orphaned.some((message) => /^running cases?: .*survivor \(/u.test(message)),
+    orphaned.join("\n"),
+  );
+  assert.equal(
+    orphaned.some((message) =>
+      /^running cases?: .*dies inside \(/u.test(message),
+    ),
+    false,
+    orphaned.join("\n"),
+  );
+  // A task that reports no cases is never given one.
+  const plain = [];
+  const quiet = await executeSuite(
+    {
+      name: "plain",
+      heartbeatMs: 150,
+      command: [process.execPath, "-e", "setTimeout(() => {}, 600)"],
+    },
+    repo,
+    900_000,
+    ({ message }) => plain.push(message),
+  );
+  assert.equal(quiet.exitCode, 0, quiet.output);
+  assert.ok(plain.some((message) => /^running task: plain /u.test(message)));
+  assert.equal(
+    plain.some((message) => /running case/u.test(message)),
+    false,
+  );
+  // The interval is a fixture control; a declared table cannot carry it.
+  assert.throws(
+    () =>
+      validateSuites([
+        { name: "build", build: true, command: ["build"] },
+        { name: "slow", command: ["slow"], heartbeatMs: 10 },
+      ]),
+    /Heartbeat interval is a fixture control: slow/u,
+  );
+});
+
+test("WO-186 excluded license pins fail their document-routed check and outward vocabulary stays in the product identity", async (t) => {
+  const { repo } = taskReuseFixture(t);
+  const { licenseSurfaceRules } = await import("./license-surfaces.mjs");
+  mkdirSync(join(repo, "docs"), { recursive: true });
+  mkdirSync(join(repo, "packages/fixture"), { recursive: true });
+  writeFileSync(join(repo, "package.json"), '{"private":false}\n');
+  writeFileSync(
+    join(repo, "packages/fixture/package.json"),
+    '{"name":"fixture","version":"0.0.1","private":false}\n',
+  );
+  for (const file of ["LICENSE", "LICENSE-docs", "NOTICE", "docs/LEGAL.md"])
+    cpSync(join(root, file), join(repo, file));
+  const pins = (rules) =>
+    rules.filter((row) => row.line.includes("docs/LEGAL.md"));
+  assert.ok(pins(licenseSurfaceRules(repo)).every((row) => row.pass));
+  const identity = gateCodeIdentity(repo);
+  writeFileSync(
+    join(repo, "docs/LEGAL.md"),
+    readFileSync(join(repo, "docs/LEGAL.md"), "utf8").replace(
+      /sha256:[a-f0-9]{64}/,
+      "sha256:" + "0".repeat(64),
+    ),
+  );
+  assert.equal(gateCodeIdentity(repo), identity);
+  assert.ok(pins(licenseSurfaceRules(repo)).some((row) => !row.pass));
+  for (const name of [
+    "license-surfaces",
+    "resume",
+    "resident-bind",
+    "local-runner-double",
+    "artifact-corpus",
+  ]) {
+    const suite = suites.find((row) => row.name === name);
+    assert.equal(suite.document, true, name);
+    assert.equal(suite.product, false, name);
+  }
+  mkdirSync(join(repo, "docs/control"), { recursive: true });
+  writeFileSync(
+    join(repo, "docs/control/outward-vocabulary.json"),
+    '["first"]\n',
+  );
+  const vocabulary = gateCodeIdentity(repo);
+  writeFileSync(
+    join(repo, "docs/control/outward-vocabulary.json"),
+    '["second"]\n',
+  );
+  assert.notEqual(gateCodeIdentity(repo), vocabulary);
+  for (const name of ["github-body", "outward-lint", "target-publish"])
+    assert.equal(suites.find((row) => row.name === name).product, true, name);
+});
+
+test("WO-186 a failed release case reruns alone after its passed disposable template has gone", async (t) => {
+  const { repo, table, observed } = taskReuseFixture(t);
+  writeFileSync(
+    join(repo, ".gitignore"),
+    readFileSync(join(repo, ".gitignore"), "utf8") + "fail-release\n",
+  );
+  writeFileSync(
+    join(repo, "scripts/test-release.sh"),
+    `#!/bin/bash
+set -eu
+release_case_good() {
+  :
+}
+release_case_bad() {
+  :
+}
+if [[ "$1" == --prepare-template ]]; then
+  printf 'prepare\\n' >> observed.jsonl
+  mkdir -p "$2"
+elif [[ "$1" == --case ]]; then
+  printf '%s\\n' "$2" >> observed.jsonl
+  if [[ "$2" == bad && -f fail-release ]]; then exit 1; fi
+fi
+`,
+  );
+  runGit(repo, ["add", "."]);
+  runGit(repo, ["commit", "-qm", "release reuse fixture"]);
+  const selection = [
+    table[0],
+    {
+      name: "release",
+      product: true,
+      command: ["bash", "scripts/test-release.sh"],
+    },
+  ];
+  writeFileSync(join(repo, "fail-release"), "fail\n");
+  const first = await runGate(["--again", "--serial"], repo, {
+    table: selection,
+  });
+  assert.equal(first.exitCode, 1);
+  assert.deepEqual(observed(), ["build", "prepare", "good", "bad"]);
+  rmSync(join(repo, "fail-release"));
+  const second = await runGate(["--serial"], repo, { table: selection });
+  assert.equal(second.exitCode, 0);
+  assert.deepEqual(observed(), ["build", "prepare", "good", "bad", "bad"]);
+  assert.equal(second.freshSuites, 1);
+  assert.equal(second.reusedSuites, 3);
+  const preparation = second.taskTimeline.find(
+    (row) => row.name === "release:prepare",
+  );
+  assert.equal(preparation.sourceRow.recordedAt, first.recordedAt);
+});
+
+test("WO-186 FINAL-001 a fresh worktree's failed single-suite run displaces main's claim until the task passes", async (t) => {
+  const { repo, table, observed } = taskReuseFixture(t);
+  const { coveringGateCheck, coveringTaskResults } =
+    await import("./lib/gate-reuse.mjs");
+  const { requireGateClaims } = await import("./lib/handoff-ledger.mjs");
+  const ledger = {
+    checked: true,
+    claims: { plain: ["3"], review: [], document: [] },
+  };
+  const main = await runGate(["--serial", "--again"], repo, { table });
+  const index = join(repo, "docs/control/local/harness/checks.json");
+  const mainBytes = readFileSync(index);
+  const worktree = `${repo}-worktree`;
+  t.after(() => rmSync(worktree, { recursive: true, force: true }));
+  runGit(repo, ["worktree", "add", "-q", "-b", "work", worktree]);
+  assert.equal(
+    (await coveringGateCheck(worktree, "npm test", [])).location,
+    "main",
+  );
+  assert.equal(
+    (await requireGateClaims(worktree, ledger)).productGate.recordedAt,
+    main.recordedAt,
+  );
+  writeFileSync(join(worktree, "fail-beta"), "fail\n");
+  assert.equal(
+    (await runGate(["--only", "beta", "--serial"], worktree, { table }))
+      .exitCode,
+    1,
+  );
+  const tasks = table.filter((row) => !row.machinery);
+  assert.deepEqual(
+    [
+      ...(
+        await coveringTaskResults(worktree, "npm test", tasks)
+      ).results.keys(),
+    ],
+    ["build", "alpha"],
+  );
+  const refused = await coveringGateCheck(worktree, "npm test", []);
+  assert.equal(refused.row, undefined);
+  assert.deepEqual(refused.displaced.tasks, ["beta"]);
+  await assert.rejects(
+    () => requireGateClaims(worktree, ledger),
+    /no passing complete npm test row stands[^]*beta/u,
+  );
+  // Recovery under the other check restores main's pass without creating a
+  // local npm test row. This arrangement was absent from the failed review.
+  rmSync(join(worktree, "fail-beta"));
+  assert.equal(
+    (await runGate(["--only", "beta", "--serial"], worktree, { table }))
+      .exitCode,
+    0,
+  );
+  assert.deepEqual((await requireGateClaims(worktree, ledger)).advisories, []);
+  assert.equal(
+    (await coveringTaskResults(worktree, "npm test", tasks)).results.size,
+    tasks.length,
+  );
+  assert.ok(
+    readGateChecks(worktree).every((row) => row.checkId !== "npm test"),
+  );
+  // A second failure must still make the next plain run execute beta alone.
+  writeFileSync(join(worktree, "fail-beta"), "fail again\n");
+  await runGate(["--only", "beta", "--serial"], worktree, { table });
+  const before = observed(worktree).length;
+  const plain = await runGate(["--serial"], worktree, { table });
+  assert.equal(plain.exitCode, 1);
+  assert.deepEqual(observed(worktree).slice(before), ["beta"]);
+  assert.deepEqual(readFileSync(index), mainBytes);
+});
+
+test("WO-186 FINAL-001 runner and claim agree over local/main and same/other-check histories", async (t) => {
+  const { coveringGateCheck, coveringTaskResults } =
+    await import("./lib/gate-reuse.mjs");
+  for (const own of [false, true])
+    for (const consultMain of [false, true])
+      for (const checkId of ["npm test", "suite:beta"])
+        for (const passed of [false, true])
+          await t.test(
+            JSON.stringify({ own, consultMain, checkId, passed }),
+            async (cell) => {
+              const { repo, table } = taskReuseFixture(cell);
+              let worktree = repo;
+              if (consultMain) {
+                worktree = `${repo}-worktree`;
+                cell.after(() =>
+                  rmSync(worktree, { recursive: true, force: true }),
+                );
+                runGit(repo, ["worktree", "add", "-q", "-b", "work", worktree]);
+              }
+              const tasks = table.filter((row) => !row.machinery);
+              const identity = gateCodeIdentity(worktree);
+              const row = (at, id = "npm test", success = true) => ({
+                checkId: id,
+                codeIdentity: identity,
+                treeHash: gateTreeHash(worktree),
+                executed: true,
+                exitCode: success ? 0 : 1,
+                identityUnchanged: true,
+                durationMs: 1,
+                evidenceRef: `fixture:${at}:${id}`,
+                recordedAt: new Date(at).toISOString(),
+                requiredSuites:
+                  id === "npm test" ? tasks.map((task) => task.name) : ["beta"],
+                taskTimeline: (id === "npm test"
+                  ? tasks
+                  : tasks.filter((task) => task.name === "beta")
+                ).map((task) => ({
+                  name: task.name,
+                  executed: true,
+                  exitCode: task.name === "beta" && !success ? 1 : 0,
+                  durationMs: 1,
+                  finishedAt: new Date(at).toISOString(),
+                })),
+              });
+              if (consultMain) recordGateChecks(repo, [row(1000)]);
+              if (own) recordGateChecks(worktree, [row(2000)]);
+              recordGateChecks(worktree, [row(3000, checkId, passed)]);
+              const carried = await coveringTaskResults(
+                worktree,
+                "npm test",
+                tasks,
+              );
+              const claim = await coveringGateCheck(
+                worktree,
+                "npm test",
+                tasks.map((task) => task.name),
+              );
+              assert.equal(
+                Boolean(claim.row),
+                carried.results.size === tasks.length,
+              );
+              assert.equal(
+                carried.results.has("beta"),
+                passed && (own || consultMain || checkId === "npm test"),
+              );
+            },
+          );
+});
+
+test("WO-186 FINAL-001 identity and consulted-index errors retain an explicit unproved-claim advisory", async (t) => {
+  const { repo, table } = taskReuseFixture(t);
+  const { requireGateClaims } = await import("./lib/handoff-ledger.mjs");
+  const ledger = {
+    checked: true,
+    claims: { plain: ["3"], review: [], document: [] },
+  };
+  await runGate(["--serial", "--again"], repo, { table });
+  symlinkSync("../fail-beta", join(repo, "scripts/new.mjs"));
+  await assert.rejects(
+    () => runGate(["--serial"], repo, { table }),
+    /symbolic source aliases/u,
+  );
+  const symbolic = await requireGateClaims(repo, ledger, {
+    log: { warn() {} },
+  });
+  assert.equal(symbolic.productGate, undefined);
+  assert.equal(symbolic.advisories.length, 1);
+  assert.match(
+    symbolic.advisories[0],
+    /symbolic source aliases[^]*criterion 3 is recorded as stated/u,
+  );
+  rmSync(join(repo, "scripts/new.mjs"));
+  const worktree = `${repo}-worktree`;
+  t.after(() => rmSync(worktree, { recursive: true, force: true }));
+  runGit(repo, ["worktree", "add", "-q", "-b", "work", worktree]);
+  writeFileSync(join(repo, "docs/control/local/harness/checks.json"), "{");
+  const unreadable = await requireGateClaims(worktree, ledger, {
+    log: { warn() {} },
+  });
+  assert.equal(unreadable.productGate, undefined);
+  assert.equal(unreadable.advisories.length, 1);
+  assert.match(
+    unreadable.advisories[0],
+    /Gate index unavailable:[^]*criterion 3 is recorded as stated/u,
+  );
+});
+
+test("WO-186 FINAL-001 case duration reports leave live diagnostic and suite progress slots available", async (t) => {
+  const { repo } = taskReuseFixture(t);
+  writeFileSync(
+    join(repo, "scripts/many.test.mjs"),
+    'import test from "node:test"; import assert from "node:assert/strict"; for(let n=0;n<55;n++)test("passing case "+n,()=>{}); test("late failure",()=>assert.fail("planted late failure"));\n',
+  );
+  const reporter = new URL("./lib/case-reporter.mjs", import.meta.url).href;
+  writeFileSync(
+    join(repo, "scripts/report-driver.mjs"),
+    `import {spawnSync} from "node:child_process";
+const run=spawnSync(process.execPath,["--test","--test-reporter=tap",${JSON.stringify("--test-reporter=" + reporter)},"--test-reporter-destination=stdout","--test-reporter-destination=stdout","scripts/many.test.mjs"],{stdio:"inherit"});
+console.log("PROGRESS suite-owned diagnostic after cases"); process.exitCode=run.status;
+`,
+  );
+  const progress = [];
+  const result = await executeSuite(
+    {
+      name: "many-cases",
+      command: [process.execPath, "scripts/report-driver.mjs"],
+    },
+    repo,
+    10000,
+    ({ message }) => progress.push(message),
+  );
+  assert.equal(result.exitCode, 1);
+  assert.equal(result.slowestCases.length, 5);
+  assert.ok(
+    progress.some((line) => /not ok \d+ - late failure/u.test(line)),
+    progress.join("\n"),
+  );
+  assert.ok(
+    progress.includes("PROGRESS suite-owned diagnostic after cases"),
+    progress.join("\n"),
+  );
+  assert.equal(
+    progress.some((line) => line.startsWith("PROGRESS CASE ")),
+    false,
+  );
+  assert.ok(result.slowestCases.some((row) => row.exitCode === 1));
+});
+
+test("WO-186 FINAL-001 callback opens without flags observe the default read and register descriptor metadata", async (t) => {
+  const { repo } = taskReuseFixture(t);
+  mkdirSync(join(repo, "docs/evidence/WO-999"), { recursive: true });
+  writeFileSync(join(repo, "docs/evidence/WO-999/report.md"), "report\n");
+  for (const metadata of [false, true]) {
+    writeFileSync(
+      join(repo, "scripts/open-default.mjs"),
+      `import fs from "node:fs";
+await new Promise((done,fail)=>fs.open("docs/evidence/WO-999/report.md",(e,fd)=>e?fail(e):(${metadata ? "fs.fstatSync(fd)," : ""}fs.close(fd,e=>e?fail(e):done()))));
+console.log("default open finished");
+`,
+    );
+    const result = await executeSuite(
+      {
+        name: "default-open",
+        product: true,
+        activeOrder: "WO-999",
+        command: [process.execPath, "scripts/open-default.mjs"],
+      },
+      repo,
+    );
+    assert.equal(result.exitCode, 1, result.output);
+    assert.equal(result.excludedReads, metadata ? 2 : 1, result.output);
+    assert.match(result.output, /report.md \(open\)/u);
+    if (metadata) assert.match(result.output, /report.md \(fstatSync\)/u);
+    assert.match(result.output, /default open finished/u);
+  }
+});
+
+test("WO-186 FINAL-001 another check's row-level failure displaces the tasks it executed", async (t) => {
+  const { repo, table } = taskReuseFixture(t);
+  const { coveringGateCheck, coveringTaskResults } =
+    await import("./lib/gate-reuse.mjs");
+  const clean = await runGate(["--serial", "--again"], repo, { table });
+  const beta = clean.taskTimeline.find((row) => row.name === "beta");
+  let at = Date.parse(clean.recordedAt);
+  for (const failure of [
+    { abandonedRoots: ["fixture:surviving-root"] },
+    { buildOutputUnchanged: false },
+    { memory: { failure: { kind: "fixture:memory" } } },
+    { identityUnchanged: false },
+    { stopped: true },
+    { timedOut: true },
+  ]) {
+    const observation = (extra) => {
+      const time = new Date(++at).toISOString();
+      return {
+        ...clean,
+        checkId: "suite:beta",
+        requiredSuites: ["beta"],
+        taskTimeline: [{ ...beta, finishedAt: time }],
+        recordedAt: time,
+        ...extra,
+      };
+    };
+    recordGateChecks(repo, [observation({ ...failure, exitCode: 1 })]);
+    const carried = await coveringTaskResults(repo, "npm test", table);
+    assert.equal(carried.results.has("beta"), false, JSON.stringify(failure));
+    const claim = await coveringGateCheck(repo, "npm test", []);
+    assert.equal(claim.row, undefined, JSON.stringify(failure));
+    assert.deepEqual(claim.displaced.tasks, ["beta"]);
+    recordGateChecks(repo, [observation({ exitCode: 0 })]);
+    assert.equal(
+      (await coveringGateCheck(repo, "npm test", [])).row.recordedAt,
+      clean.recordedAt,
+    );
+  }
+});
+
+test("WO-186 FINAL-001 machinery selection preserves removed, quoted and unlistable paths", async (t) => {
+  await t.test("a staged rename retains the deleted exact source", () => {
+    const { repo, table } = taskReuseFixture(t);
+    runGit(repo, ["checkout", "-q", "-b", "work"]);
+    runGit(repo, ["mv", "scripts/machine.mjs", "scripts/moved.mjs"]);
+    assert.deepEqual(
+      changedMachinery(repo, table, "main").map((row) => row.name),
+      ["machine"],
+    );
+  });
+  await t.test("a quoted filename retains its declared source prefix", () => {
+    const { repo } = taskReuseFixture(t);
+    const filename = "scripts/odd\nname.mjs";
+    writeFileSync(join(repo, filename), "export const value=1;\n");
+    runGit(repo, ["add", filename]);
+    runGit(repo, ["commit", "-qm", "quoted source fixture"]);
+    runGit(repo, ["checkout", "-q", "-b", "work"]);
+    writeFileSync(join(repo, filename), "export const value=2;\n");
+    assert.deepEqual(
+      changedMachinery(
+        repo,
+        [{ name: "quoted", machinery: true, sources: ["scripts/"] }],
+        "main",
+      ).map((row) => row.name),
+      ["quoted"],
+    );
+  });
+  await t.test("an unavailable untracked listing selects all machinery", () => {
+    const { repo } = taskReuseFixture(t);
+    const bin = join(repo, "bin");
+    mkdirSync(bin);
+    const actualGit = execFileSync("/usr/bin/which", ["git"], {
+      encoding: "utf8",
+    }).trim();
+    writeFileSync(
+      join(bin, "git"),
+      `#!/bin/sh\nif [ "$1" = ls-files ]; then exit 1; fi\nexec '${actualGit.replaceAll("'", "'\\''")}' "$@"\n`,
+    );
+    chmodSync(join(bin, "git"), 0o755);
+    const prior = process.env.PATH;
+    try {
+      process.env.PATH = `${bin}:${prior}`;
+      const table = [
+        { name: "machine", machinery: true, sources: ["scripts/machine.mjs"] },
+        { name: "second", machinery: true, sources: ["other/"] },
+      ];
+      assert.deepEqual(
+        changedMachinery(repo, table, "main").map((row) => row.name),
+        ["machine", "second"],
+      );
+    } finally {
+      process.env.PATH = prior;
+    }
+  });
+});
+
+test("WO-186 FINAL-001 a reporter loads from a checkout with URL delimiter characters", async (t) => {
+  const directory = mkdtempSync(join(tmpdir(), "dotln-reporter-url-"));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const checkout = join(directory, "checkout #?%");
+  for (const entry of [
+    "scripts",
+    "packages/skeleton/src",
+    "packages/beacons/src",
+  ])
+    cpSync(join(root, entry), join(checkout, entry), { recursive: true });
+  writeFileSync(
+    join(checkout, "scripts/url-case.test.mjs"),
+    'import test from "node:test"; test("URL-safe case",()=>{});\n',
+  );
+  const copied = await import(
+    pathToFileURL(join(checkout, "scripts/test-runner.mjs")).href
+  );
+  const result = await copied.executeSuite(
+    {
+      name: "url-case",
+      command: [process.execPath, "--test", "scripts/url-case.test.mjs"],
+    },
+    checkout,
+  );
+  assert.equal(result.exitCode, 0, result.output);
+  assert.ok(
+    result.slowestCases.some((row) => row.name === "URL-safe case"),
+    JSON.stringify(result.slowestCases),
+  );
+});
+
+test("WO-186 legacy product-only rows remain visible to planning and an even sample median uses both middle observations", async () => {
+  const { gatePerformanceConditions } =
+    await import("./lib/planning-conditions.mjs");
+  const row = {
+    checkId: "npm test",
+    executed: true,
+    exitCode: 0,
+    evidenceRef: "fixture:legacy",
+    requiredSuites: ["build", "product"],
+    taskTimeline: [],
+    executionMode: "fresh",
+  };
+  const checks = [
+    { ...row, recordedAt: "2026-10-01T00:00:00Z", durationMs: 300000 },
+    { ...row, recordedAt: "2026-10-02T00:00:00Z", durationMs: 500000 },
+    {
+      ...row,
+      recordedAt: "2026-10-03T00:00:00Z",
+      durationMs: 900000,
+      requiredSuites: ["build", "product", "machine"],
+    },
+  ];
+  const conditions = gatePerformanceConditions(checks, "2026-10-04T00:00:00Z", {
+    machinerySuites: ["machine"],
+  });
+  assert.equal(conditions[0].value, 400);
+  assert.equal(conditions[0].samples, 2);
+  assert.equal(conditions[0].holds, true);
 });

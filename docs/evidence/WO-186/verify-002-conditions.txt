@@ -1,0 +1,30 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+
+> plan
+> node scripts/refute-plan.mjs conditions
+
+Reopening conditions at 2026-10-05T17:49:51.359Z; 28.665 s.
+Host load averages: 6.19384765625, 6.001953125, 5.5654296875; 16 logical CPUs; other activity unknown.
+| Source | Measurement | Value | Threshold | Holds |
+| --- | --- | --- | --- | --- |
+| FUP-fb8cbeabbddef397 (historical: FUP-3dc0266d6b87b939, FUP-ab1746dc9c595d95) | plan-check: median of three fresh plan checks | 2.9183551249999997 s | > 8 | false |
+| WO-086-D006 | release-tags: local annotated release tags absent from the generated table | 3 tags | > 3 | false |
+| FUP-8a4e201d861208ad | order-evidence: distinct blob bytes under each of the last two closed orders' evidence paths at HEAD | [1493614,506434] bytes/order | > 1000000 in 2 consecutive orders | false |
+| FUP-8a4e201d861208ad, FUP-be1103fbfdd14653 | week-evidence: positive tracked evidence size additions since Monday 00:00 UTC | 0 bytes/week | > 10000000 | false |
+| FUP-7f9a27e6ed6c44b3 | collect-sources: median of three fresh console collectSources calls | 0.877456958 s | > 3 | false |
+| FUP-7f9a27e6ed6c44b3 | release-list: median of three fresh release lists, cache disabled without changing it | 3.385746083 s | > 10 | false |
+| FUP-7f9a27e6ed6c44b3 | status-bytes: UTF-8 stdout of status --all --json | 4522581 bytes | > 32000000 | false |
+| FUP-7f9a27e6ed6c44b3 | order-index: median of three readIndex/renderIndex calls, without writing | 1.7398747090000002 s | > 10 | false |
+| FUP-fb8cbeabbddef397 | document-gate: median of three fresh document gates (--slow) | unknown s | > 30 | unknown (not measured; use --slow) |
+| FUP-fb8cbeabbddef397 | docs-check: median of the docs-check tasks in those same three gates (--slow) | unknown s | > 15 | unknown (not measured; use --slow) |
+| FUP-e96221b106cd136a | plain-gate: thirty-day median of fresh complete plain gates; legacy product-only selections inferred from required suites | 294.87649999999996 s | > 360 | false |
+| FUP-e96221b106cd136a | gate-task:harness-fixtures: latest fresh task against its earlier thirty-day median; median 251.159 s (199 samples) | 326.028 s | > 376.7385 | false |
+| FUP-e96221b106cd136a | gate-task:worktree-integration: latest fresh task against its earlier thirty-day median; median 121.845 s (375 samples) | 259.228 s | > 182.76749999999998 | true |
+| FUP-e96221b106cd136a | gate-task:skeleton: latest fresh task against its earlier thirty-day median; median 295.4665 s (536 samples) | 241.188 s | > 443.19975 | false |
+| FUP-e96221b106cd136a | gate-task:target-publish: latest fresh task against its earlier thirty-day median; median 15.104 s (318 samples) | 159.116 s | > 22.656 | true |
+| FUP-e96221b106cd136a | gate-task:worktree: latest fresh task against its earlier thirty-day median; median 84.264 s (571 samples) | 124.149 s | > 126.39599999999999 | false |
+| WO-150-D003 | coldStartBytes.executor: meter's budget/order measurements; a later reopens record settles it | [29237] metric | > 24576 | true |
+3 hold; 2 unknown. Not evaluated: 1545 decision conditions and 883 register rows.
+bounded-result {"name":"bounded-probe","durationMs":28874,"slowestCases":[{"name":"bounded-probe","durationMs":28874,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":568609720,"peakRssBytes":694648832,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-05T17:49:51.179Z","finishedAt":"2026-10-05T17:50:20.053Z","exitCode":0,"executed":true}

@@ -1,0 +1,1256 @@
+{
+  "schemaVersion": 1,
+  "scope": "Diagnostic cause profiles, separate from the five-run ordinary-gate comparisons. Unequal and unobserved host load limits causal attribution. Initial after profiles precede the final observer and async matrix repairs.",
+  "commands": [
+    {
+      "file": "before-integration-suite-1-profile.jsonl",
+      "scope": "Five processes with the most instrumented calls; no cross-process or nested-wrapper sum is treated as wall time. Only public command basenames are retained.",
+      "observedProcesses": 238,
+      "observedCalls": 10011,
+      "processScopes": [
+        {
+          "calls": 524,
+          "totalInstrumentedMs": 244421.80047499994,
+          "commands": [
+            {
+              "operation": "worktree.mjs",
+              "calls": 42,
+              "durationMs": 190058.01791799997
+            },
+            {
+              "operation": "git",
+              "calls": 473,
+              "durationMs": 49198.58184899998
+            },
+            {
+              "operation": "work-orders.mjs",
+              "calls": 2,
+              "durationMs": 3442.8346669999974
+            },
+            {
+              "operation": "console-fixtures.mjs",
+              "calls": 2,
+              "durationMs": 1032.9892500000024
+            },
+            {
+              "operation": "harness.mjs",
+              "calls": 2,
+              "durationMs": 398.9044580000027
+            },
+            {
+              "operation": "check-publication.mjs",
+              "calls": 2,
+              "durationMs": 286.80395800000224
+            },
+            {
+              "operation": "zip",
+              "calls": 1,
+              "durationMs": 3.66837499999383
+            }
+          ]
+        },
+        {
+          "calls": 166,
+          "totalInstrumentedMs": 1225.3446289999997,
+          "commands": [
+            {
+              "operation": "git",
+              "calls": 166,
+              "durationMs": 1225.3446289999997
+            }
+          ]
+        },
+        {
+          "calls": 166,
+          "totalInstrumentedMs": 1212.9115090000023,
+          "commands": [
+            {
+              "operation": "git",
+              "calls": 166,
+              "durationMs": 1212.9115090000023
+            }
+          ]
+        },
+        {
+          "calls": 166,
+          "totalInstrumentedMs": 1214.8009140000004,
+          "commands": [
+            {
+              "operation": "git",
+              "calls": 166,
+              "durationMs": 1214.8009140000004
+            }
+          ]
+        },
+        {
+          "calls": 166,
+          "totalInstrumentedMs": 1149.9132479999992,
+          "commands": [
+            {
+              "operation": "git",
+              "calls": 166,
+              "durationMs": 1149.9132479999992
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "qualified-after-integration-suite-1-1-profile.jsonl",
+      "scope": "Five processes with the most instrumented calls; no cross-process or nested-wrapper sum is treated as wall time. Only public command basenames are retained.",
+      "observedProcesses": 238,
+      "observedCalls": 3776,
+      "processScopes": [
+        {
+          "calls": 526,
+          "totalInstrumentedMs": 167207.33653299997,
+          "commands": [
+            {
+              "operation": "worktree.mjs",
+              "calls": 42,
+              "durationMs": 117571.49466399997
+            },
+            {
+              "operation": "git",
+              "calls": 475,
+              "durationMs": 47710.22162099999
+            },
+            {
+              "operation": "console-fixtures.mjs",
+              "calls": 2,
+              "durationMs": 996.6483319999988
+            },
+            {
+              "operation": "harness.mjs",
+              "calls": 2,
+              "durationMs": 376.04291699999885
+            },
+            {
+              "operation": "work-orders.mjs",
+              "calls": 2,
+              "durationMs": 281.34508299999834
+            },
+            {
+              "operation": "check-publication.mjs",
+              "calls": 2,
+              "durationMs": 268.06891599999835
+            },
+            {
+              "operation": "zip",
+              "calls": 1,
+              "durationMs": 3.515000000003056
+            }
+          ]
+        },
+        {
+          "calls": 87,
+          "totalInstrumentedMs": 5401.207583,
+          "commands": [
+            {
+              "operation": "git",
+              "calls": 79,
+              "durationMs": 2135.337167000001
+            },
+            {
+              "operation": "npm",
+              "calls": 1,
+              "durationMs": 875.678958
+            },
+            {
+              "operation": "meta.mjs",
+              "calls": 1,
+              "durationMs": 857.6407080000004
+            },
+            {
+              "operation": "release.mjs",
+              "calls": 1,
+              "durationMs": 555.698167
+            },
+            {
+              "operation": "console-fixtures.mjs",
+              "calls": 1,
+              "durationMs": 502.73812500000076
+            },
+            {
+              "operation": "harness.mjs",
+              "calls": 1,
+              "durationMs": 190.58291699999972
+            },
+            {
+              "operation": "work-orders.mjs",
+              "calls": 1,
+              "durationMs": 139.53195799999958
+            },
+            {
+              "operation": "check-publication.mjs",
+              "calls": 1,
+              "durationMs": 137.91062499999953
+            },
+            {
+              "operation": "process-budget.mjs",
+              "calls": 1,
+              "durationMs": 6.088957999999366
+            }
+          ]
+        },
+        {
+          "calls": 87,
+          "totalInstrumentedMs": 5177.491668999998,
+          "commands": [
+            {
+              "operation": "git",
+              "calls": 79,
+              "durationMs": 2555.9587929999993
+            },
+            {
+              "operation": "npm",
+              "calls": 1,
+              "durationMs": 840.952792
+            },
+            {
+              "operation": "release.mjs",
+              "calls": 1,
+              "durationMs": 544.7648749999994
+            },
+            {
+              "operation": "console-fixtures.mjs",
+              "calls": 1,
+              "durationMs": 498.68987500000003
+            },
+            {
+              "operation": "meta.mjs",
+              "calls": 1,
+              "durationMs": 276.3802089999999
+            },
+            {
+              "operation": "harness.mjs",
+              "calls": 1,
+              "durationMs": 181.9781670000002
+            },
+            {
+              "operation": "work-orders.mjs",
+              "calls": 1,
+              "durationMs": 139.23700000000008
+            },
+            {
+              "operation": "check-publication.mjs",
+              "calls": 1,
+              "durationMs": 133.46387499999946
+            },
+            {
+              "operation": "process-budget.mjs",
+              "calls": 1,
+              "durationMs": 6.066082999999708
+            }
+          ]
+        },
+        {
+          "calls": 87,
+          "totalInstrumentedMs": 4795.691536,
+          "commands": [
+            {
+              "operation": "git",
+              "calls": 79,
+              "durationMs": 1930.8300380000014
+            },
+            {
+              "operation": "npm",
+              "calls": 1,
+              "durationMs": 837.6995830000001
+            },
+            {
+              "operation": "release.mjs",
+              "calls": 1,
+              "durationMs": 549.9617499999999
+            },
+            {
+              "operation": "meta.mjs",
+              "calls": 1,
+              "durationMs": 529.5790409999995
+            },
+            {
+              "operation": "console-fixtures.mjs",
+              "calls": 1,
+              "durationMs": 491.7075420000001
+            },
+            {
+              "operation": "harness.mjs",
+              "calls": 1,
+              "durationMs": 181.35904100000016
+            },
+            {
+              "operation": "check-publication.mjs",
+              "calls": 1,
+              "durationMs": 134.70087499999954
+            },
+            {
+              "operation": "work-orders.mjs",
+              "calls": 1,
+              "durationMs": 132.94191599999976
+            },
+            {
+              "operation": "process-budget.mjs",
+              "calls": 1,
+              "durationMs": 6.911750000000211
+            }
+          ]
+        },
+        {
+          "calls": 86,
+          "totalInstrumentedMs": 4855.359458999998,
+          "commands": [
+            {
+              "operation": "git",
+              "calls": 78,
+              "durationMs": 2227.0064569999995
+            },
+            {
+              "operation": "npm",
+              "calls": 1,
+              "durationMs": 852.186334
+            },
+            {
+              "operation": "release.mjs",
+              "calls": 1,
+              "durationMs": 547.9517089999999
+            },
+            {
+              "operation": "console-fixtures.mjs",
+              "calls": 1,
+              "durationMs": 490.18045900000016
+            },
+            {
+              "operation": "meta.mjs",
+              "calls": 1,
+              "durationMs": 274.47870799999964
+            },
+            {
+              "operation": "harness.mjs",
+              "calls": 1,
+              "durationMs": 187.3145410000002
+            },
+            {
+              "operation": "work-orders.mjs",
+              "calls": 1,
+              "durationMs": 137.80195899999944
+            },
+            {
+              "operation": "check-publication.mjs",
+              "calls": 1,
+              "durationMs": 132.20941700000003
+            },
+            {
+              "operation": "process-budget.mjs",
+              "calls": 1,
+              "durationMs": 6.229874999999993
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "before-skeleton-suite-1-profile.jsonl",
+      "scope": "Five processes with the most instrumented calls; no cross-process or nested-wrapper sum is treated as wall time. Only public command basenames are retained.",
+      "observedProcesses": 356,
+      "observedCalls": 9909,
+      "processScopes": [
+        {
+          "calls": 1468,
+          "totalInstrumentedMs": 34177.582077999985,
+          "commands": [
+            {
+              "operation": "harness.mjs",
+              "calls": 107,
+              "durationMs": 18315.048330000005
+            },
+            {
+              "operation": "git",
+              "calls": 1308,
+              "durationMs": 9226.098164999998
+            },
+            {
+              "operation": "node",
+              "calls": 4,
+              "durationMs": 3390.219916000001
+            },
+            {
+              "operation": "permissions.mjs",
+              "calls": 21,
+              "durationMs": 2143.13099899999
+            },
+            {
+              "operation": "fixture-test.mjs",
+              "calls": 28,
+              "durationMs": 1103.0846679999922
+            }
+          ]
+        },
+        {
+          "calls": 1215,
+          "totalInstrumentedMs": 185918.55232899982,
+          "commands": [
+            {
+              "operation": "resident-lock-process: matrix",
+              "calls": 696,
+              "durationMs": 142119.06492700023
+            },
+            {
+              "operation": "resident-lock-process.js",
+              "calls": 132,
+              "durationMs": 30738.299619999685
+            },
+            {
+              "operation": "node",
+              "calls": 385,
+              "durationMs": 12324.675448999918
+            },
+            {
+              "operation": "resident.test.js",
+              "calls": 1,
+              "durationMs": 728.4324579999957
+            },
+            {
+              "operation": "sandbox-exec",
+              "calls": 1,
+              "durationMs": 8.079874999999902
+            }
+          ]
+        },
+        {
+          "calls": 1144,
+          "totalInstrumentedMs": 24340.988497000024,
+          "commands": [
+            {
+              "operation": "harness.mjs",
+              "calls": 64,
+              "durationMs": 10601.501917000018
+            },
+            {
+              "operation": "git",
+              "calls": 1011,
+              "durationMs": 7007.9999110000135
+            },
+            {
+              "operation": "node",
+              "calls": 2,
+              "durationMs": 4128.751624
+            },
+            {
+              "operation": "fixture-test.mjs",
+              "calls": 37,
+              "durationMs": 1435.163917999997
+            },
+            {
+              "operation": "contract-test.mjs",
+              "calls": 30,
+              "durationMs": 1167.5711269999952
+            }
+          ]
+        },
+        {
+          "calls": 1142,
+          "totalInstrumentedMs": 12361.059017000007,
+          "commands": [
+            {
+              "operation": "git",
+              "calls": 913,
+              "durationMs": 7658.298968000003
+            },
+            {
+              "operation": "node",
+              "calls": 90,
+              "durationMs": 2845.356547
+            },
+            {
+              "operation": "select.mjs",
+              "calls": 138,
+              "durationMs": 1138.5455850000035
+            },
+            {
+              "operation": "dotln.js",
+              "calls": 1,
+              "durationMs": 718.8579170000012
+            }
+          ]
+        },
+        {
+          "calls": 587,
+          "totalInstrumentedMs": 4610.35807799999,
+          "commands": [
+            {
+              "operation": "git",
+              "calls": 587,
+              "durationMs": 4610.35807799999
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "qualified-after-skeleton-suite-1-1-profile.jsonl",
+      "scope": "Five processes with the most instrumented calls; no cross-process or nested-wrapper sum is treated as wall time. Only public command basenames are retained.",
+      "observedProcesses": 355,
+      "observedCalls": 9592,
+      "processScopes": [
+        {
+          "calls": 1468,
+          "totalInstrumentedMs": 34712.34313299997,
+          "commands": [
+            {
+              "operation": "harness.mjs",
+              "calls": 107,
+              "durationMs": 18472.65724700001
+            },
+            {
+              "operation": "git",
+              "calls": 1308,
+              "durationMs": 9367.42084199997
+            },
+            {
+              "operation": "node",
+              "calls": 4,
+              "durationMs": 3610.2901250000004
+            },
+            {
+              "operation": "permissions.mjs",
+              "calls": 21,
+              "durationMs": 2137.710126999991
+            },
+            {
+              "operation": "fixture-test.mjs",
+              "calls": 28,
+              "durationMs": 1124.2647919999986
+            }
+          ]
+        },
+        {
+          "calls": 1215,
+          "totalInstrumentedMs": 194832.69913800005,
+          "commands": [
+            {
+              "operation": "resident-lock-process: matrix",
+              "calls": 696,
+              "durationMs": 149102.609411
+            },
+            {
+              "operation": "resident-lock-process.js",
+              "calls": 132,
+              "durationMs": 32807.071047000034
+            },
+            {
+              "operation": "node",
+              "calls": 385,
+              "durationMs": 12195.557180000013
+            },
+            {
+              "operation": "resident.test.js",
+              "calls": 1,
+              "durationMs": 718.9350830000185
+            },
+            {
+              "operation": "sandbox-exec",
+              "calls": 1,
+              "durationMs": 8.526417000000038
+            }
+          ]
+        },
+        {
+          "calls": 1144,
+          "totalInstrumentedMs": 24572.68640000003,
+          "commands": [
+            {
+              "operation": "harness.mjs",
+              "calls": 64,
+              "durationMs": 10626.151416000006
+            },
+            {
+              "operation": "git",
+              "calls": 1011,
+              "durationMs": 7086.472197000018
+            },
+            {
+              "operation": "node",
+              "calls": 2,
+              "durationMs": 4280.374875000001
+            },
+            {
+              "operation": "fixture-test.mjs",
+              "calls": 37,
+              "durationMs": 1422.9359980000042
+            },
+            {
+              "operation": "contract-test.mjs",
+              "calls": 30,
+              "durationMs": 1156.7519140000009
+            }
+          ]
+        },
+        {
+          "calls": 1142,
+          "totalInstrumentedMs": 12525.946072999996,
+          "commands": [
+            {
+              "operation": "git",
+              "calls": 913,
+              "durationMs": 7910.212408000005
+            },
+            {
+              "operation": "node",
+              "calls": 90,
+              "durationMs": 2812.8354949999994
+            },
+            {
+              "operation": "select.mjs",
+              "calls": 138,
+              "durationMs": 1164.7176289999902
+            },
+            {
+              "operation": "dotln.js",
+              "calls": 1,
+              "durationMs": 638.1805410000015
+            }
+          ]
+        },
+        {
+          "calls": 587,
+          "totalInstrumentedMs": 4433.990951999996,
+          "commands": [
+            {
+              "operation": "git",
+              "calls": 587,
+              "durationMs": 4433.990951999996
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "guarded-generator-after-profile.jsonl",
+      "scope": "Five processes with the most instrumented calls; no cross-process or nested-wrapper sum is treated as wall time. Only public command basenames are retained.",
+      "observedProcesses": 15,
+      "observedCalls": 216,
+      "processScopes": [
+        {
+          "calls": 66,
+          "totalInstrumentedMs": 3038.087872,
+          "commands": [
+            {
+              "operation": "git",
+              "calls": 66,
+              "durationMs": 3038.087872
+            }
+          ]
+        },
+        {
+          "calls": 36,
+          "totalInstrumentedMs": 11398.579416999997,
+          "commands": [
+            {
+              "operation": "worktree.mjs",
+              "calls": 2,
+              "durationMs": 7697.637041
+            },
+            {
+              "operation": "git",
+              "calls": 30,
+              "durationMs": 2668.9860849999973
+            },
+            {
+              "operation": "console-fixtures.mjs",
+              "calls": 1,
+              "durationMs": 488.79612499999894
+            },
+            {
+              "operation": "work-orders.mjs",
+              "calls": 1,
+              "durationMs": 214.35358300000007
+            },
+            {
+              "operation": "harness.mjs",
+              "calls": 1,
+              "durationMs": 202.3556660000013
+            },
+            {
+              "operation": "check-publication.mjs",
+              "calls": 1,
+              "durationMs": 126.45091700000012
+            }
+          ]
+        },
+        {
+          "calls": 30,
+          "totalInstrumentedMs": 4014.839582999999,
+          "commands": [
+            {
+              "operation": "meta.mjs",
+              "calls": 1,
+              "durationMs": 1262.022084
+            },
+            {
+              "operation": "npm",
+              "calls": 1,
+              "durationMs": 847.771667
+            },
+            {
+              "operation": "release.mjs",
+              "calls": 1,
+              "durationMs": 611.700875
+            },
+            {
+              "operation": "console-fixtures.mjs",
+              "calls": 1,
+              "durationMs": 491.6318329999999
+            },
+            {
+              "operation": "git",
+              "calls": 22,
+              "durationMs": 255.438997999999
+            },
+            {
+              "operation": "work-orders.mjs",
+              "calls": 1,
+              "durationMs": 214.1234169999998
+            },
+            {
+              "operation": "harness.mjs",
+              "calls": 1,
+              "durationMs": 194.31333400000005
+            },
+            {
+              "operation": "check-publication.mjs",
+              "calls": 1,
+              "durationMs": 131.8111670000003
+            },
+            {
+              "operation": "process-budget.mjs",
+              "calls": 1,
+              "durationMs": 6.026208000000224
+            }
+          ]
+        },
+        {
+          "calls": 23,
+          "totalInstrumentedMs": 316.649753,
+          "commands": [
+            {
+              "operation": "resume.mjs",
+              "calls": 1,
+              "durationMs": 185.286125
+            },
+            {
+              "operation": "git",
+              "calls": 22,
+              "durationMs": 131.36362799999998
+            }
+          ]
+        },
+        {
+          "calls": 21,
+          "totalInstrumentedMs": 145.0292080000001,
+          "commands": [
+            {
+              "operation": "git",
+              "calls": 21,
+              "durationMs": 145.0292080000001
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "file": "before-integration-suite-1.log",
+      "reportedCases": 21,
+      "scope": "All integration cases or forty slowest reported skeleton cases, including nested cells; overlapping case times are not additive.",
+      "cases": [
+        {
+          "case": "WO-086 a stub blocked by a symlink retains its saved collision through continuation",
+          "nesting": 0,
+          "durationMs": 24675.5285
+        },
+        {
+          "case": "WO-086 a blocked PR file preserves collision inputs for continuation",
+          "nesting": 0,
+          "durationMs": 19962.649166
+        },
+        {
+          "case": "WO-086 a stub blocked by a regular file with a newer tag during retry retains its saved collision through continuation",
+          "nesting": 0,
+          "durationMs": 19832.42825
+        },
+        {
+          "case": "WO-086 a blocked PR directory preserves collision inputs for continuation",
+          "nesting": 0,
+          "durationMs": 19389.755084
+        },
+        {
+          "case": "WO-086 a tag that lands after the stub is written is recorded once, by release prepare",
+          "nesting": 0,
+          "durationMs": 18404.026167
+        },
+        {
+          "case": "WO-086 a stub blocked by a regular file retains its saved collision through continuation",
+          "nesting": 0,
+          "durationMs": 18042.641
+        },
+        {
+          "case": "WO-086 a retime that lands on a continuation is recorded once, in the stub the failed pass withheld",
+          "nesting": 0,
+          "durationMs": 16245.7795
+        },
+        {
+          "case": "real Git reviewed merge preserves recovery, histories and authored conflicts with real generators",
+          "nesting": 0,
+          "durationMs": 15959.6465
+        },
+        {
+          "case": "real Git fast-forward preserves recovery, histories and authored conflicts with real generators",
+          "nesting": 0,
+          "durationMs": 15595.365917
+        },
+        {
+          "case": "a later stash failure with nothing stashed restores the completed receipt it replaced",
+          "nesting": 0,
+          "durationMs": 13923.98025
+        },
+        {
+          "case": "untracked stash collision remains explicit and recoverable until continuation",
+          "nesting": 0,
+          "durationMs": 13074.240166
+        },
+        {
+          "case": "WO-167 --continue judges the recorded phase while the uncommitted control log travels in the stash",
+          "nesting": 0,
+          "durationMs": 12606.917666
+        },
+        {
+          "case": "WO-169 a first invocation with no authored conflict generates at once",
+          "nesting": 0,
+          "durationMs": 12332.56975
+        },
+        {
+          "case": "WO-169 a pass whose generator fails keeps its checks and names the pending step, not a conflict",
+          "nesting": 0,
+          "durationMs": 10512.188958
+        },
+        {
+          "case": "WO-086 a conflicted decisions record refuses the collision's record and writes nothing",
+          "nesting": 0,
+          "durationMs": 10384.565083
+        },
+        {
+          "case": "a stash Git stores and then fails to finish resumes with --continue; --continue refuses intent-to-add entries",
+          "nesting": 0,
+          "durationMs": 6930.272917
+        },
+        {
+          "case": "three required refusals leave the tree, index, HEAD and recovery refs unchanged",
+          "nesting": 0,
+          "durationMs": 6862.313833
+        },
+        {
+          "case": "an intent-to-add entry is refused before any write, and a failed stash leaves no pending receipt",
+          "nesting": 0,
+          "durationMs": 6833.339417
+        },
+        {
+          "case": "printed checks use the runner's declared machinery sources, including package code",
+          "nesting": 0,
+          "durationMs": 98.278667
+        },
+        {
+          "case": "follow-up union preserves compatible histories and refuses divergent same-entry histories",
+          "nesting": 0,
+          "durationMs": 1.084416
+        },
+        {
+          "case": "WO-169 the integration record holds each release message as one line with one full stop",
+          "nesting": 0,
+          "durationMs": 0.3205
+        }
+      ]
+    },
+    {
+      "file": "qualified-after-integration-suite-1-1.log",
+      "reportedCases": 21,
+      "scope": "All integration cases or forty slowest reported skeleton cases, including nested cells; overlapping case times are not additive.",
+      "cases": [
+        {
+          "case": "WO-086 a stub blocked by a symlink retains its saved collision through continuation",
+          "nesting": 0,
+          "durationMs": 16027.999542
+        },
+        {
+          "case": "WO-086 a stub blocked by a regular file with a newer tag during retry retains its saved collision through continuation",
+          "nesting": 0,
+          "durationMs": 13624.422042
+        },
+        {
+          "case": "WO-086 a blocked PR directory preserves collision inputs for continuation",
+          "nesting": 0,
+          "durationMs": 12231.052833
+        },
+        {
+          "case": "WO-086 a blocked PR file preserves collision inputs for continuation",
+          "nesting": 0,
+          "durationMs": 12166.102792
+        },
+        {
+          "case": "WO-086 a tag that lands after the stub is written is recorded once, by release prepare",
+          "nesting": 0,
+          "durationMs": 12127.770084
+        },
+        {
+          "case": "WO-086 a stub blocked by a regular file retains its saved collision through continuation",
+          "nesting": 0,
+          "durationMs": 12125.728209
+        },
+        {
+          "case": "WO-086 a retime that lands on a continuation is recorded once, in the stub the failed pass withheld",
+          "nesting": 0,
+          "durationMs": 11687.556084
+        },
+        {
+          "case": "a later stash failure with nothing stashed restores the completed receipt it replaced",
+          "nesting": 0,
+          "durationMs": 10300.441125
+        },
+        {
+          "case": "real Git reviewed merge preserves recovery, histories and authored conflicts with real generators",
+          "nesting": 0,
+          "durationMs": 10144.0775
+        },
+        {
+          "case": "real Git fast-forward preserves recovery, histories and authored conflicts with real generators",
+          "nesting": 0,
+          "durationMs": 10022.693583
+        },
+        {
+          "case": "WO-167 --continue judges the recorded phase while the uncommitted control log travels in the stash",
+          "nesting": 0,
+          "durationMs": 9767.340167
+        },
+        {
+          "case": "WO-169 a first invocation with no authored conflict generates at once",
+          "nesting": 0,
+          "durationMs": 9423.294792
+        },
+        {
+          "case": "WO-086 a conflicted decisions record refuses the collision's record and writes nothing",
+          "nesting": 0,
+          "durationMs": 8740.244375
+        },
+        {
+          "case": "untracked stash collision remains explicit and recoverable until continuation",
+          "nesting": 0,
+          "durationMs": 8692.801958
+        },
+        {
+          "case": "WO-169 a pass whose generator fails keeps its checks and names the pending step, not a conflict",
+          "nesting": 0,
+          "durationMs": 8014.122167
+        },
+        {
+          "case": "three required refusals leave the tree, index, HEAD and recovery refs unchanged",
+          "nesting": 0,
+          "durationMs": 6541.496833
+        },
+        {
+          "case": "an intent-to-add entry is refused before any write, and a failed stash leaves no pending receipt",
+          "nesting": 0,
+          "durationMs": 6490.2085
+        },
+        {
+          "case": "a stash Git stores and then fails to finish resumes with --continue; --continue refuses intent-to-add entries",
+          "nesting": 0,
+          "durationMs": 6142.408084
+        },
+        {
+          "case": "printed checks use the runner's declared machinery sources, including package code",
+          "nesting": 0,
+          "durationMs": 97.535083
+        },
+        {
+          "case": "follow-up union preserves compatible histories and refuses divergent same-entry histories",
+          "nesting": 0,
+          "durationMs": 2.263833
+        },
+        {
+          "case": "WO-169 the integration record holds each release message as one line with one full stop",
+          "nesting": 0,
+          "durationMs": 1.448209
+        }
+      ]
+    },
+    {
+      "file": "qualified-after-skeleton-suite-1-1.log",
+      "reportedCases": 476,
+      "scope": "All integration cases or forty slowest reported skeleton cases, including nested cells; overlapping case times are not additive.",
+      "cases": [
+        {
+          "case": "WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers",
+          "nesting": 0,
+          "durationMs": 162563.814666
+        },
+        {
+          "case": "cell loop-lifetime-reclaim",
+          "nesting": 1,
+          "durationMs": 89216.125417
+        },
+        {
+          "case": "cell once-append-reclaim",
+          "nesting": 1,
+          "durationMs": 86901.55875
+        },
+        {
+          "case": "cell once-lifetime-reclaim",
+          "nesting": 1,
+          "durationMs": 86197.495625
+        },
+        {
+          "case": "cell loop-lifetime-fresh",
+          "nesting": 1,
+          "durationMs": 75371.660917
+        },
+        {
+          "case": "cell loop-append-reclaim",
+          "nesting": 1,
+          "durationMs": 74379.001416
+        },
+        {
+          "case": "cell loop-append-fresh",
+          "nesting": 1,
+          "durationMs": 69242.060708
+        },
+        {
+          "case": "cell once-append-fresh",
+          "nesting": 1,
+          "durationMs": 66382.886583
+        },
+        {
+          "case": "cell once-lifetime-fresh",
+          "nesting": 1,
+          "durationMs": 65865.752375
+        },
+        {
+          "case": "WO-143 once and loop recover kills during a running episode's polling acquisition",
+          "nesting": 0,
+          "durationMs": 41295.448625
+        },
+        {
+          "case": "WO-143 thirty consecutive kill/restart rounds remain openable on once and loop paths",
+          "nesting": 0,
+          "durationMs": 37522.776667
+        },
+        {
+          "case": "WO-157 the host counts committed paths against the files ceiling and refuses a removal without repo.delete, except a declared Sort move",
+          "nesting": 0,
+          "durationMs": 9088.834125
+        },
+        {
+          "case": "WO-055 AC3 two wrong repairs exhaust with last finding and no third source dispatch",
+          "nesting": 0,
+          "durationMs": 6982.652
+        },
+        {
+          "case": "WO-052 emitted Claude permission hook admits only live host-issued exact commands",
+          "nesting": 0,
+          "durationMs": 5800.720458
+        },
+        {
+          "case": "WO-132 the public worker CLI admits ultra and unrecorded selectors before transport",
+          "nesting": 0,
+          "durationMs": 5345.247625
+        },
+        {
+          "case": "WO-055 AC2 failing source commit repairs once and re-verifies the complete original contract",
+          "nesting": 0,
+          "durationMs": 5135.065792
+        },
+        {
+          "case": "WO-119 check confinement denies outside writes, outside reads and network; timeout is not a candidate",
+          "nesting": 0,
+          "durationMs": 5044.254458
+        },
+        {
+          "case": "WO-147 retirement probe tolerates a delayed claim present when recursive cleanup begins",
+          "nesting": 0,
+          "durationMs": 4719.735625
+        },
+        {
+          "case": "WO-055 AC4 SIGKILL afterSnapshotPrepared resumes persisted continuation without another repair",
+          "nesting": 0,
+          "durationMs": 4719.323542
+        },
+        {
+          "case": "WO-055 AC4 SIGKILL afterRepairCommit resumes persisted continuation without another repair",
+          "nesting": 0,
+          "durationMs": 4693.412084
+        },
+        {
+          "case": "WO-055 AC1 refused path or command persists byte-identical envelope and dispatches no writer",
+          "nesting": 0,
+          "durationMs": 4472.131959
+        },
+        {
+          "case": "WO-062 criterion 2: every declared shape/form is omitted from current text and full historical versions, without persisted text",
+          "nesting": 0,
+          "durationMs": 4118.712417
+        },
+        {
+          "case": "WO-121 negative activity stream never changes away phase or cancels; human return preserves foreground",
+          "nesting": 0,
+          "durationMs": 3913.952917
+        },
+        {
+          "case": "WO-052 AC1 claude: governed foreign worktree, failing baseline, committed passing result, receipt and explicit finish",
+          "nesting": 0,
+          "durationMs": 3680.788625
+        },
+        {
+          "case": "WO-052 dirty committed tree and unowned ignored files refuse while preserving contents",
+          "nesting": 0,
+          "durationMs": 3493.744792
+        },
+        {
+          "case": "WO-052 wrong branch and outside-surface commits refuse without redispatch or discard",
+          "nesting": 0,
+          "durationMs": 2950.229541
+        },
+        {
+          "case": "WO-042 installed role projection takes each support from compiled equipment",
+          "nesting": 0,
+          "durationMs": 2891.282667
+        },
+        {
+          "case": "WO-052 AC2 real host SIGKILL after-receipt: expired lease recovers one effect",
+          "nesting": 0,
+          "durationMs": 2803.800292
+        },
+        {
+          "case": "WO-052 AC2 real host SIGKILL before-commit: expired lease recovers one effect",
+          "nesting": 0,
+          "durationMs": 2637.732667
+        },
+        {
+          "case": "WO-052 AC2 real host SIGKILL after-commit: expired lease recovers one effect",
+          "nesting": 0,
+          "durationMs": 2550.386542
+        },
+        {
+          "case": "WO-066 host review witness preserves scope, named tests, revision and one-round bound",
+          "nesting": 0,
+          "durationMs": 2309.615791
+        },
+        {
+          "case": "WO-052 AC1 codex: governed foreign worktree, failing baseline, committed passing result, receipt and explicit finish",
+          "nesting": 0,
+          "durationMs": 2230.313875
+        },
+        {
+          "case": "WO-052 effect receipt and stable request are positively decoded before reclaim or redispatch",
+          "nesting": 0,
+          "durationMs": 2147.312917
+        },
+        {
+          "case": "WO-055 AC1 pure derivation contains paths, commands, contract and admitted exact grants",
+          "nesting": 0,
+          "durationMs": 2007.943041
+        },
+        {
+          "case": "WO-009 invalid correlation, malformed output and success-shaped nonzero exits never complete commands",
+          "nesting": 0,
+          "durationMs": 1998.809667
+        },
+        {
+          "case": "WO-010 codex-cli-exec killed verifier retains its command and recovers in a fresh leased episode",
+          "nesting": 0,
+          "durationMs": 1744.28
+        },
+        {
+          "case": "WO-052 a second interrupted attempt exhausts recovery; no third dispatch",
+          "nesting": 0,
+          "durationMs": 1740.067167
+        },
+        {
+          "case": "WO-157 a grant-bearing artifact identity equips and runs through the source-change host; a malformed registry still refuses",
+          "nesting": 0,
+          "durationMs": 1739.440583
+        },
+        {
+          "case": "WO-010 claude-cli-print killed verifier retains its command and recovers in a fresh leased episode",
+          "nesting": 0,
+          "durationMs": 1703.447584
+        },
+        {
+          "case": "WO-009 missed leases fence delayed heartbeats and results while authority remains valid",
+          "nesting": 0,
+          "durationMs": 1675.508208
+        }
+      ]
+    },
+    {
+      "file": "matrix-async-positive.log",
+      "reportedCases": 11,
+      "scope": "All integration cases or forty slowest reported skeleton cases, including nested cells; overlapping case times are not additive.",
+      "cases": [
+        {
+          "case": "WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers",
+          "nesting": 0,
+          "durationMs": 81616.393
+        },
+        {
+          "case": "cell loop-lifetime-reclaim",
+          "nesting": 1,
+          "durationMs": 45982.347584
+        },
+        {
+          "case": "cell loop-append-reclaim",
+          "nesting": 1,
+          "durationMs": 40822.98225
+        },
+        {
+          "case": "cell once-lifetime-reclaim",
+          "nesting": 1,
+          "durationMs": 40297.685291
+        },
+        {
+          "case": "cell once-append-reclaim",
+          "nesting": 1,
+          "durationMs": 40287.129666
+        },
+        {
+          "case": "cell loop-lifetime-fresh",
+          "nesting": 1,
+          "durationMs": 37902.625291
+        },
+        {
+          "case": "cell loop-append-fresh",
+          "nesting": 1,
+          "durationMs": 35262.254792
+        },
+        {
+          "case": "cell once-lifetime-fresh",
+          "nesting": 1,
+          "durationMs": 31114.064625
+        },
+        {
+          "case": "cell once-append-fresh",
+          "nesting": 1,
+          "durationMs": 31102.608167
+        },
+        {
+          "case": "WO-173 a lock-matrix cell that exceeds its own deadline fails by name while the other seven run",
+          "nesting": 0,
+          "durationMs": 717.001417
+        },
+        {
+          "case": "WO-186 a cancelled matrix cell reaps its paused fixture child before teardown",
+          "nesting": 0,
+          "durationMs": 298.352583
+        }
+      ]
+    }
+  ]
+}

@@ -4,7 +4,9 @@ import { cpus, loadavg } from "node:os";
 import { join } from "node:path";
 import { performance } from "node:perf_hooks";
 import { docPath, docRelative, TOOL_ROOT } from "./config.mjs";
-import { runGit } from "./git.mjs";
+import { runGit, mainWorktree } from "./git.mjs";
+import { completePassingRow } from "./gate-reuse.mjs";
+import { readGateChecks, partialGateCheck } from "./gate-evidence.mjs";
 import { readControl } from "./control-store.mjs";
 import { readDecisions, collectMeta } from "./meta.mjs";
 import { readFollowups } from "./planning-followups.mjs";
@@ -94,8 +96,112 @@ export const CONDITION_TABLE = Object.freeze([
     method: "median of the docs-check tasks in those same three gates (--slow)",
   },
 ]);
-const median = (values) =>
-  [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)];
+// Performance conditions use observed fresh work, never the zero duration of
+// a reused task. A task's latest observation is compared with earlier samples.
+export function gatePerformanceConditions(
+  checks,
+  now,
+  { machinerySuites = [] } = {},
+) {
+  const end = Date.parse(now),
+    start = end - 30 * 86400000;
+  const rows = checks
+    .filter(
+      (row) =>
+        row.checkId === "npm test" &&
+        row.executed === true &&
+        !partialGateCheck(row) &&
+        row.identityUnchanged !== false &&
+        !row.stopped &&
+        !row.failureKind &&
+        Date.parse(row.recordedAt) >= start &&
+        Date.parse(row.recordedAt) <= end,
+    )
+    .sort((a, b) => Date.parse(a.recordedAt) - Date.parse(b.recordedAt));
+  const source = ["FUP-e96221b106cd136a"];
+  const plain = rows.filter(
+    (row) =>
+      completePassingRow(row) &&
+      row.executionMode !== "reused" &&
+      !row.reused &&
+      !(row.taskTimeline ?? row.cases ?? []).some((task) => task.reused) &&
+      (row.gateSelection === "plain" ||
+        (!row.gateSelection &&
+          machinerySuites.length > 0 &&
+          Array.isArray(row.requiredSuites) &&
+          row.requiredSuites.length > 0 &&
+          !row.requiredSuites.some((name) => machinerySuites.includes(name)))),
+  );
+  const samples = plain.map((row) => row.durationMs / 1000);
+  const result = [
+    {
+      id: "plain-gate",
+      sources: source,
+      unit: "s",
+      threshold: 360,
+      method:
+        "thirty-day median of fresh complete plain gates; legacy product-only selections inferred from required suites",
+      value: samples.length ? median(samples) : null,
+      samples: samples.length,
+      holds: samples.length ? median(samples) > 360 : null,
+      ...(samples.length
+        ? {}
+        : { unavailable: "no fresh complete plain rows in thirty days" }),
+    },
+  ];
+  const tasks = new Map();
+  for (const row of rows)
+    for (const task of row.taskTimeline ?? row.cases ?? []) {
+      if (
+        !task.name ||
+        task.reused ||
+        task.executed !== true ||
+        task.exitCode !== 0 ||
+        task.stopped ||
+        task.failureKind ||
+        task.timedOut ||
+        partialGateCheck(task) ||
+        !Number.isFinite(task.durationMs) ||
+        task.durationMs < 0
+      )
+        continue;
+      const history = tasks.get(task.name) ?? [];
+      history.push({ durationMs: task.durationMs, recordedAt: row.recordedAt });
+      tasks.set(task.name, history);
+    }
+  for (const [name, history] of [...tasks]
+    .sort((a, b) => b[1].at(-1).durationMs - a[1].at(-1).durationMs)
+    .slice(0, 5)) {
+    const latest = history.at(-1),
+      prior = history.slice(0, -1).map((row) => row.durationMs / 1000);
+    const baseline = prior.length ? median(prior) : null;
+    result.push({
+      id: "gate-task:" + name,
+      sources: source,
+      unit: "s",
+      method: "latest fresh task against its earlier thirty-day median",
+      value: latest.durationMs / 1000,
+      median: baseline,
+      samples: prior.length,
+      threshold: baseline === null ? null : baseline * 1.5,
+      recordedAt: latest.recordedAt,
+      holds:
+        baseline === null ? null : latest.durationMs / 1000 > baseline * 1.5,
+      ...(baseline === null
+        ? { unavailable: "no earlier fresh task sample in thirty days" }
+        : {}),
+    });
+  }
+  return result;
+}
+
+const median = (values) => {
+  const ordered = [...values].sort((a, b) => a - b);
+  const middle = Math.floor(ordered.length / 2);
+  return ordered.length % 2
+    ? ordered[middle]
+    : (ordered[middle - 1] + ordered[middle]) / 2;
+};
 const oneLine = (value) =>
   String(value)
     .replace(/[\r\n\u0000-\u001f]/g, " ")
@@ -320,6 +426,50 @@ export async function planningConditions(
         : null;
     rows.push({ ...row, ...measurement, holds });
   }
+  if (table === CONDITION_TABLE) {
+    try {
+      let main;
+      try {
+        main = mainWorktree(root);
+      } catch {
+        /* A standalone checkout still has local history. */
+      }
+      const history = [
+        ...(main && main !== root ? readGateChecks(main) : []),
+        ...readGateChecks(root),
+      ];
+      const unique = new Map(
+        history.map((row) => [
+          JSON.stringify([
+            row.treeHash,
+            row.codeIdentity,
+            row.recordedAt,
+            row.evidenceRef,
+          ]),
+          row,
+        ]),
+      );
+      const { suites } = await import("../test-runner.mjs");
+      rows.push(
+        ...gatePerformanceConditions([...unique.values()], now, {
+          machinerySuites: suites
+            .filter((suite) => suite.machinery)
+            .map((suite) => suite.name),
+        }),
+      );
+    } catch (error) {
+      rows.push({
+        id: "plain-gate",
+        sources: ["FUP-e96221b106cd136a"],
+        method: "thirty-day gate history",
+        value: null,
+        threshold: 360,
+        unit: "s",
+        holds: null,
+        unavailable: oneLine(error.message),
+      });
+    }
+  }
   let numeric = [];
   try {
     numeric = (await collectMeta(root)).decisionConditions;
@@ -385,7 +535,7 @@ export function renderPlanningConditions(result) {
     "| --- | --- | --- | --- | --- |",
     ...result.rows.map(
       (row) =>
-        `| ${row.sources.join(", ")}${row.historicalSources ? ` (historical: ${row.historicalSources.join(", ")})` : ""} | ${cell(row.id + ": " + row.method)} | ${cell(row.value === null ? "unknown" : JSON.stringify(row.value))} ${row.unit} | ${row.operator ?? ">"} ${row.threshold}${row.consecutive ? ` in ${row.consecutive} consecutive orders` : ""} | ${row.holds === null ? `unknown (${cell(row.unavailable ?? "measurement unavailable")})` : row.holds}${row.reopened ? " (reopened)" : ""} |`,
+        `| ${row.sources.join(", ")}${row.historicalSources ? ` (historical: ${row.historicalSources.join(", ")})` : ""} | ${cell(row.id + ": " + row.method + (row.median !== undefined ? "; median " + (row.median ?? "unknown") + " s (" + row.samples + " samples)" : ""))} | ${cell(row.value === null ? "unknown" : JSON.stringify(row.value))} ${row.unit} | ${row.operator ?? ">"} ${row.threshold}${row.consecutive ? ` in ${row.consecutive} consecutive orders` : ""} | ${row.holds === null ? `unknown (${cell(row.unavailable ?? "measurement unavailable")})` : row.holds}${row.reopened ? " (reopened)" : ""} |`,
     ),
     `${result.holding} hold; ${result.unknown} unknown. Not evaluated: ${result.unevaluated.decisionConditions} decision conditions and ${result.unevaluated.registerRows} register rows.`,
   ].join("\n");

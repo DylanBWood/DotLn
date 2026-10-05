@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "repository": "docs/control/local/harness/wo186-before-snapshot",
+  "originalIdentity": "8d2d7373fd068fd40c0db22cc6d0c39d766c9c7461f62b36d7b5f31e58df7f46",
+  "snapshotIdentity": "8d2d7373fd068fd40c0db22cc6d0c39d766c9c7461f62b36d7b5f31e58df7f46",
+  "source": "tracked and non-ignored working files plus current compiled dist; dependency links refer to installed public tools and snapshot-owned workspaces",
+  "releaseHistory": "full clone including original tags; origin/main pinned to original merge base",
+  "reviewSelectionMatches": true,
+  "createdAt": "2026-10-05T03:37:17.164Z"
+}

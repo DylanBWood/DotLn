@@ -1,23 +1,23 @@
 # Current control state
 
-## WO-195
+## WO-186
 
-- Work order: WO-195
-- Work-order path: docs/work-orders/WO-195-roles-finish-what-was-dispatched.md
+- Work order: WO-186
+- Work-order path: docs/work-orders/WO-186-gate-time-follows-the-change.md
 - Phase: closed
-- Latest verification: VER-002
-- Verification path: docs/verifications/WO-195/VER-002.md
+- Latest verification: VER-003
+- Verification path: docs/verifications/WO-186/VER-003.md
 - Latest verdict: pass
-- Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-195/FINAL-001.md
+- Final review: FINAL-002
+- Final-review path: docs/final-reviews/WO-186/FINAL-002.md
 - Latest attestation: harness claude-code; version 2.1.289; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable
-- Effort drift: max -> xhigh
-- Latest recordedAt: 2026-10-04T16:25:03.320Z
-- Elapsed implementation: 10538866 ms
-- Elapsed verification: 728144 ms
-- Elapsed repair: 6030651 ms
-- Elapsed finalReview: 1674242 ms
-- Latest checkpoint: 94b6eab23dbd8c0ba24ed10f6bf47a25166ee925 (restore: `git checkout refs/dotln/checkpoint/WO-195/11 -- .`)
+- Effort drift: max -> xhigh (subagents) (raw: ultracode) -> xhigh
+- Latest recordedAt: 2026-10-05T21:11:22.696Z
+- Elapsed implementation: 31708945 ms
+- Elapsed verification: 920000 ms
+- Elapsed repair: 3140553 ms
+- Elapsed finalReview: 2015322 ms
+- Latest checkpoint: 9a449a67150677da6d98efb0d628fc028e4538b9 (restore: `git checkout refs/dotln/checkpoint/WO-186/16 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct
 

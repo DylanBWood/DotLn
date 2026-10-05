@@ -1,0 +1,217 @@
+{
+  "guardExperiment": {
+    "source": "Read-only analyst agent of the resume: fix dispatch on 2026-10-05; bounded runs, one at a time, of executeSuite in scratch copies with their own build and release template. The HEAD arm's original guard label was wrong and is corrected here: HEAD applies no guard to shell rows.",
+    "runs": [
+      {
+        "task": "release:case:runtime_refresh",
+        "subject": "HEAD 2816c773 (no guard on shell rows)",
+        "guard": false,
+        "at": "2026-10-05T14:53:58.951Z",
+        "loadAverageBefore": "{ 6.21 4.70 4.66 }",
+        "wallSeconds": 16.978,
+        "exitCode": 0
+      },
+      {
+        "task": "release:case:runtime_refresh",
+        "subject": "checkpoint 3 subject, identity 8f77f8bb",
+        "guard": false,
+        "at": "2026-10-05T14:54:16.063Z",
+        "loadAverageBefore": "{ 5.58 4.63 4.64 }",
+        "wallSeconds": 16.932,
+        "exitCode": 0
+      },
+      {
+        "task": "release:case:runtime_refresh",
+        "subject": "checkpoint 3 subject, identity 8f77f8bb",
+        "guard": true,
+        "at": "2026-10-05T14:54:35.181Z",
+        "loadAverageBefore": "{ 5.73 4.73 4.67 }",
+        "wallSeconds": 18.927,
+        "exitCode": 0
+      },
+      {
+        "task": "release:case:runtime_refresh",
+        "subject": "checkpoint 3 subject, identity 8f77f8bb",
+        "guard": true,
+        "at": "2026-10-05T14:55:35.031Z",
+        "loadAverageBefore": "{ 4.36 4.50 4.58 }",
+        "wallSeconds": 18.501,
+        "exitCode": 0
+      },
+      {
+        "task": "release:case:runtime_refresh",
+        "subject": "HEAD 2816c773 (no guard on shell rows)",
+        "guard": false,
+        "at": "2026-10-05T14:55:51.884Z",
+        "loadAverageBefore": "{ 4.06 4.42 4.56 }",
+        "wallSeconds": 16.668,
+        "exitCode": 0
+      },
+      {
+        "task": "release:case:runtime_refresh",
+        "subject": "checkpoint 3 subject, identity 8f77f8bb",
+        "guard": false,
+        "at": "2026-10-05T14:56:08.284Z",
+        "loadAverageBefore": "{ 4.53 4.51 4.58 }",
+        "wallSeconds": 16.215,
+        "exitCode": 0
+      },
+      {
+        "task": "release:case:runtime_refresh",
+        "subject": "checkpoint 3 subject, identity 8f77f8bb",
+        "guard": false,
+        "at": "2026-10-05T14:56:24.186Z",
+        "loadAverageBefore": "{ 4.72 4.55 4.60 }",
+        "wallSeconds": 15.726,
+        "exitCode": 0
+      },
+      {
+        "task": "release:case:runtime_refresh",
+        "subject": "checkpoint 3 subject, identity 8f77f8bb",
+        "guard": true,
+        "at": "2026-10-05T14:56:41.741Z",
+        "loadAverageBefore": "{ 4.34 4.47 4.57 }",
+        "wallSeconds": 17.371,
+        "exitCode": 0
+      },
+      {
+        "task": "release:case:runtime_refresh",
+        "subject": "HEAD 2816c773 (no guard on shell rows)",
+        "guard": false,
+        "at": "2026-10-05T14:56:58.628Z",
+        "loadAverageBefore": "{ 4.51 4.50 4.58 }",
+        "wallSeconds": 16.71,
+        "exitCode": 0
+      },
+      {
+        "task": "worktree",
+        "subject": "checkpoint 3 subject, identity 8f77f8bb",
+        "guard": false,
+        "at": "2026-10-05T15:02:28.354Z",
+        "loadAverageBefore": "{ 4.01 4.27 4.44 }",
+        "wallSeconds": 94.469,
+        "exitCode": 0
+      },
+      {
+        "task": "worktree",
+        "subject": "checkpoint 3 subject, identity 8f77f8bb",
+        "guard": true,
+        "at": "2026-10-05T15:04:02.055Z",
+        "loadAverageBefore": "{ 5.79 5.29 4.85 }",
+        "wallSeconds": 93.511,
+        "exitCode": 0
+      },
+      {
+        "task": "worktree",
+        "subject": "checkpoint 3 subject, identity 8f77f8bb",
+        "guard": true,
+        "at": "2026-10-05T15:05:48.308Z",
+        "loadAverageBefore": "{ 5.66 5.55 5.02 }",
+        "wallSeconds": 94.002,
+        "exitCode": 0
+      },
+      {
+        "task": "worktree",
+        "subject": "checkpoint 3 subject, identity 8f77f8bb",
+        "guard": false,
+        "at": "2026-10-05T15:07:18.389Z",
+        "loadAverageBefore": "{ 4.40 5.21 4.94 }",
+        "wallSeconds": 89.896,
+        "exitCode": 0
+      }
+    ],
+    "runtimeRefreshPairedGuardEffectSeconds": [
+      1.995,
+      2.286,
+      1.645
+    ],
+    "worktreePairedGuardEffectSeconds": [
+      -0.958,
+      4.106
+    ],
+    "nodeStartup": {
+      "plainMedianMs": 28.6,
+      "guardedMedianMs": 36.9,
+      "manifestBytes": 246203,
+      "excludedPaths": 4213,
+      "runsEach": 40
+    },
+    "limits": "Tasks ran alone rather than in four lanes, with a scratch temporary directory; the one-minute load average before each timed run was 4.0 to 6.2 (6.9 before the release template was prepared); three pairs for the release case and two for worktree.",
+    "observedProcesses": {
+      "source": "Analyst's and record reviewer's counts from the product read logs of the gate rows, which are ignored local files",
+      "targetPublishDistinctProcessIdsPerRun": [
+        561,
+        564
+      ],
+      "targetPublishInReviewRow": {
+        "recordedAt": "2026-10-05T09:29:18.318Z",
+        "distinctProcessIds": 562,
+        "childCommandEvents": 4810
+      }
+    }
+  },
+  "matrixOverlap": {
+    "status": "Inference, not recomputed by the executor: it needs the case-end events of review observation 1, kept in an earlier session's ignored scratch.",
+    "source": "Read-only analyst agent of the resume: fix dispatch on 2026-10-05",
+    "row": "2026-10-05T07:58:48.611Z",
+    "matrixWindowWithinSkeletonSeconds": [
+      43.5,
+      134.8
+    ],
+    "overlappingReleaseTasks": 13,
+    "overlappingGrowthSeconds": 60.694,
+    "rowReleaseGrowthSeconds": 65.87,
+    "overlappingShare": 0.921,
+    "growthAgainstOverlapPearson": 0.938,
+    "releaseTasksEndingBeforeWindow": 36,
+    "theirGrowthSeconds": 4.69
+  },
+  "buildAndLookupCosts": {
+    "source": "Executor measurements in this worktree on 2026-10-05, before the repair's first gate",
+    "buildTask": {
+      "executedPassingSamples": 26,
+      "medianMs": 658,
+      "minMs": 616,
+      "maxMs": 886
+    },
+    "outputDigest": {
+      "files": 493,
+      "bytes": 4286222,
+      "milliseconds": [
+        16,
+        10,
+        10
+      ]
+    },
+    "determinism": "Two builds of one scratch copy gave the same digest over all 493 files.",
+    "gateCodeIdentityMs": 89,
+    "readMainIndexMs": 310,
+    "readMainIndexRows": 10354,
+    "readWorktreeIndexMs": 12
+  },
+  "heartbeatProbe": {
+    "source": "Executor's bounded run of executeSuite at the production 15 s interval on a node:test file with a 50 ms async case, then spawnSync sleeps of 22 s and 18 s",
+    "lines": [
+      "[20.0s] running case: sync one (entered 19.9 s ago)",
+      "[40.0s] running case: sync two (entered 17.9 s ago)"
+    ],
+    "slowestCasesMs": {
+      "sync one": 22009,
+      "sync two": 18009,
+      "async first": 57
+    },
+    "finishedCaseNamed": false,
+    "priorBehavior": "The same shape through the checkpoint's executeSuite printed 'running case: async first' at 30.0 s, 30 s after that case ended (analyst reproduction; VER-001 R1).",
+    "fixtureRepeats": "The executor ran the heartbeat fixture five times in a row after writing it; all five passed.",
+    "preloadCost": {
+      "source": "Analyst's measurement in session scratch",
+      "trivialCases": 2000,
+      "withoutPreloadMs": 290,
+      "withPreloadMs": [
+        440,
+        540
+      ]
+    }
+  },
+  "note": "Observations merged into repair-measurements.json by repair-recompute.mjs --extras. They are measurements and probe outputs of the resume: fix dispatch on 2026-10-05 and cannot be regenerated from the gate index; each names who observed it. repair-measurements.json lists the gate rows that existed when it was generated: gates run after it, the completion's own document gate among them, are not in it."
+}

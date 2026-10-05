@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "result": [
+    {
+      "case": "harness",
+      "productionFile": "packages/skeleton/dist/src/harness-host.js",
+      "mutation": {
+        "before": "if (view.alive === true && !force)",
+        "after": "if (false && view.alive === true && !force)"
+      },
+      "exitCode": 1,
+      "detected": true,
+      "wallMs": 750.2489580000006,
+      "log": "docs/control/local/harness/wo186-mutants/harness/defect-control.log",
+      "repository": "docs/control/local/harness/wo186-mutants/harness",
+      "failingCases": [
+        "WO-039 an operator release judges, retires and journals one observed reservation"
+      ]
+    },
+    {
+      "case": "integration",
+      "productionFile": "scripts/lib/worktree-integration.mjs",
+      "mutation": {
+        "before": ".join(\". \")}.",
+        "after": ".join(\". \")}.."
+      },
+      "exitCode": 1,
+      "detected": true,
+      "wallMs": 20178.43675,
+      "log": "docs/control/local/harness/wo186-mutants/integration/defect-control.log",
+      "repository": "docs/control/local/harness/wo186-mutants/integration",
+      "failingCases": [
+        "real Git fast-forward preserves recovery, histories and authored conflicts with real generators",
+        "real Git reviewed merge preserves recovery, histories and authored conflicts with real generators",
+        "WO-169 the integration record holds each release message as one line with one full stop"
+      ]
+    },
+    {
+      "case": "lock-matrix",
+      "productionFile": "packages/skeleton/dist/src/resident-store.js",
+      "mutation": {
+        "before": "openSync(this.store.logPath, \"a\", 0o600)",
+        "after": "openSync(this.store.logPath, type === \"ScriptEpisodeLost\" ? \"w\" : \"a\", 0o600)"
+      },
+      "exitCode": 1,
+      "detected": true,
+      "wallMs": 2809.3219999999965,
+      "log": "docs/control/local/harness/wo186-mutants/lock-matrix/defect-control.log",
+      "repository": "docs/control/local/harness/wo186-mutants/lock-matrix",
+      "failingCases": [
+        "cell once-lifetime-fresh",
+        "cell once-lifetime-reclaim",
+        "cell once-append-fresh",
+        "cell once-append-reclaim",
+        "cell loop-lifetime-fresh",
+        "cell loop-lifetime-reclaim",
+        "cell loop-append-fresh",
+        "cell loop-append-reclaim",
+        "WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers"
+      ]
+    }
+  ]
+}

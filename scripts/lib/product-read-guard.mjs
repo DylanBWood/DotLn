@@ -5,14 +5,24 @@ import promises from "node:fs/promises";
 import children from "node:child_process";
 import { createHook, executionAsyncId } from "node:async_hooks";
 import { syncBuiltinESMExports } from "node:module";
-import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
+import {
+  basename,
+  dirname,
+  isAbsolute,
+  join,
+  relative,
+  resolve,
+  sep,
+} from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { randomUUID } from "node:crypto";
-import { docPath } from "./config.mjs";
+import { defaultDocRelative, docPath, docRelative } from "./config.mjs";
+import { prospectiveRealpath } from "./gate-evidence.mjs";
 
 const observerURL = pathToFileURL(fileURLToPath(import.meta.url)).href;
+const vocabularyPath = defaultDocRelative("control", "outward-vocabulary.json");
 
-export function productReadEnvironment(repo, env, name) {
+export function productReadEnvironment(repo, env, name, order) {
   const root = fs.realpathSync(repo);
   const git = (args, input) => {
     const result = children.spawnSync("git", args, {
@@ -35,16 +45,23 @@ export function productReadEnvironment(repo, env, name) {
   const excluded = new Set(
     tracked.filter(
       (path) =>
-        /^(?:docs|\.claude|\.agents)\//u.test(path) ||
-        /^[^/]+\.md$/iu.test(path),
+        path !== vocabularyPath &&
+        (/^(?:docs|\.claude|\.agents)\//u.test(path) ||
+          /^[^/]+\.md$/iu.test(path)),
     ),
   );
   for (let i = 0; i + 2 < fields.length; i += 3)
     if (fields[i + 2] === "set") excluded.add(fields[i]);
+  excluded.delete(vocabularyPath);
   const directories = new Set();
   for (const path of excluded)
     for (let parent = dirname(path); parent !== "."; parent = dirname(parent))
       directories.add(parent);
+  const recordRoots = /^WO-\d{3}$/.test(order ?? "")
+    ? ["evidence", "verifications", "finalReviews"].map((kind) =>
+        docRelative(root, kind, order),
+      )
+    : [];
   const directory = docPath(
     root,
     "control",
@@ -63,6 +80,7 @@ export function productReadEnvironment(repo, env, name) {
       root,
       excluded: [...excluded],
       directories: [...directories],
+      recordRoots,
     }),
   );
   fs.writeFileSync(log, "");
@@ -86,16 +104,32 @@ export function productReadObservations(log) {
     .map(JSON.parse);
 }
 
-if (process.env.DOTLN_PRODUCT_READ_MANIFEST) {
-  const { root, excluded, directories } = JSON.parse(
-    fs.readFileSync(process.env.DOTLN_PRODUCT_READ_MANIFEST, "utf8"),
-  );
+// A cloned runner can import a second copy of this module in a preloaded
+// process. Observe each manifest once instead of wrapping the same I/O again.
+const installations = (globalThis[
+  Symbol.for("dotln.product-read-guard.installations")
+] ??= new Set());
+const manifestPath = process.env.DOTLN_PRODUCT_READ_MANIFEST;
+const logPath = process.env.DOTLN_PRODUCT_READ_LOG;
+const installationKey = JSON.stringify([manifestPath, logPath]);
+if (manifestPath && !installations.has(installationKey)) {
+  const {
+    root,
+    excluded,
+    directories,
+    recordRoots = [],
+  } = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
   const paths = new Set(excluded),
     dirs = new Set(directories),
     descriptors = new Map();
   const contexts = new Map();
   const originalAppend = fs.appendFileSync;
   const originalRealpath = fs.realpathSync;
+  const pathIO = {
+    lstatSync: fs.lstatSync,
+    readlinkSync: fs.readlinkSync,
+    realpathSync: originalRealpath.native,
+  };
   const seen = new Set();
   // Test is Node 26's async resource; the fixture pins name attribution across
   // awaits and nested cases. Other resources inherit that context.
@@ -126,51 +160,188 @@ if (process.env.DOTLN_PRODUCT_READ_MANIFEST) {
     if (seen.has(key)) return;
     seen.add(key);
     originalAppend(
-      process.env.DOTLN_PRODUCT_READ_LOG,
+      logPath,
       JSON.stringify({ ...event, pid: process.pid }) + "\n",
     );
   };
   const filePath = (value) => {
-    if (typeof value === "number") return descriptors.get(value);
-    if (value instanceof URL)
-      return value.protocol === "file:" ? fileURLToPath(value) : undefined;
-    if (Buffer.isBuffer(value)) return value.toString();
+    if (typeof value === "number") return descriptors.get(value)?.path;
+    // Node also takes a URL-shaped object and any byte view as a path.
+    if (value && typeof value === "object" && typeof value.href === "string")
+      return value.protocol === "file:" ? fileURLToPath(value.href) : undefined;
+    if (ArrayBuffer.isView(value))
+      return Buffer.from(
+        value.buffer,
+        value.byteOffset,
+        value.byteLength,
+      ).toString();
     return typeof value === "string" ? value : undefined;
   };
-  const observe = (method, value) => {
+  const observe = (method, value, recordsOnly = false, options) => {
     const input = filePath(value);
     if (input === undefined) return;
-    let absolute = resolve(input);
+    const enumerates = /readdir|opendir|^(?:promises\.)?watch$/.test(method);
+    const copies = /^(?:promises\.)?cp(?:Sync)?$/.test(method);
+    // A copy from the root or an ancestor is judged as a walk whatever its
+    // options; a listing or watch only when it asks to descend.
+    const recursive =
+      copies ||
+      (enumerates &&
+        typeof options === "object" &&
+        options !== null &&
+        Boolean(options.recursive));
+    const lexical = resolve(input);
+    let physical = lexical;
     try {
-      absolute = originalRealpath(absolute);
+      // Preserve symlink-before-.. semantics and resolve existing parents of
+      // not-yet-created reports; resolve() followed by realpath() loses both.
+      const absolute = isAbsolute(input)
+        ? input
+        : `${process.cwd()}${sep}${input}`;
+      try {
+        physical = originalRealpath.native(absolute);
+      } catch {
+        // A missing leaf with an existing parent needs no root-to-leaf walk.
+        // A dangling leaf link is present to lstat and must use full traversal.
+        // Keep the parent spelling intact until native resolution follows '..'.
+        try {
+          if (
+            absolute.endsWith(sep) ||
+            pathIO.lstatSync(absolute, { throwIfNoEntry: false }) !== undefined
+          )
+            throw new Error("Existing leaf requires prospective traversal");
+          physical = join(
+            originalRealpath.native(dirname(absolute)),
+            basename(absolute),
+          );
+        } catch {
+          physical = prospectiveRealpath(absolute, pathIO);
+        }
+      }
     } catch {
       /* An attempted read still names its lexical path. */
     }
-    const path = relative(root, absolute).split(sep).join("/");
-    if (isAbsolute(path) || path === ".." || path.startsWith("../")) return;
-    if (paths.has(path) || (method.includes("readdir") && dirs.has(path)))
-      record({ kind: "excluded-read", case: caseName(), path, method });
+    for (const absolute of new Set([lexical, physical])) {
+      const path = relative(root, absolute).split(sep).join("/");
+      // The root and its ancestors name a record only through a walk that
+      // descends: a plain listing there shows nothing below its own entries.
+      const containsRoot = path === "" || /^\.\.(?:\/\.\.)*$/.test(path);
+      if (
+        isAbsolute(path) ||
+        (!containsRoot && (path === ".." || path.startsWith("../")))
+      )
+        continue;
+      const recordRead = recordRoots.some((record) =>
+        containsRoot
+          ? recursive
+          : path === record ||
+            path.startsWith(record + "/") ||
+            ((enumerates || copies) && record.startsWith(path + "/")),
+      );
+      if (
+        recordRead ||
+        (!recordsOnly &&
+          (paths.has(path) ||
+            (/readdir|opendir/.test(method) && dirs.has(path))))
+      )
+        record({
+          kind: "excluded-read",
+          case: caseName(),
+          path: path || ".",
+          method,
+        });
+    }
   };
   const readable = (flags) =>
     typeof flags === "number"
       ? (flags & (fs.constants.O_WRONLY | fs.constants.O_RDWR)) !==
         fs.constants.O_WRONLY
       : flags === undefined ||
+        flags === null ||
         String(flags).includes("r") ||
         String(flags).includes("+");
+  const openedPath = (value) => {
+    const input = filePath(value);
+    return input === undefined || isAbsolute(input)
+      ? input
+      : `${process.cwd()}${sep}${input}`;
+  };
   for (const method of ["readFileSync", "readdirSync"]) {
     const original = fs[method];
     fs[method] = function (value, ...args) {
-      observe(method, value);
+      observe(method, value, false, args[0]);
       return original.call(this, value, ...args);
     };
   }
+  // Record admission also protects metadata dependencies: changing a report's
+  // presence, size or directory listing must not influence a product pass.
+  // Existing excluded-input observations retain their content-read boundary.
+  for (const method of [
+    "existsSync",
+    "statSync",
+    "lstatSync",
+    "statfsSync",
+    "readlinkSync",
+    "realpathSync",
+    "accessSync",
+    "opendirSync",
+    "createReadStream",
+    "watch",
+    "watchFile",
+  ]) {
+    const original = fs[method];
+    const wrapped = function (value, ...args) {
+      observe(method, value, true, args[0]);
+      return original.call(this, value, ...args);
+    };
+    Object.assign(wrapped, original);
+    if (method === "realpathSync" && original.native)
+      wrapped.native = function (value, ...args) {
+        observe("realpathSync.native", value, true);
+        return original.native.call(this, value, ...args);
+      };
+    fs[method] = wrapped;
+  }
+  for (const method of [
+    "stat",
+    "lstat",
+    "statfs",
+    "readlink",
+    "realpath",
+    "access",
+    "opendir",
+  ]) {
+    const original = fs[method];
+    const wrapped = function (value, ...args) {
+      observe(method, value, true, args[0]);
+      return original.call(this, value, ...args);
+    };
+    // Keep what callers reach through the function, such as realpath.native.
+    Object.assign(wrapped, original);
+    if (original.native)
+      wrapped.native = function (value, ...args) {
+        observe(`${method}.native`, value, true);
+        return original.native.call(this, value, ...args);
+      };
+    fs[method] = wrapped;
+    const promiseOriginal = promises[method];
+    promises[method] = function (value, ...args) {
+      observe(`promises.${method}`, value, true, args[0]);
+      return promiseOriginal.call(this, value, ...args);
+    };
+  }
+  // The promise watcher is an async iterator over the same notifications.
+  const promiseWatch = promises.watch;
+  promises.watch = function (value, ...args) {
+    observe("promises.watch", value, true, args[0]);
+    return promiseWatch.call(this, value, ...args);
+  };
   const originalOpen = fs.openSync;
   fs.openSync = function (value, flags, ...args) {
     if (readable(flags)) observe("openSync", value);
+    const path = openedPath(value);
     const fd = originalOpen.call(this, value, flags, ...args);
-    if (readable(flags)) descriptors.set(fd, filePath(value));
-    else descriptors.delete(fd);
+    descriptors.set(fd, { path });
     return fd;
   };
   const originalClose = fs.closeSync;
@@ -179,29 +350,111 @@ if (process.env.DOTLN_PRODUCT_READ_MANIFEST) {
     descriptors.delete(fd);
     return result;
   };
+  for (const method of ["fstatSync", "fstat"]) {
+    const original = fs[method];
+    fs[method] = function (fd, ...args) {
+      observe(method, fd, true);
+      return original.call(this, fd, ...args);
+    };
+  }
+  // Copy, link and rename operations reach their source through native code,
+  // bypassing opens; a record moved or linked elsewhere could then be read
+  // under another name. They are judged for the active order's records only:
+  // a copied excluded tracked input is not an observed read (WO-186 VER-001
+  // R3), and neither is anything a shell command or native tool reads.
+  for (const method of [
+    "copyFileSync",
+    "cpSync",
+    "copyFile",
+    "cp",
+    "linkSync",
+    "link",
+    "renameSync",
+    "rename",
+  ]) {
+    const original = fs[method];
+    fs[method] = function (source, ...args) {
+      observe(method, source, true);
+      return original.call(this, source, ...args);
+    };
+  }
+  for (const method of ["copyFile", "cp", "link", "rename"]) {
+    const original = promises[method];
+    promises[method] = function (source, ...args) {
+      observe(`promises.${method}`, source, true);
+      return original.call(this, source, ...args);
+    };
+  }
+  // A blob is a content read that never passes through open.
+  const originalBlob = fs.openAsBlob;
+  fs.openAsBlob = function (value, ...args) {
+    observe("openAsBlob", value);
+    return originalBlob.call(this, value, ...args);
+  };
   // Callback forms are observed too, although the order's minimum set is the
   // synchronous and promise forms. They cost no extra suite execution.
   for (const method of ["readFile", "readdir"]) {
     const original = fs[method];
     fs[method] = function (value, ...args) {
-      observe(method, value);
+      observe(method, value, false, args[0]);
       return original.call(this, value, ...args);
     };
     const promiseOriginal = promises[method];
     promises[method] = function (value, ...args) {
-      observe(`promises.${method}`, value);
+      observe(`promises.${method}`, value, false, args[0]);
       return promiseOriginal.call(this, value, ...args);
     };
   }
   const promiseOpen = promises.open;
   promises.open = function (value, flags, ...args) {
     if (readable(flags)) observe("promises.open", value);
-    return promiseOpen.call(this, value, flags, ...args);
+    const path = openedPath(value);
+    return promiseOpen.call(this, value, flags, ...args).then((handle) => {
+      const fd = handle.fd,
+        descriptor = { path };
+      descriptors.set(fd, descriptor);
+      const stat = handle.stat;
+      handle.stat = function (...args) {
+        observe("FileHandle.stat", path, true);
+        return stat.apply(this, args);
+      };
+      const close = handle.close;
+      handle.close = function (...args) {
+        return close.apply(this, args).then((result) => {
+          if (descriptors.get(fd) === descriptor) descriptors.delete(fd);
+          return result;
+        });
+      };
+      return handle;
+    });
   };
   const callbackOpen = fs.open;
   fs.open = function (value, flags, ...args) {
+    // Node's two-argument callback form opens for reading by default. Keep
+    // its callback out of the flags test and register its descriptor too.
+    if (typeof flags === "function") {
+      args = [flags];
+      flags = undefined;
+    }
     if (readable(flags)) observe("open", value);
+    const path = openedPath(value);
+    const callback = args.at(-1);
+    if (typeof callback === "function")
+      args[args.length - 1] = function (error, fd) {
+        if (!error) descriptors.set(fd, { path });
+        return callback.call(this, error, fd);
+      };
     return callbackOpen.call(this, value, flags, ...args);
+  };
+  const callbackClose = fs.close;
+  fs.close = function (fd, callback) {
+    if (typeof callback !== "function")
+      return callbackClose.call(this, fd, callback);
+    const descriptor = descriptors.get(fd);
+    return callbackClose.call(this, fd, function (error) {
+      if (!error && descriptors.get(fd) === descriptor) descriptors.delete(fd);
+      return callback.call(this, error);
+    });
   };
   // A reduced environment can retain the preload but omit its manifest/log.
   // Carry that context whenever the options retain this observer. Children
@@ -211,12 +464,10 @@ if (process.env.DOTLN_PRODUCT_READ_MANIFEST) {
       ...(options?.env ?? process.env),
       DOTLN_PRODUCT_READ_CASE: caseName(),
     };
-    if (env.NODE_OPTIONS?.includes(observerURL))
-      for (const name of [
-        "DOTLN_PRODUCT_READ_MANIFEST",
-        "DOTLN_PRODUCT_READ_LOG",
-      ])
-        env[name] ??= process.env[name];
+    if (env.NODE_OPTIONS?.includes(observerURL)) {
+      env.DOTLN_PRODUCT_READ_MANIFEST ??= manifestPath;
+      env.DOTLN_PRODUCT_READ_LOG ??= logPath;
+    }
     return { ...options, env };
   };
   for (const method of [
@@ -265,4 +516,5 @@ if (process.env.DOTLN_PRODUCT_READ_MANIFEST) {
     };
   }
   syncBuiltinESMExports();
+  installations.add(installationKey);
 }

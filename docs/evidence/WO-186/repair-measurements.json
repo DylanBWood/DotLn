@@ -1,0 +1,795 @@
+{
+  "schemaVersion": 1,
+  "documentGate": {
+    "before": {
+      "source": "main checkout gate index, npm run test:docs, recordedAt >= 2026-10-01",
+      "rows": 171,
+      "failedRowsExcluded": 31,
+      "passingRows": 140,
+      "taskCounts": [
+        24
+      ],
+      "first": "2026-10-01T00:04:16.363Z",
+      "last": "2026-10-04T16:23:39.155Z",
+      "medianSeconds": 38.993,
+      "criticalPathEnds": {
+        "console-docs": 135,
+        "entropy": 5
+      }
+    },
+    "after": {
+      "source": "this worktree's gate index, npm run test:docs",
+      "finalIdentity": "8f77f8bb26e21f212f2f7ffa1a9a098aaaa4a71f9c9d1184539c40f00618ee99",
+      "rows": [
+        {
+          "recordedAt": "2026-10-05T03:58:24.123Z",
+          "codeIdentity": "43803be39f41cf3f623b96080dafaacd6f6cbf96a4af0f615187b4159baa1782",
+          "exitCode": 1,
+          "seconds": 21.598,
+          "tasks": 29,
+          "criticalPath": [
+            "build",
+            "publication",
+            "docs-check"
+          ],
+          "resumeSeconds": 0
+        },
+        {
+          "recordedAt": "2026-10-05T04:04:12.754Z",
+          "codeIdentity": "43803be39f41cf3f623b96080dafaacd6f6cbf96a4af0f615187b4159baa1782",
+          "exitCode": 1,
+          "seconds": 114.092,
+          "tasks": 29,
+          "criticalPath": [
+            "build",
+            "publication",
+            "docs-check",
+            "kernel-docs",
+            "console-docs"
+          ],
+          "resumeSeconds": 14.769
+        },
+        {
+          "recordedAt": "2026-10-05T05:01:35.249Z",
+          "codeIdentity": "4b45c0b3c6e2dc855b94b1bfab29921884ac6af8bae6a3203b13da2fee210d6d",
+          "exitCode": 0,
+          "seconds": 67.538,
+          "tasks": 29,
+          "criticalPath": [
+            "build",
+            "publication",
+            "docs-check",
+            "resume"
+          ],
+          "resumeSeconds": 53.736
+        },
+        {
+          "recordedAt": "2026-10-05T09:43:49.996Z",
+          "codeIdentity": "8f77f8bb26e21f212f2f7ffa1a9a098aaaa4a71f9c9d1184539c40f00618ee99",
+          "exitCode": 0,
+          "seconds": 62.149,
+          "tasks": 29,
+          "criticalPath": [
+            "build",
+            "publication",
+            "docs-check",
+            "resume"
+          ],
+          "resumeSeconds": 49.369
+        },
+        {
+          "recordedAt": "2026-10-05T13:45:05.658Z",
+          "codeIdentity": "8f77f8bb26e21f212f2f7ffa1a9a098aaaa4a71f9c9d1184539c40f00618ee99",
+          "exitCode": 0,
+          "seconds": 66.69,
+          "tasks": 29,
+          "criticalPath": [
+            "build",
+            "publication",
+            "docs-check",
+            "resume"
+          ],
+          "resumeSeconds": 53.022
+        },
+        {
+          "recordedAt": "2026-10-05T14:36:45.417Z",
+          "codeIdentity": "8f77f8bb26e21f212f2f7ffa1a9a098aaaa4a71f9c9d1184539c40f00618ee99",
+          "exitCode": 0,
+          "seconds": 67.38,
+          "tasks": 29,
+          "criticalPath": [
+            "build",
+            "publication",
+            "docs-check",
+            "resume"
+          ],
+          "resumeSeconds": 53.435
+        },
+        {
+          "recordedAt": "2026-10-05T15:31:23.269Z",
+          "codeIdentity": "048d28d8f1dbfb498273175fe7ec91b752f57f417d87c67d44b94d0a90d92e1c",
+          "exitCode": 0,
+          "seconds": 67.357,
+          "tasks": 29,
+          "criticalPath": [
+            "build",
+            "publication",
+            "docs-check",
+            "resume"
+          ],
+          "resumeSeconds": 53.548
+        },
+        {
+          "recordedAt": "2026-10-05T17:32:58.150Z",
+          "codeIdentity": "dea58b070d67cc37483fb0ceabb9d7fb55e46fda478169cae7e63554a255870a",
+          "exitCode": 0,
+          "seconds": 67.918,
+          "tasks": 29,
+          "criticalPath": [
+            "build",
+            "publication",
+            "docs-check",
+            "resume"
+          ],
+          "resumeSeconds": 54.095
+        }
+      ],
+      "finalIdentityPassingRows": 3,
+      "medianSeconds": 66.69
+    },
+    "changeSeconds": 27.697,
+    "perOrderAtSevenGatesSeconds": 193.9
+  },
+  "releaseTasks": {
+    "rows": {
+      "before": [
+        "2026-10-05T01:55:30.954Z",
+        "2026-10-05T02:03:45.660Z",
+        "2026-10-05T02:12:01.306Z",
+        "2026-10-05T02:20:18.757Z",
+        "2026-10-05T02:28:40.084Z"
+      ],
+      "after": [
+        "2026-10-05T06:47:28.653Z",
+        "2026-10-05T06:54:28.746Z",
+        "2026-10-05T07:01:27.053Z",
+        "2026-10-05T07:30:01.885Z",
+        "2026-10-05T07:37:07.394Z"
+      ]
+    },
+    "releaseTaskCount": 51,
+    "releaseSumSeconds": {
+      "before": {
+        "median": 354.286,
+        "min": 350.826,
+        "max": 380.836
+      },
+      "after": {
+        "median": 423.64,
+        "min": 418.87,
+        "max": 424.082
+      }
+    },
+    "grew": 42,
+    "shrank": 9,
+    "largestGrowth": [
+      {
+        "name": "release:case:runtime_refresh",
+        "before": 19.79,
+        "after": 37.359,
+        "change": 17.569
+      },
+      {
+        "name": "release:case:material",
+        "before": 81.952,
+        "after": 91.415,
+        "change": 9.463
+      },
+      {
+        "name": "release:case:concurrent",
+        "before": 17.681,
+        "after": 25.7,
+        "change": 8.019
+      },
+      {
+        "name": "release:case:success",
+        "before": 18.293,
+        "after": 23.414,
+        "change": 5.121
+      }
+    ],
+    "controls": [
+      {
+        "name": "worktree",
+        "before": 100.477,
+        "after": 118.962,
+        "change": 18.485
+      },
+      {
+        "name": "skeleton",
+        "before": 355.779,
+        "after": 229.754,
+        "change": -126.025
+      },
+      {
+        "name": "kernel",
+        "before": 0.488,
+        "after": 0.48,
+        "change": -0.008
+      },
+      {
+        "name": "compiler",
+        "before": 0.938,
+        "after": 0.907,
+        "change": -0.031
+      },
+      {
+        "name": "console",
+        "before": 18.191,
+        "after": 17.349,
+        "change": -0.842
+      },
+      {
+        "name": "browser-evidence",
+        "before": 18.59,
+        "after": 18.525,
+        "change": -0.065
+      },
+      {
+        "name": "build",
+        "before": 0.696,
+        "after": 0.652,
+        "change": -0.044
+      },
+      {
+        "name": "target-publish",
+        "before": 147.558,
+        "after": 145.214,
+        "change": -2.344
+      },
+      {
+        "name": "portfolio",
+        "before": 21.374,
+        "after": 20.25,
+        "change": -1.124
+      },
+      {
+        "name": "derived-orders",
+        "before": 7.956,
+        "after": 7.409,
+        "change": -0.547
+      },
+      {
+        "name": "license-fixtures",
+        "before": 8.778,
+        "after": 8.043,
+        "change": -0.735
+      }
+    ]
+  },
+  "gateRows": [
+    {
+      "recordedAt": "2026-10-05T01:55:30.954Z",
+      "codeIdentity": "8d2d7373fd06",
+      "exitCode": 0,
+      "selection": null,
+      "skeletonSeconds": 355.779,
+      "releaseSumSeconds": 354.286,
+      "runtimeRefreshSeconds": 20.727,
+      "worktreeSeconds": 100.477,
+      "guardOnReleaseTasks": false
+    },
+    {
+      "recordedAt": "2026-10-05T02:03:45.660Z",
+      "codeIdentity": "8d2d7373fd06",
+      "exitCode": 0,
+      "selection": null,
+      "skeletonSeconds": 352.629,
+      "releaseSumSeconds": 352.526,
+      "runtimeRefreshSeconds": 19.46,
+      "worktreeSeconds": 99.475,
+      "guardOnReleaseTasks": false
+    },
+    {
+      "recordedAt": "2026-10-05T02:12:01.306Z",
+      "codeIdentity": "8d2d7373fd06",
+      "exitCode": 0,
+      "selection": null,
+      "skeletonSeconds": 375.008,
+      "releaseSumSeconds": 380.836,
+      "runtimeRefreshSeconds": 23.486,
+      "worktreeSeconds": 106.702,
+      "guardOnReleaseTasks": false
+    },
+    {
+      "recordedAt": "2026-10-05T02:20:18.757Z",
+      "codeIdentity": "8d2d7373fd06",
+      "exitCode": 0,
+      "selection": null,
+      "skeletonSeconds": 351.792,
+      "releaseSumSeconds": 350.826,
+      "runtimeRefreshSeconds": 19.637,
+      "worktreeSeconds": 100.024,
+      "guardOnReleaseTasks": false
+    },
+    {
+      "recordedAt": "2026-10-05T02:28:40.084Z",
+      "codeIdentity": "8d2d7373fd06",
+      "exitCode": 0,
+      "selection": null,
+      "skeletonSeconds": 359.417,
+      "releaseSumSeconds": 363.205,
+      "runtimeRefreshSeconds": 19.79,
+      "worktreeSeconds": 102.904,
+      "guardOnReleaseTasks": false
+    },
+    {
+      "recordedAt": "2026-10-05T02:36:41.872Z",
+      "codeIdentity": "8d2d7373fd06",
+      "exitCode": 0,
+      "selection": null,
+      "skeletonSeconds": 349.269,
+      "releaseSumSeconds": 349.348,
+      "runtimeRefreshSeconds": 19.927,
+      "worktreeSeconds": 102.811,
+      "guardOnReleaseTasks": false
+    },
+    {
+      "recordedAt": "2026-10-05T02:45:08.338Z",
+      "codeIdentity": "8d2d7373fd06",
+      "exitCode": 0,
+      "selection": null,
+      "skeletonSeconds": 372.571,
+      "releaseSumSeconds": 371.7,
+      "runtimeRefreshSeconds": 21.019,
+      "worktreeSeconds": 106.852,
+      "guardOnReleaseTasks": false
+    },
+    {
+      "recordedAt": "2026-10-05T02:52:59.112Z",
+      "codeIdentity": "8d2d7373fd06",
+      "exitCode": 0,
+      "selection": null,
+      "skeletonSeconds": 347.635,
+      "releaseSumSeconds": 342.944,
+      "runtimeRefreshSeconds": 19.303,
+      "worktreeSeconds": 99.051,
+      "guardOnReleaseTasks": false
+    },
+    {
+      "recordedAt": "2026-10-05T03:02:10.269Z",
+      "codeIdentity": "8d2d7373fd06",
+      "exitCode": 0,
+      "selection": null,
+      "skeletonSeconds": 350.505,
+      "releaseSumSeconds": 353.894,
+      "runtimeRefreshSeconds": 19.516,
+      "worktreeSeconds": 99.214,
+      "guardOnReleaseTasks": false
+    },
+    {
+      "recordedAt": "2026-10-05T03:17:01.674Z",
+      "codeIdentity": "8d2d7373fd06",
+      "exitCode": 0,
+      "selection": null,
+      "skeletonSeconds": 349.763,
+      "releaseSumSeconds": 351.951,
+      "runtimeRefreshSeconds": 19.528,
+      "worktreeSeconds": 100.442,
+      "guardOnReleaseTasks": false
+    },
+    {
+      "recordedAt": "2026-10-05T03:33:50.256Z",
+      "codeIdentity": "8d2d7373fd06",
+      "exitCode": 0,
+      "selection": null,
+      "skeletonSeconds": 351.985,
+      "releaseSumSeconds": 343.063,
+      "runtimeRefreshSeconds": 19.04,
+      "worktreeSeconds": 99.563,
+      "guardOnReleaseTasks": false
+    },
+    {
+      "recordedAt": "2026-10-05T06:12:03.262Z",
+      "codeIdentity": "4c3632f07980",
+      "exitCode": 0,
+      "selection": "review",
+      "skeletonSeconds": 327.342,
+      "releaseSumSeconds": 375.496,
+      "runtimeRefreshSeconds": 21.551,
+      "worktreeSeconds": 102.915,
+      "guardOnReleaseTasks": true
+    },
+    {
+      "recordedAt": "2026-10-05T06:37:38.504Z",
+      "codeIdentity": "f181c507d17f",
+      "exitCode": 0,
+      "selection": "plain",
+      "skeletonSeconds": 228.841,
+      "releaseSumSeconds": 418.705,
+      "runtimeRefreshSeconds": 35.417,
+      "worktreeSeconds": 119.088,
+      "guardOnReleaseTasks": true
+    },
+    {
+      "recordedAt": "2026-10-05T06:47:28.653Z",
+      "codeIdentity": "6bcefed0fcdf",
+      "exitCode": 0,
+      "selection": "plain",
+      "skeletonSeconds": 229.907,
+      "releaseSumSeconds": 420.894,
+      "runtimeRefreshSeconds": 36.546,
+      "worktreeSeconds": 119.023,
+      "guardOnReleaseTasks": true
+    },
+    {
+      "recordedAt": "2026-10-05T06:54:28.746Z",
+      "codeIdentity": "6bcefed0fcdf",
+      "exitCode": 0,
+      "selection": "plain",
+      "skeletonSeconds": 229.754,
+      "releaseSumSeconds": 423.64,
+      "runtimeRefreshSeconds": 37.212,
+      "worktreeSeconds": 119.432,
+      "guardOnReleaseTasks": true
+    },
+    {
+      "recordedAt": "2026-10-05T07:01:27.053Z",
+      "codeIdentity": "6bcefed0fcdf",
+      "exitCode": 0,
+      "selection": "plain",
+      "skeletonSeconds": 229.544,
+      "releaseSumSeconds": 418.87,
+      "runtimeRefreshSeconds": 37.359,
+      "worktreeSeconds": 118.385,
+      "guardOnReleaseTasks": true
+    },
+    {
+      "recordedAt": "2026-10-05T07:08:27.631Z",
+      "codeIdentity": "6bcefed0fcdf",
+      "exitCode": 1,
+      "selection": "plain",
+      "skeletonSeconds": 230.614,
+      "releaseSumSeconds": 421.92,
+      "runtimeRefreshSeconds": 38.189,
+      "worktreeSeconds": 120.271,
+      "guardOnReleaseTasks": true
+    },
+    {
+      "recordedAt": "2026-10-05T07:30:01.885Z",
+      "codeIdentity": "af229ba815ff",
+      "exitCode": 0,
+      "selection": "plain",
+      "skeletonSeconds": 231.773,
+      "releaseSumSeconds": 424.082,
+      "runtimeRefreshSeconds": 39.618,
+      "worktreeSeconds": 118.962,
+      "guardOnReleaseTasks": true
+    },
+    {
+      "recordedAt": "2026-10-05T07:37:07.394Z",
+      "codeIdentity": "af229ba815ff",
+      "exitCode": 0,
+      "selection": "plain",
+      "skeletonSeconds": 229.754,
+      "releaseSumSeconds": 423.882,
+      "runtimeRefreshSeconds": 38.546,
+      "worktreeSeconds": 118.457,
+      "guardOnReleaseTasks": true
+    },
+    {
+      "recordedAt": "2026-10-05T07:58:48.611Z",
+      "codeIdentity": "af229ba815ff",
+      "exitCode": 0,
+      "selection": "review",
+      "skeletonSeconds": 228.875,
+      "releaseSumSeconds": 422.178,
+      "runtimeRefreshSeconds": 38.364,
+      "worktreeSeconds": 120.454,
+      "guardOnReleaseTasks": true
+    },
+    {
+      "recordedAt": "2026-10-05T08:12:35.524Z",
+      "codeIdentity": "af229ba815ff",
+      "exitCode": 0,
+      "selection": "review",
+      "skeletonSeconds": 230.009,
+      "releaseSumSeconds": 418.215,
+      "runtimeRefreshSeconds": 36.877,
+      "worktreeSeconds": 119.489,
+      "guardOnReleaseTasks": true
+    },
+    {
+      "recordedAt": "2026-10-05T08:26:11.031Z",
+      "codeIdentity": "af229ba815ff",
+      "exitCode": 1,
+      "selection": "review",
+      "skeletonSeconds": 229.073,
+      "releaseSumSeconds": 411.806,
+      "runtimeRefreshSeconds": 35.273,
+      "worktreeSeconds": 117.521,
+      "guardOnReleaseTasks": true
+    },
+    {
+      "recordedAt": "2026-10-05T09:02:13.201Z",
+      "codeIdentity": "8f77f8bb26e2",
+      "exitCode": 0,
+      "selection": "review",
+      "skeletonSeconds": 229.815,
+      "releaseSumSeconds": 415.216,
+      "runtimeRefreshSeconds": 36.697,
+      "worktreeSeconds": 118.782,
+      "guardOnReleaseTasks": true
+    },
+    {
+      "recordedAt": "2026-10-05T09:15:43.198Z",
+      "codeIdentity": "8f77f8bb26e2",
+      "exitCode": 0,
+      "selection": "review",
+      "skeletonSeconds": 228.379,
+      "releaseSumSeconds": 414.225,
+      "runtimeRefreshSeconds": 38.902,
+      "worktreeSeconds": 116.632,
+      "guardOnReleaseTasks": true
+    },
+    {
+      "recordedAt": "2026-10-05T09:29:18.318Z",
+      "codeIdentity": "8f77f8bb26e2",
+      "exitCode": 0,
+      "selection": "review",
+      "skeletonSeconds": 228.283,
+      "releaseSumSeconds": 411.763,
+      "runtimeRefreshSeconds": 37.401,
+      "worktreeSeconds": 117.202,
+      "guardOnReleaseTasks": true
+    },
+    {
+      "recordedAt": "2026-10-05T16:43:28.504Z",
+      "codeIdentity": "8b9a11816950",
+      "exitCode": 1,
+      "selection": "review",
+      "skeletonSeconds": 234.971,
+      "releaseSumSeconds": 427.358,
+      "runtimeRefreshSeconds": 30.628,
+      "worktreeSeconds": 125.037,
+      "guardOnReleaseTasks": true
+    },
+    {
+      "recordedAt": "2026-10-05T17:03:01.036Z",
+      "codeIdentity": "5b87201e5178",
+      "exitCode": 0,
+      "selection": "review",
+      "skeletonSeconds": 237.771,
+      "releaseSumSeconds": 452.45,
+      "runtimeRefreshSeconds": 39.609,
+      "worktreeSeconds": 128.434,
+      "guardOnReleaseTasks": true
+    },
+    {
+      "recordedAt": "2026-10-05T17:27:45.668Z",
+      "codeIdentity": "dea58b070d67",
+      "exitCode": 0,
+      "selection": "review",
+      "skeletonSeconds": 241.188,
+      "releaseSumSeconds": 452.461,
+      "runtimeRefreshSeconds": 41.667,
+      "worktreeSeconds": 124.149,
+      "guardOnReleaseTasks": true
+    }
+  ],
+  "guardExperiment": {
+    "source": "Read-only analyst agent of the resume: fix dispatch on 2026-10-05; bounded runs, one at a time, of executeSuite in scratch copies with their own build and release template. The HEAD arm's original guard label was wrong and is corrected here: HEAD applies no guard to shell rows.",
+    "runs": [
+      {
+        "task": "release:case:runtime_refresh",
+        "subject": "HEAD 2816c773 (no guard on shell rows)",
+        "guard": false,
+        "at": "2026-10-05T14:53:58.951Z",
+        "loadAverageBefore": "{ 6.21 4.70 4.66 }",
+        "wallSeconds": 16.978,
+        "exitCode": 0
+      },
+      {
+        "task": "release:case:runtime_refresh",
+        "subject": "checkpoint 3 subject, identity 8f77f8bb",
+        "guard": false,
+        "at": "2026-10-05T14:54:16.063Z",
+        "loadAverageBefore": "{ 5.58 4.63 4.64 }",
+        "wallSeconds": 16.932,
+        "exitCode": 0
+      },
+      {
+        "task": "release:case:runtime_refresh",
+        "subject": "checkpoint 3 subject, identity 8f77f8bb",
+        "guard": true,
+        "at": "2026-10-05T14:54:35.181Z",
+        "loadAverageBefore": "{ 5.73 4.73 4.67 }",
+        "wallSeconds": 18.927,
+        "exitCode": 0
+      },
+      {
+        "task": "release:case:runtime_refresh",
+        "subject": "checkpoint 3 subject, identity 8f77f8bb",
+        "guard": true,
+        "at": "2026-10-05T14:55:35.031Z",
+        "loadAverageBefore": "{ 4.36 4.50 4.58 }",
+        "wallSeconds": 18.501,
+        "exitCode": 0
+      },
+      {
+        "task": "release:case:runtime_refresh",
+        "subject": "HEAD 2816c773 (no guard on shell rows)",
+        "guard": false,
+        "at": "2026-10-05T14:55:51.884Z",
+        "loadAverageBefore": "{ 4.06 4.42 4.56 }",
+        "wallSeconds": 16.668,
+        "exitCode": 0
+      },
+      {
+        "task": "release:case:runtime_refresh",
+        "subject": "checkpoint 3 subject, identity 8f77f8bb",
+        "guard": false,
+        "at": "2026-10-05T14:56:08.284Z",
+        "loadAverageBefore": "{ 4.53 4.51 4.58 }",
+        "wallSeconds": 16.215,
+        "exitCode": 0
+      },
+      {
+        "task": "release:case:runtime_refresh",
+        "subject": "checkpoint 3 subject, identity 8f77f8bb",
+        "guard": false,
+        "at": "2026-10-05T14:56:24.186Z",
+        "loadAverageBefore": "{ 4.72 4.55 4.60 }",
+        "wallSeconds": 15.726,
+        "exitCode": 0
+      },
+      {
+        "task": "release:case:runtime_refresh",
+        "subject": "checkpoint 3 subject, identity 8f77f8bb",
+        "guard": true,
+        "at": "2026-10-05T14:56:41.741Z",
+        "loadAverageBefore": "{ 4.34 4.47 4.57 }",
+        "wallSeconds": 17.371,
+        "exitCode": 0
+      },
+      {
+        "task": "release:case:runtime_refresh",
+        "subject": "HEAD 2816c773 (no guard on shell rows)",
+        "guard": false,
+        "at": "2026-10-05T14:56:58.628Z",
+        "loadAverageBefore": "{ 4.51 4.50 4.58 }",
+        "wallSeconds": 16.71,
+        "exitCode": 0
+      },
+      {
+        "task": "worktree",
+        "subject": "checkpoint 3 subject, identity 8f77f8bb",
+        "guard": false,
+        "at": "2026-10-05T15:02:28.354Z",
+        "loadAverageBefore": "{ 4.01 4.27 4.44 }",
+        "wallSeconds": 94.469,
+        "exitCode": 0
+      },
+      {
+        "task": "worktree",
+        "subject": "checkpoint 3 subject, identity 8f77f8bb",
+        "guard": true,
+        "at": "2026-10-05T15:04:02.055Z",
+        "loadAverageBefore": "{ 5.79 5.29 4.85 }",
+        "wallSeconds": 93.511,
+        "exitCode": 0
+      },
+      {
+        "task": "worktree",
+        "subject": "checkpoint 3 subject, identity 8f77f8bb",
+        "guard": true,
+        "at": "2026-10-05T15:05:48.308Z",
+        "loadAverageBefore": "{ 5.66 5.55 5.02 }",
+        "wallSeconds": 94.002,
+        "exitCode": 0
+      },
+      {
+        "task": "worktree",
+        "subject": "checkpoint 3 subject, identity 8f77f8bb",
+        "guard": false,
+        "at": "2026-10-05T15:07:18.389Z",
+        "loadAverageBefore": "{ 4.40 5.21 4.94 }",
+        "wallSeconds": 89.896,
+        "exitCode": 0
+      }
+    ],
+    "runtimeRefreshPairedGuardEffectSeconds": [
+      1.995,
+      2.286,
+      1.645
+    ],
+    "worktreePairedGuardEffectSeconds": [
+      -0.958,
+      4.106
+    ],
+    "nodeStartup": {
+      "plainMedianMs": 28.6,
+      "guardedMedianMs": 36.9,
+      "manifestBytes": 246203,
+      "excludedPaths": 4213,
+      "runsEach": 40
+    },
+    "limits": "Tasks ran alone rather than in four lanes, with a scratch temporary directory; the one-minute load average before each timed run was 4.0 to 6.2 (6.9 before the release template was prepared); three pairs for the release case and two for worktree.",
+    "observedProcesses": {
+      "source": "Analyst's and record reviewer's counts from the product read logs of the gate rows, which are ignored local files",
+      "targetPublishDistinctProcessIdsPerRun": [
+        561,
+        564
+      ],
+      "targetPublishInReviewRow": {
+        "recordedAt": "2026-10-05T09:29:18.318Z",
+        "distinctProcessIds": 562,
+        "childCommandEvents": 4810
+      }
+    }
+  },
+  "matrixOverlap": {
+    "status": "Inference, not recomputed by the executor: it needs the case-end events of review observation 1, kept in an earlier session's ignored scratch.",
+    "source": "Read-only analyst agent of the resume: fix dispatch on 2026-10-05",
+    "row": "2026-10-05T07:58:48.611Z",
+    "matrixWindowWithinSkeletonSeconds": [
+      43.5,
+      134.8
+    ],
+    "overlappingReleaseTasks": 13,
+    "overlappingGrowthSeconds": 60.694,
+    "rowReleaseGrowthSeconds": 65.87,
+    "overlappingShare": 0.921,
+    "growthAgainstOverlapPearson": 0.938,
+    "releaseTasksEndingBeforeWindow": 36,
+    "theirGrowthSeconds": 4.69
+  },
+  "buildAndLookupCosts": {
+    "source": "Executor measurements in this worktree on 2026-10-05, before the repair's first gate",
+    "buildTask": {
+      "executedPassingSamples": 26,
+      "medianMs": 658,
+      "minMs": 616,
+      "maxMs": 886
+    },
+    "outputDigest": {
+      "files": 493,
+      "bytes": 4286222,
+      "milliseconds": [
+        16,
+        10,
+        10
+      ]
+    },
+    "determinism": "Two builds of one scratch copy gave the same digest over all 493 files.",
+    "gateCodeIdentityMs": 89,
+    "readMainIndexMs": 310,
+    "readMainIndexRows": 10354,
+    "readWorktreeIndexMs": 12
+  },
+  "heartbeatProbe": {
+    "source": "Executor's bounded run of executeSuite at the production 15 s interval on a node:test file with a 50 ms async case, then spawnSync sleeps of 22 s and 18 s",
+    "lines": [
+      "[20.0s] running case: sync one (entered 19.9 s ago)",
+      "[40.0s] running case: sync two (entered 17.9 s ago)"
+    ],
+    "slowestCasesMs": {
+      "sync one": 22009,
+      "sync two": 18009,
+      "async first": 57
+    },
+    "finishedCaseNamed": false,
+    "priorBehavior": "The same shape through the checkpoint's executeSuite printed 'running case: async first' at 30.0 s, 30 s after that case ended (analyst reproduction; VER-001 R1).",
+    "fixtureRepeats": "The executor ran the heartbeat fixture five times in a row after writing it; all five passed.",
+    "preloadCost": {
+      "source": "Analyst's measurement in session scratch",
+      "trivialCases": 2000,
+      "withoutPreloadMs": 290,
+      "withPreloadMs": [
+        440,
+        540
+      ]
+    }
+  },
+  "note": "Observations merged into repair-measurements.json by repair-recompute.mjs --extras. They are measurements and probe outputs of the resume: fix dispatch on 2026-10-05 and cannot be regenerated from the gate index; each names who observed it. repair-measurements.json lists the gate rows that existed when it was generated: gates run after it, the completion's own document gate among them, are not in it."
+}

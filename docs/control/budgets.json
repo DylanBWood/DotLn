@@ -51,7 +51,7 @@
   "limits": {
     "coldStartBytes": {
       "executor": 29246,
-      "verifier": 25151,
+      "verifier": 29831,
       "reviewer": 28884,
       "release-close": 21266,
       "planner": 24576,
@@ -64,6 +64,14 @@
     "passRefutationMs": 120000
   },
   "acceptances": [
+    {
+      "date": "2026-10-05",
+      "metric": "coldStartBytes.verifier",
+      "scope": null,
+      "dispatch": "executor",
+      "ceiling": 29831,
+      "reason": "WO-186 measured 25,735 bytes in each installed verifier root (CLAUDE.md 6,873 plus the skill 18,862), up 780 from the unchanged pre-implementation 24,955, against 25,151. The generated shared rule now admits the active order's default-root records during a product gate and preserves the document/review refusal and observed-read protection. Preserve that reviewed rule under product 07's standing 2026-09-17 route and set only the verifier ceiling to measured 25,735 plus 4,096, or 29,831. Executor 29,237 remains below 29,246; other bounded roles also remain within their ceilings. Reassess when another reviewed rule needs more. Decision: docs/evidence/WO-186/decisions.md#wo-186-d016."
+    },
     {
       "date": "2026-10-01",
       "metric": "coldStartBytes.release-close",

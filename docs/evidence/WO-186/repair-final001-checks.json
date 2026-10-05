@@ -1,0 +1,351 @@
+{
+  "schemaVersion": 1,
+  "workOrderId": "WO-186",
+  "dispatch": "resume: fix",
+  "failureReport": "docs/final-reviews/WO-186/FINAL-001.md",
+  "actor": {
+    "harness": "codex-cli",
+    "harnessVersion": "0.160.0",
+    "model": "gpt-6.1-sol",
+    "effort": "max",
+    "source": "codex-session-readback"
+  },
+  "checks": [
+    {
+      "name": "F1 before shared execution resolver",
+      "source": "bounded wrapper tool output; no retained full transcript",
+      "finishedAt": "2026-10-05T18:52:46.726Z",
+      "durationMs": 3417,
+      "passed": 15,
+      "failed": 3,
+      "observation": "Linked-worktree claim and agreement table reproduced F1; own=false/main=true/other-check/failed was the bad matrix cell."
+    },
+    {
+      "name": "F1 after shared execution resolver",
+      "source": "bounded wrapper tool output",
+      "finishedAt": "2026-10-05T18:53:01.878Z",
+      "durationMs": 4688,
+      "passed": 18,
+      "failed": 0
+    },
+    {
+      "name": "Adjacent findings before repair",
+      "source": "ignored session-scratch final001-adjacent-before.log",
+      "finishedAt": "2026-10-05T18:56:06.166Z",
+      "durationMs": 5404,
+      "passed": 19,
+      "failed": 8
+    },
+    {
+      "name": "Adjacent findings and complete reuse message after repair",
+      "source": "ignored session-scratch final001-adjacent-after.log",
+      "finishedAt": "2026-10-05T18:56:48.505Z",
+      "durationMs": 8058,
+      "passed": 28,
+      "failed": 0
+    },
+    {
+      "name": "Qualified actual timeout and parent cancellation markers",
+      "source": "ignored session-scratch probe-cancelled-markers.mjs and cancelled-markers-qualified.log",
+      "finishedAt": "2026-10-05T18:58:23.464Z",
+      "durationMs": 2032,
+      "exitCode": 0,
+      "childTaskExitCode": 1,
+      "staleTimeout": false,
+      "staleCancellation": false,
+      "limit": "The first probe did not actually cancel its child; only the qualified run supports cancellation. Other missing-marker forms were not tested."
+    },
+    {
+      "name": "Complete runner fixtures",
+      "command": "node scripts/harness.mjs bounded -- node --test scripts/test-runner.test.mjs",
+      "source": "ignored session-scratch final001-runner-complete.log",
+      "startedAt": "2026-10-05T19:01:10.578Z",
+      "finishedAt": "2026-10-05T19:02:02.472Z",
+      "durationMs": 51894,
+      "passed": 99,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "limit": "Only explanatory source comments changed after this run; the passing final full review covers the final source bytes."
+    },
+    {
+      "name": "Publication check after lock refresh",
+      "command": "node scripts/harness.mjs bounded -- npm run publication:check",
+      "finishedAt": "2026-10-05T19:02:58.648Z",
+      "durationMs": 228,
+      "exitCode": 0,
+      "observation": "253 of 253 indexed headings; 29 everyday and 45 software-engineer linked sections current."
+    },
+    {
+      "name": "Planning check",
+      "command": "node scripts/harness.mjs bounded -- npm run plan -- check",
+      "finishedAt": "2026-10-05T19:03:01.760Z",
+      "durationMs": 2826,
+      "exitCode": 0
+    },
+    {
+      "name": "Publication check after final in-place compression",
+      "command": "node scripts/harness.mjs bounded -- npm run publication:check",
+      "source": "ignored session-scratch final001-publication-final.log",
+      "finishedAt": "2026-10-05T19:08:57.187Z",
+      "durationMs": 249,
+      "exitCode": 0,
+      "product07Bytes": 166877,
+      "product07Ceiling": 166907,
+      "product07Headroom": 30
+    },
+    {
+      "name": "Final planning check after canonical follow-up dispositions",
+      "command": "node scripts/harness.mjs bounded -- npm run plan -- check",
+      "source": "ignored session-scratch final001-plan-handoff.log",
+      "startedAt": "2026-10-05T19:40:03.794Z",
+      "finishedAt": "2026-10-05T19:40:06.923Z",
+      "durationMs": 3128,
+      "exitCode": 0
+    }
+  ],
+  "releasePreparation": {
+    "command": "npm run release -- prepare --local",
+    "exitCode": 0,
+    "target": "v0.66.3",
+    "targetChanged": false,
+    "componentSourceChangedByThisRepair": false,
+    "newDependency": false
+  },
+  "adjacentQueue": {
+    "revision": 60,
+    "item": "adjacent-0012",
+    "state": "completed",
+    "pending": [],
+    "running": []
+  },
+  "reviewGate": {
+    "checkId": "npm test",
+    "codeIdentity": "3743c14b5afa554cf2517c23833d0bb807cc204f1ac9f637adcebbc9f1bcd718",
+    "treeHash": "1ebbf831dbc6b67ff4a6412d15a3bef4451a7d73",
+    "recordedAt": "2026-10-05T19:25:49.225Z",
+    "durationMs": 932703,
+    "exitCode": 0,
+    "executed": true,
+    "executionMode": "forced-fresh",
+    "gateSelection": "review",
+    "freshSuites": 86,
+    "reusedSuites": 0,
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "evidenceRef": "host-gate:3743c14b5afa554cf2517c23833d0bb807cc204f1ac9f637adcebbc9f1bcd718:npm test",
+    "command": "npm test -- --review",
+    "source": "canonical gate index row and ignored session-scratch final001-review-gate.log",
+    "selectedSuites": 36,
+    "tasks": 86,
+    "allTasksHaveOneToFiveSlowestCases": true,
+    "deadlineDiagnostics": 4,
+    "criticalPath": {
+      "tasks": [
+        "build",
+        "artifact-evidence",
+        "feedback-evidence",
+        "harness-fixtures",
+        "process-debt",
+        "release:prepare",
+        "release:case:preflight",
+        "release:case:surfaces",
+        "release:case:license_surfaces",
+        "release:case:surfaces_component",
+        "release:case:surfaceclose",
+        "release:case:dirty",
+        "release:case:derived",
+        "release:case:nonmain",
+        "release:case:malformed",
+        "release:case:unauthenticated",
+        "release:case:lower",
+        "release:case:cadence_missing",
+        "release:case:conflict",
+        "release:case:localconflict",
+        "release:case:nestedtag",
+        "release:case:missinglocalprevious",
+        "release:case:refrecovery",
+        "release:case:stale_helpers",
+        "release:case:success",
+        "release:case:edition",
+        "release:case:firstrelease",
+        "release:case:cached_evidence",
+        "release:case:concurrent",
+        "release:case:close_leftover",
+        "license-fixtures",
+        "publication-fixtures",
+        "backup-intake",
+        "beacon-portability",
+        "checkpoint",
+        "worktree-integration"
+      ],
+      "workMs": 932226,
+      "waitMs": 328,
+      "durationMs": 932554
+    },
+    "selectedTaskDurationsMs": {
+      "build": 696,
+      "harness-fixtures": 333471,
+      "process-debt": 120168,
+      "skeleton": 254003,
+      "target-publish": 158149,
+      "runner-fixtures": 65618,
+      "worktree-integration": 259657
+    },
+    "releaseTaskDurationSumMs": 467960,
+    "hostLaneWaitMs": 0
+  },
+  "documentGate": {
+    "checkId": "npm run test:docs",
+    "codeIdentity": "3743c14b5afa554cf2517c23833d0bb807cc204f1ac9f637adcebbc9f1bcd718",
+    "treeHash": "1ebbf831dbc6b67ff4a6412d15a3bef4451a7d73",
+    "recordedAt": "2026-10-05T19:10:04.781Z",
+    "durationMs": 66971,
+    "exitCode": 0,
+    "executed": true,
+    "executionMode": "fresh",
+    "gateSelection": "document",
+    "freshSuites": 29,
+    "reusedSuites": 0,
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "evidenceRef": "host-gate:3743c14b5afa554cf2517c23833d0bb807cc204f1ac9f637adcebbc9f1bcd718:npm run test:docs",
+    "command": "npm run test:docs",
+    "source": "canonical gate index row and ignored session-scratch final001-document-gate-002.log",
+    "tasks": 29,
+    "scope": "pre-completion check; repair-complete runs the final document gate inline after authored records are finished"
+  },
+  "finalDiffCheck": {
+    "source": "git diff --check and git diff --cached --check tool outputs after final handoff/follow-up writes",
+    "observedAt": "2026-10-05T19:40:28.890Z",
+    "worktreeExitCode": 0,
+    "indexExitCode": 0,
+    "scope": "Current authored tree before this JSON observation; repair-complete checks the final tree inline."
+  },
+  "limits": [
+    "Original benchmark and replay cohorts are retained; these checks establish no new median, causal saving or total-work-order reduction.",
+    "Unavailable identity or consulted main index leaves an advisory, actor-stated unproved claim and no productGate, as product 07 and the fixtures explicitly record.",
+    "Lookups judge persisted executions; a gate that stops or throws before persistence records no deciding execution.",
+    "Other untracked excluded inputs are outside the tracked guard inventory; own record roots protect prospective paths. Shell/native calls and Node children without inherited options remain unobserved.",
+    "No subagents were used in this repair. D002's declined economy experiment remains unchanged."
+  ],
+  "documentAttempts": [
+    {
+      "command": "npm run test:docs",
+      "source": "gate index row and ignored session-scratch final001-document-gate.log",
+      "recordedAt": "2026-10-05T19:07:26.520Z",
+      "codeIdentity": "3743c14b5afa554cf2517c23833d0bb807cc204f1ac9f637adcebbc9f1bcd718",
+      "durationMs": 27907,
+      "exitCode": 1,
+      "cause": "docs-check: product 07 was 740 bytes above its 166907-byte ceiling; dependent checks did not execute.",
+      "repair": "Compressed the same Discipline rules to 166877 bytes, retaining identity, persistence, advisory, guard and build limits. Refreshed the publication lock; no ceiling or source change."
+    }
+  ],
+  "outcomeAssessment": {
+    "knownCorrectnessRepair": "F1 and the reproduced adjacent defects are repaired and covered by passing regression and full gates.",
+    "wholeOrderPerformanceValue": "unmeasured aggregate over future work orders; potentially positive",
+    "mergeRecommendation": "Passing repair checks alone do not decide the whole order's recurring value. Evaluate net benefit over future orders; one-time development/repair cost is not a recurring penalty.",
+    "formalCriterionDistinction": "FINAL-001 marked criteria 1 and 9 met and failed criterion 3. The written timing/profile obligations and the broader net workflow objective are separate judgments."
+  },
+  "futureOperatingValueModel": {
+    "kind": "conditional arithmetic, not a forecast or measured saving",
+    "horizonOrders": 50,
+    "assumedFreshPlainGatesPerOrder": 2,
+    "assumedDocumentGatesPerOrder": 7,
+    "assumptions": "The gate counts are illustrative. Recorded phase median differences are assumed representative; their source workloads and host activity were not a controlled equal-work comparison.",
+    "plainSecondsSavedPerFreshGate": 73.577,
+    "documentSecondsAddedPerGate": 27.697,
+    "oneTimeDevelopmentAndRepairCostsExcludedFromRecurringModel": true,
+    "matchedReviewSecondsAddedPerOrder": null,
+    "averageNetReuseSecondsSavedPerOrder": null,
+    "formula": "50 * (2 * 73.577 - 7 * 27.697 + averageNetReuseSecondsSavedPerOrder - matchedReviewSecondsAddedPerOrder)",
+    "plainSecondsSavedAcrossHorizon": 7357.7,
+    "documentSecondsAddedAcrossHorizon": 9693.95,
+    "recurringGapSecondsAcrossHorizon": 2336.25,
+    "breakEvenNetReuseSecondsPerOrderWithZeroMatchedReviewDelta": 46.725,
+    "illustrativeAfterPhasePlainGateSeconds": 422.027,
+    "zeroReviewDeltaScenarios": [
+      {
+        "averageNetReuseSecondsSavedPerOrder": 0,
+        "netSecondsSavedAcrossHorizon": -2336.25
+      },
+      {
+        "averageNetReuseSecondsSavedPerOrder": 50,
+        "netSecondsSavedAcrossHorizon": 163.75
+      },
+      {
+        "averageNetReuseSecondsSavedPerOrder": 100,
+        "netSecondsSavedAcrossHorizon": 2663.75
+      },
+      {
+        "averageNetReuseSecondsSavedPerOrder": 422.027,
+        "netSecondsSavedAcrossHorizon": 18765.1
+      }
+    ],
+    "limits": [
+      "Reuse frequency and its overhead across fifty future orders have not been measured.",
+      "The observed review median increase is not a matched recurring penalty and is not multiplied by fifty.",
+      "Full review is always fresh. Only eligible non-review invocations/tasks can contribute reuse savings.",
+      "Historical development, failed gates and repair costs remain recorded separately; no hypothetical future gain is booked against them.",
+      "An unknown aggregate benefit is not evidence that the change is useless or that further optimization is impossible.",
+      "Net reuse counts work beyond the two assumed fresh plain gates; no invocation is counted as both fresh and skipped. The 422.027-second scenario assumes zero lookup overhead."
+    ]
+  },
+  "planningBusinessCase": {
+    "source": "docs/planning/standard-pass-2026-10-02.md section 4; refutation receipt 038, retained by receipts 039 and 040",
+    "purpose": "Recurring savings across future work orders through shorter cases, task/main reuse and report-writing overlap.",
+    "historicalRerunPairs": 14,
+    "historicalRerunWallSeconds": 8384,
+    "historicalTaskTimeShareNeedingExecutionPercent": [
+      9,
+      36
+    ],
+    "historicalFirstGatesOnCorpusDocumentOrders": 15,
+    "historicalFirstGateWallSeconds": 10129,
+    "measurementCostTreatedAsPaidOnce": true,
+    "limit": "Historical costs identify opportunity, not realized savings from this implementation; the harness case duration premise was later disproved."
+  },
+  "currentClaimCheck": {
+    "observedAt": "2026-10-05T19:38:32.423Z",
+    "source": "current --review --list and coveringGateCheck",
+    "requiredSuites": 36,
+    "codeIdentity": "3743c14b5afa554cf2517c23833d0bb807cc204f1ac9f637adcebbc9f1bcd718",
+    "location": "worktree",
+    "recordedAt": "2026-10-05T19:25:49.225Z",
+    "missing": [],
+    "displaced": [],
+    "exitCode": 0
+  },
+  "followupDispositions": {
+    "source": "canonical plan followups apply output and subsequent register readback",
+    "expectedRevision": "376bdfb4433005920973ae09c5d622388fe2b55ecb2faebd238a353aceb3e76a",
+    "resultRevision": "ce5babf2a5c45cd9c688c187e360fbbf7a368fe990fd742381aec8f2b1b31591",
+    "appliedAt": "2026-10-05T19:39:21.509Z",
+    "entries": [
+      {
+        "id": "FUP-ff62b8dd608794b0",
+        "sourceRevision": 2,
+        "status": "settled"
+      },
+      {
+        "id": "FUP-3a2358223cd7864f",
+        "sourceRevision": 1,
+        "status": "settled"
+      },
+      {
+        "id": "FUP-7a67deb691d858ea",
+        "sourceRevision": 1,
+        "status": "settled"
+      },
+      {
+        "id": "FUP-0c10689747f83675",
+        "sourceRevision": 2,
+        "status": "open",
+        "owner": "planning; existing FUP-b28b870422a74166 input-coverage route"
+      }
+    ],
+    "firstAttempt": "The batch was refused atomically because an open disposition requires reopenWhen=null. No register write occurred; the field was corrected and the same revision-bound batch applied.",
+    "originalCloseOnlyAllocationsChanged": false
+  }
+}

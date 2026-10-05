@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 1,
+  "workOrderId": "WO-186",
+  "dispatch": "resume: verify",
+  "report": "docs/verifications/WO-186/VER-003.md",
+  "subject": {
+    "judges": "the FINAL-001 repair (D043 to D046) and the whole order at its current subject",
+    "branch": "wo-186",
+    "dispatchCheckpoint": "refs/dotln/checkpoint/WO-186/13",
+    "repairEntryCheckpoint": "refs/dotln/checkpoint/WO-186/11",
+    "codeIdentity": "3743c14b5afa554cf2517c23833d0bb807cc204f1ac9f637adcebbc9f1bcd718",
+    "codeIdentityAfterThisVerificationsRecords": "3743c14b5afa554cf2517c23833d0bb807cc204f1ac9f637adcebbc9f1bcd718",
+    "repairSourceFiles": [
+      "scripts/lib/gate-reuse.mjs",
+      "scripts/lib/product-read-guard.mjs",
+      "scripts/test-runner.mjs",
+      "scripts/test-runner.test.mjs"
+    ],
+    "node": "v26.9.0"
+  },
+  "actor": {
+    "harness": "claude-code",
+    "harnessVersion": "2.1.289",
+    "model": "claude-opus-5-5",
+    "effort": "xhigh",
+    "source": "claude-session-readback"
+  },
+  "consumedGateRow": {
+    "checkId": "npm test",
+    "gateSelection": "review",
+    "executionMode": "forced-fresh",
+    "codeIdentity": "3743c14b5afa554cf2517c23833d0bb807cc204f1ac9f637adcebbc9f1bcd718",
+    "treeHash": "1ebbf831dbc6b67ff4a6412d15a3bef4451a7d73",
+    "recordedAt": "2026-10-05T19:25:49.225Z",
+    "durationMs": 932703,
+    "exitCode": 0,
+    "requiredSuites": 36,
+    "tasks": 86,
+    "tasksNotPassedOrReused": 0,
+    "tasksWithoutOneToFiveSlowestCases": 0,
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "hostLaneWaitMs": 0,
+    "processDebtMs": 120168,
+    "releaseTasks": 51,
+    "releaseTaskSumMs": 467960,
+    "readBy": "direct readGateChecks of this worktree's index at the computed code identity",
+    "claimCheck": "requireGateClaims with plain and review claims and no document claim: no advisory; productGate is this row, so it covers the current review selection (changedMachinery selects 12 machinery suites from the merge base)"
+  },
+  "latestDocumentRowBeforeThisReport": {
+    "checkId": "npm run test:docs",
+    "recordedAt": "2026-10-05T19:42:05.807Z",
+    "exitCode": 0,
+    "tasks": 29,
+    "durationMs": 67690,
+    "note": "the repair-complete transition's inline run; the verification-result transition runs the document gate again over this report"
+  },
+  "checks": [
+    {
+      "name": "runner fixture file",
+      "command": "node scripts/harness.mjs bounded -- node --test scripts/test-runner.test.mjs",
+      "finishedAt": "2026-10-05T19:50:52Z",
+      "durationMs": 54170,
+      "results": { "tests": 99, "pass": 99, "fail": 0, "cancelled": 0 },
+      "finalReviewFixtures": [
+        "a fresh worktree's failed single-suite run displaces main's claim until the task passes",
+        "runner and claim agree over local/main and same/other-check histories (16 cells)",
+        "identity and consulted-index errors retain an explicit unproved-claim advisory",
+        "case duration reports leave live diagnostic and suite progress slots available",
+        "callback opens without flags observe the default read and register descriptor metadata",
+        "another check's row-level failure displaces the tasks it executed",
+        "machinery selection preserves removed, quoted and unlistable paths",
+        "a reporter loads from a checkout with URL delimiter characters"
+      ]
+    },
+    {
+      "name": "independent task-standing safety probe",
+      "script": "docs/evidence/WO-186/verify-003-standing-probe.mjs",
+      "scriptSha256": "d292f309002467be4f6b65d4a772fb2c73d1b8605171b03a55b57f3abb24ca69",
+      "method": "Random gate histories (1 to 7 rows) written into a scratch main checkout and its linked worktree at one code identity: npm test, suite:beta and suite:alpha rows, per-task pass or fail, worktree npm test rows that carry tasks from main's passing rows, and six row-integrity failures (abandoned roots, stopped, timed out, changed identity, changed build output, memory failure). An oracle written in the probe, not the subject's decidingExecution, takes each task's standing from its latest executed result among the worktree's executions at the identity under any check, or main's when the worktree has none, and calls it safe only when that result passed in an intact row. A violation is a row the claim check accepts, or a task the runner carries, whose standing is unsafe, or a carried result whose source row did not execute a pass of that task. Agreement counts claims accepted while the runner would not carry every task.",
+      "runs": [
+        {
+          "source": "current subject",
+          "histories": 600,
+          "seed": 186,
+          "mode": "mixed",
+          "accepted": 46,
+          "acceptedMain": 4,
+          "carried": 354,
+          "disagreements": 0,
+          "violations": 0
+        },
+        {
+          "source": "current subject",
+          "histories": 600,
+          "seed": 7,
+          "mode": "mainFirst",
+          "accepted": 49,
+          "acceptedMain": 30,
+          "carried": 518,
+          "disagreements": 0,
+          "violations": 0,
+          "reproducedFromRetainedScript": true
+        },
+        {
+          "source": "current subject",
+          "histories": 1500,
+          "seed": 42,
+          "mode": "mainFirst",
+          "accepted": 134,
+          "acceptedMain": 89,
+          "carried": 1371,
+          "disagreements": 0,
+          "violations": 0
+        },
+        {
+          "source": "current subject",
+          "histories": 1500,
+          "seed": 186,
+          "mode": "mixed",
+          "accepted": 109,
+          "acceptedMain": 10,
+          "carried": 887,
+          "disagreements": 0,
+          "violations": 0
+        },
+        {
+          "source": "control: scripts/lib/gate-reuse.mjs from refs/dotln/checkpoint/WO-186/11 (before the FINAL-001 repair) with the current skeleton",
+          "histories": 600,
+          "seed": 7,
+          "mode": "mainFirst",
+          "accepted": 182,
+          "acceptedMain": 156,
+          "carried": 798,
+          "disagreements": 59,
+          "violations": 489,
+          "violationsByKind": { "claim": 231, "carried": 258 },
+          "claimViolationHistories": 130,
+          "firstClaimViolation": "main npm test passes build, alpha and beta; the worktree then records suite:beta failing beta with changed build output, and suite:beta passing beta in a timed-out row; the old claim check accepted main's row",
+          "reading": "Claim violations are FINAL-001 F1's class; carried violations are D042 item 1 (another check's row-level failure did not displace a passing task result). Reproduced from the retained script."
+        }
+      ],
+      "totalsOnCurrentSubject": {
+        "histories": 4200,
+        "accepted": 338,
+        "acceptedMain": 133,
+        "carried": 3130,
+        "violations": 0,
+        "disagreements": 0
+      },
+      "limits": "Three tasks and two single-suite checks; equal finish times, partial rows, repeated names, unreadable rows and rows carried from another identity are not generated. The oracle judges safety (no unsafe acceptance or carry), not that every safe arrangement is accepted. Probes ran under the bounded wrapper, one at a time."
+    },
+    {
+      "name": "planning check",
+      "command": "node scripts/harness.mjs bounded -- npm run --silent plan -- check",
+      "exitCode": 0,
+      "finishedAt": "2026-10-05T19:51:26.937Z"
+    },
+    {
+      "name": "publication check",
+      "command": "node scripts/harness.mjs bounded -- npm run --silent publication:check",
+      "exitCode": 0,
+      "output": "253/253 product headings indexed; both editions CURRENT",
+      "finishedAt": "2026-10-05T19:51:27.265Z"
+    },
+    {
+      "name": "whitespace",
+      "command": "git diff --check; git diff --cached --check",
+      "exitCode": 0
+    },
+    {
+      "name": "dependencies",
+      "command": "git diff main -- package-lock.json and package manifests",
+      "result": "only internal version lines and exact workspace pins move (compiler 0.25.1 to 0.25.2, skeleton 0.52.2 to 0.52.3); no dependency is added"
+    },
+    {
+      "name": "record arithmetic",
+      "result": "costs.md and the handoff recompute: 420.269 + 815.174 = 1235.443 s and + 900.119 = 2135.562 s; 50 x 2 x 73.577 = 7357.7 s; 50 x 7 x 27.697 = 9693.95 s; gap 2336.25 s; break-even 46.725 s per order; 100 s per order gives 2663.75 s; one 422.027 s gate per order gives 18765.1 s. Quoted task figures (254.003, 259.657, 333.471, 120.168 s; release sum 467.960 s; lane wait 0) match the consumed row."
+    }
+  ],
+  "notRun": [
+    "npm test -- --review: consumed the executor's matching forced-fresh row; no finding needed a reproduction at the gate",
+    "npm run test:docs: runs inline in the verification-result transition",
+    "planted-defect controls, assertion inventories, second-process proofs, replay and the five-run measurement series: unchanged by this repair and judged by VER-002 and FINAL-001 from their records"
+  ],
+  "subagents": { "planned": 0, "observedAtEntry": 0, "cap": 20 }
+}

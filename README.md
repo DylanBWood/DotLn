@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.66.2`.
+This source prepares DotLn `v0.66.3`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program and authority envelope that the kernel checks on every decision.
@@ -184,7 +184,10 @@ Independent implementation, verification
 and final review record their own evidence, and publication consumes the
 reviewer's successful code-identity gate row.
 DotLn hooks refuse five conditions: a second writer in a worktree, writes to gate
-inputs or the success record during live `npm test`, repository writes outside
+inputs or the success record during a live gate, with only the active order’s
+evidence, verification and final-review directories
+at the default document roots admitted during a product gate; document and
+mixed review gates retain the full refusal. The other conditions are writes outside
 `docs/` and root Markdown on `planning/` branches, observable subagent
 admissions beyond the configured cap, and known outside-project write
 destinations without an active role's declared, admitted root grant.
@@ -261,10 +264,18 @@ and the [fresh host probe](docs/discovery/beacon-probe-2026-09-04.md).
 
 The test suite feeds that log through the same pure reactor used by the live
 host and compares complete decisions and semantic projections, including a
-negative verifier outcome. `npm test` runs fresh product and lifecycle suites;
+negative verifier outcome. `npm test` runs the product and lifecycle tasks
+whose latest executed result at the current code identity is not a pass,
+composing fresh results with carried ones that name their executing row. When
+any task runs, the build runs first unless its ignored output is still the one
+the latest passing build there recorded; when every pass is carried, nothing
+runs. `--again` runs them all fresh. A new worktree with the same code can
+read main’s passing rows without writing to main. The identity includes
+non-ignored untracked code and is unchanged by staging; symbolic source aliases
+are refused because their target bytes are outside that key;
 `npm test -- --list` explains the operator-visible behavior each protects.
-The reviewer uses `npm test -- --review` once, adding machinery suites selected
-by changed sources; `npm run test:full` is the alias for that same review selection. `npm run test:machinery` runs that inventory on demand, and
+The reviewer uses `npm test -- --review` once, running every selected task
+fresh and adding machinery suites selected by changes from the merge base; `npm run test:full` is the alias for that same review selection. `npm run test:machinery` runs that inventory on demand, and
 `npm run test:docs` checks document-only planning and ideation dispatches.
 The operator's current Claude Code, Codex and Copilot sessions run without a
 host sandbox (posture recorded 2026-09-25 in

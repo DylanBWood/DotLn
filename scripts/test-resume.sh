@@ -2,6 +2,7 @@
 set -euo pipefail
 unset DOTLN_ACCOUNT_LABEL # Fixtures declare their own labels.
 unset CLAUDE_EFFORT # The host's selected effort is declared per fixture (WO-157 item 11).
+unset CODEX_THREAD_ID COPILOT_AGENT_SESSION_ID # Fixtures declare host identity explicitly.
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 source "$script_dir/test-temp-root.sh"

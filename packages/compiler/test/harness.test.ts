@@ -454,7 +454,15 @@ test("WO-132 both harness roles receive identical duties and the shared instruct
     /fixture-codex: fixture-attribution: No project hook fired/,
   );
   assert.match(merged, /one writer per worktree on any branch, including main/);
-  assert.match(merged, /success record during a live npm test/);
+  assert.match(merged, /success record during a live gate/);
+  assert.match(
+    merged,
+    /active order's own evidence, verification and final-review directories at the default document roots during a product gate/,
+  );
+  assert.match(
+    merged,
+    /document and mixed review gates retain the full refusal/,
+  );
   assert.match(merged, /node scripts\/harness\.mjs evidence --stop/);
   assert.match(merged, /five refusals \(WO-135, WO-139, WO-144\)/);
   assert.match(

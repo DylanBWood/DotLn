@@ -1,0 +1,83 @@
+{
+  "diagnostic": {
+    "exitCode": 0,
+    "wallMs": 399868.30358400004,
+    "log": "before-full-harness.log",
+    "profile": "before-full-harness-profile.jsonl"
+  },
+  "scope": "Parent harness worker synchronous subprocess time; nested scopes overlap and are not added",
+  "cases": [
+    {
+      "case": "<root> > WO-132 only the live product gate refuses input and success-record writes, including opaque shell writes",
+      "calls": 449,
+      "syncMs": 52874.429803999985,
+      "longestMs": 201.7087499999907
+    },
+    {
+      "case": "<root> > WO-125 F3 entry refuses generated-hook writes throughout the gate and releases on exit",
+      "calls": 968,
+      "syncMs": 22472.104048999972,
+      "longestMs": 212.72158299999137
+    },
+    {
+      "case": "<root> > WO-158 a live gate admits the fixed read-only list stage by stage and names it in its refusal",
+      "calls": 154,
+      "syncMs": 17909.619574999873,
+      "longestMs": 251.63658299998497
+    },
+    {
+      "case": "<root> > WO-125 F3 runner refuses generated-hook writes throughout the gate and releases on exit",
+      "calls": 675,
+      "syncMs": 15635.025030999772,
+      "longestMs": 225.95508400000108
+    },
+    {
+      "case": "<root> > WO-125 F3 evidence refuses generated-hook writes throughout the gate and releases on exit",
+      "calls": 493,
+      "syncMs": 11416.720058999883,
+      "longestMs": 210.5615839999955
+    },
+    {
+      "case": "<root> > WO-172 the generated observer answers the agent with the shell's diagnostic, at the call or after a failed one, counts it locally and refuses nothing",
+      "calls": 140,
+      "syncMs": 11089.3328810003,
+      "longestMs": 225.41933399997652
+    },
+    {
+      "case": "<root> > WO-144 generated hooks apply active-role grants to physical writes and removals",
+      "calls": 89,
+      "syncMs": 11023.324005000235,
+      "longestMs": 185.96712500002468
+    },
+    {
+      "case": "<root> > WO-135 generated planning hooks refuse repository code paths and preserve documents, scratch and override",
+      "calls": 80,
+      "syncMs": 9727.888500999834,
+      "longestMs": 194.03479199996218
+    },
+    {
+      "case": "<root> > WO-144 FINAL-001 F1 a moved working directory is still judged and journals in the hook's own project",
+      "calls": 84,
+      "syncMs": 9390.38496199972,
+      "longestMs": 159.13758300000336
+    },
+    {
+      "case": "<root> > WO-168 a live gate admits four argument forms of listed reads and the second npm spelling, and refuses every other form",
+      "calls": 88,
+      "syncMs": 9068.514879999973,
+      "longestMs": 207.77724999998463
+    },
+    {
+      "case": "<root> > WO-139 Codex executor and fix completion automatically release after the final index",
+      "calls": 51,
+      "syncMs": 9048.268753999999,
+      "longestMs": 610.6074169999993
+    },
+    {
+      "case": "<root> > WO-168 a granted session root is a real directory: a linked root grants nothing, a real or absent root grants, and an unreadable root advises once",
+      "calls": 57,
+      "syncMs": 7820.571872,
+      "longestMs": 214.5280410000123
+    }
+  ]
+}

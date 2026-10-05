@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "checks": [
+    {
+      "name": "formatted-build",
+      "exitCode": 0,
+      "wallMs": 822.761667,
+      "log": "formatted-build-initial.log"
+    },
+    {
+      "name": "cross-process-proof",
+      "exitCode": 0,
+      "wallMs": 2294.054875,
+      "log": "cross-process-proof-initial.log"
+    },
+    {
+      "name": "record-permissions",
+      "exitCode": 0,
+      "wallMs": 8609.134667,
+      "log": "record-permissions-initial.log"
+    },
+    {
+      "name": "compiler-harness",
+      "exitCode": 0,
+      "wallMs": 263.4412080000002,
+      "log": "compiler-harness-initial.log"
+    },
+    {
+      "name": "assertions",
+      "exitCode": 1,
+      "wallMs": 133.8480410000011,
+      "log": "assertions-initial.log"
+    },
+    {
+      "name": "assertions-corrected",
+      "exitCode": 0,
+      "sourceLog": "assertions-passing.log"
+    }
+  ],
+  "runnerFile": {
+    "tests": 55,
+    "passed": 55,
+    "failed": 0,
+    "source": "bounded Node test-runner.test.mjs execution at 2026-10-05T03:40:47.469Z"
+  },
+  "correction": "The first assertion-inventory draft called the legacy TypeScript API. Installed TypeScript 7.0.2 exports version only at the package root; checked package exports and current version-specific official docs, then used the native sync API with virtual source files. AST assertion arguments ignore formatting and optional trailing commas; all before/after lists compare equal."
+}

@@ -263,7 +263,10 @@ incident count (D012).
 
 DotLn's generated hooks refuse five conditions (WO-135, WO-139 and WO-144): a second live writer
 in the same worktree; a write to gate inputs or the success record during a live
-`npm test`; a classified repository write outside `docs/` and root Markdown
+gate, where a product gate admits only the active order's evidence,
+verification and final-review directories
+at the default document roots and document and mixed review gates keep the
+full refusal; a classified repository write outside `docs/` and root Markdown
 on a `planning/` branch; an observable subagent admission beyond
 `docs/control/budgets.json` `subagentCap` (default 20; `null` disables); and a
 known write destination outside the project without a containing grant from

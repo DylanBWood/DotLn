@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-05T07:21:12.505Z",
+  "decision": "WO-186-D026",
+  "earlierIdentity": "6bcefed0fcdfc9bd83f47403d016b2ef58f1a5b2b763af117e604bf02f0e46ef",
+  "finalIdentity": "af229ba815ff320fcf23943a45afc7c20dc55d7bc6c95d90b4a4e61d2f67a5af",
+  "earlierFile": "ordinary-final-after-6bcefed0fcdf-series.json",
+  "finalFile": "ordinary-final-after-af229ba815ff-series.json",
+  "plainEarlierOrdinals": [
+    1,
+    2,
+    3
+  ],
+  "plainFinalOrdinals": [
+    4,
+    5
+  ],
+  "harnessEarlierOrdinals": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "reviewFinalOrdinals": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "qualification": "Five after-phase passes: three before the independent browser readiness repair, two after. This pooled median is not a five-run median of final source. Five harness observations precede the unrelated browser test repair; all five review observations use final source. Keep failed fourth attempt and repair/retry cost. The performance implementation, target cases, scheduler and selections do not change across this test-only repair."
+}

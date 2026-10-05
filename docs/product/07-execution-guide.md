@@ -2016,13 +2016,31 @@ claim evidence or releases it does not have.
   probes did not exercise interruption; no native interruption proof is claimed.
 - **Write once, run once (WO-132).** The reviewer stages intended new source
   files and runs `npm test -- --review` once after the last source edit. The
-  runner records `npm test` by tracked, non-generated code identity, excluding
-  `docs/`, `.claude/`, `.agents/`, root Markdown and the paths Git marks
+  runner records `npm test` by tracked and non-ignored untracked code paths
+  and bytes, independent of staging. Symbolic source aliases refuse the key
+  rather than silently omitting their target bytes. The identity excludes `docs/` except
+  `docs/control/outward-vocabulary.json`, `.claude/`, `.agents/`, root Markdown
+  and the paths Git marks
   `dotln-generated` or `dotln-documentation`; the package READMEs no suite
   reads carry the documentation mark in `.gitattributes`, while a README or
   Markdown file a test reads as an input stays unmarked and counts (WO-115).
-  Product package tasks reject observed reads of excluded tracked inputs;
-  `[document]` cases run in the document gate, including kernel (WO-174).
+  Product tasks reject observed Node content reads of excluded tracked
+  inputs and listings of the directories below the root that hold them, and
+  observed reads, metadata probes, listings, watches, copies and links of
+  the active order’s record directories, including untracked records and a
+  recursive walk from the repository root or an ancestor. Copy sources of
+  excluded tracked inputs, shell commands, native tools and Node children or
+  workers started without the inherited options are not judged:
+  `license-fixtures`, `worktree` and `release` copy `docs/LEGAL.md`, and
+  `release` copies `docs/releases/tag-manifest.template.json` and
+  `docs/control/budgets.json`, so a reused row does not answer for those
+  bytes (FUP-b28b870422a74166). Only tracked excluded inputs are inventoried;
+  untracked ones remain unguarded until staged. Record roots guard prospective
+  paths. License
+  surfaces, resume, resident binding, local runner qualification and the
+  artifact corpus run in the document gate with the `[document]` package
+  cases, including kernel. Outward descriptions, lint and target publication
+  retain product coverage with their vocabulary included in the identity.
   The exact tested tree remains beside that key. New source bytes
   require a new final product gate; report/control/index/release-text and
   marked-documentation edits do not. A passing final review recorded while no
@@ -2046,8 +2064,38 @@ claim evidence or releases it does not have.
   that names `npm test` or `npm test -- --review` needs a passing row at
   the current code identity covering the change's review selection; one
   recorded unmet always records and is shown at the next dispatch. `npm
-  test` reuses a passing complete row of a covering selection at that
-  identity and exits; `--again` runs it.
+  test` runs only the selected tasks whose latest recorded run at that
+  identity is not a pass, and records a complete row in which each carried
+  result names the row that executed it. A later failed or timed-out run of
+  a task, in a gate or in a failed single-suite, machinery or partial run,
+  and a later failed gate are never masked by an older pass; a carried
+  result is never itself evidence. Unpersisted runs (stops/signals or errors
+  in final identity, deadline parsing or index locking) leave no row and
+  displace nothing. Both lookups choose worktree executions first, across
+  checks. A row stands while each task's latest run supplies its result or
+  a pass that may be carried; integrity failures displace their executed
+  tasks. Identity errors (including symbolic aliases) and unreadable consulted
+  main indexes retain the storage-unavailable contract: `Gate index unavailable`
+  names the error, leaving an actor-stated unproved claim with no product gate.
+  Passing tasks may compose after an unchanged-code failure; partial results
+  never reuse. A carried build beside a running task requires its ignored
+  output's digest to match disk; otherwise it runs first. Changed output at
+  gate end fails the row. With no task to run,
+  nothing builds. With no local
+  row at the identity, a worktree reads main’s index through the common Git
+  worktree registration, without writing to main; a pass it carried from
+  main is checked against main’s latest execution at each later lookup;
+  unresolvable main leaves the worktree’s own rows.
+  `--again` and `--review`
+  always run every selected task fresh. Review selection diffs against the
+  merge base, retaining the worktree’s changes when a sibling advances main.
+  During a product gate, roles may write only the active order’s evidence,
+  verification and final-review directories at the default document roots;
+  relocated record roots retain the full refusal until the identity and read
+  boundary support them together. Observed content, presence and descriptor
+  metadata reads fail product tasks, including physical aliases and prospective
+  report paths. Every other gate input and the success record stay protected.
+  Document and mixed review gates retain the full write refusal.
 - **Host-confinement preflight.** `scripts/lib/host-confinement.mjs` detects
   a host restriction; it creates no sandbox [WO-140, 2026-09-19; renamed by
   WO-161, 2026-09-25]. The operator's three CLI sessions currently run

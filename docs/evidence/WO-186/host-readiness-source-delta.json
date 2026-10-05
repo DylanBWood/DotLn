@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-05T08:45:02.781Z",
+  "changedCodePath": "scripts/test-host-guard.test.mjs",
+  "beforeCodeIdentity": "af229ba815ff320fcf23943a45afc7c20dc55d7bc6c95d90b4a4e61d2f67a5af",
+  "afterCodeIdentity": "8f77f8bb26e21f212f2f7ffa1a9a098aaaa4a71f9c9d1184539c40f00618ee99",
+  "beforeFileSha256": "e02f3efa80eb69905b2c307083a7dffaf3de582aad7d5169401864d50d845823",
+  "afterFileSha256": "4c6430dc9ad8ce2bf08ac7e1e6106f3455b96ace89fffdb3f286d02ca886142d",
+  "method": "Read-only check: hash the actual current working tree, then recompute in this disposable process with only this one file read supplied from HEAD. That file was unchanged from HEAD before D028. The recomputed whole code identity exactly equals the observed pre-repair gate identity. Restore the read binding and confirm the current identity again. No repository bytes or gate row are changed; this diagnostic is not a passing gate and cannot authorize reuse at a different identity."
+}
