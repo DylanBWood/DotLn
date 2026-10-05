@@ -56,6 +56,7 @@ const commonSources = [
   "packages/skeleton/src/review.ts",
   "packages/skeleton/src/repair-host.ts",
   "packages/skeleton/src/resident-state.ts",
+  "packages/skeleton/src/vertical.ts",
   "packages/skeleton/src/presence-signals.ts",
   "packages/skeleton/src/presence-heartbeat.ts",
   "packages/skeleton/src/resident-store.ts",

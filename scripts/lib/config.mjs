@@ -93,6 +93,7 @@ const SECTION_KEYS = [
 // WO-100: the reviewed text of a preauthorized portfolio. The skeleton's
 // `decodePortfolio` re-validates the same shape and admits it under the floor.
 const PORTFOLIO_KEYS = [
+  "class",
   "version",
   "repo",
   "mechanics",
@@ -447,10 +448,28 @@ const validatePortfolios = (path, declared, repositories) => {
     const label = `portfolios.${id}`;
     requireObject(path, value, label);
     requireKnownKeys(path, value, PORTFOLIO_KEYS, label);
+    const intent = value.class === "intent";
+    if (value.class !== undefined && !intent)
+      throw refuse(path, `${label}.class must be intent when supplied`);
     for (const key of PORTFOLIO_KEYS)
-      if (value[key] === undefined && key !== "verification")
+      if (
+        value[key] === undefined &&
+        !["verification", "class"].includes(key) &&
+        !(intent && key === "mechanics")
+      )
         throw refuse(path, `${label}.${key} is required`);
     const repo = requireText(path, value.repo, `${label}.repo`);
+    if (intent && repo === "self")
+      throw refuse(
+        path,
+        `${label}.repo requires a registered target for intent`,
+      );
+    if (
+      intent &&
+      value.mechanics !== undefined &&
+      (!Array.isArray(value.mechanics) || value.mechanics.length)
+    )
+      throw refuse(path, `${label}.mechanics is empty for intent`);
     const profile =
       repo === "self" ? undefined : repositories[repo]?.authorityProfile;
     if (repo !== "self" && !profile)
@@ -513,19 +532,19 @@ const validatePortfolios = (path, declared, repositories) => {
     requireKnownKeys(
       path,
       verification,
-      CANDIDATE_KINDS,
+      intent ? ["intent"] : CANDIDATE_KINDS,
       `${label}.verification`,
     );
     portfolios[id] = {
+      ...(intent ? { class: "intent" } : {}),
       portfolioId: id,
       version: positiveInteger(path, value.version, `${label}.version`),
       repo,
-      mechanics: distinctList(
-        path,
-        value.mechanics,
-        `${label}.mechanics`,
-        (m) => PORTFOLIO_MECHANICS.includes(m),
-      ),
+      mechanics: intent
+        ? []
+        : distinctList(path, value.mechanics, `${label}.mechanics`, (m) =>
+            PORTFOLIO_MECHANICS.includes(m),
+          ),
       surfaces: distinctList(
         path,
         value.surfaces,

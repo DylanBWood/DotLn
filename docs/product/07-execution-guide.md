@@ -464,13 +464,27 @@ is the executor's half of the same contract.
 ### Derived work and intent
 
 `npm run dotln -- intent "Describe the work"` files a draft authority in the
-configured derived root and prints its identity and path. It does not activate
-or execute it. Review the objective, replace placeholder acceptance criteria,
-fill in surfaces, dependencies and release classification, then use the printed
-identity/path with the ordinary `resume activate` or `worktree start` command.
+configured derived root and prints its identity and path. Filing does not
+activate or execute it. A resident with a covering `intent` portfolio and
+admitted operator grants admits the unchanged draft itself: it screens the
+issue, compiles its contract and derives surfaces, then records
+`IntentAdmitted`, stating why standing authorization supersedes the draft's
+human-review constraint, before it materializes or dispatches anything.
+Uncovered, ambiguous, malformed or over-ceiling inputs record a permanent
+`IntentHeld` and dispatch nothing. Without that authorization, review the
+objective, replace placeholder criteria, fill in surfaces, dependencies and
+release classification, then use the printed identity/path with
+`resume activate` or `worktree start`.
 The same draft is visible in the work-order index. `resume status --json
 --work-order WO-NNN` exposes its allocation provenance and phase `none`; the
 index and runtime status label that phase `draft`.
+
+`npm run dotln -- vertical ISSUE --store DIRECTORY` runs the same persisted
+continuation on demand. Both entries share one admission ledger, converge at
+the accepted binding and never repeat a completed step, and a failure names
+its step. The baseline consumes reviewed, source-bound assertion judgments and
+parses no English. The skeleton README documents the store inputs, the
+judgment schema, holds, recovery and evidence limits.
 
 Runtime and future UI consumers import `materializeOrder` from
 `scripts/lib/derived-orders.mjs`. Pass a complete compiler `WorkOrder`, public
@@ -505,9 +519,9 @@ lock; independent checkouts are not a distributed allocator. Range exhaustion
 refuses with the configured bounds. Existing handwritten/control identities
 are skipped. `dotln status --store <directory> --json` adds `derivedOrders` from
 the same selected launchpad control fold (use `DOTLN_LAUNCHPAD` when needed),
-including provenance and current lifecycle phase. The resident fixture persists
-and recompiles the returned identity across an actual host restart. This order
-does not derive new work automatically or implement UI filing.
+including provenance and current lifecycle phase. The resident persists and
+recompiles the returned identity across an actual host restart; UI filing
+remains a separate consumer.
 
 ### Declaring a portfolio
 
@@ -576,6 +590,12 @@ explicit portfolio edit. No
 resume phrase changes, and the manual one-slot protocol remains authoritative
 for hand-written orders. The skeleton README's portfolio section is the
 runbook.
+
+An intent portfolio adds `"class": "intent"`, a registered target with an
+authority profile (never `self`) and exact test commands under
+`verification.intent`. Remote effects also need operator grants that contain
+only remote effects. Admission intersects the phase envelope, the portfolio's
+surfaces and budget, and the grants. Discovery portfolios keep their shape.
 
 ### Where the control plane finds its documents
 

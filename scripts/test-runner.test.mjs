@@ -2022,12 +2022,13 @@ const confinementFixture = (t) => {
 };
 
 test("WO-140 the real inventory declares only the suites with an environmental outside-only cause", () => {
-  // Native skeleton/portfolio cases nest `sandbox-exec`, which an outer
+  // Native skeleton/portfolio/vertical cases nest `sandbox-exec`, which an outer
   // Seatbelt sandbox refuses. Browser evidence owns a Chromium process and
   // loopback servers; the native discovery profile denies that network access.
   assert.deepEqual(
     suites.filter((row) => row.needs).map((row) => [row.name, row.needs]),
     [
+      ["vertical", OUTSIDE_CONFINEMENT],
       ["skeleton", OUTSIDE_CONFINEMENT],
       ["browser-evidence", OUTSIDE_CONFINEMENT],
       ["skeleton-docs", OUTSIDE_CONFINEMENT],

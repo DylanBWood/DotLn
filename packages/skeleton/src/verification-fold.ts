@@ -39,6 +39,8 @@ export type VerificationPayload = {
   baseline: VerificationSubject;
   subject: VerificationSubject;
   implementerEpisodeId: string;
+  /** Optional cumulative source-worker lineage, supplied by the host. */
+  implementerEpisodeIds?: readonly string[];
   episodeNamespace?: string;
   maxRepairs: number;
   authority: AuthorityEnvelope;
@@ -66,7 +68,27 @@ export function foldVerificationOpening(
         value.reviewConventionsPath !== undefined),
     "review notice requires a review-enabled stream",
   );
-  const opened = foldOriginalVerificationOpening(state, event, value);
+  const implementers = value.implementerEpisodeIds;
+  requireState(
+    implementers === undefined ||
+      (Array.isArray(implementers) &&
+        implementers.length > 0 &&
+        implementers.length <= 100 &&
+        implementers.every(
+          (id) => typeof id === "string" && /^[a-zA-Z0-9_-]+$/u.test(id),
+        ) &&
+        new Set(implementers).size === implementers.length &&
+        implementers.includes(value.implementerEpisodeId)),
+    "implementer lineage",
+  );
+  const original = foldOriginalVerificationOpening(state, event, value);
+  const opened = implementers
+    ? {
+        ...original,
+        implementerEpisodes: [...implementers],
+        episodeIds: [...implementers],
+      }
+    : original;
   return value.reviewNotice
     ? { ...opened, reviewNotice: value.reviewNotice }
     : opened;

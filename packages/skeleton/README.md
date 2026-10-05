@@ -1155,3 +1155,140 @@ its graph and environment compiled under that profile; `--check <store>`
 refuses a store that departs from the profile or whose profile cannot be read
 (WO-157). The runtime itself still admits whatever store it is given
 (WO-100 D006).
+
+
+## Vertical continuation (WO-123)
+
+`dotln vertical <issue> --store <directory>` drains the same persisted
+continuation that an absent resident can admit automatically. Configure the
+store before either entry: `resident.json` contains the compiled presence
+policy and registered intent portfolio; `vertical.json` contains
+`schemaVersion: 1`, canonical physical `target` and `worktreeParent`, a
+`repositoryId` (`HOST/OWNER/REPO`), `phaseId`, `profile`, `issues`, and `workers`.
+Each issue entry names its positive `number`, optional filed `draftId`, exact
+source `revisionId`, the existing StoryContract `inferences`, and a reviewed
+`baselineAssessment` described below. `profile`
+uses the existing architecture/command-to-directory surface profile. `workers`
+requires `transport` (`codex-cli-exec` or `claude-cli-print`), `model` and
+`effort`. Set `DOTLN_LIVE_WORKERS=1` for real model actors. The complete fixture
+configuration is in `scripts/fixtures/vertical/fixture.mjs`. A running resident
+reads `vertical.json` once at start, while the command reads it on every call:
+restart the resident after editing it, or a draft filed for a newly added issue
+is held as having no configured binding.
+
+The launchpad's portfolio must have `class: "intent"`, a registered target
+with an authority profile, authorized surfaces and exact commands in
+`verification.intent`. The target origin and worktree parent must match the
+configuration; the resident floor must fit the profile. Remote effects need
+registered operator grants admitted by the resident configuration. Publication
+grants contain only remote effects and operations. Mixed local/remote grants
+are filtered from the worker loadout; admission holds when required remote
+effects lack matching remote-only grants. Unrelated host grants are not copied
+into the binding.
+Optional `conventionsPath` names repository-native
+conventions required by delivery readiness. `browserScenario` invokes the
+installed browser adapter; its synthetic evidence cannot satisfy live target
+visual claims. Optional `checkTests` and `judgments` are the existing review
+resolution inputs. Unknown classification, a changed source revision, missing
+conventions, unresolved ambiguity or unavailable evidence stops with its step.
+
+Assertion meaning is an explicit judgment in each issue entry's
+`baselineAssessment`. Compile the screened bundle with the same `inferences`
+using `compileStoryContract`; use its `contractId` and the `statementId` of
+every active statement except a `non-requirement`. The input is:
+
+```json
+{
+  "schemaVersion": 1,
+  "contractId": "<compiled contract ID>",
+  "producer": { "kind": "model", "name": "<actual model or operator name>" },
+  "assertions": [
+    {
+      "statementId": "<compiled statement ID>",
+      "kind": "existing-failure",
+      "rationale": "The source reports behavior that currently fails."
+    }
+  ]
+}
+```
+
+The producer reads the original statement with the issue and discussion
+context. `existing-failure` means it asserts an actual current or past failure;
+`no-existing-failure` means healthy context or a desired, hypothetical or
+negated failure without an actual failure assertion. A mixed statement naming
+an actual failure is `existing-failure`. Use `unresolved` when the context does
+not settle the distinction, for example whether "Guests cannot edit pages"
+reports a defect or states an intended prohibition. `producer.kind` is
+`model` or `operator`; `name` records the actual source of the judgment, and
+each rationale is a nonempty single line. The runtime's `unsupplied` producer
+is reserved for missing input and can only contain unresolved judgments.
+
+Admission validates exact fields, version, producer, contract identity,
+statement identities and unique coverage. Omitted judgments become
+`unresolved`; invalid or stale inputs hold at `contract`. The normalized
+assessment is persisted with the accepted binding and included in its identity.
+Both entries and restarts use those saved judgments; execution never infers
+English meaning from words, regex, quantities or punctuation. Missing or
+unresolved judgments stop at `baseline` before a snapshot, baseline worker,
+source work or remote effects. A resident ledger whose admissions predate this
+field no longer replays ("intent admission differs from its recorded inputs"),
+so neither entry runs from it; use a fresh store. Behind that refusal, the
+vertical host itself holds a saved binding without judgments before its next
+primitive step and keeps every historical receipt. Judgments are ordered by
+UTF-16 code unit, so the binding identity does not depend on the host's locale.
+
+Baseline selection uses existing-failure judgments in any active executable
+statement, including a requirement that also describes a bug. The host checks
+the primitive's claimed class against those judgments: an existing failure
+classed new is a finding and stops at `baseline`. A defect must
+reproduce; non-reproduction remains `NeedsHuman`. Receipts record statement
+IDs, contract ID, producer and assessment hash, linking back to source text and
+spans. Source-bound decoding proves which judgment execution consumed; its
+semantic correctness remains the producer's responsibility. This composition
+consumes reviewed host input and does not select or invoke a classifier model;
+no small/local-model accuracy has been measured here.
+
+A hold is permanent for its filed draft. Correct or resolve the judgment using
+the original text and context, file a new intent and bind its draft, source
+revision, inferences and fresh assessment in `vertical.json`. Changing source
+bytes or statement roles requires a new compiled contract and judgments; editing
+the issue is unnecessary when only its interpretation changes. Prior admissions,
+receipts and terminal histories remain intact.
+
+An issue entry without `draftId` selects the one filed draft that references
+its issue and that no other entry names. When two such drafts reference it, the
+resident holds each undecided one at `admission` and the command refuses, so an
+entry never selects two drafts. Those holds are permanent too: file a new draft
+and bind it with `draftId`.
+
+An issue its source cannot decode or finds incomplete is held, like a refused
+screen item. So is a readable target whose origin is missing or names another
+forge; both entries check it when the configuration is read, and the resident
+checks again before it prepares a draft. An unavailable forge, an issue edited
+during the read, an unavailable bundle store and an unclean or unreadable
+target are not
+decisions: the draft stays undecided and is retried after a delay that doubles
+from one second to five minutes, while later drafts are prepared. A failure
+outside those conditions is held after three attempts. The delay and the set
+of finished continuations are process memory; a restarted resident retries at
+once and replays each continuation once. An idle tick appends two clock
+samples, the vertical's and the resident host's, whatever the number of
+admitted intents.
+
+Admission preserves the filed draft and allocates the executable order under
+runtime provenance. Both entries reserve the same resident budget. Each
+resident step occupies the existing presence interpreter's active-work slot,
+so active work prevents idle expiry, return follows the phase's kill/finish
+rule, and revocation stops further worker effects. Either entry reconciles a
+durable step receipt with an interrupted resident settlement. Expiry records
+a named stop without launching another effect.
+`vertical/<key>/events.jsonl` and its `receipts/` retain
+completed steps; neither entry repeats them. Blocking review routes through at
+most two bounded repairs and fresh verification; a failed review gets one
+fresh retry. Preparation cites host-run checks and declares unnamed build/lint
+commands not applicable. Publication requires delivery readiness and outward
+lint; a missing preparation or a test reference that is not host-run evidence
+stops at `lint` before any push. Fresh observation/resolution leaves merge control with the human.
+Completed-step restart is proven; external success before durable receipt is
+a separate recovery window. Composition tests use external actor doubles and
+local bare Git remotes; they are not a live end-to-end proof.

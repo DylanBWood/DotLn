@@ -1,4 +1,5 @@
 import { spawnGit, runGit } from "./git.mjs";
+import { repairedPublicationEpisode } from "./target-repair.mjs";
 
 import { createHash } from "node:crypto";
 import {
@@ -85,6 +86,7 @@ const REQUEST_KEYS = [
   "baselineStore",
   "reviewStore",
   "repositoryId",
+  "repairStores",
 ];
 /** A host-owned request. Relative paths resolve beside the request file. */
 export function readTargetPublishRequest(path) {
@@ -111,6 +113,10 @@ export function readTargetPublishRequest(path) {
     Array.isArray(request.environment) ||
     Object.keys(request.environment).sort().join(",") !==
       "baseCommit,capabilities,environmentId,repo,version" ||
+    (request.repairStores !== undefined &&
+      (!Array.isArray(request.repairStores) ||
+        request.repairStores.length > 2 ||
+        request.repairStores.some((p) => typeof p !== "string" || !p))) ||
     ["verificationStore", "baselineStore", "reviewStore"].some(
       (key) => request[key] !== undefined && typeof request[key] !== "string",
     )
@@ -128,6 +134,9 @@ export function readTargetPublishRequest(path) {
     environment: request.environment,
     store: resolve(base, request.store),
     baseBranch: request.baseBranch,
+    ...(request.repairStores === undefined
+      ? {}
+      : { repairStores: request.repairStores.map((p) => resolve(base, p)) }),
     verificationStore:
       request.verificationStore === undefined
         ? null
@@ -241,8 +250,15 @@ function reviewPublicationContext(
   const writer = compileLoadout(writerLoadout(source), request.environment);
   if (!published.ok || !writer.ok)
     throw refuse("review publication loadout does not compile");
-  const episode = readEpisode(request.store);
-  bind(published.program, writer, episode, workOrderId);
+  const originalEpisode = readEpisode(request.store);
+  bind(published.program, writer, originalEpisode, workOrderId);
+  const episode = repairedPublicationEpisode(
+    originalEpisode,
+    writer,
+    request.repairStores ?? [],
+    readEpisode,
+    observeTarget,
+  );
   authorizePublication(published.program, episode, now, effects);
   const url = pushUrl(episode.request.repo, { selector: request.repositoryId });
   const publication = new WorkerStore(join(request.store, "publication"));
@@ -333,7 +349,7 @@ export function pushRepairedHead(options) {
     repositoryId: request.repositoryId,
     number: context.opened.payload.number,
     headSha: commit,
-    branch: context.episode.request.branch,
+    branch: context.episode.publicationBranch ?? context.episode.request.branch,
   };
   const previous = () =>
     decodeLog(context.publication.read()).find(
@@ -1036,6 +1052,7 @@ export function publishTargetOrder({
   request,
   registry,
   requireDeliverableReady = false,
+  preview = false,
   now = Date.now(),
   log = (line) => process.stdout.write(`${line}\n`),
 }) {
@@ -1063,9 +1080,17 @@ export function publishTargetOrder({
     request.environment,
     "the writer loadout (without its publication grants)",
   );
-  const episode = readEpisode(request.store);
-  bind(program, writer, episode, workOrderId);
-  const { branch, repo, baseCommit } = episode.request;
+  const originalEpisode = readEpisode(request.store);
+  bind(program, writer, originalEpisode, workOrderId);
+  const episode = repairedPublicationEpisode(
+    originalEpisode,
+    writer,
+    request.repairStores ?? [],
+    readEpisode,
+    observeTarget,
+  );
+  const { repo, baseCommit } = episode.request;
+  const branch = episode.publicationBranch ?? episode.request.branch;
   const { commit } = episode.observation;
   const publication = new WorkerStore(join(request.store, "publication"));
   const already = () => readPublication(publication, commit)?.payload;
@@ -1076,7 +1101,8 @@ export function publishTargetOrder({
     return opened;
   };
   const previous = already();
-  if (previous && !requireDeliverableReady) return reportAlready(previous);
+  if (previous && !requireDeliverableReady && !preview)
+    return reportAlready(previous);
   authorizePublication(program, episode, now);
   const boundUrl = pushUrl(repo, { selector: request.repositoryId });
   const target = observeTarget(episode);
@@ -1107,7 +1133,7 @@ export function publishTargetOrder({
     throw refuse(
       `deliverable-ready evidence absent: ${absent.map((row) => row.item).join("; ")}`,
     );
-  if (previous) return reportAlready(previous);
+  if (previous && !preview) return reportAlready(previous);
   const { title, body } = generateTargetPullRequest({
     ...bodyInputs,
     matrix: readiness.matrix,
@@ -1122,6 +1148,14 @@ export function publishTargetOrder({
   assertGitHubBodyProfile(body, "generated pull-request body");
   if (hasAiAttribution(title) || hasAiAttribution(body))
     throw refuse("the title or body contains AI attribution");
+  if (preview)
+    return {
+      title,
+      body,
+      branch,
+      commit,
+      readiness: deliverableReady(readiness.artifacts),
+    };
   // One publisher per episode from here; a concurrent winner is reported.
   publication.acquire();
   try {
@@ -1132,7 +1166,7 @@ export function publishTargetOrder({
       repository.selector.toLowerCase() !== request.repositoryId.toLowerCase()
     )
       throw refuse("origin differs from the requested repository");
-    pushObservedCommit(repo, boundUrl, branch, commit);
+    pushObservedCommit(repo, boundUrl, episode.request.branch, commit, branch);
     const created = withTemporaryBody(body, (bodyPath) =>
       executeGh(repo, [
         "pr",

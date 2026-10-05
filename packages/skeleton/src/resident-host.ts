@@ -96,6 +96,14 @@ export interface ResidentHostOptions {
   capabilities?: () => readonly string[];
   /** WO-100: the WO-120, WO-052 and WO-054 hosts a portfolio actor runs through. */
   portfolio?: PortfolioPorts;
+  /** WO-123: filed intents admitted and resumed by the resident itself. */
+  vertical?: {
+    tick(
+      store: ResidentStore,
+      now: () => number,
+      capabilities: () => readonly string[],
+    ): Promise<boolean>;
+  };
 }
 export class ResidentHost {
   readonly store: ResidentStore;
@@ -156,6 +164,19 @@ export class ResidentHost {
   }
   async tick(): Promise<void> {
     if (!this.started) throw new Error("resident is not started");
+    if (
+      await this.options.vertical?.tick(
+        this.store,
+        this.now,
+        () =>
+          this.options.capabilities?.() ?? [
+            "actor.script",
+            "actor.cli-worker",
+            "actor.human-handoff",
+          ],
+      )
+    )
+      return;
     const dispatched = await this.store.transaction(
       (tx): { id: string; run: ActorRun; deadline: number } | null => {
         tx.sample(this.now());

@@ -613,6 +613,12 @@ export const suites = [
     needsBuild: false,
   }),
   nodeTests("target-publish", "scripts/test-target-publish.mjs"),
+  nodeTests("vertical", "scripts/test-vertical.mjs", {
+    product: true,
+    needs: OUTSIDE_CONFINEMENT,
+    protects:
+      "filed intent admission, common restartable vertical, repair lineage, readiness, typed stops and directory identity before effects",
+  }),
   nodeTests("license-fixtures", "scripts/test-license-surfaces.mjs"),
   node("license-surfaces", "scripts/license-surfaces.mjs", {
     preflight: true,

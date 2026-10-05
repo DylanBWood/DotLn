@@ -33,6 +33,12 @@ const derivedOrders = () =>
     new URL("../../../../scripts/lib/derived-orders.mjs", import.meta.url).href
   );
 const intentProse = command === "intent" ? args.shift() : undefined;
+const verticalIssue = command === "vertical" ? args.shift() : undefined;
+const verticalBridge = () =>
+  import(
+    new URL("../../../../scripts/lib/vertical-runtime.mjs", import.meta.url)
+      .href
+  );
 const presenceAction = command === "presence" ? args.shift() : undefined;
 const handoffAction = command === "handoff" ? args.shift() : undefined;
 const options = new Map<string, string>();
@@ -69,13 +75,37 @@ try {
   const directory = options.get("--store") ?? "";
   if (!directory && command !== "intent")
     throw new Error(
-      'usage: dotln intent "<prose>" | dotln resident --store <directory> --policy <id> [--tick <ms> | --once] | dotln presence away|back --store <directory> | dotln status --store <directory> [--json] | dotln audit --store <directory> [--workstream <id> | --episode <id>] | dotln handoff answer --store <directory> --episode <id> --work-order <id> --option <id> | dotln demo --store <directory> --transport <claude-cli-print|codex-cli-exec> --model <model> --effort <level> [--beacons] | dotln <verify-demo|feedback-audit> --store <directory> [--transport fake|claude-cli-print|codex-cli-exec --model <model> --effort <level>]',
+      'usage: dotln intent "<prose>" | dotln vertical <issue> --store <directory> | dotln resident --store <directory> --policy <id> [--tick <ms> | --once] | dotln presence away|back --store <directory> | dotln status --store <directory> [--json] | dotln audit --store <directory> [--workstream <id> | --episode <id>] | dotln handoff answer --store <directory> --episode <id> --work-order <id> --option <id> | dotln demo --store <directory> --transport <claude-cli-print|codex-cli-exec> --model <model> --effort <level> [--beacons] | dotln <verify-demo|feedback-audit> --store <directory> [--transport fake|claude-cli-print|codex-cli-exec --model <model> --effort <level>]',
     );
   if (command === "intent") {
     if (!intentProse || options.size || switches.size)
       throw new Error('usage: dotln intent "<prose>"');
     const result = await (await derivedOrders()).fileIntent(intentProse);
     console.log(`Filed draft ${result.workOrderId}: ${result.workOrderPath}`);
+  } else if (command === "vertical") {
+    if (
+      options.size !== 1 ||
+      switches.size ||
+      !/^[1-9][0-9]*$/u.test(verticalIssue ?? "")
+    )
+      throw new Error("usage: dotln vertical <issue> --store <directory>");
+    const result = await (
+      await verticalBridge()
+    ).runVerticalIssue({
+      directory: resolve(directory),
+      issue: Number(verticalIssue),
+    });
+    // A paused continuation prints its position, never its binding or bundle.
+    const paused = Array.isArray(result.receipts)
+      ? {
+          kind: "pending",
+          key: result.binding.key,
+          completedSteps: result.receipts.length,
+          pendingStep: result.pending?.step ?? null,
+        }
+      : result;
+    console.log(JSON.stringify(result.terminal ?? paused, null, 2));
+    if (result.terminal?.kind !== "resolved") process.exitCode = 1;
   } else if (command === "presence") {
     if (
       options.size !== 1 ||
@@ -146,10 +176,20 @@ try {
       } catch {
         workOrderIndexError = "launchpad-unavailable";
       }
+      const vertical = existsSync(join(directory, "vertical.json"))
+        ? (await verticalBridge()).createVerticalEntry({
+            directory: resolve(directory),
+            configuration: (await verticalBridge()).readVerticalConfiguration(
+              resolve(directory),
+              commandRoot,
+            ),
+          }).resident
+        : undefined;
       await new ResidentHost({
         directory,
         policyId: options.get("--policy")!,
         commandRoot,
+        ...(vertical ? { vertical } : {}),
         ...(workOrderIndexPath === undefined ? {} : { workOrderIndexPath }),
         ...(workOrderIndexError === undefined ? {} : { workOrderIndexError }),
       }).run({
@@ -326,7 +366,7 @@ try {
     if (result.envelope.status !== "completed") process.exitCode = 1;
   } else
     throw new Error(
-      "expected intent, resident, presence, handoff, status, audit, demo, verify-demo or feedback-audit",
+      "expected intent, vertical, resident, presence, handoff, status, audit, demo, verify-demo or feedback-audit",
     );
 } catch (error) {
   // Unexpected external diagnostics may contain paths or auth details.
