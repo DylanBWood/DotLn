@@ -1,6 +1,7 @@
 import {
   canonicalStringify,
   compileLoadout,
+  normalizeAuthorityGrants,
   requireCompiled,
   type CompilationEnvironment,
   type CompiledPresencePhase,
@@ -47,6 +48,14 @@ import {
   type PortfolioActivation,
   type PortfolioBinding,
 } from "./portfolio.js";
+import {
+  admitIntent,
+  intentBudgetUsed,
+  verticalEqual,
+  verticalProgram,
+  type IntentBinding,
+  type PreparedIntent,
+} from "./vertical.js";
 
 export interface ResidentConfiguration {
   graph: LoadoutGraph;
@@ -70,6 +79,12 @@ export interface MissionHold {
   correctionEventId?: string;
 }
 export interface ResidentState {
+  intentStep?: { key: string; commandId: string } | null;
+  intents?: Record<
+    string,
+    | { kind: "admitted"; binding: IntentBinding }
+    | { kind: "NeedsHuman"; step: string; reason: string }
+  >;
   configuration: ResidentConfiguration | null;
   policy: CompiledPresencePolicy | null;
   machine: PresenceSnapshot | null;
@@ -223,6 +238,61 @@ export function residentMachine(
     state.machine,
   );
 }
+/** The host and replay fold share the scheduling predicate. Input/authority
+ * decoding remains admitIntent's job; a temporarily unavailable slot is no
+ * admission decision. */
+export function intentAdmissionReady(
+  state: ResidentState,
+  phase: CompiledPresencePhase | undefined,
+  operator = false,
+  predicates: PredicateRegistry = {},
+): boolean {
+  const machine = residentMachine(state, predicates);
+  const selected = operator
+    ? state.policy!.phases.find((p) => p.phaseId === phase?.phaseId)
+    : machine.phase();
+  return !!(
+    phase &&
+    selected &&
+    verticalEqual(phase, selected) &&
+    (operator || !state.present) &&
+    !state.dispatchHeld &&
+    !state.revokedBy.length &&
+    !machine.current &&
+    selected.availability.kind === "ready" &&
+    (operator || machine.due(state.at) !== null)
+  );
+}
+export function intentStepReady(
+  state: ResidentState,
+  binding: IntentBinding,
+  commandId: string,
+  predicates: PredicateRegistry = {},
+  resuming = false,
+): boolean {
+  const machine = residentMachine(state, predicates);
+  const phase = machine.phase();
+  if (
+    state.present ||
+    state.dispatchHeld ||
+    state.revokedBy.length ||
+    !phase ||
+    phase.phaseId !== binding.phaseId ||
+    phase.availability.kind !== "ready" ||
+    binding.authority.expiresAt <= state.at ||
+    (state.intentStep &&
+      (state.intentStep.key !== binding.key ||
+        state.intentStep.commandId !== commandId))
+  )
+    return false;
+  if (machine.current)
+    return !!(
+      resuming &&
+      state.intentStep?.key === binding.key &&
+      machine.current.id === commandId
+    );
+  return machine.due(state.at) !== null;
+}
 export function residentEpisodeId(
   machine: PresenceMachine,
   dueAt: number,
@@ -241,6 +311,10 @@ export function residentEpisodeId(
   ).replace("cmd_", "script_");
 }
 export const residentEventTypes = [
+  "IntentAdmitted",
+  "IntentHeld",
+  "IntentStepStarted",
+  "IntentStepSettled",
   "ResidentConfigured",
   "ClockSampled",
   "ScriptEpisodeDispatched",
@@ -632,6 +706,102 @@ export function foldResidentEvent(
   }
   const machine = residentMachine(state, predicates);
   machine.now = state.at;
+  if (event.type === "IntentHeld" || event.type === "IntentAdmitted") {
+    const draftId = payload["draftId"];
+    if (typeof draftId !== "string" || !draftId || state.intents?.[draftId])
+      throw new Error("invalid or repeated intent admission");
+    state.intents ??= {};
+    if (event.type === "IntentHeld") {
+      if (
+        typeof payload["reason"] !== "string" ||
+        !payload["reason"] ||
+        typeof payload["step"] !== "string"
+      )
+        throw new Error("intent hold requires a step and reason");
+      state.intents[draftId] = {
+        kind: "NeedsHuman",
+        step: payload["step"],
+        reason: payload["reason"],
+      };
+    } else {
+      const input = payload["input"] as PreparedIntent;
+      const operator = payload["entry"] === "operator";
+      const grants = payload["grants"];
+      const registry = normalizeAuthorityGrants(
+        state.configuration!.environment.authorityGrantRegistry ?? [],
+      );
+      if (
+        (payload["entry"] !== undefined &&
+          payload["entry"] !== "resident" &&
+          !operator) ||
+        (operator && event.actorId !== "operator") ||
+        !intentAdmissionReady(state, input.phase, operator, predicates) ||
+        input.draft.workOrderId !== draftId ||
+        input.at !== state.at ||
+        !verticalEqual(input.evidence ?? [], state.configuration!.evidence) ||
+        !verticalEqual(
+          input.spent,
+          intentBudgetUsed(state.intents, state.at),
+        ) ||
+        !Array.isArray(grants) ||
+        grants.some((g) => !registry.some((entry) => verticalEqual(entry, g)))
+      )
+        throw new Error("intent admission outside the current resident phase");
+      const admission = admitIntent(
+        input,
+        state.configuration!.portfolio?.definition,
+        payload["grants"],
+      );
+      if (
+        admission.kind !== "admitted" ||
+        !verticalEqual(admission.binding, payload["binding"]) ||
+        !verticalEqual(
+          payload["continuation"],
+          verticalProgram(admission.binding.key),
+        )
+      )
+        throw new Error("intent admission differs from its recorded inputs");
+      state.intents[draftId] = admission;
+    }
+  }
+  if (event.type === "IntentStepStarted") {
+    const key = payload["key"],
+      commandId = payload["commandId"];
+    const admitted = Object.values(state.intents ?? {}).find(
+      (i) => i.kind === "admitted" && i.binding.key === key,
+    );
+    if (
+      event.actorId !== "resident-host" ||
+      admitted?.kind !== "admitted" ||
+      typeof commandId !== "string" ||
+      !commandId.startsWith("cmd_vertical_") ||
+      !intentStepReady(state, admitted.binding, commandId, predicates)
+    )
+      throw new Error("vertical step is outside the resident phase");
+    machine.dispatch(commandId);
+    state.intentStep = { key: admitted.binding.key, commandId };
+  }
+  if (event.type === "IntentStepSettled") {
+    if (
+      event.actorId !== "resident-host" ||
+      state.intentStep?.key !== payload["key"] ||
+      state.intentStep?.commandId !== payload["commandId"] ||
+      !["completed", "NeedsHuman", "refused", "retry", "repair"].includes(
+        payload["result"] as string,
+      ) ||
+      typeof payload["terminal"] !== "boolean"
+    )
+      throw new Error("vertical settlement has no matching step");
+    const id = state.intentStep!.commandId;
+    if (payload["terminal"])
+      machine.outcome(
+        payload["result"] === "completed" ? "verified-success" : "failure",
+        id,
+      );
+    else machine.waitForInput(id);
+    machine.lastActivity = state.at;
+    state.intentStep = null;
+  }
   if (humanChanged) {
     if (state.present) machine.returned();
     else machine.absence();

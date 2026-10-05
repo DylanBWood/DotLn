@@ -226,7 +226,7 @@ export class RepairHost {
       testCommand: order.tests[0]!.command,
       commitMessage: this.options.reviewItem
         ? "fix: address automated review finding\n"
-        : `Repair ${order.finding.findingId}\n`,
+        : "fix: address verified behavior finding\n",
       now: this.now,
     });
   }

@@ -9,6 +9,7 @@ import {
 } from "node:fs";
 import { join, resolve } from "node:path";
 import {
+  BeaconDirectoryIdentityError,
   canonicalDestination,
   exists,
   probeBeaconStorage,
@@ -94,13 +95,34 @@ export function sweepControlBeacons(worktrees, audience = "public") {
     if (seen.has(root)) throw new Error("duplicate worktree in beacon set");
     seen.add(root);
     const directory = controlBeaconDirectory(root, audience);
-    safeDirectory(directory);
+    /** @type {string[]} */
+    let names;
+    try {
+      safeDirectory(directory);
+      names = exists(directory) ? readdirSync(directory) : [];
+    } catch (error) {
+      // One registered worktree's unreadable or variant-spelled directory is
+      // its own row's refusal; the other rows of the set are still swept.
+      const denied = ["EACCES", "EPERM"].includes(
+        /** @type {NodeJS.ErrnoException} */ (error).code ?? "",
+      );
+      if (!(error instanceof BeaconDirectoryIdentityError) && !denied)
+        throw error;
+      return [
+        /** @type {SignalObservation} */ ({
+          address: `${hash(root)}:refused`,
+          size: null,
+          mtimeMs: null,
+          decoded: { status: "malformed" },
+          refusal:
+            error instanceof BeaconDirectoryIdentityError
+              ? { path: error.directory, reason: error.reason }
+              : { path: directory, reason: "directory cannot be read" },
+        }),
+      ];
+    }
     const addresses = new Set(
-      exists(directory)
-        ? readdirSync(directory).filter((name) =>
-            /^[a-f0-9]{64}\.beacon$/.test(name),
-          )
-        : [],
+      names.filter((name) => /^[a-f0-9]{64}\.beacon$/.test(name)),
     );
     const order = /^refs\/heads\/wo-(\d{3})$/.exec(branch ?? "")?.[1];
     if (order) addresses.add(controlBeaconAddress(`WO-${order}`));
@@ -351,22 +373,37 @@ export function emitGroupBeacon(root, worktrees, now, storage) {
 export function readGroupBeacon(worktrees, observations) {
   const expected = groupCounts(observations);
   const name = groupBeaconAddress(worktrees);
-  const candidates = worktrees.map(({ worktree }) => {
+  const candidates = worktrees.flatMap(({ worktree }) => {
     const directory = join(worktree, CONTROL_BEACON_ROOT, "groups");
-    safeDirectory(directory);
-    const metadata = observeBeaconMetadata(
-      join(directory, name),
-      `${hash(resolve(worktree))}:${name}`,
-    );
-    return {
-      ...metadata,
-      decoded:
-        metadata.decoded.status === "absent"
-          ? { status: "absent" }
-          : metadata.decoded.status === "malformed"
-            ? { status: "malformed" }
-            : decodeGroupBeaconSize(BigInt(metadata.size ?? 0)),
-    };
+    /** @type {SignalObservation} */
+    let metadata;
+    try {
+      safeDirectory(directory);
+      metadata = observeBeaconMetadata(
+        join(directory, name),
+        `${hash(resolve(worktree))}:${name}`,
+      );
+    } catch (error) {
+      if (
+        !(error instanceof BeaconDirectoryIdentityError) &&
+        !["EACCES", "EPERM"].includes(
+          /** @type {NodeJS.ErrnoException} */ (error).code ?? "",
+        )
+      )
+        throw error;
+      return [];
+    }
+    return [
+      {
+        ...metadata,
+        decoded:
+          metadata.decoded.status === "absent"
+            ? { status: "absent" }
+            : metadata.decoded.status === "malformed"
+              ? { status: "malformed" }
+              : decodeGroupBeaconSize(BigInt(metadata.size ?? 0)),
+      },
+    ];
   });
   return /** @type {import("./types.d.mts").GroupObservation[]} */ (candidates)
     .filter(
@@ -390,6 +427,8 @@ export function renderControlConstellation(
 ) {
   const rows = observations.map((observation) => {
     const { address, decoded } = observation;
+    if (observation.refusal)
+      return `Beacon ${address} | refused | ${observation.refusal.reason}: ${observation.refusal.path}`;
     const age = beaconAge(observation, now, threshold);
     if (decoded.status !== "decoded")
       return `Beacon ${address} | ${decoded.status} | ${age}`;

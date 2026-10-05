@@ -45,10 +45,10 @@
       "decision": "docs/planning/standard-pass-2026-10-02.md#16-document-ceilings-set-from-declared-write-backs"
     },
     "07-execution-guide.md": {
-      "nonExemptBytesAtLanding": 157957,
-      "ceiling": 166907,
-      "date": "2026-10-03",
-      "decision": "docs/planning/release-close-finishes-2026-10-03.md#10-document-ceiling"
+      "nonExemptBytesAtLanding": 168083,
+      "ceiling": 168083,
+      "date": "2026-10-05",
+      "decision": "docs/planning/wo-123-integration-ceiling-2026-10-05.md#1-product-07-ceiling"
     },
     "08-publication-compiler.md": {
       "nonExemptBytesAtLanding": 22552,

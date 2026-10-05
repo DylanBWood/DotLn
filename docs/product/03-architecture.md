@@ -1897,6 +1897,28 @@ outside scheduler. `dotln presence away|back --store <dir>` appends explicit
 presence. WO-068 adds no automatic stage launch, work selection, presence sensor
 or installed system service.
 
+A resident configured with an `intent` portfolio and reviewed `vertical.json`
+can consume a filed intent. While absent in a ready phase, it screens the bound
+issue, compiles its contract and derives surfaces under the phase's read
+authority. Before materialization or invocation, `IntentAdmitted` records the
+contract, narrowed authority, standing-authorization statement and continuation.
+A missing covering entry, unreadable draft, grant or issue, ambiguous contract
+or excessive surface records `IntentHeld` with a reason and dispatches nothing.
+The registered entry supplies the target; the draft stays unchanged. Each tick
+resumes from durable receipts; missing files are restored from events.
+Scheduling changes, live continuation holders and named transient reads leave
+a draft undecided: its retry backs off while later drafts take their turn; an
+unnamed failure is held after three tries. Admission rechecks phase and
+generation under the ledger lock. Recorded step start/settlement occupies the presence
+interpreter's process slot, preventing idle expiry during active work. The
+transport checks authority before launch and while a child runs. Return kills
+discretionary work under `kill`, or lets the current child finish under `finish`,
+then holds later steps. Polls reuse observed state until a log change or deciding
+deadline. Revocation and expiry interrupt the child. The `dotln vertical`
+foreground entry uses its own admitted authority; both entries reserve budget
+in one ledger. Neither widens grants or bypasses primitive verification,
+review, outward lint or delivery readiness.
+
 The resident folds its optional reactor slice through the explicit environment
 projector. Old serialized states acquire no resident key. Every sampled clock
 value is an event; backward samples do not move logical policy time backward.

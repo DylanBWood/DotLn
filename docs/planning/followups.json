@@ -3596,6 +3596,14 @@
           "reopenWhen": "the first consuming model invocation, including WO-123 composition preflight, or a proposed private-material reader",
           "targets": [],
           "at": "2026-10-02T04:08:21.907Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-123 D005 records what each composition step's model input can carry; the composition runs external actor doubles, so no live model consumed a screened bundle and no exposure plan primitive was added. WO-123 FINAL-001 (docs/final-reviews/WO-123/FINAL-001.md) and D044.",
+          "reopenWhen": "the first live consuming model invocation through the vertical (WO-112), or a proposed private-material reader",
+          "targets": [],
+          "at": "2026-10-05T22:33:07.227Z"
         }
       ]
     },
@@ -22307,6 +22315,14 @@
             "WO-123"
           ],
           "at": "2026-09-28T14:59:05.213Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-123 criterion 4 is met: the source-change and beacon guards refuse case, volume-alias and Unicode spellings before any containment comparison, the host verifies identity before git worktree add, and VER-001 to VER-005 recorded no residue on case-insensitive APFS; this review also applies the identity rule to vertical.json's target and worktree parent (D043). WO-123 FINAL-001 (docs/final-reviews/WO-123/FINAL-001.md) and D044.",
+          "reopenWhen": "a variant-spelled parent, launchpad or beacon directory passes a guard or leaves a worktree, branch or registration",
+          "targets": [],
+          "at": "2026-10-05T22:33:06.974Z"
         }
       ]
     },
@@ -27459,7 +27475,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "WO-123 composes the Claude writer path but proves it only with doubles; writerSandboxProfile and the writer Write route are outside its criteria and declared surfaces, and G1 rests on WO-184's code reading. D044 carries it to WO-112's live run. WO-123 FINAL-001 (docs/final-reviews/WO-123/FINAL-001.md) and D044.",
+          "reopenWhen": "before the first live Claude writer run through the vertical (WO-112), or a change to writerSandboxProfile or the writer Write route's protected list",
+          "targets": [],
+          "at": "2026-10-05T22:33:07.176Z"
+        }
+      ]
     },
     {
       "id": "FUP-ebaa803e38670545",
@@ -28185,6 +28210,444 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-2d0fcb555f4a29da",
+      "key": "decision:docs/evidence/WO-123/decisions.md#wo-123-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ec6015741373dc2a0c39f36afa28f8066e152c334588eebab1731b348a97f274",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d008--close-the-requested-reviews-concrete-gaps",
+          "title": "WO-123-D008: Use one replay-validated resident admission ledger for both entries, with operator provenance changing only scheduling. Match issue identities exactly. Intersect all phase resource caps, ",
+          "summary": "{ \"id\": \"WO-123-D008\", \"date\": \"2026-10-04\", \"dispatch\": \"resume: next; operator-requested implementation reviews\", \"decision\": \"Use one replay-validated resident admission ledger for both entries, with operator provenance changing only scheduling. Match issue identities exactly. Intersect all phase resource caps, use only the resident-admitted host grants, and hold unsupported mixed local/remote grants before dispatch. Track resident steps through the existing presence interpreter and guard each worker launch and running process against return, revocation and expiry. Reconcile a completed receipt with its resident settlement from either entry. Record expiry as a named terminal stop even whe",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "D008's single replay-validated admission ledger for both entries is implemented; VER-001 to VER-005 judged criterion 2 met and the convergence, shared-budget and SIGKILL cases pass in this review's final gate. WO-123 FINAL-001 (docs/final-reviews/WO-123/FINAL-001.md) and D044.",
+          "reopenWhen": "the operator and resident entries admit through different ledgers or diverge after the accepted binding",
+          "targets": [],
+          "at": "2026-10-05T22:33:06.512Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8a7b975033b4203b",
+      "key": "decision:docs/evidence/WO-123/decisions.md#wo-123-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "73ae81d239eaed1fe9e45a6265658df6d3f68936c918afb1dccc8ddcd35b72a6",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d016--verification-fail-on-criterion-5-repair-items-for-the-resident-path",
+          "title": "WO-123-D016: WO-123 resume: fix. (F1) The 'derivation' negative gives admitIntent a decodable input for which deriveSurfaces itself returns NeedsHuman (snapshot null, or an index without the named fil",
+          "summary": "{ \"id\": \"WO-123-D016\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on criterion 5 alone; criteria 1-4 and 6-8 are met. F1: no fixture drives a surface derivation that returns NeedsHuman. The suite's 'derivation' case passes snapshot [], which makes deriveSurfaces throw a decode refusal, so admitIntent returns its generic 'intent input cannot be decoded' from the catch at packages/skeleton/src/vertical.ts:416-427, and the derivation branch at vertical.ts:284-287 never runs. The case asserts only that a step and a reason are present (scripts/test-vertical.mjs:437-440). F2: no fixture has one unresolved material ambiguity. The 'ambig",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "VER-001's F1 to F3 and R1 to R8 were repaired in D018 to D020 and verified by VER-002; F3's class rule was later replaced by D037. WO-123 FINAL-001 (docs/final-reviews/WO-123/FINAL-001.md) and D044.",
+          "reopenWhen": "a VER-001 rule regresses in the composition suite",
+          "targets": [],
+          "at": "2026-10-05T22:33:06.617Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-cb922b59e013dbf1",
+      "key": "decision:docs/evidence/WO-123/decisions.md#wo-123-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b20505ea76f06a8d8d3bf1384723759d7024236d4a902e59a9d7d023c5210678",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d017--boarded-the-harness-runtime-snapshot-misses-unlisted-transitive-imports",
+          "title": "WO-123-D017: Planner: nominate an order that keys the harness runtime snapshot on the full import closure of its listed files (or lists every transitive import and checks the list against that closure",
+          "summary": "{ \"id\": \"WO-123-D017\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Board, without failing WO-123, a defect outside its criteria and declared surfaces. The installed harness runtime snapshot is keyed only by the hand-listed runtimeFiles in scripts/lib/harness.mjs:91-138. resident-state.js is listed and now imports vertical.js, which is not listed. Re-emitting therefore kept snapshot .runtime/harness/a883fdb19c420283 (created 2026-10-05T02:17Z): its resident-state.js matches the current build, but its vertical.js, vertical-host.js and verification-fold.js do not, while node scripts/harness.mjs check reports 32 current surfaces. verification-fold",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "B1 stays boarded as D017 records: the harness runtime snapshot keys only its hand-listed runtimeFiles, outside WO-123's criteria and declared surfaces; this review met no hook failure from it. WO-123 FINAL-001 (docs/final-reviews/WO-123/FINAL-001.md) and D044.",
+          "reopenWhen": "a planning pass nominates keying the runtime snapshot on its import closure, or a hook loads a stale transitive module",
+          "targets": [],
+          "at": "2026-10-05T22:33:07.025Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-02bb24fa17b09d6e",
+      "key": "decision:docs/evidence/WO-123/decisions.md#wo-123-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0cb1db344be8a46548889df2c547a87517782d3ebba8032e47cef76ca44cf858",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d018--repair-the-criterion-5-evidence-and-independent-class-check",
+          "title": "WO-123-D018: Separate the no-criterion and unresolved-decision refusals. Exercise the derivation's own NeedsHuman result with a decodable unavailable snapshot, and one open decision alongside an activ",
+          "summary": "{ \"id\": \"WO-123-D018\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; VER-001\", \"decision\": \"Separate the no-criterion and unresolved-decision refusals. Exercise the derivation's own NeedsHuman result with a decodable unavailable snapshot, and one open decision alongside an active criterion. Select baseline story class from supplied current-behavior observations; independently screen all active contract assertions for existing failures at the host boundary. A failing requirement classified as new stops with a finding before source work. Expand the bounded assertion vocabulary and keep modal/healthy negative controls. Preserve the existing primitive hosts, authority and event identities.\", \"",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "D018's split refusals and the derivation's own NeedsHuman fixture were verified by VER-002 (F1, F2 repaired and mutation-caught) and pass in this review's final gate. WO-123 FINAL-001 (docs/final-reviews/WO-123/FINAL-001.md) and D044.",
+          "reopenWhen": "a no-criterion and an unresolved-decision refusal share a reason again, or the derivation fixture stops exercising deriveSurfaces' own NeedsHuman",
+          "targets": [],
+          "at": "2026-10-05T22:33:06.353Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-292495966f229bc6",
+      "key": "decision:docs/evidence/WO-123/decisions.md#wo-123-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e24392aa8ab1eff4ca5425a0639bd5dbedb12bde1f6db262f9bc244f784aee0d",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d019--preserve-refusal-provenance-and-retryable-resident-scheduling",
+          "title": "WO-123-D019: Apply baseline non-reproduction only to completed admitted witnesses. Share the fold's admission and step-start scheduling predicates with the host. Recheck phase identity and generation ",
+          "summary": "{ \"id\": \"WO-123-D019\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; adjacent-0002 revision 1\", \"decision\": \"Apply baseline non-reproduction only to completed admitted witnesses. Share the fold's admission and step-start scheduling predicates with the host. Recheck phase identity and generation after preparation, reuse an existing ledger decision, and treat a live continuation holder as no work this tick. Persist only intrinsic input holds; unknown preparation failures and scheduling changes leave the draft undecided. Cache in-flight authority observation until the resident log changes or an authority, human-idle or actor-heartbeat deadline is reached, retaining launch, kill-on-return, fin",
+          "missing": false
+        },
+        {
+          "hash": "8e9a9bda4068acd48b09b94a87c0a971545a5dd1d78f290066b52be2eb3b392b",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d019--preserve-refusal-provenance-and-retryable-resident-scheduling",
+          "title": "WO-123-D019: Apply baseline non-reproduction only to completed admitted witnesses. Share the fold's admission and step-start scheduling predicates with the host. Recheck phase identity and generation ",
+          "summary": "{ \"id\": \"WO-123-D019\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; adjacent-0002 revision 1\", \"decision\": \"Apply baseline non-reproduction only to completed admitted witnesses. Share the fold's admission and step-start scheduling predicates with the host. Recheck phase identity and generation after preparation, reuse an existing ledger decision, and treat a live continuation holder as no work this tick. Persist only intrinsic input holds; unknown preparation failures and scheduling changes leave the draft undecided. Cache in-flight authority observation until the resident log changes or an authority, human-idle or actor-heartbeat deadline is reached, retaining launch, kill-on-return, fin",
+          "missing": false
+        },
+        {
+          "hash": "e24392aa8ab1eff4ca5425a0639bd5dbedb12bde1f6db262f9bc244f784aee0d",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d019--preserve-refusal-provenance-and-retryable-resident-scheduling",
+          "title": "WO-123-D019: Apply baseline non-reproduction only to completed admitted witnesses. Share the fold's admission and step-start scheduling predicates with the host. Recheck phase identity and generation ",
+          "summary": "{ \"id\": \"WO-123-D019\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; adjacent-0002 revision 1\", \"decision\": \"Apply baseline non-reproduction only to completed admitted witnesses. Share the fold's admission and step-start scheduling predicates with the host. Recheck phase identity and generation after preparation, reuse an existing ledger decision, and treat a live continuation holder as no work this tick. Persist only intrinsic input holds; unknown preparation failures and scheduling changes leave the draft undecided. Cache in-flight authority observation until the resident log changes or an authority, human-idle or actor-heartbeat deadline is reached, retaining launch, kill-on-return, fin",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "D019's completed-witness rule and retryable scheduling were verified by VER-002 and VER-003 (R1 to R4, R11 to R13) and pass in this review's final gate. WO-123 FINAL-001 (docs/final-reviews/WO-123/FINAL-001.md) and D044.",
+          "reopenWhen": "a refused, held or killed baseline is reported as non-reproduction, or a transient preparation condition becomes a durable hold",
+          "targets": [],
+          "at": "2026-10-05T22:33:06.461Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a45f36e984a54cff",
+      "key": "decision:docs/evidence/WO-123/decisions.md#wo-123-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e09d4f399db42540f3c28d31c453ec396ef0899bc1981cfe2c44727c2b3f225a",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d021--verification-fail-on-criterion-5-failure-wording-still-walks-to-publication",
+          "title": "WO-123-D021: WO-123 resume: fix. (F4) F3's rule stands: a contract whose active statements assert an existing failure is classed defect, or held NeedsHuman as unclassified, and is never silently new. ",
+          "summary": "{ \"id\": \"WO-123-D021\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Fail VER-002 on criterion 5 alone; criteria 1-4 and 6-8 are met, and F1, F2, R1 and the R2-R8 repairs hold except as WO-123-D022 records. F4: the F3 repair leaves ordinary failure wording inside VER-001's minimum categories classed new. baselineClass (packages/skeleton/src/vertical.ts:456-505) matches an error status only after return or respond, 'is not working' only uncontracted, can't and doesn't only with an ASCII apostrophe, and skips a failure verb whenever a modal appears earlier in the same sentence, including across a comma or colon. The primitive's selection (baseline",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "D037 replaced the lexical baseline classifier with reviewed, source-bound baselineAssessment judgments; VER-005 passed criterion 5 on that input and this final review judged it met, so the wording families this row tracked no longer exist in the runtime. WO-123 FINAL-001 (docs/final-reviews/WO-123/FINAL-001.md) and D044.",
+          "reopenWhen": "the runtime again infers story class from statement wording",
+          "targets": [],
+          "at": "2026-10-05T22:33:06.669Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a7e4faa0d61cba13",
+      "key": "decision:docs/evidence/WO-123/decisions.md#wo-123-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "60cbb51eb644b1737d1ac7f3b96dc02cfbc5f12d32a6c14b96e8501f0ed48ce6",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d022--verification-resident-preparation-starves-on-an-undecodable-issue",
+          "title": "WO-123-D022: WO-123 resume: fix, with WO-123-D021. (R11) A failure of the intent's own inputs, including the issue source's decode, completeness or screen refusal (IssueSourceRefusal from fetchIssueBu",
+          "summary": "{ \"id\": \"WO-123-D022\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Record three adjacent findings on the resident path inside the order's declared surfaces; none fails a criterion. R11: an intent whose issue source cannot be decoded or is incomplete is retried on every tick without a record, and every later draft is starved. vertical-resident.ts:152-154 returns false for any error that is not a non-transient IntentPreparationRefusal, while fetchIssueBundle and requireCompleteIssueBundle throw IssueSourceRefusal, and :138-140 picks the first undecided draft on every tick. At checkpoint 3 the same failure was a durable hold. R3's rule names deco",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "D022's issue-source holds, later-draft progress and bounded idle history were repaired in D024 and D025 and verified by VER-003; an unreadable target is now also transient at configuration read (D043). WO-123 FINAL-001 (docs/final-reviews/WO-123/FINAL-001.md) and D044.",
+          "reopenWhen": "an undecodable issue is retried without record, or one unpreparable draft starves later drafts",
+          "targets": [],
+          "at": "2026-10-05T22:33:06.719Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-fb42e392b945cb45",
+      "key": "decision:docs/evidence/WO-123/decisions.md#wo-123-d023",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "65b27932699dee25326619df6f41e51f321219454720fe538d83eda36a0e732e",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d023--read-failure-assertions-clause-by-clause-and-requirement-voice-as-no-assertion",
+          "title": "WO-123-D023: Planner: decide whether the baseline class needs failure wording outside the families this rule reads (a timeout, lost or missing data, 'does nothing', 'won't', 'stopped working', 'no lon",
+          "summary": "{ \"id\": \"WO-123-D023\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; VER-002\", \"decision\": \"Replace the single sentence-scoped pattern in baselineClass with a clause-scoped rule that both the selection (supplied current-behavior observations) and the host check (every active statement) share. A cue asserts existing failure: the fail family with its noun, the throw, error and crash families, a negative auxiliary (does/do/did/could not, cannot, can't, with either apostrophe, with or without a following verb), 'not working' in full or contracted, a broken state, and an HTTP error status wherever a statement names one (after HTTP, status, code or error; before error, status, response, page or ",
+          "missing": false
+        },
+        {
+          "hash": "0f323fec76a40184fcae273546022c0992ea55fe270de97612af149a5a33efbd",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d023--read-failure-assertions-clause-by-clause-and-requirement-voice-as-no-assertion",
+          "title": "WO-123-D023: Planner: decide whether the baseline class needs failure wording outside the families this rule reads (a timeout, lost or missing data, 'does nothing', 'won't', 'stopped working', 'no lon",
+          "summary": "{ \"id\": \"WO-123-D023\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; VER-002\", \"decision\": \"Replace the single sentence-scoped pattern in baselineClass with a clause-scoped rule that both the selection (supplied current-behavior observations) and the host check (every active statement) share. A cue asserts existing failure: the fail family with its noun, the throw, error and crash families, a negative auxiliary (does/do/did/could not, cannot, can't, with either apostrophe, with or without a following verb), 'not working' in full or contracted, a broken state, and an HTTP error status wherever a statement names one (after HTTP, status, code or error; before error, status, response, page or ",
+          "missing": false
+        },
+        {
+          "hash": "b30ab0e5212c74106f9b284306e7c523ff7b621e4fb93ec16e9bd4c7a9131a99",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d023--read-failure-assertions-clause-by-clause-and-requirement-voice-as-no-assertion",
+          "title": "WO-123-D023: Planner: decide whether the baseline class needs failure wording outside the families this rule reads (a timeout, lost or missing data, 'does nothing', 'won't', 'stopped working', 'no lon",
+          "summary": "{ \"id\": \"WO-123-D023\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; VER-002\", \"decision\": \"Replace the single sentence-scoped pattern in baselineClass with a clause-scoped rule that both the selection (supplied current-behavior observations) and the host check (every active statement) share. A cue asserts existing failure: the fail family with its noun, the throw, error and crash families, a negative auxiliary (does/do/did/could not, cannot, can't, with either apostrophe, with or without a following verb), 'not working' in full or contracted, a broken state, and an HTTP error status wherever a statement names one (after HTTP, status, code or error; before error, status, response, page or ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "The wider-vocabulary question belonged to the lexical classifier, which D037 removed; story class now comes from reviewed judgments, so no vocabulary decision remains for planning. WO-123 FINAL-001 (docs/final-reviews/WO-123/FINAL-001.md) and D044.",
+          "reopenWhen": "the runtime again infers story class from statement wording",
+          "targets": [],
+          "at": "2026-10-05T22:33:06.924Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2709c55824da8403",
+      "key": "decision:docs/evidence/WO-123/decisions.md#wo-123-d026",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "daf64367b330ec59d029c1a6916667b703abcfba1236a794ca29b21d9853e919",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d026--verification-ordinary-status-labels-and-modified-negative-predicates-still-walk",
+          "title": "WO-123-D026: WO-123 resume: fix. (F5) Preserve D021/D023's rule: an active existing-failure assertion inside the declared families is selected defect or held with the classed-new finding before source",
+          "summary": "{ \"id\": \"WO-123-D026\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: verify; VER-003\", \"kind\": \"finding\", \"decision\": \"Fail VER-003 on criterion 5 alone. F5 (high): ordinary spellings inside the existing error-status and not-working families still evade both baseline selection and the host check. 'The endpoint returns status: 500', 'The response status = 500' and 'Login isn't actually working' are silently new, with no finding and a walked baseline; composed runs publish a Deliverable-ready body and resolve. The colon splits the status label from its number before failureCues reads the clause, STATUS_LABEL admits no equals separator, and NOT_WORKING requires working immediately after the negati",
+          "missing": false
+        },
+        {
+          "hash": "17670db5d371feb068bebf9dd8648e634f333a1bfb458b75c63bd6d9287dbac3",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d026--verification-ordinary-status-labels-and-modified-negative-predicates-still-walk",
+          "title": "WO-123-D026: WO-123 resume: fix. (F5) Preserve D021/D023's rule: an active existing-failure assertion inside the declared families is selected defect or held with the classed-new finding before source",
+          "summary": "{ \"id\": \"WO-123-D026\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: verify; VER-003\", \"kind\": \"finding\", \"decision\": \"Fail VER-003 on criterion 5 alone. F5 (high): ordinary spellings inside the existing error-status and not-working families still evade both baseline selection and the host check. 'The endpoint returns status: 500', 'The response status = 500' and 'Login isn't actually working' are silently new, with no finding and a walked baseline; composed runs publish a Deliverable-ready body and resolve. The colon splits the status label from its number before failureCues reads the clause, STATUS_LABEL admits no equals separator, and NOT_WORKING requires working immediately after the negati",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "D037 replaced the lexical baseline classifier with reviewed, source-bound baselineAssessment judgments; VER-005 passed criterion 5 on that input and this final review judged it met, so the wording families this row tracked no longer exist in the runtime. WO-123 FINAL-001 (docs/final-reviews/WO-123/FINAL-001.md) and D044.",
+          "reopenWhen": "the runtime again infers story class from statement wording",
+          "targets": [],
+          "at": "2026-10-05T22:33:06.408Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ba51f50cadb9dae2",
+      "key": "decision:docs/evidence/WO-123/decisions.md#wo-123-d027",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ae14102123be026dc4b2dcf26cc0be194565568fff3d3552197edabd45d55bb2",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d027--preserve-status-units-and-predicate-polarity-within-the-declared-families",
+          "title": "WO-123-D027: Keep the supplied StoryContract classes as the reviewed selection input and the host's existing classed-new finding. Repair the bounded lexical check structurally: a labeled HTTP 4xx/5xx ",
+          "summary": "{ \"id\": \"WO-123-D027\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; VER-003\", \"decision\": \"Keep the supplied StoryContract classes as the reviewed selection input and the host's existing classed-new finding. Repair the bounded lexical check structurally: a labeled HTTP 4xx/5xx status, including colon or equals separators, is one unit whose internal punctuation cannot break its clause; a negative working predicate admits intervening adverbs; a negated failure subject retains its polarity through a passive predicate. Preserve clause-local modal, imperative and conditional controls. Exercise both supplied classes, advancing time between composed steps, and include status-code and adverb exam",
+          "missing": false
+        },
+        {
+          "hash": "ed89115badb2c83314a6136b8afe549d1432b79e164ebfe5b2ccbdb803b87cb5",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d027--preserve-status-units-and-predicate-polarity-within-the-declared-families",
+          "title": "WO-123-D027: Keep the supplied StoryContract classes as the reviewed selection input and the host's existing classed-new finding. Repair the bounded lexical check structurally: a labeled HTTP 4xx/5xx ",
+          "summary": "{ \"id\": \"WO-123-D027\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; VER-003\", \"decision\": \"Keep the supplied StoryContract classes as the reviewed selection input and the host's existing classed-new finding. Repair the bounded lexical check structurally: a labeled HTTP 4xx/5xx status, including colon or equals separators, is one unit whose internal punctuation cannot break its clause; a negative working predicate admits intervening adverbs; a negated failure subject retains its polarity through a passive predicate. Preserve clause-local modal, imperative and conditional controls. Exercise both supplied classes, advancing time between composed steps, and include status-code and adverb exam",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "D037 replaced the lexical baseline classifier with reviewed, source-bound baselineAssessment judgments; VER-005 passed criterion 5 on that input and this final review judged it met, so the wording families this row tracked no longer exist in the runtime. WO-123 FINAL-001 (docs/final-reviews/WO-123/FINAL-001.md) and D044.",
+          "reopenWhen": "the runtime again infers story class from statement wording",
+          "targets": [],
+          "at": "2026-10-05T22:33:06.822Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c93cd9075de47176",
+      "key": "decision:docs/evidence/WO-123/decisions.md#wo-123-d033",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5fcb9d89258cc3c09bf9115889017037788ce2941ea8aa24111ca06af188e982",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d033--verification-reported-statuses-modified-or-perfect-not-working-and-broken-states-still-walk",
+          "title": "WO-123-D033: WO-123 resume: fix. (F6) Hold D021, D023 and D027's rule over the families, not over quoted spellings: an active statement asserting existing failure inside the error-status, not-working ",
+          "summary": "{ \"id\": \"WO-123-D033\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: verify; VER-004\", \"kind\": \"finding\", \"decision\": \"Fail VER-004 on criterion 5 alone. F5 and R15 are repaired as quoted, and criteria 1-4 and 6-8 are met. F6 (high): ordinary wording inside the error-status, not-working and broken-state families that D023 and D027 name still evades both baseline selection and the host check. Both supplied statement classes return storyClass new, host kind new and no finding for these inputs. A status joined to its label by a copula: 'The response status is 500', 'The HTTP status was 503', 'The status code is 502', 'The response code was 500'. A status after a progressive reporting verb: 'The en",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "VER-005 judged F6 repaired by D037 to D039 and left this row for final review; this review judged criterion 5 met. WO-123 FINAL-001 (docs/final-reviews/WO-123/FINAL-001.md) and D044.",
+          "reopenWhen": "an existing-failure judgment avoids reproduction or a missing judgment defaults to new",
+          "targets": [],
+          "at": "2026-10-05T22:33:06.873Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a830400bd33152c9",
+      "key": "decision:docs/evidence/WO-123/decisions.md#wo-123-d034",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2a8a372ac8032a2aae050efc102ef40ec5a3f6acd3296fa038e6990ab8eefdf4",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d034--repair-predicate-families-rather-than-individual-phrasings",
+          "title": "WO-123-D034: Replace tense-specific phrase recognition in the three F6 families with predicate units: normalize auxiliary contractions; recognize negative working through an auxiliary/modifier sequenc",
+          "summary": "{ \"id\": \"WO-123-D034\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; VER-004\", \"decision\": \"Replace tense-specific phrase recognition in the three F6 families with predicate units: normalize auxiliary contractions; recognize negative working through an auxiliary/modifier sequence, state anchors with their local polarity, and HTTP error values through labeled or reporting predicates. Reporting verbs include base, finite, progressive and participle forms. Labels admit copulas and auxiliary chains. A status reason phrase is part of its value, not a counted quantity or clause negation. Keep the existing supplied-class selection, host finding, clause-local requirement voice and healthy controls",
+          "missing": false
+        },
+        {
+          "hash": "a93486cdc3959f609bcbb9b369cd6a67673cd34f36bf380b1f57c1b06397a32e",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d034--repair-predicate-families-rather-than-individual-phrasings",
+          "title": "WO-123-D034: Replace tense-specific phrase recognition in the three F6 families with predicate units: normalize auxiliary contractions; recognize negative working through an auxiliary/modifier sequenc",
+          "summary": "{ \"id\": \"WO-123-D034\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; VER-004\", \"decision\": \"Replace tense-specific phrase recognition in the three F6 families with predicate units: normalize auxiliary contractions; recognize negative working through an auxiliary/modifier sequence, state anchors with their local polarity, and HTTP error values through labeled or reporting predicates. Reporting verbs include base, finite, progressive and participle forms. Labels admit copulas and auxiliary chains. A status reason phrase is part of its value, not a counted quantity or clause negation. Keep the existing supplied-class selection, host finding, clause-local requirement voice and healthy controls",
+          "missing": false
+        },
+        {
+          "hash": "ab575405ffd9d552a6f36daefa80d043da8bd610ea815f5b9024e9b644f195f7",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d034--repair-predicate-families-rather-than-individual-phrasings",
+          "title": "WO-123-D034: Replace tense-specific phrase recognition in the three F6 families with predicate units: normalize auxiliary contractions; recognize negative working through an auxiliary/modifier sequenc",
+          "summary": "{ \"id\": \"WO-123-D034\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; VER-004\", \"decision\": \"Replace tense-specific phrase recognition in the three F6 families with predicate units: normalize auxiliary contractions; recognize negative working through an auxiliary/modifier sequence, state anchors with their local polarity, and HTTP error values through labeled or reporting predicates. Reporting verbs include base, finite, progressive and participle forms. Labels admit copulas and auxiliary chains. A status reason phrase is part of its value, not a counted quantity or clause negation. Keep the existing supplied-class selection, host finding, clause-local requirement voice and healthy controls",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "D037 replaced the lexical baseline classifier with reviewed, source-bound baselineAssessment judgments; VER-005 passed criterion 5 on that input and this final review judged it met, so the wording families this row tracked no longer exist in the runtime. WO-123 FINAL-001 (docs/final-reviews/WO-123/FINAL-001.md) and D044.",
+          "reopenWhen": "the runtime again infers story class from statement wording",
+          "targets": [],
+          "at": "2026-10-05T22:33:06.770Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6374f558664c418e",
+      "key": "decision:docs/evidence/WO-123/decisions.md#wo-123-d037",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "876a61d3f8b2e998b23a006448fdd066f6a0d7f669bb230476b07ebf94666529",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d037--make-assertion-meaning-an-explicit-persisted-input",
+          "title": "WO-123-D037: Replace the implicit English predicate grammar with a complete baselineAssessment of existing-failure, no-existing-failure or unresolved for each active executable StoryContract statement",
+          "summary": "{ \"id\": \"WO-123-D037\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; VER-004; adjacent-0006 revision 2\", \"decision\": \"Replace the implicit English predicate grammar with a complete baselineAssessment of existing-failure, no-existing-failure or unresolved for each active executable StoryContract statement. Bind judgments and their rationale and producer to the compiled contract ID, persist them in the admitted binding, and include them in its identity. Missing judgments become unresolved; stale or malformed judgments refuse at contract admission; unresolved or legacy bindings stop before baseline effects. Select the story from supplied observations and independently check all executable sta",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "D037's source-bound assessment is implemented and was verified by VER-005; this review judged criterion 5 met on it and changed only its sort order to code units (D043). WO-123 FINAL-001 (docs/final-reviews/WO-123/FINAL-001.md) and D044.",
+          "reopenWhen": "a missing, stale or unresolved assessment reaches a baseline, source or remote effect",
+          "targets": [],
+          "at": "2026-10-05T22:33:06.565Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-faae1df8f1022634",
+      "key": "decision:docs/evidence/WO-123/decisions.md#wo-123-d040",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "18791f5df48273817db4a52b0e2f2d1ec4ad8a5d195a3afabdb41cf9b0b78423",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d040--verification-pass-source-bound-assertion-judgments-discharge-criterion-5",
+          "title": "WO-123-D040: Planner: WO-112's labeled inference episode and WO-118's interpretation of the filed intent must also produce each issue's baselineAssessment (vertical.json issues[].baselineAssessment, p",
+          "summary": "{ \"id\": \"WO-123-D040\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: verify; VER-005\", \"decision\": \"Pass VER-005. All eight criteria are met at code identity f6a2f75a61c444b205abd06ef8f72ef0097bac2bd72297a592ebb8bd2ced0da1. F6 is repaired by changing how the composition knows what a statement means, not by adding more wording. D037 and D038 replace the lexical classifier with a reviewed baselineAssessment bound to the compiled contract and statement identities. An existing-failure judgment selects defect in any executable role, and the defect must reproduce. A primitive claiming new against that judgment is criterion 5's finding. Missing or unresolved judgments hold at baseline before any snaps",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-112's labeled inference episode and WO-118's interpretation of the filed intent must also produce each issue's baselineAssessment; until then their runs stop at baseline. WO-123 FINAL-001 (docs/final-reviews/WO-123/FINAL-001.md) and D044.",
+          "reopenWhen": "WO-112 or WO-118 is next planned, amended or activated",
+          "targets": [],
+          "at": "2026-10-05T22:33:07.075Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-82750a69c54c2ced",
+      "key": "decision:docs/evidence/WO-123/decisions.md#wo-123-d044",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ef040dea703bed4860fef2f6d28323846da1932943675fe9a7b14792cf3cc61b",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d044--final-review-pass-dispositions-and-follow-ups",
+          "title": "WO-123-D044: Planner, with WO-118's planning and before its unattended run: (1) the resolution repair's raw git worktree add --detach under the store path (scripts/lib/vertical-primitives.mjs, near li",
+          "summary": "{ \"id\": \"WO-123-D044\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: final review; FINAL-001\", \"decision\": \"Pass WO-123 on its eight original criteria at the integrated and fixed subject, code identity 84b33b5db28c51a5049933e36db7328ee5eab049bdece8e9d6e89e39e52117be. Criterion 5 does not require the composition to infer failure from English: the Design takes the story class from the StoryContract, WO-180 D013 asked the composition to read it from WO-061's contract, whose classifications D005 records as caller-supplied, and the order adds no inference primitive. A reviewed baselineAssessment bound to the compiled statement identities is that input, so D040's reopening condition is not met. D037'",
+          "missing": false
+        },
+        {
+          "hash": "1e6cb6399bb682d9352d705a4d9740f04ab3d9f2869be9c5ecd6781594bfd39b",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d044--final-review-pass-dispositions-and-follow-ups",
+          "title": "WO-123-D044: Planner, with WO-118's planning and before its unattended run: (1) the resolution repair's raw git worktree add --detach under the store path (scripts/lib/vertical-primitives.mjs, near li",
+          "summary": "{ \"id\": \"WO-123-D044\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: final review; FINAL-001\", \"decision\": \"Pass WO-123 on its eight original criteria at the integrated and fixed subject, code identity 84b33b5db28c51a5049933e36db7328ee5eab049bdece8e9d6e89e39e52117be. Criterion 5 does not require the composition to infer failure from English: the Design takes the story class from the StoryContract, WO-180 D013 asked the composition to read it from WO-061's contract, whose classifications D005 records as caller-supplied, and the order adds no inference primitive. A reviewed baselineAssessment bound to the compiled statement identities is that input, so D040's reopening condition is not met. D037'",
+          "missing": false
+        },
+        {
+          "hash": "18113b50162a028396528165294be2d31d0d4d3e596adbbf7983666a283eff14",
+          "ref": "docs/evidence/WO-123/decisions.md#wo-123-d044--final-review-pass-dispositions-and-follow-ups",
+          "title": "WO-123-D044: Planner, with WO-118's planning and before its unattended run: (1) the resolution repair's raw git worktree add --detach under the store path (scripts/lib/vertical-primitives.mjs, near li",
+          "summary": "{ \"id\": \"WO-123-D044\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: final review; FINAL-001\", \"decision\": \"Pass WO-123 on its eight original criteria at the integrated and fixed subject, code identity b917af6db6a9a3b718c2d69144a6cea9c11e1ce4f6da86d99ba61aaf1bc1dd67. Criterion 5 does not require the composition to infer failure from English: the Design takes the story class from the StoryContract, WO-180 D013 asked the composition to read it from WO-061's contract, whose classifications D005 records as caller-supplied, and the order adds no inference primitive. A reviewed baselineAssessment bound to the compiled statement identities is that input, so D040's reopening condition is not met. D037'",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Five items this review found stay outside its fixes: the resolution repair's unchecked worktree add, the resident's read-once vertical.json, kill-on-return ending a continuation, holds for unfiled draft ids and an uninformative reason when authority cannot be bound, and WO-184 D038's G1 and G2. WO-123 FINAL-001 (docs/final-reviews/WO-123/FINAL-001.md) and D044.",
+          "reopenWhen": "WO-118 is planned or activated, WO-112 runs a live Claude writer, or one of the five named conditions occurs in a run",
+          "targets": [],
+          "at": "2026-10-05T22:33:07.126Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "Five items this review found stay outside its fixes: the resolution repair's unchecked worktree add, the resident's read-once vertical.json, kill-on-return ending a continuation, holds for unfiled draft ids and an uninformative reason when authority cannot be bound, and WO-184 D038's G1 and G2. WO-123 FINAL-001 (docs/final-reviews/WO-123/FINAL-001.md) and D044.",
+          "reopenWhen": "WO-118 is planned or activated, WO-112 runs a live Claude writer, or one of the five named conditions occurs in a run",
+          "targets": [],
+          "at": "2026-10-05T23:20:54.641Z"
+        }
+      ]
     }
   ]
 }

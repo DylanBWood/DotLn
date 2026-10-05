@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-123",
+  "source": "Observed bounded command result after the verification wrapper correction; exact stdout and host memory/timing receipt retained in ignored local control storage.",
+  "command": "node scripts/test-vertical.mjs",
+  "wrapper": "node scripts/harness.mjs bounded --",
+  "startedAt": "2026-10-05T04:06:32.973Z",
+  "finishedAt": "2026-10-05T04:08:32.195Z",
+  "wallSeconds": 119.222,
+  "exitCode": 0,
+  "tests": 20,
+  "passed": 20,
+  "failed": 0,
+  "peakFootprintBytes": 165468840,
+  "peakRssBytes": 281100288,
+  "actors": "Synthetic external actors and local bare Git remotes; existing production primitive hosts execute.",
+  "pathIdentity": {
+    "platform": "darwin",
+    "filesystem": "Host temporary volume; variant identities checked by inode",
+    "constructed": [
+      "case",
+      "volume",
+      "unicode"
+    ],
+    "guardCoverage": [
+      "source-change-worktree",
+      "source-change-environment",
+      "beacon-io"
+    ],
+    "result": "All variants refused before worktree creation, with no new worktree, branch or registration; canonical positive and unreadable-identity controls pass."
+  },
+  "passedCases": [
+    "resident admits an actual filed draft and resumes every completed step through the real primitive hosts",
+    "one command repairs a blocking independent review, re-verifies and publishes the repaired lineage; producer reuse and child payload tampering refuse",
+    "review failure 1 uses fresh bounded attempts",
+    "review failure 2 uses fresh bounded attempts",
+    "admission holds declared negative inputs before materialization or dispatch; filesystem identity refusals leave no residue",
+    "real issue screening and unreadable registered authority produce durable resident holds",
+    "real baseline refusal stops the composed run at its named step",
+    "real capsule refusal stops the composed run at its named step",
+    "real lint refusal stops the composed run at its named step",
+    "real observation refusal stops the composed run at its named step",
+    "executable stop branches and completed-step restarts never dispatch later effects",
+    "operator-first restart converges with resident and both entries share the portfolio budget",
+    "exact issue identity, phase resource caps and baseline classification",
+    "operator restart reconciles a durable resident receipt before its settlement",
+    "operator records an expiry stop after a completed-step pause",
+    "resident records an expiry stop after a completed-step pause",
+    "in-flight resident step prevents idle expiry and respects kill",
+    "in-flight resident step prevents idle expiry and respects finish",
+    "in-flight resident step prevents idle expiry and respects revoke",
+    "transport refuses a revoked child before calling the external actor"
+  ],
+  "reviewChecks": {
+    "adversarial": "Final read-only wrapper recheck found no blocker: optional lineage validates uniqueness, bounds and primary membership, excludes every producer, and preserves absent-field legacy behavior.",
+    "principal": "Final read-only wrapper recheck confirmed the extension point and both copied independence arrays; no material compatibility concern.",
+    "execution": "The reviewers inspected source and tests. The executor ran the tests. These reviews do not replace independent verification or final review."
+  },
+  "subjectChange": "Optional cumulative implementer lineage applied by the existing verification-opening wrapper; original branch bodies preserved."
+}

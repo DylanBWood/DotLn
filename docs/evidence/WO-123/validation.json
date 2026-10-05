@@ -1,0 +1,589 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-123",
+  "dispatch": "resume: fix; VER-004",
+  "source": "Selected canonical passing product and freshly executed documentation rows at the final source identity, before final report/index writes. Canonical repair-complete checks documentation inline. Full rows and transcripts remain in ignored local control storage.",
+  "recordedAt": "2026-10-05T20:36:38.386Z",
+  "product": {
+    "checkId": "npm test",
+    "recordedAt": "2026-10-05T20:29:22.820Z",
+    "treeHash": "b76e0d7496433a5c884039ecc80750fc7c699dcb",
+    "codeIdentity": "f6a2f75a61c444b205abd06ef8f72ef0097bac2bd72297a592ebb8bd2ced0da1",
+    "evidenceRef": "host-gate:f6a2f75a61c444b205abd06ef8f72ef0097bac2bd72297a592ebb8bd2ced0da1:npm test",
+    "durationMs": 756579,
+    "exitCode": 0,
+    "executed": true,
+    "executionMode": "fresh",
+    "freshSuites": 89,
+    "reusedSuites": 0,
+    "requiredSuites": [
+      "build",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "vertical",
+      "license-fixtures",
+      "license-surfaces",
+      "publication-fixtures",
+      "backup-intake",
+      "resume",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "resident-bind",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "local-runner-double",
+      "artifact-corpus",
+      "evidence-sources",
+      "configuration-root",
+      "authority-evidence",
+      "harness-evidence",
+      "artifact-evidence",
+      "verification-evidence",
+      "feedback-evidence",
+      "runner-fixtures",
+      "registrations"
+    ],
+    "command": "npm test -- --review --again"
+  },
+  "document": {
+    "checkId": "npm run test:docs",
+    "recordedAt": "2026-10-05T20:31:36.316Z",
+    "treeHash": "b76e0d7496433a5c884039ecc80750fc7c699dcb",
+    "codeIdentity": "f6a2f75a61c444b205abd06ef8f72ef0097bac2bd72297a592ebb8bd2ced0da1",
+    "evidenceRef": "host-gate:f6a2f75a61c444b205abd06ef8f72ef0097bac2bd72297a592ebb8bd2ced0da1:npm run test:docs",
+    "durationMs": 39782,
+    "exitCode": 0,
+    "executed": true,
+    "executionMode": "fresh",
+    "freshSuites": 24,
+    "reusedSuites": 0,
+    "requiredSuites": [
+      "build",
+      "format",
+      "release-surfaces",
+      "publication",
+      "docs-check",
+      "docs-check-fixtures",
+      "index",
+      "lineage",
+      "lineage-fixtures",
+      "kernel-docs",
+      "skeleton-docs",
+      "console-docs",
+      "authority-evidence",
+      "harness",
+      "harness-context",
+      "harness-evidence",
+      "plan-refutation-current",
+      "artifact-evidence",
+      "verification-evidence",
+      "feedback-evidence",
+      "meta",
+      "registrations",
+      "plan",
+      "entropy"
+    ],
+    "command": "npm run test:docs"
+  },
+  "composition": "docs/evidence/WO-123/composition-check-010.json",
+  "regeneration": "docs/evidence/WO-123/regeneration-010.json",
+  "repair": {
+    "failureReport": "docs/verifications/WO-123/VER-004.md",
+    "primaryFindings": [
+      "F6"
+    ],
+    "decisions": [
+      "WO-123-D034",
+      "WO-123-D035",
+      "WO-123-D036",
+      "WO-123-D037",
+      "WO-123-D038",
+      "WO-123-D039"
+    ],
+    "rule": "Execution follows a complete persisted assessment bound to the compiled source contract and statement identities. Existing-failure judgments select defect across all executable roles; missing or unresolved judgments hold before baseline or later legacy effects. The host independently compares the primitive claim with the judgments and still requires defect reproduction. No English parser or default-new fallback remains."
+  },
+  "authoredSources": [
+    {
+      "path": "packages/skeleton/src/vertical.ts",
+      "sha256": "e882ba955b2346820a2398842bebbb14f8cb67795c3020b19fd3e3844e8f31b1",
+      "modifiedAt": "2026-10-05T20:02:24.638Z",
+      "trackedForIdentity": true
+    },
+    {
+      "path": "packages/skeleton/src/vertical-host.ts",
+      "sha256": "750ba2e6a601fb1128ba52a012ba6512a7dea6c05dbdfffa2e524827cc864659",
+      "modifiedAt": "2026-10-05T20:02:24.656Z",
+      "trackedForIdentity": true
+    },
+    {
+      "path": "packages/skeleton/src/vertical-resident.ts",
+      "sha256": "4ec0e89dc727287528f3ccb64bc59c805b7d3fb0c2e6ce8e07a4e7fcc8b022c4",
+      "modifiedAt": "2026-10-05T15:58:01.801Z",
+      "trackedForIdentity": true
+    },
+    {
+      "path": "packages/skeleton/src/vertical-scheduling.ts",
+      "sha256": "5aa154ab5f4b731ecb1fa323fca1630d91c43d271bccb32c388ad5bcf6c365a6",
+      "modifiedAt": "2026-10-05T15:57:36.095Z",
+      "trackedForIdentity": true
+    },
+    {
+      "path": "scripts/lib/vertical-runtime.mjs",
+      "sha256": "f5e6815fabee6eb412af2e1b57d2e67adf00a6a01f58dadfe481d44d88d53a8f",
+      "modifiedAt": "2026-10-05T19:53:01.526Z",
+      "trackedForIdentity": true
+    },
+    {
+      "path": "scripts/lib/vertical-primitives.mjs",
+      "sha256": "11aa7526eeb938d2c0dc3a96347f6c9d774fcfd9c9fd82c4d8ed785e4d8b3c3a",
+      "modifiedAt": "2026-10-05T19:50:10.039Z",
+      "trackedForIdentity": true
+    },
+    {
+      "path": "scripts/lib/vertical-transport.mjs",
+      "sha256": "7427d243b4718559aa12860e9ffb9c76b73b987b103304472be30afb08a99378",
+      "modifiedAt": "2026-10-05T02:17:19.013Z",
+      "trackedForIdentity": true
+    },
+    {
+      "path": "scripts/lib/target-repair.mjs",
+      "sha256": "48d04919e7417ef063abd114cc4be18e2528fe806ae28ba0d8f0afd2749c2ffb",
+      "modifiedAt": "2026-10-05T02:24:58.679Z",
+      "trackedForIdentity": true
+    },
+    {
+      "path": "scripts/test-vertical.mjs",
+      "sha256": "5dbd983ec7d7e6f3b7f4fefccdd0e92c5950f576777dd871bf01e3d53551da18",
+      "modifiedAt": "2026-10-05T20:02:24.745Z",
+      "trackedForIdentity": true
+    },
+    {
+      "path": "scripts/fixtures/vertical/fixture.mjs",
+      "sha256": "5986b8c574d405902a72e0bbb0c10f221526269d36a716fbde9f6263e794711a",
+      "modifiedAt": "2026-10-05T19:53:01.557Z",
+      "trackedForIdentity": true
+    },
+    {
+      "path": "scripts/fixtures/vertical/path-identity.mjs",
+      "sha256": "da536cefb549e18f6b62314bb0b773ada232912437281a5389ff64e7db807396",
+      "modifiedAt": "2026-10-05T16:04:02.233Z",
+      "trackedForIdentity": true
+    },
+    {
+      "path": "scripts/fixtures/vertical/crash.mjs",
+      "sha256": "4cf109ff92d18e49340eda2e676576b1587e64534a40b0b9fa125395fbb3d9dd",
+      "modifiedAt": "2026-10-05T14:16:39.187Z",
+      "trackedForIdentity": true
+    },
+    {
+      "path": "scripts/fixtures/vertical/git.mjs",
+      "sha256": "41cbb91e306ca037311b76f2b564e8fde07eefe982d022634df6200f703d9c81",
+      "modifiedAt": "2026-10-05T02:00:32.458Z",
+      "trackedForIdentity": true
+    },
+    {
+      "path": "scripts/fixtures/vertical/gh.mjs",
+      "sha256": "291b706ab8d42d742a7402dfcebc7bd249f47e8d18b2cb27a79c459fb8bf06ed",
+      "modifiedAt": "2026-10-05T15:53:58.314Z",
+      "trackedForIdentity": true
+    },
+    {
+      "path": "scripts/fixtures/vertical/writer.mjs",
+      "sha256": "4e616f3a941a45667c1daf8ba5891377b7b8fb269135e658388dceadac5e3463",
+      "modifiedAt": "2026-10-05T02:00:32.469Z",
+      "trackedForIdentity": true
+    }
+  ],
+  "repairedTrackedSources": [
+    {
+      "path": "packages/beacons/src/beacon-io.mjs",
+      "sha256": "14802c6d62f3634a101fff2d769de7ab1bb9c36f7bc0f0ce9dea1a962b739247",
+      "modifiedAt": "2026-10-05T16:06:40.783Z",
+      "trackedForIdentity": true
+    },
+    {
+      "path": "packages/beacons/src/control-beacon-fs.mjs",
+      "sha256": "664677ca28ae2a43389e514f72f547624026d32f98646554e2076cf6f6aebded",
+      "modifiedAt": "2026-10-05T16:04:01.963Z",
+      "trackedForIdentity": true
+    }
+  ],
+  "sourceBoundary": "All seventeen listed source/test paths were written before final composition, immutable remints, fresh live feedback and the complete product gate. Fifteen originally untracked paths remain staged without a commit. Subsequent edits are reports, indexes, projections and documentation; repair-complete checks documentation inline.",
+  "diffCheck": {
+    "command": "git diff --check and git diff --cached --check",
+    "exitCode": 0,
+    "source": "Executed after the repair and repeated before repair-complete, whose own inline diff check also remains required."
+  },
+  "reviews": {
+    "source": "VER-004 supplies the independent failure finding. This repair awaits separate re-verification and final-review dispatches. Zero collaboration agents were spawned; one required fresh live feedback episode ran after the final judged-source edit in this dispatch."
+  },
+  "adjacentRepair": {
+    "item": "adjacent-0006",
+    "itemRevision": 2,
+    "status": "completed",
+    "checks": [
+      {
+        "command": "node scripts/test-vertical.mjs",
+        "exitCode": 0,
+        "evidenceRef": "docs/evidence/WO-123/composition-check-010.json"
+      },
+      {
+        "command": "npm test -- --review",
+        "exitCode": 0,
+        "evidenceRef": "host-gate:f6a2f75a61c444b205abd06ef8f72ef0097bac2bd72297a592ebb8bd2ced0da1:npm test"
+      },
+      {
+        "command": "npm run test:docs",
+        "exitCode": 0,
+        "evidenceRef": "host-gate:f6a2f75a61c444b205abd06ef8f72ef0097bac2bd72297a592ebb8bd2ced0da1:npm run test:docs"
+      }
+    ],
+    "queueRevision": 48,
+    "earlierItems": [
+      {
+        "item": "adjacent-0001",
+        "itemRevision": 3,
+        "status": "completed",
+        "checks": [
+          {
+            "command": "node scripts/test-vertical.mjs",
+            "exitCode": 0,
+            "evidenceRef": "docs/evidence/WO-123/composition-check-002.json"
+          },
+          {
+            "command": "npm test -- --review",
+            "exitCode": 0,
+            "evidenceRef": "host-gate:7f90a4a3a69694ca76e33375cb0f645742c2329840b85da39cfdcb294fd182f7:npm test"
+          }
+        ]
+      },
+      {
+        "item": "adjacent-0002",
+        "itemRevision": 2,
+        "status": "completed",
+        "checks": [
+          {
+            "command": "node scripts/test-vertical.mjs",
+            "exitCode": 0,
+            "evidenceRef": "docs/evidence/WO-123/composition-check-003.json"
+          },
+          {
+            "command": "npm test -- --review",
+            "exitCode": 0,
+            "evidenceRef": "host-gate:ad11446bba857146997e8f26b19c4c9e45194b8a30f64c974cdf0098e868e99b:npm test"
+          },
+          {
+            "command": "npm run test:docs",
+            "exitCode": 0,
+            "evidenceRef": "host-gate:ad11446bba857146997e8f26b19c4c9e45194b8a30f64c974cdf0098e868e99b:npm run test:docs"
+          }
+        ]
+      },
+      {
+        "item": "adjacent-0003",
+        "itemRevision": 1,
+        "status": "completed",
+        "checks": [
+          {
+            "command": "node scripts/test-vertical.mjs",
+            "exitCode": 0,
+            "evidenceRef": "docs/evidence/WO-123/composition-check-004.json"
+          },
+          {
+            "command": "npm test -- --review",
+            "exitCode": 0,
+            "evidenceRef": "host-gate:c21128ff6ff619a84e57b69b837d0d4229df0aaaad921324272994bf6f84569a:npm test"
+          },
+          {
+            "command": "npm run test:docs",
+            "exitCode": 0,
+            "evidenceRef": "host-gate:c21128ff6ff619a84e57b69b837d0d4229df0aaaad921324272994bf6f84569a:npm run test:docs"
+          }
+        ]
+      },
+      {
+        "item": "adjacent-0004",
+        "itemRevision": 1,
+        "status": "completed",
+        "checks": [
+          {
+            "command": "node scripts/test-vertical.mjs",
+            "exitCode": 0,
+            "evidenceRef": "docs/evidence/WO-123/composition-check-006.json"
+          },
+          {
+            "command": "npm test -- --review",
+            "exitCode": 0,
+            "evidenceRef": "host-gate:ad93e2550dadb84f861a73be016ac2012667f6d93d53c22b0686c2c187b0d106:npm test"
+          },
+          {
+            "command": "npm run test:docs",
+            "exitCode": 0,
+            "evidenceRef": "host-gate:ad93e2550dadb84f861a73be016ac2012667f6d93d53c22b0686c2c187b0d106:npm run test:docs"
+          }
+        ]
+      },
+      {
+        "item": "adjacent-0005",
+        "itemRevision": 1,
+        "status": "completed",
+        "checks": [
+          {
+            "command": "node scripts/test-vertical.mjs",
+            "exitCode": 0,
+            "evidenceRef": "docs/evidence/WO-123/composition-check-007.json"
+          },
+          {
+            "command": "npm test -- --review",
+            "exitCode": 0,
+            "evidenceRef": "host-gate:defd9f05bd531daf2ba21f45bbc8db7d857f61689eb5a25c9472330dc68c568d:npm test"
+          },
+          {
+            "command": "npm run test:docs",
+            "exitCode": 0,
+            "evidenceRef": "host-gate:defd9f05bd531daf2ba21f45bbc8db7d857f61689eb5a25c9472330dc68c568d:npm run test:docs"
+          }
+        ]
+      }
+    ]
+  },
+  "material": {
+    "recordedAt": "2026-10-05T20:36:21.282Z",
+    "source": "Canonical inventoryMaterial at the current worktree",
+    "repositories": 33,
+    "preserved": 33,
+    "undeclared": [],
+    "repositoriesByPath": [
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-0HwLZN/launchpad",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-0HwLZN/target",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-0HwLZN/trees/cmd_92e3b805d73d003c",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-6G0vNd/launchpad",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-6G0vNd/target",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-6G0vNd/trees/cmd_92e3b805d73d003c",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-6G0vNd/trees/cmd_d069afa1381503c6",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-EwKt4j/launchpad",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-EwKt4j/target",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-EwKt4j/trees/cmd_92e3b805d73d003c",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-FlsUFB/launchpad",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-FlsUFB/target",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-FlsUFB/trees/cmd_92e3b805d73d003c",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-Kt7rDz/launchpad",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-Kt7rDz/target",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-Kt7rDz/trees/cmd_92e3b805d73d003c",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-WoxCFU/launchpad",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-WoxCFU/target",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-WoxCFU/trees/cmd_92e3b805d73d003c",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-WoxCFU/trees/cmd_d069afa1381503c6",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-XyfoiQ/launchpad",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-XyfoiQ/target",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-XyfoiQ/trees/cmd_92e3b805d73d003c",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-XyfoiQ/trees/cmd_d069afa1381503c6",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-ZSQfuj/launchpad",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-ZSQfuj/target",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-ZSQfuj/trees/cmd_92e3b805d73d003c",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-iXTErA/launchpad",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-iXTErA/target",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-iXTErA/trees/cmd_92e3b805d73d003c",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-iqhm5T/launchpad",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-iqhm5T/target",
+        "disposition": "preserve",
+        "source": "declared"
+      },
+      {
+        "path": "docs/control/local/wo123-material/dotln-source-host-iqhm5T/trees/cmd_92e3b805d73d003c",
+        "disposition": "preserve",
+        "source": "declared"
+      }
+    ]
+  },
+  "release": {
+    "application": "v0.67.0",
+    "skeleton": "0.53.0",
+    "beacons": "0.1.1",
+    "preparation": {
+      "schemaVersion": 1,
+      "workOrder": "WO-123",
+      "dispatch": "resume: fix; VER-004",
+      "label": "release-prepare",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "npm",
+        "run",
+        "release",
+        "--",
+        "prepare",
+        "--local"
+      ],
+      "startedAt": "2026-10-05T20:03:34.681Z",
+      "completedAt": "2026-10-05T20:03:35.482Z",
+      "wallSeconds": 0.800142333,
+      "exitCode": 0,
+      "signal": null,
+      "transcript": ".runtime/wo123/repair-010/release-prepare.log",
+      "source": "host subprocess UTC endpoints and monotonic timing; command output retained in the ignored transcript"
+    },
+    "dependencyObservation": "Git manifest diff contains component release versions and internal pins only; no external dependency added."
+  },
+  "limits": [
+    "Composition uses synthetic external actors and local bare remotes, not a live target end-to-end run.",
+    "The fresh live feedback audit uses codex-cli-exec, gpt-6.1-sol, max; it judges the registered feedback source set. Its effective model and effort are not read back.",
+    "Baseline meaning is a reviewed source-bound judgment, consumed deterministically. Missing or unresolved assessments stop; semantic accuracy remains a producer responsibility. This repair selects no automatic classifier and measures no cheap/local-model accuracy.",
+    "Preparation backoff and the finished-continuation memory are process-local; a restart retries at once and replays each continuation at most once.",
+    "Real SIGKILL coverage uses pure execution ports at durable completed-step boundaries and before receipt projection; the separate production composition exercises the real primitive hosts with external doubles.",
+    "External success before a durable completion receipt remains a carried recovery window.",
+    "Filesystem observations cover one case-insensitive APFS volume; unreadable-directory cases assume a non-root user."
+  ],
+  "diagnosticHistory": {
+    "structuralPrototype": ".runtime/wo123/repair-009/structural-composition.json",
+    "structuralPrototypeTests": 145,
+    "structuralPrototypeWallSeconds": 536.340468458,
+    "finalAssertionFocused": ".runtime/wo123/repair-010/final-focused.json",
+    "composition": ".runtime/wo123/repair-008/composition.json",
+    "challengeBefore": ".runtime/wo123/repair-008/challenge-before.json",
+    "challengeAfter": ".runtime/wo123/repair-008/challenge-after.json",
+    "finalFocused": ".runtime/wo123/repair-008/grouped-matrix.json",
+    "note": "Earlier grammar passes and the 145-test structural prototype are diagnostic history. They predate final all-role assertion selection and the legacy post-baseline guard."
+  }
+}

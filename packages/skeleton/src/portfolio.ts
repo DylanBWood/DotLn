@@ -53,6 +53,8 @@ export interface PortfolioBudget {
   readonly tokens?: number;
 }
 export interface Portfolio {
+  /** Absent preserves the WO-100 maintenance portfolio contract. */
+  readonly class?: "intent";
   readonly portfolioId: string;
   readonly version: number;
   /** `self` or a registered repository id (WO-069); orders bind to it. */
@@ -66,7 +68,7 @@ export interface Portfolio {
   /** Exact commands whose independent verification every derived order of
    * the kind requires. A kind without them yields `NeedsHuman`. */
   readonly verification: Readonly<
-    Partial<Record<CandidateKind, readonly string[]>>
+    Partial<Record<CandidateKind | "intent", readonly string[]>>
   >;
 }
 /** The resident's loadout field: a portfolio bound to the observed base. */
@@ -166,20 +168,27 @@ const sorted = (values: Iterable<string>): string[] =>
 
 /** Structural contract. Admission under the floor is `admitPortfolio`. */
 export function decodePortfolio(value: unknown): Portfolio {
+  const intent = (value as { class?: unknown } | null)?.class === "intent";
+  const keys = [
+    "portfolioId",
+    "version",
+    "repo",
+    "mechanics",
+    "surfaces",
+    "phases",
+    "budget",
+    "verification",
+    "class",
+  ];
   const root = object(
     value,
-    [
-      "portfolioId",
-      "version",
-      "repo",
-      "mechanics",
-      "surfaces",
-      "phases",
-      "budget",
-      "verification",
-    ],
+    keys,
     "portfolio",
+    keys.filter((key) => key !== "class" && !(intent && key === "mechanics")),
   );
+  if (root.class !== undefined && !intent) refuse("unknown portfolio class");
+  if (intent && root.repo === "self")
+    refuse("intent portfolio requires a registered target, not self");
   if (
     !text(root.portfolioId) ||
     !/^[A-Za-z0-9][A-Za-z0-9._-]*$/u.test(root.portfolioId)
@@ -188,9 +197,17 @@ export function decodePortfolio(value: unknown): Portfolio {
   if (!positive(root.version)) refuse("version must be a positive integer");
   if (!text(root.repo) || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/u.test(root.repo))
     refuse("repo must be self or a repository id");
-  const mechanics = distinct(root.mechanics, "mechanics", (m) =>
-    PORTFOLIO_MECHANICS.includes(m as PortfolioMechanic),
-  ) as PortfolioMechanic[];
+  const mechanics = intent
+    ? []
+    : (distinct(root.mechanics, "mechanics", (m) =>
+        PORTFOLIO_MECHANICS.includes(m as PortfolioMechanic),
+      ) as PortfolioMechanic[]);
+  if (
+    intent &&
+    root.mechanics !== undefined &&
+    (!Array.isArray(root.mechanics) || root.mechanics.length)
+  )
+    refuse("intent portfolio declares no maintenance mechanics");
   const surfaces = distinct(root.surfaces, "surfaces", (path) => {
     try {
       discoveryPath(path);
@@ -242,13 +259,15 @@ export function decodePortfolio(value: unknown): Portfolio {
     );
   const verificationRecord = object(
     root.verification,
-    WORK_CANDIDATE_KINDS,
+    intent ? ["intent"] : WORK_CANDIDATE_KINDS,
     "verification",
     [],
   );
-  const verification: Partial<Record<CandidateKind, readonly string[]>> = {};
+  const verification: Partial<
+    Record<CandidateKind | "intent", readonly string[]>
+  > = {};
   for (const [kind, commands] of Object.entries(verificationRecord))
-    verification[kind as CandidateKind] = distinct(
+    verification[kind as CandidateKind | "intent"] = distinct(
       commands,
       `verification.${kind}`,
       (command) =>
@@ -257,6 +276,7 @@ export function decodePortfolio(value: unknown): Portfolio {
         COMMAND.test(command),
     );
   return {
+    ...(intent ? { class: "intent" as const } : {}),
     portfolioId: root.portfolioId as string,
     version: root.version as number,
     repo: root.repo as string,

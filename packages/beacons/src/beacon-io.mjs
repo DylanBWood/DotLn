@@ -9,6 +9,7 @@ import {
   realpathSync,
   renameSync,
   rmSync,
+  statSync,
   utimesSync,
   writeSync,
 } from "node:fs";
@@ -48,6 +49,17 @@ export const exists = (path) => {
 };
 
 // Resolve existing ancestors too, including aliases to a forbidden intake path.
+export class BeaconDirectoryIdentityError extends Error {
+  /** @param {string} directory @param {string} reason */
+  constructor(
+    directory,
+    reason = "directory spelling differs from its identity",
+  ) {
+    super(`beacon ${reason}: ${directory}`);
+    this.directory = directory;
+    this.reason = reason;
+  }
+}
 /** @param {string} path */
 export const canonicalDestination = (path) => {
   let ancestor = path;
@@ -57,6 +69,31 @@ export const canonicalDestination = (path) => {
     tail.unshift(basename(ancestor));
     ancestor = dirname(ancestor);
   }
+  const ancestorIsDirectory = statSync(ancestor).isDirectory();
+  if (tail.length && !ancestorIsDirectory)
+    throw new Error("beacon destination ancestor is not a directory");
+  // This helper also validates existing provenance-key files; their containing
+  // directory supplies directory identity, while the caller checks the file.
+  const directory = ancestorIsDirectory ? ancestor : dirname(ancestor);
+  // realpath on a case-insensitive volume can retain case, Unicode and volume
+  // aliases. Read the existing directory's physical identity before comparing
+  // any spelling against intake or repository containment.
+  let identity;
+  try {
+    identity = execFileSync("/bin/pwd", ["-P"], {
+      cwd: directory,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+      timeout: 5_000,
+    }).replace(/\n$/u, "");
+  } catch {
+    // An identity that cannot be read is refused by name, never passed.
+    throw new BeaconDirectoryIdentityError(
+      directory,
+      "directory identity cannot be read",
+    );
+  }
+  if (identity !== directory) throw new BeaconDirectoryIdentityError(directory);
   return join(realpathSync(ancestor), ...tail);
 };
 
@@ -69,7 +106,7 @@ export function validateBeaconDirectory(
   if (!directory.trim()) throw new Error("--beacons requires a directory");
   const requested = resolve(directory);
   const destination = canonicalDestination(requested);
-  const root = realpathSync(repository);
+  const root = canonicalDestination(resolve(repository));
   for (const path of [requested, destination]) {
     const parts = path.split(sep);
     if (!control && parts.includes(".control-beacons"))
