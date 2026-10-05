@@ -1,4 +1,4 @@
-# WO-186 — Gate time goes where the change is: three slow cases fixed at their cause, a rerun runs only what has no passing result, a fresh worktree reuses main's row, and a role writes its records while the gate runs (version assigned at activation)
+# WO-186 — Gate time goes where the change is: three slow cases fixed at their cause, a rerun runs only what has no passing result, a fresh worktree reuses main's row, and a role writes its records while the gate runs (v0.66.3)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
