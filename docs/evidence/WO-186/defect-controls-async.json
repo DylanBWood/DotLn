@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "result": [
+    {
+      "case": "lock-matrix",
+      "productionFile": "packages/skeleton/dist/src/resident-store.js",
+      "mutation": {
+        "before": "openSync(this.store.logPath, \"a\", 0o600)",
+        "after": "openSync(this.store.logPath, type === \"ScriptEpisodeLost\" ? \"w\" : \"a\", 0o600)"
+      },
+      "exitCode": 1,
+      "detected": true,
+      "recordedAt": "2026-10-05T06:29:28.877Z",
+      "testSourceSha256": "039f2e429c16737d3f8aa7be83afe643826e57935be4cda5eecd5235f97436e2",
+      "causalDiagnostic": "All eight cells reject a log whose ScriptEpisodeLost append truncates its existing event prefix; EVENT_ORDER is emitted by the real event decoder.",
+      "wallMs": 1698.7267920000004,
+      "log": "docs/control/local/harness/wo186-mutants/lock-matrix-async/defect-control.log",
+      "repository": "docs/control/local/harness/wo186-mutants/lock-matrix-async",
+      "failingCases": [
+        "cell once-lifetime-fresh",
+        "cell once-lifetime-reclaim",
+        "cell once-append-fresh",
+        "cell once-append-reclaim",
+        "cell loop-lifetime-fresh",
+        "cell loop-lifetime-reclaim",
+        "cell loop-append-fresh",
+        "cell loop-append-reclaim",
+        "WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers"
+      ]
+    }
+  ]
+}

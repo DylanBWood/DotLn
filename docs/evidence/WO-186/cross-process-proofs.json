@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "command": "node --test --test-reporter=tap --test-name-pattern=^WO-186 (one failed task reruns alone|a fresh worktree reads main) scripts/test-runner.test.mjs",
+  "sourceLog": "cross-process-proof-initial.log (ignored session scratch)",
+  "proofs": [
+    {
+      "shell": "bash",
+      "session": "task-reuse-second-session",
+      "first": {
+        "codeIdentity": "aa47908b46b31d8147fc1d3f30a05356e50bb54c1658125a3805149690a4a814",
+        "evidenceRef": "host-gate:aa47908b46b31d8147fc1d3f30a05356e50bb54c1658125a3805149690a4a814:npm test",
+        "recordedAt": "2026-10-05T03:41:55.244Z",
+        "executionMode": "forced-fresh",
+        "freshSuites": 3,
+        "reusedSuites": 0,
+        "exitCode": 1,
+        "tasks": [
+          {
+            "name": "build",
+            "executed": true,
+            "exitCode": 0
+          },
+          {
+            "name": "alpha",
+            "executed": true,
+            "exitCode": 0
+          },
+          {
+            "name": "beta",
+            "executed": true,
+            "exitCode": 1
+          }
+        ]
+      },
+      "second": {
+        "codeIdentity": "aa47908b46b31d8147fc1d3f30a05356e50bb54c1658125a3805149690a4a814",
+        "evidenceRef": "host-gate:aa47908b46b31d8147fc1d3f30a05356e50bb54c1658125a3805149690a4a814:npm test",
+        "recordedAt": "2026-10-05T03:41:55.504Z",
+        "executionMode": "composed",
+        "freshSuites": 1,
+        "reusedSuites": 2,
+        "exitCode": 0,
+        "tasks": [
+          {
+            "name": "build",
+            "executed": true,
+            "exitCode": 0,
+            "reused": true,
+            "sourceRow": {
+              "task": "build",
+              "codeIdentity": "aa47908b46b31d8147fc1d3f30a05356e50bb54c1658125a3805149690a4a814",
+              "treeHash": "be6b7ba8b5ff6cf4474b434683b550588cf027be",
+              "recordedAt": "2026-10-05T03:41:55.244Z",
+              "evidenceRef": "host-gate:aa47908b46b31d8147fc1d3f30a05356e50bb54c1658125a3805149690a4a814:npm test",
+              "location": "worktree"
+            }
+          },
+          {
+            "name": "alpha",
+            "executed": true,
+            "exitCode": 0,
+            "reused": true,
+            "sourceRow": {
+              "task": "alpha",
+              "codeIdentity": "aa47908b46b31d8147fc1d3f30a05356e50bb54c1658125a3805149690a4a814",
+              "treeHash": "be6b7ba8b5ff6cf4474b434683b550588cf027be",
+              "recordedAt": "2026-10-05T03:41:55.244Z",
+              "evidenceRef": "host-gate:aa47908b46b31d8147fc1d3f30a05356e50bb54c1658125a3805149690a4a814:npm test",
+              "location": "worktree"
+            }
+          },
+          {
+            "name": "beta",
+            "executed": true,
+            "exitCode": 0
+          }
+        ]
+      },
+      "claimAccepted": true
+    },
+    {
+      "shell": "bash",
+      "session": "main-reuse-second-session",
+      "main": {
+        "codeIdentity": "aa47908b46b31d8147fc1d3f30a05356e50bb54c1658125a3805149690a4a814",
+        "evidenceRef": "host-gate:aa47908b46b31d8147fc1d3f30a05356e50bb54c1658125a3805149690a4a814:npm test",
+        "recordedAt": "2026-10-05T03:41:56.432Z",
+        "executionMode": "forced-fresh",
+        "freshSuites": 3,
+        "reusedSuites": 0,
+        "exitCode": 0,
+        "tasks": [
+          {
+            "name": "build",
+            "executed": true,
+            "exitCode": 0
+          },
+          {
+            "name": "alpha",
+            "executed": true,
+            "exitCode": 0
+          },
+          {
+            "name": "beta",
+            "executed": true,
+            "exitCode": 0
+          }
+        ]
+      },
+      "worktree": {
+        "codeIdentity": "aa47908b46b31d8147fc1d3f30a05356e50bb54c1658125a3805149690a4a814",
+        "evidenceRef": "host-gate:aa47908b46b31d8147fc1d3f30a05356e50bb54c1658125a3805149690a4a814:npm test",
+        "recordedAt": "2026-10-05T03:41:56.599Z",
+        "executionMode": "reused",
+        "freshSuites": 0,
+        "reusedSuites": 3,
+        "exitCode": 0,
+        "tasks": [
+          {
+            "name": "build",
+            "executed": true,
+            "exitCode": 0,
+            "reused": true,
+            "sourceRow": {
+              "task": "build",
+              "codeIdentity": "aa47908b46b31d8147fc1d3f30a05356e50bb54c1658125a3805149690a4a814",
+              "treeHash": "be6b7ba8b5ff6cf4474b434683b550588cf027be",
+              "recordedAt": "2026-10-05T03:41:56.432Z",
+              "evidenceRef": "host-gate:aa47908b46b31d8147fc1d3f30a05356e50bb54c1658125a3805149690a4a814:npm test",
+              "location": "main"
+            }
+          },
+          {
+            "name": "alpha",
+            "executed": true,
+            "exitCode": 0,
+            "reused": true,
+            "sourceRow": {
+              "task": "alpha",
+              "codeIdentity": "aa47908b46b31d8147fc1d3f30a05356e50bb54c1658125a3805149690a4a814",
+              "treeHash": "be6b7ba8b5ff6cf4474b434683b550588cf027be",
+              "recordedAt": "2026-10-05T03:41:56.432Z",
+              "evidenceRef": "host-gate:aa47908b46b31d8147fc1d3f30a05356e50bb54c1658125a3805149690a4a814:npm test",
+              "location": "main"
+            }
+          },
+          {
+            "name": "beta",
+            "executed": true,
+            "exitCode": 0,
+            "reused": true,
+            "sourceRow": {
+              "task": "beta",
+              "codeIdentity": "aa47908b46b31d8147fc1d3f30a05356e50bb54c1658125a3805149690a4a814",
+              "treeHash": "be6b7ba8b5ff6cf4474b434683b550588cf027be",
+              "recordedAt": "2026-10-05T03:41:56.432Z",
+              "evidenceRef": "host-gate:aa47908b46b31d8147fc1d3f30a05356e50bb54c1658125a3805149690a4a814:npm test",
+              "location": "main"
+            }
+          }
+        ]
+      },
+      "mainUnchanged": true,
+      "suitesStarted": []
+    }
+  ]
+}

@@ -11850,6 +11850,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-04T16:21:50.507Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Kept open by WO-186's final review with a new measurement. The narrowed refusal and role sentences add 780 bytes to the executor and the verifier. node scripts/harness-context.mjs --check: executor 29,237 of 29,246, verifier 25,735 of 29,831 (raised from 25,151 by D016's dated acceptance), reviewer 27,077 of 28,884, release-close 18,186 of 21,266, planner 20,004 of 24,576. The executor has 9 bytes of headroom. [WO-186 final review (docs/final-reviews/WO-186/FINAL-002.md); docs/evidence/WO-186/close-register.md, measurements.json, repair-measurements.json, costs.md]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-05T21:05:23.473Z"
         }
       ]
     },
@@ -12551,6 +12559,14 @@
             "WO-186"
           ],
           "at": "2026-10-02T06:02:34.394Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled at close as the duplicate of FUP-7629e03c6573f5cb that close-register.md names, on the same evidence. [WO-186 final review (docs/final-reviews/WO-186/FINAL-002.md); docs/evidence/WO-186/close-register.md, measurements.json, repair-measurements.json, costs.md]",
+          "reopenWhen": "Source bytes executed by a product task are absent from the identity or its guarded input contract.",
+          "targets": [],
+          "at": "2026-10-05T21:05:22.936Z"
         }
       ]
     },
@@ -13005,6 +13021,14 @@
           "reopenWhen": "an order next opens these consumers, a supported input exceeds the batch limit, or a real source-change workload reproduces the reported parser or progress cost",
           "targets": [],
           "at": "2026-10-04T14:19:28.816Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again: WO-186 opens the runner's reporter selection, but adds the case reporter, with TAP when no reporter is named, only to node --test commands. Suites started through node() without --test still select no reporter (O2), and O4, O5 and O9 are untouched. [WO-186 final review (docs/final-reviews/WO-186/FINAL-002.md); docs/evidence/WO-186/close-register.md, measurements.json, repair-measurements.json, costs.md]",
+          "reopenWhen": "an order next opens these consumers, a supported input exceeds the batch limit, or a real source-change workload reproduces the reported parser or progress cost",
+          "targets": [],
+          "at": "2026-10-05T21:05:23.376Z"
         }
       ]
     },
@@ -20697,6 +20721,14 @@
           "reopenWhen": "a session is refused for a live gate while no gate runs, or the next order that edits gate-evidence.mjs",
           "targets": [],
           "at": "2026-09-27T01:46:00.348Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again: its condition occurred because WO-186 edits gate-evidence.mjs, but only to add a kind field to new gate markers and the identity, record-path and reuse readers. Marker liveness and removal are unchanged. The main checkout still holds the 2026-09-16 marker with a null birth observation (pid 43275, no such process on 2026-10-05), and no refusal from it is recorded. A marker with no kind gets no record-write admission, so a stale one still refuses as before. [WO-186 final review (docs/final-reviews/WO-186/FINAL-002.md); docs/evidence/WO-186/close-register.md, measurements.json, repair-measurements.json, costs.md]",
+          "reopenWhen": "A session is refused for a live gate while no gate runs, or an order edits gate-run liveness in gate-evidence.mjs (activeGateRuns, gateProcessStart or marker removal).",
+          "targets": [],
+          "at": "2026-10-05T21:05:23.328Z"
         }
       ]
     },
@@ -22622,6 +22654,14 @@
           "reopenWhen": "WO-186 closes and the plain gate's median stays above 360 s",
           "targets": [],
           "at": "2026-10-02T06:02:34.622Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Returned to open at close as close-register.md specifies. Its trigger fired: the five-observation after-phase plain median is 422.027 s, above 360. The conditions listing's thirty-day median of all fresh plain gates is 294.876 s, a different statistic. Planning takes the build, release and integration critical path with the lane-peer growth costs.md records (release 354.286 to 423.640 s, worktree 100.477 to 118.962 s, by inference). This order did not change lane packing. [WO-186 final review (docs/final-reviews/WO-186/FINAL-002.md); docs/evidence/WO-186/close-register.md, measurements.json, repair-measurements.json, costs.md]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-05T21:05:23.182Z"
         }
       ]
     },
@@ -23201,6 +23241,14 @@
             "WO-186"
           ],
           "at": "2026-10-02T06:02:34.357Z"
+        },
+        {
+          "sourceRevision": 6,
+          "status": "settled",
+          "reason": "Settled at close as close-register.md specifies. The code identity covers non-ignored untracked code by path and bytes, independent of staging; edits invalidate the row and staging preserves the identity. FINAL-002 read identity 3743c14b5afa554cf2517c23833d0bb807cc204f1ac9f637adcebbc9f1bcd718 with the three new sources staged, equal to VER-003's. [WO-186 final review (docs/final-reviews/WO-186/FINAL-002.md); docs/evidence/WO-186/close-register.md, measurements.json, repair-measurements.json, costs.md]",
+          "reopenWhen": "Source bytes executed by a product task are absent from the identity or its guarded input contract.",
+          "targets": [],
+          "at": "2026-10-05T21:05:22.885Z"
         }
       ]
     },
@@ -25223,6 +25271,14 @@
           "reopenWhen": "the document gate's median passes 60 s, or the document check alone passes 20 s",
           "targets": [],
           "at": "2026-10-02T06:02:34.660Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Returned to open at close as close-register.md specifies. Its condition occurred (VER-001 R4, D036): the document gate's median is 66.690 s at this order's source against 38.993 s over main's October rows, after five suites moved there, about 194 s more per order at seven document gates. resume ends its critical path. [WO-186 final review (docs/final-reviews/WO-186/FINAL-002.md); docs/evidence/WO-186/close-register.md, measurements.json, repair-measurements.json, costs.md]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-05T21:05:23.230Z"
         }
       ]
     },
@@ -25315,6 +25371,14 @@
             "WO-186"
           ],
           "at": "2026-10-02T06:02:34.545Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled at close as close-register.md specifies. npm test runs only the selected tasks whose latest recorded run at the code identity is not a pass and composes a complete row whose carried results name their executing rows. The second-shell fixture runs only the failed task, and D044 gives the runner and the completion claim one task-standing decision. Forced-fresh and review gates still run every task; FINAL-002's review gate ran 86 fresh and reused none. [WO-186 final review (docs/final-reviews/WO-186/FINAL-002.md); docs/evidence/WO-186/close-register.md, measurements.json, repair-measurements.json, costs.md]",
+          "reopenWhen": "An ordinary rerun repeats a reusable task at the same identity, or a carried task's latest run at that identity did not pass.",
+          "targets": [],
+          "at": "2026-10-05T21:05:22.831Z"
         }
       ]
     },
@@ -25448,6 +25512,14 @@
             "WO-186"
           ],
           "at": "2026-10-02T06:02:34.470Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Returned to open at close as close-register.md specifies. D007 and D013 route the eight named suites: five to the fresh document gate and three keyed by the vocabulary. The remainder (VER-001 R3, D033, D045) stays: copy sources are judged for records only, shell and native reads are unobserved, and license-fixtures, worktree and release copy docs/LEGAL.md and other excluded inputs. Planning chooses a route per input; FUP-dc1335f4d10f6a75 and FUP-0c10689747f83675 stay beside it. [WO-186 final review (docs/final-reviews/WO-186/FINAL-002.md); docs/evidence/WO-186/close-register.md, measurements.json, repair-measurements.json, costs.md]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-05T21:05:23.085Z"
         }
       ]
     },
@@ -25507,6 +25579,14 @@
             "WO-186"
           ],
           "at": "2026-10-02T06:02:34.508Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled at close as close-register.md specifies. D006 and costs.md separate covered repeats, the former untracked-source rule, failed tasks, grown selections and forced-fresh runs; historical totals are exposure, not realized savings. A composed row now records each carried result's source and a forced-fresh row its freshReason. [WO-186 final review (docs/final-reviews/WO-186/FINAL-002.md); docs/evidence/WO-186/close-register.md, measurements.json, repair-measurements.json, costs.md]",
+          "reopenWhen": "Fresh same-identity repeats whose recorded reason does not explain why reuse was bypassed.",
+          "targets": [],
+          "at": "2026-10-05T21:05:23.036Z"
         }
       ]
     },
@@ -25557,6 +25637,14 @@
             "WO-186"
           ],
           "at": "2026-10-02T06:02:34.584Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Returned to open at close as close-register.md specifies; no 180-second harness saving is settled. D005 disproves that premise: the case's original median was 1.924 s. The harness-fixtures task took 333.977 s in FINAL-002's gate against an earlier thirty-day median of 252.13 s. Planning judges the remaining selected-suite cost recorded in costs.md, keeping the machinery selection and its 120-second threshold. [WO-186 final review (docs/final-reviews/WO-186/FINAL-002.md); docs/evidence/WO-186/close-register.md, measurements.json, repair-measurements.json, costs.md]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-05T21:05:23.134Z"
         }
       ]
     },
@@ -26774,6 +26862,14 @@
             "WO-186"
           ],
           "at": "2026-10-02T06:02:34.432Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled at close as close-register.md specifies. The review selection diffs from the merge base; the sibling-advance fixture leaves the selection and the claim check unchanged, and the worktree's own machinery change still widens it. The fixture passed in FINAL-002's gate. [WO-186 final review (docs/final-reviews/WO-186/FINAL-002.md); docs/evidence/WO-186/close-register.md, measurements.json, repair-measurements.json, costs.md]",
+          "reopenWhen": "An upstream-only change alters the review selection at unchanged worktree code.",
+          "targets": [],
+          "at": "2026-10-05T21:05:22.986Z"
         }
       ]
     },
@@ -27065,6 +27161,14 @@
           "reopenWhen": "WO-186 closes and the replay shows the median order's affected share below 60%, or the plain gate's median stays above 360 s",
           "targets": [],
           "at": "2026-10-02T06:02:37.172Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Its plain-gate condition occurred at close on the figure close-register.md uses for FUP-e96221b106cd136a: the after-phase plain median is 422.027 s, above 360. The replay half has not occurred: VER-002's current replay still shows a 100% affected share for the median order, against the memo's own 60% threshold. Planning weighs the per-task memo beside the cold-gate cuts. [WO-186 final review (docs/final-reviews/WO-186/FINAL-002.md); docs/evidence/WO-186/close-register.md, measurements.json, repair-measurements.json, costs.md]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-05T21:05:23.279Z"
         }
       ]
     },
@@ -27671,6 +27775,14 @@
           "reopenWhen": "A plan failures count exceeds the stopped trees it reports, a guard-originated SIGTERM ends a gate as an operator stop with no row, a nested gate waits on its own parent's lanes, or a later order edits these guard or runner paths.",
           "targets": [],
           "at": "2026-10-04T16:21:50.458Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again: WO-186 opens scripts/test-runner.mjs in runGateChecks (reuse), executeSuite (case timing and the read guard), scheduleSuites and changedMachinery, but none of the five named paths: terminateGate's resource-stop classification, the nested inherited lease, killErrors on finish() and stopTasks(), the registration-withdrawal failureKind, or host-guard.mjs candidate marking. None of their conditions was observed in FINAL-002's gate. [WO-186 final review (docs/final-reviews/WO-186/FINAL-002.md); docs/evidence/WO-186/close-register.md, measurements.json, repair-measurements.json, costs.md]",
+          "reopenWhen": "A plan failures count exceeds the stopped trees it reports, a guard-originated SIGTERM ends a gate as an operator stop with no row, a nested gate waits on its own parent's lanes, or a later order edits these guard or runner paths.",
+          "targets": [],
+          "at": "2026-10-05T21:05:23.424Z"
         }
       ]
     },
@@ -27697,6 +27809,382 @@
           "at": "2026-10-04T16:21:50.255Z"
         }
       ]
+    },
+    {
+      "id": "FUP-b941a857143acff0",
+      "key": "decision:docs/evidence/WO-186/decisions.md#wo-186-d031",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8d07a6b6d3dbb465b40760910b44d1580dd5ede13ac24998c1c88f809c051811",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d031--verification-fail-on-criterion-3-eight-findings-to-the-repair",
+          "title": "WO-186-D031: WO-186 resume: fix. (F1) A composed plain npm test row at code identity X records a task as passing only when that pass, fresh or reused, ran against inputs made at X. Reuse the build tas",
+          "summary": "{ \"id\": \"WO-186-D031\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on criterion 3 alone (F1). A plain npm test that reuses the build task's pass leaves its fresh tasks running against whatever ignored build output is on disk, which can come from another code identity. The composed row then records a complete pass at an identity where a fresh run of that task fails, the completion claim check accepts it, and later plain runs keep reusing that pass after a forced-fresh run at the same identity has failed. The other ten criteria are met. Eight further findings inside the order's declared surfaces go to the repair's Adjacent Repair: R",
+          "missing": false
+        },
+        {
+          "hash": "16054a46eb7297abd60571bee0cec5910ae11c333391a0acdf0a3e12e85286b8",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d031--verification-fail-on-criterion-3-eight-findings-to-the-repair",
+          "title": "WO-186-D031: WO-186 resume: fix. (F1) A composed plain npm test row at code identity X records a task as passing only when that pass, fresh or reused, ran against inputs made at X. Reuse the build tas",
+          "summary": "{ \"id\": \"WO-186-D031\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on criterion 3 alone (F1). A plain npm test that reuses the build task's pass leaves its fresh tasks running against whatever ignored build output is on disk, which can come from another code identity. The composed row then records a complete pass at an identity where a fresh run of that task fails, the completion claim check accepts it, and later plain runs keep reusing that pass after a forced-fresh run at the same identity has failed. The other ten criteria are met. Eight further findings inside the order's declared surfaces go to the repair's Adjacent Repair: R",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "The WO-186 repair answers every item of D031's follow-up: F1 by D035 (the latest recorded run decides, the build's pass travels only with the output it attested, and both named fixtures exist beside twelve more), R1 by D037, R2 and R3 by D033, R4 to R6 by D036, R7 and R8 by D034. The repair's review gate passed at its final identity on 2026-10-05T17:27:45.668Z with 86 tasks fresh. Independent re-verification is the next lifecycle phase.",
+          "reopenWhen": "Re-verification finds a rule of D031's follow-up not held, or a fresh run at an identity fails a task that a composed row at that identity reported passing.",
+          "targets": [],
+          "at": "2026-10-05T17:31:18.953Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ee77538e5276336e",
+      "key": "decision:docs/evidence/WO-186/decisions.md#wo-186-d032",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e9c0014c676c751db2b6ebdcb942b2060c22c0b613bc927612a7f334f1dd22b8",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d032--board-the-stale-refusal-description-in-the-harness-security-document",
+          "title": "WO-186-D032: docs/AI-HARNESS-SECURITY.md's five-refusals description matches the generated sentence: during a live gate, writes to gate inputs or the success record are refused; a product gate admits ",
+          "summary": "{ \"id\": \"WO-186-D032\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Board the stale refusal description in docs/AI-HARNESS-SECURITY.md. Lines 264-266 still describe the second refusal as 'a write to gate inputs or the success record during a live npm test', without the product-gate admission of the active order's evidence, verification and final-review directories at the default document roots, or the retained refusal of document and mixed review gates. The file is hand-written, and criterion 10 names product 07, the generated five-refusals sentence and README, so it lies outside the order's criteria and declared surfaces.\", \"evidence\": [ \"sed ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "The WO-186 repair rewrote the second-refusal clause of the harness security document in place to state the product-gate admission of the active order's record directories at the default document roots and the retained refusal of document and mixed review gates (D034).",
+          "reopenWhen": "The refusal changes again, or another hand-written posture document is found describing it.",
+          "targets": [],
+          "at": "2026-10-05T17:31:19.008Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b5609ad9b5ae3af2",
+      "key": "decision:docs/evidence/WO-186/decisions.md#wo-186-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "70af42b6611fc8533cfab47368999a1c3884610d90caaaea0156eca4b0836bda",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d006--compose-task-results-at-the-existing-identity",
+          "title": "WO-186-D006: Reuse passing task results at one code identity, including good tasks from an unchanged-code failed attempt; record a complete local composed row with source dates, identities and locatio",
+          "summary": "{ \"id\": \"WO-186-D006\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: next\", \"decision\": \"Reuse passing task results at one code identity, including good tasks from an unchanged-code failed attempt; record a complete local composed row with source dates, identities and locations. Force every selected task fresh for --again, --fresh and --review.\", \"evidence\": [ \"Existing gate-reuse, suite-evidence and runner source; WO-173 D004; stand-down rule 10.\", \"New fixtures exercise actual commands, a later Bash process with distinct session environment, the completion claim checker and a second linked worktree. Their executed result is pending until the drafts are applied.\", \"A passed disposable release ",
+          "missing": false
+        },
+        {
+          "hash": "dc61fd7b552124d0439a6671a69b70f9d3169fc4dd3a9a9d78d254520594d8d5",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d006--compose-task-results-at-the-existing-identity",
+          "title": "WO-186-D006: Reuse passing task results at one code identity, including good tasks from an unchanged-code failed attempt; record a complete local composed row with source dates, identities and locatio",
+          "summary": "{ \"id\": \"WO-186-D006\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: next\", \"decision\": \"Reuse passing task results at one code identity, including good tasks from an unchanged-code failed attempt; record a complete local composed row with source dates, identities and locations. Force every selected task fresh for --again, --fresh and --review.\", \"evidence\": [ \"Existing gate-reuse, suite-evidence and runner source; WO-173 D004; stand-down rule 10.\", \"New fixtures exercise actual commands, a later Bash process with distinct session environment, the completion claim checker and a second linked worktree. Their executed result is pending until the drafts are applied.\", \"A passed disposable release ",
+          "missing": false
+        },
+        {
+          "hash": "0acd83b7fbfb48f3f262497fbde1b97e1445de7eccc834f1ddfbcfcb18540e89",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d006--compose-task-results-at-the-existing-identity",
+          "title": "WO-186-D006: Reuse passing task results at one code identity, including good tasks from an unchanged-code failed attempt; record a complete local composed row with source dates, identities and locatio",
+          "summary": "{ \"id\": \"WO-186-D006\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: next\", \"decision\": \"Reuse passing task results at one code identity, including good tasks from an unchanged-code failed attempt; record a complete local composed row with source dates, identities and locations. Force every selected task fresh for --again, --fresh and --review.\", \"evidence\": [ \"Existing gate-reuse, suite-evidence and runner source; WO-173 D004; stand-down rule 10.\", \"New fixtures exercise actual commands, a later Bash process with distinct session environment, the completion claim checker and a second linked worktree. Their executed result is pending until the drafts are applied.\", \"A passed disposable release ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "D035 answers the observation that reopened D006: a carried build no longer lets a task run against output made at another identity, because the build's pass travels only with the output digest its executing row recorded, and a later failure is never masked by an older pass. Fixtures hold both sequences of the verification report and the cases around them.",
+          "reopenWhen": "A fresh run at an identity fails a task that a composed row at that identity reported passing.",
+          "targets": [],
+          "at": "2026-10-05T17:31:19.062Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c00b8bdd6450c861",
+      "key": "decision:docs/evidence/WO-186/decisions.md#wo-186-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f995e8a6e9ecf284db20b2d2b5a5097c7c8e925048f21e4686aa29970f8ba226",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d009--make-case-and-growth-evidence-visible",
+          "title": "WO-186-D009: Keep up to five measured slowest cases for each task, execution-ordered case starts for heartbeats, and explicit per-case integration completion reports. List the five longest latest fres",
+          "summary": "{ \"id\": \"WO-186-D009\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: next\", \"decision\": \"Keep up to five measured slowest cases for each task, execution-ordered case starts for heartbeats, and explicit per-case integration completion reports. List the five longest latest fresh tasks against earlier thirty-day medians and a fresh plain-gate median against 360 seconds.\", \"evidence\": [ \"Node.js official test-runner reporter documentation retrieved through Context7; actual runtime fixture checks the event protocol and duration selection.\", \"A CLI or shell invocation without subcase events has one explicitly task-granularity case; no internal durations are invented.\", \"Reused zero-duration observati",
+          "missing": false
+        },
+        {
+          "hash": "7a4254b42e0803d5e245b0597092161fd7763b8797961ac3c2b3f25929dc9071",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d009--make-case-and-growth-evidence-visible",
+          "title": "WO-186-D009: Keep up to five measured slowest cases for each task, execution-ordered case starts for heartbeats, and explicit per-case integration completion reports. List the five longest latest fres",
+          "summary": "{ \"id\": \"WO-186-D009\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: next\", \"decision\": \"Keep up to five measured slowest cases for each task, execution-ordered case starts for heartbeats, and explicit per-case integration completion reports. List the five longest latest fresh tasks against earlier thirty-day medians and a fresh plain-gate median against 360 seconds.\", \"evidence\": [ \"Node.js official test-runner reporter documentation retrieved through Context7; actual runtime fixture checks the event protocol and duration selection.\", \"A CLI or shell invocation without subcase events has one explicitly task-granularity case; no internal durations are invented.\", \"Reused zero-duration observati",
+          "missing": false
+        },
+        {
+          "hash": "1b20b56bc4d955c9d7336f2387ec881c38ed4f55fd61ce47e6467a44b3b1ea98",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d009--make-case-and-growth-evidence-visible",
+          "title": "WO-186-D009: Keep up to five measured slowest cases for each task, execution-ordered case starts for heartbeats, and explicit per-case integration completion reports. List the five longest latest fres",
+          "summary": "{ \"id\": \"WO-186-D009\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: next\", \"decision\": \"Keep up to five measured slowest cases for each task, execution-ordered case starts for heartbeats, and explicit per-case integration completion reports. List the five longest latest fresh tasks against earlier thirty-day medians and a fresh plain-gate median against 360 seconds.\", \"evidence\": [ \"Node.js official test-runner reporter documentation retrieved through Context7; actual runtime fixture checks the event protocol and duration selection.\", \"A CLI or shell invocation without subcase events has one explicitly task-granularity case; no internal durations are invented.\", \"Reused zero-duration observati",
+          "missing": false
+        },
+        {
+          "hash": "fbc52f82c469b717864fbb9ae383ee21f1566ae1098154b448970012a682f905",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d009--make-case-and-growth-evidence-visible",
+          "title": "WO-186-D009: Keep up to five measured slowest cases for each task, execution-ordered case starts for heartbeats, and explicit per-case integration completion reports. List the five longest latest fres",
+          "summary": "{ \"id\": \"WO-186-D009\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: next\", \"decision\": \"Keep up to five measured slowest cases for each task, execution-ordered case starts for heartbeats, and explicit per-case integration completion reports. List the five longest latest fresh tasks against earlier thirty-day medians and a fresh plain-gate median against 360 seconds.\", \"evidence\": [ \"Node.js official test-runner reporter documentation retrieved through Context7; actual runtime fixture checks the event protocol and duration selection.\", \"A CLI or shell invocation without subcase events has one explicitly task-granularity case; no internal durations are invented.\", \"Reused zero-duration observati",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "D037 answers the observation that reopened D009: the heartbeat names a case only between start and end markers the test process writes synchronously, so a finished case is no longer named, and a fixture covers a synchronous case after an async one with nested, concurrent and second-file cases.",
+          "reopenWhen": "A heartbeat names a case outside its own run, or the runtime stops publishing the test tracing channel.",
+          "targets": [],
+          "at": "2026-10-05T17:31:19.114Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "settled",
+          "reason": "D037 answers the observation that reopened D009: the heartbeat names a case only between start and end markers the test process writes synchronously, so a finished case is no longer named, and a fixture covers a synchronous case after an async one with nested, concurrent and second-file cases.",
+          "reopenWhen": "A heartbeat names a case outside its own run, or the runtime stops publishing the test tracing channel.",
+          "targets": [],
+          "at": "2026-10-05T17:33:53.452Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-14d261585f5d4f6d",
+      "key": "decision:docs/evidence/WO-186/decisions.md#wo-186-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "db989951049deede80dd961022d92d6be6c231a88472fa0253bec0a10052f5f1",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d017--close-the-reviewers-remaining-record-read-counterexamples",
+          "title": "WO-186-D017: Observe own-record readlink metadata in synchronous, callback and promise forms, register a promised FileHandle's descriptor for fstat calls, and remove descriptor registrations only when",
+          "summary": "{ \"id\": \"WO-186-D017\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: next; same two implementation critics\", \"decision\": \"Observe own-record readlink metadata in synchronous, callback and promise forms, register a promised FileHandle's descriptor for fstat calls, and remove descriptor registrations only when the closing generation still owns them. Guard native copy source reads too, keeping the existing excluded-tracked-input content boundary.\", \"evidence\": [ \"The same adversarial critic confirmed the prior repairs and identified own-directory symlink text reads. The same principal critic confirmed the reporter repair and identified fstatSync(handle.fd) after a write-only promised open. No addi",
+          "missing": false
+        },
+        {
+          "hash": "ded1af8750788ccbf9dd77656d516050186b67a93fa59bb487746bc5b365bc64",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d017--close-the-reviewers-remaining-record-read-counterexamples",
+          "title": "WO-186-D017: Observe own-record readlink metadata in synchronous, callback and promise forms, register a promised FileHandle's descriptor for fstat calls, and remove descriptor registrations only when",
+          "summary": "{ \"id\": \"WO-186-D017\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: next; same two implementation critics\", \"decision\": \"Observe own-record readlink metadata in synchronous, callback and promise forms, register a promised FileHandle's descriptor for fstat calls, and remove descriptor registrations only when the closing generation still owns them. Guard native copy source reads too, keeping the existing excluded-tracked-input content boundary.\", \"evidence\": [ \"The same adversarial critic confirmed the prior repairs and identified own-directory symlink text reads. The same principal critic confirmed the reporter repair and identified fstatSync(handle.fd) after a write-only promised open. No addi",
+          "missing": false
+        },
+        {
+          "hash": "bbe2efe34c39f91debdeb02223929918a261b232e25d1211e9524c65f6071630",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d017--close-the-reviewers-remaining-record-read-counterexamples",
+          "title": "WO-186-D017: Observe own-record readlink metadata in synchronous, callback and promise forms, register a promised FileHandle's descriptor for fstat calls, and remove descriptor registrations only when",
+          "summary": "{ \"id\": \"WO-186-D017\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: next; same two implementation critics\", \"decision\": \"Observe own-record readlink metadata in synchronous, callback and promise forms, register a promised FileHandle's descriptor for fstat calls, and remove descriptor registrations only when the closing generation still owns them. Guard native copy source reads too, keeping the existing excluded-tracked-input content boundary.\", \"evidence\": [ \"The same adversarial critic confirmed the prior repairs and identified own-directory symlink text reads. The same principal critic confirmed the reporter repair and identified fstatSync(handle.fd) after a write-only promised open. No addi",
+          "missing": false
+        },
+        {
+          "hash": "a2c696314d81f2f94559e31f01d10891d61b88bcfa06aacba259dbd6c91ed1a2",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d017--close-the-reviewers-remaining-record-read-counterexamples",
+          "title": "WO-186-D017: Observe own-record readlink metadata in synchronous, callback and promise forms, register a promised FileHandle's descriptor for fstat calls, and remove descriptor registrations only when",
+          "summary": "{ \"id\": \"WO-186-D017\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: next; same two implementation critics\", \"decision\": \"Observe own-record readlink metadata in synchronous, callback and promise forms, register a promised FileHandle's descriptor for fstat calls, and remove descriptor registrations only when the closing generation still owns them. Guard native copy source reads too, keeping the existing excluded-tracked-input content boundary.\", \"evidence\": [ \"The same adversarial critic confirmed the prior repairs and identified own-directory symlink text reads. The same principal critic confirmed the reporter repair and identified fstatSync(handle.fd) after a write-only promised open. No addi",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "D033 answers the observation that reopened D017: recursive listings, watches and copies from the repository root or an ancestor, and blob, link, rename and statfs reads of an active-order record are observed, with a fixture per form; the forms the guard does not wrap are listed in D033 and stated in the execution guide.",
+          "reopenWhen": "A product task is found using one of the unwrapped forms D033 lists, or another form reaches an active-order record with no observation.",
+          "targets": [],
+          "at": "2026-10-05T17:31:19.166Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "settled",
+          "reason": "D033 answers the observation that reopened D017: recursive listings, watches and copies from the repository root or an ancestor, and blob, link, rename and statfs reads of an active-order record are observed, with a fixture per form; the forms the guard does not wrap are listed in D033 and stated in the execution guide.",
+          "reopenWhen": "A product task is found using one of the unwrapped forms D033 lists, or another form reaches an active-order record with no observation.",
+          "targets": [],
+          "at": "2026-10-05T17:33:53.507Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-511b5a41d831fe83",
+      "key": "decision:docs/evidence/WO-186/decisions.md#wo-186-d036",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "959126fe3714f4debae6469088ed1eea5461979c2294f57812e694895be778e9",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d036--record-the-document-gates-rise-the-lane-peer-growth-and-the-harness-cases-after-median",
+          "title": "WO-186-D036: Planning weighs the document gate's 66.690 s median (FUP-fb8cbeabbddef397, returned to open at close) against the plain gate's reduction when it next routes document-reading suites, and j",
+          "summary": "{ \"id\": \"WO-186-D036\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; VER-001 R4, R5 and R6\", \"decision\": \"Record three measurements the first handoff left out or unreconciled, and book no saving from any of them. R4: the document gate's median rose from 38.993 s to 66.690 s with the five suites this order moved into it; at the order's count of seven document gates that is 193.9 s per order, set beside the measured 73.577 s reduction per fresh plain gate. R5: summed release task time per plain gate rose from 354.286 s to 423.640 s and the worktree task from 100.477 s to 118.962 s; the read guard explains about 2 s of one case, and the recorded rows place the step at the source that made the",
+          "missing": false
+        },
+        {
+          "hash": "646624b84715699e552766082a22d56c16dd944b9ca3c330f5fc5aa4b809815e",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d036--record-the-document-gates-rise-the-lane-peer-growth-and-the-harness-cases-after-median",
+          "title": "WO-186-D036: Planning weighs the document gate's 66.690 s median (FUP-fb8cbeabbddef397, returned to open at close) against the plain gate's reduction when it next routes document-reading suites, and j",
+          "summary": "{ \"id\": \"WO-186-D036\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; VER-001 R4, R5 and R6\", \"decision\": \"Record three measurements the first handoff left out or unreconciled, and book no saving from any of them. R4: the document gate's median rose from 38.993 s to 66.690 s after this order moved five suites into it, of which resume alone ends the critical path; at the order's count of seven document gates that is 193.9 s per order, set beside the measured 73.577 s reduction per fresh plain gate. R5: summed release task time per plain gate rose from 354.286 s to 423.640 s and the worktree task from 100.477 s to 118.962 s; the read guard explains about 2 s of one case, and the recorded rows",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5e52eb500e395237",
+      "key": "decision:docs/evidence/WO-186/decisions.md#wo-186-d038",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1b096ed4b6c2667e617275473e85bd32fba56119cabe49aa8c395d70445cde99",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d038--board-two-reuse-boundaries-the-repair-leaves-as-they-are",
+          "title": "WO-186-D038: Planning decides whether findGateCheck and resume correct --set productGate adopt the rule the runner and the completion claim now hold (a complete row answers only while each of its task",
+          "summary": "{ \"id\": \"WO-186-D038\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; VER-001 F1, met while repairing\", \"kind\": \"finding\", \"decision\": \"Record, for planning, two boundaries met while repairing F1 and left unchanged. First, the skeleton's findGateCheck still answers 'npm test' with any complete passing row at the code identity, under its stated rule that a failed attempt does not erase a pass; the completion claim check now follows each task's latest execution, so after a later failure at an identity the two lookups differ. findGateCheck serves the final-review advisory, npm run harness -- evidence (which skips npm test on a cached pass) and the application-evidence hook; resume correct --se",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-16a4af39c710459b",
+      "key": "decision:docs/evidence/WO-186/decisions.md#wo-186-d039",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fc65a0d3b196a9b8d5121154694e344c50920e63da8538761127a069d3d80801",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d039--attest-the-selected-effort-ultracode-is-a-mode-beside-it",
+          "title": "WO-186-D039: Planning, with the operator, decides how a Claude Code role records that Ultracode was on, now that it is a mode beside effort there: whether scripts/resume.mjs parseActor still accepts t",
+          "summary": "{ \"id\": \"WO-186-D039\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; operator message during the repair\", \"kind\": \"correction\", \"decision\": \"Record this repair's completion with the effort the session selected, xhigh, from the Claude session readback, and describe Ultracode in the handoff as a mode separate from effort. The operator's words, in two messages sent while the repair's reviewers were running: 'ultracode is no longer an effort value; it is orthogonal now to effort', then 'for claude that is; for codex ultra is still an effort value'. The correction therefore applies to Claude Code attestations only; under Codex the ultra spelling stays an effort value and the parser's handling o",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ff62b8dd608794b0",
+      "key": "decision:docs/evidence/WO-186/decisions.md#wo-186-d041",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "55744a1172c661e0a30d612dd995cf6da89c5bab9246d434b8e53be79f468e4c",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d041--final-review-fail-on-criterion-3-the-claim-check-answers-with-mains-row-after-the-worktrees-own-run-failed",
+          "title": "WO-186-D041: WO-186 resume: fix. (F1) The completion's claim check accepts a complete row only while each task it names has, as its latest run at the identity among the executions this worktree may co",
+          "summary": "{ \"id\": \"WO-186-D041\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Fail FINAL-001 on criterion 3 (F1) and send three further reproduced items in the order's surfaces to the same repair. F1: a linked worktree whose code identity equals a passing complete row of the main checkout, and which has no npm test row of its own at that identity, runs npm test -- --only for one task and the task fails. The runner treats that failure as the task's latest run: the next plain run carries the other tasks from main and runs that one. The completion's claim check does not: coveringGateCheck judges main's row against main's rows alone, finds the task's",
+          "missing": false
+        },
+        {
+          "hash": "824a42ce19a6a0747050c176eff89b919ffe8588c274f3f340b597616d5fa55a",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d041--final-review-fail-on-criterion-3-the-claim-check-answers-with-mains-row-after-the-worktrees-own-run-failed",
+          "title": "WO-186-D041: WO-186 resume: fix. (F1) The completion's claim check accepts a complete row only while each task it names has, as its latest run at the identity among the executions this worktree may co",
+          "summary": "{ \"id\": \"WO-186-D041\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Fail FINAL-001 on criterion 3 (F1) and send three further reproduced items in the order's surfaces to the same repair. F1: a linked worktree whose code identity equals a passing complete row of the main checkout, and which has no npm test row of its own at that identity, runs npm test -- --only for one task and the task fails. The runner treats that failure as the task's latest run: the next plain run carries the other tasks from main and runs that one. The completion's claim check does not: coveringGateCheck judges main's row against main's rows alone, finds the task's",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-186 D043/D044/D046 implement FINAL-001 F1 and R1 to R3: one shared worktree-first execution resolver, actual main/linked-worktree failure/recovery and sixteen history arrangements, preserved explicit advisory proof bound, progress preservation and default callback-open observation. All 99 runner fixture results and the final fresh 36-suite/86-task review pass at 3743c14b5afa. Separate re-verification still judges the repaired subject.",
+          "reopenWhen": "Runner and completion disagree on a task's latest deciding execution, a local failure is masked by main, or an independent check contradicts a repaired R1 to R3 rule.",
+          "targets": [],
+          "at": "2026-10-05T19:39:21.349Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3a2358223cd7864f",
+      "key": "decision:docs/evidence/WO-186/decisions.md#wo-186-d042",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3de1795362ff6fb16514f98fbe9299ab51fe08f1f70268a7381904028915c503",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d042--final-review-items-read-and-not-reproduced-for-the-repair-to-dispose",
+          "title": "WO-186-D042: WO-186 resume: fix records one disposition for each of items 1 to 8 in its decisions: repaired with a fixture, stated as a bound in product 07 or in the decision that owns it, or dismisse",
+          "summary": "{ \"id\": \"WO-186-D042\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Hand the repair eight items this review read and did not reproduce, and three record notes, for one disposition each: repaired with a fixture, stated as a bound, or dismissed with the reason. None bears on the verdict. (1) A single-suite run whose task passes but whose row fails for abandoned roots or a changed build output does not displace an older pass, while the same failure in an npm test row displaces every task it ran: latestExecution records an other-check run as passed from the task result alone. (2) A gate that throws after its tasks ran, at the end-of-gate id",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-186 D045 gives sourced dispositions for all eight D042 notes and its three record corrections. Reproduced integrity, selection, reporter-path and complete-message defects have fixtures; persistence/input bounds and unknown live-hook cost are stated; the qualified actual timeout/cancellation probe refutes the tested marker suspicion. Costs/replay attribution and unpublished PR root count/current repair result are corrected. The next passing final reviewer owns final PR/release prose and its current meter.",
+          "reopenWhen": "An untested marker form leaves stale progress, a stated persistence or input bound is contradicted, a live-gate measurement establishes material lookup cost, or final review retains stale publication facts.",
+          "targets": [],
+          "at": "2026-10-05T19:39:21.404Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0c10689747f83675",
+      "key": "decision:docs/evidence/WO-186/decisions.md#wo-186-d033",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "148d2a489b3fa3fb724c214a01dd6ca613ad4856c2781109c595faf2747aa76b",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d033--repair-the-read-guards-root-and-ancestor-walks-state-the-copy-and-shell-boundary",
+          "title": "WO-186-D033: Repair R2 in the product read guard and settle R3 by stating the observed boundary. The guard now sees each call's options: at the repository root or an ancestor it records an own-record ",
+          "summary": "{ \"id\": \"WO-186-D033\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; VER-001 R2 and R3\", \"decision\": \"Repair R2 in the product read guard and settle R3 by stating the observed boundary. The guard now sees each call's options: at the repository root or an ancestor it records an own-record read when a listing or watch descends or the call is a copy, and leaves a plain listing there unjudged. It also observes openAsBlob as a content read; hard-link and rename sources, the three statfs forms, the native callback realpath and the promise watcher as record reads; an open with null flags as the read Node makes it; and a byte view or URL-shaped object as the path Node takes it for. Copy and link s",
+          "missing": false
+        },
+        {
+          "hash": "442fb74a5d58ba8402bda3ee56b31733d194d3ab9af14131ec3aa045b43632e7",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d033--repair-the-read-guards-root-and-ancestor-walks-state-the-copy-and-shell-boundary",
+          "title": "WO-186-D033: Repair R2 in the product read guard and settle R3 by stating the observed boundary. The guard now sees each call's options: at the repository root or an ancestor it records an own-record ",
+          "summary": "{ \"id\": \"WO-186-D033\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; VER-001 R2 and R3\", \"decision\": \"Repair R2 in the product read guard and settle R3 by stating the observed boundary. The guard now sees each call's options: at the repository root or an ancestor it records an own-record read when a listing or watch descends or the call is a copy, and leaves a plain listing there unjudged. It also observes openAsBlob as a content read; hard-link and rename sources, the three statfs forms, the native callback realpath and the promise watcher as record reads; an open with null flags as the read Node makes it; and a byte view or URL-shaped object as the path Node takes it for. Copy and link s",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "Planning owns the remaining excluded-input coverage route in WO-186 D033/D045 and FUP-b28b870422a74166. Product 07 now states that non-record untracked excluded inputs are outside the tracked manifest until staged, while own record roots protect prospective records. No product reader of such an untracked input was identified by this scoped repair. Preserve the existing copied-input/shell/native investigation and original close-only allocations; choose per input whether to key it, author it in the fixture or move its case to the document gate.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-05T19:39:21.509Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7a67deb691d858ea",
+      "key": "decision:docs/evidence/WO-186/decisions.md#wo-186-d035",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9f9e2e8524b87bac554bcb615d4fe309b4712afd30dc2ca776aef390e3c286df",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d035--repair-f1-the-latest-execution-decides-and-the-builds-pass-travels-only-with-the-output-it-attested",
+          "title": "WO-186-D035: Repair F1 inside the existing identity and gate rows, with no new key and no new file. Rule held: a pass enters a composed row, or answers a completion claim, only when it is that task's ",
+          "summary": "{ \"id\": \"WO-186-D035\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; VER-001 F1 (criterion 3)\", \"decision\": \"Repair F1 inside the existing identity and gate rows, with no new key and no new file. Rule held: a pass enters a composed row, or answers a completion claim, only when it is that task's latest recorded run at the identity, in a gate row that ended at the code identity it started with and whose build output still had its recorded digest when the gate ended; and a task runs beside a carried build only when the build output on disk is byte for byte the output that build's executing row published. Seven parts carry it. (1) coveringTaskResults takes, per task, the execution that finishe",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-186 D044 reopens and repairs D035's missed local-other/main arrangement through the shared decidingExecution. The real linked-worktree fixture checks failure before any local npm test row, single-suite recovery, another failure followed by beta alone, and main unchanged; sixteen arrangements and six row-integrity controls pass in the 99-result file and final fresh review. Existing output attestation remains.",
+          "reopenWhen": "Runner and claim select different execution histories, a nonintact row substitutes for a passing result, or a carried build lacks the output its source execution attested.",
+          "targets": [],
+          "at": "2026-10-05T19:39:21.456Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5094b24d6d68d2e4",
+      "key": "decision:docs/evidence/WO-186/decisions.md#wo-186-d047",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f139b39831a6d2b85ca15c08df81742b4abb29e06b57ff1a37571c5a3cda4ce3",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d047--final-review-pass-at-the-repaired-identity-five-low-items-boarded-with-one-follow-up",
+          "title": "WO-186-D047: Planning, low priority, with the next order that opens the runner's case timing, the gate index reader or the product read guard: (1) make the integration and harness case-ended reports r",
+          "summary": "{ \"id\": \"WO-186-D047\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: final review; FINAL-002\", \"decision\": \"Pass final review of WO-186. All eleven criteria are met at code identity 3743c14b5afa554cf2517c23833d0bb807cc204f1ac9f637adcebbc9f1bcd718, the identity VER-003 judged. No integration is due and this review changes no source. Board five low items under one follow-up. (1) The integration and harness suites print their own PROGRESS case-ended lines from inside node:test, so the lines reach the runner as TAP comments and are never forwarded live. Criterion 2 is met without them: the case reporter's end events put each case's duration on the row, and each integration case's TAP subtest line a",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

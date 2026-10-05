@@ -1,0 +1,3822 @@
+{
+  "schemaVersion": 2,
+  "codeIdentity": "af229ba815ff320fcf23943a45afc7c20dc55d7bc6c95d90b4a4e61d2f67a5af",
+  "finalCodeIdentity": "8f77f8bb26e21f212f2f7ffa1a9a098aaaa4a71f9c9d1184539c40f00618ee99",
+  "sourceDelta": {
+    "schemaVersion": 1,
+    "recordedAt": "2026-10-05T08:45:02.781Z",
+    "changedCodePath": "scripts/test-host-guard.test.mjs",
+    "beforeCodeIdentity": "af229ba815ff320fcf23943a45afc7c20dc55d7bc6c95d90b4a4e61d2f67a5af",
+    "afterCodeIdentity": "8f77f8bb26e21f212f2f7ffa1a9a098aaaa4a71f9c9d1184539c40f00618ee99",
+    "beforeFileSha256": "e02f3efa80eb69905b2c307083a7dffaf3de582aad7d5169401864d50d845823",
+    "afterFileSha256": "4c6430dc9ad8ce2bf08ac7e1e6106f3455b96ace89fffdb3f286d02ca886142d",
+    "method": "Read-only check: hash the actual current working tree, then recompute in this disposable process with only this one file read supplied from HEAD. That file was unchanged from HEAD before D028. The recomputed whole code identity exactly equals the observed pre-repair gate identity. Restore the read binding and confirm the current identity again. No repository bytes or gate row are changed; this diagnostic is not a passing gate and cannot authorize reuse at a different identity."
+  },
+  "method": "Full existing execution-ordered case-end events retained by a measurement-only gate-child-stdout preload during required review ordinal 1, before the independent host-guard fixture repair. The whole-code source-delta proof limits that later change to scripts/test-host-guard.test.mjs; profiled target source is unchanged. This is not a final-source whole-gate profile. The earlier reporter-stdout attempt during plain ordinal 5 produced no file; that passing timing remains retained and was not rerun for profiling. The retained review profile uses a larger selection than the five plain observations, with each task and its peers recorded. Instrumentation appends a small JSON row per selected case and has uncalibrated overhead included in the retained timings. Cases and files overlap; durations are not added to infer wall savings. Host contention is retained in measurements.json.",
+  "executingPreloadSha256": "d9a57f70e64b8514a2b826fd5775e0c795c59e5bee3c8a1ccca4ec60fd050260",
+  "formattedEvidencePreloadSha256": "d9a57f70e64b8514a2b826fd5775e0c795c59e5bee3c8a1ccca4ec60fd050260",
+  "profiles": [
+    {
+      "name": "review-gate",
+      "ordinal": 1,
+      "recordedAt": "2026-10-05T07:58:48.611Z",
+      "codeIdentity": "af229ba815ff320fcf23943a45afc7c20dc55d7bc6c95d90b4a4e61d2f67a5af",
+      "evidenceRef": "host-gate:af229ba815ff320fcf23943a45afc7c20dc55d7bc6c95d90b4a4e61d2f67a5af:npm test",
+      "gateDurationMs": 829870,
+      "driverWallMs": 831248.6785,
+      "eventFile": "final-af229ba815ff-ordinary-after-review-gate-1-1-cases.jsonl",
+      "taskProfiles": [
+        {
+          "name": "skeleton",
+          "durationMs": 228875,
+          "startedAt": "2026-10-05T07:51:47.956Z",
+          "finishedAt": "2026-10-05T07:55:36.931Z",
+          "loadClass": "shared",
+          "concurrentAtStart": [
+            "release:prepare",
+            "worktree"
+          ],
+          "predecessors": [
+            "build",
+            "authority-evidence",
+            "harness",
+            "harness-evidence",
+            "artifact-evidence",
+            "verification-evidence",
+            "feedback-evidence",
+            "meta",
+            "process-debt"
+          ],
+          "hostLaneWaitMs": 0,
+          "caseCount": 472,
+          "cases": [
+            {
+              "file": "packages/skeleton/dist/test/artifact-identity.test.js",
+              "name": "WO-029 new host equips v2, pins authority atomically, and receipts every compiled consumer with replay identity",
+              "nesting": 0,
+              "durationMs": 51.270167,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/artifact-identity.test.js",
+              "name": "WO-029 stale graph/pin equip is durably refused; replay of a refused log does not throw or invent a WorkOrder",
+              "nesting": 0,
+              "durationMs": 4.963166,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/artifact-identity.test.js",
+              "name": "compiler-contract-version",
+              "nesting": 1,
+              "durationMs": 13.997625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/artifact-identity.test.js",
+              "name": "compiler-package-version",
+              "nesting": 1,
+              "durationMs": 13.970667,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/artifact-identity.test.js",
+              "name": "semantic-hash",
+              "nesting": 1,
+              "durationMs": 13.412417,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/artifact-identity.test.js",
+              "name": "component-definitions",
+              "nesting": 1,
+              "durationMs": 13.2445,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/artifact-identity.test.js",
+              "name": "compilation-environment",
+              "nesting": 1,
+              "durationMs": 13.341209,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/artifact-identity.test.js",
+              "name": "authority-expiry",
+              "nesting": 1,
+              "durationMs": 13.312917,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/artifact-identity.test.js",
+              "name": "WO-029 every stored compiled consumer uses the same fail-closed comparison for each drift axis",
+              "nesting": 0,
+              "durationMs": 83.885708,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/artifact-identity.test.js",
+              "name": "WO-029 diagnostics, malformed v2 payloads and pre-equip consumers are typed inert refusals",
+              "nesting": 0,
+              "durationMs": 5.546167,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/artifact-identity.test.js",
+              "name": "WO-029 historical replay keeps the frozen WO-003 trace oracle; the logged boundary prevents forward legacy consumption",
+              "nesting": 0,
+              "durationMs": 31.064792,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/artifact-identity.test.js",
+              "name": "WO-029 host factory cannot mint or accept legacy events, and snapshots the caller's graph",
+              "nesting": 0,
+              "durationMs": 3.89125,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/artifact-identity.test.js",
+              "name": "WO-029 recovery checks the pin before redispatch; restoring legacy or drifted history never reaches an adapter",
+              "nesting": 0,
+              "durationMs": 34.433875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/artifact-identity.test.js",
+              "name": "WO-029 unknown schedule ids have durable inert evidence; reused ids from an earlier equip remain unstamped",
+              "nesting": 0,
+              "durationMs": 6.434292,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/artifact-identity.test.js",
+              "name": "WO-029 Seiri and Entropy Reducer pins retain exact environment inputs, require re-equip on relocation, and do not authenticate rewritten pairs",
+              "nesting": 0,
+              "durationMs": 55.849625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/artifact-identity.test.js",
+              "name": "WO-029 L0 and governed raw expose canonical comparison/refusal references while cryptographic and outer-confinement claims stay absent",
+              "nesting": 0,
+              "durationMs": 7.242833,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/audit.test.js",
+              "name": "AC1 enumerates each consequential action class with operator and verifier questions",
+              "nesting": 0,
+              "durationMs": 0.774,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/audit.test.js",
+              "name": "AC2 AuditRecord v1 keeps canonical references and no copied event payloads",
+              "nesting": 0,
+              "durationMs": 51.92625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/audit.test.js",
+              "name": "WO-017 audit: an adjacent matching grant trace is evidence for allowed authority, with safe fallback",
+              "nesting": 0,
+              "durationMs": 0.375667,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/audit.test.js",
+              "name": "WO-017 audit: denied records attach only a complete matching v1 refusal trace",
+              "nesting": 0,
+              "durationMs": 0.15475,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/audit.test.js",
+              "name": "AC3 captures the L0 receipt, causal timeline, and governed raw JSON with fidelity links",
+              "nesting": 0,
+              "durationMs": 17.978541,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/audit.test.js",
+              "name": "audit source validation refuses missing canonical references instead of inventing success",
+              "nesting": 0,
+              "durationMs": 0.396125,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/audit.test.js",
+              "name": "causal timeline obeys causation while correlation remains an append-stable group",
+              "nesting": 0,
+              "durationMs": 0.423875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/audit.test.js",
+              "name": "projection fidelity links share one scope across mixed and context-only logs",
+              "nesting": 0,
+              "durationMs": 0.187291,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/audit.test.js",
+              "name": "audit associations stay scope-bound and honor explicit verification links",
+              "nesting": 0,
+              "durationMs": 0.195417,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/audit.test.js",
+              "name": "AC4 step 9 refusal is explicit in the receipt and causal timeline",
+              "nesting": 0,
+              "durationMs": 14.741292,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/audit.test.js",
+              "name": "AC5 all projection bytes are identical over live, replayed, and re-encoded logs",
+              "nesting": 0,
+              "durationMs": 38.765916,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/audit.test.js",
+              "name": "WO-142 audit rejects malformed envelope times, versions and partial NoOp evidence",
+              "nesting": 0,
+              "durationMs": 0.173625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/audit.test.js",
+              "name": "WO-142 audit retains failed and unknown verdicts and bounded adjacency association",
+              "nesting": 0,
+              "durationMs": 0.142667,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/beacon-fs.test.js",
+              "name": "WO-020 AC2 filesystem live/replay cmp includes bytes, identical observed mtime and logical size",
+              "nesting": 0,
+              "durationMs": 70.154458,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/beacon-fs.test.js",
+              "name": "WO-020 AC3 metadata sweep succeeds with denied reads and garbage content",
+              "nesting": 0,
+              "durationMs": 2.585166,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/beacon-fs.test.js",
+              "name": "WO-020 AC4 fake executor emits its claim before CommandResult without changing host evidence",
+              "nesting": 0,
+              "durationMs": 75.361042,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/beacon-fs.test.js",
+              "name": "WO-020 AC5 concurrent metadata observer sees only complete codewords and fixed addresses",
+              "nesting": 0,
+              "durationMs": 131.043125,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/beacon-fs.test.js",
+              "name": "WO-020 edge refuses unsafe destinations and invalid records before publishing",
+              "nesting": 0,
+              "durationMs": 53.058084,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/beacon-fs.test.js",
+              "name": "WO-020 sweep labels future codebooks, malformed sizes and non-regular entries without state guesses",
+              "nesting": 0,
+              "durationMs": 1.226708,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/beacon-fs.test.js",
+              "name": "WO-020/WO-029 CLI pins the new timeline, remains opt-in, and prints terminal host state last",
+              "nesting": 0,
+              "durationMs": 535.868625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/beacon.test.js",
+              "name": "WO-020 AC1 exhausts all 104 v1 states and every integer through twice the maximum",
+              "nesting": 0,
+              "durationMs": 28.898375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/beacon.test.js",
+              "name": "WO-020 decoder refuses bad values and never guesses an extended future payload",
+              "nesting": 0,
+              "durationMs": 0.286208,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/beacon.test.js",
+              "name": "WO-020 AC2 live and replay encode identical records without mutating audit or events",
+              "nesting": 0,
+              "durationMs": 40.324958,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/beacon.test.js",
+              "name": "WO-020 fold separates episode scopes, caps cumulative refusals, and obeys append order",
+              "nesting": 0,
+              "durationMs": 16.443875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/beacon.test.js",
+              "name": "WO-020 host retains the matching L0 links when unaudited events widen projection scope",
+              "nesting": 0,
+              "durationMs": 0.169542,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/beacon.test.js",
+              "name": "WO-020 record encoding preserves UTF-8, labels claims, pads with only newlines and rejects overflow",
+              "nesting": 0,
+              "durationMs": 0.353875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/audit-command.test.js",
+              "name": "WO-116 the terminal audit command prints the skeleton --audit projections byte for byte over the fixture log, with their fidelity labels, in every scope",
+              "nesting": 0,
+              "durationMs": 387.441375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/audit-command.test.js",
+              "name": "WO-116 each audit scope selects what the fold scopes for it; an empty store, an absent selection and an invalid source refuse by name without writing",
+              "nesting": 0,
+              "durationMs": 1518.12375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/audit-command.test.js",
+              "name": "WO-116 the dotln usage and command list name audit beside every other command, handoff included",
+              "nesting": 0,
+              "durationMs": 180.279541,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/cli.test.js",
+              "name": "WO-016 AC8 default CLI stdout is exact",
+              "nesting": 0,
+              "durationMs": 118.929042,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/cli.test.js",
+              "name": "WO-016 AC8 --audit CLI stdout is exact and additive",
+              "nesting": 0,
+              "durationMs": 116.293834,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/cli.test.js",
+              "name": "WO-008 AC5 --compiled-diff CLI stdout is exact",
+              "nesting": 0,
+              "durationMs": 111.121542,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/cli.test.js",
+              "name": "WO-008 AC5 --audit and --compiled-diff preserve deterministic section order",
+              "nesting": 0,
+              "durationMs": 109.822792,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/cli.test.js",
+              "name": "WO-142 unknown skeleton arguments refuse before running the scenario",
+              "nesting": 0,
+              "durationMs": 192.665167,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/codex-episode.test.js",
+              "name": "WO-159 one builder owns the shared Codex exec flags",
+              "nesting": 0,
+              "durationMs": 0.744292,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/codex-episode.test.js",
+              "name": "WO-159 the trust-table projection keeps only [projects] lines",
+              "nesting": 0,
+              "durationMs": 0.410583,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/codex-episode.test.js",
+              "name": "WO-159 the user-level Codex home follows CODEX_HOME, then HOME",
+              "nesting": 0,
+              "durationMs": 0.072917,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/codex-episode.test.js",
+              "name": "WO-159 an episode isolates CODEX_HOME, links auth and removes the home",
+              "nesting": 0,
+              "durationMs": 10.819208,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/codex-episode.test.js",
+              "name": "WO-159 a user-level change is recorded as an unequal pair; absent stays equal",
+              "nesting": 0,
+              "durationMs": 14.9795,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/codex-episode.test.js",
+              "name": "WO-159 AC1 a fake codex that trusts its target leaves the user-level file byte-identical",
+              "nesting": 0,
+              "durationMs": 525.186167,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/codex-episode.test.js",
+              "name": "WO-159 stale episode homes are those of exited launchers; the next launch removes them",
+              "nesting": 0,
+              "durationMs": 81.959541,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/codex-episode.test.js",
+              "name": "WO-159 AC2 only the launcher's file carries the shared Codex exec flags",
+              "nesting": 0,
+              "durationMs": 22.216292,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/codex-episode.test.js",
+              "name": "WO-159 a home that cannot be removed is recorded, not thrown",
+              "nesting": 0,
+              "durationMs": 9.619792,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/control-beacon.test.js",
+              "name": "WO-021 v2 exhaustively round-trips every field, retains v1, and pins numeric bounds",
+              "nesting": 0,
+              "durationMs": 2.872584,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/control-beacon.test.js",
+              "name": "WO-021 group exhaustively proves the bounded additive lattice",
+              "nesting": 0,
+              "durationMs": 213.744625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/control-beacon.test.js",
+              "name": "WO-021 maximum dense/sparse files obey allocation bounds; unsupported sizes create nothing",
+              "nesting": 0,
+              "durationMs": 18.49725,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/control-beacon.test.js",
+              "name": "WO-142 Node 26 beacon precision preserves the millisecond and refuses adjacent or coarse timestamps",
+              "nesting": 0,
+              "durationMs": 0.070125,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/control-beacon.test.js",
+              "name": "WO-142 beacon timestamp readback refusal preserves the published projection",
+              "nesting": 0,
+              "durationMs": 5.222459,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/control-beacon.test.js",
+              "name": "WO-142 Node 26 beacon emission preserves raw precision and unchanged age boundaries",
+              "nesting": 0,
+              "durationMs": 6.549375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/control-beacon.test.js",
+              "name": "WO-021 age retains sub-millisecond metadata at skew and cadence boundaries",
+              "nesting": 0,
+              "durationMs": 5.185666,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/control-beacon.test.js",
+              "name": "WO-021 authorization precedes every beacon stat; refusals and one authorized perception replay",
+              "nesting": 0,
+              "durationMs": 4.812916,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/control-beacon.test.js",
+              "name": "WO-021 observation state cannot change the same authority decision; reactor uses no ambient clock",
+              "nesting": 0,
+              "durationMs": 0.235917,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/control-beacon.test.js",
+              "name": "WO-016 identity extends to live sweep events appended to the walking skeleton",
+              "nesting": 0,
+              "durationMs": 41.57275,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/control-beacon-cli.test.js",
+              "name": "WO-021 agent constellation CLI persists permission/refusal and one metadata perception through the reactor",
+              "nesting": 0,
+              "durationMs": 1268.881958,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer-artifacts.test.js",
+              "name": "WO-023 AC3 every linked support owns exactly one generated paragraph",
+              "nesting": 0,
+              "durationMs": 3.111209,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer-artifacts.test.js",
+              "name": "WO-023 AC3 unordered graph permutations preserve residue bytes",
+              "nesting": 0,
+              "durationMs": 2.798791,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer-artifacts.test.js",
+              "name": "WO-023 AC3 a semantic edit to every support changes generated residue",
+              "nesting": 0,
+              "durationMs": 16.466584,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer-artifacts.test.js",
+              "name": "WO-023 AC3 identity, role, and active stance all flow into generated residue",
+              "nesting": 0,
+              "durationMs": 5.563,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer-artifacts.test.js",
+              "name": "WO-023 AC3 malformed support participation cannot render a plausible residue",
+              "nesting": 0,
+              "durationMs": 0.82975,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer-artifacts.test.js",
+              "name": "WO-023 AC3 residue generation is pure and cannot read the tracked projection",
+              "nesting": 0,
+              "durationMs": 2.031416,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer.test.js",
+              "name": "WO-165 preserves both derived judges' compiled identities",
+              "nesting": 0,
+              "durationMs": 3.9175,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer.test.js",
+              "name": "WO-142 Shape-First v2 transfers the relationship before evaluating load-bearing literal details",
+              "nesting": 0,
+              "durationMs": 6.824708,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer.test.js",
+              "name": "WO-023 AC1 compiles the complete reviewer definition through the real compiler",
+              "nesting": 0,
+              "durationMs": 9.031334,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer.test.js",
+              "name": "WO-023 AC1 assembles the full deferred Program and once cadence",
+              "nesting": 0,
+              "durationMs": 4.737708,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer.test.js",
+              "name": "WO-023 AC2 wildcard authority grants bounded reads and traces write refusals",
+              "nesting": 0,
+              "durationMs": 33.002958,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer.test.js",
+              "name": "WO-023 AC2 threads resource ceilings and enforces expiry, stop, and report emission",
+              "nesting": 0,
+              "durationMs": 14.038542,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer.test.js",
+              "name": "WO-023 AC2 validates findings and clean-room status before constructing report.emit",
+              "nesting": 0,
+              "durationMs": 0.339958,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer.test.js",
+              "name": "WO-165 multiline custom brief data cannot add checklist items",
+              "nesting": 0,
+              "durationMs": 6.820917,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer.test.js",
+              "name": "WO-165 rejects sparse lens and required-string arrays",
+              "nesting": 0,
+              "durationMs": 23.535416,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer.test.js",
+              "name": "WO-165 rejects non-array iterables before applying the lens ceiling",
+              "nesting": 0,
+              "durationMs": 5.854208,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer.test.js",
+              "name": "WO-023 AC4 enforces every lens-brief field, no-fix, uniqueness, and the four-brief ceiling",
+              "nesting": 0,
+              "durationMs": 6.270333,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer.test.js",
+              "name": "WO-023 AC5 validates ProductSuggestion packets and enforces a summary under 200 words",
+              "nesting": 0,
+              "durationMs": 0.439833,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer.test.js",
+              "name": "WO-023 AC6 selects every measured finding and reports zero denominators as not-applicable",
+              "nesting": 0,
+              "durationMs": 0.2235,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer.test.js",
+              "name": "WO-023 AC6 examines all six-or-fewer inspection findings and deterministically stratifies larger sets",
+              "nesting": 0,
+              "durationMs": 0.261208,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/entropy-reducer.test.js",
+              "name": "WO-023 AC6 keeps failed findings attributable but removes them from the promoted set",
+              "nesting": 0,
+              "durationMs": 0.261291,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/evidence-editions.test.js",
+              "name": "current evidence follows one manifest, independent of active order; explicit historical pins survive",
+              "nesting": 0,
+              "durationMs": 2.381583,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/evidence-editions.test.js",
+              "name": "repair revisions preserve the original artifact and verification evidence",
+              "nesting": 0,
+              "durationMs": 4.900958,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/evidence-editions.test.js",
+              "name": "evidence compares component release labels by content and preserves behavioral inputs",
+              "nesting": 0,
+              "durationMs": 0.535791,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/evidence-editions.test.js",
+              "name": "WO-070 the build-free Beacon workspace is a component whose release labels compare by content",
+              "nesting": 0,
+              "durationMs": 0.1685,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/evidence-editions.test.js",
+              "name": "immutable evidence admits a component-only bump while source, external dependency, and evidence changes invalidate",
+              "nesting": 0,
+              "durationMs": 198.649584,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/executor-supports.test.js",
+              "name": "WO-133 every generated role preserves supplied actor values and checks edited product publications",
+              "nesting": 0,
+              "durationMs": 48.384375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/executor-supports.test.js",
+              "name": "WO-179 and WO-195 emitted roles carry their assigned corrections across support settings",
+              "nesting": 0,
+              "durationMs": 79.065375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/executor-supports.test.js",
+              "name": "WO-145 economy equipment adds only executor guidance and no authority or host checks",
+              "nesting": 0,
+              "durationMs": 3.92025,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/executor-supports.test.js",
+              "name": "WO-042 atomic support switches compose independently and removal restores the saved build",
+              "nesting": 0,
+              "durationMs": 501.562583,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/executor-supports.test.js",
+              "name": "Process Cost is one compiled support projected once into every Contributor role",
+              "nesting": 0,
+              "durationMs": 58.125333,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/executor-supports.test.js",
+              "name": "WO-042 installed role projection takes each support from compiled equipment",
+              "nesting": 0,
+              "durationMs": 2987.117084,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-audit-source.test.js",
+              "name": "feedback audit pins labeled projections and keeps release-only workspace metadata stable",
+              "nesting": 0,
+              "durationMs": 53.399792,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-audit-source.test.js",
+              "name": "WO-142 discovery entry point participates in both evidence source inventories",
+              "nesting": 0,
+              "durationMs": 2.723875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-audit-source.test.js",
+              "name": "feedback audit invalidates every declared runtime and fixture source byte",
+              "nesting": 0,
+              "durationMs": 625.879833,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-audit-source.test.js",
+              "name": "feedback audit keeps execution, dependency, publication, and unknown metadata in the subject",
+              "nesting": 0,
+              "durationMs": 180.17325,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-audit-source.test.js",
+              "name": "feedback audit refuses malformed package projection inputs",
+              "nesting": 0,
+              "durationMs": 53.887333,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/discovery.test.js",
+              "name": "WO-119 actual bounded program discovers the pinned six candidates with resolvable evidence",
+              "nesting": 0,
+              "durationMs": 168.210541,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/discovery.test.js",
+              "name": "WO-119 repo defaults and Markdown profile conventions; empty repository is an empty observation",
+              "nesting": 0,
+              "durationMs": 444.395833,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/discovery.test.js",
+              "name": "WO-119 observations disappear when facts change; references and one-off repairs are not candidates",
+              "nesting": 0,
+              "durationMs": 84.273541,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/discovery.test.js",
+              "name": "WO-119 refuses unsafe paths, incomplete inventory, malformed history and invalid declarations",
+              "nesting": 0,
+              "durationMs": 33.896417,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/discovery.test.js",
+              "name": "WO-119 check confinement denies outside writes, outside reads and network; timeout is not a candidate",
+              "nesting": 0,
+              "durationMs": 5052.945833,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-edition.test.js",
+              "name": "WO-154 a reference rebuilds its body from the working tree before commit and from Git after it; a missing body is named",
+              "nesting": 0,
+              "durationMs": 157.373833,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-edition.test.js",
+              "name": "WO-154 the pins snapshot resolves a stranded derived reference from the working tree, with no Git object",
+              "nesting": 0,
+              "durationMs": 81.802916,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-edition.test.js",
+              "name": "WO-154 a verifier stream committed by reference rebuilds byte for byte and leaves other records alone",
+              "nesting": 0,
+              "durationMs": 38.796625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-edition.test.js",
+              "name": "WO-154 the behavioral identity moves with a judged change and not with release labels; the pins record moves with the labels",
+              "nesting": 0,
+              "durationMs": 22.749209,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/discovery.test.js",
+              "name": "WO-119 real script episode through fake-clock resident persists candidates and replays; live scratch Git row",
+              "nesting": 0,
+              "durationMs": 488.764042,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/discovery.test.js",
+              "name": "WO-119 wire rejects malformed or oversized output, wrong modes and unresolved evidence",
+              "nesting": 0,
+              "durationMs": 305.0025,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-fixtures.test.js",
+              "name": "WO-011 regression anti-oscillation",
+              "nesting": 0,
+              "durationMs": 6.848458,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-fixtures.test.js",
+              "name": "WO-011 regression correctness-over-sycophancy",
+              "nesting": 0,
+              "durationMs": 3.269583,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-fixtures.test.js",
+              "name": "WO-011 regression fail-conservative-correction",
+              "nesting": 0,
+              "durationMs": 3.444917,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-fixtures.test.js",
+              "name": "WO-011 regression verify-app-before-done",
+              "nesting": 0,
+              "durationMs": 41.294041,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-fixtures.test.js",
+              "name": "WO-011 regression no-attribution",
+              "nesting": 0,
+              "durationMs": 318.461709,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-fixtures.test.js",
+              "name": "WO-011 regression concurrent-work-requires-worktrees",
+              "nesting": 0,
+              "durationMs": 86.070709,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-fixtures.test.js",
+              "name": "WO-011 regression no-lint-type-disables-as-fixes",
+              "nesting": 0,
+              "durationMs": 147.010375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-fixtures.test.js",
+              "name": "WO-011 regression read-your-own-output",
+              "nesting": 0,
+              "durationMs": 3.138084,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-fixtures.test.js",
+              "name": "WO-011 regression no-partial-completion",
+              "nesting": 0,
+              "durationMs": 2.228167,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-fixtures.test.js",
+              "name": "WO-011 regression bounded-boy-scout-cleanup",
+              "nesting": 0,
+              "durationMs": 3.509625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-fixtures.test.js",
+              "name": "WO-142 TypeScript 7 comment batches preserve snapshot boundaries and escaped literals",
+              "nesting": 0,
+              "durationMs": 24.273458,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-host.test.js",
+              "name": "WO-129 Claude upgrades retain version observations above the supported minimum",
+              "nesting": 0,
+              "durationMs": 0.5205,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-host.test.js",
+              "name": "WO-011 shared reactor dispatches a pinned audit, refuses expiry, and makes semantic correction a durable diagnosis request",
+              "nesting": 0,
+              "durationMs": 24.468375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/discovery.test.js",
+              "name": "WO-119 canonical output digest binds every byte and matches native SHA-256",
+              "nesting": 0,
+              "durationMs": 4.112208,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/discovery.test.js",
+              "name": "WO-119 default npm checks honor lifecycle scripts and package environment",
+              "nesting": 0,
+              "durationMs": 500.71975,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/discovery.test.js",
+              "name": "WO-119 resolved placements and removed generated outputs cease to be candidates",
+              "nesting": 0,
+              "durationMs": 81.443833,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-v2.test.js",
+              "name": "WO-126 anti-oscillation version 2",
+              "nesting": 0,
+              "durationMs": 60.550709,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-v2.test.js",
+              "name": "WO-126 correctness-over-sycophancy version 2",
+              "nesting": 0,
+              "durationMs": 47.003125,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-v2.test.js",
+              "name": "WO-126 fail-conservative-correction version 2",
+              "nesting": 0,
+              "durationMs": 47.356458,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-v2.test.js",
+              "name": "WO-126 verify-app-before-done version 2",
+              "nesting": 0,
+              "durationMs": 1.803042,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-v2.test.js",
+              "name": "WO-126 no-attribution version 2",
+              "nesting": 0,
+              "durationMs": 2.450292,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-v2.test.js",
+              "name": "WO-132 concurrent-work-requires-worktrees version 2",
+              "nesting": 0,
+              "durationMs": 1.2785,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-v2.test.js",
+              "name": "WO-126 read-your-own-output version 2",
+              "nesting": 0,
+              "durationMs": 1.4345,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-v2.test.js",
+              "name": "WO-126 no-partial-completion version 2",
+              "nesting": 0,
+              "durationMs": 1.424959,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-v2.test.js",
+              "name": "WO-126 bounded-boy-scout-cleanup version 2",
+              "nesting": 0,
+              "durationMs": 48.650833,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-v2.test.js",
+              "name": "WO-126 retains v1 empty-output and all-attempt evidence semantics",
+              "nesting": 0,
+              "durationMs": 4.005791,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/feedback-v2.test.js",
+              "name": "WO-132 writer v2 admits main and preserves v1 historical replay",
+              "nesting": 0,
+              "durationMs": 2.508333,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/harness-input.test.js",
+              "name": "WO-045 hook decoder validates required, optional and config-bound fields",
+              "nesting": 0,
+              "durationMs": 1.017084,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/harness-input.test.js",
+              "name": "WO-045 supplied inputs reject inherited fields and accessors without evaluating them",
+              "nesting": 0,
+              "durationMs": 0.12575,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/harness-input.test.js",
+              "name": "WO-045 hook decoder accepts native metadata and all declared effort levels",
+              "nesting": 0,
+              "durationMs": 0.117875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/harness-input.test.js",
+              "name": "WO-045 wrapper rejects malformed supplied and raw input before runtime or host effects",
+              "nesting": 0,
+              "durationMs": 0.369916,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/local-model.test.js",
+              "name": "WO-110 AC1 a double endpoint returns the validated six-field envelope",
+              "nesting": 0,
+              "durationMs": 18.660833,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/local-model.test.js",
+              "name": "WO-110 the wire request carries the compiled prompt, the result schema and the observed decoding",
+              "nesting": 0,
+              "durationMs": 5.539542,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/local-model.test.js",
+              "name": "WO-110 AC1 an unavailable endpoint yields the typed unavailability",
+              "nesting": 0,
+              "durationMs": 1.74575,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/local-model.test.js",
+              "name": "WO-110 an endpoint without the model is unavailable; other HTTP faults are transport failures",
+              "nesting": 0,
+              "durationMs": 3.43325,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/local-model.test.js",
+              "name": "WO-110 truncated, unparsable and contract-breaking completions are refused by code",
+              "nesting": 0,
+              "durationMs": 6.325416,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/local-model.test.js",
+              "name": "WO-110 the endpoint and profile fences refuse before any request is sent",
+              "nesting": 0,
+              "durationMs": 0.526166,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/local-model.test.js",
+              "name": "WO-110 a killed episode is interrupted without a supervisor process",
+              "nesting": 0,
+              "durationMs": 2.932334,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/local-model.test.js",
+              "name": "WO-110 AC1 the catalog reports the declared row and the resident gets a reasoned NoOp",
+              "nesting": 0,
+              "durationMs": 3.195875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/local-model.test.js",
+              "name": "WO-110 an endpoint failure reaches the resident as a typed actor observation",
+              "nesting": 0,
+              "durationMs": 1.092958,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/local-model.test.js",
+              "name": "WO-110 an actor without an endpoint decodes and reports unavailable",
+              "nesting": 0,
+              "durationMs": 0.182291,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/local-model.test.js",
+              "name": "WO-110 a local-model declaration is refused on another actor kind",
+              "nesting": 0,
+              "durationMs": 0.06675,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/mission-check.test.js",
+              "name": "WO-099 the four verdicts: out-of-surface drift, mid-episode clause change, on-contract pass, unavailable verifier",
+              "nesting": 0,
+              "durationMs": 417.345666,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/mission-check.test.js",
+              "name": "WO-099 a drift holds unattended dispatch, records the correction, and a human answer clears it",
+              "nesting": 0,
+              "durationMs": 678.75975,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/mission-check.test.js",
+              "name": "WO-099 an unavailable verifier holds, and only a passing judgment over changed work clears the hold",
+              "nesting": 0,
+              "durationMs": 701.2765,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/mission-check.test.js",
+              "name": "WO-099 the check itself stays armed while it holds the work, and the Contributor build declares the cadence",
+              "nesting": 0,
+              "durationMs": 142.237041,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/mission-check.test.js",
+              "name": "WO-099 VER-001 F1: the cadence judges changed work, and its fresh pass clears the hold",
+              "nesting": 0,
+              "durationMs": 635.089458,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/mission-check.test.js",
+              "name": "WO-099 VER-001 F2: the capsule carries untracked work, names what it cannot carry, and refuses past its bounds",
+              "nesting": 0,
+              "durationMs": 548.149375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/mission-check.test.js",
+              "name": "WO-099 VER-004 F1: ignored work is redacted, bounded and judged beside an unignored control",
+              "nesting": 0,
+              "durationMs": 432.286584,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/mission-check.test.js",
+              "name": "WO-099 VER-005 F1: ordinary build residue under a baselined ignored root leaves the cadence quiet",
+              "nesting": 0,
+              "durationMs": 405.832916,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/mission-check.test.js",
+              "name": "WO-099 VER-005 F1: an ordinary build during the cadence raises no hold",
+              "nesting": 0,
+              "durationMs": 551.853,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/mission-check.test.js",
+              "name": "WO-099 VER-002 F1: a failed verifier cannot erase the drift the capsule already proved",
+              "nesting": 0,
+              "durationMs": 891.782666,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/mission-check.test.js",
+              "name": "WO-099 VER-002 F2: the capsule carries links as links and reads nothing outside the worktree",
+              "nesting": 0,
+              "durationMs": 256.860375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/mission-check.test.js",
+              "name": "WO-099 VER-003 F1: the host's own findings readmit at the capsule's bounds, and the judge's bound counts only what it adds",
+              "nesting": 0,
+              "durationMs": 245.339208,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/mission-check.test.js",
+              "name": "WO-099 VER-003 F1: the resident records the hold for every host finding at the path bound, whether or not the judge answered",
+              "nesting": 0,
+              "durationMs": 1302.411166,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/mission-check.test.js",
+              "name": "WO-099 VER-003 F1: a judgment the actor contract refuses is recorded as the failed episode with its capsule, and the proved drift still holds",
+              "nesting": 0,
+              "durationMs": 374.204375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/mission-check.test.js",
+              "name": "WO-099 VER-003 F2: a decision history that exists but cannot be carried is named and holds; the declared window is honored, including zero",
+              "nesting": 0,
+              "durationMs": 402.3305,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/mission-check.test.js",
+              "name": "WO-099 VER-003 F2: the resident holds a claimed pass over a history it could not carry",
+              "nesting": 0,
+              "durationMs": 389.630375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/mission-check.test.js",
+              "name": "WO-184 R10: an answered unknown over a complete capsule is not an absent judgment",
+              "nesting": 0,
+              "durationMs": 374.013667,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/mission-check.test.js",
+              "name": "WO-152 the emitted schema carries no duplicate enum item, and a mid-episode clause change still names the old and the new id",
+              "nesting": 0,
+              "durationMs": 184.549917,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/portfolio.test.js",
+              "name": "WO-100 derivation over the WO-119 fixture: in-portfolio candidates become bounded orders, the rest suggestions, human questions or deferrals",
+              "nesting": 0,
+              "durationMs": 85.699292,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/portfolio.test.js",
+              "name": "WO-100 a portfolio is validated under the floor and each phase, and its contract refuses malformed text",
+              "nesting": 0,
+              "durationMs": 1.914917,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/portfolio.test.js",
+              "name": "WO-100 a derived order activates with host-policy provenance, runs through the WO-052 and WO-054 doubles, advances only after a pass, resets from a non-last phase on a failed verification and stops at the budget with an in-phase candidate left",
+              "nesting": 0,
+              "durationMs": 919.08425,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/github-issue-source.test.js",
+              "name": "WO-062 criterion 1: recorded JSON produces canonical stable rich input, resolving spans and role labels through the fake CLI",
+              "nesting": 0,
+              "durationMs": 363.796541,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/github-issue-source.test.js",
+              "name": "WO-062 criterion 2: every declared shape/form is omitted from current text and full historical versions, without persisted text",
+              "nesting": 0,
+              "durationMs": 4856.107709,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/github-issue-source.test.js",
+              "name": "WO-062 repair: full history cannot restore refused or unavailable current bodies",
+              "nesting": 0,
+              "durationMs": 503.808583,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/github-issue-source.test.js",
+              "name": "WO-062 repair: each unknown-role comment is named and none of its versions is stored",
+              "nesting": 0,
+              "durationMs": 661.127875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/github-issue-source.test.js",
+              "name": "WO-062 repair: historical-only text and images do not change current content or add spans",
+              "nesting": 0,
+              "durationMs": 587.230708,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/github-issue-source.test.js",
+              "name": "WO-062 the parsed forge is the whole allowlist and automation also recognizes the Bot actor type",
+              "nesting": 0,
+              "durationMs": 349.530542,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/github-issue-source.test.js",
+              "name": "WO-062 criterion 3: absent CLI, authentication, failing CLI and unreadable JSON refuse without stores or echoed diagnostics",
+              "nesting": 0,
+              "durationMs": 501.687083,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/github-issue-source.test.js",
+              "name": "WO-062 malformed fields report their API paths and write nothing, including failure after a paginated edit read",
+              "nesting": 0,
+              "durationMs": 1006.772334,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/github-issue-source.test.js",
+              "name": "WO-062 criterion 3: missing declared fields are absent receipts, with no invented body, author or history",
+              "nesting": 0,
+              "durationMs": 354.679209,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/github-issue-source.test.js",
+              "name": "WO-062 pagination consumes every independent connection, rejects non-advancing cursors and never stores a partial read",
+              "nesting": 0,
+              "durationMs": 500.755542,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/github-issue-source.test.js",
+              "name": "WO-062 changed issue or discussion during fetch refuses and stores nothing",
+              "nesting": 0,
+              "durationMs": 350.051666,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/github-issue-source.test.js",
+              "name": "WO-062 the existing screen's declared limits pass unchanged",
+              "nesting": 0,
+              "durationMs": 194.087417,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/github-issue-source.test.js",
+              "name": "WO-062 immutable hash storage refuses a collision or symlink without replacing bytes",
+              "nesting": 0,
+              "durationMs": 521.92875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/github-issue-source.test.js",
+              "name": "WO-062 invalid caller arguments refuse before reading or writing",
+              "nesting": 0,
+              "durationMs": 5.435041,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/presence-signals.test.js",
+              "name": "WO-121 classifier depends on signal evidence and stamp, never launch path",
+              "nesting": 0,
+              "durationMs": 0.5475,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/portfolio.test.js",
+              "name": "WO-100 spent wall time or reported tokens refuse the next phase while it still admits a candidate",
+              "nesting": 0,
+              "durationMs": 1206.900708,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/portfolio.test.js",
+              "name": "WO-100 an unbound resident reports the portfolio actor unavailable and dispatches nothing",
+              "nesting": 0,
+              "durationMs": 497.3315,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/portfolio.test.js",
+              "name": "WO-100 a kill records what WO-052 observed: nothing before the change, the commit and skipped verification after it",
+              "nesting": 0,
+              "durationMs": 0.544333,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/presence.test.js",
+              "name": "WO-067 fixture: hold, verified-only advance, failure reset, peak/reset/loop",
+              "nesting": 0,
+              "durationMs": 0.985208,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/presence.test.js",
+              "name": "WO-067 fixture: return kills or finishes discretionary work, preserves foreground and wins races",
+              "nesting": 0,
+              "durationMs": 0.491792,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/presence.test.js",
+              "name": "WO-067 fixture: idle deadline expires phase allocation and requires a fresh absence edge",
+              "nesting": 0,
+              "durationMs": 0.075917,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/presence.test.js",
+              "name": "WO-067 fixture: a preauthorized portfolio effect with an unavailable adapter emits NoOp",
+              "nesting": 0,
+              "durationMs": 1.618458,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/presence.test.js",
+              "name": "WO-067 fixture: real kernel authorizer enforces every phase ceiling and inherited restrictions",
+              "nesting": 0,
+              "durationMs": 0.32275,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/presence.test.js",
+              "name": "WO-067 fixture: condition entry and every emitted cadence execute in the kernel subset",
+              "nesting": 0,
+              "durationMs": 0.886416,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/reactor-slices.test.js",
+              "name": "WO-050 slices have exclusive event ownership; WO-052 fills only the reserved source-change slot",
+              "nesting": 0,
+              "durationMs": 7.303166,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/reactor-slices.test.js",
+              "name": "WO-142 B13 owns the live driver in its extracted module and preserves the scenario re-export",
+              "nesting": 0,
+              "durationMs": 0.412417,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/reactor-slices.test.js",
+              "name": "WO-050 hosts read raw runtime fields only through exported selectors",
+              "nesting": 0,
+              "durationMs": 0.731458,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/reactor-slices.test.js",
+              "name": "WO-050 malformed verification continuation and custom predicate context preserve the boundary",
+              "nesting": 0,
+              "durationMs": 34.070125,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/presence-signals.test.js",
+              "name": "WO-121 negative activity stream never changes away phase or cancels; human return preserves foreground",
+              "nesting": 0,
+              "durationMs": 4401.55925,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/presence-signals.test.js",
+              "name": "WO-121 human idle threshold, actor stall, and task progress are independent replay clocks",
+              "nesting": 0,
+              "durationMs": 486.324167,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/repair.test.js",
+              "name": "WO-066 host review witness preserves scope, named tests, revision and one-round bound",
+              "nesting": 0,
+              "durationMs": 2488.792333,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/presence-signals.test.js",
+              "name": "WO-121 running actor silence is sampled without incoming traffic",
+              "nesting": 0,
+              "durationMs": 288.183666,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/presence-signals.test.js",
+              "name": "WO-121 late heartbeats retain missed deadlines; backwards live back preserves intent; task keys are data",
+              "nesting": 0,
+              "durationMs": 462.031708,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/presence-signals.test.js",
+              "name": "WO-121 generated hooks emit exactly one reduced observation per event and no SessionStart heartbeat",
+              "nesting": 0,
+              "durationMs": 804.618166,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/presence-signals.test.js",
+              "name": "WO-121 native script receives only explicit resident stamp environment",
+              "nesting": 0,
+              "durationMs": 87.816917,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/repair.test.js",
+              "name": "WO-055 AC1 pure derivation contains paths, commands, contract and admitted exact grants",
+              "nesting": 0,
+              "durationMs": 2355.686125,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident-actors.test.js",
+              "name": "WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals",
+              "nesting": 0,
+              "durationMs": 925.654042,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/repair.test.js",
+              "name": "WO-055 AC2 failing source commit repairs once and re-verifies the complete original contract",
+              "nesting": 0,
+              "durationMs": 5302.1525,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident-actors.test.js",
+              "name": "WO-122 writer dispatches through the resident with stamp and envelope; a claim never advances the phase",
+              "nesting": 0,
+              "durationMs": 388.786125,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident-actors.test.js",
+              "name": "WO-122 inspection dispatches through the resident with stamp and envelope; a claim never advances the phase",
+              "nesting": 0,
+              "durationMs": 328.3545,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident-actors.test.js",
+              "name": "WO-122 unavailable launch row names its source and never falls back; nested authority cannot widen the phase",
+              "nesting": 0,
+              "durationMs": 678.406791,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident-actors.test.js",
+              "name": "WO-122 transport rejection and synchronous refusal become one durable failure each",
+              "nesting": 0,
+              "durationMs": 715.248416,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident-actors.test.js",
+              "name": "WO-122 human packet survives restart, rejects invalid answers, and resumes after an explicit human answer",
+              "nesting": 0,
+              "durationMs": 731.603,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident-actors.test.js",
+              "name": "WO-122 a crash after handoff dispatch recovers the same packet without losing the question",
+              "nesting": 0,
+              "durationMs": 441.97375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident-actors.test.js",
+              "name": "WO-122 a crash after handoff dispatch recovers the same packet across a new absence without promoting it",
+              "nesting": 0,
+              "durationMs": 650.074625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident-actors.test.js",
+              "name": "WO-122 nested expiry, missing evidence and unrepresentable revocation refuse before launch",
+              "nesting": 0,
+              "durationMs": 895.853042,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident-actors.test.js",
+              "name": "WO-122 late answers release the hold without advancing an expired policy",
+              "nesting": 0,
+              "durationMs": 347.765625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident-actors.test.js",
+              "name": "WO-122 pending handoff holds its order across return while another order dispatches",
+              "nesting": 0,
+              "durationMs": 560.07375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident-actors.test.js",
+              "name": "WO-122 native process stamps are per launch and cancellation does not wait on escaped stderr",
+              "nesting": 0,
+              "durationMs": 459.031792,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "WO-068 recorded clock drives all phases; replay ignores ambient clock; return cancels; idle needs a fresh edge",
+              "nesting": 0,
+              "durationMs": 855.5735,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "WO-068 in-flight kill and finish obey return precedence and reject stale advancement",
+              "nesting": 0,
+              "durationMs": 634.463333,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "WO-068 envelope, scope and runtime capability refusals never spawn; unavailable actor has no fallback",
+              "nesting": 0,
+              "durationMs": 1079.181833,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "WO-068 two once invocations produce byte-identical events to two loop ticks",
+              "nesting": 0,
+              "durationMs": 842.281292,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "WO-068 malformed saved evidence refuses before append/reclaim; presence rejects symlink stores",
+              "nesting": 0,
+              "durationMs": 133.262542,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "WO-068 inspected restart records lost once and cannot reuse dispatched identity",
+              "nesting": 0,
+              "durationMs": 503.7605,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "WO-068 native script uses exact argv/cwd, clears inherited env, verifies output and denies network",
+              "nesting": 0,
+              "durationMs": 537.117042,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/repair.test.js",
+              "name": "WO-055 AC3 two wrong repairs exhaust with last finding and no third source dispatch",
+              "nesting": 0,
+              "durationMs": 7644.961667,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "WO-186 a cancelled matrix cell reaps its paused fixture child before teardown",
+              "nesting": 0,
+              "durationMs": 353.981209,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/repair.test.js",
+              "name": "WO-055 AC4 SIGKILL afterRepairCommit resumes persisted continuation without another repair",
+              "nesting": 0,
+              "durationMs": 5818.799167,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/repair.test.js",
+              "name": "WO-055 AC4 SIGKILL afterSnapshotPrepared resumes persisted continuation without another repair",
+              "nesting": 0,
+              "durationMs": 6184.979375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/repair.test.js",
+              "name": "WO-055 AC1 refused path or command persists byte-identical envelope and dispatches no writer",
+              "nesting": 0,
+              "durationMs": 6040.857208,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/runtime-status.test.js",
+              "name": "WO-114 per-event status, tick, privacy and restart transcript",
+              "nesting": 0,
+              "durationMs": 547.051625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/runtime-status.test.js",
+              "name": "WO-114 CLI binds the selected launchpad's configured index root",
+              "nesting": 0,
+              "durationMs": 440.550958,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/runtime-status.test.js",
+              "name": "WO-114 failed publication cannot abort start, presence or dispatch and the next tick rebuilds",
+              "nesting": 0,
+              "durationMs": 651.176666,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/runtime-status.test.js",
+              "name": "WO-117 bad launchpad sources remain live, replace old bindings and survive helpers",
+              "nesting": 0,
+              "durationMs": 1122.122166,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/runtime-status.test.js",
+              "name": "WO-184 criterion 10: FIFO configuration, index and binding cannot block the resident CLI",
+              "nesting": 0,
+              "durationMs": 1116.932042,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/runtime-status.test.js",
+              "name": "WO-117 only the lifetime owner sweeps status temporaries",
+              "nesting": 0,
+              "durationMs": 258.229375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "WO-184 criterion 19: transitive reactor purity has exactly two reasoned host exclusions",
+              "nesting": 0,
+              "durationMs": 240.478125,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "WO-016 AC1 one typed reactor and its pure helpers own kernel decisions",
+              "nesting": 0,
+              "durationMs": 5.745834,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "WO-016 AC3 live and replay match every complete Decision and semantic projection",
+              "nesting": 0,
+              "durationMs": 97.422834,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "WO-008 AC6 the running scenario consumes the compiled Seiri loadout",
+              "nesting": 0,
+              "durationMs": 1.346708,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "WO-029 the new trace delta adds only the boundary, receipts and pin inputs to the frozen WO-003 mechanics",
+              "nesting": 0,
+              "durationMs": 46.024208,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "WO-008 AC2 an unequipped support changes the live reactor program",
+              "nesting": 0,
+              "durationMs": 82.573583,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "WO-008 AC2 the running reactor consumes compiled cadence identifiers",
+              "nesting": 0,
+              "durationMs": 42.654459,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "WO-008 AC3 the precedence winner authorizes the emitted runtime effect",
+              "nesting": 0,
+              "durationMs": 1.033209,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "the canonical scenario milestones retain exact order with the WO-029 enforcement and receipt delta",
+              "nesting": 0,
+              "durationMs": 42.325833,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "WO-016 AC6 every derived event names an earlier canonical cause and its pulse or command",
+              "nesting": 0,
+              "durationMs": 42.06775,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "WO-016 step 9 preserves deletion paths, evidence, and structural refusal",
+              "nesting": 0,
+              "durationMs": 42.019875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "WO-016 step 12 executes the reactor's NoOp and declared cancellations",
+              "nesting": 0,
+              "durationMs": 41.49075,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "CommandResult.candidates",
+              "nesting": 1,
+              "durationMs": 75.361125,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "VerificationCompleted.accepted",
+              "nesting": 1,
+              "durationMs": 59.248,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "WorkOrderEmitted.workOrder",
+              "nesting": 1,
+              "durationMs": 52.398875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "CommandRefused.reason",
+              "nesting": 1,
+              "durationMs": 50.916542,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "SchedulesCancelled.scheduleIds",
+              "nesting": 1,
+              "durationMs": 50.975542,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "CommandPersisted.command.intent.effect",
+              "nesting": 1,
+              "durationMs": 50.993167,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "WO-016 AC4 semantic payload changes alter the decision at their event",
+              "nesting": 0,
+              "durationMs": 382.217083,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "WO-016 AC7 a negative fixture stays unverified in live, replay, and glyph state",
+              "nesting": 0,
+              "durationMs": 78.645125,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/scenario.test.js",
+              "name": "row 1 crash recovery replays state, redispatches, and adapter-deduplicates",
+              "nesting": 0,
+              "durationMs": 129.512708,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/senses-v3.test.js",
+              "name": "WO-022 AC9 v3 data, algebraic product bounds, all residues for representative states, malformed boundaries",
+              "nesting": 0,
+              "durationMs": 300.634625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/senses-v3.test.js",
+              "name": "WO-022 AC9 maximum v3 is sparse through atomic replacement; unsupported hosts create no file",
+              "nesting": 0,
+              "durationMs": 52.55975,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/senses-v3.test.js",
+              "name": "WO-022 AC6/8/10 dynamic external keys, forged provenance, replay, unknown/rotated epochs and exhaustion",
+              "nesting": 0,
+              "durationMs": 541.060208,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/senses.test.js",
+              "name": "WO-022 AC2/3 affordance and permission guard agree; no sense or grant yields an event with zero reads",
+              "nesting": 0,
+              "durationMs": 487.272833,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/senses.test.js",
+              "name": "WO-022 legacy v1/v2 sensing is unauthenticated and pre-sense replay retains the unknown tag-3 meaning",
+              "nesting": 0,
+              "durationMs": 229.544375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/senses.test.js",
+              "name": "WO-022 AC4/6/7 exact metadata-only channels; search-only listing refusal and no extra names/content/xattrs",
+              "nesting": 0,
+              "durationMs": 316.020917,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/senses.test.js",
+              "name": "WO-022 AC5 a mounted Beacon Sight verifier completes the skeleton with no implementer prose in its inputs",
+              "nesting": 0,
+              "durationMs": 472.768791,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/senses.test.js",
+              "name": "WO-022 AC8 canonical control-log re-derivation uses the same host v3 writer and key",
+              "nesting": 0,
+              "durationMs": 490.095416,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/snapshot-index.test.js",
+              "name": "WO-124 criterion 3: a host-produced snapshot indexes every file's actual bytes, size and hash",
+              "nesting": 0,
+              "durationMs": 483.548291,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/source-change-confinement.test.js",
+              "name": "WO-066 AC6: host and exact writer command deny direct network, common-Git writes and outside reads",
+              "nesting": 0,
+              "durationMs": 476.222875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/source-change-confinement.test.js",
+              "name": "WO-184 criterion 15: the confined writer test cannot alter its hook, host scratch, Git link or local instruction controls",
+              "nesting": 0,
+              "durationMs": 313.652041,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/source-change-confinement.test.js",
+              "name": "confined npm test leaves committed source clean through host and writer routes",
+              "nesting": 0,
+              "durationMs": 713.895125,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/source-change-host.test.js",
+              "name": "WO-052 AC1 claude: governed foreign worktree, failing baseline, committed passing result, receipt and explicit finish",
+              "nesting": 0,
+              "durationMs": 4637.442042,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "cell once-append-fresh",
+              "nesting": 1,
+              "durationMs": 35653.982791,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "cell once-lifetime-fresh",
+              "nesting": 1,
+              "durationMs": 35867.159416,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/source-change-host.test.js",
+              "name": "WO-052 AC1 codex: governed foreign worktree, failing baseline, committed passing result, receipt and explicit finish",
+              "nesting": 0,
+              "durationMs": 2802.256,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/source-change-host.test.js",
+              "name": "WO-052 AC2 real host SIGKILL before-commit: expired lease recovers one effect",
+              "nesting": 0,
+              "durationMs": 3384.935583,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "cell once-append-reclaim",
+              "nesting": 1,
+              "durationMs": 45069.973167,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "cell once-lifetime-reclaim",
+              "nesting": 1,
+              "durationMs": 45247.179042,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/source-change-host.test.js",
+              "name": "WO-052 AC2 real host SIGKILL after-commit: expired lease recovers one effect",
+              "nesting": 0,
+              "durationMs": 3404.670458,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/source-change-host.test.js",
+              "name": "WO-052 AC2 real host SIGKILL after-receipt: expired lease recovers one effect",
+              "nesting": 0,
+              "durationMs": 3650.927709,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/source-change-host.test.js",
+              "name": "WO-052 AC3 no commit refuses and retains edits; finish never discards them",
+              "nesting": 0,
+              "durationMs": 1645.362083,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/source-change-host.test.js",
+              "name": "WO-052 effect receipt and stable request are positively decoded before reclaim or redispatch",
+              "nesting": 0,
+              "durationMs": 3042.516625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/source-change-host.test.js",
+              "name": "WO-052 dirty committed tree and unowned ignored files refuse while preserving contents",
+              "nesting": 0,
+              "durationMs": 4857.906,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/source-change-host.test.js",
+              "name": "WO-052 authority expiry fences initial dispatch and post-worker admission",
+              "nesting": 0,
+              "durationMs": 1850.904875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/source-change-host.test.js",
+              "name": "WO-052 AC4 source payloads reject malformed identity, cross-order/branch results and terminal rewrites",
+              "nesting": 0,
+              "durationMs": 0.460459,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/source-change-host.test.js",
+              "name": "WO-052 emitted Claude permission hook admits only live host-issued exact commands",
+              "nesting": 0,
+              "durationMs": 7428.566333,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/source-change-host.test.js",
+              "name": "WO-052 wrong branch and outside-surface commits refuse without redispatch or discard",
+              "nesting": 0,
+              "durationMs": 4092.771625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/source-change-host.test.js",
+              "name": "WO-052 a second interrupted attempt exhausts recovery; no third dispatch",
+              "nesting": 0,
+              "durationMs": 2346.570041,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/source-change-host.test.js",
+              "name": "WO-157 a grant-bearing artifact identity equips and runs through the source-change host; a malformed registry still refuses",
+              "nesting": 0,
+              "durationMs": 2366.825917,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "cell loop-lifetime-fresh",
+              "nesting": 1,
+              "durationMs": 41625.146959,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "cell loop-append-fresh",
+              "nesting": 1,
+              "durationMs": 38271.783417,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/source-change-host.test.js",
+              "name": "WO-157 the host counts committed paths against the files ceiling and refuses a removal without repo.delete, except a declared Sort move",
+              "nesting": 0,
+              "durationMs": 11864.648459,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/subagent-budget.test.js",
+              "name": "WO-139 third admission succeeds; fourth and exhausted Workflow refuse; duplicate hooks and sessions remain independent",
+              "nesting": 0,
+              "durationMs": 47.02875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/subagent-budget.test.js",
+              "name": "WO-139 workflow children count once at their first attributed call, including rejection retries",
+              "nesting": 0,
+              "durationMs": 27.093125,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/subagent-budget.test.js",
+              "name": "WO-139 only observed result joins resolve direct/child overlap; mixed concurrency stays explicitly partial",
+              "nesting": 0,
+              "durationMs": 24.457333,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/subagent-budget.test.js",
+              "name": "WO-139 a direct child is not double charged before or after its exact result join",
+              "nesting": 0,
+              "durationMs": 8.715834,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/subagent-budget.test.js",
+              "name": "WO-139 new direct spawns cannot overlap previously observed workflow children",
+              "nesting": 0,
+              "durationMs": 16.261041,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/subagent-budget.test.js",
+              "name": "WO-139 child observation persists when that child's first spawn request is refused",
+              "nesting": 0,
+              "durationMs": 11.208667,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/subagent-budget.test.js",
+              "name": "WO-139 null disables refusal but preserves counting; zero denies, absent key defaults to 20",
+              "nesting": 0,
+              "durationMs": 72.634167,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/subagent-budget.test.js",
+              "name": "WO-139 missing, malformed, non-file, locked counters and invalid budgets admit with named causes",
+              "nesting": 0,
+              "durationMs": 728.095208,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "cell loop-lifetime-reclaim",
+              "nesting": 1,
+              "durationMs": 50214.414042,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/subagent-budget.test.js",
+              "name": "WO-139 concurrent independent admissions serialize at caps one and three",
+              "nesting": 0,
+              "durationMs": 201.185959,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/subagent-budget.test.js",
+              "name": "WO-142 B5 missing tool identity is unknown and known resumed agents are not recharged",
+              "nesting": 0,
+              "durationMs": 17.754333,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification-witness.test.js",
+              "name": "WO-058 AC1 DOM and accessibility alone leave visual incomplete; a cited screenshot verifies",
+              "nesting": 0,
+              "durationMs": 8.044833,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification-witness.test.js",
+              "name": "WO-058 AC2 network requires a cited passing trace bound to its criterion",
+              "nesting": 0,
+              "durationMs": 4.22925,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification-witness.test.js",
+              "name": "WO-058 unavailable screenshots and traces cannot support a pass",
+              "nesting": 0,
+              "durationMs": 2.380667,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification-witness.test.js",
+              "name": "WO-058 AC3 a console error bound to each scenario criterion fails both and cannot be omitted or relabeled",
+              "nesting": 0,
+              "durationMs": 2.671416,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification-witness.test.js",
+              "name": "WO-058 console info/warnings are not errors; unrelated checks retain the existing admission rule",
+              "nesting": 0,
+              "durationMs": 3.377292,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification-witness.test.js",
+              "name": "WO-184 criterion 14: the closed result schema exposes only the capsule's claim types",
+              "nesting": 0,
+              "durationMs": 1.232,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification-worktree.test.js",
+              "name": "WO-054 AC1/2 capsule from a WO-052 episode has a sealed contract, diff and independent live host witnesses",
+              "nesting": 0,
+              "durationMs": 1100.210375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "cell loop-append-reclaim",
+              "nesting": 1,
+              "durationMs": 45476.389042,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification-worktree.test.js",
+              "name": "WO-054 AC1 nested envelope injection refuses with the exact path, including through protocol validation",
+              "nesting": 0,
+              "durationMs": 219.633375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification-worktree.test.js",
+              "name": "WO-054 AC2 on-disk bytes, modes, additions, removals and symlinks cannot retain the sealed input hash",
+              "nesting": 0,
+              "durationMs": 1087.755541,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification-worktree.test.js",
+              "name": "WO-054 AC3 failing contract finding survives a success-shaped implementer event",
+              "nesting": 0,
+              "durationMs": 141.020916,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification-worktree.test.js",
+              "name": "WO-054 adverse witness cannot be omitted from a passing verifier result",
+              "nesting": 0,
+              "durationMs": 60.878459,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification-worktree.test.js",
+              "name": "WO-054 cached recovery and post-dispatch admission recheck the physical snapshot",
+              "nesting": 0,
+              "durationMs": 473.390333,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification-worktree.test.js",
+              "name": "WO-054 host test confinement denies outside reads, writes and network and isolates each execution",
+              "nesting": 0,
+              "durationMs": 183.035834,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification-worktree.test.js",
+              "name": "WO-054 unavailable commands never pass and a named test cannot rewrite its own inputs",
+              "nesting": 0,
+              "durationMs": 238.125667,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification-worktree.test.js",
+              "name": "WO-056 verifier schema, instructions and admission agree on the finding contract",
+              "nesting": 0,
+              "durationMs": 54.503542,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification-worktree.test.js",
+              "name": "WO-056 Codex launches a verifier in the files-only snapshot and every other shape keeps its bytes",
+              "nesting": 0,
+              "durationMs": 53.664792,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers",
+              "nesting": 0,
+              "durationMs": 91348.856834,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "WO-173 a lock-matrix cell that exceeds its own deadline fails by name while the other seven run",
+              "nesting": 0,
+              "durationMs": 731.650542,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-184 criterion 13: the notice requires a review-enabled opening and the value true",
+              "nesting": 0,
+              "durationMs": 571.674875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-010 AC1/2/3/5 claude-cli-print dispatch → finding → fresh focused repair → re-verification uses the kernel loop",
+              "nesting": 0,
+              "durationMs": 1490.084417,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-010 AC1/2/3/5 codex-cli-exec dispatch → finding → fresh focused repair → re-verification uses the kernel loop",
+              "nesting": 0,
+              "durationMs": 1505.875709,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-010 AC2 implementer-emitted events and repair results cannot certify acceptance",
+              "nesting": 0,
+              "durationMs": 3.47675,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-010 AC2/3 claim types, evidence sources, observations, subject and result shape are host-checked",
+              "nesting": 0,
+              "durationMs": 1.794208,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-010 AC3 each blocking finding has its own compiled repair; repair limits stop without greenwashing",
+              "nesting": 0,
+              "durationMs": 587.6265,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-010 completed-result crash recovery retains the producing verifier and invokes no duplicate effect",
+              "nesting": 0,
+              "durationMs": 1546.764542,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-010 a committed repair recovers before its event without repeating the write",
+              "nesting": 0,
+              "durationMs": 1423.288083,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-010 an admitted-result prefix recovers completion status and its continuation exactly once",
+              "nesting": 0,
+              "durationMs": 1426.72425,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-010 explicit human disposition holds a completed repair proposal before application",
+              "nesting": 0,
+              "durationMs": 1.798541,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-010 claude-cli-print killed verifier retains its command and recovers in a fresh leased episode",
+              "nesting": 0,
+              "durationMs": 1756.724291,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-010 claude-cli-print model refusal and forged passes retain pending work",
+              "nesting": 0,
+              "durationMs": 1524.659417,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-010 codex-cli-exec killed verifier retains its command and recovers in a fresh leased episode",
+              "nesting": 0,
+              "durationMs": 1754.719291,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-010 codex-cli-exec model refusal and forged passes retain pending work",
+              "nesting": 0,
+              "durationMs": 1560.301208,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-010 expired authority or lease quarantines acceptance and replay remains pure",
+              "nesting": 0,
+              "durationMs": 523.467833,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-056 the legacy verification profile launches Codex inside its Git worktree, without the repository-check skip",
+              "nesting": 0,
+              "durationMs": 1.009167,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-157 item 16 (D024): the verifier schema admits only findings admission can accept",
+              "nesting": 0,
+              "durationMs": 1.741041,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-142 B7 result schema, prompt and bounded rejection agree on summary length",
+              "nesting": 0,
+              "durationMs": 1.00525,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-157 item 8 claude-cli-print: an invalid-result refusal records and rethrows its typed detail",
+              "nesting": 0,
+              "durationMs": 515.322333,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-157 item 8 codex-cli-exec: an invalid-result refusal records and rethrows its typed detail",
+              "nesting": 0,
+              "durationMs": 529.054875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-157 item 8: a detail outside the closed vocabulary is recorded as unclassified, never verbatim",
+              "nesting": 0,
+              "durationMs": 451.968791,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-157 item 8: dotln prints the typed refusal detail",
+              "nesting": 0,
+              "durationMs": 627.973417,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/verification.test.js",
+              "name": "WO-157 item 8: the host's own receipt check records its typed detail",
+              "nesting": 0,
+              "durationMs": 477.962041,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/wo046-continuations.test.js",
+              "name": "WO-046 runtime rejects corrupt persisted continuations on fold before a result or dispatch",
+              "nesting": 0,
+              "durationMs": 0.999583,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/wo046-continuations.test.js",
+              "name": "WO-046 verification state reads and folds reject bad nested continuations",
+              "nesting": 0,
+              "durationMs": 0.28325,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/wo046-continuations.test.js",
+              "name": "WO-046 a valid persisted executable tree folds without byte changes",
+              "nesting": 0,
+              "durationMs": 0.539459,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-read-inventory.test.js",
+              "name": "WO-048 every host disk/JSON read is inventoried inside a path-named decoder",
+              "nesting": 0,
+              "durationMs": 43.10025,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-read-inventory.test.js",
+              "name": "WO-048 inventory tripwire detects newly added and aliased unguarded reads",
+              "nesting": 0,
+              "durationMs": 54.354792,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "lock-truncated-json",
+              "nesting": 1,
+              "durationMs": 31.490667,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "lock-null",
+              "nesting": 1,
+              "durationMs": 27.733916,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "lock-array",
+              "nesting": 1,
+              "durationMs": 30.573042,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "lock-foreign-field",
+              "nesting": 1,
+              "durationMs": 24.749959,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "lock-zero-pid",
+              "nesting": 1,
+              "durationMs": 26.190167,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "lock-fractional-pid",
+              "nesting": 1,
+              "durationMs": 26.893667,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "lock-unsafe-pid",
+              "nesting": 1,
+              "durationMs": 28.342416,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "lock-string-pid",
+              "nesting": 1,
+              "durationMs": 27.018167,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "log-torn",
+              "nesting": 1,
+              "durationMs": 33.059291,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-truncated-json",
+              "nesting": 1,
+              "durationMs": 30.558792,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-null",
+              "nesting": 1,
+              "durationMs": 26.660333,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-array",
+              "nesting": 1,
+              "durationMs": 32.5255,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-foreign-wrapper-field",
+              "nesting": 1,
+              "durationMs": 26.735458,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-missing-result",
+              "nesting": 1,
+              "durationMs": 30.437,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-non-object-result",
+              "nesting": 1,
+              "durationMs": 31.868625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-missing-envelope",
+              "nesting": 1,
+              "durationMs": 19.493708,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-missing-envelope-field",
+              "nesting": 1,
+              "durationMs": 26.232083,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-wrong-result-version",
+              "nesting": 1,
+              "durationMs": 38.420292,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-another-command",
+              "nesting": 1,
+              "durationMs": 32.629083,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-another-work-order",
+              "nesting": 1,
+              "durationMs": 30.57625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-invalid-episode",
+              "nesting": 1,
+              "durationMs": 24.171292,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-empty-episode",
+              "nesting": 1,
+              "durationMs": 25.398333,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-incomplete-success-cache",
+              "nesting": 1,
+              "durationMs": 26.523792,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-noncanonical-request-key",
+              "nesting": 1,
+              "durationMs": 21.080959,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-foreign-request-key",
+              "nesting": 1,
+              "durationMs": 32.076958,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "success-shaped-pending",
+              "nesting": 1,
+              "durationMs": 25.546208,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "command-noncanonical-key",
+              "nesting": 1,
+              "durationMs": 22.91325,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "command-non-string-key",
+              "nesting": 1,
+              "durationMs": 22.75625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "malformed-attempt-tail",
+              "nesting": 1,
+              "durationMs": 23.774,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "dangling-host.lock",
+              "nesting": 1,
+              "durationMs": 31.463625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "dangling-events.jsonl",
+              "nesting": 1,
+              "durationMs": 23.711375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "dangling-cmd_5ee0c6d8e207bd25.result.json",
+              "nesting": 1,
+              "durationMs": 33.018041,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "direct-host-run-refuses-before-events",
+              "nesting": 1,
+              "durationMs": 95.180042,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "WO-048 inspection malformed recovery corpus preserves all store bytes",
+              "nesting": 0,
+              "durationMs": 1319.819583,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "lock-truncated-json",
+              "nesting": 1,
+              "durationMs": 33.233959,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "lock-null",
+              "nesting": 1,
+              "durationMs": 34.133334,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "lock-array",
+              "nesting": 1,
+              "durationMs": 27.996334,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "lock-foreign-field",
+              "nesting": 1,
+              "durationMs": 35.033375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "lock-zero-pid",
+              "nesting": 1,
+              "durationMs": 25.997666,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "lock-fractional-pid",
+              "nesting": 1,
+              "durationMs": 37.855041,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "lock-unsafe-pid",
+              "nesting": 1,
+              "durationMs": 34.827541,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "lock-string-pid",
+              "nesting": 1,
+              "durationMs": 35.957375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "log-torn",
+              "nesting": 1,
+              "durationMs": 33.050792,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-truncated-json",
+              "nesting": 1,
+              "durationMs": 34.808,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-null",
+              "nesting": 1,
+              "durationMs": 27.801,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-array",
+              "nesting": 1,
+              "durationMs": 30.203417,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-foreign-wrapper-field",
+              "nesting": 1,
+              "durationMs": 29.677459,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-missing-result",
+              "nesting": 1,
+              "durationMs": 25.093792,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-non-object-result",
+              "nesting": 1,
+              "durationMs": 21.646625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-missing-envelope",
+              "nesting": 1,
+              "durationMs": 21.512667,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-missing-envelope-field",
+              "nesting": 1,
+              "durationMs": 29.450667,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-wrong-result-version",
+              "nesting": 1,
+              "durationMs": 30.004625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-another-command",
+              "nesting": 1,
+              "durationMs": 34.836416,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-another-work-order",
+              "nesting": 1,
+              "durationMs": 35.833792,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-invalid-episode",
+              "nesting": 1,
+              "durationMs": 29.9895,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-empty-episode",
+              "nesting": 1,
+              "durationMs": 33.298292,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-incomplete-success-cache",
+              "nesting": 1,
+              "durationMs": 37.509375,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-noncanonical-request-key",
+              "nesting": 1,
+              "durationMs": 31.836167,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "receipt-foreign-request-key",
+              "nesting": 1,
+              "durationMs": 34.219875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "success-shaped-pending",
+              "nesting": 1,
+              "durationMs": 29.857333,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "command-noncanonical-key",
+              "nesting": 1,
+              "durationMs": 36.19525,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "command-non-string-key",
+              "nesting": 1,
+              "durationMs": 38.090666,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "capsule-null",
+              "nesting": 1,
+              "durationMs": 41.563875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "capsule-truncated-shape",
+              "nesting": 1,
+              "durationMs": 38.916125,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "capsule-wrong-version",
+              "nesting": 1,
+              "durationMs": 31.198792,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "capsule-input-hash-drift",
+              "nesting": 1,
+              "durationMs": 28.445958,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "capsule-subject-drift",
+              "nesting": 1,
+              "durationMs": 31.410625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "malformed-attempt-tail",
+              "nesting": 1,
+              "durationMs": 29.385041,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "dangling-host.lock",
+              "nesting": 1,
+              "durationMs": 28.77275,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "dangling-events.jsonl",
+              "nesting": 1,
+              "durationMs": 24.341917,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "dangling-cmd_3b843b5108e71409.result.json",
+              "nesting": 1,
+              "durationMs": 30.918292,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "direct-host-run-refuses-before-events",
+              "nesting": 1,
+              "durationMs": 133.711084,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker-store-decode.test.js",
+              "name": "WO-048 verification malformed recovery corpus preserves all store bytes",
+              "nesting": 0,
+              "durationMs": 1875.66625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker.test.js",
+              "name": "WO-009 AC6 canonical launch shapes pin model, settings, memory, persistence, mounts and honest effort",
+              "nesting": 0,
+              "durationMs": 15.192958,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker.test.js",
+              "name": "WO-125 unknown Codex arguments retain the pre-change bytes on both observed versions",
+              "nesting": 0,
+              "durationMs": 8.342667,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker.test.js",
+              "name": "WO-132 unrecorded versions and efforts reach host launch without discovery refusal",
+              "nesting": 0,
+              "durationMs": 7.312125,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker.test.js",
+              "name": "WO-132 version observations admit older, unknown and upgraded workers without changing the requested model",
+              "nesting": 0,
+              "durationMs": 992.137625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker.test.js",
+              "name": "WO-132 effort presence is required and quoted config values cannot add options",
+              "nesting": 0,
+              "durationMs": 5.4395,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker.test.js",
+              "name": "WO-132 normalized plan-refuter effort retains its subagent mode at launch",
+              "nesting": 0,
+              "durationMs": 5.71875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker.test.js",
+              "name": "WO-132 ultra modes select xhigh, retain host permissions and permit Codex subagents",
+              "nesting": 0,
+              "durationMs": 5.528125,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker.test.js",
+              "name": "WO-009 AC3 deterministic real-Git create, verified cwd/base, collision and dirty cleanup refusal",
+              "nesting": 0,
+              "durationMs": 328.899291,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker.test.js",
+              "name": "WO-009 row 2 crash after effect before result persist re-queries the durable receipt without double application",
+              "nesting": 0,
+              "durationMs": 674.614125,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker.test.js",
+              "name": "WO-009 row 4 a result after authority expiry is persisted and quarantined without candidate state mutation",
+              "nesting": 0,
+              "durationMs": 197.540875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker.test.js",
+              "name": "WO-009 row 6 SIGKILL leaves a recoverable command and continuation; lease expiry admits a fresh episode",
+              "nesting": 0,
+              "durationMs": 881.402583,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker.test.js",
+              "name": "WO-009 AC5 missing models fail closed in both directions and both transports; diagnostics stay private",
+              "nesting": 0,
+              "durationMs": 1320.326042,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker.test.js",
+              "name": "WO-009 invalid correlation, malformed output and success-shaped nonzero exits never complete commands",
+              "nesting": 0,
+              "durationMs": 1958.598042,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker.test.js",
+              "name": "WO-009 incomplete envelopes retain partial evidence without applying candidates or forcing human input",
+              "nesting": 0,
+              "durationMs": 726.188125,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker.test.js",
+              "name": "WO-009 stale episode observations cannot close pending commands; duplicate admitted results are inert",
+              "nesting": 0,
+              "durationMs": 168.662416,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker.test.js",
+              "name": "WO-009 a legacy or drifted equip cannot reach a real transport",
+              "nesting": 0,
+              "durationMs": 116.465709,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker.test.js",
+              "name": "WO-009 missed leases fence delayed heartbeats and results while authority remains valid",
+              "nesting": 0,
+              "durationMs": 1702.828416,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker.test.js",
+              "name": "WO-009 recovery from a durable result prefix closes the episode and runs the demo suffix once",
+              "nesting": 0,
+              "durationMs": 857.0085,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker.test.js",
+              "name": "WO-009 concurrent dead-host reclaimers admit only one writer and abandoned guards refuse",
+              "nesting": 0,
+              "durationMs": 159.325292,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/worker.test.js",
+              "name": "WO-132 the public worker CLI admits ultra and unrecorded selectors before transport",
+              "nesting": 0,
+              "durationMs": 5271.718917,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/writer.test.js",
+              "name": "WO-161 the bounded Contributor label retains the writer's authority limits",
+              "nesting": 0,
+              "durationMs": 7.361167,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/writer.test.js",
+              "name": "WO-051 inspection request, validator, parser, prompt and both launch arrays retain activation bytes",
+              "nesting": 0,
+              "durationMs": 0.916666,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/writer.test.js",
+              "name": "WO-051 writer authority, command and environment refuse invalid requests before a launch",
+              "nesting": 0,
+              "durationMs": 151.478458,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/writer.test.js",
+              "name": "WO-051 source-change mount accepts scratch worktrees and rejects root, prefix and symlink escapes",
+              "nesting": 0,
+              "durationMs": 161.197625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/writer.test.js",
+              "name": "WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes",
+              "nesting": 0,
+              "durationMs": 115.900875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/writer.test.js",
+              "name": "WO-051 claude subprocess observes committed and C-K1 edited-uncommitted outcomes",
+              "nesting": 0,
+              "durationMs": 433.992625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/writer.test.js",
+              "name": "WO-051 claude malformed, spoofed and failed vendor output never becomes a writer result",
+              "nesting": 0,
+              "durationMs": 759.6255,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/writer.test.js",
+              "name": "WO-051 codex subprocess observes committed and C-K1 edited-uncommitted outcomes",
+              "nesting": 0,
+              "durationMs": 464.37625,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/writer.test.js",
+              "name": "WO-051 codex malformed, spoofed and failed vendor output never becomes a writer result",
+              "nesting": 0,
+              "durationMs": 493.173167,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/writer.test.js",
+              "name": "WO-051 strict writer parser keeps observations host-owned and validates stored fields",
+              "nesting": 0,
+              "durationMs": 121.4985,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "WO-143 thirty consecutive kill/restart rounds remain openable on once and loop paths",
+              "nesting": 0,
+              "durationMs": 42688.819334,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "WO-143 live, unreadable and legacy guards refuse unchanged; released locks remain compatible",
+              "nesting": 0,
+              "durationMs": 438.251833,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "WO-143 malformed resident state preserves dead append guard and lock before reclaim",
+              "nesting": 0,
+              "durationMs": 289.200792,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "WO-143 killed actors drain without further polling lock acquisitions",
+              "nesting": 0,
+              "durationMs": 498.695292,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "WO-143 concurrent dead-guard starts publish exactly one reclaim claim",
+              "nesting": 0,
+              "durationMs": 155.92675,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "WO-147 a lock released between observation and read is re-inspected under the guard",
+              "nesting": 0,
+              "durationMs": 565.8505,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "WO-147 retirement probe tolerates a delayed claim present when recursive cleanup begins",
+              "nesting": 0,
+              "durationMs": 5100.412875,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "WO-143 a delayed claimant cannot unlink a successor through a retired target",
+              "nesting": 0,
+              "durationMs": 285.32725,
+              "exitCode": 0
+            },
+            {
+              "file": "packages/skeleton/dist/test/resident.test.js",
+              "name": "WO-143 once and loop recover kills during a running episode's polling acquisition",
+              "nesting": 0,
+              "durationMs": 44747.090625,
+              "exitCode": 0
+            }
+          ]
+        },
+        {
+          "name": "worktree-integration",
+          "durationMs": 226540,
+          "startedAt": "2026-10-05T07:55:01.965Z",
+          "finishedAt": "2026-10-05T07:58:48.512Z",
+          "loadClass": "shared",
+          "concurrentAtStart": [
+            "skeleton",
+            "target-publish",
+            "checkpoint"
+          ],
+          "predecessors": [
+            "build",
+            "authority-evidence",
+            "harness",
+            "harness-evidence",
+            "artifact-evidence",
+            "verification-evidence",
+            "feedback-evidence",
+            "meta",
+            "release:case:material"
+          ],
+          "hostLaneWaitMs": 0,
+          "caseCount": 21,
+          "cases": [
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "real Git fast-forward preserves recovery, histories and authored conflicts with real generators",
+              "nesting": 0,
+              "durationMs": 14954.037292,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "real Git reviewed merge preserves recovery, histories and authored conflicts with real generators",
+              "nesting": 0,
+              "durationMs": 15334.232625,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "three required refusals leave the tree, index, HEAD and recovery refs unchanged",
+              "nesting": 0,
+              "durationMs": 9724.682125,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "an intent-to-add entry is refused before any write, and a failed stash leaves no pending receipt",
+              "nesting": 0,
+              "durationMs": 7850.741375,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "a stash Git stores and then fails to finish resumes with --continue; --continue refuses intent-to-add entries",
+              "nesting": 0,
+              "durationMs": 9479.328709,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "a later stash failure with nothing stashed restores the completed receipt it replaced",
+              "nesting": 0,
+              "durationMs": 12769.630709,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "follow-up union preserves compatible histories and refuses divergent same-entry histories",
+              "nesting": 0,
+              "durationMs": 1.994875,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "untracked stash collision remains explicit and recoverable until continuation",
+              "nesting": 0,
+              "durationMs": 11003.220959,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "WO-167 --continue judges the recorded phase while the uncommitted control log travels in the stash",
+              "nesting": 0,
+              "durationMs": 11085.501792,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "WO-169 a first invocation with no authored conflict generates at once",
+              "nesting": 0,
+              "durationMs": 12219.360917,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "WO-169 a pass whose generator fails keeps its checks and names the pending step, not a conflict",
+              "nesting": 0,
+              "durationMs": 9448.062083,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "WO-086 a conflicted decisions record refuses the collision's record and writes nothing",
+              "nesting": 0,
+              "durationMs": 9151.128042,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "WO-086 a retime that lands on a continuation is recorded once, in the stub the failed pass withheld",
+              "nesting": 0,
+              "durationMs": 13494.460375,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "WO-086 a blocked PR directory preserves collision inputs for continuation",
+              "nesting": 0,
+              "durationMs": 13735.029917,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "WO-086 a blocked PR file preserves collision inputs for continuation",
+              "nesting": 0,
+              "durationMs": 13792.230542,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "WO-086 a stub blocked by a regular file retains its saved collision through continuation",
+              "nesting": 0,
+              "durationMs": 13600.736667,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "WO-086 a stub blocked by a symlink retains its saved collision through continuation",
+              "nesting": 0,
+              "durationMs": 18235.634042,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "WO-086 a stub blocked by a regular file with a newer tag during retry retains its saved collision through continuation",
+              "nesting": 0,
+              "durationMs": 15816.491916,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "WO-086 a tag that lands after the stub is written is recorded once, by release prepare",
+              "nesting": 0,
+              "durationMs": 14603.209792,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "WO-169 the integration record holds each release message as one line with one full stop",
+              "nesting": 0,
+              "durationMs": 1.359291,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-worktree-integration.mjs",
+              "name": "printed checks use the runner's declared machinery sources, including package code",
+              "nesting": 0,
+              "durationMs": 95.111291,
+              "exitCode": 0
+            }
+          ]
+        },
+        {
+          "name": "target-publish",
+          "durationMs": 144973,
+          "startedAt": "2026-10-05T07:54:41.766Z",
+          "finishedAt": "2026-10-05T07:57:06.752Z",
+          "loadClass": "shared",
+          "concurrentAtStart": [
+            "skeleton",
+            "release:case:material",
+            "release:case:close_leftover"
+          ],
+          "predecessors": [
+            "build",
+            "authority-evidence",
+            "harness",
+            "harness-evidence",
+            "artifact-evidence",
+            "verification-evidence",
+            "feedback-evidence",
+            "meta",
+            "outward-lint"
+          ],
+          "hostLaneWaitMs": 0,
+          "caseCount": 37,
+          "cases": [
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-182 AC3: readiness refusal precedes every remote call; operator publication shows the same gaps",
+              "nesting": 0,
+              "durationMs": 2931.024041,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-182 AC3: one absent item names its gap; the same store publishes a proposal without the flag",
+              "nesting": 0,
+              "durationMs": 3923.020417,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-182 current replayed baseline, verification and review permit required publication",
+              "nesting": 0,
+              "durationMs": 3553.951791,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-182 stale preparation and forged baseline/review events cannot bypass readiness",
+              "nesting": 0,
+              "durationMs": 3957.822625,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-064 AC1: publish refuses without an operator grant before any remote call",
+              "nesting": 0,
+              "durationMs": 2548.808417,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-064 AC1: a host-policy grant is not operator provenance",
+              "nesting": 0,
+              "durationMs": 2353.770542,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-064 AC1/AC2: lint and target refusals name their rule; the granted publish pushes and opens the pull request with the pinned body",
+              "nesting": 0,
+              "durationMs": 4754.505666,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-064 AC1 (VER-001 F1): a same-head acceptance matrix must verify this WorkOrder's criteria",
+              "nesting": 0,
+              "durationMs": 4158.41675,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-157: publication runs no hook or repository configuration the target holds",
+              "nesting": 0,
+              "durationMs": 2985.310791,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-064: the CLI names its usage for a malformed target request",
+              "nesting": 0,
+              "durationMs": 57.262084,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-066 AC5: a signed-header commit runs planted gpg on ordinary log, never publication; request binds origin before remote calls",
+              "nesting": 0,
+              "durationMs": 2834.907416,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-065 AC1: typed classes, correlation, roles and latest normalized-state dedup through the CLI",
+              "nesting": 0,
+              "durationMs": 2990.654042,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-065 F1: actor types decide roles on every comment connection and pagination path",
+              "nesting": 0,
+              "durationMs": 453.797833,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-065 AC2: every declared secret and URL form is refused without persisted text; safe peers survive",
+              "nesting": 0,
+              "durationMs": 419.822708,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-065 AC1/AC2: all connections and nested thread comments paginate",
+              "nesting": 0,
+              "durationMs": 627.11325,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-065 AC3: unknown PR, malformed JSON/fields, partial errors and gh failure append nothing",
+              "nesting": 0,
+              "durationMs": 4155.7315,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-065: duplicate nodes, stalled pagination and concurrent writer refuse",
+              "nesting": 0,
+              "durationMs": 732.632416,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-065 F2: malformed screened bodies remain refused items while safe peers survive",
+              "nesting": 0,
+              "durationMs": 805.698417,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-065 F3: refused metadata stays local, preserves check states, and retains no rejected content",
+              "nesting": 0,
+              "durationMs": 798.648291,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-065 F3: forge hosts incompatible with the screen refuse before gh",
+              "nesting": 0,
+              "durationMs": 495.124375,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-065: draft comments stay transient, deleted authors and opaque padded ids remain readable, empty checks are valid",
+              "nesting": 0,
+              "durationMs": 421.162667,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-065: a valid page over the default child-process buffer is decoded and stored",
+              "nesting": 0,
+              "durationMs": 500.408708,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-066 AC1/AC3: an accepted automated thread repairs, verifies, pushes, disposes and records fresh resolution; recovery never pushes twice",
+              "nesting": 0,
+              "durationMs": 8115.236625,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-066 AC1: a mapped failing check repairs and is freshly observed successful at the new head",
+              "nesting": 0,
+              "durationMs": 7228.079958,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-066 AC2: reject carries evidence to the thread; human comments never dispatch or dispose; outside paths and unmapped checks name NeedsHuman",
+              "nesting": 0,
+              "durationMs": 15442.260125,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-066 AC2: a refused comment stops with its identifier; failed repair verification cannot push or dispatch a second round",
+              "nesting": 0,
+              "durationMs": 10322.391042,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-066 AC3: later comments enter at observation, but a local resolved bit without an observer event proves nothing",
+              "nesting": 0,
+              "durationMs": 4387.941,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-066 AC4: push and every thread disposition require their operator effect before gh; a foreign repaired head cannot push",
+              "nesting": 0,
+              "durationMs": 6517.526417,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-184 criterion 7: response-derived argument tokens refuse before reuse without echo",
+              "nesting": 0,
+              "durationMs": 585.744958,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-184 criterion 7: screen overflow refuses only the item, preserving its safe peer",
+              "nesting": 0,
+              "durationMs": 445.929833,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-184 criterion 8: required publication rechecks a recorded head without remote calls",
+              "nesting": 0,
+              "durationMs": 4048.151209,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-184 criterion 8: lint not-applicable carries its reason, while tests always require evidence",
+              "nesting": 0,
+              "durationMs": 3828.257125,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-184 criterion 9: pending and cancelled mapped checks stop needs-human with their item",
+              "nesting": 0,
+              "durationMs": 13569.180459,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-184 criterion 9: interruption after the observer append resumes from the last effect receipt",
+              "nesting": 0,
+              "durationMs": 7139.456792,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-184 criterion 9: missing lines and unmatched required checks end human, allowing later items",
+              "nesting": 0,
+              "durationMs": 10449.442791,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-184 criterion 9: pushRepairedHead refuses a failing exact-head matrix before any push",
+              "nesting": 0,
+              "durationMs": 6252.824625,
+              "exitCode": 0
+            },
+            {
+              "file": "scripts/test-target-publish.mjs",
+              "name": "WO-184 criterion 7: every observer caller gets a fixed reason for unexpected errors",
+              "nesting": 0,
+              "durationMs": 0.61575,
+              "exitCode": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -114,7 +114,8 @@ and no longer. The slowest cases cost what their assertions need; a
 rerun never repeats a task that already passed at the same code; a new
 worktree does not repeat main's gate; and the minutes a gate does take
 are minutes the role spends writing its record. Final review still runs
-everything.
+everything. Judge elapsed work under the operator's normal parallel
+work-order workflow, retaining contention as part of the observed cost.
 
 **Observed gap (dated 2026-10-02, `main` at `08845c71`; gate figures are
 medians of passing four-lane rows in the main checkout's gate index,
@@ -228,11 +229,15 @@ write-backs below.
 **Acceptance criteria (all required)**
 
 1. For each of the three cases the decisions record the measured cause,
-   the change, and the median of five runs alone on this host before and
-   after. The harness case's median is at most 10 s, the integration
+   the change, and the median of five runs during ordinary use of this
+   host before and after. Parallel work orders remain allowed; record
+   observed contention and leave unobserved activity unknown. Do not
+   discard or repeat a passing run merely because other work overlaps.
+   The harness case's median is at most 10 s, the integration
    suite's at most 150 s and the skeleton suite's at most 200 s; where a
    figure is not met, a profile of the remaining time shows which
-   assertion needs it, and the criterion is met by that record. Each
+   assertion needs it and any observed contention, and the criterion is
+   met by that record. Each
    case's assertions are listed before and after, and a planted defect
    for each is still caught.
 2. A gate row records each task's five slowest cases with their
@@ -268,8 +273,12 @@ write-backs below.
    their thirty-day medians, holding when one exceeds its median by half,
    and the plain gate's median against 360 s.
 9. The decisions record the medians of five plain and five review gates
-   alone on this host before and after this order, and reconcile them
-   with the Cost line's removals item by item. The replay script and its
+   during ordinary host use before and after this order, including
+   parallel work orders, and reconcile them with the Cost line's
+   removals item by item. Retain observed contention and unknowns with
+   the comparison; do not require a quiet host or discard a passing
+   observation solely for overlap. Unequal workloads limit causal
+   attribution and must be stated. The replay script and its
    output for the last thirty orders are kept under this order's
    evidence.
 10. Write-backs land, each in place with no dated paragraph: product 07

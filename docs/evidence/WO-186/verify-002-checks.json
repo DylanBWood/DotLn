@@ -1,0 +1,478 @@
+{
+  "schemaVersion": 1,
+  "subjectIdentity": "dea58b070d67cc37483fb0ceabb9d7fb55e46fda478169cae7e63554a255870a",
+  "executorReview": {
+    "recordedAt": "2026-10-05T17:27:45.668Z",
+    "exitCode": 0,
+    "executionMode": "forced-fresh",
+    "durationMs": 899487,
+    "freshTasks": 86,
+    "reusedTasks": 0,
+    "requiredSuites": 36,
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true
+  },
+  "runner": {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern='WO-186' scripts/test-runner.test.mjs",
+    "passed": 27,
+    "failed": 0,
+    "repairRegressionCases": 14,
+    "bounded": {
+      "name": "bounded-probe",
+      "durationMs": 34758,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 34758,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 164812040,
+      "peakRssBytes": 340525056,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-05T17:41:59.730Z",
+      "finishedAt": "2026-10-05T17:42:34.488Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    "cases": [
+      {
+        "name": "WO-186 npm test records composed task rows; --again, --review, changed code and unusable observations run fresh",
+        "durationMs": 2930.292541
+      },
+      {
+        "name": "WO-186 one failed task reruns alone in another shell and session, composes a claimable row and keeps review fresh",
+        "durationMs": 1279.692541
+      },
+      {
+        "name": "WO-186 stopped, partial, timed-out and failed task observations never reuse; untracked edits invalidate and staging is stable",
+        "durationMs": 1224.354416
+      },
+      {
+        "name": "WO-186 a fresh worktree reads main's passes without modifying main, while a changed source runs",
+        "durationMs": 976.945917
+      },
+      {
+        "name": "WO-186 VER-001 a build output made at another identity is rebuilt before a task runs, so a returned-to identity keeps its failure",
+        "durationMs": 1248.764125
+      },
+      {
+        "name": "WO-186 VER-001 a task's latest executed result decides: a forced-fresh failure runs again, and a carried result names the row that executed it",
+        "durationMs": 1167.698666
+      },
+      {
+        "name": "WO-186 VER-001 a build output that changes while the gate runs fails the row and none of its passes is carried",
+        "durationMs": 763.257666
+      },
+      {
+        "name": "WO-186 VER-001 an output changed or removed outside its attested build is rebuilt, and an undeclared output is never carried beside a task",
+        "durationMs": 1825.2295
+      },
+      {
+        "name": "WO-186 VER-001 a later failed gate displaces older passes, and a carried result is never itself evidence",
+        "durationMs": 2190.733583
+      },
+      {
+        "name": "WO-186 VER-001 a pass carried from main is re-validated against main's latest execution",
+        "durationMs": 997.213375
+      },
+      {
+        "name": "WO-186 VER-001 an attested output is carried in another session, and a worktree without main's output builds before its task",
+        "durationMs": 1170.513917
+      },
+      {
+        "name": "WO-186 VER-001 the build output digest covers wildcard directories by bytes and refuses what it cannot cover",
+        "durationMs": 4.496
+      },
+      {
+        "name": "WO-186 VER-001 a wildcard output beside a plain file is attested, a failed task reruns alone, and a carried build's output is still judged at the end",
+        "durationMs": 1445.190041
+      },
+      {
+        "name": "WO-186 VER-001 a failed single-suite, machinery or partial run displaces an older pass, and a run under another check supplies none",
+        "durationMs": 1843.55875
+      },
+      {
+        "name": "WO-186 VER-001 an unresolvable main leaves the lookup with the worktree's own rows",
+        "durationMs": 637.524834
+      },
+      {
+        "name": "WO-186 VER-001 a pass carried from main has no execution to stand on while main cannot be consulted",
+        "durationMs": 990.158417
+      },
+      {
+        "name": "WO-186 code changing between partial lookup and preflight discards every old-identity pass",
+        "durationMs": 835.656666
+      },
+      {
+        "name": "WO-186 symbolic source aliases cannot reuse a key that omits ignored target bytes",
+        "durationMs": 577.627208
+      },
+      {
+        "name": "WO-186 sibling advancement leaves merge-base selection and the review claim unchanged; own machinery still selects",
+        "durationMs": 783.436125
+      },
+      {
+        "name": "WO-186 product tasks reject reads of untracked active-order reports and retain the five longest cases",
+        "durationMs": 1360.035291
+      },
+      {
+        "name": "WO-186 VER-001 product tasks reject recursive listings, watches and copies from the root or an ancestor, and blob and link reads of records",
+        "durationMs": 423.640666
+      },
+      {
+        "name": "WO-186 planning performance excludes reused zero durations, compares earlier medians and holds above half growth",
+        "durationMs": 4.979459
+      },
+      {
+        "name": "WO-186 concurrent duplicate names and runtime skip/todo clear at execution completion",
+        "durationMs": 338.194584
+      },
+      {
+        "name": "WO-186 VER-001 the heartbeat names a synchronous case while it runs, after an async one, and never a finished case",
+        "durationMs": 8881.366416
+      },
+      {
+        "name": "WO-186 excluded license pins fail their document-routed check and outward vocabulary stays in the product identity",
+        "durationMs": 102.818625
+      },
+      {
+        "name": "WO-186 a failed release case reruns alone after its passed disposable template has gone",
+        "durationMs": 639.181958
+      },
+      {
+        "name": "WO-186 legacy product-only rows remain visible to planning and an even sample median uses both middle observations",
+        "durationMs": 0.284417
+      }
+    ]
+  },
+  "realBuildProof": {
+    "subject": "/Users/dylanwood/Projects/DotLn-wo186",
+    "repo": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln/19251143035e678c1c233f60318f1234a9262f0493d6bf699c6536d943c782f3/scratch/real-build-fixture-002",
+    "checkedAt": "2026-10-05T17:44:54.102Z",
+    "method": "actual declared build and kernel tasks, kernel filtered to one additional test; all production source copied from the current non-ignored tree; installed dependencies referenced through symlinks inside an ignored dependency directory",
+    "claimRejected": true,
+    "steps": [
+      {
+        "label": "A first",
+        "identity": "380a7791b30329a54bef91e3f9acecc24a07865bffdd2372138f074632aa60ac",
+        "exitCode": 1,
+        "mode": "fresh",
+        "buildOutputUnchanged": true,
+        "tasks": [
+          {
+            "name": "build",
+            "exitCode": 0,
+            "outputDigest": "8b57b8e2cae17f656e24e66e18421e6fe9e1bf26f0e19572b0194b6b8501c985"
+          },
+          {
+            "name": "kernel",
+            "exitCode": 1
+          }
+        ]
+      },
+      {
+        "label": "B",
+        "identity": "9770cb4895e7bce3b04e96bab673d22f82bafed9006d1e363719b0971a02fa73",
+        "exitCode": 0,
+        "mode": "fresh",
+        "buildOutputUnchanged": true,
+        "tasks": [
+          {
+            "name": "build",
+            "exitCode": 0,
+            "outputDigest": "1a919390f17f9bd9e1418fc24569638f73b6a9a305a11569684a43bbd0fd4830"
+          },
+          {
+            "name": "kernel",
+            "exitCode": 0
+          }
+        ]
+      },
+      {
+        "label": "A returned with B output",
+        "identity": "380a7791b30329a54bef91e3f9acecc24a07865bffdd2372138f074632aa60ac",
+        "exitCode": 1,
+        "mode": "fresh",
+        "buildOutputUnchanged": true,
+        "tasks": [
+          {
+            "name": "build",
+            "exitCode": 0,
+            "outputDigest": "8b57b8e2cae17f656e24e66e18421e6fe9e1bf26f0e19572b0194b6b8501c985"
+          },
+          {
+            "name": "kernel",
+            "exitCode": 1
+          }
+        ]
+      },
+      {
+        "label": "A repeated",
+        "identity": "380a7791b30329a54bef91e3f9acecc24a07865bffdd2372138f074632aa60ac",
+        "exitCode": 1,
+        "mode": "composed",
+        "buildOutputUnchanged": true,
+        "tasks": [
+          {
+            "name": "build",
+            "exitCode": 0,
+            "reused": true,
+            "outputDigest": "8b57b8e2cae17f656e24e66e18421e6fe9e1bf26f0e19572b0194b6b8501c985",
+            "sourceRow": {
+              "task": "build",
+              "codeIdentity": "380a7791b30329a54bef91e3f9acecc24a07865bffdd2372138f074632aa60ac",
+              "treeHash": "d33c402f928ae786e478aba64ce0feb9c2873e5a",
+              "recordedAt": "2026-10-05T17:44:53.327Z",
+              "evidenceRef": "host-gate:380a7791b30329a54bef91e3f9acecc24a07865bffdd2372138f074632aa60ac:npm test",
+              "location": "worktree"
+            }
+          },
+          {
+            "name": "kernel",
+            "exitCode": 1
+          }
+        ]
+      }
+    ]
+  },
+  "liveGateAdmission": {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern='WO-186 only the active order' scripts/test-harness.mjs",
+    "passed": 1,
+    "failed": 0,
+    "bounded": {
+      "name": "bounded-probe",
+      "durationMs": 8361,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 8361,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 106558952,
+      "peakRssBytes": 247332864,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-05T17:45:53.519Z",
+      "finishedAt": "2026-10-05T17:46:01.880Z",
+      "exitCode": 0,
+      "executed": true
+    }
+  },
+  "measurementAndOutputChecks": {
+    "checkedAt": "2026-10-05T17:47:37.927Z",
+    "identity": "dea58b070d67cc37483fb0ceabb9d7fb55e46fda478169cae7e63554a255870a",
+    "phases": {
+      "before": {
+        "harness-case": {
+          "samples": 5,
+          "wallMedianSeconds": 1.924
+        },
+        "plain-gate": {
+          "samples": 5,
+          "wallMedianSeconds": 495.605
+        },
+        "review-gate": {
+          "samples": 5,
+          "wallMedianSeconds": 506.452
+        },
+        "skeleton": {
+          "samples": 5,
+          "medianSeconds": 355.779
+        },
+        "worktree-integration": {
+          "samples": 5,
+          "medianSeconds": 307.349
+        },
+        "releaseSumSeconds": 354.286,
+        "worktreeMedianSeconds": 100.477
+      },
+      "after": {
+        "harness-case": {
+          "samples": 5,
+          "wallMedianSeconds": 1.758
+        },
+        "plain-gate": {
+          "samples": 5,
+          "wallMedianSeconds": 422.027
+        },
+        "review-gate": {
+          "samples": 5,
+          "wallMedianSeconds": 814.813
+        },
+        "skeleton": {
+          "samples": 5,
+          "medianSeconds": 229.754
+        },
+        "worktree-integration": {
+          "samples": 5,
+          "medianSeconds": 226.064
+        },
+        "releaseSumSeconds": 423.64,
+        "worktreeMedianSeconds": 118.962
+      }
+    },
+    "documentGate": {
+      "mainCutoff": "2026-10-04T16:23:39.155Z",
+      "beforeSamples": 140,
+      "beforeSeconds": 38.993,
+      "exactBeforeSeconds": 38.9935,
+      "rounding": "published displays use the retained repair-recompute.mjs toFixed(3) method",
+      "afterSamples": 3,
+      "afterSeconds": 66.69
+    },
+    "assertions": [
+      {
+        "file": "scripts/test-harness.mjs",
+        "before": 15,
+        "after": 15,
+        "identical": true
+      },
+      {
+        "file": "scripts/test-worktree-integration.mjs",
+        "before": 215,
+        "after": 215,
+        "identical": true
+      },
+      {
+        "file": "packages/skeleton/test/resident.test.ts",
+        "before": 12,
+        "after": 12,
+        "identical": true
+      }
+    ],
+    "dependencies": "no new lockfile entry or external dependency change; internal versions and workspace pins only",
+    "generatedRefusals": {
+      "identicalSkillRoots": 12,
+      "defaultRootsQualified": true
+    },
+    "slowCases": {
+      "suites": 36,
+      "tasks": 86,
+      "sortedTopFive": true
+    }
+  },
+  "plantedDefectControls": [
+    {
+      "case": "harness",
+      "productionFile": "packages/skeleton/dist/src/harness-host.js",
+      "mutation": {
+        "before": "if (view.alive === true && !force)",
+        "after": "if (false && view.alive === true && !force)"
+      },
+      "exitCode": 1,
+      "detected": true,
+      "recordedAt": "2026-10-05T17:48:35.745Z",
+      "wallMs": 1381.2590840000003,
+      "log": "../../../../private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln/19251143035e678c1c233f60318f1234a9262f0493d6bf699c6536d943c782f3/scratch/mutants/harness/defect-control.log",
+      "repository": "mutants/harness",
+      "failingCases": [
+        "WO-039 an operator release judges, retires and journals one observed reservation"
+      ]
+    },
+    {
+      "case": "integration",
+      "productionFile": "scripts/lib/worktree-integration.mjs",
+      "mutation": {
+        "before": ".join(\". \")}.",
+        "after": ".join(\". \")}.."
+      },
+      "exitCode": 1,
+      "detected": true,
+      "recordedAt": "2026-10-05T17:49:15.530Z",
+      "wallMs": 34369.742542,
+      "log": "../../../../private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln/19251143035e678c1c233f60318f1234a9262f0493d6bf699c6536d943c782f3/scratch/mutants/integration/defect-control.log",
+      "repository": "mutants/integration",
+      "failingCases": [
+        "real Git fast-forward preserves recovery, histories and authored conflicts with real generators",
+        "real Git reviewed merge preserves recovery, histories and authored conflicts with real generators",
+        "WO-169 the integration record holds each release message as one line with one full stop"
+      ]
+    },
+    {
+      "case": "lock-matrix",
+      "productionFile": "packages/skeleton/dist/src/resident-store.js",
+      "mutation": {
+        "before": "openSync(this.store.logPath, \"a\", 0o600)",
+        "after": "openSync(this.store.logPath, type === \"ScriptEpisodeLost\" ? \"w\" : \"a\", 0o600)"
+      },
+      "exitCode": 1,
+      "detected": true,
+      "recordedAt": "2026-10-05T17:49:23.609Z",
+      "wallMs": 2183.4225420000002,
+      "log": "../../../../private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln/19251143035e678c1c233f60318f1234a9262f0493d6bf699c6536d943c782f3/scratch/mutants/lock-matrix/defect-control.log",
+      "repository": "mutants/lock-matrix",
+      "failingCases": [
+        "cell once-lifetime-fresh",
+        "cell once-lifetime-reclaim",
+        "cell once-append-fresh",
+        "cell once-append-reclaim",
+        "cell loop-lifetime-fresh",
+        "cell loop-lifetime-reclaim",
+        "cell loop-append-fresh",
+        "cell loop-append-reclaim",
+        "WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers"
+      ]
+    }
+  ],
+  "conditions": {
+    "observedAt": "2026-10-05T17:49:51.359Z",
+    "listedTasks": 5,
+    "plainMedianSeconds": 294.8765,
+    "plainThresholdSeconds": 360,
+    "holdingTasks": [
+      "worktree-integration",
+      "target-publish"
+    ],
+    "durationMs": 28665
+  },
+  "replayCurrent": {
+    "codeIdentity": "dea58b070d67cc37483fb0ceabb9d7fb55e46fda478169cae7e63554a255870a",
+    "orderCount": 30,
+    "measuredOrders": 30,
+    "medianAffectedShare": 1,
+    "measuredPassingRows": [
+      {
+        "recordedAt": "2026-10-05T17:27:45.668Z",
+        "evidenceRef": "host-gate:dea58b070d67cc37483fb0ceabb9d7fb55e46fda478169cae7e63554a255870a:npm test"
+      }
+    ]
+  },
+  "publication": {
+    "command": "npm run publication:check",
+    "exitCode": 0,
+    "indexedProductHeadings": 253,
+    "totalProductHeadings": 253,
+    "editionsCurrent": true
+  },
+  "probeSetupCorrections": [
+    {
+      "phase": "real build probe",
+      "error": "missing closing parenthesis in scratch script",
+      "milliseconds": 45
+    },
+    {
+      "phase": "real build fixture",
+      "error": "node_modules symlink leaf was not ignored by directory-only rule; fixture corrected to an ignored directory with dependency symlinks",
+      "milliseconds": 933
+    },
+    {
+      "phase": "measurement checker",
+      "error": "display rounding differs at a half millisecond; matched the retained toFixed(3) method and retained exact 38.9935-second median",
+      "milliseconds": 507
+    }
+  ],
+  "scopeLimits": [
+    "No full product rerun; consume matching executor review row.",
+    "Second-session fixtures use distinct session labels under the same host session.",
+    "Production build/kernel proof filters kernel to one added test.",
+    "Historical phase medians are pooled pre-repair comparisons, not five measurements of repaired final source.",
+    "Dollar cost and unsampled host activity remain unknown."
+  ]
+}
