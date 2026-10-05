@@ -234,6 +234,7 @@ test("WO-116 the dotln usage and command list name audit beside every other comm
   assert.equal(bare.stdout, "");
   for (const grammar of [
     "dotln audit --store <directory> [--workstream <id> | --episode <id>]",
+    "dotln vertical <issue> --store <directory>",
     "dotln handoff answer --store <directory> --episode <id> --work-order <id> --option <id>",
   ])
     assert.ok(
@@ -248,6 +249,6 @@ test("WO-116 the dotln usage and command list name audit beside every other comm
   assert.equal(unknown.status, 1);
   assert.equal(
     unknown.stderr,
-    "expected intent, resident, presence, handoff, status, audit, demo, verify-demo or feedback-audit\n",
+    "expected intent, vertical, resident, presence, handoff, status, audit, demo, verify-demo or feedback-audit\n",
   );
 });

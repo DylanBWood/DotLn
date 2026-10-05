@@ -60,7 +60,7 @@ const claim: BeaconClaimRecord = {
 };
 
 const temporary = (t: TestContext): string => {
-  const root = mkdtempSync(join(tmpdir(), "dotln-wo020-"));
+  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-wo020-")));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   return root;
 };
@@ -269,7 +269,7 @@ test("WO-020 edge refuses unsafe destinations and invalid records before publish
   symlinkSync(join(repository, "docs/intake"), alias);
   assert.throws(
     () => validateBeaconDirectory(join(alias, "beacons"), repository),
-    /intake/,
+    /spelling differs from its identity/,
   );
   assert.throws(
     () =>
@@ -327,7 +327,10 @@ test("WO-020 edge refuses unsafe destinations and invalid records before publish
   );
   const changed = createBeaconWriter(join(root, "changed"), repository);
   symlinkSync(join(repository, "docs/intake"), changed.directory);
-  assert.throws(() => changed.claim(claim), /changed since validation/);
+  assert.throws(
+    () => changed.claim(claim),
+    /spelling differs from its identity/,
+  );
 });
 
 test("WO-020 sweep labels future codebooks, malformed sizes and non-regular entries without state guesses", (t) => {

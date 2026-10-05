@@ -1,5 +1,5 @@
 import { realpathSync, statSync } from "node:fs";
-import { isAbsolute, relative, resolve, sep } from "node:path";
+import { dirname, isAbsolute, relative, resolve, sep } from "node:path";
 import { observedExecFileSync as execFileSync } from "./gate-deadlines.mjs";
 
 import type { SourceChangeProfile } from "./execution-environment.js";
@@ -14,10 +14,17 @@ const inside = (parent: string, path: string): boolean => {
   );
 };
 const canonicalPath = (path: string): string => {
+  const directory = statSync(path).isDirectory() ? path : dirname(path);
   if (
     !isAbsolute(path) ||
     resolve(path) !== path ||
-    realpathSync(path) !== path
+    realpathSync.native(path) !== path ||
+    execFileSync("/bin/pwd", ["-P"], {
+      cwd: directory,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+      timeout: 5_000,
+    }).replace(/\n$/u, "") !== directory
   )
     throw new Error("source-change environment requires canonical paths");
   return path;

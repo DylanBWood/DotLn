@@ -66,6 +66,7 @@ export type SignalObservation = Readonly<{
   decoded: SignalDecode | Readonly<{ status: "absent" }>;
   provenanceCheck?: import("./beacon-provenance.mjs").ProvenanceCheck;
   fineSpectrum?: "sensed" | "not-sensed";
+  refusal?: Readonly<{ path: string; reason: string }>;
 }>;
 
 export type GroupObservation = Omit<SignalObservation, "decoded"> &

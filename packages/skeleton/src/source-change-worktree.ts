@@ -51,7 +51,13 @@ const canonicalDirectory = (path: string) => {
   if (
     resolve(path) !== path ||
     realpathSync(path) !== path ||
-    !lstatSync(path).isDirectory()
+    !lstatSync(path).isDirectory() ||
+    execFileSync("/bin/pwd", ["-P"], {
+      cwd: path,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+      timeout: 5_000,
+    }).replace(/\n$/u, "") !== path
   )
     throw new Error("source-change paths must be canonical directories");
   return path;
@@ -153,6 +159,11 @@ export class SourceChangeWorktree {
   }
   create(): void {
     const { requested } = this.options;
+    // Check again at the effect boundary: a variant or an unreadable identity
+    // must never leave a branch or a worktree registration behind.
+    canonicalDirectory(this.options.parent);
+    canonicalDirectory(this.options.launchpad);
+    canonicalDirectory(requested.repo);
     if (!present(this.path)) {
       this.assertUnused();
       sourceGit(
