@@ -590,60 +590,106 @@ test("WO-185 duplicate pruning preserves an already observed detached descendant
   const f = await fixture(t);
   const retiredRepo = join(f.base, "retired-repo"),
     childFile = join(f.base, "grandchild.pid"),
+    startFile = join(f.base, "start"),
+    intermediateFile = join(f.base, "intermediate.pid"),
+    intermediateExitFile = join(f.base, "intermediate.exit"),
     detachFile = join(f.base, "detach"),
     allocateFile = join(f.base, "allocate");
   mkdirSync(retiredRepo);
-  const original = registerProcess(
-    "sessions",
-    process.pid,
-    { protected: true, repo: retiredRepo, limits: f.limits },
-    f.directory,
-  );
-  await ensureHostGuard(f.directory);
   const grandchildCode = `const fs=require('node:fs');let allocation;
     setInterval(()=>{if(!allocation&&fs.existsSync(${JSON.stringify(allocateFile)})) allocation=Buffer.alloc(83886080,1)},20);
     setTimeout(()=>process.exit(0),10000);`;
-  const intermediate = spawn(
+  const intermediateCode = `
+    const fs=require('node:fs'),{spawn}=require('node:child_process');
+    const child=spawn(process.execPath,['-e',${JSON.stringify(grandchildCode)}],{detached:true,stdio:'ignore'});
+    child.unref();fs.writeFileSync(${JSON.stringify(childFile + ".tmp")},String(child.pid));
+    fs.renameSync(${JSON.stringify(childFile + ".tmp")},${JSON.stringify(childFile)});
+    setInterval(()=>{if(fs.existsSync(${JSON.stringify(detachFile)})) process.exit(0)},20);
+    setTimeout(()=>process.exit(0),10000);`;
+  // This owner spawns only the two intended descendants. Registering the test
+  // worker lets its census helpers satisfy a three-process count prematurely.
+  const owner = spawn(
     process.execPath,
     [
       "-e",
       `
-    const fs=require('node:fs'),{spawn}=require('node:child_process');
-    const child=spawn(process.execPath,['-e',${JSON.stringify(grandchildCode)}],{detached:true,stdio:'ignore'});
-    child.unref();fs.writeFileSync(${JSON.stringify(childFile)},String(child.pid));
-    setInterval(()=>{if(fs.existsSync(${JSON.stringify(detachFile)})) process.exit(0)},20);
-    setTimeout(()=>process.exit(0),10000);`,
+    const fs=require('node:fs'),{spawn}=require('node:child_process');let started=false;
+    setInterval(()=>{if(!started&&fs.existsSync(${JSON.stringify(startFile)})) {
+      started=true;
+      const child=spawn(process.execPath,['-e',${JSON.stringify(intermediateCode)}],{stdio:'ignore'});
+      fs.writeFileSync(${JSON.stringify(intermediateFile + ".tmp")},String(child.pid));
+      fs.renameSync(${JSON.stringify(intermediateFile + ".tmp")},${JSON.stringify(intermediateFile)});
+      child.once('exit',(code,signal)=>{
+        fs.writeFileSync(${JSON.stringify(intermediateExitFile + ".tmp")},JSON.stringify({code,signal}));
+        fs.renameSync(${JSON.stringify(intermediateExitFile + ".tmp")},${JSON.stringify(intermediateExitFile)});
+      });
+    }},20);
+    setTimeout(()=>process.exit(0),30000);`,
     ],
     { stdio: "ignore" },
   );
-  const intermediateExit = once(intermediate, "exit");
-  const intermediateOwner = readHostSnapshot({
-    footprint: false,
-  }).processes.find((row) => row.pid === intermediate.pid);
-  let grandchild;
-  t.after(() => {
-    for (const member of [grandchild, intermediateOwner]) {
-      if (!member?.birth) continue;
-      if (
-        processAlive(member, readHostSnapshot({ footprint: false }).processes)
-      )
-        process.kill(member.pid, "SIGKILL");
-    }
+  const ownerClosed = once(owner, "close");
+  const original = registerProcess(
+    "sessions",
+    owner.pid,
+    { protected: true, repo: retiredRepo, limits: f.limits },
+    f.directory,
+  );
+  let grandchild, intermediateOwner;
+  f.cleanups.push(async () => {
+    const table = readHostSnapshot({ footprint: false }).processes;
+    const attached = ownedProcesses(table, owner.pid, new Map(), {
+      group: false,
+      birth: original.record.birth,
+      uniqueId: original.record.uniqueId,
+    });
+    killOwned([
+      ...attached,
+      ...[grandchild, intermediateOwner, original.record].filter(Boolean),
+    ]);
+    await ownerClosed;
     original.release();
   });
-  for (let n = 0; n < 100 && !existsSync(childFile); n++) await delay(20);
-  assert.ok(existsSync(childFile), "intermediate publishes its grandchild");
-  const grandchildPid = Number(readFileSync(childFile, "utf8"));
-  grandchild = readHostSnapshot({ footprint: false }).processes.find(
-    (row) => row.pid === grandchildPid,
+  await ensureHostGuard(f.directory);
+  const initial = await guardMetrics(
+    f.directory,
+    (row) => row.trackedRegistrations === 1 && row.trackedProcesses === 1,
   );
+  writeFileSync(startFile, "start\n");
+  for (
+    let n = 0;
+    n < 100 && (!existsSync(childFile) || !existsSync(intermediateFile));
+    n++
+  )
+    await delay(20);
+  const intermediatePid = existsSync(intermediateFile)
+    ? Number(readFileSync(intermediateFile, "utf8"))
+    : undefined;
+  const grandchildPid = existsSync(childFile)
+    ? Number(readFileSync(childFile, "utf8"))
+    : undefined;
+  const beforeDetach = readHostSnapshot({ footprint: false }).processes;
+  intermediateOwner = beforeDetach.find((row) => row.pid === intermediatePid);
+  grandchild = beforeDetach.find((row) => row.pid === grandchildPid);
+  assert.ok(existsSync(childFile), "intermediate publishes its grandchild");
+  assert.ok(existsSync(intermediateFile), "owner publishes its intermediate");
+  assert.ok(intermediateOwner);
   assert.ok(grandchild);
   const observed = await guardMetrics(
     f.directory,
-    (row) => row.trackedProcesses >= 3,
+    (row) =>
+      row.samples > initial.samples &&
+      row.trackedRegistrations === 1 &&
+      row.trackedProcesses === 3,
   );
   writeFileSync(detachFile, "detach\n");
-  await intermediateExit;
+  for (let n = 0; n < 100 && !existsSync(intermediateExitFile); n++)
+    await delay(20);
+  assert.ok(existsSync(intermediateExitFile), "intermediate exit is observed");
+  assert.deepEqual(JSON.parse(readFileSync(intermediateExitFile, "utf8")), {
+    code: 0,
+    signal: null,
+  });
   const detached = readHostSnapshot({ footprint: false }).processes.find(
     (row) => row.pid === grandchildPid,
   );
@@ -654,7 +700,7 @@ test("WO-185 duplicate pruning preserves an already observed detached descendant
   );
   const survivor = registerProcess(
     "sessions",
-    process.pid,
+    owner.pid,
     { protected: true, repo: f.repo, limits: f.limits },
     f.directory,
   );
@@ -673,9 +719,23 @@ test("WO-185 duplicate pruning preserves an already observed detached descendant
       break;
     await delay(20);
   }
+  const stopped = !processAlive(
+    grandchild,
+    readHostSnapshot({ footprint: false }).processes,
+  );
   assert.ok(
-    !processAlive(grandchild, readHostSnapshot({ footprint: false }).processes),
-    "transferred ownership stops the detached descendant",
+    stopped,
+    "transferred ownership stops the detached descendant" +
+      (stopped
+        ? ""
+        : ": " +
+          JSON.stringify({
+            observed,
+            latest: JSON.parse(
+              readFileSync(join(f.directory, "guard-metrics.json"), "utf8"),
+            ),
+            guardLog: readFileSync(join(f.directory, "guard.log"), "utf8"),
+          })),
   );
   const incident = JSON.parse(
     readFileSync(

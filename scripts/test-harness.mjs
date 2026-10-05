@@ -4734,7 +4734,22 @@ test("WO-039 a refreshed reservation survives a stale reclaimer that classified 
   }
 });
 
-test("WO-039 an operator release judges, retires and journals one observed reservation", async () => {
+test("WO-039 an operator release judges, retires and journals one observed reservation", async (t) => {
+  const started = performance.now();
+  // Flush execution progress before the reservation operations begin.
+  await new Promise((resolve) => setImmediate(resolve));
+  t.after(() =>
+    console.log(
+      "PROGRESS harness case ended " +
+        JSON.stringify({
+          event: "end",
+          file: "scripts/test-harness.mjs",
+          nesting: 0,
+          name: "WO-039 an operator release judges, retires and journals one observed reservation",
+          durationMs: performance.now() - started,
+        }),
+    ),
+  );
   const root = fixture();
   const children = [];
   try {
@@ -11997,5 +12012,164 @@ require("node:module").syncBuiltinESMExports();
       assert.equal(JSON.parse(bytes).workOrder, name.slice(0, 6));
   } finally {
     rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-186 only the active order's records are writable in a live product gate; document gates and aliases retain refusal", () => {
+  const root = fixture();
+  try {
+    for (const directory of ["evidence", "verifications", "final-reviews"]) {
+      mkdirSync(join(root, "docs", directory, "WO-999"), { recursive: true });
+      mkdirSync(join(root, "docs", directory, "WO-998"), { recursive: true });
+    }
+    const own = ["evidence", "verifications", "final-reviews"].map((kind) =>
+      join(root, "docs", kind, "WO-999", "report.md"),
+    );
+    const refused = [
+      join(root, "fixture.ts"),
+      join(root, "docs/evidence/WO-998/report.md"),
+      join(root, "docs/control/orders/WO-999.jsonl"),
+      join(root, "docs/control/local/harness/checks.json"),
+    ];
+    symlinkSync(
+      join(root, "fixture.ts"),
+      join(root, "docs/evidence/WO-999/code-alias"),
+    );
+    linkSync(
+      join(root, "fixture.ts"),
+      join(root, "docs/evidence/WO-999/hard-alias"),
+    );
+    refused.push(
+      join(root, "docs/evidence/WO-999/code-alias"),
+      join(root, "docs/evidence/WO-999/hard-alias"),
+    );
+    const request = (path) =>
+      input(root, "PreToolUse", {
+        tool_name: "Write",
+        tool_input: { file_path: path, content: "report" },
+      });
+    const product = beginGateRun(root, "npm test", { kind: "product" });
+    try {
+      for (const hook of [
+        "permissions",
+        "concurrent-work-requires-worktrees",
+        "write-observer",
+      ]) {
+        for (const path of own)
+          assert.equal(
+            allowed(invoke(root, hook, request(path))),
+            true,
+            `${hook}: ${path}`,
+          );
+        for (const path of refused)
+          assert.equal(
+            invoke(root, hook, request(path)).hookSpecificOutput
+              ?.permissionDecision,
+            "deny",
+            `${hook}: ${path}`,
+          );
+      }
+      assert.equal(
+        allowed(
+          invoke(
+            root,
+            "permissions",
+            input(root, "PreToolUse", {
+              tool_name: "Bash",
+              tool_input: {
+                command: "printf report > docs/evidence/WO-999/report.md",
+              },
+            }),
+          ),
+        ),
+        true,
+      );
+      assert.equal(
+        allowed(
+          invoke(
+            root,
+            "permissions",
+            input(root, "PreToolUse", {
+              tool_name: "apply_patch",
+              tool_input: {
+                patch:
+                  "*** Begin Patch\n*** Add File: docs/evidence/WO-999/patch.md\n+report\n*** End Patch",
+              },
+            }),
+          ),
+        ),
+        true,
+      );
+      write(
+        root,
+        "docs/control/fixture-status.json",
+        json({ ...control, phase: "closed" }),
+      );
+      for (const path of own)
+        assert.equal(
+          invoke(root, "permissions", request(path)).hookSpecificOutput
+            ?.permissionDecision,
+          "deny",
+        );
+      write(root, "docs/control/fixture-status.json", json(control));
+      // Relocated records are not excluded by the default code identity yet.
+      // Retain the full refusal at both canonical and obsolete default roots.
+      write(
+        root,
+        "dotln.config.json",
+        json({ version: 1, roots: { evidence: "records/evidence" } }),
+      );
+      for (const path of [
+        ...own,
+        join(root, "records/evidence/WO-999/report.md"),
+      ])
+        assert.equal(
+          invoke(root, "permissions", request(path)).hookSpecificOutput
+            ?.permissionDecision,
+          "deny",
+        );
+      rmSync(join(root, "dotln.config.json"));
+      const review = beginGateRun(root, "npm test review", { kind: "review" });
+      try {
+        for (const path of own)
+          assert.equal(
+            invoke(root, "permissions", request(path)).hookSpecificOutput
+              ?.permissionDecision,
+            "deny",
+          );
+      } finally {
+        review.release();
+      }
+      const document = beginGateRun(root, "npm run test:docs", {
+        kind: "document",
+      });
+      try {
+        for (const path of own)
+          assert.equal(
+            invoke(root, "permissions", request(path)).hookSpecificOutput
+              ?.permissionDecision,
+            "deny",
+          );
+      } finally {
+        document.release();
+      }
+    } finally {
+      product.release();
+    }
+    const document = beginGateRun(root, "npm run test:docs", {
+      kind: "document",
+    });
+    try {
+      for (const path of [...own, ...refused])
+        assert.equal(
+          invoke(root, "permissions", request(path)).hookSpecificOutput
+            ?.permissionDecision,
+          "deny",
+        );
+    } finally {
+      document.release();
+    }
+  } finally {
+    removeFixture(root, { recursive: true });
   }
 });

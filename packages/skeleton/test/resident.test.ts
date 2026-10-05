@@ -738,39 +738,145 @@ function runLockProcess(
     .split("\n")
     .map((line) => JSON.parse(line) as LockStep);
 }
+type LockCellChildren = {
+  signal: AbortSignal;
+  pending: Set<Promise<void>>;
+};
+function matrixLockProcess(
+  input: ReturnType<typeof crashInput> & { poll?: boolean },
+  cell: LockCellChildren,
+) {
+  cell.signal.throwIfAborted();
+  const child = spawn(process.execPath, [lockProcess, JSON.stringify(input)], {
+    stdio: ["ignore", "pipe", "pipe"],
+    signal: cell.signal,
+    timeout: 10000,
+    killSignal: "SIGKILL",
+  });
+  let stderr = "";
+  let failure: Error | undefined;
+  for (const [name, stream] of [
+    ["stdout", child.stdout],
+    ["stderr", child.stderr],
+  ] as const) {
+    let bytes = 0;
+    stream.on("data", (chunk: Buffer) => {
+      bytes += chunk.length;
+      if (bytes > 1024 * 1024) {
+        failure ??= new Error(
+          `lock child ${name} exceeded the existing 1 MiB output bound`,
+        );
+        child.kill("SIGKILL");
+      } else if (name === "stderr") stderr += chunk.toString();
+    });
+  }
+  child.on("error", (error) => {
+    failure ??= error;
+  });
+  const closed = new Promise<{
+    code: number | null;
+    signal: NodeJS.Signals | null;
+  }>((resolve) => {
+    child.once("close", (code, signal) => resolve({ code, signal }));
+  });
+  const reaped = closed.then(() => {
+    cell.pending.delete(reaped);
+  });
+  cell.pending.add(reaped);
+  return {
+    child,
+    closed,
+    failure: () => failure,
+    diagnostic: () => stderr || String(failure),
+  };
+}
+async function runMatrixLockProcess(
+  input: ReturnType<typeof crashInput> & { poll?: boolean },
+  cell: LockCellChildren,
+) {
+  const running = matrixLockProcess(input, cell);
+  const observed = await running.closed;
+  cell.signal.throwIfAborted();
+  assert.equal(running.failure(), undefined, running.diagnostic());
+  assert.equal(observed.code, 0, running.diagnostic());
+  return readFileSync(input.trace, "utf8")
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line) as LockStep);
+}
 async function killLockProcess(
   input: ReturnType<typeof crashInput> & { poll?: boolean },
+  cell?: LockCellChildren,
 ) {
-  const child = spawn(process.execPath, [lockProcess, JSON.stringify(input)], {
-    stdio: ["ignore", "ignore", "pipe"],
-  });
+  const owned = cell ? matrixLockProcess(input, cell) : undefined;
+  const child =
+    owned?.child ??
+    spawn(process.execPath, [lockProcess, JSON.stringify(input)], {
+      stdio: ["ignore", "ignore", "pipe"],
+    });
   let error = "";
-  child.stderr!.on("data", (chunk) => {
-    error += String(chunk);
-  });
-  const exited = new Promise<string | null>((resolve) =>
-    child.once("exit", (_code, signal) => resolve(signal)),
-  );
+  if (!owned)
+    child.stderr!.on("data", (chunk) => {
+      error += String(chunk);
+    });
+  const exited = owned
+    ? owned.closed.then(({ signal }) => signal)
+    : new Promise<string | null>((resolve) =>
+        child.once("exit", (_code, signal) => resolve(signal)),
+      );
   try {
     await until(() => {
+      cell?.signal.throwIfAborted();
+      if (owned) assert.equal(owned.failure(), undefined, owned.diagnostic());
       if (child.exitCode !== null || child.signalCode !== null)
         assert.fail(
-          `crash child exited before boundary ${input.stop}: ${error}`,
+          `crash child exited before boundary ${input.stop}: ${owned ? owned.diagnostic() : error}`,
         );
       return existsSync(input.pause);
     }, 10000);
     const row = JSON.parse(readFileSync(input.pause, "utf8")) as LockStep;
     assert.equal(row.index, input.stop);
     child.kill("SIGKILL");
-    assert.equal(await exited, "SIGKILL");
+    const signal = await exited;
+    cell?.signal.throwIfAborted();
+    if (owned) assert.equal(owned.failure(), undefined, owned.diagnostic());
+    assert.equal(signal, "SIGKILL");
     return row;
   } finally {
     if (child.exitCode === null && child.signalCode === null) {
       child.kill("SIGKILL");
       await exited;
     }
+    if (owned) await owned.closed;
   }
 }
+
+test("WO-186 a cancelled matrix cell reaps its paused fixture child before teardown", async (t) => {
+  const directory = mkdtempSync(join(tmpdir(), "dotln-lock-cancel-"));
+  const controller = new AbortController();
+  const cell: LockCellChildren = {
+    signal: controller.signal,
+    pending: new Set(),
+  };
+  t.after(async () => {
+    controller.abort();
+    await Promise.all(cell.pending);
+    rmSync(directory, { recursive: true, force: true });
+  });
+  await seedFlight(directory);
+  const pid = deadPid();
+  for (const path of [directory, join(directory, ".resident-append")])
+    writeFileSync(join(path, "host.lock"), JSON.stringify({ pid }));
+  const input = crashInput(directory, directory, "once", "cancel", 0);
+  const running = matrixLockProcess(input, cell);
+  await until(() => existsSync(input.pause), 10000);
+  controller.abort();
+  assert.equal((await running.closed).signal, "SIGKILL");
+  assert.equal(running.failure()?.name, "AbortError");
+  assertDeadPid(running.child.pid!);
+  await Promise.all(cell.pending);
+  assert.equal(cell.pending.size, 0);
+});
 
 // WO-173: the matrix runs one subtest per cell, each with its own deadline,
 // so a cell slowed by another lane's load fails alone, by name, and the
@@ -798,98 +904,135 @@ const lockMatrixFixture: { delayMs?: Record<string, number> } | null = process
       delayMs?: Record<string, number>;
     })
   : null;
-test("WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers", async (t) => {
-  const root = mkdtempSync(join(tmpdir(), "dotln-lock-matrix-"));
-  t.after(() => rmSync(root, { recursive: true, force: true }));
-  const template = join(root, "template");
-  let prefix = "";
-  if (!lockMatrixFixture) {
-    mkdirSync(template);
-    await seedFlight(template);
-    prefix = readFileSync(join(template, "events.jsonl"), "utf8");
-  }
-  for (const cell of lockMatrixCells)
-    await t.test(
-      `cell ${cell.label}`,
-      { timeout: lockMatrixCellTimeoutMs },
-      async (c) => {
-        if (lockMatrixFixture) {
-          await delay(lockMatrixFixture.delayMs?.[cell.label] ?? 0);
-          return;
-        }
-        const { mode, scope, reclaim, label } = cell;
-        const make = (label: string) => {
-          const directory = join(root, label);
-          cpSync(template, directory, { recursive: true });
-          const target =
-            scope === "append"
-              ? join(directory, ".resident-append")
-              : directory;
-          const pid = deadPid();
-          for (const path of [directory, join(directory, ".resident-append")])
-            writeFileSync(join(path, "host.lock"), JSON.stringify({ pid }));
-          if (reclaim) abandonedGuard(target, pid);
-          return { directory, target, pid };
-        };
-        const discovery = make(`${label}-discovery`);
-        const steps = runLockProcess(
-          crashInput(discovery.directory, discovery.target, mode, "discover"),
-        );
-        assertDeadPid(discovery.pid);
-        assert.ok(steps.some((step) => step.op === "symlinkSync"));
-        assert.ok(
-          steps.some(
-            (step) =>
-              step.op === "unlinkSync" &&
-              step.paths.some((path) => path.endsWith("host-lock-recovery")),
-          ),
-        );
-        assert.ok(
-          steps.some(
-            (step) =>
-              step.op === "linkSync" &&
-              step.paths.some((path) => path.endsWith("host.lock")),
-          ),
-        );
-        if (reclaim)
-          assert.ok(
-            steps.some(
-              (step) =>
-                step.op === "linkSync" &&
-                step.paths.some((path) => path.includes("next-")),
-            ),
-          );
-        let publishedKills = 0;
-        for (const step of steps) {
-          const { directory, target, pid } = make(`${label}-${step.index}`);
-          const actual = await killLockProcess(
-            crashInput(directory, target, mode, "kill", step.index),
-          );
-          assert.deepEqual(actual, step, `${label} boundary trace changed`);
-          if (existsSync(join(target, "host-lock-recovery"))) publishedKills++;
-          assert.equal(
-            readFileSync(join(directory, "events.jsonl"), "utf8"),
-            prefix,
-            "kill window changed prior event bytes",
-          );
-          runLockProcess(crashInput(directory, target, mode, "restart"));
-          const store = new ResidentStore(directory);
-          assert.ok(store.read().startsWith(prefix));
-          assert.equal(events(store, "ScriptEpisodeLost").length, 1);
-          const continued = store.read();
-          runLockProcess(crashInput(directory, target, mode, "again"));
-          assert.ok(store.read().startsWith(continued));
-          assert.equal(events(store, "ScriptEpisodeLost").length, 1);
-          assert.equal(existsSync(join(target, "host-lock-recovery")), false);
-          assertDeadPid(pid);
-        }
-        assert.ok(publishedKills > 0);
-        c.diagnostic(
-          `${label}: ${steps.length} deterministic SIGKILL boundaries; ${publishedKills} with published guard; exact prefix; one Lost; second restart continues`,
-        );
-      },
+test(
+  "WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers",
+  { concurrency: 4 },
+  async (t) => {
+    const root = mkdtempSync(join(tmpdir(), "dotln-lock-matrix-"));
+    t.after(() => rmSync(root, { recursive: true, force: true }));
+    const template = join(root, "template");
+    let prefix = "";
+    if (!lockMatrixFixture) {
+      mkdirSync(template);
+      await seedFlight(template);
+      prefix = readFileSync(join(template, "events.jsonl"), "utf8");
+    }
+    await Promise.all(
+      lockMatrixCells.map((cell) =>
+        t.test(
+          `cell ${cell.label}`,
+          { timeout: lockMatrixCellTimeoutMs },
+          async (c) => {
+            if (lockMatrixFixture) {
+              await delay(lockMatrixFixture.delayMs?.[cell.label] ?? 0);
+              return;
+            }
+            const children: LockCellChildren = {
+              signal: c.signal,
+              pending: new Set(),
+            };
+            c.after(async () => {
+              await Promise.all(children.pending);
+            });
+            const { mode, scope, reclaim, label } = cell;
+            const cellRoot = mkdtempSync(join(root, `${label}-`));
+            const make = (label: string) => {
+              const directory = join(cellRoot, label);
+              cpSync(template, directory, { recursive: true });
+              const target =
+                scope === "append"
+                  ? join(directory, ".resident-append")
+                  : directory;
+              const pid = deadPid();
+              for (const path of [
+                directory,
+                join(directory, ".resident-append"),
+              ])
+                writeFileSync(join(path, "host.lock"), JSON.stringify({ pid }));
+              if (reclaim) abandonedGuard(target, pid);
+              return { directory, target, pid };
+            };
+            const discovery = make(`${label}-discovery`);
+            const steps = await runMatrixLockProcess(
+              crashInput(
+                discovery.directory,
+                discovery.target,
+                mode,
+                "discover",
+              ),
+              children,
+            );
+            assertDeadPid(discovery.pid);
+            assert.ok(steps.some((step) => step.op === "symlinkSync"));
+            assert.ok(
+              steps.some(
+                (step) =>
+                  step.op === "unlinkSync" &&
+                  step.paths.some((path) =>
+                    path.endsWith("host-lock-recovery"),
+                  ),
+              ),
+            );
+            assert.ok(
+              steps.some(
+                (step) =>
+                  step.op === "linkSync" &&
+                  step.paths.some((path) => path.endsWith("host.lock")),
+              ),
+            );
+            if (reclaim)
+              assert.ok(
+                steps.some(
+                  (step) =>
+                    step.op === "linkSync" &&
+                    step.paths.some((path) => path.includes("next-")),
+                ),
+              );
+            let publishedKills = 0;
+            for (const step of steps) {
+              const { directory, target, pid } = make(`${label}-${step.index}`);
+              const actual = await killLockProcess(
+                crashInput(directory, target, mode, "kill", step.index),
+                children,
+              );
+              assert.deepEqual(actual, step, `${label} boundary trace changed`);
+              if (existsSync(join(target, "host-lock-recovery")))
+                publishedKills++;
+              assert.equal(
+                readFileSync(join(directory, "events.jsonl"), "utf8"),
+                prefix,
+                "kill window changed prior event bytes",
+              );
+              await runMatrixLockProcess(
+                crashInput(directory, target, mode, "restart"),
+                children,
+              );
+              const store = new ResidentStore(directory);
+              assert.ok(store.read().startsWith(prefix));
+              assert.equal(events(store, "ScriptEpisodeLost").length, 1);
+              const continued = store.read();
+              await runMatrixLockProcess(
+                crashInput(directory, target, mode, "again"),
+                children,
+              );
+              assert.ok(store.read().startsWith(continued));
+              assert.equal(events(store, "ScriptEpisodeLost").length, 1);
+              assert.equal(
+                existsSync(join(target, "host-lock-recovery")),
+                false,
+              );
+              assertDeadPid(pid);
+            }
+            assert.ok(publishedKills > 0);
+            c.diagnostic(
+              `${label}: ${steps.length} deterministic SIGKILL boundaries; ${publishedKills} with published guard; exact prefix; one Lost; second restart continues`,
+            );
+          },
+        ),
+      ),
     );
-});
+  },
+);
 
 test("WO-173 a lock-matrix cell that exceeds its own deadline fails by name while the other seven run", () => {
   const env: NodeJS.ProcessEnv = {

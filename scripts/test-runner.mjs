@@ -23,13 +23,15 @@ import { randomUUID } from "node:crypto";
 import {
   existsSync,
   mkdirSync,
+  mkdtempSync,
   readdirSync,
   readFileSync,
   renameSync,
+  rmSync,
   writeFileSync,
 } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { startDeadline } from "../packages/skeleton/src/gate-deadlines.mjs";
 import { evidenceSourceContent } from "../packages/skeleton/src/evidence-editions.mjs";
 import { gateCriticalPath } from "./lib/gate-timeline.mjs";
@@ -39,7 +41,11 @@ import {
   gateCodeIdentity,
   recordGateChecks,
 } from "./lib/gate-evidence.mjs";
-import { coveringGateCheck, describeGateRow } from "./lib/gate-reuse.mjs";
+import {
+  buildOutputAttested,
+  buildOutputDigest,
+  coveringTaskResults,
+} from "./lib/gate-reuse.mjs";
 import {
   createReleaseFixtureContext,
   releaseCases,
@@ -261,6 +267,12 @@ const machinerySources = {
     "scripts/lib/gate-evidence.mjs",
     // WO-173: the passing-row lookup `npm test` reuses and completions read.
     "scripts/lib/gate-reuse.mjs",
+    "scripts/lib/case-reporter.mjs",
+    "scripts/lib/case-marker.mjs",
+    "scripts/lib/control-store.mjs",
+    "scripts/lib/handoff-ledger.mjs",
+    "scripts/lib/planning-conditions.mjs",
+    "scripts/license-surfaces.mjs",
     "scripts/lib/host-confinement.mjs",
     "scripts/test-runner.mjs",
     "packages/skeleton/src/evidence-editions.mjs",
@@ -323,6 +335,8 @@ const machinerySources = {
     "packages/skeleton/src/usage-observation.mjs",
     "scripts/test-process-debt.mjs",
     "packages/skeleton/fixtures/wo195-role-baseline.json",
+    "packages/skeleton/fixtures/wo195-integrated-role-baseline.json",
+    "packages/skeleton/fixtures/wo186-role-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
     "scripts/lib/git.mjs",
@@ -507,17 +521,26 @@ function classifySuite(row) {
   };
 }
 export function changedMachinery(repo, table = suites, base = "origin/main") {
-  let run = spawnGit(["diff", "--name-only", base, "--"], {
+  // A sibling advancing main changes neither this branch's code nor its
+  // selection. Compare against the shared ancestor, retaining local dirt.
+  let mergeBase = spawnGit(["merge-base", "HEAD", base], {
     cwd: repo,
     encoding: "utf8",
   });
-  if (run.status !== 0) {
-    base = "main";
-    run = spawnGit(["diff", "--name-only", base, "--"], {
+  if (mergeBase.status !== 0 && base === "origin/main")
+    mergeBase = spawnGit(["merge-base", "HEAD", "main"], {
       cwd: repo,
       encoding: "utf8",
     });
-  }
+  if (mergeBase.status !== 0) return table.filter((row) => row.machinery);
+  base = mergeBase.stdout.trim();
+  const run = spawnGit(
+    ["diff", "--no-renames", "--name-only", "-z", base, "--"],
+    {
+      cwd: repo,
+      encoding: "utf8",
+    },
+  );
   if (run.status !== 0) return table.filter((row) => row.machinery);
   // WO-173 (WO-169 D007): an order's work stays uncommitted until final
   // review, so the change includes its untracked files, which the diff omits.
@@ -525,11 +548,9 @@ export function changedMachinery(repo, table = suites, base = "origin/main") {
     ["ls-files", "--others", "--exclude-standard", "-z"],
     { cwd: repo, encoding: "utf8" },
   );
+  if (untracked.status !== 0) return table.filter((row) => row.machinery);
   const files = [
-    ...new Set([
-      ...run.stdout.split("\n"),
-      ...(untracked.status === 0 ? untracked.stdout.split("\0") : []),
-    ]),
+    ...new Set([...run.stdout.split("\0"), ...untracked.stdout.split("\0")]),
   ]
     .filter(Boolean)
     .filter((file) =>
@@ -574,7 +595,12 @@ export const suites = [
     document: true,
     preflight: true,
   },
-  node("build", "scripts/build.mjs", { fast: true, build: true }),
+  // The published runtime is ignored; its digest rides on the build's result.
+  node("build", "scripts/build.mjs", {
+    fast: true,
+    build: true,
+    outputs: ["packages/*/dist"],
+  }),
   node("release-surfaces", "scripts/release.mjs", {
     args: ["check-surfaces", "--local"],
     fast: true,
@@ -590,11 +616,12 @@ export const suites = [
   nodeTests("license-fixtures", "scripts/test-license-surfaces.mjs"),
   node("license-surfaces", "scripts/license-surfaces.mjs", {
     preflight: true,
+    document: true,
   }),
   shell("fixture-temp-root", "scripts/test-fixture-temp-root.sh"),
   shell("publication-fixtures", "scripts/test-publication.sh"),
   shell("backup-intake", "scripts/test-backup-intake.sh"),
-  shell("resume", "scripts/test-resume.sh"),
+  { ...shell("resume", "scripts/test-resume.sh"), document: true },
   nodeTests("beacon-portability", "scripts/test-beacon-portability.mjs", {
     fast: true,
     // The absent skeleton dist copies are judged against a fresh build.
@@ -690,7 +717,9 @@ export const suites = [
   ),
   nodeTests("adjacent-queue", "scripts/test-adjacent-queue.mjs"),
   nodeTests("evidence-sources", "scripts/test-evidence-sources.mjs"),
-  nodeTests("resident-bind", "scripts/test-resident-bind.mjs"),
+  nodeTests("resident-bind", "scripts/test-resident-bind.mjs", {
+    document: true,
+  }),
   nodeTests("derived-orders", "scripts/test-derived-orders.mjs", {
     product: true,
     protects:
@@ -724,6 +753,7 @@ export const suites = [
     "local-runner-double",
     "scripts/probes/local-runner-smoke.test.mjs",
     {
+      document: true,
       command: [
         process.execPath,
         "--test",
@@ -773,7 +803,9 @@ export const suites = [
     args: ["--check-only"],
     document: true,
   }),
-  nodeTests("artifact-corpus", "corpus/harness/wo101-id-corpus.test.mjs"),
+  nodeTests("artifact-corpus", "corpus/harness/wo101-id-corpus.test.mjs", {
+    document: true,
+  }),
   node("artifact-evidence", "scripts/artifact-identity-evidence.mjs", {
     args: ["--check"],
     needsBuild: true,
@@ -834,6 +866,10 @@ export function validateSuites(table) {
   for (const row of table)
     if (row.needs !== undefined && row.needs !== OUTSIDE_CONFINEMENT)
       throw new Error(`Unknown suite need: ${row.name} needs ${row.needs}`);
+  // A fixture shortens the heartbeat to observe it; a gate never does.
+  for (const row of table)
+    if (row.heartbeatMs !== undefined)
+      throw new Error(`Heartbeat interval is a fixture control: ${row.name}`);
 }
 
 const explicitlyIsolated = (row) =>
@@ -880,15 +916,63 @@ export function executeSuite(
   onProgress({ name: row.name, message: "started", elapsedMs: 0 });
   let command;
   let readGuard;
+  let caseMarkers;
+  const dropCaseMarkers = () => {
+    if (!caseMarkers) return;
+    try {
+      rmSync(dirname(caseMarkers), { recursive: true, force: true });
+    } catch {
+      /* A leftover marker directory is harmless; a thrown cleanup is not. */
+    }
+  };
   try {
     const argv = [...row.command, ...(row.args ?? [])];
     command = row.probe ? argv : expand(argv, repo);
-    if (row.packageTest && row.product && !row.document) {
-      readGuard = productReadEnvironment(repo, env, row.name);
+    if (command[0] === process.execPath && command.includes("--test")) {
+      const reporters = command.filter((part) =>
+        part.startsWith("--test-reporter="),
+      );
+      const destinations = command.filter((part) =>
+        part.startsWith("--test-reporter-destination="),
+      );
+      const flags = [
+        ...(reporters.length ? [] : ["--test-reporter=tap"]),
+        `--test-reporter=${pathToFileURL(join(root, "scripts/lib/case-reporter.mjs")).href}`,
+        ...Array.from(
+          { length: Math.max(0, reporters.length - destinations.length) },
+          () => "--test-reporter-destination=stdout",
+        ),
+        ...(reporters.length ? [] : ["--test-reporter-destination=stdout"]),
+        "--test-reporter-destination=stdout",
+      ];
+      // The test processes append each case's start and end here themselves;
+      // reporter events arrive too late to say what is running.
+      // Without a place for them the task runs unmarked and names no case.
+      try {
+        caseMarkers = join(
+          mkdtempSync(join(tmpdir(), "dotln-case-markers-")),
+          "cases.jsonl",
+        );
+        writeFileSync(caseMarkers, "");
+      } catch {
+        dropCaseMarkers();
+        caseMarkers = undefined;
+      }
+      if (caseMarkers) {
+        env = { ...env, DOTLN_CASE_MARKERS: caseMarkers };
+        flags.unshift(
+          `--import=${pathToFileURL(join(root, "scripts/lib/case-marker.mjs")).href}`,
+        );
+      }
+      command.splice(command.indexOf("--test") + 1, 0, ...flags);
+    }
+    if (row.product && !row.document && !row.build) {
+      readGuard = productReadEnvironment(repo, env, row.name, row.activeOrder);
       env = readGuard.env;
     }
     if (row.executionWrapper) command = [...row.executionWrapper, ...command];
   } catch (error) {
+    dropCaseMarkers();
     return Promise.resolve({
       name: row.name,
       exitCode: 1,
@@ -898,11 +982,19 @@ export function executeSuite(
       failureKind: "setup",
     });
   }
-  return new Promise((resolveRun) => {
+  return new Promise((resolveRun, rejectRun) => {
     // Each POSIX suite owns a process group, including descendants inheriting
     // its pipes. Cancellation signals that group, never a scanned process list.
     const grouped = process.platform !== "win32";
-    const child = spawn(taskLauncher(hostDirectory), ["--launch", ...command], {
+    let launcher;
+    try {
+      launcher = taskLauncher(hostDirectory);
+    } catch (error) {
+      dropCaseMarkers();
+      rejectRun(error);
+      return;
+    }
+    const child = spawn(launcher, ["--launch", ...command], {
       cwd: repo,
       stdio: ["ignore", "pipe", "pipe", "pipe"],
       env,
@@ -987,10 +1079,11 @@ export function executeSuite(
       cancel();
     }, timeoutMs);
     let progressCount = 0;
+    const slowestCases = [];
     let lastProgressAt = started;
     let lastMessage = "waiting for the next case report";
-    const progress = (message) => {
-      if (progressCount >= 80) return;
+    const progress = (message, force = false) => {
+      if (progressCount >= 80 && !force) return;
       progressCount++;
       lastProgressAt = Date.now();
       onProgress({
@@ -999,10 +1092,91 @@ export function executeSuite(
         elapsedMs: lastProgressAt - started,
       });
     };
+    const heartbeatMs = row.heartbeatMs ?? 15_000;
+    // The cases a test process has entered and not left, oldest first. A
+    // process that is gone has none.
+    const openCases = () => {
+      const open = new Map();
+      let seen = false;
+      try {
+        for (const line of readFileSync(caseMarkers, "utf8").split("\n")) {
+          let marker;
+          try {
+            marker = JSON.parse(line);
+          } catch {
+            continue; // Empty, or a line still being appended.
+          }
+          seen = true;
+          const key = `${marker.pid}:${marker.id}`;
+          if (marker.event === "start") open.set(key, marker);
+          else if (marker.event === "end") open.delete(key);
+        }
+      } catch {
+        return { seen: false, open: [] };
+      }
+      const alive = (pid) => {
+        try {
+          process.kill(pid, 0);
+          return true;
+        } catch (error) {
+          return error.code === "EPERM";
+        }
+      };
+      return {
+        seen,
+        open: [...open.entries()]
+          .filter(([, marker]) => alive(marker.pid))
+          .sort(([, a], [, b]) => a.at - b.at || a.id - b.id),
+      };
+    };
+    const namedAt = new Map();
+    const entered = (marker, now) =>
+      `${marker.name.slice(0, 80)} (entered ${((now - marker.at) / 1000).toFixed(1)} s ago)`;
+    // A case is named from its own start and end markers, so never after it
+    // ended. Every case that has run for the interval is named on the tick
+    // it becomes due and again each interval, even while other cases keep
+    // reporting, on as many lines as the names need. A quiet task says what
+    // is open, whatever its age.
     const heartbeat = setInterval(() => {
-      if (Date.now() - lastProgressAt >= 15_000)
-        progress(`running; last report: ${lastMessage}`);
-    }, 15_000);
+      const now = Date.now();
+      const quiet = now - lastProgressAt >= heartbeatMs;
+      if (!caseMarkers) {
+        if (quiet)
+          progress(
+            `running task: ${row.name} (reports no cases); last report: ${lastMessage}`,
+            true,
+          );
+        return;
+      }
+      const { seen, open } = openCases();
+      const due = open.filter(
+        ([key, marker]) =>
+          now - marker.at >= heartbeatMs &&
+          now - (namedAt.get(key) ?? 0) >= heartbeatMs,
+      );
+      if (due.length) {
+        const lines = [[]];
+        for (const [key, marker] of due) {
+          const name = entered(marker, now);
+          if (
+            lines.at(-1).length &&
+            lines.at(-1).join("; ").length + name.length > 150
+          )
+            lines.push([]);
+          lines.at(-1).push(name);
+          namedAt.set(key, now);
+        }
+        for (const names of lines)
+          progress(
+            `running case${names.length > 1 ? "s" : ""}: ${names.join("; ")}`,
+            true,
+          );
+      } else if (quiet)
+        progress(
+          `${open.length ? `running case: ${entered(open.at(-1)[1], now)}` : seen ? `no case is open in ${row.name} (between cases, in a hook or in module setup)` : `no case marker from ${row.name} yet`}; last report: ${lastMessage}`,
+          true,
+        );
+    }, heartbeatMs / 3);
     const capture = (stderr = false) => {
       let partial = "";
       let diagnosticLines = 0;
@@ -1017,6 +1191,34 @@ export function executeSuite(
         const lines = partial.split("\n");
         partial = lines.pop().slice(-1024);
         for (const line of lines) {
+          if (line.startsWith("PROGRESS CASE ")) {
+            try {
+              const report = JSON.parse(line.slice("PROGRESS CASE ".length));
+              // Reporter events supply durations; markers say what runs.
+              if (report.event === "end") {
+                if (
+                  !report.skipped &&
+                  Number.isFinite(report.durationMs) &&
+                  report.durationMs >= 0
+                ) {
+                  slowestCases.push({
+                    name: report.name,
+                    file: report.file,
+                    durationMs: report.durationMs,
+                    exitCode: report.exitCode,
+                  });
+                  slowestCases.sort((a, b) => b.durationMs - a.durationMs);
+                  slowestCases.length = Math.min(slowestCases.length, 5);
+                }
+              }
+            } catch {
+              /* TAP diagnostics still judge malformed extra output. */
+            }
+            // Case events supply durations, not live progress. Forwarding
+            // them spends the bounded slots that diagnostics and a suite's
+            // own progress need, and bypasses the usual output throttle.
+            continue;
+          }
           if (!stderr) {
             if (
               /^(?:\s*not ok \d+|.*(?:AssertionError|Error:|DIAGNOSTIC))/.test(
@@ -1054,6 +1256,7 @@ export function executeSuite(
       clearTimeout(killTimer);
       clearTimeout(finishTimer);
       clearInterval(heartbeat);
+      dropCaseMarkers();
       signal?.removeEventListener("abort", stop);
       const resources = resourceTask ? monitor.finish(resourceTask) : {};
       if (ownMonitor) monitor.close();
@@ -1126,6 +1329,16 @@ export function executeSuite(
       resolveRun({
         name: row.name,
         durationMs,
+        slowestCases: slowestCases.length
+          ? slowestCases
+          : [
+              {
+                name: row.name,
+                durationMs,
+                exitCode: code ?? 1,
+                granularity: "task",
+              },
+            ],
         ...resources,
         droppedOutputBytes,
         ...(resourceDetails ? { memoryFailure: resourceDetails } : {}),
@@ -1261,6 +1474,7 @@ export async function scheduleSuites(
     diagnosticContext = {},
     stopRequested = () => false,
     hostLanes,
+    reused = new Map(),
   } = {},
 ) {
   validateSuites(table);
@@ -1378,18 +1592,24 @@ export async function scheduleSuites(
     results.push(result);
     onResult(result);
   };
-  onActiveChange([build.name]);
-  finish(
-    await executeTask(
-      build,
-      lanes.map((_, index) => index),
-      [],
-    ),
-  );
+  for (const row of table)
+    if (reused.has(row.name)) finish(reused.get(row.name));
+  if (!reused.has(build.name)) {
+    onActiveChange([build.name]);
+    finish(
+      await executeTask(
+        build,
+        lanes.map((_, index) => index),
+        [],
+      ),
+    );
+  }
   onActiveChange([]);
-  for (const lane of lanes) lane.previous = build.name;
-  if (results[0].exitCode !== 0) return results;
-  const pending = table.filter((row) => row !== build);
+  for (const lane of lanes)
+    lane.previous = reused.has(build.name) ? null : build.name;
+  if (results.find((row) => row.name === build.name)?.exitCode !== 0)
+    return results;
+  const pending = table.filter((row) => row !== build && !reused.has(row.name));
   for (const row of pending)
     for (const dependency of row.after ?? [])
       if (!table.some((item) => item.name === dependency))
@@ -1467,7 +1687,9 @@ export async function scheduleSuites(
           )
           .slice(-1)
           .map((result) => result.name),
-      ];
+      ].filter((name) =>
+        results.some((result) => result.name === name && result.startedAt),
+      );
       for (const index of laneIndexes) lanes[index].active = row.name;
       const observation = {
         startedAt: new Date().toISOString(),
@@ -1548,7 +1770,7 @@ export function expandSuiteTasks(selected, repo, template) {
     }));
 }
 
-export function aggregateSuiteRows(selected, tasks, rows) {
+export function aggregateSuiteRows(selected, tasks, rows, codeIdentity) {
   return selected.map((suite) => {
     const members = tasks.filter(
       (task) =>
@@ -1571,12 +1793,16 @@ export function aggregateSuiteRows(selected, tasks, rows) {
       .map((row) => Date.parse(row.finishedAt));
     return {
       name: suite.name,
-      exitCode: completeCoverage(members, observed) ? 0 : 1,
+      exitCode: completeCoverage(members, observed, codeIdentity) ? 0 : 1,
       durationMs:
         starts.length && ends.length
           ? Math.max(...ends) - Math.min(...starts)
           : 0,
       executed: observed.some((row) => row.executed),
+      slowestCases: observed
+        .flatMap((row) => row.slowestCases ?? [])
+        .sort((a, b) => b.durationMs - a.durationMs)
+        .slice(0, 5),
       reused: observed.some((row) => row.reused),
       expectedCases: members.map((row) => row.name),
       cases: observed.map(({ output, ...row }) => ({
@@ -1594,7 +1820,24 @@ export async function runGate(
   options = {},
 ) {
   if (args.includes("--list")) return runGateChecks(args, repo, options);
-  const active = beginGateRun(repo, "scripts/test-runner.mjs");
+  const only = args.indexOf("--only");
+  const single =
+    only < 0
+      ? undefined
+      : (options.table ?? suites).find((row) => row.name === args[only + 1]);
+  // Review also runs document-reading machinery, so it retains the full
+  // refusal. Only a product selection that observes no own records grants
+  // report writes; --only must respect the selected suite's declaration.
+  const active = beginGateRun(repo, "scripts/test-runner.mjs", {
+    kind:
+      args.includes("--document") || single?.document
+        ? "document"
+        : args.includes("--review") || args.includes("--full")
+          ? "review"
+          : args.includes("--machinery") || single?.machinery
+            ? "machinery"
+            : "product",
+  });
   let registration;
   try {
     registration = await registerGuardTree(
@@ -1680,27 +1923,101 @@ async function runGateChecks(
       );
     return { exitCode: 0 };
   }
-  // WO-173: `npm test`, with or without --review, first looks for a passing
-  // complete row of the same command at the current code identity whose
-  // required suites include this selection's. One exists: print it and exit
-  // without starting a suite; --again runs the gate. A changed code identity,
-  // a partial row and a failed row never satisfy the lookup, and the row
-  // publication accepted before stays the row it accepts.
-  if (!again && !only && !document && !machinery && !confinedPartial) {
-    const required = selected.map((row) => row.name);
+  const lookupStarted = Date.now();
+  let reused = new Map();
+  let reuseIdentity;
+  // Review and explicit fresh runs always execute the entire selection.
+  if (
+    !again &&
+    !review &&
+    !only &&
+    !document &&
+    !machinery &&
+    !confinedPartial
+  ) {
+    const needsBuild = selected.some((row) => row.needsBuild || row.build);
+    const inventory = [
+      needsBuild
+        ? table.find((row) => row.build)
+        : { name: "document-barrier", build: true, command: [], outputs: [] },
+      ...selected.filter((row) => !row.build),
+    ];
+    const tasks = expandSuiteTasks(inventory, repo, "<gate-template>");
     let covering;
     try {
-      covering = await coveringGateCheck(repo, "npm test", required);
+      covering = await coveringTaskResults(repo, "npm test", tasks);
+      reused = covering.results;
+      reuseIdentity = covering.codeIdentity;
     } catch (error) {
       console.log(
         `npm test: passing-row lookup unavailable (${error.message}); running the selection`,
       );
     }
-    if (covering?.row) {
+    // The build output is ignored and may have been made at another identity.
+    // A task that runs here must run against output made at this one: the
+    // build's pass is carried beside it only while the output on disk is the
+    // one its executing row attested. A row in which no task runs consumes
+    // no output and carries the pass as it stands.
+    const build = tasks.find((row) => row.build);
+    if (reused.size < tasks.length && reused.has(build.name)) {
+      const carried = reused.get(build.name);
+      if (buildOutputAttested(repo, build, carried))
+        reused.set(build.name, { ...carried, outputAttested: true });
+      else {
+        reused.delete(build.name);
+        console.log(
+          typeof carried.outputDigest === "string"
+            ? "npm test: the build output on disk is not the one the latest passing build at this code identity recorded; building"
+            : "npm test: the latest passing build at this code identity attested no output; building",
+        );
+      }
+    }
+    if (reused.size === tasks.length) {
+      const treeHash = gateTreeHash(repo);
+      const taskRows = tasks.map((task) => reused.get(task.name));
+      const unchanged = gateCodeIdentity(repo) === covering.codeIdentity;
+      const check = {
+        checkId: "npm test",
+        treeHash,
+        subject: treeHash,
+        codeIdentity: covering.codeIdentity,
+        durationMs: Date.now() - lookupStarted,
+        exitCode:
+          unchanged && completeCoverage(tasks, taskRows, covering.codeIdentity)
+            ? 0
+            : 1,
+        identityUnchanged: unchanged,
+        executed: true,
+        reused: true,
+        executionMode: "reused",
+        gateSelection: "plain",
+        freshSuites: 0,
+        reusedSuites: taskRows.length,
+        requiredSuites: inventory.map((row) => row.name),
+        evidenceRef: `host-gate:${covering.codeIdentity}:npm test`,
+        recordedAt: new Date().toISOString(),
+        cases: aggregateSuiteRows(
+          inventory,
+          tasks,
+          taskRows,
+          covering.codeIdentity,
+        ),
+        taskTimeline: taskRows,
+      };
+      check.criticalPath = gateCriticalPath(check);
+      recordGateChecks(repo, [check]);
+      const sources = [
+        ...new Set(
+          taskRows.map(
+            (row) =>
+              `${row.sourceRow.location} row recorded ${row.sourceRow.recordedAt} (${row.sourceRow.evidenceRef})`,
+          ),
+        ),
+      ];
       console.log(
-        `npm test: a passing complete row of a selection that covers this one already exists at code identity ${covering.codeIdentity} (${describeGateRow(covering.row)}); no suite started. Run npm test -- --again${review ? " --review" : ""} to run it anyway.`,
+        `npm test: ${taskRows.length} passing task results at code identity ${covering.codeIdentity}; no suite started; sources: ${sources.join("; ")}. Complete composed row recorded. Run npm test -- --again to run it anyway.`,
       );
-      return { ...covering.row, reused: true, executionMode: "reused" };
+      return check;
     }
   }
   // The preflight precedes the build, the diagnostics directory and every
@@ -1750,16 +2067,32 @@ async function runGateChecks(
   const treeHash = gateTreeHash(repo),
     codeIdentity = gateCodeIdentity(repo),
     started = Date.now();
+  // Preflight can take time. Results looked up before it belong to that
+  // earlier identity, never to a newly captured gate subject.
+  if (reused.size && reuseIdentity !== codeIdentity) {
+    reused = new Map();
+    console.log(
+      "npm test: code changed after passing-row lookup; running the selection",
+    );
+  }
   const needsBuild = selected.some((row) => row.needsBuild || row.build);
   selected = [
     needsBuild
       ? table.find((row) => row.build)
-      : { name: "document-barrier", build: true, command: [] },
+      : { name: "document-barrier", build: true, command: [], outputs: [] },
     ...selected.filter((row) => !row.build),
   ];
-  const fixture = selected.some((row) => row.name === "release")
-    ? createReleaseFixtureContext()
-    : null;
+  const freshRelease =
+    selected.some((row) => row.name === "release") &&
+    expandSuiteTasks(selected, repo, "<gate-template>").some(
+      (row) => row.name.startsWith("release:") && !reused.has(row.name),
+    );
+  // A passed preparation task stays passed. Its old disposable template is
+  // gone, so a missing release case uses the shell's standalone setup instead
+  // of executing that passing task again or trusting an old writable fixture.
+  const standaloneRelease = freshRelease && reused.has("release:prepare");
+  const fixture =
+    freshRelease && !standaloneRelease ? createReleaseFixtureContext() : null;
   const diagnosticRoot = join(repo, "docs/control/local/harness/runner");
   mkdirSync(diagnosticRoot, { recursive: true });
   const peerFile = join(diagnosticRoot, "active.json"),
@@ -1779,7 +2112,30 @@ async function runGateChecks(
           Math.floor(availableParallelism() / 2),
         ),
       );
-  const tasks = expandSuiteTasks(selected, repo, fixture?.template);
+  const tasks = expandSuiteTasks(
+    selected,
+    repo,
+    fixture?.template ?? "<gate-template>",
+  ).map((row) =>
+    standaloneRelease && row.name.startsWith("release:case:")
+      ? { ...row, args: ["--case", row.name.slice("release:case:".length)] }
+      : row,
+  );
+  let activeOrder;
+  try {
+    const { readControl, branchWorkOrder, selectWorkOrder } =
+      await import("./lib/control-store.mjs");
+    const control = readControl(repo);
+    activeOrder = selectWorkOrder(control, { branch: branchWorkOrder(repo) });
+    if (
+      ["closed", "withdrawn"].includes(
+        control.orders.get(activeOrder)?.state.phase,
+      )
+    )
+      activeOrder = undefined;
+  } catch {
+    /* Standalone fixture without lifecycle authority. */
+  }
   const stop = new AbortController();
   const limits = memoryBudgets(repo);
   let resourceGateFailure;
@@ -1841,36 +2197,62 @@ async function runGateChecks(
         signal: stop.signal,
         parentLease: inheritedLease,
       },
+      reused,
       onActiveChange(names) {
         writeFileSync(`${peerFile}.tmp`, JSON.stringify({ tasks: names }));
         renameSync(`${peerFile}.tmp`, peerFile);
       },
-      execute: async (row, cwd) =>
-        row.name === "document-barrier"
-          ? {
-              name: row.name,
-              exitCode: 0,
-              durationMs: 0,
-              executed: true,
-              output: "",
-            }
-          : executeSuite(
-              {
-                ...row,
-                resourceMonitor: monitor,
-                memoryLimits: limits,
-                hostDirectory,
-              },
-              cwd,
-              900_000,
-              ({ name, message, elapsedMs }) =>
-                console.log(
-                  `PROGRESS [${name}] ${(elapsedMs / 1000).toFixed(1)} s ${message}`,
-                ),
-              stop.signal,
-            ),
+      execute: async (row, cwd) => {
+        const result =
+          row.name === "document-barrier"
+            ? {
+                name: row.name,
+                exitCode: 0,
+                durationMs: 0,
+                executed: true,
+                output: "",
+              }
+            : await executeSuite(
+                {
+                  ...row,
+                  resourceMonitor: monitor,
+                  memoryLimits: limits,
+                  hostDirectory,
+                  activeOrder,
+                },
+                cwd,
+                900_000,
+                ({ name, message, elapsedMs }) =>
+                  console.log(
+                    `PROGRESS [${name}] ${(elapsedMs / 1000).toFixed(1)} s ${message}`,
+                  ),
+                stop.signal,
+              );
+        if (!row.build || result.exitCode !== 0) return result;
+        // A passing build attests the output it published. An output that
+        // cannot be attested leaves the pass without a digest, so it is
+        // never carried beside a task that runs.
+        let outputDigest;
+        try {
+          outputDigest = buildOutputDigest(cwd, row.outputs);
+        } catch {
+          /* Unreadable while this gate holds it: no attestation. */
+        }
+        if (outputDigest) return { ...result, outputDigest };
+        if (Array.isArray(row.outputs))
+          console.log(
+            `${checkId}: the build's declared output could not be attested (absent, unreadable, or holding a link or special file); no pass of this run will be carried`,
+          );
+        return result;
+      },
       onResult(row) {
         if (row.name === "document-barrier") return;
+        if (row.reused) {
+          console.log(
+            `REUSE ${row.name} from ${row.sourceRow.location} row ${row.sourceRow.recordedAt}`,
+          );
+          return;
+        }
         console.log(
           `${row.exitCode === 0 ? "PASS" : "FAIL"} ${row.name} ${(row.durationMs / 1000).toFixed(2)} s`,
         );
@@ -1929,8 +2311,20 @@ async function runGateChecks(
       );
     if (stopping() && (interrupted || !resourceGateFailure))
       throw new Error("Gate stopped during base comparison; no check recorded");
-    const rows = aggregateSuiteRows(selected, tasks, taskRows);
+    const rows = aggregateSuiteRows(selected, tasks, taskRows, codeIdentity);
     const unchanged = gateCodeIdentity(repo) === codeIdentity;
+    // Every task ran between the build's attestation and this check. An
+    // output that changed in between leaves no task's pass tied to this
+    // identity's build, exactly as changed code does.
+    const buildRow = tasks.find((row) => row.build);
+    const built = taskRows.find((row) => row.name === buildRow.name);
+    const outputJudged = typeof built?.outputDigest === "string";
+    const outputUnchanged =
+      !outputJudged || buildOutputAttested(repo, buildRow, built);
+    // A passing build that declares outputs and attested none leaves this
+    // row's passes tied to no output: the row may pass and supplies nothing.
+    const outputUnattested =
+      built?.exitCode === 0 && Array.isArray(buildRow.outputs) && !outputJudged;
     // A root that survives every suite's own teardown is a failed gate; the
     // check names it and removes nothing, so the leftover stays diagnosable.
     const abandoned = readdirSync(tmpdir())
@@ -1946,8 +2340,9 @@ async function runGateChecks(
       subject: treeHash,
       durationMs: Date.now() - started,
       exitCode:
-        completeCoverage(tasks, taskRows) &&
+        completeCoverage(tasks, taskRows, codeIdentity) &&
         unchanged &&
+        outputUnchanged &&
         !abandoned.length &&
         !resourceGateFailure
           ? 0
@@ -1955,9 +2350,29 @@ async function runGateChecks(
       executed: true,
       evidenceRef: `host-gate:${codeIdentity}:${only ?? checkId}`,
       recordedAt: new Date().toISOString(),
-      executionMode: "fresh",
-      freshSuites: taskRows.filter((row) => row.executed).length,
-      reusedSuites: 0,
+      executionMode:
+        review || again ? "forced-fresh" : reused.size ? "composed" : "fresh",
+      gateSelection: document
+        ? "document"
+        : review
+          ? "review"
+          : machinery
+            ? "machinery"
+            : only
+              ? "single"
+              : "plain",
+      identityUnchanged: unchanged,
+      ...(outputJudged ? { buildOutputUnchanged: outputUnchanged } : {}),
+      ...(outputUnattested ? { buildOutputAttested: false } : {}),
+      freshReason: review
+        ? "review"
+        : again
+          ? "requested"
+          : reused.size
+            ? "missing-passing-tasks"
+            : "no-passing-tasks",
+      freshSuites: taskRows.filter((row) => row.executed && !row.reused).length,
+      reusedSuites: taskRows.filter((row) => row.reused).length,
       requiredSuites: selected.map((row) => row.name),
       // A partial row names what it left out; no product-gate consumer reads it.
       ...(confinedPartial
@@ -1973,9 +2388,7 @@ async function runGateChecks(
         maxHostLoadPerCpu: 2,
         scheduler: "exclusive-machinery-v1",
       },
-      taskTimeline: taskRows
-        .filter((row) => row.startedAt)
-        .map(({ output, ...row }) => row),
+      taskTimeline: taskRows.map(({ output, ...row }) => row),
       memory: {
         ...monitor.close(),
         budgets: limits,
@@ -2009,9 +2422,12 @@ async function runGateChecks(
     }
     if (stopping() && (interrupted || !resourceGateFailure))
       throw new Error("Gate stopped before recording; no check recorded");
-    if (!only && !machinery) recordGateChecks(repo, [check]);
+    // A single-suite or machinery run is not gate evidence: its row is kept
+    // under its own check, which answers no claim, so that the lookup knows
+    // how each task last ran at this identity.
+    recordGateChecks(repo, [check]);
     console.log(
-      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(check.durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh tasks${unchanged ? "" : "; code changed"}${abandoned.length ? `; abandoned fixture roots: ${abandoned.join(", ")}` : ""}${confinedPartial ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,
+      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(check.durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh tasks${unchanged ? "" : "; code changed"}${outputUnchanged ? "" : "; build output changed during the gate"}${abandoned.length ? `; abandoned fixture roots: ${abandoned.join(", ")}` : ""}${confinedPartial ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,
     );
     return check;
   } finally {

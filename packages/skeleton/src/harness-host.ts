@@ -73,6 +73,7 @@ import {
   activeGateRuns,
   beginGateRun,
   gateInputPath,
+  gateRecordPath,
   prospectiveRealpath,
   gateTreeHash,
   findGateCheck,
@@ -3787,15 +3788,36 @@ function activeGateWriteRefusal(
   const args = input.tool_input ?? {};
   const runs = activeGateRuns(root);
   if (!runs.length) return null;
+  let order: string | undefined;
+  if (runs.every((run) => run.kind === "product")) {
+    try {
+      const control = harnessControl(root);
+      if (
+        [
+          "active",
+          "repairing",
+          "ready-to-verify",
+          "verifying",
+          "verified",
+          "needs-fix",
+          "final-review",
+        ].includes(control.phase)
+      )
+        order = control.workOrder ?? undefined;
+    } catch {
+      // Unknown selected authority retains the ordinary live-gate refusal.
+    }
+  }
+  const protectedPath = (path: string) =>
+    gateInputPath(root, path) && !(order && gateRecordPath(root, path, order));
   if (tool === "write") {
     const path = args.file_path ?? args.notebook_path;
-    if (typeof path === "string" && !gateInputPath(root, path)) return null;
+    if (typeof path === "string" && !protectedPath(path)) return null;
     const targets =
       input.tool_name === "apply_patch" && typeof args.patch === "string"
         ? patchWriteTargets(args.patch)
         : null;
-    if (targets?.every((target) => !gateInputPath(root, target.path)))
-      return null;
+    if (targets?.every((target) => !protectedPath(target.path))) return null;
   }
   if (tool === "shell") {
     const command = args.command ?? args.cmd;
@@ -3850,10 +3872,7 @@ function activeGateWriteRefusal(
       paths &&
       paths.every(
         (path) =>
-          !gateInputPath(
-            root,
-            isAbsolute(path) ? path : `${directory}/${path}`,
-          ),
+          !protectedPath(isAbsolute(path) ? path : `${directory}/${path}`),
       )
     )
       return null;

@@ -62,8 +62,15 @@ export function gateInstalledInputRoots(root) {
 /** Walk before normalizing parents: the kernel follows a directory symlink
  * before applying `..`, and follows a dangling final link when creating a file.
  * Native realpath retains on-disk case for every existing component.
- * @param {string} path @returns {string} */
-export function prospectiveRealpath(path) {
+ * The optional I/O snapshot lets a read observer use the same traversal
+ * without recursively invoking its own wrapped filesystem methods.
+ * @param {string} path
+ * @param {{lstatSync: typeof lstatSync, readlinkSync: typeof readlinkSync, realpathSync: typeof realpathSync.native}} [io]
+ * @returns {string} */
+export function prospectiveRealpath(
+  path,
+  io = { lstatSync, readlinkSync, realpathSync: realpathSync.native },
+) {
   let physical = parse(path).root;
   const pending = path.slice(physical.length).split(sep);
   let links = 0;
@@ -77,7 +84,7 @@ export function prospectiveRealpath(path) {
     const next = join(physical, part);
     let info;
     try {
-      info = lstatSync(next);
+      info = io.lstatSync(next);
     } catch (error) {
       if (/** @type {NodeJS.ErrnoException} */ (error).code !== "ENOENT")
         throw error;
@@ -87,12 +94,12 @@ export function prospectiveRealpath(path) {
     if (info.isSymbolicLink()) {
       if (++links > 40)
         throw new Error("Gate input symlink traversal unavailable");
-      const target = readlinkSync(next);
+      const target = io.readlinkSync(next);
       if (isAbsolute(target)) physical = parse(target).root;
       pending.unshift(
         ...target.slice(isAbsolute(target) ? physical.length : 0).split(sep),
       );
-    } else physical = realpathSync.native(next);
+    } else physical = io.realpathSync(next);
   }
   return physical;
 }
@@ -181,7 +188,63 @@ export function gateInputPath(root, path) {
   });
 }
 
-/** @typedef {{contract: "gate-run-v1", runId: string, command: string, pid: number, startedAt: string, processStartedAt: string|null}} GateRun */
+/** Only a selected order's records, with neither symlink escape nor inode
+ * aliasing, can be written while a product gate reads its other inputs.
+ * @param {string} root @param {string} path @param {string} order */
+export function gateRecordPath(root, path, order) {
+  if (!/^WO-\d{3}$/.test(order)) return false;
+  root = realpathSync.native(root);
+  // The code identity excludes the default document tree. A relocated record
+  // tree needs that same identity boundary before it can be write-admitted.
+  // Until then retain the full refusal, including at the old default paths.
+  const config = join(root, "dotln.config.json");
+  if (existsSync(config)) {
+    try {
+      const { version, roots = {} } = JSON.parse(readFileSync(config, "utf8"));
+      if (
+        version !== 1 ||
+        !roots ||
+        typeof roots !== "object" ||
+        Array.isArray(roots) ||
+        (roots.docs ?? "docs") !== "docs" ||
+        Object.entries({
+          evidence: "docs/evidence",
+          verifications: "docs/verifications",
+          finalReviews: "docs/final-reviews",
+        }).some(([key, fallback]) => (roots[key] ?? fallback) !== fallback)
+      )
+        return false;
+    } catch {
+      return false;
+    }
+  }
+  const lexical = resolve(root, path);
+  const physical = prospectiveRealpath(
+    isAbsolute(path) ? path : `${root}${sep}${path}`,
+  );
+  const info = lstatSync(physical, { throwIfNoEntry: false });
+  if (info && !info.isDirectory() && info.nlink > 1) return false;
+  /** @param {string} parent @param {string} child */
+  const inside = (parent, child) => {
+    const local = relative(parent, child);
+    return (
+      local === "" ||
+      (!isAbsolute(local) && local !== ".." && !local.startsWith(`..${sep}`))
+    );
+  };
+  return ["evidence", "verifications", "final-reviews"].some((kind) => {
+    const directory = join(root, "docs", kind, order);
+    // Resolve the directory itself too: a substituted record-root symlink
+    // must not grant another part of the worktree or a foreign directory.
+    return (
+      prospectiveRealpath(directory) === directory &&
+      inside(directory, lexical) &&
+      inside(directory, physical)
+    );
+  });
+}
+
+/** @typedef {{contract: "gate-run-v1", runId: string, command: string, kind?: "product"|"document"|"machinery"|"review", pid: number, startedAt: string, processStartedAt: string|null}} GateRun */
 /** @typedef {{contract: "gate-stop-v1", runId: string, requestedAt: string}} GateStop */
 /** @param {string} root */
 const gateRunsDirectory = (root) =>
@@ -337,8 +400,9 @@ export function activeGateRuns(root) {
 }
 /** Gate-owned writes (build, preparation and evidence) are internal operations;
  * this marker fences new agent tool dispatches, not the gate's subprocesses.
- * @param {string} root @param {string} command */
-export function beginGateRun(root, command) {
+ * @param {string} root @param {string} command
+ * @param {{kind?: "product"|"document"|"machinery"|"review"}} [options] */
+export function beginGateRun(root, command, { kind } = {}) {
   if (!/^[a-zA-Z0-9 :./-]{1,160}$/.test(command))
     throw new Error("Gate command must be a bounded public label");
   const directory = gateRunsDirectory(root);
@@ -348,6 +412,7 @@ export function beginGateRun(root, command) {
     contract: "gate-run-v1",
     runId: randomUUID(),
     command,
+    ...(kind ? { kind } : {}),
     pid: process.pid,
     startedAt: new Date().toISOString(),
     processStartedAt: gateProcessStart(process.pid),
@@ -625,9 +690,9 @@ export function latestGateOutcome(root, treeHash, runIds = []) {
   );
 }
 
-/** Product evidence follows tracked source bytes, independent of reports,
- * documentation and generated projections. Stage new source files before the
- * reviewer's gate. A path Git marks `dotln-documentation` (the package
+/** Product evidence follows tracked and non-ignored untracked source bytes,
+ * independent of staging, reports and generated projections. A path Git marks
+ * `dotln-documentation` (the package
  * READMEs no suite reads) is documentation for a reader, never product code,
  * so editing it after a gate leaves the gate's key intact; a README a test
  * reads as an input stays unmarked and counts (WO-115 D026).
@@ -647,7 +712,17 @@ export function gateCodeIdentity(root, revision) {
           return { path: match[3], mode: match[1], object: match[2] };
         })
     : [
-        ...new Set(git(root, ["ls-files", "-z"]).split("\0").filter(Boolean)),
+        ...new Set(
+          git(root, [
+            "ls-files",
+            "--cached",
+            "--others",
+            "--exclude-standard",
+            "-z",
+          ])
+            .split("\0")
+            .filter(Boolean),
+        ),
       ].map((path) => ({ path }));
   const attributes = spawnSync(
     "git",
@@ -675,6 +750,7 @@ export function gateCodeIdentity(root, revision) {
   const selected = entries
     .filter(
       ({ path }) =>
+        path === "docs/control/outward-vocabulary.json" ||
         !(
           /^(?:docs|\.claude|\.agents)\//.test(path) ||
           /^[^/]+\.md$/i.test(path) ||
@@ -707,27 +783,23 @@ export function gateCodeIdentity(root, revision) {
   for (const row of selected) {
     let bytes, mode;
     if (revision) {
+      if (row.mode === "120000")
+        throw new Error(
+          `Code identity does not support symbolic source aliases: ${row.path}`,
+        );
       bytes = blobs.get(row.path);
-      mode =
-        row.mode === "120000"
-          ? "link"
-          : row.mode === "100755"
-            ? "executable"
-            : "file";
+      mode = row.mode === "100755" ? "executable" : "file";
     } else {
       const absolute = join(root, row.path),
         stat = lstatSync(absolute, { throwIfNoEntry: false });
       if (!stat) continue;
-      if (!stat.isFile() && !stat.isSymbolicLink())
-        throw new Error("Unsupported code identity entry");
-      bytes = stat.isSymbolicLink()
-        ? Buffer.from(readlinkSync(absolute))
-        : readFileSync(absolute);
-      mode = stat.isSymbolicLink()
-        ? "link"
-        : stat.mode & 0o111
-          ? "executable"
-          : "file";
+      if (stat.isSymbolicLink())
+        throw new Error(
+          `Code identity does not support symbolic source aliases: ${row.path}`,
+        );
+      if (!stat.isFile()) throw new Error("Unsupported code identity entry");
+      bytes = readFileSync(absolute);
+      mode = stat.mode & 0o111 ? "executable" : "file";
     }
     digest.update(`${row.path}\0${mode}\0${bytes.length}\0`).update(bytes);
   }

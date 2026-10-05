@@ -264,7 +264,7 @@ export async function requireGateClaims(
     if (plain) {
       if (!plain.row)
         throw new Error(
-          `${named(productClaims)} recorded met names ${command}, and no passing complete npm test row exists at the current code identity ${plain.codeIdentity}. Run ${command}, or ${instead}.`,
+          `${named(productClaims)} recorded met names ${command}, and no passing complete npm test row ${plain.displaced ? `stands at the current code identity ${plain.codeIdentity}: the latest complete row (${describeGateRow(plain.displaced.row)}) names ${plain.displaced.tasks.join(", ")}, whose latest execution there can no longer be carried (a later run did not pass, a later gate that ran it failed, or the row that executed it cannot be read)` : `exists at the current code identity ${plain.codeIdentity}`}. Run ${command}, or ${instead}.`,
         );
       result.productGate = gateFields(plain.row);
       if (claims.review.length) {

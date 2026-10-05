@@ -48,6 +48,15 @@ const record = (row) => {
 };
 const sha = (bytes) =>
   `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
+function readProgressAction(file) {
+  try {
+    return JSON.parse(readFileSync(file, "utf8")).action;
+  } catch (error) {
+    if (error instanceof SyntaxError || error.code === "ENOENT")
+      return undefined;
+    throw error;
+  }
+}
 const independentEnv = (env) =>
   Object.fromEntries(
     Object.entries(env).filter(
@@ -621,6 +630,21 @@ test("fixture runs without every connected-server environment variable WO-057 re
   record({ id: "no-connected-server", label: "pass", ...observation });
 });
 
+test("recovery readiness retries incomplete progress without swallowing other I/O errors", () => {
+  const file = join(output, "readiness-progress.json");
+  assert.equal(readProgressAction(file), undefined);
+  for (const partial of ["", '{"action":', '{"action":"wait"']) {
+    writeFileSync(file, partial);
+    for (let poll = 0; poll < 3; poll += 1)
+      assert.equal(readProgressAction(file), undefined);
+  }
+  writeFileSync(file, JSON.stringify({ action: "navigate" }));
+  assert.equal(readProgressAction(file), "navigate");
+  writeFileSync(file, JSON.stringify({ action: "wait" }));
+  assert.equal(readProgressAction(file), "wait");
+  assert.throws(() => readProgressAction(output), { code: "EISDIR" });
+});
+
 test("SIGKILL recovery observes zero recorded browser processes and leaves an unrelated process alive", async () => {
   const directory = join(output, "interrupted");
   const sentinel = spawn(
@@ -643,11 +667,7 @@ test("SIGKILL recovery observes zero recorded browser processes and leaves an un
     const until = Date.now() + 10000;
     let processes;
     while (Date.now() < until) {
-      if (
-        existsSync(join(directory, "progress.json")) &&
-        JSON.parse(readFileSync(join(directory, "progress.json"), "utf8"))
-          .action === "wait"
-      ) {
+      if (readProgressAction(join(directory, "progress.json")) === "wait") {
         processes = JSON.parse(
           readFileSync(join(directory, "processes.json"), "utf8"),
         );

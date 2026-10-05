@@ -1,6 +1,7 @@
 import { runGit } from "./lib/git.mjs";
 import { json as prettyJson, write as put } from "./lib/helpers.mjs";
-import test from "node:test";
+import nodeTest from "node:test";
+import { performance } from "node:perf_hooks";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -25,6 +26,33 @@ import {
   integrationTestCommand,
   releaseLine,
 } from "./lib/worktree-integration.mjs";
+
+// Git integration fixtures need this revision and their own branches and tag.
+// Importing every unrelated release tag made each generator inspect hundreds
+// of historical control snapshots; no assertion below depends on those tags.
+const test = (name, fn) =>
+  nodeTest(name, async (t) => {
+    // Flush the execution-ordered start before synchronous fixture operations.
+    await new Promise((resolve) => setImmediate(resolve));
+    const started = performance.now();
+    try {
+      await fn(t);
+    } finally {
+      console.log(
+        "PROGRESS integration case ended " +
+          JSON.stringify({
+            event: "end",
+            name,
+            file: "scripts/test-worktree-integration.mjs",
+            nesting: 0,
+            durationMs: performance.now() - started,
+          }),
+      );
+      // Synchronous Git work otherwise holds the worker event loop across cases
+      // and makes buffered TAP look like a single unexplained pause.
+      await new Promise((resolve) => setImmediate(resolve));
+    }
+  });
 
 const source = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const text = (root, path) => readFileSync(join(root, path), "utf8");
@@ -148,6 +176,8 @@ function fixture(
     "maintenance.auto=false",
     "clone",
     "--bare",
+    "--no-tags",
+    "--single-branch",
     "--no-hardlinks",
     "--quiet",
     source,
@@ -171,6 +201,8 @@ function fixture(
     "-c",
     "maintenance.auto=false",
     "clone",
+    "--no-tags",
+    "--single-branch",
     "--no-hardlinks",
     "--quiet",
     "--branch",
