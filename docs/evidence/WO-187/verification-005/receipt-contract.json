@@ -1,0 +1,27 @@
+{
+  "observedAt": "2026-10-06T10:19:04.079Z",
+  "source": "docs/planning/refutations/2026-10-03-planning-90bdcd90e4af7f16-040.json",
+  "currentReceiptValid": true,
+  "canonicalFiling": "scripts/lib/plan-receipts.mjs validates result and receipt before writing",
+  "results": [
+    {
+      "name": "missing",
+      "accepted": false,
+      "error": "invalid-result: goal-review order shape"
+    },
+    {
+      "name": "null",
+      "accepted": false,
+      "error": "invalid-result: goal findings must be a bounded array"
+    },
+    {
+      "name": "object",
+      "accepted": false,
+      "error": "invalid-result: goal findings must be a bounded array"
+    },
+    {
+      "name": "explicit-empty",
+      "accepted": true
+    }
+  ]
+}

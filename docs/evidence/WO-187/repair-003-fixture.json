@@ -1,0 +1,11 @@
+{
+  "command": "WO-187 verification-review lifecycle fixture",
+  "subject": "current worktree",
+  "exitCode": 0,
+  "signal": null,
+  "durationMs": 14530,
+  "recordedAt": "2026-10-06T02:53:16.688Z",
+  "fixtureRoot": "<session-scratch>/fixture-CLUgDA",
+  "stdout": "WO-187 verification briefing, completion advisories, finding classes and planning counts passed\n",
+  "stderr": ""
+}

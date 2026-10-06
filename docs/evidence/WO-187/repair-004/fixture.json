@@ -1,0 +1,16 @@
+{
+  "command": "node scripts/test-verification-review.mjs <private parent> [<08845c71:scripts/resume.mjs>]",
+  "source": "bounded runs in session scratch after the last source edit; see probes for the other checks",
+  "observedAt": "2026-10-06T06:13:30Z",
+  "current": {
+    "exit": 0,
+    "seconds": 18.61,
+    "output": "WO-187 verification briefing, completion advisories, finding classes and planning counts passed"
+  },
+  "against08845c71": {
+    "exit": 1,
+    "seconds": 1.04,
+    "assertion": "AssertionError [ERR_ASSERTION]: verify must print the order's known issues",
+    "at": "scripts/test-verification-review.mjs:129:8"
+  }
+}

@@ -1,0 +1,148 @@
+{
+  "at": "2026-10-06T01:08:41.803Z",
+  "cases": [
+    {
+      "name": "plain uncounted control",
+      "findings": "**R1:** follow-up; class: escape; defect.",
+      "verdict": "pass",
+      "parser": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 0,
+        "unrecognised": [
+          1
+        ],
+        "measured": false
+      },
+      "exitCode": 0,
+      "recordedCounts": null,
+      "advisories": [
+        "No passing product gate at this code identity; the reviewer runs npm test before publication.",
+        "Session authorship and output reads unavailable.",
+        "docs/final-reviews/WO-187/FINAL-001.md: line 7 names a route and a class but no single F-numbered finding label; not counted, and the finding counts are recorded as unmeasured. The final-review result records all the same."
+      ],
+      "stderr": "Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.\nAdvisory: No passing product gate at this code identity; the reviewer runs npm test before publication.\nAdvisory: Session authorship and output reads unavailable.\nAdvisory: docs/final-reviews/WO-187/FINAL-001.md: line 7 names a route and a class but no single F-numbered finding label; not counted, and the finding counts are recorded as unmeasured. The final-review result records all the same."
+    },
+    {
+      "name": "backtick value",
+      "findings": "**R1:** follow-up; class: `escape`; defect.",
+      "verdict": "pass",
+      "parser": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 0,
+        "unrecognised": [],
+        "measured": true
+      },
+      "exitCode": 0,
+      "recordedCounts": {
+        "escape": 0,
+        "integration": 0,
+        "new-scope": 0,
+        "unclassed": 0
+      },
+      "advisories": [
+        "No passing product gate at this code identity; the reviewer runs npm test before publication.",
+        "Session authorship and output reads unavailable."
+      ],
+      "stderr": "Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.\nAdvisory: No passing product gate at this code identity; the reviewer runs npm test before publication.\nAdvisory: Session authorship and output reads unavailable."
+    },
+    {
+      "name": "unknown class after counted finding",
+      "findings": "**Finding F1:** follow-up; class: escape; first.\n**R1:** blocking; class: typo; second.",
+      "verdict": "fail",
+      "parser": {
+        "counts": {
+          "escape": 1,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      },
+      "exitCode": 0,
+      "recordedCounts": {
+        "escape": 1,
+        "integration": 0,
+        "new-scope": 0,
+        "unclassed": 0
+      },
+      "advisories": [
+        "Session authorship and output reads unavailable."
+      ],
+      "stderr": "Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.\nAdvisory: Session authorship and output reads unavailable."
+    },
+    {
+      "name": "suffix class after counted finding",
+      "findings": "**Finding F1:** follow-up; class: escape; first.\n**R1:** blocking; class: escape2; second.",
+      "verdict": "fail",
+      "parser": {
+        "counts": {
+          "escape": 1,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      },
+      "exitCode": 0,
+      "recordedCounts": {
+        "escape": 1,
+        "integration": 0,
+        "new-scope": 0,
+        "unclassed": 0
+      },
+      "advisories": [
+        "Session authorship and output reads unavailable."
+      ],
+      "stderr": "Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.\nAdvisory: Session authorship and output reads unavailable."
+    },
+    {
+      "name": "counted unknown control",
+      "findings": "**Finding F1:** blocking; class: typo; defect.",
+      "verdict": "fail",
+      "parser": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 1
+        },
+        "unclassedBlocking": [
+          "F1"
+        ],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      },
+      "exitCode": 0,
+      "recordedCounts": {
+        "escape": 0,
+        "integration": 0,
+        "new-scope": 0,
+        "unclassed": 1
+      },
+      "advisories": [
+        "Session authorship and output reads unavailable.",
+        "docs/final-reviews/WO-187/FINAL-001.md: blocking findings F1 have a missing, unknown or ambiguous class; counted as unclassed. The final-review result records all the same."
+      ],
+      "stderr": "Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.\nAdvisory: Session authorship and output reads unavailable.\nAdvisory: docs/final-reviews/WO-187/FINAL-001.md: blocking findings F1 have a missing, unknown or ambiguous class; counted as unclassed. The final-review result records all the same."
+    }
+  ]
+}

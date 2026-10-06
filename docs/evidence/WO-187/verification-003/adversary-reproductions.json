@@ -1,0 +1,119 @@
+{
+  "at": "2026-10-06T02:25:53.282Z",
+  "source": "root reproduction of the fresh adversary's findings by direct module calls at the current subject",
+  "findings": {
+    "A1_adjacentFindingLines": {
+      "verdict": "fail",
+      "text": "**Finding F1:** blocking; class: escape; a lone ` in a label hides the next line.\n**Finding F2:** blocking; class: escape; `resume verify` prints nothing.\n**Finding F3:** follow-up; class: new-scope; third.",
+      "result": {
+        "counts": {
+          "escape": 1,
+          "integration": 0,
+          "new-scope": 1,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 2,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    "A1_tripleBacktickMentions": {
+      "verdict": "fail",
+      "text": "**Finding F1:** blocking; class: escape; an unclosed ``` fence in a quote.\n**Finding F2:** blocking; class: integration; a ``` closer at four spaces.",
+      "result": {
+        "counts": {
+          "escape": 1,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    "A5_basisSubBullet": {
+      "verdict": "fail",
+      "text": "- **Finding F1:** blocking; class: escape; the reader drops a line.\n  - Basis for class: present in the subject VER-002 judged; blocking because criterion 4.",
+      "result": {
+        "counts": {
+          "escape": 1,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [
+          2
+        ],
+        "measured": false
+      }
+    },
+    "C_followUpTrailingPeriod": {
+      "verdict": "pass",
+      "text": "**Finding F1:** follow-up; class: escape.",
+      "result": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 1
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    "A7_quotedEarlierFinding": {
+      "verdict": "fail",
+      "text": "> **Finding F1:** blocking; class: escape; quoted from FINAL-001.\n\n**Finding F1:** blocking; class: integration; this review's finding.",
+      "result": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 1
+        },
+        "unclassedBlocking": [
+          "F1"
+        ],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    "A7_recapOnPass": {
+      "verdict": "pass",
+      "text": "**F1:** blocking finding from the earlier review, repaired.",
+      "result": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 1
+        },
+        "unclassedBlocking": [
+          "F1"
+        ],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      }
+    }
+  },
+  "selfReviewDetected": {
+    "self-review: **found 2**; fixed 2; recorded 0": false,
+    "self-review: _found_ 2": false,
+    "- `self-review:` found 2": false,
+    "Self-review (dotln-worker): found 2; fixed 2; recorded 0": false,
+    "self-review: found 2; fixed 2; recorded 0": true
+  },
+  "briefing": {
+    "A8_boldFieldWordParagraph": "\n\nAdvisory: docs/work-orders/WO-901-probe.md:5 labels Known issues and carry-ins but holds no text; nothing is printed from it.",
+    "A8_singularLabel": ""
+  }
+}

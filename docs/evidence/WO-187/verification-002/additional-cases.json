@@ -1,0 +1,26 @@
+{
+  "at": "2026-10-06T01:11:13.839Z",
+  "markupCases": [
+    {
+      "input": "**Known issues and carry-ins:** Investigate **critical failure**",
+      "briefing": "\n\nKnown issues and carry-ins (docs/work-orders/WO-187-fixture.md:6):\nInvestigate **critical failure"
+    },
+    {
+      "input": "__Known issues and carry-ins__: Investigate __critical failure__",
+      "briefing": "\n\nKnown issues and carry-ins (docs/work-orders/WO-187-fixture.md:6):\nInvestigate __critical failure"
+    },
+    {
+      "input": "**Known issues and carry-ins: none**",
+      "briefing": "\n\nKnown issues and carry-ins (docs/work-orders/WO-187-fixture.md:6):\nnone"
+    }
+  ],
+  "repairDocumentGate": {
+    "checkId": "npm run test:docs",
+    "treeHash": "df3bbc54dc4a70ead62c45cc7add605633e1357d",
+    "codeIdentity": "ba8910f12fa25c7ebb8320f5dfd8080e2214ebac74325f50258a8a0b0e290983",
+    "exitCode": 0,
+    "executed": true,
+    "recordedAt": "2026-10-06T01:01:35.742Z",
+    "durationMs": 72562
+  }
+}

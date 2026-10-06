@@ -1,0 +1,11 @@
+{
+  "command": [
+    "node",
+    "scripts/test-verification-review.mjs",
+    "<fixture>"
+  ],
+  "exitCode": 0,
+  "durationMs": 2523,
+  "stdout": "WO-187 verification briefing, completion advisories, finding classes and planning counts passed\n",
+  "stderr": ""
+}

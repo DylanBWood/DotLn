@@ -1,0 +1,60 @@
+{
+  "command": "bounded direct reproduction of the fresh adversary static candidates",
+  "cutoff": "2026-10-06T01:31:27.689Z",
+  "source": "current repair readers before the self-review corrections",
+  "rows": [
+    {
+      "id": "route",
+      "text": "**Finding F1:** follow-up; class: integration; first.\n**R1:** `blocking`; class: typo; real.",
+      "result": {
+        "counts": {
+          "escape": 0,
+          "integration": 1,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    {
+      "id": "multiline",
+      "text": "Example: `first\n**Finding F99:** blocking; class: escape; sample.\nlast`\n**Finding F1:** follow-up; class: integration; real.",
+      "result": {
+        "counts": {
+          "escape": 1,
+          "integration": 1,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 2,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    {
+      "id": "thematic",
+      "text": "**Finding F1:** follow-up; class: integration; real.\n\n* * *\n\n  ```md\n  example\n**Finding F99:** blocking; class: escape; still an example.",
+      "result": {
+        "counts": {
+          "escape": 1,
+          "integration": 1,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 2,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    {
+      "id": "nested-label",
+      "text": "- > **Known issues and carry-ins:** real-issue.",
+      "briefing": ""
+    }
+  ]
+}

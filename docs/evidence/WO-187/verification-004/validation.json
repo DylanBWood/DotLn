@@ -1,0 +1,49 @@
+{
+  "at": "2026-10-06T04:45:00.000Z",
+  "head": "c44ba6c60d7a3049f15edc4ce106b2dcc518b551",
+  "branch": "wo-187",
+  "latestCheckpoint": "3db041a7b9276157182d38db629e71018899c7c0 (refs/dotln/checkpoint/WO-187/15)",
+  "sourceMatchesCheckpoint15": "git diff --stat refs/dotln/checkpoint/WO-187/15 -- scripts packages docs/product docs/PLAYBOOK.md .claude .agents README.md package.json package-lock.json printed nothing; the same against checkpoint 14 printed nothing",
+  "repairDelta": "refs/dotln/checkpoint/WO-187/13 to the worktree: README.md, docs/product/07-execution-guide.md, scripts/lib/review-findings.mjs, scripts/lib/verification-briefing.mjs, scripts/resume.mjs, scripts/test-verification-review.mjs; checkpoints 11 and 13 have no source difference",
+  "codeIdentity": "df6a56e11398cac98d2e0536f0c1ccbc86dfa2eef5ba89bff5c2a89eee83f00f (gateCodeIdentity, read before and after the harness check build)",
+  "productGate": {
+    "checkId": "npm test",
+    "gateSelection": "review",
+    "executionMode": "forced-fresh",
+    "codeIdentity": "df6a56e11398cac98d2e0536f0c1ccbc86dfa2eef5ba89bff5c2a89eee83f00f",
+    "exitCode": 0,
+    "requiredSuites": 38,
+    "freshSuites": 88,
+    "durationMs": 901640,
+    "recordedAt": "2026-10-06T03:11:00.671Z",
+    "use": "consumed from the RepairCompleted event and repair-003-review-gate.json; not rerun"
+  },
+  "documentGate": {
+    "checkId": "npm run test:docs",
+    "codeIdentity": "df6a56e11398cac98d2e0536f0c1ccbc86dfa2eef5ba89bff5c2a89eee83f00f",
+    "exitCode": 0,
+    "durationMs": 84093,
+    "recordedAt": "2026-10-06T03:15:47.595Z",
+    "use": "RepairCompleted row; the verification-result transition reruns it inline"
+  },
+  "checks": [
+    {"command": "node scripts/harness.mjs bounded -- zsh probes/fixture.zsh (lifecycle fixture, current resume.mjs)", "exitCode": 0, "seconds": 14.08, "output": "WO-187 verification briefing, completion advisories, finding classes and planning counts passed"},
+    {"command": "the same fixture with 08845c71:scripts/resume.mjs", "exitCode": 1, "seconds": 0.73, "output": "AssertionError: verify must print the order's known issues (scripts/test-verification-review.mjs:129)"},
+    {"command": "node scripts/harness.mjs bounded -- npm run harness -- check", "exitCode": 0, "durationMs": 1114, "output": "harness check: 33 generated surfaces"},
+    {"command": "git diff --check; git diff --cached --check", "exitCode": 0},
+    {"command": "node scripts/harness.mjs bounded -- node probes/timing.mjs", "exitCode": 0, "output": "20,000 to 97,889-character pathological inputs read in 0.4 to 7.3 ms"}
+  ],
+  "coldStartBytes": {
+    "method": "wc -c of CLAUDE.md plus each role SKILL.md, both skill roots",
+    "CLAUDE.md": 6873,
+    "executor": 29777,
+    "verifier": 26077,
+    "reviewer": 27641,
+    "release-close": 18485,
+    "planner": 20303,
+    "refuter": 19582,
+    "twinsEqual": true,
+    "equalsColdStartAfter": true,
+    "budgetsJsonDiff": "none"
+  }
+}

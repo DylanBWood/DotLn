@@ -1,0 +1,60 @@
+strayBeforeExample (pass)
+  now : escape=1 found=1 unrec=[] measured=true ub=[]
+  cp11: escape=1 found=1 unrec=[] measured=true ub=[]
+  cp8 : none found=0 unrec=[] measured=true ub=[]
+strayBeforeExampleControl (pass)
+  now : none found=0 unrec=[] measured=true ub=[]
+  cp11: none found=0 unrec=[] measured=true ub=[]
+  cp8 : none found=0 unrec=[] measured=true ub=[]
+genuineMultiline (pass)
+  now : none found=0 unrec=[] measured=true ub=[]
+  cp11: none found=0 unrec=[] measured=true ub=[]
+  cp8 : none found=0 unrec=[] measured=true ub=[]
+classHidden (fail)
+  now : unclassed=1 found=1 unrec=[2] measured=false ub=[F1]
+  cp11: unclassed=1 found=1 unrec=[] measured=true ub=[F1]
+  cp8 : unclassed=2 found=2 unrec=[] measured=true ub=[F1,F2]
+escaped (fail)
+  now : escape=1 found=1 unrec=[] measured=true ub=[]
+  cp11: escape=1 found=1 unrec=[] measured=true ub=[]
+  cp8 : escape=1 found=1 unrec=[] measured=true ub=[]
+doubleRun (fail)
+  now : none found=0 unrec=[2] measured=false ub=[]
+  cp11: none found=0 unrec=[] measured=false ub=[]
+  cp8 : escape=1 found=1 unrec=[] measured=true ub=[]
+lazyQuote (fail)
+  now : none found=0 unrec=[2] measured=false ub=[]
+  cp11: none found=0 unrec=[] measured=false ub=[]
+  cp8 : escape=1 found=1 unrec=[] measured=true ub=[]
+listCont (fail)
+  now : none found=0 unrec=[2] measured=false ub=[]
+  cp11: none found=0 unrec=[] measured=false ub=[]
+  cp8 : escape=1 found=1 unrec=[] measured=true ub=[]
+narrativeClass (pass)
+  now : escape=1 found=1 unrec=[] measured=true ub=[]
+  cp11: unclassed=1 found=1 unrec=[] measured=true ub=[F1]
+  cp8 : unclassed=1 found=1 unrec=[] measured=true ub=[F1]
+routeInParen (pass)
+  now : escape=1 found=1 unrec=[] measured=true ub=[]
+  cp11: escape=1 found=1 unrec=[] measured=true ub=[]
+  cp8 : escape=1 found=1 unrec=[] measured=true ub=[]
+leadingZero (fail)
+  now : escape=1 found=1 unrec=[] measured=true ub=[]
+  cp11: escape=1 found=1 unrec=[] measured=true ub=[]
+  cp8 : escape=1 found=1 unrec=[] measured=true ub=[]
+zeroId (fail)
+  now : unclassed=1 found=1 unrec=[] measured=true ub=[F0]
+  cp11: unclassed=1 found=1 unrec=[] measured=true ub=[F0]
+  cp8 : unclassed=1 found=1 unrec=[] measured=true ub=[F0]
+summaryProse (pass)
+  now : none found=0 unrec=[] measured=true ub=[]
+  cp11: none found=0 unrec=[1] measured=false ub=[]
+  cp8 : none found=0 unrec=[1] measured=false ub=[]
+verdictLine (pass)
+  now : none found=0 unrec=[] measured=true ub=[]
+  cp11: none found=0 unrec=[1] measured=false ub=[]
+  cp8 : none found=0 unrec=[] measured=true ub=[]
+basisAfter (pass)
+  now : none found=0 unrec=[] measured=true ub=[]
+  cp11: none found=0 unrec=[1] measured=false ub=[]
+  cp8 : none found=0 unrec=[1] measured=false ub=[]

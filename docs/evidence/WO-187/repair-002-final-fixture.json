@@ -1,0 +1,10 @@
+{
+  "command": "node scripts/test-verification-review.mjs (owned physical session-scratch parent)",
+  "startedAt": "2026-10-06T01:40:38.889Z",
+  "finishedAt": "2026-10-06T01:40:47.321Z",
+  "wallSeconds": 8.430221708,
+  "exitCode": 0,
+  "stdout": "WO-187 verification briefing, completion advisories, finding classes and planning counts passed\n",
+  "stderr": "",
+  "source": "direct executable result; temporary fixture repository is outside the worktree"
+}

@@ -1,0 +1,37 @@
+{
+  "observedAt": "2026-10-06T10:17:59.126Z",
+  "cases": [
+    {
+      "name": "missing",
+      "before": "\n\nKnown issues and carry-ins (docs/work-orders/WO-187-fixture.md:3; ends before line 5, **Non-goals:**):\nOrder sentinel.\n\nPlanning receipt 2030-01-01-planning-fixture-001 known issues for WO-187:\n- criterion:2: Earlier receipt sentinel. Reopen when: Reproduction.",
+      "after": "\n\nKnown issues and carry-ins (docs/work-orders/WO-187-fixture.md:3; ends before line 5, **Non-goals:**):\nOrder sentinel.",
+      "receiptSentinelBefore": true,
+      "receiptSentinelAfter": false,
+      "hasUnavailableAdvisory": false
+    },
+    {
+      "name": "null",
+      "before": "\n\nKnown issues and carry-ins (docs/work-orders/WO-187-fixture.md:3; ends before line 5, **Non-goals:**):\nOrder sentinel.\n\nPlanning receipt 2030-01-01-planning-fixture-001 known issues for WO-187:\n- criterion:2: Earlier receipt sentinel. Reopen when: Reproduction.",
+      "after": "\n\nKnown issues and carry-ins (docs/work-orders/WO-187-fixture.md:3; ends before line 5, **Non-goals:**):\nOrder sentinel.",
+      "receiptSentinelBefore": true,
+      "receiptSentinelAfter": false,
+      "hasUnavailableAdvisory": false
+    },
+    {
+      "name": "object",
+      "before": "\n\nKnown issues and carry-ins (docs/work-orders/WO-187-fixture.md:3; ends before line 5, **Non-goals:**):\nOrder sentinel.\n\nPlanning receipt 2030-01-01-planning-fixture-001 known issues for WO-187:\n- criterion:2: Earlier receipt sentinel. Reopen when: Reproduction.",
+      "after": "\n\nKnown issues and carry-ins (docs/work-orders/WO-187-fixture.md:3; ends before line 5, **Non-goals:**):\nOrder sentinel.",
+      "receiptSentinelBefore": true,
+      "receiptSentinelAfter": false,
+      "hasUnavailableAdvisory": false
+    },
+    {
+      "name": "explicit-empty",
+      "before": "\n\nKnown issues and carry-ins (docs/work-orders/WO-187-fixture.md:3; ends before line 5, **Non-goals:**):\nOrder sentinel.\n\nPlanning receipt 2030-01-01-planning-fixture-001 known issues for WO-187:\n- criterion:2: Earlier receipt sentinel. Reopen when: Reproduction.",
+      "after": "\n\nKnown issues and carry-ins (docs/work-orders/WO-187-fixture.md:3; ends before line 5, **Non-goals:**):\nOrder sentinel.",
+      "receiptSentinelBefore": true,
+      "receiptSentinelAfter": false,
+      "hasUnavailableAdvisory": false
+    }
+  ]
+}

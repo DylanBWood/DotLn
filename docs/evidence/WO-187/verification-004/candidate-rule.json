@@ -1,0 +1,67 @@
+{
+  "at": "2026-10-06T04:46:01.216Z",
+  "source": "probes/candidate-rule.mjs: a probe of the F1 repair rule, not an implementation change. Candidate: an uncounted unfenced line (approximated as a line that reads no finding on its own) is flagged when a route word precedes a class field. Lines are read through the current markdownLines projection with backticks removed.",
+  "results": {
+    "issueLabel": {
+      "measuredNow": true,
+      "candidateFlags": [
+        3
+      ]
+    },
+    "hashLabel": {
+      "measuredNow": true,
+      "candidateFlags": [
+        3
+      ]
+    },
+    "letterLabel": {
+      "measuredNow": true,
+      "candidateFlags": [
+        3
+      ]
+    },
+    "decimalLabel": {
+      "measuredNow": true,
+      "candidateFlags": [
+        3
+      ]
+    },
+    "spacedLabel": {
+      "measuredNow": true,
+      "candidateFlags": [
+        3
+      ]
+    },
+    "routeField": {
+      "measuredNow": true,
+      "candidateFlags": [
+        3
+      ]
+    },
+    "recapWithClass": {
+      "measuredNow": true,
+      "candidateFlags": [
+        3
+      ]
+    },
+    "ver002Form": {
+      "measuredNow": false,
+      "candidateFlags": [
+        3
+      ]
+    },
+    "classFirst": {
+      "measuredNow": true,
+      "candidateFlags": []
+    },
+    "basisSubBullet": {
+      "measuredNow": true,
+      "candidateFlags": []
+    },
+    "wo186Final002": {
+      "measuredNow": true,
+      "candidateFlags": []
+    },
+    "realCorpusReportsTheCandidateWouldFlag": []
+  }
+}

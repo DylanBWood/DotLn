@@ -1,0 +1,289 @@
+{
+  "at": "2026-10-06T02:18:18.421Z",
+  "source": "direct module probes; checkpoint 8 is refs/dotln/checkpoint/WO-187/8 (VER-002's repair baseline) via git archive",
+  "inputs": {
+    "finding": {
+      "adjacentUnmatchedFindings": "**Finding F1:** blocking; class: escape; the `--review flag is ignored.\n**Finding F2:** blocking; class: integration; `resume.mjs` breaks.",
+      "proseThenFinding": "Summary of `npm test -- --review results:\n**Finding F1:** blocking; class: escape; `x` breaks.",
+      "blankSeparatedControl": "**Finding F1:** blocking; class: escape; the `--review flag is ignored.\n\n**Finding F2:** blocking; class: integration; `resume.mjs` breaks.",
+      "followUpWithoutClass": "**Finding F1:** follow-up; boarded on a follow-up.",
+      "followUpUnknownClass": "**Finding F1:** follow-up; class: escaped; boarded."
+    },
+    "order": "# WO-900 — probe\n\n**Objective:** probe.\n\n**Write-back duty:** as listed in `criteria 5 and 7.\n**Known issues and carry-ins:** the `x` reader drops input.\n\n**Non-goals:** none.",
+    "handoff": "**Criterion 8:** met. npm test `--review passed.\nself-review: found 2; fixed 2; recorded 0 (`worker`)"
+  },
+  "results": {
+    "current": {
+      "adjacentUnmatchedFindings/pass": {
+        "counts": {
+          "escape": 1,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      },
+      "adjacentUnmatchedFindings/fail": {
+        "counts": {
+          "escape": 1,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      },
+      "proseThenFinding/pass": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 0,
+        "unrecognised": [],
+        "measured": true
+      },
+      "proseThenFinding/fail": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 0,
+        "unrecognised": [],
+        "measured": false
+      },
+      "blankSeparatedControl/pass": {
+        "counts": {
+          "escape": 1,
+          "integration": 1,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 2,
+        "unrecognised": [],
+        "measured": true
+      },
+      "blankSeparatedControl/fail": {
+        "counts": {
+          "escape": 1,
+          "integration": 1,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 2,
+        "unrecognised": [],
+        "measured": true
+      },
+      "followUpWithoutClass/pass": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 1
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      },
+      "followUpWithoutClass/fail": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 1
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      },
+      "followUpUnknownClass/pass": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 1
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      },
+      "followUpUnknownClass/fail": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 1
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      },
+      "briefing": "",
+      "selfReviewPresent": false,
+      "WO-186/FINAL-002/pass": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "found": 0,
+        "unrecognised": [
+          3
+        ],
+        "measured": false
+      }
+    },
+    "checkpoint8": {
+      "adjacentUnmatchedFindings/pass": {
+        "counts": {
+          "escape": 1,
+          "integration": 1,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 2,
+        "unrecognised": [],
+        "measured": true
+      },
+      "adjacentUnmatchedFindings/fail": {
+        "counts": {
+          "escape": 1,
+          "integration": 1,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 2,
+        "unrecognised": [],
+        "measured": true
+      },
+      "proseThenFinding/pass": {
+        "counts": {
+          "escape": 1,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      },
+      "proseThenFinding/fail": {
+        "counts": {
+          "escape": 1,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      },
+      "blankSeparatedControl/pass": {
+        "counts": {
+          "escape": 1,
+          "integration": 1,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 2,
+        "unrecognised": [],
+        "measured": true
+      },
+      "blankSeparatedControl/fail": {
+        "counts": {
+          "escape": 1,
+          "integration": 1,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 2,
+        "unrecognised": [],
+        "measured": true
+      },
+      "followUpWithoutClass/pass": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 1
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      },
+      "followUpWithoutClass/fail": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 1
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      },
+      "followUpUnknownClass/pass": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 1
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      },
+      "followUpUnknownClass/fail": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 1
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      },
+      "briefing": "\n\nKnown issues and carry-ins (docs/work-orders/WO-900-probe.md:6):\nthe `x` reader drops input.",
+      "selfReviewPresent": true,
+      "WO-186/FINAL-002/pass": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "found": 0,
+        "unrecognised": [],
+        "measured": true
+      }
+    }
+  }
+}

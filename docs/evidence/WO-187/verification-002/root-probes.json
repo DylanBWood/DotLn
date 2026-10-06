@@ -1,0 +1,385 @@
+{
+  "at": "2026-10-06T01:05:40.147Z",
+  "cwd": "/Users/dylanwood/Projects/DotLn-wo187",
+  "codeIdentity": "ba8910f12fa25c7ebb8320f5dfd8080e2214ebac74325f50258a8a0b0e290983",
+  "gate": {
+    "checkId": "npm test",
+    "treeHash": "72114503e901e05143d8c647a2f7a1bdee7f6fc2",
+    "codeIdentity": "ba8910f12fa25c7ebb8320f5dfd8080e2214ebac74325f50258a8a0b0e290983",
+    "durationMs": 874944,
+    "exitCode": 0,
+    "executed": true,
+    "recordedAt": "2026-10-06T00:59:17.329Z",
+    "executionMode": "forced-fresh",
+    "gateSelection": "review",
+    "freshSuites": 88,
+    "reusedSuites": 0,
+    "requiredSuites": [
+      "build",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "configuration-root",
+      "harness-probe",
+      "authority-evidence",
+      "harness-fixtures",
+      "harness",
+      "harness-context",
+      "harness-evidence",
+      "plan-refutation",
+      "artifact-evidence",
+      "verification-evidence",
+      "feedback-evidence",
+      "runner-fixtures",
+      "process-debt",
+      "registrations"
+    ]
+  },
+  "variants": [
+    {
+      "name": "empty fail",
+      "text": "",
+      "verdict": "fail",
+      "result": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 0,
+        "unrecognised": [],
+        "measured": false
+      }
+    },
+    {
+      "name": "empty pass",
+      "text": "",
+      "verdict": "pass",
+      "result": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 0,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    {
+      "name": "canonical",
+      "text": "**Finding F1:** blocking; class: escape; defect.",
+      "verdict": "fail",
+      "result": {
+        "counts": {
+          "escape": 1,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    {
+      "name": "second token conflict",
+      "text": "**Finding F1:** blocking; class: escape; class: integration; defect.",
+      "verdict": "fail",
+      "result": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 1
+        },
+        "unclassedBlocking": [
+          "F1"
+        ],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    {
+      "name": "vocabulary suffix",
+      "text": "**Finding F1:** blocking; class: escape2; defect.",
+      "verdict": "fail",
+      "result": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 1
+        },
+        "unclassedBlocking": [
+          "F1"
+        ],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    {
+      "name": "leading zero duplicate",
+      "text": "**Finding F01:** blocking; class: escape; defect.\n**Finding F1:** blocking; class: escape; detail.",
+      "verdict": "fail",
+      "result": {
+        "counts": {
+          "escape": 1,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    {
+      "name": "inline code then real",
+      "text": "```npm test``` passed.\n**Finding F1:** blocking; class: escape; defect.",
+      "verdict": "fail",
+      "result": {
+        "counts": {
+          "escape": 1,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    {
+      "name": "closed quoted fence then real",
+      "text": "> ```md\n> **Finding F9:** blocking; class: escape; example.\n> ```\n**Finding F1:** blocking; class: escape; real.",
+      "verdict": "fail",
+      "result": {
+        "counts": {
+          "escape": 1,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    {
+      "name": "implicit quoted fence end",
+      "text": "**Finding F1:** blocking; class: integration; real.\n\n> ```md\n> **Finding F9:** blocking; class: new-scope; example.\n\n**Finding F2:** blocking; class: escape; real.",
+      "verdict": "fail",
+      "result": {
+        "counts": {
+          "escape": 0,
+          "integration": 1,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    {
+      "name": "indented code example",
+      "text": "    **Finding F9:** blocking; class: escape; example.\n\n**Finding F1:** blocking; class: integration; real.",
+      "verdict": "fail",
+      "result": {
+        "counts": {
+          "escape": 1,
+          "integration": 1,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 2,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    {
+      "name": "ordered list then quote",
+      "text": "1. > **Finding F1:** blocking; class: escape; real.",
+      "verdict": "fail",
+      "result": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 0,
+        "unrecognised": [
+          1
+        ],
+        "measured": false
+      }
+    },
+    {
+      "name": "nested quoted lists",
+      "text": "> - > **Finding F1:** blocking; class: escape; real.",
+      "verdict": "fail",
+      "result": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 0,
+        "unrecognised": [
+          1
+        ],
+        "measured": false
+      }
+    },
+    {
+      "name": "recap plus report id",
+      "text": "**F1 (FINAL-001, blocking):** repaired.",
+      "verdict": "pass",
+      "result": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 0,
+        "unrecognised": [],
+        "measured": true
+      }
+    }
+  ],
+  "corpus": {
+    "orderSections": [
+      {
+        "workOrderId": "WO-014",
+        "labels": 1,
+        "projectedSections": 1,
+        "advisory": false
+      },
+      {
+        "workOrderId": "WO-073",
+        "labels": 1,
+        "projectedSections": 1,
+        "advisory": false
+      },
+      {
+        "workOrderId": "WO-123",
+        "labels": 1,
+        "projectedSections": 1,
+        "advisory": false
+      },
+      {
+        "workOrderId": "WO-184",
+        "labels": 1,
+        "projectedSections": 1,
+        "advisory": false
+      },
+      {
+        "workOrderId": "WO-185",
+        "labels": 1,
+        "projectedSections": 1,
+        "advisory": false
+      },
+      {
+        "workOrderId": "WO-186",
+        "labels": 1,
+        "projectedSections": 1,
+        "advisory": false
+      },
+      {
+        "workOrderId": "WO-187",
+        "labels": 1,
+        "projectedSections": 1,
+        "advisory": false
+      },
+      {
+        "workOrderId": "WO-188",
+        "labels": 1,
+        "projectedSections": 1,
+        "advisory": false
+      },
+      {
+        "workOrderId": "WO-189",
+        "labels": 1,
+        "projectedSections": 1,
+        "advisory": false
+      },
+      {
+        "workOrderId": "WO-190",
+        "labels": 1,
+        "projectedSections": 1,
+        "advisory": false
+      },
+      {
+        "workOrderId": "WO-191",
+        "labels": 1,
+        "projectedSections": 1,
+        "advisory": false
+      },
+      {
+        "workOrderId": "WO-192",
+        "labels": 1,
+        "projectedSections": 1,
+        "advisory": false
+      },
+      {
+        "workOrderId": "WO-193",
+        "labels": 1,
+        "projectedSections": 1,
+        "advisory": false
+      },
+      {
+        "workOrderId": "WO-194",
+        "labels": 1,
+        "projectedSections": 1,
+        "advisory": false
+      },
+      {
+        "workOrderId": "WO-195",
+        "labels": 1,
+        "projectedSections": 1,
+        "advisory": false
+      }
+    ],
+    "wo123Printed": true
+  },
+  "authoredDiffDigest": "9b1d0fa39eab8c1827db2742ec2bd5a313484126a6073d814e843bd80723b332"
+}

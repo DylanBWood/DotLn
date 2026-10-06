@@ -1,0 +1,124 @@
+{
+  "observedAt": "2026-10-06T10:08:23.922Z",
+  "findingCases": 273,
+  "briefingCases": 45,
+  "corpus": [
+    {
+      "path": "docs/work-orders/WO-014-approval-burden-contract.md",
+      "labelLine": 352,
+      "endingLine": 361,
+      "bodyBytes": 412,
+      "printedWhole": true
+    },
+    {
+      "path": "docs/work-orders/WO-073-repository-class-and-profile.md",
+      "labelLine": 236,
+      "endingLine": 259,
+      "bodyBytes": 1226,
+      "printedWhole": true
+    },
+    {
+      "path": "docs/work-orders/WO-123-vertical-composition.md",
+      "labelLine": 466,
+      "endingLine": 511,
+      "bodyBytes": 2756,
+      "printedWhole": true
+    },
+    {
+      "path": "docs/work-orders/WO-184-seams-before-the-vertical.md",
+      "labelLine": 445,
+      "endingLine": 469,
+      "bodyBytes": 1249,
+      "printedWhole": true
+    },
+    {
+      "path": "docs/work-orders/WO-185-no-order-can-exhaust-the-host.md",
+      "labelLine": 264,
+      "endingLine": 282,
+      "bodyBytes": 930,
+      "printedWhole": true
+    },
+    {
+      "path": "docs/work-orders/WO-186-gate-time-follows-the-change.md",
+      "labelLine": 303,
+      "endingLine": 326,
+      "bodyBytes": 1256,
+      "printedWhole": true
+    },
+    {
+      "path": "docs/work-orders/WO-187-verification-attacks-and-reviews.md",
+      "labelLine": 276,
+      "endingLine": 290,
+      "bodyBytes": 728,
+      "printedWhole": true
+    },
+    {
+      "path": "docs/work-orders/WO-188-boarded-machinery-items.md",
+      "labelLine": 434,
+      "endingLine": 466,
+      "bodyBytes": 1717,
+      "printedWhole": true
+    },
+    {
+      "path": "docs/work-orders/WO-189-front-page.md",
+      "labelLine": 203,
+      "endingLine": 215,
+      "bodyBytes": 528,
+      "printedWhole": true
+    },
+    {
+      "path": "docs/work-orders/WO-190-index-and-roadmap-show-the-work-ahead.md",
+      "labelLine": 211,
+      "endingLine": 223,
+      "bodyBytes": 473,
+      "printedWhole": true
+    },
+    {
+      "path": "docs/work-orders/WO-191-reader-profiles.md",
+      "labelLine": 216,
+      "endingLine": 236,
+      "bodyBytes": 1011,
+      "printedWhole": true
+    },
+    {
+      "path": "docs/work-orders/WO-192-router-drives-an-order.md",
+      "labelLine": 309,
+      "endingLine": 332,
+      "bodyBytes": 1152,
+      "printedWhole": true
+    },
+    {
+      "path": "docs/work-orders/WO-193-instance-capability-requests.md",
+      "labelLine": 235,
+      "endingLine": 254,
+      "bodyBytes": 949,
+      "printedWhole": true
+    },
+    {
+      "path": "docs/work-orders/WO-194-private-predecessor-map.md",
+      "labelLine": 194,
+      "endingLine": 212,
+      "bodyBytes": 908,
+      "printedWhole": true
+    },
+    {
+      "path": "docs/work-orders/WO-195-roles-finish-what-was-dispatched.md",
+      "labelLine": 276,
+      "endingLine": 293,
+      "bodyBytes": 839,
+      "printedWhole": true
+    }
+  ],
+  "history": {
+    "reports": 166,
+    "unmeasured": 166
+  },
+  "lastTen": {
+    "orders": 10,
+    "reviews": 11,
+    "measured": 10,
+    "escapes": 75,
+    "unclassed": 0,
+    "escapesPerFinalReview": null
+  }
+}

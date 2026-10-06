@@ -1,0 +1,115 @@
+{
+  "checks": [
+    {
+      "command": "npm run meta",
+      "exitCode": 0,
+      "durationMs": 2613,
+      "recordedAt": "2026-10-06T02:53:49.047Z",
+      "stderr": "",
+      "summary": [
+        "Generated docs/work-orders/README.md"
+      ]
+    },
+    {
+      "command": "npm run publication:check",
+      "exitCode": 0,
+      "durationMs": 234,
+      "recordedAt": "2026-10-06T02:53:49.283Z",
+      "stderr": "",
+      "summary": [
+        "CURRENT everyday-ai-user-toc.md: 29 linked source sections match",
+        "CURRENT software-engineer-toc.md: 45 linked source sections match",
+        "PASS publication bootstrap checks"
+      ]
+    },
+    {
+      "command": "npm run plan -- check",
+      "exitCode": 0,
+      "durationMs": 2937,
+      "recordedAt": "2026-10-06T02:53:52.220Z",
+      "stderr": "",
+      "summary": [
+        "Planning check exited 0; full structured output retained in ignored session scratch."
+      ]
+    },
+    {
+      "command": "npm run release -- check-surfaces --local",
+      "exitCode": 0,
+      "durationMs": 1813,
+      "recordedAt": "2026-10-06T02:53:54.033Z",
+      "stderr": "",
+      "summary": [
+        "PASS component-version @dotln/beacons: src unchanged; observed 0.1.0; previous v0.66.3 0.1.0; expected no bump required",
+        "PASS component-version @dotln/browser-evidence: src unchanged; observed 0.1.0; previous v0.66.3 0.1.0; expected no bump required",
+        "PASS component-version @dotln/compiler: src changed; observed 0.25.3; previous v0.66.3 0.25.2; expected a different version",
+        "PASS component-version @dotln/console: src unchanged; observed 0.4.0; previous v0.66.3 0.4.0; expected no bump required",
+        "PASS component-version @dotln/kernel: src unchanged; observed 0.6.0; previous v0.66.3 0.6.0; expected no bump required",
+        "PASS component-version @dotln/skeleton: src changed; observed 0.52.4; previous v0.66.3 0.52.3; expected a different version"
+      ]
+    }
+  ],
+  "coldStart": [
+    {
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "bytes": 29777,
+      "previous": 29777
+    },
+    {
+      "path": ".claude/skills/dotln-verifier/SKILL.md",
+      "bytes": 26077,
+      "previous": 26077
+    },
+    {
+      "path": ".claude/skills/dotln-reviewer/SKILL.md",
+      "bytes": 27641,
+      "previous": 27641
+    },
+    {
+      "path": ".claude/skills/dotln-release-close/SKILL.md",
+      "bytes": 18485,
+      "previous": 18485
+    },
+    {
+      "path": ".claude/skills/dotln-planner/SKILL.md",
+      "bytes": 20303,
+      "previous": 20303
+    },
+    {
+      "path": ".claude/skills/dotln-refuter/SKILL.md",
+      "bytes": 19582,
+      "previous": 19582
+    },
+    {
+      "path": ".agents/skills/dotln-executor/SKILL.md",
+      "bytes": 29777,
+      "previous": 29777
+    },
+    {
+      "path": ".agents/skills/dotln-verifier/SKILL.md",
+      "bytes": 26077,
+      "previous": 26077
+    },
+    {
+      "path": ".agents/skills/dotln-reviewer/SKILL.md",
+      "bytes": 27641,
+      "previous": 27641
+    },
+    {
+      "path": ".agents/skills/dotln-release-close/SKILL.md",
+      "bytes": 18485,
+      "previous": 18485
+    },
+    {
+      "path": ".agents/skills/dotln-planner/SKILL.md",
+      "bytes": 20303,
+      "previous": 20303
+    },
+    {
+      "path": ".agents/skills/dotln-refuter/SKILL.md",
+      "bytes": 19582,
+      "previous": 19582
+    }
+  ],
+  "guideBytes": 175497,
+  "recordedAt": "2026-10-06T02:53:54.033Z"
+}

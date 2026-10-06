@@ -1,0 +1,10 @@
+{
+  "command": "node scripts/test-verification-review.mjs (owned physical session-scratch parent)",
+  "startedAt": "2026-10-06T01:39:16.421Z",
+  "finishedAt": "2026-10-06T01:39:17.945Z",
+  "wallSeconds": 1.5226459579999998,
+  "exitCode": 1,
+  "stdout": "",
+  "stderr": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: > Example: `first\n**Finding F99:** blocking; class: escape; sample.\n> last`\n\n**Finding F1:** follow-up; class: integration; real.\n+ actual - expected\n\n  {\n    'new-scope': 0,\n+   escape: 1,\n-   escape: 0,\n    integration: 1,\n    unclassed: 0\n  }\n\n    at file://<worktree>/scripts/test-verification-review.mjs:384:10\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: { escape: 1, integration: 1, 'new-scope': 0, unclassed: 0 },\n  expected: { escape: 0, integration: 1, 'new-scope': 0, unclassed: 0 },\n  operator: 'deepStrictEqual',\n  diff: 'simple'\n}\n\nNode.js v26.9.0\n",
+  "source": "direct executable result; temporary fixture repository is outside the worktree"
+}

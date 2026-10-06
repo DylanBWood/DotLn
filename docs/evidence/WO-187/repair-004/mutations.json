@@ -1,0 +1,37 @@
+{
+ "at": "2026-10-06T06:11:57.264Z",
+ "unmutated": {
+  "exit": 0,
+  "firstFailure": null
+ },
+ "mutations": {
+  "exactMarkersOnly": {
+   "exit": 1,
+   "firstFailure": "a quoted second block"
+  },
+  "failedNeedsAnyFinding": {
+   "exit": 1,
+   "firstFailure": "a failed review with only a follow-up"
+  },
+  "routeUnchecked": {
+   "exit": 1,
+   "firstFailure": "route \"Blocking\""
+  },
+  "closerAtLineStartOnly": {
+   "exit": 1,
+   "firstFailure": "935"
+  },
+  "fieldEndsWithoutBlankLine": {
+   "exit": 1,
+   "firstFailure": "910"
+  },
+  "plainFenceToggle": {
+   "exit": 1,
+   "firstFailure": "914"
+  },
+  "boldSelfReview": {
+   "exit": 1,
+   "firstFailure": "**self-review:** found 1; fixed 1; recorded 0."
+  }
+ }
+}

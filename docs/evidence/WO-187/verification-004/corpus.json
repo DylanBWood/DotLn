@@ -1,0 +1,48 @@
+{
+  "at": "2026-10-06T04:27:54.402Z",
+  "source": "direct module calls; checkpoint 11 (VER-003's subject) via git archive refs/dotln/checkpoint/WO-187/11 scripts/lib; probe corpus.mjs",
+  "finalReports": 166,
+  "verdictFromControlEvent": 144,
+  "verdictBothWaysWhenNoEvent": 22,
+  "countOrMeasurementChanges": [
+    {
+      "rel": "docs/final-reviews/WO-186/FINAL-002.md",
+      "verdict": "pass",
+      "now": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 0,
+        "unrecognised": [],
+        "measured": true
+      },
+      "cp11": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 0,
+        "unrecognised": [
+          3
+        ],
+        "measured": false
+      }
+    }
+  ],
+  "unmeasuredAtSubject": {
+    "count": 24,
+    "allFailedWithNoFindingAndNoUnrecognisedLine": true,
+    "sameAtCheckpoint11": "no difference listed except WO-186/FINAL-002"
+  },
+  "workOrders": 193,
+  "briefingChangesAgainstCheckpoint11": [],
+  "briefingAdvisoriesAtSubject": [],
+  "carryInSectionsPrinted": 15
+}

@@ -1,0 +1,11 @@
+{
+  "command": "WO-187 verification-review lifecycle fixture",
+  "subject": "current worktree",
+  "exitCode": 1,
+  "signal": null,
+  "durationMs": 1515,
+  "recordedAt": "2026-10-06T02:43:30.766Z",
+  "fixtureRoot": "<session-scratch>/fixture-1yIH1a",
+  "stdout": "",
+  "stderr": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: **Finding F1:** blocking; class: escape; the `--review flag is ignored.\n**Finding F2:** blocking; class: integration; `resume.mjs` breaks.\n\ntrue !== false\n\n    at file://<worktree>/scripts/test-verification-review.mjs:282:12\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: true,\n  expected: false,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v26.9.0\n"
+}

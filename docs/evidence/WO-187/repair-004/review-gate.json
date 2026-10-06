@@ -1,0 +1,4968 @@
+{
+  "command": "npm test -- --review",
+  "source": "the passing gate row at the current code identity (scripts/lib/gate-reuse.mjs coveringGateCheck) and the runner's summary line",
+  "runnerSummary": "npm test: 38 passed; 0 failed; 1607.53 s; 88 fresh tasks",
+  "gate": {
+    "checkId": "npm test",
+    "treeHash": "d21be2eec6518a2836aaf3fc4b05adfe4e96de19",
+    "codeIdentity": "b8245313e92bd0493329f4e38506337ffd28e292b13dfc0cc42ea3e6c3ca34fe",
+    "subject": "d21be2eec6518a2836aaf3fc4b05adfe4e96de19",
+    "durationMs": 1607532,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:b8245313e92bd0493329f4e38506337ffd28e292b13dfc0cc42ea3e6c3ca34fe:npm test",
+    "recordedAt": "2026-10-06T06:40:31.695Z",
+    "executionMode": "forced-fresh",
+    "gateSelection": "review",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "freshReason": "review",
+    "freshSuites": 88,
+    "reusedSuites": 0,
+    "requiredSuites": [
+      "build",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "configuration-root",
+      "harness-probe",
+      "authority-evidence",
+      "harness-fixtures",
+      "harness",
+      "harness-context",
+      "harness-evidence",
+      "plan-refutation",
+      "artifact-evidence",
+      "verification-evidence",
+      "feedback-evidence",
+      "runner-fixtures",
+      "process-debt",
+      "registrations"
+    ],
+    "sandbox": {
+      "marker": "claude-code",
+      "probe": {
+        "path": "/Users/dylanwood/Projects/DotLn-wo187/.claude/hooks",
+        "denied": false,
+        "code": "written"
+      },
+      "inForce": false
+    },
+    "loadClass": {
+      "sharedCap": 4,
+      "factorPerSlot": 2,
+      "maxHostLoadPerCpu": 2,
+      "scheduler": "exclusive-machinery-v1"
+    },
+    "taskTimeline": [
+      {
+        "name": "build",
+        "durationMs": 680,
+        "slowestCases": [
+          {
+            "name": "build",
+            "durationMs": 680,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 23382728,
+        "peakRssBytes": 72499200,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:13:44.194Z",
+        "finishedAt": "2026-10-06T06:26:20.394Z",
+        "exitCode": 0,
+        "executed": true,
+        "outputDigest": "2f7df21d45a68e5e8b00c1492b8d9d48daf409d68db79e7c99384867e4bc329b",
+        "concurrentAtStart": [],
+        "predecessors": [],
+        "schedulerDurationMs": 756200,
+        "loadClass": "isolated",
+        "loadFactor": 2,
+        "peerCap": 0,
+        "reservedSlots": 4,
+        "lanes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "hostLaneWaitMs": 755498,
+        "hostLaneSlots": 4
+      },
+      {
+        "name": "harness-context",
+        "durationMs": 161,
+        "slowestCases": [
+          {
+            "name": "harness-context",
+            "durationMs": 161,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 25857648,
+        "peakRssBytes": 76152832,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:26:20.403Z",
+        "finishedAt": "2026-10-06T06:26:20.600Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "authority-evidence",
+          "harness"
+        ],
+        "predecessors": [
+          "build"
+        ],
+        "schedulerDurationMs": 197,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          2
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "harness",
+        "durationMs": 215,
+        "slowestCases": [
+          {
+            "name": "harness",
+            "durationMs": 215,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 49076728,
+        "peakRssBytes": 97697792,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:26:20.402Z",
+        "finishedAt": "2026-10-06T06:26:20.639Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "authority-evidence"
+        ],
+        "predecessors": [
+          "build"
+        ],
+        "schedulerDurationMs": 237,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "artifact-evidence",
+        "durationMs": 264,
+        "slowestCases": [
+          {
+            "name": "artifact-evidence",
+            "durationMs": 264,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 86628832,
+        "peakRssBytes": 133300224,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:26:20.606Z",
+        "finishedAt": "2026-10-06T06:26:20.876Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "authority-evidence",
+          "harness",
+          "harness-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "harness-context"
+        ],
+        "schedulerDurationMs": 270,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          2
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "harness-evidence",
+        "durationMs": 444,
+        "slowestCases": [
+          {
+            "name": "harness-evidence",
+            "durationMs": 444,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 114583392,
+        "peakRssBytes": 161005568,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:26:20.403Z",
+        "finishedAt": "2026-10-06T06:26:20.894Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "authority-evidence",
+          "harness",
+          "harness-context"
+        ],
+        "predecessors": [
+          "build"
+        ],
+        "schedulerDurationMs": 491,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "authority-evidence",
+        "durationMs": 750,
+        "slowestCases": [
+          {
+            "name": "authority-evidence",
+            "durationMs": 750,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 117877032,
+        "peakRssBytes": 168558592,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:26:20.402Z",
+        "finishedAt": "2026-10-06T06:26:21.161Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [],
+        "predecessors": [
+          "build"
+        ],
+        "schedulerDurationMs": 759,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "verification-evidence",
+        "durationMs": 1188,
+        "slowestCases": [
+          {
+            "name": "verification-evidence",
+            "durationMs": 1188,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 101818144,
+        "peakRssBytes": 186908672,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:26:20.645Z",
+        "finishedAt": "2026-10-06T06:26:21.839Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "authority-evidence",
+          "harness-evidence",
+          "artifact-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "harness"
+        ],
+        "schedulerDurationMs": 1194,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "feedback-evidence",
+        "durationMs": 2790,
+        "slowestCases": [
+          {
+            "name": "feedback-evidence",
+            "durationMs": 2790,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 130281496,
+        "peakRssBytes": 267780096,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:26:20.883Z",
+        "finishedAt": "2026-10-06T06:26:23.684Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "authority-evidence",
+          "harness-evidence",
+          "verification-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "artifact-evidence"
+        ],
+        "schedulerDurationMs": 2801,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          2
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "harness-fixtures",
+        "durationMs": 311647,
+        "slowestCases": [
+          {
+            "name": "WO-132 only the live product gate refuses input and success-record writes, including opaque shell writes",
+            "file": "scripts/test-harness.mjs",
+            "durationMs": 46073.670458,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-125 F3 entry refuses generated-hook writes throughout the gate and releases on exit",
+            "file": "scripts/test-harness.mjs",
+            "durationMs": 20841.102292,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-158 a live gate admits the fixed read-only list stage by stage and names it in its refusal",
+            "file": "scripts/test-harness.mjs",
+            "durationMs": 15443.790167,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-125 F3 runner refuses generated-hook writes throughout the gate and releases on exit",
+            "file": "scripts/test-harness.mjs",
+            "durationMs": 14682.486167,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-125 F3 evidence refuses generated-hook writes throughout the gate and releases on exit",
+            "file": "scripts/test-harness.mjs",
+            "durationMs": 10849.75,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 350263216,
+        "peakRssBytes": 699023360,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:26:23.691Z",
+        "finishedAt": "2026-10-06T06:31:35.343Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence"
+        ],
+        "schedulerDurationMs": 311652,
+        "loadClass": "isolated",
+        "loadFactor": 2,
+        "peerCap": 0,
+        "reservedSlots": 4,
+        "lanes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 4
+      },
+      {
+        "name": "process-debt",
+        "durationMs": 99474,
+        "slowestCases": [
+          {
+            "name": "effect-program classification preserves effect distinctions while hooks delegate to host permissions",
+            "file": "scripts/test-process-debt.mjs",
+            "durationMs": 8689.105541,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-132 missing bootstrap runtime delegates every pre-tool hook to host permissions",
+            "file": "scripts/test-process-debt.mjs",
+            "durationMs": 7290.86275,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-131 prompt submission stays open while dispatches retain the ordinary command's gate and writer checks",
+            "file": "scripts/test-process-debt.mjs",
+            "durationMs": 6355.032542,
+            "exitCode": 0
+          },
+          {
+            "name": "installed permission hook distinguishes classification advisories from runtime failure",
+            "file": "scripts/test-process-debt.mjs",
+            "durationMs": 5297.796334,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-131 operator-control precedes runtime, state, Git, gate and writer checks in every generated hook",
+            "file": "scripts/test-process-debt.mjs",
+            "durationMs": 4721.825916,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 695937744,
+        "peakRssBytes": 1072709632,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:31:35.350Z",
+        "finishedAt": "2026-10-06T06:33:14.829Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "harness-fixtures"
+        ],
+        "schedulerDurationMs": 99479,
+        "loadClass": "isolated",
+        "loadFactor": 2,
+        "peerCap": 0,
+        "reservedSlots": 4,
+        "lanes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 4
+      },
+      {
+        "name": "release:prepare",
+        "durationMs": 946,
+        "slowestCases": [
+          {
+            "name": "release:prepare",
+            "durationMs": 946,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 19630816,
+        "peakRssBytes": 63356928,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:14.837Z",
+        "finishedAt": "2026-10-06T06:33:15.792Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-prepare-9e87de10-2527-493c-9c7b-2a31bb5d9798.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "process-debt"
+        ],
+        "schedulerDurationMs": 955,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:preflight",
+        "durationMs": 171,
+        "slowestCases": [
+          {
+            "name": "release:case:preflight",
+            "durationMs": 171,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 23940408,
+        "peakRssBytes": 68632576,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:15.799Z",
+        "finishedAt": "2026-10-06T06:33:15.978Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-preflight-5eac73c8-3aff-451f-bb6f-258f60341f02.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release-preparation"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence"
+        ],
+        "schedulerDurationMs": 179,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release-preparation",
+        "durationMs": 2610,
+        "slowestCases": [
+          {
+            "name": "release preparation uses only the selected order's open state",
+            "file": "scripts/test-release-preparation.mjs",
+            "durationMs": 867.472292,
+            "exitCode": 0
+          },
+          {
+            "name": "a conflicted decisions record refuses with its path and writes nothing",
+            "file": "scripts/test-release-preparation.mjs",
+            "durationMs": 496.39325,
+            "exitCode": 0
+          },
+          {
+            "name": "release preparation refuses malformed or ambiguous inputs before writing",
+            "file": "scripts/test-release-preparation.mjs",
+            "durationMs": 388.870166,
+            "exitCode": 0
+          },
+          {
+            "name": "release preparation follows the existing classification and skips an available target",
+            "file": "scripts/test-release-preparation.mjs",
+            "durationMs": 146.474167,
+            "exitCode": 0
+          },
+          {
+            "name": "release preparation refuses wrong worktrees, escaped sources, and stale plans",
+            "file": "scripts/test-release-preparation.mjs",
+            "durationMs": 121.851292,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 46028968,
+        "peakRssBytes": 144195584,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:14.837Z",
+        "finishedAt": "2026-10-06T06:33:17.589Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-preparation-85ec86f8-e784-43a2-acb2-c2d5289c2a24.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "release:prepare",
+          "worktree",
+          "skeleton"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "process-debt"
+        ],
+        "schedulerDurationMs": 2752,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:surfaces_local_snapshot",
+        "durationMs": 1108,
+        "slowestCases": [
+          {
+            "name": "release:case:surfaces_local_snapshot",
+            "durationMs": 1108,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 51452720,
+        "peakRssBytes": 144048128,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:17.602Z",
+        "finishedAt": "2026-10-06T06:33:18.716Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-surfaces-local-snapshot-272aef2f-7d48-4eb5-b0be-419b96ec0451.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:surfaces"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release-preparation"
+        ],
+        "schedulerDurationMs": 1114,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:surfaces",
+        "durationMs": 4239,
+        "slowestCases": [
+          {
+            "name": "release:case:surfaces",
+            "durationMs": 4239,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 57482920,
+        "peakRssBytes": 154501120,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:15.985Z",
+        "finishedAt": "2026-10-06T06:33:20.231Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-surfaces-0467f2b4-cc03-4f02-af29-38508bd35374.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release-preparation"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:preflight"
+        ],
+        "schedulerDurationMs": 4246,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:prepare_independent",
+        "durationMs": 2804,
+        "slowestCases": [
+          {
+            "name": "release:case:prepare_independent",
+            "durationMs": 2804,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 53042232,
+        "peakRssBytes": 145768448,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:18.722Z",
+        "finishedAt": "2026-10-06T06:33:21.533Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-prepare-independent-4f2f59e4-75da-40c3-a367-adae452a8661.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:surfaces"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:surfaces_local_snapshot"
+        ],
+        "schedulerDurationMs": 2811,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:surfaces_committed_readme",
+        "durationMs": 1399,
+        "slowestCases": [
+          {
+            "name": "release:case:surfaces_committed_readme",
+            "durationMs": 1399,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 33182088,
+        "peakRssBytes": 83001344,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:21.539Z",
+        "finishedAt": "2026-10-06T06:33:22.944Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-surfaces-committed-readme-99802736-1c40-4e37-9574-23144c3c817d.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:license_surfaces"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:prepare_independent"
+        ],
+        "schedulerDurationMs": 1405,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:surfaces_lower",
+        "durationMs": 1135,
+        "slowestCases": [
+          {
+            "name": "release:case:surfaces_lower",
+            "durationMs": 1135,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 26742192,
+        "peakRssBytes": 75333632,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:22.951Z",
+        "finishedAt": "2026-10-06T06:33:24.092Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-surfaces-lower-3786b4ec-6396-4e62-a200-a3515a5fbcdd.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:license_surfaces"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:surfaces_committed_readme"
+        ],
+        "schedulerDurationMs": 1141,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:license_surfaces",
+        "durationMs": 4563,
+        "slowestCases": [
+          {
+            "name": "release:case:license_surfaces",
+            "durationMs": 4563,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 98578576,
+        "peakRssBytes": 244596736,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:20.238Z",
+        "finishedAt": "2026-10-06T06:33:24.807Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-license-surfaces-3a940772-b533-4863-a893-3801ecd3f65f.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:prepare_independent"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:surfaces"
+        ],
+        "schedulerDurationMs": 4569,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:surfaces_first",
+        "durationMs": 1048,
+        "slowestCases": [
+          {
+            "name": "release:case:surfaces_first",
+            "durationMs": 1048,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 58597344,
+        "peakRssBytes": 159072256,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:24.099Z",
+        "finishedAt": "2026-10-06T06:33:25.153Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-surfaces-first-18178037-f80c-4bb0-acbe-59da29343790.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:license_surfaces"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:surfaces_lower"
+        ],
+        "schedulerDurationMs": 1054,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:surfaces_non_source",
+        "durationMs": 908,
+        "slowestCases": [
+          {
+            "name": "release:case:surfaces_non_source",
+            "durationMs": 908,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 26430968,
+        "peakRssBytes": 74973184,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:25.160Z",
+        "finishedAt": "2026-10-06T06:33:26.076Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-surfaces-non-source-3dab4bb6-307d-482f-bf9a-4c6094be67c3.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:surfaces_component"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:surfaces_first"
+        ],
+        "schedulerDurationMs": 916,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:surfaces_component",
+        "durationMs": 2094,
+        "slowestCases": [
+          {
+            "name": "release:case:surfaces_component",
+            "durationMs": 2094,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 57433720,
+        "peakRssBytes": 154845184,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:24.815Z",
+        "finishedAt": "2026-10-06T06:33:26.915Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-surfaces-component-19d3f4c0-4d10-43e3-917f-aa0aa7a9c60f.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:surfaces_first"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:license_surfaces"
+        ],
+        "schedulerDurationMs": 2100,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:surfaces_new_component",
+        "durationMs": 1123,
+        "slowestCases": [
+          {
+            "name": "release:case:surfaces_new_component",
+            "durationMs": 1123,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 35541768,
+        "peakRssBytes": 90537984,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:26.083Z",
+        "finishedAt": "2026-10-06T06:33:27.212Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-surfaces-new-component-96cbebef-d9ea-4060-b32c-983bb961d5d3.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:surfaces_component"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:surfaces_non_source"
+        ],
+        "schedulerDurationMs": 1129,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:surfaceclose_linked",
+        "durationMs": 1917,
+        "slowestCases": [
+          {
+            "name": "release:case:surfaceclose_linked",
+            "durationMs": 1917,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 35164864,
+        "peakRssBytes": 85950464,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:27.219Z",
+        "finishedAt": "2026-10-06T06:33:29.142Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-surfaceclose-linked-1c6b2877-a402-4627-b7ed-60650d6c4257.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:surfaceclose"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:surfaces_new_component"
+        ],
+        "schedulerDurationMs": 1923,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:surfaceclose",
+        "durationMs": 2947,
+        "slowestCases": [
+          {
+            "name": "release:case:surfaceclose",
+            "durationMs": 2947,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 42571584,
+        "peakRssBytes": 107446272,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:26.921Z",
+        "finishedAt": "2026-10-06T06:33:29.874Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-surfaceclose-d53144a8-cc3d-43d0-ba3d-40f03c8bdb74.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:surfaces_new_component"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:surfaces_component"
+        ],
+        "schedulerDurationMs": 2953,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:bodyclose",
+        "durationMs": 1438,
+        "slowestCases": [
+          {
+            "name": "release:case:bodyclose",
+            "durationMs": 1438,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 38065336,
+        "peakRssBytes": 94257152,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:29.149Z",
+        "finishedAt": "2026-10-06T06:33:30.593Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-bodyclose-62cd7f43-2343-47f7-ad70-45d690251c3a.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:surfaceclose"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:surfaceclose_linked"
+        ],
+        "schedulerDurationMs": 1444,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:dirty",
+        "durationMs": 3145,
+        "slowestCases": [
+          {
+            "name": "release:case:dirty",
+            "durationMs": 3145,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 50763488,
+        "peakRssBytes": 102809600,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:29.881Z",
+        "finishedAt": "2026-10-06T06:33:33.032Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-dirty-287458bb-13f6-42f7-9dbc-7f28039cce15.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:bodyclose"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:surfaceclose"
+        ],
+        "schedulerDurationMs": 3151,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:unreachable",
+        "durationMs": 3079,
+        "slowestCases": [
+          {
+            "name": "release:case:unreachable",
+            "durationMs": 3079,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 75031672,
+        "peakRssBytes": 175570944,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:30.599Z",
+        "finishedAt": "2026-10-06T06:33:33.688Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-unreachable-130d617f-4b49-41da-b86e-2c901386d4d0.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:dirty"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:bodyclose"
+        ],
+        "schedulerDurationMs": 3089,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:settings_scope",
+        "durationMs": 2775,
+        "slowestCases": [
+          {
+            "name": "release:case:settings_scope",
+            "durationMs": 2775,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 47191704,
+        "peakRssBytes": 103890944,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:33.694Z",
+        "finishedAt": "2026-10-06T06:33:36.474Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-settings-scope-4dc32a41-96e5-4c60-96b5-4c622723552b.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:derived"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:unreachable"
+        ],
+        "schedulerDurationMs": 2780,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:derived",
+        "durationMs": 4320,
+        "slowestCases": [
+          {
+            "name": "release:case:derived",
+            "durationMs": 4320,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 44586960,
+        "peakRssBytes": 100237312,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:33.038Z",
+        "finishedAt": "2026-10-06T06:33:37.365Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-derived-09d3a815-58c6-4585-81d0-8091b2159af5.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:unreachable"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:dirty"
+        ],
+        "schedulerDurationMs": 4327,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:nonmain",
+        "durationMs": 1871,
+        "slowestCases": [
+          {
+            "name": "release:case:nonmain",
+            "durationMs": 1871,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 26430896,
+        "peakRssBytes": 75137024,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:36.480Z",
+        "finishedAt": "2026-10-06T06:33:38.357Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-nonmain-69cd0b6f-3e86-4ccf-8447-9a7c599177b6.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:derived"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:settings_scope"
+        ],
+        "schedulerDurationMs": 1877,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:divergence",
+        "durationMs": 1731,
+        "slowestCases": [
+          {
+            "name": "release:case:divergence",
+            "durationMs": 1731,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 28970608,
+        "peakRssBytes": 79806464,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:37.375Z",
+        "finishedAt": "2026-10-06T06:33:39.119Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-divergence-f75763ca-22ef-4ab9-9d60-1537959478b2.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:nonmain"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:derived"
+        ],
+        "schedulerDurationMs": 1744,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:malformed",
+        "durationMs": 1519,
+        "slowestCases": [
+          {
+            "name": "release:case:malformed",
+            "durationMs": 1519,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 29413144,
+        "peakRssBytes": 80527360,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:38.367Z",
+        "finishedAt": "2026-10-06T06:33:39.892Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-malformed-a8a670dd-885f-40b6-a322-ec22b821aa63.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:divergence"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:nonmain"
+        ],
+        "schedulerDurationMs": 1525,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:unauthenticated",
+        "durationMs": 2350,
+        "slowestCases": [
+          {
+            "name": "release:case:unauthenticated",
+            "durationMs": 2350,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 37344176,
+        "peakRssBytes": 88768512,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:39.903Z",
+        "finishedAt": "2026-10-06T06:33:42.266Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-unauthenticated-3222be35-46a1-4e6a-b33b-6d7894015922.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:missinggh"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:malformed"
+        ],
+        "schedulerDurationMs": 2363,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:missinggh",
+        "durationMs": 3206,
+        "slowestCases": [
+          {
+            "name": "release:case:missinggh",
+            "durationMs": 3206,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 58072264,
+        "peakRssBytes": 160382976,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:39.130Z",
+        "finishedAt": "2026-10-06T06:33:42.347Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-missinggh-ab324d93-ff33-4df4-9792-78da89db19e8.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:malformed"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:divergence"
+        ],
+        "schedulerDurationMs": 3217,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:splitorigin",
+        "durationMs": 916,
+        "slowestCases": [
+          {
+            "name": "release:case:splitorigin",
+            "durationMs": 916,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 27889120,
+        "peakRssBytes": 76726272,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:42.278Z",
+        "finishedAt": "2026-10-06T06:33:43.208Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-splitorigin-d3cc0929-f373-4a8c-94ea-dd98baa55496.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:missinggh"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:unauthenticated"
+        ],
+        "schedulerDurationMs": 930,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:lower",
+        "durationMs": 1732,
+        "slowestCases": [
+          {
+            "name": "release:case:lower",
+            "durationMs": 1732,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 37885184,
+        "peakRssBytes": 94306304,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:42.365Z",
+        "finishedAt": "2026-10-06T06:33:44.104Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-lower-f1a80882-f675-4fa9-a971-3221ad2a96d0.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:splitorigin"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:missinggh"
+        ],
+        "schedulerDurationMs": 1739,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:failures",
+        "durationMs": 2758,
+        "slowestCases": [
+          {
+            "name": "release:case:failures",
+            "durationMs": 2758,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 35918552,
+        "peakRssBytes": 87031808,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:43.214Z",
+        "finishedAt": "2026-10-06T06:33:45.978Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-failures-64da2264-f5b3-402a-8a27-240ff6f6e3cd.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:lower"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:splitorigin"
+        ],
+        "schedulerDurationMs": 2764,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:cadence_missing",
+        "durationMs": 2217,
+        "slowestCases": [
+          {
+            "name": "release:case:cadence_missing",
+            "durationMs": 2217,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 61545936,
+        "peakRssBytes": 155860992,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:44.111Z",
+        "finishedAt": "2026-10-06T06:33:46.334Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-cadence-missing-2ae17bd2-09bc-4ed8-8702-608d235a6cb6.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:failures"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:lower"
+        ],
+        "schedulerDurationMs": 2223,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:conflict",
+        "durationMs": 1896,
+        "slowestCases": [
+          {
+            "name": "release:case:conflict",
+            "durationMs": 1896,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 33149296,
+        "peakRssBytes": 83525632,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:46.342Z",
+        "finishedAt": "2026-10-06T06:33:48.253Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-conflict-41ff1024-ed8a-42f9-8c8a-543ded6ddf18.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:cadence_inconsistent"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:cadence_missing"
+        ],
+        "schedulerDurationMs": 1911,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:localconflict",
+        "durationMs": 1800,
+        "slowestCases": [
+          {
+            "name": "release:case:localconflict",
+            "durationMs": 1800,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 33444208,
+        "peakRssBytes": 83820544,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:48.272Z",
+        "finishedAt": "2026-10-06T06:33:50.089Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-localconflict-4601bebe-a376-45a0-af13-8d1c7ae6b617.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:cadence_inconsistent"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:conflict"
+        ],
+        "schedulerDurationMs": 1817,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:cadence_inconsistent",
+        "durationMs": 4578,
+        "slowestCases": [
+          {
+            "name": "release:case:cadence_inconsistent",
+            "durationMs": 4578,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 44930280,
+        "peakRssBytes": 97255424,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:45.992Z",
+        "finishedAt": "2026-10-06T06:33:50.580Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-cadence-inconsistent-e740bc6f-f241-4ee4-bceb-ccf6e3b81993.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:cadence_missing"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:failures"
+        ],
+        "schedulerDurationMs": 4588,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:nestedtag",
+        "durationMs": 1379,
+        "slowestCases": [
+          {
+            "name": "release:case:nestedtag",
+            "durationMs": 1379,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 35935224,
+        "peakRssBytes": 87146496,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:50.095Z",
+        "finishedAt": "2026-10-06T06:33:51.480Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-nestedtag-6f4a21d7-4ceb-4eba-8a2a-49d0f625084b.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:cadence_inconsistent"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:localconflict"
+        ],
+        "schedulerDurationMs": 1385,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:prepare",
+        "durationMs": 2590,
+        "slowestCases": [
+          {
+            "name": "release:case:prepare",
+            "durationMs": 2590,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 50567048,
+        "peakRssBytes": 109985792,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:50.586Z",
+        "finishedAt": "2026-10-06T06:33:53.181Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-prepare-1cafe67f-eb92-4cf3-aead-d3fd6feeff04.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:nestedtag"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:cadence_inconsistent"
+        ],
+        "schedulerDurationMs": 2595,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:missinglocalprevious",
+        "durationMs": 2693,
+        "slowestCases": [
+          {
+            "name": "release:case:missinglocalprevious",
+            "durationMs": 2693,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 45782344,
+        "peakRssBytes": 109608960,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:51.486Z",
+        "finishedAt": "2026-10-06T06:33:54.185Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-missinglocalprevious-15e06fe2-97ec-4c95-b708-0139499b307b.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:prepare"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:nestedtag"
+        ],
+        "schedulerDurationMs": 2699,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:pushfail",
+        "durationMs": 3173,
+        "slowestCases": [
+          {
+            "name": "release:case:pushfail",
+            "durationMs": 3173,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 44340432,
+        "peakRssBytes": 101433344,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:53.194Z",
+        "finishedAt": "2026-10-06T06:33:56.374Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-pushfail-ed6b8c33-b72e-4392-96e8-09aa9adfed1c.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:missinglocalprevious"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:prepare"
+        ],
+        "schedulerDurationMs": 3180,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:refrecovery",
+        "durationMs": 5441,
+        "slowestCases": [
+          {
+            "name": "release:case:refrecovery",
+            "durationMs": 5441,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 54777880,
+        "peakRssBytes": 110985216,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:54.194Z",
+        "finishedAt": "2026-10-06T06:33:59.648Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-refrecovery-3805885c-ac0b-4e61-90f0-2e6d679365d5.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:pushfail"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:missinglocalprevious"
+        ],
+        "schedulerDurationMs": 5454,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:createrecovery",
+        "durationMs": 13481,
+        "slowestCases": [
+          {
+            "name": "release:case:createrecovery",
+            "durationMs": 13481,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 47765264,
+        "peakRssBytes": 100974592,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:56.381Z",
+        "finishedAt": "2026-10-06T06:34:09.868Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-createrecovery-4a0dcb66-2de0-4653-8269-8e9454b709ea.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:refrecovery"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:pushfail"
+        ],
+        "schedulerDurationMs": 13487,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:stale_helpers",
+        "durationMs": 11373,
+        "slowestCases": [
+          {
+            "name": "release:case:stale_helpers",
+            "durationMs": 11373,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 80487712,
+        "peakRssBytes": 186597376,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:59.662Z",
+        "finishedAt": "2026-10-06T06:34:11.050Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-stale-helpers-7cfd7be0-f177-4693-b37f-695e0ed010c5.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:createrecovery"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:refrecovery"
+        ],
+        "schedulerDurationMs": 11388,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:success",
+        "durationMs": 24083,
+        "slowestCases": [
+          {
+            "name": "release:case:success",
+            "durationMs": 24083,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 51418440,
+        "peakRssBytes": 103710720,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:34:11.078Z",
+        "finishedAt": "2026-10-06T06:34:35.183Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-success-62013e23-e2c1-4d4d-a1f3-346647cc5bc7.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:runtime_refresh"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:stale_helpers"
+        ],
+        "schedulerDurationMs": 24105,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:edition",
+        "durationMs": 9445,
+        "slowestCases": [
+          {
+            "name": "release:case:edition",
+            "durationMs": 9445,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 47896336,
+        "peakRssBytes": 103546880,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:34:35.193Z",
+        "finishedAt": "2026-10-06T06:34:44.644Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-edition-ff157872-d8b9-4ab2-b9c3-a60c2ab42d86.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:runtime_refresh"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:success"
+        ],
+        "schedulerDurationMs": 9451,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:runtime_refresh",
+        "durationMs": 35932,
+        "slowestCases": [
+          {
+            "name": "release:case:runtime_refresh",
+            "durationMs": 35932,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 52714504,
+        "peakRssBytes": 146063360,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:34:09.881Z",
+        "finishedAt": "2026-10-06T06:34:45.821Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-runtime-refresh-d7f97a86-9f9a-456e-b6a9-8c3103cf6279.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:stale_helpers"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:createrecovery"
+        ],
+        "schedulerDurationMs": 35940,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:firstrelease",
+        "durationMs": 5243,
+        "slowestCases": [
+          {
+            "name": "release:case:firstrelease",
+            "durationMs": 5243,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 48846752,
+        "peakRssBytes": 101548032,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:34:44.652Z",
+        "finishedAt": "2026-10-06T06:34:49.904Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-firstrelease-a03efffd-5103-4e35-b3a2-0f1483dc53ab.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:runtime_refresh"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:edition"
+        ],
+        "schedulerDurationMs": 5252,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:cached_evidence",
+        "durationMs": 9513,
+        "slowestCases": [
+          {
+            "name": "release:case:cached_evidence",
+            "durationMs": 9513,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 45815232,
+        "peakRssBytes": 98123776,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:34:45.859Z",
+        "finishedAt": "2026-10-06T06:34:55.386Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-cached-evidence-4b771f55-6ca5-48a5-94ae-3c86d1533833.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:firstrelease"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:runtime_refresh"
+        ],
+        "schedulerDurationMs": 9527,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:composed_evidence",
+        "durationMs": 9849,
+        "slowestCases": [
+          {
+            "name": "release:case:composed_evidence",
+            "durationMs": 9849,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 53992552,
+        "peakRssBytes": 153600000,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:34:49.910Z",
+        "finishedAt": "2026-10-06T06:34:59.766Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-composed-evidence-1fc40cd3-cde2-45c6-9d22-ca22d04d3a04.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:cached_evidence"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:firstrelease"
+        ],
+        "schedulerDurationMs": 9856,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "worktree",
+        "durationMs": 120663,
+        "slowestCases": [
+          {
+            "name": "worktree",
+            "durationMs": 120663,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 124468728,
+        "peakRssBytes": 318275584,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:14.837Z",
+        "finishedAt": "2026-10-06T06:35:15.562Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/worktree-a9e0de77-8e94-422a-9b15-d58d233977cb.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "release:prepare"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "process-debt"
+        ],
+        "schedulerDurationMs": 120725,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:concurrent",
+        "durationMs": 27028,
+        "slowestCases": [
+          {
+            "name": "release:case:concurrent",
+            "durationMs": 27028,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 78080128,
+        "peakRssBytes": 224231424,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:34:55.393Z",
+        "finishedAt": "2026-10-06T06:35:22.429Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-concurrent-1f4d9525-99f7-4488-9a8e-c38dcc06b350.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:composed_evidence"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:cached_evidence"
+        ],
+        "schedulerDurationMs": 27036,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:close_completion",
+        "durationMs": 12675,
+        "slowestCases": [
+          {
+            "name": "release:case:close_completion",
+            "durationMs": 12675,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 82076960,
+        "peakRssBytes": 181764096,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:35:15.584Z",
+        "finishedAt": "2026-10-06T06:35:28.273Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-close-completion-45a6fe2c-e57e-468e-a5c2-c3263f61ff9f.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "skeleton",
+          "release:case:concurrent",
+          "release:case:material"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "worktree"
+        ],
+        "schedulerDurationMs": 12689,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:close_sealed",
+        "durationMs": 9174,
+        "slowestCases": [
+          {
+            "name": "release:case:close_sealed",
+            "durationMs": 9174,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 83978176,
+        "peakRssBytes": 188366848,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:35:22.442Z",
+        "finishedAt": "2026-10-06T06:35:31.623Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-close-sealed-a0c85dc3-e7f2-46c5-a669-f234826689d7.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "skeleton",
+          "release:case:material",
+          "release:case:close_completion"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:concurrent"
+        ],
+        "schedulerDurationMs": 9181,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:close_retry_paths",
+        "durationMs": 5633,
+        "slowestCases": [
+          {
+            "name": "release:case:close_retry_paths",
+            "durationMs": 5633,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 47584704,
+        "peakRssBytes": 99287040,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:35:31.629Z",
+        "finishedAt": "2026-10-06T06:35:37.269Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-close-retry-paths-17a6e307-ba50-44ed-8d5e-503423a567c7.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "skeleton",
+          "release:case:material",
+          "release:case:close_leftover"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:close_sealed"
+        ],
+        "schedulerDurationMs": 5640,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:close_receipt_recovery",
+        "durationMs": 32228,
+        "slowestCases": [
+          {
+            "name": "release:case:close_receipt_recovery",
+            "durationMs": 32228,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 72770488,
+        "peakRssBytes": 173195264,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:35:37.275Z",
+        "finishedAt": "2026-10-06T06:36:09.510Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-close-receipt-recovery-d88a98c9-ae24-4223-a1d8-1bb0db924740.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "skeleton",
+          "release:case:material",
+          "release:case:close_leftover"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:close_retry_paths"
+        ],
+        "schedulerDurationMs": 32235,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "github-body",
+        "durationMs": 174,
+        "slowestCases": [
+          {
+            "name": "GitHub prose profile case 2",
+            "file": "scripts/test-github-body.mjs",
+            "durationMs": 4.6345,
+            "exitCode": 0
+          },
+          {
+            "name": "GitHub prose profile case 3",
+            "file": "scripts/test-github-body.mjs",
+            "durationMs": 4.32525,
+            "exitCode": 0
+          },
+          {
+            "name": "GitHub prose profile case 11",
+            "file": "scripts/test-github-body.mjs",
+            "durationMs": 3.895458,
+            "exitCode": 0
+          },
+          {
+            "name": "GitHub prose profile case 12",
+            "file": "scripts/test-github-body.mjs",
+            "durationMs": 3.854625,
+            "exitCode": 0
+          },
+          {
+            "name": "GitHub prose profile case 6",
+            "file": "scripts/test-github-body.mjs",
+            "durationMs": 3.403333,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 40080880,
+        "peakRssBytes": 127811584,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:36:09.517Z",
+        "finishedAt": "2026-10-06T06:36:09.696Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/github-body-69fc766d-ffb2-4948-9b0c-3cec0aa87b89.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "skeleton",
+          "release:case:material",
+          "release:case:close_leftover"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:close_receipt_recovery"
+        ],
+        "schedulerDurationMs": 179,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "outward-lint",
+        "durationMs": 567,
+        "slowestCases": [
+          {
+            "name": "CLI stdin, redacted JSON, framing, and distinct pass/refused/unavailable/error exit codes",
+            "file": "scripts/test-outward-lint.mjs",
+            "durationMs": 336.950625,
+            "exitCode": 0
+          },
+          {
+            "name": "copied CLI runs with relocated documents and no default document tree",
+            "file": "scripts/test-outward-lint.mjs",
+            "durationMs": 48.088084,
+            "exitCode": 0
+          },
+          {
+            "name": "existing local checker refuses synthetic terms without exposing the term or matched text",
+            "file": "scripts/test-outward-lint.mjs",
+            "durationMs": 6.364083,
+            "exitCode": 0
+          },
+          {
+            "name": "empty and uncontained local lists refuse without raw errors, and public checks still run",
+            "file": "scripts/test-outward-lint.mjs",
+            "durationMs": 3.605,
+            "exitCode": 0
+          },
+          {
+            "name": "configured control root owns both lists and editable type set",
+            "file": "scripts/test-outward-lint.mjs",
+            "durationMs": 3.526708,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 42981232,
+        "peakRssBytes": 135364608,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:36:09.706Z",
+        "finishedAt": "2026-10-06T06:36:10.283Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/outward-lint-5992b484-6dce-430e-b45c-0e1488b655e5.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "skeleton",
+          "release:case:material",
+          "release:case:close_leftover"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "github-body"
+        ],
+        "schedulerDurationMs": 577,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:close_leftover",
+        "durationMs": 48044,
+        "slowestCases": [
+          {
+            "name": "release:case:close_leftover",
+            "durationMs": 48044,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 80520240,
+        "peakRssBytes": 181075968,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:35:28.280Z",
+        "finishedAt": "2026-10-06T06:36:16.335Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-close-leftover-216c5c94-9a5c-426a-9854-bf7372a80f64.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "skeleton",
+          "release:case:material",
+          "release:case:close_sealed"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:close_completion"
+        ],
+        "schedulerDurationMs": 48055,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "license-fixtures",
+        "durationMs": 8174,
+        "slowestCases": [
+          {
+            "name": "every license file is byte-pinned; missing files, symlinks, and legal-record drift refuse",
+            "file": "scripts/test-license-surfaces.mjs",
+            "durationMs": 5365.858333,
+            "exitCode": 0
+          },
+          {
+            "name": "committed checks read Git blobs for metadata, hashes, and npm snapshots",
+            "file": "scripts/test-license-surfaces.mjs",
+            "durationMs": 1210.826875,
+            "exitCode": 0
+          },
+          {
+            "name": "DCO checks every new commit's author and trailer, exempts only the operator, and leaves old history alone",
+            "file": "scripts/test-license-surfaces.mjs",
+            "durationMs": 483.216625,
+            "exitCode": 0
+          },
+          {
+            "name": "real npm refuses every validated manifest before packing, despite ambient script suppression",
+            "file": "scripts/test-license-surfaces.mjs",
+            "durationMs": 443.453,
+            "exitCode": 0
+          },
+          {
+            "name": "operator merge commits do not hide unsigned outside commits on a merged branch",
+            "file": "scripts/test-license-surfaces.mjs",
+            "durationMs": 271.342208,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 87305040,
+        "peakRssBytes": 234668032,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:36:16.345Z",
+        "finishedAt": "2026-10-06T06:36:24.528Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/license-fixtures-690cc9a4-0d50-44c5-8563-81f2083549b0.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "skeleton",
+          "release:case:material",
+          "target-publish"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:close_leftover"
+        ],
+        "schedulerDurationMs": 8183,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "publication-fixtures",
+        "durationMs": 1071,
+        "slowestCases": [
+          {
+            "name": "publication-fixtures",
+            "durationMs": 1071,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 3670664,
+        "peakRssBytes": 4489216,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:36:24.535Z",
+        "finishedAt": "2026-10-06T06:36:25.613Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/publication-fixtures-7900ac9e-c129-46b3-885f-56eb8e926b2b.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "skeleton",
+          "release:case:material",
+          "target-publish"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "license-fixtures"
+        ],
+        "schedulerDurationMs": 1078,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "backup-intake",
+        "durationMs": 312,
+        "slowestCases": [
+          {
+            "name": "backup-intake",
+            "durationMs": 312,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 10913904,
+        "peakRssBytes": 13336576,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:36:25.622Z",
+        "finishedAt": "2026-10-06T06:36:25.940Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/backup-intake-83938db2-3fe7-424f-af8e-00af540ee4aa.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "skeleton",
+          "release:case:material",
+          "target-publish"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "publication-fixtures"
+        ],
+        "schedulerDurationMs": 318,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "beacon-portability",
+        "durationMs": 828,
+        "slowestCases": [
+          {
+            "name": "WO-070 copied control plane emits a decoded Beacon without skeleton source",
+            "file": "scripts/test-beacon-portability.mjs",
+            "durationMs": 673.752792,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-070 grep scan finds one home for the seven Beacon leaves and no skeleton source or dist copy of them",
+            "file": "scripts/test-beacon-portability.mjs",
+            "durationMs": 18.982,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 71705888,
+        "peakRssBytes": 212107264,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:36:25.947Z",
+        "finishedAt": "2026-10-06T06:36:26.781Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/beacon-portability-6bbfaecb-fcfa-44b3-9a87-8d32be2c7a7f.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "skeleton",
+          "release:case:material",
+          "target-publish"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "backup-intake"
+        ],
+        "schedulerDurationMs": 834,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "checkpoint",
+        "durationMs": 7563,
+        "slowestCases": [
+          {
+            "name": "checkpoint",
+            "durationMs": 7563,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 45226056,
+        "peakRssBytes": 138149888,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:36:26.787Z",
+        "finishedAt": "2026-10-06T06:36:34.357Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/checkpoint-a3e33bb9-c8fc-4816-9ccb-907ac6518474.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "skeleton",
+          "release:case:material",
+          "target-publish"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "beacon-portability"
+        ],
+        "schedulerDurationMs": 7570,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release:case:material",
+        "durationMs": 95013,
+        "slowestCases": [
+          {
+            "name": "release:case:material",
+            "durationMs": 95013,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 86042248,
+        "peakRssBytes": 191610880,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:34:59.780Z",
+        "finishedAt": "2026-10-06T06:36:34.809Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/release-case-material-73da05a5-6c03-4e64-b5f4-895fd9ea3816.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree",
+          "skeleton",
+          "release:case:concurrent"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:composed_evidence"
+        ],
+        "schedulerDurationMs": 95029,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "work-orders-fixtures",
+        "durationMs": 22623,
+        "slowestCases": [
+          {
+            "name": "work-orders-fixtures",
+            "durationMs": 22623,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 69100280,
+        "peakRssBytes": 171065344,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:36:34.817Z",
+        "finishedAt": "2026-10-06T06:36:57.448Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/work-orders-fixtures-629f3cf8-fec1-40a3-83e7-324a6ea0427a.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "skeleton",
+          "target-publish",
+          "worktree-integration"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "release:case:material"
+        ],
+        "schedulerDurationMs": 22631,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "skeleton",
+        "durationMs": 229043,
+        "slowestCases": [
+          {
+            "name": "WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers",
+            "file": "packages/skeleton/dist/test/resident.test.js",
+            "durationMs": 91467.889834,
+            "exitCode": 0
+          },
+          {
+            "name": "cell loop-lifetime-reclaim",
+            "file": "packages/skeleton/dist/test/resident.test.js",
+            "durationMs": 49934.606208,
+            "exitCode": 0
+          },
+          {
+            "name": "cell loop-append-reclaim",
+            "file": "packages/skeleton/dist/test/resident.test.js",
+            "durationMs": 45495.531459,
+            "exitCode": 0
+          },
+          {
+            "name": "cell once-lifetime-reclaim",
+            "file": "packages/skeleton/dist/test/resident.test.js",
+            "durationMs": 45358.590791,
+            "exitCode": 0
+          },
+          {
+            "name": "cell once-append-reclaim",
+            "file": "packages/skeleton/dist/test/resident.test.js",
+            "durationMs": 44812.283792,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 397788744,
+        "peakRssBytes": 840859648,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:33:14.837Z",
+        "finishedAt": "2026-10-06T06:37:03.992Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/skeleton-b1e27536-c8c2-4ae1-acd7-3daf4a2235cb.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "release:prepare",
+          "worktree"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "process-debt"
+        ],
+        "schedulerDurationMs": 229155,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          2
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "kernel",
+        "durationMs": 515,
+        "slowestCases": [
+          {
+            "name": "WO-142 application-state coupling detector catches alias and destructuring reads",
+            "file": "packages/kernel/dist/test/ac2-replay-store.test.js",
+            "durationMs": 48.1385,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-047 reserved application-state reads occur only in the exported default projector",
+            "file": "packages/kernel/dist/test/ac2-replay-store.test.js",
+            "durationMs": 15.624458,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-046 iterative decoding accepts deep trees without stack overflow",
+            "file": "packages/kernel/dist/test/wo046-continuation-decoder.test.js",
+            "durationMs": 10.188125,
+            "exitCode": 0
+          },
+          {
+            "name": "AC3 evidence: Backoff jitter yields exact dueAt and rngState for pinned rngStates with a non-binding clamp",
+            "file": "packages/kernel/dist/test/ac3-cadence.test.js",
+            "durationMs": 6.286375,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-017 store contract: well-formed logs retain exact bytes and count only object lines",
+            "file": "packages/kernel/dist/test/ac2-replay-store.test.js",
+            "durationMs": 5.195542,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 49011216,
+        "peakRssBytes": 146292736,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:37:03.999Z",
+        "finishedAt": "2026-10-06T06:37:04.521Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/kernel-e9d65e36-0874-4532-b25d-678afb17d068.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "target-publish",
+          "worktree-integration",
+          "console"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "skeleton"
+        ],
+        "schedulerDurationMs": 522,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          2
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "compiler",
+        "durationMs": 1043,
+        "slowestCases": [
+          {
+            "name": "WO-008 constraint compiler is deterministic, input-immutable, I/O-free, and has zero runtime dependencies",
+            "file": "packages/compiler/dist/test/purity.test.js",
+            "durationMs": 174.949458,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-132 compiler purity inspects executable syntax while preserving emitted hook text",
+            "file": "packages/compiler/dist/test/purity.test.js",
+            "durationMs": 121.233666,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-060 decoding is deterministic, reads no clock or randomness and screens adversarial text in linear time",
+            "file": "packages/compiler/dist/test/source-bundle.test.js",
+            "durationMs": 101.668333,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-008 AC3 every adjacent precedence pair selects the higher level",
+            "file": "packages/compiler/dist/test/compiler.test.js",
+            "durationMs": 22.8515,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-144 role grants are closed, source-bearing target data in hooks and manifests",
+            "file": "packages/compiler/dist/test/harness.test.js",
+            "durationMs": 20.457,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 83700704,
+        "peakRssBytes": 228802560,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:37:04.527Z",
+        "finishedAt": "2026-10-06T06:37:05.578Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/compiler-ee4947dc-94c8-499d-aa35-7624bc4e355e.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "target-publish",
+          "worktree-integration",
+          "console"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "kernel"
+        ],
+        "schedulerDurationMs": 1051,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          2
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "console",
+        "durationMs": 17449,
+        "slowestCases": [
+          {
+            "name": "WO-164 console collection spawns a constant number of processes and Git reads only new or moved tags",
+            "file": "packages/console/dist/test/collect.test.js",
+            "durationMs": 15687.053,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-117 combined passive view refreshes status, orders and audit without receipts and recovers",
+            "file": "packages/console/dist/test/live.test.js",
+            "durationMs": 6502.82725,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-117 generic payloads and inherited names cannot stop refresh",
+            "file": "packages/console/dist/test/live.test.js",
+            "durationMs": 4012.90725,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-117 live command read, mutation, audit and refusal have invoke byte parity and exact receipts",
+            "file": "packages/console/dist/test/live.test.js",
+            "durationMs": 3405.912584,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-117 idle clock samples do not repaint and compact audit fields cannot forge lines",
+            "file": "packages/console/dist/test/live.test.js",
+            "durationMs": 1262.000666,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 273170136,
+        "peakRssBytes": 567328768,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:36:57.455Z",
+        "finishedAt": "2026-10-06T06:37:14.911Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/console-c1f0335d-eb6b-4a80-b4ab-51d62cac6e35.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "skeleton",
+          "target-publish",
+          "worktree-integration"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "work-orders-fixtures"
+        ],
+        "schedulerDurationMs": 17456,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "adjacent-queue",
+        "durationMs": 486,
+        "slowestCases": [
+          {
+            "name": "WO-157 retarget moves only a deferred item's target onto an existing FUP, also at final review",
+            "file": "scripts/test-adjacent-queue.mjs",
+            "durationMs": 169.333,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-042 actual queue CLI uses the selected work order and read-only listing",
+            "file": "scripts/test-adjacent-queue.mjs",
+            "durationMs": 86.558209,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-042 queued fixes require diagnosis, announcement, steering checkpoint and current priority",
+            "file": "scripts/test-adjacent-queue.mjs",
+            "durationMs": 33.110625,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-042 operator steering supersedes queued intent without erasing history",
+            "file": "scripts/test-adjacent-queue.mjs",
+            "durationMs": 24.72825,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-042 a recommendation waits for attributed operator direction and fresh check-in",
+            "file": "scripts/test-adjacent-queue.mjs",
+            "durationMs": 11.887542,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 43063032,
+        "peakRssBytes": 135331840,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:37:14.918Z",
+        "finishedAt": "2026-10-06T06:37:15.411Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/adjacent-queue-73a0982b-4068-4b71-9b5c-798d839a5f06.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "target-publish",
+          "worktree-integration",
+          "browser-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "console"
+        ],
+        "schedulerDurationMs": 493,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "derived-orders",
+        "durationMs": 7557,
+        "slowestCases": [
+          {
+            "name": "compiled order materializes, activates and shares index, status and lifecycle",
+            "file": "scripts/test-derived-orders.mjs",
+            "durationMs": 2509.752084,
+            "exitCode": 0
+          },
+          {
+            "name": "two processes serialize allocations, including the same retry key",
+            "file": "scripts/test-derived-orders.mjs",
+            "durationMs": 670.595875,
+            "exitCode": 0
+          },
+          {
+            "name": "a resident restarts with a derived compiled identity and unchanged control provenance",
+            "file": "scripts/test-derived-orders.mjs",
+            "durationMs": 658.947208,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-157 a corrupt allocation authority refuses only its own order",
+            "file": "scripts/test-derived-orders.mjs",
+            "durationMs": 637.074042,
+            "exitCode": 0
+          },
+          {
+            "name": "allocation replay, interrupted authority recovery and retry preserve one identity",
+            "file": "scripts/test-derived-orders.mjs",
+            "durationMs": 534.260416,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 98283688,
+        "peakRssBytes": 240353280,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:37:15.419Z",
+        "finishedAt": "2026-10-06T06:37:22.983Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/derived-orders-97136632-87c9-46c1-bbd2-75db086f3893.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "target-publish",
+          "worktree-integration",
+          "browser-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "adjacent-queue"
+        ],
+        "schedulerDurationMs": 7564,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "browser-evidence",
+        "durationMs": 18742,
+        "slowestCases": [
+          {
+            "name": "a failed assertion produces adverse evidence rather than a pass",
+            "file": "packages/browser-evidence/test/scenario.test.mjs",
+            "durationMs": 5436.268209,
+            "exitCode": 0
+          },
+          {
+            "name": "SIGKILL recovery observes zero recorded browser processes and leaves an unrelated process alive",
+            "file": "packages/browser-evidence/test/scenario.test.mjs",
+            "durationMs": 1597.254625,
+            "exitCode": 0
+          },
+          {
+            "name": "installed pinned browser produces all five kinds admitted from a VerificationOpened subject",
+            "file": "packages/browser-evidence/test/scenario.test.mjs",
+            "durationMs": 1427.294042,
+            "exitCode": 0
+          },
+          {
+            "name": "fresh worktree suite default prints an install remedy for its actual cache and README setup",
+            "file": "packages/browser-evidence/test/scenario.test.mjs",
+            "durationMs": 1293.141917,
+            "exitCode": 0
+          },
+          {
+            "name": "recovery signals a recorded surviving root and child after owner SIGKILL",
+            "file": "packages/browser-evidence/test/scenario.test.mjs",
+            "durationMs": 1231.884584,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 382850128,
+        "peakRssBytes": 760315904,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:37:05.584Z",
+        "finishedAt": "2026-10-06T06:37:24.335Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/browser-evidence-88628362-f2e3-4a15-835e-70979667220b.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "target-publish",
+          "worktree-integration",
+          "console"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "compiler"
+        ],
+        "schedulerDurationMs": 18751,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          2
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "codex-continuation",
+        "durationMs": 6334,
+        "slowestCases": [
+          {
+            "name": "Codex completed, foreign, absent and malformed task identities never request continuation",
+            "file": "scripts/test-codex-continuation.mjs",
+            "durationMs": 2360.942833,
+            "exitCode": 0
+          },
+          {
+            "name": "Codex recovery controls arriving during task observation suppress continuation",
+            "file": "scripts/test-codex-continuation.mjs",
+            "durationMs": 831.052083,
+            "exitCode": 0
+          },
+          {
+            "name": "Codex side questions do not replace unfinished work; analysis and override always suppress automatic continuation",
+            "file": "scripts/test-codex-continuation.mjs",
+            "durationMs": 695.92775,
+            "exitCode": 0
+          },
+          {
+            "name": "Codex generated entry restores context and continues through the emitted native JSON contract",
+            "file": "scripts/test-codex-continuation.mjs",
+            "durationMs": 678.622042,
+            "exitCode": 0
+          },
+          {
+            "name": "Codex compaction restores the owned task and continues once without dispatching or releasing its writer",
+            "file": "scripts/test-codex-continuation.mjs",
+            "durationMs": 631.825625,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 78457008,
+        "peakRssBytes": 202686464,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:37:24.341Z",
+        "finishedAt": "2026-10-06T06:37:30.681Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/codex-continuation-914a1675-bfe8-49c5-bd55-4c81be26e86b.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "target-publish",
+          "worktree-integration",
+          "portfolio"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "browser-evidence"
+        ],
+        "schedulerDurationMs": 6340,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          2
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "authority-grants",
+        "durationMs": 193,
+        "slowestCases": [
+          {
+            "name": "WO-042 AC5/6 Contributor projection and grant bundle carry the enforced envelope and registry provenance",
+            "file": "scripts/test-authority-grants.mjs",
+            "durationMs": 19.981333,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-042 AC2 trace, effective envelope and runtime authorize agree for every layer and restoration",
+            "file": "scripts/test-authority-grants.mjs",
+            "durationMs": 8.251333,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-042 AC3 host admits only matching grants from the committed and ignored local registries",
+            "file": "scripts/test-authority-grants.mjs",
+            "durationMs": 6.335083,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-071 registered profiles narrow the WorkOrder and widen only through retained grant provenance",
+            "file": "scripts/test-authority-grants.mjs",
+            "durationMs": 3.857416,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 50305816,
+        "peakRssBytes": 142016512,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:37:30.688Z",
+        "finishedAt": "2026-10-06T06:37:30.887Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/authority-grants-88e4a222-2354-4606-8d07-737422d69353.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "target-publish",
+          "worktree-integration",
+          "portfolio"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "codex-continuation"
+        ],
+        "schedulerDurationMs": 199,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          2
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "configuration-root",
+        "durationMs": 3979,
+        "slowestCases": [
+          {
+            "name": "configuration root",
+            "file": "scripts/test-configuration-root.mjs",
+            "durationMs": 3857.354417,
+            "exitCode": 0
+          },
+          {
+            "name": "worktree start and finish use the configured roots",
+            "file": "scripts/test-configuration-root.mjs",
+            "durationMs": 2246.284042,
+            "exitCode": 0
+          },
+          {
+            "name": "a fixture launchpad with non-default roots drives the lifecycle",
+            "file": "scripts/test-configuration-root.mjs",
+            "durationMs": 1431.510042,
+            "exitCode": 0
+          },
+          {
+            "name": "configured lineage and planning consumers use the launchpad ledger",
+            "file": "scripts/test-configuration-root.mjs",
+            "durationMs": 93.220791,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-184 criterion 10: a configuration FIFO refuses promptly by path",
+            "file": "scripts/test-configuration-root.mjs",
+            "durationMs": 35.78,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 82782768,
+        "peakRssBytes": 229883904,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:37:30.893Z",
+        "finishedAt": "2026-10-06T06:37:34.879Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "target-publish",
+          "worktree-integration",
+          "portfolio"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "authority-grants"
+        ],
+        "schedulerDurationMs": 3986,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          2
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "portfolio",
+        "durationMs": 20850,
+        "slowestCases": [
+          {
+            "name": "a Sort move passes only when the host sees the exact relocation and its named check passes, also for a check naming no path in both trees; a copy fails before any verifier runs, and a verifier's human escalation fails the order",
+            "file": "scripts/test-portfolio.mjs",
+            "durationMs": 14141.317041,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-100 criteria 1-3: derived orders materialize as indexed records, activate with host-policy provenance, change through WO-052, verify through WO-054, reset from a non-last phase on a failure, advance on a pass and stop at the budget with an in-phase candidate left",
+            "file": "scripts/test-portfolio.mjs",
+            "durationMs": 6380.070375,
+            "exitCode": 0
+          },
+          {
+            "name": "the configuration section is the reviewed portfolio text, validated under its registered repository",
+            "file": "scripts/test-portfolio.mjs",
+            "durationMs": 138.193083,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 133726792,
+        "peakRssBytes": 277692416,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:37:22.991Z",
+        "finishedAt": "2026-10-06T06:37:43.848Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/portfolio-9056a07f-7a0d-45c0-9115-3153a578de7e.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "target-publish",
+          "worktree-integration",
+          "browser-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "derived-orders"
+        ],
+        "schedulerDurationMs": 20857,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "harness-probe",
+        "durationMs": 60477,
+        "slowestCases": [
+          {
+            "name": "WO-044 the probe drives every Claude and Codex launch through stub harnesses, records shapes only, and renders the labeled record, addendum and disposition",
+            "file": "scripts/test-harness-probe.mjs",
+            "durationMs": 23102.5115,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-146 Copilot stub exercises both registrations, trust, caps, denial evidence and immutable observations",
+            "file": "scripts/test-harness-probe.mjs",
+            "durationMs": 12266.554291,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-146 operator qualification uses real fixture transitions, fresh identities and a six-attempt bound",
+            "file": "scripts/test-harness-probe.mjs",
+            "durationMs": 5341.046125,
+            "exitCode": 0
+          },
+          {
+            "name": "owned process group and descendants stop on timeout",
+            "file": "scripts/test-authority-probe.mjs",
+            "durationMs": 3975.084916,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-044 VER-001 an unconfirmed background token never targets another session",
+            "file": "scripts/test-harness-probe.mjs",
+            "durationMs": 2906.773083,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 171122448,
+        "peakRssBytes": 337559552,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:37:34.885Z",
+        "finishedAt": "2026-10-06T06:38:35.368Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "target-publish",
+          "worktree-integration",
+          "portfolio"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "configuration-root"
+        ],
+        "schedulerDurationMs": 60483,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          2
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "target-publish",
+        "durationMs": 150608,
+        "slowestCases": [
+          {
+            "name": "WO-066 AC2: reject carries evidence to the thread; human comments never dispatch or dispose; outside paths and unmapped checks name NeedsHuman",
+            "file": "scripts/test-target-publish.mjs",
+            "durationMs": 15970.931334,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-184 criterion 9: pending and cancelled mapped checks stop needs-human with their item",
+            "file": "scripts/test-target-publish.mjs",
+            "durationMs": 14271.801125,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-184 criterion 9: missing lines and unmatched required checks end human, allowing later items",
+            "file": "scripts/test-target-publish.mjs",
+            "durationMs": 11174.285833,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-066 AC2: a refused comment stops with its identifier; failed repair verification cannot push or dispatch a second round",
+            "file": "scripts/test-target-publish.mjs",
+            "durationMs": 10646.975291,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-066 AC1/AC3: an accepted automated thread repairs, verifies, pushes, disposes and records fresh resolution; recovery never pushes twice",
+            "file": "scripts/test-target-publish.mjs",
+            "durationMs": 8103.420625,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 156896120,
+        "peakRssBytes": 358121472,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:36:10.289Z",
+        "finishedAt": "2026-10-06T06:38:40.908Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/target-publish-1fc071c1-3465-402c-838b-7e15d90c87e5.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "skeleton",
+          "release:case:material",
+          "release:case:close_leftover"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "outward-lint"
+        ],
+        "schedulerDurationMs": 150619,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "registrations",
+        "durationMs": 626,
+        "slowestCases": [
+          {
+            "name": "registrations",
+            "durationMs": 626,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 24759368,
+        "peakRssBytes": 73908224,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:38:40.915Z",
+        "finishedAt": "2026-10-06T06:38:41.547Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "worktree-integration",
+          "plan-refutation",
+          "runner-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "target-publish"
+        ],
+        "schedulerDurationMs": 632,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "plan-refutation",
+        "durationMs": 58159,
+        "slowestCases": [
+          {
+            "name": "plan-refutation",
+            "durationMs": 58159,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 418268416,
+        "peakRssBytes": 466042880,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:37:43.855Z",
+        "finishedAt": "2026-10-06T06:38:42.021Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "target-publish",
+          "worktree-integration",
+          "harness-probe"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "portfolio"
+        ],
+        "schedulerDurationMs": 58166,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "runner-fixtures",
+        "durationMs": 64353,
+        "slowestCases": [
+          {
+            "name": "WO-185 a generated quarantine with nonfinite findings passes all three wo102 files",
+            "file": "scripts/test-host-guard.test.mjs",
+            "durationMs": 13302.760541,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-185 independent worktrees and separate clones share lanes, wait, reclaim a dead holder and reuse one guard",
+            "file": "scripts/test-host-guard.test.mjs",
+            "durationMs": 11272.992084,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-186 VER-001 the heartbeat names a synchronous case while it runs, after an async one, and never a finished case",
+            "file": "scripts/test-runner.test.mjs",
+            "durationMs": 8890.763667,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-185 native footprint stops zero-filled and low-resident growth as a gate task, bounded command and bare registered-session child",
+            "file": "scripts/test-host-guard.test.mjs",
+            "durationMs": 8010.242917,
+            "exitCode": 0
+          },
+          {
+            "name": "only and document CLI selection execute their declared checks with the projection build",
+            "file": "scripts/test-runner.test.mjs",
+            "durationMs": 5071.442375,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 841256056,
+        "peakRssBytes": 1032224768,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:38:35.376Z",
+        "finishedAt": "2026-10-06T06:39:39.738Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "target-publish",
+          "worktree-integration",
+          "plan-refutation"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "harness-probe"
+        ],
+        "schedulerDurationMs": 64362,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          2
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "worktree-integration",
+        "durationMs": 237199,
+        "slowestCases": [
+          {
+            "name": "WO-086 a stub blocked by a regular file with a newer tag during retry retains its saved collision through continuation",
+            "file": "scripts/test-worktree-integration.mjs",
+            "durationMs": 17857.021875,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-086 a stub blocked by a symlink retains its saved collision through continuation",
+            "file": "scripts/test-worktree-integration.mjs",
+            "durationMs": 17248.692583,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-086 a blocked PR directory preserves collision inputs for continuation",
+            "file": "scripts/test-worktree-integration.mjs",
+            "durationMs": 15358.922041,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-086 a retime that lands on a continuation is recorded once, in the stub the failed pass withheld",
+            "file": "scripts/test-worktree-integration.mjs",
+            "durationMs": 15272.828875,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-086 a stub blocked by a regular file retains its saved collision through continuation",
+            "file": "scripts/test-worktree-integration.mjs",
+            "durationMs": 15228.750292,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 458894048,
+        "peakRssBytes": 726876160,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:36:34.364Z",
+        "finishedAt": "2026-10-06T06:40:31.575Z",
+        "exitCode": 0,
+        "productReadLog": "/Users/dylanwood/Projects/DotLn-wo187/docs/control/local/harness/runner/product-reads/worktree-integration-d212f551-6c96-4421-9fc8-5eab52d32162.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "skeleton",
+          "release:case:material",
+          "target-publish"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "checkpoint"
+        ],
+        "schedulerDurationMs": 237211,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      }
+    ],
+    "memory": {
+      "samples": 1868,
+      "footprintSamples": 772,
+      "samplingCostMs": 12759.126828003566,
+      "peakFootprintBytes": 1122550600,
+      "peakRssBytes": 1820999680,
+      "source": "proc_pid_rusage.ri_phys_footprint",
+      "unavailable": [
+        "original-parent unique identity"
+      ],
+      "budgets": {
+        "taskShare": 0.25,
+        "gateShare": 0.5,
+        "hostShare": 0.6666666666666666,
+        "signalIntervalMs": 1000,
+        "footprintIntervalMs": 4000,
+        "outputTailBytes": 1048576,
+        "hostLanes": 4,
+        "basis": {
+          "workOrder": "WO-185",
+          "source": "docs/evidence/WO-185/repair-final001-gate-initial-measurements.json; full npm test -- --review at 2026-10-03T19:17:49.624Z; above-threshold runner sampling directs D026 interval correction and current-identity recheck",
+          "codeIdentity": "bf5bdd3dbafb90b1b9dd25b4de74f82d34ab5d2e440d7d528d1ee70047e0eab0",
+          "physicalBytes": 51539607552,
+          "taskPeakFootprintBytes": 1100039120,
+          "gatePeakFootprintBytes": 1787537328,
+          "hostPeakFootprintBytes": 1721155256,
+          "runnerSamplingPercent": 2.5778002756795977,
+          "guardSamplingPercent": 1.0997731092970733
+        },
+        "physicalBytes": 51539607552,
+        "taskBytes": 12884901888,
+        "gateBytes": 25769803776,
+        "hostBytes": 34359738368
+      }
+    },
+    "deadlineDiagnostics": [
+      {
+        "site": "worker-transport:process",
+        "task": "skeleton",
+        "timeoutMs": 300,
+        "durationMs": 302.29312500000015,
+        "startedAt": "2026-10-06T06:33:50.158Z",
+        "finishedAt": "2026-10-06T06:33:50.460Z",
+        "hit": true,
+        "loadClass": "shared",
+        "concurrency": 4,
+        "loadFactor": 8,
+        "concurrentTasks": [
+          "worktree",
+          "release:case:cadence_inconsistent",
+          "release:case:nestedtag"
+        ],
+        "peerObservation": "scheduler-current",
+        "hostLoadPerCpu": 0.430419921875,
+        "classification": "deadline-hit-cause-unestablished"
+      },
+      {
+        "site": "scripts/test-gate-deadlines.mjs:spawn:50",
+        "task": "runner-fixtures",
+        "timeoutMs": 50,
+        "durationMs": 52.85137499999996,
+        "startedAt": "2026-10-06T06:38:36.465Z",
+        "finishedAt": "2026-10-06T06:38:36.518Z",
+        "hit": true,
+        "loadClass": "shared",
+        "concurrency": 4,
+        "loadFactor": 8,
+        "concurrentTasks": [
+          "target-publish",
+          "worktree-integration",
+          "plan-refutation"
+        ],
+        "peerObservation": "scheduler-current",
+        "hostLoadPerCpu": 0.47711181640625,
+        "classification": "deadline-hit-cause-unestablished"
+      },
+      {
+        "site": "scripts/test-gate-deadlines.mjs:spawnSync:50",
+        "task": "runner-fixtures",
+        "timeoutMs": 50,
+        "durationMs": 53.45595800000001,
+        "startedAt": "2026-10-06T06:38:36.519Z",
+        "finishedAt": "2026-10-06T06:38:36.573Z",
+        "hit": true,
+        "loadClass": "shared",
+        "concurrency": 4,
+        "loadFactor": 8,
+        "concurrentTasks": [
+          "target-publish",
+          "worktree-integration",
+          "plan-refutation"
+        ],
+        "peerObservation": "scheduler-current",
+        "hostLoadPerCpu": 0.47711181640625,
+        "classification": "deadline-hit-cause-unestablished"
+      },
+      {
+        "site": "suite:slow-fixture",
+        "task": "runner-fixtures",
+        "timeoutMs": 35,
+        "durationMs": 37.135167000000365,
+        "startedAt": "2026-10-06T06:38:39.715Z",
+        "finishedAt": "2026-10-06T06:38:39.752Z",
+        "hit": true,
+        "loadClass": "shared",
+        "concurrency": 4,
+        "loadFactor": 8,
+        "concurrentTasks": [
+          "target-publish",
+          "worktree-integration",
+          "plan-refutation"
+        ],
+        "peerObservation": "scheduler-current",
+        "hostLoadPerCpu": 0.47393798828125,
+        "classification": "deadline-hit-cause-unestablished"
+      }
+    ],
+    "criticalPath": {
+      "tasks": [
+        "build",
+        "harness-context",
+        "artifact-evidence",
+        "feedback-evidence",
+        "harness-fixtures",
+        "process-debt",
+        "worktree",
+        "release:case:close_completion",
+        "release:case:close_leftover",
+        "license-fixtures",
+        "publication-fixtures",
+        "backup-intake",
+        "beacon-portability",
+        "checkpoint",
+        "worktree-integration"
+      ],
+      "workMs": 1607262,
+      "waitMs": 119,
+      "durationMs": 1607381
+    },
+    "workOrder": "WO-187"
+  },
+  "hostLaneWait": {
+    "note": "the build task waited for host lanes held by another worktree's gate before it started",
+    "buildSchedulerDurationMs": 756200,
+    "buildDurationMs": 680
+  }
+}

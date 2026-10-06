@@ -1,0 +1,322 @@
+{
+  "at": "2026-10-06T04:27:54.402Z",
+  "source": "direct module calls on VER-003's recorded inputs (verification-003/reader-regressions.json, adversary-reproductions.json) and the R3 order shape; probe findings.mjs",
+  "results": {
+    "findings": {
+      "adjacentUnmatchedFindings/pass": {
+        "now": {
+          "c": "escape=1",
+          "found": 1,
+          "unrec": [
+            2
+          ],
+          "measured": false,
+          "ub": []
+        },
+        "cp11": {
+          "c": "escape=1",
+          "found": 1,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        }
+      },
+      "adjacentUnmatchedFindings/fail": {
+        "now": {
+          "c": "escape=1",
+          "found": 1,
+          "unrec": [
+            2
+          ],
+          "measured": false,
+          "ub": []
+        },
+        "cp11": {
+          "c": "escape=1",
+          "found": 1,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        }
+      },
+      "proseThenFinding/pass": {
+        "now": {
+          "c": "none",
+          "found": 0,
+          "unrec": [
+            2
+          ],
+          "measured": false,
+          "ub": []
+        },
+        "cp11": {
+          "c": "none",
+          "found": 0,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        }
+      },
+      "proseThenFinding/fail": {
+        "now": {
+          "c": "none",
+          "found": 0,
+          "unrec": [
+            2
+          ],
+          "measured": false,
+          "ub": []
+        },
+        "cp11": {
+          "c": "none",
+          "found": 0,
+          "unrec": [],
+          "measured": false,
+          "ub": []
+        }
+      },
+      "blankSeparatedControl/pass": {
+        "now": {
+          "c": "escape=1,integration=1",
+          "found": 2,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        },
+        "cp11": {
+          "c": "escape=1,integration=1",
+          "found": 2,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        }
+      },
+      "blankSeparatedControl/fail": {
+        "now": {
+          "c": "escape=1,integration=1",
+          "found": 2,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        },
+        "cp11": {
+          "c": "escape=1,integration=1",
+          "found": 2,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        }
+      },
+      "followUpWithoutClass/pass": {
+        "now": {
+          "c": "unclassed=1",
+          "found": 1,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        },
+        "cp11": {
+          "c": "unclassed=1",
+          "found": 1,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        }
+      },
+      "followUpWithoutClass/fail": {
+        "now": {
+          "c": "unclassed=1",
+          "found": 1,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        },
+        "cp11": {
+          "c": "unclassed=1",
+          "found": 1,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        }
+      },
+      "followUpUnknownClass/pass": {
+        "now": {
+          "c": "unclassed=1",
+          "found": 1,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        },
+        "cp11": {
+          "c": "unclassed=1",
+          "found": 1,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        }
+      },
+      "followUpUnknownClass/fail": {
+        "now": {
+          "c": "unclassed=1",
+          "found": 1,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        },
+        "cp11": {
+          "c": "unclassed=1",
+          "found": 1,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        }
+      },
+      "WO-186/FINAL-002/pass": {
+        "now": {
+          "c": "none",
+          "found": 0,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        },
+        "cp11": {
+          "c": "none",
+          "found": 0,
+          "unrec": [
+            3
+          ],
+          "measured": false,
+          "ub": []
+        }
+      }
+    },
+    "adversary": {
+      "A1_adjacentFindingLines": {
+        "verdict": "fail",
+        "now": {
+          "c": "escape=1,new-scope=1",
+          "found": 2,
+          "unrec": [
+            2
+          ],
+          "measured": false,
+          "ub": []
+        },
+        "cp11": {
+          "c": "escape=1,new-scope=1",
+          "found": 2,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        }
+      },
+      "A1_tripleBacktickMentions": {
+        "verdict": "fail",
+        "now": {
+          "c": "escape=1",
+          "found": 1,
+          "unrec": [
+            2
+          ],
+          "measured": false,
+          "ub": []
+        },
+        "cp11": {
+          "c": "escape=1",
+          "found": 1,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        }
+      },
+      "A5_basisSubBullet": {
+        "verdict": "fail",
+        "now": {
+          "c": "escape=1",
+          "found": 1,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        },
+        "cp11": {
+          "c": "escape=1",
+          "found": 1,
+          "unrec": [
+            2
+          ],
+          "measured": false,
+          "ub": []
+        }
+      },
+      "C_followUpTrailingPeriod": {
+        "verdict": "pass",
+        "now": {
+          "c": "unclassed=1",
+          "found": 1,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        },
+        "cp11": {
+          "c": "unclassed=1",
+          "found": 1,
+          "unrec": [],
+          "measured": true,
+          "ub": []
+        }
+      },
+      "A7_quotedEarlierFinding": {
+        "verdict": "fail",
+        "now": {
+          "c": "unclassed=1",
+          "found": 1,
+          "unrec": [],
+          "measured": true,
+          "ub": [
+            "F1"
+          ]
+        },
+        "cp11": {
+          "c": "unclassed=1",
+          "found": 1,
+          "unrec": [],
+          "measured": true,
+          "ub": [
+            "F1"
+          ]
+        }
+      },
+      "A7_recapOnPass": {
+        "verdict": "pass",
+        "now": {
+          "c": "unclassed=1",
+          "found": 1,
+          "unrec": [],
+          "measured": true,
+          "ub": [
+            "F1"
+          ]
+        },
+        "cp11": {
+          "c": "unclassed=1",
+          "found": 1,
+          "unrec": [],
+          "measured": true,
+          "ub": [
+            "F1"
+          ]
+        }
+      }
+    },
+    "briefing": {
+      "ver003Order": {
+        "now": "\n\nAdvisory: docs/work-orders/WO-900-probe.md lines 6 contain Known issues labels hidden by ambiguous inline-code spans; read those source lines for carry-ins.",
+        "cp11": ""
+      },
+      "R3": {
+        "now": "\n\nKnown issues and carry-ins (docs/work-orders/WO-901-probe.md:5):\n- first carry-in.\n\n**Design** for the repair: keep it small.\n\n- second carry-in.",
+        "cp11": "\n\nKnown issues and carry-ins (docs/work-orders/WO-901-probe.md:5):\n- first carry-in."
+      }
+    }
+  }
+}
