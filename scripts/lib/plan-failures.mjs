@@ -13,6 +13,7 @@ import { checksPath, readGateChecks } from "./gate-evidence.mjs";
 import { bounded } from "./planning-followups.mjs";
 import { completedPhaseAttempts } from "./control-time.mjs";
 import { parseHeader } from "../work-orders.mjs";
+import { measuredFindingCounts } from "./review-findings.mjs";
 
 // WO-172: what failed since the pass before, folded from the public record:
 // the control logs, the planning control log and the structured decisions.
@@ -29,6 +30,7 @@ const OFF_RAMPS = new Set([
 ]);
 const KIND_ORDER = [
   "failed-judgment",
+  "review-findings",
   "repair",
   "off-ramp",
   "amendment",
@@ -162,6 +164,19 @@ export function failureRecord(root) {
           failed: event.verdict === "fail",
         });
       }
+      // A clean review is no failure item; its zero stays in
+      // finalReviewFindings.
+      if (
+        event.type === "FinalReviewCompleted" &&
+        Object.values(measuredFindingCounts(event) ?? {}).some((n) => n > 0)
+      )
+        items.push({
+          kind: "review-findings",
+          order,
+          report: event.finalReviewId,
+          recordedAt,
+          findingCounts: event.findingCounts,
+        });
       if (
         ["VerificationCompleted", "FinalReviewCompleted"].includes(
           event.type,
@@ -274,6 +289,71 @@ export function failureRecord(root) {
       identity(a).localeCompare(identity(b)),
   );
   return { control, items, facts };
+}
+
+/** Historical events without a count are unmeasured, never zero escapes.
+ * The recent figure takes every final review of the ten most recently
+ * reviewed orders, including failed attempts and findings on passing reviews. */
+export function finalReviewFindings(
+  control,
+  includes = () => true,
+  { full = false } = {},
+) {
+  const events = [...control.eventSegments.values()]
+    .flat()
+    .filter((event) => event.type === "FinalReviewCompleted")
+    .sort((a, b) => (b.recordedAt ?? "").localeCompare(a.recordedAt ?? ""));
+  const recentOrders = [
+    ...new Set(events.map((event) => event.workOrderId)),
+  ].slice(0, 10);
+  const summarize = (rows) => {
+    const measured = rows.filter(measuredFindingCounts);
+    const escapes = measured.reduce(
+      (sum, event) => sum + event.findingCounts.escape,
+      0,
+    );
+    const unclassed = measured.reduce(
+      (sum, event) => sum + event.findingCounts.unclassed,
+      0,
+    );
+    return {
+      reviews: rows.length,
+      measured: measured.length,
+      escapes,
+      unclassed,
+      escapesPerFinalReview:
+        rows.length && measured.length === rows.length
+          ? escapes / rows.length
+          : null,
+    };
+  };
+  const selected = events.filter((event) =>
+    includes({ recordedAt: event.recordedAt ?? "unknown" }),
+  );
+  const byOrder = new Map();
+  for (const event of selected) {
+    const rows = byOrder.get(event.workOrderId) ?? [];
+    rows.push(event);
+    byOrder.set(event.workOrderId, rows);
+  }
+  const rows = [...byOrder].map(([order, events]) => [
+    order,
+    summarize(events),
+  ]);
+  const shown = full ? rows : rows.slice(0, LOCAL_ORDERS);
+  return {
+    ...summarize(selected),
+    byOrder: Object.fromEntries(shown),
+    ...(shown.length < rows.length
+      ? { otherOrders: rows.length - shown.length }
+      : {}),
+    recent: {
+      orders: recentOrders.length,
+      ...summarize(
+        events.filter((event) => recentOrders.includes(event.workOrderId)),
+      ),
+    },
+  };
 }
 
 // A bound is a UTC date (its midnight) or a timestamp that carries its zone: a
@@ -894,6 +974,10 @@ export function planningFailures(
     source: sourceNote(root),
     window: chosen.view.public,
     counts: chosen.counts,
+    finalReviewFindings: finalReviewFindings(
+      chosen.record.control,
+      chosen.view.includes,
+    ),
     ...(chosen.local ? { localGateFailures: chosen.local } : {}),
     ...(chosen.memory ? { localMemoryStops: chosen.memory } : {}),
     ...(chosen.shell ? { localShellDiagnostics: chosen.shell } : {}),
@@ -929,6 +1013,11 @@ export function exportFailures(
     source: sourceNote(root),
     window: chosen.view.public,
     counts: chosen.counts,
+    finalReviewFindings: finalReviewFindings(
+      chosen.record.control,
+      chosen.view.includes,
+      { full: true },
+    ),
     ...(chosen.local ? { localGateFailures: chosen.local } : {}),
     ...(chosen.memory ? { localMemoryStops: chosen.memory } : {}),
     ...(chosen.shell ? { localShellDiagnostics: chosen.shell } : {}),
@@ -980,11 +1069,15 @@ export function failuresAtStart(root) {
   try {
     const chosen = selection(root, {});
     control = chosen.record.control;
+    const recent = finalReviewFindings(control).recent;
+    // The full feed keeps the receipt identity in window.opensAt. Here the
+    // actual cutoff and command preserve access to that provenance while all
+    // counts, including unknown historical measurements, fit the start bound.
     Object.assign(block, {
       since: chosen.view.public.since,
-      opensAt: chosen.view.public.opensAt,
       items: chosen.items.length,
       counts: chosen.counts.window,
+      finalReviewEscapes: `${recent.escapes}/${recent.reviews} reviews; ${recent.orders} orders; ${recent.unclassed} unclassed${recent.measured === recent.reviews ? "" : `; rate unknown (${recent.measured} measured)`}`,
       localReleaseCloses: chosen.operational.localReleaseCloses.count,
       localHostDenials: chosen.operational.localHostDenials.count,
       interventions: {
@@ -994,7 +1087,7 @@ export function failuresAtStart(root) {
       longPhases: chosen.operational.longPhases.count,
       repeatedGateRuns: chosen.operational.repeatedGateRuns.count,
       recentTracks: chosen.operational.recentTracks,
-      localCoverage: "local; Codex dispatch-only; coverage incomplete",
+      localCoverage: "local; Codex dispatch-only; incomplete",
     });
   } catch (error) {
     block.unavailable = `counts not computed: ${oneLine(error.message)}`;

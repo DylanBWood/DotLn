@@ -14,6 +14,12 @@ import { docPath, docRelative } from "./config.mjs";
 import { containedRegularFile, workOrderAuthorityPath } from "./paths.mjs";
 import { criterionJudgments, criterionLineForms } from "./off-ramps.mjs";
 
+// The self-review line has one form: at the start of a line, after an optional
+// list marker, `self-review: found <n>; fixed <n>; recorded <n>`; text may
+// follow. No other spelling, emphasis or indentation is the line.
+const SELF_REVIEW =
+  /^(?:(?:[-*+]|\d{1,9}[.)])[ \t]+)?self-review: found \d+; fixed \d+; recorded \d+(?!\w)/u;
+
 /**
  * The numbered acceptance criteria an order's text declares, each with the
  * text of its item (wrapped lines included, up to a blank line), or null
@@ -96,6 +102,18 @@ export function readReportGateClaims(root, state, reportPath) {
  */
 export function readHandoffLedger(root, state) {
   const path = handoffLedgerPath(root, state.workOrderId);
+  const readable = containedRegularFile(
+    join(root, path),
+    docPath(root, "evidence"),
+  );
+  const text = readable ? readFileSync(join(root, path), "utf8") : "";
+  const advisories = text
+    .split(/\r\n?|\n/u)
+    .some((line) => SELF_REVIEW.test(line))
+    ? []
+    : [
+        `${path} lacks a self-review: line; write a line that starts \`self-review: found <n>; fixed <n>; recorded <n>\` with the fresh review's counts, then the worker or the separate-pass fallback. Completion records all the same.`,
+      ];
   const declared = readDeclaredCriteria(root, state);
   if (!declared)
     return {
@@ -106,6 +124,7 @@ export function readHandoffLedger(root, state) {
       unmet: [],
       claims: { document: [], review: [], plain: [] },
       advisories: [
+        ...advisories,
         `${state.workOrderPath} declares no numbered acceptance criteria this completion can read; ${path} is not checked.`,
       ],
     };
@@ -115,9 +134,8 @@ export function readHandoffLedger(root, state) {
       `${path}: ${detail}. Before handoff the executor judges each declared criterion (${ids.join(", ")}) on one line, met followed by its evidence or unmet followed by the decision that says why (criterion lines: ${criterionLineForms}).`,
     );
   };
-  if (!containedRegularFile(join(root, path), docPath(root, "evidence")))
-    refuse("absent");
-  const judgments = criterionJudgments(readFileSync(join(root, path), "utf8"));
+  if (!readable) refuse("absent");
+  const judgments = criterionJudgments(text);
   const seen = new Map();
   const duplicates = [];
   const undeclared = [];
@@ -140,7 +158,7 @@ export function readHandoffLedger(root, state) {
   const met = ids.filter((id) => seen.get(id).met);
   const unmet = ids.filter((id) => !seen.get(id).met);
   const claims = criterionGateClaims(declared, met);
-  return { checked: true, path, declared, met, unmet, claims, advisories: [] };
+  return { checked: true, path, declared, met, unmet, claims, advisories };
 }
 
 // The suites `npm test -- --review` would run now, read through the runner's
