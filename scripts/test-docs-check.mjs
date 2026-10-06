@@ -7,6 +7,11 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import {
+  disposeFollowup,
+  planningFollowups,
+  syncFollowups,
+} from "./lib/planning-followups.mjs";
+import {
   checkDocs,
   dispatchFingerprint,
   linkFailures,
@@ -151,7 +156,7 @@ function fixture(t, roots = {}) {
     links: [],
   };
   const check = () => checkDocs(root, { ceilings, baseline });
-  const record = (dispatch) => {
+  const record = (dispatch, extra = {}, heading = "WO-999-D001") => {
     const row = {
       id: "WO-999-D001",
       date: "2026-09-26",
@@ -160,10 +165,11 @@ function fixture(t, roots = {}) {
       evidence: ["fixture"],
       rejected: [],
       reopenWhen: "fixture changes",
+      ...extra,
     };
     write(
       `${evidence}/WO-999/decisions.md`,
-      `# Decisions\n\n## WO-999-D001\n\n\`\`\`json\n${JSON.stringify(row)}\n\`\`\`\n`,
+      `# Decisions\n\n## ${heading}\n\n\`\`\`json\n${JSON.stringify(row)}\n\`\`\`\n`,
     );
     return { ...row, path: `${evidence}/WO-999/decisions.md` };
   };
@@ -194,6 +200,83 @@ test("byte ceilings count UTF-8, report exact overage and refuse absent products
   assert.match(f.check().failures.join("\n"), /2 bytes over ceiling/);
   delete f.ceilings.documents["00-fixture.md"];
   assert.match(f.check().failures.join("\n"), /missing ceiling/);
+});
+
+test("WO-187 one operator-directed byte goal advises only with its current unresolved public follow-up", (t) => {
+  for (const roots of [
+    {},
+    { docs: "records", evidence: "proof", product: "blueprint" },
+  ]) {
+    for (const heading of ["WO-999-D001", "WO-999-D001 — byte goal"]) {
+      const f = fixture(t, roots);
+      const entry = f.ceilings.documents["00-fixture.md"];
+      entry.ceiling = Buffer.byteLength(f.source);
+      f.write(`${f.product}/00-fixture.md`, f.source + "é");
+      const reference = `${f.evidence}/WO-999/decisions.md#${heading.includes("—") ? "wo-999-d001--byte-goal" : "wo-999-d001"}`;
+      entry.advisoryDecision = reference;
+      const overage = () =>
+        assert.match(f.check().failures.join("\n"), /2 bytes over ceiling/);
+      overage(); // No decision or registered follow-up.
+      f.record(
+        "resume: next; operator direction",
+        {
+          followup: "Consolidate fixture text with equivalent usefulness.",
+        },
+        heading,
+      );
+      overage();
+      const dispose = (status) => {
+        syncFollowups(f.root);
+        const feed = planningFollowups(f.root, { all: true });
+        const row = feed.rows.find((row) => row.source === reference);
+        assert.ok(row);
+        disposeFollowup(f.root, {
+          expectedRevision: feed.revision,
+          id: row.id,
+          sourceRevision: row.sourceRevision,
+          status,
+          reason: "Fixture operator-directed byte goal.",
+          reopenWhen:
+            status === "open" ? null : "Useful consolidation changes.",
+          targets: status === "allocated" ? ["WO-998"] : [],
+        });
+        return row.id;
+      };
+      const id = dispose("open");
+      assert.deepEqual(f.check().failures, []);
+      assert.match(
+        f.check().notices.join("\n"),
+        new RegExp(`ADVISORY .*2 bytes over ceiling; follow-up ${id}`),
+      );
+      assert.equal(f.check().rows[0].ceiling, entry.ceiling);
+      assert.equal(f.check().rows[0].headroom, -2);
+      entry.advisoryDecision = `${reference}#does-not-resolve`;
+      overage(); // The complete reference must resolve, not its first fragment.
+      entry.advisoryDecision = reference.replace("d001", "d002");
+      overage();
+      entry.advisoryDecision = reference;
+      f.record(
+        "resume: next; operator direction",
+        {
+          followup: "A revised consolidation scope.",
+        },
+        heading,
+      );
+      overage(); // The register has not captured the current decision bytes.
+      syncFollowups(f.root);
+      overage(); // Source revision changed; the former disposition is stale.
+      dispose("deferred");
+      assert.deepEqual(f.check().failures, []);
+      f.write(
+        `${roots.workOrders ?? `${roots.docs ?? "docs"}/work-orders`}/WO-998-fixture.md`,
+        "# WO-998 — fixture\n",
+      );
+      dispose("allocated");
+      overage(); // An allocation is closed in the register, not proof of pending work.
+      dispose("settled");
+      overage(); // A resolved item cannot leave a permanent budget exception.
+    }
+  }
 });
 
 test("receipt and candidate baselines admit only counted labels under their original heading", (t) => {
@@ -518,6 +601,8 @@ test("a ceiling increase requires an existing planning decision, including after
     "# Plan\n\n## Ceiling change\n\nA fixture decision.\n",
   );
   assert.deepEqual(f.check().failures, []);
+  entry.decision += "#does-not-resolve";
+  assert.match(f.check().failures.join("\n"), /raising a ceiling requires/);
 });
 
 test("Markdown titles, nested brackets and decoded entities retain live destinations", (t) => {

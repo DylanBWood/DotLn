@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "policy": "UTF-8 bytes excluding the one registered generated block, 06-roadmap.md's dotln-release-history markers (WO-086), whose rows docs-check compares with their recorded tags; any other marker pair grants no exemption. A planning pass sets a document's ceiling to its non-exempt bytes at that pass plus the write-backs the pass and its queued orders declare for it, and records that size as nonExemptBytesAtLanding (2026-10-02 pass; earlier entries were ceil(nonExemptBytesAtLanding * 1.02)). Consolidation lowers the ceiling in the same change. An increase requires a resolving planning-document decision in the entry, including when restoring previously removed headroom.",
+  "policy": "UTF-8 bytes excluding the one registered generated block, 06-roadmap.md's dotln-release-history markers (WO-086), whose rows docs-check compares with their recorded tags; any other marker pair grants no exemption. A planning pass sets a document's ceiling to its non-exempt bytes at that pass plus the write-backs the pass and its queued orders declare for it, and records that size as nonExemptBytesAtLanding (2026-10-02 pass; earlier entries were ceil(nonExemptBytesAtLanding * 1.02)). Consolidation lowers the ceiling in the same change. An increase requires a resolving planning-document decision in the entry, including when restoring previously removed headroom. Operator-directed byte goals may name an advisoryDecision: a resolving public evidence decision with a current unresolved registered follow-up. Its overrun advises without raising the ceiling or exempting bytes.",
   "documents": {
     "00-vision.md": {
       "nonExemptBytesAtLanding": 28025,
@@ -48,7 +48,8 @@
       "nonExemptBytesAtLanding": 168083,
       "ceiling": 168083,
       "date": "2026-10-05",
-      "decision": "docs/planning/wo-123-integration-ceiling-2026-10-05.md#1-product-07-ceiling"
+      "decision": "docs/planning/wo-123-integration-ceiling-2026-10-05.md#1-product-07-ceiling",
+      "advisoryDecision": "docs/evidence/WO-187/decisions.md#wo-187-d013"
     },
     "08-publication-compiler.md": {
       "nonExemptBytesAtLanding": 22552,
