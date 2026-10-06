@@ -1930,7 +1930,7 @@ test("WO-139 cap-module-only changes refresh the runtime and snapshot damage is 
       readFileSync(join(root, previous.snapshot, modulePath), "utf8"),
       original,
     );
-    assert.equal(checkHarness(root, options).files, 32);
+    assert.equal(checkHarness(root, options).files, 33);
     assert.match(
       invoke(root, "finish", input(root, "Stop")).systemMessage,
       /^Subagents: 0\/21/,
@@ -3489,6 +3489,30 @@ test("WO-132 whole-procedure context reports late and unaccounted reads with adv
     ),
     "larger directed context remains visible as an advisory",
   );
+});
+
+test("WO-187 harness check covers the spawned-worker model and effort pins", () => {
+  const root = fixture();
+  try {
+    emitHarness(root);
+    const agent = join(root, ".claude/agents/dotln-worker.md");
+    const original = readFileSync(agent, "utf8");
+    checkHarness(root);
+    for (const [before, after] of [
+      ["model: claude-opus-5-5", "model: inherit"],
+      ["effort: xhigh", "effort: low"],
+    ]) {
+      writeFileSync(agent, original.replace(before, after));
+      assert.throws(
+        () => checkHarness(root),
+        /harness drift: \.claude\/agents\/dotln-worker\.md/,
+      );
+      writeFileSync(agent, original);
+    }
+    checkHarness(root);
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
 });
 
 test("WO-132 generated read observer spans the session and records alternate read routes", () => {

@@ -237,6 +237,11 @@ export interface HarnessProgram {
   readonly roles: readonly HarnessRole[];
   readonly facets: readonly HarnessFacet[];
   readonly correctionToken: string | null;
+  readonly worker?: {
+    readonly name: string;
+    readonly model: string;
+    readonly effort: "low" | "medium" | "high" | "xhigh" | "max";
+  };
 }
 export interface HarnessOrigin {
   readonly ids: readonly string[];
@@ -934,6 +939,33 @@ process.stdout.write(JSON.stringify(response)); }`;
       1,
     );
     hookPaths.set(event, [...(hookPaths.get(event) ?? []), path]);
+  }
+  if (program.worker && profile.harness === "claude-code") {
+    const worker = program.worker;
+    ensure(/^[a-z][a-z0-9-]*$/.test(worker.name), "worker name");
+    ensure(/^[a-z][a-z0-9.-]*$/.test(worker.model), "worker model");
+    ensure(
+      ["low", "medium", "high", "xhigh", "max"].includes(worker.effort),
+      "worker effort",
+    );
+    emit(
+      `.claude/agents/${worker.name}.md`,
+      [
+        "---",
+        `name: ${worker.name}`,
+        "description: Performs the assigned DotLn adversarial review, refutation or research with the operator's pinned model and effort.",
+        `model: ${worker.model}`,
+        `effort: ${worker.effort}`,
+        "---",
+        "",
+        `<!-- Origin: ${canonicalStringify(origin(program.roles.map((role) => role.facetId)))} -->`,
+        "",
+        "Perform only the parent's assigned review, refutation or research. The parent owns repository writes; return findings with evidence and improvements, never edit the subject or spawn descendants unless explicitly assigned. Read only the assigned inputs. Preserve the Clean Room floor. Report model and effort only from host readback; a configured pin is not effective-session evidence.",
+        "",
+      ].join("\n"),
+      program.roles.map((role) => role.facetId),
+      7,
+    );
   }
   for (const role of program.roles) {
     const supportIds = program.facets.flatMap((facet) =>

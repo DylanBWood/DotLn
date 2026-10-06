@@ -57,6 +57,7 @@ const operatorControls =
 const sessionBoundaries =
   "Under Codex, lifecycle dispatch reserves the writer and completion releases it; inspect with `node scripts/harness.mjs writer --show`, never a hand-built hook payload. Await a gate or background task through `node scripts/harness.mjs evidence --wait [--timeout <seconds>]` in the background or the host's completion signal, then do bounded listed work or stay quiet; never poll or narrate the wait.";
 const sharedCorrections = [
+  "Launch all adversaries, reviewers, refuters and research workers as Claude `dotln-worker` (claude-opus-5-5, xhigh) without a model override, or Codex spawn_agent with fork_turns none, model gpt-6.1-sol and reasoning_effort max; product 07 §Model-specific notes records the pin and readback limits.",
   "Run a probe outside a gate under `node scripts/harness.mjs bounded -- <command>`, one process at a time; the host guard also watches attributable session descendants.",
   "Settle routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority; ask when the answer changes scope or authority.",
   "Before acting on an operator message, state its aim in one line and act on that reading; ask one focused question if the reading is doubtful.",
@@ -117,6 +118,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "Declare each scratch repository the order creates with `npm run worktree -- material` before completion.",
       evidence,
       boardedDefect,
+      "Before either completion, one fresh adversary reads only the order and diff as an improver too; fix or record each finding and add handoff.md line `self-review: found N; fixed N; recorded N`; without spawning, do a separate pass and say so.",
       actor,
       "Finish all authored output, index preparation, review and usage observations before recording `npm run resume -- implementation-ready <actor-flags>` or `npm run resume -- repair-complete <actor-flags>`. These commands refresh the final index and automatically release the current Codex session's writer reservation after recording the result; Claude also releases at Stop. Read the resulting projections without another write. A repair is unfinished until repair-complete records. Report evidence, attestation, and limits; leave verification and final review to their separate dispatches. Never leave the writer reserved at handoff or ask the operator to release it.",
     ],
@@ -130,11 +132,12 @@ export const contributorRoles: readonly HarnessRole[] = [
     feedbackHandlers: handlers,
     procedure: [
       ...common,
-      "The `verify` dispatch is recorded with the phrase and delivers the exact new VER path it allocates (Codex runs `npm run resume -- verify` itself); write only that path. Judge the original order and current subject against its acceptance criteria, reproducing consequential claims and checking earlier findings. Substantive implementation defects become findings for repair.",
+      "The `verify` dispatch delivers the exact new VER path (Codex runs `npm run resume -- verify`); write only it. Judge the original criteria and earlier findings: attack the change, review the whole implementation and use one fresh adversary, as product 07 §Verification review and attack directs.",
+      "Read: `docs/product/07-execution-guide.md#Verification review and attack`",
       "Read: `@verification-reports`",
       "Independent verifiers use `xhigh`, not `max`. A verifier launch may cap provider spend at USD 5 when its transport exposes a hard dollar-cap control; otherwise report the limit as unenforced rather than claiming a cap.",
       evidence,
-      "Consume the executor's recorded passing `npm test` row when its code identity matches the subject; run the gate only to reproduce a finding or when the identity differs, stating which.",
+      "Consume the executor's recorded passing `npm test` row when its code identity matches the subject; run the gate only to reproduce a finding or when the identity differs, stating which. This limits product-gate reruns, never probes.",
       costLine,
       boardedDefect,
       actor,
@@ -158,6 +161,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       productGate,
       costLine,
       boardedDefect,
+      'List every finding once, in one block: a `<!-- dotln-findings:start -->` line, a JSON array of `{"id": "F1", "route": "blocking|follow-up|operator", "class": "escape|integration|new-scope", "summary": "<one line>"}` entries (`[]` for none) and a `<!-- dotln-findings:end -->` line; product 07 §Verification review and attack defines classes. Only that block is counted, so write its marker lines nowhere else. A block that cannot be read, or a class outside the three, advises and never blocks recording.',
       "After the last source edit and intended new source files are staged, run `npm test -- --review` once. This runs the product suites and machinery suites whose own declared sources changed since the base. The passing npm test row is keyed by tracked and non-ignored untracked non-generated code and the shared outward vocabulary; final-review-result carries it in the control event, worktree publish cites it in the PR, and release close consumes it without running a suite. Source changes require affected checks and a new final product gate; report/control/generated-document changes do not.",
       actor,
       "Prepare the contained PR.md and five-section RELEASE-NOTES.md beside the report, using the current publication contract; use one physical line per prose paragraph. Write the PR title as a headline: one clause saying what changed for the reader and why it matters, the lede first, sized by its content and never by the previous title, with no implementation inventory, version list or repeated work-order prose. A relevant gitmoji shortcode belongs in the PR title; commit subjects stay plain and contain no AI attribution.",
@@ -643,6 +647,7 @@ export const contributorProgram = (
   return {
     contractVersion: "harness-v1",
     loadout,
+    worker: { name: "dotln-worker", model: "claude-opus-5-5", effort: "xhigh" },
     roles: contributorRolesFor(loadout),
     facets: [
       permissions,

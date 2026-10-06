@@ -337,6 +337,7 @@ const machinerySources = {
     "packages/skeleton/fixtures/wo195-role-baseline.json",
     "packages/skeleton/fixtures/wo195-integrated-role-baseline.json",
     "packages/skeleton/fixtures/wo186-role-baseline.json",
+    "packages/skeleton/fixtures/wo187-role-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
     "scripts/lib/git.mjs",

@@ -1032,9 +1032,9 @@ proposal packet **in this same pass**. Accepted findings are this pass's
 candidates: they are weighed, sequenced or declined here — in the map, the
 sequence and the orders, each decline carrying its `NoOpIntent` record — not
 queued for a later pass to read. A finding half that a standing operator
-direction reserves for the operator's own pass (the cold-start ceiling route,
-WO-054 D006) stays recorded against that direction rather than overruled
-[REVIEW-002 pass, 2026-09-22]. The generated
+direction reserves for the operator's own pass stays recorded against that
+direction rather than overruled [REVIEW-002 pass, 2026-09-22]; a cold-start
+byte ceiling is no longer one (§Discipline's cold-start ceiling route). The generated
 `docs/planning/entropy-reviews/REVIEW-NNN.md` rows and the follow-up register
 are the durable record of what this pass decided; an item left undecided there
 is an ordinary unresolved register row, not a second planning pass waiting to
@@ -1085,8 +1085,8 @@ remains an alias). The command verifies the committed subject equals the
 workspace and prints the canonical prompt and closed JSON schema. The parent
 spawns one fresh background worker without inherited conversation, supplying
 only that prompt and the shared goal card. In Codex this uses `spawn_agent`
-with `fork_turns: none`; in Claude it uses a fresh background agent on
-`claude-opus-5-5` (the Agent tool's `opus`) at the root's selected effort
+with `fork_turns: none`; in Claude it uses the generated `dotln-worker`
+type pinned to `claude-opus-5-5` at `xhigh`, without a model override
 (§Model-specific notes). The worker
 judges the supplied prompt directly, returns its frozen JSON and a truthful
 single-line statement of at most 4000 characters, and makes no repository or
@@ -1244,7 +1244,11 @@ byte count; a figure in an order filed earlier is the planner's estimate, never
 a bound a role trims reviewed text to meet [2026-09-30 pass; WO-172 theme 14].
 A pass that files or keeps a write-back to a bounded document sets that
 document's ceiling (`docs/control/doc-ceilings.json`) to cover it and cites its
-planning document. A duty an order owes beyond its criteria (a carry-in, a
+planning document. When the operator makes bytes a goal and boards an overrun,
+the entry may name an `advisoryDecision` in public evidence with a current
+unresolved registered follow-up; the check reports the exact overrun without
+raising its ceiling or exempting bytes. Remove that reference when the useful
+text fits. A duty an order owes beyond its criteria (a carry-in, a
 boarded item it takes, a known issue an earlier receipt named) is written in
 that order under `Known issues and carry-ins`; a known issue from the pass's
 own receipt, which finds the order frozen, goes on its catalog row until a
@@ -1518,6 +1522,104 @@ recommendation at its source and regenerate rather than editing checkboxes.
 The local source worktree can describe staged work while main still describes
 the last merged source. Label that distinction instead of making either view
 claim evidence or releases it does not have.
+
+## Verification review and attack
+
+Verification is the implementation review and attack before final acceptance
+[[WO-187](../work-orders/WO-187-verification-attacks-and-reviews.md)]. Run these
+three duties in order; choose relevant lenses and state why in the report.
+
+1. **Attack the change.** Judge every original criterion and reproduce its
+   consequential claims. Vary what executor fixtures held constant: empty,
+   forged or stale inputs and records; working directory; a member outside
+   the declared list or vocabulary; a second or repeated token; the real
+   corpus instead of a fixture; and paths introduced by a repair. Name tried
+   variations and explain those that do not apply. Consuming the executor's
+   passing product-gate row limits product-gate reruns, never independent
+   probes or affected checks. Check earlier findings as well.
+2. **Review the implementation.** Read the whole subject diff, asking whether
+   it is correct beyond the named criteria, whether a simpler alternative
+   holds the same contract, what a maintainer will not understand in six
+   months, and whether it fits repository principles and the platform lens
+   in §Goal-aligned decisions. Propose improvements with concrete evidence.
+3. **Use one fresh adversary.** Where the host can spawn, give a fresh worker
+   only the work order and diff, with no executor narrative, inherited
+   conversation or prior review conclusions. Use the pin in §Model-specific
+   notes and judge its findings yourself. Without spawning, make the pass
+   a separate step and disclose that limit. Never delegate the verdict.
+
+Every finding takes a route: `blocking` for a defect in the order's declared
+surfaces (fail the verdict); `follow-up` for a boarded item with reproduction;
+or `operator` for a decision packet that names the choice only the operator
+can make, evidence, alternatives and consequence. Maintainability alone is
+a follow-up unless it hides a defect. §Discipline's Adjacent Repair boundary
+still applies. The verifier writes evidence and its immutable report, never
+the implementation it judges.
+
+On re-verification, re-derive every criterion whose surfaces the repair diff
+touches and attack the repair itself. Carry untouched claims with their
+original evidence; an earlier passing fixture is not evidence for a changed
+path.
+
+The verify briefing prints every `Known issues and carry-ins` section of the
+order as written, under a header naming its label's line, the last line
+printed and the line that ended it, then the latest filed planning judgment
+naming that order's known issues. It reads the order line by line,
+and structure counts only at the start of a line: anything indented or behind
+a list or quote marker is text. A section starts at that field's label
+(`**Known issues and carry-ins:**`, `**Known issues and carry-ins**:`, the
+bold name alone on its line, or a heading of that name). It ends before the
+next heading at its level or above (any heading, under a bold label) or the
+next order-field label that follows a blank line; a field label on a line
+that continues a paragraph is that paragraph's text. A line that starts with
+three backticks or tildes opens a fence, closed by a line of that character
+at least as long, and no label or field is read inside one. The briefing
+advises on an empty section, on a fence the order never closes and on any
+other line outside a section whose first letters are `Known issue`.
+
+| Lens | Question | Suitable changes |
+| --- | --- | --- |
+| Correctness and tests | What input or transition disproves the claim, and does its test fail? | All orders; especially state, parsers and repair |
+| Design and coupling | Is there a simpler implementation with the same contract and fewer coupled parts? | APIs, machinery and architecture |
+| Platform fit | Is the capability a consumable, externalizable interface used here and understandable outside this session? | New capabilities and artifacts |
+| Operator flow | Can a person finish the task and recover without another routing ritual? | CLI, lifecycle, UI and handoffs |
+| Authority and private data | Do effects stay authorized and public data stay separate from private inputs? | Hosts, writes, transport and publication |
+| Maintainer in six months | Can the next maintainer explain the rule and change it safely? | Every nontrivial implementation |
+
+The executor uses the same fresh order-and-diff adversary as an improver before
+`implementation-ready` and `repair-complete`, fixes or records every finding,
+and writes a line in `handoff.md` that starts `self-review: found N; fixed N;
+recorded N`, then names the worker or separate-pass fallback and its evidence.
+A list marker may precede the line; no other form is the line. Absence advises
+once and never refuses completion. A line does not prove a review occurred.
+
+Final review retains all its duties. Its report lists every finding once, in
+one block: a `<!-- dotln-findings:start -->` line, a JSON array and a
+`<!-- dotln-findings:end -->` line. Each entry is
+`{"id": "F1", "route": "blocking", "class": "escape", "summary": "<one line>"}`:
+an id `F1`, `F2` and so on that no other entry has, a route (`blocking`,
+`follow-up` or `operator`), a class and a one-line summary. A review with no finding writes
+`[]`. The class is `escape` when the defect was present in the verified
+subject and inside verification's instructed review scope; `integration` when
+it arose from integrating main or preparing the release; or `new-scope`
+otherwise. Record the basis for that judgment in the report's prose.
+`final-review-result` reads only that block and never counts a prose line. It
+records the three class counts and `unclassed`; an entry whose class is
+missing or outside the three counts as `unclassed` and is named in one
+advisory. Counts that cannot be complete record as unmeasured, with one
+advisory naming the cause: a report without exactly one block (any other line
+whose only letters are a marker's name is a second copy, an example
+included), a block that is not a JSON array, an entry with a bad or repeated
+id, an unlisted route or no one-line summary, or a failed review whose block
+lists no blocking finding. The result records in every case. `plan failures` shows per-order counts (its export includes every
+order); `plan start` gives escapes per final review across all attempts of
+the ten most recently reviewed orders. Historical events without counts are
+unmeasured, so the rate is unknown until every review in that window is
+measured.
+
+Byte headroom is an operating-cost goal: measure before and after, preserve
+useful duties, and board any overrun for optimization with equivalent
+usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-187-d003--preserve-useful-guidance-and-report-byte-overruns)].
 
 ## Discipline
 
@@ -1839,16 +1941,16 @@ claim evidence or releases it does not have.
   record the parser correction and its end-to-end regression.
 
   The cold-start ceilings in `docs/control/budgets.json` (installed
-  `CLAUDE.md` plus the role skill, per role) have one normal route
-  (operator direction, 2026-09-17): a reviewed rule that breaches a ceiling
-  raises it in the same change by one 4 KB step above the measured bytes
-  with the rule named, or records a dated acceptance for that metric; the
-  breach is never trimmed around, never resolved by cutting another rule,
-  and never left advisory across orders. `npm run meta` reports the verdict;
-  the [WO-044 decision](../evidence/WO-044/decisions.md) of 2026-09-14
-  (caps yield to needed rules, accuracy before efficiency) is the policy,
-  and the [2026-09-17 pass](../planning/vision-into-use-2026-09-17.md) §10
-  records the two acceptances made under it.
+  `CLAUDE.md` plus the role skill, per role) have one route (operator
+  direction, 2026-10-05, §Verification review and attack): a reviewed rule
+  that breaches a ceiling stays whole, and its measured overrun is boarded
+  as a follow-up for optimization with equivalent usefulness. No ceiling is
+  raised, no acceptance is recorded, no needed rule is cut to fit, and no
+  byte count is put to the operator. `npm run meta` reports the verdict. The
+  2026-09-17 route (a 4 KB raise or a dated acceptance) is retired; the
+  [WO-044 decision](../evidence/WO-044/decisions.md) (caps yield to needed
+  rules) and the [2026-09-17 pass](../planning/vision-into-use-2026-09-17.md)
+  §10 record the acceptances made under it.
 
   WO-054 raises the executor ceiling to 24,576 bytes and release-close to
   16,384 bytes for the shared advisory-boundary and Codex continuation rule
@@ -2248,9 +2350,17 @@ declaration, not an enforced cap, and must be reported that way.
 Spawned agents run the operator's pinned models (direction of 2026-09-30): a
 worker, reviewer, refuter, live episode or probe that a session launches runs
 Codex `gpt-6.1-sol` at `max` or Claude Code `claude-opus-5-5` at `xhigh`.
-Claude Code's Agent tool selects the model (`opus`) and no effort, so a spawned
-Claude agent inherits the root session's selected effort; a root that spawns
-runs at `xhigh`. Compiled defaults and probes that still name `gpt-6-sol` or
+Claude workers use the generated `.claude/agents/dotln-worker.md` type:
+`model: claude-opus-5-5` and `effort: xhigh`. Launch Agent with
+`subagent_type: dotln-worker` and no per-call model override; its definition's
+effort overrides the root's effort. The host's [subagent documentation](https://code.claude.com/docs/en/sub-agents)
+documents both fields, per-call model precedence and `/tasks` model/effort
+readback (checked 2026-10-05). Codex workers use `spawn_agent` with
+`fork_turns: none`, `model: gpt-6.1-sol`, `reasoning_effort: max`; use the same
+pin for adversaries, reviewers, refuters and research. Generated-definition
+and call arguments are launch selections, never proof of effective effort.
+Report the host's readback or that it reports none; a root's own selection
+does not decide the worker's. Compiled defaults and probes that still name `gpt-6-sol` or
 `claude-fable-5` are WO-177's; the attestation records what ran.
 
 - Required attestation fields, `unknown`, Codex thread readback, the

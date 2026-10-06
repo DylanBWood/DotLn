@@ -288,7 +288,11 @@ resume: verify
 ```
 
 The phrase allocates the immutable `VER-NNN` path and prints the authoritative
-work-order path. The verifier runs the acceptance evidence, writes only that
+work-order path, its `Known issues and carry-ins`, and the latest filed
+planning receipt's known issues for that order. Following product 07
+§Verification review and attack, the verifier attacks the change, reviews
+the whole implementation and uses one fresh pinned adversary, choosing and
+naming relevant lenses. The verifier runs the acceptance evidence, writes only that
 report, and records `pass` or `fail`; it does not repair its own findings.
 It runs the product gate when useful, not as a prerequisite to `verification-result`.
 Its report remains immutable even when later bookkeeping changes the exact tree.

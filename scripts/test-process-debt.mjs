@@ -5979,7 +5979,7 @@ test("meter diff bytes include newly authored untracked source", (t) => {
   );
 });
 
-test("WO-145 optional economy support preserves historical snapshots through WO-186 and changes only executor instructions on", () => {
+test("WO-145 optional economy support preserves historical snapshots through WO-187 and changes only executor instructions on", () => {
   const historical = JSON.parse(
     readFileSync(
       join(source, "packages/skeleton/fixtures/wo145-role-baseline.json"),
@@ -5993,10 +5993,11 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
   // WO-157, WO-158, WO-161, WO-166, WO-168, WO-173 and WO-179 shared role edits
   // follow the same route. The integrated oracle preserves both WO-185's
   // upstream snapshot and WO-195's original planner/release-close snapshot.
-  // WO-186's default-root record admission preserves that integrated snapshot.
+  // WO-186's default-root record admission preserves that integrated snapshot;
+  // WO-187's review duties and worker pin preserve WO-186 in turn.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo186-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo187-role-baseline.json"),
       "utf8",
     ),
   );

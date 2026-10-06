@@ -1,0 +1,37 @@
+{
+  "workOrder": "WO-187",
+  "historicalBaseline": "wo186-role-baseline.json",
+  "historicalSha256": "76d76464517128ca521fad7365b7100c5359cd1ce756fe365e47748fd78606a9",
+  "upstreamBaseline": "wo185-role-baseline.json",
+  "upstreamSha256": "f67e48b79873202b56c069902f2338d54b1fef42d3c9eb29706d3d2cd7a72ef9",
+  "method": "Current default and economy opt-out role hashes after WO-187 authorizes verifier attack/full review/fresh adversary, executor self-review, finding classes and the explicit claude-opus-5-5/xhigh worker launch pin. All historical snapshots remain byte-exact; opt-out still removes only the executor economy paragraph apart from origin metadata.",
+  "decision": "docs/evidence/WO-187/decisions.md#wo-187-d011--preserve-historical-role-oracles-and-pin-the-authorized-current-instructions",
+  "roles": {
+    ".agents/skills/dotln-executor/SKILL.md": "f62b617d069e53c75c3b15ac8ad12f3977696d09f9e993370811120c5ce08fda",
+    ".agents/skills/dotln-planner/SKILL.md": "24e74e04a77bf10a82e548c174f20e5272f08748b0d1e0c8de20c68b22a455eb",
+    ".agents/skills/dotln-refuter/SKILL.md": "b71e66078f8770ee7a5114e33cb58c2a87ff18b06eb036e25cb865412742e73d",
+    ".agents/skills/dotln-release-close/SKILL.md": "c55e52c9c55783a48df14ad8a6ef2e64d26543a5f1971b41cb399bd8e4d740c1",
+    ".agents/skills/dotln-reviewer/SKILL.md": "22e87bdeae10f2d2d59910fa84a67c78e0a782cc561d637015bd9f53bbb15533",
+    ".agents/skills/dotln-verifier/SKILL.md": "d19ac8251e51fa290c2d98cbee465f50d1b0d4b3748b96bf4f6055646f9d21b2",
+    ".claude/skills/dotln-executor/SKILL.md": "f62b617d069e53c75c3b15ac8ad12f3977696d09f9e993370811120c5ce08fda",
+    ".claude/skills/dotln-planner/SKILL.md": "24e74e04a77bf10a82e548c174f20e5272f08748b0d1e0c8de20c68b22a455eb",
+    ".claude/skills/dotln-refuter/SKILL.md": "b71e66078f8770ee7a5114e33cb58c2a87ff18b06eb036e25cb865412742e73d",
+    ".claude/skills/dotln-release-close/SKILL.md": "c55e52c9c55783a48df14ad8a6ef2e64d26543a5f1971b41cb399bd8e4d740c1",
+    ".claude/skills/dotln-reviewer/SKILL.md": "22e87bdeae10f2d2d59910fa84a67c78e0a782cc561d637015bd9f53bbb15533",
+    ".claude/skills/dotln-verifier/SKILL.md": "d19ac8251e51fa290c2d98cbee465f50d1b0d4b3748b96bf4f6055646f9d21b2"
+  },
+  "optOutRoles": {
+    ".agents/skills/dotln-executor/SKILL.md": "4a4306e5e86bbbb1c6cbf88efd63a624a5a01d9440887278950d5aac55dc703b",
+    ".agents/skills/dotln-planner/SKILL.md": "c317fb9a0c0349f098da9bcd47bd8785cf497695945d14fcb2a68bb081b506b9",
+    ".agents/skills/dotln-refuter/SKILL.md": "5b962cc0ae72cb07f7e4f14d501528beafd7b2da7adc1f2c85d95b8f1880e9cd",
+    ".agents/skills/dotln-release-close/SKILL.md": "f67f9d5879aba0c1c8c5568aca1e5b5cf094b450be7a60d9d3a93d16e61888d0",
+    ".agents/skills/dotln-reviewer/SKILL.md": "8f039c6ebfcfc5b06bc7b30c47c1d880db92bf0291b2facfa12c6cf8ec43c117",
+    ".agents/skills/dotln-verifier/SKILL.md": "65c2e135a8fbd3a9f0eed3866e8cc4a46ef2837c60bbbf5839daf85d59165cd8",
+    ".claude/skills/dotln-executor/SKILL.md": "4a4306e5e86bbbb1c6cbf88efd63a624a5a01d9440887278950d5aac55dc703b",
+    ".claude/skills/dotln-planner/SKILL.md": "c317fb9a0c0349f098da9bcd47bd8785cf497695945d14fcb2a68bb081b506b9",
+    ".claude/skills/dotln-refuter/SKILL.md": "5b962cc0ae72cb07f7e4f14d501528beafd7b2da7adc1f2c85d95b8f1880e9cd",
+    ".claude/skills/dotln-release-close/SKILL.md": "f67f9d5879aba0c1c8c5568aca1e5b5cf094b450be7a60d9d3a93d16e61888d0",
+    ".claude/skills/dotln-reviewer/SKILL.md": "8f039c6ebfcfc5b06bc7b30c47c1d880db92bf0291b2facfa12c6cf8ec43c117",
+    ".claude/skills/dotln-verifier/SKILL.md": "65c2e135a8fbd3a9f0eed3866e8cc4a46ef2837c60bbbf5839daf85d59165cd8"
+  }
+}

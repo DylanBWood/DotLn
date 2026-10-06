@@ -46,6 +46,7 @@ const allowed = (path) =>
   path === ".codex/config.toml" ||
   path === ".codex/hooks.json" ||
   path === manifestPath ||
+  /^\.claude\/agents\/dotln-[a-z-]+\.md$/.test(path) ||
   /^\.(?:claude|agents)\/skills\/dotln-[a-z-]+\/SKILL\.md$/.test(path) ||
   /^\.(?:claude|codex)\/hooks\/[a-z0-9.-]+\.mjs$/.test(path);
 const contained = (root, path) => {
@@ -224,7 +225,11 @@ const walkOwned = (root) => {
     ? JSON.parse(readFileSync(manifest, "utf8"))
     : null;
   for (const file of previous?.installed ?? [])
-    if (file.path.startsWith(".codex/") && existsSync(join(root, file.path)))
+    if (
+      (file.path.startsWith(".codex/") ||
+        file.path.startsWith(".claude/agents/")) &&
+      existsSync(join(root, file.path))
+    )
       paths.push(file.path);
   for (const skills of [".claude/skills", ".agents/skills"])
     if (existsSync(join(root, skills)))

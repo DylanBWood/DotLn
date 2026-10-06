@@ -415,6 +415,40 @@ test("WO-039 profile observations, authority identity and bounded residue refuse
   assert.ok(!fallback.files.some((file) => file.path.endsWith(".mjs")));
 });
 
+test("WO-187 a worker definition pins model and effort independently of its root and participates in bundle integrity", () => {
+  const input: HarnessProgram = {
+    ...program,
+    worker: { name: "dotln-worker", model: "claude-opus-5-5", effort: "xhigh" },
+  };
+  const bundle = lower(input);
+  const worker = bundle.files.find(
+    (file) => file.path === ".claude/agents/dotln-worker.md",
+  )!;
+  assert.ok(worker);
+  assert.match(worker.contents, /^model: claude-opus-5-5$/m);
+  assert.match(worker.contents, /^effort: xhigh$/m);
+  assert.equal(verifyHarnessBundle(bundle), true);
+  for (const [before, after] of [
+    ["model: claude-opus-5-5", "model: inherit"],
+    ["effort: xhigh", "effort: low"],
+  ]) {
+    const edited = {
+      ...bundle,
+      files: bundle.files.map((file) =>
+        file.path === worker.path
+          ? { ...file, contents: file.contents.replace(before!, after!) }
+          : file,
+      ),
+    };
+    assert.equal(verifyHarnessBundle(edited), false);
+  }
+  assert.notEqual(
+    lower({ ...input, worker: { ...input.worker!, effort: "low" } }).manifest
+      .loadout.targetHash,
+    bundle.manifest.loadout.targetHash,
+  );
+});
+
 test("WO-132 both harness roles receive identical duties and the shared instruction includes missing-hook residue", () => {
   const availableBundle = lower();
   const unavailable = {
