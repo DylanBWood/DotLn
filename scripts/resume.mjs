@@ -10,6 +10,8 @@ import {
 } from "node:fs";
 import { createHash } from "node:crypto";
 import { createCheckpoint } from "./lib/checkpoint.mjs";
+import { findingsAdvisory, reviewFindings } from "./lib/review-findings.mjs";
+import { verificationKnownIssues } from "./lib/verification-briefing.mjs";
 import { dirname, join, posix, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -1074,7 +1076,7 @@ const executionBriefing = (state) => {
 const repairBriefing = (state) =>
   `Repair ${state.workOrderPath} using ${state.failureSourcePath}; read both artifacts. ${repairSentence}${ledgerBriefing(state, "repair-complete")}${executorEntryBriefing(repoRoot, state.workOrderId)}`;
 const verificationBriefing = (state, reportPath) =>
-  `Verify ${state.workOrderPath}; write the immutable report to ${reportPath}. ${costLineBriefing}\n${verifySentence}${unmetBriefing(state)}`;
+  `Verify ${state.workOrderPath}; write the immutable report to ${reportPath}. ${costLineBriefing}\n${verifySentence}${unmetBriefing(state)}${verificationKnownIssues(repoRoot, state)}`;
 const finalReviewBriefing = (state, reportPath) =>
   `Final-review ${state.workOrderPath}, the complete verification sequence, and ideation receipt; write ${reportPath}. ${costLineBriefing}\n${defectBoundarySentence} ${offRampSentence} ${operatorMessageSentence} ${gateClaimSentence}${unmetBriefing(state)}`;
 // The advisories and rows the handoff produced ride on the completion's
@@ -1545,14 +1547,28 @@ const run = async (argv) => {
       );
       requireReceiptCostLine(repoRoot, state.finalReviewPath);
       requireCriterionLines(repoRoot, state.finalReviewPath, state, verdict);
+      const findings = reviewFindings(
+        readFileSync(join(repoRoot, state.finalReviewPath), "utf8"),
+        { verdict },
+      );
       const evidence = await requireLifecycleEvidence(
         repoRoot,
         action,
         verdict,
         state.workOrderId,
       );
+      // Only the report's findings block is read. A block that cannot give a
+      // complete count records none, never a lower one; either way one
+      // advisory says so and the result records.
+      const advisory = findingsAdvisory(findings);
+      if (advisory) {
+        const line = `${state.finalReviewPath}: ${advisory} The final-review result records all the same.`;
+        console.warn(`Advisory: ${line}`);
+        evidence.advisories.push(line);
+      }
       appendTransition(action, {
         type: "FinalReviewCompleted",
+        ...(findings.measured ? { findingCounts: findings.counts } : {}),
         ...(evidence ? { evidence } : {}),
         workOrderId: state.workOrderId,
         finalReviewId: state.finalReviewId,

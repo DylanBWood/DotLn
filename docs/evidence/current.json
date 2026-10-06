@@ -1,21 +1,9 @@
 {
   "schemaVersion": 1,
   "editions": {
-    "authority": {
-      "workOrder": "WO-123",
-      "revision": "013"
-    },
-    "artifact-identity": {
-      "workOrder": "WO-123",
-      "revision": "013"
-    },
-    "verification": {
-      "workOrder": "WO-123",
-      "revision": "013"
-    },
-    "feedback": {
-      "workOrder": "WO-123",
-      "revision": "013"
-    }
+    "authority": {"workOrder": "WO-187", "revision": "003"},
+    "artifact-identity": {"workOrder": "WO-187", "revision": "001"},
+    "verification": {"workOrder": "WO-187", "revision": "001"},
+    "feedback": {"workOrder": "WO-187", "revision": "003"}
   }
 }

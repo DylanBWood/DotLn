@@ -11866,6 +11866,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-05T21:05:23.473Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "targets": [],
+          "reason": "Kept open by WO-187's final review with a new measurement and a changed route. The worker-pin sentence and the review duties add 299 to 805 bytes per role: executor 29,777 of 29,246 (531 over, boarded on FUP-8ce4b4b0104ba41b), verifier 26,077 of 29,831, reviewer 27,882 of 28,884, release-close 18,485 of 21,266, planner 20,303 of 24,576. Product 07 now retires the 4 KB raise and the dated acceptance: a breach is boarded for optimization with equivalent usefulness.",
+          "reopenWhen": null,
+          "at": "2026-10-06T14:39:38.336Z"
         }
       ]
     },
@@ -12150,6 +12158,14 @@
           "reopenWhen": "a snapshot that fails to load a reachable module, or the next order that changes the bundle's shape",
           "targets": [],
           "at": "2026-09-28T03:29:45.906Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "WO-187 D009 observes the recorded bundle-shape trigger: the optional worker contract and generated .claude/agents/dotln-worker.md increase the bundle from 32 to 33 surfaces. Reopen the existing runtime import-closure pin-list candidate for planning. The runtimeFiles list is unchanged and harness check passes; no missing runtime module is claimed.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-05T21:56:15.018Z"
         }
       ]
     },
@@ -22801,6 +22817,16 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:34.698Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "targets": [
+            "WO-188"
+          ],
+          "reason": "Retargeted at WO-187's close, as its 2026-10-02 allocation said. WO-187 delivered its part: verification now reviews every implementation for a simpler alternative, and the executor's fresh adversary reads the diff as an improver (WO-187 FINAL-001). What remains is WO-188 item 22, which makes the economy experiment follow a fork the work shows.",
+          "reopenWhen": "WO-188 is withdrawn or closes with item 22 undone, or verification reports repeatedly fail to consider a credible simpler alternative.",
+          "at": "2026-10-06T14:39:37.385Z"
         }
       ]
     },
@@ -23437,6 +23463,14 @@
             "WO-187"
           ],
           "at": "2026-10-02T06:02:34.736Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "targets": [],
+          "reason": "Returned to open at WO-187's close, as its 2026-10-02 allocation said. Delivered by WO-187: one fresh adversary at every executor completion and in every verification whether or not the workflow mode is on, launched through a generated worker definition with the pinned model and effort. Remaining from WO-065-D008: the personal delegation profile of product 05, with its enabled-mode floor of three meaningful contributions, setting readback and evidence for both modes. WO-187-D051 boards a related item, a separate principal-engineer improver sub-agent.",
+          "reopenWhen": null,
+          "at": "2026-10-06T14:39:37.441Z"
         }
       ]
     },
@@ -28646,6 +28680,508 @@
           "reopenWhen": "WO-118 is planned or activated, WO-112 runs a live Claude writer, or one of the five named conditions occurs in a run",
           "targets": [],
           "at": "2026-10-05T23:20:54.641Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8ce4b4b0104ba41b",
+      "key": "decision:docs/evidence/WO-187/decisions.md#wo-187-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4ad6695024f7e946c4ea902555d632714dc5f36585246a58534161cfac53e8ec",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d005--retain-useful-executor-duties-and-board-the-506-byte-overrun",
+          "title": "WO-187-D005: Reduce the executor's 506-byte cold-start overrun with equivalent usefulness: compare source instructions in packages/skeleton/src/loadouts/contributor.ts and generated .agents/skills/dot",
+          "summary": "{ \"id\": \"WO-187-D005\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: next; operator direction during execution\", \"decision\": \"Keep the worker pin and fresh self-review instructions. Record the executor's measured 506-byte ceiling overrun as a follow-up, without a ceiling acceptance or usefulness-reducing edits.\", \"evidence\": [ \"cold-start-before.json and cold-start-after.json measure all twelve installed role roots, including CLAUDE.md, before and after regeneration.\", \"Both executor roots move from 29,237 to 29,752 bytes, +515, against 29,246: 506 bytes over. Both verifier roots move from 25,735 to 26,052 (+317) against 29,831; reviewer 27,077 to 27,616 (+539) against 28,884; release-close 18,",
+          "missing": false
+        },
+        {
+          "hash": "746ad3a48e79d743471116eb3844e6c136d7841b251218c83a2e4cd55d3db074",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d005--retain-useful-executor-duties-and-board-the-531-byte-overrun",
+          "title": "WO-187-D005: Reduce the executor's 531-byte cold-start overrun with equivalent usefulness: compare source instructions in packages/skeleton/src/loadouts/contributor.ts and generated .agents/skills/dot",
+          "summary": "{ \"id\": \"WO-187-D005\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: next; operator direction during execution\", \"decision\": \"Keep the worker pin and fresh self-review instructions. Record the executor's final measured 531-byte ceiling overrun as a follow-up, without a ceiling acceptance or usefulness-reducing edits.\", \"evidence\": [ \"cold-start-before.json and cold-start-after.json measure all twelve installed role roots, including CLAUDE.md, before and after regeneration.\", \"Both executor roots move from 29,237 to 29,777 bytes, +540, against 29,246: 531 bytes over. Both verifier roots move from 25,735 to 26,077 (+342) against 29,831; reviewer 27,077 to 27,641 (+564) against 28,884; release-clo",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Operator direction during WO-187 resume: next: preserve useful review guidance and add any byte overrun as a follow-up. D005 measures executor 29,752 against 29,246, 506 bytes over in both roots; optimize with equivalent usefulness and preserve every duty.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-05T21:33:33.160Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "Operator direction during WO-187 resume: next: preserve useful review guidance and add any byte overrun as a follow-up. D005 finally measures executor 29,777 against 29,246, 531 bytes over in both roots, including explicit Claude opus 5.5/xhigh launch text; optimize with equivalent usefulness and preserve every duty.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-05T21:42:37.623Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0a7c93eed06727ce",
+      "key": "decision:docs/evidence/WO-187/decisions.md#wo-187-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "94708b8ac48fd1551cdb0df914ca1b1aa7b178bc7ce22c589625bd1e53156300",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d013",
+          "title": "WO-187-D013: Optimize docs/product/07-execution-guide.md with equivalent usefulness. The document gate first measured 172,622 bytes against 166,907, 5,715 over; rerun node scripts/docs-check.mjs for t",
+          "summary": "{ \"id\": \"WO-187-D013\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: next; operator direction during execution\", \"decision\": \"Apply the operator's byte-headroom direction to the execution-guide write-back: retain its existing 166,907-byte ceiling and useful review detail, mark only its overrun advisory through a resolving public decision with an unresolved registered follow-up, and keep all other document checks and ceiling-raise rules.\", \"evidence\": [ \"The operator directed that byte headroom is a goal rather than a hard criterion, that reducing usefulness to reduce bytes is useless, and that an overrun becomes a follow-up. D003 binds this direction for the role roots; the same direction appli",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Operator direction during WO-187 resume: next makes byte headroom a goal and boards overruns. Preserve the useful execution-guide review detail and its 166,907-byte ceiling; expose the exact overrun as an advisory linked to D013 while the equivalent-usefulness optimization remains open.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-05T22:14:39.663Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "targets": [],
+          "reason": "Kept open with a new measurement. After integrating main, whose WO-123 review set the ceiling to 168,083 bytes, product 07 measures 175,881 non-exempt bytes, 7,798 over, and reports as an advisory through this row. The advisory holds only while this row is open or deferred; allocating or settling it before the text fits returns the hard failure.",
+          "reopenWhen": null,
+          "at": "2026-10-06T14:39:38.282Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-82e9f0bda503c40c",
+      "key": "decision:docs/evidence/WO-187/decisions.md#wo-187-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cf879b95983ec217fe40cb136f4aa4122f8678563cdedfe2e62daf62bbf71ad9",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d020--board-the-class-label-and-maintainability-follow-ups",
+          "title": "WO-187-D020: Tolerate natural class-label endings in scripts/lib/review-findings.mjs (take the first class token before punctuation, a parenthesis or a dash; read a bold label), with fixtures for each",
+          "summary": "{ \"id\": \"WO-187-D020\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: verify (VER-001)\", \"decision\": \"Board VER-001's low-severity class-label and maintainability items rather than add them to the repair.\", \"evidence\": [ \"Class labels: a class followed by its basis without a semicolon ('class: escape.', 'class: escape (inside criterion 2's surface)', 'class: escape — ...', '**class:** escape') counts as unclassed. It is advised only for a blocking finding, so a follow-up finding on a passing review drops out of the escape count silently. Reproduction: VER-001's variant probe over scripts/lib/review-findings.mjs.\", \"Worker pin: the Claude and Codex pins appear as literal role text in packages/ske",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "targets": [],
+          "reason": "Kept open and narrowed at WO-187's close; the prepared decline would have dropped items that still hold. Withdrawn: the class-label endings, since no prose line is read for counts now. Remaining, each confirmed at final review: the worker pin is written in the role text and in the worker constant with nothing comparing them; the Claude worker type shares its name with the Codex permission profile and restricts no tools; the compiler's worker-name pattern admits digits and the installer's agent-path pattern does not; plan failures shows escapes 0 for an order whose reviews are all unmeasured.",
+          "reopenWhen": null,
+          "at": "2026-10-06T14:39:37.705Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-cde72b7860c03c18",
+      "key": "decision:docs/evidence/WO-187/decisions.md#wo-187-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "dfa2c593fa3daee82f6ec56242dd7dc6aafd7b04f578f59fdb1f87b9297e3b20",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d021--board-an-intermittent-off-ramps-fixture-failure",
+          "title": "WO-187-D021: Find why scripts/test-off-ramps.mjs's checkpoint correction case (around line 787) can see event 2 carrying refs/dotln/checkpoint/WO-099/1. Run the off-ramps fixture repeatedly in isolati",
+          "summary": "{ \"id\": \"WO-187-D021\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: verify (VER-001 completion)\", \"decision\": \"Board an intermittent failure of the resume document suite in scripts/test-off-ramps.mjs, observed once by the verification-result completion's inline npm run test:docs, with its cause unknown.\", \"evidence\": [ \"The first verification-result fail attempt ran the inline document gate and refused: 28 passed, 1 failed (resume, 6.78 s), 93.12 s. Its check output failed at scripts/test-off-ramps.mjs:787 on the refusal of 'correct 2 --set checkpointRef=refs/dotln/checkpoint/WO-099/1 --set checkpointSha=000…'. It expected /checkpoint refs\\\\/dotln\\\\/checkpoint\\\\/WO-099\\\\/1 resolves to [0-9a-f]",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "targets": [],
+          "reason": "Open: the off-ramps fixture failure was observed once, during VER-001's completion, and its cause is unknown (WO-187-D021).",
+          "reopenWhen": null,
+          "at": "2026-10-06T14:39:38.072Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d5605723a86254eb",
+      "key": "decision:docs/evidence/WO-187/decisions.md#wo-187-d023",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fb1dfc86f7e23841c738cd74c1afb79cdb28f8f4204b04adb014b973130ecb91",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d023--guard-the-beacon-portability-fixture-against-gits-detached-repack-and-board-the-sweep",
+          "title": "WO-187-D023: Set maintenance.auto=false (git config in the fixture repository, or -c maintenance.auto=false on clone) in every test fixture that commits to a temporary Git repository and later removes",
+          "summary": "{ \"id\": \"WO-187-D023\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: fix (VER-001); Adjacent Repair\", \"decision\": \"Set maintenance.auto=false in scripts/test-beacon-portability.mjs's fixture repository, the guard other fixtures already carry, and board the sweep of the other fixtures that commit and then remove a temporary repository without it.\", \"evidence\": [ \"The repair's first npm test -- --review run (2026-10-06T00:26:09Z, 880.12 s, 88 fresh tasks) passed 37 suites and failed beacon-portability in its after hook: rmSync ENOTEMPTY on the fixture's temporary directory. The test body passed.\", \"In isolation the suite failed 3 of 6 runs at the repaired worktree, and 2 of 6 with refs/dotln/chec",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "targets": [],
+          "reason": "Open: beacon-portability carries the guard and passed this final review's gate. The sweep of the other 22 fixtures named in WO-187-D023 is unmeasured.",
+          "reopenWhen": null,
+          "at": "2026-10-06T14:39:38.126Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-57c781f9462cd31b",
+      "key": "decision:docs/evidence/WO-187/decisions.md#wo-187-d024",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b8709eb4a886f2a3871fbcf87809eef89b51cd9e2df8069088821a28d354e56c",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d024--fix-the-repairs-self-review-findings-and-board-the-two-left",
+          "title": "WO-187-D024: In scripts/lib/review-findings.mjs, read a counted line's class value as D020's follow-up (FUP-82e9f0bda503c40c) describes, adding the forms class: escape in inline code and (blocking, cl",
+          "summary": "{ \"id\": \"WO-187-D024\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: fix (VER-001); executor self-review\", \"decision\": \"Fix ten of the fresh adversary's twelve items in the repair diff; board the class-value forms with D020's follow-up and the bold-label-then-subheading briefing case.\", \"evidence\": [ \"One fresh dotln-worker (Claude Code, launched by type with no model override; the host reported no worker model or effort) read only the order and the repair diff against refs/dotln/checkpoint/WO-187/5, ran bounded probes in session scratch and wrote no repository file. It reported 1 blocking defect, 7 should-fix items and nits: 12 numbered items.\", \"Fixed and reproduced in scripts/test-verificati",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "targets": [],
+          "reason": "Its class forms concerned a prose finding line, which is no longer read. Its briefing case, a bold Known issues label followed directly by a sub-heading, is a stated boundary that draws the empty-section advisory and is pinned by a fixture row (WO-187-D044).",
+          "reopenWhen": "An order writes carry-ins under a sub-heading of a bold Known issues label, or a finding's class is again read from prose.",
+          "at": "2026-10-06T14:39:37.756Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d46dde0ef39e0048",
+      "key": "decision:docs/evidence/WO-187/decisions.md#wo-187-d025",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a2a6d86a1300ecbefbd14c61d9c10f3ef374a56679e061c720fedd940f40838d",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d025--re-verification-reproduces-incomplete-measurements-and-a-briefing-formatting-defect",
+          "title": "WO-187-D025: Repair WO-187 VER-002 F1, F2 and R1 under the three rules above in scripts/lib/review-findings.mjs, scripts/lib/verification-briefing.mjs and their existing lifecycle fixture; cover the s",
+          "summary": "{ \"id\": \"WO-187-D025\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: verify (VER-002)\", \"decision\": \"Fail VER-002 on criteria 2 and 4. F1 and F2 are medium-severity defects in the repaired shared line reader and completeness detector; R1 is a low-severity briefing presentation defect within the same declared surface. Return all three to the order's bounded repair, preserving report recording and the existing class-value follow-ups.\", \"evidence\": [ \"verification-002/container-fence.json: a FinalReviewCompleted fixture run from its docs subdirectory records escape 0 and integration 1, with no count advisory, although the report has one of each. A quoted fenced example ends at its containing block",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "targets": [],
+          "reason": "The repair it named was delivered and judged as VER-003's subject, and the readers it concerned were then replaced under WO-187-D039.",
+          "reopenWhen": "FUP-dd7caa31b91f2e70 reopens.",
+          "at": "2026-10-06T14:39:37.600Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c3cc1f043b44f257",
+      "key": "decision:docs/evidence/WO-187/decisions.md#wo-187-d032",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8e9cbeeb48bcd51b4e328c9ffad1db248d078165dad0f2159eb0f66c92011488",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d032--re-verification-finds-a-repair-introduced-silent-loss-across-inline-code-spans",
+          "title": "WO-187-D032: Repair WO-187 VER-003 F1, R1, R2 and R3 under the four rules above in scripts/lib/review-findings.mjs, scripts/lib/verification-briefing.mjs, scripts/resume.mjs or packages/skeleton/src/l",
+          "summary": "{ \"id\": \"WO-187-D032\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: verify (VER-003)\", \"decision\": \"Fail VER-003 on criteria 2 and 4. F1 is a medium-severity defect the VER-002 repair introduced in the shared example projection: a backtick left unmatched on one physical line pairs with a backtick on the next line of the same paragraph and silently hides a real finding, carry-in label or self-review line. R1, R2 and R3 are low-severity defects in the same declared surfaces and go to the same bounded repair through Adjacent Repair. Preserve result recording, the fixed repairs of VER-002 and the existing class-value follow-up.\", \"evidence\": [ \"verification-003/reader-regressions.json: '**Finding ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "targets": [],
+          "reason": "The repair it named was delivered and judged as VER-004's subject, and the readers it concerned were then replaced under WO-187-D039.",
+          "reopenWhen": "FUP-dd7caa31b91f2e70 reopens.",
+          "at": "2026-10-06T14:39:37.653Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0e62f2c7cfd0ed54",
+      "key": "decision:docs/evidence/WO-187/decisions.md#wo-187-d033",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7d097e0d5153a857b79e3ca5ac16fa6d4a391e7118e3ceae2278657e2d43c145",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d033--board-a-bound-on-the-document-ceiling-advisory-route",
+          "title": "WO-187-D033: Bound the document-ceiling advisoryDecision route in scripts/docs-check.mjs: record the overrun (or the measured bytes) at boarding in docs/control/doc-ceilings.json and fail growth beyon",
+          "summary": "{ \"id\": \"WO-187-D033\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: verify (VER-003); fresh adversary finding\", \"decision\": \"Board the uncapped advisoryDecision route in scripts/docs-check.mjs as a follow-up. It serves D013's operator-directed byte goal, criterion 6 does not depend on it, and it does not change a criterion's judgment.\", \"evidence\": [ \"scripts/docs-check.mjs advisoryByteFollowup admits an over-ceiling document as an ADVISORY for any overrun size while the decision's follow-up is open or deferred. Nothing compares the current overrun with the one boarded. Product 07's overrun has grown under it from 5,715 bytes (D013) to 7,696 (D031) during this order's repairs.\", \"The route dep",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "targets": [],
+          "reason": "Kept open at WO-187's close. After integration product 07 is 7,798 bytes over its 168,083-byte ceiling and reports as an advisory. WO-187 FINAL-001 adds, from its fresh adversary: the advisory accepts any evidence decision with an open follow-up, with no tie to the document it excuses and no planning decision (WO-187-D052).",
+          "reopenWhen": null,
+          "at": "2026-10-06T14:39:37.914Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3f9d788f4d8c89ac",
+      "key": "decision:docs/evidence/WO-187/decisions.md#wo-187-d034",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "42f418ccb02b12dcd63fe53d216dfb9bb498406a08fe83b1041333ad2fd02a8f",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d034--board-the-remaining-low-reader-advisory-and-planning-count-observations",
+          "title": "WO-187-D034: Tolerate common self-review forms (emphasised counts, a code-formatted label, a parenthetical worker before the colon) in scripts/lib/handoff-ledger.mjs. In scripts/lib/review-findings.mj",
+          "summary": "{ \"id\": \"WO-187-D034\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: verify (VER-003); fresh adversary findings\", \"decision\": \"Board the adversary's low-severity observations that break no criterion and fall outside D032's repair rules, each with its reproduction.\", \"evidence\": [ \"Self-review forms (adversary-reproductions.json): 'self-review: **found 2**; ...', 'self-review: _found_ 2', '- `self-review:` found 2' and 'Self-review (dotln-worker): found 2; ...' each draw the 'lacks a self-review: line' advisory; the canonical form does not. Advisory only. The receipt's criterion-3 known issue already covers a present line not proving a review.\", \"Finding reader: a quoted earlier finding '> **Fin",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "targets": [],
+          "reason": "Kept open and narrowed at WO-187's close. Done by the VER-004 repair: the advisory on a singular label. Withdrawn by D039's formats: the tolerant self-review forms and the finding reader's quote, comment and indented-code items. Remaining: the fallback for a receipt without a receiptId, a passing review's integration or new-scope counts listed as a failure item, and the agent-path pattern in scripts/lib/harness.mjs.",
+          "reopenWhen": null,
+          "at": "2026-10-06T14:39:37.808Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-dd7caa31b91f2e70",
+      "key": "decision:docs/evidence/WO-187/decisions.md#wo-187-d039",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5236a16c0b1541c9ae262868547347205269bcf7dede55d188a5590a048df5f5",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d039--re-verification-finds-the-narrowed-completeness-detector-silently-drops-finding-shaped-lines",
+          "title": "WO-187-D039: Repair WO-187 VER-004 F1 under the one rule above in scripts/lib/review-findings.mjs (uncountedFinding) with the eight route-first inputs added to scripts/test-verification-review.mjs; ad",
+          "summary": "{ \"id\": \"WO-187-D039\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: verify (VER-004)\", \"decision\": \"Fail VER-004 on criterion 4. F1 is a medium-severity defect the VER-003 repair introduced: uncountedFinding accepts only a one-word label (or Finding plus one word) before the route, so finding-shaped lines with any other label are neither counted nor flagged and the review records a lower measured figure. Repair only F1, by the single rule below. Board the older low-severity items found in this pass (D040) instead of sending them through Adjacent Repair.\", \"evidence\": [ \"verification-004/adversary-reproductions.json: after a counted control finding, each of '**Issue 1:** blocking; class: escape",
+          "missing": false
+        },
+        {
+          "hash": "afb28dbdfa5bb78676203f079cc2ffe4283355759fa667454f07239b33ae1ef1",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d039--criteria-2-and-4-infer-records-from-free-form-markdown-replace-the-inference-with-exact-structured-formats",
+          "title": "WO-187-D039: Repair WO-187 VER-004 F1 under rules F1(a) to F1(e) in scripts/resume.mjs, scripts/lib/review-findings.mjs, scripts/lib/verification-briefing.mjs, scripts/lib/handoff-ledger.mjs, packages",
+          "summary": "{ \"id\": \"WO-187-D039\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: verify (VER-004)\", \"decision\": \"Fail VER-004 on criteria 2 and 4 with one blocking design finding, F1. The final-review finding counter, the verify briefing and the handoff self-review check infer records from free-form Markdown prose. Every verification of this order has failed on that inference, and each repair has opened a new silent loss. Repair by replacing the inference with exact formats, following the marker-and-JSON pattern of scripts/lib/dependencies.mjs. This is a verifier route for a defect in the order's declared surfaces (the order's Design: blocking, the verdict fails) and needs no operator authorization; the cr",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "targets": [],
+          "reason": "The VER-004 repair implemented rules F1(a) to F1(e), VER-005 passed it, and WO-187 FINAL-001 passed on the integrated tree: only the findings block is counted, the briefing reads carry-in sections line by line, and the self-review line has one form.",
+          "reopenWhen": "A count or carry-in is again inferred from prose, a block outcome is not deterministic, or a real carry-in section is not printed whole.",
+          "at": "2026-10-06T14:39:37.495Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2ac34ad96c41dfed",
+      "key": "decision:docs/evidence/WO-187/decisions.md#wo-187-d040",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a64051afcf5e01a67a46639033e2b0faa3b564537f314b50b7f58a60d47935fa",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d040--board-the-remaining-reader-observations-from-ver-004",
+          "title": "WO-187-D040: In scripts/lib/review-findings.mjs, apply the per-line uncertainty witness to counted lines (a counted line whose paragraph and physical-line readings disagree on label, route or class ma",
+          "summary": "{ \"id\": \"WO-187-D040\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: verify (VER-004); root probes and fresh adversary findings\", \"decision\": \"Board, with reproductions, the reader observations that were present at VER-003's subject or affect wording or advisories only, and break no criterion. None rides with D039's repair.\", \"evidence\": [ \"Ambiguity asymmetry (root and adversary): the per-line witness is read only for uncounted lines. 'The reader takes `npm test -- --review output.' followed by '`**Finding F1:** blocking; class: escape; <finding>` is the canonical form.' counts escape 1, measured true; checkpoint 8 counted none; checkpoint 11 counted the same as now (variations.txt). On a fail",
+          "missing": false
+        },
+        {
+          "hash": "7dad49e6305879eb89c886288002468b0ab60c99585087453d461a214b347008",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d040--the-remaining-reader-observations-of-ver-004-are-evidence-for-d039-not-separate-work",
+          "title": "WO-187-D040: No separate work: this row's earlier text (a board of reader items) is withdrawn. Dispose it with FUP-dd7caa31b91f2e70 (WO-187-D039), whose repair removes the inference these items concer",
+          "summary": "{ \"id\": \"WO-187-D040\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: verify (VER-004); root probes and fresh adversary findings\", \"decision\": \"Record the remaining observations as further evidence for D039. Each concerns the inference D039 removes, so none is boarded separately, and an earlier draft of this decision that boarded them is withdrawn.\", \"evidence\": [ \"A stray backtick before a one-line example of the finding format counts the example (variations.txt, strayBeforeExample); a failed review's counted line with a hidden route counts unclassed blocking; underscore-emphasised routes are not recognised; a field-zero narrative 'class: integration' supplies a class; a narrative route word ov",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "targets": [
+            "FUP-dd7caa31b91f2e70"
+          ],
+          "reason": "WO-187-D040 directs disposing it with D039's row: each observation concerned the prose inference the VER-004 repair removed.",
+          "reopenWhen": "A later reader keeps any part of that inference.",
+          "at": "2026-10-06T14:39:37.548Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c64a12400f061738",
+      "key": "decision:docs/evidence/WO-187/decisions.md#wo-187-d041",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "167b56d3e261292c4532273c5436bf694d3b3ff01a059e3992032514fc060de9",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d041--receipt-040s-criterion-3-reopening-condition-has-occurred",
+          "title": "WO-187-D041: At the next planning pass, reopen receipt 2026-10-03-planning-90bdcd90e4af7f16-040's criterion:3 known issue for WO-187 and judge whether the executor's self-review needs an executable ob",
+          "summary": "{ \"id\": \"WO-187-D041\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: verify (VER-004)\", \"decision\": \"Record for planning that the reopening condition of planning receipt 2026-10-03-planning-90bdcd90e4af7f16-040's criterion:3 known issue has occurred twice in this order. The verifier does not reopen a planning judgment itself.\", \"evidence\": [ \"The receipt's condition: a handoff carries a self-review line and its verification then blocks on a defect of a kind the self-review sentence names (a defect in the diff the fresh adversary reads).\", \"VER-003 blocked on F1 after the VER-002 repair handoff carried 'self-review: found 8; fixed 7; recorded 1' (VER-003 criterion 3).\", \"VER-004 blocks on D039's",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "targets": [],
+          "reason": "Open for the next planning pass. Receipt 040's criterion-3 reopening condition occurred twice in WO-187: VER-003 and VER-004 each blocked after a self-reviewed repair (WO-187-D041). The fourth repair's self-review preceded VER-005's pass.",
+          "reopenWhen": null,
+          "at": "2026-10-06T14:39:37.966Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e835d826e9af5417",
+      "key": "decision:docs/evidence/WO-187/decisions.md#wo-187-d042",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "298caae72293810a503cf4743ad7bcd44aa280e215719635ce2ed741780fc050",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d042--ver-004-verifier-process-failures",
+          "title": "WO-187-D042: Make explicit in the verifier root (packages/skeleton/src/loadouts/contributor.ts) and product 07 §Verification review and attack that a design-level defect in the order's declared surfac",
+          "summary": "{ \"id\": \"WO-187-D042\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: verify (VER-004); operator correction\", \"decision\": \"Record as a serious verifier failure, at the operator's direction, that the VER-004 verifier asked the operator to authorize the repair of a blocking finding, and record its other errors in this dispatch. The corrected judgment is D039.\", \"evidence\": [ \"Authorization request (serious): the verifier told the operator that replacing the prose readers 'changes what criteria 2 and 4 specify, so it needs your authorization'. The order's Design routes a defect in the declared surfaces as blocking (the verdict fails) and keeps operator for a choice only the operator can make; duty ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "targets": [],
+          "reason": "Open for the next planning pass: state in the verifier root and product 07 that a design-level defect in the order's declared surfaces is a blocking finding the verifier routes itself (WO-187-D042).",
+          "reopenWhen": null,
+          "at": "2026-10-06T14:39:38.229Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-de6162b279f66709",
+      "key": "decision:docs/evidence/WO-187/decisions.md#wo-187-d043",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3c2073f919f9ad47e1dc025601f8a01a914d81b3873d6041717add06130d80b4",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d043--recording-a-verification-result-waits-on-another-worktrees-test-lanes",
+          "title": "WO-187-D043: Make lifecycle recording independent of other worktrees' test lanes: a fail verdict records without waiting on an inline document gate (the met claim is recorded as stated with an advisor",
+          "summary": "{ \"id\": \"WO-187-D043\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: verify (VER-004); operator observation\", \"decision\": \"Board, outside this order's criteria and surfaces, that the verification-result transition runs npm run test:docs inline and that run queues for host lanes shared by every worktree, so one order's test run blocks another order's lifecycle step, including a fail verdict the gate cannot change.\", \"evidence\": [ \"The first VER-004 fail transition's inline document gate (started 2026-10-06T05:01:23.102Z) printed 'WAIT host lanes for /Users/dylanwood/Projects/DotLn-wo187 / build; held by /Users/dylanwood/Projects/DotLn-wo112 / vertical (1)' when rerun standalone, and failed after",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "targets": [],
+          "reason": "Open for planning: a lifecycle transition's inline document gate queues behind host lanes another worktree holds (WO-187-D043).",
+          "reopenWhen": null,
+          "at": "2026-10-06T14:39:38.178Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-67a07b670440cf5a",
+      "key": "decision:docs/evidence/WO-187/decisions.md#wo-187-d045",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3d9c342d3728c96e07d37a44e8fa857df872b57befd034bc189a6c02e83f486a",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d045--fix-nine-self-review-findings-record-three-and-board-the-strict-validation-choice",
+          "title": "WO-187-D045: Judge, over the first measured final reviews, whether a findings-block problem in a field that does not enter the count (id shape, route, summary) should be named and counted rather than ",
+          "summary": "{ \"id\": \"WO-187-D045\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: fix (VER-004); executor self-review\", \"decision\": \"Fix nine of the fresh adversary's twelve findings in the repaired readers, their texts and the fixture, and record three: the strict block validation D039 F1(a) sets is kept and boarded for a judgment over real reviews, one unverified concern is dismissed on the source, and two reader edges are judged limits.\", \"evidence\": [ \"One fresh Claude dotln-worker (definition pin claude-opus-5-5, xhigh; no per-call model override) read only the order, the repair diff from checkpoint 17 and the authored diff for the same files, imported the three reader modules read-only for bounded pro",
+          "missing": false
+        },
+        {
+          "hash": "33c646e4e6938b064ba64f7d93e7282ef47b972a3df8b579cf51817ad32d798d",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d045--fix-nine-self-review-findings-record-three-and-board-the-strict-validation-choice",
+          "title": "WO-187-D045: Judge, over the first measured final reviews, whether a findings-block problem in a field that does not enter the count (id shape, route, summary) should be named and counted rather than ",
+          "summary": "{ \"id\": \"WO-187-D045\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: fix (VER-004); executor self-review\", \"decision\": \"Fix nine of the fresh adversary's twelve findings in the repaired readers, their texts and the fixture, and record three: the strict block validation D039 F1(a) sets is kept and boarded for a judgment over real reviews, one unverified concern is dismissed on the source, and two reader edges are judged limits.\", \"evidence\": [ \"One fresh Claude dotln-worker (definition pin claude-opus-5-5, xhigh; no per-call model override) read only the order, the repair diff from checkpoint 17 and the authored diff for the same files, imported the three reader modules read-only for bounded pro",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "targets": [],
+          "reason": "Kept open for the first measured reviews. WO-187 FINAL-001 is the first report to carry the block. Its fresh adversary adds one observation: findingCounts is not a field the correct off-ramp can set, so one unreadable block leaves the last-ten rate unknown until that order leaves the window.",
+          "reopenWhen": null,
+          "at": "2026-10-06T14:39:37.862Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c95ffe4a84e49cbb",
+      "key": "decision:docs/evidence/WO-187/decisions.md#wo-187-d047",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "215e8bd8411295d4d29de88061f9720285bcc38d71bb64b605b2eeb0f821fc39",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d047--judge-the-fresh-adversary-against-the-filed-receipt-contract-and-board-two-design-follow-ups",
+          "title": "WO-187-D047: Assess two bounded design improvements: (1) in scripts/lib/verification-briefing.mjs, advise when a newer receipt's matching order row has missing or non-array findings, without treating ",
+          "summary": "{ \"id\": \"WO-187-D047\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: verify (VER-005)\", \"decision\": \"Pass the repaired subject after independently judging the fresh adversary's three candidates. The missing-findings receipt reproduction is real for a manually supplied malformed record, but the current receipt validates and canonical filing refuses that input; retain criterion 2 as met and board corruption diagnostics. Board the byte-advisory allocation question as an operator-flow design follow-up, not a new criterion failure. The latent worker-name mismatch is already D034's FUP-3f9d788f4d8c89ac and is not duplicated.\", \"evidence\": [ \"One fresh Codex worker, selected gpt-6.1-sol/max with fork_",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "targets": [],
+          "reason": "Deferred at the priority WO-187-D047 sets: no valid filed receipt loses an issue, and the product 07 follow-up stays open rather than allocated.",
+          "reopenWhen": "A corrupt receipt reaches a verify briefing without its invalidity shown, a valid filed receipt loses known issues, or an overrun's optimization is allocated before the text fits its ceiling.",
+          "at": "2026-10-06T14:39:38.020Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f4bf5a4ada0c1420",
+      "key": "decision:docs/evidence/WO-187/decisions.md#wo-187-d051",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "543547cf78ca59610263c8884ba69ca7ea498c13a4e9ad4fdebbdce7a6b6d8b9",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d051--ship-the-sub-agent-duties-as-filed-and-board-a-separate-improver-sub-agent-for-planning",
+          "title": "WO-187-D051: Planning: decide whether executor completion, and verification, should spawn a separate principal-engineer improver sub-agent beside the fresh adversary, in place of one dual-role agent a",
+          "summary": "{ \"id\": \"WO-187-D051\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: final review; operator question and choice during the review\", \"decision\": \"Ship WO-187's sub-agent duties as the order filed them. The operator confirmed that a fresh adversary at executor completion, including each repair, matches what they asked for, and chose to board the one remaining difference for planning: a separate principal-engineer improver sub-agent beside the adversary. It is a follow-up, not a defect against the order.\", \"evidence\": [ \"During this final review the operator said, paraphrased, that they had asked planning for an adversarial sub-agent plus one principal-software-engineer improver sub-agent at the e",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "targets": [],
+          "reason": "Open for the next planning pass, at the operator's choice during WO-187's final review: the order ships as filed and the separate principal-engineer improver sub-agent is boarded.",
+          "reopenWhen": null,
+          "at": "2026-10-06T14:39:38.388Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1315c82ef74fb832",
+      "key": "decision:docs/evidence/WO-187/decisions.md#wo-187-d052",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fbc17bcf620e4a4c7de63a90a7fecb7b298ecb7eca933f4334febd8eede4f4fe",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d052--pass-the-integrated-subject-and-board-seven-low-findings",
+          "title": "WO-187-D052: Planning, low priority unless a condition occurs. (1) scripts/resume.mjs and scripts/lib/verification-briefing.mjs: build the verify briefing before appending VerificationRequested, or tu",
+          "summary": "{ \"id\": \"WO-187-D052\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: final review; reviewer and fresh adversary findings\", \"decision\": \"Pass WO-187 at the integrated subject. Board seven findings, none blocking: three present in the verified subject (class escape) and four that ask for something the order did not set out to do (class new-scope; one of them is D051's). Keep D020's register row open rather than apply its prepared decline. Judge the fresh adversary's other items as already boarded, recorded known issues, or readings this review accepts.\", \"evidence\": [ \"One fresh dotln-worker (definition pin claude-opus-5-5, xhigh; launched by type with no model override) read only the order and t",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "targets": [],
+          "reason": "Open for the next planning pass: the six low items WO-187 FINAL-001 boards here, with their paths and reproductions in WO-187-D052.",
+          "reopenWhen": null,
+          "at": "2026-10-06T14:39:38.439Z"
         }
       ]
     }

@@ -91,6 +91,9 @@ test("WO-070 copied control plane emits a decoded Beacon without skeleton source
     return result.stdout;
   };
   run("git", ["init", "-b", "main"]);
+  // Git 2.55 starts a detached repack after the commit once objects/17 holds
+  // two loose objects; it would write into the tree the hook removes.
+  run("git", ["config", "maintenance.auto", "false"]);
   run("git", ["config", "user.name", "DotLn Fixture"]);
   run("git", ["config", "user.email", "fixture@example.invalid"]);
   cpSync(join(repository, "scripts"), join(root, "scripts"), {

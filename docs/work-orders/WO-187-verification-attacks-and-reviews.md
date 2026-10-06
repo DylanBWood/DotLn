@@ -1,4 +1,4 @@
-# WO-187 — Verification attacks the change and reviews the implementation; the executor self-reviews first; what final review still finds is counted (version assigned at activation)
+# WO-187 — Verification attacks the change and reviews the implementation; the executor self-reviews first; what final review still finds is counted (v0.67.1)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -252,10 +252,12 @@ counts; the handoff line and advisory; fixtures; the write-backs below.
    from a root at another effort, with the effort the host reports for
    it, or records that the host reports none.
 6. Cold-start bytes of every role root are measured before and after
-   regeneration and recorded in the decisions; the verifier and executor
-   roots fit the ceilings in force at this order's base with no new
-   acceptance, and text that does not fit is moved to the section read
-   at verify time.
+   regeneration and recorded in the decisions. Headroom is a goal rather
+   than a hard pass condition: preserve useful guidance, introduce no new
+   ceiling acceptance, and record any ceiling overrun as a concrete follow-up.
+   Detail belongs in the section read at verify time where that preserves
+   usefulness. Operator direction during `resume: next`, 2026-10-05,
+   recorded in WO-187-D003.
 7. Write-backs: the decisions file with each sentence and the finding it
    answers; the decisions index; register rows FUP-19cd701c25446383 and
    FUP-e62d0d2771185a38 retargeted at close.
@@ -277,7 +279,9 @@ duties, and the final review says whether it did.
   every bounded role's ceiling had been raised two or three times since
   2026-09-17. This order is not one more raise (criterion 6). Reopen if,
   after regeneration, the verifier or executor measure exceeds its
-  ceiling and an acceptance is recorded.
+  ceiling and an acceptance is recorded. The operator's 2026-10-05 direction
+  makes headroom a goal and boards overruns without removing useful guidance
+  or adding an acceptance (WO-187-D003).
 - Receipt 038: a finding's class must never block recording a final
   review; criterion 4 counts an unclassed line and advises. Reopen if a
   final-review result is refused, or needs a new report or an operator

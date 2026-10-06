@@ -5308,6 +5308,7 @@ else {
             "kind",
             "window",
             "counts",
+            "finalReviewFindings",
             "localGateFailures",
             "localShellDiagnostics",
             "localReleaseCloses",
@@ -5513,9 +5514,10 @@ else {
         assert.deepEqual(started.failures, {
           command: "npm run plan -- failures",
           since: "2030-01-02T12:00:00.000Z",
-          opensAt: "latest planning receipt 2030-01-02-planning-fixture-001",
           items: 12,
           counts: windowCounts,
+          finalReviewEscapes:
+            "0/4 reviews; 3 orders; 0 unclassed; rate unknown (0 measured)",
           localReleaseCloses: 0,
           localHostDenials: 0,
           interventions: { count: 0, unclassified: 0 },
@@ -5528,7 +5530,7 @@ else {
             evidence: 0,
             unknown: 3,
           },
-          localCoverage: "local; Codex dispatch-only; coverage incomplete",
+          localCoverage: "local; Codex dispatch-only; incomplete",
           // WO-802 passed between review completion and filing; WO-803's
           // and WO-801's passes precede completion or carry no time.
           sinceEntropyReview: {

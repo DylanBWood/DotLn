@@ -1,0 +1,10 @@
+{
+  "command": "node scripts/test-verification-review.mjs (owned physical session-scratch parent)",
+  "startedAt": "2026-10-06T01:24:02.702Z",
+  "finishedAt": "2026-10-06T01:24:06.537Z",
+  "wallSeconds": 3.833278334,
+  "exitCode": 1,
+  "stdout": "",
+  "stderr": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: 910: \n\nKnown issues and carry-ins (docs/work-orders/WO-910-layout.md:5):\nInvestigate **critical failure\n    at file://<worktree>/scripts/test-verification-review.mjs:647:10\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v26.9.0\n",
+  "source": "direct executable result; temporary fixture repository is outside the worktree"
+}

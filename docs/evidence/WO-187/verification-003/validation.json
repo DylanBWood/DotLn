@@ -1,0 +1,158 @@
+{
+  "at": "2026-10-06T02:18:37.544Z",
+  "head": "c44ba6c60d7a3049f15edc4ce106b2dcc518b551",
+  "branch": "wo-187",
+  "latestCheckpoint": "5a88168b8e167123053b88e72b9dcfdbfd4a65bc",
+  "sourceMatchesCheckpoint11": "every tracked file of checkpoint 11 under scripts, packages, docs/product, docs/PLAYBOOK.md, .claude and .agents hashes equal in the worktree (git hash-object loop, no difference printed)",
+  "codeIdentity": "9408c8dcb05cbb5c39324fbe74f725522f39a7adf357d3b2e4c0435d74aac6a6",
+  "productGate": [
+    {
+      "checkId": "npm test",
+      "codeIdentity": "9408c8dcb05cbb5c39324fbe74f725522f39a7adf357d3b2e4c0435d74aac6a6",
+      "exitCode": 0,
+      "recordedAt": "2026-10-06T01:56:17.134Z",
+      "durationMs": 885916,
+      "gateSelection": "review",
+      "executionMode": "forced-fresh",
+      "freshSuites": 88,
+      "requiredSuites": 38,
+      "includesResumeSuite": false
+    }
+  ],
+  "documentGate": [
+    {
+      "checkId": "npm run test:docs",
+      "codeIdentity": "9408c8dcb05cbb5c39324fbe74f725522f39a7adf357d3b2e4c0435d74aac6a6",
+      "exitCode": 0,
+      "recordedAt": "2026-10-06T02:05:17.261Z",
+      "durationMs": 81886,
+      "gateSelection": "document",
+      "executionMode": "fresh",
+      "freshSuites": 29,
+      "requiredSuites": 29,
+      "includesResumeSuite": true
+    }
+  ],
+  "diffCheck": "git diff --check and git diff --cached --check exit 0",
+  "budgetsDiff": "",
+  "manifests": "package.json/lockfile diffs carry only internal @dotln workspace version pins (compiler 0.25.3, skeleton 0.52.4); no suppression directive added outside docs",
+  "instructionBytes": 6873,
+  "roleBytes": [
+    {
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "skillBytes": 22904,
+      "coldStartBytes": 29777,
+      "recordedAfter": 29777,
+      "matches": true
+    },
+    {
+      "path": ".claude/skills/dotln-verifier/SKILL.md",
+      "skillBytes": 19204,
+      "coldStartBytes": 26077,
+      "recordedAfter": 26077,
+      "matches": true
+    },
+    {
+      "path": ".claude/skills/dotln-reviewer/SKILL.md",
+      "skillBytes": 20768,
+      "coldStartBytes": 27641,
+      "recordedAfter": 27641,
+      "matches": true
+    },
+    {
+      "path": ".claude/skills/dotln-release-close/SKILL.md",
+      "skillBytes": 11612,
+      "coldStartBytes": 18485,
+      "recordedAfter": 18485,
+      "matches": true
+    },
+    {
+      "path": ".claude/skills/dotln-planner/SKILL.md",
+      "skillBytes": 13430,
+      "coldStartBytes": 20303,
+      "recordedAfter": 20303,
+      "matches": true
+    },
+    {
+      "path": ".claude/skills/dotln-refuter/SKILL.md",
+      "skillBytes": 12709,
+      "coldStartBytes": 19582,
+      "recordedAfter": 19582,
+      "matches": true
+    },
+    {
+      "path": ".agents/skills/dotln-executor/SKILL.md",
+      "skillBytes": 22904,
+      "coldStartBytes": 29777,
+      "recordedAfter": 29777,
+      "matches": true
+    },
+    {
+      "path": ".agents/skills/dotln-verifier/SKILL.md",
+      "skillBytes": 19204,
+      "coldStartBytes": 26077,
+      "recordedAfter": 26077,
+      "matches": true
+    },
+    {
+      "path": ".agents/skills/dotln-reviewer/SKILL.md",
+      "skillBytes": 20768,
+      "coldStartBytes": 27641,
+      "recordedAfter": 27641,
+      "matches": true
+    },
+    {
+      "path": ".agents/skills/dotln-release-close/SKILL.md",
+      "skillBytes": 11612,
+      "coldStartBytes": 18485,
+      "recordedAfter": 18485,
+      "matches": true
+    },
+    {
+      "path": ".agents/skills/dotln-planner/SKILL.md",
+      "skillBytes": 13430,
+      "coldStartBytes": 20303,
+      "recordedAfter": 20303,
+      "matches": true
+    },
+    {
+      "path": ".agents/skills/dotln-refuter/SKILL.md",
+      "skillBytes": 12709,
+      "coldStartBytes": 19582,
+      "recordedAfter": 19582,
+      "matches": true
+    }
+  ],
+  "bounded": [
+    {
+      "command": "node scripts/test-verification-review.mjs <physical scratch parent>",
+      "exitCode": 0,
+      "durationMs": 9112,
+      "finishedAt": "2026-10-06T02:11:41.690Z"
+    },
+    {
+      "command": "node scripts/test-verification-review.mjs <physical scratch parent> <08845c71:scripts/resume.mjs>",
+      "exitCode": 1,
+      "failure": "AssertionError: verify must print the order's known issues (test-verification-review.mjs:129)"
+    },
+    {
+      "command": "npm run harness -- check",
+      "exitCode": 0,
+      "output": "harness check: 33 generated surfaces",
+      "durationMs": 1158,
+      "finishedAt": "2026-10-06T02:14:13.607Z"
+    },
+    {
+      "command": "verificationKnownIssues over every docs/work-orders/WO-*.md",
+      "result": "15 orders mention Known issues; 15 print a section; 0 advisories; 0 misses"
+    },
+    {
+      "command": "reviewFindings over 166 docs/final-reviews/*/FINAL-*.md (pass reading)",
+      "result": "1 now has an unrecognised line (WO-186/FINAL-002.md line 3); 0 at checkpoint 8"
+    },
+    {
+      "command": "reviewFindings over 732 final-review and verification Markdown files, current versus checkpoint 8",
+      "result": "no count changes; 7 report/verdict readings move from measured to unmeasured"
+    }
+  ]
+}

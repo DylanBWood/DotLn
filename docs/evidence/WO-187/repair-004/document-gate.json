@@ -1,0 +1,1627 @@
+{
+  "command": "npm run test:docs",
+  "source": "the passing gate row at the current code identity (scripts/lib/gate-reuse.mjs coveringGateCheck) and the runner's summary line",
+  "runnerSummary": "npm run test:docs: 29 passed; 0 failed; 77.65 s; 29 fresh tasks",
+  "firstRun": {
+    "runnerSummary": "npm run test:docs: 15 passed; 14 failed; 28.17 s; 16 fresh tasks",
+    "recordedAt": "2026-10-06T06:44:07.768Z",
+    "cause": "docs-check: docs/evidence/WO-187/README.md linked repair-004/document-gate.json before that record existed; the thirteen suites after docs-check did not run. The link was removed and the gate rerun."
+  },
+  "gate": {
+    "checkId": "npm run test:docs",
+    "treeHash": "8258f54f17affdf614d9c69ac36c721613f7eb31",
+    "codeIdentity": "b8245313e92bd0493329f4e38506337ffd28e292b13dfc0cc42ea3e6c3ca34fe",
+    "subject": "8258f54f17affdf614d9c69ac36c721613f7eb31",
+    "durationMs": 77649,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:b8245313e92bd0493329f4e38506337ffd28e292b13dfc0cc42ea3e6c3ca34fe:npm run test:docs",
+    "recordedAt": "2026-10-06T06:46:41.152Z",
+    "executionMode": "fresh",
+    "gateSelection": "document",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "freshReason": "no-passing-tasks",
+    "freshSuites": 29,
+    "reusedSuites": 0,
+    "requiredSuites": [
+      "build",
+      "format",
+      "release-surfaces",
+      "license-surfaces",
+      "resume",
+      "publication",
+      "docs-check",
+      "docs-check-fixtures",
+      "index",
+      "lineage",
+      "lineage-fixtures",
+      "kernel-docs",
+      "skeleton-docs",
+      "console-docs",
+      "resident-bind",
+      "local-runner-double",
+      "authority-evidence",
+      "harness",
+      "harness-context",
+      "harness-evidence",
+      "plan-refutation-current",
+      "artifact-corpus",
+      "artifact-evidence",
+      "verification-evidence",
+      "feedback-evidence",
+      "meta",
+      "registrations",
+      "plan",
+      "entropy"
+    ],
+    "sandbox": {
+      "marker": "claude-code",
+      "probe": {
+        "path": "/Users/dylanwood/Projects/DotLn-wo187/.claude/hooks",
+        "denied": false,
+        "code": "written"
+      },
+      "inForce": false
+    },
+    "failureComparisons": [],
+    "loadClass": {
+      "sharedCap": 4,
+      "factorPerSlot": 2,
+      "maxHostLoadPerCpu": 2,
+      "scheduler": "exclusive-machinery-v1"
+    },
+    "taskTimeline": [
+      {
+        "name": "build",
+        "durationMs": 648,
+        "slowestCases": [
+          {
+            "name": "build",
+            "durationMs": 648,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 31296320,
+        "peakRssBytes": 84410368,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:23.527Z",
+        "finishedAt": "2026-10-06T06:45:24.195Z",
+        "exitCode": 0,
+        "executed": true,
+        "outputDigest": "2f7df21d45a68e5e8b00c1492b8d9d48daf409d68db79e7c99384867e4bc329b",
+        "concurrentAtStart": [],
+        "predecessors": [],
+        "schedulerDurationMs": 668,
+        "loadClass": "isolated",
+        "loadFactor": 2,
+        "peerCap": 0,
+        "reservedSlots": 4,
+        "lanes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 4
+      },
+      {
+        "name": "publication",
+        "durationMs": 172,
+        "slowestCases": [
+          {
+            "name": "publication",
+            "durationMs": 172,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 31183144,
+        "peakRssBytes": 81330176,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:24.202Z",
+        "finishedAt": "2026-10-06T06:45:24.421Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "format",
+          "release-surfaces",
+          "license-surfaces"
+        ],
+        "predecessors": [
+          "build"
+        ],
+        "schedulerDurationMs": 219,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "license-surfaces",
+        "durationMs": 1600,
+        "slowestCases": [
+          {
+            "name": "license-surfaces",
+            "durationMs": 1600,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 63463152,
+        "peakRssBytes": 163708928,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:24.202Z",
+        "finishedAt": "2026-10-06T06:45:25.837Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "format",
+          "release-surfaces"
+        ],
+        "predecessors": [
+          "build"
+        ],
+        "schedulerDurationMs": 1635,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          2
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "release-surfaces",
+        "durationMs": 1884,
+        "slowestCases": [
+          {
+            "name": "release-surfaces",
+            "durationMs": 1884,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 79849432,
+        "peakRssBytes": 184909824,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:24.202Z",
+        "finishedAt": "2026-10-06T06:45:26.107Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "format"
+        ],
+        "predecessors": [
+          "build"
+        ],
+        "schedulerDurationMs": 1905,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "lineage",
+        "durationMs": 63,
+        "slowestCases": [
+          {
+            "name": "lineage",
+            "durationMs": 63,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 1327464,
+        "peakRssBytes": 1802240,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:26.114Z",
+        "finishedAt": "2026-10-06T06:45:26.184Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "format",
+          "docs-check",
+          "index"
+        ],
+        "predecessors": [
+          "build",
+          "release-surfaces"
+        ],
+        "schedulerDurationMs": 70,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "authority-evidence",
+        "durationMs": 806,
+        "slowestCases": [
+          {
+            "name": "authority-evidence",
+            "durationMs": 806,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 98589512,
+        "peakRssBytes": 147308544,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:26.191Z",
+        "finishedAt": "2026-10-06T06:45:27.005Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "format",
+          "docs-check",
+          "index"
+        ],
+        "predecessors": [
+          "build",
+          "lineage"
+        ],
+        "schedulerDurationMs": 814,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "harness",
+        "durationMs": 215,
+        "slowestCases": [
+          {
+            "name": "harness",
+            "durationMs": 215,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 34345376,
+        "peakRssBytes": 82706432,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:27.012Z",
+        "finishedAt": "2026-10-06T06:45:27.233Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "format",
+          "docs-check",
+          "index"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence"
+        ],
+        "schedulerDurationMs": 221,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "harness-context",
+        "durationMs": 160,
+        "slowestCases": [
+          {
+            "name": "harness-context",
+            "durationMs": 160,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 23645472,
+        "peakRssBytes": 67928064,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:27.239Z",
+        "finishedAt": "2026-10-06T06:45:27.406Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "format",
+          "docs-check",
+          "index"
+        ],
+        "predecessors": [
+          "build",
+          "harness"
+        ],
+        "schedulerDurationMs": 167,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "index",
+        "durationMs": 1934,
+        "slowestCases": [
+          {
+            "name": "index",
+            "durationMs": 1934,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 213838944,
+        "peakRssBytes": 246169600,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:25.845Z",
+        "finishedAt": "2026-10-06T06:45:27.785Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "format",
+          "release-surfaces",
+          "docs-check"
+        ],
+        "predecessors": [
+          "build",
+          "license-surfaces"
+        ],
+        "schedulerDurationMs": 1940,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          2
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "harness-evidence",
+        "durationMs": 456,
+        "slowestCases": [
+          {
+            "name": "harness-evidence",
+            "durationMs": 456,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 113731640,
+        "peakRssBytes": 167624704,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:27.413Z",
+        "finishedAt": "2026-10-06T06:45:27.875Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "format",
+          "docs-check",
+          "index"
+        ],
+        "predecessors": [
+          "build",
+          "harness-context"
+        ],
+        "schedulerDurationMs": 462,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "artifact-evidence",
+        "durationMs": 269,
+        "slowestCases": [
+          {
+            "name": "artifact-evidence",
+            "durationMs": 269,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 88545880,
+        "peakRssBytes": 135233536,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:27.792Z",
+        "finishedAt": "2026-10-06T06:45:28.067Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "format",
+          "docs-check",
+          "harness-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "index"
+        ],
+        "schedulerDurationMs": 275,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          2
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "verification-evidence",
+        "durationMs": 1275,
+        "slowestCases": [
+          {
+            "name": "verification-evidence",
+            "durationMs": 1275,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 88709552,
+        "peakRssBytes": 136364032,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:27.882Z",
+        "finishedAt": "2026-10-06T06:45:29.165Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "format",
+          "docs-check",
+          "artifact-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "harness-evidence"
+        ],
+        "schedulerDurationMs": 1283,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "format",
+        "durationMs": 5723,
+        "slowestCases": [
+          {
+            "name": "format",
+            "durationMs": 5723,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 618708256,
+        "peakRssBytes": 690536448,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:24.202Z",
+        "finishedAt": "2026-10-06T06:45:29.933Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [],
+        "predecessors": [
+          "build"
+        ],
+        "schedulerDurationMs": 5731,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "feedback-evidence",
+        "durationMs": 2995,
+        "slowestCases": [
+          {
+            "name": "feedback-evidence",
+            "durationMs": 2995,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 141063272,
+        "peakRssBytes": 278724608,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:28.074Z",
+        "finishedAt": "2026-10-06T06:45:31.075Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "format",
+          "docs-check",
+          "verification-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "artifact-evidence"
+        ],
+        "schedulerDurationMs": 3001,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          2
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "meta",
+        "durationMs": 2104,
+        "slowestCases": [
+          {
+            "name": "meta",
+            "durationMs": 2104,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 238477744,
+        "peakRssBytes": 275316736,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:29.171Z",
+        "finishedAt": "2026-10-06T06:45:31.282Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "format",
+          "docs-check",
+          "feedback-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "verification-evidence"
+        ],
+        "schedulerDurationMs": 2111,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "docs-check",
+        "durationMs": 13130,
+        "slowestCases": [
+          {
+            "name": "docs-check",
+            "durationMs": 13130,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 435666248,
+        "peakRssBytes": 456278016,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:24.429Z",
+        "finishedAt": "2026-10-06T06:45:37.566Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "format",
+          "release-surfaces",
+          "license-surfaces"
+        ],
+        "predecessors": [
+          "build",
+          "publication"
+        ],
+        "schedulerDurationMs": 13137,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "lineage-fixtures",
+        "durationMs": 527,
+        "slowestCases": [
+          {
+            "name": "CLI generation is deterministic; --check refuses stale output and invalid fixtures without writes",
+            "file": "scripts/test-lineage.mjs",
+            "durationMs": 364.9425,
+            "exitCode": 0
+          },
+          {
+            "name": "current index matches independently counted lead statuses and stays outside the product gate",
+            "file": "scripts/test-lineage.mjs",
+            "durationMs": 50.788792,
+            "exitCode": 0
+          },
+          {
+            "name": "index counts lead memberships, wrapped labels and prose-only/reference sections",
+            "file": "scripts/test-lineage.mjs",
+            "durationMs": 2.534667,
+            "exitCode": 0
+          },
+          {
+            "name": "unknown and duplicate tags fail even beside a recognized lifecycle tag",
+            "file": "scripts/test-lineage.mjs",
+            "durationMs": 0.413667,
+            "exitCode": 0
+          },
+          {
+            "name": "unlabeled entries cannot borrow status from nested evidence or later prose",
+            "file": "scripts/test-lineage.mjs",
+            "durationMs": 0.272125,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 53812544,
+        "peakRssBytes": 183107584,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:37.572Z",
+        "finishedAt": "2026-10-06T06:45:38.131Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "resume",
+          "docs-check-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "docs-check",
+          "index",
+          "lineage",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta"
+        ],
+        "schedulerDurationMs": 559,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          2
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "kernel-docs",
+        "durationMs": 819,
+        "slowestCases": [
+          {
+            "name": "[document] WO-045 committed EventEnvelope streams decode and round-trip byte-identically",
+            "file": "packages/kernel/dist/test/store-history.test.js",
+            "durationMs": 524.414084,
+            "exitCode": 0
+          },
+          {
+            "name": "[document] AC7 evidence: every README map row's right cell names an entry present in docs/product/02-domain-model.md",
+            "file": "packages/kernel/dist/test/ac7-readme-map.test.js",
+            "durationMs": 2.029083,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 213156832,
+        "peakRssBytes": 301940736,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:37.572Z",
+        "finishedAt": "2026-10-06T06:45:38.434Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "resume",
+          "docs-check-fixtures",
+          "lineage-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "docs-check",
+          "index",
+          "lineage",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta"
+        ],
+        "schedulerDurationMs": 862,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "docs-check-fixtures",
+        "durationMs": 4773,
+        "slowestCases": [
+          {
+            "name": "WO-187 one operator-directed byte goal advises only with its current unresolved public follow-up",
+            "file": "scripts/test-docs-check.mjs",
+            "durationMs": 1687.432083,
+            "exitCode": 0
+          },
+          {
+            "name": "the docs check holds the table to its recorded tags: it refuses a changed row, reports a newer tag and names a missing one",
+            "file": "scripts/test-docs-check.mjs",
+            "durationMs": 793.824959,
+            "exitCode": 0
+          },
+          {
+            "name": "release list --markdown joins each recorded tag to the orders its manifest names, as release list does",
+            "file": "scripts/test-docs-check.mjs",
+            "durationMs": 399.359583,
+            "exitCode": 0
+          },
+          {
+            "name": "configuration roots and nonignored new documents are used; private and package fixtures are excluded",
+            "file": "scripts/test-docs-check.mjs",
+            "durationMs": 232.215916,
+            "exitCode": 0
+          },
+          {
+            "name": "a ceiling increase requires an existing planning decision, including after a prior consolidation",
+            "file": "scripts/test-docs-check.mjs",
+            "durationMs": 201.92575,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 96727592,
+        "peakRssBytes": 193576960,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:37.571Z",
+        "finishedAt": "2026-10-06T06:45:42.367Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "docs-check",
+          "index",
+          "lineage",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta"
+        ],
+        "schedulerDurationMs": 4796,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "resident-bind",
+        "durationMs": 9583,
+        "slowestCases": [
+          {
+            "name": "--check names a store retargeted through any declared source field",
+            "file": "scripts/test-resident-bind.mjs",
+            "durationMs": 1161.520291,
+            "exitCode": 0
+          },
+          {
+            "name": "--check names every mismatch, refuses a launch line and exits non-zero",
+            "file": "scripts/test-resident-bind.mjs",
+            "durationMs": 759.589,
+            "exitCode": 0
+          },
+          {
+            "name": "bind writes a store the runtime accepts and aims at the bound worktree",
+            "file": "scripts/test-resident-bind.mjs",
+            "durationMs": 734.060291,
+            "exitCode": 0
+          },
+          {
+            "name": "a merge base moved by integrating main is named before any launch line",
+            "file": "scripts/test-resident-bind.mjs",
+            "durationMs": 724.439208,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-157 a bind without --model and --effort records the transport's default judge",
+            "file": "scripts/test-resident-bind.mjs",
+            "durationMs": 706.203542,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 85880064,
+        "peakRssBytes": 226967552,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:42.373Z",
+        "finishedAt": "2026-10-06T06:45:51.963Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "resume",
+          "skeleton-docs",
+          "console-docs"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "docs-check",
+          "index",
+          "lineage",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "docs-check-fixtures"
+        ],
+        "schedulerDurationMs": 9590,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "local-runner-double",
+        "durationMs": 3769,
+        "slowestCases": [
+          {
+            "name": "WO-138 live HTTP episode is discarded when a product gate starts in flight",
+            "file": "scripts/probes/local-model-role-qualification.test.mjs",
+            "durationMs": 393.770833,
+            "exitCode": 0
+          },
+          {
+            "name": "fixed suite validates schema, actual tool round trip, repeats, cancellation, timeout and recovery",
+            "file": "scripts/probes/local-runner-smoke.test.mjs",
+            "durationMs": 332.71625,
+            "exitCode": 0
+          },
+          {
+            "name": "slow asynchronous observer cannot delay the traffic deadline",
+            "file": "scripts/probes/local-runner-load.test.mjs",
+            "durationMs": 162.200709,
+            "exitCode": 0
+          },
+          {
+            "name": "deadline during cancellation observer retains timeout as the first cause",
+            "file": "scripts/probes/local-runner-smoke.test.mjs",
+            "durationMs": 104.851334,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-138 HTTP double receives fixed decoding and returns a host-validated candidate for validation",
+            "file": "scripts/probes/local-model-role-qualification.test.mjs",
+            "durationMs": 99.626459,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 66886160,
+        "peakRssBytes": 167247872,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:51.969Z",
+        "finishedAt": "2026-10-06T06:45:55.744Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "resume",
+          "skeleton-docs",
+          "console-docs"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "docs-check",
+          "index",
+          "lineage",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "resident-bind"
+        ],
+        "schedulerDurationMs": 3775,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "plan-refutation-current",
+        "durationMs": 2601,
+        "slowestCases": [
+          {
+            "name": "plan-refutation-current",
+            "durationMs": 2601,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 352565536,
+        "peakRssBytes": 384335872,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:55.754Z",
+        "finishedAt": "2026-10-06T06:45:58.361Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "resume",
+          "skeleton-docs",
+          "console-docs"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "docs-check",
+          "index",
+          "lineage",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "local-runner-double"
+        ],
+        "schedulerDurationMs": 2607,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "artifact-corpus",
+        "durationMs": 234,
+        "slowestCases": [
+          {
+            "name": "WO-101 every stable-hash fixture agrees byte-for-byte across independent and shipped implementations",
+            "file": "corpus/harness/wo101-id-corpus.test.mjs",
+            "durationMs": 47.834,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-101 every command-id tuple agrees across the typed reference and shipped implementation",
+            "file": "corpus/harness/wo101-id-corpus.test.mjs",
+            "durationMs": 24.003542,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-101 independent pair-arithmetic hash is planted on published FNV-1a-64 values",
+            "file": "corpus/harness/wo101-id-corpus.test.mjs",
+            "durationMs": 10.585667,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-101 namespace pairs re-derive the swallowed-command incident with only ep:/ws: changed",
+            "file": "corpus/harness/wo101-id-corpus.test.mjs",
+            "durationMs": 7.783083,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-101 normalization pairs explicitly preserve byte-honest NFC/NFD differences",
+            "file": "corpus/harness/wo101-id-corpus.test.mjs",
+            "durationMs": 7.724667,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 57318120,
+        "peakRssBytes": 147324928,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:58.368Z",
+        "finishedAt": "2026-10-06T06:45:58.608Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "resume",
+          "skeleton-docs",
+          "console-docs"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "docs-check",
+          "index",
+          "lineage",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "plan-refutation-current"
+        ],
+        "schedulerDurationMs": 240,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "registrations",
+        "durationMs": 606,
+        "slowestCases": [
+          {
+            "name": "registrations",
+            "durationMs": 606,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 31460712,
+        "peakRssBytes": 79544320,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:58.620Z",
+        "finishedAt": "2026-10-06T06:45:59.233Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "resume",
+          "skeleton-docs",
+          "console-docs"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "docs-check",
+          "index",
+          "lineage",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "artifact-corpus"
+        ],
+        "schedulerDurationMs": 613,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "plan",
+        "durationMs": 2879,
+        "slowestCases": [
+          {
+            "name": "plan",
+            "durationMs": 2879,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 375306576,
+        "peakRssBytes": 407830528,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:59.250Z",
+        "finishedAt": "2026-10-06T06:46:02.145Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "resume",
+          "skeleton-docs",
+          "console-docs"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "docs-check",
+          "index",
+          "lineage",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "registrations"
+        ],
+        "schedulerDurationMs": 2895,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "entropy",
+        "durationMs": 224,
+        "slowestCases": [
+          {
+            "name": "entropy",
+            "durationMs": 224,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 28577704,
+        "peakRssBytes": 71729152,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:46:02.151Z",
+        "finishedAt": "2026-10-06T06:46:02.381Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "resume",
+          "skeleton-docs",
+          "console-docs"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "docs-check",
+          "index",
+          "lineage",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "plan"
+        ],
+        "schedulerDurationMs": 230,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          1
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "skeleton-docs",
+        "durationMs": 25019,
+        "slowestCases": [
+          {
+            "name": "[document] WO-011 selfhost executes the real repository audit, recovers its saved result, and independently verifies once",
+            "file": "packages/skeleton/dist/test/feedback-host.test.js",
+            "durationMs": 5298.98125,
+            "exitCode": 0
+          },
+          {
+            "name": "[document] WO-047 complete Decision bytes match across stored skeleton streams",
+            "file": "packages/skeleton/dist/test/scenario.test.js",
+            "durationMs": 4828.094208,
+            "exitCode": 0
+          },
+          {
+            "name": "feedback verifier",
+            "file": "packages/skeleton/dist/test/scenario.test.js",
+            "durationMs": 4700.305292,
+            "exitCode": 0
+          },
+          {
+            "name": "[document] WO-181 AC3: only blocking review findings enter real bounded repair and fresh re-verification",
+            "file": "packages/skeleton/dist/test/review.test.js",
+            "durationMs": 2934.199458,
+            "exitCode": 0
+          },
+          {
+            "name": "[document] WO-125 observed efforts reach the process and durable launch claim without effective readback",
+            "file": "packages/skeleton/dist/test/worker.test.js",
+            "durationMs": 2597.18425,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 405155920,
+        "peakRssBytes": 541753344,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:38.138Z",
+        "finishedAt": "2026-10-06T06:46:03.164Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "resume",
+          "docs-check-fixtures",
+          "kernel-docs"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "docs-check",
+          "index",
+          "lineage",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "lineage-fixtures"
+        ],
+        "schedulerDurationMs": 25026,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          2
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "console-docs",
+        "durationMs": 26850,
+        "slowestCases": [
+          {
+            "name": "[document] WO-115 a bound resident serves terminal bytes and events under the terminal's compiled authority, refuses in terminal shape and replays its receipts",
+            "file": "packages/console/dist/test/console-commands.test.js",
+            "durationMs": 12628.994958,
+            "exitCode": 0
+          },
+          {
+            "name": "[document] WO-115 every contract command keeps its terminal parser, refusal bytes and events over loopback",
+            "file": "packages/console/dist/test/console-commands.test.js",
+            "durationMs": 7201.033459,
+            "exitCode": 0
+          },
+          {
+            "name": "[document] WO-032 host collection reads current sources and all shipped exports without changing control or creating a missing store",
+            "file": "packages/console/dist/test/board.test.js",
+            "durationMs": 4423.831291,
+            "exitCode": 0
+          },
+          {
+            "name": "[document] WO-115 the compiled envelope admits or refuses each command by the terminal classifier's effect, through the terminal hooks' decider",
+            "file": "packages/console/dist/test/console-commands.test.js",
+            "durationMs": 3602.904375,
+            "exitCode": 0
+          },
+          {
+            "name": "[document] WO-116 the served audit command returns the terminal's bytes for each store and selection, the text host shows the three labeled projections, and the resident's own store audits as it stood when the command started",
+            "file": "packages/console/dist/test/console-commands.test.js",
+            "durationMs": 3200.611458,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 516265432,
+        "peakRssBytes": 746438656,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:38.440Z",
+        "finishedAt": "2026-10-06T06:46:05.296Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "resume",
+          "docs-check-fixtures",
+          "skeleton-docs"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "docs-check",
+          "index",
+          "lineage",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "kernel-docs"
+        ],
+        "schedulerDurationMs": 26856,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          3
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "resume",
+        "durationMs": 63458,
+        "slowestCases": [
+          {
+            "name": "resume",
+            "durationMs": 63458,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 73899448,
+        "peakRssBytes": 180682752,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-06T06:45:37.571Z",
+        "finishedAt": "2026-10-06T06:46:41.040Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "docs-check",
+          "index",
+          "lineage",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta"
+        ],
+        "schedulerDurationMs": 63469,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3,
+        "reservedSlots": 1,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 0,
+        "hostLaneSlots": 1
+      }
+    ],
+    "memory": {
+      "samples": 163,
+      "footprintSamples": 121,
+      "samplingCostMs": 1147.2892499999562,
+      "peakFootprintBytes": 1248146016,
+      "peakRssBytes": 1787363328,
+      "source": "proc_pid_rusage.ri_phys_footprint",
+      "unavailable": [],
+      "budgets": {
+        "taskShare": 0.25,
+        "gateShare": 0.5,
+        "hostShare": 0.6666666666666666,
+        "signalIntervalMs": 1000,
+        "footprintIntervalMs": 4000,
+        "outputTailBytes": 1048576,
+        "hostLanes": 4,
+        "basis": {
+          "workOrder": "WO-185",
+          "source": "docs/evidence/WO-185/repair-final001-gate-initial-measurements.json; full npm test -- --review at 2026-10-03T19:17:49.624Z; above-threshold runner sampling directs D026 interval correction and current-identity recheck",
+          "codeIdentity": "bf5bdd3dbafb90b1b9dd25b4de74f82d34ab5d2e440d7d528d1ee70047e0eab0",
+          "physicalBytes": 51539607552,
+          "taskPeakFootprintBytes": 1100039120,
+          "gatePeakFootprintBytes": 1787537328,
+          "hostPeakFootprintBytes": 1721155256,
+          "runnerSamplingPercent": 2.5778002756795977,
+          "guardSamplingPercent": 1.0997731092970733
+        },
+        "physicalBytes": 51539607552,
+        "taskBytes": 12884901888,
+        "gateBytes": 25769803776,
+        "hostBytes": 34359738368
+      }
+    },
+    "deadlineDiagnostics": [],
+    "criticalPath": {
+      "tasks": [
+        "build",
+        "publication",
+        "docs-check",
+        "resume"
+      ],
+      "workMs": 77493,
+      "waitMs": 20,
+      "durationMs": 77513
+    },
+    "workOrder": "WO-187"
+  }
+}

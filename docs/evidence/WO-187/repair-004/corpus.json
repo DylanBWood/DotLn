@@ -1,0 +1,38 @@
+{
+ "at": "2026-10-06T06:11:46.529Z",
+ "orders": 193,
+ "carryInSections": 15,
+ "sectionsNotWhole": [],
+ "bodyChangesAgainstPreRepair": [
+  {
+   "order": "WO-130",
+   "now": "\n\nAdvisory: docs/work-orders/WO-130-declared-suite-inputs-replica.md line 241 starts with `Known issue` in a layout this briefing does not read; nothing is printed from it.",
+   "before": ""
+  }
+ ],
+ "advisories": [
+  "Advisory: docs/work-orders/WO-130-declared-suite-inputs-replica.md line 241 starts with `Known issue` in a layout this briefing does not read; nothing is printed from it."
+ ],
+ "headers": [
+  "Known issues and carry-ins (docs/work-orders/WO-014-approval-burden-contract.md:352-359; ends before line 361, **Non-goals:**):",
+  "Known issues and carry-ins (docs/work-orders/WO-073-repository-class-and-profile.md:236-257; ends before line 259, **Non-goals:**):",
+  "Known issues and carry-ins (docs/work-orders/WO-123-vertical-composition.md:466-509; ends before line 511, **Non-goals:**):",
+  "Known issues and carry-ins (docs/work-orders/WO-184-seams-before-the-vertical.md:445-467; ends before line 469, **Non-goals:**):",
+  "Known issues and carry-ins (docs/work-orders/WO-185-no-order-can-exhaust-the-host.md:264-280; ends before line 282, **Non-goals:**):",
+  "Known issues and carry-ins (docs/work-orders/WO-186-gate-time-follows-the-change.md:303-324; ends before line 326, **Non-goals:**):",
+  "Known issues and carry-ins (docs/work-orders/WO-187-verification-attacks-and-reviews.md:276-288; ends before line 290, **Non-goals:**):",
+  "Known issues and carry-ins (docs/work-orders/WO-188-boarded-machinery-items.md:434-464; ends before line 466, **Non-goals:**):",
+  "Known issues and carry-ins (docs/work-orders/WO-189-front-page.md:203-213; ends before line 215, **Non-goals:**):",
+  "Known issues and carry-ins (docs/work-orders/WO-190-index-and-roadmap-show-the-work-ahead.md:211-221; ends before line 223, **Non-goals:**):",
+  "Known issues and carry-ins (docs/work-orders/WO-191-reader-profiles.md:216-234; ends before line 236, **Non-goals:**):",
+  "Known issues and carry-ins (docs/work-orders/WO-192-router-drives-an-order.md:309-330; ends before line 332, **Non-goals:**):",
+  "Known issues and carry-ins (docs/work-orders/WO-193-instance-capability-requests.md:235-252; ends before line 254, **Non-goals:**):",
+  "Known issues and carry-ins (docs/work-orders/WO-194-private-predecessor-map.md:194-210; ends before line 212, **Non-goals:**):",
+  "Known issues and carry-ins (docs/work-orders/WO-195-roles-finish-what-was-dispatched.md:276-291; ends before line 293, **Non-goals:**):"
+ ],
+ "finalReports": 166,
+ "finalReportReadings": {
+  "the report has no findings block": 166
+ },
+ "recordedEventsWithCounts": 0
+}

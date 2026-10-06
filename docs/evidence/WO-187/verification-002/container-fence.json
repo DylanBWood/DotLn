@@ -1,0 +1,33 @@
+{
+  "at": "2026-10-06T01:07:01.718Z",
+  "root": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln/27713ba74e4b420df62386330961982b9cd0c12de8a991eff4059b2f23581e02/scratch/ver002-fence-2nLupD/fixture",
+  "cwd": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln/27713ba74e4b420df62386330961982b9cd0c12de8a991eff4059b2f23581e02/scratch/ver002-fence-2nLupD/fixture/docs",
+  "report": "# Container fence fixture\n\n**Actor attestation:** {\"harness\":\"human\",\"harnessVersion\":\"not-applicable\",\"model\":\"human\",\"effort\":\"unknown\",\"source\":\"operator-attested\"}\n**Process cost:** unknown; cause no-session\n**Criterion 1:** met. Read.\n\n**Finding F1:** blocking; class: integration; real.\n\n> ```md\n> **Finding F9:** blocking; class: new-scope; example.\n\n**Finding F2:** blocking; class: escape; real.\n",
+  "exitCode": 0,
+  "stdout": "Recorded final review failure; return to bounded repair.\nObserved facts at 2026-10-06T01:07:01.710Z: unknown (observation-runtime-unavailable); advisory only.",
+  "stderr": "Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.\nAdvisory: Session authorship and output reads unavailable.",
+  "recorded": {
+    "type": "FinalReviewCompleted",
+    "verdict": "fail",
+    "findingCounts": {
+      "escape": 0,
+      "integration": 1,
+      "new-scope": 0,
+      "unclassed": 0
+    },
+    "advisories": [
+      "Session authorship and output reads unavailable."
+    ]
+  },
+  "expectedCounts": {
+    "escape": 1,
+    "integration": 1,
+    "new-scope": 0,
+    "unclassed": 0
+  },
+  "briefingDropsVisibleIssue": true,
+  "briefing": "",
+  "advisoriesForPresentSelfReview": [
+    "docs/evidence/WO-187/handoff.md lacks a self-review: line; record the fresh review's found, fixed and recorded counts (or the separate-pass fallback). Completion records all the same."
+  ]
+}

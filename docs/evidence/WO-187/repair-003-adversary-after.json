@@ -1,0 +1,111 @@
+{
+  "recordedAt": "2026-10-06T02:54:15.147Z",
+  "cases": [
+    {
+      "name": "parentheticalPass",
+      "text": "**R1 (blocking):** class: escape; defect.",
+      "verdict": "pass",
+      "result": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 0,
+        "unrecognised": [
+          1
+        ],
+        "measured": false
+      }
+    },
+    {
+      "name": "parentheticalFail",
+      "text": "**Finding F1:** blocking; class: escape; first.\n**R1 (blocking):** class: escape; second.",
+      "verdict": "fail",
+      "result": {
+        "counts": {
+          "escape": 1,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [
+          2
+        ],
+        "measured": false
+      }
+    },
+    {
+      "name": "bodyClass",
+      "text": "**Finding F1:** blocking; class: escape; the fixture emits `class: integration`.",
+      "verdict": "pass",
+      "result": {
+        "counts": {
+          "escape": 1,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    {
+      "name": "classProse",
+      "text": "**Finding F1:** blocking; class: escape; class declarations emit `class: integration`.",
+      "verdict": "pass",
+      "result": {
+        "counts": {
+          "escape": 1,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    {
+      "name": "bodyRoute",
+      "text": "**Finding F1:** follow-up; class: typo; the blocking check is confusing.",
+      "verdict": "pass",
+      "result": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 1
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    {
+      "name": "largeIDs",
+      "text": "**Finding F9007199254740992:** blocking; class: escape; first.\n**Finding F9007199254740993:** blocking; class: integration; second.",
+      "verdict": "fail",
+      "result": {
+        "counts": {
+          "escape": 1,
+          "integration": 1,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 2,
+        "unrecognised": [],
+        "measured": true
+      }
+    }
+  ]
+}

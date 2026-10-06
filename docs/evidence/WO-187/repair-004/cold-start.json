@@ -1,0 +1,73 @@
+{
+  "method": "UTF-8 bytes of the installed CLAUDE.md plus each installed role skill, by file size; the before column is the pre-repair measurement of the same files in this session and equals cold-start-after.json",
+  "measuredAt": "2026-10-06T06:41:20.543Z",
+  "instructionBytes": 6873,
+  "roles": {
+    "executor": {
+      "skillBytesBefore": 22904,
+      "skillBytes": 22904,
+      "bothRootsEqual": true,
+      "rootBytesBefore": 29777,
+      "rootBytes": 29777,
+      "delta": 0,
+      "ceiling": 29246,
+      "headroom": -531
+    },
+    "planner": {
+      "skillBytesBefore": 13430,
+      "skillBytes": 13430,
+      "bothRootsEqual": true,
+      "rootBytesBefore": 20303,
+      "rootBytes": 20303,
+      "delta": 0,
+      "ceiling": 24576,
+      "headroom": 4273
+    },
+    "refuter": {
+      "skillBytesBefore": 12709,
+      "skillBytes": 12709,
+      "bothRootsEqual": true,
+      "rootBytesBefore": 19582,
+      "rootBytes": 19582,
+      "delta": 0,
+      "ceiling": null,
+      "headroom": null
+    },
+    "release-close": {
+      "skillBytesBefore": 11612,
+      "skillBytes": 11612,
+      "bothRootsEqual": true,
+      "rootBytesBefore": 18485,
+      "rootBytes": 18485,
+      "delta": 0,
+      "ceiling": 21266,
+      "headroom": 2781
+    },
+    "reviewer": {
+      "skillBytesBefore": 20768,
+      "skillBytes": 21009,
+      "bothRootsEqual": true,
+      "rootBytesBefore": 27641,
+      "rootBytes": 27882,
+      "delta": 241,
+      "ceiling": 28884,
+      "headroom": 1002
+    },
+    "verifier": {
+      "skillBytesBefore": 19204,
+      "skillBytes": 19204,
+      "bothRootsEqual": true,
+      "rootBytesBefore": 26077,
+      "rootBytes": 26077,
+      "delta": 0,
+      "ceiling": 29831,
+      "headroom": 3754
+    }
+  },
+  "product07": {
+    "bytesBefore": 175497,
+    "bytes": 174675,
+    "ceiling": 166907
+  },
+  "budgetsChanged": false
+}

@@ -1,0 +1,184 @@
+{
+  "command": "bounded class-field probe importing checkpoint 8 and current review-findings.mjs",
+  "cutoff": "2026-10-06T01:26:37.514Z",
+  "beforeSource": "refs/dotln/checkpoint/WO-187/8:scripts/lib/review-findings.mjs",
+  "afterSource": "scripts/lib/review-findings.mjs",
+  "rows": [
+    {
+      "value": "typo",
+      "verdict": "pass",
+      "before": {
+        "measured": true,
+        "unrecognised": []
+      },
+      "after": {
+        "measured": false,
+        "unrecognised": [
+          1
+        ]
+      }
+    },
+    {
+      "value": "typo",
+      "verdict": "fail",
+      "before": {
+        "measured": true,
+        "unrecognised": []
+      },
+      "after": {
+        "measured": false,
+        "unrecognised": [
+          2
+        ]
+      }
+    },
+    {
+      "value": "escape2",
+      "verdict": "pass",
+      "before": {
+        "measured": true,
+        "unrecognised": []
+      },
+      "after": {
+        "measured": false,
+        "unrecognised": [
+          1
+        ]
+      }
+    },
+    {
+      "value": "escape2",
+      "verdict": "fail",
+      "before": {
+        "measured": true,
+        "unrecognised": []
+      },
+      "after": {
+        "measured": false,
+        "unrecognised": [
+          2
+        ]
+      }
+    },
+    {
+      "value": "",
+      "verdict": "pass",
+      "before": {
+        "measured": true,
+        "unrecognised": []
+      },
+      "after": {
+        "measured": false,
+        "unrecognised": [
+          1
+        ]
+      }
+    },
+    {
+      "value": "",
+      "verdict": "fail",
+      "before": {
+        "measured": true,
+        "unrecognised": []
+      },
+      "after": {
+        "measured": false,
+        "unrecognised": [
+          2
+        ]
+      }
+    },
+    {
+      "value": "`escape`",
+      "verdict": "pass",
+      "before": {
+        "measured": true,
+        "unrecognised": []
+      },
+      "after": {
+        "measured": false,
+        "unrecognised": [
+          1
+        ]
+      }
+    },
+    {
+      "value": "`escape`",
+      "verdict": "fail",
+      "before": {
+        "measured": true,
+        "unrecognised": []
+      },
+      "after": {
+        "measured": false,
+        "unrecognised": [
+          2
+        ]
+      }
+    },
+    {
+      "value": "``integration``",
+      "verdict": "pass",
+      "before": {
+        "measured": false,
+        "unrecognised": [
+          1
+        ]
+      },
+      "after": {
+        "measured": false,
+        "unrecognised": [
+          1
+        ]
+      }
+    },
+    {
+      "value": "``integration``",
+      "verdict": "fail",
+      "before": {
+        "measured": false,
+        "unrecognised": [
+          2
+        ]
+      },
+      "after": {
+        "measured": false,
+        "unrecognised": [
+          2
+        ]
+      }
+    },
+    {
+      "value": "**new-scope**",
+      "verdict": "pass",
+      "before": {
+        "measured": false,
+        "unrecognised": [
+          1
+        ]
+      },
+      "after": {
+        "measured": false,
+        "unrecognised": [
+          1
+        ]
+      }
+    },
+    {
+      "value": "**new-scope**",
+      "verdict": "fail",
+      "before": {
+        "measured": false,
+        "unrecognised": [
+          2
+        ]
+      },
+      "after": {
+        "measured": false,
+        "unrecognised": [
+          2
+        ]
+      }
+    }
+  ]
+}

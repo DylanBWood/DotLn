@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-187",
+  "dispatch": "resume: fix (VER-001)",
+  "recordedAt": "2026-10-06T00:43:32.532Z",
+  "before": {
+    "subject": "refs/dotln/checkpoint/WO-187/5 scripts/ (the subject VER-001 judged)"
+  },
+  "after": {
+    "subject": "the repaired worktree, after the self-review round"
+  },
+  "command": "node scripts/harness.mjs bounded -- node <session scratch>/per-case.mjs <checkpoint-5 scripts> <worktree> <fixture root left by scripts/test-verification-review.mjs>",
+  "lifecycle": "node scripts/test-verification-review.mjs <root> passes at the repair; with checkpoint 5 scripts/ it fails at its first new assertion: the second section prints",
+  "cases": [
+    {
+      "case": "F1 187-fixture inline-label sentinel",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "F1 187-fixture bold-paragraph sentinel",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "F1 901-layout colon-outside sentinel",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "F1 902-layout subheading sentinel",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "F1 903-layout first-bold sentinel",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "F1 904-layout parenthetical sentinel",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "F1 905-layout unlisted-label sentinel",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "F1 906-layout holds no text",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "F2 WO-100 period",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "F2 WO-164 comma",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "F2 ordered list",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "F2 paren route",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "F2 inline backticks",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "F2 recaps",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "F2 blockquote+dash (unquoted)",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "F2 classed line without F-number advised (unquoted)",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "R3 - self-review: a.",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "R3 **self-review**: a.",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "R3 > self-review: a.",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "R3 1. self-review: a.",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "R3 > - **Self-review:** a.",
+      "before": "FAIL",
+      "after": "pass"
+    },
+    {
+      "case": "R1 clean reviews add no item",
+      "before": "FAIL",
+      "after": "pass"
+    }
+  ],
+  "failedBefore": 22,
+  "passAfter": 22,
+  "selfReviewCases": {
+    "source": "the fresh dotln-worker adversary's probes p1-p7 against the first repair round (before), and scripts/test-verification-review.mjs at the repair (after)",
+    "cases": [
+      "fence behind a blockquote counted as escape 1 -> 0",
+      "fence behind a list marker counted -> 0",
+      "passing re-review recaps (WO-139 FINAL-002, WO-144 FINAL-002 shapes; a report id with a route word) counted -> 0",
+      "not blocking read as blocking -> not blocking",
+      "table row or F1; label naming a route and a class, lost or left measured -> advised and unmeasured",
+      "U+2028 or a lone CR in a label line: uncounted, and cubic (3,948 ms at 1,600 spaces) -> counted, under 1 s at 25,600 spaces",
+      "F01 and F1 counted as two findings -> one",
+      "F1.2 prose counted as F1 -> not counted",
+      "two identical class labels unclassed -> that class",
+      "empty **self-review:** counted as present -> advisory",
+      "self-review only inside a quoted fence counted as present -> advisory",
+      "label text closed by ** printed with ** -> trimmed",
+      "Known issues label in a bulleted layout printed nothing silently -> advisory"
+    ]
+  }
+}

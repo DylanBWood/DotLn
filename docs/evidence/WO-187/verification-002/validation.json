@@ -1,0 +1,97 @@
+{
+  "at": "2026-10-06T01:09:38.592Z",
+  "head": "c44ba6c60d7a3049f15edc4ce106b2dcc518b551",
+  "branch": "wo-187",
+  "checkpoint": "236d7c8aa02b228252c786e64ed739242ac981af",
+  "codeIdentity": "ba8910f12fa25c7ebb8320f5dfd8080e2214ebac74325f50258a8a0b0e290983",
+  "diffCheck": "",
+  "stagedDiffCheck": "",
+  "budgetsDiff": "",
+  "newSuppressions": [],
+  "roleBytes": [
+    {
+      "role": "executor",
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "before": 29237,
+      "after": 29777,
+      "ceiling": 29246
+    },
+    {
+      "role": "verifier",
+      "path": ".claude/skills/dotln-verifier/SKILL.md",
+      "before": 25735,
+      "after": 26077,
+      "ceiling": 29831
+    },
+    {
+      "role": "reviewer",
+      "path": ".claude/skills/dotln-reviewer/SKILL.md",
+      "before": 27077,
+      "after": 27641,
+      "ceiling": 28884
+    },
+    {
+      "role": "release-close",
+      "path": ".claude/skills/dotln-release-close/SKILL.md",
+      "before": 18186,
+      "after": 18485,
+      "ceiling": 21266
+    },
+    {
+      "role": "planner",
+      "path": ".claude/skills/dotln-planner/SKILL.md",
+      "before": 20004,
+      "after": 20303,
+      "ceiling": 24576
+    },
+    {
+      "role": "refuter",
+      "path": ".claude/skills/dotln-refuter/SKILL.md",
+      "before": 19283,
+      "after": 19582,
+      "ceiling": null
+    },
+    {
+      "role": "executor",
+      "path": ".agents/skills/dotln-executor/SKILL.md",
+      "before": 29237,
+      "after": 29777,
+      "ceiling": 29246
+    },
+    {
+      "role": "verifier",
+      "path": ".agents/skills/dotln-verifier/SKILL.md",
+      "before": 25735,
+      "after": 26077,
+      "ceiling": 29831
+    },
+    {
+      "role": "reviewer",
+      "path": ".agents/skills/dotln-reviewer/SKILL.md",
+      "before": 27077,
+      "after": 27641,
+      "ceiling": 28884
+    },
+    {
+      "role": "release-close",
+      "path": ".agents/skills/dotln-release-close/SKILL.md",
+      "before": 18186,
+      "after": 18485,
+      "ceiling": 21266
+    },
+    {
+      "role": "planner",
+      "path": ".agents/skills/dotln-planner/SKILL.md",
+      "before": 20004,
+      "after": 20303,
+      "ceiling": 24576
+    },
+    {
+      "role": "refuter",
+      "path": ".agents/skills/dotln-refuter/SKILL.md",
+      "before": 19283,
+      "after": 19582,
+      "ceiling": null
+    }
+  ]
+}

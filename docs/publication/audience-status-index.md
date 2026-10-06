@@ -214,6 +214,7 @@ as a current blocked verdict.
 | [Workflow closeout and releases](../product/07-execution-guide.md#workflow-closeout-and-releases)                                                            | software-engineer                   | implemented |
 | [Documentation freshness and ownership](../product/07-execution-guide.md#documentation-freshness-and-ownership)                                              | everyday-ai-user, software-engineer | specified   |
 | [Discipline](../product/07-execution-guide.md#discipline)                                                                                                    | software-engineer                   | specified   |
+| [Verification review and attack](../product/07-execution-guide.md#verification-review-and-attack) | software-engineer | implemented |
 | [Model-specific notes](../product/07-execution-guide.md#model-specific-notes)                                                                                | software-engineer                   | specified   |
 
 ## 08 — Publication compiler

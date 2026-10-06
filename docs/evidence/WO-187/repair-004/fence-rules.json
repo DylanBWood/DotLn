@@ -1,0 +1,20 @@
+{
+ "at": "2026-10-06T06:11:46.326Z",
+ "rules": {
+  "shipped": {
+   "nestedFence": "printed",
+   "listMarkerFences": "printed",
+   "indentedFence": "not printed; the header names line 7, **Design:**"
+  },
+  "plainToggle": {
+   "nestedFence": "not printed; the header names line 8, **Design:**",
+   "listMarkerFences": "printed",
+   "indentedFence": "not printed; the header names line 7, **Design:**"
+  },
+  "indentTolerant": {
+   "nestedFence": "printed",
+   "listMarkerFences": "not printed; nothing says so",
+   "indentedFence": "printed"
+  }
+ }
+}

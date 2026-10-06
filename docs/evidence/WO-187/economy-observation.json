@@ -1,0 +1,11 @@
+{
+  "question": "Read finding counts once at lifecycle recording, or parse reports again during planning?",
+  "alternatives": [
+    "Persist an additive count on FinalReviewCompleted and consume events",
+    "Parse each report separately in lifecycle and planning"
+  ],
+  "observation": "failureRecord already consumes FinalReviewCompleted in a single event traversal; no existing report parser participates in planning. Persisting counts avoids a second parser and preserves immutable event evidence.",
+  "wallSeconds": 0.00008320900000000009,
+  "source": "performance.now around reading scripts/lib/plan-failures.mjs and recording the inspected data path",
+  "outcome": "kept-current"
+}

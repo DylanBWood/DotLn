@@ -1,0 +1,276 @@
+{
+  "schemaVersion": 3,
+  "comparisonEdition": "v0.66.3",
+  "method": "Installed CLAUDE.md plus the installed role skill only; UTF-8 source bytes, no task documents or estimated tokens. Previous edition is the highest reachable local vX.Y.Z release tag (or explicit comparison). Last acceptance uses the first committed snapshot on HEAD's first-parent history containing the role's latest global acceptance (date, then record order); it does not infer a measurement from the ceiling or reason prose. Missing history or files are null with a cause.",
+  "instruction": {
+    "path": "CLAUDE.md",
+    "bytes": 6873,
+    "previousBytes": 6873
+  },
+  "profiles": [
+    {
+      "role": "executor",
+      "skillsRoot": ".claude/skills",
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "skillBytes": 22364,
+      "bytes": 29237,
+      "previousBytes": 29237,
+      "previousCause": null,
+      "delta": 0,
+      "ceiling": 29246,
+      "lastAcceptance": {
+        "date": "2026-09-22",
+        "ceiling": 29246,
+        "revision": "75743fd64031e83bb13c3873411fd5ca56cda1c1",
+        "source": "75743fd64031e83bb13c3873411fd5ca56cda1c1:docs/control/budgets.json",
+        "bytes": 25183,
+        "delta": 4054,
+        "cause": null
+      },
+      "metric": "coldStartBytes.executor",
+      "verdict": "within"
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".claude/skills",
+      "path": ".claude/skills/dotln-verifier/SKILL.md",
+      "skillBytes": 18862,
+      "bytes": 25735,
+      "previousBytes": 25735,
+      "previousCause": null,
+      "delta": 0,
+      "ceiling": 29831,
+      "lastAcceptance": {
+        "date": "2026-10-05",
+        "ceiling": 29831,
+        "revision": "c44ba6c60d7a3049f15edc4ce106b2dcc518b551",
+        "source": "c44ba6c60d7a3049f15edc4ce106b2dcc518b551:docs/control/budgets.json",
+        "bytes": 25735,
+        "delta": 0,
+        "cause": null
+      },
+      "metric": "coldStartBytes.verifier",
+      "verdict": "within"
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".claude/skills",
+      "path": ".claude/skills/dotln-reviewer/SKILL.md",
+      "skillBytes": 20204,
+      "bytes": 27077,
+      "previousBytes": 27077,
+      "previousCause": null,
+      "delta": 0,
+      "ceiling": 28884,
+      "lastAcceptance": {
+        "date": "2026-09-29",
+        "ceiling": 28884,
+        "revision": "c57fd557a4f6617fa64cffc1bfd491140cb082d6",
+        "source": "c57fd557a4f6617fa64cffc1bfd491140cb082d6:docs/control/budgets.json",
+        "bytes": 24788,
+        "delta": 2289,
+        "cause": null
+      },
+      "metric": "coldStartBytes.reviewer",
+      "verdict": "within"
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".claude/skills",
+      "path": ".claude/skills/dotln-release-close/SKILL.md",
+      "skillBytes": 11313,
+      "bytes": 18186,
+      "previousBytes": 18186,
+      "previousCause": null,
+      "delta": 0,
+      "ceiling": 21266,
+      "lastAcceptance": {
+        "date": "2026-10-01",
+        "ceiling": 21266,
+        "revision": "a3da7127b0c52c110e3f48e34cbfe0e3cd1a2570",
+        "source": "a3da7127b0c52c110e3f48e34cbfe0e3cd1a2570:docs/control/budgets.json",
+        "bytes": 17170,
+        "delta": 1016,
+        "cause": null
+      },
+      "metric": "coldStartBytes.release-close",
+      "verdict": "within"
+    },
+    {
+      "role": "planner",
+      "skillsRoot": ".claude/skills",
+      "path": ".claude/skills/dotln-planner/SKILL.md",
+      "skillBytes": 13131,
+      "bytes": 20004,
+      "previousBytes": 20004,
+      "previousCause": null,
+      "delta": 0,
+      "ceiling": 24576,
+      "lastAcceptance": {
+        "date": null,
+        "ceiling": null,
+        "revision": null,
+        "source": null,
+        "bytes": null,
+        "delta": null,
+        "cause": "no-acceptance"
+      },
+      "metric": "coldStartBytes.planner",
+      "verdict": "within"
+    },
+    {
+      "role": "refuter",
+      "skillsRoot": ".claude/skills",
+      "path": ".claude/skills/dotln-refuter/SKILL.md",
+      "skillBytes": 12410,
+      "bytes": 19283,
+      "previousBytes": 19283,
+      "previousCause": null,
+      "delta": 0,
+      "ceiling": null,
+      "lastAcceptance": {
+        "date": null,
+        "ceiling": null,
+        "revision": null,
+        "source": null,
+        "bytes": null,
+        "delta": null,
+        "cause": "no-acceptance"
+      },
+      "metric": "coldStartBytes.refuter",
+      "verdict": "unset"
+    },
+    {
+      "role": "executor",
+      "skillsRoot": ".agents/skills",
+      "path": ".agents/skills/dotln-executor/SKILL.md",
+      "skillBytes": 22364,
+      "bytes": 29237,
+      "previousBytes": 29237,
+      "previousCause": null,
+      "delta": 0,
+      "ceiling": 29246,
+      "lastAcceptance": {
+        "date": "2026-09-22",
+        "ceiling": 29246,
+        "revision": "75743fd64031e83bb13c3873411fd5ca56cda1c1",
+        "source": "75743fd64031e83bb13c3873411fd5ca56cda1c1:docs/control/budgets.json",
+        "bytes": 25183,
+        "delta": 4054,
+        "cause": null
+      },
+      "metric": "coldStartBytes.executor",
+      "verdict": "within"
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".agents/skills",
+      "path": ".agents/skills/dotln-verifier/SKILL.md",
+      "skillBytes": 18862,
+      "bytes": 25735,
+      "previousBytes": 25735,
+      "previousCause": null,
+      "delta": 0,
+      "ceiling": 29831,
+      "lastAcceptance": {
+        "date": "2026-10-05",
+        "ceiling": 29831,
+        "revision": "c44ba6c60d7a3049f15edc4ce106b2dcc518b551",
+        "source": "c44ba6c60d7a3049f15edc4ce106b2dcc518b551:docs/control/budgets.json",
+        "bytes": 25735,
+        "delta": 0,
+        "cause": null
+      },
+      "metric": "coldStartBytes.verifier",
+      "verdict": "within"
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".agents/skills",
+      "path": ".agents/skills/dotln-reviewer/SKILL.md",
+      "skillBytes": 20204,
+      "bytes": 27077,
+      "previousBytes": 27077,
+      "previousCause": null,
+      "delta": 0,
+      "ceiling": 28884,
+      "lastAcceptance": {
+        "date": "2026-09-29",
+        "ceiling": 28884,
+        "revision": "c57fd557a4f6617fa64cffc1bfd491140cb082d6",
+        "source": "c57fd557a4f6617fa64cffc1bfd491140cb082d6:docs/control/budgets.json",
+        "bytes": 24788,
+        "delta": 2289,
+        "cause": null
+      },
+      "metric": "coldStartBytes.reviewer",
+      "verdict": "within"
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".agents/skills",
+      "path": ".agents/skills/dotln-release-close/SKILL.md",
+      "skillBytes": 11313,
+      "bytes": 18186,
+      "previousBytes": 18186,
+      "previousCause": null,
+      "delta": 0,
+      "ceiling": 21266,
+      "lastAcceptance": {
+        "date": "2026-10-01",
+        "ceiling": 21266,
+        "revision": "a3da7127b0c52c110e3f48e34cbfe0e3cd1a2570",
+        "source": "a3da7127b0c52c110e3f48e34cbfe0e3cd1a2570:docs/control/budgets.json",
+        "bytes": 17170,
+        "delta": 1016,
+        "cause": null
+      },
+      "metric": "coldStartBytes.release-close",
+      "verdict": "within"
+    },
+    {
+      "role": "planner",
+      "skillsRoot": ".agents/skills",
+      "path": ".agents/skills/dotln-planner/SKILL.md",
+      "skillBytes": 13131,
+      "bytes": 20004,
+      "previousBytes": 20004,
+      "previousCause": null,
+      "delta": 0,
+      "ceiling": 24576,
+      "lastAcceptance": {
+        "date": null,
+        "ceiling": null,
+        "revision": null,
+        "source": null,
+        "bytes": null,
+        "delta": null,
+        "cause": "no-acceptance"
+      },
+      "metric": "coldStartBytes.planner",
+      "verdict": "within"
+    },
+    {
+      "role": "refuter",
+      "skillsRoot": ".agents/skills",
+      "path": ".agents/skills/dotln-refuter/SKILL.md",
+      "skillBytes": 12410,
+      "bytes": 19283,
+      "previousBytes": 19283,
+      "previousCause": null,
+      "delta": 0,
+      "ceiling": null,
+      "lastAcceptance": {
+        "date": null,
+        "ceiling": null,
+        "revision": null,
+        "source": null,
+        "bytes": null,
+        "delta": null,
+        "cause": "no-acceptance"
+      },
+      "metric": "coldStartBytes.refuter",
+      "verdict": "unset"
+    }
+  ]
+}

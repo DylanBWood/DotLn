@@ -1,0 +1,21 @@
+{
+  "command": "bounded counted code-formatted field reproduction",
+  "cutoff": "2026-10-06T01:40:24.658Z",
+  "source": "current repair reader; canonical counted-class syntax unchanged",
+  "text": "**Finding F1:** `blocking`; `class`: escape; real.",
+  "result": {
+    "counts": {
+      "escape": 0,
+      "integration": 0,
+      "new-scope": 0,
+      "unclassed": 1
+    },
+    "unclassedBlocking": [
+      "F1"
+    ],
+    "found": 1,
+    "unrecognised": [],
+    "measured": true
+  },
+  "disposition": "recorded with D020 class-label follow-up FUP-82e9f0bda503c40c"
+}

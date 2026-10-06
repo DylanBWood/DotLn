@@ -1,0 +1,149 @@
+{
+  "at": "2026-10-06T04:44:16.047Z",
+  "source": "root reproduction by direct module calls (probes/adversary-f2.mjs) of the fresh adversary's items; 'cp11' is refs/dotln/checkpoint/WO-187/11, VER-003's subject, via git archive scripts/lib. Finding inputs F2-shaped lines follow a blank-separated counted control '**Finding F1:** blocking; class: escape; counted control.'",
+  "adversary": {
+    "type": "dotln-worker (definition pin claude-opus-5-5/xhigh; no per-call model override)",
+    "inputs": {
+      "order.md": "sha256:064d35550e8cd3b1196ccefb083d8b187fac68e795461498bd42953e228ea6c8",
+      "authored.diff": "sha256:aec8f68aa35ef186d7f33a16efc542da97d86c3c3f65e891e448a36db33fb49b",
+      "repair.diff (refs/dotln/checkpoint/WO-187/13 to worktree)": "sha256:8e1b033dc11ee8f47978dd2aaa2cc41b7047491b3a900740633432563ce7ba94"
+    },
+    "executableAccess": "imported scripts/lib/review-findings.mjs and scripts/lib/verification-briefing.mjs read-only; no repository writes, npm, lifecycle or gate commands, no descendants",
+    "hostReadback": {
+      "model": "claude-opus-5-5 (self-reported from its system context)",
+      "effort": null
+    },
+    "taskNotification": {
+      "subagentTokens": 175796,
+      "toolUses": 21,
+      "durationMs": 1199280
+    }
+  },
+  "results": {
+    "issueLabel/pass": {
+      "now": "escape=1 found=1 unrec=[] measured=true ub=[]",
+      "cp11": "escape=1 found=1 unrec=[3] measured=false ub=[]"
+    },
+    "issueLabel/fail": {
+      "now": "escape=1 found=1 unrec=[] measured=true ub=[]",
+      "cp11": "escape=1 found=1 unrec=[3] measured=false ub=[]"
+    },
+    "hashLabel/pass": {
+      "now": "escape=1 found=1 unrec=[] measured=true ub=[]",
+      "cp11": "escape=1 found=1 unrec=[3] measured=false ub=[]"
+    },
+    "hashLabel/fail": {
+      "now": "escape=1 found=1 unrec=[] measured=true ub=[]",
+      "cp11": "escape=1 found=1 unrec=[3] measured=false ub=[]"
+    },
+    "letterLabel/pass": {
+      "now": "escape=1 found=1 unrec=[] measured=true ub=[]",
+      "cp11": "escape=1 found=1 unrec=[3] measured=false ub=[]"
+    },
+    "letterLabel/fail": {
+      "now": "escape=1 found=1 unrec=[] measured=true ub=[]",
+      "cp11": "escape=1 found=1 unrec=[3] measured=false ub=[]"
+    },
+    "decimalLabel/pass": {
+      "now": "escape=1 found=1 unrec=[] measured=true ub=[]",
+      "cp11": "escape=1 found=1 unrec=[3] measured=false ub=[]"
+    },
+    "decimalLabel/fail": {
+      "now": "escape=1 found=1 unrec=[] measured=true ub=[]",
+      "cp11": "escape=1 found=1 unrec=[3] measured=false ub=[]"
+    },
+    "spacedLabel/pass": {
+      "now": "escape=1 found=1 unrec=[] measured=true ub=[]",
+      "cp11": "escape=1 found=1 unrec=[3] measured=false ub=[]"
+    },
+    "spacedLabel/fail": {
+      "now": "escape=1 found=1 unrec=[] measured=true ub=[]",
+      "cp11": "escape=1 found=1 unrec=[3] measured=false ub=[]"
+    },
+    "routeField/pass": {
+      "now": "escape=1 found=1 unrec=[] measured=true ub=[]",
+      "cp11": "escape=1 found=1 unrec=[3] measured=false ub=[]"
+    },
+    "routeField/fail": {
+      "now": "escape=1 found=1 unrec=[] measured=true ub=[]",
+      "cp11": "escape=1 found=1 unrec=[3] measured=false ub=[]"
+    },
+    "classFirst/pass": {
+      "now": "escape=1 found=1 unrec=[] measured=true ub=[]",
+      "cp11": "escape=1 found=1 unrec=[3] measured=false ub=[]"
+    },
+    "classFirst/fail": {
+      "now": "escape=1 found=1 unrec=[] measured=true ub=[]",
+      "cp11": "escape=1 found=1 unrec=[3] measured=false ub=[]"
+    },
+    "recapWithClass/pass": {
+      "now": "escape=1 found=1 unrec=[] measured=true ub=[]",
+      "cp11": "escape=1 found=1 unrec=[3] measured=false ub=[]"
+    },
+    "recapWithClass/fail": {
+      "now": "escape=1 found=1 unrec=[] measured=true ub=[]",
+      "cp11": "escape=1 found=1 unrec=[3] measured=false ub=[]"
+    },
+    "ver002Form/pass": {
+      "now": "escape=1 found=1 unrec=[3] measured=false ub=[]",
+      "cp11": "escape=1 found=1 unrec=[3] measured=false ub=[]"
+    },
+    "ver002Form/fail": {
+      "now": "escape=1 found=1 unrec=[3] measured=false ub=[]",
+      "cp11": "escape=1 found=1 unrec=[3] measured=false ub=[]"
+    },
+    "F1reverse": {
+      "verdict": "pass",
+      "now": "escape=1 found=1 unrec=[] measured=true ub=[]",
+      "cp11": "escape=1 found=1 unrec=[] measured=true ub=[]"
+    },
+    "F3basis": {
+      "verdict": "pass",
+      "now": "escape=1 found=1 unrec=[3] measured=false ub=[]",
+      "cp11": "escape=1 found=1 unrec=[3] measured=false ub=[]"
+    },
+    "F3followup": {
+      "verdict": "pass",
+      "now": "escape=1 found=1 unrec=[3] measured=false ub=[]",
+      "cp11": "escape=1 found=1 unrec=[3] measured=false ub=[]"
+    },
+    "F4hiddenRouteFail": {
+      "verdict": "fail",
+      "now": "unclassed=1 found=1 unrec=[] measured=true ub=[F1]",
+      "cp11": "unclassed=1 found=1 unrec=[] measured=true ub=[F1]"
+    },
+    "F5underscore": {
+      "verdict": "pass",
+      "now": "unclassed=1 found=1 unrec=[] measured=true ub=[]",
+      "cp11": "unclassed=1 found=1 unrec=[] measured=true ub=[]"
+    },
+    "F5underscoreNoClass": {
+      "verdict": "pass",
+      "now": "none found=0 unrec=[] measured=true ub=[]",
+      "cp11": "none found=0 unrec=[] measured=true ub=[]"
+    },
+    "F7fieldZero": {
+      "verdict": "pass",
+      "now": "integration=1 found=1 unrec=[] measured=true ub=[]",
+      "cp11": "integration=1 found=1 unrec=[] measured=true ub=[]"
+    },
+    "F8paren": {
+      "verdict": "pass",
+      "now": "unclassed=1 found=1 unrec=[] measured=true ub=[F2]",
+      "cp11": "unclassed=1 found=1 unrec=[] measured=true ub=[F2]"
+    },
+    "F12bareCR": {
+      "verdict": "fail",
+      "now": "escape=1 found=1 unrec=[] measured=true ub=[]",
+      "cp11": "unclassed=1 found=1 unrec=[] measured=true ub=[F1]"
+    },
+    "F6": {
+      "now": "\n\nKnown issues and carry-ins (docs/work-orders/WO-902-probe.md:3):\n- Receipt 038: the order's estimate in the",
+      "cp11": "\n\nKnown issues and carry-ins (docs/work-orders/WO-902-probe.md:3):\n- Receipt 038: the order's estimate in the"
+    },
+    "F10": {
+      "now": "",
+      "cp11": ""
+    }
+  }
+}

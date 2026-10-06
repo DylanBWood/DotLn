@@ -1,0 +1,53 @@
+{
+  "recordedAt": "2026-10-06T02:45:39.407Z",
+  "compared": 166,
+  "countsChanged": [],
+  "newlyUnmeasured": [],
+  "probes": {
+    "fullyEnclosed": {
+      "text": "A stray ` opener\n**Finding F1:** blocking; class: escape; actual record.\nA stray ` closer",
+      "result": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 0,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    "basis": {
+      "text": "**Finding F1:** blocking; class: escape; defect.\n- Basis for class: present in the subject; blocking because criterion 4.",
+      "result": {
+        "counts": {
+          "escape": 1,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 0
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      }
+    },
+    "unknownFollowup": {
+      "text": "**Finding F1:** follow-up; class: escape.",
+      "result": {
+        "counts": {
+          "escape": 0,
+          "integration": 0,
+          "new-scope": 0,
+          "unclassed": 1
+        },
+        "unclassedBlocking": [],
+        "found": 1,
+        "unrecognised": [],
+        "measured": true
+      }
+    }
+  }
+}

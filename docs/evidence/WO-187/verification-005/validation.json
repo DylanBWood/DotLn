@@ -1,0 +1,65 @@
+{
+  "observedAt": "2026-10-06T10:10:53.824Z",
+  "branch": "wo-187",
+  "head": "c44ba6c60d7a3049f15edc4ce106b2dcc518b551",
+  "subjectCheckpoint": "refs/dotln/checkpoint/WO-187/18",
+  "subjectMatchesCheckpoint": true,
+  "codeIdentity": "b8245313e92bd0493329f4e38506337ffd28e292b13dfc0cc42ea3e6c3ca34fe",
+  "instructionBytes": 6873,
+  "roots": {
+    "executor": {
+      "before": 29237,
+      "after": 29777,
+      "ceiling": 29246,
+      "twinsEqual": true
+    },
+    "verifier": {
+      "before": 25735,
+      "after": 26077,
+      "ceiling": 29831,
+      "twinsEqual": true
+    },
+    "reviewer": {
+      "before": 27077,
+      "after": 27882,
+      "ceiling": 28884,
+      "twinsEqual": true
+    },
+    "release-close": {
+      "before": 18186,
+      "after": 18485,
+      "ceiling": 21266,
+      "twinsEqual": true
+    },
+    "planner": {
+      "before": 20004,
+      "after": 20303,
+      "ceiling": 24576,
+      "twinsEqual": true
+    },
+    "refuter": {
+      "before": 19283,
+      "after": 19582,
+      "ceiling": null,
+      "twinsEqual": true
+    }
+  },
+  "product07": {
+    "bytes": 174675,
+    "ceiling": 166907
+  },
+  "budgetChanges": false,
+  "externalDependencyEntriesUnchanged": 32,
+  "diffChecks": "clean",
+  "adversaryInputs": {
+    "orderSha256": "064d35550e8cd3b1196ccefb083d8b187fac68e795461498bd42953e228ea6c8",
+    "authoredDiffSha256": "a36543f4da171dc65dc054788f35c6ee2d8fb66566a3ad39f3a7f564667003ad"
+  },
+  "harnessCheck": {
+    "command": "node scripts/harness.mjs bounded -- npm run harness -- check",
+    "exitCode": 0,
+    "surfaces": 33,
+    "completedAt": "2026-10-06T10:08:44.471Z",
+    "durationMs": 1071
+  }
+}
