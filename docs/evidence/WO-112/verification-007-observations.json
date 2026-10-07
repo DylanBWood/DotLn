@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "report": "docs/verifications/WO-112/VER-007.md",
+  "subject": {
+    "observedWindow": "after the entry usage cutoff 2026-10-07T04:18:22.430Z and before the recheck start 2026-10-07T04:21:11.511Z; the comparison command recorded no own timestamp",
+    "checkpoint": "refs/dotln/checkpoint/WO-112/28",
+    "checkpointCommit": "87d5729f671f1005ba9f81e7d44c57dec6e72fb0",
+    "repairDiff": "refs/dotln/checkpoint/WO-112/25..refs/dotln/checkpoint/WO-112/27",
+    "physicalComparison": "Every tracked checkpoint-28 file under packages/, scripts/, .claude/, README.md, docs/product, docs/planning, docs/evidence/WO-112, docs/verifications/WO-112 and the work order hashed equal to its physical file (git hash-object --no-filters), and no extra cached or untracked non-ignored file exists under packages/, scripts/, .claude/, docs/evidence/WO-112 or docs/verifications/WO-112.",
+    "mismatches": [],
+    "codeIdentity": "b47f2d3090c98aebafedbd5ccf7a490e233877d7fabdf4c4961e4c7fba3fa926",
+    "codeIdentitySource": "gateCodeIdentity(root) from scripts/lib/gate-evidence.mjs at the physical worktree"
+  },
+  "consumedGateRows": [
+    {
+      "checkId": "npm test",
+      "gateSelection": "review",
+      "executionMode": "forced-fresh",
+      "freshSuites": 88,
+      "reusedSuites": 0,
+      "exitCode": 0,
+      "durationMs": 1852591,
+      "recordedAt": "2026-10-07T04:07:50.593Z",
+      "codeIdentity": "b47f2d3090c98aebafedbd5ccf7a490e233877d7fabdf4c4961e4c7fba3fa926",
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true
+    },
+    {
+      "checkId": "npm run test:docs",
+      "gateSelection": "document",
+      "exitCode": 0,
+      "durationMs": 106123,
+      "recordedAt": "2026-10-07T04:16:19.069Z",
+      "codeIdentity": "b47f2d3090c98aebafedbd5ccf7a490e233877d7fabdf4c4961e4c7fba3fa926"
+    }
+  ],
+  "priorFindingRecheck": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-112/repair-006-recheck.mjs",
+    "startedAt": "2026-10-07T04:21:11.511Z",
+    "finishedAt": "2026-10-07T04:21:29.408Z",
+    "exitCode": 0,
+    "rows": [
+      {
+        "probe": "verification-006-cleanup-probe.mjs",
+        "wallMs": 14498,
+        "episodes": 1,
+        "durableVerdict": "acknowledge",
+        "leftoverPartials": 1,
+        "terminals": ["resolved", "resolved", "resolved"]
+      },
+      {
+        "probe": "verification-006-boundary-probes.mjs legacy-receipt",
+        "wallMs": 3335,
+        "durableReceiptPresent": true,
+        "candidateMatchesReceipt": true,
+        "outcome": "observed",
+        "dispatches": 1
+      }
+    ]
+  },
+  "carriedEvidence": {
+    "unchangedSince": "refs/dotln/checkpoint/WO-112/23",
+    "note": "git diff --name-status checkpoint 23..28 over docs/evidence/WO-112, docs/product, README.md and docs/planning/capability-table.md lists only decisions/handoff/meta, the repair-006 and verification-006 records, revision 009 regenerated families and product 03; the run receipts, outward receipts, scenario and evidence README are unchanged. VER-001 through VER-006 are unchanged since checkpoint 25. decisions.md has no removed line since checkpoint 25.",
+    "writebackBytes": {
+      "docs/product/06-roadmap.md": { "main": 79690, "now": 79891, "added": 201, "limit": 300 },
+      "docs/product/12-workstream-application.md": { "main": 18164, "now": 18327, "added": 163, "limit": 200 }
+    },
+    "representativeReviewLoop": "repair-representative-run.json: inline item judged accept by a model producer, repaired and resolved; review body acknowledged; terminal resolved; no reject disposition and no NeedsHuman.",
+    "controlReviewLoop": "repair-control-run.json: incorrect suggestion judged reject with three evidence references; review body acknowledged; terminal resolved."
+  },
+  "freshAdversary": {
+    "agentType": "dotln-worker",
+    "launchSelection": { "model": "claude-opus-5-5", "effort": "xhigh", "source": "agent definition pin" },
+    "effectiveModel": "unknown",
+    "effectiveEffort": "unknown",
+    "inputs": "the work order and the diffs 8218616b..checkpoint 28 and checkpoint 25..27 only; told not to read evidence, verification, final-review or control records",
+    "descendants": 0,
+    "durationMs": 728800,
+    "subagentTokens": 218534,
+    "toolUses": 70,
+    "dollarCap": "unenforced: the Agent tool exposes no hard dollar-cap control",
+    "repairJudgment": "No defect in either repair: a receipt is saved only inside observe(), after settle() or recoverTermination() recorded termination and a passing integrity check; cleanup swallowing covers only removal of the host's own partial after the link step.",
+    "findings": [
+      {
+        "id": "A1",
+        "adopted": "VER-007 F1 (blocking)",
+        "summary": "Writers launched in their own process group outlive a terminal interrupt of `dotln vertical`; a rerun while the writer lives ends the issue's run as terminal refused."
+      },
+      {
+        "id": "A2",
+        "adopted": "follow-up (D061)",
+        "summary": "Judgment episodes that fail the same way every time (budget exhausted, deadline exceeded) are retried with capped backoff and no per-subject count."
+      }
+    ]
+  },
+  "parentProbes": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-112/verification-007-orphan-probe.mjs",
+      "startedAt": "2026-10-07T04:36:43.647Z",
+      "finishedAt": "2026-10-07T04:36:53.135Z",
+      "exitCode": 0,
+      "rows": [
+        { "ownProcessGroup": false, "hostAliveAfterSigint": false, "writerAliveAfterSigint": false, "writerAlivePastHostDeadline": false, "writerLastHeartbeatMs": 303 },
+        { "ownProcessGroup": true, "hostAliveAfterSigint": false, "writerAliveAfterSigint": true, "writerAlivePastHostDeadline": true, "writerLastHeartbeatMs": 4544 }
+      ],
+      "note": "An earlier identical run of the adversary's scratch copy (2026-10-07T04:34:47.148Z to 04:34:56.692Z, exit 0) printed the same booleans with heartbeats 304 and 4544 ms."
+    }
+  ],
+  "codeTrace": {
+    "label": "inference from source, not an end-to-end run",
+    "steps": [
+      "packages/skeleton/src/worker-transport.ts:1342 sets ownProcessGroup for every writer request of the Claude and Codex CLI transports; :115-130 spawns it detached. Main (8218616b) detached only resident launches.",
+      "packages/skeleton/src/dotln.ts:85-107 (`dotln vertical`) installs no SIGINT, SIGTERM or SIGHUP handler; :153-157 installs them only for `presence`.",
+      "packages/skeleton/src/source-change-host.ts:522: recovery of an unreceipted attempt throws `source-change prior worker group is still present` while the recorded group lives; packages/skeleton/test/source-change-integrity.test.ts:906 asserts that throw after a killed host.",
+      "scripts/lib/vertical-primitives.mjs:510-523 awaits host.run() without a catch; packages/skeleton/src/vertical-host.ts:202-213 records any non-triage host error at a non-review step as result refused.",
+      "packages/skeleton/src/vertical.ts:719 maps refused to Program.Done(); :857-865 records terminal kind refused, which later invocations replay."
+    ]
+  },
+  "limits": [
+    "No native model CLI, forge or live PR ran in this verification; historical live claims are carried at their original cutoffs.",
+    "The orphan probe uses a synthetic writer under runWorkerProcess; the native CLIs' own budget caps and the 180-second source-change command expiry are not exercised.",
+    "The rerun-to-terminal-refused chain is traced in source and the existing killed-host test, not executed end to end through `dotln vertical`."
+  ]
+}

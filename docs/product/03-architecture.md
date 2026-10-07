@@ -1533,30 +1533,31 @@ changes.
 
 Worker and verification recovery positively decode the event log, host lock, saved receipts, canonical request keys and persisted verification capsules before lock reclaim or dispatch; cached-result loads revalidate the concrete request, and malformed or unpublished staging state refuses by path while preserving store bytes for inspection.
 
-**Source-change host (WO-052):** one compiled order names a target repository,
-immutable base, branch, changed surfaces and focused test. The host creates a
-branch worktree under the configured parent, emits the governed target bundle,
-and records the original test observation before dispatch. WorkerStore retains
-the request and its existing five-second worker leases. After an interrupted
-lease expires, recovery checks Git first: a clean descendant commit on the
-declared branch is observed, tested and saved as an immutable effect receipt
-without a second worker dispatch. A baseline branch permits one recovery
-dispatch; another interrupted attempt exhausts that bounded retry. Dirty
-committed trees, changed requests, foreign branches and malformed receipts
-refuse without discarding work. A crash after receipt persistence reuses both
-test observations and appends the missing source observation once.
+**Source-change host (WO-052):** a compiled order pins the repository, base,
+branch, surfaces and focused test. The host creates its governed branch
+worktree under the configured parent. Before launch WorkerStore persists the
+test, request, five-second leases, shared refs (including symbolic targets) and
+alternates. Refs require Git's files backend; object bytes remain unprotected
+(WO-112-D033).
+Unreceipted recovery requires writer termination and unchanged refs and
+alternates. Host Git ignores replace refs and commit-graph.
+A live or unobservable prior process group stops recovery;
+unexplained shared changes are preserved and refused, never restored over
+another actor's work. A baseline branch permits one recovery dispatch; another
+interrupted attempt exhausts that retry. Dirty committed trees, changed requests,
+foreign branches and malformed receipts preserve work and refuse. A saved receipt
+matching Git reuses test observations and appends the missing source observation
+once, even in older admitted logs without process markers.
 
-The host rechecks supplied authority before dispatch, after worker completion,
-and around its after-test. The worker lease governs the child process; subsequent
-host observation and testing do not invent another worker lease. The existing
-target guards admit only the host-issued exact test, `git add -A`, and
-host-message commit command while their launchpad-side route has a live owner
-and an unexpired deadline. Branch/base/message checks, compiled permissions,
-writer isolation and attribution checks still apply. The route disappears when
-dispatch ends. This is trusted-host governance, not OS isolation of arbitrary
-test scripts or a proof that every orphan Codex writer has stopped after a host
-kill. [WO-053](../evidence/WO-053/README.md) observed both clean harness
-episodes and Codex recovery after worker exit; it did not prove live-orphan fencing.
+Authority is rechecked before dispatch, after worker completion and around the
+after-test; host testing creates no worker lease. While the issued route has a
+live owner and unexpired deadline, target guards admit only the exact test,
+`git add -A` and host-message commit. Branch/base/message, permissions, isolation
+and attribution checks still apply. Dispatch completion revokes the route.
+Native writers use a separate process group; this is host
+governance, not isolation of arbitrary scripts or descendants that escape that
+group. [WO-053](../evidence/WO-053/README.md) observed clean harness episodes
+and Codex recovery after worker exit; WO-112 tests group-presence refusal.
 
 Only explicit `SourceChangeHost.finish()` removes a successfully observed
 worktree, after checking its persisted commit receipt and refusing unowned
@@ -1721,14 +1722,13 @@ text, never the default channel for state you own in structured form.
   three Bash commands (the declared test, `git add -A`, `git commit -F <path>`),
   no permission prompts, project/local settings, no persistence, strict empty
   MCP, no browser, a $3 budget and `stream-json` with hook events. Codex uses
-  X-W1/X-W2/X-W8: `-a never exec --ephemeral --ignore-user-config --sandbox
-  workspace-write --cd <worktree> --json`, named `dotln-writer` permissions
-  (`:minimal` read, `:workspace_roots` write, network disabled), and the
-  inspection profile's hardening minus the shell-tool disables, retaining
-  `shell_environment_policy.inherit="none"`.
-  [WO-053](../evidence/WO-053/README.md) observed test, add and commit through
-  the live writer profile and records the bounded launch repairs it required;
-  synthetic fixtures pin the exact arrays.
+  X-W1/X-W2/X-W8: `-a never exec --ephemeral --ignore-user-config --cd
+  <worktree> --json`, named `dotln-writer` permissions (`:minimal` read,
+  `:workspace_roots` write, toolchain read, gitdir/objects/refs/logs write,
+  network disabled) with no overriding `--sandbox`, and the inspection
+  profile's hardening minus the shell-tool disables, retaining
+  `shell_environment_policy.inherit="none"` with a host PATH. Synthetic
+  fixtures pin the exact arrays.
   Construction refuses tools-only Claude (C-W1, ambiguous), on-request Codex
   approval (X-U2, ambiguous) and a Codex hook expectation (X-W3, unavailable).
 
@@ -1739,11 +1739,13 @@ text, never the default channel for state you own in structured form.
   Model-supplied observations refuse; saved host observations remain bound to
   the request's kind, mount, authority and command in its immutable result key.
   The sandbox is not the containment boundary: C-W6 and X-W6 observed sibling
-  writes. Target governance and host post-exit checks supply the planned
-  containment proof, not the launch flags alone. WO-051 established subprocess
-  fixtures, WO-052 supplied worktree/message ownership, and
-  [WO-053](../evidence/WO-053/README.md) observed clean live source changes and
-  post-worker-exit recovery within the recorded limits.
+  writes. Target governance and host post-exit checks bound acceptance.
+  WO-051 established subprocess fixtures, WO-052 worktree/message ownership,
+  WO-112 preservation and refusal of unexplained shared-state changes, checks
+  on failure/recovery, and one host-message commit, and
+  [WO-053](../evidence/WO-053/README.md) observed clean live source changes
+  (test, add and commit, with its launch repairs) and post-worker-exit recovery
+  within the recorded limits.
 
   WO-110 adds the third adapter over an operator-owned local inference
   endpoint, for the inspection profile only. It launches no child process: one
@@ -1837,11 +1839,12 @@ text, never the default channel for state you own in structured form.
   passing signal is ever "done". Target publication evaluates all fourteen items
   from bound artifacts, renders their evidence or gaps in `Deliverable-ready`,
   and refuses locally on an absent item with `--require-deliverable-ready`;
-  operator proposals without the flag still publish with gaps. Post-submission loop ownership: CI failures
-  deterministically classified before any repair dispatch, review comments
-  triaged by type, upstream source drift watched (revision guard) until a
-  human-controlled terminal state. Projection boundary enforced: no internal
-  vocabulary in external artifacts.
+  Without the flag, proposals publish with gaps. Post-submission: CI is
+  deterministically classified before repair; triage episodes retry with capped
+  resident backoff, while host preparation failures stop. Each invocation judges
+  at most eight review bodies, then names the unjudged item. Source drift stays
+  watched until a human-controlled terminal state. External artifacts carry no
+  internal vocabulary.
 
 ## Operator-presence policy
 
@@ -1900,24 +1903,24 @@ or installed system service.
 A resident configured with an `intent` portfolio and reviewed `vertical.json`
 can consume a filed intent. While absent in a ready phase, it screens the bound
 issue, compiles its contract and derives surfaces under the phase's read
-authority. Before materialization or invocation, `IntentAdmitted` records the
-contract, narrowed authority, standing-authorization statement and continuation.
-A missing covering entry, unreadable draft, grant or issue, ambiguous contract
-or excessive surface records `IntentHeld` with a reason and dispatches nothing.
-The registered entry supplies the target; the draft stays unchanged. Each tick
-resumes from durable receipts; missing files are restored from events.
-Scheduling changes, live continuation holders and named transient reads leave
-a draft undecided: its retry backs off while later drafts take their turn; an
-unnamed failure is held after three tries. Admission rechecks phase and
-generation under the ledger lock. Recorded step start/settlement occupies the presence
-interpreter's process slot, preventing idle expiry during active work. The
-transport checks authority before launch and while a child runs. Return kills
-discretionary work under `kill`, or lets the current child finish under `finish`,
-then holds later steps. Polls reuse observed state until a log change or deciding
-deadline. Revocation and expiry interrupt the child. The `dotln vertical`
-foreground entry uses its own admitted authority; both entries reserve budget
-in one ledger. Neither widens grants or bypasses primitive verification,
-review, outward lint or delivery readiness.
+authority. Model episodes classify `intake: "model"` issues and judge unsupplied
+review items; `awaitChecks` are awaited after publication. Before materialization or invocation, `IntentAdmitted`
+records the contract, narrowed authority, standing-authorization statement and
+continuation. A missing covering entry, unreadable draft, grant or issue,
+ambiguous contract or excessive surface records `IntentHeld` with a reason and
+dispatches nothing. The registered entry supplies the target; the draft stays
+unchanged. Ticks resume from durable receipts, restoring missing files from
+events. Scheduling changes, live continuation holders and named transient reads
+leave a draft undecided, backing off; an unnamed failure is held after three
+tries. Admission rechecks phase and generation under the ledger lock. Recorded
+step start/settlement occupies the presence interpreter's process slot, so
+active work cannot idle. The transport checks authority before launch and
+while a child runs; revocation and expiry interrupt it. Return kills
+discretionary work under `kill`, or lets the current child finish under
+`finish`, then holds later steps. Polls reuse observed state until a log change
+or deciding deadline. The `dotln vertical` foreground entry uses its own
+admitted authority and shares the budget ledger. Neither widens grants or
+bypasses primitive verification, review, outward lint or delivery readiness.
 
 The resident folds its optional reactor slice through the explicit environment
 projector. Old serialized states acquire no resident key. Every sampled clock

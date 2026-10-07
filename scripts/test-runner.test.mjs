@@ -3961,6 +3961,38 @@ test("WO-186 sibling advancement leaves merge-base selection and the review clai
   );
 });
 
+test("WO-112 a census that misses the held launcher retries and never reports the handshake exit", async (t) => {
+  const { repo } = taskReuseFixture(t);
+  const { registerProcess } = await import("./lib/host-resources.mjs");
+  let misses = 0;
+  const missing = (pid) => {
+    throw new Error(`Cannot register exited process ${pid}`);
+  };
+  const recovered = await executeSuite(
+    {
+      name: "missed-twice",
+      command: [process.execPath, "-e", "console.log('task ran')"],
+      registerProcess: (...args) =>
+        misses++ < 2 ? missing(args[1]) : registerProcess(...args),
+    },
+    repo,
+  );
+  assert.equal(recovered.exitCode, 0, recovered.output);
+  assert.match(recovered.output, /task ran/u);
+  assert.equal(misses, 3);
+  const unseen = await executeSuite(
+    {
+      name: "never-seen",
+      command: [process.execPath, "-e", "console.log('task ran')"],
+      registerProcess: (...args) => missing(args[1]),
+    },
+    repo,
+  );
+  assert.equal(unseen.exitCode, 1, unseen.output);
+  assert.equal(unseen.failureKind, "monitor-unavailable");
+  assert.doesNotMatch(unseen.output, /task ran/u);
+});
+
 test("WO-186 product tasks reject reads of untracked active-order reports and retain the five longest cases", async (t) => {
   const { repo } = taskReuseFixture(t);
   mkdirSync(join(repo, "docs/evidence/WO-999"), { recursive: true });

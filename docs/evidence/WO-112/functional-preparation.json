@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "label": "observed",
+  "kind": "local-functional-scenario-preparation",
+  "recordedAt": "2026-10-05T23:52:12.888Z",
+  "source": "Locally prepared synthetic draft, not a GitHub SourceBundle or actual live episode",
+  "criterionCount": 1,
+  "claimTypes": [
+    "behavior"
+  ],
+  "openDecisions": 0,
+  "derivation": {
+    "kind": "DerivedSurfaces",
+    "surfaces": [
+      "index.html"
+    ],
+    "confidence": 1,
+    "tests": [
+      "node page.test.mjs"
+    ]
+  },
+  "baseline": {
+    "storyClass": "defect",
+    "command": "node page.test.mjs",
+    "exitCode": 1,
+    "expected": "Ready",
+    "observed": "Pending"
+  },
+  "remoteWrites": 0,
+  "modelChildEpisodes": 0,
+  "limits": [
+    "Admitted compilation and file derivation do not prove any later host step or the full loop.",
+    "No remote issue, seed push, generated PR or automated review is established."
+  ]
+}

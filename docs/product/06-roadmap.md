@@ -685,7 +685,7 @@ injected implementer events. The first four attempts failed and found two
 runtime defects, repaired in that order: the verifier had never been told the
 finding contract the host enforces, and Codex could not launch in the
 files-only snapshot. This is one synthetic two-clause repository, as executor
-evidence awaiting independent verification. The remaining personal-flavor vertical is planned: GitHub Issue → SourceBundle →
+evidence awaiting independent verification. [The scratch proof](../evidence/WO-112/README.md) now runs unaided: the composition's own intake and triage take a scratch issue to a generated PR and resolve its automated review, with Claude or Codex as every worker. The personal-flavor vertical is: GitHub Issue → SourceBundle →
 StoryContract → RepoProfile + ImpactMap (fixture-proven surfaces/tests;
 low coverage hands off) → **Live Witness baseline** (reproduce
 before changing; preserve baseline evidence) → implementation episode → blinded

@@ -615,6 +615,9 @@ export const suites = [
   }),
   nodeTests("target-publish", "scripts/test-target-publish.mjs"),
   nodeTests("vertical", "scripts/test-vertical.mjs", {
+    args: ["scripts/test-vertical-judgment.mjs"],
+    fileConcurrency: 2,
+    loadSlots: 2,
     product: true,
     needs: OUTSIDE_CONFINEMENT,
     protects:
@@ -1389,18 +1392,33 @@ export function executeSuite(
     });
     if (child.pid) {
       try {
-        taskRegistration = registerProcess(
-          "trees",
-          child.pid,
-          {
-            repo,
-            scope: "task",
-            task: row.name,
-            budgetBytes: limits.taskBytes,
-            limits,
-          },
-          hostDirectory,
-        );
+        // The launcher holds the command until the go byte, so it cannot
+        // have exited here: a missing row is a census that missed a live
+        // process. Retry a bounded number of censuses; a launcher that never
+        // appears is a monitor failure, never the task's exit code (WO-112
+        // D025).
+        const register = row.registerProcess ?? registerProcess;
+        for (let attempt = 1; !taskRegistration; attempt++)
+          try {
+            taskRegistration = register(
+              "trees",
+              child.pid,
+              {
+                repo,
+                scope: "task",
+                task: row.name,
+                budgetBytes: limits.taskBytes,
+                limits,
+              },
+              hostDirectory,
+            );
+          } catch (error) {
+            if (
+              attempt >= 5 ||
+              !error.message.startsWith("Cannot register exited process")
+            )
+              throw error;
+          }
         const ownershipStarted = performance.now();
         try {
           heldDescriptors = holdTaskDescriptors(child.pid, hostDirectory);
@@ -1456,11 +1474,9 @@ export function executeSuite(
         } else child.stdio[3].destroy();
       } catch (error) {
         child.stdio[3].destroy();
-        if (!error.message.startsWith("Cannot register exited process")) {
-          resourceFailure = "monitor-unavailable";
-          failure = error.message;
-          cancel();
-        }
+        resourceFailure = "monitor-unavailable";
+        failure = error.message;
+        cancel();
       }
     }
   });

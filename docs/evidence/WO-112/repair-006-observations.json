@@ -1,0 +1,647 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-112",
+  "repairOf": "VER-006",
+  "actor": {
+    "harness": "codex-cli",
+    "harnessVersion": "0.160.1",
+    "model": "gpt-6.1-sol",
+    "effort": "max",
+    "source": "codex-session-readback"
+  },
+  "baseline": [
+    {
+      "command": [
+        "node",
+        "docs/evidence/WO-112/verification-006-cleanup-probe.mjs"
+      ],
+      "startedAt": "2026-10-07T02:32:03.385Z",
+      "completedAt": "2026-10-07T02:32:16.860Z",
+      "wallMs": 13475,
+      "exitCode": 0,
+      "actual": {
+        "episodes": 1,
+        "durableVerdict": "acknowledge",
+        "leftoverPartials": 1,
+        "firstTerminal": "refused",
+        "resumedTerminal": "refused",
+        "persistedTerminal": "refused",
+        "reason": "resolution host failed or was unavailable"
+      }
+    },
+    {
+      "command": [
+        "node",
+        "docs/evidence/WO-112/verification-006-boundary-probes.mjs",
+        "legacy-receipt"
+      ],
+      "startedAt": "2026-10-07T02:32:30.028Z",
+      "completedAt": "2026-10-07T02:32:33.126Z",
+      "wallMs": 3098,
+      "exitCode": 0,
+      "actual": {
+        "durableReceiptPresent": true,
+        "candidateMatchesReceipt": true,
+        "dispatches": 1,
+        "outcome": "thrown",
+        "message": "source-change recovery lacks worker termination evidence"
+      }
+    }
+  ],
+  "repairedImmutableProbes": [
+    {
+      "command": [
+        "node",
+        "docs/evidence/WO-112/verification-006-cleanup-probe.mjs"
+      ],
+      "startedAt": "2026-10-07T02:42:07.284Z",
+      "completedAt": "2026-10-07T02:42:20.928Z",
+      "wallMs": 13642.635958,
+      "exitCode": 0,
+      "actual": {
+        "episodes": 1,
+        "durableVerdict": "acknowledge",
+        "leftoverPartials": 1,
+        "firstTerminal": "resolved",
+        "resumedTerminal": "resolved",
+        "persistedTerminal": "resolved",
+        "reason": "fresh observation and resolution reached the human-controlled terminal"
+      }
+    },
+    {
+      "command": [
+        "node",
+        "docs/evidence/WO-112/verification-006-boundary-probes.mjs",
+        "legacy-receipt"
+      ],
+      "startedAt": "2026-10-07T02:42:20.928Z",
+      "completedAt": "2026-10-07T02:42:24.117Z",
+      "wallMs": 3189.316042,
+      "exitCode": 0,
+      "actual": {
+        "durableReceiptPresent": true,
+        "candidateMatchesReceipt": true,
+        "dispatches": 1,
+        "outcome": "observed",
+        "workOrderId": "wo_source_fixture",
+        "branch": "source-fixture",
+        "testBeforeExitCode": 1,
+        "testAfterExitCode": 0
+      }
+    }
+  ],
+  "focusedTests": [
+    {
+      "command": "node --test --test-name-pattern=\"VER-006\" scripts/test-vertical-judgment.mjs",
+      "startedAt": "2026-10-07T02:45:36.116Z",
+      "completedAt": "2026-10-07T02:46:07.431Z",
+      "wallMs": 31315,
+      "exitCode": 0,
+      "passed": 4,
+      "failed": 0,
+      "cancelled": 0,
+      "subject": "Final independent-inode race fixture and unchanged runtime repair"
+    },
+    {
+      "command": "node --test packages/skeleton/dist/test/source-change-integrity.test.js",
+      "startedAt": "2026-10-07T02:40:35.394Z",
+      "completedAt": "2026-10-07T02:41:26.552Z",
+      "wallMs": 51158,
+      "exitCode": 0,
+      "passed": 15,
+      "failed": 0,
+      "cancelled": 0,
+      "subject": "Final source-host and integrity-test bytes; subsequent edits affect the judgment script test only"
+    }
+  ],
+  "preservation": {
+    "schemaVersion": 1,
+    "checkpoint": "refs/dotln/checkpoint/WO-112/25",
+    "observedAt": "2026-10-07T02:47:02.128120+00:00",
+    "historicalFilesChecked": 181,
+    "changedHistoricalFiles": [],
+    "decisionsAppendOnly": true,
+    "controls": [
+      {
+        "path": "README.md",
+        "unchanged": true
+      },
+      {
+        "path": "package.json",
+        "unchanged": true
+      },
+      {
+        "path": "package-lock.json",
+        "unchanged": true
+      },
+      {
+        "path": "packages/skeleton/package.json",
+        "unchanged": true
+      },
+      {
+        "path": "docs/product/06-roadmap.md",
+        "unchanged": true
+      },
+      {
+        "path": "docs/product/12-workstream-application.md",
+        "unchanged": true
+      },
+      {
+        "path": "docs/planning/capability-table.md",
+        "unchanged": true
+      }
+    ]
+  },
+  "adversary": {
+    "explicitAgents": 1,
+    "cap": 20,
+    "reusedForDelta": true,
+    "descendants": 0,
+    "mode": "read-only order and diff",
+    "requestedModel": "gpt-6.1-sol",
+    "requestedEffort": "max",
+    "effectiveSelection": "unknown",
+    "usage": "unknown",
+    "newBlockers": 0,
+    "optionalFindings": 1,
+    "optionalFixed": 1,
+    "deltaResult": "independent inode suggestion addressed; no remaining concrete blocker"
+  },
+  "limits": [
+    "Permission timing and competing publication are synthetic; the unlink failure itself is real EACCES.",
+    "Older compatibility uses a positively decoded current log stripped to the admitted older shape; no older binary ran.",
+    "Focused checks establish the local recovery rules; historical remote/live proof remains at its recorded cutoff.",
+    "No model, filesystem failure rate or efficiency gain is inferred from these fixtures."
+  ],
+  "regeneration": {
+    "revision": "009",
+    "startedAt": "2026-10-07T02:47:25.174Z",
+    "completedAt": "2026-10-07T02:48:14.230Z",
+    "steps": [
+      {
+        "label": "select-009",
+        "command": [
+          "select docs/evidence/current.json WO-112 revision 009"
+        ],
+        "startedAt": "2026-10-07T02:47:25.174Z",
+        "completedAt": "2026-10-07T02:47:25.176Z",
+        "wallSeconds": 0.000569292,
+        "exitCode": 0
+      },
+      {
+        "label": "harness-emit",
+        "command": [
+          "node",
+          "scripts/harness.mjs",
+          "emit"
+        ],
+        "startedAt": "2026-10-07T02:47:25.177Z",
+        "completedAt": "2026-10-07T02:47:25.394Z",
+        "wallSeconds": 0.216164584,
+        "exitCode": 0
+      },
+      {
+        "label": "authority-write",
+        "command": [
+          "node",
+          "scripts/authority-evidence.mjs",
+          "--write",
+          "--edition",
+          "WO-112",
+          "--revision",
+          "009"
+        ],
+        "startedAt": "2026-10-07T02:47:25.394Z",
+        "completedAt": "2026-10-07T02:47:26.291Z",
+        "wallSeconds": 0.897355583,
+        "exitCode": 0
+      },
+      {
+        "label": "artifact-identity-write",
+        "command": [
+          "node",
+          "scripts/artifact-identity-evidence.mjs",
+          "--write"
+        ],
+        "startedAt": "2026-10-07T02:47:26.291Z",
+        "completedAt": "2026-10-07T02:47:26.572Z",
+        "wallSeconds": 0.280411541,
+        "exitCode": 0
+      },
+      {
+        "label": "verification-write",
+        "command": [
+          "node",
+          "scripts/verification-evidence.mjs",
+          "--write"
+        ],
+        "startedAt": "2026-10-07T02:47:26.572Z",
+        "completedAt": "2026-10-07T02:47:27.982Z",
+        "wallSeconds": 1.409298541,
+        "exitCode": 0
+      },
+      {
+        "label": "feedback-write",
+        "command": [
+          "node",
+          "scripts/feedback-evidence.mjs",
+          "--write",
+          "--edition",
+          "WO-112",
+          "--revision",
+          "009"
+        ],
+        "startedAt": "2026-10-07T02:47:27.982Z",
+        "completedAt": "2026-10-07T02:47:31.225Z",
+        "wallSeconds": 3.242345542,
+        "exitCode": 0
+      },
+      {
+        "label": "feedback-live",
+        "command": [
+          "npm",
+          "run",
+          "dotln",
+          "--",
+          "feedback-audit",
+          "--store",
+          ".runtime/wo112/feedback-live-009",
+          "--transport",
+          "claude-cli-print",
+          "--model",
+          "claude-opus-5-5",
+          "--effort",
+          "xhigh"
+        ],
+        "startedAt": "2026-10-07T02:47:31.225Z",
+        "completedAt": "2026-10-07T02:47:59.600Z",
+        "wallSeconds": 28.374887959,
+        "exitCode": 0
+      },
+      {
+        "label": "feedback-record",
+        "command": [
+          "node",
+          "scripts/feedback-evidence.mjs",
+          "--record-selfhost",
+          ".runtime/wo112/feedback-live-009",
+          "--edition",
+          "WO-112",
+          "--revision",
+          "009"
+        ],
+        "startedAt": "2026-10-07T02:47:59.601Z",
+        "completedAt": "2026-10-07T02:48:00.009Z",
+        "wallSeconds": 0.408154625,
+        "exitCode": 0
+      },
+      {
+        "label": "console-record",
+        "command": [
+          "node",
+          "scripts/console-fixtures.mjs",
+          "--record-current-selfhost"
+        ],
+        "startedAt": "2026-10-07T02:48:00.009Z",
+        "completedAt": "2026-10-07T02:48:00.509Z",
+        "wallSeconds": 0.499254834,
+        "exitCode": 0
+      },
+      {
+        "label": "console-write",
+        "command": [
+          "node",
+          "scripts/console-fixtures.mjs",
+          "--write"
+        ],
+        "startedAt": "2026-10-07T02:48:00.509Z",
+        "completedAt": "2026-10-07T02:48:01.040Z",
+        "wallSeconds": 0.530558833,
+        "exitCode": 0
+      },
+      {
+        "label": "authority-check",
+        "command": [
+          "node",
+          "scripts/authority-evidence.mjs",
+          "--check",
+          "--edition",
+          "WO-112",
+          "--revision",
+          "009"
+        ],
+        "startedAt": "2026-10-07T02:48:01.040Z",
+        "completedAt": "2026-10-07T02:48:01.887Z",
+        "wallSeconds": 0.846563167,
+        "exitCode": 0
+      },
+      {
+        "label": "artifact-identity-check",
+        "command": [
+          "node",
+          "scripts/artifact-identity-evidence.mjs",
+          "--check"
+        ],
+        "startedAt": "2026-10-07T02:48:01.887Z",
+        "completedAt": "2026-10-07T02:48:02.173Z",
+        "wallSeconds": 0.285214042,
+        "exitCode": 0
+      },
+      {
+        "label": "verification-check",
+        "command": [
+          "node",
+          "scripts/verification-evidence.mjs",
+          "--check"
+        ],
+        "startedAt": "2026-10-07T02:48:02.173Z",
+        "completedAt": "2026-10-07T02:48:03.565Z",
+        "wallSeconds": 1.391825667,
+        "exitCode": 0
+      },
+      {
+        "label": "feedback-check",
+        "command": [
+          "node",
+          "scripts/feedback-evidence.mjs",
+          "--check",
+          "--edition",
+          "WO-112",
+          "--revision",
+          "009"
+        ],
+        "startedAt": "2026-10-07T02:48:03.565Z",
+        "completedAt": "2026-10-07T02:48:06.936Z",
+        "wallSeconds": 3.370674167,
+        "exitCode": 0
+      },
+      {
+        "label": "console-check",
+        "command": [
+          "node",
+          "scripts/console-fixtures.mjs",
+          "--check"
+        ],
+        "startedAt": "2026-10-07T02:48:06.936Z",
+        "completedAt": "2026-10-07T02:48:07.457Z",
+        "wallSeconds": 0.520508,
+        "exitCode": 0
+      },
+      {
+        "label": "harness-check",
+        "command": [
+          "node",
+          "scripts/harness.mjs",
+          "check"
+        ],
+        "startedAt": "2026-10-07T02:48:07.457Z",
+        "completedAt": "2026-10-07T02:48:07.676Z",
+        "wallSeconds": 0.219415791,
+        "exitCode": 0
+      },
+      {
+        "label": "publication-check",
+        "command": [
+          "npm",
+          "run",
+          "publication:check"
+        ],
+        "startedAt": "2026-10-07T02:48:07.676Z",
+        "completedAt": "2026-10-07T02:48:08.150Z",
+        "wallSeconds": 0.472731208,
+        "exitCode": 0
+      },
+      {
+        "label": "release-surfaces",
+        "command": [
+          "npm",
+          "run",
+          "release",
+          "--",
+          "check-surfaces",
+          "--local"
+        ],
+        "startedAt": "2026-10-07T02:48:08.150Z",
+        "completedAt": "2026-10-07T02:48:14.230Z",
+        "wallSeconds": 6.080002083,
+        "exitCode": 0
+      }
+    ]
+  },
+  "documentGateHistory": [
+    {
+      "checkId": "npm run test:docs",
+      "codeIdentity": "b47f2d3090c98aebafedbd5ccf7a490e233877d7fabdf4c4961e4c7fba3fa926",
+      "durationMs": 131622,
+      "exitCode": 1,
+      "recordedAt": "2026-10-07T02:53:06.886Z",
+      "freshSuites": 29,
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "passed": 28,
+      "failed": 1,
+      "failedTask": "console-docs",
+      "failedCase": "[document] WO-115 a bound resident serves terminal bytes and events under the terminal's compiled authority, refuses in terminal shape and replays its receipts",
+      "reportedError": "TypeError: fetch failed",
+      "cause": "unknown; recorded task output contains no stack or nested cause"
+    },
+    {
+      "checkId": "npm run test:docs",
+      "codeIdentity": "b47f2d3090c98aebafedbd5ccf7a490e233877d7fabdf4c4961e4c7fba3fa926",
+      "durationMs": 108774,
+      "exitCode": 0,
+      "recordedAt": "2026-10-07T02:58:08.139Z",
+      "freshSuites": 29,
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "passed": 29,
+      "failed": 0
+    },
+    {
+      "checkId": "npm run test:docs",
+      "codeIdentity": "b47f2d3090c98aebafedbd5ccf7a490e233877d7fabdf4c4961e4c7fba3fa926",
+      "durationMs": 102781,
+      "exitCode": 0,
+      "recordedAt": "2026-10-07T03:35:58.331Z",
+      "freshSuites": 29,
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "passed": 29,
+      "failed": 0,
+      "purpose": "D057 replacement review preflight"
+    }
+  ],
+  "consoleNamedRecheck": [
+    {
+      "sample": 1,
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=WO-115 a bound resident",
+        "packages/console/dist/test/console-commands.test.js"
+      ],
+      "startedAt": "2026-10-07T02:54:14.013Z",
+      "completedAt": "2026-10-07T02:54:27.907Z",
+      "wallMs": 13893.0435,
+      "exitCode": 0
+    },
+    {
+      "sample": 2,
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=WO-115 a bound resident",
+        "packages/console/dist/test/console-commands.test.js"
+      ],
+      "startedAt": "2026-10-07T02:54:27.908Z",
+      "completedAt": "2026-10-07T02:54:41.759Z",
+      "wallMs": 13850.767334,
+      "exitCode": 0
+    },
+    {
+      "sample": 3,
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=WO-115 a bound resident",
+        "packages/console/dist/test/console-commands.test.js"
+      ],
+      "startedAt": "2026-10-07T02:54:41.759Z",
+      "completedAt": "2026-10-07T02:54:55.606Z",
+      "wallMs": 13846.185208,
+      "exitCode": 0
+    }
+  ],
+  "physicalSubject": {
+    "source": "SHA-256 of current physical file bytes",
+    "observedAt": "2026-10-07T03:00:16.445434+00:00",
+    "files": [
+      {
+        "path": "scripts/lib/vertical-judgment.mjs",
+        "sha256": "69da2e5767ffa19c9b6b31e1c81efbee1d2bf8a2e727aeb044f8a1e6ed7ecf11",
+        "bytes": 5902
+      },
+      {
+        "path": "scripts/test-vertical-judgment.mjs",
+        "sha256": "acf87818d8ba5b1c51f8dbb5c6277a369d8b415a06550cfa1769dc63e3a5fbbe",
+        "bytes": 70534
+      },
+      {
+        "path": "packages/skeleton/src/source-change-host.ts",
+        "sha256": "fa793aafb492de4dd2906410e5ec5316c6c7a21cbd1286d03b1b3adae32f3292",
+        "bytes": 31378
+      },
+      {
+        "path": "packages/skeleton/test/source-change-integrity.test.ts",
+        "sha256": "a0ca6b1c23c4862cf815a66ab5d9de89284cbb040d733647884d3c7b8997d9c8",
+        "bytes": 37377
+      },
+      {
+        "path": "docs/product/03-architecture.md",
+        "sha256": "fe7a1b9a46182a6a92ba1f28a80d7d9d265c046b4d2c73f806ac0d3b28f00626",
+        "bytes": 176807
+      }
+    ]
+  },
+  "reviewGateHistory": [
+    {
+      "checkId": "npm test",
+      "codeIdentity": "b47f2d3090c98aebafedbd5ccf7a490e233877d7fabdf4c4961e4c7fba3fa926",
+      "durationMs": 1860580,
+      "exitCode": 0,
+      "recordedAt": "2026-10-07T03:30:15.632Z",
+      "executionMode": "forced-fresh",
+      "gateSelection": "review",
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "freshSuites": 88,
+      "reusedSuites": 0,
+      "passedSuites": 38,
+      "failedSuites": 0,
+      "freshTasks": 88,
+      "finalQualification": false,
+      "reason": "D057: executor wrote and formatted two own records during this mixed review gate",
+      "verticalDurationMs": 840772
+    },
+    {
+      "checkId": "npm test",
+      "codeIdentity": "b47f2d3090c98aebafedbd5ccf7a490e233877d7fabdf4c4961e4c7fba3fa926",
+      "durationMs": 1852591,
+      "exitCode": 0,
+      "recordedAt": "2026-10-07T04:07:50.593Z",
+      "executionMode": "forced-fresh",
+      "gateSelection": "review",
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "freshSuites": 88,
+      "reusedSuites": 0,
+      "passedSuites": 38,
+      "failedSuites": 0,
+      "freshTasks": 88,
+      "finalQualification": true,
+      "reason": "D057: replacement mixed review with no root repository writes and matching protected-input boundary hashes",
+      "verticalDurationMs": 841812
+    }
+  ],
+  "replacementProtectedInputComparison": {
+    "source": "Git cached and nonignored untracked physical inputs; symlinks hash their link text",
+    "startedAt": "2026-10-07T03:36:54.941453+00:00",
+    "completedAt": "2026-10-07T04:08:20.749872+00:00",
+    "beforeFiles": 5582,
+    "afterFiles": 5582,
+    "changed": [],
+    "limits": "Boundary hashes detect retained content/link-text changes; not identical-byte writes, transient restorations, modes or ignored paths.",
+    "rootRepositoryWritesDuringGate": 0
+  },
+  "finalPreservation": {
+    "schemaVersion": 1,
+    "checkpoint": "refs/dotln/checkpoint/WO-112/25",
+    "observedAt": "2026-10-07T04:13:19.829207+00:00",
+    "historicalFilesChecked": 181,
+    "changedHistoricalFiles": [],
+    "decisionsAppendOnly": true,
+    "controls": [
+      {
+        "path": "README.md",
+        "unchanged": true
+      },
+      {
+        "path": "package.json",
+        "unchanged": true
+      },
+      {
+        "path": "package-lock.json",
+        "unchanged": true
+      },
+      {
+        "path": "packages/skeleton/package.json",
+        "unchanged": true
+      },
+      {
+        "path": "docs/product/06-roadmap.md",
+        "unchanged": true
+      },
+      {
+        "path": "docs/product/12-workstream-application.md",
+        "unchanged": true
+      },
+      {
+        "path": "docs/planning/capability-table.md",
+        "unchanged": true
+      }
+    ]
+  },
+  "executorFailure": {
+    "decision": "WO-112-D058",
+    "classification": "ANOTHER COLOSSAL, INEXCUSABLE EXECUTION FAILURE",
+    "priorWarning": [
+      "WO-112-D049",
+      "docs/evidence/WO-112/repair-005.md:112"
+    ],
+    "violation": "Two own-record writes and formatting during a mixed review gate",
+    "unusableReviewDurationMs": 1860580,
+    "correction": "Qualifying replacement review with no root repository writes and matching boundary hashes",
+    "mechanicalGuardFollowup": "FUP-117dc832458dc6e2",
+    "mechanicalGuardImplemented": false
+  }
+}

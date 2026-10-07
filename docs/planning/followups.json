@@ -3930,6 +3930,34 @@
           "title": "Workstream application — end-user workflow candidate",
           "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
           "missing": false
+        },
+        {
+          "hash": "9d302ee1d9d21f616e6cf25c39ed99c3edfec53124d62a1b8d817c63636e5c71",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
+        },
+        {
+          "hash": "ad38e5c781f9c34fff3912cb179f79cc9804584c19401a8a977bc873f84de1c4",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
+        },
+        {
+          "hash": "f8348976b653291cde26c96c590a097e8e91b7c742be63319417ef28089a3b9f",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
+        },
+        {
+          "hash": "c0df297a16264a56a8b81ca1def6f0f894b61373aba89177ea1f0d0ca2eb2713",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -27517,6 +27545,14 @@
           "reopenWhen": "before the first live Claude writer run through the vertical (WO-112), or a change to writerSandboxProfile or the writer Write route's protected list",
           "targets": [],
           "at": "2026-10-05T22:33:07.176Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "G1 and G2 are fixed in code: writerSandboxProfile denies .claude, .dotln, .git, claude.local.md and CLAUDE.local.md, and the native fixture 'WO-184 criterion 15' passes at the WO-112 repair subject; docs/evidence/WO-184/fixture.mjs asserts every criterion id beside changedSurfaces sum.mjs. WO-112-D015.",
+          "reopenWhen": "writerSandboxProfile or the writer Write route's protected list changes, or the native confinement fixture fails.",
+          "targets": [],
+          "at": "2026-10-06T02:23:30.473Z"
         }
       ]
     },
@@ -28634,6 +28670,14 @@
           "reopenWhen": "WO-112 or WO-118 is next planned, amended or activated",
           "targets": [],
           "at": "2026-10-05T22:33:07.075Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-112's half is shipped: its run-time intake episode produces each issue's baselineAssessment through admitIntake, and both WO-112 repair runs passed baseline on it unaided (WO-112-D012, D019). WO-118's interpretation of the filed intent must still produce it.",
+          "reopenWhen": "WO-118 is next planned, amended or activated",
+          "targets": [],
+          "at": "2026-10-06T06:28:12.340Z"
         }
       ]
     },
@@ -29184,6 +29228,583 @@
           "at": "2026-10-06T14:39:38.439Z"
         }
       ]
+    },
+    {
+      "id": "FUP-c842faafbe34c7da",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e11d1f4506e0eb64f827fb0946a51158139de6b7c6e1cc95de5eae1685704401",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d008--preserve-the-codex-writer-failure-and-use-an-existing-live-transport",
+          "title": "WO-112-D008: Qualify and repair the Codex source writer's admission of the host-confined focused test and the governed worktree's shared Git metadata at the current installed CLI. Retain the exact den",
+          "summary": "{ \"id\": \"WO-112-D008\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: next; actual live source-change refusal\", \"decision\": \"Preserve the first live refusal and its unstaged governed-worktree change. Retry through the engine's existing authenticated Claude transport, reporting its actual launch and result. Keep issue 3 as the main proof and use the unnecessarily duplicated issue 4 only for the separately required incorrect-review control. Nominate the Codex writer admission failure separately; do not change runtime or broaden the writer's permissions in this evidence order.\", \"evidence\": [ \"Actual issue 3 run completed bundle, contract, surfaces, derived-order and independent baseline, then retu",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Fixed by WO-112-D017: the Codex writer runs on its named dotln-writer profile with Codex's documented writable roots for this worktree's gitdir and the shared objects, refs and logs, reads of the host's node, git and Codex installations and its helper aliases, and is launched by its real path. Live: the WO-112 repair control's Codex writer edited, ran the declared test (exit 1 to 0) and committed 8521c71 itself.",
+          "reopenWhen": "A Codex release changes its metadata or helper rules, or a live Codex writer fails to commit through these grants.",
+          "targets": [],
+          "at": "2026-10-06T03:13:31.734Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-988ecf16081223f6",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cc4259fb4830b1749834450787e37b290072e84ab303989fda8536ac2339e48d",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d009--preserve-the-control-stop-bound-the-representative-review-fixture",
+          "title": "WO-112-D009: Qualify disposition of actual non-inline automated review summaries: preserve source screening and original-surface authority while distinguishing supported actionable comments from infor",
+          "summary": "{ \"id\": \"WO-112-D009\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: next; actual post-PR control observation\", \"decision\": \"Retain the control's actual rejected disposition, resolved incorrect-suggestion thread and unchanged Ready revision, together with its subsequent NeedsHuman stop on the bot's separate non-inline review summary. Prepare the representative bot fixture to post only the intended inline review item, with no separate review body. Reuse the canonical main issue with a fresh portfolio version and store; do not create another duplicate issue or modify the runtime.\", \"evidence\": [ \"The unchanged public vertical CLI rejected the control suggestion with contract, page and host-test e",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "A non-inline automated review body is now judged once and recorded as ReviewBodyJudged: an acknowledgement citing evidence disposes it, any other verdict leaves it to a human while the loop finishes the other items. Fixture-tested in scripts/test-target-publish.mjs and scripts/test-vertical.mjs; not yet observed live. WO-112-D012 and D015.",
+          "reopenWhen": "A live run meets a review body this disposition mishandles, or a reviewer posts actionable text without a thread.",
+          "targets": [],
+          "at": "2026-10-06T02:23:30.525Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6896e8324a8fca59",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8205a9a006a2e20cd0f01e780b6faed8eda8fa0e0efdeb4e0a218d2b7af01f57",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d011--retain-the-generated-bodys-metadata-limitation",
+          "title": "WO-112-D011: Qualify title/heading metadata handling from model classification through StoryContract, intent derivation and generated PR non-goals. The live body currently lists the request title as a",
+          "summary": "{ \"id\": \"WO-112-D011\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: next; final artifact read\", \"decision\": \"Preserve the actual generated PR body and nominate its misleading non-goals list. The root classified title/headings as non-requirement metadata; vertical intent derivation copies every active statement of that class into nonGoals, so the displayed list includes the task title and Required behavior/Current behavior headings. The actual normative behavior criterion is verified and the review thread is resolved, but this is not a qualification of general artifact semantics. Do not silently rewrite the generated artifact or change runtime in this evidence order.\", \"evidence\": [ \"The actual",
+          "missing": false
+        },
+        {
+          "hash": "de0c53535199fcc9c2aaa6ffe11866160d46d976516e610f41d0991f5ec5edc0",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d011--retain-the-generated-bodys-metadata-limitation",
+          "title": "WO-112-D011: Qualify title/heading metadata handling from classification through StoryContract, intent derivation and generated PR non-goals. The live body currently lists the request title as a non-g",
+          "summary": "{ \"id\": \"WO-112-D011\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: next; final artifact read\", \"decision\": \"Preserve the actual generated PR body and nominate its misleading non-goals list. The executor's prefix rule labelled the title and headings non-requirement (corrected 2026-10-05 by WO-112-D013; this text first said the root model classified them); vertical intent derivation copies every active statement of that class into nonGoals, so the displayed list includes the task title and Required behavior/Current behavior headings. The actual normative behavior criterion is verified and the review thread is resolved, but this is not a qualification of general artifact semantics. Do not silent",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Model intake now gives classes their consequences, including that a title or heading is never a non-goal, and a composed fixture shows labels never reach non-goals (WO-112-D012, D015). The live model behavior is unobserved because the live re-run awaits the operator (D014).",
+          "reopenWhen": "The repaired composition runs live, or a generated body lists a title or heading as a non-goal.",
+          "targets": [],
+          "at": "2026-10-06T02:23:30.575Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Observed live in both WO-112 repair runs: model intake classed the titles and headings inference, and both generated pull-request bodies list no non-goals (WO-112-D019).",
+          "reopenWhen": "A generated body lists a title or heading as a non-goal.",
+          "targets": [],
+          "at": "2026-10-06T03:13:31.789Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8617e8b2d281899a",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "29263cafc6ca57a22d4fd4098907e80be853eba0c3de6128b1eed31a87c9aca6",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d014--the-codex-writers-sandbox-diagnosis-a-reverted-change-and-the-operators-decision",
+          "title": "WO-112-D014: Design a Codex source writer that commits without losing its pre-effect controls. Options observed so far: named read roots for node's prefix, the developer tools and openssl.cnf; a non-l",
+          "summary": "{ \"id\": \"WO-112-D014\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; operator scope expansion (paraphrase): fix the Codex writer's sandbox failure\", \"decision\": \"Keep the Codex source writer's launch profile as it was at HEAD and record why it cannot work, for the operator to decide the design. No Codex permission profile can host this writer: Codex keeps .git read-only under every writable root, so a linked worktree cannot commit, and the minimal read profile cannot start node or git. A change that ran the writer outside Codex's Seatbelt (danger-full-access) was made and reverted the same day. The adversarial review showed it removed every pre-effect control Codex has (credential reads, n",
+          "missing": false
+        },
+        {
+          "hash": "f327aadd58f62dbec5d7ac4ce6930d3b4cf96190cfdd1766b1bff6df8517aa0f",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d014--the-codex-writers-sandbox-diagnosis-a-reverted-change-and-the-operators-decision",
+          "title": "WO-112-D014: Design a Codex source writer that commits without losing its pre-effect controls. Options observed so far: named read roots for node's prefix, the developer tools and openssl.cnf; a non-l",
+          "summary": "{ \"id\": \"WO-112-D014\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; operator scope expansion (paraphrase): fix the Codex writer's sandbox failure\", \"decision\": \"Superseded the same day by WO-112-D017, which grants the Codex writer its commit through Codex's documented writable roots. As first recorded: keep the Codex source writer's launch profile as it was at HEAD and record why it cannot work, for the operator to decide the design. No Codex permission profile can host this writer: Codex keeps .git read-only under every writable root, so a linked worktree cannot commit, and the minimal read profile cannot start node or git. A change that ran the writer outside Codex's Seatbelt (danger-fu",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-112-D017 chose the design: Codex's documented specific writable roots, keeping its sandbox and network denial; the live control committed through it.",
+          "reopenWhen": "The D017 grants stop working on a supported Codex release.",
+          "targets": [],
+          "at": "2026-10-06T03:13:31.846Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3d2f14d1de17c607",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6d29e5ade2a847d259b97911185e50451de5ebfcb7200d1ae870b01953cce74d",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d018--planning-failure-the-order-was-planned-as-evidence-only-with-no-new-code",
+          "title": "WO-112-D018: Planner: before filing or amending an order that claims no code ships, check every cited design for work assigned to that order ('a model episode in WO-NNN', 'supplied by WO-NNN') and eve",
+          "summary": "{ \"id\": \"WO-112-D018\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; operator direction (paraphrase): record the planner's failure in planning this order as needing no new code\", \"kind\": \"correction\", \"misread\": \"Planning read WO-112 as an evidence run of WO-123's finished composition that adds no code.\", \"meant\": \"WO-061 and WO-066 assigned WO-112 the model episodes for intake and triage, and criterion 3 required unaided parity, so the order needed code.\", \"changed\": \"The order is amended to a minor release that ships the episodes and adapter fixes (D012, D017), and a planner follow-up asks for a check on no-code orders.\", \"decision\": \"Record that WO-112 was planned wrongly. Its release c",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Planning owns the D018 correction: before filing another no-code order, check cited designs and unaided criteria for capability assigned to that order. WO-112's runtime gap is repaired, but the planning/refutation process change remains open for the next planning pass.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-06T15:48:48.202Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-13c8972c4cbacdc2",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d026",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d71ea6a9392c59bf93e802651904a02c324b97c83c93a5175ef3fa46de63d2bf",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d026--verify-the-repaired-proof-retain-four-implementation-defects-for-repair",
+          "title": "WO-112-D026: WO-112 VER-002 repair F1-F4: preserve independently owned ref changes; restore alternates without following controlled links; durably adjudicate shared-state integrity on every failure an",
+          "summary": "{ \"id\": \"WO-112-D026\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: verify; operator requested an adversarial subagent and a principal software engineer improver subagent\", \"decision\": \"VER-001 F1 is repaired for the two recorded scratch scenarios: their model judgments are bound to actual screened inputs and the public CLI runs were uninterrupted. Independently verify the six bounded acceptance criteria, but fail VER-002 for four reproduced defects in the newly delivered D022 and D015 implementation. Keep implementation unchanged during verification and route F1-F4 to this order's repair. Both requested reviewers are read-only; the root alone runs the synthetic reproductions and files evidenc",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "VER-002 F1-F4 are assigned to the authorized WO-112 repair under D027 and D028; the immutable report remains a failure until separate verification judges the repair.",
+          "reopenWhen": "WO-112 repair is withdrawn or independent verification identifies an unresolved F1-F4 invariant.",
+          "targets": [
+            "WO-112"
+          ],
+          "at": "2026-10-06T14:29:22.647Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-fadd2376e82a909e",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d033",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "788a1226e4e0dc8e9a4be699299e544d733540520ea8a1af9d796dc5e7155a24",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d033--record-the-uncovered-shared-object-mutation-boundary",
+          "title": "WO-112-D033: Plan a source-writer object-store protection order before claiming shared-repository preservation: compare a private non-shared writer object store with host admission against a files-onl",
+          "summary": "{ \"id\": \"WO-112-D033\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: fix; fresh integrated adversarial review\", \"decision\": \"Record the confirmed broader object-store defect for planning and narrow this order's claim to unchanged shared refs and alternates. The native writer can write existing objects, while the durable observer does not inventory their bytes. Do not add an unbounded object-directory scan or claim preservation that detects damage only after it occurs.\", \"evidence\": [ \"worker-transport.ts codexWriterAccess grants write access to the common objects directory; source-change-worktree.ts sharedState records only the common path, refs and exact alternates bytes.\", \".runtime/wo112-int",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Confirmed source-writer shared-object loss requires an object-authority design beyond this bounded refs/alternates repair. Planning should prioritize private non-shared writer storage or files-only writing with host-owned commit before claiming protection of existing shared objects; D033 records the executable counterexample and required recovery, maintenance-concurrency and cost evidence.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-06T15:48:48.256Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4317575e7b30018e",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d034",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f57826c1662866a41ddd46c1bf11e078d4fbdb466c5aeda527af86687852ed0e",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d034--verify-the-ver-002-repair-retain-three-new-in-order-defects-for-repair",
+          "title": "WO-112-D034: WO-112 VER-003 repair F1-F3: (F1) the host's admission reads must derive a commit's parents and tree from the commit object, never from writer-writable derived metadata. Run the host's Gi",
+          "summary": "{ \"id\": \"WO-112-D034\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-002 F1-F4 are repaired: their original counterexamples, re-run at the repaired subject, now refuse or re-judge as each repair rule requires. The six bounded acceptance criteria hold on the carried live-run evidence, a fresh read-only forge readback and the executor's forced-fresh review gate at the unchanged code identity. Fail VER-003 for three reproduced defects in the implementation this amended order ships, and route them to this order's repair: F1, a writer-planted commit-graph shows the host's Git an honest tree, so the host accepts a commit that changes a file outside the declared surfaces; F2,",
+          "missing": false
+        },
+        {
+          "hash": "0bb664bb883df062c05de04f704dffc532c4c3f2e12d296c79e701558acc20bf",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d034--verify-the-ver-002-repair-retain-three-new-in-order-defects-for-repair",
+          "title": "WO-112-D034: WO-112 VER-003 repair F1-F3: (F1) the host's admission reads must derive a commit's parents and tree from the commit object, never from writer-writable derived metadata. Run the host's Gi",
+          "summary": "{ \"id\": \"WO-112-D034\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-002 F1-F4 are repaired: their original counterexamples, re-run at the repaired subject, now refuse or re-judge as each repair rule requires. The six bounded acceptance criteria hold on the carried live-run evidence, a fresh read-only forge readback and the executor's forced-fresh review gate at the unchanged code identity. Fail VER-003 for three reproduced defects in the implementation this amended order ships, and route them to this order's repair: F1, a writer-planted commit-graph shows the host's Git an honest tree, so the host accepts a commit that changes a file outside the declared surfaces; F2,",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "VER-003 F1-F3 are allocated to this order's current repair. D035-D037 and the executable source/triage regressions address their rules; a fresh independent VER report must judge the repaired subject. This disposition is not a verification pass.",
+          "reopenWhen": "The independent verifier reproduces a failure of actual-object admission, saved-receipt recovery or retryable triage at the repaired subject.",
+          "targets": [
+            "WO-112"
+          ],
+          "at": "2026-10-06T18:30:37.716Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-df4a22676759adcc",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d040",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4795291b38debcc4d17b81b7dfaeebc861007f993749f4660d32c5c884e06a7a",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d040--verify-the-ver-003-repair-retain-two-new-in-order-defects-in-the-triage-retry-paths",
+          "title": "WO-112-D040: WO-112 VER-004 repair. (F1) A retryable triage failure is retried by its responsible host without operator rescue: in the resident it defers that continuation with the capped backoff inta",
+          "summary": "{ \"id\": \"WO-112-D040\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-003 F1-F3 are repaired: their original counterexamples, re-run at the repaired subject, refuse the graph-forged commit, replay the persisted receipt observed with one launch after later unrelated ref changes, and reach a fresh triage episode after each retryable failure. The six bounded acceptance criteria hold on the unchanged live-run evidence and the executor's forced-fresh review gate at the unchanged code identity. Fail VER-004 for two reproduced defects that the triage repair introduced in this order's declared surfaces, and route them to this order's repair: F1, a retryable triage failure ends ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "VER-004 blocking F1/F2 are allocated to WO-112's existing repair, D041/D042. Its separately boarded lower F3/F4 remain open under D043/D044's own minted follow-ups; this allocation claims no independent verification verdict.",
+          "reopenWhen": "Independent verification finds the resident retry or review-body bound still unsatisfied; lower F3/F4 remain under D043/D044 regardless of this allocation.",
+          "targets": [
+            "WO-112"
+          ],
+          "at": "2026-10-06T20:56:36.162Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6b6274b0176af00d",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d043",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5f88570662afc6e141ed862355dd0998ce30e1956ec2e595f0d7e62f17d79289",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d043--keep-cleanup-error-recovery-as-a-separate-testable-follow-up",
+          "title": "WO-112-D043: Repair source-writer command revocation under partial and persistent host cleanup failures in source-change-command.ts/source-change-host.ts and their host/integrity tests: tolerate alrea",
+          "summary": "{ \"id\": \"WO-112-D043\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: fix\", \"decision\": \"Retain D040's lower F3 as a separate planning follow-up, not as a discharged finding. This repair closes the two blocking triage defects and the encountered cached-preparation defect; it does not claim robust command revocation after host filesystem cleanup errors. A correct F3 repair must keep revocation failure blocking admission, attempt both removals after a partial earlier removal, and still retain termination, interruption and integrity evidence. Queue the diagnosed work and defer it to its minted follow-up.\", \"evidence\": [ \"D040 and VER-004 board F3 as lower, with no blocking verdict for this item. Ro",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "D040/VER-004's lower finding remains actionable, with source-reviewed cause, concrete fix and fault qualification recorded separately in WO-112-D043. Deferred queue work routes to this public identifier. No repair or passing verdict is claimed for this boundary.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-06T20:56:37.494Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7777b9f12644e560",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d044",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1fb0737eab224ffbec83cb0b64785b997716a8c2791560c5bc70a2f8445b04e0",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d044--retain-the-writer-writable-git-interpretation-review",
+          "title": "WO-112-D044: Before source-host focused after-tests, refuse skip-worktree and assume-unchanged entries or compare worktree bytes/modes with the committed tree without restoring candidate files. Apply ",
+          "summary": "{ \"id\": \"WO-112-D044\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: fix\", \"decision\": \"Retain D040's lower F4 as a separate planning follow-up covering the source host's pre-after-test clean check and verification's Git interpretation together. Do not claim that a clean porcelain status proves committed worktree bytes. The triage and cached-preparation repair changes neither boundary. Queue the diagnosed work and defer it to its minted follow-up; allocate D040's blocking F1/F2 to this repair while preserving these lower items separately.\", \"evidence\": [ \"D040/VER-004's executed Git probe sets skip-worktree and observes empty status despite different file bytes. This repair relies on that filed",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "D040/VER-004's lower finding remains actionable, with source-reviewed cause, concrete fix and fault qualification recorded separately in WO-112-D044. Deferred queue work routes to this public identifier. No repair or passing verdict is claimed for this boundary.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-06T20:56:38.698Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-51b7739810ca1a2c",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d045",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "97b66175332f944a6240562cb32d1316226719110dee30827d9c8fe65f19a8fd",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d045--verify-the-ver-004-repair-retain-three-reproduced-in-order-defects-in-intake-deferral-and-checkout-recovery",
+          "title": "WO-112-D045: WO-112 VER-005 repair. (F1) Only an intake episode's launch and return may make a model-intake preparation transient, as for triage: a missing live-worker opt-in, an unreadable or unbindi",
+          "summary": "{ \"id\": \"WO-112-D045\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-004 F1 and F2 are repaired: the original R1 probe now survives all 60 resident cycles with resolution pending, the executor's advancing-clock regression resolves after three failures without a restart, and B1 stops needs-human after eight judgments without judging the ninth subject. The six bounded acceptance criteria hold on the unchanged live-run evidence and the executor's forced-fresh review gate at the unchanged code identity. Fail VER-005 for three defects reproduced in this order's declared surfaces and route them to this order's repair: F1, model intake classes host-side failures (a missing li",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "VER-005 blocking F1-F3 are allocated to WO-112's existing repair, D047, which closes each class at its origin with regressions beyond the quoted probes. This allocation claims no independent verification verdict.",
+          "reopenWhen": "Independent verification finds an intake host fault retried without bound, a draft prepared while admission refuses, or a foreign worktree registration changed by recovery.",
+          "targets": [
+            "WO-112"
+          ],
+          "at": "2026-10-07T00:13:03.639Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7c269a184f75e742",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d046",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "94a0cf0124fe70bba307de273e73931a30b5ec3b25ea5c7bda5c04053abc5c0a",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d046--board-five-lower-review-loop-and-resident-items-from-the-ver-005-adversary",
+          "title": "WO-112-D046: WO-112 VER-005 boarded items: (a) bound fresh triage episodes and outward dispositions per review-loop invocation across inline items and bodies, ending in a typed stop that names the nex",
+          "summary": "{ \"id\": \"WO-112-D046\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: verify\", \"decision\": \"Board five lower items the VER-005 fresh adversary reported, each fail-safe or bounded, with their reproduction or source basis: (a) model triage of inline items has no per-invocation bound, so a reviewer that opens a new thread on every observation drives one episode and one outward disposition each until authority ends; (b) the review-body bound counts every fresh judgment, and each push re-keys every body by head, so an invocation whose own repairs push R times while an automated reviewer adds a body per push judges (R+1)(R+2)/2 bodies and stops NeedsHuman from R = 3; (c) a cached resolution input pass",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b8440605da5a4eb2",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d047",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8c23c0d001120046dd831bc29fa05ee7d81c2c7a8cb5d83dc7c378e5ab12a4db",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d047--close-the-ver-005-classes-at-their-origin-one-judgment-failure-rule-admission-gated-preparation-and-own-registration-recovery",
+          "title": "WO-112-D047: Label a stored intake or triage judgment record that parses and binds but fails current result validation at replay as a record refusal, not an episode failure, for intake as a bounded ho",
+          "summary": "{ \"id\": \"WO-112-D047\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: fix\", \"decision\": \"Repair VER-005 F1-F3 by closing each class where the decision is made rather than at the quoted path. (F1) runVerticalJudgment marks only an episode's own launch or return failure, for intake as for triage (RetryableJudgmentError; RetryableTriageError now extends it). Model intake is transient only on that marker. A refused return, or a verdict recordedJudgment could not write (JudgmentRecordError), holds the draft with its reason, so no fault buys a further episode. Every other intake failure is a named bounded host fault: the resident retries it within its existing three-attempt bound, counted apart from t",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Pre-existing Low wording defect found by D047's adversary: a replayed record that fails current result validation is labeled an episode failure. The intake outcome is already a hold with no episode; fixing it in shared replay would change a triage disposition, so it is deferred with D046 (e)'s triage item rather than widened into this repair.",
+          "reopenWhen": "Before WO-118's live run, when D046's follow-up is scheduled, or when a replayed record's validation failure is observed in a run.",
+          "targets": [],
+          "at": "2026-10-07T00:13:03.703Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3799fb396f911d8a",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d049",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cdecb855f8b23c16fd6eab2678cf4b94cdb4d070311c3a525fa994e81685a368",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d049--inexcusable-failure-the-31-minute-review-gate-ran-before-the-2-minute-document-gate-again",
+          "title": "WO-112-D049: HIGH PRIORITY. Make gate order mechanical so no executor can repeat D049. npm test -- --review (and any full product gate) first runs the cheap preconditions that can invalidate it at the",
+          "summary": "{ \"id\": \"WO-112-D049\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: fix\", \"decision\": \"Record as an INEXCUSABLE FAILURE, at the operator's direction, that this executor ran npm test -- --review (1863.232 s) before npm run test:docs and without running the repository's formatter on the files it had edited. The document gate's Prettier task then failed on two of those files. The whitespace-only fix changed the code identity, so the passing review row could not be used and the review gate ran a third time. This is the same mistake recorded in WO-164, WO-148, WO-146 and WO-158. Recording a lesson in an order's own receipt has not prevented it, so file a high-priority follow-up for a mechanical gua",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-032190d84be0c2f0",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d050",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "277bca734fa23ddb157c11faff51f5646160255b9958778c410e6a985bbb51a0",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d050--record-an-intermittent-off-ramp-checkpoint-assertion-met-in-the-document-gate",
+          "title": "WO-112-D050: Diagnose why the off-ramp fixture's ordinal 2 sometimes records a checkpoint (scripts/test-off-ramps.mjs:787, the 'correct 2 --set checkpointRef' refusal), observed once in six runs under",
+          "summary": "{ \"id\": \"WO-112-D050\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: fix\", \"decision\": \"Record, without repairing in this order, an intermittent failure of the document gate's resume check. In one of six observed runs, scripts/test-off-ramps.mjs:787 found that the fixture's ordinal 2 already recorded checkpointRef refs/dotln/checkpoint/WO-099/1, so its expected 'resolves to ..., not 0{40}' refusal became 'ordinal 2 already records checkpointRef'. The cause is not diagnosed.\", \"evidence\": [ \"npm run test:docs at 2026-10-07T01:29:08.316Z: 28 passed, 1 failed (resume, 8.96 s), with the AssertionError at test-off-ramps.mjs:787. The same check passed in npm run test:docs at 00:54:36.239Z and inside ",
+          "missing": false
+        },
+        {
+          "hash": "cd1773a235b8ff235356b3b6d71616d3dc1f9e8958b419c35638e3fa93f6a92e",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d050--record-an-intermittent-off-ramp-checkpoint-assertion-met-in-the-document-gate",
+          "title": "WO-112-D050: Diagnose why the off-ramp fixture's ordinal 2 sometimes records a checkpoint (scripts/test-off-ramps.mjs:787, the 'correct 2 --set checkpointRef' refusal), observed once in six runs under",
+          "summary": "{ \"id\": \"WO-112-D050\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: fix\", \"decision\": \"Record, without repairing in this order, an intermittent failure of the document gate's resume check. In one of six observed runs, scripts/test-off-ramps.mjs:787 found that the fixture's ordinal 2 already recorded checkpointRef refs/dotln/checkpoint/WO-099/1, so its expected 'resolves to ..., not 0{40}' refusal became 'ordinal 2 already records checkpointRef'. The cause is not diagnosed.\", \"evidence\": [ \"npm run test:docs at 2026-10-07T01:29:08.316Z: 28 passed, 1 failed (resume, 8.96 s), with the AssertionError at test-off-ramps.mjs:787. The same check passed in npm run test:docs at 00:54:36.239Z (89.02 s) a",
+          "missing": false
+        },
+        {
+          "hash": "309048bc351aaac9b33c88a0d83ad4fc17895da86974f158ea4a6057d080cd31",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d050--record-an-intermittent-off-ramp-checkpoint-assertion-met-in-the-document-gate",
+          "title": "WO-112-D050: Diagnose why the off-ramp fixture's ordinal 2 sometimes records a checkpoint (scripts/test-off-ramps.mjs:787, the 'correct 2 --set checkpointRef' refusal), observed once in six executions",
+          "summary": "{ \"id\": \"WO-112-D050\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: fix\", \"decision\": \"Record, without repairing in this order, an intermittent failure of the document gate's resume check. In one of six observed runs, scripts/test-off-ramps.mjs:787 found that the fixture's ordinal 2 already recorded checkpointRef refs/dotln/checkpoint/WO-099/1, so its expected 'resolves to ..., not 0{40}' refusal became 'ordinal 2 already records checkpointRef'. The cause is not diagnosed.\", \"evidence\": [ \"npm run test:docs at 2026-10-07T01:29:08.316Z: 28 passed, 1 failed (resume, 8.96 s), with the AssertionError at test-off-ramps.mjs:787. The same check passed in npm run test:docs at 00:54:36.239Z (89.02 s) a",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-7b6e93212081952f",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d052",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "45745b08b29ca30b02fb5fd17c9dcef1732013f3c40c688e023a2df12393cb17",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d052--retain-two-independently-reproduced-verdict-and-receipt-recovery-defects-for-repair",
+          "title": "WO-112-D052: WO-112 VER-006 blocking repair. F1: after successful publication or valid replay of the subject-bound judgment record, failure to remove its partial file must not replace the accepted ver",
+          "summary": "{ \"id\": \"WO-112-D052\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail VER-006 on two defects in the order's declared judgment and source-change-host surfaces. F1: after recordedJudgment exclusively links a valid triage verdict, failure to unlink its partial file replaces that verdict with a host error; VerticalHost persists a terminal refused resolution, and restoring filesystem access cannot resume it. F2: recovery calls recoverTermination even for a matching durable source-change receipt; a positively decoded pre-WO-112 event shape has no new process markers, so the promised receipt-before-observation recovery throws before replay. VER-005 F1-F3 and the earlier block",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "status": "allocated",
+          "reason": "VER-006 blocking F1 and F2 are assigned to WO-112’s next repair under D052, within its declared judgment and source-change-host surfaces. This allocation claims no repair or verification pass.",
+          "reopenWhen": "Independent verification repeats the cleanup and legacy receipt reproductions, or confirms the accepted-receipt compatibility exclusion D052 names.",
+          "targets": [
+            "WO-112"
+          ],
+          "sourceRevision": 1,
+          "at": "2026-10-07T02:12:16.751Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-bcd4724fca7bff7a",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d053",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8dbfcb30fc5b4b57f8fb2fa807b23d6de33ed86e0a70756c0ef90c87c9c3bb7d",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d053--board-the-preparation-retry-clock-choice-with-its-observed-contrast",
+          "title": "WO-112-D053: Clarify the clock origin of preparation retry backoff when a forge read or model episode takes longer than its delay. Choose and document attempt-start spacing or a full post-failure cool",
+          "summary": "{ \"id\": \"WO-112-D053\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: verify\", \"decision\": \"Board the fresh adversary's slow-intake observation as a retry-policy ambiguity, not as a third blocking defect. Preparation retry uses context.at sampled before the awaited preparation, while triage continuation retry uses now() after failure. The former expression is unchanged from HEAD. Neither the cited contract nor the existing fake-clock tests defines whether preparation backoff starts at attempt start or failure return; start-based spacing already includes episode duration. The immediate retry is observed, but the adversary's mandatory post-failure deadline is an interpretation, not an established ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "status": "deferred",
+          "reason": "D053 records the observed slow-preparation timing but finds no cited mandatory post-failure cooldown. Start-based spacing and post-failure cooldown are different policies; a speculative scheduler change is deferred with its reproduction.",
+          "reopenWhen": "A cited requirement establishes post-failure cooldown, production evidence shows unacceptable retry rate or spend, or planning schedules the clock-policy follow-up.",
+          "targets": [],
+          "sourceRevision": 1,
+          "at": "2026-10-07T02:12:16.811Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e86366edbc1d5289",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d056",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "198335727899d4b468fb4be140f000a4b58dab6f269e99d4ab04c5627687ac2b",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d056--preserve-the-unlocalized-loopback-failure-and-recheck-the-same-source",
+          "title": "WO-112-D056: Diagnose the unlocalized intermittent WO-115 console-loopback TypeError: fetch failed observed in WO-112 repair 006's first document gate. Add sanitized failing-command and nested-cause d",
+          "summary": "{ \"id\": \"WO-112-D056\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: fix\", \"decision\": \"Record the first document gate's console loopback failure without claiming a cause or a repair. The named case passes three serial isolated runs on the same source. Re-run the document gate once after recording and formatting this evidence. If the failure repeats, capture the sanitized underlying fetch cause and failing invocation before another gate; do not repeat blindly or weaken the assertion. No concrete console fix has been identified, so there is no next queued implementation action. Board the diagnostic need for planning if the current gate passes.\", \"evidence\": [ \"npm run test:docs: 28/29 passed, co",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-117dc832458dc6e2",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d057",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a13d76ac6df1d97b75dfc63785472a187691f5d952969678a2748fd226d75c58",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d057--correct-the-executors-writes-during-a-mixed-review-gate",
+          "title": "WO-112-D057: Prevent record writes during mixed review gates in an unhooked Codex execution path. Add a bounded mechanical preflight or watcher that records the actual gate kind and permitted record r",
+          "summary": "{ \"id\": \"WO-112-D057\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: fix\", \"decision\": \"Do not use the first passing full review as the final qualification. I treated --review as a product gate and wrote repair-006-observations.json and handoff.md, then formatted them, while it was live. runGate explicitly registers --review as review, which retains the full write refusal. The Codex calls were unhooked; that does not waive the role duty. Preserve the passing runtime row as history, finish the records and indexes, run the document preflight, then re-run the full review with no repository writes until its completion. Reports may be finalized afterward under the existing post-gate rule.\", \"evidenc",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5f8a48126bb022be",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d060",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1c79d9f6c97845c03f0e6cd967494d7143f23a41127e17fbbbf7ab54961ce093",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d060--fail-ver-007-on-writers-that-outlive-an-interrupt-and-seal-the-run-as-refused",
+          "title": "WO-112-D060: WO-112 VER-007 blocking repair. When the host running a source-change writer is interrupted (SIGINT, SIGTERM, SIGHUP) it kills every live writer process group it launched before exiting, ",
+          "summary": "{ \"id\": \"WO-112-D060\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail VER-007 on one blocking regression in the declared writer-launch and source-change surfaces. This order launches every native writer in its own process group (worker-transport.ts:1342, detached spawn at :115-130), but `dotln vertical` installs no interrupt handler (dotln.ts:85-107). Ctrl-C, SIGTERM or a closed terminal now stops only the host: the model writer keeps editing the governed worktree past the host's deadline and output bounds. On main the writer shared the host's job and stopped with it. A rerun while that writer lives throws `prior worker group is still present` (source-change-host.ts:52",
+          "missing": false
+        },
+        {
+          "hash": "574d2781c6601073f89ef3a57f7e638922d0739f725a641f7e30dccd70b66022",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d060--board-writers-that-outlive-an-interrupt-and-seal-a-rerun-as-refused-after-the-operators-override",
+          "title": "WO-112-D060: WO-112 VER-007 blocking repair. When the host running a source-change writer is interrupted (SIGINT, SIGTERM, SIGHUP) it kills every live writer process group it launched before exiting, ",
+          "summary": "{ \"id\": \"WO-112-D060\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: verify\", \"decision\": \"The verifier judged one blocking regression in the declared writer-launch and source-change surfaces; the operator's override (D062) records VER-007 as a pass, so it is boarded with the follow-up below. This order launches every native writer in its own process group (worker-transport.ts:1342, detached spawn at :115-130), but `dotln vertical` installs no interrupt handler (dotln.ts:85-107). Ctrl-C, SIGTERM or a closed terminal now stops only the host: the model writer keeps editing the governed worktree past the host's deadline and output bounds. On main the writer shared the host's job and stopped with i",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5d48c4f3c2a3730d",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d061",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5834960db48d0d21c23a81ff93b6a7d94d22be436021f6bf926583902bf5c276",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d061--board-unbounded-retries-of-judgment-episodes-that-fail-identically",
+          "title": "WO-112-D061: Count subject-tied judgment failures (budget exhausted, deadline exceeded) toward a per-subject-hash limit like host faults, so only launch or reachability failures retry without a count.",
+          "summary": "{ \"id\": \"WO-112-D061\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: verify\", \"decision\": \"Board, not block, the adversary's retry-cost item. judgmentRetryable (vertical-judgment-host.ts) treats every failure except invalid-result and profile-refused as retryable, so a subject whose episode always exhausts its budget or deadline is relaunched with capped backoff while the phase stays ready (intake) or until authority expires (triage). It costs money, not correctness, and needs a subject that fails identically every time.\", \"evidence\": [ \"Adversary report: decodeResult maps a Claude error_max_budget_usd result to transport-failed and the judgment timeout to deadline-exceeded; vertical-runtime.mj",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ac99e09feec05a3b",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d063",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ab6925a472de3204fe89298541e93cf51958af54a6634d95290b168165be4e0a",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d063--severe-reviewer-failure-the-final-reviewer-starved-its-own-adversary-by-starting-the-review-gate-beside-it",
+          "title": "WO-112-D063: Make the collision mechanical rather than a reviewer's memory: before a verify or final-review role spawns a probing worker, check for a live gate in the worktree and refuse or warn, and ",
+          "summary": "{ \"id\": \"WO-112-D063\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: final review\", \"decision\": \"Record a severe failure by the final reviewer, as the operator classified it. I dispatched the fresh dotln-worker adversary at 04:46:56.683Z with instructions to execute its probes under `node scripts/harness.mjs bounded`, then started `npm test -- --review` 61 s later at 04:47:57.949Z. A live review gate refuses node and bounded commands, so every probe the adversary wrote was refused and all six of its findings came back inferred from source. I had two warnings before I did it: the same live gate had already refused my own commands, and WO-187's FINAL-001, which I read minutes earlier, records the",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-627ec3088bb86e62",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d065",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4be4ed011160decdca63c371362b83f8126e610c4f714a0f625fb93714ed9eb1",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d065--fail-final-001-a-writer-launched-through-the-vertical-records-no-process-group-so-its-recovery-seals-the-issue-refused",
+          "title": "WO-112-D065: WO-112 FINAL-001 blocking repair. A writer launched through verticalTransport has its process group recorded in SourceChangeProcessStarted before it can change the repository: expose the ",
+          "summary": "{ \"id\": \"WO-112-D065\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: final review\", \"decision\": \"Route FINAL-001 F1 as blocking, class escape. The vertical wraps every writer transport in verticalTransport (vertical-primitives.mjs:220, :319). The wrapper returns its dispatch before it launches the inner one, inside a promise after `await active(true)`, and exposes no processGroup. SourceChangeHost records SourceChangeProcessStarted immediately after dispatch() (source-change-host.ts:733), so every writer the vertical launches is recorded with processGroup null. This order made recovery of an unreceipted attempt require that group (recoverTermination, :509-521). After the host process dies while",
+          "missing": false
+        },
+        {
+          "hash": "84285b9f8e98a2c668da8a558706f448752a9eb5b91fb57a4111a7b51368a0c4",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d065--board-at-the-operators-override-a-vertical-writer-that-records-no-process-group-so-its-recovery-seals-the-issue-refused",
+          "title": "WO-112-D065: WO-112 FINAL-001 F1 repair, boarded at the operator's override. A writer launched through verticalTransport has its process group recorded in SourceChangeProcessStarted before it can chan",
+          "summary": "{ \"id\": \"WO-112-D065\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: final review\", \"decision\": \"Route FINAL-001 F1 as a follow-up, class escape, at the operator's explicit override (D067); the reviewer judged it blocking and the evidence and repair rule below are unchanged. The vertical wraps every writer transport in verticalTransport (vertical-primitives.mjs:220, :319). The wrapper returns its dispatch before it launches the inner one, inside a promise after `await active(true)`, and exposes no processGroup. SourceChangeHost records SourceChangeProcessStarted immediately after dispatch() (source-change-host.ts:733), so every writer the vertical launches is recorded with processGroup null. Th",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-60dab7dee5b4073d",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d066",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9fecd4678072fd21a464520ca0c1ed92d6d1361926d1fe5e26f7abb549a9180a",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d066--board-host-admission-refusals-recorded-as-transport-failures",
+          "title": "WO-112-D066: Record host admission refusals after a writer's result under their own reason, not WorkerInterrupted 'transport-failed', and assert the recorded reason in the one-commit host-message test",
+          "summary": "{ \"id\": \"WO-112-D066\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: final review\", \"decision\": \"Route FINAL-001 F2 as a follow-up, class escape. This order moved the host's post-result admission (tree.effect(), the one-commit host-message check, observe() with its authority checks and receipt save) inside the dispatch try (source-change-host.ts:789-818); at HEAD they followed it. Any of them that throws a plain Error now appends WorkerInterrupted with reason 'transport-failed' after WorkerResultObserved. The refusal itself still happens and no work is accepted; only the recorded reason is wrong.\", \"evidence\": [ \"git show HEAD:packages/skeleton/src/source-change-host.ts: the try closes at line ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

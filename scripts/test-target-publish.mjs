@@ -20,6 +20,8 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { appendEvent, decodeLog } from "@dotln/kernel";
 import { WorkerStore } from "../packages/skeleton/dist/src/worker-store.js";
+import { WorkerFailure } from "../packages/skeleton/dist/src/worker-protocol.js";
+import { RetryableTriageError } from "../packages/skeleton/dist/src/vertical-judgment-host.js";
 import { SOURCE_SECRET_SHAPES, SOURCE_URL_FORMS } from "@dotln/compiler";
 import { SourceChangeHost } from "../packages/skeleton/dist/src/source-change-host.js";
 import {
@@ -40,13 +42,19 @@ import {
   pushRepairedHead,
   disposeReviewThread,
   bindReviewRepairInput,
+  TARGET_PUBLISH_HOST,
 } from "./lib/target-publish.mjs";
 import {
   resolveReviewComments,
   replayReviewItems,
+  REVIEW_BODY_JUDGMENT_LIMIT,
 } from "./lib/review-comment-loop.mjs";
-import { observePullRequest } from "./lib/pull-request-observer.mjs";
+import {
+  observePullRequest,
+  PULL_REQUEST_OBSERVER,
+} from "./lib/pull-request-observer.mjs";
 import { RepairHost } from "../packages/skeleton/dist/src/repair-host.js";
+import { repairHash } from "../packages/skeleton/dist/src/repair.js";
 import {
   repairTransport,
   disposeRepairFixture,
@@ -1838,6 +1846,7 @@ async function reviewScenario(
     check = null,
     repairedCheck = "SUCCESS",
     wrong = false,
+    reviews = [],
   } = {},
 ) {
   const subject = await scenario(t, { review: true });
@@ -1852,6 +1861,7 @@ async function reviewScenario(
       items,
       check,
       repairedCheck,
+      reviews,
       initialHead: subject.observation.commit,
       resolved: [],
     }),
@@ -1873,7 +1883,7 @@ else if(operation==='DotlnResolveReview') {raw.resolved.push(vars.thread);writeF
 else if(operation==='DotlnChecks') data={repository:{object:{oid:head,statusCheckRollup:{contexts:page(raw.check?[{__typename:'CheckRun',id:'CHECK_1',name:raw.check,status:head!==raw.initialHead&&raw.repairedCheck==='IN_PROGRESS'?'IN_PROGRESS':'COMPLETED',conclusion:head===raw.initialHead?'FAILURE':raw.repairedCheck==='IN_PROGRESS'?null:raw.repairedCheck}]:[])}}}};
 else {
  if(operation==='DotlnComments') pull.comments=page([]);
- if(operation==='DotlnReviews') pull.reviews=page([]);
+ if(operation==='DotlnReviews') pull.reviews=page((raw.reviews??[]).map(review=>({id:review.id,body:review.text,author:{__typename:'Bot',login:'fixture-bot'},state:'COMMENTED'})));
  if(operation==='DotlnThreads') pull.reviewThreads=page(raw.items.map(item=>({id:'T_'+item.id,isResolved:raw.resolved.includes('T_'+item.id),comments:page([{id:item.id,body:item.text??'Synthetic automated finding',author:item.role==='human'?{__typename:'User',login:'human-reviewer'}:{__typename:'Bot',login:'fixture-bot'},path:item.path,line:item.line??null,state:'SUBMITTED'}])})));
  if(!['DotlnPullRequest','DotlnComments','DotlnReviews','DotlnThreads'].includes(operation)) process.exit(64);
  data={repository:{nameWithOwner:'dotln-fixture/target',pullRequest:pull}};
@@ -2623,4 +2633,856 @@ test("WO-184 criterion 7: every observer caller gets a fixed reason for unexpect
       return true;
     },
   );
+});
+
+await test("WO-112 an unsupplied automated item is judged by the triage episode; its verdict is recorded with provenance and never bypasses the loop's guards", async (t) => {
+  const producer = {
+    kind: "model",
+    task: "triage",
+    transport: "fake",
+    episodeId: "ep_fixture_triage",
+  };
+  const verdict = (kind, criterionId = null) => ({
+    kind,
+    criterionId,
+    reason: "Fixture triage double.",
+    evidenceRefs: kind === "NeedsHuman" ? [] : ["synthetic-contract"],
+    producer,
+  });
+  const accept = await reviewScenario(t);
+  accept.config.judgments = {};
+  const seen = [];
+  accept.config.triage = async (active) => {
+    seen.push(active.item.id);
+    return verdict("accept", "AC-contract");
+  };
+  assert.equal((await resolveReviewComments(accept.config)).status, "resolved");
+  assert.deepEqual(seen, ["R1"]);
+  assert.equal(accept.launches().length, 1);
+  const item = [...replayReviewItems(accept.events()).values()][0];
+  assert.equal(item.judgment, null);
+  assert.deepEqual(item.results.triage.judgment.producer, producer);
+  // A rerun replays the recorded verdict; no second episode or repair.
+  assert.equal((await resolveReviewComments(accept.config)).status, "resolved");
+  assert.deepEqual(seen, ["R1"]);
+  assert.equal(accept.launches().length, 1);
+
+  const reject = await reviewScenario(t);
+  reject.config.judgments = {};
+  reject.config.triage = async () => verdict("reject");
+  assert.equal((await resolveReviewComments(reject.config)).status, "resolved");
+  assert.equal(reject.launches().length, 0);
+  assert.match(
+    reject.calls(),
+    /body=\{"disposition":"rejected","evidenceRefs":\["synthetic-contract"\]\}/,
+  );
+
+  const human = await reviewScenario(t);
+  human.config.judgments = {};
+  human.config.triage = async () => verdict("NeedsHuman");
+  assert.equal(
+    (await resolveReviewComments(human.config)).status,
+    "needs-human",
+  );
+  assert.equal(human.launches().length, 0);
+  assert.doesNotMatch(human.calls(), /mutation/);
+
+  const failed = await reviewScenario(t);
+  failed.config.judgments = {};
+  failed.config.triage = async () => {
+    throw new WorkerFailure("invalid-result", "fixture return refused");
+  };
+  assert.equal(
+    (await resolveReviewComments(failed.config)).status,
+    "needs-human",
+  );
+  assert.equal(
+    [...replayReviewItems(failed.events()).values()][0].terminal.reason,
+    "triage episode failed: invalid-result: fixture return refused",
+  );
+  assert.equal(failed.launches().length, 0);
+  assert.doesNotMatch(failed.calls(), /mutation/);
+
+  // An item no verdict could dispose launches no episode.
+  const outside = await reviewScenario(t, {
+    items: [{ id: "OUTSIDE", path: "outside.txt", line: 1 }],
+  });
+  outside.config.judgments = {};
+  outside.config.triage = async () => assert.fail("no episode for OUTSIDE");
+  assert.equal(
+    (await resolveReviewComments(outside.config)).status,
+    "needs-human",
+  );
+  // A supplied judgment wins over the episode.
+  const supplied = await reviewScenario(t);
+  supplied.config.triage = async () => assert.fail("supplied judgment wins");
+  assert.equal(
+    (await resolveReviewComments(supplied.config)).status,
+    "resolved",
+  );
+  // A supplied judgment can never claim to be a model's (VER-001 F1).
+  const forged = await reviewScenario(t);
+  forged.config.judgments.R1.producer = { kind: "model", name: "claimed" };
+  forged.config.triage = async () =>
+    assert.fail("no episode for a supplied item");
+  assert.equal(
+    (await resolveReviewComments(forged.config)).status,
+    "needs-human",
+  );
+  assert.equal(
+    [...replayReviewItems(forged.events()).values()][0].terminal.reason,
+    "a supplied judgment cannot claim a model producer",
+  );
+  assert.equal(forged.launches().length, 0);
+  // A mapped failing check has no model verdict that could dispose it.
+  const check = await reviewScenario(t, { items: [], check: "unit" });
+  check.config.judgments = {};
+  check.config.triage = async () => assert.fail("no episode for a check");
+  assert.equal(
+    (await resolveReviewComments(check.config)).status,
+    "needs-human",
+  );
+  // An observer whose declared checks never settled stops typed.
+  const unsettled = await reviewScenario(t);
+  unsettled.config.observe = async () => ({
+    unsettled: "declared automated review checks did not finish: review-bot",
+  });
+  const stopped = await resolveReviewComments(unsettled.config);
+  assert.equal(stopped.status, "needs-human");
+  assert.equal(
+    stopped.reason,
+    "declared automated review checks did not finish: review-bot",
+  );
+  assert.equal(unsettled.launches().length, 0);
+});
+
+await test("WO-112 VER-003 F3 retryable inline and review-body triage stays undecided and retries once", async (t) => {
+  for (const shape of ["inline", "body"])
+    for (const code of ["interrupted", "model-unavailable", "untyped"])
+      await t.test(`${shape}: ${code}`, async (child) => {
+        const subject = await reviewScenario(
+          child,
+          shape === "body"
+            ? {
+                items: [],
+                reviews: [{ id: "S1", text: "Summary: no changes requested." }],
+              }
+            : {},
+        );
+        subject.config.judgments = {};
+        let calls = 0;
+        const error =
+          code === "untyped"
+            ? new Error("synthetic transient episode failure")
+            : new WorkerFailure(code, "synthetic transient episode failure");
+        subject.config.triage = async () => {
+          if (++calls === 1) throw new RetryableTriageError(error);
+          return {
+            kind: shape === "body" ? "acknowledge" : "accept",
+            criterionId: shape === "body" ? null : "AC-contract",
+            reason: "Fresh triage episode succeeded.",
+            evidenceRefs: ["synthetic-contract"],
+            producer: { kind: "model", task: "triage", transport: "fake" },
+          };
+        };
+        await assert.rejects(
+          () => resolveReviewComments(subject.config),
+          (thrown) =>
+            thrown.name === "RetryableTriageError" && thrown.cause === error,
+        );
+        const undecided = subject.events();
+        assert.equal(
+          undecided.some((event) => event.type === "ReviewBodyJudged"),
+          false,
+        );
+        assert.equal(
+          undecided.some((event) => event.type === "ReviewItemCommandResult"),
+          false,
+        );
+        assert.equal(
+          undecided.some((event) => event.type === "ReviewItemFinished"),
+          false,
+        );
+        assert.equal(
+          undecided.some(
+            (event) => event.type === "PullRequestReviewLoopStopped",
+          ),
+          false,
+        );
+        if (shape === "inline") {
+          const pending = [...replayReviewItems(undecided).values()][0];
+          assert.equal(pending.pending.intent.payload.stage, "triage");
+          assert.equal(pending.terminal, null);
+        }
+        assert.equal(
+          existsSync(
+            join(subject.config.store, "publication/review-loop/host.lock"),
+          ),
+          false,
+        );
+        assert.equal(subject.launches().length, 0);
+        assert.doesNotMatch(subject.calls(), /mutation/);
+
+        assert.equal(
+          (await resolveReviewComments(subject.config)).status,
+          "resolved",
+        );
+        assert.equal(calls, 2);
+        assert.equal(subject.launches().length, shape === "body" ? 0 : 1);
+        const decided = subject.events();
+        assert.equal(
+          decided.filter((event) => event.type === "ReviewBodyJudged").length,
+          shape === "body" ? 1 : 0,
+        );
+        if (shape === "inline") {
+          const item = [...replayReviewItems(decided).values()][0];
+          assert.equal(item.results.triage.judgment.kind, "accept");
+          assert.equal(item.terminal.status, "resolved");
+        }
+        assert.equal(
+          (await resolveReviewComments(subject.config)).status,
+          "resolved",
+        );
+        assert.equal(calls, 2);
+        assert.equal(subject.launches().length, shape === "body" ? 0 : 1);
+      });
+});
+
+await test("WO-112 VER-003 F3 non-retryable triage failures persist human decisions", async (t) => {
+  for (const shape of ["inline", "body"])
+    for (const code of ["invalid-result", "profile-refused"])
+      await t.test(`${shape}: ${code}`, async (child) => {
+        const subject = await reviewScenario(
+          child,
+          shape === "body"
+            ? {
+                items: [],
+                reviews: [{ id: "S1", text: "Summary needs a judgment." }],
+              }
+            : {},
+        );
+        subject.config.judgments = {};
+        let calls = 0;
+        subject.config.triage = async () => {
+          calls++;
+          throw new WorkerFailure(code, "synthetic refused episode");
+        };
+        for (let replay = 0; replay < 2; replay++) {
+          const result = await resolveReviewComments(subject.config);
+          assert.equal(result.status, "needs-human");
+          assert.equal(
+            result.reason,
+            `triage episode failed: ${code}: synthetic refused episode`,
+          );
+        }
+        assert.equal(calls, 1);
+        assert.equal(subject.launches().length, 0);
+        assert.doesNotMatch(subject.calls(), /mutation/);
+        if (shape === "body")
+          assert.equal(
+            subject
+              .events()
+              .filter((event) => event.type === "ReviewBodyJudged").length,
+            1,
+          );
+        else
+          assert.equal(
+            [...replayReviewItems(subject.events()).values()][0].terminal
+              .status,
+            "needs-human",
+          );
+      });
+});
+
+await test("WO-112 an automated review body is disposed only by a recorded model acknowledgement; an actionable or unjudged body still stops typed", async (t) => {
+  const body = {
+    id: "S1",
+    text: "Automated review: one inline suggestion follows.",
+  };
+  const producer = { kind: "model", task: "triage", transport: "fake" };
+  const triage = (bodyKind) => async (active) =>
+    active.item.path === undefined || active.item.path === null
+      ? {
+          kind: bodyKind,
+          criterionId: null,
+          reason: "Fixture triage double.",
+          evidenceRefs: bodyKind === "NeedsHuman" ? [] : ["synthetic-contract"],
+          producer,
+        }
+      : {
+          kind: "accept",
+          criterionId: "AC-contract",
+          reason: "Fixture triage double.",
+          evidenceRefs: ["synthetic-contract"],
+          producer,
+        };
+  const acknowledged = await reviewScenario(t, { reviews: [body] });
+  acknowledged.config.judgments = {};
+  acknowledged.config.triage = triage("acknowledge");
+  assert.equal(
+    (await resolveReviewComments(acknowledged.config)).status,
+    "resolved",
+  );
+  const record = acknowledged
+    .events()
+    .filter((e) => e.type === "ReviewBodyJudged");
+  assert.equal(record.length, 1);
+  assert.equal(record[0].payload.itemId, "S1");
+  assert.equal(record[0].payload.reason, null);
+  assert.deepEqual(record[0].payload.judgment.producer, producer);
+  // The inline item is repaired before this body's first judgment. Unchanged
+  // replay neither posts a reply nor launches another judgment.
+  assert.equal(acknowledged.launches().length, 1);
+  assert.equal(
+    (acknowledged.calls().match(/mutation DotlnResolveReview/g) ?? []).length,
+    1,
+  );
+  assert.equal(
+    (await resolveReviewComments(acknowledged.config)).status,
+    "resolved",
+  );
+  assert.equal(
+    acknowledged.events().filter((e) => e.type === "ReviewBodyJudged").length,
+    1,
+  );
+
+  // A body left to a human does not stop the other items; the loop repairs
+  // the inline item, then ends needs-human naming the body and its reason.
+  const actionable = await reviewScenario(t, { reviews: [body] });
+  actionable.config.judgments = {};
+  actionable.config.triage = triage("NeedsHuman");
+  const stopped = await resolveReviewComments(actionable.config);
+  assert.equal(stopped.status, "needs-human");
+  assert.equal(stopped.itemId, "S1");
+  assert.equal(stopped.reason, "Fixture triage double.");
+  assert.equal(actionable.launches().length, 1);
+  assert.equal(
+    (actionable.calls().match(/mutation DotlnResolveReview/g) ?? []).length,
+    1,
+  );
+  // A supplied acknowledgement disposes a body without any episode.
+  const suppliedBody = await reviewScenario(t, { items: [], reviews: [body] });
+  suppliedBody.config.judgments = {
+    S1: {
+      kind: "acknowledge",
+      reason: "Operator: the summary requests nothing.",
+      evidenceRefs: ["synthetic-contract"],
+    },
+  };
+  suppliedBody.config.triage = async () => assert.fail("supplied body wins");
+  assert.equal(
+    (await resolveReviewComments(suppliedBody.config)).status,
+    "resolved",
+  );
+
+  const unjudged = await reviewScenario(t, { items: [], reviews: [body] });
+  unjudged.config.judgments = {};
+  assert.equal(
+    (await resolveReviewComments(unjudged.config)).status,
+    "needs-human",
+  );
+  // An acknowledgement must cite evidence.
+  const uncited = await reviewScenario(t, { items: [], reviews: [body] });
+  uncited.config.judgments = {};
+  uncited.config.triage = async () => ({
+    kind: "acknowledge",
+    criterionId: null,
+    reason: "No evidence.",
+    evidenceRefs: [],
+  });
+  assert.equal(
+    (await resolveReviewComments(uncited.config)).status,
+    "needs-human",
+  );
+});
+
+await test("WO-112 review-body triage refreshes edited text, changed heads and newly added items before stopping", async () => {
+  for (const changed of ["body", "head", "inline", "unsettled"]) {
+    const root = mkdtempSync(join(tmpdir(), "dotln-review-body-race-"));
+    try {
+      const publication = new WorkerStore(join(root, "publication"));
+      const repositoryId = "github.com/dotln-fixture/target",
+        number = 7;
+      let clock = 10,
+        calls = 0,
+        observations = 0;
+      let text = "No additional changes requested.",
+        head = "a".repeat(40);
+      let added = [];
+      const record = (actorId, type, payload, causationId) => {
+        publication.acquire();
+        try {
+          const { event } = appendEvent(publication.read(), {
+            schemaVersion: 1,
+            type,
+            occurredAt: ++clock,
+            actorId,
+            workstreamId: "ws_body_race",
+            ...(causationId ? { causationId } : {}),
+            payload,
+          });
+          publication.append(event);
+          return event;
+        } finally {
+          publication.release();
+        }
+      };
+      const opening = record(TARGET_PUBLISH_HOST, "PullRequestOpened", {
+        repositoryId,
+        number,
+      });
+      const result = await resolveReviewComments({
+        store: root,
+        repositoryId,
+        number,
+        now: () => ++clock,
+        original: { surfaces: ["fixture.txt"], criteria: [], tests: [] },
+        observe() {
+          observations++;
+          record(
+            PULL_REQUEST_OBSERVER,
+            "PullRequestStateObserved",
+            {
+              repositoryId,
+              number,
+              headSha: head,
+              checks: [],
+              comments: [
+                { id: "S1", class: "automated-review", text, resolved: false },
+                ...added,
+              ],
+            },
+            opening.eventId,
+          );
+          return changed === "unsettled" && observations > 1
+            ? { unsettled: "new declared check is pending" }
+            : {};
+        },
+        async triage() {
+          if (++calls > 1)
+            return {
+              kind: "NeedsHuman",
+              reason: "Changed subject requires attention.",
+              evidenceRefs: [],
+            };
+          if (changed === "body") text = "Please change fixture.txt.";
+          if (changed === "head") head = "b".repeat(40);
+          if (changed === "inline")
+            added = [
+              {
+                id: "R2",
+                class: "automated-review",
+                text: "New finding",
+                path: "elsewhere.txt",
+                line: 1,
+                threadId: "T_R2",
+                resolved: false,
+              },
+            ];
+          return {
+            kind: "acknowledge",
+            reason: "No action in the original subject.",
+            evidenceRefs: ["synthetic-contract"],
+          };
+        },
+      });
+      assert.equal(result.status, "needs-human", changed);
+      assert.equal(calls, ["body", "head"].includes(changed) ? 2 : 1);
+      const rows = decodeLog(publication.read());
+      const observed = rows.filter(
+        (e) => e.type === "PullRequestStateObserved",
+      );
+      assert.ok(observed.length >= 2);
+      assert.equal(result.observationId, observed.at(-1).eventId);
+      assert.equal(observed.at(-1).payload.headSha, head);
+      assert.equal(observed.at(-1).payload.comments[0].text, text);
+      if (changed === "inline") assert.equal(result.itemId, "R2");
+      if (changed === "unsettled")
+        assert.equal(result.reason, "new declared check is pending");
+      assert.equal(
+        rows.filter((e) => e.type === "PullRequestReviewLoopStopped").length,
+        1,
+      );
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }
+});
+
+await test("WO-112 VER-004 F2 changing review bodies have a finite invocation and never seal an unjudged subject", async () => {
+  for (const mode of ["text", "head", "many", "settles-at-limit"]) {
+    const root = mkdtempSync(join(tmpdir(), "dotln-review-body-bound-"));
+    try {
+      const publication = new WorkerStore(join(root, "publication"));
+      const repositoryId = "github.com/dotln-fixture/target",
+        number = 7;
+      let clock = 10,
+        observations = 0,
+        calls = 0,
+        frozen = null;
+      const record = (actorId, type, payload, causationId) => {
+        publication.acquire();
+        try {
+          const { event } = appendEvent(publication.read(), {
+            schemaVersion: 1,
+            type,
+            occurredAt: ++clock,
+            actorId,
+            workstreamId: "ws_body_bound",
+            ...(causationId ? { causationId } : {}),
+            payload,
+          });
+          publication.append(event);
+          return event;
+        } finally {
+          publication.release();
+        }
+      };
+      const opening = record(TARGET_PUBLISH_HOST, "PullRequestOpened", {
+        repositoryId,
+        number,
+      });
+      const options = {
+        store: root,
+        repositoryId,
+        number,
+        now: () => ++clock,
+        original: { surfaces: ["fixture.txt"], criteria: [], tests: [] },
+        observe() {
+          observations++;
+          const revision =
+            frozen ??
+            (mode === "settles-at-limit"
+              ? Math.min(observations, REVIEW_BODY_JUDGMENT_LIMIT)
+              : observations);
+          const comments = Array.from(
+            { length: mode === "many" ? REVIEW_BODY_JUDGMENT_LIMIT + 1 : 1 },
+            (_, i) => ({
+              id: `S${i + 1}`,
+              class: "automated-review",
+              text: `No action requested. Status ${mode === "text" || mode === "settles-at-limit" ? revision : i}.`,
+              resolved: false,
+            }),
+          );
+          record(
+            PULL_REQUEST_OBSERVER,
+            "PullRequestStateObserved",
+            {
+              repositoryId,
+              number,
+              headSha:
+                mode === "head"
+                  ? revision.toString(16).padStart(40, "0")
+                  : "a".repeat(40),
+              checks: [],
+              comments,
+            },
+            opening.eventId,
+          );
+          return {};
+        },
+        triage(entry) {
+          assert.ok(
+            ++calls <= REVIEW_BODY_JUDGMENT_LIMIT + 1,
+            "the host must stop before a probe-side cap",
+          );
+          return {
+            kind: "acknowledge",
+            criterionId: null,
+            reason: "No action in this observed subject.",
+            evidenceRefs: [`observation:${entry.observation.eventId}`],
+          };
+        },
+      };
+      const result = await resolveReviewComments(options);
+      assert.equal(calls, REVIEW_BODY_JUDGMENT_LIMIT, mode);
+      assert.equal(observations, REVIEW_BODY_JUDGMENT_LIMIT + 1, mode);
+      const rows = decodeLog(publication.read());
+      const latest = rows
+        .filter((e) => e.type === "PullRequestStateObserved")
+        .at(-1);
+      const judgments = rows.filter((e) => e.type === "ReviewBodyJudged");
+      assert.equal(judgments.length, REVIEW_BODY_JUDGMENT_LIMIT);
+      assert.equal(result.observationId, latest.eventId);
+      if (mode === "settles-at-limit") {
+        assert.equal(result.status, "resolved");
+      } else {
+        assert.equal(result.status, "needs-human", mode);
+        assert.equal(
+          result.itemId,
+          mode === "many" ? `S${REVIEW_BODY_JUDGMENT_LIMIT + 1}` : "S1",
+        );
+        assert.match(
+          result.reason,
+          /review-body judgment limit 8 reached before judging item/u,
+        );
+        assert.equal(
+          judgments.some((e) => e.payload.observationId === latest.eventId),
+          false,
+        );
+        if (mode === "many")
+          assert.equal(
+            judgments.some((e) => e.payload.itemId === result.itemId),
+            false,
+          );
+        // Once the body/head stops changing, the next invocation judges only
+        // its current subject; earlier acknowledgements remain bound to theirs.
+        frozen = observations;
+        assert.equal((await resolveReviewComments(options)).status, "resolved");
+        assert.equal(calls, REVIEW_BODY_JUDGMENT_LIMIT + 1);
+        assert.equal((await resolveReviewComments(options)).status, "resolved");
+        assert.equal(calls, REVIEW_BODY_JUDGMENT_LIMIT + 1);
+      }
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }
+});
+
+await test("WO-112 F4 review-body acknowledgements bind text, candidate head and original contract", async () => {
+  for (const changed of [
+    "body",
+    "head",
+    "contract",
+    "supplied",
+    "replacement",
+    "legacy",
+  ]) {
+    const root = mkdtempSync(join(tmpdir(), "dotln-review-body-"));
+    try {
+      const publication = new WorkerStore(join(root, "publication"));
+      let clock = 10,
+        text = "No additional changes requested.",
+        head = "a".repeat(40),
+        calls = 0;
+      const record = (actorId, type, payload, causationId) => {
+        publication.acquire();
+        try {
+          const { event } = appendEvent(publication.read(), {
+            schemaVersion: 1,
+            type,
+            occurredAt: ++clock,
+            actorId,
+            workstreamId: "ws_body_fixture",
+            ...(causationId ? { causationId } : {}),
+            payload,
+          });
+          publication.append(event);
+          return event;
+        } finally {
+          publication.release();
+        }
+      };
+      const repositoryId = "github.com/dotln-fixture/target";
+      const opening = record(TARGET_PUBLISH_HOST, "PullRequestOpened", {
+        number: 7,
+        repositoryId,
+      });
+      const acknowledged = {
+        kind: "acknowledge",
+        reason: "No action.",
+        evidenceRefs: ["synthetic-contract"],
+      };
+      const supplied = ["supplied", "replacement"].includes(changed);
+      const options = {
+        store: root,
+        repositoryId,
+        number: 7,
+        now: () => ++clock,
+        original: { surfaces: ["fixture.txt"], criteria: [], tests: [] },
+        judgments: supplied ? { S1: acknowledged } : {},
+        observe() {
+          record(
+            PULL_REQUEST_OBSERVER,
+            "PullRequestStateObserved",
+            {
+              number: 7,
+              repositoryId,
+              headSha: head,
+              checks: [],
+              comments: [
+                { id: "S1", class: "automated-review", text, resolved: false },
+              ],
+            },
+            opening.eventId,
+          );
+        },
+        ...(supplied
+          ? {}
+          : {
+              async triage() {
+                calls++;
+                return calls === 1
+                  ? acknowledged
+                  : {
+                      kind: "NeedsHuman",
+                      reason: "Changed subject needs attention.",
+                      evidenceRefs: [],
+                    };
+              },
+            }),
+      };
+      assert.equal((await resolveReviewComments(options)).status, "resolved");
+      assert.equal((await resolveReviewComments(options)).status, "resolved");
+      assert.equal(calls, supplied ? 0 : 1);
+      if (["body", "supplied"].includes(changed))
+        text = "Action required: fix the acceptance failure.";
+      if (changed === "replacement") {
+        text = "Updated summary: no further action requested.";
+        const subjectKey = repairHash({
+          item: { id: "S1", class: "automated-review", text, resolved: false },
+          headSha: head,
+          repositoryId,
+          number: 7,
+          original: options.original,
+        });
+        options.judgments[subjectKey] = {
+          ...acknowledged,
+          reason: "Replacement judgment of the updated summary.",
+        };
+      }
+      if (changed === "head") head = "b".repeat(40);
+      if (changed === "contract")
+        options.original.criteria = [
+          { criterionId: "new", description: "New obligation" },
+        ];
+      if (changed === "legacy") {
+        const rows = decodeLog(publication.read());
+        for (const row of rows)
+          if (row.type === "ReviewBodyJudged") delete row.payload.subjectKey;
+        writeFileSync(
+          publication.logPath,
+          rows.map((row) => JSON.stringify(row) + "\n").join(""),
+        );
+      }
+      const expected = changed === "replacement" ? "resolved" : "needs-human";
+      assert.equal(
+        (await resolveReviewComments(options)).status,
+        expected,
+        changed,
+      );
+      assert.equal(calls, supplied ? 0 : 2);
+      const judged = decodeLog(publication.read()).filter(
+        (event) => event.type === "ReviewBodyJudged",
+      );
+      assert.equal(judged.length, 2);
+      assert.notEqual(
+        judged[0].payload.subjectKey,
+        judged[1].payload.subjectKey,
+      );
+      if (changed === "replacement")
+        assert.equal(
+          judged[1].payload.judgment.reason,
+          "Replacement judgment of the updated summary.",
+        );
+      assert.equal((await resolveReviewComments(options)).status, expected);
+      assert.equal(
+        calls,
+        supplied ? 0 : 2,
+        "unchanged judgment replay is idempotent",
+      );
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }
+});
+
+await test("WO-112 review-body acknowledgements reject malformed evidence on admission and replay", async () => {
+  for (const evidenceRefs of [
+    [],
+    [""],
+    [" "],
+    [7],
+    "synthetic-contract",
+    { length: 1 },
+    null,
+  ]) {
+    for (const supplied of [true, false]) {
+      const root = mkdtempSync(join(tmpdir(), "dotln-body-evidence-"));
+      try {
+        const publication = new WorkerStore(join(root, "publication"));
+        let clock = 10,
+          calls = 0;
+        const record = (actorId, type, payload, causationId) => {
+          publication.acquire();
+          try {
+            const { event } = appendEvent(publication.read(), {
+              schemaVersion: 1,
+              type,
+              occurredAt: ++clock,
+              actorId,
+              workstreamId: "ws_body_evidence",
+              ...(causationId ? { causationId } : {}),
+              payload,
+            });
+            publication.append(event);
+            return event;
+          } finally {
+            publication.release();
+          }
+        };
+        const repositoryId = "github.com/dotln-fixture/target",
+          number = 7;
+        const opening = record(TARGET_PUBLISH_HOST, "PullRequestOpened", {
+          number,
+          repositoryId,
+        });
+        const judgment = {
+          kind: "acknowledge",
+          reason: "No action.",
+          evidenceRefs,
+        };
+        const options = {
+          store: root,
+          repositoryId,
+          number,
+          now: () => ++clock,
+          original: { surfaces: ["fixture.txt"], criteria: [], tests: [] },
+          judgments: supplied ? { S1: judgment } : {},
+          triage: async () => {
+            calls++;
+            return judgment;
+          },
+          observe() {
+            record(
+              PULL_REQUEST_OBSERVER,
+              "PullRequestStateObserved",
+              {
+                number,
+                repositoryId,
+                headSha: "a".repeat(40),
+                checks: [],
+                comments: [
+                  {
+                    id: "S1",
+                    class: "automated-review",
+                    text: "Summary.",
+                    resolved: false,
+                  },
+                ],
+              },
+              opening.eventId,
+            );
+          },
+        };
+        assert.equal(
+          (await resolveReviewComments(options)).status,
+          "needs-human",
+        );
+        assert.equal(
+          (await resolveReviewComments(options)).status,
+          "needs-human",
+        );
+        assert.equal(calls, supplied ? 0 : 1);
+        assert.equal(
+          decodeLog(publication.read()).filter(
+            (event) => event.type === "ReviewBodyJudged",
+          ).length,
+          1,
+        );
+      } finally {
+        rmSync(root, { recursive: true, force: true });
+      }
+    }
+  }
 });

@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-112",
+  "dispatch": "resume: fix",
+  "codeIdentity": "4ab207c415d1aa97e405a40c5185f2dc893688270a4076c90466fad2192bf51b",
+  "source": "executor-observed stdout from the unchanged verification-004-probes.mjs, under harness bounded; synthetic fixtures and declared judgment doubles, no live forge or vendor worker",
+  "cutoff": "2026-10-06T21:03:07.619Z",
+  "boundedDurationMs": 30370,
+  "rows": [
+    {
+      "probe": "R1 resident loop, retryable triage failure",
+      "failingTask": "triage",
+      "loop": {
+        "ended": "cycles-exhausted"
+      },
+      "ticksBeforeLoopEnded": 60,
+      "cyclesRequested": 60,
+      "judgeCalls": [
+        "triage"
+      ],
+      "intentKind": "admitted",
+      "runTerminal": null,
+      "pendingStep": "resolution"
+    },
+    {
+      "probe": "R2 resident loop, retryable intake failure",
+      "failingTask": "intake",
+      "loop": {
+        "ended": "cycles-exhausted"
+      },
+      "ticksBeforeLoopEnded": 60,
+      "cyclesRequested": 60,
+      "judgeCalls": [
+        "intake"
+      ],
+      "intentKind": null,
+      "runTerminal": null,
+      "pendingStep": null
+    },
+    {
+      "probe": "B1 review body edited on every observation",
+      "cap": 25,
+      "triageCalls": 8,
+      "observations": 9,
+      "returned": "needs-human"
+    }
+  ],
+  "interpretation": "R1 survives the outage without restart. Its short fixture clock does not reach the retry deadline, so this probe establishes survival/pending preservation; the separate 60-cycle advancing-clock regression proves repeated retries and eventual resolution. B1 returns before its own cap instead of continually launching episodes.",
+  "declaredChecks": {
+    "cutoff": "2026-10-06T21:01:51.735Z",
+    "boundedDurationMs": 412560,
+    "normalBuild": "passed",
+    "results": [
+      {
+        "command": "node --test scripts/test-vertical-judgment.mjs",
+        "tests": 22,
+        "passed": 22,
+        "failed": 0,
+        "exitCode": 0
+      },
+      {
+        "command": "node --test --test-name-pattern=WO-112 scripts/test-target-publish.mjs",
+        "tests": 18,
+        "passed": 18,
+        "failed": 0,
+        "exitCode": 0
+      },
+      {
+        "command": "node --test packages/skeleton/dist/test/vertical-judgment.test.js",
+        "tests": 8,
+        "passed": 8,
+        "failed": 0,
+        "exitCode": 0
+      }
+    ]
+  },
+  "currentEditionChecks": {
+    "authority": "passed",
+    "artifact-identity": "passed",
+    "verification": "passed",
+    "feedback": "passed",
+    "selectedRevision": "007",
+    "newLiveAudit": false
+  },
+  "harnessCheck": {
+    "generatedSurfaces": 33,
+    "result": "passed"
+  },
+  "publicationCheck": {
+    "everydaySections": 29,
+    "engineerSections": 45,
+    "result": "current"
+  },
+  "reviewGate": {
+    "checkId": "npm test",
+    "treeHash": "2658a7e83b33aea2851bc30ad0cd48db72e9dd6c",
+    "codeIdentity": "4ab207c415d1aa97e405a40c5185f2dc893688270a4076c90466fad2192bf51b",
+    "durationMs": 1831434,
+    "exitCode": 0,
+    "recordedAt": "2026-10-06T21:34:53.473Z",
+    "executionMode": "forced-fresh",
+    "gateSelection": "review",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "freshSuites": 88,
+    "reusedSuites": 0,
+    "requiredSuites": 38,
+    "vertical": 822999
+  },
+  "documentGate": {
+    "checkId": "npm run test:docs",
+    "codeIdentity": "4ab207c415d1aa97e405a40c5185f2dc893688270a4076c90466fad2192bf51b",
+    "durationMs": 104975,
+    "exitCode": 0,
+    "recordedAt": "2026-10-06T21:38:08.894Z",
+    "executionMode": "fresh",
+    "gateSelection": "document",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "freshSuites": 29,
+    "reusedSuites": 0,
+    "requiredSuites": 29
+  }
+}

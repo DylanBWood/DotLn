@@ -1,0 +1,396 @@
+{
+  "schemaVersion": 1,
+  "report": "docs/verifications/WO-112/VER-005.md",
+  "note": "Probe scripts assert nothing; exit 0 means they ran. Rows are copied verbatim from bounded runs at the subject below. The fourth run reproduces the fresh adversary's intake, deferral and prune items; a fixture temporary path in one refusal message is replaced by <fixture temporary directory>.",
+  "subject": {
+    "head": "8218616b",
+    "checkpoint": "refs/dotln/checkpoint/WO-112/20",
+    "checkpointCommit": "ead83fbcd9d1db966af90880897d80e50f0c5d9f",
+    "codeIdentity": "4ab207c415d1aa97e405a40c5185f2dc893688270a4076c90466fad2192bf51b"
+  },
+  "consumedGate": {
+    "checkId": "npm test",
+    "codeIdentity": "4ab207c415d1aa97e405a40c5185f2dc893688270a4076c90466fad2192bf51b",
+    "exitCode": 0,
+    "executionMode": "forced-fresh",
+    "gateSelection": "review",
+    "freshSuites": 88,
+    "reusedSuites": 0,
+    "requiredSuites": 38,
+    "durationMs": 1831434,
+    "recordedAt": "2026-10-06T21:34:53.473Z"
+  },
+  "runs": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-112/verification-004-probes.mjs",
+      "startedAt": "2026-10-06T22:06:31.009Z",
+      "finishedAt": "2026-10-06T22:06:51.863Z",
+      "durationMs": 20854,
+      "exitCode": 0,
+      "rows": [
+        {
+          "probe": "R1 resident loop, retryable triage failure",
+          "failingTask": "triage",
+          "loop": {
+            "ended": "cycles-exhausted"
+          },
+          "ticksBeforeLoopEnded": 60,
+          "cyclesRequested": 60,
+          "judgeCalls": [
+            "triage"
+          ],
+          "intentKind": "admitted",
+          "runTerminal": null,
+          "pendingStep": "resolution"
+        },
+        {
+          "probe": "R2 resident loop, retryable intake failure",
+          "failingTask": "intake",
+          "loop": {
+            "ended": "cycles-exhausted"
+          },
+          "ticksBeforeLoopEnded": 60,
+          "cyclesRequested": 60,
+          "judgeCalls": [
+            "intake"
+          ],
+          "intentKind": null,
+          "runTerminal": null,
+          "pendingStep": null
+        },
+        {
+          "probe": "B1 review body edited on every observation",
+          "cap": 25,
+          "triageCalls": 8,
+          "observations": 9,
+          "returned": "needs-human"
+        }
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-112/verification-003-probes.mjs",
+      "startedAt": "2026-10-06T22:08:13.399Z",
+      "finishedAt": "2026-10-06T22:08:24.771Z",
+      "durationMs": 11372,
+      "exitCode": 0,
+      "rows": [
+        {
+          "probe": "F1 forged commit-graph",
+          "status": null,
+          "reason": "source-change committed tree is dirty; preserve for inspection",
+          "acceptedCommitIsForged": false,
+          "realTreeIsHonestTree": false,
+          "integrityOutcomes": [
+            "unchanged",
+            "unchanged"
+          ],
+          "hostFlagDiff": [
+            "fixture.txt"
+          ],
+          "commitGraphDisabledDiff": [
+            "fixture-test.mjs",
+            "fixture.txt"
+          ],
+          "pushWithForgedGraph": " ! [remote rejected] 8c4b9a4ef618c43802cb8d146048a632e23a430a -> published (missing necessary objects)",
+          "pushAfterGraphRewrite": "accepted",
+          "remoteDiff": [
+            "fixture-test.mjs",
+            "fixture.txt"
+          ]
+        },
+        {
+          "probe": "VER-002 F1 recheck",
+          "status": "refused",
+          "reason": "shared-repository-changed",
+          "siblingCommitPreserved": true,
+          "siblingStatus": ""
+        },
+        {
+          "probe": "VER-002 F2 recheck",
+          "status": "refused",
+          "reason": "shared-repository-unreadable",
+          "victimUnchanged": true
+        },
+        {
+          "probe": "VER-002 F3 recheck",
+          "first": "invalid-result: stored writer envelope",
+          "recovery": "refused",
+          "recoveryReason": "shared-repository-changed",
+          "strayTagPreserved": true,
+          "writerLaunches": 1
+        },
+        {
+          "probe": "VER-002 F4 recheck",
+          "first": "resolved",
+          "second": "needs-human",
+          "third": "needs-human",
+          "triageCalls": 2,
+          "bodyJudgments": 2
+        },
+        {
+          "probe": "F2 receipt-crash recovery",
+          "later": "none",
+          "hostSignal": "SIGKILL",
+          "receiptPersistedBeforeKill": true,
+          "recovery": "observed",
+          "reason": null,
+          "writerLaunches": 1
+        },
+        {
+          "probe": "F2 receipt-crash recovery",
+          "later": "tag",
+          "hostSignal": "SIGKILL",
+          "receiptPersistedBeforeKill": true,
+          "recovery": "observed",
+          "reason": null,
+          "writerLaunches": 1
+        },
+        {
+          "probe": "F2 receipt-crash recovery",
+          "later": "remote-tracking-ref",
+          "hostSignal": "SIGKILL",
+          "receiptPersistedBeforeKill": true,
+          "recovery": "observed",
+          "reason": null,
+          "writerLaunches": 1
+        },
+        {
+          "probe": "F3 transient triage failure",
+          "shape": "review body",
+          "code": "interrupted",
+          "retryableByIntakeRule": true,
+          "first": [
+            "interrupted: synthetic transient failure",
+            null
+          ],
+          "retried": [
+            "needs-human",
+            "second episode reached"
+          ],
+          "triageCalls": 2
+        },
+        {
+          "probe": "F3 transient triage failure",
+          "shape": "review body",
+          "code": "model-unavailable",
+          "retryableByIntakeRule": true,
+          "first": [
+            "model-unavailable: synthetic transient failure",
+            null
+          ],
+          "retried": [
+            "needs-human",
+            "second episode reached"
+          ],
+          "triageCalls": 2
+        },
+        {
+          "probe": "F3 transient triage failure",
+          "shape": "inline item",
+          "code": "interrupted",
+          "retryableByIntakeRule": true,
+          "first": [
+            "interrupted: synthetic transient failure",
+            null
+          ],
+          "retried": [
+            "needs-human",
+            "second episode reached"
+          ],
+          "triageCalls": 2
+        },
+        {
+          "probe": "F3 transient triage failure",
+          "shape": "inline item",
+          "code": "model-unavailable",
+          "retryableByIntakeRule": true,
+          "first": [
+            "model-unavailable: synthetic transient failure",
+            null
+          ],
+          "retried": [
+            "needs-human",
+            "second episode reached"
+          ],
+          "triageCalls": 2
+        }
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-112/verification-005-probes.mjs",
+      "startedAt": "2026-10-06T22:11:04.293Z",
+      "finishedAt": "2026-10-06T22:12:11.477Z",
+      "durationMs": 67184,
+      "exitCode": 0,
+      "rows": [
+        {
+          "probe": "C1 cached resolution receipt altered after an interrupted episode",
+          "alias": "none",
+          "first": "RetryableTriageError: triage episode failed: interrupted: synthetic interruption",
+          "second": "resolved",
+          "secondStep": "resolution",
+          "secondReason": "fresh observation has no unresolved items",
+          "judgeCalls": 2,
+          "elsewhereUnchanged": true
+        },
+        {
+          "probe": "C1 cached resolution receipt altered after an interrupted episode",
+          "alias": "hard-link",
+          "first": "RetryableTriageError: triage episode failed: interrupted: synthetic interruption",
+          "second": "refused",
+          "secondStep": "resolution",
+          "secondReason": "resolution host failed or was unavailable",
+          "judgeCalls": 1,
+          "elsewhereUnchanged": true
+        },
+        {
+          "probe": "C1 cached resolution receipt altered after an interrupted episode",
+          "alias": "directory",
+          "first": "RetryableTriageError: triage episode failed: interrupted: synthetic interruption",
+          "second": "refused",
+          "secondStep": "resolution",
+          "secondReason": "resolution host failed or was unavailable",
+          "judgeCalls": 1,
+          "elsewhereUnchanged": true
+        },
+        {
+          "probe": "R3 resident: retryable failure, then a refused return",
+          "loop": "cycles-exhausted",
+          "ticks": 60,
+          "judgeCalls": 2,
+          "planted": null,
+          "terminal": "NeedsHuman",
+          "terminalStep": "resolution",
+          "lastReason": "triage episode failed: invalid-result: triage result shape",
+          "resolutionReceipts": 1,
+          "intentStepCleared": true
+        },
+        {
+          "probe": "R4 resident: resolution child aliased during backoff",
+          "loop": "cycles-exhausted",
+          "ticks": 60,
+          "judgeCalls": 1,
+          "planted": "child symlinked",
+          "terminal": "refused",
+          "terminalStep": "resolution",
+          "lastReason": "resolution host failed or was unavailable",
+          "resolutionReceipts": 1,
+          "intentStepCleared": true
+        },
+        {
+          "probe": "B2 review-body bound record and later invocations",
+          "invocations": [
+            {
+              "phase": "changing",
+              "returned": "needs-human",
+              "reason": "review-body judgment limit 8 reached before judging item S1",
+              "itemId": "S1",
+              "triageCalls": 8,
+              "stopNamesLastObservation": true,
+              "lastObservationJudged": false
+            },
+            {
+              "phase": "stable",
+              "returned": "resolved",
+              "reason": "fresh observation has no unresolved items",
+              "itemId": null,
+              "triageCalls": 1,
+              "stopNamesLastObservation": true,
+              "lastObservationJudged": false
+            },
+            {
+              "phase": "replay",
+              "returned": "resolved",
+              "reason": "fresh observation has no unresolved items",
+              "itemId": null,
+              "triageCalls": 0,
+              "stopNamesLastObservation": true,
+              "lastObservationJudged": false
+            }
+          ],
+          "bodyJudgedEvents": 9,
+          "observations": 12
+        }
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-112/verification-005-adversary-probes.mjs",
+      "startedAt": "2026-10-06T22:28:22.590Z",
+      "finishedAt": "2026-10-06T22:28:50.728Z",
+      "durationMs": 28138,
+      "exitCode": 0,
+      "rows": [
+        {
+          "probe": "I1 host-side intake failure in the resident loop",
+          "mode": "live-opt-in-missing",
+          "simulatedSeconds": 39,
+          "prepares": 6,
+          "intakeEpisodes": 0,
+          "intentHeldEvents": 0,
+          "intentAdmittedEvents": 0,
+          "intent": null,
+          "heldReason": null,
+          "firstRefusal": {
+            "named": true,
+            "transient": true,
+            "message": "intake episode failed: vertical live workers require DOTLN_LIVE_WORKERS=1"
+          }
+        },
+        {
+          "probe": "I1 host-side intake failure in the resident loop",
+          "mode": "record-unwritable",
+          "simulatedSeconds": 39,
+          "prepares": 6,
+          "intakeEpisodes": 6,
+          "intentHeldEvents": 0,
+          "intentAdmittedEvents": 0,
+          "intent": null,
+          "heldReason": null,
+          "firstRefusal": {
+            "named": true,
+            "transient": true,
+            "message": "intake episode failed: EACCES: permission denied, open '<fixture temporary directory>"
+          }
+        },
+        {
+          "probe": "I1 host-side intake failure in the resident loop",
+          "mode": "unnamed",
+          "simulatedSeconds": 39,
+          "prepares": 3,
+          "intakeEpisodes": 0,
+          "intentHeldEvents": 1,
+          "intentAdmittedEvents": 0,
+          "intent": "NeedsHuman",
+          "heldReason": "intent preparation failed repeatedly outside the named transient conditions",
+          "firstRefusal": null
+        },
+        {
+          "probe": "I2 replayed intake record of another schema",
+          "outcome": {
+            "named": true,
+            "transient": true,
+            "message": "intake episode failed: intake record does not bind this subject's episode"
+          },
+          "intakeEpisodes": 1
+        },
+        {
+          "probe": "D1 second draft while a triage continuation is deferred",
+          "triageEpisodes": 4,
+          "ticksAcrossDeferrals": 7,
+          "secondDraftPrepares": 4,
+          "fixtureForgeCallsDuringDeferrals": 40,
+          "secondDraftDecisions": 0,
+          "firstRunTerminal": "resolved"
+        },
+        {
+          "probe": "P1 checkout recovery beside a moved unrelated worktree",
+          "unrelatedRegisteredBefore": true,
+          "unrelatedRegisteredAfter": false,
+          "ownRegisteredAfter": false,
+          "movedWorktreeStatus": "failed: Command failed: git -c core.hooksPath=/dev/null -c commit.gpgsign=false status --porcelain",
+          "movedFilesPresent": true
+        }
+      ]
+    }
+  ]
+}

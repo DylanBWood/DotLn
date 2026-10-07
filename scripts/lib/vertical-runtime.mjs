@@ -1,5 +1,7 @@
 /** Kit-owned bridge for the operator and resident entries. No issue text grants
- * authority: target, phase, profile, inference inputs and actors are host input. */
+ * authority: target, phase, profile and actors are host input. Inferences are
+ * either host input or, with intake "model", a validated model episode's
+ * return over the screened bundle, recorded with its launch provenance. */
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
@@ -53,6 +55,20 @@ import {
 } from "../../packages/skeleton/dist/src/resident-state.js";
 import { ResidentStore } from "../../packages/skeleton/dist/src/resident-store.js";
 import { createVerticalPrimitives } from "./vertical-primitives.mjs";
+import {
+  JudgmentRecordError,
+  liveTransport,
+  recordedJudgment,
+} from "./vertical-judgment.mjs";
+import {
+  admitIntake,
+  intakeSubject,
+} from "../../packages/skeleton/dist/src/vertical-judgment-protocol.js";
+import {
+  judgmentFailure,
+  judgmentRetryable,
+  RetryableJudgmentError,
+} from "../../packages/skeleton/dist/src/vertical-judgment-host.js";
 
 const read = (file) => JSON.parse(readFileSync(file, "utf8"));
 const need = (ok, why) => {
@@ -71,6 +87,15 @@ const ISSUE_SOURCE_REFUSALS = {
   changed: ["issue changed during the read", true],
   storage: ["issue bundle store is unavailable", true],
 };
+/** A host fault's recorded reason. A system error's or child process's
+ * message names a local path, so only its code or exit status is recorded
+ * (D047). */
+const hostFault = (error) =>
+  typeof error?.syscall === "string" && typeof error.code === "string"
+    ? error.code
+    : typeof error?.status === "number"
+      ? `exit ${error.status}`
+      : judgmentFailure(error);
 /** An unreadable target is the host's condition, never the draft's input. */
 const readTarget = (target, args, options) => {
   try {
@@ -136,6 +161,7 @@ export function readVerticalConfiguration(directory, root = findLaunchpad()) {
     "browserScenario",
     "checkTests",
     "judgments",
+    "awaitChecks",
   ];
   need(
     value &&
@@ -163,6 +189,8 @@ export function readVerticalConfiguration(directory, root = findLaunchpad()) {
       value.issues.length > 0,
     "phase and issue bindings required",
   );
+  // Supplied classifications pin the revision they read; a model intake
+  // classifies whatever revision the screen admits, so it pins none.
   need(
     value.issues.every(
       (i) =>
@@ -174,15 +202,35 @@ export function readVerticalConfiguration(directory, root = findLaunchpad()) {
             "inferences",
             "revisionId",
             "baselineAssessment",
+            "intake",
           ].includes(k),
         ) &&
         Number.isSafeInteger(i.number) &&
         i.number > 0 &&
         (i.draftId === undefined || /^WO-\d+$/u.test(i.draftId)) &&
-        Array.isArray(i.inferences) &&
-        typeof i.revisionId === "string",
+        (i.intake === "model"
+          ? i.inferences === undefined &&
+            i.revisionId === undefined &&
+            i.baselineAssessment === undefined
+          : i.intake === undefined &&
+            Array.isArray(i.inferences) &&
+            typeof i.revisionId === "string"),
     ),
-    "issue classifications must name an issue and exact source revision",
+    "issue classifications must name an issue and exact source revision, or intake model",
+  );
+  need(
+    value.awaitChecks === undefined ||
+      (Array.isArray(value.awaitChecks) &&
+        value.awaitChecks.length > 0 &&
+        value.awaitChecks.every(
+          (name) =>
+            typeof name === "string" &&
+            name.trim() === name &&
+            name.length > 0 &&
+            name.length <= 200,
+        ) &&
+        new Set(value.awaitChecks).size === value.awaitChecks.length),
+    "awaitChecks must name distinct check runs",
   );
   need(
     new Set(value.issues.map((i) => i.number)).size === value.issues.length,
@@ -355,6 +403,63 @@ export function createVerticalEntry({
         : !cfg.issues.some((i) => i.draftId === d.workOrderId) &&
           referencesIssue(d, cfg.repositoryId, issue.number),
     );
+  /** One recorded episode per screened issue revision; a retried admission
+   * replays it. Only the episode's own launch or return leaves the draft
+   * undecided for a fresh episode. A refused return, or a verdict the host
+   * could not record, holds it with its reason, so no fault buys a further
+   * episode. Any other host fault, such as a missing live-worker opt-in or an
+   * unbinding record, keeps its reason for a bounded number of attempts (D047). */
+  async function modelIntake(issue, bundle) {
+    let record;
+    try {
+      record = await recordedJudgment({
+        directory: join(directory, "issue-intake"),
+        name: String(issue.number),
+        task: "intake",
+        subject: intakeSubject(bundle),
+        transport: () => external.judge ?? liveTransport(cfg),
+        model: cfg.workers.model,
+        effort: cfg.workers.effort,
+        now,
+      });
+    } catch (error) {
+      if (error instanceof RetryableJudgmentError)
+        throw new IntentPreparationRefusal(
+          "contract",
+          `intake episode failed: ${judgmentFailure(error.cause)}`,
+          true,
+        );
+      if (error instanceof JudgmentRecordError)
+        throw new IntentPreparationRefusal(
+          "contract",
+          `intake record could not be written: ${hostFault(error.cause)}`,
+        );
+      // A refused return is a decision; anything else is the host's fault.
+      if (!judgmentRetryable(error))
+        throw new IntentPreparationRefusal(
+          "contract",
+          `intake episode failed: ${judgmentFailure(error)}`,
+        );
+      throw new IntentPreparationRefusal(
+        "contract",
+        `intake episode failed: ${hostFault(error)}`,
+        true,
+        true,
+      );
+    }
+    const p = record.provenance;
+    try {
+      return admitIntake(bundle, record.result, {
+        kind: p.kind,
+        name: `${p.transport} ${p.model} ${p.effort} intake episode ${p.episodeId}`,
+      });
+    } catch (error) {
+      throw new IntentPreparationRefusal(
+        "contract",
+        `intake record cannot be bound to the screened source: ${judgmentFailure(error)}`,
+      );
+    }
+  }
   const ports = {
     portfolio: () => cfg.portfolio,
     async drafts() {
@@ -415,18 +520,32 @@ export function createVerticalEntry({
         if (!named) throw error;
         throw new IntentPreparationRefusal("bundle", ...named);
       }
-      prepareNeed(
-        result.bundle.revisionId === issue.revisionId,
-        "contract",
-        "issue revision changed; supplied classification requires review",
-      );
+      let { inferences, baselineAssessment } = issue;
+      if (issue.intake === "model")
+        ({ inferences, baselineAssessment } = await modelIntake(
+          issue,
+          result.bundle,
+        ));
+      else {
+        prepareNeed(
+          result.bundle.revisionId === issue.revisionId,
+          "contract",
+          "issue revision changed; supplied classification requires review",
+        );
+        // Only an episode the host launched may be labelled a model (VER-001 F1).
+        prepareNeed(
+          baselineAssessment?.producer?.kind !== "model",
+          "contract",
+          "a supplied baseline assessment cannot claim a model producer",
+        );
+      }
       const baseCommit = readTarget(cfg.target, ["rev-parse", "HEAD"]);
       return {
         draft,
         bundle: result.bundle,
         forgeHost: cfg.repositoryId.split("/")[0],
-        inferences: issue.inferences,
-        baselineAssessment: issue.baselineAssessment,
+        inferences,
+        baselineAssessment,
         profile: cfg.profile,
         snapshot: targetIndex(cfg.target, baseCommit),
         target: cfg.target,

@@ -23,7 +23,7 @@ import {
 import { join, resolve } from "node:path";
 import { once } from "node:events";
 import { executeSuite, runGate, suites } from "./test-runner.mjs";
-import { guardCensus } from "./host-guard.mjs";
+import { guardCensus, transferDuplicateOwnership } from "./host-guard.mjs";
 import { agentAncestor, ensureHostGuard } from "./lib/host-guard-state.mjs";
 import { acquireHostLanes, laneHolderAlive } from "./lib/host-lanes.mjs";
 import {
@@ -749,6 +749,59 @@ test("WO-185 duplicate pruning preserves an already observed detached descendant
     observedProcesses: observed.trackedProcesses,
     incident,
   });
+});
+
+test("WO-112 a repository removed mid-sample never retires a registration into itself", (t) => {
+  const base = realpathSync(mkdtempSync(join(tmpdir(), "dotln-wo112-guard-")));
+  t.after(() => rmSync(base, { recursive: true, force: true }));
+  const owner = { pid: 4242, birth: "100.000001" },
+    grandchild = { pid: 4343, birth: "101.000001" },
+    rows = [owner, grandchild];
+  const registration = (id, repo) => {
+    const file = join(base, `${id}.json`);
+    writeFileSync(file, "{}");
+    return { id, ...owner, protected: true, repo, file };
+  };
+  // The survivor is listed first, so a registration still present when roots
+  // are chosen would be the last root for the shared agent identity.
+  const survivor = registration("survivor", join(base, "kept")),
+    original = registration("original", join(base, "retired"));
+  const histories = new Map([
+    ["survivor", new Map([[owner.pid, owner.birth]])],
+    [
+      "original",
+      new Map([
+        [owner.pid, owner.birth],
+        [grandchild.pid, grandchild.birth],
+      ]),
+    ],
+  ]);
+  const historyFor = (row) => histories.get(row.id);
+  // The retired repository disappears after its first observation.
+  let reads = 0;
+  const flipping = (repo) => (repo === original.repo ? reads++ > 0 : false);
+  const first = transferDuplicateOwnership(
+    [survivor, original],
+    rows,
+    historyFor,
+    flipping,
+  );
+  assert.equal(first.size, 0, "observed present, the original is kept");
+  assert.ok(existsSync(original.file));
+  assert.ok(histories.get("original").has(grandchild.pid));
+  const second = transferDuplicateOwnership(
+    [survivor, original],
+    rows,
+    historyFor,
+    flipping,
+  );
+  assert.deepEqual([...second], ["original"]);
+  assert.ok(!existsSync(original.file));
+  assert.equal(
+    histories.get("survivor").get(grandchild.pid),
+    grandchild.birth,
+    "the survivor inherits the observed detached descendant",
+  );
 });
 
 test("WO-185 the long-lived guard drops released registration histories", async (t) => {

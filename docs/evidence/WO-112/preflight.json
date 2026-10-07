@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "kind": "read-only-readiness-and-witness-guard-probe",
+  "label": "observed",
+  "startedAt": "2026-10-05T23:40:39.114Z",
+  "recordedAt": "2026-10-05T23:40:40.669Z",
+  "subject": "WO-112 activation checkout; existing vertical primitives",
+  "target": {
+    "selectorShape": "github.com/<operator>/<scratch-repository>",
+    "visibility": "private",
+    "issueCount": 0,
+    "issueEnumerationComplete": true,
+    "treeEntryCount": 2,
+    "treeEnumerationComplete": true,
+    "htmlFilePresent": false,
+    "workflowCount": 0,
+    "automatedReviewerConfiguration": "unknown; workflow enumeration does not enumerate installed reviewer applications"
+  },
+  "launchpad": {
+    "configurationPresent": false,
+    "registeredTargetCount": 0
+  },
+  "witnessProbe": {
+    "visualCriterion": "synthetic probe input, not a compiled StoryContract",
+    "sourceChangeReceipt": "synthetic probe input; no source-change episode ran",
+    "unconfigured": {
+      "result": "NeedsHuman",
+      "reason": "browser scenario is not configured for the visual claim"
+    },
+    "configured": {
+      "result": "NeedsHuman",
+      "reason": "installed browser adapter supplies synthetic-fixture evidence; live target evidence is unavailable",
+      "browserCalls": 1,
+      "browser": "explicit double; no real browser launched"
+    }
+  },
+  "cost": {
+    "wallMs": 1554,
+    "tokens": null,
+    "costUsd": null,
+    "scope": "this preflight process only"
+  },
+  "effects": {
+    "remoteReads": true,
+    "remoteWrites": false,
+    "modelEpisodes": 0,
+    "browserEpisodes": 0,
+    "createdRepositories": 0,
+    "localWriteDirectory": ".runtime/wo112/witness-probe",
+    "outsideProjectWrites": []
+  },
+  "limits": [
+    "No witnessed vertical, target branch, generated PR, screenshot, repair or review disposition is established.",
+    "The configured branch isolates the existing guard with a browser double; it is not live browser evidence.",
+    "Remote identities, URLs, issue text, credentials and user identifiers are omitted."
+  ]
+}

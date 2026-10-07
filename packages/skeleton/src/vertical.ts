@@ -123,11 +123,15 @@ export type IntentAdmission =
       readonly reason: string;
     };
 /** Only the source adapter constructs this from already-screened metadata. */
+/** `transient` leaves the draft undecided. A `bounded` transient refusal is a
+ * host fault that keeps its reason for the resident's unnamed-attempt bound
+ * instead of retrying without limit (D047). */
 export class IntentPreparationRefusal extends Error {
   constructor(
     readonly step: string,
     reason: string,
     readonly transient = false,
+    readonly bounded = false,
   ) {
     super(reason);
   }
@@ -473,7 +477,8 @@ export interface BaselineAssessment {
   readonly schemaVersion: 1;
   readonly contractId: string;
   readonly producer: {
-    readonly kind: "model" | "operator" | "unsupplied";
+    /** `double`: a declared test actor answered, never a model. */
+    readonly kind: "model" | "double" | "operator" | "unsupplied";
     readonly name: string;
   };
   readonly assertions: readonly {
@@ -527,7 +532,7 @@ export function decodeBaselineAssessment(
   );
   requireAssessment(
     exactFields(v.producer, ["kind", "name"]) &&
-      ["model", "operator", "unsupplied"].includes(v.producer.kind) &&
+      ["model", "double", "operator", "unsupplied"].includes(v.producer.kind) &&
       line(v.producer.name),
     "producer cannot be decoded",
   );

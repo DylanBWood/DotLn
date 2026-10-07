@@ -1,8 +1,12 @@
 import { createHash } from "node:crypto";
 import {
+  closeSync,
+  constants,
   existsSync,
+  fstatSync,
   lstatSync,
   mkdirSync,
+  openSync,
   readFileSync,
   readdirSync,
   realpathSync,
@@ -21,6 +25,7 @@ import {
   assertSourceSurface,
   type FocusedTestResult,
   type SourceChangeRequested,
+  type SharedRepositoryState,
 } from "./source-change-state.js";
 
 export const sourceDigest = (value: string | Buffer): string =>
@@ -34,6 +39,14 @@ export const HOST_GIT = [
   "core.hooksPath=/dev/null",
   "-c",
   "core.fsmonitor=false",
+  // A writer could otherwise plant a replace ref that hides a file from the
+  // host's diff while the real commit is published (WO-112 D022).
+  "-c",
+  "core.useReplaceRefs=false",
+  // A writer-writable commit-graph can substitute a commit's tree or parents.
+  // Admission must parse the commit objects instead (WO-112 VER-003 F1).
+  "-c",
+  "core.commitGraph=false",
 ] as const;
 export const sourceGit = (cwd: string, ...args: string[]): string =>
   execFileSync("git", [...HOST_GIT, ...args], {
@@ -45,6 +58,20 @@ export const sourceGit = (cwd: string, ...args: string[]): string =>
   }).trim();
 const present = (path: string) =>
   lstatSync(path, { throwIfNoEntry: false }) !== undefined;
+const ordinaryFile = (path: string): Buffer => {
+  const info = lstatSync(path);
+  if (!info.isFile() || info.nlink !== 1)
+    throw new Error("source-change shared entry is not an ordinary file");
+  const fd = openSync(path, constants.O_RDONLY | constants.O_NOFOLLOW);
+  try {
+    const opened = fstatSync(fd);
+    if (!opened.isFile() || opened.dev !== info.dev || opened.ino !== info.ino)
+      throw new Error("source-change shared entry identity changed");
+    return readFileSync(fd);
+  } finally {
+    closeSync(fd);
+  }
+};
 const inside = (parent: string, path: string) =>
   path.startsWith(`${parent}${sep}`);
 const canonicalDirectory = (path: string) => {
@@ -206,6 +233,111 @@ export class SourceChangeWorktree {
     );
     return head;
   }
+  /** Observe shared state without following a substituted alternates entry.
+   * Differences are not attributable to this writer: independent Git clients
+   * may legitimately change any shared ref. Never restore them here. */
+  sharedState(): SharedRepositoryState {
+    const { repo, branch } = this.options.requested;
+    const common = resolve(
+      repo,
+      sourceGit(repo, "rev-parse", "--git-common-dir"),
+    );
+    const parents = [
+      common,
+      join(common, "objects"),
+      join(common, "objects/info"),
+    ];
+    const identities = parents.map((path) => {
+      const info = lstatSync(path);
+      if (!info.isDirectory() || realpathSync(path) !== path)
+        throw new Error(
+          "source-change shared object directory is not ordinary",
+        );
+      return info;
+    });
+    const alternates = join(common, "objects", "info", "alternates");
+    const info = lstatSync(alternates, { throwIfNoEntry: false });
+    const bytes = info ? ordinaryFile(alternates).toString("hex") : null;
+    // Git's ref iterator silently omits dangling and cyclic symbolic refs.
+    // Inspect loose symbolic entries too; do not claim coverage of another
+    // storage format whose unresolved entries this observer cannot enumerate.
+    const storage = spawnSync(
+      "git",
+      [...HOST_GIT, "config", "--local", "--get", "extensions.refStorage"],
+      {
+        cwd: repo,
+        encoding: "utf8",
+        timeout: 15_000,
+      },
+    );
+    if (!(
+      storage.status === 1 ||
+      (storage.status === 0 && storage.stdout.trim() === "files")
+    ))
+      throw new Error("source-change shared ref storage is unsupported");
+    const symbolic = new Map<string, string>();
+    const visit = (directory: string): void => {
+      const before = lstatSync(directory);
+      if (!before.isDirectory() || realpathSync(directory) !== directory)
+        throw new Error("source-change shared refs directory is not ordinary");
+      for (const name of readdirSync(directory)) {
+        const path = join(directory, name);
+        if (lstatSync(path).isDirectory()) visit(path);
+        else {
+          const bytes = ordinaryFile(path);
+          const text = bytes.toString("utf8");
+          if (!Buffer.from(text, "utf8").equals(bytes))
+            throw new Error("source-change shared ref text is not UTF-8");
+          const value = text.trim();
+          if (value.startsWith("ref: "))
+            symbolic.set(path.slice(common.length + 1), value.slice(5));
+          else assertSourceCommit(value);
+        }
+      }
+      const after = lstatSync(directory);
+      if (
+        realpathSync(directory) !== directory ||
+        after.dev !== before.dev ||
+        after.ino !== before.ino
+      )
+        throw new Error("source-change shared refs directory changed");
+    };
+    visit(join(common, "refs"));
+    const refs = new Map<string, [string, string, string]>();
+    for (const line of sourceGit(
+      repo,
+      "for-each-ref",
+      "--format=%(refname) %(objectname) %(symref)",
+    )
+      .split("\n")
+      .filter(Boolean)) {
+      const [ref, commit, target = ""] = line.split(" ");
+      refs.set(ref!, [ref!, commit!, target]);
+    }
+    for (const [ref, target] of symbolic) {
+      const observed = refs.get(ref);
+      // The stored immediate target matters even if Git resolves a chain.
+      refs.set(ref, [ref, observed?.[1] ?? "", target]);
+    }
+    parents.forEach((path, index) => {
+      const info = lstatSync(path);
+      const before = identities[index]!;
+      if (
+        !info.isDirectory() ||
+        realpathSync(path) !== path ||
+        info.dev !== before.dev ||
+        info.ino !== before.ino
+      )
+        throw new Error("source-change shared object directory changed");
+    });
+    return {
+      commonDirectory: common,
+      refs: [...refs.values()]
+        .filter(([ref]) => ref !== `refs/heads/${branch}`)
+        .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)),
+      alternates: bytes,
+    };
+  }
   bundle(action: "emit" | "check" | "remove"): void {
     execFileSync(
       process.execPath,
@@ -310,6 +442,20 @@ export class SourceChangeWorktree {
     )
       throw new Error(
         "source-change diff is empty or outside the declared surfaces",
+      );
+    // One commit carrying the host's message, whoever the writer was.
+    if (
+      sourceGit(
+        this.path,
+        "rev-list",
+        "--count",
+        `${baseCommit}..${commit}`,
+      ) !== "1" ||
+      sourceGit(this.path, "log", "-1", "--format=%B", commit).trimEnd() !==
+        this.options.commitMessage.trimEnd()
+    )
+      throw new Error(
+        "source-change result is not one commit with the host message",
       );
     if (admit) this.checkChangeLimits(baseCommit, commit);
     const diff = execFileSync(

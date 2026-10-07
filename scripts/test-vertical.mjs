@@ -25,6 +25,7 @@ import {
 import {
   verticalFixture,
   fixtureBaselineAssessment,
+  runState,
   json,
   put,
 } from "./fixtures/vertical/fixture.mjs";
@@ -94,11 +95,6 @@ async function addIssue(
   return { ...filed, bundle: result.bundle };
 }
 
-const runState = (directory, key) =>
-  decodeLog(new WorkerStore(join(directory, "vertical", key)).read()).reduce(
-    foldVertical,
-    undefined,
-  );
 async function prepareFixture(f) {
   const cfg = readVerticalConfiguration(f.directory, f.launchpad);
   const entry = createVerticalEntry({

@@ -1,0 +1,219 @@
+{
+  "schemaVersion": 1,
+  "label": "observed",
+  "subjectCodeIdentity": "02fce51f8477d5b9fcb48c9321579c8741b5da8fd197b4f3d0d3253b6e4081ec",
+  "toolVersions": {
+    "git": "2.55.0",
+    "node": "v26.9.0"
+  },
+  "probe": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-112/verification-003-probes.mjs",
+    "startedAt": "2026-10-06T16:53:06.493Z",
+    "finishedAt": "2026-10-06T16:53:21.458Z",
+    "durationMs": 14965,
+    "exitCode": 0,
+    "interpretation": "The script asserts nothing. The F1-F3 rows record defects at this subject; the VER-002 rows show that its four counterexamples no longer reproduce. F2 and F3 reproduce the fresh adversary's p1, r1 and r2 cases inside this filed script.",
+    "results": [
+      {
+        "probe": "F1 forged commit-graph",
+        "status": "observed",
+        "reason": null,
+        "acceptedCommitIsForged": true,
+        "realTreeIsHonestTree": false,
+        "integrityOutcomes": [
+          "unchanged",
+          "unchanged"
+        ],
+        "hostFlagDiff": [
+          "fixture.txt"
+        ],
+        "commitGraphDisabledDiff": [
+          "fixture-test.mjs",
+          "fixture.txt"
+        ],
+        "pushWithForgedGraph": "! [remote rejected] <commit> -> published (missing necessary objects)",
+        "pushAfterGraphRewrite": "accepted",
+        "remoteDiff": [
+          "fixture-test.mjs",
+          "fixture.txt"
+        ]
+      },
+      {
+        "probe": "VER-002 F1 recheck",
+        "status": "refused",
+        "reason": "shared-repository-changed",
+        "siblingCommitPreserved": true,
+        "siblingStatus": ""
+      },
+      {
+        "probe": "VER-002 F2 recheck",
+        "status": "refused",
+        "reason": "shared-repository-unreadable",
+        "victimUnchanged": true
+      },
+      {
+        "probe": "VER-002 F3 recheck",
+        "first": "invalid-result: stored writer envelope",
+        "recovery": "refused",
+        "recoveryReason": "shared-repository-changed",
+        "strayTagPreserved": true,
+        "writerLaunches": 1
+      },
+      {
+        "probe": "VER-002 F4 recheck",
+        "first": "resolved",
+        "second": "needs-human",
+        "third": "needs-human",
+        "triageCalls": 2,
+        "bodyJudgments": 2
+      },
+      {
+        "probe": "F2 receipt-crash recovery",
+        "later": "none",
+        "hostSignal": "SIGKILL",
+        "receiptPersistedBeforeKill": true,
+        "recovery": "observed",
+        "reason": null,
+        "writerLaunches": 1
+      },
+      {
+        "probe": "F2 receipt-crash recovery",
+        "later": "tag",
+        "hostSignal": "SIGKILL",
+        "receiptPersistedBeforeKill": true,
+        "recovery": "refused",
+        "reason": "shared-repository-changed",
+        "writerLaunches": 1
+      },
+      {
+        "probe": "F2 receipt-crash recovery",
+        "later": "remote-tracking-ref",
+        "hostSignal": "SIGKILL",
+        "receiptPersistedBeforeKill": true,
+        "recovery": "refused",
+        "reason": "shared-repository-changed",
+        "writerLaunches": 1
+      },
+      {
+        "probe": "F3 transient triage failure",
+        "shape": "review body",
+        "code": "interrupted",
+        "retryableByIntakeRule": true,
+        "first": [
+          "needs-human",
+          "triage episode failed: interrupted: synthetic transient failure"
+        ],
+        "retried": [
+          "needs-human",
+          "triage episode failed: interrupted: synthetic transient failure"
+        ],
+        "triageCalls": 1
+      },
+      {
+        "probe": "F3 transient triage failure",
+        "shape": "review body",
+        "code": "model-unavailable",
+        "retryableByIntakeRule": true,
+        "first": [
+          "needs-human",
+          "triage episode failed: model-unavailable: synthetic transient failure"
+        ],
+        "retried": [
+          "needs-human",
+          "triage episode failed: model-unavailable: synthetic transient failure"
+        ],
+        "triageCalls": 1
+      },
+      {
+        "probe": "F3 transient triage failure",
+        "shape": "inline item",
+        "code": "interrupted",
+        "retryableByIntakeRule": true,
+        "first": [
+          "needs-human",
+          "triage episode failed: interrupted: synthetic transient failure"
+        ],
+        "retried": [
+          "needs-human",
+          "triage episode failed: interrupted: synthetic transient failure"
+        ],
+        "triageCalls": 1
+      },
+      {
+        "probe": "F3 transient triage failure",
+        "shape": "inline item",
+        "code": "model-unavailable",
+        "retryableByIntakeRule": true,
+        "first": [
+          "needs-human",
+          "triage episode failed: model-unavailable: synthetic transient failure"
+        ],
+        "retried": [
+          "needs-human",
+          "triage episode failed: model-unavailable: synthetic transient failure"
+        ],
+        "triageCalls": 1
+      }
+    ],
+    "limits": "Disposable synthetic repositories. The F1 writer is a synthetic process double run by the real host through the Codex transport class; it does not run inside Codex's sandbox. The local bare remote stands in for a forge's connectivity check. F2 kills the host with SIGKILL from its afterReceiptSaved hook. F3 uses a declared observer and a triage double that throws WorkerFailure. No vendor worker, forge write or network effect."
+  },
+  "liveReadback": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-112/verification-002-live-checks.mjs",
+    "startedAt": "2026-10-06T16:41:41.942Z",
+    "finishedAt": "2026-10-06T16:41:43.445Z",
+    "durationMs": 1503,
+    "exitCode": 0,
+    "scenarios": [
+      {
+        "scenario": "representative",
+        "observedAt": "2026-10-06T16:41:42.808Z",
+        "state": "OPEN",
+        "merged": false,
+        "headMatchesRecordedSubject": true,
+        "generatedBodyHashMatches": true,
+        "commits": 2,
+        "threads": 1,
+        "allThreadsResolved": true,
+        "nonemptyAutomatedReviewBodies": 1,
+        "automatedBodyTextsMatchRecordedObservations": true,
+        "outwardArtifactCount": 5,
+        "allOutwardLintsPass": true,
+        "treeGrepExit": 1,
+        "trackedFiles": 6,
+        "forbiddenPaths": 0
+      },
+      {
+        "scenario": "control",
+        "observedAt": "2026-10-06T16:41:43.438Z",
+        "state": "OPEN",
+        "merged": false,
+        "headMatchesRecordedSubject": true,
+        "generatedBodyHashMatches": true,
+        "commits": 1,
+        "threads": 1,
+        "allThreadsResolved": true,
+        "nonemptyAutomatedReviewBodies": 1,
+        "automatedBodyTextsMatchRecordedObservations": true,
+        "controlRejectionHasRecordedEvidence": true,
+        "outwardArtifactCount": 4,
+        "allOutwardLintsPass": true,
+        "treeGrepExit": 1,
+        "trackedFiles": 6,
+        "forbiddenPaths": 0
+      }
+    ],
+    "limits": "Read-only forge and local-tree checks with the VER-002 script; no new live worker run. Private selectors and response text stay in their existing ignored source."
+  },
+  "consumedGate": {
+    "check": "npm test -- --review",
+    "codeIdentity": "02fce51f8477d5b9fcb48c9321579c8741b5da8fd197b4f3d0d3253b6e4081ec",
+    "recordedAt": "2026-10-06T16:19:02.790Z",
+    "executionMode": "forced-fresh",
+    "requiredSuites": 38,
+    "freshSuites": 88,
+    "reusedSuites": 0,
+    "exitCode": 0,
+    "durationMs": 1422592,
+    "source": "docs/control/local/harness/checks.json via node scripts/harness.mjs evidence"
+  }
+}

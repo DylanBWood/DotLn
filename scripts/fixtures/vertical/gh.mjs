@@ -1,5 +1,10 @@
 #!/usr/bin/env node
-import { readFileSync, writeFileSync, appendFileSync } from "node:fs";
+import {
+  appendFileSync,
+  existsSync,
+  readFileSync,
+  writeFileSync,
+} from "node:fs";
 import { execFileSync } from "node:child_process";
 const [, , ...args] = process.argv;
 const cfg = JSON.parse(
@@ -56,12 +61,35 @@ else if (args[0] === "pr" && args[1] === "create") {
     });
   } else {
     const { head } = JSON.parse(readFileSync(cfg.published, "utf8"));
+    // A declared check-state sequence advances once per checks query, so a
+    // test can watch an automated reviewer run and finish between observations.
+    let check = { status: "COMPLETED", conclusion: "SUCCESS" };
+    if (cfg.checkStates && operation === "DotlnChecks") {
+      const seen = Number(
+        existsSync(cfg.checkCounter)
+          ? readFileSync(cfg.checkCounter, "utf8")
+          : 0,
+      );
+      writeFileSync(cfg.checkCounter, String(seen + 1));
+      const state = cfg.checkStates[Math.min(seen, cfg.checkStates.length - 1)];
+      check =
+        state === "IN_PROGRESS"
+          ? { status: "IN_PROGRESS", conclusion: null }
+          : { status: "COMPLETED", conclusion: state };
+    }
     const pr = {
       number: 7,
       headRefOid: head,
       author: { __typename: "User", login: "fixture" },
       comments: connection(cfg.reviewComments ?? []),
-      reviews: connection(),
+      reviews: connection(
+        (cfg.reviews ?? []).map((review) => ({
+          id: review.id,
+          body: review.text,
+          author: { __typename: "Bot", login: "fixture-bot" },
+          state: "COMMENTED",
+        })),
+      ),
       reviewThreads: connection(),
     };
     send({
@@ -77,8 +105,7 @@ else if (args[0] === "pr" && args[1] === "create") {
                   __typename: "CheckRun",
                   id: "CR_1",
                   name: "unit",
-                  status: "COMPLETED",
-                  conclusion: "SUCCESS",
+                  ...check,
                 },
               ]),
             },

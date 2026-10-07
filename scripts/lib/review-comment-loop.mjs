@@ -5,6 +5,10 @@ import { appendEvent, decodeLog, Program, stepProgram } from "@dotln/kernel";
 import { WorkerStore } from "../../packages/skeleton/dist/src/worker-store.js";
 import { RepairHost } from "../../packages/skeleton/dist/src/repair-host.js";
 import {
+  judgmentFailure,
+  judgmentRetryable,
+} from "../../packages/skeleton/dist/src/vertical-judgment-host.js";
+import {
   deriveRepairOrder,
   repairHash,
   repairContains,
@@ -28,6 +32,7 @@ import {
 } from "../../packages/skeleton/dist/src/worker-transport.js";
 
 export const REVIEW_LOOP_HOST = "review-comment-loop";
+export const REVIEW_BODY_JUDGMENT_LIMIT = 8;
 const same = (a, b) => canonicalStringify(a) === canonicalStringify(b);
 const refuse = (reason) => new Error(`review loop refused: ${reason}`);
 const env = { now: 0, rngState: 0, predicates: {} };
@@ -111,10 +116,62 @@ export function replayReviewItems(events) {
       )
         throw refuse("terminal item drift");
       state.terminal = p;
-    } else if (event.type !== "PullRequestReviewLoopStopped")
+    } else if (
+      !["PullRequestReviewLoopStopped", "ReviewBodyJudged"].includes(event.type)
+    )
       throw refuse("unknown loop event");
   }
   return items;
+}
+
+/** A review body has no thread to resolve or path to repair. Its judgment is
+ * recorded per subject: an acknowledgement, citing evidence, that it asks for nothing
+ * actionable is its only disposition; any other verdict leaves it to a human
+ * while the loop goes on to the other items. */
+const isReviewBody = (item) =>
+  item.class === "automated-review" && !item.threadId && !item.path;
+const reviewBodyKey = (item, observation, original) =>
+  repairHash({
+    item,
+    headSha: observation.payload.headSha,
+    repositoryId: observation.payload.repositoryId,
+    number: observation.payload.number,
+    original,
+  });
+const judgedReviewBodies = (events) =>
+  new Map(
+    events
+      .filter(
+        (event) =>
+          event.actorId === REVIEW_LOOP_HOST &&
+          event.type === "ReviewBodyJudged",
+      )
+      .map((event) => [event.payload.subjectKey, event.payload]),
+  );
+const citesEvidence = (judgment) =>
+  Array.isArray(judgment?.evidenceRefs) &&
+  judgment.evidenceRefs.length > 0 &&
+  judgment.evidenceRefs.every((ref) => typeof ref === "string" && ref.trim());
+const acknowledges = (judgment) =>
+  judgment?.kind === "acknowledge" && citesEvidence(judgment);
+/** A supplied verdict is the host's input; only a launched episode is a model. */
+const claimsModel = (judgment) => judgment?.producer?.kind === "model";
+
+/** Why no judgment could dispose this item, or null. A model episode is never
+ * launched for an item every verdict would leave to a human. */
+function triageBlocker(item, original, checkTests) {
+  if (item.class === "ci-failure")
+    return checkTests[item.text]
+      ? null
+      : `check mapping does not name ${item.text}`;
+  if (item.class !== "automated-review")
+    return `unknown item class ${item.class}`;
+  if (!item.path || !repairContains(original.surfaces, item.path))
+    return `path outside original surfaces: ${item.path ?? "missing path"}`;
+  if (!item.threadId) return "comment has no actionable review thread";
+  if (!Number.isSafeInteger(item.line) || item.line < 1)
+    return `comment has no positive integer line: ${item.id}`;
+  return null;
 }
 
 function admittedTriage(item, judgment, observation, original, checkTests) {
@@ -122,34 +179,14 @@ function admittedTriage(item, judgment, observation, original, checkTests) {
     result: "human",
     value: { reason, itemId: item.id },
   });
-  if (item.class === "ci-failure" && !checkTests[item.text])
-    return human(`check mapping does not name ${item.text}`);
-  if (!["automated-review", "ci-failure"].includes(item.class))
-    return human(`unknown item class ${item.class}`);
+  const blocked = triageBlocker(item, original, checkTests);
+  if (blocked) return human(blocked);
   if (!judgment || !["accept", "reject", "NeedsHuman"].includes(judgment.kind))
     return human("no supplied triage judgment");
   if (judgment.kind === "NeedsHuman")
     return human(judgment.reason ?? "supplied judgment needs human");
-  if (
-    !Array.isArray(judgment.evidenceRefs) ||
-    !judgment.evidenceRefs.length ||
-    judgment.evidenceRefs.some((ref) => typeof ref !== "string" || !ref.trim())
-  )
+  if (!citesEvidence(judgment))
     return human("triage judgment lacks evidence references");
-  if (
-    item.class === "automated-review" &&
-    (!item.path || !repairContains(original.surfaces, item.path))
-  )
-    return human(
-      `path outside original surfaces: ${item.path ?? "missing path"}`,
-    );
-  if (item.class === "automated-review" && !item.threadId)
-    return human("comment has no actionable review thread");
-  if (
-    item.class === "automated-review" &&
-    (!Number.isSafeInteger(item.line) || item.line < 1)
-  )
-    return human(`comment has no positive integer line: ${item.id}`);
   if (judgment.kind === "reject") {
     if (item.class !== "automated-review")
       return human("a failing check cannot be rejected as a review thread");
@@ -196,9 +233,15 @@ function admittedTriage(item, judgment, observation, original, checkTests) {
   return { result: "accept", value: { judgment, witness, finding } };
 }
 
-/** One command invocation drains currently observed actionable items, with no
- * polling cadence. Doubles may replace triage/worker/verifier, never resolution
- * provenance. The original and host selections are pinned before effects. */
+/** One command invocation drains currently observed actionable items. Its
+ * observer may wait for declared checks and return `{ unsettled }` naming any
+ * that did not finish. A supplied judgment wins; otherwise `triage` may judge an
+ * unblocked item, or a review body, with a recorded model episode. A triage
+ * episode raises RetryableTriageError for an undecided launch/return; unmarked
+ * preparation errors remain host failures. At most eight fresh review-body
+ * judgments run per invocation. Doubles may replace triage/worker/verifier,
+ * never resolution provenance. The original and host selections are pinned
+ * before effects. */
 export async function resolveReviewComments(options) {
   const {
     store,
@@ -273,9 +316,13 @@ export async function resolveReviewComments(options) {
   };
   lease.acquire();
   try {
+    let bodyJudgments = 0;
     let items = replayReviewItems(events());
     let active = [...items.values()].find((item) => !item.terminal);
-    if (!active) await observe();
+    if (!active) {
+      const unsettled = (await observe())?.unsettled ?? null;
+      if (unsettled) return stop("needs-human", unsettled);
+    }
     while (true) {
       items = replayReviewItems(events());
       active = [...items.values()].find((item) => !item.terminal);
@@ -289,17 +336,80 @@ export async function resolveReviewComments(options) {
           refused.id,
         );
       if (!active) {
+        const bodies = judgedReviewBodies(events());
+        const bodyKey = (item) => reviewBodyKey(item, observation, original);
+        const bodyJudgment = (item) =>
+          isReviewBody(item) ? bodies.get(bodyKey(item)) : undefined;
         const unresolved = observation.payload.comments.filter(
-          (item) => !item.resolved && item.class !== "resolved",
+          (item) =>
+            !item.resolved &&
+            item.class !== "resolved" &&
+            !acknowledges(bodyJudgment(item)?.judgment),
         );
         const candidate = unresolved.find(
           (item) =>
             item.class !== "human-review" &&
-            !items.has(repairHash([repositoryId, number, item.id])),
+            !bodyJudgment(item) &&
+            (isReviewBody(item) ||
+              !items.has(repairHash([repositoryId, number, item.id]))),
         );
+        if (candidate && isReviewBody(candidate)) {
+          if (bodyJudgments >= REVIEW_BODY_JUDGMENT_LIMIT)
+            return stop(
+              "needs-human",
+              `review-body judgment limit ${REVIEW_BODY_JUDGMENT_LIMIT} reached before judging item ${candidate.id}`,
+              candidate.id,
+            );
+          const subjectKey = bodyKey(candidate);
+          const changedSubject = events().some(
+            (event) =>
+              event.actorId === REVIEW_LOOP_HOST &&
+              event.type === "ReviewBodyJudged" &&
+              event.payload.itemId === candidate.id &&
+              event.payload.subjectKey !== subjectKey,
+          );
+          // An old ID-only supplied input is not a fresh judgment of edited
+          // text or a new head. A caller may bind a replacement by subject key.
+          let judgment =
+              judgments[subjectKey] ??
+              (changedSubject ? undefined : judgments[candidate.id]),
+            failure = claimsModel(judgment)
+              ? "a supplied judgment cannot claim a model producer"
+              : null;
+          if (!judgment && options.triage)
+            try {
+              judgment = await options.triage({
+                key: subjectKey,
+                item: candidate,
+                observation,
+              });
+            } catch (error) {
+              // A failed attempt has made no decision. Leave the body open
+              // for a fresh episode instead of sealing a transient outage.
+              if (judgmentRetryable(error)) throw error;
+              failure = `triage episode failed: ${judgmentFailure(error)}`;
+            }
+          append("ReviewBodyJudged", {
+            itemId: candidate.id,
+            subjectKey,
+            observationId: observation.eventId,
+            headSha: observation.payload.headSha,
+            judgment: failure ? null : judgment,
+            reason:
+              failure ??
+              (acknowledges(judgment)
+                ? null
+                : (judgment?.reason ?? "review body requires human attention")),
+          });
+          bodyJudgments++;
+          const unsettled = (await observe())?.unsettled ?? null;
+          if (unsettled) return stop("needs-human", unsettled);
+          continue;
+        }
         if (!candidate) {
           const unfinished = [...items.values()].find(
-            (item) => item.terminal?.status !== "resolved",
+            (item) =>
+              !isReviewBody(item.item) && item.terminal?.status !== "resolved",
           );
           if (unfinished)
             return stop(
@@ -311,7 +421,8 @@ export async function resolveReviewComments(options) {
           return remaining
             ? stop(
                 "needs-human",
-                "observed unresolved item requires human attention",
+                bodyJudgment(remaining)?.reason ??
+                  "observed unresolved item requires human attention",
                 remaining.id,
               )
             : stop("resolved", "fresh observation has no unresolved items");
@@ -365,13 +476,36 @@ export async function resolveReviewComments(options) {
       let result = "completed",
         value;
       if (stage === "triage") {
-        ({ result, value } = admittedTriage(
-          active.item,
-          active.judgment,
-          active.observation,
-          active.original,
-          checkTests,
-        ));
+        let judgment = active.judgment,
+          failure = null;
+        if (claimsModel(judgment))
+          failure = "a supplied judgment cannot claim a model producer";
+        else if (
+          !judgment &&
+          options.triage &&
+          active.item.class === "automated-review" &&
+          !triageBlocker(active.item, active.original, checkTests)
+        )
+          try {
+            judgment = await options.triage(active);
+          } catch (error) {
+            // Keep this persisted triage command pending until an episode
+            // returns a decision; recovery can safely launch a fresh one.
+            if (judgmentRetryable(error)) throw error;
+            failure = `triage episode failed: ${judgmentFailure(error)}`;
+          }
+        ({ result, value } = failure
+          ? {
+              result: "human",
+              value: { reason: failure, itemId: active.item.id },
+            }
+          : admittedTriage(
+              active.item,
+              judgment,
+              active.observation,
+              active.original,
+              checkTests,
+            ));
       } else if (stage === "repair") {
         const triage = active.results.triage;
         const prepared = await options.prepareRepair(active);
@@ -444,7 +578,7 @@ export async function resolveReviewComments(options) {
               ),
           )
           .at(-1);
-        await observe();
+        const unsettled = (await observe())?.unsettled ?? null;
         const fresh = readObservation();
         const head =
           active.results.repair?.headSha ?? active.observation.payload.headSha;
@@ -452,6 +586,7 @@ export async function resolveReviewComments(options) {
           (item) => item.id === active.item.id,
         );
         const resolved =
+          !unsettled &&
           fresh &&
           receipt &&
           Number(fresh.eventId.slice(4)) > Number(receipt.eventId.slice(4)) &&
@@ -466,7 +601,11 @@ export async function resolveReviewComments(options) {
           observationId: fresh?.eventId ?? null,
           ...(resolved
             ? {}
-            : { reason: "no fresh post-disposition resolution observation" }),
+            : {
+                reason:
+                  unsettled ??
+                  "no fresh post-disposition resolution observation",
+              }),
         };
       } else throw refuse("unknown continuation effect");
       append("ReviewItemCommandResult", {

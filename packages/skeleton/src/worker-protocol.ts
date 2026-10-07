@@ -479,7 +479,13 @@ export function parseStoredWriterResult(
   });
 }
 
-export function writerPrompt(request: WriterRequest): string {
+/** The test command is the one each harness admits: Claude's allow-list admits
+ * only the host's confined spelling; Codex's own sandbox confines the declared
+ * command, and a nested sandbox-exec cannot start inside it (WO-112 D017). */
+export function writerPrompt(
+  request: WriterRequest,
+  harness?: WorkerTransportName,
+): string {
   const source = request.command.intent.payload as Readonly<
     Record<string, JsonValue>
   >;
@@ -498,11 +504,17 @@ export function writerPrompt(request: WriterRequest): string {
     episodeId: request.episodeId,
     resultId: resultId(request.command),
     mount: request.profile.mounts[0],
-    testCommand: confinedTestCommand(
-      request.cwd,
-      request.testCommand,
-      writerSandboxProfilePath(request.profile.launchpadCheckout, request.cwd),
-    ),
+    testCommand:
+      harness === "codex-cli-exec"
+        ? request.testCommand
+        : confinedTestCommand(
+            request.cwd,
+            request.testCommand,
+            writerSandboxProfilePath(
+              request.profile.launchpadCheckout,
+              request.cwd,
+            ),
+          ),
     commitCommand: `git commit -F ${request.commitMessagePath}`,
     outputSchema: writerResultSchema(request),
     inspectionInstructions:

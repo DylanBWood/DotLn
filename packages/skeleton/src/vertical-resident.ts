@@ -22,6 +22,7 @@ import {
   type PreparedIntent,
 } from "./vertical.js";
 import { VerticalHost, type VerticalPorts } from "./vertical-host.js";
+import { RetryableTriageError } from "./vertical-judgment-host.js";
 import { residentVerticalScheduling } from "./vertical-scheduling.js";
 
 export interface VerticalEntryPorts {
@@ -44,7 +45,7 @@ export function verticalResident(
   options: {
     steps?: number;
     afterStep?: ConstructorParameters<typeof VerticalHost>[0]["afterStep"];
-    /** Backoff for a draft whose preparation did not reach a decision. */
+    /** Backoff for preparation or a triage episode that made no decision. */
     retry?: { baseMs: number; capMs: number; unnamedAttempts: number };
   } = {},
 ) {
@@ -56,7 +57,16 @@ export function verticalResident(
   // Process-local scheduling memory. The ledger and each vertical store stay
   // the only decision records; a restart costs one replay per continuation.
   const finished = new Set<string>();
-  const deferred = new Map<string, { failures: number; notBefore: number }>();
+  const deferred = new Map<
+    string,
+    { failures: number; faults: number; notBefore: number }
+  >();
+  const continuations = new Map<
+    string,
+    { failures: number; notBefore: number }
+  >();
+  const backoff = (failures: number) =>
+    Math.min(retry.capMs, retry.baseMs * 2 ** (failures - 1));
   return {
     async tick(
       store: ResidentStore,
@@ -78,8 +88,10 @@ export function verticalResident(
           intent.kind === "admitted" &&
           !finished.has(intent.binding.key) &&
           (intent.binding.authority.expiresAt <= state.at ||
-            state.intentStep?.key === intent.binding.key ||
-            intentStepReady(state, intent.binding, "", tx.predicates))
+            ((continuations.get(intent.binding.key)?.notBefore ?? -Infinity) <=
+              state.at &&
+              (state.intentStep?.key === intent.binding.key ||
+                intentStepReady(state, intent.binding, "", tx.predicates))))
             ? [intent.binding]
             : [],
         );
@@ -124,12 +136,18 @@ export function verticalResident(
           runnable,
           at: state.at,
           generation: machine.generation,
+          admissionReady: intentAdmissionReady(
+            state,
+            phase,
+            false,
+            tx.predicates,
+          ),
         };
       });
       if (!context) return false;
       // An admitted run resumes from its original binding, even if preparation
       // would now see a changed issue or clock. No completed step is repeated.
-      for (const binding of context.runnable) {
+      const run = async (binding: IntentBinding): Promise<boolean> => {
         const host = new VerticalHost({
           directory: join(directory, binding.key),
           binding,
@@ -139,27 +157,42 @@ export function verticalResident(
           ...(options.afterStep ? { afterStep: options.afterStep } : {}),
         });
         const before = host.store.read();
+        let retried = false;
         try {
           const state = await host.run({
             ...(options.steps === undefined ? {} : { steps: options.steps }),
           });
+          continuations.delete(binding.key);
           if (state.terminal) finished.add(binding.key);
         } catch (error) {
+          if (error instanceof RetryableTriageError) {
+            const failures =
+              (continuations.get(binding.key)?.failures ?? 0) + 1;
+            continuations.set(binding.key, {
+              failures,
+              notBefore: now() + backoff(failures),
+            });
+            retried = true;
+          }
           // Another entry owns this continuation; never reclaim a live writer.
           // Malformed stores and unrelated failures still refuse normally.
-          if (
+          else if (
             !(error instanceof Error) ||
             !/worker store already has a live host/u.test(error.message)
           )
             throw error;
         }
-        if (host.store.read() !== before) return true;
-      }
+        return retried || host.store.read() !== before;
+      };
+      for (const binding of context.runnable)
+        if (await run(binding)) return true;
       const draftKey = (d: WorkOrder) =>
         typeof d?.workOrderId === "string"
           ? d.workOrderId
           : `unreadable-${verticalHash(d)}`;
-      if (!context.phase) return false;
+      // A tick prepares no draft that this state's admission already refuses,
+      // such as while a deferred continuation holds the slot (D047).
+      if (!context.phase || !context.admissionReady) return false;
       const admissionPhase = context.phase;
       const spent = intentBudgetUsed(context.intents, context.at);
       for (const draft of await ports.drafts()) {
@@ -181,16 +214,23 @@ export function verticalResident(
         } catch (error) {
           const refusal =
             error instanceof IntentPreparationRefusal ? error : undefined;
-          const failures = (deferred.get(draftId)?.failures ?? 0) + 1;
-          // A named transient condition is retried with backoff and an
-          // unnamed failure a bounded number of times. Neither is a decision
-          // yet, and neither keeps a later draft from its turn.
-          if (refusal ? refusal.transient : failures < retry.unnamedAttempts) {
+          const prior = deferred.get(draftId);
+          const failures = (prior?.failures ?? 0) + 1;
+          // A named transient condition is retried with backoff; a named host
+          // fault or an unnamed failure a bounded number of times, the named
+          // one keeping its reason. The bound counts only those faults, so an
+          // earlier transient outage never spends it (D047). None is a
+          // decision yet, and none keeps a later draft from its turn.
+          const fault = !refusal || refusal.bounded;
+          const faults = (prior?.faults ?? 0) + (fault ? 1 : 0);
+          if (
+            (!refusal || refusal.transient) &&
+            (!fault || faults < retry.unnamedAttempts)
+          ) {
             deferred.set(draftId, {
               failures,
-              notBefore:
-                context.at +
-                Math.min(retry.capMs, retry.baseMs * 2 ** (failures - 1)),
+              faults,
+              notBefore: context.at + backoff(failures),
             });
             continue;
           }
@@ -256,28 +296,7 @@ export function verticalResident(
         });
         if (!recorded) return false;
         deferred.delete(draftId);
-        if (decision.kind === "admitted") {
-          const binding = decision.binding;
-          const host = new VerticalHost({
-            directory: join(directory, binding.key),
-            binding,
-            ports: ports.execution(binding),
-            now,
-            ...residentVerticalScheduling(store, binding, now, capabilities),
-            ...(options.afterStep ? { afterStep: options.afterStep } : {}),
-          });
-          try {
-            await host.run({
-              ...(options.steps === undefined ? {} : { steps: options.steps }),
-            });
-          } catch (error) {
-            if (
-              !(error instanceof Error) ||
-              !/worker store already has a live host/u.test(error.message)
-            )
-              throw error;
-          }
-        }
+        if (decision.kind === "admitted") await run(decision.binding);
         return true;
       }
       return false;

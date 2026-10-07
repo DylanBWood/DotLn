@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "label": "observed",
+  "recordedAt": "2026-10-06T03:10:18.485Z",
+  "scenario": "control",
+  "subjectRevision": "8521c71feaa8fe2f8fe41400ba1692558a35b934",
+  "pullRequest": {
+    "state": "OPEN",
+    "mergedAt": null,
+    "title": "fix: implement requested behavior",
+    "bodyHash": "b0758b636e467e60f615352bbacdf2695ce48d391d932ea0e5dc4213af152421",
+    "commits": [
+      "fix: implement requested behavior"
+    ]
+  },
+  "configuredVocabulary": {
+    "types": [
+      "build",
+      "chore",
+      "ci",
+      "docs",
+      "feat",
+      "fix",
+      "perf",
+      "refactor",
+      "revert",
+      "style",
+      "test"
+    ],
+    "terms": [
+      "DotLn",
+      "launchpad",
+      "gem",
+      "gems",
+      "mask",
+      "masks"
+    ]
+  },
+  "lint": [
+    {
+      "kind": "branch",
+      "artifactHash": "83d4f4c1bdc54958e0b2e4a72e6a708ab6f2f204ff53b4027963426ec4ee681f",
+      "status": "pass",
+      "checks": {
+        "format": {
+          "status": "pass"
+        },
+        "launchpad": {
+          "status": "pass"
+        },
+        "localTerms": {
+          "status": "pass"
+        }
+      },
+      "findings": []
+    },
+    {
+      "kind": "pr-title",
+      "artifactHash": "1e8adaa6aaa4a60105c87d6aca051df1bb41526fe0c563fa768eae05cb62efdf",
+      "status": "pass",
+      "checks": {
+        "format": {
+          "status": "pass"
+        },
+        "launchpad": {
+          "status": "pass"
+        },
+        "localTerms": {
+          "status": "pass"
+        }
+      },
+      "findings": []
+    },
+    {
+      "kind": "pr-body",
+      "artifactHash": "b0758b636e467e60f615352bbacdf2695ce48d391d932ea0e5dc4213af152421",
+      "status": "pass",
+      "checks": {
+        "format": {
+          "status": "pass"
+        },
+        "launchpad": {
+          "status": "pass"
+        },
+        "localTerms": {
+          "status": "pass"
+        }
+      },
+      "findings": []
+    },
+    {
+      "kind": "commit",
+      "artifactHash": "1e8adaa6aaa4a60105c87d6aca051df1bb41526fe0c563fa768eae05cb62efdf",
+      "status": "pass",
+      "checks": {
+        "format": {
+          "status": "pass"
+        },
+        "launchpad": {
+          "status": "pass"
+        },
+        "localTerms": {
+          "status": "pass"
+        }
+      },
+      "findings": []
+    }
+  ],
+  "treeGrep": {
+    "program": "git grep -n -I -i -E",
+    "terms": [
+      "DotLn",
+      "launchpad",
+      "gem",
+      "gems",
+      "mask",
+      "masks"
+    ],
+    "prefixes": [
+      ".agents/",
+      ".claude/",
+      ".beacons/",
+      ".control-beacons/",
+      ".runtime/",
+      "docs/control/",
+      "packages/skeleton/"
+    ],
+    "exitCode": 1,
+    "matchCount": 0,
+    "matchedPaths": [],
+    "trackedFileCount": 6,
+    "status": "pass"
+  },
+  "limits": [
+    "Declared vocabulary and path prefixes only; no claim of every possible private identifier or secret."
+  ]
+}

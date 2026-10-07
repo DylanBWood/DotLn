@@ -16,6 +16,7 @@ import {
   type TransportRequest,
   type TransportResultFor,
 } from "./verification-protocol.js";
+import { isVerticalJudgmentRequest } from "./vertical-judgment-protocol.js";
 import type {
   TransportDispatch,
   WorkOrderTransport,
@@ -90,16 +91,21 @@ export function localModelOrigin(value: string): string {
   return url.origin;
 }
 
-/** WO-110 carries the inspection profile only. Writing, verification-evidence
- * and plan-refutation requests keep their existing transports until a row of
- * their own exists; the local model gets no writing profile (WO-110 non-goal). */
+/** WO-110 carries the inspection profile only. Writing, verification-evidence,
+ * plan-refutation and vertical-judgment requests keep their existing
+ * transports until a row of their own exists; the local model gets no writing
+ * profile (WO-110 non-goal). */
 function refuseUnsupported(request: TransportRequest): void {
   if (isWriterRequest(request))
     throw new WorkerFailure(
       "profile-refused",
       "local-model transport carries no writing profile",
     );
-  if (isEvidenceRequest(request) || isPlanRequest(request))
+  if (
+    isEvidenceRequest(request) ||
+    isPlanRequest(request) ||
+    isVerticalJudgmentRequest(request)
+  )
     throw new WorkerFailure(
       "profile-refused",
       "local-model transport carries the inspection profile only",

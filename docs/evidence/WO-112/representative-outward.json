@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "label": "observed",
+  "recordedAt": "2026-10-06T00:20:53.632Z",
+  "subjectRevision": "d8bf5204756303649cffe52c12887f9a334b980f",
+  "scenario": "representative",
+  "pullRequest": {
+    "state": "OPEN",
+    "mergedAt": null,
+    "title": "fix: implement requested behavior",
+    "bodyHash": "e2a3bbf604e6bf6c9f12612da44bf926ec8d3ba8d34b402cf959368d99981024"
+  },
+  "configuredVocabulary": {
+    "types": [
+      "build",
+      "chore",
+      "ci",
+      "docs",
+      "feat",
+      "fix",
+      "perf",
+      "refactor",
+      "revert",
+      "style",
+      "test"
+    ],
+    "terms": [
+      "DotLn",
+      "launchpad",
+      "gem",
+      "gems",
+      "mask",
+      "masks"
+    ]
+  },
+  "localTerms": {
+    "count": 1,
+    "hash": "12634a399fe6ddf8b07fdb7cc97e40845b41e3f785c3fd2c3b200c4c14ef011d",
+    "scope": "Only the synthetic scratch-local-only marker; no universal secret-detection claim."
+  },
+  "lint": [
+    {
+      "kind": "branch",
+      "artifactHash": "435fb7b3591e49887152a10a095b10bb33ea82b8adb6e15bf425042646504bdc",
+      "status": "pass",
+      "checks": {
+        "format": {
+          "status": "pass"
+        },
+        "launchpad": {
+          "status": "pass"
+        },
+        "localTerms": {
+          "status": "pass"
+        }
+      },
+      "findings": []
+    },
+    {
+      "kind": "pr-title",
+      "artifactHash": "1e8adaa6aaa4a60105c87d6aca051df1bb41526fe0c563fa768eae05cb62efdf",
+      "status": "pass",
+      "checks": {
+        "format": {
+          "status": "pass"
+        },
+        "launchpad": {
+          "status": "pass"
+        },
+        "localTerms": {
+          "status": "pass"
+        }
+      },
+      "findings": []
+    },
+    {
+      "kind": "pr-body",
+      "artifactHash": "e2a3bbf604e6bf6c9f12612da44bf926ec8d3ba8d34b402cf959368d99981024",
+      "status": "pass",
+      "checks": {
+        "format": {
+          "status": "pass"
+        },
+        "launchpad": {
+          "status": "pass"
+        },
+        "localTerms": {
+          "status": "pass"
+        }
+      },
+      "findings": []
+    },
+    {
+      "kind": "commit",
+      "artifactHash": "1e8adaa6aaa4a60105c87d6aca051df1bb41526fe0c563fa768eae05cb62efdf",
+      "status": "pass",
+      "checks": {
+        "format": {
+          "status": "pass"
+        },
+        "launchpad": {
+          "status": "pass"
+        },
+        "localTerms": {
+          "status": "pass"
+        }
+      },
+      "findings": []
+    },
+    {
+      "kind": "commit",
+      "artifactHash": "317f40d4e27143a2cb2bbd2722a64abf6431c864ccfe35fd6f36bd6ce39539f3",
+      "status": "pass",
+      "checks": {
+        "format": {
+          "status": "pass"
+        },
+        "launchpad": {
+          "status": "pass"
+        },
+        "localTerms": {
+          "status": "pass"
+        }
+      },
+      "findings": []
+    }
+  ],
+  "treeGrep": {
+    "program": "git grep -n -I -i -E",
+    "pattern": "(^|[^[:alnum:]_])(DotLn|launchpad|gem|gems|mask|masks)([^[:alnum:]_]|$)|\\.agents/|\\.claude/|\\.beacons/|\\.control-beacons/|\\.runtime/|docs/control/|packages/skeleton/",
+    "terms": [
+      "DotLn",
+      "launchpad",
+      "gem",
+      "gems",
+      "mask",
+      "masks"
+    ],
+    "prefixes": [
+      ".agents/",
+      ".claude/",
+      ".beacons/",
+      ".control-beacons/",
+      ".runtime/",
+      "docs/control/",
+      "packages/skeleton/"
+    ],
+    "exitCode": 1,
+    "matchCount": 0,
+    "matchedPaths": [],
+    "trackedFileCount": 6,
+    "status": "pass"
+  },
+  "limits": [
+    "Declared vocabulary, local-term list and path prefixes only; no claim of every possible private identifier or secret."
+  ]
+}

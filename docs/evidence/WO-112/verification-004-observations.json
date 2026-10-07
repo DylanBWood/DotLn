@@ -1,0 +1,261 @@
+{
+  "subject": {
+    "head": "8218616bfd37bde8b30c3f23dbf6873a711c0ac9",
+    "verificationEntryCheckpoint": "refs/dotln/checkpoint/WO-112/16 (5a9a99a4a808c769d0358ed891a830a571dc6e9e)",
+    "workingTreeVsCheckpoint": "identical except docs/control/current.md, docs/control/orders/WO-112.jsonl and docs/work-orders/README.md (the recorded verify dispatch)",
+    "codeIdentity": "ed9c6d7b095bb1b90cbaabb76f2f8ca1e52f6029e29c0f5a3d2b565a047ba4ef",
+    "codeIdentityRecomputed": [
+      "2026-10-06T20:10Z",
+      "2026-10-06T20:22:38Z"
+    ]
+  },
+  "consumedGateRow": {
+    "checkId": "npm test",
+    "gateSelection": "review",
+    "executionMode": "forced-fresh",
+    "requiredSuites": 38,
+    "freshSuites": 88,
+    "reusedSuites": 0,
+    "exitCode": 0,
+    "durationMs": 1832577,
+    "recordedAt": "2026-10-06T19:59:51.438Z",
+    "codeIdentity": "ed9c6d7b095bb1b90cbaabb76f2f8ca1e52f6029e29c0f5a3d2b565a047ba4ef",
+    "verticalSuite": {
+      "durationMs": 832551,
+      "exitCode": 0,
+      "filesInSlowestCases": [
+        "scripts/test-vertical.mjs",
+        "scripts/test-vertical-judgment.mjs"
+      ]
+    }
+  },
+  "verification003ProbeRerun": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-112/verification-003-probes.mjs",
+    "window": [
+      "2026-10-06T20:12:41.311Z",
+      "2026-10-06T20:12:56.752Z"
+    ],
+    "exitCode": 0,
+    "rows": [
+      {
+        "probe": "F1 forged commit-graph",
+        "status": null,
+        "reason": "source-change committed tree is dirty; preserve for inspection",
+        "acceptedCommitIsForged": false,
+        "realTreeIsHonestTree": false,
+        "integrityOutcomes": [
+          "unchanged",
+          "unchanged"
+        ],
+        "hostFlagDiff": [
+          "fixture.txt"
+        ],
+        "commitGraphDisabledDiff": [
+          "fixture-test.mjs",
+          "fixture.txt"
+        ],
+        "pushWithForgedGraph": " ! [remote rejected] fbbd657d55a8d793e167d499300b483e93718b9b -> published (missing necessary objects)",
+        "pushAfterGraphRewrite": "accepted",
+        "remoteDiff": [
+          "fixture-test.mjs",
+          "fixture.txt"
+        ]
+      },
+      {
+        "probe": "VER-002 F1 recheck",
+        "status": "refused",
+        "reason": "shared-repository-changed",
+        "siblingCommitPreserved": true,
+        "siblingStatus": ""
+      },
+      {
+        "probe": "VER-002 F2 recheck",
+        "status": "refused",
+        "reason": "shared-repository-unreadable",
+        "victimUnchanged": true
+      },
+      {
+        "probe": "VER-002 F3 recheck",
+        "first": "invalid-result: stored writer envelope",
+        "recovery": "refused",
+        "recoveryReason": "shared-repository-changed",
+        "strayTagPreserved": true,
+        "writerLaunches": 1
+      },
+      {
+        "probe": "VER-002 F4 recheck",
+        "first": "resolved",
+        "second": "needs-human",
+        "third": "needs-human",
+        "triageCalls": 2,
+        "bodyJudgments": 2
+      },
+      {
+        "probe": "F2 receipt-crash recovery",
+        "later": "none",
+        "hostSignal": "SIGKILL",
+        "receiptPersistedBeforeKill": true,
+        "recovery": "observed",
+        "reason": null,
+        "writerLaunches": 1
+      },
+      {
+        "probe": "F2 receipt-crash recovery",
+        "later": "tag",
+        "hostSignal": "SIGKILL",
+        "receiptPersistedBeforeKill": true,
+        "recovery": "observed",
+        "reason": null,
+        "writerLaunches": 1
+      },
+      {
+        "probe": "F2 receipt-crash recovery",
+        "later": "remote-tracking-ref",
+        "hostSignal": "SIGKILL",
+        "receiptPersistedBeforeKill": true,
+        "recovery": "observed",
+        "reason": null,
+        "writerLaunches": 1
+      },
+      {
+        "probe": "F3 transient triage failure",
+        "shape": "review body",
+        "code": "interrupted",
+        "retryableByIntakeRule": true,
+        "first": [
+          "triage episode failed: interrupted: synthetic transient failure",
+          null
+        ],
+        "retried": [
+          "needs-human",
+          "second episode reached"
+        ],
+        "triageCalls": 2
+      },
+      {
+        "probe": "F3 transient triage failure",
+        "shape": "review body",
+        "code": "model-unavailable",
+        "retryableByIntakeRule": true,
+        "first": [
+          "triage episode failed: model-unavailable: synthetic transient failure",
+          null
+        ],
+        "retried": [
+          "needs-human",
+          "second episode reached"
+        ],
+        "triageCalls": 2
+      },
+      {
+        "probe": "F3 transient triage failure",
+        "shape": "inline item",
+        "code": "interrupted",
+        "retryableByIntakeRule": true,
+        "first": [
+          "triage episode failed: interrupted: synthetic transient failure",
+          null
+        ],
+        "retried": [
+          "needs-human",
+          "second episode reached"
+        ],
+        "triageCalls": 2
+      },
+      {
+        "probe": "F3 transient triage failure",
+        "shape": "inline item",
+        "code": "model-unavailable",
+        "retryableByIntakeRule": true,
+        "first": [
+          "triage episode failed: model-unavailable: synthetic transient failure",
+          null
+        ],
+        "retried": [
+          "needs-human",
+          "second episode reached"
+        ],
+        "triageCalls": 2
+      }
+    ]
+  },
+  "verification004Probes": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-112/verification-004-probes.mjs",
+    "scriptSha256": "7e2ec4ea81be7c6bebde32399acdef65be9293671c6f7de16e5101850d199eae",
+    "window": [
+      "2026-10-06T20:22:16.002Z",
+      "2026-10-06T20:22:37.775Z"
+    ],
+    "exitCode": 0,
+    "rows": [
+      {
+        "probe": "R1 resident loop, retryable triage failure",
+        "failingTask": "triage",
+        "loop": {
+          "ended": "threw",
+          "error": "RetryableTriageError",
+          "message": "triage episode failed: interrupted: synthetic transient outage"
+        },
+        "ticksBeforeLoopEnded": 19,
+        "cyclesRequested": 60,
+        "judgeCalls": [
+          "triage"
+        ],
+        "intentKind": "admitted",
+        "runTerminal": null,
+        "pendingStep": "resolution"
+      },
+      {
+        "probe": "R2 resident loop, retryable intake failure",
+        "failingTask": "intake",
+        "loop": {
+          "ended": "cycles-exhausted"
+        },
+        "ticksBeforeLoopEnded": 60,
+        "cyclesRequested": 60,
+        "judgeCalls": [
+          "intake"
+        ],
+        "intentKind": null,
+        "runTerminal": null,
+        "pendingStep": null
+      },
+      {
+        "probe": "B1 review body edited on every observation",
+        "cap": 25,
+        "triageCalls": 26,
+        "observations": 26,
+        "threw": "RetryableTriageError",
+        "message": "triage episode failed: probe cap reached"
+      }
+    ]
+  },
+  "indexFlagProbe": {
+    "note": "Plain Git in a scratch repository, with the four HOST_GIT flags; no product code.",
+    "steps": [
+      "commit lib.mjs ('// committed')",
+      "git update-index --skip-worktree lib.mjs",
+      "rewrite lib.mjs ('// worktree only')",
+      "git <HOST_GIT> status --porcelain --untracked-files=all"
+    ],
+    "observed": {
+      "status": "",
+      "committed": "export const ok = false; // committed",
+      "worktree": "export const ok = true; // worktree only",
+      "lsFilesV": "S lib.mjs"
+    }
+  },
+  "adversary": {
+    "agentType": "dotln-worker",
+    "selected": "claude-opus-5-5 / xhigh (launch claim; no override)",
+    "reportedTokens": 141951,
+    "toolUses": 34,
+    "durationMs": 444686,
+    "executed": "nothing; every adversary item is inferred from source and diffs",
+    "inputs": [
+      "work order",
+      "repair diff checkpoint 13..16 (code, tests, product 03)",
+      "whole code diff HEAD..checkpoint 16"
+    ]
+  }
+}
