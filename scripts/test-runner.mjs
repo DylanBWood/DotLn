@@ -338,6 +338,7 @@ const machinerySources = {
     "packages/skeleton/fixtures/wo195-integrated-role-baseline.json",
     "packages/skeleton/fixtures/wo186-role-baseline.json",
     "packages/skeleton/fixtures/wo187-role-baseline.json",
+    "packages/skeleton/fixtures/wo196-role-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
     "scripts/lib/git.mjs",
@@ -1615,15 +1616,39 @@ export async function scheduleSuites(
     results.push(result);
     onResult(result);
   };
+  // A configured formatter can read bytes outside the code identity. Run its
+  // preflight before building or carrying product results.
+  const format = table.find((row) => row.name === "format" && row.preflight);
+  if (format) {
+    onActiveChange([format.name]);
+    const result = await executeTask(
+      format,
+      lanes.map((_, index) => index),
+      [],
+    );
+    finish(result);
+    onActiveChange([]);
+    if (result.exitCode !== 0) {
+      for (const row of table.filter((row) => row !== format))
+        finish({
+          name: row.name,
+          exitCode: 1,
+          durationMs: 0,
+          executed: false,
+          output: `Required format preflight failed for ${row.name}:\n${result.output}\nRun npm run format, then rerun this command.`,
+        });
+      return results;
+    }
+  }
   for (const row of table)
-    if (reused.has(row.name)) finish(reused.get(row.name));
+    if (row !== format && reused.has(row.name)) finish(reused.get(row.name));
   if (!reused.has(build.name)) {
     onActiveChange([build.name]);
     finish(
       await executeTask(
         build,
         lanes.map((_, index) => index),
-        [],
+        format ? [format.name] : [],
       ),
     );
   }
@@ -1632,7 +1657,9 @@ export async function scheduleSuites(
     lane.previous = reused.has(build.name) ? null : build.name;
   if (results.find((row) => row.name === build.name)?.exitCode !== 0)
     return results;
-  const pending = table.filter((row) => row !== build && !reused.has(row.name));
+  const pending = table.filter(
+    (row) => row !== build && row !== format && !reused.has(row.name),
+  );
   for (const row of pending)
     for (const dependency of row.after ?? [])
       if (!table.some((item) => item.name === dependency))
@@ -1937,6 +1964,11 @@ async function runGateChecks(
   );
   if (review && !only && !document && !machinery)
     selected = [...new Set([...selected, ...changedMachinery(repo, table)])];
+  if (!only && !document && !machinery) {
+    const format = table.find((row) => row.name === "format");
+    if (format)
+      selected = [format, ...selected.filter((row) => row !== format)];
+  }
   if (list) {
     for (const row of confinedPartial
       ? selected.filter((row) => !row.needs)
@@ -1946,18 +1978,10 @@ async function runGateChecks(
       );
     return { exitCode: 0 };
   }
-  const lookupStarted = Date.now();
   let reused = new Map();
   let reuseIdentity;
-  // Review and explicit fresh runs always execute the entire selection.
-  if (
-    !again &&
-    !review &&
-    !only &&
-    !document &&
-    !machinery &&
-    !confinedPartial
-  ) {
+  // Plain and review selections compose the latest passing task executions.
+  if (!again && !only && !document && !machinery && !confinedPartial) {
     const needsBuild = selected.some((row) => row.needsBuild || row.build);
     const inventory = [
       needsBuild
@@ -1970,6 +1994,7 @@ async function runGateChecks(
     try {
       covering = await coveringTaskResults(repo, "npm test", tasks);
       reused = covering.results;
+      reused.delete("format");
       reuseIdentity = covering.codeIdentity;
     } catch (error) {
       console.log(
@@ -1994,53 +2019,6 @@ async function runGateChecks(
             : "npm test: the latest passing build at this code identity attested no output; building",
         );
       }
-    }
-    if (reused.size === tasks.length) {
-      const treeHash = gateTreeHash(repo);
-      const taskRows = tasks.map((task) => reused.get(task.name));
-      const unchanged = gateCodeIdentity(repo) === covering.codeIdentity;
-      const check = {
-        checkId: "npm test",
-        treeHash,
-        subject: treeHash,
-        codeIdentity: covering.codeIdentity,
-        durationMs: Date.now() - lookupStarted,
-        exitCode:
-          unchanged && completeCoverage(tasks, taskRows, covering.codeIdentity)
-            ? 0
-            : 1,
-        identityUnchanged: unchanged,
-        executed: true,
-        reused: true,
-        executionMode: "reused",
-        gateSelection: "plain",
-        freshSuites: 0,
-        reusedSuites: taskRows.length,
-        requiredSuites: inventory.map((row) => row.name),
-        evidenceRef: `host-gate:${covering.codeIdentity}:npm test`,
-        recordedAt: new Date().toISOString(),
-        cases: aggregateSuiteRows(
-          inventory,
-          tasks,
-          taskRows,
-          covering.codeIdentity,
-        ),
-        taskTimeline: taskRows,
-      };
-      check.criticalPath = gateCriticalPath(check);
-      recordGateChecks(repo, [check]);
-      const sources = [
-        ...new Set(
-          taskRows.map(
-            (row) =>
-              `${row.sourceRow.location} row recorded ${row.sourceRow.recordedAt} (${row.sourceRow.evidenceRef})`,
-          ),
-        ),
-      ];
-      console.log(
-        `npm test: ${taskRows.length} passing task results at code identity ${covering.codeIdentity}; no suite started; sources: ${sources.join("; ")}. Complete composed row recorded. Run npm test -- --again to run it anyway.`,
-      );
-      return check;
     }
   }
   // The preflight precedes the build, the diagnostics directory and every
@@ -2279,8 +2257,9 @@ async function runGateChecks(
         console.log(
           `${row.exitCode === 0 ? "PASS" : "FAIL"} ${row.name} ${(row.durationMs / 1000).toFixed(2)} s`,
         );
-        if (row.exitCode !== 0)
-          for (const line of (row.output ?? "").trimEnd().split("\n"))
+        // Successful checks still deliver their explicit diagnostics.
+        for (const line of (row.output ?? "").trimEnd().split("\n"))
+          if (row.exitCode !== 0 || /^(?:ADVISORY|NEWER)\b/u.test(line))
             console.log(`  [${row.name}] ${line}`);
       },
     });
@@ -2356,6 +2335,11 @@ async function runGateChecks(
       )
       .map((name) => join(tmpdir(), name))
       .sort();
+    const freshTasks = taskRows.filter((row) => row.executed && !row.reused);
+    const onlyFreshFormat =
+      freshTasks.length === 1 &&
+      freshTasks[0].name === "format" &&
+      tasks.some((row) => row.name === "format" && row.preflight);
     const check = {
       checkId,
       treeHash,
@@ -2373,8 +2357,11 @@ async function runGateChecks(
       executed: true,
       evidenceRef: `host-gate:${codeIdentity}:${only ?? checkId}`,
       recordedAt: new Date().toISOString(),
-      executionMode:
-        review || again ? "forced-fresh" : reused.size ? "composed" : "fresh",
+      executionMode: again
+        ? "forced-fresh"
+        : reused.size
+          ? "composed"
+          : "fresh",
       gateSelection: document
         ? "document"
         : review
@@ -2387,14 +2374,16 @@ async function runGateChecks(
       identityUnchanged: unchanged,
       ...(outputJudged ? { buildOutputUnchanged: outputUnchanged } : {}),
       ...(outputUnattested ? { buildOutputAttested: false } : {}),
-      freshReason: review
-        ? "review"
-        : again
-          ? "requested"
-          : reused.size
-            ? "missing-passing-tasks"
-            : "no-passing-tasks",
-      freshSuites: taskRows.filter((row) => row.executed && !row.reused).length,
+      freshReason: again
+        ? "requested"
+        : reused.size
+          ? onlyFreshFormat
+            ? "always-fresh-preflight"
+            : freshTasks.length
+              ? "missing-passing-tasks"
+              : "no-fresh-tasks"
+          : "no-passing-tasks",
+      freshSuites: freshTasks.length,
       reusedSuites: taskRows.filter((row) => row.reused).length,
       requiredSuites: selected.map((row) => row.name),
       // A partial row names what it left out; no product-gate consumer reads it.

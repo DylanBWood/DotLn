@@ -212,12 +212,17 @@ ancestry even when release attribution retains its recorded tag snapshot.
 
 **Current gate contract (WO-132, 2026-09-15).** `npm test` is the product
 and lifecycle gate. `npm test -- --list` names the behavior each suite protects.
-The final reviewer runs `npm test -- --review` once after the last source edit;
-`--review` includes machinery suites only when their declared sources changed.
+The final reviewer runs `npm test -- --review` after the last source edit;
+`--review` includes machinery suites only when their declared sources changed
+and composes the latest passing task results at the unchanged code identity,
+with their source rows retained. `--again` forces every task fresh. Formatting
+runs freshly before the build and other tasks, including when product results
+can be reused.
 `npm run test:machinery` runs that inventory on demand; document-sensitive checks
-stay in `npm run test:docs`. The runner executes fresh suites against the worktree.
-There are no replica executions, per-suite success reuse or 120-second fast-gate
-budget in this contract.
+stay in `npm run test:docs`. There are no replica executions or 120-second
+fast-gate budget. The handoff sequence is `npm run format`, then
+`npm run test:docs`, then the product gate with no repository writes or new
+agents while it runs, then records and the completion command.
 
 The success row records code identity beside the exact reviewed tree. Reports,
 control events, generated projections and release prose do not invalidate the
