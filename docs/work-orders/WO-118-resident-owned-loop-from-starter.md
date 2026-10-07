@@ -327,8 +327,9 @@ parity checklist; the write-backs below.
    capability table, an
    appended `## WO-118 dated reassessment (YYYY-MM-DD)` section rating
    `runtime.resident` and `vertical.source-to-pr` on the table's scale,
-   live-evidenced from a starter instance, never a row edited in place;
-   the decisions file; the publication locks refreshed. The executor
+   live-evidenced from a starter instance, never a row edited in place,
+   and a rating rises only from a run criterion 1 records as observed,
+   never from a waived one; the decisions file; the publication locks refreshed. The executor
    re-measures the headroom at its base; where the bound does not fit, it
    consolidates the section it edits in the same change; a ceiling is
    raised only by a planning-document decision.

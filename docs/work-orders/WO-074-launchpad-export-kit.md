@@ -96,8 +96,8 @@ instance's own `dotln.config.json` is instance-owned and never written),
 the document roots with README conventions, a minimal operating contract
 (`CLAUDE.md` with `AGENTS.md` symlinked; generated marked block;
 hand-written floor with only the clean-room and secret rules and the resume
-phrases), the repository-profile and workstream templates, the executor
-half of the guide and the operator playbook, a sanitized harness-security
+phrases), the repository-profile and workstream templates, product 07
+copied whole and the operator playbook, a sanitized harness-security
 template, a client-facing README, the implementation-overlay template with
 an upstream pointer list, a pre-drafted first work order in WO-001's shape
 extended with the harness smoke, the local-terms registration step and the

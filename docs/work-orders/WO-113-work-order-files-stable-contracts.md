@@ -192,12 +192,13 @@ one-line pointer; the umbrella records' prose moves beside the typed
    leads in order: `**Model:**`, `**Effort:**`, `**Track:**`, `**Front page:**`,
    `**Release classification:**`, `**Cost:**`, `**Nomination provenance:**`,
    `**Depends on:**`, `**Recommended placement:**`, `**Repository:**`,
+   `**Workstream:**`,
    `**Cites (read these sections):**`, `**Objective:**`, `**Observed gap (dated `,
    `**Design (scope discipline):**`, `**Execution plan (`, `**Deliverables:**`,
    `**Acceptance criteria (all required)**`, `**Evidence gate:**`, `**Write-back duty:**`,
    `**Known issues and carry-ins:**`, `**Non-goals:**`, `**Operator-review assumptions**`
-   (`Track`, `Front page`, `Repository`, `Execution plan` and `Known issues and carry-ins`
-   optional); the only heading below the H1 is the literal `## Execution record`. Export
+   (`Track`, `Front page`, `Repository`, `Workstream`, `Execution plan` and
+   `Known issues and carry-ins` optional); the only heading below the H1 is the literal `## Execution record`. Export
    `orderContractCutoff(root)` (this order's `WorkOrderActivated.recordedAt` in the
    launchpad's control; absent, the section rule is inactive) and
    `orderContractFindings(markdown, path, { sectionRule })` returning `{ path, line, reason }`;

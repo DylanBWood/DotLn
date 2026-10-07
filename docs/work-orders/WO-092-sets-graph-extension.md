@@ -201,10 +201,7 @@ fixtures, the re-mints, the write-backs below.
    or dark listing) and 10 §Separate version axes (the additive
    collection). WO-091, WO-097 and WO-098 also write 02; WO-081, WO-083
    and WO-094 also write 04; WO-076,
-   WO-091, WO-058 and WO-076 also write 10; so the executor re-measures
-   the headroom at its base; where the bound does not fit, it consolidates
-   the section it edits in the same change; a ceiling is raised only by a
-   planning-document decision. The decisions file; the publication locks
+   WO-091, WO-097 and WO-194 also write 10. The decisions file; the publication locks
    refreshed.
 5. Every edition the Cost line names is re-minted or carried, the console
    re-pinned with its self-host fixtures and the harness bundle

@@ -33,7 +33,9 @@ an adversary at each repair completion and each verification (175,796 to
 and six repairs with one at each); the five-refusals paragraph duplicated
 between CLAUDE.md and every role skill (about 2,300 bytes per root, which
 puts the executor root at 29,777 bytes against its 29,246 ceiling). What
-the gates take afterwards is measured by criterion 8, not promised here.
+the gates take afterwards is measured by the gate rows of the orders that
+follow and by the next planning pass's `plan conditions`, not promised
+here.
 Re-mints: `harness-host.ts`, `subagent-budget.ts`, `gate-evidence.mjs`
 and `contributor.ts` are registered evidence sources in three editions
 (`scripts/lib/evidence-sources.mjs` lines 150 to 156, 248 to 254 and 319
@@ -415,9 +417,13 @@ declared machinery sources, and again at final review. No live row.
   it and records that this order did it.
 - WO-150-D003's condition (`coldStartBytes.executor` at 29,777) is
   criterion 6.
-- Receipt known issue (2026-10-07 pass): the review composition is sound
-  only while the code identity covers every byte the review selection
-  reads; WO-186 made the identity cover untracked code and declared
+- Receipt known issue (2026-10-07 pass): the review composition is keyed
+  to the code identity alone and lands before WO-198, which records the
+  shared refs a task may have read; a composed row could reuse a task that
+  read a ref a sibling merge moved. Reopen when a composed row's task read
+  a shared ref that moved between its source row and the reuse. The
+  composition is otherwise sound only while the code identity covers every
+  byte the review selection reads; WO-186 made the identity cover untracked code and declared
   sources. Reopen when a composed review row passes at an identity where
   a fresh `--again` run of the same selection fails.
 

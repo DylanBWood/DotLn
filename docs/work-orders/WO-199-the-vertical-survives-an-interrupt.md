@@ -85,7 +85,9 @@ resources: process groups and the bounded wrapper); the
 
 **Objective:** After the host dies or is interrupted while a writer runs,
 the next `dotln vertical` run recovers the writer's outcome the way the
-direct transport already does, no writer outlives the host, and a host
+direct transport already does, no writer outlives an interrupted host (a
+writer a dead host left alive is stopped by the next run's recovery), and a
+host
 refusal after a result carries its own reason.
 
 **Observed gap (dated 2026-10-07, `main` at `bd437eb2`):**
@@ -201,8 +203,10 @@ and after probe tables, the re-mints and the live episode, the write-backs.
 1. The recovery probe, run at this order's identity, records a process
    group for `crash-vertical` and recovers `observed`, as `crash-direct`
    does; `revoke-vertical` records `SourceChangeProcessStopped` and
-   `WorkerInterrupted`; the three cases are regressions in the suites
-   named in step 5.
+   `WorkerInterrupted`; a rerun while a writer group the previous host
+   started is still alive stops that group through recovery and reads its
+   outcome instead of throwing `prior worker group is still present`; the
+   four cases are regressions in the suites named in step 5.
 2. SIGINT, SIGTERM and SIGHUP to a running `dotln vertical` stop every
    writer group it started within 10 s, record `WorkerInterrupted` with the
    signal, and exit non-zero; the next run of the same issue resumes from

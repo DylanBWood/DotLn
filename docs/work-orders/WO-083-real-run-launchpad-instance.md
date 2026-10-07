@@ -210,7 +210,8 @@ baseline.
    (prose-parsing screen: no reading of message substance).
 8. Write-backs (each heading re-read at the base): `docs/siblings/README.md` through WO-078's
    generator (a receipt, never a hand edit); `docs/planning/capability-table.md`: a
-   `consumer.angular` row, above level 0 only for a run that did not fail; products 12, 04,
+   `consumer.angular` row, above level 0 only for a run that did not fail
+   and was not waived; products 12, 04,
    13 and 06 as criterion 4 names them; `docs/evidence/WO-083/decisions.md`; `npm run meta`;
    `node scripts/check-publication.mjs --print-locks`; `npm run publication:check`.
 9. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
@@ -256,7 +257,8 @@ and fired-unit counts; the write-backs below.
 4. Write-backs land, each in place with no dated paragraph: the Angular
    consumer's entry in `docs/siblings/README.md` through WO-078's
    generator, with its check passing; the capability table
-   (`consumer.angular` above level 0 only for a run that did not fail); 12
+   (`consumer.angular` above level 0 only for a run that did not fail and
+   was not waived); 12
    §One workstream across repositories (the route's outcome, in place with no dated paragraph (ceilings are planning's since the 2026-10-07 pass);
    WO-118, WO-080, WO-082, WO-193 and WO-194 also write 12); 04 §Plural UI
    hosts, one projection contract and its §Later console hosts (the
