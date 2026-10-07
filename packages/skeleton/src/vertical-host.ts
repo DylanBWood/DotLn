@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { appendEvent, decodeLog, type JsonValue } from "@dotln/kernel";
 import type { WorkOrder } from "@dotln/compiler";
 import { WorkerStore } from "./worker-store.js";
+import { RetryableTriageError } from "./vertical-judgment-host.js";
 import {
   baselineClass,
   foldVertical,
@@ -198,7 +199,12 @@ export class VerticalHost {
               this.state!,
               this.options.active,
             );
-          } catch {
+          } catch (error) {
+            if (
+              command.step === "resolution" &&
+              error instanceof RetryableTriageError
+            )
+              throw error;
             // External diagnostics can carry source text. Their primitive keeps
             // its own receipt; this boundary records only the named failure.
             result = {

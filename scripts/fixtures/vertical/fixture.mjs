@@ -14,6 +14,8 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { compileStoryContract } from "@dotln/compiler";
+import { decodeLog } from "@dotln/kernel";
+import { WorkerStore } from "../../../packages/skeleton/dist/src/worker-store.js";
 import {
   TOOL_ROOT,
   docPath,
@@ -23,7 +25,10 @@ import {
 import { fileIntent } from "../../lib/derived-orders.mjs";
 import { fetchIssueBundle } from "../../../packages/skeleton/dist/src/github-issue-source.js";
 import { decodeResidentConfiguration } from "../../../packages/skeleton/dist/src/resident-state.js";
-import { VERTICAL_EFFECTS } from "../../../packages/skeleton/dist/src/vertical.js";
+import {
+  VERTICAL_EFFECTS,
+  foldVertical,
+} from "../../../packages/skeleton/dist/src/vertical.js";
 import {
   sourceFixtureOptions,
   createSourceFixture,
@@ -47,6 +52,11 @@ export const put = (p, v) => {
     typeof v === "string" ? v : JSON.stringify(v, null, 2) + "\n",
   );
 };
+export const runState = (directory, key) =>
+  decodeLog(new WorkerStore(join(directory, "vertical", key)).read()).reduce(
+    foldVertical,
+    undefined,
+  );
 const connection = {
   nodes: [],
   pageInfo: { hasNextPage: false, endCursor: null },
@@ -75,6 +85,11 @@ export function fixtureBaselineAssessment(
       })),
   };
 }
+/** Resolved before any fixture prepends its doubles to PATH: a fixture created
+ * while another is open must never take that fixture's git double as real. */
+const REAL_GIT = execFileSync("/usr/bin/which", ["git"], {
+  encoding: "utf8",
+}).trim();
 export async function verticalFixture(options = {}) {
   const root = createSourceFixture();
   const target = join(root, "target"),
@@ -103,9 +118,6 @@ export async function verticalFixture(options = {}) {
   );
   fixtureGit(target, "add", "CONVENTIONS.md");
   fixtureGit(target, "commit", "-m", "Declare fixture conventions");
-  const git = execFileSync("/usr/bin/which", ["git"], {
-    encoding: "utf8",
-  }).trim();
   const remote = join(root, "origin.git");
   fixtureGit(root, "init", "--bare", remote);
   fixtureGit(
@@ -117,12 +129,13 @@ export async function verticalFixture(options = {}) {
   );
   const fixturePath = join(root, "fixture.json");
   put(fixturePath, {
-    git,
+    git: REAL_GIT,
     target,
     remote,
     plantReview: options.plantReview ?? false,
     calls: join(root, "calls.jsonl"),
     published: join(root, "published.json"),
+    checkCounter: join(root, "check-counter"),
     body: "The check is failing: make `fixture.txt` contain changed by synthetic worker.",
     ...options.forge,
   });

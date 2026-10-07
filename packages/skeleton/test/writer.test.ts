@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import {
+  existsSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -10,8 +11,8 @@ import {
   symlinkSync,
   writeFileSync,
 } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { homedir, tmpdir } from "node:os";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   sourceChangeProfile,
@@ -47,6 +48,7 @@ import {
 import { contributorProgram } from "../src/loadouts/contributor.js";
 import {
   confinedTestCommand,
+  toolchainReadRoots,
   writerSandboxProfilePath,
 } from "../src/discovery-sandbox.js";
 
@@ -422,12 +424,176 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
       ["claude-cli-print", "claude"],
       ["codex-cli-exec", "codex"],
     ] as const) {
-      const args = canonicalWorkerArgs(
+      const launched = canonicalWorkerArgs(
         name,
         s.request,
         "/schema.json",
         key === "claude" ? "2.1.270" : "0.154.0",
       );
+      // WO-112 D017 adds only the Codex writer's commit grants and its PATH,
+      // and drops --sandbox so the named profile applies; every other pinned
+      // byte is unchanged.
+      if (key === "codex") assert.equal(launched.includes("--sandbox"), false);
+      const args =
+        key === "codex"
+          ? [
+              ...launched.slice(0, launched.indexOf("--strict-config")),
+              "--sandbox",
+              "workspace-write",
+              ...launched.slice(launched.indexOf("--strict-config")),
+            ].flatMap((arg, index, all) =>
+              arg.startsWith("shell_environment_policy.set=") ||
+              all[index + 1]?.startsWith("shell_environment_policy.set=")
+                ? []
+                : arg.startsWith("permissions.dotln-writer.filesystem=")
+                  ? [
+                      'permissions.dotln-writer.filesystem={":minimal"="read",":workspace_roots"="write"}',
+                    ]
+                  : [arg],
+            )
+          : launched;
+      if (key === "codex") {
+        const grants = launched.find((arg) =>
+          arg.startsWith("permissions.dotln-writer.filesystem="),
+        )!;
+        const gitDir = realpathSync(
+          execFileSync(
+            "git",
+            ["rev-parse", "--path-format=absolute", "--git-dir"],
+            {
+              cwd: s.request.cwd,
+              encoding: "utf8",
+            },
+          ).trim(),
+        );
+        const common = realpathSync(
+          execFileSync(
+            "git",
+            ["rev-parse", "--path-format=absolute", "--git-common-dir"],
+            { cwd: s.request.cwd, encoding: "utf8" },
+          ).trim(),
+        );
+        for (const [path, mode] of [
+          [gitDir, "write"],
+          [join(common, "objects"), "write"],
+          [join(common, "refs"), "write"],
+          [join(common, "logs"), "write"],
+          [common, "read"],
+        ])
+          assert.ok(
+            grants.includes(`${JSON.stringify(path)}=${JSON.stringify(mode)}`),
+            `${path} ${mode}`,
+          );
+        // Codex's helper aliases live under the episode home; only that
+        // directory is granted, never the home and its credentials.
+        const home = realpathSync(
+          mkdtempSync(join(tmpdir(), "dotln-codex-home-test-")),
+        );
+        try {
+          const withHome = canonicalWorkerArgs(
+            "codex-cli-exec",
+            s.request,
+            "/schema.json",
+            "0.154.0",
+            home,
+          ).find((arg) =>
+            arg.startsWith("permissions.dotln-writer.filesystem="),
+          )!;
+          assert.ok(
+            withHome.includes(
+              `${JSON.stringify(join(home, "tmp", "arg0"))}="read"`,
+            ),
+          );
+          assert.equal(withHome.includes(`${JSON.stringify(home)}=`), false);
+          assert.ok(existsSync(join(home, "tmp", "arg0")));
+        } finally {
+          rmSync(home, { recursive: true, force: true });
+        }
+        // The whole grant set, pinned: toolchain, Git and Codex installs,
+        // the user's Git identity, shared metadata read; the worktree's own
+        // gitdir and the commit's objects, refs and logs written.
+        const installed = (name: string) => {
+          try {
+            return realpathSync(
+              execFileSync("/usr/bin/which", [name], {
+                encoding: "utf8",
+              }).trim(),
+            );
+          } catch {
+            return undefined;
+          }
+        };
+        const codexBinary = installed("codex");
+        assert.deepEqual(
+          [...grants.matchAll(/("(?:[^"\\]|\\.)*")=("read"|"write")/gu)].map(
+            ([, path, mode]) => [JSON.parse(path!), JSON.parse(mode!)],
+          ),
+          [
+            [":minimal", "read"],
+            [":workspace_roots", "write"],
+            ...toolchainReadRoots().map((root) => [root, "read"]),
+            [dirname(dirname(installed("git")!)), "read"],
+            ...(codexBinary ? [[dirname(dirname(codexBinary)), "read"]] : []),
+            [join(homedir(), ".gitconfig"), "read"],
+            [common, "read"],
+            [gitDir, "write"],
+            [join(common, "objects"), "write"],
+            [join(common, "refs"), "write"],
+            [join(common, "logs"), "write"],
+          ],
+        );
+        for (const [path] of grants.matchAll(/"((?:[^"\\]|\\.)*)"=/gu))
+          assert.ok(
+            path !== "/" && !`${homedir()}/`.startsWith(`${path}/`),
+            `${path} never covers the home directory`,
+          );
+        // A main checkout's gitdir holds the shared hooks and config; one
+        // that passes the mount checks is still refused its grants.
+        const main = realpathSync(
+          mkdtempSync(join(s.request.profile.worktreeParent, "main-")),
+        );
+        try {
+          execFileSync("git", ["init", "--quiet"], { cwd: main });
+          writeFileSync(join(main, "message.txt"), "Synthetic\n");
+          assert.throws(
+            () =>
+              canonicalWorkerArgs(
+                "codex-cli-exec",
+                {
+                  ...s.request,
+                  cwd: main,
+                  commitMessagePath: join(main, "message.txt"),
+                  profile: {
+                    ...s.request.profile,
+                    mounts: [{ path: main, access: "read-write" }],
+                    writableSurfaces: [main],
+                  },
+                },
+                "/schema.json",
+                "0.154.0",
+              ),
+            /writer needs a linked worktree/u,
+          );
+        } finally {
+          rmSync(main, { recursive: true, force: true });
+        }
+        // Hooks and config are never writable, and the network stays off.
+        assert.equal(
+          grants.includes(`${JSON.stringify(common)}="write"`),
+          false,
+        );
+        assert.ok(
+          launched.includes("permissions.dotln-writer.network.enabled=false"),
+        );
+        assert.match(
+          launched.find((arg) =>
+            arg.startsWith("shell_environment_policy.set="),
+          )!,
+          new RegExp(
+            dirname(realpathSync(process.execPath)).replaceAll("/", "\\/"),
+          ),
+        );
+      }
       assert.deepEqual(
         args.map((arg) =>
           arg
@@ -488,6 +654,12 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
       `git commit -F ${s.request.commitMessagePath}`,
     );
     assert.equal(prompt.testCommand, confined);
+    // Codex's own sandbox confines the declared command; a nested sandbox-exec
+    // cannot start inside it, so Codex is given the declared command itself.
+    assert.equal(
+      JSON.parse(writerPrompt(s.request, "codex-cli-exec")).testCommand,
+      s.request.testCommand,
+    );
     assert.match(prompt.outputInstructions, /Never compose a commit message/);
     assert.match(prompt.outputInstructions, /\.claude\/.*\.dotln\//);
     assert.match(

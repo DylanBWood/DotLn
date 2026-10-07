@@ -73,6 +73,12 @@ const STATUS = [
   "REQUESTED",
   "WAITING",
 ];
+/** A check in one of these states has not finished; a finished CheckRun
+ * reports its conclusion and a StatusContext its final state. */
+export const UNFINISHED_CHECK_STATES = new Set([
+  ...STATUS.filter((status) => status !== "COMPLETED"),
+  "EXPECTED",
+]);
 const CONCLUSION = [
   "ACTION_REQUIRED",
   "CANCELLED",

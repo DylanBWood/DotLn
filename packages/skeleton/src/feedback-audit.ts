@@ -52,6 +52,7 @@ export const FEEDBACK_SOURCE_PATHS = [
   // import, so a moved protocol stales the subject (WO-157 item 12).
   "packages/skeleton/src/entropy-review-protocol.ts",
   "packages/skeleton/src/mission-check-protocol.ts",
+  "packages/skeleton/src/vertical-judgment-protocol.ts",
   "packages/skeleton/src/plan-refutation-protocol.ts",
   "packages/skeleton/src/verification-host.ts",
   "packages/skeleton/src/verification-worktree.ts",

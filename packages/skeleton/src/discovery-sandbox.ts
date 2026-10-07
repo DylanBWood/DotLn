@@ -1,6 +1,20 @@
 import { realpathSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
+/** The toolchain a confined test reads, whichever harness runs it: the same
+ * roots back the Claude writer's sandbox-exec profile and the Codex writer's
+ * permission profile (WO-112 D022). */
+export function toolchainReadRoots(): string[] {
+  return [
+    "/usr",
+    "/bin",
+    "/System",
+    "/Library/Apple",
+    "/opt/homebrew",
+    dirname(dirname(realpathSync(process.execPath))),
+    "/private/var/db/dyld",
+  ];
+}
 /** Native boundary shared by direct checks and the whole trusted producer episode. */
 export function discoverySandbox(
   root: string,
@@ -9,17 +23,7 @@ export function discoverySandbox(
   const quote = (path: string) => JSON.stringify(path);
   return (
     `(version 1)(allow default)(deny network*)(deny file-read-data)(deny file-write*)` +
-    [
-      root,
-      "/usr",
-      "/bin",
-      "/System",
-      "/Library/Apple",
-      "/opt/homebrew",
-      dirname(dirname(realpathSync(process.execPath))),
-      "/private/var/db/dyld",
-      ...runtimeReads,
-    ]
+    [root, ...toolchainReadRoots(), ...runtimeReads]
       .map((path) => `(allow file-read-data (subpath ${quote(path)}))`)
       .join("") +
     `(allow file-read-data (literal "/") (literal "/dev/null") (literal "/dev/urandom"))(allow file-write* (subpath ${quote(root)}) (literal "/dev/null"))`

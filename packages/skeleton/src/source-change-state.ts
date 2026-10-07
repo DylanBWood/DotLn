@@ -27,6 +27,14 @@ export type SourceChangeRefused = {
   readonly workOrderId: string;
   readonly reason: string;
 };
+/** Host-owned baseline, persisted before a writer can run. */
+export type SharedRepositoryState = {
+  readonly commonDirectory: string;
+  /** Ref name, resolved commit (empty if unresolved), immediate symbolic target. */
+  readonly refs: readonly (readonly [string, string, string])[];
+  /** Lossless lowercase hexadecimal bytes; null means no alternates entry. */
+  readonly alternates: string | null;
+};
 export type SourceChangeSlice = {
   readonly workstreamId?: string;
   readonly request?: SourceChangeRequested;
@@ -152,6 +160,42 @@ export function decodeSourceRefusal(value: unknown): SourceChangeRefused {
   line(item.workOrderId);
   line(item.reason);
   return item as unknown as SourceChangeRefused;
+}
+export function decodeSharedRepositoryState(
+  value: unknown,
+): SharedRepositoryState {
+  const item = record(value, ["commonDirectory", "refs", "alternates"]);
+  line(item.commonDirectory);
+  if (!item.commonDirectory.startsWith("/"))
+    throw new Error("source-change common directory must be absolute");
+  if (!Array.isArray(item.refs))
+    throw new Error("source-change shared refs must be an array");
+  const names = new Set<string>();
+  for (const entry of item.refs) {
+    if (!Array.isArray(entry) || entry.length !== 3)
+      throw new Error(
+        "source-change shared ref requires name, commit and symbolic target",
+      );
+    line(entry[0]);
+    if (!entry[0].startsWith("refs/") || names.has(entry[0]))
+      throw new Error("source-change shared refs must have unique ref names");
+    if (entry[1] !== "" || entry[2] === "") assertSourceCommit(entry[1]);
+    if (entry[2] !== "") {
+      line(entry[2]);
+      if (!entry[2].startsWith("refs/"))
+        throw new Error("source-change symbolic target must be a ref name");
+    }
+    names.add(entry[0]);
+  }
+  if (
+    item.alternates !== null &&
+    (typeof item.alternates !== "string" ||
+      !/^(?:[a-f0-9]{2})*$/.test(item.alternates))
+  )
+    throw new Error(
+      "source-change alternates must be hexadecimal bytes or absent",
+    );
+  return item as unknown as SharedRepositoryState;
 }
 export const sameSourceValue = (left: unknown, right: unknown): boolean =>
   canonicalStringify(left) === canonicalStringify(right);

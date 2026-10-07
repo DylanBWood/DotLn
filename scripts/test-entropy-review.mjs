@@ -1440,6 +1440,12 @@ export async function entropyFixtures() {
           );
           assert.ok(disabled.includes("multi_agent"));
           assert.ok(disabled.includes("multi_agent_v2"));
+          // WO-151's confinement is Codex's workspace-write sandbox; a named
+          // profile beside --sandbox would be overridden, so none is passed.
+          assert.equal(args[args.indexOf("--sandbox") + 1], "workspace-write");
+          assert.ok(
+            !args.some((arg) => /^(?:default_)?permissions/u.test(arg)),
+          );
         }
       }
       assert.throws(

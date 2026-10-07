@@ -66,8 +66,32 @@ for (const transport of ["claude", "codex"] as const)
       const options = sourceFixtureOptions(root, () => 10, "commit", transport);
       const head = git(launchpad, "rev-parse", "HEAD");
       const tree = git(launchpad, "rev-parse", "HEAD^{tree}");
-      const host = new SourceChangeHost(options);
+      let settled = false;
+      const host = new SourceChangeHost({
+        ...options,
+        afterResult() {
+          settled = true;
+          assert.equal(
+            existsSync(
+              join(
+                launchpad,
+                "docs/control/local/harness/targets",
+                sourceDigest(host.tree.path),
+                "source-change-commands.json",
+              ),
+            ),
+            false,
+            "settled writer retains no command route before host admission",
+          );
+          assert.equal(
+            existsSync(writerSandboxProfilePath(launchpad, host.tree.path)),
+            false,
+            "settled writer retains no command sandbox profile",
+          );
+        },
+      });
       const result = await host.run();
+      assert.equal(settled, true);
       assert.equal(result.status, "observed");
       if (result.status !== "observed") return;
       const observation = result.observation;
@@ -651,6 +675,135 @@ test("WO-052 wrong branch and outside-surface commits refuse without redispatch 
     } finally {
       dispose(root);
     }
+  }
+});
+
+for (const name of ["claude", "codex"] as const)
+  test(`WO-112 ${name}: unexplained shared changes are refused and preserved`, async () => {
+    const root = createSourceFixture();
+    const repo = join(root, "target");
+    const base = readFileSync(join(root, "base.txt"), "utf8");
+    try {
+      git(root, "init", "--bare", join(root, "alternate"));
+      const host: SourceChangeHost = new SourceChangeHost({
+        ...sourceFixtureOptions(root, () => 10, "commit", name),
+        afterResult: () => {
+          const head = git(host.tree.path, "rev-parse", "HEAD");
+          git(repo, "update-ref", "refs/heads/main", head);
+          git(repo, "update-ref", "refs/tags/stray", head);
+          git(repo, "replace", head, base);
+          writeFileSync(
+            join(repo, ".git/objects/info/alternates"),
+            `${join(root, "alternate", "objects")}\n`,
+          );
+        },
+      });
+      const outcome = await host.run();
+      assert.equal(outcome.status, "refused");
+      assert.equal(
+        outcome.status === "refused" && outcome.refusal.reason,
+        "shared-repository-changed",
+      );
+      assert.notEqual(git(repo, "rev-parse", "refs/heads/main"), base);
+      assert.notEqual(
+        git(repo, "for-each-ref", "refs/tags", "refs/replace"),
+        "",
+      );
+      assert.equal(
+        existsSync(join(repo, ".git/objects/info/alternates")),
+        true,
+      );
+      assert.notEqual(
+        git(repo, "rev-parse", "refs/heads/source-fixture"),
+        base,
+      );
+      assert.equal(launches(root), 1);
+      assert.equal(
+        events(root).some((event) => event.type === "SourceChangeObserved"),
+        false,
+      );
+    } finally {
+      dispose(root);
+    }
+  });
+
+test("WO-112 a result that is not one commit with the host message refuses for any writer", async () => {
+  for (const change of ["two-commits", "message"]) {
+    const root = createSourceFixture();
+    try {
+      const host: SourceChangeHost = new SourceChangeHost({
+        ...sourceFixtureOptions(root, () => 10),
+        afterResult: () => {
+          if (change === "message")
+            git(
+              host.tree.path,
+              "commit",
+              "--amend",
+              "-m",
+              "Writer's own message",
+            );
+          else {
+            writeFileSync(join(host.tree.path, "fixture.txt"), "second\n");
+            git(host.tree.path, "commit", "-am", "Synthetic source change");
+          }
+        },
+      });
+      await assert.rejects(
+        () => host.run(),
+        /not one commit with the host message/,
+      );
+      assert.equal(launches(root), 1);
+      assert.equal(
+        events(root).some((event) => event.type === "SourceChangeObserved"),
+        false,
+      );
+    } finally {
+      dispose(root);
+    }
+  }
+});
+
+test("WO-112 a replace ref cannot hide a change outside the surfaces from the host", async () => {
+  const root = createSourceFixture();
+  const repo = join(root, "target");
+  const base = readFileSync(join(root, "base.txt"), "utf8");
+  try {
+    let plant = () => {};
+    const host: SourceChangeHost = new SourceChangeHost({
+      ...sourceFixtureOptions(root, () => 10),
+      afterResult: () => {
+        // The writer's commit carries a file outside its surfaces; a replace
+        // ref dresses it as the in-surface change alone.
+        const tree = host.tree.path;
+        const inSurface = git(tree, "rev-parse", "HEAD^{tree}");
+        writeFileSync(join(tree, "outside.txt"), "hidden\n");
+        git(tree, "add", "outside.txt");
+        git(tree, "commit", "--amend", "--no-edit");
+        const head = git(tree, "rev-parse", "HEAD");
+        const disguise = git(
+          tree,
+          "commit-tree",
+          inSurface,
+          "-p",
+          base,
+          "-m",
+          "Synthetic source change",
+        );
+        plant = () => git(repo, "replace", head, disguise);
+        plant();
+      },
+    });
+    const outcome = await host.run();
+    assert.equal(
+      outcome.status === "refused" && outcome.refusal.reason,
+      "shared-repository-changed",
+    );
+    assert.notEqual(git(repo, "for-each-ref", "refs/replace"), "");
+    // Planted where no snapshot saw it, as after a lost host, the host's own
+    // Git still judges the real commit.
+    assert.throws(() => host.tree.effect(), /outside the declared surfaces/);
+  } finally {
+    dispose(root);
   }
 });
 

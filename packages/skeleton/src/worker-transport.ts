@@ -3,8 +3,10 @@ import { createHash } from "node:crypto";
 import { observedExecFileSync as execFileSync } from "./gate-deadlines.mjs";
 import { startDeadline } from "./gate-deadlines.mjs";
 import {
+  accessSync,
   chmodSync,
   closeSync,
+  constants,
   existsSync,
   fstatSync,
   lstatSync,
@@ -13,14 +15,19 @@ import {
   openSync,
   readdirSync,
   readFileSync,
+  realpathSync,
   rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { homedir, tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { feedbackClaudeSettings } from "./loadouts/feedback.js";
 import { PLAN_REFUTATION_LIMITS } from "./plan-refutation-protocol.js";
+import {
+  VERTICAL_JUDGMENT_LIMITS,
+  isVerticalJudgmentRequest,
+} from "./vertical-judgment-protocol.js";
 import {
   MISSION_CHECK_LIMITS,
   isMissionCheckRequest,
@@ -64,6 +71,7 @@ import {
 import { validateSourceChangeEnvironment } from "./source-change-environment.js";
 import {
   confinedTestCommand,
+  toolchainReadRoots,
   writerSandboxProfilePath,
 } from "./discovery-sandbox.js";
 
@@ -71,6 +79,8 @@ export { normalizeWorkerEffort };
 
 export interface WorkerLaunch {
   readonly resident?: { readonly store: string; readonly episodeId: string };
+  /** A source writer's descendants share a group the host can stop/observe. */
+  readonly ownProcessGroup?: boolean;
   readonly binary: string;
   readonly args: readonly string[];
   readonly cwd: string;
@@ -89,6 +99,7 @@ export interface RunningProcess {
   readonly completed: Promise<ProcessResult>;
   readonly alive: () => boolean;
   readonly kill: () => void;
+  readonly processGroup?: number;
 }
 export type ProcessRunner = (launch: WorkerLaunch) => RunningProcess;
 
@@ -101,6 +112,9 @@ export const runWorkerProcess: ProcessRunner = (launch) => {
   const capture = mkdtempSync(join(tmpdir(), "dotln-worker-output-"));
   const file = join(capture, "stdout");
   const fd = openSync(file, "wx", 0o600);
+  const grouped =
+    process.platform !== "win32" &&
+    Boolean(launch.resident || launch.ownProcessGroup);
   const child = spawn(launch.binary, [...launch.args], {
     cwd: launch.cwd,
     stdio: ["pipe", fd, "pipe"],
@@ -113,14 +127,16 @@ export const runWorkerProcess: ProcessRunner = (launch) => {
           DOTLN_RESIDENT_EPISODE_ID: launch.resident.episodeId,
         }
       : (launch.env ?? process.env),
-    ...(launch.resident ? { detached: true } : {}),
+    ...(grouped ? { detached: true } : {}),
   });
   let live = false;
+  let settled = false;
   let stderr = "";
   let failure: WorkerFailure | undefined;
   const kill = () => {
+    if (settled) return;
     failure ??= new WorkerFailure("interrupted");
-    if (launch.resident && child.pid) {
+    if (grouped && child.pid) {
       try {
         process.kill(-child.pid, "SIGKILL");
       } catch {}
@@ -163,7 +179,7 @@ export const runWorkerProcess: ProcessRunner = (launch) => {
     });
     child.once("exit", () => {
       live = false;
-      if (launch.resident && child.pid) {
+      if (grouped && child.pid) {
         try {
           process.kill(-child.pid, "SIGKILL");
         } catch {}
@@ -171,6 +187,7 @@ export const runWorkerProcess: ProcessRunner = (launch) => {
       }
     });
     child.once("close", (exitCode, signal) => {
+      settled = true;
       observation.finish();
       live = false;
       clearTimeout(deadline);
@@ -189,7 +206,13 @@ export const runWorkerProcess: ProcessRunner = (launch) => {
   });
   void completed.catch(() => {});
   child.stdin!.end(launch.input);
-  return { accepted, completed, alive: () => live, kill };
+  return {
+    accepted,
+    completed,
+    alive: () => live,
+    kill,
+    ...(grouped && child.pid ? { processGroup: child.pid } : {}),
+  };
 };
 
 export interface TransportDispatch<T = WorkerResult> {
@@ -197,6 +220,8 @@ export interface TransportDispatch<T = WorkerResult> {
   readonly completed: Promise<T>;
   readonly alive: () => boolean;
   readonly kill: () => void;
+  /** Local writer group; absence cannot establish post-crash termination. */
+  readonly processGroup?: number;
   readonly usage?: Promise<ReturnType<typeof usageObservation>>;
   /** Codex only: the isolated episode's record once the process has ended. */
   readonly isolation?: Promise<CodexEpisodeIsolation>;
@@ -434,6 +459,7 @@ export const STALE_CODEX_HOME_MS =
     MISSION_CHECK_LIMITS.timeoutMs,
     PLAN_REFUTATION_LIMITS.timeoutMs,
     FEEDBACK_VERIFIER_LIMITS.timeoutMs,
+    VERTICAL_JUDGMENT_LIMITS.timeoutMs,
   );
 
 /** Episode homes left behind by an abnormal end: their launching process has
@@ -569,6 +595,8 @@ export function canonicalWorkerArgs(
   request: TransportRequest,
   schemaPath: string,
   harnessVersion = "unknown",
+  /** The Codex episode's own home; its helper aliases live under it. */
+  codexHome?: string,
 ): readonly string[] {
   validateTransportRequest(request);
   if (typeof request.effort !== "string" || !request.effort.trim())
@@ -602,7 +630,13 @@ export function canonicalWorkerArgs(
     } catch {
       throw new WorkerFailure("profile-refused", "source-change environment");
     }
-    return sourceChangeArgs(name, request, schemaPath, selection.effort);
+    return sourceChangeArgs(
+      name,
+      request,
+      schemaPath,
+      selection.effort,
+      codexHome,
+    );
   }
   if (name === "claude-cli-print") {
     return [
@@ -637,9 +671,11 @@ export function canonicalWorkerArgs(
         ? MISSION_CHECK_LIMITS.maxBudgetUsd
         : isPlanRequest(request)
           ? PLAN_REFUTATION_LIMITS.maxBudgetUsd
-          : "feedback" in request && request.feedback
-            ? FEEDBACK_VERIFIER_LIMITS.maxBudgetUsd
-            : "1.00",
+          : isVerticalJudgmentRequest(request)
+            ? VERTICAL_JUDGMENT_LIMITS.maxBudgetUsd
+            : "feedback" in request && request.feedback
+              ? FEEDBACK_VERIFIER_LIMITS.maxBudgetUsd
+              : "1.00",
     ];
   }
   if (!meetsMinimumVersion(harnessVersion, OBSERVED_CLI_VERSIONS.codex))
@@ -762,12 +798,9 @@ function entropyArgs(
       "--json",
       "--output-schema",
       schemaPath,
-      "-c",
-      'default_permissions="dotln-entropy"',
-      "-c",
-      'permissions.dotln-entropy.filesystem={":minimal"="read",":workspace_roots"="write"}',
-      "-c",
-      "permissions.dotln-entropy.network.enabled=false",
+      // --sandbox selects Codex's workspace-write permissions and overrides any
+      // named profile, so none is declared here (WO-112 D022): the copy is the
+      // writable root, reads are not confined and the network stays off.
       "-c",
       'approval_policy="never"',
       "-c",
@@ -804,6 +837,7 @@ function sourceChangeArgs(
   request: WriterRequest,
   schemaPath: string,
   effort: string,
+  codexHome?: string,
 ): readonly string[] {
   if (name === "claude-cli-print")
     return [
@@ -833,12 +867,17 @@ function sourceChangeArgs(
       "--json-schema",
       JSON.stringify(transportResultSchema(request)),
     ];
-  // The shared flags include --ignore-user-config (X-W1, X-U2).
+  // The shared flags include --ignore-user-config (X-W1, X-U2). WO-112 D017:
+  // Codex keeps a worktree's resolved gitdir read-only unless a more specific
+  // writable root covers it, so the writer is granted exactly what one commit
+  // needs; hooks, config and everything outside stay unwritable.
+  const access = codexWriterAccess(request.cwd, codexHome);
+  // No --sandbox flag: under codex exec it overrides the named profile, so the
+  // dotln-writer grants would never apply (live control run, WO-112 D017). The
+  // inspection worker already runs on its named profile alone.
   return codexExecArgv({
     approval: "never",
     rest: [
-      "--sandbox",
-      "workspace-write", // X-W1; not containment (X-W6)
       "--strict-config",
       "--model",
       request.model,
@@ -850,7 +889,7 @@ function sourceChangeArgs(
       "-c",
       'default_permissions="dotln-writer"', // X-W2
       "-c",
-      'permissions.dotln-writer.filesystem={":minimal"="read",":workspace_roots"="write"}', // X-W2
+      `permissions.dotln-writer.filesystem={":minimal"="read",":workspace_roots"="write",${access.filesystem}}`, // X-W2
       "-c",
       "permissions.dotln-writer.network.enabled=false", // X-W2
       // Retained hardening; project instructions/hooks are not a Codex guarantee (X-W3).
@@ -866,6 +905,9 @@ function sourceChangeArgs(
       "memories.generate_memories=false",
       "-c",
       'shell_environment_policy.inherit="none"',
+      // The empty environment still needs the host's node and git.
+      "-c",
+      `shell_environment_policy.set={PATH=${JSON.stringify(access.path)}}`,
       // X-W1 needs native tools. WO-122's live row also requires the stable
       // code-mode host: disabling it leaves model-exposed tools unable to run.
       ...codexDisabled
@@ -880,6 +922,97 @@ function sourceChangeArgs(
       "-",
     ],
   });
+}
+
+/** The writer's grants beyond its worktree: read the host's node, git and
+ * Codex installations, the user's git identity and the shared repository
+ * metadata; write its own gitdir and the shared objects, refs and logs.
+ * These directory-wide grants do not protect existing object bytes. */
+function codexWriterAccess(
+  cwd: string,
+  codexHome?: string,
+): { filesystem: string; path: string } {
+  const [gitDir, commonDir] = writerGit(cwd, [
+    "rev-parse",
+    "--path-format=absolute",
+    "--git-dir",
+    "--git-common-dir",
+  ]).split("\n");
+  if (!gitDir || !commonDir)
+    throw new WorkerFailure("profile-refused", "writer Git directories");
+  // A main checkout's gitdir is the shared directory, hooks and config included.
+  if (realpathSync(gitDir) === realpathSync(commonDir))
+    throw new WorkerFailure(
+      "profile-refused",
+      "writer needs a linked worktree",
+    );
+  const prefix = (binary: string) => dirname(dirname(realpathSync(binary)));
+  const node = realpathSync(process.execPath);
+  const git = hostBinary("git");
+  // A host without Codex cannot launch it; the grant is then simply absent.
+  let codex: string | undefined;
+  try {
+    codex = hostBinary("codex");
+  } catch {}
+  const entries: [string, "read" | "write"][] = [
+    ...toolchainReadRoots().map((root): [string, "read"] => [root, "read"]),
+    [prefix(git), "read"],
+    // Codex's native edit and code-mode helpers run from its own installation,
+    // through aliases it creates under the episode home's tmp/arg0.
+    ...(codex ? [[prefix(codex), "read"] as [string, "read"]] : []),
+    ...(codexHome
+      ? [[codexHelperDirectory(codexHome), "read"] as [string, "read"]]
+      : []),
+    [join(homedir(), ".gitconfig"), "read"],
+    [realpathSync(commonDir), "read"],
+    [realpathSync(gitDir), "write"],
+    ...(["objects", "refs", "logs"] as const).map((name): [string, "write"] => [
+      join(realpathSync(commonDir), name),
+      "write",
+    ]),
+  ];
+  // No read root may be / or hold the home directory or Codex's credentials.
+  const guarded = [homedir(), userCodexHome()].map((path) => resolve(path));
+  for (const [path] of entries)
+    if (
+      path === "/" ||
+      guarded.some((held) => held === path || held.startsWith(`${path}/`))
+    )
+      throw new WorkerFailure("profile-refused", "writer grant too broad");
+  return {
+    filesystem: entries
+      .map(([path, mode]) => `${JSON.stringify(path)}=${JSON.stringify(mode)}`)
+      .join(","),
+    path: [dirname(node), dirname(realpathSync(git)), "/usr/bin", "/bin"].join(
+      ":",
+    ),
+  };
+}
+/** Codex links its helpers here at startup (codex-rs arg0, mode 0700); it
+ * exists before launch so the profile never names a missing path. */
+function codexHelperDirectory(codexHome: string): string {
+  const directory = join(realpathSync(codexHome), "tmp", "arg0");
+  mkdirSync(directory, { recursive: true, mode: 0o700 });
+  return directory;
+}
+/** The binary's real installation path, or the bare name when PATH lacks it. */
+function resolvedBinary(name: string): string {
+  try {
+    return realpathSync(hostBinary(name));
+  } catch {
+    return name;
+  }
+}
+/** The first executable on the host's PATH, as the host itself would run it. */
+function hostBinary(name: string): string {
+  for (const directory of (process.env.PATH ?? "").split(":").filter(Boolean)) {
+    const candidate = join(directory, name);
+    try {
+      accessSync(candidate, constants.X_OK);
+      return candidate;
+    } catch {}
+  }
+  throw new WorkerFailure("profile-refused", `writer host ${name} unavailable`);
 }
 
 function writerGit(cwd: string, args: readonly string[]): string {
@@ -993,7 +1126,7 @@ function decodeResult<R extends TransportRequest>(
       mode: 0o600,
     });
   }
-  if (isPlanRequest(request)) {
+  if (isPlanRequest(request) || isVerticalJudgmentRequest(request)) {
     writeFileSync(join(request.cwd, "wire.jsonl"), output.stdout, {
       mode: 0o600,
     });
@@ -1026,7 +1159,7 @@ function decodeResult<R extends TransportRequest>(
       );
     throw new WorkerFailure(
       unavailable ? "model-unavailable" : "transport-failed",
-      isPlanRequest(request)
+      isPlanRequest(request) || isVerticalJudgmentRequest(request)
         ? `${wireDetail}; stderr: ${output.stderr.slice(-4000).replace(/(?:Bearer\s+|(?:api[_-]?key|token|password)\s*[=:]\s*)\S+/gi, "[redacted credential]") || "(empty)"}`
         : wireDetail,
     );
@@ -1057,7 +1190,7 @@ function decodeResult<R extends TransportRequest>(
         result.is_error === true
       )
         throw new WorkerFailure("transport-failed", wireDetail);
-      if (isPlanRequest(request)) {
+      if (isPlanRequest(request) || isVerticalJudgmentRequest(request)) {
         writeFileSync(
           join(request.cwd, "result.json"),
           JSON.stringify(result.structured_output ?? null) + "\n",
@@ -1107,7 +1240,7 @@ function decodeResult<R extends TransportRequest>(
     if (typeof text !== "string")
       throw new WorkerFailure("invalid-result", "final-message-absent");
     parsePhase = "final-message-json";
-    if (isPlanRequest(request)) {
+    if (isPlanRequest(request) || isVerticalJudgmentRequest(request)) {
       writeFileSync(join(request.cwd, "result.json"), text, { mode: 0o600 });
       writeFileSync(join(request.cwd, "statement.txt"), text, { mode: 0o600 });
     }
@@ -1169,11 +1302,21 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
     let episode: CodexEpisode | undefined;
     try {
       const schemaPath = join(schemaDirectory, "result.json");
+      const launchEnv =
+        isEntropyRequest(request) && request.temporaryDirectory
+          ? { ...this.launchEnv, TMPDIR: request.temporaryDirectory }
+          : this.launchEnv;
+      // The episode home exists before the writer's grants name its helpers.
+      episode =
+        this.name === "codex-cli-exec"
+          ? startCodexEpisode(launchEnv)
+          : undefined;
       const args = canonicalWorkerArgs(
         this.name,
         request,
         schemaPath,
         this.harnessVersion,
+        episode?.env.CODEX_HOME,
       );
       writeFileSync(
         schemaPath,
@@ -1185,19 +1328,18 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
       const before = isWriterRequest(request)
         ? writerGit(request.cwd, ["rev-parse", "HEAD"])
         : undefined;
-      const launchEnv =
-        isEntropyRequest(request) && request.temporaryDirectory
-          ? { ...this.launchEnv, TMPDIR: request.temporaryDirectory }
-          : this.launchEnv;
-      episode =
-        this.name === "codex-cli-exec"
-          ? startCodexEpisode(launchEnv)
-          : undefined;
       const process = this.runner({
-        binary: this.binary,
+        // Codex re-executes itself for its native edit helper through the path it
+        // was launched by; the resolved installation path is the one a writer's
+        // profile can read, while a PATH symlink elsewhere is not (WO-112 D017).
+        binary:
+          this.name === "codex-cli-exec"
+            ? resolvedBinary(this.binary)
+            : this.binary,
         args,
         cwd: request.cwd,
-        input: transportPrompt(request),
+        input: transportPrompt(request, this.name),
+        ...(isWriterRequest(request) ? { ownProcessGroup: true } : {}),
         env: episode?.env ?? launchEnv,
         timeoutMs: isEntropyReviewRequest(request)
           ? ENTROPY_REVIEW_LIMITS.timeoutMs
@@ -1207,9 +1349,11 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
               ? MISSION_CHECK_LIMITS.timeoutMs
               : isPlanRequest(request)
                 ? PLAN_REFUTATION_LIMITS.timeoutMs
-                : "feedback" in request && request.feedback
-                  ? FEEDBACK_VERIFIER_LIMITS.timeoutMs
-                  : WORKER_TIMEOUT_MS,
+                : isVerticalJudgmentRequest(request)
+                  ? VERTICAL_JUDGMENT_LIMITS.timeoutMs
+                  : "feedback" in request && request.feedback
+                    ? FEEDBACK_VERIFIER_LIMITS.timeoutMs
+                    : WORKER_TIMEOUT_MS,
       });
       const receipt = process.accepted.then(() => ({
         commandId: request.command.commandId,
@@ -1241,6 +1385,7 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
         completed,
         alive: process.alive,
         kill: process.kill,
+        ...(process.processGroup ? { processGroup: process.processGroup } : {}),
         usage,
         ...(isolation ? { isolation } : {}),
       };

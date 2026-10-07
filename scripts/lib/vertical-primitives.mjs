@@ -1,7 +1,15 @@
 /** Production bindings: the vertical has no replacement worker, verifier,
  * reviewer, repairer or publisher. Every effect below calls a landed host. */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import {
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { basename, join } from "node:path";
 import { compileLoadout, compileVerificationTask } from "@dotln/compiler";
 import { decodeLog } from "@dotln/kernel";
 import { WorkerStore } from "../../packages/skeleton/dist/src/worker-store.js";
@@ -22,18 +30,22 @@ import {
   baselineStoryClass,
   verticalEqual,
 } from "../../packages/skeleton/dist/src/vertical.js";
-import {
-  CodexCliExecWorkOrderTransport,
-  ClaudeCliPrintWorkOrderTransport,
-} from "../../packages/skeleton/dist/src/worker-transport.js";
 import { SOURCE_CHANGE_DENIED } from "../../packages/skeleton/dist/src/worker-protocol.js";
 import { sourceGit } from "../../packages/skeleton/dist/src/source-change-worktree.js";
 import { writerLoadout, publishTargetOrder } from "./target-publish.mjs";
 import { deliveryContractHash } from "./github-body.mjs";
-import { observePullRequest } from "./pull-request-observer.mjs";
+import {
+  observePullRequest,
+  UNFINISHED_CHECK_STATES,
+} from "./pull-request-observer.mjs";
 import { resolveReviewComments } from "./review-comment-loop.mjs";
 import { TOOL_ROOT } from "./config.mjs";
 import { verticalTransport } from "./vertical-transport.mjs";
+import {
+  liveTransport,
+  recordedJudgment,
+  triageSubject,
+} from "./vertical-judgment.mjs";
 
 const read = (file) => JSON.parse(readFileSync(file, "utf8"));
 const write = (file, value) =>
@@ -52,6 +64,53 @@ const requireCompiled = (r) => {
     );
   return r;
 };
+
+const SETTLE_LIMITS = { timeoutMs: 900_000, pollMs: 15_000 };
+
+function assertResolutionDirectory(directory, child) {
+  mkdirSync(child, { recursive: true });
+  const stat = lstatSync(child);
+  if (
+    !stat.isDirectory() ||
+    stat.isSymbolicLink() ||
+    realpathSync(child) !== join(realpathSync(directory), basename(child))
+  )
+    throw new Error("vertical resolution checkout directory identity drift");
+}
+
+/** A detached checkout of `revision` at `<child>/input-tree`, used once and
+ * always removed. The child must be the run directory's own real child; a
+ * checkout or registration left by a kill between add and remove is cleared
+ * first, so a recovered resolution never adds over a stale registration. */
+export function withDetachedCheckout(target, directory, child, revision, use) {
+  assertResolutionDirectory(directory, child);
+  const tree = join(child, "input-tree");
+  const leftover = lstatSync(tree, { throwIfNoEntry: false });
+  if (leftover?.isSymbolicLink())
+    throw new Error("vertical resolution checkout directory identity drift");
+  if (leftover)
+    try {
+      sourceGit(target, "worktree", "remove", "--force", tree);
+    } catch {
+      rmSync(tree, { recursive: true, force: true });
+    }
+  // Clear only this checkout's own registration when it outlived its
+  // directory; another registration, stale or valid, is the operator's (D047).
+  const own = join(realpathSync(child), "input-tree");
+  if (
+    sourceGit(target, "worktree", "list", "--porcelain")
+      .split("\n")
+      .includes(`worktree ${own}`)
+  )
+    // Twice forced: a kill during `worktree add` can leave it locked.
+    sourceGit(target, "worktree", "remove", "--force", "--force", own);
+  sourceGit(target, "worktree", "add", "--detach", tree, revision);
+  try {
+    return use(tree);
+  } finally {
+    sourceGit(target, "worktree", "remove", "--force", tree);
+  }
+}
 
 function loadout(state) {
   const { binding, workOrder } = state;
@@ -157,15 +216,61 @@ export function createVerticalPrimitives({
   active,
 }) {
   mkdirSync(directory, { recursive: true });
-  const selectedTransport = () => {
-    if (process.env.DOTLN_LIVE_WORKERS !== "1")
-      throw new Error("vertical live workers require DOTLN_LIVE_WORKERS=1");
-    return cfg.workers.transport === "codex-cli-exec"
-      ? new CodexCliExecWorkOrderTransport()
-      : new ClaudeCliPrintWorkOrderTransport();
-  };
   const transport = (kind) =>
-    verticalTransport(external[kind] ?? selectedTransport(), active);
+    verticalTransport(external[kind] ?? liveTransport(cfg), active);
+  const waitUntil =
+    external.waitUntil ??
+    ((deadline) =>
+      new Promise((done) => setTimeout(done, Math.max(0, deadline - now()))));
+  /** A declared automated reviewer posts before its check run finishes. Wait,
+   * bounded by the settle limit, authority expiry and running authority, until
+   * every declared check has finished at the observed head, so a reviewer still
+   * running is never read as an empty review. Returns the unsettled reason. */
+  async function observeSettled(observeOnce, expiresAt) {
+    const settle = external.settle ?? SETTLE_LIMITS;
+    const deadline = Math.min(now() + settle.timeoutMs, expiresAt);
+    for (;;) {
+      const observed = observeOnce();
+      // A declared reviewer that was cancelled, skipped or failed may never have
+      // posted; only a finished, successful run settles it.
+      const states = (name) =>
+        observed.payload.checks
+          .filter((c) => c.name === name)
+          .map((c) => c.state);
+      const waiting = [],
+        ended = [];
+      for (const name of cfg.awaitChecks ?? []) {
+        const seen = states(name);
+        if (
+          !seen.length ||
+          seen.some((state) => UNFINISHED_CHECK_STATES.has(state))
+        )
+          waiting.push(`${name} (${seen.join(", ") || "absent"})`);
+        else if (seen.some((state) => !["SUCCESS", "NEUTRAL"].includes(state)))
+          ended.push(`${name} (${seen.join(", ")})`);
+      }
+      if (ended.length)
+        return {
+          observed,
+          unsettled: `declared automated review checks ended without success: ${ended.join(", ")}`,
+        };
+      if (!waiting.length) return { observed, unsettled: null };
+      if (now() >= deadline)
+        return {
+          observed,
+          unsettled:
+            deadline === expiresAt
+              ? `authority expired while awaiting declared checks: ${waiting.join(", ")}`
+              : `declared automated review checks did not finish: ${waiting.join(", ")}`,
+        };
+      if (active && !(await active(false)))
+        return {
+          observed,
+          unsettled: "running authority ended while awaiting declared checks",
+        };
+      await waitUntil(Math.min(now() + settle.pollMs, deadline));
+    }
+  }
   function compiled(state) {
     const graph = loadout(state);
     const environment = {
@@ -677,13 +782,18 @@ export function createVerticalPrimitives({
         return complete(publishTargetOrder(publication(state)));
       if (command.step === "observation") {
         const published = last(state, "publish");
-        const event = observePullRequest({
-          cwd: state.binding.target,
-          store: last(state, "source-change").store,
-          number: published.number,
-          repositoryId: cfg.repositoryId,
-          now: now(),
-        });
+        const { observed: event, unsettled } = await observeSettled(
+          () =>
+            observePullRequest({
+              cwd: state.binding.target,
+              store: last(state, "source-change").store,
+              number: published.number,
+              repositoryId: cfg.repositoryId,
+              now: now(),
+            }),
+          state.binding.authority.expiresAt,
+        );
+        if (unsettled) return held(unsettled, { observation: event });
         if (event.payload.comments.some((c) => c.refused))
           return held(
             `review source screen refused item ${event.payload.comments
@@ -698,7 +808,40 @@ export function createVerticalPrimitives({
       }
       if (command.step === "resolution") {
         const published = last(state, "publish");
-        const prepared = last(state, "witnesses").prepared;
+        /** The candidate the item was observed on, sealed once per item and
+         * shared by its triage episode and any repair. */
+        const resolutionInput = (active) => {
+          const child = join(directory, `resolution-${active.key.slice(8)}`);
+          assertResolutionDirectory(directory, child);
+          const receipt = join(child, "prepared.json");
+          const cached = lstatSync(receipt, { throwIfNoEntry: false });
+          if (cached) {
+            if (
+              !cached.isFile() ||
+              cached.isSymbolicLink() ||
+              cached.nlink !== 1
+            )
+              throw new Error(
+                "vertical resolution input is not an ordinary file",
+              );
+            return { child, input: read(receipt) };
+          }
+          const input = withDetachedCheckout(
+            state.binding.target,
+            directory,
+            child,
+            active.observation.payload.headSha,
+            (tree) =>
+              snapshot(
+                state,
+                `resolution-${active.key.slice(8)}-snapshot`,
+                tree,
+                active.observation.payload.headSha,
+              ),
+          );
+          write(receipt, input);
+          return { child, input };
+        };
         const result = await resolveReviewComments({
           store: last(state, "source-change").store,
           number: published.number,
@@ -709,34 +852,39 @@ export function createVerticalPrimitives({
           checkTests: cfg.checkTests ?? {},
           publication: publication(state),
           now,
+          async observe() {
+            const { unsettled } = await observeSettled(
+              () =>
+                observePullRequest({
+                  cwd: cfg.root,
+                  store: last(state, "source-change").store,
+                  number: published.number,
+                  repositoryId: cfg.repositoryId,
+                  now: now(),
+                }),
+              state.binding.authority.expiresAt,
+            );
+            return { unsettled };
+          },
+          /** An item without a supplied judgment gets one recorded model
+           * episode over the candidate it was observed on. `entry` is the
+           * loop's item; `active` stays the run's authority observer. */
+          async triage(entry) {
+            const { child, input } = resolutionInput(entry);
+            const record = await recordedJudgment({
+              directory: child,
+              name: "triage",
+              task: "triage",
+              subject: triageSubject(state, entry, input.subject),
+              transport: () => transport("judge"),
+              model: cfg.workers.model,
+              effort: cfg.workers.effort,
+              now,
+            });
+            return { ...record.result, producer: record.provenance };
+          },
           prepareRepair(active) {
-            const child = join(directory, `resolution-${active.key.slice(8)}`);
-            mkdirSync(child, { recursive: true });
-            const tree = join(child, "input-tree");
-            const receipt = join(child, "prepared.json");
-            let input;
-            if (existsSync(receipt)) input = read(receipt);
-            else {
-              sourceGit(
-                state.binding.target,
-                "worktree",
-                "add",
-                "--detach",
-                tree,
-                active.observation.payload.headSha,
-              );
-              try {
-                input = snapshot(
-                  state,
-                  `resolution-${active.key.slice(8)}-snapshot`,
-                  tree,
-                  active.observation.payload.headSha,
-                );
-              } finally {
-                sourceGit(state.binding.target, "worktree", "remove", tree);
-              }
-              write(receipt, input);
-            }
+            const { child, input } = resolutionInput(active);
             return {
               store: new WorkerStore(join(child, "repair")),
               baseline: last(state, "baseline").prepared.subject,
