@@ -118,7 +118,7 @@ test("WO-178 capture citations and attributed words stay inside their provenance
   assert.equal(operatorWordFindings(f.root).length, 0);
 });
 
-import { suites } from "./test-runner.mjs";
+import { runGate, suites } from "./test-runner.mjs";
 import {
   historyEnd,
   historyStart,
@@ -192,17 +192,17 @@ function fixture(t, roots = {}) {
   };
 }
 
-test("byte ceilings count UTF-8, report exact overage and refuse absent products", (t) => {
+test("byte ceilings count UTF-8, advise exact overage and refuse absent products", (t) => {
   const f = fixture(t);
   f.ceilings.documents["00-fixture.md"].ceiling = Buffer.byteLength(f.source);
   assert.deepEqual(f.check().failures, []);
   f.write(`${f.product}/00-fixture.md`, f.source + "é");
-  assert.match(f.check().failures.join("\n"), /2 bytes over ceiling/);
+  assert.match(f.check().notices.join("\n"), /2 bytes over ceiling/);
   delete f.ceilings.documents["00-fixture.md"];
   assert.match(f.check().failures.join("\n"), /missing ceiling/);
 });
 
-test("WO-187 one operator-directed byte goal advises only with its current unresolved public follow-up", (t) => {
+test("byte overages advise independently of decision and follow-up disposition", (t) => {
   for (const roots of [
     {},
     { docs: "records", evidence: "proof", product: "blueprint" },
@@ -215,8 +215,8 @@ test("WO-187 one operator-directed byte goal advises only with its current unres
       const reference = `${f.evidence}/WO-999/decisions.md#${heading.includes("—") ? "wo-999-d001--byte-goal" : "wo-999-d001"}`;
       entry.advisoryDecision = reference;
       const overage = () =>
-        assert.match(f.check().failures.join("\n"), /2 bytes over ceiling/);
-      overage(); // No decision or registered follow-up.
+        assert.match(f.check().notices.join("\n"), /2 bytes over ceiling/);
+      overage(); // Neither a decision nor a follow-up is required.
       f.record(
         "resume: next; operator direction",
         {
@@ -246,12 +246,12 @@ test("WO-187 one operator-directed byte goal advises only with its current unres
       assert.deepEqual(f.check().failures, []);
       assert.match(
         f.check().notices.join("\n"),
-        new RegExp(`ADVISORY .*2 bytes over ceiling; follow-up ${id}`),
+        /ADVISORY .*2 bytes over ceiling; planning resets ceilings/,
       );
       assert.equal(f.check().rows[0].ceiling, entry.ceiling);
       assert.equal(f.check().rows[0].headroom, -2);
       entry.advisoryDecision = `${reference}#does-not-resolve`;
-      overage(); // The complete reference must resolve, not its first fragment.
+      overage(); // An unresolved reference does not turn the byte goal into a refusal.
       entry.advisoryDecision = reference.replace("d001", "d002");
       overage();
       entry.advisoryDecision = reference;
@@ -262,9 +262,9 @@ test("WO-187 one operator-directed byte goal advises only with its current unres
         },
         heading,
       );
-      overage(); // The register has not captured the current decision bytes.
+      overage(); // The register need not capture the decision bytes.
       syncFollowups(f.root);
-      overage(); // Source revision changed; the former disposition is stale.
+      overage(); // A stale disposition also leaves the advisory unchanged.
       dispose("deferred");
       assert.deepEqual(f.check().failures, []);
       f.write(
@@ -272,9 +272,9 @@ test("WO-187 one operator-directed byte goal advises only with its current unres
         "# WO-998 — fixture\n",
       );
       dispose("allocated");
-      overage(); // An allocation is closed in the register, not proof of pending work.
+      overage(); // Allocation does not alter the advisory.
       dispose("settled");
-      overage(); // A resolved item cannot leave a permanent budget exception.
+      overage(); // Settlement does not turn a byte goal into a refusal.
     }
   }
 });
@@ -347,7 +347,10 @@ test("the Release boundary heading exempts nothing; only the registered release-
   );
   const failures = f.check().failures.join("\n");
   assert.match(failures, /06-roadmap\.md#release-boundary: new receipt/);
-  assert.match(failures, /06-roadmap\.md: 2\d{3} bytes over ceiling/);
+  assert.match(
+    f.check().notices.join("\n"),
+    /06-roadmap\.md: 2\d{3} bytes over ceiling/,
+  );
   // The registration names one product path: elsewhere the pair exempts nothing.
   for (const other of ["07-guide.md", "archive/06-roadmap.md"]) {
     const elsewhere = productContent(other, source);
@@ -572,7 +575,7 @@ test("list continuation indentation preserves live links and hides only actual l
   );
 });
 
-test("a ceiling increase requires an existing planning decision, including after a prior consolidation", (t) => {
+test("planning owns ceiling increases without a gate enforcing the raise rule", (t) => {
   const f = fixture(t);
   const entry = f.ceilings.documents["00-fixture.md"];
   entry.ceiling = 100;
@@ -593,16 +596,16 @@ test("a ceiling increase requires an existing planning decision, including after
     0,
   );
   entry.ceiling = 101;
-  assert.match(f.check().failures.join("\n"), /raising a ceiling requires/);
+  assert.deepEqual(f.check().failures, []);
   entry.decision = "docs/planning/approved.md#ceiling-change";
-  assert.match(f.check().failures.join("\n"), /raising a ceiling requires/);
+  assert.deepEqual(f.check().failures, []);
   f.write(
     "docs/planning/approved.md",
     "# Plan\n\n## Ceiling change\n\nA fixture decision.\n",
   );
   assert.deepEqual(f.check().failures, []);
   entry.decision += "#does-not-resolve";
-  assert.match(f.check().failures.join("\n"), /raising a ceiling requires/);
+  assert.deepEqual(f.check().failures, []);
 });
 
 test("Markdown titles, nested brackets and decoded entities retain live destinations", (t) => {
@@ -662,7 +665,7 @@ test("a demoted, quoted or hidden terminating heading exempts nothing after the 
     assert.match(failures, /: new receipt/, terminator);
     assert.match(failures, /#candidate--smuggled: new candidate/, terminator);
     assert.match(
-      failures,
+      f.check().notices.join("\n"),
       /06-roadmap\.md: 6001 bytes over ceiling/,
       terminator,
     );
@@ -743,7 +746,7 @@ test("handwritten marker pairs cannot bypass bytes, receipts or candidates", (t)
   const result = f.check();
   assert.equal(result.rows[0].exemptBytes, 0);
   assert.equal(result.rows[0].bytes, Buffer.byteLength(f.source + additions));
-  assert.match(result.failures.join("\n"), /bytes over ceiling/);
+  assert.match(result.notices.join("\n"), /bytes over ceiling/);
   assert.match(result.failures.join("\n"), /new receipt/);
   assert.match(result.failures.join("\n"), /new candidate/);
 });
@@ -810,7 +813,7 @@ test("an unregistered marker pair in the roadmap reports the receipt, the candid
   assert.equal(row.bytes, Buffer.byteLength(source));
   const failures = result.failures.join("\n");
   assert.match(
-    failures,
+    result.notices.join("\n"),
     new RegExp(
       `06-roadmap\\.md: ${Buffer.byteLength(source) - Buffer.byteLength(base)} bytes over ceiling`,
     ),
@@ -1057,4 +1060,135 @@ test("the docs check holds the table to its recorded tags: it refuses a changed 
   result = f.check();
   assert.deepEqual(result.failures, []);
   assert.deepEqual(result.notices, []);
+});
+
+test("document CLI admits overage with one advisory but refuses missing and malformed ceiling metadata", (t) => {
+  const f = fixture(t);
+  const entry = f.ceilings.documents["00-fixture.md"];
+  entry.ceiling = Buffer.byteLength(f.source) - 2;
+  const run = () => {
+    f.controls();
+    return spawnSync(process.execPath, [script], {
+      cwd: f.root,
+      env: { ...process.env, DOTLN_LAUNCHPAD: f.root },
+      encoding: "utf8",
+    });
+  };
+  const advisory = run();
+  assert.equal(advisory.status, 0, advisory.stdout + advisory.stderr);
+  assert.equal(
+    (
+      advisory.stdout.match(
+        /ADVISORY .*2 bytes over ceiling; planning resets ceilings/g,
+      ) ?? []
+    ).length,
+    1,
+  );
+  delete f.ceilings.documents["00-fixture.md"];
+  const missing = run();
+  assert.notEqual(missing.status, 0);
+  assert.match(missing.stdout + missing.stderr, /missing ceiling/);
+  f.ceilings.documents["00-fixture.md"] = { ...entry, ceiling: "bad" };
+  const malformed = run();
+  assert.notEqual(malformed.status, 0);
+  assert.match(malformed.stdout + malformed.stderr, /invalid ceiling metadata/);
+});
+
+test("document gate prints each ceiling advisory once and refuses invalid metadata at default and relocated roots", async (t) => {
+  for (const roots of [{}, { docs: "records" }])
+    await t.test(roots.docs ?? "default roots", async (t) => {
+      const f = fixture(t, roots);
+      const entry = f.ceilings.documents["00-fixture.md"];
+      entry.ceiling = Buffer.byteLength(f.source) - 2;
+      const second = f.source.replace("A fact.", "A café fact.");
+      f.write(`${f.product}/01-extra.md`, second);
+      f.ceilings.documents["01-extra.md"] = {
+        ...entry,
+        nonExemptBytesAtLanding: Buffer.byteLength(second),
+        ceiling: Buffer.byteLength(second) - 4,
+      };
+      const table = [
+        {
+          ...suites.find((row) => row.name === "docs-check"),
+          command: [process.execPath, script],
+          needsBuild: false,
+          executionEnvironment: { ...process.env, DOTLN_LAUNCHPAD: f.root },
+        },
+      ];
+      const run = async () => {
+        f.controls();
+        const lines = [];
+        const saved = console.log;
+        try {
+          console.log = (line) => lines.push(String(line));
+          const check = await runGate(["--document", "--serial"], f.root, {
+            table,
+          });
+          return { check, output: lines.join("\n") };
+        } finally {
+          console.log = saved;
+        }
+      };
+      const advisory = await run();
+      assert.equal(advisory.check.exitCode, 0, advisory.output);
+      for (const [name, bytes] of [
+        ["00-fixture.md", 2],
+        ["01-extra.md", 4],
+      ]) {
+        const expected = `ADVISORY ${f.product}/${name}: ${bytes} bytes over ceiling; planning resets ceilings`;
+        assert.equal(
+          advisory.output.split("\n").filter((line) => line.includes(expected))
+            .length,
+          1,
+          advisory.output,
+        );
+      }
+      delete f.ceilings.documents["00-fixture.md"];
+      const missing = await run();
+      assert.equal(missing.check.exitCode, 1, missing.output);
+      assert.match(missing.output, /missing ceiling/);
+      f.ceilings.documents["00-fixture.md"] = { ...entry, ceiling: "bad" };
+      const malformed = await run();
+      assert.equal(malformed.check.exitCode, 1, malformed.output);
+      assert.match(malformed.output, /invalid ceiling metadata/);
+    });
+});
+
+test("document gate forwards explicit success diagnostics and preserves full failure output", async (t) => {
+  const f = fixture(t);
+  for (const exitCode of [0, 1]) {
+    f.write(
+      "scripts/notice.mjs",
+      `console.log("ordinary detail");\nconsole.log("ADVISORY fixture notice");\nconsole.log("NEWER fixture history");\nprocess.exitCode = ${exitCode};\n`,
+    );
+    const lines = [];
+    const saved = console.log;
+    try {
+      console.log = (line) => lines.push(String(line));
+      const check = await runGate(["--document", "--serial"], f.root, {
+        table: [
+          {
+            name: "fixture-notices",
+            document: true,
+            command: [process.execPath, "scripts/notice.mjs"],
+          },
+        ],
+      });
+      assert.equal(check.exitCode, exitCode, lines.join("\n"));
+      for (const diagnostic of [
+        "ADVISORY fixture notice",
+        "NEWER fixture history",
+      ])
+        assert.equal(
+          lines.filter((line) => line.endsWith(diagnostic)).length,
+          1,
+        );
+      assert.equal(
+        lines.some((line) => line.endsWith("ordinary detail")),
+        exitCode !== 0,
+      );
+    } finally {
+      console.log = saved;
+    }
+  }
 });
