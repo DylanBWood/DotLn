@@ -1,0 +1,38 @@
+# WO-196
+
+A role that finishes work now runs one fixed sequence, and the product gate enforces its first step. `npm test` and `npm test -- --review` run Prettier before anything else. If formatting fails they stop in seconds, name the files and print `Run npm run format, then rerun this command.` A review gate at a code identity whose tasks already passed reuses those results instead of rerunning them. The reason is in the record: one order alone lost two 31-minute review gates, one to formatting after the gate and one to a record write during it. And the verifier and the final reviewer each paid a fresh review gate for bytes the executor's passing row already covered.
+
+**Gate.** The `format` row joins the plain and review selections as a preflight. It runs alone before the build and before any carried result, and its failure finishes every other task unexecuted. `--only` and `--machinery` are unchanged. The review selection now composes the latest passing task results at the unchanged code identity, as the plain selection already did since WO-186. The row keeps `gateSelection: "review"` and its `requiredSuites`, so `final-review-result`, `worktree publish` and release close consume it unchanged. `--again` still forces every task fresh, and a task whose latest run at the identity failed always runs again. Format is never reused, because a configured formatter can read files outside the code identity; a composed row whose only fresh task is format records `freshReason: "always-fresh-preflight"`. A passing task's `ADVISORY` and `NEWER` lines now reach the gate's output.
+
+**Role text.** The executor, verifier and reviewer skills open with numbered steps in execution order. They end with the handoff: format, `npm run test:docs`, the product gate ("while it runs, write nothing under the repository and start no agent"), the records, then the completion command. Every earlier rule follows under `Rules:`. The five-refusals paragraph, duplicated in every skill, now lives only in `CLAUDE.md`, which both harnesses load first. The executor root falls from 29,777 to 28,128 bytes, under its 29,246 ceiling. Before `implementation-ready` only, the executor spawns two fresh `dotln-worker` agents, an adversary of the criteria and an improver of the design. A repair spawns none. The verifier judges with its own probes and the two reports, and spawns only to reproduce one named claim. Verifier and reviewer route a finding that breaks no criterion and no behavior `main` had to a follow-up. The Tinkerer and Goal Alignment sentences are shortened as WO-188 item 22 states them.
+
+**Advisories.** A spawn while a gate is live is admitted with one advisory naming the run and saying that probes will be refused until it ends. The self-review advisory fires at `implementation-ready` only. A product document over its byte ceiling is now an advisory, never a failure, and the rule requiring a planning anchor to raise a ceiling is removed, because planning passes reset ceilings.
+
+**Read before merging.** The document gate no longer fails on byte overruns; it only advises. Format now runs alone before the build in the document gate too, which puts the format task (7.13 s in this review's gate) on its serial path. Each preflight-suppressed task repeats Prettier's output, which on the real review selection is 87 copies on a format failure. The composed review row is keyed to the code identity alone until WO-198 records shared refs, so a task that read a moved shared ref could be reused; the order records that as a known issue with its reopening condition. Application v0.69.0 is a minor release: compiler 0.25.3 → 0.25.4, skeleton 0.54.0 → 0.55.0, harness host 0.34.5 → 0.35.0. No dependency is added.
+
+**Validation.** A fresh `npm test -- --review` at the reviewed identity passed 38 of 38 suites with 88 fresh tasks in 1,797.84 s, and `npm run test:docs` passes 29 of 29. VER-002's composed review at the previous identity took 7.07 s, against 1,815.45 s for the executor's fresh run there. VER-001 failed criterion 8, because the document gate did not show the ceiling advisory. The repair forwarded passing tasks' diagnostics and removed a reuse shortcut no production selection reached. VER-002 passed all nine criteria and boarded an unused import, which this final review removed. The findings block is empty. Details: [FINAL-001](FINAL-001.md), [VER-001](../../verifications/WO-196/VER-001.md), [VER-002](../../verifications/WO-196/VER-002.md), [decisions](../../evidence/WO-196/decisions.md), [release notes](RELEASE-NOTES.md).
+
+<!-- dotln-process-meter:start -->
+
+Observation cutoff: 2026-10-07T16:35:01.848Z; source: canonical control events and the recorded gate, usage and harness observations collected by npm run meta.
+
+| Work | Phase ms / attempts | Gate ms | Read files / bytes | Observed tokens / USD | Declared prompt tokens | Corrections | Directions |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| WO-195 | 20,414,389 (Δ unavailable) / 5 | 4,507,949 (Δ unavailable) | 4 (Δ unavailable) / 65,846 (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | 1,019 (Δ unavailable) | 1 (Δ unavailable) | 5 (Δ unavailable) |
+| WO-186 | 55,250,955 (Δ 34,836,566) / 8 | 20,388,505 (Δ 15,880,556) | 13 (Δ 9) / 163,932 (Δ 98,086) | 331,235,803 (Δ unavailable) / unavailable (Δ unavailable) | 1,019 (Δ 0) | 8 (Δ 7) | 3 (Δ -2) |
+| WO-123 | 48,979,236 (Δ -6,271,719) / 11 | 4,558,664 (Δ -15,829,841) | 2 (Δ -11) / 13,988 (Δ -149,944) | 233,314,215 (Δ -97,921,588) / unavailable (Δ unavailable) | 1,019 (Δ 0) | 2 (Δ -6) | 1 (Δ -2) |
+| WO-187 | 34,222,529 (Δ -14,756,707) / 11 | 7,377,103 (Δ 2,818,439) | 16 (Δ 14) / 179,356 (Δ 165,368) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | 1,019 (Δ 0) | 6 (Δ 4) | 5 (Δ 4) |
+| WO-112 | 73,614,052 (Δ 39,391,523) / 15 | 22,407,039 (Δ 15,029,936) | 46 (Δ 30) / 828,397 (Δ 649,041) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | 1,019 (Δ 0) | 5 (Δ -1) | 22 (Δ 17) |
+| WO-196 | 12,235,935 (Δ -61,378,117) / 4 | 5,202,112 (Δ -17,204,927) | 4 (Δ -42) / 69,822 (Δ -758,575) | 88,914,669 (Δ unavailable) / unavailable (Δ unavailable) | 768 (Δ -251) | 2 (Δ -3) | 0 (Δ -22) |
+
+Unavailable observations are not zero; unset ceilings are not approvals of a future limit.
+
+| Dispatch | Wall ms (Δ) | Context bytes (Δ) | Commands (Δ) | Tokens (Δ) | Steps (Δ) | USD (Δ) / declared prompt tokens |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| WO-196/executor | 9,617,979 (-52,258,314) | unavailable (unavailable) | unavailable (unavailable) | 45,811,373 (unavailable) | 294 (-968) | unavailable (unavailable) / 768 |
+| WO-196/verifier | 2,617,956 (-6,499,767) | 139,514 (-16,089) | 179 (-315) | 31,286,563 (-53,822,250) | 204 (-349) | unavailable (unavailable) / unavailable |
+| WO-196/reviewer | 2,384,124 (-235,912) | 48,567 (unavailable) | 76 (unavailable) | 11,816,733 (unavailable) | 87 (unavailable) | unavailable (unavailable) / unavailable |
+| WO-196/release-close | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) / unavailable |
+| WO-196/planner | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) / unavailable |
+| WO-196/refuter | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) / unavailable |
+<!-- dotln-process-meter:end -->

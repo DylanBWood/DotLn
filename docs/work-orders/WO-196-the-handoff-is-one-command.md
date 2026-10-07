@@ -1,4 +1,4 @@
-# WO-196 — The handoff is one command: the gate formats first and refuses to start otherwise, a review gate at an unchanged identity reuses its passing tasks, every role reads a numbered procedure, and one adversary and one improver run once at the end of implementation (version assigned at activation)
+# WO-196 — The handoff is one command: the gate formats first and refuses to start otherwise, a review gate at an unchanged identity reuses its passing tasks, every role reads a numbered procedure, and one adversary and one improver run once at the end of implementation (v0.69.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

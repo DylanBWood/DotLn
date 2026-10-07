@@ -28809,6 +28809,14 @@
             "WO-196"
           ],
           "at": "2026-10-07T06:46:22.851Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Delivered by WO-196 criterion 6: CLAUDE.md plus the executor skill measures 28,128 bytes against its 29,246 ceiling, from 29,777 (D005). [WO-196 FINAL-001]",
+          "reopenWhen": "the installed executor root crosses its docs/control/budgets.json ceiling again",
+          "targets": [],
+          "at": "2026-10-07T16:00:49.282Z"
         }
       ]
     },
@@ -29051,6 +29059,14 @@
             "WO-196"
           ],
           "at": "2026-10-07T06:46:22.908Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Returned to open: WO-196 did not take this row. Its order text never names it, the self-review reader is unchanged, and the tolerant forms the allocation cited were already withdrawn at WO-187's close, with product 07 fixing one line form. What remains is WO-187's narrowing: the fallback for a receipt without a receiptId, a passing review's integration or new-scope counts listed as a failure item, and the agent-path pattern in scripts/lib/harness.mjs. [WO-196 FINAL-001]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-07T16:00:49.461Z"
         }
       ]
     },
@@ -29276,6 +29292,14 @@
             "WO-196"
           ],
           "at": "2026-10-07T06:46:22.795Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Delivered by WO-196 criterion 4: the executor spawns a separate adversary and improver before implementation-ready only; verification and final review spawn only to reproduce a named claim. [WO-196 FINAL-001]",
+          "reopenWhen": "an order's escape count at final review rises over three consecutive orders after WO-196",
+          "targets": [],
+          "at": "2026-10-07T16:00:49.224Z"
         }
       ]
     },
@@ -29698,6 +29722,14 @@
             "WO-196"
           ],
           "at": "2026-10-07T06:46:22.617Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Delivered by WO-196 criterion 1: the plain and review gates run the format preflight first, stop before any product task with the files named and print the repair command; VER-001 and VER-002 reproduced it with the real Prettier setup. [WO-196 FINAL-001]",
+          "reopenWhen": "a product gate is lost to formatting after WO-196 merges",
+          "targets": [],
+          "at": "2026-10-07T16:00:49.040Z"
         }
       ]
     },
@@ -29818,6 +29850,14 @@
             "WO-196"
           ],
           "at": "2026-10-07T06:46:22.679Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Answered as WO-196 filed it: the numbered handoff steps leave nothing to write during the gate and criterion 7 advises a spawn during a live gate; the watcher stays declined on FUP-1bd1a1561feb3a57. [WO-196 FINAL-001]",
+          "reopenWhen": "a record write during a review gate after WO-196 merges",
+          "targets": [],
+          "at": "2026-10-07T16:00:49.103Z"
         }
       ]
     },
@@ -29901,6 +29941,14 @@
             "WO-196"
           ],
           "at": "2026-10-07T06:46:22.736Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Delivered by WO-196 criterion 7: a spawn during a live gate is admitted with one advisory naming the run, and the role procedures order the worker before the gate. [WO-196 FINAL-001]",
+          "reopenWhen": "a probing worker is spawned during a live gate after WO-196 merges",
+          "targets": [],
+          "at": "2026-10-07T16:00:49.163Z"
         }
       ]
     },
@@ -30112,6 +30160,103 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-b8fd526baef52c4f",
+      "key": "decision:docs/evidence/WO-196/decisions.md#wo-196-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0ac12774f637e3e92e76351b0cda7c2506627b587b2336965e9ee5f1aad8c466",
+          "ref": "docs/evidence/WO-196/decisions.md#wo-196-d010--verification-fail-on-criterion-8-one-finding-to-the-repair",
+          "title": "WO-196-D010: WO-196 resume: fix. (F1) With a product document over its ceiling, npm run test:docs exits 0 and its own output carries exactly one 'ADVISORY <file>: <n> bytes over ceiling; planning rese",
+          "summary": "{ \"id\": \"WO-196-D010\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on criterion 8 alone. With a product document over its ceiling, scripts/docs-check.mjs prints one ADVISORY line and exits 0, and npm run test:docs also exits 0, but npm run test:docs prints no advisory. For a passing task the runner prints only 'PASS <suite> <seconds> s' and prints task output only when the exit code is non-zero (scripts/test-runner.mjs:2297-2311). The gate record keeps output only for failed or unexecuted tasks (packages/skeleton/src/gate-evidence.mjs:876). The advisory is therefore neither printed nor recorded. Criterion 8 requires npm run test:d",
+          "missing": false
+        },
+        {
+          "hash": "d3ffce17bea24964d53db5daf2e41f10a514fb5fb71158dd071db0fc4d600367",
+          "ref": "docs/evidence/WO-196/decisions.md#wo-196-d010--verification-fail-on-criterion-8-one-finding-to-the-repair",
+          "title": "WO-196-D010: WO-196 resume: fix. (F1) With a product document over its ceiling, npm run test:docs exits 0 and its own output carries exactly one 'ADVISORY <file>: <n> bytes over ceiling; planning rese",
+          "summary": "{ \"id\": \"WO-196-D010\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on criterion 8 alone. With a product document over its ceiling, scripts/docs-check.mjs prints one ADVISORY line and exits 0, and npm run test:docs also exits 0, but npm run test:docs prints no advisory. For a passing task the runner prints only 'PASS <suite> <seconds> s' and prints task output only when the exit code is non-zero (scripts/test-runner.mjs:2297-2311). The gate record keeps output only for failed or unexecuted tasks (packages/skeleton/src/gate-evidence.mjs:876). The advisory is therefore neither printed nor recorded. Criterion 8 requires npm run test:d",
+          "missing": false
+        },
+        {
+          "hash": "0b342db2a6e2b3afea1e628b0a5149afc30f069aab5655b14aaa4ccd68cdb562",
+          "ref": "docs/evidence/WO-196/decisions.md#wo-196-d010--verification-fail-on-criterion-8-one-finding-to-the-repair",
+          "title": "WO-196-D010: WO-196 resume: fix. (F1) With a product document over its ceiling, npm run test:docs exits 0 and its own output carries exactly one 'ADVISORY <file>: <n> bytes over ceiling; planning rese",
+          "summary": "{ \"id\": \"WO-196-D010\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on criterion 8 alone. With a product document over its ceiling, scripts/docs-check.mjs prints one ADVISORY line and exits 0, and npm run test:docs also exits 0, but npm run test:docs prints no advisory. For a passing task the runner prints only 'PASS <suite> <seconds> s' and prints task output only when the exit code is non-zero (scripts/test-runner.mjs:2297-2311). The gate record keeps output only for failed or unexecuted tasks (packages/skeleton/src/gate-evidence.mjs:876). The advisory is therefore neither printed nor recorded. Criterion 8 requires npm run test:d",
+          "missing": false
+        },
+        {
+          "hash": "5c504138039fb640683974d358041730a49694e594f61fac5dd5727c7510f970",
+          "ref": "docs/evidence/WO-196/decisions.md#wo-196-d010--verification-fail-on-criterion-8-one-finding-to-the-repair",
+          "title": "WO-196-D010: WO-196 resume: fix. (F1) With a product document over its ceiling, npm run test:docs exits 0 and its own output carries exactly one 'ADVISORY <file>: <n> bytes over ceiling; planning rese",
+          "summary": "{ \"id\": \"WO-196-D010\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on criterion 8 alone. With a product document over its ceiling, scripts/docs-check.mjs prints one ADVISORY line and exits 0, and npm run test:docs also exits 0, but npm run test:docs prints no advisory. For a passing task the runner prints only 'PASS <suite> <seconds> s' and prints task output only when the exit code is non-zero (scripts/test-runner.mjs:2297-2311). The gate record keeps output only for failed or unexecuted tasks (packages/skeleton/src/gate-evidence.mjs:876). The advisory is therefore neither printed nor recorded. Criterion 8 requires npm run test:d",
+          "missing": false
+        },
+        {
+          "hash": "7059ebc8ee299a0991823005ef181915265e241255437805584f9aa3e06d909c",
+          "ref": "docs/evidence/WO-196/decisions.md#wo-196-d010--verification-fail-on-criterion-8-one-finding-to-the-repair",
+          "title": "WO-196-D010: WO-196 resume: fix. (F1) With a product document over its ceiling, npm run test:docs exits 0 and its own output carries exactly one 'ADVISORY <file>: <n> bytes over ceiling; planning rese",
+          "summary": "{ \"id\": \"WO-196-D010\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on criterion 8 alone. With a product document over its ceiling, scripts/docs-check.mjs prints one ADVISORY line and exits 0, and npm run test:docs also exits 0, but npm run test:docs prints no advisory. For a passing task the runner prints only 'PASS <suite> <seconds> s' and prints task output only when the exit code is non-zero (scripts/test-runner.mjs:2297-2311). The gate record keeps output only for failed or unexecuted tasks (packages/skeleton/src/gate-evidence.mjs:876). The advisory is therefore neither printed nor recorded. Criterion 8 requires npm run test:d",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 5,
+          "status": "settled",
+          "reason": "The repair delivered F1 and R1 (D011 to D013) and VER-002 reproduced both fixes (D014). [WO-196 FINAL-001]",
+          "reopenWhen": "a product document over its ceiling passes npm run test:docs without its advisory line, or a production selection reaches a removed composition path",
+          "targets": [],
+          "at": "2026-10-07T16:00:49.342Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c24585c3b7bebf38",
+      "key": "decision:docs/evidence/WO-196/decisions.md#wo-196-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "450fa912f0e66bdfb358aae194fa33d0a10d0d9e099bf27934718b37199402d7",
+          "ref": "docs/evidence/WO-196/decisions.md#wo-196-d014--verification-pass-the-repaired-findings-hold-and-one-import-is-left-to-a-follow-up",
+          "title": "WO-196-D014: Remove the unused runGit import from scripts/docs-check.mjs line 18, in the next repair or the next order that edits that file. Keep runGitPathList, which is still used. Check: npm run te",
+          "summary": "{ \"id\": \"WO-196-D014\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002. All nine criteria are met at code identity 8017b3c565377a9637c7e213d2e84a61a823102258b0e83355d51f89653ab431. VER-001's F1 and R1 are fixed. F1: a passing document gate now prints a successful task's ADVISORY and NEWER lines. R1: the shortcut no production selection reached is removed, and a composed row whose only fresh task is format records freshReason always-fresh-preflight. One defect is left to a follow-up. The raise-rule removal left runGit unused: scripts/docs-check.mjs line 18 imports it and nothing calls it; main called it three times. It breaks no criter",
+          "missing": false
+        },
+        {
+          "hash": "786b57c11fd891e344bd68cd730fbe345b35ab29bbc1a774ceb8cf408983d03d",
+          "ref": "docs/evidence/WO-196/decisions.md#wo-196-d014--verification-pass-the-repaired-findings-hold-and-one-import-is-left-to-a-follow-up",
+          "title": "WO-196-D014: Remove the unused runGit import from scripts/docs-check.mjs line 18, in the next repair or the next order that edits that file. Keep runGitPathList, which is still used. Check: npm run te",
+          "summary": "{ \"id\": \"WO-196-D014\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002. All nine criteria are met at code identity 8017b3c565377a9637c7e213d2e84a61a823102258b0e83355d51f89653ab431. VER-001's F1 and R1 are fixed. F1: a passing document gate now prints a successful task's ADVISORY and NEWER lines. R1: the shortcut no production selection reached is removed, and a composed row whose only fresh task is format records freshReason always-fresh-preflight. One defect is left to a follow-up. The raise-rule removal left runGit unused: scripts/docs-check.mjs line 18 imports it and nothing calls it; main called it three times. It breaks no criter",
+          "missing": false
+        },
+        {
+          "hash": "d965aaf9726fa0e00b1958eb466e6979a5e76ea5ee220404d5eec6922f84ab3f",
+          "ref": "docs/evidence/WO-196/decisions.md#wo-196-d014--verification-pass-the-repaired-findings-hold-and-one-import-is-left-to-a-follow-up",
+          "title": "WO-196-D014: Remove the unused runGit import from scripts/docs-check.mjs line 18, in the next repair or the next order that edits that file. Keep runGitPathList, which is still used. Check: npm run te",
+          "summary": "{ \"id\": \"WO-196-D014\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002. All nine criteria are met at code identity 8017b3c565377a9637c7e213d2e84a61a823102258b0e83355d51f89653ab431. VER-001's F1 and R1 are fixed. F1: a passing document gate now prints a successful task's ADVISORY and NEWER lines. R1: the shortcut no production selection reached is removed, and a composed row whose only fresh task is format records freshReason always-fresh-preflight. One defect is left to a follow-up. The raise-rule removal left runGit unused: scripts/docs-check.mjs line 18 imports it and nothing calls it; main called it three times. It breaks no criter",
+          "missing": false
+        },
+        {
+          "hash": "09507a51a8e977d5ba91b622eb7b30095810b993abc93c41d1baf09e992ad6ef",
+          "ref": "docs/evidence/WO-196/decisions.md#wo-196-d014--verification-pass-the-repaired-findings-hold-and-one-import-is-left-to-a-follow-up",
+          "title": "WO-196-D014: Remove the unused runGit import from scripts/docs-check.mjs line 18, in the next repair or the next order that edits that file. Keep runGitPathList, which is still used. Check: npm run te",
+          "summary": "{ \"id\": \"WO-196-D014\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002. All nine criteria are met at code identity 8017b3c565377a9637c7e213d2e84a61a823102258b0e83355d51f89653ab431. VER-001's F1 and R1 are fixed. F1: a passing document gate now prints a successful task's ADVISORY and NEWER lines. R1: the shortcut no production selection reached is removed, and a composed row whose only fresh task is format records freshReason always-fresh-preflight. One defect is left to a follow-up. The raise-rule removal left runGit unused: scripts/docs-check.mjs line 18 imports it and nothing calls it; main called it three times. It breaks no criter",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Removed during final review (D016); scripts/docs-check.mjs no longer imports runGit. [WO-196 FINAL-001]",
+          "reopenWhen": "npm run test:docs or npm test -- --review fails on scripts/docs-check.mjs at the reviewed identity",
+          "targets": [],
+          "at": "2026-10-07T16:00:49.401Z"
+        }
+      ]
     }
   ]
 }
