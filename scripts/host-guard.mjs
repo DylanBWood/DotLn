@@ -53,6 +53,60 @@ export function guardCensus(registrations, options, sample = readHostSnapshot) {
   return snapshot;
 }
 
+/** Retire a protected session registration whose repository is gone while
+ * another registration of the same live agent root survives, moving its
+ * observed history first. Each repository is observed once per sample: read
+ * twice, a repository removed between the reads made a registration its own
+ * survivor, so it was retired with the history it held (WO-112 D024). */
+export function transferDuplicateOwnership(
+  registrations,
+  rows,
+  historyFor,
+  missing = repositoryMissing,
+) {
+  const sessions = registrations.filter(
+    (registration) =>
+      registration.protected &&
+      registration.scope !== "gate" &&
+      typeof registration.repo === "string",
+  );
+  const absent = new Map(
+    sessions.map((registration) => [
+      registration.id,
+      missing(registration.repo),
+    ]),
+  );
+  const existingSessionRoots = new Map();
+  for (const registration of sessions)
+    if (!absent.get(registration.id) && processAlive(registration, rows))
+      existingSessionRoots.set(
+        `${registration.pid}:${registration.birth}`,
+        registration,
+      );
+  const retired = new Set();
+  for (const registration of sessions) {
+    const survivor = existingSessionRoots.get(
+      `${registration.pid}:${registration.birth}`,
+    );
+    // Transfer established ownership before any census mutates histories.
+    // A late duplicate cannot rediscover a descendant already reparented.
+    if (!survivor || !absent.get(registration.id)) continue;
+    const from = historyFor(registration),
+      to = historyFor(survivor);
+    for (const [pid, birth] of from)
+      if (!to.has(pid) || processAlive({ pid, birth }, rows))
+        to.set(pid, birth);
+    for (const property of ["uniqueIds", "precedingUniqueIds"])
+      to[property] = new Set([
+        ...(to[property] ?? []),
+        ...(from[property] ?? []),
+      ]);
+    rmSync(registration.file, { force: true });
+    retired.add(registration.id);
+  }
+  return retired;
+}
+
 export async function runHostGuard(directory = hostStateRoot()) {
   ensureHostRoot(directory);
   return withHostLock(directory, "guard", async () => {
@@ -162,47 +216,11 @@ export async function runHostGuard(directory = hostStateRoot()) {
             }
             return history;
           };
-          const existingSessionRoots = new Map();
-          for (const registration of registrations)
-            if (
-              registration.protected &&
-              registration.scope !== "gate" &&
-              typeof registration.repo === "string" &&
-              !repositoryMissing(registration.repo) &&
-              processAlive(registration, rows)
-            )
-              existingSessionRoots.set(
-                `${registration.pid}:${registration.birth}`,
-                registration,
-              );
-          const retired = new Set();
-          for (const registration of registrations) {
-            const survivor = existingSessionRoots.get(
-              `${registration.pid}:${registration.birth}`,
-            );
-            // Transfer established ownership before any census mutates histories.
-            // A late duplicate cannot rediscover a descendant already reparented.
-            if (
-              survivor &&
-              registration.protected &&
-              registration.scope !== "gate" &&
-              typeof registration.repo === "string" &&
-              repositoryMissing(registration.repo)
-            ) {
-              const from = historyFor(registration),
-                to = historyFor(survivor);
-              for (const [pid, birth] of from)
-                if (!to.has(pid) || processAlive({ pid, birth }, rows))
-                  to.set(pid, birth);
-              for (const property of ["uniqueIds", "precedingUniqueIds"])
-                to[property] = new Set([
-                  ...(to[property] ?? []),
-                  ...(from[property] ?? []),
-                ]);
-              rmSync(registration.file, { force: true });
-              retired.add(registration.id);
-            }
-          }
+          const retired = transferDuplicateOwnership(
+            registrations,
+            rows,
+            historyFor,
+          );
           const currentIds = new Set(
             registrations
               .filter((row) => !retired.has(row.id))

@@ -3081,6 +3081,29 @@ else {
           ),
         );
         await assert.rejects(checkPlanGate(repo), /decision binding differs/);
+        // A decision corrected in place is re-bound through amend-order; the
+        // later row carries the binding and a further unbound edit fails.
+        const rebound = await amendPlanOrder(repo, {
+          workOrderId: "WO-901",
+          decisionId: decision.id,
+          reason: "Operator authorized the corrected decision",
+          now: () => "2030-01-02T15:00:00.000Z",
+        });
+        assert.notEqual(rebound.decisionHash, event.decisionHash);
+        assert.equal(
+          (await checkPlanGate(repo)).continuation.workspaceUpdates[0].kind,
+          "authorized-execution-amendment",
+        );
+        write(
+          repo,
+          decisionPath,
+          read(repo, decisionPath).replace(
+            "Change the observed",
+            "Alter the observed",
+          ),
+        );
+        await assert.rejects(checkPlanGate(repo), /decision binding differs/);
+        write(repo, OVERRIDES, log);
         write(
           repo,
           decisionPath,

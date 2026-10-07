@@ -1243,7 +1243,7 @@ const amendmentDecision = (root, decisionId) => {
   const { path: decisionPath, workOrder, ...entry } = decision;
   return { workOrder, hash: sha256(stable(entry)) };
 };
-const validateAmendment = (root, event, receipts) => {
+const validateAmendment = (root, event, receipts, { decision = true } = {}) => {
   const receipt = receipts.find(
     (row) =>
       row.receiptId === event.receiptId &&
@@ -1264,10 +1264,10 @@ const validateAmendment = (root, event, receipts) => {
     ) === event.sourceOrderHash,
     "execution amendment source order binding differs",
   );
-  const decision = amendmentDecision(root, event.decisionId);
+  if (!decision) return;
+  const bound = amendmentDecision(root, event.decisionId);
   check(
-    decision.workOrder === event.workOrderId &&
-      decision.hash === event.decisionHash,
+    bound.workOrder === event.workOrderId && bound.hash === event.decisionHash,
     "execution amendment decision binding differs",
   );
 };
@@ -1516,10 +1516,21 @@ export async function checkPlanGate(root) {
   const localTerms = checkLocalTerms(root, []).status;
   const receipts = await readReceipts(root);
   const overrides = readOverrides(root);
-  for (const event of overrides) {
+  for (const [index, event] of overrides.entries()) {
     if (event.type === "PlanExecutionAmendmentWithdrawn") continue;
     if (event.type === "PlanExecutionAmended") {
-      validateAmendment(root, event, receipts);
+      // A decision corrected in place is re-bound by a later amend-order of
+      // the same order and decision; that row then carries the binding, and
+      // an edit nobody re-bound still fails (WO-112 D023).
+      const rebound = overrides
+        .slice(index + 1)
+        .some(
+          (row) =>
+            row.type === "PlanExecutionAmended" &&
+            row.workOrderId === event.workOrderId &&
+            row.decisionId === event.decisionId,
+        );
+      validateAmendment(root, event, receipts, { decision: !rebound });
       continue;
     }
     check(
