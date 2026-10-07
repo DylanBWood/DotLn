@@ -466,7 +466,28 @@ machinery orders touch.
 
 ## 15. Independent review
 
-One fresh `dotln-worker` refuter judged the committed subject (the three
-new orders, the thirty-two amended ones and the sequence) through
-`npm run plan -- refute`; its receipt and dispositions are recorded under
-`docs/planning/refutations/` and summarized here once filed.
+Two fresh `dotln-worker` refuters judged the committed subject through
+`npm run plan -- refute`, each given only the canonical prompt (about 254
+KB: the vision theses, the standard, the 25 orders the default scope
+selects, the sequence, the deferrals and the cost table). The first (base
+`bcd05ba3`) returned aligned-with-findings with 39 known issues and no
+hold; seven of its findings named plain defects in the judged fields (a
+wrong criterion reference in WO-196's Cost line, WO-074's "executor half",
+a duplicated co-writer in WO-092, WO-199's objective wider than its
+criteria, a waiver that could raise a capability rating in WO-118 and
+WO-083, a missing field in WO-113's allowlist), which the pass corrected
+in a second commit. The second refuter (base `8d5d2d6d`) returned
+aligned-with-findings with 33 known issues and no hold: 23 orders
+aligned-with-findings (WO-196 (4), WO-199 (1), WO-197 (1), WO-074 (1), WO-075 (2), WO-198 (1), WO-077 (1), WO-078 (2), WO-072 (1), WO-076 (1), WO-118 (2), WO-113 (1), WO-081 (1), WO-082 (1), WO-096 (1), WO-097 (2), WO-098 (2), WO-091 (1), WO-092 (1), WO-093 (2), WO-094 (1), WO-088 (1), WO-083 (2)) and WO-080 and WO-095 aligned. Receipt
+`2026-10-07-planning-c351cfc3b65e74e5-041`; judged, committed and
+workspace subjects agree. Every known issue is carried on its order's
+catalog row in the planning map, as product 07 places a receipt's known
+issue for an order the receipt finds frozen. The ones that matter most:
+review-gate reuse keyed to the code identity lands before WO-198 (carried
+in WO-196's own known issues); WO-083's write-back through WO-078's
+generator is protected by sequence position only (a later pass adds the
+typed edge when it amends WO-083); WO-097 and WO-098 can grow always-on
+text before a sentence is retired (their counts are the test, and the
+ceilings advise); WO-094's Safety fixtures all expect a refusal (the
+allowed-effect fixtures of its step 2 answer this); WO-075 does not say
+what a hook does when the exported runtime is missing.
