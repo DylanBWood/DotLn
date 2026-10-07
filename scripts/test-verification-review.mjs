@@ -269,10 +269,7 @@ recorded(
   "fail",
 );
 call(["fix"]);
-write(
-  ledger,
-  "**Criterion 1:** met. Read.\n\nself-review: found 2; fixed 1; recorded 1 (worker)\n",
-);
+write(ledger, "**Criterion 1:** met. Read.\n");
 assert.ok(!call(["repair-complete", ...flags]).stderr.includes("self-review"));
 call(["verify"]);
 report("docs/verifications/WO-187/VER-002.md");

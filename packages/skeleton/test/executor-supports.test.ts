@@ -294,11 +294,16 @@ test("WO-042 atomic support switches compose independently and removal restores 
       procedure.some((line) => line.includes("Repair only those obligations.")),
       !ids.includes(adjacentRepair.supportFacetId),
     );
-    assert.ok(procedure[0]!.includes("Operator controls precede workflow"));
+    assert.ok(
+      procedure.some((line) =>
+        line.includes("Operator controls precede workflow"),
+      ),
+    );
+    assert.match(procedure[0]!, /^1\. .*honor operator controls/);
     const readOnlyEntry = procedure.findIndex((line) =>
       line.includes("read-only command"),
     );
-    assert.ok(readOnlyEntry > 0);
+    assert.ok(readOnlyEntry >= 0);
     assert.ok(procedure[readOnlyEntry]!.includes("stop"));
     const firstSubjectRead = procedure.indexOf("Read: `@work-order`");
     assert.ok(readOnlyEntry < firstSubjectRead);
@@ -672,5 +677,67 @@ test("WO-042 installed role projection takes each support from compiled equipmen
         ),
       }),
     /projection drift/u,
+  );
+});
+
+test("execution roles open with an ordered handoff and keep shared rules below it", () => {
+  const roles = contributorProgram().roles;
+  for (const name of ["executor", "verifier", "reviewer"]) {
+    const role = roles.find((row) => row.name === name)!;
+    const rules = role.procedure.indexOf("Rules:");
+    assert.ok(rules > 0, name);
+    assert.equal(role.procedure.filter((line) => line === "Rules:").length, 1);
+    const steps = role.procedure.slice(0, rules);
+    steps.forEach((step, index) =>
+      assert.ok(step.startsWith(`${index + 1}. `), name),
+    );
+    const format = steps.findIndex((step) => step.includes("npm run format"));
+    assert.ok(format >= 0);
+    if (name === "verifier") {
+      assert.match(steps[format]!, /`npm run format:check`/);
+      assert.doesNotMatch(steps[format]!, /`npm run format`/);
+      assert.match(steps[format]!, /target only its allocated path/);
+    }
+    assert.ok(steps[format + 1]!.includes("npm run test:docs"));
+    assert.ok(steps[format + 2]!.includes("npm test"));
+    assert.ok(
+      steps[format + 2]!.includes(
+        "while it runs, write nothing under the repository and start no agent",
+      ),
+    );
+    assert.match(
+      steps[format + 3]!,
+      /Complete.*(?:handoff\.md|VER report|FINAL report)/,
+    );
+    assert.ok(steps[format + 4]!.includes("npm run resume --"));
+    assert.ok(
+      role.procedure
+        .slice(rules + 1)
+        .some((line) => line.startsWith("Completion flags:")),
+    );
+  }
+  const executor = roles
+    .find((row) => row.name === "executor")!
+    .procedure.join("\n");
+  assert.match(
+    executor,
+    /Before `implementation-ready` only, spawn two fresh `dotln-worker` agents/,
+  );
+  assert.match(executor, /one adversary of the criteria and one improver/);
+  assert.doesNotMatch(
+    executor,
+    /Before either completion|900 s|all eight system traps/,
+  );
+  const verifier = roles
+    .find((row) => row.name === "verifier")!
+    .procedure.join("\n");
+  assert.match(
+    verifier,
+    /your own probes and the executor's two worker reports/,
+  );
+  assert.match(verifier, /Spawn a worker only to reproduce one named claim/);
+  assert.match(
+    verifier,
+    /breaks no criterion and no behavior `main` had is a follow-up, never blocking/,
   );
 });

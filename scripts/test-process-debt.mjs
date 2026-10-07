@@ -5979,7 +5979,7 @@ test("meter diff bytes include newly authored untracked source", (t) => {
   );
 });
 
-test("WO-145 optional economy support preserves historical snapshots through WO-187 and changes only executor instructions on", () => {
+test("WO-145 optional economy support preserves historical snapshots through WO-196 and changes only executor instructions on", () => {
   const historical = JSON.parse(
     readFileSync(
       join(source, "packages/skeleton/fixtures/wo145-role-baseline.json"),
@@ -5995,9 +5995,10 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
   // upstream snapshot and WO-195's original planner/release-close snapshot.
   // WO-186's default-root record admission preserves that integrated snapshot;
   // WO-187's review duties and worker pin preserve WO-186 in turn.
+  // WO-196's ordered procedures and conditional economy preserve WO-187.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo187-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo196-role-baseline.json"),
       "utf8",
     ),
   );
@@ -6072,13 +6073,16 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
       `${file.path} must not imply an approval path in full-access mode`,
     );
     if (file.path.endsWith("dotln-executor/SKILL.md")) {
-      assert.match(file.contents, /Tinkerer — Economy: Before implementation/);
       assert.match(
         file.contents,
-        /at most 900 s including preparation and recording/,
+        /Tinkerer — Economy: When the work shows two credible ways/,
       );
-      assert.match(file.contents, /decline with a reason/);
-      assert.match(file.contents, /do not start a second one/);
+      assert.match(
+        file.contents,
+        /differ on a named axis, run one bounded comparison and record both arms/,
+      );
+      assert.match(file.contents, /record nothing when no such fork appeared/);
+      assert.match(file.contents, /an order may name an experiment/);
       assert.equal(file.contents.split("Tinkerer — Economy:").length - 1, 1);
       assert.ok(!optedOut.contents.includes("Tinkerer — Economy:"));
       assert.equal(
@@ -7810,11 +7814,22 @@ test("bare executor next/fix project installed defaults and completion advises a
   assert.equal(next.status, 0, next.stderr);
   assert.match(next.stdout, /Adjacent Repair is equipped/);
   assert.match(next.stdout, /Intent to Act is equipped.*'I intend to'/);
-  // WO-150: the support is default equipment, so the briefing names it too.
-  assert.match(
-    next.stdout,
-    /Tinkerer — Economy is equipped: before implementation/,
+  // Experiment guidance belongs at a real fork, not at every dispatch.
+  assert.doesNotMatch(next.stdout, /Tinkerer — Economy is equipped/);
+  assert.doesNotMatch(next.stdout, /\*\*Experiment:/);
+  const orderPath = join(root, "docs/work-orders/WO-999-fixture.md");
+  writeFileSync(
+    orderPath,
+    readFileSync(orderPath, "utf8").replace(
+      "\n\n<!-- dotln-dependencies",
+      "\n**Experiment:** Compare the two fixture alternatives.\n\n<!-- dotln-dependencies",
+    ),
   );
+  assert.match(
+    call("briefing").stdout,
+    /\*\*Experiment:\*\* Compare the two fixture alternatives\./,
+  );
+
   assert.match(next.stdout, /running none; next none/);
   const before = snapshot(root);
   const status = call("status", "--json");
