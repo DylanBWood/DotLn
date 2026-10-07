@@ -3,6 +3,7 @@
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** delivery
 **Release classification:** minor. Six compiled units, their lowering and
 the compatible `feedback-v1` extension they need to compile, with a
 compiler minor release. Assigned at activation under the standing opt-out
@@ -112,8 +113,8 @@ fixture proving every removed sentence has a covering unit.
   instruction file carries a Codex residue line per hook-lowered unit. The
   reviewer's cold start is 24,171 bytes against its ceiling of 24,576. The
   executor re-measures these at its base.
-- Product 02 holds 2,776 bytes of headroom and product 10 holds 507 at
-  `5f3849ec`.
+- Ceilings are planning's since the 2026-10-07 pass; no byte figure binds
+  this order.
 
 **Design (scope discipline):**
 
@@ -161,6 +162,58 @@ fixture proving every removed sentence has a covering unit.
   decision); a unit whose rule no always-on sentence states (it retires
   nothing here; a later batch may compile it).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07; the six shapes and the `retired` schema come from WO-096 at the base):**
+
+1. `packages/compiler/src/feedback.ts`: export `FEEDBACK_UNIT_BOUND` (16 here, 22 after
+   WO-098) and use it at line 103; add six `FEEDBACK_HANDLERS` keys at rung 1 or 2, one key
+   per unit (keeping the duplicate-handler refusal at line 198), six `FeedbackRequest`
+   variants and six `reason()` cases. Check: `npm run build`.
+2. `packages/compiler/test/feedback.test.ts`: in the WO-011 case (line 44) change `Array(11)`
+   to the bound plus one; add "WO-097 sixteen units compile and an inventory above the bound
+   refuses". Check: `node --test packages/compiler/dist/test/feedback.test.js`.
+3. `packages/compiler/src/harness.ts`: add each hook-lowered handler to `hookFor` (line 389;
+   `PreToolUse` lowers at rung 2 and `PostToolUse` at rung 1, lines 781 to 787).
+4. `packages/skeleton/src/harness-host.ts`: one `harnessFeedbackFacts` branch (line 2854) per
+   new hook handler, building its request from `input.tool_input`.
+5. `packages/skeleton/src/loadouts/feedback.ts`: a `batchOneAUnits` array (`version: 1`,
+   `regressionFixtures: ["WO-097 regression <unitId>"]`, public `sourceRefs`, never
+   `docs/intake/`) appended to `personalFeedbackUnits`; every role picks them up
+   (`contributor.ts` line 54 maps all triggers).
+6. `packages/skeleton/test/feedback-fixtures.test.ts`: one test per unit named exactly its
+   fixture string; under `DOTLN_FEEDBACK_ABLATE=<unitId>` (line 31) it must fail by
+   `ERR_ASSERTION` (`feedback-audit.ts` lines 226 to 231).
+7. Counts: `packages/skeleton/src/feedback-selfhost.ts` line 280 to `program.units.length`
+   and the strings at 236, 245 and 276 count-derived; `packages/skeleton/test/feedback-host.test.ts`
+   line 130 and the three asserts in `packages/console/test/board.test.ts` (587, 627, 666)
+   to the bound.
+8. `scripts/test-harness.mjs`: one test per new hook, modelled on the WO-132 unit-removal case
+   (line 2797); add the chained role oracle fixture
+   `packages/skeleton/fixtures/wo097-role-baseline.json` and point the process-debt baseline
+   test and `machinerySources["process-debt"]` at it. Check: `npm test -- --only harness-fixtures`.
+9. Retirements: remove each covered sentence from CLAUDE.md above the harness marker, the
+   `contributor.ts` procedure arrays or the 07 sections WO-096 pins; add `retired` records
+   to `corpus/feedback/migration.json`; the reverse-mapping fixture fails when a record's
+   `unitId` is not compiled or its text is still present, and every line
+   `git diff <activation base> -- <always-on files>` removes must lie inside a record's text.
+   Check: `npm run feedback -- migration --check`.
+10. Regenerate: `npm run build && npm run harness -- emit`; `npm run harness -- check`;
+    `node scripts/harness-context.mjs --check`; record each role root's bytes in the decisions
+    (the ceilings advise; no acceptance ritual).
+11. Live episode after the last judged edit:
+    `npm run evidence:feedback -- --write --edition WO-097 --revision 001`, then the self-host
+    on the pinned transport and `--record-selfhost`; re-mint authority, artifact-identity and
+    verification; re-pin the console fixtures through `scripts/console-fixtures.mjs` as WO-162
+    D012 directs.
+12. `npm run terms -- check corpus/feedback/migration.json packages/skeleton/src/loadouts/feedback.ts`.
+13. Write-backs: product 02 §"### Feedback compiler v1" (the unit bound and the per-unit
+    handler rule, in place); product 10 §"## Separate version axes" (the compiler minor and
+    the compatible `feedback-v1` extension); `packages/console/README.md` lines 316 to 317
+    (rewrite without a count); `docs/evidence/WO-097/decisions.md` (the per-unit byte
+    comparison, why no equipped unit carries each rule); `node scripts/meta.mjs`;
+    `node scripts/check-publication.mjs --print-locks`; `npm run publication:check`.
+14. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+    complete `docs/evidence/WO-097/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the units, the extension, fixtures, retirements, the
 regenerated bundle, the write-backs below.
 
@@ -185,15 +238,10 @@ regenerated bundle, the write-backs below.
    accepted as the Design states. The criterion is judged against the
    declared set; a case outside it is a follow-up, not a failure.
 5. Write-backs land, each in place with no dated paragraph: the migration
-   rows updated; 02 §Feedback compiler v1 (the extension; at most 200 bytes
-   added, against 2,776 bytes of headroom on 2026-09-28; WO-065, WO-066,
-   WO-058, WO-098, WO-091 and WO-092 also write 02); 10 §Separate version
-   axes (the compiler release and the extension; at most 200 bytes added,
-   against 507; WO-060, WO-086, WO-058, WO-076, WO-091 and WO-092 also
-   write 10). For each document the executor re-measures the headroom at
-   its base; where the bound does not fit, it consolidates the section it
-   edits in the same change; a ceiling is raised only by a
-   planning-document decision. The console README's sentence that counts
+   rows updated; 02 §Feedback compiler v1 (the extension, in place with no dated paragraph (ceilings are planning's: the 2026-10-07 pass set every product document's ceiling at measured bytes plus one tenth); WO-098,
+   WO-091 and WO-092 also write 02); 10 §Separate version axes (the
+   compiler release and the extension; WO-076, WO-091, WO-092 and WO-194
+   also write 10). The console README's sentence that counts
    the mechanisms, rewritten without a count; the decisions file; the
    publication locks refreshed.
 6. The deterministic re-mints the Cost line names are recorded. After the
@@ -222,6 +270,18 @@ review. The live row is the executor's feedback self-host episode
 (criterion 6).
 
 **Write-back duty:** as listed in criterion 5.
+
+**Known issues and carry-ins:**
+
+- Stale on 2026-10-07 and corrected above: the reviewer's and executor's
+  cold-start bytes and ceilings (the ceilings advise; WO-196 brings the
+  roots under them first); the 02 and 10 headroom and co-writers.
+- Decided by the 2026-10-07 pass: one handler key per unit; the
+  `harnessFeedbackFacts` branches and the hard-coded tens are in scope
+  (named above); the reverse mapping is typed (prose-parsing screen); the
+  role oracle fixture chain is a named step.
+- Blocked on WO-096 for the six shapes, the rows schema and the check
+  script's name.
 
 **Non-goals:** the skill and cadence units, the whole-set measurement and
 the template (WO-098); a sixth refusal; any kernel change.

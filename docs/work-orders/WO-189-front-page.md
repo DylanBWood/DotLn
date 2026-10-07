@@ -153,6 +153,51 @@ this order the page changes only when an order is filed to change it.
   version line from the page (release preparation and the merge
   normalization read it).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+1. `docs/evidence/WO-189/inventory.json` (new) rows `{ id, sha256, class, destination, anchors[] }`,
+   `inventory.md` rendered from it, and `inventory-check.mjs` asserting each literal anchor
+   occurs in its destination (criterion 1 is judged on anchors, not on prose matching).
+   Check: `node docs/evidence/WO-189/inventory-check.mjs`.
+2. `reader-key.json` committed as a checkpoint before any candidate exists (`git log` order
+   shows it).
+3. `candidate-1200.md`, `candidate-2000.md`, `candidate-3000.md`; three reader runs launched
+   outside the repository (the pinned CLI with cwd in an empty temporary directory, so no
+   CLAUDE.md loads; model and effort readback recorded; a sub-agent spawned inside the
+   repository receives CLAUDE.md and is not a stranger); scores persisted as
+   `reader-scores.json` rows `{ candidate, question, quote, score, scorer, model, effort }`.
+4. Moves: `CONTRIBUTING.md` and the package READMEs receive the moved paragraphs;
+   `inventory-check` passes.
+5. `README.md`: the chosen candidate (the operator picks at final review; fallback: the
+   shortest candidate with a full score); the map names the six packages (beacons,
+   browser-evidence, compiler, console, kernel, skeleton); remove the maintainer comment
+   (lines 85 to 93); the release block is exactly one generated line; "What runs today" sits
+   between `<!-- dotln-what-runs:start -->` and `<!-- dotln-what-runs:end -->` with one
+   sentence per physical line, and the budget counts non-empty lines.
+6. `scripts/lib/release-preparation.mjs` `planReleasePreparation`: write the block as the
+   single line `This source prepares DotLn \`vX.Y.Z\`.`; `scripts/release.mjs`
+   `releaseBlockRule` (line 488): FAIL on any other non-empty line between the markers. Check:
+   `node --test scripts/test-release-preparation.mjs`; the `release-surfaces` row; the four
+   tests that pin the wording (`scripts/test-worktree-integration.mjs` lines 123, 284, 679,
+   1142; `scripts/test-release-preparation.mjs` line 46) updated.
+7. `scripts/lib/worktree-integration.mjs` `mixedProjection` (line 125): logic unchanged; add a
+   one-line-block merge case to `scripts/test-worktree-integration.mjs`.
+8. `scripts/docs-check.mjs` new `frontPageFindings(root)`: base `git merge-base HEAD main`;
+   diff `README.md` outside the generated blocks; the active order from branch `wo-NNN`; its
+   typed `**Front page:** README.md` header field (the 2026-10-07 pass added it to WO-118,
+   WO-095, WO-098 and WO-088; nothing reads the criteria's prose); the line budget. Fixtures
+   in `scripts/test-docs-check.mjs` (`docs-check-fixtures`); the "fails against `08845c71`"
+   case runs the fixture with `git show 08845c71:scripts/docs-check.mjs`.
+9. The header-field reader: a small helper in `scripts/lib/` (new, `front-page-scope.mjs`)
+   using `dependencyHeader`, so `scripts/work-orders.mjs` (WO-190's) stays untouched.
+10. Write-backs: `docs/PLAYBOOK.md` §"## The loop, per work order" (replace the sentence at
+    line 262 about the root README release block); product 07 §"## Documentation freshness and
+    ownership" (replace the sentence about the fifteen-sentence write-back, in place);
+    `docs/evidence/WO-189/decisions.md` with totals and scores; FUP-84bc6f15abd1e45f retargeted
+    at close; locks via `node scripts/check-publication.mjs --print-locks`.
+11. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+    complete `docs/evidence/WO-189/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the inventory; the reader key; three candidates with
 scores; the chosen `README.md`; the moved text in its new homes; the
 generated version line and its rule; the refusal and the budget with
@@ -201,6 +246,19 @@ review. No live row.
 **Write-back duty:** as listed in criteria 6 and 7.
 
 **Known issues and carry-ins:**
+- 2026-10-07 pass: stale and corrected above: `README.md` is 39,030
+  bytes in 661 lines; the release block is 8,535 bytes; 145 of 187
+  first-parent merges changed the page; WO-112 is closed; WO-118's README
+  sentence now goes into the marked "What runs today" section, not the
+  release block (its criterion was amended by the pass); the wording
+  "This source prepares DotLn" is pinned by the five tests named in step 6.
+- Decided by the 2026-10-07 pass: the typed `**Front page:**` field;
+  one sentence per line; the isolated reader launch; the fallback
+  candidate. Reopen: the operator picks a candidate the scores rank
+  lower.
+- WO-188 item 14 edits `planReleasePreparation`, `decisionsConflicted`
+  and `worktree-integration.mjs` `regenerate` before this order; the
+  executor rebases over it and re-reads the line positions.
 
 - WO-112, WO-118, WO-095 and WO-098 each fold one sentence into "What
   runs today", and WO-088 emits a generated phrase table between its

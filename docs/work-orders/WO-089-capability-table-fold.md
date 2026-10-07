@@ -3,6 +3,7 @@
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** machinery
 **Release classification:** patch. One document fold with a migration note.
 Assigned at activation under the standing opt-out default.
 **Cost:** adds a folded capability table prepared at
@@ -127,6 +128,45 @@ level without the evidence the dated sections already cite.
   cites no final review to its inventory value (an assessment, which
   operator-review assumption 1 excludes).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+0. Base: `git rev-parse HEAD`; recount
+   `grep -c -E '^## WO-[0-9]{3} dated (addition|reassessment) \(' docs/planning/capability-table.md`
+   (26 on 2026-10-07, not 23; WO-075, WO-083, WO-098, WO-118 and WO-095 append more before
+   this order).
+1. `docs/evidence/WO-089/fold-map.json` (new; the write creates the directory): the
+   executor's persisted judgment the verifier re-judges. Per dated heading: `heading`,
+   `line`, `workOrderId`, `date`, `ids`, `placement` (`folded` or `unplaced`), `reason`.
+   Per id: `id`, `sourceHeading`, `sourceLine`, `levelCell` (verbatim), `level` (0 to 3
+   or null), `scope` (verbatim or null), `citations` (link targets verbatim), `lastChange`
+   (the heading date). Levels are not a typed field in the table (four table shapes and one
+   prose section; `harness.codex-continuation` reads "Unchanged"; `runtime.resident` holds
+   two live scoped levels), so the fold is a judgment recorded here and code checks only
+   structure (prose-parsing screen). One row per id and scope is allowed; a cell with no
+   source reads `unknown` (decided 2026-10-07).
+2. `docs/evidence/WO-089/check-fold-map.mjs` (new evidence script, as WO-112's
+   `preflight.mjs` precedent; `scripts/` stays untouched): every dated heading at the base
+   appears once; the ids equal the set `scripts/lib/plan-subject.mjs` finds in first cells of
+   `|` lines (29 on 2026-10-07); each `sourceHeading` is the last section holding that id;
+   each `levelCell` is a byte substring of its source row. Check:
+   `node docs/evidence/WO-089/check-fold-map.mjs <base>`.
+3. `docs/evidence/WO-089/capability-table-folded.md` (new): first line `# Capability table v1`;
+   Evidence boundary, Selected progression policy and Reading the table byte-identical to the
+   base; the inventory under the exact ten-cell `CAPABILITY_HEADER`
+   (`packages/console/src/text-sources.ts` line 61), one row per id and scope; no other table
+   header, because `parseCapabilities` (line 75) accepts five headers only and the
+   `console-docs` suite runs it on the live table. Check:
+   `node --input-type=module -e 'import { parseCapabilities } from "./packages/console/dist/src/text-sources.js"; import { readFileSync } from "node:fs"; console.log(parseCapabilities(readFileSync("docs/evidence/WO-089/capability-table-folded.md", "utf8")).length)'`
+   prints the row count.
+4. The migration note names the base commit; the prior text stays in Git history and the
+   folded table links that commit (decided 2026-10-07).
+5. `git diff --exit-code <base> -- docs/planning/capability-table.md` (criterion 3: this order
+   installs nothing; a planning pass installs the fold).
+6. Write-backs: `docs/evidence/WO-089/decisions.md` (new): one decision per unplaced section and
+   per scoped-level choice; no product document changes.
+7. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+   complete `docs/evidence/WO-089/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the prepared table, the fold map, the write-backs below.
 
 **Acceptance criteria (all required)**
@@ -155,6 +195,20 @@ path under `docs/` is a declared source of the registrations suite, and
 again at final review. No live row.
 
 **Write-back duty:** as listed in criterion 4.
+
+**Known issues and carry-ins:**
+
+- 2026-10-07 pass: stale and corrected above: 26 dated sections (seven
+  before "Reading the table", 19 after); five dated rows link a final
+  review; WO-117 is closed and its section present; WO-014 is last, not
+  this order.
+- Decided by the 2026-10-07 pass: the fold is a persisted judgment
+  (`fold-map.json`) and code checks structure only (prose-parsing
+  screen); one row per id and scope; `unknown` cells; the console's
+  five-header constraint binds the prepared table. Reopen: the console
+  parser accepts a new header.
+- Blocked on WO-075, WO-083, WO-098, WO-118 and WO-095, which append
+  sections before this order.
 
 **Non-goals:** new capabilities; a level changed by assessment; a change
 to the continuation check; installing the fold outside a planning pass.

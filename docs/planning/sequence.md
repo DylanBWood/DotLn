@@ -34,32 +34,48 @@ re-observes its gap. WO-014 is last until a pass finds approval friction
 recorded as the constraint. The period below `v1.0.0` is early access
 (operator direction, 2026-09-30).
 
+WO-196 runs next and alone (operator direction, 2026-10-07): it changes
+the gate every order runs and the text every role reads, and it is the
+order that stops the lost 30-minute gates
+([2026-10-07 pass](machinery-reset-2026-10-07.md) §3). The six pairs
+after it were cut on the orders' primary source files as the pass's
+research recorded them: each pair shares no script, package or test
+file; product documents they both write are integrated as bookkeeping.
+WO-199 (the vertical's recovery, which WO-118 needs) leads the first
+pair. WO-198 follows WO-196 (both edit the runner), WO-188 follows WO-196
+(both edit the role source) and WO-191 follows WO-188. WO-072 runs alone
+because every machinery order shares `resume.mjs`, `release.mjs` or
+`worktree.mjs` with it. WO-083 is last: it needs the operator's fork on
+the operator's own machine, where DotLn may not be installed for some
+time (operator direction, 2026-10-07), and nothing before it needs that.
+WO-088's gap was absent for a third pass; it stays near the end for the
+operator to withdraw. WO-123, WO-112, WO-186, WO-187, WO-185 and WO-195
+closed and leave the list. The order of everything after WO-196 is the
+planner's, as the operator said.
+
 <!-- dotln-work-order-sequence:start -->
-- WO-195 — Roles finish what the operator dispatched
+- WO-196 — The handoff is one command
 
-- WO-185 — No order can exhaust the host
-
-- WO-123 — dotln vertical composition
-- WO-186 — Gate time follows the change
-
-- WO-112 — The loop from core
-- WO-187 — Verification attacks and reviews
+- WO-199 — The vertical survives an interrupt and a host crash
+- WO-197 — Slow suites back to their medians
 
 - WO-074 — Launchpad export kit
 - WO-188 — Twenty-four boarded machinery items
 
 - WO-075 — Kit runtime and harness bundle in the export
-- WO-189 — The front page, rewritten once and guarded
-
-- WO-072 — Target worktree lifecycle
 - WO-190 — Index and roadmap lead with the work ahead
 
 - WO-073 — Repository class and profile documents
+- WO-198 — A worktree's gate names what moved
+
+- WO-077 — Launchpad export update
+- WO-189 — The front page, rewritten once and guarded
+
+- WO-078 — Sibling registry and export receipts
 - WO-191 — Reader profiles for published text
 
+- WO-072 — Target worktree lifecycle
 - WO-076 — Instance build overlay
-- WO-077 — Launchpad export update
-- WO-078 — Sibling registry and export receipts
 - WO-118 — The resident-owned loop from a starter instance
 - WO-192 — A router drives an order through its lifecycle
 - WO-193 — Capability requests from an instance
@@ -69,7 +85,6 @@ recorded as the constraint. The period below `v1.0.0` is early access
 - WO-080 — Workstream document and index grouping
 - WO-081 — Board Workstreams section
 - WO-082 — Synthetic pilot
-- WO-083 — The real run from the operator's launchpad instance
 - WO-096 — Migration ledger
 - WO-097 — Rule migration batch 1a
 - WO-098 — Rule migration batch 1b
@@ -78,8 +93,9 @@ recorded as the constraint. The period below `v1.0.0` is early access
 - WO-093 — The 5S mechanics as data
 - WO-094 — Set bonuses lowered
 - WO-095 — Full-set scenario and set tooltip render
-- WO-088 — One source for the phrase table
 - WO-089 — Capability table fold
+- WO-088 — One source for the phrase table
 - WO-014 — Approval-burden baseline
+- WO-083 — The real run from the operator's launchpad instance
 
 <!-- dotln-work-order-sequence:end -->

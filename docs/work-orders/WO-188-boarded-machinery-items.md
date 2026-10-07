@@ -292,6 +292,77 @@ Release and pull-request text:
   keeping the experiment as default equipment with a better prompt (the
   timing, not the wording, is what the record shows failing).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07; item numbers are the Design's):**
+
+1. Items 2 and 6 were done by WO-195 (commit `2d50a415`): `releaseCloseCommand` in
+   `scripts/lib/git.mjs` line 143 builds every printer and `materialCloseCommand`
+   (`scripts/lib/worktree-material.mjs` line 329) is built from it; `releaseCloseAdmission` in
+   `harness-host.ts` withholds under `session.correction` (WO-195 D004). Record both as not
+   reproduced with
+   `node --test --test-name-pattern 'WO-195 each script printer' scripts/test-harness.mjs`.
+   Item 22 is WO-196's; skip it and record that. Items 1 and 23 edit role text after WO-196
+   restructured it: read the regenerated procedure first.
+2. Item 1: `scripts/lib/paths.mjs` `describeIgnoredMaterial` (a nested non-intake,
+   non-submodule repository is scratch); `worktree-material.mjs` `inventoryMaterial`;
+   `scripts/release.mjs` `finishPublishedWorktree` (no material blocker; rows of path, head,
+   remoteHeld); `scripts/lib/lifecycle-evidence.mjs` `requireLifecycleEvidence` advisory;
+   `contributor.ts` executor sentence ("remove", not "declare"), one reviewer sentence,
+   `releaseCloseRemedy`. Check: `bash scripts/test-release.sh`.
+3. Item 3: `release.mjs` `close` (`tagOutcome` before `ensureGhPreflight`) and the catch in
+   `finishPublishedWorktree`; `worktree-material.mjs` `recoverDisposableRepositories`
+   (`-c core.hooksPath=/dev/null`). Check: `test-release.sh` with `DOTLN_FIXTURE_GH_FAIL=create`
+   then `auth`.
+4. Item 4: `scripts/worktree.mjs` `removePreservedWorktree`, `reconcileDerivedWorktrees`;
+   `release.mjs` `main` (the record exists before `parseMaterialFlags`).
+5. Item 5: `scripts/lib/harness-prune.mjs` `pruneHarness`. Item 7: `harness-host.ts`
+   `promptRoute`, `recordOperatorMessage`; `scripts/lib/plan-failures.mjs`. Check:
+   `npm test -- --only harness-fixtures`.
+6. Item 8: probe first, one bounded live Copilot CLI run (`node scripts/harness-probe.mjs copilot`,
+   the order's own observation step; its credit spend is the live row); then
+   `packages/compiler/src/harness.ts` `hook(...)` for `PostToolUseFailure` (the event's name per
+   WO-172's shell-diagnostics record), the `harness-host.ts` allowlist (about line 218),
+   `HostHookEvent`, `observeShellDiagnostics` reading `input.error`.
+7. Items 9 to 13: `scripts/lib/meta.mjs` `isCorrection` reads the persisted ids in
+   `docs/evidence/WO-172/direction-agreement.json` (`correctionsNotRecorded`), never the
+   `operatorStep` grammar at line 716 (prose-parsing screen); `scripts/docs-check.mjs`
+   `operatorWordFindings` (keys `provenance`, `provenance-2`; wider scope) with the refusal
+   only on a typed `operatorQuote { text, captureSha256 }` lacking a digest, the
+   `attributedWords` regex staying advisory; a new `homePathFindings` with `homePaths` in
+   `docs/control/doc-baseline.json` (scope: tracked Markdown); `scripts/lib/release-history.mjs`
+   `checkReleaseHistory`; `scripts/lib/entropy-review.mjs` `subjectRecord`. Paraphrase the
+   five current advisories (WO-112 D062 and D067, WO-185 D017, WO-186 D039, WO-187 D039) and
+   the quotations in WO-102 (decisions line 747), WO-140 and WO-181 by the route WO-178 used.
+   Check: `node --test scripts/test-docs-check.mjs`.
+8. Item 14: `release.mjs` `main` prepare guard; `scripts/lib/release-preparation.mjs`
+   `planReleasePreparation`, `decisionsConflicted`; `scripts/lib/worktree-integration.mjs`
+   `regenerate`. Check: `node --test scripts/test-release-preparation.mjs`.
+9. Items 15 and 16: `scripts/test-worktree-integration.mjs` `fixture` overlay;
+   `scripts/lib/release-tags.mjs` `manifestWorkOrders`; the crash assertion at
+   `packages/console/test/collect.test.ts` line 452.
+10. Items 17 and 18: `scripts/lib/planning-followups.mjs` `namesPath`; `lifecycle-evidence.mjs`;
+    `scripts/refute-plan.mjs` `exportDestination`; `.gitattributes` `-whitespace`.
+11. Items 19 and 20: `refute-plan.mjs` lines 510 to 519 (`gpt-6.1-sol`, `max`); one comment
+    line in each of the six probe scripts; `scripts/resident-bind.mjs` `portfolioMismatches`.
+    Check: `node --test scripts/test-plan-refutation.mjs`, `node --test scripts/test-resident-bind.mjs`.
+12. Item 21: `plan-failures.mjs` line 39 (`sha256Hex`); `scripts/lib/product-read-guard.mjs`
+    `productReadEnvironment` through `spawnGit` (the guard is a `NODE_OPTIONS` preload that
+    patches `child_process`, WO-174 D020: test it under the preload); `scripts/test-helper-reuse.mjs`.
+13. Item 23: the executor sentence; new `scripts/lib/comment-labels.mjs` over
+    `feedbackSourcesComments`; the baseline; a document row in `scripts/test-runner.mjs`.
+14. Item 24: `meta.mjs` `renderMetaTable`; `scripts/lib/github-body.mjs`
+    `githubBodyProfileFailures`; `release.mjs` `releaseEdition`; regenerate the v0.68.0
+    (WO-112) body and Release text into evidence.
+15. Role oracle: `packages/skeleton/fixtures/wo188-role-baseline.json` chained from the latest;
+    `scripts/test-process-debt.mjs` "WO-145 optional economy support..." reads it; add its path
+    to `machinerySources["process-debt"]` in `scripts/test-runner.mjs`.
+16. Re-mints: `npm run build`; `node scripts/harness.mjs emit` and `check`;
+    `node scripts/authority-evidence.mjs --write --edition WO-188 --revision 001`;
+    artifact-identity, verification and feedback (`--write` or `--carry` as the base
+    selects); then the write-backs the order names (products 05 and 07, the security runbook)
+    in place; locks via `node scripts/check-publication.mjs --print-locks`.
+17. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+    complete `docs/evidence/WO-188/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the twenty-four changes with their fixtures; the two
 baselines; the re-observation record of item 1; the Copilot observation
 of item 8; the re-mints; the write-backs below.
@@ -432,6 +503,19 @@ again at final review. No live row.
 **Write-back duty:** as listed in criterion 26.
 
 **Known issues and carry-ins:**
+- 2026-10-07 pass: items 2 and 6 are done by WO-195 (recorded not
+  reproduced, step 1); item 22 moved to WO-196; the figures moved (71
+  experiment records, 39 declined; five current operator-word advisories
+  to paraphrase; 98 tracked files with a home path; the comment-label
+  count is approximate); product 07's bytes are planning's (no net-shrink
+  duty); item 8's live Copilot probe is the order's live row.
+- Decided by the 2026-10-07 pass: item 9 reads the persisted ids; item 13
+  refuses only a typed quote lacking a digest; item 12 scopes tracked
+  Markdown; the role oracle fixture is step 15. Reopen: the operator
+  declines the Copilot run (item 8 is then recorded unmet with the
+  command).
+- This order follows WO-196 (both edit `contributor.ts`) and pairs with
+  WO-074, which shares no file with it.
 
 - A failed item is repaired alone; verification judges each criterion on
   its own fixture.

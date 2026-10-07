@@ -4,6 +4,8 @@
 resident; the operator witnesses from the operator's terminal; launch
 claims recorded per episode (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** delivery
+**Front page:** README.md
 **Release classification:** minor. The product exit's composition inside a
 starter instance plus its evidence record; a defect found in a primitive is
 a separate bounded order. Assigned at activation under the standing opt-out
@@ -35,8 +37,9 @@ have a fallback; the outside-root carry-in is written in; the final
 criterion names both gates
 ([planning document](../planning/failures-across-phases-2026-09-28.md)
 §10).
-**Depends on:** WO-075 and WO-076 merged (a starter instance with the build
-and its overlay); WO-121 and WO-122 merged (presence with origin; the
+**Depends on:** WO-199 merged (the vertical survives an interrupt and a
+host crash: D060 and D065, which criterion 2 needs); WO-075 and WO-076
+merged (a starter instance with the build and its overlay); WO-121 and WO-122 merged (presence with origin; the
 `cli-worker` and `human-handoff` actors; closed, v0.27.0 and v0.29.0);
 WO-100 merged (derivation inside a portfolio; closed, v0.44.0); WO-120
 merged (derived work as durable records; closed, v0.41.0); WO-124 merged
@@ -57,6 +60,11 @@ dependency token.
 
 <!-- dotln-dependencies:start -->
 [
+  {
+    "workOrderId": "WO-199",
+    "relation": "hard",
+    "reason": "an actor killed and the resident restarted (criterion 2) needs the vertical's recovery through a recorded process group and an interrupt handler"
+  },
   {
     "workOrderId": "WO-075",
     "relation": "hard",
@@ -180,9 +188,8 @@ reason, and nothing else returning to the operator.
   (fixture-evidenced, live-evidenced); no document defines an
   instance-evidenced level. `runtime.resident` has five assessments, and
   an addition or a reassessment is an appended dated section.
-- Product 00 §The one-paragraph story holds no status sentence. Product 00
-  has 561 bytes of headroom and product 12 has 360, which WO-112 shares,
-  at `5f3849ec`; the executor re-measures both at its base.
+- Product 00 §The one-paragraph story holds no status sentence. Ceilings
+  are planning's since the 2026-10-07 pass; no byte figure binds this order.
 - The export directory and the scratch target lie outside this
   repository. The default roles grant outside-project writes only under
   the temporary, session-scratch and host-scratchpad roots, and order
@@ -220,6 +227,56 @@ reason, and nothing else returning to the operator.
   (that is the fork's run, WO-083); answering the third replan checkpoint
   at this order's close (WO-083 depends on this order; reopen when the
   critical path moves the checkpoint).
+
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+1. Gate: `node scripts/harness.mjs bounded -- node docs/evidence/WO-112/final-001-vertical-recovery-probe.mjs`
+   at the base; every case must recover (WO-199 merged). If `crash-vertical` still throws,
+   stop and record the order blocked on WO-199.
+2. Export (WO-074 and WO-075 merged): `npm run launchpad -- export <dir>` with `<dir>` under
+   `node -e 'console.log(require("os").tmpdir())'`, the system-temp root every role holds
+   (`contributor.ts` lines 226 to 229); inside it `node scripts/harness.mjs emit` then
+   `node scripts/harness.mjs check`. Write `docs/evidence/WO-118/export-receipt.json`
+   (paths as shapes). The kit must carry `packages/skeleton/dist/src/dotln.js`,
+   `scripts/lib/vertical-*.mjs` and the console; if WO-075's runtime subset left one out,
+   record criterion 1 unmet with the file name (the fallback the order's assumptions allow).
+3. Instance configuration: `dotln.config.json` with `repositories.<id>`
+   (`worktreeParent`, `baseBranch`, `authorityProfile`), `portfolios.<id>`
+   (`class: "intent"`, the repository), and the grants where
+   `scripts/lib/authority-grants.mjs` lines 13 to 45 read them; the resident policy from
+   WO-076's overlay when it names one, else the instance's own.
+4. `<store>/vertical.json` with only the keys `scripts/lib/vertical-runtime.mjs` lines 152 to
+   164 read (`workers` with transport, model and effort; `awaitChecks`); each issue
+   `{ number, intake: "model" }`; `<store>/resident.json` per `decodeResidentConfiguration`
+   (`packages/skeleton/src/resident-state.ts` line 134). Check:
+   `readVerticalConfiguration(store, root)` reports no admission failure.
+5. Each intent's prose carries `https://<repositoryId>/issues/<n>` exactly
+   (`vertical-runtime.mjs` lines 143 to 148).
+6. The run: `dotln resident --store <store> --policy <id>`; `dotln presence away --store <store>`
+   (the one setup event criterion 1 permits, recorded in `human-events.json` with purpose
+   `setup`); `dotln intent "<prose>"`; for criterion 2, kill the source-change writer step
+   (the longest-running one) as `kill.json` `{ step, commandId, signal, at }` records; send
+   SIGTERM to the resident and relaunch it between steps. No operator terminal: the executor
+   runs it (WO-112-D007's delegation applies).
+7. Evidence under `docs/evidence/WO-118/`: `README.md`; `human-events.json` rows
+   `{ store, eventId, type, purpose }` checked by a script against every operator-origin
+   event in both logs; `measures.json` rows `{ item, score, label, method, evidence }`
+   (the README renders it); `kill.json`; a copy of `<store>/runtime-status-v1.json` at each
+   `IntentStepSettled` plus `dotln audit --store <store>/vertical/<key>` (criterion 4's
+   phases are judged on these JSON fields, not on the console, which does not read the
+   vertical's events); the outward checks (`lintOutwardArtifact`, `scripts/outward-lint.mjs`
+   line 55; `docs/control/outward-vocabulary.json`); any `.jsonl` passes
+   `node scripts/check-registrations.mjs`.
+8. Write-backs: `docs/product/00-vision.md` §"## The one-paragraph story" (one sentence, in
+   place); `docs/product/12-workstream-application.md` §"## Replacing a successful but costly
+   workflow" (extend the WO-112 sentence); `README.md` release block: rewrite the paragraph
+   that says the `dotln vertical` command runs unaided; `docs/planning/capability-table.md`:
+   append `## WO-118 dated reassessment (<date>)` after the WO-112 section;
+   `docs/evidence/WO-118/decisions.md`; `npm run meta`;
+   `node scripts/lineage.mjs index --check`; `node scripts/check-publication.mjs --print-locks`;
+   `npm run publication:check`.
+9. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+   complete `docs/evidence/WO-118/handoff.md`; `npm run resume -- implementation-ready <flags>`.
 
 **Deliverables:** the instance export receipt; `docs/evidence/WO-118/README.md`
 with the sanitized event log, the console transcript, the measures and the
@@ -261,11 +318,9 @@ parity checklist; the write-backs below.
    observed-met.
 6. Write-backs land, each in place with no dated paragraph: 00 §The
    one-paragraph story (one status sentence stating what the receipt
-   observed; at most 250 bytes added, against 561 bytes of headroom on
-   2026-09-28); 12 §Replacing a successful but costly workflow (the
-   evidence for the rows this run observed; at most 150 bytes added,
-   against 360 bytes of headroom on 2026-09-28, which WO-061 and WO-112
-   also write before this order and WO-080 and WO-082 after it);
+   observed, in place with no dated paragraph (ceilings are planning's: the 2026-10-07 pass set every product document's ceiling at measured bytes plus one tenth)); 12 §Replacing a successful but costly workflow (the
+   evidence for the rows this run observed, extending the WO-112 sentence
+   in place; WO-080, WO-082, WO-193 and WO-194 also write 12 after it);
    `README.md` §What runs today, folded into the release block's prose,
    which is rewritten, never appended to; the capability table, an
    appended `## WO-118 dated reassessment (YYYY-MM-DD)` section rating
@@ -287,6 +342,26 @@ The live row: the run from the starter instance, which the operator
 witnesses (criterion 1).
 
 **Write-back duty:** as listed in criterion 6.
+
+**Known issues and carry-ins:**
+
+- The 2026-10-07 pass found this order planned as evidence-only while its
+  criterion 2 needs recovery the tree lacks (D060, D065); WO-199 now
+  supplies it and is a hard dependency. Stale and corrected: WO-123,
+  WO-112, WO-116 and WO-117 are closed; the headroom figures; the
+  WO-122 actors are not what the vertical launches (it launches writers
+  through `SourceChangeHost` over `verticalTransport`), so the typed WO-122
+  edge is history, not a mechanism this run exercises.
+- Decided by the 2026-10-07 pass: `dotln presence away` is the one
+  permitted setup event (criterion 1 reads it so); the kill targets the
+  source-change writer step; criterion 4's phases are judged on the
+  vertical's own receipts; a `NeedsHuman` that ends a run is a typed stop
+  recorded as such, and consuming the operator's answer is a candidate
+  (reopen when WO-083's run needs the answer consumed); the executor runs
+  the whole run under D007's delegation. Reopen: the operator asks to
+  witness.
+- Blocked on WO-074 and WO-075 for the export's contents and on WO-076
+  for the overlay path; step 2 records what the kit lacks.
 
 **Non-goals:** the operator's repositories (WO-083 is the fork's run);
 cross-repository workstreams; any runtime fix (a separate order); merging

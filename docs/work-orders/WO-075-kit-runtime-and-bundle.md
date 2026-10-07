@@ -4,6 +4,7 @@
 actual harness. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** delivery
 **Release classification:** minor. The export gains the build; no runtime
 package capability change. Assigned at activation under the standing opt-out
 default.
@@ -169,6 +170,58 @@ phrase.
   compiler refuses it; reopen if a fork's hooks must import a runtime
   outside the fork).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07; steps 1 to 5 are written against WO-074's `scripts/launchpad.mjs` and are re-read at the base):**
+
+1. `scripts/launchpad.mjs`: add `RUNTIME_PACKAGES = ["kernel", "compiler", "skeleton"]`
+   and `copyRuntime(root, destination)` copying `packages/<name>/dist/src/**` and each
+   `packages/<name>/package.json`, never `dist/test` or `*.tsbuildinfo`. This is the hook
+   closure `scripts/harness-live-smoke.mjs` lines 86 to 110 build a working runtime from.
+   Refuse when `git status --porcelain -- packages tsconfig.json package.json package-lock.json`
+   is non-empty, then call `atomicBuild()` (`scripts/build.mjs`) so the copy is the commit's
+   build. A kit script whose import closure needs `packages/console` or
+   `packages/browser-evidence` is left out of `KIT_FILES` and named in the decisions; the
+   criteria judge the hook closure and the `resume` and `harness` commands.
+2. Same file: add each runtime file to the manifest `files` with its sha256; extend
+   `kitLockfile` with `packages/kernel`, `packages/compiler`, `packages/skeleton` and their
+   `node_modules/@dotln/<name>` links (skeleton pins typescript at core's version).
+3. `scripts/kit/gitignore.template` (WO-074): must not ignore `packages/*/dist/` or
+   `*.tsbuildinfo` under packages, so a starter can commit its runtime; keep `/.runtime/`
+   ignored.
+4. Same file: after writing, spawn `node scripts/harness.mjs emit` with cwd = the export
+   and `DOTLN_LAUNCHPAD` unset; list the emitted surfaces (the entries of core's
+   `.claude/harness-manifest.json`) in the manifest. A fresh clone lacks the ignored
+   `.runtime/harness/<hash>` snapshot and hooks report `snapshot-missing`
+   (`packages/compiler/src/harness.ts` lines 710 to 721), so `README.client.md` says to run
+   `node scripts/harness.mjs emit` after cloning.
+5. `scripts/test-launchpad.mjs`, new cases: the runtime matches a rebuild at the named
+   commit (clone, `npm ci --offline`, `node scripts/build.mjs`, `cmp` each manifest-listed
+   dist file); `harness check` passes in the export and refuses a one-byte drift; no
+   manifest-listed hook has an absolute import specifier (search `import("/` and
+   `from "/`); no `packages/*/src/**/*.ts` in the export. Check: `npm test -- --only launchpad`.
+6. Cold start: `measureColdStarts(exportRoot)` and `measureColdStarts(TOOL_ROOT)`
+   (`scripts/lib/process-budget.mjs` line 87); assert no role's export bytes exceed core's;
+   write `docs/evidence/WO-075/cold-start.json`.
+7. The smoke, run by the executor: in a committed Git copy of the export,
+   `DOTLN_LIVE_HARNESS=1 node scripts/harness-live-smoke.mjs executor 001` with cwd = the
+   export. The script requires cwd to be the launchpad and a Git top level (lines 34 to 42),
+   opens the session in a scratch repository built from the export's scripts and dist
+   (lines 68 to 110) and writes `WO-042/harness-live/executor-001.json` under the export's
+   evidence root (lines 59 to 63); copy it, identifiers as shapes, to
+   `docs/evidence/WO-075/`. That is the session the criteria mean (2026-10-07 pass).
+8. FUP-a058e82c0bbd9b6d: record taken up or deferred in `docs/evidence/WO-075/decisions.md`.
+   Taken up, it edits `packages/skeleton/src/usage-observation.mjs`, a feedback-judged file,
+   and owes the live feedback episode the Cost line names.
+9. Write-backs: `docs/product/03-architecture.md` §"## Platform and instance boundary" (the
+   build travels with the kit, in place); `docs/LEGAL.md` §"## Current state" (dated
+   observation: the runtime build travels under the decided terms, and assumption 2's
+   THIRD_PARTY_NOTICES reading); `docs/planning/capability-table.md`: a new
+   `## WO-075 dated addition (<date>)` section with the header
+   `| Capability and scope | Current assessment | Evidence and remaining gate |` and a
+   `launchpad.starter` row; `node scripts/check-publication.mjs --print-locks` into
+   `docs/publication/audience-status-index.md`; `npm run publication:check`.
+10. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+    complete `docs/evidence/WO-075/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the runtime copy and its manifest entries, the exported
 bundle, the smoke record, the carry-in's disposition, the write-backs below.
 
@@ -193,12 +246,8 @@ bundle, the smoke record, the carry-in's disposition, the write-backs below.
    live feedback episode after that edit on Codex `gpt-6.1-sol` at `max` or Claude Code `claude-opus-5-5` at `xhigh`, and the decisions record the
    configuration.
 6. Write-backs land: 03 §Platform and instance boundary (the build travels
-   with the kit), in place with no dated paragraph, at most 300 bytes added,
-   against 3,284 bytes of headroom on 2026-09-28; WO-060, WO-059, WO-124,
-   WO-062, WO-123, WO-074 and WO-073 also write product 03, so the executor
-   re-measures the headroom at its base; where the bound does not fit, it
-   consolidates the section it edits in the same change; a ceiling is
-   raised only by a planning-document decision. `docs/LEGAL.md` §Current
+   with the kit), in place with no dated paragraph (ceilings are planning's: the 2026-10-07 pass set every product document's ceiling at measured bytes plus one tenth, and an overrun is an advisory the next pass reads); WO-074, WO-073 and WO-193 also write product
+   03. `docs/LEGAL.md` §Current
    state (a dated observation, that section's form: the runtime build
    travels under the decided terms); `docs/planning/capability-table.md` (a
    `WO-075 dated addition` section with a `launchpad.starter` row at its
@@ -217,6 +266,19 @@ owes, with a live feedback row only if criterion 5 edits
 `usage-observation.mjs`.
 
 **Write-back duty:** as listed in criterion 6.
+
+**Known issues and carry-ins:**
+
+- Stale on 2026-10-07 and corrected above: product 03 headroom and its
+  co-writer list; `scripts/copilot-qualification.mjs` in the Cost line is
+  `scripts/lib/copilot-qualification.mjs`.
+- Decided by the 2026-10-07 pass: the runtime subset is the hook closure
+  (kernel, compiler, skeleton `dist/src`); the live smoke's scratch
+  repository built from the export is the session the criteria mean.
+  Reopen: a kit command fails on a missing package.
+- Blocked on WO-074 for the export function, the manifest schema, the
+  template directory and the fixture file; the executor re-reads them at
+  the base before step 1.
 
 **Non-goals:** the overlay (WO-076); update (WO-077); package publication;
 wiring `harness check` into the export's `npm test` (WO-074's

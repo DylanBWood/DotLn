@@ -3,6 +3,8 @@
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** delivery
+**Front page:** README.md
 **Release classification:** minor. A second scenario and a render selector.
 Assigned at activation under the standing opt-out default.
 **Cost:** adds a second deterministic scenario that equips the six pieces
@@ -159,6 +161,58 @@ dark and the three view hashes.
   edit (the collection is dynamic and the contract passes the selector
   through; reopen when a board change proves necessary).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07; the set module, ids, environment and listing field come from WO-092 to WO-094 at the base):**
+
+1. `packages/skeleton/src/full-set-scenario.ts` (new; decided 2026-10-07: a new module that no
+   registered source imports, so `scenario.ts` stays unedited): exports `runFullSetScenario`
+   and `replayFullSetScenario` beside the shape of `runScenario` (`scenario.ts` line 359);
+   the result carries `bonusEvents` (bonus id, event type, sequence number) taken from
+   Decisions, and the test asserts on it, never on the timeline text (prose-parsing screen).
+   Check: `node --test packages/skeleton/dist/test/full-set-scenario.test.js` after
+   `npm run build`.
+2. `packages/skeleton/src/reactor.ts`: accept the full-set program and fold the four bonus
+   behaviors (the reactor binds `seiriLoadout` at line 395 and compiles under
+   `seiriEnvironment` at 431; no skeleton source interprets a compiled `verifier-episode` or
+   `cadence` emission, so this edit is certain, not conditional). The WO-184 criterion-19
+   purity test ("transitive reactor purity has exactly two reasoned host exclusions",
+   `scenario.test.ts`) limits new imports. Check: `node --test packages/skeleton/dist/test/scenario.test.js`.
+3. `packages/skeleton/test/full-set-scenario.test.ts` (new) and one trace fixture under
+   `packages/skeleton/fixtures/` (new): "WO-095 live and replay match every complete
+   Decision", "each bonus fires once", "the Safety gate refuses the destructive change",
+   "operator return cancels the cadence". Oracle: `git diff --exit-code <base> -- packages/skeleton/fixtures/wo003-decision-traces.json`.
+4. `packages/compiler/src/render.ts`: new export `renderSetSummary(program)`, re-exported from
+   `packages/compiler/src/index.ts`; case "WO-095 set summary lists each bonus armed or dark" in
+   `packages/compiler/test/tooltip.test.ts`.
+5. `packages/skeleton/src/cli.ts`: accept `--loadout <id>` in the option loop (lines 44 to 54),
+   only with `--compiled-diff`; update the usage at line 52; the pinned case "WO-095
+   --compiled-diff --loadout renders each piece and the set" in `cli.test.ts`; the four
+   existing cases and the WO-142 refusal stay unchanged.
+6. Versions: bump `packages/compiler/package.json` and `packages/skeleton/package.json`; set
+   `packages/console/package.json` pins equal. Check: `node scripts/release.mjs check-surfaces --local`.
+7. Editions, after `npm run build`: `node scripts/authority-evidence.mjs --write --edition WO-095 --revision 001`;
+   `node scripts/artifact-identity-evidence.mjs --write`; `node scripts/verification-evidence.mjs --write`;
+   `node scripts/harness.mjs emit`; repoint `docs/evidence/current.json` as WO-147-D010 did;
+   check each with `--check`.
+8. The live feedback episode (the reactor changed, and it is the subject the feedback verifier
+   judges): `npm run evidence:feedback -- --write --edition WO-095 --revision 001`, then the
+   self-host on the harness the executor runs in (Claude `claude-opus-5-5` at `xhigh` or Codex
+   `gpt-6.1-sol` at `max`), then `node scripts/feedback-evidence.mjs --record-selfhost <store> --edition WO-095 --revision 001`.
+9. Console: `node scripts/console-fixtures.mjs --record-current-selfhost`, then `--check`;
+   only the four console fixture files change.
+10. Write-backs: product 06, the pending rung heading for the pattern workshop (found by name at
+    the base, because WO-190 moves the rungs): replace the "wave 4" clause of its second
+    paragraph, in place; `README.md` §"What runs today" (one sentence inside the marked
+    section, under WO-189's rules; this order's `**Front page:**` field names the file) and
+    lines 421 to 422 (set bonuses are no longer future); `packages/compiler/README.md` lines
+    113 to 114 (the same); `packages/skeleton/src/portfolio.ts` lines 25 to 26 (the comment
+    that WO-093 extends the vocabulary, corrected while this order re-mints anyway);
+    `docs/planning/capability-table.md`: append `## WO-095 dated addition (<date>)` with the
+    header `Capability and scope | Current assessment | Evidence and remaining gate` and a
+    `compiler.five-s-set` row; `docs/evidence/WO-095/decisions.md` (new);
+    `node scripts/check-publication.mjs`; `npm run meta`; `npm run publication:check`.
+11. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+    complete `docs/evidence/WO-095/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the scenario, the selector, the render, fixtures, the
 write-backs below.
 
@@ -188,12 +242,8 @@ write-backs below.
    unchanged `reactor.ts` meets the criterion.
 4. Write-backs land: 06 §Application version pending — Pattern workshop
    v1, in place with no dated paragraph (its second paragraph names the
-   compiled slice instead of wave 4; at most 200 bytes added, against
-   1,802 bytes of headroom on 2026-09-28; WO-086, WO-087, WO-066, WO-061,
-   WO-124, WO-112, WO-083, WO-096 and WO-098 also write 06, so the
-   executor re-measures the headroom at its base; where the bound does
-   not fit, it consolidates the section it edits in the same change; a
-   ceiling is raised only by a planning-document decision); one sentence
+   compiled slice instead of wave 4, in place with no dated paragraph (ceilings are planning's since the 2026-10-07 pass); WO-083, WO-096, WO-098 and
+   WO-183 also write 06, and WO-190 moves its rungs); one sentence
    folded into README §What runs today, rewriting what it supersedes, as
    the block's own rule says; an appended
    `## WO-095 dated addition (YYYY-MM-DD)` section in the capability table
@@ -217,6 +267,18 @@ at final review. The live row is the executor's feedback self-host
 episode, owed only if `reactor.ts` changes.
 
 **Write-back duty:** as listed in criterion 4.
+
+**Known issues and carry-ins:**
+
+- 2026-10-07 pass: the Cost line's "the reactor if the scenario needs
+  it" is certain (step 2), so the live feedback episode is planned, not
+  conditional. Stale and corrected: product 06's figures; the console
+  pins; WO-086, WO-087, WO-066, WO-061, WO-124 and WO-112 closed; the
+  README rule is WO-189's.
+- Decided by the 2026-10-07 pass: the scenario in a new module;
+  `bonusEvents` typed (prose-parsing screen); the README and
+  `portfolio.ts` corrections WO-093 and WO-094 left land here.
+- Blocked on WO-094 (behind WO-092, WO-093 and WO-091) and WO-189.
 
 **Non-goals:** drag-equip authoring; any console source change; a row
 edited into the capability inventory.

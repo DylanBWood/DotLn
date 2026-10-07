@@ -1,97 +1,96 @@
 {
   "schemaVersion": 1,
-  "policy": "UTF-8 bytes excluding the one registered generated block, 06-roadmap.md's dotln-release-history markers (WO-086), whose rows docs-check compares with their recorded tags; any other marker pair grants no exemption. A planning pass sets a document's ceiling to its non-exempt bytes at that pass plus the write-backs the pass and its queued orders declare for it, and records that size as nonExemptBytesAtLanding (2026-10-02 pass; earlier entries were ceil(nonExemptBytesAtLanding * 1.02)). Consolidation lowers the ceiling in the same change. An increase requires a resolving planning-document decision in the entry, including when restoring previously removed headroom. Operator-directed byte goals may name an advisoryDecision: a resolving public evidence decision with a current unresolved registered follow-up. Its overrun advises without raising the ceiling or exempting bytes.",
+  "policy": "UTF-8 bytes excluding the one registered generated block, 06-roadmap.md's dotln-release-history markers (WO-086), whose rows docs-check compares with their recorded tags; any other marker pair grants no exemption. Ceilings are planning's alone (operator direction, 2026-10-07; the 2026-10-07 pass): every planning pass sets each document's ceiling to its measured non-exempt bytes plus one tenth, records that size as nonExemptBytesAtLanding and cites its planning document; an increase outside a pass requires a resolving planning-document decision in the entry. The check reports an overrun as an advisory the next pass reads once WO-196 lands; until then an entry may name an advisoryDecision as before. No order carries a byte bound and no review asks the operator to settle bytes.",
   "documents": {
     "00-vision.md": {
-      "nonExemptBytesAtLanding": 28025,
-      "ceiling": 28586,
-      "date": "2026-09-26",
-      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+      "nonExemptBytesAtLanding": 28041,
+      "ceiling": 30846,
+      "date": "2026-10-07",
+      "decision": "docs/planning/machinery-reset-2026-10-07.md#10-document-ceilings"
     },
     "01-principles.md": {
       "nonExemptBytesAtLanding": 9462,
-      "ceiling": 9652,
-      "date": "2026-09-26",
-      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+      "ceiling": 10409,
+      "date": "2026-10-07",
+      "decision": "docs/planning/machinery-reset-2026-10-07.md#10-document-ceilings"
     },
     "02-domain-model.md": {
       "nonExemptBytesAtLanding": 149450,
-      "ceiling": 150750,
-      "date": "2026-10-02",
-      "decision": "docs/planning/standard-pass-2026-10-02.md#16-document-ceilings-set-from-declared-write-backs"
+      "ceiling": 164395,
+      "date": "2026-10-07",
+      "decision": "docs/planning/machinery-reset-2026-10-07.md#10-document-ceilings"
     },
     "03-architecture.md": {
-      "nonExemptBytesAtLanding": 174757,
-      "ceiling": 176807,
-      "date": "2026-10-02",
-      "decision": "docs/planning/standard-pass-2026-10-02.md#16-document-ceilings-set-from-declared-write-backs"
+      "nonExemptBytesAtLanding": 176807,
+      "ceiling": 194488,
+      "date": "2026-10-07",
+      "decision": "docs/planning/machinery-reset-2026-10-07.md#10-document-ceilings"
     },
     "04-interfaces.md": {
-      "nonExemptBytesAtLanding": 60482,
-      "ceiling": 61282,
-      "date": "2026-10-02",
-      "decision": "docs/planning/standard-pass-2026-10-02.md#16-document-ceilings-set-from-declared-write-backs"
+      "nonExemptBytesAtLanding": 60516,
+      "ceiling": 66568,
+      "date": "2026-10-07",
+      "decision": "docs/planning/machinery-reset-2026-10-07.md#10-document-ceilings"
     },
     "05-pattern-library.md": {
       "nonExemptBytesAtLanding": 135256,
-      "ceiling": 136356,
-      "date": "2026-10-02",
-      "decision": "docs/planning/standard-pass-2026-10-02.md#16-document-ceilings-set-from-declared-write-backs"
+      "ceiling": 148782,
+      "date": "2026-10-07",
+      "decision": "docs/planning/machinery-reset-2026-10-07.md#10-document-ceilings"
     },
     "06-roadmap.md": {
-      "nonExemptBytesAtLanding": 41108,
-      "ceiling": 42358,
-      "date": "2026-10-02",
-      "decision": "docs/planning/standard-pass-2026-10-02.md#16-document-ceilings-set-from-declared-write-backs"
+      "nonExemptBytesAtLanding": 41309,
+      "ceiling": 45440,
+      "date": "2026-10-07",
+      "decision": "docs/planning/machinery-reset-2026-10-07.md#10-document-ceilings"
     },
     "07-execution-guide.md": {
-      "nonExemptBytesAtLanding": 168083,
-      "ceiling": 168083,
-      "date": "2026-10-05",
-      "decision": "docs/planning/wo-123-integration-ceiling-2026-10-05.md#1-product-07-ceiling",
-      "advisoryDecision": "docs/evidence/WO-187/decisions.md#wo-187-d013"
+      "nonExemptBytesAtLanding": 178811,
+      "ceiling": 196693,
+      "date": "2026-10-07",
+      "decision": "docs/planning/machinery-reset-2026-10-07.md#10-document-ceilings"
     },
     "08-publication-compiler.md": {
-      "nonExemptBytesAtLanding": 22552,
-      "ceiling": 23004,
-      "date": "2026-09-26",
-      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+      "nonExemptBytesAtLanding": 22633,
+      "ceiling": 24897,
+      "date": "2026-10-07",
+      "decision": "docs/planning/machinery-reset-2026-10-07.md#10-document-ceilings"
     },
     "09-audit-resilience-privacy.md": {
-      "nonExemptBytesAtLanding": 50759,
-      "ceiling": 51775,
-      "date": "2026-09-26",
-      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+      "nonExemptBytesAtLanding": 51569,
+      "ceiling": 56726,
+      "date": "2026-10-07",
+      "decision": "docs/planning/machinery-reset-2026-10-07.md#10-document-ceilings"
     },
     "10-ir-compatibility.md": {
       "nonExemptBytesAtLanding": 25665,
-      "ceiling": 26615,
-      "date": "2026-10-02",
-      "decision": "docs/planning/standard-pass-2026-10-02.md#16-document-ceilings-set-from-declared-write-backs"
+      "ceiling": 28232,
+      "date": "2026-10-07",
+      "decision": "docs/planning/machinery-reset-2026-10-07.md#10-document-ceilings"
     },
     "11-proteino.md": {
       "nonExemptBytesAtLanding": 2058,
-      "ceiling": 2100,
-      "date": "2026-09-26",
-      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+      "ceiling": 2264,
+      "date": "2026-10-07",
+      "decision": "docs/planning/machinery-reset-2026-10-07.md#10-document-ceilings"
     },
     "11-protino.md": {
       "nonExemptBytesAtLanding": 30626,
-      "ceiling": 31239,
-      "date": "2026-09-26",
-      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+      "ceiling": 33689,
+      "date": "2026-10-07",
+      "decision": "docs/planning/machinery-reset-2026-10-07.md#10-document-ceilings"
     },
     "12-workstream-application.md": {
-      "nonExemptBytesAtLanding": 18164,
-      "ceiling": 20014,
-      "date": "2026-10-02",
-      "decision": "docs/planning/standard-pass-2026-10-02.md#16-document-ceilings-set-from-declared-write-backs"
+      "nonExemptBytesAtLanding": 18327,
+      "ceiling": 20160,
+      "date": "2026-10-07",
+      "decision": "docs/planning/machinery-reset-2026-10-07.md#10-document-ceilings"
     },
     "13-uifa-roles.md": {
-      "nonExemptBytesAtLanding": 26948,
-      "ceiling": 27487,
-      "date": "2026-09-26",
-      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+      "nonExemptBytesAtLanding": 26964,
+      "ceiling": 29661,
+      "date": "2026-10-07",
+      "decision": "docs/planning/machinery-reset-2026-10-07.md#10-document-ceilings"
     }
   }
 }

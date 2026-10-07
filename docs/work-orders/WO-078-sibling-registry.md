@@ -3,6 +3,7 @@
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** delivery
 **Release classification:** patch. Documentation convention plus one check.
 Assigned at activation under the standing opt-out default.
 **Cost:** adds one receipt written inside the export and update commands
@@ -36,8 +37,7 @@ committed ([planning document](../planning/failures-across-phases-2026-09-28.md)
 §10).
 **Depends on:** WO-074 merged (the first export receipt); WO-075 merged (the
 build hash a receipt records); WO-077 merged (`--update`, which writes a
-receipt); WO-167 merged (product 07 holds 9 bytes of headroom until the fold
-resets its ceiling).
+receipt); WO-167 merged (closed, v0.53.1).
 **Recommended placement:** in the serial run after WO-077 and before
 WO-118. This order edits `scripts/launchpad.mjs`, `scripts/lib/config.mjs`,
 `scripts/test-runner.mjs`, `docs/README.md` and product 07, and adds the
@@ -65,7 +65,7 @@ dependency token.
   {
     "workOrderId": "WO-167",
     "relation": "hard",
-    "reason": "product 07 has 9 bytes of headroom until the fold resets its ceiling"
+    "reason": "closed at v0.53.1; the fold this order's product 07 write-back followed"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -128,6 +128,54 @@ whose recorded manifest hash differs from the latest receipt.
   decode refuses, naming the receipt, and nothing is written.
 - **Declined alternatives, recorded:** a registry of every fork.
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07; steps 3 and 4 are written against WO-074's, WO-075's and WO-077's files and re-read at the base):**
+
+1. `scripts/lib/config.mjs` `ROOT_SEGMENTS` (line 26): add `siblings: "siblings"`;
+   `scripts/test-configuration-root.mjs` subtest "an absent configuration means today's
+   layout" (line 114): add `siblings: "docs/siblings"`; "every declared root key is reachable"
+   (line 965) then covers it. Check: `node --test scripts/test-configuration-root.mjs`.
+2. `docs/siblings/siblings.json` (new, the directory with it):
+   `{ "schemaVersion": 1, "siblings": [{ "id", "purpose", "relation": { "kind": "export", "coreCommit" } | { "kind": "consumer", "contractVersion" }, "capabilityRows": ["<row id>"] }] }`
+   with the starter and the Angular consumer (ids are public repository names). The
+   capability rows are this typed list; the generator never reads
+   `docs/planning/capability-table.md` (prose-parsing screen). WO-078 writes both
+   declarations; WO-083 only adds receipts through the generator.
+3. `scripts/launchpad.mjs`: inside the manifest step of `export` and `--update` (function
+   names from WO-074 and WO-077 at the base), write
+   `docPath(root, "evidence", "siblings/<sibling-id>/<UTC-stamp>.json")` holding `sibling`,
+   `coreCommit`, `manifestHash`, `buildHash` (WO-075's field) and `date`: one JSON file per
+   receipt, because `scripts/check-registrations.mjs` classifies only `.jsonl` (line 49) and
+   the kernel registry lists exact JSONL paths. Non-`WO-NNN` evidence directories are skipped
+   by `readDecisions` (`scripts/lib/meta.mjs` lines 257 to 260) and by
+   `scripts/lib/planning-followups.mjs` line 178.
+4. `scripts/siblings.mjs` (new): `index` and `index --check`, mirroring `scripts/work-orders.mjs`
+   `main` (temp file plus rename; a check naming the first differing line like `checkIndex`,
+   line 659). Reads the declaration, every receipt and the kit manifests; an undecodable
+   receipt refuses naming it and nothing is written; "the orders in core that advanced it"
+   come from Git and control events between consecutive receipts' `coreCommit`, never from
+   prose. `docRelative` only; no quoted `docs/` literal.
+5. `scripts/test-runner.mjs`: document row
+   `node("siblings", "scripts/siblings.mjs", { args: ["index", "--check"], document: true })`
+   after `index` (lines 664 to 669); product row
+   `nodeTests("siblings-fixtures", "scripts/test-siblings.mjs")`.
+   `scripts/lib/document-gate-stubs.mjs`: add `siblings.mjs` to `DOCUMENT_GATE_STUBS` (else
+   `check-registrations.mjs` reports an unstubbed document suite, lines 77 to 85).
+6. `scripts/test-siblings.mjs` (new): "WO-078 criterion 1: an export writes the receipt and
+   regenerates the entry", "refuses a hand-edited entry", "refuses a manifest hash that
+   disagrees with the latest receipt", "refuses an undecodable receipt" (recording wall-clock
+   and table bytes with `t.diagnostic`), "WO-078 criterion 2: unsupplied fields read not
+   evidenced". Check: `npm test -- --only siblings-fixtures`.
+7. Generate `docs/siblings/README.md`: `node scripts/siblings.mjs index`; check
+   `node scripts/siblings.mjs index --check`.
+8. Write-backs: `docs/README.md` §"## Map" (one `docs/siblings/` line in the code block);
+   product 07 §"### Where the control plane finds its documents" (add `siblings` to the root
+   list, lines 628 to 633, in place); `docs/evidence/WO-078/decisions.md` (the declaration and
+   receipt formats, the removed lookup and its cost); `npm run meta`;
+   `node scripts/check-publication.mjs --print-locks`; `npm run work-orders -- index`;
+   `npm run publication:check`.
+9. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+   complete `docs/evidence/WO-078/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the registry generator with its check, the receipt written
 by the export and update commands, the once-per-sibling declaration, the
 root key, the write-backs below.
@@ -152,14 +200,10 @@ root key, the write-backs below.
 2. The registry carries the starter's entry and the Angular consumer's
    entry; every field no receipt supplies reads "not evidenced".
 3. Write-backs land: `docs/README.md` §Map (the siblings root); 07 §Where
-   the control plane finds its documents (the root's name), in place with
-   no dated paragraph, at most 150 bytes added, against 9 bytes of headroom
-   on 2026-09-28, which WO-167's fold resets first; WO-173, WO-172, WO-086,
-   WO-123, WO-072, WO-073, WO-113, WO-080 and WO-077 also write product 07,
-   so the executor re-measures the headroom at its base; where the bound
-   does not fit, it consolidates the section it edits in the same change; a
-   ceiling is raised only by a planning-document decision. The decisions
-   file; the publication locks refreshed.
+   the control plane finds its documents (the root's name), in place with no dated paragraph (ceilings are planning's since the 2026-10-07 pass);
+   WO-072, WO-073, WO-113, WO-080, WO-077, WO-188, WO-189, WO-190, WO-192
+   and WO-193 also write product 07. The decisions file; the publication
+   locks refreshed.
 4. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
    clean; no new dependency.
 
@@ -169,6 +213,19 @@ root key, the write-backs below.
 again at final review. No live row.
 
 **Write-back duty:** as listed in criterion 3.
+
+**Known issues and carry-ins:**
+
+- Stale on 2026-10-07 and corrected above: WO-167 and the 07 co-writers;
+  the missing `DOCUMENT_GATE_STUBS` step is now step 5.
+- Decided by the 2026-10-07 pass: capability rows are a typed id list in
+  the declaration; receipts are one JSON file each; this order writes both
+  declarations and WO-083 adds receipts only. Reopen: a sibling's rows
+  must come from its own manifest.
+- Blocked on WO-074 (the export's manifest step, the manifest path and
+  version field), WO-075 (the build hash) and WO-077 (the `--update`
+  path); none registers `scripts/launchpad.mjs` in an evidence inventory
+  at the base, re-checked by the executor.
 
 **Non-goals:** tracking external organizations' forks; a control event for
 a receipt.

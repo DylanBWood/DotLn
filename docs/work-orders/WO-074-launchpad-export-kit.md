@@ -3,6 +3,7 @@
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** delivery
 **Release classification:** minor. A new control-plane command and the kit
 manifest; no runtime package change. Assigned at activation under the
 standing opt-out default.
@@ -129,9 +130,11 @@ supplied with core's advisory.
 - WO-070's fixture shows a copied control plane activating an order and
   emitting a decodable control Beacon with `scripts/` and the build-free
   `packages/beacons` workspace and no skeleton source.
-- No heading or marker delimits an executor half of product 07, which was
-  71,005 bytes at `33e2c25` and is 188,390 at `5f3849ec`; WO-167 folds it
-  before this order.
+- No heading or marker delimits an executor half of product 07 (175,881
+  bytes at `bd437eb2` on 2026-10-07; WO-167's fold closed at v0.53.1 and
+  left none), and the emitted role skills read four 07 sections that sit
+  across any such halves, so the kit copies product 07 whole (Execution
+  plan step 4; 2026-10-07 pass).
 
 **Design (scope discipline):**
 
@@ -153,8 +156,9 @@ supplied with core's advisory.
 - The first order's audit questions are four generic topics: gateway and
   provider behavior, metering between foreground and delegated execution,
   interruption recovery, and managed-settings precedence.
-- The executor lists the product 07 sections the kit copies as the executor
-  half in the manifest by heading, with each reason in the decisions file.
+- The kit copies product 07 whole, listed in the manifest like every
+  other kit file; no section reader is written (the prose-parsing screen of
+  the 2026-10-07 pass).
 - The local-terms check is `scripts/lib/terms.mjs`'s: with no list it
   reports `unavailable`, which the export prints and never counts as a
   pass; a list present but empty or malformed refuses the export, as does a
@@ -182,6 +186,75 @@ supplied with core's advisory.
   ADR-0006's amendments keep it in core; reopened by the operator at
   review); a kit-only test runner (it breaks the byte identity criterion 1
   requires).
+
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+1. `scripts/launchpad.mjs` (new): a `KIT_FILES` allowlist; `readKitSources(root, commit)`
+   reading Git blobs at the named commit, never the work tree;
+   `kitManifest({ commit, tag, files })` (`schemaVersion: 1`, `files: [{ path, sha256 }]`);
+   `exportKit(root, destination, { license })`; the CLI `export <dir> [--license none]`.
+   Refuse, before any write, a destination that exists and is not an empty readable
+   directory. Resolve every document root through `scripts/lib/config.mjs`
+   (`TOOL_ROOT`, `docRelative`, `defaultDocRelative`); `scripts/test-configuration-root.mjs`
+   (line 377) refuses a quoted `docs/` literal and an `import.meta.url` root.
+   Kit files include the nine build-free `.mjs` modules under `packages/skeleton/src`
+   and `packages/compiler/src` that the kit's scripts import (`gate-evidence.mjs` among
+   them, which `implementation-ready` reaches through `scripts/lib/gate-evidence.mjs`);
+   "package source" in criterion 2 means TypeScript source, so the fixture asserts no
+   `packages/*/src/**/*.ts` in the export. `packages/skeleton/loadouts/grants.json` is
+   instance authority data (`scripts/lib/authority-grants.mjs`): never a kit file; the
+   executor checks at its base whether `authority-grants.mjs` tolerates its absence and,
+   if not, writes the minimal valid empty file as an instance seed, not manifest-listed.
+2. Same file, `kitLockfile(coreLock, kitPackage)`: prune core's `package-lock.json` (six
+   workspaces) to `""`, `packages/beacons`, `node_modules/@dotln/beacons` and the closure
+   of the kit's three dev dependencies at core's exact pins (read them from
+   `package.json` at the base). The kit `package.json` keeps core's script names.
+   Check: `npm ci --offline` in the export (criterion 1).
+3. Same file: run `checkLocalTerms(findLaunchpad(), surfaces)` (`scripts/lib/terms.mjs`)
+   over every exported text before writing; print `local-terms list: <status>`; an
+   empty or malformed list refuses.
+4. Templates in `scripts/kit/` (new directory): `CLAUDE.template.md` (the floor: clean room,
+   secrets, the resume phrases; the template is not named `CLAUDE.md` because a nested
+   file of that name would load into core sessions), `dotln.config.example.json`,
+   `README.client.md`, `AI-HARNESS-SECURITY.template.md`, `first-order.template.md`
+   (WO-001's shape with `**Effort:**`, the harness smoke, `npm run terms -- check` and the
+   four audit topics), the repository-profile and workstream templates, `gitignore.template`
+   (which must not ignore `packages/*/dist/`, because WO-075's starter commits its build),
+   `LICENSE-PENDING.md`. Product 07 is copied whole. Instance seeds (the first order, the
+   root READMEs) are written and never manifest-listed.
+5. `package.json`: add `"launchpad": "node scripts/launchpad.mjs"`. Check:
+   `npm run launchpad -- export "$(mktemp -d)/kit"`.
+6. `scripts/license-surfaces.mjs`: export the pinned `licenseHashes` (line 23) for the
+   fixture; under `--license none` the export writes `LICENSE-PENDING.md` only.
+7. `scripts/test-launchpad.mjs` (new), one case per criterion: refuses a non-empty or
+   unreadable destination before any write; scripts match `UPSTREAM.md`'s commit and the
+   manifest hashes verify; offline `npm ci` succeeds; the kit's `resume activate` activates
+   the first order without TypeScript source (`git init` and commit as
+   `scripts/test-beacon-portability.mjs` lines 93 to 129 do); a transition emits a
+   decodable control Beacon; the negative fixture leaves out every planted item (byte-search
+   the export for the planted terms hash); terms status `present`, `unavailable`, and an
+   empty list refuses; license files pinned or only `LICENSE-PENDING.md`; an unmatched
+   attestation records with the advisory. Fixtures commit a temporary copy of the work tree
+   because the order stays uncommitted until final review.
+8. `scripts/test-runner.mjs`: add `nodeTests("launchpad", "scripts/test-launchpad.mjs", { protects })`
+   (`scripts/test-runner.test.mjs` line 941 requires a `protects` string).
+   Check: `npm test -- --only launchpad`.
+9. Re-mints: point `docs/evidence/current.json` at WO-074 revision 001 for the four kinds;
+   `npm run build`; `node scripts/authority-evidence.mjs --write`,
+   `node scripts/artifact-identity-evidence.mjs --write`,
+   `node scripts/verification-evidence.mjs --write`; `node scripts/feedback-evidence.mjs --carry <the feedback edition selected at the base>`.
+   Check each with `--check`.
+10. Criterion 6: `DOTLN_LAUNCHPAD=<the main checkout> npm run launchpad -- export <dir>`;
+    expect `present`.
+11. Write-backs: `docs/product/03-architecture.md` §"## Platform and instance boundary"
+    (the kit's first slice, in place); `docs/LEGAL.md` §"## Current state" (a dated
+    observation: the kit carries the three license files by default); `docs/README.md`
+    §"## Map" (one line naming `scripts/kit/`); `docs/evidence/WO-074/decisions.md`
+    (the kit-file decisions of step 1, the in-place `npm test` follow-up, WO-069-D001 and
+    D002 dispositions); `node scripts/check-publication.mjs --print-locks` into
+    `docs/publication/audience-status-index.md`; `npm run publication:check`.
+12. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+    complete `docs/evidence/WO-074/handoff.md`; `npm run resume -- implementation-ready <flags>`.
 
 **Deliverables:** the command, the manifest, the templates, the
 `package.json` entry, fixtures, the re-mints, the write-backs below.
@@ -226,12 +299,8 @@ supplied with core's advisory.
    criterion unmet with that command; it then closes by a run with the
    list or by a recorded waiver.
 7. Write-backs land: 03 §Platform and instance boundary (the kit's first
-   slice), in place with no dated paragraph, at most 400 bytes added,
-   against 3,284 bytes of headroom on 2026-09-28; WO-060, WO-059, WO-124,
-   WO-062, WO-123, WO-075 and WO-073 also write product 03, so the executor
-   re-measures the headroom at its base; where the bound does not fit, it
-   consolidates the section it edits in the same change; a ceiling is
-   raised only by a planning-document decision. `docs/LEGAL.md` §Current
+   slice), in place with no dated paragraph (ceilings are planning's: the 2026-10-07 pass set every product document's ceiling at measured bytes plus one tenth, and an overrun is an advisory the next pass reads); WO-075, WO-073 and WO-193 also write product 03
+   after this order. `docs/LEGAL.md` §Current
    state (a dated observation, that section's form: the kit carries the
    three license files by default); `docs/README.md` §Map (one line for
    where the kit templates live); the decisions file; the publication locks
@@ -246,6 +315,18 @@ or the recorded fallback; `npm run test:docs`; `npm test -- --review` before
 of configuration-root, and again at final review. No live row.
 
 **Write-back duty:** as listed in criterion 7.
+
+**Known issues and carry-ins:**
+
+- Stale on 2026-10-07 and corrected above: product 03 had no headroom
+  (176,807 of 176,807) and every 03 co-writer the order named was closed;
+  the 2026-10-07 pass reset the ceilings and removed byte bounds.
+- Decided by the 2026-10-07 pass (reopen conditions in the planning
+  document §8): product 07 is copied whole; templates live in `scripts/kit/`;
+  the nine build-free `.mjs` modules are kit files; `grants.json` is an
+  instance file; the kit lockfile is pruned from core's (step 2).
+- The "executor half of product 07" wording in Cost and Objective is
+  superseded by step 4; the executor reads them as the whole file.
 
 **Non-goals:** the runtime build and harness bundle in the export (WO-075);
 the overlay (WO-076); update (WO-077); the registry (WO-078); publishing

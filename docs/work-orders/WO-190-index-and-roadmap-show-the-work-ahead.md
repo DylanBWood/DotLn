@@ -150,6 +150,58 @@ away.
   into two documents (its links and its ceiling are per file, and the
   reorder gives the reader the same thing).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+1. `scripts/work-orders.mjs` `parseHeader` (line 68): add `umbrella: { successors }` from the
+   typed `"relation": "superseded"` entries with `"by"` that exactly the six umbrella files
+   carry (`scripts/lib/dependencies.mjs` line 17); the class is the exact label
+   `^\*\*Umbrella record( \(\d{4}-\d{2}-\d{2}\))?:\*\*` plus at least one such entry;
+   successors are the `by` values, never read from prose. `readIndex` (line 191): sections
+   Active, Open, Closed, Withdrawn (its own section), Superseded, Historical; Open rows ordered
+   by sequence position.
+2. `renderIndex` (line 444): `README.md` keeps line 1 `# Work orders`, the generated-by
+   sentence, `## Active`, `## Open` and every card field; adds the sequence with pairs (groups
+   of two) and a `HISTORY.md` link; drops "Other open work". New export `renderHistory(index)`:
+   Closed, Withdrawn, Superseded (with successors), Historical, `renderSources`, the tag
+   snapshot; `HISTORY.md` starts with its own title (the runtime contract reads only README);
+   link definitions on both pages.
+3. `main` (line 669): write both pages (temp then rename each); `--check` reads the snapshot
+   from `HISTORY.md` and calls `checkIndex(expected, actual, page)` per page; new export
+   `checkSequenceCoverage(index)` refuses an open non-umbrella order missing from the sequence,
+   kept out of `checkSequenceTopology` (`scripts/lib/plan-receipts.mjs` uses that for
+   historical receipts). Check: `node scripts/work-orders.mjs index --check` (the `index`
+   row); `scripts/test-work-orders.mjs` through `scripts/test-work-orders.sh`
+   (`work-orders-fixtures`) with one fixture per class.
+4. `scripts/resume.mjs` activate (line 1275): before `readDependencies`, refuse an umbrella
+   with `activation refused: WO-NNN is an umbrella record superseded by <ids>`. Check: a case
+   in `scripts/test-resume.sh` that fails at `08845c71`.
+5. `scripts/lib/meta.mjs` size paths (line 1299) add `HISTORY.md`;
+   `scripts/lib/worktree-integration.mjs` `pureProjection` (line 113) adds `HISTORY.md`;
+   `.gitattributes`: `/docs/work-orders/HISTORY.md dotln-generated dotln-check=suite:index`.
+6. Console: `packages/console/src/types.ts` `BoardSources.workOrderHistory`;
+   `collect.ts` `text("docs/work-orders/HISTORY.md")` (line 284); `text-sources.ts` parser
+   accepting the history header; `work.ts` `projectWork` indexes both pages. Regenerate
+   fixtures with `node scripts/console-fixtures.mjs --write`. A test in
+   `packages/console/test/board.test.ts`: release links equal those computed from
+   `git show <base>:docs/work-orders/README.md`.
+7. `packages/skeleton/test/runtime-status.test.ts`: `runtimeOrdersFromIndex` over the new
+   README returns active and queued orders.
+8. Roadmap: the introduction links the index; pending rungs, then closed rungs, then the
+   release-history block (position-free in `historyBlock`); the intended heading order is
+   committed as `docs/evidence/WO-190/roadmap-order.json` and a test asserts the exact
+   sequence (criterion 7 is judged on it, not on a reading of headings). Rename the two
+   headings to drop "→ WO-039 + WO-040" and "→ WO-033 + WO-034"; update the matching rows
+   (183 and 186) of `docs/publication/audience-status-index.md`, since
+   `npm run publication:check` requires row labels to equal headings; keep each
+   `<!-- prettier-ignore -->`.
+9. Write-backs: `docs/README.md` §"## Map" (line 38); product 07 §"## Operator resume
+   phrases" (the sentences at lines 318 and 327, in place); `packages/console/README.md`
+   §"## Sources and limits"; `docs/evidence/WO-190/decisions.md` with index bytes before and
+   after; locks via `node scripts/check-publication.mjs --print-locks`;
+   `npm run publication:check`.
+10. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+    complete `docs/evidence/WO-190/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the two generated pages; the header class and the
 activation refusal; the index refusal; the console's second source; the
 reordered roadmap; fixtures; the write-backs below.
@@ -209,6 +261,16 @@ review. No live row.
 **Write-back duty:** as listed in criteria 7 and 9.
 
 **Known issues and carry-ins:**
+- 2026-10-07 pass: stale and corrected above: the index is 749,018
+  bytes in 3,813 lines (closed cards 333,159; the tag record 312,340;
+  87,643 bytes precede `## Closed`); the roadmap is 79,891 bytes; the
+  sequence now holds 39 entries, 33 of them queued; WO-185 and WO-187 are
+  merged.
+- Decided by the 2026-10-07 pass: Withdrawn is its own section;
+  `HISTORY.md` has its own title; successors come from the typed
+  superseded entries and the roadmap order from a committed JSON (the
+  prose-parsing screen); the pair is WO-075, which shares no file with
+  this order.
 
 - The index's delivery line for WO-112 and WO-118 is written into the
   generator by identifier (`renderIndex`); it moves with their cards and

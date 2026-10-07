@@ -3,6 +3,7 @@
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** delivery
 **Release classification:** minor. An overlay schema and its composition in
 `harness emit`; no kit law change. Assigned at activation under the standing
 opt-out default.
@@ -128,6 +129,53 @@ where the configuration declares them.
   second home for registration and classes (two sources for one fact;
   reopen if a fork needs a registration that differs per build).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+1. `scripts/lib/harness.mjs`: add `OVERLAY_KEYS` (`version`, `build`, `identity`,
+   `unequip`, `equip`, `narrow`, `grants`) and `decodeBuildOverlay(path, text)`, which
+   throws `invalid build overlay in <path>: <detail>` naming the key for non-JSON, an unknown
+   key or a wrong type. `readBuildOverlay(launchpad)` resolves `loadConfig(launchpad).build.overlay`
+   through `containedRegularFile` (`scripts/lib/paths.mjs` line 14) and refuses an unreadable
+   file. Grants accept `grantedBy` `operator` or `host-policy` only
+   (`packages/kernel/src/types.ts` line 109). "Extra units" means the support switches the
+   kit build already defines (`contributorConfiguredProgram`, `contributor.ts` line 685);
+   the tree has no data-defined unit catalog, so `equip` and `unequip` name those switches.
+2. `packages/skeleton/src/loadouts/contributor.ts`: give `contributorProgram(supportIds, overlay)`
+   an optional overlay applied to `contributorWithSupports(supportIds)` before
+   `compileLoadout` (lines 628 to 684), so an ungranted widening fails with
+   `AUTHORITY WIDENING` (`packages/compiler/src/authority.ts` line 61). This file is a
+   registered evidence source (authority, feedback and harness inventories) and not in
+   `FEEDBACK_SOURCE_PATHS`, so it owes re-mints and no live episode. Check: `npm run build`.
+3. `scripts/lib/harness.mjs`: `harnessInstallation(options)` accepts `options.overlay`; it maps
+   `unequip` and `equip` to the switches, passes the rest to step 2, and adds
+   `overlay: { path, sha256 }` to the installation manifest only when an overlay exists, so the
+   bytes with no overlay stay the same. `build: "none"` returns no generated files and
+   `emitHarness` writes the floor alone; `.claude/harness-manifest.json` stays, listing no
+   installed surfaces, so `harness check` keeps a subject.
+4. `scripts/harness.mjs`: for `emit` and `check` without `--target`, set
+   `options.overlay = readBuildOverlay(findLaunchpad())` beside `options.termsRoot = root`
+   (line 319). A refusal happens before any write.
+5. `scripts/test-harness.mjs` (the `harness-fixtures` row), cases: overlay narrowing re-emits
+   with only the declared diff; identity replacement and two unequips leave neither;
+   `build: none` emits the floor and `check` passes; an ungranted widening refuses
+   `AUTHORITY WIDENING`; a granted widening records provenance; non-JSON, unknown-key and
+   unreadable overlays refuse by path and write nothing; no overlay reproduces today's bytes.
+   Check: `npm test -- --only harness-fixtures`, then `node scripts/harness.mjs check`.
+6. Re-mints: point `docs/evidence/current.json` authority at WO-076 revision 001;
+   `node scripts/authority-evidence.mjs --write`; `npm run build`;
+   `node scripts/feedback-evidence.mjs --carry <the edition selected at the base>`;
+   `npm test -- --only harness-evidence` re-checks the harness inventory (it has no
+   `--write`; "the harness edition" in the Cost line means this inventory check).
+7. Write-backs: `scripts/kit/README.client.md` (WO-074), first section: the Contributor
+   build is starter content, not kit law, and the overlay owns the fork's build;
+   `docs/decisions/0006-platform-mechanisms-instance-doctrine.md` §"## Amendments": one dated
+   bullet in the existing form; `docs/product/10-ir-compatibility.md` §"## Separate version
+   axes": the overlay schema axis, in place; `docs/evidence/WO-076/decisions.md` (WO-069-D001's
+   disposition, the composition placement); `node scripts/check-publication.mjs --print-locks`
+   into `docs/publication/audience-status-index.md`; `npm run publication:check`.
+8. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+   complete `docs/evidence/WO-076/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the schema, the composition, fixtures, the client README
 section, the write-backs below.
 
@@ -149,11 +197,9 @@ section, the write-backs below.
    Contributor build is starter content, not kit law, and the overlay owns
    the fork's build); ADR-0006 §Amendments (a dated note, the section's
    form); 10 §Separate version axes (the overlay schema), in place with no
-   dated paragraph, at most 200 bytes added, against 507 bytes of headroom
-   on 2026-09-28; WO-060, WO-086, WO-058, WO-091 and WO-092 also write
-   product 10, so the executor re-measures the headroom at its base; where
-   the bound does not fit, it consolidates the section it edits in the same
-   change; a ceiling is raised only by a planning-document decision. The
+   dated paragraph (ceilings are planning's: the 2026-10-07 pass set every
+   product document's ceiling at measured bytes plus one tenth); WO-091,
+   WO-092, WO-097 and WO-194 also write product 10. The
    decisions file, with WO-069-D001's disposition; the publication locks
    refreshed.
 6. The re-mints the Cost line names are recorded; `npm test -- --review`
@@ -166,6 +212,19 @@ because `scripts/lib/harness.mjs` is a declared source of harness-fixtures,
 and again at final review. No live row.
 
 **Write-back duty:** as listed in criterion 5.
+
+**Known issues and carry-ins:**
+
+- Stale on 2026-10-07 and corrected above: product 10 headroom (950, not
+  507) and its co-writers; the Observed gap's line counts (now 337, 853 and
+  1,376); the Cost line's "harness edition" is the inventory check of step 6.
+- Decided by the 2026-10-07 pass: the overlay keys of step 1; "extra units"
+  are the existing support switches; `build: none` keeps the manifest; the
+  composition is a parameter on `contributorProgram` (`contributor.ts`, now
+  a declared surface with its re-mints). Reopen: a fork needs a unit the
+  switches do not name.
+- Blocked on WO-074 (the client README template's path and first heading)
+  and WO-075 (an export to compose over; the core fixtures are not blocked).
 
 **Non-goals:** update (WO-077); registration semantics (WO-071); class
 semantics (WO-073); composition outside the floor.

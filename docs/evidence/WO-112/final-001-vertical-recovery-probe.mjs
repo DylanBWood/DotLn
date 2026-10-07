@@ -104,8 +104,9 @@ async function revoke() {
   return {
     case: "revoke-vertical",
     first,
-    recordedProcessGroup:
-      types.includes("SourceChangeProcessStarted") ? "see crash cases" : "absent",
+    recordedProcessGroup: types.includes("SourceChangeProcessStarted")
+      ? "see crash cases"
+      : "absent",
     processStoppedRecorded: types.includes("SourceChangeProcessStopped"),
     workerInterruptedRecorded: types.includes("WorkerInterrupted"),
     lastEvent: types.at(-1),

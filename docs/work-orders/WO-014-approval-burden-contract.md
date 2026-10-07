@@ -9,6 +9,7 @@ authority stays with the operator: this order authorizes no change to
 personal settings, and any setting change it finds necessary returns to
 the operator as a decision packet.
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** evidence
 **Release classification:** patch. Documentation, process and test
 infrastructure; no exported runtime capability. Assigned at activation
 under the standing opt-out default.
@@ -247,6 +248,39 @@ allow rule.
   the matrices (the formatter ignores their formats since 2026-09-13;
   reopen if the format gate covers `.md` or `.json` again).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+1. Scope decided by the 2026-10-07 pass: this order is phase 1, documents only. Criteria 3
+   to 11, 13 and 14 count approval requests that nothing in the tree observes (the WO-136
+   matrix, `docs/discovery/authority-boundary-2026-09-17.md` line 109, says prompt counts
+   remain unknown without a host channel; the hooks registered are PreToolUse, PostToolUse,
+   PermissionDenied, UserPromptSubmit, SessionStart and Stop), so they are out of this
+   order's scope and recorded as a candidate in the planning map (reopen when a host channel
+   reports approval requests). Criteria 1, 2, 12, 17 and 18 remain; 15 and 16 are judged
+   on typed records (`predictable` and `bounded` booleans with a note; the gate rows per
+   harness) and recorded `unknown` where no run exists.
+2. `docs/AI-HARNESS-SECURITY.md` §"## Recorded host posture" (the anchor
+   `recorded-host-posture-2026-09-01-with-dated-amendments`, line 510): the row at line 525
+   ("no checkout-local allow entries") and the paragraph at lines 537 to 542 ("the count is now
+   zero") become dated observations with the drift rule and the count at the base (15
+   entries in this checkout's git-ignored `.claude/settings.local.json` on 2026-10-07; the
+   count only, never the entries). Check: `npm run test:docs`.
+3. `docs/decisions/0003-personal-ai-harness-security.md` §"## Amendments" (line 94) and
+   `docs/decisions/0004-claude-sandboxed-bash-auto-allow.md` §"## Amendments" (line 78):
+   append the two forward-pointing entries (ADR-0003 Decision 2 to ADR-0004 Decision 1;
+   ADR-0004 Decision 4 to ADR-0005 Decision 1). Check: `git diff` shows appends only.
+4. Readback: `npm run discover -- harness claude-code`, then `codex-cli` and `copilot-cli`,
+   for versions; the pinned axes are personal settings the operator reads, recorded as a
+   dated observation or `unknown`.
+5. `docs/evidence/WO-014/decisions.md` (new): the scope decision, the observations, the
+   three later partial observations the gap did not name
+   (`docs/discovery/copilot-cli-2026-09-20.json` line 9451;
+   `writing-worker-smoke-2026-09-14.md` rows C-U2 and X-U2; Claude's typed
+   `HostPermissionDenied` events since `09fe5d88`); `npm run meta`;
+   `docs/planning/work-order-map.md` row at close.
+6. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+   complete `docs/evidence/WO-014/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the phase-1 reconciliation edits (runbook, two ADR
 amendments); baseline and final approval-surface matrices per harness under
 `docs/discovery/`; the sanitized fresh-session transcripts those matrices
@@ -350,6 +384,17 @@ operator-witnessed run.
 **Write-back duty:** as listed in criterion 17.
 
 **Known issues and carry-ins:**
+- 2026-10-07 pass: no later order met any criterion; the counting the
+  order needs has no channel in the tree, so the order is narrowed to
+  phase 1 (step 1) and the rest is a candidate. Stale and corrected: the
+  order sits last in the sequence; five suite rows declare
+  `needs: outside-sandbox`; three later partial observations exist.
+- Decided by the 2026-10-07 pass: the allow-entry count may be committed
+  as a dated observation (count only); criteria 15 and 16 are typed
+  records (prose-parsing screen). Reopen: a host channel reports approval
+  requests, which unboards phases 2 and 3.
+- WO-188 and WO-192 write `docs/AI-HARNESS-SECURITY.md` before this order;
+  the executor re-measures the lines at the base.
 
 - Receipt 038: the order commits to baselines, final runs on three
   harnesses, a verifier reproduction and two witnessed runs before any
@@ -371,7 +416,8 @@ request.
 
 **Operator-review assumptions**
 
-1. The order stays outside the sequence, as the planning map keeps it,
+1. The order sits last in the sequence (the 2026-10-07 pass corrected the
+   earlier statement that it stayed outside it),
    until a correction or a decision records approval prompts interrupting
    an ordinary session under the recorded posture; the pass that finds
    one sequences it.

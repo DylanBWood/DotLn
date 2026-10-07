@@ -163,6 +163,54 @@ change.
   front page, order titles and code comments as surfaces (WO-189 and
   WO-188 own them; the control file can name them later).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+1. `docs/control/reader-profiles.json` (new): `{ schemaVersion, surfaces: { prTitle, prBody, commitSubject, releaseNotes, releasePage } }`,
+   each with `audience`, `density`, `identifiers`, `machineDetail`, `voice`; every surface
+   defaults to `balanced` unless the operator picks at final review.
+2. `scripts/lib/reader-profiles.mjs` (new): `validateReaderProfiles`, `profileGuidance(surface)`,
+   `scoreRows`. `scripts/reader.mjs` (new): `profile`, `preview`, `score`, `score --record`
+   (its JSON schema: release, question id, quote or null), `score --correction <surface>
+   --capture-hash sha256:<digest>` (a correction is recorded only through this typed command,
+   never inferred from messages), `check`; `package.json` script `reader` (this stales all
+   five evidence editions, since root `package.json` is a source in each). Add a document row
+   `node("reader-profiles", "scripts/reader.mjs", { args: ["check"], document: true })` to
+   `scripts/test-runner.mjs` and `reader.mjs` to `DOCUMENT_GATE_STUBS`. Check:
+   `npm run test:docs`; `scripts/test-reader.mjs` (new): unknown surface, dimension or
+   position; a missing surface; an idempotent record; a quote not in the text.
+3. `docs/publication/examples/<surface>/{record,balanced,reader}.md` and one illustration per
+   position; each example carries a front-matter list of fact ids with literal anchors
+   (version, commands, paths) checked by substring, and the reviewer's sameness verdict is
+   recorded as JSON (criterion 2 is judged on those, not on a prose comparison).
+4. `scripts/worktree.mjs` `main` publish: after `Proposed N: title` print
+   `profileGuidance("prTitle")` and `("prBody")`; `scripts/release.mjs` `main` prepare: print
+   `profileGuidance("releaseNotes")`. Check: the successful publish case with the `gh` double
+   in `scripts/test-release.sh` (about line 1751, the `release` row) and
+   `scripts/test-release-preparation.mjs` show the guidance and no refusal.
+5. Role text (after WO-196): one sentence in the reviewer procedure and one in the planner
+   procedure of `contributor.ts`; the chained role oracle
+   `packages/skeleton/fixtures/wo191-role-baseline.json`; `scripts/test-process-debt.mjs`
+   "WO-145 optional economy support..." reads it and `machinerySources["process-debt"]` lists
+   it; `node scripts/harness.mjs emit` and `check`; record root bytes (the ceilings advise).
+6. `plan start`: return `readerScores` from `scripts/refute-plan.mjs` `start` beside
+   `failures`, outside the 1 KB `failuresAtStart` block (`scripts/lib/plan-failures.mjs`
+   `START_BYTES`, line 24).
+7. Profile revision at a tag: `git show <tag>:docs/control/reader-profiles.json`; releases
+   before the file existed record `null` with the reason.
+8. The baseline run over the ten most recent tags (v0.68.0 back) into
+   `docs/publication/reader-scores.jsonl` (register the path in the kernel JSONL registry if
+   `check-registrations.mjs` requires it) with model and effort readback; readers launch
+   outside the repository (the pinned CLI with cwd in an empty temporary directory, as WO-189
+   does), and the run spends pinned-model tokens under the standing rule.
+9. Re-mint all five editions: `node scripts/authority-evidence.mjs --write --edition WO-191 --revision 001`;
+   artifact-identity, verification and feedback (`--write` or `--carry` as the base selects);
+   harness check.
+10. Write-backs: product 08 §"## PRs and commits" (in place); `docs/evidence/WO-191/decisions.md`;
+    `node scripts/meta.mjs`; locks via `node scripts/check-publication.mjs --print-locks`;
+    `npm run publication:check`.
+11. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+    complete `docs/evidence/WO-191/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the control file and its check; the examples library;
 the command and its three forms; the two prints; the role sentences and
 regenerated roots; the score file and the `plan start` line; fixtures;
@@ -214,6 +262,19 @@ declared machinery sources, and again at final review.
 **Write-back duty:** as listed in criterion 8.
 
 **Known issues and carry-ins:**
+- 2026-10-07 pass: stale and corrected above: the `package.json` entry
+  stales all five editions; the root bytes (reviewer 27,882, planner
+  20,303) need no acceptance and the ceilings advise; WO-187 is merged and
+  WO-189 edits only `release.mjs` of the three files named.
+- Decided by the 2026-10-07 pass: `balanced` is every surface's fallback;
+  reader runs launch outside the repository and may spend pinned-model
+  tokens; `null` is the revision for releases before the file; fact
+  anchors, a JSON sameness verdict and a typed correction command replace
+  the prose reads (prose-parsing screen). Reopen: a correction arrives
+  through a channel the command cannot capture.
+- Blocked on WO-188 item 24 (hard) for the PR-body and Release shapes the
+  examples copy, and on WO-196 for the role procedure the sentences join;
+  the pair is WO-078, which shares no file with this order.
 
 - Reading-grade figures in the planning document use a syllable
   heuristic; they compare samples with each other and are not a target.

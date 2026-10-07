@@ -3,6 +3,7 @@
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** delivery
 **Release classification:** minor. Control-plane lifecycle capability over
 registered repositories. Assigned at activation under the standing opt-out
 default.
@@ -36,8 +37,7 @@ and the map's and the register's carry-ins are written in
 **Depends on:** WO-071 merged (the registration it starts worktrees from;
 closed, v0.38.0); WO-049 merged (the emit into the target worktree; closed,
 v0.25.0); WO-030 merged (per-order segments; satisfied at `v0.7.0`); WO-167
-merged (product 07 holds 9 bytes of headroom until the fold resets its
-ceiling); WO-123 merged (the source-change guard refuses variant path
+merged (closed, v0.53.1); WO-123 merged (the source-change guard refuses variant path
 spellings before `repositories.<id>.worktreeParent` has a reader, register
 row FUP-8369f2b4284e70a8). WO-052 (closed, v0.28.0) is a reference: its
 worktree creation helper is reused where it fits.
@@ -70,7 +70,7 @@ records the sharing. A recommendation, not a dependency token.
   {
     "workOrderId": "WO-167",
     "relation": "hard",
-    "reason": "product 07 has 9 bytes of headroom until the fold resets its ceiling"
+    "reason": "closed at v0.53.1; the fold this order's product 07 write-back followed"
   },
   {
     "workOrderId": "WO-123",
@@ -182,6 +182,69 @@ repository.
   profile and an import root in a Contributor one; reopen with an order that
   gives target profiles role skills).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+1. Decided shape (2026-10-07 pass): a target order has two worktrees. The launchpad's own
+   `wo-NNN` worktree and branch carry the control segment, evidence and reports, exactly as
+   today, so `worktree integrate` (which refuses outside the order's launchpad worktree,
+   `scripts/lib/worktree-integration.mjs` around line 467) and `release close` (which reads
+   merged control at `origin/main`, `scripts/release.mjs` line 2143) keep working unchanged;
+   the target worktree carries the code on a branch also named `wo-NNN` (selectable by
+   `branchWorkOrder`'s `^wo-(\d{3})$`). A target close removes both worktrees: the target
+   one through this order's path and the launchpad one as today. The order's "removes only
+   the target worktree" reads as "removes the target worktree beside the launchpad one".
+2. `scripts/lib/target-worktrees.mjs` (new): `targetRegistryPath(launchpad)` =
+   `docRelative(launchpad, "control", "local/target-worktrees.json")` (ignored, `.gitignore`
+   line 18); `cloneMapPath` = `local/repository-clones.json`; `physicalDirectory(p)` refusing
+   unless `resolve(p) === p`, `realpathSync.native(p) === p` and `/bin/pwd -P` in `p` prints
+   `p` (WO-123-D003; the same rule is module-private in `scripts/lib/vertical-runtime.mjs`
+   line 113 and `packages/skeleton/src/source-change-worktree.ts` line 77: reuse by export or
+   copy with a comment naming the origin); `resolveTargetStart(launchpad, id)` returning
+   `{ clone, parent }` with `parent = resolve(launchpad, worktreeParent)` (as
+   `vertical-runtime.mjs` line 297 reads it), refusing "no local clone recorded", "not a Git
+   top level" and "spelling differs from filesystem identity"; `recordTargetWorktree` and
+   `forgetTargetWorktree` (temp file plus rename); `registeredOrder(launchpad, cwd)`.
+3. `scripts/worktree.mjs`: new action `clone <id> <absolute-path>` writing the clone map after
+   the identity and `rev-parse --show-toplevel` checks; extend usage (line 841). In `start`
+   (line 440) read `parseRepositoryDeclaration` (`scripts/lib/work-order-repository.mjs`);
+   when present call a new `startTargetWorktree()`: every refusal first;
+   `git -C <clone> rev-parse --verify <baseCommit>^{commit}`;
+   `git -C <clone> worktree add -b wo-NNN <parent>/<basename(clone)>-woNNN <baseCommit>`;
+   the launchpad worktree as today; activation; `emitTargetHarness(target, { runtimeRoot })`
+   then `checkTargetHarness` (`scripts/lib/harness.mjs` lines 850 and 779);
+   `recordTargetWorktree`; print the `authorityProfile` JSON, then the existing handoff
+   (line 487).
+4. `scripts/resume.mjs` `run` (line 1152): when `branchWorkOrder(repoRoot)` is undefined and
+   the physical Git top level of cwd differs from `repoRoot`, take the order from
+   `registeredOrder`; for status, next, verify and final-review with no entry print
+   `<cwd> is not a registered target worktree; no order selected` and return without a
+   transition. Reports already resolve through `docPath(repoRoot)`.
+5. `scripts/release.mjs` `close` (line 2113): after line 2143, when the fold's
+   `state.repositoryId` is set (`scripts/lib/control.mjs` line 182):
+   `record.publication.outcome = "no-release"`, no surface check or tag;
+   `removeTargetHarness`; require `git -C <clone> merge-base --is-ancestor wo-NNN <baseBranch>`;
+   `git -C <clone> worktree remove <path>`; `removeMergedBranch(clone, "wo-NNN")`
+   (`scripts/lib/git.mjs` line 131); `forgetTargetWorktree`; then the launchpad worktree as
+   today.
+6. `scripts/test-target-worktree.mjs` (new): a launchpad with a bare origin as
+   `scripts/test-configuration-root.mjs` "worktree start and finish use the configured roots"
+   (line 808) builds it, plus a target bare repository and clone, runtime symlinks as
+   `scripts/test-target-harness.mjs` lines 61 to 100; tests "WO-072 criterion 1" to
+   "criterion 4"; criterion 3 probes case sensitivity (create `Probe`, stat `probe`) and
+   reports it with `t.diagnostic`; criterion 4 asserts `git tag --list` empty in both
+   repositories.
+7. `scripts/test-runner.mjs`: `nodeTests("target-worktree", "scripts/test-target-worktree.mjs")`
+   after line 644. Check: `npm test -- --only target-worktree`.
+8. Write-backs: product 07 §"### Where the control plane finds its documents" (the target
+   worktree, the registry, reports in the launchpad) and §"## Workflow closeout and releases"
+   (the target no-release close), in place; `docs/PLAYBOOK.md` §"## The loop, per work order"
+   (the target loop); `docs/evidence/WO-072/decisions.md` (the registry and clone-map homes,
+   the `worktreeParent` base, the branch name, WO-064-D001 and D004 dispositions, the
+   WO-071-D001 reopen check); `npm run meta`; `node scripts/check-publication.mjs --print-locks`;
+   `npm run work-orders -- index`; `npm run publication:check`.
+9. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+   complete `docs/evidence/WO-072/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the lifecycle changes, the registry, a real-Git
 launchpad-and-target fixture, the write-backs below.
 
@@ -212,13 +275,9 @@ launchpad-and-target fixture, the write-backs below.
 5. Write-backs land, each in place with no dated paragraph: 07 §Where the
    control plane finds its documents (the target worktree, the registry,
    reports in the launchpad) and §Workflow closeout and releases (the
-   target no-release close), at most 500 bytes added to product 07, against
-   9 bytes of headroom on 2026-09-28, which WO-167's fold resets first;
-   WO-173, WO-172, WO-086, WO-123, WO-073, WO-113, WO-080, WO-077 and
-   WO-078 also write product 07, so the executor re-measures the headroom
-   at its base; where the bound does not fit, it consolidates the section
-   it edits in the same change; a ceiling is raised only by a
-   planning-document decision. `docs/PLAYBOOK.md` §The loop, per work order
+   target no-release close), in place with no dated paragraph (ceilings are planning's since the 2026-10-07 pass); WO-073, WO-113, WO-080, WO-077,
+   WO-078, WO-188, WO-189, WO-190, WO-192 and WO-193 also write product 07.
+   `docs/PLAYBOOK.md` §The loop, per work order
    (the target loop); the decisions file, with the dispositions of
    WO-064-D001 and D004; the publication locks refreshed.
 6. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
@@ -230,6 +289,22 @@ launchpad-and-target fixture, the write-backs below.
 final review. No live row.
 
 **Write-back duty:** as listed in criterion 5.
+
+**Known issues and carry-ins:**
+
+- Stale on 2026-10-07 and corrected above: WO-167, WO-123, WO-173,
+  WO-172 and WO-086 are closed and FUP-8369f2b4284e70a8 settled; the
+  Observed gap's line counts are now 853, 2,212 and 2,978;
+  `worktreeParent` has a reader (`vertical-runtime.mjs` line 297) and
+  the vertical store's `vertical.json` binds a repository to a clone, so
+  the gap is the control-plane lifecycle, not the mapping.
+- Decided by the 2026-10-07 pass: the two-worktree shape of step 1; the
+  branch name `wo-NNN` in both; this order runs alone because every
+  machinery order in the queue shares `resume.mjs`, `release.mjs` or
+  `worktree.mjs` with it. Reopen: a target order must carry its records
+  in the target repository.
+- Anchors move after WO-188 (`release.mjs`, `worktree.mjs`) and WO-190
+  (`resume.mjs`); the executor re-reads them at the base.
 
 **Non-goals:** publishing (WO-064, closed); integration (WO-079, closed,
 shipped as `worktree integrate`); classes (WO-073); role skills in a target
