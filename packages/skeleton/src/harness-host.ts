@@ -4418,6 +4418,14 @@ async function evaluateExistingHarnessHook(
         : undefined;
     if (admission?.refusal)
       return protocolRefusal(config.event, admission.refusal);
+    const liveGates = spawn ? activeGateRuns(root) : [];
+    const gateAdvisory = liveGates.length
+      ? `DotLn advisory: spawn admitted during live gate ${liveGates.map((run) => `${run.runId} (${run.kind ?? "unknown"})`).join(", ")}; probes under node, npm and harness bounded will be refused until it ends.`
+      : undefined;
+    if (gateAdvisory) record(root, input, { advisory: gateAdvisory });
+    const spawnAdvisory = [admission?.advisory, gateAdvisory]
+      .filter(Boolean)
+      .join("\n");
     // A counter advisory never bypasses the existing permission classification.
     if (admission?.advisory)
       record(root, input, {
@@ -4461,8 +4469,8 @@ async function evaluateExistingHarnessHook(
     );
     record(root, input, { effect, allowed: decision.authorized });
     return decision.authorized
-      ? admission?.advisory
-        ? subagentAdvisory({ systemMessage: admission.advisory })
+      ? spawnAdvisory
+        ? subagentAdvisory({ systemMessage: spawnAdvisory })
         : {}
       : protocolAdvisory(`compiled authority does not permit ${effect}`);
   }
