@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "subjectSourceHash": "sha256:e696937e6d6a6a41627ad99a321ef60c1f858a1981762f5bb0da1a1f5e14c2de",
+  "subjectSourceHash": "sha256:abeb076e1a3d104dea1eb497d150c0cf1be6243038fa00b8d785d5785c0a041b",
   "acceptances": [
     {
       "date": "2026-10-05",
@@ -115,187 +115,187 @@
       "reason": "WO-140 measured 21,299 bytes in both generated roots (installed CLAUDE.md 5,788 plus the reviewer skill 15,511) against 20,480, from 20,434 before it, after adding two reviewed rules of 865 bytes together: the product gate runs outside the harness sandbox from the start in an attended session and a resident-launched verification records a partial result, and the receipt's Process cost line carries counters with their source or one cause code. During resume: next on 2026-09-19 the operator authorized raising the limit; raise by one 4 KB step under that authorization and the standing direction of 2026-09-17, preserving every reviewed rule; the verifier measures 20,081 against 20,480 with the same two rules and stays unchanged. Reassess when another reviewed rule needs more. Decision: docs/evidence/WO-140/decisions.md#wo-140-d005."
     }
   ],
-  "observedAt": "2026-10-07T06:53:59.279Z",
-  "subjectRevision": "4da577cf77bfd61179238be8918793bfda76f23a",
+  "observedAt": "2026-10-07T07:16:02.038Z",
+  "subjectRevision": "04ad7255c99b1da5285317d7d2e3f53502a71b2c",
   "rows": [
     {
       "workOrder": "WO-196",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-199",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-197",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-074",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-188",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-075",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-190",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-073",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-198",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-077",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-189",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-078",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-191",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-072",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-076",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-118",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-192",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-193",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-194",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-183",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-113",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-080",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-081",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-082",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-096",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-097",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-098",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-091",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-092",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-093",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-094",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-095",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-089",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-088",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-014",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     },
     {
       "workOrder": "WO-083",
-      "observedAt": "2026-10-07T06:53:59.279Z",
+      "observedAt": "2026-10-07T07:16:02.038Z",
       "metrics": null
     }
   ],
