@@ -46,10 +46,10 @@ owes are gathered under Known issues and carry-ins
 ([planning document](../planning/standard-pass-2026-10-02.md) §6 and
 §9).
 **Depends on:** WO-071 merged (the registration the class and profile attach
-to; closed, v0.38.0); WO-167 merged (product 07 holds 9 bytes of headroom
-until the fold resets its ceiling).
-**Recommended placement:** the delivery lane of the seventh pair, beside
-WO-191, after WO-072 and before WO-076. This order edits
+to; closed, v0.38.0); WO-167 merged (closed, v0.53.1).
+**Recommended placement:** the delivery lane of the fourth pair after
+WO-196, beside WO-198 (the runner and its fixture; no shared file), after
+WO-075 and before WO-077. This order edits
 `scripts/lib/config.mjs`, `scripts/lib/authority-grants.mjs`,
 `scripts/lib/pull-request-observer.mjs`, `scripts/lib/target-publish.mjs`,
 the target activation in `scripts/resume.mjs`, the role procedure in
@@ -71,7 +71,7 @@ owns them, never here. A recommendation, not a dependency token.
   {
     "workOrderId": "WO-167",
     "relation": "hard",
-    "reason": "product 07 has 9 bytes of headroom until the fold resets its ceiling"
+    "reason": "closed at v0.53.1; the fold this order's product 07 write-back followed"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -183,6 +183,65 @@ states them.
   verification contract (a judged source; reopen if the host adapter cannot
   carry them).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+1. `scripts/lib/config.mjs`: `SECTION_KEYS` (line 84) gains `classes` (the class home is a
+   configuration section, decided 2026-10-07); new `validateClasses(path, declared)` for
+   `{ <id>: { checks: string[], supports: string[] } }` through `validateStringSet`;
+   `REPOSITORY_KEYS` (line 67) gains `profile` (a relative normalized POSIX path, the same
+   test as `worktreeParent`, lines 364 to 373), `automationLogins` and `linkHosts`;
+   `validateRepositories` refuses a `repositoryClass` naming no declared class;
+   `ROOT_SEGMENTS` (line 26) gains `repositoryProfiles: "repositories"`; `absentConfig` gains
+   `classes: {}`. Check: `node --test scripts/test-configuration-root.mjs` (subtests at lines
+   114, 194 and 220 gain the root and the keys).
+2. Fixtures that declare `repositoryClass` gain a `classes` entry:
+   `scripts/fixtures/vertical/fixture.mjs` line 195, `scripts/test-authority-grants.mjs` line
+   146, `scripts/test-configuration-root.mjs` line 74, `scripts/test-portfolio.mjs` line 97,
+   `scripts/test-resident-bind.mjs` line 1194.
+3. `scripts/lib/authority-grants.mjs`: new export `applyRepositoryClass(source, repository, classes)`
+   adding the class's checks to `activeMechanics[0].workOrder.requiredEvidence`
+   (`packages/compiler/src/compile.ts` lines 840 to 843 carry it into the compiled WorkOrder)
+   and a `Link` per class support id found in `source.supportFacets`; an absent id or an
+   ungranted widening refuses `CLASS LAYER: <class>`. Layers only union, so criterion 1's
+   removal case is read as "a class naming a check the launchpad does not declare refuses
+   naming the class" (decided 2026-10-07). Call it in `registeredRepositoryInputs` (line 209)
+   before the profile; mirror it in `registeredProfileMismatches` (line 259). Check:
+   `node --test scripts/test-authority-grants.mjs`, new test "WO-073 criterion 1: two
+   repositories in one class".
+4. `scripts/resume.mjs` `activate`, after the unknown-id refusal (line 1309): a declared
+   `profile` that is absent, not a `containedRegularFile` (imported at line 75) or unreadable
+   refuses naming the path; none declared prints
+   `Advisory: repository <id> declares no profile`. Check: a configuration-root subtest for
+   criterion 3.
+5. `scripts/lib/pull-request-observer.mjs`: `observePullRequestInternal` (line 364) takes
+   `automationLogins = []` and `linkHosts = []`; `comment()` (line 172) treats a declared
+   login as automation; `screen()` (line 139) gets `allowedHosts: [host, ...linkHosts]` for
+   automation items. `scripts/lib/target-publish.mjs` `readTargetPublishRequest` (line 92)
+   attaches both from `loadConfig(findLaunchpad()).repositories[environment.repo]`; the
+   observer callers `scripts/lib/review-comment-loop.mjs` line 298 (target request at 639),
+   `scripts/lib/vertical-primitives.mjs` lines 787 and 858 and `scripts/worktree.mjs` line
+   402 pass them. Check: `node --test scripts/test-target-publish.mjs`, new test "WO-073
+   criterion 4".
+6. `packages/skeleton/src/loadouts/contributor.ts`, the executor procedure (restructured by
+   WO-196 at the base): one sentence after the `@failure-report` read directive, no new
+   `Read:` directive; add the chained role oracle fixture
+   `packages/skeleton/fixtures/wo073-role-baseline.json`, point the process-debt baseline
+   test and `machinerySources["process-debt"]` at it; `npm run build` and
+   `node scripts/harness.mjs emit`; measure with `node scripts/harness-context.mjs --check`
+   before and after and record the bytes (the ceilings advise).
+7. `docs/repositories/README.md` (new): the convention and the `dotln-discovery` place.
+8. Re-mints: `node scripts/authority-evidence.mjs --write --edition WO-073 --revision 001`;
+   `node scripts/feedback-evidence.mjs --carry <the edition selected at the base> --edition WO-073`;
+   `npm test -- --only harness-evidence` checks the regenerated bundle.
+9. Write-backs: product 03 §"#### Agent enablement skills" (in place); product 07
+   §"### Where the control plane finds its documents" (the class, its home, the profile root
+   and the two keys; the section list at line 623 and the root list at 628 to 633);
+   `docs/evidence/WO-073/decisions.md` (the class home, the profile root, WO-119-D001 and
+   WO-071-D001 dispositions); `npm run meta`; `node scripts/check-publication.mjs --print-locks`;
+   `npm run work-orders -- index`; `npm run publication:check`.
+10. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+    complete `docs/evidence/WO-073/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the class semantics, the profile convention, the skill
 change, fixtures, the write-backs below.
 
@@ -234,6 +293,18 @@ harness-fixtures, and again at final review. No live row.
 **Write-back duty:** as listed in criterion 5.
 
 **Known issues and carry-ins:**
+- 2026-10-07 pass: stale and corrected above: the cold-start figures
+  (executor 29,777, verifier 26,077, reviewer 27,882; WO-196 brings the
+  executor under its ceiling first and the ceilings advise, so no
+  acceptance is recorded); product 03's and 07's headroom (ceilings are
+  planning's); WO-167, WO-184 and WO-187 closed; the observer callers are
+  now listed surfaces (step 5).
+- Decided by the 2026-10-07 pass: the class home is a `classes`
+  configuration section; criterion 1's removal case reads as step 3 says;
+  the pair is WO-198. Reopen: a class needs to remove a check a layer
+  below it added.
+- Anchors move after WO-072 (`resume.mjs`) and WO-196 (`contributor.ts`);
+  the executor re-reads them at the base.
 
 - On the three real pull requests WO-065's review read, 12 of 21 bot
   review items were stored as refusals, and a bot that runs as a user

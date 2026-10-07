@@ -40,6 +40,80 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-07 — Planning pass: the machinery reset (WO-196, WO-197; every queued order rewritten with an execution plan)
+
+Source: the operator's dispatch `planning:` on 2026-10-07 and five mid-turn
+messages, captured verbatim in ignored intake
+(`docs/intake/notes/2026-10-07-machinery-reset-planning.md`, SHA-256
+`e181640347ef46d8e1a66bbb3f9e2d9fbd9ed18feb7b9278c082a931cbedfa14`); the
+control record, the gate index and the decisions of the six orders closed
+since the last receipt. Planner synthesis; the clean-room screen found no
+stop condition. The record is
+[the planning document](../planning/machinery-reset-2026-10-07.md).
+
+- **The gate formats first and refuses to start otherwise** `adopted` `operator-directed`
+  - Five orders lost a full review gate to a formatter run after it; the
+    lesson in a receipt failed five times (WO-112 D049). WO-196 adds the
+    `format` row to the product and review gates' existing preflight
+    stage. Reopen: a gate lost to formatting after WO-196.
+- **A review gate at an unchanged identity reuses its passing tasks** `adopted`
+  - The review selection was always `forced-fresh`, so the verifier and
+    the reviewer paid 31 minutes each for bytes the executor's row covered.
+    WO-196 composes it by WO-186's rule; `--again` forces. Reopen: a
+    composed row passes where `--again` fails.
+- **The verdict is bound to the criteria** `adopted` `operator-directed`
+  - WO-112's VER-002 to VER-006 met every criterion and failed on new
+    in-surface defects; WO-185's FINAL-001 the same. Product 07 now routes
+    `blocking` to an unmet criterion or a regression against `main`, and
+    every other defect to a reproduced follow-up. Reopen: three
+    consecutive orders with rising escape counts.
+- **One adversary and one improver, once, at the end of implementation** `adopted` `operator-directed`
+  - The operator's note of 2026-10-02 asked for exactly that; the pass of
+    that day spread an adversary to four completions (WO-187) and cost
+    multiplied without cutting escapes. Product 07 states the operator's
+    shape; WO-196 regenerates the role sentences. Reopen: as above.
+- **No criterion requires reading prose** `adopted`
+  - WO-123 and WO-187 spent 39.9 hours building readers over English and
+    Markdown before each was replaced by a structured input. Product 07's
+    planning section carries the screen; every queued order was screened.
+    Reopen: a filed order's criterion asks for it again.
+- **Every order carries an execution plan** `adopted` `operator-directed`
+  - Orders named objectives and criteria, not files, functions and
+    commands; executors filled the gaps (WO-112 D016 lists fifteen). Every
+    queued order now has one, verified against `main` at `bd437eb2`.
+    Reopen: an activated order's plan names a file that is not there.
+- **Ceilings are planning's; the check advises** `adopted` `operator-directed`
+  - Orders promised bytes against headroom other orders had consumed;
+    product 03 sits at its ceiling and 07 was 7,798 over with an advisory.
+    Every ceiling is reset at measured bytes plus one tenth; WO-196 makes
+    the overrun an advisory. Reopen: the operator is asked to settle bytes
+    in a review.
+- **WO-196 runs next and alone** `adopted` `operator-directed`
+  - It changes the gate every order runs and the text every role reads.
+    Reopen: the operator reorders.
+- **A worktree's gate names the shared refs that moved** `adopted` `operator-directed`
+  - The operator reported passing suites failing after a merge into main;
+    the record holds one documented instance (WO-179 D012, fixed by
+    WO-186) and worktree gate rows leave with the worktree. WO-198 records
+    the shared refs on every row, names the ones that moved when a task
+    fails, and reproduces a sibling merge in a fixture. Reopen: a live
+    flip after WO-198 prints no delta line.
+- **The vertical survives an interrupt and a host crash** `adopted`
+  - WO-118 was planned as evidence-only while its criterion 2 needs
+    recovery the tree lacks (WO-112 D060, D065). WO-199 repairs the three
+    recorded defects and WO-118 depends on it. Reopen: a vertical run after
+    WO-199 is sealed refused after an interrupt.
+- **Every queued order was gone over** `adopted` `operator-directed`
+  - Eight read-only research workers verified every cited path of the 32
+    queued orders against `main` at `bd437eb2`; the pass corrected the
+    stale statements, removed every byte bound, recorded a default for
+    every open design question, narrowed WO-082 and WO-014 to what the
+    tree supplies, and wrote the execution plan. Reopen: an activated
+    order's plan names a file that is not there.
+- **Nothing before WO-083 needs DotLn on the operator's work machine** `adopted` `operator-directed`
+  - WO-083 (the operator's fork) is last; WO-118's starter is a scratch
+    instance on this machine. Reopen: the operator installs DotLn there.
+
 ## 2026-10-03 — Planning pass: why a Claude release close stops before it is finished (WO-195)
 
 Source: the operator's dispatch `planning:` after the WO-184 close and

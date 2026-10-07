@@ -104,8 +104,9 @@ else leaves.
   declines importing or paraphrasing any predecessor file. WO-112 scores
   the generic parity sentence in core. Neither gives an instance a
   place for its own private rows.
-- The kit's manifest already excludes instance files, and the overlay
-  is instance-owned; nothing instance-owned yet records predecessor
+- The kit's manifest, once WO-074 lands, excludes instance files (no
+  manifest exists at `bd437eb2`), and the overlay, once WO-076 lands, is
+  instance-owned; nothing instance-owned yet records predecessor
   capability.
 
 **Design (scope discipline):**
@@ -145,6 +146,48 @@ else leaves.
   instances (instances are not tracked); reusing WO-096's renderer
   (queued later and built over a different source; the vocabulary is
   shared when it lands).
+
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+1. `scripts/parity.mjs` (new): export `decodeParityRow`. Fields: `id`; `generation` (the
+   instance's label; seed rows carry `v1`); `kind` in `capability`, `rule`; `statement`;
+   `source` `{ registryKey, locator }`; `status` in `exact`, `adapted`, `lossy`, `unmapped`,
+   `blocked`, `unverified` (product 10 lines 256 to 257); `carrier`
+   `{ kind: "unit" | "support" | "profile" | "order", id }` for exact, adapted and lossy;
+   `lost` for lossy; `request` or `decision` for unmapped; `blocker` for blocked; optional
+   `evidence` path. A refusal names the field as `PARITY_FIELD_<NAME>`.
+2. The seed (in WO-074's template directory): five rows from product 12 lines 78 to 82 and
+   the eight items of the critical path's parity bullet (as WO-112 criterion 3 enumerates
+   them), each `unverified`, each with `source.quote` copied verbatim from the public
+   planning document (its generic terms are the ones CLAUDE.md prescribes); fixture rows carry
+   `synthetic: true`. The executor writes the seed by hand; nothing parses the product 12 table.
+3. `scripts/lib/config.mjs`: `SECTION_KEYS` (line 84) gains `parity` with `rows` (a contained
+   relative path); `absentConfig` (line 633) default. This is the file WO-193 step 1 edits;
+   the serial order avoids a conflict. Check: `scripts/test-configuration-root.mjs`;
+   `npm test -- --only configuration-root`.
+4. Commands in `scripts/parity.mjs`; `package.json` gains `"parity": "node scripts/parity.mjs"`:
+   `init` writes rows from the seed when absent and the ignored registry, a second run changes
+   no byte; `add` decodes then appends; `check` decodes all, looks each carrier up (a `unit`
+   or `support` in the emitted manifest's `origin.ids`, a `profile` document path, an
+   `order` id in the control log) and searches each row's private text (`source.locator`,
+   `lost`, `blocker`) as substrings in kit files and request drafts; `report` counts by
+   generation, kind and status and marks a generation `at-least-as-capable: false` while any
+   unmapped, blocked or unverified row remains, listing those ids; `request <row>` calls
+   WO-193's `draftRequest` with `statement` as the body only.
+5. `scripts/test-parity.mjs` (new) over synthetic rows: one case per status (criterion 2), the
+   four refusals (criterion 3), a two-generation report (criterion 4), a draft holding only the
+   statement (criterion 5), and the quote test of step 2 (each `source.quote` is a substring
+   of its file; criterion 7); add `nodeTests("parity", "scripts/test-parity.mjs")` to `suites`
+   (`scripts/test-runner.mjs` line 591). Check: `npm test -- --only parity`.
+6. Export and update fixtures (after WO-074 and WO-077): rows and registry unchanged byte for
+   byte; an export from a checkout holding a synthetic rows file writes none of it.
+7. Write-backs: product 12 §"## Open product choices" (answer the private-state bullet and
+   name the report, in place); product 10 §"## Candidate: external rule-source import plans"
+   (the row statuses, in place); the kit client README (WO-074's path);
+   `docs/evidence/WO-194/decisions.md`; `node scripts/lineage.mjs index --check`;
+   `node scripts/check-publication.mjs --print-locks`; `npm run publication:check`.
+8. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+   complete `docs/evidence/WO-194/handoff.md`; `npm run resume -- implementation-ready <flags>`.
 
 **Deliverables:** the kit command, schema, templates and seed; the
 configuration key for the rows path; fixtures over synthetic rows; the
@@ -192,6 +235,14 @@ map exists only in an instance and is never evidence here.
 **Write-back duty:** as listed in criterion 8.
 
 **Known issues and carry-ins:**
+- Stale on 2026-10-07 and corrected above: the manifest and the overlay
+  are planned, not present.
+- Decided by the 2026-10-07 pass: seed rows carry generation `v1`; critical
+  path quotes are kept verbatim from the public planning document; the
+  carrier and the quote checks are typed (prose-parsing screen).
+- Blocked on WO-074 (template directory, manifest file list, client README,
+  the instance `.gitignore`), WO-076 (where the emitted manifest and overlay
+  live), WO-077 (the update command) and WO-193 (`draftRequest`).
 
 - The check that a private field does not appear in a kit file or a
   draft compares text; a paraphrase passes it. The request's floor is

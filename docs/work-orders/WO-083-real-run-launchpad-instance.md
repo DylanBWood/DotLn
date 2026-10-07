@@ -4,6 +4,7 @@
 declarations and emitted bundle; the operator witnesses; launch claims
 recorded per session (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** delivery
 **Release classification:** minor. The witnessed run's evidence and the
 write-backs it earns; the external effects happen in the operator's
 repositories. Assigned at activation under the standing opt-out default.
@@ -174,6 +175,48 @@ baseline.
   repository; reopen if the copies cannot be sanitized); a hand-edited
   sibling entry (WO-078's check refuses it; reopen if WO-078 is withdrawn).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+1. This order needs the operator's own fork on the operator's own machine (their Angular
+   work); the operator said on 2026-10-07 that DotLn and the starter may not reach that
+   machine soon, so this order is last in the sequence and nothing before it needs them
+   there. If the run has not happened by handoff, criteria 1 to 4 are recorded unmet with
+   the steps below, as the order's assumptions allow.
+2. Decided 2026-10-07: the fork files its slice as a `dotln intent` (WO-120's draft;
+   WO-123's admission path), not as a planning-cut order; the baseline block is filed by a
+   planning pass (documents only, on a planning branch) before this order activates, so its
+   commit provably precedes activation.
+3. `docs/evidence/WO-083/README.md` (new; creates the directory): the baseline as JSON
+   between `<!-- dotln-baseline:start -->` and `<!-- dotln-baseline:end -->`:
+   `{ record, sha256, measure, value, attestation: "operator" }` per row, every value
+   supplied by the operator (`shasum -a 256 <record>`; a recalled number is `unknown`).
+4. Activate through `resume: next` (`npm run worktree -- start WO-083 docs/work-orders/WO-083-real-run-launchpad-instance.md`).
+5. The operator's run, outside this repository: export, fork, register the Angular target
+   with its class (WO-073), author `WS-001` (WO-080's JSON block), file the slice as an
+   intent, the resident-driven lifecycle (WO-118), `worktree publish WO-NNN --target <request> --require-deliverable-ready`.
+6. `docs/evidence/WO-083/transcripts/*.md`, `WS-001.md` and a profile copy (new), each with
+   the fork commit and its `shasum -a 256`. Checks: `npm run terms -- check docs/evidence/WO-083`
+   (`unavailable` without the local list, then that part is recorded unmet with the command);
+   `node scripts/outward-lint.mjs branch < <file>` and likewise `commit`, `pr-title`,
+   `pr-body`; the PR's changed files against the fork's `.claude/harness-manifest.json`
+   installed list; `node scripts/check-registrations.mjs` if any JSONL is committed;
+   WO-080's JSON-block validator on the `WS-001` copy and WO-073's profile decoder on the
+   profile copy (never a judgment of Markdown shape); "every member order cites both" judged
+   by the header fields `**Workstream:** WS-001` and `**Repository:** <id> @ <sha>`.
+7. `docs/evidence/WO-083/measures.json` (new, the verifier's): entries
+   `{ measure, transcript, line, citedPath, citedSha256, citedLine }` and, for handoffs,
+   `dispatchOrdinal` (a session boundary with no control-log dispatch is manual); counts
+   come from the entries; a measure with an `unknown` baseline is `unverified`
+   (prose-parsing screen: no reading of message substance).
+8. Write-backs (each heading re-read at the base): `docs/siblings/README.md` through WO-078's
+   generator (a receipt, never a hand edit); `docs/planning/capability-table.md`: a
+   `consumer.angular` row, above level 0 only for a run that did not fail
+   and was not waived; products 12, 04,
+   13 and 06 as criterion 4 names them; `docs/evidence/WO-083/decisions.md`; `npm run meta`;
+   `node scripts/check-publication.mjs --print-locks`; `npm run publication:check`.
+9. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+   complete `docs/evidence/WO-083/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the receipt with sanitized transcripts, the two copies
 and fired-unit counts; the write-backs below.
 
@@ -214,23 +257,18 @@ and fired-unit counts; the write-backs below.
 4. Write-backs land, each in place with no dated paragraph: the Angular
    consumer's entry in `docs/siblings/README.md` through WO-078's
    generator, with its check passing; the capability table
-   (`consumer.angular` above level 0 only for a run that did not fail); 12
-   §One workstream across repositories (the route's outcome; at most 200
-   bytes added, against 360 bytes of headroom on 2026-09-28; WO-061,
-   WO-112, WO-118, WO-080 and WO-082 also write 12); 04 §Plural UI hosts,
-   one projection contract and its §Later console hosts (the framework
-   decision's evidence and console v1's status; at most 200 bytes added,
-   against 1,194; WO-116, WO-117, WO-081, WO-092 and WO-094 also write 04);
-   13 §Assistance the platform owes each role (the showrunner and engineer
-   rows; at most 200 bytes added, against 539; WO-098 also writes 13); 06
-   §Application version pending — Launchpad and cross-repository
-   workstreams → WO-033 + WO-034 (the rung's status; at most 200 bytes
-   added, against 1,802; WO-086 and WO-087 restructure 06 first, and
-   WO-061, WO-066, WO-124, WO-112, WO-095, WO-096 and WO-098 also write it).
-   For each document the executor re-measures the headroom at its base;
-   where the bound does not fit, it consolidates the section it edits in
-   the same change; a ceiling is raised only by a planning-document
-   decision. The decisions file; the publication locks refreshed.
+   (`consumer.angular` above level 0 only for a run that did not fail and
+   was not waived); 12
+   §One workstream across repositories (the route's outcome, in place with no dated paragraph (ceilings are planning's since the 2026-10-07 pass);
+   WO-118, WO-080, WO-082, WO-193 and WO-194 also write 12); 04 §Plural UI
+   hosts, one projection contract and its §Later console hosts (the
+   framework decision's evidence and console v1's status; WO-081, WO-092
+   and WO-094 also write 04); 13 §Assistance the platform owes each role
+   (the showrunner and engineer rows; WO-098 also writes 13); 06, the
+   pending rung heading that names WO-033 and WO-034, found by those names
+   at the base because WO-190 renames it (the rung's status; WO-095,
+   WO-096, WO-098 and WO-183 also write it).
+   No byte figure binds these write-backs. The decisions file; the publication locks refreshed.
 5. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
    clean; no new dependency.
 
@@ -242,6 +280,19 @@ review. The live row is the operator-witnessed run from the fork, which the
 receipt records (criterion 1).
 
 **Write-back duty:** as listed in criterion 4.
+
+**Known issues and carry-ins:**
+
+- 2026-10-07 pass: stale and corrected above: WO-112 and WO-123 are
+  closed (only WO-118 is queued); the headroom figures; WO-086, WO-087,
+  WO-061, WO-066, WO-124, WO-116 and WO-117 closed.
+- Decided by the 2026-10-07 pass: the slice is filed as an intent; the
+  baseline is filed by a planning pass before activation; counts and the
+  baseline are typed (prose-parsing screen); this order is last because
+  it needs the operator's fork on the operator's machine. Reopen: the
+  operator installs DotLn there, or asks for the resident to admit a
+  planning-cut order.
+- Blocked on WO-118, WO-082, WO-073, WO-080 and WO-078.
 
 **Non-goals:** manually opened sessions as the executors (that is the
 predecessor's shape); console v1 beyond the slice; any external

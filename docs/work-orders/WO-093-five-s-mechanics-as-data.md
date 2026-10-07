@@ -3,6 +3,7 @@
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** delivery
 **Release classification:** minor. Five mechanic definitions in the
 skeleton's loadouts. Assigned at activation under the standing opt-out
 default.
@@ -121,6 +122,50 @@ tooltip, and all six compile in one group.
   assumption 3).
 - **Declined alternatives, recorded:** forking Shine silently.
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+1. `packages/skeleton/src/loadouts/five-s.ts` (new). Imports `seiriLoadout` and types from
+   `@dotln/compiler`; `entropyReducerLoadout` and `entropyReducerSupports` from
+   `./entropy-reducer.js`. Reuse Shine's fields from
+   `entropyReducerLoadout(expiresAt).activeMechanics[0]` and Standardize's from
+   `entropyReducerSupports.standardize`, so `entropy-reducer.ts` stays unedited and no
+   edition stales. Exports: `fiveSPieces` (five `ActiveMechanic` values; Shitsuke's cadence
+   is a `cadence` emission only); the shared supports; `seitonLoadout`, `seisoLoadout`,
+   `seiketsuLoadout`, `shitsukeLoadout`, `safetyLoadout`, `fiveSGroupLoadout`, each
+   `(expiresAt: number) => LoadoutGraph`, and no other export whose name ends in `Loadout`
+   (the console calls every such export with one number and lists it live,
+   `packages/console/src/builds.ts` lines 51 to 54); `FIVE_S_DIVERGENCES` as a typed array
+   `{ piece, field, entropyReducer, fiveS }`. Supports (decided 2026-10-07): each piece links
+   the Entropy Reducer's support of the same name where one exists and the six share
+   `standardize` plus the support Shine already links; the executor records the mapping as a
+   JSON decision block per term `{ piece, field, value, source | "executor-chosen" }`. A 5S
+   Shine field that differs from `seiso-shine` v3 takes a new version under the same id. The
+   six-piece container's `socketBudget` admits its links. Check: `node scripts/build.mjs`.
+2. `packages/skeleton/test/five-s.test.ts` (new): "WO-093 Seiton compiles alone with its
+   pinned tooltip" and the same for Seisō, Seiketsu, Shitsuke and Safety, each asserting the
+   exact `renderCompiledDiff(undefined, program)` lines (term, translation, kanji, title,
+   GRANTS, INTERRUPT, COST, hash); "WO-093 six pieces compile in one group with the budget
+   signal"; "WO-093 divergences from the Entropy Reducer equal FIVE_S_DIVERGENCES" (recomputed
+   field by field); "WO-093 equal fields are the Entropy Reducer's values"
+   (`assert.strictEqual` on reused arrays). Check:
+   `node scripts/build.mjs && node --test packages/skeleton/dist/test/five-s.test.js` (the
+   `skeleton` row, outside confinement).
+3. Show nothing stales: `node scripts/authority-evidence.mjs --check`,
+   `node scripts/artifact-identity-evidence.mjs --check`,
+   `node scripts/verification-evidence.mjs --check`, `node scripts/feedback-evidence.mjs --check`.
+4. Labels: `packages/skeleton/package.json` line 3, `packages/console/package.json` line 30,
+   `package-lock.json` lines 493 and 509. Check: `npm run release -- check-surfaces --local`;
+   `node scripts/harness.mjs check`.
+5. Write-backs: product 05 §"## 5S / 6S" (replace the sentence at lines 109 to 110 "Seiton and
+   the remaining pieces join the vocabulary as WO-093 compiles them." with which pieces compile
+   and what stays prose, in place); `docs/evidence/WO-093/decisions.md` (new: the term
+   provenance blocks and the comparison); the stale comment at
+   `packages/skeleton/src/portfolio.ts` lines 25 to 26 is left for WO-095, which re-mints every
+   edition anyway (recorded as a known issue there); `node scripts/check-publication.mjs --print-locks`
+   into both TOCs; `npm run meta`; `npm run work-orders -- index`; `npm run publication:check`.
+6. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+   complete `docs/evidence/WO-093/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the definitions, the six-piece group, fixtures, the
 comparison, the write-backs below.
 
@@ -143,12 +188,9 @@ comparison, the write-backs below.
 3. Write-backs land, in place with no dated paragraph: 05 §5S / 6S — the
    maintenance organism (which pieces are compiled and what remains
    prose, replacing the sentence that the remaining pieces join the
-   portfolio vocabulary as this order compiles them; at most 400 bytes
-   added, against 2,544 bytes of headroom on 2026-09-28; WO-094 also
-   writes 05, so the executor re-measures the headroom at its base; where
-   the bound does not fit, it consolidates the section it edits in the
-   same change; a ceiling is raised only by a planning-document
-   decision); the decisions file; the publication locks refreshed.
+   portfolio vocabulary as this order compiles them, in place with no dated paragraph (ceilings are planning's since the 2026-10-07 pass); WO-094,
+   WO-188 and WO-192 also write 05); the decisions file; the publication
+   locks refreshed.
 4. `npm test -- --review` and `npm run test:docs` green; `git diff
    --check` clean; no new dependency.
 
@@ -159,6 +201,18 @@ the harness-fixtures and harness suites, and again at final review. No
 live row.
 
 **Write-back duty:** as listed in criterion 3.
+
+**Known issues and carry-ins:**
+
+- 2026-10-07 pass: stale and corrected above: product 05's figures; the
+  Cost line omitted the lockfile lines.
+- Decided by the 2026-10-07 pass: the support mapping rule and its typed
+  record; a new version for a divergent Shine; the divergence array and
+  term blocks are typed (prose-parsing screen); `portfolio.ts`'s comment
+  goes to WO-095. Reopen: a piece needs a support the Entropy Reducer
+  lacks.
+- Blocked on WO-091 for the budget-signal and per-active field names the
+  six-piece test asserts (the five single-piece steps are not blocked).
 
 **Non-goals:** bonuses (WO-094); the scenario (WO-095); a scheduler or a
 cadence run for Sustain; the portfolio vocabulary.

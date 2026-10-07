@@ -3,6 +3,7 @@
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** delivery
 **Release classification:** minor. An additive graph collection under
 schema version 1. Assigned at activation under the standing opt-out
 default.
@@ -121,6 +122,60 @@ the 5S set here (a fixture set).
   semantic hash); leaving the lowering to WO-094 (its placement edits no
   compiler source; reopen if WO-094 is rewritten to own compiler work).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07; the per-active field WO-091 adds is read at the base):**
+
+1. `packages/compiler/src/types.ts`: `SUPPORT_EMISSION_KINDS` (the eight kinds,
+   `satisfies readonly SupportEmission["kind"][]`; the tree has no runtime list, so an
+   undeclared kind can be refused by name); `SetBonus { bonusId; pieceCount; emissions }`;
+   `EquipmentSet { setId; version; name; memberActiveMechanicIds; bonuses }`;
+   `LoadoutGraph.sets?`; `CompiledSetBonus { setId; bonusId; pieceCount; equippedPieces; state: "armed" | "dark" }`;
+   `CompiledProgram.setBonuses?` (omitted without sets); `FunctionTableRow` kind `"set"`;
+   `StatechartJsonView.context.sets?`; compiled emission records gain an optional
+   `setBonusId` beside `supportFacetId` (one or the other is required). Check:
+   `node scripts/build.mjs`.
+2. `normalize.ts`: export `normalizeSets(values)` modelled on `normalizeAuthorityGrants`
+   (line 349): throws `set "<setId>": ...` for a malformed field, a non-integer piece count
+   or a kind outside `SUPPORT_EMISSION_KINDS`; sorts sets by `setId`, members sorted-unique,
+   bonuses by `bonusId`, emissions by `emissionId` via `normalizeEmission`. In
+   `normalizeLoadoutGraph` (line 417) add `setFields`, omitted when empty like
+   `presenceFields` (line 412), so set-free view encodings stay byte-identical (decided
+   2026-10-07).
+3. `views.ts`: `rowKindOrder` gains `set: 14`; `functionTableFromLoadout` emits set rows keyed
+   by `setId`; `loadoutFromFunctionTable` reads them; the statechart context carries `sets`
+   when non-empty; `loadoutFromStatechartJson` reads it.
+4. `compile.ts` `graphDiagnostics` (line 431): `duplicateDiagnostics("set", ...)`; `invalid`
+   naming the set for a member not in `activeMechanics` and for a piece count below 1 or
+   above the member count.
+5. `compile.ts` `emitProgram` (line 763): a member is equipped when it has at least one link
+   in a participating link group or is listed in a container's `activeMechanicIds` (WO-037's
+   "equipped in the group"; decided 2026-10-07, so a held but unlinked member leaves a bonus
+   dark); count equipped members per set; list every bonus in `setBonuses`; lower an armed
+   bonus's emissions into the same arrays a linked support's reach (cadences,
+   statechartGuards, schemas, hooks, verificationPlan, promptFragments, WorkOrder lists,
+   permission lists), attributed by `setBonusId` and attached at the program top level; a
+   bonus `permission-guard` passes the WO-042 floor (`authority.ts` lines 38 to 80) against
+   every member active.
+6. `packages/compiler/test/sets.test.ts` (new): "WO-092 a graph with sets round-trips through
+   three views and hashes equal"; "WO-092 a graph without sets keeps its bytes and hash";
+   "WO-092 each fixture bonus is dark one piece short and armed at its count"; "WO-092 a
+   two-emission bonus lowers both when armed"; "WO-092 an unknown member, piece count 0 or
+   above members, and an undeclared kind refuse naming the set"; re-run the pinned-literal
+   asserts WO-091 lists. Check: `node scripts/build.mjs && node --test packages/compiler/dist/test/sets.test.js packages/compiler/dist/test/views.test.js`
+   (the `compiler` row).
+7. Labels and re-mints as WO-091 steps 8 and 9, edition WO-092 revision 001, carrying from
+   the feedback edition selected at the base.
+8. Write-backs: product 02 §"### LoadoutGraph v1 payload contract": add
+   `sets?: readonly EquipmentSetV1[];` to the `LoadoutGraphV1` block (lines 286 to 302), its
+   shape and the normalization rule, in place; product 04 §"## RPG / Path-of-Exile view": the
+   bullet at lines 615 to 617 beginning "**Set bonuses compile to real mechanics**" gains the
+   collection and the armed or dark listing; product 10 §"## Separate version axes": one
+   sentence, `sets` additive under schema 1; `packages/compiler/README.md` lines 113 to 114:
+   drop "set bonuses" from the deferred list; `docs/evidence/WO-092/decisions.md` (new);
+   `node scripts/check-publication.mjs --print-locks` (both TOCs cite 02, 04 and 10);
+   `npm run meta`; `npm run work-orders -- index`; `npm run publication:check`.
+9. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+   complete `docs/evidence/WO-092/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the collection, codecs, lowering, arming inspection,
 fixtures, the re-mints, the write-backs below.
 
@@ -141,17 +196,12 @@ fixtures, the re-mints, the write-backs below.
    a failure.
 4. Write-backs land, each in place with no dated paragraph: 02
    §LoadoutGraph v1 payload contract (the `sets` field and its shape in
-   the payload listing, and the normalization rule; at most 500 bytes
-   added, against 2,776 bytes of headroom on 2026-09-28), 04 §RPG /
+   the payload listing, and the normalization rule, in place with no dated paragraph (ceilings are planning's since the 2026-10-07 pass)), 04 §RPG /
    Path-of-Exile view (the set-bonus bullet: the collection and the armed
-   or dark listing; at most 200 bytes, against 1,194) and 10 §Separate
-   version axes (the additive collection; at most 200 bytes, against
-   507). WO-091, WO-065, WO-066, WO-058 and WO-098 also write 02; WO-116,
-   WO-117, WO-081, WO-083 and WO-094 also write 04; WO-060, WO-086,
-   WO-091, WO-058 and WO-076 also write 10; so the executor re-measures
-   the headroom at its base; where the bound does not fit, it consolidates
-   the section it edits in the same change; a ceiling is raised only by a
-   planning-document decision. The decisions file; the publication locks
+   or dark listing) and 10 §Separate version axes (the additive
+   collection). WO-091, WO-097 and WO-098 also write 02; WO-081, WO-083
+   and WO-094 also write 04; WO-076,
+   WO-091, WO-097 and WO-194 also write 10. The decisions file; the publication locks
    refreshed.
 5. Every edition the Cost line names is re-minted or carried, the console
    re-pinned with its self-host fixtures and the harness bundle
@@ -167,6 +217,19 @@ verification-, feedback- and harness-evidence suites, and again at final
 review. No live row.
 
 **Write-back duty:** as listed in criterion 4.
+
+**Known issues and carry-ins:**
+
+- 2026-10-07 pass: stale and corrected above: products 02, 04 and 10
+  figures and co-writers; the Cost line omitted the compiler README line
+  and the version labels.
+- Decided by the 2026-10-07 pass: "equipped" is linked in a participating
+  group or listed in a container (so the dark case exists); the emission
+  kinds constant; `setBonusId` on lowered records; bonus guards pass the
+  floor against every member and attach at the top level; absent `sets`
+  normalizes by omission. Reopen: a bonus must attach per member.
+- Blocked on WO-091 for the per-active program field and the multi-active
+  fixture builder.
 
 **Non-goals:** the 5S bonuses (WO-094); the render (WO-095); arming state
 outside the semantic hash.

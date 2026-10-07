@@ -3,6 +3,7 @@
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** delivery
 **Release classification:** patch. A generated projection over typed rows
 and its check; no unit compiled here. Assigned at activation under the
 standing opt-out default.
@@ -197,6 +198,61 @@ batch 1a and 1b candidates named.
   order names its lane and the corpus entry point links each lane; reopen
   when the corpus policy moves synthesized rows into that lane).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+1. `corpus/feedback/migration.json` (new; the directory with it). Schema:
+   `{ schemaVersion: 1, capture: { sha256 | null, count | "unknown" }, categories: { <name>: { lowerable: bool, reason } }, alwaysOnSet: [...], excluded: { "employer-specific": N }, rows: [{ shapeId, category, rung, status, unitId?, enforcedBy?, batch?, reason?, note, restatementSearch, retired? }] }`.
+   `alwaysOnSet` is computed: CLAUDE.md above the harness start marker, the `procedure:`
+   arrays in `packages/skeleton/src/loadouts/contributor.ts` (lines 111, 133, 155, 179, 197,
+   216 at the base; WO-196 renumbers them) and their support imports, and the product 07
+   anchors `readDirectives` resolves. `restatementSearch` is a persisted judgment
+   `{ set: [{ path, anchor, sha256 }], found: [{ path, text, sha256 }] }`; the check derives
+   `mechanism` when the unit is equipped, its kind is not `prose` and `found` is empty, and
+   refuses when any `set[].sha256` differs from the current file. `retired` is
+   `{ path, text, sha256 }`: the check verifies `sha256(text)` and does a
+   whitespace-normalized substring test, never sentence segmentation. No public capture names
+   a SHA-256 for the feedback shapes, so `capture` records `null` and `"unknown"` with the
+   ten-rule table (`docs/lineage/idea-ledger.md` §Chat 010, line 8634) as the public source;
+   `lowerable` is the executor's recorded judgment per category with its reason (a shape is
+   lowerable when a host fact can decide it).
+2. `scripts/feedback.mjs` (new): exports `renderMigration(root)` and `checkMigration(root)`;
+   CLI `migration [--check]`. Reads equipped units from
+   `packages/skeleton/dist/src/loadouts/feedback.js` (`personalFeedbackUnits`), the lineage
+   root through `docPath(root, "lineage", "feedback-migration.md")`, and runs
+   `checkLocalTerms(root, surfaces)` over one surface per row field (`unavailable` prints and
+   exits non-zero; a throw refuses). No literal `docs/` path.
+3. `scripts/test-feedback.mjs` (new, `node:test`): cases: a stale render refuses; an equipped
+   unit missing from the rows refuses; a mechanism row whose retired text is present refuses;
+   a synthetic local term refuses (a temporary launchpad with its own
+   `docs/control/local/terms.txt`); an absent list reports `unavailable`; an empty or
+   malformed list refuses; a found restatement derives `prose`.
+   Check: `npm run build && node --test scripts/test-feedback.mjs`.
+4. `package.json`: add `"feedback": "node scripts/feedback.mjs"`. Check:
+   `npm run feedback -- migration`.
+5. `scripts/test-runner.mjs`: add
+   `node("feedback-migration", "scripts/feedback.mjs", { args: ["migration", "--check"], document: true, needsBuild: true, preflight: true })`
+   and `nodeTests("feedback-migration-fixtures", "scripts/test-feedback.mjs", { document: true })`;
+   `scripts/lib/document-gate-stubs.mjs`: add `feedback.mjs` and `test-feedback.mjs` to
+   `DOCUMENT_GATE_STUBS`. Check: `npm test -- --only feedback-migration`; `npm run test:docs`.
+6. `.gitattributes`: add `/docs/lineage/feedback-migration.md dotln-generated dotln-check=suite:feedback-migration`
+   (the value must match `^suite:[a-z][a-z0-9-]*$`, `harness-host.ts` line 2154).
+7. Classification: fill the rows and exclusion counts; mark the ten compiled units
+   `compiled`; the four prose-kind units derive `prose`; name six `batch-1a` and six
+   `batch-1b` candidates and at least one `reference`. Check:
+   `npm run feedback -- migration --check`;
+   `npm run terms -- check corpus/feedback/migration.json docs/lineage/feedback-migration.md`.
+8. Render: `npm run feedback -- migration`, then `npm run format`.
+9. Write-backs: product 06, the pending rung heading that names WO-039 and WO-040 (one
+   sentence that the ledger is generated at `docs/lineage/feedback-migration.md` with counts
+   by status and governance mode; find the heading by those names at the base, because WO-190
+   may have renamed it); product 02 §"### Feedback compiler v1": correct "the other three
+   DotLn refusals" to the five, in place; `corpus/README.md`: one bullet for `feedback/`;
+   `docs/evidence/WO-096/decisions.md`; `node scripts/meta.mjs`;
+   `node scripts/check-publication.mjs --print-locks`; re-mint authority, artifact-identity
+   and verification (`--write`) for `package.json`; `npm run publication:check`.
+10. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+    complete `docs/evidence/WO-096/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the rows, renderer, check, render, the root script, the
 write-backs below.
 
@@ -224,13 +280,10 @@ write-backs below.
    row.
 4. Write-backs land, each in place with no dated paragraph: 06
    §Application version pending — Harness lowering and rule migration →
-   WO-039 + WO-040 (the migration rung's status; at most 200 bytes added,
-   against 1,802 bytes of headroom on 2026-09-28; WO-086 and WO-087
-   restructure 06 first, and WO-061, WO-066, WO-124, WO-112, WO-083, WO-095
-   and WO-098 also write it, so the executor re-measures the headroom at its
-   base, and where the bound does not fit it consolidates the section it
-   edits in the same change; a ceiling is raised only by a
-   planning-document decision); `corpus/README.md` (the lane); the
+   WO-039 + WO-040 (the migration rung's status, in place with no dated paragraph (ceilings are planning's: the 2026-10-07 pass set every product document's ceiling at measured bytes plus one tenth); WO-190 may rename
+   this heading before this order runs, so the executor finds it by its
+   WO-039 and WO-040 names at the base; WO-083, WO-095, WO-098 and WO-183
+   also write 06); `corpus/README.md` (the lane); the
    decisions file; the publication locks refreshed.
 5. The re-mints the Cost line names are recorded; `npm test -- --review`
    and `npm run test:docs` green; `git diff --check` clean; no new
@@ -243,6 +296,20 @@ verification- and feedback-evidence suites, and again at final review. No
 live row.
 
 **Write-back duty:** as listed in criterion 4.
+
+**Known issues and carry-ins:**
+
+- Stale on 2026-10-07 and corrected above: product 06's bytes and
+  co-writers (WO-086, WO-087, WO-061, WO-066, WO-124 closed; WO-112
+  closed); product 02 names four refusals, not five, and this order
+  corrects it; `idea-ledger.md` §Notes 001 is not the feedback inventory,
+  §Chat 010 (line 8634) holds the ten-rule table.
+- Decided by the 2026-10-07 pass: the capture denominator is recorded
+  `unknown` with the public ten-rule table as source; `lowerable` is the
+  executor's persisted judgment with a reason; the restatement search and
+  the retired sentence are typed inputs (prose-parsing screen). Reopen: a
+  public capture with a SHA-256 appears in the ledger.
+- Blocked on WO-190 for the exact 06 heading (step 9 finds it by name).
 
 **Non-goals:** compiling any unit (WO-097, WO-098); changing the compiler's
 feedback contract; a restatement outside the declared always-on set (a

@@ -3,6 +3,8 @@
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** machinery
+**Front page:** README.md
 **Release classification:** patch. One generated block. Assigned at
 activation under the standing opt-out default.
 **Cost:** adds an emitter in `scripts/resume.mjs` that renders the seven
@@ -30,8 +32,7 @@ phrases where the Contributor declares them because `resume.mjs` holds
 none, and the product 07 write-back waits for the fold and is bounded
 ([planning document](../planning/failures-across-phases-2026-09-28.md)
 §10).
-**Depends on:** WO-167 merged (product 07 holds 9 bytes of headroom until
-the fold resets its ceiling). The dated planning deferral until WO-053 is
+**Depends on:** WO-167 merged (closed, v0.53.1). The dated planning deferral until WO-053 is
 met: WO-053 passed final review on 2026-09-18 (closed, `v0.29.3`).
 **Recommended placement:** second to last in the serial run, after WO-095
 and before WO-089, under the 2026-09-19 hold that the 2026-09-25 pass
@@ -49,7 +50,7 @@ recommendation, not a dependency token.
   {
     "workOrderId": "WO-167",
     "relation": "hard",
-    "reason": "product 07 has 9 bytes of headroom until the fold resets its ceiling"
+    "reason": "closed at v0.53.1; the fold this order's product 07 write-back followed"
   },
   {
     "workOrderId": "WO-053",
@@ -95,10 +96,10 @@ a stale copy; `docs/README.md`'s copy becomes a pointer.
   (`packages/skeleton/src/loadouts/contributor.ts`: the seven `resume:`
   intents and five `planning:` or `ideation:` ones), and four of them map
   to lifecycle actions in `packages/skeleton/src/harness-host.ts`.
-- Product 07 has 9 bytes of headroom under its ceiling; marker pairs alone
-  grant no exemption, because no product marker generator is registered
-  (`docs/control/doc-ceilings.json`; `scripts/docs-check.mjs`). WO-167
-  resets the ceiling to the folded guide plus two per cent.
+- Marker pairs alone grant no exemption, because no product marker
+  generator is registered (`docs/control/doc-ceilings.json`;
+  `scripts/docs-check.mjs`). Ceilings are planning's since the 2026-10-07
+  pass.
 
 **Design (scope discipline):**
 
@@ -125,6 +126,53 @@ a stale copy; `docs/README.md`'s copy becomes a pointer.
   the list; reopen when a planning document asks for one table
   everywhere).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+0. Re-observe the gap first: `sed -n 560,568p README.md; sed -n 199,207p docs/README.md; sed -n 546,554p docs/PLAYBOOK.md; sed -n 257,263p docs/product/07-execution-guide.md`
+   (line numbers move; find the four copies by their phrases). On 2026-10-07 all four hold
+   the same seven phrases, the third pass to find the gap absent. If no copy differs at the
+   base, stop and record the order unmet under its assumption 3; the operator may withdraw it
+   (the 2026-10-07 pass recommends that).
+1. `scripts/lib/phrase-list.mjs` (new): `PHRASE_MARKER = "dotln-resume-phrases"`,
+   `phraseStart`, `phraseEnd`, `PHRASE_FILES` (`README.md`, `docs/PLAYBOOK.md`,
+   `docs/product/07-execution-guide.md`), `resumeIntents(roles)` (intents starting
+   `resume: `, in declaration order: next, fix, status, times, verify, final review, release
+   close; decided 2026-10-07), `renderPhraseList(intents)`, `phraseListFindings(root, { roles })`
+   (each finding names its file), `writePhraseList(root, { roles })`; the exact-pair rule
+   modelled on `historyBlock` in `scripts/lib/release-history.mjs`; roles from
+   `contributorRoles` in `packages/skeleton/dist/src/loadouts/contributor.js`. The guide's
+   table rows are read from the mdast `table` node docs-check's parser already yields
+   (`scripts/docs-check.mjs` line 30), requiring the first cell to be exactly one
+   `inlineCode` node (prose-parsing screen). Check: `node --test scripts/test-phrase-list.mjs`.
+2. `scripts/resume.mjs` `run` (line 1099): branch `phrases --write|--check` before
+   `reportHarnessRuntime` and `readControl`, calling step 1 (the emitter body sits in
+   `scripts/lib/` because `resume.mjs` runs `findLaunchpad()` at import, line 127). Check:
+   `node scripts/resume.mjs phrases --check` fails before step 4 and passes after.
+3. `scripts/test-phrase-list.mjs` (new): "WO-088 list equals the Contributor's seven resume
+   intents"; "refuses a changed copy naming the file"; "refuses a missing marker"; "refuses a
+   doubled marker"; "refuses an unreadable file"; "refuses a guide row whose phrase the list
+   lacks"; "refuses a listed phrase with no guide row"; "write changes only bytes between
+   markers".
+4. Insert the marker pair in the three files, then `node scripts/resume.mjs phrases --write`.
+5. `scripts/test-runner.mjs`: rows
+   `node("phrase-list", "scripts/resume.mjs", { args: ["phrases", "--check"], document: true, needsBuild: true })`
+   and `nodeTests("phrase-list-fixtures", "scripts/test-phrase-list.mjs", { document: true })`,
+   each with a `protects` entry (`scripts/test-runner.test.mjs` line 939). Check:
+   `node --test scripts/test-runner.test.mjs`.
+6. `scripts/lib/document-gate-stubs.mjs`: add `resume.mjs` and `test-phrase-list.mjs`. Check:
+   `node scripts/check-registrations.mjs`.
+7. Write-backs: product 07 §"## Operator resume phrases" (the marker pair at column 0 after the
+   section's opening paragraph, outside list item 2, so its bytes equal the other copies);
+   `docs/PLAYBOOK.md` §"## Resume command surface" (the list becomes the pair); `README.md`
+   §"## The repo runs on itself" (the list becomes the pair; this order's `**Front page:**`
+   field admits the edit under WO-189's guard); `docs/README.md` §"## Resuming the control
+   loop" (one line linking `PLAYBOOK.md#resume-command-surface`);
+   `docs/publication/software-engineer-toc.md` `Source lock:` from
+   `node scripts/check-publication.mjs --print-locks`; `docs/evidence/WO-088/decisions.md`
+   (new); `npm run publication:check`.
+8. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+   complete `docs/evidence/WO-088/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the emitter, the markers, the check, the write-backs
 below.
 
@@ -139,13 +187,9 @@ below.
    outside it is a follow-up, not a failure.
 2. Write-backs land: `docs/README.md`'s copy becomes a one-line pointer;
    product 07 §Operator resume phrases — how you get dispatched gains the
-   markers and the list, in place with no dated paragraph (at most 250
-   bytes added, against 9 bytes of headroom on 2026-09-28, which WO-167's
-   fold resets; WO-167, WO-173, WO-172, WO-086, WO-123, WO-072, WO-073,
-   WO-113 and WO-080 also write 07, WO-072 and WO-123 in this same
-   section, so the executor re-measures the headroom at its base; where
-   the bound does not fit, it consolidates the section it edits in the
-   same change; a ceiling is raised only by a planning-document decision);
+   markers and the list, in place with no dated paragraph (ceilings are planning's since the 2026-10-07 pass); WO-072, WO-073, WO-113, WO-080,
+   WO-188, WO-189, WO-190, WO-192 and WO-193 also write 07, WO-192 in
+   this same section);
    the decisions file; the publication locks refreshed.
 3. `npm test -- --review` and `npm run test:docs` green; `git diff
    --check` clean; no new dependency.
@@ -157,6 +201,21 @@ and every file under `scripts/` of the configuration-root suite, and
 again at final review. No live row.
 
 **Write-back duty:** as listed in criterion 2.
+
+**Known issues and carry-ins:**
+
+- 2026-10-07 pass: the gap is absent for the third pass (all four copies
+  hold the same seven phrases); step 0 says what to do, and the pass
+  recommends the operator withdraw the order. Stale and corrected: product
+  07's bytes; five phrases map to lifecycle actions since release close
+  joined `phraseDispatches` (`09fe5d88`); the evidence gate omitted
+  `harness-probe` and `process-debt`, which `resume.mjs` selects; WO-123
+  is closed and WO-192 writes the same 07 section.
+- Decided by the 2026-10-07 pass: declaration order for the generated
+  list; the table rows read from the mdast node (prose-parsing screen);
+  the `**Front page:**` field for WO-189's guard. Reopen: a copy diverges.
+- Blocked on WO-189 (the README rewrite), WO-192 (the `drive:` row the
+  list must ignore) and WO-073 (`resume.mjs` anchors).
 
 **Non-goals:** changing any phrase; the `planning:` and `ideation:`
 phrases; the procedure columns of the guide's table.

@@ -3,6 +3,7 @@
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** delivery
 **Release classification:** minor. An additive `uifa-board-v1` extension in
 `packages/console`. Assigned at activation under the standing opt-out
 default.
@@ -103,6 +104,58 @@ existing command.
   case's existing sections; reopen if the pinned index is re-recorded for
   another reason).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07; the marker name, field names and fixture bytes come from WO-080 at the base):**
+
+1. `packages/console/src/text-sources.ts`: add
+   `export function parseWorkstreams(text: string): readonly TextRow[]`. Require the
+   generated-index prologue as `parseWorkOrderIndex` (line 143) does; find exactly one
+   `<!-- dotln-workstreams: ... -->` line: none returns `[]`, more than one throws; parse it
+   with `JSON.parse` and map each member to
+   `{ key: "<WS>/<WO>", line, values: { workstream, workOrder, repository, base, phase, verdict, integration, stale } }`.
+   Nothing reads the rendered Markdown section (prose-parsing screen).
+2. `packages/console/src/work.ts`, `projectWork` (line 22): add
+   `const workstreams = ctx.section("workstreams", "Workstreams", sources.workOrderIndex, "docs/work-orders/README.md", (text, ref) => parseWorkstreams(text).map(...))`.
+   Row id `id("workstream-member", row.key)`; cells use
+   `known(key, label, value, ctx.ref(ref, "workstreams:<key>"))`; link to
+   `indexed.get(workOrder).id` when present (the board refuses a link with no target);
+   evaluate it after `usage` and return `[status, constellation, releases, index, usage, workstreams]`.
+   Evidence ids are insertion-ordered, so an empty or unavailable section adds none and the
+   five existing cases keep theirs.
+3. Decided 2026-10-07: on a parse failure the section shares the index's ref, so
+   `ProjectionContext.section` re-notes `docs/work-orders/README.md` as unavailable while
+   `work-order-index` stays available; a test covers that flip. No separate ref (it would
+   change every case's `sources` list).
+4. `packages/console/fixtures/inputs/workOrderIndex-workstreams.md` (new): the committed
+   fixture index WO-080's test generates; it must hold no physical path.
+5. `packages/console/fixtures/manifest.json`: input `workOrderIndexWorkstreams` (`ref`
+   `docs/work-orders/README.md`, `format` `text`, `sha256` from `shasum -a 256`), the case
+   `"workstreams": { "workOrderIndex": "workOrderIndexWorkstreams" }`, one provenance
+   sentence appended to `capture`; the other inputs untouched. Check:
+   `git diff --exit-code packages/console/fixtures/inputs/workOrderIndex.md`.
+6. `npm run evidence:console -- --write` (writes `expected/workstreams.{json,txt,html}` and
+   rewrites the five existing cases); check `npm run evidence:console -- --check`; criterion
+   1 by a printing script in the evidence directory: for each existing case, remove the
+   `workstreams` section from the new JSON and compare it with
+   `git show <base>:packages/console/fixtures/expected/<case>.json`; re-render the filtered
+   board with `renderTerminal` and `renderHtml` from `packages/console/dist/src/render.js`
+   and compare with the base txt and html.
+7. `packages/console/test/board.test.ts`: `test("[document] WO-081 workstreams case shows
+   every column and the stale mark")`, `test("WO-081 an index without the marker gives an
+   empty section; a malformed marker makes it unavailable")`, `test("WO-081 a view without
+   the workstreams section validates and renders in text and HTML")` (`schemaMatches`,
+   `renderTerminal`, `renderHtml`); add `workstreams` to the available-section list in the
+   WO-032 host collection case (line 1120). Check: `npm run test:console`.
+8. `packages/console/package.json` and the `packages/console` entry in `package-lock.json`
+   (line 486): 0.4.0 to 0.5.0 (the order's "0.3.1" is stale). Check:
+   `npm test -- --only release-surfaces`.
+9. Write-backs: `packages/console/README.md` §"## Contract for another UI host" (the Work
+   table row gains the section's cell keys) and §"## Recorded evidence and reproduction"
+   line 351 ("Five cases" becomes six); product 04 §"### Actor board v0" (the section
+   sentence, in place); `docs/evidence/WO-081/decisions.md` (new, with the step 3 decision);
+   `npm run meta`; `node scripts/check-publication.mjs --print-locks`; `npm run publication:check`.
+10. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+    complete `docs/evidence/WO-081/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the extension, the render, the new fixture case with
 regenerated expectations, the write-backs below.
 
@@ -117,11 +170,7 @@ regenerated expectations, the write-backs below.
    unchanged `uifa-board-v1.schema.json`, and a view without the section
    still renders in the text and HTML hosts.
 3. Write-backs land, each in place with no dated paragraph: 04 §Actor board
-   v0 (the section; at most 200 bytes added, against 1,194 bytes of
-   headroom on 2026-09-28; WO-116, WO-117, WO-083, WO-092 and WO-094 also
-   write 04, so the executor re-measures the headroom at its base, and
-   where the bound does not fit it consolidates the section it edits in the
-   same change; a ceiling is raised only by a planning-document decision);
+   v0 (the section, in place with no dated paragraph (ceilings are planning's since the 2026-10-07 pass); WO-083, WO-092 and WO-094 also write 04);
    the console README §Contract for another UI host (the Work panel's row);
    the decisions file; the publication locks refreshed.
 4. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
@@ -133,6 +182,16 @@ outputs; `npm run test:docs`; `npm test -- --review` before
 declared source of registrations, and again at final review. No live row.
 
 **Write-back duty:** as listed in criterion 3.
+
+**Known issues and carry-ins:**
+
+- 2026-10-07 pass: stale and corrected above: the console is 0.4.0 (the
+  minor goes to 0.5.0); product 04's figures; WO-116 and WO-117 closed;
+  the README "Five cases" sentence is a write-back the order did not list.
+- Decided by the 2026-10-07 pass: the section parses WO-080's JSON line
+  (prose-parsing screen); the shared ref on parse failure.
+- Blocked on WO-080 for the marker name, the field names and the fixture
+  index bytes.
 
 **Non-goals:** console v1; drag-equip authoring; any other panel; a new
 schema field.

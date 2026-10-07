@@ -3,6 +3,7 @@
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** delivery
 **Release classification:** patch. Fixtures and evidence. Assigned at
 activation under the standing opt-out default.
 **Cost:** adds one real-Git fixture suite that builds three target
@@ -116,6 +117,53 @@ named; and a session restart in a target worktree resuming from
   each workstream its own worktree; reopen if product 12 changes that
   profile).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+1. Scope decided by the 2026-10-07 pass (the no-code screen): this order demonstrates D1
+   (one member reaches closed from a target worktree), D2 (the client proceeds against the
+   pinned contract fixture while the service lands first), the refusal half of D4 (an
+   occupied worktree refuses a second writer) and D6 (a session restart resumes from
+   `resume next` in the target worktree under the emitted bundle). D3 (stale marks that
+   spread from a service change to dependent members), the conflict half of D4, D5 (a
+   blocked target naming its manual handoff) and a workstream-level next safe action need
+   capability no order supplies; they are candidates in the planning map (reopen when an
+   order builds them) and are not criteria here.
+2. `scripts/test-workstream-pilot.mjs` (new). Import `./test-fixture-temporary.mjs` first.
+   Build the service, client and docs target repositories with `runGit`
+   (`scripts/lib/git.mjs`); export a launchpad with WO-074's command (its exact invocation at
+   the base); write `dotln.config.json` with three `repositories` entries copying the
+   `registeredRepository` helper from `scripts/test-configuration-root.mjs` line 71; record
+   the clones in WO-072's registry (`scripts/lib/target-worktrees.mjs`); author `WS-001` under
+   the workstreams root and three member orders carrying `**Repository:** <id> @ <sha>` and
+   `**Workstream:** WS-001` (WO-080's convention).
+3. Same file, four named tests, each asserting on JSON, never on terminal text
+   (prose-parsing screen): "WO-082 D1 single repository: one member reaches closed from a
+   target worktree" (`phase` from `resume status --json` and the member's record entry);
+   "WO-082 D2 cross repository: client proceeds against the pinned contract fixture while
+   service lands first" (the client base commit holds the fixture blob through
+   `git rev-parse <sha>:<path>`, and the service close precedes it); "WO-082 D4 two
+   workstreams on one repository: an occupied worktree refuses a second writer" (seed a
+   foreign reservation with `seedHarnessWriter` from `packages/skeleton/dist/src/harness-host.js`
+   and spawn the worktree's `.claude/hooks/concurrent-work-requires-worktrees.mjs` with a
+   PreToolUse Edit payload on stdin, following `scripts/test-harness.mjs` line 4097 and
+   `invoke` at line 1040; expect `hookSpecificOutput.permissionDecision` deny); "WO-082 D6
+   session restart resumes from resume next in the target worktree under the emitted bundle"
+   (run `node <launchpad>/scripts/resume.mjs next` from the worktree and
+   `node <launchpad>/scripts/harness.mjs check --target <worktree>`). Which members are
+   dependent comes from WO-080's JSON `edges`. Check: `node --test scripts/test-workstream-pilot.mjs`.
+4. `scripts/test-runner.mjs`: `nodeTests("workstream-pilot", "scripts/test-workstream-pilot.mjs", { protects: "product 12's demonstrations hold over a real-Git launchpad and three targets" })`,
+   a product row (not in `machinerySources`, not `document`); decide `needs: OUTSIDE_CONFINEMENT`
+   by one confined run (unknown whether the hooks nest `sandbox-exec`). Check:
+   `npm test -- --list`; `/usr/bin/time -p npm test -- --only workstream-pilot` for the
+   suite's wall-clock; one fresh `/usr/bin/time -p npm test` for the six-minute condition.
+5. Write-backs: product 12 §"## What exists and what must be proved" (the demonstrations'
+   status, naming the four shown and the four candidates, in place);
+   `docs/evidence/WO-082/README.md` (new: fixture transcripts and wall-clock) and
+   `docs/evidence/WO-082/decisions.md` (new); `npm run meta`;
+   `node scripts/check-publication.mjs --print-locks`; `npm run publication:check`.
+6. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+   complete `docs/evidence/WO-082/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the fixture suite, the write-backs below.
 
 **Acceptance criteria (all required)**
@@ -128,13 +176,9 @@ named; and a session restart in a target worktree resuming from
    against the declared set; a case outside it is a follow-up, not a
    failure.
 2. Write-backs land, each in place with no dated paragraph: 12 §What exists
-   and what must be proved (the demonstrations' status; at most 200 bytes
-   added, against 360 bytes of headroom on 2026-09-28; WO-061, WO-112,
-   WO-118, WO-080 and WO-083 also write 12, so the executor re-measures the
-   headroom at its base, and where the bound does not fit it consolidates
-   the section it edits in the same change; a ceiling is raised only by a
-   planning-document decision); the decisions file; the publication locks
-   refreshed.
+   and what must be proved (the demonstrations' status, in place with no dated paragraph (ceilings are planning's since the 2026-10-07 pass);
+   WO-118, WO-080, WO-083, WO-193 and WO-194 also write 12); the decisions
+   file; the publication locks refreshed.
 3. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
    clean; no new dependency.
 
@@ -144,6 +188,21 @@ because `scripts/test-runner.mjs` is a declared source of runner-fixtures
 and registrations, and again at final review. No live row.
 
 **Write-back duty:** as listed in criterion 2.
+
+**Known issues and carry-ins:**
+
+- 2026-10-07 pass: this order was classified "patch, fixtures and
+  evidence" while four of its six demonstrations needed capability nothing
+  supplies (the WO-112 pattern); the scope is narrowed to the four
+  demonstrations the tree and its dependencies supply, and the other four
+  are candidates in the planning map. Stale and corrected: product 12's
+  figures; WO-061 and WO-112 closed; `scripts/test-runner.mjs` also
+  selects `configuration-root`.
+- Decided by the 2026-10-07 pass: assertions read JSON records and
+  `resume status --json` fields (prose-parsing screen); the suite is a
+  product row counted against the six-minute condition.
+- Blocked on WO-074 and WO-075 (the export), WO-072 (registration,
+  `worktree start` on a target) and WO-080 (the convention and record).
 
 **Non-goals:** the real run (WO-083); runtime transports as executors.
 

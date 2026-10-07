@@ -12722,6 +12722,14 @@
           "reopenWhen": "another week adds more than 10 MB of tracked evidence, two consecutive orders each commit more than 1 MB of distinct evidence blobs, or measured reading/storage harm occurs; preserve the authority writer-edit/10% condition",
           "targets": [],
           "at": "2026-10-02T04:08:22.010Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The last two closed orders' 1.06 and 2.77 MB and this week's 16.3 MB follow seven and five verifications; the pass cuts the verification count by binding the verdict to the criteria; pruning is not authorized. [2026-10-07 machinery reset planning pass (docs/planning/machinery-reset-2026-10-07.md)]",
+          "reopenWhen": "a week after WO-196 merges adds more than 10 MB of tracked evidence with orders that passed verification in at most two attempts",
+          "targets": [],
+          "at": "2026-10-07T06:46:23.424Z"
         }
       ]
     },
@@ -18261,6 +18269,14 @@
           "reopenWhen": "another week adds more than 10 MB of tracked evidence, two consecutive orders each commit more than 1 MB of distinct evidence blobs, or measured reading/storage harm occurs",
           "targets": [],
           "at": "2026-10-02T04:08:22.045Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Same reading as FUP-8a4e201d861208ad: the growth follows the verification count the pass cuts; a ceiling would still be a mechanism with no removal. [2026-10-07 machinery reset planning pass (docs/planning/machinery-reset-2026-10-07.md)]",
+          "reopenWhen": "a week after WO-196 merges adds more than 10 MB of tracked evidence with orders that passed verification in at most two attempts",
+          "targets": [],
+          "at": "2026-10-07T06:46:23.481Z"
         }
       ]
     },
@@ -22722,6 +22738,16 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-05T21:05:23.182Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-197 takes the three gate-task conditions that hold (target-publish, worktree-integration, harness-fixtures) at their cause; the plain-gate median and lane packing stay declined with the 2026-10-02 pass section 15 reopening tests. [2026-10-07 machinery reset planning pass (docs/planning/machinery-reset-2026-10-07.md)]",
+          "reopenWhen": "the plain gate's thirty-day median stays above 360 s after WO-197 merges",
+          "targets": [
+            "WO-197"
+          ],
+          "at": "2026-10-07T06:46:23.021Z"
         }
       ]
     },
@@ -25723,6 +25749,16 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-05T21:05:23.134Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-197 repairs the harness-fixtures task at its cause with a bound assertion (its thirty-day median is 261.423 s against 399.784 s latest). [2026-10-07 machinery reset planning pass (docs/planning/machinery-reset-2026-10-07.md)]",
+          "reopenWhen": "harness-fixtures runs above 326.779 s fresh after WO-197 merges",
+          "targets": [
+            "WO-197"
+          ],
+          "at": "2026-10-07T06:46:22.965Z"
         }
       ]
     },
@@ -28763,6 +28799,16 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-05T21:42:37.623Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "WO-196 criterion 6: the five-refusals paragraph leaves the skills (CLAUDE.md keeps it) and every role root measures below its ceiling with no new acceptance. [2026-10-07 machinery reset planning pass (docs/planning/machinery-reset-2026-10-07.md)]",
+          "reopenWhen": "a role root exceeds its ceiling after WO-196 merges",
+          "targets": [
+            "WO-196"
+          ],
+          "at": "2026-10-07T06:46:22.851Z"
         }
       ]
     },
@@ -28963,6 +29009,14 @@
           "reason": "Kept open at WO-187's close. After integration product 07 is 7,798 bytes over its 168,083-byte ceiling and reports as an advisory. WO-187 FINAL-001 adds, from its fresh adversary: the advisory accepts any evidence decision with an open follow-up, with no tie to the document it excuses and no planning decision (WO-187-D052).",
           "reopenWhen": null,
           "at": "2026-10-06T14:39:37.914Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Ceilings are planning's under the 2026-10-07 policy (measured bytes plus one tenth, reset each pass) and WO-196 makes the overrun an advisory; a hard bound on the advisory route would reintroduce the byte burden the operator removed. [2026-10-07 machinery reset planning pass (docs/planning/machinery-reset-2026-10-07.md)]",
+          "reopenWhen": "the operator asks for a hard document ceiling",
+          "targets": [],
+          "at": "2026-10-07T06:46:23.366Z"
         }
       ]
     },
@@ -28987,6 +29041,16 @@
           "reason": "Kept open and narrowed at WO-187's close. Done by the VER-004 repair: the advisory on a singular label. Withdrawn by D039's formats: the tolerant self-review forms and the finding reader's quote, comment and indented-code items. Remaining: the fallback for a receipt without a receiptId, a passing review's integration or new-scope counts listed as a failure item, and the agent-path pattern in scripts/lib/harness.mjs.",
           "reopenWhen": null,
           "at": "2026-10-06T14:39:37.808Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-196 criterion 7 edits the self-review reader in scripts/lib/handoff-ledger.mjs; the tolerant forms are taken in the same edit. [2026-10-07 machinery reset planning pass (docs/planning/machinery-reset-2026-10-07.md)]",
+          "reopenWhen": "a self-review line in a common form is rejected after WO-196 merges",
+          "targets": [
+            "WO-196"
+          ],
+          "at": "2026-10-07T06:46:22.908Z"
         }
       ]
     },
@@ -29202,6 +29266,16 @@
           "reason": "Open for the next planning pass, at the operator's choice during WO-187's final review: the order ships as filed and the separate principal-engineer improver sub-agent is boarded.",
           "reopenWhen": null,
           "at": "2026-10-06T14:39:38.388Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Decided in product 07 Verification review and attack by the pass: one adversary and one improver run once before implementation-ready, not before repair-complete; the verifier judges with its own probes and the two reports; WO-196 criterion 4 regenerates the role sentences. [2026-10-07 machinery reset planning pass (docs/planning/machinery-reset-2026-10-07.md)]",
+          "reopenWhen": "an order's escape count at final review rises over three consecutive orders after WO-196",
+          "targets": [
+            "WO-196"
+          ],
+          "at": "2026-10-07T06:46:22.795Z"
         }
       ]
     },
@@ -29368,6 +29442,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-06T15:48:48.202Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Product 07 Operator-opened planning pass now carries the no-code screen; the pass applied it to every queued order and found WO-118 and WO-082 (both corrected). [2026-10-07 machinery reset planning pass (docs/planning/machinery-reset-2026-10-07.md)]",
+          "reopenWhen": "an order filed after 2026-10-07 claims no code while a cited design assigns it work",
+          "targets": [],
+          "at": "2026-10-07T06:46:23.307Z"
         }
       ]
     },
@@ -29606,7 +29688,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-196 criterion 1: the format row joins the product and review gates' preflight stage, so an unformatted file stops the gate within seconds and prints the repair. [2026-10-07 machinery reset planning pass (docs/planning/machinery-reset-2026-10-07.md)]",
+          "reopenWhen": "a gate is lost to formatting after WO-196 merges",
+          "targets": [
+            "WO-196"
+          ],
+          "at": "2026-10-07T06:46:22.617Z"
+        }
+      ]
     },
     {
       "id": "FUP-032190d84be0c2f0",
@@ -29715,7 +29808,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-196: the numbered procedure leaves nothing to write during the gate, the live-gate spawn advisory names the gate, and product 07 Discipline states the handoff sequence; a Codex watcher is declined in the planning document section 12. [2026-10-07 machinery reset planning pass (docs/planning/machinery-reset-2026-10-07.md)]",
+          "reopenWhen": "a record write during a review gate after WO-196 merges",
+          "targets": [
+            "WO-196"
+          ],
+          "at": "2026-10-07T06:46:22.679Z"
+        }
+      ]
     },
     {
       "id": "FUP-5f8a48126bb022be",
@@ -29737,7 +29841,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "WO-199 criterion 2: dotln vertical installs an interrupt handler that stops every writer group it started and a rerun resumes. [2026-10-07 machinery reset planning pass (docs/planning/machinery-reset-2026-10-07.md)]",
+          "reopenWhen": "a writer outlives an interrupted dotln vertical after WO-199",
+          "targets": [
+            "WO-199"
+          ],
+          "at": "2026-10-07T06:46:23.134Z"
+        }
+      ]
     },
     {
       "id": "FUP-5d48c4f3c2a3730d",
@@ -29752,7 +29867,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Unbounded retries of a judgment that fails identically are a separate behavior with its own fixture; WO-199 declines to fold it in. [2026-10-07 machinery reset planning pass (docs/planning/machinery-reset-2026-10-07.md)]",
+          "reopenWhen": "WO-118's run pays a repeated identical judgment episode",
+          "targets": [],
+          "at": "2026-10-07T06:46:23.249Z"
+        }
+      ]
     },
     {
       "id": "FUP-ac99e09feec05a3b",
@@ -29767,7 +29891,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-196 criterion 7: a spawn while a gate run is live is admitted with one advisory naming the run, and the role procedures order the worker before the gate. [2026-10-07 machinery reset planning pass (docs/planning/machinery-reset-2026-10-07.md)]",
+          "reopenWhen": "a probing worker is spawned during a live gate after WO-196 merges",
+          "targets": [
+            "WO-196"
+          ],
+          "at": "2026-10-07T06:46:22.736Z"
+        }
+      ]
     },
     {
       "id": "FUP-627ec3088bb86e62",
@@ -29789,7 +29924,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "WO-199 criterion 1: the vertical's transport exposes the process group and crash recovery through the vertical matches the direct transport in the WO-112 probe. [2026-10-07 machinery reset planning pass (docs/planning/machinery-reset-2026-10-07.md)]",
+          "reopenWhen": "a vertical run after WO-199 is sealed refused after a host crash",
+          "targets": [
+            "WO-199"
+          ],
+          "at": "2026-10-07T06:46:23.078Z"
+        }
+      ]
     },
     {
       "id": "FUP-60dab7dee5b4073d",
@@ -29801,6 +29947,167 @@
           "ref": "docs/evidence/WO-112/decisions.md#wo-112-d066--board-host-admission-refusals-recorded-as-transport-failures",
           "title": "WO-112-D066: Record host admission refusals after a writer's result under their own reason, not WorkerInterrupted 'transport-failed', and assert the recorded reason in the one-commit host-message test",
           "summary": "{ \"id\": \"WO-112-D066\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: final review\", \"decision\": \"Route FINAL-001 F2 as a follow-up, class escape. This order moved the host's post-result admission (tree.effect(), the one-commit host-message check, observe() with its authority checks and receipt save) inside the dispatch try (source-change-host.ts:789-818); at HEAD they followed it. Any of them that throws a plain Error now appends WorkerInterrupted with reason 'transport-failed' after WorkerResultObserved. The refusal itself still happens and no work is accepted; only the recorded reason is wrong.\", \"evidence\": [ \"git show HEAD:packages/skeleton/src/source-change-host.ts: the try closes at line ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-199 criterion 3: a host refusal after a writer's result records a typed refusal naming the check. [2026-10-07 machinery reset planning pass (docs/planning/machinery-reset-2026-10-07.md)]",
+          "reopenWhen": "a refusal after a result is recorded as transport-failed after WO-199",
+          "targets": [
+            "WO-199"
+          ],
+          "at": "2026-10-07T06:46:23.191Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-aacfb270ebb2a74e",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-machinery-reset-pass-recorded-2026-10-07::16d255317cef9263070d6d4263f519947ea28cab79830954e2a22cc4afb45679",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "253d950b6f39239ff06cd8eafc41a95e0c83b116a378637c6e5c87b3923be289",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-machinery-reset-pass-recorded-2026-10-07",
+          "title": "A failure-feed row that names the failing criteria and the blocking findings' classes.",
+          "summary": "1. **A failure-feed row that names the failing criteria and the blocking findings' classes.** `plan failures` rows carry report paths and judges; the pattern \"every criterion met, verdict failed\" was visible only in the reports. Reopen: the next pass reads more than ten failed reports by hand to classify them.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9b0632b0ec72d168",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-machinery-reset-pass-recorded-2026-10-07::20fadfb7353f9ac0e7cd73860697111c6a476ba01d327691619ef47d907a946f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d8119b387609441690879795713a2275609c669fa8629092ff92107aa9384826",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-machinery-reset-pass-recorded-2026-10-07",
+          "title": "WO-088's withdrawal.",
+          "summary": "8. **WO-088's withdrawal.** Its gap (phrase copies diverging) was absent on three passes; its own assumption 3 says to take it out. The pass leaves it near the end for the operator's `withdraw`. Reopen: a copy diverges.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ed7136a8228e83f8",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-machinery-reset-pass-recorded-2026-10-07::44546ba55b925efc062d093dab7a3dcad6d5ba3f44780e17c316505e7c0471e6",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c9b28a0cee0b98a0a9ff13f7ae8f2854f4475b5122dcb89247bb957276497408",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-machinery-reset-pass-recorded-2026-10-07",
+          "title": "Evidence volume (FUP-8a4e201d861208ad, FUP-be1103fbfdd14653).",
+          "summary": "5. **Evidence volume (FUP-8a4e201d861208ad, FUP-be1103fbfdd14653).** Declined again (§12). Reopen: a week after WO-196 adds more than 10 MB with orders that passed verification in at most two attempts.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6e6bf2f4d6671e18",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-machinery-reset-pass-recorded-2026-10-07::7a06d36bb117d0f662ea9e1a31ae37bd5afaf8ec23d59085e51c6e867f7d8c3d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c8e1d69b425f7760d5d56234d4abe7baae9740b8a98d9a41d6feee6041f57c56",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-machinery-reset-pass-recorded-2026-10-07",
+          "title": "WO-014 phases 2 and 3",
+          "summary": "7. **WO-014 phases 2 and 3** (counting approval requests per harness and scenario). No hook observes approval requests (the WO-136 matrix). Reopen: a host channel reports approval requests.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0d2a940087f0036d",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-machinery-reset-pass-recorded-2026-10-07::8fd2bd4f558ba0effc353dcf2a7a9f2874e4b156d73e17b7023e3068d9c935ae",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "721fdf8b648494c906f662561c283bece9ccab48acdd690b797b7ab4bede1d72",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-machinery-reset-pass-recorded-2026-10-07",
+          "title": "A consumer of the operator's answer to a vertical NeedsHuman.",
+          "summary": "9. **A consumer of the operator's answer to a vertical NeedsHuman.** A NeedsHuman ends a run as a typed stop and nothing consumes the answer (WO-118's known issue). Reopen: WO-083's run needs the answer consumed.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1bd1a1561feb3a57",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-machinery-reset-pass-recorded-2026-10-07::9db280513f7e9eb5ed625e3690ca017cb6c00d022b64ba93eade9c21319e948c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "39a18597eab35bf8e803a445ed6f1a90ace83a9b40aa808dd306a2acd4101a92",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-machinery-reset-pass-recorded-2026-10-07",
+          "title": "A record-write watcher for Codex gates (WO-112 D057).",
+          "summary": "3. **A record-write watcher for Codex gates (WO-112 D057).** Declined (§12). Reopen: a record write during a review gate after WO-196.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a0a5ff5624f75eb2",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-machinery-reset-pass-recorded-2026-10-07::a36231b3f813d3e61db158fcb9667c7effae85a418d823e25cd8a1d024b6bf25",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "dd92d0de825fcb358b533d80c42e95eef3182bc3a5ff83fe969752c6d485d6ad",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-machinery-reset-pass-recorded-2026-10-07",
+          "title": "A resume qualify command.",
+          "summary": "2. **A `resume qualify` command.** Declined (the planning document §12). Reopen: a gate lost to formatting or a record write after WO-196.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-95626cc3b7352359",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-machinery-reset-pass-recorded-2026-10-07::ae0dcdb8f6b21c0d065bd3c5a4034c470542df10f49654bc0826574277c133f9",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "3b698b5950a26c1eae70f7cfcbf17b73cab71a6f609d0ecc0b54de062241a864",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-machinery-reset-pass-recorded-2026-10-07",
+          "title": "The known-issues reader as a marker block.",
+          "summary": "4. **The known-issues reader as a marker block.** Declined (§6). Reopen: the reader drops a section of an order filed after 2026-10-07.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b28d36edaa8630b1",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-machinery-reset-pass-recorded-2026-10-07::cc6731d920c3621613e25b7009a6c66f632f62a71189a3e66cbe19930d03f222",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6abc32f0094020669f50dd9a5696cfe7de377d5b9286d71cf7fb7b549dbebf59",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-machinery-reset-pass-recorded-2026-10-07",
+          "title": "WO-082's four demonstrations no order supplies",
+          "summary": "6. **WO-082's four demonstrations no order supplies** (stale marks that spread from a service change to dependent members; a shared-file conflict surfaced as coordination work; a blocked target naming its manual handoff; a workstream-level next safe action). The 2026-10-07 pass narrowed WO-082 to the four demonstrations the tree and its dependencies supply. Reopen: an order builds one of these, or product 12's claims about them are to be proved.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-7d1f987c4cfbb93f",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-machinery-reset-pass-recorded-2026-10-07::f950e51a83d9223494fd2d53fdbf9c52964e026c84d72431c3e2739b2a9dceb3",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "60d6efcc1ae67083def5f6f5ded50e2a04fc3a640025a6d404f35f8ab1f4ea05",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-machinery-reset-pass-recorded-2026-10-07",
+          "title": "Target facts in the committed work-order index.",
+          "summary": "10. **Target facts in the committed work-order index.** WO-080 renders them live from the local registry instead (they would churn across hosts). Reopen: a consumer needs them committed.",
           "missing": false
         }
       ],

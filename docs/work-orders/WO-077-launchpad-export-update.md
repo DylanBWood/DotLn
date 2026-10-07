@@ -3,6 +3,7 @@
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** delivery
 **Release classification:** minor. One command mode over the kit manifest.
 Assigned at activation under the standing opt-out default.
 **Cost:** adds `--update` to `scripts/launchpad.mjs`, the kit's dated
@@ -28,8 +29,8 @@ written in
 §10).
 **Depends on:** WO-074 merged (a prior manifest to update from); WO-075
 merged (the kit runtime a resident inside an exported instance runs on);
-WO-167 merged (product 07 holds 9 bytes of headroom until the fold resets
-its ceiling).
+WO-167 merged (closed, v0.53.1; its fold is history, and product 07's
+ceiling is planning's).
 **Recommended placement:** in the serial run after WO-076 and before
 WO-078. This order edits `scripts/launchpad.mjs`, `scripts/lib/config.mjs`,
 the client README template and product 07; WO-078 edits
@@ -52,7 +53,7 @@ token.
   {
     "workOrderId": "WO-167",
     "relation": "hard",
-    "reason": "product 07 has 9 bytes of headroom until the fold resets its ceiling"
+    "reason": "closed at v0.53.1; retained as the fold this order's product 07 write-back followed"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -125,6 +126,53 @@ instruction; it refuses without a prior manifest.
   is a schema change this order does not make; reopen if WO-078's receipts
   need the actions).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07; steps 2, 4 and 5 are written against WO-074's files and re-read at the base):**
+
+1. `scripts/lib/config.mjs`: add a `kit` section with one boolean `applyInstanceActions`
+   (default false): add it to `SECTION_KEYS` (line 84), add `validateKit(path, declared)`
+   using `requireObject` and `requireKnownKeys`, and add it to `validateConfig` and
+   `absentConfig` (line 633). `scripts/test-configuration-root.mjs`: add the case
+   "a kit section admits only applyInstanceActions as a boolean".
+   Check: `npm test -- --only configuration-root`.
+2. `scripts/launchpad.mjs`: `export --update <dir> [--apply]`. `readPriorManifest(dir)`
+   refuses an absent or malformed `KIT-MANIFEST.json` before any write, naming the path.
+   `planUpdate(prior, next, dir)` sorts each path as unmodified-replace, modified-refuse,
+   dropped-remove (only if unmodified) or new-add; instance files are never touched; an
+   unreadable kit file refuses before any write. Apply the plan, rewrite `UPSTREAM.md` and
+   `KIT-MANIFEST.json` (a refused, locally modified file keeps its prior hash in the manifest
+   and is listed in the dated note, so the next update refuses it again), and print the
+   dated note, the refused list, `opted-in update` or `update without opt-in`, and
+   `re-emit: node scripts/harness.mjs emit`.
+3. Same file: `applyInstanceActions(dir, actions)` refuses unless
+   `loadConfig(dir).kit.applyInstanceActions` is true, performs only declared kinds, and
+   prints one line per applied action. Actions are typed, never read from the note.
+4. `scripts/kit/KIT-ACTIONS.json` (new, manifest-listed):
+   `{ "schemaVersion": 1, "actions": [{ "id", "date", "kind": "rename-root" | "add-config-field" | "change-phrase", ...typed fields }] }`,
+   empty at first; the printed dated instance-actions note is rendered from it; `--apply`
+   refuses any `kind` outside the list. After export the fork's `CLAUDE.md` is an instance
+   file, so a `change-phrase` action edits it only under the opt-in. Add the update section to
+   `scripts/kit/README.client.md`.
+5. `scripts/test-launchpad.mjs`: build two commits in a synthetic source repository (B drops one
+   kit file, adds one and changes one) and export A. Cases: update replaces unmodified kit files,
+   refuses a modified one, keeps instance and overlay files, removes the dropped file, adds the
+   new one, rewrites the manifest and `UPSTREAM.md`, prints the re-emit line; update refuses
+   without or with a malformed prior manifest before any write; update prints the dated note;
+   `--apply` without opt-in refuses and changes no instance file; `--apply` with opt-in performs
+   and lists declared actions and refuses an undeclared one; an opted-in update keeps a
+   resident's log, derived identities and next cadence (follow `scripts/test-derived-orders.mjs`
+   line 574: `ResidentHost` start, tick, close; `replayResident`; `materializeOrder`), loading
+   `resident-host.js` from the export's `packages/skeleton/dist/src` (WO-075's runtime subset
+   must carry it; the executor checks and otherwise records the case as blocked on WO-075 with
+   the file name). Check: `npm test -- --only launchpad`.
+6. Write-backs: `scripts/kit/README.client.md` sections for taking upstream updates and for
+   opting in; `docs/product/07-execution-guide.md` §"### Where the control plane finds its
+   documents": add `kit` to the sentence that lists the optional sections and one sentence for
+   the field, in place; `docs/evidence/WO-077/decisions.md` (the field, the action format, what
+   the manifest records for a refused file); `node scripts/check-publication.mjs --print-locks`
+   into `docs/publication/audience-status-index.md`; `npm run publication:check`.
+7. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+   complete `docs/evidence/WO-077/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the mode, the opt-in field, fixtures, the write-backs
 below.
 
@@ -149,13 +197,9 @@ below.
    fires.
 4. Write-backs land: the client README template (take upstream updates;
    opting in); 07 §Where the control plane finds its documents (the opt-in
-   field), in place with no dated paragraph, at most 200 bytes added,
-   against 9 bytes of headroom on 2026-09-28, which WO-167's fold resets
-   first; WO-173, WO-172, WO-086, WO-123, WO-072, WO-073, WO-113, WO-080
-   and WO-078 also write product 07, so the executor re-measures the
-   headroom at its base; where the bound does not fit, it consolidates the
-   section it edits in the same change; a ceiling is raised only by a
-   planning-document decision. The decisions file; the publication locks
+   field), in place with no dated paragraph (ceilings are planning's: the 2026-10-07 pass set every product document's ceiling at measured bytes plus one tenth, and an overrun is an advisory the next pass reads); WO-072, WO-073, WO-113, WO-080, WO-078, WO-188,
+   WO-189, WO-190, WO-192 and WO-193 also write product 07. The decisions
+   file; the publication locks
    refreshed.
 5. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
    clean; no new dependency.
@@ -166,6 +210,17 @@ below.
 again at final review. No live row.
 
 **Write-back duty:** as listed in criterion 4.
+
+**Known issues and carry-ins:**
+
+- Stale on 2026-10-07 and corrected above: WO-167's fold and product 07's
+  headroom; the 07 co-writer list.
+- Decided by the 2026-10-07 pass: the opt-in is `kit.applyInstanceActions`;
+  actions are a typed `KIT-ACTIONS.json`; a refused file keeps its prior
+  manifest hash; the fork's `CLAUDE.md` is an instance file after export.
+  Reopen: a fork needs an action kind outside the three.
+- Blocked on WO-074 (manifest schema, entry point, template directory,
+  fixture helper) and WO-075 (`resident-host.js` in the runtime subset).
 
 **Non-goals:** any fork's own upstream merge; the overlay (WO-076); an
 event type for applied actions; the resident-owned loop from a starter

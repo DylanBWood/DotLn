@@ -1242,9 +1242,12 @@ Standard artifacts, all doc-only:
 An acceptance criterion says what a write-back states and where, without a
 byte count; a figure in an order filed earlier is the planner's estimate, never
 a bound a role trims reviewed text to meet [2026-09-30 pass; WO-172 theme 14].
-A pass that files or keeps a write-back to a bounded document sets that
-document's ceiling (`docs/control/doc-ceilings.json`) to cover it and cites its
-planning document. When the operator makes bytes a goal and boards an overrun,
+Ceilings are planning's alone [operator direction, 2026-10-07]: every pass
+sets each product document's ceiling (`docs/control/doc-ceilings.json`) at
+its measured non-exempt bytes plus one tenth, citing its planning document;
+the document check reports an overrun as an advisory that the next pass reads
+(mechanical once WO-196 lands); no role trims reviewed text to a number and no
+review asks the operator to settle bytes. When the operator makes bytes a goal and boards an overrun,
 the entry may name an `advisoryDecision` in public evidence with a current
 unresolved registered follow-up; the check reports the exact overrun without
 raising its ceiling or exempting bytes. Remove that reference when the useful
@@ -1264,6 +1267,24 @@ judged source again runs another the same way. A step the order's objective
 gives the operator (a session the operator witnesses, a run in the operator's
 own fork, a grant only the operator's account holds) names its fallback for
 the case that it has not happened by handoff.
+
+An order carries an `Execution plan`: numbered steps in execution order,
+each naming one file (existing, with the function or export it changes, or
+new, in a directory that exists or an earlier step creates), the change, and
+the command that checks it; write-backs last, each with the section heading
+as it reads today; then the handoff sequence of §Discipline. A step that
+cannot be written until another order merges says so and names what will be
+known then. Two screens before filing [2026-10-07 pass]: an order that says
+no code ships is checked against every cited design for work assigned to it
+("a model episode in WO-NNN", "supplied by WO-NNN") and against every
+criterion that needs capability the tree lacks (WO-112 D018: planned as
+evidence-only, it needed four code repairs under override); and no criterion
+requires a deterministic reading of natural language or free-form Markdown.
+A classification of wording is a persisted judgment supplied as input; a
+record inside a document is a marker block holding JSON or a typed field.
+WO-123 (criterion 5, four repairs) and WO-187 (criteria 2 and 4, four
+repairs) spent 39.9 hours between them before each reader was replaced by a
+structured input.
 
 A planning pass never activates, implements, tags, publishes, merges, edits
 immutable evidence, or reopens a decision without its stated evidence or
@@ -1542,40 +1563,42 @@ three duties in order; choose relevant lenses and state why in the report.
    holds the same contract, what a maintainer will not understand in six
    months, and whether it fits repository principles and the platform lens
    in §Goal-aligned decisions. Propose improvements with concrete evidence.
-3. **Use one fresh adversary.** Where the host can spawn, give a fresh worker
-   only the work order and diff, with no executor narrative, inherited
-   conversation or prior review conclusions. Use the pin in §Model-specific
-   notes and judge its findings yourself. Without spawning, make the pass
-   a separate step and disclose that limit. Never delegate the verdict.
+3. **Read the two worker reports and reproduce.** The executor's adversary
+   and improver (below) ran at `implementation-ready`; read their reports
+   and the executor's dispositions, and reproduce the claims your verdict
+   rests on. Spawn a fresh `dotln-worker` only to reproduce one named
+   claim you cannot run yourself, with only the order and diff. Never
+   delegate the verdict [2026-10-07 pass; the operator's direction of
+   2026-10-02 as WO-187 D051 records it].
 
-Every finding takes a route: `blocking` for a defect in the order's declared
-surfaces (fail the verdict); `follow-up` for a boarded item with reproduction;
-or `operator` for a decision packet that names the choice only the operator
-can make, evidence, alternatives and consequence. Maintainability alone is
-a follow-up unless it hides a defect. §Discipline's Adjacent Repair boundary
-still applies. The verifier writes evidence and its immutable report, never
-the implementation it judges.
+Every finding takes a route: `blocking` when an acceptance criterion is
+unmet, or when the change breaks behavior `main` had and a probe or fixture
+shows it (fail the verdict); `follow-up` for every other defect, reproduced
+and boarded, a defect in the declared surfaces that breaks no criterion
+among them; or `operator` for a decision packet that names the choice only
+the operator can make, evidence, alternatives and consequence. The verdict
+is bound to the criteria: WO-112's VER-002 to VER-006 each met every
+criterion and failed on new in-surface defects, and the order closed by
+override after seven verifications [2026-10-07 pass]. Maintainability alone
+is a follow-up. §Discipline's Adjacent Repair boundary still applies: the
+next repair, if one happens, fixes boarded follow-ups in the declared
+surfaces within the Boy Scout bound. The verifier writes evidence and its
+immutable report, never the implementation it judges.
 
 On re-verification, re-derive every criterion whose surfaces the repair diff
-touches and attack the repair itself. Carry untouched claims with their
-original evidence; an earlier passing fixture is not evidence for a changed
-path.
+touches and reproduce the repaired findings. Carry untouched claims with
+their original evidence; an earlier passing fixture is not evidence for a
+changed path. A new defect in the repair that breaks no criterion is a
+follow-up, so a repair loop ends when the criteria hold.
 
 The verify briefing prints every `Known issues and carry-ins` section of the
 order as written, under a header naming its label's line, the last line
 printed and the line that ended it, then the latest filed planning judgment
-naming that order's known issues. It reads the order line by line,
-and structure counts only at the start of a line: anything indented or behind
-a list or quote marker is text. A section starts at that field's label
-(`**Known issues and carry-ins:**`, `**Known issues and carry-ins**:`, the
-bold name alone on its line, or a heading of that name). It ends before the
-next heading at its level or above (any heading, under a bold label) or the
-next order-field label that follows a blank line; a field label on a line
-that continues a paragraph is that paragraph's text. A line that starts with
-three backticks or tildes opens a fence, closed by a line of that character
-at least as long, and no label or field is read inside one. The briefing
-advises on an empty section, on a fence the order never closes and on any
-other line outside a section whose first letters are `Known issue`.
+naming that order's known issues. The reader is
+`scripts/lib/verification-briefing.mjs`: a section starts at the field's
+label or a heading of that name and ends at the next heading or at an
+order-field label after a blank line; fenced lines are text; the briefing
+advises on an empty section or an unclosed fence.
 
 | Lens | Question | Suitable changes |
 | --- | --- | --- |
@@ -1586,14 +1609,22 @@ other line outside a section whose first letters are `Known issue`.
 | Authority and private data | Do effects stay authorized and public data stay separate from private inputs? | Hosts, writes, transport and publication |
 | Maintainer in six months | Can the next maintainer explain the rule and change it safely? | Every nontrivial implementation |
 
-The executor uses the same fresh order-and-diff adversary as an improver before
-`implementation-ready` and `repair-complete`, fixes or records every finding,
-and writes a line in `handoff.md` that starts `self-review: found N; fixed N;
-recorded N`, then names the worker or separate-pass fallback and its evidence.
-A list marker may precede the line; no other form is the line. Absence advises
-once and never refuses completion. A line does not prove a review occurred.
+Before `implementation-ready`, and not before `repair-complete`, the
+executor spawns two fresh `dotln-worker` agents, each given only the order
+and the diff: an adversary that attacks the criteria and an improver that
+critiques design, simplicity and what a maintainer will not understand in
+six months. It fixes or records every finding and writes a line in
+`handoff.md` that starts `self-review: found N; fixed N; recorded N`, then
+names both workers or the separate-pass fallback and its evidence. A list
+marker may precede the line; no other form is the line. Absence advises once
+and never refuses completion. A line does not prove a review occurred. Until
+WO-196 regenerates the role text, this section governs where a role sentence
+differs from it.
 
-Final review retains all its duties. Its report lists every finding once, in
+Final review is acceptance: the criteria, the integration and the release
+surfaces. A finding outside the criteria that breaks no behavior `main` had
+is a follow-up by rule, never blocking; the class counts below still measure
+escapes [2026-10-07 pass]. Its report lists every finding once, in
 one block: a `<!-- dotln-findings:start -->` line, a JSON array and a
 `<!-- dotln-findings:end -->` line. Each entry is
 `{"id": "F1", "route": "blocking", "class": "escape", "summary": "<one line>"}`:
@@ -1623,6 +1654,18 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
 
 ## Discipline
 
+- **The handoff sequence (2026-10-07 pass).** A role that finishes
+  implementation, a repair, a verification or a final review runs, in this
+  order and nothing between: `npm run format`; `npm run test:docs` until
+  green; the product gate (`npm test`, or `npm test -- --review` when the
+  order's final criterion names it) while writing nothing under the
+  repository and starting no agent; the records that cite the passing rows;
+  the completion command. A write during the gate loses the gate (WO-112
+  D057, 1,861 s); a formatter run after the gate changes the code identity
+  and loses it (WO-112 D049, 1,863 s; the same in WO-164, WO-148, WO-146 and
+  WO-158). WO-196 makes the first step mechanical: the gate runs Prettier as
+  its first preflight and refuses to start otherwise, and a review gate at
+  an identity whose tasks already passed reuses them.
 - **Host resources (WO-185).** Dispatch registers the verified agent ancestor
   with one detached guard per user, shared across clones and exported instances
   through the operating system's per-user temporary root. The runner, guard and

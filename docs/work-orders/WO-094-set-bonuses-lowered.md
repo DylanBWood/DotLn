@@ -3,6 +3,7 @@
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** delivery
 **Release classification:** minor. Bonus emissions over WO-092's
 collection. Assigned at activation under the standing opt-out default.
 **Cost:** adds the 5S set's five bonuses as data beside WO-093's mechanics
@@ -113,6 +114,47 @@ plus statechart gate), which the Gardener's base rank refuses.
   fixture pair can hold the listing constant); seven one-emission bonus
   entries (WO-092's decision; reopen with it).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07; the set and bonus type names, the `setBonuses` field and "equipped" come from WO-092, the module and piece ids from WO-093, both read at the base):**
+
+1. `packages/skeleton/src/loadouts/five-s.ts`: add `fiveSSet` with the six piece ids and five
+   bonuses: `five-s.canonical-home` (2: `evidence-schema`), `five-s.integrity-check` (3:
+   `verifier-episode`), `five-s.standardization` (4: `evidence-schema` and `work-order`),
+   `five-s.reevaluation` (5: a `cadence` whose kind is in the kernel's
+   `EVALUABLE_CADENCE_KINDS`, `packages/kernel/src/core.ts` line 61), `five-s.safety` (6: a
+   `permission-guard` denying `repo.delete` and `repo.write`, the effects Seiri's tooltip
+   restricts, plus a `statechart-gate`). Export `fiveSSetLoadout(expiresAt)`; build the k and
+   k-1 piece graphs with a helper whose name does not end in `Loadout`. No ProductSuggestion
+   is emitted. Check: `node scripts/build.mjs`.
+2. The Safety gate's preconditions are a typed predicate `five-s.safety.preconditions` v1
+   reading four typed state fields (isolation, evidence, independent verification, approval),
+   registered beside the module (decided 2026-10-07: no predicate in the tree reads them, and
+   kernel `authorize` refuses on denial before it checks evidence, so without this the four
+   absent-input fixtures would pass vacuously). The fixtures grant base authority for the
+   effect so the evidence check is reached.
+3. `packages/skeleton/test/five-s-bonuses.test.ts` (new): per bonus "WO-094 <bonusId> is dark
+   one piece short and armed at its count" (its `setBonuses` state and the presence or absence
+   of each emission id in the lowered arrays; two ids for the 4- and 6-piece bonuses);
+   "WO-094 the Safety gate compiles and refuses the destructive change" (`authorize` from
+   `@dotln/kernel` on the compiled `authorityEnvelope`, asserting `authorized === false` and
+   the reason names the predicate); one test per absent or undecodable input, each with the
+   effect allowed so only the predicate can refuse. Check:
+   `node scripts/build.mjs && node --test packages/skeleton/dist/test/five-s-bonuses.test.js`
+   (the `skeleton` row).
+4. Show nothing stales: `node scripts/{authority,artifact-identity,verification,feedback}-evidence.mjs --check`
+   (one command each).
+5. Labels: `packages/skeleton/package.json` line 3, `packages/console/package.json` line 30,
+   `package-lock.json` lines 493 and 509. Check: `npm run release -- check-surfaces --local`;
+   `node scripts/harness.mjs check`.
+6. Write-backs: product 04 §"## RPG / Path-of-Exile view" (the bullet at lines 615 to 617
+   names the five bonuses now implemented for the 5S set and the rest planned, in place);
+   product 05's status paragraph (lines 3 to 8) and the 5S section sentence at lines 33 to 34;
+   `docs/evidence/WO-094/decisions.md` (new); `README.md` lines 421 to 422 and
+   `packages/compiler/README.md` lines 113 to 114 still call set bonuses future: WO-095
+   corrects them (it edits README under WO-189's rule); `node scripts/check-publication.mjs --print-locks`
+   into both TOCs; `npm run meta`; `npm run work-orders -- index`; `npm run publication:check`.
+7. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+   complete `docs/evidence/WO-094/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the bonuses, fixtures, the write-backs below.
 
 **Acceptance criteria (all required)**
@@ -128,13 +170,10 @@ plus statechart gate), which the Gardener's base rank refuses.
    outside it is a follow-up, not a failure.
 3. Write-backs land, each in place with no dated paragraph: 04 §RPG /
    Path-of-Exile view (the set-bonus bullet: the bonuses implemented for
-   this set, the rest still planned; at most 200 bytes added, against
-   1,194 bytes of headroom on 2026-09-28) and 05's status paragraph under
-   the title and §5S / 6S — the maintenance organism, which call set
-   bonuses planned (at most 200 bytes, against 2,544). WO-092, WO-116,
-   WO-117, WO-081 and WO-083 also write 04, and WO-093 also writes 05, so
-   the executor re-measures the headroom at its base; where the bound
-   does not fit, it consolidates the section it edits in the same change;
+   this set, the rest still planned, in place with no dated paragraph (ceilings are planning's since the 2026-10-07 pass)) and 05's status paragraph
+   under the title and §5S / 6S — the maintenance organism, which call set
+   bonuses planned. WO-092, WO-081 and WO-083 also write 04, and WO-093,
+   WO-188 and WO-192 also write 05;
    a ceiling is raised only by a planning-document decision. The
    decisions file; the publication locks refreshed.
 4. `npm test -- --review` and `npm run test:docs` green; `git diff
@@ -147,6 +186,19 @@ harness-fixtures and harness suites, and again at final review. No live
 row.
 
 **Write-back duty:** as listed in criterion 3.
+
+**Known issues and carry-ins:**
+
+- 2026-10-07 pass: the order said no compiler source is edited while
+  its Safety criterion could pass without testing anything (no predicate
+  reads the four inputs); step 2 adds the typed predicate. Stale and
+  corrected: products 04 and 05 figures; WO-116 and WO-117 closed; the
+  lockfile lines.
+- Decided by the 2026-10-07 pass: the destructive effect ids; the
+  predicate and the allowed-effect fixtures; the README corrections go to
+  WO-095. Reopen: the Safety gate must read a fifth input.
+- Blocked on WO-092 (type names, `setBonuses`, "equipped") and WO-093
+  (the module, piece ids, shared supports, the six-piece factory).
 
 **Non-goals:** the scenario and render (WO-095); real deletion authority;
 compiler lowering (WO-092); a hash-level proof per bonus.

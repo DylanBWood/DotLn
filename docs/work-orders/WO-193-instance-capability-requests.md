@@ -174,6 +174,61 @@ answers it, the instance's next update says so.
   none); a request channel other than the forge's issues (the reader
   exists for this one; an instance that cannot reach it uses `manual`).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+1. `scripts/lib/config.mjs`: `SECTION_KEYS` (line 84) gains `requests`; a decoder admits only
+   `route` in `none`, `manual`, `direct`; `absentConfig` (line 633) defaults
+   `requests: { route: "none" }`. Cases in `scripts/test-configuration-root.mjs`.
+   Check: `npm test -- --only configuration-root`.
+2. `scripts/request.mjs` (new) exporting `draftRequest`, `checkRequest`, `fileRequest`
+   (WO-194 imports `draftRequest`); `package.json` gains `"request": "node scripts/request.mjs"`.
+   A draft is typed JSON `{ schemaVersion: 1, id, title, body, ready: null | { by: "operator", at } }`;
+   `file` checks `ready` only (no "ready line" in Markdown). `check` runs
+   `checkLocalTerms(root, surfaces)` (`scripts/lib/terms.mjs` line 13),
+   `lintOutwardArtifact` (`scripts/lib/outward-lint.mjs` line 55) and
+   `screenSourceBundle(bundle, allowedHosts)` (`packages/compiler/src/source-bundle.ts` line
+   694); an absent terms list reports `unavailable`. `file`: route `none` refuses
+   `REQUEST_ROUTE_NONE`; missing ready `REQUEST_NOT_READY`; a failed or unavailable screen
+   `REQUEST_SCREEN_FAILED`; `manual` prints; `direct` runs
+   `executeGh(cwd, ["issue", "create", "--repo", <upstream>, "--title", ..., "--body-file", ..., "--label", "dotln-request"])`
+   (`scripts/lib/github-repository.mjs` line 99). Ledger rows
+   `{ id, titleDigest, route, issue, state, version }`: the reference and digest only, never
+   the body (clean room).
+3. `scripts/test-request.mjs` (new) with a PATH `gh` stub that fails on any call (manual) or
+   records argv (direct); add `nodeTests("request", "scripts/test-request.mjs")` to `suites`
+   (`scripts/test-runner.mjs` line 591). Check: `npm test -- --only request`.
+4. Labelled listing: a new export in `packages/skeleton/src/github-issue-source.ts` using
+   its `gh api graphql` helper (lines 240 to 256), returning numbers only; each number then
+   goes through `fetchIssueBundle` and `requireCompleteIssueBundle` (refusal `incomplete`,
+   line 94). The reader has no listing today; this is the capability the order lacked.
+5. `scripts/refute-plan.mjs` `main` (line 198): a `requests` command writes
+   `docs/planning/requests.json` rows `{ issue, bundleHash, revisionId }`, skipping registered
+   issues; `scripts/lib/planning-followups.mjs` `collectFollowupSources` (lines 91 to 206)
+   adds kind `request` read from that file, never from headings; `plan start` (lines 314 to
+   337) returns `requests: { undisposed }`. Fixtures in `scripts/test-plan-refutation.mjs`.
+   Check: `npm test -- --only plan-refutation`.
+6. `scripts/work-orders.mjs`: `parseHeader` returns `requests` from a
+   `<!-- dotln-requests:start -->[{ "issue": 123 }]<!-- dotln-requests:end -->` block parsed
+   like the dependency block (never from a `**Requests:**` prose field); `renderIndex` (line
+   444) prints it; `npm run work-orders -- index`. `scripts/worktree.mjs` `publish` (after
+   `assertGitHubBodyProfile`, line 563) refuses a body lacking `Closes #N` for each request.
+   Check: `scripts/test-work-orders.mjs` (`work-orders-fixtures`) and `scripts/test-worktree.sh`
+   (`worktree`).
+7. Receipt and update note (after WO-077 and WO-078; re-read their formats at the base).
+8. Deployment-record and request templates, the drafts lane, the ledger path and the
+   `.gitignore` entry in `scripts/kit/` (after WO-074); `UPSTREAM.md` carries
+   `upstream.repository`, the id `direct` files to (the executor adds it to WO-074's
+   writer if WO-074 left it out, as an Adjacent Repair).
+9. Live request (criterion 8) under the operator's explicit grant; if none is given by
+   handoff, record the criterion unmet with the command.
+10. Write-backs: product 03 §"### Channel-plural intake, PR-backed registration" (in place);
+    product 07 §"## Operator-opened planning pass" (the requests feed, one sentence); product
+    12 §"## Replacing a successful but costly workflow" (the route, beside the request row);
+    `docs/evidence/WO-193/decisions.md`; `node scripts/lineage.mjs index --check`;
+    `node scripts/check-publication.mjs --print-locks`; `npm run publication:check`.
+11. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+    complete `docs/evidence/WO-193/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the kit command, template, lane, ledger and
 configuration key; the deployment-record template; the planning intake
 and its register candidates; the header field; the receipt and note
@@ -233,6 +288,17 @@ operator's explicit grant at execution; `npm test -- --review` before
 **Write-back duty:** as listed in criterion 9.
 
 **Known issues and carry-ins:**
+- Stale on 2026-10-07 and corrected above: `plan start` also reads
+  recorded failures and conditions (`scripts/refute-plan.mjs` lines 326 to
+  327); products 03 and 07 headroom (ceilings are planning's now).
+- Decided by the 2026-10-07 pass: the register row carries the reference
+  and bundle hash only; the label is `dotln-request`; the upstream id
+  comes from `UPSTREAM.md`; the product 12 sentence goes beside the
+  request row. Typed draft, typed requests block and a JSON-backed request
+  source replace the three prose reads (prose-parsing screen). Reopen: a
+  request needs its body in the register to be triaged.
+- Blocked on WO-074 (kit file set, template directory, drafts lane,
+  `UPSTREAM.md`), WO-077 (the note's format) and WO-078 (the receipt).
 
 - The declared screen catches declared secret shapes and off-host
   addresses only; an unrecognized secret passes it (the release notes of

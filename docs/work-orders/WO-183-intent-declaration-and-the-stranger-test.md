@@ -4,6 +4,7 @@
 harnesses as the loop's actors. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer any.
+**Track:** delivery
 **Release classification:** minor. One terminal and console command over
 the parity contract, one receipt shape, one witnessed run; no change to
 the loop's primitives. Assigned at activation under the standing opt-out
@@ -71,7 +72,7 @@ horizons; `docs/planning/work-order-map.md` (the candidate "Intent
 declaration and the stranger test"); `docs/work-orders/WO-118-resident-owned-loop-from-starter.md`
 (the intent the resident admits, the standing grants, the exported
 instance); `docs/work-orders/WO-123-vertical-composition.md` (the
-`intent` portfolio class); `docs/work-orders/WO-061-storycontract-compile.md`
+`intent` portfolio class); `docs/work-orders/WO-061-story-contract-compile.md`
 (the labeled inference episode); `docs/work-orders/WO-120-*.md` (derived
 identity); `packages/skeleton/src/dotln.ts`; the console's loopback
 command surface.
@@ -112,6 +113,58 @@ a natural-language chat surface (the receipt is a screen, not a
 transcript); admitting an intent outside a portfolio's grants (never);
 a new contract vocabulary (the StoryContract's).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+1. What exists: `dotln intent "<prose>"` (`packages/skeleton/src/dotln.ts` lines 35 and 80
+   to 84, WO-120) files a draft through `fileIntent` (`scripts/lib/derived-orders.mjs` line
+   286); `dotln.intent` is in `CONSOLE_COMMANDS_V1` (`console-commands.ts` lines 40 to 43).
+   New here: `--target`, the receipt, a prose source and the help text. Neither `dotln.ts` nor
+   `console-commands.ts` is a registered evidence source, so they owe no re-mint.
+2. `packages/skeleton/src/intent-source.ts` (new): `intentSourceBundle(prose, sourceId)` builds
+   a one-section bundle of `sourceKind: "intent"` decoded by
+   `decodeSourceBundle(bundle, { allowedHosts: [] })`; prose is its own source, no forge
+   effect. Keep it imported only from unregistered files or register it (the evidence-sources
+   suite checks the import closure). Check: `npm run build`.
+3. `scripts/lib/derived-orders.mjs`: `fileIntent(prose, { target, judge })` validates `target`
+   against `loadConfig(root).repositories` and resolves its base commit; runs the intake
+   judgment (`judge` is a double in fixtures, live through `liveTransport` in
+   `scripts/lib/vertical-judgment.mjs` line 68; the live labeled episode is the vertical's
+   intake, `intakeSubject` and `admitIntake` in `vertical-judgment-protocol.ts` lines 233 and
+   265, run by `runVerticalJudgment`); compiles via `admitIntake`, then
+   `materializeOrder(compiled, { kind: "intent", sourceId })`; returns
+   `{ workOrderId, workOrderPath, watch, decision }`, `decision` from the typed
+   `contract.openDecisions` or an `IntentAdmission` `NeedsHuman` (`vertical.ts` line 118).
+   The target binds by `--target` into the compiled `repo` (validated by `validateCompiled`,
+   `derived-contract.mjs` line 42), never by scraping URLs from the prose
+   (`referencesIssue`, `vertical-runtime.mjs` line 143).
+4. `packages/skeleton/src/dotln.ts`: accept `--target` (option list, lines 54 to 65); answer
+   `intent --help` with help text before line 35 takes prose (today `--help` would file a
+   draft); print the receipt: order id and path, the watch command
+   (`console status --store <dir> --watch`, `packages/console/src/cli.ts` line 16), and the
+   decision or `none`. A refusal is typed `{ code: "unregistered-target" | "no-intent-class", message }`;
+   fixtures assert the code and the absence of an event, never the wording.
+5. `IntentDeclared`: appended in the order's control segment, with a `case "IntentDeclared"`
+   added to `scanControl` (`scripts/lib/control.mjs` line 239 onward; the fold throws on
+   unknown types at 450 to 453).
+6. `scripts/test-derived-orders.mjs` (`derived-orders`, product): cases: an intent with a
+   registered target returns a receipt and `IntentDeclared`; an unregistered target refuses
+   with the code and no event; a portfolio without the intent class refuses with the code and
+   no event. Check: `npm test -- --only derived-orders`.
+7. `packages/console/test/console-commands.test.ts`: extend the WO-115 contract-command case
+   (line 979) with the receipt bytes. Check: `npm test -- --only console-docs`.
+8. `npm run resume -- status --all --json` lists the derived id; record whether a
+   never-activated draft appears (unknown at the base).
+9. The witnessed run on WO-118's exported starter, or the substitute run given only the help
+   text; write `docs/evidence/WO-183/witness.json`
+   `{ run: "witnessed" | "substitute", readDocs: false, typedShape, neededBeyondScreen, understood: { order, watch, decision } }`
+   and `witness.md` rendering it with the paraphrase.
+10. Write-backs: product 06 §"## v1.0.0: Teammate-ready" (the command and the run, in place);
+    product 04 §"### Console parity contract v1" (the receipt and `--target` on the
+    `dotln.intent` row); `docs/evidence/WO-183/decisions.md`; `node scripts/meta.mjs`;
+    `node scripts/check-publication.mjs --print-locks`; `npm run publication:check`.
+11. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+    complete `docs/evidence/WO-183/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the command and its loopback form, the event, the
 receipt, fixtures with doubles; the witnessed run's record; the two
 product write-backs; the decisions.
@@ -143,6 +196,20 @@ the editions re-minted deterministically; a live feedback episode only if
 a judged feedback source changes.
 
 **Write-back duty:** products 04 and 06, in place; the order's decisions.
+
+**Known issues and carry-ins:**
+
+- Stale on 2026-10-07 and corrected above: the command exists and the
+  Cost line overstates what is new; `dotln.ts` and the parity contract are
+  not evidence sources; WO-061 shipped a double, the live episode is the
+  vertical's intake; product 06's exit names this order; the index count.
+- Decided by the 2026-10-07 pass: prose is its own source adapter (no forge
+  effect); `IntentDeclared` lives in the control segment; the witness is
+  WO-118's run or the substitute record (typed, prose-parsing screen).
+  Reopen: a fork needs the intent filed as a forge issue.
+- Blocked on WO-118 for the starter and the admission path without an
+  issue binding; WO-190 may reorder 06 rungs (the heading is re-checked
+  at the base).
 
 **Non-goals:** the loop's primitives and the resident (WO-118); a chat
 interface; the Angular shell (WO-083's fork); teaching the taxonomy (the

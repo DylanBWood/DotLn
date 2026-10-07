@@ -3,6 +3,7 @@
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** delivery
 **Release classification:** minor. Compiler lowering capability; existing
 programs keep their hashes. Assigned at activation under the standing
 opt-out default.
@@ -164,6 +165,70 @@ single-active programs normalize and hash exactly as before.
   for every consumer; reopen when a consumer needs the signal outside the
   hashed program).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+1. `packages/compiler/src/types.ts`: add `DEFAULT_LINK_BUDGET = 6`;
+   `CompiledActive { activeMechanicId; linkedSupportFacetIds; semantics; workOrder; authorityEnvelope; effectiveClaims; inspection }`;
+   `LinkBudgetSignal { linkGroupId; linkCount; defaultBudget; question }`; optional
+   `CompiledProgram.actives?` and `linkBudget?`, both omitted for one active (decided
+   2026-10-07: these names; a shared support's emissions are listed per active, since each
+   active's lowering is independent). Check: `node scripts/build.mjs`.
+2. `packages/compiler/src/compile.ts` `graphDiagnostics` (line 555): refuse only zero actives
+   (`SEMANTICS UNSUPPORTED: no active mechanic`); keep the blocks at 565 and 575 byte-identical
+   except that each refusal now names its `linkGroupId` or `activeMechanicId` (today both
+   build `diagnostic("SEMANTICS UNSUPPORTED", msg)` with counts only; the Design's "as today"
+   is corrected by this step).
+3. Same file: add `supportsLinkedTo(graph, activeMechanicId)` beside `supportsInGroup` (line
+   223); `conflictDiagnostics` (245) and `resolveClaims` (322) iterate per active; the
+   pipeline lookup stays by group.
+4. Same file `emitProgram` (line 763): move the per-active body into
+   `lowerActive(graph, environment, active, supports, claims)`. One active: today's object
+   unchanged. Several: the top-level `workOrder`, `authorityEnvelope`, `inspection` and
+   `authorityExpiresAt` come from the first active by normalized id (decided 2026-10-07);
+   `actives` lists each; `linkBudget` lists each group over six links.
+5. `compileLoadout` (line 1024): run `grantEnvelopeDiagnostics` and
+   `inspectionAuthorityDiagnostics` (`authority.ts`) per `actives` entry; presence with
+   several actives refuses `SEMANTICS UNSUPPORTED: presence with several actives` (decided
+   2026-10-07).
+6. `packages/compiler/test/multi-active.test.ts` (new): "WO-091 three actives sharing two
+   supports compile per active, no signal"; "WO-091 a non-commuting pair on one active needs
+   the group pipeline"; "WO-091 a pair split across two actives needs none"; "WO-091 a seventh
+   link in a seven-socket container carries the signal"; "WO-091 two groups and two pipelines
+   refuse with the named diagnostics"; "WO-091 every active of a compiling fixture is in its
+   program". Check: `node scripts/build.mjs && node --test packages/compiler/dist/test/multi-active.test.js`
+   (the `compiler` row).
+7. The pinned literals stay: Seiri `9ca8d0229c6bd8db` (compiler tests presence line 346,
+   tooltip 66 and 112 to 114, views 203 to 205; skeleton `cli.test.ts` 27 to 29 and 75;
+   `wo029-identities.json` line 6; `wo051-inspection-baseline.json` line 121); Entropy
+   Reducer `e3505eb7f111ba22` (`wo029-identities.json` line 66); Contributor
+   `fcf61a6d699e7ffd`, `06245f5c581212f1`, `87aa6e1263d6d74d` (`executor-supports.test.ts`
+   341, 360, 371); Plan Refuter `e9f7e0080fcb9810` and Mission Check `4c09a5d98f6bc433`
+   (`entropy-reducer.test.ts` 46, 50); the reviewer order `ecb0eca5675332f7`
+   (`entropy-reducer-artifacts.test.ts` 314; receipt `b81d0609ee2e9fed` line 262). Check:
+   `git diff --exit-code <base> --` on the five frozen fixtures.
+8. Labels: `packages/compiler/package.json`, `COMPILER_PACKAGE_VERSION`
+   (`packages/compiler/src/artifact-identity.ts` line 15), the skeleton compiler pin
+   (`packages/skeleton/package.json` line 18), `packages/console/package.json` line 28,
+   `package-lock.json` lines 480, 491 and 513. Check: `npm run release -- check-surfaces --local`.
+9. Re-mints: select WO-091 revision 001 for all four kinds in `docs/evidence/current.json`;
+   `node scripts/build.mjs`; `node scripts/harness.mjs emit`;
+   `node scripts/authority-evidence.mjs --write`, `node scripts/artifact-identity-evidence.mjs --write`,
+   `node scripts/verification-evidence.mjs --write`;
+   `node scripts/feedback-evidence.mjs --carry <the edition selected at the base>`;
+   `node scripts/console-fixtures.mjs --record-current-selfhost`; then each `--check` and
+   `node scripts/harness.mjs check`.
+10. Write-backs: product 02 §"#### Authority grants and trusted admission" under
+    §"### LoadoutGraph v1 payload contract": rewrite the sentence at lines 522 to 526
+    ("Compiler v1 lowers exactly one active mechanic...") to the multi-active rule and the
+    signal, in place; product 10 §"## Separate version axes": one sentence after lines 41 to
+    49 on the additive fields and the compiler version; `packages/compiler/README.md` line
+    113: drop "multi-active lowering" from the deferred list; `docs/evidence/WO-091/decisions.md`
+    (new, with the pinned-literal list); `node scripts/check-publication.mjs --print-locks`
+    into both `docs/publication/*-toc.md` `Source lock:` lines; `npm run meta`;
+    `npm run work-orders -- index`; `npm run publication:check`.
+11. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+    complete `docs/evidence/WO-091/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the lowering, the budget signal, fixtures, the re-mints,
 the write-backs below.
 
@@ -196,13 +261,10 @@ the write-backs below.
    program.
 4. Write-backs land, each in place with no dated paragraph: 02
    §LoadoutGraph v1 payload contract (the v1 lowering sentence states the
-   multi-active rule and the signal; at most 400 bytes added, against
-   2,776 bytes of headroom on 2026-09-28) and 10 §Separate version axes
-   (the additive lowering and the compiler version; at most 200 bytes,
-   against 507). WO-092, WO-065, WO-066, WO-058 and WO-098 also write 02,
-   and WO-060, WO-086, WO-092, WO-058 and WO-076 also write 10, so the
-   executor re-measures the headroom at its base; where the bound does
-   not fit, it consolidates the section it edits in the same change; a
+   multi-active rule and the signal, in place with no dated paragraph (ceilings are planning's since the 2026-10-07 pass)) and 10 §Separate version
+   axes (the additive lowering and the compiler version). WO-092, WO-097
+   and WO-098 also write 02, and WO-076, WO-092, WO-097 and WO-194 also
+   write 10; a
    ceiling is raised only by a planning-document decision. The decisions
    file; the publication locks refreshed.
 5. Every edition the Cost line names is re-minted or carried, the console
@@ -218,6 +280,18 @@ authority-, artifact-, verification-, feedback- and harness-evidence
 suites, and again at final review. No live row.
 
 **Write-back duty:** as listed in criterion 4.
+
+**Known issues and carry-ins:**
+
+- 2026-10-07 pass: stale and corrected above: products 02 and 10
+  headroom and co-writers; the Design's claim that the existing refusals
+  name the group or active (they give counts only; step 2 names them);
+  the Cost line omitted the version labels, the lockfile lines and the
+  compiler README sentence (steps 8 and 10).
+- Decided by the 2026-10-07 pass: the `actives` and `linkBudget` fields;
+  per-active emissions; the first active fills the top level; presence
+  with several actives refuses; zero actives refuses. Reopen: a consumer
+  needs a merged top level.
 
 **Non-goals:** sets (WO-092); the 5S mechanics (WO-093); more than one
 participating link group or explicit pipeline per group; the budget as a

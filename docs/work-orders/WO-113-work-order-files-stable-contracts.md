@@ -3,6 +3,7 @@
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** machinery
 **Release classification:** patch. One check in the work-order tooling and
 a forward-only migration of open orders' dated notes. Assigned at activation
 under the standing opt-out default.
@@ -37,8 +38,7 @@ names both gates
 §10).
 **Depends on:** WO-043 merged (supersession and deferral become typed
 entries, so no dated prose is needed for them; closed, v0.17.1); WO-026
-merged (the index; satisfied at `v0.5.2`); WO-167 merged (product 07 has
-9 bytes of headroom until the fold resets its ceiling).
+merged (the index; satisfied at `v0.5.2`); WO-167 merged (closed, v0.53.1).
 **Recommended placement:** in the serial run after WO-118 and before
 WO-080. This order edits `scripts/work-orders.mjs` (the check), its
 fixtures, the open orders' dated notes, the evidence READMEs that receive
@@ -64,7 +64,7 @@ it until the fold lands. A recommendation, not a dependency token.
   {
     "workOrderId": "WO-167",
     "relation": "hard",
-    "reason": "product 07 has 9 bytes of headroom until the fold resets its ceiling"
+    "reason": "closed at v0.53.1; the fold this order's product 07 write-back followed"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -186,6 +186,60 @@ one-line pointer; the umbrella records' prose moves beside the typed
   an order's one execution update, so the two checks would contradict
   each other; reopen when that check stops admitting it).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+1. `scripts/work-orders.mjs`: export `ORDER_LEADS`, the exact allowlist of line-start bold
+   leads in order: `**Model:**`, `**Effort:**`, `**Track:**`, `**Front page:**`,
+   `**Release classification:**`, `**Cost:**`, `**Nomination provenance:**`,
+   `**Depends on:**`, `**Recommended placement:**`, `**Repository:**`,
+   `**Workstream:**`,
+   `**Cites (read these sections):**`, `**Objective:**`, `**Observed gap (dated `,
+   `**Design (scope discipline):**`, `**Execution plan (`, `**Deliverables:**`,
+   `**Acceptance criteria (all required)**`, `**Evidence gate:**`, `**Write-back duty:**`,
+   `**Known issues and carry-ins:**`, `**Non-goals:**`, `**Operator-review assumptions**`
+   (`Track`, `Front page`, `Repository`, `Workstream`, `Execution plan` and
+   `Known issues and carry-ins` optional); the only heading below the H1 is the literal `## Execution record`. Export
+   `orderContractCutoff(root)` (this order's `WorkOrderActivated.recordedAt` in the
+   launchpad's control; absent, the section rule is inactive) and
+   `orderContractFindings(markdown, path, { sectionRule })` returning `{ path, line, reason }`;
+   skip authorities where `parseDerivedProvenance` (`scripts/lib/derived-contract.mjs` line
+   71) is non-null, which keep `checkGeneratedSections`. A bold lead's date is read inside the
+   bold span only, letting the span wrap lines (`checkGeneratedSections`, line 127, does this;
+   a `[^*\n]` regex misses a wrapped date). In `main`'s `--check` (line 681) after
+   `readIndex` (line 691), run it over `workOrderAuthorityFiles(root)` (`scripts/lib/paths.mjs`
+   line 74): the date rule for open orders, the full rule for orders filed after the cutoff
+   (filing date = the earliest `git log --diff-filter=A --format=%cI -- <path>`; an
+   uncommitted file reads unreadable and is reported, not refused); throw
+   `<path>:<line>: <reason>`. Nothing classifies heading or lead wording (prose-parsing screen).
+2. `renderSources` (line 589): add an "Order contract" bullet.
+3. `scripts/test-work-orders.mjs`: one `check(...)` case per criterion-1 fixture, a passing
+   fixture with a two-line gap lead and one `## Execution record`, and one with an unreadable
+   filing date; bind the rule by writing a WO-113 activation segment in the fixture. Check:
+   `bash scripts/test-work-orders.sh` (`work-orders-fixtures`).
+4. Keep passing, unedited, the six tests that run `index --check` over minimal fixture orders
+   (`scripts/test-derived-orders.mjs` line 157, `scripts/test-harness.mjs` 428,
+   `scripts/test-plan-refutation.mjs` 3752, `scripts/test-portfolio.mjs` 430,
+   `scripts/test-process-debt.mjs` 2989, `scripts/test-work-orders.mjs` 326): a cutoff read
+   from each fixture's control leaves the rule inactive there; a constant cutoff would refuse
+   them all.
+5. Migration (re-scan at the base with a bold-span date scan of every open order): create
+   `docs/evidence/WO-033/README.md` and the five others (WO-034, WO-035, WO-036, WO-037,
+   WO-040); move each `**Umbrella record (...)**` paragraph and WO-035's
+   `**Redirect note (2026-09-06):**` byte for byte; rewrite WO-036's
+   `[WO-126](WO-126-process-debt.md)` to `../../work-orders/WO-126-process-debt.md`; leave a
+   dateless pointer. These six orders are not in the sequence, so plan continuation does not
+   bind them. Check: `npm run test:docs` (`docs-check` `linkFailures`).
+6. `git diff --stat <base> -- docs/work-orders/` lists only the six orders and `README.md`
+   (criterion 3).
+7. Write-backs: product 07 §"## Discipline" (the five surfaces, the allowed fields and the
+   date rule, in place); `docs/work-orders/README.md` §"## Sources and limits" (regenerated by
+   `npm run work-orders -- index`); `docs/evidence/WO-113/decisions.md` (the cutoff and
+   filing-date sources, the allowlist, the moved notes, the rewritten link, a follow-up for
+   `scripts/lib/dependencies.mjs` line 258); `npm run meta`;
+   `node scripts/check-publication.mjs --print-locks`; `npm run publication:check`.
+8. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+   complete `docs/evidence/WO-113/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the check, the migration, the pointers, fixtures, the
 write-backs below.
 
@@ -212,15 +266,10 @@ write-backs below.
    notes it moved, measured at its base.
 3. Closed and historical orders are byte-identical to the activation base.
 4. Write-backs land, each in place with no dated paragraph: 07 §Discipline
-   (the five surfaces, the allowed fields and the date rule; at most 700
-   bytes added to product 07, against 9 bytes of headroom on 2026-09-28,
-   which WO-167's fold resets); `docs/work-orders/README.md` Sources and
+   (the five surfaces, the allowed fields and the date rule, in place with no dated paragraph (ceilings are planning's since the 2026-10-07 pass)); `docs/work-orders/README.md` Sources and
    limits (generated, through `scripts/work-orders.mjs`); the decisions
-   file; the publication locks refreshed. WO-173, WO-172, WO-086, WO-123,
-   WO-072, WO-073 and WO-080 also write product 07: the executor
-   re-measures the headroom at its base; where the bound does not fit, it
-   consolidates the section it edits in the same change; a ceiling is
-   raised only by a planning-document decision.
+   file; the publication locks refreshed. WO-072, WO-073, WO-080, WO-188, WO-189, WO-190, WO-192 and WO-193
+   also write product 07.
 5. `npm test -- --review` and `npm run test:docs` green;
    `git diff --check` clean; no new dependency.
 

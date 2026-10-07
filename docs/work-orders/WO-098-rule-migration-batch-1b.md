@@ -3,6 +3,8 @@
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
+**Track:** delivery
+**Front page:** README.md
 **Release classification:** minor. Six compiled units, the measurement and
 the template, with the `feedback-v1` extension their rung-seven and cadence
 units need and a compiler minor release. Assigned at activation under the
@@ -107,8 +109,8 @@ batch two's candidates named in the ledger.
 - The table under 13 §Assistance the platform owes each role names WO-040
   in the engineer and tester rows, and 06's harness-lowering rung says the
   Contributor holds the ten personal units.
-- Products 02, 06 and 13 hold 2,776, 1,802 and 539 bytes of headroom at
-  `5f3849ec`; WO-086 and WO-087 restructure 06 earlier in the sequence.
+- Ceilings are planning's since the 2026-10-07 pass; WO-086 and WO-087
+  closed (v0.56.1, v0.56.3) and WO-190 may rename the 06 rung heading.
 
 **Design (scope discipline):**
 
@@ -152,6 +154,51 @@ batch two's candidates named in the ledger.
   for convenience (a shape that lowers only to always-on prose is a
   `reference` or a finding, not a unit).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07; WO-097's handler rule and bound constant are read at the base):**
+
+1. `packages/compiler/src/feedback.ts`: bound 22 through WO-097's exported constant; add a
+   rung-7 entry (kind `role-skill`, derived `prose` because it has no host predicate) and a
+   cadence entry with an optional `mechanism.cadence: CadenceSpec`
+   (`packages/compiler/src/types.ts` line 38: Once, After, Every, Gate, Until; no kernel
+   dependency) validated in `lowerFeedbackUnits` (export `normalizeCadence` from
+   `normalize.ts` line 75 or validate locally). Check: `npm run build`.
+2. `packages/compiler/test/feedback.test.ts`: "WO-098 twenty-two units compile", "rung-seven
+   kind lowers without a hook", "cadence unit refuses a malformed CadenceSpec", the bound plus
+   one refusal. Check: `node --test packages/compiler/dist/test/feedback.test.js`.
+3. `packages/compiler/src/harness.ts`: the rung-7 role-skill line already exists
+   (`${unit.unitId}: ${unit.desiredBehavior}`, line 1015); skip the residue branch for it at
+   line 760 as prose-kind is skipped, so no residue line enters CLAUDE.md's generated block.
+4. `packages/skeleton/src/loadouts/feedback.ts`, `packages/skeleton/test/feedback-fixtures.test.ts`,
+   `packages/skeleton/src/harness-host.ts`: six units and fixtures as WO-097 steps 4 to 6; the
+   cadence unit's fixture asserts its threshold fires and that ablation fails.
+5. Counts: `feedback-selfhost.ts`, `feedback-host.test.ts` line 130 and the console
+   `board.test.ts` asserts to 22 where WO-097 did not derive them.
+6. `scripts/test-harness.mjs`: one test per new hook; the chained role oracle fixture
+   `packages/skeleton/fixtures/wo098-role-baseline.json`, the process-debt baseline test and
+   `machinerySources["process-debt"]` pointed at it. Check: `npm test -- --only harness-fixtures`.
+7. Retirements and the reverse mapping across all twelve units (WO-097 step 9);
+   `npm run feedback -- migration --check`. The verifier's restatement findings are a typed
+   input `docs/evidence/WO-098/restatements.json` `[{ shapeId, path, sha256, text }]` the
+   renderer reads to revert a row to `prose`; remaining sentences are listed as
+   `[{ path, text, sha256, reason: "no-unit" | "not-lowerable" | "out-of-batch", note }]`.
+8. Measurement: `scripts/harness-context.mjs` line 30 `roles` extended to all six
+   (`planner`, `refuter` added); run it at WO-097's activation base (`git worktree add` of that
+   commit) and at head; per role, the bytes added by generated unit lines (lines matching
+   `^<unitId>: ` in each SKILL.md) and the bytes removed by retirements; mechanism and prose
+   counts from the render before and after.
+9. Regenerate: `npm run harness -- emit`; `npm run harness -- check`; record root bytes.
+10. Live episode, re-mints and the console re-pin as WO-097 steps 11 and 12 with
+    `--edition WO-098`.
+11. `npm run terms -- check corpus/feedback/migration.json packages/skeleton/src/loadouts/feedback.ts`.
+12. Write-backs as criterion 6 lists them, plus `README.md` §"## What runs today" (one
+    sentence within WO-189's rule), `docs/planning/capability-table.md` (a
+    `## WO-098 dated addition (<date>)` section with a three-column `feedback.migration`
+    row), `docs/evidence/WO-098/decisions.md` (the template and batch-two candidates);
+    `node scripts/meta.mjs`; `node scripts/check-publication.mjs --print-locks`;
+    `npm run publication:check`.
+13. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+    complete `docs/evidence/WO-098/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the units, the reference, the measurement, the template,
 the write-backs below.
 
@@ -186,18 +233,14 @@ the write-backs below.
 5. The template is recorded in the result and the rows name batch two's
    candidates.
 6. Write-backs land, each in place with no dated paragraph: 02 §Feedback
-   compiler v1 (the batch and the extension; at most 200 bytes added,
-   against 2,776 bytes of headroom on 2026-09-28; WO-065, WO-066, WO-058,
-   WO-097, WO-091 and WO-092 also write 02); 06 §Application version
-   pending — Harness lowering and rule migration → WO-039 + WO-040 (the
-   rung's status; at most 200 bytes added, against 1,802; WO-086 and WO-087
-   restructure 06 first, and WO-061, WO-066, WO-124, WO-112, WO-083, WO-095
-   and WO-096 also write it); 13 §Assistance the platform owes each role
-   (the engineer and tester rows; at most 200 bytes added, against 539;
-   WO-083 also writes 13). For each document the executor re-measures the
-   headroom at its base; where the bound does not fit, it consolidates the
-   section it edits in the same change; a ceiling is raised only by a
-   planning-document decision. The root README §What runs today (one
+   compiler v1 (the batch and the extension, in place with no dated paragraph (ceilings are planning's: the 2026-10-07 pass set every product document's ceiling at measured bytes plus one tenth); WO-097, WO-091 and
+   WO-092 also write 02); 06, the pending rung heading that names WO-039
+   and WO-040, found by those names at the base because WO-190 may rename
+   it (the rung's status; the section also says "four roles" while six role
+   skills exist, corrected in the same edit; WO-083, WO-095, WO-096 and
+   WO-183 also write 06); 13 §Assistance the platform owes each role (the
+   engineer and tester rows; WO-083 also writes 13). The root README §What
+   runs today (one
    sentence folded in, rewriting what it supersedes); a dated
    capability-table row `feedback.migration` with the counts; the decisions
    file; the publication locks refreshed.
@@ -226,6 +269,19 @@ review. The live row is the executor's feedback self-host episode
 (criterion 7).
 
 **Write-back duty:** as listed in criterion 6.
+
+**Known issues and carry-ins:**
+
+- Stale on 2026-10-07 and corrected above: WO-167's fold; the headroom
+  and co-writer lists; "no handler has rung seven" (prose-kind units
+  already lower at rung 7, `feedback.ts` line 213); `measureHarnessContext`
+  measures four roles, extended to six here.
+- Decided by the 2026-10-07 pass: a rung-7 role-skill unit derives
+  `prose` (no host predicate); "every role" is six; the cadence uses the
+  compiler's `CadenceSpec`; the verifier's restatement findings and the
+  remaining-sentence list are typed inputs (prose-parsing screen).
+- Blocked on WO-097 (handler rule, bound constant), WO-096 (rows schema),
+  WO-189 (README rule) and WO-190 (the 06 heading, found by name).
 
 **Non-goals:** batch two onward (the recorded candidate, one batch per
 wave); a sixth refusal; any kernel change.

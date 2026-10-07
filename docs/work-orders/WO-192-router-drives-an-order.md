@@ -238,6 +238,75 @@ own sub-agent budget and records its own completion.
   driving several orders at once (one order per phrase; lane pairs use
   two routers in two sessions).
 
+**Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07):**
+
+1. Probe first: new `scripts/lib/agent-identity-probe.mjs` modelled on
+   `scripts/lib/subagent-probe.mjs` (under `DOTLN_LIVE_HARNESS=1`); add mode
+   `--agent-identity <new-file>` beside `--subagents` in `scripts/harness-probe.mjs` (line
+   309); add the new lib to `machinerySources["harness-probe"]` in `scripts/test-runner.mjs`.
+   Rows: the child's `agent_id`, `agent_type` and `effort.level`; a nested Agent call names
+   its worker; a write under a directory added after the spawn; the pinned effort equals the
+   child's reported level. WO-139's probe (`docs/evidence/WO-139/subagent-probe-2.json`,
+   Claude 2.1.276) already observed the first three fields on a spawned agent; nested spawns,
+   late directories and pinned effort are new. Check:
+   `DOTLN_LIVE_HARNESS=1 node scripts/harness-probe.mjs --agent-identity docs/evidence/WO-192/host-probe.json`;
+   a fixture in `scripts/test-harness-probe.mjs`; `npm test -- --only harness-probe`.
+   A failed row selects the print-transport fallback for steps 4 to 6.
+2. Definitions: `packages/compiler/src/harness.ts` lines 240 to 244: `worker?` becomes
+   `workers?: { name, model, effort, description, skills?, body }[]`; loop the emitter
+   (lines 943 to 966); `contributor.ts` line 650 lists `dotln-worker` plus one definition per
+   lifecycle role (executor, verifier, reviewer, release-close) at the pinned model and effort
+   of product 07 §Model-specific notes. No per-order parsing: an order's `**Effort:**` line
+   stays advisory text. Check: `npm run build && node scripts/harness.mjs emit && node scripts/harness.mjs check`;
+   a `scripts/test-harness.mjs` case edits `effort:` in an emitted definition and expects
+   `harness drift: .claude/agents/<name>.md` (`scripts/lib/harness.mjs` line 393).
+3. Router role: `contributor.router` in `contributorRoles` (`contributor.ts` line 103) with
+   intents `["drive:"]`; `harness-host.ts` line 4099 prefix list gains `drive:` and line 4104
+   `auxiliary` gains `router`; `scripts/lib/process-budget.mjs` `dispatchKinds` (lines 6 to
+   13) gains `router` and `docs/control/budgets.json` gains `dispatches.router` and
+   `limits.coldStartBytes.router` (else `readBudgets` throws at line 38). The router's own
+   refusal sentence lives in the router root only; CLAUDE.md gains one line naming the
+   phrase, and no other root changes. Add the chained role oracle fixture
+   `packages/skeleton/fixtures/wo192-role-baseline.json` (from the latest one), point the
+   process-debt test that reads the baseline at it and add its path to
+   `machinerySources["process-debt"]`. Check: `npm test -- --only harness-fixtures`;
+   `npm test -- --only process-debt`.
+4. Spawn admission (`harness-host.ts` line 4414): when `spawn && !input.agent_id &&
+   session.role === "router"` and `tool_input.prompt` is not exactly one of the generated
+   lifecycle phrases, refuse with `DOTLN_ROUTER_SPAWN_REFUSED`. The phrase list is the
+   existing intents; the order is selected by the worker's cwd (the order's worktree), so no
+   phrase carries an order id. Cases in `scripts/test-harness.mjs`.
+5. Identity: `sessionKey` (`harness-host.ts` line 448) keys by `session_id` plus `agent_id`;
+   the writer actor sites (lines 2073, 2830, 5028) carry `agentId`, printed by
+   `harness writer --show`; the worker role comes from `agent_type` mapped to definition
+   names. Check: `npm test -- --only harness-fixtures`.
+6. Budget: `Counter.direct` entries (`subagent-budget.ts` lines 24 to 29) gain `spawner`;
+   `fits()` checks the spawner against `subagentCap` and the root total against a new
+   `budgets.json` `drivenSessionCeiling` (default four times the cap). Check:
+   `npm run build && node --test packages/skeleton/dist/test/subagent-budget.test.js`.
+7. Grant: `OutsideWriteGrant` (`harness.ts` lines 176 to 183) and its validator (300 to 316)
+   gain `order-worktree`; `harness-host.ts` line 3636 resolves it from
+   `git worktree list --porcelain` for the order's recorded branch; `contributor.ts` line 225
+   adds it with its source. Check: `npm test -- --only harness-fixtures`.
+8. Route: `projectOrder` (`scripts/resume.mjs` lines 752 to 791) adds `route` from
+   `legalActions` (208 to 228); merged is `git merge-base --is-ancestor <branch> origin/main`
+   with no fetch (as `scripts/worktree.mjs` lines 709 to 716; a stale `origin/main` reads as
+   not yet merged, which is safe); released is `localReleaseRecords`
+   (`scripts/lib/release-records.mjs` line 29) or `publication.outcome: "no-release"` in
+   `docs/control/local/retained/<WO>/release-close.json` (`scripts/release.mjs` lines 2636 to
+   2640). Re-entry and stop cases in `scripts/test-control-segments.mjs` (run by
+   `scripts/test-resume.sh` line 1018). Check: `npm test -- --only resume`.
+9. Live drive (criterion 9): a scratch clone with a local bare remote.
+10. Write-backs: product 07 §"## Operator resume phrases" (the `drive:` phrase and the router,
+    in place); product 05 §"### Orchestration and quality policies" (one sentence);
+    `docs/AI-HARNESS-SECURITY.md` §"## DotLn hook boundary" (the spawn refusal and the
+    worktree grant); `docs/PLAYBOOK.md` §"## Who does what" (the router);
+    `packages/compiler/src/harness.ts` line 1196 unchanged (the shared paragraph grows no
+    root); `docs/evidence/WO-192/decisions.md`; `node scripts/lineage.mjs index --check`;
+    `node scripts/check-publication.mjs --print-locks`; `npm run publication:check`.
+11. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
+    complete `docs/evidence/WO-192/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+
 **Deliverables:** the probe rows; the router role, phrase and generated
 root; the per-role agent definitions; the identity, reservation, budget
 and grant changes with fixtures; the spawn-prompt refusal; the `route`
@@ -307,6 +376,18 @@ deterministic re-mints; `npm test -- --review` before
 **Write-back duty:** as listed in criterion 10.
 
 **Known issues and carry-ins:**
+- Stale on 2026-10-07 and corrected above: the Cost line's "the other roots
+  are unchanged" (the router's refusal now lives in its own root, so it
+  holds); the gap's "none of this has been probed" (WO-139's probe
+  observed three of the fields); WO-187 is closed and the worker
+  definition is emitted and manifest-hashed.
+- Decided by the 2026-10-07 pass: one definition per lifecycle role at the
+  pinned model and effort, no per-order parsing of `**Effort:**`
+  (prose-parsing screen); the phrase list is the existing intents and the
+  order is the worker's cwd; merged is judged without a fetch. Reopen: an
+  order needs a per-role effort the pin does not give.
+- The role oracle fixture chain (step 3) is a duty every role-text order
+  owes and none named before this pass.
 
 - WO-139's counter treats an unresolved overlap between a direct spawn
   and a child's first call as a reported minimum; that stays.
