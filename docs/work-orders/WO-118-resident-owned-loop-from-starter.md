@@ -321,8 +321,10 @@ parity checklist; the write-backs below.
    observed, in place with no dated paragraph (ceilings are planning's: the 2026-10-07 pass set every product document's ceiling at measured bytes plus one tenth)); 12 §Replacing a successful but costly workflow (the
    evidence for the rows this run observed, extending the WO-112 sentence
    in place; WO-080, WO-082, WO-193 and WO-194 also write 12 after it);
-   `README.md` §What runs today, folded into the release block's prose,
-   which is rewritten, never appended to; the capability table, an
+   `README.md` §What runs today (one sentence inside the marked section
+   WO-189 defines, named by this order's `**Front page:**` field; if WO-189
+   has not landed, folded into the existing prose, never appended to); the
+   capability table, an
    appended `## WO-118 dated reassessment (YYYY-MM-DD)` section rating
    `runtime.resident` and `vertical.source-to-pr` on the table's scale,
    live-evidenced from a starter instance, never a row edited in place;
