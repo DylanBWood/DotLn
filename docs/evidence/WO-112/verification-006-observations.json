@@ -1,0 +1,1071 @@
+{
+  "schemaVersion": 1,
+  "subject": {
+    "observedAt": "2026-10-07T02:08:46.215Z",
+    "checkpoint": "refs/dotln/checkpoint/WO-112/23",
+    "checkpointCommit": "970479343cab30bf58d790d451f63adde9f323dc",
+    "codeIdentity": "58450a151c11d06f2d92e0c9a894a71e287fb258357c3eedcc169c8b40173740",
+    "checkpointCodeIdentity": "58450a151c11d06f2d92e0c9a894a71e287fb258357c3eedcc169c8b40173740",
+    "sourceFilesCompared": 641,
+    "sourceMismatches": [],
+    "carried": [
+      {
+        "path": "docs/evidence/WO-112/codex-refusal-run.json",
+        "same": true,
+        "sha256": "ef13fd508b32627218d25091ec480a1e35d4d727ffc5bd208b165b5e4059b781",
+        "bytes": 8836
+      },
+      {
+        "path": "docs/evidence/WO-112/control-outward.json",
+        "same": true,
+        "sha256": "9b90cc03026a7118b904393f3b49203206e411684bf5343821560c10fb9d388d",
+        "bytes": 3249
+      },
+      {
+        "path": "docs/evidence/WO-112/control-page.png",
+        "same": true,
+        "sha256": "744cce50d3532ef4fb6a3e63f6528cf2dda54a614e9e2fe5132176e0d2442bf6",
+        "bytes": 7143
+      },
+      {
+        "path": "docs/evidence/WO-112/control-run.json",
+        "same": true,
+        "sha256": "ca32859deff4f7b6024e7d82b975a0d2740b2959b85bc5cb1d728e79cd7a3f81",
+        "bytes": 21132
+      },
+      {
+        "path": "docs/evidence/WO-112/repair-control-outward.json",
+        "same": true,
+        "sha256": "ad5087903b16acd204808b87296c5dd66993f62c0c3947d2bf90587c6d860bd8",
+        "bytes": 2892
+      },
+      {
+        "path": "docs/evidence/WO-112/repair-control-run.json",
+        "same": true,
+        "sha256": "541915903d6e52eb0cd195064a0a9ec291c80921c6cd7e46c81d22cc0f2031bc",
+        "bytes": 14648
+      },
+      {
+        "path": "docs/evidence/WO-112/repair-representative-outward.json",
+        "same": true,
+        "sha256": "715c42d05f2306126f44063835e9860e31355a5758193e9190180f0f7af1ddba",
+        "bytes": 3325
+      },
+      {
+        "path": "docs/evidence/WO-112/repair-representative-run.json",
+        "same": true,
+        "sha256": "f7e252ef3156103336d938e4b7107fff64ccbadbdd19ab94e4feb6ceb12aca64",
+        "bytes": 19526
+      },
+      {
+        "path": "docs/evidence/WO-112/representative-outward.json",
+        "same": true,
+        "sha256": "772d9fc8b7e1ce0c11a6f274a8015046f793f6360a124e0ad88656f7c4356b34",
+        "bytes": 3635
+      },
+      {
+        "path": "docs/evidence/WO-112/representative-page.png",
+        "same": true,
+        "sha256": "744cce50d3532ef4fb6a3e63f6528cf2dda54a614e9e2fe5132176e0d2442bf6",
+        "bytes": 7143
+      },
+      {
+        "path": "docs/evidence/WO-112/representative-run.json",
+        "same": true,
+        "sha256": "554b6a159a5b904843d5dc8d985f63004962196d93da5dff4e27cd343c003a2a",
+        "bytes": 22581
+      },
+      {
+        "path": "docs/evidence/WO-112/scenario.md",
+        "same": true,
+        "sha256": "929f0318ccaf6ba1b33fe1d191b154ea916cc22ab975e1314fb32881df9a4908",
+        "bytes": 3539
+      },
+      {
+        "path": "docs/evidence/WO-112/preflight.json",
+        "same": true,
+        "sha256": "de4d1e6e4c84c0439d80a369013abfcb2a42639d998602b88ba85cb3ac52aed5",
+        "bytes": 2042
+      },
+      {
+        "path": "docs/evidence/WO-112/preflight.mjs",
+        "same": true,
+        "sha256": "616295102399b173e11f9b01c5cbd0a7e4c25bf6e875c4490b7e29ece15dfd13",
+        "bytes": 5288
+      },
+      {
+        "path": "docs/evidence/WO-112/functional-preparation.json",
+        "same": true,
+        "sha256": "d89944f61c86432dd92debacf000bffd1b33c6c18b05eb5abe0d1e471c55fbc6",
+        "bytes": 896
+      },
+      {
+        "path": "README.md",
+        "same": true,
+        "sha256": "34d19e8f644cbd8fb0e31a842d21be59c5ffdd13e3c8eecac48e78307df98425",
+        "bytes": 39030
+      },
+      {
+        "path": "docs/product/06-roadmap.md",
+        "same": true,
+        "sha256": "9b439159ec91c1fb461b259908e55075a7d38ed8bca35f33ad914dec01a60912",
+        "bytes": 79891
+      },
+      {
+        "path": "docs/product/12-workstream-application.md",
+        "same": true,
+        "sha256": "9929996681090e5f60412a81b5b3cb5c86c0169a87687a4d7e3af0404445dfd0",
+        "bytes": 18327
+      },
+      {
+        "path": "docs/planning/capability-table.md",
+        "same": true,
+        "sha256": "0e08af7a0c2d4b95b4ffdc524da7c9dfc7b4fe43c18c1bad12d72ffbb6cf613c",
+        "bytes": 79986
+      }
+    ],
+    "oldReports": [
+      {
+        "path": "docs/verifications/WO-112/VER-001.md",
+        "same": true,
+        "sha256": "347c8fad20b5b6e7ddb09adb567eb6818271c046a5686d1d95ee4140bf7a75d7",
+        "bytes": 15006
+      },
+      {
+        "path": "docs/verifications/WO-112/VER-002.md",
+        "same": true,
+        "sha256": "259d4a4a83e1bea6fb6dccc2a773fc22e89b7a00a0dec816a08fd34cb26761ad",
+        "bytes": 15763
+      },
+      {
+        "path": "docs/verifications/WO-112/VER-003.md",
+        "same": true,
+        "sha256": "2d58cc3e497bc8e3bd74dde37ced1ff4e76887bd38c79263596138b064cf0c2a",
+        "bytes": 16721
+      },
+      {
+        "path": "docs/verifications/WO-112/VER-004.md",
+        "same": true,
+        "sha256": "5621c30734ef3f6f8820508a7cfbf58662d9ba74080abee7acbccfd1fb03cda1",
+        "bytes": 16610
+      },
+      {
+        "path": "docs/verifications/WO-112/VER-005.md",
+        "same": true,
+        "sha256": "e8f0c7f921c3821be10737f29722cc2843587da8c6bcee6c29df4ddb3ca540f1",
+        "bytes": 19394
+      }
+    ],
+    "writebacks": [
+      {
+        "path": "docs/product/06-roadmap.md",
+        "originalBytes": 79690,
+        "currentBytes": 79891,
+        "addedBytes": 201
+      },
+      {
+        "path": "docs/product/12-workstream-application.md",
+        "originalBytes": 18164,
+        "currentBytes": 18327,
+        "addedBytes": 163
+      }
+    ],
+    "checks": [
+      {
+        "index": false,
+        "exitCode": 0
+      },
+      {
+        "index": true,
+        "exitCode": 0
+      }
+    ],
+    "activeGates": [],
+    "gate": {
+      "checkId": "npm test",
+      "treeHash": "3af10ed0a6170a6f256a0472625c532042a330b7",
+      "codeIdentity": "58450a151c11d06f2d92e0c9a894a71e287fb258357c3eedcc169c8b40173740",
+      "subject": "3af10ed0a6170a6f256a0472625c532042a330b7",
+      "durationMs": 1841600,
+      "exitCode": 0,
+      "executed": true,
+      "evidenceRef": "host-gate:58450a151c11d06f2d92e0c9a894a71e287fb258357c3eedcc169c8b40173740:npm test",
+      "recordedAt": "2026-10-07T01:25:24.048Z",
+      "executionMode": "forced-fresh",
+      "gateSelection": "review",
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "freshReason": "review",
+      "freshSuites": 88,
+      "reusedSuites": 0,
+      "requiredSuites": [
+        "build",
+        "release-preparation",
+        "github-body",
+        "outward-lint",
+        "target-publish",
+        "vertical",
+        "license-fixtures",
+        "publication-fixtures",
+        "backup-intake",
+        "beacon-portability",
+        "checkpoint",
+        "worktree",
+        "worktree-integration",
+        "release",
+        "work-orders-fixtures",
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console",
+        "browser-evidence",
+        "adjacent-queue",
+        "derived-orders",
+        "portfolio",
+        "codex-continuation",
+        "authority-grants",
+        "evidence-sources",
+        "configuration-root",
+        "harness-probe",
+        "authority-evidence",
+        "harness-fixtures",
+        "harness-evidence",
+        "plan-refutation",
+        "artifact-evidence",
+        "verification-evidence",
+        "feedback-evidence",
+        "runner-fixtures",
+        "process-debt",
+        "registrations"
+      ],
+      "sandbox": {
+        "marker": "claude-code",
+        "probe": {
+          "path": ".claude/hooks (project-relative; physical prefix omitted)",
+          "denied": false,
+          "code": "written"
+        },
+        "inForce": false
+      },
+      "loadClass": {
+        "sharedCap": 4,
+        "factorPerSlot": 2,
+        "maxHostLoadPerCpu": 2,
+        "scheduler": "exclusive-machinery-v1"
+      },
+      "workOrder": "WO-112"
+    },
+    "gateCases": [
+      {
+        "name": "build",
+        "durationMs": 854,
+        "exitCode": 0,
+        "executed": true,
+        "outputDigest": "b841555ecfcf6718383c1ffaec47dfee9dfbbd8758c92be044029eaae33b6138"
+      },
+      {
+        "name": "release-preparation",
+        "durationMs": 3162,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "github-body",
+        "durationMs": 220,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "outward-lint",
+        "durationMs": 685,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "target-publish",
+        "durationMs": 351995,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "vertical",
+        "durationMs": 842890,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "license-fixtures",
+        "durationMs": 9460,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "publication-fixtures",
+        "durationMs": 1014,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "backup-intake",
+        "durationMs": 363,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "beacon-portability",
+        "durationMs": 1066,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "checkpoint",
+        "durationMs": 8197,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "worktree",
+        "durationMs": 238746,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "worktree-integration",
+        "durationMs": 294745,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "release",
+        "durationMs": 275482,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "work-orders-fixtures",
+        "durationMs": 23483,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "kernel",
+        "durationMs": 595,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "compiler",
+        "durationMs": 1145,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "skeleton",
+        "durationMs": 259402,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "console",
+        "durationMs": 18735,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "browser-evidence",
+        "durationMs": 28226,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "adjacent-queue",
+        "durationMs": 535,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "derived-orders",
+        "durationMs": 8738,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "portfolio",
+        "durationMs": 27546,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "codex-continuation",
+        "durationMs": 7162,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "authority-grants",
+        "durationMs": 246,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "evidence-sources",
+        "durationMs": 77244,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "configuration-root",
+        "durationMs": 4999,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "harness-probe",
+        "durationMs": 64763,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "authority-evidence",
+        "durationMs": 1049,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "harness-fixtures",
+        "durationMs": 392259,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "harness-evidence",
+        "durationMs": 633,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "plan-refutation",
+        "durationMs": 70625,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "artifact-evidence",
+        "durationMs": 407,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "verification-evidence",
+        "durationMs": 1619,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "feedback-evidence",
+        "durationMs": 3462,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "runner-fixtures",
+        "durationMs": 73484,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "process-debt",
+        "durationMs": 124979,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "registrations",
+        "durationMs": 919,
+        "exitCode": 0,
+        "executed": true
+      }
+    ]
+  },
+  "initialRecheck": {
+    "bounded": {
+      "startedAt": "2026-10-07T01:55:02.894Z",
+      "finishedAt": "2026-10-07T01:55:18.841Z",
+      "durationMs": 15947,
+      "exitCode": 1,
+      "cause": "wrapper parsed a human fixture diagnostic as JSON after all 12 VER-003 rows completed; not a product failure"
+    },
+    "runs": [
+      {
+        "name": "verification-003-probes.mjs",
+        "startedAt": "2026-10-07T01:55:02.945Z",
+        "finishedAt": "2026-10-07T01:55:18.085Z",
+        "rows": [
+          {
+            "probe": "F1 forged commit-graph",
+            "status": null,
+            "reason": "source-change committed tree is dirty; preserve for inspection",
+            "acceptedCommitIsForged": false,
+            "realTreeIsHonestTree": false,
+            "integrityOutcomes": [
+              "unchanged",
+              "unchanged"
+            ],
+            "hostFlagDiff": [
+              "fixture.txt"
+            ],
+            "commitGraphDisabledDiff": [
+              "fixture-test.mjs",
+              "fixture.txt"
+            ],
+            "pushWithForgedGraph": " ! [remote rejected] 7acccda79613c704ac52be203ffdb8cef9d02fb8 -> published (missing necessary objects)",
+            "pushAfterGraphRewrite": "accepted",
+            "remoteDiff": [
+              "fixture-test.mjs",
+              "fixture.txt"
+            ]
+          },
+          {
+            "probe": "VER-002 F1 recheck",
+            "status": "refused",
+            "reason": "shared-repository-changed",
+            "siblingCommitPreserved": true,
+            "siblingStatus": ""
+          },
+          {
+            "probe": "VER-002 F2 recheck",
+            "status": "refused",
+            "reason": "shared-repository-unreadable",
+            "victimUnchanged": true
+          },
+          {
+            "probe": "VER-002 F3 recheck",
+            "first": "invalid-result: stored writer envelope",
+            "recovery": "refused",
+            "recoveryReason": "shared-repository-changed",
+            "strayTagPreserved": true,
+            "writerLaunches": 1
+          },
+          {
+            "probe": "VER-002 F4 recheck",
+            "first": "resolved",
+            "second": "needs-human",
+            "third": "needs-human",
+            "triageCalls": 2,
+            "bodyJudgments": 2
+          },
+          {
+            "probe": "F2 receipt-crash recovery",
+            "later": "none",
+            "hostSignal": "SIGKILL",
+            "receiptPersistedBeforeKill": true,
+            "recovery": "observed",
+            "reason": null,
+            "writerLaunches": 1
+          },
+          {
+            "probe": "F2 receipt-crash recovery",
+            "later": "tag",
+            "hostSignal": "SIGKILL",
+            "receiptPersistedBeforeKill": true,
+            "recovery": "observed",
+            "reason": null,
+            "writerLaunches": 1
+          },
+          {
+            "probe": "F2 receipt-crash recovery",
+            "later": "remote-tracking-ref",
+            "hostSignal": "SIGKILL",
+            "receiptPersistedBeforeKill": true,
+            "recovery": "observed",
+            "reason": null,
+            "writerLaunches": 1
+          },
+          {
+            "probe": "F3 transient triage failure",
+            "shape": "review body",
+            "code": "interrupted",
+            "retryableByIntakeRule": true,
+            "first": [
+              "interrupted: synthetic transient failure",
+              null
+            ],
+            "retried": [
+              "needs-human",
+              "second episode reached"
+            ],
+            "triageCalls": 2
+          },
+          {
+            "probe": "F3 transient triage failure",
+            "shape": "review body",
+            "code": "model-unavailable",
+            "retryableByIntakeRule": true,
+            "first": [
+              "model-unavailable: synthetic transient failure",
+              null
+            ],
+            "retried": [
+              "needs-human",
+              "second episode reached"
+            ],
+            "triageCalls": 2
+          },
+          {
+            "probe": "F3 transient triage failure",
+            "shape": "inline item",
+            "code": "interrupted",
+            "retryableByIntakeRule": true,
+            "first": [
+              "interrupted: synthetic transient failure",
+              null
+            ],
+            "retried": [
+              "needs-human",
+              "second episode reached"
+            ],
+            "triageCalls": 2
+          },
+          {
+            "probe": "F3 transient triage failure",
+            "shape": "inline item",
+            "code": "model-unavailable",
+            "retryableByIntakeRule": true,
+            "first": [
+              "model-unavailable: synthetic transient failure",
+              null
+            ],
+            "retried": [
+              "needs-human",
+              "second episode reached"
+            ],
+            "triageCalls": 2
+          }
+        ]
+      },
+      {
+        "name": "verification-004-probes.mjs",
+        "startedAt": "2026-10-07T01:55:18.085Z",
+        "finishedAt": "2026-10-07T01:55:18.830Z",
+        "error": "SyntaxError: Unexpected token 'W', \"WO-123 scr\"... is not valid JSON"
+      }
+    ]
+  },
+  "correctedRecheck": {
+    "bounded": {
+      "startedAt": "2026-10-07T01:55:55.197Z",
+      "finishedAt": "2026-10-07T01:58:05.195Z",
+      "durationMs": 129998,
+      "exitCode": 0,
+      "executed": true,
+      "peakFootprintBytes": 190048536
+    },
+    "runs": [
+      {
+        "name": "verification-004-probes.mjs",
+        "startedAt": "2026-10-07T01:55:55.246Z",
+        "finishedAt": "2026-10-07T01:56:18.622Z",
+        "rows": [
+          {
+            "probe": "R1 resident loop, retryable triage failure",
+            "failingTask": "triage",
+            "loop": {
+              "ended": "cycles-exhausted"
+            },
+            "ticksBeforeLoopEnded": 60,
+            "cyclesRequested": 60,
+            "judgeCalls": [
+              "triage"
+            ],
+            "intentKind": "admitted",
+            "runTerminal": null,
+            "pendingStep": "resolution"
+          },
+          {
+            "probe": "R2 resident loop, retryable intake failure",
+            "failingTask": "intake",
+            "loop": {
+              "ended": "cycles-exhausted"
+            },
+            "ticksBeforeLoopEnded": 60,
+            "cyclesRequested": 60,
+            "judgeCalls": [
+              "intake"
+            ],
+            "intentKind": null,
+            "runTerminal": null,
+            "pendingStep": null
+          },
+          {
+            "probe": "B1 review body edited on every observation",
+            "cap": 25,
+            "triageCalls": 8,
+            "observations": 9,
+            "returned": "needs-human"
+          }
+        ]
+      },
+      {
+        "name": "verification-005-probes.mjs",
+        "startedAt": "2026-10-07T01:56:18.623Z",
+        "finishedAt": "2026-10-07T01:57:36.289Z",
+        "rows": [
+          {
+            "probe": "C1 cached resolution receipt altered after an interrupted episode",
+            "alias": "none",
+            "first": "RetryableTriageError: triage episode failed: interrupted: synthetic interruption",
+            "second": "resolved",
+            "secondStep": "resolution",
+            "secondReason": "fresh observation has no unresolved items",
+            "judgeCalls": 2,
+            "elsewhereUnchanged": true
+          },
+          {
+            "probe": "C1 cached resolution receipt altered after an interrupted episode",
+            "alias": "hard-link",
+            "first": "RetryableTriageError: triage episode failed: interrupted: synthetic interruption",
+            "second": "refused",
+            "secondStep": "resolution",
+            "secondReason": "resolution host failed or was unavailable",
+            "judgeCalls": 1,
+            "elsewhereUnchanged": true
+          },
+          {
+            "probe": "C1 cached resolution receipt altered after an interrupted episode",
+            "alias": "directory",
+            "first": "RetryableTriageError: triage episode failed: interrupted: synthetic interruption",
+            "second": "refused",
+            "secondStep": "resolution",
+            "secondReason": "resolution host failed or was unavailable",
+            "judgeCalls": 1,
+            "elsewhereUnchanged": true
+          },
+          {
+            "probe": "R3 resident: retryable failure, then a refused return",
+            "loop": "cycles-exhausted",
+            "ticks": 60,
+            "judgeCalls": 2,
+            "planted": null,
+            "terminal": "NeedsHuman",
+            "terminalStep": "resolution",
+            "lastReason": "triage episode failed: invalid-result: triage result shape",
+            "resolutionReceipts": 1,
+            "intentStepCleared": true
+          },
+          {
+            "probe": "R4 resident: resolution child aliased during backoff",
+            "loop": "cycles-exhausted",
+            "ticks": 60,
+            "judgeCalls": 1,
+            "planted": "child symlinked",
+            "terminal": "refused",
+            "terminalStep": "resolution",
+            "lastReason": "resolution host failed or was unavailable",
+            "resolutionReceipts": 1,
+            "intentStepCleared": true
+          },
+          {
+            "probe": "B2 review-body bound record and later invocations",
+            "invocations": [
+              {
+                "phase": "changing",
+                "returned": "needs-human",
+                "reason": "review-body judgment limit 8 reached before judging item S1",
+                "itemId": "S1",
+                "triageCalls": 8,
+                "stopNamesLastObservation": true,
+                "lastObservationJudged": false
+              },
+              {
+                "phase": "stable",
+                "returned": "resolved",
+                "reason": "fresh observation has no unresolved items",
+                "itemId": null,
+                "triageCalls": 1,
+                "stopNamesLastObservation": true,
+                "lastObservationJudged": false
+              },
+              {
+                "phase": "replay",
+                "returned": "resolved",
+                "reason": "fresh observation has no unresolved items",
+                "itemId": null,
+                "triageCalls": 0,
+                "stopNamesLastObservation": true,
+                "lastObservationJudged": false
+              }
+            ],
+            "bodyJudgedEvents": 9,
+            "observations": 12
+          }
+        ]
+      },
+      {
+        "name": "verification-005-adversary-probes.mjs",
+        "startedAt": "2026-10-07T01:57:36.289Z",
+        "finishedAt": "2026-10-07T01:58:05.177Z",
+        "rows": [
+          {
+            "probe": "I1 host-side intake failure in the resident loop",
+            "mode": "live-opt-in-missing",
+            "simulatedSeconds": 39,
+            "prepares": 3,
+            "intakeEpisodes": 0,
+            "intentHeldEvents": 1,
+            "intentAdmittedEvents": 0,
+            "intent": "NeedsHuman",
+            "heldReason": "intake episode failed: vertical live workers require DOTLN_LIVE_WORKERS=1",
+            "firstRefusal": {
+              "named": true,
+              "transient": true,
+              "message": "intake episode failed: vertical live workers require DOTLN_LIVE_WORKERS=1"
+            }
+          },
+          {
+            "probe": "I1 host-side intake failure in the resident loop",
+            "mode": "record-unwritable",
+            "simulatedSeconds": 39,
+            "prepares": 1,
+            "intakeEpisodes": 1,
+            "intentHeldEvents": 1,
+            "intentAdmittedEvents": 0,
+            "intent": "NeedsHuman",
+            "heldReason": "intake record could not be written: EACCES",
+            "firstRefusal": {
+              "named": true,
+              "transient": false,
+              "message": "intake record could not be written: EACCES"
+            }
+          },
+          {
+            "probe": "I1 host-side intake failure in the resident loop",
+            "mode": "unnamed",
+            "simulatedSeconds": 39,
+            "prepares": 3,
+            "intakeEpisodes": 0,
+            "intentHeldEvents": 1,
+            "intentAdmittedEvents": 0,
+            "intent": "NeedsHuman",
+            "heldReason": "intent preparation failed repeatedly outside the named transient conditions",
+            "firstRefusal": null
+          },
+          {
+            "probe": "I2 replayed intake record of another schema",
+            "outcome": {
+              "named": true,
+              "transient": true,
+              "message": "intake episode failed: intake record does not bind this subject's episode"
+            },
+            "intakeEpisodes": 1
+          },
+          {
+            "probe": "D1 second draft while a triage continuation is deferred",
+            "triageEpisodes": 4,
+            "ticksAcrossDeferrals": 7,
+            "secondDraftPrepares": 0,
+            "fixtureForgeCallsDuringDeferrals": 24,
+            "secondDraftDecisions": 0,
+            "firstRunTerminal": "resolved"
+          },
+          {
+            "probe": "P1 checkout recovery beside a moved unrelated worktree",
+            "unrelatedRegisteredBefore": true,
+            "unrelatedRegisteredAfter": true,
+            "ownRegisteredAfter": false,
+            "movedWorktreeStatus": "M  a.txt",
+            "movedFilesPresent": true
+          }
+        ]
+      }
+    ]
+  },
+  "freshAdversary": {
+    "launch": {
+      "model": "gpt-6.1-sol",
+      "effort": "max",
+      "forkTurns": "none",
+      "effectiveModel": "unknown",
+      "effectiveEffort": "unknown"
+    },
+    "scope": "order and whole/latest-repair diffs initially; no executor narrative or prior reports; read-only; no descendants",
+    "legacy": [
+      {
+        "observation": {
+          "probe": "legacy-receipt",
+          "durableReceiptPresent": true,
+          "candidateMatchesReceipt": true,
+          "outcome": {
+            "thrown": "source-change recovery lacks worker termination evidence"
+          },
+          "dispatches": 1
+        }
+      },
+      {
+        "bounded": {
+          "name": "bounded-probe",
+          "durationMs": 2553,
+          "slowestCases": [
+            {
+              "name": "bounded-probe",
+              "durationMs": 2553,
+              "exitCode": 0,
+              "granularity": "task"
+            }
+          ],
+          "peakFootprintBytes": 69542456,
+          "peakRssBytes": 163741696,
+          "memoryBudgetBytes": 12884901888,
+          "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+          "droppedOutputBytes": 0,
+          "startedAt": "2026-10-07T02:00:40.165Z",
+          "finishedAt": "2026-10-07T02:00:42.719Z",
+          "exitCode": 0,
+          "executed": true
+        }
+      }
+    ],
+    "slowIntake": [
+      {
+        "observation": {
+          "probe": "slow-intake-backoff",
+          "firstFinishedAt": 2620,
+          "launchesAt": [
+            120,
+            2620
+          ],
+          "episodesAfterImmediateNextTick": 2,
+          "expectedFirstRetryNotBefore": 3620
+        }
+      },
+      {
+        "bounded": {
+          "name": "bounded-probe",
+          "durationMs": 1856,
+          "slowestCases": [
+            {
+              "name": "bounded-probe",
+              "durationMs": 1856,
+              "exitCode": 0,
+              "granularity": "task"
+            }
+          ],
+          "peakFootprintBytes": 50534880,
+          "peakRssBytes": 132382720,
+          "memoryBudgetBytes": 12884901888,
+          "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+          "droppedOutputBytes": 0,
+          "startedAt": "2026-10-07T02:00:50.915Z",
+          "finishedAt": "2026-10-07T02:00:52.771Z",
+          "exitCode": 0,
+          "executed": true
+        }
+      }
+    ],
+    "stoppedBroadSuite": {
+      "durationMs": 57262,
+      "exitCode": 1,
+      "failureKind": "stopped",
+      "casesPassed": 6,
+      "pendingCasesCancelled": 1,
+      "suitePassClaim": false,
+      "source": "worker report and parent stop confirmation"
+    }
+  },
+  "parentProbes": [
+    {
+      "mode": "legacy-receipt",
+      "bounded": {
+        "startedAt": "2026-10-07T02:03:28.053Z",
+        "finishedAt": "2026-10-07T02:03:30.643Z",
+        "durationMs": 2590,
+        "exitCode": 0
+      },
+      "observation": {
+        "probe": "legacy-receipt",
+        "durableReceiptPresent": true,
+        "candidateMatchesReceipt": true,
+        "outcome": {
+          "thrown": "source-change recovery lacks worker termination evidence"
+        },
+        "dispatches": 1
+      }
+    },
+    {
+      "mode": "slow-intake-backoff 3000",
+      "bounded": {
+        "startedAt": "2026-10-07T02:03:55.885Z",
+        "finishedAt": "2026-10-07T02:03:57.657Z",
+        "durationMs": 1771,
+        "exitCode": 0
+      },
+      "observation": {
+        "probe": "slow-intake-backoff",
+        "firstFinishedAt": 3120,
+        "launchesAt": [
+          120,
+          3120
+        ],
+        "episodeDurationMs": 3000,
+        "episodesAfterImmediateNextTick": 2,
+        "expectedFirstRetryNotBefore": 4120,
+        "expectedDeadlineLabel": "adversary proposed post-failure rule; not an observed scheduler deadline"
+      }
+    },
+    {
+      "mode": "linked-triage-verdict-cleanup",
+      "bounded": {
+        "startedAt": "2026-10-07T02:05:27.515Z",
+        "finishedAt": "2026-10-07T02:05:40.816Z",
+        "durationMs": 13301,
+        "exitCode": 0
+      },
+      "observation": {
+        "probe": "linked-triage-verdict-cleanup",
+        "episodes": 1,
+        "durableVerdict": "acknowledge",
+        "leftoverPartials": 1,
+        "firstTerminal": {
+          "kind": "refused",
+          "step": "resolution",
+          "reason": "resolution host failed or was unavailable"
+        },
+        "secondTerminal": {
+          "kind": "refused",
+          "step": "resolution",
+          "reason": "resolution host failed or was unavailable"
+        },
+        "persistedTerminal": {
+          "kind": "refused",
+          "step": "resolution",
+          "reason": "resolution host failed or was unavailable"
+        }
+      }
+    },
+    {
+      "mode": "slow-intake-backoff 500",
+      "bounded": {
+        "startedAt": "2026-10-07T02:06:40.422Z",
+        "finishedAt": "2026-10-07T02:06:41.912Z",
+        "durationMs": 1490,
+        "exitCode": 0
+      },
+      "observation": {
+        "probe": "slow-intake-backoff",
+        "firstFinishedAt": 620,
+        "launchesAt": [
+          120
+        ],
+        "episodeDurationMs": 500,
+        "episodesAfterImmediateNextTick": 1,
+        "expectedFirstRetryNotBefore": 1620,
+        "expectedDeadlineLabel": "adversary proposed post-failure rule; not an observed scheduler deadline"
+      }
+    }
+  ],
+  "limits": [
+    "No new native worker or forge run; historical proof claims are carried on identical bytes.",
+    "Legacy event shape is synthesized; no old binary executed.",
+    "Zero probe exits mean successful execution, not product acceptance.",
+    "Source and generated-output checks share the subject harness/runner; independently read filesystem outcomes decide defects."
+  ]
+}

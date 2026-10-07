@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.67.1`.
+This source prepares DotLn `v0.68.0`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program and authority envelope that the kernel checks on every decision.
@@ -152,6 +152,13 @@ status, host test outcomes and diff; missing local-term coverage refuses. The
 [fourteen-item readiness table](docs/evidence/WO-182/artifact-contract.md) names
 evidence or gaps; `--require-deliverable-ready` refuses locally on a missing item,
 while operator proposals without the flag carry those gaps into review.
+The `dotln vertical` command runs unaided in a
+[scratch proof](docs/evidence/WO-112/README.md): its own intake episode
+classifies the issue, workers change, test and commit, and after the
+generated PR opens it waits for the automated reviewer, triages each comment
+with a model episode, repairs or rejects it with evidence and resolves the
+thread. Claude and Codex each ran every episode of one scenario; the Codex
+writer now commits inside Codex's sandbox.
 
 Derived work shares the same `WO-NNN` identity and lifecycle as authored work.
 `npm run dotln -- intent "Describe the work"` files a draft for review; compiled

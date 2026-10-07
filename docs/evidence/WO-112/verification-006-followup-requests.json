@@ -1,0 +1,22 @@
+[
+  {
+    "id": "FUP-7b6e93212081952f",
+    "status": "allocated",
+    "reason": "VER-006 blocking F1 and F2 are assigned to WO-112’s next repair under D052, within its declared judgment and source-change-host surfaces. This allocation claims no repair or verification pass.",
+    "reopenWhen": "Independent verification repeats the cleanup and legacy receipt reproductions, or confirms the accepted-receipt compatibility exclusion D052 names.",
+    "targets": [
+      "WO-112"
+    ],
+    "expectedRevision": "819f798d6d5a93ccd733a1c5d37f09065988dbd92507286ff84b9e130109dc5d",
+    "sourceRevision": 1
+  },
+  {
+    "id": "FUP-bcd4724fca7bff7a",
+    "status": "deferred",
+    "reason": "D053 records the observed slow-preparation timing but finds no cited mandatory post-failure cooldown. Start-based spacing and post-failure cooldown are different policies; a speculative scheduler change is deferred with its reproduction.",
+    "reopenWhen": "A cited requirement establishes post-failure cooldown, production evidence shows unacceptable retry rate or spend, or planning schedules the clock-policy follow-up.",
+    "targets": [],
+    "expectedRevision": "819f798d6d5a93ccd733a1c5d37f09065988dbd92507286ff84b9e130109dc5d",
+    "sourceRevision": 1
+  }
+]

@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "label": "observed",
+  "subjectCodeIdentity": "db20d3c35d4a9a058432064cb0ecf435bf3a8d99dd3265b4f794560ea5c89c5b",
+  "defectProbe": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-112/verification-002-probes.mjs",
+    "startedAt": "2026-10-06T10:10:22.475Z",
+    "finishedAt": "2026-10-06T10:10:26.470Z",
+    "durationMs": 3995,
+    "exitCode": 0,
+    "interpretation": "The executable assertions pin four observed defects. Exit zero confirms their reproduction, not correct product behavior.",
+    "results": [
+      {
+        "finding": "F1",
+        "defectObserved": true,
+        "result": "worker-changed-shared-repository",
+        "independentCommitCreated": true,
+        "independentBranchRewoundToBase": true,
+        "independentWorkingTreeStatus": "A  independent.txt"
+      },
+      {
+        "finding": "F2",
+        "defectObserved": true,
+        "result": "worker-changed-shared-repository",
+        "syntheticFileOutsideRepositoryOverwritten": true
+      },
+      {
+        "finding": "F3",
+        "defectObserved": true,
+        "firstFailure": "invalid-result: stored writer envelope",
+        "unauthorizedTagSurvivesFailure": true,
+        "recoveryStatus": "observed",
+        "unauthorizedTagSurvivesRecovery": true,
+        "writerLaunches": 1
+      },
+      {
+        "finding": "F4",
+        "defectObserved": true,
+        "firstStatus": "resolved",
+        "changedBodyStatus": "resolved",
+        "triageCalls": 1,
+        "changedBodyObserved": true,
+        "changedBodyJudged": false
+      }
+    ],
+    "limits": "Synthetic disposable repositories and a declared observer/triage double. No private target was mutated; no real worker was launched. The host and review loop are the subject implementation."
+  },
+  "liveReadback": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-112/verification-002-live-checks.mjs",
+    "startedAt": "2026-10-06T10:13:32.540Z",
+    "finishedAt": "2026-10-06T10:13:33.737Z",
+    "durationMs": 1197,
+    "exitCode": 0,
+    "scenarios": [
+      {
+        "scenario": "representative",
+        "observedAt": "2026-10-06T10:13:33.206Z",
+        "state": "OPEN",
+        "merged": false,
+        "headMatchesRecordedSubject": true,
+        "generatedBodyHashMatches": true,
+        "commits": 2,
+        "threads": 1,
+        "allThreadsResolved": true,
+        "reviewBodies": 1,
+        "nonemptyAutomatedReviewBodies": 1,
+        "automatedBodyTextsMatchRecordedObservations": true,
+        "controlRejectionHasRecordedEvidence": "not-applicable",
+        "outwardArtifactCount": 5,
+        "allOutwardLintsPass": true,
+        "treeGrepExit": 1,
+        "trackedFiles": 6,
+        "forbiddenPaths": 0,
+        "recordedCycleMs": 389816,
+        "recordedNativeEpisodes": 9
+      },
+      {
+        "scenario": "control",
+        "observedAt": "2026-10-06T10:13:33.730Z",
+        "state": "OPEN",
+        "merged": false,
+        "headMatchesRecordedSubject": true,
+        "generatedBodyHashMatches": true,
+        "commits": 1,
+        "threads": 1,
+        "allThreadsResolved": true,
+        "reviewBodies": 2,
+        "nonemptyAutomatedReviewBodies": 1,
+        "automatedBodyTextsMatchRecordedObservations": true,
+        "controlRejectionHasRecordedEvidence": true,
+        "outwardArtifactCount": 4,
+        "allOutwardLintsPass": true,
+        "treeGrepExit": 1,
+        "trackedFiles": 6,
+        "forbiddenPaths": 0,
+        "recordedCycleMs": 185555,
+        "recordedNativeEpisodes": 7
+      }
+    ],
+    "limits": "Read-only forge and local-tree checks. Private selectors, remote IDs and response text are not copied. The proof's existing ignored material is required to repeat these reads. An initial probe used the wrong publication-stream path and failed ENOENT before any forge call; the corrected script locates the single stream under vertical/<run>/source/publication."
+  },
+  "consumedReviewGate": {
+    "command": "npm test -- --review",
+    "recordedAt": "2026-10-06T06:26:19.747Z",
+    "durationMs": 1398323,
+    "exitCode": 0,
+    "executed": true,
+    "executionMode": "forced-fresh",
+    "gateSelection": "review",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "requiredSuiteCount": 38,
+    "freshTasks": 88,
+    "reusedTasks": 0,
+    "interpretation": "Passing recorded gate at the current code identity; the four verification counterexamples are not covered by that gate."
+  }
+}

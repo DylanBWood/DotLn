@@ -1,0 +1,265 @@
+{
+  "schemaVersion": 1,
+  "label": "observed",
+  "scenario": "codex-refusal",
+  "recordedAt": "2026-10-06T00:21:24.975Z",
+  "source": {
+    "kind": "actual-github-issue",
+    "identity": "preserved-private-codex-refusal-issue",
+    "revision": "2026-10-05T23:56:36Z",
+    "contractId": "contract:85d4d3c40aa6af4f",
+    "classificationProducer": "executor-scripted double: a prefix rule in the executor's setup script (.runtime/wo112/setup-live.mjs line 83) over issue text the executor wrote; not a model episode",
+    "classificationCorrection": "Corrected 2026-10-05 (WO-112-D013, VER-001 F1): curated as 'root executor model; explicit spans in retained issue input'. Each rationale below is the script's fixed text, kept as supplied; its claim that a model classified the span is wrong.",
+    "classes": [
+      {
+        "statementId": "statement:3f7655ad5c3f8065",
+        "section": "title",
+        "span": {
+          "sectionId": "title",
+          "start": 0,
+          "end": 28
+        },
+        "class": "non-requirement",
+        "rationale": "Root executor model explicitly classifies the exact filed issue span; headings/title label the request, its Required behavior paragraph is normative, and Current behavior states the observed failing baseline.",
+        "text": "Fix the status in index.html"
+      },
+      {
+        "statementId": "statement:33b771b9cd40e3f2",
+        "section": "body",
+        "span": {
+          "sectionId": "body",
+          "start": 0,
+          "end": 20
+        },
+        "class": "non-requirement",
+        "rationale": "Root executor model explicitly classifies the exact filed issue span; headings/title label the request, its Required behavior paragraph is normative, and Current behavior states the observed failing baseline.",
+        "text": "## Required behavior"
+      },
+      {
+        "statementId": "statement:7d77de48de15e1f7",
+        "section": "body",
+        "span": {
+          "sectionId": "body",
+          "start": 22,
+          "end": 225
+        },
+        "class": "requirement",
+        "rationale": "Root executor model explicitly classifies the exact filed issue span; headings/title label the request, its Required behavior paragraph is normative, and Current behavior states the observed failing baseline.",
+        "text": "In `index.html`, replace Pending in the status element with Ready. Preserve its role=status, accessible label Build status, and heading Scratch welcome. Change only that page and introduce no dependency."
+      },
+      {
+        "statementId": "statement:47c03154cf355422",
+        "section": "body",
+        "span": {
+          "sectionId": "body",
+          "start": 227,
+          "end": 246
+        },
+        "class": "non-requirement",
+        "rationale": "Root executor model explicitly classifies the exact filed issue span; headings/title label the request, its Required behavior paragraph is normative, and Current behavior states the observed failing baseline.",
+        "text": "## Current behavior"
+      },
+      {
+        "statementId": "statement:72a26c7a55195f57",
+        "section": "body",
+        "span": {
+          "sectionId": "body",
+          "start": 248,
+          "end": 328
+        },
+        "class": "current-behavior observation",
+        "rationale": "Root executor model explicitly classifies the exact filed issue span; headings/title label the request, its Required behavior paragraph is normative, and Current behavior states the observed failing baseline.",
+        "text": "The current status in index.html says Pending and the focused status test fails."
+      }
+    ],
+    "openDecisions": [],
+    "criteria": [
+      {
+        "criterionId": "criterion:5e2a871e43e839c0",
+        "description": "In `index.html`, replace Pending in the status element with Ready. Preserve its role=status, accessible label Build status, and heading Scratch welcome. Change only that page and introduce no dependency.",
+        "claimType": "behavior",
+        "evidenceSource": "live",
+        "codeSurfaces": [
+          "index.html"
+        ],
+        "requiredChecks": [
+          "check-1"
+        ]
+      }
+    ]
+  },
+  "binding": {
+    "portfolioVersion": 1,
+    "baseRevision": "6ee09fe7d3e4b1392cf2ef259b386ecf1dd1c373",
+    "surfaces": [
+      "index.html"
+    ],
+    "authorityEffects": [
+      "repo.read",
+      "repo.write",
+      "git.local",
+      "shell.run",
+      "verification.evaluate",
+      "repo.push",
+      "pr.open",
+      "pr.thread.resolve"
+    ],
+    "deniedEffects": [
+      "repo.delete"
+    ],
+    "grantEffects": [
+      "pr.open",
+      "pr.thread.resolve",
+      "repo.push"
+    ],
+    "writers": 1,
+    "roots": "Target clone, isolated launchpad and stores under ignored order-local material; governed Git worktrees under the dispatched canonical system-temp/session-scratch root. Exact paths and provenance remain in the ignored binding."
+  },
+  "terminal": {
+    "kind": "refused",
+    "step": "source-change",
+    "reason": "source-change host refused"
+  },
+  "steps": [
+    {
+      "step": "bundle",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed",
+      "reason": null
+    },
+    {
+      "step": "contract",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed",
+      "reason": null
+    },
+    {
+      "step": "surfaces",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed",
+      "reason": null
+    },
+    {
+      "step": "derived-order",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed",
+      "reason": null
+    },
+    {
+      "step": "baseline",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed",
+      "reason": null
+    },
+    {
+      "step": "source-change",
+      "round": 0,
+      "attempt": 0,
+      "result": "refused",
+      "reason": "source-change host refused"
+    }
+  ],
+  "sourceChange": {
+    "commit": null,
+    "diffHash": null,
+    "branchHash": null,
+    "testBefore": null,
+    "testAfter": null,
+    "reason": "source-change host refused"
+  },
+  "publication": null,
+  "episodes": [
+    {
+      "role": "baseline",
+      "episodeId": "vertical_f49233afe728c0cd_0_ep_baseline_1_attempt_1",
+      "transport": "codex-cli-exec",
+      "harnessVersion": "0.160.0",
+      "model": {
+        "value": "gpt-6.1-sol",
+        "label": "launch-claim"
+      },
+      "effort": {
+        "value": "max",
+        "label": "launch-claim"
+      },
+      "effectiveModel": {
+        "value": "unknown",
+        "label": "unknown"
+      },
+      "effectiveEffort": {
+        "value": "unknown",
+        "label": "unknown"
+      },
+      "startedAt": "2026-10-06T00:00:00.355Z"
+    },
+    {
+      "role": "source",
+      "episodeId": "ep_9226bbed93a4056d4c981c2a_1",
+      "transport": "codex-cli-exec",
+      "harnessVersion": "0.160.0",
+      "model": {
+        "value": "gpt-6.1-sol",
+        "label": "launch-claim"
+      },
+      "effort": {
+        "value": "max",
+        "label": "launch-claim"
+      },
+      "effectiveModel": {
+        "value": "unknown",
+        "label": "unknown"
+      },
+      "effectiveEffort": {
+        "value": "unknown",
+        "label": "unknown"
+      },
+      "startedAt": "2026-10-06T00:00:18.542Z"
+    }
+  ],
+  "episodeCount": 2,
+  "eventStreams": [
+    {
+      "path": "baseline-verifier/events.jsonl",
+      "bytes": 46242,
+      "hash": "e872f164c99947c55f392e42464e819b8d8459d25fb8bdaab7bde4865186a9f4",
+      "eventCount": 27
+    },
+    {
+      "path": "events.jsonl",
+      "bytes": 111512,
+      "hash": "bb397f1f81cbe4a41f99b0add540c9be9a174f7c0a7b2961500bd3a7d099468f",
+      "eventCount": 13
+    },
+    {
+      "path": "source/events.jsonl",
+      "bytes": 35668,
+      "hash": "a4f76e8890788bab4e5587d984bee140dcadd513f9f425fda03404489d23f98e",
+      "eventCount": 75
+    }
+  ],
+  "cycle": {
+    "label": "observed",
+    "method": "First VerticalOpened through the last durable vertical event, including model and forge waits; preparation and the later host browser/grep checks excluded.",
+    "startedAt": "2026-10-05T23:59:59.477Z",
+    "finishedAt": "2026-10-06T00:01:25.038Z",
+    "wallMs": 85561
+  },
+  "review": {
+    "dispositions": [],
+    "items": [],
+    "repairPushes": [],
+    "finalObservation": null
+  },
+  "limits": [
+    "Full immutable event streams, target selector, remote IDs and physical paths remain in ignored preserved local material. This is a sanitized JSON projection, not a rewritten EventEnvelope stream.",
+    "Model counters and costs are unknown: retained source/verification result files have no usage and no transport wire was retained for these episodes.",
+    "The deterministic GitHub bot fixture is declared automation, not an independent AI reviewer; independent model verification and review occur in separate native CLI episodes."
+  ],
+  "repairs": [],
+  "repairVerifications": []
+}

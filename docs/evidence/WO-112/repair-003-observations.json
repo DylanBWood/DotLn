@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "kind": "synthetic-repair-probe-observations",
+  "source": "verification-003-probes.mjs stdout at the repaired source before the route-lifetime delta",
+  "durationMs": 15115,
+  "cutoff": "2026-10-06T18:24:41.295Z",
+  "projection": "hostFlagDiff is relabeled legacyHostFlagDiff: that probe uses the old flag subset, whereas the repaired sourceGit also disables commit-graph. No historical probe source is edited.",
+  "rows": [
+    {
+      "probe": "F1 forged commit-graph",
+      "status": null,
+      "reason": "source-change committed tree is dirty; preserve for inspection",
+      "acceptedCommitIsForged": false,
+      "realTreeIsHonestTree": false,
+      "integrityOutcomes": [
+        "unchanged",
+        "unchanged"
+      ],
+      "commitGraphDisabledDiff": [
+        "fixture-test.mjs",
+        "fixture.txt"
+      ],
+      "pushWithForgedGraph": " ! [remote rejected] 06583267a9e3d2d3978321d3c8dd559eef99ff32 -> published (missing necessary objects)",
+      "pushAfterGraphRewrite": "accepted",
+      "remoteDiff": [
+        "fixture-test.mjs",
+        "fixture.txt"
+      ],
+      "legacyHostFlagDiff": [
+        "fixture.txt"
+      ]
+    },
+    {
+      "probe": "VER-002 F1 recheck",
+      "status": "refused",
+      "reason": "shared-repository-changed",
+      "siblingCommitPreserved": true,
+      "siblingStatus": ""
+    },
+    {
+      "probe": "VER-002 F2 recheck",
+      "status": "refused",
+      "reason": "shared-repository-unreadable",
+      "victimUnchanged": true
+    },
+    {
+      "probe": "VER-002 F3 recheck",
+      "first": "invalid-result: stored writer envelope",
+      "recovery": "refused",
+      "recoveryReason": "shared-repository-changed",
+      "strayTagPreserved": true,
+      "writerLaunches": 1
+    },
+    {
+      "probe": "VER-002 F4 recheck",
+      "first": "resolved",
+      "second": "needs-human",
+      "third": "needs-human",
+      "triageCalls": 2,
+      "bodyJudgments": 2
+    },
+    {
+      "probe": "F2 receipt-crash recovery",
+      "later": "none",
+      "hostSignal": "SIGKILL",
+      "receiptPersistedBeforeKill": true,
+      "recovery": "observed",
+      "reason": null,
+      "writerLaunches": 1
+    },
+    {
+      "probe": "F2 receipt-crash recovery",
+      "later": "tag",
+      "hostSignal": "SIGKILL",
+      "receiptPersistedBeforeKill": true,
+      "recovery": "observed",
+      "reason": null,
+      "writerLaunches": 1
+    },
+    {
+      "probe": "F2 receipt-crash recovery",
+      "later": "remote-tracking-ref",
+      "hostSignal": "SIGKILL",
+      "receiptPersistedBeforeKill": true,
+      "recovery": "observed",
+      "reason": null,
+      "writerLaunches": 1
+    },
+    {
+      "probe": "F3 transient triage failure",
+      "shape": "review body",
+      "code": "interrupted",
+      "retryableByIntakeRule": true,
+      "first": [
+        "triage episode failed: interrupted: synthetic transient failure",
+        null
+      ],
+      "retried": [
+        "needs-human",
+        "second episode reached"
+      ],
+      "triageCalls": 2
+    },
+    {
+      "probe": "F3 transient triage failure",
+      "shape": "review body",
+      "code": "model-unavailable",
+      "retryableByIntakeRule": true,
+      "first": [
+        "triage episode failed: model-unavailable: synthetic transient failure",
+        null
+      ],
+      "retried": [
+        "needs-human",
+        "second episode reached"
+      ],
+      "triageCalls": 2
+    },
+    {
+      "probe": "F3 transient triage failure",
+      "shape": "inline item",
+      "code": "interrupted",
+      "retryableByIntakeRule": true,
+      "first": [
+        "triage episode failed: interrupted: synthetic transient failure",
+        null
+      ],
+      "retried": [
+        "needs-human",
+        "second episode reached"
+      ],
+      "triageCalls": 2
+    },
+    {
+      "probe": "F3 transient triage failure",
+      "shape": "inline item",
+      "code": "model-unavailable",
+      "retryableByIntakeRule": true,
+      "first": [
+        "triage episode failed: model-unavailable: synthetic transient failure",
+        null
+      ],
+      "retried": [
+        "needs-human",
+        "second episode reached"
+      ],
+      "triageCalls": 2
+    }
+  ]
+}

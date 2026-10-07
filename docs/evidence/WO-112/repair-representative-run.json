@@ -1,0 +1,618 @@
+{
+  "schemaVersion": 1,
+  "label": "observed",
+  "scenario": "representative",
+  "issue": 3,
+  "workers": {
+    "transport": "claude-cli-print",
+    "model": "sonnet",
+    "effort": "max"
+  },
+  "suppliedInputs": {
+    "inferences": 0,
+    "baselineAssessments": 0,
+    "judgments": 0
+  },
+  "publicCli": {
+    "schemaVersion": 1,
+    "label": "observed",
+    "command": "npm run dotln -- vertical 3 --store <preserved-local-store>",
+    "startedAt": "2026-10-06T02:40:17.098Z",
+    "finishedAt": "2026-10-06T02:48:15.337Z",
+    "exitCode": 0,
+    "signal": null,
+    "driver": "unchanged public CLI; one uninterrupted invocation; no pause, no supplied input",
+    "operatorAttested": false
+  },
+  "terminal": {
+    "kind": "resolved",
+    "step": "resolution",
+    "reason": "fresh observation and resolution reached the human-controlled terminal"
+  },
+  "steps": [
+    {
+      "step": "bundle",
+      "result": "completed"
+    },
+    {
+      "step": "contract",
+      "result": "completed"
+    },
+    {
+      "step": "surfaces",
+      "result": "completed"
+    },
+    {
+      "step": "derived-order",
+      "result": "completed"
+    },
+    {
+      "step": "baseline",
+      "result": "completed"
+    },
+    {
+      "step": "source-change",
+      "result": "completed"
+    },
+    {
+      "step": "witnesses",
+      "result": "completed"
+    },
+    {
+      "step": "verification",
+      "result": "completed"
+    },
+    {
+      "step": "review",
+      "result": "completed"
+    },
+    {
+      "step": "preparation",
+      "result": "completed"
+    },
+    {
+      "step": "lint",
+      "result": "completed"
+    },
+    {
+      "step": "publish",
+      "result": "completed"
+    },
+    {
+      "step": "observation",
+      "result": "completed"
+    },
+    {
+      "step": "resolution",
+      "result": "completed"
+    }
+  ],
+  "intake": {
+    "producer": "model",
+    "episodeId": "ep_vertical_intake_fff9229a70126979",
+    "spans": [
+      {
+        "text": "Fix the status in index.html",
+        "class": "inference",
+        "baseline": "existing-failure",
+        "rationale": "Title that only names and summarizes the request. The concrete obligations are in span-3, so it adds no separate requirement and is not a non-goal."
+      },
+      {
+        "text": "## Required behavior",
+        "class": "inference",
+        "baseline": "no-existing-failure",
+        "rationale": "Section heading that only labels the requirement text below it. It adds no obligation of its own and is not an exclusion."
+      },
+      {
+        "text": "In `index.html`, replace Pending in the status element with Ready. Preserve its role=status, accessible label Build status, and heading Scratch welcome. Change only that page and introduce no dependency.",
+        "class": "requirement",
+        "baseline": "existing-failure",
+        "rationale": "Normative. The status element must read Ready instead of Pending, keeping role=status, the accessible label Build status and the heading Scratch welcome. The same text limits the change to index.html with no new dependency. Those limits are constraints on the one requirement, so the work order should carry them as acceptance constraints."
+      },
+      {
+        "text": "## Current behavior",
+        "class": "inference",
+        "baseline": "no-existing-failure",
+        "rationale": "Section heading that only labels the observation below it. It adds no obligation or fact of its own."
+      },
+      {
+        "text": "The current status in index.html says Pending and the focused status test fails.",
+        "class": "current-behavior observation",
+        "baseline": "existing-failure",
+        "rationale": "Reports the repository's present state: the status in index.html says Pending and the focused status test fails. It becomes a known fact and adds no new obligation."
+      }
+    ]
+  },
+  "contract": {
+    "contractId": "contract:009fec2ca4447394",
+    "criteria": [
+      {
+        "criterionId": "criterion:dac1003c1dff42f9",
+        "description": "In `index.html`, replace Pending in the status element with Ready. Preserve its role=status, accessible label Build status, and heading Scratch welcome. Change only that page and introduce no dependency.",
+        "claimType": "behavior"
+      }
+    ],
+    "nonGoals": [],
+    "baselineProducer": {
+      "kind": "model",
+      "name": "claude-cli-print sonnet max intake episode ep_vertical_intake_fff9229a70126979"
+    }
+  },
+  "sourceChange": {
+    "result": "completed",
+    "commit": "da95f7add70bbefbb621912deccd6ada913d71ee",
+    "reason": null,
+    "refusal": null
+  },
+  "episodes": [
+    {
+      "role": "intake",
+      "episodeId": "ep_vertical_intake_fff9229a70126979",
+      "producer": "model",
+      "transport": "claude-cli-print",
+      "harnessVersion": "2.1.290",
+      "model": {
+        "value": "sonnet",
+        "label": "launch-claim"
+      },
+      "effort": {
+        "value": "max",
+        "label": "launch-claim"
+      },
+      "effectiveModel": {
+        "value": "unknown",
+        "label": "unknown"
+      }
+    },
+    {
+      "role": "triage",
+      "episodeId": "ep_vertical_triage_e1d38f579c546da6",
+      "producer": "model",
+      "transport": "claude-cli-print",
+      "harnessVersion": "2.1.290",
+      "model": {
+        "value": "sonnet",
+        "label": "launch-claim"
+      },
+      "effort": {
+        "value": "max",
+        "label": "launch-claim"
+      },
+      "effectiveModel": {
+        "value": "unknown",
+        "label": "unknown"
+      }
+    },
+    {
+      "role": "triage",
+      "episodeId": "ep_vertical_triage_efc9bd41cd32ff81",
+      "producer": "model",
+      "transport": "claude-cli-print",
+      "harnessVersion": "2.1.290",
+      "model": {
+        "value": "sonnet",
+        "label": "launch-claim"
+      },
+      "effort": {
+        "value": "max",
+        "label": "launch-claim"
+      },
+      "effectiveModel": {
+        "value": "unknown",
+        "label": "unknown"
+      }
+    },
+    {
+      "role": "baseline",
+      "episodeId": "vertical_5afcdaeada3f6d4e_0_ep_baseline_1_attempt_1",
+      "transport": "claude-cli-print",
+      "harnessVersion": "2.1.290",
+      "model": {
+        "value": "sonnet",
+        "label": "launch-claim"
+      },
+      "effort": {
+        "value": "max",
+        "label": "launch-claim"
+      },
+      "effectiveModel": {
+        "value": "unknown",
+        "label": "unknown"
+      }
+    },
+    {
+      "role": "repair-writer",
+      "episodeId": "ep_5a19ab52c2386465aef836ad_1",
+      "transport": "claude-cli-print",
+      "harnessVersion": "2.1.290",
+      "model": {
+        "value": "sonnet",
+        "label": "launch-claim"
+      },
+      "effort": {
+        "value": "max",
+        "label": "launch-claim"
+      },
+      "effectiveModel": {
+        "value": "unknown",
+        "label": "unknown"
+      }
+    },
+    {
+      "role": "repair-verifier",
+      "episodeId": "repair_dd12eba8ad2afa06_verify_1_ep_verifier_1_attempt_1",
+      "transport": "claude-cli-print",
+      "harnessVersion": "2.1.290",
+      "model": {
+        "value": "sonnet",
+        "label": "launch-claim"
+      },
+      "effort": {
+        "value": "max",
+        "label": "launch-claim"
+      },
+      "effectiveModel": {
+        "value": "unknown",
+        "label": "unknown"
+      }
+    },
+    {
+      "role": "source",
+      "episodeId": "ep_7a07edc4f2a8ca2d2946e89e_1",
+      "transport": "claude-cli-print",
+      "harnessVersion": "2.1.290",
+      "model": {
+        "value": "sonnet",
+        "label": "launch-claim"
+      },
+      "effort": {
+        "value": "max",
+        "label": "launch-claim"
+      },
+      "effectiveModel": {
+        "value": "unknown",
+        "label": "unknown"
+      }
+    },
+    {
+      "role": "verifier",
+      "episodeId": "vertical_5afcdaeada3f6d4e_0_ep_verifier_1_attempt_1",
+      "transport": "claude-cli-print",
+      "harnessVersion": "2.1.290",
+      "model": {
+        "value": "sonnet",
+        "label": "launch-claim"
+      },
+      "effort": {
+        "value": "max",
+        "label": "launch-claim"
+      },
+      "effectiveModel": {
+        "value": "unknown",
+        "label": "unknown"
+      }
+    },
+    {
+      "role": "review",
+      "episodeId": "vertical_5afcdaeada3f6d4e_0_ep_review_2_attempt_1",
+      "transport": "claude-cli-print",
+      "harnessVersion": "2.1.290",
+      "model": {
+        "value": "sonnet",
+        "label": "launch-claim"
+      },
+      "effort": {
+        "value": "max",
+        "label": "launch-claim"
+      },
+      "effectiveModel": {
+        "value": "unknown",
+        "label": "unknown"
+      }
+    }
+  ],
+  "observations": [
+    {
+      "eventId": "evt_2",
+      "at": "2026-10-06T02:44:52.584Z",
+      "head": "da95f7add70bbefbb621912deccd6ada913d71ee",
+      "checks": [],
+      "comments": []
+    },
+    {
+      "eventId": "evt_3",
+      "at": "2026-10-06T02:45:09.869Z",
+      "head": "da95f7add70bbefbb621912deccd6ada913d71ee",
+      "checks": [
+        {
+          "name": "review-bot",
+          "state": "SUCCESS"
+        }
+      ],
+      "comments": [
+        {
+          "item": "item-08576ae603ff",
+          "class": "automated-review",
+          "path": "index.html",
+          "line": 6,
+          "resolved": false,
+          "text": "Remove the trailing whitespace inside the status element; its text should be exactly Ready.\n\n```suggestion\n<p id=\"status\" role=\"status\" aria-label=\"Build status\">Ready</p>\n```"
+        },
+        {
+          "item": "item-ee9cc8168591",
+          "class": "automated-review",
+          "path": null,
+          "line": null,
+          "resolved": false,
+          "text": "Automated review summary: one inline suggestion on index.html."
+        }
+      ]
+    },
+    {
+      "eventId": "evt_16",
+      "at": "2026-10-06T02:47:41.322Z",
+      "head": "d2a109e1d64adc91c236b588422a04bdab50b04b",
+      "checks": [],
+      "comments": [
+        {
+          "item": "item-ee9cc8168591",
+          "class": "automated-review",
+          "path": null,
+          "line": null,
+          "resolved": false,
+          "text": "Automated review summary: one inline suggestion on index.html."
+        },
+        {
+          "item": "item-08576ae603ff",
+          "class": "resolved",
+          "path": "index.html",
+          "line": null,
+          "resolved": true,
+          "text": "Remove the trailing whitespace inside the status element; its text should be exactly Ready.\n\n```suggestion\n<p id=\"status\" role=\"status\" aria-label=\"Build status\">Ready</p>\n```"
+        }
+      ]
+    },
+    {
+      "eventId": "evt_17",
+      "at": "2026-10-06T02:47:58.402Z",
+      "head": "d2a109e1d64adc91c236b588422a04bdab50b04b",
+      "checks": [
+        {
+          "name": "review-bot",
+          "state": "SUCCESS"
+        }
+      ],
+      "comments": [
+        {
+          "item": "item-ee9cc8168591",
+          "class": "automated-review",
+          "path": null,
+          "line": null,
+          "resolved": false,
+          "text": "Automated review summary: one inline suggestion on index.html."
+        },
+        {
+          "item": "item-08576ae603ff",
+          "class": "resolved",
+          "path": "index.html",
+          "line": null,
+          "resolved": true,
+          "text": "Remove the trailing whitespace inside the status element; its text should be exactly Ready.\n\n```suggestion\n<p id=\"status\" role=\"status\" aria-label=\"Build status\">Ready</p>\n```"
+        }
+      ]
+    }
+  ],
+  "reviewLoop": [
+    {
+      "type": "ReviewItemCommandResult",
+      "at": "2026-10-06T02:45:35.881Z",
+      "payload": {
+        "key": "fnv1a64:b8000c4bfea0548f",
+        "commandId": "cmd_review_19b71f61c0ad8c4b",
+        "result": "accept",
+        "value": {
+          "judgment": {
+            "kind": "accept",
+            "criterionId": "criterion:dac1003c1dff42f9",
+            "reason": "The suggestion only trims the trailing space inside the status paragraph in index.html, so it stays within the contract (one page, no dependency). It keeps role=status, aria-label \"Build status\" and the \"Scratch welcome\" heading, and the text is still Ready. The host's fresh re-verification will confirm the criterion after the repair.",
+            "evidenceRefs": [
+              "contract:009fec2ca4447394",
+              "da95f7add70bbefbb621912deccd6ada913d71ee:index.html",
+              "da95f7add70bbefbb621912deccd6ada913d71ee:host-test:0"
+            ],
+            "producer": {
+              "kind": "model",
+              "task": "triage",
+              "transport": "claude-cli-print",
+              "harnessVersion": "2.1.290",
+              "model": "sonnet",
+              "effort": "max",
+              "episodeId": "ep_vertical_triage_efc9bd41cd32ff81",
+              "subjectHash": "sha256:efc9bd41cd32ff81b321253f22c118090dd55c525cc27588cf5480bfd92f7ae0",
+              "selectionSource": "host-launch",
+              "effectiveModel": "unknown",
+              "effectiveEffort": "unknown",
+              "dispatchedAt": "2026-10-06T02:45:15.039Z",
+              "completedAt": "2026-10-06T02:45:35.855Z"
+            }
+          },
+          "witness": {
+            "evidenceId": "evt_3:forge-item-08576ae603ff",
+            "subjectRevision": "da95f7add70bbefbb621912deccd6ada913d71ee",
+            "criterionId": "criterion:dac1003c1dff42f9",
+            "itemId": "forge-item-08576ae603ff",
+            "class": "automated-review",
+            "path": "index.html",
+            "line": 6,
+            "testCommand": "node page.test.mjs",
+            "observed": "Unresolved automated-review item forge-item-08576ae603ff",
+            "expected": "In `index.html`, replace Pending in the status element with Ready. Preserve its role=status, accessible label Build status, and heading Scratch welcome. Change only that page and introduce no dependency."
+          },
+          "finding": {
+            "findingId": "review_1b93aed8b7539d65",
+            "criterionId": "criterion:dac1003c1dff42f9",
+            "severity": "blocking",
+            "observed": "Unresolved automated-review item forge-item-08576ae603ff",
+            "expected": "In `index.html`, replace Pending in the status element with Ready. Preserve its role=status, accessible label Build status, and heading Scratch welcome. Change only that page and introduce no dependency.",
+            "evidenceRefs": [
+              "evt_3:forge-item-08576ae603ff"
+            ],
+            "reproductionSteps": [
+              "node page.test.mjs"
+            ],
+            "likelySurface": [
+              "index.html"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "ReviewItemCommandResult",
+      "at": "2026-10-06T02:47:38.584Z",
+      "payload": {
+        "key": "fnv1a64:b8000c4bfea0548f",
+        "commandId": "cmd_review_3784419db9463b4a",
+        "result": "completed",
+        "value": {
+          "status": "complete",
+          "headSha": "d2a109e1d64adc91c236b588422a04bdab50b04b"
+        }
+      }
+    },
+    {
+      "type": "PullRequestRepairPushed",
+      "at": "2026-10-06T02:47:38.610Z",
+      "payload": {
+        "itemKey": "fnv1a64:b8000c4bfea0548f",
+        "repositoryId": "github.com/<private-scratch-repository>",
+        "number": 7,
+        "headSha": "d2a109e1d64adc91c236b588422a04bdab50b04b",
+        "branch": "fix/intent-5afcdaeada3f6d4e"
+      }
+    },
+    {
+      "type": "ReviewItemCommandResult",
+      "at": "2026-10-06T02:47:40.326Z",
+      "payload": {
+        "key": "fnv1a64:b8000c4bfea0548f",
+        "commandId": "cmd_review_3892c217bdfb1103",
+        "result": "completed",
+        "value": {
+          "itemKey": "fnv1a64:b8000c4bfea0548f",
+          "repositoryId": "github.com/<private-scratch-repository>",
+          "number": 7,
+          "headSha": "d2a109e1d64adc91c236b588422a04bdab50b04b",
+          "branch": "fix/intent-5afcdaeada3f6d4e"
+        }
+      }
+    },
+    {
+      "type": "PullRequestThreadDisposed",
+      "at": "2026-10-06T02:47:40.355Z",
+      "payload": {
+        "itemKey": "fnv1a64:b8000c4bfea0548f",
+        "repositoryId": "github.com/<private-scratch-repository>",
+        "number": 7,
+        "disposition": "accept",
+        "evidenceRefs": [
+          "contract:009fec2ca4447394",
+          "da95f7add70bbefbb621912deccd6ada913d71ee:index.html",
+          "da95f7add70bbefbb621912deccd6ada913d71ee:host-test:0"
+        ]
+      }
+    },
+    {
+      "type": "ReviewItemCommandResult",
+      "at": "2026-10-06T02:47:41.291Z",
+      "payload": {
+        "key": "fnv1a64:b8000c4bfea0548f",
+        "commandId": "cmd_review_1f6abf54240ea4f6",
+        "result": "completed",
+        "value": {
+          "itemKey": "fnv1a64:b8000c4bfea0548f",
+          "repositoryId": "github.com/<private-scratch-repository>",
+          "number": 7,
+          "disposition": "accept",
+          "evidenceRefs": [
+            "contract:009fec2ca4447394",
+            "da95f7add70bbefbb621912deccd6ada913d71ee:index.html",
+            "da95f7add70bbefbb621912deccd6ada913d71ee:host-test:0"
+          ]
+        }
+      }
+    },
+    {
+      "type": "ReviewItemCommandResult",
+      "at": "2026-10-06T02:48:00.608Z",
+      "payload": {
+        "key": "fnv1a64:b8000c4bfea0548f",
+        "commandId": "cmd_review_57ef4ea218cec0d7",
+        "result": "completed",
+        "value": {
+          "observationId": "evt_17"
+        }
+      }
+    },
+    {
+      "type": "ReviewItemFinished",
+      "at": "2026-10-06T02:48:00.633Z",
+      "payload": {
+        "key": "fnv1a64:b8000c4bfea0548f",
+        "status": "resolved",
+        "reason": null
+      }
+    },
+    {
+      "type": "ReviewBodyJudged",
+      "at": "2026-10-06T02:48:15.263Z",
+      "payload": {
+        "observationId": "evt_17",
+        "headSha": "d2a109e1d64adc91c236b588422a04bdab50b04b",
+        "judgment": {
+          "kind": "acknowledge",
+          "criterionId": null,
+          "reason": "The item is a review body with no path or line. It only summarizes an inline suggestion and requests no change itself. The candidate already passes the host test for the only criterion, which covers the Ready status.",
+          "evidenceRefs": [
+            "contract:009fec2ca4447394",
+            "d2a109e1d64adc91c236b588422a04bdab50b04b:host-test:0"
+          ],
+          "producer": {
+            "kind": "model",
+            "task": "triage",
+            "transport": "claude-cli-print",
+            "harnessVersion": "2.1.290",
+            "model": "sonnet",
+            "effort": "max",
+            "episodeId": "ep_vertical_triage_e1d38f579c546da6",
+            "subjectHash": "sha256:e1d38f579c546da6dbbb5b31d0e58c2f4876ac2163a8bc64e5d91f111f30b67a",
+            "selectionSource": "host-launch",
+            "effectiveModel": "unknown",
+            "effectiveEffort": "unknown",
+            "dispatchedAt": "2026-10-06T02:48:00.816Z",
+            "completedAt": "2026-10-06T02:48:15.234Z"
+          }
+        },
+        "reason": null
+      }
+    },
+    {
+      "type": "PullRequestReviewLoopStopped",
+      "at": "2026-10-06T02:48:15.291Z",
+      "payload": {
+        "repositoryId": "github.com/<private-scratch-repository>",
+        "number": 7,
+        "status": "resolved",
+        "reason": "fresh observation has no unresolved items",
+        "observationId": "evt_17"
+      }
+    }
+  ],
+  "cycle": {
+    "label": "observed",
+    "method": "First VerticalOpened through the last durable vertical event.",
+    "startedAt": "2026-10-06T02:41:45.480Z",
+    "finishedAt": "2026-10-06T02:48:15.296Z",
+    "wallMs": 389816
+  }
+}

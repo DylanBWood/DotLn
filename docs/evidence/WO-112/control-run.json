@@ -1,0 +1,622 @@
+{
+  "schemaVersion": 1,
+  "label": "observed",
+  "scenario": "control",
+  "recordedAt": "2026-10-06T00:21:24.999Z",
+  "source": {
+    "kind": "actual-github-issue",
+    "identity": "preserved-private-control-issue",
+    "revision": "2026-10-06T00:04:31Z",
+    "contractId": "contract:390c1a5f5f5a089b",
+    "classificationProducer": "executor-scripted double: a prefix rule in the executor's setup script (.runtime/wo112/setup-live.mjs line 83) over issue text the executor wrote; not a model episode",
+    "classificationCorrection": "Corrected 2026-10-05 (WO-112-D013, VER-001 F1): curated as 'root executor model; explicit spans in retained issue input'. Each rationale below is the script's fixed text, kept as supplied; its claim that a model classified the span is wrong.",
+    "classes": [
+      {
+        "statementId": "statement:3f7655ad5c3f8065",
+        "section": "title",
+        "span": {
+          "sectionId": "title",
+          "start": 0,
+          "end": 28
+        },
+        "class": "non-requirement",
+        "rationale": "Root executor model explicitly classifies the exact filed issue span; headings/title label the request, its Required behavior paragraph is normative, and Current behavior states the observed failing baseline.",
+        "text": "Fix the status in index.html"
+      },
+      {
+        "statementId": "statement:33b771b9cd40e3f2",
+        "section": "body",
+        "span": {
+          "sectionId": "body",
+          "start": 0,
+          "end": 20
+        },
+        "class": "non-requirement",
+        "rationale": "Root executor model explicitly classifies the exact filed issue span; headings/title label the request, its Required behavior paragraph is normative, and Current behavior states the observed failing baseline.",
+        "text": "## Required behavior"
+      },
+      {
+        "statementId": "statement:7d77de48de15e1f7",
+        "section": "body",
+        "span": {
+          "sectionId": "body",
+          "start": 22,
+          "end": 225
+        },
+        "class": "requirement",
+        "rationale": "Root executor model explicitly classifies the exact filed issue span; headings/title label the request, its Required behavior paragraph is normative, and Current behavior states the observed failing baseline.",
+        "text": "In `index.html`, replace Pending in the status element with Ready. Preserve its role=status, accessible label Build status, and heading Scratch welcome. Change only that page and introduce no dependency."
+      },
+      {
+        "statementId": "statement:47c03154cf355422",
+        "section": "body",
+        "span": {
+          "sectionId": "body",
+          "start": 227,
+          "end": 246
+        },
+        "class": "non-requirement",
+        "rationale": "Root executor model explicitly classifies the exact filed issue span; headings/title label the request, its Required behavior paragraph is normative, and Current behavior states the observed failing baseline.",
+        "text": "## Current behavior"
+      },
+      {
+        "statementId": "statement:72a26c7a55195f57",
+        "section": "body",
+        "span": {
+          "sectionId": "body",
+          "start": 248,
+          "end": 328
+        },
+        "class": "current-behavior observation",
+        "rationale": "Root executor model explicitly classifies the exact filed issue span; headings/title label the request, its Required behavior paragraph is normative, and Current behavior states the observed failing baseline.",
+        "text": "The current status in index.html says Pending and the focused status test fails."
+      }
+    ],
+    "openDecisions": [],
+    "criteria": [
+      {
+        "criterionId": "criterion:5e2a871e43e839c0",
+        "description": "In `index.html`, replace Pending in the status element with Ready. Preserve its role=status, accessible label Build status, and heading Scratch welcome. Change only that page and introduce no dependency.",
+        "claimType": "behavior",
+        "evidenceSource": "live",
+        "codeSurfaces": [
+          "index.html"
+        ],
+        "requiredChecks": [
+          "check-1"
+        ]
+      }
+    ]
+  },
+  "binding": {
+    "portfolioVersion": 1,
+    "baseRevision": "6ee09fe7d3e4b1392cf2ef259b386ecf1dd1c373",
+    "surfaces": [
+      "index.html"
+    ],
+    "authorityEffects": [
+      "repo.read",
+      "repo.write",
+      "git.local",
+      "shell.run",
+      "verification.evaluate",
+      "repo.push",
+      "pr.open",
+      "pr.thread.resolve"
+    ],
+    "deniedEffects": [
+      "repo.delete"
+    ],
+    "grantEffects": [
+      "pr.open",
+      "pr.thread.resolve",
+      "repo.push"
+    ],
+    "writers": 1,
+    "roots": "Target clone, isolated launchpad and stores under ignored order-local material; governed Git worktrees under the dispatched canonical system-temp/session-scratch root. Exact paths and provenance remain in the ignored binding."
+  },
+  "terminal": {
+    "kind": "NeedsHuman",
+    "step": "resolution",
+    "reason": "no supplied triage judgment"
+  },
+  "steps": [
+    {
+      "step": "bundle",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed",
+      "reason": null
+    },
+    {
+      "step": "contract",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed",
+      "reason": null
+    },
+    {
+      "step": "surfaces",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed",
+      "reason": null
+    },
+    {
+      "step": "derived-order",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed",
+      "reason": null
+    },
+    {
+      "step": "baseline",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed",
+      "reason": null
+    },
+    {
+      "step": "source-change",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed",
+      "reason": null
+    },
+    {
+      "step": "witnesses",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed",
+      "reason": null
+    },
+    {
+      "step": "verification",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed",
+      "reason": "all criteria verified at current revision"
+    },
+    {
+      "step": "review",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed",
+      "reason": "independent review completed"
+    },
+    {
+      "step": "preparation",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed",
+      "reason": null
+    },
+    {
+      "step": "lint",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed",
+      "reason": null
+    },
+    {
+      "step": "publish",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed",
+      "reason": null
+    },
+    {
+      "step": "observation",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed",
+      "reason": null
+    },
+    {
+      "step": "resolution",
+      "round": 0,
+      "attempt": 0,
+      "result": "NeedsHuman",
+      "reason": "no supplied triage judgment"
+    }
+  ],
+  "sourceChange": {
+    "commit": "fd838f4a56200b277372d8237c5d9dd802fe9c67",
+    "diffHash": "f43e9e93f485ffc1a547e2e769d1a6ac12cbf4c0558f3cf5b840f15a46a0b789",
+    "branchHash": "134af3e6eed2ae7daef4231f52ba4eabe4e931c7aaca4384a9e4db517b6cd87f",
+    "testBefore": {
+      "command": "node page.test.mjs",
+      "exitCode": 1,
+      "signal": null,
+      "stdoutHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrHash": "140f94cb1d05b26089362dec0f1a8ee869aabe60f1718059d5c8557bbe3e134a"
+    },
+    "testAfter": {
+      "command": "node page.test.mjs",
+      "exitCode": 0,
+      "signal": null,
+      "stdoutHash": "b4b7b6fe56f7f379d9179787d673abbf24bdaff783ace2c0a3a074940e9a8de3",
+      "stderrHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "reason": null
+  },
+  "publication": {
+    "identity": "preserved-private-control-pr",
+    "initialRevision": "fd838f4a56200b277372d8237c5d9dd802fe9c67"
+  },
+  "episodes": [
+    {
+      "role": "baseline",
+      "episodeId": "vertical_6c6689cf270d28e7_0_ep_baseline_1_attempt_1",
+      "transport": "claude-cli-print",
+      "harnessVersion": "2.1.290",
+      "model": {
+        "value": "sonnet",
+        "label": "launch-claim"
+      },
+      "effort": {
+        "value": "max",
+        "label": "launch-claim"
+      },
+      "effectiveModel": {
+        "value": "unknown",
+        "label": "unknown"
+      },
+      "effectiveEffort": {
+        "value": "unknown",
+        "label": "unknown"
+      },
+      "startedAt": "2026-10-06T00:04:41.423Z"
+    },
+    {
+      "role": "source",
+      "episodeId": "ep_677a103681c2c6554d7abbec_1",
+      "transport": "claude-cli-print",
+      "harnessVersion": "2.1.290",
+      "model": {
+        "value": "sonnet",
+        "label": "launch-claim"
+      },
+      "effort": {
+        "value": "max",
+        "label": "launch-claim"
+      },
+      "effectiveModel": {
+        "value": "unknown",
+        "label": "unknown"
+      },
+      "effectiveEffort": {
+        "value": "unknown",
+        "label": "unknown"
+      },
+      "startedAt": "2026-10-06T00:04:51.215Z"
+    },
+    {
+      "role": "verifier",
+      "episodeId": "vertical_6c6689cf270d28e7_0_ep_verifier_1_attempt_1",
+      "transport": "claude-cli-print",
+      "harnessVersion": "2.1.290",
+      "model": {
+        "value": "sonnet",
+        "label": "launch-claim"
+      },
+      "effort": {
+        "value": "max",
+        "label": "launch-claim"
+      },
+      "effectiveModel": {
+        "value": "unknown",
+        "label": "unknown"
+      },
+      "effectiveEffort": {
+        "value": "unknown",
+        "label": "unknown"
+      },
+      "startedAt": "2026-10-06T00:06:48.795Z"
+    },
+    {
+      "role": "review",
+      "episodeId": "vertical_6c6689cf270d28e7_0_ep_review_2_attempt_1",
+      "transport": "claude-cli-print",
+      "harnessVersion": "2.1.290",
+      "model": {
+        "value": "sonnet",
+        "label": "launch-claim"
+      },
+      "effort": {
+        "value": "max",
+        "label": "launch-claim"
+      },
+      "effectiveModel": {
+        "value": "unknown",
+        "label": "unknown"
+      },
+      "effectiveEffort": {
+        "value": "unknown",
+        "label": "unknown"
+      },
+      "startedAt": "2026-10-06T00:07:21.229Z"
+    }
+  ],
+  "episodeCount": 4,
+  "eventStreams": [
+    {
+      "path": "baseline-verifier/events.jsonl",
+      "bytes": 42457,
+      "hash": "87d2cf34c8692d77eb918259edaa46cb0b2018082bd4ecb31962cc16c33b176d",
+      "eventCount": 18
+    },
+    {
+      "path": "events.jsonl",
+      "bytes": 145399,
+      "hash": "99c7e8f55ce7bb106ef4525f307ba0025168beff57ba496f0b33dcfbe58f9682",
+      "eventCount": 29
+    },
+    {
+      "path": "source/events.jsonl",
+      "bytes": 57511,
+      "hash": "cec43a1ca8ff2deff8faa3b315fd8da0b173482dddac3ede7c9e2948fb2d3a9b",
+      "eventCount": 125
+    },
+    {
+      "path": "source/publication/events.jsonl",
+      "bytes": 19904,
+      "hash": "88ad5b23d1e423583913ae171e3e97a4ab0901d089d6fc873814871a5a576ead",
+      "eventCount": 18
+    },
+    {
+      "path": "source/publication/review-loop/events.jsonl",
+      "bytes": 0,
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "eventCount": 0
+    },
+    {
+      "path": "verification-0/events.jsonl",
+      "bytes": 152234,
+      "hash": "775a295706fc1a8b2c1adfc78fe57585f4b86e7e4c6cb94723dcdda8a048db6e",
+      "eventCount": 216
+    }
+  ],
+  "cycle": {
+    "label": "observed",
+    "method": "First VerticalOpened through the last durable vertical event, including model and forge waits; preparation and the later host browser/grep checks excluded.",
+    "startedAt": "2026-10-06T00:04:40.570Z",
+    "finishedAt": "2026-10-06T00:13:09.038Z",
+    "wallMs": 508468
+  },
+  "review": {
+    "dispositions": [
+      {
+        "eventId": "evt_8",
+        "disposition": "reject",
+        "evidenceRefs": [
+          "contract:390c1a5f5f5a089b",
+          "fd838f4a56200b277372d8237c5d9dd802fe9c67:index.html",
+          "fd838f4a56200b277372d8237c5d9dd802fe9c67:host-test:0"
+        ],
+        "recordedAt": "2026-10-06T00:13:04.173Z",
+        "verdictProducer": {
+          "label": "observed",
+          "kind": "executor-scripted double",
+          "method": ".runtime/wo112/observe-review.mjs fixed 'reject' by scenario identity after asserting the planted marker 'deliberately incorrect', labelled it a model judgment, and wrote it into the run configuration after a custom driver paused the run following publication (WO-112-D013)"
+        }
+      }
+    ],
+    "items": [
+      {
+        "eventId": "evt_13",
+        "status": "resolved",
+        "reason": null
+      },
+      {
+        "eventId": "evt_17",
+        "status": "needs-human",
+        "reason": "no supplied triage judgment"
+      }
+    ],
+    "repairPushes": [],
+    "finalObservation": {
+      "eventId": "evt_11",
+      "recordedAt": "2026-10-06T00:13:06.249Z",
+      "headRevision": "fd838f4a56200b277372d8237c5d9dd802fe9c67",
+      "checks": [],
+      "comments": [
+        {
+          "identity": "observed-comment-1",
+          "role": "automation",
+          "class": "automated-review",
+          "resolved": false,
+          "path": null,
+          "line": null,
+          "text": "Declared automated scratch review fixture (control).",
+          "refused": null
+        },
+        {
+          "identity": "observed-comment-2",
+          "role": "automation",
+          "class": "resolved",
+          "resolved": true,
+          "path": "index.html",
+          "line": 6,
+          "text": "Control fixture: change the status back to Pending. This deliberately incorrect suggestion tests rejection.\n\n```suggestion\n<p id=\"status\" role=\"status\" aria-label=\"Build status\">Pending</p>\n```",
+          "refused": null
+        },
+        {
+          "identity": "observed-comment-3",
+          "role": "reporter",
+          "class": "resolved",
+          "resolved": true,
+          "path": "index.html",
+          "line": 6,
+          "text": "{\"disposition\":\"rejected\",\"evidenceRefs\":[\"contract:390c1a5f5f5a089b\",\"fd838f4a56200b277372d8237c5d9dd802fe9c67:index.html\",\"fd838f4a56200b277372d8237c5d9dd802fe9c67:host-test:0\"]}",
+          "refused": null
+        }
+      ]
+    }
+  },
+  "limits": [
+    "Full immutable event streams, target selector, remote IDs and physical paths remain in ignored preserved local material. This is a sanitized JSON projection, not a rewritten EventEnvelope stream.",
+    "Model counters and costs are unknown: retained source/verification result files have no usage and no transport wire was retained for these episodes.",
+    "The deterministic GitHub bot fixture is declared automation, not an independent AI reviewer; independent model verification and review occur in separate native CLI episodes."
+  ],
+  "repairs": [],
+  "repairVerifications": [],
+  "verification": {
+    "subjectRevision": "fd838f4a56200b277372d8237c5d9dd802fe9c67",
+    "rows": [
+      {
+        "criterion": {
+          "criterionId": "criterion:5e2a871e43e839c0",
+          "description": "In `index.html`, replace Pending in the status element with Ready. Preserve its role=status, accessible label Build status, and heading Scratch welcome. Change only that page and introduce no dependency.",
+          "claimType": "behavior",
+          "evidenceSource": "live",
+          "codeSurfaces": [
+            "index.html"
+          ],
+          "requiredChecks": [
+            "check-1"
+          ]
+        },
+        "status": "verified",
+        "evaluations": [
+          {
+            "criterionId": "criterion:5e2a871e43e839c0",
+            "verdict": "pass",
+            "subjectRevision": "fd838f4a56200b277372d8237c5d9dd802fe9c67",
+            "evidenceRefs": [
+              "fd838f4a56200b277372d8237c5d9dd802fe9c67:host-test:0"
+            ],
+            "stale": false
+          }
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "hostTest": {
+          "kind": "host-run-test",
+          "origin": "host",
+          "snapshotHash": "fnv1a64:2914a208dda67483",
+          "command": "node page.test.mjs",
+          "exitCode": 0,
+          "signal": null,
+          "stdout": "Status and accessibility contract passed\n",
+          "stderr": ""
+        },
+        "evidenceId": "fd838f4a56200b277372d8237c5d9dd802fe9c67:host-test:0",
+        "criterionId": "criterion:5e2a871e43e839c0",
+        "checkId": "check-1",
+        "claimType": "behavior",
+        "source": "live",
+        "subjectRevision": "fd838f4a56200b277372d8237c5d9dd802fe9c67",
+        "codeSurfaces": [
+          "index.html"
+        ],
+        "automatedTest": "node page.test.mjs",
+        "observed": "exit 0",
+        "expected": "exit 0",
+        "outcome": "pass",
+        "reproductionSteps": [
+          "Run node page.test.mjs in a fresh confined copy of snapshot fnv1a64:2914a208dda67483."
+        ]
+      }
+    ],
+    "reason": "all criteria verified at current revision"
+  },
+  "independentReview": {
+    "subjectRevision": "fd838f4a56200b277372d8237c5d9dd802fe9c67",
+    "baselineRevision": "6ee09fe7d3e4b1392cf2ef259b386ecf1dd1c373",
+    "inputHash": "fnv1a64:9280b75710171615",
+    "reviewerEpisodeId": "vertical_6c6689cf270d28e7_0_ep_review_2_attempt_1",
+    "verifierEpisodeIds": [
+      "vertical_6c6689cf270d28e7_0_ep_verifier_1_attempt_1"
+    ],
+    "implementerEpisodeIds": [
+      "ep_677a103681c2c6554d7abbec_1"
+    ],
+    "conventionsPath": "CONVENTIONS.md",
+    "counts": {
+      "blocking": 0,
+      "should": 0,
+      "nit": 1
+    },
+    "findings": [
+      {
+        "class": "review",
+        "findingId": "review-nit-status-text-trailing-space",
+        "criterionId": "criterion:5e2a871e43e839c0",
+        "severity": "nit",
+        "observed": "The added line in index.html is `<p id=\"status\" role=\"status\" aria-label=\"Build status\">Ready </p>`. The status text is `Ready` followed by one trailing space, carried over unchanged from the baseline `Pending `. No declared convention forbids it, rendering and the host test (which trims the captured text) are unaffected, and the replacement is otherwise exactly as specified, so this is recorded as a known hygiene item only.",
+        "expected": "In `index.html`, replace Pending in the status element with Ready.",
+        "reproductionSteps": [
+          "Open the supplied diff for index.html: the removed line is `<p id=\"status\" role=\"status\" aria-label=\"Build status\">Pending </p>` and the added line is `<p id=\"status\" role=\"status\" aria-label=\"Build status\">Ready </p>`.",
+          "Inspect the text between `>` and `</p>` on the added line: it is `Ready` followed by one space, the same trailing space the baseline had after `Pending`.",
+          "Read page.test.mjs: it compares `status[1].trim()` to `Ready`, so the trailing space does not change the host result, and CONVENTIONS.md has no rule about it."
+        ],
+        "evidenceRefs": [
+          "contract",
+          "diff",
+          "file:index.html",
+          "file:page.test.mjs"
+        ],
+        "likelySurface": [
+          "index.html"
+        ]
+      }
+    ],
+    "requiresHuman": false
+  },
+  "sourceWorkerResult": {
+    "type": "WorkerResultObserved",
+    "envelope": {
+      "workOrderId": "WO-903",
+      "episodeId": "ep_677a103681c2c6554d7abbec_1",
+      "status": "completed",
+      "resultId": "result_cmd_b98f09a14f238091",
+      "summary": "Status in index.html changed from Pending to Ready; role, aria-label and heading untouched. Declared test command passed. Committed fd838f4 (1 file, +1/-1). git status/diff reads were refused by the shell hook, so I could not read the diff; the commit stat matches the edit.",
+      "requiresHuman": false,
+      "observedDenials": 3,
+      "observedCommit": {
+        "sha": "fd838f4a56200b277372d8237c5d9dd802fe9c67",
+        "branch": "fix/intent-6c6689cf270d28e7"
+      }
+    },
+    "codexIsolation": null
+  },
+  "publicCLI": {
+    "schemaVersion": 1,
+    "label": "observed",
+    "command": "npm run dotln -- vertical 4 --store <preserved-local-store>",
+    "startedAt": "2026-10-06T00:12:57.892Z",
+    "finishedAt": "2026-10-06T00:13:09.080Z",
+    "exitCode": 1,
+    "signal": null,
+    "driver": "unchanged public CLI; delegated executor host",
+    "operatorAttested": false
+  },
+  "browser": {
+    "schemaVersion": 1,
+    "label": "observed",
+    "kind": "supplemental-actual-target-page",
+    "recordedAt": "2026-10-06T00:12:47.604Z",
+    "subjectRevision": "fd838f4a56200b277372d8237c5d9dd802fe9c67",
+    "criterionId": "criterion:5e2a871e43e839c0",
+    "pageHash": "7964dee65109691cbc7e629d39d399b8dcde7a475e903c3d0edbc2a3f7bb2eab",
+    "screenshotHash": "744cce50d3532ef4fb6a3e63f6528cf2dda54a614e9e2fe5132176e0d2442bf6",
+    "browserVersion": "153.0.8010.12",
+    "viewport": {
+      "width": 640,
+      "height": 400
+    },
+    "actual": {
+      "text": "Ready",
+      "role": "status",
+      "label": "Build status",
+      "heading": "Scratch welcome"
+    },
+    "limits": [
+      "Actual target Git blob served locally; no deployed-site claim.",
+      "Supplemental host witness for a behavior criterion; not an output of the synthetic visual adapter."
+    ]
+  }
+}
