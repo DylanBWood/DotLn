@@ -305,7 +305,7 @@ test("release shell changes select their inventory guard during review", async (
   );
 });
 
-test("WO-186 npm test records composed task rows; --again, --review, changed code and unusable observations run fresh", async (t) => {
+test("npm test composes plain and review task rows; explicit fresh, changed code and unusable observations run fresh", async (t) => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-gate-reuse-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   const fixtureGitOptions = {
@@ -328,7 +328,7 @@ test("WO-186 npm test records composed task rows; --again, --review, changed cod
   );
   mkdirSync(join(repo, "scripts"));
   const source = (name) => join(repo, `scripts/${name}.mjs`);
-  for (const name of ["build", "alpha", "machine"])
+  for (const name of ["format", "build", "alpha", "machine"])
     writeFileSync(
       source(name),
       `import fs from "node:fs";\nfs.appendFileSync("observed.jsonl", ${JSON.stringify(`${name}\n`)});\n`,
@@ -353,41 +353,67 @@ test("WO-186 npm test records composed task rows; --again, --review, changed cod
     ...options,
   });
   const table = [
-    row("build", { build: true, product: true }),
+    {
+      ...suites.find((row) => row.name === "format"),
+      command: [process.execPath, "scripts/format.mjs"],
+    },
+    row("build", { build: true, product: true, outputs: [] }),
     row("alpha", { product: true }),
     row("machine", { machinery: true, sources: ["scripts/machine.mjs"] }),
   ];
-  const observed = () =>
+  const executions = () =>
     existsSync(join(repo, "observed.jsonl"))
       ? readFileSync(join(repo, "observed.jsonl"), "utf8").trim().split("\n")
       : [];
+  const observed = () => executions().filter((name) => name !== "format");
+  const formats = () => executions().filter((name) => name === "format").length;
   const rows = () =>
     readGateChecks(repo).filter((check) => check.checkId === "npm test");
   const lines = [];
   const log = console.log;
   console.log = (line) => lines.push(String(line));
   t.after(() => (console.log = log));
-  const gate = (args) => runGate(["--serial", ...args], repo, { table });
-  const reuseLine = (row) =>
-    `npm test: ${row.taskTimeline.length} passing task results at code identity ${row.codeIdentity}; no suite started; sources: worktree row recorded ${row.recordedAt} (${row.evidenceRef}). Complete composed row recorded. Run npm test -- --again to run it anyway.`;
+  const gate = async (args) => {
+    const before = formats();
+    const check = await runGate(["--serial", ...args], repo, { table });
+    assert.equal(
+      formats(),
+      before + 1,
+      "format runs freshly on every selection",
+    );
+    return check;
+  };
   const identity = gateCodeIdentity(repo);
   const first = await gate([]);
   assert.equal(first.exitCode, 0);
   assert.equal(first.reused, undefined);
   assert.equal(first.codeIdentity, identity);
-  assert.deepEqual(first.requiredSuites, ["build", "alpha"]);
+  assert.deepEqual(first.requiredSuites, ["build", "format", "alpha"]);
   assert.deepEqual(observed(), ["build", "alpha"]);
   assert.equal(rows().length, 1);
-  // The same selection at the same code identity: the row is printed, no
-  // suite starts; a complete composed row retains the task source pointers.
+  // Only format runs at the same identity; the composed row retains the
+  // executed source pointers for every reused product task.
   lines.length = 0;
   const reused = await gate([]);
   assert.equal(reused.exitCode, 0);
-  assert.equal(reused.reused, true);
+  assert.equal(reused.reused, undefined);
+  assert.equal(reused.executionMode, "composed");
+  assert.equal(reused.gateSelection, "plain");
+  assert.equal(reused.freshReason, "always-fresh-preflight");
+  assert.equal(reused.freshSuites, 1);
+  assert.equal(reused.reusedSuites, 2);
+  for (const task of reused.taskTimeline.filter(
+    (row) => row.name !== "format",
+  )) {
+    assert.equal(task.reused, true);
+    assert.equal(task.sourceRow.recordedAt, first.recordedAt);
+  }
   assert.equal(reused.evidenceRef, first.evidenceRef);
   assert.deepEqual(observed(), ["build", "alpha"]);
   assert.equal(rows().length, 2);
-  assert.equal(lines.join("\n"), reuseLine(first));
+  assert.ok(lines.some((line) => line.startsWith("PASS format ")));
+  assert.ok(lines.some((line) => line.startsWith("REUSE build ")));
+  assert.ok(lines.some((line) => line.startsWith("REUSE alpha ")));
   assert.equal(
     findGateCheck(repo, "npm test", gateTreeHash(repo)).evidenceRef,
     first.evidenceRef,
@@ -396,6 +422,8 @@ test("WO-186 npm test records composed task rows; --again, --review, changed cod
   const again = await gate(["--again"]);
   assert.equal(again.exitCode, 0);
   assert.equal(again.reused, undefined);
+  assert.equal(again.executionMode, "forced-fresh");
+  assert.equal(again.freshReason, "requested");
   assert.deepEqual(observed(), ["build", "alpha", "build", "alpha"]);
   assert.equal(rows().length, 3);
   // --fresh keeps its meaning and runs the selection too.
@@ -403,24 +431,36 @@ test("WO-186 npm test records composed task rows; --again, --review, changed cod
   assert.equal(fresh.reused, undefined);
   assert.equal(observed().length, 6);
   assert.equal(rows().length, 4);
-  // A plain row under --review runs the gate: the selection holds the
-  // machinery suite the branch's change selects, which no row covers yet.
+  // A review carries the product tasks and executes the uncovered machinery.
   const review = await gate(["--review"]);
   assert.equal(review.exitCode, 0);
   assert.equal(review.reused, undefined);
-  assert.deepEqual(review.requiredSuites, ["build", "alpha", "machine"]);
-  assert.deepEqual(observed().slice(6), ["build", "alpha", "machine"]);
+  assert.deepEqual(review.requiredSuites, [
+    "build",
+    "format",
+    "alpha",
+    "machine",
+  ]);
+  assert.deepEqual(observed().slice(6), ["machine"]);
+  assert.equal(review.executionMode, "composed");
+  assert.equal(review.gateSelection, "review");
+  assert.equal(review.freshReason, "missing-passing-tasks");
   assert.equal(rows().length, 5);
-  // Review remains forced fresh even with a covering row; plain may reuse it.
+  // Both selections reuse the covering task results.
   lines.length = 0;
   const reviewAgain = await gate(["--review"]);
   assert.equal(reviewAgain.reused, undefined);
+  assert.equal(reviewAgain.executionMode, "composed");
+  assert.equal(reviewAgain.freshReason, "always-fresh-preflight");
+  assert.equal(reviewAgain.freshSuites, 1);
+  assert.equal(reviewAgain.reusedSuites, 3);
   assert.equal(reviewAgain.evidenceRef, review.evidenceRef);
-  assert.deepEqual(observed().slice(9), ["build", "alpha", "machine"]);
+  assert.deepEqual(observed().slice(7), []);
   const plainAfterReview = await gate([]);
-  assert.equal(plainAfterReview.reused, true);
+  assert.equal(plainAfterReview.reused, undefined);
+  assert.equal(plainAfterReview.freshReason, "always-fresh-preflight");
   assert.equal(plainAfterReview.evidenceRef, review.evidenceRef);
-  assert.equal(observed().length, 12);
+  assert.equal(observed().length, 7);
   assert.equal(rows().length, 7);
   // A changed source file moves the code identity, and the gate runs.
   writeFileSync(
@@ -430,7 +470,7 @@ test("WO-186 npm test records composed task rows; --again, --review, changed cod
   assert.notEqual(gateCodeIdentity(repo), identity);
   const changed = await gate([]);
   assert.equal(changed.reused, undefined);
-  assert.equal(observed().length, 14);
+  assert.equal(observed().length, 9);
   assert.equal(changed.codeIdentity, gateCodeIdentity(repo));
   // A failed row and a partial row at the current identity never satisfy the
   // lookup, whoever recorded them.
@@ -2834,7 +2874,7 @@ function gateInAnotherSession(repo, table, session) {
   );
 }
 
-test("WO-186 one failed task reruns alone in another shell and session, composes a claimable row and keeps review fresh", async (t) => {
+test("WO-186 one failed task reruns alone in another shell and session, composes a claimable row and carries it into review", async (t) => {
   const { repo, table, observed } = taskReuseFixture(t);
   writeFileSync(join(repo, "fail-beta"), "fail\n");
   const first = await runGate(["--serial", "--again"], repo, { table });
@@ -2906,8 +2946,11 @@ test("WO-186 one failed task reruns alone in another shell and session, composes
     const before = observed().length;
     const fresh = await runGate(["--serial", ...args], repo, { table });
     assert.equal(fresh.exitCode, 0);
-    assert.equal(fresh.reusedSuites, 0);
-    assert.deepEqual(observed().slice(before), ["build", "alpha", "beta"]);
+    assert.equal(fresh.reusedSuites, args.includes("--again") ? 0 : 3);
+    assert.deepEqual(
+      observed().slice(before),
+      args.includes("--again") ? ["build", "alpha", "beta"] : [],
+    );
   }
 });
 
@@ -5222,4 +5265,170 @@ test("WO-186 legacy product-only rows remain visible to planning and an even sam
   assert.equal(conditions[0].value, 400);
   assert.equal(conditions[0].samples, 2);
   assert.equal(conditions[0].holds, true);
+});
+
+test("format preflight stops plain and review before product tasks, and stays fresh across document edits", async (t) => {
+  for (const selection of [[], ["--review"]]) {
+    const { repo, table, observed } = taskReuseFixture(t);
+    mkdirSync(join(repo, "node_modules"));
+    cpSync(
+      join(root, "node_modules/prettier"),
+      join(repo, "node_modules/prettier"),
+      { recursive: true },
+    );
+    writeFileSync(
+      join(repo, ".gitignore"),
+      readFileSync(join(repo, ".gitignore"), "utf8") + "node_modules/\n",
+    );
+    writeFileSync(
+      join(repo, "package.json"),
+      JSON.stringify({
+        scripts: {
+          "format:check":
+            "node node_modules/prettier/bin/prettier.cjs --check scripts/format-subject.mjs README.md",
+          format:
+            "node node_modules/prettier/bin/prettier.cjs --write scripts/format-subject.mjs README.md",
+        },
+      }),
+    );
+    writeFileSync(
+      join(repo, "scripts/format-subject.mjs"),
+      "export const value={a:1};\n",
+    );
+    writeFileSync(join(repo, "README.md"), "# Fixture\n");
+    const format = suites.find((row) => row.name === "format");
+    const inventory = [format, ...table];
+    const gate = (args = selection) =>
+      runGate(["--serial", ...args], repo, { table: inventory });
+    const started = Date.now();
+    const failed = await gate();
+    assert.equal(failed.exitCode, 1);
+    assert.ok(Date.now() - started < 60_000);
+    assert.deepEqual(observed(), []);
+    const failure = failed.taskTimeline.find((row) => row.name === "format");
+    const output = (row, check = failed) =>
+      check.cases.find((item) => item.name === row.name).output;
+    assert.match(output(failure), /scripts\/format-subject\.mjs/);
+    for (const task of failed.taskTimeline.filter(
+      (row) => row.name !== "format",
+    )) {
+      assert.equal(task.executed, false);
+      assert.match(output(task), /scripts\/format-subject\.mjs/);
+      assert.match(
+        output(task),
+        /Run npm run format, then rerun this command\./,
+      );
+    }
+    const formatted = spawnSync("npm", ["run", "format", "--silent"], {
+      cwd: repo,
+      encoding: "utf8",
+    });
+    assert.equal(formatted.status, 0, formatted.stdout + formatted.stderr);
+    const passed = await gate();
+    assert.equal(passed.exitCode, 0);
+    assert.deepEqual(observed(), ["build", "alpha", "beta"]);
+    assert.ok(
+      Date.parse(
+        passed.taskTimeline.find((row) => row.name === "build").startedAt,
+      ) >=
+        Date.parse(
+          passed.taskTimeline.find((row) => row.name === "format").finishedAt,
+        ),
+    );
+    const reused = await gate();
+    assert.equal(reused.exitCode, 0);
+    assert.equal(reused.executionMode, "composed");
+    assert.equal(reused.freshReason, "always-fresh-preflight");
+    assert.equal(
+      reused.taskTimeline.find((row) => row.name === "format").reused,
+      undefined,
+    );
+    assert.deepEqual(observed(), ["build", "alpha", "beta"]);
+    writeFileSync(join(repo, "README.md"), "#   Fixture\n");
+    assert.equal(gateCodeIdentity(repo), passed.codeIdentity);
+    const documentFailure = await gate();
+    assert.equal(documentFailure.exitCode, 1);
+    assert.match(
+      output(
+        documentFailure.taskTimeline.find((row) => row.name === "format"),
+        documentFailure,
+      ),
+      /README\.md/,
+    );
+    assert.deepEqual(observed(), ["build", "alpha", "beta"]);
+    // The narrower selections do not acquire the formatting preflight.
+    for (const args of [["--only", "alpha"], ["--machinery"]]) {
+      const narrow = await gate(args);
+      assert.equal(narrow.exitCode, 0);
+      assert.ok(!narrow.requiredSuites.includes("format"));
+    }
+  }
+});
+
+test("review composition retains source rows and reruns a task whose latest single-suite execution failed", async (t) => {
+  const { repo, table, observed } = taskReuseFixture(t);
+  writeFileSync(join(repo, "scripts/format.mjs"), "export {};\n");
+  const inventory = [
+    {
+      ...suites.find((row) => row.name === "format"),
+      command: [process.execPath, "scripts/format.mjs"],
+    },
+    ...table,
+  ];
+  runGit(repo, ["checkout", "-qb", "work"]);
+  writeFileSync(
+    join(repo, "scripts/machine.mjs"),
+    readFileSync(join(repo, "scripts/machine.mjs"), "utf8") +
+      "// changed machinery\n",
+  );
+  const gate = (args) =>
+    runGate(["--serial", ...args], repo, { table: inventory });
+  const plain = await gate([]);
+  assert.equal(plain.exitCode, 0);
+  const review = await gate(["--review"]);
+  assert.equal(review.exitCode, 0);
+  assert.equal(review.gateSelection, "review");
+  assert.equal(review.executionMode, "composed");
+  assert.deepEqual(review.requiredSuites, [
+    "build",
+    "format",
+    "alpha",
+    "beta",
+    "machine",
+  ]);
+  for (const name of ["build", "alpha", "beta"]) {
+    const task = review.taskTimeline.find((row) => row.name === name);
+    assert.equal(task.reused, true);
+    assert.equal(task.sourceRow.recordedAt, plain.recordedAt);
+  }
+  assert.deepEqual(observed(), ["build", "alpha", "beta", "machine"]);
+  const onlyFormat = await gate(["--review"]);
+  assert.equal(onlyFormat.exitCode, 0);
+  assert.equal(onlyFormat.executionMode, "composed");
+  assert.equal(onlyFormat.gateSelection, "review");
+  assert.equal(onlyFormat.freshReason, "always-fresh-preflight");
+  assert.equal(onlyFormat.freshSuites, 1);
+  assert.equal(onlyFormat.reusedSuites, 4);
+  assert.deepEqual(onlyFormat.requiredSuites, review.requiredSuites);
+  assert.deepEqual(observed(), ["build", "alpha", "beta", "machine"]);
+  const fresh = await gate(["--review", "--again"]);
+  assert.equal(fresh.executionMode, "forced-fresh");
+  assert.equal(fresh.reusedSuites, 0);
+  writeFileSync(join(repo, "fail-beta"), "fail\n");
+  const failed = await gate(["--only", "beta"]);
+  assert.equal(failed.exitCode, 1);
+  const before = observed().length;
+  const retried = await gate(["--review"]);
+  assert.equal(retried.exitCode, 1);
+  assert.equal(retried.freshReason, "missing-passing-tasks");
+  assert.equal(
+    retried.taskTimeline.find((row) => row.name === "beta").reused,
+    undefined,
+  );
+  assert.deepEqual(observed().slice(before), ["beta"]);
+  rmSync(join(repo, "fail-beta"));
+  const repaired = await gate(["--review"]);
+  assert.equal(repaired.exitCode, 0);
+  assert.equal(repaired.executionMode, "composed");
+  t.diagnostic("review composition " + JSON.stringify(gateProof(review)));
 });

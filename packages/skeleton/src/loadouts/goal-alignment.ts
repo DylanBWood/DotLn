@@ -3,5 +3,5 @@ import { promptSupport } from "./prompt-support.js";
 export const goalAlignment = promptSupport(
   "goal-alignment",
   "Goal Alignment",
-  "Goal Alignment: Read `docs/product/07-execution-guide.md#Goal-aligned decisions`. Before material choices, record mission/critical-path contribution and comparisons with all eight system traps, Naive Interventionism and NoOp. Revisit changed evidence/scope; judge outcomes at handoff. Scale detail to consequence.",
+  "Goal Alignment: Before a material choice, name the traps that would change what you do and what you will do about each, and the NoOp; where none applies, write nothing; at handoff say whether the outcome matched.",
 );

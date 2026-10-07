@@ -1,0 +1,302 @@
+WO-196 validation transcript excerpts
+
+These are selected, unmodified stdout lines from passing commands. Full stdout is retained in the named session-scratch logs. Canonical gate metadata is in docs/control/local/harness/checks.json. The gate rows bind code identity 3318e5928d5d7f97301ba96461870815141d2c92a230021d962d1b359d22027a.
+
+Command: npm run test:docs
+Source log: wo196-docs-gate-4.log
+Full-log SHA-256: 5bb918c2846ee792fcb8ceba94a01c4541725602400662b5ba58af3581130a82
+PASS format 5.71 s
+PASS build 0.68 s
+PASS publication 0.17 s
+PASS index 1.91 s
+PASS lineage 0.06 s
+PASS authority-evidence 0.77 s
+PASS harness 0.21 s
+PASS harness-context 0.16 s
+PASS harness-evidence 0.44 s
+PASS artifact-evidence 0.26 s
+PASS verification-evidence 1.24 s
+PASS license-surfaces 5.64 s
+PASS release-surfaces 5.67 s
+PASS meta 2.61 s
+PASS feedback-evidence 3.04 s
+PASS docs-check 13.16 s
+PROGRESS [resume] 0.0 s started
+PROGRESS [docs-check-fixtures] 0.0 s started
+PASS lineage-fixtures 0.53 s
+PASS kernel-docs 0.86 s
+PROGRESS [docs-check-fixtures] 4.1 s # Subtest: WO-178 attributed operator words advise by record, with capture and fingerprinted baseline exceptions
+PASS docs-check-fixtures 4.14 s
+PASS resident-bind 9.93 s
+PROGRESS [resume] 15.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PASS local-runner-double 3.81 s
+PASS plan-refutation-current 2.92 s
+PASS artifact-corpus 0.27 s
+PASS registrations 0.61 s
+PASS skeleton-docs 23.06 s
+PASS entropy 0.26 s
+PASS plan 3.14 s
+PASS console-docs 27.42 s
+PROGRESS [resume] 30.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [resume] 45.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [resume] 60.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PASS resume 70.27 s
+npm run test:docs: 29 passed; 0 failed; 90.06 s; 29 fresh tasks
+
+Command: npm test -- --review
+Source log: wo196-review-gate-3.log
+Full-log SHA-256: 872e728ce7dd4b06f2abf232f6318b7826c12392395e7d49b68083db99d63f31
+PASS format 5.68 s
+PASS build 0.68 s
+PASS harness 0.21 s
+PASS artifact-evidence 0.27 s
+PASS harness-evidence 0.46 s
+PASS authority-evidence 0.77 s
+PASS verification-evidence 1.22 s
+PASS feedback-evidence 2.85 s
+PASS harness-fixtures 326.94 s
+PASS process-debt 107.41 s
+PROGRESS [skeleton] 0.0 s started
+PROGRESS [skeleton] 0.4 s # Subtest: WO-029 new host equips v2, pins authority atomically, and receipts every compiled consumer with replay identity
+PASS release:prepare 0.96 s
+PASS release:case:preflight 0.17 s
+PROGRESS [skeleton] 2.3 s # Subtest: WO-116 the terminal audit command prints the skeleton --audit projections byte for byte over the fixture log, with their fidelity labels, in every scope
+PASS release-preparation 2.67 s
+PASS release:case:surfaces_local_snapshot 1.10 s
+PROGRESS [skeleton] 4.6 s # Subtest: WO-021 agent constellation CLI persists permission/refusal and one metadata perception through the reactor
+PASS release:case:surfaces 4.35 s
+PASS release:case:prepare_independent 2.78 s
+PASS release:case:surfaces_committed_readme 1.35 s
+PASS release:case:surfaces_lower 1.10 s
+PASS release:case:surfaces_first 0.85 s
+PROGRESS [skeleton] 10.3 s # Subtest: WO-119 actual bounded program discovers the pinned six candidates with resolvable evidence
+PASS release:case:surfaces_component 2.08 s
+PROGRESS [skeleton] 12.5 s # Subtest: WO-119 wire rejects malformed or oversized output, wrong modes and unresolved evidence
+PASS release:case:surfaces_non_source 0.90 s
+PASS release:case:surfaces_new_component 1.07 s
+PASS release:case:license_surfaces 10.92 s
+PASS release:case:surfaceclose 2.87 s
+PASS release:case:surfaceclose_linked 1.82 s
+PASS release:case:bodyclose 1.68 s
+PASS release:case:dirty 3.08 s
+PASS release:case:unreachable 2.82 s
+PROGRESS [skeleton] 22.3 s # Subtest: WO-062 criterion 1: recorded JSON produces canonical stable rich input, resolving spans and role labels through the fake CLI
+PROGRESS [skeleton] 23.5 s # Subtest: WO-100 a derived order activates with host-policy provenance, runs through the WO-052 and WO-054 doubles, advances only after a pass, resets from a non-last phase on a failed verification a
+PASS release:case:settings_scope 3.27 s
+PROGRESS [skeleton] 24.9 s # Subtest: WO-100 spent wall time or reported tokens refuse the next phase while it still admits a candidate
+PASS release:case:derived 4.71 s
+PASS release:case:nonmain 1.52 s
+PROGRESS [skeleton] 27.3 s # Subtest: WO-121 classifier depends on signal evidence and stamp, never launch path
+PASS release:case:divergence 1.46 s
+PASS release:case:malformed 1.40 s
+PROGRESS [skeleton] 28.7 s # Subtest: WO-121 running actor silence is sampled without incoming traffic
+PASS release:case:unauthenticated 1.66 s
+PASS release:case:splitorigin 0.81 s
+PROGRESS [skeleton] 31.7 s # Subtest: WO-055 AC1 pure derivation contains paths, commands, contract and admitted exact grants
+PASS release:case:lower 1.88 s
+PASS release:case:missinggh 5.04 s
+PASS release:case:cadence_missing 2.28 s
+PASS release:case:failures 2.91 s
+PASS release:case:conflict 1.73 s
+PROGRESS [skeleton] 37.5 s # Subtest: WO-055 AC2 failing source commit repairs once and re-verifies the complete original contract
+PASS release:case:localconflict 1.49 s
+PASS release:case:cadence_inconsistent 4.41 s
+PASS release:case:nestedtag 2.18 s
+PASS release:case:prepare 2.89 s
+PASS release:case:missinglocalprevious 2.71 s
+PASS release:case:pushfail 3.17 s
+PROGRESS [skeleton] 46.5 s # Subtest: WO-055 AC3 two wrong repairs exhaust with last finding and no third source dispatch
+PASS release:case:refrecovery 5.66 s
+PROGRESS [skeleton] 53.2 s # Subtest: WO-055 AC4 SIGKILL afterRepairCommit resumes persisted continuation without another repair
+PROGRESS [skeleton] 59.8 s # Subtest: WO-055 AC4 SIGKILL afterSnapshotPrepared resumes persisted continuation without another repair
+PROGRESS [skeleton] 60.1 s running cases: WO-143 once and loop restart at every acquisition filesystem boundary, including (entered 17.3 s ago); cell once-lifetime-fresh (entered 17.1 s ago)
+PROGRESS [skeleton] 60.1 s running cases: cell once-lifetime-reclaim (entered 17.0 s ago); cell once-append-fresh (entered 17.0 s ago); cell once-append-reclaim (entered 17.0 s ago)
+PASS release:case:createrecovery 14.68 s
+PASS release:case:stale_helpers 11.19 s
+PROGRESS [skeleton] 65.0 s # Subtest: WO-055 AC1 refused path or command persists byte-identical envelope and dispatches no writer
+PROGRESS [skeleton] 75.1 s running cases: WO-143 once and loop restart at every acquisition filesystem boundary, including (entered 32.3 s ago); cell once-lifetime-fresh (entered 32.1 s ago)
+PROGRESS [skeleton] 75.1 s running cases: cell once-lifetime-reclaim (entered 32.0 s ago); cell once-append-fresh (entered 32.0 s ago); cell once-append-reclaim (entered 32.0 s ago)
+PROGRESS [skeleton] 79.5 s # Subtest: WO-068 recorded clock drives all phases; replay ignores ambient clock; return cancels; idle needs a fresh edge
+PASS release:case:success 25.20 s
+PROGRESS [skeleton] 89.2 s     # Subtest: cell once-lifetime-reclaim
+PROGRESS [skeleton] 90.1 s running case: WO-143 once and loop restart at every acquisition filesystem boundary, including (entered 47.3 s ago)
+PROGRESS [skeleton] 95.1 s running cases: cell loop-lifetime-fresh (entered 15.8 s ago); cell loop-lifetime-reclaim (entered 15.6 s ago)
+PASS release:case:edition 10.42 s
+PASS release:case:firstrelease 6.06 s
+PASS release:case:runtime_refresh 41.94 s
+PROGRESS [skeleton] 105.1 s running cases: WO-143 once and loop restart at every acquisition filesystem boundary, including (entered 62.3 s ago); cell loop-append-fresh (entered 16.3 s ago)
+PROGRESS [skeleton] 105.1 s running case: cell loop-append-reclaim (entered 15.9 s ago)
+PROGRESS [skeleton] 110.1 s running cases: cell loop-lifetime-fresh (entered 30.9 s ago); cell loop-lifetime-reclaim (entered 30.7 s ago)
+PASS release:case:cached_evidence 10.57 s
+PASS release:case:composed_evidence 10.56 s
+PROGRESS [skeleton] 119.4 s     # Subtest: cell loop-lifetime-fresh
+PROGRESS [skeleton] 120.1 s running cases: WO-143 once and loop restart at every acquisition filesystem boundary, including (entered 77.3 s ago); cell loop-append-fresh (entered 31.3 s ago)
+PROGRESS [skeleton] 120.1 s running case: cell loop-append-reclaim (entered 30.9 s ago)
+PROGRESS [skeleton] 125.1 s running case: cell loop-lifetime-reclaim (entered 45.7 s ago)
+PROGRESS [skeleton] 128.9 s     # Subtest: cell loop-lifetime-reclaim
+PROGRESS [skeleton] 135.1 s running case: WO-143 once and loop restart at every acquisition filesystem boundary, including (entered 92.3 s ago)
+PROGRESS [skeleton] 136.8 s     # Subtest: cell loop-append-reclaim
+PASS release:case:concurrent 24.58 s
+PASS release:case:close_completion 11.17 s
+PROGRESS [skeleton] 155.1 s running case: WO-143 thirty consecutive kill/restart rounds remain openable on once and loop p (entered 19.0 s ago)
+PASS release:case:close_sealed 9.32 s
+PROGRESS [skeleton] 170.1 s running case: WO-143 thirty consecutive kill/restart rounds remain openable on once and loop p (entered 34.0 s ago)
+PROGRESS [skeleton] 178.8 s # Subtest: WO-143 thirty consecutive kill/restart rounds remain openable on once and loop paths
+PROGRESS [skeleton] 179.9 s # Subtest: WO-147 a lock released between observation and read is re-inspected under the guard
+PROGRESS [skeleton] 185.1 s # Subtest: WO-147 retirement probe tolerates a delayed claim present when recursive cleanup begins
+PROGRESS [skeleton] 200.2 s running case: WO-112 F3 cancellation stops an ordinary descendant before judging shared state (entered 0.2 s ago); last report: ok 250 - WO-143 a delayed claimant cannot unlink a successor through a r
+PROGRESS [skeleton] 205.2 s running case: WO-143 once and loop recover kills during a running episode's polling acquisitio (entered 19.7 s ago)
+PASS release:case:material 93.00 s
+PASS release:case:close_leftover 49.25 s
+PASS worktree 208.46 s
+PASS github-body 0.16 s
+PASS outward-lint 0.66 s
+PASS release:case:close_retry_paths 5.42 s
+PROGRESS [skeleton] 220.2 s running case: WO-143 once and loop recover kills during a running episode's polling acquisitio (entered 34.7 s ago)
+PROGRESS [skeleton] 230.2 s # Subtest: WO-143 once and loop recover kills during a running episode's polling acquisition
+PASS license-fixtures 21.20 s
+PROGRESS [skeleton] 233.4 s # Subtest: WO-048 inspection malformed recovery corpus preserves all store bytes
+PASS publication-fixtures 1.18 s
+PASS backup-intake 0.33 s
+PASS beacon-portability 1.12 s
+PROGRESS [skeleton] 235.2 s # Subtest: WO-009 AC5 missing models fail closed in both directions and both transports; diagnostics stay private
+PROGRESS [skeleton] 237.0 s # Subtest: WO-009 invalid correlation, malformed output and success-shaped nonzero exits never complete commands
+PROGRESS [skeleton] 239.4 s # Subtest: WO-009 missed leases fence delayed heartbeats and results while authority remains valid
+PASS release:case:close_receipt_recovery 33.26 s
+PASS checkpoint 8.30 s
+PROGRESS [skeleton] 245.6 s # Subtest: WO-009 concurrent dead-host reclaimers admit only one writer and abandoned guards refuse
+PASS skeleton 245.57 s
+PASS kernel 0.51 s
+PASS compiler 0.97 s
+PASS console 17.09 s
+PASS work-orders-fixtures 21.88 s
+PASS adjacent-queue 0.50 s
+PASS derived-orders 7.75 s
+PASS browser-evidence 24.29 s
+PASS codex-continuation 6.35 s
+PASS authority-grants 0.20 s
+PASS configuration-root 4.13 s
+PASS portfolio 26.72 s
+PROGRESS [runner-fixtures] 0.0 s started
+PROGRESS [runner-fixtures] 0.1 s # Subtest: the scheduler declaration derives finite bounds and refuses an unbounded class
+PROGRESS [runner-fixtures] 1.2 s # Subtest: async process timeout is distinguished from an ordinary caller kill
+PROGRESS [runner-fixtures] 8.4 s # Subtest: WO-185 native footprint stops zero-filled and low-resident growth as a gate task, bounded command and bare registered-session child
+PROGRESS [runner-fixtures] 9.9 s # Subtest: WO-185 bounded CLI prints typed memory stop and exit 125
+PROGRESS [runner-fixtures] 13.7 s # Subtest: WO-185 a gate memory breach records a typed failed row rather than an operator stop
+PROGRESS [runner-fixtures] 18.4 s # Subtest: WO-185 a guard retires after its registered owner exits without treating itself as a survivor
+PROGRESS [runner-fixtures] 21.1 s # Subtest: WO-185 a guard prunes deleted duplicate repository registrations and preserves its last agent root
+PROGRESS [runner-fixtures] 22.5 s # Subtest: WO-185 the long-lived guard drops released registration histories
+PROGRESS [runner-fixtures] 23.9 s # Subtest: WO-185 document base comparisons pass their four-lane lease to nested gates
+PROGRESS [runner-fixtures] 27.3 s # Subtest: WO-185 interrupt, termination and hang-up end task groups without a gate row
+PROGRESS [runner-fixtures] 38.6 s # Subtest: WO-185 independent worktrees and separate clones share lanes, wait, reclaim a dead holder and reuse one guard
+PROGRESS [runner-fixtures] 40.2 s # Subtest: WO-185 nested gates suballocate one reservation and a dead runner's live task retains its lanes
+PROGRESS [runner-fixtures] 42.7 s # Subtest: WO-185 double and triple forks retain descriptor ownership through gate and bounded completion
+PROGRESS [runner-fixtures] 45.9 s # Subtest: WO-185 a docs-shaped gate of concurrent tasks that start nothing records no survivor
+PROGRESS [runner-fixtures] 47.8 s # Subtest: WO-185 a signal during completed-row aggregation cannot record a gate row
+PROGRESS [runner-fixtures] 50.9 s # Subtest: WO-185 a budget kill survives unavailable host and checkout incident ledgers
+PROGRESS [runner-fixtures] 52.5 s # Subtest: WO-185 bounded CLI preserves literal argv, caller environment, cwd and exit status
+PROGRESS [runner-fixtures] 54.6 s # Subtest: WO-185 a bare group names its largest member and retains the group kill
+PROGRESS [runner-fixtures] 57.2 s # Subtest: WO-185 a nested gate keeps its validated parent lease when later lookup would fail
+PASS harness-probe 61.07 s
+PASS registrations 0.65 s
+PROGRESS [runner-fixtures] 69.0 s # Subtest: WO-185 a generated quarantine with nonfinite findings passes all three wo102 files
+PROGRESS [runner-fixtures] 70.5 s # Subtest: format preflight stops plain and review before product tasks, and stays fresh across document edits
+PROGRESS [runner-fixtures] 72.2 s # Subtest: review composition retains source rows and reruns a task whose latest single-suite execution failed
+PASS runner-fixtures 72.24 s
+PASS worktree-integration 267.05 s
+PASS target-publish 312.80 s
+PASS vertical 739.44 s
+npm test: 38 passed; 0 failed; 1556.25 s; 88 fresh tasks
+
+Command: npm test -- --review (unchanged rerun)
+Source log: wo196-review-reuse.log
+Full-log SHA-256: 4017bf12dc43259b4279a7dad38cf86a5a4be0447a56d39a1f562b3931805894
+PASS format 5.81 s
+REUSE build from worktree row 2026-10-07T09:49:10.209Z
+REUSE release-preparation from worktree row 2026-10-07T09:49:10.209Z
+REUSE github-body from worktree row 2026-10-07T09:49:10.209Z
+REUSE outward-lint from worktree row 2026-10-07T09:49:10.209Z
+REUSE target-publish from worktree row 2026-10-07T09:49:10.209Z
+REUSE vertical from worktree row 2026-10-07T09:49:10.209Z
+REUSE license-fixtures from worktree row 2026-10-07T09:49:10.209Z
+REUSE publication-fixtures from worktree row 2026-10-07T09:49:10.209Z
+REUSE backup-intake from worktree row 2026-10-07T09:49:10.209Z
+REUSE beacon-portability from worktree row 2026-10-07T09:49:10.209Z
+REUSE checkpoint from worktree row 2026-10-07T09:49:10.209Z
+REUSE worktree from worktree row 2026-10-07T09:49:10.209Z
+REUSE worktree-integration from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:prepare from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:preflight from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:surfaces from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:surfaces_local_snapshot from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:prepare_independent from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:license_surfaces from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:surfaces_committed_readme from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:surfaces_lower from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:surfaces_first from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:surfaces_component from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:surfaces_non_source from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:surfaces_new_component from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:surfaceclose from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:surfaceclose_linked from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:bodyclose from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:dirty from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:unreachable from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:derived from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:settings_scope from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:nonmain from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:divergence from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:malformed from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:missinggh from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:unauthenticated from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:splitorigin from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:lower from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:failures from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:cadence_missing from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:cadence_inconsistent from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:conflict from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:localconflict from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:nestedtag from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:prepare from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:missinglocalprevious from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:pushfail from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:refrecovery from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:createrecovery from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:stale_helpers from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:runtime_refresh from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:success from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:edition from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:firstrelease from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:cached_evidence from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:composed_evidence from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:concurrent from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:material from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:close_completion from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:close_sealed from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:close_leftover from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:close_retry_paths from worktree row 2026-10-07T09:49:10.209Z
+REUSE release:case:close_receipt_recovery from worktree row 2026-10-07T09:49:10.209Z
+REUSE work-orders-fixtures from worktree row 2026-10-07T09:49:10.209Z
+REUSE kernel from worktree row 2026-10-07T09:49:10.209Z
+REUSE compiler from worktree row 2026-10-07T09:49:10.209Z
+REUSE skeleton from worktree row 2026-10-07T09:49:10.209Z
+REUSE console from worktree row 2026-10-07T09:49:10.209Z
+REUSE browser-evidence from worktree row 2026-10-07T09:49:10.209Z
+REUSE adjacent-queue from worktree row 2026-10-07T09:49:10.209Z
+REUSE derived-orders from worktree row 2026-10-07T09:49:10.209Z
+REUSE portfolio from worktree row 2026-10-07T09:49:10.209Z
+REUSE codex-continuation from worktree row 2026-10-07T09:49:10.209Z
+REUSE authority-grants from worktree row 2026-10-07T09:49:10.209Z
+REUSE configuration-root from worktree row 2026-10-07T09:49:10.209Z
+REUSE harness-probe from worktree row 2026-10-07T09:49:10.209Z
+REUSE authority-evidence from worktree row 2026-10-07T09:49:10.209Z
+REUSE harness-fixtures from worktree row 2026-10-07T09:49:10.209Z
+REUSE harness from worktree row 2026-10-07T09:49:10.209Z
+REUSE harness-evidence from worktree row 2026-10-07T09:49:10.209Z
+REUSE artifact-evidence from worktree row 2026-10-07T09:49:10.209Z
+REUSE verification-evidence from worktree row 2026-10-07T09:49:10.209Z
+REUSE feedback-evidence from worktree row 2026-10-07T09:49:10.209Z
+REUSE runner-fixtures from worktree row 2026-10-07T09:49:10.209Z
+REUSE process-debt from worktree row 2026-10-07T09:49:10.209Z
+REUSE registrations from worktree row 2026-10-07T09:49:10.209Z
+npm test: 38 passed; 0 failed; 5.96 s; 1 fresh tasks

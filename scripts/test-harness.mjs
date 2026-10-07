@@ -12197,3 +12197,54 @@ test("WO-186 only the active order's records are writable in a live product gate
     removeFixture(root, { recursive: true });
   }
 });
+
+test("spawn during a live gate is admitted with one advisory; no live gate gives none", () => {
+  const root = fixture();
+  let active;
+  try {
+    beginHarnessSession(root, "synthetic-session", "executor");
+    const call = (id) =>
+      invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          tool_name: "Agent",
+          tool_use_id: id,
+          tool_input: {},
+        }),
+      );
+    const clear = call("before-gate");
+    assert.equal(allowed(clear), true);
+    assert.doesNotMatch(
+      JSON.stringify(clear),
+      /spawn admitted during live gate/,
+    );
+    active = beginGateRun(root, "npm test -- --review", { kind: "review" });
+    const live = call("during-gate");
+    assert.equal(allowed(live), true);
+    assert.match(
+      live.systemMessage,
+      /spawn admitted during live gate .*\(review\)/,
+    );
+    assert.ok(live.systemMessage.includes(active.run.runId));
+    assert.match(
+      live.systemMessage,
+      /probes under node, npm and harness bounded will be refused until it ends/,
+    );
+    assert.equal(
+      live.systemMessage.split("spawn admitted during live gate").length - 1,
+      1,
+    );
+    active.release();
+    active = undefined;
+    const after = call("after-gate");
+    assert.equal(allowed(after), true);
+    assert.doesNotMatch(
+      JSON.stringify(after),
+      /spawn admitted during live gate/,
+    );
+  } finally {
+    active?.release();
+    removeFixture(root, { recursive: true, force: true });
+  }
+});

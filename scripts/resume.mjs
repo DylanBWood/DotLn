@@ -423,9 +423,20 @@ const workOrderDeclaration = (
     throw new Error(
       `work order must place **Model:** and **Effort:** in its leading metadata header: ${workOrderPath}`,
     );
+  const experimentIndex = lines.findIndex(
+    (line, index) =>
+      index < headerEnd && /^\*\*Experiment:\*\*(?:\s|$)/.test(line),
+  );
+  const experiment =
+    experimentIndex < 0
+      ? {}
+      : {
+          experimentSource: fieldAt("Experiment", experimentIndex).source,
+        };
   const model = fieldAt("Model", modelIndex);
   if (effortIndex === undefined)
     return {
+      ...experiment,
       modelSource: model.source,
       effortSource:
         "**Effort:** unavailable for this pre-WO-019 activation; executor any; verifier any; reviewer any.",
@@ -454,6 +465,7 @@ const workOrderDeclaration = (
     );
 
   return {
+    ...experiment,
     modelSource: model.source,
     effortSource: effort.source,
     efforts: {
@@ -1071,7 +1083,7 @@ const unmetBriefing = (state) => {
 };
 const executionBriefing = (state) => {
   const declaration = activeWorkOrderDeclaration(state);
-  return `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}\nRead that authority and only its cited blueprint sections; when its deliverable and evidence exist, run ${commandFor("implementation-ready", state.workOrderId)}.${ledgerBriefing(state, "that command")}${executorEntryBriefing(repoRoot, state.workOrderId)}`;
+  return `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}${declaration.experimentSource ? `\n${declaration.experimentSource}` : ""}\nRead that authority and only its cited blueprint sections; when its deliverable and evidence exist, run ${commandFor("implementation-ready", state.workOrderId)}.${ledgerBriefing(state, "that command")}${executorEntryBriefing(repoRoot, state.workOrderId)}`;
 };
 const repairBriefing = (state) =>
   `Repair ${state.workOrderPath} using ${state.failureSourcePath}; read both artifacts. ${repairSentence}${ledgerBriefing(state, "repair-complete")}${executorEntryBriefing(repoRoot, state.workOrderId)}`;
@@ -1469,7 +1481,7 @@ const run = async (argv) => {
     case "repair-complete": {
       requirePhase(state, "repairing");
       const actor = completionActor(action, args, state, "executor");
-      const handoff = readHandoffLedger(repoRoot, state);
+      const handoff = readHandoffLedger(repoRoot, state, { selfReview: false });
       releaseExecutorWriter = await executorWriterRelease(repoRoot);
       const { gateIndexError, ...evidence } = await requireLifecycleEvidence(
         repoRoot,

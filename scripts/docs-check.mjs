@@ -15,10 +15,9 @@ import {
   findLaunchpad,
   loadConfig,
 } from "./lib/config.mjs";
-import { runGit, runGitPathList } from "./lib/git.mjs";
+import { runGitPathList } from "./lib/git.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { readDecisions } from "./lib/meta.mjs";
-import { followupStatus, syncFollowups } from "./lib/planning-followups.mjs";
 import {
   RELEASE_HISTORY,
   checkReleaseHistory,
@@ -396,53 +395,6 @@ export function operatorWordAdvisories(root, baseline = {}) {
   };
 }
 
-function documentDecision(root, reference, directory) {
-  if (typeof reference !== "string") return false;
-  const parts = reference.split("#");
-  if (parts.length !== 2) return false;
-  const [file, anchor] = parts;
-  const path = resolve(root, file);
-  if (
-    !anchor ||
-    !file.startsWith(`${docRelative(root, directory)}/`) ||
-    !inside(docPath(root, directory), path) ||
-    !existsSync(path) ||
-    !statSync(path).isFile() ||
-    !inside(realpathSync(root), realpathSync(path))
-  )
-    return false;
-  return anchors(readFileSync(path, "utf8")).has(anchor);
-}
-
-const planningDecision = (root, reference) =>
-  documentDecision(root, reference, "planning");
-
-// An operator-directed byte goal keeps its measured ceiling. The advisory
-// stands only while that public decision has a current, unresolved follow-up.
-function advisoryByteFollowup(root, reference) {
-  if (!documentDecision(root, reference, "evidence")) return null;
-  const [file, anchor] = reference.split("#");
-  const decision = readDecisions(root).find(
-    (row) => row.path === file && row.anchor === anchor,
-  );
-  if (typeof decision?.followup !== "string" || !decision.followup.trim())
-    return null;
-  let register;
-  try {
-    register = syncFollowups(root, { check: true });
-  } catch {
-    return null; // Missing, stale or invalid register cannot support an advisory.
-  }
-  const entry = register.entries.find(
-    (row) => row.key === `decision:${file}#${decision.id.toLowerCase()}`,
-  );
-  return entry &&
-    !entry.revisions.at(-1).missing &&
-    ["open", "deferred"].includes(followupStatus(entry))
-    ? entry.id
-    : null;
-}
-
 export function checkDocs(root, { ceilings, baseline, files } = {}) {
   ceilings ??= JSON.parse(
     readFileSync(docPath(root, "control", "doc-ceilings.json"), "utf8"),
@@ -471,28 +423,6 @@ export function checkDocs(root, { ceilings, baseline, files } = {}) {
         "Historical link exceptions require a source, destination, reason and positive safe-integer count",
       );
   }
-  let previous = null;
-  const controlPath = docRelative(root, "control", "doc-ceilings.json");
-  let head = null;
-  try {
-    head = runGit(root, ["rev-parse", "--verify", "HEAD"]);
-  } catch {
-    /* An unborn fixture has no prior controls. */
-  }
-  // A new file has no previous ceiling; malformed committed data must fail.
-  if (
-    head &&
-    runGitPathList(root, [
-      "ls-tree",
-      "-r",
-      "--name-only",
-      "-z",
-      head,
-      "--",
-      controlPath,
-    ]).length
-  )
-    previous = JSON.parse(runGit(root, ["show", `${head}:${controlPath}`]));
   const failures = [],
     rows = [];
   const directory = docPath(root, "product");
@@ -525,28 +455,13 @@ export function checkDocs(root, { ceilings, baseline, files } = {}) {
       !Number.isSafeInteger(entry.nonExemptBytesAtLanding) ||
       entry.nonExemptBytesAtLanding < 0 ||
       !/^\d{4}-\d{2}-\d{2}$/.test(entry.date ?? "") ||
-      !entry.decision?.trim()
+      typeof entry.decision !== "string" ||
+      !entry.decision.trim()
     )
       failures.push(`${file}: invalid ceiling metadata`);
-    else if (measured.bytes > entry.ceiling) {
-      const followup = advisoryByteFollowup(root, entry.advisoryDecision);
-      if (followup)
-        notices.push(
-          `ADVISORY ${file}: ${measured.bytes - entry.ceiling} bytes over ceiling; follow-up ${followup}; decision ${entry.advisoryDecision}`,
-        );
-      else
-        failures.push(
-          `${file}: ${measured.bytes - entry.ceiling} bytes over ceiling; edit in place or cite a planning decision to raise it`,
-        );
-    }
-    if (
-      entry &&
-      (entry.ceiling > Math.ceil(entry.nonExemptBytesAtLanding * 1.02) ||
-        entry.ceiling > (previous?.documents?.[name]?.ceiling ?? Infinity)) &&
-      !planningDecision(root, entry.decision)
-    )
-      failures.push(
-        `${file}: raising a ceiling requires a named planning decision with a resolving anchor`,
+    else if (measured.bytes > entry.ceiling)
+      notices.push(
+        `ADVISORY ${file}: ${measured.bytes - entry.ceiling} bytes over ceiling; planning resets ceilings`,
       );
     rows.push({
       document: file,

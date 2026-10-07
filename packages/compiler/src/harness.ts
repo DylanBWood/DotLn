@@ -997,7 +997,9 @@ process.stdout.write(JSON.stringify(response)); }`;
       "",
       `<!-- Origin: ${canonicalStringify(origin([role.facetId, ...supportIds, ...units.map((unit) => unit.unitId)]))} -->`,
       "",
-      ...role.procedure,
+      ...role.procedure.flatMap((line) =>
+        line === "Rules:" ? ["", line, ""] : [line],
+      ),
       "",
       `Outside-write grants for ${role.name}: ${
         outsideWriteGrants
@@ -1010,7 +1012,6 @@ process.stdout.write(JSON.stringify(response)); }`;
           .join(", ") || "none"
       }; system-temp is os.tmpdir(); host-scratchpad is only the scratchpad Claude Code prints for this session; use the DotLn scratch path printed at role dispatch (Codex: node scripts/harness.mjs scratch). Native scratch and /tmp need a separate grant when outside system-temp. Sources are in the manifest. Literal /dev/null redirects discard output; other device mutations need grants.`,
       "",
-      HARNESS_BOUNDARIES,
       "",
       ...units.map((unit) => `${unit.unitId}: ${unit.desiredBehavior}`),
       "",

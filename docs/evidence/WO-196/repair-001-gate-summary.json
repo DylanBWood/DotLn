@@ -1,0 +1,45 @@
+{
+  "document": {
+    "checkId": "npm run test:docs",
+    "codeIdentity": "8017b3c565377a9637c7e213d2e84a61a823102258b0e83355d51f89653ab431",
+    "recordedAt": "2026-10-07T14:54:35.239Z",
+    "durationMs": 111602,
+    "exitCode": 0,
+    "executionMode": "fresh",
+    "gateSelection": "document",
+    "freshReason": "no-passing-tasks",
+    "freshTasks": 29,
+    "reusedTasks": 0,
+    "requiredSuites": 29,
+    "identityUnchanged": true
+  },
+  "freshReview": {
+    "checkId": "npm test",
+    "codeIdentity": "8017b3c565377a9637c7e213d2e84a61a823102258b0e83355d51f89653ab431",
+    "recordedAt": "2026-10-07T15:25:18.063Z",
+    "durationMs": 1815451,
+    "exitCode": 0,
+    "executionMode": "fresh",
+    "gateSelection": "review",
+    "freshReason": "no-passing-tasks",
+    "freshTasks": 88,
+    "reusedTasks": 0,
+    "requiredSuites": 38,
+    "identityUnchanged": true
+  },
+  "composedReview": {
+    "checkId": "npm test",
+    "codeIdentity": "8017b3c565377a9637c7e213d2e84a61a823102258b0e83355d51f89653ab431",
+    "recordedAt": "2026-10-07T15:25:55.958Z",
+    "durationMs": 6457,
+    "exitCode": 0,
+    "executionMode": "composed",
+    "gateSelection": "review",
+    "freshReason": "always-fresh-preflight",
+    "freshTasks": 1,
+    "reusedTasks": 87,
+    "requiredSuites": 38,
+    "identityUnchanged": true
+  },
+  "compositionAssertions": "all 87 reused tasks name the fresh worktree row; format alone executes; selection and required suites match; code identity current"
+}

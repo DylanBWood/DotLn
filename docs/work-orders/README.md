@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-196] — The handoff is one command · **queued**
+- [x] [WO-196] — The handoff is one command · **final-reviewed**
 - [ ] [WO-199] — The vertical survives an interrupt and a host crash · **queued**
 - [ ] [WO-197] — Slow suites back to their medians · **queued**
 - [ ] [WO-074] — Launchpad export kit · **queued**
@@ -721,31 +721,14 @@ None.
 - Cost: adds to the kit &#96;npm run parity -- init&#124;add&#124;check&#124;report&#124;request&#96; (&#96;scripts/parity.mjs&#96;), a row schema with the six mapping statuses product 10 proposes, an instance-owned rows file, an ignored registry of where predecessor material can be read on that host, a seed of the generic behaviors product 12 and the critical path already state, and a summary by predecessor generation. Removes: the absence of any place where an instance records what its predecessors did and whether its own build does it yet, so that "at least as capable" is a count, not an impression. Core gains no reader of any instance row: its tests run on synthetic rows only. Re-mints: unknown until the export orders fix which kit files are registered sources. Wall-clock, tokens and context bytes are unknown until run.
 - Authority: [docs/work-orders/WO-194-private-predecessor-map.md](WO-194-private-predecessor-map.md)
 
-### WO-196
-
-[WO-196 — The handoff is one command: the gate formats first and refuses to start otherwise, a review gate at an unchanged identity reuses its passing tasks, every role reads a numbered procedure, and one adversary and one improver run once at the end of implementation (version assigned at activation)](WO-196-the-handoff-is-one-command.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-187: hard (met) — the verifier duties, the self-review line and the generated worker definition this order rewrites; WO-186: hard (met) — task reuse at one code identity, extended here to the review selection; WO-185: hard (met) — the bounded wrapper and the shared gate lanes the runner keeps; WO-195: hard (met) — the release-close and planner sentences this order preserves in the regenerated roles.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer any.
-- Track: machinery
-- Cost: adds the &#96;format&#96; row to the preflight stage of the plain and review selections (&#96;scripts/test-runner.mjs&#96;), task reuse for the review selection at an unchanged code identity (&#96;scripts/test-runner.mjs&#96;, &#96;scripts/lib/gate-reuse.mjs&#96;), a numbered procedure at the head of the executor, verifier and reviewer roles with the shared rules after it (&#96;packages/skeleton/src/loadouts/contributor.ts&#96;, &#96;packages/skeleton/src/loadouts/executor-supports.ts&#96;, &#96;packages/skeleton/src/loadouts/goal-alignment.ts&#96;), one live-gate advisory on spawn (&#96;packages/skeleton/src/harness-host.ts&#96;), the self-review advisory bound to &#96;implementation-ready&#96; (&#96;scripts/lib/handoff-ledger.mjs&#96;, &#96;scripts/resume.mjs&#96;), and the document ceiling check turned into an advisory (&#96;scripts/docs-check.mjs&#96;). Removes, by the record: a 31-minute review gate lost to formatting after the gate (WO-112 D049: 1,863 s; the same loss in WO-164, WO-148, WO-146 and WO-158); a 31-minute review gate lost to record writes during the gate (WO-112 D058: 1,861 s); the fresh review gate the verifier and the final reviewer run at an identity the executor's row already covers (two of the median three fresh product gates per order, 1,660 s median each, 2026-10-02 pass §4); an adversary at each repair completion and each verification (175,796 to 248,326 tokens and 11 to 18 minutes each; WO-112 ran seven verifications and six repairs with one at each); the five-refusals paragraph duplicated between CLAUDE.md and every role skill (about 2,300 bytes per root, which puts the executor root at 29,777 bytes against its 29,246 ceiling). What the gates take afterwards is measured by the gate rows of the orders that follow and by the next planning pass's &#96;plan conditions&#96;, not promised here. Re-mints: &#96;harness-host.ts&#96;, &#96;subagent-budget.ts&#96;, &#96;gate-evidence.mjs&#96; and &#96;contributor.ts&#96; are registered evidence sources in three editions (&#96;scripts/lib/evidence-sources.mjs&#96; lines 150 to 156, 248 to 254 and 319 to 325), re-minted deterministically, and the harness bundle is re-emitted with &#96;npm run harness -- emit&#96;; none of the edited files is in &#96;FEEDBACK_SOURCE_PATHS&#96; (&#96;packages/skeleton/src/feedback-audit.ts&#96;, checked 2026-10-07), so no live episode; &#96;scripts/test-runner.mjs&#96;, &#96;scripts/resume.mjs&#96; and &#96;contributor.ts&#96; are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff. Wall-clock, tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-196-the-handoff-is-one-command.md](WO-196-the-handoff-is-one-command.md)
-
 ### WO-197
 
 [WO-197 — Three gate tasks that grew past their thirty-day medians are brought back at their cause, and the vertical suite's slowest cases are named (version assigned at activation)](WO-197-slow-suites-back-to-their-medians.md)
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-196.
-- References: WO-196: hard (unmet) — the gate preflight and the review composition this order's own gates rely on; WO-186: hard (met) — per-case durations on the gate row, which step 1 reads.
+- Dependencies: typed; dependency-ready.
+- References: WO-196: hard (met) — the gate preflight and the review composition this order's own gates rely on; WO-186: hard (met) — per-case durations on the gate row, which step 1 reads.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -761,8 +744,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-196.
-- References: WO-196: hard (unmet) — the runner's preflight and review composition this order's fixture runs under; both orders edit scripts/test-runner.mjs.
+- Dependencies: typed; dependency-ready.
+- References: WO-196: hard (met) — the runner's preflight and review composition this order's fixture runs under; both orders edit scripts/test-runner.mjs.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -3629,6 +3612,24 @@ None.
 - Cost: adds a recorded release-close dispatch and admission that hold when main's built adapter is stale after the merge, a summary of the close on standard output with the full report in the retained record, one exported builder for the admitted command, a permission restore before the subject is removed, removal of a subject directory Git has already dropped, branch deletion in the run that removes the worktree, and their fixtures. Removes: the operator's own command in 6 of the 12 Claude closes recorded from 2026-10-01 to 2026-10-03 (5 after the auto-mode classifier denied the publish, 1 after a cleanup blocker); an admission that fired in none of the 9 closes run since it landed; 305 to 342 KB of helper output in each close session's context; a role sentence that tells the session to hand a blocker or denial to the operator; and the push-and-PR request the operator typed in 9 of the 12 planning sessions since 2026-09-20. Re-mints: the deterministic re-mint of each edition whose check the change stales (&#96;packages/skeleton/src/loadouts/contributor.ts&#96; and &#96;packages/skeleton/src/harness-host.ts&#96; are in the authority, feedback and harness editions; &#96;packages/compiler/src/harness.ts&#96;, if the admission lands in the generated hooks, is in all five), and one harness bundle re-emit. No file the feedback verifier judges is edited (&#96;packages/skeleton/src/verification-worktree.ts&#96; stays as it is), so no live episode. &#96;scripts/release.mjs&#96; and &#96;scripts/resume.mjs&#96; are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff. Wall-clock, tokens and context bytes are unknown until run.
 - Latest attestation: harness claude-code; version 2.1.289; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable.
 - Authority: [docs/work-orders/WO-195-roles-finish-what-was-dispatched.md](WO-195-roles-finish-what-was-dispatched.md)
+
+### WO-196
+
+[WO-196 — The handoff is one command: the gate formats first and refuses to start otherwise, a review gate at an unchanged identity reuses its passing tasks, every role reads a numbered procedure, and one adversary and one improver run once at the end of implementation (v0.69.0)](WO-196-the-handoff-is-one-command.md)
+
+- State: closed.
+- Application target: v0.69.0.
+- Dependencies: typed; activation not applicable.
+- References: WO-187: hard (met) — the verifier duties, the self-review line and the generated worker definition this order rewrites; WO-186: hard (met) — task reuse at one code identity, extended here to the review selection; WO-185: hard (met) — the bounded wrapper and the shared gate lanes the runner keeps; WO-195: hard (met) — the release-close and planner sentences this order preserves in the regenerated roles.
+- Verification: [VER-002](../../docs/verifications/WO-196/VER-002.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-196/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer any.
+- Track: machinery
+- Cost: adds the &#96;format&#96; row to the preflight stage of the plain and review selections (&#96;scripts/test-runner.mjs&#96;), task reuse for the review selection at an unchanged code identity (&#96;scripts/test-runner.mjs&#96;, &#96;scripts/lib/gate-reuse.mjs&#96;), a numbered procedure at the head of the executor, verifier and reviewer roles with the shared rules after it (&#96;packages/skeleton/src/loadouts/contributor.ts&#96;, &#96;packages/skeleton/src/loadouts/executor-supports.ts&#96;, &#96;packages/skeleton/src/loadouts/goal-alignment.ts&#96;), one live-gate advisory on spawn (&#96;packages/skeleton/src/harness-host.ts&#96;), the self-review advisory bound to &#96;implementation-ready&#96; (&#96;scripts/lib/handoff-ledger.mjs&#96;, &#96;scripts/resume.mjs&#96;), and the document ceiling check turned into an advisory (&#96;scripts/docs-check.mjs&#96;). Removes, by the record: a 31-minute review gate lost to formatting after the gate (WO-112 D049: 1,863 s; the same loss in WO-164, WO-148, WO-146 and WO-158); a 31-minute review gate lost to record writes during the gate (WO-112 D058: 1,861 s); the fresh review gate the verifier and the final reviewer run at an identity the executor's row already covers (two of the median three fresh product gates per order, 1,660 s median each, 2026-10-02 pass §4); an adversary at each repair completion and each verification (175,796 to 248,326 tokens and 11 to 18 minutes each; WO-112 ran seven verifications and six repairs with one at each); the five-refusals paragraph duplicated between CLAUDE.md and every role skill (about 2,300 bytes per root, which puts the executor root at 29,777 bytes against its 29,246 ceiling). What the gates take afterwards is measured by the gate rows of the orders that follow and by the next planning pass's &#96;plan conditions&#96;, not promised here. Re-mints: &#96;harness-host.ts&#96;, &#96;subagent-budget.ts&#96;, &#96;gate-evidence.mjs&#96; and &#96;contributor.ts&#96; are registered evidence sources in three editions (&#96;scripts/lib/evidence-sources.mjs&#96; lines 150 to 156, 248 to 254 and 319 to 325), re-minted deterministically, and the harness bundle is re-emitted with &#96;npm run harness -- emit&#96;; none of the edited files is in &#96;FEEDBACK_SOURCE_PATHS&#96; (&#96;packages/skeleton/src/feedback-audit.ts&#96;, checked 2026-10-07), so no live episode; &#96;scripts/test-runner.mjs&#96;, &#96;scripts/resume.mjs&#96; and &#96;contributor.ts&#96; are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff. Wall-clock, tokens and context bytes are unknown until run.
+- Latest attestation: harness claude-code; version 2.1.292; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable.
+- Authority: [docs/work-orders/WO-196-the-handoff-is-one-command.md](WO-196-the-handoff-is-one-command.md)
 
 ## Historical
 

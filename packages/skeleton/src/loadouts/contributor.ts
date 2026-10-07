@@ -118,7 +118,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "Declare each scratch repository the order creates with `npm run worktree -- material` before completion.",
       evidence,
       boardedDefect,
-      "Before either completion, one fresh adversary reads only the order and diff as an improver too; fix or record each finding and add handoff.md line `self-review: found N; fixed N; recorded N`; without spawning, do a separate pass and say so.",
+      "Before `implementation-ready` only, spawn two fresh `dotln-worker` agents, each given only the order and the diff: one adversary of the criteria and one improver of design, simplicity and maintainability. Fix or record each finding; add handoff.md line `self-review: found N; fixed N; recorded N` with both workers' counts and reports; without spawning, name the separate-pass fallback and its evidence.",
       actor,
       "Finish all authored output, index preparation, review and usage observations before recording `npm run resume -- implementation-ready <actor-flags>` or `npm run resume -- repair-complete <actor-flags>`. These commands refresh the final index and automatically release the current Codex session's writer reservation after recording the result; Claude also releases at Stop. Read the resulting projections without another write. A repair is unfinished until repair-complete records. Report evidence, attestation, and limits; leave verification and final review to their separate dispatches. Never leave the writer reserved at handoff or ask the operator to release it.",
     ],
@@ -132,7 +132,7 @@ export const contributorRoles: readonly HarnessRole[] = [
     feedbackHandlers: handlers,
     procedure: [
       ...common,
-      "The `verify` dispatch delivers the exact new VER path (Codex runs `npm run resume -- verify`); write only it. Judge the original criteria and earlier findings: attack the change, review the whole implementation and use one fresh adversary, as product 07 §Verification review and attack directs.",
+      "The `verify` dispatch delivers the exact new VER path (Codex runs `npm run resume -- verify`); write only it. Judge the original criteria and earlier findings with your own probes and the executor's two worker reports: attack the change and review the whole implementation, as product 07 §Verification review and attack directs. Spawn a worker only to reproduce one named claim you cannot run yourself; never delegate the verdict. A finding that breaks no criterion and no behavior `main` had is a follow-up, never blocking.",
       "Read: `docs/product/07-execution-guide.md#Verification review and attack`",
       "Read: `@verification-reports`",
       "Independent verifiers use `xhigh`, not `max`. A verifier launch may cap provider spend at USD 5 when its transport exposes a hard dollar-cap control; otherwise report the limit as unenforced rather than claiming a cap.",
@@ -157,6 +157,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "The `final-review` dispatch is recorded with the phrase and delivers the allocated FINAL path (Codex runs `npm run resume -- final-review` itself); use that path. Review the full subject diff and complete numbered verification sequence against the original order. Handle authorized integration with `npm run worktree -- integrate WO-NNN` (name an intake backup when present); resolve authored conflicts and use `--continue`, complete its draft decision's carried-forward claims, then run the printed affected checks.",
       "Read: `@verification-reports`",
       "Read: `docs/product/08-publication-compiler.md#PRs and commits`",
+      "A finding outside the criteria that breaks no behavior `main` had is a follow-up by rule, never blocking.",
       evidence,
       productGate,
       costLine,
@@ -565,6 +566,56 @@ const targetRoles: readonly HarnessRole[] = contributorRoles.map((role) => {
   };
 });
 
+// Keep the execution sequence visible before the complete shared rules.
+const roleSteps: Readonly<Record<string, readonly string[]>> = {
+  executor: [
+    "Resolve cwd/Git root and canonical status; honor operator controls. For status/times, report the read-only command and stop; otherwise dispatch next/fix once.",
+    "Read the order, citations, subject source/tests, package mapping and named failure; refresh the work-order index.",
+    "Implement the bounded deliverable and write-backs.",
+    "Prepare the classified release with `npm run release -- prepare --local`.",
+    "Declare scratch repositories with `npm run worktree -- material`.",
+    "Finish decisions, indexes and other authored outputs; apply the worker review rule below before implementation-ready.",
+    "Run `npm run format`.",
+    "Run `npm run test:docs` until green.",
+    "Run `npm test`, or `npm test -- --review` when the order's final criterion names it; while it runs, write nothing under the repository and start no agent; if it fails, fix and return to the format step.",
+    "Complete the active order's handoff.md with the passing evidence, review counts and criterion judgments; read final outputs and usage.",
+    "Record `npm run resume -- implementation-ready <actor-flags>` or, for a repair, `npm run resume -- repair-complete <actor-flags>`; read resulting projections without another write.",
+  ],
+  verifier: [
+    "Resolve cwd/Git root and canonical status; honor operator controls and dispatch verify once.",
+    "Read the order, citations, subject and earlier reports; attack each criterion with your own probes, review the implementation and apply the worker rule below.",
+    "Complete probes before the handoff sequence. As a read-only verifier, never edit the implementation to turn your verdict green.",
+    "Run `npm run format:check` on the implementation and report a formatting failure; any report formatting must target only its allocated path.",
+    "Run `npm run test:docs` until green within your authority; record a subject failure in the verdict.",
+    "Consume a covering passing product row or run `npm test` (`npm test -- --review` when the order's final criterion names it) as the reuse rule below directs; while it runs, write nothing under the repository and start no agent; if it fails, return to the format step for authorized fixes or record the failure.",
+    "Complete the allocated VER report and evidence, criterion judgments, attestation and usage; read current outputs.",
+    "Record `npm run resume -- verification-result pass|fail <actor-flags>`; refresh the index and reread projections.",
+  ],
+  reviewer: [
+    "Resolve cwd/Git root and canonical status; honor operator controls and dispatch final-review once.",
+    "Read the order, full diff, numbered verification sequence and publication contract; integrate main with `npm run worktree -- integrate WO-NNN` and resolve authorized conflicts.",
+    "Finish affected checks and any worker reproducing a named claim before the handoff sequence; prepare release surfaces.",
+    "Run `npm run format`.",
+    "Run `npm run test:docs` until green.",
+    "Run `npm test -- --review`; passing tasks at the unchanged code identity compose the review row; while it runs, write nothing under the repository and start no agent; if it fails, fix and return to the format step.",
+    "Complete the allocated FINAL report, PR.md and RELEASE-NOTES.md, criterion judgments, attestation and usage; read final outputs.",
+    "Record `npm run resume -- final-review-result pass|fail <actor-flags>`; on pass follow the reviewed branch publication rule below.",
+  ],
+};
+const orderedRole = (role: HarnessRole): HarnessRole => {
+  const steps = roleSteps[role.name];
+  return steps
+    ? {
+        ...role,
+        procedure: [
+          ...steps.map((step, index) => `${index + 1}. ${step}`),
+          "Rules:",
+          ...role.procedure,
+        ],
+      }
+    : role;
+};
+
 export function contributorRolesFor(
   program: CompiledProgram,
 ): readonly HarnessRole[] {
@@ -591,7 +642,7 @@ export function contributorRolesFor(
       );
     return { support, emitted };
   });
-  if (!emissions.length) return targetRoles;
+  if (!emissions.length) return targetRoles.map(orderedRole);
   const modifiers = equipped.flatMap((support) => support.semanticsModified);
   return targetRoles.map((role) => {
     const shared = emissions
@@ -605,7 +656,7 @@ export function contributorRolesFor(
             )
             .flatMap(({ emitted }) => emitted)
         : [];
-    if (!shared.length && !fragments.length) return role;
+    if (!shared.length && !fragments.length) return orderedRole(role);
     const procedure = role.procedure.flatMap((line) => {
       const projected = (role.name === "executor" ? modifiers : []).reduce(
         (text, { from, to }) => text.replace(from, to),
@@ -615,13 +666,13 @@ export function contributorRolesFor(
         ? [projected, ...fragments]
         : [projected];
     });
-    return {
+    return orderedRole({
       ...role,
       procedure:
         role.name === "executor"
           ? [procedure[0]!, ...shared, ...procedure.slice(1)]
           : [...shared, ...procedure],
-    };
+    });
   });
 }
 

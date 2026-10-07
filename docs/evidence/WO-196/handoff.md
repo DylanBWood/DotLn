@@ -1,0 +1,29 @@
+# WO-196 repair handoff
+
+Dispatch: `resume: fix`, repairing [VER-001](../../verifications/WO-196/VER-001.md) F1 and adjacent finding R1. Prepared application v0.69.0, compiler 0.25.4, skeleton 0.55.0 and harness host 0.35.0; existing workspace pins only, with no new dependency.
+
+Repaired code identity: `8017b3c565377a9637c7e213d2e84a61a823102258b0e83355d51f89653ab431`. Format ran before the gates. `npm run test:docs` passed 29/29 at 2026-10-07T14:54:35.239Z in 111,602 ms. `npm test -- --review` passed 38/38 suites and 88 fresh tasks at 15:25:18.063Z in 1,815,451 ms. An unchanged review passed at 15:25:55.958Z in 6,457 ms: format alone ran fresh, with 87 tasks carried from the fresh row. No root repository writes or agent starts occurred during the gates. [repair-001-gate-summary.json](repair-001-gate-summary.json) records the rows and executed assertions; canonical rows remain in `docs/control/local/harness/checks.json`.
+
+**Criterion 1:** met — Current review `runner-fixtures` passes the real-Prettier plain/review case: unformatted source fails within 60 seconds before product tasks, names the file and repair command, and formatted source proceeds. Single-suite/machinery selections and the broader formatter's document-edit variation also pass.
+
+**Criterion 2:** met — Composition fixtures now include the fresh format preflight and retain source pointers, required suites, forced freshness, latest-failure precedence and build-output assertions. The real unchanged `npm test -- --review` row is composed/review with `freshReason: always-fresh-preflight`, one fresh task and 87 reused tasks, each naming the fresh worktree row. A bounded probe asserted every pointer and field. The `resume` document-gate row and `release:case:composed_evidence` passed. R1's unreachable shortcut is removed.
+
+**Criterion 3:** met — VER-001 independently compared numbered procedures, rule preservation and the five-refusals paragraph; [rule-sentences.diff](rule-sentences.diff) records the authorized differences. This repair touches only the runner and its fixtures. Current procedure/snapshot fixtures and `harness -- check` passed.
+
+**Criterion 4:** met — VER-001 confirmed the executor's two workers, verifier's own probes/report/reproduction duties and reviewer follow-up route against product 07. Current skeleton and process-debt fixtures pass those retained role sentences.
+
+**Criterion 5:** met — VER-001 confirmed WO-188 item 22's conditional economy and goal-alignment duties and the Experiment-header projection. Current support and process-debt fixtures pass, including the preserved historical snapshot chain.
+
+**Criterion 6:** met — [role-measurements.json](role-measurements.json), independently reproduced in VER-001, records identical roots: executor 29,777 → 28,128 under 29,246; verifier 26,077 → 25,380 under 29,831; reviewer 27,882 → 26,831 under 28,884. No role source, projection, ceiling or acceptance changed in this repair.
+
+**Criterion 7:** met — The current full harness suite passed the live-gate spawn advisory case. The `resume` document-gate row passed both completion paths: missing self-review advises at implementation-ready and does not advise at repair-complete. VER-001 independently reproduced these retained paths.
+
+**Criterion 8:** met — F1 is fixed at the successful-task printer. Current `docs-check-fixtures` runs the real document gate and asserts each of two overage advisories once, with UTF-8 content at default and relocated roots; missing and malformed metadata still fail. Another case checks NEWER/ADVISORY success delivery and full failure output. The new regression failed before the printer edit and passed afterward. The bounded document-check probe passed 38 tests; `npm run test:docs` passed with real successful diagnostics visible. The raise rule remains removed.
+
+**Criterion 9:** met — Current authority, artifact-identity and verification WO-196 revision 004 and feedback-001 checks passed. Repair paths are absent from registered edition sources, so no new edition or live episode is needed. PLAYBOOK and [decisions.md](decisions.md) hold the write-backs; publication and harness checks passed. `npm test -- --review`, `npm run test:docs` and `git diff --check` pass at the repaired subject. No dependency was added.
+
+self-review: found 1; fixed 1; recorded 0 — Initial implementation reviews: [adversary.md](adversary.md): 1/1/0; [improver.md](improver.md): 0/0/0. Two fresh read-only workers received the order and diff, with no descendants; supplied gpt-6.1-sol/max, effective effort independently unobserved. This repair launched no workers, as the repair procedure specifies; current-diff review and executed probes are recorded in D011–D013. Both VER-001 findings are fixed. Adjacent-0001 is completed at queue revision 5, with no pending next item.
+
+Goal-alignment outcome: actual gate output establishes the advisory rule, and production composition establishes fresh format plus task provenance. The bounded rendering comparison delivered identical diagnostics in 6 rather than 24 lines; it measures output volume, not future gate savings. The filed shared-reference reuse limitation remains allocated to WO-198 with its reopening conditions. Successful diagnostic forwarding uses the existing bounded output tail; gate-record semantics are retained.
+
+Attestation: Codex CLI 0.160.1, gpt-6.1-sol, max, source `codex-session-readback`; the order recommends xhigh. Final usage stays in ignored receipts and the response. Evidence wait commands completed. Scratch contains source/diff snapshots and bounded probes. Temporary fixture repositories were removed by teardown; no retained scratch repository was created. Authored outputs were reviewed; generated/oversized outputs use passing generation and check evidence. Independent re-verification and final review remain separate dispatches.

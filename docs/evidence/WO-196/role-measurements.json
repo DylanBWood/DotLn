@@ -1,0 +1,35 @@
+{
+  "source": "Installed CLAUDE.md plus generated skill; both skill roots byte-identical; checked line preservation against entry snapshots.",
+  "roles": [
+    {
+      "role": "executor",
+      "before": 29777,
+      "after": 28128,
+      "ceiling": 29246,
+      "preservedRuleLines": 59,
+      "changedOrRemovedRuleLines": 4,
+      "unexpectedLosses": 0,
+      "duplicates": 0
+    },
+    {
+      "role": "verifier",
+      "before": 26077,
+      "after": 25380,
+      "ceiling": 29831,
+      "preservedRuleLines": 54,
+      "changedOrRemovedRuleLines": 3,
+      "unexpectedLosses": 0,
+      "duplicates": 0
+    },
+    {
+      "role": "reviewer",
+      "before": 27882,
+      "after": 26831,
+      "ceiling": 28884,
+      "preservedRuleLines": 57,
+      "changedOrRemovedRuleLines": 2,
+      "unexpectedLosses": 0,
+      "duplicates": 0
+    }
+  ]
+}

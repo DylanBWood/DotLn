@@ -100,20 +100,20 @@ export function readReportGateClaims(root, state, reportPath) {
  * the order does not declare. An order whose criteria cannot be read is not
  * checked and returns one advisory, as before this order.
  */
-export function readHandoffLedger(root, state) {
+export function readHandoffLedger(root, state, { selfReview = true } = {}) {
   const path = handoffLedgerPath(root, state.workOrderId);
   const readable = containedRegularFile(
     join(root, path),
     docPath(root, "evidence"),
   );
   const text = readable ? readFileSync(join(root, path), "utf8") : "";
-  const advisories = text
-    .split(/\r\n?|\n/u)
-    .some((line) => SELF_REVIEW.test(line))
-    ? []
-    : [
-        `${path} lacks a self-review: line; write a line that starts \`self-review: found <n>; fixed <n>; recorded <n>\` with the fresh review's counts, then the worker or the separate-pass fallback. Completion records all the same.`,
-      ];
+  const advisories =
+    !selfReview ||
+    text.split(/\r\n?|\n/u).some((line) => SELF_REVIEW.test(line))
+      ? []
+      : [
+          `${path} lacks a self-review: line; write a line that starts \`self-review: found <n>; fixed <n>; recorded <n>\` with the fresh review's counts, then the worker or the separate-pass fallback. Completion records all the same.`,
+        ];
   const declared = readDeclaredCriteria(root, state);
   if (!declared)
     return {
