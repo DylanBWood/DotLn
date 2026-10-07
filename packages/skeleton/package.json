@@ -1,6 +1,6 @@
 {
   "name": "@dotln/skeleton",
-  "version": "0.53.1",
+  "version": "0.54.0",
   "private": true,
   "license": "Apache-2.0",
   "type": "module",

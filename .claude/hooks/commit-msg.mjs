@@ -1,6 +1,6 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:3fda088a97df0f55"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/dd985e766328b0b9/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/dd985e766328b0b9/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/341d8229ff992ac9/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/341d8229ff992ac9/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
   "compilerPackageVersion": "0.25.3",
   "runtime": {
@@ -57,7 +57,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/source-change-state.js",
-        "hash": "fnv1a64:c37242cb80738d4d"
+        "hash": "fnv1a64:f0f512b07352a99d"
       },
       {
         "path": "packages/skeleton/dist/src/version.js",
@@ -113,7 +113,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/verification-protocol.js",
-        "hash": "fnv1a64:b1b6c34f37bfa534"
+        "hash": "fnv1a64:9c6da06a4376c6e2"
       },
       {
         "path": "packages/skeleton/dist/src/plan-refutation-protocol.js",
@@ -121,7 +121,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/worker-protocol.js",
-        "hash": "fnv1a64:023351024fb98b7e"
+        "hash": "fnv1a64:df68218642aede29"
       },
       {
         "path": "packages/skeleton/dist/src/presence-machine.js",
@@ -153,7 +153,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/discovery-sandbox.js",
-        "hash": "fnv1a64:188b307b48660846"
+        "hash": "fnv1a64:7d830f99be355cb6"
       },
       {
         "path": "packages/skeleton/dist/src/discovery-actor.js",
@@ -168,7 +168,7 @@ await runCommitMessageHook({
         "hash": "fnv1a64:5ad495017c40b9b2"
       }
     ],
-    "snapshot": ".runtime/harness/dd985e766328b0b9"
+    "snapshot": ".runtime/harness/341d8229ff992ac9"
   },
   "policy": {
     "contractVersion": "feedback-v1",
