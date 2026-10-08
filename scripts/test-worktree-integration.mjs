@@ -1,6 +1,6 @@
 import { runGit } from "./lib/git.mjs";
 import { json as prettyJson, write as put } from "./lib/helpers.mjs";
-import nodeTest from "node:test";
+import nodeTest, { after } from "node:test";
 import { performance } from "node:perf_hooks";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -27,11 +27,58 @@ import {
   releaseLine,
 } from "./lib/worktree-integration.mjs";
 
+// WO-197: per-case durations from the whole-suite run alone, rounded up to
+// 0.1 s; each case checks twice its own measurement after fixture cleanup.
+const repairedCaseMs = new Map([
+  [
+    "WO-169 a first invocation with no authored conflict generates at once",
+    4100,
+  ],
+  [
+    "WO-169 a pass whose generator fails keeps its checks and names the pending step, not a conflict",
+    3200,
+  ],
+  [
+    "WO-086 a conflicted decisions record refuses the collision's record and writes nothing",
+    3300,
+  ],
+  [
+    "WO-086 a retime that lands on a continuation is recorded once, in the stub the failed pass withheld",
+    4400,
+  ],
+  [
+    "WO-086 a blocked PR directory preserves collision inputs for continuation",
+    4600,
+  ],
+  [
+    "WO-086 a blocked PR file preserves collision inputs for continuation",
+    4600,
+  ],
+  [
+    "WO-086 a stub blocked by a regular file retains its saved collision through continuation",
+    4500,
+  ],
+  [
+    "WO-086 a stub blocked by a symlink retains its saved collision through continuation",
+    5900,
+  ],
+  [
+    "WO-086 a stub blocked by a regular file with a newer tag during retry retains its saved collision through continuation",
+    5400,
+  ],
+  [
+    "WO-086 a tag that lands after the stub is written is recorded once, by release prepare",
+    4600,
+  ],
+]);
+
 // Git integration fixtures need this revision and their own branches and tag.
 // Importing every unrelated release tag made each generator inspect hundreds
 // of historical control snapshots; no assertion below depends on those tags.
-const test = (name, fn) =>
-  nodeTest(name, async (t) => {
+const unregisteredCaseBounds = new Set(repairedCaseMs.keys());
+const test = (name, fn) => {
+  unregisteredCaseBounds.delete(name);
+  return nodeTest(name, async (t) => {
     // Flush the execution-ordered start before synchronous fixture operations.
     await new Promise((resolve) => setImmediate(resolve));
     const started = performance.now();
@@ -48,11 +95,20 @@ const test = (name, fn) =>
             durationMs: performance.now() - started,
           }),
       );
+      const measuredMs = repairedCaseMs.get(name);
+      if (measuredMs !== undefined)
+        t.after(() =>
+          assert.ok(
+            performance.now() - started <= 2 * measuredMs,
+            `${name} stays within twice its measured ${measuredMs} ms duration`,
+          ),
+        );
       // Synchronous Git work otherwise holds the worker event loop across cases
       // and makes buffered TAP look like a single unexplained pause.
       await new Promise((resolve) => setImmediate(resolve));
     }
   });
+};
 
 const source = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const text = (root, path) => readFileSync(join(root, path), "utf8");
@@ -158,9 +214,171 @@ const event = (workOrderId, type, extra = {}) =>
     ...extra,
   }) + "\n";
 
+const generatorLog = "docs/control/local/fixture-generator-calls.jsonl";
+const generatorStages = [
+  "build",
+  "harness",
+  "release",
+  "meta",
+  "work-orders",
+  "publication",
+  "console",
+];
+const generatorRecord = (stage) => `
+const {appendFileSync: recordCall, mkdirSync: makeLogDirectory} = await import("node:fs");
+makeLogDirectory("docs/control/local", {recursive:true});
+recordCall(${JSON.stringify(generatorLog)}, JSON.stringify({stage:${JSON.stringify(stage)}, argv:process.argv.slice(2)}) + "\\n");
+`;
+function focusedGenerators(root) {
+  for (const [script, stage, args] of [
+    ["build", "build", []],
+    ["harness", "harness", ["emit"]],
+    ["meta", "meta", []],
+    ["check-publication", "publication", ["--print-locks"]],
+    ["console-fixtures", "console", ["--write"]],
+  ]) {
+    put(
+      root,
+      `scripts/${script}.mjs`,
+      `import assert from "node:assert/strict";\nassert.deepEqual(process.argv.slice(2), ${JSON.stringify(args)});\n` +
+        generatorRecord(stage) +
+        (stage === "publication"
+          ? `for (const edition of ["software-engineer-toc.md", "everyday-ai-user-toc.md"]) console.log("LOCK " + edition + ": sha256:" + "c".repeat(64));\n`
+          : ""),
+    );
+  }
+  // These algorithms remain real: release metering and the work-order index
+  // have deliberate filesystem failures in the continuation cases below.
+  for (const script of ["release", "work-orders"]) {
+    const file = `scripts/${script}.mjs`;
+    const source = text(root, file);
+    const entry = "if (isMainModule(import.meta.url)) {";
+    assert.equal(source.split(entry).length, 2);
+    put(root, file, source.replace(entry, entry + generatorRecord(script)));
+  }
+}
+
+function overlayImplementation(root) {
+  for (const path of [
+    "scripts/worktree.mjs",
+    "scripts/resume.mjs",
+    "scripts/release.mjs",
+  ])
+    cpSync(join(source, path), join(root, path));
+  // The working-tree libraries and their build-free Beacon peers travel
+  // together; static imports must not split across revisions.
+  for (const path of ["scripts/lib", "packages/beacons"])
+    cpSync(join(source, path), join(root, path), { recursive: true });
+}
+
+let focusedSeed;
+const seedState = (root) => ({
+  head: runGit(root, ["rev-parse", "HEAD"], fixtureGitOptions),
+  refs: runGit(
+    root,
+    ["for-each-ref", "--format=%(refname) %(objectname)"],
+    fixtureGitOptions,
+  ),
+  dirty: runGit(root, ["status", "--porcelain"], fixtureGitOptions),
+});
+function focusedSource() {
+  if (focusedSeed) {
+    assert.deepEqual(seedState(focusedSeed.root), focusedSeed.state);
+    return focusedSeed.root;
+  }
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-integrate-seed-")),
+  );
+  try {
+    // Recovery cases need real code and Git operations, but not the project's
+    // historical objects, old decisions, or unrelated order authorities.
+    // The comprehensive real-generator fixtures below still carry all of them.
+    const archive = spawnSync(
+      "git",
+      [
+        "archive",
+        "HEAD",
+        "scripts",
+        "packages",
+        ".gitignore",
+        "package.json",
+        "package-lock.json",
+        "tsconfig.json",
+        "README.md",
+        "CLAUDE.md",
+        ".claude/harness-manifest.json",
+        "docs/control/budgets.json",
+        "docs/product",
+        "docs/publication/software-engineer-toc.md",
+        "docs/publication/everyday-ai-user-toc.md",
+      ],
+      {
+        cwd: source,
+        maxBuffer: 128 * 1024 * 1024,
+      },
+    );
+    assert.equal(archive.status, 0, String(archive.stderr));
+    const extracted = spawnSync("tar", ["-xf", "-", "-C", root], {
+      input: archive.stdout,
+      encoding: "utf8",
+    });
+    assert.equal(extracted.status, 0, extracted.stderr);
+    overlayImplementation(root);
+    focusedGenerators(root);
+    put(
+      root,
+      "docs/planning/followups.json",
+      prettyJson({ schemaVersion: 1, entries: [] }),
+    );
+    put(
+      root,
+      "docs/planning/sequence.md",
+      "# Fixture sequence\n\n<!-- dotln-work-order-sequence:start -->\n- WO-997 — fixture peer\n\n- WO-998 — integration subject\n\n- WO-999 — fixture peer\n<!-- dotln-work-order-sequence:end -->\n",
+    );
+    put(root, "docs/lineage/decisions-index.md", "fixture projection\n");
+    put(root, "docs/evidence/.gitkeep", "");
+    runGit(
+      root,
+      ["init", "--quiet", "--initial-branch=main"],
+      fixtureGitOptions,
+    );
+    for (const [key, value] of [
+      ["user.name", "Fixture"],
+      ["user.email", "fixture@example.invalid"],
+      ["maintenance.auto", "false"],
+    ])
+      runGit(root, ["config", key, value], fixtureGitOptions);
+    runGit(root, ["add", "-A"], fixtureGitOptions);
+    runGit(
+      root,
+      ["commit", "-qm", "focused integration seed"],
+      fixtureGitOptions,
+    );
+    focusedSeed = { root, state: seedState(root) };
+    assert.equal(focusedSeed.state.dirty, "");
+    return root;
+  } catch (error) {
+    rmSync(root, { recursive: true, force: true });
+    throw error;
+  }
+}
+after(() => {
+  if (!focusedSeed) return;
+  try {
+    assert.deepEqual(seedState(focusedSeed.root), focusedSeed.state);
+  } finally {
+    rmSync(focusedSeed.root, { recursive: true, force: true });
+  }
+});
+
 function fixture(
   t,
-  { reviewed = false, third = "active", authored = true } = {},
+  {
+    reviewed = false,
+    third = "active",
+    authored = true,
+    generators = "real",
+  } = {},
 ) {
   const temporary = realpathSync(
     mkdtempSync(join(tmpdir(), "dotln-integrate-test-")),
@@ -169,6 +387,7 @@ function fixture(
   const origin = join(temporary, "origin.git"),
     main = join(temporary, "main"),
     subject = join(temporary, "wo998");
+  const cloneSource = generators === "focused" ? focusedSource() : source;
   // Clone only Git's tracked history. No intake, credentials, ignored runtime
   // state or real remote is copied; every push below goes to this local bare repo.
   checked(temporary, "git", [
@@ -180,7 +399,7 @@ function fixture(
     "--single-branch",
     "--no-hardlinks",
     "--quiet",
-    source,
+    cloneSource,
     origin,
   ]);
   runGit(origin, ["config", "maintenance.auto", "false"], fixtureGitOptions);
@@ -193,7 +412,7 @@ function fixture(
     [
       "update-ref",
       "refs/heads/main",
-      runGit(source, ["rev-parse", "HEAD"], fixtureGitOptions),
+      runGit(cloneSource, ["rev-parse", "HEAD"], fixtureGitOptions),
     ],
     fixtureGitOptions,
   );
@@ -216,23 +435,7 @@ function fixture(
     ["maintenance.auto", "false"],
   ])
     runGit(main, ["config", key, value], fixtureGitOptions);
-  // The two entry points and the release command the helper spawns; the peers
-  // they import statically travel with the library overlay below.
-  for (const path of [
-    "scripts/worktree.mjs",
-    "scripts/resume.mjs",
-    "scripts/release.mjs",
-  ])
-    cpSync(join(source, path), join(main, path));
-  // The overlay carries the whole shared library so a working-tree module and
-  // its peers never split across the clone's committed copies.
-  cpSync(join(source, "scripts/lib"), join(main, "scripts/lib"), {
-    recursive: true,
-  });
-  // The library's build-free Beacon peers travel with it (WO-070).
-  cpSync(join(source, "packages/beacons"), join(main, "packages/beacons"), {
-    recursive: true,
-  });
+  if (generators === "real") overlayImplementation(main);
   for (const id of ["WO-997", "WO-998", "WO-999"]) {
     const path = `docs/work-orders/${id}-fixture.md`;
     put(
@@ -409,13 +612,41 @@ function fixture(
   }
   put(subject, "untracked-fixture.md", "retained untracked bytes\n");
   const control = Object.fromEntries(readControl(subject).sources);
-  const invoke = (...args) =>
-    run(subject, process.execPath, [
+  const calls = () =>
+    existsSync(join(subject, generatorLog))
+      ? text(subject, generatorLog)
+          .trim()
+          .split("\n")
+          .filter(Boolean)
+          .map((line) => JSON.parse(line))
+      : [];
+  const invokeStages = (
+    expected,
+    args,
+    releaseArgs = ["prepare", "--local", "--integration"],
+  ) => {
+    const before = calls().length;
+    const result = run(subject, process.execPath, [
       "scripts/worktree.mjs",
       "integrate",
       "WO-998",
       ...args,
     ]);
+    if (generators === "focused") {
+      const actual = calls().slice(before);
+      assert.deepEqual(
+        actual.map((row) => row.stage),
+        expected,
+        result.stdout + result.stderr,
+      );
+      for (const row of actual) {
+        if (row.stage === "work-orders") assert.deepEqual(row.argv, ["index"]);
+        if (row.stage === "release") assert.deepEqual(row.argv, releaseArgs);
+      }
+    }
+    return result;
+  };
+  const invoke = (...args) => invokeStages(generatorStages, args);
   return {
     temporary,
     origin,
@@ -426,6 +657,13 @@ function fixture(
     upstream,
     control,
     invoke,
+    continueWithStub: () =>
+      invokeStages(generatorStages, ["--continue"], ["prepare", "--local"]),
+    invokeWithoutRelease: (...args) =>
+      invokeStages(
+        generatorStages.filter((stage) => stage !== "release"),
+        args,
+      ),
   };
 }
 
@@ -1061,7 +1299,7 @@ test("WO-167 --continue judges the recorded phase while the uncommitted control 
 });
 
 test("WO-169 a first invocation with no authored conflict generates at once", (t) => {
-  const f = fixture(t, { authored: false });
+  const f = fixture(t, { authored: false, generators: "focused" });
   const first = f.invoke();
   assert.equal(first.status, 0, first.stdout + first.stderr);
   assert.match(first.stdout, /Authored conflicts: none/);
@@ -1085,7 +1323,7 @@ test("WO-169 a first invocation with no authored conflict generates at once", (t
 });
 
 test("WO-169 a pass whose generator fails keeps its checks and names the pending step, not a conflict", (t) => {
-  const f = fixture(t, { authored: false });
+  const f = fixture(t, { authored: false, generators: "focused" });
   // Release preparation reads the decisions record; one with no entry fails it.
   put(f.subject, "docs/evidence/WO-998/decisions.md", "# WO-998 decisions\n");
   const first = f.invoke();
@@ -1114,7 +1352,7 @@ test("WO-169 a pass whose generator fails keeps its checks and names the pending
 });
 
 test("WO-086 a conflicted decisions record refuses the collision's record and writes nothing", (t) => {
-  const f = fixture(t, { authored: false });
+  const f = fixture(t, { authored: false, generators: "focused" });
   const path = "docs/evidence/WO-998/decisions.md";
   const conflicted =
     "# WO-998 decisions\n\n<<<<<<< local\nlocal note\n=======\nupstream note\n>>>>>>> upstream\n";
@@ -1152,7 +1390,7 @@ test("WO-086 a conflicted decisions record refuses the collision's record and wr
 });
 
 test("WO-086 a retime that lands on a continuation is recorded once, in the stub the failed pass withheld", (t) => {
-  const f = fixture(t, { authored: false });
+  const f = fixture(t, { authored: false, generators: "focused" });
   const path = "docs/evidence/WO-998/decisions.md";
   // An entry-less record fails the preparation's meter before any write.
   put(f.subject, path, "# WO-998 decisions\n");
@@ -1185,7 +1423,7 @@ test("WO-086 a retime that lands on a continuation is recorded once, in the stub
 
 for (const blocker of ["PR directory", "PR file"])
   test(`WO-086 a blocked ${blocker} preserves collision inputs for continuation`, (t) => {
-    const f = fixture(t, { authored: false });
+    const f = fixture(t, { authored: false, generators: "focused" });
     const directory = join(f.subject, "docs/final-reviews/WO-998");
     const blocked =
       blocker === "PR directory" ? directory : join(directory, "PR.md");
@@ -1263,7 +1501,7 @@ for (const [blocker, newerTag] of [
   ["regular file with a newer tag during retry", true],
 ])
   test(`WO-086 a stub blocked by a ${blocker} retains its saved collision through continuation`, (t) => {
-    const f = fixture(t, { authored: false });
+    const f = fixture(t, { authored: false, generators: "focused" });
     const directory = join(f.subject, "docs/evidence/WO-998");
     if (blocker === "symlink") {
       mkdirSync(join(f.subject, "stub-target"));
@@ -1288,7 +1526,7 @@ for (const [blocker, newerTag] of [
     if (newerTag) {
       // A second collision must wait until the first outcome is filed.
       runGit(f.main, ["tag", "v9000.0.2"], fixtureGitOptions);
-      const blockedRetry = f.invoke("--continue");
+      const blockedRetry = f.invokeWithoutRelease("--continue");
       assert.equal(
         blockedRetry.status,
         1,
@@ -1322,7 +1560,7 @@ for (const [blocker, newerTag] of [
       rmSync(pr);
       mkdirSync(pr);
       writeFileSync(join(pr, "blocker"), "blocked\n");
-      const failedPrepare = f.invoke("--continue");
+      const failedPrepare = f.continueWithStub();
       assert.equal(
         failedPrepare.status,
         1,
@@ -1348,7 +1586,7 @@ for (const [blocker, newerTag] of [
       );
       rmSync(pr, { recursive: true });
     }
-    const continued = f.invoke("--continue");
+    const continued = f.continueWithStub();
     assert.equal(continued.status, 0, continued.stdout + continued.stderr);
     const rows = [
       ...text(f.subject, decisions).matchAll(/```json\n([\s\S]*?)\n```/g),
@@ -1399,7 +1637,7 @@ for (const [blocker, newerTag] of [
   });
 
 test("WO-086 a tag that lands after the stub is written is recorded once, by release prepare", (t) => {
-  const f = fixture(t, { authored: false });
+  const f = fixture(t, { authored: false, generators: "focused" });
   const path = "docs/evidence/WO-998/decisions.md";
   // The subject's target is above main's tag, so the first pass is current.
   put(
@@ -1424,7 +1662,7 @@ test("WO-086 a tag that lands after the stub is written is recorded once, by rel
   // A sibling publishes the colliding version between the passes.
   rmSync(join(f.subject, "docs/work-orders/README.md.tmp"));
   runGit(f.main, ["tag", "v9000.0.5"], fixtureGitOptions);
-  const continued = f.invoke("--continue");
+  const continued = f.continueWithStub();
   assert.equal(continued.status, 0, continued.stdout + continued.stderr);
   assert.match(
     text(f.subject, "docs/work-orders/WO-998-fixture.md").split("\n")[0],
@@ -1499,3 +1737,9 @@ test("printed checks use the runner's declared machinery sources, including pack
     "npm test -- --review",
   );
 });
+
+assert.deepEqual(
+  [...unregisteredCaseBounds],
+  [],
+  "every duration bound must match a declared case, including after a rename",
+);

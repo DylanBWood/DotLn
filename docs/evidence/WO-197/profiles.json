@@ -1,0 +1,488 @@
+{
+  "schemaVersion": 1,
+  "profiles": [
+    {
+      "name": "target",
+      "method": "Wrap node:child_process synchronous spawn/exec and node:fs cpSync/rmSync in the test worker, resynchronize builtin ESM exports, retain call counts and elapsed durations by operation. Child commands keep original arguments. Child-internal work is included in parent wall duration; counters do not decompose it.",
+      "operations": [
+        {
+          "label": "execFileSync node harness.mjs",
+          "calls": 77,
+          "ms": 15145.222714000003
+        },
+        {
+          "label": "execFileSync git rev-parse",
+          "calls": 543,
+          "ms": 5170.645667999946
+        },
+        {
+          "label": "spawnSync node worktree.mjs",
+          "calls": 9,
+          "ms": 4194.983957999997
+        },
+        {
+          "label": "spawnSync gh api",
+          "calls": 76,
+          "ms": 3765.0155040000104
+        },
+        {
+          "label": "spawnSync sandbox-exec -p",
+          "calls": 64,
+          "ms": 3022.299082999987
+        },
+        {
+          "label": "execFileSync git diff",
+          "calls": 134,
+          "ms": 1456.4418790000063
+        },
+        {
+          "label": "execFileSync git merge-base",
+          "calls": 116,
+          "ms": 1233.5300440000174
+        },
+        {
+          "label": "execFileSync git status",
+          "calls": 97,
+          "ms": 1120.4374570000255
+        },
+        {
+          "label": "execFileSync git symbolic-ref",
+          "calls": 92,
+          "ms": 905.9020460000096
+        },
+        {
+          "label": "execFileSync git push",
+          "calls": 9,
+          "ms": 699.3173319999919
+        },
+        {
+          "label": "execFileSync git commit",
+          "calls": 29,
+          "ms": 686.5369999999805
+        },
+        {
+          "label": "execFileSync git cat-file",
+          "calls": 60,
+          "ms": 617.5738349999933
+        },
+        {
+          "label": "execFileSync git worktree",
+          "calls": 20,
+          "ms": 578.5029579999944
+        },
+        {
+          "label": "execFileSync git rev-list",
+          "calls": 46,
+          "ms": 501.0273339999951
+        },
+        {
+          "label": "execFileSync git log",
+          "calls": 46,
+          "ms": 496.20575399998916
+        },
+        {
+          "label": "spawnSync git config",
+          "calls": 43,
+          "ms": 413.3631649999961
+        },
+        {
+          "label": "execFileSync git init",
+          "calls": 27,
+          "ms": 390.50029200000245
+        },
+        {
+          "label": "execFileSync git for-each-ref",
+          "calls": 33,
+          "ms": 344.30770500000335
+        },
+        {
+          "label": "execFileSync git add",
+          "calls": 20,
+          "ms": 234.0718350000081
+        },
+        {
+          "label": "execFileSync pwd -P",
+          "calls": 114,
+          "ms": 223.59637099999435
+        },
+        {
+          "label": "execFileSync git ls-tree",
+          "calls": 20,
+          "ms": 209.28633100001014
+        },
+        {
+          "label": "rmSync",
+          "calls": 151,
+          "ms": 206.33528400000785
+        },
+        {
+          "label": "spawnSync git show-ref",
+          "calls": 22,
+          "ms": 201.9755020000078
+        },
+        {
+          "label": "spawnSync git remote",
+          "calls": 10,
+          "ms": 144.25729299998784
+        },
+        {
+          "label": "spawnSync git push",
+          "calls": 2,
+          "ms": 140.82145800000035
+        },
+        {
+          "label": "execFileSync git check-ref-format",
+          "calls": 15,
+          "ms": 135.18766600000276
+        },
+        {
+          "label": "spawnSync git fetch",
+          "calls": 2,
+          "ms": 131.11654099999942
+        },
+        {
+          "label": "execFileSync git ls-files",
+          "calls": 9,
+          "ms": 95.23141700000406
+        },
+        {
+          "label": "execFileSync git remote",
+          "calls": 9,
+          "ms": 91.9111689999931
+        },
+        {
+          "label": "execFileSync git config",
+          "calls": 9,
+          "ms": 86.09487400000239
+        },
+        {
+          "label": "spawnSync git rev-parse",
+          "calls": 6,
+          "ms": 60.18287500000315
+        },
+        {
+          "label": "spawnSync git merge-base",
+          "calls": 4,
+          "ms": 42.63770900000236
+        },
+        {
+          "label": "spawnSync git diff",
+          "calls": 4,
+          "ms": 40.04779099999905
+        },
+        {
+          "label": "spawnSync gh --version",
+          "calls": 5,
+          "ms": 27.984458000000814
+        },
+        {
+          "label": "spawnSync git init",
+          "calls": 2,
+          "ms": 26.647540999993907
+        },
+        {
+          "label": "spawnSync gh auth",
+          "calls": 5,
+          "ms": 25.5392490000022
+        },
+        {
+          "label": "spawnSync git rev-list",
+          "calls": 2,
+          "ms": 24.146999999997206
+        },
+        {
+          "label": "spawnSync git log",
+          "calls": 2,
+          "ms": 21.088290999998208
+        },
+        {
+          "label": "execFileSync sh -c",
+          "calls": 1,
+          "ms": 5.823207999999994
+        }
+      ]
+    },
+    {
+      "name": "integration",
+      "method": "Wrap node:child_process synchronous spawn/exec and node:fs cpSync/rmSync in the test worker, resynchronize builtin ESM exports, retain call counts and elapsed durations by operation. Child commands keep original arguments. Child-internal work is included in parent wall duration; counters do not decompose it.",
+      "operations": [
+        {
+          "label": "spawnSync node worktree.mjs",
+          "calls": 3,
+          "ms": 15781.632376
+        },
+        {
+          "label": "spawnSync git clone",
+          "calls": 2,
+          "ms": 1408.260917
+        },
+        {
+          "label": "rmSync",
+          "calls": 4,
+          "ms": 1156.5199999999986
+        },
+        {
+          "label": "spawnSync git worktree",
+          "calls": 1,
+          "ms": 966.356041
+        },
+        {
+          "label": "spawnSync git add",
+          "calls": 2,
+          "ms": 473.5887509999998
+        },
+        {
+          "label": "spawnSync git commit",
+          "calls": 2,
+          "ms": 366.4975830000001
+        },
+        {
+          "label": "spawnSync git push",
+          "calls": 2,
+          "ms": 220.81395799999973
+        },
+        {
+          "label": "cpSync skeleton/dist",
+          "calls": 1,
+          "ms": 83.80408400000033
+        },
+        {
+          "label": "spawnSync git config",
+          "calls": 5,
+          "ms": 40.85787500000015
+        },
+        {
+          "label": "spawnSync git rev-parse",
+          "calls": 4,
+          "ms": 29.233999999999753
+        },
+        {
+          "label": "cpSync scripts/lib",
+          "calls": 1,
+          "ms": 22.816667000000052
+        },
+        {
+          "label": "cpSync compiler/dist",
+          "calls": 1,
+          "ms": 17.899999999999636
+        },
+        {
+          "label": "cpSync console/dist",
+          "calls": 1,
+          "ms": 11.525874999999814
+        },
+        {
+          "label": "spawnSync git diff",
+          "calls": 1,
+          "ms": 11.015999999999622
+        },
+        {
+          "label": "cpSync kernel/dist",
+          "calls": 1,
+          "ms": 10.126416999999947
+        },
+        {
+          "label": "spawnSync git update-ref",
+          "calls": 1,
+          "ms": 9.59416600000003
+        },
+        {
+          "label": "spawnSync git tag",
+          "calls": 1,
+          "ms": 9.450667000000067
+        },
+        {
+          "label": "cpSync browser-evidence/dist",
+          "calls": 1,
+          "ms": 2.666374999999789
+        },
+        {
+          "label": "cpSync packages/beacons",
+          "calls": 1,
+          "ms": 1.8754579999999805
+        },
+        {
+          "label": "cpSync scripts/worktree.mjs",
+          "calls": 1,
+          "ms": 0.9269170000000031
+        },
+        {
+          "label": "cpSync scripts/release.mjs",
+          "calls": 1,
+          "ms": 0.5841250000000855
+        },
+        {
+          "label": "cpSync scripts/resume.mjs",
+          "calls": 1,
+          "ms": 0.25995799999986957
+        }
+      ]
+    },
+    {
+      "name": "harness",
+      "method": "Wrap node:child_process synchronous spawn/exec and node:fs cpSync/rmSync in the test worker, resynchronize builtin ESM exports, retain call counts and elapsed durations by operation. Child commands keep original arguments. Child-internal work is included in parent wall duration; counters do not decompose it.",
+      "operations": [
+        {
+          "label": "spawnSync node permissions.mjs",
+          "calls": 207,
+          "ms": 27192.39404499999
+        },
+        {
+          "label": "spawnSync node concurrent-work-requires-worktrees.mjs",
+          "calls": 116,
+          "ms": 16492.720667999987
+        },
+        {
+          "label": "spawnSync node write-observer.mjs",
+          "calls": 116,
+          "ms": 14956.382789999978
+        },
+        {
+          "label": "rmSync",
+          "calls": 1,
+          "ms": 67.1485840000023
+        },
+        {
+          "label": "cpSync skeleton/dist",
+          "calls": 1,
+          "ms": 59.74187500000005
+        },
+        {
+          "label": "cpSync dist/src",
+          "calls": 3,
+          "ms": 43.10599999999998
+        },
+        {
+          "label": "execFileSync git add",
+          "calls": 2,
+          "ms": 37.03204199999996
+        },
+        {
+          "label": "execFileSync git commit",
+          "calls": 1,
+          "ms": 31.505124999999992
+        },
+        {
+          "label": "spawnSync git ls-files",
+          "calls": 2,
+          "ms": 15.820415999999966
+        },
+        {
+          "label": "spawnSync git config",
+          "calls": 2,
+          "ms": 15.190792999999985
+        },
+        {
+          "label": "cpSync compiler/dist",
+          "calls": 1,
+          "ms": 13.061750000000018
+        },
+        {
+          "label": "execFileSync git init",
+          "calls": 1,
+          "ms": 12.950375000000008
+        },
+        {
+          "label": "cpSync console/dist",
+          "calls": 1,
+          "ms": 8.595541999999966
+        },
+        {
+          "label": "execFileSync git rev-parse",
+          "calls": 1,
+          "ms": 7.570125000000004
+        },
+        {
+          "label": "cpSync kernel/dist",
+          "calls": 1,
+          "ms": 6.482917000000043
+        },
+        {
+          "label": "spawnSync ps -p",
+          "calls": 1,
+          "ms": 4.100084000000038
+        },
+        {
+          "label": "cpSync packages/beacons",
+          "calls": 1,
+          "ms": 1.779500000000013
+        },
+        {
+          "label": "cpSync browser-evidence/dist",
+          "calls": 1,
+          "ms": 1.5772079999999846
+        },
+        {
+          "label": "cpSync beacons/src",
+          "calls": 1,
+          "ms": 1.5637499999999704
+        },
+        {
+          "label": "cpSync console/package.json",
+          "calls": 1,
+          "ms": 0.8961249999999836
+        },
+        {
+          "label": "cpSync compiler/package.json",
+          "calls": 2,
+          "ms": 0.4949590000000086
+        },
+        {
+          "label": "cpSync browser-evidence/package.json",
+          "calls": 1,
+          "ms": 0.48799999999999955
+        },
+        {
+          "label": "cpSync skeleton/package.json",
+          "calls": 2,
+          "ms": 0.4596250000000168
+        },
+        {
+          "label": "cpSync beacons/package.json",
+          "calls": 1,
+          "ms": 0.4534580000000119
+        },
+        {
+          "label": "cpSync kernel/package.json",
+          "calls": 2,
+          "ms": 0.43600000000003547
+        },
+        {
+          "label": "cpSync scripts/harness.mjs",
+          "calls": 1,
+          "ms": 0.3394169999999974
+        },
+        {
+          "label": "cpSync lib/harness.mjs",
+          "calls": 1,
+          "ms": 0.24600000000000932
+        },
+        {
+          "label": "cpSync lib/paths.mjs",
+          "calls": 1,
+          "ms": 0.23416699999998514
+        },
+        {
+          "label": "cpSync lib/git.mjs",
+          "calls": 1,
+          "ms": 0.20195800000001896
+        },
+        {
+          "label": "cpSync lib/config.mjs",
+          "calls": 1,
+          "ms": 0.19716700000000742
+        },
+        {
+          "label": "cpSync lib/terms.mjs",
+          "calls": 1,
+          "ms": 0.19404199999999605
+        },
+        {
+          "label": "cpSync lib/helpers.mjs",
+          "calls": 1,
+          "ms": 0.18312499999998977
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-# WO-197 — Three gate tasks that grew past their thirty-day medians are brought back at their cause, and the vertical suite's slowest cases are named (version assigned at activation)
+# WO-197 — Three gate tasks that grew past their thirty-day medians are brought back at their cause, and the vertical suite's slowest cases are named (v0.69.1)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

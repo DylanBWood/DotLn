@@ -22748,6 +22748,14 @@
             "WO-197"
           ],
           "at": "2026-10-07T06:46:23.021Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Returned to open by WO-197's final review. WO-197 took the three gate-task conditions. At its code identity 1641987c the fresh review gate ran harness-fixtures in 289.515 s and worktree-integration in 181.029 s, and plan conditions on 2026-10-08 no longer holds either (thresholds 397.508 s and 188.898 s). target-publish fell from 357 to 366 s in WO-196's gates to 129.847 s. That is still above its 26.705 s threshold. Criterion 2 is waived at ordinal 6, and FUP-edf3b0375b7c0eda carries planning's re-measure of the baseline. A different condition now holds: gate-task:worktree at 221.874 s against 128.139 s. It was already 212.641 s and 220.258 s in WO-196's gates on main, and WO-197 did not touch that suite. The plain-gate median is 294.876 s, below 360. Planning owns the worktree condition and lane packing. [WO-197 final review (docs/final-reviews/WO-197/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-08T00:19:26.936Z"
         }
       ]
     },
@@ -25759,6 +25767,14 @@
             "WO-197"
           ],
           "at": "2026-10-07T06:46:22.965Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-197 as the allocation specified. The order repaired five harness-fixtures cases at their cause and gave each a bound assertion, and its own fresh review gate ran the task in 289.515 s against the 326.779 s ceiling, down from 399.784 s. Alone runs took 285.816 s and 286.755 s. The machinery selection that runs harness-fixtures for a scripts/harness.mjs change is kept. [WO-197 final review (docs/final-reviews/WO-197/FINAL-001.md); docs/evidence/WO-197/decisions.md D004, D013]",
+          "reopenWhen": "harness-fixtures runs above 326.779 s fresh after WO-197 merges",
+          "targets": [],
+          "at": "2026-10-08T00:19:26.996Z"
         }
       ]
     },
@@ -30255,6 +30271,83 @@
           "reopenWhen": "npm run test:docs or npm test -- --review fails on scripts/docs-check.mjs at the reviewed identity",
           "targets": [],
           "at": "2026-10-07T16:00:49.401Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-edf3b0375b7c0eda",
+      "key": "decision:docs/evidence/WO-197/decisions.md#wo-197-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f98dd429908cb24415b20ce61ef4c92d8fbfce83b8775cd821cfc66f378fa057",
+          "ref": "docs/evidence/WO-197/decisions.md#wo-197-d002--retain-the-expanded-cases-decline-an-ineffective-cache-experiment",
+          "title": "WO-197-D002: Planning remeasures or explicitly retains WO-197 criterion 2's aggregate baselines for the expanded publication, integration and harness suites, using this order's task-durations.json, me",
+          "summary": "{ \"id\": \"WO-197-D002\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: next\", \"decision\": \"No test or runtime source is changed. The selected cases reproduce their time outside the gate, execute added scenarios and real commands, and expose no fixed wait to shorten. Retain that work under the order's first operator-review assumption. Complete the required whole-suite and gate measurements, and record missed timing criteria as unmet rather than changing the baseline or coverage.\", \"evidence\": [ \"measurements.json: target-publish's WO-112 unsupplied automated item case passes three times alone in 48.768, 48.660 and 48.311 s; integration's WO-086 symlink-blocked stub case in 21.033, 20.710 and 19.70",
+          "missing": false
+        },
+        {
+          "hash": "2bf46466b5ed0cd4462facfbe0e53981a5bf6433e8901dd3ca8bf53038135006",
+          "ref": "docs/evidence/WO-197/decisions.md#wo-197-d002--reject-the-cache-experiment-and-reopen-the-test-architecture",
+          "title": "WO-197-D002: Planning remeasures or explicitly retains WO-197 criterion 2's aggregate baselines for the expanded publication, integration and harness suites, using this order's task-durations.json, me",
+          "summary": "{ \"id\": \"WO-197-D002\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: next\", \"decision\": \"Reject the ineffective compile-cache experiment. Withdraw the initial no-change conclusion: caller-level profiles measured costs but did not prove those costs necessary. Reopen the test architecture under the operator’s direction to research alternative proof strategies and preserve assertions while removing repeated setup.\", \"evidence\": [ \"measurements.json: target-publish's WO-112 unsupplied automated item case passes three times alone in 48.768, 48.660 and 48.311 s; integration's WO-086 symlink-blocked stub case in 21.033, 20.710 and 19.703 s; harness's WO-132 live-gate refusal matrix in 57.624, 57.923 a",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "WO-197 D002 retains the expanded tests under the order’s explicit larger-work assumption. Planning must decide the baseline and the missing historical case evidence from the recorded measurements; the executor has neither changed nor waived a criterion.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-07T18:11:39.340Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "WO-197 D002 and D004-D010 replace the initial no-change conclusion with measured fixture and hashing improvements. Planning still owns the aggregate baseline decision for the expanded tests and the unavailable historical case attribution. Judge the order's final measurements and own gate row; no threshold, assertion or criterion is waived by the executor.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-07T20:38:47.678Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-da00a7d62cf18603",
+      "key": "decision:docs/evidence/WO-197/decisions.md#wo-197-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "421d7e3684ec3b17fdfb4b082fc81be30339d3319c9c8cce0bee110c4d922105",
+          "ref": "docs/evidence/WO-197/decisions.md#wo-197-d014--verification-fail-on-criteria-1-and-2-criteria-3-to-6-hold",
+          "title": "WO-197-D014: WO-197 resume: fix, or an operator off-ramp. (F1) A repair names a case or commit range only from executed per-case evidence or a retained row, never by inference. The retained rows canno",
+          "summary": "{ \"id\": \"WO-197-D014\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on criteria 1 and 2, which the executor recorded unmet and which no waiver or amendment covers. F1 (criterion 1): task-durations.json is complete and exact, but most of its rows carry no per-case durations, and D001 names no case for any task's first growth, because every first crossing predates per-case recording. F2 (criterion 2): target-publish exceeds 22.254 s both in the order's own gate row and alone; worktree-integration exceeds 156.976 s in the gate row and meets it alone; harness-fixtures meets 326.779 s in both. Criteria 3 to 6 are met at code identity 16",
+          "missing": false
+        },
+        {
+          "hash": "424247822119fd2abcd0c735ad79ca8dbc45f643c4a5ea2c3775c214b9fcd7c9",
+          "ref": "docs/evidence/WO-197/decisions.md#wo-197-d014--verification-fail-on-criteria-1-and-2-criteria-3-to-6-hold",
+          "title": "WO-197-D014: WO-197 resume: fix, or an operator off-ramp. (F1) A repair names a case or commit range only from executed per-case evidence or a retained row, never by inference. The retained rows canno",
+          "summary": "{ \"id\": \"WO-197-D014\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on criteria 1 and 2, which the executor recorded unmet and which no waiver or amendment covers. F1 (criterion 1): task-durations.json is complete and exact, but most of its rows carry no per-case durations, and D001 names no case for any task's first growth, because every first crossing predates per-case recording. F2 (criterion 2): target-publish exceeds 22.254 s both in the order's own gate row and alone; worktree-integration exceeds 156.976 s in the gate row and meets it alone; harness-fixtures meets 326.779 s in both. Criteria 3 to 6 are met at code identity 16",
+          "missing": false
+        },
+        {
+          "hash": "536d64751bd7f837bd2a3ae05574e63443b8400c3210a62b211f726e9cb37560",
+          "ref": "docs/evidence/WO-197/decisions.md#wo-197-d014--verification-fail-on-criteria-1-and-2-criteria-3-to-6-hold",
+          "title": "WO-197-D014: WO-197 resume: fix, or an operator off-ramp. (F1) A repair names a case or commit range only from executed per-case evidence or a retained row, never by inference. The retained rows canno",
+          "summary": "{ \"id\": \"WO-197-D014\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on criteria 1 and 2, which the executor recorded unmet and which no waiver or amendment covers. F1 (criterion 1): task-durations.json is complete and exact, but most of its rows carry no per-case durations, and D001 names no case for any task's first growth, because every first crossing predates per-case recording. F2 (criterion 2): target-publish exceeds 22.254 s both in the order's own gate row and alone; worktree-integration exceeds 156.976 s in the gate row and meets it alone; harness-fixtures meets 326.779 s in both. Criteria 3 to 6 are met at code identity 16",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "WO-197 D015 applies the canonical CriterionWaived events for criteria 1 and 2, recorded after VER-001. Both capture hashes match in repair-validation.json, and the verified code identity is unchanged. These operator off-ramps resolve D014 F1 and F2 while preserving their unmet factual judgments. Further aggregate-baseline work remains in the open FUP-edf3b0375b7c0eda; the original carry-ins remain for final review.",
+          "reopenWhen": "A waiver capture ceases to match, the operator changes the disposition, or re-verification finds a defect in a remaining criterion.",
+          "targets": [],
+          "at": "2026-10-07T23:41:06.973Z"
         }
       ]
     }

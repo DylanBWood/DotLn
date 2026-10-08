@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "dispatch": "resume: fix",
+  "sourceReport": "docs/verifications/WO-197/VER-001.md",
+  "entry": {
+    "observedAt": "2026-10-07T23:37:44.759Z",
+    "codeIdentity": "1641987c5cc467978750209176252c09c126cd9f1a17b7eeecc5e5be40ba5aa8",
+    "waivers": [
+      {
+        "criterionId": "1",
+        "recordedAt": "2026-10-07T23:33:14.916Z",
+        "controlPath": "docs/control/orders/WO-197.jsonl",
+        "controlLine": 5,
+        "captureHashMatches": true,
+        "reason": "Operator waives criterion 1: the retained gate rows carry no per-case timing before 2026-10-05, so no repair can name the case behind any task's first threshold crossing (VER-001 F1, WO-197-D014)."
+      },
+      {
+        "criterionId": "2",
+        "recordedAt": "2026-10-07T23:34:18.795Z",
+        "controlPath": "docs/control/orders/WO-197.jsonl",
+        "controlLine": 6,
+        "captureHashMatches": true,
+        "reason": "Operator waives criterion 2: target-publish runs 105-130 s at this identity against a 22.254 s ceiling, and worktree-integration exceeds 156.976 s only in the gate; the operator judges the ceiling unreachable (VER-001 F2, WO-197-D014)."
+      }
+    ],
+    "productGate": {
+      "checkId": "npm test",
+      "recordedAt": "2026-10-07T21:42:47.615Z",
+      "codeIdentity": "1641987c5cc467978750209176252c09c126cd9f1a17b7eeecc5e5be40ba5aa8",
+      "treeHash": "e3774428740dca8aad205dce0f905ae1b7ec6b3e",
+      "evidenceRef": "host-gate:1641987c5cc467978750209176252c09c126cd9f1a17b7eeecc5e5be40ba5aa8:npm test",
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 1477586,
+      "gateSelection": "review",
+      "executionMode": "fresh",
+      "freshSuites": 85,
+      "reusedSuites": 0,
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true
+    },
+    "documentGate": {
+      "checkId": "npm run test:docs",
+      "recordedAt": "2026-10-07T22:19:24.297Z",
+      "codeIdentity": "1641987c5cc467978750209176252c09c126cd9f1a17b7eeecc5e5be40ba5aa8",
+      "treeHash": "7608db36c7f3a4d4bfd6a81617341c5e0642f6e8",
+      "evidenceRef": "host-gate:1641987c5cc467978750209176252c09c126cd9f1a17b7eeecc5e5be40ba5aa8:npm run test:docs",
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 108850,
+      "gateSelection": "document",
+      "executionMode": "fresh",
+      "freshSuites": 29,
+      "reusedSuites": 0,
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true
+    }
+  },
+  "handoff": {
+    "observedAt": "2026-10-07T23:44:45.756Z",
+    "codeIdentity": "1641987c5cc467978750209176252c09c126cd9f1a17b7eeecc5e5be40ba5aa8",
+    "waivers": [
+      {
+        "criterionId": "1",
+        "recordedAt": "2026-10-07T23:33:14.916Z",
+        "controlPath": "docs/control/orders/WO-197.jsonl",
+        "controlLine": 5,
+        "captureHashMatches": true,
+        "reason": "Operator waives criterion 1: the retained gate rows carry no per-case timing before 2026-10-05, so no repair can name the case behind any task's first threshold crossing (VER-001 F1, WO-197-D014)."
+      },
+      {
+        "criterionId": "2",
+        "recordedAt": "2026-10-07T23:34:18.795Z",
+        "controlPath": "docs/control/orders/WO-197.jsonl",
+        "controlLine": 6,
+        "captureHashMatches": true,
+        "reason": "Operator waives criterion 2: target-publish runs 105-130 s at this identity against a 22.254 s ceiling, and worktree-integration exceeds 156.976 s only in the gate; the operator judges the ceiling unreachable (VER-001 F2, WO-197-D014)."
+      }
+    ],
+    "productGate": {
+      "checkId": "npm test",
+      "recordedAt": "2026-10-07T23:44:09.733Z",
+      "codeIdentity": "1641987c5cc467978750209176252c09c126cd9f1a17b7eeecc5e5be40ba5aa8",
+      "treeHash": "23a0b1afd80f5f0b391942e81a94b5a210a26f3b",
+      "evidenceRef": "host-gate:1641987c5cc467978750209176252c09c126cd9f1a17b7eeecc5e5be40ba5aa8:npm test",
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 7250,
+      "gateSelection": "review",
+      "executionMode": "composed",
+      "freshSuites": 1,
+      "reusedSuites": 84,
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true
+    },
+    "documentGate": {
+      "checkId": "npm run test:docs",
+      "recordedAt": "2026-10-07T23:43:50.252Z",
+      "codeIdentity": "1641987c5cc467978750209176252c09c126cd9f1a17b7eeecc5e5be40ba5aa8",
+      "treeHash": "23a0b1afd80f5f0b391942e81a94b5a210a26f3b",
+      "evidenceRef": "host-gate:1641987c5cc467978750209176252c09c126cd9f1a17b7eeecc5e5be40ba5aa8:npm run test:docs",
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 113151,
+      "gateSelection": "document",
+      "executionMode": "fresh",
+      "freshSuites": 29,
+      "reusedSuites": 0,
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true
+    }
+  }
+}

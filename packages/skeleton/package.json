@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@dotln/beacons": "0.1.1",
-    "@dotln/compiler": "0.25.4",
+    "@dotln/compiler": "0.25.5",
     "@dotln/kernel": "0.6.0",
     "typescript": "7.0.2"
   },
