@@ -1077,6 +1077,36 @@ const allowed = (result) =>
   result.decision !== "block" &&
   result.hookSpecificOutput?.permissionDecision !== "deny";
 
+// Decision matrices reuse the real pinned runtime; generated-process checks
+// separately cover stdin, stdout, loading and process ownership. Use the full
+// entry point so protocol decoding and advisory/error handling remain real.
+async function fixtureHook(root, name) {
+  const config = configFor(root, name);
+  const runtime = join(root, config.runtime.snapshot ?? ".");
+  const { runHarnessHook } = await import(
+    pathToFileURL(join(runtime, "packages/skeleton/dist/src/harness-host.js"))
+  );
+  const { feedbackBoundary: boundary } = await import(
+    pathToFileURL(
+      join(runtime, "packages/skeleton/dist/src/feedback-boundary.js"),
+    )
+  );
+  return async (request) => {
+    const write = process.stdout.write;
+    let output = "";
+    process.stdout.write = (chunk) => {
+      output += chunk;
+      return true;
+    };
+    try {
+      await runHarnessHook(config, boundary, request, JSON.stringify(request));
+      return JSON.parse(output);
+    } finally {
+      process.stdout.write = write;
+    }
+  };
+}
+
 const wo178Rows = (root, id = "synthetic-session") =>
   readFileSync(
     join(root, "docs/control/local/harness", `${sha256(id)}.jsonl`),
@@ -2176,6 +2206,7 @@ for (const mode of ["runner", "evidence", "entry"])
     `WO-125 F3 ${mode} refuses generated-hook writes throughout the gate and releases on exit`,
     { timeout: 300000 },
     async (t) => {
+      const started = performance.now();
       const testDeadline = startDeadline("harness:gate-guard-test", 300000);
       t.signal.addEventListener("abort", () => testDeadline.finish(true), {
         once: true,
@@ -2266,6 +2297,16 @@ while (!existsSync("${local}/" + stage + ".go")) {
             ? `const {runGate} = await import(${JSON.stringify(new URL("./test-runner.mjs", import.meta.url).href)}); process.exitCode = (await runGate(["--only", "format"], process.cwd())).exitCode;`
             : 'const {runHarnessEvidence} = await import("./packages/skeleton/dist/src/harness-host.js"); const checks = runHarnessEvidence(process.cwd()); if (checks.some(row => row.exitCode !== 0)) process.exitCode = 1;';
         const before = gateTreeHash(root);
+        const hooks = [
+          "permissions",
+          "concurrent-work-requires-worktrees",
+          "write-observer",
+        ];
+        const evaluate = Object.fromEntries(
+          await Promise.all(
+            hooks.map(async (hook) => [hook, await fixtureHook(root, hook)]),
+          ),
+        );
         child =
           mode === "entry"
             ? spawn("npm", ["run", "harness", "--", "evidence"], {
@@ -2416,11 +2457,14 @@ while (!existsSync("${local}/" + stage + ".go")) {
               },
             },
           ];
-          for (const hook of [
-            "permissions",
-            "concurrent-work-requires-worktrees",
-            "write-observer",
-          ])
+          for (const hook of hooks) {
+            assert.equal(
+              allowed(
+                invoke(root, hook, input(root, "PreToolUse", attempts[0])),
+              ),
+              false,
+              `${hook} generated adapter refuses during ${stage}`,
+            );
             for (const attempt of [
               ...attempts,
               // All entry points share the classifier; exercise its path matrix
@@ -2452,9 +2496,7 @@ while (!existsSync("${local}/" + stage + ".go")) {
                   ]
                 : []),
             ]) {
-              const verdict = invoke(
-                root,
-                hook,
+              const verdict = await evaluate[hook](
                 input(root, "PreToolUse", attempt),
               );
               if (allowed(verdict)) {
@@ -2494,11 +2536,25 @@ while (!existsSync("${local}/" + stage + ".go")) {
                 ),
               );
             }
-          for (const hook of [
-            "permissions",
-            "concurrent-work-requires-worktrees",
-            "write-observer",
-          ])
+          }
+          for (const hook of hooks) {
+            assert.equal(
+              allowed(
+                invoke(
+                  root,
+                  hook,
+                  input(root, "PreToolUse", {
+                    tool_name: "Write",
+                    tool_input: {
+                      file_path: `${local}/scratch.txt`,
+                      content: "local only\n",
+                    },
+                  }),
+                ),
+              ),
+              true,
+              `${hook} generated adapter admits scratch during ${stage}`,
+            );
             for (const attempt of [
               {
                 tool_name: "Write",
@@ -2540,9 +2596,7 @@ while (!existsSync("${local}/" + stage + ".go")) {
                 },
               },
             ]) {
-              const verdict = invoke(
-                root,
-                hook,
+              const verdict = await evaluate[hook](
                 input(root, "PreToolUse", attempt),
               );
               assert.equal(
@@ -2564,6 +2618,7 @@ while (!existsSync("${local}/" + stage + ".go")) {
                 );
               assert.equal(gateTreeHash(root), before);
             }
+          }
           for (const attempt of [
             {
               tool_name: "Read",
@@ -2614,6 +2669,13 @@ while (!existsSync("${local}/" + stage + ".go")) {
         if (finished) await finished;
         removeFixture(root, { recursive: true, force: true });
       }
+      const measuredMs = { runner: 10_600, evidence: 8_400, entry: 16_400 }[
+        mode
+      ];
+      assert.ok(
+        performance.now() - started <= 2 * measuredMs,
+        `${mode} matrix stays within twice its measured duration`,
+      );
     },
   );
 
@@ -5071,7 +5133,8 @@ test("WO-132 main uses one reservation for build, bootstrap, history and release
   }
 });
 
-test("WO-132 only the live product gate refuses input and success-record writes, including opaque shell writes", () => {
+test("WO-132 only the live product gate refuses input and success-record writes, including opaque shell writes", async () => {
+  const started = performance.now();
   const root = fixture();
   try {
     // VER-003 F1: these literal append destinations are protected gate inputs.
@@ -5179,30 +5242,45 @@ test("WO-132 only the live product gate refuses input and success-record writes,
         "concurrent-work-requires-worktrees",
         "write-observer",
       ]) {
+        const evaluate = await fixtureHook(root, hook);
         for (const request of writes)
           assert.equal(
-            invoke(root, hook, request).hookSpecificOutput?.permissionDecision,
+            (await evaluate(request)).hookSpecificOutput?.permissionDecision,
             "deny",
             `${hook}: ${JSON.stringify(request.tool_input)}`,
           );
         for (const request of reads)
           assert.equal(
-            allowed(invoke(root, hook, request)),
+            allowed(await evaluate(request)),
             true,
             `${hook}: ${JSON.stringify(request.tool_input)}`,
+          );
+        // The matrix exercises the real evaluator with generated configuration.
+        // Keep the stdin/stdout adapter contract through each generated process.
+        for (const request of [writes[0], reads[0]])
+          assert.deepEqual(
+            invoke(root, hook, request),
+            await evaluate(request),
           );
       }
     } finally {
       active.release();
     }
+    const evaluate = await fixtureHook(root, "permissions");
     for (const request of writes)
-      assert.equal(allowed(invoke(root, "permissions", request)), true);
+      assert.equal(allowed(await evaluate(request)), true);
+    assert.equal(allowed(invoke(root, "permissions", writes[0])), true);
   } finally {
     removeFixture(root, { recursive: true });
   }
+  assert.ok(
+    performance.now() - started <= 2 * 16_300,
+    "hook matrix stays within twice its measured 16.3 s duration",
+  );
 });
 
-test("WO-158 a live gate admits the fixed read-only list stage by stage and names it in its refusal", () => {
+test("WO-158 a live gate admits the fixed read-only list stage by stage and names it in its refusal", async () => {
+  const started = performance.now();
   const root = fixture();
   try {
     const payload = (command) =>
@@ -5267,14 +5345,15 @@ test("WO-158 a live gate admits the fixed read-only list stage by stage and name
         "concurrent-work-requires-worktrees",
         "write-observer",
       ]) {
+        const evaluate = await fixtureHook(root, hook);
         for (const command of reads)
           assert.equal(
-            allowed(invoke(root, hook, payload(command))),
+            allowed(await evaluate(payload(command))),
             true,
             `${hook}: ${command}`,
           );
         for (const command of refused) {
-          const result = invoke(root, hook, payload(command));
+          const result = await evaluate(payload(command));
           assert.equal(
             result.hookSpecificOutput?.permissionDecision,
             "deny",
@@ -5285,6 +5364,11 @@ test("WO-158 a live gate admits the fixed read-only list stage by stage and name
             listed,
           );
         }
+        for (const command of [reads[0], refused[0]])
+          assert.deepEqual(
+            invoke(root, hook, payload(command)),
+            await evaluate(payload(command)),
+          );
       }
       // WO-142-D012: a Git read runs the programs the repository configures,
       // so the list admits one only while none is configured.
@@ -5324,6 +5408,10 @@ test("WO-158 a live gate admits the fixed read-only list stage by stage and name
   } finally {
     removeFixture(root, { recursive: true });
   }
+  assert.ok(
+    performance.now() - started <= 2 * 8_100,
+    "read-only matrix stays within twice its measured 8.1 s duration",
+  );
 });
 
 test("WO-158 FINAL-001 F1: Git prefix orders terminate and chained writes remain refused during a live gate", () => {
