@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "repair": "WO-199 repair of VER-001 F1",
+  "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-199/verification-001-signal-step-probe.mjs",
+  "note": "The verifier's own probe, unchanged: the writer step completes, the verification judgment that follows is held 30 s, and the host pid alone is signalled. Before rows are VER-001's committed run.",
+  "run": {
+    "startedAt": "2026-10-08T04:10:39.650Z",
+    "finishedAt": "2026-10-08T04:11:21.467Z",
+    "durationMs": 41817,
+    "exitCode": 0
+  },
+  "rows": [
+    {
+      "variant": "subject",
+      "signal": "SIGTERM",
+      "pendingWhenSignalled": "verification",
+      "exitAfterSignalMs": {
+        "before": 29518,
+        "after": 19
+      },
+      "exitCode": 143,
+      "exitSignal": null,
+      "stderrTail": [
+        "Vertical interrupted: SIGTERM"
+      ],
+      "pendingAfter": "verification",
+      "terminalAfter": null
+    },
+    {
+      "variant": "subject",
+      "signal": "SIGINT",
+      "pendingWhenSignalled": "verification",
+      "exitAfterSignalMs": {
+        "before": 29536,
+        "after": 16
+      },
+      "exitCode": 130,
+      "exitSignal": null,
+      "stderrTail": [
+        "Vertical interrupted: SIGINT"
+      ],
+      "pendingAfter": "verification",
+      "terminalAfter": null
+    },
+    {
+      "variant": "subject",
+      "signal": "SIGHUP",
+      "pendingWhenSignalled": "verification",
+      "exitAfterSignalMs": {
+        "before": 29541,
+        "after": 19
+      },
+      "exitCode": 129,
+      "exitSignal": null,
+      "stderrTail": [
+        "Vertical interrupted: SIGHUP"
+      ],
+      "pendingAfter": "verification",
+      "terminalAfter": null
+    },
+    {
+      "variant": "HEAD disposition (dotln vertical signal listeners dropped)",
+      "signal": "SIGTERM",
+      "pendingWhenSignalled": "verification",
+      "exitAfterSignalMs": {
+        "before": 8,
+        "after": 11
+      },
+      "exitCode": null,
+      "exitSignal": "SIGTERM",
+      "stderrTail": [
+        ""
+      ],
+      "pendingAfter": "verification",
+      "terminalAfter": null
+    }
+  ]
+}

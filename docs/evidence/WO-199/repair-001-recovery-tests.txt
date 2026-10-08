@@ -1,0 +1,32 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+WO-123 scratch repositories: /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-source-host-teLB4D
+WO-123 scratch repositories: /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-source-host-5Uu4iJ
+WO-123 scratch repositories: /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-source-host-oDV1Kk
+WO-123 scratch repositories: /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-source-host-QwNPYT
+✔ WO-199 dotln vertical forwards SIGINT, SIGTERM and SIGHUP and resumes the same issue (51089.161375ms)
+WO-123 scratch repositories: /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-source-host-03W3oT
+✔ WO-199 a signal during a judgment step stops the judgment at once, keeps the step pending and a rerun resumes after its lease (13424.171667ms)
+WO-123 scratch repositories: /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-source-host-a2HZCS
+✔ WO-199 a signal during the observation settle wait ends the wait at once, keeps the step pending and a rerun resumes (12046.367334ms)
+WO-123 scratch repositories: /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-source-host-qOAnoy
+✔ WO-199 a signal during a repair writer stops its group, records the signal and a rerun resumes the repair (24606.647333ms)
+✔ WO-199 a step failure caused by a terminal-wide signal is left pending as interrupted, never recorded refused (2670.384834ms)
+✔ WO-199 real wrapped writers recover after crash, revocation and a surviving orphan (14744.498583ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 118670.157959
+bounded-result {"name":"bounded-probe","durationMs":118726,"slowestCases":[{"name":"bounded-probe","durationMs":118726,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":210562720,"peakRssBytes":441303040,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-08T05:23:51.953Z","finishedAt":"2026-10-08T05:25:50.679Z","exitCode":0,"executed":true}
+EXIT 0

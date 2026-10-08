@@ -1,0 +1,35 @@
+{
+  "startedAt": "2026-10-08T02:02:43.889Z",
+  "finishedAt": "2026-10-08T02:02:50.894Z",
+  "exitCode": 0,
+  "durationMs": 7005,
+  "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-112/final-001-vertical-recovery-probe.mjs",
+  "rows": [
+    {
+      "case": "crash-vertical",
+      "hostSignal": "SIGKILL",
+      "recordedProcessGroup": 45315,
+      "recovery": {
+        "status": "observed"
+      }
+    },
+    {
+      "case": "crash-direct",
+      "hostSignal": "SIGKILL",
+      "recordedProcessGroup": 46727,
+      "recovery": {
+        "status": "observed"
+      }
+    },
+    {
+      "case": "revoke-vertical",
+      "first": {
+        "error": "interrupted: vertical running authority was interrupted"
+      },
+      "recordedProcessGroup": "see crash cases",
+      "processStoppedRecorded": true,
+      "workerInterruptedRecorded": true,
+      "lastEvent": "WorkerInterrupted"
+    }
+  ]
+}

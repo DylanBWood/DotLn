@@ -41,13 +41,14 @@ import {
 } from "./source-change-host.js";
 import { WorkerStore } from "./worker-store.js";
 import { runFocusedTest } from "./source-change-worktree.js";
+import { interruptibleHostCall } from "./host-interruption.js";
 import {
   VerificationDriver,
   VerificationHost,
   preflightVerificationRecovery,
 } from "./verification-host.js";
 import {
-  prepareWorktreeVerification,
+  prepareInterruptibleWorktreeVerification,
   assertWorktreeSnapshot,
 } from "./verification-worktree.js";
 import type { WorkOrderTransport } from "./worker-transport.js";
@@ -77,11 +78,15 @@ export interface RepairHostOptions {
     | "model"
     | "effort"
     | "transport"
+    | "signal"
   >;
   readonly verifier: {
     readonly transport: WorkOrderTransport<EvidenceWorkerRequest>;
     readonly model: string;
     readonly effort: string;
+    /** Waits out a stopped attempt's lease before the one fresh attempt; the
+     * caller supplies the wait so an injected clock can advance. */
+    readonly awaitLease?: (leaseExpiresAt: number) => Promise<void>;
   };
   readonly now?: () => number;
   readonly onEvent?: (event: Event) => void;
@@ -105,6 +110,10 @@ export class RepairHost {
     return this.runtime.repair as unknown as RepairState;
   }
   private opening(): Record<string, unknown> {
+    const { signal, ...source } = this.options.source;
+    const { awaitLease, ...verifier } = this.options.verifier;
+    void signal;
+    void awaitLease;
     const shell = {
       workstreamId: this.workstreamId,
       round: 0,
@@ -141,15 +150,17 @@ export class RepairHost {
       host: {
         directory: this.options.directory,
         snapshotPath: this.options.snapshotPath,
+        // Runtime handles (the run's abort, the lease waiter) never enter the
+        // recorded opening, which every entry must reproduce (WO-199 D010).
         source: {
-          ...this.options.source,
+          ...source,
           transport: {
             name: this.options.source.transport.name,
             harnessVersion: this.options.source.transport.harnessVersion,
           },
         },
         verifier: {
-          ...this.options.verifier,
+          ...verifier,
           transport: {
             name: this.options.verifier.transport.name,
             harnessVersion: this.options.verifier.transport.harnessVersion,
@@ -286,16 +297,19 @@ export class RepairHost {
               `snapshot-${state.round}-${attempt++}`,
             );
           } while (existsSync(directory));
-          prepared = prepareWorktreeVerification({
-            worktree: this.sourceHost().tree.path,
-            baseCommit: state.original.workOrder.baseCommit,
-            observedCommit: state.currentCommit,
-            repo: state.subject.repo,
-            contract: this.options.subject.snapshot!.contract,
-            criteria: state.original.criteria,
-            tests: state.original.tests,
-            directory,
-          });
+          prepared = await prepareInterruptibleWorktreeVerification(
+            {
+              worktree: this.sourceHost().tree.path,
+              baseCommit: state.original.workOrder.baseCommit,
+              observedCommit: state.currentCommit,
+              repo: state.subject.repo,
+              contract: this.options.subject.snapshot!.contract,
+              criteria: state.original.criteria,
+              tests: state.original.tests,
+              directory,
+            },
+            this.options.source.signal,
+          );
           path = prepared.snapshotPath;
           driver.record("RepairSnapshotPrepared", this.now(), {
             subject: prepared.subject,
@@ -331,6 +345,15 @@ export class RepairHost {
       }
       if (!driver.state.lastResultEventId) {
         driver.persistNext(this.now());
+        // A stopped attempt keeps its lease; honor it before the one fresh
+        // attempt, as the vertical's judgments do (WO-199 D010).
+        const pending = driver.state.pending;
+        if (
+          pending?.activeEpisode &&
+          !pending.leaseExpired &&
+          this.now() < pending.leaseExpiresAt
+        )
+          await this.options.verifier.awaitLease?.(pending.leaseExpiresAt);
         await new VerificationHost({
           driver,
           transport: this.options.verifier.transport,
@@ -397,8 +420,12 @@ export class RepairHost {
               });
             else {
               this.options.afterRepairCommit?.();
-              const before = source.tree.effect();
-              const tests = this.state.order!.tests.map((test) => {
+              const before = await interruptibleHostCall(
+                this.options.source.signal,
+                () => source.tree.effect(),
+              );
+              const tests = [];
+              for (const test of this.state.order!.tests) {
                 if (
                   !sourceChangeAuthorization(
                     { kind: "Act", effect: "shell.run", payload: {} },
@@ -415,13 +442,24 @@ export class RepairHost {
                   ).authorized
                 )
                   throw new Error("repair test authority expired or revoked");
-                const result = runFocusedTest(source.tree.path, test.command);
-                if (!repairEqual(before, source.tree.effect()))
+                const result = await interruptibleHostCall(
+                  this.options.source.signal,
+                  () => runFocusedTest(source.tree.path, test.command),
+                );
+                if (
+                  !repairEqual(
+                    before,
+                    await interruptibleHostCall(
+                      this.options.source.signal,
+                      () => source.tree.effect(),
+                    ),
+                  )
+                )
                   throw new Error(
                     "repair reproduction changed committed source",
                   );
-                return result;
-              });
+                tests.push(result);
+              }
               this.feed(
                 "SourceChangeObserved",
                 { observation: outcome.observation, tests },

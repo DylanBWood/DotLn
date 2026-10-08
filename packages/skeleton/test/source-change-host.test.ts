@@ -171,7 +171,7 @@ for (const transport of ["claude", "codex"] as const)
   });
 
 for (const point of ["before-commit", "after-commit", "after-receipt"] as const)
-  test(`WO-052 AC2 real host SIGKILL ${point}: expired lease recovers one effect`, async () => {
+  test(`WO-199 real host SIGKILL ${point}: immediate recovery observes one effect`, async () => {
     const root = createSourceFixture();
     try {
       const script = `
@@ -191,11 +191,11 @@ for (const point of ["before-commit", "after-commit", "after-receipt"] as const)
       );
       assert.equal(killed.signal, "SIGKILL", killed.stderr);
       assert.equal(launches(root), 1);
-      await assert.rejects(
-        () => new SourceChangeHost(sourceFixtureOptions(root, () => 100)).run(),
-        /lease has not expired/,
-      );
-      assert.equal(launches(root), 1);
+      const immediate = await new SourceChangeHost(
+        sourceFixtureOptions(root, () => 100),
+      ).run();
+      assert.equal(immediate.status, "observed");
+      assert.equal(launches(root), point === "before-commit" ? 2 : 1);
       const host = new SourceChangeHost(
         sourceFixtureOptions(root, () => 6_000),
       );
@@ -302,9 +302,13 @@ test("WO-052 dirty committed tree and unowned ignored files refuse while preserv
     });
     await assert.rejects(() => host.run(), /committed tree is dirty/);
     assert.equal(launches(root), 1);
-    await assert.rejects(
-      () => new SourceChangeHost(sourceFixtureOptions(root, () => 6_000)).run(),
-      /committed tree is dirty/,
+    assert.equal(
+      (
+        await new SourceChangeHost(
+          sourceFixtureOptions(root, () => 6_000),
+        ).run()
+      ).status,
+      "refused",
     );
     assert.equal(
       readFileSync(join(host.tree.path, "fixture.txt"), "utf8"),
@@ -663,8 +667,13 @@ test("WO-052 wrong branch and outside-surface commits refuse without redispatch 
           ? /identity drift/
           : /outside the declared surfaces/,
       );
-      await assert.rejects(() =>
-        new SourceChangeHost(sourceFixtureOptions(root, () => 6_000)).run(),
+      assert.equal(
+        (
+          await new SourceChangeHost(
+            sourceFixtureOptions(root, () => 6_000),
+          ).run()
+        ).status,
+        "refused",
       );
       assert.equal(launches(root), 1);
       assert.ok(existsSync(host.tree.path));
@@ -751,6 +760,17 @@ test("WO-112 a result that is not one commit with the host message refuses for a
       await assert.rejects(
         () => host.run(),
         /not one commit with the host message/,
+      );
+      assert.equal(
+        (
+          events(root).find((event) => event.type === "SourceChangeRefused")
+            ?.payload as { reason: string } | undefined
+        )?.reason,
+        "host-admission-effect",
+      );
+      assert.equal(
+        events(root).some((event) => event.type === "WorkerInterrupted"),
+        false,
       );
       assert.equal(launches(root), 1);
       assert.equal(

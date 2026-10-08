@@ -1,0 +1,61 @@
+{
+  "command": "node scripts/harness.mjs bounded -- node .runtime/wo199/file-order-probe.mjs",
+  "boundary": "Host Node scheduling fixture: identical synthetic test durations and two file lanes; no Git repository or product actors.",
+  "rows": [
+    {
+      "label": "before",
+      "starts": [
+        {
+          "role": "judgment",
+          "afterMs": 0
+        },
+        {
+          "role": "recovery",
+          "afterMs": 0
+        },
+        {
+          "role": "main",
+          "afterMs": 247
+        }
+      ]
+    },
+    {
+      "label": "after",
+      "starts": [
+        {
+          "role": "main",
+          "afterMs": 0
+        },
+        {
+          "role": "judgment",
+          "afterMs": 0
+        },
+        {
+          "role": "recovery",
+          "afterMs": 450
+        }
+      ]
+    }
+  ],
+  "observation": {
+    "name": "bounded-probe",
+    "durationMs": 1544,
+    "slowestCases": [
+      {
+        "name": "bounded-probe",
+        "durationMs": 1544,
+        "exitCode": 0,
+        "granularity": "task"
+      }
+    ],
+    "peakFootprintBytes": 67069168,
+    "peakRssBytes": 238141440,
+    "memoryBudgetBytes": 12884901888,
+    "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+    "droppedOutputBytes": 0,
+    "startedAt": "2026-10-08T02:26:32.946Z",
+    "finishedAt": "2026-10-08T02:26:34.490Z",
+    "exitCode": 0,
+    "executed": true
+  }
+}

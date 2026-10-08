@@ -1,0 +1,581 @@
+{
+  "schemaVersion": 1,
+  "verification": "VER-003",
+  "subject": {
+    "branch": "wo-199",
+    "head": "0eb0afa2ecdd3c6ba5b0fd437bb5bce1fd5f4958",
+    "dispatchCheckpoint": "refs/dotln/checkpoint/WO-199/14",
+    "codeIdentity": "2b3fffa9613834721835b5532d96b0d561d4f1adb0e9678aaa945f39d2fba97c"
+  },
+  "source": "Commands this verifier ran, one at a time, under node scripts/harness.mjs bounded; local paths redacted to <repo>.",
+  "agreedRecoveryProbe": {
+    "command": "node docs/evidence/WO-112/final-001-vertical-recovery-probe.mjs",
+    "startedAt": "2026-10-08T19:50:44.640Z",
+    "finishedAt": "2026-10-08T19:50:50.042Z",
+    "exitCode": 0,
+    "rows": [
+      {
+        "case": "crash-vertical",
+        "hostSignal": "SIGKILL",
+        "recordedProcessGroup": 8539,
+        "recovery": {
+          "status": "observed"
+        }
+      },
+      {
+        "case": "crash-direct",
+        "hostSignal": "SIGKILL",
+        "recordedProcessGroup": 9780,
+        "recovery": {
+          "status": "observed"
+        }
+      },
+      {
+        "case": "revoke-vertical",
+        "first": {
+          "error": "interrupted: vertical running authority was interrupted"
+        },
+        "recordedProcessGroup": "see crash cases",
+        "processStoppedRecorded": true,
+        "workerInterruptedRecorded": true,
+        "lastEvent": "WorkerInterrupted"
+      }
+    ]
+  },
+  "final001Probe": {
+    "command": "node docs/evidence/WO-199/final-001-post-result-signal-probe.mjs <repo> subject <SIGNAL>",
+    "bytes": "unchanged since FINAL-001",
+    "runs": [
+      {
+        "startedAt": "2026-10-08T19:50:55.109Z",
+        "finishedAt": "2026-10-08T19:51:08.293Z",
+        "exitCode": 0,
+        "signal": "SIGINT",
+        "firstRun": {
+          "exitCode": 130,
+          "exitSignal": null,
+          "exitAfterMs": 11,
+          "stderr": [
+            "Vertical interrupted: SIGINT"
+          ]
+        },
+        "sourceEventsAfterSignal": [
+          "ArtifactIdentityEnforcementStarted",
+          "SourceChangeRequested",
+          "CommandPersisted",
+          "WorkerAttemptStarted",
+          "SourceChangeProcessStarted",
+          "CommandReceipt",
+          "SourceChangeProcessStopped",
+          "WorkerResultObserved",
+          "SourceChangeIntegrityChecked",
+          "WorkerInterrupted:SIGINT"
+        ],
+        "stateAfterSignal": {
+          "terminal": null,
+          "pending": "source-change"
+        },
+        "sourceReceiptsAfterSignal": 0,
+        "rerun": {
+          "exitCode": 0,
+          "exitSignal": null
+        },
+        "stateAfterRerun": {
+          "terminal": "resolved",
+          "pending": null
+        },
+        "rerunTestAfter": [
+          {
+            "exitCode": 0,
+            "signal": null
+          }
+        ]
+      },
+      {
+        "startedAt": "2026-10-08T19:51:18.039Z",
+        "finishedAt": "2026-10-08T19:51:31.171Z",
+        "exitCode": 0,
+        "signal": "SIGTERM",
+        "firstRun": {
+          "exitCode": 143,
+          "exitSignal": null,
+          "exitAfterMs": 11,
+          "stderr": [
+            "Vertical interrupted: SIGTERM"
+          ]
+        },
+        "sourceEventsAfterSignal": [
+          "ArtifactIdentityEnforcementStarted",
+          "SourceChangeRequested",
+          "CommandPersisted",
+          "WorkerAttemptStarted",
+          "SourceChangeProcessStarted",
+          "CommandReceipt",
+          "SourceChangeProcessStopped",
+          "WorkerResultObserved",
+          "SourceChangeIntegrityChecked",
+          "WorkerInterrupted:SIGTERM"
+        ],
+        "stateAfterSignal": {
+          "terminal": null,
+          "pending": "source-change"
+        },
+        "sourceReceiptsAfterSignal": 0,
+        "rerun": {
+          "exitCode": 0,
+          "exitSignal": null
+        },
+        "stateAfterRerun": {
+          "terminal": "resolved",
+          "pending": null
+        },
+        "rerunTestAfter": [
+          {
+            "exitCode": 0,
+            "signal": null
+          }
+        ]
+      },
+      {
+        "startedAt": "2026-10-08T19:51:31.281Z",
+        "finishedAt": "2026-10-08T19:51:44.346Z",
+        "exitCode": 0,
+        "signal": "SIGHUP",
+        "firstRun": {
+          "exitCode": 129,
+          "exitSignal": null,
+          "exitAfterMs": 10,
+          "stderr": [
+            "Vertical interrupted: SIGHUP"
+          ]
+        },
+        "sourceEventsAfterSignal": [
+          "ArtifactIdentityEnforcementStarted",
+          "SourceChangeRequested",
+          "CommandPersisted",
+          "WorkerAttemptStarted",
+          "SourceChangeProcessStarted",
+          "CommandReceipt",
+          "SourceChangeProcessStopped",
+          "WorkerResultObserved",
+          "SourceChangeIntegrityChecked",
+          "WorkerInterrupted:SIGHUP"
+        ],
+        "stateAfterSignal": {
+          "terminal": null,
+          "pending": "source-change"
+        },
+        "sourceReceiptsAfterSignal": 0,
+        "rerun": {
+          "exitCode": 0,
+          "exitSignal": null
+        },
+        "stateAfterRerun": {
+          "terminal": "resolved",
+          "pending": null
+        },
+        "rerunTestAfter": [
+          {
+            "exitCode": 0,
+            "signal": null
+          }
+        ]
+      }
+    ]
+  },
+  "ver001Probe": {
+    "command": "node docs/evidence/WO-199/verification-001-signal-step-probe.mjs",
+    "startedAt": "2026-10-08T19:53:28.453Z",
+    "finishedAt": "2026-10-08T19:54:01.288Z",
+    "exitCode": 0,
+    "rows": [
+      {
+        "variant": "subject",
+        "signal": "SIGTERM",
+        "exitAfterSignalMs": 28,
+        "exitCode": 143,
+        "exitSignal": null,
+        "pendingAfter": "verification"
+      },
+      {
+        "variant": "subject",
+        "signal": "SIGINT",
+        "exitAfterSignalMs": 21,
+        "exitCode": 130,
+        "exitSignal": null,
+        "pendingAfter": "verification"
+      },
+      {
+        "variant": "subject",
+        "signal": "SIGHUP",
+        "exitAfterSignalMs": 30,
+        "exitCode": 129,
+        "exitSignal": null,
+        "pendingAfter": "verification"
+      },
+      {
+        "variant": "HEAD disposition (dotln vertical signal listeners dropped)",
+        "signal": "SIGTERM",
+        "exitAfterSignalMs": 10,
+        "exitCode": null,
+        "exitSignal": "SIGTERM",
+        "pendingAfter": "verification"
+      }
+    ]
+  },
+  "variations": {
+    "command": "node docs/evidence/WO-199/verification-003-variation-probe.mjs <repo> <variant>",
+    "preload": "docs/evidence/WO-199/verification-003-hold-preload.mjs",
+    "note": "Rows from the committed bytes. host-only signals the CLI pid alone; group signals its process group as a terminal Ctrl-C does; rerun-reobserve signals the rerun's host re-observation test; pre-dispatch signals the focused test before any writer launch.",
+    "host-only": {
+      "window": [
+        "2026-10-08T20:03:36.075Z",
+        "2026-10-08T20:03:54.795Z"
+      ],
+      "exit": 0,
+      "runs": [
+        {
+          "index": 0,
+          "step": {
+            "select": "post",
+            "target": "host",
+            "signal": "SIGTERM"
+          },
+          "held": true,
+          "exit": {
+            "code": 143,
+            "signal": null,
+            "afterMs": 5597,
+            "stderr": [
+              "Vertical interrupted: SIGTERM"
+            ]
+          },
+          "state": {
+            "terminal": null,
+            "pending": "source-change"
+          },
+          "writerAttempts": 1,
+          "receipts": [],
+          "events": [
+            "ArtifactIdentityEnforcementStarted",
+            "SourceChangeRequested",
+            "CommandPersisted",
+            "WorkerAttemptStarted",
+            "SourceChangeProcessStarted",
+            "CommandReceipt",
+            "SourceChangeProcessStopped",
+            "WorkerResultObserved",
+            "SourceChangeIntegrityChecked:unchanged",
+            "WorkerInterrupted:interrupted:SIGTERM"
+          ]
+        },
+        {
+          "index": 1,
+          "step": null,
+          "exit": {
+            "code": 0,
+            "signal": null,
+            "stderr": [
+              ""
+            ]
+          },
+          "state": {
+            "terminal": "resolved",
+            "pending": null
+          },
+          "writerAttempts": 1,
+          "receipts": [
+            {
+              "result": "completed",
+              "testAfter": [
+                0,
+                null
+              ]
+            }
+          ],
+          "events": [
+            "ArtifactIdentityEnforcementStarted",
+            "SourceChangeRequested",
+            "CommandPersisted",
+            "WorkerAttemptStarted",
+            "SourceChangeProcessStarted",
+            "CommandReceipt",
+            "SourceChangeProcessStopped",
+            "WorkerResultObserved",
+            "SourceChangeIntegrityChecked:unchanged",
+            "WorkerInterrupted:interrupted:SIGTERM",
+            "SourceChangeIntegrityChecked:unchanged",
+            "SourceChangeIntegrityChecked:unchanged",
+            "SourceChangeObserved:exit=0:sig=null",
+            "CommandResult",
+            "WorkerCompleted"
+          ]
+        }
+      ]
+    },
+    "rerun-reobserve": {
+      "window": [
+        "2026-10-08T20:03:54.876Z",
+        "2026-10-08T20:04:11.689Z"
+      ],
+      "exit": 0,
+      "runs": [
+        {
+          "index": 0,
+          "step": {
+            "select": "post",
+            "target": "group",
+            "signal": "SIGINT"
+          },
+          "held": true,
+          "exit": {
+            "code": 130,
+            "signal": null,
+            "afterMs": 27,
+            "stderr": [
+              "Vertical interrupted: SIGINT"
+            ]
+          },
+          "state": {
+            "terminal": null,
+            "pending": "source-change"
+          },
+          "writerAttempts": 1,
+          "receipts": [],
+          "events": [
+            "ArtifactIdentityEnforcementStarted",
+            "SourceChangeRequested",
+            "CommandPersisted",
+            "WorkerAttemptStarted",
+            "SourceChangeProcessStarted",
+            "CommandReceipt",
+            "SourceChangeProcessStopped",
+            "WorkerResultObserved",
+            "SourceChangeIntegrityChecked:unchanged",
+            "WorkerInterrupted:interrupted:SIGINT"
+          ]
+        },
+        {
+          "index": 1,
+          "step": {
+            "select": "post",
+            "target": "group",
+            "signal": "SIGHUP"
+          },
+          "held": true,
+          "exit": {
+            "code": 129,
+            "signal": null,
+            "afterMs": 11,
+            "stderr": [
+              "Vertical interrupted: SIGHUP"
+            ]
+          },
+          "state": {
+            "terminal": null,
+            "pending": "source-change"
+          },
+          "writerAttempts": 1,
+          "receipts": [],
+          "events": [
+            "ArtifactIdentityEnforcementStarted",
+            "SourceChangeRequested",
+            "CommandPersisted",
+            "WorkerAttemptStarted",
+            "SourceChangeProcessStarted",
+            "CommandReceipt",
+            "SourceChangeProcessStopped",
+            "WorkerResultObserved",
+            "SourceChangeIntegrityChecked:unchanged",
+            "WorkerInterrupted:interrupted:SIGINT",
+            "SourceChangeIntegrityChecked:unchanged"
+          ]
+        },
+        {
+          "index": 2,
+          "step": null,
+          "exit": {
+            "code": 0,
+            "signal": null,
+            "stderr": [
+              ""
+            ]
+          },
+          "state": {
+            "terminal": "resolved",
+            "pending": null
+          },
+          "writerAttempts": 1,
+          "receipts": [
+            {
+              "result": "completed",
+              "testAfter": [
+                0,
+                null
+              ]
+            }
+          ],
+          "events": [
+            "ArtifactIdentityEnforcementStarted",
+            "SourceChangeRequested",
+            "CommandPersisted",
+            "WorkerAttemptStarted",
+            "SourceChangeProcessStarted",
+            "CommandReceipt",
+            "SourceChangeProcessStopped",
+            "WorkerResultObserved",
+            "SourceChangeIntegrityChecked:unchanged",
+            "WorkerInterrupted:interrupted:SIGINT",
+            "SourceChangeIntegrityChecked:unchanged",
+            "SourceChangeIntegrityChecked:unchanged",
+            "SourceChangeIntegrityChecked:unchanged",
+            "SourceChangeObserved:exit=0:sig=null",
+            "CommandResult",
+            "WorkerCompleted"
+          ]
+        }
+      ]
+    },
+    "pre-dispatch": {
+      "window": [
+        "2026-10-08T20:04:11.768Z",
+        "2026-10-08T20:04:23.532Z"
+      ],
+      "exit": 0,
+      "runs": [
+        {
+          "index": 0,
+          "step": {
+            "select": "pre",
+            "target": "group",
+            "signal": "SIGINT"
+          },
+          "held": true,
+          "exit": {
+            "code": 130,
+            "signal": null,
+            "afterMs": 17,
+            "stderr": [
+              "Vertical interrupted: SIGINT"
+            ]
+          },
+          "state": {
+            "terminal": null,
+            "pending": "source-change"
+          },
+          "writerAttempts": 0,
+          "receipts": [],
+          "events": [
+            "ArtifactIdentityEnforcementStarted",
+            "SourceChangeRequested",
+            "CommandPersisted"
+          ]
+        },
+        {
+          "index": 1,
+          "step": null,
+          "exit": {
+            "code": 0,
+            "signal": null,
+            "stderr": [
+              ""
+            ]
+          },
+          "state": {
+            "terminal": "resolved",
+            "pending": null
+          },
+          "writerAttempts": 1,
+          "receipts": [
+            {
+              "result": "completed",
+              "testAfter": [
+                0,
+                null
+              ]
+            }
+          ],
+          "events": [
+            "ArtifactIdentityEnforcementStarted",
+            "SourceChangeRequested",
+            "CommandPersisted",
+            "WorkerAttemptStarted",
+            "SourceChangeProcessStarted",
+            "CommandReceipt",
+            "SourceChangeProcessStopped",
+            "WorkerResultObserved",
+            "SourceChangeIntegrityChecked:unchanged",
+            "SourceChangeIntegrityChecked:unchanged",
+            "SourceChangeObserved:exit=0:sig=null",
+            "CommandResult",
+            "WorkerCompleted"
+          ]
+        }
+      ]
+    }
+  },
+  "coincidentRefusal": {
+    "command": "node docs/evidence/WO-199/verification-003-coincident-refusal-probe.mjs <repo>",
+    "window": [
+      "2026-10-08T20:04:23.620Z",
+      "2026-10-08T20:04:25.837Z"
+    ],
+    "exit": 0,
+    "coincident-signal": {
+      "first": {
+        "threw": "Error:interrupted:interrupted: SIGINT"
+      },
+      "afterFirst": [
+        "SourceChangeProcessStopped",
+        "WorkerResultObserved",
+        "WorkerInterrupted:interrupted:SIGINT"
+      ],
+      "rerun": {
+        "threw": "Error::source-change committed tree is dirty; preserve for inspection"
+      },
+      "afterRerun": [
+        "SourceChangeIntegrityChecked"
+      ]
+    },
+    "no-signal-control": {
+      "first": {
+        "threw": "Error::source-change committed tree is dirty; preserve for inspection"
+      },
+      "afterFirst": [
+        "SourceChangeProcessStopped",
+        "WorkerResultObserved",
+        "SourceChangeIntegrityChecked",
+        "SourceChangeIntegrityChecked",
+        "SourceChangeRefused:host-admission-effect"
+      ],
+      "rerun": {
+        "status": "refused",
+        "reason": "host-admission-effect"
+      },
+      "afterRerun": [
+        "CommandResult",
+        "WorkerCompleted"
+      ]
+    }
+  },
+  "suites": {
+    "integrity": {
+      "command": "node --test packages/skeleton/dist/test/source-change-integrity.test.js",
+      "startedAt": "2026-10-08T19:54:07.905Z",
+      "finishedAt": "2026-10-08T19:54:58.288Z",
+      "exitCode": 0,
+      "tests": 19,
+      "pass": 19,
+      "fail": 0
+    },
+    "recovery": {
+      "command": "node --test scripts/test-vertical.recovery.mjs",
+      "startedAt": "2026-10-08T19:57:38.998Z",
+      "finishedAt": "2026-10-08T20:01:41.776Z",
+      "exitCode": 0,
+      "tests": 9,
+      "pass": 9,
+      "fail": 0
+    }
+  }
+}

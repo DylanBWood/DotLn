@@ -1,0 +1,85 @@
+{
+  "source": "Bounded command stdout from this resume: fix dispatch",
+  "recovery": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-112/final-001-vertical-recovery-probe.mjs",
+    "rows": [
+      {
+        "case": "crash-vertical",
+        "hostSignal": "SIGKILL",
+        "recordedProcessGroup": 71337,
+        "recovery": {
+          "status": "observed"
+        }
+      },
+      {
+        "case": "crash-direct",
+        "hostSignal": "SIGKILL",
+        "recordedProcessGroup": 72738,
+        "recovery": {
+          "status": "observed"
+        }
+      },
+      {
+        "case": "revoke-vertical",
+        "first": {
+          "error": "interrupted: vertical running authority was interrupted"
+        },
+        "recordedProcessGroup": "see crash cases",
+        "processStoppedRecorded": true,
+        "workerInterruptedRecorded": true,
+        "lastEvent": "WorkerInterrupted"
+      }
+    ],
+    "execution": {
+      "name": "bounded-probe",
+      "durationMs": 5464,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 5464,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 66658968,
+      "peakRssBytes": 186925056,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-08T18:19:49.235Z",
+      "finishedAt": "2026-10-08T18:19:54.699Z",
+      "exitCode": 0,
+      "executed": true
+    }
+  },
+  "hostSuites": {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-reporter=tap --test-concurrency=1 packages/skeleton/dist/test/source-change-host.test.js packages/skeleton/dist/test/source-change-integrity.test.js packages/skeleton/dist/test/verification-worktree.test.js packages/skeleton/dist/test/repair-host.test.js",
+    "summary": [
+      "# tests 48",
+      "# pass 48",
+      "# fail 0",
+      "# duration_ms 98120.179833"
+    ],
+    "execution": {
+      "name": "bounded-probe",
+      "durationMs": 98174,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 98174,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 110753064,
+      "peakRssBytes": 280035328,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-08T18:16:28.320Z",
+      "finishedAt": "2026-10-08T18:18:06.494Z",
+      "exitCode": 0,
+      "executed": true
+    }
+  }
+}

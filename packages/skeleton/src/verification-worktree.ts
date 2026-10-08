@@ -29,6 +29,7 @@ import {
 } from "./gate-deadlines.mjs";
 import { discoverySandbox } from "./discovery-sandbox.js";
 import { WorkerFailure } from "./worker-protocol.js";
+import { interruptibleHostCall } from "./host-interruption.js";
 
 const refuse = (detail: string): never => {
   throw new WorkerFailure("profile-refused", detail);
@@ -232,13 +233,19 @@ function witnessTest(
 /** Host-only preparation precedes VerificationOpened and the verifier episode.
  * Each named test gets a new files-only checkout; no shared Git metadata is writable.
  * This first-proof confinement is not a hostile-process security boundary. */
-export function prepareWorktreeVerification(
-  options: WorktreeVerificationOptions,
-): {
+interface PreparedSnapshot {
+  readonly sealed: VerificationTask;
+  readonly snapshotPath: string;
+  readonly testPaths: string[];
+}
+export interface PreparedWorktreeVerification {
   readonly subject: VerificationSubject;
   readonly snapshotPath: string;
   readonly testPaths: readonly string[];
-} {
+}
+function prepareSnapshot(
+  options: WorktreeVerificationOptions,
+): PreparedSnapshot {
   const source = canonicalDirectory(options.worktree);
   const parent = canonicalDirectory(dirname(options.directory));
   if (
@@ -331,32 +338,43 @@ export function prepareWorktreeVerification(
   mkdirSync(options.directory, { mode: 0o700 });
   const snapshotPath = join(options.directory, "snapshot");
   materialize(snapshotPath, sealed.subject.files, true);
-  const testPaths: string[] = [];
-  const evidence = sealed.subject.snapshot!.tests.map((test, ordinal) => {
-    assertWorktreeSnapshot(sealed, snapshotPath);
-    const path = join(options.directory, `test-${ordinal}`);
-    materialize(path, sealed.subject.files, false);
-    testPaths.push(path);
-    const witness = witnessTest(
-      sealed.subject,
-      sealed.criteria.find((c) => c.criterionId === test.criterionId)!,
-      test,
-      path,
-      ordinal,
-    );
-    // Tests may create caches, but may not alter any sealed input (including tests).
-    for (const file of sealed.subject.files) {
-      const absolute = join(path, file.path);
-      if (
-        realpathSync(absolute) !== absolute ||
-        readText(absolute) !== file.contents ||
-        modeOf(lstatSync(absolute).mode) !== file.mode
-      )
-        refuse(`named test changed a snapshot input: ${file.path}`);
-    }
-    assertWorktreeSnapshot(sealed, snapshotPath);
-    return witness;
-  });
+  return { sealed, snapshotPath, testPaths: [] };
+}
+function snapshotWitness(
+  prepared: PreparedSnapshot,
+  test: NamedVerificationTest,
+  ordinal: number,
+): VerificationEvidence {
+  const { sealed, snapshotPath, testPaths } = prepared;
+  assertWorktreeSnapshot(sealed, snapshotPath);
+  const path = join(dirname(snapshotPath), `test-${ordinal}`);
+  materialize(path, sealed.subject.files, false);
+  testPaths.push(path);
+  const witness = witnessTest(
+    sealed.subject,
+    sealed.criteria.find((c) => c.criterionId === test.criterionId)!,
+    test,
+    path,
+    ordinal,
+  );
+  // Tests may create caches, but may not alter any sealed input (including tests).
+  for (const file of sealed.subject.files) {
+    const absolute = join(path, file.path);
+    if (
+      realpathSync(absolute) !== absolute ||
+      readText(absolute) !== file.contents ||
+      modeOf(lstatSync(absolute).mode) !== file.mode
+    )
+      refuse(`named test changed a snapshot input: ${file.path}`);
+  }
+  assertWorktreeSnapshot(sealed, snapshotPath);
+  return witness;
+}
+function finishSnapshot(
+  prepared: PreparedSnapshot,
+  evidence: readonly VerificationEvidence[],
+): PreparedWorktreeVerification {
+  const { sealed, snapshotPath, testPaths } = prepared;
   const subject = compileVerificationTask(
     "snapshot_preflight",
     sealed.criteria,
@@ -369,4 +387,37 @@ export function prepareWorktreeVerification(
   )
     refuse("snapshot metadata drift");
   return { subject, snapshotPath, testPaths };
+}
+
+export function prepareWorktreeVerification(
+  options: WorktreeVerificationOptions,
+): PreparedWorktreeVerification {
+  const prepared = prepareSnapshot(options);
+  const evidence = prepared.sealed.subject.snapshot!.tests.map(
+    (test, ordinal) => snapshotWitness(prepared, test, ordinal),
+  );
+  return finishSnapshot(prepared, evidence);
+}
+
+/** The vertical admits no witness data or failure caused by its terminal
+ * signal. An unfinished preparation stays inspectable; the caller retries in
+ * a fresh directory, with new tests, before publishing a prepared receipt. */
+export async function prepareInterruptibleWorktreeVerification(
+  options: WorktreeVerificationOptions,
+  signal: AbortSignal | undefined,
+): Promise<PreparedWorktreeVerification> {
+  const prepared = await interruptibleHostCall(signal, () =>
+    prepareSnapshot(options),
+  );
+  const evidence: VerificationEvidence[] = [];
+  for (const [
+    ordinal,
+    test,
+  ] of prepared.sealed.subject.snapshot!.tests.entries())
+    evidence.push(
+      await interruptibleHostCall(signal, () =>
+        snapshotWitness(prepared, test, ordinal),
+      ),
+    );
+  return finishSnapshot(prepared, evidence);
 }

@@ -5,6 +5,11 @@ import type { WorkOrder } from "@dotln/compiler";
 import { WorkerStore } from "./worker-store.js";
 import { RetryableTriageError } from "./vertical-judgment-host.js";
 import {
+  deliverPendingSignal,
+  throwIfInterrupted,
+} from "./host-interruption.js";
+export { interruption, throwIfInterrupted } from "./host-interruption.js";
+import {
   baselineClass,
   foldVertical,
   nextVerticalCommand,
@@ -39,6 +44,8 @@ export interface VerticalHostOptions {
   startStep?: (command: VerticalCommand) => Promise<boolean>;
   active?: (launch: boolean) => Promise<boolean>;
   settled?: (receipt: VerticalReceipt, terminal: boolean) => Promise<void>;
+  /** Operator interruption preserves the current command for a later run. */
+  signal?: AbortSignal;
 }
 export class VerticalHost {
   readonly store: WorkerStore;
@@ -108,6 +115,9 @@ export class VerticalHost {
         });
       }
       for (let count = 0; count < steps && !this.state!.terminal; count++) {
+        // An interruption stops before the next step. A step that returned
+        // despite it keeps its receipt below, so a rerun never repeats it.
+        throwIfInterrupted(this.options.signal);
         const command =
           this.state!.pending ?? nextVerticalCommand(this.state!)!;
         if (!this.state!.pending)
@@ -193,6 +203,9 @@ export class VerticalHost {
             },
           };
         else {
+          // The permitted and start checks above awaited; a signal during
+          // them must not start the step.
+          throwIfInterrupted(this.options.signal);
           try {
             result = await this.options.ports.execute(
               command,
@@ -200,6 +213,7 @@ export class VerticalHost {
               this.options.active,
             );
           } catch (error) {
+            if (await deliverPendingSignal(this.options.signal)) throw error;
             if (
               command.step === "resolution" &&
               error instanceof RetryableTriageError
@@ -245,6 +259,11 @@ export class VerticalHost {
               };
           }
         }
+        // Primitive observations guard their synchronous children before
+        // returning. Deliver a queued signal even on a successful return;
+        // an already accepted clean effect keeps its receipt (D010), while
+        // the loop stops before the next step and the CLI keeps its exit code.
+        await deliverPendingSignal(this.options.signal);
         const receipt: VerticalReceipt = { command, ...result };
         this.append("VerticalStepCompleted", receipt);
         // The event is authoritative; these per-step files are readable receipts.

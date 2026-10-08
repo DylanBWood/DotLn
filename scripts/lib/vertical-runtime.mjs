@@ -43,7 +43,11 @@ import {
   intentBudgetUsed,
   verticalProgram,
 } from "../../packages/skeleton/dist/src/vertical.js";
-import { VerticalHost } from "../../packages/skeleton/dist/src/vertical-host.js";
+import {
+  VerticalHost,
+  interruption,
+  throwIfInterrupted,
+} from "../../packages/skeleton/dist/src/vertical-host.js";
 import { verticalResident } from "../../packages/skeleton/dist/src/vertical-resident.js";
 import {
   residentVerticalScheduling,
@@ -55,6 +59,7 @@ import {
 } from "../../packages/skeleton/dist/src/resident-state.js";
 import { ResidentStore } from "../../packages/skeleton/dist/src/resident-store.js";
 import { createVerticalPrimitives } from "./vertical-primitives.mjs";
+import { verticalTransport } from "./vertical-transport.mjs";
 import {
   JudgmentRecordError,
   liveTransport,
@@ -96,6 +101,13 @@ const hostFault = (error) =>
     : typeof error?.status === "number"
       ? `exit ${error.status}`
       : judgmentFailure(error);
+/** A terminal-wide signal kills a synchronous child before this process has
+ * handled it; a few loop turns let the handler run first (WO-199 D010). */
+const interruptedSoon = async (signal) => {
+  for (let turn = 0; signal && !signal.aborted && turn < 5; turn++)
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  return signal?.aborted ?? false;
+};
 /** An unreadable target is the host's condition, never the draft's input. */
 const readTarget = (target, args, options) => {
   try {
@@ -372,6 +384,7 @@ export function createVerticalEntry({
   configuration,
   now = Date.now,
   external = {},
+  signal,
 }) {
   const cfg = configuration;
   const runs = join(directory, "vertical");
@@ -417,7 +430,14 @@ export function createVerticalEntry({
         name: String(issue.number),
         task: "intake",
         subject: intakeSubject(bundle),
-        transport: () => external.judge ?? liveTransport(cfg),
+        // The run's abort stops a held intake episode as it stops every
+        // step's child (WO-199 D010); the episode itself is unchanged.
+        transport: () =>
+          verticalTransport(
+            external.judge ?? liveTransport(cfg),
+            undefined,
+            signal ? { signal } : {},
+          ),
         model: cfg.workers.model,
         effort: cfg.workers.effort,
         now,
@@ -577,6 +597,7 @@ export function createVerticalEntry({
               now,
               external,
               active,
+              signal,
             }).execute(command, state);
           } catch (error) {
             external.onError?.(command.step, error);
@@ -604,6 +625,7 @@ export async function runVerticalIssue({
   external = {},
   steps,
   afterStep,
+  signal,
 }) {
   need(
     Number.isSafeInteger(issue) && issue > 0,
@@ -632,6 +654,7 @@ export async function runVerticalIssue({
     configuration: cfg,
     now,
     external,
+    signal,
   });
   const url = `https://${cfg.repositoryId}/issues/${issue}`;
   const selected = cfg.issues.find((i) => i.number === issue);
@@ -679,10 +702,13 @@ export async function runVerticalIssue({
     };
     if (!context.ready) return busy;
     let input;
+    throwIfInterrupted(signal);
     try {
       input = await entry.ports.prepare(draft, context.phase, context.spent);
       decision = admitIntent(input, cfg.portfolio, cfg.grants);
     } catch (error) {
+      // An interrupted admission files and records nothing; the rerun retries.
+      if (await interruptedSoon(signal)) throw interruption(signal);
       decision = {
         kind: "NeedsHuman",
         step: error instanceof IntentPreparationRefusal ? error.step : "bundle",
@@ -768,7 +794,9 @@ export async function runVerticalIssue({
       () => cfg.resident.environment.capabilities,
     ).settled,
     ...(afterStep ? { afterStep } : {}),
+    ...(signal ? { signal } : {}),
   });
+  throwIfInterrupted(signal);
   try {
     return await host.run({ ...(steps === undefined ? {} : { steps }) });
   } catch (error) {

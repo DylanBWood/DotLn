@@ -1,4 +1,4 @@
-# WO-199 — The vertical survives an interrupt and a host crash: a writer launched through the vertical records its process group, an interrupted `dotln vertical` stops its writer and resumes on rerun, and a host refusal after a writer's result records its own reason (version assigned at activation)
+# WO-199 — The vertical survives an interrupt and a host crash: a writer launched through the vertical records its process group, an interrupted `dotln vertical` stops its writer and resumes on rerun, and a host refusal after a writer's result records its own reason (v0.69.2)
 
 **Model:** any capable model; the live feedback episode runs on Codex
 `gpt-6.1-sol` at `max` or Claude Code `claude-opus-5-5` at `xhigh`. State
