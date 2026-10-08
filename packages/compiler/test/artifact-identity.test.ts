@@ -51,7 +51,7 @@ const key = (entry: ArtifactIdentityV1["componentDefinitions"][number]) =>
   canonicalStringify([entry.componentKind, entry.componentId, entry.version]);
 
 for (const fixture of fixtures) {
-  test(`WO-029 ${fixture.name}: exact identity, manifest membership and independent no-BigInt FNV agreement`, () => {
+  test(`WO-029 ${fixture.name}: exact identity, manifest membership and reference FNV agreement`, () => {
     const first = compiled(fixture.graph, fixture.environment);
     const second = compiled(fixture.graph, fixture.environment);
     assert.equal(
@@ -219,6 +219,36 @@ for (const fixture of fixtures) {
     });
   });
 }
+
+test("WO-197 FNV-1a64 preserves every bit against an independent BigInt oracle", () => {
+  const reference = (value: string) => {
+    let hash = 0xcbf29ce484222325n;
+    for (const byte of new TextEncoder().encode(value))
+      hash = ((hash ^ BigInt(byte)) * 0x100000001b3n) & 0xffffffffffffffffn;
+    return hash.toString(16).padStart(16, "0");
+  };
+  let seed = 197;
+  const random = () => (seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0);
+  const values = [
+    "",
+    "a",
+    "hello",
+    "雪🚀",
+    "\u0000\ud800\udfff",
+    // Every UTF-16 code unit includes lone surrogates and every UTF-8 width.
+    String.fromCharCode(...Array.from({ length: 65_536 }, (_, i) => i)),
+    "runtime bytes\n".repeat(20_000),
+  ];
+  for (let i = 0; i < 1000; i++)
+    values.push(
+      String.fromCharCode(
+        ...Array.from({ length: random() % 512 }, () => random() & 0xffff),
+      ),
+    );
+  for (const value of values) assert.equal(fnv1a64(value), reference(value));
+  assert.equal(fnv1a64(""), "cbf29ce484222325");
+  assert.equal(fnv1a64("hello"), "a430d84680aabd0b");
+});
 
 test("WO-029 definition v1 pins the exact domain, canonical Unicode preimage and independent fixed value", () => {
   const ambient: AmbientEffect = {

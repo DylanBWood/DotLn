@@ -470,10 +470,19 @@ export const normalizeCompiledProgram = (
   ) as CompiledProgram;
 
 export const fnv1a64 = (value: string): string => {
-  let hash = 0xcbf29ce484222325n;
-  for (const byte of new TextEncoder().encode(value))
-    hash = ((hash ^ BigInt(byte)) * 0x100000001b3n) & 0xffffffffffffffffn;
-  return hash.toString(16).padStart(16, "0");
+  // The prime is 435 + 256 * 2^32. Both products and their sum stay below
+  // 2^42, so Number arithmetic is exact before each modulo-2^32 reduction.
+  // Keep this self-contained: generated recovery hooks embed its source.
+  let high = 0xcbf29ce4;
+  let low = 0x84222325;
+  for (const byte of new TextEncoder().encode(value)) {
+    low = (low ^ byte) >>> 0;
+    const product = low * 0x1b3;
+    high =
+      (high * 0x1b3 + Math.floor(product / 0x100000000) + low * 0x100) >>> 0;
+    low = product >>> 0;
+  }
+  return high.toString(16).padStart(8, "0") + low.toString(16).padStart(8, "0");
 };
 
 export const semanticHash = (value: CompiledProgram): string =>
