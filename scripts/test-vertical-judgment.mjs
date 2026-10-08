@@ -372,7 +372,7 @@ for (const [finished, checkStates, awaited, reason] of [
     }
   });
 
-test("WO-112 a resolution checkout clears a killed run's leftover, always removes itself, and refuses a relocated directory before any add", () => {
+test("WO-112 a resolution checkout clears a killed run's leftover, always removes itself, and refuses a relocated directory before any add", async () => {
   const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-checkout-")));
   try {
     const target = join(root, "target");
@@ -393,6 +393,29 @@ test("WO-112 a resolution checkout clears a killed run's leftover, always remove
     assert.equal(
       withDetachedCheckout(target, directory, child, head, read),
       "a\n",
+    );
+    assert.equal(existsSync(tree), false);
+    assert.doesNotMatch(registered(), /input-tree/u);
+    // Snapshot preparation now yields to deliver terminal signals. The
+    // checkout must remain available until that preparation settles.
+    assert.equal(
+      await withDetachedCheckout(target, directory, child, head, async (at) => {
+        await new Promise((resolve) => setImmediate(resolve));
+        assert.ok(registered().includes(at));
+        return read(at);
+      }),
+      "a\n",
+    );
+    assert.equal(existsSync(tree), false);
+    assert.doesNotMatch(registered(), /input-tree/u);
+    await assert.rejects(
+      () =>
+        withDetachedCheckout(target, directory, child, head, async (at) => {
+          await new Promise((resolve) => setImmediate(resolve));
+          assert.equal(read(at), "a\n");
+          throw new Error("asynchronous seal failed");
+        }),
+      /asynchronous seal failed/u,
     );
     assert.equal(existsSync(tree), false);
     assert.doesNotMatch(registered(), /input-tree/u);
@@ -2066,6 +2089,50 @@ test("WO-112 VER-006 F1 cleanup cannot mask a primary publication or invalid lin
         );
       });
     }
+  } finally {
+    f.close();
+  }
+});
+
+test("WO-199 a signal during a held intake episode ends the admission at once, records nothing and a rerun admits", async () => {
+  const f = await verticalFixture();
+  try {
+    useModelIntake(f);
+    const controller = new AbortController();
+    const judge = judgmentDouble((request, count) =>
+      count === 1 ? new Promise(() => {}) : intakeByUnit(request),
+    );
+    const external = { ...f.external, judge: judge.transport };
+    const held = runVerticalIssue({
+      directory: f.directory,
+      issue: 1,
+      configuration: readVerticalConfiguration(f.directory, f.launchpad),
+      now: () => {
+        f.tick();
+        return f.now();
+      },
+      external,
+      signal: controller.signal,
+    });
+    void held.catch(() => {});
+    const deadline = Date.now() + 10_000;
+    while (judge.calls.length < 1 && Date.now() < deadline)
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    assert.equal(judge.calls.length, 1);
+    controller.abort("SIGTERM");
+    await assert.rejects(
+      held,
+      (error) => error instanceof WorkerFailure && error.code === "interrupted",
+    );
+    const records = join(f.directory, "issue-intake");
+    assert.equal(existsSync(records) ? readdirSync(records).length : 0, 0);
+    const result = await runIssue(f, external);
+    assert.equal(
+      result.terminal?.kind,
+      "resolved",
+      JSON.stringify(result.terminal),
+    );
+    assert.equal(judge.calls.length, 2);
   } finally {
     f.close();
   }

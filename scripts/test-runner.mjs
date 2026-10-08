@@ -616,7 +616,11 @@ export const suites = [
   }),
   nodeTests("target-publish", "scripts/test-target-publish.mjs"),
   nodeTests("vertical", "scripts/test-vertical.mjs", {
-    args: ["scripts/test-vertical-judgment.mjs"],
+    // Node starts files in name order; keep the main file in the first pair.
+    args: [
+      "scripts/test-vertical-judgment.mjs",
+      "scripts/test-vertical.recovery.mjs",
+    ],
     fileConcurrency: 2,
     loadSlots: 2,
     product: true,

@@ -39,6 +39,110 @@ const events = (root: string) => decodeLog(readFileSync(logPath(root), "utf8"));
 const dispose = (root: string) =>
   rmSync(root, { recursive: true, force: true });
 
+test("WO-199 the vertical wrapper records a group and recovers stopped or surviving writers", async () => {
+  const { crashRecovery, revokeRecovery } = await import(
+    new URL(
+      "../../../../scripts/fixtures/vertical/recovery.mjs",
+      import.meta.url,
+    ).href
+  );
+  for (const options of [
+    { wrapped: true },
+    { wrapped: false },
+    { wrapped: true, alive: true },
+    { wrapped: true, alive: true, leaderless: true },
+    { wrapped: true, alive: true, leaderless: true, grandchild: true },
+  ]) {
+    const row = await crashRecovery(options);
+    assert.equal(row.hostSignal, "SIGKILL");
+    assert.equal(typeof row.recordedProcessGroup, "number");
+    assert.equal(row.processIdentityRecorded, true);
+    assert.deepEqual(row.recovery, { status: "observed" });
+    assert.equal(row.writerAlive, false);
+    assert.equal(row.processStoppedRecorded, true);
+    if (options.leaderless) assert.equal(row.descendantStopped, true);
+  }
+  const revoked = await revokeRecovery();
+  assert.match(revoked.first.error, /authority was interrupted/);
+  assert.equal(typeof revoked.recordedProcessGroup, "number");
+  assert.equal(revoked.processStoppedRecorded, true);
+  assert.equal(revoked.workerInterruptedRecorded, true);
+  assert.equal(revoked.workerInterruptionReason, "interrupted");
+});
+
+test("WO-199 death before the start marker never admits the held native writer", async () => {
+  const { crashRecovery } = await import(
+    new URL(
+      "../../../../scripts/fixtures/vertical/recovery.mjs",
+      import.meta.url,
+    ).href
+  );
+  const row = await crashRecovery({ beforeRecord: true, alive: true });
+  assert.equal(row.hostSignal, "SIGKILL");
+  assert.equal(row.recordedProcessGroup, null);
+  assert.equal(row.writerStarted, false);
+  assert.deepEqual(row.recovery, { status: "observed" });
+  assert.equal(row.writerAlive, false);
+  assert.equal(row.processStoppedRecorded, true);
+});
+
+test("WO-199 recovery never signals a group with a mismatched birth identity", async () => {
+  const { crashRecovery } = await import(
+    new URL(
+      "../../../../scripts/fixtures/vertical/recovery.mjs",
+      import.meta.url,
+    ).href
+  );
+  const row = await crashRecovery({ alive: true, mismatch: true });
+  assert.match(row.recovery.error, /identity is unproven/);
+  assert.equal(row.writerAlive, true);
+  assert.equal(row.processStoppedRecorded, false);
+});
+
+test("WO-199 post-result effect and receipt refusals retain their own host check", async () => {
+  for (const check of ["effect", "receipt"]) {
+    const root = createSourceFixture();
+    try {
+      const options = sourceFixtureOptions(root, () => 10);
+      if (check === "receipt")
+        options.store.saveSourceChangeReceipt = () => {
+          throw new Error("synthetic receipt refusal");
+        };
+      const host = new SourceChangeHost({
+        ...options,
+        afterResult() {
+          if (check === "effect")
+            writeFileSync(join(host.tree.path, "fixture.txt"), "dirty\n");
+        },
+      });
+      await assert.rejects(
+        () => host.run(),
+        check === "effect"
+          ? /committed tree is dirty/
+          : /synthetic receipt refusal/,
+      );
+      const rows = events(root);
+      assert.equal(
+        (
+          rows.find((event) => event.type === "SourceChangeRefused")
+            ?.payload as { reason: string } | undefined
+        )?.reason,
+        `host-admission-${check}`,
+      );
+      assert.equal(
+        rows.some((event) => event.type === "WorkerInterrupted"),
+        false,
+      );
+      assert.equal(
+        rows.some((event) => event.type === "SourceChangeObserved"),
+        false,
+      );
+    } finally {
+      dispose(root);
+    }
+  }
+});
+
 // Synthetic SHA-1 commit-graph corruption using Git's documented CDAT format.
 // Recompute the checksum so the host cannot rely on a malformed-file warning.
 const forgeGraph = (
@@ -376,10 +480,11 @@ const legacySourceLog = (root: string, keepTermination = false) => {
         ].includes(event.type),
     )
     .map((event, index) => {
-      const { sharedState: _sharedState, ...payload } = event.payload as Record<
-        string,
-        JsonValue
-      >;
+      const {
+        sharedState: _sharedState,
+        launchGated: _launchGated,
+        ...payload
+      } = event.payload as Record<string, JsonValue>;
       return { ...event, eventId: `evt_${index + 1}`, payload };
     });
   writeFileSync(logPath(root), encodeLog(legacy));
@@ -903,7 +1008,7 @@ test("WO-112 F3 a killed host's unchecked commit is judged against its persisted
   }
 });
 
-test("WO-112 F3 lease expiry does not imply a killed host's writer group has exited", async () => {
+test("WO-199 recovery stops a killed host's surviving writer before adjudication", async () => {
   const root = createSourceFixture();
   let group: number | undefined;
   try {
@@ -930,20 +1035,21 @@ test("WO-112 F3 lease expiry does not imply a killed host's writer group has exi
     );
     group = (started?.payload as { processGroup: number }).processGroup;
     assert.ok(Number.isSafeInteger(group) && group! > 1);
-    await assert.rejects(
-      () => new SourceChangeHost(sourceFixtureOptions(root, () => 6_000)).run(),
-      /prior worker group is still present/,
-    );
+    const recovered = await new SourceChangeHost(
+      sourceFixtureOptions(root, () => 6_000),
+    ).run();
+    assert.equal(recovered.status, "observed");
+    assert.throws(() => process.kill(-group!, 0), { code: "ESRCH" });
     assert.equal(
       events(root).some(
         (event) => event.type === "SourceChangeIntegrityChecked",
       ),
-      false,
+      true,
     );
     assert.equal(
       events(root).filter((event) => event.type === "WorkerAttemptStarted")
         .length,
-      1,
+      2,
     );
   } finally {
     if (group) {

@@ -8,8 +8,41 @@
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
+#include <signal.h>
+#include <sys/wait.h>
 
 int main(int argc, char **argv) {
+  if (argc > 2 && strcmp(argv[1], "--supervise") == 0) {
+    // Remain the source writer's group leader after its host dies. The actual
+    // writer never inherits the release/result channel and starts only on go.
+    signal(SIGINT, SIG_IGN); signal(SIGTERM, SIG_IGN); signal(SIGHUP, SIG_IGN);
+    signal(SIGPIPE, SIG_IGN);
+    char go;
+    if (read(3, &go, 1) != 1) return 5;
+    pid_t writer = fork();
+    if (writer < 0) return 5;
+    if (writer == 0) {
+      close(3);
+      signal(SIGINT, SIG_DFL); signal(SIGTERM, SIG_DFL); signal(SIGHUP, SIG_DFL);
+      signal(SIGPIPE, SIG_DFL);
+      execvp(argv[2], argv + 2);
+      perror("DotLn writer launch"); _exit(127);
+    }
+    // Only the writer holds its input; the supervisor owns no output beyond
+    // its private result channel. A vanished host cannot make SIGPIPE kill it.
+    close(STDIN_FILENO); close(STDOUT_FILENO); close(STDERR_FILENO);
+    int result;
+    while (waitpid(writer, &result, 0) < 0) if (errno != EINTR) return 5;
+    char response[64];
+    int length = WIFEXITED(result)
+      ? snprintf(response, sizeof(response), "worker-exit %d\n", WEXITSTATUS(result))
+      : snprintf(response, sizeof(response), "worker-signal %d\n", WTERMSIG(result));
+    if (length > 0) write(3, response, length);
+    // Stop every remaining group member even without the original host. The
+    // authenticated channel preserves the writer's exit result for that host.
+    kill(-getpid(), SIGKILL);
+    return 5;
+  }
   if (argc > 2 && strcmp(argv[1], "--launch") == 0) {
     char go;
     if (read(3, &go, 1) != 1) return 5;

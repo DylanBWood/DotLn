@@ -1170,7 +1170,11 @@ source `revisionId`, the existing StoryContract `inferences`, and a reviewed
 `baselineAssessment` described below. `profile`
 uses the existing architecture/command-to-directory surface profile. `workers`
 requires `transport` (`codex-cli-exec` or `claude-cli-print`), `model` and
-`effort`. Set `DOTLN_LIVE_WORKERS=1` for real model actors. The complete fixture
+`effort`. Set `DOTLN_LIVE_WORKERS=1` for real model actors. Native writers
+launch through small C helpers (a launch gate and, on macOS, a process
+identity reader) that the host compiles on first use of each helper version,
+so a C compiler is a prerequisite: `clang` with `xcrun` from the Command Line
+Tools or Xcode on macOS, `cc` elsewhere. The complete fixture
 configuration is in `scripts/fixtures/vertical/fixture.mjs`. A running resident
 reads `vertical.json` once at start, while the command reads it on every call:
 restart the resident after editing it, or a draft filed for a newly added issue
@@ -1283,7 +1287,50 @@ rule, and revocation stops further worker effects. Either entry reconciles a
 durable step receipt with an interrupted resident settlement. Expiry records
 a named stop without launching another effect.
 `vertical/<key>/events.jsonl` and its `receipts/` retain
-completed steps; neither entry repeats them. Blocking review routes through at
+completed steps; neither entry repeats them.
+An operator SIGINT, SIGTERM or SIGHUP forwards that signal to the run's writer
+group, settles it within 10 seconds (escalating to SIGKILL when needed), records
+the signal in `WorkerInterrupted`, and exits 130, 143 or 129. The current step
+stays pending, so an immediate rerun recovers its recorded termination without
+waiting for the stopped writer's lease. In every other step the same signal
+ends the run's asynchronous work at once: an in-flight baseline, verification
+or review judgment, a repair verifier or an admission intake episode is
+stopped and, where it has a store, that store records `WorkerInterrupted`; a
+triage episode is stopped and its command stays undecided; the observation
+step's check poll and a judgment's lease wait end. The source host handles a
+pending terminal signal before admitting a synchronous Git read or focused
+test: an interrupted call records no observation, refusal or unreadable
+integrity finding. The source-change step stays pending; a rerun checks
+integrity and re-tests the writer's existing commit without spending another
+writer dispatch. Baseline and candidate snapshot tests follow the same rule:
+an interrupted preparation publishes no witness receipt, retains its files
+for inspection and reruns the tests in a fresh copy. An already accepted clean
+step keeps its receipt. The step loop and CLI deliver pending signals before
+recording a returned step and removing the signal listeners. A synchronous child
+command in flight returns first: a Git command within 15 seconds where the
+source host runs one, a focused test within 180 seconds, a snapshot witness
+test within 30 seconds per test, and a forge read or push without a timeout.
+A rerun of an interrupted judgment or repair verifier waits out the stopped
+episode's lease, at most 5 seconds, before its one fresh attempt. A repeated
+signal never extends the wait, and 15 seconds after the command handles the
+first signal it exits regardless; that backstop also bounds the witnesses
+step's browser scenario, which the signal does not reach, and the next run
+recovers from the records. Two interrupted writer dispatches exhaust the
+step's launch budget; interrupted host re-observation of a committed result
+uses no dispatch. Native writers wait at an exec gate
+until the host saves their process group and birth identity. The native launcher
+remains the group supervisor until the writer ends, then stops any surviving
+members even if the original host died. After a host crash,
+recovery stops a surviving group only when the recorded native identity proves
+ownership, including surviving descendants after the leader exits. Where the
+host cannot prove that ownership, it refuses to signal. Death before the start
+record leaves the native gate unreleased and admits no writer. Recovery then
+checks repository integrity and reads or redispatches the bounded outcome. Host checks
+that refuse a returned result in the run that receives it record
+`SourceChangeRefused` with `host-admission-<check>`; they are never transport
+interruptions. A rerun that re-observes an unreceipted committed result does not
+yet record that refusal (WO-199 D015).
+Blocking review routes through at
 most two bounded repairs and fresh verification; a failed review gets one
 fresh retry. Preparation cites host-run checks and declares unnamed build/lint
 commands not applicable. Publication requires delivery readiness and outward

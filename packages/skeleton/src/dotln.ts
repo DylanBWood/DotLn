@@ -18,6 +18,7 @@ import { FakeVerificationTransport } from "./verification-fake.js";
 import { runFeedbackSelfhost } from "./feedback-selfhost.js";
 import { harnessControl } from "./harness-host.js";
 import { ResidentHost } from "./resident-host.js";
+import { interruptionCheckpoint } from "./host-interruption.js";
 import { recordPresence, answerHandoff } from "./resident-store.js";
 import {
   recordUsageObservation,
@@ -89,12 +90,54 @@ try {
       !/^[1-9][0-9]*$/u.test(verticalIssue ?? "")
     )
       throw new Error("usage: dotln vertical <issue> --store <directory>");
-    const result = await (
-      await verticalBridge()
-    ).runVerticalIssue({
-      directory: resolve(directory),
-      issue: Number(verticalIssue),
+    const abort = new AbortController();
+    const signals = { SIGINT: 130, SIGTERM: 143, SIGHUP: 129 } as const;
+    // The run's abort forwards the signal to a live writer and settles its
+    // group within 10 s; every other in-flight episode or timed wait ends at
+    // once (WO-199 VER-001 F1). Should the run still not end, exit anyway and
+    // let the next run recover from the records. The bound must exceed the
+    // writer's 9 s SIGKILL escalation plus settlement; it caps the waits the
+    // abort does not reach (a browser scenario, a prior group's termination
+    // poll) and counts from when this process handles the signal, which a
+    // synchronous child command in flight delays until it returns.
+    const INTERRUPT_EXIT_MS = 15_000;
+    const handlers = Object.entries(signals).map(([signal, code]) => {
+      const stop = () => {
+        // A repeated signal never extends the wait.
+        if (abort.signal.aborted) return;
+        process.exitCode = code;
+        abort.abort(signal);
+        setTimeout(() => {
+          console.error(
+            `Vertical interrupted: ${signal}; exiting ${INTERRUPT_EXIT_MS} ms after the signal`,
+          );
+          process.exit(code);
+        }, INTERRUPT_EXIT_MS).unref();
+      };
+      process.on(signal, stop);
+      return { signal, stop };
     });
+    let result;
+    try {
+      result = await (
+        await verticalBridge()
+      ).runVerticalIssue({
+        directory: resolve(directory),
+        issue: Number(verticalIssue),
+        signal: abort.signal,
+      });
+      // The final synchronous stretch can finish before Node delivers a
+      // terminal signal. Keep the listeners until a poll turn admits success.
+      await interruptionCheckpoint(abort.signal);
+    } catch (error) {
+      if (!abort.signal.aborted) throw error;
+      console.error(`Vertical interrupted: ${abort.signal.reason}`);
+      // Any live writer has been settled and recorded, and every other
+      // in-flight episode or wait stopped; the step stays pending.
+      process.exit(process.exitCode);
+    } finally {
+      for (const { signal, stop } of handlers) process.off(signal, stop);
+    }
     // A paused continuation prints its position, never its binding or bundle.
     const paused = Array.isArray(result.receipts)
       ? {
@@ -105,7 +148,8 @@ try {
         }
       : result;
     console.log(JSON.stringify(result.terminal ?? paused, null, 2));
-    if (result.terminal?.kind !== "resolved") process.exitCode = 1;
+    if (result.terminal?.kind !== "resolved" && !abort.signal.aborted)
+      process.exitCode = 1;
   } else if (command === "presence") {
     if (
       options.size !== 1 ||

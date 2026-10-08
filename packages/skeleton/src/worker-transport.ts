@@ -81,6 +81,8 @@ export interface WorkerLaunch {
   readonly resident?: { readonly store: string; readonly episodeId: string };
   /** A source writer's descendants share a group the host can stop/observe. */
   readonly ownProcessGroup?: boolean;
+  /** Native exec gate, released only after the source host saves its identity. */
+  readonly launchGate?: string;
   readonly binary: string;
   readonly args: readonly string[];
   readonly cwd: string;
@@ -98,8 +100,9 @@ export interface RunningProcess {
   readonly accepted: Promise<void>;
   readonly completed: Promise<ProcessResult>;
   readonly alive: () => boolean;
-  readonly kill: () => void;
+  readonly kill: (signal?: NodeJS.Signals) => void;
   readonly processGroup?: number;
+  readonly start?: () => void;
 }
 export type ProcessRunner = (launch: WorkerLaunch) => RunningProcess;
 
@@ -115,39 +118,61 @@ export const runWorkerProcess: ProcessRunner = (launch) => {
   const grouped =
     process.platform !== "win32" &&
     Boolean(launch.resident || launch.ownProcessGroup);
-  const child = spawn(launch.binary, [...launch.args], {
-    cwd: launch.cwd,
-    stdio: ["pipe", fd, "pipe"],
-    // Auth is resolved by the CLI, never copied into a prompt or log. Restrict
-    // model tool environments separately in the canonical launch below.
-    env: launch.resident
-      ? {
-          ...(launch.env ?? process.env),
-          DOTLN_RESIDENT_STORE: launch.resident.store,
-          DOTLN_RESIDENT_EPISODE_ID: launch.resident.episodeId,
-        }
-      : (launch.env ?? process.env),
-    ...(grouped ? { detached: true } : {}),
-  });
+  const child = spawn(
+    launch.launchGate ?? launch.binary,
+    launch.launchGate
+      ? ["--supervise", launch.binary, ...launch.args]
+      : [...launch.args],
+    {
+      cwd: launch.cwd,
+      stdio: [
+        "pipe",
+        fd,
+        "pipe",
+        ...(launch.launchGate ? ["pipe" as const] : []),
+      ],
+      // Auth is resolved by the CLI, never copied into a prompt or log. Restrict
+      // model tool environments separately in the canonical launch below.
+      env: launch.resident
+        ? {
+            ...(launch.env ?? process.env),
+            DOTLN_RESIDENT_STORE: launch.resident.store,
+            DOTLN_RESIDENT_EPISODE_ID: launch.resident.episodeId,
+          }
+        : (launch.env ?? process.env),
+      ...(grouped ? { detached: true } : {}),
+    },
+  );
   let live = false;
   let settled = false;
   let stderr = "";
   let failure: WorkerFailure | undefined;
-  const kill = () => {
+  let escalation: ReturnType<typeof setTimeout> | undefined;
+  let pendingSignal: NodeJS.Signals | undefined;
+  let writerExit: number | undefined;
+  let writerSignal = false;
+  const kill = (signal: NodeJS.Signals = "SIGKILL") => {
     if (settled) return;
     failure ??= new WorkerFailure("interrupted");
+    if (!live) {
+      pendingSignal = signal;
+      return;
+    }
     if (grouped && child.pid) {
       try {
-        process.kill(-child.pid, "SIGKILL");
+        process.kill(-child.pid, signal);
       } catch {}
       child.stderr?.destroy();
       child.stdin?.destroy();
-    } else child.kill("SIGKILL");
+    } else child.kill(signal);
+    if (signal !== "SIGKILL" && !escalation)
+      escalation = setTimeout(() => kill(), 9_000);
   };
   const accepted = new Promise<void>((resolve, reject) => {
     child.once("spawn", () => {
       live = true;
       resolve();
+      if (pendingSignal) kill(pendingSignal);
     });
     child.once("error", () => reject(new WorkerFailure("transport-failed")));
   });
@@ -191,13 +216,19 @@ export const runWorkerProcess: ProcessRunner = (launch) => {
       observation.finish();
       live = false;
       clearTimeout(deadline);
+      if (escalation) clearTimeout(escalation);
       clearInterval(bound);
       try {
         if (fstatSync(fd).size > 1_000_000)
           failure = new WorkerFailure("output-limit");
-        if (failure || signal)
+        if (failure || writerSignal || (signal && writerExit === undefined))
           reject(failure ?? new WorkerFailure("interrupted"));
-        else resolve({ stdout: readFileSync(file, "utf8"), stderr, exitCode });
+        else
+          resolve({
+            stdout: readFileSync(file, "utf8"),
+            stderr,
+            exitCode: writerExit ?? exitCode,
+          });
       } finally {
         closeSync(fd);
         rmSync(capture, { recursive: true });
@@ -206,12 +237,37 @@ export const runWorkerProcess: ProcessRunner = (launch) => {
   });
   void completed.catch(() => {});
   child.stdin!.end(launch.input);
+  const gate = child.stdio[3] as import("node:stream").Duplex | undefined;
+  // Closing this pipe before release admits no writer. After release it carries
+  // the supervisor's result; the actual writer has no descriptor for it.
+  gate?.on("error", () => {});
+  let gateOutput = "";
+  gate?.on("data", (chunk: Buffer) => {
+    gateOutput += chunk.toString("utf8");
+    if (gateOutput.length > 64) {
+      failure ??= new WorkerFailure("transport-failed");
+      kill();
+    }
+    const exit = gateOutput.match(/^worker-exit (\d+)\n$/u);
+    if (exit) writerExit = Number(exit[1]);
+    if (/^worker-signal \d+\n$/u.test(gateOutput)) writerSignal = true;
+  });
+  let started = false;
   return {
     accepted,
     completed,
     alive: () => live,
     kill,
     ...(grouped && child.pid ? { processGroup: child.pid } : {}),
+    ...(gate
+      ? {
+          start() {
+            if (started || settled || failure) return;
+            started = true;
+            gate.end("g");
+          },
+        }
+      : {}),
   };
 };
 
@@ -219,9 +275,13 @@ export interface TransportDispatch<T = WorkerResult> {
   readonly receipt: Promise<CommandReceipt>;
   readonly completed: Promise<T>;
   readonly alive: () => boolean;
-  readonly kill: () => void;
+  readonly kill: (signal?: NodeJS.Signals) => void;
   /** Local writer group; absence cannot establish post-crash termination. */
   readonly processGroup?: number;
+  /** Wrappers may admit asynchronously; await the actual launch before recording. */
+  readonly processGroupReady?: Promise<number | undefined>;
+  /** Release a native writer only after its start marker is durable. */
+  readonly start?: () => void;
   readonly usage?: Promise<ReturnType<typeof usageObservation>>;
   /** Codex only: the isolated episode's record once the process has ended. */
   readonly isolation?: Promise<CodexEpisodeIsolation>;
@@ -231,9 +291,11 @@ export interface WorkOrderTransport<
 > {
   readonly name: WorkerTransportName;
   readonly harnessVersion: string;
+  readonly supportsDeferredStart?: boolean;
   dispatch(
     request: R,
     now: () => number,
+    options?: { readonly launchGate?: string },
   ): TransportDispatch<TransportResultFor<R>>;
 }
 
@@ -1262,6 +1324,7 @@ function decodeResult<R extends TransportRequest>(
 abstract class CliWorkOrderTransport implements WorkOrderTransport {
   abstract readonly name: WorkerTransportName;
   readonly harnessVersion: string;
+  readonly supportsDeferredStart = true;
   constructor(
     private readonly binary: string,
     observedVersion: string,
@@ -1297,6 +1360,7 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
   dispatch<R extends TransportRequest>(
     request: R,
     now: () => number,
+    options?: { readonly launchGate?: string },
   ): TransportDispatch<TransportResultFor<R>> {
     const schemaDirectory = mkdtempSync(join(tmpdir(), "dotln-worker-schema-"));
     let episode: CodexEpisode | undefined;
@@ -1340,6 +1404,7 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
         cwd: request.cwd,
         input: transportPrompt(request, this.name),
         ...(isWriterRequest(request) ? { ownProcessGroup: true } : {}),
+        ...(options?.launchGate ? { launchGate: options.launchGate } : {}),
         env: episode?.env ?? launchEnv,
         timeoutMs: isEntropyReviewRequest(request)
           ? ENTROPY_REVIEW_LIMITS.timeoutMs
@@ -1386,6 +1451,7 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
         alive: process.alive,
         kill: process.kill,
         ...(process.processGroup ? { processGroup: process.processGroup } : {}),
+        ...(process.start ? { start: process.start } : {}),
         usage,
         ...(isolation ? { isolation } : {}),
       };

@@ -10,6 +10,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { basename, join } from "node:path";
+import { setTimeout as delay } from "node:timers/promises";
 import { compileLoadout, compileVerificationTask } from "@dotln/compiler";
 import { decodeLog } from "@dotln/kernel";
 import { WorkerStore } from "../../packages/skeleton/dist/src/worker-store.js";
@@ -20,7 +21,7 @@ import {
   preflightVerificationRecovery,
 } from "../../packages/skeleton/dist/src/verification-host.js";
 import {
-  prepareWorktreeVerification,
+  prepareInterruptibleWorktreeVerification,
   assertWorktreeSnapshot,
 } from "../../packages/skeleton/dist/src/verification-worktree.js";
 import { RepairHost } from "../../packages/skeleton/dist/src/repair-host.js";
@@ -31,6 +32,7 @@ import {
   verticalEqual,
 } from "../../packages/skeleton/dist/src/vertical.js";
 import { SOURCE_CHANGE_DENIED } from "../../packages/skeleton/dist/src/worker-protocol.js";
+import { throwIfInterrupted } from "../../packages/skeleton/dist/src/vertical-host.js";
 import { sourceGit } from "../../packages/skeleton/dist/src/source-change-worktree.js";
 import { writerLoadout, publishTargetOrder } from "./target-publish.mjs";
 import { deliveryContractHash } from "./github-body.mjs";
@@ -105,10 +107,18 @@ export function withDetachedCheckout(target, directory, child, revision, use) {
     // Twice forced: a kill during `worktree add` can leave it locked.
     sourceGit(target, "worktree", "remove", "--force", "--force", own);
   sourceGit(target, "worktree", "add", "--detach", tree, revision);
+  const remove = () => sourceGit(target, "worktree", "remove", "--force", tree);
+  let deferred = false;
   try {
-    return use(tree);
+    const result = use(tree);
+    if (result && typeof result.then === "function") {
+      const pending = Promise.resolve(result).finally(remove);
+      deferred = true;
+      return pending;
+    }
+    return result;
   } finally {
-    sourceGit(target, "worktree", "remove", "--force", tree);
+    if (!deferred) remove();
   }
 }
 
@@ -214,14 +224,40 @@ export function createVerticalPrimitives({
   now = Date.now,
   external = {},
   active,
+  signal,
 }) {
   mkdirSync(directory, { recursive: true });
+  // The wrapper exempts source-change writers; see verticalTransport.
   const transport = (kind) =>
-    verticalTransport(external[kind] ?? liveTransport(cfg), active);
-  const waitUntil =
-    external.waitUntil ??
-    ((deadline) =>
-      new Promise((done) => setTimeout(done, Math.max(0, deadline - now()))));
+    verticalTransport(
+      external[kind] ?? liveTransport(cfg),
+      active,
+      signal ? { signal } : {},
+    );
+  /** A timed wait the run's abort ends at once, with the hosts' typed reason;
+   * a test's own waiter advances its clock instead. */
+  const waitUntil = async (deadline) => {
+    throwIfInterrupted(signal);
+    if (external.waitUntil) return external.waitUntil(deadline);
+    try {
+      await delay(
+        Math.max(0, deadline - now()),
+        undefined,
+        signal ? { signal } : {},
+      );
+    } catch (error) {
+      throwIfInterrupted(signal);
+      throw error;
+    }
+  };
+  /** A stopped attempt keeps the primitive's lease until it expires. Wait it
+   * out before asking the same host for its one fresh attempt: a review retry,
+   * and any judgment or repair verifier a rerun resumes after an interruption
+   * or crash, which the host would otherwise refuse as still leased and the
+   * fold would seal (WO-199 VER-001 F1). */
+  const awaitLease = async (deadline) => {
+    while (now() < deadline) await waitUntil(deadline);
+  };
   /** A declared automated reviewer posts before its check run finishes. Wait,
    * bounded by the settle limit, authority expiry and running authority, until
    * every declared check has finished at the observed head, so a reviewer still
@@ -230,6 +266,7 @@ export function createVerticalPrimitives({
     const settle = external.settle ?? SETTLE_LIMITS;
     const deadline = Math.min(now() + settle.timeoutMs, expiresAt);
     for (;;) {
+      throwIfInterrupted(signal);
       const observed = observeOnce();
       // A declared reviewer that was cancelled, skipped or failed may never have
       // posted; only a finished, successful run settles it.
@@ -317,23 +354,33 @@ export function createVerticalPrimitives({
       model: cfg.workers.model,
       effort: cfg.workers.effort,
       transport: transport("writer"),
+      ...(signal ? { signal } : {}),
     };
   }
-  function snapshot(state, name, tree, commit) {
+  async function snapshot(state, name, tree, commit) {
     const saved = join(directory, `${name}.json`);
     let prepared;
     if (existsSync(saved)) prepared = read(saved);
     else {
-      prepared = prepareWorktreeVerification({
-        worktree: tree,
-        baseCommit: state.workOrder.baseCommit,
-        observedCommit: commit,
-        repo: cfg.repositoryId,
-        contract: repairContract(compiled(state).writer.program.workOrder),
-        criteria: state.binding.criteria,
-        tests: state.binding.tests,
-        directory: join(directory, name),
-      });
+      // Keep interrupted preparations for inspection; their tests and files
+      // were never admitted. A rerun observes the commit in a fresh copy.
+      let attempt = 0;
+      let snapshotDirectory = join(directory, name);
+      while (existsSync(snapshotDirectory))
+        snapshotDirectory = join(directory, `${name}-${++attempt}`);
+      prepared = await prepareInterruptibleWorktreeVerification(
+        {
+          worktree: tree,
+          baseCommit: state.workOrder.baseCommit,
+          observedCommit: commit,
+          repo: cfg.repositoryId,
+          contract: repairContract(compiled(state).writer.program.workOrder),
+          criteria: state.binding.criteria,
+          tests: state.binding.tests,
+          directory: snapshotDirectory,
+        },
+        signal,
+      );
       write(saved, prepared);
     }
     if (
@@ -412,21 +459,13 @@ export function createVerticalPrimitives({
         });
       }
       if (!driver.state.pending) driver.persistNext(now());
-      // A failed actor retains the primitive's lease until it expires. Honor
-      // that boundary before asking the same host for its one fresh attempt.
+      const leased = driver.state.pending;
       if (
-        command.step === "review" &&
-        command.attempt === 1 &&
-        driver.state.pending?.activeEpisode
-      ) {
-        const deadline = driver.state.pending.leaseExpiresAt;
-        if (external.waitUntil) await external.waitUntil(deadline);
-        else
-          while (now() < deadline)
-            await new Promise((done) =>
-              setTimeout(done, Math.min(1000, deadline - now())),
-            );
-      }
+        leased?.activeEpisode &&
+        !leased.leaseExpired &&
+        now() < leased.leaseExpiresAt
+      )
+        await awaitLease(leased.leaseExpiresAt);
       await new VerificationHost({
         driver,
         transport: transport(
@@ -473,7 +512,7 @@ export function createVerticalPrimitives({
         );
         if (classification.kind === "unresolved")
           return held(classification.findings[0]);
-        const prepared = snapshot(
+        const prepared = await snapshot(
           state,
           "baseline-snapshot",
           state.binding.target,
@@ -568,7 +607,7 @@ export function createVerticalPrimitives({
               { browser },
             );
         }
-        const prepared = snapshot(
+        const prepared = await snapshot(
           state,
           `candidate-${command.round}`,
           current.tree,
@@ -675,6 +714,7 @@ export function createVerticalPrimitives({
             transport: transport("verifier"),
             model: cfg.workers.model,
             effort: cfg.workers.effort,
+            awaitLease,
           },
           ...(reviewed ? { reviewItem: reviewed.reviewItem } : {}),
           now,
@@ -810,7 +850,7 @@ export function createVerticalPrimitives({
         const published = last(state, "publish");
         /** The candidate the item was observed on, sealed once per item and
          * shared by its triage episode and any repair. */
-        const resolutionInput = (active) => {
+        const resolutionInput = async (active) => {
           const child = join(directory, `resolution-${active.key.slice(8)}`);
           assertResolutionDirectory(directory, child);
           const receipt = join(child, "prepared.json");
@@ -826,7 +866,7 @@ export function createVerticalPrimitives({
               );
             return { child, input: read(receipt) };
           }
-          const input = withDetachedCheckout(
+          const input = await withDetachedCheckout(
             state.binding.target,
             directory,
             child,
@@ -870,7 +910,7 @@ export function createVerticalPrimitives({
            * episode over the candidate it was observed on. `entry` is the
            * loop's item; `active` stays the run's authority observer. */
           async triage(entry) {
-            const { child, input } = resolutionInput(entry);
+            const { child, input } = await resolutionInput(entry);
             const record = await recordedJudgment({
               directory: child,
               name: "triage",
@@ -883,8 +923,8 @@ export function createVerticalPrimitives({
             });
             return { ...record.result, producer: record.provenance };
           },
-          prepareRepair(active) {
-            const { child, input } = resolutionInput(active);
+          async prepareRepair(active) {
+            const { child, input } = await resolutionInput(active);
             return {
               store: new WorkerStore(join(child, "repair")),
               baseline: last(state, "baseline").prepared.subject,
@@ -896,6 +936,7 @@ export function createVerticalPrimitives({
                 transport: transport("verifier"),
                 model: cfg.workers.model,
                 effort: cfg.workers.effort,
+                awaitLease,
               },
               now,
             };
