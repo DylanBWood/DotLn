@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "repair": "WO-199 repair of VER-001 F1",
+  "liveModel": "gpt-6.1-sol",
+  "liveEffort": "max",
+  "transport": "codex-cli-exec",
+  "edition": "WO-199 revision 002 (feedback); 001 (authority, artifact-identity, verification)",
+  "note": "The live self-host ran after the last judged-source edit from the alias-free session scratchpad; the deterministic families check current at revision 001 because their recorded evidence regenerates unchanged.",
+  "observations": {
+    "live-feedback": {
+      "startedAt": "2026-10-08T05:26:56.330Z",
+      "finishedAt": "2026-10-08T05:27:43.204Z",
+      "durationMs": 46874,
+      "exitCode": 0,
+      "executed": true
+    },
+    "feedback-check": {
+      "startedAt": "2026-10-08T05:27:43.668Z",
+      "finishedAt": "2026-10-08T05:27:47.198Z",
+      "durationMs": 3529,
+      "exitCode": 0,
+      "executed": true
+    },
+    "authority-check": {
+      "startedAt": "2026-10-08T05:27:47.306Z",
+      "finishedAt": "2026-10-08T05:27:47.881Z",
+      "durationMs": 575,
+      "exitCode": 0,
+      "executed": true
+    },
+    "artifact-check": {
+      "startedAt": "2026-10-08T05:27:47.995Z",
+      "finishedAt": "2026-10-08T05:27:48.240Z",
+      "durationMs": 244,
+      "exitCode": 0,
+      "executed": true
+    },
+    "verification-check": {
+      "startedAt": "2026-10-08T05:27:48.352Z",
+      "finishedAt": "2026-10-08T05:27:49.590Z",
+      "durationMs": 1238,
+      "exitCode": 0,
+      "executed": true
+    }
+  }
+}

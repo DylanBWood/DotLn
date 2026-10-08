@@ -1,0 +1,53 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+✔ WO-052 AC1 claude: governed foreign worktree, failing baseline, committed passing result, receipt and explicit finish (3850.370792ms)
+✔ WO-052 AC1 codex: governed foreign worktree, failing baseline, committed passing result, receipt and explicit finish (2253.4615ms)
+✔ WO-199 real host SIGKILL before-commit: immediate recovery observes one effect (2887.853083ms)
+✔ WO-199 real host SIGKILL after-commit: immediate recovery observes one effect (2691.264375ms)
+✔ WO-199 real host SIGKILL after-receipt: immediate recovery observes one effect (2881.8705ms)
+✔ WO-052 AC3 no commit refuses and retains edits; finish never discards them (1073.0685ms)
+✔ WO-052 effect receipt and stable request are positively decoded before reclaim or redispatch (2212.287625ms)
+✔ WO-052 dirty committed tree and unowned ignored files refuse while preserving contents (3171.226166ms)
+✔ WO-052 authority expiry fences initial dispatch and post-worker admission (1369.561958ms)
+✔ WO-052 AC4 source payloads reject malformed identity, cross-order/branch results and terminal rewrites (0.516ms)
+✔ WO-052 emitted Claude permission hook admits only live host-issued exact commands (5763.086375ms)
+✔ WO-052 wrong branch and outside-surface commits refuse without redispatch or discard (2375.507375ms)
+✔ WO-112 claude: unexplained shared changes are refused and preserved (2285.793417ms)
+✔ WO-112 codex: unexplained shared changes are refused and preserved (1079.975375ms)
+✔ WO-112 a result that is not one commit with the host message refuses for any writer (2501.215875ms)
+✔ WO-112 a replace ref cannot hide a change outside the surfaces from the host (1275.867333ms)
+✔ WO-052 a second interrupted attempt exhausts recovery; no third dispatch (1787.236834ms)
+✔ WO-157 a grant-bearing artifact identity equips and runs through the source-change host; a malformed registry still refuses (1785.510833ms)
+✔ WO-157 the host counts committed paths against the files ceiling and refuses a removal without repo.delete, except a declared Sort move (9302.388292ms)
+✔ WO-199 the vertical wrapper records a group and recovers stopped or surviving writers (13621.858ms)
+✔ WO-199 death before the start marker never admits the held native writer (2438.112542ms)
+✔ WO-199 recovery never signals a group with a mismatched birth identity (918.459125ms)
+✔ WO-199 post-result effect and receipt refusals retain their own host check (2842.207291ms)
+✔ WO-112 VER-003 F1 admission ignores forged commit-graph trees and parents (2298.88375ms)
+✔ WO-112 VER-003 F2 persisted receipt recovery ignores later unrelated shared-ref changes (11913.780625ms)
+✔ WO-112 VER-003 F2 a persisted receipt cannot accept a changed candidate (2163.095ms)
+✔ WO-112 VER-006 F2 a matching accepted older receipt replays once without new process markers or redispatch (2959.311292ms)
+✔ WO-112 VER-006 F2 older receipt replay retains exact commit, diff and request binding (6321.271875ms)
+✔ WO-112 VER-006 F2 an older attempt without an accepted receipt still refuses missing termination evidence (1008.655959ms)
+✔ WO-112 VER-006 F2 an unreceipted stopped attempt still requires its durable shared-state baseline (1024.151ms)
+✔ WO-112 F1 preserves independent commits, tags, deleted refs and symbolic retargets (6640.818125ms)
+✔ WO-112 F2 refuses substituted alternates entries and parents without writing through them (3045.266958ms)
+✔ WO-112 shared-state comparison preserves distinct alternates bytes without UTF-8 loss (1048.622958ms)
+✔ WO-112 F3 adjudicates malformed returns and transport failures durably before recovery (2236.671083ms)
+✔ WO-112 F3 a killed host's unchecked commit is judged against its persisted baseline (1205.534541ms)
+✔ WO-199 recovery stops a killed host's surviving writer before adjudication (2534.954167ms)
+✔ WO-112 F3 cancellation stops an ordinary descendant before judging shared state (1016.373792ms)
+✔ WO-112 new integrity records decode before recovery changes any store bytes (2052.8425ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 67367.250958
+bounded-result {"name":"bounded-probe","durationMs":67430,"slowestCases":[{"name":"bounded-probe","durationMs":67430,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":204728312,"peakRssBytes":488767488,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-08T01:58:02.407Z","finishedAt":"2026-10-08T01:59:09.837Z","exitCode":0,"executed":true}

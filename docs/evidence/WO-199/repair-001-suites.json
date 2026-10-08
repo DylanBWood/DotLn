@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "repair": "WO-199 repair of VER-001 F1",
+  "host": "darwin; every suite ran alone under node scripts/harness.mjs bounded",
+  "note": "The final code identity's runs; earlier rounds before the review's fixes are recorded in D010.",
+  "suites": [
+    {
+      "name": "recovery",
+      "command": "node --test scripts/test-vertical.recovery.mjs",
+      "run": {
+        "startedAt": "2026-10-08T05:23:51.953Z",
+        "finishedAt": "2026-10-08T05:25:50.679Z",
+        "durationMs": 118726,
+        "exitCode": 0
+      },
+      "tests": 6,
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "name": "skeleton hosts",
+      "command": "node --test packages/skeleton/dist/test/repair-host.test.js packages/skeleton/dist/test/source-change-host.test.js packages/skeleton/dist/test/source-change-integrity.test.js",
+      "run": {
+        "startedAt": "2026-10-08T05:25:50.789Z",
+        "finishedAt": "2026-10-08T05:26:52.779Z",
+        "durationMs": 61990,
+        "exitCode": 0
+      },
+      "tests": 38,
+      "pass": 38,
+      "fail": 0
+    },
+    {
+      "name": "judgment",
+      "command": "node --test scripts/test-vertical-judgment.mjs",
+      "run": {
+        "startedAt": "2026-10-08T04:51:22.647Z",
+        "finishedAt": "2026-10-08T04:58:35.372Z",
+        "durationMs": 432724,
+        "exitCode": 0
+      },
+      "tests": 37,
+      "pass": 37,
+      "fail": 0
+    },
+    {
+      "name": "vertical",
+      "command": "node --test scripts/test-vertical.mjs",
+      "run": {
+        "startedAt": "2026-10-08T05:00:24.376Z",
+        "finishedAt": "2026-10-08T05:11:44.001Z",
+        "durationMs": 679625,
+        "exitCode": 0
+      },
+      "tests": 160,
+      "pass": 160,
+      "fail": 0
+    }
+  ]
+}

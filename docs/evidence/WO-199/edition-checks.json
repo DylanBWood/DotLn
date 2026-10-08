@@ -1,0 +1,113 @@
+{
+  "liveModel": "gpt-6.1-sol",
+  "liveEffort": "max",
+  "transport": "codex-cli-exec",
+  "edition": "WO-199 revision 001",
+  "observations": {
+    "live-feedback": {
+      "name": "bounded-probe",
+      "durationMs": 52985,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 52985,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 261277240,
+      "peakRssBytes": 368820224,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-08T01:21:21.534Z",
+      "finishedAt": "2026-10-08T01:22:14.519Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    "feedback-check": {
+      "name": "bounded-probe",
+      "durationMs": 2914,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 2914,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 100853480,
+      "peakRssBytes": 215334912,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-08T02:07:28.451Z",
+      "finishedAt": "2026-10-08T02:07:31.366Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    "authority-check": {
+      "name": "bounded-probe",
+      "durationMs": 642,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 642,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 52335272,
+      "peakRssBytes": 99713024,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-08T02:07:31.501Z",
+      "finishedAt": "2026-10-08T02:07:32.143Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    "artifact-check": {
+      "name": "bounded-probe",
+      "durationMs": 262,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 262,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 49386104,
+      "peakRssBytes": 96747520,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-08T02:07:32.275Z",
+      "finishedAt": "2026-10-08T02:07:32.537Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    "verification-check": {
+      "name": "bounded-probe",
+      "durationMs": 1369,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 1369,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 75274648,
+      "peakRssBytes": 123027456,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-08T02:07:32.668Z",
+      "finishedAt": "2026-10-08T02:07:34.037Z",
+      "exitCode": 0,
+      "executed": true
+    }
+  }
+}

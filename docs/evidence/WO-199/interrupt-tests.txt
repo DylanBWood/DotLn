@@ -1,0 +1,20 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+WO-123 scratch repositories: /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-source-host-zUd733
+WO-123 scratch repositories: /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-source-host-tJyfoX
+WO-123 scratch repositories: /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-source-host-YPP8Fl
+✔ WO-199 dotln vertical forwards SIGINT, SIGTERM and SIGHUP and resumes the same issue (54179.292ms)
+✔ WO-199 real wrapped writers recover after crash, revocation and a surviving orphan (16660.498834ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 70934.612625
+bounded-result {"name":"bounded-probe","durationMs":70997,"slowestCases":[{"name":"bounded-probe","durationMs":70997,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":176447536,"peakRssBytes":388382720,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-08T02:00:23.649Z","finishedAt":"2026-10-08T02:01:34.646Z","exitCode":0,"executed":true}

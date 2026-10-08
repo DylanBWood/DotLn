@@ -1,0 +1,36 @@
+{
+  "capturedAt": "2026-10-08T05:54:35.383Z",
+  "source": "canonical gate stdout of the repair; lifecycle completion validates current-identity gate rows",
+  "gates": {
+    "documents": {
+      "command": "npm run test:docs",
+      "summary": "npm run test:docs: 29 passed; 0 failed; 99.75 s; 29 fresh tasks",
+      "passed": 29,
+      "failed": 0,
+      "durationSeconds": 99.75,
+      "freshTasks": 29,
+      "transcript": "repair-001-document-gate.txt",
+      "sha256": "89fc9cdb9a3f53b1cc3187d50f9e9e17f132e66f2198286a045178c7e6917195"
+    },
+    "review": {
+      "command": "npm test -- --review",
+      "summary": "npm test: 38 passed; 0 failed; 1339.23 s; 88 fresh tasks",
+      "passed": 38,
+      "failed": 0,
+      "durationSeconds": 1339.23,
+      "freshTasks": 88,
+      "transcript": "repair-001-review-gate.txt",
+      "sha256": "75c564e145b48642a3a40740a5943de7fa48385631b4545b5f2c1450cb7c5bc9",
+      "verticalDurationSeconds": 719.23,
+      "verticalDeadlineSeconds": 900
+    }
+  },
+  "fixtureCleanup": {
+    "boundary": "Only vertical fixture roots this repair session's own bounded transcripts and gate logs recorded; fixture disposal skips symlink targets.",
+    "recordedRoots": 439,
+    "presentBefore": 388,
+    "retainedOfMine": 0,
+    "disposed": 0,
+    "otherSessionsRoots": 388
+  }
+}

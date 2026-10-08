@@ -1,0 +1,265 @@
+{
+  "schemaVersion": 1,
+  "dispatch": "resume: fix; FINAL-001 F1",
+  "source": "Executed bounded commands and canonical document/review gate rows in the current Codex repair dispatch.",
+  "signalComparison": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-199/repair-002-signal-boundary-comparison.mjs",
+    "executionLocation": "The identical script first ran from session scratch before being filed here.",
+    "startedAt": "2026-10-08T18:05:00.517Z",
+    "finishedAt": "2026-10-08T18:05:01.911Z",
+    "exitCode": 0,
+    "arms": [
+      {
+        "name": "two-immediates",
+        "handledSignals": [
+          "SIGINT",
+          "SIGTERM",
+          "SIGHUP"
+        ],
+        "signalDrainMs": [
+          0.069417,
+          0.108208,
+          0.092708
+        ],
+        "noSignalDrainMs": 0.082541
+      },
+      {
+        "name": "five-timers",
+        "handledSignals": [
+          "SIGINT",
+          "SIGTERM",
+          "SIGHUP"
+        ],
+        "signalDrainMs": [
+          11.112625,
+          10.134167,
+          11.200584
+        ],
+        "noSignalDrainMs": 54.194208
+      }
+    ]
+  },
+  "targetedRegressions": {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern='WO-199 terminal signals|WO-199 a signal queued at the final return' scripts/test-vertical.recovery.mjs",
+    "startedAt": "2026-10-08T18:12:11.257Z",
+    "finishedAt": "2026-10-08T18:14:21.332Z",
+    "exitCode": 0,
+    "passed": 3,
+    "failed": 0,
+    "durationMs": 130075,
+    "cases": [
+      "post-result focused test: SIGINT, SIGTERM, SIGHUP",
+      "focused test trapping SIGINT and exiting 17",
+      "admission integrity read: SIGINT",
+      "admission worktree read: SIGTERM",
+      "admission effect read: SIGHUP",
+      "baseline witness: SIGINT",
+      "candidate witness: SIGHUP",
+      "candidate witness trapping SIGTERM and exiting 17",
+      "SIGTERM queued at final CLI return"
+    ],
+    "assertions": "No interrupted test is admitted; source-change remains pending and reruns resolve with testAfter exitCode 0 and exactly one writer attempt; unpublished snapshots remain and reruns test fresh copies; final queued signal exits 143."
+  },
+  "reviewerProbeAfterLockFix": {
+    "command": "node scripts/harness.mjs bounded -- node <session scratch>/post-result-diagnostic.mjs /Users/dylanwood/Projects/DotLn-wo199 subject SIGHUP",
+    "sourceProbe": "docs/evidence/WO-199/final-001-post-result-signal-probe.mjs",
+    "diagnosticChange": "Only adds the rerun stdout and stderr to the probe report and resolves the preload path from scratch.",
+    "startedAt": "2026-10-08T18:09:25.681Z",
+    "finishedAt": "2026-10-08T18:09:39.182Z",
+    "exitCode": 0,
+    "interruptedExitCode": 129,
+    "exitAfterMs": 11,
+    "pendingStep": "source-change",
+    "observationRecorded": false,
+    "refusalRecorded": false,
+    "sourceReceiptCount": 0,
+    "rerunExitCode": 0,
+    "terminal": "resolved",
+    "testAfter": {
+      "exitCode": 0,
+      "signal": null
+    }
+  },
+  "stoppedReviewGate": {
+    "command": "npm test -- --review",
+    "runId": "d211915d-a430-4452-9cf2-72c4f1f28630",
+    "startedAt": "2026-10-08T18:32:36.974Z",
+    "stopRequestedAt": "2026-10-08T18:46:01.620Z",
+    "stopCommand": "node scripts/harness.mjs evidence --stop",
+    "exitCode": 1,
+    "durationSeconds": 803.1,
+    "passingCheckRecorded": false,
+    "symptoms": [
+      "Cached resolution and production/resident triage cases failed before judgment.",
+      "Resolution input was an unawaited Promise: Cannot read properties of undefined (reading files).",
+      "Asynchronous snapshot preparation saw ENOENT in the already removed detached input-tree."
+    ],
+    "correction": "Await resolution preparation and both callers; keep the detached checkout until an async callback settles, including rejection. Extend the existing cleanup regression."
+  },
+  "resolutionRegressions": {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern='WO-112 a resolution checkout|WO-112 cached resolution preparation|WO-112 production resolution (preserves|retains)|WO-112 resident resolution preserves|WO-112 VER-004 F1 (ResidentHost.run|continuation backoff)|WO-112 an unsupplied review body' scripts/test-vertical-judgment.mjs",
+    "startedAt": "2026-10-08T18:48:35.803Z",
+    "finishedAt": "2026-10-08T18:50:52.080Z",
+    "exitCode": 0,
+    "passed": 11,
+    "failed": 0,
+    "durationMs": 136276,
+    "assertions": "Synchronous and asynchronous checkout callbacks retain their input until completion and remove it after success or rejection; cached aliases refuse before another judgment; retryable triage and resident restarts recover; non-retryable triage keeps its disposition; unsupplied review judgment records once and replays."
+  },
+  "touchingFollowups": {
+    "command": "npm run plan -- followups --touching --work-order WO-199",
+    "revision": "86112f1e70aea7a4b7d4b54da49ae08c78ee8ab19c4d7ddeccd9bd3a583752c4",
+    "matched": 17,
+    "pagesRead": 3,
+    "disposition": "Read the 17 textual pointer rows. This repair changes signal observation and the asynchronous resolution checkout lifetime; existing open and deferred boards remain available for their named work. D011 and D061 are explicitly retained. The executor does not treat a textual match as a defect or a settled verdict; final review applies the recorded seam and trigger judgments."
+  },
+  "finalGates": {
+    "document": {
+      "checkId": "npm run test:docs",
+      "treeHash": "c1b82e60d584cab4eab7a7c2e1193dfc109bef14",
+      "codeIdentity": "2b3fffa9613834721835b5532d96b0d561d4f1adb0e9678aaa945f39d2fba97c",
+      "durationMs": 86596,
+      "exitCode": 0,
+      "executed": true,
+      "evidenceRef": "host-gate:2b3fffa9613834721835b5532d96b0d561d4f1adb0e9678aaa945f39d2fba97c:npm run test:docs",
+      "recordedAt": "2026-10-08T18:58:47.014Z",
+      "gateSelection": "document",
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "freshSuites": 29,
+      "reusedSuites": 0,
+      "requiredSuites": [
+        "build",
+        "format",
+        "release-surfaces",
+        "license-surfaces",
+        "resume",
+        "publication",
+        "docs-check",
+        "docs-check-fixtures",
+        "index",
+        "lineage",
+        "lineage-fixtures",
+        "kernel-docs",
+        "skeleton-docs",
+        "console-docs",
+        "resident-bind",
+        "local-runner-double",
+        "authority-evidence",
+        "harness",
+        "harness-context",
+        "harness-evidence",
+        "plan-refutation-current",
+        "artifact-corpus",
+        "artifact-evidence",
+        "verification-evidence",
+        "feedback-evidence",
+        "meta",
+        "registrations",
+        "plan",
+        "entropy"
+      ],
+      "passed": 29,
+      "failed": 0
+    },
+    "review": {
+      "checkId": "npm test",
+      "treeHash": "c1b82e60d584cab4eab7a7c2e1193dfc109bef14",
+      "codeIdentity": "2b3fffa9613834721835b5532d96b0d561d4f1adb0e9678aaa945f39d2fba97c",
+      "durationMs": 1307615,
+      "exitCode": 0,
+      "executed": true,
+      "evidenceRef": "host-gate:2b3fffa9613834721835b5532d96b0d561d4f1adb0e9678aaa945f39d2fba97c:npm test",
+      "recordedAt": "2026-10-08T19:21:04.653Z",
+      "gateSelection": "review",
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "freshSuites": 88,
+      "reusedSuites": 0,
+      "requiredSuites": [
+        "build",
+        "format",
+        "release-preparation",
+        "github-body",
+        "outward-lint",
+        "target-publish",
+        "vertical",
+        "license-fixtures",
+        "publication-fixtures",
+        "backup-intake",
+        "beacon-portability",
+        "checkpoint",
+        "worktree",
+        "worktree-integration",
+        "release",
+        "work-orders-fixtures",
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console",
+        "browser-evidence",
+        "adjacent-queue",
+        "derived-orders",
+        "portfolio",
+        "codex-continuation",
+        "authority-grants",
+        "evidence-sources",
+        "configuration-root",
+        "harness-probe",
+        "authority-evidence",
+        "harness-fixtures",
+        "harness-evidence",
+        "plan-refutation",
+        "artifact-evidence",
+        "verification-evidence",
+        "feedback-evidence",
+        "runner-fixtures",
+        "registrations"
+      ],
+      "passedSuiteGroups": 38,
+      "failed": 0,
+      "vertical": {
+        "name": "vertical",
+        "durationMs": 725851,
+        "startedAt": "2026-10-08T19:08:58.613Z",
+        "finishedAt": "2026-10-08T19:21:04.522Z",
+        "exitCode": 0,
+        "executed": true,
+        "excludedReads": 0,
+        "slowestCases": [
+          {
+            "name": "WO-199 terminal signals during post-result host calls admit no observation or refusal; reruns reuse the commit without redispatch",
+            "file": "scripts/test-vertical.recovery.mjs",
+            "durationMs": 107302.763291,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-199 dotln vertical forwards SIGINT, SIGTERM and SIGHUP and resumes the same issue",
+            "file": "scripts/test-vertical.recovery.mjs",
+            "durationMs": 53557.157875,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-199 terminal signals during baseline and candidate witness tests leave no admitted snapshot; reruns test a fresh retained copy",
+            "file": "scripts/test-vertical.recovery.mjs",
+            "durationMs": 40409.8,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-112 VER-004 F1 continuation backoff caps repeated failures and never defers authority expiry",
+            "file": "scripts/test-vertical-judgment.mjs",
+            "durationMs": 30619.5405,
+            "exitCode": 0
+          },
+          {
+            "name": "WO-112 D047 resident intake leaves only the episode's own launch or return undecided; every host fault ends held with its reason",
+            "file": "scripts/test-vertical-judgment.mjs",
+            "durationMs": 27050.08575,
+            "exitCode": 0
+          }
+        ]
+      }
+    },
+    "diagnostics": "Successful stdout remains in ignored session scratch; these rows link the canonical executable evidence instead of copying the progress stream."
+  }
+}

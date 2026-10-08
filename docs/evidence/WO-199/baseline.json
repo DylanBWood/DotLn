@@ -1,0 +1,28 @@
+{
+  "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-112/final-001-vertical-recovery-probe.mjs",
+  "startedAt": "2026-10-08T00:43:48.695Z",
+  "finishedAt": "2026-10-08T00:43:54.198Z",
+  "exitCode": 0,
+  "rows": [
+    {
+      "case": "crash-vertical",
+      "hostSignal": "SIGKILL",
+      "recordedProcessGroup": "absent",
+      "recovery": { "error": "source-change recovery lacks worker termination evidence" }
+    },
+    {
+      "case": "crash-direct",
+      "hostSignal": "SIGKILL",
+      "recordedProcessGroup": 89842,
+      "recovery": { "status": "observed" }
+    },
+    {
+      "case": "revoke-vertical",
+      "first": { "error": "source-change worker has not terminated" },
+      "recordedProcessGroup": "see crash cases",
+      "processStoppedRecorded": false,
+      "workerInterruptedRecorded": false,
+      "lastEvent": "CommandReceipt"
+    }
+  ]
+}

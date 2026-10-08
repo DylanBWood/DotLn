@@ -1,0 +1,220 @@
+{
+  "schemaVersion": 1,
+  "verification": "WO-199 VER-001",
+  "codeIdentity": "685d99e40887bd455b285a3a5529918cec59875b0c121c9eee7d003cc6a5cf53",
+  "host": "darwin; every probe ran alone under node scripts/harness.mjs bounded",
+  "agreedRecoveryProbe": {
+    "command": "node docs/evidence/WO-112/final-001-vertical-recovery-probe.mjs",
+    "run": {
+      "startedAt": "2026-10-08T03:17:28.158Z",
+      "finishedAt": "2026-10-08T03:17:35.495Z",
+      "durationMs": 7337,
+      "exitCode": 0
+    },
+    "rows": [
+      {
+        "case": "crash-vertical",
+        "hostSignal": "SIGKILL",
+        "recordedProcessGroup": 46728,
+        "recovery": {
+          "status": "observed"
+        }
+      },
+      {
+        "case": "crash-direct",
+        "hostSignal": "SIGKILL",
+        "recordedProcessGroup": 47978,
+        "recovery": {
+          "status": "observed"
+        }
+      },
+      {
+        "case": "revoke-vertical",
+        "first": {
+          "error": "interrupted: vertical running authority was interrupted"
+        },
+        "recordedProcessGroup": "see crash cases",
+        "processStoppedRecorded": true,
+        "workerInterruptedRecorded": true,
+        "lastEvent": "WorkerInterrupted"
+      }
+    ]
+  },
+  "focusedSuites": [
+    {
+      "command": "node --test packages/skeleton/dist/test/source-change-integrity.test.js packages/skeleton/dist/test/source-change-host.test.js",
+      "run": {
+        "startedAt": "2026-10-08T03:17:41.376Z",
+        "finishedAt": "2026-10-08T03:18:51.335Z",
+        "durationMs": 69959,
+        "exitCode": 0
+      },
+      "tests": 38,
+      "pass": 38,
+      "fail": 0
+    },
+    {
+      "command": "node --test scripts/test-vertical.recovery.mjs",
+      "run": {
+        "startedAt": "2026-10-08T03:18:59.907Z",
+        "finishedAt": "2026-10-08T03:20:15.880Z",
+        "durationMs": 75973,
+        "exitCode": 0
+      },
+      "tests": 2,
+      "pass": 2,
+      "fail": 0
+    }
+  ],
+  "signalDuringJudgmentStep": {
+    "command": "node docs/evidence/WO-199/verification-001-signal-step-probe.mjs",
+    "run": {
+      "startedAt": "2026-10-08T03:32:53.168Z",
+      "finishedAt": "2026-10-08T03:35:04.171Z",
+      "durationMs": 131003,
+      "exitCode": 0
+    },
+    "rows": [
+      {
+        "variant": "subject",
+        "signal": "SIGTERM",
+        "judgmentDelayMs": 30000,
+        "pendingWhenSignalled": "verification",
+        "exitAfterSignalMs": 29518,
+        "exitCode": 143,
+        "exitSignal": null,
+        "stderrTail": [
+          "Vertical interrupted: SIGTERM"
+        ],
+        "pendingAfter": "verification",
+        "terminalAfter": null
+      },
+      {
+        "variant": "subject",
+        "signal": "SIGINT",
+        "judgmentDelayMs": 30000,
+        "pendingWhenSignalled": "verification",
+        "exitAfterSignalMs": 29536,
+        "exitCode": 130,
+        "exitSignal": null,
+        "stderrTail": [
+          "Vertical interrupted: SIGINT"
+        ],
+        "pendingAfter": "verification",
+        "terminalAfter": null
+      },
+      {
+        "variant": "subject",
+        "signal": "SIGHUP",
+        "judgmentDelayMs": 30000,
+        "pendingWhenSignalled": "verification",
+        "exitAfterSignalMs": 29541,
+        "exitCode": 129,
+        "exitSignal": null,
+        "stderrTail": [
+          "Vertical interrupted: SIGHUP"
+        ],
+        "pendingAfter": "verification",
+        "terminalAfter": null
+      },
+      {
+        "variant": "HEAD disposition (dotln vertical signal listeners dropped)",
+        "signal": "SIGTERM",
+        "judgmentDelayMs": 30000,
+        "pendingWhenSignalled": "verification",
+        "exitAfterSignalMs": 8,
+        "exitCode": null,
+        "exitSignal": "SIGTERM",
+        "stderrTail": [
+          ""
+        ],
+        "pendingAfter": "verification",
+        "terminalAfter": null
+      }
+    ],
+    "earlierScratchRun": {
+      "run": {
+        "startedAt": "2026-10-08T03:24:04.122Z",
+        "finishedAt": "2026-10-08T03:25:38.480Z",
+        "durationMs": 94358,
+        "exitCode": 0
+      },
+      "rows": [
+        {
+          "variant": "subject",
+          "signal": "SIGTERM",
+          "judgmentDelayMs": 30000,
+          "pendingStepWhenSignalled": "verification",
+          "exitAfterSignalMs": 29540,
+          "exitCode": 143,
+          "exitSignal": null,
+          "stderrTail": [
+            "Vertical interrupted: SIGTERM"
+          ],
+          "pendingAfter": "verification",
+          "terminalAfter": null,
+          "rerunExitCode": 1,
+          "terminalAfterRerun": "refused"
+        },
+        {
+          "variant": "subject",
+          "signal": "SIGINT",
+          "judgmentDelayMs": 30000,
+          "pendingStepWhenSignalled": "verification",
+          "exitAfterSignalMs": 29534,
+          "exitCode": 130,
+          "exitSignal": null,
+          "stderrTail": [
+            "Vertical interrupted: SIGINT"
+          ],
+          "pendingAfter": "verification",
+          "terminalAfter": null,
+          "rerunExitCode": 1,
+          "terminalAfterRerun": "refused"
+        },
+        {
+          "variant": "HEAD-equivalent (WO-199 signal listeners dropped)",
+          "signal": "SIGTERM",
+          "judgmentDelayMs": 30000,
+          "pendingStepWhenSignalled": "verification",
+          "exitAfterSignalMs": 8,
+          "exitCode": null,
+          "exitSignal": "SIGTERM",
+          "stderrTail": [
+            ""
+          ],
+          "pendingAfter": "verification",
+          "terminalAfter": null,
+          "rerunExitCode": 1,
+          "terminalAfterRerun": "refused"
+        }
+      ]
+    }
+  },
+  "wo112OrphanProbe": {
+    "command": "node docs/evidence/WO-112/verification-007-orphan-probe.mjs",
+    "run": {
+      "startedAt": "2026-10-08T03:29:39.209Z",
+      "finishedAt": "2026-10-08T03:29:48.695Z",
+      "durationMs": 9485,
+      "exitCode": 0
+    },
+    "rows": [
+      {
+        "ownProcessGroup": false,
+        "hostAliveAfterSigint": false,
+        "writerAliveAfterSigint": false,
+        "writerAlivePastHostDeadline": false,
+        "writerLastHeartbeatMs": 303
+      },
+      {
+        "ownProcessGroup": true,
+        "hostAliveAfterSigint": false,
+        "writerAliveAfterSigint": true,
+        "writerAlivePastHostDeadline": true,
+        "writerLastHeartbeatMs": 4540
+      }
+    ],
+    "note": "Drives runWorkerProcess under a host with no signal handler; the repaired handler lives in dotln vertical, above this layer."
+  }
+}

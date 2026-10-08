@@ -1,0 +1,322 @@
+{
+  "purpose": "WO-199 FINAL-001 F1: a terminal-wide signal while the source host runs its synchronous post-result focused test. The CLI runs in its own process group with the order's CLI actor doubles and the probe signals the whole group, as Ctrl-C reaches a foreground job; the detached writer group is not signalled. head drops only dotln vertical's new signal listeners (HEAD installed none).",
+  "codeIdentity": "e86d7a74c5ea939a4c937b4614f16334d841fc6caf862bc4187ee3087abedfc6",
+  "runs": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-199/final-001-post-result-signal-probe.mjs <repo-root> subject SIGINT",
+      "bounded": {
+        "startedAt": "2026-10-08T16:41:29.929Z",
+        "finishedAt": "2026-10-08T16:41:40.514Z",
+        "exitCode": 0,
+        "durationMs": 10585
+      },
+      "report": {
+        "variant": "subject",
+        "signal": "SIGINT",
+        "startedAt": "2026-10-08T16:41:30.622Z",
+        "lastStepBeforeCli": "baseline",
+        "postResultTestStarted": true,
+        "groupAtSignal": [
+          "41391 41227 41391 node --import <home>",
+          "41631 41391 41391 /bin/sh -c sleep 8; exec \"$0\" \"$@\" /usr/bin/sandbox-exec -p (version 1)(allow default)(deny network*)(",
+          "41632 41631 41391 sleep 8"
+        ],
+        "firstRun": {
+          "exitCode": 0,
+          "exitSignal": null,
+          "exitAfterMs": 3193,
+          "stderr": [
+            ""
+          ]
+        },
+        "sourceEventsAfterSignal": [
+          {
+            "type": "ArtifactIdentityEnforcementStarted"
+          },
+          {
+            "type": "SourceChangeRequested"
+          },
+          {
+            "type": "CommandPersisted"
+          },
+          {
+            "type": "WorkerAttemptStarted"
+          },
+          {
+            "type": "SourceChangeProcessStarted"
+          },
+          {
+            "type": "CommandReceipt"
+          },
+          {
+            "type": "SourceChangeProcessStopped"
+          },
+          {
+            "type": "WorkerResultObserved"
+          },
+          {
+            "type": "SourceChangeIntegrityChecked"
+          },
+          {
+            "type": "SourceChangeIntegrityChecked"
+          },
+          {
+            "type": "SourceChangeObserved",
+            "testAfter": {
+              "command": "node fixture-test.mjs",
+              "exitCode": null,
+              "signal": "SIGINT",
+              "stdoutHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stderrHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          },
+          {
+            "type": "CommandResult"
+          },
+          {
+            "type": "WorkerCompleted"
+          }
+        ],
+        "stateAfterSignal": {
+          "terminal": "resolved",
+          "pending": null
+        },
+        "sourceReceiptAfterSignal": [
+          {
+            "result": "completed",
+            "testAfter": {
+              "command": "node fixture-test.mjs",
+              "exitCode": null,
+              "signal": "SIGINT",
+              "stdoutHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stderrHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          }
+        ],
+        "rerun": {
+          "exitCode": 0,
+          "exitSignal": null
+        },
+        "stateAfterRerun": {
+          "terminal": "resolved",
+          "pending": null
+        },
+        "sourceReceiptAfterRerun": [
+          {
+            "result": "completed",
+            "testAfter": {
+              "command": "node fixture-test.mjs",
+              "exitCode": null,
+              "signal": "SIGINT",
+              "stdoutHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stderrHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          }
+        ],
+        "finishedAt": "2026-10-08T16:41:40.506Z"
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-199/final-001-post-result-signal-probe.mjs <repo-root> head SIGINT",
+      "bounded": {
+        "startedAt": "2026-10-08T16:41:40.601Z",
+        "finishedAt": "2026-10-08T16:41:54.280Z",
+        "exitCode": 0,
+        "durationMs": 13679
+      },
+      "report": {
+        "variant": "head",
+        "signal": "SIGINT",
+        "startedAt": "2026-10-08T16:41:41.191Z",
+        "lastStepBeforeCli": "baseline",
+        "postResultTestStarted": true,
+        "groupAtSignal": [
+          "41983 41819 41983 node --import <home>",
+          "42222 41983 41983 /bin/sh -c sleep 8; exec \"$0\" \"$@\" /usr/bin/sandbox-exec -p (version 1)(allow default)(deny network*)(",
+          "42223 42222 41983 sleep 8"
+        ],
+        "firstRun": {
+          "exitCode": null,
+          "exitSignal": "SIGINT",
+          "exitAfterMs": 3,
+          "stderr": [
+            ""
+          ]
+        },
+        "sourceEventsAfterSignal": [
+          {
+            "type": "ArtifactIdentityEnforcementStarted"
+          },
+          {
+            "type": "SourceChangeRequested"
+          },
+          {
+            "type": "CommandPersisted"
+          },
+          {
+            "type": "WorkerAttemptStarted"
+          },
+          {
+            "type": "SourceChangeProcessStarted"
+          },
+          {
+            "type": "CommandReceipt"
+          },
+          {
+            "type": "SourceChangeProcessStopped"
+          },
+          {
+            "type": "WorkerResultObserved"
+          },
+          {
+            "type": "SourceChangeIntegrityChecked"
+          }
+        ],
+        "stateAfterSignal": {
+          "terminal": null,
+          "pending": "source-change"
+        },
+        "sourceReceiptAfterSignal": [],
+        "rerun": {
+          "exitCode": 0,
+          "exitSignal": null
+        },
+        "stateAfterRerun": {
+          "terminal": "resolved",
+          "pending": null
+        },
+        "sourceReceiptAfterRerun": [
+          {
+            "result": "completed",
+            "testAfter": {
+              "command": "node fixture-test.mjs",
+              "exitCode": 0,
+              "signal": null,
+              "stdoutHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stderrHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          }
+        ],
+        "finishedAt": "2026-10-08T16:41:54.271Z"
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-199/final-001-post-result-signal-probe.mjs <repo-root> subject-diag SIGINT",
+      "bounded": {
+        "startedAt": "2026-10-08T16:41:54.381Z",
+        "finishedAt": "2026-10-08T16:42:05.072Z",
+        "exitCode": 0,
+        "durationMs": 10691
+      },
+      "report": {
+        "variant": "subject-diag",
+        "signal": "SIGINT",
+        "startedAt": "2026-10-08T16:41:55.028Z",
+        "lastStepBeforeCli": "baseline",
+        "postResultTestStarted": true,
+        "groupAtSignal": [
+          "42735 42570 42735 node --import <home>",
+          "42972 42735 42735 /bin/sh -c sleep 8; exec \"$0\" \"$@\" /usr/bin/sandbox-exec -p (version 1)(allow default)(deny network*)(",
+          "42973 42972 42735 sleep 8"
+        ],
+        "firstRun": {
+          "exitCode": 0,
+          "exitSignal": null,
+          "exitAfterMs": 3249,
+          "stderr": [
+            ""
+          ]
+        },
+        "diagnostics": [
+          "handled SIGINT; dotln listeners present 0",
+          "exit code=0 exitCode=undefined"
+        ],
+        "sourceEventsAfterSignal": [
+          {
+            "type": "ArtifactIdentityEnforcementStarted"
+          },
+          {
+            "type": "SourceChangeRequested"
+          },
+          {
+            "type": "CommandPersisted"
+          },
+          {
+            "type": "WorkerAttemptStarted"
+          },
+          {
+            "type": "SourceChangeProcessStarted"
+          },
+          {
+            "type": "CommandReceipt"
+          },
+          {
+            "type": "SourceChangeProcessStopped"
+          },
+          {
+            "type": "WorkerResultObserved"
+          },
+          {
+            "type": "SourceChangeIntegrityChecked"
+          },
+          {
+            "type": "SourceChangeIntegrityChecked"
+          },
+          {
+            "type": "SourceChangeObserved",
+            "testAfter": {
+              "command": "node fixture-test.mjs",
+              "exitCode": null,
+              "signal": "SIGINT",
+              "stdoutHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stderrHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          },
+          {
+            "type": "CommandResult"
+          },
+          {
+            "type": "WorkerCompleted"
+          }
+        ],
+        "stateAfterSignal": {
+          "terminal": "resolved",
+          "pending": null
+        },
+        "sourceReceiptAfterSignal": [
+          {
+            "result": "completed",
+            "testAfter": {
+              "command": "node fixture-test.mjs",
+              "exitCode": null,
+              "signal": "SIGINT",
+              "stdoutHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stderrHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          }
+        ],
+        "rerun": {
+          "exitCode": 0,
+          "exitSignal": null
+        },
+        "stateAfterRerun": {
+          "terminal": "resolved",
+          "pending": null
+        },
+        "sourceReceiptAfterRerun": [
+          {
+            "result": "completed",
+            "testAfter": {
+              "command": "node fixture-test.mjs",
+              "exitCode": null,
+              "signal": "SIGINT",
+              "stdoutHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stderrHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          }
+        ],
+        "finishedAt": "2026-10-08T16:42:05.064Z"
+      }
+    }
+  ]
+}

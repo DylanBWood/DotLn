@@ -1,0 +1,93 @@
+
+> test:docs
+> node scripts/test-runner.mjs --document
+
+PROGRESS [format] 0.0 s started
+PASS format 6.99 s
+PROGRESS [build] 0.0 s started
+PASS build 0.81 s
+PROGRESS [release-surfaces] 0.0 s started
+PROGRESS [license-surfaces] 0.0 s started
+PROGRESS [publication] 0.0 s started
+PROGRESS [docs-check] 0.0 s started
+PASS publication 0.22 s
+PROGRESS [index] 0.0 s started
+PASS index 2.31 s
+PROGRESS [lineage] 0.0 s started
+PASS lineage 0.07 s
+PROGRESS [authority-evidence] 0.0 s started
+PASS authority-evidence 0.70 s
+PROGRESS [harness] 0.0 s started
+PASS harness 0.16 s
+PROGRESS [harness-context] 0.0 s started
+PASS harness-context 0.19 s
+PROGRESS [harness-evidence] 0.0 s started
+PASS harness-evidence 0.39 s
+PROGRESS [artifact-evidence] 0.0 s started
+PASS artifact-evidence 0.29 s
+PROGRESS [verification-evidence] 0.0 s started
+PASS license-surfaces 5.91 s
+PASS release-surfaces 5.94 s
+PASS verification-evidence 1.46 s
+PROGRESS [feedback-evidence] 0.0 s started
+PROGRESS [meta] 0.0 s started
+PASS feedback-evidence 3.11 s
+PASS meta 3.11 s
+PROGRESS [docs-check] 15.0 s running task: docs-check (reports no cases); last report: waiting for the next case report
+PASS docs-check 15.08 s
+  [docs-check] NEWER local release tags not in docs/product/06-roadmap.md: v0.66.0, v0.66.1, v0.66.2, v0.66.3, v0.67.0, v0.67.1, v0.68.0, v0.69.0, v0.69.1; the table stays valid for its recorded tags; run npm run release -- list --markdown --write to add them
+  [docs-check] ADVISORY docs/evidence/WO-112/decisions.md#WO-112-D062: operator-attributed words need a capture digest (SHA-256 or --capture-hash), or a paraphrase
+  [docs-check] ADVISORY docs/evidence/WO-112/decisions.md#WO-112-D067: operator-attributed words need a capture digest (SHA-256 or --capture-hash), or a paraphrase
+  [docs-check] ADVISORY docs/evidence/WO-185/decisions.md#WO-185-D017: operator-attributed words need a capture digest (SHA-256 or --capture-hash), or a paraphrase
+  [docs-check] ADVISORY docs/evidence/WO-186/decisions.md#WO-186-D039: operator-attributed words need a capture digest (SHA-256 or --capture-hash), or a paraphrase
+  [docs-check] ADVISORY docs/evidence/WO-187/decisions.md#WO-187-D039: operator-attributed words need a capture digest (SHA-256 or --capture-hash), or a paraphrase
+PROGRESS [resume] 0.0 s started
+PROGRESS [docs-check-fixtures] 0.0 s started
+PROGRESS [lineage-fixtures] 0.0 s started
+PROGRESS [kernel-docs] 0.0 s started
+PROGRESS [kernel-docs] 0.1 s # Subtest: packages/kernel/dist/test/ac1-purity.test.js
+PROGRESS [lineage-fixtures] 0.7 s # Subtest: index counts lead memberships, wrapped labels and prose-only/reference sections
+PASS lineage-fixtures 0.69 s
+PROGRESS [skeleton-docs] 0.0 s started
+PROGRESS [skeleton-docs] 0.2 s # Subtest: packages/skeleton/dist/test/artifact-identity.test.js
+PASS kernel-docs 1.11 s
+PROGRESS [console-docs] 0.0 s started
+PROGRESS [docs-check-fixtures] 5.3 s # Subtest: WO-178 attributed operator words advise by record, with capture and fingerprinted baseline exceptions
+PROGRESS [console-docs] 5.3 s # Subtest: [document] WO-174 console fixture generator checks the current lazy exports
+PROGRESS [skeleton-docs] 6.1 s # Subtest: [document] WO-180 AC1: named base failure precedes the repaired candidate and survives replay
+PROGRESS [docs-check-fixtures] 7.2 s     # Subtest: records
+PASS docs-check-fixtures 7.71 s
+PROGRESS [resident-bind] 0.0 s started
+PROGRESS [skeleton-docs] 11.1 s # Subtest: [document] WO-011 selfhost executes the real repository audit, recovers its saved result, and independently verifies once
+PROGRESS [resume] 15.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [console-docs] 16.7 s # Subtest: [document] WO-115 a bound resident serves terminal bytes and events under the terminal's compiled authority, refuses in terminal shape and replays its receipts
+PROGRESS [resident-bind] 12.0 s # Subtest: bind writes a store the runtime accepts and aims at the bound worktree
+PASS resident-bind 12.02 s
+PROGRESS [local-runner-double] 0.0 s started
+PROGRESS [local-runner-double] 0.6 s # Subtest: WO-138 matrix pre-registers 30 baselines, five one-factor cells and three failure cells
+PROGRESS [console-docs] 21.3 s # Subtest: [document] WO-115 the compiled envelope admits or refuses each command by the terminal classifier's effect, through the terminal hooks' decider
+PROGRESS [local-runner-double] 3.0 s # Subtest: WO-110 the smoke records an envelope as shapes and keeps model text out
+PASS local-runner-double 3.99 s
+PROGRESS [plan-refutation-current] 0.0 s started
+PROGRESS [skeleton-docs] 26.1 s # Subtest: [document] WO-184 R9: committed no-notice replay preserves the pre-edit command and prompt
+PASS plan-refutation-current 3.49 s
+PROGRESS [artifact-corpus] 0.0 s started
+PROGRESS [artifact-corpus] 0.2 s # Subtest: WO-101 independent pair-arithmetic hash is planted on published FNV-1a-64 values
+PASS artifact-corpus 0.26 s
+PROGRESS [registrations] 0.0 s started
+PROGRESS [skeleton-docs] 27.5 s # Subtest: [document] WO-125 observed efforts reach the process and durable launch claim without effective readback
+PASS skeleton-docs 27.52 s
+PROGRESS [plan] 0.0 s started
+PASS registrations 0.71 s
+PROGRESS [entropy] 0.0 s started
+PASS entropy 0.34 s
+PROGRESS [resume] 30.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [console-docs] 29.4 s # Subtest: [document] WO-115 every contract command keeps its terminal parser, refusal bytes and events over loopback
+PASS plan 3.62 s
+PROGRESS [console-docs] 32.6 s # Subtest: [document] WO-116 the served audit command returns the terminal's bytes for each store and selection, the text host shows the three labeled projections, and the resident's own store audits
+PASS console-docs 32.63 s
+PROGRESS [resume] 45.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [resume] 60.1 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [resume] 75.1 s running task: resume (reports no cases); last report: waiting for the next case report
+PASS resume 89.57 s
+npm run test:docs: 29 passed; 0 failed; 112.78 s; 29 fresh tasks

@@ -1,0 +1,291 @@
+{
+  "subject": {
+    "workOrder": "WO-199",
+    "report": "FINAL-002",
+    "codeIdentity": "2b3fffa9613834721835b5532d96b0d561d4f1adb0e9678aaa945f39d2fba97c",
+    "head": "0eb0afa2ecdd3c6ba5b0fd437bb5bce1fd5f4958"
+  },
+  "redaction": "local paths and process command lines are omitted",
+  "agreedRecoveryProbe": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-112/final-001-vertical-recovery-probe.mjs",
+    "window": [
+      "2026-10-08T20:25:23.642Z",
+      "2026-10-08T20:25:29.020Z"
+    ],
+    "exitCode": 0,
+    "rows": [
+      {
+        "case": "crash-vertical",
+        "hostSignal": "SIGKILL",
+        "recordedProcessGroup": 42470,
+        "recovery": "observed"
+      },
+      {
+        "case": "crash-direct",
+        "hostSignal": "SIGKILL",
+        "recordedProcessGroup": 43721,
+        "recovery": "observed"
+      },
+      {
+        "case": "revoke-vertical",
+        "first": "interrupted: vertical running authority was interrupted",
+        "processStoppedRecorded": true,
+        "workerInterruptedRecorded": true,
+        "lastEvent": "WorkerInterrupted"
+      }
+    ]
+  },
+  "final001PostResultSignalProbe": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-199/final-001-post-result-signal-probe.mjs <repo> subject <signal>",
+    "note": "An earlier pass of the same three runs (20:25:34Z-20:26:15Z, each exit 0) had its rows cut by a display filter; these rows are the rerun with output retained.",
+    "rows": [
+      {
+        "signal": "SIGINT",
+        "window": [
+          "2026-10-08T20:26:21.906Z",
+          "2026-10-08T20:26:35.325Z"
+        ],
+        "boundedExit": 0,
+        "firstRun": {
+          "exitCode": 130,
+          "exitSignal": null,
+          "exitAfterMs": 12,
+          "stderr": [
+            "Vertical interrupted: SIGINT"
+          ]
+        },
+        "postResultTestStarted": true,
+        "sourceEventsAfterSignal": [
+          {
+            "type": "ArtifactIdentityEnforcementStarted"
+          },
+          {
+            "type": "SourceChangeRequested"
+          },
+          {
+            "type": "CommandPersisted"
+          },
+          {
+            "type": "WorkerAttemptStarted"
+          },
+          {
+            "type": "SourceChangeProcessStarted"
+          },
+          {
+            "type": "CommandReceipt"
+          },
+          {
+            "type": "SourceChangeProcessStopped"
+          },
+          {
+            "type": "WorkerResultObserved"
+          },
+          {
+            "type": "SourceChangeIntegrityChecked"
+          },
+          {
+            "type": "WorkerInterrupted",
+            "reason": "interrupted",
+            "signal": "SIGINT"
+          }
+        ],
+        "stateAfterSignal": {
+          "terminal": null,
+          "pending": "source-change"
+        },
+        "sourceReceiptsAfterSignal": 0,
+        "rerun": {
+          "exitCode": 0,
+          "exitSignal": null
+        },
+        "stateAfterRerun": {
+          "terminal": "resolved",
+          "pending": null
+        },
+        "rerunTestAfter": [
+          {
+            "result": "completed",
+            "exitCode": 0,
+            "signal": null
+          }
+        ]
+      },
+      {
+        "signal": "SIGTERM",
+        "window": [
+          "2026-10-08T20:26:35.405Z",
+          "2026-10-08T20:26:48.825Z"
+        ],
+        "boundedExit": 0,
+        "firstRun": {
+          "exitCode": 143,
+          "exitSignal": null,
+          "exitAfterMs": 11,
+          "stderr": [
+            "Vertical interrupted: SIGTERM"
+          ]
+        },
+        "postResultTestStarted": true,
+        "sourceEventsAfterSignal": [
+          {
+            "type": "ArtifactIdentityEnforcementStarted"
+          },
+          {
+            "type": "SourceChangeRequested"
+          },
+          {
+            "type": "CommandPersisted"
+          },
+          {
+            "type": "WorkerAttemptStarted"
+          },
+          {
+            "type": "SourceChangeProcessStarted"
+          },
+          {
+            "type": "CommandReceipt"
+          },
+          {
+            "type": "SourceChangeProcessStopped"
+          },
+          {
+            "type": "WorkerResultObserved"
+          },
+          {
+            "type": "SourceChangeIntegrityChecked"
+          },
+          {
+            "type": "WorkerInterrupted",
+            "reason": "interrupted",
+            "signal": "SIGTERM"
+          }
+        ],
+        "stateAfterSignal": {
+          "terminal": null,
+          "pending": "source-change"
+        },
+        "sourceReceiptsAfterSignal": 0,
+        "rerun": {
+          "exitCode": 0,
+          "exitSignal": null
+        },
+        "stateAfterRerun": {
+          "terminal": "resolved",
+          "pending": null
+        },
+        "rerunTestAfter": [
+          {
+            "result": "completed",
+            "exitCode": 0,
+            "signal": null
+          }
+        ]
+      },
+      {
+        "signal": "SIGHUP",
+        "window": [
+          "2026-10-08T20:26:48.904Z",
+          "2026-10-08T20:27:02.225Z"
+        ],
+        "boundedExit": 0,
+        "firstRun": {
+          "exitCode": 129,
+          "exitSignal": null,
+          "exitAfterMs": 11,
+          "stderr": [
+            "Vertical interrupted: SIGHUP"
+          ]
+        },
+        "postResultTestStarted": true,
+        "sourceEventsAfterSignal": [
+          {
+            "type": "ArtifactIdentityEnforcementStarted"
+          },
+          {
+            "type": "SourceChangeRequested"
+          },
+          {
+            "type": "CommandPersisted"
+          },
+          {
+            "type": "WorkerAttemptStarted"
+          },
+          {
+            "type": "SourceChangeProcessStarted"
+          },
+          {
+            "type": "CommandReceipt"
+          },
+          {
+            "type": "SourceChangeProcessStopped"
+          },
+          {
+            "type": "WorkerResultObserved"
+          },
+          {
+            "type": "SourceChangeIntegrityChecked"
+          },
+          {
+            "type": "WorkerInterrupted",
+            "reason": "interrupted",
+            "signal": "SIGHUP"
+          }
+        ],
+        "stateAfterSignal": {
+          "terminal": null,
+          "pending": "source-change"
+        },
+        "sourceReceiptsAfterSignal": 0,
+        "rerun": {
+          "exitCode": 0,
+          "exitSignal": null
+        },
+        "stateAfterRerun": {
+          "terminal": "resolved",
+          "pending": null
+        },
+        "rerunTestAfter": [
+          {
+            "result": "completed",
+            "exitCode": 0,
+            "signal": null
+          }
+        ]
+      }
+    ]
+  },
+  "coincidentRefusalProbe": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-199/verification-003-coincident-refusal-probe.mjs <repo>",
+    "window": [
+      "2026-10-08T20:29:13.791Z",
+      "2026-10-08T20:29:15.770Z"
+    ],
+    "exitCode": 0,
+    "coincidentSignal": {
+      "first": "interrupted: SIGINT",
+      "afterFirst": [
+        "SourceChangeProcessStopped",
+        "WorkerResultObserved",
+        "WorkerInterrupted:interrupted:SIGINT"
+      ],
+      "rerun": "source-change committed tree is dirty; preserve for inspection",
+      "afterRerun": [
+        "SourceChangeIntegrityChecked"
+      ]
+    },
+    "noSignalControl": {
+      "first": "source-change committed tree is dirty; preserve for inspection",
+      "afterFirst": [
+        "SourceChangeProcessStopped",
+        "WorkerResultObserved",
+        "SourceChangeIntegrityChecked",
+        "SourceChangeIntegrityChecked",
+        "SourceChangeRefused:host-admission-effect"
+      ],
+      "rerun": {
+        "status": "refused",
+        "reason": "host-admission-effect"
+      }
+    }
+  }
+}

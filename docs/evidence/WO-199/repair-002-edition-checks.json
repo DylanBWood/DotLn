@@ -1,0 +1,328 @@
+{
+  "source": "Canonical bounded stdout; root session readback is codex-cli 0.161.0, gpt-6.1-sol, max",
+  "lastJudgedSourceEdit": {
+    "path": "scripts/test-vertical-judgment.mjs",
+    "modifiedAt": "2026-10-08T18:47:48.283Z",
+    "evidence": "statSync over FEEDBACK_SOURCE_PATHS plus the changed vertical primitives and CLI regression inputs after formatting; production vertical-primitives.mjs last changed at 18:47:47.098Z"
+  },
+  "live": {
+    "command": "DOTLN_LIVE_WORKERS=1 node scripts/harness.mjs bounded -- node packages/skeleton/dist/src/dotln.js feedback-audit --store <alias-free session scratch store> --transport codex-cli-exec --model gpt-6.1-sol --effort max",
+    "storeLocation": "Ignored session scratch, canonical physical path; no credentials or private harness output filed.",
+    "transport": "codex-cli-exec",
+    "model": "gpt-6.1-sol",
+    "effort": "max",
+    "phase": "complete",
+    "fixtures": 10,
+    "savedInstructionBytes": 1192,
+    "execution": {
+      "name": "bounded-probe",
+      "durationMs": 77286,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 77286,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 262538376,
+      "peakRssBytes": 370999296,
+      "memoryBudgetBytes": 12884901888,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-08T18:52:31.049Z",
+      "finishedAt": "2026-10-08T18:53:48.335Z",
+      "exitCode": 0,
+      "executed": true
+    }
+  },
+  "selectedEditions": {
+    "feedback": "004",
+    "authority": "003",
+    "artifact-identity": "003",
+    "verification": "003"
+  },
+  "checks": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/feedback-evidence.mjs --check",
+      "exitCode": 0,
+      "stdout": "Live feedback audit docs/evidence/WO-199/feedback-004 judged the current source.\nVerified ten passing regressions, ten removal failures, and 1192 fewer instruction bytes in the matched projection.",
+      "execution": {
+        "name": "bounded-probe",
+        "durationMs": 2224,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 2224,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 123858848,
+        "peakRssBytes": 257179648,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-08T18:54:30.903Z",
+        "finishedAt": "2026-10-08T18:54:33.127Z",
+        "exitCode": 0,
+        "executed": true
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/authority-evidence.mjs --check",
+      "exitCode": 0,
+      "stdout": "Verified two unchanged programs, the WO-132 plan-refuter, WO-142 Shape-First, WO-100 reviewer and WO-165 serial-route migrations, four widening rejections, nine runtime denials, admitted/reverted grants and 36 bundle comparisons (including additions and removals).",
+      "execution": {
+        "name": "bounded-probe",
+        "durationMs": 480,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 480,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 66196904,
+        "peakRssBytes": 113065984,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-08T18:54:33.230Z",
+        "finishedAt": "2026-10-08T18:54:33.711Z",
+        "exitCode": 0,
+        "executed": true
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/artifact-identity-evidence.mjs --check",
+      "exitCode": 0,
+      "stdout": "Verified 4 current artifact evidence files in docs/evidence/WO-199/artifact-identity/003; Seiri semantic hash and frozen oracle unchanged; versioned Entropy Reducer matches its current recorded fixture.",
+      "execution": {
+        "name": "bounded-probe",
+        "durationMs": 215,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 215,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 71964096,
+        "peakRssBytes": 118784000,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-08T18:54:33.813Z",
+        "finishedAt": "2026-10-08T18:54:34.028Z",
+        "exitCode": 0,
+        "executed": true
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/verification-evidence.mjs --check",
+      "exitCode": 0,
+      "stdout": "Verified 4 synthetic verification evidence files; planted defect, repair, staleness and replay are green.",
+      "execution": {
+        "name": "bounded-probe",
+        "durationMs": 1010,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 1010,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 75928640,
+        "peakRssBytes": 123011072,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-08T18:54:34.129Z",
+        "finishedAt": "2026-10-08T18:54:35.140Z",
+        "exitCode": 0,
+        "executed": true
+      }
+    }
+  ],
+  "beforeResolutionCorrection": {
+    "source": "Canonical bounded stdout; root session readback is codex-cli 0.161.0, gpt-6.1-sol, max",
+    "lastJudgedSourceEdit": {
+      "path": "packages/skeleton/src/verification-worktree.ts",
+      "modifiedAt": "2026-10-08T18:16:15.774Z",
+      "evidence": "statSync over FEEDBACK_SOURCE_PATHS after formatting and before the live episode"
+    },
+    "live": {
+      "command": "DOTLN_LIVE_WORKERS=1 node scripts/harness.mjs bounded -- node packages/skeleton/dist/src/dotln.js feedback-audit --store <alias-free session scratch store> --transport codex-cli-exec --model gpt-6.1-sol --effort max",
+      "storeLocation": "Ignored session scratch, canonical physical path; no credentials or private harness output filed.",
+      "transport": "codex-cli-exec",
+      "model": "gpt-6.1-sol",
+      "effort": "max",
+      "phase": "complete",
+      "fixtures": 10,
+      "savedInstructionBytes": 1192,
+      "execution": {
+        "name": "bounded-probe",
+        "durationMs": 42159,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 42159,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 247023064,
+        "peakRssBytes": 363249664,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-08T18:22:00.057Z",
+        "finishedAt": "2026-10-08T18:22:42.216Z",
+        "exitCode": 0,
+        "executed": true
+      }
+    },
+    "selectedEditions": {
+      "feedback": "003",
+      "authority": "002",
+      "artifact-identity": "002",
+      "verification": "002"
+    },
+    "checks": [
+      {
+        "command": "node scripts/harness.mjs bounded -- node scripts/verification-evidence.mjs --write",
+        "exitCode": 0,
+        "stdout": "Recorded 4 synthetic verification evidence files; planted defect, repair, staleness and replay are green.",
+        "execution": {
+          "name": "bounded-probe",
+          "durationMs": 1022,
+          "slowestCases": [
+            {
+              "name": "bounded-probe",
+              "durationMs": 1022,
+              "exitCode": 0,
+              "granularity": "task"
+            }
+          ],
+          "peakFootprintBytes": 91118000,
+          "peakRssBytes": 138756096,
+          "memoryBudgetBytes": 12884901888,
+          "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+          "droppedOutputBytes": 0,
+          "startedAt": "2026-10-08T18:24:57.459Z",
+          "finishedAt": "2026-10-08T18:24:58.481Z",
+          "exitCode": 0,
+          "executed": true
+        }
+      },
+      {
+        "command": "node scripts/harness.mjs bounded -- node scripts/feedback-evidence.mjs --check",
+        "exitCode": 0,
+        "stdout": "Live feedback audit docs/evidence/WO-199/feedback-003 judged the current source.\nVerified ten passing regressions, ten removal failures, and 1192 fewer instruction bytes in the matched projection.",
+        "execution": {
+          "name": "bounded-probe",
+          "durationMs": 2358,
+          "slowestCases": [
+            {
+              "name": "bounded-probe",
+              "durationMs": 2358,
+              "exitCode": 0,
+              "granularity": "task"
+            }
+          ],
+          "peakFootprintBytes": 131314528,
+          "peakRssBytes": 269205504,
+          "memoryBudgetBytes": 12884901888,
+          "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+          "droppedOutputBytes": 0,
+          "startedAt": "2026-10-08T18:24:58.587Z",
+          "finishedAt": "2026-10-08T18:25:00.945Z",
+          "exitCode": 0,
+          "executed": true
+        }
+      },
+      {
+        "command": "node scripts/harness.mjs bounded -- node scripts/authority-evidence.mjs --check",
+        "exitCode": 0,
+        "stdout": "Verified two unchanged programs, the WO-132 plan-refuter, WO-142 Shape-First, WO-100 reviewer and WO-165 serial-route migrations, four widening rejections, nine runtime denials, admitted/reverted grants and 36 bundle comparisons (including additions and removals).",
+        "execution": {
+          "name": "bounded-probe",
+          "durationMs": 477,
+          "slowestCases": [
+            {
+              "name": "bounded-probe",
+              "durationMs": 477,
+              "exitCode": 0,
+              "granularity": "task"
+            }
+          ],
+          "peakFootprintBytes": 68785624,
+          "peakRssBytes": 115621888,
+          "memoryBudgetBytes": 12884901888,
+          "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+          "droppedOutputBytes": 0,
+          "startedAt": "2026-10-08T18:25:01.061Z",
+          "finishedAt": "2026-10-08T18:25:01.538Z",
+          "exitCode": 0,
+          "executed": true
+        }
+      },
+      {
+        "command": "node scripts/harness.mjs bounded -- node scripts/artifact-identity-evidence.mjs --check",
+        "exitCode": 0,
+        "stdout": "Verified 4 current artifact evidence files in docs/evidence/WO-199/artifact-identity/002; Seiri semantic hash and frozen oracle unchanged; versioned Entropy Reducer matches its current recorded fixture.",
+        "execution": {
+          "name": "bounded-probe",
+          "durationMs": 236,
+          "slowestCases": [
+            {
+              "name": "bounded-probe",
+              "durationMs": 236,
+              "exitCode": 0,
+              "granularity": "task"
+            }
+          ],
+          "peakFootprintBytes": 62476824,
+          "peakRssBytes": 109920256,
+          "memoryBudgetBytes": 12884901888,
+          "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+          "droppedOutputBytes": 0,
+          "startedAt": "2026-10-08T18:25:01.644Z",
+          "finishedAt": "2026-10-08T18:25:01.880Z",
+          "exitCode": 0,
+          "executed": true
+        }
+      },
+      {
+        "command": "node scripts/harness.mjs bounded -- node scripts/verification-evidence.mjs --check",
+        "exitCode": 0,
+        "stdout": "Verified 4 synthetic verification evidence files; planted defect, repair, staleness and replay are green.",
+        "execution": {
+          "name": "bounded-probe",
+          "durationMs": 1098,
+          "slowestCases": [
+            {
+              "name": "bounded-probe",
+              "durationMs": 1098,
+              "exitCode": 0,
+              "granularity": "task"
+            }
+          ],
+          "peakFootprintBytes": 87857608,
+          "peakRssBytes": 135462912,
+          "memoryBudgetBytes": 12884901888,
+          "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+          "droppedOutputBytes": 0,
+          "startedAt": "2026-10-08T18:25:01.986Z",
+          "finishedAt": "2026-10-08T18:25:03.084Z",
+          "exitCode": 0,
+          "executed": true
+        }
+      }
+    ]
+  }
+}

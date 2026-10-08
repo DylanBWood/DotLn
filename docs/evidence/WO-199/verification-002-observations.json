@@ -1,0 +1,593 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-199",
+  "verification": "VER-002",
+  "subject": {
+    "codeIdentity": "e86d7a74c5ea939a4c937b4614f16334d841fc6caf862bc4187ee3087abedfc6",
+    "head": "0eb0afa2ecdd3c6ba5b0fd437bb5bce1fd5f4958",
+    "checkpoint": "refs/dotln/checkpoint/WO-199/7",
+    "productReuse": {
+      "checkId": "npm test",
+      "recordedAt": "2026-10-08T05:53:55.360Z",
+      "codeIdentity": "e86d7a74c5ea939a4c937b4614f16334d841fc6caf862bc4187ee3087abedfc6",
+      "exitCode": 0,
+      "executed": true,
+      "executionMode": "fresh",
+      "durationMs": 1339227,
+      "gateSelection": "review",
+      "requiredSuites": [
+        "build",
+        "format",
+        "release-preparation",
+        "github-body",
+        "outward-lint",
+        "target-publish",
+        "vertical",
+        "license-fixtures",
+        "publication-fixtures",
+        "backup-intake",
+        "beacon-portability",
+        "checkpoint",
+        "worktree",
+        "worktree-integration",
+        "release",
+        "work-orders-fixtures",
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console",
+        "browser-evidence",
+        "adjacent-queue",
+        "derived-orders",
+        "portfolio",
+        "codex-continuation",
+        "authority-grants",
+        "evidence-sources",
+        "configuration-root",
+        "harness-probe",
+        "authority-evidence",
+        "harness-fixtures",
+        "harness-evidence",
+        "plan-refutation",
+        "artifact-evidence",
+        "verification-evidence",
+        "feedback-evidence",
+        "runner-fixtures",
+        "registrations"
+      ],
+      "cases": 38,
+      "evidenceRef": "host-gate:e86d7a74c5ea939a4c937b4614f16334d841fc6caf862bc4187ee3087abedfc6:npm test",
+      "location": "worktree"
+    }
+  },
+  "boundary": "One root verifier, no workers or implementation edits. Each probe ran alone under harness bounded. Native/CLI actors are explicit doubles in disposable system-temp repositories; the live feedback episode is consumed from revision 002 and checked current.",
+  "handoffChecks": {
+    "format": {
+      "command": "npm run format:check",
+      "exitCode": 0,
+      "source": "observed stdout: All matched files use Prettier code style!"
+    },
+    "documents": {
+      "checkId": "npm run test:docs",
+      "codeIdentity": "e86d7a74c5ea939a4c937b4614f16334d841fc6caf862bc4187ee3087abedfc6",
+      "recordedAt": "2026-10-08T14:29:34.967Z",
+      "exitCode": 0,
+      "durationMs": 111876,
+      "rows": 29,
+      "failed": 0,
+      "gateSelection": "document",
+      "identityUnchanged": true
+    },
+    "productConsumed": {
+      "checkId": "npm test",
+      "codeIdentity": "e86d7a74c5ea939a4c937b4614f16334d841fc6caf862bc4187ee3087abedfc6",
+      "recordedAt": "2026-10-08T05:53:55.360Z",
+      "exitCode": 0,
+      "durationMs": 1339227,
+      "rows": 38,
+      "failed": 0,
+      "gateSelection": "review",
+      "identityUnchanged": true
+    }
+  },
+  "commands": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-112/final-001-vertical-recovery-probe.mjs",
+      "exitCode": 0,
+      "observation": {
+        "name": "bounded-probe",
+        "durationMs": 5391,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 5391,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 65741128,
+        "peakRssBytes": 167936000,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-08T14:17:38.151Z",
+        "finishedAt": "2026-10-08T14:17:43.542Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "rows": [
+        {
+          "case": "crash-vertical",
+          "hostSignal": "SIGKILL",
+          "recordedProcessGroup": 32156,
+          "recovery": {
+            "status": "observed"
+          }
+        },
+        {
+          "case": "crash-direct",
+          "hostSignal": "SIGKILL",
+          "recordedProcessGroup": 33559,
+          "recovery": {
+            "status": "observed"
+          }
+        },
+        {
+          "case": "revoke-vertical",
+          "first": {
+            "error": "interrupted: vertical running authority was interrupted"
+          },
+          "recordedProcessGroup": "see crash cases",
+          "processStoppedRecorded": true,
+          "workerInterruptedRecorded": true,
+          "lastEvent": "WorkerInterrupted"
+        }
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-199/verification-001-signal-step-probe.mjs",
+      "exitCode": 0,
+      "observation": {
+        "name": "bounded-probe",
+        "durationMs": 32675,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 32675,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 145852656,
+        "peakRssBytes": 283770880,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-08T14:17:52.792Z",
+        "finishedAt": "2026-10-08T14:18:25.467Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "rows": [
+        {
+          "variant": "subject",
+          "signal": "SIGTERM",
+          "judgmentDelayMs": 30000,
+          "pendingWhenSignalled": "verification",
+          "exitAfterSignalMs": 13,
+          "exitCode": 143,
+          "exitSignal": null,
+          "stderrTail": [
+            "Vertical interrupted: SIGTERM"
+          ],
+          "pendingAfter": "verification",
+          "terminalAfter": null
+        },
+        {
+          "variant": "subject",
+          "signal": "SIGINT",
+          "judgmentDelayMs": 30000,
+          "pendingWhenSignalled": "verification",
+          "exitAfterSignalMs": 10,
+          "exitCode": 130,
+          "exitSignal": null,
+          "stderrTail": [
+            "Vertical interrupted: SIGINT"
+          ],
+          "pendingAfter": "verification",
+          "terminalAfter": null
+        },
+        {
+          "variant": "subject",
+          "signal": "SIGHUP",
+          "judgmentDelayMs": 30000,
+          "pendingWhenSignalled": "verification",
+          "exitAfterSignalMs": 13,
+          "exitCode": 129,
+          "exitSignal": null,
+          "stderrTail": [
+            "Vertical interrupted: SIGHUP"
+          ],
+          "pendingAfter": "verification",
+          "terminalAfter": null
+        },
+        {
+          "variant": "HEAD disposition (dotln vertical signal listeners dropped)",
+          "signal": "SIGTERM",
+          "judgmentDelayMs": 30000,
+          "pendingWhenSignalled": "verification",
+          "exitAfterSignalMs": 6,
+          "exitCode": null,
+          "exitSignal": "SIGTERM",
+          "stderrTail": [
+            ""
+          ],
+          "pendingAfter": "verification",
+          "terminalAfter": null
+        }
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test scripts/test-vertical.recovery.mjs",
+      "exitCode": 0,
+      "observation": {
+        "name": "bounded-probe",
+        "durationMs": 118959,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 118959,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 198224416,
+        "peakRssBytes": 375734272,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-08T14:18:51.163Z",
+        "finishedAt": "2026-10-08T14:20:50.122Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "summary": [
+        "✔ WO-199 dotln vertical forwards SIGINT, SIGTERM and SIGHUP and resumes the same issue (45930.017584ms)",
+        "✔ WO-199 a signal during a judgment step stops the judgment at once, keeps the step pending and a rerun resumes after its lease (13783.4305ms)",
+        "✔ WO-199 a signal during the observation settle wait ends the wait at once, keeps the step pending and a rerun resumes (13448.463542ms)",
+        "✔ WO-199 a signal during a repair writer stops its group, records the signal and a rerun resumes the repair (26394.153291ms)",
+        "✔ WO-199 a step failure caused by a terminal-wide signal is left pending as interrupted, never recorded refused (2880.457375ms)",
+        "✔ WO-199 real wrapped writers recover after crash, revocation and a surviving orphan (16399.981333ms)",
+        "ℹ tests 6",
+        "ℹ suites 0",
+        "ℹ pass 6",
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 118911.134583"
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-199/verification-002-launch-probe.mjs",
+      "exitCode": 0,
+      "observation": {
+        "name": "bounded-probe",
+        "durationMs": 3951,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 3951,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 82683960,
+        "peakRssBytes": 180862976,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-08T14:23:20.942Z",
+        "finishedAt": "2026-10-08T14:23:24.893Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "rows": [
+        {
+          "case": "abort-before-launch",
+          "launches": 0,
+          "kills": 0
+        },
+        {
+          "case": "abort-during-authority-read",
+          "launches": 0,
+          "kills": 0
+        },
+        {
+          "case": "authority-refused",
+          "launches": 0,
+          "kills": 0
+        },
+        {
+          "case": "writer-abort-owned-by-source-host",
+          "launches": 1,
+          "kills": 0
+        },
+        {
+          "case": "source-abort-burns-no-attempt",
+          "attemptsBeforeRerun": 0,
+          "resumed": "observed"
+        },
+        {
+          "case": "post-result-authority-expired",
+          "reason": "host-admission-authority"
+        }
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test packages/skeleton/dist/test/repair-host.test.js packages/skeleton/dist/test/source-change-host.test.js packages/skeleton/dist/test/source-change-integrity.test.js",
+      "exitCode": 0,
+      "observation": {
+        "name": "bounded-probe",
+        "durationMs": 70584,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 70584,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 224522272,
+        "peakRssBytes": 561152000,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-08T14:21:26.656Z",
+        "finishedAt": "2026-10-08T14:22:37.240Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "summary": [
+        "✔ WO-052 AC1 claude: governed foreign worktree, failing baseline, committed passing result, receipt and explicit finish (3859.632667ms)",
+        "✔ WO-052 AC1 codex: governed foreign worktree, failing baseline, committed passing result, receipt and explicit finish (2337.21625ms)",
+        "✔ WO-199 real host SIGKILL before-commit: immediate recovery observes one effect (2999.263125ms)",
+        "✔ WO-199 real host SIGKILL after-commit: immediate recovery observes one effect (2786.31ms)",
+        "✔ WO-199 real host SIGKILL after-receipt: immediate recovery observes one effect (3008.657291ms)",
+        "✔ WO-052 AC3 no commit refuses and retains edits; finish never discards them (1104.289833ms)",
+        "✔ WO-052 effect receipt and stable request are positively decoded before reclaim or redispatch (2284.993834ms)",
+        "✔ WO-052 dirty committed tree and unowned ignored files refuse while preserving contents (3308.766625ms)",
+        "✔ WO-052 authority expiry fences initial dispatch and post-worker admission (1445.71275ms)",
+        "✔ WO-052 AC4 source payloads reject malformed identity, cross-order/branch results and terminal rewrites (0.565834ms)",
+        "✔ WO-052 emitted Claude permission hook admits only live host-issued exact commands (6089.579791ms)",
+        "✔ WO-052 wrong branch and outside-surface commits refuse without redispatch or discard (2539.126084ms)",
+        "✔ WO-112 claude: unexplained shared changes are refused and preserved (2478.84875ms)",
+        "✔ WO-112 codex: unexplained shared changes are refused and preserved (1170.682333ms)",
+        "✔ WO-112 a result that is not one commit with the host message refuses for any writer (2665.247292ms)",
+        "✔ WO-112 a replace ref cannot hide a change outside the surfaces from the host (1340.269667ms)",
+        "✔ WO-052 a second interrupted attempt exhausts recovery; no third dispatch (1931.978ms)",
+        "✔ WO-157 a grant-bearing artifact identity equips and runs through the source-change host; a malformed registry still refuses (1838.890167ms)",
+        "✔ WO-157 the host counts committed paths against the files ceiling and refuses a removal without repo.delete, except a declared Sort move (9814.655083ms)",
+        "✔ WO-199 the vertical wrapper records a group and recovers stopped or surviving writers (14090.778291ms)",
+        "✔ WO-199 death before the start marker never admits the held native writer (2533.35225ms)",
+        "✔ WO-199 recovery never signals a group with a mismatched birth identity (954.850458ms)",
+        "✔ WO-199 post-result effect and receipt refusals retain their own host check (2963.331958ms)",
+        "✔ WO-112 VER-003 F1 admission ignores forged commit-graph trees and parents (2430.833583ms)",
+        "✔ WO-112 VER-003 F2 persisted receipt recovery ignores later unrelated shared-ref changes (12758.868167ms)",
+        "✔ WO-112 VER-003 F2 a persisted receipt cannot accept a changed candidate (2307.367ms)",
+        "✔ WO-112 VER-006 F2 a matching accepted older receipt replays once without new process markers or redispatch (3183.181833ms)",
+        "✔ WO-112 VER-006 F2 older receipt replay retains exact commit, diff and request binding (6651.160875ms)",
+        "✔ WO-112 VER-006 F2 an older attempt without an accepted receipt still refuses missing termination evidence (1062.311ms)",
+        "✔ WO-112 VER-006 F2 an unreceipted stopped attempt still requires its durable shared-state baseline (1062.056834ms)",
+        "✔ WO-112 F1 preserves independent commits, tags, deleted refs and symbolic retargets (6898.588416ms)",
+        "✔ WO-112 F2 refuses substituted alternates entries and parents without writing through them (3156.0965ms)",
+        "✔ WO-112 shared-state comparison preserves distinct alternates bytes without UTF-8 loss (1077.586791ms)",
+        "✔ WO-112 F3 adjudicates malformed returns and transport failures durably before recovery (2300.386125ms)",
+        "✔ WO-112 F3 a killed host's unchecked commit is judged against its persisted baseline (1246.823083ms)",
+        "✔ WO-199 recovery stops a killed host's surviving writer before adjudication (2607.872708ms)",
+        "✔ WO-112 F3 cancellation stops an ordinary descendant before judging shared state (1039.294209ms)",
+        "✔ WO-112 new integrity records decode before recovery changes any store bytes (2122.240666ms)",
+        "ℹ tests 38",
+        "ℹ suites 0",
+        "ℹ pass 38",
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 70523.836875"
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test packages/skeleton/dist/test/repair.test.js",
+      "exitCode": 0,
+      "observation": {
+        "name": "bounded-probe",
+        "durationMs": 31727,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 31727,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 88976232,
+        "peakRssBytes": 230162432,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-08T14:24:05.760Z",
+        "finishedAt": "2026-10-08T14:24:37.487Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "summary": [
+        "✔ WO-066 host review witness preserves scope, named tests, revision and one-round bound (2252.576916ms)",
+        "✔ WO-055 AC1 pure derivation contains paths, commands, contract and admitted exact grants (2221.790667ms)",
+        "✔ WO-055 AC2 failing source commit repairs once and re-verifies the complete original contract (5194.260375ms)",
+        "✔ WO-055 AC3 two wrong repairs exhaust with last finding and no third source dispatch (7241.513791ms)",
+        "✔ WO-055 AC4 SIGKILL afterRepairCommit resumes persisted continuation without another repair (4983.928167ms)",
+        "✔ WO-055 AC4 SIGKILL afterSnapshotPrepared resumes persisted continuation without another repair (4955.690958ms)",
+        "✔ WO-055 AC1 refused path or command persists byte-identical envelope and dispatches no writer (4733.009916ms)",
+        "ℹ tests 7",
+        "ℹ suites 0",
+        "ℹ pass 7",
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 31664.257959"
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern='WO-199 a signal during a held intake' scripts/test-vertical-judgment.mjs",
+      "exitCode": 0,
+      "observation": {
+        "name": "bounded-probe",
+        "durationMs": 12648,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 12648,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 126598816,
+        "peakRssBytes": 266895360,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-08T14:25:12.965Z",
+        "finishedAt": "2026-10-08T14:25:25.613Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "summary": [
+        "✔ WO-199 a signal during a held intake episode ends the admission at once, records nothing and a rerun admits (12474.92675ms)",
+        "ℹ tests 1",
+        "ℹ suites 0",
+        "ℹ pass 1",
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 12588.359708"
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/feedback-evidence.mjs --check",
+      "exitCode": 0,
+      "observation": {
+        "name": "bounded-probe",
+        "durationMs": 2931,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 2931,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 100115648,
+        "peakRssBytes": 190119936,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-08T14:26:09.323Z",
+        "finishedAt": "2026-10-08T14:26:12.254Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "summary": [
+        "Live feedback audit docs/evidence/WO-199/feedback-002 judged the current source.",
+        "Verified ten passing regressions, ten removal failures, and 1192 fewer instruction bytes in the matched projection."
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/authority-evidence.mjs --check",
+      "exitCode": 0,
+      "observation": {
+        "name": "bounded-probe",
+        "durationMs": 652,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 652,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 49893912,
+        "peakRssBytes": 97370112,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-08T14:26:12.384Z",
+        "finishedAt": "2026-10-08T14:26:13.036Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "summary": [
+        "Verified two unchanged programs, the WO-132 plan-refuter, WO-142 Shape-First, WO-100 reviewer and WO-165 serial-route migrations, four widening rejections, nine runtime denials, admitted/reverted grants and 36 bundle comparisons (including additions and removals)."
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/artifact-identity-evidence.mjs --check",
+      "exitCode": 0,
+      "observation": {
+        "name": "bounded-probe",
+        "durationMs": 263,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 263,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 45797984,
+        "peakRssBytes": 93175808,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-08T14:26:13.167Z",
+        "finishedAt": "2026-10-08T14:26:13.430Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "summary": [
+        "Verified 4 current artifact evidence files in docs/evidence/WO-199/artifact-identity/001; Seiri semantic hash and frozen oracle unchanged; versioned Entropy Reducer matches its current recorded fixture."
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/verification-evidence.mjs --check",
+      "exitCode": 0,
+      "observation": {
+        "name": "bounded-probe",
+        "durationMs": 1389,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 1389,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 73030496,
+        "peakRssBytes": 126910464,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-08T14:26:13.560Z",
+        "finishedAt": "2026-10-08T14:26:14.949Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "summary": [
+        "Verified 4 synthetic verification evidence files; planted defect, repair, staleness and replay are green."
+      ]
+    }
+  ],
+  "correction": "The source-suite command inherited the absent repair-host.test.js filename from the executor handoff and executed 38 source-host/integrity tests only. File inventory found repair.test.js; the separate current repair suite executed and passed 7 tests."
+}
