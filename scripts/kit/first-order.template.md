@@ -24,11 +24,15 @@ limits observed incidentally.
    and its output formats; model and effort selection; settings sources
    actually loaded; hooks; instruction-file handling; startup-context
    accounting (what a fresh session auto-loads, by file, metadata only).
-3. The harness smoke: `node scripts/harness.mjs check` and the live smoke
-   `scripts/harness-live-smoke.mjs` import the compiled runtime under
-   `packages/<name>/dist/`, which this kit revision does not carry. Record
-   `blocked` with that missing input, or `observed` with the command and its
-   output once a kit revision carries the runtime.
+3. The harness smoke: `node scripts/harness.mjs check` verifies the pinned
+   runtime files the hooks import (the snapshot) and every generated surface;
+   `KIT-MANIFEST.json` hashes the whole compiled runtime. Record `observed`
+   with the command and its output, or `blocked` with the printed cause when
+   it refuses (a fresh clone runs `node scripts/bootstrap.mjs` once first:
+   `npm ci`, then the emit that installs the snapshot). The live smoke,
+   `DOTLN_LIVE_HARNESS=1 node scripts/harness-live-smoke.mjs executor 001`,
+   launches the actual harness in a scratch copy of this launchpad and is
+   this instance's choice; record it the same way if run.
 4. Local-terms registration: create `docs/control/local/terms.txt` with at
    least one term (one per line, ignored by Git; an empty list refuses), run
    `npm run terms -- check CLAUDE.md README.md docs/product/07-execution-guide.md`

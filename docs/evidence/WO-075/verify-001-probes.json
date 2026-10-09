@@ -1,0 +1,635 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-075",
+  "verification": "VER-001",
+  "recordedAt": "2026-10-09T13:58:19.527Z",
+  "dispatch": "resume: verify",
+  "subjectCodeIdentity": "5b5974674d8b561544cc8f8be900bd8e7ebc12316dd63255260f2946f20bfa32",
+  "launchpadSourceSha256": "c4fc37780f765d89694733c981c4bc831ce68088ec18803bdb44b159414440dc",
+  "fixtureCommit": "50581e4a7e510efc07920da58d4a6f08c5262591",
+  "verdict": "fail",
+  "findings": [
+    {
+      "id": "F1",
+      "route": "blocking",
+      "severity": "major",
+      "criterion": "1",
+      "rule": "Every compiled runtime byte and path must come from the manifest-named commit, including when ignored directories or status-hidden tracked inputs exist.",
+      "observations": [
+        "ignored-source-directory",
+        "status-hidden-tracked-source"
+      ]
+    }
+  ],
+  "boundedRuns": [
+    {
+      "startedAt": "2026-10-09T13:51:20.582Z",
+      "durationMs": 5833,
+      "exitCode": 0
+    },
+    {
+      "startedAt": "2026-10-09T13:54:05.804Z",
+      "durationMs": 4931,
+      "exitCode": 0
+    }
+  ],
+  "probes": [
+    {
+      "label": "clean-export",
+      "exitCode": 0,
+      "manifestCommitMatches": true
+    },
+    {
+      "label": "manifest-hashes",
+      "files": 588,
+      "runtimeFiles": 270,
+      "allMatch": true
+    },
+    {
+      "label": "harness-check",
+      "exitCode": 0
+    },
+    {
+      "label": "directed-role-inputs",
+      "exitCode": 0,
+      "roleRows": 12,
+      "source": "scripts/harness-context.mjs --check"
+    },
+    {
+      "label": "independent-rebuild",
+      "runtimeFiles": 270,
+      "byteIdentical": true,
+      "setEqual": true,
+      "install": "npm ci --offline"
+    },
+    {
+      "label": "cold-start",
+      "instruction": {
+        "kit": 6832,
+        "core": 6873
+      },
+      "deltas": [
+        {
+          "role": "executor",
+          "root": ".claude/skills",
+          "kit": 28087,
+          "core": 28128,
+          "delta": -41
+        },
+        {
+          "role": "verifier",
+          "root": ".claude/skills",
+          "kit": 25339,
+          "core": 25380,
+          "delta": -41
+        },
+        {
+          "role": "reviewer",
+          "root": ".claude/skills",
+          "kit": 26790,
+          "core": 26831,
+          "delta": -41
+        },
+        {
+          "role": "release-close",
+          "root": ".claude/skills",
+          "kit": 16325,
+          "core": 16366,
+          "delta": -41
+        },
+        {
+          "role": "planner",
+          "root": ".claude/skills",
+          "kit": 18143,
+          "core": 18184,
+          "delta": -41
+        },
+        {
+          "role": "refuter",
+          "root": ".claude/skills",
+          "kit": 17422,
+          "core": 17463,
+          "delta": -41
+        },
+        {
+          "role": "executor",
+          "root": ".agents/skills",
+          "kit": 28087,
+          "core": 28128,
+          "delta": -41
+        },
+        {
+          "role": "verifier",
+          "root": ".agents/skills",
+          "kit": 25339,
+          "core": 25380,
+          "delta": -41
+        },
+        {
+          "role": "reviewer",
+          "root": ".agents/skills",
+          "kit": 26790,
+          "core": 26831,
+          "delta": -41
+        },
+        {
+          "role": "release-close",
+          "root": ".agents/skills",
+          "kit": 16325,
+          "core": 16366,
+          "delta": -41
+        },
+        {
+          "role": "planner",
+          "root": ".agents/skills",
+          "kit": 18143,
+          "core": 18184,
+          "delta": -41
+        },
+        {
+          "role": "refuter",
+          "root": ".agents/skills",
+          "kit": 17422,
+          "core": 17463,
+          "delta": -41
+        }
+      ]
+    },
+    {
+      "label": "hook-byte-drift",
+      "exitCode": 1,
+      "namedPath": ".claude/hooks/no-attribution.mjs"
+    },
+    {
+      "label": "snapshot-byte-drift",
+      "exitCode": 1,
+      "output": "harness drift: pinned snapshot missing or changed (packages/compiler/dist/src/artifact-identity.js); run the build bootstrap"
+    },
+    {
+      "label": "ignored-source-directory",
+      "statusOutput": "!! packages/kernel/src/verifier-ignored/",
+      "exitCode": 0,
+      "message": "Exported the DotLn kit of 50581e4a7e510efc07920da58d4a6f08c5262591 (untagged) to <verifier-scratch>/ignored-directory-kit: 590 kit files in KIT-MANIFEST.json, 23 instance seeds.\nruntime: 272 compiled files built from the commit's package sources; harness bundle: 33 surfaces emitted and checked inside the export, 32 manifest-listed (CLAUDE.md's block is checked through .claude/harness-manifest.json); snapshot .runtime/harness/acf4f99ae6bf54ba.\nlocal-terms list: unavailable; no text was checked against a local-terms list",
+      "payloadManifestListed": true,
+      "payloadInRebuild": false
+    },
+    {
+      "label": "product-gate-reuse",
+      "codeIdentity": "5b5974674d8b561544cc8f8be900bd8e7ebc12316dd63255260f2946f20bfa32",
+      "row": {
+        "checkId": "npm test",
+        "codeIdentity": "5b5974674d8b561544cc8f8be900bd8e7ebc12316dd63255260f2946f20bfa32",
+        "subject": "419ef539d246d6d4cc6870a3245394cc226fd821",
+        "exitCode": 0,
+        "executed": true,
+        "durationMs": 1359065,
+        "evidenceRef": "host-gate:5b5974674d8b561544cc8f8be900bd8e7ebc12316dd63255260f2946f20bfa32:npm test",
+        "recordedAt": "2026-10-09T10:53:18.316Z"
+      }
+    },
+    {
+      "label": "hook-specifiers",
+      "hookCount": 15,
+      "scanned": [
+        {
+          "path": ".claude/hooks/commit-msg.mjs",
+          "specifiers": 2
+        },
+        {
+          "path": ".claude/hooks/concurrent-work-requires-worktrees.mjs",
+          "specifiers": 19
+        },
+        {
+          "path": ".claude/hooks/finish.mjs",
+          "specifiers": 19
+        },
+        {
+          "path": ".claude/hooks/no-attribution.mjs",
+          "specifiers": 19
+        },
+        {
+          "path": ".claude/hooks/no-lint-type-disables-as-fixes.mjs",
+          "specifiers": 19
+        },
+        {
+          "path": ".claude/hooks/permission-denied.mjs",
+          "specifiers": 19
+        },
+        {
+          "path": ".claude/hooks/permissions.mjs",
+          "specifiers": 19
+        },
+        {
+          "path": ".claude/hooks/presence-posttooluse.mjs",
+          "specifiers": 2
+        },
+        {
+          "path": ".claude/hooks/presence-pretooluse.mjs",
+          "specifiers": 2
+        },
+        {
+          "path": ".claude/hooks/presence-stop.mjs",
+          "specifiers": 2
+        },
+        {
+          "path": ".claude/hooks/presence-userpromptsubmit.mjs",
+          "specifiers": 2
+        },
+        {
+          "path": ".claude/hooks/read-observer.mjs",
+          "specifiers": 19
+        },
+        {
+          "path": ".claude/hooks/session.mjs",
+          "specifiers": 22
+        },
+        {
+          "path": ".claude/hooks/write-observer.mjs",
+          "specifiers": 19
+        },
+        {
+          "path": ".codex/hooks/continuation.mjs",
+          "specifiers": 9
+        }
+      ],
+      "absoluteOrFileSpecifiers": []
+    },
+    {
+      "label": "repeat-emit",
+      "sameListedBytes": true
+    },
+    {
+      "label": "fresh-clone-hook",
+      "exitCode": 0,
+      "namedCause": "snapshot-missing",
+      "advisory": true,
+      "denied": false
+    },
+    {
+      "label": "fresh-clone-bootstrap",
+      "missingCheckExitCode": 1,
+      "bootstrap": "harness emit: 33 generated surfaces; local-terms list: unavailable\nWorktree ready for Claude or Codex (1 preparation steps).",
+      "checkAfterExitCode": 0,
+      "installLeavesCommittedTreeClean": true
+    },
+    {
+      "label": "ignored-single-source-file",
+      "exitCode": 1,
+      "destinationAbsent": true,
+      "message": "error: the export builds and emits from the commit, but the work tree differs from HEAD: ignored files under package sources (tsc would compile them unseen): packages/kernel/src/single.verifier.ts. Commit or stash them (remove the ignored files), or export from a clean checkout of the commit."
+    },
+    {
+      "label": "repeat-export-to-occupied-destination",
+      "exitCode": 1,
+      "existingManifestUnchanged": true
+    },
+    {
+      "label": "kit-re-export-refusal",
+      "exitCode": 1,
+      "destinationAbsent": true
+    },
+    {
+      "label": "executor-smoke-record",
+      "file": "executor-001.json",
+      "observedAt": "2026-10-09T09:22:29.760Z",
+      "phrase": "resume: next",
+      "harnessVersion": "2.1.295 (Claude Code)",
+      "profileVersion": "2.1.263",
+      "actor": {
+        "harness": "claude-code",
+        "model": "claude-fable-5",
+        "effort": "xhigh",
+        "source": "launch-selector"
+      },
+      "effectiveEffort": [
+        "xhigh"
+      ],
+      "resolvedSkill": ".claude/skills/dotln-executor/SKILL.md",
+      "deniedEffect": "attribution",
+      "response": "advisory",
+      "refusedWriterRows": 0,
+      "holderNamed": false,
+      "bundleMatches": true,
+      "launchpadCheckExitCode": 0,
+      "observedPathsReduced": true,
+      "snapshot": ".runtime/harness/acf4f99ae6bf54ba"
+    },
+    {
+      "label": "executor-smoke-record",
+      "file": "writer-foreign-live-001.json",
+      "observedAt": "2026-10-09T09:26:25.964Z",
+      "phrase": "resume: next",
+      "harnessVersion": "2.1.295 (Claude Code)",
+      "profileVersion": "2.1.263",
+      "actor": {
+        "harness": "claude-code",
+        "model": "claude-fable-5",
+        "effort": "xhigh",
+        "source": "launch-selector"
+      },
+      "effectiveEffort": [
+        "xhigh"
+      ],
+      "resolvedSkill": ".claude/skills/dotln-executor/SKILL.md",
+      "deniedEffect": "writer-isolation",
+      "response": "refusal",
+      "refusedWriterRows": 2,
+      "holderNamed": true,
+      "bundleMatches": true,
+      "launchpadCheckExitCode": 0,
+      "observedPathsReduced": true,
+      "snapshot": ".runtime/harness/acf4f99ae6bf54ba"
+    },
+    {
+      "label": "package-and-dependency-diff",
+      "sourceFilesChanged": [],
+      "dependencyFilesChanged": [],
+      "feedbackSourceUnchanged": true
+    },
+    {
+      "label": "carry-in",
+      "id": "FUP-a058e82c0bbd9b6d",
+      "lastDisposition": {
+        "sourceRevision": 1,
+        "status": "deferred",
+        "reason": "Deferred by WO-075 (docs/evidence/WO-075/decisions.md#wo-075-d006): the export carries both module identities of the four build-free modules exactly as core does, so the question is unchanged by the kit runtime; taking it up edits four harness-pinned runtime modules, re-mints every edition they stale and owes a live feedback episode for usage-observation.mjs; and the row's check condition, a DOTLN_LAUNCHPAD that is not the scripts' checkout, is not what an export exercises (inside the export findLaunchpad() resolves the export itself).",
+        "reopenWhen": "A launchpad separate from the scripts' checkout, or one declaring non-default roots, must run these paths; or a kit command fails on the two module identities.",
+        "targets": [],
+        "at": "2026-10-09T08:47:32.912Z"
+      }
+    },
+    {
+      "label": "recorded-cold-start",
+      "kitCommit": "285603d74aab7d0ff0cf9101ab1edb0bcbb123d9",
+      "exportCommit": "f6cd1d588565bb5a8c344573722d1d6046566203",
+      "roleRows": 12,
+      "deltas": [
+        -41
+      ]
+    },
+    {
+      "label": "product-gate",
+      "codeIdentity": "5b5974674d8b561544cc8f8be900bd8e7ebc12316dd63255260f2946f20bfa32",
+      "row": {
+        "checkId": "npm test",
+        "codeIdentity": "5b5974674d8b561544cc8f8be900bd8e7ebc12316dd63255260f2946f20bfa32",
+        "subject": "419ef539d246d6d4cc6870a3245394cc226fd821",
+        "gateSelection": "review",
+        "exitCode": 0,
+        "executed": true,
+        "partial": false,
+        "excludedSuites": [],
+        "durationMs": 1359065,
+        "recordedAt": "2026-10-09T10:53:18.316Z",
+        "evidenceRef": "host-gate:5b5974674d8b561544cc8f8be900bd8e7ebc12316dd63255260f2946f20bfa32:npm test",
+        "requiredSuites": [
+          "build",
+          "format",
+          "release-preparation",
+          "github-body",
+          "outward-lint",
+          "target-publish",
+          "vertical",
+          "license-fixtures",
+          "publication-fixtures",
+          "backup-intake",
+          "launchpad",
+          "beacon-portability",
+          "checkpoint",
+          "worktree",
+          "worktree-integration",
+          "release",
+          "work-orders-fixtures",
+          "kernel",
+          "compiler",
+          "skeleton",
+          "console",
+          "browser-evidence",
+          "adjacent-queue",
+          "derived-orders",
+          "portfolio",
+          "codex-continuation",
+          "authority-grants",
+          "configuration-root",
+          "authority-evidence",
+          "harness-fixtures",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "runner-fixtures",
+          "process-debt",
+          "registrations"
+        ],
+        "cases": [
+          {
+            "name": "build",
+            "exitCode": 0,
+            "durationMs": 620
+          },
+          {
+            "name": "format",
+            "exitCode": 0,
+            "durationMs": 5969
+          },
+          {
+            "name": "release-preparation",
+            "exitCode": 0,
+            "durationMs": 2616
+          },
+          {
+            "name": "github-body",
+            "exitCode": 0,
+            "durationMs": 155
+          },
+          {
+            "name": "outward-lint",
+            "exitCode": 0,
+            "durationMs": 559
+          },
+          {
+            "name": "target-publish",
+            "exitCode": 0,
+            "durationMs": 117324
+          },
+          {
+            "name": "vertical",
+            "exitCode": 0,
+            "durationMs": 717196
+          },
+          {
+            "name": "license-fixtures",
+            "exitCode": 0,
+            "durationMs": 8307
+          },
+          {
+            "name": "publication-fixtures",
+            "exitCode": 0,
+            "durationMs": 1067
+          },
+          {
+            "name": "backup-intake",
+            "exitCode": 0,
+            "durationMs": 339
+          },
+          {
+            "name": "launchpad",
+            "exitCode": 0,
+            "durationMs": 41247
+          },
+          {
+            "name": "beacon-portability",
+            "exitCode": 0,
+            "durationMs": 1129
+          },
+          {
+            "name": "checkpoint",
+            "exitCode": 0,
+            "durationMs": 9337
+          },
+          {
+            "name": "worktree",
+            "exitCode": 0,
+            "durationMs": 121918
+          },
+          {
+            "name": "worktree-integration",
+            "exitCode": 0,
+            "durationMs": 158264
+          },
+          {
+            "name": "release",
+            "exitCode": 0,
+            "durationMs": 199680
+          },
+          {
+            "name": "work-orders-fixtures",
+            "exitCode": 0,
+            "durationMs": 22488
+          },
+          {
+            "name": "kernel",
+            "exitCode": 0,
+            "durationMs": 505
+          },
+          {
+            "name": "compiler",
+            "exitCode": 0,
+            "durationMs": 988
+          },
+          {
+            "name": "skeleton",
+            "exitCode": 0,
+            "durationMs": 248559
+          },
+          {
+            "name": "console",
+            "exitCode": 0,
+            "durationMs": 17288
+          },
+          {
+            "name": "browser-evidence",
+            "exitCode": 0,
+            "durationMs": 19183
+          },
+          {
+            "name": "adjacent-queue",
+            "exitCode": 0,
+            "durationMs": 627
+          },
+          {
+            "name": "derived-orders",
+            "exitCode": 0,
+            "durationMs": 8728
+          },
+          {
+            "name": "portfolio",
+            "exitCode": 0,
+            "durationMs": 22977
+          },
+          {
+            "name": "codex-continuation",
+            "exitCode": 0,
+            "durationMs": 6181
+          },
+          {
+            "name": "authority-grants",
+            "exitCode": 0,
+            "durationMs": 245
+          },
+          {
+            "name": "configuration-root",
+            "exitCode": 0,
+            "durationMs": 6693
+          },
+          {
+            "name": "authority-evidence",
+            "exitCode": 0,
+            "durationMs": 612
+          },
+          {
+            "name": "harness-fixtures",
+            "exitCode": 0,
+            "durationMs": 237439
+          },
+          {
+            "name": "harness",
+            "exitCode": 0,
+            "durationMs": 150
+          },
+          {
+            "name": "harness-context",
+            "exitCode": 0,
+            "durationMs": 169
+          },
+          {
+            "name": "harness-evidence",
+            "exitCode": 0,
+            "durationMs": 343
+          },
+          {
+            "name": "artifact-evidence",
+            "exitCode": 0,
+            "durationMs": 245
+          },
+          {
+            "name": "verification-evidence",
+            "exitCode": 0,
+            "durationMs": 1258
+          },
+          {
+            "name": "feedback-evidence",
+            "exitCode": 0,
+            "durationMs": 2427
+          },
+          {
+            "name": "runner-fixtures",
+            "exitCode": 0,
+            "durationMs": 72131
+          },
+          {
+            "name": "process-debt",
+            "exitCode": 0,
+            "durationMs": 95289
+          },
+          {
+            "name": "registrations",
+            "exitCode": 0,
+            "durationMs": 604
+          }
+        ]
+      }
+    },
+    {
+      "label": "status-hidden-tracked-source",
+      "statusOutput": "",
+      "sourceBytesEqualToCommit": false,
+      "exitCode": 0,
+      "runtimeDiffersFromRebuild": true,
+      "compiledPayloadPresent": true,
+      "summary": "Exported the DotLn kit of 50581e4a7e510efc07920da58d4a6f08c5262591 (untagged) to <verifier-scratch>/status-hidden-kit: 588 kit files in KIT-MANIFEST.json, 23 instance seeds.\nruntime: 270 compiled files built from the commit's package sources; harness bundle: 33 surfaces emitted and checked inside the export, 32 manifest-listed (CLAUDE.md's block is checked through .claude/harness-manifest.json); snapshot .runtime/harness/acf4f99ae6bf54ba.\nlocal-terms list: unavailable; no text was checked against a local-terms list"
+    }
+  ]
+}

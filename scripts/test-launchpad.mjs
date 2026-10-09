@@ -1,6 +1,9 @@
 // Launchpad export fixtures, one case per WO-074 acceptance criterion. The
 // order stays uncommitted until final review, so the fixtures commit a bounded
 // copy of the work tree into a temporary repository and export from it.
+// WO-075: the copy carries the package sources and links the running
+// checkout's node_modules, so the export builds the runtime it carries and a
+// clone of the copy rebuilds it for comparison.
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -18,17 +21,22 @@ import {
   readlinkSync,
   realpathSync,
   rmSync,
+  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { defaultRoots, loadConfig } from "./lib/config.mjs";
+import { measureColdStarts } from "./lib/process-budget.mjs";
+import { BUILD_INPUTS, EMIT_CLOSURE } from "./launchpad.mjs";
 import { licenseHashes } from "./license-surfaces.mjs";
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const scratch = realpathSync(mkdtempSync(join(tmpdir(), "dotln-launchpad-")));
 const source = join(scratch, "source");
+const RUNTIME_PACKAGES = ["kernel", "compiler", "skeleton"];
+const HARNESS_MANIFEST = ".claude/harness-manifest.json";
 // Built at runtime from reversed parts: the suite is itself a kit file, and
 // the terms check joins consecutive tokens, so the literal must not appear.
 const synthetic = `${["term", "synthetic", "wvut", "zyx"].reverse().join("-")}\n`;
@@ -39,13 +47,20 @@ const planted = {
   beacon: ".beacons/planted-beacon",
   controlBeacon: ".control-beacons/public/planted",
   store: ".runtime/planted-store.jsonl",
-  typescript: "packages/skeleton/src/planted.ts",
+  // A declaration file: TypeScript source under packages/*/src that the
+  // export's build compiles without emitting, so the plant can only travel
+  // as source.
+  typescript: "packages/skeleton/src/planted.d.ts",
   evidence: "docs/evidence/WO-074/planted.md",
 };
 const marker = (kind) => `PLANTED-${kind.toUpperCase()}-7f3a9c`;
+const plantedText = (kind) =>
+  kind === "typescript"
+    ? `export declare const planted: "${marker(kind)}";\n`
+    : `${marker(kind)}\n${kind === "evidence" ? `synthetic list sha256:${syntheticHash}\n` : ""}`;
 const termsPath = join(source, "docs/control/local/terms.txt");
 // The cases judge a session that is not a Codex dispatch and exports no
-// selected effort; the Codex refusal is asserted with its variable set.
+// selected effort; the Codex dispatch is asserted with its variable set.
 const env = {
   ...process.env,
   CODEX_THREAD_ID: "",
@@ -74,13 +89,25 @@ const ok = (result, label) => {
 };
 const git = (cwd, args) =>
   ok(run("git", args, { cwd }), `git ${args.join(" ")}`);
-const initRepository = (cwd) => {
-  git(cwd, ["init", "-q", "-b", "main"]);
-  // Git 2.55 starts a detached repack once objects/17 holds two loose
-  // objects; it would write into the tree the fixture removes.
+// Git 2.55 starts a detached repack once objects/17 holds two loose objects;
+// it would write into the tree the fixture removes.
+const configureRepository = (cwd) => {
   git(cwd, ["config", "maintenance.auto", "false"]);
   git(cwd, ["config", "user.name", "DotLn Fixture"]);
   git(cwd, ["config", "user.email", "fixture@example.invalid"]);
+};
+const initRepository = (cwd) => {
+  git(cwd, ["init", "-q", "-b", "main"]);
+  configureRepository(cwd);
+};
+// A committed export of its own, for a case that must not depend on another
+// case's commit: the export already initialized the repository.
+const commitExport = (destination) => {
+  ok(runExport(destination), `export ${destination}`);
+  configureRepository(destination);
+  git(destination, ["add", "."]);
+  git(destination, ["commit", "-qm", "exported launchpad"]);
+  return destination;
 };
 // The command line under test, run from the committed copy's own scripts.
 const runExport = (destination, extra = [], cwd = scratch) =>
@@ -89,17 +116,64 @@ const runExport = (destination, extra = [], cwd = scratch) =>
     [join(source, "scripts/launchpad.mjs"), "export", destination, ...extra],
     { cwd },
   );
+// Every path under root but the repository, the install and the ignored
+// runtime lane the export's emit installs.
 const files = (root, directory = "") =>
   readdirSync(join(root, directory), { withFileTypes: true }).flatMap(
     (entry) => {
       const path = directory ? `${directory}/${entry.name}` : entry.name;
-      if ([".git", "node_modules"].includes(path)) return [];
+      if ([".git", "node_modules", ".runtime"].includes(path)) return [];
       if (entry.isSymbolicLink()) return [path];
       return entry.isDirectory() ? files(root, path) : [path];
     },
   );
+// A real node_modules for a copy of the checkout: one link per third-party
+// entry of the running install and relative links to the copy's own
+// workspaces, as atomicBuild stages them, so a package-name import resolves
+// inside the copy and never to the running checkout's packages. A directory
+// named node_modules is ignored by the copied .gitignore; a link would not be.
+const linkInstall = (target) => {
+  mkdirSync(join(target, "node_modules/@dotln"), { recursive: true });
+  for (const entry of readdirSync(join(repository, "node_modules")))
+    if (![".bin", "@dotln"].includes(entry))
+      symlinkSync(
+        join(repository, "node_modules", entry),
+        join(target, "node_modules", entry),
+      );
+  for (const name of readdirSync(join(target, "packages")))
+    if (existsSync(join(target, "packages", name, "package.json")))
+      symlinkSync(
+        `../../packages/${name}`,
+        join(target, "node_modules/@dotln", name),
+      );
+};
 const manifestOf = (root) =>
   JSON.parse(readFileSync(join(root, "KIT-MANIFEST.json"), "utf8"));
+const harnessManifestOf = (root) =>
+  JSON.parse(readFileSync(join(root, HARNESS_MANIFEST), "utf8"));
+const harness = (root, action, args = [], options = {}) =>
+  run(process.execPath, ["scripts/harness.mjs", action, ...args], {
+    cwd: root,
+    ...options,
+  });
+// Every string specifier a generated hook imports: static `from`, dynamic
+// `import(...)` and `new URL(...)` forms. A specifier is admitted when it is
+// relative (./, ../) or a node: builtin; an absolute path or a file: URL is not.
+const importSpecifiers = (text) =>
+  [
+    ...text.matchAll(/\bfrom\s*"((?:[^"\\]|\\.)*)"/gu),
+    ...text.matchAll(/\bimport\(\s*"((?:[^"\\]|\\.)*)"/gu),
+    ...text.matchAll(/new URL\(\s*"((?:[^"\\]|\\.)*)"/gu),
+  ].map((match) => match[1]);
+const absoluteSpecifiers = (text) =>
+  importSpecifiers(text).filter(
+    (specifier) =>
+      !(
+        specifier.startsWith("./") ||
+        specifier.startsWith("../") ||
+        specifier.startsWith("node:")
+      ),
+  );
 const licenseLike = (root) =>
   files(root)
     // The license-surfaces check is a script named for what it checks.
@@ -109,8 +183,9 @@ const licenseLike = (root) =>
     )
     .sort();
 
-// A bounded copy of the work tree: the kit's sources, the planted instance
-// material, and the synthetic local-terms list in its ignored location.
+// A bounded copy of the work tree: the kit's sources, the package sources the
+// runtime is built from, the planted instance material, and the synthetic
+// local-terms list in its ignored location.
 const copy = (path) => {
   mkdirSync(dirname(join(source, path)), { recursive: true });
   cpSync(join(repository, path), join(source, path), { recursive: true });
@@ -125,25 +200,30 @@ for (const path of [
   "packages/beacons",
   "package.json",
   "package-lock.json",
+  "tsconfig.json",
   "LICENSE",
   "LICENSE-docs",
   "NOTICE",
   ".gitignore",
   "docs/product/07-execution-guide.md",
+  "docs/product/08-publication-compiler.md",
   "docs/PLAYBOOK.md",
   "docs/publication/implementation-overlay-template.md",
   // Not a kit file: an upstream pointer the export names and does not carry.
   "docs/LEGAL.md",
 ])
   copy(path);
-for (const directory of ["packages/skeleton/src", "packages/compiler/src"])
-  for (const name of readdirSync(join(repository, directory)))
-    if (name.endsWith(".mjs")) copy(`${directory}/${name}`);
+// Every workspace the root project graph references, so the build compiles
+// inside the copy; the list comes from tsconfig.json rather than a directory
+// listing, which the product read guard counts as a read of the packages tree.
+for (const { path } of JSON.parse(
+  readFileSync(join(repository, "tsconfig.json"), "utf8"),
+).references)
+  for (const entry of ["package.json", "tsconfig.json", "src", "test"])
+    if (existsSync(join(repository, path, entry)))
+      copy(`${path.replace(/^\.\//u, "")}/${entry}`);
 for (const [kind, path] of Object.entries(planted))
-  write(
-    path,
-    `${marker(kind)}\n${kind === "evidence" ? `synthetic list sha256:${syntheticHash}\n` : ""}`,
-  );
+  write(path, plantedText(kind));
 write("docs/control/local/terms.txt", synthetic);
 initRepository(source);
 git(source, [
@@ -172,6 +252,11 @@ git(source, [
 ]);
 const commit = git(source, ["rev-parse", "HEAD"]).stdout.trim();
 git(source, ["tag", "-a", "v9.9.9-fixture", "-m", "fixture tag"]);
+// The build resolves its third-party dependencies through the running
+// checkout's install (the copy's lockfile is the same one) and its own
+// workspaces through the copy; installed after the commit, so nothing of it is
+// a blob at the exported commit.
+linkInstall(source);
 for (const path of Object.values(planted))
   assert.ok(
     git(source, ["ls-files", "--", path]).stdout.trim(),
@@ -181,6 +266,11 @@ assert.equal(
   git(source, ["ls-files", "--", "docs/control/local/terms.txt"]).stdout,
   "",
   "the list stays in its ignored location",
+);
+assert.equal(
+  git(source, ["ls-files", "--", "node_modules"]).stdout,
+  "",
+  "the install link stays out of the commit",
 );
 // The default export every case below reads.
 const kit = join(scratch, "kit");
@@ -232,6 +322,10 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     exported.stdout,
     /^local-terms list: present \(\d+ texts checked\)$/mu,
   );
+  assert.match(
+    exported.stdout,
+    /^runtime: \d+ compiled files built from the commit's package sources; harness bundle: \d+ surfaces emitted and checked inside the export, \d+ manifest-listed \(CLAUDE\.md's block is checked through \.claude\/harness-manifest\.json\); snapshot \.runtime\/harness\/[0-9a-f]{16}\.$/mu,
+  );
   const manifest = manifestOf(kit);
   assert.equal(manifest.schemaVersion, 1);
   assert.equal(manifest.commit, commit);
@@ -247,6 +341,16 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     "the upstream pointer list names a core document the kit does not carry",
   );
   assert.ok(!existsSync(join(kit, "docs/LEGAL.md")));
+  assert.match(
+    upstream,
+    /^- `packages\/skeleton\/package\.json`, `packages\/skeleton\/dist\/src\/\*\*`: \d+ files, the compiled `@dotln\/skeleton` runtime/mu,
+  );
+  // The build-free modules stay listed one per line, outside the runtime groups.
+  assert.match(upstream, /^- `packages\/skeleton\/src\/gate-evidence\.mjs`$/mu);
+  assert.match(
+    upstream,
+    /^- `\.claude\/\*\*`, `\.agents\/\*\*`, `\.codex\/\*\*`: \d+ files, the Contributor harness bundle/mu,
+  );
   const listed = new Map(
     manifest.files.map(({ path, sha256: hash }) => [path, hash]),
   );
@@ -257,17 +361,15 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
   );
   for (const [path, hash] of listed)
     assert.equal(sha256(readFileSync(join(kit, path))), hash, path);
-  // Every scripts/** and packages/beacons/** blob at the commit, and only those.
+  // Every scripts/** and packages/beacons/** blob at the commit, and only
+  // those; the runtime packages' package.json files are blobs too.
+  const verbatim = [
+    "scripts",
+    "packages/beacons",
+    ...RUNTIME_PACKAGES.map((name) => `packages/${name}/package.json`),
+  ];
   const tree = new Map(
-    git(source, [
-      "ls-tree",
-      "-r",
-      "-z",
-      commit,
-      "--",
-      "scripts",
-      "packages/beacons",
-    ])
+    git(source, ["ls-tree", "-r", "-z", commit, "--", ...verbatim])
       .stdout.split("\0")
       .filter(Boolean)
       .map((entry) => {
@@ -277,7 +379,9 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
   );
   const copied = [...listed.keys()].filter(
     (path) =>
-      path.startsWith("scripts/") || path.startsWith("packages/beacons/"),
+      path.startsWith("scripts/") ||
+      path.startsWith("packages/beacons/") ||
+      /^packages\/[^/]+\/package\.json$/u.test(path),
   );
   assert.deepEqual(copied.sort(), [...tree.keys()].sort());
   for (const path of copied) {
@@ -296,7 +400,17 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     "scripts/kit/repository-profile.template.md",
     "packages/skeleton/src/gate-evidence.mjs",
     "packages/compiler/src/attribution.mjs",
+    "packages/kernel/package.json",
+    "packages/skeleton/dist/src/harness-host.js",
+    "packages/compiler/dist/src/index.js",
+    ".claude/hooks/permissions.mjs",
+    ".claude/settings.json",
+    ".claude/skills/dotln-executor/SKILL.md",
+    ".agents/skills/dotln-executor/SKILL.md",
+    ".codex/config.toml",
+    HARNESS_MANIFEST,
     "docs/product/07-execution-guide.md",
+    "docs/product/08-publication-compiler.md",
     "docs/PLAYBOOK.md",
     "docs/publication/implementation-overlay-template.md",
     "package.json",
@@ -305,6 +419,14 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     "UPSTREAM.md",
   ])
     assert.ok(listed.has(path), `${path} is a kit file`);
+  // Every emitted surface but the operating contract is listed, at the bytes
+  // the export's own emit wrote.
+  for (const file of harnessManifestOf(kit).installed)
+    assert.equal(
+      listed.has(file.path),
+      file.path !== "CLAUDE.md",
+      `${file.path} manifest listing`,
+    );
   // What the manifest does not list is a seed, the manifest or the symlink.
   const unlisted = files(kit)
     .filter((path) => !listed.has(path))
@@ -352,6 +474,27 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     /\{\{|[0-9a-f]{40}/u,
     "the block carries no placeholder and no commit",
   );
+  // The floor directs each role to its generated skill, so a session's
+  // directed-read set holds the skill the resume phrase selects (WO-075).
+  for (const role of [
+    "executor",
+    "verifier",
+    "reviewer",
+    "release-close",
+    "planner",
+  ])
+    assert.ok(
+      contract.includes(
+        "Read[" + role + "]: `@skills/dotln-" + role + "/SKILL.md`",
+      ),
+      role + " directive",
+    );
+  // The harness block follows the floor and the kit block, once.
+  assert.equal(contract.split("<!-- dotln-harness:start -->").length, 2);
+  assert.ok(
+    contract.indexOf("<!-- dotln-kit:end -->") <
+      contract.indexOf("<!-- dotln-harness:start -->"),
+  );
   // The configuration example is today's layout, byte for byte.
   const configured = join(scratch, "configured");
   mkdirSync(configured);
@@ -367,6 +510,14 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
   assert.ok(!ignore.some((line) => /^\/?dist\/?$|tsbuildinfo/u.test(line)));
   assert.ok(ignore.includes("/.runtime/"));
   assert.ok(ignore.includes("/docs/control/local/"));
+  assert.ok(ignore.includes("node_modules/"));
+  // The export is its own repository on main with no commit yet (WO-075).
+  assert.equal(
+    realpathSync(git(kit, ["rev-parse", "--show-toplevel"]).stdout.trim()),
+    realpathSync(kit),
+  );
+  assert.equal(git(kit, ["branch", "--show-current"]).stdout.trim(), "main");
+  assert.notEqual(run("git", ["rev-parse", "HEAD"], { cwd: kit }).status, 0);
 });
 
 test("WO-074 criterion 1: an offline npm ci against the exported lockfile succeeds", () => {
@@ -385,55 +536,259 @@ test("WO-074 criterion 1: an offline npm ci against the exported lockfile succee
     lock.packages[""].devDependencies,
     corePackage.devDependencies,
   );
+  const workspaces = ["beacons", ...RUNTIME_PACKAGES];
   for (const key of Object.keys(lock.packages))
     assert.ok(
       key === "" ||
         key.startsWith("node_modules/") ||
-        key === "packages/beacons",
+        workspaces.some((name) => key === `packages/${name}`),
       `${key} is not a kit lockfile entry`,
     );
+  for (const name of workspaces) {
+    assert.ok(lock.packages[`packages/${name}`], `packages/${name} entry`);
+    assert.equal(lock.packages[`node_modules/@dotln/${name}`]?.link, true);
+  }
   assert.ok(
     !Object.keys(lock.packages).some((key) =>
-      /skeleton|compiler|kernel|console|browser-evidence/u.test(key),
+      /console|browser-evidence|playwright/u.test(key),
     ),
   );
+  // The export seeded the workspace links its own emit needed; the install
+  // replaces them with the same links.
+  for (const name of workspaces)
+    assert.equal(
+      readlinkSync(join(kit, `node_modules/@dotln/${name}`)),
+      `../../packages/${name}`,
+    );
   const install = run(
     "npm",
     ["ci", "--offline", "--no-audit", "--no-fund", "--loglevel=error"],
     { cwd: kit, timeout: 300_000 },
   );
   assert.equal(install.status, 0, install.stderr || install.stdout);
-  for (const name of [
-    "prettier",
-    "typescript",
-    "@types/node",
-    "@dotln/beacons",
-  ])
+  for (const name of ["prettier", "typescript", "@types/node"])
     assert.ok(existsSync(join(kit, "node_modules", name)), name);
+  for (const name of workspaces)
+    assert.equal(
+      readlinkSync(join(kit, `node_modules/@dotln/${name}`))
+        .replace(/\/$/u, "")
+        .split("/")
+        .slice(-2)
+        .join("/"),
+      `packages/${name}`,
+    );
+});
+
+test("WO-075 criterion 1: the exported runtime is byte-identical to a rebuild at the named commit, sits at the paths the scripts import, is manifest-listed and holds no package source", () => {
+  const listed = new Set(manifestOf(kit).files.map(({ path }) => path));
+  const runtimePaths = [...listed].filter((path) =>
+    /^packages\/(?:kernel|compiler|skeleton)\/dist\/src\//u.test(path),
+  );
+  assert.ok(runtimePaths.length >= 200, `${runtimePaths.length} runtime files`);
+  for (const path of files(kit)) {
+    // packages/beacons is a build-free workspace exported whole (WO-074); its
+    // declaration file is a kit file, not package source to compile.
+    assert.doesNotMatch(
+      path,
+      /^packages\/(?!beacons\/)[^/]+\/src\/.*\.(?:[cm]?ts|tsx)$/u,
+      path,
+    );
+    assert.doesNotMatch(path, /^packages\/[^/]+\/dist\/test\//u, path);
+    assert.doesNotMatch(path, /\.tsbuildinfo$/u, path);
+    if (/^packages\/[^/]+\/dist\//u.test(path))
+      assert.ok(listed.has(path), `${path} is manifest-listed`);
+    if (path.startsWith("packages/"))
+      assert.ok(
+        /^packages\/(?:beacons|kernel|compiler|skeleton)\//u.test(path),
+        `${path} belongs to a kit workspace`,
+      );
+  }
+  assert.ok(!existsSync(join(kit, "packages/skeleton/src/planted.d.ts")));
+  assert.ok(!existsSync(join(kit, "packages/skeleton/dist/src/planted.d.ts")));
+  // The pinned runtime files the hooks import are among them, at the paths
+  // core's scripts read.
+  const profile = harnessManifestOf(kit).profiles[0].profile;
+  for (const file of profile.runtime.files)
+    assert.ok(listed.has(file.path), `${file.path} is a pinned runtime file`);
+  // The rebuild: a clone at the commit, the same install, the same build.
+  const clone = join(scratch, "rebuild");
+  git(scratch, ["clone", "-q", source, clone]);
+  git(clone, ["checkout", "-q", commit]);
+  assert.ok(!existsSync(join(clone, "packages/kernel/dist")));
+  linkInstall(clone);
+  ok(
+    run(process.execPath, ["scripts/build.mjs"], { cwd: clone }),
+    "rebuild at the commit",
+  );
+  for (const path of runtimePaths)
+    assert.ok(
+      readFileSync(join(kit, path)).equals(readFileSync(join(clone, path))),
+      `${path} differs from the rebuild at ${commit}`,
+    );
+  for (const name of RUNTIME_PACKAGES) {
+    const built = files(join(clone, `packages/${name}/dist/src`))
+      .filter((path) => !path.endsWith(".tsbuildinfo"))
+      .map((path) => `packages/${name}/dist/src/${path}`)
+      .sort();
+    assert.deepEqual(
+      runtimePaths
+        .filter((path) => path.startsWith(`packages/${name}/`))
+        .sort(),
+      built,
+      `${name}: the kit carries exactly the rebuilt dist/src`,
+    );
+  }
+});
+
+test("WO-075 criterion 2: harness check passes inside the export and refuses a one-byte drift, no hook imports by absolute path, the snapshot is ignored, a second emit changes no listed byte, and every installed Read directive resolves", () => {
+  const check = () => harness(kit, "check");
+  assert.match(
+    ok(check(), "harness check").stdout,
+    /^harness check: \d+ generated surfaces/mu,
+  );
+  const manifest = manifestOf(kit);
+  const hooks = manifest.files
+    .map(({ path }) => path)
+    .filter((path) => /^\.(?:claude|codex)\/hooks\/.*\.mjs$/u.test(path));
+  assert.ok(hooks.length >= 14, `${hooks.length} hooks`);
+  const snapshot = harnessManifestOf(kit).profiles[0].profile.runtime.snapshot;
+  assert.match(snapshot, /^\.runtime\/harness\/[0-9a-f]{16}$/u);
+  // The scanner itself rejects the compiler's absolute forms (WO-049's
+  // target import root emits file: URLs) and admits the relative ones.
+  assert.deepEqual(
+    absoluteSpecifiers(
+      'await import(new URL("file:///launchpad/.runtime/harness/x/packages/skeleton/dist/src/harness-host.js"));\nimport("/abs/path.js"); import { a } from "/abs/b.js"; import("node:fs"); import("../../.runtime/harness/x/a.js"); import { b } from "./c.js";',
+    ).sort((a, b) => a.localeCompare(b)),
+    [
+      "/abs/b.js",
+      "/abs/path.js",
+      "file:///launchpad/.runtime/harness/x/packages/skeleton/dist/src/harness-host.js",
+    ].sort((a, b) => a.localeCompare(b)),
+  );
+  let relativeImports = 0;
+  for (const path of hooks) {
+    const text = readFileSync(join(kit, path), "utf8");
+    assert.deepEqual(
+      absoluteSpecifiers(text),
+      [],
+      `${path} imports by an absolute specifier`,
+    );
+    assert.ok(importSpecifiers(text).length > 0, `${path} imports nothing`);
+    if (text.includes(`../../${snapshot}/packages/skeleton/dist/src/`))
+      relativeImports += 1;
+  }
+  assert.ok(relativeImports > 0, "hooks import the snapshot by relative path");
+  assert.ok(
+    existsSync(
+      join(kit, snapshot, "packages/skeleton/dist/src/harness-host.js"),
+    ),
+  );
   assert.equal(
-    readlinkSync(join(kit, "node_modules/@dotln/beacons"))
-      .replace(/\/$/u, "")
-      .split("/")
-      .slice(-2)
-      .join("/"),
-    "packages/beacons",
+    run("git", ["check-ignore", "-q", snapshot], { cwd: kit }).status,
+    0,
+    "the snapshot is ignored",
+  );
+  // One byte of drift in an emitted hook is refused by name; the restored
+  // bytes pass again.
+  const hook = join(kit, ".claude/hooks/no-attribution.mjs");
+  const original = readFileSync(hook);
+  writeFileSync(hook, Buffer.concat([original, Buffer.from(" ")]));
+  try {
+    const drifted = check();
+    assert.equal(drifted.status, 1);
+    assert.match(
+      drifted.stderr + drifted.stdout,
+      /harness drift: \.claude\/hooks\/no-attribution\.mjs/u,
+    );
+  } finally {
+    writeFileSync(hook, original);
+  }
+  ok(check(), "harness check after the restore");
+  // The export's own emit reproduces every listed byte.
+  const before = new Map(
+    manifest.files.map(({ path }) => [
+      path,
+      sha256(readFileSync(join(kit, path))),
+    ]),
+  );
+  assert.match(
+    ok(harness(kit, "emit"), "second emit").stdout,
+    /^harness emit: \d+ generated surfaces/mu,
+  );
+  for (const [path, hash] of before)
+    assert.equal(
+      sha256(readFileSync(join(kit, path))),
+      hash,
+      `${path} changed on re-emit`,
+    );
+  assert.equal(
+    sha256(readFileSync(join(kit, "KIT-MANIFEST.json"))),
+    sha256(JSON.stringify(manifest, null, 2) + "\n"),
+  );
+  // Every Read directive of the installed floor and role skills names a
+  // document the kit carries (the reviewer skill cites product 08).
+  ok(
+    run(process.execPath, ["scripts/harness-context.mjs", "--check"], {
+      cwd: kit,
+    }),
+    "harness-context --check inside the export",
   );
 });
 
-test("WO-074 criteria 1, 2 and 5: without package source the export activates its first order, a transition emits a decodable control Beacon, and an unmatched attestation records with the advisory", async () => {
-  assert.ok(!existsSync(join(kit, "packages/skeleton/src/planted.ts")));
+// Reads core's installed CLAUDE.md, skills and budgets, which a product task
+// may not read: the document gate runs this case (test-runner's launchpad-docs
+// row), the product gate skips it.
+test("[document] WO-075 criterion 4: the cold-start bytes of each role inside the export are not larger than core's", () => {
+  const inside = measureColdStarts(kit);
+  const core = measureColdStarts(repository);
+  assert.ok(inside.instruction.bytes > 0);
+  assert.ok(inside.instruction.bytes <= core.instruction.bytes);
+  let compared = 0;
+  for (const row of inside.profiles) {
+    const match = core.profiles.find(
+      (candidate) =>
+        candidate.role === row.role && candidate.skillsRoot === row.skillsRoot,
+    );
+    if (row.bytes === null) continue;
+    assert.ok(
+      match?.bytes != null,
+      `${row.skillsRoot}/${row.role}: core has no row`,
+    );
+    assert.equal(
+      row.skillBytes,
+      match.skillBytes,
+      `${row.skillsRoot}/${row.role}: the skill differs from core's`,
+    );
+    assert.ok(
+      row.bytes <= match.bytes,
+      `${row.role}: export ${row.bytes} bytes against core ${match.bytes}`,
+    );
+    compared += 1;
+  }
+  assert.equal(
+    compared,
+    inside.profiles.filter((row) => row.bytes !== null).length,
+    "every installed role in the export was compared",
+  );
+  assert.ok(compared > 0);
+});
+
+test("WO-074 criteria 1, 2 and 5: without package source the export activates its first order, a transition emits a decodable control Beacon, an unmatched attestation records with the advisory, and a Codex dispatch reserves its writer on the carried runtime", async () => {
   assert.ok(
     !files(kit).some((path) => /^packages\/[^/]+\/src\/.*\.ts$/u.test(path)),
     "no TypeScript source in the export",
   );
-  // "package source" is TypeScript source (step 1): the skeleton holds only
-  // the build-free modules the scripts import and the empty grants seed.
+  // "package source" is TypeScript source (step 1): the skeleton holds the
+  // build-free modules the scripts import, the empty grants seed, its
+  // package.json and the compiled dist/src (WO-075).
+  const skeleton = files(kit)
+    .filter((path) => path.startsWith("packages/skeleton/"))
+    .sort();
   assert.deepEqual(
-    files(kit)
-      .filter((path) => path.startsWith("packages/skeleton/"))
-      .sort(),
+    skeleton.filter((path) => !path.startsWith("packages/skeleton/dist/src/")),
     [
       "packages/skeleton/loadouts/grants.json",
+      "packages/skeleton/package.json",
       "packages/skeleton/src/correction-observation.mjs",
       "packages/skeleton/src/evidence-editions.mjs",
       "packages/skeleton/src/gate-deadlines.mjs",
@@ -442,9 +797,14 @@ test("WO-074 criteria 1, 2 and 5: without package source the export activates it
       "packages/skeleton/src/writer-teardown.mjs",
     ],
   );
-  initRepository(kit);
+  configureRepository(kit);
   git(kit, ["add", "."]);
   git(kit, ["commit", "-qm", "exported launchpad"]);
+  assert.equal(
+    git(kit, ["ls-files", "--", ".runtime", "node_modules"]).stdout,
+    "",
+    "the snapshot and the install stay out of the fork's first commit",
+  );
   const resume = (args, options = {}) =>
     run(process.execPath, [join(kit, "scripts/resume.mjs"), ...args], {
       cwd: kit,
@@ -576,16 +936,38 @@ test("WO-074 criteria 1, 2 and 5: without package source the export activates it
   );
   rmSync(join(kit, "docs/discovery/environment.json"));
   // A Codex session's dispatch needs the writer reservation the runtime
-  // provides; without a build it refuses and records nothing (README).
+  // provides; with the carried runtime it reserves the writer and records
+  // the request (WO-075; WO-074 asserted the refusal without a build).
   const codex = resume(["verify"], {
     env: { ...env, CODEX_THREAD_ID: "fixture-thread" },
   });
-  assert.equal(codex.status, 1);
-  assert.match(codex.stderr, /harness runtime is not built/u);
+  assert.equal(codex.status, 0, codex.stderr || codex.stdout);
+  assert.doesNotMatch(
+    codex.stderr + codex.stdout,
+    /harness runtime is not built/u,
+  );
+  assert.match(codex.stdout, /^DotLn session: fixture-thread\./mu);
   assert.equal(
     JSON.parse(ok(resume(["status", "--json"]), "status").stdout).phase,
-    "ready-to-verify",
+    "verifying",
   );
+  const writer = JSON.parse(
+    ok(harness(kit, "writer", ["--show"]), "writer --show").stdout,
+  );
+  assert.equal(writer.reserved, true);
+  assert.equal(
+    writer.actorId,
+    createHash("sha256").update("fixture-thread").digest("hex"),
+    "the reservation belongs to the dispatch thread",
+  );
+  assert.ok(["codex-host", "thread"].includes(writer.owner?.source));
+  if (writer.owner.source === "thread") {
+    assert.equal(writer.owner.pid, undefined);
+    assert.equal(writer.alive, "unknown");
+  } else {
+    assert.ok(Number.isSafeInteger(writer.owner.pid) && writer.owner.pid > 0);
+    assert.equal(writer.alive, true);
+  }
 });
 
 test("WO-074 criterion 3: the export holds no planted instance material and the manifest lists no instance path", () => {
@@ -603,6 +985,8 @@ test("WO-074 criterion 3: the export holds no planted instance material and the 
       `${kind} plant ${path} was exported`,
     );
   assert.ok(!existsSync(join(kit, "docs/control/local/terms.txt")));
+  // The emitted harness surfaces are kit files; the operator-owned local
+  // settings file, the Beacon outputs and the runtime lane are instance paths.
   const instance = [
     "dotln.config.json",
     "docs/control/",
@@ -614,10 +998,11 @@ test("WO-074 criterion 3: the export holds no planted instance material and the 
     "docs/repositories/",
     "docs/planning/",
     "docs/intake/",
-    ".claude/",
+    ".claude/settings.local.json",
     ".beacons/",
     ".control-beacons/",
     ".runtime/",
+    "node_modules/",
   ];
   for (const { path } of manifestOf(kit).files) {
     assert.ok(
@@ -669,6 +1054,19 @@ test("WO-074 criterion 3: the local-terms check runs over every exported text an
     assert.match(matched.stderr, /"file":"README\.md","line":\d+/u);
     assert.doesNotMatch(matched.stderr + matched.stdout, /attestations/u);
     assert.ok(!existsSync(matchTarget), "a refused export writes nothing");
+    // A term in the emitted role skills is refused before any write too, and
+    // the refusal names a bundle path: the bundle is screened at the bytes
+    // the export's emit reproduces.
+    writeFileSync(termsPath, "fail-conservative-correction\n");
+    const bundleTarget = join(scratch, "kit-bundle-match");
+    const bundleMatched = runExport(bundleTarget);
+    assert.equal(bundleMatched.status, 1);
+    assert.match(bundleMatched.stderr, /local-terms list present; refused \[/u);
+    assert.match(
+      bundleMatched.stderr,
+      /"file":"\.claude\/skills\/dotln-[a-z-]+\/SKILL\.md"/u,
+    );
+    assert.ok(!existsSync(bundleTarget), "a refused export writes nothing");
   } finally {
     writeFileSync(termsPath, synthetic);
   }
@@ -746,12 +1144,366 @@ test("WO-074 design: an export from a work tree that differs from HEAD carries t
   }
 });
 
-test("WO-074 design: a kit file absent at the commit refuses by name, and a destination inside a Git work tree is advised", () => {
+test("WO-075 design: a package source that differs from HEAD refuses before any write, so the runtime is the commit's build", () => {
+  const touched = join(source, "packages/kernel/src/index.ts");
+  const original = readFileSync(touched, "utf8");
+  writeFileSync(touched, `${original}// uncommitted\n`);
+  try {
+    const target = join(scratch, "kit-dirty-source");
+    const refused = runExport(target);
+    assert.equal(refused.status, 1);
+    assert.match(
+      refused.stderr,
+      /the export builds and emits from the commit, but the work tree differs from HEAD: build inputs: packages\/kernel\/src\/index\.ts\. Commit or stash them/u,
+    );
+    assert.ok(!existsSync(target), "a refused export writes nothing");
+  } finally {
+    writeFileSync(touched, original);
+  }
+});
+
+test("WO-075 VER-001-F1: tracked build and emit bytes hidden by index flags refuse before destination creation", () => {
+  for (const flag of ["assume-unchanged", "skip-worktree"])
+    for (const path of [
+      "packages/kernel/src/index.ts",
+      "tsconfig.json",
+      "scripts/lib/terms.mjs",
+    ]) {
+      const touched = join(source, path);
+      const original = readFileSync(touched);
+      git(source, ["update-index", `--${flag}`, "--", path]);
+      try {
+        const change = path.endsWith(".ts")
+          ? "\nexport const statusHiddenInput = 1;\n"
+          : path.endsWith(".mjs")
+            ? "\n// status-hidden input\n"
+            : "\n";
+        writeFileSync(touched, Buffer.concat([original, Buffer.from(change)]));
+        assert.equal(
+          git(source, ["status", "--porcelain", "--", path]).stdout,
+          "",
+          `${flag} hides the changed bytes from status`,
+        );
+        const target = join(
+          scratch,
+          `kit-hidden-${flag}-${path.replaceAll("/", "-")}`,
+        );
+        const refused = runExport(target);
+        assert.equal(refused.status, 1, refused.stdout);
+        assert.ok(refused.stderr.includes(path), refused.stderr);
+        assert.match(refused.stderr, /work tree differs from HEAD/u);
+        assert.ok(!existsSync(target), "a refused export writes nothing");
+      } finally {
+        writeFileSync(touched, original);
+        git(source, ["update-index", `--no-${flag}`, "--", path]);
+      }
+    }
+});
+
+test("WO-075 VER-001-F1: a missing tracked source hidden by skip-worktree refuses before any write", () => {
+  const path = "packages/kernel/src/index.ts";
+  const touched = join(source, path);
+  const original = readFileSync(touched);
+  git(source, ["update-index", "--skip-worktree", "--", path]);
+  try {
+    rmSync(touched);
+    assert.equal(git(source, ["status", "--porcelain", "--", path]).stdout, "");
+    const target = join(scratch, "kit-hidden-missing-source");
+    const refused = runExport(target);
+    assert.equal(refused.status, 1, refused.stdout);
+    assert.ok(refused.stderr.includes(path), refused.stderr);
+    assert.ok(!existsSync(target), "a refused export writes nothing");
+  } finally {
+    writeFileSync(touched, original);
+    git(source, ["update-index", "--no-skip-worktree", "--", path]);
+  }
+});
+
+test("WO-075 VER-001-F1: nested compilable files inside ignored source and test directories refuse before any write", () => {
+  const exclude = join(source, ".git/info/exclude");
+  const original = existsSync(exclude) ? readFileSync(exclude) : null;
+  for (const tree of ["src", "test"]) {
+    const directory = `packages/kernel/${tree}/ignored inputs`;
+    const path = `${directory}/nested/plant.ts`;
+    writeFileSync(exclude, `${original ?? ""}\n/${directory}/\n`);
+    mkdirSync(dirname(join(source, path)), { recursive: true });
+    writeFileSync(join(source, path), "export const ignoredInput = 1;\n");
+    try {
+      assert.equal(
+        git(source, ["status", "--porcelain", "--", directory]).stdout,
+        "",
+      );
+      assert.equal(
+        run("git", ["check-ignore", "-q", path], { cwd: source }).status,
+        0,
+      );
+      const target = join(scratch, `kit-ignored-directory-${tree}`);
+      const refused = runExport(target);
+      assert.equal(refused.status, 1, refused.stdout);
+      assert.ok(refused.stderr.includes(path), refused.stderr);
+      assert.match(refused.stderr, /uncommitted compilable package files/u);
+      assert.ok(!existsSync(target), "a refused export writes nothing");
+    } finally {
+      rmSync(join(source, directory), { recursive: true, force: true });
+      if (original === null) rmSync(exclude, { force: true });
+      else writeFileSync(exclude, original);
+    }
+  }
+});
+
+test("WO-075 VER-001-F1: a tracked source replaced by a same-byte symlink under assume-unchanged refuses before any write", () => {
+  const path = "packages/kernel/src/index.ts";
+  const touched = join(source, path);
+  const original = readFileSync(touched);
+  const external = join(scratch, "same-byte-source.ts");
+  writeFileSync(external, original);
+  git(source, ["update-index", "--assume-unchanged", "--", path]);
+  try {
+    rmSync(touched);
+    symlinkSync(external, touched);
+    assert.equal(git(source, ["status", "--porcelain", "--", path]).stdout, "");
+    const target = join(scratch, "kit-symlink-source");
+    const refused = runExport(target);
+    assert.equal(refused.status, 1, refused.stdout);
+    assert.ok(refused.stderr.includes(path), refused.stderr);
+    assert.ok(!existsSync(target), "a refused export writes nothing");
+  } finally {
+    rmSync(touched);
+    writeFileSync(touched, original);
+    git(source, ["update-index", "--no-assume-unchanged", "--", path]);
+  }
+});
+
+test("WO-075 design: the emit closure the export predicts with is pinned to HEAD, named from the import graph, and a dirty copy refuses before any write", () => {
+  // The declared closure equals the static import graph of the harness CLI
+  // and library under scripts/.
+  const closure = new Set();
+  const queue = ["scripts/harness.mjs", "scripts/lib/harness.mjs"];
+  while (queue.length) {
+    const file = queue.shift();
+    if (closure.has(file)) continue;
+    closure.add(file);
+    const text = readFileSync(join(repository, file), "utf8");
+    for (const match of text.matchAll(/^import[\s\S]*?from\s+"(\.[^"]+)"/gmu)) {
+      const target = join(dirname(file), match[1]);
+      if (target.startsWith("scripts/")) queue.push(target);
+    }
+  }
+  assert.deepEqual([...closure].sort(), [...EMIT_CLOSURE]);
+  assert.ok(BUILD_INPUTS.includes("scripts/build.mjs"));
+  const touched = join(source, "scripts/lib/terms.mjs");
+  const original = readFileSync(touched, "utf8");
+  writeFileSync(touched, `${original}// uncommitted\n`);
+  try {
+    const target = join(scratch, "kit-dirty-emit");
+    const refused = runExport(target);
+    assert.equal(refused.status, 1);
+    assert.match(
+      refused.stderr,
+      /harness emit scripts \(the export's own emit runs the commit's copies\): scripts\/lib\/terms\.mjs/u,
+    );
+    assert.ok(!existsSync(target), "a refused export writes nothing");
+  } finally {
+    writeFileSync(touched, original);
+  }
+  // An ignored file under a package's sources would enter the build unseen.
+  const stray = join(source, "packages/kernel/src/stray.ignored.ts");
+  writeFileSync(join(source, ".git/info/exclude"), "*.ignored.ts\n");
+  writeFileSync(stray, "export const stray = 1;\n");
+  try {
+    const target = join(scratch, "kit-ignored-source");
+    const refused = runExport(target);
+    assert.equal(refused.status, 1);
+    assert.match(
+      refused.stderr,
+      /uncommitted compilable package files \(including ignored paths\): packages\/kernel\/src\/stray\.ignored\.ts/u,
+    );
+    assert.ok(!existsSync(target), "a refused export writes nothing");
+  } finally {
+    rmSync(stray, { force: true });
+    rmSync(join(source, ".git/info/exclude"), { force: true });
+  }
+  // An ignored file tsc cannot include, the Finder's .DS_Store under src, is
+  // not a build input and does not refuse.
+  const finder = join(source, "packages/kernel/src/.DS_Store");
+  writeFileSync(finder, "");
+  try {
+    assert.equal(
+      run("git", ["check-ignore", "-q", "packages/kernel/src/.DS_Store"], {
+        cwd: source,
+      }).status,
+      0,
+    );
+    ok(runExport(join(scratch, "kit-finder-file")), "export beside .DS_Store");
+  } finally {
+    rmSync(finder, { force: true });
+  }
+});
+
+test("WO-075 design: a TypeScript module under a runtime package's sources travels only as compiled output, which the local-terms screen judges", () => {
+  // The declaration-file plant (WO-074) emits nothing; a module that compiles
+  // carries its text into dist/src, so the terms screen is what keeps instance
+  // material there out of an export.
+  const module = "packages/skeleton/src/planted-module.ts";
+  writeFileSync(
+    join(source, module),
+    `export const plantedTerm = "${synthetic.trim()}";\n`,
+  );
+  git(source, ["add", module]);
+  git(source, ["commit", "-qm", "plant a compiled module"]);
+  try {
+    const target = join(scratch, "kit-compiled-plant");
+    const refused = runExport(target);
+    assert.equal(refused.status, 1);
+    assert.match(refused.stderr, /local-terms list present; refused \[/u);
+    assert.match(
+      refused.stderr,
+      /"file":"packages\/skeleton\/dist\/src\/planted-module\.js"/u,
+    );
+    assert.doesNotMatch(refused.stderr, new RegExp(synthetic.trim(), "u"));
+    assert.ok(!existsSync(target), "a refused export writes nothing");
+  } finally {
+    git(source, ["reset", "-q", "--hard", "HEAD~1"]);
+  }
+});
+
+test("WO-075 design: a host Git configuration that would ignore a kit file refuses the export by name, and an export cannot be made from a kit", () => {
+  const excludes = join(scratch, "host-excludes");
+  writeFileSync(excludes, "dist/\n");
+  const target = join(scratch, "kit-host-excludes");
+  const refused = run(
+    process.execPath,
+    [join(source, "scripts/launchpad.mjs"), "export", target],
+    {
+      cwd: scratch,
+      env: {
+        ...env,
+        GIT_CONFIG_COUNT: "1",
+        GIT_CONFIG_KEY_0: "core.excludesFile",
+        GIT_CONFIG_VALUE_0: excludes,
+      },
+    },
+  );
+  assert.equal(refused.status, 1);
+  assert.match(
+    refused.stderr,
+    /the fork's Git would ignore \d+ kit files, so its first commit would lack them: packages\/compiler\/dist\/src\/.*remove it before exporting again/u,
+  );
+  // The export is left in place for inspection; no manifest was written.
+  assert.ok(existsSync(join(target, "scripts/launchpad.mjs")));
+  assert.ok(!existsSync(join(target, "KIT-MANIFEST.json")));
+  // A kit carries no package sources, so it cannot export itself.
+  const fromKit = run(
+    process.execPath,
+    [
+      join(kit, "scripts/launchpad.mjs"),
+      "export",
+      join(scratch, "kit-from-kit"),
+    ],
+    { cwd: scratch },
+  );
+  assert.equal(fromKit.status, 1);
+  assert.match(fromKit.stderr, /package sources, which this checkout lacks/u);
+  assert.ok(!existsSync(join(scratch, "kit-from-kit")));
+});
+
+test("WO-075 design: a fresh clone of the committed export lacks the ignored snapshot, its hooks report snapshot-missing and delegate to host permissions, and one emit restores the check", () => {
+  const committed = commitExport(join(scratch, "kit-committed"));
+  const clone = join(scratch, "kit-clone");
+  git(scratch, ["clone", "-q", committed, clone]);
+  const snapshot =
+    harnessManifestOf(clone).profiles[0].profile.runtime.snapshot;
+  assert.ok(!existsSync(join(clone, snapshot)));
+  assert.ok(
+    existsSync(join(clone, "packages/skeleton/dist/src/harness-host.js")),
+  );
+  // A generated hook without its snapshot: one advisory naming the cause, no
+  // denial; the fork runs on the host's permissions until it emits.
+  const hook = run(process.execPath, [".claude/hooks/permissions.mjs"], {
+    cwd: clone,
+    input: JSON.stringify({
+      session_id: "fixture-clone-session",
+      hook_event_name: "PreToolUse",
+      tool_name: "Bash",
+      tool_input: { command: "git commit -m 'Generated by AI'" },
+      cwd: clone,
+    }),
+  });
+  assert.equal(hook.status, 0, hook.stderr);
+  const response = JSON.parse(hook.stdout);
+  assert.match(response.systemMessage ?? "", /snapshot-missing/u);
+  assert.equal(response.decision, undefined);
+  assert.equal(response.hookSpecificOutput?.permissionDecision, undefined);
+  // Without the install the clone has no workspace links, so even the check
+  // cannot load its runtime; after it, the check names the missing snapshot.
+  const unlinked = harness(clone, "check");
+  assert.equal(unlinked.status, 1);
+  assert.match(
+    unlinked.stderr,
+    /Cannot find package '@dotln\/|ERR_MODULE_NOT_FOUND/u,
+  );
+  ok(
+    run(
+      "npm",
+      ["ci", "--offline", "--no-audit", "--no-fund", "--loglevel=error"],
+      { cwd: clone, timeout: 300_000 },
+    ),
+    "npm ci in the clone",
+  );
+  // The README's order, commit then install, leaves the tree clean: the bin
+  // target npm makes executable was written executable by the export.
+  assert.equal(git(clone, ["status", "--porcelain"]).stdout, "");
+  const before = harness(clone, "check");
+  assert.equal(before.status, 1);
+  assert.match(
+    before.stderr + before.stdout,
+    /harness drift: pinned snapshot missing or changed/u,
+  );
+  // The compiled hook advisory names bootstrap: in a kit it has no build step
+  // (no tsconfig.json) and runs the emit that installs the snapshot.
+  const bootstrap = ok(
+    run(process.execPath, ["scripts/bootstrap.mjs"], { cwd: clone }),
+    "bootstrap in the clone",
+  );
+  assert.match(
+    bootstrap.stdout,
+    /Worktree ready for Claude or Codex \(1 preparation steps\)\./u,
+  );
+  assert.doesNotMatch(bootstrap.stdout + bootstrap.stderr, /npm run build/u);
+  assert.ok(
+    existsSync(
+      join(clone, snapshot, "packages/skeleton/dist/src/harness-host.js"),
+    ),
+  );
+  ok(harness(clone, "check"), "check in the clone");
+  // The emit reproduced the listed surfaces byte for byte.
+  for (const { path, sha256: hash } of manifestOf(clone).files)
+    if (/^\.(?:claude|agents|codex)\//u.test(path))
+      assert.equal(sha256(readFileSync(join(clone, path))), hash, path);
+  const again = run(process.execPath, [".claude/hooks/permissions.mjs"], {
+    cwd: clone,
+    input: JSON.stringify({
+      session_id: "fixture-clone-session-2",
+      hook_event_name: "PreToolUse",
+      tool_name: "Bash",
+      tool_input: { command: "git commit -m 'Generated by AI'" },
+      cwd: clone,
+    }),
+  });
+  assert.equal(again.status, 0, again.stderr);
+  assert.doesNotMatch(again.stdout, /snapshot-missing/u);
+});
+
+test("WO-074 design: a kit file absent at the commit refuses by name, and a destination inside a Git work tree becomes its own repository", () => {
   const inside = join(source, "nested-export");
   const nested = ok(runExport(inside), "export inside a work tree");
-  assert.match(
+  assert.doesNotMatch(
     nested.stdout,
-    /^advisory: the destination lies inside the Git work tree /mu,
+    /^advisory: the destination lies inside/mu,
+  );
+  assert.equal(
+    realpathSync(git(inside, ["rev-parse", "--show-toplevel"]).stdout.trim()),
+    realpathSync(inside),
   );
   rmSync(inside, { recursive: true, force: true });
   git(source, [

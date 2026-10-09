@@ -1,0 +1,296 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-075",
+  "verification": "VER-002",
+  "recordedAt": "2026-10-09T15:51:03.860Z",
+  "dispatch": "resume: verify",
+  "subjectCodeIdentity": "a5cefbc4cc6eaea828e04709bcc091d8f119f47ce98718b24b90dced79ca139d",
+  "launchpadSourceSha256": "c83d4a45f5741431f7964807127a1d00971d37b434011f7279f887f73c76df71",
+  "fixture": "A bounded copy of the current subject (scripts, packages/beacons, every workspace's package.json, tsconfig.json, src and test, root project files and the docs the kit reads) committed in session scratch; each probe is a fresh clone with the running checkout's third-party install linked and its own workspaces linked relatively. The reference is a separate clone built with its own scripts/build.mjs.",
+  "referenceRuntimeFiles": 270,
+  "boundedRuns": [
+    {
+      "label": "guard probes",
+      "command": "node scripts/harness.mjs bounded -- node <session-scratch>/probe-tool/probe.mjs <worktree> <session-scratch>/probe-run",
+      "durationMs": 10176,
+      "exitCode": 0,
+      "startedAt": "2026-10-09T15:47:44.220Z"
+    },
+    {
+      "label": "criteria 1, 2 and 4 on the clean export",
+      "command": "node scripts/harness.mjs bounded -- node <session-scratch>/probe-tool/probe2.mjs <worktree> <clean-export> <criteria.json>",
+      "durationMs": 399,
+      "exitCode": 0,
+      "startedAt": "2026-10-09T15:49:28.194Z"
+    }
+  ],
+  "probes": [
+    {
+      "label": "clean",
+      "expectRefusal": false,
+      "exitCode": 0,
+      "gitStatusEmpty": true,
+      "destinationExists": true,
+      "message": "Exported the DotLn kit of <fixture-commit> (untagged) to <verifier-scratch>/out-clean: 588 kit files in KIT-MANIFEST.json, 23 instance seeds.",
+      "manifestNamesFixtureCommit": true,
+      "againstCleanRebuild": {
+        "runtimeFiles": 270,
+        "extra": [],
+        "missing": [],
+        "differing": []
+      },
+      "judgement": "matches-clean-rebuild"
+    },
+    {
+      "label": "ver001-ignored-directory",
+      "expectRefusal": true,
+      "exitCode": 1,
+      "gitStatusEmpty": true,
+      "destinationExists": false,
+      "message": "error: the export builds and emits from the commit, but the work tree differs from HEAD: uncommitted compilable package files (including ignored paths): packages/kernel/src/verifier-ignored/plant.ts. Commit or stash them (remove the uncommitted files), or export from a clean checkout of the commit.",
+      "judgement": "refused-before-destination"
+    },
+    {
+      "label": "ver001-assume-unchanged",
+      "expectRefusal": true,
+      "exitCode": 1,
+      "gitStatusEmpty": true,
+      "destinationExists": false,
+      "message": "error: the export builds and emits from the commit, but the work tree differs from HEAD: build inputs: packages/kernel/src/index.ts. Commit or stash them (remove the uncommitted files), or export from a clean checkout of the commit.",
+      "judgement": "refused-before-destination"
+    },
+    {
+      "label": "uppercase-ts-ignored",
+      "expectRefusal": true,
+      "exitCode": 0,
+      "gitStatusEmpty": true,
+      "destinationExists": true,
+      "message": "Exported the DotLn kit of <fixture-commit> (untagged) to <verifier-scratch>/out-uppercase-ts-ignored: 588 kit files in KIT-MANIFEST.json, 23 instance seeds.",
+      "manifestNamesFixtureCommit": true,
+      "againstCleanRebuild": {
+        "runtimeFiles": 270,
+        "extra": [],
+        "missing": [],
+        "differing": []
+      },
+      "judgement": "NOT-REFUSED"
+    },
+    {
+      "label": "uppercase-mjs-ignored",
+      "expectRefusal": true,
+      "exitCode": 0,
+      "gitStatusEmpty": true,
+      "destinationExists": true,
+      "message": "Exported the DotLn kit of <fixture-commit> (untagged) to <verifier-scratch>/out-uppercase-mjs-ignored: 588 kit files in KIT-MANIFEST.json, 23 instance seeds.",
+      "manifestNamesFixtureCommit": true,
+      "againstCleanRebuild": {
+        "runtimeFiles": 270,
+        "extra": [],
+        "missing": [],
+        "differing": []
+      },
+      "judgement": "NOT-REFUSED"
+    },
+    {
+      "label": "stale-dist-plant",
+      "expectRefusal": false,
+      "exitCode": 0,
+      "gitStatusEmpty": true,
+      "destinationExists": true,
+      "message": "Exported the DotLn kit of <fixture-commit> (untagged) to <verifier-scratch>/out-stale-dist-plant: 588 kit files in KIT-MANIFEST.json, 23 instance seeds.",
+      "manifestNamesFixtureCommit": true,
+      "againstCleanRebuild": {
+        "runtimeFiles": 270,
+        "extra": [],
+        "missing": [],
+        "differing": []
+      },
+      "judgement": "matches-clean-rebuild"
+    },
+    {
+      "label": "replace-blob-assume-unchanged",
+      "expectRefusal": true,
+      "exitCode": 0,
+      "gitStatusEmpty": true,
+      "destinationExists": true,
+      "message": "Exported the DotLn kit of <fixture-commit> (untagged) to <verifier-scratch>/out-replace-blob-assume-unchanged: 588 kit files in KIT-MANIFEST.json, 23 instance seeds.",
+      "manifestNamesFixtureCommit": true,
+      "againstCleanRebuild": {
+        "runtimeFiles": 270,
+        "extra": [],
+        "missing": [],
+        "differing": [
+          "packages/kernel/dist/src/index.d.ts",
+          "packages/kernel/dist/src/index.js"
+        ]
+      },
+      "judgement": "NOT-REFUSED"
+    }
+  ],
+  "interpretation": {
+    "ver001-ignored-directory": "VER-001 case 1 refuses before destination creation and names the nested plant.",
+    "ver001-assume-unchanged": "VER-001 case 2 refuses before destination creation and names the hidden tracked input.",
+    "uppercase-ts-ignored": "Not refused, but the export equals the clean rebuild: tsc does not compile an upper-case .TS file, so no input reaches the runtime.",
+    "uppercase-mjs-ignored": "Not refused, but the export equals the clean rebuild: tsc does not compile an upper-case .MJS file.",
+    "stale-dist-plant": "A planted file in the ignored packages/kernel/dist is removed by the build's publication; the export equals the clean rebuild.",
+    "replace-blob-assume-unchanged": "Follow-up D017: a refs/replace object for the index.ts blob that equals the edited work-tree bytes, with assume-unchanged, passes the guard because cat-file honors replace refs; kernel dist/src/index.js and index.d.ts differ from the clean rebuild while the manifest names the unchanged commit. git --no-replace-objects cat-file shows the original blob without the edit."
+  },
+  "criteria": {
+    "c1": {
+      "runtimeFiles": 270,
+      "allUnderDistSrc": true,
+      "unlisted": [],
+      "hashMismatch": [],
+      "packageTypeScriptSource": [],
+      "packageSourceFiles": [
+        "packages/compiler/src/attribution.mjs",
+        "packages/compiler/src/codex-continuation.mjs",
+        "packages/compiler/src/operator-control.mjs",
+        "packages/skeleton/src/correction-observation.mjs",
+        "packages/skeleton/src/evidence-editions.mjs",
+        "packages/skeleton/src/gate-deadlines.mjs",
+        "packages/skeleton/src/gate-evidence.mjs",
+        "packages/skeleton/src/usage-observation.mjs",
+        "packages/skeleton/src/writer-teardown.mjs"
+      ],
+      "tsbuildinfo": [],
+      "distTest": [],
+      "manifestCommit": "487daaf0fe5f38f35a219aed54e7e3da1d2faa40"
+    },
+    "c2": {
+      "before": {
+        "exit": 0,
+        "text": "harness check: 33 generated surfaces; local-terms list: unavailable"
+      },
+      "drift": {
+        "exit": 1,
+        "text": "harness drift: .claude/hooks/permissions.mjs",
+        "namesPath": true
+      },
+      "after": {
+        "exit": 0,
+        "text": "harness check: 33 generated surfaces; local-terms list: unavailable"
+      },
+      "hooksScanned": 15,
+      "specifierCount": 193,
+      "absolute": []
+    },
+    "c4": {
+      "instruction": {
+        "kit": 6832,
+        "core": 6873
+      },
+      "rows": [
+        {
+          "root": ".claude/skills",
+          "role": "executor",
+          "kit": 28087,
+          "core": 28128,
+          "delta": -41,
+          "skillIdentical": true
+        },
+        {
+          "root": ".claude/skills",
+          "role": "verifier",
+          "kit": 25339,
+          "core": 25380,
+          "delta": -41,
+          "skillIdentical": true
+        },
+        {
+          "root": ".claude/skills",
+          "role": "reviewer",
+          "kit": 26790,
+          "core": 26831,
+          "delta": -41,
+          "skillIdentical": true
+        },
+        {
+          "root": ".claude/skills",
+          "role": "release-close",
+          "kit": 16325,
+          "core": 16366,
+          "delta": -41,
+          "skillIdentical": true
+        },
+        {
+          "root": ".claude/skills",
+          "role": "planner",
+          "kit": 18143,
+          "core": 18184,
+          "delta": -41,
+          "skillIdentical": true
+        },
+        {
+          "root": ".claude/skills",
+          "role": "refuter",
+          "kit": 17422,
+          "core": 17463,
+          "delta": -41,
+          "skillIdentical": true
+        },
+        {
+          "root": ".agents/skills",
+          "role": "executor",
+          "kit": 28087,
+          "core": 28128,
+          "delta": -41,
+          "skillIdentical": true
+        },
+        {
+          "root": ".agents/skills",
+          "role": "verifier",
+          "kit": 25339,
+          "core": 25380,
+          "delta": -41,
+          "skillIdentical": true
+        },
+        {
+          "root": ".agents/skills",
+          "role": "reviewer",
+          "kit": 26790,
+          "core": 26831,
+          "delta": -41,
+          "skillIdentical": true
+        },
+        {
+          "root": ".agents/skills",
+          "role": "release-close",
+          "kit": 16325,
+          "core": 16366,
+          "delta": -41,
+          "skillIdentical": true
+        },
+        {
+          "root": ".agents/skills",
+          "role": "planner",
+          "kit": 18143,
+          "core": 18184,
+          "delta": -41,
+          "skillIdentical": true
+        },
+        {
+          "root": ".agents/skills",
+          "role": "refuter",
+          "kit": 17422,
+          "core": 17463,
+          "delta": -41,
+          "skillIdentical": true
+        }
+      ],
+      "noneLarger": true
+    }
+  },
+  "productGateReuse": {
+    "checkId": "npm test",
+    "gateSelection": "review",
+    "codeIdentity": "a5cefbc4cc6eaea828e04709bcc091d8f119f47ce98718b24b90dced79ca139d",
+    "currentCodeIdentityMatches": true,
+    "exitCode": 0,
+    "executed": true,
+    "durationMs": 1401767,
+    "recordedAt": "2026-10-09T15:06:19.586Z",
+    "evidenceRef": "host-gate:a5cefbc4cc6eaea828e04709bcc091d8f119f47ce98718b24b90dced79ca139d:npm test",
+    "source": "docs/control/orders/WO-075.jsonl RepairCompleted productGate and docs/evidence/WO-075/repair-f1-gates.json; current identity from scripts/lib/gate-evidence.mjs gateCodeIdentity"
+  }
+}

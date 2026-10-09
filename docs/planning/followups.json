@@ -19718,6 +19718,14 @@
             "WO-075"
           ],
           "at": "2026-09-27T00:36:26.408Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by WO-075 (docs/evidence/WO-075/decisions.md#wo-075-d006): the export carries both module identities of the four build-free modules exactly as core does, so the question is unchanged by the kit runtime; taking it up edits four harness-pinned runtime modules, re-mints every edition they stale and owes a live feedback episode for usage-observation.mjs; and the row's check condition, a DOTLN_LAUNCHPAD that is not the scripts' checkout, is not what an export exercises (inside the export findLaunchpad() resolves the export itself).",
+          "reopenWhen": "A launchpad separate from the scripts' checkout, or one declaring non-default roots, must run these paths; or a kit command fails on the two module identities.",
+          "targets": [],
+          "at": "2026-10-09T08:47:32.912Z"
         }
       ]
     },
@@ -30718,7 +30726,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Returned to open by WO-075's final review (FINAL-001): the row's condition occurred, since the export now carries the commit's compiled runtime and the Contributor bundle and verifies both inside the export with node scripts/harness.mjs check (v0.72.0). Wiring the export's npm test stays outside WO-075 by its non-goal under WO-074's operator-review assumption 2, so planning decides the order that owns it: harness check first, then the suites that need no TypeScript source. WO-075 D011 names WO-118 and WO-082 as the orders that close the capability row's remaining gate.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-09T17:34:45.863Z"
+        }
+      ]
     },
     {
       "id": "FUP-06de60fa5d19fe5a",
@@ -31214,6 +31231,103 @@
           "at": "2026-10-09T15:58:45.264Z"
         }
       ]
+    },
+    {
+      "id": "FUP-749c959a41178a3b",
+      "key": "decision:docs/evidence/WO-075/decisions.md#wo-075-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "68a30ded9f8a0c853f3b040e90447d68f2078018d989fbab1f140cdfabead82d",
+          "ref": "docs/evidence/WO-075/decisions.md#wo-075-d012--adjacent-status-warns-about-the-projection-in-an-instance-with-no-control-events",
+          "title": "WO-075-D012: resume status should not warn that docs/control/current.md disagrees with the fold when the projection is absent and no control event exists (a fresh launchpad before its first activate):",
+          "summary": "{ \"id\": \"WO-075-D012\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next; adjacent observation\", \"decision\": \"In a fresh export (and in a WO-074 export made from the main checkout's scripts, so not this order's regression) node scripts/resume.mjs status --json prints 'warning: docs/control/current.md disagrees with the canonical fold of control segments; status is read-only and did not rewrite the projection' before the first lifecycle transition, because warnIfProjectionDisagrees compares an absent projection with the rendered empty fold. The warning is cosmetic and stops at activate, which writes the projection. scripts/resume.mjs is outside this order's declared surfaces and criteria, so th",
+          "missing": false
+        },
+        {
+          "hash": "d71ad78f2b22610c5ef892cc3e3a397477c9fcf6fff4fcde0e2bd02737e26a57",
+          "ref": "docs/evidence/WO-075/decisions.md#wo-075-d012--adjacent-status-warns-about-the-projection-in-an-instance-with-no-control-events",
+          "title": "WO-075-D012: resume status should not warn that docs/control/current.md disagrees with the fold when the projection is absent and no control event exists (a fresh launchpad before its first activate):",
+          "summary": "{ \"id\": \"WO-075-D012\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next; adjacent observation\", \"decision\": \"In a fresh export (and in a WO-074 export made from the main checkout's scripts, so not this order's regression) node scripts/resume.mjs status --json prints 'warning: docs/control/current.md disagrees with the canonical fold of control segments; status is read-only and did not rewrite the projection' before the first lifecycle transition, because warnIfProjectionDisagrees compares an absent projection with the rendered empty fold. The warning is cosmetic and stops at activate, which writes the projection. scripts/resume.mjs is outside this order's declared surfaces and criteria, so th",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-44639ec9a751d8d1",
+      "key": "decision:docs/evidence/WO-075/decisions.md#wo-075-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "98fd9355eb341828ef4ea54a617855ffafe6923fe1bfd7a0bb5f6d5c144ee363",
+          "ref": "docs/evidence/WO-075/decisions.md#wo-075-d008--cold-start-bytes-inside-the-export",
+          "title": "WO-075-D008: Emit the Start here Read[role] directives from the compiled Contributor bundle instead of hand-writing them in core's CLAUDE.md floor and the kit's CLAUDE.template.md, so the two floors c",
+          "summary": "{ \"id\": \"WO-075-D008\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next; criterion 4\", \"decision\": \"measureColdStarts (scripts/lib/process-budget.mjs) was run inside the evidence export and in this worktree at the committed copy's bytes; docs/evidence/WO-075/cold-start.json records both and the per-role difference. The export's CLAUDE.md is the kit template floor (3,335 bytes with its kit block) plus the generated block; core's is its hand-written floor (3,368 bytes) plus the same block, and the role skills are byte-identical, so every role is 32 bytes smaller in the export in both skill roots. The fixture asserts the inequality for all twelve rows against the running checkout. The margin is ",
+          "missing": false
+        },
+        {
+          "hash": "72fb675b47cf61034d71647facfdde008494d569097d9f5c3d85c4c061bd794a",
+          "ref": "docs/evidence/WO-075/decisions.md#wo-075-d008--cold-start-bytes-inside-the-export",
+          "title": "WO-075-D008: Emit the Start here Read[role] directives from the compiled Contributor bundle instead of hand-writing them in core's CLAUDE.md floor and the kit's CLAUDE.template.md, so the two floors c",
+          "summary": "{ \"id\": \"WO-075-D008\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next; criterion 4\", \"decision\": \"measureColdStarts (scripts/lib/process-budget.mjs) was run inside the evidence export and in this worktree at the committed copy's bytes; docs/evidence/WO-075/cold-start.json records both and the per-role difference. The export's CLAUDE.md is the kit template floor (3,326 bytes with its kit block) plus the generated block; core's is its hand-written floor (3,368 bytes) plus the same block, and the role skills are byte-identical, so every role is 41 bytes smaller in the export in both skill roots. The fixture asserts the inequality for all twelve rows against the running checkout. The margin is ",
+          "missing": false
+        },
+        {
+          "hash": "76a442c0a9dc674dc0f1dff0f02f600e291d8d2a9be85555aeba87885129384a",
+          "ref": "docs/evidence/WO-075/decisions.md#wo-075-d008--cold-start-bytes-inside-the-export",
+          "title": "WO-075-D008: Emit the Start here Read[role] directives from the compiled Contributor bundle instead of hand-writing them in core's CLAUDE.md floor and the kit's CLAUDE.template.md, so the two floors c",
+          "summary": "{ \"id\": \"WO-075-D008\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next; criterion 4\", \"decision\": \"measureColdStarts (scripts/lib/process-budget.mjs) was run inside the evidence export and in this worktree at the committed copy's bytes; docs/evidence/WO-075/cold-start.json records both and the per-role difference. The export's CLAUDE.md is the kit template floor (3,326 bytes with its kit block) plus the generated block; core's is its hand-written floor (3,368 bytes) plus the same block, and the role skills are byte-identical, so every role is 41 bytes smaller in the export in both skill roots. The fixture asserts the inequality for every installed role against the running checkout, in the do",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5d17b4e440f612e9",
+      "key": "decision:docs/evidence/WO-075/decisions.md#wo-075-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "52a3468f26bdd8dfa63b6847c513d8a237614d99e33be666c1f06567f962770b",
+          "ref": "docs/evidence/WO-075/decisions.md#wo-075-d014--verification-f1-the-build-input-check-misses-source-bytes",
+          "title": "WO-075-D014: WO-075 repair of VER-001-F1: make the build consume only inputs whose actual bytes and paths are proven equal to the named commit, independent of Git status flags; add regression cases fo",
+          "summary": "{ \"id\": \"WO-075-D014\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-001\", \"decision\": \"Record VER-001-F1 as a blocking major defect against criterion 1 and return WO-075 to repair. dirtyPinnedInputs treats git status as proof that the bytes atomicBuild copies equal HEAD. An ignored source directory is returned as one directory by --ignored=matching and discarded by the extension filter; an edited tracked source marked assume-unchanged is absent from status. Both independent scratch probes exported successfully under the unchanged commit's name while carrying compiled bytes that a clean clone's rebuild does not have. The verifier leaves the implementation unchanged.\", \"evidence\": [ ",
+          "missing": false
+        },
+        {
+          "hash": "371146774d6b5d26020f027390bcb30a8fc0d8a1d5d446cdb70de78b403e124c",
+          "ref": "docs/evidence/WO-075/decisions.md#wo-075-d014--verification-f1-the-build-input-check-misses-source-bytes",
+          "title": "WO-075-D014: WO-075 repair of VER-001-F1: make the build consume only inputs whose actual bytes and paths are proven equal to the named commit, independent of Git status flags; add regression cases fo",
+          "summary": "{ \"id\": \"WO-075-D014\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-001\", \"decision\": \"Record VER-001-F1 as a blocking major defect against criterion 1 and return WO-075 to repair. dirtyPinnedInputs treats git status as proof that the bytes atomicBuild copies equal HEAD. An ignored source directory is returned as one directory by --ignored=matching and discarded by the extension filter; an edited tracked source marked assume-unchanged is absent from status. Both independent scratch probes exported successfully under the unchanged commit's name while carrying compiled bytes that a clean clone's rebuild does not have. The verifier leaves the implementation unchanged.\", \"evidence\": [ ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Repaired VER-001-F1 under resume: fix; WO-075-D015 records actual committed-blob comparisons and a filesystem package-path walk independent of Git status flags and ignore traversal. Six bounded targeted tests pass, including both reported classes, skip-worktree, missing tracked source and a same-byte symlink; every mismatch refuses before destination creation. The original individual ignored-source refusal and harmless .DS_Store admission pass.",
+          "reopenWhen": "A build consumes an input outside the pinned scope or a new source form outside the actual package-path walk; extend the guard and reproduce the mismatch before claiming named-commit provenance.",
+          "targets": [],
+          "at": "2026-10-09T14:23:35.386Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5c2082d9fc28dbbf",
+      "key": "decision:docs/evidence/WO-075/decisions.md#wo-075-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d7132ae2602c0e4be3f206ea2d2f2457c8a527429d6652a6ebfa26e799081c7e",
+          "ref": "docs/evidence/WO-075/decisions.md#wo-075-d017--verification-ver-002-provenance-reads-honor-git-replace-refs",
+          "title": "WO-075-D017: Launchpad export provenance reads ignore replace refs: run the export's commit reads (rev-parse, ls-tree, cat-file for kit sources and pinned build/emit inputs) with git --no-replace-obje",
+          "summary": "{ \"id\": \"WO-075-D017\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-002\", \"decision\": \"Record a minor, non-blocking hardening follow-up found while attacking the VER-001-F1 repair. dirtyPinnedInputs reads the named commit with git ls-tree and git cat-file --batch, and both honor refs/replace. A blob replacement whose content equals an edited work-tree input, combined with assume-unchanged so status is empty, passes the guard; the export exits 0 and names the unchanged commit while kernel dist/src/index.js and index.d.ts differ from a clean clone's rebuild. It is not blocking: Git presents the replacement as the commit's content to every ordinary command in that repository (checkout",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

@@ -59,6 +59,21 @@ open until WO-075's first built distribution. The kit `package.json` keeps
 `private: true`, the Apache-2.0 label (`UNLICENSED` under `--license none`)
 and the publication guard.
 
+**Kit runtime — 2026-10-09 (WO-075).** The export now carries the compiled
+runtime of `@dotln/kernel`, `@dotln/compiler` and `@dotln/skeleton` under
+`packages/<name>/dist/src/`, built from the commit's package sources at export
+time and hashed in `KIT-MANIFEST.json`, and the Contributor harness bundle
+its own emit writes from that runtime. The build travels under the decided
+Apache-2.0 terms with `NOTICE` (§Decision — 2026-09-06, Distribution): the
+copied output is this project's own compiled source, it bundles no third-party
+file (the fixture's rebuild compares every byte to `tsc` output of the
+project's sources, and the export walks only `dist/src`), and the fork's
+`npm ci` installs its pinned development dependencies from the registry or a
+local cache. This order therefore writes no `THIRD_PARTY_NOTICES` file; the
+duty becomes due at the first export that copies a third-party file (a
+compiled browser dependency among the candidates), and the kit manifest is
+where to check. Package metadata is unchanged from the WO-074 observation.
+
 **2026-09-06 observation (phase-two planning pass):** the operator intends
 `DotLn-Enterprise-Starter`, an exported launchpad kit of this repository's
 control plane and operating documents, to be forked by several external

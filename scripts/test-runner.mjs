@@ -641,10 +641,20 @@ export const suites = [
   shell("backup-intake", "scripts/test-backup-intake.sh"),
   { ...shell("resume", "scripts/test-resume.sh"), document: true },
   nodeTests("launchpad", "scripts/test-launchpad.mjs", {
-    // The export and its fixture read no compiled output.
+    // The fixture builds its committed copy's own packages with the running
+    // install's toolchain and reads that copy's dist, never this checkout's.
+    // The cold-start comparison reads this checkout's installed floor and
+    // skills, so it runs in the launchpad-docs row.
     needsBuild: false,
+    skipPattern: "\\[document\\]",
     protects:
-      "launchpad export writes only manifest-listed kit files and instance seeds from the scripts' checkout's commit, refuses a non-empty destination and a local-terms match, and the export activates its first order and emits control Beacons without package source",
+      "launchpad export writes only manifest-listed kit files and instance seeds from the scripts' checkout's commit, carries the commit's compiled runtime and the harness bundle the export's own emit writes, refuses a non-empty destination, a dirty pinned input and a local-terms match, and the export passes harness check, activates its first order, emits control Beacons and reserves a Codex writer without package source",
+  }),
+  nodeTests("launchpad-docs", "scripts/test-launchpad.mjs", {
+    document: true,
+    namePattern: "\\[document\\]",
+    protects:
+      "the cold-start bytes of every role inside an export are not larger than this checkout's",
   }),
   nodeTests("beacon-portability", "scripts/test-beacon-portability.mjs", {
     fast: true,

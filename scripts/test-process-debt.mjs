@@ -9121,6 +9121,8 @@ test("WO-131 generated prompt hook accepts missing runtime, damaged state and ma
 
 test("WO-131 bootstrap works without dependencies and stops before a launch handoff when preparation fails", (t) => {
   const root = repo(t);
+  // A core worktree holds package sources to build; a kit export has none.
+  write(root, "packages/kernel/tsconfig.json", "{}\n");
   write(root, ".claude/harness-manifest.json", "{}\n");
   const calls = [];
   const run = (command, args, options) => {
@@ -9149,6 +9151,7 @@ test("WO-131 bootstrap works without dependencies and stops before a launch hand
 
 test("WO-181 bootstrap prepares the pinned browser in the future worktree cache before readiness", (t) => {
   const root = repo(t);
+  write(root, "packages/kernel/tsconfig.json", "{}\n");
   write(root, "packages/browser-evidence/package.json", "{}\n");
   write(root, ".claude/harness-manifest.json", "{}\n");
   const calls = [];

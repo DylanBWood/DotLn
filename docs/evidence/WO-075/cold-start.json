@@ -1,0 +1,377 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-075",
+  "recordedAt": "2026-10-09T09:19:59.901Z",
+  "method": "measureColdStarts (scripts/lib/process-budget.mjs) over the installed CLAUDE.md plus each role skill in both skill roots, UTF-8 bytes; the export is the committed copy of this work tree exported with DOTLN_LAUNCHPAD naming the main checkout, then committed, installed offline and checked (docs/evidence/WO-075/export-run.md names its commits); core is this worktree at the same bytes",
+  "exportCommit": "f6cd1d588565bb5a8c344573722d1d6046566203",
+  "kitCommit": "285603d74aab7d0ff0cf9101ab1edb0bcbb123d9",
+  "export": {
+    "instruction": {
+      "path": "CLAUDE.md",
+      "bytes": 6832,
+      "previousBytes": null
+    },
+    "profiles": [
+      {
+        "role": "executor",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-executor/SKILL.md",
+        "skillBytes": 21255,
+        "bytes": 28087,
+        "ceiling": null,
+        "verdict": "unset"
+      },
+      {
+        "role": "verifier",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-verifier/SKILL.md",
+        "skillBytes": 18507,
+        "bytes": 25339,
+        "ceiling": null,
+        "verdict": "unset"
+      },
+      {
+        "role": "reviewer",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-reviewer/SKILL.md",
+        "skillBytes": 19958,
+        "bytes": 26790,
+        "ceiling": null,
+        "verdict": "unset"
+      },
+      {
+        "role": "release-close",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-release-close/SKILL.md",
+        "skillBytes": 9493,
+        "bytes": 16325,
+        "ceiling": null,
+        "verdict": "unset"
+      },
+      {
+        "role": "planner",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-planner/SKILL.md",
+        "skillBytes": 11311,
+        "bytes": 18143,
+        "ceiling": null,
+        "verdict": "unset"
+      },
+      {
+        "role": "refuter",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-refuter/SKILL.md",
+        "skillBytes": 10590,
+        "bytes": 17422,
+        "ceiling": null,
+        "verdict": "unset"
+      },
+      {
+        "role": "executor",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-executor/SKILL.md",
+        "skillBytes": 21255,
+        "bytes": 28087,
+        "ceiling": null,
+        "verdict": "unset"
+      },
+      {
+        "role": "verifier",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-verifier/SKILL.md",
+        "skillBytes": 18507,
+        "bytes": 25339,
+        "ceiling": null,
+        "verdict": "unset"
+      },
+      {
+        "role": "reviewer",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-reviewer/SKILL.md",
+        "skillBytes": 19958,
+        "bytes": 26790,
+        "ceiling": null,
+        "verdict": "unset"
+      },
+      {
+        "role": "release-close",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-release-close/SKILL.md",
+        "skillBytes": 9493,
+        "bytes": 16325,
+        "ceiling": null,
+        "verdict": "unset"
+      },
+      {
+        "role": "planner",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-planner/SKILL.md",
+        "skillBytes": 11311,
+        "bytes": 18143,
+        "ceiling": null,
+        "verdict": "unset"
+      },
+      {
+        "role": "refuter",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-refuter/SKILL.md",
+        "skillBytes": 10590,
+        "bytes": 17422,
+        "ceiling": null,
+        "verdict": "unset"
+      }
+    ]
+  },
+  "core": {
+    "instruction": {
+      "path": "CLAUDE.md",
+      "bytes": 6873,
+      "previousBytes": 6873
+    },
+    "profiles": [
+      {
+        "role": "executor",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-executor/SKILL.md",
+        "skillBytes": 21255,
+        "bytes": 28128,
+        "ceiling": 29246,
+        "verdict": "within"
+      },
+      {
+        "role": "verifier",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-verifier/SKILL.md",
+        "skillBytes": 18507,
+        "bytes": 25380,
+        "ceiling": 29831,
+        "verdict": "within"
+      },
+      {
+        "role": "reviewer",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-reviewer/SKILL.md",
+        "skillBytes": 19958,
+        "bytes": 26831,
+        "ceiling": 28884,
+        "verdict": "within"
+      },
+      {
+        "role": "release-close",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-release-close/SKILL.md",
+        "skillBytes": 9493,
+        "bytes": 16366,
+        "ceiling": 21266,
+        "verdict": "within"
+      },
+      {
+        "role": "planner",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-planner/SKILL.md",
+        "skillBytes": 11311,
+        "bytes": 18184,
+        "ceiling": 24576,
+        "verdict": "within"
+      },
+      {
+        "role": "refuter",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-refuter/SKILL.md",
+        "skillBytes": 10590,
+        "bytes": 17463,
+        "ceiling": null,
+        "verdict": "unset"
+      },
+      {
+        "role": "executor",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-executor/SKILL.md",
+        "skillBytes": 21255,
+        "bytes": 28128,
+        "ceiling": 29246,
+        "verdict": "within"
+      },
+      {
+        "role": "verifier",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-verifier/SKILL.md",
+        "skillBytes": 18507,
+        "bytes": 25380,
+        "ceiling": 29831,
+        "verdict": "within"
+      },
+      {
+        "role": "reviewer",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-reviewer/SKILL.md",
+        "skillBytes": 19958,
+        "bytes": 26831,
+        "ceiling": 28884,
+        "verdict": "within"
+      },
+      {
+        "role": "release-close",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-release-close/SKILL.md",
+        "skillBytes": 9493,
+        "bytes": 16366,
+        "ceiling": 21266,
+        "verdict": "within"
+      },
+      {
+        "role": "planner",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-planner/SKILL.md",
+        "skillBytes": 11311,
+        "bytes": 18184,
+        "ceiling": 24576,
+        "verdict": "within"
+      },
+      {
+        "role": "refuter",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-refuter/SKILL.md",
+        "skillBytes": 10590,
+        "bytes": 17463,
+        "ceiling": null,
+        "verdict": "unset"
+      }
+    ]
+  },
+  "comparison": [
+    {
+      "role": "executor",
+      "skillsRoot": ".claude/skills",
+      "exportBytes": 28087,
+      "coreBytes": 28128,
+      "delta": -41,
+      "skillBytesEqual": true,
+      "exportCeiling": null,
+      "coreCeiling": 29246,
+      "coreVerdict": "within"
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".claude/skills",
+      "exportBytes": 25339,
+      "coreBytes": 25380,
+      "delta": -41,
+      "skillBytesEqual": true,
+      "exportCeiling": null,
+      "coreCeiling": 29831,
+      "coreVerdict": "within"
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".claude/skills",
+      "exportBytes": 26790,
+      "coreBytes": 26831,
+      "delta": -41,
+      "skillBytesEqual": true,
+      "exportCeiling": null,
+      "coreCeiling": 28884,
+      "coreVerdict": "within"
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".claude/skills",
+      "exportBytes": 16325,
+      "coreBytes": 16366,
+      "delta": -41,
+      "skillBytesEqual": true,
+      "exportCeiling": null,
+      "coreCeiling": 21266,
+      "coreVerdict": "within"
+    },
+    {
+      "role": "planner",
+      "skillsRoot": ".claude/skills",
+      "exportBytes": 18143,
+      "coreBytes": 18184,
+      "delta": -41,
+      "skillBytesEqual": true,
+      "exportCeiling": null,
+      "coreCeiling": 24576,
+      "coreVerdict": "within"
+    },
+    {
+      "role": "refuter",
+      "skillsRoot": ".claude/skills",
+      "exportBytes": 17422,
+      "coreBytes": 17463,
+      "delta": -41,
+      "skillBytesEqual": true,
+      "exportCeiling": null,
+      "coreCeiling": null,
+      "coreVerdict": "unset"
+    },
+    {
+      "role": "executor",
+      "skillsRoot": ".agents/skills",
+      "exportBytes": 28087,
+      "coreBytes": 28128,
+      "delta": -41,
+      "skillBytesEqual": true,
+      "exportCeiling": null,
+      "coreCeiling": 29246,
+      "coreVerdict": "within"
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".agents/skills",
+      "exportBytes": 25339,
+      "coreBytes": 25380,
+      "delta": -41,
+      "skillBytesEqual": true,
+      "exportCeiling": null,
+      "coreCeiling": 29831,
+      "coreVerdict": "within"
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".agents/skills",
+      "exportBytes": 26790,
+      "coreBytes": 26831,
+      "delta": -41,
+      "skillBytesEqual": true,
+      "exportCeiling": null,
+      "coreCeiling": 28884,
+      "coreVerdict": "within"
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".agents/skills",
+      "exportBytes": 16325,
+      "coreBytes": 16366,
+      "delta": -41,
+      "skillBytesEqual": true,
+      "exportCeiling": null,
+      "coreCeiling": 21266,
+      "coreVerdict": "within"
+    },
+    {
+      "role": "planner",
+      "skillsRoot": ".agents/skills",
+      "exportBytes": 18143,
+      "coreBytes": 18184,
+      "delta": -41,
+      "skillBytesEqual": true,
+      "exportCeiling": null,
+      "coreCeiling": 24576,
+      "coreVerdict": "within"
+    },
+    {
+      "role": "refuter",
+      "skillsRoot": ".agents/skills",
+      "exportBytes": 17422,
+      "coreBytes": 17463,
+      "delta": -41,
+      "skillBytesEqual": true,
+      "exportCeiling": null,
+      "coreCeiling": null,
+      "coreVerdict": "unset"
+    }
+  ],
+  "noRoleLarger": true
+}

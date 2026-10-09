@@ -78,6 +78,19 @@ export function harnessInstructionBlock(text) {
     ) + "\n"
   );
 }
+/** The operating contract an emit writes: a floor that holds the marker pair
+ * gets its block replaced; a floor without one gets the block after a blank
+ * line. One rule for emitHarness and for a prediction of its output. */
+export function composeHarnessInstruction(floor, block) {
+  if (typeof floor !== "string" || !floor.trim())
+    throw new Error("harness emit requires the hand-written clean-room floor");
+  if (floor.includes(HARNESS_START) || floor.includes(HARNESS_END))
+    return floor.replace(
+      harnessInstructionBlock(floor).trimEnd(),
+      block.trimEnd(),
+    );
+  return floor.trimEnd() + "\n\n" + block;
+}
 export function harnessInstallation(options = {}) {
   if (options.loadout && options.loadout !== "contributor")
     throw new Error("unknown harness loadout");
@@ -250,15 +263,7 @@ export function emitHarness(root, options = {}) {
   const floor = existsSync(instruction.path)
     ? readFileSync(instruction.path, "utf8")
     : options.instructionFloor;
-  if (typeof floor !== "string" || !floor.trim())
-    throw new Error("harness emit requires the hand-written clean-room floor");
-  if (floor.includes(HARNESS_START) || floor.includes(HARNESS_END)) {
-    const block = harnessInstructionBlock(floor);
-    instruction.contents = floor.replace(
-      block.trimEnd(),
-      instruction.contents.trimEnd(),
-    );
-  } else instruction.contents = floor.trimEnd() + "\n\n" + instruction.contents;
+  instruction.contents = composeHarnessInstruction(floor, instruction.contents);
   const expected = new Set(installation.files.map((file) => file.path));
   const obsolete = walkOwned(root).filter((path) => !expected.has(path));
   const previous = existsSync(join(root, manifestPath))

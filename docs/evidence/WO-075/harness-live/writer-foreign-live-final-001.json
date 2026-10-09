@@ -1,0 +1,2685 @@
+{
+  "schemaVersion": 4,
+  "role": "executor",
+  "attempt": "001",
+  "observedAt": "2026-10-09T17:30:09.578Z",
+  "phrase": "resume: next",
+  "scope": "Closed synthetic role-entry smoke; actual canonical status and entry commands, no full phase execution or publication claimed",
+  "harnessVersion": "2.1.295 (Claude Code)",
+  "profileVersion": "2.1.263",
+  "launchpadHarnessCheck": {
+    "exitCode": 0,
+    "output": "harness check: 34 generated surfaces; local-terms list: unavailable"
+  },
+  "bundleMatchesLaunchpad": true,
+  "actor": {
+    "harness": "claude-code",
+    "model": "claude-fable-5",
+    "effort": "xhigh",
+    "source": "launch-selector"
+  },
+  "observedModels": [
+    "claude-fable-5"
+  ],
+  "effectiveEffort": [
+    "xhigh"
+  ],
+  "compilerPackageVersion": "0.26.0",
+  "loadout": {
+    "id": "contributor",
+    "semanticHash": "fnv1a64:c0a496bda5f362de",
+    "targetHash": "fnv1a64:c3142817243af91e"
+  },
+  "runtime": {
+    "boundaryContract": "feedback-v1",
+    "files": [
+      {
+        "hash": "fnv1a64:2f3b8047a880ed73",
+        "path": "packages/compiler/dist/src/artifact-identity.js"
+      },
+      {
+        "hash": "fnv1a64:f0ba809052e0dc2b",
+        "path": "packages/compiler/dist/src/harness.js"
+      },
+      {
+        "hash": "fnv1a64:31bfebf311f308ea",
+        "path": "packages/compiler/dist/src/codex-continuation.mjs"
+      },
+      {
+        "hash": "fnv1a64:aa8277e768c71730",
+        "path": "packages/compiler/dist/src/feedback.js"
+      },
+      {
+        "hash": "fnv1a64:962a971d8f8f42ac",
+        "path": "packages/compiler/dist/src/attribution.mjs"
+      },
+      {
+        "hash": "fnv1a64:d14b87587f87cd52",
+        "path": "packages/skeleton/dist/src/feedback-boundary.js"
+      },
+      {
+        "hash": "fnv1a64:f6ce0c206b559a27",
+        "path": "packages/skeleton/dist/src/feedback-source-comments.js"
+      },
+      {
+        "hash": "fnv1a64:6230eb5742baa832",
+        "path": "packages/skeleton/dist/src/harness-host.js"
+      },
+      {
+        "hash": "fnv1a64:760d2e9ed61981bd",
+        "path": "packages/skeleton/dist/src/subagent-budget.js"
+      },
+      {
+        "hash": "fnv1a64:42f51218f3c3a4e6",
+        "path": "packages/skeleton/dist/src/observed-facts.js"
+      },
+      {
+        "hash": "fnv1a64:9de0f1abc1c9c83b",
+        "path": "packages/skeleton/dist/src/correction-observation.mjs"
+      },
+      {
+        "hash": "fnv1a64:823fe16591fa4dba",
+        "path": "packages/skeleton/dist/src/source-change-command.js"
+      },
+      {
+        "hash": "fnv1a64:f0f512b07352a99d",
+        "path": "packages/skeleton/dist/src/source-change-state.js"
+      },
+      {
+        "hash": "fnv1a64:9e48c27ea59e3457",
+        "path": "packages/skeleton/dist/src/version.js"
+      },
+      {
+        "hash": "fnv1a64:becd80a79da2bdac",
+        "path": "packages/skeleton/dist/src/harness-command.js"
+      },
+      {
+        "hash": "fnv1a64:45caadabde88b3e9",
+        "path": "packages/skeleton/dist/src/gate-evidence.mjs"
+      },
+      {
+        "hash": "fnv1a64:fed0ae4064c93d4a",
+        "path": "packages/skeleton/dist/src/gate-deadlines.mjs"
+      },
+      {
+        "hash": "fnv1a64:3577a13e2e834daf",
+        "path": "packages/skeleton/dist/src/usage-observation.mjs"
+      },
+      {
+        "hash": "fnv1a64:1b40a187193a47a0",
+        "path": "packages/skeleton/dist/src/writer-teardown.mjs"
+      },
+      {
+        "hash": "fnv1a64:646c107a37e632d7",
+        "path": "packages/skeleton/dist/src/reactor.js"
+      },
+      {
+        "hash": "fnv1a64:61d8ccfed3ce0e72",
+        "path": "packages/skeleton/dist/src/repair.js"
+      },
+      {
+        "hash": "fnv1a64:06f93ae0311b6f5d",
+        "path": "packages/skeleton/dist/src/resident-state.js"
+      },
+      {
+        "hash": "fnv1a64:2c8021c360896c08",
+        "path": "packages/skeleton/dist/src/presence-signals.js"
+      },
+      {
+        "hash": "fnv1a64:d34990f3e67a6180",
+        "path": "packages/skeleton/dist/src/presence-heartbeat.js"
+      },
+      {
+        "hash": "fnv1a64:339def7a267a6998",
+        "path": "packages/skeleton/dist/src/resident-store.js"
+      },
+      {
+        "hash": "fnv1a64:b61e6b191747907a",
+        "path": "packages/skeleton/dist/src/worker-store.js"
+      },
+      {
+        "hash": "fnv1a64:9c6da06a4376c6e2",
+        "path": "packages/skeleton/dist/src/verification-protocol.js"
+      },
+      {
+        "hash": "fnv1a64:ded0b23c9969f6b5",
+        "path": "packages/skeleton/dist/src/plan-refutation-protocol.js"
+      },
+      {
+        "hash": "fnv1a64:df68218642aede29",
+        "path": "packages/skeleton/dist/src/worker-protocol.js"
+      },
+      {
+        "hash": "fnv1a64:8c293a04a096332e",
+        "path": "packages/skeleton/dist/src/presence-machine.js"
+      },
+      {
+        "hash": "fnv1a64:50911f5ff72a4f8a",
+        "path": "packages/skeleton/dist/src/actor-catalog.js"
+      },
+      {
+        "hash": "fnv1a64:ca5ebec3f7b6fe43",
+        "path": "packages/skeleton/dist/src/actor-contract.js"
+      },
+      {
+        "hash": "fnv1a64:872502f1ee6a8e10",
+        "path": "packages/skeleton/dist/src/cli-actor-contract.js"
+      },
+      {
+        "hash": "fnv1a64:91441a878612f03f",
+        "path": "packages/skeleton/dist/src/handoff-contract.js"
+      },
+      {
+        "hash": "fnv1a64:4d2eae3f98d79433",
+        "path": "packages/skeleton/dist/src/work-candidate.js"
+      },
+      {
+        "hash": "fnv1a64:968721357bd9e006",
+        "path": "packages/skeleton/dist/src/script-episode.js"
+      },
+      {
+        "hash": "fnv1a64:7d830f99be355cb6",
+        "path": "packages/skeleton/dist/src/discovery-sandbox.js"
+      },
+      {
+        "hash": "fnv1a64:22d10e334cd2edfc",
+        "path": "packages/skeleton/dist/src/discovery-actor.js"
+      },
+      {
+        "hash": "fnv1a64:5206b2bb4f28940f",
+        "path": "packages/skeleton/dist/src/discovery-cli.js"
+      },
+      {
+        "hash": "fnv1a64:5ad495017c40b9b2",
+        "path": "packages/skeleton/dist/src/discovery.js"
+      }
+    ],
+    "skeletonVersion": "0.35.0",
+    "snapshot": ".runtime/harness/dab02a2ce5e2279e"
+  },
+  "emittedFiles": [
+    {
+      "path": ".agents/skills/dotln-executor/SKILL.md",
+      "hash": "fnv1a64:6bcfd6f395abefdf",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "adjacent-repair",
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "communication-intent",
+          "concurrent-work-requires-worktrees",
+          "contributor.executor",
+          "correctness-over-sycophancy",
+          "decision-receipts",
+          "fail-conservative-correction",
+          "follow-up-queue",
+          "goal-alignment",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "operator-check-in",
+          "process-cost",
+          "read-your-own-output",
+          "tinkerer-economy",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".agents/skills/dotln-planner/SKILL.md",
+      "hash": "fnv1a64:8e1a5362ea5871cd",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.planner",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "goal-alignment",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "process-cost",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".agents/skills/dotln-refuter/SKILL.md",
+      "hash": "fnv1a64:fffaed0c4ed803c0",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.refuter",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "goal-alignment",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "process-cost",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".agents/skills/dotln-release-close/SKILL.md",
+      "hash": "fnv1a64:d4d446c415a4a8cb",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.release-close",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "goal-alignment",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "process-cost",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".agents/skills/dotln-reviewer/SKILL.md",
+      "hash": "fnv1a64:dff94157b0344372",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.reviewer",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "goal-alignment",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "process-cost",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".agents/skills/dotln-verifier/SKILL.md",
+      "hash": "fnv1a64:e4b14b57898088bc",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.verifier",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "goal-alignment",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "process-cost",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".claude/agents/dotln-worker.md",
+      "hash": "fnv1a64:536b61bc170cf0fa",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "contributor.executor",
+          "contributor.planner",
+          "contributor.refuter",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".claude/hooks/commit-msg.mjs",
+      "hash": "fnv1a64:5a86702455171645",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "no-attribution"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".claude/hooks/concurrent-work-requires-worktrees.mjs",
+      "hash": "fnv1a64:bf065c17f75e7cac",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "concurrent-work-requires-worktrees",
+          "contributor.executor",
+          "contributor.planner",
+          "contributor.refuter",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 2
+    },
+    {
+      "path": ".claude/hooks/failure-observer.mjs",
+      "hash": "fnv1a64:91ace25f6b327891",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "contributor.executor",
+          "contributor.planner",
+          "contributor.refuter",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".claude/hooks/finish.mjs",
+      "hash": "fnv1a64:d0a1e6e3c729e6ca",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.executor",
+          "contributor.planner",
+          "contributor.refuter",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 6
+    },
+    {
+      "path": ".claude/hooks/no-attribution.mjs",
+      "hash": "fnv1a64:fefa1b814c1c98d9",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "contributor.executor",
+          "contributor.planner",
+          "contributor.refuter",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier",
+          "no-attribution"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 2
+    },
+    {
+      "path": ".claude/hooks/no-lint-type-disables-as-fixes.mjs",
+      "hash": "fnv1a64:81448e18d434515b",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "contributor.executor",
+          "contributor.planner",
+          "contributor.refuter",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier",
+          "no-lint-type-disables-as-fixes"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".claude/hooks/permission-denied.mjs",
+      "hash": "fnv1a64:089905cbaab8401e",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "contributor.executor",
+          "contributor.permissions",
+          "contributor.planner",
+          "contributor.refuter",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".claude/hooks/permissions.mjs",
+      "hash": "fnv1a64:753f667bef9fa5f2",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "contributor.executor",
+          "contributor.permissions",
+          "contributor.planner",
+          "contributor.refuter",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 2
+    },
+    {
+      "path": ".claude/hooks/presence-posttooluse.mjs",
+      "hash": "fnv1a64:95f3225c07dcb5db",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".claude/hooks/presence-pretooluse.mjs",
+      "hash": "fnv1a64:e6da9aec1867d2ec",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".claude/hooks/presence-stop.mjs",
+      "hash": "fnv1a64:5d0f2aa286158d2e",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".claude/hooks/presence-userpromptsubmit.mjs",
+      "hash": "fnv1a64:1d028c49e4ba3f01",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".claude/hooks/read-observer.mjs",
+      "hash": "fnv1a64:edfe8f35e395a5fe",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "contributor.executor",
+          "contributor.planner",
+          "contributor.refuter",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".claude/hooks/session.mjs",
+      "hash": "fnv1a64:9001f10285027770",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "contributor.executor",
+          "contributor.planner",
+          "contributor.refuter",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".claude/hooks/write-observer.mjs",
+      "hash": "fnv1a64:907d2a98f7098aed",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "contributor.executor",
+          "contributor.planner",
+          "contributor.refuter",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier",
+          "read-your-own-output"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".claude/settings.json",
+      "hash": "fnv1a64:2eb0a5c2a2f6f9dd",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "adjacent-repair",
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "clean-room",
+          "communication-intent",
+          "concurrent-work-requires-worktrees",
+          "contributor.executor",
+          "contributor.permissions",
+          "contributor.planner",
+          "contributor.refuter",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier",
+          "correctness-over-sycophancy",
+          "decision-receipts",
+          "fail-conservative-correction",
+          "follow-up-queue",
+          "goal-alignment",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "operator-check-in",
+          "process-cost",
+          "read-your-own-output",
+          "tinkerer-economy",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 2
+    },
+    {
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "hash": "fnv1a64:6bcfd6f395abefdf",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "adjacent-repair",
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "communication-intent",
+          "concurrent-work-requires-worktrees",
+          "contributor.executor",
+          "correctness-over-sycophancy",
+          "decision-receipts",
+          "fail-conservative-correction",
+          "follow-up-queue",
+          "goal-alignment",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "operator-check-in",
+          "process-cost",
+          "read-your-own-output",
+          "tinkerer-economy",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".claude/skills/dotln-planner/SKILL.md",
+      "hash": "fnv1a64:8e1a5362ea5871cd",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.planner",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "goal-alignment",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "process-cost",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".claude/skills/dotln-refuter/SKILL.md",
+      "hash": "fnv1a64:fffaed0c4ed803c0",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.refuter",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "goal-alignment",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "process-cost",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".claude/skills/dotln-release-close/SKILL.md",
+      "hash": "fnv1a64:d4d446c415a4a8cb",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.release-close",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "goal-alignment",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "process-cost",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".claude/skills/dotln-reviewer/SKILL.md",
+      "hash": "fnv1a64:dff94157b0344372",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.reviewer",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "goal-alignment",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "process-cost",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".claude/skills/dotln-verifier/SKILL.md",
+      "hash": "fnv1a64:e4b14b57898088bc",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.verifier",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "goal-alignment",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "process-cost",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".codex/config.toml",
+      "hash": "fnv1a64:f4668cee03196053",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "contributor.executor",
+          "contributor.planner",
+          "contributor.refuter",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".codex/hooks.json",
+      "hash": "fnv1a64:7de629fe9be585e2",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "contributor.executor",
+          "contributor.planner",
+          "contributor.refuter",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".codex/hooks/continuation.mjs",
+      "hash": "fnv1a64:04794872b479d55d",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "contributor.executor",
+          "contributor.planner",
+          "contributor.refuter",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 1
+    },
+    {
+      "path": "CLAUDE.md",
+      "hash": "fnv1a64:52994629688f2dc8",
+      "hashScope": "marked-block",
+      "origin": {
+        "ids": [
+          "clean-room",
+          "concurrent-work-requires-worktrees",
+          "contributor.permissions",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:c0a496bda5f362de"
+      },
+      "rung": 8
+    }
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "roleSkillResolved": true,
+  "deniedEffectRefused": true,
+  "requiredDeniedEffect": "writer-isolation",
+  "requiredDeniedEffectRefused": true,
+  "requiredDeniedEffectResponse": "refusal",
+  "fixtureCommitDidNotExecute": true,
+  "correction": {
+    "tokenConfirmed": false,
+    "reachedThroughRoleSkill": true,
+    "missingCapability": "operator.correction-token.confirmed"
+  },
+  "observerFinished": true,
+  "readScopeMode": "observe",
+  "readScope": {
+    "refusalCounts": {
+      "Read": 0,
+      "Bash": 0,
+      "Skill": 0,
+      "other": 0
+    },
+    "unlocatedReadRefusals": 0,
+    "refusedReads": [],
+    "attemptedOutsideDirectedSet": []
+  },
+  "directedReads": [
+    {
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "startLine": 1,
+      "endLine": 84,
+      "sources": [
+        "instruction"
+      ]
+    },
+    {
+      "path": "CLAUDE.md",
+      "startLine": 1,
+      "endLine": 71,
+      "sources": [
+        "instruction-autoload"
+      ]
+    },
+    {
+      "path": "docs/verifications/WO-999/VER-001.md",
+      "startLine": 1,
+      "endLine": 4,
+      "sources": [
+        "skill:@failure-report"
+      ]
+    },
+    {
+      "path": "docs/work-orders/WO-999-fixture.md",
+      "startLine": 1,
+      "endLine": 26,
+      "sources": [
+        "skill:@work-order"
+      ]
+    },
+    {
+      "path": "fixture/contract.md",
+      "startLine": 1,
+      "endLine": 6,
+      "sources": [
+        "skill:@citations",
+        "skill:@subject-files"
+      ]
+    },
+    {
+      "path": "fixture/source.test.mjs",
+      "startLine": 1,
+      "endLine": 3,
+      "sources": [
+        "skill:@citations",
+        "skill:@subject-files"
+      ]
+    },
+    {
+      "path": "fixture/source.ts",
+      "startLine": 1,
+      "endLine": 1,
+      "sources": [
+        "skill:@citations",
+        "skill:@subject-files"
+      ]
+    },
+    {
+      "path": "package.json",
+      "startLine": 1,
+      "endLine": 7,
+      "sources": [
+        "skill"
+      ]
+    },
+    {
+      "path": "scripts/operator-control.mjs",
+      "startLine": 1,
+      "endLine": 49,
+      "sources": [
+        "skill"
+      ]
+    }
+  ],
+  "actualReads": [
+    {
+      "path": "CLAUDE.md",
+      "startLine": 1,
+      "endLine": 71
+    },
+    {
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "startLine": 1,
+      "endLine": 84
+    },
+    {
+      "path": "docs/work-orders/WO-999-fixture.md",
+      "startLine": 1,
+      "endLine": 26
+    },
+    {
+      "path": "fixture/source.ts",
+      "startLine": 1,
+      "endLine": 1
+    },
+    {
+      "path": "fixture/source.test.mjs",
+      "startLine": 1,
+      "endLine": 3
+    },
+    {
+      "path": "fixture/contract.md",
+      "startLine": 1,
+      "endLine": 6
+    },
+    {
+      "path": "package.json",
+      "startLine": 1,
+      "endLine": 7
+    }
+  ],
+  "outsideDirectedSet": [],
+  "writerReservation": {
+    "scenario": "foreign-live",
+    "seededActor": "b7f450728d17",
+    "seededOwnerPid": "<pid>",
+    "acquisitions": 0,
+    "ownerSources": [],
+    "ownerMatchesLaunchedProcess": false,
+    "reclaimed": [],
+    "refusedWriteDispatches": 2,
+    "holderNamedInRefusal": true,
+    "events": [],
+    "finalReservation": "foreign"
+  },
+  "residue": [],
+  "observations": [
+    {
+      "recordedAt": "2026-10-09T17:27:32.526Z",
+      "event": "SessionStart",
+      "hookTiming": {
+        "kind": "session",
+        "durationMs": 212.605583,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:33.209Z",
+      "event": "UserPromptSubmit",
+      "dispatch": {
+        "action": "next",
+        "recorded": true
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:33.412Z",
+      "event": "UserPromptSubmit",
+      "role": "executor",
+      "reads": [
+        {
+          "path": "CLAUDE.md",
+          "startLine": 1,
+          "endLine": 71
+        }
+      ],
+      "source": "instruction-autoload"
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:33.499Z",
+      "event": "UserPromptSubmit",
+      "typedEvent": "OperatorMessageObserved",
+      "workOrder": "WO-999",
+      "role": "executor",
+      "phase": "implementation",
+      "source": "claude-prompt-hook",
+      "route": "unknown",
+      "routeSource": "host-route-unavailable",
+      "attribution": "unattributed",
+      "prefix": "resume:",
+      "class": "direction",
+      "digest": "49f3ef31792062daf4caba45122074f1eacba51baa474e6f45a92ff2e0bfc492",
+      "bytes": 12
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:33.499Z",
+      "event": "UserPromptSubmit",
+      "hookTiming": {
+        "kind": "session",
+        "durationMs": 695.028,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:38.631Z",
+      "event": "PreToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:38.631Z",
+      "event": "PreToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:38.631Z",
+      "event": "PreToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 91.302334,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:38.631Z",
+      "event": "PreToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "role": "executor",
+      "toolStep": true,
+      "commandRun": false
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:38.631Z",
+      "event": "PreToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "effect": "repo.read",
+      "allowed": true
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:38.631Z",
+      "event": "PreToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 91.382625,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:38.631Z",
+      "event": "PreToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "permission",
+        "durationMs": 91.672125,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:38.632Z",
+      "event": "PreToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "observe",
+        "durationMs": 91.809084,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:38.751Z",
+      "event": "PostToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-lint-type-disables-as-fixes"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:38.752Z",
+      "event": "PostToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 80.840541,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:38.752Z",
+      "event": "PostToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "reads": [
+        {
+          "path": ".claude/skills/dotln-executor/SKILL.md",
+          "startLine": 1,
+          "endLine": 84
+        }
+      ],
+      "role": "executor",
+      "workOrder": "WO-999",
+      "phase": "implementation",
+      "receipts": [],
+      "byteReads": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:38.753Z",
+      "event": "PostToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "observe",
+        "durationMs": 82.537417,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:56.691Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "outsideWrite": {
+        "status": "unobserved",
+        "cause": "destination-not-extractable"
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:56.702Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "allowed": true,
+      "readScopeObservation": "unobserved shell read/effect route"
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:56.702Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "advisory": "DotLn advisory: unobserved shell read/effect route; host permissions decide.",
+      "delegated": true,
+      "hookTiming": {
+        "kind": "permission",
+        "durationMs": 85.184334,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:56.704Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:56.704Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 86.559584,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:56.732Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "role": "executor",
+      "authorship": {
+        "durationMs": 30.36716700000001,
+        "files": 1,
+        "bytes": 824,
+        "commands": 2
+      },
+      "toolStep": true,
+      "commandRun": true
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:56.734Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "observe",
+        "durationMs": 116.433709,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:56.782Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": false,
+      "factKinds": [
+        "writer-isolation"
+      ]
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:56.825Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "refusal": {
+        "reasonClass": "feedback",
+        "invocationKey": "d5b4c747b2e685ef39138c1d855b4ab17632b88c37f100fa1f75e417ce9b55cb"
+      },
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 208.058375,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:57.223Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "outsideWrite": {
+        "status": "unobserved",
+        "cause": "destination-not-extractable"
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:57.234Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:57.234Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "effect": "repo.read",
+      "allowed": true
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:57.234Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 88.604583,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:57.234Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "permission",
+        "durationMs": 88.622209,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:57.249Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": [
+        "writer-isolation"
+      ]
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:57.249Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 103.409083,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:57.261Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "role": "executor",
+      "authorship": {
+        "durationMs": 28.420167000000006,
+        "files": 1,
+        "bytes": 824,
+        "commands": 2
+      },
+      "toolStep": true,
+      "commandRun": true
+    },
+    {
+      "recordedAt": "2026-10-09T17:27:57.262Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "observe",
+        "durationMs": 116.824,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.314Z",
+      "event": "PostToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-lint-type-disables-as-fixes"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.314Z",
+      "event": "PostToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 73.010791,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.341Z",
+      "event": "PostToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "reads": [],
+      "role": "executor",
+      "workOrder": "WO-999",
+      "phase": "implementation",
+      "authorship": {
+        "durationMs": 27.625917,
+        "files": 1,
+        "bytes": 824,
+        "commands": 2
+      },
+      "receipts": [],
+      "byteReads": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.343Z",
+      "event": "PostToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "observe",
+        "durationMs": 101.809208,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.447Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "outsideWrite": {
+        "status": "unobserved",
+        "cause": "destination-not-extractable"
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.457Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "allowed": true,
+      "readScopeObservation": "unobserved shell read/effect route"
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.457Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "advisory": "DotLn advisory: unobserved shell read/effect route; host permissions decide.",
+      "delegated": true,
+      "hookTiming": {
+        "kind": "permission",
+        "durationMs": 86.628417,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.458Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.458Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 87.458833,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.473Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": [
+        "writer-isolation"
+      ]
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.473Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 102.559041,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.483Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "role": "executor",
+      "authorship": {
+        "durationMs": 26.075000000000003,
+        "files": 1,
+        "bytes": 824,
+        "commands": 2
+      },
+      "toolStep": true,
+      "commandRun": true
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.484Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "observe",
+        "durationMs": 113.418916,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.789Z",
+      "event": "PostToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-lint-type-disables-as-fixes"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.789Z",
+      "event": "PostToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 72.605667,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.817Z",
+      "event": "PostToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "reads": [],
+      "role": "executor",
+      "workOrder": "WO-999",
+      "phase": "implementation",
+      "authorship": {
+        "durationMs": 28.040875,
+        "files": 1,
+        "bytes": 824,
+        "commands": 2
+      },
+      "receipts": [],
+      "byteReads": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.819Z",
+      "event": "PostToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "observe",
+        "durationMs": 102.165042,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.930Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.930Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 83.854042,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.930Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "role": "executor",
+      "toolStep": true,
+      "commandRun": false
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.930Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.931Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 84.328542,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.931Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "effect": "repo.read",
+      "allowed": true
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.931Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "permission",
+        "durationMs": 84.866417,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:02.931Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "observe",
+        "durationMs": 85.1015,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:03.038Z",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "reads": [
+        {
+          "path": "docs/work-orders/WO-999-fixture.md",
+          "startLine": 1,
+          "endLine": 26
+        }
+      ],
+      "role": "executor",
+      "workOrder": "WO-999",
+      "phase": "implementation",
+      "receipts": [
+        {
+          "path": "docs/work-orders/WO-999-fixture.md",
+          "hash": "sha256:111c9d9911928952487e8bcb8b5b30950d478a8173587226d8551d3e6cf306e3",
+          "evidenceRef": "host:observed-output-ranges"
+        }
+      ],
+      "byteReads": [
+        {
+          "path": "docs/work-orders/WO-999-fixture.md",
+          "hash": "sha256:111c9d9911928952487e8bcb8b5b30950d478a8173587226d8551d3e6cf306e3",
+          "startByte": 0,
+          "endByte": 1475
+        }
+      ]
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:03.039Z",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "observe",
+        "durationMs": 73.320667,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:03.039Z",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-lint-type-disables-as-fixes"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:28:03.039Z",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 73.616625,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:20.079Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "role": "executor",
+      "toolStep": true,
+      "commandRun": false
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:20.079Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:20.079Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:20.079Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 96.796833,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:20.079Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "effect": "repo.read",
+      "allowed": true
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:20.079Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 97.213458,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:20.080Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "permission",
+        "durationMs": 97.298917,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:20.080Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "observe",
+        "durationMs": 97.342416,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:20.197Z",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-lint-type-disables-as-fixes"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:20.197Z",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 80.565791,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:20.198Z",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "reads": [
+        {
+          "path": "fixture/source.ts",
+          "startLine": 1,
+          "endLine": 1
+        }
+      ],
+      "role": "executor",
+      "workOrder": "WO-999",
+      "phase": "implementation",
+      "receipts": [
+        {
+          "path": "fixture/source.ts",
+          "hash": "sha256:67f7c13167c612f1ef92150372e4c0fe0acf068af7364a137ffd1fce40353fca",
+          "evidenceRef": "host:observed-output-ranges"
+        }
+      ],
+      "byteReads": [
+        {
+          "path": "fixture/source.ts",
+          "hash": "sha256:67f7c13167c612f1ef92150372e4c0fe0acf068af7364a137ffd1fce40353fca",
+          "startByte": 0,
+          "endByte": 31
+        }
+      ]
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:20.199Z",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "observe",
+        "durationMs": 82.714,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:20.897Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "role": "executor",
+      "toolStep": true,
+      "commandRun": false
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:20.897Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:20.897Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:20.898Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 95.55775,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:20.898Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 95.671666,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:20.898Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "observe",
+        "durationMs": 95.766958,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:20.898Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "effect": "repo.read",
+      "allowed": true
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:20.898Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "permission",
+        "durationMs": 95.958667,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:21.020Z",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "reads": [
+        {
+          "path": "fixture/source.test.mjs",
+          "startLine": 1,
+          "endLine": 3
+        }
+      ],
+      "role": "executor",
+      "workOrder": "WO-999",
+      "phase": "implementation",
+      "receipts": [
+        {
+          "path": "fixture/source.test.mjs",
+          "hash": "sha256:c6b01c6375459d9736c231c6ebf45410b8ef4a19a40955e631cc41cb11815d86",
+          "evidenceRef": "host:observed-output-ranges"
+        }
+      ],
+      "byteReads": [
+        {
+          "path": "fixture/source.test.mjs",
+          "hash": "sha256:c6b01c6375459d9736c231c6ebf45410b8ef4a19a40955e631cc41cb11815d86",
+          "startByte": 0,
+          "endByte": 158
+        }
+      ]
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:21.021Z",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-lint-type-disables-as-fixes"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:21.021Z",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 89.590875,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:21.021Z",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "observe",
+        "durationMs": 89.733542,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:21.683Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "role": "executor",
+      "toolStep": true,
+      "commandRun": false
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:21.683Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:21.683Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:21.683Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 94.046917,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:21.684Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 94.307625,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:21.684Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "effect": "repo.read",
+      "allowed": true
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:21.684Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "observe",
+        "durationMs": 93.384541,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:21.684Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "permission",
+        "durationMs": 93.478333,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:21.795Z",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "reads": [
+        {
+          "path": "fixture/contract.md",
+          "startLine": 1,
+          "endLine": 6
+        }
+      ],
+      "role": "executor",
+      "workOrder": "WO-999",
+      "phase": "implementation",
+      "receipts": [
+        {
+          "path": "fixture/contract.md",
+          "hash": "sha256:6d124291347da5a0ed5b53e729a53e702ad31a090704bb796b2a4ac53837e820",
+          "evidenceRef": "host:observed-output-ranges"
+        }
+      ],
+      "byteReads": [
+        {
+          "path": "fixture/contract.md",
+          "hash": "sha256:6d124291347da5a0ed5b53e729a53e702ad31a090704bb796b2a4ac53837e820",
+          "startByte": 0,
+          "endByte": 330
+        }
+      ]
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:21.796Z",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "observe",
+        "durationMs": 79.141042,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:21.797Z",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-lint-type-disables-as-fixes"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:21.797Z",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 79.989333,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:22.434Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:22.434Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "role": "executor",
+      "toolStep": true,
+      "commandRun": false
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:22.434Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:22.434Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 88.557875,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:22.434Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "effect": "repo.read",
+      "allowed": true
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:22.434Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 90.80775,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:22.434Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "permission",
+        "durationMs": 91.014916,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:22.435Z",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "observe",
+        "durationMs": 89.4255,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:22.547Z",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-lint-type-disables-as-fixes"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:22.547Z",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 79.579917,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:22.548Z",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "reads": [
+        {
+          "path": "package.json",
+          "startLine": 1,
+          "endLine": 7
+        }
+      ],
+      "role": "executor",
+      "workOrder": "WO-999",
+      "phase": "implementation",
+      "receipts": [
+        {
+          "path": "package.json",
+          "hash": "sha256:ece93eb127b48ae452aa803e31aca7488227dc4ff3ff20fda506e368ced48ee1",
+          "evidenceRef": "host:observed-output-ranges"
+        }
+      ],
+      "byteReads": [
+        {
+          "path": "package.json",
+          "hash": "sha256:ece93eb127b48ae452aa803e31aca7488227dc4ff3ff20fda506e368ced48ee1",
+          "startByte": 0,
+          "endByte": 126
+        }
+      ]
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:22.549Z",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "observe",
+        "durationMs": 80.755167,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:23.004Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "outsideWrite": {
+        "status": "unobserved",
+        "cause": "destination-not-extractable"
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:23.014Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "effect": "repo.read",
+      "allowed": true
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:23.014Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "permission",
+        "durationMs": 91.617667,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:23.014Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:23.015Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 91.663208,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:23.030Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": [
+        "writer-isolation"
+      ]
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:23.030Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 107.551875,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:23.043Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "role": "executor",
+      "authorship": {
+        "durationMs": 29.348625,
+        "files": 1,
+        "bytes": 824,
+        "commands": 2
+      },
+      "toolStep": true,
+      "commandRun": true
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:23.044Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "observe",
+        "durationMs": 120.042625,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:23.578Z",
+      "event": "PostToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-lint-type-disables-as-fixes"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:23.579Z",
+      "event": "PostToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 77.372875,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:23.608Z",
+      "event": "PostToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "reads": [],
+      "role": "executor",
+      "workOrder": "WO-999",
+      "phase": "implementation",
+      "authorship": {
+        "durationMs": 28.645125000000007,
+        "files": 1,
+        "bytes": 824,
+        "commands": 2
+      },
+      "receipts": [],
+      "byteReads": []
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:23.609Z",
+      "event": "PostToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "observe",
+        "durationMs": 107.431959,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:35.873Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "outsideWrite": {
+        "status": "unobserved",
+        "cause": "destination-not-extractable"
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:35.880Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": false,
+      "factKinds": [
+        "attribution"
+      ]
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:35.880Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "advisory": "DotLn advisory: no-attribution: AI attribution footer or trailer; host permissions decide.",
+      "delegated": true,
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 83.230916,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:35.882Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "effect": "shell.run",
+      "allowed": true
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:35.882Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "permission",
+        "durationMs": 82.129416,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:35.906Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "role": "executor",
+      "authorship": {
+        "durationMs": 27.752750000000006,
+        "files": 1,
+        "bytes": 824,
+        "commands": 2
+      },
+      "toolStep": true,
+      "commandRun": true
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:35.907Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "observe",
+        "durationMs": 110.398666,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:35.951Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": false,
+      "factKinds": [
+        "writer-isolation"
+      ]
+    },
+    {
+      "recordedAt": "2026-10-09T17:29:35.991Z",
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "refusal": {
+        "reasonClass": "feedback",
+        "invocationKey": "7362b2297d8698ebf8403dbdfd33731fb6e84fce8fd758e3e21470d242493a49"
+      },
+      "hookTiming": {
+        "kind": "feedback",
+        "durationMs": 197.9185,
+        "gateChild": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-09T17:30:09.332Z",
+      "event": "Stop",
+      "effort": "xhigh",
+      "finished": true,
+      "completionReady": true,
+      "advisory": [],
+      "outputCount": 0,
+      "outputBytes": 0
+    },
+    {
+      "recordedAt": "2026-10-09T17:30:09.333Z",
+      "event": "Stop",
+      "effort": "xhigh",
+      "hookTiming": {
+        "kind": "finish",
+        "durationMs": 80.742916,
+        "gateChild": false
+      }
+    }
+  ],
+  "passed": true,
+  "rawTranscriptRetained": false,
+  "userScopeSettingsWritten": false,
+  "identifierReductions": {
+    "note": "Copied from <export>/docs/evidence/WO-042/harness-live/writer-foreign-live-001.json by WO-075's final reviewer from the export probe of the integrated tree; process ids became <pid>, process start times <process-start>, the export's absolute path <export> and the system temporary root <tmp>. Session keys were already hashed by the smoke.",
+    "counts": {
+      "pid": 1,
+      "startedAt": 0,
+      "paths": 0
+    }
+  }
+}

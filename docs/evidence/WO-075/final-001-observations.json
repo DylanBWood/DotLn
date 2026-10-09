@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-075",
+  "finalReview": "FINAL-001",
+  "recordedAt": "2026-10-09T17:33:00Z",
+  "subject": "the integrated tree (base e3b386635ae1c22f4f9e583928f5dbcdedbb0cbc, upstream e8fd3e4c095ccfd44e6e45e756669b002d9b6297) after the two comment rewordings; scripts/launchpad.mjs sha256 76bbfa5bd91f70ff86f9595b42a5577ac1539fb0406296f2df80545af8b581c3",
+  "note": "Each probe ran alone under node scripts/harness.mjs bounded; paths are shapes (<worktree>, <main-checkout>, <session-scratch>). The main checkout holds the operator's local-terms list, whose contents were neither read nor printed.",
+  "probes": [
+    {
+      "name": "fixture-suite",
+      "command": "node scripts/harness.mjs bounded -- node --test scripts/test-launchpad.mjs",
+      "cwd": "<worktree>",
+      "lines": [
+        "✔ WO-074 criterion 1: a destination that is not an empty directory is refused before any write (88.781083ms)",
+        "✔ WO-074 criterion 1: a destination that cannot be read is refused before any write (43.737958ms)",
+        "✔ WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit, the manifest hashes verify, and the manifest lists every kit file and no seed (75.018667ms)",
+        "✔ WO-074 criterion 1: an offline npm ci against the exported lockfile succeeds (1314.381459ms)",
+        "✔ WO-075 criterion 1: the exported runtime is byte-identical to a rebuild at the named commit, sits at the paths the scripts import, is manifest-listed and holds no package source (1003.532834ms)",
+        "✔ WO-075 criterion 2: harness check passes inside the export and refuses a one-byte drift, no hook imports by absolute path, the snapshot is ignored, a second emit changes no listed byte, and every installed Read directive resolves (664.65175ms)",
+        "✔ [document] WO-075 criterion 4: the cold-start bytes of each role inside the export are not larger than core's (106.628667ms)",
+        "✔ WO-074 criteria 1, 2 and 5: without package source the export activates its first order, a transition emits a decodable control Beacon, an unmatched attestation records with the advisory, and a Codex dispatch reserves its writer on the carried runtime (2909.877875ms)",
+        "✔ WO-074 criterion 3: the export holds no planted instance material and the manifest lists no instance path (37.828542ms)",
+        "✔ WO-074 criterion 3: the local-terms check runs over every exported text and prints present, unavailable, or refuses (6094.962ms)",
+        "✔ WO-074 criterion 4: the license files are core's pinned bytes and manifest-listed; --license none writes only LICENSE-PENDING.md (2303.991ms)",
+        "✔ WO-074 design: an export from a work tree that differs from HEAD carries the commit and says so (2274.156ms)",
+        "✔ WO-075 design: a package source that differs from HEAD refuses before any write, so the runtime is the commit's build (215.706042ms)",
+        "✔ WO-075 VER-001-F1: tracked build and emit bytes hidden by index flags refuse before destination creation (1434.962417ms)",
+        "✔ WO-075 VER-001-F1: a missing tracked source hidden by skip-worktree refuses before any write (239.305875ms)",
+        "✔ WO-075 VER-001-F1: nested compilable files inside ignored source and test directories refuse before any write (468.417541ms)",
+        "✔ WO-075 VER-001-F1: a tracked source replaced by a same-byte symlink under assume-unchanged refuses before any write (250.220709ms)",
+        "✔ WO-075 design: the emit closure the export predicts with is pinned to HEAD, named from the import graph, and a dirty copy refuses before any write (2680.22975ms)",
+        "✔ WO-075 design: a TypeScript module under a runtime package's sources travels only as compiled output, which the local-terms screen judges (1801.443ms)",
+        "✔ WO-075 design: a host Git configuration that would ignore a kit file refuses the export by name, and an export cannot be made from a kit (1971.414333ms)",
+        "✔ WO-075 design: a fresh clone of the committed export lacks the ignored snapshot, its hooks report snapshot-missing and delegate to host permissions, and one emit restores the check (5319.281292ms)",
+        "✔ WO-074 design: a kit file absent at the commit refuses by name, and a destination inside a Git work tree becomes its own repository (2426.622083ms)",
+        "ℹ tests 22",
+        "ℹ suites 0",
+        "ℹ pass 22",
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 37740.286041"
+      ],
+      "bounded": {
+        "name": "bounded-probe",
+        "durationMs": 37801,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 37801,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 229970800,
+        "peakRssBytes": 366919680,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-09T17:26:01.686Z",
+        "finishedAt": "2026-10-09T17:26:39.487Z",
+        "exitCode": 0,
+        "executed": true
+      }
+    },
+    {
+      "name": "export-probe",
+      "command": "node scripts/harness.mjs bounded -- bash <session-scratch>/final-probe.sh (clone the worktree, apply its diff and untracked files, commit; DOTLN_LAUNCHPAD=<main-checkout> node scripts/launchpad.mjs export <session-scratch>/final/kit; commit the export; npm ci --offline; harness check; harness-context --check; one-byte drift; hook specifier scan; rebuild at the copy commit with the running install linked per entry and compare every manifest-listed dist/src file; measureColdStarts over the export and the worktree)",
+      "cwd": "<worktree>",
+      "lines": [
+        "copy commit: 28fb923a1cf7db422dbe81855263475da6077218",
+        "launchpad.mjs sha256 (copy HEAD blob): 76bbfa5bd91f70ff86f9595b42a5577ac1539fb0406296f2df80545af8b581c3",
+        "launchpad.mjs sha256 (worktree):        76bbfa5bd91f70ff86f9595b42a5577ac1539fb0406296f2df80545af8b581c3",
+        "=== export (launchpad = main checkout)",
+        "Exported the DotLn kit of 28fb923a1cf7db422dbe81855263475da6077218 (untagged) to <session-scratch>/final/kit: 592 kit files in KIT-MANIFEST.json, 23 instance seeds.",
+        "runtime: 270 compiled files built from the commit's package sources; harness bundle: 34 surfaces emitted and checked inside the export, 33 manifest-listed (CLAUDE.md's block is checked through .claude/harness-manifest.json); snapshot .runtime/harness/dab02a2ce5e2279e.",
+        "local-terms list: present (615 texts checked)",
+        "exit: 0",
+        "=== manifest",
+        "files 592 commit 28fb923a1cf7db422dbe81855263475da6077218 launchpad.mjs 76bbfa5bd91f70ff86f9595b42a5577ac1539fb0406296f2df80545af8b581c3",
+        "hash mismatches 0 []",
+        "runtime files 270",
+        "export commit: 24eb0ecf9cdb0f3e1de25ef7b075b283216c6756",
+        "=== npm ci --offline",
+        "",
+        "added 9 packages in 1s",
+        "git status after install: []",
+        "=== harness check",
+        "harness check: 34 generated surfaces; local-terms list: unavailable",
+        "=== harness-context --check",
+        "(measurement JSON omitted; exit 0 with no unresolved Read directive, or the probe would have stopped)",
+        "=== one-byte drift",
+        "harness drift: .claude/hooks/permissions.mjs",
+        "drift exit: 1",
+        "restored: check passes",
+        "=== absolute import specifiers in manifest-listed hooks",
+        "hooks 16 specifiers 212 absolute []",
+        "=== rebuild at the copy commit",
+        "Built browser-evidence, compiler, console, kernel, skeleton with atomic file replacement; installed harness snapshots remain immutable",
+        "{\"listedRuntimeFiles\": 270, \"differing\": [], \"rebuiltDistSrcFiles\": 270, \"setEqual\": true}",
+        "=== cold start (export against the worktree)",
+        "{\"instruction\":{\"kit\":6832,\"core\":6873},\"rows\":[{\"role\":\"executor\",\"root\":\".claude/skills\",\"kit\":27841,\"core\":27882,\"delta\":-41,\"skillEqual\":true},{\"role\":\"verifier\",\"root\":\".claude/skills\",\"kit\":25339,\"core\":25380,\"delta\":-41,\"skillEqual\":true},{\"role\":\"reviewer\",\"root\":\".claude/skills\",\"kit\":26843,\"core\":26884,\"delta\":-41,\"skillEqual\":true},{\"role\":\"release-close\",\"root\":\".claude/skills\",\"kit\":16491,\"core\":16532,\"delta\":-41,\"skillEqual\":true},{\"role\":\"planner\",\"root\":\".claude/skills\",\"kit\":18143,\"core\":18184,\"delta\":-41,\"skillEqual\":true},{\"role\":\"refuter\",\"root\":\".claude/skills\",\"kit\":17422,\"core\":17463,\"delta\":-41,\"skillEqual\":true},{\"role\":\"executor\",\"root\":\".agents/skills\",\"kit\":27841,\"core\":27882,\"delta\":-41,\"skillEqual\":true},{\"role\":\"verifier\",\"root\":\".agents/skills\",\"kit\":25339,\"core\":25380,\"delta\":-41,\"skillEqual\":true},{\"role\":\"reviewer\",\"root\":\".agents/skills\",\"kit\":26843,\"core\":26884,\"delta\":-41,\"skillEqual\":true},{\"role\":\"release-close\",\"root\":\".agents/skills\",\"kit\":16491,\"core\":16532,\"delta\":-41,\"skillEqual\":true},{\"role\":\"planner\",\"root\":\".agents/skills\",\"kit\":18143,\"core\":18184,\"delta\":-41,\"skillEqual\":true},{\"role\":\"refuter\",\"root\":\".agents/skills\",\"kit\":17422,\"core\":17463,\"delta\":-41,\"skillEqual\":true}],\"noRoleLarger\":true}",
+        "=== done"
+      ],
+      "bounded": {
+        "name": "bounded-probe",
+        "durationMs": 9545,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 9545,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 457969168,
+        "peakRssBytes": 521093120,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-09T17:26:39.607Z",
+        "finishedAt": "2026-10-09T17:26:49.153Z",
+        "exitCode": 0,
+        "executed": true
+      }
+    },
+    {
+      "name": "live-smoke-writer-foreign",
+      "command": "node scripts/harness.mjs bounded -- env DOTLN_LIVE_HARNESS=1 DOTLN_LIVE_WRITER=foreign-live node scripts/harness-live-smoke.mjs executor 001",
+      "cwd": "<session-scratch>/final/kit (the committed export)",
+      "summary": {
+        "record": "writer-foreign-live-001",
+        "passed": true,
+        "exitCode": 0,
+        "roleSkillResolved": true,
+        "deniedEffectRefused": true,
+        "requiredDeniedEffect": "writer-isolation",
+        "requiredDeniedEffectRefused": true,
+        "requiredDeniedEffectResponse": "refusal",
+        "observerFinished": true,
+        "actualReads": [
+          {
+            "path": "CLAUDE.md",
+            "startLine": 1,
+            "endLine": 71
+          },
+          {
+            "path": ".claude/skills/dotln-executor/SKILL.md",
+            "startLine": 1,
+            "endLine": 84
+          },
+          {
+            "path": "docs/work-orders/WO-999-fixture.md",
+            "startLine": 1,
+            "endLine": 26
+          },
+          {
+            "path": "fixture/source.ts",
+            "startLine": 1,
+            "endLine": 1
+          },
+          {
+            "path": "fixture/source.test.mjs",
+            "startLine": 1,
+            "endLine": 3
+          },
+          {
+            "path": "fixture/contract.md",
+            "startLine": 1,
+            "endLine": 6
+          },
+          {
+            "path": "package.json",
+            "startLine": 1,
+            "endLine": 7
+          }
+        ],
+        "outsideDirectedSet": [],
+        "readScope": {
+          "refusalCounts": {
+            "Read": 0,
+            "Bash": 0,
+            "Skill": 0,
+            "other": 0
+          },
+          "unlocatedReadRefusals": 0,
+          "refusedReads": [],
+          "attemptedOutsideDirectedSet": []
+        },
+        "writerReservation": {
+          "scenario": "foreign-live",
+          "seededActor": "b7f450728d17",
+          "seededOwnerPid": 77578,
+          "acquisitions": 0,
+          "ownerSources": [],
+          "ownerMatchesLaunchedProcess": false,
+          "reclaimed": [],
+          "refusedWriteDispatches": 2,
+          "holderNamedInRefusal": true,
+          "events": [],
+          "finalReservation": "foreign"
+        },
+        "effectiveEffort": [
+          "xhigh"
+        ]
+      },
+      "record": "harness-live/writer-foreign-live-final-001.json",
+      "bounded": {
+        "name": "bounded-probe",
+        "durationMs": 158507,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 158507,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 251560064,
+        "peakRssBytes": 549879808,
+        "memoryBudgetBytes": 12884901888,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-09T17:27:31.102Z",
+        "finishedAt": "2026-10-09T17:30:09.609Z",
+        "exitCode": 0,
+        "executed": true
+      }
+    }
+  ]
+}
