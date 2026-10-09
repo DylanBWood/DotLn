@@ -41,7 +41,7 @@ import {
   UNFINISHED_CHECK_STATES,
 } from "./pull-request-observer.mjs";
 import { resolveReviewComments } from "./review-comment-loop.mjs";
-import { TOOL_ROOT } from "./config.mjs";
+import { TOOL_ROOT, loadConfig } from "./config.mjs";
 import { verticalTransport } from "./vertical-transport.mjs";
 import {
   liveTransport,
@@ -484,6 +484,7 @@ export function createVerticalPrimitives({
     const source = last(state, "source-change");
     const current = last(state, "source-change", "repair");
     const verified = last(state, "verification");
+    const registration = loadConfig(cfg.root).repositories[cfg.portfolio.repo];
     return {
       launchpad: cfg.root,
       workOrderId: state.workOrder.workOrderId,
@@ -492,6 +493,8 @@ export function createVerticalPrimitives({
       now: now(),
       log() {},
       request: {
+        automationLogins: registration.automationLogins,
+        linkHosts: registration.linkHosts,
         loadout: file,
         environment,
         store: source.store,
@@ -824,10 +827,13 @@ export function createVerticalPrimitives({
         return complete(publishTargetOrder(publication(state)));
       if (command.step === "observation") {
         const published = last(state, "publish");
+        const { automationLogins, linkHosts } = publication(state).request;
         const { observed: event, unsettled } = await observeSettled(
           () =>
             observePullRequest({
               cwd: state.binding.target,
+              automationLogins,
+              linkHosts,
               store: last(state, "source-change").store,
               number: published.number,
               repositoryId: cfg.repositoryId,
@@ -884,6 +890,7 @@ export function createVerticalPrimitives({
           write(receipt, input);
           return { child, input };
         };
+        const publishing = publication(state);
         const result = await resolveReviewComments({
           store: last(state, "source-change").store,
           number: published.number,
@@ -892,13 +899,15 @@ export function createVerticalPrimitives({
           launchpad: cfg.root,
           judgments: cfg.judgments ?? {},
           checkTests: cfg.checkTests ?? {},
-          publication: publication(state),
+          publication: publishing,
           now,
           async observe() {
             const { unsettled } = await observeSettled(
               () =>
                 observePullRequest({
                   cwd: cfg.root,
+                  automationLogins: publishing.request.automationLogins,
+                  linkHosts: publishing.request.linkHosts,
                   store: last(state, "source-change").store,
                   number: published.number,
                   repositoryId: cfg.repositoryId,

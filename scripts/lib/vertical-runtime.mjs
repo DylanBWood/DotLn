@@ -301,6 +301,7 @@ export function readVerticalConfiguration(directory, root = findLaunchpad()) {
             ...config.repositories[portfolio.repo],
             id: value.target,
           },
+          classes: config.classes,
           registry: grants,
         }).length === 0,
       "resident floor departs from the registered target profile",

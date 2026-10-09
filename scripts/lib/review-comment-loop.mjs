@@ -297,6 +297,8 @@ export async function resolveReviewComments(options) {
     (() =>
       observePullRequest({
         cwd: options.launchpad,
+        automationLogins: options.publication?.request.automationLogins,
+        linkHosts: options.publication?.request.linkHosts,
         store,
         number,
         repositoryId,
@@ -638,6 +640,7 @@ export async function runReviewLoopRequest(launchpad, file, registry) {
     );
   const request = readTargetPublishRequest(
     resolve(directory, input.targetRequest),
+    launchpad,
   );
   const repair = JSON.parse(
     readFileSync(resolve(directory, input.repairInput), "utf8"),

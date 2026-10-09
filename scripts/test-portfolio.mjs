@@ -90,6 +90,7 @@ const portfolioText = (overrides = {}) => ({
 });
 const configuration = (portfolios) => ({
   version: 1,
+  classes: { scratch: { checks: [], supports: [] } },
   repositories: {
     scratch: {
       baseBranch: "main",

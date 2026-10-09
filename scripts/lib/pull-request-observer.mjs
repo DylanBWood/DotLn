@@ -136,10 +136,12 @@ function bundle(text, role) {
     ],
   };
 }
-function screen(text, role, host, path) {
+function screen(text, role, host, path, linkHosts = []) {
   let result;
   try {
-    result = decodeSourceBundle(bundle(text, role), { allowedHosts: [host] });
+    result = decodeSourceBundle(bundle(text, role), {
+      allowedHosts: role === "automation" ? [host, ...linkHosts] : [host],
+    });
   } catch (error) {
     if (error instanceof RangeError)
       return { shape: "unscreenable-text", path };
@@ -162,6 +164,8 @@ function comment(
     check = false,
     threadId,
     bodyPath = `${path}.body`,
+    automationLogins = [],
+    linkHosts = [],
   } = {},
 ) {
   object(raw, path);
@@ -170,7 +174,9 @@ function comment(
   const id = ci ? `ci:${nodeId}` : check ? `check:${nodeId}` : nodeId;
   const author = check ? null : actor(raw.author, `${path}.author`);
   const role =
-    check || author?.type === "Bot"
+    check ||
+    author?.type === "Bot" ||
+    (author !== null && automationLogins.includes(author.login))
       ? "automation"
       : author !== null && same(author, pullAuthor)
         ? "reporter"
@@ -205,7 +211,7 @@ function comment(
     refusal ??= pathRefusal;
   }
   const text = string(raw.body, bodyPath);
-  refusal ??= screen(text, role, host, bodyPath);
+  refusal ??= screen(text, role, host, bodyPath, check ? [] : linkHosts);
   if (refusal) item.refused = refusal;
   else item.text = text;
   return item;
@@ -366,10 +372,13 @@ function observePullRequestInternal({
   store,
   number,
   repositoryId,
+  automationLogins = [],
+  linkHosts = [],
   now = Date.now(),
   log = () => {},
 }) {
   positive(number, "$.number");
+  const logins = automationLogins.map((login) => login.toLowerCase());
   const publication = new WorkerStore(join(store, "publication"));
   recorded(decodeLog(publication.read()), number, repositoryId);
   publication.acquire();
@@ -413,7 +422,11 @@ function observePullRequestInternal({
           ? `check:${nodeId}`
           : nodeId;
       unique(commentIds, id, path);
-      const item = comment(raw, path, resolved, pullAuthor, host, options);
+      const item = comment(raw, path, resolved, pullAuthor, host, {
+        ...options,
+        automationLogins: logins,
+        linkHosts,
+      });
       comments.push(item);
     };
     pages(

@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "verification": "VER-001",
+  "workOrder": "WO-073",
+  "observedAt": "2026-10-09T19:52:00Z",
+  "codeIdentity": "acc59de0a031256eb8c5519429f221571382aad7d575bc3c9a8b14d33b853c34",
+  "runner": "node scripts/harness.mjs bounded -- node <probe>; probe sources were session scratch, each fixture a fresh temporary directory removed on exit",
+  "probes": [
+    {
+      "criterion": 1,
+      "name": "class layering variations through compileRegisteredRepositoryLoadout and applyRepositoryClass",
+      "cases": [
+        { "case": "two members of class alpha carry its checks (WorkOrder-, envelope- and support-declared), its support and their own profile check; no beta check or support leaks", "result": "pass" },
+        { "case": "a class naming a support the launchpad already links adds no duplicate link", "result": "pass" },
+        { "case": "an empty class leaves the graph equal to its input", "result": "pass" },
+        { "case": "a class naming a check only a repository profile declares refuses: CLASS LAYER: alpha: check \"a1-own\" is not declared by the launchpad", "result": "pass" },
+        { "case": "a deny (narrowing) class support is admitted and narrows the compiled envelope", "result": "pass" },
+        { "case": "an allow (widening) class support refuses: CLASS LAYER: alpha: AUTHORITY WIDENING", "result": "pass" },
+        { "case": "registeredProfileMismatches: a class check added after binding is named as CLASS LAYER: alpha: the compiled WorkOrder omits check new-check", "result": "pass" },
+        { "case": "registeredProfileMismatches: a removed class declaration is named as profile: CLASS LAYER: alpha: no declared class", "result": "pass" },
+        { "case": "a repository profile widening without its exact grant refuses: AUTHORITY WIDENING: registered repository a1 profile allows authority outside the active base without its exact registered-repository grant", "result": "pass" },
+        { "case": "repeated class application is idempotent on the real seiri loadout", "result": "pass" }
+      ]
+    },
+    {
+      "criterion": 2,
+      "name": "cold-start bytes per role, node scripts/harness-context.mjs --check and git show HEAD bytes",
+      "cases": [
+        { "case": "executor skill in .claude and .agents: 21,009 -> 21,239 bytes (+230 = 229-byte sentence plus newline); cold start 27,882 -> 28,112 against ceiling 29,246", "result": "pass" },
+        { "case": "verifier, reviewer, release-close, planner and refuter skills unchanged in both roots; CLAUDE.md unchanged at 6,873 bytes", "result": "pass" },
+        { "case": "no added or removed Read: directive in either skills root; docs/control/budgets.json unchanged", "result": "pass" }
+      ]
+    },
+    {
+      "criterion": 3,
+      "name": "resume.mjs activate in a temporary launchpad with variations the executor fixture did not hold",
+      "cases": [
+        { "case": "profile reached through a symlinked directory component outside the launchpad", "result": "refused naming profiles/target.md; no order log, no checkpoint ref" },
+        { "case": "profile is a FIFO", "result": "refused naming profiles/target.md; no order log, no checkpoint ref" },
+        { "case": "empty regular file", "result": "activated; no advisory" },
+        { "case": "contained file outside the repositoryProfiles root (NOTES.md)", "result": "activated; no advisory" },
+        { "case": "contained file inside .git (.git/HEAD)", "result": "activated; no advisory" },
+        { "case": "no profile declared", "result": "activated; exactly one advisory" }
+      ]
+    },
+    {
+      "criterion": 4,
+      "name": "observePullRequest with a replayed gh over the pinned observation fixture",
+      "cases": [
+        { "case": "declared login ops-machine against author Ops-Machine (User), and declared OPS-MACHINE", "result": "automated-review in both" },
+        { "case": "bot body linking sub.reviews.example with reviews.example declared", "result": "refused scheme-authority (exact host match)" },
+        { "case": "bot body linking REVIEWS.EXAMPLE with reviews.example declared", "result": "stored" },
+        { "case": "bot body linking a declared and an undeclared host", "result": "refused scheme-authority" },
+        { "case": "declared machine's inline review comment whose body links the declared host", "result": "stored as automated-review" },
+        { "case": "neither key declared", "result": "machine account is human-review; every declared-host body refused, as before" },
+        { "case": "unknown registration key automationLogin (typo)", "result": "configuration refuses naming the key" },
+        { "case": "linkHosts [\"*\"], [\"https://reviews.example\"], [\"localhost\"] or [\"reviews.example:8443\"]", "result": "configuration loads; the whole observation then refuses with: pull request observation refused: observer execution failed (WO-073-D010)" }
+      ]
+    },
+    {
+      "criterion": null,
+      "name": "pre-order registration shape outside the declared surfaces",
+      "cases": [
+        { "case": "registration with repositoryClass scratch and no classes section, the shape docs/evidence/WO-111/seed.mjs writes", "result": "loadConfig refuses: repositories.scratch.repositoryClass names no declared class: scratch (WO-073-D011)" }
+      ]
+    },
+    {
+      "criterion": null,
+      "name": "executor self-review claims reproduced",
+      "cases": [
+        { "case": "node --test --test-name-pattern='WO-073|WO-065' scripts/test-authority-grants.mjs scripts/test-target-publish.mjs (WorkOrder-only evidence diagnostic; metadata and check names keep the original host screen)", "result": "13 passed, 0 failed" },
+        { "case": "node --test --test-name-pattern='configuration root|WO-073' scripts/test-configuration-root.mjs", "result": "16 passed, 0 failed" }
+      ]
+    }
+  ]
+}

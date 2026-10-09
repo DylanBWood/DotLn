@@ -1327,6 +1327,25 @@ const run = async (argv) => {
         throw new Error(
           `${workOrderPath}: unknown repository id ${JSON.stringify(repository.id)} in dotln.config.json`,
         );
+      if (repository) {
+        const { profile } = loadConfig(repoRoot).repositories[repository.id];
+        if (profile === undefined)
+          console.warn(
+            `Advisory: repository ${repository.id} declares no profile`,
+          );
+        else {
+          try {
+            const file = resolve(repoRoot, profile);
+            if (!containedRegularFile(file, repoRoot))
+              throw new Error("not a contained regular file");
+            readFileSync(file);
+          } catch {
+            throw new Error(
+              `${workOrderPath}: repository ${repository.id} profile must be a readable contained regular file: ${profile}`,
+            );
+          }
+        }
+      }
       const dependencies = readDependencies(
         repoRoot,
         { workOrderId, workOrderPath },

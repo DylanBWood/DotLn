@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import {
   canonicalStringify,
+  authorityDiagnostics,
   compileLoadout,
   normalizeAuthorityGrants,
 } from "@dotln/compiler";
@@ -62,6 +63,110 @@ const matches = (pattern, effect) =>
 const admittedByBase = (allowed, denied, effect) =>
   allowed.some((pattern) => matches(pattern, effect)) &&
   !denied.some((pattern) => matches(pattern, effect));
+
+/** Equip a class through the existing link group and retain all wider checks.
+ * The compiler supports one participating group, so the class extends it. */
+export function applyRepositoryClass(source, repository, classes) {
+  const id = repository.repositoryClass;
+  const refuse = (reason) => {
+    throw new Error(`CLASS LAYER: ${id}: ${reason}`);
+  };
+  if (!Object.hasOwn(classes, id)) refuse("no declared class");
+  if (source.activeMechanics.length !== 1)
+    refuse("requires exactly one active mechanic");
+  const declaration = classes[id];
+  const active = source.activeMechanics[0];
+  const knownChecks = new Set([
+    ...active.workOrder.requiredEvidence,
+    ...active.authorityEnvelope.requiredEvidence,
+    ...source.supportFacets.flatMap((support) => support.evidenceRequirements),
+  ]);
+  for (const check of declaration.checks)
+    if (!knownChecks.has(check))
+      refuse(`check ${JSON.stringify(check)} is not declared by the launchpad`);
+  for (const id of declaration.supports)
+    if (!source.supportFacets.some((support) => support.supportFacetId === id))
+      refuse(`support ${JSON.stringify(id)} is not declared by the launchpad`);
+  const missing = declaration.supports.filter(
+    (id) =>
+      !source.links.some(
+        (link) =>
+          link.activeMechanicId === active.activeMechanicId &&
+          link.supportFacetId === id,
+      ),
+  );
+  let graph = {
+    ...source,
+    activeMechanics: [
+      {
+        ...active,
+        workOrder: {
+          ...active.workOrder,
+          requiredEvidence: unique([
+            ...active.workOrder.requiredEvidence,
+            ...declaration.checks,
+          ]),
+        },
+      },
+    ],
+  };
+  if (missing.length) {
+    const participating = new Set(source.links.map((link) => link.linkGroupId));
+    if (participating.size > 1)
+      refuse("requires at most one participating link group");
+    const group =
+      source.linkGroups.find((group) => participating.has(group.linkGroupId)) ??
+      source.linkGroups.find((group) =>
+        source.containers.some(
+          (container) =>
+            container.containerId === group.containerId &&
+            container.activeMechanicIds.includes(active.activeMechanicId),
+        ),
+      );
+    if (!group) refuse("no link group contains the active mechanic");
+    const links = missing.map((supportFacetId) => ({
+      linkId: `class.${id}.${supportFacetId}`,
+      linkGroupId: group.linkGroupId,
+      activeMechanicId: active.activeMechanicId,
+      supportFacetId,
+    }));
+    if (
+      links.some((link) =>
+        source.links.some((prior) => prior.linkId === link.linkId),
+      )
+    )
+      refuse("generated class link id collides with an existing link");
+    graph = {
+      ...graph,
+      links: [...source.links, ...links],
+      linkGroups: source.linkGroups.map((entry) =>
+        entry === group
+          ? {
+              ...entry,
+              linkIds: [...entry.linkIds, ...links.map((link) => link.linkId)],
+            }
+          : entry,
+      ),
+      containers: source.containers.map((entry) =>
+        entry.containerId === group.containerId
+          ? {
+              ...entry,
+              socketBudget: entry.socketBudget + links.length,
+              supportFacetIds: unique([...entry.supportFacetIds, ...missing]),
+            }
+          : entry,
+      ),
+    };
+  }
+  const widening = authorityDiagnostics(graph, { repo: repository.id }).filter(
+    (entry) =>
+      entry.code === "AUTHORITY WIDENING" &&
+      declaration.supports.includes(entry.supportFacetId),
+  );
+  if (widening.length)
+    refuse(widening.map((entry) => entry.message).join("; "));
+  return graph;
+}
 
 const registeredProfileGrant = (source, repository) => {
   if (source.activeMechanics.length !== 1)
@@ -159,6 +264,10 @@ export function applyRegisteredRepositoryProfile(
         ...active.workOrder.prohibitedOperations,
         ...profile.deniedEffects,
       ]),
+      requiredEvidence: unique([
+        ...active.workOrder.requiredEvidence,
+        ...profile.requiredEvidence,
+      ]),
     },
     authorityEnvelope: {
       ...active.authorityEnvelope,
@@ -212,14 +321,15 @@ export function registeredRepositoryInputs(
   root,
   repositoryId,
 ) {
-  const repositories = loadConfig(root).repositories;
+  const { repositories, classes } = loadConfig(root);
   if (!Object.hasOwn(repositories, repositoryId))
     throw new Error(
       `unknown registered repository id ${JSON.stringify(repositoryId)}`,
     );
   const repository = repositories[repositoryId];
-  const grant = registeredProfileGrant(source, repository);
-  const graph = applyRegisteredRepositoryProfile(source, repository, grant);
+  const classified = applyRepositoryClass(source, repository, classes);
+  const grant = registeredProfileGrant(classified, repository);
+  const graph = applyRegisteredRepositoryProfile(classified, repository, grant);
   const registry = normalizeAuthorityGrants([
     ...readAuthorityGrantRegistry(root),
     ...(grant ? [grant] : []),
@@ -260,6 +370,7 @@ export function registeredProfileMismatches({
   program,
   environment,
   repository,
+  classes,
   registry,
 }) {
   const profile = repository.authorityProfile;
@@ -267,6 +378,19 @@ export function registeredProfileMismatches({
   const floor = program.authorityEnvelope;
   const at = `the compiled floor ${floor.authorityEnvelopeId}`;
   const lines = [];
+  const declaration = classes[repository.repositoryClass];
+  const className = `CLASS LAYER: ${repository.repositoryClass}`;
+  if (!declaration) lines.push(`${className}: no declared class`);
+  else {
+    for (const check of declaration.checks)
+      if (!program.workOrder.requiredEvidence.includes(check))
+        lines.push(`${className}: the compiled WorkOrder omits check ${check}`);
+    for (const support of declaration.supports)
+      if (!program.phenotype.linkedSupportFacetIds.includes(support))
+        lines.push(
+          `${className}: the compiled WorkOrder omits support ${support}`,
+        );
+  }
   if (environment.repo !== repository.id)
     lines.push(
       `resident.json environment.repo is ${JSON.stringify(environment.repo)}; ${named} compiles it as ${JSON.stringify(repository.id)}`,
@@ -290,9 +414,14 @@ export function registeredProfileMismatches({
     lines.push(
       `${named} expires at ${profile.expiresAt}; ${at} expires at ${floor.expiresAt}`,
     );
-  for (const evidence of profile.requiredEvidence)
+  for (const evidence of profile.requiredEvidence) {
     if (!floor.requiredEvidence.includes(evidence))
       lines.push(`${named} requires evidence ${evidence}; ${at} does not`);
+    if (!program.workOrder.requiredEvidence.includes(evidence))
+      lines.push(
+        `${named} requires evidence ${evidence}; the compiled WorkOrder does not`,
+      );
+  }
   for (const type of profile.revocationEventTypes)
     if (!floor.revocationEventTypes.includes(type))
       lines.push(`${named} revokes on ${type}; ${at} does not`);

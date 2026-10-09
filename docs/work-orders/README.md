@@ -11,7 +11,7 @@
 - [x] [WO-188] — Twenty-four boarded machinery items · **final-reviewed** · pair 2
 - [x] [WO-075] — Kit runtime and harness bundle in the export · **final-reviewed** · pair 3
 - [x] [WO-190] — Index and roadmap lead with the work ahead · **final-reviewed** · pair 3
-- [ ] [WO-073] — Repository class and profile documents · **queued** · pair 4
+- [x] [WO-073] — Repository class and profile documents · **final-reviewed** · pair 4
 - [ ] [WO-198] — A worktree's gate names what moved · **queued** · pair 4
 - [ ] [WO-077] — Launchpad export update · **queued** · pair 5
 - [ ] [WO-189] — The front page, rewritten once and guarded · **queued** · pair 5
@@ -56,23 +56,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-073
-
-[WO-073 — Repository class and profile documents: a class is a link group of supports and checks every member equips, a profile document per registered repository is loaded on demand by the role skill, and policy layers launchpad → class → repository (version assigned at activation)](WO-073-repository-class-and-profile.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-071: hard (met) — the registration the class and profile attach to; WO-167: hard (met) — closed at v0.53.1; the fold this order's product 07 write-back followed.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Track: delivery
-- Cost: adds a class declaration (its checks and supports) and its application where a registered profile is applied today (&#96;scripts/lib/authority-grants.mjs&#96;), a profile convention with its document root, an activation refusal for an unreadable profile in &#96;scripts/resume.mjs&#96;, one sentence in the role procedure (&#96;packages/skeleton/src/loadouts/contributor.ts&#96;) and the regenerated bundle, fixtures, one write-back each in product 03 and product 07, and two optional declarations on a registration, machine-user logins and admitted link hosts, read by the pull-request observer through the target request (&#96;scripts/lib/pull-request-observer.mjs&#96;, &#96;scripts/lib/target-publish.mjs&#96;). Removes the opaque class name every registration must declare today and nothing reads, and the stop a repository's review bots cause when they run as user accounts or link to another host. WO-083 depends on it. Re-mints: deterministic, the authority, feedback and harness editions that &#96;contributor.ts&#96; stales and the regenerated bundle; the feedback edition by carry, since that file is not among the sources the feedback verifier judges; no live episode. &#96;scripts/lib/config.mjs&#96; is excluded from every inventory with a recorded reason. A class check compiled in &#96;packages/compiler/src/verification.ts&#96; or &#96;feedback.ts&#96;, which the verifier judges, would owe a live episode the executor runs; the Design keeps the checks in the host adapter. Wall-clock, tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-073-repository-class-and-profile.md](WO-073-repository-class-and-profile.md)
 
 ### WO-198
 
@@ -542,8 +525,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-118, WO-082, WO-073, WO-078.
-- References: WO-118: hard (unmet) — the resident-owned loop is proven from a starter instance before the fork runs it against a real target; WO-082: hard (unmet) — the synthetic pilot precedes the witnessed run; WO-073: hard (unmet) — the profile convention the fork's profile follows; WO-078: hard (unmet) — the generated sibling registry whose Angular consumer entry the run changes.
+- Dependencies: typed; blocked on WO-118, WO-082, WO-078.
+- References: WO-118: hard (unmet) — the resident-owned loop is proven from a starter instance before the fork runs it against a real target; WO-082: hard (unmet) — the synthetic pilot precedes the witnessed run; WO-073: hard (met) — the profile convention the fork's profile follows; WO-078: hard (unmet) — the generated sibling registry whose Angular consumer entry the run changes.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

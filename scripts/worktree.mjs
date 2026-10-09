@@ -389,12 +389,14 @@ const main = async () => {
     const flags = new Map();
     for (let i = 0; i < args.length; i += 2) {
       if (
-        !["--store", "--number", "--repository"].includes(args[i]) ||
+        !["--store", "--number", "--repository", "--request"].includes(
+          args[i],
+        ) ||
         !args[i + 1] ||
         flags.has(args[i])
       )
         throw new Error(
-          "usage: worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO]",
+          "usage: worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO] [--request <target-request.json>]",
         );
       flags.set(args[i], args[i + 1]);
     }
@@ -403,16 +405,32 @@ const main = async () => {
       !/^[1-9][0-9]*$/u.test(flags.get("--number") ?? "")
     )
       throw new Error(
-        "usage: worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO]",
+        "usage: worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO] [--request <target-request.json>]",
       );
     const { observePullRequest, observationErrorMessage } =
       await import("./lib/pull-request-observer.mjs");
     try {
+      const { readTargetPublishRequest } =
+        await import("./lib/target-publish.mjs");
+      const request = flags.has("--request")
+        ? readTargetPublishRequest(flags.get("--request"), toolRoot)
+        : undefined;
+      if (
+        request &&
+        (request.store !== resolve(flags.get("--store")) ||
+          (flags.has("--repository") &&
+            request.repositoryId !== flags.get("--repository")))
+      )
+        throw new Error(
+          "observation target request differs from the selected store or repository",
+        );
       observePullRequest({
         cwd: toolRoot,
         store: resolve(flags.get("--store")),
         number: Number(flags.get("--number")),
-        repositoryId: flags.get("--repository"),
+        repositoryId: request?.repositoryId ?? flags.get("--repository"),
+        automationLogins: request?.automationLogins,
+        linkHosts: request?.linkHosts,
         log: (line) => process.stdout.write(`${line}\n`),
       });
     } catch (error) {

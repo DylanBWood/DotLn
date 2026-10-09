@@ -399,6 +399,12 @@ current WorkOrder, role, loadout, topology, implementation policy, runtime
 profile, and authority envelope. It is minimal and episode-scoped: an isolated
 worker does not receive team negotiation skills; a read-only watcher does not
 receive mutation procedures; a verifier does not inherit the maker's narrative.
+For a registered target, the executor reads its declared repository profile on
+demand as repo-native authority: demonstrated architecture, commands, startup,
+branch and pull-request conventions, and pinned upstream references. The
+profile stays out of cold-start context. Launchpad, class and repository policy
+compose in that order; repository conventions prevail over class conventions
+without relaxing the authority floor.
 
 This is the skills-layer version of "a build, not a biography." Loading every
 available coordination skill into every agent would send each one into every

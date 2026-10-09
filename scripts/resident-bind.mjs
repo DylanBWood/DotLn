@@ -637,6 +637,7 @@ export function bindPortfolio(launchpad, request, now = () => new Date()) {
     ),
     environment: configuration.environment,
     repository,
+    classes: loadConfig(launchpad).classes,
     registry: readAuthorityGrantRegistry(launchpad),
   });
   if (departures.length)
@@ -765,6 +766,7 @@ export function portfolioMismatches(
       ),
       environment: configuration.environment,
       repository,
+      classes: loadConfig(launchpad).classes,
       registry,
     }),
   ];
