@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "kind": "order-meter-snapshot",
+  "observedAt": "2026-10-09T20:27:40.057Z",
+  "revision": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+  "source": "the order's checkout: 3 session journals, its usage observations, gate rows and the canonical control fold",
+  "orders": [
+    {
+      "workOrder": "WO-073",
+      "phase": "final-review",
+      "metrics": {
+        "elapsedMs": 6610828,
+        "attempts": 2,
+        "failedVerifications": 0,
+        "failedFinalReviews": 0,
+        "repairs": 0,
+        "recordedCorrections": 0,
+        "gateMs": 1534475,
+        "fastGateMs": 1534475,
+        "readObligationCount": 4,
+        "readObligationBytes": 37979,
+        "codeDiffBytes": 57489,
+        "readAmplification": 0.6606307293569205,
+        "machineryShare": 0.3529355173058503,
+        "elapsedPerCodeByte": 114.99292038476926,
+        "tokens": 32659563,
+        "costUsd": null,
+        "declaredPromptTokens": 768,
+        "coldStartBytes": 28112,
+        "subjectCharacters": null,
+        "gateStepCount": 89,
+        "operatorCorrections": 0,
+        "operatorDirections": 0,
+        "guardRefusals": 2,
+        "stopRefusals": 0,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": 126,
+        "bytesReadIntoContext": 66338,
+        "stepCount": 146,
+        "authorshipSnapshots": 269,
+        "authorshipMs": 17716.701592999994,
+        "authorshipBytes": 1523711321,
+        "authorshipCommands": 538,
+        "authorshipMeanMs": 65.86134421189588,
+        "authorshipPeakBytes": 6961892,
+        "hookRuns": 894,
+        "hookMs": 103936.59651899994,
+        "hookMeanMs": 116.26017507718115,
+        "hookPeakMs": 3323.819167,
+        "prBodyBytes": 1739
+      },
+      "corrections": {
+        "total": 0,
+        "byPhase": {},
+        "byUnit": {},
+        "byPhaseAndUnit": {},
+        "source": "session-journal"
+      },
+      "directions": {
+        "total": 0,
+        "byKind": {"scopeExpand":0,"operatorOverride":0,"analysis":0,"conversationOnly":0,"operatorLabel":0,"resumeCorrection":0,"resumeDirection":0,"resumeScopeExpansion":0,"resumeOverride":0,"resumeTakeover":0,"resumeAnswer":0,"OperatorOverrideRecorded":0,"RecordCorrected":0,"CriterionWaived":0},
+        "source": "committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events"
+      },
+      "usageByRole": {
+        "executor": {"dispatches":1,"totalTokens":15880594,"costUsd":null,"commandsRun":null,"stepCount":125,"durationMs":4126587},
+        "verifier": {"dispatches":1,"totalTokens":16635019,"costUsd":null,"commandsRun":85,"stepCount":104,"durationMs":2358519},
+        "reviewer": {"dispatches":1,"totalTokens":143950,"costUsd":null,"commandsRun":2,"stepCount":3,"durationMs":14410}
+      },
+      "dispatches": [
+        {"role":"executor","wallClockMs":4277632,"attempts":1,"stepCount":125,"observedTokens":15880594,"declaredPromptTokens":768},
+        {"role":"verifier","wallClockMs":2333196,"attempts":1,"bytesReadIntoContext":66338,"commandsRun":83,"stepCount":102,"authorshipSnapshots":184,"authorshipMs":12045.125216000006,"authorshipBytes":931950501,"authorshipCommands":368,"authorshipMeanMs":65.4626370434783,"authorshipPeakBytes":6961465,"hookRuns":629,"hookMs":72877.23792699997,"hookMeanMs":115.86206347694748,"hookPeakMs":3323.819167,"observedTokens":16635019},
+        {"role":"reviewer","wallClockMs":14410,"commandsRun":43,"stepCount":44,"authorshipSnapshots":85,"authorshipMs":5671.5763769999985,"authorshipBytes":591760820,"authorshipCommands":170,"authorshipMeanMs":66.72442796470587,"authorshipPeakBytes":6961892,"hookRuns":263,"hookMs":30587.910216999993,"hookMeanMs":116.30384112927754,"hookPeakMs":3146.796625,"observedTokens":143950}
+      ],
+      "declared": {
+        "promptTokens": 768,
+        "supports": 9,
+        "units": 10,
+        "hooks": 15
+      }
+    }
+  ]
+}

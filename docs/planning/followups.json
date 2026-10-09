@@ -31328,6 +31328,43 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-815e8662408881f1",
+      "key": "decision:docs/evidence/WO-073/decisions.md#wo-073-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "02607a72fd5de62c3e767b9e65234f807211b45146a14070effe043d4b4e02fa",
+          "ref": "docs/evidence/WO-073/decisions.md#wo-073-d010",
+          "title": "WO-073-D010: Registration linkHosts validation matches the observer screen: scripts/lib/config.mjs refuses at load each repositories.<id>.linkHosts entry the source-bundle host allowlist would refuse ",
+          "summary": "{ \"id\": \"WO-073-D010\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-001\", \"decision\": \"Record a minor, non-blocking follow-up. The configuration loader validates linkHosts only as non-empty strings, while the source screen's host allowlist accepts only lowercase multi-label DNS host names with a non-numeric top-level label and throws a caller error otherwise. A registration declaring linkHosts such as \\\"*\\\", \\\"https://reviews.example\\\", \\\"localhost\\\" or \\\"reviews.example:8443\\\" therefore loads, and the first automation item screened refuses the whole observation with the opaque message 'pull request observation refused: observer execution failed', naming neither the key nor the val",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-785f679912b2f36c",
+      "key": "decision:docs/evidence/WO-073/decisions.md#wo-073-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9ff6740bdef364d6cd7bcc4e95810f1013b3176ebba813f305710b0446aef638",
+          "ref": "docs/evidence/WO-073/decisions.md#wo-073-d011",
+          "title": "WO-073-D011: Earlier registration generators declare their class: docs/evidence/WO-111/seed.mjs adds classes: { scratch: { checks: [], supports: [] } } beside its scratch registration (or an owning or",
+          "summary": "{ \"id\": \"WO-073-D011\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-001\", \"decision\": \"Record a minor, non-blocking follow-up outside the order's criteria and declared surfaces. The closed WO-111 evidence generator docs/evidence/WO-111/seed.mjs still writes a scratch launchpad whose registration declares repositoryClass scratch with no classes section, and the loader now refuses that shape with 'repositories.scratch.repositoryClass names no declared class: scratch'. A launchpad prepared again from the generator would therefore refuse every configuration read, including the WO-111 receipt scripts that read it. Execution plan step 2 migrated the five listed fixtures; this generator w",
+          "missing": false
+        },
+        {
+          "hash": "755fe53bcf88cd3aca3aaea1456a73caa895c3aa738e0c46bf16982b04d7a5a4",
+          "ref": "docs/evidence/WO-073/decisions.md#wo-073-d011",
+          "title": "WO-073-D011: Earlier registration generators declare their class: docs/evidence/WO-111/seed.mjs adds classes: { scratch: { checks: [], supports: [] } } beside its scratch registration (or an owning or",
+          "summary": "{ \"id\": \"WO-073-D011\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-001\", \"decision\": \"Record a minor, non-blocking follow-up outside the order's criteria and declared surfaces. The closed WO-111 evidence generator docs/evidence/WO-111/seed.mjs still writes a scratch launchpad whose registration declares repositoryClass scratch with no classes section, and the loader now refuses that shape with 'repositories.scratch.repositoryClass names no declared class: scratch'. A launchpad prepared again from the generator would therefore refuse every DotLn command that loads its configuration (the WO-111 receipt scripts compare only the file's bytes with its commit). Execution plan step 2 mig",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
