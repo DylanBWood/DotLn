@@ -76,6 +76,7 @@ import {
 import { checkLocalTerms } from "./lib/terms.mjs";
 import { fold, parseControlEvents } from "./lib/control.mjs";
 import { runGit } from "./lib/git.mjs";
+import { isCorrection } from "./lib/meta.mjs";
 import { main as plan } from "./refute-plan.mjs";
 import {
   beginDirectRefutation,
@@ -277,7 +278,7 @@ const mutate = (repo, path, from, to) => {
   commit(repo, "criterion or standard change");
 };
 
-// WO-172: a record holding one item of each kind, events without a time, a
+// A record holding one item of each kind, events without a time, a
 // correction recorded by a misread field alone and a filed Entropy Reducer
 // review. The planning receipt completes at 2030-01-02T12:00Z, so WO-802's
 // items lie in the default window, WO-803's before it and WO-801's without a
@@ -378,7 +379,7 @@ const failureRecord = (repo, { review = true } = {}) => {
       ...(time ? { recordedAt: time } : {}),
     },
   ];
-  // WO-801 in the older log: no event carries a time.
+  // The older log holds WO-801; no event in it carries a time.
   write(
     repo,
     "docs/control/resume.jsonl",
@@ -721,6 +722,64 @@ export async function fixtures() {
           "Malformed fixture",
         ]);
         await assert.rejects(plan(["start", "malformed-decision"], repo), safe);
+      },
+    );
+    await check(
+      "plan failures leaves a host task notification out of the interventions and counts prompts without transcript evidence as unattributed",
+      async () => {
+        const repo = failureRepo(parent, "notification-record");
+        const time = "2030-01-03T10:00:00.000Z";
+        write(
+          repo,
+          `docs/control/local/harness/${"b".repeat(64)}.jsonl`,
+          [
+            {
+              class: "direction",
+              source: "claude-prompt-hook",
+              route: "turn-prompt",
+              attribution: "operator",
+            },
+            {
+              class: "unclassified",
+              source: "claude-prompt-hook",
+              route: "unknown",
+              attribution: "unattributed",
+            },
+            {
+              class: "unclassified",
+              source: "host-task-notification",
+              route: "mid-turn",
+              attribution: "host-task-notification",
+            },
+          ]
+            .map((row) =>
+              JSON.stringify({
+                typedEvent: "OperatorMessageObserved",
+                ...row,
+                workOrder: "WO-802",
+                phase: "verification",
+                recordedAt: time,
+              }),
+            )
+            .join("\n") + "\n",
+        );
+        const operational = operationalFailures(
+          repo,
+          { eventSegments: new Map(), orders: new Map() },
+          () => true,
+        );
+        assert.equal(operational.interventions.count, 2);
+        assert.equal(operational.interventions.unattributed, 1);
+        assert.equal(operational.interventions.hostNotifications, 1);
+        assert.equal(
+          operational.interventions.bySource["claude-prompt-hook"],
+          2,
+        );
+        assert.ok(
+          !("host-task-notification" in operational.interventions.bySource),
+        );
+        assert.ok(!("unknown" in operational.interventions.bySource));
+        assert.equal((await plan(["failures"], repo)).interventions.count, 2);
       },
     );
     await check(
@@ -2951,6 +3010,117 @@ else {
         assert.equal(receipt.episode.effort, "max");
         assert.equal(receipt.episode.selectionSource, "host-launch");
         assert.equal(receipt.episode.effectiveEffort, "unknown");
+      },
+    );
+    await check(
+      "plan refute --transport codex-cli-exec launches the pinned model and effort without flags",
+      async () => {
+        const repo = makeRepo(parent, "codex-default-cli");
+        const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
+        const bin = join(repo, "bin");
+        mkdirSync(bin);
+        const argsPath = join(repo, "codex-args.json");
+        const wire =
+          [
+            {
+              type: "item.completed",
+              item: {
+                type: "agent_message",
+                text: JSON.stringify(cannedGoalReview(subject)),
+              },
+            },
+            {
+              type: "turn.completed",
+              usage: { input_tokens: 10, output_tokens: 5 },
+            },
+          ]
+            .map((row) => JSON.stringify(row))
+            .join("\n") + "\n";
+        writeFileSync(
+          join(bin, "codex"),
+          `#!/usr/bin/env node
+const fs = require("node:fs");
+if (process.argv[2] === "--version") console.log("codex-cli 0.154.0");
+else {
+  fs.readFileSync(0, "utf8");
+  fs.writeFileSync(${JSON.stringify(argsPath)}, JSON.stringify(process.argv.slice(2)));
+  process.stdout.write(${JSON.stringify(wire)});
+}
+`,
+          { mode: 0o755 },
+        );
+        const previousPath = process.env.PATH;
+        try {
+          process.env.PATH = `${bin}:${previousPath ?? ""}`;
+          const result = await plan(
+            ["refute", "--transport", "codex-cli-exec"],
+            repo,
+          );
+          assert.equal(result.verdict, "aligned");
+        } finally {
+          if (previousPath === undefined) delete process.env.PATH;
+          else process.env.PATH = previousPath;
+        }
+        const args = JSON.parse(readFileSync(argsPath, "utf8"));
+        assert.equal(args[args.indexOf("--model") + 1], "gpt-6.1-sol");
+        assert.deepEqual(args.slice(-3), [
+          "-c",
+          'model_reasoning_effort="max"',
+          "-",
+        ]);
+        assert.ok(args.includes("--ignore-user-config"));
+        const receipt = (await readReceipts(repo))[0];
+        assert.equal(receipt.episode.model, "gpt-6.1-sol");
+        assert.equal(receipt.episode.effort, "max");
+      },
+    );
+    await check(
+      "plan failures counts a decision whose dispatch the persisted direction reading names as an operator correction",
+      async () => {
+        const repo = failureRepo(parent, "failures-dispatch-correction");
+        write(
+          repo,
+          "docs/evidence/WO-804/decisions.md",
+          "# WO-804 decisions\n\n" +
+            failureDecision("WO-804-D001", "2030-01-03", {
+              dispatch:
+                "resume: next; operator correction during implementation",
+            }),
+        );
+        const before = await plan(["failures"], repo);
+        assert.equal(
+          before.counts.window.corrections,
+          windowCounts.corrections,
+          "neither the kind nor a misread field: uncounted until the reading names it",
+        );
+        write(
+          repo,
+          "docs/evidence/WO-172/direction-agreement.json",
+          prettyJson({ correctionsNotRecorded: ["WO-804-D001"] }),
+        );
+        const page = await plan(["failures"], repo);
+        assert.equal(
+          page.counts.window.corrections,
+          windowCounts.corrections + 1,
+        );
+        assert.ok(
+          page.rows.some(
+            (row) =>
+              row.kind === "correction" &&
+              row.decision === "WO-804-D001" &&
+              row.date === "2030-01-03" &&
+              row.phase === "implementation",
+          ),
+        );
+        assert.ok(
+          isCorrection({ id: "WO-1", kind: "finding" }, new Set(["WO-1"])),
+        );
+        assert.ok(!isCorrection({ id: "WO-1", kind: "finding" }));
+        write(repo, "docs/evidence/WO-172/direction-agreement.json", "{\n");
+        await assert.rejects(
+          plan(["failures"], repo),
+          /persisted correction ids are unreadable/,
+        );
       },
     );
     await check(
@@ -5554,7 +5724,7 @@ else {
             unknown: 3,
           },
           localCoverage: "local; Codex dispatch-only; incomplete",
-          // WO-802 passed between review completion and filing; WO-803's
+          // Only WO-802 passed between review completion and filing; WO-803's
           // and WO-801's passes precede completion or carry no time.
           sinceEntropyReview: {
             review: "REVIEW-001",
@@ -6004,8 +6174,9 @@ if (isMainModule(import.meta.url)) {
   try {
     if (!process.argv.includes("--check-only")) {
       await fixtures();
-      // WO-151's dispatch host is compiled from the same identity and files
-      // the same shape of immutable receipt; it is judged in this suite.
+      // The Entropy Reducer dispatch host is compiled from the same identity
+      // and files the same shape of immutable receipt; it is judged in this
+      // suite.
       const { entropyFixtures } = await import("./test-entropy-review.mjs");
       await entropyFixtures();
     }

@@ -1170,6 +1170,134 @@ test("WO-178 PermissionDenied journals bounded metadata and offers both operator
   }
 });
 
+test("the host's failed-command event answers a failed Bash call at the call itself with one counted row, and the transcript route answers it no second time", () => {
+  const root = fixture();
+  try {
+    beginHarnessSession(root, "synthetic-session", "executor");
+    const settings = JSON.parse(
+      readFileSync(join(root, ".claude/settings.json")),
+    );
+    assert.match(
+      JSON.stringify(settings.hooks.PostToolUseFailure),
+      /failure-observer\.mjs/,
+    );
+    assert.equal(settings.hooks.PostToolUseFailure[0].matcher, ".*");
+    const command = "grep -rn pattern --include=*.nomatch .";
+    const error = "Exit code 1\nzsh:1: no matches found: --include=*.nomatch";
+    const response = invoke(
+      root,
+      "failure-observer",
+      input(root, "PostToolUseFailure", {
+        tool_name: "Bash",
+        tool_input: { command },
+        tool_use_id: "failed-use-1",
+        error,
+      }),
+    );
+    assert.equal(
+      response.hookSpecificOutput?.hookEventName,
+      "PostToolUseFailure",
+    );
+    assert.match(
+      response.hookSpecificOutput?.additionalContext ?? "",
+      /^DotLn shell diagnostic: /,
+    );
+    const lane = join(
+      root,
+      "docs/control/local/harness/shell-diagnostics.jsonl",
+    );
+    const rows = () =>
+      readFileSync(lane, "utf8").trim().split("\n").map(JSON.parse);
+    assert.equal(rows().length, 1);
+    assert.equal(rows()[0].kind, "unmatched-pattern");
+    assert.equal(rows()[0].marked, "failed");
+    assert.equal(rows()[0].use, sha256("failed-use-1"));
+    assert.equal(rows()[0].role, "executor");
+    // The same failed result in the transcript is already answered.
+    const transcript = join(root, ".fixture-transcripts/failed-session.jsonl");
+    write(
+      root,
+      ".fixture-transcripts/failed-session.jsonl",
+      [
+        {
+          type: "assistant",
+          message: {
+            content: [
+              {
+                type: "tool_use",
+                id: "failed-use-1",
+                name: "Bash",
+                input: { command },
+              },
+            ],
+          },
+        },
+        {
+          type: "user",
+          message: {
+            content: [
+              {
+                type: "tool_result",
+                tool_use_id: "failed-use-1",
+                is_error: true,
+                content: error,
+              },
+            ],
+          },
+        },
+      ]
+        .map(JSON.stringify)
+        .join("\n") + "\n",
+    );
+    const later = invoke(
+      root,
+      "read-observer",
+      input(root, "PostToolUse", {
+        tool_name: "Bash",
+        tool_input: { command: "true" },
+        tool_response: { stdout: "", stderr: "" },
+        transcript_path: transcript,
+      }),
+    );
+    assert.equal(later.hookSpecificOutput?.additionalContext ?? "", "");
+    assert.equal(rows().length, 1);
+    // A failure sent without the call's identity, as Copilot CLI sends it, is
+    // answered and counted once without a mark.
+    const unidentified = invoke(
+      root,
+      "failure-observer",
+      input(root, "PostToolUseFailure", {
+        tool_name: "Bash",
+        tool_input: { command },
+        error,
+      }),
+    );
+    assert.match(
+      unidentified.hookSpecificOutput?.additionalContext ?? "",
+      /^DotLn shell diagnostic: /,
+    );
+    assert.equal(rows().length, 2);
+    assert.equal(rows()[1].marked, undefined);
+    assert.equal(rows()[1].use, undefined);
+    // A failure whose error text carries no diagnostic answers and counts nothing.
+    const silent = invoke(
+      root,
+      "failure-observer",
+      input(root, "PostToolUseFailure", {
+        tool_name: "Bash",
+        tool_input: { command: "false" },
+        tool_use_id: "failed-use-2",
+        error: "Exit code 1",
+      }),
+    );
+    assert.deepEqual(silent, {});
+    assert.equal(rows().length, 2);
+    checkHarness(root);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("WO-178 prompt rows retain digest, prefix class and witnessed route, including recovery prompts", () => {
   const root = fixture();
   try {
@@ -1960,7 +2088,7 @@ test("WO-139 cap-module-only changes refresh the runtime and snapshot damage is 
       readFileSync(join(root, previous.snapshot, modulePath), "utf8"),
       original,
     );
-    assert.equal(checkHarness(root, options).files, 33);
+    assert.equal(checkHarness(root, options).files, 34);
     assert.match(
       invoke(root, "finish", input(root, "Stop")).systemMessage,
       /^Subagents: 0\/21/,
@@ -4655,8 +4783,8 @@ test("WO-039 concurrent dead-owner recovery admits exactly one writer while the 
       dispatch,
     } = raceHarness(root, children);
 
-    // VER-002 F1: two contenders classify the same dead holder, pause before
-    // their first mutation, and then act in turn.
+    // Two contenders classify the same dead holder, pause before their first
+    // mutation, and then act in turn.
     seedDead();
     const b = contend("B", "unlinkSync");
     await paused("B");
@@ -4738,10 +4866,10 @@ test("WO-039 a refreshed reservation survives a stale reclaimer that classified 
       events,
       dispatch,
     } = raceHarness(root, children);
-    // VER-003 F1: the owning session finds its recorded owner dead and records
-    // that fact while a contender that classified the previous facts as dead
-    // is paused before its unlink. The owner's authorized work is outstanding,
-    // so the contender must not remove the refreshed reservation and proceed.
+    // The owning session finds its recorded owner dead and records that fact
+    // while a contender that classified the previous facts as dead is paused
+    // before its unlink. The owner's authorized work is outstanding, so the
+    // contender must not remove the refreshed reservation and proceed.
     seed({ actorId: actor("A"), owner: dead });
     const seeded = names()[0];
     const stale = contend("E", "unlinkSync");
@@ -4851,9 +4979,9 @@ test("WO-039 an operator release judges, retires and journals one observed reser
       events,
       dispatch,
     } = raceHarness(root, children);
-    // VER-003 F2: a reclaimer replaces the dead holder after the public
-    // release command judged it. The unforced release judges the replacement
-    // by the same rule and, finding it alive, refuses; the replacement survives.
+    // A reclaimer replaces the dead holder after the public release command
+    // judged it. The unforced release judges the replacement by the same rule
+    // and, finding it alive, refuses; the replacement survives.
     seedDead();
     const unforced = operate("F", "unlinkSync");
     await paused("F");
@@ -5137,7 +5265,7 @@ test("WO-132 only the live product gate refuses input and success-record writes,
   const started = performance.now();
   const root = fixture();
   try {
-    // VER-003 F1: these literal append destinations are protected gate inputs.
+    // These literal append destinations are protected gate inputs.
     for (const path of ["1", "-"]) write(root, path, "seed\n");
     runGit(root, ["add", "--", "1", "-"], fixtureGitOptions);
     for (const path of ["1", "-"])
@@ -5186,7 +5314,7 @@ test("WO-132 only the live product gate refuses input and success-record writes,
         'ls "$TARGET"',
         "env ls scripts",
         "rg --pre script value fixture.ts",
-        // VER-002 F1: descriptor-style redirects open their operand as a file.
+        // Descriptor-style redirects open their operand as a file.
         "ls scripts >&packages/skeleton/dist/src/harness-command.js",
         "ls scripts 1>&packages/skeleton/dist/src/harness-command.js",
         "ls scripts >>&packages/skeleton/dist/src/harness-command.js",
@@ -5202,8 +5330,8 @@ test("WO-132 only the live product gate refuses input and success-record writes,
         "echo marker 1>>&1",
         "ls scripts >>&1",
         "head -1 fixture.ts >>&-",
-        // VER-004 F1: shell-special prefixes must never be classified as
-        // literal paths that the unanchored dist/node_modules rules ignore.
+        // Shell-special prefixes must never be classified as literal paths
+        // that the unanchored dist/node_modules rules ignore.
         "ls scripts >!packages/skeleton/dist/src/harness-command.js",
         "ls scripts 1>!packages/skeleton/dist/src/harness-command.js",
         "ls scripts >>!packages/skeleton/dist/src/harness-command.js",
@@ -5319,8 +5447,8 @@ test("WO-158 a live gate admits the fixed read-only list stage by stage and name
       "git --no-pager diff --output=fixture.ts",
       "git --no-pager stash",
       "git -c core.pager=cat log",
-      // VER-001 F4: a paged read runs the configured or default pager, an
-      // unlisted program, whenever its output is a terminal.
+      // A paged read runs the configured or default pager, an unlisted
+      // program, whenever its output is a terminal.
       "git log -1",
       "git status",
       "git diff --stat",
@@ -5370,16 +5498,16 @@ test("WO-158 a live gate admits the fixed read-only list stage by stage and name
             await evaluate(payload(command)),
           );
       }
-      // WO-142-D012: a Git read runs the programs the repository configures,
-      // so the list admits one only while none is configured.
+      // A Git read runs the programs the repository configures, so the list
+      // admits one only while none is configured.
       // `git --no-pager status` is the WO-142 activation read vocabulary, a
-      // boarded metadata exception (N7, FUP-9e2be6bfac0708fe) judged before
+      // boarded metadata exception (FUP-9e2be6bfac0708fe) judged before
       // this list, so the fsmonitor row uses a diff, which refreshes the index.
       for (const [key, value, command] of [
         ["core.fsmonitor", "true", "git --no-pager diff --stat"],
         ["diff.fixture.textconv", "cat", "git --no-pager diff"],
         ["diff.external", "cat", "git --no-pager diff --stat"],
-        // `git status --short` stays a boarded metadata exception (WO-142 N7).
+        // `git status --short` stays a boarded metadata exception (WO-142).
         ["filter.fixture.clean", "cat", "git --no-pager show --stat HEAD"],
         ["log.showSignature", "true", "git --no-pager log -1"],
         ["gpg.program", "false", "git --no-pager log -1"],
@@ -5639,7 +5767,7 @@ test("WO-168 a live gate admits four argument forms of listed reads and the seco
   ];
   for (const [command, expected] of table)
     assert.deepEqual(liveGateReads(command), expected, command);
-  // VER-001 F1 and F2: the destination adapter the hook falls back to agrees.
+  // The destination adapter the hook falls back to agrees.
   // Where a shell backgrounds at `&>`, the words after its operand are another
   // command, so they make the invocation opaque; nothing after it keeps the
   // WO-144 discard.
@@ -5708,7 +5836,7 @@ test("WO-168 a live gate admits four argument forms of listed reads and the seco
           // A redirect the destination adapter names onto a gate input.
           "ls docs 2>fixture.ts",
           "cat fixture.ts\u00a0#;touch fixture.ts",
-          // VER-001 F1: dash runs the touch; F2: zsh expands the word.
+          // Dash runs the touch after `&>`; zsh expands the `=cat` word.
           "ls docs &>/dev/null touch fixture.ts",
           "ls =cat",
         ])
@@ -5733,7 +5861,7 @@ test("WO-168 a live gate admits four argument forms of listed reads and the seco
           /active gate/,
         );
       }
-      // WO-158-D028 (b): a hook or a signature format a listed read can run.
+      // A Git hook or a signature format that a listed read can run.
       const hook = join(root, ".git/hooks/post-index-change");
       writeFileSync(hook, "#!/bin/sh\n");
       chmodSync(hook, 0o644);
@@ -6231,8 +6359,8 @@ test("WO-168 an override exit prints ahead of an input refusal, and an appended 
     const command =
       /npm run resume -- override-record --bypassed dotln-hook-enforcement --effects <what the recovery changed, or none> --reason 'operator override from /;
 
-    // WO-158-D028 (c): the decoder refuses an input without cwd after the
-    // mode is already normal; the exit and its record command still print.
+    // The decoder refuses an input without cwd after the mode is already
+    // normal; the exit and its record command still print.
     prompt("operator override: first recovery");
     const refused = prompt(
       "operator override: off",
@@ -6251,8 +6379,8 @@ test("WO-168 an override exit prints ahead of an input refusal, and an appended 
       /^DotLn: prompt accepted; DOTLN_HARNESS_INPUT_REFUSED: MISSING_FIELD at \$\.cwd/,
     );
 
-    // WO-158-D028 (d): the session holds the writer, so nothing journals
-    // before the append; the observation after it cannot be written.
+    // The session holds the writer, so nothing journals before the append;
+    // the observation after it cannot be written.
     assert.equal(
       allowed(
         invoke(
@@ -6480,8 +6608,7 @@ test("WO-144 repair admits null discards and exposes scratch with single consist
       dispatch.hookSpecificOutput.additionalContext,
       /Native scratch and \/tmp need a separate grant/,
     );
-    // WO-168: the dispatch that printed the path created it; this fixture
-    // never does.
+    // The dispatch that printed the path created it; this fixture never does.
     const printed = lstatSync(scratch);
     assert.equal(printed.isDirectory(), true);
     assert.equal(printed.mode & 0o777, 0o700);
@@ -6870,7 +6997,7 @@ test("WO-168 a granted session root is a real directory: a linked root grants no
     judged(temporary, unexplained);
     judged(scratch, admitted);
 
-    // WO-158-D028 (a): the swap that carried the grant to its target.
+    // Swapping a granted root for a symlink carries no grant to its target.
     rmSync(scratch, { recursive: true });
     symlinkSync(target, scratch);
     judged(scratch, refusedFor(scratch));
@@ -8288,9 +8415,9 @@ test("WO-142 D1 prune previews without writes, preserves live files and keeps de
       "unpublished bytes",
     );
     write(root, ".git/dotln/suite-success/obsolete.json", "dead cache");
-    // WO-164: the live release list cache is named and never removed.
+    // The live release list cache is named and never removed (WO-164).
     write(root, "docs/control/local/cache/release-list.json", "{}\n");
-    // WO-159: a Codex episode home whose launcher exited is listed, not pruned.
+    // A Codex episode home whose launcher exited is listed, not pruned.
     const codexHomeRoot = join(root, "system-temp");
     const exited = spawnSync(process.execPath, ["-e", ""]).pid;
     mkdirSync(join(codexHomeRoot, `dotln-codex-home-${exited}-abc123`), {
@@ -8940,7 +9067,7 @@ test("WO-142 D1 publication proof binds the origin repository despite ambient GH
       .map(JSON.parse);
     assert.equal(observations.length, 2);
     for (const row of observations) {
-      // WO-171: one release listing per plan, never a view per release.
+      // One release listing per plan, never a view per release.
       assert.deepEqual(row.args.slice(0, 2), ["release", "list"]);
       assert.equal(
         row.args[row.args.indexOf("--repo") + 1],
@@ -10778,6 +10905,94 @@ test("WO-142 VER-002 B3 preserves the activation read vocabulary and every outpu
       assert.equal(shellWriteTargets(program + args), null, program + args);
 });
 
+test("a queued prompt the host marks as a task notification journals a non-operator source, and a prompt with no transcript evidence is unattributed", () => {
+  const root = fixture();
+  try {
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: next" }),
+    );
+    const transcript = join(
+      root,
+      "docs/control/local/fixture-transcript.jsonl",
+    );
+    const notice =
+      "<task-notification><task-id>fixture-task</task-id><status>completed</status><summary>synthetic private summary</summary></task-notification>";
+    const rows = () =>
+      wo178Rows(root).filter(
+        (row) => row.typedEvent === "OperatorMessageObserved",
+      );
+    writeFileSync(
+      transcript,
+      JSON.stringify({
+        type: "attachment",
+        attachment: {
+          type: "queued_command",
+          prompt: notice,
+          commandMode: "task-notification",
+        },
+      }) + "\n",
+    );
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        prompt: notice,
+        transcript_path: transcript,
+      }),
+    );
+    const notification = rows().at(-1);
+    assert.equal(notification.source, "host-task-notification");
+    assert.equal(notification.attribution, "host-task-notification");
+    assert.equal(notification.route, "mid-turn");
+    assert.equal(notification.routeSource, "transcript-queued-command");
+    assert.equal(notification.digest, sha256(notice));
+    assert.equal(notification.bytes, Buffer.byteLength(notice));
+    assert.doesNotMatch(
+      JSON.stringify(rows()),
+      /synthetic private|fixture-task/,
+    );
+    // The same bytes queued as an operator command keep the operator's source.
+    writeFileSync(
+      transcript,
+      JSON.stringify({
+        type: "attachment",
+        attachment: { type: "queued_command", prompt: notice },
+      }) + "\n",
+    );
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        prompt: notice,
+        transcript_path: transcript,
+      }),
+    );
+    assert.equal(rows().at(-1).source, "claude-prompt-hook");
+    assert.equal(rows().at(-1).attribution, "operator");
+    // An unflushed transcript holds no evidence of who sent the prompt.
+    writeFileSync(
+      transcript,
+      JSON.stringify({ sessionId: "synthetic-session", cwd: root }) + "\n",
+    );
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        prompt: "synthetic operator words",
+        transcript_path: transcript,
+      }),
+    );
+    assert.equal(rows().at(-1).source, "claude-prompt-hook");
+    assert.equal(rows().at(-1).routeSource, "host-route-unavailable");
+    assert.equal(rows().at(-1).attribution, "unattributed");
+    assert.equal(rows()[0].attribution, "unattributed", "no transcript at all");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("VER-003 N1 generated prompt hook observes an idle notice before transcript flush", () => {
   const root = fixture();
   try {
@@ -11310,7 +11525,7 @@ test("WO-160 non-top prune retains stashes during concurrent pack-refs pruning",
   }
 });
 
-// WO-171: four published retained lanes and two published integration stashes.
+// Four published retained lanes and two published integration stashes.
 const pruneApplyFixture = (prefix) => {
   const root = realpathSync(mkdtempSync(join(tmpdir(), prefix)));
   runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
@@ -11465,8 +11680,8 @@ test("WO-171 one apply issues one release listing and one tag listing whatever t
       ],
       fixtureGitOptions,
     );
-    // WO-907 is a draft Release, WO-908's remote tag names another object and
-    // WO-909 has no Release: each stays retained.
+    // Three orders stay retained: WO-907 is a draft Release, WO-908's remote
+    // tag names another object and WO-909 has no Release.
     const orders = [...lanes, "WO-905", "WO-906", "WO-907", "WO-908", "WO-909"];
     const objects = {};
     for (const [index, order] of orders.slice(0, 8).entries()) {
@@ -11786,8 +12001,8 @@ test("WO-171 a lane holding a usage copy is retained until a committed snapshot 
       reasons()["WO-914"],
       "usage copy is not in the committed snapshot",
     );
-    // WO-170 settles the field: a digest named anywhere else is not a carried
-    // copy (WO-171-D014).
+    // A copy is carried only in the field WO-170 settles: a digest named
+    // anywhere else is not a carried copy (WO-171 D014).
     write(
       root,
       meter,
@@ -11842,7 +12057,7 @@ test("WO-171 a lane holding a usage copy is retained until a committed snapshot 
   }
 });
 
-// VER-001 F1: worktree preservation names a colliding file or directory
+// Worktree preservation names a colliding file or directory
 // `<name>.from-WO-NNN[-n]`, so a lane can hold usage copies under names the
 // canonical path misses. Each keeps the lane until the snapshot names it.
 test("WO-171 a collision-preserved usage copy keeps its lane until the snapshot names it", () => {
@@ -11935,7 +12150,7 @@ test("WO-171 a collision-preserved usage copy keeps its lane until the snapshot 
         fixtureGitOptions,
       );
     };
-    // WO-922's and WO-923's only usage copies are preserved under a suffix.
+    // The only usage copies of WO-922 and WO-923 are preserved under a suffix.
     assert.deepEqual(reasons(), {
       "WO-921": "usage has no committed snapshot",
       "WO-922": "usage has no committed snapshot",
@@ -12122,6 +12337,67 @@ require("node:module").syncBuiltinESMExports();
     );
     for (const [name, bytes] of Object.entries(laneProofs(root)))
       assert.equal(JSON.parse(bytes).workOrder, name.slice(0, 6));
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("a prune removes a leftover partial that sits beside a whole proof", () => {
+  const { root } = pruneApplyFixture("dotln-prune-leftover-");
+  try {
+    // A stop between the link and the partial's removal leaves the partial
+    // beside the whole proof.
+    write(
+      root,
+      "bin/prune-proof-leftover.cjs",
+      `const fs = require("node:fs");
+const link = fs.linkSync;
+fs.linkSync = function (from, to, ...rest) {
+  const result = link.call(this, from, to, ...rest);
+  if (String(to).includes(".bytes-")) {
+    process.kill(process.pid, "SIGTERM");
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 10000);
+  }
+  return result;
+};
+require("node:module").syncBuiltinESMExports();
+`,
+    );
+    const stopped = spawnSync(
+      process.execPath,
+      [
+        "--require",
+        join(root, "bin/prune-proof-leftover.cjs"),
+        "--input-type=module",
+        "-e",
+        `import {pruneHarness} from ${JSON.stringify(new URL("./lib/harness-prune.mjs", import.meta.url).href)};pruneHarness(process.argv[1], {apply: true, publishedRelease: () => "v1.0.0"});`,
+        root,
+      ],
+      { encoding: "utf8" },
+    );
+    assert.equal(stopped.signal, "SIGTERM", stopped.stderr);
+    const retained = join(root, "docs/control/local/retained");
+    const proofs = Object.keys(laneProofs(root));
+    assert.equal(proofs.length, 1);
+    assert.match(proofs[0], /^WO-901\.bytes-[a-f0-9]{16}\.json$/);
+    assert.deepEqual(
+      readdirSync(retained).filter((name) => name.endsWith(".partial")),
+      [`${proofs[0]}.partial`],
+    );
+    assert.ok(existsSync(join(retained, "WO-901/evidence.txt")));
+    const bytes = laneProofs(root)[proofs[0]];
+    const resumed = pruneHarness(root, {
+      apply: true,
+      publishedRelease: () => "v1.0.0",
+    });
+    assert.equal(resumed.candidates.length, 6);
+    assert.deepEqual(
+      readdirSync(retained).filter((name) => name.endsWith(".partial")),
+      [],
+      "the partial beside the whole proof is removed",
+    );
+    assert.equal(laneProofs(root)[proofs[0]], bytes, "the proof is unchanged");
+    assert.ok(!existsSync(join(retained, "WO-901")));
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

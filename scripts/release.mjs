@@ -34,11 +34,13 @@ import {
   resolveGitHubPushTarget,
 } from "./lib/github-repository.mjs";
 import {
+  absoluteBodyLinks,
   assertGitHubBodyProfile,
   withTemporaryBody,
 } from "./lib/github-body.mjs";
 import {
   applyReleasePreparation,
+  integrationPreparationRefusal,
   planReleasePreparation,
 } from "./lib/release-preparation.mjs";
 import { licenseSurfaceRules } from "./license-surfaces.mjs";
@@ -75,7 +77,6 @@ import {
 } from "./lib/worktree-removal.mjs";
 import { releaseListCache } from "./lib/release-list-cache.mjs";
 import {
-  committedMaterial,
   inventoryMaterial,
   materialCloseCommand,
   materialFlagValue,
@@ -160,12 +161,55 @@ const writeOutput = (text) => {
   if (closeTranscript) closeTranscript.push(String(text));
   else process.stdout.write(text);
 };
+// A refusal after this order's tag was published, in this attempt or an
+// earlier one, is never a plain refusal: the tag outcome is carried, a Release
+// an earlier attempt completed is carried and marked, and the outcome says
+// what still stands. Returns whether the publication had already settled.
+const settlePublication = (record, refusal) => {
+  const publication = record.publication;
+  const tagged = ["published", "already-published"];
+  if ([...tagged, "no-release"].includes(publication.outcome)) return true;
+  const earlier = [...(record.previousAttempts ?? [])]
+    .reverse()
+    .filter(
+      (attempt) =>
+        attempt?.publication &&
+        (!publication.tag ||
+          !attempt.publication.tag ||
+          attempt.publication.tag === publication.tag),
+    );
+  if (!tagged.includes(publication.tagOutcome)) {
+    const previous = earlier.find((attempt) =>
+      tagged.includes(attempt.publication.tagOutcome),
+    );
+    if (previous) {
+      publication.tag ??= previous.publication.tag;
+      publication.tagOutcome = "already-published";
+    }
+  }
+  if (publication.release === null) {
+    const previous = earlier.find((attempt) =>
+      ["created", "existing"].includes(attempt.publication.release),
+    );
+    if (previous) {
+      publication.release = previous.publication.release;
+      publication.releaseCarried = true;
+    }
+  }
+  publication.outcome = tagged.includes(publication.tagOutcome)
+    ? publication.release
+      ? "already-published"
+      : "partially-published"
+    : "refused";
+  publication.refusal = refusal;
+  return false;
+};
 export function releaseCloseSummary(record) {
   const line = (value) =>
     String(value).replace(/\s+/gu, " ").trim().slice(0, 1000);
   const publication = record.publication;
   const lines = [
-    `${record.workOrderId}${record.dryRun ? " dry run" : ""}: ${publication.outcome}; tag ${publication.tag ?? "unknown"}; GitHub Release ${publication.release ?? (record.dryRun ? "would reconcile/create" : "not verified")}.`,
+    `${record.workOrderId}${record.dryRun ? " dry run" : ""}: ${publication.outcome}; tag ${publication.tag ?? "unknown"}; GitHub Release ${publication.release ?? (record.dryRun ? "would reconcile/create" : "not verified")}${publication.releaseCarried ? " (carried from an earlier attempt)" : ""}.`,
   ];
   // Keep the small concluding outcome sentences useful to existing consumers.
   for (const text of closeTranscript ?? [])
@@ -179,6 +223,10 @@ export function releaseCloseSummary(record) {
   lines.push(`Cleanup: ${record.cleanup.outcome}.`);
   for (const row of record.cleanup.worktrees)
     lines.push(`Worktree ${row.path}: ${row.outcome}.`);
+  for (const row of record.removals ?? [])
+    lines.push(
+      `Scratch repository ${row.path} in ${row.worktree}: ${row.outcome}; head ${row.head ?? "unknown"}; remote held ${row.remoteHeld === null ? "unknown" : row.remoteHeld}.`,
+    );
   if (record.cleanup.branch)
     lines.push(
       `Branch ${record.cleanup.branch.name}: ${record.cleanup.branch.outcome}.`,
@@ -187,6 +235,7 @@ export function releaseCloseSummary(record) {
     lines.push(
       `Cleanup/publication blocker (${blocker.action}): ${line(blocker.reason)}`,
     );
+    if (blocker.operator) lines.push(`Operator: ${blocker.operator}`);
     lines.push(`Retry: ${blocker.command}`);
     if (blocker.disposableCommand)
       lines.push(
@@ -1499,15 +1548,35 @@ const releaseEdition = (root, manifest) => {
   );
   if (entries.length === 0)
     throw new Error("release range contains no reviewed work order");
+  // Reviewed notes link file-relative; on the Release page those resolve
+  // nowhere, so they are written absolute to the repository at the release
+  // commit, or as plain text where no GitHub target resolves.
+  let repository = null;
+  try {
+    repository = resolveGitHubPushTarget(root);
+  } catch {
+    repository = null;
+  }
+  const absolute = (id, text) =>
+    absoluteBodyLinks(text, {
+      from: releaseNotesPathFor(id, root),
+      repository,
+      revision: manifest.release.commit,
+    });
   const lines = [`DotLn ${manifest.release.application}`];
   for (const heading of releaseNoteHeadings) {
     lines.push("", `## ${heading}`);
     for (const entry of entries) {
+      // Every section heading carries the identifier alone; the title is
+      // named once, under the overview.
       lines.push(
         "",
-        `### ${entry.id} — ${entry.title}`,
+        `### ${entry.id}`,
+        ...(heading === releaseNoteHeadings[0]
+          ? ["", `**${entry.title}**`]
+          : []),
         "",
-        entry.sections[heading],
+        absolute(entry.id, entry.sections[heading]),
       );
     }
     if (heading === "Read before upgrading") {
@@ -1533,6 +1602,41 @@ const releaseEdition = (root, manifest) => {
 };
 const tagMessage = (root, manifest) =>
   `${releaseEdition(root, manifest)}\n\nDOTLN-MANIFEST-BEGIN\n${JSON.stringify(manifest, null, 2)}\nDOTLN-MANIFEST-END\n`;
+/** The Release text of a published tag as a close would render it now, with
+ * the commit range bound at the tag's own commit. */
+export function regeneratedReleaseText(root, tag) {
+  const manifest = manifestFromTag(root, tag);
+  const previous = sourceRevision;
+  sourceRevision = manifest.release.commit;
+  try {
+    return releaseEdition(root, manifest);
+  } finally {
+    sourceRevision = previous;
+  }
+}
+/** A stored pull-request body with its meter block rendered from the current
+ * collection and its links written absolute at the given revision. */
+export async function regeneratedPullRequestBody(root, workOrderId, revision) {
+  const { collectMeta, renderMetaTable } = await import("./lib/meta.mjs");
+  const path = docRelative(root, "finalReviews", `${workOrderId}/PR.md`);
+  const source = readFileSync(join(root, path), "utf8");
+  const begin = "<!-- dotln-process-meter:start -->",
+    end = "<!-- dotln-process-meter:end -->";
+  const block = `${begin}\n${renderMetaTable(await collectMeta(root))}\n${end}`;
+  const body = source.includes(begin)
+    ? source.replace(
+        /<!-- dotln-process-meter:start -->[\s\S]*?<!-- dotln-process-meter:end -->/,
+        block,
+      )
+    : source;
+  let repository = null;
+  try {
+    repository = resolveGitHubPushTarget(root);
+  } catch {
+    repository = null;
+  }
+  return absoluteBodyLinks(body, { from: path, repository, revision });
+}
 const ensureExistingRelease = (root, tag, head, local, remote) => {
   const localTag = local.get(tag);
   const remoteTag = remote.get(tag);
@@ -1639,9 +1743,6 @@ const finishPublishedWorktree = (
         .map(([path]) => path),
     ];
     const branchExisted = Boolean(runGit(root, ["branch", "--list", branch]));
-    const declarations = [
-      ...committedMaterial(root, workOrderId, sourceRevision),
-    ];
     const suffix = workOrderId.slice(3);
     const before = registered.filter(
       (item) =>
@@ -1682,12 +1783,18 @@ const finishPublishedWorktree = (
       try {
         if (existsSync(path))
           material = inventoryMaterial(path, {
-            declarations,
             overrides,
             overrideWorktree: subjectPath ?? null,
           });
       } catch (error) {
         inventoryError = error.message;
+        // The rows themselves are still worth recording: a blocker's material
+        // command names every kept worktree's repositories from them.
+        try {
+          material = inventoryMaterial(path);
+        } catch {
+          material = [];
+        }
       }
       cleanup.worktrees.push({
         path,
@@ -1720,28 +1827,19 @@ const finishPublishedWorktree = (
               materialFlagValue(row),
             ]),
           ],
-          {
-            cwd: root,
-            env: {
-              ...process.env,
-              DOTLN_RELEASE_MATERIAL_REVISION: sourceRevision,
-            },
-          },
+          { cwd: root },
         );
         outputs.push(finished.stdout ?? "");
         if (finished.stdout) writeOutput(finished.stdout);
         for (const line of (finished.stdout ?? "").split("\n"))
-          if (line.startsWith("Material recovery: ")) {
-            const recovery = JSON.parse(
-              line.slice("Material recovery: ".length),
-            );
-            const previous = record.recovery.find(
+          if (line.startsWith("Scratch removal: ")) {
+            const removal = JSON.parse(line.slice("Scratch removal: ".length));
+            const previous = record?.removals.find(
               (row) =>
-                row.path === recovery.path &&
-                row.repository === recovery.repository,
+                row.worktree === removal.worktree && row.path === removal.path,
             );
-            if (previous) Object.assign(previous, recovery);
-            else record.recovery.push(recovery);
+            if (previous) Object.assign(previous, removal);
+            else record?.removals.push(removal);
           } else if (line.startsWith("Worktree removal proof: ")) {
             const proof = JSON.parse(
               line.slice("Worktree removal proof: ".length),
@@ -1826,20 +1924,32 @@ const finishPublishedWorktree = (
                 blocker.action ===
                   (row.path === subjectPath ? "finish" : "settle"))),
         );
-        const line =
+        const lines = output.split("\n");
+        const kept =
           row.path === subjectPath
-            ? undefined
-            : output
-                .split("\n")
-                .find((line) =>
-                  line.startsWith(`Derived worktree ${row.path}: kept`),
-                );
-        if (line) {
+            ? -1
+            : lines.findIndex((line) =>
+                line.startsWith(`Derived worktree ${row.path}: kept`),
+              );
+        if (kept >= 0) {
+          // The whole reason: the kept line and the indented lines that
+          // continue it. A remedy that is the operator's is named apart.
+          const reason = [lines[kept]];
+          for (
+            let index = kept + 1;
+            index < lines.length && lines[index].startsWith("  ");
+            index++
+          )
+            reason.push(lines[index]);
+          const operator = /; operator: (.*?), then retry with /u.exec(
+            lines[kept],
+          )?.[1];
           const blocker = {
             action: "settle",
             path: row.path,
-            reason: line,
+            reason: reason.join("\n"),
             command: releaseCloseCommand(root, workOrderId),
+            ...(operator ? { operator } : {}),
           };
           row.blockers.push(blocker);
           record?.blockers.push(blocker);
@@ -1856,39 +1966,43 @@ const finishPublishedWorktree = (
         }
       }
     }
-    const undeclared = cleanup.worktrees
+    // A blocker a nested repository caused carries the material command
+    // naming every kept worktree's repositories, so the operator can settle
+    // it with a word, and the discarding form of that command.
+    const kept = cleanup.worktrees
       .filter((row) => row.outcome === "retained")
       .flatMap((row) =>
-        row.material
-          .filter((material) => material.disposition === "undeclared")
-          .map((material) => ({ path: material.path, worktree: row.path })),
+        row.material.map((material) => ({
+          path: material.path,
+          worktree: row.path,
+        })),
       );
-    for (const row of cleanup.worktrees)
-      for (const material of row.material)
+    const materialCaused = (reason) =>
+      /\b(?:scratch repository|nested repository|material word)\b/iu.test(
+        reason ?? "",
+      );
+    if (kept.length)
+      for (const blocker of record?.blockers ?? [])
         if (
-          material.disposition === "undeclared" &&
-          row.outcome === "retained"
-        ) {
-          const blocker = {
-            action: "material",
-            path: material.path,
-            worktree: row.path,
-            reason: "undeclared nested repository",
-            command: materialCloseCommand(root, workOrderId, undeclared),
+          !blocker.resolved &&
+          ["finish", "settle"].includes(blocker.action) &&
+          materialCaused(blocker.reason)
+        )
+          Object.assign(blocker, {
+            command: materialCloseCommand(root, workOrderId, kept),
             disposableCommand: materialCloseCommand(
               root,
               workOrderId,
-              undeclared,
+              kept,
               "disposable",
             ),
-          };
-          row.blockers.push(blocker);
-          record?.blockers.push(blocker);
-        }
-    if (undeclared.length)
-      writeOutput(
-        `Material cleanup retry: ${materialCloseCommand(root, workOrderId, undeclared)}\n`,
-      );
+          });
+    const retries = new Set(
+      (record?.blockers ?? [])
+        .filter((blocker) => !blocker.resolved && blocker.disposableCommand)
+        .map((blocker) => blocker.command),
+    );
+    for (const command of retries) writeOutput(`Material retry: ${command}\n`);
     const subjectRemoved =
       (!subjectPath ||
         (!after.has(resolve(subjectPath)) && !existsSync(subjectPath))) &&
@@ -2210,6 +2324,11 @@ const close = (workOrderId, parsed, record) => {
       `release tag ${authority.version} is blocked by nested tag ${blockingTag}`,
     );
   if (latest && compareVersions(authority.version, latest) === 0) {
+    // The tag already stands on the remote at this head, so its outcome is
+    // known before the preflight or the Release checks can refuse.
+    const remoteTag = remote.get(authority.version);
+    if (remoteTag?.annotated && remoteTag.target === head)
+      record.publication.tagOutcome = "already-published";
     const repository = publish && !dryRun ? ensureGhPreflight(root) : undefined;
     if (!dryRun) ensureReleaseRuntime(root);
     const inspectExisting = () =>
@@ -2474,16 +2593,10 @@ export const listPublishedReleases = (
       } catch {
         manifest = undefined;
       }
-      // The attribution is used only when the range attributes nothing, so a
-      // manifest it cannot read fails the listing only then, as before
-      // WO-164. The error stands in for the list and the record stays
-      // uncached (release-list-cache.mjs).
-      let attribution;
-      try {
-        attribution = manifestWorkOrders(manifest, root);
-      } catch (error) {
-        attribution = error;
-      }
+      // The attribution is used only when the range attributes nothing; a
+      // manifest that cannot be read, or whose changed-file list is not a
+      // list, attributes nothing and the row prints without attribution.
+      const attribution = manifestWorkOrders(manifest, root);
       return [
         name,
         {
@@ -2552,11 +2665,7 @@ export const listPublishedReleases = (
               },
       });
       const workOrders = [...between];
-      if (workOrders.length === 0) {
-        if (fact.manifestWorkOrders instanceof Error)
-          throw fact.manifestWorkOrders;
-        workOrders.push(...fact.manifestWorkOrders);
-      }
+      if (workOrders.length === 0) workOrders.push(...fact.manifestWorkOrders);
       if (workOrders.length === 0)
         workOrders.push(...historicalWorkOrders(root, item.name));
       return {
@@ -2628,10 +2737,20 @@ const main = async () => {
       throw new Error(
         "usage: release close WO-NNN [--publish] [--dry-run] [--material <path>=disposable|preserve]",
       );
-    const parsed = parseMaterialFlags(args.slice(1), [
-      "--publish",
-      "--dry-run",
-    ]);
+    // The record exists before the flags are judged: a malformed word is
+    // recorded as a refusal, never a silent exit.
+    let parsed, parseError;
+    try {
+      parsed = parseMaterialFlags(args.slice(1), ["--publish", "--dry-run"]);
+    } catch (error) {
+      parseError = error;
+      parsed = {
+        flags: args
+          .slice(1)
+          .filter((arg) => ["--publish", "--dry-run"].includes(arg)),
+        material: [],
+      };
+    }
     const root = findMainWorktree(toolRoot);
     const recordPath = docRelative(
       root,
@@ -2673,7 +2792,7 @@ const main = async () => {
       },
       cleanup: { outcome: "not-attempted", worktrees: [] },
       material: [],
-      recovery: [],
+      removals: [],
       overrides: parsed.material,
       blockers: [],
       previousAttempts: [],
@@ -2713,7 +2832,9 @@ const main = async () => {
     // A release-close dispatch keeps the writer through publication. Only a
     // successful, non-preview close is its completion and releases that actor.
     const completing =
-      parsed.flags.includes("--publish") && !parsed.flags.includes("--dry-run");
+      !parseError &&
+      parsed.flags.includes("--publish") &&
+      !parsed.flags.includes("--dry-run");
     let releaseWriter;
     try {
       if (completing) {
@@ -2733,25 +2854,13 @@ const main = async () => {
           throw error;
         }
       }
+      if (parseError) throw parseError;
       const result = close(workOrderId, parsed, record);
       if (!process.exitCode && record.cleanup.outcome !== "blocked")
         releaseWriter?.();
       return result;
     } catch (error) {
-      const published = [
-        "published",
-        "already-published",
-        "no-release",
-      ].includes(record.publication.outcome);
-      if (!published) {
-        record.publication.outcome = [
-          "published",
-          "already-published",
-        ].includes(record.publication.tagOutcome)
-          ? "partially-published"
-          : "refused";
-        record.publication.refusal = error.message;
-      }
+      const published = settlePublication(record, error.message);
       record.blockers.push({
         action: published ? "completion" : "publication",
         reason: error.message,
@@ -2818,6 +2927,15 @@ const main = async () => {
         throw new Error(
           `release prepare --integration is worktree integrate's and needs its pending integration of ${state.workOrderId ?? "the selected order"}; run npm run release -- prepare --local without it`,
         );
+      const refusal = integrationPreparationRefusal(
+        toolRoot,
+        state.workOrderId,
+        pendingIntegration,
+      );
+      if (refusal)
+        throw new Error(
+          `release prepare --integration refuses: ${refusal}; run npm run worktree -- integrate ${state.workOrderId} --continue. Nothing was written.`,
+        );
     }
     const latest = latestVersion(
       localOnly ? localTags(toolRoot) : remoteTags(toolRoot),
@@ -2841,8 +2959,8 @@ const main = async () => {
     let snapshotLine = "";
     if (metering) {
       const { renderMetaTable, writeOrderSnapshot } = meterModule;
-      // WO-170: the order's bounded meter snapshot, from the same collection,
-      // written only where the order's session journals are.
+      // The order's bounded meter snapshot, from the same collection, written
+      // only where the order's session journals are.
       const snapshot = writeOrderSnapshot(toolRoot, meta, state.workOrderId);
       if (snapshot.written) ancillary.push(join(toolRoot, snapshot.path));
       snapshotLine = snapshot.reason
@@ -2874,7 +2992,7 @@ const main = async () => {
     }
     // Ancillary filesystem outputs must succeed before the target changes.
     // A failed output then leaves the original collision inputs for retry;
-    // the plan's own writer restores any partial core edit (WO-086 F1).
+    // the plan's own writer restores any partial core edit (WO-086).
     const written = [...applyReleasePreparation(plan), ...ancillary];
     const outcome = !plan.edits.length
       ? `${state.workOrderId} target ${plan.target} remains current.`
@@ -2934,7 +3052,7 @@ const main = async () => {
   }
   if (action === "list") {
     if (args.length === 0) return listPublishedReleases();
-    // WO-086: the roadmap's generated release history. The default listing
+    // The roadmap's generated release history (WO-086). The default listing
     // above is unchanged; the console parses its bytes.
     if (args.length === 1 && args[0] === "--markdown") {
       writeOutput(

@@ -69,7 +69,7 @@ const sharedCorrections = [
   "After a second consecutive provider safeguard refusal, stop retrying, record the stop as a decision naming phase and model, and resume in a fresh session.",
 ];
 const releaseCloseRemedy =
-  "Run the printed helper command exactly as printed, with no redirect, prefix, cd or pipe. The close is done when the tag and Release exist, git worktree list shows no worktree for the order, its directory is gone and git branch --list wo-NNN is empty. Diagnose and finish a cleanup blocker in this session; retry by re-running the same command, which re-checks an existing Release and never publishes twice. A retry after main moves can refuse and remains a blocker. Retry a host denial of the exact command once through the host permission flow before handing the operator the printed command for !. Material dispositions stay the operator's through --material; never force teardown.";
+  "Run the printed helper command exactly as printed, with no redirect, prefix, cd or pipe. The close is done when the tag and Release exist, git worktree list shows no worktree for the order, its directory is gone and git branch --list wo-NNN is empty. Diagnose and finish a cleanup blocker in this session; retry by re-running the same command, which re-checks an existing Release and never publishes twice. A retry after main moves can refuse and remains a blocker. Retry a host denial of the exact command once through the host permission flow before handing the operator the printed command for !. The close removes any scratch repository still present and records its path, head commit and whether a remote held it; intake and declared submodules stay, and an operator word through --material preserves a scratch repository; never force teardown.";
 // Every role in both harnesses carries this line (operator direction,
 // 2026-09-14, WO-044): a guess presented as a finding is a defect.
 const noGuessing =
@@ -109,18 +109,16 @@ export const contributorRoles: readonly HarnessRole[] = [
     intents: ["resume: next", "resume: fix", "resume: status", "resume: times"],
     feedbackHandlers: handlers,
     procedure: [
-      "For resume: status or resume: times, resolve cwd and Git root, run the matching read-only command, report its observation, and stop. The remaining input and implementation procedure is for next or fix.",
       ...common,
       "For status or times, run the matching read-only command and report its observation; stop without a transition. For next, follow the emitted path in the delivered briefing (Codex runs `npm run resume -- next` itself). If closed, report other in-flight orders; only when none remain, give the exact printed worktree-start handoff.",
       "For fix, the dispatch is recorded and its briefing delivered with the phrase (Codex runs `npm run resume -- fix` first); read the original order and its named failure source. Repair only those obligations. A premature repair may reopen only while the unresolved failure source remains.",
       "Read: `@failure-report`",
-      "Implement the complete bounded deliverable and its write-backs. Prepare its classified release with `npm run release -- prepare --local`; bump only changed components with their compatibility impact and retain all publication controls.",
-      "Declare each scratch repository the order creates with `npm run worktree -- material` before completion.",
       evidence,
       boardedDefect,
+      "A comment says what the code does or why, in words a reader who has not seen the order understands; an order, report, finding or decision identifier never leads or replaces that explanation, and a report-local label (a verification or final-review finding label, a bare decision number) never appears in code; fix the comments in the lines you change.",
       "Before `implementation-ready` only, spawn two fresh `dotln-worker` agents, each given only the order and the diff: one adversary of the criteria and one improver of design, simplicity and maintainability. Fix or record each finding; add handoff.md line `self-review: found N; fixed N; recorded N` with both workers' counts and reports; without spawning, name the separate-pass fallback and its evidence.",
       actor,
-      "Finish all authored output, index preparation, review and usage observations before recording `npm run resume -- implementation-ready <actor-flags>` or `npm run resume -- repair-complete <actor-flags>`. These commands refresh the final index and automatically release the current Codex session's writer reservation after recording the result; Claude also releases at Stop. Read the resulting projections without another write. A repair is unfinished until repair-complete records. Report evidence, attestation, and limits; leave verification and final review to their separate dispatches. Never leave the writer reserved at handoff or ask the operator to release it.",
+      "Completion refreshes the final index and releases the Codex session's writer reservation after recording the result; Claude releases at Stop. A repair is unfinished until repair-complete records. Report evidence, attestation and limits; leave verification and final review to their separate dispatches. Never leave the writer reserved at handoff or ask the operator to release it.",
     ],
   },
   {
@@ -572,8 +570,8 @@ const roleSteps: Readonly<Record<string, readonly string[]>> = {
     "Resolve cwd/Git root and canonical status; honor operator controls. For status/times, report the read-only command and stop; otherwise dispatch next/fix once.",
     "Read the order, citations, subject source/tests, package mapping and named failure; refresh the work-order index.",
     "Implement the bounded deliverable and write-backs.",
-    "Prepare the classified release with `npm run release -- prepare --local`.",
-    "Declare scratch repositories with `npm run worktree -- material`.",
+    "Prepare the classified release with `npm run release -- prepare --local`, bumping only changed components with their compatibility impact and retaining all publication controls.",
+    "Remove scratch repositories, nested repositories outside intake that the tracked tree does not declare as submodules; never declare one. The close removes any left and records its head commit.",
     "Finish decisions, indexes and other authored outputs; apply the worker review rule below before implementation-ready.",
     "Run `npm run format`.",
     "Run `npm run test:docs` until green.",
@@ -594,7 +592,7 @@ const roleSteps: Readonly<Record<string, readonly string[]>> = {
   reviewer: [
     "Resolve cwd/Git root and canonical status; honor operator controls and dispatch final-review once.",
     "Read the order, full diff, numbered verification sequence and publication contract; integrate main with `npm run worktree -- integrate WO-NNN` and resolve authorized conflicts.",
-    "Finish affected checks and any worker reproducing a named claim before the handoff sequence; prepare release surfaces.",
+    "Finish affected checks and any worker reproducing a named claim before the handoff sequence; remove any scratch repository still in the worktree; prepare release surfaces.",
     "Run `npm run format`.",
     "Run `npm run test:docs` until green.",
     "Run `npm test -- --review`; passing tasks at the unchanged code identity compose the review row; while it runs, write nothing under the repository and start no agent; if it fails, fix and return to the format step.",

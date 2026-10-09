@@ -455,9 +455,10 @@ export function checkPlanContinuation(
       }
     : observed.read;
   const orderPaths = new Set(judged.orders.map(({ path }) => path));
-  // WO-126 installs missing-data declarations, not retrospective cost claims.
-  // Only that exact header and the newly bound meter input may continue an old
-  // receipt. New cost claims, criteria or sequence edits still need refutation.
+  // Order WO-126 installs missing-data declarations, not retrospective cost
+  // claims. Only that exact header and the newly bound meter input may
+  // continue an old receipt. New cost claims, criteria or sequence edits still
+  // need refutation.
   const adoptsCost =
     !judged.costTable &&
     Boolean(current.costTable) &&

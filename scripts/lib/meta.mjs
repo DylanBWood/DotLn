@@ -1,6 +1,6 @@
 import { readJsonFile } from "./paths.mjs";
 import { json as prettyJson } from "./helpers.mjs";
-import { runGit } from "./git.mjs";
+import { runGit, spawnGit } from "./git.mjs";
 import { docPath, docRelative, rootPattern } from "./config.mjs";
 import { createHash } from "node:crypto";
 import {
@@ -13,7 +13,6 @@ import {
 } from "node:fs";
 import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
-import { spawnSync } from "node:child_process";
 import { usageRecordIdentity } from "../../packages/skeleton/src/usage-observation.mjs";
 import { correctionCounts } from "../../packages/skeleton/src/correction-observation.mjs";
 import { readControl, eventsForOrder } from "./control-store.mjs";
@@ -146,10 +145,38 @@ function checkExperiment(entry, path) {
     );
 }
 
-/** WO-172: a recorded correction is a decision whose kind is `correction` or
- * that carries a `misread` field. */
-export const isCorrection = (decision) =>
-  decision.kind === "correction" || Object.hasOwn(decision, "misread");
+/** The decision ids a persisted direction reading found to name an operator
+ * correction in their dispatch without carrying the correction record. The
+ * set is read from the record, never parsed out of dispatch prose. */
+export function persistedCorrectionIds(root) {
+  const relative = docRelative(
+    root,
+    "evidence",
+    "WO-172",
+    "direction-agreement.json",
+  );
+  const path = join(root, relative);
+  if (!existsSync(path)) return new Set();
+  let ids;
+  try {
+    ids = JSON.parse(readFileSync(path, "utf8")).correctionsNotRecorded;
+  } catch {
+    throw new Error(`${relative}: persisted correction ids are unreadable`);
+  }
+  if (!Array.isArray(ids) || ids.some((id) => !/^WO-\d{3}-D\d{3}$/u.test(id)))
+    throw new Error(
+      `${relative}: correctionsNotRecorded must list decision identifiers`,
+    );
+  return new Set(ids);
+}
+
+/** A recorded correction: a decision whose kind is `correction`, that carries a
+ * `misread` field, or whose dispatch the persisted reading classified as an
+ * operator correction. */
+export const isCorrection = (decision, persisted = new Set()) =>
+  decision.kind === "correction" ||
+  Object.hasOwn(decision, "misread") ||
+  persisted.has(decision.id);
 
 // Names are declared independently of available observations: null is a known
 // metric without a measurement; a typo is not a metric.
@@ -459,11 +486,10 @@ export function codeDiffBytes(root, revision) {
     ]);
     if (paths === null) return null;
     for (const path of paths.split("\0").filter(Boolean)) {
-      const patch = spawnSync(
-        "git",
-        ["diff", "--no-index", "--", "/dev/null", path],
-        { cwd: root, maxBuffer: 8 * 1024 * 1024 },
-      );
+      const patch = spawnGit(["diff", "--no-index", "--", "/dev/null", path], {
+        cwd: root,
+        maxBuffer: 8 * 1024 * 1024,
+      });
       if (![0, 1].includes(patch.status) || !patch.stdout) return null;
       total += patch.stdout.length;
     }
@@ -510,7 +536,7 @@ function usageRows(root, workOrder) {
 }
 // The last recorded observation of a dispatch wins, whatever order the rows are
 // read in: retained copies are read by name, and preservation's `-10` sorts
-// before `-2` (VER-001 F1). Rows are ordered by recording time, then by
+// before `-2`. Rows are ordered by recording time, then by
 // observation cutoff; an undated value counts as earlier than any dated one,
 // and rows equal on both keep the order they were read in.
 const dated = (value) => {
@@ -626,7 +652,7 @@ export function usageTotals(rows) {
   );
 }
 
-// WO-170: the operator's directions, counted from what the record publishes.
+// The operator's directions, counted from what the record publishes (WO-170).
 // The docs check has required a control prefix on every dispatch since WO-085;
 // records filed before it are counted when they begin with "operator", except
 // the lifecycle dispatch "Operator resume:" that names no direction (a control
@@ -643,8 +669,8 @@ const directionEvents = [
   "CriterionWaived",
 ];
 
-// WO-172: the operator step a dispatch names, as the order's hand
-// classification reads it: the first step, reading left to right. A match
+// The operator step a dispatch names, as WO-172's hand classification reads
+// it: the first step, reading left to right. A match
 // counts only in a clause that names the operator (a scope expansion is always
 // the operator's); one the text marks as prior, standing or cited is a
 // reference, and a dispatch that names no step reads `none`.
@@ -794,8 +820,8 @@ export function operatorDirections(decisions, events) {
         ))
     )
       byKind.operatorLabel++;
-    // WO-172: a lifecycle dispatch the rules above leave uncounted counts the
-    // operator step it names after its resume: prefix.
+    // A lifecycle dispatch the rules above leave uncounted counts the
+    // operator step it names after its resume: prefix (WO-172).
     else if (/^(?:operator(?:'s)? )?resume:/iu.test(text)) {
       const kind = lifecycleStepKinds[operatorStep(text)];
       if (kind) byKind[kind]++;
@@ -857,7 +883,7 @@ const unavailableCorrections = () => ({
   source: "unavailable",
 });
 
-// WO-170: the order's own meter row, bounded, written where its journals are.
+// The order's own meter row, bounded, written where its journals are (WO-170).
 // A dispatch row keeps its observed values; an absent one reads unavailable.
 export const SNAPSHOT_BYTES = 8192;
 /** Indented to the row's fields; a dispatch row, a role's totals or a unit
@@ -1164,8 +1190,8 @@ export function trapRows(orders) {
   });
 }
 
-/** WO-172: in how many of the last eight closed orders, by close time, the
- * first verification failed. Fewer closed orders are counted as they are. No
+/** In how many of the last eight closed orders, by close time, the first
+ * verification failed (WO-172). Fewer closed orders are counted as they are. No
  * threshold, trap rule or reopen candidate reads it. */
 export function firstVerificationSummary(orders) {
   return {
@@ -1277,7 +1303,8 @@ export async function collectMeta(
 ) {
   const control = readControl(root),
     budgets = readBudgets(root),
-    decisions = readDecisions(root);
+    decisions = readDecisions(root),
+    persisted = persistedCorrectionIds(root);
   const closed = [...control.orders]
     .filter(([, row]) => row.state.phase === "closed")
     .sort(([, a], [, b]) =>
@@ -1339,8 +1366,8 @@ export async function collectMeta(
   }
   const checks = readGateChecks(root);
   const titles = mergedSubjects(root, 100);
-  // WO-172: how an order's judgments ended, read from the control fold and the
-  // decisions, so an order whose journals are gone still has them.
+  // How an order's judgments ended, read from the control fold and the
+  // decisions, so an order whose journals are gone still has them (WO-172).
   const judgments = (
     workOrder,
     events = eventsForOrder(control, workOrder),
@@ -1352,7 +1379,7 @@ export async function collectMeta(
       repairs: judged?.repairs ?? 0,
       recordedCorrections: decisions.filter(
         (decision) =>
-          decision.workOrder === workOrder && isCorrection(decision),
+          decision.workOrder === workOrder && isCorrection(decision, persisted),
       ).length,
       firstVerification: judged?.firstVerification ?? null,
     };
@@ -1939,32 +1966,89 @@ const display = (value) =>
     : typeof value === "number"
       ? Number(value.toFixed(3)).toLocaleString("en-US")
       : String(value);
+// An unavailable observation is a blank cell, never the word; a dispatch row
+// with nothing observed is left out; one line says how many were omitted.
+const unobserved = (value) => value === null || value === undefined;
 export function renderMetaTable(meta) {
-  const d = (row, key) =>
-    `${display(row.metrics[key])} (Δ ${display(row.delta[key])})`;
+  let omitted = 0;
+  const cell = (value, delta) => {
+    if (unobserved(value)) {
+      omitted += 1;
+      return "";
+    }
+    if (unobserved(delta)) {
+      omitted += 1;
+      return display(value);
+    }
+    return `${display(value)} (Δ ${display(delta)})`;
+  };
+  const plain = (value) => {
+    if (unobserved(value)) {
+      omitted += 1;
+      return "";
+    }
+    return display(value);
+  };
+  const d = (row, key) => cell(row.metrics[key], row.delta[key]);
+  const orderKeys = [
+    "elapsedMs",
+    "attempts",
+    "gateMs",
+    "readObligationCount",
+    "readObligationBytes",
+    "tokens",
+    "costUsd",
+    "declaredPromptTokens",
+    "operatorCorrections",
+    "operatorDirections",
+  ];
+  const orders = meta.orders.flatMap((row) => {
+    if (orderKeys.every((key) => unobserved(row.metrics[key]))) {
+      omitted += orderKeys.length;
+      return [];
+    }
+    return [
+      `| ${row.workOrder} | ${d(row, "elapsedMs")} / ${plain(row.metrics.attempts)} | ${d(row, "gateMs")} | ${d(row, "readObligationCount")} / ${d(row, "readObligationBytes")} | ${d(row, "tokens")} / ${d(row, "costUsd")} | ${d(row, "declaredPromptTokens")} | ${d(row, "operatorCorrections")} | ${d(row, "operatorDirections")} |`,
+    ];
+  });
+  const observed = [
+    "wallClockMs",
+    "bytesReadIntoContext",
+    "commandsRun",
+    "observedTokens",
+    "stepCount",
+    "observedCostUsd",
+    "declaredPromptTokens",
+  ];
+  const dispatches = meta.orders
+    .filter((row) => !["closed", "withdrawn"].includes(row.phase))
+    .flatMap((order) =>
+      order.dispatches.flatMap((row) => {
+        if (observed.every((key) => unobserved(row[key]))) {
+          omitted += observed.length;
+          return [];
+        }
+        const pair = (key) => cell(row[key], row.delta?.[key]);
+        return [
+          `| ${order.workOrder}/${row.role} | ${pair("wallClockMs")} | ${pair("bytesReadIntoContext")} | ${pair("commandsRun")} | ${pair("observedTokens")} | ${pair("stepCount")} | ${pair("observedCostUsd")} / ${plain(row.declaredPromptTokens)} |`,
+        ];
+      }),
+    );
   return [
     "",
     `Observation cutoff: ${meta.observedAt ?? "unknown"}; source: canonical control events and the recorded gate, usage and harness observations collected by npm run meta.`,
     "",
     "| Work | Phase ms / attempts | Gate ms | Read files / bytes | Observed tokens / USD | Declared prompt tokens | Corrections | Directions |",
     "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
-    ...meta.orders.map(
-      (row) =>
-        `| ${row.workOrder} | ${d(row, "elapsedMs")} / ${row.metrics.attempts} | ${d(row, "gateMs")} | ${d(row, "readObligationCount")} / ${d(row, "readObligationBytes")} | ${d(row, "tokens")} / ${d(row, "costUsd")} | ${d(row, "declaredPromptTokens")} | ${d(row, "operatorCorrections")} | ${d(row, "operatorDirections")} |`,
-    ),
-    "",
-    "Unavailable observations are not zero; unset ceilings are not approvals of a future limit.",
+    ...orders,
     "",
     "| Dispatch | Wall ms (Δ) | Context bytes (Δ) | Commands (Δ) | Tokens (Δ) | Steps (Δ) | USD (Δ) / declared prompt tokens |",
     "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
-    ...meta.orders
-      .filter((row) => !["closed", "withdrawn"].includes(row.phase))
-      .flatMap((order) =>
-        order.dispatches.map(
-          (row) =>
-            `| ${order.workOrder}/${row.role} | ${display(row.wallClockMs)} (${display(row.delta.wallClockMs)}) | ${display(row.bytesReadIntoContext)} (${display(row.delta.bytesReadIntoContext)}) | ${display(row.commandsRun)} (${display(row.delta.commandsRun)}) | ${display(row.observedTokens)} (${display(row.delta.observedTokens)}) | ${display(row.stepCount)} (${display(row.delta.stepCount)}) | ${display(row.observedCostUsd)} (${display(row.delta.observedCostUsd)}) / ${display(row.declaredPromptTokens)} |`,
-        ),
-      ),
+    ...dispatches,
+    "",
+    `${omitted} unavailable observations omitted as blank cells or rows; unavailable is not zero; unset ceilings are not approvals of a future limit.`,
+    // A blank line closes the prose so a marker after it is no soft wrap.
+    "",
   ].join("\n");
 }
 export function renderMeta(meta) {

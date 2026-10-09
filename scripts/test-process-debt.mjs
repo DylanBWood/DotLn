@@ -1,4 +1,4 @@
-import { execGit, runGit } from "./lib/git.mjs";
+import { execGit, runGit, runGitPathList } from "./lib/git.mjs";
 import {
   write,
   json,
@@ -54,6 +54,7 @@ import {
   reconcileIntake,
   reconcileWorktreeMaterial,
   renderIntakeReconciliation,
+  scratchMaterial,
   verifyPreservedMaterial,
 } from "./lib/intake-reconciliation.mjs";
 import {
@@ -91,11 +92,9 @@ import {
 } from "./lib/meta.mjs";
 import { requireLifecycleEvidence } from "./lib/lifecycle-evidence.mjs";
 import {
-  committedMaterial,
-  declareMaterial,
   inventoryMaterial,
-  recoverDisposableRepositories,
-  verifyMaterialState,
+  parseMaterialFlags,
+  removeScratchRepositories,
 } from "./lib/worktree-material.mjs";
 import { installBeaconFixture } from "./test-beacon-fixture.mjs";
 import { prepareHarnessEvidence } from "./lib/evidence-preparation.mjs";
@@ -253,7 +252,7 @@ test("WO-141 meter retains only journal-derived historical correction counts", a
   const legacy = (await collectMeta(root)).orders.find(
     (row) => row.workOrder === workOrder,
   );
-  // WO-170: a count computed from no journal is unavailable, not zero.
+  // A count computed from no journal is unavailable, not zero (WO-170).
   assert.equal(legacy.metrics.operatorCorrections, null);
   assert.equal(legacy.corrections.source, "unavailable");
 });
@@ -324,7 +323,7 @@ function usageRow(workOrder, role, startedAt, totalTokens) {
 }
 const jsonLines = (rows) =>
   rows.map((row) => JSON.stringify(row)).join("\n") + "\n";
-// WO-172: the lifecycle steps the direction reader adds, zero unless named.
+// The lifecycle steps the direction reader adds, zero unless named (WO-172).
 const lifecycleSteps = (counts = {}) => ({
   resumeCorrection: 0,
   resumeDirection: 0,
@@ -406,9 +405,11 @@ test("WO-170 a closed order's snapshot stands for its journals, and with neither
     /^Operator directions per closed order \(committed decisions and control events\): WO-999 0\.$/m,
   );
   const table = renderMetaTable(await collectMeta(root));
-  assert.match(
-    table,
-    /^\| WO-999 \|.*\| unavailable \(Δ unavailable\) \| 0 \(Δ unavailable\) \|$/m,
+  assert.match(table, /^\| WO-999 \|.*\|  \| 0 \|$/m);
+  assert.ok(
+    !table
+      .split("\n")
+      .some((line) => line.startsWith("|") && line.includes("unavailable")),
   );
   assert.match(
     renderMeta(await collectMeta(root)),
@@ -690,9 +691,9 @@ test("WO-170 a retained usage copy supplies the order's tokens by role and names
 });
 
 test("WO-170 the latest retained observation of a dispatch wins past preservation's tenth collision", async (t) => {
-  // VER-001 F1: successive observations of one dispatch, each preserved by
-  // worktree finish, land in `.from-WO-999`, `-2` … `-10`; `-10` is read
-  // before `-2`, and the older total won.
+  // Successive observations of one dispatch, each preserved by worktree
+  // finish, land in `.from-WO-999`, `-2` … `-10`; `-10` is read before
+  // `-2`, and the older total once won.
   const source = repo(t),
     main = repo(t);
   const workOrder = "WO-999";
@@ -842,8 +843,8 @@ test("WO-170 operator directions equal a hand count of committed decisions and o
   assert.equal(none.directions.total, 0);
   const table = renderMetaTable(meta);
   assert.match(table, /\| Corrections \| Directions \|$/m);
-  assert.match(table, /^\| WO-999 \|.*\| 4 \(Δ [^)]*\) \|$/m);
-  assert.match(table, /^\| WO-998 \|.*\| 0 \(Δ [^)]*\) \|$/m);
+  assert.match(table, /^\| WO-999 \|.*\| 4(?: \(Δ [^)]*\))? \|$/m);
+  assert.match(table, /^\| WO-998 \|.*\| 0(?: \(Δ [^)]*\))? \|$/m);
   assert.match(
     renderMeta(meta),
     /^WO-999 operator directions: 4; scopeExpand 2, operatorOverride 1, RecordCorrected 1; committed decision dispatches \(control prefixes, legacy operator labels and the operator step a lifecycle dispatch names\) and control events\.$/m,
@@ -953,8 +954,9 @@ const closedOrder = (workOrder, hour, first) =>
 
 test("WO-172 every closed order carries its failed judgments, repairs and recorded corrections without a journal, and the health line counts failed first verifications over the last eight closed orders", async (t) => {
   const root = repo(t);
-  // WO-999 fails its first verification and its first final review and is
-  // repaired after each; no journal and no snapshot of it exists.
+  // The fixture order WO-999 fails its first verification and its first
+  // final review and is repaired after each; no journal and no snapshot of
+  // it exists.
   const segment = join(root, "docs/control/orders/WO-999.jsonl");
   writeFileSync(
     segment,
@@ -2412,10 +2414,10 @@ test("WO-132 spawn and classification advisories delegate to host permissions wh
       tool_input: { file_path: join(root, "package.json"), content: "{}" },
     });
     assert.equal(refused.permissionDecision, "deny");
-    // WO-044: the session's own route out of its gate is admitted while the
-    // gate holds the tree, in both harnesses, and the refusal names it. The
-    // harness stop tools and the exact stop command change no gate input; the
-    // gate itself stays refused until it ends.
+    // The session's own route out of its gate is admitted while the gate
+    // holds the tree, in both harnesses, and the refusal names it. The
+    // harness stop tools and the exact stop command change no gate input;
+    // the gate itself stays refused until it ends (WO-044).
     assert.match(
       refused.permissionDecisionReason,
       /Stop that gate from this session with node scripts\/harness\.mjs evidence --stop \(admitted now; it ends at its next boundary and records no check\) or the harness's own task-stop tool, or wait for it to finish\./,
@@ -3145,8 +3147,8 @@ test("discovery uses a bounded observed probe and session warns once off the ver
     /version probe failed/,
   );
   discoverHarness(root, "claude-code", () => probe);
-  // WO-157 item 11: CLAUDE_EFFORT is the host's selected effort, recorded as a
-  // selected-session readback and never as an effective one.
+  // CLAUDE_EFFORT is the host's selected effort, recorded as a
+  // selected-session readback and never as an effective one (WO-157 item 11).
   const stored = JSON.parse(
     readFileSync(join(root, "docs/discovery/environment.json"), "utf8"),
   ).effortReadbackProbe.harnesses["claude-code"];
@@ -3345,8 +3347,8 @@ test("effect inventory refuses opaque tools and classifies invocations instead o
       permissionEffect({ tool_name: name, tool_input: {} }),
       "repo.read",
     );
-  // WO-044: ending a task this session started is its own process control,
-  // never an unclassified effect and never a repository write.
+  // Ending a task this session started is its own process control, never an
+  // unclassified effect and never a repository write (WO-044).
   for (const name of ["TaskStop", "KillShell"])
     assert.equal(
       permissionEffect({ tool_name: name, tool_input: { task_id: "gate" } }),
@@ -4852,7 +4854,7 @@ test("closeout preview and copy preserve collisions, harness state, terms and ev
   assert.throws(() => reconcileIntake(from, main, "WO-999"), /symlink|regular/);
 });
 
-test("WO-044 closeout classifies nested repositories: empty scaffolding is discarded, content is preserved as a unit, and every blocker names its lane and remedy", (t) => {
+test("closeout classifies nested repositories: outside intake they are scratch, removed with a record, and every blocker names its lane and remedy", (t) => {
   const from = repo(t),
     main = repo(t),
     local = "docs/control/local";
@@ -4879,38 +4881,81 @@ test("WO-044 closeout classifies nested repositories: empty scaffolding is disca
   const preview = reconcileWorktreeMaterial(from, main, "WO-999", {
     dryRun: true,
   });
+  // Both control-lane repositories are scratch: neither is archived, both
+  // are removed with a record of their head commit.
   assert.deepEqual(
     preview.nestedRepositories.map((row) => [row.source, row.disposition]),
     [
-      [mount, "empty-scaffolding"],
-      [kept, "preserved-unit"],
+      [mount, "disposable"],
+      [kept, "disposable"],
     ],
   );
   const sources = preview.files.map((row) => row.source);
-  assert.ok(sources.includes(`${kept}/.git/HEAD`));
-  assert.ok(sources.includes(`${kept}/file.txt`));
+  assert.ok(!sources.some((path) => path.startsWith(kept)));
   assert.ok(!sources.some((path) => path.startsWith(mount)));
-  const rendered = renderIntakeReconciliation(preview);
-  assert.match(
-    rendered,
-    /nested repository discarded as empty fixture scaffolding/,
+  const keptHead = runGit(
+    join(from, kept),
+    ["rev-parse", "HEAD"],
+    fixtureGitOptions,
   );
-  assert.match(rendered, /nested repository preserved as a directory unit/);
+  assert.deepEqual(
+    preview.removals.map((row) => [
+      row.path,
+      row.head,
+      row.remoteHeld,
+      row.outcome,
+    ]),
+    [
+      [mount, null, null, "would-remove"],
+      [kept, keptHead, false, "would-remove"],
+    ],
+  );
+  const rendered = renderIntakeReconciliation(preview);
+  assert.equal(
+    (
+      rendered.match(
+        /nested repository disposable; removed with the worktree/g,
+      ) ?? []
+    ).length,
+    2,
+  );
+  assert.match(rendered, /Scratch removal: \{"worktree":/);
+  assert.ok(
+    existsSync(join(from, kept, "file.txt")),
+    "a preview removes nothing",
+  );
+  const scaffolding = describeIgnoredMaterial(from, `${mount}/`);
+  assert.equal(scaffolding.disposable, true);
+  assert.match(
+    scaffolding.classification,
+    /scratch repository \(only \.git, no commit\)/,
+  );
+  const unit = describeIgnoredMaterial(from, `${kept}/`);
+  assert.equal(unit.disposable, true);
+  assert.match(unit.remedy, /scratch; removed with the worktree/);
   const applied = reconcileWorktreeMaterial(from, main, "WO-999");
   verifyPreservedMaterial(from, main, applied);
   const archive = `${local}/retained/WO-999`;
-  assert.equal(
-    readFileSync(join(main, archive, "prototypes/repo/file.txt"), "utf8"),
-    "kept nested content\n",
-  );
-  assert.ok(existsSync(join(main, archive, "prototypes/repo/.git/HEAD")));
+  assert.equal(existsSync(join(main, archive, "prototypes/repo")), false);
   assert.equal(existsSync(join(main, archive, "feedback")), false);
-  const scaffolding = describeIgnoredMaterial(from, `${mount}/`);
-  assert.equal(scaffolding.disposable, true);
-  assert.match(scaffolding.classification, /empty nested repository/);
-  const unit = describeIgnoredMaterial(from, `${kept}/`);
-  assert.equal(unit.disposable, false);
-  assert.match(unit.remedy, /preserved as a directory unit/);
+  assert.ok(
+    existsSync(join(from, kept)),
+    "preservation itself removes nothing",
+  );
+  // The caller removes scratch after its final preservation check.
+  assert.deepEqual(
+    removeScratchRepositories(from, applied.material).map((row) => [
+      row.path,
+      row.head,
+      row.outcome,
+    ]),
+    [
+      [mount, null, "removed"],
+      [kept, keptHead, "removed"],
+    ],
+  );
+  assert.equal(existsSync(join(from, kept)), false);
+  assert.equal(existsSync(join(from, mount)), false);
   const env = describeIgnoredMaterial(from, ".env");
   assert.equal(env.lane, "other");
   assert.match(env.remedy, /operator terminal/);
@@ -4930,7 +4975,7 @@ test("WO-044 closeout classifies nested repositories: empty scaffolding is disca
   );
 });
 
-test("WO-044 VER-001 preserves unborn repositories with refs, staged-only bytes, dangling objects or unreadable metadata", async (t) => {
+test("unborn repositories with refs, staged-only bytes, dangling objects or unreadable metadata are no scaffolding; as scratch they are removed with a record", async (t) => {
   const { removeMountScaffolding } =
     await import("../packages/skeleton/dist/src/feedback-selfhost.js");
   for (const kind of ["refs", "index", "objects", "broken-head"]) {
@@ -4968,32 +5013,37 @@ test("WO-044 VER-001 preserves unborn repositories with refs, staged-only bytes,
       rmSync(join(nested, "valuable.txt"));
     } else write(nested, ".git/HEAD", "broken\n");
     assert.equal(inspectNestedRepository(from, path + "/").empty, false, kind);
-    assert.equal(
-      describeIgnoredMaterial(from, path + "/").disposable,
-      false,
-      kind,
-    );
+    const described = describeIgnoredMaterial(from, path + "/");
+    assert.equal(described.disposable, true, kind);
+    assert.doesNotMatch(described.classification, /only \.git, no commit/);
     if (kind === "broken-head")
-      assert.match(
-        describeIgnoredMaterial(from, path + "/").classification,
-        /commit state unknown/,
-      );
-    const receipt = reconcileWorktreeMaterial(from, main, "WO-999");
-    verifyPreservedMaterial(from, main, receipt);
-    if (kind !== "broken-head")
-      assert.equal(receipt.nestedRepositories[0].disposition, "preserved-unit");
-    assert.ok(receipt.files.length > 0);
-    if (kind === "index")
-      assert.equal(
-        runGit(
-          join(main, "docs/control/local/retained/WO-999/prototypes", kind),
-          ["show", ":valuable.txt"],
-          fixtureGitOptions,
-        ),
-        "saved fixture bytes",
-      );
+      assert.match(described.classification, /commit state unknown/);
+    // The feedback mount helper still keeps anything that is not scaffolding.
     removeMountScaffolding(nested);
     assert.ok(existsSync(nested), `feedback mount preserves ${kind}`);
+    const receipt = reconcileWorktreeMaterial(from, main, "WO-999");
+    verifyPreservedMaterial(from, main, receipt);
+    assert.deepEqual(
+      receipt.nestedRepositories.map((row) => [row.source, row.disposition]),
+      [[path, "disposable"]],
+    );
+    assert.deepEqual(
+      removeScratchRepositories(from, scratchMaterial(receipt)).map((row) => [
+        row.path,
+        row.head,
+        row.remoteHeld,
+        row.outcome,
+      ]),
+      [[path, null, null, "removed"]],
+      `an unborn or unreadable head records null, ${kind}`,
+    );
+    assert.equal(existsSync(nested), false);
+    assert.equal(
+      existsSync(
+        join(main, "docs/control/local/retained/WO-999/prototypes", kind),
+      ),
+      false,
+    );
   }
 });
 
@@ -5347,9 +5397,9 @@ test("WO-155 cold-start trends share edition and acceptance evidence across the 
     renderMeta(meta),
     /ceiling [\d,]+; previous \d+; Δ edition 4; last acceptance 2026-09-20: \d+ bytes, Δ 9/,
   );
-  // WO-169 item 6: an unset ceiling reads "unset" in the drift rows as it
-  // does in the budget rows and the legend; "unavailable" stays a missing
-  // observation (WO-155 D006).
+  // An unset ceiling reads "unset" in the drift rows as it does in the
+  // budget rows and the legend (WO-169 item 6); "unavailable" stays a
+  // missing observation (WO-155 D006).
   assert.equal(
     renderMeta(meta).match(
       /^\S+\/refuter: [\d,]+ bytes; ceiling unset; .*; unset$/gm,
@@ -5979,7 +6029,7 @@ test("meter diff bytes include newly authored untracked source", (t) => {
   );
 });
 
-test("WO-145 optional economy support preserves historical snapshots through WO-196 and changes only executor instructions on", () => {
+test("WO-145 optional economy support preserves historical snapshots through WO-188 and changes only executor instructions on", () => {
   const historical = JSON.parse(
     readFileSync(
       join(source, "packages/skeleton/fixtures/wo145-role-baseline.json"),
@@ -5996,9 +6046,10 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
   // WO-186's default-root record admission preserves that integrated snapshot;
   // WO-187's review duties and worker pin preserve WO-186 in turn.
   // WO-196's ordered procedures and conditional economy preserve WO-187.
+  // WO-188's comment, scratch and failed-command rules preserve WO-196.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo196-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo188-role-baseline.json"),
       "utf8",
     ),
   );
@@ -6592,8 +6643,8 @@ test("follow-up handoffs require a live public destination without copying local
   assert.throws(() => requirePlanningHandoffs(root, wo), /public FUP/);
 });
 
-// WO-169 fixtures: a register whose rows name their seams in each field the
-// match reads, on a worktree branch with a main to compare against.
+// Fixtures: a register whose rows name their seams in each field the match
+// reads, on a worktree branch with a main to compare against (WO-169).
 const seamDecision = (record) =>
   `## ${record.id} — Full title\n\n\`\`\`json\n${json({
     date: "2026-09-27",
@@ -6748,6 +6799,35 @@ test("WO-169 followups --touching names the pending rows a path, an order or thi
   rmSync(join(root, "scripts/lib/meta.mjs"));
   write(root, "own.txt", "original\n");
   assert.deepEqual(snapshot(root), before, "the match reads and never writes");
+});
+
+test("followups --touching names a row that writes the path with leading parent steps", async (t) => {
+  const root = repo(t);
+  runGit(root, ["branch", "main"], fixtureGitOptions);
+  write(
+    root,
+    "docs/product/ideas.md",
+    "## Candidate — Relative link\nSee [the architecture](../product/03-architecture.md).\n\n## Candidate — Other directory\nSee ../other/03-architecture.md.\n",
+  );
+  syncFollowups(root);
+  const ids = Object.fromEntries(
+    planningFollowups(root).rows.map((row) => [row.title, row.id]),
+  );
+  // Given the path, the relative link names it; another directory does not.
+  assert.deepEqual(
+    touched(
+      await planMain(
+        ["followups", "--touching", "docs/product/03-architecture.md"],
+        root,
+      ),
+    ),
+    [ids["Candidate — Relative link"]],
+  );
+  // A changed file is whole, and the link still names it.
+  write(root, "docs/product/03-architecture.md", "# Architecture\n");
+  assert.deepEqual(touched(await planMain(["followups", "--touching"], root)), [
+    ids["Candidate — Relative link"],
+  ]);
 });
 
 test("WO-169 the change is read from the merge base with main: committed, renamed, deleted and untracked files, never main's own", async (t) => {
@@ -6964,6 +7044,23 @@ test("WO-169 completion advises with the count, the command and the rule when ro
     planMain(["followups", "--touching"], alone),
     /no main to compare with; name the paths/,
   );
+  // With no main the rows are judged by the order alone, and the printed
+  // command names that order as a term, which the feed answers without main.
+  write(
+    alone,
+    "docs/product/more.md",
+    "## Candidate — Order\nRides with WO-999.\n",
+  );
+  syncFollowups(alone);
+  const [advisory] = await advice(alone, "implementation-ready");
+  assert.match(
+    advisory,
+    /^1 pending follow-up row names WO-999 \(a textual match\): run npm run plan -- followups --touching WO-999; /,
+  );
+  assert.equal(
+    (await planMain(["followups", "--touching", "WO-999"], alone)).matched,
+    1,
+  );
   // On a branch that names no order, with several open, the command cannot
   // select the completion's order: the advisory names it, and the command it
   // prints returns the advisory's count.
@@ -7147,6 +7244,23 @@ test("WO-169 followups --export writes every pending row whole to a granted dest
     readFileSync(join(outside, "kept.json"), "utf8"),
     readFileSync(printed.path, "utf8"),
   );
+  // A name the lane's own tools read is refused before it exists.
+  for (const reserved of [
+    "docs/control/local/terms.txt",
+    "docs/control/local/harness/exported.json",
+    "docs/control/local/cache/release-list.json",
+  ]) {
+    await assert.rejects(
+      planMain(["followups", "--export", reserved], root),
+      /is a name the local control lane reserves; name another file/,
+      reserved,
+    );
+    assert.ok(!existsSync(join(root, reserved)), reserved);
+  }
+  await assert.rejects(
+    planMain(["failures", "--export", "docs/control/local/terms.txt"], root),
+    /is a name the local control lane reserves; name another file/,
+  );
   linkSync(join(root, "own.txt"), join(root, "docs/control/local/shared.json"));
   write(root, "docs/control/local/harness/checks.json", "[]\n");
   write(outside, "notes.txt", "kept\n");
@@ -7187,6 +7301,42 @@ test("WO-169 followups --export writes every pending row whole to a granted dest
       refused,
     );
   assert.ok(!existsSync("/dotln-export-refused"));
+  // A revision lookup that fails for any reason other than lying outside
+  // every repository leaves the destination unjudged, so it is refused.
+  const shim = join(outside, "shim");
+  mkdirSync(shim);
+  const realGit = (process.env.PATH ?? "")
+    .split(":")
+    .map((dir) => join(dir, "git"))
+    .find((path) => existsSync(path));
+  assert.ok(realGit, "a git executable on PATH");
+  writeFileSync(
+    join(shim, "git"),
+    `#!${process.execPath}
+const { spawnSync } = require("node:child_process");
+if (process.argv.includes("--is-inside-work-tree")) {
+  process.stderr.write("fixture: rev-parse unavailable\\n");
+  process.exit(2);
+}
+const result = spawnSync(${JSON.stringify(realGit)}, process.argv.slice(2), { stdio: "inherit" });
+process.exit(result.status ?? 1);
+`,
+    { mode: 0o755 },
+  );
+  const previousPath = process.env.PATH;
+  try {
+    process.env.PATH = `${shim}:${previousPath ?? ""}`;
+    await assert.rejects(
+      planMain(
+        ["followups", "--export", join(outside, "unjudged/rows.json")],
+        root,
+      ),
+      /destination cannot be judged: git rev-parse failed: .*rev-parse unavailable/,
+    );
+  } finally {
+    process.env.PATH = previousPath;
+  }
+  assert.ok(!existsSync(join(outside, "unjudged")));
   assert.equal(
     runGit(
       join(outside, "checkout"),
@@ -8196,8 +8346,8 @@ test("WO-153 a Codex dispatch whose session entry fails names the cause and stil
         /^DotLn advisory: Codex session entry failed \(Invalid harness session\); process cost remains unknown; cause no-session\.$/m,
     },
     {
-      // A partial begin (VER-001 F1): the host writes the session record, then
-      // refuses an observation log that is not a regular file.
+      // A partial begin: the host writes the session record, then refuses an
+      // observation log that is not a regular file.
       script: resume,
       prepare: (thread) => {
         // Fail session observation after successful writer admission. A
@@ -9519,7 +9669,7 @@ test("WO-131 prompt submission stays open while dispatches retain the ordinary c
   const contended = prompt("contender", "resume: verify");
   assert.equal(contended.decision, undefined);
   // Each hook reads the reservation's age from its own clock, so a second
-  // boundary between the two calls changes that one field (WO-168 VER-001 F3).
+  // boundary between the two calls changes that one field (WO-168).
   // The pattern below still requires an age in the delivered reason.
   const ageless = (text) =>
     text.replace(/; age \d+ seconds\./g, "; age <seconds> seconds.");
@@ -9626,7 +9776,7 @@ test("WO-131 prompt submission stays open while dispatches retain the ordinary c
   const briefingOf = (context, session) => {
     const scratch = `/dotln/${actor(session)}/scratch. `;
     assert.ok(context.includes(scratch), `${session} is given its own scratch`);
-    // WO-140 prints each session's own id and exact usage command.
+    // Each session's own id and exact usage command are printed (WO-140).
     const usage = `\nDotLn session: ${session}. Usage readback: node scripts/harness.mjs usage ${session}`;
     assert.ok(
       context.includes(`${usage}\n`) || context.endsWith(usage),
@@ -9787,6 +9937,73 @@ test("process table names the observed cutoff and evidence sources", () => {
     /Observation cutoff: 2030-01-02T03:04:05.000Z; source: canonical control events/,
   );
   assert.match(renderMetaTable({ orders: [] }), /Observation cutoff: unknown/);
+});
+
+test("the meter table leaves unavailable observations blank, drops an unobserved dispatch row and counts the omissions once", () => {
+  const metrics = {
+    elapsedMs: 10,
+    attempts: 1,
+    gateMs: null,
+    readObligationCount: 2,
+    readObligationBytes: 3,
+    tokens: null,
+    costUsd: null,
+    declaredPromptTokens: 4,
+    operatorCorrections: 0,
+    operatorDirections: 1,
+  };
+  const delta = {
+    ...Object.fromEntries(Object.keys(metrics).map((key) => [key, null])),
+    elapsedMs: 5,
+    readObligationCount: 1,
+  };
+  const keys = [
+    "wallClockMs",
+    "bytesReadIntoContext",
+    "commandsRun",
+    "observedTokens",
+    "stepCount",
+    "observedCostUsd",
+    "declaredPromptTokens",
+  ];
+  const dispatch = (role, value) => ({
+    role,
+    ...Object.fromEntries(keys.map((key) => [key, value])),
+    delta: Object.fromEntries(keys.map((key) => [key, value])),
+  });
+  const rendered = renderMetaTable({
+    observedAt: "2030-01-02T03:04:05.000Z",
+    orders: [
+      {
+        workOrder: "WO-999",
+        phase: "implementing",
+        metrics,
+        delta,
+        dispatches: [dispatch("executor", 7), dispatch("verifier", null)],
+      },
+    ],
+  });
+  const rows = rendered.split("\n").filter((line) => line.startsWith("|"));
+  assert.ok(
+    rows.every((line) => !line.includes("unavailable")),
+    rendered,
+  );
+  assert.match(
+    rendered,
+    /^\| WO-999 \| 10 \(Δ 5\) \/ 1 \|  \| 2 \(Δ 1\) \/ 3 \|  \/  \| 4 \| 0 \| 1 \|$/m,
+  );
+  assert.match(
+    rendered,
+    /^\| WO-999\/executor \| 7 \(Δ 7\) \| 7 \(Δ 7\) \| 7 \(Δ 7\) \| 7 \(Δ 7\) \| 7 \(Δ 7\) \| 7 \(Δ 7\) \/ 7 \|$/m,
+  );
+  assert.ok(!rendered.includes("WO-999/verifier"));
+  assert.match(rendered, /\| Corrections \| Directions \|$/m);
+  // Three missing values, four missing deltas and the seven cells of the
+  // dropped dispatch row.
+  assert.match(
+    rendered,
+    /^14 unavailable observations omitted as blank cells or rows; unavailable is not zero; unset ceilings are not approvals of a future limit\.$/m,
+  );
 });
 
 test("WO-142 Beacon staging residue is disposable only at the named staging shape", async () => {
@@ -10467,223 +10684,354 @@ function materialRepository(root, path, bytes = "nested fixture\n") {
   return nested;
 }
 
-test("WO-176 recorded dispositions never authorize changed or same-path foreign repositories", (t) => {
-  const from = repo(t),
-    derived = repo(t);
-  for (const root of [from, derived])
-    write(
-      root,
-      ".gitignore",
-      readFileSync(join(root, ".gitignore"), "utf8") + "scratch-material/\n",
-    );
-  const path = "scratch-material/x";
-  mkdirSync(join(from, path), { recursive: true });
-  runGit(join(from, path), ["init", "-q"], fixtureGitOptions);
-  const empty = inventoryMaterial(from);
-  assert.equal(empty[0].disposition, "disposable");
-  materialRepository(from, path);
-  const fresh = inventoryMaterial(from, { declarations: empty });
-  assert.equal(fresh[0].disposition, "undeclared");
-  assert.match(fresh[0].reason, /with content/);
-  declareMaterial(from, path, "disposable", "saved scratch word");
-  const declared = inventoryMaterial(from);
-  assert.equal(declared[0].source, "declared");
-  materialRepository(derived, path, "foreign saved commit\n");
-  assert.equal(
-    inventoryMaterial(derived, { declarations: declared })[0].disposition,
-    "undeclared",
-  );
-  assert.equal(
-    inventoryMaterial(derived, { declarations: empty })[0].disposition,
-    "undeclared",
-  );
-  const word = {
-    path,
-    disposition: "disposable",
-    source: "declared",
-    reason: "operator close word",
-  };
-  assert.equal(
-    inventoryMaterial(derived, {
-      declarations: declared,
-      overrides: [word],
-      overrideWorktree: from,
-    })[0].disposition,
-    "undeclared",
-  );
-  assert.equal(
-    inventoryMaterial(derived, {
-      declarations: declared,
-      overrides: [{ ...word, worktree: derived }],
-      overrideWorktree: from,
-    })[0].disposition,
-    "disposable",
-  );
-  // Uncommitted files invalidate a disposal decision even when HEAD is unchanged.
-  write(from, `${path}/unsaved.txt`, "new work after the handoff\n");
-  assert.equal(
-    inventoryMaterial(from, { declarations: declared })[0].disposition,
-    "undeclared",
-  );
-  assert.throws(
-    () => verifyMaterialState(from, declared),
-    /changed.*source retained/,
-  );
-  const legacy = [{ ...word, reason: "unbound legacy word" }];
-  assert.equal(
-    inventoryMaterial(from, { declarations: legacy })[0].disposition,
-    "undeclared",
-  );
-  materialRepository(from, ".runtime/kept");
-  declareMaterial(from, ".runtime/kept", "preserve", "retain this repository");
-  const keeping = inventoryMaterial(from);
-  write(from, ".runtime/kept/later.txt", "later work must stay\n");
-  assert.equal(
-    inventoryMaterial(from, { declarations: keeping }).find(
-      (row) => row.path === ".runtime/kept",
-    ).disposition,
-    "undeclared",
-  );
-});
-
-test("WO-176 disposable recovery bundles retain referenced and unreachable commits", (t) => {
-  const from = repo(t),
-    main = repo(t);
-  const nested = materialRepository(from, ".runtime/x");
-  const dangling = runGit(
-    nested,
-    [
-      "-c",
-      "user.name=Fixture",
-      "-c",
-      "user.email=f@example.invalid",
-      "commit-tree",
-      "HEAD^{tree}",
-      "-p",
-      "HEAD",
-      "-m",
-      "unreachable fixture",
-    ],
-    fixtureGitOptions,
-  );
-  const refs = runGit(nested, ["for-each-ref"], fixtureGitOptions);
-  const material = inventoryMaterial(from);
-  const preview = recoverDisposableRepositories(
-    from,
-    main,
-    "WO-999",
-    material,
-    { dryRun: true },
-  );
-  assert.equal(preview[0].outcome, "would-bundle");
-  assert.ok(!existsSync(join(main, preview[0].path)));
-  const recovery = recoverDisposableRepositories(
-    from,
-    main,
-    "WO-999",
-    material,
-  );
-  assert.equal(recovery[0].commitCount, 2);
-  assert.equal(recovery[0].outcome, "bundled");
-  assert.equal(runGit(nested, ["for-each-ref"], fixtureGitOptions), refs);
-  const clone = join(main, ".runtime/recovered");
-  runGit(
-    main,
-    ["clone", join(main, recovery[0].path), clone],
-    fixtureGitOptions,
-  );
-  assert.equal(
-    runGit(clone, ["show", "HEAD:saved.txt"], fixtureGitOptions),
-    "nested fixture",
-  );
-  assert.equal(
-    runGit(clone, ["cat-file", "-t", dangling], fixtureGitOptions),
-    "commit",
-  );
-  verifyMaterialState(from, material);
-  assert.equal(
-    recoverDisposableRepositories(from, main, "WO-999", material)[0].sha256,
-    recovery[0].sha256,
-  );
-  writeFileSync(join(main, recovery[0].path), "damaged bundle\n");
-  assert.throws(
-    () => recoverDisposableRepositories(from, main, "WO-999", material),
-    /bundle/,
-  );
-  assert.equal(
-    runGit(nested, ["cat-file", "-t", dangling], fixtureGitOptions),
-    "commit",
-  );
-});
-
-test("WO-176 repository disposal uses directory lanes rather than file suffixes or linked metadata", (t) => {
-  const from = repo(t),
-    external = repo(t);
+test("a nested repository outside intake that the tracked tree does not declare is scratch; intake and declared submodules are kept", (t) => {
+  const from = repo(t);
   write(
     from,
     ".gitignore",
-    readFileSync(join(from, ".gitignore"), "utf8") + "work/\n",
+    readFileSync(join(from, ".gitignore"), "utf8") +
+      "scratch-material/\nwork/\n",
   );
-  for (const path of [
-    "work/notes.tsbuildinfo",
-    "work/.dotln-beacon-stage-abc123",
-    "work/plain",
-  ])
-    materialRepository(from, path);
-  const linked = join(from, ".runtime/linked");
+  materialRepository(from, "scratch-material/x");
+  materialRepository(from, "work/plain");
+  materialRepository(from, "docs/control/local/prototypes/repo");
+  materialRepository(from, "docs/intake/x", "protected intake\n");
+  // A repository under a path no ignore rule covers, as one cloned after
+  // review, is scratch like the ignored ones.
+  materialRepository(from, "outside-lanes/probe");
+  mkdirSync(join(from, ".runtime/empty"), { recursive: true });
+  runGit(join(from, ".runtime/empty"), ["init", "-q"], fixtureGitOptions);
+  assert.deepEqual(
+    inventoryMaterial(from).map((row) => [
+      row.path,
+      row.disposition,
+      row.source,
+    ]),
+    [
+      [".runtime/empty", "disposable", "lane"],
+      ["docs/control/local/prototypes/repo", "disposable", "lane"],
+      ["docs/intake/x", "preserve", "lane"],
+      ["outside-lanes/probe", "disposable", "lane"],
+      ["scratch-material/x", "disposable", "lane"],
+      ["work/plain", "disposable", "lane"],
+    ],
+  );
+  assert.match(
+    describeIgnoredMaterial(from, "scratch-material/x/").classification,
+    /other lane: scratch repository$/,
+  );
+  assert.match(
+    describeIgnoredMaterial(from, "outside-lanes/probe/").classification,
+    /other lane: scratch repository$/,
+  );
+  assert.match(
+    describeIgnoredMaterial(from, ".runtime/empty/").classification,
+    /scratch repository \(only \.git, no commit\)/,
+  );
+  assert.match(
+    describeIgnoredMaterial(from, "docs/intake/x/").remedy,
+    /preserved as a directory unit/,
+  );
+  // A declared submodule is the operator's, whether its directory is tracked
+  // as a gitlink or only named by .gitmodules.
+  const upstream = repo(t);
   runGit(
-    external,
-    ["worktree", "add", "--detach", linked, "HEAD"],
+    from,
+    [
+      "-c",
+      "protocol.file.allow=always",
+      "submodule",
+      "add",
+      "-q",
+      upstream,
+      "vendor/sub",
+    ],
     fixtureGitOptions,
   );
-  write(linked, "unsaved.txt", "linked worktree dirt\n");
+  runGit(from, ["commit", "-qm", "submodule"], fixtureGitOptions);
   assert.ok(
-    inventoryMaterial(from).every((row) => row.disposition === "undeclared"),
+    !inventoryMaterial(from).some((row) => row.path === "vendor/sub"),
+    "a populated tracked submodule is not ignored material",
   );
-  materialRepository(from, ".runtime/standalone");
+  write(
+    from,
+    ".gitmodules",
+    readFileSync(join(from, ".gitmodules"), "utf8") +
+      '[submodule "work/declared"]\n\tpath = work/declared\n\turl = ./upstream\n',
+  );
+  materialRepository(from, "work/declared");
+  const declared = inventoryMaterial(from).find(
+    (row) => row.path === "work/declared",
+  );
+  assert.deepEqual(
+    [declared.disposition, declared.submodule],
+    ["preserve", true],
+  );
+  assert.match(
+    describeIgnoredMaterial(from, "work/declared/").classification,
+    /declared submodule/,
+  );
+  // An operator word preserves a scratch repository; disposable is refused
+  // for intake and submodules; a word that names nothing is refused; a word
+  // scoped through an alias of the worktree is this worktree's word.
+  const word = (path, disposition, worktree) => ({
+    path,
+    disposition,
+    source: "declared",
+    reason: "operator close word",
+    ...(worktree ? { worktree } : {}),
+  });
+  const disposition = (root, options) =>
+    inventoryMaterial(root, options).find(
+      (row) => row.path === "scratch-material/x",
+    ).disposition;
   assert.equal(
-    inventoryMaterial(from).find((row) => row.path === ".runtime/standalone")
-      .disposition,
+    disposition(from, {
+      overrides: [word("scratch-material/x", "preserve")],
+      overrideWorktree: from,
+    }),
+    "preserve",
+  );
+  assert.equal(
+    inventoryMaterial(from, {
+      overrides: [word("outside-lanes/probe", "preserve")],
+      overrideWorktree: from,
+    }).find((row) => row.path === "outside-lanes/probe").disposition,
+    "preserve",
+  );
+  assert.throws(
+    () =>
+      inventoryMaterial(from, {
+        overrides: [word("docs/intake/x", "disposable")],
+        overrideWorktree: from,
+      }),
+    /Protected intake/,
+  );
+  assert.throws(
+    () =>
+      inventoryMaterial(from, {
+        overrides: [word("work/declared", "disposable")],
+        overrideWorktree: from,
+      }),
+    /declared submodule cannot/,
+  );
+  assert.throws(
+    () =>
+      inventoryMaterial(from, {
+        overrides: [word("scratch-material/missing", "preserve")],
+        overrideWorktree: from,
+      }),
+    /names no nested repository/,
+  );
+  const alias = `${from}-alias`;
+  symlinkSync(from, alias);
+  t.after(() => rmSync(alias, { force: true }));
+  assert.equal(
+    disposition(from, {
+      overrides: [word("scratch-material/x", "preserve", alias)],
+    }),
+    "preserve",
+  );
+  // Another worktree's word never applies here.
+  const derived = repo(t);
+  write(
+    derived,
+    ".gitignore",
+    readFileSync(join(derived, ".gitignore"), "utf8") + "scratch-material/\n",
+  );
+  materialRepository(derived, "scratch-material/x", "foreign\n");
+  assert.equal(
+    disposition(derived, {
+      overrides: [word("scratch-material/x", "preserve", from)],
+      overrideWorktree: from,
+    }),
     "disposable",
   );
-  write(from, "ordinary.tsbuildinfo", "derived file\n");
   assert.equal(
-    describeIgnoredMaterial(from, "ordinary.tsbuildinfo").disposable,
-    true,
+    parseMaterialFlags(
+      ["--material", `${alias}/::scratch-material/x=preserve`],
+      [],
+    ).material[0].worktree,
+    realpathSync(from),
+  );
+  assert.throws(
+    () =>
+      parseMaterialFlags(
+        [
+          "--material",
+          `${from}::scratch-material/x=preserve`,
+          "--material",
+          `${alias}/::scratch-material/x=disposable`,
+        ],
+        [],
+      ),
+    /Duplicate material path/,
   );
 });
 
-test("WO-176 lane disposal and explicit preservation keep repository units and collisions intact", (t) => {
-  const from = repo(t),
-    main = repo(t);
-  materialRepository(from, ".runtime/x");
-  materialRepository(from, "docs/intake/x", "protected intake\n");
-  materialRepository(from, "docs/control/local/cache/x");
-  assert.equal(describeIgnoredMaterial(from, ".runtime/x/").disposable, true);
-  const rows = inventoryMaterial(from);
+test("a linked worktree of another repository is never scratch: its commits live in its owner, so it is kept and a disposable word on it refuses", (t) => {
+  const from = repo(t);
+  write(
+    from,
+    ".gitignore",
+    readFileSync(join(from, ".gitignore"), "utf8") + "scratch-material/\n",
+  );
+  materialRepository(from, "scratch-material/owner");
+  runGit(
+    join(from, "scratch-material/owner"),
+    ["worktree", "add", "--detach", join(from, "scratch-material/linked")],
+    fixtureGitOptions,
+  );
+  const linked = describeIgnoredMaterial(from, "scratch-material/linked/");
+  assert.equal(linked.disposable, false);
+  assert.match(linked.classification, /linked worktree of another repository/);
+  assert.match(linked.remedy, /git worktree remove --force/);
   assert.deepEqual(
-    rows.map((row) => [row.path, row.disposition, row.source]),
+    inventoryMaterial(from).map((row) => [row.path, row.disposition]),
     [
-      [".runtime/x", "disposable", "lane"],
-      ["docs/control/local/cache/x", "disposable", "lane"],
-      ["docs/intake/x", "preserve", "lane"],
+      ["scratch-material/linked", "preserve"],
+      ["scratch-material/owner", "disposable"],
     ],
   );
-  declareMaterial(from, ".runtime/x", "preserve", "keep the saved fixture");
-  const material = inventoryMaterial(from);
+  assert.throws(
+    () =>
+      inventoryMaterial(from, {
+        overrideWorktree: from,
+        overrides: [
+          {
+            path: "scratch-material/linked",
+            disposition: "disposable",
+            source: "declared",
+            reason: "fixture word",
+          },
+        ],
+      }),
+    /linked worktree of another repository cannot be declared disposable/,
+  );
+});
+
+test("reconciliation removes scratch repositories and records each with its head and whether a remote held it; preserved units and words stay", (t) => {
+  const from = repo(t),
+    main = repo(t);
+  write(
+    from,
+    ".gitignore",
+    readFileSync(join(from, ".gitignore"), "utf8") + "scratch-material/\n",
+  );
+  const pushed = materialRepository(from, "scratch-material/pushed");
+  const origin = join(main, ".runtime/nested-origin.git");
+  mkdirSync(origin, { recursive: true });
+  runGit(main, ["init", "-q", "--bare", origin], fixtureGitOptions);
+  runGit(pushed, ["remote", "add", "origin", origin], fixtureGitOptions);
+  runGit(
+    pushed,
+    ["push", "-q", "origin", "HEAD:refs/heads/main"],
+    fixtureGitOptions,
+  );
+  runGit(pushed, ["fetch", "-q", "origin"], fixtureGitOptions);
+  const unpushed = materialRepository(from, "scratch-material/unpushed");
+  mkdirSync(join(from, "scratch-material/empty"), { recursive: true });
+  runGit(
+    join(from, "scratch-material/empty"),
+    ["init", "-q"],
+    fixtureGitOptions,
+  );
+  materialRepository(from, "docs/intake/x", "protected intake\n");
+  const kept = materialRepository(from, "scratch-material/kept");
+  // A scratch repository's own hooks and file monitor never run during the
+  // close: the planted hook and monitor leave no marker.
+  const marker = join(main, ".runtime/nested-hook.marker");
+  for (const nested of [pushed, unpushed, kept]) {
+    mkdirSync(join(nested, ".git/hooks"), { recursive: true });
+    write(
+      from,
+      `${nested.slice(from.length + 1)}/.git/hooks/reference-transaction`,
+      `#!/bin/sh\necho reference-transaction \$1 >> '${marker}'\n`,
+    );
+    chmodSync(join(nested, ".git/hooks/reference-transaction"), 0o755);
+    write(
+      main,
+      ".runtime/fsmonitor.sh",
+      `#!/bin/sh\necho fsmonitor >> '${marker}'\necho /\n`,
+    );
+    chmodSync(join(main, ".runtime/fsmonitor.sh"), 0o755);
+    runGit(
+      nested,
+      ["config", "core.fsmonitor", join(main, ".runtime/fsmonitor.sh")],
+      fixtureGitOptions,
+    );
+  }
+  runGit(kept, ["update-ref", "refs/fixture/probe", "HEAD"], fixtureGitOptions);
+  assert.ok(existsSync(marker), "the planted hook is live");
+  rmSync(marker);
+  const heads = Object.fromEntries(
+    [pushed, unpushed, kept].map((nested) => [
+      nested,
+      runGit(nested, ["rev-parse", "HEAD"], fixtureGitOptions),
+    ]),
+  );
+  rmSync(marker, { force: true });
+  const material = inventoryMaterial(from, {
+    overrides: [
+      {
+        path: "scratch-material/kept",
+        disposition: "preserve",
+        source: "declared",
+        reason: "operator close word",
+      },
+    ],
+    overrideWorktree: from,
+  });
+  const preview = reconcileWorktreeMaterial(from, main, "WO-999", {
+    dryRun: true,
+    material,
+  });
+  assert.deepEqual(
+    preview.removals.map((row) => [
+      row.path,
+      row.head,
+      row.remoteHeld,
+      row.outcome,
+    ]),
+    [
+      ["scratch-material/empty", null, null, "would-remove"],
+      ["scratch-material/pushed", heads[pushed], true, "would-remove"],
+      ["scratch-material/unpushed", heads[unpushed], false, "would-remove"],
+    ],
+  );
+  for (const name of ["empty", "pushed", "unpushed", "kept"])
+    assert.ok(
+      existsSync(join(from, "scratch-material", name)),
+      `${name} survives the preview`,
+    );
   const receipt = reconcileWorktreeMaterial(from, main, "WO-999", { material });
   verifyPreservedMaterial(from, main, receipt);
-  const kept = join(
-    main,
-    "docs/control/local/retained/WO-999/material/.runtime/x",
+  assert.equal(receipt.removals, undefined, "preservation removes nothing");
+  const removals = removeScratchRepositories(from, scratchMaterial(receipt));
+  assert.deepEqual(
+    removals.map((row) => [row.path, row.outcome]),
+    [
+      ["scratch-material/empty", "removed"],
+      ["scratch-material/pushed", "removed"],
+      ["scratch-material/unpushed", "removed"],
+    ],
   );
+  assert.equal(removals[1].worktree, realpathSync(from));
+  assert.equal(receipt.recovery, undefined);
+  for (const name of ["empty", "pushed", "unpushed"])
+    assert.equal(existsSync(join(from, "scratch-material", name)), false, name);
+  assert.ok(existsSync(join(from, "scratch-material/kept")));
+  assert.ok(existsSync(join(from, "docs/intake/x")));
   assert.equal(
-    runGit(kept, ["show", "HEAD:saved.txt"], fixtureGitOptions),
+    runGit(
+      join(
+        main,
+        "docs/control/local/retained/WO-999/material/scratch-material/kept",
+      ),
+      ["show", "HEAD:saved.txt"],
+      fixtureGitOptions,
+    ),
     "nested fixture",
-  );
-  assert.throws(
-    () => declareMaterial(from, "docs/intake/x", "disposable", "invalid"),
-    /Protected intake/,
   );
   assert.equal(
     runGit(
@@ -10693,38 +11041,36 @@ test("WO-176 lane disposal and explicit preservation keep repository units and c
     ),
     "protected intake",
   );
-  assert.ok(
-    !receipt.files.some((row) =>
-      row.source.startsWith("docs/control/local/cache/x/"),
-    ),
+  assert.match(
+    renderIntakeReconciliation(preview),
+    /Scratch removal: \{"worktree":/,
   );
-  const retry = reconcileWorktreeMaterial(from, main, "WO-999", { material });
-  verifyPreservedMaterial(from, main, retry);
-  const collision = retry.directories.find(
-    (row) => row.source === ".runtime/x",
-  );
-  assert.match(collision.destination, /x\.from-WO-999$/);
-  assert.equal(
-    runGit(
-      join(main, collision.destination),
-      ["show", "HEAD:saved.txt"],
-      fixtureGitOptions,
-    ),
-    "nested fixture",
-  );
-  const external = repo(t);
-  symlinkSync(external, join(from, ".runtime/link"));
-  assert.throws(
-    () => declareMaterial(from, ".runtime/link", "disposable", "invalid"),
-    /symlink/,
-  );
-  assert.throws(
-    () => declareMaterial(from, "../outside", "disposable", "invalid"),
-    /relative/,
-  );
+  assert.equal(existsSync(marker), false, "no nested hook or monitor ran");
+  // A repository that cannot be removed names itself and leaves the rest.
+  const sealed = materialRepository(from, "scratch-material/sealed");
+  chmodSync(sealed, 0o555);
+  try {
+    if (process.getuid?.() !== 0) {
+      assert.throws(
+        () => removeScratchRepositories(from, inventoryMaterial(from)),
+        /Scratch repository "scratch-material\/sealed" could not be removed \("scratch-material\/sealed" is not writable\); source retained/,
+      );
+      assert.ok(
+        existsSync(join(sealed, ".git/HEAD")),
+        "a refused removal deletes nothing",
+      );
+      assert.ok(existsSync(join(sealed, "saved.txt")));
+      assert.ok(
+        existsSync(join(from, "scratch-material/kept/.git")),
+        "a refusal retains every scratch repository, not only the sealed one",
+      );
+    }
+  } finally {
+    if (existsSync(sealed)) chmodSync(sealed, 0o755);
+  }
 });
 
-test("WO-176 actual executor completions record declared, lane and undeclared material without refusing", (t) => {
+test("an executor completion records lane material and advises once for scratch repositories still present, without refusing", (t) => {
   const root = repo(t, { runtime: true });
   cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
     recursive: true,
@@ -10743,8 +11089,8 @@ test("WO-176 actual executor completions record declared, lane and undeclared ma
     readFileSync(join(root, ".gitignore"), "utf8") + "private-fixture/\n",
   );
   materialRepository(root, ".runtime/lane");
-  materialRepository(root, "private-fixture/declared");
   materialRepository(root, "private-fixture/unknown");
+  materialRepository(root, "docs/intake/keep", "protected intake\n");
   const call = (script, ...args) =>
     spawnSync(process.execPath, [join(root, "scripts", script), ...args], {
       cwd: root,
@@ -10757,15 +11103,6 @@ test("WO-176 actual executor completions record declared, lane and undeclared ma
       },
       timeout: 30_000,
     });
-  const declared = call(
-    "worktree.mjs",
-    "material",
-    "private-fixture/declared",
-    "--disposable",
-    "--reason",
-    "discard fixture",
-  );
-  assert.equal(declared.status, 0, declared.stderr);
   const actor = [
     "--harness",
     "fixture",
@@ -10780,9 +11117,17 @@ test("WO-176 actual executor completions record declared, lane and undeclared ma
   ];
   const ready = call("resume.mjs", "implementation-ready", ...actor);
   assert.equal(ready.status, 0, ready.stderr);
+  const advisories =
+    ready.stderr.match(/^Advisory: Scratch repositories present: .*$/gm) ?? [];
+  assert.equal(advisories.length, 1, ready.stderr);
+  assert.match(advisories[0], /"\.runtime\/lane", "private-fixture\/unknown"/);
   assert.match(
-    ready.stderr,
-    /Undeclared nested repository.*private-fixture\/unknown.*npm run worktree -- material/,
+    advisories[0],
+    /rm -rf -- '\.runtime\/lane'; rm -rf -- 'private-fixture\/unknown'/,
+  );
+  assert.doesNotMatch(
+    advisories[0],
+    /docs\/intake\/keep|npm run worktree -- material/,
   );
   const eventRows = () =>
     readFileSync(join(root, "docs/control/orders/WO-999.jsonl"), "utf8")
@@ -10800,21 +11145,15 @@ test("WO-176 actual executor completions record declared, lane and undeclared ma
     ]),
     [
       [".runtime/lane", "disposable", "lane"],
-      ["private-fixture/declared", "disposable", "declared"],
-      ["private-fixture/unknown", "undeclared", "lane"],
+      ["docs/intake/keep", "preserve", "lane"],
+      ["private-fixture/unknown", "disposable", "lane"],
     ],
   );
-  assert.equal(implementation.evidence.material[1].reason, "discard fixture");
-  // Main consumes the filed event, not a later local change to its declaration.
+  // A later completion inventories again: a removed repository is gone from
+  // its record, and no declaration from the earlier completion is read.
+  rmSync(join(root, "private-fixture/unknown"), { recursive: true });
   runGit(root, ["add", "."], fixtureGitOptions);
   runGit(root, ["commit", "-qm", "file handoff"], fixtureGitOptions);
-  declareMaterial(
-    root,
-    "private-fixture/declared",
-    "preserve",
-    "changed local word",
-  );
-  assert.equal(committedMaterial(root, "WO-999")[1].disposition, "disposable");
   const appended =
     [
       {
@@ -10850,7 +11189,79 @@ test("WO-176 actual executor completions record declared, lane and undeclared ma
   assert.equal(repaired.status, 0, repaired.stderr);
   const repair = eventRows().at(-1);
   assert.equal(repair.type, "RepairCompleted");
-  assert.equal(repair.evidence.material[1].disposition, "preserve");
-  assert.equal(repair.evidence.material[1].source, "declared");
-  assert.equal(repair.evidence.material[2].disposition, "undeclared");
+  assert.deepEqual(
+    repair.evidence.material.map((row) => [row.path, row.disposition]),
+    [
+      [".runtime/lane", "disposable"],
+      ["docs/intake/keep", "preserve"],
+    ],
+  );
+  assert.equal(
+    (repaired.stderr.match(/Scratch repositories present/g) ?? []).length,
+    1,
+  );
+});
+
+test("the completion whitespace check reads untracked files and exempts byte-exact captures by attribute", async (t) => {
+  const root = repo(t);
+  write(
+    root,
+    ".gitattributes",
+    readFileSync(new URL("../.gitattributes", import.meta.url), "utf8"),
+  );
+  runGit(root, ["add", ".gitattributes"], fixtureGitOptions);
+  runGit(root, ["commit", "-qm", "attributes"], fixtureGitOptions);
+  for (const path of [
+    "docs/evidence/WO-999/capture.txt",
+    "docs/evidence/WO-999/run.tap",
+    "docs/evidence/WO-999/run.log",
+    "corpus/manifests/runs/x.log",
+  ])
+    write(root, path, "a byte-exact line with trailing space \n");
+  // Git lists an untracked nested repository as a directory entry, which the
+  // check leaves out of the intent-to-add list; the gate tree hash refuses
+  // such an entry later, so it is removed before the completion runs.
+  mkdirSync(join(root, "nested"));
+  runGit(join(root, "nested"), ["init", "-q"], fixtureGitOptions);
+  write(root, "nested/inner.txt", "inner trailing space \n");
+  assert.ok(
+    runGitPathList(root, [
+      "ls-files",
+      "--others",
+      "--exclude-standard",
+      "-z",
+    ]).includes("nested/"),
+  );
+  rmSync(join(root, "nested"), { recursive: true, force: true });
+  await requireLifecycleEvidence(
+    root,
+    "implementation-ready",
+    undefined,
+    "WO-999",
+  );
+  write(root, "fresh.mjs", "export const value = 1; \n");
+  await assert.rejects(
+    requireLifecycleEvidence(root, "implementation-ready", undefined, "WO-999"),
+    /git diff --check failed[\s\S]*fresh\.mjs:1: trailing whitespace/,
+  );
+  // The real index is untouched: the file stays untracked.
+  assert.equal(
+    runGit(root, ["ls-files", "--", "fresh.mjs"], fixtureGitOptions),
+    "",
+  );
+  assert.match(
+    runGit(
+      root,
+      ["status", "--porcelain", "--", "fresh.mjs"],
+      fixtureGitOptions,
+    ),
+    /^\?\? fresh\.mjs$/m,
+  );
+  write(root, "fresh.mjs", "export const value = 1;\n");
+  await requireLifecycleEvidence(
+    root,
+    "implementation-ready",
+    undefined,
+    "WO-999",
+  );
 });

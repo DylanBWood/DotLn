@@ -69,6 +69,8 @@ emitTargetHarness(target, options);
 checkTargetHarness(target, options);
 const instruction = readFileSync(join(target, "CLAUDE.local.md"), "utf8");
 const sibling = resolve(target, "../", `denied-${id}.txt`);
+// This smoke regenerates the dated 2026-09-16 live record, so it keeps the
+// model and effort that record measured.
 const model = harness === "claude" ? "claude-fable-5" : "gpt-6-sol";
 const effort = "xhigh";
 const prompt =
@@ -129,7 +131,8 @@ try {
       .trim()
       .match(/\d+\.\d+\.\d+/)?.[0] ?? "unknown";
 } catch {}
-// WO-159: a Codex launch gets its own home; Claude keeps the caller environment.
+// A Codex launch gets its own home; Claude keeps the caller environment
+// (WO-159).
 const episode = harness === "codex" ? startCodexEpisode() : null;
 let isolation = null;
 let run;

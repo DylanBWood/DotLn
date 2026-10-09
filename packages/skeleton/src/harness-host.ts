@@ -114,7 +114,8 @@ import {
   type ObservationScope,
 } from "./observed-facts.js";
 export { HARNESS_HOST_VERSION } from "./version.js";
-type HostHookEvent = HarnessEvent | "SessionStart" | "PermissionDenied";
+type HostHookEvent =
+  HarnessEvent | "SessionStart" | "PermissionDenied" | "PostToolUseFailure";
 export interface HarnessInput {
   readonly hook_event_name: HostHookEvent;
   readonly cwd: string;
@@ -131,6 +132,8 @@ export interface HarnessInput {
   readonly harness_version?: string;
   /** Claude sets this when it re-enters Stop because a Stop hook refused. */
   readonly stop_hook_active?: boolean;
+  /** The failed-command event carries the host's error text here. */
+  readonly error?: string;
 }
 
 export function harnessInputHarness(
@@ -211,6 +214,7 @@ function decodeHarnessRecord(
     "harness_version",
     "prompt",
     "reason",
+    "error",
   ])
     if (key in value && typeof value[key] !== "string")
       return fail("EXPECTED_STRING", `$.${key}`, "expected a string");
@@ -222,6 +226,7 @@ function decodeHarnessRecord(
       "UserPromptSubmit",
       "SessionStart",
       "PermissionDenied",
+      "PostToolUseFailure",
     ].includes(value.hook_event_name as string)
   )
     return fail("UNKNOWN_EVENT", "$.hook_event_name", "unsupported hook event");
@@ -848,7 +853,12 @@ const nativeText = (content: unknown): string | undefined =>
 function promptRoute(input: HarnessInput) {
   // UserPromptSubmit has no documented route field. Only the latest native
   // message with the same bytes establishes a route; an unflushed transcript
-  // or an earlier repeated phrase does not. No transcript text leaves here.
+  // or an earlier repeated phrase does not. A queued command the host marks
+  // as a task notification is the host's own message, never the operator's;
+  // a prompt with no transcript evidence is unattributed. No transcript text
+  // leaves here.
+  const queued = (mode: unknown) =>
+    mode === "task-notification" ? "host-task-notification" : "operator";
   try {
     const row = input.transcript_path
       ? transcriptMessages(input.transcript_path).at(-1)
@@ -858,13 +868,21 @@ function promptRoute(input: HarnessInput) {
       row.operation === "enqueue" &&
       nativeText(row.content) === input.prompt
     )
-      return { route: "mid-turn", routeSource: "transcript-enqueue" };
+      return {
+        route: "mid-turn",
+        routeSource: "transcript-enqueue",
+        attribution: queued(row.commandMode),
+      };
     if (
       row?.type === "attachment" &&
       row.attachment?.type === "queued_command" &&
       nativeText(row.attachment.prompt) === input.prompt
     )
-      return { route: "mid-turn", routeSource: "transcript-queued-command" };
+      return {
+        route: "mid-turn",
+        routeSource: "transcript-queued-command",
+        attribution: queued(row.attachment.commandMode),
+      };
     if (
       row?.type === "user" &&
       row.message?.role === "user" &&
@@ -878,11 +896,16 @@ function promptRoute(input: HarnessInput) {
           ? "interrupt"
           : "turn-prompt",
         routeSource: "transcript-user",
+        attribution: "operator",
       };
   } catch {
     // Missing optional metadata never changes prompt admission.
   }
-  return { route: "unknown", routeSource: "host-route-unavailable" };
+  return {
+    route: "unknown",
+    routeSource: "host-route-unavailable",
+    attribution: "unattributed",
+  };
 }
 export function recordOperatorMessage(
   root: string,
@@ -903,13 +926,24 @@ export function recordOperatorMessage(
     Object.keys(operatorPrefixes).find((prefix) =>
       input.prompt!.trimStart().startsWith(prefix),
     ) ?? null;
+  const route =
+    source === "codex-dispatch-phrase"
+      ? {
+          route: "unknown",
+          routeSource: "dispatch-only",
+          attribution: "operator",
+        }
+      : promptRoute(input);
   record(root, input, {
     typedEvent: "OperatorMessageObserved",
     ...observationContext(session),
-    source,
-    ...(source === "codex-dispatch-phrase"
-      ? { route: "unknown", routeSource: "dispatch-only" }
-      : promptRoute(input)),
+    // The host's own notification is journaled under its own source, which
+    // the intervention count leaves out.
+    source:
+      route.attribution === "host-task-notification"
+        ? "host-task-notification"
+        : source,
+    ...route,
     prefix,
     class: prefix ? operatorPrefixes[prefix] : "unclassified",
     digest: textDigest(input.prompt),
@@ -1566,7 +1600,8 @@ function observeShellDiagnostics(
   },
 ): { hookSpecificOutput?: Record<string, unknown> } {
   try {
-    if (input.hook_event_name !== "PostToolUse") return {};
+    const failedCall = input.hook_event_name === "PostToolUseFailure";
+    if (input.hook_event_name !== "PostToolUse" && !failedCall) return {};
     const said: string[] = [];
     const row = (kind: string, failed?: string) => {
       const { workOrder, phase, sessionKey: session } = scope();
@@ -1581,18 +1616,39 @@ function observeShellDiagnostics(
       });
     };
     const command = input.tool_input?.command;
-    const output = [input.tool_response?.stdout, input.tool_response?.stderr]
+    const output = [
+      ...(failedCall ? [input.error] : []),
+      input.tool_response?.stdout,
+      input.tool_response?.stderr,
+    ]
       .filter((text): text is string => typeof text === "string")
       .join("\n");
     if (input.tool_name === "Bash" && typeof command === "string" && output) {
       const found = shellDiagnostics(command, output);
+      // A failed call the host identifies is marked with its use under the
+      // claim the transcript route takes, so that route answers it no second
+      // time; a host that sends no call identity gets an unmarked count.
+      const use =
+        failedCall && found.length && typeof input.tool_use_id === "string"
+          ? digest(input.tool_use_id)
+          : null;
+      const release = use ? claimShellResult(root, use) : null;
       try {
-        for (const { kind } of found) row(kind);
-      } catch {
-        // The count is lost; the agent is still answered.
+        if (
+          !use ||
+          (release && !answeredShellResults(root, new Set([use])).has(use))
+        ) {
+          try {
+            for (const { kind } of found) row(kind, use ?? undefined);
+          } catch {
+            // The count is lost; the agent is still answered.
+          }
+          const guidance = shellGuidance(found);
+          if (guidance) said.push(guidance);
+        }
+      } finally {
+        release?.();
       }
-      const guidance = shellGuidance(found);
-      if (guidance) said.push(guidance);
     }
     try {
       const transcript =
@@ -1642,7 +1698,7 @@ function observeShellDiagnostics(
     return said.length
       ? {
           hookSpecificOutput: {
-            hookEventName: "PostToolUse",
+            hookEventName: input.hook_event_name,
             additionalContext: said.join(" "),
           },
         }
@@ -3333,7 +3389,7 @@ const protocolRefusal = (event: HostHookEvent, reason: string) =>
         }
       : event === "Stop"
         ? { systemMessage: `DotLn: ${reason.replace(/\s+/g, " ")}` }
-        : event === "PostToolUse"
+        : event === "PostToolUse" || event === "PostToolUseFailure"
           ? {}
           : protocolAdvisory(reason);
 
@@ -4263,6 +4319,15 @@ async function evaluateExistingHarnessHook(
         : {};
   }
   if (config.kind === "observe") {
+    // A failed call wrote no output to read; its shell diagnostic alone is
+    // answered and counted, at the call itself.
+    if (input.hook_event_name === "PostToolUseFailure")
+      return observeShellDiagnostics(
+        root,
+        input,
+        session.role,
+        observationScope,
+      );
     if (
       input.hook_event_name === "PostToolUse" &&
       ["Agent", "Task"].includes(input.tool_name ?? "")

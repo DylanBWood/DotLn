@@ -1,5 +1,5 @@
 import { sha256Hex as digest } from "./helpers.mjs";
-// WO-158 off-ramps: the operator capture every operator act names, the
+// Off-ramps (WO-158): the operator capture every operator act names, the
 // recording session's observed role, and the report convention that judges a
 // waived criterion. Shared by `resume` routes and their completion checks.
 import { createHash } from "node:crypto";

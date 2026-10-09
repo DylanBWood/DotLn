@@ -181,7 +181,7 @@ export class WorkerHost {
       gate.event,
     );
     let result: WorkerResult;
-    // WO-159: a Codex episode ends with its isolation record.
+    // A Codex episode ends with its isolation record (WO-159).
     let codexIsolation: CodexEpisodeIsolation | undefined;
     if (cached) {
       result = cached;

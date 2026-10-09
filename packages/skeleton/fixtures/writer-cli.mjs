@@ -3,8 +3,8 @@ import { execFileSync } from "node:child_process";
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 const [transport, behavior] = process.argv.slice(2);
 const input = JSON.parse(readFileSync(0, "utf8"));
-// WO-157 shapes of a committed change the host counts: a Sort move keeps the
-// bytes, a file becomes a directory of files, or one more surface path.
+// Shapes of a committed change the host counts (WO-157): a Sort move keeps
+// the bytes, a file becomes a directory of files, or one more surface path.
 if (behavior === "commit-move") {
   mkdirSync("sorted");
   execFileSync("git", ["mv", "fixture.txt", "sorted/fixture.txt"], {
@@ -64,7 +64,7 @@ const tape = JSON.parse(
 const events = tape[transport];
 for (const event of events) {
   if (event.result === "<envelope>") {
-    // WO-053: a successful display message need not itself be JSON.
+    // A successful display message need not itself be JSON (WO-053).
     event.result = "The synthetic change is complete.";
     event.structured_output = { envelope };
     if (behavior === "missing-structured") {

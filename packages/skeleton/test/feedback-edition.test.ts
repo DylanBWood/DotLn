@@ -1,7 +1,7 @@
-// WO-154: feedback editions by reference. A schema 2 edition commits its
+// Feedback editions by reference (WO-154). A schema 2 edition commits its
 // verifier stream with every body replaced by a Git blob reference, keys
-// staleness on the judged behavior, and keeps D010's refusal: a behavioral
-// change never inherits an older live audit.
+// staleness on the judged behavior, and keeps WO-147 D010's refusal: a
+// behavioral change never inherits an older live audit.
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
@@ -130,9 +130,9 @@ test("WO-154 a reference rebuilds its body from the working tree before commit a
   );
 });
 
-// D011 (FUP-0c86ada82f559914): the live audit's pins snapshot is a
-// working-tree candidate, so a pin-bearing body no commit holds still
-// resolves, and recording needs no object write.
+// The live audit's pins snapshot is a working-tree candidate, so a
+// pin-bearing body no commit holds still resolves, and recording needs no
+// object write (FUP-0c86ada82f559914).
 test("WO-154 the pins snapshot resolves a stranded derived reference from the working tree, with no Git object", (t) => {
   const { directory, write, hasObject } = repository(t);
   const lock = (version: string) =>
@@ -262,7 +262,7 @@ test("WO-154 the behavioral identity moves with a judged change and not with rel
     ".feedback-source/package-lock.json",
   ]);
 
-  // A judged module (D010's worker-store.ts) is behavior; the pins stay.
+  // A judged module (WO-147 D010's worker-store.ts) is behavior; the pins stay.
   const store = "packages/skeleton/src/worker-store.ts";
   const changed = current.files.map((file) =>
     file.path === store

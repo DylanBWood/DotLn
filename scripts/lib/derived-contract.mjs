@@ -91,10 +91,10 @@ const sections = [
   "Surfaces",
   "Operator-review assumptions",
 ];
-// WO-157 item 14 (WO-120 D007): an allocation event names the section set it
-// was written under by digest, so a later change to `sections` above leaves
-// historical events foldable. A change keeps each superseded set in this
-// table; an event without a digest was written under the WO-120 set.
+// An allocation event names the section set it was written under by digest,
+// so a later change to `sections` above leaves historical events foldable.
+// A change keeps each superseded set in this table; an event without a
+// digest was written under the WO-120 set (WO-157 item 14, WO-120 D007).
 const WO120_SECTIONS = [
   "Objective",
   "Design",
@@ -114,7 +114,7 @@ export function allocationSections(event) {
   if (!set) refuse(`unknown generated section set ${event.sectionsHash}`);
   return set;
 }
-/** WO-113 owns global migration. Only generated authorities opt in here. */
+/** Global migration belongs to WO-113; only generated authorities opt in here. */
 export function checkGeneratedSections(markdown, path, expected = sections) {
   if (!parseDerivedProvenance(markdown, path))
     throw new Error(`${path}: missing derived provenance`);

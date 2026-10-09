@@ -430,9 +430,9 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
         "/schema.json",
         key === "claude" ? "2.1.270" : "0.154.0",
       );
-      // WO-112 D017 adds only the Codex writer's commit grants and its PATH,
-      // and drops --sandbox so the named profile applies; every other pinned
-      // byte is unchanged.
+      // Only the Codex writer's commit grants and its PATH are added, and
+      // --sandbox is dropped so the named profile applies; every other pinned
+      // byte is unchanged (WO-112 D017).
       if (key === "codex") assert.equal(launched.includes("--sandbox"), false);
       const args =
         key === "codex"
@@ -600,7 +600,7 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
             .replace(confined, s.request.testCommand)
             .replaceAll(s.request.cwd, "<worktree>"),
         ),
-        // WO-122 live evidence corrects exactly this inherited inspection
+        // Live evidence (WO-122) corrects exactly this inherited inspection
         // disable. Preserve the historical WO-051 fixture and every other arg.
         key === "codex"
           ? pinned[key].args.filter(

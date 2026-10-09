@@ -13,7 +13,7 @@ export const CONTROL_LOG_SCHEMA_VERSION = 1;
 /** The code a failed allocation validation carries (WO-157 item 14). */
 export const ALLOCATION_REFUSED = "DOTLN_ALLOCATION_REFUSED";
 
-// WO-158 off-ramps. Each is a typed event with its own `resume` route; the
+// Off-ramps (WO-158). Each is a typed event with its own `resume` route; the
 // fold validates their shape here and `resume` judges their legality.
 export const WITHDRAWAL_DISPOSITIONS = ["failed", "superseded", "abandoned"];
 export const CORRECTABLE_ATTESTATION_FIELDS = [
@@ -144,10 +144,10 @@ const offRampEvent = (event, at) => {
   }
 };
 
-// WO-173: an executor completion carries the identifiers its handoff ledger
+// An executor completion carries the identifiers its handoff ledger
 // recorded unmet; the fold projects them with the ordinal that recorded them,
 // and an event without the field (an order whose criteria could not be read,
-// or one recorded before this rule) projects none.
+// or one recorded before this rule) projects none (WO-173).
 const unmetCriteria = (event, at) => {
   if (event.unmetCriteria === undefined) return undefined;
   if (
@@ -195,13 +195,13 @@ const emptyState = () => ({
   latestAttestation: undefined,
   effortPairs: [],
   effortDeclarationValidated: false,
-  // WO-158 projections stay undefined until their event appears, so folds of
-  // histories without off-ramps keep their recorded shape.
+  // The off-ramp projections stay undefined until their event appears, so
+  // folds of histories without off-ramps keep their recorded shape (WO-158).
   waivedCriteria: undefined,
   withdrawal: undefined,
   corrections: undefined,
   overrideRecords: undefined,
-  // WO-173: the criteria the latest executor completion recorded unmet.
+  // The criteria the latest executor completion recorded unmet (WO-173).
   unmetCriteria: undefined,
 });
 
@@ -342,8 +342,8 @@ const scanControl = (events, visit) => {
             event.verdict === "fail" ? event.reportPath : undefined,
         });
         break;
-      // WO-158: none of these changes the phase except the withdrawal, and
-      // none is an attested completion of the order's own work.
+      // None of these changes the phase except the withdrawal, and
+      // none is an attested completion of the order's own work (WO-158).
       case "CriterionWaived":
         offRampEvent(event, index + 1);
         state.waivedCriteria = [

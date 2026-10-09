@@ -2,6 +2,7 @@ import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
+import { createRequire } from "node:module";
 
 export const withTemporaryBody = (body, operation, filename = "PR.md") => {
   const directory = mkdtempSync(join(tmpdir(), "dotln-body-"));
@@ -116,12 +117,269 @@ const tableLines = (lines) => {
   return indexes;
 };
 
-export const githubBodyProfileFailures = (markdown) => {
-  const failures = [];
-  const lines = markdown.split("\n");
-  const quotedLines = lines.map((rawLine) =>
-    quoteContent(rawLine.replace(/\r$/, "")),
+// Links in a stored body are file-relative, the form the document gate
+// resolves; on the forge they resolve nowhere. A link is relative when its
+// destination carries no scheme and is not protocol-relative; an empty
+// destination is relative too, since the forge resolves it to the page itself.
+const schemeless = (destination) =>
+  !/^[a-z][a-z0-9+.-]*:/iu.test(destination) && !destination.startsWith("//");
+const definitionPattern = /^( {0,3}\[[^\]]+\]:[ \t]*)(<[^>]*>|\S+)(.*)$/u;
+// A backslash escapes the character after it; an even run of backslashes
+// escapes nothing.
+const escaped = (text, index) => {
+  let backslashes = 0;
+  while (index - backslashes > 0 && text[index - backslashes - 1] === "\\")
+    backslashes += 1;
+  return backslashes % 2 === 1;
+};
+// The index of the bracket that closes the one before `from`, with nested
+// pairs balanced, or -1.
+const closingBracket = (text, from, open, close) => {
+  let depth = 0;
+  for (let index = from; index < text.length; index += 1) {
+    if (text[index] === "\\") index += 1;
+    else if (text[index] === open) depth += 1;
+    else if (text[index] === close) {
+      if (depth === 0) return index;
+      depth -= 1;
+    }
+  }
+  return -1;
+};
+// A bare destination runs to the first whitespace or to the parenthesis that
+// closes the link; parentheses inside it count only in balanced pairs.
+const bareDestinationEnd = (text, from) => {
+  let depth = 0;
+  for (let index = from; index < text.length; index += 1) {
+    const character = text[index];
+    if (character === "\\") index += 1;
+    else if (/[\s\p{Cc}]/u.test(character)) return index;
+    else if (character === "(") depth += 1;
+    else if (character === ")") {
+      if (depth === 0) return index;
+      depth -= 1;
+    }
+  }
+  return -1;
+};
+const unescapedIndex = (text, from, character) => {
+  for (let index = from; index < text.length; index += 1) {
+    if (text[index] === "\\") index += 1;
+    else if (text[index] === character) return index;
+  }
+  return -1;
+};
+const afterSpaces = (text, from) => {
+  while (text[from] === " " || text[from] === "\t") from += 1;
+  return from;
+};
+/** Each inline link on one line, with the destination the parser renders for
+ * it. The scanner finds the link's extent as CommonMark reads it: an optional
+ * `!`, a label whose brackets balance, `(`, optional spaces, a destination in
+ * angle brackets or bare with balanced parentheses, an optional title in
+ * double quotes, single quotes or parentheses, optional spaces and `)`.
+ * Brackets in code and raw HTML are hidden by the caller's masking; the label
+ * and title are sliced from the unmasked line. The parser decides whether the
+ * sequence renders as a link and what its destination is once backslash
+ * escapes and character references are resolved: a sequence the parser does
+ * not render as a link at its column, such as the outer brackets around a
+ * nested link, keeps its bytes while the scan goes on inside it. A link split
+ * across lines is not an inline link here and is left for the parser-backed
+ * refusal. */
+function* inlineLinks(masked, line, rendered) {
+  for (
+    let at = masked.indexOf("[");
+    at >= 0;
+    at = masked.indexOf("[", at + 1)
+  ) {
+    if (escaped(masked, at)) continue;
+    const image = at > 0 && masked[at - 1] === "!" && !escaped(masked, at - 1);
+    const start = image ? at - 1 : at;
+    const node = rendered.get(start + 1);
+    if (!node) continue;
+    const labelEnd = closingBracket(masked, at + 1, "[", "]");
+    if (labelEnd < 0 || masked[labelEnd + 1] !== "(") continue;
+    let cursor = afterSpaces(masked, labelEnd + 2);
+    if (masked[cursor] === "<") {
+      const end = unescapedIndex(masked, cursor + 1, ">");
+      if (end < 0) continue;
+      cursor = end + 1;
+    } else {
+      const end = bareDestinationEnd(masked, cursor);
+      if (end < 0) continue;
+      cursor = end;
+    }
+    const titleStart = cursor;
+    cursor = afterSpaces(masked, cursor);
+    let title = "";
+    const closer = { '"': '"', "'": "'", "(": ")" }[masked[cursor]];
+    if (cursor > titleStart && closer) {
+      const end = unescapedIndex(masked, cursor + 1, closer);
+      if (end < 0) continue;
+      title = line.slice(titleStart, end + 1);
+      cursor = afterSpaces(masked, end + 1);
+    }
+    if (masked[cursor] !== ")") continue;
+    yield {
+      index: start,
+      length: cursor + 1 - start,
+      image: image ? "!" : "",
+      text: line.slice(at + 1, labelEnd),
+      destination: node.url ?? "",
+      title,
+    };
+    at = cursor;
+  }
+}
+/** The installed Markdown parser is the oracle for what renders as a link and
+ * for what is code or raw HTML rather than prose: nested brackets in a label,
+ * balanced parentheses in a destination, a label or destination split across
+ * lines, images and definitions all count as links, while code spans, code
+ * blocks and raw HTML hide theirs. It is loaded on first use because most
+ * callers of this module never check or rewrite links. */
+let markdownParser;
+const parsedNodes = (markdown, types) => {
+  markdownParser ??= createRequire(import.meta.url)("prettier/plugins/markdown")
+    .parsers.markdown;
+  const found = [];
+  const visit = (node) => {
+    if (types.includes(node.type)) found.push(node);
+    for (const child of node.children ?? []) visit(child);
+  };
+  visit(markdownParser.parse(markdown));
+  return found;
+};
+const renderedLinks = (markdown) =>
+  parsedNodes(markdown, ["link", "image", "definition"]).map((node) => ({
+    line: node.position.start.line,
+    href: node.url ?? "",
+  }));
+// A line ends at a newline, at a carriage return and newline, or at a lone
+// carriage return, the three line endings Markdown recognizes, and the parser
+// counts lines the same way; its columns count UTF-16 code units from the
+// start of such a line, as string indexes do, and a leading byte-order mark is
+// outside its count. Each line keeps the ending that followed it, so a body
+// is reassembled byte-for-byte.
+const sourceLines = (markdown) => {
+  const bom = markdown.startsWith("﻿") ? "﻿" : "";
+  const parts = markdown.slice(bom.length).split(/(\r\n|\r|\n)/u);
+  const lines = [];
+  for (let index = 0; index < parts.length; index += 2)
+    lines.push({ text: parts[index], ending: parts[index + 1] ?? "" });
+  return { bom, lines };
+};
+// Visit each line with its text, the same text with every range the parser
+// renders as code or raw HTML replaced by spaces, and the links and the
+// definition the parser renders starting on it, so a link-shaped sequence
+// inside a code span (whatever its backtick runs, and across lines), a fenced
+// or indented code block or a raw HTML tag or block is never read as a link
+// and keeps its bytes, and a link is rewritten only where the parser renders
+// one. The parser's line and column address the same lines as the inventory,
+// whichever line ending each line uses.
+const proseLines = (markdown, visit) => {
+  const { bom, lines } = sourceLines(markdown);
+  const masked = lines.map((line) => line.text);
+  const rendered = lines.map(() => ({ links: new Map(), definition: null }));
+  for (const node of parsedNodes(markdown.slice(bom.length), [
+    "inlineCode",
+    "code",
+    "html",
+    "link",
+    "image",
+    "definition",
+  ])) {
+    const { start, end } = node.position;
+    if (node.type === "link" || node.type === "image")
+      rendered[start.line - 1].links.set(start.column, node);
+    else if (node.type === "definition")
+      rendered[start.line - 1].definition = node;
+    else
+      for (let line = start.line; line <= end.line; line += 1) {
+        const text = masked[line - 1];
+        const from = line === start.line ? start.column - 1 : 0;
+        const to = line === end.line ? end.column - 1 : text.length;
+        masked[line - 1] =
+          text.slice(0, from) + " ".repeat(to - from) + text.slice(to);
+      }
+  }
+  return (
+    bom +
+    lines
+      .map(
+        (line, index) =>
+          (visit(line.text, masked[index], rendered[index]) ?? line.text) +
+          line.ending,
+      )
+      .join("")
   );
+};
+/** Every link the parser renders with a relative destination, in document
+ * order, each with the line it starts on. */
+export const relativeLinkFailures = (markdown) =>
+  renderedLinks(markdown)
+    .filter((link) => schemeless(link.href))
+    .map((link) => ({ ...link, kind: "relative-link" }));
+/** Rewrite each link the parser renders with a relative destination in a
+ * stored body to the repository at the reviewed revision, from the body's own
+ * repository path; a destination that escapes the repository, a bare fragment,
+ * an empty destination, or a body with no GitHub target becomes the link's
+ * text. Images keep rendering through the raw form. The destination is the one
+ * the parser renders, its backslash escapes and character references resolved,
+ * and the rewritten path encodes parentheses too, so the destination reads the
+ * same to a renderer that balances them and to one that does not. A rendered
+ * relative link this line scanner cannot see is left as it is for the profile
+ * check to refuse. */
+export const absoluteBodyLinks = (markdown, { from, repository, revision }) => {
+  const base = from.includes("/") ? from.slice(0, from.lastIndexOf("/")) : "";
+  const resolved = (destination, image) => {
+    if (!repository?.selector || !revision) return null;
+    const at = destination.indexOf("#");
+    const path = at >= 0 ? destination.slice(0, at) : destination;
+    const fragment = at >= 0 ? destination.slice(at) : "";
+    if (!path || path.startsWith("/")) return null;
+    const parts = [];
+    for (const part of `${base}/${path}`.split("/")) {
+      if (part === "" || part === ".") continue;
+      if (part === "..") {
+        if (!parts.length) return null;
+        parts.pop();
+      } else parts.push(part);
+    }
+    const encoded = encodeURI(parts.join("/")).replace(
+      /[()]/gu,
+      (character) => `%${character.charCodeAt(0).toString(16).toUpperCase()}`,
+    );
+    return `https://${repository.selector}/blob/${revision}/${encoded}${image ? "?raw=true" : ""}${fragment}`;
+  };
+  return proseLines(markdown, (line, masked, rendered) => {
+    const definition = rendered.definition && definitionPattern.exec(masked);
+    if (definition) {
+      const destination = rendered.definition.url ?? "";
+      if (!schemeless(destination)) return line;
+      const target = resolved(destination, false);
+      return target === null ? "" : `${definition[1]}${target}${definition[3]}`;
+    }
+    let output = "";
+    let cursor = 0;
+    for (const link of inlineLinks(masked, line, rendered.links)) {
+      output += line.slice(cursor, link.index);
+      const { image, text, destination, title } = link;
+      const original = line.slice(link.index, link.index + link.length);
+      if (!schemeless(destination)) output += original;
+      else {
+        const target = resolved(destination, image === "!");
+        output +=
+          target === null ? text : `${image}[${text}](${target}${title})`;
+      }
+      cursor = link.index + link.length;
+    }
+    return output + line.slice(cursor);
+  });
+};
+export const githubBodyProfileFailures = (markdown, { links = false } = {}) => {
+  const failures = [];
+  const { lines } = sourceLines(markdown);
+  const quotedLines = lines.map((line) => quoteContent(line.text));
   const tableLineIndexes = tableLines(quotedLines);
   let fence;
   let previousProse;
@@ -203,6 +461,7 @@ export const githubBodyProfileFailures = (markdown) => {
     };
   });
 
+  if (links) failures.push(...relativeLinkFailures(markdown));
   return failures;
 };
 
@@ -795,10 +1054,14 @@ export const generateTargetPullRequest = ({
   return { title, body };
 };
 
-export const assertGitHubBodyProfile = (markdown, displayPath) => {
-  const failures = githubBodyProfileFailures(markdown);
+export const assertGitHubBodyProfile = (markdown, displayPath, options) => {
+  const failures = githubBodyProfileFailures(markdown, options);
   if (failures.length === 0) return;
   const first = failures[0];
+  if (first.kind === "relative-link")
+    throw new Error(
+      `${displayPath}:${first.line}: relative link ${first.href || "with an empty destination"}; a published body links absolute to the repository at the reviewed revision or writes plain text`,
+    );
   throw new Error(
     `${displayPath}: accidental GitHub prose soft wrap between lines ${first.previousLine} and ${first.line}; keep each prose paragraph or list-item paragraph on one physical line and use blank lines or explicit Markdown hard breaks only for intentional rendered breaks`,
   );

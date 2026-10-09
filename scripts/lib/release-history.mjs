@@ -208,14 +208,24 @@ function readSnapshot(block, displayPath) {
   return snapshot;
 }
 
+const missingBlock = (displayPath) =>
+  `${displayPath}: no generated release history block; add the ${historyStart} and ${historyEnd} lines where the table belongs, then run ${historyCommand}`;
+
 /** The index's rule for the committed table: each recorded tag must remain
  * available and unchanged, the rows must equal those tags' rows, and a
- * newer local release tag is reported without refusing. */
+ * newer local release tag is reported without refusing. A document whose
+ * block is gone fails; so does a local release tag whose annotation cannot be
+ * read, which is reported rather than thrown. */
 export function checkReleaseHistory(root, source, displayPath) {
   let block, records, snapshot;
   try {
     block = historyBlock(source, displayPath);
-    if (!block) return { present: false, failures: [], newer: [] };
+    if (!block)
+      return {
+        present: false,
+        failures: [missingBlock(displayPath)],
+        newer: [],
+      };
     snapshot = readSnapshot(block, displayPath);
     records = localReleaseRecords(root, snapshot);
   } catch (error) {
@@ -240,14 +250,18 @@ export function checkReleaseHistory(root, source, displayPath) {
     ({ name, objectType }) =>
       !recorded.has(name) && semver(name) && objectType === "tag",
   );
-  return {
-    present: true,
-    failures,
-    newer: releaseTagsFrom(
+  let newer = [];
+  try {
+    newer = releaseTagsFrom(
       candidates,
       releaseAnnotations(root, candidates),
-    ).map(({ name }) => name),
-  };
+    ).map(({ name }) => name);
+  } catch (error) {
+    failures.push(
+      `${displayPath}: a local release tag's annotation cannot be read (${error instanceof Error ? error.message : String(error)}); repair or delete the tag`,
+    );
+  }
+  return { present: true, failures, newer };
 }
 
 /** Replaces the committed block with one generated from every local release
@@ -259,10 +273,7 @@ export function writeReleaseHistory(root) {
     throw new Error(`${displayPath}: expected a contained regular file`);
   const source = readFileSync(path, "utf8");
   const block = historyBlock(source, displayPath);
-  if (!block)
-    throw new Error(
-      `${displayPath}: no generated release history block; add the ${historyStart} and ${historyEnd} lines where the table belongs`,
-    );
+  if (!block) throw new Error(missingBlock(displayPath));
   const records = localReleaseRecords(root);
   const lines = source.split("\n");
   lines.splice(

@@ -687,8 +687,10 @@ test("WO-199 real wrapped writers recover after crash, revocation and a survivin
   assert.equal(held.writerAlive, false);
 });
 
-// FINAL-001 F1's returned-result class includes a runner that traps the signal
-// and exits normally with a failure, and killed git reads inside admission.
+// The returned-result class, where a terminal signal during post-result
+// admission becomes the writer's result, includes a runner that traps the
+// signal and exits normally with a failure, and killed git reads inside
+// admission.
 test("WO-199 terminal signals during post-result host calls admit no observation or refusal; reruns reuse the commit without redispatch", async () => {
   for (const [kind, signal, expectedCode, trapSignal] of [
     ["focused-test", "SIGINT", 130, false],

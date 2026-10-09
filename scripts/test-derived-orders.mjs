@@ -188,8 +188,8 @@ test("compiled order materializes, activates and shares index, status and lifecy
       "--work-order",
       result.workOrderId,
     ];
-    // WO-173: a derived order declares numbered criteria, so each executor
-    // completion reads the handoff ledger, one line per criterion.
+    // A derived order declares numbered criteria, so each executor completion
+    // reads the handoff ledger, one line per criterion (WO-173).
     const ledger = () =>
       write(
         root,
@@ -710,8 +710,8 @@ test("direct activation refuses a derived authority root redirected outside the 
     }
   }));
 
-// WO-157 item 14 (WO-120 D007): an allocation event keeps folding after the
-// generated section list changes, and a corrupt one refuses only its order.
+// An allocation event keeps folding after the generated section list changes,
+// and a corrupt one refuses only its order (WO-157 item 14, WO-120 D007).
 test("WO-157 an allocation written under a superseded section set folds after the list changes", async () =>
   fixture(async (root) => {
     const kept = await materializeOrder(compiled(), provenance("superseded"), {

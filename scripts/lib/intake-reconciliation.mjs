@@ -14,8 +14,8 @@ import { dirname, join, relative, resolve, sep } from "node:path";
 import { runGitPathList } from "./git.mjs";
 import { classifyIgnoredMaterial, inspectNestedRepository } from "./paths.mjs";
 import {
-  recoverDisposableRepositories,
-  verifyMaterialState,
+  inventoryMaterial,
+  removeScratchRepositories,
 } from "./worktree-material.mjs";
 
 const stat = (path) => lstatSync(path, { throwIfNoEntry: false });
@@ -47,7 +47,6 @@ function inventory(source, retainedControl, material = []) {
     ...(retainedControl ? [controlRoot(source)] : []),
   ];
   const additional = material
-    .filter((row) => row.disposition !== "undeclared")
     .filter(
       (row) =>
         !roots.some(
@@ -121,17 +120,20 @@ function inventory(source, retainedControl, material = []) {
     if (!item) return;
     if (item.isDirectory()) {
       if (ignored.has(`${path}/`) || stat(join(absolute, ".git"))) {
+        // A nested repository the inventory could not list (Git hides a
+        // directory whose .git it cannot read) is scratch like any other
+        // outside intake; only a preserving word keeps it.
         const nested = inspectNestedRepository(source, `${path}/`);
         if (
           nested.repository &&
-          nested.empty &&
-          lane === "control" &&
+          !nested.linked &&
+          lane !== "intake" &&
           declaration?.disposition !== "preserve"
         ) {
           nestedRepositories.push({
             source: path,
             lane,
-            disposition: "empty-scaffolding",
+            disposition: "disposable",
           });
           discarded++;
           return;
@@ -253,7 +255,6 @@ function plan(source, main, workOrder, retainedControl, material) {
 export function verifyPreservedMaterial(source, main, receipt) {
   source = realpathSync(source);
   main = realpathSync(main);
-  verifyMaterialState(source, receipt.material ?? []);
   const current = entries(source, receipt.retainedControl, receipt.material);
   const expected = new Map(
     [...receipt.directories, ...receipt.files].map((row) => [row.source, row]),
@@ -301,7 +302,7 @@ function reconcile(
   {
     dryRun = false,
     retainedControl = false,
-    material = [],
+    material,
     copyFile = copyFileSync,
   } = {},
 ) {
@@ -309,6 +310,9 @@ function reconcile(
     throw new Error("Worktree preservation needs its work order");
   source = realpathSync(source);
   main = realpathSync(main);
+  // The inventory names every nested repository and its disposition; a caller
+  // that passes none gets the worktree's own.
+  material ??= source === main ? [] : inventoryMaterial(source);
   const planned =
     source === main
       ? { files: [], directories: [], nestedRepositories: [] }
@@ -326,14 +330,13 @@ function reconcile(
   };
   preservationProofs.set(receipt, proofs);
   if (source === main) return receipt;
-  verifyMaterialState(source, material);
   if (dryRun) {
-    receipt.recovery = recoverDisposableRepositories(
+    receipt.removals = removeScratchRepositories(
       source,
-      main,
-      workOrder,
-      material,
-      { dryRun },
+      scratchMaterial(receipt),
+      {
+        dryRun,
+      },
     );
     return receipt;
   }
@@ -357,14 +360,30 @@ function reconcile(
       throw new Error("Preservation byte proof failed; source retained");
   }
   verifyPreservedMaterial(source, main, receipt);
-  receipt.recovery = recoverDisposableRepositories(
-    source,
-    main,
-    workOrder,
-    material,
-  );
+  // Scratch repositories leave after the caller's final preservation check,
+  // just before the worktree itself; the preview above says what would go.
   return receipt;
 }
+
+/** The rows the caller removes after its final preservation check: every
+ * disposable inventory row, plus a nested repository the walk found that the
+ * inventory could not list (Git hides a directory whose .git it cannot read). */
+export const scratchMaterial = (receipt) => [
+  ...receipt.material.filter((row) => row.disposition === "disposable"),
+  ...(receipt.nestedRepositories ?? [])
+    .filter(
+      (row) =>
+        row.disposition === "disposable" &&
+        !receipt.material.some((entry) => entry.path === row.source),
+    )
+    .map((row) => ({
+      path: row.source,
+      lane: row.lane,
+      disposition: "disposable",
+      source: "lane",
+      reason: "nested repository Git could not list",
+    })),
+];
 
 export const reconcileIntake = (source, main, workOrder, options = {}) =>
   reconcile(source, main, workOrder, options);
@@ -382,12 +401,12 @@ export function renderIntakeReconciliation(receipt) {
   return (
     [
       `${label}${receipt.dryRun ? " preview" : " receipt"}: ${receipt.files.length} files, ${receipt.directories.length} directories, ${receipt.bytes} bytes; source retained until worktree removal.`,
-      ...(receipt.recovery ?? []).map(
-        (row) => `Material recovery: ${JSON.stringify(row)}`,
+      ...(receipt.removals ?? []).map(
+        (row) => `Scratch removal: ${JSON.stringify(row)}`,
       ),
       ...(receipt.nestedRepositories ?? []).map(
         (row) =>
-          `  ${JSON.stringify(row.source)}: nested repository ${row.disposition === "empty-scaffolding" ? "discarded as empty fixture scaffolding (only .git, no commit)" : row.disposition === "disposable" ? "disposable; removed with the worktree" : "preserved as a directory unit"}`,
+          `  ${JSON.stringify(row.source)}: nested repository ${row.disposition === "disposable" ? "disposable; removed with the worktree" : "preserved as a directory unit"}`,
       ),
       ...[...receipt.directories, ...receipt.files].map(
         (row) =>

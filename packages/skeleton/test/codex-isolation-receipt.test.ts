@@ -23,8 +23,8 @@ import { runVerificationDemo } from "../src/verification-demo.js";
 import { WorkerStore } from "../src/worker-store.js";
 import type { FixtureTree } from "../src/scenario.js";
 
-// WO-159 AC4: the live receipt lists both digest pairs among its protected
-// surfaces, and a receipt whose pairs differ fails the receipt check.
+// The live receipt lists both digest pairs among its protected surfaces, and
+// a receipt whose pairs differ fails the receipt check (WO-159 criterion 4).
 const evidence = new URL("../../../../docs/evidence/WO-159/", import.meta.url);
 const receiptTools = () => import(new URL("receipt.mjs", evidence).href);
 const fixture = JSON.parse(
@@ -313,8 +313,8 @@ test("[document] WO-159 AC4 the verification host's own episode record builds a 
     assert.doesNotThrow(() => validateReceipt(receipt));
     assert.equal(receipt.episode.value.terminal, "WorkerCompleted");
     assert.equal(receipt.episode.value.isolation.isolatedTrustEntries, 1);
-    // The retained stream derives the receipt (VER-001 F2): a digest, count,
-    // launch selection or episode fact the stream does not bear is refused.
+    // The retained stream derives the receipt: a digest, count, launch
+    // selection or episode fact the stream does not bear is refused.
     assert.equal(matchSharedStream(receipt, log), true);
     const streamForgeries: [string, (r: Receipt) => void, RegExp][] = [
       [
@@ -387,8 +387,8 @@ test("[document] WO-159 AC3 the committed live receipt and trust probe pass the 
   );
   assert.doesNotThrow(() => validateReceipt(receipt));
   assert.equal(matchSharedStream(receipt), true);
-  // VER-001 F2's reproduction: a well-formed false digest passes the syntax
-  // check but not the retained stream.
+  // The verifier's reproduction: a well-formed false digest passes the
+  // syntax check but not the retained stream.
   const forged = structuredClone(receipt);
   forged.eventStream.value.sha256 = OTHER;
   assert.doesNotThrow(() => validateReceipt(forged));

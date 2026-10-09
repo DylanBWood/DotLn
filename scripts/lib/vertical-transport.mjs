@@ -6,7 +6,7 @@ import { interruption } from "../../packages/skeleton/dist/src/vertical-host.js"
 
 /** Preserve primitive transport semantics while observing the resident's
  * existing presence interpreter before launch and during the child process,
- * and the run's abort signal (WO-199 VER-001 F1): an interrupted run stops a
+ * and the run's abort signal (WO-199): an interrupted run stops a
  * judgment, triage or repair-verifier child at once and rejects its
  * completion with the hosts' typed interruption. A source-change writer is
  * left to its host, which forwards the operator's signal to the writer group

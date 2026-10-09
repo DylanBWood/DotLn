@@ -2,9 +2,11 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import {
+  absoluteBodyLinks,
   assertGitHubBodyProfile,
   githubBodyProfileFailures,
   deliverableReady,
+  relativeLinkFailures,
 } from "./lib/github-body.mjs";
 import { readinessFixture } from "./fixtures/target-publish/readiness.mjs";
 
@@ -51,6 +53,367 @@ await test("GitHub prose profile case 5", () => {
         "RELEASE-NOTES.md",
       ),
     /RELEASE-NOTES\.md: accidental GitHub prose soft wrap between lines 1 and 2/,
+  );
+});
+
+await test("relative links are refused only when asked, and never inside code", () => {
+  const body =
+    [
+      "Read [the record](../../evidence/WO-1/README.md) and ![a figure](figures/a.png).",
+      "",
+      "An absolute [link](https://github.com/o/r/blob/abc/docs/x.md) and a [mail](mailto:a@b.c) pass.",
+      "",
+      "A protocol-relative [one](//example.invalid/x) passes; a bare [fragment](#top) is relative.",
+      "",
+      "Inline code keeps `[a](../b.md)` and the fence below keeps its link.",
+      "",
+      "```",
+      "[fenced](../c.md)",
+      "```",
+      "",
+      "[ref]: ../../decisions.md",
+    ].join("\n") + "\n";
+  assert.equal(githubBodyProfileFailures(body).length, 0);
+  assert.deepEqual(
+    relativeLinkFailures(body).map((row) => [row.line, row.href]),
+    [
+      [1, "../../evidence/WO-1/README.md"],
+      [1, "figures/a.png"],
+      [5, "#top"],
+      [13, "../../decisions.md"],
+    ],
+  );
+  assert.equal(githubBodyProfileFailures(body, { links: true }).length, 4);
+  assert.throws(
+    () => assertGitHubBodyProfile(body, "PR.md", { links: true }),
+    /PR\.md:1: relative link \.\.\/\.\.\/evidence\/WO-1\/README\.md; a published body links absolute/,
+  );
+  assert.doesNotThrow(() => assertGitHubBodyProfile(body, "PR.md"));
+});
+
+await test("relative links are written absolute at the reviewed revision; escaping ones and bare fragments become text", () => {
+  const body =
+    [
+      'Read [the record](../../evidence/WO-1/README.md#top) and ![a figure](figures/a.png "Figure").',
+      "An escaping [link](../../../../outside.md) and a [fragment](#top) become text; `[code](../x.md)` stays.",
+      "An absolute [link](https://example.invalid/x) stays.",
+      "",
+      "[ref]: ../../decisions.md",
+      "[gone]: ../../../../outside.md",
+    ].join("\n") + "\n";
+  const published = absoluteBodyLinks(body, {
+    from: "docs/final-reviews/WO-1/PR.md",
+    repository: { host: "github.com", selector: "github.com/o/r" },
+    revision: "abc123",
+  });
+  assert.equal(
+    published,
+    [
+      'Read [the record](https://github.com/o/r/blob/abc123/docs/evidence/WO-1/README.md#top) and ![a figure](https://github.com/o/r/blob/abc123/docs/final-reviews/WO-1/figures/a.png?raw=true "Figure").',
+      "An escaping link and a fragment become text; `[code](../x.md)` stays.",
+      "An absolute [link](https://example.invalid/x) stays.",
+      "",
+      "[ref]: https://github.com/o/r/blob/abc123/docs/decisions.md",
+      "",
+    ].join("\n") + "\n",
+  );
+  assert.equal(relativeLinkFailures(published).length, 0);
+  // Without a GitHub target every relative link is written as its text.
+  assert.equal(
+    absoluteBodyLinks("See [the record](../x.md).\n", {
+      from: "docs/a/PR.md",
+      repository: null,
+      revision: "abc",
+    }),
+    "See the record.\n",
+  );
+});
+
+await test("angle-bracket destinations, single-quoted titles and bracketed definitions are links too, written with an encoded path", () => {
+  const body =
+    [
+      "See [a space](<../a b.md>) and [a title](../t.md 'Title').",
+      "",
+      "[def]: <../d e.md>",
+    ].join("\n") + "\n";
+  assert.deepEqual(
+    relativeLinkFailures(body).map((row) => row.href),
+    ["../a b.md", "../t.md", "../d e.md"],
+  );
+  const published = absoluteBodyLinks(body, {
+    from: "docs/a/PR.md",
+    repository: { host: "github.com", selector: "github.com/o/r" },
+    revision: "abc",
+  });
+  assert.equal(
+    published,
+    [
+      "See [a space](https://github.com/o/r/blob/abc/docs/a%20b.md) and [a title](https://github.com/o/r/blob/abc/docs/t.md 'Title').",
+      "",
+      "[def]: https://github.com/o/r/blob/abc/docs/d%20e.md",
+    ].join("\n") + "\n",
+  );
+  assert.equal(relativeLinkFailures(published).length, 0);
+});
+
+await test("valid link forms with nested brackets, balanced parentheses, padding, titles and escapes are rewritten; a link split across lines is refused by the parser-backed profile; indented code stays", () => {
+  const body =
+    [
+      "A [nested [label]](../evidence/WO-188/decisions.md) and a [file](file(1).md) with balanced parentheses.",
+      "",
+      "A [padded]( ../p.md ) destination, a [paren](../q.md (Paren title)) title and an [esc\\]aped](../e.md) label.",
+      "",
+      "A label holding code [`a]b`](../c.md), an escaped \\[bracket](../n.md) and an absolute [link](https://example.invalid/x).",
+      "",
+      "[two",
+      "lines](../m.md)",
+      "",
+      "    [literal](../code.md)",
+    ].join("\n") + "\n";
+  assert.deepEqual(
+    relativeLinkFailures(body).map((row) => [row.line, row.href]),
+    [
+      [1, "../evidence/WO-188/decisions.md"],
+      [1, "file(1).md"],
+      [3, "../p.md"],
+      [3, "../q.md"],
+      [3, "../e.md"],
+      [5, "../c.md"],
+      [7, "../m.md"],
+    ],
+  );
+  const published = absoluteBodyLinks(body, {
+    from: "docs/final-reviews/WO-1/PR.md",
+    repository: { host: "github.com", selector: "github.com/o/r" },
+    revision: "abc",
+  });
+  assert.equal(
+    published,
+    [
+      "A [nested [label]](https://github.com/o/r/blob/abc/docs/final-reviews/evidence/WO-188/decisions.md) and a [file](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/file%281%29.md) with balanced parentheses.",
+      "",
+      "A [padded](https://github.com/o/r/blob/abc/docs/final-reviews/p.md) destination, a [paren](https://github.com/o/r/blob/abc/docs/final-reviews/q.md (Paren title)) title and an [esc\\]aped](https://github.com/o/r/blob/abc/docs/final-reviews/e.md) label.",
+      "",
+      "A label holding code [`a]b`](https://github.com/o/r/blob/abc/docs/final-reviews/c.md), an escaped \\[bracket](../n.md) and an absolute [link](https://example.invalid/x).",
+      "",
+      "[two",
+      "lines](../m.md)",
+      "",
+      "    [literal](../code.md)",
+    ].join("\n") + "\n",
+  );
+  // The split link is the one rendered relative link left, and the profile
+  // refuses it rather than publishing it.
+  assert.deepEqual(
+    githubBodyProfileFailures(published, { links: true })
+      .filter((row) => row.kind === "relative-link")
+      .map((row) => [row.line, row.href]),
+    [[7, "../m.md"]],
+  );
+  // Without a GitHub target a nested label is written as its own text.
+  assert.equal(
+    absoluteBodyLinks("See [the [record]](../x.md).\n", {
+      from: "docs/a/PR.md",
+      repository: null,
+      revision: "abc",
+    }),
+    "See the [record].\n",
+  );
+});
+
+await test("an empty destination is a relative link: the profile refuses it and the rewriter writes the link's text", () => {
+  const body =
+    [
+      'An [empty]() link, one [in brackets](<> "Title") and an ![empty image]() each render with an empty destination.',
+      "",
+      "[empty-def]: <>",
+    ].join("\n") + "\n";
+  assert.deepEqual(
+    relativeLinkFailures(body).map((row) => [row.line, row.href]),
+    [
+      [1, ""],
+      [1, ""],
+      [1, ""],
+      [3, ""],
+    ],
+  );
+  assert.throws(
+    () => assertGitHubBodyProfile(body, "PR.md", { links: true }),
+    /PR\.md:1: relative link with an empty destination; a published body links absolute/,
+  );
+  const published = absoluteBodyLinks(body, {
+    from: "docs/final-reviews/WO-1/PR.md",
+    repository: { host: "github.com", selector: "github.com/o/r" },
+    revision: "abc",
+  });
+  assert.equal(
+    published,
+    "An empty link, one in brackets and an empty image each render with an empty destination.\n\n\n",
+  );
+  assert.equal(githubBodyProfileFailures(published, { links: true }).length, 0);
+});
+
+await test("code and raw HTML the parser renders keep their bytes whatever their backtick runs or line count; an escaped or closed backtick leaves a real link", () => {
+  const body =
+    [
+      "A span `` [sample](file.md) ` literal `` with a shorter run inside, the opposite order `[a](b.md) `` x` and a longer run ``` [c](d.md) `` y ``` stay.",
+      "",
+      "A span opened here `[two](lines.md)",
+      "closes here` and this [link](after.md) is real.",
+      "",
+      "An escaped \\`[opener](esc.md)` is a link; so is the one after `code\\`[closed](span.md)`.",
+      "",
+      "<div>",
+      "[html block](block.md)",
+      "</div>",
+      "",
+      'An inline <span title="[tag](attr.md)">tag</span> keeps its attribute.',
+      "",
+      "> A quoted `` [q](q.md) ` r `` span stays and its [link](quoted.md) is real.",
+    ].join("\n") + "\n";
+  assert.deepEqual(
+    relativeLinkFailures(body).map((row) => [row.line, row.href]),
+    [
+      [4, "after.md"],
+      [6, "esc.md"],
+      [6, "span.md"],
+      [14, "quoted.md"],
+    ],
+  );
+  const published = absoluteBodyLinks(body, {
+    from: "docs/final-reviews/WO-1/PR.md",
+    repository: { host: "github.com", selector: "github.com/o/r" },
+    revision: "abc",
+  });
+  const at = "https://github.com/o/r/blob/abc/docs/final-reviews/WO-1";
+  assert.equal(
+    published,
+    [
+      body.split("\n")[0],
+      "",
+      "A span opened here `[two](lines.md)",
+      `closes here\` and this [link](${at}/after.md) is real.`,
+      "",
+      `An escaped \\\`[opener](${at}/esc.md)\` is a link; so is the one after \`code\\\`[closed](${at}/span.md)\`.`,
+      "",
+      "<div>",
+      "[html block](block.md)",
+      "</div>",
+      "",
+      'An inline <span title="[tag](attr.md)">tag</span> keeps its attribute.',
+      "",
+      `> A quoted \`\` [q](q.md) \` r \`\` span stays and its [link](${at}/quoted.md) is real.`,
+    ].join("\n") + "\n",
+  );
+  // No rendered relative link remains; the two-line span is a soft wrap the
+  // prose profile refuses on its own terms.
+  assert.deepEqual(
+    githubBodyProfileFailures(published, { links: true }).map((row) => [
+      row.kind ?? "soft-wrap",
+      row.line,
+    ]),
+    [["soft-wrap", 4]],
+  );
+});
+
+await test("code and raw HTML keep their bytes under every Markdown line ending, a link on such a line is rewritten, a leading byte-order mark stays, and the profile counts the lines the parser counts", () => {
+  const options = {
+    from: "docs/final-reviews/WO-1/PR.md",
+    repository: { host: "github.com", selector: "github.com/o/r" },
+    revision: "abc",
+  };
+  const at = "https://github.com/o/r/blob/abc/docs/final-reviews";
+  // A lone carriage return ends a line: a code span after such a paragraph
+  // break and an indented code block inside a list item keep their bytes.
+  for (const source of [
+    "Intro\r\r`` [sample](file.md) ` literal ``",
+    "- code:\r\r      [sample](file.md)",
+  ])
+    assert.equal(absoluteBodyLinks(source, options), source);
+  // One body mixing the three line endings: a fence closed on a lone
+  // carriage-return line, a raw HTML block on carriage-return-and-newline
+  // lines, a code span and a real link on a lone carriage-return line, and a
+  // definition ended by carriage return and newline.
+  const body =
+    "Intro\n\n```md\r[fenced](../c.md)\r```\r\r<div>\r\n[html](../h.md)\r\n</div>\r\n\r\nA span `[code](../x.md)` and a [link](../l.md) here.\r\r[def]: ../d.md\r\n\nLast ![figure](f.png).";
+  const published = absoluteBodyLinks(body, options);
+  assert.equal(
+    published,
+    `Intro\n\n\`\`\`md\r[fenced](../c.md)\r\`\`\`\r\r<div>\r\n[html](../h.md)\r\n</div>\r\n\r\nA span \`[code](../x.md)\` and a [link](${at}/l.md) here.\r\r[def]: ${at}/d.md\r\n\nLast ![figure](${at}/WO-1/f.png?raw=true).`,
+  );
+  assert.deepEqual(published.match(/\r\n|\r|\n/gu), body.match(/\r\n|\r|\n/gu));
+  assert.equal(githubBodyProfileFailures(published, { links: true }).length, 0);
+  // A leading byte-order mark is outside the parser's column count; the
+  // rewriter keeps it and still masks the span and rewrites the link.
+  assert.equal(
+    absoluteBodyLinks("﻿`[code](../x.md)` and a [link](../l.md).\n", options),
+    `﻿\`[code](../x.md)\` and a [link](${at}/l.md).\n`,
+  );
+  // The profile's soft-wrap line numbers and the parser's link line numbers
+  // count the same lines when a body uses lone carriage returns.
+  const wrapped =
+    "First prose line\rsecond prose line\r\rA [relative](x.md) link.\r";
+  assert.deepEqual(githubBodyProfileFailures(wrapped, { links: true }), [
+    { line: 2, previousLine: 1 },
+    { line: 4, href: "x.md", kind: "relative-link" },
+  ]);
+  assert.throws(
+    () => assertGitHubBodyProfile(wrapped, "PR.md"),
+    /soft wrap between lines 1 and 2/,
+  );
+});
+
+await test("a destination is the one the parser renders: backslash escapes and character references resolve before the path is encoded, a reference-spelled scheme stays absolute, and brackets the parser does not render as a link keep their bytes while the link inside them is rewritten", () => {
+  const options = {
+    from: "docs/final-reviews/WO-1/PR.md",
+    repository: { host: "github.com", selector: "github.com/o/r" },
+    revision: "abc",
+  };
+  const at = "https://github.com/o/r/blob/abc/docs/final-reviews/WO-1";
+  const body =
+    [
+      "An [escaped](file\\(1\\).md) name, a [reference](file&#40;1&#41;.md) name and an [ampersand](a&amp;b.md) name address the files they spell.",
+      "",
+      "An [underscore](file\\_1.md) and a [scheme](&#104;ttps://example.invalid/x) spelled by reference.",
+      "",
+      "Outer [a [b](c.md) d](e.md) brackets are text around the one link.",
+      "",
+      "[def]: file\\(1\\).md",
+    ].join("\n") + "\n";
+  assert.deepEqual(
+    relativeLinkFailures(body).map((row) => [row.line, row.href]),
+    [
+      [1, "file(1).md"],
+      [1, "file(1).md"],
+      [1, "a&b.md"],
+      [3, "file_1.md"],
+      [5, "c.md"],
+      [7, "file(1).md"],
+    ],
+  );
+  const published = absoluteBodyLinks(body, options);
+  assert.equal(
+    published,
+    [
+      `An [escaped](${at}/file%281%29.md) name, a [reference](${at}/file%281%29.md) name and an [ampersand](${at}/a&b.md) name address the files they spell.`,
+      "",
+      `An [underscore](${at}/file_1.md) and a [scheme](&#104;ttps://example.invalid/x) spelled by reference.`,
+      "",
+      `Outer [a [b](${at}/c.md) d](e.md) brackets are text around the one link.`,
+      "",
+      `[def]: ${at}/file%281%29.md`,
+    ].join("\n") + "\n",
+  );
+  assert.equal(githubBodyProfileFailures(published, { links: true }).length, 0);
+  // Without a GitHub target the rendered link, not the outer brackets, is
+  // written as its text.
+  assert.equal(
+    absoluteBodyLinks("Outer [a [b](c.md) d](e.md) brackets.\n", {
+      from: "docs/a/PR.md",
+      repository: null,
+      revision: "abc",
+    }),
+    "Outer [a b d](e.md) brackets.\n",
   );
 });
 
@@ -159,7 +522,7 @@ await test("GitHub prose profile case 12", () => {
   );
 });
 
-// WO-064: the target pull-request generator is pure over its artifacts.
+// The target pull-request generator is pure over its artifacts (WO-064).
 const { generateTargetPullRequest } = await import("./lib/github-body.mjs");
 const { lintOutwardArtifact } = await import("./lib/outward-lint.mjs");
 const vocabulary = JSON.parse(
@@ -507,7 +870,7 @@ await test("WO-064 target pull request: a same-head matrix speaks only for this 
       );
   const refused =
     /acceptance matrix criteria must be the WorkOrder's acceptance criteria/;
-  // VER-001 F1: an unrelated verified row at the published head.
+  // An unrelated verified row at the published head.
   assert.throws(
     withRows(
       [{ description: "Unrelated behavior works", status: "verified" }],

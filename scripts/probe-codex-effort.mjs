@@ -43,7 +43,7 @@ assert.equal(
 assert.ok(output && !extra.length);
 const destination = resolve(root, output);
 assert.ok(destination.startsWith(root + "/") && !existsSync(destination));
-// WO-159: every Codex invocation runs in its own isolated home and returns
+// Every Codex invocation runs in its own isolated home and returns
 // its digest record beside the result.
 const run = (args, cwd, input) => {
   const episode = startCodexEpisode();
@@ -86,6 +86,8 @@ try {
     workOrder: workOrderFromState(driver.state),
     artifactIdentity: driver.state.artifactIdentity,
     episodeId: "effort_probe",
+    // The probe regenerates the dated 2026-09-11 discovery record, so it keeps
+    // the model that record measured.
     model: "gpt-6-sol",
     effort: "unknown",
     cwd,

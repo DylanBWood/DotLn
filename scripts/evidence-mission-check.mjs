@@ -27,6 +27,8 @@ const flag = (name, fallback) => {
   const index = process.argv.indexOf(`--${name}`);
   return index > 0 ? process.argv[index + 1] : fallback;
 };
+// This script regenerates the dated 2026-09-20 live row, so its defaults keep
+// the model and effort that row measured.
 const transport = flag("transport", "codex-cli-exec");
 const model = flag("model", "gpt-6-sol");
 const effort = flag("effort", "xhigh");

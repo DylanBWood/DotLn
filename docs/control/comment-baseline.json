@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-08",
+  "decision": "WO-188-D025",
+  "source": "Fingerprints of the comment lines that carried a report-local label or led with an order identifier when the check was installed; never the lines themselves. The file only shrinks: a line that is fixed leaves it, and a line in a file outside every evidence edition is never added.",
+  "admitted": {},
+  "lines": {
+    "packages/compiler/src/harness.ts": {
+      "fbf0b12e172cac886200592c662696051d528c52d07ebbbf4fd96e2640701a3e": 1,
+      "d4c925b83b7c1b758b75f73fc34e2d2f3ad9b504c9cbf2a0d84ec8ef1e18726c": 1
+    },
+    "packages/compiler/src/story-contract.ts": {
+      "edd517c0555f80c509fc32d63f271fa720c892444634d04d60c2921ea156ab88": 1
+    },
+    "packages/skeleton/src/actor-catalog.ts": {
+      "2e21236f302bfdfd93c3695699bd8a03994362e3531b916e1b108bae3bdf5a04": 1,
+      "5e297f946bc8320b7f27ba3b9261edcb824d83fc0ba88d70e862661cfdf858e0": 1
+    },
+    "packages/skeleton/src/execution-environment.ts": {
+      "b11c8a80e95c312292e04073ee67153943b5c5e054cc35cc106405d412256e4c": 1
+    },
+    "packages/skeleton/src/feedback-selfhost.ts": {
+      "1a6f81196d2f7dfa4fd93b5ef91ba7a5958d0af5f0b0de39b34d087e33ce635a": 1,
+      "c005a47873255882709bba59be02102fc1f5a22315d82707713576bbbeff6686": 1
+    },
+    "packages/skeleton/src/harness-command.ts": {
+      "1bc6c324760b3d2bbb77dd1b3e368090757a611852121e4e263301d8b228b529": 1,
+      "e39dedf9f4c1f277aa72783a0ae73f7c64b295a8bfb66fac2a2a62d79cf5ad23": 1,
+      "72a85cbc1105bedfa23705a692b9808eef5282d67cd3da194f46ee0a3b346712": 1,
+      "0521e624922fcbc2ee252b61b77b13539de38469bd0f39e89f9ce40e38973cf8": 1,
+      "80e3a3c8ba315a37caa497d1db1557cdb061f7dc918aff94422421ae1b034e6b": 1,
+      "ccda426705dca94e562564d91b9038f28c5a484922d6e77f7983e155af0bdf66": 1,
+      "067c2a6643114db8f2f5762be8bd1b8aa9dcb82dd0bfc0dc0b25757bfa242ff4": 1,
+      "65a69244857ec5bdec0cabf46827fc785ea2223ed8a7f86ff94a465912a41df6": 1
+    },
+    "packages/skeleton/src/harness-host.ts": {
+      "dc44f768f8de2280723c2de049543f388dd82f1d559278c3af14dc136f6cab7d": 1,
+      "78653ed504ffc05973b0de3093538c7dd4f23960a3bbe4c73f3329acefb835a7": 1,
+      "650acd37608fbddb166ac8611a5cc3645c3167849f1b91eb661f93ba145e1365": 1,
+      "70e96fb3bfd575d9a065cfa41bc864eab11e6b462acf9352151f549b55b780ef": 1,
+      "87838dec0e1d2f41dfa9e62906f1e2e3b8558efea2c6551340e32096d4baf02b": 1,
+      "5c30db24500e5a61099403ca8db9579610adc2328697fc8ca03dcb08aa4c1662": 1,
+      "bae2e21d08fe7f73b66d88baacd562937f5c633037958482edf4723e569d13ab": 1,
+      "45ed5141b9c475210248979488b67af779aa65fb86cc85c0347e1f22912a1d6c": 1,
+      "fc22522c58fd2bd4ea3d8095e2144f26ea0fd86c2f33705f2c45c47b1d58c622": 1,
+      "f1117aea5618bd576280dcec46c442a0e337a774c2ef601bbf8ceb0ef5e48eee": 1,
+      "385698e94c032fd27f6688d5ec81f4e68fd6ea811c18d877f23f3316fc29a3b5": 1,
+      "4670627b042381b66192adeba494d66266647fdf34555939d8a43e63f639c28c": 1,
+      "7ef5b460d107468f44bd982cae254408c18f608a4be5831c932e798d07ca2397": 1,
+      "e9b4c2f238f3efdaa98de8d03f311a310ca034e1c9dba8920f59b3c1bacbaf88": 1,
+      "b66517544b3f79d1198082ad63cb33c6bee412fb5e7df11e99d967963b932906": 1,
+      "8435c31d76c0cce51d013a9007fa0fb3068d7c0fc5ebb1e637a85c322bb2a0ed": 1,
+      "3a9d705a78763cb7facbeb33c36b94ab3ff0e824a6a3a1feb839da13840e45e7": 1,
+      "076ed96840fdcad4f5250d1eb8702f2565a1cf8a583f108e14c81947a4ba7f29": 1
+    },
+    "packages/skeleton/src/loadouts/contributor.ts": {
+      "d1b7fd7f1b2ac05671be65bc4dc9eda552a7f014476f3a7f9a726e384f89a857": 1
+    },
+    "packages/skeleton/src/observed-facts.ts": {
+      "42372b10bc5890c6b006f302a7d0b021e171787e9abd767a4e39867677c2892f": 1
+    },
+    "packages/skeleton/src/portfolio-actor.ts": {
+      "50436501278c754648f513690421e99d2fef9c0ba2a340883e786699c7fc0690": 1,
+      "7b6ed98775fde76a7e72716a4360067279c24c69cf8a842a9769822d0eaf4b43": 1,
+      "8dad84b74f8569e81151c26b8bab63fc18b4c75130d89b3bf99b29574e409e92": 1,
+      "29d2f72a4618b81d16f30c57f6a566ad5baa694c28f379fe43aaab3feca3fc00": 1,
+      "4a6327d23bb212f94981d90b8e4e9439e276d88bf0d11e3a655a0c2926c0a02d": 1
+    },
+    "packages/skeleton/src/portfolio-host.ts": {
+      "9289cbb7c5372fbea832c740ed5ab9564209cb86e68c9c28a5e33b2eebe3776e": 1,
+      "11db86dc404687273f52370cc620a992d8601d58a83c832959c61ecace3e7f2b": 1,
+      "75a1d131b15b08d14e6372231aab763e3005acbbf675b1fc9e76339c6a70b42f": 1,
+      "61014779304938d1a0518e763ad4e5cc240d4ca0d5e7ebd4d79631d486a72028": 1,
+      "05346cd3d6b1ecfba9602040bfa679d7cf5a754ee40bc46037e1618c9eab5909": 1
+    },
+    "packages/skeleton/src/portfolio.ts": {
+      "8a9828c9e080689b118bd4e41372c63bbc48152a9c155be06a80ea0d0df02377": 1,
+      "f131c36370e21123f2bfefe1700770be6315b163bda45d2737546395adc6288e": 1,
+      "9e3bf29a0228686e1c17b3ecf08bd795d1ad80f711c414d8a7e83b5d4edd54b7": 1,
+      "c7114e7786fadacad0090d7466fc94b06a8f1df81755b05bf2feecd603f5c539": 1,
+      "1a2ebd7d264902dd16dc2e54db942a178b05ebe9b738d720a3f6bfe1c81cb141": 1
+    },
+    "packages/skeleton/src/resident-state.ts": {
+      "92f86a841b23d0c0e3be9515a498c031cdda8e7315b819f1536b2bc2955a4017": 1,
+      "bfed3b544773cb34e6fcd0e73fa2ed0cf09ae7bd38478b5f7404c725415fc9c6": 1,
+      "2236fa9c504f34f9ab502640b72e26e9d429419cb88448bcbefc953314f897c4": 1
+    },
+    "packages/skeleton/src/review.ts": {
+      "e2e25973f8765002e5817d41eaa18f3d98c72b4b8300e782b822e362994d1873": 1
+    },
+    "packages/skeleton/src/source-change-host.ts": {
+      "c2031a6caad82a0589e571a301556bb0ad10040d27e25d3a0da44e014f26aa51": 1
+    },
+    "packages/skeleton/src/source-change-worktree.ts": {
+      "3e54b2bf410fe7508b43bcaad9f85fc20235914ee59a6163a4663396a6765973": 1
+    },
+    "packages/skeleton/src/subagent-budget.ts": {
+      "61cd98cb95042dfcefedfb08bb4ec49bd391f3d53039c2103de07556977eab02": 1
+    },
+    "packages/skeleton/src/verification-host.ts": {
+      "c2031a6caad82a0589e571a301556bb0ad10040d27e25d3a0da44e014f26aa51": 1
+    },
+    "packages/skeleton/src/vertical-judgment-protocol.ts": {
+      "0e6e14b611e76619889e7e705c57f6530f63872f98b94763f019184930aa19bb": 1
+    },
+    "packages/skeleton/src/vertical.ts": {
+      "3ce0d7c08f1190ae959feee78c23c74459973cf2df808abac17f075ed2cfa630": 1,
+      "5aecd5e7aeeb3c086f3e70e4038faac72a9a68f89820fa3eded9bca125d773a0": 1
+    },
+    "packages/skeleton/src/worker-transport.ts": {
+      "0435bc08a9bb9a3a7f3b10349546429b22cac7c23509d05e6392bc600b7d9e31": 1,
+      "d24153a4620c44154db967edb1d47294c5d0928bcb06df8e0067e5834f2f9002": 1,
+      "b2c5f07817e0edd221e5db5eaa3a31ca39e88cbac5f60d6841aeafcbc56fd799": 1
+    },
+    "scripts/authority-evidence.mjs": {
+      "d8cad7b1b667abef1210a363d879d85afa9957c0497e2fd8fdca9ec25e692498": 1,
+      "7724799b2f7808ab4e1099591a489cc88d73de5f19be741747fdc5498cf4da9b": 1,
+      "ac37a1dace1b18b6789eff9cedad627d7263933d540eec699ccf8205446669fb": 1,
+      "08aa0885598956de187d72b182d3eadd51edf9335aa15578c533c2e384db6ef4": 1,
+      "1c7290e6cd5a3004dd7d9d5ef7843eb98497922006fca6934e05f21728c1fc45": 1,
+      "c699b3e57037583b97eefa7bb54e1fd102749564f5d15b6349463886955b9987": 1,
+      "cfad26f4582e2fec6200557f66d655df37404ffb34f9e35ba04a898a11eacd65": 1
+    },
+    "scripts/feedback-evidence.mjs": {
+      "72565ef971e6b3a8617ec11a3e326d4a28a5d9d56689b540c9d0daedc4ff16d7": 1
+    },
+    "scripts/harness-context.mjs": {
+      "3cab4f4c1ceccaa2756be1ab14e979a0308b5c057b8306e695f747f7374437ad": 1
+    },
+    "scripts/harness-evidence.mjs": {
+      "c72e5b65cb885b5a56f190ed060bccccabf6da725f4a6991cde0e882e1b026fc": 1
+    },
+    "scripts/lib/evidence-sources.mjs": {
+      "45a20a59ffbd4041b5da3c1e45b964cadced0aba5bf24db94f8e7595d8aab49d": 1,
+      "cfd7ca86cb77942890eb59001c0ed46ae505562f54d7f1604a90cc30e52754f6": 1,
+      "61f60e083face751ebcc30c0d90c28d6e075ad57147fc3f31c52f5c1e670a3fc": 1,
+      "d831f9164910ee9e0c54b67a31bc429fdba0039e933687e51e23963506517273": 1,
+      "b0d62cc3507a41a61ab64e2fab4c9a82e3ea1d2eed869569ed2c9aa80400af8f": 1
+    },
+    "scripts/lib/host-resources.mjs": {
+      "b3ac8dd5c536fa8f447b3893b0dcaf309947da669710a37b955df11afa7e9e99": 1
+    }
+  }
+}

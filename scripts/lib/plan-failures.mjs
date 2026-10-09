@@ -1,12 +1,15 @@
-import { json as encode } from "./helpers.mjs";
+import { json as encode, sha256Hex } from "./helpers.mjs";
 import { docPath, docRelative } from "./config.mjs";
 import { existsSync, lstatSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { createHash } from "node:crypto";
 
 import { controlPaths } from "./control.mjs";
 import { readControl } from "./control-store.mjs";
-import { isCorrection, readDecisions } from "./meta.mjs";
+import {
+  isCorrection,
+  persistedCorrectionIds,
+  readDecisions,
+} from "./meta.mjs";
 import { MANUAL_RECEIPTS, readOverrides } from "./plan-receipts.mjs";
 import { readEntropyControl, readReceipt } from "./entropy-review.mjs";
 import { checksPath, readGateChecks } from "./gate-evidence.mjs";
@@ -15,10 +18,10 @@ import { completedPhaseAttempts } from "./control-time.mjs";
 import { parseHeader } from "../work-orders.mjs";
 import { measuredFindingCounts } from "./review-findings.mjs";
 
-// WO-172: what failed since the pass before, folded from the public record:
+// What failed since the pass before, folded from the public record:
 // the control logs, the planning control log and the structured decisions.
 // An item carries identifiers, dates and paths, never a report's or a
-// decision's text.
+// decision's text (WO-172).
 export const FAILURES_COMMAND = "npm run plan -- failures";
 const ROWS_PER_PAGE = 32;
 const START_BYTES = 1024;
@@ -36,7 +39,6 @@ const KIND_ORDER = [
   "amendment",
   "correction",
 ];
-const sha256 = (value) => createHash("sha256").update(value).digest("hex");
 const oneLine = (value) => String(value).replace(/\s+/gu, " ").trim();
 const requireFailures = (condition, reason) => {
   if (!condition) throw new Error(`Planning failures: ${reason}`);
@@ -264,8 +266,9 @@ export function failureRecord(root) {
         receipt: event.receiptId,
         recordedAt: event.recordedAt,
       });
+  const persisted = persistedCorrectionIds(root);
   for (const decision of readDecisions(root))
-    if (isCorrection(decision))
+    if (isCorrection(decision, persisted))
       items.push({
         kind: "correction",
         decision: decision.id,
@@ -740,6 +743,7 @@ export function operationalFailures(root, control, includes) {
         unreadable.closes++;
       }
     }
+  let hostNotifications = 0;
   const directory = dirname(checksPath(root));
   if (existsSync(directory))
     for (const name of readdirSync(directory).sort()) {
@@ -765,7 +769,13 @@ export function operationalFailures(root, control, includes) {
           };
           if (row.typedEvent === "HostPermissionDenied")
             rows.push({ kind: "host-denial", ...context });
-          else if (row.typedEvent === "OperatorMessageObserved")
+          else if (row.typedEvent === "OperatorMessageObserved") {
+            // The host's task notification is its own message, never an
+            // intervention; it is counted apart from the operator's rows.
+            if (row.source === "host-task-notification") {
+              hostNotifications++;
+              continue;
+            }
             rows.push({
               kind: "intervention",
               ...context,
@@ -782,7 +792,12 @@ export function operationalFailures(root, control, includes) {
               )
                 ? row.route
                 : "unknown",
+              attribution:
+                row.attribution === "unattributed"
+                  ? "unattributed"
+                  : "operator",
             });
+          }
         }
       } catch {
         unreadable.journals++;
@@ -908,8 +923,12 @@ export function operationalFailures(root, control, includes) {
       bySource: tally(interventions, "source").by,
       unclassified: interventions.filter((row) => row.class === "unclassified")
         .length,
+      unattributed: interventions.filter(
+        (row) => row.attribution === "unattributed",
+      ).length,
+      hostNotifications,
       coverage:
-        "Claude/Copilot prompt-hook rows; Codex dispatch phrases only; unobserved messages unknown",
+        "Claude/Copilot prompt-hook rows; Codex dispatch phrases only; host task notifications excluded; prompts without transcript evidence counted as unattributed; unobserved messages unknown",
     },
     longPhases: {
       ...summary("long-phase"),
@@ -940,7 +959,7 @@ function selection(root, options) {
     record,
     items,
     operational,
-    revision: sha256(encode({ window: view.public, items })),
+    revision: sha256Hex(encode({ window: view.public, items })),
     counts: {
       window: failureCounts(items, record.facts.filter(view.includes)),
       record: failureCounts(record.items, record.facts),

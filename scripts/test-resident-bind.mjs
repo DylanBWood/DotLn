@@ -1,9 +1,9 @@
 import { spawnGit, runGit } from "./lib/git.mjs";
 import { write, json as prettyJson } from "./lib/helpers.mjs";
-// WO-148 fixtures: a real Git launchpad with an activated order in its own
+// The fixtures are a real Git launchpad with an activated order in its own
 // worktree, bound by the actual command. Nothing here is synthesized past the
 // launchpad itself — the store, the capsule and the binding record are the
-// ones an operator would get.
+// ones an operator would get (WO-148).
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -792,8 +792,8 @@ test("argument parsing keeps the declaration literal", () => {
       base: undefined,
     },
   );
-  // WO-157 item 7: an absent --model or --effort is left for the bind's
-  // per-transport default (it was a refusal before).
+  // An absent --model or --effort is left for the bind's per-transport
+  // default (it was a refusal before; WO-157 item 7).
   assert.deepEqual(
     parseArguments([
       "WO-148",
@@ -1057,7 +1057,7 @@ test("a merge base moved by integrating main is named before any launch line", (
     assert.notEqual(binding.baseCommit, context.baseCommit);
   }));
 
-// WO-157 item 7 (WO-100 D007): the always-on judge's default per transport.
+// The always-on judge's default per transport (WO-157 item 7, WO-100 D007).
 test("WO-157 a bind without --model and --effort records the transport's default judge", () =>
   withFixture({}, (context) => {
     for (const [transport, model] of [
@@ -1152,9 +1152,9 @@ test("WO-157 a bind with --model and --effort records the operator's choice", ()
     assert.doesNotMatch(stale.stdout, /--effort xhigh/u);
   }));
 
-// WO-157 item 6 (WO-100 D006): a portfolio binding compiled under its
-// repository's registered authorityProfile, and --check refusing a store that
-// was not.
+// A portfolio binding compiled under its repository's registered
+// authorityProfile (WO-100 D006), and --check refusing a store that was not
+// (WO-157 item 6).
 const PORTFOLIO_WRITE = ["git.local", "repo.read", "repo.write", "shell.run"];
 const PORTFOLIO = {
   version: 1,
@@ -1628,4 +1628,46 @@ test("WO-157 a template grant that differs from its registry entry only in reaso
     )?.[1];
     const checked = run(context.launchpad, "--check", store);
     assert.equal(checked.status, 0, checked.stdout + checked.stderr);
+  }));
+
+test("--check names a binding record whose profile identifier differs from the registered profile's and prints no launch line", () =>
+  withPortfolio((context) => {
+    const bound = run(
+      context.launchpad,
+      "--portfolio",
+      "gardener-5s",
+      "--template",
+      context.templatePath,
+      "--base",
+      context.base,
+    );
+    assert.equal(bound.status, 0, bound.stderr);
+    const store = /^Bound portfolio gardener-5s to (.+)$/mu.exec(
+      bound.stdout,
+    )?.[1];
+    assert.ok(store, bound.stdout);
+    const bindingPath = join(store, "binding.json");
+    const binding = JSON.parse(readFileSync(bindingPath, "utf8"));
+    // A stale or hand-edited profile name must not pass as the registered one.
+    writeFileSync(
+      bindingPath,
+      JSON.stringify({ ...binding, profileId: "not.the.profile" }),
+    );
+    const stale = run(context.launchpad, "--check", store);
+    assert.equal(stale.status, 1, stale.stdout + stale.stderr);
+    assert.match(
+      stale.stdout,
+      /  mismatch   profile: the binding record names profile not\.the\.profile; repositories\.scratch\.authorityProfile is fixture\.scratch/u,
+    );
+    noLaunchLine(stale);
+    // A record that names no profile at all is a mismatch too.
+    const { profileId: _profile, ...unnamed } = binding;
+    writeFileSync(bindingPath, JSON.stringify(unnamed));
+    const checked = run(context.launchpad, "--check", store);
+    assert.equal(checked.status, 1, checked.stdout + checked.stderr);
+    assert.match(
+      checked.stdout,
+      /the binding record names profile none; repositories\.scratch\.authorityProfile is fixture\.scratch/u,
+    );
+    noLaunchLine(checked);
   }));

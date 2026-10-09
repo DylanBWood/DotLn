@@ -55,7 +55,7 @@ import {
 } from "./lib/vertical-judgment.mjs";
 import { verticalJudgmentSubjectHash } from "../packages/skeleton/dist/src/vertical-judgment-protocol.js";
 
-/** WO-112 judgment double: a declared test actor. It answers by source unit
+/** A judgment double (WO-112): a declared test actor. It answers by source unit
  * and spanId, never by reading the source's English. */
 function judgmentDouble(answer) {
   const calls = [];
@@ -520,7 +520,7 @@ test("WO-112 replay refuses a changed judgment schema or stored subject without 
       readdirSync(directory).find((name) => name.startsWith("triage-")),
     );
     assert.deepEqual(await recordedJudgment(options), record);
-    // A recorded triage replays without resolving its transport (D047).
+    // A recorded triage replays without resolving its transport (WO-112 D047).
     assert.deepEqual(
       await recordedJudgment({
         ...options,
@@ -1289,7 +1289,7 @@ test("WO-112 D047 resident intake leaves only the episode's own launch or return
       }
       let seeded = 0;
       if (mode === "record-unbinding" || mode === "record-corrupt") {
-        // A record of another schema is met at a later preparation (VER-005 I2),
+        // A record of another schema is met at a later preparation,
         // or bytes that do not parse.
         const cfg = readVerticalConfiguration(f.directory, f.launchpad);
         const entry = createVerticalEntry({
@@ -1499,7 +1499,7 @@ test("WO-112 D047 a deferred continuation holding the slot prepares no other dra
     offerSecond = true;
     const start = f.now();
     let ticks = 0;
-    // VER-005 D1: one tick per simulated second across the 1, 2 and 4 s deferrals.
+    // One tick per simulated second across the 1, 2 and 4 s deferrals.
     while (judge.calls.length < 4 && ticks < 60) {
       f.setTime(start + ++ticks * 1000);
       await host.tick();
@@ -1531,7 +1531,7 @@ test("WO-112 D047 checkout recovery clears only its own registration and leaves 
     fixtureGit(target, "add", "a.txt");
     fixtureGit(target, "commit", "-m", "Seed");
     const head = fixtureGit(target, "rev-parse", "HEAD");
-    // VER-005 P1: a moved worktree with staged work.
+    // A moved worktree with staged work, as the verification report quoted it.
     const side = join(root, "side");
     fixtureGit(target, "worktree", "add", "-b", "side", side, head);
     writeFileSync(join(side, "a.txt"), "staged side work\n");

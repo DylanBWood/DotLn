@@ -166,9 +166,9 @@ test("WO-010 AC4 repair radius follows changed dependency surfaces and fails clo
   assert.deepEqual(affectedVerificationCriteria(criteria, []), []);
 });
 
-// WO-154 VER-001: a stream recorded before a release-only compiler bump
-// replays. The earlier release's capsule is this lowering under its own label,
-// with the input hash that label derives.
+// A stream recorded before a release-only compiler bump replays (WO-154).
+// The earlier release's capsule is this lowering under its own label, with
+// the input hash that label derives.
 test("WO-154 a recorded capsule keeps its compiler release; any other drift still fails", () => {
   const capsule = compileVerificationTask("test", criteria, subject);
   const recorded = (

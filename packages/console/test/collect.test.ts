@@ -418,9 +418,10 @@ test("WO-164 console collection spawns a constant number of processes and Git re
     writeFileSync(gitModule, gitSource);
     writeFileSync(controlModule, controlSource);
 
-    // A manifest whose changedFiles is not a list is read only when a range
-    // attributes nothing, as before this order: every row prints and the
-    // record stays uncached, while an empty range still fails the listing.
+    // A manifest whose changedFiles is not a list attributes nothing, as an
+    // unreadable manifest does: a range that attributes orders still prints
+    // them, the record is cached with no attribution, and an empty range
+    // prints its row with none recorded.
     for (const [index, changedFiles] of [
       [11, "docs/final-reviews/WO-921/RELEASE-NOTES.md"],
       [12, { path: "docs/final-reviews/WO-922/RELEASE-NOTES.md" }],
@@ -437,20 +438,29 @@ test("WO-164 console collection spawns a constant number of processes and Git re
         row(`v0.1.${index}`, `v0.1.${index}`, `WO-${910 + index}`),
       );
     assert.equal(releases((await census()).sources), malformed);
-    assert.equal(
+    assert.deepEqual(
       (
         JSON.parse(readFileSync(join(repo, cache), "utf8")) as {
-          tags: Record<string, unknown>;
+          tags: Record<string, { manifestWorkOrders: unknown } | undefined>;
         }
-      ).tags["v0.1.11"],
-      undefined,
+      ).tags["v0.1.11"]?.manifestWorkOrders,
+      [],
+      "a non-list changed-file list is cached as no attribution",
     );
-    tagRelease("v0.1.14", {
-      release: { application: "v0.1.14" },
-      notes: { changedFiles: "docs/final-reviews/WO-923/RELEASE-NOTES.md" },
-    });
-    assert.throws(listCold, /flatMap is not a function/);
-    for (let index = 11; index <= 14; index += 1)
+    for (const [tag, changedFiles] of [
+      ["v0.1.14", "docs/final-reviews/WO-923/RELEASE-NOTES.md"],
+      ["v0.1.15", { path: "docs/final-reviews/WO-923/RELEASE-NOTES.md" }],
+      ["v0.1.16", 16],
+    ] as const)
+      tagRelease(tag, {
+        release: { application: tag },
+        notes: { changedFiles },
+      });
+    const emptyRanges = listCold();
+    for (const tag of ["v0.1.14", "v0.1.15", "v0.1.16"])
+      assert.match(emptyRanges, row(tag, tag, "none recorded"));
+    assert.equal(releases((await census()).sources), emptyRanges);
+    for (let index = 11; index <= 16; index += 1)
       git("tag", "-d", `v0.1.${index}`);
 
     // Rewriting historical control bytes is still refused by the same

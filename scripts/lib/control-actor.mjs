@@ -31,7 +31,7 @@ export const renderAttestation = (actor) => {
     accountLabel,
   } = projectActor(actor);
   const effortText = renderEffort({ effort, raw, mode });
-  // WO-158: a RecordCorrected event names itself beside the values it set.
+  // A RecordCorrected event names itself beside the values it set (WO-158).
   const corrected = Array.isArray(actor.correctedBy)
     ? `; corrected by ordinal ${actor.correctedBy.join(", ")}`
     : "";

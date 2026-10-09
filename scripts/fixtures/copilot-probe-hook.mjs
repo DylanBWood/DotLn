@@ -102,6 +102,8 @@ async function main() {
       "UserPromptSubmit",
       "PreToolUse",
       "PostToolUse",
+      "PostToolUseFailure",
+      "PermissionDenied",
       "Stop",
     ].includes(event)
   )

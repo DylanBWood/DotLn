@@ -261,8 +261,9 @@ export class VerticalHost {
         }
         // Primitive observations guard their synchronous children before
         // returning. Deliver a queued signal even on a successful return;
-        // an already accepted clean effect keeps its receipt (D010), while
-        // the loop stops before the next step and the CLI keeps its exit code.
+        // an already accepted clean effect keeps its receipt (WO-199 D010),
+        // while the loop stops before the next step and the CLI keeps its
+        // exit code.
         await deliverPendingSignal(this.options.signal);
         const receipt: VerticalReceipt = { command, ...result };
         this.append("VerticalStepCompleted", receipt);

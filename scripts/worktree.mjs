@@ -6,6 +6,7 @@ import { basename, dirname, join, relative, resolve, sep } from "node:path";
 
 import { spawnSync } from "node:child_process";
 import {
+  absoluteBodyLinks,
   assertGitHubBodyProfile,
   withTemporaryBody,
 } from "./lib/github-body.mjs";
@@ -47,13 +48,34 @@ import {
   productGateBody,
 } from "./lib/release-records.mjs";
 import {
-  committedMaterial,
-  declareMaterial,
   inventoryMaterial,
-  materialCloseCommand,
-  materialDeclareCommand,
   parseMaterialFlags,
+  removeScratchRepositories,
 } from "./lib/worktree-material.mjs";
+import { scratchMaterial } from "./lib/intake-reconciliation.mjs";
+
+// Scratch repositories leave once every preserved byte is proven and just
+// before the worktree itself; each removal is printed as it lands, with its
+// head commit and whether a remote held it, for the close record.
+const removeScratch = (path, receipt) => {
+  removeScratchRepositories(path, scratchMaterial(receipt), {
+    prepare: (directory) => restoreOwnedDirectoryWrites(directory),
+    onRemoved: (row) =>
+      process.stdout.write(`Scratch removal: ${JSON.stringify(row)}\n`),
+  });
+};
+// Git removes a worktree whose index holds a submodule only with --force,
+// which would discard the submodule's unpushed commits. Refuse before any
+// scratch repository leaves, so that "source retained" is the whole truth.
+const refuseSubmoduleWorktree = (subject) => {
+  const submodules = runGitPathList(subject, ["ls-files", "-z", "--stage"])
+    .filter((entry) => entry.startsWith("160000 "))
+    .map((entry) => entry.slice(entry.indexOf("\t") + 1));
+  if (submodules.length)
+    throw new Error(
+      `Worktree holds a submodule (${submodules.join(", ")}); Git removes it only with --force, which would discard its unpushed commits; source retained. Push the submodule's commits, then remove this worktree from an operator terminal with git worktree remove --force ${JSON.stringify(subject)} and retry`,
+    );
+};
 
 const toolRoot = findLaunchpad();
 const readTrackedTextAtHead = (root, path, displayPath) => {
@@ -85,19 +107,16 @@ const readTrackedTextAtHead = (root, path, displayPath) => {
   }
 };
 // Every blocker is reported at once with its lane and that lane's remedy, so
-// clearing N entries costs one run, not N. Only disposable material may leave.
+// clearing N entries costs one run, not N. Only disposable material may leave;
+// a scratch repository is disposable and was removed by the reconciliation.
 const ensureNoIgnoredMaterial = (
   path,
   receipt = { files: [], nestedRepositories: [] },
-  { mainPath, workOrderId } = {},
 ) => {
   const reconciled = new Set([
     ...receipt.files.map((row) => row.source),
     ...(receipt.nestedRepositories ?? []).map((row) => `${row.source}/`),
   ]);
-  const inventoried = new Map(
-    (receipt.material ?? []).map((row) => [`${row.path}/`, row]),
-  );
   const blockers = runGitPathList(path, [
     "ls-files",
     "-z",
@@ -106,25 +125,11 @@ const ensureNoIgnoredMaterial = (
     "--exclude-standard",
   ])
     .filter((candidate) => !reconciled.has(candidate))
-    .map((candidate) => {
-      const entry = describeIgnoredMaterial(path, candidate);
-      const row = inventoried.get(candidate);
-      if (row?.disposition === "undeclared") {
-        entry.disposable = false;
-        entry.classification = row.reason;
-      }
-      return entry;
-    })
+    .map((candidate) => describeIgnoredMaterial(path, candidate))
     .filter((entry) => !entry.disposable);
-  const repositories = blockers
-    .filter((entry) => entry.kind === "nested-repository")
-    .map((entry) => ({ path: entry.path, worktree: path }));
-  for (const entry of blockers)
-    if (entry.kind === "nested-repository")
-      entry.remedy = `${mainPath && workOrderId ? `after publication retry: ${materialCloseCommand(mainPath, workOrderId, repositories)}; to discard instead: ${materialCloseCommand(mainPath, workOrderId, repositories, "disposable")}; ` : ""}before review, declare and record a new executor completion: ${materialDeclareCommand(entry.path)}`;
   if (blockers.length > 0)
     throw new Error(
-      `worktree contains ignored material and will not be removed (${blockers.length} ${blockers.length === 1 ? "entry" : "entries"}; undeclared material is retained):\n${blockers
+      `worktree contains ignored material and will not be removed (${blockers.length} ${blockers.length === 1 ? "entry" : "entries"}; only scratch repositories are removed):\n${blockers
         .map(
           (entry) =>
             `  ${entry.path}: ${entry.classification}; ${entry.remedy}`,
@@ -132,10 +137,17 @@ const ensureNoIgnoredMaterial = (
         .join("\n")}`,
     );
 };
-const ensureMaterialClean = (root, material) => {
+// An inventoried nested repository is never dirt in a worktree about to go: a
+// scratch one leaves with a record and a preserved one is byte-proven before
+// removal. Main keeps every repository it holds, so only its protected intake
+// units are excused there.
+const ensureMaterialClean = (root, material, { leaving = true } = {}) => {
   const protectedUnits = new Set(
     material
-      .filter((row) => row.lane === "intake" && row.disposition === "preserve")
+      .filter(
+        (row) =>
+          leaving || (row.lane === "intake" && row.disposition === "preserve"),
+      )
       .map((row) => `${row.path}/`),
   );
   if (!protectedUnits.size) return ensureClean(root);
@@ -161,12 +173,14 @@ const removePreservedWorktree = (
   material,
   reconciliation,
 ) => {
-  // Git sees re-included intake repository directories as untracked. Only
-  // these byte-proven units may require --force; writer/gate and dirt checks
-  // still hold under the reservation lock immediately before this call.
+  // Git sees a re-included intake repository, and any preserved repository no
+  // ignore rule covers, as untracked. Only these byte-proven units may require
+  // --force: each was archived and verified just before this call, and every
+  // scratch repository has already left. Writer/gate and dirt checks still
+  // hold under the reservation lock.
   const units = new Set(
     material
-      .filter((row) => row.lane === "intake" && row.disposition === "preserve")
+      .filter((row) => row.disposition === "preserve")
       .map((row) => `${row.path}/`),
   );
   const untracked = runGitPathList(subject, [
@@ -177,6 +191,7 @@ const removePreservedWorktree = (
   ]);
   if (untracked.some((path) => !units.has(path)))
     throw new Error("Unpreserved untracked material; source retained");
+  refuseSubmoduleWorktree(subject);
   const receipt = recordWorktreeRemoval(mainPath, subject, reconciliation);
   process.stdout.write(
     `Worktree removal proof: ${JSON.stringify({ subject, receipt })}\n`,
@@ -203,7 +218,8 @@ const removePreservedWorktree = (
 // closing order (WO-044). A detached derivative that is clean and idle has its
 // non-disposable control and intake material preserved like the subject's and
 // is then removed; a missing directory is pruned; anything else is reported
-// with its blocker and the exact command. Nothing here deletes ignored bytes.
+// with its blocker and the exact command. Only scratch repositories are
+// removed; other ignored bytes stay.
 const derivedWorktree = (path, suffix) =>
   path
     .split(sep)
@@ -221,7 +237,6 @@ const reconcileDerivedWorktrees = (
     activeGateRuns,
     withWriterReservationLock,
     writerTeardownBlocker,
-    material: declarations = [],
     overrides = [],
     overrideWorktree = null,
   },
@@ -254,11 +269,7 @@ const reconcileDerivedWorktrees = (
     if (writerBlocker) blockers.push(writerBlocker);
     let material;
     try {
-      material = inventoryMaterial(path, {
-        declarations,
-        overrides,
-        overrideWorktree,
-      });
+      material = inventoryMaterial(path, { overrides, overrideWorktree });
     } catch (error) {
       lines.push(`Derived worktree ${path}: kept (${error.message})`);
       continue;
@@ -276,13 +287,18 @@ const reconcileDerivedWorktrees = (
           dryRun: true,
           material,
         });
-        ensureNoIgnoredMaterial(path, receipt, { mainPath, workOrderId });
+        ensureNoIgnoredMaterial(path, receipt);
       } catch (error) {
         blockers.push(error.message);
       }
     if (blockers.length) {
+      // Dirt is the operator's to settle: nothing here commits, stashes or
+      // discards their changes.
+      const operator = blockers.includes("uncommitted changes")
+        ? `operator: commit, stash or discard the changes in ${shellQuote(path)} from an operator terminal, then `
+        : "";
       lines.push(
-        `Derived worktree ${path}: kept (${blockers.join("; ")}); retry with node ${shellQuote(join(mainPath, "scripts/worktree.mjs"))} settle ${workOrderId}`,
+        `Derived worktree ${path}: kept (${blockers.join("; ")}); ${operator}retry with node ${shellQuote(join(mainPath, "scripts/worktree.mjs"))} settle ${workOrderId}`,
       );
       continue;
     }
@@ -291,20 +307,28 @@ const reconcileDerivedWorktrees = (
         withWriterReservationLock(path, () => {
           const writer = writerTeardownBlocker(path);
           if (writer) throw new Error(writer);
-          ensureMaterialClean(path, material);
+          // Inventoried again under the lock, so a repository that appeared
+          // since the preview is removed with a record, never silently.
+          const locked = inventoryMaterial(path, {
+            overrides,
+            overrideWorktree,
+          });
+          ensureMaterialClean(path, locked);
           if (activeGateRuns(path).length) throw new Error("active gate run");
           const preserved = reconcileWorktreeMaterial(
             path,
             mainPath,
             workOrderId,
-            { material },
+            { material: locked },
           );
           process.stdout.write(renderIntakeReconciliation(preserved));
-          ensureNoIgnoredMaterial(path, preserved, { mainPath, workOrderId });
+          ensureNoIgnoredMaterial(path, preserved);
           verifyPreservedMaterial(path, mainPath, preserved);
+          refuseSubmoduleWorktree(path);
+          removeScratch(path, preserved);
           const restoreBeaconPermissions = prepareBeaconDisposal(path);
           try {
-            removePreservedWorktree(mainPath, path, material, preserved);
+            removePreservedWorktree(mainPath, path, locked, preserved);
           } catch (error) {
             restoreBeaconPermissions();
             throw error;
@@ -337,21 +361,6 @@ const main = async () => {
   const repoRoot = ["finish", "settle"].includes(action)
     ? resolve(process.cwd())
     : toolRoot;
-  if (action === "material") {
-    const [flag, reasonFlag, reason, ...extra] = actionArgs;
-    if (
-      !["--disposable", "--preserve"].includes(flag) ||
-      reasonFlag !== "--reason" ||
-      !reason ||
-      extra.length
-    )
-      throw new Error(
-        "usage: worktree material <path> --disposable|--preserve --reason <text>",
-      );
-    const row = declareMaterial(repoRoot, workOrderId, flag.slice(2), reason);
-    process.stdout.write(`Material declared: ${JSON.stringify(row)}\n`);
-    return;
-  }
   if (action === "constellation") {
     if (!workOrderId && !actionArgs.length)
       process.stdout.write(`${constellation(repoRoot)}\n`);
@@ -614,7 +623,16 @@ const main = async () => {
           gateBlock,
         )
       : `${body.trimEnd()}\n\n${gateBlock}\n`;
-    const opened = withTemporaryBody(publicationBody, (committedBodyPath) => {
+    // The stored body links file-relative, the form the document gate
+    // resolves; on the forge those resolve nowhere, so the published body
+    // links absolute to the repository at the reviewed revision.
+    const publishedBody = absoluteBodyLinks(publicationBody, {
+      from: bodyRelativePath,
+      repository,
+      revision: runGit(subject, ["rev-parse", "HEAD"]),
+    });
+    assertGitHubBodyProfile(publishedBody, bodyFile, { links: true });
+    const opened = withTemporaryBody(publishedBody, (committedBodyPath) => {
       runGit(subject, ["push", "--no-follow-tags", "-u", "origin", branch]);
       return executeGh(subject, [
         "pr",
@@ -652,22 +670,13 @@ const main = async () => {
     );
     if (!item?.worktree) throw new Error(`no worktree found for ${branch}`);
     const subject = resolve(item.worktree);
-    const declarations = [
-      ...committedMaterial(
-        mainPath,
-        workOrderId,
-        process.env.DOTLN_RELEASE_MATERIAL_REVISION ?? "HEAD",
-      ),
-    ];
     const material = inventoryMaterial(subject, {
-      declarations,
       overrides,
       overrideWorktree: subject,
     });
-    ensureMaterialClean(
-      mainPath,
-      inventoryMaterial(mainPath, { declarations: [] }),
-    );
+    ensureMaterialClean(mainPath, inventoryMaterial(mainPath), {
+      leaving: false,
+    });
     ensureMaterialClean(subject, material);
     const {
       reconcileWorktreeMaterial,
@@ -682,7 +691,7 @@ const main = async () => {
       material,
     });
     process.stdout.write(renderIntakeReconciliation(preview));
-    ensureNoIgnoredMaterial(subject, preview, { mainPath, workOrderId });
+    ensureNoIgnoredMaterial(subject, preview);
     const control = statusProjection(readControl(subject, "HEAD"), workOrderId);
     if (control?.phase !== "closed" || control.workOrder !== workOrderId)
       throw new Error(`${workOrderId} has not passed final review and closed`);
@@ -694,7 +703,6 @@ const main = async () => {
         verifyPreservedMaterial,
         activeGateRuns,
         ...writerTeardown,
-        material: declarations,
         overrides,
         overrideWorktree: subject,
       }))
@@ -724,14 +732,6 @@ const main = async () => {
     );
     if (integrated.phase !== "closed")
       throw new Error(`${workOrderId} is not closed in merged control state`);
-    const mergedDeclarations = [
-      ...committedMaterial(mainPath, workOrderId, "origin/main"),
-    ];
-    const mergedMaterial = inventoryMaterial(subject, {
-      declarations: mergedDeclarations,
-      overrides,
-      overrideWorktree: subject,
-    });
     refreshHarnessRuntime(mainPath, () => {
       const built = spawnSync("npm", ["run", "build"], {
         cwd: mainPath,
@@ -747,31 +747,31 @@ const main = async () => {
     writerTeardown.withWriterReservationLock(subject, () => {
       const blocker = writerTeardown.writerTeardownBlocker(subject);
       if (blocker) throw new Error(blocker);
-      ensureMaterialClean(subject, mergedMaterial);
+      // Inventoried again under the lock, so a repository that appeared since
+      // the preview is removed with a record, never silently.
+      const locked = inventoryMaterial(subject, {
+        overrides,
+        overrideWorktree: subject,
+      });
+      ensureMaterialClean(subject, locked);
       if (activeGateRuns(subject).length)
         throw new Error("active gate run; source retained");
       const reconciliation = reconcileWorktreeMaterial(
         subject,
         mainPath,
         workOrderId,
-        { material: mergedMaterial },
+        { material: locked },
       );
       process.stdout.write(renderIntakeReconciliation(reconciliation));
       const checks = readGateChecks(subject);
       if (checks.length) recordGateChecks(mainPath, checks);
-      ensureNoIgnoredMaterial(subject, reconciliation, {
-        mainPath,
-        workOrderId,
-      });
+      ensureNoIgnoredMaterial(subject, reconciliation);
       verifyPreservedMaterial(subject, mainPath, reconciliation);
+      refuseSubmoduleWorktree(subject);
+      removeScratch(subject, reconciliation);
       const restoreBeaconPermissions = prepareBeaconDisposal(subject);
       try {
-        removePreservedWorktree(
-          mainPath,
-          subject,
-          mergedMaterial,
-          reconciliation,
-        );
+        removePreservedWorktree(mainPath, subject, locked, reconciliation);
       } catch (error) {
         restoreBeaconPermissions();
         throw error;
@@ -785,7 +785,6 @@ const main = async () => {
       verifyPreservedMaterial,
       activeGateRuns,
       ...writerTeardown,
-      material: mergedDeclarations,
       overrides,
       overrideWorktree: subject,
     }))
@@ -818,13 +817,6 @@ const main = async () => {
       renderIntakeReconciliation,
       activeGateRuns,
       ...writerTeardown,
-      material: [
-        ...committedMaterial(
-          mainPath,
-          workOrderId,
-          process.env.DOTLN_RELEASE_MATERIAL_REVISION ?? "HEAD",
-        ),
-      ],
       overrides,
       overrideWorktree:
         parseWorktrees(mainPath).find(

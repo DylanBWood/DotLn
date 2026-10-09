@@ -1,5 +1,6 @@
-// WO-174: the product key excludes documents. Observe the package run itself,
-// including Node descendants that inherit NODE_OPTIONS, instead of rerunning it.
+// The product key excludes documents (WO-174). Observe the package run
+// itself, including Node descendants that inherit NODE_OPTIONS, instead of
+// rerunning it.
 import fs from "node:fs";
 import promises from "node:fs/promises";
 import children from "node:child_process";
@@ -18,6 +19,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { randomUUID } from "node:crypto";
 import { defaultDocRelative, docPath, docRelative } from "./config.mjs";
 import { prospectiveRealpath } from "./gate-evidence.mjs";
+import { spawnGit } from "./git.mjs";
 
 const observerURL = pathToFileURL(fileURLToPath(import.meta.url)).href;
 const vocabularyPath = defaultDocRelative("control", "outward-vocabulary.json");
@@ -25,7 +27,7 @@ const vocabularyPath = defaultDocRelative("control", "outward-vocabulary.json");
 export function productReadEnvironment(repo, env, name, order) {
   const root = fs.realpathSync(repo);
   const git = (args, input) => {
-    const result = children.spawnSync("git", args, {
+    const result = spawnGit(args, {
       cwd: root,
       encoding: "utf8",
       input,
@@ -360,8 +362,8 @@ if (manifestPath && !installations.has(installationKey)) {
   // Copy, link and rename operations reach their source through native code,
   // bypassing opens; a record moved or linked elsewhere could then be read
   // under another name. They are judged for the active order's records only:
-  // a copied excluded tracked input is not an observed read (WO-186 VER-001
-  // R3), and neither is anything a shell command or native tool reads.
+  // a copied excluded tracked input is not an observed read (WO-186), and
+  // neither is anything a shell command or native tool reads.
   for (const method of [
     "copyFileSync",
     "cpSync",

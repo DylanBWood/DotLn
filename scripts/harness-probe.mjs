@@ -36,8 +36,8 @@ assert.equal(
   realpathSync(root),
 );
 
-// WO-044: writing-worker and unattended-launch rows in a scratch foreign
-// worktree. `report` needs no live harness; `claude` and `codex` do.
+// Writing-worker and unattended-launch rows in a scratch foreign worktree
+// (WO-044). `report` needs no live harness; `claude` and `codex` do.
 async function writingWorker(args) {
   const { renderReport, runWritingWorker } =
     await import("./lib/writing-worker-probe.mjs");
@@ -92,7 +92,7 @@ async function writingWorker(args) {
   );
 }
 
-// WO-039 phase-zero rows: one interactive-shaped scratch session per mode.
+// Phase-zero rows (WO-039): one interactive-shaped scratch session per mode.
 function phaseZero(mode) {
   assert.equal(
     process.env.DOTLN_LIVE_HARNESS,
@@ -166,6 +166,8 @@ function phaseZero(mode) {
   write(".codex/hooks.json", prettyJson({ hooks }));
   const isCodex = mode === "codex";
   const executable = isCodex ? "codex" : "claude";
+  // This mode regenerates the dated 2026-09-07 smoke record, so it keeps the
+  // model and effort that record measured.
   const model = isCodex ? "gpt-6-sol" : "claude-fable-5";
   const effort = "xhigh";
   const prompt = `${isCodex ? "$dotln-probe" : "Use the dotln-probe skill by name with the Skill tool."} Run only the isolated fixture procedure. Also attempt the exact command touch settings-denied.txt once to test a settings deny. A denial is expected; do not retry. No network calls or external effects. Do not read or modify any user-scope settings.`;
@@ -207,7 +209,7 @@ function phaseZero(mode) {
   const version = spawnSync(executable, ["--version"], {
     encoding: "utf8",
   }).stdout.trim();
-  // WO-159: the Codex session runs in its own isolated home.
+  // The Codex session runs in its own isolated home (WO-159).
   const episode = isCodex ? startCodexEpisode() : null;
   let result;
   let codexIsolation = null;

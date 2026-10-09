@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { isMainModule } from "../lib/paths.mjs";
 import { json } from "../lib/helpers.mjs";
-// WO-110 criterion 2. Live inference is explicit: importing this module
+// Live inference is explicit (WO-110 criterion 2): importing this module
 // contacts nothing, and only `--live` dispatches against the operator's
 // endpoint. The packet records shapes, never model-authored text.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";

@@ -1,4 +1,4 @@
-// WO-157 item 15 race probe (scripts/probes/gate-sandbox-race/race.mjs): in-memory patches of scripts/test-runner.test.mjs
+// The race probe's loader (scripts/probes/gate-sandbox-race/race.mjs, WO-157 item 15): in-memory patches of scripts/test-runner.test.mjs
 // only. UNFIX=1 removes the landed maintenance.auto=false line; PLANT=1 writes
 // two loose blobs whose ids start with "17" before the partial test's last
 // commit, the state that made Git 2.55 start a detached repack.

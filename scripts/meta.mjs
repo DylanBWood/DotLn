@@ -130,8 +130,8 @@ export async function metaMain(args = process.argv.slice(2), repo = root) {
       mkdirSync(dirname(join(repo, path)), { recursive: true });
       writeFileSync(join(repo, path), prettyJson(meta));
     } else {
-      // WO-170: a later observation is the order's bounded snapshot, as
-      // release prepare writes it.
+      // A later observation is the order's bounded snapshot, as release
+      // prepare writes it (WO-170).
       const workOrder = path.match(/(WO-\d{3})\/meta\.json$/)[1];
       const snapshot = writeOrderSnapshot(repo, meta, workOrder);
       if (snapshot.reason)

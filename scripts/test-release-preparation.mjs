@@ -16,6 +16,8 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import {
   applyReleasePreparation,
+  decisionsConflicted,
+  integrationPreparationRefusal,
   planReleasePreparation,
 } from "./lib/release-preparation.mjs";
 
@@ -510,5 +512,131 @@ test("release preparation recovers prior source bytes after a write failure", ()
     } finally {
       f.dispose();
     }
+  }
+});
+
+test("a lone conflict marker line is an authored conflict; a setext underline alone is not", () => {
+  for (const integration of [false, true])
+    for (const [text, conflicted] of [
+      ["# WO-099 decisions\n\n<<<<<<< ours\nmine\n=======\ntheirs\n", true],
+      ["# WO-099 decisions\n\nmine\n=======\ntheirs\n>>>>>>> upstream\n", true],
+      ["# WO-099 decisions\n\n||||||| base\nbase\n", true],
+      ["# WO-099 decisions\n\nA heading\n=======\n\nprose\n", false],
+    ]) {
+      const f = fixture();
+      try {
+        mkdirSync(dirname(join(f.root, decisionsPath)), { recursive: true });
+        writeFileSync(join(f.root, decisionsPath), text);
+        git(f.root, "add", "--", decisionsPath);
+        assert.equal(
+          decisionsConflicted(f.root, decisionsPath, text),
+          conflicted,
+        );
+        const before = f.snapshot();
+        if (conflicted)
+          assert.throws(
+            () => f.plan("v0.13.2", { integration }),
+            /has an authored conflict/,
+          );
+        else assert.doesNotThrow(() => f.plan("v0.13.2", { integration }));
+        assert.deepEqual(f.snapshot(), before);
+      } finally {
+        f.dispose();
+      }
+    }
+});
+
+test("a decisions record behind a symlinked evidence directory inside the repository is refused in every mode", () => {
+  const f = fixture();
+  try {
+    mkdirSync(join(f.root, "docs/evidence"), { recursive: true });
+    mkdirSync(join(f.root, "elsewhere"));
+    symlinkSync(
+      join(f.root, "elsewhere"),
+      join(f.root, "docs/evidence/WO-099"),
+    );
+    const before = f.snapshot();
+    for (const integration of [false, true])
+      assert.throws(
+        () => f.plan("v0.13.2", { integration }),
+        /contained regular file reached through no symlink/,
+      );
+    assert.deepEqual(f.snapshot(), before);
+    assert.equal(existsSync(join(f.root, "elsewhere/decisions.md")), false);
+    // A record already present behind the link is refused the same way.
+    writeFileSync(
+      join(f.root, "elsewhere/decisions.md"),
+      "# WO-099 decisions\n",
+    );
+    assert.throws(
+      () => f.plan(),
+      /contained regular file reached through no symlink/,
+    );
+    // A directory where the record should be is refused by name.
+    rmSync(join(f.root, "docs/evidence/WO-099"));
+    mkdirSync(join(f.root, decisionsPath), { recursive: true });
+    assert.throws(
+      () => f.plan(),
+      /requires docs\/evidence\/WO-099\/decisions\.md to be a contained regular file$/,
+    );
+  } finally {
+    f.dispose();
+  }
+});
+
+test("prepare --integration is refused once the stub is written or a saved outcome waits", () => {
+  const f = fixture();
+  try {
+    const receipt = {
+      workOrder: "WO-099",
+      complete: false,
+      stage: "applied",
+      checkpointRef: "refs/dotln/checkpoint/WO-099/1",
+    };
+    assert.equal(
+      integrationPreparationRefusal(f.root, "WO-099", receipt),
+      null,
+    );
+    assert.equal(
+      integrationPreparationRefusal(f.root, "WO-099", {
+        ...receipt,
+        release: "Retimed WO-099: v0.13.2 → v0.13.3",
+      }),
+      "a saved release outcome waits for its integration decision stub",
+    );
+    mkdirSync(dirname(join(f.root, decisionsPath)), { recursive: true });
+    writeFileSync(
+      join(f.root, decisionsPath),
+      "# WO-099 decisions\n\n## WO-099-D001\n\n<!-- integration refs/dotln/checkpoint/WO-099/1 -->\n",
+    );
+    assert.equal(
+      integrationPreparationRefusal(f.root, "WO-099", receipt),
+      "the integration decision stub is already written",
+    );
+    writeFileSync(
+      join(f.root, decisionsPath),
+      "# WO-099 decisions\n\n<!-- integration refs/dotln/checkpoint/WO-099/0 -->\n",
+    );
+    assert.equal(
+      integrationPreparationRefusal(f.root, "WO-099", receipt),
+      null,
+      "another integration's stub is not this one's",
+    );
+    assert.equal(
+      integrationPreparationRefusal(f.root, "WO-099", {
+        ...receipt,
+        checkpointRef: undefined,
+      }),
+      "its pending integration names no checkpoint",
+    );
+    rmSync(join(f.root, decisionsPath));
+    mkdirSync(join(f.root, decisionsPath));
+    assert.equal(
+      integrationPreparationRefusal(f.root, "WO-099", receipt),
+      null,
+      "a record that is not a file holds no stub; the plan refuses it by name",
+    );
+  } finally {
+    f.dispose();
   }
 });

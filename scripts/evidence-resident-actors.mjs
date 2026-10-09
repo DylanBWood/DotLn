@@ -34,6 +34,8 @@ if (process.argv[2] === "--child") {
       "\n",
     { mode: 0o600 },
   );
+  // This script regenerates the dated 2026-09-17 live row, so it keeps the
+  // model and effort that row measured.
   f.request.model = "gpt-6-sol";
   f.request.effort = "xhigh";
   // decodeResidentConfiguration clones declarations, so update each actual input.

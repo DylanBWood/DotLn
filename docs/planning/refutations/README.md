@@ -113,8 +113,9 @@ discharge an independent hold.
 External CLI review runs only when the operator explicitly requests
 `refute --transport claude-cli-print|codex-cli-exec`; a background-worker failure
 never triggers an automatic external fallback. Claude defaults to
-`claude-opus-5-5` at `xhigh`; Codex defaults to `gpt-6-sol` at `xhigh` (WO-100;
-previously `claude-fable-5-1` at `max` and `gpt-6-astra` with effort `unknown`).
+`claude-opus-5-5` at `xhigh`; Codex defaults to `gpt-6.1-sol` at `max` (WO-177;
+under WO-100 `gpt-6-sol` at `xhigh`, and before that `claude-fable-5-1` at `max`
+and `gpt-6-astra` with effort `unknown`).
 An explicit nonempty effort selection is logged. `ultra` and `ultra code`
 normalize to `xhigh` with `mode: subagents` and preserve their raw spelling.
 Version and effort observations are provenance, not admission requirements.

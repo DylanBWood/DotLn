@@ -1,4 +1,4 @@
-/** WO-123: publication follows completed WO-055 lineage, never a claimed SHA.
+/** Publication follows completed WO-055 lineage, never a claimed SHA (WO-123).
  * Original and child logs stay immutable; this is a checked read projection. */
 import { existsSync } from "node:fs";
 import { join } from "node:path";

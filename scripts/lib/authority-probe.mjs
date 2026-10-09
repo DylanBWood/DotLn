@@ -1,6 +1,7 @@
 import { runGit } from "./git.mjs";
 import { json, write as writeFixture } from "./helpers.mjs";
-// WO-136 research apparatus. Nothing here installs a new product boundary.
+// Research apparatus for the authority enforcement matrix (WO-136). Nothing
+// here installs a new product boundary.
 import { TOOL_ROOT, docPath, findLaunchpad } from "./config.mjs";
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
@@ -315,7 +316,7 @@ export function authorityLaunch(cell, fixture) {
   return {
     binary: cell.harness,
     args,
-    // WO-159: a Codex cell runs in its own isolated home.
+    // A Codex cell runs in its own isolated home (WO-159).
     isolated: cell.harness === "codex",
     actor,
     commandShape: [cell.harness, ...shape, `<fixture row ${cell.row}>`].join(

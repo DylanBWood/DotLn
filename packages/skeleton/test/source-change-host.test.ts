@@ -982,7 +982,7 @@ test("WO-157 the host counts committed paths against the files ceiling and refus
   };
   // Shine: the writer turns a file surface into a directory of files, all of
   // them inside the surface and within the ceiling.
-  // The refusal names the removed path and the configured ceiling (VER-001 F1).
+  // The refusal names the removed path and the configured ceiling.
   refused(
     await run("commit-directory", ["fixture.txt"], { files: 3 }),
     /removes or changes the type of paths without repo\.delete \(3 paths against the envelope's files ceiling of 3\): D fixture\.txt$/u,

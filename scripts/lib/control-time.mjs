@@ -57,7 +57,7 @@ export function* completedPhaseAttempts(events) {
   }
 }
 
-// WO-172: how each order's judgments ended, in the same append order. The
+// How each order's judgments ended, in the same append order (WO-172). The
 // first completed verification is the first judgment of the order's work.
 export function orderJudgments(events) {
   const orders = new Map();

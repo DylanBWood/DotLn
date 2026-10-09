@@ -681,10 +681,12 @@ export function changedAgainstMain(root, { required = true } = {}) {
 }
 // A path is named where its base name stands as a whole name and the path
 // written around it agrees with the path's own trailing components: the whole
-// path or a shorter tail of it such as its base name. A given path may be a
-// tail itself, so a longer written path that ends in it names it too; a
-// changed file is whole, and a longer written path is another file. Another
-// file of the same base name, or a longer name, is never named.
+// path or a shorter tail of it such as its base name. A written path's leading
+// parent steps (../) are dropped first, so a relative link names the path it
+// resolves to. A given path may be a tail itself, so a longer written path
+// that ends in it names it too; a changed file is whole, and a longer written
+// path is another file. Another file of the same base name, or a longer name,
+// is never named.
 const namesPath = (value, path, whole) => {
   const parts = path.split("/"),
     base = parts.at(-1);
@@ -700,6 +702,7 @@ const namesPath = (value, path, whole) => {
       .slice(start, at + base.length)
       .split("/")
       .filter((part) => part && part !== ".");
+    while (written[0] === "..") written.shift();
     if (whole && written.length > parts.length) continue;
     const length = Math.min(written.length, parts.length);
     if (written.slice(-length).join("/") === parts.slice(-length).join("/"))

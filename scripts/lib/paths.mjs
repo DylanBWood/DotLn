@@ -106,15 +106,33 @@ const anchoredBuildOutput = (candidate) =>
   /^(?:node_modules|dist)(?:\/|$)/.test(candidate) ||
   /^packages\/[^/]+\/(?:node_modules|dist)(?:\/|$)/.test(candidate);
 
-// File suffixes and nested beacon-stage names do not classify whole
-// repositories. Only the project's explicit scratch-directory lanes do.
-const disposableRepositoryLane = (candidate, root) =>
-  anchoredBuildOutput(candidate) ||
-  anchored(candidate, ".runtime") ||
-  anchored(candidate, `${lanes(root).controlLocal}/harness`) ||
-  anchored(candidate, `${lanes(root).controlLocal}/cache`) ||
-  anchored(candidate, ".control-beacons") ||
-  /^\.dotln-beacon-stage-[A-Za-z0-9]{6}(?:\/|$)/.test(candidate);
+// The tracked tree declares a submodule by a gitlink entry or a .gitmodules
+// path; a nested repository there is the operator's, never scratch.
+const declaredSubmodules = (root) => {
+  const declared = new Set();
+  const staged = runGit(root, ["ls-files", "-s", "-z"], {
+    onFailure: () => "",
+  });
+  for (const entry of staged.split("\0"))
+    if (entry.startsWith("160000 "))
+      declared.add(entry.slice(entry.indexOf("\t") + 1));
+  const modules = runGit(
+    root,
+    [
+      "config",
+      "-f",
+      join(root, ".gitmodules"),
+      "--get-regexp",
+      "^submodule\\..*\\.path$",
+    ],
+    { onFailure: () => "" },
+  );
+  for (const line of modules.split("\n")) {
+    const path = line.slice(line.indexOf(" ") + 1).trim();
+    if (line.includes(" ") && path) declared.add(path.replace(/\/$/, ""));
+  }
+  return declared;
+};
 
 export const disposableBasename = (candidate) =>
   basename(candidate) === ".DS_Store" ||
@@ -169,12 +187,17 @@ export function inspectNestedRepository(root, candidate) {
   if (!names.includes(".git"))
     return { repository: false, commits: false, empty: false };
   const gitDirectory = join(directory, ".git");
-  // Linked worktrees and unreadable repositories need an explicit word;
-  // their metadata cannot establish empty standalone scaffolding.
+  // A .git that is not a directory is a linked worktree's gitfile (or a link
+  // to one): its commits live in the owning repository, so it is never scratch.
   try {
     if (!lstatSync(gitDirectory).isDirectory())
-      return { repository: true, commits: null, empty: false };
+      return { repository: true, commits: null, empty: false, linked: true };
+    // The nested repository's own hooks and file monitor never run here.
     const inspectionGitFlags = [
+      "-c",
+      "core.hooksPath=/dev/null",
+      "-c",
+      "core.fsmonitor=false",
       "--git-dir",
       gitDirectory,
       "--work-tree",
@@ -243,7 +266,7 @@ const remedies = (root) => ({
   settings:
     "the operator-owned settings file is never deleted here; move it out of the worktree from an operator terminal",
   other:
-    "move it outside the checkout or delete it from an operator terminal; nothing in the release close deletes ignored material",
+    "move it outside the checkout or delete it from an operator terminal; the release close removes only scratch repositories and keeps other ignored files",
 });
 
 /** One classified row per ignored entry: what it is, which lane owns it,
@@ -270,41 +293,56 @@ export function describeIgnoredMaterial(root, candidate) {
       classification: `${lane} lane: ignored directory`,
       remedy: remedies(root)[lane],
     };
-  if (
-    base.disposable &&
-    nested.commits !== null &&
-    disposableRepositoryLane(candidate.replace(/\/$/, ""), root)
-  )
+  const state =
+    nested.commits === null
+      ? " (commit state unknown)"
+      : nested.commits
+        ? ""
+        : " and no commit";
+  if (lane === "intake")
     return {
       path: candidate,
       kind: "nested-repository",
       lane,
-      ...base,
-      classification: `${lane} lane: disposable scratch repository`,
+      disposable: false,
+      releaseEvidenceAllowed: base.releaseEvidenceAllowed,
+      classification: `intake lane: nested repository with content${state}`,
+      remedy: "preserved as a directory unit by the reviewed helper",
+    };
+  if (declaredSubmodules(root).has(candidate.replace(/\/$/, "")))
+    return {
+      path: candidate,
+      kind: "nested-repository",
+      lane,
+      submodule: true,
+      disposable: false,
+      releaseEvidenceAllowed: base.releaseEvidenceAllowed,
+      classification: `${lane} lane: declared submodule${state}`,
+      remedy: "declared by the tracked tree; never removed here",
+    };
+  if (nested.linked)
+    return {
+      path: candidate,
+      kind: "nested-repository",
+      lane,
+      linked: true,
+      disposable: false,
+      releaseEvidenceAllowed: base.releaseEvidenceAllowed,
+      classification: `${lane} lane: linked worktree of another repository`,
       remedy:
-        "disposable by lane; it is removed with the worktree unless declared preserve",
+        "its commits live in the owning repository; remove it there with git worktree remove --force from an operator terminal, then retry",
     };
-  if (nested.empty && lane !== "intake")
-    return {
-      path: candidate,
-      kind: "nested-repository",
-      lane,
-      disposable: true,
-      releaseEvidenceAllowed: true,
-      classification: `${lane} lane: empty nested repository (fixture scaffolding; only .git, no commit)`,
-      remedy: "disposable; it is removed with the worktree",
-    };
-  const preserved = lane === "intake" || lane === "control";
+  // Any other nested repository is scratch: built to test, verify or help
+  // build, removed with the worktree, and recorded with its head commit.
   return {
     path: candidate,
     kind: "nested-repository",
     lane,
-    disposable: false,
-    releaseEvidenceAllowed: base.releaseEvidenceAllowed,
-    classification: `${lane} lane: nested repository with content${nested.commits === null ? " (commit state unknown)" : nested.commits ? "" : " and no commit"}`,
-    remedy: preserved
-      ? "preserved as a directory unit by the reviewed helper"
-      : "move it outside the checkout from an operator terminal; a nested repository is never deleted here",
+    disposable: true,
+    releaseEvidenceAllowed: true,
+    classification: `${lane} lane: scratch repository${nested.empty ? " (only .git, no commit)" : state}`,
+    remedy:
+      "scratch; removed with the worktree and recorded with its head commit and whether a remote held it",
   };
 }
 

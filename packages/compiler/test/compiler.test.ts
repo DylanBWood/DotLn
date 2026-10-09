@@ -285,7 +285,8 @@ test("WO-008 AC3 the winning authority claim governs the emitted runtime envelop
       },
     ],
   } as const satisfies SupportFacet;
-  // WO-042: precedence may restore only authority already granted by the active.
+  // Precedence may restore only authority already granted by the active
+  // (WO-042).
   const source = graphWithSupports([safety, skin]);
   const program = compiled({
     ...source,

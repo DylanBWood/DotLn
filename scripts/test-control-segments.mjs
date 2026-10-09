@@ -266,7 +266,7 @@ await test("test-control-segments", async (t) => {
         ["final-review"],
         ["final-review-result", "pass", ...actorArgs],
         ["release-close"],
-        // WO-158 off-ramps read the same fold and refuse on the same damage.
+        // Off-ramps read the same fold and refuse on the same damage (WO-158).
         ["waive", "2", "--reason", "fixture", ...actorArgs],
         ["withdraw", "--disposition", "failed", ...actorArgs],
         ["correct", "1", "--set", "model=fixture", ...actorArgs],

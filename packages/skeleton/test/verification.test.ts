@@ -972,7 +972,7 @@ test("WO-142 B7 result schema, prompt and bounded rejection agree on summary len
   );
 });
 
-// WO-157 item 8 (WO-152 D009): a refused live episode keeps its typed reason.
+// A refused live episode keeps its typed reason (WO-157 item 8, WO-152 D009).
 for (const name of ["claude-cli-print", "codex-cli-exec"] as const)
   test(`WO-157 item 8 ${name}: an invalid-result refusal records and rethrows its typed detail`, async () => {
     const directory = temporary();
@@ -993,7 +993,7 @@ for (const name of ["claude-cli-print", "codex-cli-exec"] as const)
     );
     assert.equal(interrupted.length, 1);
     const payload = interrupted[0]!.payload as Record<string, JsonValue>;
-    // WO-159: a Codex episode's record carries its isolated-home record.
+    // A Codex episode's record carries its isolated-home record (WO-159).
     assert.deepEqual(Object.keys(payload).sort(), [
       ...(name === "codex-cli-exec" ? ["codexIsolation"] : []),
       "commandId",
@@ -1135,10 +1135,9 @@ test("WO-157 item 8: the host's own receipt check records its typed detail", asy
   );
 });
 
-// WO-154 VER-001: the WO-157 verification edition was recorded under
-// compiler 0.17.0. It replays to its recorded matrix under a later release,
-// while a persisted capsule that differs in anything but that label is
-// still refused.
+// The WO-157 verification edition was recorded under compiler 0.17.0. It
+// replays to its recorded matrix under a later release, while a persisted
+// capsule that differs in anything but that label is still refused (WO-154).
 test("[document] WO-154 a verification stream recorded under an earlier compiler release replays; other persisted drift is refused", () => {
   const edition = new URL(
     "../../../../docs/evidence/WO-157/verification/001/",
@@ -1217,8 +1216,8 @@ test("[document] WO-154 a verification stream recorded under an earlier compiler
   );
 });
 
-// WO-154 D014: the verification streams WO-050's oracle froze as refusals,
-// recorded under compilers 0.5.0 and 0.6.0, replay to complete. The WO-011
+// The verification streams WO-050's oracle froze as refusals, recorded under
+// compilers 0.5.0 and 0.6.0, replay to complete (WO-154 D014). The WO-011
 // self-host verifier leaves that byte oracle (its 1,600 prefix projections
 // cost about 100 s), so its replay is asserted here.
 test("[document] WO-154 historical verification streams recorded under compilers 0.5.0 and 0.6.0 replay to complete", () => {

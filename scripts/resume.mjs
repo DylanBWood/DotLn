@@ -227,8 +227,8 @@ const legalActions = (state) => {
     : actions;
 };
 
-// WO-158 off-ramps sit beside the lifecycle's next actions: each records a
-// typed event in the phases listed and changes no phase except `withdraw`.
+// Off-ramps sit beside the lifecycle's next actions: each records a typed
+// event in the phases listed and changes no phase except `withdraw` (WO-158).
 const openPhases = [
   "active",
   "ready-to-verify",
@@ -319,8 +319,8 @@ const checkpoint = (action, workOrderId) => {
     return warn(error instanceof Error ? error.message : String(error));
   }
 };
-// WO-168 (WO-166-D014): set while a Codex dispatch holds a reservation it
-// placed and has recorded nothing, so a refusal leaves the worktree as found.
+// Set while a Codex dispatch holds a reservation it placed and has recorded
+// nothing, so a refusal leaves the worktree as found (WO-168, WO-166-D014).
 let releaseRefusedDispatch;
 const appendTransition = (action, event) => {
   const control = readControl(repoRoot);
@@ -610,11 +610,10 @@ export const parseActor = (
     ...(subagents ? { mode: "subagents", raw: suppliedEffort } : {}),
     source,
   };
-  // WO-157 item 11 (WO-152 D012): the Claude Code host exports the session's
-  // selected effort. A readback source must match it, and while it is
-  // readable a claude-code attestation records exactly that value and source:
-  // nothing records which other session a differing value would describe
-  // (VER-001 F3).
+  // The Claude Code host exports the session's selected effort. A readback
+  // source must match it, and while it is readable a claude-code attestation
+  // records exactly that value and source: nothing records which other
+  // session a differing value would describe (WO-157 item 11, WO-152 D012).
   const selected = CLAUDE_SELECTED_EFFORTS.includes(env.CLAUDE_EFFORT)
     ? env.CLAUDE_EFFORT
     : undefined;
@@ -670,7 +669,7 @@ const renderDrift = (pairs) =>
   pairs.length <= 1 ? "none" : pairs.map(renderEffort).join(" -> ");
 
 // A recorded result names the bytes it judged, so a later path correction can
-// bind to the same report and never to another (WO-158 VER-001 F2).
+// bind to the same report and never to another (WO-158).
 const reportDigest = (reportPath) =>
   sha256Bytes(readFileSync(join(repoRoot, reportPath)));
 
@@ -737,7 +736,7 @@ const renderOffRamps = (state) =>
       `- Withdrawal: ${state.withdrawal.disposition} at ordinal ${state.withdrawal.ordinal} — ${state.withdrawal.reason}`,
     state.waivedCriteria?.length &&
       `- Waived criteria: ${state.waivedCriteria.map((waiver) => `${waiver.criterionId} (ordinal ${waiver.ordinal})`).join(", ")}`,
-    // WO-173: what the executor's handoff ledger recorded unmet.
+    // What the executor's handoff ledger recorded unmet (WO-173).
     state.unmetCriteria?.length &&
       `- Unmet criteria: ${state.unmetCriteria.map((row) => row.criterionId).join(", ")} (recorded unmet by the executor at ordinal ${state.unmetCriteria[0].ordinal})`,
     state.corrections?.length &&
@@ -984,7 +983,7 @@ const authorityHash = (state, workOrderPath = state.workOrderPath) =>
   );
 
 // A note's date is a calendar date; the digit shape alone admitted 9999-99-99
-// (WO-158 VER-001 F1).
+// (WO-158).
 const calendarDate = (date) => {
   const parsed = new Date(`${date}T00:00:00.000Z`);
   return (
@@ -1345,8 +1344,8 @@ const run = async (argv) => {
     case "implementation-ready": {
       requirePhase(state, "active");
       const actor = completionActor(action, args, state, "executor");
-      // WO-173: the ledger is read first; a claim the record contradicts is
-      // refused before anything else runs, and a handoff never is.
+      // The handoff ledger is read first; a claim the record contradicts is
+      // refused before anything else runs, and a handoff never is (WO-173).
       const handoff = readHandoffLedger(repoRoot, state);
       releaseExecutorWriter = await executorWriterRelease(repoRoot);
       const { gateIndexError, ...evidence } = await requireLifecycleEvidence(
@@ -1904,7 +1903,7 @@ const run = async (argv) => {
           );
         // The bytes the verdict judged: the result's recorded digest, or for a
         // result recorded before digests, the report at its current path. A
-        // different report takes its own judgment (VER-001 F2).
+        // different report takes its own judgment.
         const candidateHash = reportDigest(fields.reportPath);
         let judgedFrom = `ordinal ${ordinal}'s recorded report digest`;
         judgedReportHash = subject.reportHash;
@@ -1967,7 +1966,7 @@ const run = async (argv) => {
       }
       // The readback source keeps its WO-157 meaning: only the session that
       // appended the event read its CLAUDE_EFFORT, so no correction asserts
-      // one (WO-157 VER-001 F3).
+      // one.
       if (
         (fields.source ?? effective("source")) === "claude-session-readback" &&
         (fields.source !== undefined || fields.effort !== undefined)

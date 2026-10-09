@@ -24,3 +24,8 @@
 /packages/console/README.md dotln-documentation
 /packages/skeleton/README.md dotln-documentation
 /corpus/README.md dotln-documentation
+# Byte-exact evidence captures and run logs keep their whitespace: the lifecycle whitespace check reads every file, these with the attribute unset.
+/docs/evidence/**/*.txt -whitespace
+/docs/evidence/**/*.tap -whitespace
+/docs/evidence/**/*.log -whitespace
+/corpus/manifests/runs/*.log -whitespace

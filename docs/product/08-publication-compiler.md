@@ -280,8 +280,9 @@ coauthors and ordinary subject text are unaffected. The generated Claude
 settings contain the declared attribution block; `harness check` detects its
 absence. The same matcher screens committed PR title and body before the first
 push. `release prepare` supplies the current meter table in the reviewed PR
-body; it reports unknown observations and previous-order deltas without
-inventing limits.
+body; it reports previous-order deltas without inventing limits, leaves an
+unavailable observation as a blank cell or an omitted dispatch row, and says
+in one line how many it omitted.
 The pre-tool attribution check extracts messages from actual parsed commit
 invocations, including supported wrappers. A search or quoted example naming
 `git commit` is data; an actual commit without available literal message bytes
@@ -299,7 +300,12 @@ hand-authored commit messages continue to use plain subjects.
 The summary leads with the resulting behavior and why it matters. Include the
 validation result and any limitation or migration a reviewer needs to act on;
 link the full evidence with paths relative to the stored body file, the form
-the document gate resolves. Optimize for accuracy, clarity, and useful substance.
+the document gate resolves; the publish step writes each such link absolute to
+the repository at the reviewed revision, or as plain text where it would
+escape, so the forge resolves it, and refuses a body it could not rewrite. The
+Release text does the same with the reviewed notes at the release commit, names
+the order's title once under the overview, and carries the order identifier
+alone in its section headings. Optimize for accuracy, clarity, and useful substance.
 Scale detail to the change: complex behavior and consequential tradeoffs may
 need several paragraphs or grouped explanations. There is no sentence quota,
 and shortening the text must not remove what the reviewer needs. Remove repeated claims,

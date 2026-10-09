@@ -47,7 +47,9 @@ assert_u202f() {
 
 write_control_events() {
   local path="$1" id="$2" authority="$3" material_evidence=""
-  if [[ -n "${DOTLN_FIXTURE_MATERIAL_SOURCE:-}" ]]; then
+  if [[ -n "${DOTLN_FIXTURE_MATERIAL_ROWS:-}" ]]; then
+    material_evidence=",\"evidence\":{\"material\":$DOTLN_FIXTURE_MATERIAL_ROWS}"
+  elif [[ -n "${DOTLN_FIXTURE_MATERIAL_SOURCE:-}" ]]; then
     material_evidence=",\"evidence\":$("$node_bin" --input-type=module - "$DOTLN_FIXTURE_MATERIAL_SOURCE" <<'JS'
 import { pathToFileURL } from "node:url";
 const root = process.argv[2];
@@ -161,6 +163,10 @@ make_repo() {
   git -C "$main" push -u origin main >/dev/null 2>&1
   git -C "$main" push origin refs/tags/v0.2.0 >/dev/null 2>&1
   fi
+  # The copied helpers resolve the launchpad's installed Markdown parser as
+  # the launchpad does: through a node_modules above them.
+  mkdir -p "$fixture/node_modules"
+  ln -sfn "$script_dir/../node_modules/prettier" "$fixture/node_modules/prettier"
   git -C "$main" config "url.$origin.insteadOf" "$github_origin"
   git -C "$main" remote set-url origin "$github_origin"
   bin="$fixture/bin"
@@ -370,7 +376,8 @@ commit_reviewed_candidate() {
     '## Evidence and compatibility' \
     '' \
     '- Reviewer evidence line.' \
-    '- Reviewer compatibility line.' >"$review_dir/RELEASE-NOTES.md"
+    '- Reviewer compatibility line.' \
+    '- Evidence record: [the decisions](../../evidence/WO-024/decisions.md).' >"$review_dir/RELEASE-NOTES.md"
   printf '# final review fixture\n' >"$review_dir/FINAL-001.md"
   printf '# reviewed PR body fixture\n' >"$review_dir/PR.md"
   printf 'release tooling changed\n' >"$repository/scripts/release.fixture.mjs"
@@ -571,15 +578,28 @@ write_control_events "$main/docs/control/orders/WO-101.jsonl" WO-101 docs/work-o
 cp -R "$main/docs/control" "$fixture/control-before"
 cp "$main/docs/product/06-roadmap.md" "$fixture/roadmap-before"
 git -C "$main" for-each-ref >"$fixture/refs-before"
-# WO-086: --integration belongs to a pending worktree integrate, whose decision
-# records the collision; without one it refuses before any write.
+# --integration belongs to a pending worktree integrate, whose decision records
+# the collision; without one it refuses before any write (WO-086).
 if integration_only="$(release_command prepare --local --integration 2>&1)"; then exit 1; fi
 grep -Fq 'release prepare --integration is worktree integrate'"'"'s and needs its pending integration of WO-099' <<<"$integration_only"
 cmp "$main/docs/product/06-roadmap.md" "$fixture/roadmap-before"
 test ! -e "$main/docs/evidence/WO-099/decisions.md"
+# With a pending integration, the flag is refused once a saved release outcome
+# waits for the stub, and once the stub is written; nothing is written either way.
+mkdir -p "$main/docs/control/local" "$main/docs/evidence/WO-099"
+printf '%s\n' '{"workOrder":"WO-099","complete":false,"stage":"applied","checkpointRef":"refs/dotln/checkpoint/WO-099/1","release":"Retimed WO-099: v0.2.0 → v0.2.1 above the observed release baseline v0.2.0."}' >"$main/docs/control/local/integration.json"
+if waiting="$(release_command prepare --local --integration 2>&1)"; then exit 1; fi
+grep -Fq 'release prepare --integration refuses: a saved release outcome waits for its integration decision stub; run npm run worktree -- integrate WO-099 --continue. Nothing was written.' <<<"$waiting"
+printf '%s\n' '{"workOrder":"WO-099","complete":false,"stage":"applied","checkpointRef":"refs/dotln/checkpoint/WO-099/1"}' >"$main/docs/control/local/integration.json"
+printf '# WO-099 decisions\n\n## WO-099-D001\n\n<!-- integration refs/dotln/checkpoint/WO-099/1 -->\n' >"$main/docs/evidence/WO-099/decisions.md"
+if stubbed="$(release_command prepare --local --integration 2>&1)"; then exit 1; fi
+grep -Fq 'release prepare --integration refuses: the integration decision stub is already written; run npm run worktree -- integrate WO-099 --continue. Nothing was written.' <<<"$stubbed"
+cmp "$main/docs/product/06-roadmap.md" "$fixture/roadmap-before"
+grep -Fxq '# WO-099 — fixture (v0.2.0)' "$main/docs/work-orders/WO-099-fixture.md"
+rm -rf "$main/docs/control/local" "$main/docs/evidence/WO-099"
 prepared="$(release_command prepare --local)"
 grep -Fxq 'Retimed WO-099: v0.2.0 → v0.2.1 above the observed release baseline v0.2.0.' <<<"$prepared"
-# WO-086: the collision is the order's decision; no product document changes.
+# The collision is the order's decision; no product document changes (WO-086).
 grep -Fxq 'Recorded WO-099-D001 in docs/evidence/WO-099/decisions.md.' <<<"$prepared"
 grep -Fq '"superseded target v0.2.0"' "$main/docs/evidence/WO-099/decisions.md"
 cmp "$main/docs/product/06-roadmap.md" "$fixture/roadmap-before"
@@ -592,13 +612,13 @@ done
 if grep -Fq 'docs/product/' <<<"$prepared"; then exit 1; fi
 prepared_again="$(release_command prepare --local)"
 grep -Fq 'no files changed' <<<"$prepared_again"
-# WO-160: an unchanged version can still change the process meter.
+# An unchanged version can still change the process meter (WO-160).
 cp "$script_dir/../docs/control/budgets.json" "$main/docs/control/budgets.json"
 pr_only="$(release_command prepare --local)"
 grep -Fq 'target v0.2.1 remains current' <<<"$pr_only"
 grep -Fxq '  docs/final-reviews/WO-099/PR.md' <<<"$pr_only"
 if grep -Fq 'no files changed' <<<"$pr_only"; then exit 1; fi
-# WO-170: no session journal of the order here, so no snapshot, and it says why.
+# No session journal of the order here: no snapshot, and it says why (WO-170).
 grep -Fxq 'Meter snapshot not written: this checkout holds no session journal of WO-099.' <<<"$pr_only"
 test ! -e "$main/docs/evidence/WO-099/meta.json"
 meter_again="$(release_command prepare --local)"
@@ -625,7 +645,7 @@ if (others.length || row.workOrder !== "WO-099" || guardRefusals !== 1 || stopRe
 ' "$main/docs/evidence/WO-099/meta.json"
 grep -Fq '| Corrections | Directions |' "$main/docs/final-reviews/WO-099/PR.md"
 release_command check-surfaces --local >/dev/null
-# WO-086: a placeholder heading is assigned from the latest tag and recorded.
+# A placeholder heading is assigned from the latest tag and recorded (WO-086).
 printf '# WO-099 — fixture (version assigned at activation)\n\n**Release classification:** patch. Existing scope.\n\n**Objective:** Fixture retiming.\n' >"$main/docs/work-orders/WO-099-fixture.md"
 write_release_block "$main" v0.2.0
 assigned="$(release_command prepare --local)"
@@ -855,8 +875,8 @@ release_case_unreachable() {
 make_repo unreachable
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
-# WO-044: egress is proven before any local prerequisite, and the dry run
-# names the host it needs.
+# Egress is proven before any local prerequisite, and the dry run names the
+# host it needs (WO-044).
 reachable_output="$(release_close WO-099 --dry-run)"
 grep -Fq 'Origin reachable: github.com' <<<"$reachable_output"
 mv -- "$origin" "$origin.away"
@@ -877,8 +897,8 @@ release_case_derived() {
 make_repo derived
 commit_candidate "$main" WO-099 v0.0.2 v0.2.0
 git -C "$main" push origin main >/dev/null 2>&1
-# WO-044: a close whose subject worktree is already gone still settles the
-# order's derived worktrees, in the preview and in the close.
+# A close whose subject worktree is already gone still settles the order's
+# derived worktrees, in the preview and in the close (WO-044).
 derived_clean="$fixture/project-wo099-measure-001"
 derived_dirty="$fixture/project-wo099-measure-002"
 git -C "$main" worktree add --detach "$derived_clean" >/dev/null 2>&1
@@ -888,7 +908,7 @@ seed_release_close_writer
 derived_preview="$(CODEX_THREAD_ID=fixture-close-session release_close WO-099 --dry-run)"
 test -f "$main/docs/control/local/harness/writer.json"
 grep -Fq "Derived worktree $derived_clean: would remove" <<<"$derived_preview"
-grep -Fq "Derived worktree $derived_dirty: kept (uncommitted changes)" <<<"$derived_preview"
+grep -Fq "Derived worktree $derived_dirty: kept (uncommitted changes); operator: commit, stash or discard the changes in '$derived_dirty' from an operator terminal, then retry with node" <<<"$derived_preview"
 test -d "$derived_clean"
 derived_output="$(CODEX_THREAD_ID=fixture-close-session release_close WO-099 --publish)"
 # A retained dirty derivative is a cleanup blocker, so the dispatch's writer
@@ -1176,6 +1196,21 @@ test "$(git -C "$main" cat-file -t v0.2.1)" = tag
 test "$(git -C "$main" rev-list -n 1 v0.2.1)" = "$(git --git-dir="$origin" rev-list -n 1 v0.2.1)"
 test ! -e "$gh_state/v0.2.1.body"
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
+# A retry the forge double refuses at authentication still records the tag
+# that stands on the remote.
+if auth_failure="$(DOTLN_FIXTURE_GH_FAIL=auth release_close WO-099 --publish 2>&1)"; then printf 'error: unauthenticated retry after a published tag reported success\n' >&2; exit 1; fi
+grep -Fq 'gh authentication is required' <<<"$auth_failure"
+"$node_bin" - "$main/docs/control/local/retained/WO-099/release-close.json" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+assert.equal(record.publication.tagOutcome, "already-published");
+assert.equal(record.publication.tag, "v0.2.1");
+assert.equal(record.publication.outcome, "partially-published");
+assert.equal(record.publication.release, null);
+assert.match(record.publication.refusal, /gh authentication/);
+assert.equal(record.previousAttempts.at(-1).publication.tagOutcome, "published");
+JS
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
 create_recovery_builds_before="$(grep -c '^build$' "$npm_log")"
 recovery_output="$(release_close WO-099 --publish)"
 grep -Fq 'GitHub Release created' <<<"$recovery_output"
@@ -1190,9 +1225,11 @@ grep -Fq 'GitHub Release state not verified and no create was attempted' <<<"$lo
 "$node_bin" - "$main/docs/control/local/retained/WO-099/release-close.json" <<'JS'
 const assert = require("node:assert/strict"), fs = require("node:fs");
 const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
-assert.equal(record.publication.outcome, "partially-published");
+// The Release an earlier attempt completed is carried and marked as carried.
+assert.equal(record.publication.outcome, "already-published");
 assert.equal(record.publication.tagOutcome, "already-published");
-assert.equal(record.publication.release, null);
+assert.equal(record.publication.release, "existing");
+assert.equal(record.publication.releaseCarried, true);
 JS
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 2
 if ambiguous_404="$(DOTLN_FIXTURE_GH_FAIL=view404 release_close WO-099 --publish 2>&1)"; then printf 'error: ambiguous GitHub 404 triggered success\n' >&2; exit 1; fi
@@ -1207,6 +1244,88 @@ if mismatch_output="$(release_close WO-099 --publish 2>&1)"; then printf 'error:
 grep -Fq 'GitHub Release body differs at line 1' <<<"$mismatch_output"
 grep -Fq 'expected "DotLn v0.2.1"' <<<"$mismatch_output"
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 2
+}
+
+release_case_submodule_force() {
+make_repo submodule_force
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+# A derived worktree holding a populated committed submodule with an unpushed
+# commit is never force-removed: the settle names the submodule and keeps it.
+git init -q --bare "$fixture/sub-origin.git"
+seed="$fixture/sub-seed"
+git init -q -b main "$seed"
+printf 'seed\n' >"$seed/seed.txt"
+git -C "$seed" add seed.txt
+git -C "$seed" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm seed
+git -C "$seed" push -q "$fixture/sub-origin.git" main
+derived="$fixture/project-wo099-measure-001"
+git -C "$main" worktree add --detach "$derived" >/dev/null 2>&1
+git -C "$derived" -c protocol.file.allow=always submodule add -q "$fixture/sub-origin.git" vendor/sub
+git -C "$derived" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'submodule' >/dev/null
+printf 'unpushed\n' >"$derived/vendor/sub/unpushed.txt"
+git -C "$derived/vendor/sub" add unpushed.txt
+git -C "$derived/vendor/sub" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm unpushed
+unpushed="$(git -C "$derived/vendor/sub" rev-parse HEAD)"
+git -C "$derived" add vendor/sub
+git -C "$derived" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'submodule pointer' >/dev/null
+# An intake unit makes the removal a forced one, which is what the old code
+# passed through; the refusal must come before that force.
+mkdir -p "$derived/docs/intake/x"
+git init -q "$derived/docs/intake/x"
+printf 'raw\n' >"$derived/docs/intake/x/raw.txt"
+git -C "$derived/docs/intake/x" add raw.txt
+git -C "$derived/docs/intake/x" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm raw
+# A scratch repository beside the submodule stays, because the refusal comes
+# before any scratch removal, and the blocker gets no material command.
+git init -q "$derived/.runtime/scratch-tool"
+printf 'tool\n' >"$derived/.runtime/scratch-tool/tool.txt"
+git -C "$derived/.runtime/scratch-tool" add tool.txt
+git -C "$derived/.runtime/scratch-tool" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm tool
+seed_release_close_writer
+output="$(CODEX_THREAD_ID=fixture-close-session release_close WO-099 --publish)"
+grep -Fq 'Published annotated v0.2.1' <<<"$output"
+grep -Fq "Derived worktree $derived: kept (Worktree holds a submodule (vendor/sub); Git removes it only with --force, which would discard its unpushed commits; source retained. Push the submodule's commits, then remove this worktree from an operator terminal with git worktree remove --force \"$derived\" and retry" <<<"$output"
+test -d "$derived/.runtime/scratch-tool/.git"
+test -f "$derived/docs/intake/x/raw.txt"
+test -d "$derived"
+test "$(git -C "$derived/vendor/sub" cat-file -t "$unpushed")" = commit
+record="$main/docs/control/local/retained/WO-099/release-close.json"
+"$node_bin" - "$record" "$derived" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8")), derived = process.argv[3];
+assert.equal(record.publication.outcome, "published");
+assert.equal(record.cleanup.outcome, "blocked");
+const settle = record.blockers.find((row) => row.action === "settle" && row.path === derived);
+assert.match(settle.reason, /Worktree holds a submodule \(vendor\/sub\); Git removes it only with --force/);
+assert.ok(settle.command.length > 0);
+assert.equal(settle.disposableCommand, undefined, "a submodule refusal is not a material cause");
+assert.ok(record.material.some((row) => row.path === ".runtime/scratch-tool"), "the scratch repository the refusal retained is listed");
+assert.ok(!record.material.some((row) => row.path === "vendor/sub"));
+JS
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
+git -C "$main" worktree remove --force "$derived" >/dev/null
+}
+
+release_case_malformed_material() {
+make_repo malformed_material
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+# A malformed word is refused with a close record, never a bare usage exit.
+if release_close WO-099 --publish --material scratch-material/x=keep >/dev/null 2>&1; then printf 'error: malformed material word accepted\n' >&2; exit 1; fi
+record="$main/docs/control/local/retained/WO-099/release-close.json"
+"$node_bin" - "$record" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+assert.equal(record.publication.outcome, "refused");
+assert.match(record.publication.refusal, /usage: --material <path>=disposable\|preserve/);
+assert.equal(record.publication.tagOutcome, null);
+assert.deepEqual(record.overrides, []);
+assert.equal(record.publication.requested, true);
+assert.ok(record.blockers.some((row) => row.action === "publication"));
+JS
+assert_no_candidate_tag "$main" "$origin"
+test ! -f "$gh_state/v0.2.1.body"
 }
 
 release_case_stale_helpers() {
@@ -1586,8 +1705,16 @@ assert.ok(notes.includes("Reviewed overview prose remains on one physical source
 assert.ok(notes.includes("Reviewer warning prose remains on one physical source line even when it is longer than eighty characters, so the reader owns viewport wrapping."));
 assert.ok(notes.includes("**Release operations.** Readers now receive the reviewed edition.\n\n### WO-999 is reviewer prose, not release membership\n\nThis heading must not affect the release list."));
 assert.ok(notes.includes("## Progressive polish\n\n### WO-023"));
-assert.ok(notes.includes("### WO-024 — reviewed release fixture, v0.2.1\n\nNone."));
+assert.ok(notes.includes("### WO-024\n\nNone."));
+// The title is named once, under the overview; every section heading carries the identifier alone.
+assert.equal(notes.split("**reviewed release fixture, v0.2.1**").length - 1, 1);
+assert.equal((notes.match(/^### WO-024$/gm) ?? []).length, 5);
+assert.ok(!notes.includes("### WO-024 — "));
 assert.ok(notes.includes("- Reviewer evidence line.\n- Reviewer compatibility line."));
+// A reviewed relative link is written absolute to the repository at the release commit.
+const releaseCommit = JSON.parse(manifest).release.commit;
+assert.ok(notes.includes(`- Evidence record: [the decisions](https://github.com/dotln-fixture/edition/blob/${releaseCommit}/docs/evidence/WO-024/decisions.md).`), notes);
+assert.ok(!notes.includes("](../../evidence/"));
 const readBefore = notes.slice(
   notes.indexOf("## Read before upgrading"),
   notes.indexOf("## Substantive changes"),
@@ -1776,7 +1903,12 @@ PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE
 }
 
 release_case_material() {
-for mode in lane disposable preserve unknown unknown_keep intake; do
+# Every nested repository outside intake is scratch, whether or not an ignore
+# rule covers it, and leaves at close with no flag: its head commit and whether
+# a remote held it are recorded, a keep row an earlier completion recorded no
+# longer preserves it, an operator word can still preserve one, and intake
+# survives every path.
+for mode in lane scratch kept preserve intake untracked; do
   make_repo "material_$mode"
   subject="$fixture/project-wo099"
   git -C "$main" worktree add "$subject" -b wo-099 main >/dev/null
@@ -1784,14 +1916,16 @@ for mode in lane disposable preserve unknown unknown_keep intake; do
   case "$mode" in
     lane) material_path='.runtime/x' ;;
     intake) material_path='docs/intake/x' ;;
-    unknown_keep) material_path="scratch-material/repo's space" ;;
+    kept) material_path="scratch-material/repo's space" ;;
+    untracked) material_path='outside-lanes/probe' ;;
     *) material_path='scratch-material/x' ;;
   esac
   nested="$subject/$material_path"
   # Re-included intake directories can arise after the reviewed gate. Cover
   # the real ignore policy at cleanup without putting a directory into that
-  # gate's file-only candidate tree.
-  if [[ "$mode" == intake ]]; then
+  # gate's file-only candidate tree. A repository cloned after review under a
+  # path no ignore rule covers is scratch all the same.
+  if [[ "$mode" == intake || "$mode" == untracked ]]; then
     commit_candidate "$subject" WO-099 v0.2.1
   fi
   mkdir -p "$nested"
@@ -1799,38 +1933,53 @@ for mode in lane disposable preserve unknown unknown_keep intake; do
   printf 'nested repository fixture\n' >"$nested/saved.txt"
   git -C "$nested" add saved.txt
   git -C "$nested" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'nested fixture'
-  if [[ "$mode" == unknown_keep ]]; then
-    second="$subject/scratch-material/second repository"
+  if [[ "$mode" == scratch ]]; then
+    # One repository whose head a remote holds, one whose head no remote holds.
+    git init -q --bare "$fixture/nested-origin.git"
+    git -C "$nested" remote add origin "$fixture/nested-origin.git"
+    git -C "$nested" push -q origin HEAD:refs/heads/main
+    git -C "$nested" fetch -q origin
+    second="$subject/scratch-material/second"
     mkdir -p "$second"
     git -C "$second" init -q
     printf 'second repository fixture\n' >"$second/saved.txt"
     git -C "$second" add saved.txt
     git -C "$second" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'second nested fixture'
   fi
-  if [[ "$mode" == disposable || "$mode" == preserve ]]; then
-    (cd "$subject" && CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" scripts/worktree.mjs material "$material_path" "--$mode" --reason 'fixture disposition')
-  fi
-  if [[ "$mode" != intake ]]; then
+  if [[ "$mode" == kept ]]; then
+    # A keep row an earlier completion recorded is history, not preservation.
+    kept_rows="$("$node_bin" -e 'process.stdout.write(JSON.stringify([{ path: process.argv[1], lane: "other", disposition: "preserve", source: "declared", reason: "keep this repository" }]))' "$material_path")"
+    DOTLN_FIXTURE_MATERIAL_ROWS="$kept_rows" commit_candidate "$subject" WO-099 v0.2.1
+  elif [[ "$mode" != intake && "$mode" != untracked ]]; then
     DOTLN_FIXTURE_MATERIAL_SOURCE="$subject" commit_candidate "$subject" WO-099 v0.2.1
   fi
+  head="$(git -C "$nested" rev-parse HEAD)"
   git -C "$subject" push origin HEAD:main >/dev/null 2>&1
   # Preview deliberately starts on an older main and consumes origin/main's handoff.
   if [[ "$mode" == lane ]]; then
     preview="$(CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' CLAUDE_CODE_SESSION_ID=fixture-claude-close CLAUDE_EFFORT=high release_close WO-099 --publish --dry-run)"
   elif [[ "$mode" == preserve ]]; then
-    preview="$(CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' CLAUDE_CODE_SESSION_ID='' CLAUDE_SESSION_ID=fixture-claude-close CLAUDE_EFFORT=high release_close WO-099 --publish --dry-run)"
+    preview="$(CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' CLAUDE_CODE_SESSION_ID='' CLAUDE_SESSION_ID=fixture-claude-close CLAUDE_EFFORT=high release_close WO-099 --publish --dry-run --material "$material_path=preserve")"
   else
     preview="$(release_close WO-099 --publish --dry-run)"
   fi
   record="$main/docs/control/local/retained/WO-099/release-close.json"
-  "$node_bin" - "$record" "$mode" <<'JS'
+  "$node_bin" - "$record" "$mode" "$head" <<'JS'
 const assert = require("node:assert/strict"), fs = require("node:fs");
-const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8")), mode = process.argv[3];
+const [file, mode, head] = process.argv.slice(2);
+const record = JSON.parse(fs.readFileSync(file, "utf8"));
 assert.equal(record.dryRun, true);
 assert.equal(record.publication.outcome, "preview");
-assert.equal(record.cleanup.outcome, mode.startsWith("unknown") ? "blocked" : "clean");
-assert.equal(record.material.length, mode === "unknown_keep" ? 2 : 1);
-assert.equal(record.material[0].source, ["disposable", "preserve"].includes(mode) ? "declared" : "lane");
+assert.equal(record.cleanup.outcome, "clean");
+assert.equal(record.material.length, mode === "scratch" ? 2 : 1);
+assert.equal(record.material[0].source, mode === "preserve" ? "declared" : "lane");
+assert.ok(!record.blockers.some((row) => row.action === "material"));
+if (mode === "intake" || mode === "preserve") assert.deepEqual(record.removals, []);
+else {
+  assert.equal(record.removals.length, mode === "scratch" ? 2 : 1);
+  assert.ok(record.removals.every((row) => row.outcome === "would-remove"));
+  assert.ok(record.removals.some((row) => row.head === head));
+}
 if (["lane", "preserve"].includes(mode)) {
   assert.equal(record.dispatch.harness, "claude-code");
   assert.equal(record.dispatch.session, "fixture-claude-close");
@@ -1839,174 +1988,172 @@ if (["lane", "preserve"].includes(mode)) {
 JS
   test -d "$nested"
   test ! -f "$gh_state/v0.2.1.body"
-  if [[ "$mode" == lane ]]; then
-    grep -Fq 'nested repository disposable' <<<"$preview"
-  elif [[ "$mode" == unknown* ]]; then
-    grep -Fq 'npm run worktree -- material' <<<"$preview"
-    grep -Fq -- '--material' <<<"$preview"
+  if [[ "$mode" != intake && "$mode" != preserve ]]; then
+    grep -Fq 'nested repository disposable; removed with the worktree' <<<"$preview"
+    grep -Fq 'Scratch removal: {"worktree":' <<<"$preview"
   fi
-  output="$(CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' CLAUDE_CODE_SESSION_ID=fixture-claude-close CLAUDE_EFFORT=high release_close WO-099 --publish)"
+  if [[ "$mode" == preserve ]]; then
+    output="$(CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' CLAUDE_CODE_SESSION_ID=fixture-claude-close CLAUDE_EFFORT=high release_close WO-099 --publish --material "$material_path=preserve")"
+  else
+    output="$(CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' CLAUDE_CODE_SESSION_ID=fixture-claude-close CLAUDE_EFFORT=high release_close WO-099 --publish)"
+  fi
   grep -Fq 'Published annotated v0.2.1' <<<"$output"
-  "$node_bin" - "$record" "$mode" <<'JS'
+  "$node_bin" - "$record" "$mode" "$head" "$subject" "$material_path" <<'JS'
 const assert = require("node:assert/strict"), fs = require("node:fs");
-const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8")), mode = process.argv[3];
+const [file, mode, head, subject, path] = process.argv.slice(2);
+const record = JSON.parse(fs.readFileSync(file, "utf8"));
 assert.equal(record.dryRun, false);
 assert.equal(record.publication.outcome, "published");
 assert.equal(record.publication.tag, "v0.2.1");
 assert.equal(record.publication.tagOutcome, "published");
 assert.equal(record.publication.release, "created");
-assert.equal(record.cleanup.outcome, mode.startsWith("unknown") ? "blocked" : "clean");
-assert.equal(record.cleanup.worktrees[0].outcome, mode.startsWith("unknown") ? "retained" : "removed");
+assert.equal(record.cleanup.outcome, "clean");
+assert.equal(record.cleanup.worktrees[0].outcome, "removed");
+assert.ok(!record.blockers.some((row) => row.action === "material"));
 assert.equal(record.dispatch.harness, "claude-code");
 assert.equal(record.dispatch.session, "fixture-claude-close");
 assert.equal(record.dispatch.source, "claude-session-readback");
-if (mode.startsWith("unknown")) {
-  assert.ok(record.blockers.some(row => row.action === "material" && row.command.includes("--material")));
+if (mode === "intake" || mode === "preserve") assert.deepEqual(record.removals, []);
+else {
+  const removal = record.removals.find((row) => row.path === path);
+  assert.deepEqual([removal.worktree, removal.head, removal.outcome], [subject, head, "removed"]);
+  assert.equal(removal.remoteHeld, mode === "scratch");
+  if (mode === "scratch") {
+    const second = record.removals.find((row) => row.path === "scratch-material/second");
+    assert.equal(second.remoteHeld, false);
+    assert.match(second.head, /^[0-9a-f]{40}$/);
+  }
 }
-if (["lane", "disposable"].includes(mode)) {
-  assert.equal(record.recovery.length, 1);
-  assert.equal(record.recovery[0].outcome, "bundled");
-  assert.ok(fs.existsSync(require("node:path").join(require("node:path").dirname(process.argv[2]), "../../../../..", record.recovery[0].path)));
-}
 JS
-  if [[ "$mode" == unknown* ]]; then
-    test -d "$nested"
-    printf '%s\n' "$output" >"$fixture/material-output.txt"
-    CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" "$script_dir/test-close-admission.mjs" "$main" WO-099 "$fixture/material-output.txt" "$record"
-    # A new unfiled subject declaration cannot silently change the committed word.
-    (cd "$subject" && CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" scripts/worktree.mjs material "$material_path" --disposable --reason 'unfiled local word')
-    retry_blocked="$(release_close WO-099 --publish)"
-    grep -Fq 'cleanup blocker' <<<"$retry_blocked"
-    test -d "$nested"
-    if [[ "$mode" == unknown_keep ]]; then
-      # Execute the exact printed keep command, including its quoted path.
-      retry="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" - "$record" <<'JS'
-const fs = require("node:fs"), { execFileSync } = require("node:child_process");
-const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
-const command = record.blockers.find(row => row.action === "material").command;
-process.stdout.write(execFileSync("sh", ["-c", command], { encoding: "utf8" }));
-JS
-)"
-    else
-      retry="$(release_close WO-099 --publish --material "$material_path=disposable")"
-    fi
-    grep -Fq 'already published' <<<"$retry"
-    test ! -e "$subject"
-    "$node_bin" - "$record" "$mode" <<'JS'
-const assert = require("node:assert/strict"), fs = require("node:fs");
-const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8")), mode = process.argv[3];
-assert.equal(record.publication.outcome, "already-published");
-assert.equal(record.cleanup.outcome, "clean");
-assert.equal(record.overrides[0].disposition, mode === "unknown_keep" ? "preserve" : "disposable");
-assert.equal(record.material[0].reason, "operator close --material declaration");
-assert.equal(record.previousAttempts.length, 3);
-assert.equal(record.previousAttempts[0].dryRun, true);
-assert.equal(record.previousAttempts[1].cleanup.outcome, "blocked");
-assert.equal(record.previousAttempts[2].cleanup.outcome, "blocked");
-JS
-  else
-    test ! -e "$subject"
-  fi
-  if [[ "$mode" == preserve || "$mode" == unknown_keep ]]; then
-    kept="$main/docs/control/local/retained/WO-099/material/$material_path"
-    test "$(git -C "$kept" show HEAD:saved.txt)" = 'nested repository fixture'
-    if [[ "$mode" == unknown_keep ]]; then
-      test "$(git -C "$main/docs/control/local/retained/WO-099/material/scratch-material/second repository" show HEAD:saved.txt)" = 'second repository fixture'
-    fi
+  test ! -e "$subject"
+  if [[ "$mode" == preserve ]]; then
+    test "$(git -C "$main/docs/control/local/retained/WO-099/material/$material_path" show HEAD:saved.txt)" = 'nested repository fixture'
   elif [[ "$mode" == intake ]]; then
     test "$(git -C "$main/docs/intake/x" show HEAD:saved.txt)" = 'nested repository fixture'
-  fi
-  if [[ "$mode" == lane || "$mode" == disposable ]]; then
-    bundle="$("$node_bin" -e 'const fs = require("node:fs"); process.stdout.write(JSON.parse(fs.readFileSync(process.argv[1], "utf8")).recovery[0].path)' "$record")"
-    git -C "$main" clone "$main/$bundle" "$fixture/recovered" >/dev/null 2>&1
-    test "$(git -C "$fixture/recovered" show HEAD:saved.txt)" = 'nested repository fixture'
+  else
+    test ! -e "$main/docs/control/local/retained/WO-099/material"
+    test ! -e "$main/docs/control/local/retained/WO-099/recovery"
   fi
   test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
   test "$(git -C "$main" status --porcelain --untracked-files=no)" = ''
 done
-# A recorded disposal decision must not apply after the repository changes
-# or to another worktree's repository at the same path.
-for change in commit dirt; do
-  make_repo "material_drift_$change"
-  subject="$fixture/project-wo099"
-  derived="$fixture/measurement-wo099"
-  material_path='scratch-material/x'
-  git -C "$main" worktree add "$subject" -b wo-099 main >/dev/null
-  printf 'scratch-material/\n' >>"$subject/.gitignore"
-  nested="$subject/$material_path"
-  mkdir -p "$nested"
-  git -C "$nested" init -q
-  if [[ "$change" == dirt ]]; then
-    printf 'saved before completion\n' >"$nested/saved.txt"
-    git -C "$nested" add saved.txt
-    git -C "$nested" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'nested fixture'
-    (cd "$subject" && "$node_bin" scripts/worktree.mjs material "$material_path" --disposable --reason 'completion word')
-  fi
-  DOTLN_FIXTURE_MATERIAL_SOURCE="$subject" commit_candidate "$subject" WO-099 v0.2.1
-  printf 'new work after completion\n' >"$nested/after.txt"
-  if [[ "$change" == commit ]]; then
-    git -C "$nested" add after.txt
-    git -C "$nested" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'commit after completion'
-  fi
-  git -C "$main" worktree add --detach "$derived" wo-099 >/dev/null
-  mkdir -p "$derived/$material_path"
-  git -C "$derived/$material_path" init -q
-  printf 'different derived work\n' >"$derived/$material_path/foreign.txt"
-  git -C "$derived/$material_path" add foreign.txt
-  git -C "$derived/$material_path" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'foreign derived commit'
-  mkdir -p "$derived/docs/intake/protected"
-  git -C "$derived/docs/intake/protected" init -q
-  git -C "$subject" push origin HEAD:main >/dev/null 2>&1
-  output="$(release_close WO-099 --publish)"
-  grep -Fq 'Published annotated v0.2.1' <<<"$output"
-  test -f "$nested/after.txt"
-  test "$(git -C "$derived/$material_path" show HEAD:foreign.txt)" = 'different derived work'
-  record="$main/docs/control/local/retained/WO-099/release-close.json"
-  "$node_bin" - "$record" <<'JS'
-const assert = require("node:assert/strict"), fs = require("node:fs");
-const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
-assert.equal(record.publication.outcome, "published");
-assert.equal(record.cleanup.outcome, "blocked");
-assert.equal(record.material.length, 3);
-assert.ok(record.material.filter(row => row.path === "scratch-material/x").every(row => row.disposition === "undeclared" && row.reason.includes("with content")));
-assert.ok(record.cleanup.worktrees.every(row => row.outcome === "retained"));
-JS
-  # An unscoped word belongs to the subject; it cannot dispose of the derived unit.
-  output="$(release_close WO-099 --publish --material "$material_path=preserve" --material "$derived::docs/intake/protected=disposable")"
-  grep -Fq 'Protected intake repositories cannot be declared disposable' <<<"$output"
-  test ! -e "$subject"
-  test -d "$derived/$material_path"
-  test -f "$main/docs/control/local/retained/WO-099/material/$material_path/after.txt"
-  release_close WO-099 --publish --material "$derived::$material_path=preserve" >/dev/null
-  test ! -e "$derived"
-  test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
-done
-printf 'material handoff, preview, cleanup, preservation and publication retry passed\n'
-make_repo material_changed_keep
+# A derived worktree's scratch repository is recorded under that worktree; its
+# intake unit survives every path, and a word that would discard it refuses.
+make_repo material_derived
 subject="$fixture/project-wo099"
+derived="$fixture/measurement-wo099"
+material_path='scratch-material/x'
 git -C "$main" worktree add "$subject" -b wo-099 main >/dev/null
-nested="$subject/.runtime/kept"
+printf 'scratch-material/\n' >>"$subject/.gitignore"
+nested="$subject/$material_path"
 mkdir -p "$nested"
 git -C "$nested" init -q
-printf 'saved keep decision\n' >"$nested/saved.txt"
+printf 'saved before completion\n' >"$nested/saved.txt"
 git -C "$nested" add saved.txt
-git -C "$nested" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'kept fixture'
-(cd "$subject" && "$node_bin" scripts/worktree.mjs material .runtime/kept --preserve --reason 'keep this unit')
+git -C "$nested" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'nested fixture'
 DOTLN_FIXTURE_MATERIAL_SOURCE="$subject" commit_candidate "$subject" WO-099 v0.2.1
-printf 'later work must stay\n' >"$nested/later.txt"
+git -C "$main" worktree add --detach "$derived" wo-099 >/dev/null
+mkdir -p "$derived/$material_path"
+git -C "$derived/$material_path" init -q
+printf 'different derived work\n' >"$derived/$material_path/foreign.txt"
+git -C "$derived/$material_path" add foreign.txt
+git -C "$derived/$material_path" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'foreign derived commit'
+derived_head="$(git -C "$derived/$material_path" rev-parse HEAD)"
+mkdir -p "$derived/docs/intake/protected"
+git -C "$derived/docs/intake/protected" init -q
+printf 'protected intake bytes\n' >"$derived/docs/intake/protected/keep.txt"
 git -C "$subject" push origin HEAD:main >/dev/null 2>&1
-output="$(release_close WO-099 --publish)"
-test -f "$nested/later.txt"
-record="$main/docs/control/local/retained/WO-099/release-close.json"
-"$node_bin" - "$record" <<'JS'
-const assert = require("node:assert/strict"), fs = require("node:fs");
-const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
-assert.equal(record.material[0].disposition, "undeclared");
-assert.equal(record.cleanup.outcome, "blocked");
-JS
-release_close WO-099 --publish --material .runtime/kept=preserve >/dev/null
+output="$(release_close WO-099 --publish --material "$derived::docs/intake/protected=disposable")"
+grep -Fq 'Published annotated v0.2.1' <<<"$output"
+grep -Fq 'Protected intake repositories cannot be declared disposable' <<<"$output"
 test ! -e "$subject"
-test "$(cat "$main/docs/control/local/retained/WO-099/material/.runtime/kept/later.txt")" = 'later work must stay'
+test "$(git -C "$derived/$material_path" show HEAD:foreign.txt)" = 'different derived work'
+test -f "$derived/docs/intake/protected/keep.txt"
+record="$main/docs/control/local/retained/WO-099/release-close.json"
+"$node_bin" - "$record" "$derived" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8")), derived = process.argv[3];
+assert.equal(record.publication.outcome, "published");
+assert.equal(record.cleanup.outcome, "blocked");
+const kept = record.cleanup.worktrees.find((row) => row.path === derived);
+assert.equal(kept.outcome, "retained");
+assert.ok(kept.blockers.some((row) => /Protected intake/.test(row.reason)));
+assert.equal(record.removals.filter((row) => row.worktree === derived).length, 0);
+JS
+retry="$(release_close WO-099 --publish)"
+grep -Fq 'already published' <<<"$retry"
+test ! -e "$derived"
+test -f "$main/docs/intake/protected/keep.txt"
+"$node_bin" - "$record" "$derived" "$derived_head" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const [file, derived, head] = process.argv.slice(2);
+const record = JSON.parse(fs.readFileSync(file, "utf8"));
+assert.equal(record.publication.outcome, "already-published");
+assert.equal(record.cleanup.outcome, "clean");
+const removal = record.removals.find((row) => row.worktree === derived);
+assert.deepEqual([removal.path, removal.head, removal.remoteHeld, removal.outcome], ["scratch-material/x", head, false, "removed"]);
+JS
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
+# A blocker a nested repository causes carries the material command naming
+# every kept worktree's repositories; a settle blocker keeps its whole reason.
+make_repo material_settle
+subject="$fixture/project-wo099"
+misnamed="$fixture/measurement-wo099-misnamed"
+listed="$fixture/measurement-wo099-listed"
+git -C "$main" worktree add "$subject" -b wo-099 main >/dev/null
+printf 'scratch-material/\n' >>"$subject/.gitignore"
+commit_candidate "$subject" WO-099 v0.2.1
+for derived in "$misnamed" "$listed"; do
+  git -C "$main" worktree add --detach "$derived" wo-099 >/dev/null
+  mkdir -p "$derived/scratch-material/x"
+  git -C "$derived/scratch-material/x" init -q
+  printf 'derived scratch\n' >"$derived/scratch-material/x/saved.txt"
+  git -C "$derived/scratch-material/x" add saved.txt
+  git -C "$derived/scratch-material/x" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'derived scratch'
+done
+printf 'SECRET=fixture-only\n' >"$listed/.env"
+git -C "$subject" push origin HEAD:main >/dev/null 2>&1
+# The operator's word names a repository the worktree does not hold.
+output="$(release_close WO-099 --publish --material "$misnamed::scratch-material/missing=preserve")"
+grep -Fq 'Published annotated v0.2.1' <<<"$output"
+grep -Fq 'Material retry: ' <<<"$output"
+test ! -e "$subject"
+test -d "$misnamed"
+test -d "$listed"
+record="$main/docs/control/local/retained/WO-099/release-close.json"
+"$node_bin" - "$record" "$misnamed" "$listed" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const [file, misnamed, listed] = process.argv.slice(2);
+const record = JSON.parse(fs.readFileSync(file, "utf8"));
+assert.equal(record.cleanup.outcome, "blocked");
+const settle = (path) => record.blockers.find((row) => row.action === "settle" && row.path === path);
+const listedBlocker = settle(listed);
+assert.match(listedBlocker.reason, /kept \(worktree contains ignored material and will not be removed \(1 entry; only scratch repositories are removed\):\n  \.env: other lane: ignored file/);
+assert.ok(!listedBlocker.disposableCommand, "an ignored file is not a material cause");
+const misnamedBlocker = settle(misnamed);
+assert.match(misnamedBlocker.reason, /Material word names no nested repository of this worktree: "scratch-material\/missing"/);
+assert.ok(misnamedBlocker.command.includes(`--material '${misnamed}::scratch-material/x=preserve'`), misnamedBlocker.command);
+assert.ok(misnamedBlocker.command.includes(`--material '${listed}::scratch-material/x=preserve'`), "every kept worktree is named");
+assert.ok(misnamedBlocker.disposableCommand.includes(`--material '${misnamed}::scratch-material/x=disposable'`));
+assert.ok(record.cleanup.worktrees.find((row) => row.path === misnamed).material.some((row) => row.path === "scratch-material/x"));
+JS
+printf '%s\n' "$output" >"$fixture/settle-output.txt"
+CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" "$script_dir/test-close-admission.mjs" "$main" WO-099 "$fixture/settle-output.txt" "$record"
+rm -- "$listed/.env"
+retry="$(release_close WO-099 --publish)"
+grep -Fq 'already published' <<<"$retry"
+test ! -e "$misnamed"
+test ! -e "$listed"
+"$node_bin" - "$record" "$misnamed" "$listed" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const [file, misnamed, listed] = process.argv.slice(2);
+const record = JSON.parse(fs.readFileSync(file, "utf8"));
+assert.equal(record.cleanup.outcome, "clean");
+for (const worktree of [misnamed, listed])
+  assert.equal(record.removals.find((row) => row.worktree === worktree && row.path === "scratch-material/x").outcome, "removed");
+JS
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
+printf 'material handoff, preview, cleanup, preservation and publication retry passed\n'
 for result in success failure; do
   make_repo "material_record_io_$result"
   subject="$fixture/project-wo099"
@@ -2035,8 +2182,10 @@ printf 'record I/O preserves publication outcome and original errors\n'
 }
 
 
+# The sealed variant runs the same case from a template copy under its own
+# fixture name, so a whole-script run does not copy onto the first run's tree.
 release_case_close_completion() {
-make_repo close_completion
+make_repo "${1:-close_completion}"
 subject="$fixture/project-wo099"
 git -C "$main" worktree add "$subject" -b wo-099 main >/dev/null
 mkdir -p "$subject/.runtime/kept" "$subject/.runtime/snapshots/deep" "$fixture/outside"
@@ -2044,24 +2193,23 @@ printf 'preserved fixture bytes\n' >"$subject/.runtime/kept/saved.txt"
 git -C "$subject/.runtime/kept" init -q
 git -C "$subject/.runtime/kept" add .
 git -C "$subject/.runtime/kept" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'preserved fixture'
-(cd "$subject" && CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" scripts/worktree.mjs material .runtime/kept --preserve --reason 'fixture preservation')
 printf 'sealed disposable snapshot\n' >"$subject/.runtime/snapshots/deep/snapshot.txt"
 ln -s "$fixture/outside" "$subject/.runtime/outside-link"
 DOTLN_FIXTURE_MATERIAL_SOURCE="$subject" commit_candidate "$subject" WO-099 v0.2.1
 git -C "$subject" push origin HEAD:main >/dev/null 2>&1
 chmod 500 "$subject/.runtime/snapshots/deep" "$fixture/outside"
-preview="$(release_close_summary WO-099 --dry-run)"
+preview="$(release_close_summary WO-099 --dry-run --material .runtime/kept=preserve)"
 if [[ "$selected_case" != close_sealed ]] && ! grep -Fq 'Branch wo-099: would-delete' <<<"$preview"; then
   chmod 700 "$subject/.runtime/snapshots/deep" "$fixture/outside"
   printf 'WO-195 branch deletion preview missing\n' >&2; return 1
 fi
 test -d "$subject"
 if [[ "$selected_case" != close_sealed ]]; then
-prepared="$(release_close_summary WO-099)"
+prepared="$(release_close_summary WO-099 --material .runtime/kept=preserve)"
 printf '%s\n' "$prepared" >"$fixture/prepared-output.txt"
 CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" "$script_dir/test-close-admission.mjs" "$main" WO-099 "$fixture/prepared-output.txt"
 fi
-output="$(release_close_summary WO-099 --publish)"
+output="$(release_close_summary WO-099 --publish --material .runtime/kept=preserve)"
 # Undo the fixture's external seal only after measuring the no-follow result.
 external_mode="$($node_bin -e 'console.log((require("node:fs").statSync(process.argv[1]).mode & 511).toString(8))' "$fixture/outside")"
 chmod 700 "$fixture/outside"
@@ -2092,7 +2240,7 @@ CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" "$script_dir/test-clo
 }
 
 release_case_close_sealed() {
-release_case_close_completion
+release_case_close_completion close_sealed
 }
 
 release_case_close_leftover() {

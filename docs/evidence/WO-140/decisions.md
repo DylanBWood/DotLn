@@ -98,7 +98,7 @@ Mission and critical path: the usage command existed and the session could not f
     "node scripts/harness-context.mjs --check after regeneration: reviewer 21,299 bytes in both generated roots against 20,480, verdict breach before the raise; verifier 20,081 against 20,480, within (21,274 and 20,056 before D007 lengthened one sentence by 25 bytes)",
     "git show HEAD:.claude/skills/dotln-reviewer/SKILL.md: 14,646 bytes; installed CLAUDE.md 5,788; before 20,434, after 21,299, delta 865; the verifier moved 19,216 to 20,081 by the same 865 bytes",
     "docs/product/07-execution-guide.md Discipline, the cold-start rule: a reviewed rule that breaches a ceiling raises it in the same change by one 4 KB step with the rule named, never trimmed around",
-    "Operator message during resume: next, 2026-09-19: 'i authorize just upping the limit'",
+    "Operator message during resume: next, 2026-09-19: authorization to simply raise the limit",
     "docs/control/budgets.json acceptances: WO-054 and WO-139 raised ceilings by the same route"
   ],
   "rejected": [

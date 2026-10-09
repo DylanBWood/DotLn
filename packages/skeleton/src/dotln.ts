@@ -94,7 +94,7 @@ try {
     const signals = { SIGINT: 130, SIGTERM: 143, SIGHUP: 129 } as const;
     // The run's abort forwards the signal to a live writer and settles its
     // group within 10 s; every other in-flight episode or timed wait ends at
-    // once (WO-199 VER-001 F1). Should the run still not end, exit anyway and
+    // once (WO-199). Should the run still not end, exit anyway and
     // let the next run recover from the records. The bound must exceed the
     // writer's 9 s SIGKILL escalation plus settlement; it caps the waits the
     // abort does not reach (a browser scenario, a prior group's termination

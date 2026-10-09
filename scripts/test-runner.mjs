@@ -109,7 +109,7 @@ const machinerySources = {
     "scripts/test-fixture-temp-root.sh",
   ],
   "harness-probe": [
-    // WO-174: direct entry imports and literal first-party script inputs.
+    // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/skeleton/src/discovery-sandbox.ts",
     "packages/skeleton/src/source-change-command.ts",
     "scripts/resume.mjs",
@@ -125,11 +125,11 @@ const machinerySources = {
     "scripts/lib/writing-worker-probe.mjs",
     "scripts/probe-worker-hosts.mjs",
     "scripts/test-harness-probe.mjs",
-    // WO-159: the probes build their Codex argv and home through the launcher.
+    // The probes build their Codex argv and home through the launcher (WO-159).
     "packages/skeleton/src/worker-transport.ts",
   ],
   "harness-fixtures": [
-    // WO-174: direct entry imports and literal first-party script inputs.
+    // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/compiler/src/artifact-identity.ts",
     "packages/compiler/src/index.ts",
     "packages/compiler/src/operator-control.mjs",
@@ -152,14 +152,14 @@ const machinerySources = {
     "packages/skeleton/src/gate-evidence.mjs",
     "scripts/test-harness.mjs",
     "scripts/lib/harness-prune.mjs",
-    // WO-171: the prune's usage retention follows preservation's collision names.
+    // Prune usage retention follows preservation's collision names (WO-171).
     "scripts/lib/intake-reconciliation.mjs",
     "scripts/lib/worktree-material.mjs",
     "scripts/lib/worktree-removal.mjs",
     "scripts/lib/git.mjs",
     "packages/skeleton/src/writer-teardown.mjs",
     "scripts/lib/stash-drop.mjs",
-    // WO-159: prune lists stale Codex episode homes through the launcher.
+    // Prune lists stale Codex episode homes through the launcher (WO-159).
     "packages/skeleton/src/worker-transport.ts",
     "scripts/test-observed-facts.mjs",
     "scripts/lib/executor-handoff.mjs",
@@ -179,7 +179,7 @@ const machinerySources = {
   ],
   harness: [
     "scripts/lib/bounded-command.mjs",
-    // WO-174: direct entry imports and literal first-party script inputs.
+    // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/skeleton/src/usage-observation.mjs",
     "scripts/lib/evidence-preparation.mjs",
     "scripts/lib/harness-prune.mjs",
@@ -196,8 +196,8 @@ const machinerySources = {
     "packages/compiler/src/harness.ts",
     "packages/skeleton/src/loadouts/",
   ],
-  // WO-169 item 5: the suite scans every non-test script for a literal
-  // document root, so any changed script selects it (WO-085 D014).
+  // The suite scans every non-test script for a literal document root, so
+  // any changed script selects it (WO-169 item 5, WO-085 D014).
   "configuration-root": ["scripts/"],
   "harness-context": [
     "scripts/lib/process-budget.mjs",
@@ -207,7 +207,7 @@ const machinerySources = {
   ],
   "harness-evidence": recordedSources["harness"],
   "plan-refutation": [
-    // WO-174: direct entry imports and literal first-party script inputs.
+    // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/kernel/src/index.ts",
     "scripts/lib/control-store.mjs",
     "scripts/lib/control.mjs",
@@ -221,6 +221,8 @@ const machinerySources = {
     "scripts/test-plan-refutation.mjs",
     "scripts/refute-plan.mjs",
     "scripts/lib/plan-",
+    // plan-failures reads the persisted correction ids through meta.mjs.
+    "scripts/lib/meta.mjs",
     "packages/skeleton/src/plan-refutation-protocol.ts",
     "packages/skeleton/src/loadouts/plan-refuter.ts",
     "packages/skeleton/src/entropy-review-protocol.ts",
@@ -250,7 +252,7 @@ const machinerySources = {
     "scripts/lib/machinery-coverage.mjs",
     "scripts/lib/product-read-guard.mjs",
     "scripts/lib/evidence-sources.mjs",
-    // WO-174: direct entry imports and literal first-party script inputs.
+    // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/compiler/src/artifact-identity.ts",
     "packages/skeleton/src/harness-host.ts",
     "packages/skeleton/src/loadouts/contributor.ts",
@@ -265,7 +267,7 @@ const machinerySources = {
     "scripts/lib/gate-timeline.mjs",
     "scripts/measure-gates.mjs",
     "scripts/lib/gate-evidence.mjs",
-    // WO-173: the passing-row lookup `npm test` reuses and completions read.
+    // The passing-row lookup `npm test` reuses and completions read (WO-173).
     "scripts/lib/gate-reuse.mjs",
     "scripts/lib/case-reporter.mjs",
     "scripts/lib/case-marker.mjs",
@@ -289,13 +291,13 @@ const machinerySources = {
     "packages/skeleton/src/writer-teardown.mjs",
     "scripts/lib/suite-evidence.mjs",
     "scripts/lib/release-fixtures.mjs",
-    // WO-163: the release shell runs the library through this entry point.
+    // The release shell runs the library through this entry point (WO-163).
     "scripts/release-fixtures.mjs",
     "packages/skeleton/src/gate-evidence.mjs",
     "packages/skeleton/src/gate-deadlines.mjs",
   ],
   "process-debt": [
-    // WO-174: direct entry imports and literal first-party script inputs.
+    // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/compiler/src/feedback.ts",
     "packages/compiler/src/index.ts",
     "packages/compiler/src/operator-control.mjs",
@@ -339,6 +341,7 @@ const machinerySources = {
     "packages/skeleton/fixtures/wo186-role-baseline.json",
     "packages/skeleton/fixtures/wo187-role-baseline.json",
     "packages/skeleton/fixtures/wo196-role-baseline.json",
+    "packages/skeleton/fixtures/wo188-role-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
     "scripts/lib/git.mjs",
@@ -355,15 +358,15 @@ const machinerySources = {
     "packages/skeleton/src/gate-evidence.mjs",
   ],
   mutation: [
-    // WO-174: direct entry imports and literal first-party script inputs.
+    // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/compiler/src/compile.ts",
     "packages/compiler/src/normalize.ts",
     "packages/kernel/src/index.ts",
     "corpus/mutation/",
   ],
-  // WO-157 item 12: the inventories and the import closure they must follow.
+  // The inventories and the import closure they must follow (WO-157 item 12).
   "evidence-sources": [
-    // WO-174: direct entry imports and literal first-party script inputs.
+    // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/compiler/src/artifact-identity.ts",
     "packages/kernel/src/index.ts",
     "packages/skeleton/src/entropy-review-protocol.ts",
@@ -377,10 +380,10 @@ const machinerySources = {
     "packages/skeleton/src/feedback-audit.ts",
     "packages/skeleton/src/evidence-editions.mjs",
   ],
-  // WO-157 item 13: any changed docs path, stub list or registry re-runs the
-  // registration check under --review, not only under test:docs.
+  // Any changed docs path, stub list or registry re-runs the registration
+  // check under --review, not only under test:docs (WO-157 item 13).
   registrations: [
-    // WO-174: direct entry imports and literal first-party script inputs.
+    // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/kernel/src/index.ts",
     "docs/",
     "scripts/check-registrations.mjs",
@@ -395,7 +398,7 @@ const machinerySources = {
   "verification-evidence": recordedSources["verification"],
   "feedback-evidence": recordedSources["feedback"],
   meta: [
-    // WO-174: direct entry imports and literal first-party script inputs.
+    // Direct entry imports and literal first-party script inputs (WO-174).
     "scripts/lib/executor-handoff.mjs",
     "scripts/lib/plan-subject.mjs",
     "packages/skeleton/src/correction-observation.mjs",
@@ -544,8 +547,8 @@ export function changedMachinery(repo, table = suites, base = "origin/main") {
     },
   );
   if (run.status !== 0) return table.filter((row) => row.machinery);
-  // WO-173 (WO-169 D007): an order's work stays uncommitted until final
-  // review, so the change includes its untracked files, which the diff omits.
+  // An order's work stays uncommitted until final review (WO-169 D007), so
+  // the change includes its untracked files, which the diff omits (WO-173).
   const untracked = spawnGit(
     ["ls-files", "--others", "--exclude-standard", "-z"],
     { cwd: repo, encoding: "utf8" },
@@ -672,6 +675,18 @@ export const suites = [
     protects:
       "document checks reject new growth and broken navigation while preserving declared exceptions",
   }),
+  node("comment-labels", "scripts/comment-labels.mjs", {
+    document: true,
+    needsBuild: true,
+    preflight: true,
+    protects:
+      "a new or changed code comment carries no report-local label and leads with no order identifier; today's lines pass by a baseline that only shrinks",
+  }),
+  nodeTests("comment-labels-fixtures", "scripts/test-comment-labels.mjs", {
+    document: true,
+    protects:
+      "the comment check refuses labels and leading identifiers, honours its fingerprint baseline and shrinks it on a fix",
+  }),
   node("index", "scripts/work-orders.mjs", {
     args: ["index", "--check"],
     fast: true,
@@ -698,7 +713,7 @@ export const suites = [
               "scripts/fixtures/historical-compiler-loader.mjs",
             ],
             // Its native script cases nest `sandbox-exec`, which an outer
-            // Seatbelt sandbox refuses (WO-068 FINAL-001 O4).
+            // Seatbelt sandbox refuses (WO-068).
             needs: OUTSIDE_CONFINEMENT,
           }
         : {}),
@@ -1736,7 +1751,7 @@ export async function scheduleSuites(
         ...(row.after ?? []),
         ...laneIndexes.map((index) => lanes[index].previous),
         // A task skipped for a failed dependency never started, so it is not
-        // a timeline edge (VER-001 F1).
+        // a timeline edge.
         ...results
           .filter(
             (result) =>

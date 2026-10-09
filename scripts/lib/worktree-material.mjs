@@ -1,30 +1,20 @@
 import {
+  accessSync,
   constants,
-  copyFileSync,
   existsSync,
   lstatSync,
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
   readdirSync,
-  readlinkSync,
   realpathSync,
   rmSync,
-  unlinkSync,
-  writeFileSync,
 } from "node:fs";
-import { createHash, randomUUID } from "node:crypto";
-import { dirname, isAbsolute, join, resolve } from "node:path";
-import { docPath } from "./config.mjs";
+import { isAbsolute, join, resolve } from "node:path";
 import {
   releaseCloseCommand,
   runGit,
   runGitPathList,
   shellQuote,
-  spawnGit,
 } from "./git.mjs";
-import { eventsForOrder, readControl } from "./control-store.mjs";
-import { describeIgnoredMaterial, ignoredLane } from "./paths.mjs";
+import { describeIgnoredMaterial, isNestedRepositoryEntry } from "./paths.mjs";
 
 export function materialPath(candidate) {
   const path =
@@ -41,74 +31,7 @@ export function materialPath(candidate) {
   return path;
 }
 
-const declarationsPath = (root) =>
-  docPath(root, "control", "local/material.json");
-const dispositions = new Set(["disposable", "preserve", "undeclared"]);
-
-// A path is not an identity. Do not persist host paths in the committed
-// handoff; the digest binds a row to its physical worktree, while the state
-// covers refs, all stored objects, index and working files (including dirt).
-export function materialState(root, path) {
-  try {
-    requireMaterialContainment(root, path);
-    const directory = join(root, materialPath(path));
-    requireMaterialContainment(root, `${path}/.git`);
-    const hash = createHash("sha256");
-    const add = (name, bytes) => {
-      hash.update(JSON.stringify([name, bytes.length]));
-      hash.update(bytes);
-    };
-    const walk = (relative) => {
-      const absolute = join(directory, relative);
-      const item = lstatSync(absolute);
-      add(relative, Buffer.from(String(item.mode)));
-      if (item.isDirectory()) {
-        for (const name of readdirSync(absolute).sort())
-          if (relative || name !== ".git")
-            walk(relative ? `${relative}/${name}` : name);
-      } else if (item.isFile()) add(relative, readFileSync(absolute));
-      else if (item.isSymbolicLink())
-        add(relative, Buffer.from(readlinkSync(absolute)));
-      else throw new Error("Unsupported repository entry");
-    };
-    walk("");
-    for (const args of [
-      ["for-each-ref", "--format=%(refname) %(objectname)"],
-      ["cat-file", "--batch-all-objects", "--batch-check=%(objectname)"],
-      ["ls-files", "--stage", "-z"],
-    ])
-      add(args[0], Buffer.from(runGit(directory, args)));
-    const head = spawnGit(["-C", directory, "rev-parse", "--verify", "HEAD"], {
-      encoding: "utf8",
-    });
-    if (head.status !== 0 && head.status !== 128)
-      throw new Error("Repository HEAD cannot be inspected");
-    add("HEAD", Buffer.from(head.status === 0 ? head.stdout : "unborn"));
-    const symbolic = spawnGit(
-      ["-C", directory, "symbolic-ref", "--quiet", "HEAD"],
-      { encoding: "utf8" },
-    );
-    if (![0, 1].includes(symbolic.status))
-      throw new Error("Repository HEAD ref cannot be inspected");
-    add(
-      "HEAD-ref",
-      Buffer.from(symbolic.status === 0 ? symbolic.stdout : "detached"),
-    );
-    return {
-      worktree: createHash("sha256").update(realpathSync(root)).digest("hex"),
-      sha256: hash.digest("hex"),
-    };
-  } catch {
-    // Missing evidence is not permission to reuse a disposable declaration.
-    return null;
-  }
-}
-
-const sameState = (left, right) =>
-  left &&
-  right &&
-  left.worktree === right.worktree &&
-  left.sha256 === right.sha256;
+const dispositions = new Set(["disposable", "preserve"]);
 
 function checkedRows(rows) {
   if (!Array.isArray(rows))
@@ -126,162 +49,93 @@ function checkedRows(rows) {
   });
 }
 
-// A declaration never follows a symlink, including its ignored record's parents.
+// A material path never follows a symlink, including its parents.
 export function requireMaterialContainment(root, path) {
   let current = root;
   for (const part of materialPath(path).split("/")) {
     current = join(current, part);
     if (lstatSync(current, { throwIfNoEntry: false })?.isSymbolicLink())
-      throw new Error("Material declaration refuses a symlink");
+      throw new Error("Material path refuses a symlink");
   }
 }
 
-export function readMaterialDeclarations(root) {
-  const file = declarationsPath(root);
-  const relative = file.slice(root.length + 1);
-  requireMaterialContainment(root, relative);
-  if (!existsSync(file)) return [];
-  const record = JSON.parse(readFileSync(file, "utf8"));
-  if (record.schemaVersion !== 1)
-    throw new Error("Invalid material declaration schema");
-  return checkedRows(record.material);
-}
+// A worktree is named physically: a word scoped through an alias of the same
+// directory is the same word.
+const physical = (path) => {
+  try {
+    return realpathSync(path);
+  } catch {
+    return resolve(path);
+  }
+};
 
-/** Inventory only the repository units Git reports; ordinary ignored files
- * keep their existing lane behavior. Only a current, worktree-bound explicit
- * word overrides a fresh lane classification; a lane row is an observation. */
+/** Inventory every nested repository of a worktree. Git reports one as a
+ * single directory unit whether an ignore rule covers it or it is merely
+ * untracked, so both listings are read. A nested repository outside the
+ * intake lane that the tracked tree does not declare as a submodule is
+ * scratch and disposable; only an operator's close-time word for this
+ * worktree changes a row's disposition, and a word that names no repository
+ * here is refused. */
 export function inventoryMaterial(
   root,
-  {
-    declarations = readMaterialDeclarations(root),
-    overrides = [],
-    overrideWorktree = null,
-  } = {},
+  { overrides = [], overrideWorktree = null } = {},
 ) {
   root = realpathSync(root);
-  const declared = new Map(
-    checkedRows(declarations)
-      .filter((row) => row.source === "declared")
-      .map((row) => [row.path, row]),
-  );
-  const words = new Map(
-    checkedRows(overrides)
-      .filter(
-        (row) =>
-          resolve(row.worktree ?? overrideWorktree ?? "") === root &&
-          Boolean(row.worktree || overrideWorktree),
-      )
-      .map((row) => [row.path, row]),
-  );
-  const ignored = runGitPathList(root, [
-    "ls-files",
-    "-z",
-    "--others",
-    "--ignored",
-    "--exclude-standard",
-  ]);
-  // Intake re-includes directories to retain .gitkeep. A repository unit can
-  // consequently be untracked while its contents are ignored; it is still
-  // protected intake, never ordinary scratch or permission to drop work.
-  const intake = runGitPathList(root, [
-    "ls-files",
-    "-z",
-    "--others",
-    "--exclude-standard",
-  ]).filter(
-    (path) => path.endsWith("/") && ignoredLane(path, root) === "intake",
-  );
-  return [...new Set([...ignored, ...intake])]
+  const words = new Map();
+  for (const row of checkedRows(overrides)) {
+    const scope = row.worktree ?? overrideWorktree;
+    if (!scope || physical(scope) !== root) continue;
+    if (words.has(row.path))
+      throw new Error(
+        `Duplicate material word for ${JSON.stringify(row.path)}`,
+      );
+    words.set(row.path, row);
+  }
+  // A repository no ignore rule covers, such as one cloned after review, is
+  // scratch like an ignored one. A re-included intake unit is untracked while
+  // its contents are ignored and stays protected intake either way.
+  const units = (flags) =>
+    runGitPathList(root, ["ls-files", "-z", "--others", ...flags]).filter(
+      isNestedRepositoryEntry,
+    );
+  const rows = [
+    ...new Set([
+      ...units(["--ignored", "--exclude-standard"]),
+      ...units(["--exclude-standard"]),
+    ]),
+  ]
     .sort()
-    .filter((path) => path.endsWith("/"))
     .map((path) => describeIgnoredMaterial(root, path))
     .filter((row) => row.kind === "nested-repository")
     .map((row) => {
-      const path = materialPath(row.path),
-        state = materialState(root, path);
-      const recorded = declared.get(path);
-      const explicit =
-        words.get(path) ??
-        (sameState(recorded?.state, state) ? recorded : undefined);
-      // A stale keep decision is uncertainty, not permission to downgrade
-      // preservation to a scratch-lane deletion. A fresh scoped word can settle it.
-      const staleKeep =
-        !explicit &&
-        recorded?.disposition === "preserve" &&
-        (!recorded.state || recorded.state.worktree === state?.worktree);
-      if (row.lane === "intake" && explicit?.disposition === "disposable")
+      const path = materialPath(row.path);
+      const explicit = words.get(path);
+      if (explicit?.disposition === "disposable" && row.lane === "intake")
         throw new Error(
           "Protected intake repositories cannot be declared disposable",
+        );
+      if (explicit?.disposition === "disposable" && row.submodule)
+        throw new Error("A declared submodule cannot be declared disposable");
+      if (explicit?.disposition === "disposable" && row.linked)
+        throw new Error(
+          "A linked worktree of another repository cannot be declared disposable; its commits live in the owning repository",
         );
       return {
         path,
         lane: row.lane,
         disposition:
-          explicit?.disposition ??
-          (staleKeep
-            ? "undeclared"
-            : row.disposable
-              ? "disposable"
-              : ["intake", "control"].includes(row.lane)
-                ? "preserve"
-                : "undeclared"),
+          explicit?.disposition ?? (row.disposable ? "disposable" : "preserve"),
         source: explicit?.source ?? "lane",
-        reason:
-          explicit?.reason ??
-          (staleKeep
-            ? "preservation declaration no longer matches repository state; a new word is required"
-            : row.classification),
-        state,
+        reason: explicit?.reason ?? row.classification,
+        ...(row.submodule ? { submodule: true } : {}),
       };
     });
-}
-
-export function declareMaterial(root, candidate, disposition, reason) {
-  const path = materialPath(candidate);
-  if (
-    !dispositions.has(disposition) ||
-    disposition === "undeclared" ||
-    !reason?.trim()
-  )
-    throw new Error(
-      "Material declaration needs disposable or preserve and a nonempty reason",
-    );
-  requireMaterialContainment(root, path);
-  const material = inventoryMaterial(root);
-  const current = material.find((row) => row.path === path);
-  if (!current)
-    throw new Error(
-      `${JSON.stringify(path)} is not an ignored nested repository`,
-    );
-  if (current.lane === "intake" && disposition === "disposable")
-    throw new Error(
-      "Protected intake repositories cannot be declared disposable",
-    );
-  const row = { ...current, disposition, source: "declared", reason };
-  const rows = readMaterialDeclarations(root).filter(
-    (entry) => entry.path !== path,
-  );
-  rows.push(row);
-  rows.sort((a, b) => a.path.localeCompare(b.path));
-  const file = declarationsPath(root);
-  requireMaterialContainment(root, file.slice(root.length + 1));
-  mkdirSync(dirname(file), { recursive: true, mode: 0o700 });
-  writeFileSync(
-    file,
-    `${JSON.stringify({ schemaVersion: 1, material: rows }, null, 2)}\n`,
-    { mode: 0o600 },
-  );
-  return row;
-}
-
-// Close consumes main's committed completion, never the subject's local words.
-export function committedMaterial(root, workOrder, revision = "HEAD") {
-  const event = eventsForOrder(readControl(root, revision), workOrder)
-    .filter((row) =>
-      ["ImplementationReady", "RepairCompleted"].includes(row.type),
-    )
-    .at(-1);
-  return checkedRows(event?.evidence?.material ?? []);
+  for (const path of words.keys())
+    if (!rows.some((row) => row.path === path))
+      throw new Error(
+        `Material word names no nested repository of this worktree: ${JSON.stringify(path)}`,
+      );
+  return rows;
 }
 
 export function parseMaterialFlags(args, allowed) {
@@ -303,13 +157,14 @@ export function parseMaterialFlags(args, allowed) {
       const path = materialPath(
         scopeAt < 0 ? candidate : candidate.slice(scopeAt + 2),
       );
-      if (
-        material.some((row) => row.path === path && row.worktree === worktree)
-      )
+      // Two words for one repository conflict whatever their spelling: a
+      // trailing slash or an alias of the worktree names the same directory.
+      const scoped = worktree === undefined ? undefined : physical(worktree);
+      if (material.some((row) => row.path === path && row.worktree === scoped))
         throw new Error(`Duplicate material path: ${path}`);
       material.push({
         path,
-        ...(worktree ? { worktree: resolve(worktree) } : {}),
+        ...(scoped ? { worktree: scoped } : {}),
         disposition,
         source: "declared",
         reason: "operator close --material declaration",
@@ -322,9 +177,6 @@ export function parseMaterialFlags(args, allowed) {
   }
   return { flags, material };
 }
-
-export const materialDeclareCommand = (path) =>
-  `npm run worktree -- material ${shellQuote(materialPath(path))} --preserve --reason 'keep this repository'`;
 
 export const materialCloseCommand = (
   main,
@@ -347,140 +199,116 @@ export const materialCloseCommand = (
 export const materialFlagValue = (row) =>
   `${row.worktree ? `${row.worktree}::` : ""}${row.path}=${row.disposition}`;
 
-export function verifyMaterialState(root, material) {
-  for (const row of material)
-    if (
-      row.disposition !== "undeclared" &&
-      !sameState(row.state, materialState(root, row.path))
-    )
-      throw new Error(
-        `Repository material changed or cannot be inspected: ${JSON.stringify(row.path)}; source retained`,
-      );
+// Git inside a nested repository runs with that repository's hooks and file
+// monitor off: a scratch repository's own configuration never executes during
+// a close. A failed read records null, never a guess.
+const NESTED_GIT = [
+  "-c",
+  "core.hooksPath=/dev/null",
+  "-c",
+  "core.fsmonitor=false",
+];
+// The repository is named explicitly: with an unreadable HEAD, discovery
+// would otherwise fall through to the worktree that holds it.
+const readNested = (directory, args) =>
+  runGit(
+    directory,
+    [
+      ...NESTED_GIT,
+      "--git-dir",
+      join(directory, ".git"),
+      "--work-tree",
+      directory,
+      ...args,
+    ],
+    { timeout: 5000, onFailure: () => null },
+  );
+
+/** What a removal record keeps about a scratch repository: its head commit
+ * and whether a remote of that repository held it, as its remote-tracking
+ * refs stood at its last fetch or push. */
+export function scratchRepositoryFacts(root, path) {
+  const directory = join(root, materialPath(path));
+  const head =
+    readNested(directory, ["rev-parse", "--verify", "--quiet", "HEAD"]) || null;
+  const held =
+    head === null
+      ? null
+      : readNested(directory, [
+          "for-each-ref",
+          "--contains",
+          head,
+          "--format=%(refname)",
+          "refs/remotes/",
+        ]);
+  return { head, remoteHeld: held === null ? null : held !== "" };
 }
 
-/** A bundle contains all commit objects, including ones no current ref reaches.
- * Temporary export refs are removed in finally; no source history is rewritten.
- * Failure leaves both source and any partial recovery bytes for inspection. */
-export function recoverDisposableRepositories(
-  source,
-  main,
-  workOrder,
-  material,
-  { dryRun = false } = {},
-) {
-  const recovery = [];
-  for (const row of material.filter(
-    (entry) => entry.disposition === "disposable",
-  )) {
-    verifyMaterialState(source, [row]);
-    const nested = join(source, row.path);
-    const objects = runGit(nested, [
-      "cat-file",
-      "--batch-all-objects",
-      "--batch-check=%(objectname) %(objecttype)",
-    ]);
-    const commits = objects
-      .split("\n")
-      .filter((line) => line.endsWith(" commit"))
-      .map((line) => line.split(" ")[0])
-      .sort();
-    if (!commits.length) {
-      recovery.push({
-        worktree: source,
-        repository: row.path,
-        outcome: "not-needed",
-        reason: "repository has no commit objects",
-        commitCount: 0,
-      });
-      continue;
-    }
-    const id = createHash("sha256")
-      .update(JSON.stringify([row.path, row.state]))
-      .digest("hex");
-    const path = `${docPath(main, "control", `local/retained/${workOrder}/recovery`).slice(main.length + 1)}/${id}.bundle`;
-    const result = {
-      worktree: source,
-      repository: row.path,
-      path,
-      commitCount: commits.length,
-      outcome: dryRun ? "would-bundle" : "bundled",
-    };
-    requireMaterialContainment(main, path);
-    if (
-      runGitPathList(main, ["ls-files", "-z", "--", `:(literal)${path}`])
-        .length ||
-      !runGitPathList(main, ["check-ignore", "--no-index", "-z", "--stdin"], {
-        input: `${path}\0`,
-      }).includes(path)
-    )
-      throw new Error(
-        "Recovery bundle must remain ignored and untracked; source retained",
-      );
-    if (dryRun) {
-      recovery.push(result);
-      continue;
-    }
-    const file = join(main, path);
-    const nonce = randomUUID(),
-      prefix = `refs/dotln/material-recovery/${nonce}`;
-    const refs = commits.map((commit, index) => `${prefix}/${index}`);
-    const temporary = `${file}.${nonce}.partial`;
-    mkdirSync(dirname(file), { recursive: true, mode: 0o700 });
-    if (!existsSync(file)) {
-      let exported = false;
-      try {
-        runGit(nested, ["update-ref", "--stdin"], {
-          input: refs
-            .map((ref, index) => `create ${ref} ${commits[index]}\n`)
-            .join(""),
-        });
-        exported = true;
-        runGit(nested, ["bundle", "create", temporary, "--all"]);
-        runGit(nested, ["bundle", "verify", temporary]);
-        copyFileSync(temporary, file, constants.COPYFILE_EXCL);
-        unlinkSync(temporary);
-      } finally {
-        if (exported)
-          runGit(nested, ["update-ref", "--stdin"], {
-            input: refs.map((ref) => `delete ${ref}\n`).join(""),
-          });
-      }
-    }
-    if (!lstatSync(file).isFile())
-      throw new Error("Recovery bundle is not a regular file; source retained");
-    runGit(nested, ["bundle", "verify", file]);
-    const heads = new Set(
-      runGit(nested, ["bundle", "list-heads", file])
-        .split("\n")
-        .map((line) => line.split(" ")[0]),
-    );
-    if (commits.some((commit) => !heads.has(commit)))
-      throw new Error("Recovery bundle omits a commit; source retained");
-    // Verify in an empty repository so prerequisites cannot be satisfied by
-    // the source that is about to leave. Importing and fsck also check the pack.
-    const validation = mkdtempSync(join(dirname(file), ".verify-"));
+// Deleting an entry needs write permission on the directory that holds it. A
+// directory this user cannot write refuses the whole removal before any byte
+// leaves, so a failed removal never leaves half a repository behind.
+const unwritableDirectory = (directory) => {
+  const pending = [directory];
+  while (pending.length) {
+    const current = pending.pop();
     try {
-      runGit(main, ["init", "--bare", "--quiet", validation]);
-      runGit(validation, ["bundle", "verify", file]);
-      runGit(validation, ["bundle", "unbundle", file]);
-      const imported = runGit(
-        validation,
-        ["cat-file", "--batch-check=%(objectname) %(objecttype)"],
-        { input: commits.join("\n") + "\n" },
-      );
-      if (imported !== commits.map((commit) => `${commit} commit`).join("\n"))
-        throw new Error(
-          "Recovery bundle cannot restore every commit; source retained",
-        );
-      runGit(validation, ["fsck", "--full"]);
-    } finally {
-      rmSync(validation, { recursive: true, force: true });
+      accessSync(current, constants.R_OK | constants.W_OK | constants.X_OK);
+    } catch {
+      return current;
     }
-    result.sha256 = createHash("sha256")
-      .update(readFileSync(file))
-      .digest("hex");
-    verifyMaterialState(source, [row]);
-    recovery.push(result);
+    for (const entry of readdirSync(current, { withFileTypes: true }))
+      if (entry.isDirectory()) pending.push(join(current, entry.name));
   }
-  return recovery;
+  return null;
+};
+
+/** Remove every scratch repository of a worktree, recording each with its
+ * path, head commit and remote facts; a preview records what would go. Every
+ * directory is checked before any byte leaves, so a refusal retains every
+ * repository whole; `onRemoved` receives each record as its removal lands, so
+ * a later failure loses no record. `prepare` runs over each directory first
+ * and may return an undo that a refusal calls; the worktree helper uses it to
+ * restore write bits on directories this user owns. */
+export function removeScratchRepositories(
+  root,
+  material,
+  { dryRun = false, prepare, onRemoved } = {},
+) {
+  const rows = material.filter((entry) => entry.disposition === "disposable");
+  const removals = rows.map((row) => ({
+    worktree: root,
+    path: row.path,
+    ...scratchRepositoryFacts(root, row.path),
+    outcome: dryRun ? "would-remove" : "removed",
+  }));
+  if (dryRun) return removals;
+  const undos = [];
+  for (const row of rows) {
+    requireMaterialContainment(root, row.path);
+    const directory = join(root, row.path);
+    undos.push(prepare?.(directory));
+    const sealed = unwritableDirectory(directory);
+    if (sealed) {
+      for (const undo of undos.reverse()) undo?.();
+      throw new Error(
+        `Scratch repository ${JSON.stringify(row.path)} could not be removed (${JSON.stringify(sealed.slice(root.length + 1))} is not writable); source retained`,
+      );
+    }
+  }
+  rows.forEach((row, index) => {
+    const directory = join(root, row.path);
+    try {
+      rmSync(directory, { recursive: true, force: true });
+    } catch (error) {
+      throw new Error(
+        `Scratch repository ${JSON.stringify(row.path)} could not be removed (${error.message}); source retained`,
+      );
+    }
+    if (existsSync(directory))
+      throw new Error(
+        `Scratch repository ${JSON.stringify(row.path)} could not be removed; source retained`,
+      );
+    onRemoved?.(removals[index]);
+  });
+  return removals;
 }

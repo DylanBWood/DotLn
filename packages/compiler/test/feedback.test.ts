@@ -232,7 +232,7 @@ test("WO-011 maturity separates controlled fixtures from live use and refuses in
   );
 });
 
-// WO-154 VER-001: a log recorded before a release-only compiler bump replays.
+// A log recorded before a release-only compiler bump replays.
 // The earlier release's program is this lowering under its own label, with
 // the policy hash that label derives.
 test("WO-154 a recorded program keeps its compiler release; any other drift still fails", () => {

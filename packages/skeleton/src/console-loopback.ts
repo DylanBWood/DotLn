@@ -302,6 +302,12 @@ export class ConsoleLoopback {
     this.descriptor = join(this.directory, CONSOLE_CONNECTION_FILE);
     this.server = createServer((request, response) => {
       response.on("error", () => undefined);
+      // Every response closes its connection. An idle keep-alive socket would
+      // be timed out here while a caller stalled past that window still
+      // believes it fresh; the caller's next request then meets a reset
+      // instead of an answer. A fresh loopback connection per request costs
+      // nothing and leaves no socket to go stale.
+      response.setHeader("connection", "close");
       this.accept(request, response).catch(() => {
         const failure = consoleRefusal(
           "",
@@ -381,8 +387,7 @@ export class ConsoleLoopback {
     if (!decoded) return;
     // Headers go out at once and whitespace keeps an idle connection open
     // while the request waits in the lane and while its command runs, so no
-    // client idle timeout interrupts a queued or long terminal command
-    // (VER-001 F1).
+    // client idle timeout interrupts a queued or long terminal command.
     const gone = () => response.destroyed || request.socket.destroyed;
     response.writeHead(200, JSON_HEADERS);
     response.flushHeaders();
