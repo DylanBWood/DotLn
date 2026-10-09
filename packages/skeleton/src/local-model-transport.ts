@@ -24,7 +24,7 @@ import type {
 
 export const LOCAL_MODEL_TRANSPORT = "local-model-http" as const;
 
-/** WO-110's dated availability row. The label is a readiness grade, not a
+/** The availability row WO-110 dated. The label is a readiness grade, not a
  * liveness check: WO-110 observed the endpoint serve a complete, validated
  * inspection envelope on 2026-09-20, and readiness still fails because no
  * attributable non-local-egress boundary exists and WO-137 graded the runner
@@ -91,7 +91,7 @@ export function localModelOrigin(value: string): string {
   return url.origin;
 }
 
-/** WO-110 carries the inspection profile only. Writing, verification-evidence,
+/** Only the inspection profile is carried here. Writing, verification-evidence,
  * plan-refutation and vertical-judgment requests keep their existing
  * transports until a row of their own exists; the local model gets no writing
  * profile (WO-110 non-goal). */

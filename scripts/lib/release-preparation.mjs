@@ -30,8 +30,10 @@ const dispatches = {
   "final-review": "final review",
 };
 
-// Git reports the record unmerged, or an authored resolution kept markers.
-// `worktree integrate`'s decision stub applies the same test (WO-086).
+// Git reports the record unmerged, or an authored resolution kept a marker
+// line: an opening, closing or diff3 base marker alone is a conflict too. A
+// lone ======= line is a setext heading underline, never a marker here.
+// `worktree integrate`'s decision stub applies the same test.
 export const decisionsConflicted = (root, path, text) =>
   runGitPathList(root, [
     "diff",
@@ -41,7 +43,29 @@ export const decisionsConflicted = (root, path, text) =>
     "--",
     path,
   ]).length > 0 ||
-  (text !== undefined && /^<{7}(?: |$)[\s\S]*^>{7}(?: |$)/m.test(text));
+  (text !== undefined && /^(?:<{7}|>{7}|\|{7})(?: |$)/m.test(text));
+
+// Once the integration's decision stub is written, or a saved release outcome
+// waits for that stub, a hand-run `prepare --integration` would retime the
+// order and record it nowhere; only `worktree integrate` passes the flag in
+// the states it admits. Returns the reason to refuse, or null.
+export function integrationPreparationRefusal(root, workOrderId, receipt) {
+  if (typeof receipt?.checkpointRef !== "string" || !receipt.checkpointRef)
+    return "its pending integration names no checkpoint";
+  let stubbed = false;
+  try {
+    stubbed = readFileSync(
+      join(root, docRelative(root, "evidence", `${workOrderId}/decisions.md`)),
+      "utf8",
+    ).includes(`<!-- integration ${receipt.checkpointRef} -->`);
+  } catch {
+    // An absent or unreadable record holds no stub; the plan judges the path.
+  }
+  if (stubbed) return "the integration decision stub is already written";
+  if (typeof receipt.release === "string" && receipt.release.trim())
+    return "a saved release outcome waits for its integration decision stub";
+  return null;
+}
 
 // A dangling symlink is present too: nothing is written through one.
 const present = (path) => {
@@ -179,6 +203,21 @@ export function planReleasePreparation(
   )
     throw new Error(
       `release prepare requires ${decisionsPath} to be a contained regular file`,
+    );
+  // The heading's realpath rule holds for the record too: no component is a
+  // symlink, so nothing is written behind a link inside the repository.
+  const throughLink = () => {
+    try {
+      return present(decisionsFile)
+        ? realpathSync(decisionsFile) !== decisionsFile
+        : realpathSync(ancestor) !== ancestor;
+    } catch {
+      return true;
+    }
+  };
+  if (throughLink())
+    throw new Error(
+      `release prepare requires ${decisionsPath} to be a contained regular file reached through no symlink`,
     );
   const recorded = present(decisionsFile)
     ? readFileSync(decisionsFile, "utf8")

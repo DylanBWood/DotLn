@@ -1,4 +1,4 @@
-# WO-188 — Twenty-four boarded machinery items in one order: scratch repositories and release close, the harness host, the document gate, release preparation, the planning feed, three role rituals and the release text (version assigned at activation)
+# WO-188 — Twenty-four boarded machinery items in one order: scratch repositories and release close, the harness host, the document gate, release preparation, the planning feed, three role rituals and the release text (v0.71.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

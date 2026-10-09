@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-// WO-074: `launchpad export <dir>` materializes a launchpad instance from a
+// `launchpad export <dir>` materializes a launchpad instance from a
 // manifest-listed kit read as Git blobs at the HEAD commit of the checkout
 // that holds the running scripts (TOOL_ROOT), the templates included, so the
 // manifest never names a commit that lacks a kit file's source. Kit files land
 // in the manifest with their SHA-256; instance seeds are written once and
-// never listed. Only the local-terms list is the launchpad's.
+// never listed. Only the local-terms list is the launchpad's (WO-074).
 import {
   TOOL_ROOT,
   defaultDocRelative,

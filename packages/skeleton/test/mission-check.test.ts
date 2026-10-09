@@ -850,7 +850,8 @@ test("WO-099 VER-005 F1: ordinary build residue under a baselined ignored root l
     "and the next pulse over no new work does not re-raise it either",
   );
 
-  // New ignored out-of-surface work still drifts: VER-004 F1 stays repaired.
+  // New ignored out-of-surface work still drifts: work the repository's own
+  // ignore rules exclude stays visible to the capsule.
   writeFileSync(join(fixture.work, ".env.private"), "TOKEN=planted\n");
   const planted = observeMissionSubject(source, pin);
   assert.equal(planted.observation.diff.ignoredEntries.length, 1);

@@ -109,9 +109,9 @@ export const MISSION_DECISION_LIMIT = 5;
  * all of them, because each one selects part of the subject `observeMissionSubject`
  * re-reads at every dispatch: a store retargeted through the decisions window,
  * the vision document or its theses judges a different mission than the binding
- * names, even when the worktree, phase, base and contract are untouched
- * (VER-001 F1). A field the store declares and the binding does not — `storyPath`
- * is the one the protocol admits — is named the same way. */
+ * names, even when the worktree, phase, base and contract are untouched. A
+ * field the store declares and the binding does not — `storyPath` is the one
+ * the protocol admits — is named the same way. */
 export const DECLARED_SOURCE_FIELDS = [
   "root",
   "contractPath",
@@ -466,7 +466,7 @@ export function nextStore(launchpad, workOrderId) {
  * configured control root (WO-069) moves the lane but carries no ignore rule of
  * its own, and the configuration schema validates containment only, so bind
  * asks Git about the exact files it is about to write and refuses by name when
- * either is visible (criterion 3, VER-001 F3). */
+ * either is visible (WO-148 criterion 3). */
 export function assertIgnoredStore(launchpad, store) {
   const lane = docRelative(launchpad, "control", RESIDENT_LANE);
   for (const name of STORE_FILES) {
@@ -591,7 +591,7 @@ function writeStore(lane, store, configuration, binding) {
   });
 }
 
-/** WO-157 item 6 (WO-100 D006): a resident bound to a declared portfolio is
+/** A resident bound to a declared portfolio (WO-157 item 6, WO-100 D006) is
  * built from the loaded `portfolios` entry, and its graph and environment are
  * compiled under the bound repository's registered `authorityProfile`, so the
  * profile check the configuration loader performs also holds for the store. */
@@ -740,6 +740,13 @@ export function portfolioMismatches(
       ...mismatches,
       `profile: repository ${definition.repo} has no registered authorityProfile under repositories in ${config.path}`,
     ];
+  // The record names the profile it was bound under; a stale or hand-edited
+  // name must not pass as the registered one.
+  const envelope = repository.authorityProfile?.authorityEnvelopeId;
+  if (binding.kind === "portfolio" && binding.profileId !== envelope)
+    mismatches.push(
+      `profile: the binding record names profile ${binding.profileId ?? "none"}; repositories.${definition.repo}.authorityProfile is ${envelope}`,
+    );
   let registry;
   try {
     registry = readAuthorityGrantRegistry(launchpad);
@@ -974,7 +981,7 @@ export function main(argv, write = (text) => process.stdout.write(text)) {
     );
     // A retained store may have been moved, and the check admits that. Every
     // command printed here therefore names the directory that was checked; the
-    // path the binding was written with stays as provenance (VER-001 F2).
+    // path the binding was written with stays as provenance.
     const provenance = samePath(directory, binding.store)
       ? []
       : [

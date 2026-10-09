@@ -192,7 +192,9 @@ for (let n = 0; n < 4; n++)
 const report = (file, findings = "") =>
   write(
     file,
-    `# Fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n\n**Criterion 1:** met. Read.\n\n${findings}\n`,
+    // The report ends with one newline: the lifecycle whitespace check reads
+    // an untracked report too, and a blank line at its end refuses.
+    `# Fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n\n**Criterion 1:** met. Read.\n${findings ? `\n${findings}\n` : ""}`,
   );
 // The findings block: two marker lines around a JSON array. `entry` omits a
 // class given as undefined, and `block` takes entries or the raw text between
@@ -355,8 +357,8 @@ assert.equal(
   }).recent.escapesPerFinalReview,
   null,
 );
-// WO-187 D019 R1: clean passing reviews, older than the last ten, add no
-// failure item; one holding only an unclassed finding adds one.
+// Clean passing reviews, older than the last ten, add no failure item; one
+// holding only an unclassed finding adds one.
 const clean = ["WO-021", "WO-022", "WO-023", "WO-024"].map((order, n) => ({
   type: "FinalReviewCompleted",
   workOrderId: order,
@@ -782,8 +784,8 @@ const OPEN_FENCE = (n, line) =>
   `Advisory: ${layout(n)} line ${line} opens a code fence that never closes, so no Known issues label or order field after it is read; read the order from that line for carry-ins.`;
 const KI = "**Known issues and carry-ins:**";
 for (const [n, text, printed] of [
-  // VER-001 F1: text on the label line (WO-123's layout), the colon outside,
-  // a heading, a bold-led paragraph and a second section.
+  // Text on the label line (WO-123's layout), the colon outside, a heading,
+  // a bold-led paragraph and a second section.
   [
     "901",
     `${KI} every duty this order owes that is not a\ncriterion, in one place:\n\n- first duty.\n- second duty.`,
@@ -823,25 +825,25 @@ for (const [n, text, printed] of [
       section("9", "second section."),
     ],
   ],
-  // VER-002 F1: a quoted fence that never closes, before a top-level label.
+  // A quoted fence that never closes, before a top-level label.
   [
     "906",
     `> \`\`\`md\n> ${KI} hidden-example.\n\n${KI} visible-issue.`,
     [UNREAD(906, "6"), section("8", "visible-issue.")],
   ],
-  // VER-002 R1: emphasis in the text after the label is that text's.
+  // Emphasis in the text after the label is that text's.
   [
     "907",
     `${KI} Investigate **critical failure**`,
     [section("5", "Investigate **critical failure**")],
   ],
-  // VER-003 F1: a stray backtick on the line before the label hides nothing.
+  // A stray backtick on the line before the label hides nothing.
   [
     "908",
     `**Write-back duty:** a stray \` opener\n${KI} hidden whole line\nA stray \` closer`,
     [section("6-7", "hidden whole line\nA stray ` closer")],
   ],
-  // VER-003 R3: a paragraph that starts with a bold field word stays.
+  // A paragraph that starts with a bold field word stays.
   [
     "909",
     `${KI}\n\n**Design** for the repair: retain this paragraph.\n\n- later carry-in sentinel.`,
@@ -852,8 +854,8 @@ for (const [n, text, printed] of [
       ),
     ],
   ],
-  // VER-004 F1: a wrapped line that starts with a field label continues its
-  // paragraph, and the carry-in after it prints.
+  // A wrapped line that starts with a field label continues its paragraph,
+  // and the carry-in after it prints.
   [
     "910",
     `${KI}\n\n- Receipt 038: the order's estimate in the\n**Cost:** field was wrong; carry in its correction.\n- Receipt 040: second-sentinel.`,
@@ -1118,6 +1120,14 @@ for (const [n, eol] of [
     `\n\nKnown issues and carry-ins (${layout(n)}:3-6; ends before line 8, **Non-goals:**):\n- first.\n- second.`,
   );
 }
+// The layout fixtures above carry deliberate trailing whitespace; a
+// completion's whitespace check reads untracked files too, so they are
+// committed before any completion that follows.
+for (const args of [
+  ["add", "--", "docs/work-orders"],
+  ["commit", "-q", "-m", "layout fixtures"],
+])
+  assert.equal(spawnGit(["-C", root, ...args], { env }).status, 0);
 // The handoff's self-review line, one row per form: [the handoff's text after
 // its criterion line, whether the missing-line advisory prints].
 for (const [text, advised] of [

@@ -1,6 +1,6 @@
 import { write as writeFixture, json as prettyJson } from "./helpers.mjs";
 import { spawnGit } from "./git.mjs";
-// WO-044 writing-worker and unattended-launch probe.
+// Writing-worker and unattended-launch probe (WO-044).
 //
 // Each launch runs an installed harness once against a scratch Git worktree
 // created outside this checkout, with the operator's own authentication, and
@@ -601,8 +601,8 @@ const claudeStream = [
   "--verbose",
   "--include-hook-events",
 ];
-// WO-159: the one Codex launcher, loaded only when a Codex row runs, so a
-// copied tool root that only renders reports needs no build.
+// The one Codex launcher, loaded only when a Codex row runs, so a copied tool
+// root that only renders reports needs no build (WO-159).
 let launcher = null;
 const loadCodexLauncher = async () =>
   (launcher ??= await import(
@@ -1118,9 +1118,9 @@ export async function runWritingWorker({
       throw new Error(
         `retain probe observations; ${basename(target)} exists, choose a new date`,
       );
-    // WO-159: every Codex invocation in this row, including each concurrent
-    // session and a fresh recovery, runs in its own isolated home; the row
-    // keeps one labelled digest record per invocation, in launch order.
+    // Every Codex invocation in this row, including each concurrent session
+    // and a fresh recovery, runs in its own isolated home; the row keeps one
+    // labelled digest record per invocation, in launch order (WO-159).
     const codexEpisodes = [];
     const isolated = async (label, launch) => {
       const episode = codex?.startCodexEpisode(callerEnv) ?? null;

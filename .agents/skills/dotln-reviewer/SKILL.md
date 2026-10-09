@@ -7,7 +7,7 @@ description: "Perform DotLn final review for resume: final review; prepare and p
 
 1. Resolve cwd/Git root and canonical status; honor operator controls and dispatch final-review once.
 2. Read the order, full diff, numbered verification sequence and publication contract; integrate main with `npm run worktree -- integrate WO-NNN` and resolve authorized conflicts.
-3. Finish affected checks and any worker reproducing a named claim before the handoff sequence; prepare release surfaces.
+3. Finish affected checks and any worker reproducing a named claim before the handoff sequence; remove any scratch repository still in the worktree; prepare release surfaces.
 4. Run `npm run format`.
 5. Run `npm run test:docs` until green.
 6. Run `npm test -- --review`; passing tasks at the unchanged code identity compose the review row; while it runs, write nothing under the repository and start no agent; if it fails, fix and return to the format step.

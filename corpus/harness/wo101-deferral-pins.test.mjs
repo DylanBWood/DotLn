@@ -7,7 +7,7 @@ import {
 
 const ref = { registryId: "always.false", version: 1 };
 
-// WO-101 DEFERRED PROGRAM PINS. Keep all five arrive-on-contact deferral
+// DEFERRED PROGRAM PINS (WO-101). Keep all five arrive-on-contact deferral
 // assertions in this one file so a later semantics work order can retire them
 // without searching through the generated corpus harness.
 const deferred = [

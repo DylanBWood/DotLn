@@ -1,10 +1,11 @@
-// WO-074: launchpad export fixtures, one case per acceptance criterion. The
+// Launchpad export fixtures, one case per WO-074 acceptance criterion. The
 // order stays uncommitted until final review, so the fixtures commit a bounded
 // copy of the work tree into a temporary repository and export from it.
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
+import { sha256Hex as sha256 } from "./lib/helpers.mjs";
 import {
   chmodSync,
   cpSync,
@@ -54,7 +55,6 @@ const env = {
   CLAUDE_EFFORT: "",
   npm_config_update_notifier: "false",
 };
-const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const blobId = (bytes) =>
   createHash("sha1")
     .update(`blob ${bytes.length}\0`)

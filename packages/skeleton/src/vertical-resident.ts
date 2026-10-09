@@ -191,7 +191,7 @@ export function verticalResident(
           ? d.workOrderId
           : `unreadable-${verticalHash(d)}`;
       // A tick prepares no draft that this state's admission already refuses,
-      // such as while a deferred continuation holds the slot (D047).
+      // such as while a deferred continuation holds the slot (WO-112 D047).
       if (!context.phase || !context.admissionReady) return false;
       const admissionPhase = context.phase;
       const spent = intentBudgetUsed(context.intents, context.at);
@@ -219,7 +219,7 @@ export function verticalResident(
           // A named transient condition is retried with backoff; a named host
           // fault or an unnamed failure a bounded number of times, the named
           // one keeping its reason. The bound counts only those faults, so an
-          // earlier transient outage never spends it (D047). None is a
+          // earlier transient outage never spends it (WO-112 D047). None is a
           // decision yet, and none keeps a later draft from its turn.
           const fault = !refusal || refusal.bounded;
           const faults = (prior?.faults ?? 0) + (fault ? 1 : 0);

@@ -308,8 +308,13 @@ export const validDispatch = (value) => {
   );
 };
 
-// WO-178: a prospective advisory, with content fingerprints for historical
-// records. The output names records, never repeats the attributed words.
+// A prospective advisory with content fingerprints for historical records.
+// The output names records and never repeats the attributed words. A field an
+// operator-named key attributes needs no quotation to count; a paraphrase
+// marked as one does not count.
+const PARAPHRASED = /^Paraphrase:/u;
+const OPERATOR_FIELD = /^operator[A-Z]/u;
+const CAPTURE_DIGEST = /^sha256:[0-9a-f]{64}$/u;
 const attributedWords = (text) =>
   /\boperator\b[^.!?]*(?:["“]|(?:\s|:)['‘])/iu.test(normalized(text));
 const quotedDispatch = (text) => /["“]|(?:^|[\s:])['‘]/u.test(text);
@@ -337,19 +342,22 @@ function* provenanceRecords(paragraph, source) {
     if (/^(?:Nomination )?Provenance:$/iu.test(fields[index].label))
       yield textBetween(fields[index].index, fields[index + 1]?.index);
 }
-export function operatorWordFindings(root) {
+export function operatorWordFindings(root, files) {
   const findings = [];
+  const push = (file, record, text, dispatch = "", line) =>
+    findings.push({
+      file,
+      record,
+      fingerprint: hash(normalized(JSON.stringify([text, dispatch]))),
+      ...(line ? { line } : {}),
+    });
   const check = (file, record, text, dispatch = "", captureText = text) => {
     if (
       (!attributedWords(text) && !quotedDispatch(dispatch)) ||
       captureCitation(captureText)
     )
       return;
-    findings.push({
-      file,
-      record,
-      fingerprint: hash(normalized(JSON.stringify([text, dispatch]))),
-    });
+    push(file, record, text, dispatch);
   };
   const orders = docPath(root, "workOrders");
   if (existsSync(orders))
@@ -358,33 +366,152 @@ export function operatorWordFindings(root) {
       .sort()) {
       const file = docRelative(root, "workOrders", name),
         source = readFileSync(join(orders, name), "utf8");
+      // Every provenance field counts in document order, whether or not it
+      // attributes words, so a record's key never depends on an earlier one.
+      let ordinal = 0;
       for (const node of nodes(parseMarkdown(source))) {
         if (node.type !== "paragraph") continue;
         for (const text of provenanceRecords(node, source))
-          check(file, "provenance", text);
+          check(
+            file,
+            ++ordinal === 1 ? "provenance" : `provenance-${ordinal}`,
+            text,
+          );
       }
     }
+  // A decisions file is read and split once for all of its records.
+  const sections = new Map();
   for (const row of readDecisions(root)) {
-    const source = readFileSync(join(root, row.path), "utf8");
+    if (!sections.has(row.path))
+      sections.set(
+        row.path,
+        readFileSync(join(root, row.path), "utf8").split(/(?=^##\s)/mu),
+      );
     const section =
-      source
-        .split(/(?=^##\s)/mu)
+      sections
+        .get(row.path)
         .find((part) => new RegExp(`^##\\s+${row.id}\\b`, "u").test(part)) ??
       "";
-    const prose = section.replace(/```[\s\S]*?```/gu, "");
+    // A JSON block is removed whole from its fence line, so a backquote run
+    // inside one of its strings cannot open a fence that swallows the rest.
+    const prose = section
+      .replace(/^```json\n[\s\S]*?^```[^\n]*/gmu, "")
+      .replace(/```[\s\S]*?```/gu, "");
+    const captureText = JSON.stringify(row) + prose;
     check(
       row.path,
       row.id,
       `${row.decision}\n${prose}`,
       row.dispatch,
-      JSON.stringify(row) + prose,
+      captureText,
     );
+    // The fields that quote words are read too, each under its own record.
+    const fields = [
+      ...(Array.isArray(row.evidence) ? row.evidence : []).map(
+        (text, index) => [`evidence-${index + 1}`, text],
+      ),
+      ...(Array.isArray(row.rejected) ? row.rejected : []).map(
+        (entry, index) => [`rejected-${index + 1}.reason`, entry?.reason],
+      ),
+      ...["reason", "misread", "meant"].map((key) => [key, row[key]]),
+    ];
+    for (const [key, text] of fields)
+      if (typeof text === "string")
+        check(row.path, `${row.id}/${key}`, text, "", captureText);
+    // An operator-named field attributes its value by its key alone.
+    for (const key of Object.keys(row)) {
+      if (!OPERATOR_FIELD.test(key) || key === "operatorQuote") continue;
+      const values = [row[key]].flat();
+      values.forEach((value, index) => {
+        if (
+          typeof value !== "string" ||
+          PARAPHRASED.test(value) ||
+          captureCitation(captureText)
+        )
+          return;
+        push(
+          row.path,
+          `${row.id}/${key}${values.length > 1 ? `-${index + 1}` : ""}`,
+          value,
+        );
+      });
+    }
+  }
+  // Reports and planning documents: each paragraph that attributes words is a
+  // record keyed by its own content, so an insertion above it keeps its key.
+  const documentRoots = ["verifications", "finalReviews", "planning"].map(
+    (key) => docPath(root, key),
+  );
+  for (const file of files ?? markdownFiles(root)) {
+    const absolute = resolve(root, file);
+    if (!documentRoots.some((path) => inside(path, absolute))) continue;
+    const source = readFileSync(absolute, "utf8");
+    if (!/operator/iu.test(source)) continue;
+    const seen = new Map();
+    for (const node of nodes(parseMarkdown(source))) {
+      if (node.type !== "paragraph") continue;
+      const text = renderedText(node);
+      if (!attributedWords(text) || captureCitation(text)) continue;
+      const base = `paragraph-${hash(normalized(text)).slice(0, 12)}`;
+      const count = (seen.get(base) ?? 0) + 1;
+      seen.set(base, count);
+      push(
+        file,
+        count === 1 ? base : `${base}-${count}`,
+        text,
+        "",
+        node.position?.start?.line,
+      );
+    }
   }
   return findings;
 }
 
-export function operatorWordAdvisories(root, baseline = {}) {
-  const findings = operatorWordFindings(root);
+/** A typed operator quotation must carry the capture digest of the words it
+ * quotes; one that lacks it is a failure, never an advisory. */
+export function operatorQuoteFailures(rows) {
+  const failures = [];
+  for (const row of rows) {
+    if (row.operatorQuote === undefined) continue;
+    [row.operatorQuote].flat().forEach((quote, index) => {
+      if (!(
+        quote &&
+        typeof quote === "object" &&
+        typeof quote.text === "string" &&
+        quote.text.trim() &&
+        CAPTURE_DIGEST.test(quote.captureSha256 ?? "")
+      ))
+        failures.push(
+          `${row.path}#${row.id}: operatorQuote ${index + 1} needs text and captureSha256 (sha256:<digest> of the captured words in ignored intake); paraphrase instead of quoting`,
+        );
+    });
+  }
+  return failures;
+}
+
+// A private absolute path: a home directory or a private temporary directory.
+// Placeholders such as /Users/... and relative tails such as .runtime/tmp/ are
+// not paths; a bare /tmp/ mention names no file.
+const HOME_PATH =
+  /(?<![\w.~-])\/(?:(?:Users|home)\/[A-Za-z0-9_][\w.-]*|(?:private\/)?(?:var\/folders|tmp)\/[A-Za-z0-9_])/u;
+export function homePathFindings(root, files = markdownFiles(root)) {
+  const findings = [];
+  for (const file of files)
+    readFileSync(join(root, file), "utf8")
+      .split("\n")
+      .forEach((text, index) => {
+        if (HOME_PATH.test(text))
+          findings.push({
+            file,
+            line: index + 1,
+            fingerprint: hash(normalized(text)),
+          });
+      });
+  return findings;
+}
+
+export function operatorWordAdvisories(root, baseline = {}, files) {
+  const findings = operatorWordFindings(root, files);
   const current = findings.filter(
     (row) => baseline[`${row.file}#${row.record}`] !== row.fingerprint,
   );
@@ -423,6 +550,21 @@ export function checkDocs(root, { ceilings, baseline, files } = {}) {
         "Historical link exceptions require a source, destination, reason and positive safe-integer count",
       );
   }
+  const homePaths = baseline.homePaths ?? {};
+  if (
+    homePaths === null ||
+    typeof homePaths !== "object" ||
+    Array.isArray(homePaths) ||
+    Object.values(homePaths).some(
+      (list) =>
+        !Array.isArray(list) ||
+        list.some((fingerprint) => !/^[0-9a-f]{64}$/u.test(fingerprint)),
+    )
+  )
+    throw new Error(
+      "Historical home-path exceptions require a file and SHA-256 line fingerprints",
+    );
+  files ??= markdownFiles(root);
   const failures = [],
     rows = [];
   const directory = docPath(root, "product");
@@ -488,7 +630,8 @@ export function checkDocs(root, { ceilings, baseline, files } = {}) {
       failures.push(
         `${docRelative(root, "product", name)}: ceiling names a missing product document`,
       );
-  for (const row of readDecisions(root)) {
+  const decisions = readDecisions(root);
+  for (const row of decisions) {
     if (baseline.dispatches[dispatchKey(row)] === dispatchFingerprint(row))
       continue;
     if (!validDispatch(row.dispatch))
@@ -496,6 +639,7 @@ export function checkDocs(root, { ceilings, baseline, files } = {}) {
         `${dispatchKey(row)}: dispatch needs a control prefix and at most 240 characters of paraphrase on one line`,
       );
   }
+  failures.push(...operatorQuoteFailures(decisions));
   const exceptions = new Map();
   for (const entry of baseline.links)
     exceptions.set(
@@ -514,8 +658,36 @@ export function checkDocs(root, { ceilings, baseline, files } = {}) {
         `${failure.file}:${failure.line}: ${failure.reason}: ${failure.href}`,
       );
   }
-  const operatorWords = operatorWordAdvisories(root, baseline.operatorWords);
-  return { rows, failures, historicalLinks, notices, operatorWords };
+  // A line that holds a private path today passes by its fingerprint; a new
+  // or edited one fails. The failure never prints the path.
+  const remainingHomePaths = new Map(
+    Object.entries(homePaths).map(([file, list]) => [file, [...list]]),
+  );
+  let historicalHomePaths = 0;
+  for (const row of homePathFindings(root, files)) {
+    const list = remainingHomePaths.get(row.file) ?? [];
+    const at = list.indexOf(row.fingerprint);
+    if (at >= 0) {
+      list.splice(at, 1);
+      historicalHomePaths++;
+    } else
+      failures.push(
+        `${row.file}:${row.line}: absolute home or private temporary path; write a repository-relative path or a placeholder such as <worktree>/ or <tmp>/`,
+      );
+  }
+  const operatorWords = operatorWordAdvisories(
+    root,
+    baseline.operatorWords,
+    files,
+  );
+  return {
+    rows,
+    failures,
+    historicalLinks,
+    historicalHomePaths,
+    notices,
+    operatorWords,
+  };
 }
 
 if (isMainModule(import.meta.url)) {
@@ -538,7 +710,7 @@ if (isMainModule(import.meta.url)) {
     );
     for (const failure of result.failures) console.error(`FAIL ${failure}`);
     console.log(
-      `${result.failures.length ? "FAIL" : "PASS"} docs check: ${result.rows.length} product documents; ${result.historicalLinks} declared historical link occurrences; ${result.failures.length} failures`,
+      `${result.failures.length ? "FAIL" : "PASS"} docs check: ${result.rows.length} product documents; ${result.historicalLinks} declared historical link occurrences; ${result.historicalHomePaths} declared historical home-path lines; ${result.failures.length} failures`,
     );
     process.exitCode = result.failures.length ? 1 : 0;
   } catch (error) {

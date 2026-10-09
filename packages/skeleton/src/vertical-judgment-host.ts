@@ -150,7 +150,7 @@ export async function runVerticalJudgment<T extends VerticalJudgmentTask>(
     } catch (error) {
       // Only the episode's launch and return certify an undecided judgment,
       // for intake as for triage. Preparation, replay, record publication and
-      // cleanup failures pass unmarked and are host faults (D047).
+      // cleanup failures pass unmarked and are host faults (WO-112 D047).
       if (judgmentRetryable(error))
         throw task === "triage"
           ? new RetryableTriageError(error)
@@ -179,7 +179,7 @@ export async function runVerticalJudgment<T extends VerticalJudgmentTask>(
     dispatch?.kill();
     // The transport leaves the wire and returned object in cwd; keep them.
     // Retention is diagnostic: its failure never replaces the episode's
-    // classified outcome (D047).
+    // classified outcome (WO-112 D047).
     try {
       const kept = ["result.json", "statement.txt", "wire.jsonl"].filter(
         (name) => existsSync(join(cwd, name)),

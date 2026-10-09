@@ -250,7 +250,8 @@ test("WO-100 a portfolio is validated under the floor and each phase, and its co
     () => widened({ elsewhere: { effects: WRITE, files: 1 } }),
     /not compiled/,
   );
-  // WO-052 consumes a writer unit; WO-067's fixture floor grants none.
+  // The source-change host (WO-052) consumes a writer unit; WO-067's fixture
+  // floor grants none.
   const bare = JSON.parse(
     readFileSync(
       new URL("../../fixtures/wo067-presence.json", import.meta.url),
@@ -269,7 +270,8 @@ test("WO-100 a portfolio is validated under the floor and each phase, and its co
       ),
     /grants no writer/,
   );
-  // WO-054 prepares only a 40-hex base; a SHA-256 id would spend its attempt.
+  // The verification host (WO-054) prepares only a 40-hex base; a SHA-256 id
+  // would spend its attempt.
   for (const baseCommit of ["main", "b".repeat(64)])
     assert.throws(
       () => decodePortfolioBinding({ definition: good, baseCommit }),

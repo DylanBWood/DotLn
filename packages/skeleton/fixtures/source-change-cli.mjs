@@ -1,5 +1,6 @@
-// WO-052 process double: exercise the emitted Claude guards before the existing
-// source-changing double runs its host-selected commands. No vendor invocation.
+// Process double (WO-052): exercise the emitted Claude guards before the
+// existing source-changing double runs its host-selected commands. No vendor
+// invocation.
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";

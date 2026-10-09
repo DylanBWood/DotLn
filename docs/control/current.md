@@ -1,22 +1,23 @@
 # Current control state
 
-## WO-074
+## WO-188
 
-- Work order: WO-074
-- Work-order path: docs/work-orders/WO-074-launchpad-export-kit.md
+- Work order: WO-188
+- Work-order path: docs/work-orders/WO-188-boarded-machinery-items.md
 - Phase: closed
-- Latest verification: VER-001
-- Verification path: docs/verifications/WO-074/VER-001.md
+- Latest verification: VER-004
+- Verification path: docs/verifications/WO-188/VER-004.md
 - Latest verdict: pass
 - Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-074/FINAL-001.md
-- Latest attestation: harness claude-code; version 2.1.295; model claude-fable-5-1; effort max; source claude-session-readback; account not-applicable
+- Final-review path: docs/final-reviews/WO-188/FINAL-001.md
+- Latest attestation: harness claude-code; version 2.1.295; model claude-fable-5-1; effort xhigh; source claude-session-readback; account not-applicable
 - Effort drift: xhigh -> max
-- Latest recordedAt: 2026-10-09T06:58:15.950Z
-- Elapsed implementation: 5128534 ms
-- Elapsed verification: 1044139 ms
-- Elapsed finalReview: 3161496 ms
-- Latest checkpoint: 0dc51b76f2ed4110ea0ec6914daf0a863de29c56 (restore: `git checkout refs/dotln/checkpoint/WO-074/7 -- .`)
+- Latest recordedAt: 2026-10-09T15:36:10.774Z
+- Elapsed implementation: 17683304 ms
+- Elapsed verification: 1602525 ms
+- Elapsed repair: 3748946 ms
+- Elapsed finalReview: 4816866 ms
+- Latest checkpoint: 51e3159a2330130f02f997c636c23d56bfb07ccb (restore: `git checkout refs/dotln/checkpoint/WO-188/19 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct
 

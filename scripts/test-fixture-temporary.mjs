@@ -1,4 +1,4 @@
-// WO-168: a session under test now creates its scratch directory, beside the
+// A session under test now creates its scratch directory (WO-168), beside the
 // operator-control and writer-coordination state fixtures already keep in the
 // system temporary directory. A suite that imports this module before anything
 // else keeps all of it in one directory of its own, removed when it exits.

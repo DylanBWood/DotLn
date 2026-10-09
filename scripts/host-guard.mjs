@@ -30,9 +30,10 @@ function repositoryMissing(repo) {
 }
 
 // A supervisor removes a registration before it releases the endpoint that
-// the registration's watch names (D014). A watch withdrawn by the end of this
-// census may have named a recycled descriptor during it, so its tags confer
-// nothing; tags of watches still published afterwards were read while held.
+// the registration's watch names (WO-185 D014). A watch withdrawn by the end
+// of this census may have named a recycled descriptor during it, so its tags
+// confer nothing; tags of watches still published afterwards were read while
+// held.
 export function guardCensus(registrations, options, sample = readHostSnapshot) {
   const snapshot = sample({
     ...options,

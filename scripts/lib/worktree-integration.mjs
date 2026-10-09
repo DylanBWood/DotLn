@@ -387,11 +387,17 @@ function regenerate(root, receipt) {
     root,
     docRelative(root, "evidence", `${receipt.workOrder}/decisions.md`),
   );
-  let stubbed =
-    existsSync(decisions) &&
-    readFileSync(decisions, "utf8").includes(
-      `<!-- integration ${receipt.checkpointRef} -->`,
-    );
+  let stubbed = false;
+  try {
+    stubbed =
+      existsSync(decisions) &&
+      readFileSync(decisions, "utf8").includes(
+        `<!-- integration ${receipt.checkpointRef} -->`,
+      );
+  } catch {
+    // A record that is not a file holds no stub; release preparation refuses
+    // it by name and the refusal lands as a pending line.
+  }
   const savedRelease = !stubbed && receipt.release;
   if (savedRelease)
     run("integration decision stub", () => {

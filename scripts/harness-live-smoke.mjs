@@ -279,6 +279,8 @@ assert.match(
   /^2\.1\.263 /,
   "profile version must match the observed harness",
 );
+// This smoke regenerates the dated 2026-09-09 harness-live records, so it keeps
+// the model and effort those records measured.
 const model = "claude-fable-5",
   effort = "xhigh";
 const result = spawnSync(

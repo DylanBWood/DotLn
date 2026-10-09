@@ -1,4 +1,4 @@
-// WO-179: met verification claims consume the existing gate evidence; the
+// Met verification claims consume the existing gate evidence (WO-179); the
 // dispatcher refuses a contradicted claim before it appends a result.
 import assert from "node:assert/strict";
 import {

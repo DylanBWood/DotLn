@@ -154,7 +154,12 @@ test("WO-179 and WO-195 emitted roles carry their assigned corrections across su
           );
           assert.match(
             role.contents,
-            /Material dispositions stay the operator's through --material; never force teardown/,
+            /The close removes any scratch repository still present and records its path, head commit and whether a remote held it; intake and declared submodules stay, and an operator word through --material preserves a scratch repository; never force teardown/,
+            subject,
+          );
+          assert.doesNotMatch(
+            role.contents,
+            /A comment says what the code does/,
             subject,
           );
           assert.doesNotMatch(
@@ -177,7 +182,35 @@ test("WO-179 and WO-195 emitted roles carry their assigned corrections across su
         } else if (role.path.endsWith("dotln-executor/SKILL.md")) {
           assert.match(
             role.contents,
-            /Declare each scratch repository the order creates with `npm run worktree -- material` before completion/,
+            /Remove scratch repositories, nested repositories outside intake that the tracked tree does not declare as submodules; never declare one\. The close removes any left and records its head commit\./,
+            subject,
+          );
+          // Each executor rule is stated once: the numbered step carries it
+          // and no later sentence restates it.
+          assert.doesNotMatch(
+            role.contents,
+            /Remove each scratch repository|Implement the complete bounded deliverable|For resume: status or resume: times|Finish all authored output/,
+            subject,
+          );
+          assert.doesNotMatch(
+            role.contents,
+            /npm run worktree -- material/,
+            subject,
+          );
+          assert.match(
+            role.contents,
+            /A comment says what the code does or why, in words a reader who has not seen the order understands; an order, report, finding or decision identifier never leads or replaces that explanation/,
+            subject,
+          );
+        } else if (role.path.endsWith("dotln-reviewer/SKILL.md")) {
+          assert.match(
+            role.contents,
+            /remove any scratch repository still in the worktree; prepare release surfaces/,
+            subject,
+          );
+          assert.doesNotMatch(
+            role.contents,
+            /A comment says what the code does/,
             subject,
           );
         } else if (role.path.endsWith("dotln-verifier/SKILL.md")) {
@@ -211,8 +244,9 @@ const combinations = Array.from(
 const baselineEnvelope = contributorProgram([]).loadout.authorityEnvelope;
 
 test("WO-145 economy equipment adds only executor guidance and no authority or host checks", () => {
-  // WO-150 flipped the default to on, so the per-order opt-out is the off case
-  // and the equipped build is what an ordinary dispatch compiles.
+  // The tinkerer-economy default was flipped to on (WO-150), so the per-order
+  // opt-out is the off case and the equipped build is what an ordinary
+  // dispatch compiles.
   const on = contributorConfiguredProgram({});
   const off = contributorConfiguredProgram({ "tinkerer-economy": false });
   assert.deepEqual(on.loadout.authorityEnvelope, off.loadout.authorityEnvelope);
@@ -337,7 +371,7 @@ test("WO-042 atomic support switches compose independently and removal restores 
     );
   }
   assert.equal(hashes.size, combinations.length);
-  // WO-161 gives the current vocabulary its own identity. WO-099's presence
+  // The current vocabulary gets its own identity (WO-161). WO-099's presence
   // policy and WO-042's earlier graph keep their original hashes below.
   assert.equal(
     semanticHash(

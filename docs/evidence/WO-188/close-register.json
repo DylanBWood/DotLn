@@ -1,0 +1,274 @@
+[
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-a1e36af45f68e3ac",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D003. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "The close removes a scratch repository and records its head commit and whether a remote held it; reopen if a close record names a removed repository whose commits no remote or retained ref held and the operator asks to recover it.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-e7096aa6bde63c0e",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D003; the narrowed limit is FUP-fb2a080cc9b597d0. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "D003 re-observes the lane boundary: intake and declared submodules stay, everything else nested is scratch.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-00ed3cd9ab11599f",
+    "sourceRevision": 3,
+    "status": "settled",
+    "reason": "Settle onto WO-195's record (landed at 2d50a415); WO-188-D004 records the re-observation. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Not reproduced at this order's base; the admission fixture still exercises the printed spellings.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-03ccaaf4c2e6ad49",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D005 (c, d, e) and WO-188-D003 (a, b, f gone). Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Reopen if a published tag's outcome is unset in a record or a nested hook leaves a marker.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-65efad56c927c1f9",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D006 (a, d, e, f) and WO-188-D003 (b, c, g gone); the gate-hash limit is FUP-079f827e1b11eb1e. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Reopen if a close forces a removal over a submodule or a retry loses a completed Release.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-50cda1c03ecd8ea8",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D007. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Reopen if a prune leaves a partial file beside a verified proof.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-d5a399224b1a5886",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-195's record (landed at 2d50a415); WO-188-D008 records the re-observation. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Reopen if a publish is admitted under a pending typed correction.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-bfe39a18fdf822ae",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D009. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Reopen if a host task notification is counted as an intervention.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-74e984d94ea97de5",
+    "sourceRevision": 2,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D010. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "The event is registered after the Copilot observation; reopen if a Claude Code release stops delivering it or a failed call is answered twice.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-9cb0a7e667913624",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D011. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Reopen if the persisted correction ids move to another record.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-f927210831623001",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D012. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Reopen on a key collision within one file.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-b7a66e7a4fa7ad20",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D016 (sub-items 1 to 4) and WO-188-D013 (5 and 7). Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Reopen if a preparation writes through a link or a product 06 without its block passes.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-af65972e5491da22",
+    "sourceRevision": 2,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D014. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Forward-only screen; reopen if a later order baselines a new home-path line instead of fixing it.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-71fc2efc208f597a",
+    "sourceRevision": 2,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D015. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Reopen if a typed quotation without a digest is admitted.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-dc1335f4d10f6a75",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D017. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Reopen if a console change that breaks its regenerator passes the integration suite.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-e2cf2122a642d1e0",
+    "sourceRevision": 2,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D018. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Reopen if release list crashes on a recorded manifest.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-e55e258d37cb3f20",
+    "sourceRevision": 2,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D019. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Reopen if an export lands on a reserved lane.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-def7dd3b4f48a6fb",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D020. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Reopen if an untracked file with trailing whitespace passes completion.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-a583091bec0d08b7",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D021. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Reopen when the pinned worker model changes.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-4a1d1fc3611506a1",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D022. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Reopen if a binding with a foreign profile passes the check.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-a6cf758ebdd11f1c",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D025. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Reopen if a comment failure is resolved by editing the baseline instead of the line.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-fc4158d3207e495d",
+    "sourceRevision": 15,
+    "status": "allocated",
+    "reason": "Keep allocated; record revision 14, the product 05 trigger sentence this order wrote; WO-188-D001's planning follow-up FUP-7c909f0880237fba carries the next step. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Reopen when planning disposes FUP-7c909f0880237fba or the next ten closed orders record fewer than three two-arm comparisons.",
+    "targets": [
+      "WO-188"
+    ]
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-19cd701c25446383",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle the item-22 remainder onto WO-196's record and WO-188-D024; the review allocation WO-187 implemented stays as WO-187 recorded. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Reopen if review repeatedly fails to consider a credible simpler alternative.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-de0faf98b2487c8f",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D035. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "The repair names the keep-alive timer race, closes every loopback connection after its response and records a fresh passing full document gate; reopen if the bound-resident case fails again in a full document gate or a response is seen without `connection: close`.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-3c96f0fb5b283866",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D038. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "An empty destination is refused by the profile and written as its text by the rewriter, and the actual publication in the forge double writes none; reopen if a parser-rendered link, image or definition with an empty destination passes the profile or survives the rewriter.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-c6b2a2b66fd0847c",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D039. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "Code and raw HTML are masked at the parser's positions and the committed code example reaches the forge byte-for-byte; reopen if the rewriter changes a byte inside a range the parser renders as code or HTML.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-98dd4b8af0b34182",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D038 and WO-188-D039. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "The reopened link rule is held again by the two repairs, which share the parser's reading of links and of code; reopen with either repair's condition.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-a95dab688b9bdaaf",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D043. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "The rewriter and the profile read the lines the parser counts under every Markdown line ending, and the carriage-return body reaches the forge double with its code byte-for-byte; reopen if the rewriter changes a byte inside a parser-rendered code or HTML range under any line ending or a body that passes the profile fails publication on a coordinate.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-860e9c5b60e43758",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D044; the percent-encoding remainder is D044's follow-up. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "A link is rewritten only where the parser renders one and at the destination the parser renders; reopen if a rewritten path differs from the parser's url once encoded.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "20b87ef82c6baa91868ade0775775f82c4d42fd9fdb2dd0fda0c69cb9845f3ae",
+    "id": "FUP-eb7648ea4530f48a",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settle onto WO-188-D043. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+    "reopenWhen": "The parser-position mask holds again now that its positions address the inventory's lines; reopen with D043's condition.",
+    "targets": []
+  }
+]

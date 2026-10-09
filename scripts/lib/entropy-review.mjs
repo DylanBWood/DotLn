@@ -162,7 +162,7 @@ export function scratchInventory(directory, { temporary = false } = {}) {
 
 /** SHA-256 of a sorted path list with each path NUL-terminated. A path may
  * contain a newline but never NUL, so distinct lists never share the hashed
- * bytes (WO-157 VER-001 F2: newline joining mapped ['a\nb', 'c'] and
+ * bytes (WO-157: newline joining mapped ['a\nb', 'c'] and
  * ['a', 'b\nc'] to one hash). */
 export const pathListDigest = (paths) =>
   hex(paths.map((path) => `${path}\u0000`).join(""));
@@ -370,11 +370,13 @@ export function resolveSubject(root, revision) {
   return { baseCommit, status, workingTreeDirty: status !== "" };
 }
 
-const subjectRecord = (root, baseCommit, status, inventory, repository) => {
+const subjectRecord = (baseCommit, status, inventory, repository) => {
   const subject = {
     schemaVersion: "entropy-review-v1",
     baseCommit,
-    repository: root,
+    // The launchpad is written relative; scratchRepository still records the
+    // frozen copy's absolute temporary path, which filing reopens.
+    repository: ".",
     scratchRepository: repository,
     trackedStatusSha256: hex(status),
     scratchInventorySha256: inventory.sha256,
@@ -728,9 +730,9 @@ export function renderRefutationReceipt(receipt) {
   const actor = receipt.actorAttestation;
   const selection = receipt.report.selection;
   const confinement = receipt.confinement;
-  // A receipt filed before the after-state was recorded (VER-001 finding 3)
-  // keeps its bytes, so this line renders only for a receipt that carries the
-  // observation. An immutable pair must still project to itself.
+  // A receipt filed before the after-state was recorded keeps its bytes, so
+  // this line renders only for a receipt that carries the observation. An
+  // immutable pair must still project to itself.
   const afterState =
     confinement.untrackedListing !== undefined
       ? [
@@ -1111,7 +1113,6 @@ export async function beginEntropyReview(
   try {
     const inventory = scratchInventory(repository);
     const subject = subjectRecord(
-      root,
       state.baseCommit,
       state.status,
       inventory,
@@ -1492,6 +1493,7 @@ export async function beginEntropyRefutation(
     const inventory = scratchInventory(repository);
     const subject = {
       ...review.subject,
+      repository: ".",
       scratchRepository: repository,
       scratchInventorySha256: inventory.sha256,
       scratchInventoryCount: inventory.count,

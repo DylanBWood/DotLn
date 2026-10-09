@@ -5,7 +5,7 @@ import {
   saveReleaseTemplate,
 } from "./lib/release-fixtures.mjs";
 
-// WO-163: the release shell's command surface over the fixture library.
+// The release shell's command surface over the fixture library (WO-163).
 if (isMainModule(import.meta.url)) {
   const [action, from, to, ...rest] = process.argv.slice(2);
   try {

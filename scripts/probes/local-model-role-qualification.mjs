@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { sha256Hex as sha256, json } from "../lib/helpers.mjs";
 
-// WO-138 live evaluations are explicit. Importing this module performs no
+// Live evaluations are explicit (WO-138). Importing this module performs no
 // inference, starts no runner and invokes no remote transport.
 import { spawn, execFileSync } from "node:child_process";
 import {
@@ -753,7 +753,7 @@ export async function runCodexEpisode({
   timeoutMs = EPISODE_TIMEOUT_MS,
   cwd = ROOT,
 }) {
-  // WO-159: the one Codex launcher builds the argv and isolates the home.
+  // The one Codex launcher builds the argv and isolates the home (WO-159).
   const launcher = await import(
     pathToFileURL(join(ROOT, "packages/skeleton/dist/src/worker-transport.js"))
       .href

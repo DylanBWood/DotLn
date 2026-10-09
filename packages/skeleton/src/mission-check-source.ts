@@ -150,8 +150,8 @@ const ignoredInventory = (
     // and publishes files into each `dist/` — while the pin is fixed at actor
     // declaration, so a collapsed root fingerprinted by mtime never matches
     // its baseline again and every later pulse holds over the tooling's own
-    // residue, which no human answer or verified repair can retire (WO-099
-    // VER-005 F1). A directory is therefore fingerprinted by kind and mode
+    // residue, which no human answer or verified repair can retire (WO-099).
+    // A directory is therefore fingerprinted by kind and mode
     // alone: it still drifts when it appears, disappears, changes kind or
     // changes mode, and what happens inside it remains the collapsed-directory
     // boundary this design already discloses. Files, symlinks and other kinds

@@ -437,7 +437,7 @@ test("WO-168 a hedge names the longest gate identity that holds the one it spell
     const [found] = scanHedges(phrase, facts);
     return [found.observed, found.source];
   };
-  // WO-140-D007: both rows in scope, the phrase names the partial gate.
+  // Both rows in scope, the phrase names the partial gate.
   assert.deepEqual(
     hedge("The npm test -- --inside-sandbox gate took about 3 minutes"),
     ["450 ms", "gate-row"],

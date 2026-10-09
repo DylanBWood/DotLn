@@ -287,3 +287,72 @@ test("WO-162 JSON and receipt adapters retain exact refusals and release locks",
     );
   }
 });
+
+test("no script defines a bare-hex sha256 or spawns Git outside the library", () => {
+  // A digest named sha256 is the prefixed `sha256:` export's name; a bare-hex
+  // digest belongs to sha256Hex in helpers.mjs. Git spawns belong to git.mjs.
+  const digestDefiner =
+    /\b(?:const|let|var)\s+sha256\s*=|\bfunction\s+sha256\s*\(/u;
+  const directGit =
+    /\b(?:spawnSync|spawn|execFileSync|execFile|execSync|exec)\(\s*["'`]git(?:["'`]|\s)/u;
+  // The samples are assembled so that this file's own text matches neither.
+  const call = (name) => `${name}("git", ["status"])`;
+  const definer = (keyword) => `${keyword} sha256`;
+  assert.match(
+    `${definer("const")} = (v) => createHash("sha256").update(v).digest("hex");`,
+    digestDefiner,
+  );
+  assert.match(`${definer("function")}(v) { return v; }`, digestDefiner);
+  assert.match(
+    `children.${call("spawnSync").replace("(", "(\n  ")}`,
+    directGit,
+  );
+  assert.match(call("execFileSync"), directGit);
+  assert.doesNotMatch(
+    `import { sha256Hex as sha256 } from "./lib/helpers.mjs";`,
+    digestDefiner,
+  );
+  assert.doesNotMatch(`spawnGit(["status"])`, directGit);
+  const allowed = {
+    "scripts/lib/git.mjs": { git: "the library itself" },
+    "scripts/lib/plan-subject.mjs": {
+      sha256: "the prefixed sha256: export, built on sha256Hex",
+    },
+    "scripts/test-harness.mjs": {
+      git: "an asynchronous pack-refs race fixture; the library has no async adapter",
+    },
+    "scripts/probes/gate-sandbox-race/loader.mjs": {
+      git: "a quoted Git call inside source text the probe injects into another module",
+    },
+    "scripts/test-process-debt.mjs": {
+      git: "fixture command strings that quote a Git push inside shell text, never a spawn",
+    },
+  };
+  const findings = [];
+  const scripts = [
+    ...new Set(
+      runGit(root, [
+        "ls-files",
+        "-z",
+        "--cached",
+        "--others",
+        "--exclude-standard",
+        "--",
+        "scripts",
+      ]).split("\0"),
+    ),
+  ].filter((path) => path.endsWith(".mjs"));
+  assert.ok(scripts.length > 50, "the script tree was listed");
+  for (const path of scripts) {
+    const source = readFileSync(join(root, path), "utf8");
+    if (digestDefiner.test(source) && !allowed[path]?.sha256)
+      findings.push(
+        `${path}: defines a bare-hex sha256; import sha256Hex from scripts/lib/helpers.mjs`,
+      );
+    if (directGit.test(source) && !allowed[path]?.git)
+      findings.push(
+        `${path}: spawns git directly; use spawnGit, execGit or runGit from scripts/lib/git.mjs`,
+      );
+  }
+  assert.deepEqual(findings, []);
+});

@@ -196,7 +196,7 @@ test("WO-110 the wire request carries the compiled prompt, the result schema and
   assert.equal(sent.temperature, 0);
   assert.equal(sent.top_p, 1);
   assert.equal(sent.seed, 424242);
-  // WO-137 observed an empty answer without this selector on 0.4.24+1.
+  // An empty answer was observed without this selector on 0.4.24+1 (WO-137).
   assert.equal(sent.reasoning_effort, "none");
   assert.equal(sent.max_tokens, 1024);
   assert.deepEqual(sent.response_format, {
@@ -287,7 +287,7 @@ test("WO-110 truncated, unparsable and contract-breaking completions are refused
     "invalid-result",
   );
 
-  // WO-137 observed a reasoning-only answer returning empty content.
+  // A reasoning-only answer was observed returning empty content (WO-137).
   const empty = await endpoint(t, ok(completion("")));
   assert.equal(
     (
@@ -345,7 +345,7 @@ test("WO-110 the endpoint and profile fences refuse before any request is sent",
     "http://127.0.0.1:1234",
   );
 
-  // WO-110's non-goal: no writing profile for the local model.
+  // No writing profile for the local model (a non-goal of WO-110).
   const served = await endpoint(
     t,
     ok(completion(resultFor(request.episodeId))),

@@ -97,7 +97,8 @@ export function withDetachedCheckout(target, directory, child, revision, use) {
       rmSync(tree, { recursive: true, force: true });
     }
   // Clear only this checkout's own registration when it outlived its
-  // directory; another registration, stale or valid, is the operator's (D047).
+  // directory; another registration, stale or valid, is the operator's
+  // (WO-112 D047).
   const own = join(realpathSync(child), "input-tree");
   if (
     sourceGit(target, "worktree", "list", "--porcelain")
@@ -254,7 +255,7 @@ export function createVerticalPrimitives({
    * out before asking the same host for its one fresh attempt: a review retry,
    * and any judgment or repair verifier a rerun resumes after an interruption
    * or crash, which the host would otherwise refuse as still leased and the
-   * fold would seal (WO-199 VER-001 F1). */
+   * fold would seal (WO-199). */
   const awaitLease = async (deadline) => {
     while (now() < deadline) await waitUntil(deadline);
   };
@@ -584,8 +585,9 @@ export function createVerticalPrimitives({
         const visual = state.binding.criteria.some(
           (c) => c.claimType === "visual",
         );
-        // WO-059's installed adapter targets its declared synthetic app. It is
-        // never relabelled as live evidence about an arbitrary target.
+        // The installed browser evidence adapter targets its declared synthetic
+        // app (WO-059). It is never relabelled as live evidence about an
+        // arbitrary target.
         if (visual && !cfg.browserScenario)
           return held(
             "browser scenario is not configured for the visual claim",

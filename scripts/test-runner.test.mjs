@@ -294,8 +294,8 @@ test("release shell changes select their inventory guard during review", async (
       task.args?.includes("scripts/test-release-fixtures.mjs"),
     ),
   );
-  // WO-173 (WO-169 D007): an untracked script a suite declares selects it
-  // before it is staged, so the review gate covers the file an order adds.
+  // An untracked script a suite declares selects it before it is staged, so
+  // the review gate covers the file an order adds (WO-173, WO-169 D007).
   writeFileSync(shell, baseline);
   assert.deepEqual(changedMachinery(repo, suites, "main"), []);
   writeFileSync(join(repo, "scripts/test-gate-deadlines.mjs"), "export {};\n");
@@ -1226,8 +1226,8 @@ test("only and document CLI selection execute their declared checks with the pro
   }
 });
 
-// WO-157 item 13 (WO-151 D021): an unclassified docs JSONL and an unstubbed
-// document suite fail the document gate, not only the suite that enumerates them.
+// An unclassified docs JSONL and an unstubbed document suite fail the document
+// gate, not only the suite that enumerates them (WO-157 item 13, WO-151 D021).
 test("WO-157 the document gate refuses an unregistered docs JSONL and an unstubbed document suite", (t) => {
   const row = suites.find((candidate) => candidate.name === "registrations");
   assert.ok(
@@ -1971,8 +1971,8 @@ test("code identity follows tracked source and dependency bytes across processes
   }
 });
 
-// WO-140: a fake marker and an owned denied directory stand in for a harness
-// sandbox, so the preflight runs the same in and outside a real one.
+// A fake marker and an owned denied directory stand in for a harness sandbox,
+// so the preflight runs the same in and outside a real one (WO-140).
 const confinementFixture = (t) => {
   // Under a gate the root carries the run's tag, which the gate's own
   // abandoned-root check judges (WO-157 item 15).
@@ -2075,7 +2075,8 @@ test("WO-140 the real inventory declares only the suites with an environmental o
       ["portfolio", OUTSIDE_CONFINEMENT],
     ],
   );
-  // WO-121 F1 was a defect in a release case, never a reason to declare.
+  // A defect in a release case, found in WO-121's verification, was never a
+  // reason for the release suite to declare a need.
   assert.equal(suites.find((row) => row.name === "release").needs, undefined);
   assert.throws(
     () =>
@@ -2175,7 +2176,7 @@ test("WO-140 a confined partial row is rejected by every product-gate consumer a
     fixture.options(0o555),
   );
   assert.equal(partial.exitCode, 0);
-  // WO-161: CLI spelling changes, recorded identities and selections do not.
+  // CLI spelling changes, recorded identities and selections do not (WO-161).
   assert.equal(CONFINED_PARTIAL_CHECK, "npm test -- --inside-sandbox");
   assert.equal(OUTSIDE_CONFINEMENT, "outside-sandbox");
   assert.equal(partial.checkId, CONFINED_PARTIAL_CHECK);
@@ -2562,9 +2563,9 @@ test("WO-140 any partial flag or exclusion shape disqualifies a row under the np
   );
 });
 
-// WO-157 item 15 (WO-063 D005): a fixture commit started Git's detached
-// automatic maintenance, whose geometric repack could still be writing
-// .git/objects/pack when the teardown removed the tree (ENOTEMPTY).
+// A fixture commit started Git's detached automatic maintenance, whose
+// geometric repack could still be writing .git/objects/pack when the
+// teardown removed the tree (ENOTEMPTY; WO-157 item 15, WO-063 D005).
 test("WO-157 the host-confinement fixture's commits start no background Git maintenance that could race its teardown", (t) => {
   const { repo } = confinementFixture(t);
   const fixtureGitOptions = {
@@ -2764,8 +2765,8 @@ test("WO-160 document failures rerun at the base, retain red status and record i
   assert.equal(missingGlob.failureComparisons[0].classification, "unknown");
 });
 
-// WO-186: exercise actual child commands and durable rows across shell/session
-// boundaries, rather than an in-memory scheduler double.
+// Exercise actual child commands and durable rows across shell/session
+// boundaries, rather than an in-memory scheduler double (WO-186).
 function taskReuseFixture(t) {
   const repo = mkdtempSync(join(tmpdir(), "dotln-task-reuse-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
@@ -3045,8 +3046,8 @@ test("WO-186 a fresh worktree reads main's passes without modifying main, while 
   assert.deepEqual(readFileSync(index), bytes);
 });
 
-// VER-001 F1: the build publishes an ignored output from identity-covered
-// source and beta judges that output, as a compiled package and its tests do.
+// The build publishes an ignored output from identity-covered source and
+// beta judges that output, as a compiled package and its tests do.
 function builtOutputFixture(t) {
   const fixture = taskReuseFixture(t);
   const { repo } = fixture;

@@ -108,6 +108,8 @@ export const historicalWorkOrders = (root, tag) => {
 
 // Shared attribution for manifest-bearing releases. Preserve manifest order;
 // consumers may sort their own presentation without inventing another parser.
+// A changed-file list that is not a list, or an entry that is not a path,
+// attributes nothing, as an unreadable manifest does.
 export const manifestWorkOrders = (manifest, root) => {
   const reviews = root
     ? rootPattern(root, "finalReviews")
@@ -115,11 +117,15 @@ export const manifestWorkOrders = (manifest, root) => {
   const attributed = new RegExp(`^${reviews}/(WO-\\d{3})/`);
   return [
     ...new Set([
-      ...(/^WO-\d{3}$/.test(manifest?.workOrder?.id)
+      ...(typeof manifest?.workOrder?.id === "string" &&
+      /^WO-\d{3}$/.test(manifest.workOrder.id)
         ? [manifest.workOrder.id]
         : []),
-      ...(manifest?.notes?.changedFiles ?? []).flatMap((path) => {
-        const match = attributed.exec(path);
+      ...(Array.isArray(manifest?.notes?.changedFiles)
+        ? manifest.notes.changedFiles
+        : []
+      ).flatMap((path) => {
+        const match = typeof path === "string" ? attributed.exec(path) : null;
         return match ? [match[1]] : [];
       }),
     ]),

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { execGit } from "./lib/git.mjs";
-// WO-157 item 13 (WO-151 D021): a new committed artifact or a new document
-// suite owes a registration to a check that enumerates it. This document-gate
+// A new committed artifact or a new document suite owes a registration to a
+// check that enumerates it (WO-157 item 13, WO-151 D021). This document-gate
 // row makes both owed registrations fail when they are missing, before the
 // artifact is committed or the enumerating suite happens to be selected.
 import { TOOL_ROOT, docRelative, findLaunchpad } from "./lib/config.mjs";

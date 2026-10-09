@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// WO-157 item 15 (WO-063 D005), opt-in and outside every gate: reproduce the
+// Opt-in and outside every gate (WO-157 item 15, WO-063 D005): reproduce the
 // host-confinement fixture teardown race under load. Runs the WO-140 partial test many
 // times at once with two loose objects planted under objects/17 before its
 // last commit (the state that makes Git 2.55 start a detached repack), with

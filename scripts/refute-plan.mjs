@@ -13,7 +13,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, resolve, sep } from "node:path";
+import { dirname, relative, resolve, sep } from "node:path";
 
 import { buildPlanSubject } from "./lib/plan-subject.mjs";
 import {
@@ -27,7 +27,8 @@ import {
   writePlanReceipt,
 } from "./lib/plan-receipts.mjs";
 import { containedRegularFile } from "./lib/paths.mjs";
-import { runGit, shellQuote, spawnGit } from "./lib/git.mjs";
+import { failureOf, runGit, shellQuote, spawnGit } from "./lib/git.mjs";
+import { TRANSPORT_DEFAULTS } from "./lib/entropy-review.mjs";
 import { prospectiveRealpath } from "./lib/gate-evidence.mjs";
 import {
   branchWorkOrder,
@@ -89,36 +90,68 @@ const failuresExport = {
 // local control lane, outside it only the system temporary directory, which
 // holds DotLn session scratch, and there no other checkout or Git directory.
 // An existing file is replaced only when an export of the same kind wrote it.
+// Names the lane's own tools read are never export targets, even before they
+// exist.
+const RESERVED_LANE_NAMES = [
+  "terms.txt",
+  "entropy",
+  "resident",
+  "authority-grants.json",
+  "adjacent-work.jsonl",
+  "plan",
+  "refutations",
+  "process",
+  "derived-orders",
+  "integration.json",
+  "harness",
+  "cache",
+  "retained",
+];
+// A temporary destination lies outside every repository. Inside one, Git
+// prints a `true` line; outside any, it exits 128 with its not-a-repository
+// message. Every other failure leaves the destination unjudged and refused.
+function outsideRepository(parent, kind) {
+  const probe = spawnGit(
+    ["-C", parent, "rev-parse", "--is-inside-work-tree", "--is-inside-git-dir"],
+    { encoding: "utf8", env: { ...process.env, LC_ALL: "C" } },
+  );
+  if (probe.status === 0) return !/true/.test(probe.stdout);
+  if (
+    !probe.error &&
+    probe.status === 128 &&
+    /^fatal: not a git repository/mu.test(probe.stderr ?? "")
+  )
+    return true;
+  throw new Error(
+    `${kind.label} destination cannot be judged: git rev-parse failed: ${failureOf(probe)}`,
+  );
+}
 function exportDestination(root, name, kind = followupExport) {
   const path = prospectiveRealpath(resolve(root, name));
   const within = (granted) =>
     path.startsWith(`${prospectiveRealpath(granted)}${sep}`);
   let parent = dirname(path);
   while (!existsSync(parent)) parent = dirname(parent);
+  const lane = prospectiveRealpath(docPath(root, "control", "local"));
   if (
     !(within(root)
-      ? within(docPath(root, "control", "local")) &&
+      ? within(lane) &&
         spawnGit(["-C", root, "check-ignore", "-q", "--", path], {
           encoding: "utf8",
         }).status === 0
-      : within(tmpdir()) &&
-        !/true/.test(
-          spawnGit(
-            [
-              "-C",
-              parent,
-              "rev-parse",
-              "--is-inside-work-tree",
-              "--is-inside-git-dir",
-            ],
-            { encoding: "utf8" },
-          ).stdout,
-        ))
+      : within(tmpdir()) && outsideRepository(parent, kind))
   )
     throw new Error(
       `${kind.label} destination must be a file under the system temporary directory or the ignored local control lane`,
     );
-  if (!existsSync(path)) return path;
+  if (!existsSync(path)) {
+    const local = within(lane) ? relative(lane, path).split(sep) : [];
+    if (local.length && RESERVED_LANE_NAMES.includes(local[0]))
+      throw new Error(
+        `${kind.label} destination ${local.join("/")} is a name the local control lane reserves; name another file`,
+      );
+    return path;
+  }
   if (!lstatSync(path).isFile())
     throw new Error(`${kind.label} destination is not a regular file`);
   let previous;
@@ -146,8 +179,8 @@ function writeExport(path, value) {
     throw error;
   }
 }
-// WO-172: `plan failures` takes at most one of each flag; `--all` and
-// `--since` exclude each other, and an export writes no page cursor.
+// `plan failures` takes at most one of each flag; `--all` and `--since`
+// exclude each other, and an export writes no page cursor (WO-172).
 function failuresOptions(rest) {
   const flags = {};
   for (let i = 0; i < rest.length; i++) {
@@ -321,8 +354,8 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     )
       throw new Error("plan start requires clean main");
     const followups = planningFollowups(root);
-    // WO-172: what failed since the latest planning receipt, read before the
-    // register; a count that cannot be computed never keeps the branch shut.
+    // What failed since the latest planning receipt, read before the register;
+    // a count that cannot be computed never keeps the branch shut (WO-172).
     const failures = failuresAtStart(root);
     const conditions = await conditionsAtStart(root);
     const branch = `planning/${new Date().toISOString().slice(0, 10)}-${rest[0]}`;
@@ -507,16 +540,11 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
           ? new FakePlanRefutationTransport()
           : null;
   if (!transport) throw new Error("unknown plan transport");
-  const model =
-    opt["--model"] ??
-    (name === "claude-cli-print"
-      ? "claude-opus-5-5"
-      : name === "codex-cli-exec"
-        ? "gpt-6-sol"
-        : "fixture");
-  // Codex launches ignore user configuration, so an unrecorded effort would
-  // run at the model's own default rather than the selected xhigh.
-  const effort = opt["--effort"] ?? (name === "fake" ? "max" : "xhigh");
+  // The pinned per-transport defaults are the Entropy Reducer's table. Codex
+  // launches ignore user configuration, so the effort is always recorded and
+  // passed; an unrecorded one would run at the model's own default.
+  const model = opt["--model"] ?? TRANSPORT_DEFAULTS[name].model;
+  const effort = opt["--effort"] ?? TRANSPORT_DEFAULTS[name].effort;
   const episode = await runPlanRefutation(
     subject,
     transport,

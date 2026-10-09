@@ -33,6 +33,10 @@ git -C "$main" switch -c main >/dev/null 2>&1
 mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control" "$main/docs/discovery" "$main/packages/kernel"
 cp "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$script_dir/release.mjs" "$script_dir/license-surfaces.mjs" "$main/scripts/"
 cp -R "$script_dir/lib" "$main/scripts/lib"
+# The copied helpers resolve the launchpad's installed Markdown parser as the
+# launchpad does: through a node_modules above them.
+mkdir -p "$test_root/node_modules"
+ln -sfn "$script_dir/../node_modules/prettier" "$test_root/node_modules/prettier"
 node "$script_dir/test-beacon-fixture.mjs" "$main"
 if grep -Fq 'current.md' "$main/scripts/worktree.mjs"; then
   printf 'error: worktree lifecycle parses the Markdown control projection\n' >&2
@@ -159,6 +163,7 @@ node "$subject/scripts/resume.mjs" final-review-result pass \
   --source operator-attested >/dev/null
 printf 'done\n' >"$subject/result.txt"
 printf '%s\n' 'This reviewed PR body stays on one physical source line even though it is longer than eighty characters, leaving visual wrapping to the reader.' >"$subject/pr-body.md"
+printf '%s\n' '- A code example `` [sample](file.md) ` literal `` keeps its bytes and an [empty]() link becomes its text.' >>"$subject/pr-body.md"
 git -C "$subject" add .
 "$node_bin" "$script_dir/test-release-composition.mjs" record "$subject" WO-099
 git -C "$subject" add docs/control
@@ -317,6 +322,11 @@ fi
 grep -Fq 'pr-body.md: accidental GitHub prose soft wrap between lines 1 and 2' <<<"$wrapped_pr_output"
 if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: wrapped PR body reached remote\n' >&2; exit 1; fi
 printf '%s\n' 'This reviewed PR body stays on one physical source line even though it is longer than eighty characters, leaving visual wrapping to the reader.' >"$subject/pr-body.md"
+printf '%s\n' '- A code example `` [sample](file.md) ` literal `` keeps its bytes and an [empty]() link becomes its text.' >>"$subject/pr-body.md"
+# Markdown ends a line at a lone carriage return or at a carriage return and
+# newline as well; the published body keeps those bytes and the code on such a
+# line, and writes the link on such a line absolute like any other.
+printf '\nIntro\r\r`` [crsample](cr-file.md) ` literal ``\r\rA carriage-return line links to [the notes](notes.md).\r\n' >>"$subject/pr-body.md"
 git -C "$subject" add pr-body.md
 git -C "$subject" commit --amend --no-edit >/dev/null
 printf 'GitHub body profile refused wrapped PR and release-note prose before publication\n'
@@ -423,6 +433,36 @@ printf 'hidden uncommitted private body\n' >"$subject/pr-body.md"
 printf '<!-- hidden malformed notes -->\n' >"$subject/$notes_path"
 publish_output="$(PATH="$test_root/bin:$PATH" DOTLN_GH_LOG="$gh_log" DOTLN_GH_BODY="$published_body" GH_REPO=wrong/target GH_HOST=wrong.example node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md)"
 grep -Fq "$(cat "$committed_body")" "$published_body"
+# Each committed line reaches the forge: the prose line whole, the code example
+# byte-for-byte and the empty-destination link written as its text.
+grep -Fxq "$(head -n 1 "$committed_body")" "$published_body"
+grep -Fxq -e '- A code example `` [sample](file.md) ` literal `` keeps its bytes and an empty link becomes its text.' "$published_body"
+if grep -Fq '[empty]()' "$published_body"; then printf 'error: an empty link destination was published\n' >&2; exit 1; fi
+"$node_bin" --input-type=module - "$committed_body" "$published_body" <<'NODE'
+import { readFileSync } from "node:fs";
+import assert from "node:assert/strict";
+const [committed, published] = process.argv
+  .slice(2)
+  .map((path) => readFileSync(path, "utf8"));
+const span = "`` [crsample](cr-file.md) ` literal ``";
+assert.ok(
+  committed.includes(`\nIntro\r\r${span}\r\rA carriage-return line links to [the notes](notes.md).\r\n`),
+  "the committed body holds the carriage-return lines",
+);
+assert.ok(
+  published.includes(`\nIntro\r\r${span}\r\rA carriage-return line links to [the notes](https://github.com/`),
+  "the published body keeps the carriage-return lines and the code on them",
+);
+assert.match(
+  published,
+  /\[the notes\]\(https:\/\/github\.com\/[^)]+\/blob\/[0-9a-f]{40}\/notes\.md\)\./u,
+  "the link on a carriage-return line is written absolute",
+);
+assert.ok(
+  !published.includes("[the notes](notes.md)"),
+  "no relative link on a carriage-return line was published",
+);
+NODE
 if grep -Fq 'hidden uncommitted private body' "$published_body"; then printf 'error: private working body leaked\n' >&2; exit 1; fi
 grep -Fq 'dotln-product-gate:start' "$published_body"
 grep -Fq '"checkId": "npm test"' "$published_body"
@@ -457,19 +497,19 @@ git -C "$main" merge --ff-only origin/wo-099 >/dev/null
 git -C "$main" push origin main >/dev/null 2>&1
 printf 'SECRET=fixture-only\n' >"$subject/.env"
 printf 'disposable build state\n' >"$subject/tsconfig.tsbuildinfo"
-# WO-044: every blocker is listed at once with its lane and remedy; an empty
-# nested repository is scaffolding; a nested repository with content outside
-# the preserved lanes blocks with its own remedy and is never deleted.
+# Every blocker is listed at once with its lane and remedy. A nested
+# repository outside intake is scratch: the preview says it would go, the
+# refusal that follows deletes nothing, and no declaration is asked for.
 mkdir -p "$subject/docs/control/local/feedback/verifier/mount" "$subject/vendor/node_modules/kept-repo"
 git -C "$subject/docs/control/local/feedback/verifier/mount" init -q
 git -C "$subject/vendor/node_modules/kept-repo" init -q
 printf 'kept nested content\n' >"$subject/vendor/node_modules/kept-repo/file.txt"
 if finish_output="$(finish_worktree WO-099 2>&1)"; then printf 'error: ignored secret was deleted\n' >&2; exit 1; fi
-grep -Fq '(2 entries; undeclared material is retained)' <<<"$finish_output"
+grep -Fq '(1 entry; only scratch repositories are removed)' <<<"$finish_output"
 grep -Fq '.env: other lane: ignored file; move it outside the checkout or delete it from an operator terminal' <<<"$finish_output"
-grep -Fq 'vendor/node_modules/kept-repo/: other lane: nested repository with content and no commit;' <<<"$finish_output"
-grep -Fq "npm run worktree -- material 'vendor/node_modules/kept-repo' --preserve --reason 'keep this repository'" <<<"$finish_output"
-grep -Fq -- "--material '${subject}::vendor/node_modules/kept-repo=preserve'" <<<"$finish_output"
+grep -Fq '"vendor/node_modules/kept-repo": nested repository disposable; removed with the worktree' <<<"$finish_output"
+grep -Fq 'Scratch removal: {"worktree":' <<<"$finish_output"
+if grep -Fq 'npm run worktree -- material' <<<"$finish_output"; then printf 'error: a declaration was asked for\n' >&2; exit 1; fi
 if grep -Fq 'npm run backup:intake' <<<"$finish_output"; then printf 'error: intake archive named for non-intake material\n' >&2; exit 1; fi
 if grep -Fq 'verifier/mount/:' <<<"$finish_output"; then printf 'error: empty nested repository reported as a blocker\n' >&2; exit 1; fi
 if grep -Fq 'SECRET=fixture-only' <<<"$finish_output"; then printf 'error: ignored-file content leaked in refusal\n' >&2; exit 1; fi
@@ -576,8 +616,8 @@ NODE
 mkdir -p "$subject/docs/control/local/prototypes/nested" "$subject/docs/control/local/process/empty" "$main/docs/control/local"
 printf 'subject retained record\000bytes\n' >"$subject/docs/control/local/adjacent-work.jsonl"
 printf 'subject prototype\n' >"$subject/docs/control/local/prototypes/nested/source.txt"
-# WO-044: a nested repository with content in the control lane is preserved
-# as a directory unit; the verifier mount is disposable while it is empty.
+# A nested repository with content in the control lane is scratch like any
+# other outside intake: removed with the worktree and recorded, never archived.
 mkdir -p "$subject/docs/control/local/prototypes/repo" "$subject/docs/control/local/feedback/verifier/mount"
 git -C "$subject/docs/control/local/prototypes/repo" init -q
 printf 'kept nested content\n' >"$subject/docs/control/local/prototypes/repo/file.txt"
@@ -597,7 +637,7 @@ for (const [index, root] of process.argv.slice(2).entries()) {
   recordGateChecks(root, [{ checkId: `fixture-closeout-${index}`, treeHash, subject: treeHash, durationMs: 1, exitCode: 0, executed: true, evidenceRef: "synthetic-closeout-handoff", recordedAt: new Date().toISOString() }]);
 }
 NODE
-# WO-044: derived detached worktrees of the closing order are pruned,
+# Derived detached worktrees of the closing order are pruned,
 # preserved-and-removed when safe, or reported with their blocker.
 derived_clean="$test_root/project-wo099-measure-001"
 derived_dirty="$test_root/project-wo099-measure-002"
@@ -624,12 +664,13 @@ retained_subject_head="$(git -C "$subject" rev-parse HEAD)"
 retained_preview="$(finish_worktree WO-099 --dry-run 2>&1)"
 grep -Fq 'docs/control/local/retained/WO-099/adjacent-work.jsonl' <<<"$retained_preview"
 grep -Fq 'docs/control/local/retained/WO-099/process/empty' <<<"$retained_preview"
-grep -Fq '"docs/control/local/prototypes/repo": nested repository preserved as a directory unit' <<<"$retained_preview"
+grep -Fq '"docs/control/local/prototypes/repo": nested repository disposable; removed with the worktree' <<<"$retained_preview"
 grep -Fq '"docs/control/local/feedback/verifier/mount": nested repository disposable; removed with the worktree' <<<"$retained_preview"
-grep -Fq 'docs/control/local/retained/WO-099/prototypes/repo/.git/HEAD' <<<"$retained_preview"
-grep -Fq 'docs/control/local/retained/WO-099/prototypes/repo/file.txt' <<<"$retained_preview"
+if grep -Fq 'retained/WO-099/prototypes/repo' <<<"$retained_preview"; then printf 'error: a scratch repository was archived\n' >&2; exit 1; fi
+grep -Fq '"path":"docs/control/local/prototypes/repo"' <<<"$retained_preview"
+grep -Fq '"outcome":"would-remove"' <<<"$retained_preview"
 grep -Fq "Derived worktree $derived_clean: would remove" <<<"$retained_preview"
-grep -Fq "Derived worktree $derived_dirty: kept (uncommitted changes); retry with node '$main/scripts/worktree.mjs' settle WO-099" <<<"$retained_preview"
+grep -Fq "Derived worktree $derived_dirty: kept (uncommitted changes); operator: commit, stash or discard the changes in '$derived_dirty' from an operator terminal, then retry with node '$main/scripts/worktree.mjs' settle WO-099" <<<"$retained_preview"
 grep -Fq "Derived worktree $derived_writer: kept (writer reservation" <<<"$retained_preview"
 grep -Fq "Derived worktree $derived_unknown: kept (writer reservation" <<<"$retained_preview"
 grep -Fq "Derived worktree $derived_gone: would prune (directory missing)" <<<"$retained_preview"
@@ -642,6 +683,16 @@ test "$(git -C "$main" show-ref)" = "$retained_main_refs"
 test "$(git -C "$subject" rev-parse HEAD)" = "$retained_subject_head"
 retained_finish="$(finish_worktree WO-099)"
 test ! -e "$subject"
+"$node_bin" - "$retained_finish" <<'JS'
+const assert = require("node:assert/strict");
+const rows = process.argv[2].split("\n").filter((line) => line.startsWith("Scratch removal: ")).map((line) => JSON.parse(line.slice("Scratch removal: ".length)));
+const repo = rows.filter((row) => row.path === "docs/control/local/prototypes/repo").at(-1);
+assert.equal(repo.outcome, "removed");
+assert.match(repo.head, /^[0-9a-f]{40}$/);
+assert.equal(repo.remoteHeld, false);
+const mount = rows.filter((row) => row.path === "docs/control/local/feedback/verifier/mount").at(-1);
+assert.deepEqual([mount.head, mount.remoteHeld, mount.outcome], [null, null, "removed"]);
+JS
 grep -Fq "Derived worktree $derived_clean: removed" <<<"$retained_finish"
 grep -Fq "Derived worktree $derived_dirty: kept (uncommitted changes)" <<<"$retained_finish"
 grep -Fq "Derived worktree $derived_gone: pruned (directory missing)" <<<"$retained_finish"
@@ -671,8 +722,7 @@ printf 'settle removed a derived worktree with no subject present\n'
 cmp "$test_root/retained-expected.bin" "$main/docs/control/local/retained/WO-099/adjacent-work.jsonl"
 test -f "$main/docs/control/local/retained/WO-099/prototypes/nested/source.txt"
 test -d "$main/docs/control/local/retained/WO-099/process/empty"
-test "$(cat "$main/docs/control/local/retained/WO-099/prototypes/repo/file.txt")" = 'kept nested content'
-test -f "$main/docs/control/local/retained/WO-099/prototypes/repo/.git/HEAD"
+test ! -e "$main/docs/control/local/retained/WO-099/prototypes/repo"
 test ! -e "$main/docs/control/local/retained/WO-099/feedback"
 test "$(cat "$main/docs/control/local/terms.txt")" = 'main active terms'
 test "$(cat "$main/docs/control/local/adjacent-work.jsonl")" = 'main active queue'

@@ -1,0 +1,77 @@
+# WO-188 repair-003: the extended unit fixture against the pre-repair rewriter
+
+scripts/test-github-body.mjs with its two new tests, run against scripts/lib/github-body.mjs as checkpoint refs/dotln/checkpoint/WO-188/13 holds it (git show refs/dotln/checkpoint/WO-188/13:scripts/lib/github-body.mjs), from a scratch copy with the fixtures beside it and NODE_PATH pointing at the worktree's node_modules. Passing tests are omitted; the two new tests fail as shown. After the repair the same file passes 29.
+
+Command: node --test test-github-body.mjs
+Exit: 1
+
+✖ code and raw HTML keep their bytes under every Markdown line ending, a link on such a line is rewritten, a leading byte-order mark stays, and the profile counts the lines the parser counts (0.810333ms)
+✖ a destination is the one the parser renders: backslash escapes and character references resolve before the path is encoded, a reference-spelled scheme stays absolute, and brackets the parser does not render as a link keep their bytes while the link inside them is rewritten (1.5275ms)
+ℹ Error: A resource generated asynchronous activity after the test ended. This activity created the error "Error [ERR_MODULE_NOT_FOUND]: Cannot find module '<tmp>' imported from <tmp>" which triggered an uncaughtException event, caught by the test runner.
+ℹ tests 20
+ℹ suites 0
+ℹ pass 18
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 82.365625
+
+✖ failing tests:
+
+test at test-github-body.mjs:319:7
+✖ code and raw HTML keep their bytes under every Markdown line ending, a link on such a line is rewritten, a leading byte-order mark stays, and the profile counts the lines the parser counts (0.810333ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'Intro\r\r`` [sample](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/file.md) ` literal ``'
+  - 'Intro\r\r`` [sample](file.md) ` literal ``'
+  
+      at TestContext.<anonymous> (file://<tmp>
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+      at run (node:internal/test_runner/harness:398:12)
+      at test (node:internal/test_runner/harness:407:12)
+      at file://<tmp> {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'Intro\r\r`` [sample](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/file.md) ` literal ``',
+    expected: 'Intro\r\r`` [sample](file.md) ` literal ``',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test-github-body.mjs:366:7
+✖ a destination is the one the parser renders: backslash escapes and character references resolve before the path is encoded, a reference-spelled scheme stays absolute, and brackets the parser does not render as a link keep their bytes while the link inside them is rewritten (1.5275ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'An [escaped](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/file%5C%281%5C%29.md) name, a [reference](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/file&#40;1&#41;.md) name and an [ampersand](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/a&amp;b.md) name address the files they spell.\n' +
+  - 'An [escaped](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/file%281%29.md) name, a [reference](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/file%281%29.md) name and an [ampersand](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/a&b.md) name address the files they spell.\n' +
+      '\n' +
+  +   'An [underscore](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/file%5C_1.md) and a [scheme](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/&#104;ttps://example.invalid/x) spelled by reference.\n' +
+  -   'An [underscore](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/file_1.md) and a [scheme](&#104;ttps://example.invalid/x) spelled by reference.\n' +
+      '\n' +
+  +   'Outer [a [b](c.md) d](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/e.md) brackets are text around the one link.\n' +
+  -   'Outer [a [b](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/c.md) d](e.md) brackets are text around the one link.\n' +
+      '\n' +
+  +   '[def]: https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/file%5C%281%5C%29.md\n'
+  -   '[def]: https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/file%281%29.md\n'
+  
+      at TestContext.<anonymous> (file://<tmp>
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+      at run (node:internal/test_runner/harness:398:12)
+      at test (node:internal/test_runner/harness:407:12)
+      at file://<tmp> {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'An [escaped](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/file%5C%281%5C%29.md) name, a [reference](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/file&#40;1&#41;.md) name and an [ampersand](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/a&amp;b.md) name address the files they spell.\n\nAn [underscore](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/file%5C_1.md) and a [scheme](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/&#104;ttps://example.invalid/x) spelled by reference.\n\nOuter [a [b](c.md) d](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/e.md) brackets are text around the one link.\n\n[def]: https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/file%5C%281%5C%29.md\n',
+    expected: 'An [escaped](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/file%281%29.md) name, a [reference](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/file%281%29.md) name and an [ampersand](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/a&b.md) name address the files they spell.\n\nAn [underscore](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/file_1.md) and a [scheme](&#104;ttps://example.invalid/x) spelled by reference.\n\nOuter [a [b](https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/c.md) d](e.md) brackets are text around the one link.\n\n[def]: https://github.com/o/r/blob/abc/docs/final-reviews/WO-1/file%281%29.md\n',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

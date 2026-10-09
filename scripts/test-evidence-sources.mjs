@@ -1,9 +1,9 @@
 import { json as prettyJson, write } from "./lib/helpers.mjs";
 import { execGit } from "./lib/git.mjs";
-// WO-157 item 12 (WO-151 D001): the recorded evidence inventories follow the
-// import graph. A copy of this repository, with the working tree overlaid,
-// shows a moved request protocol staling the feedback edition, an excluded
-// import admitted with its reason, and an unregistered import refused by name.
+// The recorded evidence inventories follow the import graph. A copy of this
+// repository, with the working tree overlaid, shows a moved request protocol
+// staling the feedback edition, an excluded import admitted with its reason,
+// and an unregistered import refused by name (WO-157 item 12, WO-151 D001).
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -136,7 +136,7 @@ test("WO-157 a moved entropy review protocol stales the feedback edition; an exc
   );
   restore(importer);
 
-  // VER-001 F4: the two legal forms the first parser missed are refused too.
+  // The two legal forms the first parser missed are refused too.
   for (const form of [
     "\nvoid import('./wo157-unregistered.js').then(() => {});\n",
     "\nimport './wo157-unregistered.js'\n",
@@ -212,7 +212,7 @@ test("WO-157 VER-001 F4: every legal runtime import form is read, and only type 
     [
       // A byte-order mark before the first import.
       "\ufeffimport s from './s.mjs';",
-      // The verifier's two reproductions (VER-001 F4).
+      // The verifier's two reproductions.
       "void import('./e.mjs').then(() => {});",
       "import './f.mjs'",
       // Other legal runtime forms.
@@ -255,9 +255,9 @@ test("WO-157 VER-001 F4: every legal runtime import form is read, and only type 
   );
 });
 
-// WO-154: a schema 2 feedback edition keys staleness on the judged behavior
-// and names each unresolvable reference; a pins-only change keeps its live
-// audit or carries it into a deterministic edition without a live episode.
+// A schema 2 feedback edition keys staleness on the judged behavior and names
+// each unresolvable reference; a pins-only change keeps its live audit or
+// carries it into a deterministic edition without a live episode.
 test("WO-154 a pins-only change keeps or carries the live audit; a judged change and an unresolvable reference are stale by path", (t) => {
   const { copy, check, run, restore } = editionCopy(t);
   const current = currentEvidence(copy, "feedback").directory;
@@ -426,10 +426,10 @@ test("WO-154 a pins-only change keeps or carries the live audit; a judged change
   );
 });
 
-// WO-154 VER-001-F1: a compiler release is compiled into the program and its
-// policy hash, so the case is only real once it is built. The recorded
-// streams replay under the rebuilt compiler, the console's policy binding
-// asks for the deterministic carry, and a judged change is still refused.
+// A compiler release is compiled into the program and its policy hash, so the
+// case is only real once it is built. The recorded streams replay under the
+// rebuilt compiler, the console's policy binding asks for the deterministic
+// carry, and a judged change is still refused.
 test("WO-154 a rebuilt compiler release needs only the deterministic carry; the recorded streams replay and a judged change is refused", (t) => {
   const { copy, env, check, run } = editionCopy(t, { workspace: true });
   const live = currentEvidence(copy, "feedback").directory;

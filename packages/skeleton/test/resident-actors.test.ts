@@ -152,7 +152,7 @@ for (const kind of ["writer", "inspection"] as const)
               JSON.parse(launch.input).episodeId,
             );
             assert.notEqual(launch.resident?.episodeId, f.request.episodeId);
-            // WO-159: the resident Codex episode runs in an isolated home.
+            // The resident Codex episode runs in an isolated home (WO-159).
             assert.match(launch.env?.CODEX_HOME ?? "", /dotln-codex-home-/u);
             assert.equal(state(host).present, false);
             assert.ok(

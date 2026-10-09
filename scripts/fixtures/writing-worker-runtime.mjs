@@ -1,4 +1,4 @@
-// WO-044 probe runtime. The scratch worktree's generated-shape hook imports
+// Probe runtime (WO-044). The scratch worktree's generated-shape hook imports
 // this file by an absolute file:// URL from outside that worktree, the way a
 // target bundle would import a pinned DotLn runtime. It decides fixture
 // refusals and records nothing itself; the hook records shapes.

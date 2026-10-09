@@ -77,7 +77,7 @@ export function missionFixture(
      * written and committed before the capsule is pinned. This is the shape of
      * a real worktree the episode supervises: the baseline exists before the
      * actor is declared, so an ordinary rebuild only moves entries the pin
-     * already carries (WO-099 VER-005 F1). */
+     * already carries (WO-099). */
     ignored?: {
       rules: readonly string[];
       baseline: Readonly<Record<string, string>>;

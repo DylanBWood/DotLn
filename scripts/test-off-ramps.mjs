@@ -1,7 +1,7 @@
 import { spawnGit } from "./lib/git.mjs";
-// WO-158 off-ramps: each route appends its typed event with the actor
-// attestation, refuses outside its legal phases with the legal list, and
-// projects in status --json and current.md; withdrawn is terminal.
+// Off-ramps: each route appends its typed event with the actor attestation,
+// refuses outside its legal phases with the legal list, and projects in
+// status --json and current.md; withdrawn is terminal (WO-158).
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import {
@@ -251,8 +251,8 @@ assert.match(
 
 assert.equal(matrix(), "active");
 
-// WO-173: the executor judges every declared criterion on one line of its
-// handoff ledger before either completion. An absent ledger, a missing
+// The executor judges every declared criterion on one line of its handoff
+// ledger before either completion (WO-173). An absent ledger, a missing
 // criterion, two lines for one criterion, a line for an undeclared criterion
 // and a line hidden in a code fence refuse and append nothing, naming the
 // identifiers and the accepted forms; a complete ledger records, and the
@@ -338,8 +338,8 @@ assert.match(
   ),
 );
 assert.equal(matrix(), "ready-to-verify");
-// WO-173 criterion 5: the three sentences, pinned, and the unmet disclosure
-// with both routes; no briefing grows by more than 400 bytes.
+// The three sentences, pinned, and the unmet disclosure with both routes;
+// no briefing grows by more than 400 bytes (WO-173 criterion 5).
 const originalVerifySentence =
   "A finding names its class and the rule a repair must hold; a defect outside the declared criteria is boarded with its reproduction, not failed. A recorded off-ramp whose capture hash matches is judged from the record and never put back to the operator.";
 const offRampSentence =
@@ -364,7 +364,8 @@ for (const [name, growth] of Object.entries({
   fix:
     bytes(` ${repairSentence}`) +
     bytes(ledgerSentence("WO-099", "repair-complete")),
-  // WO-173's bounded addition remains measured separately from WO-179's rules.
+  // The verify row measures only the bounded addition WO-173 made, apart
+  // from the rules WO-179 added.
   verify: bytes(`\n${originalVerifySentence}`),
   "final-review": bytes(`\n${offRampSentence}`),
 }))
@@ -724,7 +725,7 @@ refuse(/is not a contained report under docs\/verifications\/WO-099/, [
   "missing report",
   ...operator,
 ]);
-// VER-001 F2: a result records the digest of the report it judged, and a
+// A result records the digest of the report it judged, and a
 // report path moves only to those bytes. A distinct VER-002.md holding other
 // content (no actor or cost line, criterion 1 unmet) is refused; the same
 // bytes at a contained path are admitted, the correction records the digest
@@ -1000,7 +1001,7 @@ writeFileSync(
   `${authorityText}\n**Reactivation (2000-01-01):** too early.\n`,
 );
 refuse(/has new notes dated only before/, ["activate", "WO-099", authority]);
-// VER-001 F1: a note's date is a calendar date, not a digit shape.
+// A note's date is a calendar date, not a digit shape.
 for (const date of ["9999-99-99", "2026-02-30"]) {
   writeFileSync(
     join(root, authority),
@@ -1057,10 +1058,10 @@ assert.ok(
   ),
   nextBriefing101,
 );
-// WO-173 criterion 3: the executor records criterion 2 unmet; the verify
-// briefing lists it with both routes; the verifier's session records the
-// waiver in phase verifying; the report judges the criterion unmet, waived
-// by that ordinal, and a passing verification is recorded.
+// The executor records criterion 2 unmet; the verify briefing lists it with
+// both routes; the verifier's session records the waiver in phase verifying;
+// the report judges the criterion unmet, waived by that ordinal, and a
+// passing verification is recorded (WO-173 criterion 3).
 ledger(
   [
     "**Criterion 1:** met. The fixture holds.",
@@ -1322,8 +1323,8 @@ for (const [label, subject, evidence, pattern] of [
     pattern,
     label,
   );
-// WO-173 criterion 2: a criterion recorded met that names a gate stands on
-// that gate's row. `npm test` and `npm test -- --review` need a passing
+// A criterion recorded met that names a gate stands on that gate's row
+// (WO-173 criterion 2). `npm test` and `npm test -- --review` need a passing
 // complete row at the current code identity, the review form one whose
 // required suites cover the review selection the runner lists (an untracked
 // script a suite declares selects it); `npm run test:docs` runs inline, last,
@@ -1431,7 +1432,7 @@ writeFileSync(
   join(root, "scripts/declared-untracked.mjs"),
   "export const declared = true;\n",
 );
-// WO-186: introducing the runner and declared untracked source changes the
+// Introducing the runner and declared untracked source changes the
 // code identity. First prove the old green row cannot satisfy either claim;
 // then record a plain row at the new identity to judge selection coverage.
 const reviewIdentity = gateCodeIdentity(root);
@@ -1538,7 +1539,7 @@ report("docs/verifications/WO-103/VER-001.md", [
   "**Criterion 3:** met.",
   "**Criterion 4:** met.",
 ]);
-// WO-179: changing an unmet judgment to met needs the current gate evidence.
+// Changing an unmet judgment to met needs the current gate evidence (WO-179).
 plantRunner();
 recordGateChecks(root, [
   claimRow("host-gate:verified-103:npm test", {

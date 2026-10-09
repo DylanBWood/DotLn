@@ -86,6 +86,7 @@ function hook(event, tool, input, id) {
   for (const form of row.forms) {
     const config = JSON.parse(fs.readFileSync(form==="claude"?".claude/settings.json":".github/hooks/probe.json","utf8"));
     const groups = config.hooks[form==="claude"?event:nativeNames[event]];
+    if(!groups) continue;
     const hooks = form==="claude"?groups.flatMap(group=>group.hooks):groups;
     if (hooks.length!==1) throw new Error("duplicate fixture registration");
     const payload = form==="claude"
@@ -105,12 +106,13 @@ function hook(event, tool, input, id) {
 }
 hook("SessionStart"); hook("UserPromptSubmit");
 let sequence=0;
-function call(name, tool, input, effect) {
+function call(name, tool, input, effect, failed) {
   const id="private-call-"+(++sequence);
   emit("tool.execution_start",{toolCallId:id,toolName:name,arguments:input});
   const denied=hook("PreToolUse",tool,input,id);
-  if(!denied) {effect?.();hook("PostToolUse",tool,input,id);}
-  emit("tool.execution_complete",{toolCallId:id,success:!denied,result:{content:denied?"expected refusal":"private-result"}});
+  if(!denied && !failed) {effect?.();hook("PostToolUse",tool,input,id);}
+  if(!denied && failed) hook("PostToolUseFailure",tool,input,id);
+  emit("tool.execution_complete",{toolCallId:id,success:!denied && !failed,result:{content:denied?"expected refusal":failed?"exit status 3":"private-result"}});
 }
 call("skill","Skill",{skill:"dotln-probe"});
 call("view","Read",{file_path:path.join(cwd,"fixture.txt")});
@@ -120,6 +122,7 @@ call("bash","Bash",{command:"node shell-identity.mjs"},()=>fs.writeFileSync("she
 for(const name of ["claude-deny","claude-error","native-deny","native-error"])
   call("bash","Bash",{command:"printf fixture > "+name+".txt"},()=>fs.writeFileSync(name+".txt","fixture"));
 if(row.child) call("task","Agent",{description:"private-child"});
+if(row.failureEvent) call("bash","Bash",{command:'node -e "process.exit(3)"'},null,true);
 emit("assistant.message",{content:markers.join(" ")});
 emit("session.shutdown",{totalNanoAiu:1250000000});
 hook("Stop");
@@ -281,6 +284,81 @@ test("WO-146 Copilot stub exercises both registrations, trust, caps, denial evid
       .length,
     1,
     "only the explicitly prepared no-effects fixture remains; driver scratch was removed",
+  );
+});
+
+test("the Copilot failure-event mode names the failed-command event in the shared file, runs one failing command and records what the CLI did", async (t) => {
+  const { runCopilotProbe } = await import("./lib/copilot-probe.mjs");
+  const root = mkdtempSync(join(tmpdir(), "dotln-copilot-test-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const binary = join(root, "copilot-stub");
+  writeFileSync(binary, copilotStub, { mode: 0o700 });
+  write(
+    root,
+    "docs/discovery/copilot-cli-2030-01-02.json",
+    JSON.stringify({ launchesStarted: 10 }),
+  );
+  const launch = (date) =>
+    runCopilotProbe({
+      out: root,
+      binary,
+      date,
+      base: root,
+      hostModule: null,
+      mode: "failure-event",
+      env: { ...process.env, DOTLN_LIVE_HARNESS: "1" },
+    });
+  const record = await launch("2030-01-05");
+  assert.equal(record.launchesStarted, 1);
+  assert.equal(record.priorLaunches, 10);
+  assert.deepEqual(
+    record.rows.map((row) => row.id),
+    ["P11"],
+  );
+  const [row] = record.rows;
+  assert.equal(row.exitCode, 0);
+  assert.deepEqual(row.forms, ["claude"]);
+  assert.deepEqual(row.failureEvent.registered, [
+    "PostToolUseFailure",
+    "PermissionDenied",
+  ]);
+  // The stub stands in for a CLI that loads the file and fires the event; a
+  // live row records whatever the installed CLI actually did.
+  assert.deepEqual(row.failureEvent.invoked, {
+    PostToolUseFailure: 1,
+    PermissionDenied: 0,
+  });
+  assert.ok(row.failureEvent.otherEventsInvoked > 0);
+  assert.equal(row.failureEvent.failingCommandStarted, true);
+  assert.equal(row.failureEvent.failingCommandMarkedFailed, true);
+  assert.ok(
+    row.events.some(
+      (event) =>
+        event.event === "PostToolUseFailure" && event.registration === "claude",
+    ),
+  );
+  const markdown = readFileSync(
+    join(root, "docs/discovery/copilot-cli-2030-01-05.md"),
+    "utf8",
+  );
+  assert.match(markdown, /## Failed-command event/);
+  assert.match(
+    markdown,
+    /P11: CLI 1\.0\.86, exit 0; file names PostToolUseFailure and PermissionDenied; other hooks invoked \d+ times; PostToolUseFailure invoked 1 times, PermissionDenied invoked 0 times; the failing command started and was marked failed\./,
+  );
+  assert.match(
+    markdown,
+    /launches: 1\/12 in this record after 10 in earlier records/,
+  );
+  // The launch bound counts every earlier record before any file is written.
+  write(
+    root,
+    "docs/discovery/copilot-cli-2030-01-06.json",
+    JSON.stringify({ launchesStarted: 1 }),
+  );
+  await assert.rejects(launch("2030-01-07"), /launch bound/);
+  assert.ok(
+    !existsSync(join(root, "docs/discovery/copilot-cli-2030-01-07.json")),
   );
 });
 
@@ -1086,9 +1164,9 @@ test("WO-044 the probe drives every Claude and Codex launch through stub harness
       effort,
     });
   }
-  // WO-159 VER-001 F1: every Codex invocation, including each concurrent
-  // session and the fresh recovery, ran in its own home, and each row keeps
-  // one record per invocation naming the home that launch saw.
+  // Every Codex invocation, including each concurrent session and the fresh
+  // recovery, ran in its own home, and each row keeps one record per
+  // invocation naming the home that launch saw (WO-159).
   const invocations = readFileSync(
     join(root, "state", "codex-homes.jsonl"),
     "utf8",

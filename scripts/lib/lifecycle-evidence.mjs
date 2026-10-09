@@ -1,11 +1,16 @@
-import { spawnGit } from "./git.mjs";
+import { runGit, runGitPathList, shellQuote, spawnGit } from "./git.mjs";
 import { docPath } from "./config.mjs";
-import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
 import {
-  inventoryMaterial,
-  materialDeclareCommand,
-} from "./worktree-material.mjs";
+  copyFileSync,
+  existsSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { inventoryMaterial } from "./worktree-material.mjs";
 
 export async function requireLifecycleEvidence(
   root,
@@ -14,12 +19,56 @@ export async function requireLifecycleEvidence(
   workOrder,
 ) {
   const started = Date.now();
-  const diff = spawnGit(["diff", "--check"], {
-    cwd: root,
-    encoding: "utf8",
-  });
-  if (diff.status !== 0)
-    throw new Error(`git diff --check failed: ${diff.stdout}${diff.stderr}`);
+  // Untracked files are read too: they join the diff as intent-to-add entries
+  // of a temporary index copy, so Git's own whitespace and attribute rules
+  // apply and the real index is never written. A nested repository is listed
+  // as a directory and is not a file to add.
+  const untracked = runGitPathList(root, [
+    "ls-files",
+    "--others",
+    "--exclude-standard",
+    "-z",
+  ]).filter((path) => !path.endsWith("/"));
+  let scratch, env;
+  try {
+    if (untracked.length) {
+      scratch = mkdtempSync(join(tmpdir(), "dotln-whitespace-"));
+      const index = join(scratch, "index");
+      const real = runGit(root, [
+        "rev-parse",
+        "--path-format=absolute",
+        "--git-path",
+        "index",
+      ]);
+      if (existsSync(real)) copyFileSync(real, index);
+      // The names are literal paths, never pathspec patterns.
+      env = {
+        ...process.env,
+        GIT_INDEX_FILE: index,
+        GIT_LITERAL_PATHSPECS: "1",
+      };
+      const added = spawnGit(
+        [
+          "add",
+          "--intent-to-add",
+          "--pathspec-from-file=-",
+          "--pathspec-file-nul",
+        ],
+        { cwd: root, encoding: "utf8", env, input: untracked.join("\0") },
+      );
+      if (added.status !== 0)
+        throw new Error(`git add --intent-to-add failed: ${added.stderr}`);
+    }
+    const diff = spawnGit(["diff", "--check"], {
+      cwd: root,
+      encoding: "utf8",
+      ...(env ? { env } : {}),
+    });
+    if (diff.status !== 0)
+      throw new Error(`git diff --check failed: ${diff.stdout}${diff.stderr}`);
+  } finally {
+    if (scratch) rmSync(scratch, { recursive: true, force: true });
+  }
   const { gateTreeHash, findGateCheck, recordGateChecks } =
     await import("./gate-evidence.mjs");
   const treeHash = gateTreeHash(root);
@@ -35,19 +84,16 @@ export async function requireLifecycleEvidence(
     try {
       material = inventoryMaterial(root);
     } catch (error) {
-      advise(`Material declarations unavailable: ${error.message}`);
-      try {
-        material = inventoryMaterial(root, { declarations: [] });
-      } catch (error) {
-        advise(`Material inventory unavailable: ${error.message}`);
-        material = [];
-      }
+      advise(`Material inventory unavailable: ${error.message}`);
+      material = [];
     }
-    for (const row of material)
-      if (row.disposition === "undeclared")
-        advise(
-          `Undeclared nested repository ${JSON.stringify(row.path)}; this completion records undeclared. Before another executor completion declare: ${materialDeclareCommand(row.path)}; at close use --material.`,
-        );
+    // One advisory names every scratch repository still present; the close
+    // removes any left and records its head commit.
+    const scratch = material.filter((row) => row.disposition === "disposable");
+    if (scratch.length)
+      advise(
+        `Scratch repositories present: ${scratch.map((row) => JSON.stringify(row.path)).join(", ")}; remove each from the worktree root before handoff (${scratch.map((row) => `rm -rf -- ${shellQuote(row.path)}`).join("; ")}); release close removes any left and records its head commit.`,
+      );
   }
   // The whitespace check refuses; its row is bookkeeping. A gate index that
   // cannot be read or written never refuses a completion and is left as it
@@ -83,9 +129,9 @@ export async function requireLifecycleEvidence(
     advise(
       "No passing product gate at this code identity; the reviewer runs npm test before publication.",
     );
-  // WO-173: the document gate is no longer looked up by tree hash here, which
-  // every report write changed; a criterion recorded met that names it makes
-  // the completion run it inline (scripts/lib/handoff-ledger.mjs).
+  // The document gate is no longer looked up by tree hash here, which every
+  // report write changed; a criterion recorded met that names it makes the
+  // completion run it inline (scripts/lib/handoff-ledger.mjs; WO-173).
   if (executor) {
     try {
       const { requirePlanningHandoffs } =
@@ -94,7 +140,7 @@ export async function requireLifecycleEvidence(
     } catch (error) {
       advise(error.message);
     }
-    // WO-169: the register rows this change or order touches. The advisory
+    // The register rows this change or order touches (WO-169). The advisory
     // carries the rule because no role text names it; it reads and never
     // writes, and a repository without main is judged by its order alone.
     try {
@@ -102,16 +148,31 @@ export async function requireLifecycleEvidence(
         await import("./planning-followups.mjs");
       const { branchWorkOrder } = await import("./control-store.mjs");
       const orders = /^WO-\d{3}$/.test(workOrder ?? "") ? [workOrder] : [];
+      const changed = changedAgainstMain(root, { required: false });
       const { matched } = touchingFollowups(root, {
-        paths: changedAgainstMain(root, { required: false }).paths,
+        paths: changed.paths,
         orders,
         whole: true,
       });
       // The command selects its order by branch; elsewhere it is told which.
-      const command = `npm run plan -- followups --touching${orders.length && branchWorkOrder(root) !== workOrder ? ` --work-order ${workOrder}` : ""}`;
+      // With no main to compare with, the change is unknown: the rows are
+      // judged by the order alone and the command names it as a term, which
+      // the feed answers without main.
+      const command =
+        changed.base === null
+          ? `npm run plan -- followups --touching ${workOrder}`
+          : `npm run plan -- followups --touching${orders.length && branchWorkOrder(root) !== workOrder ? ` --work-order ${workOrder}` : ""}`;
+      const named =
+        changed.base === null
+          ? orders
+          : ["a file this change touches", ...orders];
       if (matched)
         advise(
-          `${matched} pending follow-up ${matched === 1 ? "row names" : "rows name"} ${["a file this change touches", ...orders].join(" or ")} (a textual match): run ${command}; fix a row inside the Boy Scout bound or record it as left in the order's decisions, never widen the order; the final review disposes a listed row whose seam the change opened or whose condition occurred, and leaves a row it only matched as it is.`,
+          `${matched} pending follow-up ${matched === 1 ? "row names" : "rows name"} ${named.join(" or ")} (a textual match): run ${command}; fix a row inside the Boy Scout bound or record it as left in the order's decisions, never widen the order; the final review disposes a listed row whose seam the change opened or whose condition occurred, and leaves a row it only matched as it is.`,
+        );
+      else if (changed.base === null && !orders.length)
+        advise(
+          "Follow-up rows this change touches unavailable: no main to compare with and no order to name; run npm run plan -- followups --touching <path> with the paths this change touches",
         );
     } catch (error) {
       advise(

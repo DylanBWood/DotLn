@@ -17,7 +17,8 @@ import { join } from "node:path";
 import { publishBuildTree } from "./build.mjs";
 
 // Optional historical comparator, never imported or invoked by the build.
-// These are the same libc exchanges used before VER-001 F4, on macOS/Linux.
+// These are the same libc exchanges, on macOS/Linux, that the build used
+// until its python3 prerequisite was removed (WO-126).
 const exchange = `import ctypes, os, sys
 library = ctypes.CDLL(None, use_errno=True)
 if sys.platform == "darwin":

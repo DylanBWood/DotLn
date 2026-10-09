@@ -1,7 +1,7 @@
 import { readJsonFile } from "./lib/paths.mjs";
 import { runGit } from "./lib/git.mjs";
 import { write } from "./lib/helpers.mjs";
-// WO-100 end to end: reviewed portfolio text in dotln.config.json, the WO-119
+// End to end (WO-100): reviewed portfolio text in dotln.config.json, the WO-119
 // producer over its fixture repository, WO-120 durable identities in the
 // index, and a resident whose derived orders change source through a WO-052
 // SourceChangeHost and are judged by a WO-054 VerificationHost. The worker and
@@ -182,7 +182,8 @@ async function fixture(fn) {
       ),
     });
   } finally {
-    // WO-054 snapshots are read-only; unlock them as WO-055's fixture does.
+    // Verification snapshots are read-only (WO-054); unlock them as WO-055's
+    // fixture does.
     const unlock = (path) => {
       const stat = lstatSync(path);
       if (stat.isSymbolicLink()) return;
@@ -213,7 +214,7 @@ const shine =
     );
     runGit(cwd, [...fixtureGitFlags, "add", "src/main.js"], fixtureGitOptions);
   };
-/** WO-052 double: a writer that edits and commits inside its worktree; the
+/** A writer double (WO-052): it edits and commits inside its worktree; the
  * host refuses any committed path outside the declared surfaces. */
 function writer(log, edit) {
   return {
@@ -263,7 +264,7 @@ function writer(log, edit) {
     },
   };
 }
-/** WO-054 double: the deterministic fixture verifier, judging the host-run
+/** The deterministic fixture verifier double (WO-054), judging the host-run
  * evidence in the capsule, with findings naming the order's own surfaces. */
 const fixtureVerifier = ({
   requiresHuman = false,
@@ -805,8 +806,8 @@ test("a Sort move passes only when the host sees the exact relocation and its na
     assert.equal(escalated.verdict.verdict, "fail");
     assert.equal(escalated.verdict.passed, 1);
     assert.equal(escalated.calls.length, 1);
-    // VER-001 F1: `npm test` names no path in both trees. WO-054 still runs
-    // it, over a criterion on the files both trees hold, and admits its verdict.
+    // `npm test` names no path in both trees. WO-054 still runs it, over a
+    // criterion on the files both trees hold, and admits its verdict.
     definition = sortChecked("npm test");
     const npmTest = (script) => {
       write(

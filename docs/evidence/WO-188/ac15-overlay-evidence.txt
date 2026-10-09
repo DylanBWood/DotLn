@@ -1,0 +1,85 @@
+AC15 evidence run, 2026-10-08, worktree wo-188 at 28d32e26 plus uncommitted work; suite scripts/test-worktree-integration.mjs
+Step 1: remove the export keyword from readFixtureManifest in packages/console/test/fixtures.ts (uncommitted); scripts/console-fixtures.mjs and packages/console/test/board.test.ts import it, so the console build the overlay rebuilds from its own sources cannot succeed
+ packages/console/test/fixtures.ts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Step 2: run the whole integration suite
+exit status 1
+✖ real Git fast-forward preserves recovery, histories and authored conflicts with real generators (11447.725958ms)
+✖ real Git reviewed merge preserves recovery, histories and authored conflicts with real generators (9851.224208ms)
+✔ three required refusals leave the tree, index, HEAD and recovery refs unchanged (8651.08225ms)
+✔ an intent-to-add entry is refused before any write, and a failed stash leaves no pending receipt (7974.756ms)
+✔ a stash Git stores and then fails to finish resumes with --continue; --continue refuses intent-to-add entries (8109.028625ms)
+✖ a later stash failure with nothing stashed restores the completed receipt it replaced (10804.50875ms)
+✔ follow-up union preserves compatible histories and refuses divergent same-entry histories (3.562666ms)
+✖ untracked stash collision remains explicit and recoverable until continuation (10789.259459ms)
+✖ WO-167 --continue judges the recorded phase while the uncommitted control log travels in the stash (10262.7055ms)
+✔ WO-169 a first invocation with no authored conflict generates at once (3914.037291ms)
+✔ WO-169 a pass whose generator fails keeps its checks and names the pending step, not a conflict (3398.191125ms)
+✔ WO-086 a conflicted decisions record refuses the collision's record and writes nothing (3334.581375ms)
+✔ WO-086 a retime that lands on a continuation is recorded once, in the stub the failed pass withheld (4185.327542ms)
+✔ WO-086 a blocked PR directory preserves collision inputs for continuation (4072.454667ms)
+✔ WO-086 a blocked PR file preserves collision inputs for continuation (4644.492708ms)
+✔ WO-086 a stub blocked by a regular file retains its saved collision through continuation (5558.935583ms)
+✔ WO-086 a stub blocked by a regular file with a newer tag during retry retains its saved collision through continuation (5147.838ms)
+✔ WO-086 a record behind a symlinked evidence directory refuses preparation and records the collision once on continuation (4173.81725ms)
+✔ WO-086 a record that is a directory refuses preparation and records the collision once on continuation (4302.079333ms)
+✔ the fixture overlay carries the console package and its fixture script from the working tree without build output (66.0955ms)
+✔ WO-086 a tag that lands after the stub is written is recorded once, by release prepare (4376.827791ms)
+✔ WO-169 the integration record holds each release message as one line with one full stop (0.85425ms)
+✔ printed checks use the runner's declared machinery sources, including package code (115.991958ms)
+ℹ pass 18
+ℹ fail 5
+✖ failing tests:
+✖ real Git fast-forward preserves recovery, histories and authored conflicts with real generators (11447.725958ms)
+✖ real Git reviewed merge preserves recovery, histories and authored conflicts with real generators (9851.224208ms)
+✖ a later stash failure with nothing stashed restores the completed receipt it replaced (10804.50875ms)
+✖ untracked stash collision remains explicit and recoverable until continuation (10789.259459ms)
+✖ WO-167 --continue judges the recorded phase while the uncommitted control log travels in the stash (10262.7055ms)
+first failure detail:
+Step 3: restore the bytes
+packages/console/test/fixtures.ts: OK
+Step 4: rerun the whole integration suite
+exit status 1
+ℹ pass 21
+ℹ fail 2
+AC15-DONE
+Step 5: the restored run's two failures (untracked stash collision; WO-167 --continue) asserted on a 'Regenerated: runtime' line that appeared because node scripts/harness.mjs emit re-emitted the source bundle while that run was in progress; rerun of the two cases alone, nothing else running:
+✖ untracked stash collision remains explicit and recoverable until continuation (13142.387667ms)
+✖ WO-167 --continue judges the recorded phase while the uncommitted control log travels in the stash (11323.895667ms)
+ℹ pass 0
+ℹ fail 2
+✖ failing tests:
+✖ untracked stash collision remains explicit and recoverable until continuation (13142.387667ms)
+✖ WO-167 --continue judges the recorded phase while the uncommitted control log travels in the stash (11323.895667ms)
+Step 6: after excluding the console package's generated fixtures from the overlay (their manifest names the evidence editions of the revision that recorded them, which this worktree's uncommitted WO-188 editions are not), the whole restored suite again, nothing else running:
+exit status 0
+ℹ pass 23
+ℹ fail 0
+AC15-STEP6-DONE
+Step 7: the removed-export run repeated with the final overlay (generated console fixtures left to the fixture's own tree), so the failure the criterion names is shown against the shipped overlay
+ packages/console/test/fixtures.ts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+exit status 1
+✖ real Git fast-forward preserves recovery, histories and authored conflicts with real generators (10595.178375ms)
+✖ real Git reviewed merge preserves recovery, histories and authored conflicts with real generators (10815.413334ms)
+✖ a later stash failure with nothing stashed restores the completed receipt it replaced (12181.54725ms)
+✖ untracked stash collision remains explicit and recoverable until continuation (9327.259416ms)
+✖ WO-167 --continue judges the recorded phase while the uncommitted control log travels in the stash (10648.12425ms)
+ℹ pass 18
+ℹ fail 5
+✖ failing tests:
+✖ real Git fast-forward preserves recovery, histories and authored conflicts with real generators (10595.178375ms)
+✖ real Git reviewed merge preserves recovery, histories and authored conflicts with real generators (10815.413334ms)
+✖ a later stash failure with nothing stashed restores the completed receipt it replaced (12181.54725ms)
+✖ untracked stash collision remains explicit and recoverable until continuation (9327.259416ms)
+✖ WO-167 --continue judges the recorded phase while the uncommitted control log travels in the stash (10648.12425ms)
+failing assertion text (the console build the fixture runs from its own sources):
+   5   packages/console/test/board.test.ts(51,3): error TS2459: Module '"./fixtures.js"' declares 'readFixtureManifest' locally, but it is not exported.
+   5   Pending: runtime: npm run build --silent: Build failed (2):
+Step 8: restore the bytes
+packages/console/test/fixtures.ts: OK
+Step 9: the whole suite with the bytes restored
+exit status 0
+ℹ pass 23
+ℹ fail 0
+AC15-STEP9-DONE

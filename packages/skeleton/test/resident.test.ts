@@ -878,7 +878,7 @@ test("WO-186 a cancelled matrix cell reaps its paused fixture child before teard
   assert.equal(cell.pending.size, 0);
 });
 
-// WO-173: the matrix runs one subtest per cell, each with its own deadline,
+// The matrix runs one subtest per cell, each with its own deadline,
 // so a cell slowed by another lane's load fails alone, by name, and the
 // other seven run (WO-159 D020, WO-168 D013: the one 240 s budget cancelled
 // the whole matrix at four judgments). The default per-cell deadline comes

@@ -724,6 +724,16 @@ export function gateCodeIdentity(root, revision) {
             .filter(Boolean),
         ),
       ].map((path) => ({ path }));
+  // A submodule is a pointer the tree records: its identity is the commit it
+  // names, never the nested working tree. In the working tree the index holds
+  // that pointer.
+  if (!revision)
+    for (const row of git(root, ["ls-files", "-s", "-z"]).split("\0")) {
+      const pointer = /^160000 ([0-9a-f]+) \d+\t(.+)$/su.exec(row);
+      if (!pointer) continue;
+      const entry = entries.find((candidate) => candidate.path === pointer[2]);
+      if (entry) Object.assign(entry, { mode: "160000", object: pointer[1] });
+    }
   const attributes = spawnSync(
     "git",
     [
@@ -759,17 +769,18 @@ export function gateCodeIdentity(root, revision) {
     )
     .sort((a, b) => a.path.localeCompare(b.path, "en"));
   const blobs = new Map();
-  if (revision && selected.length) {
+  const committed = selected.filter((row) => row.mode !== "160000");
+  if (revision && committed.length) {
     const result = spawnSync("git", ["cat-file", "--batch"], {
       cwd: root,
-      input: selected.map((row) => row.object).join("\n") + "\n",
+      input: committed.map((row) => row.object).join("\n") + "\n",
       maxBuffer: 128 * 1024 * 1024,
     });
     if (result.status !== 0)
       throw new Error("Committed code bytes unavailable");
     const output = Buffer.from(result.stdout);
     let offset = 0;
-    for (const row of selected) {
+    for (const row of committed) {
       const end = output.indexOf(10, offset),
         header = output.subarray(offset, end).toString("utf8");
       const match = /^[a-f0-9]+ blob (\d+)$/.exec(header);
@@ -782,7 +793,12 @@ export function gateCodeIdentity(root, revision) {
   const digest = createHash("sha256").update("dotln-code-v1\0");
   for (const row of selected) {
     let bytes, mode;
-    if (revision) {
+    if (row.mode === "160000") {
+      if (typeof row.object !== "string")
+        throw new Error(`Submodule object id unavailable: ${row.path}`);
+      bytes = Buffer.from(row.object);
+      mode = "gitlink";
+    } else if (revision) {
       if (row.mode === "120000")
         throw new Error(
           `Code identity does not support symbolic source aliases: ${row.path}`,

@@ -35,7 +35,7 @@ import { ConsoleLoopback } from "./console-loopback.js";
  * episode it is — `invalid-result`, with its launch and the capsule the episode
  * observed — rather than thrown out of the transaction, which would leave the
  * episode pending and nothing held. The fold then derives from that capsule
- * whatever the host can prove on its own (WO-099 VER-003 F1). The replacement
+ * whatever the host can prove on its own (WO-099). The replacement
  * must pass the same contract, or the original refusal stands; a refused
  * script observation or launch is still an error. */
 function admittedObservation(
@@ -94,9 +94,9 @@ export interface ResidentHostOptions {
   catalog?: Readonly<Record<ActorKind, ActorAdapter>>;
   predicates?: PredicateRegistry;
   capabilities?: () => readonly string[];
-  /** WO-100: the WO-120, WO-052 and WO-054 hosts a portfolio actor runs through. */
+  /** The hosts a portfolio actor runs through: WO-120, WO-052 and WO-054 (WO-100). */
   portfolio?: PortfolioPorts;
-  /** WO-123: filed intents admitted and resumed by the resident itself. */
+  /** Filed intents admitted and resumed by the resident itself (WO-123). */
   vertical?: {
     tick(
       store: ResidentStore,
@@ -250,8 +250,8 @@ export class ResidentHost {
           effect: spec.effect,
           authorityEnvelopeId: phase.effectiveEnvelope.authorityEnvelopeId,
         });
-        // WO-100: the activation, with its host-policy grant, is durable before
-        // any identity is allocated or any source changes.
+        // The activation, with its host-policy grant, is durable before any
+        // identity is allocated or any source changes (WO-100).
         let portfolio: PortfolioActivation | undefined;
         if (spec.kind === "portfolio") {
           const selection = portfolioSelection(tx.resident!, phase);

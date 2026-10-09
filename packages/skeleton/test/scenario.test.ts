@@ -584,7 +584,8 @@ test("WO-008 AC3 the precedence winner authorizes the emitted runtime effect", (
         ],
         revocationConditions: [],
       },
-      // WO-042 permits restoration only inside the active's original authority.
+      // Restoration is permitted only inside the active's original authority
+      // (WO-042).
       workOrder: {
         ...active.workOrder,
         allowedOperations: [

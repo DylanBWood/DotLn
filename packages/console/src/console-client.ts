@@ -25,6 +25,25 @@ function endpoint(connection: ConsoleConnection, path: string): string {
   return `http://127.0.0.1:${connection.port}${path}`;
 }
 
+/** A transport failure names its cause, the socket error's code and message,
+ * so a reset or refused connection is told apart from a refusal the resident
+ * answered. The token and the request never appear in the message. */
+async function transport(url: string, init: RequestInit): Promise<Response> {
+  try {
+    return await fetch(url, init);
+  } catch (error) {
+    const cause = (error as { cause?: { code?: unknown; message?: unknown } })
+      .cause;
+    const detail =
+      cause && typeof cause === "object"
+        ? `${typeof cause.code === "string" ? cause.code : "error"}: ${String(cause.message)}`
+        : error instanceof Error
+          ? error.message
+          : String(error);
+    throw new Error(`console request failed (${detail})`, { cause: error });
+  }
+}
+
 function decodeResult(value: unknown): ConsoleCommandResult {
   if (!value || typeof value !== "object" || Array.isArray(value))
     throw new Error("invalid console command result");
@@ -47,7 +66,7 @@ export async function invokeConsoleCommand(
   request: ConsoleCommandRequest,
   signal?: AbortSignal,
 ): Promise<ConsoleCommandResult> {
-  const response = await fetch(
+  const response = await transport(
     endpoint(connection, "/console-commands-v1/invoke"),
     {
       method: "POST",
@@ -69,10 +88,13 @@ export async function readConsoleContract(
   connection: ConsoleConnection,
   signal?: AbortSignal,
 ): Promise<unknown> {
-  const response = await fetch(endpoint(connection, "/console-commands-v1"), {
-    headers: { authorization: `Bearer ${connection.token}` },
-    ...(signal ? { signal } : {}),
-  });
+  const response = await transport(
+    endpoint(connection, "/console-commands-v1"),
+    {
+      headers: { authorization: `Bearer ${connection.token}` },
+      ...(signal ? { signal } : {}),
+    },
+  );
   if (!response.ok)
     throw new Error(`console contract refused (${response.status})`);
   return response.json();

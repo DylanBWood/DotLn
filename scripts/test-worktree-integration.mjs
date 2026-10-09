@@ -1,4 +1,4 @@
-import { runGit } from "./lib/git.mjs";
+import { runGit, spawnGit } from "./lib/git.mjs";
 import { json as prettyJson, write as put } from "./lib/helpers.mjs";
 import nodeTest, { after } from "node:test";
 import { performance } from "node:perf_hooks";
@@ -27,7 +27,7 @@ import {
   releaseLine,
 } from "./lib/worktree-integration.mjs";
 
-// WO-197: per-case durations from the whole-suite run alone, rounded up to
+// Per-case durations from the whole-suite run alone (WO-197), rounded up to
 // 0.1 s; each case checks twice its own measurement after fixture cleanup.
 const repairedCaseMs = new Map([
   [
@@ -56,11 +56,15 @@ const repairedCaseMs = new Map([
   ],
   [
     "WO-086 a stub blocked by a regular file retains its saved collision through continuation",
-    4500,
+    5900,
   ],
   [
-    "WO-086 a stub blocked by a symlink retains its saved collision through continuation",
-    5900,
+    "WO-086 a record behind a symlinked evidence directory refuses preparation and records the collision once on continuation",
+    5000,
+  ],
+  [
+    "WO-086 a record that is a directory refuses preparation and records the collision once on continuation",
+    5000,
   ],
   [
     "WO-086 a stub blocked by a regular file with a newer tag during retry retains its saved collision through continuation",
@@ -263,12 +267,23 @@ function overlayImplementation(root) {
     "scripts/worktree.mjs",
     "scripts/resume.mjs",
     "scripts/release.mjs",
+    "scripts/console-fixtures.mjs",
   ])
     cpSync(join(source, path), join(root, path));
-  // The working-tree libraries and their build-free Beacon peers travel
-  // together; static imports must not split across revisions.
-  for (const path of ["scripts/lib", "packages/beacons"])
-    cpSync(join(source, path), join(root, path), { recursive: true });
+  // The working-tree libraries, their build-free Beacon peers and the console
+  // package its regenerator executes travel together; static imports must not
+  // split across revisions. Build output and dependency links are left out:
+  // the fixture rebuilds them from its own sources. The console's generated
+  // fixture outputs and their manifest name the evidence editions of the
+  // revision that recorded them, so the fixture keeps its own committed copy.
+  for (const path of ["scripts/lib", "packages/beacons", "packages/console"])
+    cpSync(join(source, path), join(root, path), {
+      recursive: true,
+      filter: (from) =>
+        !/[\\/](?:dist|node_modules)(?:[\\/]|$)|\.tsbuildinfo$|[\\/]packages[\\/]console[\\/]fixtures(?:[\\/]|$)/u.test(
+          from.slice(source.length),
+        ),
+    });
 }
 
 let focusedSeed;
@@ -293,8 +308,7 @@ function focusedSource() {
     // Recovery cases need real code and Git operations, but not the project's
     // historical objects, old decisions, or unrelated order authorities.
     // The comprehensive real-generator fixtures below still carry all of them.
-    const archive = spawnSync(
-      "git",
+    const archive = spawnGit(
       [
         "archive",
         "HEAD",
@@ -707,8 +721,8 @@ for (const reviewed of [false, true])
       text(f.subject, "authored-fixture.md"),
       /<<<<<<<.*\n[\s\S]*=======\n[\s\S]*>>>>>>>/,
     );
-    // WO-169 item 4: while an authored conflict remains no generator runs, so
-    // no `Regenerated:` line is printed over conflict markers (WO-138 D011).
+    // While an authored conflict remains no generator runs (WO-169 item 4),
+    // so no `Regenerated:` line is printed over conflict markers (WO-138 D011).
     assert.doesNotMatch(first.stdout, /Regenerated:/);
     assert.deepEqual(
       receipt.pending,
@@ -883,7 +897,7 @@ for (const reviewed of [false, true])
       /^Release preparation: Retimed WO-998: v9000\.0\.1 → v9000\.0\.2 above the observed release baseline v9000\.0\.1\. Files changed: [^.].*\. Tag observation: local snapshot only\.$/,
     );
     assert.doesNotMatch(stub[release], /\.\./);
-    // WO-086: the collision is recorded exactly once, as this integration
+    // The collision is recorded exactly once (WO-086), as this integration
     // decision with the superseded and new targets and the baseline; release
     // preparation appended none of its own and changed no product document,
     // and the README only in its version claim.
@@ -1148,8 +1162,8 @@ test("a stash Git stores and then fails to finish resumes with --continue; --con
   assert.deepEqual(readFileSync(receiptPath), receiptBytes);
   runGit(f.subject, ["rm", "-q", "--cached", "late.md"], fixtureGitOptions);
   rmSync(join(f.subject, "late.md"));
-  // WO-160: simulate a crash after Git saved the named stash but before the
-  // helper recorded its SHA. The tree is clean and --continue must adopt it.
+  // Simulate a crash after Git saved the named stash but before the helper
+  // recorded its SHA (WO-160). The tree is clean and --continue must adopt it.
   const stranded = JSON.parse(readFileSync(receiptPath, "utf8"));
   stranded.stash = null;
   writeFileSync(receiptPath, JSON.stringify(stranded));
@@ -1330,7 +1344,7 @@ test("WO-169 a pass whose generator fails keeps its checks and names the pending
   assert.equal(first.status, 1, first.stdout + first.stderr);
   assert.match(first.stdout, /Authored conflicts: none/);
   assert.match(first.stdout, /Pending: release preparation: /);
-  // WO-086: the stub waits for the preparation it would record.
+  // The stub waits for the preparation it would record (WO-086).
   assert.match(
     first.stdout,
     /Pending: integration decision stub: awaits release preparation/,
@@ -1497,17 +1511,12 @@ for (const blocker of ["PR directory", "PR file"])
 
 for (const [blocker, newerTag] of [
   ["regular file", false],
-  ["symlink", false],
   ["regular file with a newer tag during retry", true],
 ])
   test(`WO-086 a stub blocked by a ${blocker} retains its saved collision through continuation`, (t) => {
     const f = fixture(t, { authored: false, generators: "focused" });
     const directory = join(f.subject, "docs/evidence/WO-998");
-    if (blocker === "symlink") {
-      mkdirSync(join(f.subject, "stub-target"));
-      put(f.subject, "stub-target/keep", "preserved through stash\n");
-      symlinkSync("../../stub-target", directory);
-    } else put(f.subject, "docs/evidence/WO-998", "blocked\n");
+    put(f.subject, "docs/evidence/WO-998", "blocked\n");
     const authority = "docs/work-orders/WO-998-fixture.md";
     const decisions = "docs/evidence/WO-998/decisions.md";
     const receipt = "docs/control/local/integration.json";
@@ -1553,7 +1562,7 @@ for (const [blocker, newerTag] of [
       assert.equal(existsSync(join(f.subject, decisions)), false);
     }
     rmSync(directory);
-    if (blocker === "symlink") {
+    if (!newerTag) {
       // Filing the saved stub can succeed before the next prepare fails.
       // The marker then owns the first outcome on every further continuation.
       const pr = join(f.subject, "docs/final-reviews/WO-998/PR.md");
@@ -1635,6 +1644,92 @@ for (const [blocker, newerTag] of [
     );
     assert.equal(JSON.parse(text(f.subject, receipt)).complete, true);
   });
+
+// The record's realpath rule refuses a symlinked evidence directory, and a
+// directory where the record should be is refused by name instead of
+// escaping as a raw error; both leave the collision to the continuation.
+for (const blocker of ["symlink", "directory"])
+  test(`WO-086 a record ${blocker === "symlink" ? "behind a symlinked evidence directory" : "that is a directory"} refuses preparation and records the collision once on continuation`, (t) => {
+    const f = fixture(t, { authored: false, generators: "focused" });
+    const directory = join(f.subject, "docs/evidence/WO-998");
+    const decisions = "docs/evidence/WO-998/decisions.md";
+    if (blocker === "symlink") {
+      mkdirSync(join(f.subject, "stub-target"));
+      put(f.subject, "stub-target/keep", "preserved through stash\n");
+      symlinkSync("../../stub-target", directory);
+    } else put(f.subject, `${decisions}/blocker`, "blocked\n");
+    const authority = "docs/work-orders/WO-998-fixture.md";
+    const receipt = "docs/control/local/integration.json";
+    const readmeBefore = text(f.subject, "README.md");
+    const first = f.invoke();
+    assert.equal(first.status, 1, first.stdout + first.stderr);
+    assert.match(
+      first.stdout,
+      blocker === "symlink"
+        ? /Pending: release preparation: .*contained regular file reached through no symlink/
+        : /Pending: release preparation: .*contained regular file/,
+    );
+    assert.match(
+      first.stdout,
+      /Pending: integration decision stub: awaits release preparation/,
+    );
+    assert.doesNotMatch(first.stdout, /Regenerated: release preparation/);
+    assert.doesNotMatch(first.stdout + first.stderr, /EISDIR/);
+    assert.match(text(f.subject, authority).split("\n")[0], /\(v9000\.0\.1\)$/);
+    assert.equal(text(f.subject, "README.md"), readmeBefore);
+    const saved = JSON.parse(text(f.subject, receipt));
+    assert.equal(saved.complete, false);
+    assert.equal(saved.release, undefined);
+    rmSync(blocker === "symlink" ? directory : join(f.subject, decisions), {
+      recursive: true,
+    });
+    // No outcome was saved, so the continuation prepares with the flag.
+    const continued = f.invoke("--continue");
+    assert.equal(continued.status, 0, continued.stdout + continued.stderr);
+    const rows = [
+      ...text(f.subject, decisions).matchAll(/```json\n([\s\S]*?)\n```/g),
+    ].map((match) => JSON.parse(match[1]));
+    assert.equal(rows.length, 1, JSON.stringify(rows));
+    assert.equal(
+      rows[0].evidence.filter((item) =>
+        item.startsWith(
+          "release preparation: Retimed WO-998: v9000.0.1 → v9000.0.2 above the observed release baseline v9000.0.1.",
+        ),
+      ).length,
+      1,
+      JSON.stringify(rows[0].evidence),
+    );
+    assert.equal(
+      (text(f.subject, decisions).match(/<!-- integration /g) ?? []).length,
+      1,
+    );
+    assert.ok(
+      text(f.subject, authority).split("\n")[0].endsWith("(v9000.0.2)"),
+    );
+    assert.equal(JSON.parse(text(f.subject, receipt)).complete, true);
+  });
+
+test("the fixture overlay carries the console package and its fixture script from the working tree without build output", (t) => {
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-integrate-overlay-")),
+  );
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  overlayImplementation(root);
+  for (const path of [
+    "packages/console/test/fixtures.ts",
+    "packages/console/src/index.ts",
+    "scripts/console-fixtures.mjs",
+    "scripts/lib/worktree-integration.mjs",
+  ])
+    assert.equal(
+      readFileSync(join(root, path), "utf8"),
+      readFileSync(join(source, path), "utf8"),
+      path,
+    );
+  assert.equal(existsSync(join(root, "packages/console/dist")), false);
+  assert.equal(existsSync(join(root, "packages/console/node_modules")), false);
+  assert.equal(existsSync(join(root, "packages/console/fixtures")), false);
+});
 
 test("WO-086 a tag that lands after the stub is written is recorded once, by release prepare", (t) => {
   const f = fixture(t, { authored: false, generators: "focused" });

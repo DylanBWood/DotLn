@@ -90,7 +90,7 @@ const SECTION_KEYS = [
   "derivedOrders",
   "portfolios",
 ];
-// WO-100: the reviewed text of a preauthorized portfolio. The skeleton's
+// The reviewed text of a preauthorized portfolio (WO-100). The skeleton's
 // `decodePortfolio` re-validates the same shape and admits it under the floor.
 const PORTFOLIO_KEYS = [
   "class",

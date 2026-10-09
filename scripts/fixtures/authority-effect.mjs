@@ -1,5 +1,6 @@
-// WO-136 disposable payload. Its configuration is created by the host, and
-// every destination is checked beneath the same OS-temporary fixture root.
+// Disposable payload for the authority probe (WO-136). Its configuration is
+// created by the host, and every destination is checked beneath the same
+// OS-temporary fixture root.
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";

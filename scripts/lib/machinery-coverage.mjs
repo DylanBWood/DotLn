@@ -1,4 +1,4 @@
-// WO-174: declared-source selection stays the rule. This direct closure check
+// Declared-source selection stays the rule (WO-174). This direct closure check
 // prevents a suite's declaration from forgetting the entry or a literal input.
 import { existsSync, readFileSync } from "node:fs";
 import { join, posix } from "node:path";

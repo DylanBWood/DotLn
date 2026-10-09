@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { runGit } from "./lib/git.mjs";
-import { write, json as prettyJson } from "./lib/helpers.mjs";
+import { write, json as prettyJson, sha256Hex } from "./lib/helpers.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -257,6 +257,23 @@ export async function entropyFixtures() {
         repo,
       );
       assert.equal(filed.receiptId, "REVIEW-001");
+      // The subject repository is written relative; the hash never covered it.
+      const reviewed = JSON.parse(
+        readFileSync(join(repo, runsRoot(repo), "REVIEW-001.json"), "utf8"),
+      ).subject;
+      assert.equal(reviewed.repository, ".");
+      assert.equal(
+        reviewed.hash,
+        sha256Hex(
+          JSON.stringify([
+            reviewed.baseCommit,
+            reviewed.trackedStatusSha256,
+            reviewed.scratchInventorySha256,
+            reviewed.scratchInventoryCount,
+          ]),
+        ),
+      );
+      assert.equal(reviewed.hash, begun.subjectHash);
       assert.equal(filed.findings.total, 5);
       assert.equal(filed.findings.measured, 2);
       assert.equal(filed.findings.byInspection, 3);
@@ -322,6 +339,16 @@ export async function entropyFixtures() {
         repo,
       );
       assert.equal(bound.receiptId, "REFUTATION-001");
+      assert.equal(
+        JSON.parse(
+          readFileSync(
+            join(repo, runsRoot(repo), "REFUTATION-001.json"),
+            "utf8",
+          ),
+        ).subject.repository,
+        ".",
+        "a refutation's subject repository is relative too",
+      );
       assert.deepEqual(
         [...bound.survived].sort(),
         ["ER-F01", "ER-F02", "ER-F03", "ER-F04", "ER-F05"],
@@ -860,7 +887,7 @@ export async function entropyFixtures() {
         confinement.scratchInventoryAfter.sha256,
         confinement.scratchInventoryBefore.sha256,
       );
-      // WO-157 item 9: the delta is the added, removed and resized path sets.
+      // The delta is the added, removed and resized path sets (WO-157 item 9).
       assert.deepEqual(
         {
           observed: confinement.scratchDelta.observed,
@@ -1440,7 +1467,7 @@ export async function entropyFixtures() {
           );
           assert.ok(disabled.includes("multi_agent"));
           assert.ok(disabled.includes("multi_agent_v2"));
-          // WO-151's confinement is Codex's workspace-write sandbox; a named
+          // The confinement here is Codex's workspace-write sandbox; a named
           // profile beside --sandbox would be overridden, so none is passed.
           assert.equal(args[args.indexOf("--sandbox") + 1], "workspace-write");
           assert.ok(

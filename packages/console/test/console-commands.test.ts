@@ -14,6 +14,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { request as httpRequest } from "node:http";
+import { connect as netConnect } from "node:net";
 import { tmpdir } from "node:os";
 import { isDeepStrictEqual } from "node:util";
 import { join } from "node:path";
@@ -456,6 +457,35 @@ test("[document] WO-115 a bound resident serves terminal bytes and events under 
       ),
     );
 
+    // Every response closes its connection, so a caller that stalls past the
+    // server's keep-alive window has no idle socket to write into: a raw
+    // keep-alive request is answered with `connection: close` and the
+    // resident ends the socket itself.
+    const raw = await new Promise<string>((done, fail) => {
+      const socket = netConnect(connection.port, "127.0.0.1");
+      const chunks: Buffer[] = [];
+      const timer = setTimeout(() => {
+        socket.destroy();
+        fail(new Error("the resident kept the loopback connection open"));
+      }, 5000);
+      socket.on("data", (chunk: Buffer) => chunks.push(chunk));
+      socket.on("end", () => {
+        clearTimeout(timer);
+        done(Buffer.concat(chunks).toString());
+      });
+      socket.on("error", (error) => {
+        clearTimeout(timer);
+        fail(error);
+      });
+      socket.on("connect", () =>
+        socket.write(
+          `GET /console-commands-v1 HTTP/1.1\r\nhost: 127.0.0.1:${connection.port}\r\nauthorization: Bearer ${connection.token}\r\nconnection: keep-alive\r\n\r\n`,
+        ),
+      );
+    });
+    assert.match(raw, /^HTTP\/1\.1 200 /u);
+    assert.match(raw, /\r\nconnection: close\r\n/iu);
+
     // Reads: exact terminal bytes, and no event beyond the console receipts.
     for (const [command, args] of [
       // Plain status tolerates several open orders, as on main.
@@ -625,6 +655,7 @@ test("[document] WO-115 a bound resident serves terminal bytes and events under 
         body: payload,
       });
       assert.equal(response.status, status, reason);
+      assert.equal(response.headers.get("connection"), "close", reason);
       assert.deepEqual(
         bytes((await response.json()) as ConsoleCommandResult),
         refusalBytes(reason),
@@ -711,8 +742,7 @@ test("[document] WO-115 a bound resident serves terminal bytes and events under 
 
     // A decoded request waiting behind a long command is answered at once
     // and returns its terminal result when the lane frees; a caller that
-    // leaves while queued keeps its invocation and refusal in the receipts
-    // (VER-001 F1).
+    // leaves while queued keeps its invocation and refusal in the receipts.
     const blocking = new AbortController();
     const blockedAt = invokedCount(store);
     const blocked = (await invoke(

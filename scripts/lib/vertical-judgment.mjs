@@ -78,7 +78,7 @@ export function liveTransport(cfg) {
  * verdict and a changed subject launches a fresh episode instead of reusing a
  * stale one. A rejected return is kept beside the records. `transport` may be
  * a factory, resolved only when an episode launches, so replay needs no live
- * worker (D047). */
+ * worker (WO-112 D047). */
 export async function recordedJudgment({
   directory,
   name,
@@ -158,7 +158,7 @@ export async function recordedJudgment({
 }
 
 /** The episode returned a verdict the host could not record. Retrying would
- * buy a further episode for the same unrecordable verdict (D047). */
+ * buy a further episode for the same unrecordable verdict (WO-112 D047). */
 export class JudgmentRecordError extends Error {
   constructor(task, error) {
     super(`${task} record could not be written`, { cause: error });

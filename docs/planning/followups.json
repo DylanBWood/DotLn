@@ -4404,6 +4404,20 @@
           "title": "Candidate — Tinkerer / Scientist",
           "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). **Allocated 2026-09-19 (second planning pass of that day).*",
           "missing": false
+        },
+        {
+          "hash": "0c38f6c9729d96ddd7bfebf7e152eed8282ece4e6671cc296694c2dace46faa4",
+          "ref": "docs/product/05-pattern-library.md#candidate--tinkerer--scientist",
+          "title": "Candidate — Tinkerer / Scientist",
+          "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). **Allocated 2026-09-19 (second planning pass of that day).*",
+          "missing": false
+        },
+        {
+          "hash": "e1538fffb1517178c74fc0cfbdb2e632023451662c6f7660ee11ae257c229b47",
+          "ref": "docs/product/05-pattern-library.md#candidate--tinkerer--scientist",
+          "title": "Candidate — Tinkerer / Scientist",
+          "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). **Allocated 2026-09-19 (second planning pass of that day).*",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -4486,6 +4500,16 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:35.694Z"
+        },
+        {
+          "sourceRevision": 15,
+          "status": "allocated",
+          "reason": "Keep allocated; record revision 14, the product 05 trigger sentence this order wrote; WO-188-D001's planning follow-up FUP-7c909f0880237fba carries the next step. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Reopen when planning disposes FUP-7c909f0880237fba or the next ten closed orders record fewer than three two-arm comparisons.",
+          "targets": [
+            "WO-188"
+          ],
+          "at": "2026-10-09T14:34:52.387Z"
         }
       ]
     },
@@ -17397,6 +17421,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:35.611Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D022. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Reopen if a binding with a foreign profile passes the check.",
+          "targets": [],
+          "at": "2026-10-09T14:34:52.264Z"
         }
       ]
     },
@@ -20274,6 +20306,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:35.367Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D015. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Reopen if a typed quotation without a digest is admitted.",
+          "targets": [],
+          "at": "2026-10-09T14:34:51.889Z"
         }
       ]
     },
@@ -21197,6 +21237,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:35.488Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D019. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Reopen if an export lands on a reserved lane.",
+          "targets": [],
+          "at": "2026-10-09T14:34:52.070Z"
         }
       ]
     },
@@ -21673,6 +21721,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:35.010Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D007. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Reopen if a prune leaves a partial file beside a verified proof.",
+          "targets": [],
+          "at": "2026-10-09T14:34:51.397Z"
         }
       ]
     },
@@ -21852,6 +21908,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:35.448Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D018. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Reopen if release list crashes on a recorded manifest.",
+          "targets": [],
+          "at": "2026-10-09T14:34:52.011Z"
         }
       ]
     },
@@ -22889,6 +22953,14 @@
           "reason": "Retargeted at WO-187's close, as its 2026-10-02 allocation said. WO-187 delivered its part: verification now reviews every implementation for a simpler alternative, and the executor's fresh adversary reads the diff as an improver (WO-187 FINAL-001). What remains is WO-188 item 22, which makes the economy experiment follow a fork the work shows.",
           "reopenWhen": "WO-188 is withdrawn or closes with item 22 undone, or verification reports repeatedly fail to consider a credible simpler alternative.",
           "at": "2026-10-06T14:39:37.385Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle the item-22 remainder onto WO-196's record and WO-188-D024; the review allocation WO-187 implemented stays as WO-187 recorded. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Reopen if review repeatedly fails to consider a credible simpler alternative.",
+          "targets": [],
+          "at": "2026-10-09T14:34:52.447Z"
         }
       ]
     },
@@ -23276,6 +23348,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:35.652Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D025. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Reopen if a comment failure is resolved by editing the baseline instead of the line.",
+          "targets": [],
+          "at": "2026-10-09T14:34:52.325Z"
         }
       ]
     },
@@ -24034,6 +24114,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:35.247Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D016 (sub-items 1 to 4) and WO-188-D013 (5 and 7). Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Reopen if a preparation writes through a link or a product 06 without its block passes.",
+          "targets": [],
+          "at": "2026-10-09T14:34:51.764Z"
         }
       ]
     },
@@ -24134,6 +24222,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:35.167Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D011. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Reopen if the persisted correction ids move to another record.",
+          "targets": [],
+          "at": "2026-10-09T14:34:51.638Z"
         }
       ]
     },
@@ -24547,6 +24643,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:35.128Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D010. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "The event is registered after the Copilot observation; reopen if a Claude Code release stops delivering it or a failed call is answered twice.",
+          "targets": [],
+          "at": "2026-10-09T14:34:51.577Z"
         }
       ]
     },
@@ -25658,6 +25762,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:35.407Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D017. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Reopen if a console change that breaks its regenerator passes the integration suite.",
+          "targets": [],
+          "at": "2026-10-09T14:34:51.948Z"
         }
       ]
     },
@@ -26266,6 +26378,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:34.853Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D003; the narrowed limit is FUP-fb2a080cc9b597d0. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "D003 re-observes the lane boundary: intake and declared submodules stay, everything else nested is scratch.",
+          "targets": [],
+          "at": "2026-10-09T14:34:51.139Z"
         }
       ]
     },
@@ -26292,6 +26412,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:34.932Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D005 (c, d, e) and WO-188-D003 (a, b, f gone). Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Reopen if a published tag's outcome is unset in a record or a nested hook leaves a marker.",
+          "targets": [],
+          "at": "2026-10-09T14:34:51.271Z"
         }
       ]
     },
@@ -26318,6 +26446,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:34.814Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D003. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "The close removes a scratch repository and records its head commit and whether a remote held it; reopen if a close record names a removed repository whose commits no remote or retained ref held and the operator asks to recover it.",
+          "targets": [],
+          "at": "2026-10-09T14:34:51.070Z"
         }
       ]
     },
@@ -26344,6 +26480,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:34.971Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D006 (a, d, e, f) and WO-188-D003 (b, c, g gone); the gate-hash limit is FUP-079f827e1b11eb1e. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Reopen if a close forces a removal over a submodule or a retry loses a completed Release.",
+          "targets": [],
+          "at": "2026-10-09T14:34:51.334Z"
         }
       ]
     },
@@ -26430,6 +26574,13 @@
           "title": "WO-102-D007: Reuse already-installed public browser binaries through a new ignored .runtime/playwright alias to the WO-176 worktree cache. Run no installation, download, dependency change or settings ",
           "summary": "{ \"id\": \"WO-102-D007\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: next\", \"decision\": \"Reuse already-installed public browser binaries through a new ignored .runtime/playwright alias to the WO-176 worktree cache. Run no installation, download, dependency change or settings edit. Preserve the cache and compare its entry metadata after the targeted suite and full gate.\", \"evidence\": [ \"npm test: 28 suites passed and browser-evidence failed; 449918 ms; missing pinned Chromium at this worktree's default cache\", \"packages/browser-evidence/test/scenario.test.mjs: default cache and isolated missing-browser/dry-run remedy probes\", \"node_modules/playwright-core/browsers.json: shell revision 1243 and F",
           "missing": false
+        },
+        {
+          "hash": "bb37121582c92e64152c40e1a7072f3f263ec4d3376c77d26f32ef9bfb0748c2",
+          "ref": "docs/evidence/WO-102/decisions.md#wo-102-d007",
+          "title": "WO-102-D007: Reuse already-installed public browser binaries through a new ignored .runtime/playwright alias to the WO-176 worktree cache. Run no installation, download, dependency change or settings ",
+          "summary": "{ \"id\": \"WO-102-D007\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: next\", \"decision\": \"Reuse already-installed public browser binaries through a new ignored .runtime/playwright alias to the WO-176 worktree cache. Run no installation, download, dependency change or settings edit. Preserve the cache and compare its entry metadata after the targeted suite and full gate.\", \"evidence\": [ \"npm test: 28 suites passed and browser-evidence failed; 449918 ms; missing pinned Chromium at this worktree's default cache\", \"packages/browser-evidence/test/scenario.test.mjs: default cache and isolated missing-browser/dry-run remedy probes\", \"node_modules/playwright-core/browsers.json: shell revision 1243 and F",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -26440,6 +26591,14 @@
           "reopenWhen": "a later order reuses a browser cache through an alias and re-observes it",
           "targets": [],
           "at": "2026-10-02T06:02:36.493Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Re-recorded at the revision WO-188 item 13 produced by paraphrasing an operator quotation in this decision record (no instruction, authorization or citation changed); the disposition stands. Prior reason: A one-order execution choice with no follow-up: the alias was local ignored state in WO-102's worktree, and the order is closed. [2026-10-02 standard planning pass, second (docs/planning/standard-pass-2026-10-02.md section 12)]",
+          "reopenWhen": "a later order reuses a browser cache through an alias and re-observes it",
+          "targets": [],
+          "at": "2026-10-08T22:01:33.615Z"
         }
       ]
     },
@@ -26457,6 +26616,13 @@
         },
         {
           "hash": "9a203d33a29fc89100f747f73a90f51acdad2411b0520cedc17fdd03d537ef88",
+          "ref": "docs/evidence/WO-102/decisions.md#wo-102-d010",
+          "title": "WO-102-D010: Planner, high priority, before the WO-102 lane is run against a changed kernel: bound the corpus harness's failure path under drift. Cap the findings each sweep keeps (for example the fir",
+          "summary": "{ \"id\": \"WO-102-D010\", \"kind\": \"correction\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; operator correction in the active conversation\", \"decision\": \"HARD RED FLAG: a reviewer failure. After the passing product gate, I ran an extra, unrequired end-to-end mutation probe on the operator's machine with no memory bound. The operator reported 230 GB of memory in use while it ran, and later stated that it reached 500 GB and was still climbing. The probe was terminated with exit 144 and produced no result. No conclusion in FINAL-001 rests on it. I run no further exploratory checks in this review, only the required lifecycle commands, one at a time.\", \"misread\": \"I judged the probe che",
+          "missing": false
+        },
+        {
+          "hash": "3764fa2c332cbf05e9b1b4dd1538e9c67a0ebc6633b2558be238205c06e83ff6",
           "ref": "docs/evidence/WO-102/decisions.md#wo-102-d010",
           "title": "WO-102-D010: Planner, high priority, before the WO-102 lane is run against a changed kernel: bound the corpus harness's failure path under drift. Cap the findings each sweep keeps (for example the fir",
           "summary": "{ \"id\": \"WO-102-D010\", \"kind\": \"correction\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; operator correction in the active conversation\", \"decision\": \"HARD RED FLAG: a reviewer failure. After the passing product gate, I ran an extra, unrequired end-to-end mutation probe on the operator's machine with no memory bound. The operator reported 230 GB of memory in use while it ran, and later stated that it reached 500 GB and was still climbing. The probe was terminated with exit 144 and produced no result. No conclusion in FINAL-001 rests on it. I run no further exploratory checks in this review, only the required lifecycle commands, one at a time.\", \"misread\": \"I judged the probe che",
@@ -26481,6 +26647,14 @@
           "reopenWhen": "A wo102 file under drift exceeds its task budget or fails without its total, kept findings and digest; a structural equality assertion over a sweep's findings re-enters corpus/harness/; or a DotLn-attributed process tree exhausts the host without a typed stop.",
           "targets": [],
           "at": "2026-10-04T14:19:28.312Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "Re-recorded at the revision WO-188 item 13 produced by paraphrasing an operator quotation in this decision record (no instruction, authorization or citation changed); the disposition stands. Prior reason: Retargeted at WO-185's close, as its criterion 7 directs. The wo102 tests compare a sweep's findings through corpus/harness/bounded-findings.mjs (total, the first 32 kept and a digest) and never hand the collection to a structural assertion; a lexical check refuses one in the declared set, and the generator refuses an oversized quarantine as findings-limit. With one planted Backoff drift, each wo102 file failed in 2.8 to 4.3 s at 250 to 294 MB of footprint under an 805,306,368-byte bound at this review. The per-user guard and the runner's budgets bound the same path when the lane is run by hand. [WO-185 final review (docs/final-reviews/WO-185/FINAL-002.md)]",
+          "reopenWhen": "A wo102 file under drift exceeds its task budget or fails without its total, kept findings and digest; a structural equality assertion over a sweep's findings re-enters corpus/harness/; or a DotLn-attributed process tree exhausts the host without a typed stop.",
+          "targets": [],
+          "at": "2026-10-08T22:01:33.495Z"
         }
       ]
     },
@@ -26654,6 +26828,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:34.892Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "Settle onto WO-195's record (landed at 2d50a415); WO-188-D004 records the re-observation. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Not reproduced at this order's base; the admission fixture still exercises the printed spellings.",
+          "targets": [],
+          "at": "2026-10-09T14:34:51.205Z"
         }
       ]
     },
@@ -26680,6 +26862,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:35.049Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-195's record (landed at 2d50a415); WO-188-D008 records the re-observation. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Reopen if a publish is admitted under a pending typed correction.",
+          "targets": [],
+          "at": "2026-10-09T14:34:51.458Z"
         }
       ]
     },
@@ -26706,6 +26896,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:35.089Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D009. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Reopen if a host task notification is counted as an intervention.",
+          "targets": [],
+          "at": "2026-10-09T14:34:51.518Z"
         }
       ]
     },
@@ -26790,6 +26988,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:35.207Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D012. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Reopen on a key collision within one file.",
+          "targets": [],
+          "at": "2026-10-09T14:34:51.704Z"
         }
       ]
     },
@@ -26816,6 +27022,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:35.569Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D021. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Reopen when the pinned worker model changes.",
+          "targets": [],
+          "at": "2026-10-09T14:34:52.199Z"
         }
       ]
     },
@@ -27059,6 +27273,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:35.286Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D014. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Forward-only screen; reopen if a later order baselines a new home-path line instead of fixing it.",
+          "targets": [],
+          "at": "2026-10-09T14:34:51.829Z"
         }
       ]
     },
@@ -27116,6 +27338,14 @@
             "WO-188"
           ],
           "at": "2026-10-02T06:02:35.529Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D020. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Reopen if an untracked file with trailing whitespace passes completion.",
+          "targets": [],
+          "at": "2026-10-09T14:34:52.130Z"
         }
       ]
     },
@@ -27784,6 +28014,13 @@
           "title": "WO-185-D016: Validate worktree publish --target arguments, and any action that needs no launchpad, before resolving the main-branch control-plane worktree in scripts/worktree.mjs, so usage errors and ",
           "summary": "{ \"id\": \"WO-185-D016\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: fix; operator direction at the repair-complete refusal\", \"decision\": \"Hold repair-complete until a complete npm test -- --review row passes for the current selection while a main-branch worktree exists, as the operator directed, and board the worktree CLI's ordering defect as a follow-up instead of repairing it in WO-185.\", \"evidence\": [ \"repair-complete refused shortly after the 2026-10-03T16:02:17Z handoff usage readback: criteria 2 and 8 name npm test -- --review, and the passing 15:52:30.844Z row (40 suites) lacks evidence-sources, artifact-evidence and verification-evidence. origin/main had advanced to efe62994 (WO-184, #",
           "missing": false
+        },
+        {
+          "hash": "80f9a6e37b1a7aa00600223fa93a2e9a9ab74de0ac1032e4575d6d6205ec7a82",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d016--review-gate-held-for-a-main-branch-worktree",
+          "title": "WO-185-D016: Validate worktree publish --target arguments, and any action that needs no launchpad, before resolving the main-branch control-plane worktree in scripts/worktree.mjs, so usage errors and ",
+          "summary": "{ \"id\": \"WO-185-D016\", \"date\": \"2026-10-03\", \"dispatch\": \"resume: fix; operator direction at the repair-complete refusal\", \"decision\": \"Hold repair-complete until a complete npm test -- --review row passes for the current selection while a main-branch worktree exists, as the operator directed, and board the worktree CLI's ordering defect as a follow-up instead of repairing it in WO-185.\", \"evidence\": [ \"repair-complete refused shortly after the 2026-10-03T16:02:17Z handoff usage readback: criteria 2 and 8 name npm test -- --review, and the passing 15:52:30.844Z row (40 suites) lacks evidence-sources, artifact-evidence and verification-evidence. origin/main had advanced to efe62994 (WO-184, #",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -27794,6 +28031,14 @@
           "reopenWhen": "An order's criteria or design touch scripts/worktree.mjs action dispatch or argument checks, a gate again fails target-publish's usage case while no worktree has main checked out, or an operator meets the misleading error at a real target publish.",
           "targets": [],
           "at": "2026-10-04T16:21:50.307Z"
+        },
+        {
+          "sourceRevision": 6,
+          "status": "deferred",
+          "reason": "Re-recorded at the revision WO-188 item 13 produced by paraphrasing an operator quotation in this decision record (no instruction, authorization or citation changed); the disposition stands. Prior reason: Deferred by WO-195's final review in WO-195-D021. worktree publish --target still resolves the main-branch worktree (scripts/worktree.mjs:431) before it checks its arguments (:487-497). WO-195 declares the file but changes neither region, and the defect is unrelated to its criteria. A fix is new behavioral code, which a reviewer may not write and certify. [WO-195 final review (docs/final-reviews/WO-195/FINAL-001.md)]",
+          "reopenWhen": "An order's criteria or design touch scripts/worktree.mjs action dispatch or argument checks, a gate again fails target-publish's usage case while no worktree has main checked out, or an operator meets the misleading error at a real target publish.",
+          "targets": [],
+          "at": "2026-10-08T22:01:33.557Z"
         }
       ]
     },
@@ -28203,6 +28448,13 @@
           "ref": "docs/evidence/WO-186/decisions.md#wo-186-d039--attest-the-selected-effort-ultracode-is-a-mode-beside-it",
           "title": "WO-186-D039: Planning, with the operator, decides how a Claude Code role records that Ultracode was on, now that it is a mode beside effort there: whether scripts/resume.mjs parseActor still accepts t",
           "summary": "{ \"id\": \"WO-186-D039\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; operator message during the repair\", \"kind\": \"correction\", \"decision\": \"Record this repair's completion with the effort the session selected, xhigh, from the Claude session readback, and describe Ultracode in the handoff as a mode separate from effort. The operator's words, in two messages sent while the repair's reviewers were running: 'ultracode is no longer an effort value; it is orthogonal now to effort', then 'for claude that is; for codex ultra is still an effort value'. The correction therefore applies to Claude Code attestations only; under Codex the ultra spelling stays an effort value and the parser's handling o",
+          "missing": false
+        },
+        {
+          "hash": "c4f9eeb49f311323c8c7d4819cc03234ca0e5b5932af6f28d46c41e3f619a475",
+          "ref": "docs/evidence/WO-186/decisions.md#wo-186-d039--attest-the-selected-effort-ultracode-is-a-mode-beside-it",
+          "title": "WO-186-D039: Planning, with the operator, decides how a Claude Code role records that Ultracode was on, now that it is a mode beside effort there: whether scripts/resume.mjs parseActor still accepts t",
+          "summary": "{ \"id\": \"WO-186-D039\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; operator message during the repair\", \"kind\": \"correction\", \"decision\": \"Record this repair's completion with the effort the session selected, xhigh, from the Claude session readback, and describe Ultracode in the handoff as a mode separate from effort. In two messages sent while the repair's reviewers were running, the operator said that Ultracode is no longer an effort value but a setting independent of effort, and then narrowed this to Claude: under Codex, ultra is still an effort value. The correction therefore applies to Claude Code attestations only; under Codex the ultra spelling stays an effort value and the parser",
           "missing": false
         }
       ],
@@ -30500,6 +30752,359 @@
           "ref": "docs/evidence/WO-074/decisions.md#wo-074-d011--self-review-findings-and-a-follow-up-outside-criterion-3s-declared-set",
           "title": "WO-074-D011: Decide whether scripts/fixtures data derived from this repository's records (wo138-local-role-qualification.json carries a verification report's verdict and durations) belongs in the expo",
           "summary": "{ \"id\": \"WO-074-D011\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next\", \"decision\": \"Two fresh dotln-workers reviewed the order and the diff before implementation-ready, an adversary of the criteria (16 findings) and an improver of design, simplicity and maintainability (21 findings; docs/evidence/WO-074/adversary.md and improver.md hold both reports with each finding's disposition). Fixed: the license-shaped template name and the fixture's scripts/ exclusion (criterion 4); the product 03 and protects wording that said the kit is read from the launchpad's commit; the client README's claim that the later transitions run without a build (in a Codex session next, verify, fix, final-review and ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-7c909f0880237fba",
+      "key": "decision:docs/evidence/WO-188/decisions.md#wo-188-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ffd23c4d1048b808d54c601b6ebba3aab13b25ec527ddf266e45b4fbbf1c5943",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d001--note-for-planning-the-experiment-rule-has-produced-no-visible-exploration",
+          "title": "WO-188-D001: Planning: decide what makes the executor's exploratory comparison happen and visible. Candidates: a handoff line that names the fork taken and both arms, or states that none appeared, che",
+          "summary": "{ \"id\": \"WO-188-D001\", \"date\": \"2026-10-08\", \"dispatch\": \"resume: next; operator note during execution, recorded without changing the order\", \"decision\": \"Record the operator's observation as a planning candidate and leave WO-188's text, scope and item 22's disposition unchanged. The observation, paraphrased: no executor, including one writing new code, has yet been seen running the exploratory comparison the Tinkerer — Economy support asks for, and fix dispatches skip it as well. This order's executor applies the current sentence where a fork appears (items 1 and 23 each show one) and records both arms.\", \"evidence\": [ \"The generated executor root (.claude/skills/dotln-executor/SKILL.md at ",
+          "missing": false
+        },
+        {
+          "hash": "99506aaa214527096c6682d12b3980a3d80105d7bddfb60aa3304fbc3947109e",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d001--note-for-planning-the-tinkerer-support-does-not-modify-the-phase-it-is-linked-to",
+          "title": "WO-188-D001: Planning: make the Tinkerer support modify the executor phase it is linked to, as product 02 defines a support facet, and decide the same for the other prompt-only executor supports. Leve",
+          "summary": "{ \"id\": \"WO-188-D001\", \"date\": \"2026-10-08\", \"dispatch\": \"resume: next; operator note during execution, recorded without changing the order\", \"decision\": \"Record the operator's observation as a planning candidate and leave WO-188's text, scope and item 22's disposition unchanged. The observation, paraphrased: a support linked to an active phase is meant to change that phase's behaviour noticeably, as a support gem changes a linked skill; equipping the Tinkerer support on the executor phase barely alters it, and no executor, including one writing new code, has yet been seen running the exploratory comparison it asks for. The product's own definition agrees: a support facet is a typed modifier",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-fb2a080cc9b597d0",
+      "key": "decision:docs/evidence/WO-188/decisions.md#wo-188-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a892f910971576cd271aeeacdcc5fea07651ffec988e01b6f4d9491156f16bce",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d003--item-1-a-nested-repository-outside-intake-is-scratch-unless-the-tracked-tree-declares-it-the-close-removes-it-and-records-its-head",
+          "title": "WO-188-D003: A bare repository, or an unreadable nested repository outside the control and intake lanes whose directory holds no other file, is invisible to the ls-files inventory and leaves with the ",
+          "summary": "{ \"id\": \"WO-188-D003\", \"date\": \"2026-10-08\", \"dispatch\": \"resume: next (2026-10-08, executor claude-fable-5-1 at xhigh); item 1\", \"decision\": \"A scratch repository is a nested repository inside an order's worktree that is neither under the intake lane nor declared by the tracked tree as a submodule (a gitlink entry or a .gitmodules path); a repository under the control lane is scratch too. The executor removes each before implementation-ready or repair-complete and declares none; a completion with one present prints one advisory naming it; the reviewer removes any still present; release close removes any left after the preservation check verifies and records, per repository, its worktree, pa",
+          "missing": false
+        },
+        {
+          "hash": "244e5829c4940ae4ef5cc74547555fe2ade2d61a9461f347060603357008a717",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d003--item-1-a-nested-repository-outside-intake-is-scratch-unless-the-tracked-tree-declares-it-the-close-removes-it-and-records-its-head",
+          "title": "WO-188-D003: A bare repository, or an unreadable nested repository outside the control and intake lanes whose directory holds no other file, is invisible to the ls-files inventory and leaves with the ",
+          "summary": "{ \"id\": \"WO-188-D003\", \"date\": \"2026-10-08\", \"dispatch\": \"resume: next (2026-10-08, executor claude-fable-5-1 at xhigh); item 1\", \"decision\": \"A scratch repository is a nested repository inside an order's worktree that is neither under the intake lane nor declared by the tracked tree as a submodule (a gitlink entry or a .gitmodules path); a repository under the control lane is scratch too. The executor removes each before implementation-ready or repair-complete and declares none; a completion with one present prints one advisory naming it; the reviewer removes any still present; release close removes any left after the preservation check verifies and records, per repository, its worktree, pa",
+          "missing": false
+        },
+        {
+          "hash": "aa9c963bf5d2fa2c66c9db93dd04508128e5da2137ac0d95fb3589d4a908da98",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d003--item-1-a-nested-repository-outside-intake-is-scratch-unless-the-tracked-tree-declares-it-the-close-removes-it-and-records-its-head",
+          "title": "WO-188-D003: A bare repository, or an unreadable nested repository outside the control and intake lanes whose directory holds no other file, is invisible to the ls-files inventory and leaves with the ",
+          "summary": "{ \"id\": \"WO-188-D003\", \"date\": \"2026-10-08\", \"dispatch\": \"resume: next (2026-10-08, executor claude-fable-5-1 at xhigh); item 1\", \"decision\": \"A scratch repository is a nested repository inside an order's worktree that is neither under the intake lane nor declared by the tracked tree as a submodule (a gitlink entry or a .gitmodules path); a repository under the control lane is scratch too. The executor removes each before implementation-ready or repair-complete and declares none; a completion with one present prints one advisory naming it; the reviewer removes any still present; release close removes any left after the preservation check verifies and records, per repository, its worktree, pa",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-079f827e1b11eb1e",
+      "key": "decision:docs/evidence/WO-188/decisions.md#wo-188-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0baee09103f180087d3a4cff5b6c035d7d4498fbb3fefa1b7a6116350df968fe",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d006--item-4-no-forced-removal-over-a-submodule-already-published-is-carried-a-dirty-derived-worktree-names-the-operator-the-record-exists-before-flags-parse",
+          "title": "WO-188-D006: gateTreeHash refuses a subject that holds a committed submodule ('Submodule gate evidence needs an explicit adapter'), so an order that commits a gitlink cannot run its gate; gateCodeIden",
+          "summary": "{ \"id\": \"WO-188-D006\", \"date\": \"2026-10-08\", \"dispatch\": \"resume: next (2026-10-08, executor claude-fable-5-1 at xhigh); item 4\", \"decision\": \"Removal of a subject that holds a submodule gitlink refuses before any proof and never passes --force to git worktree remove; the refusal says the submodule's unpushed commits would be discarded and names the operator terminal as the route. A retry whose tag and Release were completed earlier carries them into the record as already-published with a releaseCarried flag. A derived worktree kept for uncommitted changes gets a remedy that names the operator and the exact settle command. The close record is created before the flags are parsed, so a malform",
+          "missing": false
+        },
+        {
+          "hash": "c6ba6ae978f62e7380d3db84cc6ece3a63423ec05934953655c1a2e9a3568331",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d006--item-4-no-forced-removal-over-a-submodule-already-published-is-carried-a-dirty-derived-worktree-names-the-operator-the-record-exists-before-flags-parse",
+          "title": "WO-188-D006: gateTreeHash refuses a subject that holds a committed submodule ('Submodule gate evidence needs an explicit adapter'), so an order that commits a gitlink cannot run its gate; gateCodeIden",
+          "summary": "{ \"id\": \"WO-188-D006\", \"date\": \"2026-10-08\", \"dispatch\": \"resume: next (2026-10-08, executor claude-fable-5-1 at xhigh); item 4\", \"decision\": \"Removal of a subject that holds a submodule gitlink refuses before any proof and never passes --force to git worktree remove; the refusal says the submodule's unpushed commits would be discarded and names the operator terminal as the route. A retry whose tag and Release were completed earlier carries them into the record as already-published with a releaseCarried flag. A derived worktree kept for uncommitted changes gets a remedy that names the operator and the exact settle command. The close record is created before the flags are parsed, so a malform",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d4493f4251e69c87",
+      "key": "decision:docs/evidence/WO-188/decisions.md#wo-188-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ba8a66a8c3c9152a6428c3b4100d852566e97adebe1604cb735d5dd0a9f0a3b4",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d009--item-7-a-host-task-notification-is-journaled-with-its-own-source-and-is-not-an-operator-message",
+          "title": "WO-188-D009: An enqueue row that carries the message text and no recorded command mode is attributed to the operator (promptRoute reads commandMode on queue-operation rows and no record shows the fiel",
+          "summary": "{ \"id\": \"WO-188-D009\", \"date\": \"2026-10-08\", \"dispatch\": \"resume: next (2026-10-08, executor claude-fable-5-1 at xhigh); item 7\", \"decision\": \"promptRoute returns an attribution (operator, unattributed or host-task-notification); recordOperatorMessage writes source host-task-notification when the host queued the prompt as a task notification; plan failures skips those rows from the intervention count, reports them as hostNotifications, and tallies unattributed rows without excluding them.\", \"evidence\": [ \"packages/skeleton/src/harness-host.ts promptRoute and recordOperatorMessage; scripts/lib/plan-failures.mjs OperatorMessageObserved handling and summary fields.\", \"scripts/test-harness.mjs a",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5e65a88d01ef363d",
+      "key": "decision:docs/evidence/WO-188/decisions.md#wo-188-d026",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a951ccbf519bc1e3c30c157d6240be528d41b5a0f14aad046e6f1c9a81b2563b",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d026--item-24-the-meter-table-omits-unavailable-cells-and-rows-body-links-are-absolute-the-release-title-appears-once",
+          "title": "WO-188-D026: renderMetaTable leaves an unavailable observation blank, drops a dispatch row with nothing observed and ends with one line counting the omissions; a published body's relative links are re",
+          "summary": "{ \"id\": \"WO-188-D026\", \"date\": \"2026-10-08\", \"dispatch\": \"resume: next (2026-10-08, executor claude-fable-5-1 at xhigh); item 24\", \"decision\": \"renderMetaTable leaves an unavailable observation blank, drops a dispatch row with nothing observed and ends with one line counting the omissions; a published body's relative links are rewritten absolute to the repository at the reviewed revision or reduced to text, and the body-profile check refuses a relative link; the Release text holds the order's title once with id-only headings. The last closed order's body and Release text were regenerated into evidence.\", \"evidence\": [ \"scripts/lib/meta.mjs renderMetaTable; scripts/lib/github-body.mjs absolut",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-de0faf98b2487c8f",
+      "key": "decision:docs/evidence/WO-188/decisions.md#wo-188-d032",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4b718bc3afec6e9000e23ff7fda80cb448151c7d3575293027d8e01e5791dc03",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d032--verification-the-full-document-gate-fails-in-the-loopback-case",
+          "title": "WO-188-D032: WO-188 repair: diagnose and resolve the full document gate's bound-resident loopback failure before repair-complete. Reproduction: npm run test:docs; case in packages/console/test/console",
+          "summary": "{ \"id\": \"WO-188-D032\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail criterion 27 in VER-001 because two fresh npm run test:docs runs at the selected subject fail the same bound-resident loopback case with TypeError: fetch failed. Preserve the passing isolated control and committed-base comparisons. The repeated gate failure is observed; its cause and attribution to a particular source edit are not established. The verifier neither changes source nor relaxes the gate to pass it.\", \"evidence\": [ \"docs/evidence/WO-188/verifier-001/checks.txt: full document runs recorded 2026-10-09T02:48:25.044Z and 2026-10-09T02:56:15.618Z each show 30 passed",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D035. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "The repair names the keep-alive timer race, closes every loopback connection after its response and records a fresh passing full document gate; reopen if the bound-resident case fails again in a full document gate or a response is seen without `connection: close`.",
+          "targets": [],
+          "at": "2026-10-09T14:34:52.506Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-98dd4b8af0b34182",
+      "key": "decision:docs/evidence/WO-188/decisions.md#wo-188-d034",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "90b8bebb2eccf7e5e0192ea5f9797ec13d3b040f0c1a881569c5e0938c3e9399",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d034--repair-of-ver-001-f2-the-installed-markdown-parser-decides-what-renders-as-a-link-the-rewriter-reads-every-single-line-inline-link",
+          "title": "WO-188-D034: Rule the repaired code holds: a published body or Release text carries no relative link the installed Markdown parser renders. The rewriter reads each inline link on one line as CommonMar",
+          "summary": "{ \"id\": \"WO-188-D034\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: fix (2026-10-09, executor claude-fable-5-1 at xhigh); VER-001 F2, criterion 24\", \"decision\": \"Rule the repaired code holds: a published body or Release text carries no relative link the installed Markdown parser renders. The rewriter reads each inline link on one line as CommonMark does: an optional exclamation mark, a label with balanced brackets and backslash escapes, optional spaces, a destination in angle brackets or bare with balanced parentheses, an optional double-quoted, single-quoted or parenthesized title, optional spaces and the closing parenthesis. It writes the link absolute at the reviewed revision with parenthes",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D038 and WO-188-D039. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "The reopened link rule is held again by the two repairs, which share the parser's reading of links and of code; reopen with either repair's condition.",
+          "targets": [],
+          "at": "2026-10-09T14:34:52.701Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3c96f0fb5b283866",
+      "key": "decision:docs/evidence/WO-188/decisions.md#wo-188-d036",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "52fd8bc2f500b0d087eb9228e120fa04146940b88d48e2a1e19036ef1d243b1c",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d036--verification-an-empty-rendered-destination-survives-publication",
+          "title": "WO-188-D036: WO-188 repair, VER-002 F1: handle empty rendered link and image destinations under the absolute-or-absent publication contract. Keep refusal and rewrite consistent, with parser and actual",
+          "summary": "{ \"id\": \"WO-188-D036\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Fail criterion 24 in VER-002: the body-profile check admits an empty Markdown destination and actual publication leaves it as a relative link. Record the reproduced class for this order's repair; the verifier does not modify implementation.\", \"evidence\": [ \"docs/evidence/WO-188/verifier-002/links.mjs and checks.txt: the installed Markdown parser renders [empty]() as a link with url equal to the empty string. githubBodyProfileFailures with links enabled returns no failure and absoluteBodyLinks leaves it unchanged. Empty angle-bracket destinations, an empty image destination and ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D038. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "An empty destination is refused by the profile and written as its text by the rewriter, and the actual publication in the forge double writes none; reopen if a parser-rendered link, image or definition with an empty destination passes the profile or survives the rewriter.",
+          "targets": [],
+          "at": "2026-10-09T14:34:52.569Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c6b2a2b66fd0847c",
+      "key": "decision:docs/evidence/WO-188/decisions.md#wo-188-d037",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cf664c1cd76991fe6c0d2a1bb896839ff8e505639954f384109b9c1afed013a7",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d037--verification-publication-rewrites-a-literal-mixed-backtick-code-span",
+          "title": "WO-188-D037: WO-188 repair, VER-002 F2: preserve every valid inline code span byte-for-byte during link normalization, including shorter embedded backtick runs. Prefer parser source positions or a sca",
+          "summary": "{ \"id\": \"WO-188-D037\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Fail VER-002 for a reproduced regression in behavior main had: the new publication normalizer rewrites link-shaped literal text inside a valid mixed-backtick inline code span. Route it as blocking under product 07's main-behavior rule, rather than inventing another unmet acceptance criterion. This defect exists in the original WO-188 implementation as well as its repair.\", \"evidence\": [ \"docs/evidence/WO-188/verifier-002/code-spans.mjs and checks.txt: the installed parser renders the two-backtick span containing [sample](file.md) and an embedded single backtick as inlineCode, w",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D039. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "Code and raw HTML are masked at the parser's positions and the committed code example reaches the forge byte-for-byte; reopen if the rewriter changes a byte inside a range the parser renders as code or HTML.",
+          "targets": [],
+          "at": "2026-10-09T14:34:52.630Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-eb7648ea4530f48a",
+      "key": "decision:docs/evidence/WO-188/decisions.md#wo-188-d039",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b65d9b8e5b44fcf421a1a02d0113ece9afb81c35197979dd646dc4fc23baf3c1",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d039--repair-of-ver-002-f2-the-rewriter-masks-code-and-raw-html-at-the-parsers-own-positions-so-refusal-and-rewriting-share-one-reading-of-what-is-prose",
+          "title": "WO-188-D039: Rule the repaired code holds: the rewriter reads inline links only in text the installed Markdown parser renders as prose. Before a line is scanned, every range the parser reports as an i",
+          "summary": "{ \"id\": \"WO-188-D039\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: fix (2026-10-09, executor claude-fable-5-1 at xhigh); VER-002 F2, criterion 24 under the main-behavior rule\", \"decision\": \"Rule the repaired code holds: the rewriter reads inline links only in text the installed Markdown parser renders as prose. Before a line is scanned, every range the parser reports as an inline code span, a code block or raw HTML is replaced by spaces at the parser's line and column, so a link-shaped sequence inside a code span of any backtick runs, a code span that crosses lines, a fenced or indented code block, or a raw HTML block or tag is never read as a link and keeps its bytes. The hand-written code-s",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D043. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "The parser-position mask holds again now that its positions address the inventory's lines; reopen with D043's condition.",
+          "targets": [],
+          "at": "2026-10-09T14:34:52.891Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a95dab688b9bdaaf",
+      "key": "decision:docs/evidence/WO-188/decisions.md#wo-188-d041",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9352e8eab342d5b5e4f577e46e4a60aef5f264af31509fadf8b3076e5e5dded0",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d041--verification-cr-only-markdown-disagrees-with-the-rewriters-line-inventory",
+          "title": "WO-188-D041: WO-188 repair, VER-003 F1: make source-range masking and the rewriter use compatible coordinates for LF, CRLF, CR-only and mixed line endings, preserving code and raw-HTML bytes. Prefer p",
+          "summary": "{ \"id\": \"WO-188-D041\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-003\", \"kind\": \"finding\", \"decision\": \"Record a blocking regression from main in VER-003 and return the line-position mismatch to repair. The installed Markdown parser treats a lone carriage return as a line ending, while proseLines splits only at newline. Code on a later CR-only line is therefore left unmasked or masked against a different physical line. The independent API probe changes both an inline code span after a paragraph and an indented code block inside a list. The actual worktree publication path refuses an otherwise valid committed body with Invalid count value: -2; the same fixture with the recorded ba",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D043. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "The rewriter and the profile read the lines the parser counts under every Markdown line ending, and the carriage-return body reaches the forge double with its code byte-for-byte; reopen if the rewriter changes a byte inside a parser-rendered code or HTML range under any line ending or a body that passes the profile fails publication on a coordinate.",
+          "targets": [],
+          "at": "2026-10-09T14:34:52.765Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-860e9c5b60e43758",
+      "key": "decision:docs/evidence/WO-188/decisions.md#wo-188-d042",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "df469a5f86e82cd26aad9c6f487027a2194270d969a8f314ed3e6272234c6f7a",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d042--verification-follow-up-a-markdown-destinations-escapes-become-literal-filename-bytes",
+          "title": "WO-188-D042: Publication destination normalization: resolve the parser's rendered destination or decode Markdown backslash escapes before URL encoding, preserving the filename and existing authority/p",
+          "summary": "{ \"id\": \"WO-188-D042\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-003\", \"kind\": \"finding\", \"decision\": \"Board escaped-destination normalization as a nonblocking follow-up. The parser reads file\\\\(1\\\\).md as file(1).md, but the rewriter URL-encodes the raw source destination including its backslashes, producing file%5C%281%5C%29.md instead of file%281%29.md. The resulting link is absolute and passes the declared profile, so criterion 24 still holds. Main forwarded a file-relative link into the forge body and did not provide a working repository target for this case; this probe establishes no behavior regression from main.\", \"evidence\": [ \"docs/evidence/WO-188/verifier-003/links.mj",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settle onto WO-188-D044; the percent-encoding remainder is D044's follow-up. Applied at WO-188 final review (docs/final-reviews/WO-188/FINAL-001.md) from the dispositions docs/evidence/WO-188/close-register.md prepared.",
+          "reopenWhen": "A link is rewritten only where the parser renders one and at the destination the parser renders; reopen if a rewritten path differs from the parser's url once encoded.",
+          "targets": [],
+          "at": "2026-10-09T14:34:52.831Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a859aa6cad8f9c6c",
+      "key": "decision:docs/evidence/WO-188/decisions.md#wo-188-d044",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ae7bb89b8b068f47fd34c6daf3937b11de38b97d4703f1c796f4ad161024a795",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d044--repair-of-ver-003-f2-a-link-is-rewritten-only-where-the-parser-renders-one-at-the-destination-the-parser-renders",
+          "title": "WO-188-D044: Publication destination encoding: a destination already percent-encoded in the source, such as file%281%29.md, is encoded again by encodeURI to file%25281%2529.md and addresses a differen",
+          "summary": "{ \"id\": \"WO-188-D044\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: fix (2026-10-09, executor claude-fable-5-1 at xhigh); VER-003 F2, the follow-up D042 boards, taken within the adjacent-repair bound because its fix is the rule D043 already applies at the same positions\", \"decision\": \"Rule the repaired code holds: a link is rewritten only where the installed Markdown parser renders one, and its destination is the one the parser renders, with backslash escapes and character references resolved. The line scanner still finds each link's extent on its line, but it asks the parser's link, image or definition node at that column whether the sequence is a link and what it addresses; a bracket pair th",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-642d7a4beaed2272",
+      "key": "decision:docs/evidence/WO-188/decisions.md#wo-188-d045",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4c963c5fd1761edca72c7c7a62d75b7333298510626e6d1739db519da4813b2d",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d045--observation-the-runners-format-preflight-fixture-failed-once-under-the-full-review-gate-and-passed-alone",
+          "title": "WO-188-D045: Runner fixture under load: the scripts/test-runner.test.mjs case 'format preflight stops plain and review before product tasks, and stays fresh across document edits' once recorded a nest",
+          "summary": "{ \"id\": \"WO-188-D045\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: fix (2026-10-09, executor claude-fable-5-1 at xhigh); met while running the order's final gate after the VER-003 repair\", \"decision\": \"Record, not repair. In the first npm test -- --review after this repair, the scripts/test-runner.test.mjs case 'format preflight stops plain and review before product tasks, and stays fresh across document edits' failed: its fourth nested gate exited 1 as the case expects after the README edit, but the format task's captured output was empty where the file name was expected; the other 40 suites passed. npm test -- --only runner-fixtures then passed the suite in 70.03 s, and the composed review ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f2d7c420e0778cbe",
+      "key": "decision:docs/evidence/WO-188/decisions.md#wo-188-d046",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b34ddfe934a28cd6d9af7e2263ff331f1eeeaf488f7e206e9cd6f101fd5bcd18",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d046--verification-follow-up-rewriting-a-nested-destination-can-expose-another-rendered-link",
+          "title": "WO-188-D046: Publication nested-link normalization: handle nested rendered image ranges and prevent removing an inner link wrapper from exposing an unresolved outer link. Compare the parser's rendered",
+          "summary": "{ \"id\": \"WO-188-D046\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-004\", \"kind\": \"finding\", \"decision\": \"Board nested-link normalization as a nonblocking follow-up. For Outer [a [b]() d](e.md). the installed Markdown parser initially renders only the empty inner link. Removing its wrapper produces Outer [a b d](e.md)., which renders a new relative outer link. The same happens when the inner destination is a fragment or escapes the repository. For Outer [a ![b]() d](e.md). the parser initially renders both the outer link and the empty image; the scanner rewrites the outer link and advances past its label, leaving the empty image untouched. The publication profile refuses all four r",
+          "missing": false
+        },
+        {
+          "hash": "0badd8ab968356950411414ac4beb052300431bd3f2ef627e337e948237127fb",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d046--verification-follow-up-rewriting-a-nested-destination-can-expose-another-rendered-link",
+          "title": "WO-188-D046: Publication nested-link normalization: handle nested rendered image ranges and prevent removing an inner link wrapper from exposing an unresolved outer link. Compare the parser's rendered",
+          "summary": "{ \"id\": \"WO-188-D046\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-004\", \"kind\": \"finding\", \"decision\": \"Board nested-link normalization as a nonblocking follow-up. For `Outer [a [b]() d](e.md).` the installed Markdown parser initially renders only the empty inner link. Removing its wrapper produces `Outer [a b d](e.md).`, which renders a new relative outer link. The same happens when the inner destination is a fragment or escapes the repository. For `Outer [a ![b]() d](e.md).` the parser initially renders both the outer link and the empty image; the scanner rewrites the outer link and advances past its label, leaving the empty image untouched. The publication profile refuses all ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4c4ad5ef3c88547f",
+      "key": "decision:docs/evidence/WO-188/decisions.md#wo-188-d048",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3c4ca2447b4eb6c1b21c5c3b66d0f5a27e5f3ea646b63006ff212b4a4517e521",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d048--final-review-five-low-findings-of-the-host-and-document-gate-review-worker-boarded",
+          "title": "WO-188-D048: Planning, low priority: (1) scripts/lib/comment-labels.mjs FINDING_LABEL: the bare letter-and-number alternative (a capital F, N, R, B, A or M followed by one or two digits) refuses ordin",
+          "summary": "{ \"id\": \"WO-188-D048\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: final review; FINAL-001 review worker B (harness host, role text, document gate, comment check, body and Release text)\", \"kind\": \"finding\", \"decision\": \"Board, not repair: five low findings of the read-only review worker over group B, each outside the criteria as written and breaking no behavior main had, so each is a follow-up by rule. None changes a criterion judgment: criterion 23's check refuses what the order named and passes the explanation, criterion 24's WO-199 regeneration holds and the PR path refuses what survives, criterion 7 as written (an unflushed transcript gives unattributed) is met, and criterion 12's screen ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-cc27c2c1a82fed2c",
+      "key": "decision:docs/evidence/WO-188/decisions.md#wo-188-d049",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "631207ce8edfa4cb8f2259af2bf14dc1e7c82894cf10cc7d4009bbc32374e43d",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d049--final-review-seven-low-findings-of-the-release-and-lifecycle-review-worker-boarded",
+          "title": "WO-188-D049: Planning, low priority: (1) scripts/release.mjs finishPublishedWorktree: the disposable retry command names every material row of each kept worktree, so when an intake, linked-worktree or",
+          "summary": "{ \"id\": \"WO-188-D049\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: final review; FINAL-001 review worker A (release close, scratch repositories, worktrees, preparation, the planning feed and the lifecycle scripts)\", \"kind\": \"finding\", \"decision\": \"Board, not repair: seven low findings of the read-only review worker over group A, each outside the criteria as written and breaking no behavior main had, so each is a follow-up by rule. The worker's one blocking item, the bare-hex sha256 main's scripts/test-launchpad.mjs defined against this order's helper-reuse test, was integration bookkeeping and is resolved in D047. None of the seven changes a criterion judgment: the close still fails safe in e",
           "missing": false
         }
       ],

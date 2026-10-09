@@ -20,6 +20,7 @@ import {
   validDispatch,
   operatorWordAdvisories,
   operatorWordFindings,
+  homePathFindings,
 } from "./docs-check.mjs";
 
 test("WO-178 attributed operator words advise by record, with capture and fingerprinted baseline exceptions", (t) => {
@@ -822,8 +823,8 @@ test("an unregistered marker pair in the roadmap reports the receipt, the candid
   assert.match(failures, /06-roadmap\.md#candidate--smuggled: new candidate/);
 });
 
-// WO-086: annotated DotLn tags whose manifests name their orders, one of which
-// has a heading with no version, beside a lightweight and an unrelated tag.
+// Annotated DotLn tags whose manifests name their orders, one of which has a
+// heading with no version, beside a lightweight and an unrelated tag (WO-086).
 function taggedFixture(t) {
   const f = fixture(t);
   const git = (args, env = {}) => {
@@ -1191,4 +1192,295 @@ test("document gate forwards explicit success diagnostics and preserves full fai
       console.log = saved;
     }
   }
+});
+
+test("two attributed provenance fields in one order get their own keys and fingerprints", (t) => {
+  const f = fixture(t);
+  const file = "docs/work-orders/WO-999-fixture.md";
+  f.write(
+    file,
+    "# WO-999 — Fixture\n\n**Track:** machinery\n**Nomination provenance:** The operator said “synthetic first quote”.\n\n**Provenance:** The operator said “synthetic second quote”.\n",
+  );
+  const found = operatorWordFindings(f.root);
+  assert.deepEqual(
+    found.map((row) => row.record),
+    ["provenance", "provenance-2"],
+  );
+  assert.notEqual(found[0].fingerprint, found[1].fingerprint);
+  assert.doesNotMatch(JSON.stringify(found), /synthetic/);
+  f.baseline.operatorWords = { [`${file}#provenance`]: found[0].fingerprint };
+  let result = f.check();
+  assert.equal(result.operatorWords.current, 1);
+  assert.equal(result.operatorWords.rows[0].record, "provenance-2");
+  f.baseline.operatorWords[`${file}#provenance-2`] = found[1].fingerprint;
+  result = f.check();
+  assert.equal(result.operatorWords.current, 0);
+  assert.equal(result.operatorWords.historical, 2);
+  // Only the second field's words change: only its record is current.
+  f.write(
+    file,
+    "# WO-999 — Fixture\n\n**Track:** machinery\n**Nomination provenance:** The operator said “synthetic first quote”.\n\n**Provenance:** The operator said “another quote”.\n",
+  );
+  assert.deepEqual(
+    f.check().operatorWords.rows.map((row) => row.record),
+    ["provenance-2"],
+  );
+  // A clean first field still takes the first key, so the second keeps its own.
+  f.write(
+    file,
+    "# WO-999 — Fixture\n\n**Nomination provenance:** Nominated by the planner.\n\n**Provenance:** The operator said “synthetic second quote”.\n",
+  );
+  assert.deepEqual(
+    operatorWordFindings(f.root).map((row) => row.record),
+    ["provenance-2"],
+  );
+  f.baseline.operatorWords = {};
+  f.controls();
+  const cli = spawnSync(process.execPath, [script], {
+    cwd: f.root,
+    env: { ...process.env, DOTLN_LAUNCHPAD: f.root },
+    encoding: "utf8",
+  });
+  assert.match(
+    cli.stdout,
+    /ADVISORY docs\/work-orders\/WO-999-fixture\.md#provenance-2:/,
+  );
+});
+
+test("the docs check fails on a roadmap whose release-history block is removed and reports a tag whose annotation cannot be read", (t) => {
+  const f = taggedFixture(t);
+  f.cli("list", "--markdown", "--write");
+  assert.deepEqual(f.check().failures, []);
+  const committed = readFileSync(`${f.root}/${f.roadmap}`, "utf8");
+  const lines = committed.split("\n");
+  const first = lines.findIndex((line) => line.includes(historyStart)),
+    last = lines.findIndex((line) => line.includes(historyEnd));
+  assert.ok(first >= 0 && last > first, "the generated block is present");
+  f.write(
+    f.roadmap,
+    [...lines.slice(0, first), ...lines.slice(last + 1)].join("\n"),
+  );
+  assert.deepEqual(f.check().failures, [
+    `docs/product/06-roadmap.md: no generated release history block; add the ${historyStart} and ${historyEnd} lines where the table belongs, then run npm run release -- list --markdown --write`,
+  ]);
+  f.write(f.roadmap, committed);
+  assert.deepEqual(f.check().failures, []);
+  // A header-only tag object holds no annotation to read.
+  const head = f.git(["rev-parse", "HEAD"]).trim();
+  const object = `object ${head}\ntype commit\ntag v1.2.0\ntagger Fixture <fixture@example.invalid> 1767657600 +0000\n`;
+  let made = spawnGit(["-C", f.root, "mktag"], {
+    input: object,
+    encoding: "utf8",
+  });
+  if (made.status !== 0)
+    made = spawnGit(
+      [
+        "-C",
+        f.root,
+        "hash-object",
+        "-t",
+        "tag",
+        "-w",
+        "--stdin",
+        "--literally",
+      ],
+      { input: object, encoding: "utf8" },
+    );
+  assert.equal(made.status, 0, made.stderr);
+  f.git(["update-ref", "refs/tags/v1.2.0", made.stdout.trim()]);
+  assert.match(f.git(["cat-file", "-p", "v1.2.0"]), /^tag v1\.2\.0$/mu);
+  let result;
+  assert.doesNotThrow(() => {
+    result = f.check();
+  });
+  assert.deepEqual(result.failures, [
+    "docs/product/06-roadmap.md: a local release tag's annotation cannot be read (v1.2.0 is not an annotated tag object); repair or delete the tag",
+  ]);
+  assert.deepEqual(result.notices, []);
+});
+
+test("a home or private temporary path in a document fails at its line; baselined lines pass until edited", (t) => {
+  const f = fixture(t);
+  const file = "docs/evidence/WO-999/README.md";
+  const message =
+    "absolute home or private temporary path; write a repository-relative path or a placeholder such as <worktree>/ or <tmp>/";
+  f.write(file, "Ran in /Users/fixture-user/work/repo.\n");
+  let result = f.check();
+  assert.deepEqual(result.failures, [`${file}:1: ${message}`]);
+  assert.doesNotMatch(result.failures.join("\n"), /fixture-user/);
+  f.baseline.homePaths = {
+    [file]: homePathFindings(f.root).map((row) => row.fingerprint),
+  };
+  result = f.check();
+  assert.deepEqual(result.failures, []);
+  assert.equal(result.historicalHomePaths, 1);
+  // An edited line is a new line, and a pasted duplicate exceeds the count.
+  f.write(file, "Ran in /Users/fixture-user/work/other.\n");
+  assert.deepEqual(f.check().failures, [`${file}:1: ${message}`]);
+  f.write(
+    file,
+    "Ran in /Users/fixture-user/work/repo.\nRan in /Users/fixture-user/work/repo.\n",
+  );
+  assert.deepEqual(f.check().failures, [`${file}:2: ${message}`]);
+  // Each positive form on its own line; placeholders and relative tails are
+  // not paths, and a bare mention names no file.
+  f.baseline.homePaths = {};
+  f.write(
+    file,
+    [
+      "/private/var/folders/ab/T/x",
+      "/tmp/dotln-fixture/x",
+      "file:///Users/fixture-user/x",
+      "/home/fixture/x",
+      "/Users/...",
+      "/var/folders/.../T",
+      "SCRATCH/tmp/x",
+      ".runtime/tmp/x",
+      "`/tmp/` alone",
+    ].join("\n") + "\n",
+  );
+  assert.deepEqual(
+    f.check().failures.map((line) => Number(line.split(":")[1])),
+    [1, 2, 3, 4],
+  );
+  for (const malformed of [{ [file]: "x" }, { [file]: ["not-a-digest"] }]) {
+    f.baseline.homePaths = malformed;
+    assert.throws(
+      () => f.check(),
+      /Historical home-path exceptions require a file and SHA-256 line fingerprints/,
+    );
+  }
+  f.baseline.homePaths = {};
+  f.write(file, "Ran in /Users/fixture-user/work/repo.\n");
+  f.controls();
+  const cli = spawnSync(process.execPath, [script], {
+    cwd: f.root,
+    env: { ...process.env, DOTLN_LAUNCHPAD: f.root },
+    encoding: "utf8",
+  });
+  assert.equal(cli.status, 1);
+  assert.match(
+    cli.stderr,
+    /FAIL docs\/evidence\/WO-999\/README\.md:1: absolute home/,
+  );
+  assert.doesNotMatch(cli.stdout + cli.stderr, /fixture-user/);
+});
+
+test("a typed operator quotation needs its capture digest; a quoted field or report paragraph advises by its own record", (t) => {
+  const f = fixture(t);
+  const path = "docs/evidence/WO-999/decisions.md";
+  // The typed field fails the check; every other finding stays an advisory.
+  f.record("resume: next", {
+    operatorQuote: { text: "synthetic captured words" },
+  });
+  let result = f.check();
+  assert.deepEqual(result.failures, [
+    `${path}#WO-999-D001: operatorQuote 1 needs text and captureSha256 (sha256:<digest> of the captured words in ignored intake); paraphrase instead of quoting`,
+  ]);
+  assert.doesNotMatch(result.failures.join("\n"), /synthetic captured words/);
+  f.record("resume: next", {
+    operatorQuote: {
+      text: "synthetic captured words",
+      captureSha256: `sha256:${"d".repeat(64)}`,
+    },
+  });
+  assert.deepEqual(f.check().failures, []);
+  for (const quote of [
+    [{ text: "x" }],
+    { text: "", captureSha256: `sha256:${"d".repeat(64)}` },
+    { text: "x", captureSha256: "d".repeat(64) },
+    "words",
+  ]) {
+    f.record("resume: next", { operatorQuote: quote });
+    assert.equal(f.check().failures.length, 1, JSON.stringify(quote));
+  }
+  f.controls();
+  const cli = spawnSync(process.execPath, [script], {
+    cwd: f.root,
+    env: { ...process.env, DOTLN_LAUNCHPAD: f.root },
+    encoding: "utf8",
+  });
+  assert.equal(cli.status, 1);
+  assert.match(cli.stderr, /operatorQuote 1 needs text and captureSha256/);
+  // Each quoting field advises under its own record.
+  const records = () => operatorWordFindings(f.root).map((row) => row.record);
+  f.record("resume: next", {
+    evidence: ["The operator said “synthetic evidence quote”."],
+  });
+  assert.deepEqual(records(), ["WO-999-D001/evidence-1"]);
+  f.record("resume: next", {
+    kind: "correction",
+    misread: "The operator said “synthetic”.",
+    meant: "a paraphrase",
+    changed: "the text",
+  });
+  assert.deepEqual(records(), ["WO-999-D001/misread"]);
+  f.record("resume: next", {
+    rejected: [{ option: "x", reason: "The operator said “synthetic”." }],
+  });
+  assert.deepEqual(records(), ["WO-999-D001/rejected-1.reason"]);
+  // An operator-named field attributes its value by its key alone; a marked
+  // paraphrase and a capture digest exempt it; a baseline covers it.
+  f.record("resume: next", { operatorAuthorization: "synthetic words" });
+  const named = operatorWordFindings(f.root);
+  assert.deepEqual(
+    named.map((row) => row.record),
+    ["WO-999-D001/operatorAuthorization"],
+  );
+  f.baseline.operatorWords = {
+    [`${named[0].file}#${named[0].record}`]: named[0].fingerprint,
+  };
+  assert.equal(f.check().operatorWords.current, 0);
+  assert.equal(f.check().operatorWords.historical, 1);
+  f.record("resume: next", {
+    operatorAuthorization: ["Paraphrase: synthetic", "second words"],
+  });
+  assert.deepEqual(records(), ["WO-999-D001/operatorAuthorization-2"]);
+  f.record("resume: next", {
+    operatorAuthorization: "synthetic words",
+    evidence: [`SHA-256 ${"a".repeat(64)}`],
+  });
+  assert.deepEqual(records(), []);
+  // A backquote run inside a JSON string no longer leaks the record into the
+  // prose the decision-level check reads.
+  f.record("resume: next", {
+    evidence: ["a line that starts with ``` toggles a fence"],
+    rejected: [
+      { option: "Ask the operator to authorize the redesign", reason: "x" },
+    ],
+  });
+  assert.deepEqual(records(), []);
+  // Reports and planning documents: a paragraph that attributes words is a
+  // record keyed by its own content, so an insertion above it keeps the key;
+  // a fenced example is no record.
+  f.record("resume: next");
+  f.write(
+    "docs/verifications/WO-999/VER-001.md",
+    "# VER-001\n\nThe operator said “synthetic report quote”.\n",
+  );
+  f.write(
+    "docs/planning/fixture-pass.md",
+    "# Pass\n\nThe operator said “synthetic planning quote”.\n\n```\nThe operator said “fenced”.\n```\n",
+  );
+  const documents = operatorWordFindings(f.root);
+  assert.deepEqual(
+    documents.map((row) => [row.file, row.line]),
+    [
+      ["docs/planning/fixture-pass.md", 3],
+      ["docs/verifications/WO-999/VER-001.md", 3],
+    ],
+  );
+  assert.ok(
+    documents.every((row) => /^paragraph-[0-9a-f]{12}$/u.test(row.record)),
+  );
+  assert.doesNotMatch(JSON.stringify(documents), /synthetic/);
+  f.write(
+    "docs/verifications/WO-999/VER-001.md",
+    "# VER-001\n\nAn inserted paragraph.\n\nThe operator said “synthetic report quote”.\n",
+  );
+  const moved = operatorWordFindings(f.root).find(
+    (row) => row.file === documents[1].file,
+  );
+  assert.equal(moved.record, documents[1].record);
+  assert.equal(moved.line, 5);
 });

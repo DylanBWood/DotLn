@@ -1,0 +1,46 @@
+{
+  "order": "WO-199",
+  "tag": "v0.69.2",
+  "reviewedRevision": "0cc97dc8569189a928f6dfb80945ffe5788cb1d0",
+  "title": "The vertical survives an interrupt and a host crash: a writer launched through the vertical records its process group, an interrupted `dotln vertical` stops its writer and resumes on rerun, and a host refusal after a writer's result records its own reason",
+  "before": {
+    "pullRequestBody": {
+      "unavailableTokens": 75,
+      "unavailableCells": 75,
+      "relativeLinks": 4,
+      "absoluteLinks": 0,
+      "titleOccurrences": 0,
+      "countingLine": false
+    },
+    "releaseText": {
+      "unavailableTokens": 1,
+      "unavailableCells": 0,
+      "relativeLinks": 10,
+      "absoluteLinks": 0,
+      "titleOccurrences": 5,
+      "countingLine": false
+    }
+  },
+  "after": {
+    "pullRequestBody": {
+      "unavailableTokens": 2,
+      "unavailableCells": 0,
+      "relativeLinks": 0,
+      "absoluteLinks": 4,
+      "titleOccurrences": 0,
+      "countingLine": true
+    },
+    "releaseText": {
+      "unavailableTokens": 1,
+      "unavailableCells": 0,
+      "relativeLinks": 0,
+      "absoluteLinks": 10,
+      "titleOccurrences": 1,
+      "countingLine": false
+    }
+  },
+  "sources": {
+    "pullRequestBody": "docs/final-reviews/WO-199/PR.md with its meter block re-rendered by renderMetaTable over collectMeta at this worktree and links written absolute at the reviewed revision",
+    "releaseText": "releaseEdition over manifestFromTag(v0.69.2) with the commit range bound at the tag"
+  }
+}

@@ -34,6 +34,20 @@ const events = {
   PostToolUse: "postToolUse",
   Stop: "agentStop",
 };
+// The failure-event mode names the host's failed-command event, and the
+// denial event beside it, in the shared Claude-form file and has the skill
+// run one failing command, to observe how the CLI treats a file naming them.
+// Nothing here claims the CLI fires either event.
+const failureEvents = ["PostToolUseFailure", "PermissionDenied"];
+export const FAILING_COMMAND = 'node -e "process.exit(3)"';
+export const copilotFailureEventRow = {
+  id: "P11",
+  trust: true,
+  forms: ["claude"],
+  permissions: "tools",
+  model: "default",
+  failureEvent: true,
+};
 export const copilotLaunchRows = [
   {
     id: "P1",
@@ -119,7 +133,7 @@ export function prepareCopilotScratch(
   row,
   { hostModule, base = tmpdir() } = {},
 ) {
-  assert.ok(/^P(?:[1-9]|10)$/.test(row.id) || row.id === "interactive");
+  assert.ok(/^P(?:[1-9]|1[01])$/.test(row.id) || row.id === "interactive");
   const parent = realpathSync(base);
   assert.ok(
     parent === realpathSync(tmpdir()) ||
@@ -168,6 +182,9 @@ export function prepareCopilotScratch(
       ["claude-deny", "claude-error", "native-deny", "native-error"]
         .map((name) => `- \`printf fixture > ${name}.txt\``)
         .join("\n") +
+      (row.failureEvent
+        ? `\n\nRun \`${FAILING_COMMAND}\` once in its own tool call; its non-zero exit is expected, never retry.`
+        : "") +
       "\n\nInclude SKILL_OBSERVED and any instruction or hook observation markers you actually received in the final answer. Do not repeat a marker you did not receive. No external reads, settings changes, network tools or publication.\n",
   );
   write(
@@ -176,8 +193,15 @@ export function prepareCopilotScratch(
     'import {writeFileSync} from "node:fs";\nwriteFileSync("shell-identity.json",JSON.stringify({sessionVariablePresent:typeof process.env.COPILOT_AGENT_SESSION_ID==="string",claudeProjectDirMatches:process.env.CLAUDE_PROJECT_DIR===process.cwd()}));\nwriteFileSync(".probe-session.json",JSON.stringify({sessionId:process.env.COPILOT_AGENT_SESSION_ID}),{mode:0o600});\n',
   );
   for (const form of row.forms) {
+    const registered =
+      form === "claude" && row.failureEvent
+        ? [
+            ...Object.entries(events),
+            ...failureEvents.map((event) => [event, null]),
+          ]
+        : Object.entries(events);
     const hooks = Object.fromEntries(
-      Object.entries(events).map(([event, native]) => {
+      registered.map(([event, native]) => {
         const command =
           form === "claude"
             ? `node "$CLAUDE_PROJECT_DIR/probe-hook.mjs" claude ${event}`
@@ -285,8 +309,37 @@ export function summarizeCopilotProbe(directory, row, result = {}) {
       },
     ),
   );
+  const failing = row.failureEvent
+    ? (() => {
+        const started = toolStarts.find(
+          (entry) => entry.data?.arguments?.command === FAILING_COMMAND,
+        );
+        const completed =
+          started &&
+          logs.find(
+            (entry) =>
+              entry.type === "tool.execution_complete" &&
+              entry.data?.toolCallId === started.data.toolCallId,
+          );
+        return {
+          registered: failureEvents,
+          invoked: Object.fromEntries(
+            failureEvents.map((event) => [
+              event,
+              invocations.filter((entry) => entry.event === event).length,
+            ]),
+          ),
+          otherEventsInvoked: invocations.filter(
+            (entry) => !failureEvents.includes(entry.event),
+          ).length,
+          failingCommandStarted: Boolean(started),
+          failingCommandMarkedFailed: completed?.data?.success === false,
+        };
+      })()
+    : null;
   return {
     ...row,
+    ...(failing ? { failureEvent: failing } : {}),
     trustSource: "disposable config.json",
     observedAt: new Date().toISOString(),
     cliVersion: safeValue(start?.data?.copilotVersion),
@@ -460,7 +513,7 @@ export function renderCopilotProbe(record) {
   return [
     `# Copilot CLI phase-zero observations - ${record.date}`,
     "",
-    `WO-146. Scripted model launches: ${record.launchesStarted}/12; each carries a 30-AI-credit soft cap. Installed version: ${record.installedVersion ?? "unknown"}.`,
+    `WO-146. Scripted model launches: ${record.launchesStarted}/12${typeof record.priorLaunches === "number" ? ` in this record after ${record.priorLaunches} in earlier records` : ""}; each carries a 30-AI-credit soft cap. Installed version: ${record.installedVersion ?? "unknown"}.`,
     "Scratch repositories and CLI homes are system-temporary. No operator settings are written. No live CLI is part of a test gate. This is probe evidence, not workflow qualification.",
     ...(record.trustCorrection
       ? [
@@ -493,6 +546,21 @@ export function renderCopilotProbe(record) {
         `${row.id}: ${row.status}; bare entry ${row.enteredBare === true ? "operator-attested" : "not yet attested"}; permissions ${row.permissions ?? "unknown"}; hook invocations ${row.events?.length ?? "unknown"}.`,
     ),
     "",
+    ...(record.rows.some((row) => row.failureEvent)
+      ? [
+          "## Failed-command event",
+          "",
+          "The shared Claude-form registration file names the host's failed-command event and the denial event beside the five observed events; each row records what the CLI did with that file. Nothing here claims either event fires under Copilot.",
+          "",
+          ...record.rows
+            .filter((row) => row.failureEvent)
+            .map(
+              (row) =>
+                `${row.id}: CLI ${row.cliVersion ?? "unknown"}, exit ${row.exitCode ?? "unknown"}; file names ${row.failureEvent.registered.join(" and ")}; other hooks invoked ${row.failureEvent.otherEventsInvoked} times; ${failureEvents.map((event) => `${event} invoked ${row.failureEvent.invoked[event]} times`).join(", ")}; the failing command ${row.failureEvent.failingCommandStarted ? "started" : "did not start"} and ${row.failureEvent.failingCommandMarkedFailed ? "was marked failed" : "was not marked failed"}.`,
+            ),
+          "",
+        ]
+      : []),
     `Machine-readable observations: [companion](copilot-cli-${record.date}.json).`,
     "",
   ].join("\n");
@@ -505,6 +573,7 @@ export async function runCopilotProbe({
   date = new Date().toISOString().slice(0, 10),
   base = tmpdir(),
   correctTrust = false,
+  mode = "default",
   hostModule = pathToFileURL(
     join(repository, "packages/skeleton/dist/src/harness-host.js"),
   ).href,
@@ -557,7 +626,9 @@ export async function runCopilotProbe({
     ? copilotLaunchRows
         .filter((row) => row.trust && row.model !== "auto")
         .map((row, index) => ({ ...row, id: `P${index + 7}` }))
-    : copilotLaunchRows;
+    : mode === "failure-event"
+      ? [copilotFailureEventRow]
+      : copilotLaunchRows;
   assert.ok(
     previousLaunches + launches.length <= 12,
     "Copilot scripted launch bound reached",
@@ -568,6 +639,7 @@ export async function runCopilotProbe({
     harness: "copilot-cli",
     installedVersion: null,
     launchesStarted: 0,
+    priorLaunches: previousLaunches,
     rows: [],
   };
   // Reserve before launch: interruption cannot silently reset the spend bound.
@@ -708,11 +780,14 @@ export async function copilotProbe(args) {
     return;
   }
   assert.ok(
-    args.length === 0 || (args.length === 1 && args[0] === "--correct-trust"),
-    "usage: DOTLN_LIVE_HARNESS=1 node scripts/harness-probe.mjs copilot [--correct-trust]",
+    args.length === 0 ||
+      (args.length === 1 &&
+        ["--correct-trust", "failure-event"].includes(args[0])),
+    "usage: DOTLN_LIVE_HARNESS=1 node scripts/harness-probe.mjs copilot [--correct-trust|failure-event]",
   );
   const record = await runCopilotProbe({
     correctTrust: args[0] === "--correct-trust",
+    mode: args[0] === "failure-event" ? "failure-event" : "default",
   });
   console.log(
     `Retained docs/discovery/copilot-cli-${record.date}.{json,md}; interactive observations remain pending.`,

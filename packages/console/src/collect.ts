@@ -96,7 +96,7 @@ export async function collectSources(
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],
       maxBuffer,
-      // WO-125 VER-003 measured release:list at 17.2 s alone. The scheduler
+      // Verification measured release:list at 17.2 s alone (WO-125). The
       // declares the load factor; ordinary collection keeps its 60 s bound.
       timeout: deadlineLimit(17_200, 60_000),
       env: { ...process.env, GIT_OPTIONAL_LOCKS: "0" },

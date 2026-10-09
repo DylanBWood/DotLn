@@ -94,7 +94,7 @@ const ISSUE_SOURCE_REFUSALS = {
 };
 /** A host fault's recorded reason. A system error's or child process's
  * message names a local path, so only its code or exit status is recorded
- * (D047). */
+ * (WO-112 D047). */
 const hostFault = (error) =>
   typeof error?.syscall === "string" && typeof error.code === "string"
     ? error.code
@@ -121,7 +121,7 @@ const readTarget = (target, args, options) => {
   }
 };
 // realpath keeps a volume alias unchanged (WO-162 D004); the physical working
-// directory is the identity the source-change guards compare (D003).
+// directory is the identity the source-change guards compare (WO-123 D003).
 const directoryIdentity = (path) => {
   try {
     return execFileSync("/bin/pwd", ["-P"], {
@@ -277,7 +277,7 @@ export function readVerticalConfiguration(directory, root = findLaunchpad()) {
       "intent target must be a registered repository with an authority profile",
     );
     // A readable target with another or no origin is the entry's own input and
-    // holds; a target that cannot be read is a transient condition (D024).
+    // holds; an unreadable target is a transient condition (WO-123 D024).
     if (targetReadable(value.target))
       need(
         targetForge(value.target) === value.repositoryId.toLowerCase(),
@@ -421,7 +421,8 @@ export function createVerticalEntry({
    * undecided for a fresh episode. A refused return, or a verdict the host
    * could not record, holds it with its reason, so no fault buys a further
    * episode. Any other host fault, such as a missing live-worker opt-in or an
-   * unbinding record, keeps its reason for a bounded number of attempts (D047). */
+   * unbinding record, keeps its reason for a bounded number of attempts
+   * (WO-112 D047). */
   async function modelIntake(issue, bundle) {
     let record;
     try {
@@ -552,7 +553,7 @@ export function createVerticalEntry({
           "contract",
           "issue revision changed; supplied classification requires review",
         );
-        // Only an episode the host launched may be labelled a model (VER-001 F1).
+        // Only an episode the host launched may be labelled a model (WO-112).
         prepareNeed(
           baselineAssessment?.producer?.kind !== "model",
           "contract",

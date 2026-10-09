@@ -160,12 +160,7 @@ export function recordWorktreeRemoval(main, subject, reconciliation) {
   const workOrder = reconciliation.workOrder;
   if (!/^WO-\d{3}$/.test(workOrder) || reconciliation.dryRun)
     throw new Error("Removal proof requires actual preservation for its order");
-  const preservedPaths = [
-    ...reconciliation.files.map((row) => row.destination),
-    ...(reconciliation.recovery ?? [])
-      .filter((row) => row.outcome === "bundled")
-      .map((row) => row.path),
-  ];
+  const preservedPaths = reconciliation.files.map((row) => row.destination);
   const preserved = [...new Set(preservedPaths)].map((file) => {
     requireMaterialContainment(main, file);
     if (!lstatSync(join(main, file)).isFile())

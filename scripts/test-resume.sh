@@ -227,10 +227,10 @@ for (const raw of ["ultra","ultra code","ultracode","UltraCode"]) {
   assert.deepEqual(actor,{harness:"unknown",harnessVersion:"unknown",model:"unknown",effort:"xhigh",mode:"subagents",raw,source:"unknown"});
 }
 NODE
-# WO-157 item 11 (WO-152 D012): Claude Code's host exports the session's
-# selected effort as CLAUDE_EFFORT. A readback source is admitted only when it
-# is present and equal to the attested effort, and a readable value is never
-# attested as unknown.
+# Claude Code's host exports the session's selected effort as CLAUDE_EFFORT.
+# A readback source is admitted only when it is present and equal to the
+# attested effort, and a readable value is never attested as unknown
+# (WO-157 item 11; WO-152 D012).
 node --input-type=module - "$fixture_repo/scripts/resume.mjs" <<'NODE'
 import assert from "node:assert/strict";
 const {parseActor}=await import(process.argv[2]);
@@ -243,8 +243,8 @@ withEnv("xhigh",()=>assert.throws(()=>parseActor("fixture",flags("max","claude-s
 withEnv("xhigh",()=>assert.throws(()=>parseActor("fixture",flags("xhigh","claude-session-readback","codex-cli")),/CLAUDE_EFFORT xhigh, attested codex-cli effort xhigh/));
 withEnv("xhigh",()=>assert.throws(()=>parseActor("fixture",flags("unknown","operator-attested")),/exports CLAUDE_EFFORT=xhigh; attest --effort xhigh --source claude-session-readback rather than unknown/));
 withEnv("xhigh",()=>assert.equal(parseActor("fixture",flags("ultracode","claude-session-readback")).effort,"xhigh"));
-// VER-001 F3: under a readable CLAUDE_EFFORT a claude-code attestation records
-// that value from the readback; another effort or source is refused.
+// Under a readable CLAUDE_EFFORT a claude-code attestation records that value
+// from the readback; another effort or source is refused.
 withEnv("xhigh",()=>assert.throws(()=>parseActor("fixture",flags("high","operator-attested")),/exports CLAUDE_EFFORT=xhigh; attest --effort xhigh --source claude-session-readback rather than high with source operator-attested/));
 withEnv("xhigh",()=>assert.throws(()=>parseActor("fixture",flags("xhigh","operator-attested")),/rather than xhigh with source operator-attested/));
 withEnv("xhigh",()=>assert.throws(()=>parseActor("fixture",flags("xhigh","operator-selected-model-effective-effort-unavailable")),/rather than xhigh with source operator-selected-model-effective-effort-unavailable\./));
@@ -254,7 +254,7 @@ withEnv("not-a-level",()=>assert.equal(parseActor("fixture",flags("unknown","ope
 NODE
 assert_refusal 'claude-session-readback requires' implementation-ready \
   --harness claude-code --harness-version fixture-0 --model fixture.model/alpha --effort xhigh --source claude-session-readback
-# VER-001 F3: a same-session completion whose effort disagrees is refused and
+# A same-session completion whose effort disagrees is refused and
 # appends nothing.
 export CLAUDE_EFFORT=xhigh
 assert_refusal 'exports CLAUDE_EFFORT=xhigh; attest --effort xhigh --source claude-session-readback rather than high with source operator-attested' implementation-ready \
@@ -665,8 +665,8 @@ assert.deepEqual([readFileSync(log), readFileSync(current)], beforeBadClock);
 await call(["implementation-ready", ...actorArgs]);
 const costForms = "Put exactly one physical cost line in the report: `**Process cost:** entry <total> tokens; handoff <total> tokens; source <source>` or `**Process cost:** unknown; cause <hooks-fallback|no-session|harness-no-readback>`. The result transition and npm run test:docs refuse a bare unknown.";
 assert.ok((await call(["verify"])).includes(`VER-001.md. ${costForms}\n`), "the verify briefing prints the admitted cost-line forms");
-// WO-140: the result transition judges the stamped cost line while the author
-// can still edit the report, before it becomes an immutable receipt.
+// The result transition judges the stamped cost line while the author can
+// still edit the report, before it becomes an immutable receipt.
 const bareUnknown = join(root, "docs/verifications/WO-087/VER-001.md");
 mkdirSync(join(bareUnknown, ".."), { recursive: true });
 for (const body of ["", "\n**Process cost:** unknown\n", "\n- **Process cost:** entry unknown as of 2026-09-19; handoff unknown; source none\n"]) {
@@ -699,7 +699,7 @@ appended.forEach((event, index) => {
   assert.ok(time >= beforeSequence && time <= afterSequence);
   if (index) assert.ok(time >= Date.parse(appended[index - 1].recordedAt));
 });
-// WO-140: only the receipts this lifecycle allocates carry the cost-line duty.
+// Only the receipts this lifecycle allocates carry the cost-line duty.
 assert.deepEqual(
   appended.filter((event) => event.costLine !== undefined).map((event) => [event.type, event.reportPath.split("/").at(-1), event.costLine]),
   [["VerificationRequested", "VER-001.md", "required"], ["VerificationRequested", "VER-002.md", "required"], ["FinalReviewRequested", "FINAL-001.md", "required"]],

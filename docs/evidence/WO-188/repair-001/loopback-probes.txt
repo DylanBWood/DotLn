@@ -1,0 +1,49 @@
+# Loopback keep-alive probes for the WO-188 repair of VER-001 F3 (2026-10-09)
+
+Load: 20 busy Node processes on 16 cores. Command under node scripts/harness.mjs bounded:
+node --import <scratch fetch wrapper> --test --test-name-pattern 'bound resident serves' packages/console/dist/test/console-commands.test.js
+The wrapper logs each fetch, its cause on failure and every socket end/destroy/connect with a short stack; no headers, tokens or bodies.
+
+## Before the repair, first loaded attempt (exit 1)
+FETCH-DIAG    530ms #1 start GET :63971/console-commands-v1 sinceLastSettled=530ms
+FETCH-DIAG    543ms #1 headers status=200 connection=keep-alive keepAlive=timeout=5
+FETCH-DIAG   1526ms #2 start POST :63971/console-commands-v1/invoke sinceLastSettled=983ms
+FETCH-DIAG   1565ms #2 headers status=200 connection=keep-alive keepAlive=timeout=5
+FETCH-DIAG   5262ms #3 start POST :63971/console-commands-v1/invoke sinceLastSettled=3697ms
+FETCH-DIAG   5295ms #3 headers status=200 connection=keep-alive keepAlive=timeout=5
+FETCH-DIAG   8702ms #4 start POST :63971/console-commands-v1/invoke sinceLastSettled=3407ms
+SOCKET-DIAG   8703ms server destroy local=63971 peer=63973 error=- | Socket.socketOnTimeout (node:_http_server:909:10) | Socket.emit (node:events:514:20) | Socket._onTimeout (node:net:824:8) | Timeout.onStreamTimeout [as _onTimeout] (node:internal/stream_base_commons:237:10) | listOnTimeout (node:internal/timers:687:11) | process.processTimers (node:internal/timers:618:7)
+SOCKET-DIAG   8704ms client destroy local=63973 peer=undefined error=ECONNRESET: read ECONNRESET | TCP.onStreamRead (node:internal/stream_base_commons:216:12)
+FETCH-DIAG   8705ms #4 FAILED error=TypeError: fetch failed cause=Error/ECONNRESET/read: read ECONNRESET
+SOCKET-DIAG   8705ms server destroy local=63971 peer=63972 error=- | Server.closeIdleConnections (node:_http_server:708:27) | httpServerPreClose (node:_http_server:628:10) | Server.close (node:_http_server:675:3) | file://<worktree>/packages/skeleton/dist/src/console-loopback.js:299:49 | new Promise (<anonymous>) | ConsoleLoopback.shutdown (file://<worktree>/packages/skeleton/dist/src/console-loop
+SOCKET-DIAG   8705ms server destroy local=undefined peer=63973 error=- | Server.closeIdleConnections (node:_http_server:708:27) | httpServerPreClose (node:_http_server:628:10) | Server.close (node:_http_server:675:3) | file://<worktree>/packages/skeleton/dist/src/console-loopback.js:299:49 | new Promise (<anonymous>) | ConsoleLoopback.shutdown (file://<worktree>/packages/skeleton/dist/src/console-
+SOCKET-DIAG   8705ms server destroy local=undefined peer=63972 error=- | Server.closeAllConnections (node:_http_server:692:27) | ConsoleLoopback.shutdown (file://<worktree>/packages/skeleton/dist/src/console-loopback.js:301:21) | ConsoleLoopback.close (file://<worktree>/packages/skeleton/dist/src/console-loopback.js:287:38) | options.signal.addEventListener.once (file://<worktree>/packages/skeleto
+SOCKET-DIAG   8705ms server destroy local=undefined peer=63973 error=- | Server.closeAllConnections (node:_http_server:692:27) | ConsoleLoopback.shutdown (file://<worktree>/packages/skeleton/dist/src/console-loopback.js:301:21) | ConsoleLoopback.close (file://<worktree>/packages/skeleton/dist/src/console-loopback.js:287:38) | options.signal.addEventListener.once (file://<worktree>/packages/skeleto
+SOCKET-DIAG   8709ms client destroy local=63972 peer=63971 error=UND_ERR_SOCKET: other side closed | Object.destroy (node:internal/deps/undici/undici:1839:19) | Socket.onHttpSocketEnd (node:internal/deps/undici/undici:7844:12) | Socket.emit (node:events:526:24) | endReadableNT (node:internal/streams/readable:1985:12) | process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+
+## Before the repair, an earlier loaded attempt (exit 1)
+FETCH-DIAG #3 POST :63880/console-commands-v1/invoke sinceLast=4484ms took=4ms error=TypeError: fetch failed cause=Error/ECONNRESET/read: read ECONNRESET
+
+## Simple in-process experiment: one fetch, a 5.5 s synchronous stall, one fetch; three server arms
+// Reproduces the class: an in-process HTTP server, one fetch, a synchronous
+// block longer than Node's default 5 s server keep-alive timeout, then a
+// second fetch. Three arms: default; Connection: close responses; keepAliveTimeout 0.
+import { createServer } from "node:http";
+{"label":"default","keepAliveTimeout":5000,"firstHeaders":{"connection":"keep-alive","keepAlive":"timeout=5"},"blockedMs":5504,"second":"ok","large":2097152}
+{"label":"connection-close","keepAliveTimeout":5000,"firstHeaders":{"connection":"close","keepAlive":null},"blockedMs":5505,"second":"ok","large":2097152}
+{"label":"keep-alive-timeout-0","keepAliveTimeout":0,"firstHeaders":{"connection":"keep-alive","keepAlive":null},"blockedMs":5505,"second":"ok","large":2097152}
+All three arms pass: the client's own idle timer expires in the same stall and, when it fires first, undici reopens the connection, so a plain stall does not reproduce the loaded failure; the order of two expired timers decides it.
+
+## After the repair, six loaded attempts
+attempt 1: pass (exit 0), fetch failures 0, responses 26, every response connection: close: yes
+attempt 2: pass (exit 0), fetch failures 0, responses 26, every response connection: close: yes
+attempt 3: pass (exit 0), fetch failures 0, responses 26, every response connection: close: yes
+attempt 4: pass (exit 0), fetch failures 0, responses 26, every response connection: close: yes
+attempt 5: pass (exit 0), fetch failures 0, responses 26, every response connection: close: yes
+attempt 6: pass (exit 0), fetch failures 0, responses 26, every response connection: close: yes
+
+## Plain console suite after the repair
+ℹ tests 6
+ℹ pass 6
+ℹ fail 0
+ℹ duration_ms 29195.953333

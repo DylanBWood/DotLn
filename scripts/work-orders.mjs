@@ -562,7 +562,7 @@ export const renderIndex = ({
   return `${lines.join("\n").trimEnd()}\n`;
 };
 
-// WO-158: the order's off-ramp events, shown only when recorded.
+// The order's off-ramp events, shown only when recorded (WO-158).
 const offRampLines = (state) => [
   ...(state?.withdrawal
     ? [

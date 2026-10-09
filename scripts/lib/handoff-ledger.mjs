@@ -1,4 +1,4 @@
-// WO-173: the executor's handoff ledger, handoff.md in the order's directory
+// The executor's handoff ledger (WO-173), handoff.md in the order's directory
 // under the configured evidence root. It holds one line per acceptance
 // criterion the order declares, in the forms a verification report already
 // uses, followed on the same line by the evidence for met or the decision

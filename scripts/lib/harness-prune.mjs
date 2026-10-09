@@ -597,8 +597,8 @@ function usageRetention(root, order, inventory) {
   );
   if (snapshot.status !== 0) return "usage has no committed snapshot";
   try {
-    // WO-170 names each carried copy in `usageCopies`; a digest elsewhere in
-    // the snapshot (a skipped copy, say) carries nothing (WO-171-D014).
+    // The snapshot names each carried copy in `usageCopies` (WO-170); a digest
+    // elsewhere in it (a skipped copy, say) carries nothing (WO-171-D014).
     const carried = JSON.parse(snapshot.stdout)?.usageCopies;
     if (
       Array.isArray(carried) &&
@@ -834,6 +834,10 @@ export function pruneHarness(root, { apply = false, ...options } = {}) {
           throw new Error(
             `Preservation byte proof differs; retained ${row.path}`,
           );
+        // A stop between the link and the partial's removal leaves the partial
+        // beside a whole proof; once the proof matches it is residue.
+        const leftover = `${proofPath}.partial`;
+        if (stat(leftover)?.isFile()) rmSync(leftover);
         row.byteProof = relative(plan.root, proofPath);
       }
       if (row.kind === "integration-stash") {
@@ -868,7 +872,7 @@ export function pruneHarness(root, { apply = false, ...options } = {}) {
     bytes: plan.bytes,
     candidates: plan.candidates.map(({ absolute, inventory, ...row }) => row),
     retained: plan.retained,
-    // WO-159: listed, not pruned here; the next Codex launch removes them.
+    // Listed, not pruned here; the next Codex launch removes them (WO-159).
     staleCodexEpisodeHomes: staleCodexEpisodeHomes(options.codexHomeRoot).map(
       (path) => basename(path),
     ),

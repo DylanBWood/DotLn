@@ -1221,8 +1221,11 @@ record. Until it merges the support stays opt-in per order. The adaptive
 modifier is unchanged in status.
 
 **Equipped by default, 2026-09-21 (WO-150, application `v0.39.0`).** The default
-flipped to on; an order opts out with `{ "tinkerer-economy": false }`, and the
-executor may still decline any single experiment with a reason. Measured at the
+flipped to on; an order opts out with `{ "tinkerer-economy": false }`. The
+support's trigger is a fork in the work: when two credible ways to the same
+result differ on a named axis, the executor runs one bounded comparison and
+records both arms, writes nothing when no fork appears, and runs an experiment
+the order names. Measured at the
 flip in both generated skill roots: the support adds 1,173 bytes of executor
 role text, taking the executor cold start from 23,154 to 24,327 bytes against
 the 24,576-byte ceiling, within by 249 bytes, so no ceiling moved and no dated
@@ -1247,8 +1250,8 @@ dispatches after merge, each recording an experiment or a kept-current decline,
 and fewer than half doing either reconsiders the flip. Read on 2026-10-02: all
 64 dispatches since recorded one, 33 as declines; 15 adopted something and 8 of
 those measured both arms. An experiment named before implementation has no
-alternative in view, so the timing fails and the equipment does not; WO-188
-moves the trigger to the point where the work shows a fork. The adaptive
+alternative in view, so the timing fails and the equipment does not; WO-196
+moved the trigger to the point where the work shows a fork. The adaptive
 modifier and the broken-window pressure signal remain unimplemented.
 
 

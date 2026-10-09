@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync, spawn } from "node:child_process";
+import { execGit } from "./lib/git.mjs";
 import {
   mkdtempSync,
   mkdirSync,
@@ -77,9 +78,9 @@ async function fixture(t) {
       },
     }),
   );
-  execFileSync("git", ["init", "-q", repo]);
-  execFileSync("git", ["-C", repo, "add", "."]);
-  execFileSync("git", [
+  execGit(["init", "-q", repo]);
+  execGit(["-C", repo, "add", "."]);
+  execGit([
     "-C",
     repo,
     "-c",
@@ -858,8 +859,8 @@ test("WO-185 document base comparisons pass their four-lane lease to nested gate
     } catch(error) {console.error(error.message);process.exitCode=1}
     finally {clearTimeout(timer)};`,
   );
-  execFileSync("git", ["-C", f.repo, "add", "."]);
-  execFileSync("git", [
+  execGit(["-C", f.repo, "add", "."]);
+  execGit([
     "-C",
     f.repo,
     "-c",
@@ -872,7 +873,7 @@ test("WO-185 document base comparisons pass their four-lane lease to nested gate
     "-qm",
     "Nested base fixture",
   ]);
-  const base = execFileSync("git", ["-C", f.repo, "rev-parse", "HEAD"], {
+  const base = execGit(["-C", f.repo, "rev-parse", "HEAD"], {
     encoding: "utf8",
   }).trim();
   const result = await runGate(
@@ -1023,16 +1024,8 @@ test("WO-185 independent worktrees and separate clones share lanes, wait, reclai
   const f = await fixture(t);
   const worktree = join(f.base, "worktree"),
     clone = join(f.base, "clone");
-  execFileSync("git", [
-    "-C",
-    f.repo,
-    "worktree",
-    "add",
-    "-q",
-    "--detach",
-    worktree,
-  ]);
-  execFileSync("git", ["clone", "-q", "--local", f.repo, clone]);
+  execGit(["-C", f.repo, "worktree", "add", "-q", "--detach", worktree]);
+  execGit(["clone", "-q", "--local", f.repo, clone]);
   for (const [other, cpuCount] of [worktree, clone].flatMap((repo) =>
     [availableParallelism(), 4, 2].map((count) => [repo, count]),
   )) {

@@ -1,7 +1,7 @@
 import { write as writeFixture } from "./lib/helpers.mjs";
 import { spawnGit, execGit } from "./lib/git.mjs";
-// WO-064: target publication over real source-change episodes, a local bare
-// origin behind a GitHub URL and the gh stub. No network or vendor CLI.
+// Target publication over real source-change episodes, a local bare origin
+// behind a GitHub URL and the gh stub. No network or vendor CLI (WO-064).
 import nodeTest from "node:test";
 import assert from "node:assert/strict";
 import childProcess, { execFileSync, spawnSync } from "node:child_process";
@@ -92,7 +92,7 @@ import { fixtureVerificationResult } from "../packages/skeleton/dist/src/verific
 import { deliveryContractHash } from "./lib/github-body.mjs";
 import { lintOutwardArtifact } from "./lib/outward-lint.mjs";
 
-// WO-197: cold, standalone case durations rounded up to 0.1 s. Register
+// Cold, standalone case durations rounded up to 0.1 s (WO-197). Register
 // bounds after the callback so Node's FIFO after hooks include fixture cleanup.
 const repairedCaseMs = new Map([
   [
@@ -1572,7 +1572,7 @@ await test("WO-066 AC5: a signed-header commit runs planted gpg on ordinary log,
   );
 });
 
-// WO-065: recorded, synthetic GraphQL response shapes, replayed by the same
+// Recorded, synthetic GraphQL response shapes (WO-065), replayed by the same
 // gh boundary. The fixture never talks to GitHub and never executes a mutation.
 const observationFixture = JSON.parse(
   readFileSync(join(pinned, "observation.json"), "utf8"),
@@ -2450,7 +2450,7 @@ function useFixtureReviewTransport(t, transport) {
   });
 }
 
-// WO-066: the remote is a local bare repository behind fake gh. Triage and
+// The remote is a local bare repository behind fake gh (WO-066). Triage and
 // workers are labeled doubles; RepairHost runs the real derivation, snapshot
 // tests and acceptance fold before the publication helper sees a head.
 async function reviewScenario(
@@ -3556,7 +3556,7 @@ await test("WO-112 an unsupplied automated item is judged by the triage episode;
     (await resolveReviewComments(supplied.config)).status,
     "resolved",
   );
-  // A supplied judgment can never claim to be a model's (VER-001 F1).
+  // A supplied judgment can never claim to be a model's.
   const forged = guardReviewScenario(t);
   forged.config.judgments.R1.producer = { kind: "model", name: "claimed" };
   forged.config.triage = async () =>

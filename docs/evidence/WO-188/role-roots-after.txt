@@ -1,0 +1,15 @@
+# generated role roots after WO-188 edits, emitted by node scripts/harness.mjs emit on 2026-10-09 (compiler 0.26.0, skeleton 0.56.0); the executor's restated rules are folded into its numbered steps
+executor skill=21009 claude=6873 sha=46c380e1a2bb5cea
+verifier skill=18507 claude=6873 sha=53d423cfbe80a35d
+reviewer skill=20011 claude=6873 sha=6f6e5ed2fb035534
+release-close skill=9659 claude=6873 sha=749c2c8c2db2c11a
+planner skill=11311 claude=6873 sha=08c7d791c19e208e
+refuter skill=10590 claude=6873 sha=06aead3e320a5799
+codex executor skill=21009 agents=6873
+codex verifier skill=18507 agents=6873
+codex reviewer skill=20011 agents=6873
+codex release-close skill=9659 agents=6873
+codex planner skill=11311 agents=6873
+codex refuter skill=10590 agents=6873
+ceilings (docs/control/budgets.json limits.coldStartBytes): executor 29246 verifier 29831 reviewer 28884 release-close 21266 planner 24576
+cold start = skill + CLAUDE.md: executor 27882 verifier 25380 reviewer 26884 release-close 16532 planner 18184 refuter 17463; no ceiling moved, no acceptance recorded; the executor root is 246 bytes smaller than at the base (21,255)

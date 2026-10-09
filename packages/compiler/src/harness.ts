@@ -24,7 +24,7 @@ export function showHarnessAdvisory(
   cause: string,
   claimMarker: (key: string) => boolean,
 ): boolean {
-  if (event === "PostToolUse") return false;
+  if (event === "PostToolUse" || event === "PostToolUseFailure") return false;
   if (!sessionId) return true;
   try {
     return claimMarker(JSON.stringify([sessionId, cause]));
@@ -661,7 +661,7 @@ export function lowerToHarness(
       });
   }
   const hookPaths = new Map<
-    HarnessEvent | "SessionStart" | "PermissionDenied",
+    HarnessEvent | "SessionStart" | "PermissionDenied" | "PostToolUseFailure",
     string[]
   >();
   const hookRoot = ".claude/hooks";
@@ -679,7 +679,7 @@ export function lowerToHarness(
   };
   const hook = (
     name: string,
-    event: HarnessEvent | "PermissionDenied",
+    event: HarnessEvent | "PermissionDenied" | "PostToolUseFailure",
     config: unknown,
     names: readonly string[],
     rung: number,
@@ -894,6 +894,18 @@ process.stdout.write(JSON.stringify(response)); }`;
           )
           .map((unit) => unit.unitId),
       ],
+      1,
+    );
+  // The host's failed-command event answers a failed Bash call at the call
+  // itself. Copilot CLI 1.0.89 loaded this shared file with the event named
+  // and fired the other hooks (docs/discovery/copilot-cli-2026-10-08.md); the
+  // handler records only what the host actually sends.
+  if (profile.events.PostToolUse.available)
+    hook(
+      "failure-observer",
+      "PostToolUseFailure",
+      { kind: "observe" },
+      program.roles.map((role) => role.facetId),
       1,
     );
   if (profile.events.UserPromptSubmit.available)

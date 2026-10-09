@@ -1410,8 +1410,11 @@ finish cleanup blockers in the dispatched session; re-running the same command
 re-checks an existing Release and never publishes twice. A retry after main
 moves can refuse and remains a blocker. Retry a host denial of the exact
 command once through the host permission flow before handing the operator the
-printed command for `!`. Material dispositions remain the operator's through
-`--material`; teardown is never forced.
+printed command for `!`. A scratch repository, a nested repository outside
+the intake lane that the tracked tree does not declare as a submodule, is
+removed at close and recorded with its path, its head commit and whether a
+remote held it; intake and declared submodules stay, an operator word through
+`--material` preserves a scratch repository, and teardown is never forced.
 
 The command proves origin reachability first, fast-forwards main, checks the
 README release block, component bumps, notes profile and license pins, and
@@ -1431,15 +1434,17 @@ a differing Release body refuses without editing it. If Release creation fails
 after tag push, rerun the same command. A lower target is an explicit no-release
 outcome. A deliberately deferred eligible release needs a durable disposition.
 
-Publication refuses tracked dirt; cleanup is best effort and forbids undeclared
-disposal. Finish/settle preserve intake and non-disposable control in main's
-ignored `docs/control/local/retained/WO-NNN/`, retain collisions, verify bytes and
+Publication refuses tracked dirt; cleanup is best effort. Finish/settle preserve
+intake and non-disposable control in main's ignored
+`docs/control/local/retained/WO-NNN/`, retain collisions, verify bytes and
 refuse unsafe symlinks or uncertain writer/gate ownership. Lane rows are
-recomputed; disposal declarations bind worktree/state. Disposable commits are
-bundled and verified. Declare with `worktree material <path> --preserve|--disposable
---reason <text>`. Close's `--material [<absolute-worktree>::]<path>=disposable|preserve`
-settles unknowns by worktree. Attempts record `release-close.json` there;
-record I/O only advises.
+recomputed. After preservation verifies, each scratch repository is removed and
+its row records the path, the head commit and whether a remote held it; a
+repository the close could not remove is a blocker that retains the source.
+`--material [<absolute-worktree>::]<path>=preserve` keeps a scratch repository
+and `=disposable` states the default; a word that names the intake lane, a
+declared submodule or no nested repository refuses. Attempts record
+`release-close.json` there; record I/O only advises.
 
 After preservation verifies, removal restores write permission on directories
 inside the subject that the current user owns, without following symbolic
@@ -1666,6 +1671,32 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   WO-158). WO-196 makes the first step mechanical: the gate runs Prettier as
   its first preflight and refuses to start otherwise, and a review gate at
   an identity whose tasks already passed reuses them.
+- **Scratch repositories (WO-188).** A nested repository outside the intake
+  lane that the tracked tree does not declare as a submodule is scratch. An
+  executor removes each before `implementation-ready` or `repair-complete`
+  and never declares one; a completion with one present prints one advisory
+  naming it. Release close removes any left after preservation verifies and
+  records its path, its head commit and whether a remote held it; intake and
+  declared submodules stay, an operator word through `--material` preserves a
+  scratch repository, and teardown is never forced.
+- **Comments (WO-188).** A comment says what the code does or why, in words a
+  reader who has not seen the order understands; an order, report, finding or
+  decision identifier never leads or replaces that explanation, and a
+  report-local label (a verification or final-review finding label, a bare
+  decision number) never appears in code. The document gate refuses a new or
+  changed comment line that breaks the rule; the lines that carried one when
+  the check was installed, all in edition-registered sources, pass by a
+  fingerprint baseline in `docs/control/comment-baseline.json` that only
+  shrinks: a baselined line that is edited without being fixed fails, and a
+  file outside every evidence edition is never baselined.
+- **Experiments (WO-196, WO-188).** An experiment happens when the work shows
+  two credible ways to the same result that differ on a named axis, at any
+  point in the order: the executor runs one bounded comparison and records
+  both arms; when no such fork appears, nothing is written; an order may name
+  an experiment for the executor to run. A lens is written down only when it
+  changes what the role will do: before a material choice, name the traps that
+  would change the action, what will be done about each, and the NoOp; where
+  none applies, write nothing; at handoff, say whether the outcome matched.
 - **Host resources (WO-185).** Dispatch registers the verified agent ancestor
   with one detached guard per user, shared across clones and exported instances
   through the operating system's per-user temporary root. The runner, guard and
@@ -2403,8 +2434,9 @@ readback (checked 2026-10-05). Codex workers use `spawn_agent` with
 pin for adversaries, reviewers, refuters and research. Generated-definition
 and call arguments are launch selections, never proof of effective effort.
 Report the host's readback or that it reports none; a root's own selection
-does not decide the worker's. Compiled defaults and probes that still name `gpt-6-sol` or
-`claude-fable-5` are WO-177's; the attestation records what ran.
+does not decide the worker's. A script that regenerates a dated record keeps the
+model that record names and says so beside it; the attestation records what
+ran.
 
 - Required attestation fields, `unknown`, Codex thread readback, the
   `--account-label` grammar, the Codex 0.154.0 effort probes and the WO-126

@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 import { json as prettyJson } from "./lib/helpers.mjs";
-// WO-148's live row: one operator-run bind of a real in-flight order, then one
-// detached resident cycle with the operator marked away, so the cadence judges
-// the worktree the command aimed it at rather than a synthetic one. The filed
-// row carries counts, shapes and explicit observations only: no physical path,
-// no capsule text and no raw transport output reaches a committed surface.
+// The live row (WO-148): one operator-run bind of a real in-flight order,
+// then one detached resident cycle with the operator marked away, so the
+// cadence judges the worktree the command aimed it at rather than a
+// synthetic one. The filed row carries counts, shapes and explicit
+// observations only: no physical path, no capsule text and no raw transport
+// output reaches a committed surface.
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { closeSync, mkdirSync, openSync, writeFileSync } from "node:fs";

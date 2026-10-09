@@ -145,7 +145,7 @@ export const closedDependencySet = (control) =>
       .map(([id, row]) => [id, row.finalReviewVerdict]),
   );
 
-// WO-158: a withdrawn order never closes, so every edge over it is unmet with
+// A withdrawn order never closes, so every edge over it is unmet with
 // the reason named; the disposition says which terminal outcome it recorded.
 export const withdrawnDependencySet = (control) =>
   new Map(
