@@ -183,8 +183,10 @@ existing planning-log amendment and does not discharge an independent hold.
 ## The loop, per work order
 
 **1. Plan (Fable, main checkout).** Pick or refine the WO in
-`docs/work-orders/`. Consult the [generated index](work-orders/README.md) for
-header, control, typed dependency, and local release evidence; use the
+`docs/work-orders/`. Consult the generated index for header, control, typed
+dependency, and local release evidence: [README.md](work-orders/README.md) for
+the work ahead and its [history page](work-orders/HISTORY.md) for settled
+orders; use the
 [human map](planning/work-order-map.md) for recommendation, rationale, tracks,
 and activation preflight. Never choose by the next integer. Revalidate the
 selected row against its work order and the

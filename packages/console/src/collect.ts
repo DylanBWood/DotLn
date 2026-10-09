@@ -282,6 +282,7 @@ export async function collectSources(
               ) as unknown,
           ),
     workOrderIndex: text("docs/work-orders/README.md"),
+    workOrderHistory: text("docs/work-orders/HISTORY.md"),
     capabilities: text("docs/planning/capability-table.md"),
     publication: text("docs/publication/audience-status-index.md"),
     roadmap: text("docs/product/06-roadmap.md"),

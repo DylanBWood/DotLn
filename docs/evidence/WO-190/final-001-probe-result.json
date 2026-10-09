@@ -1,0 +1,66 @@
+{
+  "checks": [
+    {
+      "label": "covering executor review gate",
+      "checkId": "npm test",
+      "codeIdentity": "152d7fec6e7cfdfe28d4991233b331ddc134b506f1f75413d41cf463675e4c0d",
+      "treeHash": "fa36b7cab9d771c18f942d87633f544312ccd62a",
+      "recordedAt": "2026-10-09T17:03:18.986Z",
+      "durationMs": 1648161,
+      "exitCode": 0,
+      "executed": true,
+      "gateSelection": "review",
+      "freshSuites": 87,
+      "reusedSuites": 0,
+      "evidenceRef": "host-gate:152d7fec6e7cfdfe28d4991233b331ddc134b506f1f75413d41cf463675e4c0d:npm test",
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true
+    },
+    {
+      "label": "repository partition and order",
+      "authorityCount": 197,
+      "indexCards": 31,
+      "historyCards": 166,
+      "indexBytes": 75841,
+      "historyBytes": 709879,
+      "baseIndexBytes": 780937
+    },
+    {
+      "label": "real runtime readers, empty pages and repeated records"
+    },
+    {
+      "label": "typed successors ignore prose, deduplicate, accept CRLF and dateless labels, exclude body label"
+    },
+    {
+      "label": "CLI activation from another cwd refuses typed umbrella without event",
+      "output": "error: docs/work-orders/WO-904-fixture.md: activation refused: WO-904 is an umbrella record superseded by WO-906; activate a successor instead"
+    },
+    {
+      "label": "stale tail on either page, read-only refusal and missing open order",
+      "coverage": "error: docs/planning/sequence.md: open orders absent from the proposed sequence: WO-907; add each to the marked sequence (an order superseded whole instead takes the **Umbrella record:** label in its leading header plus typed superseded entries; active orders and derived drafts are not judged)"
+    },
+    {
+      "label": "overlapping second source preserves available first source"
+    }
+  ],
+  "subject": {
+    "head": "298c2c77cab9b413d43a6f758bcab1b55aae011a",
+    "codeIdentity": "152d7fec6e7cfdfe28d4991233b331ddc134b506f1f75413d41cf463675e4c0d"
+  },
+  "productGate": {
+    "checkId": "npm test",
+    "codeIdentity": "152d7fec6e7cfdfe28d4991233b331ddc134b506f1f75413d41cf463675e4c0d",
+    "treeHash": "fa36b7cab9d771c18f942d87633f544312ccd62a",
+    "recordedAt": "2026-10-09T17:03:18.986Z",
+    "durationMs": 1648161,
+    "exitCode": 0,
+    "executed": true,
+    "gateSelection": "review",
+    "freshSuites": 87,
+    "reusedSuites": 0,
+    "evidenceRef": "host-gate:152d7fec6e7cfdfe28d4991233b331ddc134b506f1f75413d41cf463675e4c0d:npm test",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true
+  },
+  "finishedAt": "2026-10-09T17:04:15.084Z"
+}

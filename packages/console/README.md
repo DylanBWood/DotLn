@@ -332,6 +332,14 @@ durations and legal-action strings are preserved. Status has no dependency
 blocker field; that cell stays unknown and dependency evidence comes separately
 from the generated index. Beacon metadata never establishes worker liveness.
 
+The generated work-order index is read from both of its pages (WO-190):
+`docs/work-orders/README.md` holds the active and sequenced orders and
+`docs/work-orders/HISTORY.md` the settled ones, each projected as its own
+section of the Work panel, so a release row and an order's status row link to
+the card of every order they name on either page. A card on both pages makes
+the history section unavailable rather than a second truth; a page without
+cards is a valid, empty source.
+
 Text adapters pin the generated index's `### WO-NNN` sections and named fields, the constellation's
 individual/group format, release-list TSV, capability table variants (including
 dated additions), publication tables, and roadmap headings. Unsupported formats

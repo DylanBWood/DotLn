@@ -64,7 +64,8 @@ sequenced, verifiable work and ships what the fleet makes. Their questions are
 answered by evidence, never by a checklist someone remembered to tick: which
 orders are active and in which phase, which are blocked and on what, what a
 release contained, and what the next legal action is. Today that is the
-[generated work-order index](../work-orders/README.md), the
+[generated work-order index](../work-orders/README.md) with
+[its history page](../work-orders/HISTORY.md), the
 [planning map](../planning/work-order-map.md), the control status, and the
 release records. The concurrent-workflow plan, control-plane beacons, and a
 shared status view are this role's next tooling. The candidate

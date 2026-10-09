@@ -61,6 +61,7 @@ import {
   dependencyRefusal,
   dependencyReleaseSet,
   readDependencies,
+  umbrellaRecord,
 } from "./lib/dependencies.mjs";
 import {
   projectControlBeacon,
@@ -1293,13 +1294,20 @@ const run = async (argv) => {
       if (state.phase === "withdrawn")
         requireReactivation(state, workOrderPath);
       const declaration = workOrderDeclaration(workOrderPath, { workOrderId });
+      const source = readFileSync(
+        workOrderAuthorityPath(repoRoot, workOrderId, workOrderPath),
+        "utf8",
+      );
+      // An umbrella record is superseded whole; the orders it names carry
+      // its obligations, and no control event closes it (WO-190).
+      const umbrella = umbrellaRecord(source, workOrderPath, workOrderId);
+      if (umbrella)
+        throw new Error(
+          `${workOrderPath}: activation refused: ${workOrderId} is an umbrella record superseded by ${umbrella.successors.join(", ")}; activate a successor instead`,
+        );
       if (state.allocation) {
         if (workOrderPath !== state.workOrderPath)
           throw new Error("allocated authority path differs from activation");
-        const source = readFileSync(
-          workOrderAuthorityPath(repoRoot, workOrderId, workOrderPath),
-          "utf8",
-        );
         checkGeneratedSections(
           source,
           workOrderPath,

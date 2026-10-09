@@ -3893,7 +3893,18 @@ else {
         assert.notDeepEqual(grouped(added), grouped(corrected));
         assert.doesNotThrow(() => checkSequenceTopology(readIndex(root, [])));
         const repo = makeRepo(parent, "historical-topology");
-        write(repo, PLAN_MAP, corrected);
+        // Every open order needs a place in the sequence (WO-190). The frozen
+        // tree's five unsequenced drafts and the fixture's own two take a final
+        // group of the written copy; `corrected` itself stays the receipt
+        // subject the pair assertions above inspect.
+        write(
+          repo,
+          PLAN_MAP,
+          corrected.replace(
+            "<!-- dotln-work-order-sequence:end -->",
+            `\n${["WO-014", "WO-102", "WO-103", "WO-105", "WO-107", "WO-901", "WO-902"].map((id) => `- ${id} — Unsequenced draft at the frozen revision`).join("\n")}\n<!-- dotln-work-order-sequence:end -->`,
+          ),
+        );
         const frozen = committedReader(
           root,
           "45765940a9715c8aee52215c3bfbed74de0ce838",

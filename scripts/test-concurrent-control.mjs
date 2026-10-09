@@ -205,6 +205,7 @@ await test("test-concurrent-control", async (t) => {
               [
                 "docs/control/current.md",
                 "docs/work-orders/README.md",
+                "docs/work-orders/HISTORY.md",
               ].includes(path),
             ),
             `${result.stderr}\n${conflicts.join(", ")}`,

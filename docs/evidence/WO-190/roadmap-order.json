@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-190",
+  "document": "docs/product/06-roadmap.md",
+  "baseCommit": "e3b386635ae1c22f4f9e583928f5dbcdedbb0cbc",
+  "note": "The exact heading order and the unchanged rung bodies are asserted by scripts/test-docs-check.mjs, as a subtest that skips visibly once the live document, with its registered release-history block masked to its two marker lines, no longer hashes to sha256WithoutReleaseHistory; the durable invariants (the intro links the index, the pending rungs come first, no pending rung heading names an order, the generated release history is last) are asserted always.",
+  "sha256WithoutReleaseHistory": "dd4122299475214fb5311ede5101c8fdd591125348afb7d8da2358e11d383e22",
+  "renamedHeadings": {
+    "## Application version pending — Harness lowering and rule migration → WO-039 + WO-040": "## Application version pending — Harness lowering and rule migration",
+    "## Application version pending — Launchpad and cross-repository workstreams → WO-033 + WO-034": "## Application version pending — Launchpad and cross-repository workstreams"
+  },
+  "headings": [
+    "# Roadmap — application release ladder",
+    "## Application version pending — Harness lowering and rule migration",
+    "## Application version pending — Projections & console",
+    "### UIFA v0 actor board",
+    "## Application version pending — Launchpad and cross-repository workstreams",
+    "## Application version pending — Pattern workshop v1",
+    "## Application version pending — Source-to-deliverable vertical",
+    "## v1.0.0 — Teammate-ready",
+    "## Post-1.0 horizons",
+    "## v0.0.0 — Clean-room bootstrap  *(mostly complete)*",
+    "## v0.0.1 — Environment truth (bounded)  → WO-001",
+    "## v0.1.0 — Pure kernel  → WO-002",
+    "## v0.2.0 — Walking skeleton (fake executor)  → WO-003",
+    "## v0.2.1 — Environment truth addendum and lifecycle corrections  → WO-004 + WO-012",
+    "## v0.2.2 — Capability table v1  → WO-005",
+    "## v0.2.3 — Publication bootstrap  → WO-006",
+    "## v0.3.0 — Audit-record baseline (three projections)  → WO-007",
+    "## v0.4.0 — Composition compiler v1  → WO-008",
+    "## v0.5.0 — Compiled Entropy Reducer  → WO-023",
+    "## v0.10.0 — Real disposable worker  → WO-009",
+    "## v0.12.0 — Independent verification  → WO-010",
+    "## v0.13.0 — Feedback compiler v1 (ten units)  → WO-011",
+    "## Release boundary"
+  ]
+}

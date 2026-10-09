@@ -1,0 +1,36 @@
+# WO-190 criterion 4: the umbrella activation fixture against 08845c71 and against this order
+
+Both transcripts are unedited output of [umbrella-activation.sh](umbrella-activation.sh), which builds the fixture scripts/test-resume.sh's umbrella case builds (one order, WO-900, whose leading header carries the `**Umbrella record (2026-10-09):**` label and two typed superseded entries naming WO-901 and WO-902; no control segment before the run) from a scripts tree and runs `resume activate` once. The warning about the missing recovery checkpoint comes from the empty fixture repository (no commit) and appears in both runs. Recorded on 2026-10-09T09:40:16Z by the WO-190 executor from the worktree at e3b38663 with the uncommitted WO-190 changes.
+
+## Against 08845c71
+
+Commands, run from the repository root (`$OLD` is any empty directory):
+
+```
+git archive 08845c71 scripts packages/beacons packages/skeleton/src packages/compiler/src .gitignore | tar -x -C "$OLD"
+bash docs/evidence/WO-190/umbrella-activation.sh "$OLD" "$OLD-fixture"
+```
+
+Output:
+
+```
+warning: could not create recovery checkpoint for activate: fatal: not a valid object name HEAD; proceeding without one. Do not repeat this transition after it records. When Codex workspace-write is the cause, inspect package.json and the scripts/resume.mjs diff, then request one-invocation outside-sandbox approval before future state-changing resume commands; never persist an allow rule. See docs/AI-HARNESS-SECURITY.md
+Activated WO-900.
+Observed facts at 2026-10-09T09:40:17.088Z: unknown (observation-runtime-unavailable); advisory only.
+exit 0
+control segment: {"schemaVersion":1,"recordedAt":"2026-10-09T09:40:17.054Z","type":"WorkOrderActivated","workOrderId":"WO-900","workOrderPath":"docs/work-orders/WO-900-umbrella.md","effortDeclarationValidated":true,"checkpointUnavailable":true}
+```
+
+## Against this order's scripts
+
+```
+bash docs/evidence/WO-190/umbrella-activation.sh . "$NEW-fixture"
+```
+
+Output:
+
+```
+error: docs/work-orders/WO-900-umbrella.md: activation refused: WO-900 is an umbrella record superseded by WO-901, WO-902; activate a successor instead
+exit 1
+control segment: absent
+```

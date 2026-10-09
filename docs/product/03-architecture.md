@@ -2366,9 +2366,10 @@ byte in `docs/planning/archive/work-order-map-2026-09-09.md`, with a link
 concordance. The map retains current rationale and navigation; the planner's
 startup input is the sequence rather than the archive or whole map. Closed
 entries leave the sequence at each planning pass (operator direction,
-2026-09-22); the generated work-order index's Closed section is their record.
-A withdrawn entry (WO-158) leaves the same way and is listed there under its
-disposition.
+2026-09-22); the Closed section of the generated work-order index's history
+page (`docs/work-orders/HISTORY.md`, WO-190) is their record. A withdrawn
+entry (WO-158) leaves the same way and is listed on that page under Withdrawn
+with its disposition.
 
 **Evidence growth, measured 2026-09-22.** The REVIEW-002 Entropy Reducer
 review, re-measured by the planning pass that consumed it, found the tracked

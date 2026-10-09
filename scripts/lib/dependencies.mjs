@@ -39,6 +39,31 @@ export function dependencyHeader(markdown) {
   return { lines, first, end: boundary < 0 ? lines.length : boundary };
 }
 
+// An umbrella record is an order superseded whole (WO-190). The class is the
+// exact label in the leading header plus at least one typed superseded entry;
+// the successors are those entries' `by` values, never read from prose. A
+// label without typed entries, or entries without the label, is not an
+// umbrella: the index then lists the order as open work and the sequence
+// coverage check names it, rather than guessing.
+export const UMBRELLA_LABEL =
+  /^\*\*Umbrella record( \(\d{4}-\d{2}-\d{2}\))?:\*\*/;
+export function umbrellaSuccessors(markdown, dependencies) {
+  const { lines, first, end } = dependencyHeader(markdown);
+  if (!lines.slice(first + 1, end).some((line) => UMBRELLA_LABEL.test(line)))
+    return null;
+  if (dependencies.source !== "typed") return null;
+  const successors = [
+    ...new Set(
+      dependencies.entries
+        .filter((entry) => entry.relation === "superseded")
+        .map((entry) => entry.by),
+    ),
+  ];
+  return successors.length ? { successors } : null;
+}
+export const umbrellaRecord = (markdown, path, workOrderId) =>
+  umbrellaSuccessors(markdown, parseDependencies(markdown, path, workOrderId));
+
 export function parseDependencies(markdown, path, workOrderId) {
   workOrderId ??= /(?:^|\/)(WO-\d{3})-/.exec(path)?.[1];
   const { lines, first, end } = dependencyHeader(markdown);

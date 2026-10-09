@@ -6,6 +6,7 @@ import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import {
   disposeFollowup,
   planningFollowups,
@@ -123,8 +124,135 @@ import { runGate, suites } from "./test-runner.mjs";
 import {
   historyEnd,
   historyStart,
+  markerLine,
   renderReleaseHistory,
 } from "./lib/release-history.mjs";
+
+test("WO-190 the roadmap leads with the work ahead: the index is the list of orders, pending rungs precede the closed ones, no pending rung heading names an order, and the generated release history is last", async (t) => {
+  const repoRoot = resolve(".");
+  const document = "docs/product/06-roadmap.md";
+  const text = readFileSync(join(repoRoot, document), "utf8");
+  const lines = text.split("\n");
+  assert.ok(!lines.some((line) => line.startsWith("```")), "no fences");
+  const at = (matches) =>
+    lines.flatMap((line, index) => (matches(line) ? [{ line, index }] : []));
+  const headings = at((line) => /^#{1,3} /.test(line));
+  const rungs = at((line) => /^## /.test(line));
+  assert.ok(rungs.length > 3);
+  const intro = lines.slice(0, rungs[0].index).join("\n");
+  assert.match(intro, /\]\(\.\.\/work-orders\/README\.md\)/);
+  assert.match(intro, /listed once, in the order they are planned to\s+run/);
+  // Durable invariants on the live document.
+  assert.match(rungs[0].line, /^## Application version pending — /);
+  const pending = rungs.filter((row) =>
+    /^## Application version pending — /.test(row.line),
+  );
+  const released = rungs.filter((row) => /^## v0\.\d+\.\d+ /.test(row.line));
+  assert.ok(pending.length >= 1 && released.length >= 1);
+  const firstReleased = Math.min(...released.map((row) => row.index));
+  assert.ok(
+    Math.max(...pending.map((row) => row.index)) < firstReleased,
+    "a released rung precedes a pending one",
+  );
+  const ahead = rungs.find((row) => row.line.startsWith("## v1.0.0 "));
+  assert.ok(
+    ahead && ahead.index < firstReleased,
+    "v1.0.0 precedes the closed rungs",
+  );
+  // No pending heading names an order as its carrier, so none names an
+  // umbrella record: the index is the one list of orders.
+  for (const { line } of pending)
+    assert.doesNotMatch(
+      line,
+      /WO-\d{3}/,
+      `${line} names an order as its carrier`,
+    );
+  const markers = at(markerLine);
+  assert.deepEqual(
+    markers.map((row) => row.line),
+    [historyStart, historyEnd],
+  );
+  assert.equal(rungs.at(-1).line, "## Release boundary");
+  assert.ok(
+    markers[0].index > rungs.at(-1).index,
+    "the block lies in the last section",
+  );
+  assert.equal(
+    lines
+      .slice(markers[1].index + 1)
+      .join("")
+      .trim(),
+    "",
+    "nothing follows the end marker",
+  );
+  // The exact order and the unchanged rung bodies, judged while the document
+  // (its generated block masked) is the one this order landed; a later
+  // planning edit retires these two checks as a visible skip, not a pass.
+  const record = JSON.parse(
+    readFileSync(
+      join(repoRoot, "docs/evidence/WO-190/roadmap-order.json"),
+      "utf8",
+    ),
+  );
+  const masked = [
+    ...lines.slice(0, markers[0].index),
+    historyStart,
+    historyEnd,
+    ...lines.slice(markers[1].index + 1),
+  ].join("\n");
+  const hash = createHash("sha256").update(masked).digest("hex");
+  await t.test(
+    "WO-190 the exact heading order and every rung body equal the recorded landing (retires as a skip when the document moves on)",
+    (exact) => {
+      if (hash !== record.sha256WithoutReleaseHistory) {
+        exact.skip(
+          `retired: ${document} no longer hashes to roadmap-order.json (hash ${hash.slice(0, 12)})`,
+        );
+        return;
+      }
+      assert.deepEqual(
+        headings.map((row) => row.line),
+        record.headings,
+      );
+      const base = spawnGit(["show", `${record.baseCommit}:${document}`], {
+        cwd: repoRoot,
+        encoding: "utf8",
+        maxBuffer: 16 * 1024 * 1024,
+      });
+      assert.equal(base.status, 0, base.stderr);
+      const bodies = (source) => {
+        const result = new Map();
+        let heading = null,
+          body = [];
+        const flush = () => {
+          if (heading === null) return;
+          while (body.length && !body.at(-1).trim()) body.pop();
+          if (body.at(-1) === "<!-- prettier-ignore -->") body.pop();
+          while (body.length && !body.at(-1).trim()) body.pop();
+          result.set(heading, body.join("\n"));
+        };
+        for (const line of source.split("\n")) {
+          if (/^## /.test(line)) {
+            flush();
+            heading = line;
+            body = [];
+          } else if (heading !== null) body.push(line);
+        }
+        flush();
+        return result;
+      };
+      const before = bodies(base.stdout),
+        after = bodies(text);
+      assert.equal(before.size, after.size);
+      for (const [heading, body] of before) {
+        const renamed = record.renamedHeadings[heading] ?? heading;
+        assert.ok(after.has(renamed), `${renamed} is missing`);
+        if (heading === "## Release boundary") continue; // not a rung; its generated block moved to its end
+        assert.equal(after.get(renamed), body, `${renamed}: body text changed`);
+      }
+    },
+  );
+});
 
 const script = resolve("scripts/docs-check.mjs");
 function fixture(t, roots = {}) {

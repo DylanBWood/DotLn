@@ -111,6 +111,7 @@ const pureProjection = (root, path) =>
     manifest,
     docRelative(root, "control", "current.md"),
     docRelative(root, "workOrders", "README.md"),
+    docRelative(root, "workOrders", "HISTORY.md"),
     docRelative(root, "lineage", "decisions-index.md"),
     ".claude/settings.json",
     ".codex/config.toml",

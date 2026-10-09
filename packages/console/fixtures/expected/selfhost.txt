@@ -870,6 +870,9 @@ Source not supplied
 Work-order evidence index [work-order-index] — unavailable
 Source not supplied
 
+Work-order history index [work-order-history] — unavailable
+Source not supplied
+
 Recorded actor usage [usage] — unavailable
 Source not supplied
 
@@ -926,6 +929,7 @@ docs/evidence/WO-199/feedback-004/selfhost-verification.jsonl#audit-projections
 available: store:selfhost-verifier
 unavailable: control:canonical-segments — Source not supplied
 unavailable: docs/work-orders/README.md — Source not supplied
+unavailable: docs/work-orders/HISTORY.md — Source not supplied
 unavailable: resume:status--json — Source not supplied
 unavailable: worktree:constellation — Source not supplied
 unavailable: release:list — Source not supplied

@@ -334,6 +334,10 @@ test("configured roots and range allocate deterministically and refuse exhaustio
       );
       assert.deepEqual(openOrders(readControl(root)), []);
       assert.equal(readIndex(root, []).rows[0].phase, "draft");
+      // A derived draft's place is its allocation, so the index check
+      // passes with no entry for it in the empty sequence (WO-190).
+      run(root, "scripts/work-orders.mjs", ["index"]);
+      run(root, "scripts/work-orders.mjs", ["index", "--check"]);
       assert.equal(existsSync(join(root, "docs")), false);
     },
     {
@@ -432,7 +436,7 @@ test("WO-158 an allocated order never activated is withdrawn from phase none", a
       eventsForOrder(readControl(root), "WO-900").map((event) => event.type),
       ["WorkOrderIdentityAllocated", "WorkOrderWithdrawn"],
     );
-    assert.equal(readIndex(root, []).rows[0].section, "Closed");
+    assert.equal(readIndex(root, []).rows[0].section, "Withdrawn");
   }));
 
 test("typed blockers retain a recoverable allocation and ordinary activation refusal", async () =>
