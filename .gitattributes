@@ -1,10 +1,13 @@
 /docs/work-orders/README.md dotln-generated dotln-check=suite:index
+/docs/work-orders/HISTORY.md dotln-generated dotln-check=suite:index
 /docs/product/03-architecture.md dotln-check=suite:publication
 /docs/lineage/decisions-index.md dotln-generated dotln-check=suite:meta
 /docs/planning/cost-table.json dotln-generated
 /docs/planning/followups.json dotln-generated
 /docs/evidence/**/*.json dotln-generated
 /docs/evidence/current.json -dotln-generated
+# WO-190's roadmap heading order is authored, not generated.
+/docs/evidence/WO-190/roadmap-order.json -dotln-generated
 /docs/evidence/**/*.jsonl dotln-generated
 /docs/evidence/**/stale-status.txt dotln-generated
 /docs/evidence/**/console-* dotln-generated

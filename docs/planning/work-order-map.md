@@ -3878,7 +3878,8 @@ restriction, preserved in the same correction capture.
 
 ## Status boundaries
 
-The [index](../work-orders/README.md) defines its evidence labels. Control
+The [index](../work-orders/README.md) defines its evidence labels on
+[its history page](../work-orders/HISTORY.md). Control
 closure, repository integration, and release inclusion are distinct boundaries.
 A historical order is explicitly time-indexed; absence of events is not proof
 of completion. Dependency state belongs to the index's typed projection,

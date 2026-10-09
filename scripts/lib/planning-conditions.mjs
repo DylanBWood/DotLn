@@ -77,7 +77,8 @@ export const CONDITION_TABLE = Object.freeze([
     sources: [collection],
     threshold: 10,
     unit: "s",
-    method: "median of three readIndex/renderIndex calls, without writing",
+    method:
+      "median of three readIndex calls rendering both generated pages, without writing",
   },
   {
     id: "document-gate",
@@ -372,7 +373,7 @@ async function measureCondition(root, row, context) {
     "plan-check": `const {main}=await import(${expression("scripts/refute-plan.mjs")}); await main(["check"],process.cwd())`,
     "collect-sources": `const {collectSources}=await import(${expression("packages/console/dist/src/collect.js")}); await collectSources(process.cwd())`,
     "release-list": `const {listPublishedReleases}=await import(${expression("scripts/release.mjs")}); listPublishedReleases(process.cwd(),{cold:true})`,
-    "order-index": `const {readIndex,renderIndex}=await import(${expression("scripts/work-orders.mjs")}); renderIndex(readIndex(process.cwd()))`,
+    "order-index": `const {readIndex,renderIndex,renderHistory}=await import(${expression("scripts/work-orders.mjs")}); const index=readIndex(process.cwd()); renderIndex(index); renderHistory(index)`,
   };
   const samples = [];
   for (let i = 0; i < 3; i++)

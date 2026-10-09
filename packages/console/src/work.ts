@@ -1,4 +1,4 @@
-import type { BoardRow, BoardSection, BoardSources } from "./types.js";
+import type { BoardRow, BoardSection, BoardSources, Source } from "./types.js";
 import { ProjectionContext } from "./context.js";
 import {
   array,
@@ -12,6 +12,7 @@ import {
   unknown,
 } from "./values.js";
 import {
+  INDEX_PAGE_TITLES,
   markdownLinks,
   parseConstellation,
   parseReleases,
@@ -19,18 +20,42 @@ import {
   plainText,
 } from "./text-sources.js";
 
-export function projectWork(
+/** The generated index's two pages (WO-190), each its own section. */
+const INDEX_PAGES = {
+  index: {
+    sectionId: "work-order-index",
+    title: "Work-order evidence index",
+    ref: "docs/work-orders/README.md",
+    pageTitle: INDEX_PAGE_TITLES.index,
+  },
+  history: {
+    sectionId: "work-order-history",
+    title: "Work-order history index",
+    ref: "docs/work-orders/HISTORY.md",
+    pageTitle: INDEX_PAGE_TITLES.history,
+  },
+} as const;
+
+/** One generated index page as a section; the two pages partition the
+ * orders, so a card the other page already holds makes this section
+ * unavailable before any of its rows enters the shared map. */
+function indexPage(
   ctx: ProjectionContext,
-  sources: BoardSources,
-): readonly BoardSection[] {
-  const indexed = new Map<string, BoardRow>();
-  const index = ctx.section(
-    "work-order-index",
-    "Work-order evidence index",
-    sources.workOrderIndex,
-    "docs/work-orders/README.md",
-    (text, ref) =>
-      parseWorkOrderIndex(text).map((row): BoardRow => {
+  indexed: Map<string, BoardRow>,
+  page: (typeof INDEX_PAGES)[keyof typeof INDEX_PAGES],
+  source: Source<string> | undefined,
+): BoardSection {
+  return ctx.section(
+    page.sectionId,
+    page.title,
+    source,
+    page.ref,
+    (text, ref) => {
+      const rows = parseWorkOrderIndex(text, page.pageTitle);
+      for (const row of rows)
+        if (indexed.has(row.key))
+          throw new Error(`work-order card ${row.key} is on both pages`);
+      return rows.map((row): BoardRow => {
         const evidence = ctx.ref(ref, `line:${row.line} (${row.key})`);
         const links = Object.values(row.values)
           .flatMap(markdownLinks)
@@ -48,7 +73,28 @@ export function projectWork(
         };
         indexed.set(row.key, result);
         return result;
-      }),
+      });
+    },
+  );
+}
+
+export function projectWork(
+  ctx: ProjectionContext,
+  sources: BoardSources,
+): readonly BoardSection[] {
+  const indexed = new Map<string, BoardRow>();
+  // Both pages are indexed before the status and release rows link to them.
+  const index = indexPage(
+    ctx,
+    indexed,
+    INDEX_PAGES.index,
+    sources.workOrderIndex,
+  );
+  const history = indexPage(
+    ctx,
+    indexed,
+    INDEX_PAGES.history,
+    sources.workOrderHistory,
   );
   const status = ctx.section(
     "orders",
@@ -259,5 +305,5 @@ export function projectWork(
       ];
     },
   );
-  return [status, constellation, releases, index, usage];
+  return [status, constellation, releases, index, history, usage];
 }

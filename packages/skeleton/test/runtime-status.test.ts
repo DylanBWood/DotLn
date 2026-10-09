@@ -556,3 +556,62 @@ test("WO-117 only the lifetime owner sweeps status temporaries", async (t) => {
   await assert.rejects(new ResidentStore(directory).acquire(), /live host/u);
   assert.ok(fs.existsSync(stale), "failed lifetime acquisition cannot sweep");
 });
+
+test("[document] WO-190 the repository's index page yields the active and queued orders; its history page holds every settled card", async () => {
+  const { runtimeOrdersFromIndex } =
+    await import("../src/runtime-status-contract.js");
+  const readPage = (name: string) =>
+    readFileSync(
+      new URL(`../../../../docs/work-orders/${name}`, import.meta.url),
+      "utf8",
+    );
+  const page = readPage("README.md");
+  const history = readPage("HISTORY.md");
+  // An independent scan: the cards under the named level-two headings.
+  const cardsUnder = (text: string, sections: readonly string[]) => {
+    const cards: string[] = [];
+    let current = "";
+    for (const line of text.split("\n")) {
+      const heading = line.match(/^## (.+)$/u);
+      if (heading) current = heading[1]!;
+      const card = line.match(/^### (WO-\d{3})$/u);
+      if (card && sections.includes(current)) cards.push(card[1]!);
+    }
+    return cards;
+  };
+  const projected = runtimeOrdersFromIndex(page);
+  assert.equal(projected.status, "available");
+  assert.ok(projected.items.length > 0);
+  assert.deepEqual(
+    projected.items.map((item) => item.order),
+    cardsUnder(page, ["Active", "Open"]),
+  );
+  for (const item of projected.items)
+    assert.ok(
+      !["closed", "withdrawn", "superseded", "historical"].includes(item.phase),
+      `${item.order} is settled (${item.phase}) but on the index page`,
+    );
+  assert.ok(projected.items.some((item) => item.dependency !== "unknown"));
+  const settled = cardsUnder(history, [
+    "Closed",
+    "Withdrawn",
+    "Superseded",
+    "Historical",
+  ]);
+  assert.ok(settled.length > 0);
+  assert.equal(
+    new Set([...projected.items.map((item) => item.order), ...settled]).size,
+    projected.items.length + settled.length,
+    "an order is on both pages",
+  );
+  assert.equal(
+    settled.length,
+    (history.match(/^### WO-\d{3}$/gmu) ?? []).length,
+    "a history card sits outside the four settled sections",
+  );
+  // The resident reads only the index page; the history page is not one.
+  assert.throws(
+    () => runtimeOrdersFromIndex(history),
+    /invalid generated work-order index/u,
+  );
+});

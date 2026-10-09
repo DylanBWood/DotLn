@@ -516,6 +516,9 @@ Source not supplied
 Work-order evidence index [work-order-index] — unavailable
 Source not supplied
 
+Work-order history index [work-order-history] — unavailable
+Source not supplied
+
 Recorded actor usage [usage] — unavailable
 Source not supplied
 
@@ -565,6 +568,7 @@ available: packages/console/fixtures/wo009.events.jsonl#audit-projections
 available: store:wo009-demo
 unavailable: control:canonical-segments — Source not supplied
 unavailable: docs/work-orders/README.md — Source not supplied
+unavailable: docs/work-orders/HISTORY.md — Source not supplied
 unavailable: resume:status--json — Source not supplied
 unavailable: worktree:constellation — Source not supplied
 unavailable: release:list — Source not supplied

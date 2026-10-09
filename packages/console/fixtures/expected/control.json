@@ -4360,7 +4360,15 @@
                   "target": "evidence-38"
                 }
               ]
-            },
+            }
+          ]
+        },
+        {
+          "id": "work-order-history",
+          "title": "Work-order history index",
+          "status": "available",
+          "explanation": null,
+          "rows": [
             {
               "id": "indexed-order-017a784c89bea0b3",
               "title": "WO-003",
@@ -11489,6 +11497,11 @@
       "explanation": null
     },
     {
+      "ref": "docs/work-orders/HISTORY.md",
+      "status": "available",
+      "explanation": null
+    },
+    {
       "ref": "resume:status--json",
       "status": "available",
       "explanation": null
@@ -11722,662 +11735,662 @@
     },
     {
       "id": "evidence-39",
-      "source": "docs/work-orders/README.md",
-      "record": "line:253 (WO-003)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:9 (WO-003)"
     },
     {
       "id": "evidence-40",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-003/VER-002.md"
     },
     {
       "id": "evidence-41",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-003/FINAL-001.md"
     },
     {
       "id": "evidence-42",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-003-walking-skeleton.md"
     },
     {
       "id": "evidence-43",
-      "source": "docs/work-orders/README.md",
-      "record": "line:268 (WO-004)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:24 (WO-004)"
     },
     {
       "id": "evidence-44",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-004/VER-002.md"
     },
     {
       "id": "evidence-45",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-004/FINAL-001.md"
     },
     {
       "id": "evidence-46",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-004-environment-truth-addendum.md"
     },
     {
       "id": "evidence-47",
-      "source": "docs/work-orders/README.md",
-      "record": "line:283 (WO-005)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:39 (WO-005)"
     },
     {
       "id": "evidence-48",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-005/VER-001.md"
     },
     {
       "id": "evidence-49",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-005/FINAL-001.md"
     },
     {
       "id": "evidence-50",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-005-capability-table.md"
     },
     {
       "id": "evidence-51",
-      "source": "docs/work-orders/README.md",
-      "record": "line:298 (WO-006)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:54 (WO-006)"
     },
     {
       "id": "evidence-52",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-006/VER-003.md"
     },
     {
       "id": "evidence-53",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-006/FINAL-001.md"
     },
     {
       "id": "evidence-54",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-006-publication-bootstrap.md"
     },
     {
       "id": "evidence-55",
-      "source": "docs/work-orders/README.md",
-      "record": "line:313 (WO-007)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:69 (WO-007)"
     },
     {
       "id": "evidence-56",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-007/VER-002.md"
     },
     {
       "id": "evidence-57",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-007/FINAL-001.md"
     },
     {
       "id": "evidence-58",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-007-audit-record-baseline.md"
     },
     {
       "id": "evidence-59",
-      "source": "docs/work-orders/README.md",
-      "record": "line:328 (WO-008)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:84 (WO-008)"
     },
     {
       "id": "evidence-60",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-008/VER-001.md"
     },
     {
       "id": "evidence-61",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-008/FINAL-001.md"
     },
     {
       "id": "evidence-62",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-008-composition-compiler.md"
     },
     {
       "id": "evidence-63",
-      "source": "docs/work-orders/README.md",
-      "record": "line:344 (WO-009)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:100 (WO-009)"
     },
     {
       "id": "evidence-64",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-009/VER-001.md"
     },
     {
       "id": "evidence-65",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-009/FINAL-001.md"
     },
     {
       "id": "evidence-66",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-009-real-disposable-worker.md"
     },
     {
       "id": "evidence-67",
-      "source": "docs/work-orders/README.md",
-      "record": "line:360 (WO-010)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:116 (WO-010)"
     },
     {
       "id": "evidence-68",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-010/VER-001.md"
     },
     {
       "id": "evidence-69",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-010/FINAL-001.md"
     },
     {
       "id": "evidence-70",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-010-independent-verification.md"
     },
     {
       "id": "evidence-71",
-      "source": "docs/work-orders/README.md",
-      "record": "line:376 (WO-011)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:132 (WO-011)"
     },
     {
       "id": "evidence-72",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-011/VER-001.md"
     },
     {
       "id": "evidence-73",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-011/FINAL-001.md"
     },
     {
       "id": "evidence-74",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-011-feedback-compiler.md"
     },
     {
       "id": "evidence-75",
-      "source": "docs/work-orders/README.md",
-      "record": "line:392 (WO-012)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:148 (WO-012)"
     },
     {
       "id": "evidence-76",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-012/VER-001.md"
     },
     {
       "id": "evidence-77",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-012/FINAL-001.md"
     },
     {
       "id": "evidence-78",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-012-release-gate-path-quoting.md"
     },
     {
       "id": "evidence-79",
-      "source": "docs/work-orders/README.md",
-      "record": "line:407 (WO-013)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:163 (WO-013)"
     },
     {
       "id": "evidence-80",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-013/VER-001.md"
     },
     {
       "id": "evidence-81",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-013/FINAL-001.md"
     },
     {
       "id": "evidence-82",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-013-portable-fixture-temp-roots.md"
     },
     {
       "id": "evidence-83",
-      "source": "docs/work-orders/README.md",
-      "record": "line:422 (WO-015)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:178 (WO-015)"
     },
     {
       "id": "evidence-84",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-015/VER-001.md"
     },
     {
       "id": "evidence-85",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-015/FINAL-001.md"
     },
     {
       "id": "evidence-86",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-015-release-cadence-parser.md"
     },
     {
       "id": "evidence-87",
-      "source": "docs/work-orders/README.md",
-      "record": "line:437 (WO-016)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:193 (WO-016)"
     },
     {
       "id": "evidence-88",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-016/VER-001.md"
     },
     {
       "id": "evidence-89",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-016/FINAL-001.md"
     },
     {
       "id": "evidence-90",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-016-skeleton-reactor.md"
     },
     {
       "id": "evidence-91",
-      "source": "docs/work-orders/README.md",
-      "record": "line:453 (WO-017)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:209 (WO-017)"
     },
     {
       "id": "evidence-92",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-017/VER-001.md"
     },
     {
       "id": "evidence-93",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-017/FINAL-001.md"
     },
     {
       "id": "evidence-94",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-017-kernel-truthfulness.md"
     },
     {
       "id": "evidence-95",
-      "source": "docs/work-orders/README.md",
-      "record": "line:469 (WO-018)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:225 (WO-018)"
     },
     {
       "id": "evidence-96",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-018/VER-001.md"
     },
     {
       "id": "evidence-97",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-018/FINAL-001.md"
     },
     {
       "id": "evidence-98",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-018-control-plane-consolidation.md"
     },
     {
       "id": "evidence-99",
-      "source": "docs/work-orders/README.md",
-      "record": "line:485 (WO-019)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:241 (WO-019)"
     },
     {
       "id": "evidence-100",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-019/VER-002.md"
     },
     {
       "id": "evidence-101",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-019/FINAL-001.md"
     },
     {
       "id": "evidence-102",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-019-effort-truth.md"
     },
     {
       "id": "evidence-103",
-      "source": "docs/work-orders/README.md",
-      "record": "line:501 (WO-020)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:257 (WO-020)"
     },
     {
       "id": "evidence-104",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-020/VER-001.md"
     },
     {
       "id": "evidence-105",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-020/FINAL-001.md"
     },
     {
       "id": "evidence-106",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-020-beacon-codebook.md"
     },
     {
       "id": "evidence-107",
-      "source": "docs/work-orders/README.md",
-      "record": "line:517 (WO-021)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:273 (WO-021)"
     },
     {
       "id": "evidence-108",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-021/VER-001.md"
     },
     {
       "id": "evidence-109",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-021/FINAL-001.md"
     },
     {
       "id": "evidence-110",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-021-control-plane-beacons.md"
     },
     {
       "id": "evidence-111",
-      "source": "docs/work-orders/README.md",
-      "record": "line:533 (WO-022)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:289 (WO-022)"
     },
     {
       "id": "evidence-112",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-022/VER-001.md"
     },
     {
       "id": "evidence-113",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-022/FINAL-001.md"
     },
     {
       "id": "evidence-114",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-022-senses.md"
     },
     {
       "id": "evidence-115",
-      "source": "docs/work-orders/README.md",
-      "record": "line:549 (WO-023)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:305 (WO-023)"
     },
     {
       "id": "evidence-116",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-023/VER-001.md"
     },
     {
       "id": "evidence-117",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-023/FINAL-001.md"
     },
     {
       "id": "evidence-118",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-023-compile-entropy-reducer.md"
     },
     {
       "id": "evidence-119",
-      "source": "docs/work-orders/README.md",
-      "record": "line:565 (WO-024)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:321 (WO-024)"
     },
     {
       "id": "evidence-120",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-024/VER-001.md"
     },
     {
       "id": "evidence-121",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-024/FINAL-001.md"
     },
     {
       "id": "evidence-122",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-024-release-notes-surfaced.md"
     },
     {
       "id": "evidence-123",
-      "source": "docs/work-orders/README.md",
-      "record": "line:580 (WO-025)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:336 (WO-025)"
     },
     {
       "id": "evidence-124",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-025/VER-001.md"
     },
     {
       "id": "evidence-125",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-025/FINAL-001.md"
     },
     {
       "id": "evidence-126",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-025-version-bearing-surfaces.md"
     },
     {
       "id": "evidence-127",
-      "source": "docs/work-orders/README.md",
-      "record": "line:595 (WO-026)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:351 (WO-026)"
     },
     {
       "id": "evidence-128",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-026/VER-001.md"
     },
     {
       "id": "evidence-129",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-026/FINAL-001.md"
     },
     {
       "id": "evidence-130",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-026-work-order-index.md"
     },
     {
       "id": "evidence-131",
-      "source": "docs/work-orders/README.md",
-      "record": "line:611 (WO-027)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:367 (WO-027)"
     },
     {
       "id": "evidence-132",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-027/VER-001.md"
     },
     {
       "id": "evidence-133",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-027/FINAL-001.md"
     },
     {
       "id": "evidence-134",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-027-local-inference-probe.md"
     },
     {
       "id": "evidence-135",
-      "source": "docs/work-orders/README.md",
-      "record": "line:627 (WO-028)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:383 (WO-028)"
     },
     {
       "id": "evidence-136",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-028/VER-001.md"
     },
     {
       "id": "evidence-137",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-028/FINAL-001.md"
     },
     {
       "id": "evidence-138",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-028-control-event-time.md"
     },
     {
       "id": "evidence-139",
-      "source": "docs/work-orders/README.md",
-      "record": "line:643 (WO-029)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:399 (WO-029)"
     },
     {
       "id": "evidence-140",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-029/VER-001.md"
     },
     {
       "id": "evidence-141",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-029/FINAL-001.md"
     },
     {
       "id": "evidence-142",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-029-pinned-artifact-identity.md"
     },
     {
       "id": "evidence-143",
-      "source": "docs/work-orders/README.md",
-      "record": "line:659 (WO-030)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:415 (WO-030)"
     },
     {
       "id": "evidence-144",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-030/VER-001.md"
     },
     {
       "id": "evidence-145",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-030/FINAL-001.md"
     },
     {
       "id": "evidence-146",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-030-concurrent-control-state.md"
     },
     {
       "id": "evidence-147",
-      "source": "docs/work-orders/README.md",
-      "record": "line:675 (WO-031)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:431 (WO-031)"
     },
     {
       "id": "evidence-148",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-031/VER-001.md"
     },
     {
       "id": "evidence-149",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-031/FINAL-001.md"
     },
     {
       "id": "evidence-150",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-031-actor-usage-projection.md"
     },
     {
       "id": "evidence-151",
-      "source": "docs/work-orders/README.md",
-      "record": "line:691 (WO-038)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:447 (WO-038)"
     },
     {
       "id": "evidence-152",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-038/VER-001.md"
     },
     {
       "id": "evidence-153",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-038/FINAL-001.md"
     },
     {
       "id": "evidence-154",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-038-license-posture-lands.md"
     },
     {
       "id": "evidence-155",
-      "source": "docs/work-orders/README.md",
-      "record": "line:707 (WO-041)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:463 (WO-041)"
     },
     {
       "id": "evidence-156",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-041/VER-003.md"
     },
     {
       "id": "evidence-157",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-041/FINAL-002.md"
     },
     {
       "id": "evidence-158",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-041-plan-refutation-mechanism.md"
     },
     {
       "id": "evidence-159",
-      "source": "docs/work-orders/README.md",
-      "record": "line:723 (WO-101)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:479 (WO-101)"
     },
     {
       "id": "evidence-160",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-101/VER-001.md"
     },
     {
       "id": "evidence-161",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-101/FINAL-001.md"
     },
     {
       "id": "evidence-162",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-101-program-and-hash-corpus.md"
     },
     {
       "id": "evidence-163",
-      "source": "docs/work-orders/README.md",
-      "record": "line:738 (WO-108)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:494 (WO-108)"
     },
     {
       "id": "evidence-164",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/verifications/WO-108/VER-001.md"
     },
     {
       "id": "evidence-165",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:../../docs/final-reviews/WO-108/FINAL-001.md"
     },
     {
       "id": "evidence-166",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-108-mutation-probe.md"
     },
     {
       "id": "evidence-167",
-      "source": "docs/work-orders/README.md",
-      "record": "line:756 (WO-001)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:512 (WO-001)"
     },
     {
       "id": "evidence-168",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-001-environment-truth.md"
     },
     {
       "id": "evidence-169",
-      "source": "docs/work-orders/README.md",
-      "record": "line:771 (WO-002)"
+      "source": "docs/work-orders/HISTORY.md",
+      "record": "line:527 (WO-002)"
     },
     {
       "id": "evidence-170",
-      "source": "docs/work-orders/README.md",
+      "source": "docs/work-orders/HISTORY.md",
       "record": "link:WO-002-pure-kernel.md"
     },
     {

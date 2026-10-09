@@ -315,8 +315,9 @@ table includes the shared goal card and the refuter's separate subject boundary.
 
 `resume: next` answers the selected order's lifecycle question; it does not select
 a backlog order when the repository is between work orders. For evidence state,
-read the [generated work-order index](../work-orders/README.md); for recommendation,
-rationale, tracks, and human preflight, read
+read the [generated work-order index](../work-orders/README.md) for the active
+and sequenced orders and [its history page](../work-orders/HISTORY.md) for the
+settled ones; for recommendation, rationale, tracks, and human preflight, read
 [`docs/planning/work-order-map.md`](../planning/work-order-map.md). Keep the
 three answers separate: legal lifecycle transition, dependency/preflight
 eligibility, and recommended choice. Never infer any of them from the next
@@ -324,7 +325,10 @@ integer. The map is a dated human projection, so revalidate its candidate
 against the authoritative work order and current control evidence before
 activation.
 
-WO-026's generated index observes current headers and control evidence with a
+WO-026's generated index, two pages since WO-190 (`README.md` holds the
+active line, the sequence with its lane pairs and the Active and Open cards;
+`HISTORY.md` holds the settled cards, the sources and limits and the tag
+record), observes current headers and control evidence with a
 recorded snapshot of local annotated release tag objects and the control
 segments contained in each tagged revision. Prefix checks are per segment; a
 sibling merge cannot shift another order's close ordinal. Run
@@ -820,7 +824,8 @@ fold validates each event's shape; the route judges its legality.
   after the withdrawal, on a calendar date (VER-001 F1 reactivated with
   `9999-99-99`; the digit shape alone is not a date). A withdrawn order is settled like a closed one: it is not open,
   carries no completion, gate-attribution, meta or resident-binding duty, is
-  listed unchecked under the index's Closed section with its disposition, and
+  listed unchecked in the proposed order and under the Withdrawn section of
+  the index's history page with its disposition, and
   the sequence topology check skips edges to it. A typed dependency on it is
   `unmet` with `detail: withdrawn`, because it never closes as filed. The v2
   control beacon has no withdrawn phase, so the order's previous beacon ages
@@ -1199,7 +1204,7 @@ Standard artifacts, all doc-only:
 - a compaction-safety capture of the dispatch in ignored intake;
 - one dated ledger section for the pass (and one for any ideation batch);
 - the sequence revision, from which closed entries leave at each pass (the
-  generated index's Closed section is their record) [REVIEW-002 pass,
+  Closed section of the generated index's history page is their record) [REVIEW-002 pass,
   2026-09-22], and scoped map rationale, tracks, preflight, candidates,
   catalog rows and provenance;
 - a blinded refutation receipt pair under `docs/planning/refutations/`,

@@ -167,6 +167,50 @@ printf '%s\n' '# duplicate model' '' '**Model:** fixture-model.' '**Effort:** ex
 assert_refusal 'duplicate **Model:** lines' activate WO-092 docs/work-orders/WO-092-duplicate-model.md
 printf '%s\n' '# duplicate effort' '' '**Model:** fixture-model.' '**Effort:** executor high+; verifier any; reviewer any.' '**Objective:** fixture.' '' '```markdown' '**Effort:** executor any; verifier any; reviewer any.' '```' >"$fixture_repo/docs/work-orders/WO-091-duplicate-effort.md"
 assert_refusal 'duplicate **Effort:** lines' activate WO-091 docs/work-orders/WO-091-duplicate-effort.md
+# An umbrella record (the label plus typed superseded entries) refuses
+# activation naming its successors (WO-190), in a fixture where activation would
+# otherwise succeed; at 08845c71 the same run activates WO-900 (recorded in
+# docs/evidence/WO-190/activation-08845c71.txt).
+umbrella_repo="$test_root/umbrella"
+mkdir -p -- "$umbrella_repo/scripts" "$umbrella_repo/docs/work-orders"
+cp -- "$script_dir/resume.mjs" "$umbrella_repo/scripts/resume.mjs"
+cp -R -- "$script_dir/lib" "$umbrella_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$umbrella_repo"
+printf '%s\n' \
+  '# WO-900 — Umbrella fixture (version assigned at activation)' \
+  '' \
+  '**Model:** fixture-model.' \
+  '**Effort:** executor high; verifier high; reviewer any.' \
+  '**Umbrella record (2026-10-09):** superseded whole by WO-901 and WO-902; not activatable.' \
+  '' \
+  '<!-- dotln-dependencies:start -->' \
+  '[' \
+  '  {"workOrderId":"WO-901","relation":"superseded","reason":"fixture split: carried by WO-901.","by":"WO-901"},' \
+  '  {"workOrderId":"WO-902","relation":"superseded","reason":"fixture split: carried by WO-902.","by":"WO-902"}' \
+  ']' \
+  '<!-- dotln-dependencies:end -->' \
+  '' \
+  '**Objective:** fixture umbrella.' >"$umbrella_repo/docs/work-orders/WO-900-umbrella.md"
+git init "$umbrella_repo" >/dev/null 2>&1
+cp -- "$script_dir/../.gitignore" "$umbrella_repo/.gitignore"
+if umbrella_output="$(node "$umbrella_repo/scripts/resume.mjs" activate WO-900 docs/work-orders/WO-900-umbrella.md 2>&1)"; then
+  printf 'error: umbrella record WO-900 activated\n' >&2
+  exit 1
+fi
+grep -Fq 'activation refused: WO-900 is an umbrella record superseded by WO-901, WO-902' <<<"$umbrella_output"
+if grep -Fq 'at file://' <<<"$umbrella_output"; then printf 'error: umbrella refusal leaked a JavaScript stack trace\n' >&2; exit 1; fi
+test ! -e "$umbrella_repo/docs/control/orders/WO-900.jsonl"
+# The label alone is not the class: without typed superseded entries the same
+# file activates, as any draft does.
+printf '%s\n' \
+  '# WO-903 — Labelled draft (version assigned at activation)' \
+  '' \
+  '**Model:** fixture-model.' \
+  '**Effort:** executor high; verifier high; reviewer any.' \
+  '**Umbrella record:** a label with no typed superseded entry.' \
+  '**Objective:** fixture draft.' >"$umbrella_repo/docs/work-orders/WO-903-labelled.md"
+node "$umbrella_repo/scripts/resume.mjs" activate WO-903 docs/work-orders/WO-903-labelled.md >/dev/null 2>&1
+test -s "$umbrella_repo/docs/control/orders/WO-903.jsonl"
 activate_warning="$(node "$fixture_repo/scripts/resume.mjs" activate WO-099 docs/work-orders/WO-099-fixture.md 2>&1 >/dev/null)"
 assert_status_read_only
 assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"active","latestVerification":null,"verificationPath":null,"latestVerdict":null,"finalReview":null,"finalReviewPath":null,"latestAttestation":null,"effortDrift":[],"latestCheckpoint":{"unavailable":true},"legalNextActions":["next","implementation-ready"],"legalOffRamps":["withdraw","correct","override-record"],"waivedCriteria":[],"unmetCriteria":[],"withdrawal":null,"corrections":[],"overrideRecords":[]}'
@@ -798,7 +842,7 @@ const [root, scripts] = process.argv.slice(2);
 const { main } = await import(pathToFileURL(join(root, "scripts/resume.mjs")));
 const { readControl } = await import(pathToFileURL(join(root, "scripts/lib/control-store.mjs")));
 const { completedPhaseAttempts, controlTimeProjection } = await import(pathToFileURL(join(root, "scripts/lib/control-time.mjs")));
-const { renderIndex } = await import(pathToFileURL(join(scripts, "work-orders.mjs")));
+const { renderHistory } = await import(pathToFileURL(join(scripts, "work-orders.mjs")));
 const stdout = process.stdout.write, stderr = process.stderr.write;
 const call = async (args) => {
   let output = "";
@@ -1002,7 +1046,7 @@ await selectedCall(["final-review-result", "pass", ...flags, "--account-label", 
 delete process.env.DOTLN_ACCOUNT_LABEL;
 assert.equal(last().actor.accountLabel, "claude-2");
 const state = readControl(root).orders.get(id).state;
-const index = renderIndex({ rows: [{ id, path: authority, title: "Fixture", phase: "closed", section: "Closed", model: "any", effort: "any", dependencies: { source: "conservative-tokens", entries: [], blocking: [] }, state }], sequence: [], releases: [] });
+const index = renderHistory({ rows: [{ id, path: authority, title: "Fixture", phase: "closed", section: "Closed", model: "any", effort: "any", dependencies: { source: "conservative-tokens", entries: [], blocking: [] }, state }], sequence: [], releases: [] });
 assert.match(index, /Latest attestation: harness human;.*account claude-2/);
 console.log("account labels: 11 invalid forms, missing/duplicate flags and invalid env refused before append; a1/claude-2 accepted; env default and flag override checked through all four completion commands");
 console.log("account projections: optional field stays absent in stored history; status/current render not-applicable; labelled status/current/index and report-header parity checked");

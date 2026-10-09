@@ -1324,6 +1324,7 @@ export async function collectMeta(
     sequencePath,
     docRelative(root, "planning", "work-order-map.md"),
     docRelative(root, "workOrders", "README.md"),
+    docRelative(root, "workOrders", "HISTORY.md"),
     docRelative(root, "lineage", "idea-ledger.md"),
     "CLAUDE.md",
     ...coldStart.profiles.map((row) => row.path),

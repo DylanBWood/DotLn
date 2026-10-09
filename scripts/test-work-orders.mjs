@@ -30,10 +30,13 @@ import {
 } from "./lib/release-records.mjs";
 import {
   checkIndex,
+  checkPartition,
+  checkSequenceCoverage,
   checkSequenceTopology,
   parseHeader,
   parseSequence,
   readIndex,
+  renderHistory,
   renderIndex,
 } from "./work-orders.mjs";
 
@@ -175,6 +178,15 @@ const specs = [
   ["WO-040", "v2.0.0", "WO-030", "model | <script> [link](elsewhere)"],
 ];
 for (const args of specs) write(repo, authorityPath(args[0]), header(...args));
+// Every open draft has a place in the sequence (WO-190); the first three keep
+// the operator's order the checklist assertions below rely on.
+const openDrafts = [
+  ["WO-036", "Draft four"],
+  ["WO-037", "Draft five"],
+  ["WO-038", "Draft six"],
+  ["WO-039", "Draft seven"],
+  ["WO-040", "Draft eight"],
+];
 write(
   repo,
   planningPath,
@@ -182,6 +194,7 @@ write(
     ["WO-035", "Later dependency"],
     ["WO-030", "Completed fixture"],
     ["WO-034", "Current fixture"],
+    ...openDrafts,
   ]),
 );
 write(
@@ -205,7 +218,10 @@ const events = [
 writeLog(repo, events);
 commit(repo, "closed and active orders");
 const indexFile = join(repo, "docs/work-orders/README.md");
+const historyFile = join(repo, "docs/work-orders/HISTORY.md");
 const rows = () => new Map(readIndex(repo).rows.map((row) => [row.id, row]));
+const cardIds = (page) =>
+  [...page.matchAll(/^### (WO-\d{3})$/gm)].map((match) => match[1]);
 
 await check(
   "index derives release membership, no-release, unreleased, active, blocked, ready, malformed and unknown",
@@ -261,39 +277,52 @@ await check(
   () => {
     cli(repo, ["index"]);
     const first = readFileSync(indexFile, "utf8");
+    const history = readFileSync(historyFile, "utf8");
     cli(repo, ["index"]);
     assert.equal(first, readFileSync(indexFile, "utf8"));
-    assert.doesNotMatch(first, /^\|/m, "the reader view has no wide tables");
-    const front = first.split("## Other open work")[0];
+    assert.equal(history, readFileSync(historyFile, "utf8"));
+    for (const page of [first, history])
+      assert.doesNotMatch(page, /^\|/m, "the reader view has no wide tables");
+    const front = first.split("## Active")[0];
     assert.match(front, /\*\*Now:\*\* \[WO-034\].*— active/);
     assert.deepEqual(
       [...front.matchAll(/^- \[[ x]\] \[(WO-\d{3})\]/gm)].map(
         (match) => match[1],
       ),
-      ["WO-035", "WO-030", "WO-034"],
+      ["WO-035", "WO-030", "WO-034", ...openDrafts.map(([id]) => id)],
       "preserve the operator's order rather than sorting or scheduling it",
     );
     assert.match(front, /^- \[x\] \[WO-030\].*final-reviewed/m);
     assert.match(front, /^- \[ \] \[WO-034\].*active/m);
     assert.match(front, /^- \[ \] \[WO-035\].*queued/m);
     assert.doesNotMatch(front, /dotln-work-order-tags|Model:|Effort:/);
-    for (const [id] of specs)
+    assert.doesNotMatch(first, /## Other open work/);
+    // Each page defines only the references it uses (WO-190).
+    for (const id of ["WO-030", "WO-034", "WO-035", "WO-040"])
       assert.ok(
         first.includes(`[${id}]: ${id}-fixture.md\n`),
         "reference links retain authority destinations",
       );
-    const lines = first
-      .split("\n")
-      .filter((line) => /^### WO-\d{3}$/.test(line));
-    assert.equal(lines.length, specs.length);
-    assert.equal(new Set(lines).size, specs.length);
-    for (const section of first.split(/^## /m).slice(1)) {
-      const ids = [...section.matchAll(/^### (WO-\d{3})$/gm)].map(
-        (match) => match[1],
-      );
+    for (const id of ["WO-001", "WO-031", "WO-033"])
+      assert.ok(!first.includes(`[${id}]: `), `${id} is not referenced`);
+    const cards = [...cardIds(first), ...cardIds(history)];
+    assert.equal(cards.length, specs.length);
+    assert.equal(new Set(cards).size, specs.length);
+    // The Active card, then the Open cards in sequence order (which this
+    // fixture's sequence keeps in identifier order; the two-pages fixture
+    // below proves the ordering).
+    assert.deepEqual(cardIds(first), [
+      "WO-034",
+      "WO-035",
+      ...openDrafts.map(([id]) => id),
+    ]);
+    for (const section of history.split(/^## /m).slice(1)) {
+      const ids = cardIds(section);
       assert.deepEqual(ids, [...ids].sort());
     }
-    for (const detail of first.split(/^### WO-\d{3}$/m).slice(1))
+    for (const detail of [first, history].flatMap((page) =>
+      page.split(/^### WO-\d{3}$/m).slice(1),
+    ))
       for (const field of [
         "State",
         "Application target",
@@ -309,10 +338,17 @@ await check(
         assert.ok(detail.includes(`- ${field}:`), field);
     assert.match(first, /model &#124; &lt;script&gt; &#91;link&#93;/);
     assert.match(
-      first,
+      history,
       /\[VER-001\]\(\.\.\/\.\.\/docs\/verifications\/WO-030\/VER-001.md\) \(pass\)/,
     );
-    assert.doesNotMatch(first, /`v[89]\.0\.0`/);
+    assert.doesNotMatch(history, /`v[89]\.0\.0`/);
+    assert.ok(history.startsWith("# Work-order history\n"));
+    assert.match(history, /^## Sources and limits$/m);
+    assert.match(history, /dotln-work-order-tags/);
+    checkPartition(readIndex(repo), {
+      "docs/work-orders/README.md": first,
+      "docs/work-orders/HISTORY.md": history,
+    });
     commit(repo, "generated index");
   },
 );
@@ -348,12 +384,30 @@ await check(
       assert.equal(readFileSync(indexFile, "utf8"), changed);
     }
     writeFileSync(indexFile, original);
+    // A stale history page is named as such (WO-190).
+    const settled = readFileSync(historyFile, "utf8");
+    const closedAt = settled
+      .split("\n")
+      .findIndex((line) => line === "### WO-030");
+    writeFileSync(
+      historyFile,
+      settled
+        .split("\n")
+        .filter((_, index) => index !== closedAt)
+        .join("\n"),
+    );
+    assert.match(
+      cli(repo, ["index", "--check"], false),
+      new RegExp(`HISTORY\\.md is stale at line ${closedAt + 1}\\b`),
+    );
+    writeFileSync(historyFile, settled);
     assert.equal(
       readFileSync(join(repo, "docs/control/resume.jsonl"), "utf8"),
       log,
     );
     assert.equal(runGit(repo, ["show-ref"]), refs);
     assert.equal(existsSync(`${indexFile}.tmp`), false);
+    assert.equal(existsSync(`${historyFile}.tmp`), false);
     assert.throws(() => checkIndex("a\n", "a\nextra\n"), /line 2/);
   },
 );
@@ -374,6 +428,8 @@ await check(
       sequenceSource([
         ["WO-034", "First now"],
         ["WO-030", "Then completed"],
+        ["WO-035", "Later dependency"],
+        ...openDrafts,
       ]),
     );
     assert.match(cli(repo, ["index", "--check"], false), /stale at line/);
@@ -438,14 +494,21 @@ await check(
   "a new release tag preserves the recorded check; explicit refresh includes it without retroactive no-release inference",
   () => {
     const original = readFileSync(indexFile, "utf8");
+    const settledOriginal = readFileSync(historyFile, "utf8");
     tag(repo, "v2.0.0", "WO-040", ["docs/final-reviews/WO-030/FINAL-002.md"]);
     assert.match(
       cli(repo, ["index", "--check"]),
       /NEWER local release evidence: v2\.0\.0/,
     );
     assert.equal(readFileSync(indexFile, "utf8"), original);
+    assert.equal(readFileSync(historyFile, "utf8"), settledOriginal);
     cli(repo, ["index"]);
     assert.notEqual(readFileSync(indexFile, "utf8"), original);
+    // The refreshed tag observation lives on the history page.
+    assert.match(
+      readFileSync(historyFile, "utf8"),
+      /Local annotated release tags used: .*`v2\.0\.0`/,
+    );
     const byId = rows();
     assert.equal(
       byId.get("WO-030").disposition,
@@ -484,19 +547,22 @@ await check(
   "missing or changed recorded tag objects refuse without rewriting the index",
   () => {
     const original = readFileSync(indexFile, "utf8");
+    const settledOriginal = readFileSync(historyFile, "utf8");
     const object = runGit(repo, ["rev-parse", "refs/tags/v1.0.0"]);
     runGit(repo, ["tag", "-d", "v1.0.0"]);
+    // The tag record is on the history page, which the refusal names.
     assert.match(
       cli(repo, ["index", "--check"], false),
-      /missing or changed recorded release tag: v1\.0\.0/,
+      /HISTORY\.md: missing or changed recorded release tag: v1\.0\.0/,
     );
     tag(repo, "v1.0.0", "WO-033");
     assert.match(
       cli(repo, ["index", "--check"], false),
-      /missing or changed recorded release tag: v1\.0\.0/,
+      /HISTORY\.md: missing or changed recorded release tag: v1\.0\.0/,
     );
     runGit(repo, ["update-ref", "refs/tags/v1.0.0", object]);
     assert.equal(readFileSync(indexFile, "utf8"), original);
+    assert.equal(readFileSync(historyFile, "utf8"), settledOriginal);
   },
 );
 
@@ -599,6 +665,7 @@ await check(
       header("WO-901", "SourceBundle v1 (version assigned at activation)") +
       "\n**Acceptance criteria**\n1. Update the ledgers.\n\n**Non-goals:** None.\n";
     write(fixture, authorityPath("WO-901"), source);
+    write(fixture, planningPath, sequenceSource([["WO-901", "Draft"]]));
     assert.equal(
       parseHeader(source, authorityPath("WO-901")).version,
       "unassigned",
@@ -841,6 +908,7 @@ syncBuiltinESMExports();
 await check("a symlinked script entry executes the same index command", () => {
   const fixture = makeRepo("symlink-entry");
   write(fixture, authorityPath("WO-901"), header("WO-901", "v1.2.3"));
+  write(fixture, planningPath, sequenceSource([["WO-901", "Draft"]]));
   commit(fixture, "fixture");
   cli(fixture, ["index"]);
   const alias = join(fixture, "scripts/linked-index.mjs");
@@ -929,6 +997,16 @@ await check(
     assert.equal(readFileSync(outside, "utf8"), "sentinel\n");
     unlinkSync(indexFile);
     writeFileSync(indexFile, original);
+    const settled = readFileSync(historyFile, "utf8");
+    unlinkSync(historyFile);
+    symlinkSync(outside, historyFile);
+    assert.match(
+      cli(repo, ["index"], false),
+      /HISTORY\.md: expected a contained regular file/,
+    );
+    assert.equal(readFileSync(outside, "utf8"), "sentinel\n");
+    unlinkSync(historyFile);
+    writeFileSync(historyFile, settled);
     const path = join(repo, authorityPath("WO-040"));
     const authority = readFileSync(path, "utf8");
     unlinkSync(path);
@@ -1268,7 +1346,7 @@ await check(
 );
 
 await check(
-  "WO-158 a withdrawn order is a settled Closed entry under its disposition, unmet: withdrawn for dependents and closed for the sequence",
+  "WO-158 a withdrawn order is a settled Withdrawn entry under its disposition, unmet: withdrawn for dependents and unchecked in the sequence",
   () => {
     const target = makeRepo("withdrawn-index");
     const human = {
@@ -1323,7 +1401,7 @@ await check(
     ]);
     const projection = readIndex(target, []);
     const byId = new Map(projection.rows.map((row) => [row.id, row]));
-    assert.equal(byId.get("WO-030").section, "Closed");
+    assert.equal(byId.get("WO-030").section, "Withdrawn");
     assert.equal(byId.get("WO-030").phase, "withdrawn");
     assert.equal(
       byId.get("WO-030").dependencyState,
@@ -1336,20 +1414,32 @@ await check(
     assert.doesNotThrow(() => checkSequenceTopology(projection));
     const rendered = renderIndex(projection);
     assert.match(rendered, /\*\*Now:\*\* \[WO-099\] — active\./);
+    // The two entries form one lane pair, so both rows carry its mark.
     assert.match(
       rendered,
-      /^- \[ \] \[WO-030\] — prerequisite · \*\*withdrawn: superseded\*\*$/m,
+      /^- \[ \] \[WO-030\] — prerequisite · \*\*withdrawn: superseded\*\* · pair 1$/m,
     );
-    const closed = rendered.split("## Closed\n")[1].split(/\n## /)[0];
-    assert.match(closed, /### WO-030/);
-    assert.match(closed, /- State: withdrawn\./);
     assert.match(
-      closed,
+      rendered,
+      /^- \[ \] \[WO-099\] — dependent · \*\*active\*\* · pair 1$/m,
+    );
+    // A withdrawn order has its own section on the history page (WO-190).
+    const history = renderHistory(projection);
+    assert.doesNotMatch(rendered, /### WO-030/);
+    const withdrawn = history.split("## Withdrawn\n")[1].split(/\n## /)[0];
+    assert.match(withdrawn, /### WO-030/);
+    assert.match(withdrawn, /- State: withdrawn\./);
+    assert.match(
+      withdrawn,
       /- Withdrawal: superseded at ordinal 3 — replaced by WO-099\./,
     );
-    assert.match(closed, /- Waived criteria: 2 by ordinal 2\./);
+    assert.match(withdrawn, /- Waived criteria: 2 by ordinal 2\./);
+    assert.doesNotMatch(
+      history.split("## Closed\n")[1].split(/\n## /)[0],
+      /### WO-030/,
+    );
     assert.match(rendered, /WO-030: hard \(unmet: withdrawn\)/);
-    assert.match(rendered, /never counts as a pass/);
+    assert.match(history, /never counts as a pass/);
     // A release edge is met by its release, so it keeps the release remedy.
     const release = projectDependencies(
       parseDependencies(
@@ -1405,9 +1495,10 @@ await check(
     const rendered = renderIndex(projection);
     assert.match(rendered, /WO-030: hard \(met\)/);
     assert.match(rendered, /WO-040: reference-only \(non-blocking\)/);
-    for (const section of ["Closed", "Historical"])
+    const settledPage = renderHistory(projection);
+    for (const section of ["Closed", "Withdrawn", "Superseded", "Historical"])
       assert.doesNotMatch(
-        rendered.split(`## ${section}\n`)[1].split(/\n## /)[0],
+        settledPage.split(`## ${section}\n`)[1].split(/\n## /)[0],
         /\bblocked\b/,
       );
     cli(target, ["index"]);
@@ -1435,6 +1526,385 @@ await check(
       readFileSync(join(target, "docs/work-orders/README.md"), "utf8"),
       before,
     );
+  },
+);
+
+await check(
+  "WO-190 two pages partition the orders by class, the Open cards follow the sequence with pairs marked, the stale page is named, and an open order outside the sequence is refused",
+  () => {
+    const target = makeRepo("two-pages");
+    const human = {
+      harness: "human",
+      harnessVersion: "not-applicable",
+      model: "human",
+      effort: "unknown",
+      source: "operator-attested",
+    };
+    for (const id of [
+      "WO-001",
+      "WO-901",
+      "WO-902",
+      "WO-903",
+      "WO-904",
+      "WO-905",
+      "WO-906",
+    ])
+      write(target, authorityPath(id), header(id, "unassigned"));
+    // The fixture's umbrella record is WO-907; WO-910 carries the same header
+    // but a recorded activation, so its control state wins over the class.
+    const umbrellaHeader = (id) =>
+      typedHeader(id, [
+        dependency("WO-902", "superseded", { by: "WO-902" }),
+        dependency("WO-903", "superseded", { by: "WO-903" }),
+      ]).replace(
+        "**Depends on:** nothing\n",
+        "**Depends on:** nothing\n**Umbrella record (2026-10-09):** superseded whole by WO-902 and WO-903; not activatable.\n",
+      );
+    write(target, authorityPath("WO-907"), umbrellaHeader("WO-907"));
+    write(target, authorityPath("WO-910"), umbrellaHeader("WO-910"));
+    const sequence = [
+      ["WO-904", "Single first"],
+      [],
+      ["WO-902", "Pair A"],
+      ["WO-903", "Pair B"],
+      [],
+      ["WO-905", "Closed entry"],
+    ];
+    const grouped = (entries) =>
+      `# Plan\n\n<!-- dotln-work-order-sequence:start -->\n${entries.map((entry) => (entry.length ? `- ${entry[0]} — ${entry[1]}` : "")).join("\n")}\n<!-- dotln-work-order-sequence:end -->\n`;
+    write(target, planningPath, grouped(sequence));
+    writeLog(target, [
+      activation("WO-901"),
+      ...completed("WO-905"),
+      activation("WO-906"),
+      {
+        type: "WorkOrderWithdrawn",
+        workOrderId: "WO-906",
+        disposition: "abandoned",
+        reason: "fixture withdrawal",
+        orderHash: `sha256:${"b".repeat(64)}`,
+        capture: "docs/intake/notes/operator.md",
+        captureHash: `sha256:${"a".repeat(64)}`,
+        actor: human,
+      },
+      activation("WO-910"),
+    ]);
+    commit(target, "two-page fixture");
+    const readmePath = join(target, "docs/work-orders/README.md");
+    const historyPath = join(target, "docs/work-orders/HISTORY.md");
+    assert.match(
+      cli(target, ["index"]),
+      /Generated docs\/work-orders\/README\.md\nGenerated docs\/work-orders\/HISTORY\.md/,
+    );
+    const readme = readFileSync(readmePath, "utf8");
+    const history = readFileSync(historyPath, "utf8");
+    // Criterion 1 and 2: the index page holds the active line, the sequence,
+    // and one card per active or sequenced order, the Open cards in
+    // sequence order; nothing settled and no tag record.
+    assert.ok(readme.startsWith("# Work orders\n"));
+    assert.ok(
+      readme.includes(
+        "This file is generated by `npm run work-orders -- index`",
+      ),
+    );
+    assert.match(
+      readme,
+      /^\*\*Now:\*\* \[WO-901\] — active; \[WO-910\] — active\.$/m,
+    );
+    assert.deepEqual(
+      [...readme.matchAll(/^- \[[ x]\] \[WO-\d{3}\].*$/gm)].map(
+        (match) => match[0],
+      ),
+      [
+        "- [ ] [WO-904] — Single first · **queued**",
+        "- [ ] [WO-902] — Pair A · **queued** · pair 1",
+        "- [ ] [WO-903] — Pair B · **queued** · pair 1",
+        "- [x] [WO-905] — Closed entry · **final-reviewed**",
+      ],
+    );
+    assert.deepEqual(cardIds(readme), [
+      "WO-901",
+      "WO-910",
+      "WO-904",
+      "WO-902",
+      "WO-903",
+    ]);
+    assert.deepEqual(
+      readme.split("\n").filter((line) => /^## /.test(line)),
+      ["## Proposed order", "## Active", "## Open"],
+    );
+    assert.doesNotMatch(
+      readme,
+      /Other open work|dotln-work-order-tags|Sources and limits/,
+    );
+    assert.match(readme, /\[the history page\]\(HISTORY\.md\)/);
+    for (const id of [
+      "WO-901",
+      "WO-902",
+      "WO-903",
+      "WO-904",
+      "WO-905",
+      "WO-910",
+    ])
+      assert.ok(readme.includes(`[${id}]: ${id}-fixture.md\n`), id);
+    for (const id of ["WO-001", "WO-906", "WO-907"])
+      assert.ok(!readme.includes(`[${id}]: `), id);
+    // The history page: every other class, the sources and the tag record.
+    assert.ok(history.startsWith("# Work-order history\n"));
+    assert.ok(
+      history.includes(
+        "This file is generated by `npm run work-orders -- index`",
+      ),
+    );
+    assert.deepEqual(cardIds(history), [
+      "WO-905",
+      "WO-906",
+      "WO-907",
+      "WO-001",
+    ]);
+    assert.deepEqual(
+      history.split("\n").filter((line) => /^## /.test(line)),
+      [
+        "## Closed",
+        "## Withdrawn",
+        "## Superseded",
+        "## Historical",
+        "## Sources and limits",
+      ],
+    );
+    const section = (page, name) =>
+      page.split(`## ${name}\n`)[1].split(/\n## /)[0];
+    assert.match(
+      section(history, "Closed"),
+      /### WO-905[\s\S]*- State: closed\./,
+    );
+    assert.match(
+      section(history, "Withdrawn"),
+      /### WO-906[\s\S]*- State: withdrawn\.\n- Withdrawal: abandoned at ordinal \d+ — fixture withdrawal\./,
+    );
+    // Criterion 4 (index side): the umbrella record with its named successors.
+    assert.match(
+      section(history, "Superseded"),
+      /^- \[WO-907\] — superseded by WO-902, WO-903$/m,
+    );
+    assert.match(
+      section(history, "Superseded"),
+      /### WO-907[\s\S]*- State: superseded\.[\s\S]*- Dependencies: typed; activation not applicable\.[\s\S]*WO-902: superseded \(non-blocking\) by WO-902/,
+    );
+    assert.match(
+      section(history, "Historical"),
+      /### WO-001[\s\S]*- State: historical \(time-indexed\)\./,
+    );
+    assert.match(history, /dotln-work-order-tags: \[\] -->/);
+    assert.ok(history.includes("[WO-907]: WO-907-fixture.md\n"));
+    assert.ok(!history.includes("[WO-905]: "));
+    const index = readIndex(target);
+    assert.deepEqual(
+      Object.fromEntries(index.rows.map((row) => [row.id, row.section])),
+      {
+        "WO-001": "Historical",
+        "WO-901": "Active",
+        "WO-902": "Open",
+        "WO-903": "Open",
+        "WO-904": "Open",
+        "WO-905": "Closed",
+        "WO-906": "Withdrawn",
+        "WO-907": "Superseded",
+        "WO-910": "Active",
+      },
+    );
+    assert.deepEqual(index.rows.find((row) => row.id === "WO-907").umbrella, {
+      successors: ["WO-902", "WO-903"],
+    });
+    checkPartition(index, {
+      "docs/work-orders/README.md": readme,
+      "docs/work-orders/HISTORY.md": history,
+    });
+    assert.throws(
+      () => checkPartition(index, { a: readme, b: `${history}\n### WO-901\n` }),
+      /WO-901 has cards on a and b/,
+    );
+    assert.throws(
+      () => checkPartition(index, { a: readme }),
+      /WO-905 has no card on either page/,
+    );
+    assert.throws(
+      () => checkPartition(index, { a: readme, b: `${history}\n### WO-999\n` }),
+      /WO-999 has a card on b but no authority/,
+    );
+    assert.match(
+      cli(target, ["index", "--check"]),
+      /PASS docs\/work-orders\/README\.md is current\nPASS docs\/work-orders\/HISTORY\.md is current/,
+    );
+    // Criterion 3: a changed header, control state, sequence or page names
+    // the stale page.
+    // Mutates one input, expects the named stale page, then restores that
+    // input and both pages.
+    const stale = (path, mutate, pattern) => {
+      const before = readFileSync(join(target, path), "utf8");
+      mutate();
+      assert.match(cli(target, ["index", "--check"], false), pattern);
+      write(target, path, before);
+      writeFileSync(readmePath, readme);
+      writeFileSync(historyPath, history);
+    };
+    stale(
+      authorityPath("WO-905"),
+      () =>
+        write(
+          target,
+          authorityPath("WO-905"),
+          header("WO-905", "unassigned", "nothing", "edited model"),
+        ),
+      /HISTORY\.md is stale at line \d+/,
+    );
+    stale(
+      authorityPath("WO-904"),
+      () =>
+        write(
+          target,
+          authorityPath("WO-904"),
+          header("WO-904", "unassigned", "nothing", "edited model"),
+        ),
+      /README\.md is stale at line \d+/,
+    );
+    stale(
+      "docs/control/resume.jsonl",
+      () =>
+        writeLog(target, [
+          activation("WO-901"),
+          ...completed("WO-905"),
+          activation("WO-906"),
+          {
+            type: "WorkOrderWithdrawn",
+            workOrderId: "WO-906",
+            disposition: "abandoned",
+            reason: "fixture withdrawal",
+            orderHash: `sha256:${"b".repeat(64)}`,
+            capture: "docs/intake/notes/operator.md",
+            captureHash: `sha256:${"a".repeat(64)}`,
+            actor: human,
+          },
+          activation("WO-910"),
+          activation("WO-904"),
+        ]),
+      /README\.md is stale at line \d+/,
+    );
+    stale(
+      planningPath,
+      () =>
+        write(
+          target,
+          planningPath,
+          grouped([sequence[2], sequence[3], [], sequence[0], [], sequence[5]]),
+        ),
+      /README\.md is stale at line \d+/,
+    );
+    stale(
+      "docs/work-orders/HISTORY.md",
+      () =>
+        writeFileSync(
+          historyPath,
+          history.replace("- State: closed.", "- State: invented."),
+        ),
+      /HISTORY\.md is stale at line \d+/,
+    );
+    stale(
+      "docs/work-orders/README.md",
+      () =>
+        writeFileSync(
+          readmePath,
+          readme.replace("- State: active.", "- State: invented."),
+        ),
+      /README\.md is stale at line \d+/,
+    );
+    assert.match(cli(target, ["index", "--check"]), /is current/);
+    // Criterion 5: an open order that is neither an umbrella record nor a
+    // derived draft must have a place; the write path still writes.
+    write(
+      target,
+      planningPath,
+      grouped([sequence[0], [], sequence[2], [], sequence[5]]),
+    );
+    assert.match(
+      cli(target, ["index"]),
+      /Generated docs\/work-orders\/README\.md/,
+    );
+    assert.match(
+      cli(target, ["index", "--check"], false),
+      /sequence\.md: open orders absent from the proposed sequence: WO-903; add each to the marked sequence/,
+    );
+    write(target, planningPath, grouped(sequence));
+    cli(target, ["index"]);
+    // A label without typed superseded entries is an open draft, not an umbrella.
+    write(
+      target,
+      authorityPath("WO-908"),
+      header("WO-908", "unassigned").replace(
+        "**Depends on:** nothing\n",
+        "**Depends on:** nothing\n**Umbrella record:** a label with no typed entry.\n",
+      ),
+    );
+    cli(target, ["index"]);
+    assert.equal(
+      readIndex(target).rows.find((row) => row.id === "WO-908").section,
+      "Open",
+    );
+    assert.match(
+      cli(target, ["index", "--check"], false),
+      /absent from the proposed sequence: WO-908/,
+    );
+    unlinkSync(join(target, authorityPath("WO-908")));
+    cli(target, ["index"]);
+    assert.match(cli(target, ["index", "--check"]), /is current/);
+    assert.throws(
+      () =>
+        checkSequenceCoverage({
+          rows: [{ id: "WO-904", section: "Open" }],
+          sequence: [],
+        }),
+      /WO-904/,
+    );
+    assert.doesNotThrow(() =>
+      checkSequenceCoverage({
+        rows: [
+          { id: "WO-901", section: "Active" },
+          { id: "WO-907", section: "Superseded" },
+          { id: "WO-905", section: "Closed" },
+          {
+            id: "WO-980",
+            section: "Open",
+            provenance: { kind: "runtime", sourceId: "fixture" },
+          },
+        ],
+        sequence: [],
+      }),
+    );
+    // A leftover history temporary refuses before either page is replaced:
+    // both pages need writing here, and neither changes.
+    const closedAuthority = readFileSync(
+      join(target, authorityPath("WO-905")),
+      "utf8",
+    );
+    write(target, authorityPath("WO-909"), header("WO-909", "unassigned"));
+    write(
+      target,
+      authorityPath("WO-905"),
+      header("WO-905", "unassigned", "nothing", "edited model"),
+    );
+    writeFileSync(`${historyPath}.tmp`, "interrupted\n");
+    assert.match(
+      cli(target, ["index"], false),
+      /index temporary already exists:.*HISTORY\.md\.tmp; inspect/,
+    );
+    assert.equal(readFileSync(readmePath, "utf8"), readme);
+    assert.equal(readFileSync(historyPath, "utf8"), history);
+    assert.equal(readFileSync(`${historyPath}.tmp`, "utf8"), "interrupted\n");
+    assert.equal(existsSync(`${readmePath}.tmp`), false);
+    unlinkSync(`${historyPath}.tmp`);
+    unlinkSync(join(target, authorityPath("WO-909")));
+    write(target, authorityPath("WO-905"), closedAuthority);
+    assert.match(cli(target, ["index", "--check"]), /is current/);
   },
 );
 
@@ -1484,7 +1954,8 @@ await check(
     const indexPath = "docs/work-orders/report-links.md";
     const renderReports = (length) => {
       writeLog(target, cycle.slice(0, length));
-      const rendered = renderIndex(readIndex(target));
+      const index = readIndex(target);
+      const rendered = renderIndex(index) + renderHistory(index);
       const reports = rendered
         .split("\n")
         .filter((line) => /^- (?:Verification|Final review):/.test(line))

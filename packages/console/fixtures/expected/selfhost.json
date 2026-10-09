@@ -4632,6 +4632,13 @@
           "rows": []
         },
         {
+          "id": "work-order-history",
+          "title": "Work-order history index",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
           "id": "usage",
           "title": "Recorded actor usage",
           "status": "unavailable",
@@ -4770,6 +4777,11 @@
     },
     {
       "ref": "docs/work-orders/README.md",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "docs/work-orders/HISTORY.md",
       "status": "unavailable",
       "explanation": "Source not supplied"
     },

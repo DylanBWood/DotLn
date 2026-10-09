@@ -48,6 +48,8 @@ export interface BoardSources {
   readonly constellation?: Source<string>;
   readonly releases?: Source<string>;
   readonly workOrderIndex?: Source<string>;
+  /** The index's companion page of settled orders (WO-190). */
+  readonly workOrderHistory?: Source<string>;
   readonly capabilities?: Source<string>;
   readonly publication?: Source<string>;
   readonly roadmap?: Source<string>;
