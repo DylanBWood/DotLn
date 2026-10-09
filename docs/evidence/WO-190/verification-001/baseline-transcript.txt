@@ -1,0 +1,12 @@
+08845c71
+warning: could not create recovery checkpoint for activate: fatal: not a valid object name HEAD; proceeding without one. Do not repeat this transition after it records. When Codex workspace-write is the cause, inspect package.json and the scripts/resume.mjs diff, then request one-invocation outside-sandbox approval before future state-changing resume commands; never persist an allow rule. See docs/AI-HARNESS-SECURITY.md
+Activated WO-900.
+Observed facts at 2026-10-09T13:56:30.525Z: unknown (observation-runtime-unavailable); advisory only.
+exit 0
+control segment: {"schemaVersion":1,"recordedAt":"2026-10-09T13:56:30.480Z","type":"WorkOrderActivated","workOrderId":"WO-900","workOrderPath":"docs/work-orders/WO-900-umbrella.md","effortDeclarationValidated":true,"checkpointUnavailable":true}
+
+WO-190 current
+error: docs/work-orders/WO-900-umbrella.md: activation refused: WO-900 is an umbrella record superseded by WO-901, WO-902; activate a successor instead
+exit 1
+control segment: absent
+

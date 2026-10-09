@@ -1,23 +1,22 @@
 # Current control state
 
-## WO-188
+## WO-190
 
-- Work order: WO-188
-- Work-order path: docs/work-orders/WO-188-boarded-machinery-items.md
+- Work order: WO-190
+- Work-order path: docs/work-orders/WO-190-index-and-roadmap-show-the-work-ahead.md
 - Phase: closed
-- Latest verification: VER-004
-- Verification path: docs/verifications/WO-188/VER-004.md
+- Latest verification: VER-001
+- Verification path: docs/verifications/WO-190/VER-001.md
 - Latest verdict: pass
 - Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-188/FINAL-001.md
+- Final-review path: docs/final-reviews/WO-190/FINAL-001.md
 - Latest attestation: harness claude-code; version 2.1.295; model claude-fable-5-1; effort xhigh; source claude-session-readback; account not-applicable
-- Effort drift: xhigh -> max
-- Latest recordedAt: 2026-10-09T15:36:10.774Z
-- Elapsed implementation: 17683304 ms
-- Elapsed verification: 1602525 ms
-- Elapsed repair: 3748946 ms
-- Elapsed finalReview: 4816866 ms
-- Latest checkpoint: 51e3159a2330130f02f997c636c23d56bfb07ccb (restore: `git checkout refs/dotln/checkpoint/WO-188/19 -- .`)
+- Effort drift: max -> xhigh
+- Latest recordedAt: 2026-10-09T17:06:13.768Z
+- Elapsed implementation: 10321865 ms
+- Elapsed verification: 1340146 ms
+- Elapsed finalReview: 5012116 ms
+- Latest checkpoint: 34082ea0189730c13a16249a7c613d14046358fa (restore: `git checkout refs/dotln/checkpoint/WO-190/7 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct
 

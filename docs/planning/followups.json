@@ -31109,6 +31109,111 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-1a12e83d22825ee3",
+      "key": "decision:docs/evidence/WO-190/decisions.md#wo-190-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0ab5a57f674eb22bbcfd114b204e3c09378f2ec4b3ffab5b80acba3f0ffb414c",
+          "ref": "docs/evidence/WO-190/decisions.md#wo-190-d003--the-umbrella-class-is-a-header-reading-shared-by-the-index-and-by-activation-successors-are-a-summary-list-not-a-card-field",
+          "title": "WO-190-D003: WO-113 step 5 plans to move each Umbrella record (...) paragraph out of the six order files into their evidence READMEs, leaving a dateless pointer. The pointer must keep the undated Umbr",
+          "summary": "{ \"id\": \"WO-190-D003\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next\", \"decision\": \"scripts/lib/dependencies.mjs exports umbrellaSuccessors(markdown, dependencies) and umbrellaRecord(markdown, path, id): an order is an umbrella record when its leading header (the dependencyHeader boundary) holds a line matching `^\\\\*\\\\*Umbrella record( \\\\(\\\\d{4}-\\\\d{2}-\\\\d{2}\\\\))?:\\\\*\\\\*` and its typed dependency block holds at least one `superseded` entry; the successors are those entries' `by` values in entry order, deduplicated, never read from prose. A label without typed entries, or entries without the label, is not an umbrella: the order stays open work, activation admits it as any draft, and the cov",
+          "missing": false
+        },
+        {
+          "hash": "2258711234cca27ecba8ef7c8a2e2b8fec899bbc1a73bacf954cad9e0c2caebf",
+          "ref": "docs/evidence/WO-190/decisions.md#wo-190-d003--the-umbrella-class-is-a-header-reading-shared-by-the-index-and-by-activation-successors-are-a-summary-list-not-a-card-field",
+          "title": "WO-190-D003: WO-113 step 5 plans to move each Umbrella record (...) paragraph out of the six order files into their evidence READMEs, leaving a dateless pointer. The pointer must keep the undated Umbr",
+          "summary": "{ \"id\": \"WO-190-D003\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next\", \"decision\": \"scripts/lib/dependencies.mjs exports umbrellaSuccessors(markdown, dependencies) and umbrellaRecord(markdown, path, id): an order is an umbrella record when its leading header (the dependencyHeader boundary) holds a line matching `^\\\\*\\\\*Umbrella record( \\\\(\\\\d{4}-\\\\d{2}-\\\\d{2}\\\\))?:\\\\*\\\\*` and its typed dependency block holds at least one `superseded` entry; the successors are those entries' `by` values in entry order, deduplicated, never read from prose. A label without typed entries, or entries without the label, is not an umbrella: the order stays open work, activation admits it as any draft, and the cov",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-168dc7b8d999574b",
+      "key": "decision:docs/evidence/WO-190/decisions.md#wo-190-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1bb8eba9bdd553b658481787b10464877539219c85547031cd8c40db82347220",
+          "ref": "docs/evidence/WO-190/decisions.md#wo-190-d006--the-roadmap-is-reordered-by-moving-whole-sections-the-exact-order-is-evidence-that-retires-itself",
+          "title": "WO-190-D006: Three queued orders cite the two renamed roadmap headings word for word: WO-083 (line 82, the launchpad rung), WO-096 (line 283, the migration rung as a write-back target) and WO-098 (lin",
+          "summary": "{ \"id\": \"WO-190-D006\", \"kind\": \"experiment\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next\", \"decision\": \"docs/product/06-roadmap.md is reordered by moving whole line ranges: the H1 and its two paragraphs, one added sentence that links the generated index as the list of orders in sequence, then the rungs still ahead (the five `Application version pending` rungs with their subsection, v1.0.0 and the post-1.0 horizons), then the closed rungs with their `<!-- prettier-ignore -->` lines, then `## Release boundary` whole, with the generated release history moved from after its first paragraph to the end of the section, which is the end of the document. The two pending headings lose their carrie",
+          "missing": false
+        },
+        {
+          "hash": "32310a3f44847a40c5a05e2fd6f1dfc55ae51833eae75b5ca56085f0ec27e3bd",
+          "ref": "docs/evidence/WO-190/decisions.md#wo-190-d006--the-roadmap-is-reordered-by-moving-whole-sections-the-exact-order-is-evidence-that-retires-itself",
+          "title": "WO-190-D006: Three queued orders cite the two renamed roadmap headings word for word: WO-083 (line 82, the launchpad rung), WO-096 (line 283, the migration rung as a write-back target) and WO-098 (lin",
+          "summary": "{ \"id\": \"WO-190-D006\", \"kind\": \"experiment\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next\", \"decision\": \"docs/product/06-roadmap.md is reordered by moving whole line ranges: the H1 and its two paragraphs, one added sentence that links the generated index as the list of orders in sequence, then the rungs still ahead (the five `Application version pending` rungs with their subsection, v1.0.0 and the post-1.0 horizons), then the closed rungs with their `<!-- prettier-ignore -->` lines, then `## Release boundary` whole, with the generated release history moved from after its first paragraph to the end of the section, which is the end of the document. The two pending headings lose their carrie",
+          "missing": false
+        },
+        {
+          "hash": "cc99e47af0425f883b926b54f7f3d71e56ce90bf9f4e75728904237c57e42acf",
+          "ref": "docs/evidence/WO-190/decisions.md#wo-190-d006--the-roadmap-is-reordered-by-moving-whole-sections-the-exact-order-is-evidence-that-retires-itself",
+          "title": "WO-190-D006: Three queued orders cite the two renamed roadmap headings word for word: WO-083 (line 82, the launchpad rung), WO-096 (line 283, the migration rung as a write-back target) and WO-098 (lin",
+          "summary": "{ \"id\": \"WO-190-D006\", \"kind\": \"experiment\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next\", \"decision\": \"docs/product/06-roadmap.md is reordered by moving whole line ranges: the H1 and its two paragraphs, one added sentence that links the generated index as the list of orders in sequence, then the rungs still ahead (the five `Application version pending` rungs with their subsection, v1.0.0 and the post-1.0 horizons), then the closed rungs with their `<!-- prettier-ignore -->` lines, then `## Release boundary` whole, with the generated release history moved from after its first paragraph to the end of the section, which is the end of the document. The two pending headings lose their carrie",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-bd3e66761dc301ed",
+      "key": "decision:docs/evidence/WO-190/decisions.md#wo-190-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7ac5cfa586f46c86edaba7e4439343038d231fd76d5b1c9f50893ac5ecda49fc",
+          "ref": "docs/evidence/WO-190/decisions.md#wo-190-d007--links-into-the-index-and-the-sentences-about-it-what-moved-what-was-retargeted-what-stays",
+          "title": "WO-190-D007: Two single-page assumptions stay outside this order's files: scripts/launchpad.mjs line 566 seeds a docs/README.md saying the instance's README is the index, although activation in a kit ",
+          "summary": "{ \"id\": \"WO-190-D007\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next\", \"decision\": \"Every link or sentence in a living document that cites the generated index was audited (git grep over docs/, the root Markdown files, the package READMEs and the kit templates, excluding the immutable evidence, verification and final-review records). Retargeted because their cited content moved to the history page: docs/PLAYBOOK.md §The loop (header, control, typed dependency and local release evidence of settled orders), docs/planning/work-order-map.md §Status boundaries (the evidence labels live in Sources and limits), docs/product/13-uifa-roles.md (what a release contained), docs/product/07-execution-gui",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0e82c9b04b051f66",
+      "key": "decision:docs/evidence/WO-190/decisions.md#wo-190-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "18a56992fe17a1b28918be59b23b2d44685581a29dbe51f75c5285e02335707d",
+          "ref": "docs/evidence/WO-190/decisions.md#wo-190-d008--the-pending-rung-bodies-still-name-umbrella-records-a-planning-pass-retargets-them",
+          "title": "WO-190-D008: The next planning pass that touches docs/product/06-roadmap.md retargets or drops the umbrella carriers named in the pending rung bodies (WO-033, WO-034, WO-037, WO-040), pointing at the ",
+          "summary": "{ \"id\": \"WO-190-D008\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next\", \"decision\": \"Criterion 7 forbids changing any rung's body text, so the pending rung bodies of docs/product/06-roadmap.md keep naming WO-033, WO-034, WO-037 and WO-040, the superseded umbrella records, as the carriers of their work (for example '(WO-040, batch one; later batches from its template)' in the first pending rung). The headings no longer do, the index is the one list of orders, and the residue is recorded here for the next planning pass rather than edited by this order.\", \"evidence\": [ \"docs/work-orders/WO-190-index-and-roadmap-show-the-work-ahead.md, Observed gap ('The pending rungs name umbrella records and ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-72a61540baa55755",
+      "key": "decision:docs/evidence/WO-190/decisions.md#wo-190-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6f9adb7e3f70517f69df13ac6064fa020f072bca1b6deb8940a733aac180e143",
+          "ref": "docs/evidence/WO-190/decisions.md#wo-190-d011--verification-boards-the-stale-description-of-the-roadmap-test",
+          "title": "WO-190-D011: WO-190 final review or the next evidence-maintenance pass: align D006's roadmap-test description with the current general WO-NNN assertion and visible exact.skip retirement. Preserve the ",
+          "summary": "{ \"id\": \"WO-190-D011\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify\", \"decision\": \"Record VER-001 F1 as a minor evidence-description follow-up. D006's decision text still describes a repository umbrellaRecord scan and a printed notice when the exact roadmap check retires. The final scripts/test-docs-check.mjs instead rejects every WO-NNN in a pending heading without scanning umbrella records, and retires its exact heading/body subtest with exact.skip. The implementation and roadmap-order.json agree, and the exact subtest ran successfully with zero skips during this verification; no acceptance criterion or prior behavior is broken by this stale description.\", \"evidence\": [ \"scripts/test-",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-190 final review: D006's description of the roadmap test now matches the implemented checks (the general WO-NNN assertion over pending headings and the visible exact.skip retirement), recorded as WO-190-D013; the heading and body checks and their recorded result are preserved.",
+          "reopenWhen": "The roadmap test changes again without D006 or a new record following it.",
+          "targets": [],
+          "at": "2026-10-09T15:58:45.264Z"
+        }
+      ]
     }
   ]
 }

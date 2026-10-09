@@ -1,0 +1,228 @@
+{
+  "checks": [
+    {
+      "label": "covering executor review gate",
+      "checkId": "npm test",
+      "codeIdentity": "1233ba12111f336e94645ea298a162df6c192b2db1417d37b25649cea4201201",
+      "treeHash": "e44a5a7dc4ed65fac33edad5e4ecf0b012106fa1",
+      "recordedAt": "2026-10-09T10:23:54.319Z",
+      "durationMs": 1411200,
+      "exitCode": 0,
+      "executed": true,
+      "gateSelection": "review",
+      "freshSuites": 85,
+      "reusedSuites": 0,
+      "evidenceRef": "host-gate:1233ba12111f336e94645ea298a162df6c192b2db1417d37b25649cea4201201:npm test",
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true
+    },
+    {
+      "label": "repository partition and order",
+      "authorityCount": 197,
+      "indexCards": 32,
+      "historyCards": 165,
+      "indexBytes": 78393,
+      "historyBytes": 702128,
+      "baseIndexBytes": 780937
+    },
+    {
+      "label": "real runtime readers, empty pages and repeated records"
+    },
+    {
+      "label": "typed successors ignore prose, deduplicate, accept CRLF and dateless labels, exclude body label"
+    },
+    {
+      "label": "CLI activation from another cwd refuses typed umbrella without event",
+      "output": "error: docs/work-orders/WO-904-fixture.md: activation refused: WO-904 is an umbrella record superseded by WO-906; activate a successor instead"
+    },
+    {
+      "label": "stale tail on either page, read-only refusal and missing open order",
+      "coverage": "error: docs/planning/sequence.md: open orders absent from the proposed sequence: WO-907; add each to the marked sequence (an order superseded whole instead takes the **Umbrella record:** label in its leading header plus typed superseded entries; active orders and derived drafts are not judged)"
+    },
+    {
+      "label": "overlapping second source preserves available first source"
+    }
+  ],
+  "subject": {
+    "head": "e3b386635ae1c22f4f9e583928f5dbcdedbb0cbc",
+    "codeIdentity": "1233ba12111f336e94645ea298a162df6c192b2db1417d37b25649cea4201201",
+    "verificationCheckpoint": "0ebd4ccf8622476d4e90c47197b09b32fbfbe635"
+  },
+  "productGate": {
+    "checkId": "npm test",
+    "codeIdentity": "1233ba12111f336e94645ea298a162df6c192b2db1417d37b25649cea4201201",
+    "treeHash": "e44a5a7dc4ed65fac33edad5e4ecf0b012106fa1",
+    "recordedAt": "2026-10-09T10:23:54.319Z",
+    "durationMs": 1411200,
+    "exitCode": 0,
+    "executed": true,
+    "gateSelection": "review",
+    "freshSuites": 85,
+    "reusedSuites": 0,
+    "evidenceRef": "host-gate:1233ba12111f336e94645ea298a162df6c192b2db1417d37b25649cea4201201:npm test",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true
+  },
+  "finishedAt": "2026-10-09T13:56:27.636Z",
+  "documentGate": {
+    "checkId": "npm run test:docs",
+    "treeHash": "24b356701e235451fb5db61191f705b67c0ac97a",
+    "codeIdentity": "1233ba12111f336e94645ea298a162df6c192b2db1417d37b25649cea4201201",
+    "recordedAt": "2026-10-09T13:58:50.140Z",
+    "durationMs": 92245,
+    "exitCode": 0,
+    "executed": true,
+    "gateSelection": "document",
+    "freshSuites": 29,
+    "reusedSuites": 0,
+    "evidenceRef": "host-gate:1233ba12111f336e94645ea298a162df6c192b2db1417d37b25649cea4201201:npm run test:docs",
+    "identityUnchanged": true,
+    "suites": [
+      {
+        "name": "build",
+        "exitCode": 0,
+        "durationMs": 670
+      },
+      {
+        "name": "format",
+        "exitCode": 0,
+        "durationMs": 5926
+      },
+      {
+        "name": "release-surfaces",
+        "exitCode": 0,
+        "durationMs": 1899
+      },
+      {
+        "name": "license-surfaces",
+        "exitCode": 0,
+        "durationMs": 1657
+      },
+      {
+        "name": "resume",
+        "exitCode": 0,
+        "durationMs": 71912
+      },
+      {
+        "name": "publication",
+        "exitCode": 0,
+        "durationMs": 180
+      },
+      {
+        "name": "docs-check",
+        "exitCode": 0,
+        "durationMs": 13475
+      },
+      {
+        "name": "docs-check-fixtures",
+        "exitCode": 0,
+        "durationMs": 5885
+      },
+      {
+        "name": "index",
+        "exitCode": 0,
+        "durationMs": 2045
+      },
+      {
+        "name": "lineage",
+        "exitCode": 0,
+        "durationMs": 62
+      },
+      {
+        "name": "lineage-fixtures",
+        "exitCode": 0,
+        "durationMs": 540
+      },
+      {
+        "name": "kernel-docs",
+        "exitCode": 0,
+        "durationMs": 883
+      },
+      {
+        "name": "skeleton-docs",
+        "exitCode": 0,
+        "durationMs": 23976
+      },
+      {
+        "name": "console-docs",
+        "exitCode": 0,
+        "durationMs": 27520
+      },
+      {
+        "name": "resident-bind",
+        "exitCode": 0,
+        "durationMs": 9544
+      },
+      {
+        "name": "local-runner-double",
+        "exitCode": 0,
+        "durationMs": 3756
+      },
+      {
+        "name": "authority-evidence",
+        "exitCode": 0,
+        "durationMs": 616
+      },
+      {
+        "name": "harness",
+        "exitCode": 0,
+        "durationMs": 145
+      },
+      {
+        "name": "harness-context",
+        "exitCode": 0,
+        "durationMs": 162
+      },
+      {
+        "name": "harness-evidence",
+        "exitCode": 0,
+        "durationMs": 339
+      },
+      {
+        "name": "plan-refutation-current",
+        "exitCode": 0,
+        "durationMs": 2934
+      },
+      {
+        "name": "artifact-corpus",
+        "exitCode": 0,
+        "durationMs": 204
+      },
+      {
+        "name": "artifact-evidence",
+        "exitCode": 0,
+        "durationMs": 239
+      },
+      {
+        "name": "verification-evidence",
+        "exitCode": 0,
+        "durationMs": 1276
+      },
+      {
+        "name": "feedback-evidence",
+        "exitCode": 0,
+        "durationMs": 2584
+      },
+      {
+        "name": "meta",
+        "exitCode": 0,
+        "durationMs": 2673
+      },
+      {
+        "name": "registrations",
+        "exitCode": 0,
+        "durationMs": 612
+      },
+      {
+        "name": "plan",
+        "exitCode": 0,
+        "durationMs": 3238
+      },
+      {
+        "name": "entropy",
+        "exitCode": 0,
+        "durationMs": 249
+      }
+    ]
+  }
+}

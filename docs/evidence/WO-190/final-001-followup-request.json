@@ -1,0 +1,9 @@
+{
+  "expectedRevision": "7091b10012e98b39f6116ea20fd0de9ac465a9195c2fe30fa8ba489269dcc619",
+  "id": "FUP-72a61540baa55755",
+  "sourceRevision": 1,
+  "status": "settled",
+  "reason": "Settled by WO-190 final review: D006's description of the roadmap test now matches the implemented checks (the general WO-NNN assertion over pending headings and the visible exact.skip retirement), recorded as WO-190-D013; the heading and body checks and their recorded result are preserved.",
+  "reopenWhen": "The roadmap test changes again without D006 or a new record following it.",
+  "targets": []
+}
