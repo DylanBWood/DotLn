@@ -175,6 +175,28 @@ work, and a re-emit gives the fork its own build again. That is this
 boundary made physical: the kit is the shared mechanism and the shared
 legos, the fork's overlay is the doctrine.
 
+The kit's first slice is `npm run launchpad -- export <dir>` (WO-074). Into
+an empty directory it writes, from the HEAD commit of the checkout that holds
+the running scripts and never its work tree, the control-plane scripts and
+suites, the build-free
+`packages/beacons` workspace and the build-free package modules the scripts
+import, a `package.json` with core's script names and exactly pinned
+development dependencies, a lockfile pruned to them, the execution guide and
+the operator playbook whole, the implementation-overlay template, the kit
+templates, `LICENSE`, `LICENSE-docs` and `NOTICE` (or `LICENSE-PENDING.md`
+under `--license none`), `UPSTREAM.md` and `KIT-MANIFEST.json` (schema 1:
+the commit, the tag and a SHA-256 per kit file). Instance seeds, the
+operating contract with its hand-written floor, the sanitized
+harness-security template, the client README, the pre-drafted first order,
+the proposed sequence and one README per seeded document root, are written
+once and never manifest-listed, so a later kit update replaces listed files
+and touches nothing else. Only the local-terms list is the launchpad's
+(`DOTLN_LAUNCHPAD` or the ascent): the export runs that check over every
+exported text and prints its status, and a match, or a list present but
+empty, refuses it before any write. A kit without package source activates
+its first order, reports its status and emits control Beacons; running
+core's suites in place needs the runtime build WO-075 carries.
+
 Playwright and Context7 are optional environment adapters. The operator reports
 adding MCP access and Context7 integrations for the two local coding harnesses;
 neither that setup nor a paid documentation account is a DotLn user prerequisite.

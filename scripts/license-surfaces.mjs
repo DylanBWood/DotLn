@@ -20,7 +20,7 @@ import { runGit, runGitPathList } from "./lib/git.mjs";
 import { containedRegularFile } from "./lib/paths.mjs";
 
 // docs/LEGAL.md, Decision — 2026-09-06. Changing the decision requires review.
-const licenseHashes = {
+export const licenseHashes = {
   LICENSE: "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
   "LICENSE-docs":
     "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",

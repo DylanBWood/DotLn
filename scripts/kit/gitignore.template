@@ -1,0 +1,31 @@
+# Raw ideation dumps stay local until synthesized and scrubbed. Directories are
+# re-included so the structure survives a clone; only their contents are ignored.
+docs/intake/**
+!docs/intake/**/
+!docs/intake/**/.gitkeep
+
+.DS_Store
+node_modules/
+.env
+.env.*
+!.env.example
+
+# Scripts read and write local harness evidence, usage and operator terms here.
+# These observations and private meanings remain ignored.
+/docs/control/local/
+
+# Exact operator-owned Claude Code settings; no other .claude path is allowed.
+/.claude/settings.local.json
+
+# Explicit, rebuildable skeleton beacon output.
+/.beacons/
+# Atomic Beacon staging siblings can remain after a killed writer.
+.dotln-beacon-stage-*/
+
+# Rebuildable host control projections and local audience capabilities.
+/.control-beacons/
+
+# Local worker event stores, synthetic demo repositories and result receipts.
+/.runtime/
+
+# A launchpad commits its runtime build: packages/*/dist/ is not ignored here.

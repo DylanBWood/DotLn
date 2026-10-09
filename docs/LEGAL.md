@@ -47,6 +47,18 @@ license audit. `NOTICE` and the three pinned legal hashes remain unchanged.
 The source-only change distributes no bundled package or browser; the existing
 `THIRD_PARTY_NOTICES` duty applies when built or bundled materials are distributed.
 
+**Kit export — 2026-10-09 (WO-074).** `npm run launchpad -- export <dir>`
+carries `LICENSE`, `LICENSE-docs` and `NOTICE` by default as manifest-listed
+kit files, byte-identical to the three pinned hashes below; its fixture checks
+them against the pins `scripts/license-surfaces.mjs` exports. `--license none`
+writes `LICENSE-PENDING.md` in their place, a notice that grants no rights and
+names no license. The export carries no compiled or bundled third-party
+material: the fork's own `npm ci` installs the three pinned development
+dependencies from the pruned lockfile, so the `THIRD_PARTY_NOTICES` duty stays
+open until WO-075's first built distribution. The kit `package.json` keeps
+`private: true`, the Apache-2.0 label (`UNLICENSED` under `--license none`)
+and the publication guard.
+
 **2026-09-06 observation (phase-two planning pass):** the operator intends
 `DotLn-Enterprise-Starter`, an exported launchpad kit of this repository's
 control plane and operating documents, to be forked by several external
