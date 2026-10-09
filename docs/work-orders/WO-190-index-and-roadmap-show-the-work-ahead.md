@@ -1,4 +1,4 @@
-# WO-190 — The work-order index and the roadmap lead with the work ahead, in one sequence; history moves to a companion page (version assigned at activation)
+# WO-190 — The work-order index and the roadmap lead with the work ahead, in one sequence; history moves to a companion page (v0.71.1)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
