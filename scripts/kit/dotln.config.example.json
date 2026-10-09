@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "roots": {
+    "docs": "docs"
+  },
+  "derivedOrders": { "first": "WO-900", "last": "WO-999" },
+  "repositories": {},
+  "build": {},
+  "release": {}
+}

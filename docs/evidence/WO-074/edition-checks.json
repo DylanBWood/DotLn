@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-074",
+  "edition": "001",
+  "recordedAt": "2026-10-09T04:32:19.096Z",
+  "current": {
+    "authority": {
+      "workOrder": "WO-074",
+      "revision": "001"
+    },
+    "artifact-identity": {
+      "workOrder": "WO-074",
+      "revision": "001"
+    },
+    "verification": {
+      "workOrder": "WO-074",
+      "revision": "001"
+    },
+    "feedback": {
+      "workOrder": "WO-074",
+      "revision": "001"
+    }
+  },
+  "feedback": {
+    "carriedFrom": "docs/evidence/WO-199/feedback-004",
+    "liveEpisode": false
+  },
+  "checks": [
+    {
+      "kind": "authority",
+      "command": "node scripts/authority-evidence.mjs --check",
+      "exitCode": 0,
+      "durationMs": 557,
+      "stdout": "Verified two unchanged programs, the WO-132 plan-refuter, WO-142 Shape-First, WO-100 reviewer and WO-165 serial-route migrations, four widening rejections, nine runtime denials, admitted/reverted grants and 36 bundle comparisons (including additions and removals).",
+      "stderr": ""
+    },
+    {
+      "kind": "artifact-identity",
+      "command": "node scripts/artifact-identity-evidence.mjs --check",
+      "exitCode": 0,
+      "durationMs": 216,
+      "stdout": "Verified 4 current artifact evidence files in docs/evidence/WO-074/artifact-identity/001; Seiri semantic hash and frozen oracle unchanged; versioned Entropy Reducer matches its current recorded fixture.",
+      "stderr": ""
+    },
+    {
+      "kind": "verification",
+      "command": "node scripts/verification-evidence.mjs --check",
+      "exitCode": 0,
+      "durationMs": 1174,
+      "stdout": "Verified 4 synthetic verification evidence files; planted defect, repair, staleness and replay are green.",
+      "stderr": ""
+    },
+    {
+      "kind": "feedback",
+      "command": "node scripts/feedback-evidence.mjs --check",
+      "exitCode": 0,
+      "durationMs": 2546,
+      "stdout": "Carried live feedback audit docs/evidence/WO-199/feedback-004, named by docs/evidence/WO-074/feedback-001.\nVerified ten passing regressions, ten removal failures, and 1192 fewer instruction bytes in the matched projection.",
+      "stderr": ""
+    }
+  ]
+}

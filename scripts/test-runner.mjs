@@ -637,6 +637,12 @@ export const suites = [
   shell("publication-fixtures", "scripts/test-publication.sh"),
   shell("backup-intake", "scripts/test-backup-intake.sh"),
   { ...shell("resume", "scripts/test-resume.sh"), document: true },
+  nodeTests("launchpad", "scripts/test-launchpad.mjs", {
+    // The export and its fixture read no compiled output.
+    needsBuild: false,
+    protects:
+      "launchpad export writes only manifest-listed kit files and instance seeds from the scripts' checkout's commit, refuses a non-empty destination and a local-terms match, and the export activates its first order and emits control Beacons without package source",
+  }),
   nodeTests("beacon-portability", "scripts/test-beacon-portability.mjs", {
     fast: true,
     // The absent skeleton dist copies are judged against a fresh build.

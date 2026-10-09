@@ -1,0 +1,20 @@
+# WO-074 fixture suite: node --test scripts/test-launchpad.mjs (2026-10-09T05:04:26Z, direct run on the final bytes before the gate; the gate rows are the passing evidence)
+
+✔ WO-074 criterion 1: a destination that is not an empty directory is refused before any write (80.251042ms)
+✔ WO-074 criterion 1: a destination that cannot be read is refused before any write (41.978583ms)
+✔ WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit, the manifest hashes verify, and the manifest lists every kit file and no seed (31.0935ms)
+✔ WO-074 criterion 1: an offline npm ci against the exported lockfile succeeds (358.150042ms)
+✔ WO-074 criteria 1, 2 and 5: without package source the export activates its first order, a transition emits a decodable control Beacon, and an unmatched attestation records with the advisory (1186.721708ms)
+✔ WO-074 criterion 3: the export holds no planted instance material and the manifest lists no instance path (19.076458ms)
+✔ WO-074 criterion 3: the local-terms check runs over every exported text and prints present, unavailable, or refuses (817.710459ms)
+✔ WO-074 criterion 4: the license files are core's pinned bytes and manifest-listed; --license none writes only LICENSE-PENDING.md (757.145041ms)
+✔ WO-074 design: an export from a work tree that differs from HEAD carries the commit and says so (714.47025ms)
+✔ WO-074 design: a kit file absent at the commit refuses by name, and a destination inside a Git work tree is advised (848.150583ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6391.401708

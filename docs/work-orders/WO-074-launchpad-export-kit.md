@@ -1,4 +1,4 @@
-# WO-074 — Launchpad export kit: `launchpad export <dir>` materializes a launchpad instance from a manifest-listed kit of scripts, suites, contracts, templates and license files, with no intake, local state, package source or evidence inside (version assigned at activation)
+# WO-074 — Launchpad export kit: `launchpad export <dir>` materializes a launchpad instance from a manifest-listed kit of scripts, suites, contracts, templates and license files, with no intake, local state, package source or evidence inside (v0.70.0)
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).

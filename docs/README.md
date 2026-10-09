@@ -4,6 +4,7 @@
 
 ```
 ../README.md       repo front door — what DotLn is, what runs today, horizons
+../scripts/kit/    templates the launchpad export renders (npm run launchpad -- export)
 docs/intake/       raw, local-only (gitignored) — the founding dump lives here
 docs/PLAYBOOK.md   the operator's canonical loop (models, worktrees, verify)
 docs/AI-HARNESS-SECURITY.md

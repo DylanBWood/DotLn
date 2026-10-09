@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-074",
+  "verification": "VER-001",
+  "observedAt": "2026-10-09T05:49:11.741Z",
+  "sourceCommit": "468d0fd1e736468357665ccfab05a6e14fbad10c",
+  "codeIdentity": "7b57ef29042a715b9ee198e29878d72783b84d4351cc3dc86e066be476b3d79d",
+  "launchpadFileSha256": "067cd50407532ed51779c3827c5d3cbe0a65644add7ba443243f198543c149ff",
+  "mainTermsRun": {
+    "command": "DOTLN_LAUNCHPAD=/Users/dylanwood/Projects/DotLn npm run launchpad -- export <session-scratch>/wo074-verifier-001/main-terms-export",
+    "cwd": "<session-scratch>/wo074-verifier-001/source",
+    "exitCode": 0,
+    "stdout": "\n> launchpad\n> node scripts/launchpad.mjs export <session-scratch>/wo074-verifier-001/main-terms-export\n\nExported the DotLn kit of 468d0fd1e736468357665ccfab05a6e14fbad10c (tag v8.7.6-verifier) to <session-scratch>/wo074-verifier-001/main-terms-export: 282 kit files in KIT-MANIFEST.json, 23 instance seeds.\nlocal-terms list: present (305 texts checked)\n",
+    "stderr": ""
+  },
+  "groups": [
+    {
+      "name": "C1: existing empty directory, foreign cwd, pinned commit and tag, all file hashes and script blobs",
+      "passed": true
+    },
+    {
+      "name": "C1: occupied/file/symlink/dangling-link/unreadable destinations refuse without changing bytes",
+      "passed": true
+    },
+    {
+      "name": "C3: force-committed exclusion set, list bytes and hash absent, and no manifest instance path",
+      "passed": true
+    },
+    {
+      "name": "C3: comment-only and malformed lists, token-spanning match, and unavailable status",
+      "passed": true
+    },
+    {
+      "name": "C4: exact legal pins, complete license-path census and explicit/repeated none option",
+      "passed": true
+    },
+    {
+      "name": "C1: offline dependency install from the pruned lockfile",
+      "passed": true
+    },
+    {
+      "name": "C1: independent instance activates the first order and canonical status is active",
+      "passed": true
+    },
+    {
+      "name": "C2: public and verifier Beacon sizes decode without compiled-package TypeScript source",
+      "passed": true
+    },
+    {
+      "name": "C5: unmatched version and high effort recorded with discovery advisory; README states the limit",
+      "passed": true
+    },
+    {
+      "name": "C6: npm export with separate main launchpad checks the current kit against its list in place",
+      "passed": true
+    },
+    {
+      "name": "Pinned sources: dirty script/template edits cannot enter the export",
+      "passed": true
+    },
+    {
+      "name": "Configured source document base and separate terms launchpad resolve through config",
+      "passed": true
+    },
+    {
+      "name": "Missing committed template refuses even while the template exists in the work tree",
+      "passed": true
+    },
+    {
+      "name": "C8: no dependency change and matching covering review gate remains available",
+      "passed": true
+    }
+  ],
+  "passingProductGate": {
+    "checkId": "npm test",
+    "gateSelection": "review",
+    "codeIdentity": "7b57ef29042a715b9ee198e29878d72783b84d4351cc3dc86e066be476b3d79d",
+    "recordedAt": "2026-10-09T05:24:22.775Z",
+    "durationMs": 1043999,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:7b57ef29042a715b9ee198e29878d72783b84d4351cc3dc86e066be476b3d79d:npm test",
+    "requiredSuites": 35,
+    "taskCount": 85,
+    "freshTasks": 85,
+    "reusedTasks": 0,
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "launchpad": {
+      "exitCode": 0,
+      "durationMs": 9749
+    }
+  },
+  "knownFollowups": {
+    "operatorAuthorConstant": true,
+    "verificationFixtureSourceText": true,
+    "decisions": [
+      "WO-074-D007",
+      "WO-074-D010",
+      "WO-074-D011"
+    ]
+  },
+  "codeIdentityAtEvidence": "7b57ef29042a715b9ee198e29878d72783b84d4351cc3dc86e066be476b3d79d"
+}
