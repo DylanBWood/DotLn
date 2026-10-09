@@ -346,6 +346,19 @@ export function describeIgnoredMaterial(root, candidate) {
   };
 }
 
+/** A checkout that holds package sources to build: a packages/<name> with its
+ * own tsconfig.json, atomicBuild's own criterion. A kit export carries only
+ * the compiled runtime and has none, so it has no build step. */
+export const hasPackageSources = (root) => {
+  const packages = join(root, "packages");
+  return (
+    existsSync(packages) &&
+    readdirSync(packages).some((name) =>
+      existsSync(join(packages, name, "tsconfig.json")),
+    )
+  );
+};
+
 export const isMainModule = (moduleUrl, entry = process.argv[1]) => {
   if (!entry) return false;
   try {

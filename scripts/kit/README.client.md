@@ -1,51 +1,71 @@
 # DotLn launchpad
 
 This repository is a launchpad instance exported from DotLn core: the control
-plane under `scripts/` with its suites, the build-free Beacon workspace under
-`packages/beacons`, the operating documents and the templates a new instance
-starts from. `UPSTREAM.md` names the core commit and tag the kit was read from;
-`KIT-MANIFEST.json` lists every kit file with its SHA-256. Everything the
-manifest does not list is instance-owned: the configuration, the control
-records, work orders, evidence, verification and final-review reports, the
-operating contract's hand-written floor and this instance's overlays.
+plane under `scripts/` with its suites, the compiled runtime of
+`@dotln/kernel`, `@dotln/compiler` and `@dotln/skeleton` under
+`packages/<name>/dist/src/`, the build-free Beacon workspace under
+`packages/beacons`, the Contributor harness bundle under `.claude/`,
+`.agents/` and `.codex/` that the export's own `node scripts/harness.mjs emit`
+wrote from that runtime, the operating documents and the templates a new
+instance starts from. `UPSTREAM.md` names the core commit and tag the kit was
+read from; `KIT-MANIFEST.json` lists every kit file with its SHA-256.
+Everything the manifest does not list is instance-owned: the configuration,
+the control records, work orders, evidence, verification and final-review
+reports, the operating contract's hand-written floor and this instance's
+overlays.
 
 ## First steps
 
-1. `git init` first, before any control-plane command, then review the files
-   and commit them. The control plane records checkpoints as Git refs and
-   needs a repository with at least one commit; until the export is its own
-   repository, its scripts would resolve an enclosing one as their launchpad.
+1. The export is already a Git repository on `main` with no commit: review the
+   files and commit them before any control-plane command. The control plane
+   records checkpoints as Git refs and needs at least one commit. An export
+   made inside another repository's work tree is an embedded repository there.
 2. `npm ci` (or `npm ci --offline` with a warm cache): installs the pinned
-   development dependencies from the exported lockfile and links the
-   `packages/beacons` workspace.
-3. Register the private local-terms list at `docs/control/local/terms.txt`,
+   development dependencies from the exported lockfile and links the four
+   `@dotln/*` workspaces. The export seeds the same links under
+   `node_modules/@dotln/` so that its own harness emit could run; `npm ci`
+   replaces them with identical ones.
+3. `node scripts/harness.mjs check`: the pinned runtime files the hooks
+   import (the snapshot) and every generated surface are at their pinned
+   bytes; `KIT-MANIFEST.json` hashes the whole compiled runtime. The hooks
+   import an ignored, content-addressed snapshot under `.runtime/harness/`,
+   which the export's emit installed from `packages/<name>/dist/`; after
+   cloning this repository elsewhere, run `node scripts/bootstrap.mjs` once
+   (`npm ci`, then `node scripts/harness.mjs emit`, which needs the installed
+   workspace links) to install it again. Until then each hook reports
+   `snapshot-missing` once per session and host permissions alone decide.
+4. Register the private local-terms list at `docs/control/local/terms.txt`,
    one term per line; the directory is ignored by Git. `npm run terms -- check
    <paths>` prints `local-terms list: present` or `unavailable`, and refuses on
    a match by file and line without printing the term.
-4. Copy `dotln.config.example.json` to `dotln.config.json` only when this
+5. Copy `dotln.config.example.json` to `dotln.config.json` only when this
    instance moves a document root; an absent file means the default layout
    under `docs/`. The example declares only the `docs` base, from which every
    other root derives; a root declared on its own stays where it is declared
    when the base moves.
-5. Activate the pre-drafted first order:
+6. Activate the pre-drafted first order:
    `npm run resume -- activate WO-001 docs/work-orders/WO-001-environment-truth.md`,
    then `npm run resume -- status` (`--json` is the canonical record).
-6. Open a session that reads the operating contract (`CLAUDE.md`, symlinked as
-   `AGENTS.md`); the resume phrases name the dispatch, and until a kit revision
-   carries the role skills the session runs the `npm run resume -- <action>`
-   commands itself.
+7. Open a session that reads the operating contract (`CLAUDE.md`, symlinked as
+   `AGENTS.md`); its generated harness block routes each resume phrase to the
+   role skill under `.claude/skills/` or `.agents/skills/`, and the generated
+   hooks enforce the compiled refusals where the harness runs them.
 
-## What runs here, and what does not yet
+## What runs here, and what does not
 
-Shown to run without a build in this export: `activate`, `status` and
-`implementation-ready`, each emitting the control Beacons under
-`.control-beacons/`. In a Codex session (`CODEX_THREAD_ID` set) `next`,
-`verify`, `fix`, `final-review` and `release-close` refuse until a kit
-revision carries the runtime, because their writer reservation needs it.
-`npm run build` needs the TypeScript source core keeps, and `npm test` and
-`npm run harness` need its output, so neither runs here. That is a recorded
-limit of this kit revision, not a defect of your instance; a later revision
-carries the runtime and the harness bundle.
+With the runtime present, every lifecycle command runs here, including the
+Codex dispatches that reserve a writer (`next`, `verify`, `fix`,
+`final-review`, `release-close`), and `node scripts/harness.mjs check` and
+`emit` verify and regenerate the bundle. `npm run build` needs the TypeScript
+source core keeps, and `npm test` and `npm run harness` build before they run,
+so neither runs here; that is a recorded limit of the kit (core's follow-up
+FUP-8fb7ae17dd0fad5b in `docs/planning/followups.json` at the commit
+`UPSTREAM.md` names), not a defect of your instance. `scripts/console-fixtures.mjs`
+imports `@dotln/console`, which the kit does not carry, and fails at import
+here; the vertical's browser evidence reaches `@dotln/browser-evidence` only
+on the path that uses it, and `npm run plan -- conditions` reports its
+collect-sources row as unavailable because that row reaches `@dotln/console`.
+`UPSTREAM.md` names the commit to read them at.
 
 ## Attestations
 
@@ -64,21 +84,29 @@ same.
 ## Kit files and instance files
 
 Kit files are the manifest-listed set: `scripts/**` (the kit templates under
-`scripts/kit/` among them), `packages/beacons/**`, the build-free modules
-under `packages/*/src/*.mjs`, `package.json`, `package-lock.json`,
-`dotln.config.example.json`, `UPSTREAM.md`, the license files,
-`docs/product/07-execution-guide.md`, `docs/PLAYBOOK.md` and
+`scripts/kit/` among them), `packages/beacons/**`, the compiled runtime
+`packages/<name>/dist/src/**` with its `package.json` for kernel, compiler and
+skeleton, the build-free modules under `packages/*/src/*.mjs`, the harness
+bundle under `.claude/`, `.agents/` and `.codex/` (`.claude/harness-manifest.json`
+among them), `package.json`, `package-lock.json`, `dotln.config.example.json`,
+`UPSTREAM.md`, the license files, `docs/product/07-execution-guide.md`,
+`docs/product/08-publication-compiler.md`, `docs/PLAYBOOK.md` and
 `docs/publication/implementation-overlay-template.md`. A later kit revision
-replaces these and touches nothing else. Instance files are yours:
-`dotln.config.json`, `docs/control/`, `docs/work-orders/`, `docs/evidence/`,
-`docs/verifications/`, `docs/final-reviews/`, `docs/workstreams/`,
-`docs/repositories/`, `docs/planning/`, the product overlay and the build
-overlay, `CLAUDE.md`, `AI-HARNESS-SECURITY.md`, this README, `.gitignore`
-and every root README the export seeded once, the workstream and
-repository-profile conventions included; their upstream sources stay under
-`scripts/kit/` for a later revision to refresh. Two READMEs are generated
-rather than seeded: `docs/work-orders/` gets the index at the first lifecycle
-transition (`activate`) and `docs/lineage/` gets its index from
+replaces these and touches nothing else; a re-emit regenerates the bundle from
+the runtime. Instance files are yours: `dotln.config.json`, `docs/control/`,
+`docs/work-orders/`, `docs/evidence/`, `docs/verifications/`,
+`docs/final-reviews/`, `docs/workstreams/`, `docs/repositories/`,
+`docs/planning/`, the product overlay and the build overlay, `CLAUDE.md`
+(its generated harness block is checked by `node scripts/harness.mjs check`
+through the listed harness manifest, never replaced by a kit update),
+`AI-HARNESS-SECURITY.md`, this README, `.gitignore` and every root README the
+export seeded once, the workstream and repository-profile conventions
+included; their upstream sources stay under `scripts/kit/` for a later
+revision to refresh. The generated `.claude/settings.json`, hooks, skills and
+Codex files are kit files a re-emit rewrites; operator-owned Claude Code
+settings belong in the ignored `.claude/settings.local.json`. Two READMEs are generated rather than seeded:
+`docs/work-orders/` gets the index at the first lifecycle transition
+(`activate`) and `docs/lineage/` gets its index from
 `node scripts/lineage.mjs index` once a ledger exists.
 
 ## License
@@ -87,6 +115,8 @@ The license files this export carries are listed in the manifest and
 `UPSTREAM.md`. An export made with `--license none` carries
 `LICENSE-PENDING.md` in their place, a notice that grants no rights, and its
 generated `package.json` says `UNLICENSED`; replace both with the terms the
-owner of this repository decides. The verbatim `packages/beacons/package.json`
-keeps upstream's label in either export because it is byte-identical to the
-commit.
+owner of this repository decides. The verbatim `packages/*/package.json` files
+keep upstream's label in either export because they are byte-identical to the
+commit. The compiled runtime is this project's own output under the same
+terms; the export bundles no third-party file, and `npm ci` installs the
+pinned development dependencies from the registry or a local cache.

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { TOOL_ROOT } from "./lib/config.mjs";
-import { isMainModule } from "./lib/paths.mjs";
+import { hasPackageSources, isMainModule } from "./lib/paths.mjs";
 import { existsSync, realpathSync } from "node:fs";
 import { join } from "node:path";
 
@@ -34,7 +34,10 @@ export function bootstrapWorktree(
     ...(existsSync(join(root, "packages/browser-evidence/package.json"))
       ? [browser]
       : []),
-    ["npm", "run", "build", "--silent"],
+    // A kit export (WO-075) carries the compiled runtime and no package
+    // source, so it has no build step; its emit installs the snapshot from
+    // packages/<name>/dist.
+    ...(hasPackageSources(root) ? [["npm", "run", "build", "--silent"]] : []),
     ...(existsSync(join(root, ".claude/harness-manifest.json"))
       ? [[process.execPath, "scripts/harness.mjs", "emit"]]
       : []),

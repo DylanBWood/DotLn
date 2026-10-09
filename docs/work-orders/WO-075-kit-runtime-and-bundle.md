@@ -1,4 +1,4 @@
-# WO-075 — Kit runtime and harness bundle in the export: the launchpad export carries a pinned, byte-identical runtime build and the Contributor build's compiled bundle whose hooks import that runtime, verified by `harness check` inside the export (version assigned at activation)
+# WO-075 — Kit runtime and harness bundle in the export: the launchpad export carries a pinned, byte-identical runtime build and the Contributor build's compiled bundle whose hooks import that runtime, verified by `harness check` inside the export (v0.72.0)
 
 **Model:** any capable model; the executor runs the recorded smoke in the
 actual harness. State the model and effort actually run

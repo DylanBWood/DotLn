@@ -26,6 +26,7 @@ import {
 import {
   compareObservedReads,
   directedReads,
+  readDirectives,
   scopeReadEvidence,
 } from "./lib/harness-context.mjs";
 import { fixtureSelectors, fixtureTree, roles } from "./harness-context.mjs";
@@ -122,8 +123,6 @@ write(
     },
   }),
 );
-const publication = docRelative(root, "product", "08-publication-compiler.md");
-write(publication, readFileSync(join(root, publication), "utf8"));
 write(docRelative(scratch, "discovery", "environment.json"), "{}\n");
 const workOrder = "WO-999";
 const event = (type, fields = {}) => ({
@@ -168,6 +167,44 @@ write(
 write("CLAUDE.md", readFileSync(join(root, "CLAUDE.md"), "utf8"));
 symlinkSync("CLAUDE.md", join(scratch, "AGENTS.md"));
 emitHarness(scratch, { termsRoot: root });
+// The scratch's bundle is re-emitted from the launchpad's compiled packages;
+// the record says whether the launchpad's own installed bundle passes its
+// check and whether the scratch's harness manifest equals the launchpad's, so
+// a stale or unemitted launchpad bundle cannot hide behind a passing smoke.
+const launchpadCheck = spawnSync(
+  process.execPath,
+  ["scripts/harness.mjs", "check"],
+  { cwd: root, encoding: "utf8" },
+);
+const launchpadHarnessCheck = {
+  exitCode: launchpadCheck.status,
+  output: (launchpadCheck.stdout + launchpadCheck.stderr).trim(),
+};
+const launchpadManifest = join(root, ".claude/harness-manifest.json");
+// Equal when the scripts' checkout is the launchpad; the comparison carries
+// its weight when DOTLN_LAUNCHPAD names another checkout.
+const bundleMatchesLaunchpad =
+  existsSync(launchpadManifest) &&
+  readFileSync(join(scratch, ".claude/harness-manifest.json"), "utf8") ===
+    readFileSync(launchpadManifest, "utf8");
+const read = (path) => readFileSync(join(scratch, path), "utf8");
+const skillPath = `.claude/skills/dotln-${role}/SKILL.md`;
+// Every file the role's own Read directives name travels into the scratch from
+// the launchpad (the executor cites scripts/operator-control.mjs, the verifier
+// product 07, the reviewer product 08), so the directed set expands over the
+// bytes the session may read and the fixture commit holds them; a fixture
+// selector resolves through fixtureSelectors below. A path the launchpad
+// lacks is reported by name.
+for (const { selector } of readDirectives(read(skillPath), role)) {
+  const [path] = selector.split("#");
+  if (path.startsWith("@") || existsSync(join(scratch, path))) continue;
+  assert.ok(
+    existsSync(join(root, path)),
+    `the ${role} skill directs a read of ${path}, which this launchpad lacks`,
+  );
+  mkdirSync(dirname(join(scratch, path)), { recursive: true });
+  cpSync(join(root, path), join(scratch, path));
+}
 runGit(scratch, ["add", "."], fixtureGitOptions);
 runGit(
   scratch,
@@ -187,8 +224,6 @@ runGit(
 const head = runGit(scratch, ["rev-parse", "HEAD"], fixtureGitOptions);
 if (role === "release-close")
   runGit(scratch, ["switch", "-c", "main"], fixtureGitOptions);
-const read = (path) => readFileSync(join(scratch, path), "utf8");
-const skillPath = `.claude/skills/dotln-${role}/SKILL.md`;
 const directed = directedReads({
   instruction: read("CLAUDE.md"),
   skill: read(skillPath),
@@ -274,10 +309,25 @@ assert.equal(JSON.parse(canonical.stdout).phase, "closed");
 const version = spawnSync("claude", ["--version"], {
   encoding: "utf8",
 }).stdout.trim();
+// The compiled profile pins the harness line it was observed on; a later patch
+// of that line runs the same smoke and the record keeps the version that ran
+// (WO-126 version-line policy; WO-075).
+const installation = harnessInstallation();
+const claudeProfile = installation.bundles
+  .map((bundle) => bundle.manifest.profile)
+  .find((profile) => profile.harness === "claude-code");
+assert.ok(claudeProfile, "the Contributor bundle has no claude-code profile");
+const profileVersion = claudeProfile.observedVersion;
+const versionLine = (value) => value.split(".").slice(0, 2).join(".");
 assert.match(
   version,
-  /^2\.1\.263 /,
-  "profile version must match the observed harness",
+  /^\d+\.\d+\.\d+\b/u,
+  `unreadable claude --version: ${version}`,
+);
+assert.equal(
+  versionLine(version),
+  versionLine(profileVersion),
+  `observed harness ${version} leaves the profile's version line ${versionLine(profileVersion)}`,
 );
 // This smoke regenerates the dated 2026-09-09 harness-live records, so it keeps
 // the model and effort those records measured.
@@ -307,6 +357,13 @@ const result = spawnSync(
   ],
   {
     cwd: scratch,
+    // A smoke launched from inside a Claude Code session must not inherit that
+    // session's identity, pid, effort or messaging socket.
+    env: Object.fromEntries(
+      Object.entries(process.env).filter(
+        ([name]) => !/^CLAUDE(?:CODE$|_)/u.test(name),
+      ),
+    ),
     encoding: "utf8",
     timeout: 240_000,
     maxBuffer: 16 * 1024 * 1024,
@@ -371,6 +428,17 @@ const reclaimed = observations
     actorId: row.writerReclaimed.actorId.slice(0, 12),
     ownerPid: row.writerReclaimed.owner?.pid ?? null,
   }));
+// A judgment row (allowed: false) is answered either by a refusal or, since
+// WO-133 made feedback judgments advisory outside writer isolation, by a
+// delegated advisory that leaves the decision to host permissions. The record
+// says which, so a reader does not take a judgment for a refusal.
+const delegatedAdvisory = (pattern) =>
+  observations.some(
+    (row) =>
+      row.delegated === true &&
+      typeof row.advisory === "string" &&
+      pattern.test(row.advisory),
+  );
 const refusedWriteDispatches = observations.filter(
   (row) => row.allowed === false && row.factKinds?.includes("writer-isolation"),
 ).length;
@@ -390,6 +458,17 @@ const requiredDeniedEffectRefused =
   requiredDeniedEffect === "attribution"
     ? denied
     : refusedWriteDispatches > 0 && holderNamedInRefusal;
+const requiredDeniedEffectResponse = !(requiredDeniedEffect === "attribution"
+  ? denied
+  : refusedWriteDispatches > 0)
+  ? "none"
+  : delegatedAdvisory(
+        requiredDeniedEffect === "attribution"
+          ? /no-attribution/u
+          : /writer|reserved/u,
+      )
+    ? "advisory"
+    : "refusal";
 const writerReservation = {
   scenario: scenario ?? "none",
   ...(scenario
@@ -427,7 +506,6 @@ const writerPassed =
         holderNamedInRefusal &&
         writerReservation.finalReservation === "foreign"
       : writerReservation.finalReservation === "released";
-const installation = harnessInstallation();
 const record = {
   schemaVersion: 4,
   role,
@@ -437,6 +515,9 @@ const record = {
   scope:
     "Closed synthetic role-entry smoke; actual canonical status and entry commands, no full phase execution or publication claimed",
   harnessVersion: version,
+  profileVersion,
+  launchpadHarnessCheck,
+  bundleMatchesLaunchpad,
   actor: { harness: "claude-code", model, effort, source: "launch-selector" },
   observedModels: models,
   effectiveEffort: effectiveEffort.length ? effectiveEffort : "unobserved",
@@ -450,6 +531,7 @@ const record = {
   deniedEffectRefused: denied,
   requiredDeniedEffect,
   requiredDeniedEffectRefused,
+  requiredDeniedEffectResponse,
   fixtureCommitDidNotExecute:
     runGit(scratch, ["rev-parse", "HEAD"], fixtureGitOptions) === head,
   correction: {
@@ -475,6 +557,8 @@ const record = {
   observations,
   passed:
     result.status === 0 &&
+    launchpadHarnessCheck.exitCode === 0 &&
+    bundleMatchesLaunchpad &&
     resolved &&
     requiredDeniedEffectRefused &&
     finished &&
@@ -498,6 +582,7 @@ console.log(
       deniedEffectRefused: denied,
       requiredDeniedEffect,
       requiredDeniedEffectRefused,
+      requiredDeniedEffectResponse,
       observerFinished: finished,
       actualReads,
       outsideDirectedSet: outside,
