@@ -9,7 +9,7 @@
 - [x] [WO-197] — Slow suites back to their medians · **final-reviewed** · pair 1
 - [x] [WO-074] — Launchpad export kit · **final-reviewed** · pair 2
 - [x] [WO-188] — Twenty-four boarded machinery items · **final-reviewed** · pair 2
-- [ ] [WO-075] — Kit runtime and harness bundle in the export · **queued** · pair 3
+- [x] [WO-075] — Kit runtime and harness bundle in the export · **final-reviewed** · pair 3
 - [x] [WO-190] — Index and roadmap lead with the work ahead · **final-reviewed** · pair 3
 - [ ] [WO-073] — Repository class and profile documents · **queued** · pair 4
 - [ ] [WO-198] — A worktree's gate names what moved · **queued** · pair 4
@@ -57,23 +57,6 @@ None.
 
 ## Open
 
-### WO-075
-
-[WO-075 — Kit runtime and harness bundle in the export: the launchpad export carries a pinned, byte-identical runtime build and the Contributor build's compiled bundle whose hooks import that runtime, verified by &#96;harness check&#96; inside the export (version assigned at activation)](WO-075-kit-runtime-and-bundle.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-074: hard (met) — the kit the runtime and bundle are placed in; WO-049: reference-only (non-blocking) — the target import root, absolute and target-only, which this order does not reuse; WO-042: hard (met) — grants with provenance in the exported bundle.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model; the executor runs the recorded smoke in the actual harness. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Track: delivery
-- Cost: adds to the export the compiled output the kit's scripts, hooks and &#96;harness&#96; command import, with its manifest entries and a rebuild comparison, the Contributor bundle emitted inside the export, the smoke record, fixtures, at most 300 bytes in product 03, an observation in &#96;docs/LEGAL.md&#96; and a capability-table section; it edits &#96;scripts/launchpad.mjs&#96;. Removes the build-less kit: without the build no generated hook governs a session opened in an export. WO-076, WO-077, WO-078, WO-082 and WO-118 depend on it. Re-mints: none expected, since the bundle is the existing Contributor emit and no registered source changes. If the executor takes up the carry-in FUP-a058e82c0bbd9b6d, each edition that the registered sources it edits stale is re-minted deterministically (among them &#96;packages/skeleton/src/gate-evidence.mjs&#96;, &#96;packages/skeleton/src/writer-teardown.mjs&#96;, &#96;packages/compiler/src/codex-continuation.mjs&#96; and &#96;scripts/harness-context.mjs&#96;), and &#96;packages/skeleton/src/usage-observation.mjs&#96;, which the feedback verifier judges, owes one live feedback episode, which the executor runs on Codex &#96;gpt-6.1-sol&#96; at &#96;max&#96; or Claude Code &#96;claude-opus-5-5&#96; at &#96;xhigh&#96;, with no authorization. Wall-clock, tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-075-kit-runtime-and-bundle.md](WO-075-kit-runtime-and-bundle.md)
-
 ### WO-073
 
 [WO-073 — Repository class and profile documents: a class is a link group of supports and checks every member equips, a profile document per registered repository is loaded on demand by the role skill, and policy layers launchpad → class → repository (version assigned at activation)](WO-073-repository-class-and-profile.md)
@@ -114,8 +97,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-075.
-- References: WO-074: hard (met) — a prior manifest to update from; WO-075: hard (unmet) — the kit runtime a resident inside an exported instance runs on; WO-167: hard (met) — closed at v0.53.1; retained as the fold this order's product 07 write-back followed.
+- Dependencies: typed; dependency-ready.
+- References: WO-074: hard (met) — a prior manifest to update from; WO-075: hard (met) — the kit runtime a resident inside an exported instance runs on; WO-167: hard (met) — closed at v0.53.1; retained as the fold this order's product 07 write-back followed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -148,8 +131,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-075, WO-077.
-- References: WO-074: hard (met) — the first export receipt; WO-075: hard (unmet) — the build hash a receipt records; WO-077: hard (unmet) — --update, which writes a receipt; WO-167: hard (met) — closed at v0.53.1; the fold this order's product 07 write-back followed.
+- Dependencies: typed; blocked on WO-077.
+- References: WO-074: hard (met) — the first export receipt; WO-075: hard (met) — the build hash a receipt records; WO-077: hard (unmet) — --update, which writes a receipt; WO-167: hard (met) — closed at v0.53.1; the fold this order's product 07 write-back followed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -199,8 +182,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-075.
-- References: WO-075: hard (unmet) — the kit build the overlay composes over; WO-074: hard (met) — the client README template this order writes into; WO-042: hard (met) — widening within the fork's posture is a provenance-bearing grant.
+- Dependencies: typed; dependency-ready.
+- References: WO-075: hard (met) — the kit build the overlay composes over; WO-074: hard (met) — the client README template this order writes into; WO-042: hard (met) — widening within the fork's posture is a provenance-bearing grant.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -216,8 +199,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-075, WO-076.
-- References: WO-199: hard (met) — an actor killed and the resident restarted (criterion 2) needs the vertical's recovery through a recorded process group and an interrupt handler; WO-075: hard (unmet) — a starter instance with the build; WO-076: hard (unmet) — the instance's overlay; WO-121: hard (met) — presence with origin; WO-122: hard (met) — the cli-worker and human-handoff actors; WO-100: hard (met) — derivation inside a portfolio; WO-120: hard (met) — derived work as durable records; WO-124: hard (met) — surfaces derived from the contract; WO-112: hard (met) — the loop proven from core first; WO-111: hard (met) — the unattended hour; WO-066: hard (met) — the pull-request loop with dispositions; WO-114: hard (met) — the run is visible in the status projection; WO-116: hard (met) — the audit view that reproduces the run afterward; WO-117: hard (met) — the run is visible in the live console; WO-123: hard (met) — the resident admits a filed intent under standing authorization and owns the vertical continuation.
+- Dependencies: typed; blocked on WO-076.
+- References: WO-199: hard (met) — an actor killed and the resident restarted (criterion 2) needs the vertical's recovery through a recorded process group and an interrupt handler; WO-075: hard (met) — a starter instance with the build; WO-076: hard (unmet) — the instance's overlay; WO-121: hard (met) — presence with origin; WO-122: hard (met) — the cli-worker and human-handoff actors; WO-100: hard (met) — derivation inside a portfolio; WO-120: hard (met) — derived work as durable records; WO-124: hard (met) — surfaces derived from the contract; WO-112: hard (met) — the loop proven from core first; WO-111: hard (met) — the unattended hour; WO-066: hard (met) — the pull-request loop with dispositions; WO-114: hard (met) — the run is visible in the status projection; WO-116: hard (met) — the audit view that reproduces the run afterward; WO-117: hard (met) — the run is visible in the live console; WO-123: hard (met) — the resident admits a filed intent under standing authorization and owns the vertical continuation.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -354,8 +337,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-080, WO-072, WO-075.
-- References: WO-080: hard (unmet) — the workstream the fixture exercises; WO-072: hard (unmet) — target worktrees from a launchpad; WO-075: hard (unmet) — a fixture launchpad exported with its build.
+- Dependencies: typed; blocked on WO-080, WO-072.
+- References: WO-080: hard (unmet) — the workstream the fixture exercises; WO-072: hard (unmet) — target worktrees from a launchpad; WO-075: hard (met) — a fixture launchpad exported with its build.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

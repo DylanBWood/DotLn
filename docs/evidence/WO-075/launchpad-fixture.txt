@@ -1,0 +1,28 @@
+# WO-075 fixture suite: node --test scripts/test-launchpad.mjs (2026-10-09T10:02:21Z, direct run on the handoff bytes before the gate, both selections; the gate rows are the passing evidence: the product gate skips the [document] case and the document gate runs it)
+
+✔ WO-074 criterion 1: a destination that is not an empty directory is refused before any write (77.106584ms)
+✔ WO-074 criterion 1: a destination that cannot be read is refused before any write (35.869958ms)
+✔ WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit, the manifest hashes verify, and the manifest lists every kit file and no seed (62.297291ms)
+✔ WO-074 criterion 1: an offline npm ci against the exported lockfile succeeds (352.62975ms)
+✔ WO-075 criterion 1: the exported runtime is byte-identical to a rebuild at the named commit, sits at the paths the scripts import, is manifest-listed and holds no package source (889.936875ms)
+✔ WO-075 criterion 2: harness check passes inside the export and refuses a one-byte drift, no hook imports by absolute path, the snapshot is ignored, a second emit changes no listed byte, and every installed Read directive resolves (596.031083ms)
+✔ [document] WO-075 criterion 4: the cold-start bytes of each role inside the export are not larger than core's (86.970125ms)
+✔ WO-074 criteria 1, 2 and 5: without package source the export activates its first order, a transition emits a decodable control Beacon, an unmatched attestation records with the advisory, and a Codex dispatch reserves its writer on the carried runtime (2382.438542ms)
+✔ WO-074 criterion 3: the export holds no planted instance material and the manifest lists no instance path (33.15475ms)
+✔ WO-074 criterion 3: the local-terms check runs over every exported text and prints present, unavailable, or refuses (4768.281042ms)
+✔ WO-074 criterion 4: the license files are core's pinned bytes and manifest-listed; --license none writes only LICENSE-PENDING.md (1863.935708ms)
+✔ WO-074 design: an export from a work tree that differs from HEAD carries the commit and says so (1816.667334ms)
+✔ WO-075 design: a package source that differs from HEAD refuses before any write, so the runtime is the commit's build (133.810875ms)
+✔ WO-075 design: the emit closure the export predicts with is pinned to HEAD, named from the import graph, and a dirty copy refuses before any write (2143.002917ms)
+✔ WO-075 design: a TypeScript module under a runtime package's sources travels only as compiled output, which the local-terms screen judges (1500.401292ms)
+✔ WO-075 design: a host Git configuration that would ignore a kit file refuses the export by name, and an export cannot be made from a kit (1571.607875ms)
+✔ WO-075 design: a fresh clone of the committed export lacks the ignored snapshot, its hooks report snapshot-missing and delegate to host permissions, and one emit restores the check (3612.780458ms)
+✔ WO-074 design: a kit file absent at the commit refuses by name, and a destination inside a Git work tree becomes its own repository (1984.685625ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27436.877042

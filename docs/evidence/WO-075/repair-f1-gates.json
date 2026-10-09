@@ -1,0 +1,220 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-075",
+  "dispatch": "resume: fix",
+  "recordedAt": "2026-10-09T15:07:52.306Z",
+  "codeIdentity": "a5cefbc4cc6eaea828e04709bcc091d8f119f47ce98718b24b90dced79ca139d",
+  "sourceSha256": {
+    "scripts/launchpad.mjs": "c83d4a45f5741431f7964807127a1d00971d37b434011f7279f887f73c76df71",
+    "scripts/test-launchpad.mjs": "6426566868f326c7811a3ef6dc886baaef9aee21dc4587f82fefe5b0abc2951e"
+  },
+  "rule": "Compare tracked build/emit inputs with the named commit by type, executable bit and bytes, and enumerate additional compilable package paths independently of ignore traversal; refuse mismatches before the build and destination writes.",
+  "productGate": {
+    "checkId": "npm test",
+    "treeHash": "2473db76c56baea154b5d04976172e2bfd7272da",
+    "codeIdentity": "a5cefbc4cc6eaea828e04709bcc091d8f119f47ce98718b24b90dced79ca139d",
+    "subject": "2473db76c56baea154b5d04976172e2bfd7272da",
+    "durationMs": 1401767,
+    "exitCode": 0,
+    "executed": true,
+    "recordedAt": "2026-10-09T15:06:19.586Z",
+    "evidenceRef": "host-gate:a5cefbc4cc6eaea828e04709bcc091d8f119f47ce98718b24b90dced79ca139d:npm test",
+    "gateSelection": "review",
+    "freshSuites": 89,
+    "reusedSuites": 0,
+    "requiredSuites": [
+      "build",
+      "format",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "launchpad",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "configuration-root",
+      "authority-evidence",
+      "harness-fixtures",
+      "harness",
+      "harness-context",
+      "harness-evidence",
+      "artifact-evidence",
+      "verification-evidence",
+      "feedback-evidence",
+      "runner-fixtures",
+      "process-debt",
+      "registrations"
+    ]
+  },
+  "documentGate": {
+    "checkId": "npm run test:docs",
+    "treeHash": "2473db76c56baea154b5d04976172e2bfd7272da",
+    "codeIdentity": "a5cefbc4cc6eaea828e04709bcc091d8f119f47ce98718b24b90dced79ca139d",
+    "subject": "2473db76c56baea154b5d04976172e2bfd7272da",
+    "durationMs": 93555,
+    "exitCode": 0,
+    "executed": true,
+    "recordedAt": "2026-10-09T14:42:48.486Z",
+    "evidenceRef": "host-gate:a5cefbc4cc6eaea828e04709bcc091d8f119f47ce98718b24b90dced79ca139d:npm run test:docs",
+    "gateSelection": "document",
+    "freshSuites": 30,
+    "reusedSuites": 0,
+    "requiredSuites": [
+      "build",
+      "format",
+      "release-surfaces",
+      "license-surfaces",
+      "resume",
+      "launchpad-docs",
+      "publication",
+      "docs-check",
+      "docs-check-fixtures",
+      "index",
+      "lineage",
+      "lineage-fixtures",
+      "kernel-docs",
+      "skeleton-docs",
+      "console-docs",
+      "resident-bind",
+      "local-runner-double",
+      "authority-evidence",
+      "harness",
+      "harness-context",
+      "harness-evidence",
+      "plan-refutation-current",
+      "artifact-corpus",
+      "artifact-evidence",
+      "verification-evidence",
+      "feedback-evidence",
+      "meta",
+      "registrations",
+      "plan",
+      "entropy"
+    ]
+  },
+  "fixtureTasks": [
+    {
+      "name": "launchpad",
+      "durationMs": 46805,
+      "exitCode": 0,
+      "slowestCases": [
+        {
+          "name": "WO-075 design: a fresh clone of the committed export lacks the ignored snapshot, its hooks report snapshot-missing and delegate to host permissions, and one emit restores the check",
+          "file": "scripts/test-launchpad.mjs",
+          "durationMs": 7273.227708,
+          "exitCode": 0
+        },
+        {
+          "name": "WO-074 criterion 3: the local-terms check runs over every exported text and prints present, unavailable, or refuses",
+          "file": "scripts/test-launchpad.mjs",
+          "durationMs": 6803.111542,
+          "exitCode": 0
+        },
+        {
+          "name": "WO-074 criteria 1, 2 and 5: without package source the export activates its first order, a transition emits a decodable control Beacon, an unmatched attestation records with the advisory, and a Codex dispatch reserves its writer on the carried runtime",
+          "file": "scripts/test-launchpad.mjs",
+          "durationMs": 3854.691333,
+          "exitCode": 0
+        },
+        {
+          "name": "WO-074 design: a kit file absent at the commit refuses by name, and a destination inside a Git work tree becomes its own repository",
+          "file": "scripts/test-launchpad.mjs",
+          "durationMs": 3171.970917,
+          "exitCode": 0
+        },
+        {
+          "name": "WO-075 design: the emit closure the export predicts with is pinned to HEAD, named from the import graph, and a dirty copy refuses before any write",
+          "file": "scripts/test-launchpad.mjs",
+          "durationMs": 3073.445958,
+          "exitCode": 0
+        }
+      ]
+    },
+    {
+      "name": "configuration-root",
+      "durationMs": 7142,
+      "exitCode": 0,
+      "slowestCases": [
+        {
+          "name": "configuration root",
+          "file": "scripts/test-configuration-root.mjs",
+          "durationMs": 6967.90075,
+          "exitCode": 0
+        },
+        {
+          "name": "worktree start and finish use the configured roots",
+          "file": "scripts/test-configuration-root.mjs",
+          "durationMs": 3805.7085,
+          "exitCode": 0
+        },
+        {
+          "name": "a fixture launchpad with non-default roots drives the lifecycle",
+          "file": "scripts/test-configuration-root.mjs",
+          "durationMs": 2762.651542,
+          "exitCode": 0
+        },
+        {
+          "name": "configured lineage and planning consumers use the launchpad ledger",
+          "file": "scripts/test-configuration-root.mjs",
+          "durationMs": 232.730209,
+          "exitCode": 0
+        },
+        {
+          "name": "WO-184 criterion 10: a configuration FIFO refuses promptly by path",
+          "file": "scripts/test-configuration-root.mjs",
+          "durationMs": 39.9895,
+          "exitCode": 0
+        }
+      ]
+    }
+  ],
+  "targetedChecks": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern='VER-001-F1|a package source that differs|the emit closure' scripts/test-launchpad.mjs",
+      "passed": 6,
+      "failed": 0,
+      "durationMs": 6717.477542,
+      "finishedAt": "2026-10-09T14:21:27.424Z"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern='without package source' scripts/test-launchpad.mjs",
+      "passed": 1,
+      "failed": 0,
+      "durationMs": 5496.068125,
+      "finishedAt": "2026-10-09T14:38:57.600Z"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-skip-pattern='\\[document\\]' scripts/test-launchpad.mjs",
+      "passed": 21,
+      "failed": 0,
+      "durationMs": 30483.7465,
+      "finishedAt": "2026-10-09T14:39:44.796Z"
+    }
+  ],
+  "stoppedReview": {
+    "durationMs": 654600,
+    "reason": "The carried-runtime lifecycle fixture assumed thread-only ownership; isolated reproduction reported codex-host versus thread. D016 records the assertion repair.",
+    "passingCheckRecorded": false
+  },
+  "reMints": "none; registered runtime/compiler sources and dependency manifests are unchanged",
+  "newWorkers": 0,
+  "scope": "One host; prior unchanged runtime/hook live evidence carried forward. Install-sharing limit remains D009."
+}

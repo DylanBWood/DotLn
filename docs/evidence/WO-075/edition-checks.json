@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-075",
+  "recordedAt": "2026-10-09T08:40:18.697Z",
+  "reMints": "none",
+  "reason": "No registered behavioral source changed: this order edits scripts/launchpad.mjs, scripts/test-launchpad.mjs, scripts/harness-live-smoke.mjs, scripts/bootstrap.mjs, scripts/test-runner.mjs, scripts/test-process-debt.mjs, the kit templates and documents; packages/*, package.json and package-lock.json are unchanged, so docs/evidence/current.json keeps WO-074 revision 001 for the four kinds and every current-edition check passes at this tree.",
+  "current": {
+    "authority": {
+      "workOrder": "WO-074",
+      "revision": "001"
+    },
+    "artifact-identity": {
+      "workOrder": "WO-074",
+      "revision": "001"
+    },
+    "verification": {
+      "workOrder": "WO-074",
+      "revision": "001"
+    },
+    "feedback": {
+      "workOrder": "WO-074",
+      "revision": "001"
+    }
+  },
+  "checks": [
+    {
+      "kind": "authority",
+      "command": "node scripts/authority-evidence.mjs --check",
+      "exitCode": 0,
+      "stdout": "Verified two unchanged programs, the WO-132 plan-refuter, WO-142 Shape-First, WO-100 reviewer and WO-165 serial-route migrations, four widening rejections, nine runtime denials, admitted/reverted grants and 36 bundle comparisons (including additions and removals).",
+      "stderr": ""
+    },
+    {
+      "kind": "artifact-identity",
+      "command": "node scripts/artifact-identity-evidence.mjs --check",
+      "exitCode": 0,
+      "stdout": "Verified 4 current artifact evidence files in docs/evidence/WO-074/artifact-identity/001; Seiri semantic hash and frozen oracle unchanged; versioned Entropy Reducer matches its current recorded fixture.",
+      "stderr": ""
+    },
+    {
+      "kind": "verification",
+      "command": "node scripts/verification-evidence.mjs --check",
+      "exitCode": 0,
+      "stdout": "Verified 4 synthetic verification evidence files; planted defect, repair, staleness and replay are green.",
+      "stderr": ""
+    },
+    {
+      "kind": "feedback",
+      "command": "node scripts/feedback-evidence.mjs --check",
+      "exitCode": 0,
+      "stdout": "Carried live feedback audit docs/evidence/WO-199/feedback-004, named by docs/evidence/WO-074/feedback-001.\nVerified ten passing regressions, ten removal failures, and 1192 fewer instruction bytes in the matched projection.",
+      "stderr": ""
+    }
+  ]
+}
