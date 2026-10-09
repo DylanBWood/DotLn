@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-074",
+  "finalReview": "FINAL-001",
+  "observedAt": "2026-10-09T06:22:11.734Z",
+  "sourceCommit": "cdd1c2e080f3f250b1d0d4aa034b67f473249935",
+  "criterion6": {
+    "command": "DOTLN_LAUNCHPAD=<main-checkout> node <session-scratch>/wo074-final-001/source/scripts/launchpad.mjs export <session-scratch>/wo074-final-001/kit-main",
+    "exitCode": 0,
+    "stdout": "Exported the DotLn kit of cdd1c2e080f3f250b1d0d4aa034b67f473249935 (tag v8.7.6-final) to <session-scratch>/wo074-final-001/kit-main: 282 kit files in KIT-MANIFEST.json, 23 instance seeds.\nlocal-terms list: present (305 texts checked)\n",
+    "stderr": ""
+  },
+  "identity": {
+    "manifestCommit": "cdd1c2e080f3f250b1d0d4aa034b67f473249935",
+    "manifestTag": "v8.7.6-final",
+    "manifestFiles": 282,
+    "worktreeLaunchpadSha256": "067cd50407532ed51779c3827c5d3cbe0a65644add7ba443243f198543c149ff",
+    "exportedLaunchpadSha256": "067cd50407532ed51779c3827c5d3cbe0a65644add7ba443243f198543c149ff",
+    "launchpadEqual": true,
+    "manifestListsLaunchpad": true,
+    "mismatchedHashes": 0,
+    "templateSeedEqual": [
+      {
+        "template": "README.client.md",
+        "seed": "README.md",
+        "equal": true
+      },
+      {
+        "template": "CLAUDE.template.md",
+        "seed": "CLAUDE.md",
+        "equal": true
+      },
+      {
+        "template": "first-order.template.md",
+        "seed": "docs/work-orders/WO-001-environment-truth.md",
+        "equal": true
+      },
+      {
+        "template": "AI-HARNESS-SECURITY.template.md",
+        "seed": "AI-HARNESS-SECURITY.md",
+        "equal": true
+      },
+      {
+        "template": "gitignore.template",
+        "seed": ".gitignore",
+        "equal": true
+      },
+      {
+        "template": "workstream.template.md",
+        "seed": "docs/workstreams/README.md",
+        "equal": true
+      },
+      {
+        "template": "repository-profile.template.md",
+        "seed": "docs/repositories/README.md",
+        "equal": true
+      }
+    ]
+  },
+  "seeds": {
+    "unlistedCount": 24,
+    "unlisted": [
+      ".gitignore",
+      "AGENTS.md",
+      "AI-HARNESS-SECURITY.md",
+      "CLAUDE.md",
+      "KIT-MANIFEST.json",
+      "README.md",
+      "docs/README.md",
+      "docs/control/README.md",
+      "docs/decisions/README.md",
+      "docs/discovery/README.md",
+      "docs/evidence/README.md",
+      "docs/final-reviews/README.md",
+      "docs/intake/.gitkeep",
+      "docs/observations/README.md",
+      "docs/planning/README.md",
+      "docs/planning/sequence.md",
+      "docs/product/README.md",
+      "docs/publication/README.md",
+      "docs/releases/README.md",
+      "docs/repositories/README.md",
+      "docs/verifications/README.md",
+      "docs/work-orders/WO-001-environment-truth.md",
+      "docs/workstreams/README.md",
+      "packages/skeleton/loadouts/grants.json"
+    ]
+  },
+  "licenses": {
+    "defaultCensus": [
+      "LICENSE",
+      "LICENSE-docs",
+      "NOTICE"
+    ],
+    "noneCensus": [
+      "LICENSE-PENDING.md"
+    ],
+    "noneStdout": "Exported the DotLn kit of cdd1c2e080f3f250b1d0d4aa034b67f473249935 (tag v8.7.6-final) to <session-scratch>/wo074-final-001/kit-none: 280 kit files in KIT-MANIFEST.json, 23 instance seeds.\nlocal-terms list: unavailable; no text was checked against a local-terms list\n",
+    "noticeGrantsNoRights": true,
+    "noticeNamesNoLicense": true,
+    "noticeNamesALicense": false,
+    "nonePackageLicense": "UNLICENSED",
+    "defaultPackageLicense": "Apache-2.0"
+  },
+  "cleanRoomScreen": {
+    "pattern": "\\b(gateway|proxy|managed host|enterprise|internal service|vpn|okta|azure|aws|gcp|bedrock|vertex|corp|intranet|employer)\\b",
+    "filesRead": 20,
+    "hits": [
+      {
+        "file": "AI-HARNESS-SECURITY.md",
+        "line": 41,
+        "word": "internal service"
+      },
+      {
+        "file": "AI-HARNESS-SECURITY.md",
+        "line": 42,
+        "word": "employer"
+      },
+      {
+        "file": "docs/work-orders/WO-001-environment-truth.md",
+        "line": 39,
+        "word": "gateway"
+      },
+      {
+        "file": "docs/work-orders/WO-001-environment-truth.md",
+        "line": 40,
+        "word": "gateway"
+      },
+      {
+        "file": "docs/work-orders/WO-001-environment-truth.md",
+        "line": 77,
+        "word": "gateway"
+      },
+      {
+        "file": "docs/repositories/README.md",
+        "line": 11,
+        "word": "internal service"
+      }
+    ]
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "observedAt": "2026-10-09T05:50:29.942Z",
+  "checks": [
+    {
+      "name": "launchpad-fixture",
+      "command": "node --test scripts/test-launchpad.mjs",
+      "exitCode": 0,
+      "durationMs": 6123,
+      "stdout": "✔ WO-074 criterion 1: a destination that is not an empty directory is refused before any write (70.737083ms)\n✔ WO-074 criterion 1: a destination that cannot be read is refused before any write (36.597709ms)\n✔ WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit, the manifest hashes verify, and the manifest lists every kit file and no seed (27.882125ms)\n✔ WO-074 criterion 1: an offline npm ci against the exported lockfile succeeds (354.498041ms)\n✔ WO-074 criteria 1, 2 and 5: without package source the export activates its first order, a transition emits a decodable control Beacon, and an unmatched attestation records with the advisory (1074.77175ms)\n✔ WO-074 criterion 3: the export holds no planted instance material and the manifest lists no instance path (18.294208ms)\n✔ WO-074 criterion 3: the local-terms check runs over every exported text and prints present, unavailable, or refuses (763.033167ms)\n✔ WO-074 criterion 4: the license files are core's pinned bytes and manifest-listed; --license none writes only LICENSE-PENDING.md (742.473083ms)\n✔ WO-074 design: an export from a work tree that differs from HEAD carries the commit and says so (741.374ms)\n✔ WO-074 design: a kit file absent at the commit refuses by name, and a destination inside a Git work tree is advised (831.490333ms)\nℹ tests 10\nℹ suites 0\nℹ pass 10\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 6091.791375\n",
+      "stderr": ""
+    },
+    {
+      "name": "configuration-root",
+      "command": "node --test --test-name-pattern no control-plane script keeps a literal document root or a second root derivation scripts/test-configuration-root.mjs",
+      "exitCode": 0,
+      "durationMs": 109,
+      "stdout": "✔ scripts/test-configuration-root.mjs (66.963541ms)\nℹ tests 1\nℹ suites 0\nℹ pass 1\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 70.989125\n",
+      "stderr": "",
+      "coverage": "file-wrapper-only; not credited as root-guard evidence"
+    },
+    {
+      "name": "publication",
+      "command": "node scripts/check-publication.mjs",
+      "exitCode": 0,
+      "durationMs": 151,
+      "stdout": "PASS index coverage: 254/254 product headings indexed\nPASS dual-voice links: 3 identical claim links per voice\nCURRENT everyday-ai-user-toc.md: 29 linked source sections match\nCURRENT software-engineer-toc.md: 45 linked source sections match\nPASS publication bootstrap checks\n",
+      "stderr": ""
+    },
+    {
+      "name": "authority",
+      "command": "node scripts/authority-evidence.mjs --check",
+      "exitCode": 0,
+      "durationMs": 553,
+      "stdout": "Verified two unchanged programs, the WO-132 plan-refuter, WO-142 Shape-First, WO-100 reviewer and WO-165 serial-route migrations, four widening rejections, nine runtime denials, admitted/reverted grants and 36 bundle comparisons (including additions and removals).\n",
+      "stderr": ""
+    },
+    {
+      "name": "artifact-identity",
+      "command": "node scripts/artifact-identity-evidence.mjs --check",
+      "exitCode": 0,
+      "durationMs": 227,
+      "stdout": "Verified 4 current artifact evidence files in docs/evidence/WO-074/artifact-identity/001; Seiri semantic hash and frozen oracle unchanged; versioned Entropy Reducer matches its current recorded fixture.\n",
+      "stderr": ""
+    },
+    {
+      "name": "verification",
+      "command": "node scripts/verification-evidence.mjs --check",
+      "exitCode": 0,
+      "durationMs": 1145,
+      "stdout": "Verified 4 synthetic verification evidence files; planted defect, repair, staleness and replay are green.\n",
+      "stderr": ""
+    },
+    {
+      "name": "feedback",
+      "command": "node scripts/feedback-evidence.mjs --check",
+      "exitCode": 0,
+      "durationMs": 2487,
+      "stdout": "Carried live feedback audit docs/evidence/WO-199/feedback-004, named by docs/evidence/WO-074/feedback-001.\nVerified ten passing regressions, ten removal failures, and 1192 fewer instruction bytes in the matched projection.\n",
+      "stderr": ""
+    },
+    {
+      "name": "configuration-root-complete",
+      "command": "node --test scripts/test-configuration-root.mjs under suiteEnvironment()",
+      "exitCode": 0,
+      "durationMs": 3673,
+      "stdout": "Generated records/lineage/README.md\n▶ configuration root\n  ✔ WO-184 criterion 10: a configuration FIFO refuses promptly by path (33.9695ms)\n  ✔ an absent configuration means today's layout (0.948834ms)\n  ✔ a declared root moves its documents and its children (1.186375ms)\n  ✔ registered repositories expose a validated public profile (0.65225ms)\n  ✔ a malformed configuration refuses with its path (2.953958ms)\n  ✔ the launchpad is discovered, and the override wins (1.522875ms)\n  ✔ no control-plane script keeps a literal document root or a second root derivation (19.724084ms)\n  ✔ configured lineage and planning consumers use the launchpad ledger (79.789834ms)\n  ✔ configured follow-up references validate against their roots (9.335541ms)\n  ✔ writing-worker defaults separate tool inputs from configured outputs (5.91075ms)\n  ✔ a fixture launchpad with non-default roots drives the lifecycle (1316.11825ms)\n  ✔ worktree start and finish use the configured roots (2089.729208ms)\n  ✔ every declared root key is reachable (0.7405ms)\n✔ configuration root (3564.117416ms)\nℹ tests 14\nℹ suites 0\nℹ pass 14\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 3635.760792\n",
+      "stderr": ""
+    }
+  ],
+  "probeLimits": [
+    {
+      "command": "node --test scripts/test-configuration-root.mjs with inherited Codex environment",
+      "exitCode": 1,
+      "observed": "The root guard passed. Two fixture lifecycle children refused resume verify because CODEX_THREAD_ID selected a Codex writer reservation while the disposable fixture omitted the compiled harness runtime.",
+      "basis": "scripts/lib/suite-evidence.mjs excludes CODEX_THREAD_ID from canonical offline suite environments; scripts/test-configuration-root.mjs inherits its parent environment at lines 650 and 904. Both files and scripts/resume.mjs have no subject diff.",
+      "resolution": "Run the complete suite under its canonical suiteEnvironment(); no implementation was edited."
+    }
+  ]
+}

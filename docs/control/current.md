@@ -1,23 +1,22 @@
 # Current control state
 
-## WO-199
+## WO-074
 
-- Work order: WO-199
-- Work-order path: docs/work-orders/WO-199-the-vertical-survives-an-interrupt.md
+- Work order: WO-074
+- Work-order path: docs/work-orders/WO-074-launchpad-export-kit.md
 - Phase: closed
-- Latest verification: VER-003
-- Verification path: docs/verifications/WO-199/VER-003.md
+- Latest verification: VER-001
+- Verification path: docs/verifications/WO-074/VER-001.md
 - Latest verdict: pass
-- Final review: FINAL-002
-- Final-review path: docs/final-reviews/WO-199/FINAL-002.md
-- Latest attestation: harness claude-code; version 2.1.295; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable
-- Effort drift: max -> xhigh
-- Latest recordedAt: 2026-10-08T20:43:59.737Z
-- Elapsed implementation: 8715816 ms
-- Elapsed verification: 1482583 ms
-- Elapsed repair: 5381621 ms
-- Elapsed finalReview: 1384529 ms
-- Latest checkpoint: 7e1fae58ab7ef1181e3655bd361b174cb9abff1d (restore: `git checkout refs/dotln/checkpoint/WO-199/18 -- .`)
+- Final review: FINAL-001
+- Final-review path: docs/final-reviews/WO-074/FINAL-001.md
+- Latest attestation: harness claude-code; version 2.1.295; model claude-fable-5-1; effort max; source claude-session-readback; account not-applicable
+- Effort drift: xhigh -> max
+- Latest recordedAt: 2026-10-09T06:58:15.950Z
+- Elapsed implementation: 5128534 ms
+- Elapsed verification: 1044139 ms
+- Elapsed finalReview: 3161496 ms
+- Latest checkpoint: 0dc51b76f2ed4110ea0ec6914daf0a863de29c56 (restore: `git checkout refs/dotln/checkpoint/WO-074/7 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct
 

@@ -30452,6 +30452,58 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-8fb7ae17dd0fad5b",
+      "key": "decision:docs/evidence/WO-074/decisions.md#wo-074-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c9a69251e806d505101740f9f4d9d688c08d697b9521f28ded9170fd404b85dd",
+          "ref": "docs/evidence/WO-074/decisions.md#wo-074-d007--the-exports-own-test-command-is-a-follow-up",
+          "title": "WO-074-D007: Run core's suites inside an export: once WO-075 carries the runtime build, wire the export's npm test (harness check first, then the suites that need no TypeScript source) and record in t",
+          "summary": "{ \"id\": \"WO-074-D007\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next\", \"decision\": \"The export's npm test is not claimed (operator-review assumption 2): scripts/test-runner.mjs imports packages/skeleton/src/gate-deadlines.mjs and evidence-editions.mjs, which the kit carries, but its suites need the compiled packages and the runner builds them first, so npm test in the export fails at the build. The client README says so. The follow-up is recorded here; carrying the package source or a no-build path in the runner is declined by the order.\", \"evidence\": [ \"docs/work-orders/WO-074-launchpad-export-kit.md, Observed gap (the control plane loads package code) and operator-review assumption 2\", \"",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-06de60fa5d19fe5a",
+      "key": "decision:docs/evidence/WO-074/decisions.md#wo-074-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "33017ed75c5bf2f4b71fa293240f5f205e958b2c9a55b4bfeeef6f6f8c7980de",
+          "ref": "docs/evidence/WO-074/decisions.md#wo-074-d010--write-backs-carry-ins-and-the-kits-instance-identity",
+          "title": "WO-074-D010: A fork's publish check should read its operator author identity from instance data rather than scripts/lib/contributions.mjs's constant, so the kit carries no instance identity in a byte-",
+          "summary": "{ \"id\": \"WO-074-D010\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next\", \"decision\": \"Write-backs landed in place: product 03 §Platform and instance boundary gains one undated paragraph naming the kit's first slice (the command, what it carries, the manifest, the seeds, the terms check and what a kit without package source runs); docs/LEGAL.md §Current state gains the dated observation that the kit carries the three license files by default and no bundled third-party material; docs/README.md §Map gains one line for scripts/kit/; the two publication source locks were refreshed from node scripts/check-publication.mjs --print-locks after the product 03 edit. The two Design carry-ins hold: the f",
+          "missing": false
+        },
+        {
+          "hash": "b1310acadc5723a26a56638da381d4d703b82f25c15fac13bce709e3a67e66af",
+          "ref": "docs/evidence/WO-074/decisions.md#wo-074-d010--write-backs-carry-ins-and-the-kits-instance-identity",
+          "title": "WO-074-D010: A fork's publish check should read its operator author identity from instance data rather than scripts/lib/contributions.mjs's constant, so the kit carries no instance identity in a byte-",
+          "summary": "{ \"id\": \"WO-074-D010\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next\", \"decision\": \"Write-backs landed in place: product 03 §Platform and instance boundary gains one undated paragraph naming the kit's first slice (the command, what it carries, the manifest, the seeds, the terms check and what a kit without package source runs), about 1,400 bytes under the ceiling the 2026-10-07 pass reset, which supersedes the Cost line's older 400-byte bound as the order's Known issues record; docs/LEGAL.md §Current state gains the dated observation that the kit carries the three license files by default and no bundled third-party material; docs/README.md §Map gains one line for scripts/kit/; the two publ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e624167a7f6555f6",
+      "key": "decision:docs/evidence/WO-074/decisions.md#wo-074-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c1713cefa665481944c516339ed9d1668de4b3c2721a4d2c9ed03f6e56740c37",
+          "ref": "docs/evidence/WO-074/decisions.md#wo-074-d011--self-review-findings-and-a-follow-up-outside-criterion-3s-declared-set",
+          "title": "WO-074-D011: Decide whether scripts/fixtures data derived from this repository's records (wo138-local-role-qualification.json carries a verification report's verdict and durations) belongs in the expo",
+          "summary": "{ \"id\": \"WO-074-D011\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next\", \"decision\": \"Two fresh dotln-workers reviewed the order and the diff before implementation-ready, an adversary of the criteria (16 findings) and an improver of design, simplicity and maintainability (21 findings; docs/evidence/WO-074/adversary.md and improver.md hold both reports with each finding's disposition). Fixed: the license-shaped template name and the fixture's scripts/ exclusion (criterion 4); the product 03 and protects wording that said the kit is read from the launchpad's commit; the client README's claim that the later transitions run without a build (in a Codex session next, verify, fix, final-review and ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
