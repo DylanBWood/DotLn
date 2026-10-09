@@ -1,0 +1,100 @@
+# WO-188 repair-003: the VER-003 probes rerun after the repair
+
+Each command is the one VER-003 names; exits and output are captured as printed, with worktree, temporary and home paths replaced by placeholders and progress-only lines omitted. The API probe ends by asserting that the escaped-destination finding still reproduces; after this repair that assertion fails, which is the finding's own reopening condition met, and every preservation and refusal case before it passes.
+
+## links
+
+Command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-003/links.mjs
+Exit: 1
+
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+{"probe":"baseline-CR-body-profile","source":"Intro\r\r`` [sample](file.md) ` literal ``","failures":[],"outcome":"pass"}
+{"probe":"baseline-CR-body-profile","source":"- code:\r\r      [sample](file.md)","failures":[],"outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"`` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":1,"column":34,"offset":33}}}],"rewritten":"`` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"🧪 café `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":9,"offset":8},"end":{"line":1,"column":42,"offset":41}}}],"rewritten":"🧪 café `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"\t[sample](file.md)","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":1,"column":19,"offset":18}}}],"rewritten":"\t[sample](file.md)","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"> `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":1,"column":36,"offset":35}}}],"rewritten":"> `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"- `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":1,"column":36,"offset":35}}}],"rewritten":"- `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"A span `[sample](file.md)\ncontinuation`.","parsed":[{"type":"inlineCode","value":"[sample](file.md)\ncontinuation","position":{"start":{"line":1,"column":8,"offset":7},"end":{"line":2,"column":14,"offset":39}}}],"rewritten":"A span `[sample](file.md)\ncontinuation`.","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"Intro\n\n`` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":3,"column":1,"offset":7},"end":{"line":3,"column":34,"offset":40}}}],"rewritten":"Intro\n\n`` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"```md\n[sample](file.md)\n```","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":3,"column":4,"offset":27}}}],"rewritten":"```md\n[sample](file.md)\n```","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"> ```md\n> [sample](file.md)\n> ```","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":3,"column":6,"offset":33}}}],"rewritten":"> ```md\n> [sample](file.md)\n> ```","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"- code:\n\n      [sample](file.md)","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":3,"column":3,"offset":11},"end":{"line":3,"column":24,"offset":32}}}],"rewritten":"- code:\n\n      [sample](file.md)","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"<div>\n[sample](file.md)\n</div>","parsed":[{"type":"html","value":"<div>\n[sample](file.md)\n</div>","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":3,"column":7,"offset":30}}}],"rewritten":"<div>\n[sample](file.md)\n</div>","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"Text <span title=\"[sample](file.md)\">literal</span>.","parsed":[{"type":"html","value":"<span title=\"[sample](file.md)\">","position":{"start":{"line":1,"column":6,"offset":5},"end":{"line":1,"column":38,"offset":37}}},{"type":"html","value":"</span>","position":{"start":{"line":1,"column":45,"offset":44},"end":{"line":1,"column":52,"offset":51}}}],"rewritten":"Text <span title=\"[sample](file.md)\">literal</span>.","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"`` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":1,"column":34,"offset":33}}}],"rewritten":"`` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"🧪 café `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":9,"offset":8},"end":{"line":1,"column":42,"offset":41}}}],"rewritten":"🧪 café `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"\t[sample](file.md)","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":1,"column":19,"offset":18}}}],"rewritten":"\t[sample](file.md)","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"> `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":1,"column":36,"offset":35}}}],"rewritten":"> `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"- `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":1,"column":36,"offset":35}}}],"rewritten":"- `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"A span `[sample](file.md)\r\ncontinuation`.","parsed":[{"type":"inlineCode","value":"[sample](file.md)\r\ncontinuation","position":{"start":{"line":1,"column":8,"offset":7},"end":{"line":2,"column":14,"offset":40}}}],"rewritten":"A span `[sample](file.md)\r\ncontinuation`.","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"Intro\r\n\r\n`` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":3,"column":1,"offset":9},"end":{"line":3,"column":34,"offset":42}}}],"rewritten":"Intro\r\n\r\n`` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"```md\r\n[sample](file.md)\r\n```","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":3,"column":4,"offset":29}}}],"rewritten":"```md\r\n[sample](file.md)\r\n```","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"> ```md\r\n> [sample](file.md)\r\n> ```","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":3,"column":6,"offset":35}}}],"rewritten":"> ```md\r\n> [sample](file.md)\r\n> ```","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"- code:\r\n\r\n      [sample](file.md)","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":3,"column":3,"offset":13},"end":{"line":3,"column":24,"offset":34}}}],"rewritten":"- code:\r\n\r\n      [sample](file.md)","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"<div>\r\n[sample](file.md)\r\n</div>","parsed":[{"type":"html","value":"<div>\r\n[sample](file.md)\r\n</div>","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":3,"column":7,"offset":32}}}],"rewritten":"<div>\r\n[sample](file.md)\r\n</div>","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"Text <span title=\"[sample](file.md)\">literal</span>.","parsed":[{"type":"html","value":"<span title=\"[sample](file.md)\">","position":{"start":{"line":1,"column":6,"offset":5},"end":{"line":1,"column":38,"offset":37}}},{"type":"html","value":"</span>","position":{"start":{"line":1,"column":45,"offset":44},"end":{"line":1,"column":52,"offset":51}}}],"rewritten":"Text <span title=\"[sample](file.md)\">literal</span>.","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"`` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":1,"column":34,"offset":33}}}],"rewritten":"`` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"🧪 café `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":9,"offset":8},"end":{"line":1,"column":42,"offset":41}}}],"rewritten":"🧪 café `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"\t[sample](file.md)","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":1,"column":19,"offset":18}}}],"rewritten":"\t[sample](file.md)","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"> `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":1,"column":36,"offset":35}}}],"rewritten":"> `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"- `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":1,"column":36,"offset":35}}}],"rewritten":"- `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"A span `[sample](file.md)\rcontinuation`.","parsed":[{"type":"inlineCode","value":"[sample](file.md)\rcontinuation","position":{"start":{"line":1,"column":8,"offset":7},"end":{"line":2,"column":14,"offset":39}}}],"rewritten":"A span `[sample](file.md)\rcontinuation`.","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"Intro\r\r`` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":3,"column":1,"offset":7},"end":{"line":3,"column":34,"offset":40}}}],"rewritten":"Intro\r\r`` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"```md\r[sample](file.md)\r```","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":3,"column":4,"offset":27}}}],"rewritten":"```md\r[sample](file.md)\r```","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"> ```md\r> [sample](file.md)\r> ```","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":3,"column":6,"offset":33}}}],"rewritten":"> ```md\r> [sample](file.md)\r> ```","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"- code:\r\r      [sample](file.md)","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":3,"column":3,"offset":11},"end":{"line":3,"column":24,"offset":32}}}],"rewritten":"- code:\r\r      [sample](file.md)","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"<div>\r[sample](file.md)\r</div>","parsed":[{"type":"html","value":"<div>\r[sample](file.md)\r</div>","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":3,"column":7,"offset":30}}}],"rewritten":"<div>\r[sample](file.md)\r</div>","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"Text <span title=\"[sample](file.md)\">literal</span>.","parsed":[{"type":"html","value":"<span title=\"[sample](file.md)\">","position":{"start":{"line":1,"column":6,"offset":5},"end":{"line":1,"column":38,"offset":37}}},{"type":"html","value":"</span>","position":{"start":{"line":1,"column":45,"offset":44},"end":{"line":1,"column":52,"offset":51}}}],"rewritten":"Text <span title=\"[sample](file.md)\">literal</span>.","outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[empty]()","rewritten":"empty","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[empty](<> \"title\")","rewritten":"empty","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"![empty]()","rewritten":"empty","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[empty][r]\n\n[r]: <>","rewritten":"[empty][r]\n\n","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[nested [a [b]]](file(1).md)","rewritten":"[nested [a [b]]](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%281%29.md)","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[split\nlabel](file.md)","rewritten":"[split\nlabel](file.md)","remaining":[{"line":1,"href":"file.md","kind":"relative-link"}],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[escaped](file\\(1\\).md)","rewritten":"[escaped](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%281%29.md)","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[space](<file name.md>)","rewritten":"[space](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%20name.md)","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[fragment](#a)","rewritten":"fragment","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[escape](../../../../../../outside.md)","rewritten":"escape","remaining":[],"outcome":"pass"}
+{"probe":"expanded-parser-preservation","failures":0}
+{"probe":"escaped-destination-rendered-target","source":"[escaped](file\\(1\\).md)","parsedURL":"file(1).md","rewritten":"[escaped](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%281%29.md)","expectedURL":"https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%281%29.md","sameTarget":true}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: recorded unresolved escape normalization finding still reproduces
+    at file://<worktree>/docs/evidence/WO-188/verifier-003/links.mjs:148:8 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v26.9.0
+bounded-result {"name":"bounded-probe","durationMs":106,"slowestCases":[{"name":"bounded-probe","durationMs":106,"exitCode":1,"granularity":"task"}],"peakFootprintBytes":1327464,"peakRssBytes":1802240,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T08:50:30.894Z","finishedAt":"2026-10-09T08:50:31.000Z","exitCode":1,"executed":true}
+
+## publish
+
+Command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-003/publish.mjs
+Exit: 0
+
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+release-notes publish validation fixtures passed
+contribution sign-off publication fixtures passed before any remote mutation
+{"probe":"actual-publication-CR-only-code","committedLiteral":"`` [crsample](cr-file.md) ` literal ``","publishedLiteralPreserved":true,"publishedCRSample":["`` [crsample](cr-file.md) ` literal ``","`` [crsample](cr-file.md) ` literal ``"],"emptyDestinationPublished":false,"originalMixedBacktickPreserved":true}
+{"probe":"actual-publication-CR-only-code","baseline":false,"lfControl":false,"exit":0}
+bounded-result {"name":"bounded-probe","durationMs":81075,"slowestCases":[{"name":"bounded-probe","durationMs":81075,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":130138744,"peakRssBytes":357122048,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T08:50:31.090Z","finishedAt":"2026-10-09T08:51:52.165Z","exitCode":0,"executed":true}
+
+## publish --lf-control
+
+Command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-003/publish.mjs --lf-control
+Exit: 0
+
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+release-notes publish validation fixtures passed
+contribution sign-off publication fixtures passed before any remote mutation
+{"probe":"actual-publication-CR-only-code","committedLiteral":"`` [crsample](cr-file.md) ` literal ``","publishedLiteralPreserved":true,"publishedCRSample":["`` [crsample](cr-file.md) ` literal ``","`` [crsample](cr-file.md) ` literal ``"],"emptyDestinationPublished":false,"originalMixedBacktickPreserved":true}
+{"probe":"actual-publication-CR-only-code","baseline":false,"lfControl":true,"exit":0}
+bounded-result {"name":"bounded-probe","durationMs":87600,"slowestCases":[{"name":"bounded-probe","durationMs":87600,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":121634440,"peakRssBytes":317554688,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T08:51:52.265Z","finishedAt":"2026-10-09T08:53:19.865Z","exitCode":0,"executed":true}

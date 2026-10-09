@@ -1,0 +1,76 @@
+# WO-188 repair-002: the VER-002 probes rerun after the repair
+
+Each command is the one VER-002 names; exits and output are captured as printed, with temporary and worktree paths normalized by the probes themselves.
+
+## links
+
+Command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-002/links.mjs
+Exit: 0
+
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+{"source":"[empty]()","parsed":[{"type":"link","url":""}],"profile":[{"line":1,"href":"","kind":"relative-link"}],"rewritten":"empty","rewrittenLinks":[],"remaining":[],"outcome":"pass"}
+{"source":"[empty](<> \"title\")","parsed":[{"type":"link","url":""}],"profile":[{"line":1,"href":"","kind":"relative-link"}],"rewritten":"empty","rewrittenLinks":[],"remaining":[],"outcome":"pass"}
+{"source":"[empty][dest]\n\n[dest]: <>","parsed":[{"type":"definition","url":""}],"profile":[{"line":3,"href":"","kind":"relative-link"}],"rewritten":"[empty][dest]\n\n","rewrittenLinks":[],"remaining":[],"outcome":"pass"}
+{"source":"![empty]()","parsed":[{"type":"image","url":""}],"profile":[{"line":1,"href":"","kind":"relative-link"}],"rewritten":"empty","rewrittenLinks":[],"remaining":[],"outcome":"pass"}
+{"source":"[deep [one [two [three]]]](file.md)","parsed":[{"type":"link","url":"file.md"}],"profile":[{"line":1,"href":"file.md","kind":"relative-link"}],"rewritten":"[deep [one [two [three]]]](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file.md)","rewrittenLinks":[{"type":"link","url":"https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file.md"}],"remaining":[],"outcome":"pass"}
+{"source":"[split\nlabel](file.md)","parsed":[{"type":"link","url":"file.md"}],"profile":[{"line":2,"previousLine":1},{"line":1,"href":"file.md","kind":"relative-link"}],"rewritten":"[split\nlabel](file.md)","rewrittenLinks":[{"type":"link","url":"file.md"}],"remaining":[{"type":"link","url":"file.md"}],"outcome":"pass"}
+{"source":"[fragment](#anchor)","parsed":[{"type":"link","url":"#anchor"}],"profile":[{"line":1,"href":"#anchor","kind":"relative-link"}],"rewritten":"fragment","rewrittenLinks":[],"remaining":[],"outcome":"pass"}
+{"source":"[parent](../../../../../../escape.md)","parsed":[{"type":"link","url":"../../../../../../escape.md"}],"profile":[{"line":1,"href":"../../../../../../escape.md","kind":"relative-link"}],"rewritten":"parent","rewrittenLinks":[],"remaining":[],"outcome":"pass"}
+{"source":"[root](/absolute-repository.md)","parsed":[{"type":"link","url":"/absolute-repository.md"}],"profile":[{"line":1,"href":"/absolute-repository.md","kind":"relative-link"}],"rewritten":"root","rewrittenLinks":[],"remaining":[],"outcome":"pass"}
+{"source":"`[code](file.md)`","control":"unchanged and no relative-link failure","outcome":"pass"}
+{"source":"```md\n[code](file.md)\n```","control":"unchanged and no relative-link failure","outcome":"pass"}
+{"source":"    [code](file.md)","control":"unchanged and no relative-link failure","outcome":"pass"}
+{"source":"[absolute](https://example.invalid/file.md)","control":"unchanged and no relative-link failure","outcome":"pass"}
+{"source":"[protocol](//example.invalid/file.md)","control":"unchanged and no relative-link failure","outcome":"pass"}
+{"probe":"rendered-relative-link-class","failed":0}
+bounded-result {"name":"bounded-probe","durationMs":88,"slowestCases":[{"name":"bounded-probe","durationMs":88,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":1327464,"peakRssBytes":1802240,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T06:01:24.503Z","finishedAt":"2026-10-09T06:01:24.591Z","exitCode":0,"executed":true}
+
+## code-spans
+
+Command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-002/code-spans.mjs
+Exit: 0
+
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+{"source":"`` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal"}],"profile":[],"rewritten":"`` [sample](file.md) ` literal ``","outcome":"pass"}
+{"source":"`` literal ` [sample](file.md) ``","parsed":[{"type":"inlineCode","value":"literal ` [sample](file.md)"}],"profile":[],"rewritten":"`` literal ` [sample](file.md) ``","outcome":"pass"}
+{"source":"``` [sample](file.md) `` literal ```","parsed":[{"type":"inlineCode","value":"[sample](file.md) `` literal"}],"profile":[],"rewritten":"``` [sample](file.md) `` literal ```","outcome":"pass"}
+{"source":"`[sample](file.md)`","parsed":[{"type":"inlineCode","value":"[sample](file.md)"}],"profile":[],"rewritten":"`[sample](file.md)`","outcome":"pass"}
+{"source":"``[sample](file.md)``","parsed":[{"type":"inlineCode","value":"[sample](file.md)"}],"profile":[],"rewritten":"``[sample](file.md)``","outcome":"pass"}
+{"source":"    [sample](file.md)","parsed":[{"type":"code","value":"[sample](file.md)"}],"profile":[],"rewritten":"    [sample](file.md)","outcome":"pass"}
+{"probe":"code-span-preservation","failed":0}
+bounded-result {"name":"bounded-probe","durationMs":77,"slowestCases":[{"name":"bounded-probe","durationMs":77,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":1327464,"peakRssBytes":1802240,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T06:01:24.682Z","finishedAt":"2026-10-09T06:01:24.759Z","exitCode":0,"executed":true}
+
+## publish
+
+Command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-002/publish.mjs
+Exit: 0
+
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+worktree surface refusal preserved the checker report and mutated no remote
+release-notes publish validation fixtures passed
+GitHub body profile refused wrapped PR and release-note prose before publication
+publication refuses agent session trailers and URLs in titles and bodies before any push
+FAIL contribution-signoff e6fbbd35d845: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO
+PASS contribution-signoff d735bc5e01df: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff 0d57e16aade3: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff ba497c4faa44: observed matching author sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO
+PASS contribution-signoff ca9f28a5ff41: observed operator author; expected operator exemption (no sign-off required)
+contribution sign-off publication fixtures passed before any remote mutation
+{"probe":"actual-publication-in-local-forge-double","expectedCodeSpan":"`` [sample](file.md) ` literal ``","actualCodeSpan":"`` [sample](file.md) ` literal ``","emptyDestinationPublished":false}
+Advisory: Session authorship and output reads unavailable.
+Advisory: docs/evidence/WO-099/handoff.md lacks a self-review: line; write a line that starts `self-review: found <n>; fixed <n>; recorded <n>` with the fresh review's counts, then the worker or the separate-pass fallback. Completion records all the same.
+Advisory: docs/work-orders/WO-099-fixture.md declares no numbered acceptance criteria this completion can read; docs/evidence/WO-099/handoff.md is not checked.
+Advisory: Session authorship and output reads unavailable.
+Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.
+Advisory: No passing product gate at this code identity; the reviewer runs npm test before publication.
+Advisory: Session authorship and output reads unavailable.
+Advisory: docs/final-reviews/WO-099/FINAL-001.md: the report has no findings block; its finding counts are recorded as unmeasured. A report lists its findings in one block: a `<!-- dotln-findings:start -->` line, a JSON array of {"id": "F1", "route": "blocking|follow-up|operator", "class": "escape|integration|new-scope", "summary": "<one line>"} entries ([] for none) and a `<!-- dotln-findings:end -->` line. The final-review result records all the same.
+{"probe":"publication-code-span","exit":0}
+bounded-result {"name":"bounded-probe","durationMs":74922,"slowestCases":[{"name":"bounded-probe","durationMs":74922,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":134890944,"peakRssBytes":370802688,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T06:02:18.979Z","finishedAt":"2026-10-09T06:03:33.901Z","exitCode":0,"executed":true}

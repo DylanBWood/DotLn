@@ -1,0 +1,316 @@
+START {"label":"protected-submodule","command":["bash","scripts/test-release.sh","--case","submodule_force"],"startedAt":"2026-10-09T13:49:48.225Z"}
+PROGRESS release case submodule_force started
+PROGRESS release case submodule_force passed
+release tests passed
+
+END {"label":"protected-submodule","exit":0,"signal":null,"durationMs":3913,"finishedAt":"2026-10-09T13:49:52.138Z"}
+
+START {"label":"scratch-and-intake","command":["bash","scripts/test-release.sh","--case","material"],"startedAt":"2026-10-09T13:50:32.222Z"}
+PROGRESS release case material started
+WO-195 admitted 3 actual printer commands
+material handoff, preview, cleanup, preservation and publication retry passed
+record I/O preserves publication outcome and original errors
+PROGRESS release case material passed
+release tests passed
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (detached HEAD 7ca52b0)
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (detached HEAD d2ea117)
+Preparing worktree (detached HEAD d2ea117)
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+
+END {"label":"scratch-and-intake","exit":0,"signal":null,"durationMs":54726,"finishedAt":"2026-10-09T13:51:26.948Z"}
+
+START {"label":"fresh-markdown","command":["node","docs/evidence/WO-188/verifier-004/links.mjs"],"startedAt":"2026-10-09T13:51:30.546Z"}
+{"probe":"literal-preservation","preservationCount":72}
+{"probe":"rendered-destination","source":"[escaped](file\\(1\\).md)","target":"https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%281%29.md","outcome":"pass"}
+{"probe":"rendered-destination","source":"[entity](file&#40;1&#41;.md)","target":"https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%281%29.md","outcome":"pass"}
+{"probe":"rendered-destination","source":"[ampersand](a&amp;b.md)","target":"https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/a&b.md","outcome":"pass"}
+{"probe":"rendered-destination","source":"[underscore](file\\_1.md)","target":"https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file_1.md","outcome":"pass"}
+{"probe":"refusal-or-normalization","source":"[empty]()","output":"empty","remaining":[]}
+{"probe":"refusal-or-normalization","source":"[empty](<> \"title\")","output":"empty","remaining":[]}
+{"probe":"refusal-or-normalization","source":"![empty]()","output":"empty","remaining":[]}
+{"probe":"refusal-or-normalization","source":"[empty][r]\n\n[r]: <>","output":"[empty][r]\n\n","remaining":[]}
+{"probe":"refusal-or-normalization","source":"[nested [a [b]]](file(1).md)","output":"[nested [a [b]]](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%281%29.md)","remaining":[]}
+{"probe":"refusal-or-normalization","source":"[split\nlabel](file.md)","output":"[split\nlabel](file.md)","remaining":[{"line":1,"href":"file.md","kind":"relative-link"}]}
+{"probe":"refusal-or-normalization","source":"[space](<file name.md>)","output":"[space](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%20name.md)","remaining":[]}
+{"probe":"refusal-or-normalization","source":"[fragment](#a)","output":"fragment","remaining":[]}
+{"probe":"refusal-or-normalization","source":"[escape](../../../../../../outside.md)","output":"escape","remaining":[]}
+{"probe":"nested-null-destination","source":"Outer [a [b]() d](e.md).","before":[{"type":"link","url":""}],"output":"Outer [a b d](e.md).","after":[{"type":"link","url":"e.md"}],"failures":[{"line":1,"href":"e.md","kind":"relative-link"}]}
+{"probe":"nested-null-destination","source":"Outer [a [b](#fragment) d](e.md).","before":[{"type":"link","url":"#fragment"}],"output":"Outer [a b d](e.md).","after":[{"type":"link","url":"e.md"}],"failures":[{"line":1,"href":"e.md","kind":"relative-link"}]}
+{"probe":"nested-null-destination","source":"Outer [a [b](../../../../../../outside.md) d](e.md).","before":[{"type":"link","url":"../../../../../../outside.md"}],"output":"Outer [a b d](e.md).","after":[{"type":"link","url":"e.md"}],"failures":[{"line":1,"href":"e.md","kind":"relative-link"}]}
+{"probe":"nested-null-destination","source":"Outer [a ![b]() d](e.md).","before":[{"type":"link","url":"e.md"},{"type":"image","url":""}],"output":"Outer [a ![b]() d](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/e.md).","after":[{"type":"link","url":"https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/e.md"},{"type":"image","url":""}],"failures":[{"line":1,"href":"","kind":"relative-link"}]}
+{"probe":"fresh-markdown-attacks","outcome":"pass"}
+
+END {"label":"fresh-markdown","exit":0,"signal":null,"durationMs":93,"finishedAt":"2026-10-09T13:51:30.639Z"}
+
+START {"label":"actual-cr-publication","command":["node","docs/evidence/WO-188/verifier-003/publish.mjs"],"startedAt":"2026-10-09T13:52:22.108Z"}
+START {"label":"subject-and-review-coverage","command":["node","docs/evidence/WO-188/verifier-002/subject.mjs"],"startedAt":"2026-10-09T13:53:09.020Z"}
+{
+  "base": "28d32e26fade7b7d2fe6ed00c43707ad58b87f70",
+  "codeIdentity": "32a84b4680042faaa4980d10b2c36c6a1fcad5d85d1de6ab0483a015a6d2a637",
+  "registeredChanged": [
+    "package-lock.json",
+    "packages/compiler/package.json",
+    "packages/compiler/src/artifact-identity.ts",
+    "packages/compiler/src/harness.ts",
+    "packages/skeleton/package.json",
+    "packages/skeleton/src/gate-evidence.mjs",
+    "packages/skeleton/src/harness-host.ts",
+    "packages/skeleton/src/loadouts/contributor.ts",
+    "scripts/lib/paths.mjs"
+  ],
+  "judgedCount": 59,
+  "judgedChanged": [
+    "package-lock.json",
+    "packages/compiler/src/artifact-identity.ts",
+    "packages/skeleton/package.json"
+  ],
+  "judgedBehaviorUnchanged": true,
+  "executorRootBefore": 21255,
+  "executorRootAfter": 21009,
+  "ceilingsUnchanged": true,
+  "releaseTitleOccurrences": 1,
+  "regeneratedBodyProfile": "pass",
+  "coveringReviewRow": {
+    "checkId": "npm test",
+    "codeIdentity": "32a84b4680042faaa4980d10b2c36c6a1fcad5d85d1de6ab0483a015a6d2a637",
+    "treeHash": "e5ba27ea137e0b60cef880dea765a882269fd4c9",
+    "recordedAt": "2026-10-09T09:31:26.382Z",
+    "durationMs": 84193,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:32a84b4680042faaa4980d10b2c36c6a1fcad5d85d1de6ab0483a015a6d2a637:npm test",
+    "freshTasks": 2,
+    "reusedTasks": 91,
+    "requiredSuites": [
+      "build",
+      "format",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "evidence-sources",
+      "configuration-root",
+      "harness-probe",
+      "authority-evidence",
+      "harness-fixtures",
+      "harness",
+      "harness-evidence",
+      "plan-refutation",
+      "artifact-evidence",
+      "verification-evidence",
+      "feedback-evidence",
+      "runner-fixtures",
+      "process-debt",
+      "meta",
+      "registrations"
+    ],
+    "taskCount": 93
+  },
+  "coverageLocation": "worktree",
+  "required": [
+    "format",
+    "build",
+    "release-preparation",
+    "github-body",
+    "outward-lint",
+    "target-publish",
+    "vertical",
+    "license-fixtures",
+    "publication-fixtures",
+    "backup-intake",
+    "beacon-portability",
+    "checkpoint",
+    "worktree",
+    "worktree-integration",
+    "release",
+    "work-orders-fixtures",
+    "kernel",
+    "compiler",
+    "skeleton",
+    "console",
+    "browser-evidence",
+    "adjacent-queue",
+    "derived-orders",
+    "portfolio",
+    "codex-continuation",
+    "authority-grants",
+    "evidence-sources",
+    "configuration-root",
+    "harness-probe",
+    "authority-evidence",
+    "harness-fixtures",
+    "harness",
+    "harness-evidence",
+    "plan-refutation",
+    "artifact-evidence",
+    "verification-evidence",
+    "feedback-evidence",
+    "runner-fixtures",
+    "process-debt",
+    "meta",
+    "registrations"
+  ],
+  "missing": []
+}
+
+END {"label":"subject-and-review-coverage","exit":0,"signal":null,"durationMs":2531,"finishedAt":"2026-10-09T13:53:11.551Z"}
+
+worktree surface refusal preserved the checker report and mutated no remote
+release-notes publish validation fixtures passed
+GitHub body profile refused wrapped PR and release-note prose before publication
+publication refuses agent session trailers and URLs in titles and bodies before any push
+FAIL contribution-signoff 4a38b56b3e07: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO
+PASS contribution-signoff 955b86e13f12: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff c5178a6848c8: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff 9ee24f8a3aed: observed matching author sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO
+PASS contribution-signoff f11761feaa69: observed operator author; expected operator exemption (no sign-off required)
+contribution sign-off publication fixtures passed before any remote mutation
+{"probe":"actual-publication-CR-only-code","committedLiteral":"`` [crsample](cr-file.md) ` literal ``","publishedLiteralPreserved":true,"publishedCRSample":["`` [crsample](cr-file.md) ` literal ``","`` [crsample](cr-file.md) ` literal ``"],"emptyDestinationPublished":false,"originalMixedBacktickPreserved":true}
+Advisory: Session authorship and output reads unavailable.
+Advisory: docs/evidence/WO-099/handoff.md lacks a self-review: line; write a line that starts `self-review: found <n>; fixed <n>; recorded <n>` with the fresh review's counts, then the worker or the separate-pass fallback. Completion records all the same.
+Advisory: docs/work-orders/WO-099-fixture.md declares no numbered acceptance criteria this completion can read; docs/evidence/WO-099/handoff.md is not checked.
+Advisory: Session authorship and output reads unavailable.
+Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.
+Advisory: No passing product gate at this code identity; the reviewer runs npm test before publication.
+Advisory: Session authorship and output reads unavailable.
+Advisory: docs/final-reviews/WO-099/FINAL-001.md: the report has no findings block; its finding counts are recorded as unmeasured. A report lists its findings in one block: a `<!-- dotln-findings:start -->` line, a JSON array of {"id": "F1", "route": "blocking|follow-up|operator", "class": "escape|integration|new-scope", "summary": "<one line>"} entries ([] for none) and a `<!-- dotln-findings:end -->` line. The final-review result records all the same.
+{"probe":"actual-publication-CR-only-code","baseline":false,"lfControl":false,"exit":0}
+
+END {"label":"actual-cr-publication","exit":0,"signal":null,"durationMs":216676,"finishedAt":"2026-10-09T13:55:58.784Z"}
+
+START {"label":"full-diff-comment-inspection","command":["node","docs/evidence/WO-188/verifier-003/source-review.mjs"],"startedAt":"2026-10-09T13:56:37.615Z"}
+{"probe":"whole-diff-comment-isolation","trackedCodeFiles":141,"onlyComments":["corpus/harness/profile.mjs","corpus/harness/wo101-deferral-pins.test.mjs","packages/compiler/test/compiler.test.ts","packages/compiler/test/feedback.test.ts","packages/compiler/test/verification.test.ts","packages/console/src/collect.ts","packages/skeleton/fixtures/source-change-cli.mjs","packages/skeleton/fixtures/writer-cli.mjs","packages/skeleton/src/dotln.ts","packages/skeleton/src/local-model-transport.ts","packages/skeleton/src/mission-check-source.ts","packages/skeleton/src/resident-host.ts","packages/skeleton/src/vertical-host.ts","packages/skeleton/src/vertical-judgment-host.ts","packages/skeleton/src/vertical-resident.ts","packages/skeleton/src/worker-host.ts","packages/skeleton/test/codex-isolation-receipt.test.ts","packages/skeleton/test/feedback-edition.test.ts","packages/skeleton/test/local-model.test.ts","packages/skeleton/test/mission-check.fixture.ts","packages/skeleton/test/mission-check.test.ts","packages/skeleton/test/portfolio.test.ts","packages/skeleton/test/resident-actors.test.ts","packages/skeleton/test/resident.test.ts","packages/skeleton/test/scenario.test.ts","packages/skeleton/test/source-change-host.test.ts","packages/skeleton/test/verification.test.ts","packages/skeleton/test/writer.test.ts","scripts/benchmark-build-publication.mjs","scripts/check-registrations.mjs","scripts/evidence-mission-check.mjs","scripts/evidence-resident-actors.mjs","scripts/evidence-resident-binding.mjs","scripts/fixtures/authority-effect.mjs","scripts/fixtures/writing-worker-runtime.mjs","scripts/harness-live-smoke.mjs","scripts/harness-probe.mjs","scripts/host-guard.mjs","scripts/lib/authority-probe.mjs","scripts/lib/config.mjs","scripts/lib/control-actor.mjs","scripts/lib/control-time.mjs","scripts/lib/control.mjs","scripts/lib/dependencies.mjs","scripts/lib/derived-contract.mjs","scripts/lib/handoff-ledger.mjs","scripts/lib/machinery-coverage.mjs","scripts/lib/off-ramps.mjs","scripts/lib/plan-continuation.mjs","scripts/lib/target-repair.mjs","scripts/lib/vertical-judgment.mjs","scripts/lib/vertical-primitives.mjs","scripts/lib/vertical-runtime.mjs","scripts/lib/vertical-transport.mjs","scripts/lib/writing-worker-probe.mjs","scripts/meta.mjs","scripts/operator-control.mjs","scripts/probe-codex-effort.mjs","scripts/probes/gate-sandbox-race/loader.mjs","scripts/probes/gate-sandbox-race/race.mjs","scripts/probes/local-model-role-qualification.mjs","scripts/probes/local-model-transport-smoke.mjs","scripts/release-fixtures.mjs","scripts/resume.mjs","scripts/target-worker-smoke.mjs","scripts/test-control-segments.mjs","scripts/test-derived-orders.mjs","scripts/test-evidence-sources.mjs","scripts/test-fixture-temporary.mjs","scripts/test-observed-facts.mjs","scripts/test-off-ramps.mjs","scripts/test-portfolio.mjs","scripts/test-runner.test.mjs","scripts/test-target-publish.mjs","scripts/test-verifier-gate-claims.mjs","scripts/test-vertical-judgment.mjs","scripts/test-vertical.recovery.mjs","scripts/work-orders.mjs"],"codeChanges":[".claude/hooks/commit-msg.mjs",".claude/hooks/concurrent-work-requires-worktrees.mjs",".claude/hooks/finish.mjs",".claude/hooks/no-attribution.mjs",".claude/hooks/no-lint-type-disables-as-fixes.mjs",".claude/hooks/permission-denied.mjs",".claude/hooks/permissions.mjs",".claude/hooks/presence-posttooluse.mjs",".claude/hooks/presence-pretooluse.mjs",".claude/hooks/presence-stop.mjs",".claude/hooks/presence-userpromptsubmit.mjs",".claude/hooks/read-observer.mjs",".claude/hooks/session.mjs",".claude/hooks/write-observer.mjs","packages/compiler/src/artifact-identity.ts","packages/compiler/src/harness.ts","packages/console/src/console-client.ts","packages/console/test/collect.test.ts","packages/console/test/console-commands.test.ts","packages/skeleton/src/console-loopback.ts","packages/skeleton/src/gate-evidence.mjs","packages/skeleton/src/harness-host.ts","packages/skeleton/src/loadouts/contributor.ts","packages/skeleton/test/executor-supports.test.ts","scripts/docs-check.mjs","scripts/fixtures/copilot-probe-hook.mjs","scripts/lib/copilot-probe.mjs","scripts/lib/document-gate-stubs.mjs","scripts/lib/entropy-review.mjs","scripts/lib/github-body.mjs","scripts/lib/harness-prune.mjs","scripts/lib/intake-reconciliation.mjs","scripts/lib/lifecycle-evidence.mjs","scripts/lib/meta.mjs","scripts/lib/paths.mjs","scripts/lib/plan-failures.mjs","scripts/lib/planning-followups.mjs","scripts/lib/product-read-guard.mjs","scripts/lib/release-history.mjs","scripts/lib/release-preparation.mjs","scripts/lib/release-tags.mjs","scripts/lib/worktree-integration.mjs","scripts/lib/worktree-material.mjs","scripts/lib/worktree-removal.mjs","scripts/refute-plan.mjs","scripts/release.mjs","scripts/resident-bind.mjs","scripts/test-docs-check.mjs","scripts/test-entropy-review.mjs","scripts/test-github-body.mjs","scripts/test-harness-probe.mjs","scripts/test-harness.mjs","scripts/test-helper-reuse.mjs","scripts/test-host-guard.test.mjs","scripts/test-plan-refutation.mjs","scripts/test-process-debt.mjs","scripts/test-release-fixtures.mjs","scripts/test-release-preparation.mjs","scripts/test-resident-bind.mjs","scripts/test-runner.mjs","scripts/test-verification-review.mjs","scripts/test-worktree-integration.mjs","scripts/worktree.mjs"]}
+
+END {"label":"full-diff-comment-inspection","exit":0,"signal":null,"durationMs":3420,"finishedAt":"2026-10-09T13:56:41.035Z"}
+
+START {"label":"original-api-attacks","command":["node","docs/evidence/WO-188/verifier-001/api-attacks.mjs"],"startedAt":"2026-10-09T14:00:29.994Z"}
+{"probe":"link-syntax","source":"[plain](../evidence/WO-188/decisions.md)","parsedLinks":["../evidence/WO-188/decisions.md"],"profile":[{"line":1,"href":"../evidence/WO-188/decisions.md","kind":"relative-link"}],"rewritten":"[plain](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/evidence/WO-188/decisions.md)"}
+{"probe":"relative body link refused [plain](../evidence/WO-188/decisions.md)","outcome":"pass"}
+{"probe":"link-syntax","source":"[nested [label]](../evidence/WO-188/decisions.md)","parsedLinks":["../evidence/WO-188/decisions.md"],"profile":[{"line":1,"href":"../evidence/WO-188/decisions.md","kind":"relative-link"}],"rewritten":"[nested [label]](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/evidence/WO-188/decisions.md)"}
+{"probe":"relative body link refused [nested [label]](../evidence/WO-188/decisions.md)","outcome":"pass"}
+{"probe":"link-syntax","source":"[file](file(1).md)","parsedLinks":["file(1).md"],"profile":[{"line":1,"href":"file(1).md","kind":"relative-link"}],"rewritten":"[file](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%281%29.md)"}
+{"probe":"relative body link refused [file](file(1).md)","outcome":"pass"}
+{"probe":"comment order-lead","outcome":"pass"}
+{"probe":"comment finding-label","outcome":"pass"}
+{"probe":"comment finding-label","outcome":"pass"}
+{"probe":"comment decision-number","outcome":"pass"}
+{"probe":"comment none","outcome":"pass"}
+{"probe":"comment none","outcome":"pass"}
+{"probe":"comment order-lead","outcome":"pass"}
+{"probe":"malformed changed-file values","outcome":"pass"}
+{"probe":"two provenance keys","outcome":"pass"}
+{"probe":"typed quotation validation","outcome":"pass"}
+{"probe":"new tracked home path","outcome":"pass"}
+{"probe":"conflict marker <<<<<<< head","outcome":"pass"}
+{"probe":"conflict marker >>>>>>> branch","outcome":"pass"}
+{"probe":"conflict marker ||||||| base","outcome":"pass"}
+{"probe":"setext is not conflict","outcome":"pass"}
+{"probe":"stub preparation refusal","outcome":"pass"}
+{"probe":"saved outcome preparation refusal","outcome":"pass"}
+{"probe":"current-review-gate","identity":"32a84b4680042faaa4980d10b2c36c6a1fcad5d85d1de6ab0483a015a6d2a637","gate":{"checkId":"npm test","codeIdentity":"32a84b4680042faaa4980d10b2c36c6a1fcad5d85d1de6ab0483a015a6d2a637","recordedAt":"2026-10-09T09:31:26.382Z","durationMs":84193,"exitCode":0,"evidenceRef":"host-gate:32a84b4680042faaa4980d10b2c36c6a1fcad5d85d1de6ab0483a015a6d2a637:npm test"}}
+{"probe":"executor product gate covers current identity","outcome":"pass"}
+{"completed":true,"failed":0}
+
+END {"label":"original-api-attacks","exit":0,"signal":null,"durationMs":1345,"finishedAt":"2026-10-09T14:00:31.339Z"}
+
+START {"label":"github-body-fixtures","command":["node","--test","scripts/test-github-body.mjs"],"startedAt":"2026-10-09T14:00:57.869Z"}
+✔ GitHub prose profile case 1 (0.53025ms)
+✔ GitHub prose profile case 2 (0.604084ms)
+✔ GitHub prose profile case 3 (0.142708ms)
+✔ GitHub prose profile case 4 (0.307875ms)
+✔ GitHub prose profile case 5 (0.10875ms)
+✔ relative links are refused only when asked, and never inside code (16.727958ms)
+✔ relative links are written absolute at the reviewed revision; escaping ones and bare fragments become text (2.3535ms)
+✔ angle-bracket destinations, single-quoted titles and bracketed definitions are links too, written with an encoded path (1.499083ms)
+✔ valid link forms with nested brackets, balanced parentheses, padding, titles and escapes are rewritten; a link split across lines is refused by the parser-backed profile; indented code stays (3.014375ms)
+✔ an empty destination is a relative link: the profile refuses it and the rewriter writes the link's text (1.003ms)
+✔ code and raw HTML the parser renders keep their bytes whatever their backtick runs or line count; an escaped or closed backtick leaves a real link (2.453375ms)
+✔ code and raw HTML keep their bytes under every Markdown line ending, a link on such a line is rewritten, a leading byte-order mark stays, and the profile counts the lines the parser counts (2.325459ms)
+✔ a destination is the one the parser renders: backslash escapes and character references resolve before the path is encoded, a reference-spelled scheme stays absolute, and brackets the parser does not render as a link keep their bytes while the link inside them is rewritten (1.768042ms)
+✔ GitHub prose profile case 6 (0.201167ms)
+✔ GitHub prose profile case 7 (0.061458ms)
+✔ GitHub prose profile case 8 (0.051959ms)
+✔ GitHub prose profile case 9 (0.05825ms)
+✔ GitHub prose profile case 10 (0.051875ms)
+✔ GitHub prose profile case 11 (0.047083ms)
+✔ GitHub prose profile case 12 (0.03825ms)
+✔ WO-064 target pull request: title, escaped contract, matrix and diff (1.113958ms)
+✔ WO-182 AC1/AC2: fourteen evidenced rows resolve in the fixture artifact store and render through outward lint (1.817209ms)
+✔ WO-182 AC1: missing baseline/review name their events; declared nonvisual stories are not applicable (0.203042ms)
+✔ WO-182 carries minor independent review findings into known items without widening scope (0.364ms)
+✔ WO-182 refuses stale, failed, unbound, synthetic or self-reviewed evidence as readiness (1.920083ms)
+✔ WO-064 target pull request: refuses a matrix for another revision and missing artifacts (0.131167ms)
+✔ WO-064 target pull request: a same-head matrix speaks only for this WorkOrder's criteria (0.138042ms)
+✔ WO-064 target pull request: contract text naming launchpad vocabulary is refused by the lint (0.400333ms)
+✔ WO-184 criterion 8: build/lint not-applicable requires a reason and supplies no evidence (0.345292ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 91.178708
+
+END {"label":"github-body-fixtures","exit":0,"signal":null,"durationMs":124,"finishedAt":"2026-10-09T14:00:57.993Z"}
+
+START {"label":"markdown-followup-controls","command":["node","docs/evidence/WO-188/verifier-004/links.mjs"],"startedAt":"2026-10-09T14:02:02.465Z"}
+{"probe":"literal-preservation","preservationCount":72}
+{"probe":"rendered-destination","source":"[escaped](file\\(1\\).md)","target":"https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%281%29.md","outcome":"pass"}
+{"probe":"rendered-destination","source":"[entity](file&#40;1&#41;.md)","target":"https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%281%29.md","outcome":"pass"}
+{"probe":"rendered-destination","source":"[ampersand](a&amp;b.md)","target":"https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/a&b.md","outcome":"pass"}
+{"probe":"rendered-destination","source":"[underscore](file\\_1.md)","target":"https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file_1.md","outcome":"pass"}
+{"probe":"refusal-or-normalization","source":"[empty]()","output":"empty","remaining":[]}
+{"probe":"refusal-or-normalization","source":"[empty](<> \"title\")","output":"empty","remaining":[]}
+{"probe":"refusal-or-normalization","source":"![empty]()","output":"empty","remaining":[]}
+{"probe":"refusal-or-normalization","source":"[empty][r]\n\n[r]: <>","output":"[empty][r]\n\n","remaining":[]}
+{"probe":"refusal-or-normalization","source":"[nested [a [b]]](file(1).md)","output":"[nested [a [b]]](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%281%29.md)","remaining":[]}
+{"probe":"refusal-or-normalization","source":"[split\nlabel](file.md)","output":"[split\nlabel](file.md)","remaining":[{"line":1,"href":"file.md","kind":"relative-link"}]}
+{"probe":"refusal-or-normalization","source":"[space](<file name.md>)","output":"[space](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%20name.md)","remaining":[]}
+{"probe":"refusal-or-normalization","source":"[fragment](#a)","output":"fragment","remaining":[]}
+{"probe":"refusal-or-normalization","source":"[escape](../../../../../../outside.md)","output":"escape","remaining":[]}
+{"probe":"nested-null-destination","source":"Outer [a [b]() d](e.md).","before":[{"type":"link","url":""}],"output":"Outer [a b d](e.md).","after":[{"type":"link","url":"e.md"}],"failures":[{"line":1,"href":"e.md","kind":"relative-link"}]}
+{"probe":"nested-null-destination","source":"Outer [a [b](#fragment) d](e.md).","before":[{"type":"link","url":"#fragment"}],"output":"Outer [a b d](e.md).","after":[{"type":"link","url":"e.md"}],"failures":[{"line":1,"href":"e.md","kind":"relative-link"}]}
+{"probe":"nested-null-destination","source":"Outer [a [b](../../../../../../outside.md) d](e.md).","before":[{"type":"link","url":"../../../../../../outside.md"}],"output":"Outer [a b d](e.md).","after":[{"type":"link","url":"e.md"}],"failures":[{"line":1,"href":"e.md","kind":"relative-link"}]}
+{"probe":"nested-null-destination","source":"Outer [a ![b]() d](e.md).","before":[{"type":"link","url":"e.md"},{"type":"image","url":""}],"output":"Outer [a ![b]() d](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/e.md).","after":[{"type":"link","url":"https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/e.md"},{"type":"image","url":""}],"failures":[{"line":1,"href":"","kind":"relative-link"}]}
+{"probe":"fresh-markdown-attacks","outcome":"pass"}
+
+END {"label":"markdown-followup-controls","exit":0,"signal":null,"durationMs":88,"finishedAt":"2026-10-09T14:02:02.553Z"}
+
+HANDOFF CHECKS
+npm run format:check: exit 0, all matched files use Prettier code style; repeated after correcting the new verification note.
+First npm run test:docs: exit 1; 16 passed, 15 failed, 17 fresh tasks, 40.42 seconds. docs-check reported two missing e.md links on docs/lineage/decisions-index.md:1752 because the new D046 probe examples were rendered as links. Corrected those examples to inline code in the unfiled decision, ran npm run meta successfully, and read the regenerated index. This is a verification-record authoring correction, not a subject defect.
+Second npm run test:docs: exit 0; 31 passed, 0 failed, 31 fresh tasks, 123.66 seconds. All evidence editions, harness checks and document fixtures passed. A host-lane wait was observed before format began.
+Bounded-process correction: the 2531 ms read-only subject-and-review-coverage inspection overlapped the still-running actual-cr-publication probe. This violated the one-probe-at-a-time instruction; the remaining bounded probes were serialized, and all had completed before the handoff checks.
+First verification-result pass attempt: exit 1 before recording a transition; full-workspace whitespace check reported docs/verifications/WO-188/VER-004.md:132: new blank line at EOF. Removed the extra blank line in the allocated, unfiled report. No subject implementation changed.
+
+

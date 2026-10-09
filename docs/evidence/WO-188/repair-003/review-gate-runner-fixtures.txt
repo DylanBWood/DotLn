@@ -1,0 +1,37 @@
+# WO-188 repair-003: one runner-fixtures failure under the full review gate, not reproduced alone
+
+The first npm test -- --review after the repair (started 2026-10-09T08:59:31Z) recorded 40 suites passed and one failed. The failing case is the runner's own format-preflight fixture; its fourth nested gate exited 1 as the case expects after the README edit, but the format task's captured output was empty where the file name was expected. The excerpt is the case's diagnostic as the gate printed it, with home paths replaced. The suite then passed alone.
+
+## npm test -- --review (first run)
+
+  [runner-fixtures] not ok 128 - format preflight stops plain and review before product tasks, and stays fresh across document edits
+  [runner-fixtures]   ---
+  [runner-fixtures]   duration_ms: 1861.890875
+  [runner-fixtures]   type: 'test'
+  [runner-fixtures]   location: '<worktree>/scripts/test-runner.test.mjs:5271:1'
+  [runner-fixtures]   failureType: 'testCodeFailure'
+  [runner-fixtures]   error: |-
+  [runner-fixtures]     The input did not match the regular expression /README\.md/. Input:
+  [runner-fixtures]     
+  [runner-fixtures]     ''
+  [runner-fixtures]     
+  [runner-fixtures]   code: 'ERR_ASSERTION'
+  [runner-fixtures]   name: 'AssertionError'
+  [runner-fixtures]   expected:
+  [runner-fixtures]   actual: ''
+  [runner-fixtures]   operator: 'match'
+  [runner-fixtures]   stack: |-
+  [runner-fixtures]     Test.fn (file://<worktree>/scripts/test-runner.test.mjs:5352:12)
+  [runner-fixtures]     async Test.run (node:internal/test_runner/test:1409:7)
+  [runner-fixtures]     async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  [runner-fixtures]   ...
+
+FAIL runner-fixtures 72.51 s
+npm test: 40 passed; 1 failed; 1469.27 s; 93 fresh tasks
+
+## npm test -- --only runner-fixtures
+
+Exit: 0
+
+PASS build 0.65 s
+PASS runner-fixtures 70.03 s

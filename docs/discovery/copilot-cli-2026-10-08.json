@@ -1,0 +1,1237 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-08",
+  "harness": "copilot-cli",
+  "installedVersion": "1.0.89",
+  "launchesStarted": 1,
+  "priorLaunches": 10,
+  "rows": [
+    {
+      "id": "P11",
+      "trust": true,
+      "forms": [
+        "claude"
+      ],
+      "permissions": "tools",
+      "model": "default",
+      "failureEvent": {
+        "registered": [
+          "PostToolUseFailure",
+          "PermissionDenied"
+        ],
+        "invoked": {
+          "PostToolUseFailure": 1,
+          "PermissionDenied": 0
+        },
+        "otherEventsInvoked": 30,
+        "failingCommandStarted": true,
+        "failingCommandMarkedFailed": false
+      },
+      "trustSource": "disposable config.json",
+      "observedAt": "2026-10-08T23:16:55.731Z",
+      "cliVersion": "1.0.89",
+      "exitCode": 0,
+      "timedOut": false,
+      "spawnError": null,
+      "durationMs": 33897,
+      "authenticationUnavailable": false,
+      "invalidLogLines": 0,
+      "worktreeMatches": true,
+      "events": [
+        {
+          "registration": "claude",
+          "event": "UserPromptSubmit",
+          "tool": null,
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "prompt": "string"
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "SessionStart",
+          "tool": null,
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "source": "string",
+            "initial_prompt": "string"
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PreToolUse",
+          "tool": "skill",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "skill": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PostToolUse",
+          "tool": "skill",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "skill": "string"
+            },
+            "tool_result": {
+              "result_type": "string",
+              "text_result_for_llm": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PreToolUse",
+          "tool": "Read",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "path": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PreToolUse",
+          "tool": "Read",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "path": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PostToolUseFailure",
+          "tool": "Read",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "path": "string"
+            },
+            "error": "string"
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PostToolUse",
+          "tool": "Read",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "path": "string"
+            },
+            "tool_result": {
+              "result_type": "string",
+              "text_result_for_llm": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PreToolUse",
+          "tool": "other",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "pattern": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PreToolUse",
+          "tool": "other",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "pattern": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PostToolUse",
+          "tool": "other",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "pattern": "string"
+            },
+            "tool_result": {
+              "result_type": "string",
+              "text_result_for_llm": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PostToolUse",
+          "tool": "other",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "pattern": "string"
+            },
+            "tool_result": {
+              "result_type": "string",
+              "text_result_for_llm": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PreToolUse",
+          "tool": "Read",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "path": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PreToolUse",
+          "tool": "Read",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "path": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PostToolUse",
+          "tool": "Read",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "path": "string"
+            },
+            "tool_result": {
+              "result_type": "string",
+              "text_result_for_llm": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PostToolUse",
+          "tool": "Read",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "path": "string"
+            },
+            "tool_result": {
+              "result_type": "string",
+              "text_result_for_llm": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PreToolUse",
+          "tool": "Edit",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "path": "string",
+              "old_str": "string",
+              "new_str": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PreToolUse",
+          "tool": "Write",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "path": "string",
+              "file_text": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PostToolUse",
+          "tool": "Edit",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "path": "string",
+              "old_str": "string",
+              "new_str": "string"
+            },
+            "tool_result": {
+              "result_type": "string",
+              "text_result_for_llm": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PostToolUse",
+          "tool": "Write",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "path": "string",
+              "file_text": "string"
+            },
+            "tool_result": {
+              "result_type": "string",
+              "text_result_for_llm": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PreToolUse",
+          "tool": "Bash",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "command": "string",
+              "description": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PostToolUse",
+          "tool": "Bash",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "command": "string",
+              "description": "string"
+            },
+            "tool_result": {
+              "result_type": "string",
+              "text_result_for_llm": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PreToolUse",
+          "tool": "Bash",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "command": "string",
+              "description": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": "claude-deny",
+          "decision": "deny",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PreToolUse",
+          "tool": "Bash",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "command": "string",
+              "description": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": "claude-error",
+          "decision": "error",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PreToolUse",
+          "tool": "Bash",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "command": "string",
+              "description": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": "native-deny",
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PostToolUse",
+          "tool": "Bash",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "command": "string",
+              "description": "string"
+            },
+            "tool_result": {
+              "result_type": "string",
+              "text_result_for_llm": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": "native-deny",
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PreToolUse",
+          "tool": "Bash",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "command": "string",
+              "description": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": "native-error",
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PostToolUse",
+          "tool": "Bash",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "command": "string",
+              "description": "string"
+            },
+            "tool_result": {
+              "result_type": "string",
+              "text_result_for_llm": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": "native-error",
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PreToolUse",
+          "tool": "Bash",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "command": "string",
+              "description": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "PostToolUse",
+          "tool": "Bash",
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "tool_name": "string",
+            "tool_input": {
+              "command": "string",
+              "description": "string"
+            },
+            "tool_result": {
+              "result_type": "string",
+              "text_result_for_llm": "string"
+            }
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        },
+        {
+          "registration": "claude",
+          "event": "Stop",
+          "tool": null,
+          "fields": {
+            "hook_event_name": "string",
+            "session_id": "string",
+            "timestamp": "string",
+            "cwd": "string",
+            "transcript_path": "string",
+            "stop_reason": "string",
+            "stop_hook_active": "boolean"
+          },
+          "cwdMatches": true,
+          "hookCwdMatches": true,
+          "claudeProjectDirMatches": true,
+          "copilotProjectDirMatches": true,
+          "sessionVariablePresent": false,
+          "sessionVariableMatches": false,
+          "childIdentityPresent": false,
+          "attempt": null,
+          "decision": "observe",
+          "owner": {
+            "source": "CLAUDE_PID",
+            "alive": true
+          }
+        }
+      ],
+      "maxInvocationsPerCorrelatedEvent": 1,
+      "uncorrelatedInvocations": 0,
+      "attempts": {
+        "claude-deny": {
+          "hookAttempts": 1,
+          "effectAbsent": true,
+          "toolFailed": true,
+          "denialObserved": true
+        },
+        "claude-error": {
+          "hookAttempts": 1,
+          "effectAbsent": true,
+          "toolFailed": true,
+          "denialObserved": true
+        },
+        "native-deny": {
+          "hookAttempts": 0,
+          "effectAbsent": false,
+          "toolFailed": false,
+          "denialObserved": false
+        },
+        "native-error": {
+          "hookAttempts": 0,
+          "effectAbsent": false,
+          "toolFailed": false,
+          "denialObserved": false
+        }
+      },
+      "fixtureEdited": true,
+      "fixtureCreated": true,
+      "shellIdentity": {
+        "sessionVariablePresent": true,
+        "claudeProjectDirMatches": false
+      },
+      "instructionObserved": true,
+      "skillObserved": true,
+      "instructionLoadedOnce": "untested",
+      "promptContext": {
+        "claude": false,
+        "native": false
+      },
+      "stopMessageInOutput": {
+        "claude": false,
+        "native": false
+      },
+      "modelChanges": [
+        {
+          "model": "claude-sonnet-5",
+          "effort": null,
+          "source": "startup",
+          "fields": {
+            "source": "string",
+            "contextTier": "null",
+            "newModel": "string",
+            "reasoningEffort": "null"
+          }
+        }
+      ],
+      "eventShapes": {
+        "session.start": {
+          "sessionId": "string",
+          "version": "number",
+          "producer": "string",
+          "copilotVersion": "string",
+          "startTime": "string",
+          "contextTier": "null",
+          "sessionLimits": {
+            "maxAiCredits": "number"
+          },
+          "context": {
+            "cwd": "string",
+            "gitRoot": "string",
+            "branch": "string"
+          },
+          "alreadyInUse": "boolean",
+          "remoteSteerable": "boolean"
+        },
+        "session.model_change": {
+          "source": "string",
+          "contextTier": "null",
+          "newModel": "string",
+          "reasoningEffort": "null"
+        },
+        "session.shutdown": {
+          "shutdownType": "string",
+          "totalPremiumRequests": "number",
+          "totalNanoAiu": "number",
+          "tokenDetails": {
+            "input": {
+              "tokenCount": "number"
+            },
+            "cache_read": {
+              "tokenCount": "number"
+            },
+            "cache_write": {
+              "tokenCount": "number"
+            },
+            "output": {
+              "tokenCount": "number"
+            }
+          },
+          "totalApiDurationMs": "number",
+          "sessionStartTime": "number",
+          "eventsFileSizeBytes": "number",
+          "codeChanges": {
+            "linesAdded": "number",
+            "linesRemoved": "number",
+            "filesModified": [
+              "string"
+            ]
+          },
+          "modelMetrics": {
+            "claude-sonnet-5": {
+              "requests": {
+                "count": "number",
+                "cost": "number"
+              },
+              "usage": {
+                "inputTokens": "number",
+                "outputTokens": "number",
+                "cacheReadTokens": "number",
+                "cacheWriteTokens": "number",
+                "reasoningTokens": "number"
+              },
+              "totalNanoAiu": "number",
+              "tokenDetails": {
+                "input": {
+                  "tokenCount": "number"
+                },
+                "cache_read": {
+                  "tokenCount": "number"
+                },
+                "cache_write": {
+                  "tokenCount": "number"
+                },
+                "output": {
+                  "tokenCount": "number"
+                }
+              }
+            }
+          },
+          "agentMetrics": {
+            "main": {
+              "totalApiDurationMs": "number",
+              "totalNanoAiu": "number",
+              "modelMetrics": {
+                "claude-sonnet-5": {
+                  "requests": {
+                    "count": "number",
+                    "cost": "number"
+                  },
+                  "usage": {
+                    "inputTokens": "number",
+                    "outputTokens": "number",
+                    "cacheReadTokens": "number",
+                    "cacheWriteTokens": "number",
+                    "reasoningTokens": "number"
+                  },
+                  "totalNanoAiu": "number",
+                  "tokenDetails": {
+                    "input": {
+                      "tokenCount": "number"
+                    },
+                    "cache_read": {
+                      "tokenCount": "number"
+                    },
+                    "cache_write": {
+                      "tokenCount": "number"
+                    },
+                    "output": {
+                      "tokenCount": "number"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "currentModel": "string",
+          "currentTokens": "number",
+          "systemTokens": "number",
+          "conversationTokens": "number",
+          "toolDefinitionsTokens": "number"
+        },
+        "session.usage_checkpoint": {
+          "totalNanoAiu": "number",
+          "totalPremiumRequests": "number",
+          "modelCacheState": [
+            {
+              "modelId": "string",
+              "cacheExpiresAt": "string",
+              "cacheTtlSeconds": "number"
+            }
+          ],
+          "promptCacheBreakState": [
+            {
+              "conversation": "string",
+              "models": {
+                "claude-sonnet-5": {
+                  "model": "string",
+                  "vendor": "string",
+                  "model_call_id": "string",
+                  "request_id": "string",
+                  "github_request_id": "string",
+                  "api_endpoint": "string",
+                  "transport": "string",
+                  "session_mode": "string",
+                  "reasoning_effort": "string",
+                  "initiator": "string",
+                  "tool_count": "number",
+                  "tool_tokens": "number",
+                  "tools": [
+                    {
+                      "name": "string",
+                      "schema_hash": "string",
+                      "safe": "boolean"
+                    }
+                  ],
+                  "tools_truncated": "number",
+                  "system_segments": [
+                    {
+                      "segment": "string",
+                      "hash": "string",
+                      "tokens": "number"
+                    }
+                  ],
+                  "conversation": {
+                    "message_count": "number",
+                    "points": [
+                      {
+                        "index": "number",
+                        "hash": "string"
+                      }
+                    ]
+                  },
+                  "cache_config": {
+                    "arm": "string",
+                    "marks_system_prompt": "boolean",
+                    "marks_conversation": "boolean",
+                    "advisor_tool": "boolean",
+                    "incremental_input": "boolean",
+                    "system_prompt_layout": "string"
+                  },
+                  "prompt_tokens": "number",
+                  "cache_read": "number",
+                  "cache_write": "number",
+                  "cache_details_reported": "boolean",
+                  "frontier_tokens": "number",
+                  "frontier_source": "string",
+                  "ttl_seconds": "number",
+                  "cache_expires_at": "string",
+                  "completed_at": "string"
+                }
+              },
+              "lastActiveModel": "string",
+              "pendingRewriteSources": []
+            }
+          ]
+        }
+      },
+      "approvalPrompts": "unknown",
+      "aiCredits": null,
+      "creditSource": "unavailable",
+      "creditScope": "unknown",
+      "creditObservedAt": null,
+      "rawTranscriptRetained": false,
+      "operatorSettingsWritten": false
+    }
+  ]
+}

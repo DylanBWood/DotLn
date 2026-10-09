@@ -1,0 +1,2427 @@
+{
+  "schemaVersion": 1,
+  "dispatch": "resume: next; WO-188 item 13",
+  "source": "executor reading of the widened operator-word findings (decision text, evidence, rejected reasons, correction fields, operator-named fields, report and planning paragraphs) before and after the paraphrases",
+  "candidateCutoff": "2026-10-08T22:10:00.000Z",
+  "recordedAt": "2026-10-08T22:00:36.570Z",
+  "candidatesBefore": 342,
+  "candidatesAfter": 334,
+  "paraphrased": 8,
+  "readerFix": 1,
+  "retained": 334,
+  "baselineKeysKept": 34,
+  "baselineKeysAdded": 300,
+  "currentAdvisories": 0,
+  "followup": "FUP-71fc2efc208f597a",
+  "records": [
+    {
+      "file": "docs/work-orders/WO-014-approval-burden-contract.md",
+      "record": "provenance",
+      "fingerprint": "5a35c7e4df62cba0b34269d4472760e1faa6ccb389f3278c25353018f0d1f226",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/work-orders/WO-019-effort-truth.md",
+      "record": "provenance",
+      "fingerprint": "21ae36549893ed6ecadcd614b2762bd295a91c2d1655045f84b5a2ff294c426f",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/work-orders/WO-053-first-external-source-change.md",
+      "record": "provenance",
+      "fingerprint": "6322ced5231f8f062f4cf5357509ce5e606fd2719c4c325c832feadbf4367587",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/work-orders/WO-059-playwright-evidence-adapter.md",
+      "record": "provenance",
+      "fingerprint": "9520046cbda9d8d44a09a8f0da646f83f1268d0f98f8b2c7d2268eb9a34db6fd",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/work-orders/WO-061-story-contract-compile.md",
+      "record": "provenance",
+      "fingerprint": "a31a6a634436d96e2da718a6b2837ac260a0776bde6d857780c179bcaf1f3537",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/work-orders/WO-065-pull-request-state-observation.md",
+      "record": "provenance",
+      "fingerprint": "6e8a464eee89c9e4105bd8a7415c8ba0969e978ba5dfef02c2b12be2b923ebb7",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/work-orders/WO-079-worktree-sync.md",
+      "record": "provenance",
+      "fingerprint": "2a43bfbf27f313012cd2517afd3bbd08e8da1db81e1ade5c98ac1dc461070d4f",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/work-orders/WO-086-generated-release-history.md",
+      "record": "provenance",
+      "fingerprint": "6ef4f2b5f4e2059a81ae22f5856415723debaaaefb76fdffca89c64ea367d076",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/work-orders/WO-091-multi-active-link-groups.md",
+      "record": "provenance",
+      "fingerprint": "ff0d2fd11d95885cbf65e304b30dc1e5dc174d5f086f7835308d4539336c7f56",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/work-orders/WO-100-preauthorized-portfolio.md",
+      "record": "provenance",
+      "fingerprint": "46a4d90a09db6b32dff84b0374f1a68911b2373fa5d249952774fdc5bb06881b",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/work-orders/WO-130-declared-suite-inputs-replica.md",
+      "record": "provenance",
+      "fingerprint": "802a27bab2dcf6a70dc6e053a497f43a25a988e8c4cae231494428360214a923",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/work-orders/WO-144-outside-project-write-grant.md",
+      "record": "provenance",
+      "fingerprint": "2d0d8de225722af3b4ddcca0302b7f38276298991ea6c87b9895b437b8aca29a",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/work-orders/WO-145-tinkerer-economy-experiment.md",
+      "record": "provenance",
+      "fingerprint": "8d48666ed333c9efdf8ae1411f2d0c00d9511eae3babecbea107a0256a44adae",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/work-orders/WO-151-entropy-reducer-dispatch.md",
+      "record": "provenance",
+      "fingerprint": "53a80a4260d5295d46bad6fbd8060f302feb99071f251d69efb87c46283ebef5",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/work-orders/WO-160-wo111-machinery-followups.md",
+      "record": "provenance",
+      "fingerprint": "9d4da68f8708c7ecf68fb0e880b679a421142eb3a4b80c01d9224be3399aaf54",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/work-orders/WO-162-in-unit-helper-reuse.md",
+      "record": "provenance",
+      "fingerprint": "38266efb1e24825daec1ec0d2b71285e3b509cd75766e7c46f61c402e08d91e0",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/work-orders/WO-178-the-record-holds-what-the-operator-sees.md",
+      "record": "provenance",
+      "fingerprint": "752c140fc3c489ea38361ad3b037a40eb5ac69963a4aeb459c8bda7a70915791",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-044/decisions.md",
+      "record": "WO-044-D016",
+      "fingerprint": "c24fbdf8cd346105d789b5205a9fb1e5aba58a3fc4e50234722b039f497d940d",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-044/decisions.md",
+      "record": "WO-044-D016/evidence-4",
+      "fingerprint": "576af4c5b091c266506440afda5762da736c7f8ace2f70d54b7a37643f5bc9bf",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-054/decisions.md",
+      "record": "WO-054-D007/misread",
+      "fingerprint": "7ae96357da17765e19432b40fd6f3ac98a4ce3dcb3a28b1ea93de0982131e493",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-056/decisions.md",
+      "record": "WO-056-D008",
+      "fingerprint": "edf67ff547cb3fd1b411974830f03cae4157255500c771a1622abfdab1abed30",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-070/decisions.md",
+      "record": "WO-070-D009/evidence-1",
+      "fingerprint": "58521136f237f443e1fbd57d93e3265175cf1cea3e3a7b9c268d238e2500cba3",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-070/decisions.md",
+      "record": "WO-070-D010",
+      "fingerprint": "7089d64fb2e2278c10dc1bcd87f872d2662b099372b6d439ce26315462ce433f",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-070/decisions.md",
+      "record": "WO-070-D010/evidence-1",
+      "fingerprint": "147f6d60f27d829e813aa52ba9f451870c3a5b5c0c1d452324e6af606a2a5882",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-086/decisions.md",
+      "record": "WO-086-D004/evidence-4",
+      "fingerprint": "33bf59dafd1c5fc0415e377a135155f7b7e83987d7aedd94df823d815ad1e042",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-086/decisions.md",
+      "record": "WO-086-D005/evidence-4",
+      "fingerprint": "cfa75c31bbe26d790dccb4189e7320b1a5c9f9815a9e346a3dc28a745a0eb650",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-086/decisions.md",
+      "record": "WO-086-D016/operatorAuthorization",
+      "fingerprint": "e1145ac04bb0a88f1332d43a65cb6a868b72075ee20aba9ac5716f476b3eed54",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-087/decisions.md",
+      "record": "WO-087-D008/operatorAuthorization",
+      "fingerprint": "5999102369988d7df4e775b4e40e44fd4ca49d3514c977c3fcfea70a6e06306a",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-087/decisions.md",
+      "record": "WO-087-D010/operatorAuthorization",
+      "fingerprint": "93a7aaca1ce540eeab5ebc42ed83615bd6d889fa073281d2b717ebd599103c2e",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-100/decisions.md",
+      "record": "WO-100-D007/evidence-1",
+      "fingerprint": "487484b8b2938ad5362e2317be7e7b9bb74cfeac34d676263a28ae294836f921",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-100/decisions.md",
+      "record": "WO-100-D017/evidence-5",
+      "fingerprint": "5368b6877588732d6463bf4a21ba52b2aba3d5c1b4ec61755c486be1a5820fc4",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-102/decisions.md",
+      "record": "WO-102-D009/evidence-3",
+      "line": 706,
+      "fingerprint": "f3fef750296ac5e2ea23e3d38446021319960d7dea74f13d06ece3be4880e6be",
+      "disposition": "paraphrased",
+      "reason": "Reworded the attributed operator text in place, keeping its instruction, authorization and citations; no quotation remains."
+    },
+    {
+      "file": "docs/evidence/WO-102/decisions.md",
+      "record": "WO-102-D010/evidence-2",
+      "line": 747,
+      "fingerprint": "7fd1e9bbb2322a76a7b2df6eb07043fd9cb205f79c498ac5a21bf27ec0170631",
+      "disposition": "paraphrased",
+      "reason": "Reworded the attributed operator text in place, keeping its instruction, authorization and citations; no quotation remains."
+    },
+    {
+      "file": "docs/evidence/WO-111/decisions.md",
+      "record": "WO-111-D011/evidence-2",
+      "fingerprint": "09de3b7042d7a214943cd48157bd38e6f735b5441eeb4bbf2e0488db4490bb53",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-112/decisions.md",
+      "record": "WO-112-D047/evidence-1",
+      "fingerprint": "ca0dac52634940ea33b250b8aa34ad285288d562ad57cc64dee655d7f83e3693",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-112/decisions.md",
+      "record": "WO-112-D062",
+      "line": 2278,
+      "fingerprint": "e113899629ac0345cfabbda3b8a71f7a05ff84de8d4bf7f27453b29a0f84c992",
+      "disposition": "paraphrased",
+      "reason": "Reworded the attributed operator text in place, keeping its instruction, authorization and citations; no quotation remains."
+    },
+    {
+      "file": "docs/evidence/WO-112/decisions.md",
+      "record": "WO-112-D067",
+      "line": 2413,
+      "fingerprint": "88c365ef1027b83bd7abcaa5dea2c99200b54a3f589aede99182ad8608173e26",
+      "disposition": "paraphrased",
+      "reason": "Reworded the attributed operator text in place, keeping its instruction, authorization and citations; no quotation remains."
+    },
+    {
+      "file": "docs/evidence/WO-117/decisions.md",
+      "record": "WO-117-D005/evidence-1",
+      "fingerprint": "86f2a1ab164ae4d0bb4dd8c0598d66834ee6be80c4db1a2f887fd0e938e6dfb9",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-123/decisions.md",
+      "record": "WO-123-D024/evidence-7",
+      "fingerprint": "98aa8817e340b9fe498835c38f045646b0f699a37cb48640d23c3bf6a870931b",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-130/decisions.md",
+      "record": "WO-130-D013/evidence-1",
+      "fingerprint": "9c5d6129bbc23f6df1c9cdc5e8d2b1da9a2f00106cb30cd5ae664a08836a7aed",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-135/decisions.md",
+      "record": "WO-135-D003",
+      "fingerprint": "98af9e828bdc23f05568b1d4421831dd73ebd4953638e69e8cee16770cabc64f",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-135/decisions.md",
+      "record": "WO-135-D006",
+      "fingerprint": "5cffb4cec9fb20b9efa2fe1cdee7413a4bb29fcab6c7c4d42f7637379fa3b8be",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-140/decisions.md",
+      "record": "WO-140-D005/evidence-4",
+      "line": 101,
+      "fingerprint": "3794194066a41e0c2a032429e3474059387e1129ba3af3ecdb4c256a7859f22c",
+      "disposition": "paraphrased",
+      "reason": "Reworded the attributed operator text in place, keeping its instruction, authorization and citations; no quotation remains."
+    },
+    {
+      "file": "docs/evidence/WO-143/decisions.md",
+      "record": "WO-143-D003",
+      "fingerprint": "a9eef0675df05689741c055b08af398c713507b0e8a69d6f27c70b6c5eaad84a",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-146/decisions.md",
+      "record": "WO-146-D012",
+      "fingerprint": "803ab1fcc53eaed8ae62b837a38b10a2b9472e41d5fd316b49b15eadf81bf90f",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-148/decisions.md",
+      "record": "WO-148-D003/evidence-4",
+      "fingerprint": "2d3a3d5ba35e8f277d77f98f8b49363bb778bea3e5b82b553acb37720af1dd02",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-150/decisions.md",
+      "record": "WO-150-D006",
+      "fingerprint": "8a8d3b6c5b5ff8275491981fb0f9f294cdd3aba759a3b6286ab5521718d9bb04",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-150/decisions.md",
+      "record": "WO-150-D007",
+      "fingerprint": "ac1186d3cdd7af6e3ca996270d157f736519c1ff58620d915a04b060b2e3c23f",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-152/decisions.md",
+      "record": "WO-152-D005",
+      "fingerprint": "7882e56aaa086d3656e367eb1f5bacdf4d2fa8bf6dcd317ec4d2ea4d84c15aec",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-152/decisions.md",
+      "record": "WO-152-D006/evidence-1",
+      "fingerprint": "28af8c2e55efcdfd503a9dfaa7e6021222a2c52b565d3ce3db6ccc854baaa965",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-152/decisions.md",
+      "record": "WO-152-D008/evidence-5",
+      "fingerprint": "ee4c0611df51f76638e6bf480293832ca675e9fbcfc13ad46e1ce79810710c6d",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-154/decisions.md",
+      "record": "WO-154-D004",
+      "fingerprint": "677b3a04e726c0ad42b4b6c4a596bcb080d9dd24e1cdc061ff3cf3c26806c04d",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-154/decisions.md",
+      "record": "WO-154-D005",
+      "fingerprint": "c1c7c5efefbb7ef3a9953905b66d24e69e4c00c7fdda07197782dde9d164a534",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-157/decisions.md",
+      "record": "WO-157-D005/rejected-1.reason",
+      "fingerprint": "e957615dfd0b86cea913a2ad594084dadae8452c70267d86251dc72f041c546f",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-158/decisions.md",
+      "record": "WO-158-D013",
+      "fingerprint": "fc5d1d8387cf5d3699a179cb265ae99f0b7c06553a3d0ae5c11b49f3b7c3c55b",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-161/decisions.md",
+      "record": "WO-161-D006/evidence-6",
+      "fingerprint": "1e62f9a36e4990e4be61c49dff83d582e17055a06282563a1b63d5b7cb78739f",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-167/decisions.md",
+      "record": "WO-167-D008/evidence-6",
+      "fingerprint": "14fe5643eb9f3279bbfa29eefc9b5bdd77d12e1ce8364cc66c8a7263dea89405",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-170/decisions.md",
+      "record": "WO-170-D005",
+      "fingerprint": "c74d7d664d7100378f380991e4b0b5e89a91dd064ff21398dacad5de6fd2c3af",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-170/decisions.md",
+      "record": "WO-170-D005/evidence-2",
+      "fingerprint": "0a2b3e08bf897ea8156fa2620fdd683124a454b49aaf9a3c2cc65922ca6627da",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-170/decisions.md",
+      "record": "WO-170-D005/rejected-2.reason",
+      "fingerprint": "9137737e376984b03bb86a3f8cb50753b45be6e64fcc5c557775d387b78372e1",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-170/decisions.md",
+      "record": "WO-170-D012",
+      "fingerprint": "1f0057100d1b10f5bb3ce029bab335868ac418e32d7dcb3f7bd278240f930b77",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-170/decisions.md",
+      "record": "WO-170-D012/evidence-1",
+      "fingerprint": "ae89aa4be29c1dd50351b7f2616c332dce2fc49126b64334542d5b63d6ce6b6e",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-170/decisions.md",
+      "record": "WO-170-D019",
+      "fingerprint": "8f13941d7569eed777c04ffad0eafcd2d7c60fac2ef5f7563187ae65508c296b",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-170/decisions.md",
+      "record": "WO-170-D019/evidence-1",
+      "fingerprint": "c8d615b7ffa641af3502e36f26ee9901a23296b23cf0a467ed3ab19b5ec2137c",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-170/decisions.md",
+      "record": "WO-170-D019/evidence-4",
+      "fingerprint": "4ed5915aa62c3862a2662c2d9dc5c46ea10353f631e68699a6a49fd87055e71b",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-170/decisions.md",
+      "record": "WO-170-D019/evidence-5",
+      "fingerprint": "c8bb2e5a6e06e2a1e8c1b95a52c3a04e2bfb6e1e14313e87d53948f0533e0546",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-178/decisions.md",
+      "record": "WO-178-D015",
+      "fingerprint": "53a41373e340525df1b1d23d39d0adfb5316b66dc5d250992bbc40c105428335",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-181/decisions.md",
+      "record": "WO-181-D008/operatorAuthorization",
+      "fingerprint": "48e636fa0209f3d3cfff072be1517ad779fb6ffa473a415d11179b2bd019e7a5",
+      "disposition": "retained-baseline",
+      "reason": "Bound by an execution amendment (docs/control/plan-refutations.jsonl); editing it fails the planning check, so it stays fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-181/decisions.md",
+      "record": "WO-181-D008/operatorConstraint",
+      "fingerprint": "3265a68c8c39a476407bcbc90ae0c54dd9a72b2d3a1367b8212f0f9020834cc5",
+      "disposition": "retained-baseline",
+      "reason": "Bound by an execution amendment (docs/control/plan-refutations.jsonl); editing it fails the planning check, so it stays fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-184/decisions.md",
+      "record": "WO-184-D041/misread",
+      "fingerprint": "bb95589d3041f89a0f988456da9e4e36c9f0a775639b852b7f554721c7e9bf52",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-184/decisions.md",
+      "record": "WO-184-D041/meant",
+      "fingerprint": "e2e44e7353f5b1b8a0467d0185017b696150d0ca30cc245f5f8fc037a59729c5",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-185/decisions.md",
+      "record": "WO-185-D016/evidence-5",
+      "fingerprint": "8d9dc51aec7138b736b0e80ba5f2ce653091b75fd99a94c267eb9c0dfd03e9b4",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-185/decisions.md",
+      "record": "WO-185-D017",
+      "line": 821,
+      "fingerprint": "5954e8bb6fd2a66ec40df02a820e4c70b9af524b6c09a09547e62b7b064ae6f6",
+      "disposition": "paraphrased",
+      "reason": "Reworded the attributed operator text in place, keeping its instruction, authorization and citations; no quotation remains."
+    },
+    {
+      "file": "docs/evidence/WO-185/decisions.md",
+      "record": "WO-185-D017/evidence-1",
+      "line": 828,
+      "fingerprint": "a99983175dfaf33c57a1cd7baf19dfefd52f9b03323d6423abc2a52ad9365b01",
+      "disposition": "paraphrased",
+      "reason": "Reworded the attributed operator text in place, keeping its instruction, authorization and citations; no quotation remains."
+    },
+    {
+      "file": "docs/evidence/WO-186/decisions.md",
+      "record": "WO-186-D039",
+      "line": 1329,
+      "fingerprint": "356c984c698b32ce871c57cc974827bc7c5f5170751f34ec09a3912e539ae5f0",
+      "disposition": "paraphrased",
+      "reason": "Reworded the attributed operator text in place, keeping its instruction, authorization and citations; no quotation remains."
+    },
+    {
+      "file": "docs/evidence/WO-187/decisions.md",
+      "record": "WO-187-D042/evidence-1",
+      "fingerprint": "9d653753f6da0d54e265409f3414ee1fe88c2f89d1e93d1d196cb8fe1f6ccfb7",
+      "disposition": "retained-baseline",
+      "reason": "Historical record outside the paraphrase set; fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-006/FINAL-001.md",
+      "record": "paragraph-71656a98355f",
+      "fingerprint": "2226e2d08c7f09faaf063c7dddae1a9150bec4af36d4e3036616ac291d28a4a6",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-006/FINAL-001.md",
+      "record": "paragraph-0331f788fe39",
+      "fingerprint": "0d01f420a44b72690b7a498edb270cff80672ed1895dbef00aec7192d6c6a345",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-007/FINAL-001.md",
+      "record": "paragraph-bc8a801b5af2",
+      "fingerprint": "49199d426ae9a42547607d947adf5234c42cde74710cc4e1de2ea42e7194d251",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-008/FINAL-001.md",
+      "record": "paragraph-7696d54b5663",
+      "fingerprint": "a5b2b4480a69b576c0e63a5058af6c24c54ecedcc4165c84e8e7fc1395dcae96",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-011/FINAL-001.md",
+      "record": "paragraph-ad4606a30560",
+      "fingerprint": "b53d195c117b374197503488094d704c0945cfc8a5d53a4cb8a2b1d128a65658",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-012/FINAL-001.md",
+      "record": "paragraph-0ea60fc11170",
+      "fingerprint": "19e194b1fbcee05f0c8e45386caadc53596e426a74f2f5388aeaa70001f9f166",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-012/FINAL-001.md",
+      "record": "paragraph-db488cfca730",
+      "fingerprint": "28508f20e8271a242e84dc39296bfa2bb3f3c7f965e975bbfcaab2ec5e25937f",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-013/FINAL-001.md",
+      "record": "paragraph-d749e155af95",
+      "fingerprint": "230b2bcf7ffc5c03f61064816193dc1eefb5f6135a766dd65bcd99ddd1414c23",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-015/FINAL-001.md",
+      "record": "paragraph-0d4c9c667e58",
+      "fingerprint": "e8d5bea80c734405ff41afd1843fc33e87d43b072ddf8c3b56ab1c397b0b6cce",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-017/FINAL-001.md",
+      "record": "paragraph-da0db8f23977",
+      "fingerprint": "da64a7d71e9c9b7494d9be1dfac18e869c7fbf0f37738a602fab0592a099ef79",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-018/FINAL-001.md",
+      "record": "paragraph-816d49587546",
+      "fingerprint": "43658d88818588bbda56cdc6d179dac7a8235c05948420da840a6a8d6c60f886",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-019/FINAL-001.md",
+      "record": "paragraph-26af68354e45",
+      "fingerprint": "ddd1998800e0b76b7057f0ebe44c3d7763f8f3da9bbc5b82067aa4af57113574",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-019/FINAL-001.md",
+      "record": "paragraph-1a45e3996d02",
+      "fingerprint": "8292209624aa71f21764b54f3c1c429d4b3027942096b25b085404adf5314555",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-019/FINAL-001.md",
+      "record": "paragraph-62dbae92dfe4",
+      "fingerprint": "e887c9d4cca6a5adbfc654851dfdf20d4a33c7c6d768a702a0ff86e2fb9e1952",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-020/FINAL-001.md",
+      "record": "paragraph-a52a606631c0",
+      "fingerprint": "cc701cc53064caff3dc209e76b70e0dbd210e782878bcf65aaba385729f7e0d0",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-022/FINAL-001.md",
+      "record": "paragraph-50281b721820",
+      "fingerprint": "42b107119e95f05d599655e12344ab8b4c550aa185acd25941ab09ee728b1efa",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-024/FINAL-001.md",
+      "record": "paragraph-87c722b88ba5",
+      "fingerprint": "6e051400c7c21c11510d5389b9ddda7e5b6ee593b9c0a51a7a6f95b8368652ca",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-024/FINAL-001.md",
+      "record": "paragraph-855f17c94891",
+      "fingerprint": "400bc76ef6b012cd201fbdde9bb2dc9103244d0996f3c83e17019b14b1b02cb0",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-025/FINAL-001.md",
+      "record": "paragraph-e13590666c15",
+      "fingerprint": "d859a1a97edcc118c2e5460dbaea02fb25898a3e795bbd28980add3e055ba7ba",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-026/FINAL-001.md",
+      "record": "paragraph-55006f4aac5d",
+      "fingerprint": "6a4fa44d36cb75d4f6753b752f98a747e95dc26b718d8782722226a1f14db847",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-032/RELEASE-NOTES.md",
+      "record": "paragraph-3b85a5efc3f1",
+      "fingerprint": "a14dba024e20ed6dcacfc6bbdecb2bba31fb2ec60e99fb570c19adeef0eb9e91",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-038/FINAL-001.md",
+      "record": "paragraph-0af7ab3901aa",
+      "fingerprint": "8c90fef67fd065e4edc42c74b0f9c85ab2c5081170c75c3bc8a98196d421a0cd",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-038/FINAL-001.md",
+      "record": "paragraph-fc091f3042ce",
+      "fingerprint": "4f840a0af79893ac63faf549cbbbaf4a13482a945b491746931000e461a46dd2",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-041/FINAL-001.md",
+      "record": "paragraph-861ea32d8f83",
+      "fingerprint": "e41d493bbcac159754f576dc2b74f129ccd552cfd48b391c0ecec0b9f0b1c3a4",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-042/PR.md",
+      "record": "paragraph-c8dfcce59a08",
+      "fingerprint": "27c6d5a1e64a64579840258dc557769dd9b118345594514c6ab67b0535ed8808",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-042/RELEASE-NOTES.md",
+      "record": "paragraph-d78997b39ea7",
+      "fingerprint": "5147e47cb250c04763fd179056614dc4904ff794a5daa4c888c867a1eb94b6da",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-045/FINAL-001.md",
+      "record": "paragraph-6516df738b85",
+      "fingerprint": "b5e54f059269e4e152b540c16ca5eac68b05f698ddfe6bbfdf80b7eaa058202c",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-046/FINAL-001.md",
+      "record": "paragraph-5dde578841a1",
+      "fingerprint": "470a9c12fbe399037a4210f4fa367e3c49f1d995808b8ce445603db0a83a2578",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-046/FINAL-001.md",
+      "record": "paragraph-0bfa74f15388",
+      "fingerprint": "42f5767d4763f04db6942051077c94dda25771ce23fce72dd219f1f25f4e46b0",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-047/FINAL-001.md",
+      "record": "paragraph-14376c4e8d0b",
+      "fingerprint": "c1b417672e92c65e4ddaabdf3729f24d4e4e5af1c28037fc38be9f65b889ee28",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-047/FINAL-001.md",
+      "record": "paragraph-a4934131cdc6",
+      "fingerprint": "58a3b10c3ed082753f41de6e525d28b79966f6d0fd4419d9b3d83e2f3b24a46b",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-048/FINAL-001.md",
+      "record": "paragraph-63ba0e0d7739",
+      "fingerprint": "c5fa53f7fb143ae968433e627bf234e736cfe2f893a44108f6e5e0cffd32fe6b",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-048/FINAL-001.md",
+      "record": "paragraph-d246c41da455",
+      "fingerprint": "a2f6e058c0bacc8f26fdbd5360e30cc2813d251cbb3f0966f9d2dfe3da32cec6",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-048/FINAL-001.md",
+      "record": "paragraph-906cb43d701c",
+      "fingerprint": "f525f4afb0254c0554c25371c02642c84299aa9297470dcc7ae2e6cecbcdaafb",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-048/FINAL-001.md",
+      "record": "paragraph-2c016a446228",
+      "fingerprint": "d55d9247f3af9740c8dad8b811bfce1a8617873d258704cb56df01724acd0f0d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-050/FINAL-001.md",
+      "record": "paragraph-9a469a73be2b",
+      "fingerprint": "f87de7c88d9ce9d89119c5ece14c13cd9dc36bed6f6bfcdeb2ae00223cb611bc",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-050/FINAL-001.md",
+      "record": "paragraph-a2c9a0a8b01a",
+      "fingerprint": "30e064461b473a1360a54bd9902b2c56a15a24cdd263fcbd363e43463ce14479",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-050/FINAL-001.md",
+      "record": "paragraph-cff9045a9500",
+      "fingerprint": "f82272e6fdf226f140c41d121d50d2d714bded8c1db9d6d07450e2ebe96f49fc",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-050/FINAL-001.md",
+      "record": "paragraph-9ac6b24b6515",
+      "fingerprint": "1e1d8f78ceddd7ac773d024b5b143cb7a72151d19e4f7bade11d78a70f5aaafc",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-052/FINAL-001.md",
+      "record": "paragraph-dbd85ea26507",
+      "fingerprint": "131e186b984784a77317a94419bc4db38babf772f226649db73e7874feb39c3e",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-053/FINAL-001.md",
+      "record": "paragraph-de302c806deb",
+      "fingerprint": "80b455492c5440a7c8269f8a3b69f0b646a8f54fb53eaf587e81a6a518449fda",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-054/FINAL-001.md",
+      "record": "paragraph-563228385a9a",
+      "fingerprint": "20133778d165d624800a6b27e3400de352d3923d3fb7cfe694edc49acffcc495",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-055/FINAL-001.md",
+      "record": "paragraph-563228385a9a",
+      "fingerprint": "20133778d165d624800a6b27e3400de352d3923d3fb7cfe694edc49acffcc495",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-056/FINAL-001.md",
+      "record": "paragraph-2ed0475e6e6c",
+      "fingerprint": "13e8292ea7d5127e83d8fc94f10c1ed23f68673b054045287e754a60d7b4c76d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-063/FINAL-001.md",
+      "record": "paragraph-8eda34b2d24e",
+      "fingerprint": "1c4076b35766ca545596f5e71b0fa9470299e5e85f0dc315ea106cd1124c9bf3",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-064/FINAL-001.md",
+      "record": "paragraph-ab2e091eb4e4",
+      "fingerprint": "f8ca4856f13bfddcf1232d8bdeeb3d3deada83bb45f7c6678363d26062762e19",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-064/FINAL-001.md",
+      "record": "paragraph-860b6f764b9b",
+      "fingerprint": "2047d8e8f3eb7bfdd61f335a00cf84e8a1749bce10d61e6630b0202413d0a054",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-064/FINAL-001.md",
+      "record": "paragraph-f89299604f50",
+      "fingerprint": "3e938ae2826e49db6119b02e07f06ced321c0b85556d0fc9008e74f776717b61",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-065/FINAL-001.md",
+      "record": "paragraph-6263a9ffd434",
+      "fingerprint": "be5b281c96b01dda30530df4ca720f74d2fbfd8ceda8d794b9e68908e0f76bdd",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-065/PR.md",
+      "record": "paragraph-c4c4a656a054",
+      "fingerprint": "6f520bcda89b5bef5b31616888f05c63699d7c613e3f34c4380ec85f42400024",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-067/FINAL-001.md",
+      "record": "paragraph-2652f72830a4",
+      "fingerprint": "5d23c0897f8a0adbed9cfcd7ae423f4484abc196c280a81794fbe9d453a482e5",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-084/FINAL-001.md",
+      "record": "paragraph-03ae27792794",
+      "fingerprint": "0606e142fff918938d339b96582c7fadfc5ef361baec21d7f621bc4082b370b4",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-084/FINAL-001.md",
+      "record": "paragraph-8e493e715320",
+      "fingerprint": "608f2eb6bfd7067fbe95791a79e5ae8236b79db83cd5c26ceb5802025e5de09b",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-084/PR.md",
+      "record": "paragraph-4949816e5382",
+      "fingerprint": "cc699ff43c1d2e5e931a09bad28564331f23c3ed5ce98caa10078eac8d79ff26",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-085/PR.md",
+      "record": "paragraph-b6ad165fb0bd",
+      "fingerprint": "356206ff0c36ae723c8db48543675b878e6281ab3c2b5c7a4b3beac399a1fe9d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-090/FINAL-001.md",
+      "record": "paragraph-4f0f4f16b3d4",
+      "fingerprint": "dd1c47f19f142b159c3215741ba4599e718c692ca1426bf967e59b3b961badad",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-099/FINAL-001.md",
+      "record": "paragraph-4f0f4f16b3d4",
+      "fingerprint": "dd1c47f19f142b159c3215741ba4599e718c692ca1426bf967e59b3b961badad",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-100/FINAL-001.md",
+      "record": "paragraph-ab2e091eb4e4",
+      "fingerprint": "f8ca4856f13bfddcf1232d8bdeeb3d3deada83bb45f7c6678363d26062762e19",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-100/FINAL-002.md",
+      "record": "paragraph-ab2e091eb4e4",
+      "fingerprint": "f8ca4856f13bfddcf1232d8bdeeb3d3deada83bb45f7c6678363d26062762e19",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-100/FINAL-002.md",
+      "record": "paragraph-7e6e4f94bd45",
+      "fingerprint": "68c43da95cb96a2d9ba60dc23fdfe713b669c08546663e2f59f588a924876532",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-107/FINAL-001.md",
+      "record": "paragraph-ffe4482af418",
+      "fingerprint": "d2660e4536a5eb71b88d1c801a9d7536e8d31432d5dbddfa5cdf0b88a05e8a35",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-108/PR.md",
+      "record": "paragraph-5acd502823c0",
+      "fingerprint": "e00a4e07137ff7a1de89c65ffbf857ec48388fe30ac0a33c09fef675868a6c59",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-110/FINAL-001.md",
+      "record": "paragraph-25ed26e4106b",
+      "fingerprint": "4fe04cdb80041165519c323ae8bba3b824af3781188dbbf904cd05c1f6d5499b",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-111/FINAL-001.md",
+      "record": "paragraph-437399aa88f6",
+      "fingerprint": "a3768a47fb4dd0a04d3a07e1d4116cfcc9225aa625a4142cd165ce715d511e93",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-116/FINAL-001.md",
+      "record": "paragraph-78fc20585ace",
+      "fingerprint": "503ca25938c915c6f8a98d9d1630ea75c3d6e43b063729466d34859050c04b16",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-120/FINAL-001.md",
+      "record": "paragraph-2ed0475e6e6c",
+      "fingerprint": "13e8292ea7d5127e83d8fc94f10c1ed23f68673b054045287e754a60d7b4c76d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-127/FINAL-001.md",
+      "record": "paragraph-cba792a69e4e",
+      "fingerprint": "685ba746c019ec96a90c3aa956f342d8dac02a3eee55ac3e72d219f2481978cd",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-127/FINAL-002.md",
+      "record": "paragraph-cba792a69e4e",
+      "fingerprint": "685ba746c019ec96a90c3aa956f342d8dac02a3eee55ac3e72d219f2481978cd",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-131/FINAL-001.md",
+      "record": "paragraph-c88075938881",
+      "fingerprint": "a1bc5a70e593acf7d90d843d8ce565bc1be29283168bf07732c71c5a415a4a83",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-133/FINAL-001.md",
+      "record": "paragraph-60f85aa9312c",
+      "fingerprint": "9b7c23aad3fb2f624e8db739fa5e4dfe416a9e7bdd17017e4fa6d004c90c7b77",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-133/FINAL-001.md",
+      "record": "paragraph-0685abb75178",
+      "fingerprint": "4ee3c45662cd24216b616298731c35db7dbc129f2361de368597781c23c1da9d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-133/FINAL-002.md",
+      "record": "paragraph-4fd5ed681b9e",
+      "fingerprint": "b92b8bb0df101393fc830379c76810e43fab0e5e27fdb4dc5299407240e4d732",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-134/FINAL-001.md",
+      "record": "paragraph-c88075938881",
+      "fingerprint": "a1bc5a70e593acf7d90d843d8ce565bc1be29283168bf07732c71c5a415a4a83",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-135/FINAL-001.md",
+      "record": "paragraph-de302c806deb",
+      "fingerprint": "80b455492c5440a7c8269f8a3b69f0b646a8f54fb53eaf587e81a6a518449fda",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-137/FINAL-001.md",
+      "record": "paragraph-563228385a9a",
+      "fingerprint": "20133778d165d624800a6b27e3400de352d3923d3fb7cfe694edc49acffcc495",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-139/RELEASE-NOTES.md",
+      "record": "paragraph-90a4733a975b",
+      "fingerprint": "9fab3ec1defa8d5e790c41918e6f740ca180f75b013b5705dc06bdc4b4b4121c",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-140/FINAL-001.md",
+      "record": "paragraph-2ed0475e6e6c",
+      "fingerprint": "13e8292ea7d5127e83d8fc94f10c1ed23f68673b054045287e754a60d7b4c76d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-142/FINAL-001.md",
+      "record": "paragraph-03ae27792794",
+      "fingerprint": "0606e142fff918938d339b96582c7fadfc5ef361baec21d7f621bc4082b370b4",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-143/FINAL-001.md",
+      "record": "paragraph-03ae27792794",
+      "fingerprint": "0606e142fff918938d339b96582c7fadfc5ef361baec21d7f621bc4082b370b4",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-144/FINAL-001.md",
+      "record": "paragraph-03ae27792794",
+      "fingerprint": "0606e142fff918938d339b96582c7fadfc5ef361baec21d7f621bc4082b370b4",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-144/FINAL-002.md",
+      "record": "paragraph-03ae27792794",
+      "fingerprint": "0606e142fff918938d339b96582c7fadfc5ef361baec21d7f621bc4082b370b4",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-145/FINAL-001.md",
+      "record": "paragraph-03ae27792794",
+      "fingerprint": "0606e142fff918938d339b96582c7fadfc5ef361baec21d7f621bc4082b370b4",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-147/FINAL-001.md",
+      "record": "paragraph-03ae27792794",
+      "fingerprint": "0606e142fff918938d339b96582c7fadfc5ef361baec21d7f621bc4082b370b4",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-149/FINAL-001.md",
+      "record": "paragraph-2ed0475e6e6c",
+      "fingerprint": "13e8292ea7d5127e83d8fc94f10c1ed23f68673b054045287e754a60d7b4c76d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-150/FINAL-001.md",
+      "record": "paragraph-19ea78a2273b",
+      "fingerprint": "0a07629cd802522b93784f2933e5951c30a2b2d1f1553a69234874a512eee025",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-151/FINAL-001.md",
+      "record": "paragraph-4f0f4f16b3d4",
+      "fingerprint": "dd1c47f19f142b159c3215741ba4599e718c692ca1426bf967e59b3b961badad",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-152/FINAL-001.md",
+      "record": "paragraph-4f0f4f16b3d4",
+      "fingerprint": "dd1c47f19f142b159c3215741ba4599e718c692ca1426bf967e59b3b961badad",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-158/PR.md",
+      "record": "paragraph-8bdcbc004e7d",
+      "fingerprint": "92e42e571ff88575acef2900ca38f6fe387a92aa1de2c5397cfe91f15ae4c830",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-159/PR.md",
+      "record": "paragraph-90c4cef6b74e",
+      "fingerprint": "3406afc86549e2059457ec8263b1b24e544ead7a4611ea5976bb822996955c4d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-167/PR.md",
+      "record": "paragraph-a4263c035abd",
+      "fingerprint": "c5f648f1cd5078f2cf74245a4434483033cbe043ec312eab1f2bbb760ef08795",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-170/FINAL-001.md",
+      "record": "paragraph-1f7962f93618",
+      "fingerprint": "5a86e5ec16008b32fef1cd8311d5a96b18def3cff1dc2ffcdfd6d72ea3307020",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-171/FINAL-001.md",
+      "record": "paragraph-be5c486abfce",
+      "fingerprint": "3b3b5c065a976c11251567adc2cddd20a3b8295e3d234d204a135b9b59695a58",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-178/FINAL-001.md",
+      "record": "paragraph-a50a305aa805",
+      "fingerprint": "03d6d7e765f987ab4f678c4f4590b593b82fcdf4ee96d4bd67d730f2ae9f1d3a",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-178/FINAL-001.md",
+      "record": "paragraph-bfc4dcab7fb3",
+      "fingerprint": "70fa684b1a3906edcf9e9b3cbf072446d64ed0046f776181e7d7716a3ebf8dd3",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/final-reviews/WO-182/FINAL-001.md",
+      "record": "paragraph-7e0434b5cf00",
+      "fingerprint": "c50897c8b9e4171f2b4713930e5408d95c5db052f3d35035772dbae18d11c8ba",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/critical-path-2026-09-08.md",
+      "record": "paragraph-62319f14d3ad",
+      "fingerprint": "2b7f21eab6b2a75bd2b242aadd4b953c4678470c294b90cec2500764a5c5d0ab",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/critical-path-2026-09-08.md",
+      "record": "paragraph-7f985be7bc92",
+      "fingerprint": "b4b371cf45f40509beb6208030a94c8c8caa4c7569a8fed3fc30e5cbc1d58131",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/entropy-reducer-dispatch-2026-09-22.md",
+      "record": "paragraph-5e3816f43cf0",
+      "fingerprint": "6956ed2221982f7a794a73ad62785a61fd5cea15f362567902a6730c8a1067b1",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/entropy-reducer-dispatch-2026-09-22.md",
+      "record": "paragraph-1d039d18fc78",
+      "fingerprint": "3c2cce3f922c4ccd482f93e163e9dfd8cd2e4be47374dbcdd4b3f0491c5e7956",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/entropy-review-002-2026-09-22.md",
+      "record": "paragraph-a8157e1ac383",
+      "fingerprint": "fa10bfea44b539075aa14ec2cec72fb6e4f974de9009ba0351f62b258d23c043",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/entropy-review-002-2026-09-22.md",
+      "record": "paragraph-2dbad77befde",
+      "fingerprint": "002f5ba8f3c366134b0817d278992a2fbfbcd1fa1caaaa71baec0d4b391cf233",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/entropy-review-002-2026-09-22.md",
+      "record": "paragraph-8846ca1a85e9",
+      "fingerprint": "5c47dfe4466d34bdfbfd30e7344e1c1147c72af0f5f67ff2927640dedb3edc88",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/entropy-reviews/REVIEW-004.md",
+      "record": "paragraph-1e38f1c3e61f",
+      "fingerprint": "1603b9a0e6a0431a1beb3b3ed6bcb918e741008168721270a6bdbfdf44a9daf5",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/machinery-reset-2026-10-07.md",
+      "record": "paragraph-ff696e18b7af",
+      "fingerprint": "de29568f745310d162252a5e155d0b4e94155ea3837d4a1478df005ba00820ee",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/off-ramps-5s-entropy-2026-09-25.md",
+      "record": "paragraph-0f4e00edf105",
+      "fingerprint": "c316a727d9e860baf9c944944aeffcb6b5b246ac5a6a82365f4118abd94ea397",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/off-ramps-5s-entropy-2026-09-25.md",
+      "record": "paragraph-c71f972bdd25",
+      "fingerprint": "7426c2ca3cf927976e8a48018d206b0bb871287ea7a9d0274b591f7eaaf342a4",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/off-ramps-5s-entropy-2026-09-25.md",
+      "record": "paragraph-a783e64e9763",
+      "fingerprint": "783c12787c2cc8a94fffd85a7283e4a5cdd4894762b4c3d101c026d9d7f8ec97",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/outstanding-cleanup-2026-09-19.md",
+      "record": "paragraph-d00d46edde49",
+      "fingerprint": "6f3706f972db0d6e37cb3ab2707f5bc29ad12177c15c26735d8224bcc3bac341",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/outstanding-cleanup-2026-09-19.md",
+      "record": "paragraph-0baad5933a90",
+      "fingerprint": "b13b91483d2cdebf753957217a6004377725f6f33a5bb711313dbc588e2cbe7a",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/phase-two-plan-2026-09-06.md",
+      "record": "paragraph-a0878cd9c825",
+      "fingerprint": "3b3d30dbc536ab4a788d5bf051d7c3a06f73bb3afdd188db8cbffc31e13da1c8",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/refutations/2026-09-06-phase-two-redirect-006.md",
+      "record": "paragraph-7bfe1aed4b22",
+      "fingerprint": "da26664f2f50f33063c460b7abcbc7dc6fc279bab317b0a1e92e132422ab8665",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/refutations/README.md",
+      "record": "paragraph-d36a00d02935",
+      "fingerprint": "044d70a2e633d154a28a1dd47c054fa44701698a69b3837cb8c98143c8770b76",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/release-close-finishes-2026-10-03.md",
+      "record": "paragraph-75e709d40ead",
+      "fingerprint": "a14a4e6bc730d2fd90a0c7876250a3ba9cd1a02ef556dbb3d2e9f195f33d9229",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/resident-binding-to-active-work-2026-09-20.md",
+      "record": "paragraph-90b5365cb08a",
+      "fingerprint": "40df7ea27625c069ad8f8264f5993d51f616a6eb2892d4e114af3bcb7e815da1",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/source-verification-2026-09-08.md",
+      "record": "paragraph-d2cda9d5a0cd",
+      "fingerprint": "e7cad9ba505572c55cc1be6f2977d48082670074e8e6fcec1496f129f617d347",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/source-verification-2026-09-08.md",
+      "record": "paragraph-7034625c98b5",
+      "fingerprint": "e200fb22be5621398ed95ff2db640a7a4533c0f8205484e0e06cc85d67dc90ad",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/standard-pass-2026-09-25.md",
+      "record": "paragraph-05f349c0c7c5",
+      "fingerprint": "10c2ee88b972604a4b42063b6590b9a21d7fa675e96a2f7d6f80a15a48402861",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/standard-pass-2026-09-25.md",
+      "record": "paragraph-03cb23b3cfd8",
+      "fingerprint": "fa0a8b6544c3212cf76c1036a1324eacf6833f3141fdf279d5738bad946f5dc6",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/standard-pass-2026-09-30.md",
+      "record": "paragraph-f6d11d3736cb",
+      "fingerprint": "73292656e15056a05cbc0248b8f63f87c609524deaf16fad7f5037b92aea53a3",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/standard-pass-2026-09-30.md",
+      "record": "paragraph-6068bf1a3fb9",
+      "fingerprint": "0e470f209e6fb085db1b619c4df71af03f79ac07e9adbeb360dbf8f136e30e71",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/vision-into-use-2026-09-17.md",
+      "record": "paragraph-1b6b24a0fb93",
+      "fingerprint": "865cd475efc84500b57b6837f765a2b2dd8d670b485c9c170fbd48bfb216d24d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/vision-into-use-2026-09-17.md",
+      "record": "paragraph-659f5e96316c",
+      "fingerprint": "753e6ab941a72cdfae8e3f601de571079f4100caa66213fe39af95eab6b67baa",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/vision-into-use-2026-09-17.md",
+      "record": "paragraph-b4d86f180478",
+      "fingerprint": "346d382b6bf11d985d4bf172e7a33f26f283ef6dfe06c10e0f5ff67d0d317a87",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/work-order-map.md",
+      "record": "paragraph-ba149e72c25b",
+      "fingerprint": "699e2bd9a717e43e35384fa3a81b790d4b2963389051e1760db196ca61460922",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/work-order-map.md",
+      "record": "paragraph-c44f57158837",
+      "fingerprint": "ba1585b94ec0f90da85d8e3b2aa935d003fd9f09d226093f0c03921aebc06c04",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/work-order-map.md",
+      "record": "paragraph-e0128a270029",
+      "fingerprint": "ce7fbb0c539f9343aeb5ea4fa476b2030e579f6e7b75bcac6b5912832a314bc4",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/work-order-map.md",
+      "record": "paragraph-d6f3a3141f37",
+      "fingerprint": "d32792f2922bb89d1ae2a771ef944711fbb9f4820f9623dc6e3ca0ac6f495601",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/planning/work-order-map.md",
+      "record": "paragraph-3b00f966c89e",
+      "fingerprint": "eeddd3188f454e1824278242a3ceb520632843e9ce8f43d9034a9c908dd5d9af",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-003/VER-002.md",
+      "record": "paragraph-83a443badd81",
+      "fingerprint": "8a4f10e49301bb8ba913d7351f85e08f5aa5452f8264b63c4f83a7b35618432b",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-006/VER-002.md",
+      "record": "paragraph-3332ad1408dc",
+      "fingerprint": "c50671c901e436f4fcd8ec829ae9d18b2b2b5bffa0ef9aa41affa643e2123851",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-006/VER-002.md",
+      "record": "paragraph-2020a98b2b14",
+      "fingerprint": "f2f4ff6a48c0967b36ce0af084fd1ff24edb395788b0ef281be99fb1806048e0",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-006/VER-003.md",
+      "record": "paragraph-e58113162d41",
+      "fingerprint": "7cb196616482f8f9c412184f62636c9ebd9f9e6947f2691a9fd79da5e344edf7",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-008/VER-001.md",
+      "record": "paragraph-c6d7f9acb9ab",
+      "fingerprint": "ba7427f092bbfa273f513659bfb37b0a238c84d9eada0338312b2e1766167c77",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-011/VER-001.md",
+      "record": "paragraph-5481e05a70ec",
+      "fingerprint": "321cb2cac45f6443fec81bd14862fd4c20ddda484116eba48a36397c4de7f20f",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-011/VER-001.md",
+      "record": "paragraph-be3e13df4298",
+      "fingerprint": "3af68e1f19d1aa1d7bf777f666c480aae83f479b56565f025ddda4b7d98beefc",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-012/VER-001.md",
+      "record": "paragraph-750ce1a52895",
+      "fingerprint": "e98d4a34bb6df69492855268b78a498b7c10fe074bd9c606b90f7ba04a05a4d7",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-012/VER-001.md",
+      "record": "paragraph-7e491bdd83e6",
+      "fingerprint": "c1467275a346c9f7f3169440dd0b9e886a15d62494f958a45965677724e2988b",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-013/VER-001.md",
+      "record": "paragraph-a6362d8d8631",
+      "fingerprint": "0032702543efb3fe8686b614dcda680bd90ed6fbcdfdad20517c57f7b5161192",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-017/VER-001.md",
+      "record": "paragraph-03dbf2b1f7d3",
+      "fingerprint": "f85b56c66be0241df23f7078afa1e008b34f033198cea06363392add7c280754",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-017/VER-001.md",
+      "record": "paragraph-a3d007704c5e",
+      "fingerprint": "f4d7bbc882a84ca70d6648fc200b2aa64534d8a207a8bc6f689b278346e00b50",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-018/VER-001.md",
+      "record": "paragraph-c6d7f9acb9ab",
+      "fingerprint": "ba7427f092bbfa273f513659bfb37b0a238c84d9eada0338312b2e1766167c77",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-018/VER-001.md",
+      "record": "paragraph-3abf6f04955f",
+      "fingerprint": "1a84c0ea4434218a0107157fcbf68836590d19a1335687e3f5fbea68ef6af1d1",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-018/VER-001.md",
+      "record": "paragraph-58f1c2a23512",
+      "fingerprint": "1bedeede1a15f4cb236ddcc116375f718c022573f3acf8cfec08ea7461f2049b",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-019/VER-002.md",
+      "record": "paragraph-4c6425dd41b7",
+      "fingerprint": "2f5d7985f8b57a30a765732f2ea0332f02a03dd36b827878c44302f81f04a5fb",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-019/VER-002.md",
+      "record": "paragraph-fc6eea718396",
+      "fingerprint": "aa1c655cfbfd7186909cdaa25ae58ea6d351cd480e019a9a164b0a07f8a40614",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-022/VER-001.md",
+      "record": "paragraph-ea21fb6a3aeb",
+      "fingerprint": "8c10855821fc36776ba9c8351783e14843586ee3fd3844f59976b0a545acc76b",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-023/VER-001.md",
+      "record": "paragraph-7a8431ecbb0f",
+      "fingerprint": "dd8eb0d06ed3ea5663fbd7e87cdc90a963b89de7d014c6af306460d08c41be45",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-028/VER-001.md",
+      "record": "paragraph-253a362782bc",
+      "fingerprint": "82f6cfccacb7f7cc59bd111146205b30d5e7a4b4461860b630259d1749a18aa9",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-028/VER-001.md",
+      "record": "paragraph-bf53e934acfc",
+      "fingerprint": "6d0c0f07901d782ca6e4273b2771633684b0e228e9c774b61f5a4e6f3e165b2c",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-031/VER-001.md",
+      "record": "paragraph-7ec627702745",
+      "fingerprint": "21e39151fbebe721adc05f85fa71f6e21028f6af1d76aba3996b8837db400cb6",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-038/VER-001.md",
+      "record": "paragraph-e3626f50263d",
+      "fingerprint": "c0e3c0a8d9ad22cf90cf5358c667b99394914ddea61c649208634ec837a82982",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-039/VER-001.md",
+      "record": "paragraph-3ae3942897df",
+      "fingerprint": "4944bbd3da6305aa22200bb542312bcb5af9e1551248a1c01860fd5cfa52d4e9",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-039/VER-002.md",
+      "record": "paragraph-41f5f94943cc",
+      "fingerprint": "b2b133fc57a52da224eef1b0ed418c7814e00516d2ebef58b34baea4e7a52e43",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-039/VER-003.md",
+      "record": "paragraph-41f5f94943cc",
+      "fingerprint": "b2b133fc57a52da224eef1b0ed418c7814e00516d2ebef58b34baea4e7a52e43",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-039/VER-004.md",
+      "record": "paragraph-41f5f94943cc",
+      "fingerprint": "b2b133fc57a52da224eef1b0ed418c7814e00516d2ebef58b34baea4e7a52e43",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-039/VER-005.md",
+      "record": "paragraph-41f5f94943cc",
+      "fingerprint": "b2b133fc57a52da224eef1b0ed418c7814e00516d2ebef58b34baea4e7a52e43",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-041/VER-001.md",
+      "record": "paragraph-cb2ff20052c5",
+      "fingerprint": "5272cdbd1583ac3c395b1a1d8a4d31e53ed2cc779db2977a464c0e3d1be9977d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-042/VER-001.md",
+      "record": "paragraph-41f5f94943cc",
+      "fingerprint": "b2b133fc57a52da224eef1b0ed418c7814e00516d2ebef58b34baea4e7a52e43",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-042/VER-002.md",
+      "record": "paragraph-41f5f94943cc",
+      "fingerprint": "b2b133fc57a52da224eef1b0ed418c7814e00516d2ebef58b34baea4e7a52e43",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-043/VER-002.md",
+      "record": "paragraph-ef411497a3af",
+      "fingerprint": "a98c7df7d89f30e58ae094c9cdf1f1efd4df13caca53991f164a8db589c9bda1",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-044/VER-001.md",
+      "record": "paragraph-02d3aea9381a",
+      "fingerprint": "3281248c28d58ac396522814b56bc4e9cb060664b18eefbe38cbf7ad156a169c",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-044/VER-002.md",
+      "record": "paragraph-201290337bdd",
+      "fingerprint": "391c1c808f4d157f918cc85b96223a9eef283b01f2d125b86a4ed2119c5d9013",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-044/VER-003.md",
+      "record": "paragraph-351bcdfe9778",
+      "fingerprint": "1dc4cf93fd393c993e190d33f896d64e74b8c4a72e86427213f90707501b9e74",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-044/VER-005.md",
+      "record": "paragraph-50bfd1e4ccf2",
+      "fingerprint": "dbc9cc57cb07f204e10ecbb7d63f2be2b8bce68914709288edddfdbaa49389cd",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-044/VER-005.md",
+      "record": "paragraph-0022b52643fe",
+      "fingerprint": "667dcb2a2dfa3e5a04586865f307a81a10715aaf836ba8445c7957f699f8bc7a",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-045/VER-001.md",
+      "record": "paragraph-660a051a9b3b",
+      "fingerprint": "75c37c6f137b04720d93b48545ad75b324f5a719c6d536dee00f51c8619164b2",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-045/VER-002.md",
+      "record": "paragraph-18514a4f160e",
+      "fingerprint": "6f5a8a74baede19fc99bb724871dd391072fce9e28eee5094e104709a70bd7c1",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-046/VER-001.md",
+      "record": "paragraph-9a469a73be2b",
+      "fingerprint": "f87de7c88d9ce9d89119c5ece14c13cd9dc36bed6f6bfcdeb2ae00223cb611bc",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-047/VER-001.md",
+      "record": "paragraph-48fe660dfec0",
+      "fingerprint": "f4c6c6eabc6c92cb8faa40727456e9020aeb1852a913eef54ab14a1de5ea341f",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-047/VER-002.md",
+      "record": "paragraph-17055f2b1aa7",
+      "fingerprint": "68aeebd74ae4164d8dd58861e49a4c52c3215cc489e8f1018c7e3af9fd47bdfc",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-047/VER-002.md",
+      "record": "paragraph-14376c4e8d0b",
+      "fingerprint": "c1b417672e92c65e4ddaabdf3729f24d4e4e5af1c28037fc38be9f65b889ee28",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-048/VER-001.md",
+      "record": "paragraph-e121c802a784",
+      "fingerprint": "e62cd2985d5030e184bba97efa862a26ecc1d4cd40bbe4f288532482e5574499",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-048/VER-001.md",
+      "record": "paragraph-63ba0e0d7739",
+      "fingerprint": "c5fa53f7fb143ae968433e627bf234e736cfe2f893a44108f6e5e0cffd32fe6b",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-048/VER-001.md",
+      "record": "paragraph-986e70d3ba65",
+      "fingerprint": "78b8977003ff3ff71554980dd2c9fc0cde27cd5cdefcbb1066e0ee42c2c5a71c",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-049/VER-001.md",
+      "record": "paragraph-947f7bb1078a",
+      "fingerprint": "d238fec9fdf422e9abe235fc4bdc091b8674d63ddef71aad8277108799bba643",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-049/VER-001.md",
+      "record": "paragraph-0eaff0335052",
+      "fingerprint": "b1e86721975a8f38acd18efb89abf99ae1c4bd2836ae90c539c29f09985603f1",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-049/VER-002.md",
+      "record": "paragraph-d0fe48981acc",
+      "fingerprint": "e0ae656ad5a64520298dd01d6aacfef90bb4a7f5f0e77d5e75c061559a724275",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-050/VER-001.md",
+      "record": "paragraph-db9d0583cb85",
+      "fingerprint": "54bd14de4e363ed07b1635130f5a20d41afa57f384c220326b9bbc1aa9f85ff1",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-050/VER-001.md",
+      "record": "paragraph-99aa7aeab444",
+      "fingerprint": "3324dc70ecf1aab9d644b09fc11522081da0bf62c325e9af418afa5b222350d5",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-050/VER-001.md",
+      "record": "paragraph-9a469a73be2b",
+      "fingerprint": "f87de7c88d9ce9d89119c5ece14c13cd9dc36bed6f6bfcdeb2ae00223cb611bc",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-052/VER-001.md",
+      "record": "paragraph-d20afb93cbec",
+      "fingerprint": "76edbf36223a8323f562f62dc55d1d899431490a25f68bfd18ab618a21d18de4",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-054/VER-001.md",
+      "record": "paragraph-5b493c6680d7",
+      "fingerprint": "4815bf46ffc53863e0a1421a3644b8b30f0797b47446671b1abf38f89b5aae4d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-054/VER-001.md",
+      "record": "paragraph-9da041a2bc1f",
+      "fingerprint": "c023f1c90e8c833b6681e989643ad53945f21785c4c4ee867f588a1634c7286b",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-054/VER-001.md",
+      "record": "paragraph-2f7d4dca83a9",
+      "fingerprint": "089740e1003db06a39268b8df8d8e867813f4a68defe9bfb52820eb1dd94efb6",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-054/VER-002.md",
+      "record": "paragraph-936a3f34edfa",
+      "fingerprint": "d14ebe5b4558f6f45557c9206b795bbd3ddc66c92cf9ece5352dc03973dbf33b",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-054/VER-002.md",
+      "record": "paragraph-cc9a4d100628",
+      "fingerprint": "7a7ac1b6f3e331cd010ab477ed2e5ccf2924ffba04f64c174c50b323ebd32d26",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-054/VER-003.md",
+      "record": "paragraph-936a3f34edfa",
+      "fingerprint": "d14ebe5b4558f6f45557c9206b795bbd3ddc66c92cf9ece5352dc03973dbf33b",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-055/VER-001.md",
+      "record": "paragraph-936a3f34edfa",
+      "fingerprint": "d14ebe5b4558f6f45557c9206b795bbd3ddc66c92cf9ece5352dc03973dbf33b",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-056/VER-001.md",
+      "record": "paragraph-2ed0475e6e6c",
+      "fingerprint": "13e8292ea7d5127e83d8fc94f10c1ed23f68673b054045287e754a60d7b4c76d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-063/VER-001.md",
+      "record": "paragraph-8eda34b2d24e",
+      "fingerprint": "1c4076b35766ca545596f5e71b0fa9470299e5e85f0dc315ea106cd1124c9bf3",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-065/VER-001.md",
+      "record": "paragraph-ecd88bcf4fc9",
+      "fingerprint": "90788820070e7f904529996049ba5102c4e335dae4c41f2d03a107956e0d2d0b",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-065/VER-002.md",
+      "record": "paragraph-a8da96a88302",
+      "fingerprint": "7b65c265198d24c8e3684017c2d8128117e3081839ec17022de8370889c8acb3",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-071/VER-001.md",
+      "record": "paragraph-85842c724d47",
+      "fingerprint": "31145f1ac871b8a830300fe3ee91342ea47f070c96182cbe3653afe0644d4434",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-084/VER-001.md",
+      "record": "paragraph-c6ef7cfbe0f1",
+      "fingerprint": "3216645d0cbfe4918ea0356467ee1277ff8ef6e37eb9a3afb0f04d4d2c871a88",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-084/VER-001.md",
+      "record": "paragraph-2ed0475e6e6c",
+      "fingerprint": "13e8292ea7d5127e83d8fc94f10c1ed23f68673b054045287e754a60d7b4c76d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-084/VER-001.md",
+      "record": "paragraph-25a062e737c0",
+      "fingerprint": "cd33f4ca6d71c076f0afdd0a58887318c037cbfcc458ad6aaae741231f588b9e",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-090/VER-001.md",
+      "record": "paragraph-4f0f4f16b3d4",
+      "fingerprint": "dd1c47f19f142b159c3215741ba4599e718c692ca1426bf967e59b3b961badad",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-090/VER-001.md",
+      "record": "paragraph-223297454279",
+      "fingerprint": "eb370901b4113b06f5b81d939a33211103c0f7ae8ea5317ad0cdf34866c2fe22",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-090/VER-001.md",
+      "record": "paragraph-cd0bba11c5fe",
+      "fingerprint": "8514820e97366ffab5075d4c127573bdeed40fa466a453444a030070cc622db4",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-090/VER-001.md",
+      "record": "paragraph-17d68e536014",
+      "fingerprint": "fb98d72d85d6376822de3722a90cb4838443c90c08e8141791f858d0c37fe1c8",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-090/VER-002.md",
+      "record": "paragraph-4f0f4f16b3d4",
+      "fingerprint": "dd1c47f19f142b159c3215741ba4599e718c692ca1426bf967e59b3b961badad",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-099/VER-004.md",
+      "record": "paragraph-4f0f4f16b3d4",
+      "fingerprint": "dd1c47f19f142b159c3215741ba4599e718c692ca1426bf967e59b3b961badad",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-099/VER-005.md",
+      "record": "paragraph-4f0f4f16b3d4",
+      "fingerprint": "dd1c47f19f142b159c3215741ba4599e718c692ca1426bf967e59b3b961badad",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-099/VER-005.md",
+      "record": "paragraph-d9fda92a51d9",
+      "fingerprint": "07368468f5f2a8ebc305b4e2d98a3234a5c355d97da1480474ee5b3905124e0f",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-107/VER-001.md",
+      "record": "paragraph-21ee46b17133",
+      "fingerprint": "b79848f8e599d9404a16eb8d320ad193b3549e7525b0d68c3b8fa0e14e5e50c5",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-111/VER-001.md",
+      "record": "paragraph-dfa4969818e6",
+      "fingerprint": "30a2633316f96c209faed4306870edf6c22c51e1e433ee0004bdf0b44a8ffc6a",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-111/VER-002.md",
+      "record": "paragraph-2041f3fb3443",
+      "fingerprint": "ea8fafe9be21980c9e684ae66bcf2617cb98773f4dc5d0343b8774f9e799a1fd",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-111/VER-002.md",
+      "record": "paragraph-e0e66fb71a45",
+      "fingerprint": "6a7d8373d47a3b3755f746ce5a55cad67bb321cc5a8bed1b4c56555f5c382fb3",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-111/VER-003.md",
+      "record": "paragraph-43f5988e4986",
+      "fingerprint": "dc9030e5885a65d937d09739d8c392dca669587c1631b1a92235facf21d80ba1",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-112/VER-001.md",
+      "record": "paragraph-e9ff066fa5be",
+      "fingerprint": "75dd85b55ed0f5784967d607baae818a300f5bc8355937e368092867375058bd",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-112/VER-001.md",
+      "record": "paragraph-2bd8b96e5714",
+      "fingerprint": "83d900e4f4390e4140359518cd36e7b9252ee50f1e1016bcd9a39f48784b6a38",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-112/VER-001.md",
+      "record": "paragraph-ec8d028d3cf6",
+      "fingerprint": "215c9fd6da748a095713e4f823dfb2f3bd1759e99707a6c48afb04289004270c",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-112/VER-001.md",
+      "record": "paragraph-e9b4b9fd2ffc",
+      "fingerprint": "22011b1ae1386acd60992418eb28ccb77d80b033e07fa77ad97f24a2bacb22cc",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-112/VER-001.md",
+      "record": "paragraph-a3be23f793b6",
+      "fingerprint": "70fb1e5045366b3c1bc7b7d069151ad4764caf841cc0a6f36ee2b1b64163ee44",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-112/VER-003.md",
+      "record": "paragraph-1bde6b0f790d",
+      "fingerprint": "453f352bd29b48a714fe054e6355051a0f1270742cbd60720a61af190143ae96",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-117/VER-001.md",
+      "record": "paragraph-73f8a89b2e19",
+      "fingerprint": "afa9c183b0e9ea386cfce004c76cbcae38cd79a9eaa300dfb2084b4fb9aedebd",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-119/VER-001.md",
+      "record": "paragraph-9df9b6728a40",
+      "fingerprint": "f0c9555f7e16f27ce435d9e1773dd09157fb6651e5a1422e94635dedf73afad3",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-120/VER-001.md",
+      "record": "paragraph-2ed0475e6e6c",
+      "fingerprint": "13e8292ea7d5127e83d8fc94f10c1ed23f68673b054045287e754a60d7b4c76d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-121/VER-001.md",
+      "record": "paragraph-6cbbbb28ce34",
+      "fingerprint": "27b919acdb3379b03d932965364d697ab8df5a096dc41a7fb82be2b55cd3a48b",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-122/VER-001.md",
+      "record": "paragraph-d20afb93cbec",
+      "fingerprint": "76edbf36223a8323f562f62dc55d1d899431490a25f68bfd18ab618a21d18de4",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-123/VER-001.md",
+      "record": "paragraph-990e611cbb50",
+      "fingerprint": "8728ff67561f67be7cbaf0e7ea8a144db343d8bd8b0718870344cab32f952b06",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-123/VER-004.md",
+      "record": "paragraph-bee179d60874",
+      "fingerprint": "193d88e155ddf0878bdec4e154752e9f6ec85fde0b51ca7333c778bd79a613cc",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-125/VER-002.md",
+      "record": "paragraph-62c34ecdf0ca",
+      "fingerprint": "9f7f636d97be11506e98befdd1734aa54476a074cafac94f2d408ea4860c6576",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-125/VER-002.md",
+      "record": "paragraph-5381bcd76432",
+      "fingerprint": "523a5ef986d71684763847be677cbf0624f39396ccb0f4e590a5bb8ec24b7e53",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-126/VER-002.md",
+      "record": "paragraph-3edacfcfa2d8",
+      "fingerprint": "6ddd2434e5a55edccd736f6ef6d8fbc9ebdc269b2602373a6ade7b056bf0b459",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-127/VER-001.md",
+      "record": "paragraph-5fe5055ddbaf",
+      "fingerprint": "3dcc9ca0a32e2eb712720f21e8192366b79b78225048eb811210ff741a3dd5ff",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-127/VER-002.md",
+      "record": "paragraph-465b35d396b3",
+      "fingerprint": "69a5c6ad4c763e19002fade4ecf7665ab03817db492345befcf609f7bd3882df",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-130/VER-002.md",
+      "record": "paragraph-ee195e72a72d",
+      "fingerprint": "3bcdb85bc7ba08b8d817e736d010ed9ed2a7874d83c30e35688b4cf6c26d74c0",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-130/VER-003.md",
+      "record": "paragraph-ee195e72a72d",
+      "fingerprint": "3bcdb85bc7ba08b8d817e736d010ed9ed2a7874d83c30e35688b4cf6c26d74c0",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-130/VER-004.md",
+      "record": "paragraph-ee195e72a72d",
+      "fingerprint": "3bcdb85bc7ba08b8d817e736d010ed9ed2a7874d83c30e35688b4cf6c26d74c0",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-131/VER-001.md",
+      "record": "paragraph-b6fce02f14f1",
+      "fingerprint": "a48c36a126739e2b9af1b14ec638a840778c85eb8bd2bb1278c6a11ff5419172",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-131/VER-001.md",
+      "record": "paragraph-2d4d9a573633",
+      "fingerprint": "12349113d8e1e708140d61924d142ed7ffb3d2240a4b6e4f5ffa4a372dedb29f",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-132/VER-002.md",
+      "record": "paragraph-8c5dcab650e6",
+      "fingerprint": "33289a0fa05122272d038ff5a517059353ee64b9109794a8403a41cf45baddb5",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-132/VER-003.md",
+      "record": "paragraph-c88075938881",
+      "fingerprint": "a1bc5a70e593acf7d90d843d8ce565bc1be29283168bf07732c71c5a415a4a83",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-132/VER-005.md",
+      "record": "paragraph-c88075938881",
+      "fingerprint": "a1bc5a70e593acf7d90d843d8ce565bc1be29283168bf07732c71c5a415a4a83",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-133/VER-001.md",
+      "record": "paragraph-fb3e6f7ecbf3",
+      "fingerprint": "b33e58c08a1bf2bd4c2b95ef3a5d96bcc32679c7cb74f3349e1dda05627934cf",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-134/VER-001.md",
+      "record": "paragraph-fb3e6f7ecbf3",
+      "fingerprint": "b33e58c08a1bf2bd4c2b95ef3a5d96bcc32679c7cb74f3349e1dda05627934cf",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-135/VER-001.md",
+      "record": "paragraph-a3d6f217fc4f",
+      "fingerprint": "dc274300bca18f7d7454bf59a24a458d3bf70c112df5050572888d266e3c95e6",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-137/VER-001.md",
+      "record": "paragraph-c6ef7cfbe0f1",
+      "fingerprint": "3216645d0cbfe4918ea0356467ee1277ff8ef6e37eb9a3afb0f04d4d2c871a88",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-137/VER-001.md",
+      "record": "paragraph-936a3f34edfa",
+      "fingerprint": "d14ebe5b4558f6f45557c9206b795bbd3ddc66c92cf9ece5352dc03973dbf33b",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-142/VER-001.md",
+      "record": "paragraph-623feec856d2",
+      "fingerprint": "1ee490efaedae35317668d3f49acca10d8afae8a67d82266c12e64fb3cf0250f",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-142/VER-001.md",
+      "record": "paragraph-78e16559c49d",
+      "fingerprint": "10031c521cee471939bad1837389d3c4cfcd7bed12fc680c91d3f725e956e69d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-142/VER-001.md",
+      "record": "paragraph-de29ebbad4c9",
+      "fingerprint": "09bfa818904d73f60d8bfa7a4ab9c2b899c14ee1c72e6198bcd659cba2643a21",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-142/VER-002.md",
+      "record": "paragraph-2ed0475e6e6c",
+      "fingerprint": "13e8292ea7d5127e83d8fc94f10c1ed23f68673b054045287e754a60d7b4c76d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-142/VER-002.md",
+      "record": "paragraph-0c9150f6a596",
+      "fingerprint": "81b2ddde990c52eedce07757e1cbd489c392d5193a6f800613b100016fc54f34",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-142/VER-003.md",
+      "record": "paragraph-2ed0475e6e6c",
+      "fingerprint": "13e8292ea7d5127e83d8fc94f10c1ed23f68673b054045287e754a60d7b4c76d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-142/VER-004.md",
+      "record": "paragraph-2ed0475e6e6c",
+      "fingerprint": "13e8292ea7d5127e83d8fc94f10c1ed23f68673b054045287e754a60d7b4c76d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-143/VER-001.md",
+      "record": "paragraph-2ed0475e6e6c",
+      "fingerprint": "13e8292ea7d5127e83d8fc94f10c1ed23f68673b054045287e754a60d7b4c76d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-144/VER-001.md",
+      "record": "paragraph-ab51b481fa24",
+      "fingerprint": "051e1ef08d67ed79a90316173df9539192ad65ab080ef14ea6abb0044a51b1ee",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-144/VER-001.md",
+      "record": "paragraph-2ed0475e6e6c",
+      "fingerprint": "13e8292ea7d5127e83d8fc94f10c1ed23f68673b054045287e754a60d7b4c76d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-144/VER-002.md",
+      "record": "paragraph-ea3ee3db010c",
+      "fingerprint": "dfa8465c8f3ed95756efb7727ebf5afd53ff2424101453b9b9a8c436106c448c",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-144/VER-002.md",
+      "record": "paragraph-2ed0475e6e6c",
+      "fingerprint": "13e8292ea7d5127e83d8fc94f10c1ed23f68673b054045287e754a60d7b4c76d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-145/VER-001.md",
+      "record": "paragraph-2ed0475e6e6c",
+      "fingerprint": "13e8292ea7d5127e83d8fc94f10c1ed23f68673b054045287e754a60d7b4c76d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-146/VER-001.md",
+      "record": "paragraph-82995147e965",
+      "fingerprint": "da7e0ada8933ecd4c6d82539ca1b99833378836c00d94f4477ebf4c52585bd7e",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-146/VER-001.md",
+      "record": "paragraph-beb0bade4d9a",
+      "fingerprint": "1d47cd279335027623de734949eda3b432d53c6bd6514b939e27925e79a6c765",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-149/VER-001.md",
+      "record": "paragraph-2ed0475e6e6c",
+      "fingerprint": "13e8292ea7d5127e83d8fc94f10c1ed23f68673b054045287e754a60d7b4c76d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-149/VER-001.md",
+      "record": "paragraph-79c73dcea399",
+      "fingerprint": "e51b65338ec9bc446c263287e04b7dac3708a20c74684ae5b77632db1180573c",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-149/VER-002.md",
+      "record": "paragraph-2ed0475e6e6c",
+      "fingerprint": "13e8292ea7d5127e83d8fc94f10c1ed23f68673b054045287e754a60d7b4c76d",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-149/VER-002.md",
+      "record": "paragraph-932396424d79",
+      "fingerprint": "02c4bd013f027245335fdfbd84ccf69a0924148235e12995a41c32426fafa36f",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-157/VER-001.md",
+      "record": "paragraph-a5b792c226fe",
+      "fingerprint": "96ca1ba2e2f89630ad1f41a04ae475a454446c6203b00f20b04a787f66a86139",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-161/VER-001.md",
+      "record": "paragraph-205234f4cbf7",
+      "fingerprint": "5847b5e9f47aceb7a09a91b9493a6c46de62db12aafcb2ce9104e85d3cc98f48",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-179/VER-001.md",
+      "record": "paragraph-f8555e4b654d",
+      "fingerprint": "b2b70e5389772e649ddaf04a2abb7fc5305d1215f8cad25529610083ae086b2c",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-179/VER-001.md",
+      "record": "paragraph-683d727b5c4e",
+      "fingerprint": "01b19489616cb5856d4697f5a04a5bb1b9badaa7e2d878efaf82d40b2400a765",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-185/VER-001.md",
+      "record": "paragraph-6b83ab54532d",
+      "fingerprint": "a0b7d5f41e25f6403c749558fcff1d81091b4398dbbc036cf08a212e082b4687",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-196/VER-001.md",
+      "record": "paragraph-8671e0f0e189",
+      "fingerprint": "96d09c82c80558f85b8e61e75f70816f44bcfd66d75f669c4adccd6264d1251a",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/verifications/WO-196/VER-002.md",
+      "record": "paragraph-7e7a72048786",
+      "fingerprint": "a48a4299b78f0b687080aec70517a0c482b1e212c4bbfa030b675528479e26b1",
+      "disposition": "retained-baseline",
+      "reason": "Report or planning paragraph; immutable or operator-authored wording kept by direction, fingerprinted."
+    },
+    {
+      "file": "docs/evidence/WO-187/decisions.md",
+      "record": "WO-187-D039",
+      "fingerprint": null,
+      "disposition": "reader-fix",
+      "reason": "The 2026-10-07 pass listed this advisory; no quotation exists. A backquote run inside a JSON string leaked the record into the prose; the fence strip is anchored to the fence line now, and the fixture for a leaked record covers it. The pre-fix fingerprint was not observed by this order."
+    }
+  ]
+}

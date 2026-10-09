@@ -1,0 +1,11 @@
+# Items 2 and 6 re-observed at 28d32e26fade7b7d2fe6ed00c43707ad58b87f70 on 2026-10-08: WO-195 commit 2d50a415 holds both
+$ node --test --test-name-pattern 'WO-195 each script printer' scripts/test-harness.mjs
+✔ WO-195 each script printer produces admitted bytes and missing facts are named (1631.794042ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1721.259166

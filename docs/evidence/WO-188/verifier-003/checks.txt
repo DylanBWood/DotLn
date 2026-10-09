@@ -1,0 +1,947 @@
+# WO-188 VER-003 independent verification receipts
+
+Dispatch: resume: verify; allocated VER-003. Base HEAD: 28d32e26fade7b7d2fe6ed00c43707ad58b87f70.
+Subject checkpoint: refs/dotln/checkpoint/WO-188/11 at 5f208fe6dd832b1c74d526ba36c4da3b906e27cc.
+Current code identity: 167f7a49b7767b3c5fafa4a3eab3996403e0315801d29311e7fbbc80a432fbca.
+
+Each entry below is a captured command output or a later output chunk of that command. Process exits and bounded timing are retained. Repetitive progress-only lines are omitted; local home/temp paths are replaced with placeholders and cleanup trace lines containing escaped private temporary paths are omitted. All publication effects are confined to temporary fixture repositories, local bare origins and a forge double.
+
+Setup corrections, before the final subject observations:
+- P5 initially inserted the CR sample into both body writes. The existing AI-trailer negative control then stopped on a profile soft-wrap assertion before publication. Those runs establish no publication defect. The current probe inserts the sample immediately before the committed-body capture, after the negative controls.
+- The first baseline control copied only two base files and failed module loading because committedMaterial had been removed from the current material library. The final baseline control installs the coherent base publication entry points and scripts/lib archive before fixture initialization; it exits 0.
+- P6 first attempted the conventional TypeScript root API, unavailable in the installed TypeScript 7.0.2 package. Its next Babel AST comparison still retained Prettier's __contentEnd source-position metadata. The corrected oracle uses the installed Babel parser, omits comments/location/internal position metadata and sorts keys. The earlier codeChanges list is not a semantic verdict. The final oracle compares 141 tracked code files: 78 have equal ASTs after comments/metadata are omitted; 63 differ, including 14 generated hooks. Untracked new implementations and shell fixtures were read separately.
+- Deliberately failing literal-preservation assertions are subject counterexamples; a passing harness bound alone never makes them pass.
+
+## P1
+command: node scripts/harness.mjs bounded -- bash scripts/test-release.sh --case submodule_force
+observed exit: running output chunk; see final chunk
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+
+
+## P1-output
+observed exit: 0
+PROGRESS release case submodule_force started
+PROGRESS release case submodule_force passed
+release tests passed
+bounded-result {"name":"bounded-probe","durationMs":3755,"slowestCases":[{"name":"bounded-probe","durationMs":3755,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":55794480,"peakRssBytes":137887744,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T07:46:24.944Z","finishedAt":"2026-10-09T07:46:28.699Z","exitCode":0,"executed":true}
+
+
+## P2
+command: node scripts/harness.mjs bounded -- bash scripts/test-release.sh --case material
+observed exit: running output chunk; see final chunk
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+
+
+## P2-output
+observed exit: running output chunk; see final chunk
+
+
+## P2-output
+observed exit: 0
+PROGRESS release case material started
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (detached HEAD bd00d05)
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (detached HEAD 3c70942)
+Preparing worktree (detached HEAD 3c70942)
+WO-195 admitted 3 actual printer commands
+material handoff, preview, cleanup, preservation and publication retry passed
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+record I/O preserves publication outcome and original errors
+PROGRESS release case material passed
+release tests passed
+bounded-result {"name":"bounded-probe","durationMs":48948,"slowestCases":[{"name":"bounded-probe","durationMs":48948,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":75703488,"peakRssBytes":177061888,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T07:47:26.219Z","finishedAt":"2026-10-09T07:48:15.167Z","exitCode":0,"executed":true}
+
+
+## P3
+command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-003/links.mjs
+observed exit: 1
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"`` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":1,"column":34,"offset":33}}}],"rewritten":"`` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"🧪 café `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":9,"offset":8},"end":{"line":1,"column":42,"offset":41}}}],"rewritten":"🧪 café `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"\t[sample](file.md)","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":1,"column":19,"offset":18}}}],"rewritten":"\t[sample](file.md)","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"> `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":1,"column":36,"offset":35}}}],"rewritten":"> `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"- `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":1,"column":36,"offset":35}}}],"rewritten":"- `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"A span `[sample](file.md)\ncontinuation`.","parsed":[{"type":"inlineCode","value":"[sample](file.md)\ncontinuation","position":{"start":{"line":1,"column":8,"offset":7},"end":{"line":2,"column":14,"offset":39}}}],"rewritten":"A span `[sample](file.md)\ncontinuation`.","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"```md\n[sample](file.md)\n```","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":3,"column":4,"offset":27}}}],"rewritten":"```md\n[sample](file.md)\n```","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"> ```md\n> [sample](file.md)\n> ```","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":3,"column":6,"offset":33}}}],"rewritten":"> ```md\n> [sample](file.md)\n> ```","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"- code:\n\n      [sample](file.md)","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":3,"column":3,"offset":11},"end":{"line":3,"column":24,"offset":32}}}],"rewritten":"- code:\n\n      [sample](file.md)","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"<div>\n[sample](file.md)\n</div>","parsed":[{"type":"html","value":"<div>\n[sample](file.md)\n</div>","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":3,"column":7,"offset":30}}}],"rewritten":"<div>\n[sample](file.md)\n</div>","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"Text <span title=\"[sample](file.md)\">literal</span>.","parsed":[{"type":"html","value":"<span title=\"[sample](file.md)\">","position":{"start":{"line":1,"column":6,"offset":5},"end":{"line":1,"column":38,"offset":37}}},{"type":"html","value":"</span>","position":{"start":{"line":1,"column":45,"offset":44},"end":{"line":1,"column":52,"offset":51}}}],"rewritten":"Text <span title=\"[sample](file.md)\">literal</span>.","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"`` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":1,"column":34,"offset":33}}}],"rewritten":"`` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"🧪 café `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":9,"offset":8},"end":{"line":1,"column":42,"offset":41}}}],"rewritten":"🧪 café `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"\t[sample](file.md)","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":1,"column":19,"offset":18}}}],"rewritten":"\t[sample](file.md)","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"> `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":1,"column":36,"offset":35}}}],"rewritten":"> `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"- `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":1,"column":36,"offset":35}}}],"rewritten":"- `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"A span `[sample](file.md)\r\ncontinuation`.","parsed":[{"type":"inlineCode","value":"[sample](file.md)\r\ncontinuation","position":{"start":{"line":1,"column":8,"offset":7},"end":{"line":2,"column":14,"offset":40}}}],"rewritten":"A span `[sample](file.md)\r\ncontinuation`.","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"```md\r\n[sample](file.md)\r\n```","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":3,"column":4,"offset":29}}}],"rewritten":"```md\r\n[sample](file.md)\r\n```","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"> ```md\r\n> [sample](file.md)\r\n> ```","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":3,"column":6,"offset":35}}}],"rewritten":"> ```md\r\n> [sample](file.md)\r\n> ```","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"- code:\r\n\r\n      [sample](file.md)","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":3,"column":3,"offset":13},"end":{"line":3,"column":24,"offset":34}}}],"rewritten":"- code:\r\n\r\n      [sample](file.md)","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"<div>\r\n[sample](file.md)\r\n</div>","parsed":[{"type":"html","value":"<div>\r\n[sample](file.md)\r\n</div>","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":3,"column":7,"offset":32}}}],"rewritten":"<div>\r\n[sample](file.md)\r\n</div>","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"Text <span title=\"[sample](file.md)\">literal</span>.","parsed":[{"type":"html","value":"<span title=\"[sample](file.md)\">","position":{"start":{"line":1,"column":6,"offset":5},"end":{"line":1,"column":38,"offset":37}}},{"type":"html","value":"</span>","position":{"start":{"line":1,"column":45,"offset":44},"end":{"line":1,"column":52,"offset":51}}}],"rewritten":"Text <span title=\"[sample](file.md)\">literal</span>.","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"`` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":1,"column":34,"offset":33}}}],"rewritten":"`` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"🧪 café `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":9,"offset":8},"end":{"line":1,"column":42,"offset":41}}}],"rewritten":"🧪 café `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"\t[sample](file.md)","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":1,"column":19,"offset":18}}}],"rewritten":"\t[sample](file.md)","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"> `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":1,"column":36,"offset":35}}}],"rewritten":"> `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"- `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":1,"column":36,"offset":35}}}],"rewritten":"- `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"A span `[sample](file.md)\rcontinuation`.","parsed":[{"type":"inlineCode","value":"[sample](file.md)\rcontinuation","position":{"start":{"line":1,"column":8,"offset":7},"end":{"line":2,"column":14,"offset":39}}}],"rewritten":"A span `[sample](file.md)\rcontinuation`.","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"```md\r[sample](file.md)\r```","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":3,"column":4,"offset":27}}}],"rewritten":"```md\r[sample](file.md)\r```","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"> ```md\r> [sample](file.md)\r> ```","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":3,"column":6,"offset":33}}}],"rewritten":"> ```md\r> [sample](file.md)\r> ```","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"- code:\r\r      [sample](file.md)","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":3,"column":3,"offset":11},"end":{"line":3,"column":24,"offset":32}}}],"rewritten":"- code:\r\r      [sample](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file.md)","outcome":"fail"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"<div>\r[sample](file.md)\r</div>","parsed":[{"type":"html","value":"<div>\r[sample](file.md)\r</div>","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":3,"column":7,"offset":30}}}],"rewritten":"<div>\r[sample](file.md)\r</div>","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"Text <span title=\"[sample](file.md)\">literal</span>.","parsed":[{"type":"html","value":"<span title=\"[sample](file.md)\">","position":{"start":{"line":1,"column":6,"offset":5},"end":{"line":1,"column":38,"offset":37}}},{"type":"html","value":"</span>","position":{"start":{"line":1,"column":45,"offset":44},"end":{"line":1,"column":52,"offset":51}}}],"rewritten":"Text <span title=\"[sample](file.md)\">literal</span>.","outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[empty]()","rewritten":"empty","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[empty](<> \"title\")","rewritten":"empty","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"![empty]()","rewritten":"empty","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[empty][r]\n\n[r]: <>","rewritten":"[empty][r]\n\n","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[nested [a [b]]](file(1).md)","rewritten":"[nested [a [b]]](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%281%29.md)","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[split\nlabel](file.md)","rewritten":"[split\nlabel](file.md)","remaining":[{"line":1,"href":"file.md","kind":"relative-link"}],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[escaped](file\\(1\\).md)","rewritten":"[escaped](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%5C%281%5C%29.md)","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[space](<file name.md>)","rewritten":"[space](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%20name.md)","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[fragment](#a)","rewritten":"fragment","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[escape](../../../../../../outside.md)","rewritten":"escape","remaining":[],"outcome":"pass"}
+{"probe":"expanded-parser-preservation","failures":1}
+bounded-result {"name":"bounded-probe","durationMs":89,"slowestCases":[{"name":"bounded-probe","durationMs":89,"exitCode":1,"granularity":"task"}],"peakFootprintBytes":1311080,"peakRssBytes":1785856,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T07:49:03.158Z","finishedAt":"2026-10-09T07:49:03.247Z","exitCode":1,"executed":true}
+
+
+## P4
+command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-002/subject.mjs
+observed exit: running output chunk; see final chunk
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+
+
+## P4-output
+observed exit: 0
+{
+  "base": "28d32e26fade7b7d2fe6ed00c43707ad58b87f70",
+  "codeIdentity": "167f7a49b7767b3c5fafa4a3eab3996403e0315801d29311e7fbbc80a432fbca",
+  "registeredChanged": [
+    "package-lock.json",
+    "packages/compiler/package.json",
+    "packages/compiler/src/artifact-identity.ts",
+    "packages/compiler/src/harness.ts",
+    "packages/skeleton/package.json",
+    "packages/skeleton/src/gate-evidence.mjs",
+    "packages/skeleton/src/harness-host.ts",
+    "packages/skeleton/src/loadouts/contributor.ts",
+    "scripts/lib/paths.mjs"
+  ],
+  "judgedCount": 59,
+  "judgedChanged": [
+    "package-lock.json",
+    "packages/compiler/src/artifact-identity.ts",
+    "packages/skeleton/package.json"
+  ],
+  "judgedBehaviorUnchanged": true,
+  "executorRootBefore": 21255,
+  "executorRootAfter": 21009,
+  "ceilingsUnchanged": true,
+  "releaseTitleOccurrences": 1,
+  "regeneratedBodyProfile": "pass",
+  "coveringReviewRow": {
+    "checkId": "npm test",
+    "codeIdentity": "167f7a49b7767b3c5fafa4a3eab3996403e0315801d29311e7fbbc80a432fbca",
+    "treeHash": "cb68d31344b497096c05a731f1212c52ad826ca6",
+    "recordedAt": "2026-10-09T06:53:18.878Z",
+    "durationMs": 1408803,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:167f7a49b7767b3c5fafa4a3eab3996403e0315801d29311e7fbbc80a432fbca:npm test",
+    "freshTasks": 93,
+    "reusedTasks": 0,
+    "requiredSuites": [
+      "build",
+      "format",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "evidence-sources",
+      "configuration-root",
+      "harness-probe",
+      "authority-evidence",
+      "harness-fixtures",
+      "harness",
+      "harness-evidence",
+      "plan-refutation",
+      "artifact-evidence",
+      "verification-evidence",
+      "feedback-evidence",
+      "runner-fixtures",
+      "process-debt",
+      "meta",
+      "registrations"
+    ],
+    "taskCount": 93
+  },
+  "coverageLocation": "worktree",
+  "required": [
+    "format",
+    "build",
+    "release-preparation",
+    "github-body",
+    "outward-lint",
+    "target-publish",
+    "vertical",
+    "license-fixtures",
+    "publication-fixtures",
+    "backup-intake",
+    "beacon-portability",
+    "checkpoint",
+    "worktree",
+    "worktree-integration",
+    "release",
+    "work-orders-fixtures",
+    "kernel",
+    "compiler",
+    "skeleton",
+    "console",
+    "browser-evidence",
+    "adjacent-queue",
+    "derived-orders",
+    "portfolio",
+    "codex-continuation",
+    "authority-grants",
+    "evidence-sources",
+    "configuration-root",
+    "harness-probe",
+    "authority-evidence",
+    "harness-fixtures",
+    "harness",
+    "harness-evidence",
+    "plan-refutation",
+    "artifact-evidence",
+    "verification-evidence",
+    "feedback-evidence",
+    "runner-fixtures",
+    "process-debt",
+    "meta",
+    "registrations"
+  ],
+  "missing": []
+}
+bounded-result {"name":"bounded-probe","durationMs":1581,"slowestCases":[{"name":"bounded-probe","durationMs":1581,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":49533656,"peakRssBytes":96894976,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T07:49:31.649Z","finishedAt":"2026-10-09T07:49:33.230Z","exitCode":0,"executed":true}
+
+
+## P5
+command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-003/publish.mjs
+observed exit: running output chunk; see final chunk
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+
+
+## P5-output
+observed exit: running output chunk; see final chunk
+
+
+## P5-output
+observed exit: 1
+worktree surface refusal preserved the checker report and mutated no remote
+release-notes publish validation fixtures passed
+GitHub body profile refused wrapped PR and release-note prose before publication
+Advisory: Session authorship and output reads unavailable.
+Advisory: docs/evidence/WO-099/handoff.md lacks a self-review: line; write a line that starts `self-review: found <n>; fixed <n>; recorded <n>` with the fresh review's counts, then the worker or the separate-pass fallback. Completion records all the same.
+Advisory: docs/work-orders/WO-099-fixture.md declares no numbered acceptance criteria this completion can read; docs/evidence/WO-099/handoff.md is not checked.
+Advisory: Session authorship and output reads unavailable.
+Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.
+Advisory: No passing product gate at this code identity; the reviewer runs npm test before publication.
+Advisory: Session authorship and output reads unavailable.
+Advisory: docs/final-reviews/WO-099/FINAL-001.md: the report has no findings block; its finding counts are recorded as unmeasured. A report lists its findings in one block: a `<!-- dotln-findings:start -->` line, a JSON array of {"id": "F1", "route": "blocking|follow-up|operator", "class": "escape|integration|new-scope", "summary": "<one line>"} entries ([] for none) and a `<!-- dotln-findings:end -->` line. The final-review result records all the same.
+{"probe":"actual-publication-CR-only-code","exit":1}
+bounded-result {"name":"bounded-probe","durationMs":64092,"slowestCases":[{"name":"bounded-probe","durationMs":64092,"exitCode":1,"granularity":"task"}],"peakFootprintBytes":130384528,"peakRssBytes":359383040,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T07:50:56.469Z","finishedAt":"2026-10-09T07:52:00.561Z","exitCode":1,"executed":true}
+
+
+## P5-trace
+command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-003/publish.mjs --trace
+observed exit: running output chunk; see final chunk
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+
+
+## P5-trace-output
+observed exit: 1
+worktree surface refusal preserved the checker report and mutated no remote
+release-notes publish validation fixtures passed
+GitHub body profile refused wrapped PR and release-note prose before publication
+PASS license-surfaces packages/beacons/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/kernel/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+error: pr-body.md: accidental GitHub prose soft wrap between lines 1 and 2; keep each prose paragraph or list-item paragraph on one physical line and use blank lines or explicit Markdown hard breaks only for intentional rendered breaks'
++ grep -Fq 'pr-body.md: accidental GitHub prose soft wrap between lines 1 and 2'
++ git --git-dir=<tmp>/dotln-worktree-test.BmK6mA/origin.git show-ref --verify --quiet refs/heads/wo-099
++ printf '%s\n' 'This reviewed PR body stays on one physical source line even though it is longer than eighty characters, leaving visual wrapping to the reader.'
++ printf '%s\n' '- A code example `` [sample](file.md) ` literal `` keeps its bytes and an [empty]() link becomes its text.'
++ <home-path> --input-type=module - <tmp>/dotln-worktree-test.BmK6mA/project-wo099/pr-body.md
++ git -C <tmp>/dotln-worktree-test.BmK6mA/project-wo099 add pr-body.md
++ git -C <tmp>/dotln-worktree-test.BmK6mA/project-wo099 commit --amend --no-edit
++ printf 'GitHub body profile refused wrapped PR and release-note prose before publication\n'
++ clean_attribution_body=<tmp>/dotln-worktree-test.BmK6mA/clean-attribution-body.md
++ cp <tmp>/dotln-worktree-test.BmK6mA/project-wo099/pr-body.md <tmp>/dotln-worktree-test.BmK6mA/clean-attribution-body.md
++ for attribution in ''\''Claude-Session: fixture'\''' ''\''SomeAgent-Session: fixture'\''' ''\''https://claude.ai/code/session_fixture'\'''
++ cp <tmp>/dotln-worktree-test.BmK6mA/clean-attribution-body.md <tmp>/dotln-worktree-test.BmK6mA/project-wo099/pr-body.md
++ printf '\n%s\n' 'Claude-Session: fixture'
++ git -C <tmp>/dotln-worktree-test.BmK6mA/project-wo099 add pr-body.md
++ git -C <tmp>/dotln-worktree-test.BmK6mA/project-wo099 commit --amend --no-edit
+++ PATH=<tmp>/dotln-worktree-test.BmK6mA/no-gh-bin
+++ <home-path> <tmp>/dotln-worktree-test.BmK6mA/project-wo099/scripts/worktree.mjs publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md
++ attribution_output='PASS release-block: observed v0.2.1; expected v0.2.1 (work-order target v0.2.1; latest published none)
+PASS component-version @dotln/beacons: observed 0.1.1 with no previous release; expected no source-change bump baseline
+PASS component-version @dotln/kernel: observed 0.1.0 with no previous release; expected no source-change bump baseline
+PASS github-body-profile: observed docs/final-reviews/WO-099/RELEASE-NOTES.md; expected one physical line per prose paragraph or list-item paragraph
+PASS license-surfaces package.json workspaces: observed ["packages/*"]; expected ["packages/*"]
+PASS license-surfaces workspace count: observed 2; expected at least one
+PASS license-surfaces package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces package.json private: observed true; expected true
+PASS license-surfaces package.json prepublishOnly: observed "node -e \"console.error('\''DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'\''); process.exit(1)\""; expected "node -e \"console.error('\''DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'\''); process.exit(1)\""
+PASS license-surfaces package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/beacons/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/beacons/package.json private: observed true; expected true
+PASS license-surfaces packages/beacons/package.json prepublishOnly: observed "node -e \"console.error('\''DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'\''); process.exit(1)\""; expected "node -e \"console.error('\''DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'\''); process.exit(1)\""
+PASS license-surfaces packages/beacons/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/kernel/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/kernel/package.json private: observed true; expected true
+PASS license-surfaces packages/kernel/package.json prepublishOnly: observed "node -e \"console.error('\''DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'\''); process.exit(1)\""; expected "node -e \"console.error('\''DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'\''); process.exit(1)\""
+PASS license-surfaces packages/kernel/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces LICENSE: observed sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30; expected sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+PASS license-surfaces LICENSE-docs: observed sha256:9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411; expected sha256:9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411
+PASS license-surfaces NOTICE: observed sha256:645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c; expected sha256:645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c
+PASS license-surfaces docs/LEGAL.md LICENSE pin: observed cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30; expected cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+PASS license-surfaces docs/LEGAL.md LICENSE-docs pin: observed 9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411; expected 9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411
+PASS license-surfaces docs/LEGAL.md NOTICE pin: observed 645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c; expected 645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c
+PASS license-surfaces package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/beacons/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/kernel/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+error: pr-body.md: accidental GitHub prose soft wrap between lines 4 and 5; keep each prose paragraph or list-item paragraph on one physical line and use blank lines or explicit Markdown hard breaks only for intentional rendered breaks'
++ grep -Fq 'AI attribution'
++ _dotln_finish_test_temp_root 1
++ local status=1
++ trap - EXIT INT TERM
++ cleanup_test_temp_root <tmp> <tmp>/dotln-worktree-test.BmK6mA dotln-worktree-test
++ local resolved_base=<tmp>
++ local root=<tmp>/dotln-worktree-test.BmK6mA
++ local prefix=dotln-worktree-test
++ local current_base
++ local basename
++ local parent
++ local candidate_index
++ local owned_index=
++ local shown_root=<tmp>/dotln-worktree-test.BmK6mA
++ local marker
++ local marker_token
++ [[ -z <tmp>/dotln-worktree-test.BmK6mA ]]
++ [[ -z <tmp>/dotln-worktree-test.BmK6mA ]]
+<temporary-path cleanup trace omitted>
++ [[ ! -d <tmp>/dotln-worktree-test.BmK6mA ]]
++ [[ -L <tmp>/dotln-worktree-test.BmK6mA ]]
++ [[ ! -d <tmp> ]]
++ [[ -L <tmp> ]]
+++ cd -- <tmp>
+++ pwd -P
++ current_base=<tmp>
+<temporary-path cleanup trace omitted>
++ parent=<tmp>
++ basename=dotln-worktree-test.BmK6mA
+<temporary-path cleanup trace omitted>
++ case "$basename" in
++ for candidate_index in '"${!_dotln_test_temp_roots[@]}"'
+<temporary-path cleanup trace omitted>
+<temporary-path cleanup trace omitted>
++ [[ dotln-worktree-test == \d\o\t\l\n\-\w\o\r\k\t\r\e\e\-\t\e\s\t ]]
++ owned_index=0
++ break
++ [[ -z 0 ]]
++ marker=<tmp>/dotln-worktree-test.BmK6mA/.dotln-test-root-owner
++ [[ ! -f <tmp>/dotln-worktree-test.BmK6mA/.dotln-test-root-owner ]]
++ [[ -L <tmp>/dotln-worktree-test.BmK6mA/.dotln-test-root-owner ]]
++ marker_token=dotln-worktree-test.BmK6mA:47709:0
++ [[ dotln-worktree-test.BmK6mA:47709:0 != \d\o\t\l\n\-\w\o\r\k\t\r\e\e\-\t\e\s\t\.\B\m\K\6\m\A\:\4\7\7\0\9\:\0 ]]
++ rm -rf -- <tmp>/dotln-worktree-test.BmK6mA
++ [[ -e <tmp>/dotln-worktree-test.BmK6mA ]]
++ [[ -L <tmp>/dotln-worktree-test.BmK6mA ]]
++ unset '_dotln_test_temp_roots[0]'
++ unset '_dotln_test_temp_bases[0]'
++ unset '_dotln_test_temp_prefixes[0]'
++ unset '_dotln_test_temp_tokens[0]'
++ exit 1
+{"probe":"actual-publication-CR-only-code","exit":1}
+bounded-result {"name":"bounded-probe","durationMs":63174,"slowestCases":[{"name":"bounded-probe","durationMs":63174,"exitCode":1,"granularity":"task"}],"peakFootprintBytes":120061120,"peakRssBytes":315899904,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T07:53:24.374Z","finishedAt":"2026-10-09T07:54:27.548Z","exitCode":1,"executed":true}
+
+
+## P5-corrected
+command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-003/publish.mjs
+observed exit: running output chunk; see final chunk
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+
+
+## P5-corrected-output
+observed exit: running output chunk; see final chunk
+
+
+## P5-corrected-result
+observed exit: 1
+worktree surface refusal preserved the checker report and mutated no remote
+release-notes publish validation fixtures passed
+GitHub body profile refused wrapped PR and release-note prose before publication
+publication refuses agent session trailers and URLs in titles and bodies before any push
+FAIL contribution-signoff cdb7b538b2cd: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO
+PASS contribution-signoff eea1a9da3390: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff 884ee915bc1d: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff 379a86707606: observed matching author sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO
+PASS contribution-signoff e509953d0e32: observed operator author; expected operator exemption (no sign-off required)
+contribution sign-off publication fixtures passed before any remote mutation
+Advisory: Session authorship and output reads unavailable.
+Advisory: docs/evidence/WO-099/handoff.md lacks a self-review: line; write a line that starts `self-review: found <n>; fixed <n>; recorded <n>` with the fresh review's counts, then the worker or the separate-pass fallback. Completion records all the same.
+Advisory: docs/work-orders/WO-099-fixture.md declares no numbered acceptance criteria this completion can read; docs/evidence/WO-099/handoff.md is not checked.
+Advisory: Session authorship and output reads unavailable.
+Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.
+Advisory: No passing product gate at this code identity; the reviewer runs npm test before publication.
+Advisory: Session authorship and output reads unavailable.
+Advisory: docs/final-reviews/WO-099/FINAL-001.md: the report has no findings block; its finding counts are recorded as unmeasured. A report lists its findings in one block: a `<!-- dotln-findings:start -->` line, a JSON array of {"id": "F1", "route": "blocking|follow-up|operator", "class": "escape|integration|new-scope", "summary": "<one line>"} entries ([] for none) and a `<!-- dotln-findings:end -->` line. The final-review result records all the same.
+error: Invalid count value: -2
+{"probe":"actual-publication-CR-only-code","exit":1}
+bounded-result {"name":"bounded-probe","durationMs":77039,"slowestCases":[{"name":"bounded-probe","durationMs":77039,"exitCode":1,"granularity":"task"}],"peakFootprintBytes":133645784,"peakRssBytes":369262592,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T07:55:12.779Z","finishedAt":"2026-10-09T07:56:29.818Z","exitCode":1,"executed":true}
+
+
+## P5-corrected-trace
+command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-003/publish.mjs --trace
+observed exit: running output chunk; see final chunk
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+
+
+## P5-corrected-trace-result
+observed exit: running output chunk; see final chunk
+
+
+## P5-corrected-trace-final
+observed exit: 1
+worktree surface refusal preserved the checker report and mutated no remote
+release-notes publish validation fixtures passed
+GitHub body profile refused wrapped PR and release-note prose before publication
+publication refuses agent session trailers and URLs in titles and bodies before any push
+FAIL contribution-signoff 4572d15d70ee: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO
+PASS contribution-signoff bd31847d4227: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff 6a1347f589fd: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff 3d6c86ef49b5: observed matching author sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO
+PASS contribution-signoff 3a932bb25a7f: observed operator author; expected operator exemption (no sign-off required)
+contribution sign-off publication fixtures passed before any remote mutation
++ git -C <tmp>/dotln-worktree-test.3EJgCH/project-wo099 commit --amend --no-edit
++ committed_body=<tmp>/dotln-worktree-test.3EJgCH/committed-pr-body.md
++ committed_notes=<tmp>/dotln-worktree-test.3EJgCH/committed-release-notes.md
++ published_body=<tmp>/dotln-worktree-test.3EJgCH/published-pr-body.md
++ cp <tmp>/dotln-worktree-test.3EJgCH/project-wo099/pr-body.md <tmp>/dotln-worktree-test.3EJgCH/committed-pr-body.md
++ cp <tmp>/dotln-worktree-test.3EJgCH/project-wo099/docs/final-reviews/WO-099/RELEASE-NOTES.md <tmp>/dotln-worktree-test.3EJgCH/committed-release-notes.md
++ git -C <tmp>/dotln-worktree-test.3EJgCH/project-wo099 update-index --assume-unchanged pr-body.md docs/final-reviews/WO-099/RELEASE-NOTES.md
++ printf 'hidden uncommitted private body\n'
++ printf '<!-- hidden malformed notes -->\n'
+++ PATH=<tmp>/dotln-worktree-test.3EJgCH/bin:<home-path>
+++ DOTLN_GH_LOG=<tmp>/dotln-worktree-test.3EJgCH/gh.log
+++ DOTLN_GH_BODY=<tmp>/dotln-worktree-test.3EJgCH/published-pr-body.md
+++ GH_REPO=wrong/target
+++ GH_HOST=wrong.example
+++ node <tmp>/dotln-worktree-test.3EJgCH/project-wo099/scripts/worktree.mjs publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md
+error: Invalid count value: -2
++ publish_output='PASS release-block: observed v0.2.1; expected v0.2.1 (work-order target v0.2.1; latest published none)
+PASS component-version @dotln/beacons: observed 0.1.1 with no previous release; expected no source-change bump baseline
+PASS component-version @dotln/kernel: observed 0.1.0 with no previous release; expected no source-change bump baseline
+PASS github-body-profile: observed docs/final-reviews/WO-099/RELEASE-NOTES.md; expected one physical line per prose paragraph or list-item paragraph
+PASS license-surfaces package.json workspaces: observed ["packages/*"]; expected ["packages/*"]
+PASS license-surfaces workspace count: observed 2; expected at least one
+PASS license-surfaces package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces package.json private: observed true; expected true
+PASS license-surfaces package.json prepublishOnly: observed "node -e \"console.error('\''DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'\''); process.exit(1)\""; expected "node -e \"console.error('\''DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'\''); process.exit(1)\""
+PASS license-surfaces package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/beacons/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/beacons/package.json private: observed true; expected true
+PASS license-surfaces packages/beacons/package.json prepublishOnly: observed "node -e \"console.error('\''DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'\''); process.exit(1)\""; expected "node -e \"console.error('\''DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'\''); process.exit(1)\""
+PASS license-surfaces packages/beacons/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/kernel/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/kernel/package.json private: observed true; expected true
+PASS license-surfaces packages/kernel/package.json prepublishOnly: observed "node -e \"console.error('\''DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'\''); process.exit(1)\""; expected "node -e \"console.error('\''DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'\''); process.exit(1)\""
+PASS license-surfaces packages/kernel/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces LICENSE: observed sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30; expected sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+PASS license-surfaces LICENSE-docs: observed sha256:9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411; expected sha256:9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411
+PASS license-surfaces NOTICE: observed sha256:645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c; expected sha256:645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c
+PASS license-surfaces docs/LEGAL.md LICENSE pin: observed cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30; expected cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+PASS license-surfaces docs/LEGAL.md LICENSE-docs pin: observed 9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411; expected 9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411
+PASS license-surfaces docs/LEGAL.md NOTICE pin: observed 645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c; expected 645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c
+PASS license-surfaces package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/beacons/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/kernel/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS contribution-signoff bd31847d4227: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff 6a1347f589fd: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff 3d6c86ef49b5: observed matching author sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO
+PASS contribution-signoff 62acd878e3d2: observed operator author; expected operator exemption (no sign-off required)
+Last five merged subjects (characters; visibility only):
+Proposed 18: :sparkles: fixture'
++ _dotln_finish_test_temp_root 1
++ local status=1
++ trap - EXIT INT TERM
++ cleanup_test_temp_root <tmp> <tmp>/dotln-worktree-test.3EJgCH dotln-worktree-test
++ local resolved_base=<tmp>
++ local root=<tmp>/dotln-worktree-test.3EJgCH
++ local prefix=dotln-worktree-test
++ local current_base
++ local basename
++ local parent
++ local candidate_index
++ local owned_index=
++ local shown_root=<tmp>/dotln-worktree-test.3EJgCH
++ local marker
++ local marker_token
++ [[ -z <tmp>/dotln-worktree-test.3EJgCH ]]
++ [[ -z <tmp>/dotln-worktree-test.3EJgCH ]]
+<temporary-path cleanup trace omitted>
++ [[ ! -d <tmp>/dotln-worktree-test.3EJgCH ]]
++ [[ -L <tmp>/dotln-worktree-test.3EJgCH ]]
++ [[ ! -d <tmp> ]]
++ [[ -L <tmp> ]]
+++ cd -- <tmp>
+++ pwd -P
++ current_base=<tmp>
+<temporary-path cleanup trace omitted>
++ parent=<tmp>
++ basename=dotln-worktree-test.3EJgCH
+<temporary-path cleanup trace omitted>
++ case "$basename" in
++ for candidate_index in '"${!_dotln_test_temp_roots[@]}"'
+<temporary-path cleanup trace omitted>
+<temporary-path cleanup trace omitted>
++ [[ dotln-worktree-test == \d\o\t\l\n\-\w\o\r\k\t\r\e\e\-\t\e\s\t ]]
++ owned_index=0
++ break
++ [[ -z 0 ]]
++ marker=<tmp>/dotln-worktree-test.3EJgCH/.dotln-test-root-owner
++ [[ ! -f <tmp>/dotln-worktree-test.3EJgCH/.dotln-test-root-owner ]]
++ [[ -L <tmp>/dotln-worktree-test.3EJgCH/.dotln-test-root-owner ]]
++ marker_token=dotln-worktree-test.3EJgCH:66333:0
++ [[ dotln-worktree-test.3EJgCH:66333:0 != \d\o\t\l\n\-\w\o\r\k\t\r\e\e\-\t\e\s\t\.\3\E\J\g\C\H\:\6\6\3\3\3\:\0 ]]
++ rm -rf -- <tmp>/dotln-worktree-test.3EJgCH
++ [[ -e <tmp>/dotln-worktree-test.3EJgCH ]]
++ [[ -L <tmp>/dotln-worktree-test.3EJgCH ]]
++ unset '_dotln_test_temp_roots[0]'
++ unset '_dotln_test_temp_bases[0]'
++ unset '_dotln_test_temp_prefixes[0]'
++ unset '_dotln_test_temp_tokens[0]'
++ exit 1
+{"probe":"actual-publication-CR-only-code","exit":1}
+bounded-result {"name":"bounded-probe","durationMs":77839,"slowestCases":[{"name":"bounded-probe","durationMs":77839,"exitCode":1,"granularity":"task"}],"peakFootprintBytes":130892600,"peakRssBytes":358350848,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T08:00:55.762Z","finishedAt":"2026-10-09T08:02:13.601Z","exitCode":1,"executed":true}
+
+
+## P5-baseline
+command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-003/publish.mjs --baseline
+observed exit: 1
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+file://<tmp>/dotln-worktree-test.IS1cvu/project/scripts/worktree.mjs:50
+  committedMaterial,
+  ^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module './lib/worktree-material.mjs' does not provide an export named 'committedMaterial'
+    at #asyncInstantiate (node:internal/modules/esm/module_job:463:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:561:5)
+    at async node:internal/modules/esm/loader:650:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v26.9.0
+{"probe":"actual-publication-CR-only-code","baseline":true,"exit":1}
+bounded-result {"name":"bounded-probe","durationMs":701,"slowestCases":[{"name":"bounded-probe","durationMs":701,"exitCode":1,"granularity":"task"}],"peakFootprintBytes":25464408,"peakRssBytes":97501184,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T08:04:14.570Z","finishedAt":"2026-10-09T08:04:15.271Z","exitCode":1,"executed":true}
+
+
+## P5-complete-baseline
+command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-003/publish.mjs --baseline
+observed exit: running output chunk; see final chunk
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+
+
+## P5-complete-baseline-result
+observed exit: running output chunk; see final chunk
+
+
+## P5-complete-baseline-final
+observed exit: 0
+worktree surface refusal preserved the checker report and mutated no remote
+release-notes publish validation fixtures passed
+GitHub body profile refused wrapped PR and release-note prose before publication
+publication refuses agent session trailers and URLs in titles and bodies before any push
+FAIL contribution-signoff 934f5b1b8b14: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO
+PASS contribution-signoff 65414f9ba5a2: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff 31ff32c0d6c3: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff 709553964b7d: observed matching author sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO
+PASS contribution-signoff 3922eead0130: observed operator author; expected operator exemption (no sign-off required)
+contribution sign-off publication fixtures passed before any remote mutation
+{"probe":"actual-publication-CR-only-code","committedLiteral":"`` [crsample](cr-file.md) ` literal ``","publishedLiteralPreserved":true,"publishedCRSample":["`` [crsample](cr-file.md) ` literal ``"],"emptyDestinationPublished":true,"originalMixedBacktickPreserved":true}
+Advisory: Session authorship and output reads unavailable.
+Advisory: docs/evidence/WO-099/handoff.md lacks a self-review: line; write a line that starts `self-review: found <n>; fixed <n>; recorded <n>` with the fresh review's counts, then the worker or the separate-pass fallback. Completion records all the same.
+Advisory: docs/work-orders/WO-099-fixture.md declares no numbered acceptance criteria this completion can read; docs/evidence/WO-099/handoff.md is not checked.
+Advisory: Session authorship and output reads unavailable.
+Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.
+Advisory: No passing product gate at this code identity; the reviewer runs npm test before publication.
+Advisory: Session authorship and output reads unavailable.
+Advisory: docs/final-reviews/WO-099/FINAL-001.md: the report has no findings block; its finding counts are recorded as unmeasured. A report lists its findings in one block: a `<!-- dotln-findings:start -->` line, a JSON array of {"id": "F1", "route": "blocking|follow-up|operator", "class": "escape|integration|new-scope", "summary": "<one line>"} entries ([] for none) and a `<!-- dotln-findings:end -->` line. The final-review result records all the same.
+{"probe":"actual-publication-CR-only-code","baseline":true,"exit":0}
+bounded-result {"name":"bounded-probe","durationMs":81674,"slowestCases":[{"name":"bounded-probe","durationMs":81674,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":172524272,"peakRssBytes":397639680,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T08:05:05.195Z","finishedAt":"2026-10-09T08:06:26.869Z","exitCode":0,"executed":true}
+
+
+## P3-final
+command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-003/links.mjs
+observed exit: 1
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+{"probe":"baseline-CR-body-profile","source":"Intro\r\r`` [sample](file.md) ` literal ``","failures":[],"outcome":"pass"}
+{"probe":"baseline-CR-body-profile","source":"- code:\r\r      [sample](file.md)","failures":[],"outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"`` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":1,"column":34,"offset":33}}}],"rewritten":"`` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"🧪 café `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":9,"offset":8},"end":{"line":1,"column":42,"offset":41}}}],"rewritten":"🧪 café `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"\t[sample](file.md)","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":1,"column":19,"offset":18}}}],"rewritten":"\t[sample](file.md)","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"> `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":1,"column":36,"offset":35}}}],"rewritten":"> `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"- `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":1,"column":36,"offset":35}}}],"rewritten":"- `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"A span `[sample](file.md)\ncontinuation`.","parsed":[{"type":"inlineCode","value":"[sample](file.md)\ncontinuation","position":{"start":{"line":1,"column":8,"offset":7},"end":{"line":2,"column":14,"offset":39}}}],"rewritten":"A span `[sample](file.md)\ncontinuation`.","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"Intro\n\n`` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":3,"column":1,"offset":7},"end":{"line":3,"column":34,"offset":40}}}],"rewritten":"Intro\n\n`` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"```md\n[sample](file.md)\n```","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":3,"column":4,"offset":27}}}],"rewritten":"```md\n[sample](file.md)\n```","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"> ```md\n> [sample](file.md)\n> ```","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":3,"column":6,"offset":33}}}],"rewritten":"> ```md\n> [sample](file.md)\n> ```","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"- code:\n\n      [sample](file.md)","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":3,"column":3,"offset":11},"end":{"line":3,"column":24,"offset":32}}}],"rewritten":"- code:\n\n      [sample](file.md)","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"<div>\n[sample](file.md)\n</div>","parsed":[{"type":"html","value":"<div>\n[sample](file.md)\n</div>","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":3,"column":7,"offset":30}}}],"rewritten":"<div>\n[sample](file.md)\n</div>","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\n\"","source":"Text <span title=\"[sample](file.md)\">literal</span>.","parsed":[{"type":"html","value":"<span title=\"[sample](file.md)\">","position":{"start":{"line":1,"column":6,"offset":5},"end":{"line":1,"column":38,"offset":37}}},{"type":"html","value":"</span>","position":{"start":{"line":1,"column":45,"offset":44},"end":{"line":1,"column":52,"offset":51}}}],"rewritten":"Text <span title=\"[sample](file.md)\">literal</span>.","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"`` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":1,"column":34,"offset":33}}}],"rewritten":"`` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"🧪 café `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":9,"offset":8},"end":{"line":1,"column":42,"offset":41}}}],"rewritten":"🧪 café `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"\t[sample](file.md)","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":1,"column":19,"offset":18}}}],"rewritten":"\t[sample](file.md)","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"> `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":1,"column":36,"offset":35}}}],"rewritten":"> `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"- `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":1,"column":36,"offset":35}}}],"rewritten":"- `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"A span `[sample](file.md)\r\ncontinuation`.","parsed":[{"type":"inlineCode","value":"[sample](file.md)\r\ncontinuation","position":{"start":{"line":1,"column":8,"offset":7},"end":{"line":2,"column":14,"offset":40}}}],"rewritten":"A span `[sample](file.md)\r\ncontinuation`.","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"Intro\r\n\r\n`` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":3,"column":1,"offset":9},"end":{"line":3,"column":34,"offset":42}}}],"rewritten":"Intro\r\n\r\n`` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"```md\r\n[sample](file.md)\r\n```","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":3,"column":4,"offset":29}}}],"rewritten":"```md\r\n[sample](file.md)\r\n```","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"> ```md\r\n> [sample](file.md)\r\n> ```","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":3,"column":6,"offset":35}}}],"rewritten":"> ```md\r\n> [sample](file.md)\r\n> ```","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"- code:\r\n\r\n      [sample](file.md)","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":3,"column":3,"offset":13},"end":{"line":3,"column":24,"offset":34}}}],"rewritten":"- code:\r\n\r\n      [sample](file.md)","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"<div>\r\n[sample](file.md)\r\n</div>","parsed":[{"type":"html","value":"<div>\r\n[sample](file.md)\r\n</div>","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":3,"column":7,"offset":32}}}],"rewritten":"<div>\r\n[sample](file.md)\r\n</div>","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\\n\"","source":"Text <span title=\"[sample](file.md)\">literal</span>.","parsed":[{"type":"html","value":"<span title=\"[sample](file.md)\">","position":{"start":{"line":1,"column":6,"offset":5},"end":{"line":1,"column":38,"offset":37}}},{"type":"html","value":"</span>","position":{"start":{"line":1,"column":45,"offset":44},"end":{"line":1,"column":52,"offset":51}}}],"rewritten":"Text <span title=\"[sample](file.md)\">literal</span>.","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"`` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":1,"column":34,"offset":33}}}],"rewritten":"`` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"🧪 café `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":9,"offset":8},"end":{"line":1,"column":42,"offset":41}}}],"rewritten":"🧪 café `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"\t[sample](file.md)","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":1,"column":19,"offset":18}}}],"rewritten":"\t[sample](file.md)","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"> `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":1,"column":36,"offset":35}}}],"rewritten":"> `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"- `` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":1,"column":36,"offset":35}}}],"rewritten":"- `` [sample](file.md) ` literal ``","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"A span `[sample](file.md)\rcontinuation`.","parsed":[{"type":"inlineCode","value":"[sample](file.md)\rcontinuation","position":{"start":{"line":1,"column":8,"offset":7},"end":{"line":2,"column":14,"offset":39}}}],"rewritten":"A span `[sample](file.md)\rcontinuation`.","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"Intro\r\r`` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal","position":{"start":{"line":3,"column":1,"offset":7},"end":{"line":3,"column":34,"offset":40}}}],"rewritten":"Intro\r\r`` [sample](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file.md) ` literal ``","outcome":"fail"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"```md\r[sample](file.md)\r```","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":3,"column":4,"offset":27}}}],"rewritten":"```md\r[sample](file.md)\r```","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"> ```md\r> [sample](file.md)\r> ```","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":1,"column":3,"offset":2},"end":{"line":3,"column":6,"offset":33}}}],"rewritten":"> ```md\r> [sample](file.md)\r> ```","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"- code:\r\r      [sample](file.md)","parsed":[{"type":"code","value":"[sample](file.md)","position":{"start":{"line":3,"column":3,"offset":11},"end":{"line":3,"column":24,"offset":32}}}],"rewritten":"- code:\r\r      [sample](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file.md)","outcome":"fail"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"<div>\r[sample](file.md)\r</div>","parsed":[{"type":"html","value":"<div>\r[sample](file.md)\r</div>","position":{"start":{"line":1,"column":1,"offset":0},"end":{"line":3,"column":7,"offset":30}}}],"rewritten":"<div>\r[sample](file.md)\r</div>","outcome":"pass"}
+{"probe":"literal-range-preservation","newline":"\"\\r\"","source":"Text <span title=\"[sample](file.md)\">literal</span>.","parsed":[{"type":"html","value":"<span title=\"[sample](file.md)\">","position":{"start":{"line":1,"column":6,"offset":5},"end":{"line":1,"column":38,"offset":37}}},{"type":"html","value":"</span>","position":{"start":{"line":1,"column":45,"offset":44},"end":{"line":1,"column":52,"offset":51}}}],"rewritten":"Text <span title=\"[sample](file.md)\">literal</span>.","outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[empty]()","rewritten":"empty","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[empty](<> \"title\")","rewritten":"empty","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"![empty]()","rewritten":"empty","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[empty][r]\n\n[r]: <>","rewritten":"[empty][r]\n\n","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[nested [a [b]]](file(1).md)","rewritten":"[nested [a [b]]](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%281%29.md)","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[split\nlabel](file.md)","rewritten":"[split\nlabel](file.md)","remaining":[{"line":1,"href":"file.md","kind":"relative-link"}],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[escaped](file\\(1\\).md)","rewritten":"[escaped](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%5C%281%5C%29.md)","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[space](<file name.md>)","rewritten":"[space](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%20name.md)","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[fragment](#a)","rewritten":"fragment","remaining":[],"outcome":"pass"}
+{"probe":"relative-link-refusal","source":"[escape](../../../../../../outside.md)","rewritten":"escape","remaining":[],"outcome":"pass"}
+{"probe":"expanded-parser-preservation","failures":2}
+{"probe":"escaped-destination-rendered-target","source":"[escaped](file\\(1\\).md)","parsedURL":"file(1).md","rewritten":"[escaped](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%5C%281%5C%29.md)","expectedURL":"https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%281%29.md","sameTarget":false}
+bounded-result {"name":"bounded-probe","durationMs":106,"slowestCases":[{"name":"bounded-probe","durationMs":106,"exitCode":1,"granularity":"task"}],"peakFootprintBytes":1327464,"peakRssBytes":1802240,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T08:06:57.460Z","finishedAt":"2026-10-09T08:06:57.566Z","exitCode":1,"executed":true}
+
+
+## P6
+command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-003/source-review.mjs
+observed exit: 1
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+file://<worktree>/docs/evidence/WO-188/verifier-003/source-review.mjs:10
+const printer = ts.createPrinter({ removeComments: true });
+                   ^
+
+TypeError: ts.createPrinter is not a function
+    at file://<worktree>/docs/evidence/WO-188/verifier-003/source-review.mjs:10:20
+    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)
+    at async node:internal/modules/esm/loader:650:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v26.9.0
+bounded-result {"name":"bounded-probe","durationMs":68,"slowestCases":[{"name":"bounded-probe","durationMs":68,"exitCode":1,"granularity":"task"}],"peakFootprintBytes":1327464,"peakRssBytes":1802240,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T08:07:23.623Z","finishedAt":"2026-10-09T08:07:23.691Z","exitCode":1,"executed":true}
+
+
+## P7
+command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-001/api-attacks.mjs
+observed exit: 0
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+{"probe":"link-syntax","source":"[plain](../evidence/WO-188/decisions.md)","parsedLinks":["../evidence/WO-188/decisions.md"],"profile":[{"line":1,"href":"../evidence/WO-188/decisions.md","kind":"relative-link"}],"rewritten":"[plain](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/evidence/WO-188/decisions.md)"}
+{"probe":"relative body link refused [plain](../evidence/WO-188/decisions.md)","outcome":"pass"}
+{"probe":"link-syntax","source":"[nested [label]](../evidence/WO-188/decisions.md)","parsedLinks":["../evidence/WO-188/decisions.md"],"profile":[{"line":1,"href":"../evidence/WO-188/decisions.md","kind":"relative-link"}],"rewritten":"[nested [label]](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/evidence/WO-188/decisions.md)"}
+{"probe":"relative body link refused [nested [label]](../evidence/WO-188/decisions.md)","outcome":"pass"}
+{"probe":"link-syntax","source":"[file](file(1).md)","parsedLinks":["file(1).md"],"profile":[{"line":1,"href":"file(1).md","kind":"relative-link"}],"rewritten":"[file](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%281%29.md)"}
+{"probe":"relative body link refused [file](file(1).md)","outcome":"pass"}
+{"probe":"comment order-lead","outcome":"pass"}
+{"probe":"comment finding-label","outcome":"pass"}
+{"probe":"comment finding-label","outcome":"pass"}
+{"probe":"comment decision-number","outcome":"pass"}
+{"probe":"comment none","outcome":"pass"}
+{"probe":"comment none","outcome":"pass"}
+{"probe":"comment order-lead","outcome":"pass"}
+{"probe":"malformed changed-file values","outcome":"pass"}
+{"probe":"two provenance keys","outcome":"pass"}
+{"probe":"typed quotation validation","outcome":"pass"}
+{"probe":"new tracked home path","outcome":"pass"}
+{"probe":"conflict marker <<<<<<< head","outcome":"pass"}
+{"probe":"conflict marker >>>>>>> branch","outcome":"pass"}
+{"probe":"conflict marker ||||||| base","outcome":"pass"}
+{"probe":"setext is not conflict","outcome":"pass"}
+{"probe":"stub preparation refusal","outcome":"pass"}
+{"probe":"saved outcome preparation refusal","outcome":"pass"}
+{"probe":"current-review-gate","identity":"167f7a49b7767b3c5fafa4a3eab3996403e0315801d29311e7fbbc80a432fbca","gate":{"checkId":"npm test","codeIdentity":"167f7a49b7767b3c5fafa4a3eab3996403e0315801d29311e7fbbc80a432fbca","recordedAt":"2026-10-09T06:53:18.878Z","durationMs":1408803,"exitCode":0,"evidenceRef":"host-gate:167f7a49b7767b3c5fafa4a3eab3996403e0315801d29311e7fbbc80a432fbca:npm test"}}
+{"probe":"executor product gate covers current identity","outcome":"pass"}
+{"completed":true,"failed":0}
+bounded-result {"name":"bounded-probe","durationMs":832,"slowestCases":[{"name":"bounded-probe","durationMs":832,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":42472272,"peakRssBytes":95453184,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T08:07:23.806Z","finishedAt":"2026-10-09T08:07:24.638Z","exitCode":0,"executed":true}
+
+
+## P8
+command: node scripts/harness.mjs bounded -- node --test scripts/test-github-body.mjs
+observed exit: 0
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+✔ GitHub prose profile case 1 (0.550708ms)
+✔ GitHub prose profile case 2 (0.608042ms)
+✔ GitHub prose profile case 3 (0.129375ms)
+✔ GitHub prose profile case 4 (0.3385ms)
+✔ GitHub prose profile case 5 (0.1225ms)
+✔ relative links are refused only when asked, and never inside code (16.984709ms)
+✔ relative links are written absolute at the reviewed revision; escaping ones and bare fragments become text (2.142583ms)
+✔ angle-bracket destinations, single-quoted titles and bracketed definitions are links too, written with an encoded path (1.197458ms)
+✔ valid link forms with nested brackets, balanced parentheses, padding, titles and escapes are rewritten; a link split across lines is refused by the parser-backed profile; indented code stays (2.873542ms)
+✔ an empty destination is a relative link: the profile refuses it and the rewriter writes the link's text (1.011417ms)
+✔ code and raw HTML the parser renders keep their bytes whatever their backtick runs or line count; an escaped or closed backtick leaves a real link (2.69625ms)
+✔ GitHub prose profile case 6 (0.206208ms)
+✔ GitHub prose profile case 7 (0.068333ms)
+✔ GitHub prose profile case 8 (0.048417ms)
+✔ GitHub prose profile case 9 (0.045667ms)
+✔ GitHub prose profile case 10 (0.035667ms)
+✔ GitHub prose profile case 11 (0.065208ms)
+✔ GitHub prose profile case 12 (0.047291ms)
+✔ WO-064 target pull request: title, escaped contract, matrix and diff (1.132625ms)
+✔ WO-182 AC1/AC2: fourteen evidenced rows resolve in the fixture artifact store and render through outward lint (1.838084ms)
+✔ WO-182 AC1: missing baseline/review name their events; declared nonvisual stories are not applicable (0.208417ms)
+✔ WO-182 carries minor independent review findings into known items without widening scope (0.397541ms)
+✔ WO-182 refuses stale, failed, unbound, synthetic or self-reviewed evidence as readiness (1.940917ms)
+✔ WO-064 target pull request: refuses a matrix for another revision and missing artifacts (0.143833ms)
+✔ WO-064 target pull request: a same-head matrix speaks only for this WorkOrder's criteria (0.155333ms)
+✔ WO-064 target pull request: contract text naming launchpad vocabulary is refused by the lint (0.398583ms)
+✔ WO-184 criterion 8: build/lint not-applicable requires a reason and supplies no evidence (0.29675ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 87.033666
+bounded-result {"name":"bounded-probe","durationMs":139,"slowestCases":[{"name":"bounded-probe","durationMs":139,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":51288544,"peakRssBytes":142032896,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T08:07:24.769Z","finishedAt":"2026-10-09T08:07:24.908Z","exitCode":0,"executed":true}
+
+
+## P6-final
+command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-003/source-review.mjs
+observed exit: running output chunk; see final chunk
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+
+
+## P6-final-result
+observed exit: 0
+{"probe":"whole-diff-comment-isolation","trackedCodeFiles":141,"onlyComments":["scripts/check-registrations.mjs","scripts/probes/gate-sandbox-race/race.mjs"],"codeChanges":[".claude/hooks/commit-msg.mjs",".claude/hooks/concurrent-work-requires-worktrees.mjs",".claude/hooks/finish.mjs",".claude/hooks/no-attribution.mjs",".claude/hooks/no-lint-type-disables-as-fixes.mjs",".claude/hooks/permission-denied.mjs",".claude/hooks/permissions.mjs",".claude/hooks/presence-posttooluse.mjs",".claude/hooks/presence-pretooluse.mjs",".claude/hooks/presence-stop.mjs",".claude/hooks/presence-userpromptsubmit.mjs",".claude/hooks/read-observer.mjs",".claude/hooks/session.mjs",".claude/hooks/write-observer.mjs","corpus/harness/profile.mjs","corpus/harness/wo101-deferral-pins.test.mjs","packages/compiler/src/artifact-identity.ts","packages/compiler/src/harness.ts","packages/compiler/test/compiler.test.ts","packages/compiler/test/feedback.test.ts","packages/compiler/test/verification.test.ts","packages/console/src/collect.ts","packages/console/src/console-client.ts","packages/console/test/collect.test.ts","packages/console/test/console-commands.test.ts","packages/skeleton/fixtures/source-change-cli.mjs","packages/skeleton/fixtures/writer-cli.mjs","packages/skeleton/src/console-loopback.ts","packages/skeleton/src/dotln.ts","packages/skeleton/src/gate-evidence.mjs","packages/skeleton/src/harness-host.ts","packages/skeleton/src/loadouts/contributor.ts","packages/skeleton/src/local-model-transport.ts","packages/skeleton/src/mission-check-source.ts","packages/skeleton/src/resident-host.ts","packages/skeleton/src/vertical-host.ts","packages/skeleton/src/vertical-judgment-host.ts","packages/skeleton/src/vertical-resident.ts","packages/skeleton/src/worker-host.ts","packages/skeleton/test/codex-isolation-receipt.test.ts","packages/skeleton/test/executor-supports.test.ts","packages/skeleton/test/feedback-edition.test.ts","packages/skeleton/test/local-model.test.ts","packages/skeleton/test/mission-check.fixture.ts","packages/skeleton/test/mission-check.test.ts","packages/skeleton/test/portfolio.test.ts","packages/skeleton/test/resident-actors.test.ts","packages/skeleton/test/resident.test.ts","packages/skeleton/test/scenario.test.ts","packages/skeleton/test/source-change-host.test.ts","packages/skeleton/test/verification.test.ts","packages/skeleton/test/writer.test.ts","scripts/benchmark-build-publication.mjs","scripts/docs-check.mjs","scripts/evidence-mission-check.mjs","scripts/evidence-resident-actors.mjs","scripts/evidence-resident-binding.mjs","scripts/fixtures/authority-effect.mjs","scripts/fixtures/copilot-probe-hook.mjs","scripts/fixtures/writing-worker-runtime.mjs","scripts/harness-live-smoke.mjs","scripts/harness-probe.mjs","scripts/host-guard.mjs","scripts/lib/authority-probe.mjs","scripts/lib/config.mjs","scripts/lib/control-actor.mjs","scripts/lib/control-time.mjs","scripts/lib/control.mjs","scripts/lib/copilot-probe.mjs","scripts/lib/dependencies.mjs","scripts/lib/derived-contract.mjs","scripts/lib/document-gate-stubs.mjs","scripts/lib/entropy-review.mjs","scripts/lib/github-body.mjs","scripts/lib/handoff-ledger.mjs","scripts/lib/harness-prune.mjs","scripts/lib/intake-reconciliation.mjs","scripts/lib/lifecycle-evidence.mjs","scripts/lib/machinery-coverage.mjs","scripts/lib/meta.mjs","scripts/lib/off-ramps.mjs","scripts/lib/paths.mjs","scripts/lib/plan-continuation.mjs","scripts/lib/plan-failures.mjs","scripts/lib/planning-followups.mjs","scripts/lib/product-read-guard.mjs","scripts/lib/release-history.mjs","scripts/lib/release-preparation.mjs","scripts/lib/release-tags.mjs","scripts/lib/target-repair.mjs","scripts/lib/vertical-judgment.mjs","scripts/lib/vertical-primitives.mjs","scripts/lib/vertical-runtime.mjs","scripts/lib/vertical-transport.mjs","scripts/lib/worktree-integration.mjs","scripts/lib/worktree-material.mjs","scripts/lib/worktree-removal.mjs","scripts/lib/writing-worker-probe.mjs","scripts/meta.mjs","scripts/operator-control.mjs","scripts/probe-codex-effort.mjs","scripts/probes/gate-sandbox-race/loader.mjs","scripts/probes/local-model-role-qualification.mjs","scripts/probes/local-model-transport-smoke.mjs","scripts/refute-plan.mjs","scripts/release-fixtures.mjs","scripts/release.mjs","scripts/resident-bind.mjs","scripts/resume.mjs","scripts/target-worker-smoke.mjs","scripts/test-control-segments.mjs","scripts/test-derived-orders.mjs","scripts/test-docs-check.mjs","scripts/test-entropy-review.mjs","scripts/test-evidence-sources.mjs","scripts/test-fixture-temporary.mjs","scripts/test-github-body.mjs","scripts/test-harness-probe.mjs","scripts/test-harness.mjs","scripts/test-helper-reuse.mjs","scripts/test-host-guard.test.mjs","scripts/test-observed-facts.mjs","scripts/test-off-ramps.mjs","scripts/test-plan-refutation.mjs","scripts/test-portfolio.mjs","scripts/test-process-debt.mjs","scripts/test-release-fixtures.mjs","scripts/test-release-preparation.mjs","scripts/test-resident-bind.mjs","scripts/test-runner.mjs","scripts/test-runner.test.mjs","scripts/test-target-publish.mjs","scripts/test-verification-review.mjs","scripts/test-verifier-gate-claims.mjs","scripts/test-vertical-judgment.mjs","scripts/test-vertical.recovery.mjs","scripts/test-worktree-integration.mjs","scripts/work-orders.mjs","scripts/worktree.mjs"]}
+bounded-result {"name":"bounded-probe","durationMs":3201,"slowestCases":[{"name":"bounded-probe","durationMs":3201,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":285383464,"peakRssBytes":308101120,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T08:08:12.306Z","finishedAt":"2026-10-09T08:08:15.508Z","exitCode":0,"executed":true}
+
+
+## P5-LF
+command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-003/publish.mjs --lf-control
+observed exit: running output chunk; see final chunk
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+
+
+## P5-LF-result
+observed exit: 0
+worktree surface refusal preserved the checker report and mutated no remote
+release-notes publish validation fixtures passed
+GitHub body profile refused wrapped PR and release-note prose before publication
+publication refuses agent session trailers and URLs in titles and bodies before any push
+FAIL contribution-signoff 04cd64b65b80: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO
+PASS contribution-signoff 73cfcd6c429e: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff 3e6e4dfb1982: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff b59f200c3a48: observed matching author sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO
+PASS contribution-signoff 325dd5983d73: observed operator author; expected operator exemption (no sign-off required)
+contribution sign-off publication fixtures passed before any remote mutation
+{"probe":"actual-publication-CR-only-code","committedLiteral":"`` [crsample](cr-file.md) ` literal ``","publishedLiteralPreserved":true,"publishedCRSample":["`` [crsample](cr-file.md) ` literal ``"],"emptyDestinationPublished":false,"originalMixedBacktickPreserved":true}
+Advisory: Session authorship and output reads unavailable.
+Advisory: docs/evidence/WO-099/handoff.md lacks a self-review: line; write a line that starts `self-review: found <n>; fixed <n>; recorded <n>` with the fresh review's counts, then the worker or the separate-pass fallback. Completion records all the same.
+Advisory: docs/work-orders/WO-099-fixture.md declares no numbered acceptance criteria this completion can read; docs/evidence/WO-099/handoff.md is not checked.
+Advisory: Session authorship and output reads unavailable.
+Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.
+Advisory: No passing product gate at this code identity; the reviewer runs npm test before publication.
+Advisory: Session authorship and output reads unavailable.
+Advisory: docs/final-reviews/WO-099/FINAL-001.md: the report has no findings block; its finding counts are recorded as unmeasured. A report lists its findings in one block: a `<!-- dotln-findings:start -->` line, a JSON array of {"id": "F1", "route": "blocking|follow-up|operator", "class": "escape|integration|new-scope", "summary": "<one line>"} entries ([] for none) and a `<!-- dotln-findings:end -->` line. The final-review result records all the same.
+{"probe":"actual-publication-CR-only-code","baseline":false,"lfControl":true,"exit":0}
+bounded-result {"name":"bounded-probe","durationMs":80813,"slowestCases":[{"name":"bounded-probe","durationMs":80813,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":121782064,"peakRssBytes":317931520,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T08:08:40.823Z","finishedAt":"2026-10-09T08:10:01.636Z","exitCode":0,"executed":true}
+
+
+## P6-diagnostic
+command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-003/source-review.mjs --diagnose
+observed exit: 0
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+{"probe":"comment-oracle-diagnostic","rootKeys":["type","errors","program"],"difference":{"at":"root.program.body.19.__contentEnd","before":"3034","after":"3035"}}
+bounded-result {"name":"bounded-probe","durationMs":108,"slowestCases":[{"name":"bounded-probe","durationMs":108,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":1327464,"peakRssBytes":1802240,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T08:10:58.805Z","finishedAt":"2026-10-09T08:10:58.914Z","exitCode":0,"executed":true}
+
+
+## P6-corrected
+command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-003/source-review.mjs
+observed exit: running output chunk; see final chunk
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+
+
+## P6-corrected-result
+observed exit: 0
+{"probe":"whole-diff-comment-isolation","trackedCodeFiles":141,"onlyComments":["corpus/harness/profile.mjs","corpus/harness/wo101-deferral-pins.test.mjs","packages/compiler/test/compiler.test.ts","packages/compiler/test/feedback.test.ts","packages/compiler/test/verification.test.ts","packages/console/src/collect.ts","packages/skeleton/fixtures/source-change-cli.mjs","packages/skeleton/fixtures/writer-cli.mjs","packages/skeleton/src/dotln.ts","packages/skeleton/src/local-model-transport.ts","packages/skeleton/src/mission-check-source.ts","packages/skeleton/src/resident-host.ts","packages/skeleton/src/vertical-host.ts","packages/skeleton/src/vertical-judgment-host.ts","packages/skeleton/src/vertical-resident.ts","packages/skeleton/src/worker-host.ts","packages/skeleton/test/codex-isolation-receipt.test.ts","packages/skeleton/test/feedback-edition.test.ts","packages/skeleton/test/local-model.test.ts","packages/skeleton/test/mission-check.fixture.ts","packages/skeleton/test/mission-check.test.ts","packages/skeleton/test/portfolio.test.ts","packages/skeleton/test/resident-actors.test.ts","packages/skeleton/test/resident.test.ts","packages/skeleton/test/scenario.test.ts","packages/skeleton/test/source-change-host.test.ts","packages/skeleton/test/verification.test.ts","packages/skeleton/test/writer.test.ts","scripts/benchmark-build-publication.mjs","scripts/check-registrations.mjs","scripts/evidence-mission-check.mjs","scripts/evidence-resident-actors.mjs","scripts/evidence-resident-binding.mjs","scripts/fixtures/authority-effect.mjs","scripts/fixtures/writing-worker-runtime.mjs","scripts/harness-live-smoke.mjs","scripts/harness-probe.mjs","scripts/host-guard.mjs","scripts/lib/authority-probe.mjs","scripts/lib/config.mjs","scripts/lib/control-actor.mjs","scripts/lib/control-time.mjs","scripts/lib/control.mjs","scripts/lib/dependencies.mjs","scripts/lib/derived-contract.mjs","scripts/lib/handoff-ledger.mjs","scripts/lib/machinery-coverage.mjs","scripts/lib/off-ramps.mjs","scripts/lib/plan-continuation.mjs","scripts/lib/target-repair.mjs","scripts/lib/vertical-judgment.mjs","scripts/lib/vertical-primitives.mjs","scripts/lib/vertical-runtime.mjs","scripts/lib/vertical-transport.mjs","scripts/lib/writing-worker-probe.mjs","scripts/meta.mjs","scripts/operator-control.mjs","scripts/probe-codex-effort.mjs","scripts/probes/gate-sandbox-race/loader.mjs","scripts/probes/gate-sandbox-race/race.mjs","scripts/probes/local-model-role-qualification.mjs","scripts/probes/local-model-transport-smoke.mjs","scripts/release-fixtures.mjs","scripts/resume.mjs","scripts/target-worker-smoke.mjs","scripts/test-control-segments.mjs","scripts/test-derived-orders.mjs","scripts/test-evidence-sources.mjs","scripts/test-fixture-temporary.mjs","scripts/test-observed-facts.mjs","scripts/test-off-ramps.mjs","scripts/test-portfolio.mjs","scripts/test-runner.test.mjs","scripts/test-target-publish.mjs","scripts/test-verifier-gate-claims.mjs","scripts/test-vertical-judgment.mjs","scripts/test-vertical.recovery.mjs","scripts/work-orders.mjs"],"codeChanges":[".claude/hooks/commit-msg.mjs",".claude/hooks/concurrent-work-requires-worktrees.mjs",".claude/hooks/finish.mjs",".claude/hooks/no-attribution.mjs",".claude/hooks/no-lint-type-disables-as-fixes.mjs",".claude/hooks/permission-denied.mjs",".claude/hooks/permissions.mjs",".claude/hooks/presence-posttooluse.mjs",".claude/hooks/presence-pretooluse.mjs",".claude/hooks/presence-stop.mjs",".claude/hooks/presence-userpromptsubmit.mjs",".claude/hooks/read-observer.mjs",".claude/hooks/session.mjs",".claude/hooks/write-observer.mjs","packages/compiler/src/artifact-identity.ts","packages/compiler/src/harness.ts","packages/console/src/console-client.ts","packages/console/test/collect.test.ts","packages/console/test/console-commands.test.ts","packages/skeleton/src/console-loopback.ts","packages/skeleton/src/gate-evidence.mjs","packages/skeleton/src/harness-host.ts","packages/skeleton/src/loadouts/contributor.ts","packages/skeleton/test/executor-supports.test.ts","scripts/docs-check.mjs","scripts/fixtures/copilot-probe-hook.mjs","scripts/lib/copilot-probe.mjs","scripts/lib/document-gate-stubs.mjs","scripts/lib/entropy-review.mjs","scripts/lib/github-body.mjs","scripts/lib/harness-prune.mjs","scripts/lib/intake-reconciliation.mjs","scripts/lib/lifecycle-evidence.mjs","scripts/lib/meta.mjs","scripts/lib/paths.mjs","scripts/lib/plan-failures.mjs","scripts/lib/planning-followups.mjs","scripts/lib/product-read-guard.mjs","scripts/lib/release-history.mjs","scripts/lib/release-preparation.mjs","scripts/lib/release-tags.mjs","scripts/lib/worktree-integration.mjs","scripts/lib/worktree-material.mjs","scripts/lib/worktree-removal.mjs","scripts/refute-plan.mjs","scripts/release.mjs","scripts/resident-bind.mjs","scripts/test-docs-check.mjs","scripts/test-entropy-review.mjs","scripts/test-github-body.mjs","scripts/test-harness-probe.mjs","scripts/test-harness.mjs","scripts/test-helper-reuse.mjs","scripts/test-host-guard.test.mjs","scripts/test-plan-refutation.mjs","scripts/test-process-debt.mjs","scripts/test-release-fixtures.mjs","scripts/test-release-preparation.mjs","scripts/test-resident-bind.mjs","scripts/test-runner.mjs","scripts/test-verification-review.mjs","scripts/test-worktree-integration.mjs","scripts/worktree.mjs"]}
+bounded-result {"name":"bounded-probe","durationMs":3367,"slowestCases":[{"name":"bounded-probe","durationMs":3367,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":290495176,"peakRssBytes":315228160,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T08:11:49.393Z","finishedAt":"2026-10-09T08:11:52.760Z","exitCode":0,"executed":true}
+
+
+## Routine projection refresh
+command: npm run meta
+exit: 0; observation cutoff 2026-10-09T08:10:35.460Z. Structured D041/D042 records were added; the decisions index was refreshed. The full process-health table is not duplicated in this receipt.
+
+## Handoff gates
+
+G1-format
+command: npm run format:check
+observed exit: running output chunk; see final chunk
+
+> format:check
+> prettier --check . --ignore-unknown
+
+Checking formatting...
+
+
+G1-format-result
+observed exit: 0
+All matched files use Prettier code style!
+
+
+G2-docs
+command: npm run test:docs
+observed exit: running output chunk; see final chunk
+
+> test:docs
+> node scripts/test-runner.mjs --document
+
+PROGRESS [format] 0.0 s started
+
+
+G2-docs-result
+observed exit: 0
+PASS format 6.12 s
+PROGRESS [build] 0.0 s started
+PASS build 0.64 s
+PROGRESS [release-surfaces] 0.0 s started
+PROGRESS [license-surfaces] 0.0 s started
+PROGRESS [publication] 0.0 s started
+PROGRESS [docs-check] 0.0 s started
+PASS publication 0.18 s
+PROGRESS [comment-labels] 0.0 s started
+PASS comment-labels 1.18 s
+PROGRESS [index] 0.0 s started
+PASS license-surfaces 1.74 s
+PROGRESS [lineage] 0.0 s started
+PASS lineage 0.06 s
+PROGRESS [authority-evidence] 0.0 s started
+PASS release-surfaces 1.99 s
+PROGRESS [harness] 0.0 s started
+PASS harness 0.15 s
+PROGRESS [harness-context] 0.0 s started
+PASS harness-context 0.18 s
+PROGRESS [harness-evidence] 0.0 s started
+PASS authority-evidence 0.65 s
+PROGRESS [artifact-evidence] 0.0 s started
+PASS harness-evidence 0.35 s
+PROGRESS [verification-evidence] 0.0 s started
+PASS artifact-evidence 0.26 s
+PROGRESS [feedback-evidence] 0.0 s started
+PASS index 2.13 s
+PROGRESS [meta] 0.0 s started
+PASS verification-evidence 1.32 s
+PASS feedback-evidence 2.65 s
+PASS meta 2.88 s
+PROGRESS [docs-check] 15.0 s running task: docs-check (reports no cases); last report: waiting for the next case report
+PASS docs-check 17.92 s
+  [docs-check] NEWER local release tags not in docs/product/06-roadmap.md: v0.66.0, v0.66.1, v0.66.2, v0.66.3, v0.67.0, v0.67.1, v0.68.0, v0.69.0, v0.69.1, v0.69.2, v0.70.0; the table stays valid for its recorded tags; run npm run release -- list --markdown --write to add them
+PROGRESS [resume] 0.0 s started
+PROGRESS [docs-check-fixtures] 0.0 s started
+PROGRESS [comment-labels-fixtures] 0.0 s started
+PROGRESS [lineage-fixtures] 0.0 s started
+PROGRESS [comment-labels-fixtures] 0.5 s # Subtest: a new comment line that carries a finding label, a bare decision number or a leading order identifier fails; an explanation passes
+PASS comment-labels-fixtures 0.51 s
+PROGRESS [kernel-docs] 0.0 s started
+PROGRESS [lineage-fixtures] 0.5 s # Subtest: index counts lead memberships, wrapped labels and prose-only/reference sections
+PASS lineage-fixtures 0.54 s
+PROGRESS [skeleton-docs] 0.0 s started
+PROGRESS [kernel-docs] 0.1 s # Subtest: packages/kernel/dist/test/ac1-purity.test.js
+PROGRESS [skeleton-docs] 0.1 s # Subtest: packages/skeleton/dist/test/artifact-identity.test.js
+PASS kernel-docs 0.90 s
+PROGRESS [console-docs] 0.0 s started
+PROGRESS [docs-check-fixtures] 4.5 s # Subtest: WO-178 attributed operator words advise by record, with capture and fingerprinted baseline exceptions
+PROGRESS [skeleton-docs] 4.9 s # Subtest: [document] WO-180 AC1: named base failure precedes the repaired candidate and survives replay
+PROGRESS [console-docs] 4.3 s # Subtest: [document] WO-174 console fixture generator checks the current lazy exports
+PROGRESS [docs-check-fixtures] 6.0 s     # Subtest: records
+PROGRESS [docs-check-fixtures] 7.3 s # Subtest: document gate forwards explicit success diagnostics and preserves full failure output
+PASS docs-check-fixtures 7.35 s
+PROGRESS [resident-bind] 0.0 s started
+PROGRESS [skeleton-docs] 8.7 s # Subtest: [document] WO-011 selfhost executes the real repository audit, recovers its saved result, and independently verifies once
+PROGRESS [resume] 15.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [console-docs] 13.8 s # Subtest: [document] WO-115 a bound resident serves terminal bytes and events under the terminal's compiled authority, refuses in terminal shape and replays its receipts
+PROGRESS [resident-bind] 10.0 s # Subtest: bind writes a store the runtime accepts and aims at the bound worktree
+PASS resident-bind 10.00 s
+PROGRESS [local-runner-double] 0.0 s started
+PROGRESS [local-runner-double] 0.5 s # Subtest: WO-138 matrix pre-registers 30 baselines, five one-factor cells and three failure cells
+PROGRESS [console-docs] 17.6 s # Subtest: [document] WO-115 the compiled envelope admits or refuses each command by the terminal classifier's effect, through the terminal hooks' decider
+PROGRESS [local-runner-double] 2.8 s # Subtest: WO-110 the smoke records an envelope as shapes and keeps model text out
+PASS local-runner-double 3.77 s
+PROGRESS [plan-refutation-current] 0.0 s started
+PROGRESS [skeleton-docs] 21.0 s # Subtest: [document] WO-184 R9: committed no-notice replay preserves the pre-edit command and prompt
+PROGRESS [skeleton-docs] 22.5 s # Subtest: [document] WO-125 observed efforts reach the process and durable launch claim without effective readback
+PASS plan-refutation-current 2.85 s
+PROGRESS [artifact-corpus] 0.0 s started
+PROGRESS [artifact-corpus] 0.2 s # Subtest: WO-101 independent pair-arithmetic hash is planted on published FNV-1a-64 values
+PASS artifact-corpus 0.23 s
+PROGRESS [registrations] 0.0 s started
+PROGRESS [skeleton-docs] 23.9 s # Subtest: [document] WO-009 AC1/4 one process replaces only the executor; status is read-only and replay is identical
+PASS skeleton-docs 23.93 s
+PROGRESS [plan] 0.0 s started
+PASS registrations 0.59 s
+PROGRESS [entropy] 0.0 s started
+PASS entropy 0.26 s
+PROGRESS [console-docs] 24.8 s # Subtest: [document] WO-115 every contract command keeps its terminal parser, refusal bytes and events over loopback
+PASS plan 3.18 s
+PROGRESS [console-docs] 27.8 s # Subtest: [document] WO-116 the served audit command returns the terminal's bytes for each store and selection, the text host shows the three labeled projections, and the resident's own store audits
+PASS console-docs 27.84 s
+PROGRESS [resume] 30.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [resume] 45.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [resume] 60.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [resume] 75.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PASS resume 75.11 s
+npm run test:docs: 31 passed; 0 failed; 100.07 s; 31 fresh tasks
+
+
+Consumed product row: checkId npm test; code identity 167f7a49b7767b3c5fafa4a3eab3996403e0315801d29311e7fbbc80a432fbca; recorded 2026-10-09T06:53:18.878Z; duration 1408803 ms; exit 0; --review; 41 required groups; 93 fresh tasks; 0 reused; no missing required group. The fresh document row reports that same code identity, 31 fresh tasks, exit 0, duration 100071 ms, recorded 2026-10-09T08:17:23.969Z. No implementation bytes were edited by this verifier.
+
+

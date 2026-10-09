@@ -1,0 +1,19 @@
+# generated role roots at 28d32e26fade7b7d2fe6ed00c43707ad58b87f70 before WO-188 edits
+executor skill=21255 claude=6873 sha=a297e0331f89735b
+verifier skill=18507 claude=6873 sha=53d423cfbe80a35d
+reviewer skill=19958 claude=6873 sha=e5463a0318035e50
+release-close skill=9493 claude=6873 sha=058b8d78ab262b97
+planner skill=11311 claude=6873 sha=08c7d791c19e208e
+refuter skill=10590 claude=6873 sha=06aead3e320a5799
+dotln-executor
+dotln-planner
+dotln-refuter
+dotln-release-close
+dotln-reviewer
+dotln-verifier
+codex executor skill=21255 agents=6873
+codex verifier skill=18507 agents=6873
+codex reviewer skill=19958 agents=6873
+codex release-close skill=9493 agents=6873
+codex planner skill=11311 agents=6873
+codex refuter skill=10590 agents=6873

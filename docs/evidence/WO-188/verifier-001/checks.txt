@@ -1,0 +1,203 @@
+WO-188 VER-001 independent verification receipts
+Observed 2026-10-09 UTC. These are compact summaries of observed executions,
+not verbatim full transcripts. Repository implementation was not edited.
+Fixture-only Git, local bare remotes and forge doubles were used; nothing
+was published to an external forge. Paths in captured failure output are
+normalized to <subject>, <worktree> and <tmp>.
+
+Subject
+base: 28d32e26fade7b7d2fe6ed00c43707ad58b87f70
+verification checkpoint: b2167dc1f40a156a27e4f81ee66ea2a00ad319f5
+code identity: c4f2870c166bb356fbc1a432d8ea34e384c5bdbdc7ee6dd0eac6e41ea8af97ee
+
+P1 — protected scratch boundaries
+Own scratch script imports the actual inventory and removal modules.
+A committed ignored standalone repository is removed and its head and
+remoteHeld=true are recorded. Intake, a declared gitlink, a linked worktree,
+and a repository inside a declared-submodule ancestor survive; an explicit
+disposable override cannot turn the protected cases into scratch.
+Bounded exit 0; 1349 ms; finished 2026-10-09T02:22:55Z.
+
+P2 — populated submodule before scratch deletion
+node scripts/harness.mjs bounded -- bash scripts/test-release.sh --case submodule_force
+Pass; 5530 ms; finished 2026-10-09T02:23:08Z.
+The committed populated submodule's unpushed work is retained, with an intake
+unit and scratch sidecar present; the refusal happens before scratch removal.
+
+P3 — F1: unignored committed nested repository after review
+Portable source: scratch-release.mjs, byte-for-byte copy of the tested script.
+It injects one case into the actual scripts/test-release.sh in system temp.
+The case commits and reviews a candidate, merges through its local bare origin,
+then adds an unignored standalone committed repository at outside-lanes/probe.
+Expected: clean cleanup without a flag/blocker, scratch absent, removal record
+with the path, head and remoteHeld. Observed:
+{"case":"unignored-scratch-after-review","publication":"published","cleanup":"blocked","material":[],"removals":[],"blockers":[{"action":"finish","reason":"error: working tree is not clean: <subject> (?? outside-lanes/probe/)"}],"scratchSurvived":true}
+First execution: exit 1; 4762 ms; finished 2026-10-09T02:26:11Z.
+Portable replay: exit 1; 4335 ms; started 2026-10-09T02:41:04.861Z;
+finished 2026-10-09T02:41:09.196Z; peak footprint 88812464 bytes.
+Command from the repository root:
+node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-001/scratch-release.mjs
+The script currently exits 1 for the criterion's failed assertion.
+
+P4 — F2 and API controls
+Portable source: api-attacks.mjs, byte-for-byte copy of the tested script.
+The unedited installed Prettier Markdown parser recognizes each as a link:
+[plain](../evidence/WO-188/decisions.md)
+[nested [label]](../evidence/WO-188/decisions.md)
+[file](file(1).md)
+With links=true the body profile refuses the plain relative link and the
+rewriter makes it absolute. For the nested label and balanced-parenthesis
+destination, the profile returns [] and the rewriter leaves the input unchanged.
+Both destinations remain relative even with a GitHub repository and revision.
+Initial run: exit 1 with two failed checks; 1677 ms; finished 02:27:46Z.
+Portable replay: exit 1 with the same two failed checks; 868 ms;
+started 2026-10-09T02:44:35.407Z; finished 2026-10-09T02:44:36.275Z;
+peak footprint 31641464 bytes.
+Positive controls also passed: multiline JSDoc order lead, report finding-label
+variants, bare decision labels, qualified explanatory comments, strings that
+are not comments, malformed changed-file values, two provenance keys, typed
+quote digest validation, new tracked home-path file and line, each conflict
+marker, setext non-conflict, stub and saved-outcome preparation refusals, and
+a passing review row at the subject's code identity.
+Command from the repository root:
+node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-001/api-attacks.mjs
+The script currently exits 1 for the two body-profile assertions.
+
+P5 — selected harness fixtures
+Two cases passed: admission of every actual release-close printer and queued
+notification/unattributed transcript classification. Bounded exit 0; 2870 ms;
+finished 2026-10-09T02:28:04Z.
+Three cases passed: failed Bash diagnostic/transcript deduplication, generated
+failure observer, and whole-proof partial pruning. Bounded exit 0; 12956 ms;
+finished 2026-10-09T02:28:54Z.
+
+P6 — document/API fixture suites
+node --test --test-concurrency=1 scripts/test-docs-check.mjs scripts/test-comment-labels.mjs scripts/test-github-body.mjs scripts/test-release-preparation.mjs scripts/test-helper-reuse.mjs
+Run through the bounded harness: 91 passed, zero failed; 17210 ms;
+2026-10-09T02:29:08.068Z to 2026-10-09T02:29:25.278Z.
+Covers release-history failures, provenance baselines, typed quotations,
+comment-baseline edited-line refusal, preparation states/symlinks/conflicts,
+relative-link controls and untracked helper duplicate detection.
+
+P7 — console export overlay counterfactual
+The verifier ran one real-generator integration case against unchanged console
+fixture bytes, then against a temp copy of the integration test with fixture-only
+removal of the actual export const readFixtureManifest. No worktree source was
+edited. Positive case passed (13549 ms); counterfactual failed (11227 ms):
+packages/console/test/board.test.ts(51,3): error TS2459: Module '"./fixtures.js"' declares 'readFixtureManifest' locally, but it is not exported.
+The wrapper asserted both outcomes and exited 0; bounded 24932 ms;
+2026-10-09T02:35:41.362Z to 2026-10-09T02:36:06.294Z.
+Probe correction: the first attempt targeted export function rather than the
+actual export const and changed no bytes. That invalid attempt was discarded;
+the corrected probe first asserted the fixture bytes changed. Its result alone
+supports criterion 15.
+
+P8 — selected control/process fixtures
+Eleven cases passed: correction-state helper refusal; plan-notification counting;
+Codex fake-worker default pin; persisted correction ids; role-oracle history and
+byte economy; leading-parent touching paths; no-main completion guidance;
+reserved export lanes/revision errors; meter omission; untracked whitespace
+and attribute exemptions; resident profile mismatch with no launch line.
+Bounded exit 0; 10645 ms; 2026-10-09T02:36:51.677Z to 02:37:02.322Z.
+
+P9 — six release cases, sequential under one bounded wrapper
+createrecovery (19472 ms): create/authentication-after-tag/view recovery records.
+malformed_material (1521 ms): refused close record survives malformed words.
+derived (5563 ms): dirty derived worktree ownership and remedy.
+material (73979 ms): outside ignored lanes, earlier kept repository, protected
+intake, alias scope and duplicates, material-caused settle commands and hooks.
+edition (10847 ms): release generation and title/link behavior.
+prepare_independent (4759 ms): both waiting states, evidence symlink and
+pending decisions-path directory handling.
+All six passed; bounded exit 0; 116216 ms;
+2026-10-09T02:38:10.751Z to 2026-10-09T02:40:06.967Z.
+The planted reference-transaction hook leaves no marker; no close-path Git call
+writes a nested ref, so the file-monitor control supplies the live hook proof.
+
+P10 — independent artifact/source inventory and seven read-only checks
+Built FEEDBACK_SOURCE_PATHS: 59 judged paths; touched judged paths are the
+lockfile, compiler artifact identity and skeleton package. Their normalized
+judged behavior is unchanged: release labels/version pins only.
+Nine distinct registered edition-source paths are touched. All four current
+edition families are valid; previous operator-word fingerprint entries (34)
+are unchanged and current advisories are zero.
+Both generated role roots agree. Every role carries the goal-alignment sentence
+once; only the executor carries the comment sentence; the fork sentence remains
+and there is no experiment pre-registration duty. Role bytes before -> after:
+executor 21255 -> 21009
+verifier 18507 -> 18507
+reviewer 19958 -> 20011
+release-close 9493 -> 9659
+planner 11311 -> 11311
+refuter 10590 -> 10590
+No new ceiling acceptance. Existing experiment records remain accepted.
+The unedited Markdown parser sees four PR-body links and ten Release-text links
+in the regenerated WO-199 artifacts, all HTTPS; no unavailable table cell;
+one omission-count line; title once.
+Seven checks pass: authority evidence, artifact identity, verification evidence,
+feedback carry, console fixtures, harness bundle (34 generated surfaces), and
+publication locks (254 headings, indexed sections current).
+Bounded exit 0; 17137 ms;
+2026-10-09T02:42:59.163Z to 2026-10-09T02:43:16.301Z.
+
+P11 — handoff gates and whitespace
+npm run format:check passed before the initial document gate and again after
+the isolated diagnostic, before the second document gate.
+git diff --check passed. Package changes are compiler/skeleton versions and
+workspace pins, with no dependency addition.
+Executor review row was read and independently checked for coverage with
+coveringGateCheck after both document failures. It still stands:
+command: npm test -- --review
+selection: review; executionMode: fresh; 41 suite groups; 93 fresh tasks;
+zero reused tasks; exit 0; duration 1677979 ms;
+recordedAt: 2026-10-09T01:56:20.681Z
+treeHash: 1ee252f81d47bf9ba076d8cf641393347dfd5b80
+codeIdentity: c4f2870c166bb356fbc1a432d8ea34e384c5bdbdc7ee6dd0eac6e41ea8af97ee
+identityUnchanged/buildOutputUnchanged: true
+The verifier consumes this covering passing row rather than rerunning the full
+product gate. New fixture counterexamples are additional evidence, not changes
+to the implementation identity.
+
+P12 — F3: repeated current full-document failure and controls
+npm run test:docs (first fresh attempt): exit 1; 30 passed, one failed;
+31 fresh tasks; 167164 ms; recorded 2026-10-09T02:48:25.044Z.
+console-docs: 26 of 27 cases pass; the bound-resident case fails in
+8730.017625 ms with TypeError: fetch failed.
+The runner's committed-base comparison at
+28d32e26fade7b7d2fe6ed00c43707ad58b87f70 passes all 27 cases (22976.66975 ms).
+The runner prints introduced console-docs; this is current-fail/base-pass
+classification, not established causation.
+An isolated current-subject control with a scratch-only global fetch wrapper
+(captures failure name, cause code/message and sanitized stack; no request data)
+passes the bound-resident case: one pass, zero fail, 13985.565833 ms;
+bounded total 14156 ms; 2026-10-09T02:52:59.575Z to 02:53:13.731Z.
+No diagnostic failure or cause was emitted.
+After repeating format:check, npm run test:docs (second fresh attempt):
+exit 1; 30 passed, one failed; 31 fresh tasks; 148839 ms;
+recorded 2026-10-09T02:56:15.618Z; same code identity and tree hash as first.
+console-docs again has 26 of 27 cases pass; the same bound-resident case fails
+in 8828.470917 ms with TypeError: fetch failed. The base comparison again prints
+introduced console-docs. The exact full-gate reproduction is npm run test:docs.
+Case: packages/console/test/console-commands.test.ts:405.
+Cause and attribution to a particular edit remain unknown. The older passing
+document gate and the isolated pass cannot discharge criterion 27.
+
+Probe ownership and limits
+Only the root verifier ran probes; no spawned workers. The local harness,
+release fixture, lifecycle, metadata and documentation instruments under
+verification also recorded portions of these receipts. The findings rest on
+independent assertions, actual Git/filesystem state, unedited parser nodes and
+current executable failure output. Fixtures do not prove every host/version
+or every possible Markdown syntax.
+
+P13 — authored-record validation before the result transition
+After writing the report and D030-D032, npm run meta refreshes the decisions
+index and follow-up register; bounded node scripts/meta.mjs --check exits 0.
+Whole-repository npm run format:check passes including the new artifacts.
+Bounded node scripts/docs-check.mjs exits 0 (20254 ms), finished
+2026-10-09T03:04:26.579Z: 15 product documents, 412 declared historical link
+occurrences, 214 declared historical home-path lines, zero failures and zero
+operator-word advisories. This document validator pass does not replace the
+failed full document gate's loopback suite.
+Current report parse has exactly 27 criterion judgments, unmet 1/24/27, one
+actor line and one cost line. Product code identity remains unchanged.

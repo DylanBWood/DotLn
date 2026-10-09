@@ -1,0 +1,643 @@
+# WO-188 VER-002 independent probe receipts
+
+Subject checkpoint: 86f1bffaa995706057a0bb44d5214b5a6fa3aa88 (refs/dotln/checkpoint/WO-188/7).
+Base: 28d32e26fade7b7d2fe6ed00c43707ad58b87f70.
+Only fixture Git repositories, local bare origins and forge doubles were used for publication/cleanup probes.
+No external publication occurred. Paths in captured output are normalized to <worktree> or <tmp>.
+
+Instrumentation corrections: the first publication attempt inherited the root session marker and stopped before the target on a fixture writer/runtime check. The executed helper isolates only the fixture child's session markers; normal fixture guards remain enabled. The first subject helper used feedbackSourceFile (snapshot projection), which retains workspace pins, instead of evidenceSourceContent (edition behavior comparison). That helper assertion was corrected after reading the edition implementation and exact package diff; the final subject probe passes.
+
+Decision lenses before handoff: avoid narrowing criterion 24 to nonempty links; use the installed parser and actual publish capture rather than treating the rewriter as its own oracle. Avoid Naive Interventionism by leaving implementation repair to the executor. NoOp for implementation changes in this verifier role; the lifecycle result is fail and both reproduced defects are durably recorded.
+
+## Unignored nested scratch: original VER-001 reproduction
+
+Command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-001/scratch-release.mjs
+Exit: 0
+
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+PROGRESS [bounded-probe] PROGRESS release case verifier_unignored started
+PROGRESS [bounded-probe] PROGRESS release case verifier_unignored passed
+PROGRESS release case verifier_unignored started
+{"case":"unignored-scratch-after-review","publication":"published","cleanup":"clean","material":[{"path":"outside-lanes/probe","disposition":"disposable"}],"removals":[{"path":"outside-lanes/probe","head":"cb9b3325eea529a6aacbe7529f12e45f5640a665","remoteHeld":false}],"blockers":[],"scratchSurvived":false}
+PROGRESS release case verifier_unignored passed
+release tests passed
+Preparing worktree (new branch 'wo-099')
+{"case":"unignored-scratch-after-review","exit":0}
+bounded-result {"name":"bounded-probe","durationMs":3347,"slowestCases":[{"name":"bounded-probe","durationMs":3347,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":88042584,"peakRssBytes":236421120,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T04:37:00.919Z","finishedAt":"2026-10-09T04:37:04.267Z","exitCode":0,"executed":true}
+
+## Original API attacks and repaired link forms
+
+Command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-001/api-attacks.mjs
+Exit: 0
+
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+{"probe":"link-syntax","source":"[plain](../evidence/WO-188/decisions.md)","parsedLinks":["../evidence/WO-188/decisions.md"],"profile":[{"line":1,"href":"../evidence/WO-188/decisions.md","kind":"relative-link"}],"rewritten":"[plain](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/evidence/WO-188/decisions.md)"}
+{"probe":"relative body link refused [plain](../evidence/WO-188/decisions.md)","outcome":"pass"}
+{"probe":"link-syntax","source":"[nested [label]](../evidence/WO-188/decisions.md)","parsedLinks":["../evidence/WO-188/decisions.md"],"profile":[{"line":1,"href":"../evidence/WO-188/decisions.md","kind":"relative-link"}],"rewritten":"[nested [label]](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/evidence/WO-188/decisions.md)"}
+{"probe":"relative body link refused [nested [label]](../evidence/WO-188/decisions.md)","outcome":"pass"}
+{"probe":"link-syntax","source":"[file](file(1).md)","parsedLinks":["file(1).md"],"profile":[{"line":1,"href":"file(1).md","kind":"relative-link"}],"rewritten":"[file](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file%281%29.md)"}
+{"probe":"relative body link refused [file](file(1).md)","outcome":"pass"}
+{"probe":"comment order-lead","outcome":"pass"}
+{"probe":"comment finding-label","outcome":"pass"}
+{"probe":"comment finding-label","outcome":"pass"}
+{"probe":"comment decision-number","outcome":"pass"}
+{"probe":"comment none","outcome":"pass"}
+{"probe":"comment none","outcome":"pass"}
+{"probe":"comment order-lead","outcome":"pass"}
+{"probe":"malformed changed-file values","outcome":"pass"}
+{"probe":"two provenance keys","outcome":"pass"}
+{"probe":"typed quotation validation","outcome":"pass"}
+{"probe":"new tracked home path","outcome":"pass"}
+{"probe":"conflict marker <<<<<<< head","outcome":"pass"}
+{"probe":"conflict marker >>>>>>> branch","outcome":"pass"}
+{"probe":"conflict marker ||||||| base","outcome":"pass"}
+{"probe":"setext is not conflict","outcome":"pass"}
+{"probe":"stub preparation refusal","outcome":"pass"}
+{"probe":"saved outcome preparation refusal","outcome":"pass"}
+{"probe":"current-review-gate","identity":"f27f966bfa686518a162738c99e25a31e94a91d5c8232da1f78073ccf1c33f7f","gate":{"checkId":"npm test","codeIdentity":"f27f966bfa686518a162738c99e25a31e94a91d5c8232da1f78073ccf1c33f7f","recordedAt":"2026-10-09T04:29:06.031Z","durationMs":1435876,"exitCode":0,"evidenceRef":"host-gate:f27f966bfa686518a162738c99e25a31e94a91d5c8232da1f78073ccf1c33f7f:npm test"}}
+{"probe":"executor product gate covers current identity","outcome":"pass"}
+{"completed":true,"failed":0}
+bounded-result {"name":"bounded-probe","durationMs":781,"slowestCases":[{"name":"bounded-probe","durationMs":781,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":36475512,"peakRssBytes":84279296,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T04:37:34.733Z","finishedAt":"2026-10-09T04:37:35.514Z","exitCode":0,"executed":true}
+
+## Protected material boundaries and reconciliation
+
+Command: node scripts/harness.mjs bounded -- node --test --test-name-pattern 'a nested repository outside intake|a linked worktree of another repository|reconciliation removes scratch|unborn repositories' scripts/test-process-debt.mjs
+Exit: 0
+
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+✔ unborn repositories with refs, staged-only bytes, dangling objects or unreadable metadata are no scaffolding; as scratch they are removed with a record (1091.770167ms)
+✔ a nested repository outside intake that the tracked tree does not declare is scratch; intake and declared submodules are kept (3100.372167ms)
+✔ a linked worktree of another repository is never scratch: its commits live in its owner, so it is kept and a disposable word on it refuses (232.955709ms)
+✔ reconciliation removes scratch repositories and records each with its head and whether a remote held it; preserved units and words stay (1203.213834ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5730.721041
+bounded-result {"name":"bounded-probe","durationMs":5778,"slowestCases":[{"name":"bounded-probe","durationMs":5778,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":80227248,"peakRssBytes":183058432,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T04:38:59.972Z","finishedAt":"2026-10-09T04:39:05.750Z","exitCode":0,"executed":true}
+
+## Actual material release cleanup and printed admissions
+
+Command: node scripts/harness.mjs bounded -- bash scripts/test-release.sh --case material
+Exit: 0
+
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+PROGRESS [bounded-probe] PROGRESS release case material started
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: PROGRESS release case material started
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: PROGRESS release case material started
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: PROGRESS release case material started
+PROGRESS [bounded-probe] PROGRESS release case material passed
+PROGRESS release case material started
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (detached HEAD 3e06edf)
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (detached HEAD fc5c3a4)
+Preparing worktree (detached HEAD fc5c3a4)
+WO-195 admitted 3 actual printer commands
+material handoff, preview, cleanup, preservation and publication retry passed
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+record I/O preserves publication outcome and original errors
+PROGRESS release case material passed
+release tests passed
+bounded-result {"name":"bounded-probe","durationMs":53240,"slowestCases":[{"name":"bounded-probe","durationMs":53240,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":75686624,"peakRssBytes":176783360,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T04:40:13.686Z","finishedAt":"2026-10-09T04:41:06.926Z","exitCode":0,"executed":true}
+
+## Populated committed submodule before force
+
+Command: node scripts/harness.mjs bounded -- bash scripts/test-release.sh --case submodule_force
+Exit: 0
+
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+PROGRESS [bounded-probe] PROGRESS release case submodule_force started
+PROGRESS [bounded-probe] PROGRESS release case submodule_force passed
+PROGRESS release case submodule_force started
+PROGRESS release case submodule_force passed
+release tests passed
+bounded-result {"name":"bounded-probe","durationMs":4297,"slowestCases":[{"name":"bounded-probe","durationMs":4297,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":74572776,"peakRssBytes":175669248,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T04:41:37.918Z","finishedAt":"2026-10-09T04:41:42.215Z","exitCode":0,"executed":true}
+
+## Rendered empty and other relative destinations (expected finding exit 1)
+
+Command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-002/links.mjs
+Exit: 1
+
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+{"source":"[empty]()","parsed":[{"type":"link","url":""}],"profile":[],"rewritten":"[empty]()","rewrittenLinks":[{"type":"link","url":""}],"remaining":[{"type":"link","url":""}],"outcome":"fail"}
+{"source":"[empty](<> \"title\")","parsed":[{"type":"link","url":""}],"profile":[],"rewritten":"[empty](<> \"title\")","rewrittenLinks":[{"type":"link","url":""}],"remaining":[{"type":"link","url":""}],"outcome":"fail"}
+{"source":"[empty][dest]\n\n[dest]: <>","parsed":[{"type":"definition","url":""}],"profile":[],"rewritten":"[empty][dest]\n\n[dest]: <>","rewrittenLinks":[{"type":"definition","url":""}],"remaining":[{"type":"definition","url":""}],"outcome":"fail"}
+{"source":"![empty]()","parsed":[{"type":"image","url":""}],"profile":[],"rewritten":"![empty]()","rewrittenLinks":[{"type":"image","url":""}],"remaining":[{"type":"image","url":""}],"outcome":"fail"}
+{"source":"[deep [one [two [three]]]](file.md)","parsed":[{"type":"link","url":"file.md"}],"profile":[{"line":1,"href":"file.md","kind":"relative-link"}],"rewritten":"[deep [one [two [three]]]](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file.md)","rewrittenLinks":[{"type":"link","url":"https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file.md"}],"remaining":[],"outcome":"pass"}
+{"source":"[split\nlabel](file.md)","parsed":[{"type":"link","url":"file.md"}],"profile":[{"line":2,"previousLine":1},{"line":1,"href":"file.md","kind":"relative-link"}],"rewritten":"[split\nlabel](file.md)","rewrittenLinks":[{"type":"link","url":"file.md"}],"remaining":[{"type":"link","url":"file.md"}],"outcome":"pass"}
+{"source":"[fragment](#anchor)","parsed":[{"type":"link","url":"#anchor"}],"profile":[{"line":1,"href":"#anchor","kind":"relative-link"}],"rewritten":"fragment","rewrittenLinks":[],"remaining":[],"outcome":"pass"}
+{"source":"[parent](../../../../../../escape.md)","parsed":[{"type":"link","url":"../../../../../../escape.md"}],"profile":[{"line":1,"href":"../../../../../../escape.md","kind":"relative-link"}],"rewritten":"parent","rewrittenLinks":[],"remaining":[],"outcome":"pass"}
+{"source":"[root](/absolute-repository.md)","parsed":[{"type":"link","url":"/absolute-repository.md"}],"profile":[{"line":1,"href":"/absolute-repository.md","kind":"relative-link"}],"rewritten":"root","rewrittenLinks":[],"remaining":[],"outcome":"pass"}
+{"source":"`[code](file.md)`","control":"unchanged and no relative-link failure","outcome":"pass"}
+{"source":"```md\n[code](file.md)\n```","control":"unchanged and no relative-link failure","outcome":"pass"}
+{"source":"    [code](file.md)","control":"unchanged and no relative-link failure","outcome":"pass"}
+{"source":"[absolute](https://example.invalid/file.md)","control":"unchanged and no relative-link failure","outcome":"pass"}
+{"source":"[protocol](//example.invalid/file.md)","control":"unchanged and no relative-link failure","outcome":"pass"}
+{"probe":"rendered-relative-link-class","failed":4}
+bounded-result {"name":"bounded-probe","durationMs":87,"slowestCases":[{"name":"bounded-probe","durationMs":87,"exitCode":1,"granularity":"task"}],"peakFootprintBytes":1327464,"peakRssBytes":1802240,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T04:38:15.667Z","finishedAt":"2026-10-09T04:38:15.754Z","exitCode":1,"executed":true}
+
+## Mixed-backtick code spans and controls (expected finding exit 1)
+
+Command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-002/code-spans.mjs
+Exit: 1
+
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+{"source":"`` [sample](file.md) ` literal ``","parsed":[{"type":"inlineCode","value":"[sample](file.md) ` literal"}],"profile":[],"rewritten":"`` [sample](https://github.com/public/fixture/blob/reviewed/docs/final-reviews/WO-188/file.md) ` literal ``","outcome":"fail"}
+{"source":"`` literal ` [sample](file.md) ``","parsed":[{"type":"inlineCode","value":"literal ` [sample](file.md)"}],"profile":[],"rewritten":"`` literal ` [sample](file.md) ``","outcome":"pass"}
+{"source":"``` [sample](file.md) `` literal ```","parsed":[{"type":"inlineCode","value":"[sample](file.md) `` literal"}],"profile":[],"rewritten":"``` [sample](file.md) `` literal ```","outcome":"pass"}
+{"source":"`[sample](file.md)`","parsed":[{"type":"inlineCode","value":"[sample](file.md)"}],"profile":[],"rewritten":"`[sample](file.md)`","outcome":"pass"}
+{"source":"``[sample](file.md)``","parsed":[{"type":"inlineCode","value":"[sample](file.md)"}],"profile":[],"rewritten":"``[sample](file.md)``","outcome":"pass"}
+{"source":"    [sample](file.md)","parsed":[{"type":"code","value":"[sample](file.md)"}],"profile":[],"rewritten":"    [sample](file.md)","outcome":"pass"}
+{"probe":"code-span-preservation","failed":1}
+bounded-result {"name":"bounded-probe","durationMs":75,"slowestCases":[{"name":"bounded-probe","durationMs":75,"exitCode":1,"granularity":"task"}],"peakFootprintBytes":1327464,"peakRssBytes":1802240,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T04:43:06.775Z","finishedAt":"2026-10-09T04:43:06.850Z","exitCode":1,"executed":true}
+
+## Actual publication of both finding inputs (expected finding exit 1)
+
+Command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-002/publish.mjs
+Exit: 1
+
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+worktree surface refusal preserved the checker report and mutated no remote
+release-notes publish validation fixtures passed
+GitHub body profile refused wrapped PR and release-note prose before publication
+publication refuses agent session trailers and URLs in titles and bodies before any push
+FAIL contribution-signoff 35b22874b079: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO
+PASS contribution-signoff 260388102007: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff 2b0d3925d17c: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff f3add95f0046: observed matching author sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO
+PASS contribution-signoff 615e5a320b98: observed operator author; expected operator exemption (no sign-off required)
+contribution sign-off publication fixtures passed before any remote mutation
+{"probe":"actual-publication-in-local-forge-double","expectedCodeSpan":"`` [sample](file.md) ` literal ``","actualCodeSpan":"`` [sample](https://github.com/dotln-fixture/worktree/blob/615e5a320b98e26d95fe0fc638717feb02c48615/file.md) ` literal ``","emptyDestinationPublished":true}
+Advisory: Session authorship and output reads unavailable.
+Advisory: docs/evidence/WO-099/handoff.md lacks a self-review: line; write a line that starts `self-review: found <n>; fixed <n>; recorded <n>` with the fresh review's counts, then the worker or the separate-pass fallback. Completion records all the same.
+Advisory: docs/work-orders/WO-099-fixture.md declares no numbered acceptance criteria this completion can read; docs/evidence/WO-099/handoff.md is not checked.
+Advisory: Session authorship and output reads unavailable.
+Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.
+Advisory: No passing product gate at this code identity; the reviewer runs npm test before publication.
+Advisory: Session authorship and output reads unavailable.
+Advisory: docs/final-reviews/WO-099/FINAL-001.md: the report has no findings block; its finding counts are recorded as unmeasured. A report lists its findings in one block: a `<!-- dotln-findings:start -->` line, a JSON array of {"id": "F1", "route": "blocking|follow-up|operator", "class": "escape|integration|new-scope", "summary": "<one line>"} entries ([] for none) and a `<!-- dotln-findings:end -->` line. The final-review result records all the same.
+node:internal/assert/utils:146
+  throw error;
+  ^
+
+AssertionError [ERR_ASSERTION]: a published code example must retain its literal bytes
++ actual - expected
+
++ '`` [sample](https://github.com/dotln-fixture/worktree/blob/615e5a320b98e26d95fe0fc638717feb02c48615/file.md) ` literal ``'
+- '`` [sample](file.md) ` literal ``'
+
+    at [stdin]:7:8
+    at runScriptInThisContext (node:internal/vm:219:10)
+    at node:internal/process/execution:485:12
+    at [stdin]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:483:60)
+    at evalFunction (node:internal/process/execution:317:30)
+    at evalTypeScript (node:internal/process/execution:329:3)
+    at node:internal/main/eval_stdin:51:5
+    at ReadStream.<anonymous> (node:internal/process/execution:239:5)
+    at ReadStream.emit (node:events:514:20) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '`` [sample](https://github.com/dotln-fixture/worktree/blob/615e5a320b98e26d95fe0fc638717feb02c48615/file.md) ` literal ``',
+  expected: '`` [sample](file.md) ` literal ``',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.9.0
+{"probe":"publication-code-span","exit":1}
+bounded-result {"name":"bounded-probe","durationMs":87239,"slowestCases":[{"name":"bounded-probe","durationMs":87239,"exitCode":1,"granularity":"task"}],"peakFootprintBytes":134989080,"peakRssBytes":370999296,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T04:51:04.345Z","finishedAt":"2026-10-09T04:52:31.585Z","exitCode":1,"executed":true}
+
+## Repaired resident loopback raw-socket contract
+
+Command: node scripts/harness.mjs bounded -- node --test --test-name-pattern 'bound resident serves terminal' packages/console/dist/test/console-commands.test.js
+Exit: 0
+
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+✔ [document] WO-115 a bound resident serves terminal bytes and events under the terminal's compiled authority, refuses in terminal shape and replays its receipts (12367.8895ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12465.276834
+bounded-result {"name":"bounded-probe","durationMs":12514,"slowestCases":[{"name":"bounded-probe","durationMs":12514,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":208479888,"peakRssBytes":378765312,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T04:53:24.549Z","finishedAt":"2026-10-09T04:53:37.063Z","exitCode":0,"executed":true}
+
+## Registry, versions, generated roles, regenerated artifacts and covering product row
+
+Command: node scripts/harness.mjs bounded -- node docs/evidence/WO-188/verifier-002/subject.mjs
+Exit: 0
+
+{
+  "base": "28d32e26fade7b7d2fe6ed00c43707ad58b87f70",
+  "codeIdentity": "f27f966bfa686518a162738c99e25a31e94a91d5c8232da1f78073ccf1c33f7f",
+  "registeredChanged": [
+    "package-lock.json",
+    "packages/compiler/package.json",
+    "packages/compiler/src/artifact-identity.ts",
+    "packages/compiler/src/harness.ts",
+    "packages/skeleton/package.json",
+    "packages/skeleton/src/gate-evidence.mjs",
+    "packages/skeleton/src/harness-host.ts",
+    "packages/skeleton/src/loadouts/contributor.ts",
+    "scripts/lib/paths.mjs"
+  ],
+  "judgedCount": 59,
+  "judgedChanged": [
+    "package-lock.json",
+    "packages/compiler/src/artifact-identity.ts",
+    "packages/skeleton/package.json"
+  ],
+  "judgedBehaviorUnchanged": true,
+  "executorRootBefore": 21255,
+  "executorRootAfter": 21009,
+  "ceilingsUnchanged": true,
+  "releaseTitleOccurrences": 1,
+  "regeneratedBodyProfile": "pass",
+  "coveringReviewRow": {
+    "checkId": "npm test",
+    "codeIdentity": "f27f966bfa686518a162738c99e25a31e94a91d5c8232da1f78073ccf1c33f7f",
+    "treeHash": "d4b59132d2eb208c3231e0efa1ef90d6b5abb53f",
+    "recordedAt": "2026-10-09T04:29:06.031Z",
+    "durationMs": 1435876,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:f27f966bfa686518a162738c99e25a31e94a91d5c8232da1f78073ccf1c33f7f:npm test",
+    "freshTasks": 93,
+    "reusedTasks": 0,
+    "requiredSuites": [
+      "build",
+      "format",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "evidence-sources",
+      "configuration-root",
+      "harness-probe",
+      "authority-evidence",
+      "harness-fixtures",
+      "harness",
+      "harness-evidence",
+      "plan-refutation",
+      "artifact-evidence",
+      "verification-evidence",
+      "feedback-evidence",
+      "runner-fixtures",
+      "process-debt",
+      "meta",
+      "registrations"
+    ],
+    "taskCount": 93
+  },
+  "coverageLocation": "worktree",
+  "required": [
+    "format",
+    "build",
+    "release-preparation",
+    "github-body",
+    "outward-lint",
+    "target-publish",
+    "vertical",
+    "license-fixtures",
+    "publication-fixtures",
+    "backup-intake",
+    "beacon-portability",
+    "checkpoint",
+    "worktree",
+    "worktree-integration",
+    "release",
+    "work-orders-fixtures",
+    "kernel",
+    "compiler",
+    "skeleton",
+    "console",
+    "browser-evidence",
+    "adjacent-queue",
+    "derived-orders",
+    "portfolio",
+    "codex-continuation",
+    "authority-grants",
+    "evidence-sources",
+    "configuration-root",
+    "harness-probe",
+    "authority-evidence",
+    "harness-fixtures",
+    "harness",
+    "harness-evidence",
+    "plan-refutation",
+    "artifact-evidence",
+    "verification-evidence",
+    "feedback-evidence",
+    "runner-fixtures",
+    "process-debt",
+    "meta",
+    "registrations"
+  ],
+  "missing": []
+}
+bounded-result {"name":"bounded-probe","durationMs":1604,"slowestCases":[{"name":"bounded-probe","durationMs":1604,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":52696224,"peakRssBytes":105070592,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T04:59:19.385Z","finishedAt":"2026-10-09T04:59:20.989Z","exitCode":0,"executed":true}
+## Handoff checks
+
+Command: npm run format:check
+Exit: 0
+All matched files use Prettier code style!
+
+Command: npm run test:docs
+Exit: 0
+> test:docs
+> node scripts/test-runner.mjs --document
+
+PROGRESS [format] 0.0 s started
+PASS format 6.14 s
+PROGRESS [build] 0.0 s started
+PASS build 0.64 s
+PROGRESS [release-surfaces] 0.0 s started
+PROGRESS [license-surfaces] 0.0 s started
+PROGRESS [publication] 0.0 s started
+PROGRESS [docs-check] 0.0 s started
+PASS publication 0.18 s
+PROGRESS [comment-labels] 0.0 s started
+PASS comment-labels 1.16 s
+PROGRESS [index] 0.0 s started
+PASS license-surfaces 1.63 s
+PROGRESS [lineage] 0.0 s started
+PASS lineage 0.06 s
+PROGRESS [authority-evidence] 0.0 s started
+PASS release-surfaces 1.93 s
+PROGRESS [harness] 0.0 s started
+PASS harness 0.14 s
+PROGRESS [harness-context] 0.0 s started
+PASS harness-context 0.17 s
+PROGRESS [harness-evidence] 0.0 s started
+PASS authority-evidence 0.64 s
+PROGRESS [artifact-evidence] 0.0 s started
+PASS harness-evidence 0.35 s
+PROGRESS [verification-evidence] 0.0 s started
+PASS artifact-evidence 0.26 s
+PROGRESS [feedback-evidence] 0.0 s started
+PASS index 2.08 s
+PROGRESS [meta] 0.0 s started
+PASS verification-evidence 1.30 s
+PASS feedback-evidence 2.66 s
+PASS meta 2.83 s
+PROGRESS [docs-check] 15.0 s running task: docs-check (reports no cases); last report: waiting for the next case report
+PASS docs-check 18.44 s
+  [docs-check] NEWER local release tags not in docs/product/06-roadmap.md: v0.66.0, v0.66.1, v0.66.2, v0.66.3, v0.67.0, v0.67.1, v0.68.0, v0.69.0, v0.69.1, v0.69.2; the table stays valid for its recorded tags; run npm run release -- list --markdown --write to add them
+PROGRESS [resume] 0.0 s started
+PROGRESS [docs-check-fixtures] 0.0 s started
+PROGRESS [comment-labels-fixtures] 0.0 s started
+PROGRESS [lineage-fixtures] 0.0 s started
+PROGRESS [comment-labels-fixtures] 0.5 s # Subtest: a new comment line that carries a finding label, a bare decision number or a leading order identifier fails; an explanation passes
+PASS comment-labels-fixtures 0.51 s
+PROGRESS [kernel-docs] 0.0 s started
+PROGRESS [lineage-fixtures] 0.5 s # Subtest: index counts lead memberships, wrapped labels and prose-only/reference sections
+PASS lineage-fixtures 0.53 s
+PROGRESS [skeleton-docs] 0.0 s started
+PROGRESS [kernel-docs] 0.1 s # Subtest: packages/kernel/dist/test/ac1-purity.test.js
+PROGRESS [skeleton-docs] 0.1 s # Subtest: packages/skeleton/dist/test/artifact-identity.test.js
+PASS kernel-docs 0.88 s
+PROGRESS [console-docs] 0.0 s started
+PROGRESS [docs-check-fixtures] 4.4 s # Subtest: WO-178 attributed operator words advise by record, with capture and fingerprinted baseline exceptions
+PROGRESS [skeleton-docs] 4.9 s # Subtest: [document] WO-180 AC1: named base failure precedes the repaired candidate and survives replay
+PROGRESS [console-docs] 4.1 s # Subtest: [document] WO-174 console fixture generator checks the current lazy exports
+PROGRESS [docs-check-fixtures] 5.9 s     # Subtest: records
+PROGRESS [docs-check-fixtures] 7.2 s # Subtest: document gate forwards explicit success diagnostics and preserves full failure output
+PASS docs-check-fixtures 7.19 s
+PROGRESS [resident-bind] 0.0 s started
+PROGRESS [skeleton-docs] 8.7 s # Subtest: [document] WO-011 selfhost executes the real repository audit, recovers its saved result, and independently verifies once
+PROGRESS [resume] 15.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [console-docs] 13.6 s # Subtest: [document] WO-115 a bound resident serves terminal bytes and events under the terminal's compiled authority, refuses in terminal shape and replays its receipts
+PROGRESS [resident-bind] 10.3 s # Subtest: bind writes a store the runtime accepts and aims at the bound worktree
+PASS resident-bind 10.36 s
+PROGRESS [local-runner-double] 0.0 s started
+PROGRESS [local-runner-double] 0.5 s # Subtest: WO-138 matrix pre-registers 30 baselines, five one-factor cells and three failure cells
+PROGRESS [console-docs] 17.5 s # Subtest: [document] WO-115 the compiled envelope admits or refuses each command by the terminal classifier's effect, through the terminal hooks' decider
+PROGRESS [local-runner-double] 2.9 s # Subtest: WO-110 the smoke records an envelope as shapes and keeps model text out
+PASS local-runner-double 3.80 s
+PROGRESS [plan-refutation-current] 0.0 s started
+PROGRESS [skeleton-docs] 21.3 s # Subtest: [document] WO-184 R9: committed no-notice replay preserves the pre-edit command and prompt
+PROGRESS [skeleton-docs] 22.7 s # Subtest: [document] WO-125 observed efforts reach the process and durable launch claim without effective readback
+PASS plan-refutation-current 2.86 s
+PROGRESS [artifact-corpus] 0.0 s started
+PROGRESS [artifact-corpus] 0.2 s # Subtest: WO-101 independent pair-arithmetic hash is planted on published FNV-1a-64 values
+PASS artifact-corpus 0.23 s
+PROGRESS [registrations] 0.0 s started
+PROGRESS [skeleton-docs] 24.1 s # Subtest: [document] WO-009 AC1/4 one process replaces only the executor; status is read-only and replay is identical
+PASS skeleton-docs 24.14 s
+PROGRESS [plan] 0.0 s started
+PASS registrations 0.60 s
+PROGRESS [entropy] 0.0 s started
+PASS entropy 0.28 s
+PROGRESS [console-docs] 24.8 s # Subtest: [document] WO-115 every contract command keeps its terminal parser, refusal bytes and events over loopback
+PASS plan 3.17 s
+PROGRESS [console-docs] 27.8 s # Subtest: [document] WO-116 the served audit command returns the terminal's bytes for each store and selection, the text host shows the three labeled projections, and the resident's own store audits
+PASS console-docs 27.82 s
+PROGRESS [resume] 30.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [resume] 45.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [resume] 60.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [resume] 75.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PASS resume 77.18 s
+npm run test:docs: 31 passed; 0 failed; 102.69 s; 31 fresh tasks
+
+Command: git diff --check
+Exit: 0
+Output: empty (clean).
+
+Consumption: executor's matching full review row after the fresh document gate
+{"identity":"f27f966bfa686518a162738c99e25a31e94a91d5c8232da1f78073ccf1c33f7f","recordedAt":"2026-10-09T04:29:06.031Z","exitCode":0,"durationMs":1435876,"executed":true,"freshTasks":93,"reusedTasks":0,"taskCount":93,"suiteCount":41,"evidenceRef":"host-gate:f27f966bfa686518a162738c99e25a31e94a91d5c8232da1f78073ccf1c33f7f:npm test","missing":[]}
+
+Usage at handoff: source codex-transcript-counter; scope dispatch; cutoff 2026-10-09T05:06:15.517Z; totalTokens 11144560; inputTokens 11099908; cachedInputTokens 10568832 (part of input, not added again); outputTokens 44652; reasoningOutputTokens 18559 (reported subset); cacheWriteInputTokens 0; costUsd unknown. Observed subagents 0 of cap 20, exact-observed; no verifier spawns.
+
+## Receipt correction and final handoff rerun
+
+The first result command was refused before VerificationCompleted: git diff --check failed on docs/evidence/WO-188/decisions.md:917, new blank line at EOF. The canonical check includes untracked files through its temporary index; the earlier plain git diff --check had not checked this untracked receipt. Only terminal blank lines in the owned decision/evidence records were removed. No implementation edit occurred.
+
+The four verifier-002 helpers were executed from the granted session scratch, then copied into this evidence directory and formatted. Their Command lines above give the durable reproduction paths; the original VER-001 helper commands were executed at the paths printed.
+
+Command: npm run format:check
+Exit: 0
+All matched files use Prettier code style!
+
+Command: npm run test:docs
+Exit: 0
+> test:docs
+> node scripts/test-runner.mjs --document
+
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / release:case:close_receipt_recovery (1); <parallel-worktree> / skeleton (1); <parallel-worktree> / release:case:close_leftover (1); <parallel-worktree> / release:case:material (1)
+
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / github-body (1); <parallel-worktree> / skeleton (1); <parallel-worktree> / release:case:close_leftover (1); <parallel-worktree> / release:case:material (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / outward-lint (1); <parallel-worktree> / skeleton (1); <parallel-worktree> / release:case:close_leftover (1); <parallel-worktree> / release:case:material (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / target-publish (1); <parallel-worktree> / skeleton (1); <parallel-worktree> / release:case:close_leftover (1); <parallel-worktree> / release:case:material (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / target-publish (1); <parallel-worktree> / skeleton (1); <parallel-worktree> / release:case:material (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / target-publish (1); <parallel-worktree> / skeleton (1); <parallel-worktree> / license-fixtures (1); <parallel-worktree> / release:case:material (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / publication-fixtures (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / skeleton (1); <parallel-worktree> / release:case:material (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / target-publish (1); <parallel-worktree> / skeleton (1); <parallel-worktree> / release:case:material (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / backup-intake (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / skeleton (1); <parallel-worktree> / release:case:material (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / launchpad (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / skeleton (1); <parallel-worktree> / release:case:material (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / launchpad (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / skeleton (1); <parallel-worktree> / beacon-portability (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / checkpoint (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / skeleton (1); <parallel-worktree> / beacon-portability (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / checkpoint (1); <parallel-worktree> / worktree-integration (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / skeleton (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / worktree-integration (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / skeleton (1); <parallel-worktree> / work-orders-fixtures (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / worktree-integration (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / skeleton (1); <parallel-worktree> / console (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / worktree-integration (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / kernel (1); <parallel-worktree> / console (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / worktree-integration (1); <parallel-worktree> / compiler (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / console (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / worktree-integration (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / console (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / worktree-integration (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / browser-evidence (1); <parallel-worktree> / console (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / worktree-integration (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / browser-evidence (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / worktree-integration (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / browser-evidence (1); <parallel-worktree> / adjacent-queue (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / derived-orders (1); <parallel-worktree> / worktree-integration (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / browser-evidence (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / worktree-integration (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / browser-evidence (1); <parallel-worktree> / portfolio (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / worktree-integration (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / codex-continuation (1); <parallel-worktree> / portfolio (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / worktree-integration (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / authority-grants (1); <parallel-worktree> / portfolio (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / configuration-root (1); <parallel-worktree> / worktree-integration (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / portfolio (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / runner-fixtures (1); <parallel-worktree> / worktree-integration (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / portfolio (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / runner-fixtures (1); <parallel-worktree> / worktree-integration (1); <parallel-worktree> / target-publish (1); <parallel-worktree> / registrations (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / runner-fixtures (1); <parallel-worktree> / worktree-integration (1); <parallel-worktree> / target-publish (1)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / runner-fixtures (1); <parallel-worktree> / worktree-integration (1); <parallel-worktree> / vertical (2)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / worktree-integration (1); <parallel-worktree> / vertical (2)
+WAIT host lanes for <worktree> / format; held by <parallel-worktree> / vertical (2)
+PROGRESS [format] 0.0 s started
+PASS format 6.00 s
+PROGRESS [build] 0.0 s started
+PASS build 0.64 s
+PROGRESS [release-surfaces] 0.0 s started
+PROGRESS [license-surfaces] 0.0 s started
+PROGRESS [docs-check] 0.0 s started
+PROGRESS [publication] 0.0 s started
+PASS publication 0.17 s
+PROGRESS [comment-labels] 0.0 s started
+PASS comment-labels 1.12 s
+PROGRESS [index] 0.0 s started
+PASS license-surfaces 1.61 s
+PROGRESS [lineage] 0.0 s started
+PASS lineage 0.06 s
+PROGRESS [authority-evidence] 0.0 s started
+PASS release-surfaces 1.89 s
+PROGRESS [harness] 0.0 s started
+PASS harness 0.15 s
+PROGRESS [harness-context] 0.0 s started
+PASS harness-context 0.16 s
+PROGRESS [harness-evidence] 0.0 s started
+PASS authority-evidence 0.61 s
+PROGRESS [artifact-evidence] 0.0 s started
+PASS harness-evidence 0.32 s
+PROGRESS [verification-evidence] 0.0 s started
+PASS artifact-evidence 0.24 s
+PROGRESS [feedback-evidence] 0.0 s started
+PASS index 1.97 s
+PROGRESS [meta] 0.0 s started
+PASS verification-evidence 1.26 s
+PASS feedback-evidence 2.59 s
+PASS meta 2.80 s
+PROGRESS [docs-check] 15.0 s running task: docs-check (reports no cases); last report: waiting for the next case report
+PASS docs-check 17.67 s
+  [docs-check] NEWER local release tags not in docs/product/06-roadmap.md: v0.66.0, v0.66.1, v0.66.2, v0.66.3, v0.67.0, v0.67.1, v0.68.0, v0.69.0, v0.69.1, v0.69.2; the table stays valid for its recorded tags; run npm run release -- list --markdown --write to add them
+PROGRESS [resume] 0.0 s started
+PROGRESS [docs-check-fixtures] 0.0 s started
+PROGRESS [comment-labels-fixtures] 0.0 s started
+PROGRESS [lineage-fixtures] 0.0 s started
+PROGRESS [comment-labels-fixtures] 0.5 s # Subtest: a new comment line that carries a finding label, a bare decision number or a leading order identifier fails; an explanation passes
+PASS comment-labels-fixtures 0.50 s
+PROGRESS [kernel-docs] 0.0 s started
+PROGRESS [lineage-fixtures] 0.5 s # Subtest: index counts lead memberships, wrapped labels and prose-only/reference sections
+PASS lineage-fixtures 0.53 s
+PROGRESS [skeleton-docs] 0.0 s started
+PROGRESS [kernel-docs] 0.1 s # Subtest: packages/kernel/dist/test/ac1-purity.test.js
+PROGRESS [skeleton-docs] 0.1 s # Subtest: packages/skeleton/dist/test/artifact-identity.test.js
+PASS kernel-docs 0.90 s
+PROGRESS [console-docs] 0.0 s started
+PROGRESS [docs-check-fixtures] 4.4 s # Subtest: WO-178 attributed operator words advise by record, with capture and fingerprinted baseline exceptions
+PROGRESS [skeleton-docs] 4.8 s # Subtest: [document] WO-180 AC1: named base failure precedes the repaired candidate and survives replay
+PROGRESS [console-docs] 4.1 s # Subtest: [document] WO-174 console fixture generator checks the current lazy exports
+PROGRESS [docs-check-fixtures] 5.8 s     # Subtest: records
+PROGRESS [docs-check-fixtures] 7.1 s # Subtest: document gate forwards explicit success diagnostics and preserves full failure output
+PASS docs-check-fixtures 7.14 s
+PROGRESS [resident-bind] 0.0 s started
+PROGRESS [skeleton-docs] 8.5 s # Subtest: [document] WO-011 selfhost executes the real repository audit, recovers its saved result, and independently verifies once
+PROGRESS [console-docs] 13.4 s # Subtest: [document] WO-115 a bound resident serves terminal bytes and events under the terminal's compiled authority, refuses in terminal shape and replays its receipts
+PROGRESS [resume] 15.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [resident-bind] 9.9 s # Subtest: bind writes a store the runtime accepts and aims at the bound worktree
+PASS resident-bind 9.90 s
+PROGRESS [local-runner-double] 0.0 s started
+PROGRESS [local-runner-double] 0.5 s # Subtest: WO-138 matrix pre-registers 30 baselines, five one-factor cells and three failure cells
+PROGRESS [console-docs] 17.1 s # Subtest: [document] WO-115 the compiled envelope admits or refuses each command by the terminal classifier's effect, through the terminal hooks' decider
+PROGRESS [local-runner-double] 2.9 s # Subtest: WO-110 the smoke records an envelope as shapes and keeps model text out
+PASS local-runner-double 3.80 s
+PROGRESS [plan-refutation-current] 0.0 s started
+PROGRESS [skeleton-docs] 20.5 s # Subtest: [document] WO-184 R9: committed no-notice replay preserves the pre-edit command and prompt
+PROGRESS [skeleton-docs] 22.3 s # Subtest: [document] WO-125 observed efforts reach the process and durable launch claim without effective readback
+PASS plan-refutation-current 2.83 s
+PROGRESS [artifact-corpus] 0.0 s started
+PROGRESS [artifact-corpus] 0.2 s # Subtest: WO-101 independent pair-arithmetic hash is planted on published FNV-1a-64 values
+PASS artifact-corpus 0.24 s
+PROGRESS [registrations] 0.0 s started
+PROGRESS [skeleton-docs] 23.6 s # Subtest: [document] WO-009 AC1/4 one process replaces only the executor; status is read-only and replay is identical
+PASS skeleton-docs 23.67 s
+PROGRESS [plan] 0.0 s started
+PASS registrations 0.61 s
+PROGRESS [entropy] 0.0 s started
+PASS entropy 0.25 s
+PROGRESS [console-docs] 24.2 s # Subtest: [document] WO-115 every contract command keeps its terminal parser, refusal bytes and events over loopback
+PASS plan 3.12 s
+PROGRESS [console-docs] 27.2 s # Subtest: [document] WO-116 the served audit command returns the terminal's bytes for each store and selection, the text host shows the three labeled projections, and the resident's own store audits
+PASS console-docs 27.20 s
+PROGRESS [resume] 30.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [resume] 45.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [resume] 60.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PASS resume 71.91 s
+npm run test:docs: 31 passed; 0 failed; 971.85 s; 31 fresh tasks
+
+The 971.85-second reported duration includes the shared host lane queue. The passing summary is 31 suites, 31 fresh tasks, zero failures.
+
+Consumed covering executor review row after the rerun:
+{"identity":"f27f966bfa686518a162738c99e25a31e94a91d5c8232da1f78073ccf1c33f7f","recordedAt":"2026-10-09T04:29:06.031Z","exitCode":0,"durationMs":1435876,"executed":true,"freshTasks":93,"reusedTasks":0,"taskCount":93,"suiteCount":41,"evidenceRef":"host-gate:f27f966bfa686518a162738c99e25a31e94a91d5c8232da1f78073ccf1c33f7f:npm test","missing":[]}
+
+Final handoff usage snapshot: source codex-transcript-counter; scope dispatch; cutoff 2026-10-09T05:25:59.247Z; totalTokens 15074641; inputTokens 15007767; cachedInputTokens 14426624 (part of input); outputTokens 66874; reasoningOutputTokens 36880 (reported subset); cacheWriteInputTokens 0; costUsd unknown. Observed subagents 0 of 20, exact-observed; no verifier spawns.
