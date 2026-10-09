@@ -1187,6 +1187,7 @@ function portfolioFixture() {
   write(launchpad, "packages/skeleton/loadouts/grants.json", "[]\n");
   const config = {
     version: 1,
+    classes: { scratch: { checks: [], supports: [] } },
     repositories: {
       scratch: {
         baseBranch: "main",

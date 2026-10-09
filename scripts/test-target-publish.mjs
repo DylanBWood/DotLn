@@ -1630,7 +1630,7 @@ function observationScenario(
     ghLog = join(root, "gh.log");
   const set = (value) => writeFileSync(responsePath, JSON.stringify(value));
   set(fixture);
-  const run = (number = "7", extra = []) =>
+  const run = (number = "7", extra = [], environment = {}) =>
     spawnSync(
       process.execPath,
       [cli, "observe-pr", "--store", store, "--number", number, ...extra],
@@ -1646,6 +1646,7 @@ function observationScenario(
           DOTLN_GH_LOG: ghLog,
           GH_REPO: "wrong/target",
           GH_HOST: "wrong.example",
+          ...environment,
         },
       },
     );
@@ -1812,6 +1813,146 @@ await test("WO-065 F1: actor types decide roles on every comment connection and 
       type,
     );
   assert.equal(byId.PRRC_3.class, "resolved");
+});
+
+await test("WO-073 criterion 4: registered machine logins and link hosts reach the observer through the target request", (t) => {
+  const fixture = structuredClone(observationFixture);
+  const machine = { __typename: "User", login: "review-machine" };
+  pullOf(fixture, "DotlnComments").comments.nodes.push(
+    {
+      ...fixtureComment("IC_machine", "Review the contract."),
+      author: machine,
+    },
+    fixtureComment("IC_human", "Review the contract."),
+    {
+      ...fixtureComment(
+        "IC_allowed_host",
+        "See https://reviews.example/check/1",
+      ),
+      author: { __typename: "Bot", login: "review-bot" },
+    },
+    {
+      ...fixtureComment(
+        "IC_refused_host",
+        "See https://unlisted.example/check/1",
+      ),
+      author: { __typename: "Bot", login: "review-bot" },
+    },
+    {
+      ...fixtureComment(
+        "IC_machine_host",
+        "See https://reviews.example/check/2",
+      ),
+      author: machine,
+    },
+    fixtureComment("IC_human_host", "See https://reviews.example/check/3"),
+  );
+  const thread = pullOf(fixture, "DotlnThreads").reviewThreads.nodes[0];
+  thread.comments.nodes.push({
+    ...thread.comments.nodes[0],
+    id: "PRRC_metadata",
+    body: "Review the contract.",
+    path: "https://reviews.example/file",
+    author: { __typename: "Bot", login: "review-bot" },
+  });
+  checksOf(fixture).nodes.push({
+    __typename: "CheckRun",
+    id: "CHECK_metadata",
+    name: "https://reviews.example/check",
+    status: "COMPLETED",
+    conclusion: "FAILURE",
+  });
+  const subject = observationScenario(t, fixture);
+  const configuration = {
+    version: 1,
+    classes: { shared: { checks: [], supports: [] } },
+    repositories: {
+      target: {
+        repositoryClass: "shared",
+        baseBranch: "main",
+        worktreeParent: "../trees",
+        automationLogins: ["Review-Machine"],
+        linkHosts: ["reviews.example"],
+        authorityProfile: {
+          authorityEnvelopeId: "fixture",
+          allowedEffects: [],
+          deniedEffects: [],
+          resourceLimits: {},
+          requiredEvidence: [],
+          expiresAt: 999,
+          revocationEventTypes: [],
+        },
+      },
+    },
+  };
+  writeFileSync(
+    join(subject.root, "dotln.config.json"),
+    JSON.stringify(configuration),
+  );
+  const request = join(subject.root, "target-request.json");
+  writeFileSync(
+    request,
+    JSON.stringify({
+      schemaVersion: 1,
+      loadout: "loadout.json",
+      store: "store",
+      baseBranch: "main",
+      repositoryId: "github.com/dotln-fixture/target",
+      environment: {
+        environmentId: "fixture",
+        version: 1,
+        capabilities: [],
+        repo: "target",
+        baseCommit: "a".repeat(40),
+      },
+    }),
+  );
+  const options = readTargetPublishRequest(request, subject.root);
+  assert.deepEqual(options.automationLogins, ["Review-Machine"]);
+  assert.deepEqual(options.linkHosts, ["reviews.example"]);
+  succeeded(
+    subject.run("7", ["--request", request], { DOTLN_LAUNCHPAD: subject.root }),
+  );
+  const byId = Object.fromEntries(
+    subject
+      .events()
+      .at(-1)
+      .payload.comments.map((item) => [item.id, item]),
+  );
+  assert.equal(byId.IC_machine.class, "automated-review");
+  assert.equal(byId.IC_human.class, "human-review");
+  for (const id of ["IC_allowed_host", "IC_machine_host"]) {
+    assert.equal(byId[id].refused, undefined);
+    assert.match(byId[id].text, /https:\/\/reviews.example/);
+  }
+  assert.ok(byId.IC_refused_host.refused);
+  assert.equal(byId.IC_refused_host.text, undefined);
+  for (const id of ["PRRC_metadata", "ci:CHECK_metadata"]) {
+    assert.ok(byId[id].refused, "metadata retains the original host screen");
+    assert.equal(byId[id].text, undefined);
+  }
+  assert.equal(byId.PRRC_metadata.path, undefined);
+  assert.ok(
+    byId.IC_human_host.refused,
+    "declared hosts expand only automation's screen",
+  );
+  delete configuration.repositories.target.automationLogins;
+  delete configuration.repositories.target.linkHosts;
+  writeFileSync(
+    join(subject.root, "dotln.config.json"),
+    JSON.stringify(configuration),
+  );
+  succeeded(
+    subject.run("7", ["--request", request], { DOTLN_LAUNCHPAD: subject.root }),
+  );
+  const defaults = Object.fromEntries(
+    subject
+      .events()
+      .at(-1)
+      .payload.comments.map((item) => [item.id, item]),
+  );
+  assert.equal(defaults.IC_machine.class, "human-review");
+  assert.ok(defaults.IC_allowed_host.refused);
 });
 
 await test("WO-065 AC2: every declared secret and URL form is refused without persisted text; safe peers survive", (t) => {

@@ -188,6 +188,7 @@ export async function verticalFixture(options = {}) {
   };
   put(join(launchpad, "dotln.config.json"), {
     version: 1,
+    classes: { scratch: { checks: [], supports: [] } },
     repositories: {
       scratch: {
         baseBranch: "main",

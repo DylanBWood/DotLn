@@ -624,7 +624,7 @@ routinely driven from an unrelated directory, and a working-directory ascent
 would let one checkout's session write into another checkout's documents.
 
 `dotln.config.json` at the launchpad root declares schema `version: 1` and the
-optional sections `roots`, `repositories`, `build`, `release`, `derivedOrders` and `portfolios` (§Declaring a portfolio). **Its absence
+optional sections `roots`, `classes`, `repositories`, `build`, `release`, `derivedOrders` and `portfolios` (§Declaring a portfolio). **Its absence
 means today's layout, byte for byte**, so this repository ships no such file and
 `status --json`, `current.md`, the generated index, `times`, `usage` and a
 release manifest derived over the real log are unchanged by its introduction.
@@ -633,7 +633,8 @@ release manifest derived over the real log are unchanged by its introduction.
 names are `docs` (the document base), `control`, `orders`, `workOrders`,
 `verifications`, `finalReviews`, `evidence`, `releases`, `planning`,
 `refutations`, `derivedWorkOrders`, `publication`, `intake`, `workstreams`, `lineage`, `product`,
-`discovery`, `observations` and `decisions`. An undeclared root defaults under
+`discovery`, `observations`, `decisions` and `repositoryProfiles` (default
+`docs/repositories`). An undeclared root defaults under
 the document base — `orders` under `control` and `refutations` under `planning`
 — with `derivedWorkOrders` under `workOrders/derived`, so moving a parent moves
 its children unless the launchpad moves them too. `derivedOrders` declares
@@ -641,7 +642,7 @@ its children unless the launchpad moves them too. `derivedOrders` declares
 `WO-999`; reversed or malformed ranges refuse.
 `repositories` is an object keyed by a public repository id. `self` is implicit
 and cannot be registered. Each target value declares `baseBranch`, a relative
-POSIX `worktreeParent`, an opaque `repositoryClass`, and a complete
+POSIX `worktreeParent`, a `repositoryClass` naming an entry in `classes`, and a complete
 `authorityProfile` in the domain model's `AuthorityEnvelope` shape. The loaded
 entry carries its key as `id`; no absolute repository or worktree path belongs
 in committed registration. Unknown entry or envelope fields and malformed
@@ -651,6 +652,33 @@ and instance `overlay`, and `release` carries the surface toggles `readmeBlock`,
 `componentVersions`, `corpus` and `publicationCheck`. Version 1 validates and
 exposes these sections; the orders that own `build` and `release` consume
 them.
+
+`classes` maps each class id to `{ checks: string[], supports: string[] }`.
+The host adapter unions checks into each member order's compiled
+`requiredEvidence` and equips its declared support ids in the existing link
+group. Checks must already be declared by the launchpad's active WorkOrder,
+authority envelope or support definitions; unknown checks or supports and
+support authority widening refuse with `CLASS LAYER: <id>`. The existing
+compiler support floor stays binding; the exact-grant exception below belongs
+to registered profile allowances. Composition is additive: launchpad → class → repository, with no check-removal operation.
+An earlier registration supplies an empty declaration for its class when it
+needs no shared checks or supports.
+
+A registration may name a launchpad-relative `profile` document, conventionally
+under `repositoryProfiles`; the [profile convention](../repositories/README.md)
+covers its purpose, demonstrated standards, commands, startup, branch and
+pull-request policy, pinned upstream references and optional `dotln-discovery`
+block. The executor reads it on demand for the order's `Repository:` id, never
+at cold start. Repository conventions prevail over its class's where stated;
+prose cannot relax the authority floor. Activation checks only that a declared
+path is a readable, contained regular file, naming it on refusal. No declaration
+activates with one missing-profile advisory. The registration may also declare
+`automationLogins` for machine accounts and `linkHosts` for automation's links;
+both default to empty. The target request carries them to the observer: named
+accounts join bot-type authors as automated review, and their comments may link
+to these hosts beside the forge host. Other screening, triage and verification
+remain unchanged; a declaration confers no trust. The direct observer accepts
+`--request <target-request.json>` alongside its store and number to load them.
 
 A target work order adds exactly one leading metadata line,
 `**Repository:** <id> @ <base-commit>`, where the base is a full 40- or 64-hex
@@ -664,7 +692,8 @@ refuses before the activation event.
 
 The host compiles a registered profile through the existing monotone authority
 floor. Profile denials and its expiry, resource, evidence and revocation
-constraints narrow the active base. Exact profile allowances outside either
+constraints narrow the active base; repository evidence also joins the
+WorkOrder without removing class checks. Exact profile allowances outside either
 the base envelope or the base WorkOrder operation lists enter through one
 retained `registered-repository` grant; applying the same widening without that
 exact grant refuses with `AUTHORITY WIDENING`. Wildcard widening remains

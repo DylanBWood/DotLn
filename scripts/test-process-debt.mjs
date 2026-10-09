@@ -6029,7 +6029,7 @@ test("meter diff bytes include newly authored untracked source", (t) => {
   );
 });
 
-test("WO-145 optional economy support preserves historical snapshots through WO-188 and changes only executor instructions on", () => {
+test("WO-145 optional economy support preserves historical snapshots through WO-073 and changes only executor instructions on", () => {
   const historical = JSON.parse(
     readFileSync(
       join(source, "packages/skeleton/fixtures/wo145-role-baseline.json"),
@@ -6046,10 +6046,10 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
   // WO-186's default-root record admission preserves that integrated snapshot;
   // WO-187's review duties and worker pin preserve WO-186 in turn.
   // WO-196's ordered procedures and conditional economy preserve WO-187.
-  // WO-188's comment, scratch and failed-command rules preserve WO-196.
+  // The profile-read sentence preserves the prior role oracle and all its history.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo188-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo073-role-baseline.json"),
       "utf8",
     ),
   );
@@ -6124,6 +6124,10 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
       `${file.path} must not imply an approval path in full-access mode`,
     );
     if (file.path.endsWith("dotln-executor/SKILL.md")) {
+      assert.match(
+        file.contents,
+        /For a target order, read on demand the profile declared for its `Repository:` id/,
+      );
       assert.match(
         file.contents,
         /Tinkerer — Economy: When the work shows two credible ways/,

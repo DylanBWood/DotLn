@@ -113,6 +113,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "For status or times, run the matching read-only command and report its observation; stop without a transition. For next, follow the emitted path in the delivered briefing (Codex runs `npm run resume -- next` itself). If closed, report other in-flight orders; only when none remain, give the exact printed worktree-start handoff.",
       "For fix, the dispatch is recorded and its briefing delivered with the phrase (Codex runs `npm run resume -- fix` first); read the original order and its named failure source. Repair only those obligations. A premature repair may reopen only while the unresolved failure source remains.",
       "Read: `@failure-report`",
+      "For a target order, read on demand the profile declared for its `Repository:` id in the launchpad configuration as repo-native authority, with repository conventions prevailing over its class while preserving the authority floor.",
       evidence,
       boardedDefect,
       "A comment says what the code does or why, in words a reader who has not seen the order understands; an order, report, finding or decision identifier never leads or replaces that explanation, and a report-local label (a verification or final-review finding label, a bare decision number) never appears in code; fix the comments in the lines you change.",

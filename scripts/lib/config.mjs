@@ -39,6 +39,7 @@ const ROOT_SEGMENTS = {
   discovery: "discovery",
   observations: "observations",
   decisions: "decisions",
+  repositoryProfiles: "repositories",
 };
 
 // Roots whose default is carried by another root, so that moving the parent
@@ -69,6 +70,9 @@ const REPOSITORY_KEYS = [
   "worktreeParent",
   "repositoryClass",
   "authorityProfile",
+  "profile",
+  "automationLogins",
+  "linkHosts",
 ];
 const AUTHORITY_PROFILE_KEYS = [
   "authorityEnvelopeId",
@@ -85,6 +89,7 @@ const SECTION_KEYS = [
   "version",
   "roots",
   "repositories",
+  "classes",
   "build",
   "release",
   "derivedOrders",
@@ -333,7 +338,30 @@ const validateRelease = (path, declared) => {
   return release;
 };
 
-const validateRepositories = (path, declared) => {
+const validateClasses = (path, declared) => {
+  requireObject(path, declared, "classes");
+  return Object.fromEntries(
+    Object.entries(declared).map(([id, value]) => {
+      requireText(path, id, "class id", /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/u);
+      const label = `classes.${id}`;
+      requireObject(path, value, label);
+      requireKnownKeys(path, value, ["checks", "supports"], label);
+      return [
+        id,
+        {
+          checks: validateStringSet(path, value.checks, `${label}.checks`),
+          supports: validateStringSet(
+            path,
+            value.supports,
+            `${label}.supports`,
+          ),
+        },
+      ];
+    }),
+  );
+};
+
+const validateRepositories = (path, declared, classes) => {
   requireObject(path, declared, "repositories");
   const repositories = {};
   for (const [id, value] of Object.entries(declared)) {
@@ -371,15 +399,49 @@ const validateRepositories = (path, declared) => {
         path,
         `repositories.${id}.worktreeParent must be a relative normalized POSIX path`,
       );
+    const repositoryClass = requireText(
+      path,
+      value.repositoryClass,
+      `repositories.${id}.repositoryClass`,
+      /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/u,
+    );
+    if (!Object.hasOwn(classes, repositoryClass))
+      throw refuse(
+        path,
+        `repositories.${id}.repositoryClass names no declared class: ${repositoryClass}`,
+      );
+    if (value.profile !== undefined) {
+      const profile = requireText(
+        path,
+        value.profile,
+        `repositories.${id}.profile`,
+      );
+      if (
+        profile.startsWith("/") ||
+        profile.includes("\\") ||
+        posix.normalize(profile) !== profile ||
+        profile.split("/").some((segment) => !segment || segment === ".")
+      )
+        throw refuse(
+          path,
+          `repositories.${id}.profile must be a relative normalized POSIX path`,
+        );
+    }
     repositories[id] = {
       id,
       baseBranch,
       worktreeParent,
-      repositoryClass: requireText(
+      repositoryClass,
+      ...(value.profile === undefined ? {} : { profile: value.profile }),
+      automationLogins: validateStringSet(
         path,
-        value.repositoryClass,
-        `repositories.${id}.repositoryClass`,
-        /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/u,
+        value.automationLogins === undefined ? [] : value.automationLogins,
+        `repositories.${id}.automationLogins`,
+      ),
+      linkHosts: validateStringSet(
+        path,
+        value.linkHosts === undefined ? [] : value.linkHosts,
+        `repositories.${id}.linkHosts`,
       ),
       authorityProfile: validateAuthorityProfile(
         path,
@@ -602,10 +664,14 @@ const validateConfig = (path, source) => {
       path,
       `version must be ${CONFIG_SCHEMA_VERSION}; found ${JSON.stringify(declared.version ?? null)}`,
     );
+  const classes = validateClasses(
+    path,
+    declared.classes === undefined ? {} : declared.classes,
+  );
   const repositories =
     declared.repositories === undefined
       ? {}
-      : validateRepositories(path, declared.repositories);
+      : validateRepositories(path, declared.repositories, classes);
   return {
     version: CONFIG_SCHEMA_VERSION,
     roots: resolveRoots(
@@ -615,6 +681,7 @@ const validateConfig = (path, source) => {
     ),
     derivedOrders: validateDerivedOrders(path, declared.derivedOrders),
     repositories,
+    classes,
     portfolios:
       declared.portfolios === undefined
         ? {}
@@ -634,6 +701,7 @@ const absentConfig = () => ({
   version: CONFIG_SCHEMA_VERSION,
   roots: defaultRoots(),
   repositories: {},
+  classes: {},
   portfolios: {},
   derivedOrders: { first: "WO-900", last: "WO-999" },
   build: { loadout: null, profile: null, overlay: null },

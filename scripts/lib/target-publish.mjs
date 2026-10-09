@@ -1,4 +1,5 @@
 import { spawnGit, runGit } from "./git.mjs";
+import { findLaunchpad, loadConfig } from "./config.mjs";
 import { repairedPublicationEpisode } from "./target-repair.mjs";
 
 import { createHash } from "node:crypto";
@@ -89,7 +90,7 @@ const REQUEST_KEYS = [
   "repairStores",
 ];
 /** A host-owned request. Relative paths resolve beside the request file. */
-export function readTargetPublishRequest(path) {
+export function readTargetPublishRequest(path, launchpad = findLaunchpad()) {
   const file = resolve(path);
   let request;
   try {
@@ -128,7 +129,11 @@ export function readTargetPublishRequest(path) {
   const repository = parseGitHubTarget(`https://${request.repositoryId}`);
   if (repository.selector !== request.repositoryId)
     throw refuse("repositoryId must be canonical HOST/OWNER/REPO");
+  const registration =
+    loadConfig(launchpad).repositories[request.environment.repo];
   return {
+    automationLogins: registration?.automationLogins ?? [],
+    linkHosts: registration?.linkHosts ?? [],
     repositoryId: request.repositoryId,
     loadout: resolve(base, request.loadout),
     environment: request.environment,

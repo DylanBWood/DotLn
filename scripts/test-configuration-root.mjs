@@ -4,6 +4,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import {
+  chmodSync,
   cpSync,
   existsSync,
   mkdirSync,
@@ -12,6 +13,7 @@ import {
   readdirSync,
   realpathSync,
   rmSync,
+  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -53,7 +55,14 @@ const fixtureGitOptions = {
 };
 
 const declared = (config) => {
-  write(config.root, CONFIG_FILENAME, prettyJson(config.body));
+  write(
+    config.root,
+    CONFIG_FILENAME,
+    prettyJson({
+      classes: { "fixture-class": { checks: [], supports: [] } },
+      ...config.body,
+    }),
+  );
   return config.root;
 };
 
@@ -69,6 +78,8 @@ const authorityProfile = (overrides = {}) => ({
 });
 
 const registeredRepository = (overrides = {}) => ({
+  automationLogins: [],
+  linkHosts: [],
   baseBranch: "main",
   worktreeParent: "../target-worktrees",
   repositoryClass: "fixture-class",
@@ -135,11 +146,13 @@ await test("configuration root", async (t) => {
         discovery: "docs/discovery",
         observations: "docs/observations",
         decisions: "docs/decisions",
+        repositoryProfiles: "docs/repositories",
         orders: "docs/control/orders",
         derivedWorkOrders: "docs/work-orders/derived",
         refutations: "docs/planning/refutations",
       });
       assert.deepEqual(config.repositories, {});
+      assert.deepEqual(config.classes, {});
       assert.deepEqual(config.build, {
         loadout: null,
         profile: null,
@@ -217,13 +230,185 @@ await test("configuration root", async (t) => {
     },
   );
 
+  await t.test(
+    "WO-073 classes and optional registration declarations validate",
+    () => {
+      temporary("class-config", (root) => {
+        const body = {
+          version: 1,
+          classes: {
+            shared: { checks: ["test", "test"], supports: ["scope"] },
+          },
+          repositories: {
+            target: registeredRepository({
+              repositoryClass: "shared",
+              profile: "profiles/target.md",
+              automationLogins: ["review-machine"],
+              linkHosts: ["reviews.example"],
+            }),
+          },
+        };
+        declared({ root, body });
+        assert.deepEqual(loadConfig(root).classes.shared, {
+          checks: ["test"],
+          supports: ["scope"],
+        });
+        assert.equal(
+          loadConfig(root).repositories.target.profile,
+          "profiles/target.md",
+        );
+        const refuses = (change, pattern) => {
+          const candidate = structuredClone(body);
+          change(candidate);
+          declared({ root, body: candidate });
+          assert.throws(() => loadConfig(root), pattern);
+        };
+        refuses((c) => {
+          c.classes = null;
+        }, /classes must be an object/);
+        refuses((c) => {
+          c.repositories.target.linkHosts = null;
+        }, /linkHosts must be an array/);
+        refuses((c) => {
+          c.classes = {};
+        }, /repositoryClass names no declared class/);
+        refuses((c) => {
+          c.classes.shared.unknown = [];
+        }, /unknown classes.shared key/);
+        refuses((c) => {
+          c.classes.shared.checks = "test";
+        }, /checks must be an array/);
+        refuses((c) => {
+          c.classes.shared.supports = [""];
+        }, /supports must be an array/);
+        refuses((c) => {
+          c.repositories.target.automationLogins = "bot";
+        }, /automationLogins must be an array/);
+        refuses((c) => {
+          c.repositories.target.linkHosts = [""];
+        }, /linkHosts must be an array/);
+        for (const profile of [
+          "/absolute.md",
+          "profiles/../target.md",
+          "profiles/./target.md",
+          "profiles/",
+          "profiles\\target.md",
+        ])
+          refuses((c) => {
+            c.repositories.target.profile = profile;
+          }, /profile must be a relative normalized POSIX path/);
+      });
+    },
+  );
+
+  await t.test(
+    "WO-073 criterion 3: activation reads only a declared contained regular profile",
+    () => {
+      for (const kind of [
+        "missing",
+        "directory",
+        "symlink",
+        "escape",
+        "unreadable",
+        "readable",
+        "undeclared",
+      ]) {
+        temporary(`profile-${kind}`, (root) => {
+          const launchpad = join(root, "launchpad");
+          mkdirSync(join(launchpad, "scripts"), { recursive: true });
+          cpSync(
+            join(scriptRoot, "resume.mjs"),
+            join(launchpad, "scripts/resume.mjs"),
+          );
+          cpSync(join(scriptRoot, "lib"), join(launchpad, "scripts/lib"), {
+            recursive: true,
+          });
+          installBeaconFixture(launchpad);
+          runGit(launchpad, ["init", "-q", "-b", "wo-999"], fixtureGitOptions);
+          const profile =
+            kind === "escape" ? "../outside.md" : "profiles/target.md";
+          const file = join(launchpad, profile);
+          mkdirSync(join(launchpad, "profiles"));
+          if (kind === "directory") mkdirSync(file);
+          else if (kind === "symlink") {
+            write(root, "outside.md", "external");
+            symlinkSync(join(root, "outside.md"), file);
+          } else if (!["missing", "undeclared"].includes(kind))
+            writeFileSync(
+              file,
+              "Profile content is not parsed during activation.\n",
+            );
+          if (kind === "unreadable") chmodSync(file, 0);
+          declared({
+            root: launchpad,
+            body: {
+              version: 1,
+              roots: { docs: "records", repositoryProfiles: "profiles" },
+              repositories: {
+                target: registeredRepository(
+                  kind === "undeclared" ? {} : { profile },
+                ),
+              },
+            },
+          });
+          const order = "records/work-orders/WO-999-profile.md";
+          write(
+            launchpad,
+            order,
+            `# WO-999 — profile fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Repository:** target @ ${"a".repeat(40)}\n`,
+          );
+          const env = { ...process.env, DOTLN_LAUNCHPAD: launchpad };
+          delete env.CODEX_THREAD_ID;
+          const result = spawnSync(
+            process.execPath,
+            [
+              join(launchpad, "scripts/resume.mjs"),
+              "activate",
+              "WO-999",
+              order,
+            ],
+            { cwd: launchpad, env, encoding: "utf8" },
+          );
+          if (kind === "unreadable") chmodSync(file, 0o600);
+          if (["readable", "undeclared"].includes(kind)) {
+            assert.equal(result.status, 0, result.stderr);
+            assert.match(result.stdout, /Activated WO-999/);
+            assert.equal(
+              (
+                result.stderr.match(
+                  /Advisory: repository target declares no profile/g,
+                ) ?? []
+              ).length,
+              kind === "undeclared" ? 1 : 0,
+            );
+          } else {
+            assert.equal(result.status, 1, `${kind}: ${result.stdout}`);
+            assert.ok(result.stderr.includes(profile), result.stderr);
+            assert.match(
+              result.stderr,
+              /profile must be a readable contained regular file/,
+            );
+            assert.equal(
+              existsSync(
+                join(launchpad, "records/control/orders/WO-999.jsonl"),
+              ),
+              false,
+            );
+          }
+        });
+      }
+    },
+  );
+
   await t.test("a malformed configuration refuses with its path", () => {
     temporary("config-invalid", (root) => {
       const path = join(root, CONFIG_FILENAME);
       const refuses = (body, expected) => {
         writeFileSync(
           path,
-          typeof body === "string" ? body : `${JSON.stringify(body)}\n`,
+          typeof body === "string"
+            ? body
+            : `${JSON.stringify(Array.isArray(body) ? body : { classes: { "fixture-class": { checks: [], supports: [] } }, ...body })}\n`,
         );
         assert.throws(
           () => loadConfig(root),
