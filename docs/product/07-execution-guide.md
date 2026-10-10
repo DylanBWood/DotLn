@@ -710,6 +710,10 @@ this loader's subject; WO-070 owns the kit's side of that dependency.
 
 ## Independent workflows and integration
 
+A worktree's gate judges only what its branch can see, records the shared refs it saw at start and end, and names those that moved since its previous run or during the run when a task fails ([WO-198](../work-orders/WO-198-a-worktree-gate-names-what-moved.md)).
+An earlier row with a missing or malformed snapshot, or a failed history lookup, supplies no comparison baseline; neither blocks recording the failed gate, and valid start/end snapshots still report movement during that run.
+A clean unresolved branch read records `absent` and participates in comparisons; a failed shared-ref read records `unreadable` rather than a partial count, withholds only its own field's comparison, and never changes the gate's result, row or summary.
+
 Each work order's implementation and verification progress independently of every other order's phase [[WO-041 breakout](../evidence/WO-041/ideation.md), 2026-09-07]. Do not require another lane to finish, verify, merge, or release before these transitions. A published dependency needed to implement a feature is still a real input dependency; paired-wave barriers and a verifier-reserve rule tied to the number of waiting orders are not. Actual available actors and one writer per worktree bound resource use. Two work orders run in parallel worktrees as a matter of course: the sequence is ordered in lane pairs whose orders name disjoint primary surfaces and share no hard edge [[R1 replan pass](../planning/r1-replan-2026-09-16.md), 2026-09-16]. The second lane is by preference an evidence-only or machinery order that touches surfaces the delivery order does not, so its integration has no release retime and no source merge; two operator-assisted orders never share a pair [[vision-into-use pass](../planning/vision-into-use-2026-09-17.md), 2026-09-17].
 
 The operator voluntarily takes one order from final review through PR, merge, and release close before bringing another into final review. Preserve that discipline in handoffs; it is not an enforced cross-order transition gate. It leaves other orders free to implement and verify during that window. A gate for this final-review window is an open option, not authorized implementation. The integrating final-review session owns routine integration within its window, without requiring the operator to arrange earlier sibling phases.
@@ -2316,8 +2320,8 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   worktree registration, without writing to main; a pass it carried from
   main is checked against main’s latest execution at each later lookup;
   unresolvable main leaves the worktree’s own rows.
-  `--again` and `--review`
-  always run every selected task fresh. Review selection diffs against the
+  `--again` always runs every selected task fresh; review selections may reuse
+  eligible passing tasks. Review selection diffs against the
   merge base, retaining the worktree’s changes when a sibling advances main.
   During a product gate, roles may write only the active order’s evidence,
   verification and final-review directories at the default document roots;

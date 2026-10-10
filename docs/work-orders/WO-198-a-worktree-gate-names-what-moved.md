@@ -1,4 +1,4 @@
-# WO-198 — A worktree's gate judges only what its branch can see, records the shared refs it saw, and names the ones that moved when a task fails (version assigned at activation)
+# WO-198 — A worktree's gate judges only what its branch can see, records the shared refs it saw, and names the ones that moved when a task fails (v0.73.1)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

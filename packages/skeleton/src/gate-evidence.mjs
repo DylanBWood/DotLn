@@ -459,7 +459,8 @@ export function beginGateRun(root, command, { kind } = {}) {
 }
 
 /** @typedef {{exitCode: number, executed: boolean, output?: string, outputRef?: string, cases?: GateDiagnostic[]}} GateDiagnostic */
-/** @typedef {GateDiagnostic & {checkId: string, treeHash: string, codeIdentity?: string, subject: string, durationMs: number, evidenceRef: string, recordedAt: string}} GateCheck */
+/** @typedef {{originMain: string, main: string, tags: {count: number|"unreadable", newest: string}, dotlnRefs: number|"unreadable"}} SharedRefs */
+/** @typedef {GateDiagnostic & {checkId: string, treeHash: string, codeIdentity?: string, subject: string, durationMs: number, evidenceRef: string, recordedAt: string, sharedRefs?: {start: SharedRefs, end: SharedRefs}}} GateCheck */
 /** @param {string} root @param {string[]} args */
 function git(root, args) {
   const run = spawnSync("git", args, {
@@ -470,6 +471,61 @@ function git(root, args) {
   if (run.status !== 0)
     throw new Error(`Tree observation failed: git ${args[0]}`);
   return run.stdout;
+}
+
+/** Small diagnostic snapshot of refs shared by linked worktrees. It never
+ * participates in the gate's subject or verdict. Newest means tagger date,
+ * with the full tag name breaking ties; lightweight tags are excluded.
+ * Failed reads retain unreadable fields, never partial output or invented
+ * counts. A clean unresolved branch read is absent, including a ref that
+ * exists but cannot resolve to a commit.
+ * @param {string} root @returns {SharedRefs} */
+export function readSharedRefs(root) {
+  /** @param {string[]} args @param {boolean} [unresolvedIsAbsent]
+   * @returns {string|undefined} */
+  const observe = (args, unresolvedIsAbsent = false) => {
+    try {
+      const result = spawnSync("git", args, {
+        cwd: root,
+        encoding: "utf8",
+        maxBuffer: 32 * 1024 * 1024,
+      });
+      if (result.status === 0) return result.stdout;
+      if (unresolvedIsAbsent && result.status === 1) return "absent";
+      return undefined;
+    } catch {
+      return undefined;
+    }
+  };
+  /** @param {string} ref */
+  const commit = (ref) =>
+    observe(
+      ["rev-parse", "--verify", "--quiet", `${ref}^{commit}`],
+      true,
+    )?.trim() || "unreadable";
+  const tags = observe([
+    "for-each-ref",
+    "--sort=refname",
+    "--sort=-taggerdate",
+    "--format=%(objecttype) %(refname:strip=2)",
+    "refs/tags/v*",
+  ])
+    ?.split("\n")
+    .filter((line) => line.startsWith("tag "))
+    .map((line) => line.slice(4));
+  const dotln = observe(["for-each-ref", "--format=%(refname)", "refs/dotln/"]);
+  return {
+    originMain: commit("refs/remotes/origin/main"),
+    main: commit("refs/heads/main"),
+    tags:
+      tags === undefined
+        ? { count: "unreadable", newest: "unreadable" }
+        : { count: tags.length, newest: tags[0] ?? "absent" },
+    dotlnRefs:
+      dotln === undefined
+        ? "unreadable"
+        : dotln.split("\n").filter(Boolean).length,
+  };
 }
 /** Git's own object framing, without writing an index or an object. @param {string} type @param {Buffer} bytes @param {string} algorithm */
 const objectHash = (type, bytes, algorithm) =>
