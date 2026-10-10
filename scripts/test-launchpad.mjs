@@ -1527,3 +1527,503 @@ test("WO-074 design: a kit file absent at the commit refuses by name, and a dest
     git(source, ["add", "scripts/kit/pending-license.template.md"]);
   }
 });
+
+test("export update preserves ownership, validates actions and keeps the exported resident", async (t) => {
+  const kitActions = "scripts/kit/KIT-ACTIONS.json";
+  const changed = "scripts/update-changed.txt";
+  const modified = "scripts/update-modified.txt";
+  const dropped = "scripts/update-dropped.txt";
+  const droppedModified = "scripts/update-dropped-modified.txt";
+  const added = "scripts/update-added.txt";
+  for (const path of [changed, modified, dropped, droppedModified])
+    write(path, "revision A\n");
+  git(source, ["add", "scripts"]);
+  git(source, ["commit", "-qm", "fixture kit revision A"]);
+  const revisionA = git(source, ["rev-parse", "HEAD"]).stdout.trim();
+  const base = join(scratch, "update-base");
+  ok(runExport(base), "export revision A");
+  const prior = manifestOf(base);
+  const instance = (name, optIn = false) => {
+    const target = join(scratch, `update-${name}`);
+    cpSync(base, target, { recursive: true, verbatimSymlinks: true });
+    if (optIn)
+      writeFileSync(
+        join(target, "dotln.config.json"),
+        JSON.stringify({ version: 1, kit: { applyInstanceActions: true } }) +
+          "\n",
+      );
+    return target;
+  };
+  const runUpdate = (target, extra = []) =>
+    run(
+      process.execPath,
+      [
+        join(source, "scripts/launchpad.mjs"),
+        "export",
+        "--update",
+        target,
+        ...extra,
+      ],
+      { cwd: scratch },
+    );
+  const snapshot = (target) =>
+    Object.fromEntries(
+      files(target)
+        .sort()
+        .map((path) => [
+          path,
+          lstatSync(join(target, path)).isSymbolicLink()
+            ? `link:${readlinkSync(join(target, path))}`
+            : sha256(readFileSync(join(target, path))),
+        ]),
+    );
+  const actions = [
+    {
+      id: "move-evidence",
+      date: "2026-10-10",
+      kind: "rename-root",
+      root: "evidence",
+      from: "docs/evidence",
+      to: "records/evidence",
+    },
+    {
+      id: "release-default",
+      date: "2026-10-10",
+      kind: "add-config-field",
+      field: "release.corpus",
+      value: true,
+    },
+    {
+      id: "contract-heading",
+      date: "2026-10-10",
+      kind: "change-phrase",
+      from: "# Launchpad\n",
+      to: "# Launchpad\n\nUpdated instance contract.\n",
+    },
+  ];
+  write(changed, "revision B\n");
+  write(modified, "revision B\n");
+  write(added, "new in B\n");
+  rmSync(join(source, dropped));
+  rmSync(join(source, droppedModified));
+  write(kitActions, JSON.stringify({ schemaVersion: 1, actions }) + "\n");
+  git(source, ["add", "scripts"]);
+  git(source, ["commit", "-qm", "fixture kit revision B"]);
+  const revisionB = git(source, ["rev-parse", "HEAD"]).stdout.trim();
+  assert.notEqual(revisionA, revisionB);
+
+  await t.test(
+    "unmodified files update; edited and dropped edits keep prior hashes on repeated updates",
+    () => {
+      const target = instance("ownership");
+      writeFileSync(join(target, modified), "local kit edit\n");
+      writeFileSync(join(target, droppedModified), "local dropped edit\n");
+      mkdirSync(join(target, "build"));
+      writeFileSync(
+        join(target, "build/overlay.json"),
+        '{"instance":"overlay"}\n',
+      );
+      writeFileSync(join(target, "README.md"), "instance front door\n");
+      const before = snapshot(target);
+      const result = ok(runUpdate(target), "update revision B");
+      assert.match(result.stdout, /update without opt-in/);
+      assert.match(
+        result.stdout,
+        /Instance-actions note \(\d{4}-\d{2}-\d{2}\)/,
+      );
+      assert.match(result.stdout, /contract-heading.*2026-10-10/);
+      assert.match(result.stdout, /re-emit: node scripts\/harness.mjs emit/);
+      for (const path of [modified, droppedModified])
+        assert.ok(result.stdout.includes(`refused: ${path}`));
+      const after = snapshot(target);
+      const priorPaths = new Set(prior.files.map(({ path }) => path));
+      for (const [path, hash] of Object.entries(before))
+        if (
+          path !== "KIT-MANIFEST.json" &&
+          (!priorPaths.has(path) || [modified, droppedModified].includes(path))
+        )
+          assert.equal(after[path], hash, `preserved ${path}`);
+      assert.equal(readFileSync(join(target, changed), "utf8"), "revision B\n");
+      assert.equal(readFileSync(join(target, added), "utf8"), "new in B\n");
+      assert.equal(existsSync(join(target, dropped)), false);
+      const manifest = manifestOf(target);
+      assert.equal(manifest.commit, revisionB);
+      assert.ok(
+        readFileSync(join(target, "UPSTREAM.md"), "utf8").includes(revisionB),
+      );
+      for (const { path, sha256: hash } of manifest.files) {
+        if ([modified, droppedModified].includes(path))
+          assert.equal(
+            hash,
+            prior.files.find((entry) => entry.path === path).sha256,
+          );
+        else assert.equal(hash, sha256(readFileSync(join(target, path))), path);
+      }
+      const again = ok(runUpdate(target), "repeat update");
+      for (const path of [modified, droppedModified])
+        assert.ok(again.stdout.includes(`refused: ${path}`));
+      assert.deepEqual(snapshot(target), after);
+      t.diagnostic(result.stdout.trim());
+    },
+  );
+
+  await t.test(
+    "new kit collisions stay instance-owned and refused on repetition",
+    () => {
+      const target = instance("collision");
+      writeFileSync(join(target, added), "instance file at new kit path\n");
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const result = ok(runUpdate(target), "new path collision");
+        assert.ok(
+          result.stdout.includes(`refused: ${added} (instance-owned collision`),
+        );
+        assert.equal(
+          readFileSync(join(target, added), "utf8"),
+          "instance file at new kit path\n",
+        );
+        assert.ok(!manifestOf(target).files.some(({ path }) => path === added));
+      }
+    },
+  );
+
+  await t.test(
+    "missing/malformed manifests and unreadable kit inputs refuse before any write",
+    () => {
+      const mutations = [
+        [
+          "array-commit",
+          (target) => {
+            const m = manifestOf(target);
+            m.commit = [m.commit];
+            writeFileSync(join(target, "KIT-MANIFEST.json"), JSON.stringify(m));
+          },
+          /KIT-MANIFEST\.json/,
+        ],
+        [
+          "array-hash",
+          (target) => {
+            const m = manifestOf(target);
+            m.files[0].sha256 = [m.files[0].sha256];
+            writeFileSync(join(target, "KIT-MANIFEST.json"), JSON.stringify(m));
+          },
+          /KIT-MANIFEST\.json/,
+        ],
+        [
+          "missing",
+          (target) => rmSync(join(target, "KIT-MANIFEST.json")),
+          /KIT-MANIFEST\.json/,
+        ],
+        [
+          "malformed",
+          (target) => writeFileSync(join(target, "KIT-MANIFEST.json"), "{"),
+          /KIT-MANIFEST\.json/,
+        ],
+        [
+          "invalid-path",
+          (target) => {
+            const m = manifestOf(target);
+            m.files[0].path = "../escape";
+            writeFileSync(join(target, "KIT-MANIFEST.json"), JSON.stringify(m));
+          },
+          /KIT-MANIFEST\.json/,
+        ],
+        [
+          "instance-claim",
+          (target) => {
+            const m = manifestOf(target);
+            m.files[0].path = "CLAUDE.md";
+            writeFileSync(join(target, "KIT-MANIFEST.json"), JSON.stringify(m));
+          },
+          /KIT-MANIFEST\.json/,
+        ],
+        [
+          "missing-kit",
+          (target) => rmSync(join(target, changed)),
+          /update-changed\.txt/,
+        ],
+        [
+          "directory-kit",
+          (target) => {
+            rmSync(join(target, changed));
+            mkdirSync(join(target, changed));
+          },
+          /update-changed\.txt/,
+        ],
+        [
+          "linked-kit",
+          (target) => {
+            rmSync(join(target, changed));
+            symlinkSync(join(base, changed), join(target, changed));
+          },
+          /update-changed\.txt/,
+        ],
+      ];
+      for (const [name, mutate, pattern] of mutations) {
+        const target = instance(name);
+        mutate(target);
+        const before = snapshot(target);
+        const result = runUpdate(target);
+        assert.equal(result.status, 1, result.stdout);
+        assert.match(result.stderr, pattern);
+        assert.deepEqual(snapshot(target), before, name);
+      }
+      const target = instance("unreadable");
+      chmodSync(join(target, changed), 0);
+      try {
+        const result = runUpdate(target);
+        assert.equal(result.status, 1, result.stdout);
+        assert.match(result.stderr, /cannot read.*update-changed\.txt/);
+        assert.equal(manifestOf(target).commit, revisionA);
+        assert.equal(existsSync(join(target, added)), false);
+      } finally {
+        chmodSync(join(target, changed), 0o644);
+      }
+    },
+  );
+
+  await t.test(
+    "apply requires opt-in and preflights all declared actions",
+    () => {
+      const target = instance("no-opt-in");
+      const before = snapshot(target);
+      const denied = runUpdate(target, ["--apply"]);
+      assert.equal(denied.status, 1);
+      assert.match(denied.stderr, /dotln\.config\.json/);
+      assert.deepEqual(snapshot(target), before);
+      const invalid = instance("bad-action-input", true);
+      writeFileSync(
+        join(invalid, "CLAUDE.md"),
+        "a custom contract without the declared phrase\n",
+      );
+      const invalidBefore = snapshot(invalid);
+      const refused = runUpdate(invalid, ["--apply"]);
+      assert.equal(refused.status, 1);
+      assert.match(refused.stderr, /contract-heading.*CLAUDE\.md/);
+      assert.deepEqual(snapshot(invalid), invalidBefore);
+      const unknown = instance("unknown-kind", true);
+      const unknownBefore = snapshot(unknown);
+      write(
+        kitActions,
+        JSON.stringify({
+          schemaVersion: 1,
+          actions: [
+            ...actions,
+            { id: "unknown", date: "2026-10-10", kind: "shell" },
+          ],
+        }),
+      );
+      git(source, ["add", kitActions]);
+      git(source, ["commit", "-qm", "fixture unknown action"]);
+      const rejected = runUpdate(unknown, ["--apply"]);
+      assert.equal(rejected.status, 1);
+      assert.match(
+        rejected.stderr,
+        /KIT-ACTIONS\.json: undeclared action kind shell/,
+      );
+      assert.deepEqual(snapshot(unknown), unknownBefore);
+      write(kitActions, JSON.stringify({ schemaVersion: 1, actions }) + "\n");
+      git(source, ["add", kitActions]);
+      git(source, ["commit", "-qm", "fixture restore declared actions"]);
+    },
+  );
+
+  await t.test(
+    "opt-in alone leaves instance files untouched; apply lists actions and is repeatable",
+    () => {
+      const target = instance("apply", true);
+      writeFileSync(
+        join(target, "docs/evidence/instance.md"),
+        "instance evidence\n",
+      );
+      const contract = readFileSync(join(target, "CLAUDE.md"));
+      ok(runUpdate(target), "configured opt-in without --apply");
+      assert.deepEqual(readFileSync(join(target, "CLAUDE.md")), contract);
+      assert.equal(existsSync(join(target, "records/evidence")), false);
+      const result = ok(runUpdate(target, ["--apply"]), "apply actions");
+      assert.match(result.stdout, /opted-in update/);
+      for (const { id } of actions)
+        assert.ok(result.stdout.includes(`applied: ${id}`));
+      assert.equal(
+        readFileSync(join(target, "records/evidence/instance.md"), "utf8"),
+        "instance evidence\n",
+      );
+      assert.equal(existsSync(join(target, "docs/evidence")), false);
+      assert.equal(loadConfig(target).roots.evidence, "records/evidence");
+      assert.equal(loadConfig(target).release.corpus, true);
+      assert.deepEqual(
+        JSON.parse(readFileSync(join(target, "dotln.config.json"), "utf8"))
+          .release,
+        { corpus: true },
+      );
+      assert.equal(
+        readFileSync(join(target, "CLAUDE.md"), "utf8"),
+        contract.toString().replace(actions[2].from, actions[2].to),
+      );
+      const applied = snapshot(target);
+      const repeat = ok(runUpdate(target, ["--apply"]), "repeat actions");
+      for (const { id } of actions)
+        assert.ok(repeat.stdout.includes(`preserved/already applied: ${id}`));
+      assert.deepEqual(snapshot(target), applied);
+      t.diagnostic(result.stdout.trim());
+    },
+  );
+
+  await t.test(
+    "declared child roots move with their parent and existing configuration values survive",
+    () => {
+      const target = instance("declared-child", true);
+      writeFileSync(
+        join(target, "dotln.config.json"),
+        JSON.stringify({
+          version: 1,
+          kit: { applyInstanceActions: true },
+          release: { corpus: false },
+          roots: { verifications: "docs/evidence/checks" },
+        }) + "\n",
+      );
+      mkdirSync(join(target, "docs/evidence/checks"));
+      writeFileSync(join(target, "docs/evidence/checks/kept.md"), "kept\n");
+      const result = ok(
+        runUpdate(target, ["--apply"]),
+        "move declared child root",
+      );
+      assert.equal(
+        loadConfig(target).roots.verifications,
+        "records/evidence/checks",
+      );
+      assert.equal(
+        readFileSync(join(target, "records/evidence/checks/kept.md"), "utf8"),
+        "kept\n",
+      );
+      assert.equal(loadConfig(target).release.corpus, false);
+      assert.match(
+        result.stdout,
+        /^preserved\/already applied: release-default/m,
+      );
+    },
+  );
+
+  await t.test(
+    "a running exported resident keeps its log, derived identity and pending cadence",
+    () => {
+      const target = instance("resident", true);
+      configureRepository(target);
+      git(target, ["add", "."]);
+      git(target, ["commit", "-qm", "fixture resident instance"]);
+      const graph = readFileSync(
+        join(repository, "packages/skeleton/fixtures/wo067-presence.json"),
+        "utf8",
+      );
+      writeFileSync(join(target, ".runtime/fixture-graph.json"), graph);
+      const resume = `
+      import assert from 'node:assert/strict';
+      import { readFileSync } from 'node:fs';
+      import { ResidentHost } from './packages/skeleton/dist/src/resident-host.js';
+      import { replayResident } from './packages/skeleton/dist/src/resident-store.js';
+      import { materializeOrder } from './scripts/lib/derived-orders.mjs';
+      const expected = JSON.parse(readFileSync('.runtime/fixture-expected.json', 'utf8'));
+      const host = new ResidentHost({directory: '.runtime/resident', policyId: 'fixture.progressive', now: () => 10, capabilities: () => ['adapter.fixture']});
+      await host.start();
+      try {
+        const before = host.store.read();
+        assert.equal(before, expected.log);
+        const saved = replayResident(before).state.resident.configuration;
+        assert.equal(saved.graph.activeMechanics[0].workOrder.workOrderId, expected.identity);
+        const again = await materializeOrder(expected.compiled, {kind: 'runtime', sourceId: 'export-update'}, {root: process.cwd(), activate: false});
+        assert.equal(again.workOrderId, expected.identity);
+        await host.tick();
+        const events = host.store.read().trim().split('\\n').map(JSON.parse);
+        const dispatched = events.filter(e => e.type === 'ScriptEpisodeDispatched');
+        assert.equal(dispatched.length, 1);
+        assert.equal(dispatched[0].payload.dueAt, 10);
+        console.log(JSON.stringify({runtime: 'exported packages/skeleton/dist/src/resident-host.js', identity: again.workOrderId, logPreserved: true, nextCadenceDueAt: 10, dispatched: dispatched.length}));
+      } finally { host.close(); }
+    `;
+      const result = ok(
+        run(
+          process.execPath,
+          [
+            "--input-type=module",
+            "-e",
+            `
+      import assert from 'node:assert/strict';
+      import { readFileSync, writeFileSync } from 'node:fs';
+      import { spawnSync } from 'node:child_process';
+      import { ResidentHost } from './packages/skeleton/dist/src/resident-host.js';
+      import { compileLoadout, requireCompiled } from './packages/compiler/dist/src/index.js';
+      import { recordPresence, replayResident } from './packages/skeleton/dist/src/resident-store.js';
+      import { residentMachine } from './packages/skeleton/dist/src/resident-state.js';
+      import { materializeOrder } from './scripts/lib/derived-orders.mjs';
+      const original = JSON.parse(readFileSync('.runtime/fixture-graph.json', 'utf8'));
+      const compiled = requireCompiled(compileLoadout(original.graph, {...original.environment, repo: 'self'})).workOrder;
+      const derived = await materializeOrder(compiled, {kind: 'runtime', sourceId: 'export-update'}, {root: process.cwd(), activate: false});
+      original.graph.activeMechanics[0].workOrder.workOrderId = derived.workOrderId;
+      const spec = {kind: 'script', effect: 'repo.inspect', surface: 'fixture.source', resources: {files: 1, lines: 0, tokens: 0}, command: [process.execPath, '-e', "process.stdout.write('ok\\\\n')"], cwd: process.cwd(), timeoutMs: 1000, expectedStdoutSha256: ${JSON.stringify(sha256(Buffer.from("ok\n")))}};
+      const configuration = {...original, policyId: 'fixture.progressive', actors: {probe: spec, widen: spec, peak: spec}, evidence: ['verified-input']};
+      const host = new ResidentHost({directory: '.runtime/resident', policyId: configuration.policyId, configuration, now: () => 0, capabilities: () => ['adapter.fixture']});
+      await host.start();
+      try {
+        await recordPresence('.runtime/resident', 'away', () => 0);
+        await host.tick();
+        const log = host.store.read();
+        assert.equal(residentMachine(replayResident(log).state.resident).due(10), 10);
+        writeFileSync('.runtime/resident/resident.json', JSON.stringify(configuration));
+        writeFileSync('.runtime/fixture-expected.json', JSON.stringify({log, identity: derived.workOrderId, compiled}));
+        const updated = spawnSync(process.execPath, ${JSON.stringify([join(source, "scripts/launchpad.mjs"), "export", "--update", target, "--apply"])}, {encoding:'utf8'});
+        assert.equal(updated.status, 0, updated.stderr);
+        assert.equal(host.store.read(), log);
+      } finally { host.close(); }
+      const resumed = spawnSync(process.execPath, ['--input-type=module', '-e', ${JSON.stringify(resume)}], {encoding:'utf8'});
+      assert.equal(resumed.status, 0, resumed.stderr);
+      process.stdout.write(resumed.stdout);
+    `,
+          ],
+          { cwd: target },
+        ),
+        "resident across opted-in update",
+      );
+      assert.match(result.stdout, /"logPreserved":true/);
+      assert.match(result.stdout, /"nextCadenceDueAt":10,"dispatched":1/);
+      t.diagnostic(result.stdout.trim());
+    },
+  );
+
+  await t.test(
+    "bounded comparison: shared preparation and a staged export produce identical candidate bytes",
+    () => {
+      const staged = join(scratch, "comparison-export");
+      const result = ok(
+        run(
+          process.execPath,
+          [
+            "--input-type=module",
+            "-e",
+            `
+      import assert from 'node:assert/strict';
+      import { readFileSync } from 'node:fs';
+      import { join } from 'node:path';
+      import { prepareKit, exportKit } from ${JSON.stringify(pathToFileURL(join(source, "scripts/launchpad.mjs")).href)};
+      const start = performance.now();
+      const prepared = await prepareKit();
+      const preparedMs = performance.now() - start;
+      const stagedStart = performance.now();
+      await exportKit(${JSON.stringify(staged)});
+      const candidates = new Map(prepared.writes.map(file => [file.path, file.bytes]));
+      for (const [path, contents] of prepared.bundle.surfaces) candidates.set(path, Buffer.from(contents));
+      let bytes = 0;
+      for (const {path} of prepared.manifest.files) {
+        const file = readFileSync(join(${JSON.stringify(staged)}, path));
+        assert.deepEqual(candidates.get(path), file, path);
+        bytes += file.length;
+      }
+      console.log(JSON.stringify({preparedMs: Math.round(preparedMs), stagedExportAndReadMs: Math.round(performance.now() - stagedStart), files: prepared.manifest.files.length, bytes, equal: true}));
+    `,
+          ],
+          { cwd: source },
+        ),
+        "candidate preparation comparison",
+      );
+      t.diagnostic(result.stdout.trim());
+    },
+  );
+});

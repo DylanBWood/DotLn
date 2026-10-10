@@ -153,6 +153,7 @@ await test("configuration root", async (t) => {
       });
       assert.deepEqual(config.repositories, {});
       assert.deepEqual(config.classes, {});
+      assert.deepEqual(config.kit, { applyInstanceActions: false });
       assert.deepEqual(config.build, {
         loadout: null,
         profile: null,
@@ -171,6 +172,35 @@ await test("configuration root", async (t) => {
       assert.equal(rootPattern(root, "orders"), "docs/control/orders");
     });
   });
+
+  await t.test(
+    "a kit section admits only applyInstanceActions as a boolean",
+    () => {
+      temporary("config-kit", (root) => {
+        for (const kit of [
+          {},
+          { applyInstanceActions: false },
+          { applyInstanceActions: true },
+        ]) {
+          declared({ root, body: { version: 1, kit } });
+          assert.deepEqual(loadConfig(root).kit, {
+            applyInstanceActions: kit.applyInstanceActions ?? false,
+          });
+        }
+        for (const kit of [
+          null,
+          [],
+          true,
+          { other: true },
+          { applyInstanceActions: "true" },
+          { applyInstanceActions: null },
+        ]) {
+          declared({ root, body: { version: 1, kit } });
+          assert.throws(() => loadConfig(root), /dotln\.config\.json.*kit/);
+        }
+      });
+    },
+  );
 
   await t.test("a declared root moves its documents and its children", () => {
     temporary("config-roots", (root) => {

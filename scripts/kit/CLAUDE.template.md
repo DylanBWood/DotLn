@@ -2,7 +2,8 @@
 
 This file is the operating contract every session in this repository reads;
 `AGENTS.md` is a symlink to it. The hand-written floor below is instance-owned:
-edit it here, and an upstream kit update never rewrites it. The marked blocks
+edit it here; an upstream kit update changes it only through explicitly
+opted-in instance actions. The marked blocks
 at the end are generated: the kit block by the export (its provenance) and the
 harness block by `node scripts/harness.mjs emit`, which `harness check`
 verifies.

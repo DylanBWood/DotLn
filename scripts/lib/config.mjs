@@ -92,6 +92,7 @@ const SECTION_KEYS = [
   "classes",
   "build",
   "release",
+  "kit",
   "derivedOrders",
   "portfolios",
 ];
@@ -336,6 +337,17 @@ const validateRelease = (path, declared) => {
     release[key] = declared[key];
   }
   return release;
+};
+
+const validateKit = (path, declared) => {
+  requireObject(path, declared, "kit");
+  requireKnownKeys(path, declared, ["applyInstanceActions"], "kit");
+  if (
+    declared.applyInstanceActions !== undefined &&
+    typeof declared.applyInstanceActions !== "boolean"
+  )
+    throw refuse(path, "kit.applyInstanceActions must be a boolean");
+  return { applyInstanceActions: declared.applyInstanceActions ?? false };
 };
 
 const validateClasses = (path, declared) => {
@@ -650,7 +662,7 @@ const validatePortfolios = (path, declared, repositories) => {
   return portfolios;
 };
 
-const validateConfig = (path, source) => {
+export const validateConfig = (path, source) => {
   let parsed;
   try {
     parsed = JSON.parse(source);
@@ -694,6 +706,7 @@ const validateConfig = (path, source) => {
       declared.release === undefined
         ? validateRelease(path, {})
         : validateRelease(path, declared.release),
+    kit: validateKit(path, declared.kit === undefined ? {} : declared.kit),
   };
 };
 
@@ -706,6 +719,7 @@ const absentConfig = () => ({
   derivedOrders: { first: "WO-900", last: "WO-999" },
   build: { loadout: null, profile: null, overlay: null },
   release: Object.fromEntries(RELEASE_KEYS.map((key) => [key, true])),
+  kit: { applyInstanceActions: false },
 });
 
 // One nonblocking descriptor per lookup keeps a launchpad that gains, loses or edits its
