@@ -1,0 +1,143 @@
+{
+  "source": "readGateChecks(process.cwd()), filtered to the repaired code identity",
+  "capturedAt": "2026-10-09T20:13:27.970Z",
+  "identity": "ea32fb1e1fc56cf81ad6b61b5dd3962bc25d0a32c827473d57ca324346d3822e",
+  "rows": [
+    {
+      "checkId": "npm run test:docs",
+      "codeIdentity": "ea32fb1e1fc56cf81ad6b61b5dd3962bc25d0a32c827473d57ca324346d3822e",
+      "gateSelection": "document",
+      "exitCode": 0,
+      "recordedAt": "2026-10-09T19:48:23.880Z",
+      "sharedRefs": {
+        "start": {
+          "originMain": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "main": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "tags": {
+            "count": 152,
+            "newest": "v0.72.0"
+          },
+          "dotlnRefs": 1635
+        },
+        "end": {
+          "originMain": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "main": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "tags": {
+            "count": 152,
+            "newest": "v0.72.0"
+          },
+          "dotlnRefs": 1635
+        }
+      },
+      "durationMs": 100983,
+      "requiredSuites": [
+        "build",
+        "format",
+        "release-surfaces",
+        "license-surfaces",
+        "resume",
+        "launchpad-docs",
+        "publication",
+        "docs-check",
+        "docs-check-fixtures",
+        "comment-labels",
+        "comment-labels-fixtures",
+        "index",
+        "lineage",
+        "lineage-fixtures",
+        "kernel-docs",
+        "skeleton-docs",
+        "console-docs",
+        "resident-bind",
+        "local-runner-double",
+        "authority-evidence",
+        "harness",
+        "harness-context",
+        "harness-evidence",
+        "plan-refutation-current",
+        "artifact-corpus",
+        "artifact-evidence",
+        "verification-evidence",
+        "feedback-evidence",
+        "meta",
+        "registrations",
+        "plan",
+        "entropy"
+      ],
+      "freshSuites": 32,
+      "reusedSuites": 0,
+      "identityUnchanged": true
+    },
+    {
+      "checkId": "npm test",
+      "codeIdentity": "ea32fb1e1fc56cf81ad6b61b5dd3962bc25d0a32c827473d57ca324346d3822e",
+      "gateSelection": "review",
+      "exitCode": 0,
+      "recordedAt": "2026-10-09T20:13:18.609Z",
+      "sharedRefs": {
+        "start": {
+          "originMain": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "main": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "tags": {
+            "count": 152,
+            "newest": "v0.72.0"
+          },
+          "dotlnRefs": 1635
+        },
+        "end": {
+          "originMain": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "main": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "tags": {
+            "count": 152,
+            "newest": "v0.72.0"
+          },
+          "dotlnRefs": 1635
+        }
+      },
+      "durationMs": 1488838,
+      "requiredSuites": [
+        "build",
+        "format",
+        "release-preparation",
+        "github-body",
+        "outward-lint",
+        "target-publish",
+        "vertical",
+        "license-fixtures",
+        "publication-fixtures",
+        "backup-intake",
+        "launchpad",
+        "beacon-portability",
+        "checkpoint",
+        "worktree",
+        "worktree-integration",
+        "release",
+        "work-orders-fixtures",
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console",
+        "browser-evidence",
+        "adjacent-queue",
+        "derived-orders",
+        "portfolio",
+        "codex-continuation",
+        "authority-grants",
+        "configuration-root",
+        "authority-evidence",
+        "harness-fixtures",
+        "harness",
+        "harness-evidence",
+        "artifact-evidence",
+        "verification-evidence",
+        "feedback-evidence",
+        "runner-fixtures",
+        "process-debt",
+        "registrations"
+      ],
+      "freshSuites": 90,
+      "reusedSuites": 0,
+      "identityUnchanged": true
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+PROGRESS [bounded-probe] # Subtest: WO-198 shared refs tolerate absent branches and count only annotated v tags
+PROGRESS [bounded-probe] # Subtest: WO-198 a sibling merge and tag during a worktree's gates change no result and are named on the row
+PROGRESS [bounded-probe] # Subtest: WO-198 a failed row names movement since its own check's previous row exactly once
+TAP version 13
+# Subtest: WO-198 shared refs tolerate absent branches and count only annotated v tags
+ok 1 - WO-198 shared refs tolerate absent branches and count only annotated v tags
+  ---
+  duration_ms: 155.246083
+  type: 'test'
+  ...
+# Subtest: WO-198 a sibling merge and tag during a worktree's gates change no result and are named on the row
+ok 2 - WO-198 a sibling merge and tag during a worktree's gates change no result and are named on the row
+  ---
+  duration_ms: 1567.755583
+  type: 'test'
+  ...
+# PROOF WO-198 sibling {"checkId":"npm run test:docs","before":{"start":{"originMain":"d195a6c4b5606f9d7d59fbda38c70b5ab3dfbc04","main":"d195a6c4b5606f9d7d59fbda38c70b5ab3dfbc04","tags":{"count":0,"newest":"absent"},"dotlnRefs":0},"end":{"originMain":"d195a6c4b5606f9d7d59fbda38c70b5ab3dfbc04","main":"d195a6c4b5606f9d7d59fbda38c70b5ab3dfbc04","tags":{"count":0,"newest":"absent"},"dotlnRefs":0}},"after":{"start":{"originMain":"2c8c7d8a23b99b1dc6e3d7caae0001b307f7d2f9","main":"2c8c7d8a23b99b1dc6e3d7caae0001b307f7d2f9","tags":{"count":1,"newest":"v9000.0.1"},"dotlnRefs":1},"end":{"originMain":"2c8c7d8a23b99b1dc6e3d7caae0001b307f7d2f9","main":"2c8c7d8a23b99b1dc6e3d7caae0001b307f7d2f9","tags":{"count":1,"newest":"v9000.0.1"},"dotlnRefs":1}},"tasks":[{"name":"document-barrier","exitCode":0},{"name":"alpha","exitCode":0},{"name":"beta","exitCode":0}],"deltaLines":0}
+# PROOF WO-198 sibling {"checkId":"npm test","before":{"start":{"originMain":"d195a6c4b5606f9d7d59fbda38c70b5ab3dfbc04","main":"d195a6c4b5606f9d7d59fbda38c70b5ab3dfbc04","tags":{"count":0,"newest":"absent"},"dotlnRefs":0},"end":{"originMain":"d195a6c4b5606f9d7d59fbda38c70b5ab3dfbc04","main":"d195a6c4b5606f9d7d59fbda38c70b5ab3dfbc04","tags":{"count":0,"newest":"absent"},"dotlnRefs":0}},"after":{"start":{"originMain":"2c8c7d8a23b99b1dc6e3d7caae0001b307f7d2f9","main":"2c8c7d8a23b99b1dc6e3d7caae0001b307f7d2f9","tags":{"count":1,"newest":"v9000.0.1"},"dotlnRefs":1},"end":{"originMain":"2c8c7d8a23b99b1dc6e3d7caae0001b307f7d2f9","main":"2c8c7d8a23b99b1dc6e3d7caae0001b307f7d2f9","tags":{"count":1,"newest":"v9000.0.1"},"dotlnRefs":1}},"tasks":[{"name":"build","exitCode":0},{"name":"alpha","exitCode":0},{"name":"beta","exitCode":0}],"deltaLines":0}
+# Subtest: WO-198 a failed row names movement since its own check's previous row exactly once
+ok 3 - WO-198 a failed row names movement since its own check's previous row exactly once
+  ---
+  duration_ms: 1407.211958
+  type: 'test'
+  ...
+# PROOF WO-198 forced failure shared refs moved: since previous: origin/main 431b99cd84340732be05bc770c8441adb3fb1324..eeea1be16f7d8bca25e67c9ed5912286f2292c74; since previous: main 431b99cd84340732be05bc770c8441adb3fb1324..eeea1be16f7d8bca25e67c9ed5912286f2292c74; since previous: tags +v9000.0.1 (count 0..1, newest absent..v9000.0.1); since previous: refs/dotln/ 0..1
+# Subtest: WO-198 first and legacy rows detect movement during a failed run, including a return to the previous value
+ok 4 - WO-198 first and legacy rows detect movement during a failed run, including a return to the previous value
+  ---
+  duration_ms: 931.866042
+  type: 'test'
+  ...
+# PROOF WO-198 during-run shared refs moved: during run: origin/main 86598010047fe32079ab3b3419dbcaa928753f27..9a6079c1166320e63c5217e68058d42fcfc99ecb; during run: main 86598010047fe32079ab3b3419dbcaa928753f27..9a6079c1166320e63c5217e68058d42fcfc99ecb; during run: tags +v9000.0.1 (count 0..1, newest absent..v9000.0.1); during run: refs/dotln/ 0..1
+# PROOF WO-198 round-trip shared refs moved: since previous: origin/main 9a6079c1166320e63c5217e68058d42fcfc99ecb..86598010047fe32079ab3b3419dbcaa928753f27; during run: origin/main 86598010047fe32079ab3b3419dbcaa928753f27..9a6079c1166320e63c5217e68058d42fcfc99ecb
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4118.476208
+bounded-result {"name":"bounded-probe","durationMs":4166,"slowestCases":[{"name":"bounded-probe","durationMs":4166,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":74523864,"peakRssBytes":197640192,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T18:33:30.884Z","finishedAt":"2026-10-09T18:33:35.050Z","exitCode":0,"executed":true}
