@@ -13,7 +13,7 @@
 - [x] [WO-190] — Index and roadmap lead with the work ahead · **final-reviewed** · pair 3
 - [x] [WO-073] — Repository class and profile documents · **final-reviewed** · pair 4
 - [x] [WO-198] — A worktree's gate names what moved · **final-reviewed** · pair 4
-- [ ] [WO-077] — Launchpad export update · **queued** · pair 5
+- [x] [WO-077] — Launchpad export update · **final-reviewed** · pair 5
 - [ ] [WO-189] — The front page, rewritten once and guarded · **queued** · pair 5
 - [ ] [WO-078] — Sibling registry and export receipts · **queued** · pair 6
 - [ ] [WO-191] — Reader profiles for published text · **queued** · pair 6
@@ -57,23 +57,6 @@ None.
 
 ## Open
 
-### WO-077
-
-[WO-077 — Launchpad export update: &#96;launchpad export --update &lt;dir&gt;&#96; refreshes an existing export's kit files by manifest, refuses locally modified ones, touches no instance file without the instance's opt-in, and prints the instance actions and the re-emit instruction (version assigned at activation)](WO-077-launchpad-export-update.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-074: hard (met) — a prior manifest to update from; WO-075: hard (met) — the kit runtime a resident inside an exported instance runs on; WO-167: hard (met) — closed at v0.53.1; retained as the fold this order's product 07 write-back followed.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Track: delivery
-- Cost: adds &#96;--update&#96; to &#96;scripts/launchpad.mjs&#96;, the kit's dated instance-actions note, &#96;--apply&#96; behind one opt-in field in &#96;scripts/lib/config.mjs&#96;, fixture exports and a fixture instance with a resident, the client README template's update section and at most 200 bytes in product 07. Removes the hand refresh of an export: without it a fork takes core's improvements only by hand. WO-078 depends on it. Re-mints: none; &#96;scripts/launchpad.mjs&#96; is in no evidence inventory, and &#96;scripts/lib/config.mjs&#96; is excluded from every inventory with a recorded reason. Wall-clock, tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-077-launchpad-export-update.md](WO-077-launchpad-export-update.md)
-
 ### WO-189
 
 [WO-189 — The front page is rewritten once from what it already says well, chosen by the operator from three candidates, and then guarded so that an order cannot append to it (version assigned at activation)](WO-189-front-page.md)
@@ -97,8 +80,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-077.
-- References: WO-074: hard (met) — the first export receipt; WO-075: hard (met) — the build hash a receipt records; WO-077: hard (unmet) — --update, which writes a receipt; WO-167: hard (met) — closed at v0.53.1; the fold this order's product 07 write-back followed.
+- Dependencies: typed; dependency-ready.
+- References: WO-074: hard (met) — the first export receipt; WO-075: hard (met) — the build hash a receipt records; WO-077: hard (met) — --update, which writes a receipt; WO-167: hard (met) — closed at v0.53.1; the fold this order's product 07 write-back followed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -200,8 +183,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-077, WO-078.
-- References: WO-074: hard (met) — the kit file set and manifest the request command joins; WO-077: hard (unmet) — the update and the instance-actions note that reports fulfilled requests; WO-078: hard (unmet) — the sibling receipt that gains request identifiers; WO-062: satisfied-by-close (met) — the read-only screened issue reader used by the planning intake; WO-063: satisfied-by-close (met) — the outward lint run over a draft before it may be filed; WO-060: satisfied-by-close (met) — the declared screen run over a draft and over each fetched issue.
+- Dependencies: typed; blocked on WO-078.
+- References: WO-074: hard (met) — the kit file set and manifest the request command joins; WO-077: hard (met) — the update and the instance-actions note that reports fulfilled requests; WO-078: hard (unmet) — the sibling receipt that gains request identifiers; WO-062: satisfied-by-close (met) — the read-only screened issue reader used by the planning intake; WO-063: satisfied-by-close (met) — the outward lint run over a draft before it may be filed; WO-060: satisfied-by-close (met) — the declared screen run over a draft and over each fetched issue.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

@@ -31504,6 +31504,21 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-eaad73517ca2a395",
+      "key": "decision:docs/evidence/WO-077/decisions.md#wo-077-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cd5e2e1a382a134ee0e435a13631277cb458e4433a470b812fabe906d1405e43",
+          "ref": "docs/evidence/WO-077/decisions.md#wo-077-d007--verification-ver-001-pass-three-update-follow-ups-boarded",
+          "title": "WO-077-D007: In the next repair, or the next order that edits scripts/launchpad.mjs. (1) F1: rename-root refuses a from or to that is, or lies under, a kit-owned prefix. Use the same ownership predica",
+          "summary": "{ \"id\": \"WO-077-D007\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Pass VER-001. All five criteria are met at code identity 43d2cf9cabeb65c9b603ec693c34114d2987c6a968d958e103cd7d73a2377e09. The executor's passing npm test -- --review row is at that identity, and I consumed it. Three defects in the declared surface scripts/launchpad.mjs break no criterion and no behavior main had, because main had no update mode. Product 07 section Verification review and attack routes each one to a follow-up, so none blocks. F1: a declared rename-root admits a destination inside a kit tree. F2: a kit file whose bytes already equal the incoming kit's bytes is r",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
