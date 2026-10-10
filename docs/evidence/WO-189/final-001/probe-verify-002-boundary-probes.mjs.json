@@ -1,0 +1,540 @@
+{
+  "cutoff": "2026-10-10T22:17:42.810Z",
+  "lineBudget": 11,
+  "mismatches": [],
+  "runs": [
+    {
+      "name": "unchanged",
+      "expectedRefusal": false,
+      "renderedHeadings": [
+        {
+          "depth": 1,
+          "text": "Page",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 3
+        },
+        {
+          "depth": 2,
+          "text": "Next",
+          "line": 21
+        }
+      ],
+      "failures": [],
+      "notices": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "formattedFailures": []
+    },
+    {
+      "name": "exact budget",
+      "expectedRefusal": false,
+      "renderedHeadings": [
+        {
+          "depth": 1,
+          "text": "Page",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 3
+        },
+        {
+          "depth": 2,
+          "text": "Next",
+          "line": 23
+        }
+      ],
+      "failures": [],
+      "notices": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "formattedFailures": []
+    },
+    {
+      "name": "one over budget",
+      "expectedRefusal": true,
+      "renderedHeadings": [
+        {
+          "depth": 1,
+          "text": "Page",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 3
+        },
+        {
+          "depth": 2,
+          "text": "Next",
+          "line": 24
+        }
+      ],
+      "failures": [
+        "README.md: \"What runs today\" holds 12 counted lines (the non-empty lines between its markers); the budget in docs/control/front-page.json at the merge base is 11. Rewrite the line your capability supersedes, or fold it into a related line as one sentence; planning moves the budget on main"
+      ],
+      "notices": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "formattedFailures": [
+        "README.md: \"What runs today\" holds 12 counted lines (the non-empty lines between its markers); the budget in docs/control/front-page.json at the merge base is 11. Rewrite the line your capability supersedes, or fold it into a related line as one sentence; planning moves the budget on main"
+      ]
+    },
+    {
+      "name": "CRLF exact budget",
+      "expectedRefusal": false,
+      "renderedHeadings": [
+        {
+          "depth": 1,
+          "text": "Page",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 3
+        },
+        {
+          "depth": 2,
+          "text": "Next",
+          "line": 23
+        }
+      ],
+      "failures": [],
+      "notices": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "formattedFailures": []
+    },
+    {
+      "name": "duplicate opening marker",
+      "expectedRefusal": true,
+      "renderedHeadings": [
+        {
+          "depth": 1,
+          "text": "Page",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 3
+        },
+        {
+          "depth": 2,
+          "text": "Next",
+          "line": 22
+        }
+      ],
+      "failures": [
+        "README.md: needs exactly one ordered pair of marker lines <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end --> around \"What runs today\""
+      ],
+      "notices": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "formattedFailures": [
+        "README.md: needs exactly one ordered pair of marker lines <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end --> around \"What runs today\""
+      ]
+    },
+    {
+      "name": "reversed marker pair",
+      "expectedRefusal": true,
+      "renderedHeadings": [
+        {
+          "depth": 1,
+          "text": "Page",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 3
+        },
+        {
+          "depth": 2,
+          "text": "Next",
+          "line": 21
+        }
+      ],
+      "failures": [
+        "README.md: needs exactly one ordered pair of marker lines <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end --> around \"What runs today\""
+      ],
+      "notices": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "formattedFailures": [
+        "README.md: needs exactly one ordered pair of marker lines <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end --> around \"What runs today\""
+      ]
+    },
+    {
+      "name": "subheading below pair",
+      "expectedRefusal": true,
+      "renderedHeadings": [
+        {
+          "depth": 1,
+          "text": "Page",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 3
+        },
+        {
+          "depth": 3,
+          "text": "More",
+          "line": 21
+        },
+        {
+          "depth": 2,
+          "text": "Next",
+          "line": 36
+        }
+      ],
+      "failures": [
+        "README.md:21: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; move each sentence between them, where the budget counts it, or end the section with a Markdown heading",
+        "README.md:23-34: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; move each sentence between them, where the budget counts it, or end the section with a Markdown heading"
+      ],
+      "notices": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "formattedFailures": [
+        "README.md:23: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; move each sentence between them, where the budget counts it, or end the section with a Markdown heading",
+        "README.md:25-36: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; move each sentence between them, where the budget counts it, or end the section with a Markdown heading"
+      ]
+    },
+    {
+      "name": "pair closes under next heading",
+      "expectedRefusal": true,
+      "renderedHeadings": [
+        {
+          "depth": 1,
+          "text": "Page",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 3
+        },
+        {
+          "depth": 2,
+          "text": "Next",
+          "line": 19
+        }
+      ],
+      "failures": [
+        "README.md: the marker lines <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end --> stand under ## What runs today and before the next heading; found them at lines 9 and 21"
+      ],
+      "notices": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "formattedFailures": [
+        "README.md: the marker lines <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end --> stand under ## What runs today and before the next heading; found them at lines 10 and 24"
+      ]
+    },
+    {
+      "name": "ordinary next heading may carry prose",
+      "expectedRefusal": false,
+      "renderedHeadings": [
+        {
+          "depth": 1,
+          "text": "Page",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 3
+        },
+        {
+          "depth": 2,
+          "text": "Next",
+          "line": 21
+        }
+      ],
+      "failures": [],
+      "notices": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "formattedFailures": []
+    },
+    {
+      "name": "thirteen sentences with bold terminators on one line",
+      "expectedRefusal": true,
+      "renderedHeadings": [
+        {
+          "depth": 1,
+          "text": "Page",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 3
+        },
+        {
+          "depth": 2,
+          "text": "Next",
+          "line": 21
+        }
+      ],
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence; the next starts at \"Extra capability 2 runs. Extra capabilit…\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"**Extra capability 1 runs.** **Extra cap…\""
+      ],
+      "notices": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence; the next starts at \"Extra capability 2 runs. Extra capabilit…\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"**Extra capability 1 runs.** **Extra cap…\""
+      ],
+      "renderedProbeLine": "Extra capability 1 runs. Extra capability 2 runs. Extra capability 3 runs. Extra capability 4 runs. Extra capability 5 runs. Extra capability 6 runs. Extra capability 7 runs. Extra capability 8 runs. Extra capability 9 runs. Extra capability 10 runs. Extra capability 11 runs. Extra capability 12 runs. Last capability runs."
+    },
+    {
+      "name": "thirteen sentences with italic terminators on one line",
+      "expectedRefusal": true,
+      "renderedHeadings": [
+        {
+          "depth": 1,
+          "text": "Page",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 3
+        },
+        {
+          "depth": 2,
+          "text": "Next",
+          "line": 21
+        }
+      ],
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence; the next starts at \"Extra capability 2 runs. Extra capabilit…\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"_Extra capability 1 runs._ _Extra capabi…\""
+      ],
+      "notices": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence; the next starts at \"Extra capability 2 runs. Extra capabilit…\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"_Extra capability 1 runs._ _Extra capabi…\""
+      ],
+      "renderedProbeLine": "Extra capability 1 runs. Extra capability 2 runs. Extra capability 3 runs. Extra capability 4 runs. Extra capability 5 runs. Extra capability 6 runs. Extra capability 7 runs. Extra capability 8 runs. Extra capability 9 runs. Extra capability 10 runs. Extra capability 11 runs. Extra capability 12 runs. Last capability runs."
+    },
+    {
+      "name": "exact duplicate heading",
+      "expectedRefusal": true,
+      "renderedHeadings": [
+        {
+          "depth": 1,
+          "text": "Page",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 3
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 21
+        },
+        {
+          "depth": 2,
+          "text": "Next",
+          "line": 36
+        }
+      ],
+      "failures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "notices": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "formattedFailures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ]
+    },
+    {
+      "name": "duplicate heading with closing hashes",
+      "expectedRefusal": true,
+      "renderedHeadings": [
+        {
+          "depth": 1,
+          "text": "Page",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 3
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 21
+        },
+        {
+          "depth": 2,
+          "text": "Next",
+          "line": 36
+        }
+      ],
+      "failures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "notices": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "formattedFailures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ]
+    },
+    {
+      "name": "duplicate heading with trailing spaces",
+      "expectedRefusal": true,
+      "renderedHeadings": [
+        {
+          "depth": 1,
+          "text": "Page",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 3
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 21
+        },
+        {
+          "depth": 2,
+          "text": "Next",
+          "line": 36
+        }
+      ],
+      "failures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "notices": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "formattedFailures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ]
+    },
+    {
+      "name": "duplicate heading with tab separator",
+      "expectedRefusal": true,
+      "renderedHeadings": [
+        {
+          "depth": 1,
+          "text": "Page",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 3
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 21
+        },
+        {
+          "depth": 2,
+          "text": "Next",
+          "line": 36
+        }
+      ],
+      "failures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "notices": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "formattedFailures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ]
+    },
+    {
+      "name": "duplicate heading with indentation",
+      "expectedRefusal": true,
+      "renderedHeadings": [
+        {
+          "depth": 1,
+          "text": "Page",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 3
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 21
+        },
+        {
+          "depth": 2,
+          "text": "Next",
+          "line": 36
+        }
+      ],
+      "failures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "notices": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "formattedFailures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ]
+    },
+    {
+      "name": "duplicate heading with strong emphasis",
+      "expectedRefusal": true,
+      "renderedHeadings": [
+        {
+          "depth": 1,
+          "text": "Page",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 3
+        },
+        {
+          "depth": 2,
+          "text": "What runs today",
+          "line": 21
+        },
+        {
+          "depth": 2,
+          "text": "Next",
+          "line": 36
+        }
+      ],
+      "failures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "notices": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "formattedFailures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ]
+    }
+  ]
+}

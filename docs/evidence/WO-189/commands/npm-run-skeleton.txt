@@ -1,0 +1,40 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+
+> skeleton
+> npm run build --silent && node packages/skeleton/dist/src/cli.js
+
+Built browser-evidence, compiler, console, kernel, skeleton with atomic file replacement; installed harness snapshots remain immutable
+@dotln/skeleton v0.57.1 — Repo Gardener + Seiri
+01 ArtifactIdentityEnforcementStarted — evt_1
+02 InspectionTaskCreated — evt_2
+03 LoadoutEquipped — evt_3
+04 DecisionRecorded — evt_4
+05 OperatorPresenceChanged — evt_5
+06 DecisionRecorded — evt_6
+07 CadencePulse — evt_7
+08 DecisionRecorded — evt_8
+09 WorkOrderEmitted — evt_9
+10 DecisionRecorded — evt_10
+11 CommandPersisted — evt_11
+12 CommandResult — evt_12
+13 DecisionRecorded — evt_13
+14 DeletionAttempted — evt_14
+15 DecisionRecorded — evt_15
+16 CommandRefused — evt_16
+17 DecisionRecorded — evt_17
+18 EpisodeTerminated — evt_18
+19 DecisionRecorded — evt_19
+20 VerificationRequested — evt_20
+21 DecisionRecorded — evt_21
+22 VerificationCompleted — evt_22
+23 OperatorPresenceChanged — evt_23
+24 DecisionRecorded — evt_24
+25 CadencePulse — evt_25
+26 DecisionRecorded — evt_26
+27 QueuedPulseNoOp — evt_27
+28 SchedulesCancelled — evt_28
+
+🐛 Repo Gardener  ◌ dormant  ⏱️ pulsing  🔎 inspecting  🛡️ inverted/refused  ✅ verified  ☀️ phase:returned  💤 faded/cancelled
+
+verified=true candidates=1
+bounded-result {"name":"bounded-probe","durationMs":1502,"slowestCases":[{"name":"bounded-probe","durationMs":1502,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":390064280,"peakRssBytes":556351488,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-10T03:00:45.773Z","finishedAt":"2026-10-10T03:00:47.275Z","exitCode":0,"executed":true}

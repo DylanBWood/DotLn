@@ -1,0 +1,323 @@
+{
+  "cutoff": "2026-10-10T22:17:46.222Z",
+  "shapes": [
+    {
+      "name": "exact budget with styled, linked and quoted sentences",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": [],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\n**The kernel** replays.\nThe [guide](https://example.invalid/guide) explains it.\nThe expression `a < b` compares values.\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n"
+    },
+    {
+      "name": "CRLF remains a valid line ending",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": [],
+      "source": "# Page\r\n\r\n## What runs today\r\n\r\n<!-- DOTLN-RELEASE-BEGIN -->\r\nThis source prepares DotLn `v0.1.0`.\r\n<!-- DOTLN-RELEASE-END -->\r\n\r\n<!-- dotln-what-runs:start -->\r\nThe kernel replays.\r\nThe skeleton runs.\r\n<!-- dotln-what-runs:end -->\r\n\r\n## Next\r\n\r\nA closing paragraph.\r\n"
+    },
+    {
+      "name": "escaped HTML bracket in prose",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": [],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\nThe literal \\<h2> is text.\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n"
+    },
+    {
+      "name": "heading mention and contents link are ordinary prose",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": [],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\nThe kernel replays.\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n\nThe What runs today section describes the software.\n\n[What runs today](#what-runs-today)\n"
+    },
+    {
+      "name": "closing heading with linked text",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": [],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\nThe kernel replays.\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n\n## [Next](https://example.invalid/next)\n\nA closing paragraph.\n"
+    },
+    {
+      "name": "empty section within budget",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": [],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\n\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n"
+    },
+    {
+      "name": "one extra sentence at the exact boundary",
+      "expectation": true,
+      "failures": [
+        "README.md: \"What runs today\" holds 4 counted lines (the non-empty lines between its markers); the budget in front-page.json is 3. Rewrite the line your capability supersedes, or fold it into a related line as one sentence; planning moves the budget on main"
+      ],
+      "formattedFailures": [
+        "README.md: \"What runs today\" holds 4 counted lines (the non-empty lines between its markers); the budget in front-page.json is 3. Rewrite the line your capability supersedes, or fold it into a related line as one sentence; planning moves the budget on main"
+      ],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\nOne runs.\nTwo runs.\nThree runs.\nFour runs.\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n"
+    },
+    {
+      "name": "strong text and numeric note do not hide a sentence",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence; the next starts at \"[12] Another runs.\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"**One runs.**[12] Another runs.\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence; the next starts at \"[12] Another runs.\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"**One runs.**[12] Another runs.\""
+      ],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\n**One runs.**[12] Another runs.\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n"
+    },
+    {
+      "name": "Greek sentence after a curly quote",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence; the next starts at \"” Βήτα runs.\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"“One runs.” Βήτα runs.\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence; the next starts at \"” Βήτα runs.\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"“One runs.” Βήτα runs.\""
+      ],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\n“One runs.” Βήτα runs.\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n"
+    },
+    {
+      "name": "two escaped backticks do not mask two sentences",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence; the next starts at \"\\\\ here.\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"One runs \\\\`Hidden runs. Another runs.\\\\` …\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence; the next starts at \"\\\\ here.\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"One runs \\\\`Hidden runs. Another runs.\\\\` …\""
+      ],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\nOne runs \\`Hidden runs. Another runs.\\` here.\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n"
+    },
+    {
+      "name": "inline code ending in a stop followed by prose",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence; the next starts at \"Two run.\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"`One runs.` Two run.\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence; the next starts at \"Two run.\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"`One runs.` Two run.\""
+      ],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\n`One runs.` Two run.\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n"
+    },
+    {
+      "name": "code span over a line break",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line does not end a sentence; line 11 continues it, and sentences here are never wrapped, so join the two lines: \"The `code\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line does not end a sentence; line 13 continues it, and sentences here are never wrapped, so join the two lines: \"The `code\""
+      ],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\nThe `code\nspans` lines.\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n"
+    },
+    {
+      "name": "literal HTML following two backslashes",
+      "expectation": true,
+      "failures": [
+        "README.md:10: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"</em>.\"",
+        "README.md:10: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<: \"One runs \\\\\\\\<em>here</em>.\""
+      ],
+      "formattedFailures": [
+        "README.md:12: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"</em>.\"",
+        "README.md:12: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<: \"One runs \\\\\\\\<em>here</em>.\""
+      ],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\nOne runs \\\\<em>here</em>.\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n"
+    },
+    {
+      "name": "template node inside an image label",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence; the next starts at \"More runs. }}].\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"One runs ![{{ Hidden runs. More runs. }}…\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence; the next starts at \"More runs. }}].\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"One runs ![{{ Hidden runs. More runs. }}…\""
+      ],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\nOne runs ![{{ Hidden runs. More runs. }}](https://example.invalid/a.png).\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n"
+    },
+    {
+      "name": "template text under another section",
+      "expectation": true,
+      "failures": [
+        "README.md:18: a template tag; escape its first brace with a backslash or put it in inline code"
+      ],
+      "formattedFailures": [
+        "README.md:20: a template tag; escape its first brace with a backslash or put it in inline code"
+      ],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\nThe kernel replays.\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n\n{{ A separate tag }}\n"
+    },
+    {
+      "name": "numeric bidi reference outside the counted section",
+      "expectation": true,
+      "failures": [
+        "README.md:18: a bidirectional control character, which reorders what a reader sees; remove it"
+      ],
+      "formattedFailures": [
+        "README.md:20: a bidirectional control character, which reorders what a reader sees; remove it"
+      ],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\nThe kernel replays.\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n\nA visible &#x202E; control.\n"
+    },
+    {
+      "name": "control character in a reference definition",
+      "expectation": true,
+      "failures": [
+        "README.md:18: a control character U+000C, which GitHub and the check's parser read differently; remove it"
+      ],
+      "formattedFailures": [
+        "README.md:20: a control character U+000C, which GitHub and the check's parser read differently; remove it"
+      ],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\nThe kernel replays.\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n\n[label]:\f https://example.invalid\n"
+    },
+    {
+      "name": "markers copied inside a fenced code block",
+      "expectation": true,
+      "failures": [
+        "README.md:9-14: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; move each sentence between them, where the budget counts it, or end the section with a Markdown heading",
+        "README.md:11: a \"What runs today\" line must be Markdown prose, one sentence per line: \"The kernel replays.\"",
+        "README.md:12: a \"What runs today\" line must be Markdown prose, one sentence per line: \"The skeleton runs.\""
+      ],
+      "formattedFailures": [
+        "README.md:10-15: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; move each sentence between them, where the budget counts it, or end the section with a Markdown heading",
+        "README.md:12: a \"What runs today\" line must be Markdown prose, one sentence per line: \"The kernel replays.\"",
+        "README.md:13: a \"What runs today\" line must be Markdown prose, one sentence per line: \"The skeleton runs.\""
+      ],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n```text\n<!-- dotln-what-runs:start -->\nThe kernel replays.\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n```\n\n## Next\n\nA closing paragraph.\n"
+    },
+    {
+      "name": "styled heading with decoded word separators",
+      "expectation": true,
+      "failures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "formattedFailures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\nThe kernel replays.\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n\n## **What&#32;runs&#32;today**\n\nExtra runs.\n"
+    },
+    {
+      "name": "level-six namesake in a list",
+      "expectation": true,
+      "failures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "formattedFailures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\nThe kernel replays.\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n\n- ###### _What runs today_\n\nExtra runs.\n"
+    },
+    {
+      "name": "duplicate heading through a sigma-folded reference",
+      "expectation": true,
+      "failures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "formattedFailures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\nThe kernel replays.\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n\n## [What runs today][Σ]\n\nExtra runs.\n\n[ς]: https://example.invalid\n"
+    },
+    {
+      "name": "closing heading with only an image",
+      "expectation": true,
+      "failures": [
+        "README.md:14: the heading after ## What runs today renders no letter or digit outside pictures and emoji, so a reader sees the section run on; name the next section"
+      ],
+      "formattedFailures": [
+        "README.md:16: the heading after ## What runs today renders no letter or digit outside pictures and emoji, so a reader sees the section run on; name the next section"
+      ],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\nThe kernel replays.\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n\n## ![Next](https://example.invalid/a.png)\n\nA closing paragraph.\n"
+    },
+    {
+      "name": "receipt in a link destination",
+      "expectation": true,
+      "failures": [
+        "README.md:18: \"WO-189\" is a work-order identifier outside a generated block; the page names no order, decision, date or version in text, code or link paths, so drop it or link a page whose path carries none, and keep the receipt in the order's evidence"
+      ],
+      "formattedFailures": [
+        "README.md:20: \"WO-189\" is a work-order identifier outside a generated block; the page names no order, decision, date or version in text, code or link paths, so drop it or link a page whose path carries none, and keep the receipt in the order's evidence"
+      ],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\nThe kernel replays.\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n\n[Evidence](/docs/evidence/WO-189/README.md)\n"
+    },
+    {
+      "name": "receipt assembled across emphasis",
+      "expectation": true,
+      "failures": [
+        "README.md:18: \"WO-189\" is a work-order identifier outside a generated block; the page names no order, decision, date or version in text, code or link paths, so drop it or link a page whose path carries none, and keep the receipt in the order's evidence"
+      ],
+      "formattedFailures": [
+        "README.md:20: \"WO-189\" is a work-order identifier outside a generated block; the page names no order, decision, date or version in text, code or link paths, so drop it or link a page whose path carries none, and keep the receipt in the order's evidence"
+      ],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\nThe kernel replays.\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n\nWO-**189** is a receipt.\n"
+    },
+    {
+      "name": "sentence appended between the closing marker and next heading",
+      "expectation": true,
+      "failures": [
+        "README.md:14: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; move each sentence between them, where the budget counts it, or end the section with a Markdown heading"
+      ],
+      "formattedFailures": [
+        "README.md:16: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; move each sentence between them, where the budget counts it, or end the section with a Markdown heading"
+      ],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\nThe kernel replays.\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n\nExtra runs.\n\n## Next\n\nA closing paragraph.\n"
+    },
+    {
+      "name": "registered release block with another visible sentence",
+      "expectation": true,
+      "failures": [
+        "README.md:5: <!-- DOTLN-RELEASE-BEGIN --> holds only the line `npm run release -- prepare` puts there; move other text between <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->"
+      ],
+      "formattedFailures": [
+        "README.md:5: <!-- DOTLN-RELEASE-BEGIN --> holds only the line `npm run release -- prepare` puts there; move other text between <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->"
+      ],
+      "source": "# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.1.0`.\nExtra runs.\n<!-- DOTLN-RELEASE-END -->\n\n<!-- dotln-what-runs:start -->\nThe kernel replays.\nThe skeleton runs.\n<!-- dotln-what-runs:end -->\n\n## Next\n\nA closing paragraph.\n"
+    }
+  ],
+  "ownership": [
+    {
+      "name": "undeclared order leaves the page alone",
+      "expectation": false,
+      "failures": []
+    },
+    {
+      "name": "undeclared order changes only the generated version",
+      "expectation": false,
+      "failures": []
+    },
+    {
+      "name": "undeclared order adds an ordinary capability",
+      "expectation": true,
+      "failures": [
+        "README.md: changed outside its generated blocks while WO-998's leading header at the merge base declares no `**Front page:**` field; the header is read on main, so adding or fixing it on this branch changes nothing, and planning files it there; see `git diff 89802994ac86 -- README.md`; the front page changes only through an order whose leading header carries `**Front page:** README.md`, and a sentence the page should carry is proposed in the order's evidence README. If the change is a command's output between marker lines, that block is not in docs/control/front-page.json's generatedBlocks; a front-page order lists it"
+      ]
+    },
+    {
+      "name": "working-tree declaration grants no permission",
+      "expectation": true,
+      "failures": [
+        "README.md: changed outside its generated blocks while WO-998's leading header at the merge base declares no `**Front page:**` field; the header is read on main, so adding or fixing it on this branch changes nothing, and planning files it there; see `git diff 89802994ac86 -- README.md`; the front page changes only through an order whose leading header carries `**Front page:** README.md`, and a sentence the page should carry is proposed in the order's evidence README. If the change is a command's output between marker lines, that block is not in docs/control/front-page.json's generatedBlocks; a front-page order lists it"
+      ]
+    },
+    {
+      "name": "declared order adds a sentence within main's budget",
+      "expectation": false,
+      "failures": []
+    },
+    {
+      "name": "declared order cannot raise the budget that judges it",
+      "expectation": true,
+      "failures": [
+        "README.md: \"What runs today\" holds 4 counted lines (the non-empty lines between its markers); the budget in docs/control/front-page.json at the merge base is 3. Rewrite the line your capability supersedes, or fold it into a related line as one sentence; planning moves the budget on main"
+      ]
+    },
+    {
+      "name": "working configuration cannot relocate main's governing record",
+      "expectation": true,
+      "failures": [
+        "README.md: \"What runs today\" holds 4 counted lines (the non-empty lines between its markers); the budget in docs/control/front-page.json at the merge base is 3. Rewrite the line your capability supersedes, or fold it into a related line as one sentence; planning moves the budget on main"
+      ]
+    }
+  ],
+  "mismatches": [],
+  "currentPage": {
+    "failures": [],
+    "notices": []
+  }
+}

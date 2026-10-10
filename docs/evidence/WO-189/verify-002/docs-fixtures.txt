@@ -1,0 +1,15 @@
+✔ the front page changes outside its generated blocks only through an order whose header declared it at the merge base (530.850791ms)
+✔ the control record that governs is the merge base's, so a branch cannot switch the guard off (462.299041ms)
+✔ What runs today keeps one sentence per line within its recorded budget, and the page names no receipt (814.018042ms)
+✔ What runs today is one range from its heading to the next heading: no sentence escapes the count and the markers cannot leave the heading (520.818958ms)
+✔ a page whose base carries no markers is being brought under guard: shape and budget are judged, the change is not compared (275.647625ms)
+✔ the leading header's Front page field is read as typed data, never from criteria prose (0.500083ms)
+✔ the refusal is new: the document check at 08845c71 admits the same undeclared change (277.869833ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2967.771167

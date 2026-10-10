@@ -1,0 +1,5 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+Built browser-evidence, compiler, console, kernel, skeleton with atomic file replacement; installed harness snapshots remain immutable
+Filed draft WO-900: docs/work-orders/derived/WO-900-derived.md
+bounded-result {"name":"bounded-probe","durationMs":4020,"slowestCases":[{"name":"bounded-probe","durationMs":4020,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":403269688,"peakRssBytes":569344000,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-10T03:22:09.250Z","finishedAt":"2026-10-10T03:22:13.270Z","exitCode":0,"executed":true}

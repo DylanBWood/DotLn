@@ -1,0 +1,60 @@
+{
+  "cutoff": "2026-10-10T21:54:17.761Z",
+  "savedDiffAppliesToScoredCandidate": true,
+  "currentMatchesSavedDiff": false,
+  "currentSha256": "7546fa33f8635a999d2120db5b90e67c3009203797e8c01d6437c954909349e1",
+  "checkpoint16Sha256": "7546fa33f8635a999d2120db5b90e67c3009203797e8c01d6437c954909349e1",
+  "phrases": [
+    {
+      "phrase": "showrunner (architect plus scrum master)",
+      "inSavedDiffResult": true,
+      "inCurrentReadme": false
+    },
+    {
+      "phrase": "Seiri / Sort / 整理",
+      "inSavedDiffResult": true,
+      "inCurrentReadme": false
+    },
+    {
+      "phrase": "proved the concept and then collapsed under its own success",
+      "inSavedDiffResult": true,
+      "inCurrentReadme": false
+    },
+    {
+      "phrase": "rules firing wrongly or vanishing when they mattered most",
+      "inSavedDiffResult": true,
+      "inCurrentReadme": false
+    },
+    {
+      "phrase": "gear for every damage type",
+      "inSavedDiffResult": true,
+      "inCurrentReadme": false
+    },
+    {
+      "phrase": "The workflow remembers the worker",
+      "inSavedDiffResult": true,
+      "inCurrentReadme": false
+    },
+    {
+      "phrase": "Deterministic replay is what makes it possible at all",
+      "inSavedDiffResult": true,
+      "inCurrentReadme": false
+    },
+    {
+      "phrase": "When the instrument you are using to judge is itself the thing under review",
+      "inSavedDiffResult": true,
+      "inCurrentReadme": false
+    },
+    {
+      "phrase": "Personal, mathematical, and just strange enough",
+      "inSavedDiffResult": true,
+      "inCurrentReadme": false
+    },
+    {
+      "phrase": "The ambition is not",
+      "inSavedDiffResult": true,
+      "inCurrentReadme": false
+    }
+  ],
+  "actualChangesFromCandidate": "12\t11\tdocs/evidence/WO-189/candidate-1200.md => README.md"
+}

@@ -1,74 +1,103 @@
 # DotLn
 
+> "The true work of the inventor consists in choosing among these combinations
+> so as to eliminate the useless ones... the rules that must guide the choice
+> are extremely fine and delicate. It's almost impossible to state them
+> precisely; they must be felt rather than formulated." — Poincaré, via Pirsig
+
+**DotLn turns hard-won ways of working into inspectable programs for AI
+teams.** It is for people who work with AI agents and would rather spend their
+attention on the idea than on the babysitting, and for any owner who brings
+their own doctrine to a shared substrate; the author's own implementation is
+its first user.
+
+DotLn is a local-first, model-agnostic **compiler and runtime for human
+judgment**. You bring the taste, standards and corrections you have already
+paid for once; DotLn compiles each into the smallest mechanism that can carry
+it, hands every task only the rules it needs, enforces the hard rules outside
+the model and keeps a replayable record of what happened. Models rotate.
+Sessions die. The judgment survives. The scarce resource was never generation;
+it is the **selection function**, knowing which combination is good, which
+correction matters, and when the right move is to wait.
+
 > "I will take the entire Business, Leadership, and Personal Development shelf
 > at Barnes & Noble and just map them to different agent / subagent
 > communication structures... at once anyone who has read those books is an
 > expert in some feature of the app — and it turns all those books into
 > programming books overnight."
 
-**DotLn turns hard-won ways of working into inspectable programs for AI
-teams.**
+That is the second thesis, about authoring: the patterns people already know,
+5S, the Ladder of Leadership, mitigated speech and Theory of Constraints, are
+being mapped to exact mechanics, so anyone who has read those books will
+already know a feature of the app. DotLn is not an agent, not an agent harness,
+and not an orchestration layer. It is an **agentic platform**: the shared
+substrate on which people and software actors hold work, authority and
+evidence. The guardrails in this repository are the author's own loadout, not
+commandments; another owner may choose stricter or different doctrine, and the
+owner decides which organization to build. The people around the work are the
+five **UIFA** roles (“wee-fuh”, User Interfaces for Actors): product lead,
+showrunner, engineer, tester and devops
+([UIFA roles](/docs/product/13-uifa-roles.md)). This page says which of its
+sentences are running code and which are still a promise.
 
-DotLn is a local-first, model-agnostic **compiler and runtime for human
-judgment**. This repository develops the reusable platform and the author's
-opinionated personal implementation together. In that implementation, you bring
-the taste, standards, and corrections you have already paid for once; DotLn
-compiles each into the smallest mechanism that can carry it, hands every task
-only the rules it needs, enforces its chosen hard rules outside the model, and
-keeps a replayable record of what happened. Models rotate. Sessions die. The
-judgment survives.
+## Try it
 
-DotLn is not an agent, not an agent harness, and not an orchestration layer. It
-is an **agentic platform**: the shared substrate on which people and software
-actors hold work, authority, and evidence. Harnesses run on it as observed
-environments and an orchestration layer runs inside it; neither is what it is.
+With Node 26, two commands install the workspace and run the first proof:
 
-Those guardrails are an implementation loadout, not commandments baked into the
-platform. Another owner may choose stricter doctrine, different doctrine, or a
-deliberately permissive profile with no verification or replay capability. DotLn
-supplies composable mechanisms and makes the selected capabilities visible; the
-owner decides which organization to build.
+```bash
+npm install
+npm run skeleton
+```
 
-It is early, small, and deliberately honest about which of those sentences are
-running code and which are still a promise. The first proof already walks. The
-ambition does not fit in a paragraph, so this README is longer than one.
+A **Repo Gardener** with one active mechanic, **Seiri**, inspects a fixture
+repository while the operator is away, is structurally refused the deletion
+it reaches for, has its candidates checked by a separate fake verifier, and
+stands down when the operator returns. You get a numbered timeline derived from
+the event log, one line of glyphs projected from the same log, and a receipt.
+Then look around: `npm run console -- board` renders actors, builds and evidence
+from the repository's logs, and `npm run dotln -- intent "Describe the work"`
+files a draft work order from one sentence. The
+[skeleton README](/packages/skeleton/README.md) documents every flag.
+
+## What runs today
+
+<!-- DOTLN-RELEASE-BEGIN -->
+This source prepares DotLn `v0.74.1`.
+<!-- DOTLN-RELEASE-END -->
+
+<!-- dotln-what-runs:start -->
+Hand DotLn one sentence of intent and it files a draft work order; once you or a resident you have authorized admits it, the machinery, not your attention, carries the rules.
+The compiler turns that order's loadout into a program and an authority envelope that the kernel checks on every decision, so a worker that reaches for an effect it was never granted is refused, and the refusal is an event you can replay.
+A disposable worker on Claude Code or Codex does the work in its own worktree, passes the host's test and commits, and a blinded verifier that never saw the worker judges the change against the contract, sending it back to a fresh worker until the original contract passes or the repair budget runs out and a person decides.
+When the change is good, a publish step opens the pull request, waits for the automated reviewer and answers each comment with evidence; so far these runs are recorded scratch proofs on synthetic modules, and a browser adapter can add screenshot, network and console witnesses when the subject is a web page.
+While you are away, a resident host keeps the loop moving under a presence policy you set, and a mission check on a fixed cadence holds unattended dispatch whenever it finds the work off its contract or cannot tell.
+Everything above records its events in typed, versioned logs, so the actor board and the live console can show you the actors, builds and evidence in those logs, and the first proof, the Repo Gardener plus Seiri scenario, still replays from its own log today.
+This repository is built with the same roles: a work order merges after an independent verification and a final review, a release close follows, each step resumes from one phrase, and this page now changes only through such an order.
+
+**Not yet built, and not claimed:** general source-writing worker profiles; composition beyond the Seiri subset; saved community builds; an interactive web or spatial console; SQLite persistence, hosted operation or a published package; the complete verified source-to-deliverable pipeline; portable starter export, a portfolio in the operator's own repositories and a measured absence payoff curve.
+The [goal review](/docs/planning/refutations/README.md) keeps the reopening observations, [CONTRIBUTING.md](/CONTRIBUTING.md) covers the toolchain and tests, and releases are on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases).
+<!-- dotln-what-runs:end -->
 
 ## Why this exists
 
-Working with AI agents drifts into babysitting. You restate context, supply
-procedure, coordinate tools, check "done" claims that are not evidence, and
-recover stalled work. Your attention goes to the machinery instead of the idea.
-
-The usual fix is a bigger prompt. A predecessor system, not present in this
-repo, proved the concept and then collapsed under its own success: roughly 140
-hard-won rules loaded as prose, hundreds of thousands of tokens of always-on
-context, rules firing wrongly or vanishing when they mattered most. In this
-project's vocabulary it brought **the whole stash into every map** — as if a
-character carried gear for every damage type when the map called only for cold
-resistance.
-
-The author's reference implementation answers with **compiled** rules; the
-platform makes these mechanisms composable rather than requiring every owner to
-equip the same set:
+Working with AI agents drifts into babysitting: restating context, checking
+"done" claims that are not evidence, recovering stalled work. The usual fix is
+a bigger prompt. A predecessor system collapsed under roughly 140 rules loaded
+as prose; it brought **the whole stash into every map**. DotLn answers with
+**compiled** rules:
 
 - do not delete what you cannot prove is dead → a structural guard, not a plea;
 - show evidence before claiming success → a gate the model cannot talk past;
 - preserve the operator's intent across handoffs → a bounded work order, not a
   transcript;
-- ask only when the decision is genuinely material → an interruption policy with
-  six named conditions;
-- make presence-conditioned changes explicit → a preauthorized policy may hold,
-  shrink, grow, peak, reset, or loop scope and authority while naming which axis
-  changed; the current skeleton exercises one conservative return rule.
+- ask only when the decision is material → an interruption policy with six
+  named conditions, specified and not yet compiled;
+- make presence-conditioned changes explicit → a policy that may hold, shrink,
+  grow, peak, reset, or loop scope while naming which axis changed; the
+  current skeleton exercises one conservative return rule.
 
-In that profile, a session gets **a build, not a biography**: one active
-behavior, a handful of linked supports, the profile's small safety layer, and
-the exact task state. The mission underneath is operator flow. Not a promise
-about anyone's psychology, which no software can make, but a steady removal of
-the interruptions, repetition, ceremony, and rediscovery that break it without
-violating the capabilities and boundaries that implementation selected.
-
-The reference loop is:
+A session gets **a build, not a biography**: one active behavior, a few linked
+supports, a small safety layer and the exact task state. The reference loop:
 
 ```text
 intent → task-scoped build → bounded WorkOrder → disposable executor
@@ -80,482 +109,53 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
                                       replay / inspect / resume
 ```
 
-## What runs today
-
-<!--
-  Rewrite this block; do not append to it. It says what the software does now,
-  for a reader who has never seen it, and it is not a changelog. When an order
-  changes behavior, fold the change into this prose and delete whatever it
-  superseded; per-order detail belongs in that release's notes. Release close
-  checks only that the block holds exactly one strict version, so its length is
-  an editorial choice and has drifted badly before. Keep the two marker lines
-  the only ones naming them, or release prepare refuses.
--->
-<!-- DOTLN-RELEASE-BEGIN -->
-
-This source prepares DotLn `v0.74.0`.
-
-**The core.** A local-first compiler turns a loadout graph into a bounded
-program and authority envelope that the kernel checks on every decision.
-A typed reactor folds durable, decoded events into replayable state, and the
-compiler preserves presence policy across three editable views.
-
-**What you can run.** The offline resident drives that policy from recorded
-time, explicit away/back edges and actor observations, dispatching declared
-scripts, CLI workers or human handoffs and recovering without duplicate episodes.
-On its own absence cadence it also asks whether the work it is running is still
-inside the contract it was given and still on the vision's theses: a read-only
-mission check receives a hashed capsule of that contract, the current diff and
-the last decisions, and a verdict other than `on-mission` holds every further
-unattended dispatch until a human answers or a fresh judgment passes over
-changed work.
-In a [live synthetic portfolio window](docs/evidence/WO-111/receipt-v2.json), the
-resident discovered six 5S candidates, derived three bounded source changes,
-and advanced probe → widen → peak after each independent verification passed.
-A separate mission resident judged the DotLn worktree and recorded drift; it
-did not supervise the scratch portfolio. A [second live return window](docs/evidence/WO-111/return-receipt-v2.json)
-shows an eligible fourth candidate and spare episode budget before the human
-`back` edge, with cancellation established by retained-log replay against a
-no-return control. Both runs added scratch trust entries to the user Codex
-configuration. The operator [accepted that disclosed deviation for this
-synthetic proof](docs/evidence/WO-111/decisions.md#wo-111-d020) and kept its
-prevention in an independent runtime follow-up; the literal outside-portfolio
-clause was not observed. These scratch
-observations establish neither an installed service nor a measured net-value curve.
-The [skeleton runbook](packages/skeleton/README.md#resident-host) documents
-`dotln resident`, `dotln presence` and their limits; the
-[actor board](packages/console/README.md), mutation corpus, inspection workers,
-verification matrices and Beacon senses are also runnable.
-The standalone [browser evidence adapter](packages/browser-evidence/README.md)
-runs saved scenarios on a synthetic local app and supplies screenshot,
-DOM/accessibility, network and console witnesses to the verification subject.
-[Live source-change evidence](docs/evidence/WO-053/README.md) shows Claude and
-Codex fixing a synthetic module, passing its host test and committing in isolated
-worktrees, with killed-host recovery preserving the existing commit.
-Worktree verification seals the contract, diff and source snapshot and supplies
-independent confined host-test witnesses; the
-[bounded repair loop](docs/evidence/WO-055/implementation.md) re-verifies the
-original contract after each repair, with doubles establishing recovery and exhaustion.
-[Live verification evidence](docs/evidence/WO-056/README.md) shows a Claude and a
-Codex verifier, given no tools and nothing from the implementer, each failing the
-violated clause of a planted change whose own test passed; a fresh worker
-repaired only the blamed module and a second verifier passed the original
-contract. The Claude run's event log is published and replays negative against
-injected implementer events.
-`worktree publish WO-NNN --target` then opens a pull request for such a change
-on its target repository. It pushes only the observed commit, only under an
-operator-provenance grant for `repo.push` and `pr.open`, and only after the
-[outward-artifact lint](docs/evidence/WO-063/implementation.md) passes the
-branch, commits, title and a body generated from the contract, acceptance
-status, host test outcomes and diff; missing local-term coverage refuses. The
-[publish decisions](docs/evidence/WO-064/decisions.md) record its limits. Its
-[fourteen-item readiness table](docs/evidence/WO-182/artifact-contract.md) names
-evidence or gaps; `--require-deliverable-ready` refuses locally on a missing item,
-while operator proposals without the flag carry those gaps into review.
-The `dotln vertical` command runs unaided in a
-[scratch proof](docs/evidence/WO-112/README.md): its own intake episode
-classifies the issue, workers change, test and commit, and after the
-generated PR opens it waits for the automated reviewer, triages each comment
-with a model episode, repairs or rejects it with evidence and resolves the
-thread. Claude and Codex each ran every episode of one scenario; the Codex
-writer now commits inside Codex's sandbox.
-
-Derived work shares the same `WO-NNN` identity and lifecycle as authored work.
-`npm run dotln -- intent "Describe the work"` files a draft for review; compiled
-orders can materialize through the documented API, with replayable allocation
-and restart fixtures. [The execution guide](docs/product/07-execution-guide.md#derived-work-and-intent)
-describes the shared launchpad boundary.
-
-The resident's [console command contract](packages/console/README.md#resident-command-client)
-serves existing terminal actions over a local loopback connection whose token
-sits in an owner-only descriptor. The text console combines refreshing agent and order status with audit in
-`console live`, invoking commands through that connection; a browser shell
-can use the same client through its local host.
-The terminal permission hook's classifier and decider judge each action under
-the resident's compiled envelope, and each terminal parser still decides whether
-it runs. Invocation and result receipts name the console actor and replay
-without repeating effects.
-
-**How this repository builds itself.** WO-160 adds explicit amendment
-withdrawal, evidence-local JSONL declarations, recoverable integration and
-published-stash pruning, accurate release-write messages, and document-failure
-comparisons. The observer credits its own writes at their observed bytes and
-retains read obligations after foreign edits.
-
-Every executor dispatch asks for one
-bounded economy experiment per order, with measured cost and effect, unless the
-order opts out: the [three-order trial](docs/evidence/WO-145/decisions.md) found
-an adopted method with no regression, and [WO-150](docs/evidence/WO-150/decisions.md)
-made the support default equipment.
-Independent implementation, verification
-and final review record their own evidence, and publication consumes the
-reviewer's successful code-identity gate row.
-DotLn hooks refuse five conditions: a second writer in a worktree, writes to gate
-inputs or the success record during a live gate, with only the active order’s
-evidence, verification and final-review directories
-at the default document roots admitted during a product gate; document and
-mixed review gates retain the full refusal. The other conditions are writes outside
-`docs/` and root Markdown on `planning/` branches, observable subagent
-admissions beyond the configured cap, and known outside-project write
-destinations without an active role's declared, admitted root grant.
-A literal redirect is known on any program; expansions and a program's own
-effects are opaque and remain under host permissions.
-Codex carries the same duties as role text, and other judgments defer to host
-permissions, with one exception: under a recorded release-close dispatch, Claude's
-hook admits the exact release-close helper run from main. `analysis:` and
-`operator override:` remain available for recovery.
-The [execution guide](docs/product/07-execution-guide.md#independent-workflows-and-integration)
-explains integration, evidence and the observed limits of those controls.
-
-The [Copilot CLI integration](docs/evidence/WO-146/decisions.md) adds a third
-operator-harness profile using the same generated hooks and skills. Scripted
-and bare-session observations support the shared registration. The four
-executor/failing-verifier/fixer/passing-verifier episodes are qualified on CLI
-1.0.86 with Claude Sonnet 5 / xhigh. No Copilot resident worker or publication
-workflow is qualified.
-
-**Not yet.** General source-writing workers, a portfolio in the operator's
-repositories, a measured absence payoff curve and portable starter export
-remain later work.
-The [goal review](docs/planning/refutations/README.md) retains reopening
-observations; [CONTRIBUTING.md](CONTRIBUTING.md) covers package publication, and
-published source records are on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases).
-<!-- DOTLN-RELEASE-END -->
-
-The walking skeleton first shipped in application release `v0.2.0`.
-
-The scenario gives a **Repo Gardener** one active mechanic, **Seiri / Sort
-/ 整理**, the first S of 5S:
-
-```text
-🌙 operator steps away
-      → ⏱️ a 20-minute virtual pulse fires
-      → 🐛 Repo Gardener inspects a fixture repository
-      → 🔎 evidence-backed deletion candidates
-      → 🛡️ deletion structurally refused (base rank holds no such authority)
-      → ✅ candidates checked by the separate fake verifier
-      → ☀️ operator returns
-      → 💤 future pulses cancelled; the one already queued becomes a traced NoOp
-```
-
-```bash
-npm install
-npm run skeleton
-```
-
-You get a numbered timeline derived from the JSONL event log, one line of glyphs
-that is a pure projection of that same log, and a receipt:
-
-```text
-🐛 Repo Gardener  ◌ dormant  ⏱️ pulsing  🔎 inspecting  🛡️ inverted/refused  ✅ verified  ☀️ phase:returned  💤 faded/cancelled
-
-verified=true candidates=1
-```
-
-Run `npm run skeleton -- --compiled-diff` to add the three-view semantic-hash
-receipt and the exact Seiri item tooltip, including every support's declared
-mechanism, prompt-token, runtime, and episode cost.
-
-Add `npm run skeleton -- --beacons .beacons` to write the demo's two Beacon
-files into the explicitly selected, gitignored directory. The constellation
-shows an earlier self-reported `verification/passed` claim beside the host's
-latest evidenced `external-effect/observed` state (schedule cancellation),
-sorted by exact byte size. Dates are 1970-relative because the demo uses virtual
-time. Omitting the flag creates no beacon files. The path must be gitignored
-when inside this repository and cannot be under `docs/intake`.
-
-Size intentionally reveals the codebook fields; denying file-content reads
-still leaves metadata visible. Provenance is a channel label, not writer
-authentication or authority. See the [codebook and usage](packages/skeleton/README.md#beacon-metadata-projection)
-and the [fresh host probe](docs/discovery/beacon-probe-2026-09-04.md).
-
-The test suite feeds that log through the same pure reactor used by the live
-host and compares complete decisions and semantic projections, including a
-negative verifier outcome. `npm test` runs the product and lifecycle tasks
-whose latest executed result at the current code identity is not a pass,
-composing fresh results with carried ones that name their executing row. When
-any task runs, the build runs first unless its ignored output is still the one
-the latest passing build there recorded; when every pass is carried, nothing
-runs. `--again` runs them all fresh. A new worktree with the same code can
-read main’s passing rows without writing to main. The identity includes
-non-ignored untracked code and is unchanged by staging; symbolic source aliases
-are refused because their target bytes are outside that key;
-`npm test -- --list` explains the operator-visible behavior each protects.
-The reviewer uses `npm test -- --review` once, running every selected task
-fresh and adding machinery suites selected by changes from the merge base; `npm run test:full` is the alias for that same review selection. `npm run test:machinery` runs that inventory on demand, and
-`npm run test:docs` checks document-only planning and ideation dispatches.
-The operator's current Claude Code, Codex and Copilot sessions run without a
-host sandbox (posture recorded 2026-09-25 in
-[ADR-0003](docs/decisions/0003-personal-ai-harness-security.md#amendments)).
-Run `npm test` normally. If the host-confinement detector reports a denied
-probe and a selected suite declares `needs: outside-sandbox`, the runner
-refuses before any suite and prints the command to run outside that confinement.
-`npm test -- --confined-partial` runs the remaining suites as a partial result
-that is never product-gate evidence. The historical recorded check identity
-remains `npm test -- --inside-sandbox`; it is no longer the command flag.
-The former replica/cache runner and repeated exact-tree lifecycle gates are
-retired by WO-132; old evidence retains its original meaning.
-After `npm run build`, `npm run evidence:artifact -- --check` validates the
-current artifact-identity edition; `-- --write` records it during authorized
-evidence regeneration.
-The workspace targets Node 26 (`.node-version` pins 26.9.0) and TypeScript
-7.0.2; `npm ci` installs the native compiler for the current platform. The
-shell suites use macOS utilities and fail loudly elsewhere. Earlier evidence
-keeps its recorded Node version. See the
-[release index](docs/releases/README.md),
-[v0.2.0 notes](docs/releases/v0.2.0-notes.md), and
-[v0.2.0 compatibility manifest](docs/releases/v0.2.0.md).
-
-### What that proves, and what it does not
-
-Proven:
-
-- a framework-free kernel can keep every decision pure, with no hidden clock,
-  randomness, or I/O;
-- virtual time plus a logged state can reproduce the scenario outputs currently
-  asserted by the replay tests;
-- authority can **refuse an effect structurally** instead of asking a model to
-  remember not to;
-- a crash after command persistence recovers without duplicating the fake
-  adapter's effect;
-- operator return cancels future work and turns a queued pulse into a traced
-  `NoOp`;
-- friendly glyphs can stay honest projections of real event state;
-- separate work-order control segments preserve attribution through concurrent
-  progress, serial Git integration, and fixture releases.
-
-Not yet built, and not claimed:
-
-- general source-writing worker profiles and human/shell integrations;
-- composition semantics beyond the bounded Seiri v1 subset;
-- saved community builds or compatibility migration;
-- an interactive web, spatial, or drag-and-drop console;
-- SQLite persistence, hosted operation, or a published package;
-- the complete independently verified source-to-deliverable pipeline.
-
-Scheduled capabilities are roadmap rungs with exit criteria; the rest remain
-explicit horizons rather than promises with invented dates. The audit
-projections over the same log are a receipt, a causal timeline, and governed
-raw, each naming exactly what it omits.
-
 ## The bets
 
-- **A session is an incarnation, not a memory.** In the reference workflow,
-  durable state lives in artifacts and the event log. The workflow remembers
-  the worker; the worker never needs to remember the workflow.
-- **Deterministic core, strange edge.** Models, humans, browsers, and shell
-  scripts execute work. None of them get to redefine the control logic
-  invisibly.
-- **This implementation's hard safety is boring.** Permissions, guards,
-  worktrees, and evidence gates carry its chosen invariants outside prompt
-  prose. Prose is the ninth and last mechanism choice in that loadout.
-- **In this implementation, evidence precedes "done."** A persuasive completion
-  message is not a test result.
-- **Its implementer and verifier are different roles,** making
-  self-certification structurally awkward. Another profile may label an outcome
-  owner-accepted or unverified instead.
-- **Doing nothing is a decision.** `NoOp` is a first-class intent with a reason,
-  evidence, a re-check cadence, and the condition that would make action useful.
-- **Every metaphor reveals its mechanics.** RPG, business card, statechart,
-  function table, timeline, and code views resolve to the same truth, or say
-  plainly that they are lossy.
-- **The substrate is shared; the doctrine is yours.** DotLn ships legos, not a
-  finished organization. Bundled patterns are examples, never privileged kernel
-  behavior.
-- **No fake numbers, ever.** Declared mechanics, computed attributes, and
-  empirical performance are never blurred together.
-
-The scarce resource is not generation. It is the **selection function**: knowing
-which combination is good, which correction matters, and when the right move is
-to wait.
-
-## Who works here: five UIFA roles
-
-UIFA (“wee-fuh”, User Interfaces for Actors) is the name for the interface
-direction, and the humans around it now have names too. One person can wear all
-five hats in an afternoon; the author's own description is “a UIFA programmer,
-mostly UIFA devops plus UIFA showrunner, dabbling in everything UIFA.”
-
-- **UIFA product lead** knows the domain and its screens and
-  keeps sharpening the future state; the platform transcribes and stores that
-  vision the way this repo's own docs pipeline does.
-- **UIFA showrunner** (architect plus scrum master) sequences
-  bounded work across parallel workflows, knows what is active, blocked, and
-  closed, and what each release contained.
-- **UIFA engineer** hand-crafts the actor experience: roles, supports, link
-  groups, and temporal structures, from shared legos or custom pieces, instead
-  of letting a model guess the mapping.
-- **UIFA tester** does not test DotLn or whether a UI works; they test whether a
-  proposed shape, role, or support does what it should in the circumstances
-  that matter, and they invent the scenarios automation then repeats forever.
-- **UIFA devops** builds the machinery that makes the machinery: the control
-  plane, compilers, generators, and evidence gates.
-
-People stay in these loops because their prior associations differ from a
-model's, and that judgment is where an implementation's secret sauce lives.
-Each role gets assistance ahead of time and in the moment without giving up
-authorship. The full treatment, with the same five roles mapped onto a kitchen,
-a hospital ward, a film crew, a classroom, a farm, an orchestra, a basketball
-team, and an open-source project, is in
-[UIFA roles](docs/product/13-uifa-roles.md).
+- **A session is an incarnation, not a memory.** Durable state lives in
+  artifacts and the event log.
+- **Deterministic core, strange edge.** Models, humans, browsers and scripts do
+  the work; none redefines the control logic invisibly.
+- **Hard safety is boring.** Guards, worktrees and evidence gates carry the
+  invariants; prose is the last mechanism.
+- **Evidence precedes "done."** A persuasive completion message is not a test.
+- **Implementer and verifier are different roles,** so self-certification is
+  structurally awkward.
+- **Doing nothing is a decision.** `NoOp` carries a reason and a re-check.
+- **Every metaphor reveals its mechanics,** or admits it is lossy.
+- **The substrate is shared; the doctrine is yours.**
+- **No fake numbers, ever.**
 
 ## The game is not decoration
 
-DotLn borrows the build vocabulary of action RPGs because it turns out to be an
-excellent typed language for scoped, composable behavior.
-
-| RPG view         | DotLn mechanic                                                                |
-| ---------------- | ----------------------------------------------------------------------------- |
-| Build / loadout  | The exact behavior compiled for this task                                     |
-| Active skill     | Something the actor can do                                                    |
-| Support gem      | A typed modifier that participates only through a valid link                  |
-| Reservation cost | Context, tools, attention, or budget a mechanic holds while equipped          |
-| Map / zone       | The repository and its isolated worktree                                      |
-| Summon           | A disposable worker episode                                                   |
-| Save point       | A serializable continuation                                                   |
-| Combat log       | The append-only event and evidence history                                    |
-| Guarded ability  | Authority checked before an effect can occur                                  |
-| Item tooltip     | Grants, restrictions, obligations, cadence, and cancellation, all inspectable |
-
-Links are **scope, not sequence**. Rarity encodes provenance, never power. A
-rate-limit debuff is meant to show the real backoff timer. Set bonuses are meant
-to compile to real state-machine transitions. And the second thesis is about
-authoring: the business, leadership, and personal-development shelf becomes a
-library of executable patterns, so anyone who has read those books already knows
-a feature of the app. 5S, the Ladder of Leadership, mitigated speech, Theory of
-Constraints, optimal stopping: each is being mapped to exact mechanics that can
-render in whichever view you prefer.
-
-The long-term surface is a **Path of Building for organizations**: equip a
-pattern, see its exact compiled diff, compare builds, and replay to the first
-event where two variants diverge. Today the Repo Gardener + Seiri loadout is
-executable through the pinned v1 graph; other active mechanics, saved builds,
-and interactive editing remain deferred.
+DotLn borrows the vocabulary of action RPGs because it is a good typed language
+for scoped behavior: a loadout is the behavior compiled for one task, a
+support is a typed modifier that joins only through a valid link, a summon is a
+disposable worker. Links are **scope, not sequence**. Rarity encodes
+provenance, never power. The long-term surface is a **Path of Building for
+organizations**: equip a pattern, see its compiled diff, replay to the first
+event where two variants diverge.
 
 ## Three horizons, one kernel
 
-1. **Work operating system.** Bounded work, disposable workers, external memory,
-   explicit authority, evidence-backed completion. The immediate product.
-2. **Executable pattern workshop.** The shelf-to-mechanism compiler and the
-   drag-a-card-onto-an-agent authoring surface. The differentiated product.
-3. **Agent ecology and simulation laboratory.** Paired counterfactual runs,
-   first-divergence detection, actor swaps over recorded logs. The research
-   product. Deterministic replay is what makes it possible at all.
+1. **Work operating system.** Bounded work, disposable workers, explicit
+   authority, evidence-backed completion. The immediate product.
+2. **Executable pattern workshop.** The shelf-to-mechanism compiler. The
+   differentiated product.
+3. **Agent ecology and simulation laboratory.** Paired counterfactual runs over
+   recorded logs. The research product.
 
-The release ladder climbs there one visible payoff at a time: audit projections,
-a real composition compiler, a real disposable worker, independent verification,
-a feedback compiler, then synchronized terminal and visual consoles. The next
-horizon, planned on 2026-09-06, starts with the read-only actor board now in
-this source. The remaining work adds a launchpad export of this repository's process kit that other
-organizations can fork to coordinate work across their own repositories, and
-the first cross-repository pilot; see
-[the phase-two plan](docs/planning/phase-two-plan-2026-09-06.md). `v1.0.0`
-has one exit criterion: a person who has never read these docs declares one
-bounded intent and receives a verifiable result, witnessed by a non-author.
-
-Past 1.0 sits the named flagship, **προτείνω**: a small, persistent simulated
-community where you select a resident or a group, write to them in prose at any
-length, and watch what changes, what does not, and why the system believes your
-words participated. Residents may ignore, misread, adopt, or relay what you
-said, and the scoreboard is a paired counterfactual branch rather than a
-before-and-after. Candidate first world: a basketball squad. See
-[the roadmap](docs/product/06-roadmap.md) and
-[προτείνω](docs/product/11-protino.md).
-
-## Things you would not expect to find in here
-
-- **Refusal is an event, not a politeness.** When the Gardener reaches for
-  deletion, the kernel does not ask it nicely to stop. It records
-  `CommandRefused`, and code that depended on the denied effect quietly
-  succeeding will not get it.
-- **Presence is policy, not a one-way brake.** An owner may preauthorize
-  time-conditioned shrinkage or growth, a peak, and a reset or loop. The
-  idea grew from predecessor `v1`, where a prompt-bound agent waited for the
-  operator's next interaction and a recurring cron trigger offered an early
-  escape from idle time. An active DotLn work order can already progress while
-  the operator is away; this curve is for future automatic selection and
-  advancement of further eligible orders. The author's Blackjack +3 analogy
-  is a side bet on the player's two cards and
-  dealer's upcard: raising the stake after losses makes profit on the eventual
-  first win rise, peak, then decline while still profitable before a later
-  break-even cutoff and restart. For workers, continued operator absence can
-  enable larger useful work up to a peak, then progressively smaller useful
-  work on the downswing, eventually returning to the smallest chunk and
-  resetting the cycle. The losing streak corresponds only to time away; the
-  analogy says nothing about whether an agent succeeds or fails. The scratch
-  [WO-111 return receipt](docs/evidence/WO-111/return-receipt-v2.json) records phase advancement
-  and replayed return cancellation, but its immediate peak reset skips the downswing.
-  It does not measure net value or an optimal absence length. Adapter
-  availability remains separate from permission to use it.
-- **Index cards are a planned frontend.** They worked once; a physical-card
-  importer is specified to map them to the IR. The ambient end state is a
-  magnetic LED whiteboard, and its digital form is a living index card that can
-  pulse, equip, ghost, split, and replay.
-- **The optometrist is a ranking algorithm.** "Better like this, or like this?"
-  is specified as pairwise preference aggregation over `Comparison` events, with
-  "about the same" as a legitimate stopping signal.
-- **The party is commedia dell'arte.** Whiteface plans, Auguste makes,
-  Contra-Auguste tries to break it, the Watcher narrates, and Lazzi are bounded
-  side routines with tight budgets. They are masks, worn not owned, and the
-  names never leak into a pull request.
-- **The planned glyph grammar is a functional program.** Reduced opacity is
-  dormant, blur is stale, a vertical flip is failed, a horizontal mirror is the
-  semantic opposite, and inversion is an adversarial stance. You equip
-  "Evidence-Bound," never "blue glow."
-- **Memento is the reference execution profile.** A protagonist with no session
-  memory who stays coherent only through durable external artifacts he has
-  disciplined himself to trust. Inception is nested episodes on different time
-  bases. Ex Machina is why the author's assurance profile separates implementer
-  and verifier by structure rather than by habit.
-- **The Twelve Days of Christmas context analogy.** Each later verse carries
-  the earlier material with it. Starting a fresh session with an enormous
-  inherited context is like beginning the song on day five: the first verse
-  you sing is already long. DotLn aims to preserve durable history while
-  loading only the context needed for the present task, so past success does
-  not become an ever-growing admission cost to new work.
-- **Nothing in the blueprint is allowed to disappear.** The idea ledger is
-  append-only, holds every significant founding idea from eleven chats, four
-  notes files, and forty-six images, and superseding an entry requires naming
-  what it replaces. That was an operator directive against recency bias, and it
-  is why intermediate ideas keep resurfacing on purpose.
-- **There is a candidate mechanic whose whole job is to argue for leaving things
-  alone.** "Beware of naive interventionism" asks what compensating function the
-  current mess might be serving before anyone is allowed to clean it.
-
-## Sources, license, and legal posture
-
-DotLn makes no claim that its pieces—or even this mixture of them—are novel. The
-[Sources and inspirations register](docs/lineage/inspirations.md) is the living
-best-known account of the books, methods, papers, stories, games, tools,
-conversations, failures, personal practice, and ambient culture that shaped it.
-An influence can be named before it has a clean DotLn mapping; `unknown`,
-`source forgotten`, and `ambient` are better than laundering inheritance into a
-claim of invention. Names identify sources and imply no affiliation or
-endorsement. Attribution alone grants no permission to copy protected expression
-or code.
-
-Code is licensed under the [Apache License 2.0](LICENSE) and documentation
-under [Creative Commons Attribution 4.0](LICENSE-docs); see [`NOTICE`](NOTICE)
-for the copyright notice. The names DotLn, προτείνω, and UIFA are not
-licensed as source identifiers; a fork may say it is based on DotLn without
-implying affiliation or endorsement. Outside contributions are accepted under
-the same licenses with a Developer Certificate of Origin 1.1 sign-off; see
-[CONTRIBUTING.md](CONTRIBUTING.md) for the rule and operator exemption. The
-root and all workspaces declare `license: Apache-2.0` and `private: true`.
-Publication checks verify these fields and the pinned license files, exercise
-the npm refusal, and require outside authors' sign-offs before a branch push.
-Packages stay private until a separate publication decision. The decision
-record, its scope for code, documentation, names, contributions, and
-distribution, and the gates that remain open are in
-[Legal and licensing posture](docs/LEGAL.md).
+The [roadmap](/docs/product/06-roadmap.md) climbs there one visible payoff at
+a time. The release the roadmap calls teammate-ready has one exit criterion:
+a person who has never read these docs declares one bounded intent and
+receives a verifiable result, witnessed by a non-author. Beyond it sits
+**προτείνω**, a small simulated community you write to in prose; candidate
+first world, a basketball squad ([προτείνω](/docs/product/11-protino.md)).
 
 ## The repo runs on itself
 
-DotLn is being built with its own process, and the machinery under construction
-is also the machinery in force. Work happens in bounded work orders inside
-isolated worktrees. A model that implements never verifies its own work; a
-blinded second session does, and writes an immutable numbered report. Final
-review is a third pass. A fresh session resumes from one phrase:
+Work happens in bounded work orders inside isolated worktrees. A model that
+implements never verifies its own work; a blinded second session does, and a
+third pass reviews. A fresh session resumes from one phrase:
 
 ```text
 resume: status
@@ -567,95 +167,69 @@ resume: final review
 resume: release close
 ```
 
-The phrase resolves against an append-only control log to the active work order
-and the exact artifacts the session must read. Illegal transitions refuse and
-append nothing. Every state-changing transition attempts a recovery checkpoint
-first and records when one is unavailable. The reviewer supplies one product-gate
-row keyed by code identity. The release manifest records that row's reviewed
-tree beside the merged tree, and publication requires matching code identity.
-The annotated tag names the merged commit and carries the manifest.
-
-Driving the car while building it has consequences the docs spell out. Past
-artifacts are judged against the process that existed when they were made, and a
-missing artifact whose convention had not been invented yet is not a defect. A
-new guard binds new work and never rewrites history to look tidy. When the
-instrument you are using to judge is itself the thing under review, you say so.
-The receipts include the embarrassing ones: for three work orders the executor
-ran at low reasoning effort while the playbook said otherwise, nothing detected
-it. Those reports remain historical evidence. WO-132 retains truthful
-attestations and removes version and effort refusals that later made the
-lifecycle more expensive than the work it carried. One drafted work order goes further and
-asks DotLn to compile, from its own primitives, the reviewer session that
-drafted several of the other work orders: identity, role, loadout, authority
-envelope, and all. Gödel, Escher, Bach is on the sources list for a reason.
-
-Yes, there is currently more blueprint than code. The ledger records that ratio
-as an open tension rather than a settled virtue, and the strangler experiment is
-explicit: typed mechanisms are meant to progressively absorb the prose. The
-[operator playbook](docs/PLAYBOOK.md) has the whole loop.
+The phrase resolves against an append-only control log to the active order
+and the exact artifacts to read; the reviewer's gate is keyed by code identity,
+and publication requires the reviewed tree and the merged tree to share it.
+Driving the car while building it has consequences the
+[execution guide](/docs/product/07-execution-guide.md) spells out, receipts
+included; the planning reviewer that judges this repository's own plans is
+itself compiled from DotLn primitives, and Gödel, Escher, Bach is on the
+sources list for a reason. There is more blueprint than code, recorded as an
+open tension, and the strangler experiment is explicit: typed mechanisms are
+meant to absorb the prose. The [operator playbook](/docs/PLAYBOOK.md) has the
+whole loop.
 
 ## Map
 
-- [`packages/kernel/`](packages/kernel/) — deterministic, framework-free event
-  and decision core.
-- [`packages/skeleton/`](packages/skeleton/) — the executable Repo Gardener +
-  Seiri vertical.
-- [`packages/console/`](packages/console/) — the read-only actor board, its
-  versioned JSON contract, terminal renderer, and self-contained HTML renderer.
-- [`scripts/`](scripts/) — the control plane: resume, worktree, release, intake
-  backup, and their shell suites.
-- [`docs/product/`](docs/product/) — the blueprint: vision, principles, domain
-  model, architecture, interfaces, patterns, roadmap, execution guide,
-  publication compiler, audit and privacy, IR compatibility, προτείνω, the
-  workstream application candidate, and the UIFA roles.
-- [`docs/work-orders/`](docs/work-orders/) — bounded implementation authority,
-  one file per unit of work.
-- [`docs/verifications/`](docs/verifications/) and
-  [`docs/final-reviews/`](docs/final-reviews/) — immutable, numbered evidence
-  history.
-- [`docs/control/`](docs/control/) — the append-only resume log and its
-  generated projection.
-- [`docs/lineage/`](docs/lineage/) — the idea ledger and public sources and
-  inspirations register.
-- [`docs/LEGAL.md`](docs/LEGAL.md) — the 2026-09-06 license decision
-  (Apache-2.0 code, CC BY 4.0 documentation, DCO inbound, names reserved) and
-  the gates that remain open.
-- [`docs/decisions/`](docs/decisions/) — historical decision records; preserve their sources
-  and append a sourced reopening when evidence or operator direction changes them.
-- [`docs/releases/`](docs/releases/) — release evidence and the tag-manifest
-  template.
-- [`docs/publication/`](docs/publication/) — the same blueprint compiled for
-  different readers, with a hash lock that proves when an edition has gone
-  stale.
-- [`corpus/`](corpus/) — committed test corpora that regenerate byte-for-byte
-  from recorded seeds.
-- `docs/intake/` — raw ideation, local only, deliberately outside Git.
+- [`packages/kernel/`](/packages/kernel/) — the deterministic event core.
+- [`packages/compiler/`](/packages/compiler/) — the pure composition compiler.
+- [`packages/skeleton/`](/packages/skeleton/) — the Repo Gardener + Seiri
+  vertical, the resident host and the workers.
+- [`packages/console/`](/packages/console/) — the actor board and live console.
+- [`packages/browser-evidence/`](/packages/browser-evidence/) — the browser
+  witness adapter.
+- [`packages/beacons/`](/packages/beacons/) — the Beacon codebooks.
+- [`scripts/`](/scripts/) — the control plane: resume, worktree, release.
+- [`docs/product/`](/docs/product/) — the blueprint.
+- [`docs/work-orders/`](/docs/work-orders/) — bounded authority, one file per
+  unit of work.
+- [`docs/verifications/`](/docs/verifications/) and
+  [`docs/final-reviews/`](/docs/final-reviews/) — immutable evidence.
+- [`docs/control/`](/docs/control/) — the append-only resume log and the
+  control records.
+- [`docs/lineage/`](/docs/lineage/) — the idea ledger and sources.
+- [`docs/decisions/`](/docs/decisions/) — decision records.
+- [`docs/releases/`](/docs/releases/) — release evidence.
+- [`docs/publication/`](/docs/publication/) — compiled editions.
+- [`docs/LEGAL.md`](/docs/LEGAL.md) — the license decision.
+- [`corpus/`](/corpus/) — regenerable test corpora.
+- `docs/intake/` — raw ideation, local only.
 
-If you want the idea first, read [the vision](docs/product/00-vision.md). If you
-want the machinery, start with
-[the domain model](docs/product/02-domain-model.md) and
-[architecture](docs/product/03-architecture.md). If you want to see something
-move, run [the skeleton](packages/skeleton/README.md).
+Idea first: [the vision](/docs/product/00-vision.md). Machinery:
+[the domain model](/docs/product/02-domain-model.md) and
+[architecture](/docs/product/03-architecture.md). Something moving:
+[the skeleton](/packages/skeleton/README.md).
+
+## Sources and license
+
+DotLn claims no novelty; the
+[sources and inspirations register](/docs/lineage/inspirations.md) records
+what shaped it. Names identify sources and imply no affiliation. Code is under
+the [Apache License 2.0](/LICENSE), documentation under
+[Creative Commons Attribution 4.0](/LICENSE-docs); see [`NOTICE`](/NOTICE),
+[docs/LEGAL.md](/docs/LEGAL.md) and [CONTRIBUTING.md](/CONTRIBUTING.md).
 
 ## One boundary that does not move
 
 This is a personal clean-room project. Employer code, configuration,
-identifiers, internal services, and proprietary implementation details do not
-belong here and never will. Raw ideation stays local until it has been
-deliberately processed under the repository's promotion policy: ordinary
-material is synthesized and rewritten, while explicitly authorized operator
-drafts or reviewed source references may retain exact text with provenance.
-Public material is clean-room-reviewed product reasoning and implementation;
-attributed retained expression is identified rather than claimed as original.
+identifiers and internal detail do not belong here and never will. Raw
+ideation stays local in `docs/intake/` until it is synthesized under the
+promotion policy.
 
 ## Why "DotLn"?
 
-_Days of the Natural Logarithm._ The letters of DAY and LN rearrange into the
-author's first name, and the phrase is a small technical pun: soft behavioral
-influences may evolve through additive log-odds composition, one candidate
-policy for how compatible supports can stack. Hard-precedence layers do not.
-Personal, mathematical, and just strange enough to fit the thing being built.
-
-DotLn is early on purpose. The current proof is small enough to understand all
-the way through. The ambition is not, and the plan is to keep the proof honest
-while the ambition catches up.
+_Days of the Natural Logarithm._ DAY and LN rearrange into the author's first
+name, and the pun is technical: soft influences may stack through additive
+log-odds composition. DotLn is early on purpose; the proof is small enough to
+understand all the way through, and the plan is to keep it honest while the
+ambition catches up.

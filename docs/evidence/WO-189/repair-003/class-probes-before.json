@@ -1,0 +1,224 @@
+{
+  "cutoff": "2026-10-10T18:29:04.769Z",
+  "subject": "pre-repair checker (refs/dotln/checkpoint/WO-189/15 scripts/ and packages/, extracted to session scratch)",
+  "mismatches": [
+    "template tag in emphasis",
+    "wiki link inside a link",
+    "math inside strong",
+    "footnote reference join",
+    "no-space join of thirteen",
+    "question join without space",
+    "Arabic question mark",
+    "HTML heading inside a div",
+    "HTML heading with tags",
+    "HTML heading in a list",
+    "HTML heading legacy reference",
+    "HTML heading split by a blank line",
+    "HTML heading inline in a paragraph",
+    "uppercase namesake",
+    "punctuated namesake",
+    "fullwidth namesake"
+  ],
+  "runs": [
+    {
+      "name": "control: unchanged",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "control: exact budget",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "template tag in emphasis",
+      "expectation": true,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "wiki link inside a link",
+      "expectation": true,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "math inside strong",
+      "expectation": true,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "footnote reference join",
+      "expectation": true,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "inline HTML span",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line must be Markdown prose with one rendered sentence per physical line: Shown runs <span>Hidden one runs. Hidden two runs.</span>.",
+        "README.md:11: a \"What runs today\" line must be Markdown prose with one rendered sentence per physical line: Capability 2 runs.",
+        "README.md:12: a \"What runs today\" line must be Markdown prose with one rendered sentence per physical line: Capability 3 runs.",
+        "README.md:13: a \"What runs today\" line must be Markdown prose with one rendered sentence per physical line: Capability 4 runs.",
+        "README.md:14: a \"What runs today\" line must be Markdown prose with one rendered sentence per physical line: Capability 5 runs.",
+        "README.md:15: a \"What runs today\" line must be Markdown prose with one rendered sentence per physical line: Capability 6 runs.",
+        "README.md:16: a \"What runs today\" line must be Markdown prose with one rendered sentence per physical line: Capability 7 runs.",
+        "README.md:17: a \"What runs today\" line must be Markdown prose with one rendered sentence per physical line: Capability 8 runs.",
+        "README.md:18: a \"What runs today\" line must be Markdown prose with one rendered sentence per physical line: Capability 9 runs."
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line must be Markdown prose with one rendered sentence per physical line: Shown runs <span>Hidden one runs. Hidden two runs.</span>.",
+        "README.md:13: a \"What runs today\" line must be Markdown prose with one rendered sentence per physical line: Capability 2 runs.",
+        "README.md:14: a \"What runs today\" line must be Markdown prose with one rendered sentence per physical line: Capability 3 runs.",
+        "README.md:15: a \"What runs today\" line must be Markdown prose with one rendered sentence per physical line: Capability 4 runs.",
+        "README.md:16: a \"What runs today\" line must be Markdown prose with one rendered sentence per physical line: Capability 5 runs.",
+        "README.md:17: a \"What runs today\" line must be Markdown prose with one rendered sentence per physical line: Capability 6 runs.",
+        "README.md:18: a \"What runs today\" line must be Markdown prose with one rendered sentence per physical line: Capability 7 runs.",
+        "README.md:19: a \"What runs today\" line must be Markdown prose with one rendered sentence per physical line: Capability 8 runs.",
+        "README.md:20: a \"What runs today\" line must be Markdown prose with one rendered sentence per physical line: Capability 9 runs."
+      ]
+    },
+    {
+      "name": "defined reference label",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence; write one sentence per line: Shown runs [Hidden one runs. Hidden two runs.][fixture]."
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence; write one sentence per line: Shown runs [Hidden one runs. Hidden two runs.][fixture]."
+      ]
+    },
+    {
+      "name": "no-space join of thirteen",
+      "expectation": true,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "question join without space",
+      "expectation": true,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "ideographic stops",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line does not end a sentence: 一个运行。两个运行。"
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line does not end a sentence: 一个运行。两个运行。"
+      ]
+    },
+    {
+      "name": "Arabic question mark",
+      "expectation": true,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "HTML heading inside a div",
+      "expectation": true,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "HTML heading with tags",
+      "expectation": true,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "HTML heading in a list",
+      "expectation": true,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "HTML heading legacy reference",
+      "expectation": true,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "HTML heading split by a blank line",
+      "expectation": true,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "HTML heading inline in a paragraph",
+      "expectation": true,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "uppercase namesake",
+      "expectation": true,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "punctuated namesake",
+      "expectation": true,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "fullwidth namesake",
+      "expectation": true,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "heading holding a template tag",
+      "expectation": true,
+      "failures": [
+        "README.md: needs exactly one heading ## What runs today; found 2"
+      ],
+      "formattedFailures": [
+        "README.md: needs exactly one heading ## What runs today; found 2"
+      ]
+    },
+    {
+      "name": "control: escaped dollars and braces",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "control: quoted code names",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "control: internal stops",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "control: centered HTML title",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "control: longer heading",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "control: heading in a comment",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": []
+    }
+  ]
+}

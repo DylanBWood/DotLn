@@ -1,0 +1,14 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+PROGRESS [bounded-probe] PROGRESS integration case ended {"event":"end","name":"the one-line release block reconciles across a merge where main and the subject each changed its version","file":"scripts/test-worktree-integrati
+PROGRESS integration case ended {"event":"end","name":"the one-line release block reconciles across a merge where main and the subject each changed its version","file":"scripts/test-worktree-integration.mjs","nesting":0,"durationMs":3949.015375}
+✔ the one-line release block reconciles across a merge where main and the subject each changed its version (4232.306083ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4457.972625
+bounded-result {"name":"bounded-probe","durationMs":4518,"slowestCases":[{"name":"bounded-probe","durationMs":4518,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":106948424,"peakRssBytes":248299520,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-10T16:38:28.757Z","finishedAt":"2026-10-10T16:38:33.275Z","exitCode":0,"executed":true}

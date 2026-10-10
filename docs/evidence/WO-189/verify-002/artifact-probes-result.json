@@ -1,0 +1,192 @@
+{
+  "checkpoint": {
+    "keyTime": "2026-10-09T22:27:11-04:00",
+    "candidateTime": "2026-10-09T22:41:40-04:00",
+    "keyBeforeCandidates": true,
+    "sameKeyBytes": true,
+    "keyCheckpointCandidates": [],
+    "candidatesAtLaterCheckpoint": true
+  },
+  "readerRecords": [
+    {
+      "candidate": "candidate-1200",
+      "statuses": [
+        0,
+        0
+      ],
+      "sixQuestions": true,
+      "total": 11,
+      "readerOutsideRepository": true,
+      "toolsDisabled": true,
+      "projectSettingsOnly": true,
+      "defaultSystemPromptReplaced": true,
+      "modelReadback": [
+        "claude-opus-5-5"
+      ],
+      "effortLaunch": "xhigh",
+      "rows": [
+        {
+          "question": "q1",
+          "score": 2,
+          "agreesWithRaw": true,
+          "quotesPresent": true
+        },
+        {
+          "question": "q2",
+          "score": 2,
+          "agreesWithRaw": true,
+          "quotesPresent": true
+        },
+        {
+          "question": "q3",
+          "score": 1,
+          "agreesWithRaw": true,
+          "quotesPresent": true
+        },
+        {
+          "question": "q4",
+          "score": 2,
+          "agreesWithRaw": true,
+          "quotesPresent": true
+        },
+        {
+          "question": "q5",
+          "score": 2,
+          "agreesWithRaw": true,
+          "quotesPresent": true
+        },
+        {
+          "question": "q6",
+          "score": 2,
+          "agreesWithRaw": true,
+          "quotesPresent": true
+        }
+      ]
+    },
+    {
+      "candidate": "candidate-2000",
+      "statuses": [
+        0,
+        0
+      ],
+      "sixQuestions": true,
+      "total": 11,
+      "readerOutsideRepository": true,
+      "toolsDisabled": true,
+      "projectSettingsOnly": true,
+      "defaultSystemPromptReplaced": true,
+      "modelReadback": [
+        "claude-opus-5-5"
+      ],
+      "effortLaunch": "xhigh",
+      "rows": [
+        {
+          "question": "q1",
+          "score": 2,
+          "agreesWithRaw": true,
+          "quotesPresent": true
+        },
+        {
+          "question": "q2",
+          "score": 1,
+          "agreesWithRaw": true,
+          "quotesPresent": true
+        },
+        {
+          "question": "q3",
+          "score": 2,
+          "agreesWithRaw": true,
+          "quotesPresent": true
+        },
+        {
+          "question": "q4",
+          "score": 2,
+          "agreesWithRaw": true,
+          "quotesPresent": true
+        },
+        {
+          "question": "q5",
+          "score": 2,
+          "agreesWithRaw": true,
+          "quotesPresent": true
+        },
+        {
+          "question": "q6",
+          "score": 2,
+          "agreesWithRaw": true,
+          "quotesPresent": true
+        }
+      ]
+    },
+    {
+      "candidate": "candidate-3000",
+      "statuses": [
+        0,
+        0
+      ],
+      "sixQuestions": true,
+      "total": 12,
+      "readerOutsideRepository": true,
+      "toolsDisabled": true,
+      "projectSettingsOnly": true,
+      "defaultSystemPromptReplaced": true,
+      "modelReadback": [
+        "claude-opus-5-5"
+      ],
+      "effortLaunch": "xhigh",
+      "rows": [
+        {
+          "question": "q1",
+          "score": 2,
+          "agreesWithRaw": true,
+          "quotesPresent": true
+        },
+        {
+          "question": "q2",
+          "score": 2,
+          "agreesWithRaw": true,
+          "quotesPresent": true
+        },
+        {
+          "question": "q3",
+          "score": 2,
+          "agreesWithRaw": true,
+          "quotesPresent": true
+        },
+        {
+          "question": "q4",
+          "score": 2,
+          "agreesWithRaw": true,
+          "quotesPresent": true
+        },
+        {
+          "question": "q5",
+          "score": 2,
+          "agreesWithRaw": true,
+          "quotesPresent": true
+        },
+        {
+          "question": "q6",
+          "score": 2,
+          "agreesWithRaw": true,
+          "quotesPresent": true
+        }
+      ]
+    }
+  ],
+  "readmeMatchesChosenOutsideRelease": true,
+  "packageMapComplete": true,
+  "packages": [
+    "beacons",
+    "browser-evidence",
+    "compiler",
+    "console",
+    "kernel",
+    "skeleton"
+  ],
+  "fileLinkFailures": [],
+  "externalLinks": [
+    "https://github.com/DylanBWood/DotLn/releases"
+  ],
+  "manifestsUnchanged": true
+}

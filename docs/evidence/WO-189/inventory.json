@@ -1,0 +1,2094 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-189",
+  "subject": {
+    "path": "README.md",
+    "revision": "c676909066d278c92cacd94d998a42a8fb5d4a9a",
+    "bytes": 39030,
+    "lines": 661,
+    "blocks": 131
+  },
+  "classes": {
+    "keep": "the chosen page carries the paragraph's substance in its own words; its anchors are checked on README.md (or the candidate named by --readme); a keep row may also name receipts that leave the page, each with the document that already holds it",
+    "move": "the paragraph's facts leave the page for the named document, written there by this order; every anchor is checked there",
+    "cut": "the paragraph leaves the page and the named document already holds its facts; every anchor is checked there; a heading or list label with no fact of its own names no document"
+  },
+  "anchorRule": "an anchor is a literal phrase; it is found when the destination contains it after runs of whitespace collapse to one space; a string anchor is checked in the row's destination, an object anchor in the file its `in` names",
+  "rows": [
+    {
+      "id": "b001",
+      "lines": "1-1",
+      "type": "heading",
+      "bytes": 7,
+      "sha256": "a31a619cd6e979b8402e45b2428bb132732fadb18e87060b4f9da3b079051b7f",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "# DotLn"
+      ],
+      "note": "the title"
+    },
+    {
+      "id": "b002",
+      "lines": "3-7",
+      "type": "blockquote",
+      "bytes": 328,
+      "sha256": "4d75c600a8feffaaba24fe2b63967e1eef547b24b53adfbb5c73dfb33c6e278f",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "I will take the entire Business, Leadership, and Personal Development shelf",
+        "programming books overnight"
+      ],
+      "note": "the epigraph; operator-authored public wording kept verbatim"
+    },
+    {
+      "id": "b003",
+      "lines": "9-10",
+      "type": "paragraph",
+      "bytes": 80,
+      "sha256": "cba62c55a4b21b722c29021fa00d5c391a99c22cf46451b00490798692c92eb6",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "DotLn turns hard-won ways of working into inspectable programs for AI teams"
+      ],
+      "note": "the thesis, verbatim"
+    },
+    {
+      "id": "b004",
+      "lines": "12-19",
+      "type": "paragraph",
+      "bytes": 556,
+      "sha256": "7402024e25133ceb411b460bca8a56566cae7c867c3ae9df5006a91d244ee01b",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "compiler and runtime for human judgment",
+        "Models rotate. Sessions die. The judgment survives."
+      ],
+      "note": "what DotLn is"
+    },
+    {
+      "id": "b005",
+      "lines": "21-24",
+      "type": "paragraph",
+      "bytes": 311,
+      "sha256": "60cdb6cb5f227156a00002d0b320ed5c26bd6bb8386ccdde534495dfe1d68c85",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "agentic platform",
+        "not an agent, not an agent harness, and not an orchestration layer"
+      ],
+      "note": "the identity boundary"
+    },
+    {
+      "id": "b006",
+      "lines": "26-30",
+      "type": "paragraph",
+      "bytes": 362,
+      "sha256": "a8551e59c02e3c1a11483215f7ca03f57a24033c4501005bc83999e3effe8f26",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "the owner decides which organization to build"
+      ],
+      "note": "substrate versus doctrine"
+    },
+    {
+      "id": "b007",
+      "lines": "32-34",
+      "type": "paragraph",
+      "bytes": 230,
+      "sha256": "546cef6995b351528a0db66bd312606b296a7d67694ffaee2975797abe1d3341",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "running code and which are still a promise"
+      ],
+      "note": "the honesty sentence"
+    },
+    {
+      "id": "b008",
+      "lines": "36-36",
+      "type": "heading",
+      "bytes": 18,
+      "sha256": "0b1f06a21098788ac7bccb2ce0e9aa2bf99c93bacd93298ac2cb67256c19f59f",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "## Why this exists"
+      ]
+    },
+    {
+      "id": "b009",
+      "lines": "38-40",
+      "type": "paragraph",
+      "bytes": 231,
+      "sha256": "48f914ff13ec5e5d8b39f1756c30035cbeb87db45d6afa19a2b3957e441454e1",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "babysitting"
+      ],
+      "note": "the problem"
+    },
+    {
+      "id": "b010",
+      "lines": "42-48",
+      "type": "paragraph",
+      "bytes": 477,
+      "sha256": "de669cf130a57208092bd2815d9bc74f57f6861acd437ee01b62f394a664decd",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "the whole stash into every map"
+      ],
+      "note": "the predecessor story and the stash metaphor"
+    },
+    {
+      "id": "b011",
+      "lines": "50-52",
+      "type": "paragraph",
+      "bytes": 174,
+      "sha256": "597bd4b3a7d4a8d019ed38aab22aa86ae6020a3eeba9fa833ddc3b9d42fd4a32",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "compiled"
+      ],
+      "note": "compiled rules, composable mechanisms"
+    },
+    {
+      "id": "b012",
+      "lines": "54-54",
+      "type": "listItem",
+      "bytes": 81,
+      "sha256": "f0d3f6a59775730323e9642ca236847a1d4188dfc6c97b1a25279307947935ad",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "a structural guard, not a plea"
+      ],
+      "note": "compiled rule one"
+    },
+    {
+      "id": "b013",
+      "lines": "55-55",
+      "type": "listItem",
+      "bytes": 78,
+      "sha256": "35973d359cd754ae4ebe957b9fb456de6279fae5be8ce726493697dfe962551c",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "a gate the model cannot talk past"
+      ],
+      "note": "compiled rule two"
+    },
+    {
+      "id": "b014",
+      "lines": "56-57",
+      "type": "listItem",
+      "bytes": 94,
+      "sha256": "045f29044ad878806b242eb3d2e3b5c38521c2f9aa531c591c71e9005e71c5de",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "a bounded work order, not a transcript"
+      ],
+      "note": "compiled rule three"
+    },
+    {
+      "id": "b015",
+      "lines": "58-59",
+      "type": "listItem",
+      "bytes": 106,
+      "sha256": "17f1049fec3857dc97300a8c3537fb50a3aa03ff2b8f7ca7782f7f5a6ab9493d",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "six named conditions"
+      ],
+      "note": "compiled rule four"
+    },
+    {
+      "id": "b016",
+      "lines": "60-62",
+      "type": "listItem",
+      "bytes": 234,
+      "sha256": "c7bdd4f0e04dc7fd83b153ecc6133e521fc4b89520d4e42d9b7a558bd47c689c",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "hold, shrink, grow, peak, reset, or loop"
+      ],
+      "note": "compiled rule five"
+    },
+    {
+      "id": "b017",
+      "lines": "64-69",
+      "type": "paragraph",
+      "bytes": 457,
+      "sha256": "803d35a608f9ece9f74e92eff950b85fa7ba260b606a8cab67c9500407763b21",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "a build, not a biography"
+      ],
+      "note": "the build sentence and the mission"
+    },
+    {
+      "id": "b018",
+      "lines": "71-71",
+      "type": "paragraph",
+      "bytes": 22,
+      "sha256": "e660722e329b15f23bab9e5ab2f9ee6961c499c8fb06d15b9ae0e20395b9d9fa",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "The reference loop"
+      ],
+      "note": "lead-in to the loop"
+    },
+    {
+      "id": "b019",
+      "lines": "73-81",
+      "type": "code",
+      "bytes": 461,
+      "sha256": "96de1cccd735712f6e189267ef59ddd8ac8ea722bd3bc2e52577c77150a82af1",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "intent \u2192 task-scoped build \u2192 bounded WorkOrder \u2192 disposable executor"
+      ],
+      "note": "the loop diagram"
+    },
+    {
+      "id": "b020",
+      "lines": "83-83",
+      "type": "heading",
+      "bytes": 18,
+      "sha256": "7f7813db69306af10022608c85351fc90b2d4526fadf3c70627294d2f7ebd0af",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "## What runs today"
+      ]
+    },
+    {
+      "id": "b021",
+      "lines": "85-93",
+      "type": "html",
+      "bytes": 534,
+      "sha256": "fc21b5823c82f7dd8fcb7b715a2b2731b9d1291b709b4380b180b4837f3d55aa",
+      "class": "cut",
+      "destination": "docs/product/07-execution-guide.md",
+      "anchors": [
+        {
+          "text": "is edited only by an order whose leading header carries",
+          "in": "docs/product/07-execution-guide.md"
+        }
+      ],
+      "note": "the maintainer comment; its rule becomes a sentence in product 07 \u00a7Documentation freshness and ownership and a refusal in the document check"
+    },
+    {
+      "id": "b022",
+      "lines": "94-94",
+      "type": "html",
+      "bytes": 28,
+      "sha256": "ff499c2ca12247cb984c535b614758e4adc19904f6cb9d4f54639afe4724e2a1",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "<!-- DOTLN-RELEASE-BEGIN -->"
+      ],
+      "note": "the generated block's opening marker"
+    },
+    {
+      "id": "b023",
+      "lines": "96-96",
+      "type": "paragraph",
+      "bytes": 37,
+      "sha256": "c1ee372cb69eb46d5fbc17873cd76bbdcd198e6452db33942d839195a1411000",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "This source prepares DotLn `v"
+      ],
+      "note": "the generated version claim, the only line between the markers"
+    },
+    {
+      "id": "b024",
+      "lines": "98-101",
+      "type": "paragraph",
+      "bytes": 287,
+      "sha256": "10dcd2ad2b41f13a8a9e1f3aa8824c1c66117cf0791cf103b3ebd490cfca859f",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "loadout",
+        "replay"
+      ],
+      "note": "the core, restated for a reader: the compiler, the envelope the kernel checks, and replay"
+    },
+    {
+      "id": "b025",
+      "lines": "103-161",
+      "type": "paragraph",
+      "bytes": 4321,
+      "sha256": "26e6a9f9151f4efa0396f8bb6c149df10d1c43b7a4f92f415073674b5bd515b9",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "resident host",
+        "blinded verifier",
+        "pull request",
+        "actor board",
+        "console witnesses",
+        {
+          "text": "on-mission",
+          "in": "docs/product/03-architecture.md"
+        },
+        {
+          "text": "5S candidates",
+          "in": "docs/evidence/WO-111/implementation.md"
+        },
+        {
+          "text": "scratch trust",
+          "in": "docs/evidence/WO-111/decisions.md"
+        },
+        {
+          "text": "dotln resident",
+          "in": "packages/skeleton/README.md"
+        },
+        {
+          "text": "actor board",
+          "in": "packages/console/README.md"
+        },
+        {
+          "text": "screenshot",
+          "in": "packages/browser-evidence/README.md"
+        },
+        {
+          "text": "killed-host",
+          "in": "docs/evidence/WO-053/README.md"
+        },
+        {
+          "text": "repair loop",
+          "in": "docs/evidence/WO-055/implementation.md"
+        },
+        {
+          "text": "clause",
+          "in": "docs/evidence/WO-056/README.md"
+        },
+        {
+          "text": "outward",
+          "in": "docs/evidence/WO-063/implementation.md"
+        },
+        {
+          "text": "repo.push",
+          "in": "docs/evidence/WO-064/decisions.md"
+        },
+        {
+          "text": "--require-deliverable-ready",
+          "in": "docs/evidence/WO-182/artifact-contract.md"
+        },
+        {
+          "text": "npm run dotln -- vertical",
+          "in": "docs/evidence/WO-112/README.md"
+        },
+        {
+          "text": "Codex's sandbox",
+          "in": "docs/evidence/WO-112/README.md"
+        }
+      ],
+      "note": "the runnable capabilities stay in What runs today, told for a reader; each per-order receipt and its link already live in the named evidence"
+    },
+    {
+      "id": "b026",
+      "lines": "163-167",
+      "type": "paragraph",
+      "bytes": 382,
+      "sha256": "e18b44855483de6dcf1e17416e939ef9ca318ddf30688eef48f4fd6c6b50cf4c",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "npm run dotln -- intent"
+      ],
+      "note": "derived work and intent"
+    },
+    {
+      "id": "b027",
+      "lines": "169-177",
+      "type": "paragraph",
+      "bytes": 662,
+      "sha256": "5f4474cc3a1a62eb7a15e83ce0733c2d06df184fc339462cd9a5af63421e7cf2",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "npm run console -- board",
+        {
+          "text": "loopback",
+          "in": "packages/console/README.md"
+        },
+        {
+          "text": "owner-only",
+          "in": "packages/console/README.md"
+        },
+        {
+          "text": "classifier",
+          "in": "packages/console/README.md"
+        }
+      ],
+      "note": "the console; its loopback contract stays in the console README"
+    },
+    {
+      "id": "b028",
+      "lines": "179-183",
+      "type": "paragraph",
+      "bytes": 346,
+      "sha256": "dbfe37e51e9cd7bea669726f447fda16f3e5f85e5d973f4ec488efc65e7310ec",
+      "class": "cut",
+      "destination": "docs/evidence/WO-160/README.md",
+      "anchors": [
+        {
+          "text": "Amendment withdrawal",
+          "in": "docs/evidence/WO-160/README.md"
+        }
+      ],
+      "note": "a per-order receipt"
+    },
+    {
+      "id": "b029",
+      "lines": "185-208",
+      "type": "paragraph",
+      "bytes": 1648,
+      "sha256": "c6bc4835761694b3a30e362cd9138bac047c1cc75a893dfd6f540fa7f434b297",
+      "class": "cut",
+      "destination": "docs/product/07-execution-guide.md",
+      "anchors": [
+        {
+          "text": "two credible ways to the same result",
+          "in": "docs/product/07-execution-guide.md"
+        },
+        {
+          "text": "three-trial",
+          "in": "docs/evidence/WO-145/decisions.md"
+        },
+        {
+          "text": "default equipment",
+          "in": "docs/evidence/WO-150/decisions.md"
+        },
+        {
+          "text": "refuse five conditions",
+          "in": "docs/AI-HARNESS-SECURITY.md"
+        },
+        {
+          "text": "operator override:",
+          "in": "docs/product/07-execution-guide.md"
+        },
+        {
+          "text": "helper command printed by",
+          "in": "docs/product/07-execution-guide.md"
+        }
+      ],
+      "note": "experiments, the five refusals and recovery controls; product 07 \u00a7Discipline, \u00a7Operator recovery controls and the harness security note already hold them"
+    },
+    {
+      "id": "b030",
+      "lines": "210-215",
+      "type": "paragraph",
+      "bytes": 407,
+      "sha256": "257963aacb40797b3873b9abc2931957720a6e24454cd23e050229bbe28b3331",
+      "class": "cut",
+      "destination": "docs/AI-HARNESS-SECURITY.md",
+      "anchors": [
+        {
+          "text": "Copilot",
+          "in": "docs/AI-HARNESS-SECURITY.md"
+        },
+        {
+          "text": "1.0.86",
+          "in": "docs/evidence/WO-146/decisions.md"
+        }
+      ],
+      "note": "the Copilot qualification receipt"
+    },
+    {
+      "id": "b031",
+      "lines": "217-222",
+      "type": "paragraph",
+      "bytes": 427,
+      "sha256": "8a3e9ca6d3d0cbac381c3c2013e81ff360ca0eee9cbd83d4e4261cd0149edeab",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "Not yet built",
+        "portable starter export",
+        "CONTRIBUTING.md",
+        "github.com/DylanBWood/DotLn/releases",
+        "docs/planning/refutations/README.md"
+      ],
+      "note": "what is not built and the three standing links"
+    },
+    {
+      "id": "b032",
+      "lines": "223-223",
+      "type": "html",
+      "bytes": 26,
+      "sha256": "d625fa30cefab956585bdef3e801126e086fdc07d1cae9bcc04e0d3744c423cf",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "<!-- DOTLN-RELEASE-END -->"
+      ],
+      "note": "the generated block's closing marker"
+    },
+    {
+      "id": "b033",
+      "lines": "225-225",
+      "type": "paragraph",
+      "bytes": 67,
+      "sha256": "ac762a25ebfa3fae5d4470a82aa1be685c4cbf647d74d37cd7a5c3515039ce65",
+      "class": "cut",
+      "destination": "packages/skeleton/README.md",
+      "anchors": [
+        {
+          "text": "first shipped in application release",
+          "in": "packages/skeleton/README.md"
+        }
+      ],
+      "note": "a version"
+    },
+    {
+      "id": "b034",
+      "lines": "227-228",
+      "type": "paragraph",
+      "bytes": 105,
+      "sha256": "218395406d4c6773ea17cbcc117783b9c1a6b3cb9a511b73ffd67f20d3938020",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "Repo Gardener",
+        "Seiri"
+      ],
+      "note": "the scenario"
+    },
+    {
+      "id": "b035",
+      "lines": "230-239",
+      "type": "code",
+      "bytes": 461,
+      "sha256": "8dd7e8a63d3de4a5707e985acfc460c73f7450b3884e0580fbb3b79ab7023ba9",
+      "class": "cut",
+      "destination": "packages/skeleton/README.md",
+      "anchors": [
+        {
+          "text": "\ud83d\udc1b Repo Gardener",
+          "in": "packages/skeleton/README.md"
+        },
+        {
+          "text": "\ud83d\udca4 faded/cancelled",
+          "in": "packages/skeleton/README.md"
+        }
+      ],
+      "note": "the glyph timeline; the skeleton README documents the run"
+    },
+    {
+      "id": "b036",
+      "lines": "241-244",
+      "type": "code",
+      "bytes": 40,
+      "sha256": "8a5537e2a039bfe9d679f6a144b5ca6e0006e1ae9437656da80cb51a255ed7e1",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "npm install",
+        "npm run skeleton"
+      ],
+      "note": "how to try it"
+    },
+    {
+      "id": "b037",
+      "lines": "246-247",
+      "type": "paragraph",
+      "bytes": 139,
+      "sha256": "2d101ec76881ffdaf1e328189505740a55a9bcb74abc6d501bff889cbc569b65",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "numbered timeline"
+      ],
+      "note": "what the run prints"
+    },
+    {
+      "id": "b038",
+      "lines": "249-253",
+      "type": "code",
+      "bytes": 189,
+      "sha256": "a1f89fdce5ad969d36bd0651d4dbfa7725f0043f208202b6f390e9f3136a2c2d",
+      "class": "cut",
+      "destination": "packages/skeleton/README.md",
+      "anchors": [
+        {
+          "text": "verified=true candidates=1",
+          "in": "packages/skeleton/README.md"
+        }
+      ],
+      "note": "the printed receipt"
+    },
+    {
+      "id": "b039",
+      "lines": "255-257",
+      "type": "paragraph",
+      "bytes": 206,
+      "sha256": "02a2201655c4171a78d84fd1ad5f66151b35f82ebe8fa969178db3f4bc0f9539",
+      "class": "cut",
+      "destination": "packages/skeleton/README.md",
+      "anchors": [
+        {
+          "text": "--compiled-diff",
+          "in": "packages/skeleton/README.md"
+        }
+      ],
+      "note": "a runner flag"
+    },
+    {
+      "id": "b040",
+      "lines": "259-265",
+      "type": "paragraph",
+      "bytes": 524,
+      "sha256": "a85ec94fb5c94cdfe042c4f73118c55086ba495f5dd02b8b594b9286bc8db396",
+      "class": "cut",
+      "destination": "packages/skeleton/README.md",
+      "anchors": [
+        {
+          "text": "--beacons <directory>",
+          "in": "packages/skeleton/README.md"
+        },
+        {
+          "text": "1970",
+          "in": "packages/skeleton/README.md"
+        }
+      ],
+      "note": "a runner flag and the Beacon demo"
+    },
+    {
+      "id": "b041",
+      "lines": "267-270",
+      "type": "paragraph",
+      "bytes": 332,
+      "sha256": "6cc35cc6564cc36fb9fef6fba598d2227db5a6474cbfcedc16dc2e96f1276a48",
+      "class": "cut",
+      "destination": "packages/skeleton/README.md",
+      "anchors": [
+        {
+          "text": "intentionally discloses codebook fields",
+          "in": "packages/skeleton/README.md"
+        },
+        {
+          "text": "codebook",
+          "in": "docs/discovery/beacon-probe-2026-09-04.md"
+        }
+      ],
+      "note": "Beacon metadata detail"
+    },
+    {
+      "id": "b042",
+      "lines": "272-307",
+      "type": "paragraph",
+      "bytes": 2638,
+      "sha256": "5fc8450e649545e6f865d39531c95da39b5266bf72f5ebd018f8a56184b51d9d",
+      "class": "move",
+      "destination": "CONTRIBUTING.md",
+      "anchors": [
+        {
+          "text": "npm test -- --list",
+          "in": "CONTRIBUTING.md"
+        },
+        {
+          "text": "npm test -- --review",
+          "in": "CONTRIBUTING.md"
+        },
+        {
+          "text": "--again",
+          "in": "CONTRIBUTING.md"
+        },
+        {
+          "text": "test:machinery",
+          "in": "CONTRIBUTING.md"
+        },
+        {
+          "text": "test:docs",
+          "in": "CONTRIBUTING.md"
+        },
+        {
+          "text": "--confined-partial",
+          "in": "CONTRIBUTING.md"
+        },
+        {
+          "text": "needs: outside-sandbox",
+          "in": "CONTRIBUTING.md"
+        },
+        {
+          "text": "--inside-sandbox",
+          "in": "CONTRIBUTING.md"
+        },
+        {
+          "text": "evidence:artifact",
+          "in": "CONTRIBUTING.md"
+        },
+        {
+          "text": "Node 26",
+          "in": "CONTRIBUTING.md"
+        },
+        {
+          "text": "TypeScript 7.0.2",
+          "in": "CONTRIBUTING.md"
+        },
+        {
+          "text": "macOS",
+          "in": "CONTRIBUTING.md"
+        },
+        {
+          "text": "0003-personal-ai-harness-security.md",
+          "in": "CONTRIBUTING.md"
+        },
+        {
+          "text": "code identity",
+          "in": "CONTRIBUTING.md"
+        }
+      ],
+      "note": "test runner, sandbox posture and toolchain detail; CONTRIBUTING gains a Toolchain and tests section"
+    },
+    {
+      "id": "b043",
+      "lines": "309-309",
+      "type": "heading",
+      "bytes": 42,
+      "sha256": "3265a458110332c08bea7a439cef00a435e9900c97c0d7ab1b4aacb5c498563f",
+      "class": "cut",
+      "destination": null,
+      "anchors": [],
+      "note": "a heading over paragraphs that leave; no fact of its own"
+    },
+    {
+      "id": "b044",
+      "lines": "311-311",
+      "type": "paragraph",
+      "bytes": 7,
+      "sha256": "d076c58ede9ba32db9d321220a9ff51645dec9293cb9dd5e73e97f9c8c71621f",
+      "class": "cut",
+      "destination": null,
+      "anchors": [],
+      "note": "a list label"
+    },
+    {
+      "id": "b045",
+      "lines": "313-314",
+      "type": "listItem",
+      "bytes": 99,
+      "sha256": "a078c0fcafeffe4e2f9d119e9903a80d7b1520f8d00732950b38026bed2be596",
+      "class": "cut",
+      "destination": "packages/kernel/README.md",
+      "anchors": [
+        {
+          "text": "perform no I/O and consult no ambient clock or randomness",
+          "in": "packages/kernel/README.md"
+        }
+      ],
+      "note": "proven: pure kernel"
+    },
+    {
+      "id": "b046",
+      "lines": "315-316",
+      "type": "listItem",
+      "bytes": 111,
+      "sha256": "c46f490187ebe4323be2f4aa4ac71dce78c4bf2cf637982f5425c4ef409a725b",
+      "class": "cut",
+      "destination": "packages/skeleton/README.md",
+      "anchors": [
+        {
+          "text": "replayScenario",
+          "in": "packages/skeleton/README.md"
+        }
+      ],
+      "note": "proven: replay"
+    },
+    {
+      "id": "b047",
+      "lines": "317-318",
+      "type": "listItem",
+      "bytes": 97,
+      "sha256": "0d1ecd78912a246fb1797667c723290bc90c6a70ae1cdf9ed6a7b0e251476dfe",
+      "class": "cut",
+      "destination": "packages/skeleton/README.md",
+      "anchors": [
+        {
+          "text": "structurally refuses deletion",
+          "in": "packages/skeleton/README.md"
+        }
+      ],
+      "note": "proven: structural refusal"
+    },
+    {
+      "id": "b048",
+      "lines": "319-320",
+      "type": "listItem",
+      "bytes": 93,
+      "sha256": "df3b1fa308d1b599e6c2c7d0f3a3e770dc515a428e37e93628b3e5b61d48807a",
+      "class": "cut",
+      "destination": "packages/skeleton/README.md",
+      "anchors": [
+        {
+          "text": "dispatching its identity twice",
+          "in": "packages/skeleton/README.md"
+        }
+      ],
+      "note": "proven: crash recovery without a duplicate effect"
+    },
+    {
+      "id": "b049",
+      "lines": "321-322",
+      "type": "listItem",
+      "bytes": 86,
+      "sha256": "ebb39241d69c0da2e48324e3224c92766bdf2fea9a4678b14665a72d6c11454a",
+      "class": "cut",
+      "destination": "packages/skeleton/README.md",
+      "anchors": [
+        {
+          "text": "handles operator return",
+          "in": "packages/skeleton/README.md"
+        }
+      ],
+      "note": "proven: operator return"
+    },
+    {
+      "id": "b050",
+      "lines": "323-323",
+      "type": "listItem",
+      "bytes": 66,
+      "sha256": "06c09c5a351035ee124960b30ddb338916700ecd76b85346991def817ca5bfc0",
+      "class": "cut",
+      "destination": "packages/skeleton/README.md",
+      "anchors": [
+        {
+          "text": "glyph projections",
+          "in": "packages/skeleton/README.md"
+        }
+      ],
+      "note": "proven: honest glyphs"
+    },
+    {
+      "id": "b051",
+      "lines": "324-325",
+      "type": "listItem",
+      "bytes": 136,
+      "sha256": "6aa529137307c3b2c0213eebf672d38a633ea48550c6f6a1d221706d267f9a83",
+      "class": "cut",
+      "destination": "docs/product/07-execution-guide.md",
+      "anchors": [
+        {
+          "text": "`docs/control/orders/WO-NNN.jsonl` segments",
+          "in": "docs/product/07-execution-guide.md"
+        }
+      ],
+      "note": "proven: per-order control segments"
+    },
+    {
+      "id": "b052",
+      "lines": "327-327",
+      "type": "paragraph",
+      "bytes": 31,
+      "sha256": "7209dd8bae40ce854c8ecba0086c8239f84912b0b2c970213badc88f2530cd79",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "Not yet built"
+      ],
+      "note": "the not-built label"
+    },
+    {
+      "id": "b053",
+      "lines": "329-329",
+      "type": "listItem",
+      "bytes": 70,
+      "sha256": "75acc8d57f335f907ef68769326bcb46ff30419b22a9266fe1bc516acb9a3128",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "general source-writing worker"
+      ],
+      "note": "not built"
+    },
+    {
+      "id": "b054",
+      "lines": "330-330",
+      "type": "listItem",
+      "bytes": 59,
+      "sha256": "c0614a3c8c2fb4df7c7869f8400deaf184c926a802bce95a1f6ef3015660cea6",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "Seiri"
+      ],
+      "note": "not built: composition beyond the Seiri subset"
+    },
+    {
+      "id": "b055",
+      "lines": "331-331",
+      "type": "listItem",
+      "bytes": 52,
+      "sha256": "8c0131b74db19451aad7af281be9a895f24b625020143e25f30819cdc28af616",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "saved community builds"
+      ],
+      "note": "not built"
+    },
+    {
+      "id": "b056",
+      "lines": "332-332",
+      "type": "listItem",
+      "bytes": 56,
+      "sha256": "a49f7cc7508194b5b5a9fabfd59da5df8f8d6a190711de1dd2b4827a4ee1ad03",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "interactive"
+      ],
+      "note": "not built: an interactive console"
+    },
+    {
+      "id": "b057",
+      "lines": "333-333",
+      "type": "listItem",
+      "bytes": 63,
+      "sha256": "f4a3f35a73879eb7b2171a715c2fd434fd1ddb4af5c90aa3c48fd80b4a19f4ed",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "SQLite"
+      ],
+      "note": "not built: persistence, hosting, a published package"
+    },
+    {
+      "id": "b058",
+      "lines": "334-334",
+      "type": "listItem",
+      "bytes": 69,
+      "sha256": "aced51fc7da031a176045c69f85b220def6610d1fdbf448ab32fc54557d69b04",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "source-to-deliverable"
+      ],
+      "note": "not built: the complete verified pipeline"
+    },
+    {
+      "id": "b059",
+      "lines": "336-339",
+      "type": "paragraph",
+      "bytes": 263,
+      "sha256": "063a57c4ac73dc252d9bc9d03132960798c749c1177e5be951a3cbb8151f254a",
+      "class": "cut",
+      "destination": "docs/product/06-roadmap.md",
+      "anchors": [
+        {
+          "text": "every rung ships a visible payoff",
+          "in": "docs/product/06-roadmap.md"
+        },
+        {
+          "text": "causal timeline",
+          "in": "docs/product/09-audit-resilience-privacy.md"
+        }
+      ],
+      "note": "roadmap rungs and the three audit projections"
+    },
+    {
+      "id": "b060",
+      "lines": "341-341",
+      "type": "heading",
+      "bytes": 11,
+      "sha256": "fc0f0024d3e3f0d50ae9ccdd30d0ff472f98d931544cc690bf7c798ab8574500",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "The bets"
+      ]
+    },
+    {
+      "id": "b061",
+      "lines": "343-345",
+      "type": "listItem",
+      "bytes": 215,
+      "sha256": "0dc453ff89fcb507165383e4cc318fb95251e8dca6db2d04b146d8b65181898c",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "incarnation, not a memory"
+      ],
+      "note": "bet"
+    },
+    {
+      "id": "b062",
+      "lines": "346-348",
+      "type": "listItem",
+      "bytes": 159,
+      "sha256": "8eba6c429a9f345346772c2a1a3b665a112936faa0743f91e4e073f4ead9dcaf",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "Deterministic core"
+      ],
+      "note": "bet"
+    },
+    {
+      "id": "b063",
+      "lines": "349-351",
+      "type": "listItem",
+      "bytes": 217,
+      "sha256": "a15e8c8ce9dea1633f9ecc3971d703f22a80d57617d29926483dd2bd565d22a6",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "safety is boring"
+      ],
+      "note": "bet"
+    },
+    {
+      "id": "b064",
+      "lines": "352-353",
+      "type": "listItem",
+      "bytes": 111,
+      "sha256": "3f72db630c9fe9a78fa79e457decc900827836a4964327b8675dcc6d27e40feb",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "precedes \"done.\""
+      ],
+      "note": "bet"
+    },
+    {
+      "id": "b065",
+      "lines": "354-356",
+      "type": "listItem",
+      "bytes": 182,
+      "sha256": "b4675426168ff812620e51accdbfea2fdfb4bcaeb4a7b2908c9acaf6e7aa918e",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "and verifier are different roles"
+      ],
+      "note": "bet"
+    },
+    {
+      "id": "b066",
+      "lines": "357-358",
+      "type": "listItem",
+      "bytes": 161,
+      "sha256": "0afd3b39799e4ee7afc0a311e4544e98bd004feaacb32d927eacd157bcc2c171",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "Doing nothing is a decision"
+      ],
+      "note": "bet"
+    },
+    {
+      "id": "b067",
+      "lines": "359-361",
+      "type": "listItem",
+      "bytes": 183,
+      "sha256": "802bb674da99d62030a439cfea5fbba5945398e69e78f777fd9a2f312ee4fbbf",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "Every metaphor reveals its mechanics"
+      ],
+      "note": "bet"
+    },
+    {
+      "id": "b068",
+      "lines": "362-364",
+      "type": "listItem",
+      "bytes": 170,
+      "sha256": "7b00768ca712509bfcc209b1a9d14e7eb35951f8f4fecc635822e5435d487164",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "The substrate is shared; the doctrine is yours"
+      ],
+      "note": "bet"
+    },
+    {
+      "id": "b069",
+      "lines": "365-366",
+      "type": "listItem",
+      "bytes": 125,
+      "sha256": "68480c9668d0bd2f7877df1a051ed67c68458e2182ddc5c2533619632251edb7",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "No fake numbers"
+      ],
+      "note": "bet"
+    },
+    {
+      "id": "b070",
+      "lines": "368-370",
+      "type": "paragraph",
+      "bytes": 169,
+      "sha256": "f744b851b5dc2e82053cffa45b4cf478c680597b69e9f486c3f94e05d3400fb6",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "selection function"
+      ],
+      "note": "the scarce resource"
+    },
+    {
+      "id": "b071",
+      "lines": "372-372",
+      "type": "heading",
+      "bytes": 34,
+      "sha256": "4b54ee57938bf6b4b7082c9f9b5257388c499ea0c1cebb99c8e5d78c8e0eb312",
+      "class": "cut",
+      "destination": null,
+      "anchors": [],
+      "note": "a heading over paragraphs that leave; no fact of its own"
+    },
+    {
+      "id": "b072",
+      "lines": "374-377",
+      "type": "paragraph",
+      "bytes": 312,
+      "sha256": "126f05fdd49464b07a05af37b57d39a94d14b25bc635ef06785b31987b769348",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "UIFA",
+        "wee-fuh",
+        {
+          "text": "wee-fuh",
+          "in": "docs/product/00-vision.md"
+        }
+      ],
+      "note": "the interface name and the five roles, in one sentence; the full treatment is product 13"
+    },
+    {
+      "id": "b073",
+      "lines": "379-381",
+      "type": "listItem",
+      "bytes": 191,
+      "sha256": "3d1eb799028817993b6c80183e500c1888db7627c34404e724792afc819c9a05",
+      "class": "cut",
+      "destination": "docs/product/13-uifa-roles.md",
+      "anchors": [
+        {
+          "text": "UIFA product lead",
+          "in": "docs/product/13-uifa-roles.md"
+        }
+      ],
+      "note": "a role"
+    },
+    {
+      "id": "b074",
+      "lines": "382-384",
+      "type": "listItem",
+      "bytes": 181,
+      "sha256": "5f169a3069fe41a694f0bae77e068e4cb72dd308e84306e71f8bc6cb3ef9824a",
+      "class": "cut",
+      "destination": "docs/product/13-uifa-roles.md",
+      "anchors": [
+        {
+          "text": "UIFA showrunner",
+          "in": "docs/product/13-uifa-roles.md"
+        }
+      ],
+      "note": "a role"
+    },
+    {
+      "id": "b075",
+      "lines": "385-387",
+      "type": "listItem",
+      "bytes": 194,
+      "sha256": "f419af9bf8e6b0b22ffe313fd9facf1322e1f9045fa3b725d0afa2df41f9e83d",
+      "class": "cut",
+      "destination": "docs/product/13-uifa-roles.md",
+      "anchors": [
+        {
+          "text": "UIFA engineer",
+          "in": "docs/product/13-uifa-roles.md"
+        }
+      ],
+      "note": "a role"
+    },
+    {
+      "id": "b076",
+      "lines": "388-390",
+      "type": "listItem",
+      "bytes": 234,
+      "sha256": "63cf43ffab879e709a7ed716cb0d12d3ba174ddd6d9d36c321e2ebefeab9cd5e",
+      "class": "cut",
+      "destination": "docs/product/13-uifa-roles.md",
+      "anchors": [
+        {
+          "text": "UIFA tester",
+          "in": "docs/product/13-uifa-roles.md"
+        }
+      ],
+      "note": "a role"
+    },
+    {
+      "id": "b077",
+      "lines": "391-392",
+      "type": "listItem",
+      "bytes": 128,
+      "sha256": "9426396aedd2969031c4996a1ccd2dee08d8b76f430209690fe4cd4062eaa676",
+      "class": "cut",
+      "destination": "docs/product/13-uifa-roles.md",
+      "anchors": [
+        {
+          "text": "UIFA devops",
+          "in": "docs/product/13-uifa-roles.md"
+        }
+      ],
+      "note": "a role"
+    },
+    {
+      "id": "b078",
+      "lines": "394-400",
+      "type": "paragraph",
+      "bytes": 468,
+      "sha256": "d094435940533a3049ab9544b3a0f8fad6b9f89ab30475f0cb80e17d5bb604ed",
+      "class": "cut",
+      "destination": "docs/product/13-uifa-roles.md",
+      "anchors": [
+        {
+          "text": "kitchen",
+          "in": "docs/product/13-uifa-roles.md"
+        }
+      ],
+      "note": "why people stay in the loop and the eight settings"
+    },
+    {
+      "id": "b079",
+      "lines": "402-402",
+      "type": "heading",
+      "bytes": 29,
+      "sha256": "669af835b10c6d0d700816132c62efedcfddc0eab181f3dfe0890bc93006bff4",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "The game is not decoration"
+      ]
+    },
+    {
+      "id": "b080",
+      "lines": "404-405",
+      "type": "paragraph",
+      "bytes": 137,
+      "sha256": "5f53dc5e0051ccdee3e624c45547492a563f4730d728c8d0632b2c7f23496d68",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "action RPGs"
+      ],
+      "note": "why the game vocabulary"
+    },
+    {
+      "id": "b081",
+      "lines": "407-418",
+      "type": "table",
+      "bytes": 1211,
+      "sha256": "d2a04a4d4ad36530b92c133c6dad93a9024163ad677170a41c4598aef474ece5",
+      "class": "cut",
+      "destination": "docs/product/04-interfaces.md",
+      "anchors": [
+        {
+          "text": "Rarity encodes provenance",
+          "in": "docs/product/04-interfaces.md"
+        },
+        {
+          "text": "Set bonuses compile to real mechanics",
+          "in": "docs/product/04-interfaces.md"
+        }
+      ],
+      "note": "the view table; product 04 holds the mechanics"
+    },
+    {
+      "id": "b082",
+      "lines": "420-427",
+      "type": "paragraph",
+      "bytes": 590,
+      "sha256": "78d3b55aed1108f8168bc5999576280955a6d1e966a9c2ad7ea67515f1aa2641",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "scope, not sequence",
+        "Rarity encodes provenance, never power",
+        "Ladder of Leadership"
+      ],
+      "note": "links, rarity, the authoring thesis"
+    },
+    {
+      "id": "b083",
+      "lines": "429-433",
+      "type": "paragraph",
+      "bytes": 348,
+      "sha256": "f9266cd380146195b0896d84b197709b9202a981650f352740e0614b19ea048f",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "Path of Building for organizations"
+      ],
+      "note": "the long-term surface"
+    },
+    {
+      "id": "b084",
+      "lines": "435-435",
+      "type": "heading",
+      "bytes": 29,
+      "sha256": "dbdca45ff8d389b29030c74ee699dacdd6ced83e047e33817ec199eddf4d9396",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "Three horizons, one kernel"
+      ]
+    },
+    {
+      "id": "b085",
+      "lines": "437-438",
+      "type": "listItem",
+      "bytes": 154,
+      "sha256": "d8b20a4b2055f11ad82cbbde89a0d99c303a76a74e09570c09a10823249f5c39",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "Work operating system"
+      ],
+      "note": "horizon one"
+    },
+    {
+      "id": "b086",
+      "lines": "439-440",
+      "type": "listItem",
+      "bytes": 151,
+      "sha256": "aa137e0aeae1c91f6c378e751b73bea8f37be8ca514e7aa3b2782d4bef9909e7",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "Executable pattern workshop"
+      ],
+      "note": "horizon two"
+    },
+    {
+      "id": "b087",
+      "lines": "441-443",
+      "type": "listItem",
+      "bytes": 218,
+      "sha256": "a5314ed02b31a53669f71cbc43746577eed545f6ea6018c722549f5eed0931d1",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "simulation laboratory"
+      ],
+      "note": "horizon three"
+    },
+    {
+      "id": "b088",
+      "lines": "445-454",
+      "type": "paragraph",
+      "bytes": 758,
+      "sha256": "1dedf65abd84658ce699d7143ca0f378fc076938d234a9a754a0b1a2985adf10",
+      "class": "cut",
+      "destination": "docs/product/06-roadmap.md",
+      "anchors": [
+        {
+          "text": "Teammate-ready",
+          "in": "docs/product/06-roadmap.md"
+        },
+        {
+          "text": "Launchpad and cross-repository",
+          "in": "docs/product/06-roadmap.md"
+        },
+        {
+          "text": "cross-repository",
+          "in": "docs/planning/phase-two-plan-2026-09-06.md"
+        },
+        {
+          "text": "never read these docs",
+          "in": "README.md"
+        }
+      ],
+      "note": "the dated ladder and the plan link; the roadmap holds the ladder and the 1.0 exit criterion stays on the page without its version"
+    },
+    {
+      "id": "b089",
+      "lines": "456-463",
+      "type": "paragraph",
+      "bytes": 553,
+      "sha256": "9e1ad6cac2d56815b26a05650b22b223565041b36b20a8a36ebf22585e5703be",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "\u03c0\u03c1\u03bf\u03c4\u03b5\u03af\u03bd\u03c9",
+        "basketball"
+      ],
+      "note": "the flagship"
+    },
+    {
+      "id": "b090",
+      "lines": "465-465",
+      "type": "heading",
+      "bytes": 46,
+      "sha256": "2bee7917c435e28a9c525d138b4faf41c958e215cda131945c3a9dd3ef8e8989",
+      "class": "cut",
+      "destination": null,
+      "anchors": [],
+      "note": "a heading over paragraphs that leave; no fact of its own"
+    },
+    {
+      "id": "b091",
+      "lines": "467-470",
+      "type": "listItem",
+      "bytes": 242,
+      "sha256": "b6848153471d82a4346df7238b73eefb720be34c658da2288db32fa6dd066c8f",
+      "class": "cut",
+      "destination": "docs/product/02-domain-model.md",
+      "anchors": [
+        {
+          "text": "CommandRefused",
+          "in": "docs/product/02-domain-model.md"
+        }
+      ],
+      "note": "refusal as an event"
+    },
+    {
+      "id": "b092",
+      "lines": "471-489",
+      "type": "listItem",
+      "bytes": 1416,
+      "sha256": "690f23cd5f6cfb7c4fc846a0264a14ca9b7084a770b779baba06592924e78875",
+      "class": "cut",
+      "destination": "docs/product/03-architecture.md",
+      "anchors": [
+        {
+          "text": "Blackjack",
+          "in": "docs/product/03-architecture.md"
+        },
+        {
+          "text": "payoff curve",
+          "in": "docs/product/03-architecture.md"
+        },
+        {
+          "text": "scratch trust",
+          "in": "docs/evidence/WO-111/decisions.md"
+        }
+      ],
+      "note": "presence policy and its analogy; the receipt stays in its evidence"
+    },
+    {
+      "id": "b093",
+      "lines": "490-493",
+      "type": "listItem",
+      "bytes": 271,
+      "sha256": "164ec48c51441c61f8a212725c35edd3f580a19e2f2db44b1827285dc337249c",
+      "class": "cut",
+      "destination": "docs/lineage/idea-ledger.md",
+      "anchors": [
+        {
+          "text": "Magnetic-LED whiteboard",
+          "in": "docs/lineage/idea-ledger.md"
+        },
+        {
+          "text": "index card",
+          "in": "docs/product/04-interfaces.md"
+        }
+      ],
+      "note": "index cards"
+    },
+    {
+      "id": "b094",
+      "lines": "494-496",
+      "type": "listItem",
+      "bytes": 212,
+      "sha256": "f0e3061a09434c254b79bd8b9a2c9006c7b464596e10a712f2866d5ad1692cc0",
+      "class": "cut",
+      "destination": "docs/product/05-pattern-library.md",
+      "anchors": [
+        {
+          "text": "optometrist",
+          "in": "docs/product/05-pattern-library.md"
+        },
+        {
+          "text": "about the same",
+          "in": "docs/product/05-pattern-library.md"
+        }
+      ],
+      "note": "the optometrist"
+    },
+    {
+      "id": "b095",
+      "lines": "497-500",
+      "type": "listItem",
+      "bytes": 266,
+      "sha256": "16ccbd2c59c1542e516d33cbfb3b358ed2bd0aca63f271fdc7d5104551c46902",
+      "class": "cut",
+      "destination": "docs/product/05-pattern-library.md",
+      "anchors": [
+        {
+          "text": "commedia",
+          "in": "docs/product/05-pattern-library.md"
+        },
+        {
+          "text": "Whiteface",
+          "in": "docs/product/05-pattern-library.md"
+        },
+        {
+          "text": "Lazzi",
+          "in": "docs/product/05-pattern-library.md"
+        }
+      ],
+      "note": "the party"
+    },
+    {
+      "id": "b096",
+      "lines": "501-504",
+      "type": "listItem",
+      "bytes": 265,
+      "sha256": "ef0bd32283c69591c87e736f2cdd12581ac6c900467dab4eadf679fe002613af",
+      "class": "cut",
+      "destination": "docs/product/04-interfaces.md",
+      "anchors": [
+        {
+          "text": "horizontal mirror",
+          "in": "docs/product/04-interfaces.md"
+        },
+        {
+          "text": "Evidence-Bound",
+          "in": "docs/product/04-interfaces.md"
+        }
+      ],
+      "note": "the glyph grammar"
+    },
+    {
+      "id": "b097",
+      "lines": "505-509",
+      "type": "listItem",
+      "bytes": 363,
+      "sha256": "ed930b2f8e69d555ebf58f4c4da43e9839e673c40b7eeac614504149efc12bad",
+      "class": "cut",
+      "destination": "docs/product/00-vision.md",
+      "anchors": [
+        {
+          "text": "Memento",
+          "in": "docs/product/00-vision.md"
+        },
+        {
+          "text": "Inception",
+          "in": "docs/product/00-vision.md"
+        },
+        {
+          "text": "Ex Machina",
+          "in": "docs/product/00-vision.md"
+        }
+      ],
+      "note": "the film sources"
+    },
+    {
+      "id": "b098",
+      "lines": "510-515",
+      "type": "listItem",
+      "bytes": 433,
+      "sha256": "fae5102fbcf91a242c92b09132893f782fbba9b852215e8f7eabb9f13a202d59",
+      "class": "cut",
+      "destination": "docs/lineage/inspirations.md",
+      "anchors": [
+        {
+          "text": "Twelve Days",
+          "in": "docs/lineage/inspirations.md"
+        }
+      ],
+      "note": "the context analogy"
+    },
+    {
+      "id": "b099",
+      "lines": "516-520",
+      "type": "listItem",
+      "bytes": 366,
+      "sha256": "bc96c1b1147fa5f40ff129fe2fe6f863fe05d6d57b90bcf7e0e0daa05e08aa8a",
+      "class": "cut",
+      "destination": "docs/lineage/idea-ledger.md",
+      "anchors": [
+        {
+          "text": "eleven chats",
+          "in": "docs/lineage/idea-ledger.md"
+        },
+        {
+          "text": "forty-six images",
+          "in": "docs/lineage/idea-ledger.md"
+        },
+        {
+          "text": "recency bias",
+          "in": "docs/lineage/idea-ledger.md"
+        }
+      ],
+      "note": "the append-only ledger"
+    },
+    {
+      "id": "b100",
+      "lines": "521-523",
+      "type": "listItem",
+      "bytes": 231,
+      "sha256": "d9b8d2889b3e09cc6d7192a4e8401dd807b23b50799413de8b6a8ef603a17abd",
+      "class": "cut",
+      "destination": "docs/product/05-pattern-library.md",
+      "anchors": [
+        {
+          "text": "naive interventionism",
+          "in": "docs/product/05-pattern-library.md"
+        },
+        {
+          "text": "compensating function",
+          "in": "docs/product/05-pattern-library.md"
+        }
+      ],
+      "note": "the mechanic that argues for leaving things alone"
+    },
+    {
+      "id": "b101",
+      "lines": "525-525",
+      "type": "heading",
+      "bytes": 38,
+      "sha256": "88e52ed7816b41da9aa1f0f44c4113095ab0df5c961a15efa0b80f4e8616d66d",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "license"
+      ]
+    },
+    {
+      "id": "b102",
+      "lines": "527-535",
+      "type": "paragraph",
+      "bytes": 632,
+      "sha256": "ddd8142a194382bd346941b9a1f90bd481146917bec8b4791207124aa0a09a4d",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "docs/lineage/inspirations.md",
+        "Names identify sources"
+      ],
+      "note": "no claim of novelty; the register"
+    },
+    {
+      "id": "b103",
+      "lines": "537-550",
+      "type": "paragraph",
+      "bytes": 1008,
+      "sha256": "382aa51d4979cf1f9edb2fefdf7d0c0a552ac565baf85586241faad6ba84d285",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "Apache License 2.0",
+        "Creative Commons Attribution 4.0",
+        "docs/LEGAL.md",
+        {
+          "text": "Developer Certificate of Origin 1.1",
+          "in": "CONTRIBUTING.md"
+        },
+        {
+          "text": "license-surfaces",
+          "in": "CONTRIBUTING.md"
+        },
+        {
+          "text": "private: true",
+          "in": "CONTRIBUTING.md"
+        }
+      ],
+      "note": "the license line; contributor detail already lives in CONTRIBUTING"
+    },
+    {
+      "id": "b104",
+      "lines": "552-552",
+      "type": "heading",
+      "bytes": 26,
+      "sha256": "63509fc32eff9fa8644f4cc0b91404f6e9805404f3968375caf1e11ea3d182e0",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "The repo runs on itself"
+      ]
+    },
+    {
+      "id": "b105",
+      "lines": "554-558",
+      "type": "paragraph",
+      "bytes": 370,
+      "sha256": "49753f64f1634455622d6a0af1852aea8eea313d7043e79e29ca3c9fc724898c",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "A model that implements never verifies its own work"
+      ],
+      "note": "the loop, from the inside"
+    },
+    {
+      "id": "b106",
+      "lines": "560-568",
+      "type": "code",
+      "bytes": 123,
+      "sha256": "b6d044b1140c541afeeca28706a84be1500b4d7f7a89bc9ef40894bc97089b24",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "resume: status",
+        "resume: release close"
+      ],
+      "note": "the resume phrases"
+    },
+    {
+      "id": "b107",
+      "lines": "570-576",
+      "type": "paragraph",
+      "bytes": 541,
+      "sha256": "4e78ba1d29bbcf26f1ffdd1b03b7b1ed5b7853f870f593e4d777c49b74ae75a6",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "append-only control log",
+        "code identity"
+      ],
+      "note": "what the phrase resolves against"
+    },
+    {
+      "id": "b108",
+      "lines": "578-590",
+      "type": "paragraph",
+      "bytes": 1011,
+      "sha256": "687c18f9bfdfad9a864292561878e6b1e35560a3d0ca6aa8a6785e52e8a787f9",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "Driving the car while building it",
+        "G\u00f6del, Escher, Bach",
+        {
+          "text": "effort refusal",
+          "in": "docs/evidence/WO-132/decisions.md"
+        },
+        {
+          "text": "ran at low",
+          "in": "docs/work-orders/WO-019-effort-truth.md"
+        }
+      ],
+      "note": "the honesty paragraph; its receipts stay in the records that hold them"
+    },
+    {
+      "id": "b109",
+      "lines": "592-595",
+      "type": "paragraph",
+      "bytes": 294,
+      "sha256": "b374f901ac8363d45b98a324b3bd38da54bd45d437cf3ebeae85c2c64d3293bb",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "more blueprint than code",
+        "strangler"
+      ],
+      "note": "the ratio"
+    },
+    {
+      "id": "b110",
+      "lines": "597-597",
+      "type": "heading",
+      "bytes": 6,
+      "sha256": "e9bf5677daeefd18fb7550d187810731263a0fa95128ca89a2b306083beb49b8",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "## Map"
+      ]
+    },
+    {
+      "id": "b111",
+      "lines": "599-600",
+      "type": "listItem",
+      "bytes": 101,
+      "sha256": "c83e5e9ba90fffe1fbf56007f78311c0c3ef4e7a3227bc48d0947578b47da6b4",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "packages/kernel/"
+      ],
+      "note": "map"
+    },
+    {
+      "id": "b112",
+      "lines": "601-602",
+      "type": "listItem",
+      "bytes": 97,
+      "sha256": "a7238685d3aa98ea2209229a07f991796640ec5a13cea59e46b0e64c768914e1",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "packages/skeleton/"
+      ],
+      "note": "map"
+    },
+    {
+      "id": "b113",
+      "lines": "603-604",
+      "type": "listItem",
+      "bytes": 157,
+      "sha256": "d44206dd7bee8b146be0f1132137b5202e6e964c431034217075bae77bc754c7",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "packages/console/"
+      ],
+      "note": "map; the board is no longer read-only"
+    },
+    {
+      "id": "b114",
+      "lines": "605-606",
+      "type": "listItem",
+      "bytes": 115,
+      "sha256": "cf4b1881710be88f68e672c04c87958ad834cdb8acd50a2a69c7a531438e0078",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "scripts/"
+      ],
+      "note": "map"
+    },
+    {
+      "id": "b115",
+      "lines": "607-610",
+      "type": "listItem",
+      "bytes": 290,
+      "sha256": "f71ef0a841b0e41addcc3657b648b6846d4b6a35d8fa8d3b12af9078c43769e2",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "docs/product/"
+      ],
+      "note": "map"
+    },
+    {
+      "id": "b116",
+      "lines": "611-612",
+      "type": "listItem",
+      "bytes": 109,
+      "sha256": "5612d442505f38bf5510ae1b2048a7f78a1f054e84c84e52b144193ea19f7f59",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "docs/work-orders/"
+      ],
+      "note": "map"
+    },
+    {
+      "id": "b117",
+      "lines": "613-615",
+      "type": "listItem",
+      "bytes": 141,
+      "sha256": "32fe7e765992d3049f3c2d2cfb99f1be19ce7a5d7065a25a99f71e2f40f60d6f",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "docs/verifications/",
+        "docs/final-reviews/"
+      ],
+      "note": "map"
+    },
+    {
+      "id": "b118",
+      "lines": "616-617",
+      "type": "listItem",
+      "bytes": 97,
+      "sha256": "287edc59c2ab0157b3f15277f640868e950962e4bff2db4e14deb17a45602220",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "docs/control/"
+      ],
+      "note": "map"
+    },
+    {
+      "id": "b119",
+      "lines": "618-619",
+      "type": "listItem",
+      "bytes": 102,
+      "sha256": "ed6c82e9482fe3a5baae710c39c123ae040940188be95c455b7d28c4f08ae107",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "docs/lineage/"
+      ],
+      "note": "map"
+    },
+    {
+      "id": "b120",
+      "lines": "620-622",
+      "type": "listItem",
+      "bytes": 178,
+      "sha256": "85db55b0e963d829963f110d899796bf427434f0d551a4303b36052e99dc7aeb",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "docs/LEGAL.md"
+      ],
+      "note": "map; the decision's date leaves"
+    },
+    {
+      "id": "b121",
+      "lines": "623-624",
+      "type": "listItem",
+      "bytes": 177,
+      "sha256": "99e323b46970ca7a1ed6eda7f285488d8caf85743a862046dffa885870534840",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "docs/decisions/"
+      ],
+      "note": "map"
+    },
+    {
+      "id": "b122",
+      "lines": "625-626",
+      "type": "listItem",
+      "bytes": 90,
+      "sha256": "59560ca50cce1174726ef9d8bb37184f089d714c052efa456dbd75ec5c4b4229",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "docs/releases/"
+      ],
+      "note": "map"
+    },
+    {
+      "id": "b123",
+      "lines": "627-629",
+      "type": "listItem",
+      "bytes": 162,
+      "sha256": "c2776615e52c268470190aa0073197cc30928a243d4f13dada6fef2c5a311ca7",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "docs/publication/"
+      ],
+      "note": "map"
+    },
+    {
+      "id": "b124",
+      "lines": "630-631",
+      "type": "listItem",
+      "bytes": 102,
+      "sha256": "1fbe41ee760ad5b36a779d48516e4dbc5dd8a87dc29b14c68c85d5ca07937c52",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "corpus/"
+      ],
+      "note": "map"
+    },
+    {
+      "id": "b125",
+      "lines": "632-632",
+      "type": "listItem",
+      "bytes": 72,
+      "sha256": "6bcaa0a80a226431dd01a53b8dac8404b17b8219bbfbc22053e57a8d78a82059",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "docs/intake/"
+      ],
+      "note": "map"
+    },
+    {
+      "id": "b126",
+      "lines": "634-638",
+      "type": "paragraph",
+      "bytes": 300,
+      "sha256": "8bf34a252a398eb89014c00d88c62e3c305549f95deb54be1671b57239df5b26",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "docs/product/00-vision.md",
+        "docs/product/02-domain-model.md",
+        "docs/product/03-architecture.md",
+        "packages/skeleton/README.md"
+      ],
+      "note": "where to read next"
+    },
+    {
+      "id": "b127",
+      "lines": "640-640",
+      "type": "heading",
+      "bytes": 34,
+      "sha256": "68b3433eac299a63c3806d5826f46e32bd01815c5f51c7fa2b2d172c1d576fec",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "One boundary that does not move"
+      ]
+    },
+    {
+      "id": "b128",
+      "lines": "642-649",
+      "type": "paragraph",
+      "bytes": 597,
+      "sha256": "e8e8dd7130dfcc622a6343a3a41a43cf58f34506eb4aa61f30f7c26362d2d219",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "clean-room",
+        "docs/intake/"
+      ],
+      "note": "the boundary"
+    },
+    {
+      "id": "b129",
+      "lines": "651-651",
+      "type": "heading",
+      "bytes": 15,
+      "sha256": "240da45323ea7aa1e19dfae68ff81fa220aa5efa1887b500d25fc5aa3c6f186c",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "Why \"DotLn\"?"
+      ]
+    },
+    {
+      "id": "b130",
+      "lines": "653-657",
+      "type": "paragraph",
+      "bytes": 385,
+      "sha256": "a0b492233a1ed931bb81168163de275e2715f1b86add4c21c1513abce54e6683",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "Days of the Natural Logarithm",
+        "log-odds"
+      ],
+      "note": "the name"
+    },
+    {
+      "id": "b131",
+      "lines": "659-661",
+      "type": "paragraph",
+      "bytes": 188,
+      "sha256": "109796b13fd0c3ca5ed665099d6ec0e4c44ebc4c88c65adf96b3ba270aa6a55b",
+      "class": "keep",
+      "destination": "README.md",
+      "anchors": [
+        "early on purpose"
+      ],
+      "note": "the close"
+    }
+  ]
+}

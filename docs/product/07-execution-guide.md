@@ -1561,10 +1561,22 @@ candidate belongs in the planning map (operator direction, 2026-09-25; WO-085
 binds `scripts/docs-check.mjs` in `npm run test:docs` to the byte ceilings
 in `docs/control/doc-ceilings.json`). Record the affected surfaces
 and evidence in the existing work-order outcome or breakout receipt; do not
-create a new ceremony or rewrite unrelated historical artifacts. A README “What runs today”
-write-back rewrites the existing release block rather than appending another
-release sentence, keeping it within fifteen sentences and moving per-order
-detail into release notes ([WO-068-D004](../evidence/WO-068/decisions.md#wo-068-d004)).
+create a new ceremony or rewrite unrelated historical artifacts. The front
+page, `README.md`, is edited only by an order whose leading header carries
+`**Front page:** README.md` on main, within the “What runs today” line budget
+that `docs/control/front-page.json` records on main: the section is named once
+among the headings, the page holds no raw HTML outside its marker lines and no
+receipt outside its generated blocks, and each counted line is one whole,
+unwrapped sentence of Markdown prose; a new bypass or wrongly refused sentence
+becomes a row of `scripts/fixtures/front-page-corpus.json` before the check
+changes, and the front-page order applies the operator's recorded judgment,
+asking only about a choice no record covers.
+The release block between its markers holds only the version line
+`release prepare` writes. Any other order proposes a capability the page should
+mention as one sentence in its evidence README, and when a planning pass finds
+two such proposals waiting, it files a front-page order
+([WO-189-D001](../evidence/WO-189/decisions.md#wo-189-d001),
+[closed judgment](../evidence/WO-189/decisions.md#wo-189-d021--repair-close-the-surfaces-where-github-and-the-parser-disagree-and-judge-each-line-twice)).
 
 Apply the [corpus maintenance constraint](03-architecture.md#corpus-policy)
 when choosing that surface: reuse an existing outcome or receipt, link canonical

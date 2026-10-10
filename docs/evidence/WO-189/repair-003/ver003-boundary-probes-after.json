@@ -1,0 +1,339 @@
+{
+  "cutoff": "2026-10-10T20:24:59.314Z",
+  "lineBudget": 11,
+  "mismatches": [],
+  "recorded": [
+    {
+      "name": "inline math hides twelve sentences",
+      "refused": true,
+      "refusedAfterFormat": true
+    },
+    {
+      "name": "thirteen sentences joined without a space",
+      "refused": true,
+      "refusedAfterFormat": true
+    },
+    {
+      "name": "thirteen sentences joined by zero-width spaces",
+      "refused": true,
+      "refusedAfterFormat": true
+    },
+    {
+      "name": "thirteen sentences ending in an ellipsis character",
+      "refused": true,
+      "refusedAfterFormat": true
+    },
+    {
+      "name": "thirteen sentences with fullwidth full stops",
+      "refused": true,
+      "refusedAfterFormat": true
+    },
+    {
+      "name": "soft-hyphen duplicate heading",
+      "refused": true,
+      "refusedAfterFormat": true
+    },
+    {
+      "name": "zero-width duplicate heading",
+      "refused": true,
+      "refusedAfterFormat": true
+    }
+  ],
+  "runs": [
+    {
+      "name": "control: unchanged",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "control: exact budget",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "control: styled single sentence",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "liquid output tag hides twelve sentences",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a template tag; escape its first brace with a backslash or put it in inline code",
+        "README.md:10: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds a template tag; escape its first brace with a backslash or put it in inline code: \"Capability 1 runs. {{ Extra capability 1…\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a template tag; escape its first brace with a backslash or put it in inline code",
+        "README.md:12: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds a template tag; escape its first brace with a backslash or put it in inline code: \"Capability 1 runs. {{ Extra capability 1…\""
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": [
+        {
+          "type": "liquidNode",
+          "value": "{{ Extra capability 1 runs. Extra capability 2 runs. Extra capability 3 runs. Extra capability 4 runs. Extra capability 5 runs. Extra capability 6 runs. Extra capability 7 runs. Extra capability 8 runs. Extra capability 9 runs. Extra capability 10 runs. Extra capability 11 runs. Extra capability 12 runs. }}"
+        }
+      ]
+    },
+    {
+      "name": "liquid tag hides twelve sentences",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a template tag; escape its first brace with a backslash or put it in inline code",
+        "README.md:10: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds a template tag; escape its first brace with a backslash or put it in inline code: \"Capability 1 runs. {% Extra capability 1…\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a template tag; escape its first brace with a backslash or put it in inline code",
+        "README.md:12: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds a template tag; escape its first brace with a backslash or put it in inline code: \"Capability 1 runs. {% Extra capability 1…\""
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": [
+        {
+          "type": "liquidNode",
+          "value": "{% Extra capability 1 runs. Extra capability 2 runs. Extra capability 3 runs. Extra capability 4 runs. Extra capability 5 runs. Extra capability 6 runs. Extra capability 7 runs. Extra capability 8 runs. Extra capability 9 runs. Extra capability 10 runs. Extra capability 11 runs. Extra capability 12 runs. %}"
+        }
+      ]
+    },
+    {
+      "name": "wiki link hides twelve sentences",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a wiki link; escape its first bracket with a backslash or write a Markdown link",
+        "README.md:10: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds a wiki link; escape its first bracket with a backslash or write a Markdown link: \"Capability 1 runs. [[Extra capability 1 …\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a wiki link; escape its first bracket with a backslash or write a Markdown link",
+        "README.md:12: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds a wiki link; escape its first bracket with a backslash or write a Markdown link: \"Capability 1 runs. [[Extra capability 1 …\""
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": [
+        {
+          "type": "wikiLink",
+          "value": "Extra capability 1 runs. Extra capability 2 runs. Extra capability 3 runs. Extra capability 4 runs. Extra capability 5 runs. Extra capability 6 runs. Extra capability 7 runs. Extra capability 8 runs. Extra capability 9 runs. Extra capability 10 runs. Extra capability 11 runs. Extra capability 12 runs."
+        }
+      ]
+    },
+    {
+      "name": "inline math hides twelve sentences",
+      "expectation": null,
+      "failures": [
+        "README.md:10: inline math; escape each dollar sign with a backslash or put the expression in inline code",
+        "README.md:10: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds inline math; escape each dollar sign with a backslash or put the expression in inline code: \"Capability 1 runs. $Extra capability 1 r…\""
+      ],
+      "formattedFailures": [
+        "README.md:12: inline math; escape each dollar sign with a backslash or put the expression in inline code",
+        "README.md:12: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds inline math; escape each dollar sign with a backslash or put the expression in inline code: \"Capability 1 runs. $Extra capability 1 r…\""
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": [
+        {
+          "type": "inlineMath",
+          "value": "Extra capability 1 runs. Extra capability 2 runs. Extra capability 3 runs. Extra capability 4 runs. Extra capability 5 runs. Extra capability 6 runs. Extra capability 7 runs. Extra capability 8 runs. Extra capability 9 runs. Extra capability 10 runs. Extra capability 11 runs. Extra capability 12 runs."
+        }
+      ]
+    },
+    {
+      "name": "thirteen sentences joined without a space",
+      "expectation": null,
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence. A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"Extra capability 1 runs.Extra capability…\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence. A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"Extra capability 1 runs.Extra capability…\""
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "thirteen sentences joined by zero-width spaces",
+      "expectation": null,
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence; the next starts at \"Extra capability 2 runs. Extra capabilit…\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"Extra capability 1 runs.​Extra capabilit…\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence; the next starts at \"Extra capability 2 runs. Extra capabilit…\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"Extra capability 1 runs.​Extra capabilit…\""
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "thirteen sentences ending in an ellipsis character",
+      "expectation": null,
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence; the next starts at \"Extra capability 2 runs… Extra capabilit…\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"Extra capability 1 runs… Extra capabilit…\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence; the next starts at \"Extra capability 2 runs… Extra capabilit…\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"Extra capability 1 runs… Extra capabilit…\""
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "thirteen sentences with fullwidth full stops",
+      "expectation": null,
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence; the next starts at \"Extra capability 2 runs． Extra capabilit…\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"Extra capability 1 runs． Extra capabilit…\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence; the next starts at \"Extra capability 2 runs． Extra capabilit…\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"Extra capability 1 runs． Extra capabilit…\""
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "control: nbsp entity join",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence; the next starts at \"Extra capability 2 runs. Extra capabilit…\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"Extra capability 1 runs.&nbsp;Extra capa…\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence; the next starts at \"Extra capability 2 runs. Extra capabilit…\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"Extra capability 1 runs.&nbsp;Extra capa…\""
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "control: space entity join",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence; the next starts at \"Extra capability 2 runs. Extra capabilit…\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"Extra capability 1 runs.&#32;Extra capab…\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence; the next starts at \"Extra capability 2 runs. Extra capabilit…\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"Extra capability 1 runs.&#32;Extra capab…\""
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "control: image alt sentences",
+      "expectation": true,
+      "failures": [
+        "README.md:10: missing file: x.png",
+        "README.md:10: a \"What runs today\" line holds more than one sentence; the next starts at \"Extra capability 2 runs. Extra capabilit…\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"![Extra capability 1 runs. Extra capabil…\""
+      ],
+      "formattedFailures": [
+        "README.md:12: missing file: x.png",
+        "README.md:12: a \"What runs today\" line holds more than one sentence; the next starts at \"Extra capability 2 runs. Extra capabilit…\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"![Extra capability 1 runs. Extra capabil…\""
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "control: footnote reference join",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds a footnote, whose note renders at the page foot outside the count; fold the note into the sentence: \"Extra capability runs.[^1] Last capabili…\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds a footnote, whose note renders at the page foot outside the count; fold the note into the sentence: \"Extra capability runs.[^1] Last capabili…\""
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "HTML level-two heading under another section",
+      "expectation": true,
+      "failures": [
+        "README.md:25: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"<h2>What runs today</h2>\""
+      ],
+      "formattedFailures": [
+        "README.md:27: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"<h2>What runs today</h2>\""
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "control: HTML heading directly after the closing marker",
+      "expectation": true,
+      "failures": [
+        "README.md:21: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"<h2>What runs today</h2>\"",
+        "README.md:21: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; move each sentence between them, where the budget counts it, or end the section with a Markdown heading",
+        "README.md:23-34: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; move each sentence between them, where the budget counts it, or end the section with a Markdown heading"
+      ],
+      "formattedFailures": [
+        "README.md:23: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"<h2>What runs today</h2>\"",
+        "README.md:23: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; move each sentence between them, where the budget counts it, or end the section with a Markdown heading",
+        "README.md:25-36: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; move each sentence between them, where the budget counts it, or end the section with a Markdown heading"
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "control: setext duplicate under another section",
+      "expectation": true,
+      "failures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "formattedFailures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "control: nbsp duplicate heading",
+      "expectation": true,
+      "failures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "formattedFailures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "soft-hyphen duplicate heading",
+      "expectation": null,
+      "failures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "formattedFailures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "zero-width duplicate heading",
+      "expectation": null,
+      "failures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "formattedFailures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+✔ the front page changes outside its generated blocks only through an order whose header declared it at the merge base (507.711417ms)
+✔ the control record that governs is the merge base's, so a branch cannot switch the guard off (440.248042ms)
+✔ What runs today keeps one sentence per line within its recorded budget, and the page names no receipt (803.724292ms)
+✔ What runs today is one range from its heading to the next heading: no sentence escapes the count and the markers cannot leave the heading (524.414292ms)
+✔ What runs today judges rendered sentences across inline Markdown, before and after formatting (2061.537708ms)
+✔ What runs today uses rendered heading identity and parsed section boundaries for every Markdown spelling (2150.224959ms)
+✔ a page whose base carries no markers is being brought under guard: shape and budget are judged, the change is not compared (272.526375ms)
+✔ the leading header's Front page field is read as typed data, never from criteria prose (0.52975ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6861.883917

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "page": "README.md",
+  "policy": "docs/product/07-execution-guide.md#documentation-freshness-and-ownership",
+  "generatedBlocks": [
+    {
+      "start": "<!-- DOTLN-RELEASE-BEGIN -->",
+      "end": "<!-- DOTLN-RELEASE-END -->",
+      "writer": "npm run release -- prepare"
+    }
+  ],
+  "whatRunsToday": {
+    "start": "<!-- dotln-what-runs:start -->",
+    "end": "<!-- dotln-what-runs:end -->",
+    "lineBudget": 11,
+    "candidate": "docs/evidence/WO-189/candidate-1200.md",
+    "decision": "docs/evidence/WO-189/decisions.md#wo-189-d013--repair-what-runs-today-is-judged-as-one-range"
+  }
+}

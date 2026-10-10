@@ -1,0 +1,27 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+✔ release preparation records a collision once, as the order's decision, and touches no product document (97.362042ms)
+✔ release preparation appends the next decision id after existing entries (43.189291ms)
+✔ under --integration a collision leaves its record to the integration decision (43.697208ms)
+✔ a conflicted decisions record refuses with its path and writes nothing (554.305667ms)
+✔ a placeholder heading is assigned the next version and its decision keeps the base (109.711167ms)
+✔ the release block becomes the one generated line, and prose beside or below the claim refuses before any write (169.644ms)
+✔ release preparation follows the existing classification and skips an available target (219.790375ms)
+✔ release preparation uses only the selected order's open state (960.245833ms)
+✔ release preparation refuses malformed or ambiguous inputs before writing (449.06125ms)
+✔ a decisions record is never created outside the repository (51.415167ms)
+✔ release preparation preserves prerelease examples in the heading and outside the block when replacing the strict target (42.7405ms)
+✔ release preparation refuses wrong worktrees, escaped sources, and stale plans (98.260875ms)
+✔ release preparation recovers prior source bytes after a write failure (85.396542ms)
+✔ a lone conflict marker line is an authored conflict; a setext underline alone is not (475.275625ms)
+✔ a decisions record behind a symlinked evidence directory inside the repository is refused in every mode (87.445208ms)
+✔ prepare --integration is refused once the stub is written or a saved outcome waits (20.180375ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3570.002625
+bounded-result {"name":"bounded-probe","durationMs":3633,"slowestCases":[{"name":"bounded-probe","durationMs":3633,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":44619728,"peakRssBytes":141705216,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-10T22:20:48.357Z","finishedAt":"2026-10-10T22:20:51.990Z","exitCode":0,"executed":true}

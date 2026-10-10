@@ -42,6 +42,7 @@ import {
   applyReleasePreparation,
   integrationPreparationRefusal,
   planReleasePreparation,
+  releaseClaimLine,
 } from "./lib/release-preparation.mjs";
 import { licenseSurfaceRules } from "./license-surfaces.mjs";
 import {
@@ -559,7 +560,7 @@ const releaseBlockRule = (
   if (malformedMarker >= 0) {
     return {
       pass: false,
-      line: `FAIL release-block: observed malformed release marker at README.md:${malformedMarker + 1}; expected exact marker lines and exactly one ordered block containing exactly one strict version ${expected} ${context}`,
+      line: `FAIL release-block: observed malformed release marker at README.md:${malformedMarker + 1}; expected exact marker lines and exactly one ordered block containing exactly the generated version line for ${expected} ${context}`,
     };
   }
   const begins = lines
@@ -571,15 +572,32 @@ const releaseBlockRule = (
   if (begins.length !== 1 || ends.length !== 1 || begins[0] >= ends[0]) {
     return {
       pass: false,
-      line: `FAIL release-block: observed ${begins.length} begin marker(s), ${ends.length} end marker(s), order ${begins[0] < ends[0] ? "begin-before-end" : "invalid"}; expected exactly one ordered block containing exactly one strict version ${expected} ${context}`,
+      line: `FAIL release-block: observed ${begins.length} begin marker(s), ${ends.length} end marker(s), order ${begins[0] < ends[0] ? "begin-before-end" : "invalid"}; expected exactly one ordered block containing exactly the generated version line for ${expected} ${context}`,
     };
   }
-  const block = lines.slice(begins[0] + 1, ends[0]).join("\n");
-  const versions = strictVersionsIn(block);
+  // Between the markers stands the one line release preparation writes and
+  // nothing else, so no order can append a sentence to the block.
+  const content = lines
+    .slice(begins[0] + 1, ends[0])
+    .filter((line) => line.trim());
+  const claim = releaseClaimLine(expected);
+  if (content.length !== 1) {
+    return {
+      pass: false,
+      line: `FAIL release-block: observed ${content.length === 0 ? "no line" : `${content.length} non-empty lines`} between the markers; expected exactly the generated line ${JSON.stringify(claim)}; move other text outside the markers and rerun npm run release -- prepare ${context}`,
+    };
+  }
+  const versions = strictVersionsIn(content[0]);
   if (versions.length !== 1 || versions[0] !== expected) {
     return {
       pass: false,
       line: `FAIL release-block: observed ${versions.length === 0 ? "no strict version" : versions.join(", ")}; expected exactly one ${expected} ${context}`,
+    };
+  }
+  if (content[0] !== claim) {
+    return {
+      pass: false,
+      line: `FAIL release-block: observed line ${JSON.stringify(content[0])}; expected exactly the generated line ${JSON.stringify(claim)}; move other text outside the markers and rerun npm run release -- prepare ${context}`,
     };
   }
   return {
@@ -2994,11 +3012,12 @@ const main = async () => {
     // A failed output then leaves the original collision inputs for retry;
     // the plan's own writer restores any partial core edit (WO-086).
     const written = [...applyReleasePreparation(plan), ...ancillary];
-    const outcome = !plan.edits.length
-      ? `${state.workOrderId} target ${plan.target} remains current.`
-      : plan.assigned
-        ? `Assigned ${state.workOrderId}: ${plan.target}, the next ${plan.classification} above the observed release baseline ${plan.latest}.`
-        : `Retimed ${state.workOrderId}: ${plan.previous} → ${plan.target} above the observed release baseline ${plan.latest}.`;
+    const outcome =
+      plan.target === plan.previous
+        ? `${state.workOrderId} target ${plan.target} remains current.${plan.edits.length ? " The README release block is rewritten as its generated line." : ""}`
+        : plan.assigned
+          ? `Assigned ${state.workOrderId}: ${plan.target}, the next ${plan.classification} above the observed release baseline ${plan.latest}.`
+          : `Retimed ${state.workOrderId}: ${plan.previous} → ${plan.target} above the observed release baseline ${plan.latest}.`;
     writeOutput(
       `${outcome}\n${plan.decision ? `Recorded ${plan.decision} in ${relative(toolRoot, plan.edits.at(-1).path)}.\n` : ""}${written.length ? `Files changed:\n${written.map((path) => `  ${relative(toolRoot, path)}`).join("\n")}` : "no files changed."}\n${snapshotLine}Tag observation: ${localOnly ? "local snapshot only" : "origin"}.\n`,
     );

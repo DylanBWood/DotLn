@@ -50,7 +50,7 @@ printf '%s\n' \
   '' \
   '<!-- DOTLN-RELEASE-BEGIN -->' \
   '' \
-  'This source is DotLn `v0.2.1`.' \
+  'This source prepares DotLn `v0.2.1`.' \
   '<!-- DOTLN-RELEASE-END -->' >"$main/README.md"
 printf '{"private":true,"scripts":{"release":"node scripts/release.mjs"}}\n' >"$main/package.json"
 printf '{"name":"@dotln/kernel","version":"0.1.0"}\n' >"$main/packages/kernel/package.json"
@@ -204,7 +204,7 @@ printf '%s\n' \
   '' \
   '<!-- DOTLN-RELEASE-BEGIN -->' \
   '' \
-  'This source is DotLn `v0.2.0`.' \
+  'This source prepares DotLn `v0.2.0`.' \
   '<!-- DOTLN-RELEASE-END -->' >"$subject/README.md"
 git -C "$subject" add README.md
 git -C "$subject" commit --amend --no-edit >/dev/null
@@ -220,7 +220,7 @@ printf '%s\n' \
   '' \
   '<!-- DOTLN-RELEASE-BEGIN -->' \
   '' \
-  'This source is DotLn `v0.2.1`.' \
+  'This source prepares DotLn `v0.2.1`.' \
   '<!-- DOTLN-RELEASE-END -->' >"$subject/README.md"
 git -C "$subject" add README.md
 git -C "$subject" commit --amend --no-edit >/dev/null

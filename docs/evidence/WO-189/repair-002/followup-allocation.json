@@ -1,0 +1,9 @@
+{
+  "expectedRevision": "d575d9dbed5a32b0431c6d674d9ccc47145c8a76a141c45d24266f1f2888959d",
+  "id": "FUP-4e6c063a2519487e",
+  "sourceRevision": 2,
+  "status": "allocated",
+  "reason": "VER-002 F1 is repaired in the active WO-189 by D017; the unchanged seventeen-case verifier probe and the expanded full-checkDocs fixtures pass. The current repair completes its required gates and then returns to independent verification.",
+  "reopenWhen": "Independent verification finds a formatting-stable Markdown sentence or heading bypass at the repaired subject, or a valid one-sentence line is refused.",
+  "targets": ["WO-189"]
+}

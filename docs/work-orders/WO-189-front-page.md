@@ -1,4 +1,4 @@
-# WO-189 — The front page is rewritten once from what it already says well, chosen by the operator from three candidates, and then guarded so that an order cannot append to it (version assigned at activation)
+# WO-189 — The front page is rewritten once from what it already says well, chosen by the operator from three candidates, and then guarded so that an order cannot append to it (v0.74.1)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

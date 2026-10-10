@@ -1,0 +1,64 @@
+{
+  "cutoff": "2026-10-10T16:37:55.742Z",
+  "runs": [
+    {
+      "command": [
+        "node",
+        "docs/evidence/WO-189/inventory-check.mjs"
+      ],
+      "exitCode": 0,
+      "durationMs": 138,
+      "output": "inventory: 131 rows over 131 blocks at c6769090; keep 90 rows/22961 bytes, cut 40 rows/13224 bytes, move 1 rows/2638 bytes; page README.md: 13125 bytes, What runs today 9 sentences of 11\nPASS inventory check: 0 failures\n",
+      "error": ""
+    },
+    {
+      "command": [
+        "node",
+        "docs/evidence/WO-189/inventory-check.mjs",
+        "--readme",
+        "docs/evidence/WO-189/candidate-2000.md"
+      ],
+      "exitCode": 0,
+      "durationMs": 134,
+      "output": "inventory: 131 rows over 131 blocks at c6769090; keep 90 rows/22961 bytes, cut 40 rows/13224 bytes, move 1 rows/2638 bytes; page docs/evidence/WO-189/candidate-2000.md: 19245 bytes, What runs today 14 sentences of 11\nPASS inventory check: 0 failures\n",
+      "error": ""
+    },
+    {
+      "command": [
+        "node",
+        "docs/evidence/WO-189/inventory-check.mjs",
+        "--readme",
+        "docs/evidence/WO-189/candidate-3000.md"
+      ],
+      "exitCode": 0,
+      "durationMs": 139,
+      "output": "inventory: 131 rows over 131 blocks at c6769090; keep 90 rows/22961 bytes, cut 40 rows/13224 bytes, move 1 rows/2638 bytes; page docs/evidence/WO-189/candidate-3000.md: 27317 bytes, What runs today 14 sentences of 11\nPASS inventory check: 0 failures\n",
+      "error": ""
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "publication:check"
+      ],
+      "exitCode": 0,
+      "durationMs": 448,
+      "output": "\n> publication:check\n> node scripts/check-publication.mjs\n\nPASS index coverage: 254/254 product headings indexed\nPASS dual-voice links: 3 identical claim links per voice\nCURRENT everyday-ai-user-toc.md: 29 linked source sections match\nCURRENT software-engineer-toc.md: 45 linked source sections match\nPASS publication bootstrap checks\n",
+      "error": ""
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "release",
+        "--",
+        "check-surfaces",
+        "--local"
+      ],
+      "exitCode": 0,
+      "durationMs": 5163,
+      "output": "\n> release\n> node scripts/release.mjs check-surfaces --local\n\nTag observation: local ancestors of HEAD only; publication checks origin.\nPASS release-block: observed v0.74.1; expected v0.74.1 (work-order target v0.74.1; latest local tag v0.73.1)\nPASS component-version @dotln/beacons: src unchanged; observed 0.1.1; previous v0.73.1 0.1.1; expected no bump required\nPASS component-version @dotln/browser-evidence: src unchanged; observed 0.1.0; previous v0.73.1 0.1.0; expected no bump required\nPASS component-version @dotln/compiler: src unchanged; observed 0.26.0; previous v0.73.1 0.26.0; expected no bump required\nPASS component-version @dotln/console: src unchanged; observed 0.4.2; previous v0.73.1 0.4.2; expected no bump required\nPASS component-version @dotln/kernel: src unchanged; observed 0.6.0; previous v0.73.1 0.6.0; expected no bump required\nPASS component-version @dotln/skeleton: src unchanged; observed 0.57.1; previous v0.73.1 0.57.1; expected no bump required\nPASS workspace-pin @dotln/console -> @dotln/compiler: observed 0.26.0; expected exact workspace version 0.26.0\nPASS workspace-pin @dotln/console -> @dotln/kernel: observed 0.6.0; expected exact workspace version 0.6.0\nPASS workspace-pin @dotln/console -> @dotln/skeleton: observed 0.57.1; expected exact workspace version 0.57.1\nPASS workspace-pin @dotln/skeleton -> @dotln/beacons: observed 0.1.1; expected exact workspace version 0.1.1\nPASS workspace-pin @dotln/skeleton -> @dotln/compiler: observed 0.26.0; expected exact workspace version 0.26.0\nPASS workspace-pin @dotln/skeleton -> @dotln/kernel: observed 0.6.0; expected exact workspace version 0.6.0\nPASS github-body-profile: observed docs/final-reviews/WO-189/PR.md; expected one physical line per prose paragraph or list-item paragraph\nPASS license-surfaces package.json workspaces: observed [\"packages/*\"]; expected [\"packages/*\"]\nPASS license-surfaces workspace count: observed 6; expected at least one\nPASS license-surfaces package.json license: observed \"Apache-2.0\"; expected \"Apache-2.0\"\nPASS license-surfaces package.json private: observed true; expected true\nPASS license-surfaces package.json prepublishOnly: observed \"node -e \\\"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\\\"\"; expected \"node -e \\\"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\\\"\"\nPASS license-surfaces package.json publishConfig: observed missing; expected missing\nPASS license-surfaces packages/beacons/package.json license: observed \"Apache-2.0\"; expected \"Apache-2.0\"\nPASS license-surfaces packages/beacons/package.json private: observed true; expected true\nPASS license-surfaces packages/beacons/package.json prepublishOnly: observed \"node -e \\\"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\\\"\"; expected \"node -e \\\"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\\\"\"\nPASS license-surfaces packages/beacons/package.json publishConfig: observed missing; expected missing\nPASS license-surfaces packages/browser-evidence/package.json license: observed \"Apache-2.0\"; expected \"Apache-2.0\"\nPASS license-surfaces packages/browser-evidence/package.json private: observed true; expected true\nPASS license-surfaces packages/browser-evidence/package.json prepublishOnly: observed \"node -e \\\"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\\\"\"; expected \"node -e \\\"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\\\"\"\nPASS license-surfaces packages/browser-evidence/package.json publishConfig: observed missing; expected missing\nPASS license-surfaces packages/compiler/package.json license: observed \"Apache-2.0\"; expected \"Apache-2.0\"\nPASS license-surfaces packages/compiler/package.json private: observed true; expected true\nPASS license-surfaces packages/compiler/package.json prepublishOnly: observed \"node -e \\\"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\\\"\"; expected \"node -e \\\"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\\\"\"\nPASS license-surfaces packages/compiler/package.json publishConfig: observed missing; expected missing\nPASS license-surfaces packages/console/package.json license: observed \"Apache-2.0\"; expected \"Apache-2.0\"\nPASS license-surfaces packages/console/package.json private: observed true; expected true\nPASS license-surfaces packages/console/package.json prepublishOnly: observed \"node -e \\\"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\\\"\"; expected \"node -e \\\"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\\\"\"\nPASS license-surfaces packages/console/package.json publishConfig: observed missing; expected missing\nPASS license-surfaces packages/kernel/package.json license: observed \"Apache-2.0\"; expected \"Apache-2.0\"\nPASS license-surfaces packages/kernel/package.json private: observed true; expected true\nPASS license-surfaces packages/kernel/package.json prepublishOnly: observed \"node -e \\\"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\\\"\"; expected \"node -e \\\"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\\\"\"\nPASS license-surfaces packages/kernel/package.json publishConfig: observed missing; expected missing\nPASS license-surfaces packages/skeleton/package.json license: observed \"Apache-2.0\"; expected \"Apache-2.0\"\nPASS license-surfaces packages/skeleton/package.json private: observed true; expected true\nPASS license-surfaces packages/skeleton/package.json prepublishOnly: observed \"node -e \\\"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\\\"\"; expected \"node -e \\\"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\\\"\"\nPASS license-surfaces packages/skeleton/package.json publishConfig: observed missing; expected missing\nPASS license-surfaces LICENSE: observed sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30; expected sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30\nPASS license-surfaces LICENSE-docs: observed sha256:9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411; expected sha256:9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411\nPASS license-surfaces NOTICE: observed sha256:645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c; expected sha256:645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c\nPASS license-surfaces docs/LEGAL.md LICENSE pin: observed cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30; expected cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30\nPASS license-surfaces docs/LEGAL.md LICENSE-docs pin: observed 9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411; expected 9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411\nPASS license-surfaces docs/LEGAL.md NOTICE pin: observed 645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c; expected 645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c\nPASS license-surfaces package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED\nPASS license-surfaces packages/beacons/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED\nPASS license-surfaces packages/browser-evidence/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED\nPASS license-surfaces packages/compiler/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED\nPASS license-surfaces packages/console/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED\nPASS license-surfaces packages/kernel/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED\nPASS license-surfaces packages/skeleton/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED\n",
+      "error": ""
+    }
+  ]
+}

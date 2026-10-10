@@ -1,0 +1,166 @@
+{
+  "launch": {
+    "command": "claude",
+    "args": [
+      "-p",
+      "--tools",
+      "",
+      "--setting-sources",
+      "project",
+      "--no-session-persistence",
+      "--output-format",
+      "json",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "xhigh",
+      "--max-budget-usd",
+      "3",
+      "--system-prompt",
+      "You are scoring a reader's answers about a software project's front page against… (756 chars)",
+      "--json-schema",
+      "{\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"required\": [\"scores\"],… (558 chars)"
+    ],
+    "cwd": "/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln/462d95276846dea799fb9bf2c624e6786854ad13a66d4670c335f5acfbfa8a7e/scratch/dotln-scorer-TIMJVl",
+    "startedAt": "2026-10-10T04:13:26.121Z",
+    "finishedAt": "2026-10-10T04:13:52.538Z",
+    "model": "claude-opus-5-5",
+    "effort": "xhigh",
+    "effortSource": "launch flag --effort; the CLI reports no effective-effort readback"
+  },
+  "status": 0,
+  "stderr": "",
+  "output": {
+    "duration_api_ms": 25368,
+    "stop_reason": "tool_use",
+    "session_id": "231e2c81-299e-4216-91c5-7e1c779a96b9",
+    "total_cost_usd": 0.09305959999999999,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 4458,
+      "cache_read_input_tokens": 3138,
+      "output_tokens": 2838,
+      "output_tokens_details": {
+        "thinking_tokens": 2194
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4458,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 2838,
+          "cache_read_input_tokens": 3138,
+          "cache_creation_input_tokens": 4458,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 4458
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-opus-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 2838,
+        "cacheReadInputTokens": 3138,
+        "cacheCreationInputTokens": 4458,
+        "webSearchRequests": 0,
+        "costUSD": 0.09305959999999999,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 2194,
+        "canonicalModel": "claude-opus-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"scores\":[{\"id\":\"q1\",\"score\":2,\"reason\":\"The answer has fact 1 (a local-first, model-agnostic compiler and runtime for human judgment) and fact 2 (an agentic platform and shared base, not an agent, harness or orchestration layer), and one quoted line supports each.\"},{\"id\":\"q2\",\"score\":2,\"reason\":\"The answer has fact 1 (people who work with AI agents instead of babysitting them, with the author's setup as first user), fact 3 (any owner who brings their own doctrine) and fact 2 (the five roles); the two quoted lines support facts 1 and 3, which meets the accepted two.\"},{\"id\":\"q3\",\"score\":1,\"reason\":\"The answer names the kernel and compiler checking an authority envelope, the Repo Gardener plus Seiri replay, disposable Claude/Codex workers with a blinded verifier, the resident host with presence policy and mission check, the self-built repo loop, and the actor board and console, but the quotes only support the worker-and-verifier fact, and the work-order quote supports no keyed fact.\"},{\"id\":\"q4\",\"score\":2,\"reason\":\"The answer says to run npm run skeleton after npm install, and both quoted lines support it.\"},{\"id\":\"q5\",\"score\":2,\"reason\":\"The answer lists all seven unbuilt items, and the quoted lines support at least three: general source-writing worker profiles, composition beyond the Seiri subset and saved community builds.\"},{\"id\":\"q6\",\"score\":2,\"reason\":\"The answer gives all four readings with their paths (vision, domain model and architecture, skeleton README, playbook), and the quoted lines support the vision path (/docs/product/00-vision.md) and the skeleton README path (/packages/skeleton/README.md).\"}]}",
+    "structured_output": {
+      "scores": [
+        {
+          "id": "q1",
+          "score": 2,
+          "reason": "The answer has fact 1 (a local-first, model-agnostic compiler and runtime for human judgment) and fact 2 (an agentic platform and shared base, not an agent, harness or orchestration layer), and one quoted line supports each."
+        },
+        {
+          "id": "q2",
+          "score": 2,
+          "reason": "The answer has fact 1 (people who work with AI agents instead of babysitting them, with the author's setup as first user), fact 3 (any owner who brings their own doctrine) and fact 2 (the five roles); the two quoted lines support facts 1 and 3, which meets the accepted two."
+        },
+        {
+          "id": "q3",
+          "score": 1,
+          "reason": "The answer names the kernel and compiler checking an authority envelope, the Repo Gardener plus Seiri replay, disposable Claude/Codex workers with a blinded verifier, the resident host with presence policy and mission check, the self-built repo loop, and the actor board and console, but the quotes only support the worker-and-verifier fact, and the work-order quote supports no keyed fact."
+        },
+        {
+          "id": "q4",
+          "score": 2,
+          "reason": "The answer says to run npm run skeleton after npm install, and both quoted lines support it."
+        },
+        {
+          "id": "q5",
+          "score": 2,
+          "reason": "The answer lists all seven unbuilt items, and the quoted lines support at least three: general source-writing worker profiles, composition beyond the Seiri subset and saved community builds."
+        },
+        {
+          "id": "q6",
+          "score": 2,
+          "reason": "The answer gives all four readings with their paths (vision, domain model and architecture, skeleton README, playbook), and the quoted lines support the vision path (/docs/product/00-vision.md) and the skeleton README path (/packages/skeleton/README.md)."
+        }
+      ]
+    },
+    "ttft_ms": 20804,
+    "type": "result",
+    "duration_ms": 25394,
+    "uuid": "d4c62690-addd-46e1-acb8-5ca2142c8023",
+    "ttft_stream_ms": 529,
+    "time_to_request_ms": 25,
+    "first_content_frame_ms": 530,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

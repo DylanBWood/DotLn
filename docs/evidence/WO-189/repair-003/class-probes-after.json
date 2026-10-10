@@ -1,0 +1,275 @@
+{
+  "cutoff": "2026-10-10T20:25:15.074Z",
+  "subject": "/Users/dylanwood/Projects/DotLn-wo189",
+  "mismatches": [],
+  "runs": [
+    {
+      "name": "control: unchanged",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "control: exact budget",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "template tag in emphasis",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a template tag; escape its first brace with a backslash or put it in inline code",
+        "README.md:10: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds a template tag; escape its first brace with a backslash or put it in inline code: \"Shown runs _{{ Hidden one runs. Hidden t…\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a template tag; escape its first brace with a backslash or put it in inline code",
+        "README.md:12: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds a template tag; escape its first brace with a backslash or put it in inline code: \"Shown runs _{{ Hidden one runs. Hidden t…\""
+      ]
+    },
+    {
+      "name": "wiki link inside a link",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a wiki link; escape its first bracket with a backslash or write a Markdown link",
+        "README.md:10: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds a wiki link; escape its first bracket with a backslash or write a Markdown link: \"Shown runs [[[Hidden one runs. Hidden tw…\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a wiki link; escape its first bracket with a backslash or write a Markdown link",
+        "README.md:12: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds a wiki link; escape its first bracket with a backslash or write a Markdown link: \"Shown runs [[[Hidden one runs. Hidden tw…\""
+      ]
+    },
+    {
+      "name": "math inside strong",
+      "expectation": true,
+      "failures": [
+        "README.md:10: inline math; escape each dollar sign with a backslash or put the expression in inline code",
+        "README.md:10: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds inline math; escape each dollar sign with a backslash or put the expression in inline code: \"Shown runs **$Hidden one runs. Hidden tw…\""
+      ],
+      "formattedFailures": [
+        "README.md:12: inline math; escape each dollar sign with a backslash or put the expression in inline code",
+        "README.md:12: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds inline math; escape each dollar sign with a backslash or put the expression in inline code: \"Shown runs **$Hidden one runs. Hidden tw…\""
+      ]
+    },
+    {
+      "name": "footnote reference join",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds a footnote, whose note renders at the page foot outside the count; fold the note into the sentence: \"Shown runs[^n] here.\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds a footnote, whose note renders at the page foot outside the count; fold the note into the sentence: \"Shown runs[^n] here.\""
+      ]
+    },
+    {
+      "name": "inline HTML span",
+      "expectation": true,
+      "failures": [
+        "README.md:10: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"<span>Hidden one runs. Hidden two runs.<…\"",
+        "README.md:10: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<: \"Shown runs <span>Hidden one runs. Hidden…\""
+      ],
+      "formattedFailures": [
+        "README.md:12: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"<span>Hidden one runs. Hidden two runs.<…\"",
+        "README.md:12: a \"What runs today\" line must be Markdown prose, one sentence per line; it holds raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<: \"Shown runs <span>Hidden one runs. Hidden…\""
+      ]
+    },
+    {
+      "name": "defined reference label",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence; the next starts at \"Hidden two runs.][fixture].\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"Shown runs [Hidden one runs. Hidden two …\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence; the next starts at \"Hidden two runs.][fixture].\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"Shown runs [Hidden one runs. Hidden two …\""
+      ]
+    },
+    {
+      "name": "no-space join of thirteen",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence. A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"Capability 1 runs.Capability 2 runs.Capa…\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence. A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"Capability 1 runs.Capability 2 runs.Capa…\""
+      ]
+    },
+    {
+      "name": "question join without space",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence. A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"One runs?Two runs!\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence. A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"One runs?Two runs!\""
+      ]
+    },
+    {
+      "name": "ideographic stops",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence. A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"一个运行。两个运行。\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence. A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"一个运行。两个运行。\""
+      ]
+    },
+    {
+      "name": "Arabic question mark",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence; the next starts at \"Two runs.\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"One runs؟ Two runs.\""
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence; the next starts at \"Two runs.\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"One runs؟ Two runs.\""
+      ]
+    },
+    {
+      "name": "HTML heading inside a div",
+      "expectation": true,
+      "failures": [
+        "README.md:27: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"<div><h2>What runs today</h2></div>\""
+      ],
+      "formattedFailures": [
+        "README.md:29: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"<div><h2>What runs today</h2></div>\""
+      ]
+    },
+    {
+      "name": "HTML heading with tags",
+      "expectation": true,
+      "failures": [
+        "README.md:27: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"<H3 id=\\\"x\\\">What <em>runs</em> today</H3>\""
+      ],
+      "formattedFailures": [
+        "README.md:29: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"<H3 id=\\\"x\\\">What <em>runs</em> today</H3>\""
+      ]
+    },
+    {
+      "name": "HTML heading in a list",
+      "expectation": true,
+      "failures": [
+        "README.md:27: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"<h4>What&nbsp;runs to&#100;ay</h4>\""
+      ],
+      "formattedFailures": [
+        "README.md:29: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"<h4>What&nbsp;runs to&#100;ay</h4>\""
+      ]
+    },
+    {
+      "name": "HTML heading legacy reference",
+      "expectation": true,
+      "failures": [
+        "README.md:27: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"<h2>What&nbsp runs to&#x64;ay</h2>\""
+      ],
+      "formattedFailures": [
+        "README.md:29: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"<h2>What&nbsp runs to&#x64;ay</h2>\""
+      ]
+    },
+    {
+      "name": "HTML heading split by a blank line",
+      "expectation": true,
+      "failures": [
+        "README.md:27: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"<h2>\"",
+        "README.md:31: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"</h2>\""
+      ],
+      "formattedFailures": [
+        "README.md:29: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"<h2>\"",
+        "README.md:33: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"</h2>\""
+      ]
+    },
+    {
+      "name": "HTML heading inline in a paragraph",
+      "expectation": true,
+      "failures": [
+        "README.md:27: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"<h2>What runs today</h2> more.\""
+      ],
+      "formattedFailures": [
+        "README.md:29: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"<h2>What runs today</h2> more.\""
+      ]
+    },
+    {
+      "name": "uppercase namesake",
+      "expectation": true,
+      "failures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "formattedFailures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ]
+    },
+    {
+      "name": "punctuated namesake",
+      "expectation": true,
+      "failures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "formattedFailures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ]
+    },
+    {
+      "name": "fullwidth namesake",
+      "expectation": true,
+      "failures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "formattedFailures": [
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ]
+    },
+    {
+      "name": "heading holding a template tag",
+      "expectation": true,
+      "failures": [
+        "README.md:27: a template tag; escape its first brace with a backslash or put it in inline code",
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ],
+      "formattedFailures": [
+        "README.md:29: a template tag; escape its first brace with a backslash or put it in inline code",
+        "README.md: needs exactly one heading ## What runs today; found 2; the page names the section once, so rename or remove the other heading"
+      ]
+    },
+    {
+      "name": "control: escaped dollars and braces",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "control: quoted code names",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "control: internal stops",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "raw HTML title (the page holds no raw HTML)",
+      "expectation": true,
+      "failures": [
+        "README.md:1: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"<h1 align=\\\"center\\\">DotLn</h1>\""
+      ],
+      "formattedFailures": [
+        "README.md:1: raw HTML; write it as Markdown, put it in inline code, or escape the bracket as \\<; the front page holds none outside its marker lines, since GitHub and the check's parser read it differently: \"<h1 align=\\\"center\\\">DotLn</h1>\""
+      ]
+    },
+    {
+      "name": "control: longer heading",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": []
+    },
+    {
+      "name": "heading example in an HTML comment (raw HTML)",
+      "expectation": true,
+      "failures": [
+        "README.md:27: an HTML comment line; a generated block's marker lines are listed in the control record's generatedBlocks by the front-page order that adds the block, and a note for maintainers belongs in the order's evidence: \"<!-- <h2>What runs today</h2> -->\""
+      ],
+      "formattedFailures": [
+        "README.md:29: an HTML comment line; a generated block's marker lines are listed in the control record's generatedBlocks by the front-page order that adds the block, and a note for maintainers belongs in the order's evidence: \"<!-- <h2>What runs today</h2> -->\""
+      ]
+    }
+  ]
+}
