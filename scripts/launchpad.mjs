@@ -12,6 +12,10 @@
 // compiled packages predict before any file is written (WO-075).
 import {
   TOOL_ROOT,
+  CONFIG_FILENAME,
+  ROOT_KEYS,
+  loadConfig,
+  validateConfig,
   defaultDocRelative,
   docRelative,
   findLaunchpad,
@@ -29,15 +33,22 @@ import { checkLocalTerms } from "./lib/terms.mjs";
 import { atomicBuild } from "./build.mjs";
 import { spawnSync } from "node:child_process";
 import {
+  closeSync,
+  constants,
   existsSync,
+  fstatSync,
   lstatSync,
   mkdirSync,
+  openSync,
   readdirSync,
   readFileSync,
+  renameSync,
   symlinkSync,
+  unlinkSync,
   writeFileSync,
 } from "node:fs";
 import { basename, dirname, join, resolve } from "node:path";
+import { randomUUID } from "node:crypto";
 
 export const KIT_MANIFEST = "KIT-MANIFEST.json";
 export const KIT_MANIFEST_SCHEMA_VERSION = 1;
@@ -544,6 +555,8 @@ const upstreamDocument = (
     "verified equal to the commit; and the harness bundle was emitted inside this",
     "export from that runtime and verified against the bundle core's compiled",
     "packages predicted. No other kit text was read from a work tree.",
+    "An update can retain locally modified files at their prior manifest hashes;",
+    "its dated output lists those exceptions to this source commit.",
     "",
     `- **Commit:** \`${commit}\``,
     `- **Tag:** ${tag ? `\`${tag}\`` : `none at that commit${nearest ? ` (nearest below: \`${nearest}\`)` : ""}`}`,
@@ -765,24 +778,13 @@ const ignoredKitPaths = (target, paths) =>
 const rootReadme = (key, convention) =>
   `# ${defaultDocRelative(key)}\n\n${convention}\n`;
 
-/** Export the kit of the running checkout's HEAD into `destination`; the kit
- * root is TOOL_ROOT, because the bundle prediction and the build load that
- * checkout's compiled packages, and `launchpad` is the one whose local-terms
- * list judges the texts. Refuses before any write to the destination (the
- * build first refreshes this checkout's ignored packages/*\/dist): a non-empty
- * or unreadable destination, a kit file absent at the commit, a pinned input
- * (package sources, project files, the build script, the emit closure) that
- * differs from HEAD, an installed development dependency that is not the
- * commit's pin, and a local-terms refusal. Then it writes the kit,
- * initializes the export's repository, refuses a kit file the fork's Git
- * would ignore, runs the export's own harness emit and check and refuses,
- * naming the path, if the emit's bytes differ from the bundle core's compiled
- * packages predicted; a refusal after the write leaves the destination for
- * inspection without KIT-MANIFEST.json. Returns what it wrote. */
-export async function exportKit(
-  destination,
-  { license = "default", launchpad = TOOL_ROOT } = {},
-) {
+/** Prepare the commit's complete kit in memory, including its runtime and
+ * predicted harness bundle. Export and update share the same pinned-input
+ * and local-terms checks; neither writes a destination during preparation. */
+export async function prepareKit({
+  license = "default",
+  launchpad = TOOL_ROOT,
+} = {}) {
   const root = TOOL_ROOT;
   if (!["default", "none"].includes(license))
     throw new Error(`unknown license option: ${license}`);
@@ -790,7 +792,6 @@ export async function exportKit(
     throw new Error(
       "launchpad export builds the runtime from package sources, which this checkout lacks: a kit export carries only the compiled runtime; export from the core commit UPSTREAM.md names",
     );
-  const target = checkDestination(destination);
   const commit = runGit(root, ["rev-parse", "HEAD"]);
   const { tag, nearest } = describeTag(root, commit);
   const forge = originTarget(root);
@@ -981,6 +982,34 @@ export async function exportKit(
   }
   const terms = checkLocalTerms(launchpad, surfaces);
 
+  return {
+    manifest,
+    manifestBytes,
+    writes,
+    bundle,
+    summary: {
+      commit,
+      tag,
+      nearest,
+      files: manifest.files.length,
+      runtimeFiles: runtime.size,
+      harnessSurfaces: emitted.length,
+      snapshot: bundle.snapshot,
+      seeds: [...seeds, "AGENTS.md"],
+      surfaces: surfaces.length,
+      terms: terms.status,
+      dirty,
+    },
+  };
+}
+
+/** Export into an empty destination, initialize its repository and run its
+ * own harness emit/check. A post-write failure leaves a partial export for
+ * inspection without a manifest. */
+export async function exportKit(destination, options = {}) {
+  const target = checkDestination(destination);
+  const { manifest, manifestBytes, writes, bundle, summary } =
+    await prepareKit(options);
   mkdirSync(target, { recursive: true });
   for (const { path, bytes, mode } of writes) {
     const file = join(target, path);
@@ -1036,44 +1065,536 @@ export async function exportKit(
     );
   }
   writeFileSync(join(target, KIT_MANIFEST), manifestBytes);
+  return { destination: target, ...summary };
+}
+
+export const KIT_ACTIONS = "scripts/kit/KIT-ACTIONS.json";
+const HEX_64 = /^[0-9a-f]{64}$/u;
+const object = (value) =>
+  value !== null && typeof value === "object" && !Array.isArray(value);
+const contained = (path) =>
+  typeof path === "string" &&
+  path.length > 0 &&
+  !/[\\\x00-\x1f:]/u.test(path) &&
+  path.split("/").every((part) => part && ![".", "..", ".git"].includes(part));
+const overlaps = (left, right) =>
+  left === right ||
+  left.startsWith(`${right}/`) ||
+  right.startsWith(`${left}/`);
+const knownKeys = (value, keys, label) => {
+  if (!object(value) || Object.keys(value).some((key) => !keys.includes(key)))
+    throw new Error(
+      `${label}: expected an object with only ${keys.join(", ")}`,
+    );
+};
+// A manifest can retain removed kit paths, but cannot claim instance-owned
+// roots, the operating contract, local settings, or an arbitrary destination.
+const kitPath = (path) =>
+  contained(path) &&
+  ([
+    UPSTREAM,
+    LICENSE_PENDING,
+    ...LICENSE_FILES,
+    "package.json",
+    "package-lock.json",
+    "dotln.config.example.json",
+    ...KIT_FILES.files,
+    ...KIT_FILES.documents.map(([key, ...parts]) =>
+      defaultDocRelative(key, ...parts),
+    ),
+    HARNESS_MANIFEST,
+    ".claude/settings.json",
+  ].includes(path) ||
+    [
+      ...KIT_FILES.trees,
+      ...RUNTIME_PACKAGES.map((name) => `packages/${name}/${RUNTIME_OUTPUT}`),
+      ".claude/hooks",
+      ".claude/skills",
+      ".claude/agents",
+      ".agents/skills",
+      ".codex",
+    ].some((prefix) => path.startsWith(`${prefix}/`)));
+
+/** Inspect every ancestor without following a destination symlink. Missing
+ * suffixes are allowed for additions; existing parents must be directories. */
+const destinationStat = (root, path) => {
+  if (!contained(path)) throw new Error(`invalid destination path: ${path}`);
+  const parts = path.split("/");
+  for (let index = 0; index < parts.length; index++) {
+    const file = join(root, ...parts.slice(0, index + 1));
+    let stat;
+    try {
+      stat = lstatSync(file, { throwIfNoEntry: false });
+    } catch (error) {
+      throw new Error(`cannot inspect ${file}: ${error.code}`);
+    }
+    if (!stat) return undefined;
+    if (
+      stat.isSymbolicLink() ||
+      (index < parts.length - 1 && !stat.isDirectory())
+    )
+      throw new Error(
+        `destination is not a regular ${index < parts.length - 1 ? "directory" : "file"}: ${file}`,
+      );
+    if (index === parts.length - 1) return stat;
+  }
+};
+const readDestination = (root, path) => {
+  const file = join(root, path);
+  if (!destinationStat(root, path)?.isFile())
+    throw new Error(`cannot read regular file: ${file}`);
+  let fd;
+  try {
+    fd = openSync(
+      file,
+      constants.O_RDONLY | constants.O_NONBLOCK | constants.O_NOFOLLOW,
+    );
+    if (!fstatSync(fd).isFile()) throw new Error("not a regular file");
+    return readFileSync(fd);
+  } catch (error) {
+    throw new Error(`cannot read ${file}: ${error.code ?? error.message}`);
+  } finally {
+    if (fd !== undefined) closeSync(fd);
+  }
+};
+const readJson = (bytes, path) => {
+  try {
+    return JSON.parse(bytes.toString("utf8"));
+  } catch {
+    throw new Error(`malformed JSON: ${path}`);
+  }
+};
+
+export function readPriorManifest(destination) {
+  const root = resolve(destination);
+  if (!lstatSync(root, { throwIfNoEntry: false })?.isDirectory())
+    throw new Error(`update destination is not a regular directory: ${root}`);
+  const label = join(root, KIT_MANIFEST);
+  const prior = readJson(readDestination(root, KIT_MANIFEST), label);
+  knownKeys(prior, ["schemaVersion", "commit", "tag", "files"], label);
+  if (
+    prior.schemaVersion !== KIT_MANIFEST_SCHEMA_VERSION ||
+    typeof prior.commit !== "string" ||
+    !/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/u.test(prior.commit ?? "") ||
+    !(
+      prior.tag === null ||
+      (typeof prior.tag === "string" &&
+        prior.tag.length &&
+        !/[\x00-\x1f]/u.test(prior.tag))
+    ) ||
+    !Array.isArray(prior.files) ||
+    !prior.files.length
+  )
+    throw new Error(`malformed prior manifest: ${label}`);
+  const paths = new Set();
+  for (const entry of prior.files) {
+    knownKeys(entry, ["path", "sha256"], label);
+    if (
+      !kitPath(entry.path) ||
+      typeof entry.sha256 !== "string" ||
+      !HEX_64.test(entry.sha256 ?? "") ||
+      paths.has(entry.path)
+    )
+      throw new Error(
+        `malformed prior manifest entry in ${label}: ${entry.path}`,
+      );
+    paths.add(entry.path);
+  }
+  for (const path of paths) {
+    const parts = path.split("/");
+    while (parts.pop() && parts.length)
+      if (paths.has(parts.join("/")))
+        throw new Error(`overlapping paths in ${label}: ${path}`);
+  }
+  return prior;
+}
+
+/** Plan the whole update before writing. A missing/unreadable prior file is
+ * an input failure; a readable local edit is a refusal retained in the plan. */
+export function planUpdate(prior, next, directory) {
+  const previous = new Map(prior.files.map((entry) => [entry.path, entry]));
+  const following = new Map(next.files.map((entry) => [entry.path, entry]));
+  const plan = [];
+  for (const path of [
+    ...new Set([...previous.keys(), ...following.keys()]),
+  ].sort()) {
+    if (!kitPath(path)) throw new Error(`invalid kit path: ${path}`);
+    const old = previous.get(path);
+    if (old) {
+      const unmodified =
+        sha256Hex(readDestination(directory, path)) === old.sha256;
+      plan.push({
+        path,
+        kind: !unmodified
+          ? "refuse"
+          : following.has(path)
+            ? "replace"
+            : "remove",
+        ...(unmodified ? {} : { reason: "locally modified", retained: old }),
+      });
+    } else {
+      const stat = destinationStat(directory, path);
+      if (stat && !stat.isFile())
+        throw new Error(`cannot read regular file: ${join(directory, path)}`);
+      // Read collisions too: an unreadable file refuses before any write.
+      if (stat) readDestination(directory, path);
+      plan.push({
+        path,
+        kind: stat ? "refuse" : "add",
+        ...(stat ? { reason: "instance-owned collision" } : {}),
+      });
+    }
+  }
+  return plan;
+}
+
+/** Action declarations are structured kit data, never commands parsed out of
+ * prose. Phrase changes are deliberately limited to the instance contract. */
+export function readKitActions(bytes) {
+  const document = readJson(bytes, KIT_ACTIONS);
+  knownKeys(document, ["schemaVersion", "actions"], KIT_ACTIONS);
+  if (document.schemaVersion !== 1 || !Array.isArray(document.actions))
+    throw new Error(`malformed ${KIT_ACTIONS}`);
+  const ids = new Set();
+  for (const action of document.actions) {
+    const fields = {
+      "rename-root": ["root", "from", "to"],
+      "add-config-field": ["field", "value"],
+      "change-phrase": ["from", "to"],
+    };
+    if (!object(action) || !Object.hasOwn(fields, action.kind))
+      throw new Error(`${KIT_ACTIONS}: undeclared action kind ${action?.kind}`);
+    knownKeys(
+      action,
+      ["id", "date", "kind", ...fields[action.kind]],
+      KIT_ACTIONS,
+    );
+    if (
+      typeof action.id !== "string" ||
+      typeof action.date !== "string" ||
+      !/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/u.test(action.id) ||
+      ids.has(action.id) ||
+      !/^\d{4}-\d{2}-\d{2}$/u.test(action.date ?? "") ||
+      !Number.isFinite(Date.parse(action.date)) ||
+      new Date(action.date).toISOString().slice(0, 10) !== action.date
+    )
+      throw new Error(`${KIT_ACTIONS}: invalid action id/date: ${action.id}`);
+    ids.add(action.id);
+    if (
+      action.kind === "rename-root" &&
+      (!ROOT_KEYS.includes(action.root) ||
+        !contained(action.from) ||
+        !contained(action.to) ||
+        overlaps(action.from, action.to))
+    )
+      throw new Error(`${KIT_ACTIONS}: invalid rename-root ${action.id}`);
+    if (
+      action.kind === "add-config-field" &&
+      (typeof action.field !== "string" ||
+        !/^[A-Za-z][A-Za-z0-9]*(?:\.[A-Za-z][A-Za-z0-9]*)*$/u.test(
+          action.field,
+        ) ||
+        action.field
+          .split(".")
+          .some((key) =>
+            ["__proto__", "prototype", "constructor"].includes(key),
+          ) ||
+        !Object.hasOwn(action, "value"))
+    )
+      throw new Error(`${KIT_ACTIONS}: invalid add-config-field ${action.id}`);
+    if (
+      action.kind === "change-phrase" &&
+      (typeof action.from !== "string" ||
+        !action.from ||
+        typeof action.to !== "string" ||
+        !action.to ||
+        action.from === action.to)
+    )
+      throw new Error(`${KIT_ACTIONS}: invalid change-phrase ${action.id}`);
+  }
+  return document.actions;
+}
+
+const writeReplacement = (root, path, bytes, mode = 0o644) => {
+  const file = join(root, path);
+  mkdirSync(dirname(file), { recursive: true });
+  const temporary = `${file}.dotln-update-${randomUUID()}`;
+  try {
+    writeFileSync(temporary, bytes, { flag: "wx", mode });
+    renameSync(temporary, file);
+  } finally {
+    if (existsSync(temporary)) unlinkSync(temporary);
+  }
+};
+
+/** Preflight every declared instance action, then return its mutations. The
+ * caller applies this plan only after the kit plan has also been validated. */
+function planInstanceActions(directory, actions, kitPaths) {
+  const config = loadConfig(directory);
+  if (!config.kit.applyInstanceActions)
+    throw new Error(
+      `${join(directory, CONFIG_FILENAME)}: --apply requires kit.applyInstanceActions: true`,
+    );
+  const before = readDestination(directory, CONFIG_FILENAME);
+  const draft = readJson(before, join(directory, CONFIG_FILENAME));
+  const original = JSON.stringify(draft);
+  const renames = [];
+  const writes = new Map();
+  const results = [];
+  const instancePath = (path) => {
+    if (
+      !contained(path) ||
+      [
+        KIT_MANIFEST,
+        CONFIG_FILENAME,
+        INSTRUCTION_FILE,
+        "AGENTS.md",
+        "node_modules",
+        ".runtime",
+      ].some((reserved) => overlaps(path, reserved)) ||
+      kitPaths.some((kit) => overlaps(kit, path))
+    )
+      throw new Error(`instance root overlaps a protected path: ${path}`);
+  };
+  const inspectTree = (path) => {
+    if (!destinationStat(directory, path)?.isDirectory())
+      throw new Error(`cannot read instance root: ${join(directory, path)}`);
+    for (const entry of readdirSync(join(directory, path), {
+      withFileTypes: true,
+    })) {
+      const child = `${path}/${entry.name}`;
+      if (entry.isDirectory()) inspectTree(child);
+      else readDestination(directory, child);
+    }
+  };
+  for (const action of actions) {
+    let changed = false;
+    if (action.kind === "rename-root") {
+      instancePath(action.from);
+      instancePath(action.to);
+      if (
+        renames.some(({ from, to }) =>
+          [from, to].some(
+            (path) => overlaps(path, action.from) || overlaps(path, action.to),
+          ),
+        )
+      )
+        throw new Error(`overlapping root actions: ${action.id}`);
+      const current = validateConfig(CONFIG_FILENAME, json(draft)).roots[
+        action.root
+      ];
+      const from = destinationStat(directory, action.from);
+      const to = destinationStat(directory, action.to);
+      if (current === action.to && !from && to?.isDirectory()) {
+        inspectTree(action.to);
+      } else {
+        if (current !== action.from || !from?.isDirectory() || to)
+          throw new Error(
+            `cannot apply ${action.id}: expected root ${action.root} at ${action.from} and absent ${action.to}`,
+          );
+        inspectTree(action.from);
+        renames.push(action);
+        draft.roots ??= {};
+        for (const [key, path] of Object.entries(draft.roots))
+          if (path === action.from || path.startsWith(`${action.from}/`))
+            draft.roots[key] = action.to + path.slice(action.from.length);
+        draft.roots[action.root] = action.to;
+        changed = true;
+      }
+    } else if (action.kind === "add-config-field") {
+      const parts = action.field.split(".");
+      let parent = draft;
+      for (const part of parts.slice(0, -1)) {
+        if (!Object.hasOwn(parent, part)) parent[part] = {};
+        if (!object(parent[part]))
+          throw new Error(
+            `cannot apply ${action.id}: ${action.field} has a non-object parent`,
+          );
+        parent = parent[part];
+      }
+      const key = parts.at(-1);
+      if (!Object.hasOwn(parent, key)) {
+        parent[key] = action.value;
+        changed = true;
+      }
+    } else if (action.kind === "change-phrase") {
+      const bytes =
+        writes.get(INSTRUCTION_FILE)?.bytes ??
+        readDestination(directory, INSTRUCTION_FILE);
+      const text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+      const count = text.split(action.from).length - 1;
+      const targetCount = text.split(action.to).length - 1;
+      const alreadyApplied =
+        targetCount === 1 &&
+        (count === 0 ||
+          (action.to.includes(action.from) &&
+            !text.replace(action.to, "").includes(action.from)));
+      if (alreadyApplied) {
+        // A replacement can include its old phrase; do not append it again.
+      } else if (count === 1) {
+        writes.set(INSTRUCTION_FILE, {
+          bytes: Buffer.from(text.replace(action.from, () => action.to)),
+          mode: destinationStat(directory, INSTRUCTION_FILE).mode & 0o777,
+        });
+        changed = true;
+      } else
+        throw new Error(
+          `cannot apply ${action.id}: expected one phrase in ${join(directory, INSTRUCTION_FILE)}`,
+        );
+    } else
+      throw new Error(`${KIT_ACTIONS}: undeclared action kind ${action.kind}`);
+    results.push(
+      `${changed ? "applied" : "preserved/already applied"}: ${action.id} (${action.date}, ${action.kind})`,
+    );
+  }
+  // Validate new defaults and root declarations through the same closed
+  // configuration loader before a single instance or kit mutation.
+  validateConfig(join(directory, CONFIG_FILENAME), json(draft));
+  if (JSON.stringify(draft) !== original)
+    writes.set(CONFIG_FILENAME, {
+      bytes: Buffer.from(json(draft)),
+      mode: destinationStat(directory, CONFIG_FILENAME).mode & 0o777,
+    });
+  return { renames, writes, results };
+}
+
+export async function updateKit(
+  destination,
+  { apply = false, launchpad = TOOL_ROOT } = {},
+) {
+  const target = resolve(destination);
+  const prior = readPriorManifest(target);
+  // Establish readable prior inputs and opt-in before the source build.
+  for (const { path } of prior.files) readDestination(target, path);
+  if (apply) {
+    if (destinationStat(target, CONFIG_FILENAME))
+      readDestination(target, CONFIG_FILENAME);
+    if (!loadConfig(target).kit.applyInstanceActions)
+      throw new Error(
+        `${join(target, CONFIG_FILENAME)}: --apply requires kit.applyInstanceActions: true`,
+      );
+  }
+  // Retain the instance's original export license posture automatically.
+  const license = prior.files.some(({ path }) => path === LICENSE_PENDING)
+    ? "none"
+    : "default";
+  const prepared = await prepareKit({ launchpad, license });
+  const candidates = new Map(prepared.writes.map((file) => [file.path, file]));
+  for (const [path, contents] of prepared.bundle.surfaces)
+    if (path !== INSTRUCTION_FILE)
+      candidates.set(path, { path, bytes: Buffer.from(contents), mode: 0o644 });
+  const actions = readKitActions(candidates.get(KIT_ACTIONS).bytes);
+  const plan = planUpdate(prior, prepared.manifest, target);
+  const instance = apply
+    ? planInstanceActions(target, actions, [
+        ...new Set(
+          [...prior.files, ...prepared.manifest.files].map(({ path }) => path),
+        ),
+      ])
+    : null;
+  const retained = plan.flatMap((entry) =>
+    entry.kind === "refuse"
+      ? entry.retained
+        ? [entry.retained]
+        : []
+      : entry.kind === "remove"
+        ? []
+        : [
+            {
+              path: entry.path,
+              sha256: sha256Hex(candidates.get(entry.path).bytes),
+            },
+          ],
+  );
+  const manifest = kitManifest({ ...prepared.manifest, files: retained });
+  for (const entry of plan) {
+    if (entry.kind === "remove") unlinkSync(join(target, entry.path));
+    if (entry.kind === "add" || entry.kind === "replace") {
+      const file = candidates.get(entry.path);
+      writeReplacement(target, entry.path, file.bytes, file.mode);
+    }
+  }
+  if (instance) {
+    for (const { from, to } of instance.renames) {
+      mkdirSync(dirname(join(target, to)), { recursive: true });
+      renameSync(join(target, from), join(target, to));
+    }
+    for (const [path, { bytes, mode }] of instance.writes)
+      writeReplacement(target, path, bytes, mode);
+  }
+  writeReplacement(target, KIT_MANIFEST, json(manifest));
   return {
     destination: target,
-    commit,
-    tag,
-    nearest,
-    files: manifest.files.length,
-    runtimeFiles: runtime.size,
-    harnessSurfaces: emitted.length,
-    snapshot: bundle.snapshot,
-    seeds: [...seeds, "AGENTS.md"],
-    surfaces: surfaces.length,
-    terms: terms.status,
-    dirty,
+    ...prepared.summary,
+    plan,
+    actions,
+    applied: instance?.results ?? [],
+    optedIn: apply,
   };
 }
 
 if (isMainModule(import.meta.url)) {
   try {
-    const [action, destination, ...rest] = process.argv.slice(2);
-    let license = "default";
-    for (let index = 0; index < rest.length; index += 2) {
-      if (rest[index] === "--license" && rest[index + 1] === "none")
-        license = "none";
-      else throw new Error("usage: launchpad export <dir> [--license none]");
+    const [action, ...args] = process.argv.slice(2);
+    const updating = args[0] === "--update";
+    const [destination, ...rest] = updating ? args.slice(1) : args;
+    const usage =
+      "usage: launchpad export <dir> [--license none] | launchpad export --update <dir> [--apply]";
+    if (action !== "export" || !destination || destination.startsWith("--"))
+      throw new Error(usage);
+    if (
+      updating
+        ? !(rest.length === 0 || (rest.length === 1 && rest[0] === "--apply"))
+        : !(
+            rest.length === 0 ||
+            (rest.length === 2 && rest[0] === "--license" && rest[1] === "none")
+          )
+    )
+      throw new Error(usage);
+    const result = updating
+      ? await updateKit(destination, {
+          apply: rest.includes("--apply"),
+          launchpad: findLaunchpad(),
+        })
+      : await exportKit(destination, {
+          license: rest.length ? "none" : "default",
+          launchpad: findLaunchpad(),
+        });
+    if (updating) {
+      console.log(
+        `Updated the DotLn kit to ${result.commit} in ${result.destination}.`,
+      );
+      const counts = Object.fromEntries(
+        ["replace", "add", "remove", "refuse"].map((kind) => [
+          kind,
+          result.plan.filter((entry) => entry.kind === kind).length,
+        ]),
+      );
+      console.log(
+        `kit files: ${counts.replace} replaced; ${counts.add} added; ${counts.remove} removed; ${counts.refuse} refused.`,
+      );
+      console.log(
+        `Instance-actions note (${new Date().toISOString().slice(0, 10)}): ${result.optedIn ? "opted-in update" : "update without opt-in"}.`,
+      );
+      for (const action of result.actions)
+        console.log(`action: ${JSON.stringify(action)}`);
+      if (!result.actions.length) console.log("No instance actions declared.");
+      for (const entry of result.plan.filter(
+        (entry) => entry.kind === "refuse",
+      ))
+        console.log(
+          `refused: ${entry.path} (${entry.reason}; ${entry.retained ? "prior hash retained" : "remains instance-owned"})`,
+        );
+      for (const line of result.applied) console.log(line);
+      console.log("re-emit: node scripts/harness.mjs emit");
+    } else {
+      console.log(
+        `Exported the DotLn kit of ${result.commit} (${result.tag ? `tag ${result.tag}` : "untagged"}) to ${result.destination}: ${result.files} kit files in ${KIT_MANIFEST}, ${result.seeds.length} instance seeds.`,
+      );
+      console.log(
+        `runtime: ${result.runtimeFiles} compiled files built from the commit's package sources; harness bundle: ${result.harnessSurfaces + 1} surfaces emitted and checked inside the export, ${result.harnessSurfaces} manifest-listed (${INSTRUCTION_FILE}'s block is checked through ${HARNESS_MANIFEST}); snapshot ${result.snapshot}.`,
+      );
     }
-    if (action !== "export" || !destination)
-      throw new Error("usage: launchpad export <dir> [--license none]");
-    // The kit is the running checkout's commit; the list is the launchpad's.
-    const result = await exportKit(destination, {
-      license,
-      launchpad: findLaunchpad(),
-    });
-    console.log(
-      `Exported the DotLn kit of ${result.commit} (${result.tag ? `tag ${result.tag}` : "untagged"}) to ${result.destination}: ${result.files} kit files in ${KIT_MANIFEST}, ${result.seeds.length} instance seeds.`,
-    );
-    console.log(
-      `runtime: ${result.runtimeFiles} compiled files built from the commit's package sources; harness bundle: ${result.harnessSurfaces + 1} surfaces emitted and checked inside the export, ${result.harnessSurfaces} manifest-listed (${INSTRUCTION_FILE}'s block is checked through ${HARNESS_MANIFEST}); snapshot ${result.snapshot}.`,
-    );
     console.log(
       `local-terms list: ${result.terms}${result.terms === "present" ? ` (${result.surfaces} texts checked)` : "; no text was checked against a local-terms list"}`,
     );

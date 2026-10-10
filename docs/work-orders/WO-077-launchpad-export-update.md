@@ -1,4 +1,4 @@
-# WO-077 — Launchpad export update: `launchpad export --update <dir>` refreshes an existing export's kit files by manifest, refuses locally modified ones, touches no instance file without the instance's opt-in, and prints the instance actions and the re-emit instruction (version assigned at activation)
+# WO-077 — Launchpad export update: `launchpad export --update <dir>` refreshes an existing export's kit files by manifest, refuses locally modified ones, touches no instance file without the instance's opt-in, and prints the instance actions and the re-emit instruction (v0.74.0)
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).

@@ -624,10 +624,11 @@ routinely driven from an unrelated directory, and a working-directory ascent
 would let one checkout's session write into another checkout's documents.
 
 `dotln.config.json` at the launchpad root declares schema `version: 1` and the
-optional sections `roots`, `classes`, `repositories`, `build`, `release`, `derivedOrders` and `portfolios` (§Declaring a portfolio). **Its absence
+optional sections `roots`, `classes`, `repositories`, `build`, `release`, `kit`, `derivedOrders` and `portfolios` (§Declaring a portfolio). **Its absence
 means today's layout, byte for byte**, so this repository ships no such file and
 `status --json`, `current.md`, the generated index, `times`, `usage` and a
 release manifest derived over the real log are unchanged by its introduction.
+`kit.applyInstanceActions` defaults to false; true permits `launchpad export --update <dir> --apply` to perform the kit's declared instance actions.
 
 `roots` maps a root name to a relative POSIX path inside the launchpad. The
 names are `docs` (the document base), `control`, `orders`, `workOrders`,

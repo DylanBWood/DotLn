@@ -10,6 +10,10 @@ Audience tags are `everyday-ai-user` and `software-engineer`. Status is exactly
 one of `vision`, `specified`, `planned`, `implemented`, `verified`, `blocked`,
 or `deprecated`. No row is derived from or links to gitignored intake.
 
+WO-077 lock refresh (2026-10-10, `node scripts/check-publication.mjs --print-locks`):
+`everyday-ai-user-toc.md` — `sha256:08353e6d5a507ea8623b8bc2e4b11239ca2238a266bc7f8b9de737cd863c1c01`;
+`software-engineer-toc.md` — `sha256:9d92922f69fdcc6b966a11b93357847c65311e0db45d3434a96982d37282b3c2`.
+
 ## 00 — Vision
 
 | Section                                                                                                                 | Audiences                           | Status    |
