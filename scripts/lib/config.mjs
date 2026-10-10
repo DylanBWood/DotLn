@@ -710,6 +710,12 @@ export const validateConfig = (path, source) => {
   };
 };
 
+/** The document roots a configuration's text declares, or today's defaults
+ * when there is no text; a reader of another commit's configuration resolves
+ * paths as that commit did. A malformed text refuses by path. */
+export const configuredRoots = (source, path = CONFIG_FILENAME) =>
+  source === null ? defaultRoots() : validateConfig(path, source).roots;
+
 const absentConfig = () => ({
   version: CONFIG_SCHEMA_VERSION,
   roots: defaultRoots(),

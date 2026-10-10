@@ -270,6 +270,14 @@ function overlayImplementation(root) {
     "scripts/console-fixtures.mjs",
   ])
     cpSync(join(source, path), join(root, path));
+  // The fixture's front page holds only what the integration reads: the one
+  // generated line between the release markers that preparation rewrites and
+  // the merge reconciles. The live page's prose is not this suite's subject.
+  put(
+    root,
+    "README.md",
+    "# Integration fixture\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.0.1`.\n<!-- DOTLN-RELEASE-END -->\n",
+  );
   // The working-tree libraries, their build-free Beacon peers and the console
   // package its regenerator executes travel together; static imports must not
   // split across revisions. Build output and dependency links are left out:
@@ -1838,3 +1846,36 @@ assert.deepEqual(
   [],
   "every duration bound must match a declared case, including after a rename",
 );
+
+test("the one-line release block reconciles across a merge where main and the subject each changed its version", (t) => {
+  const f = fixture(t, { authored: false, generators: "focused" });
+  // The only line between the markers differs on both sides, which Git alone
+  // would report as a conflict; the fixture sets the two versions, and the
+  // test checks that before integrating.
+  const blockLine = (root) => {
+    const lines = text(root, "README.md").split("\n");
+    return lines
+      .slice(
+        lines.indexOf("<!-- DOTLN-RELEASE-BEGIN -->") + 1,
+        lines.indexOf("<!-- DOTLN-RELEASE-END -->"),
+      )
+      .filter((line) => line.trim());
+  };
+  assert.equal(blockLine(f.main).length, 1);
+  assert.equal(blockLine(f.subject).length, 1);
+  assert.notEqual(blockLine(f.main)[0], blockLine(f.subject)[0]);
+  const first = f.invoke();
+  assert.equal(first.status, 0, first.stdout + first.stderr);
+  assert.match(first.stdout, /Authored conflicts: none/);
+  const readme = text(f.subject, "README.md").split("\n");
+  const begin = readme.indexOf("<!-- DOTLN-RELEASE-BEGIN -->");
+  const end = readme.indexOf("<!-- DOTLN-RELEASE-END -->");
+  const version = /\((v\d+\.\d+\.\d+)\)$/.exec(
+    text(f.subject, "docs/work-orders/WO-998-fixture.md").split("\n")[0],
+  )[1];
+  assert.deepEqual(
+    readme.slice(begin + 1, end).filter((line) => line.trim()),
+    [`This source prepares DotLn \`${version}\`.`],
+    "exactly the generated line, carrying the integrated heading's version",
+  );
+});

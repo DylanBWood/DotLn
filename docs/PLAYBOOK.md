@@ -266,10 +266,29 @@ projection; that is a present workflow choice, not a permanent ban on later
 governed worker launching. Everything the executor needs is in the repo. Don't
 paste context or explain the work order again.
 
-When planning assigns a tagging version above the latest published tag, the
-work order must make updating the root README release block part of execution.
-The planner pins the target; the executor makes the public source claim true;
-the publisher and release close check it against tag truth.
+When planning assigns a tagging version above the latest published tag,
+`npm run release -- prepare` writes the root README's one generated version
+line. The planner pins the target; the publisher and release close check the
+claim against tag truth.
+
+The rest of the front page is edited only by an order whose leading header on
+main carries `**Front page:** README.md`, within the “What runs today” line
+budget that `docs/control/front-page.json` records on main, where planning
+moves it. The page names its section once among its headings, holds no raw HTML
+outside its marker lines, and names no work-order or decision identifier, date
+or version outside its generated blocks, in text, code or link paths. Each
+counted line between the section’s markers is one whole, unwrapped sentence of
+Markdown prose; a stop followed by a space, after an abbreviation, inside
+quotation marks or at the end of inline code, starts another. A block a command
+writes is listed in the record’s generated blocks by the order that adds it.
+The document check refuses any other front-page change and names each fix;
+`scripts/fixtures/front-page-corpus.json` records every case it decides, and a
+newly found bypass or wrongly refused sentence becomes a row there before the
+check changes. A front-page order applies the operator’s recorded judgment and
+asks only about a choice no record covers. Any other order proposes a
+capability the page should mention as one sentence in its evidence README, and
+when a planning pass finds two such proposals waiting, it files a front-page
+order.
 
 From the operator's 2026-09-04 instruction, normal release assignment and source
 updates happen by default; specify a no-release disposition to opt out. A

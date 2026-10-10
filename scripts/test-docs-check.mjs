@@ -2,11 +2,14 @@ import { write as writeFixture } from "./lib/helpers.mjs";
 import { spawnGit } from "./lib/git.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
+import { frontPageDeclaration } from "./lib/front-page-scope.mjs";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
+import { format } from "prettier";
 import {
   disposeFollowup,
   planningFollowups,
@@ -22,6 +25,9 @@ import {
   operatorWordAdvisories,
   operatorWordFindings,
   homePathFindings,
+  frontPageFindings,
+  frontPageShapeFindings,
+  proseText,
 } from "./docs-check.mjs";
 
 test("WO-178 attributed operator words advise by record, with capture and fingerprinted baseline exceptions", (t) => {
@@ -1611,4 +1617,910 @@ test("a typed operator quotation needs its capture digest; a quoted field or rep
   );
   assert.equal(moved.record, documents[1].record);
   assert.equal(moved.line, 5);
+});
+
+// A repository whose front page is under guard: a base commit on main with
+// the marked page, its control record and the order's authority file (with or
+// without the declaration), then a wo-999 branch where the change happens.
+// The front page every front-page fixture and corpus row starts from: a
+// release block and two counted lines under "What runs today", then "Next".
+const frontPageText = ({
+  version = "v0.1.0",
+  sentences = ["The kernel replays.", "The skeleton runs."],
+  closing = "A closing paragraph.",
+  lead = "",
+} = {}) =>
+  `# Page\n\n## What runs today\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn \`${version}\`.\n<!-- DOTLN-RELEASE-END -->\n\n${lead}<!-- dotln-what-runs:start -->\n${sentences.map((line) => `${line}\n`).join("")}<!-- dotln-what-runs:end -->\n\n## Next\n\n${closing}\n`;
+function frontPageFixture(
+  t,
+  { declare = true, lineBudget = 3, basePage, baseBranch = "main" } = {},
+) {
+  const f = fixture(t);
+  const git = (...args) => {
+    const result = spawnGit(
+      [
+        "-C",
+        f.root,
+        "-c",
+        "user.name=Fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        ...args,
+      ],
+      { encoding: "utf8" },
+    );
+    assert.equal(result.status, 0, `git ${args.join(" ")}\n${result.stderr}`);
+    return result.stdout.trim();
+  };
+  const page = frontPageText;
+  const record = {
+    schemaVersion: 1,
+    page: "README.md",
+    generatedBlocks: [
+      {
+        start: "<!-- DOTLN-RELEASE-BEGIN -->",
+        end: "<!-- DOTLN-RELEASE-END -->",
+      },
+    ],
+    whatRunsToday: {
+      start: "<!-- dotln-what-runs:start -->",
+      end: "<!-- dotln-what-runs:end -->",
+      lineBudget,
+    },
+  };
+  const order = (field) =>
+    `# WO-999 — Fixture\n\n**Track:** machinery\n${field}\n**Objective:** Fixture.\n`;
+  f.write("README.md", basePage ?? page());
+  f.write(`${f.control}/front-page.json`, JSON.stringify(record));
+  f.write(
+    "docs/work-orders/WO-999-fixture.md",
+    order(declare ? "**Front page:** README.md" : ""),
+  );
+  f.controls();
+  git("checkout", "-q", "-b", baseBranch);
+  git("add", "-A");
+  git("commit", "-qm", "base");
+  git("checkout", "-q", "-b", "wo-999");
+  const frontPage = () =>
+    f
+      .check()
+      .failures.filter((line) =>
+        /^(?:README\.md|docs\/control\/front-page\.json)/.test(line),
+      );
+  return { ...f, git, page, order, record, frontPage };
+}
+
+test("the front page changes outside its generated blocks only through an order whose header declared it at the merge base", (t) => {
+  const refused = frontPageFixture(t, { declare: false });
+  assert.deepEqual(refused.frontPage(), []);
+  // The version line is a generated block's interior: free to change.
+  refused.write("README.md", refused.page({ version: "v0.2.0" }));
+  assert.deepEqual(refused.frontPage(), []);
+  refused.write(
+    "README.md",
+    refused.page({ closing: "An appended sentence." }),
+  );
+  assert.match(
+    refused.frontPage().join("\n"),
+    /README\.md: changed outside its generated blocks while WO-999's leading header at the merge base declares no `\*\*Front page:\*\*` field;[^`]* see `git diff [0-9a-f]{12} -- README\.md`/,
+  );
+  // The same sentence inside the budgeted section is refused the same way.
+  refused.write(
+    "README.md",
+    refused.page({
+      sentences: ["The kernel replays.", "A new capability runs."],
+    }),
+  );
+  assert.match(
+    refused.frontPage().join("\n"),
+    /changed outside its generated blocks/,
+  );
+  // Adding the field on the branch itself declares nothing: the base is read.
+  refused.write(
+    "docs/work-orders/WO-999-fixture.md",
+    refused.order("**Front page:** README.md"),
+  );
+  assert.match(
+    refused.frontPage().join("\n"),
+    /while WO-999's leading header at the merge base declares no `\*\*Front page:\*\*` field/,
+  );
+  const admitted = frontPageFixture(t, { declare: true });
+  admitted.write(
+    "README.md",
+    admitted.page({ closing: "An appended sentence." }),
+  );
+  assert.deepEqual(admitted.frontPage(), []);
+  // A branch that names no order has no declaration to admit it.
+  admitted.git("checkout", "-q", "-b", "planning/fixture");
+  assert.match(
+    admitted.frontPage().join("\n"),
+    /changed outside its generated blocks on branch planning\/fixture, which names no work order/,
+  );
+});
+
+test("the control record that governs is the merge base's, so a branch cannot switch the guard off", (t) => {
+  const f = frontPageFixture(t, { declare: false });
+  f.write("README.md", f.page({ closing: "An appended sentence." }));
+  const path = `${f.control}/front-page.json`;
+  // Deleting the record, raising the budget or redrawing the generated blocks
+  // changes nothing about the judgment and is itself refused.
+  rmSync(join(f.root, path));
+  let found = f.frontPage().join("\n");
+  assert.match(
+    found,
+    /front-page\.json: differs from its version at the merge base with main while WO-999's leading header at the merge base declares no/,
+  );
+  assert.match(found, /changed outside its generated blocks/);
+  f.write(
+    path,
+    JSON.stringify({
+      ...f.record,
+      whatRunsToday: { ...f.record.whatRunsToday, lineBudget: 99 },
+    }),
+  );
+  f.write(
+    "README.md",
+    f.page({ sentences: ["One.", "Two.", "Three.", "Four."] }),
+  );
+  found = f.frontPage().join("\n");
+  assert.match(
+    found,
+    /front-page\.json: differs from its version at the merge base/,
+  );
+  assert.match(
+    found,
+    /"What runs today" holds 4 counted lines \(the non-empty lines between its markers\); the budget in docs\/control\/front-page\.json at the merge base is 3/,
+  );
+  f.write(
+    path,
+    JSON.stringify({
+      ...f.record,
+      generatedBlocks: [
+        { start: "<!-- dotln-what-runs:start -->", end: "<!-- never -->" },
+      ],
+    }),
+  );
+  found = f.frontPage().join("\n");
+  assert.match(
+    found,
+    /front-page\.json: differs from its version at the merge base/,
+  );
+  assert.match(
+    found,
+    /front-page\.json: invalid front-page control record: whatRunsToday markers cannot also bound a generated block/,
+  );
+  // A declared order may move the record, and its new record must be valid;
+  // but the section's budget is the merge base's, so raising it on the branch
+  // that fills it admits nothing: planning moves the budget on main.
+  const declared = frontPageFixture(t, { declare: true });
+  declared.write(
+    path,
+    JSON.stringify({
+      ...declared.record,
+      whatRunsToday: { ...declared.record.whatRunsToday, lineBudget: 4 },
+    }),
+  );
+  declared.write(
+    "README.md",
+    declared.page({ sentences: ["One.", "Two.", "Three.", "Four."] }),
+  );
+  assert.match(
+    declared.frontPage().join("\n"),
+    /holds 4 counted lines[^;]*; the budget in docs\/control\/front-page\.json at the merge base is 3\..*planning moves the budget on main/,
+  );
+  declared.write(path, JSON.stringify({ schemaVersion: 2 }));
+  assert.match(
+    declared.frontPage().join("\n"),
+    /front-page\.json: invalid front-page control record: schemaVersion must be 1/,
+  );
+  declared.write(path, "{ not json");
+  assert.match(
+    declared.frontPage().join("\n"),
+    /invalid front-page control record: /,
+  );
+});
+
+test("What runs today keeps one sentence per line within its recorded budget, and the page names no receipt", (t) => {
+  const f = frontPageFixture(t, { declare: true, lineBudget: 3 });
+  f.write(
+    "README.md",
+    f.page({ sentences: ["One runs.", "Two runs.", "Three runs."] }),
+  );
+  assert.deepEqual(f.frontPage(), []);
+  f.write(
+    "README.md",
+    f.page({
+      sentences: ["One runs.", "Two runs.", "Three runs.", "Four runs."],
+    }),
+  );
+  assert.match(
+    f.frontPage().join("\n"),
+    /"What runs today" holds 4 counted lines \(the non-empty lines between its markers\); the budget in docs\/control\/front-page\.json at the merge base is 3/,
+  );
+  // Blank lines inside the section do not count; two sentences on one line
+  // and a line without a terminator are refused; a lost marker fails.
+  f.write(
+    "README.md",
+    f.page({ sentences: ["One runs.", "", "Two runs.", "", "Three runs."] }),
+  );
+  assert.deepEqual(f.frontPage(), []);
+  f.write(
+    "README.md",
+    f.page({ sentences: ["One runs. Two runs.", "Three runs."] }),
+  );
+  assert.match(
+    f.frontPage().join("\n"),
+    /holds more than one sentence; the next starts at "Two runs\."[\s\S]*: "One runs\. Two runs\."/,
+  );
+  f.write("README.md", f.page({ sentences: ["One runs", "Two runs."] }));
+  assert.match(
+    f.frontPage().join("\n"),
+    /does not end a sentence;[^:]*: "One runs/,
+  );
+  f.write("README.md", f.page().replace("<!-- dotln-what-runs:end -->\n", ""));
+  assert.match(
+    f.frontPage().join("\n"),
+    /needs exactly one ordered pair of marker lines/,
+  );
+  // Prose cannot stand between the heading and the opening marker.
+  f.write(
+    "README.md",
+    f.page({ lead: "A lead sentence above the markers.\n\n" }),
+  );
+  assert.match(
+    f.frontPage().join("\n"),
+    /README\.md:9: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->/,
+  );
+  f.write(
+    "README.md",
+    f.page().replace("## What runs today", "## Capabilities"),
+  );
+  assert.match(
+    f.frontPage().join("\n"),
+    /needs the heading ## What runs today/,
+  );
+  // A generated block that never closes is a shape failure, not a mask.
+  f.write("README.md", f.page().replace("<!-- DOTLN-RELEASE-END -->\n", ""));
+  assert.match(
+    f.frontPage().join("\n"),
+    /a generated block opens and never closes with <!-- DOTLN-RELEASE-END -->/,
+  );
+  // Receipts: identifiers, dates and versions outside a generated block.
+  for (const [closing, label] of [
+    ["WO-118 added the loop.", "a work-order identifier"],
+    ["See D004 for the rule.", "a decision identifier"],
+    ["Recorded on 2026-10-09.", "a date"],
+    ["Shipped in v0.2.0.", "a version"],
+    ["Shipped in 0.2.0.", "a version number"],
+  ]) {
+    f.write("README.md", f.page({ closing }));
+    assert.match(
+      f.frontPage().join("\n"),
+      new RegExp(
+        `README\\.md:\\d+: "[^"]+" is ${label} outside a generated block`,
+      ),
+      closing,
+    );
+  }
+  // Without any record nothing about the page is judged.
+  const bare = fixture(t);
+  bare.write("README.md", "# Page\n\nWO-001 shipped v0.1.0 on 2026-01-01.\n");
+  assert.deepEqual(
+    bare.check().failures.filter((line) => /^README\.md/.test(line)),
+    [],
+  );
+});
+
+test("What runs today is one range from its heading to the next heading: no sentence escapes the count and the markers cannot leave the heading", (t) => {
+  const f = frontPageFixture(t, { declare: true, lineBudget: 3 });
+  const twelve = Array.from(
+    { length: 12 },
+    (_, index) => `Extra capability ${index + 1} runs.`,
+  ).join("\n");
+  const base = f.page();
+  const prose = /prose under ## What runs today outside the markers/g;
+  // Sentences below the closing marker, before the next heading, are refused
+  // one by one and are not hidden by a blank line or by distance.
+  f.write(
+    "README.md",
+    base.replace(
+      "<!-- dotln-what-runs:end -->\n",
+      `<!-- dotln-what-runs:end -->\n\n${twelve}\n`,
+    ),
+  );
+  let found = f.frontPage();
+  // The twelve lines are one run, reported once with its line range.
+  assert.equal(found.join("\n").match(prose).length, 1);
+  assert.match(found.join("\n"), /README\.md:14-25: prose under/);
+  // A subheading does not close the section, so sentences under it are still
+  // the section's sentences.
+  f.write(
+    "README.md",
+    base.replace(
+      "<!-- dotln-what-runs:end -->\n",
+      `<!-- dotln-what-runs:end -->\n\n### More\n\nAnother capability runs.\n`,
+    ),
+  );
+  found = f.frontPage().join("\n");
+  assert.equal(found.match(prose).length, 2, found);
+  // The pair moved above the heading leaves the heading's sentences
+  // uncounted: the placement is refused, which is the one failure that
+  // explains the shape.
+  const block = base.slice(
+    base.indexOf("<!-- dotln-what-runs:start -->"),
+    base.indexOf("<!-- dotln-what-runs:end -->") +
+      "<!-- dotln-what-runs:end -->".length,
+  );
+  f.write(
+    "README.md",
+    base
+      .replace(block, twelve)
+      .replace("## What runs today", `${block}\n\n## What runs today`),
+  );
+  found = f.frontPage().join("\n");
+  assert.match(
+    found,
+    /the marker lines <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end --> stand under ## What runs today and before the next heading; found them at lines 3 and 6/,
+  );
+  assert.equal(found.match(prose), null);
+  // The closing marker cannot stand under the next heading either.
+  f.write(
+    "README.md",
+    base.replace(
+      "<!-- dotln-what-runs:end -->\n\n## Next\n",
+      "## Next\n\n<!-- dotln-what-runs:end -->\n",
+    ),
+  );
+  assert.match(
+    f.frontPage().join("\n"),
+    /stand under ## What runs today and before the next heading/,
+  );
+  // A second section under the same heading is refused as a shape, not
+  // counted as two sections.
+  f.write("README.md", base + "\n## What runs today\n\nMore runs.\n");
+  assert.match(
+    f.frontPage().join("\n"),
+    /needs exactly one heading ## What runs today; found 2/,
+  );
+  // Sentences on one line are counted whatever the next one starts with.
+  f.write(
+    "README.md",
+    f.page({
+      sentences: [
+        "One runs. " +
+          Array.from({ length: 12 }, () => "another runs.").join(" "),
+        "Two runs.",
+      ],
+    }),
+  );
+  found = f.frontPage().join("\n");
+  assert.match(
+    found,
+    /README\.md:10: a "What runs today" line holds more than one sentence; the next starts at "another runs\.[\s\S]*: "One runs\. another runs\./,
+  );
+  f.write(
+    "README.md",
+    f.page({ sentences: ["It runs (see below.) and more runs.", "Two runs."] }),
+  );
+  assert.match(f.frontPage().join("\n"), /holds more than one sentence/);
+  // A terminator inside a word, a code span or a link is not a break.
+  f.write(
+    "README.md",
+    f.page({
+      sentences: [
+        "The [guide](/docs/product/00-fixture.md) and `x.mjs` run, i.e.: fine.",
+        "Two runs.",
+      ],
+    }),
+  );
+  assert.deepEqual(f.frontPage(), []);
+  // Prose under the heading that closes the section is the page's own, judged
+  // by the declaration alone.
+  f.write("README.md", f.page({ closing: twelve }));
+  assert.deepEqual(f.frontPage(), []);
+});
+
+test("What runs today judges rendered sentences across inline Markdown, before and after formatting", async (t) => {
+  const f = frontPageFixture(t, { declare: true, lineBudget: 3 });
+  const valid = [
+    [
+      "**One runs.**",
+      "_Two runs._",
+      "[Three runs.](docs/product/00-fixture.md)",
+    ],
+    ["~~One runs.~~", "`Two runs.`", "***Three runs.***"],
+    ["**One runs.", "Two runs.**", "Three runs."],
+    ["**One runs.**  ", "_Two runs._", "Three runs."],
+    [
+      "One runs&#46;",
+      "Two runs\\.",
+      "The `x.mjs` and [guide](docs/product/00-fixture.md) run.",
+    ],
+  ];
+  const invalid = [
+    "**One runs.** **Two runs.** Three runs.",
+    "_One runs._ _Two runs._ Three runs.",
+    "~~One runs.~~ ~~Two runs.~~ Three runs.",
+    "***One runs.*** __Two runs.__ Three runs.",
+    "[One runs.](docs/product/00-fixture.md) [Two runs.](docs/product/00-fixture.md) Three runs.",
+    "`One runs.` **Two runs.** Three runs.",
+    "One runs&#46; Two runs.",
+    "One runs\\. Two runs.",
+    "**“One runs.”** _‘Two runs.’_ Three runs.",
+  ];
+  const check = async (sentences, pattern) => {
+    const source = f.page({ sentences });
+    for (const text of [
+      source,
+      await format(source, { parser: "markdown", proseWrap: "preserve" }),
+    ]) {
+      f.write("README.md", text);
+      const found = f.frontPage();
+      if (pattern) assert.match(found.join("\n"), pattern, text);
+      else assert.deepEqual(found, [], text);
+    }
+  };
+  for (const sentences of valid) await check(sentences);
+  for (const line of invalid)
+    await check([line, "Another runs."], /holds more than one sentence/);
+  await check(["**One runs**", "Another runs."], /does not end a sentence/);
+  // Invisible or block content cannot masquerade as counted sentence lines.
+  for (const line of [
+    "One <em>runs.</em> Two runs.",
+    "> **One runs.** Two runs.",
+    "### **One runs.** Two runs.",
+    "<!-- One runs. --> Two runs.",
+  ])
+    await check([line, "Another runs."], /must be Markdown prose/);
+});
+
+test("What runs today uses rendered heading identity and parsed section boundaries across Markdown spellings", async (t) => {
+  const f = frontPageFixture(t, { declare: true });
+  const headings = [
+    "## **What runs today**",
+    "## _What runs today_",
+    "## `What runs today`",
+    "## [What **runs** today](docs/product/00-fixture.md)",
+    "## What runs&#32;today",
+    "## What runs today ##",
+    "##\tWhat runs today",
+    "  ## What runs today",
+    "**What runs today**\n-------------------",
+  ];
+  for (const heading of headings) {
+    for (const source of [
+      f.page().replace("## What runs today", heading),
+      f.page() + `\n${heading}\n\nAnother runs.\n`,
+    ]) {
+      const duplicate = source.startsWith(f.page());
+      for (const text of [
+        source,
+        await format(source, { parser: "markdown", proseWrap: "preserve" }),
+      ]) {
+        f.write("README.md", text);
+        const found = f.frontPage();
+        if (duplicate)
+          assert.match(
+            found.join("\n"),
+            /needs exactly one heading ## What runs today; found 2/,
+            text,
+          );
+        else assert.deepEqual(found, [], text);
+      }
+    }
+  }
+  // A lower-level or quoted duplicate does not create an unguarded namesake.
+  for (const heading of [
+    "# What runs today",
+    "### What runs today",
+    "> ## What runs today",
+  ]) {
+    f.write("README.md", f.page() + `\n${heading}\n\nAnother runs.\n`);
+    assert.match(
+      f.frontPage().join("\n"),
+      /needs exactly one heading ## What runs today; found 2/,
+    );
+  }
+  f.write("README.md", f.page().replace("## Next", "Next\n----"));
+  assert.deepEqual(f.frontPage(), []);
+  f.write(
+    "README.md",
+    f
+      .page()
+      .replace(
+        "<!-- dotln-what-runs:end -->\n\n## Next",
+        "**Next**\n--------\n\n<!-- dotln-what-runs:end -->",
+      ),
+  );
+  assert.match(
+    f.frontPage().join("\n"),
+    /stand under ## What runs today and before the next heading/,
+  );
+});
+
+// The guard's two-sided corpus: every row names a page shape and whether the
+// guard refuses it. A row is added for each bypass or wrongly refused sentence
+// found later, before the check changes, so a fix cannot reopen an earlier
+// bypass or start refusing prose that earlier passed. DOTLN_FRONT_PAGE_CORPUS
+// names an extra rows file, so a reviewer can try candidate rows through this
+// same harness before proposing them.
+test("front-page corpus: the What runs today guard refuses every recorded bypass and admits every recorded valid page, before and after formatting", async () => {
+  // The page's shape is judged without Git: ownership has its own fixtures.
+  const control = {
+    schemaVersion: 1,
+    page: "README.md",
+    generatedBlocks: [
+      {
+        start: "<!-- DOTLN-RELEASE-BEGIN -->",
+        end: "<!-- DOTLN-RELEASE-END -->",
+      },
+    ],
+    whatRunsToday: {
+      start: "<!-- dotln-what-runs:start -->",
+      end: "<!-- dotln-what-runs:end -->",
+      lineBudget: 3,
+    },
+  };
+  const read = (file) => JSON.parse(readFileSync(file, "utf8")).rows;
+  const rows = [
+    ...read(new URL("./fixtures/front-page-corpus.json", import.meta.url)),
+    ...(process.env.DOTLN_FRONT_PAGE_CORPUS
+      ? read(process.env.DOTLN_FRONT_PAGE_CORPUS)
+      : []),
+  ];
+  const shapes = ["line", "replace", "section", "append"];
+  const keys = new Set([
+    ...shapes,
+    ...["name", "expect", "pattern", "source", "reason", "formatted"],
+    ...["limit", "class", "note"],
+  ]);
+  const twelve = Array.from(
+    { length: 12 },
+    (_, index) => `Extra capability ${index + 1} runs.`,
+  ).join("\n");
+  const names = new Set();
+  const pageOf = (row) => {
+    let text = frontPageText({
+      sentences: row.line === undefined ? undefined : [row.line, "Two run."],
+    });
+    if (row.replace) {
+      assert.ok(text.includes(row.replace[0]), `${row.name}: replace target`);
+      text = text.replace(row.replace[0], () => row.replace[1]);
+    }
+    if (row.section !== undefined) text += `\n${row.section}\n\n${twelve}\n`;
+    if (row.append !== undefined) text += `\n${row.append}\n`;
+    return text;
+  };
+  const wrong = [];
+  for (const row of rows) {
+    assert.ok(["refuse", "admit"].includes(row.expect), row.name);
+    assert.ok(!names.has(row.name), `duplicate row name ${row.name}`);
+    names.add(row.name);
+    assert.deepEqual(
+      Object.keys(row).filter((key) => !keys.has(key)),
+      [],
+      `${row.name}: unknown keys`,
+    );
+    assert.ok(
+      shapes.some((key) => key in row),
+      `${row.name}: no page shape`,
+    );
+    const source = pageOf(row);
+    for (const text of row.formatted === false
+      ? [source]
+      : [
+          source,
+          await format(source, { parser: "markdown", proseWrap: "preserve" }),
+        ]) {
+      const found = frontPageShapeFindings(
+        text,
+        control,
+        "README.md",
+      ).failures.join("\n");
+      const held =
+        row.expect === "admit"
+          ? found === ""
+          : found !== "" && (!row.pattern || found.includes(row.pattern));
+      if (!held)
+        wrong.push(
+          `${row.expect} ${JSON.stringify(row.name)}${text === source ? "" : " after formatting"}${row.pattern ? ` (pattern ${JSON.stringify(row.pattern)})` : ""}: ${found || "no failure"}`,
+        );
+    }
+  }
+  assert.deepEqual(wrong, []);
+});
+
+test("a counted line or heading is judged only from inline node types whose rendered text the check knows; a type a later parser adds is refused", () => {
+  assert.deepEqual(
+    proseText({
+      type: "paragraph",
+      children: [
+        { type: "text", value: "Shown runs. " },
+        { type: "futureNode", value: "Hidden runs." },
+      ],
+    }),
+    { refused: "futureNode" },
+  );
+  assert.deepEqual(
+    proseText({
+      type: "heading",
+      children: [
+        { type: "emphasis", children: [{ type: "text", value: "Shown" }] },
+        { type: "inlineCode", value: " runs" },
+      ],
+    }),
+    { text: "Shown runs" },
+  );
+});
+
+test("the page GitHub shows is the record's page, read through main's configuration and the order's header on main", (t) => {
+  // Another README GitHub may show in its place is refused; a .github file
+  // that is not a directory is not a README location and breaks nothing.
+  const other = frontPageFixture(t, { declare: false });
+  other.write(".github/README.md", "# Another page\n");
+  assert.match(
+    frontPageFindings(other.root).failures.join("\n"),
+    /\.github\/README\.md: GitHub may show this README in place of README\.md/,
+  );
+  rmSync(join(other.root, ".github"), { recursive: true });
+  other.write(".github", "not a directory\n");
+  other.write("README", "Another page.\n");
+  assert.match(
+    frontPageFindings(other.root).failures.join("\n"),
+    /^README: GitHub may show this README in place of README\.md/m,
+  );
+  // The page itself is a regular file, not a link to one.
+  const linked = frontPageFixture(t, { declare: true });
+  linked.write("docs/page-copy.md", linked.page());
+  rmSync(join(linked.root, "README.md"));
+  symlinkSync(
+    join(linked.root, "docs/page-copy.md"),
+    join(linked.root, "README.md"),
+  );
+  assert.match(
+    linked.frontPage().join("\n"),
+    /README\.md: the front page must be a regular file/,
+  );
+  // Moving the control root in the configuration on a branch moves nothing:
+  // the record is read where main's configuration puts it.
+  const moved = frontPageFixture(t, { declare: false });
+  const config = JSON.parse(
+    readFileSync(join(moved.root, "dotln.config.json"), "utf8"),
+  );
+  moved.write(
+    "dotln.config.json",
+    JSON.stringify({
+      ...config,
+      roots: { ...config.roots, control: "docs/elsewhere" },
+    }),
+  );
+  moved.write("README.md", moved.page({ closing: "An appended sentence." }));
+  assert.match(
+    moved.frontPage().join("\n"),
+    /README\.md: changed outside its generated blocks/,
+  );
+  // A malformed field on main refuses the change instead of breaking the check.
+  const malformed = frontPageFixture(t, { declare: false });
+  malformed.git("checkout", "-q", "main");
+  malformed.write(
+    "docs/work-orders/WO-999-fixture.md",
+    malformed.order("**Front page:** README.md (the map only)"),
+  );
+  malformed.git("commit", "-qam", "malformed field");
+  malformed.git("checkout", "-q", "wo-999");
+  malformed.git("merge", "-q", "main");
+  malformed.write(
+    "README.md",
+    malformed.page({ closing: "An appended sentence." }),
+  );
+  assert.match(
+    malformed.frontPage().join("\n"),
+    /field cannot be read: work order has a malformed \*\*Front page:\*\* line/,
+  );
+  // A generated block the record lists stands on the page.
+  const missing = frontPageFixture(t, { declare: true });
+  missing.write(
+    "README.md",
+    missing
+      .page()
+      .replace(
+        /<!-- DOTLN-RELEASE-BEGIN -->[\s\S]*<!-- DOTLN-RELEASE-END -->\n/,
+        "",
+      ),
+  );
+  assert.match(
+    missing.frontPage().join("\n"),
+    /the generated block <!-- DOTLN-RELEASE-BEGIN --> listed in docs\/control\/front-page\.json at the merge base is not on the page/,
+  );
+});
+
+test("main's record decides the page, the section and its budget: a front-page order cannot move the guard or slip a generated block under the section", (t) => {
+  const path = "docs/control/front-page.json";
+  // Moving the page to another file is refused, and the page is still judged.
+  const moved = frontPageFixture(t, { declare: true });
+  moved.write(path, JSON.stringify({ ...moved.record, page: "docs/front.md" }));
+  moved.write("docs/front.md", moved.page());
+  moved.write(
+    "README.md",
+    moved.page({
+      sentences: ["One runs.", "Two runs.", "Three runs.", "Four runs."],
+    }),
+  );
+  const found = frontPageFindings(moved.root).failures.join("\n");
+  assert.match(
+    found,
+    /moves the front page from README\.md to docs\/front\.md/,
+  );
+  assert.match(found, /README\.md: "What runs today" holds 4 counted lines/);
+  // A generated block the order adds may stand elsewhere, not under the section.
+  const added = frontPageFixture(t, { declare: true });
+  const block = {
+    start: "<!-- capabilities:start -->",
+    end: "<!-- capabilities:end -->",
+  };
+  added.write(
+    path,
+    JSON.stringify({
+      ...added.record,
+      generatedBlocks: [...added.record.generatedBlocks, block],
+    }),
+  );
+  const thirteen = Array.from(
+    { length: 13 },
+    (_, index) => `Hidden ${index + 1} runs.`,
+  ).join(" ");
+  added.write(
+    "README.md",
+    added
+      .page()
+      .replace(
+        "<!-- dotln-what-runs:end -->\n",
+        `<!-- dotln-what-runs:end -->\n\n${block.start}\n${thirteen}\n${block.end}\n`,
+      ),
+  );
+  assert.match(
+    added.frontPage().join("\n"),
+    /<!-- capabilities:start --> is a generated block main's record does not list/,
+  );
+  added.write(
+    "README.md",
+    added.page({
+      closing: `A closing paragraph.\n\n${block.start}\nGenerated text.\n${block.end}`,
+    }),
+  );
+  assert.deepEqual(added.frontPage(), []);
+});
+
+test("a page whose base carries no markers is being brought under guard: shape and budget are judged, the change is not compared", (t) => {
+  const installing = frontPageFixture(t, {
+    declare: false,
+    basePage: "# Page\n\nAn older page with no markers at all.\n",
+  });
+  // The page on main lacks the markers, but this branch does not change
+  // it: the finding is main's, reported as a notice, not refused here.
+  assert.deepEqual(installing.frontPage(), []);
+  assert.match(
+    frontPageFindings(installing.root).notices.join("\n"),
+    /needs exactly one ordered pair of marker lines.*\(on main; this branch does not change the page\)/,
+  );
+  installing.write(
+    "README.md",
+    installing.page({ closing: "Rewritten without a declaration." }),
+  );
+  assert.deepEqual(installing.frontPage(), []);
+  // Without a merge base with main only the shape is judged, with a notice.
+  const trunk = frontPageFixture(t, { declare: false, baseBranch: "trunk" });
+  trunk.write("README.md", trunk.page({ closing: "An appended sentence." }));
+  const result = trunk.check();
+  assert.deepEqual(
+    result.failures.filter((line) => /^README\.md/.test(line)),
+    [],
+  );
+  assert.match(
+    result.notices.join("\n"),
+    /README\.md: no merge base with main; the front-page change is not compared/,
+  );
+});
+
+test("the leading header's Front page field is read as typed data, never from criteria prose", () => {
+  const header = (field) =>
+    `# WO-999 — Fixture\n\n**Track:** machinery\n${field}\n**Objective:** Fixture README.md prose.\n\n**Acceptance criteria (all required)**\n\n1. README.md is rewritten.\n`;
+  assert.equal(frontPageDeclaration(header(""), "wo"), null);
+  assert.deepEqual(
+    frontPageDeclaration(header("**Front page:** README.md"), "wo"),
+    ["README.md"],
+  );
+  assert.deepEqual(
+    frontPageDeclaration(
+      header("**Front page:** README.md, docs/README.md"),
+      "wo",
+    ),
+    ["README.md", "docs/README.md"],
+  );
+  assert.throws(
+    () =>
+      frontPageDeclaration(
+        header("**Front page:** README.md\n**Front page:** README.md"),
+        "wo",
+      ),
+    /duplicate/,
+  );
+  assert.throws(
+    () => frontPageDeclaration(header("**Front page:**"), "wo"),
+    /malformed/,
+  );
+  assert.throws(
+    () => frontPageDeclaration(header("**Front page:** ../x.md"), "wo"),
+    /malformed/,
+  );
+  // A field below the Objective is body text, not metadata.
+  assert.equal(
+    frontPageDeclaration(
+      header("").replace("prose.\n", "prose.\n\n**Front page:** README.md\n"),
+      "wo",
+    ),
+    null,
+  );
+});
+
+test("the refusal is new: the document check at 08845c71 admits the same undeclared change", async (t) => {
+  const historical = "08845c71";
+  const repository = resolve(import.meta.dirname, "..");
+  const present = spawnGit([
+    "-C",
+    repository,
+    "cat-file",
+    "-e",
+    `${historical}^{commit}`,
+  ]);
+  if (present.status !== 0) {
+    t.skip(`commit ${historical} is not in this clone`);
+    return;
+  }
+  const f = frontPageFixture(t, { declare: false });
+  f.write("README.md", f.page({ closing: "An appended sentence." }));
+  assert.match(
+    f.frontPage().join("\n"),
+    /changed outside its generated blocks/,
+  );
+  // The historical scripts tree runs beside this checkout's installed
+  // dependencies; nothing in this repository is written.
+  const extracted = mkdtempSync(join(tmpdir(), "dotln-docs-check-historical-"));
+  t.after(() => rmSync(extracted, { recursive: true, force: true }));
+  const archive = join(extracted, "historical.tar");
+  const archived = spawnGit(
+    [
+      "-C",
+      repository,
+      "archive",
+      "--format=tar",
+      "-o",
+      archive,
+      historical,
+      "scripts",
+      "packages/skeleton/src",
+    ],
+    { encoding: "utf8" },
+  );
+  assert.equal(archived.status, 0, archived.stderr);
+  const untar = spawnSync("tar", ["-xf", archive, "-C", extracted], {
+    encoding: "utf8",
+  });
+  assert.equal(untar.status, 0, untar.stderr);
+  symlinkSync(
+    join(repository, "node_modules"),
+    join(extracted, "node_modules"),
+  );
+  const old = await import(
+    pathToFileURL(join(extracted, "scripts/docs-check.mjs")).href
+  );
+  const before = old.checkDocs(f.root, {
+    ceilings: f.ceilings,
+    baseline: f.baseline,
+  });
+  assert.deepEqual(
+    before.failures.filter((line) => /README\.md: /.test(line)),
+    [],
+    "the historical check judged nothing about the front page",
+  );
 });

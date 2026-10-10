@@ -22,6 +22,10 @@ import {
 } from "./lib/release-preparation.mjs";
 
 const decisionsPath = "docs/evidence/WO-099/decisions.md";
+const readmeWith = (blockLine, leading = "") =>
+  `# Fixture\n\n<!-- DOTLN-RELEASE-BEGIN -->\n${leading}${blockLine}\n<!-- DOTLN-RELEASE-END -->\n\nHistorical v0.1.0 stays.\n`;
+const generatedReadme = (version) =>
+  readmeWith(`This source prepares DotLn \`${version}\`.`);
 const decisionsIn = (text) =>
   [...text.matchAll(/^```json\n([\s\S]*?)^```/gm)].map((match) =>
     JSON.parse(match[1]),
@@ -45,7 +49,9 @@ function fixture({
     : "# WO-099 — fixture (version assigned at activation)";
   const sources = {
     [authorityPath]: `${title}\n\n**Release classification:** ${classification}. Existing scope.\n\n**Objective:** Keep this exact paragraph.\n`,
-    "README.md": `# Fixture\n\n<!-- DOTLN-RELEASE-BEGIN -->\n\nThis source prepares \`${claim}\`. Keep the reviewed description.\n<!-- DOTLN-RELEASE-END -->\n\nHistorical v0.1.0 stays.\n`,
+    // The block as a hand left it: a blank line and older wording around the
+    // claim. Preparation rewrites it as the one generated line.
+    "README.md": readmeWith(`This source prepares \`${claim}\`.`, "\n"),
     // A product document the preparation must never touch (WO-086).
     "docs/product/06-roadmap.md": `# Roadmap\n\n## Release boundary\n\nGenerated table stands here.\n\n## Later work\n\nKeep this section.\n`,
     "docs/control/orders/WO-099.jsonl": "fixture control bytes\n",
@@ -107,10 +113,7 @@ test("release preparation records a collision once, as the order's decision, and
       after[f.state.workOrderPath],
       f.sources[f.state.workOrderPath].replace("v0.13.2", "v0.13.3"),
     );
-    assert.equal(
-      after["README.md"],
-      f.sources["README.md"].replace("v0.13.2", "v0.13.3"),
-    );
+    assert.equal(after["README.md"], generatedReadme("v0.13.3"));
     for (const path of Object.keys(f.sources).slice(2))
       assert.equal(after[path], f.sources[path], path);
     const [decision, ...others] = decisionsIn(after[decisionsPath]);
@@ -242,10 +245,7 @@ test("a placeholder heading is assigned the next version and its decision keeps 
       after[f.state.workOrderPath].split("\n", 1)[0],
       "# WO-099 — fixture (v0.13.3)",
     );
-    assert.equal(
-      after["README.md"],
-      f.sources["README.md"].replace("v0.13.1", "v0.13.3"),
-    );
+    assert.equal(after["README.md"], generatedReadme("v0.13.3"));
     const [decision] = decisionsIn(after[decisionsPath]);
     assert.equal(decision.dispatch, "resume: next; release prepare");
     assert.match(
@@ -281,6 +281,40 @@ test("a placeholder heading is assigned the next version and its decision keeps 
   }
 });
 
+test("the release block becomes the one generated line, and prose beside or below the claim refuses before any write", () => {
+  for (const block of [
+    "This source prepares `v0.13.2`.\nA sentence an order appended.",
+    "This source prepares `v0.13.2`. Keep the reviewed description.",
+    "This source prepares DotLn `v0.13.2`, and now also compiles tables.",
+  ]) {
+    const prose = fixture();
+    try {
+      writeFileSync(join(prose.root, "README.md"), readmeWith(block));
+      const before = prose.snapshot();
+      assert.throws(
+        () => prose.plan(),
+        /release block to hold only its version line; move other text out of the block/,
+        block,
+      );
+      assert.deepEqual(prose.snapshot(), before);
+    } finally {
+      prose.dispose();
+    }
+  }
+  const generated = fixture();
+  try {
+    writeFileSync(
+      join(generated.root, "README.md"),
+      generatedReadme("v0.13.2"),
+    );
+    applyReleasePreparation(generated.plan());
+    assert.equal(generated.snapshot()["README.md"], generatedReadme("v0.13.3"));
+    assert.deepEqual(generated.plan().edits, []);
+  } finally {
+    generated.dispose();
+  }
+});
+
 test("release preparation follows the existing classification and skips an available target", () => {
   for (const [classification, target] of [
     ["minor", "v0.14.0"],
@@ -293,13 +327,34 @@ test("release preparation follows the existing classification and skips an avail
       f.dispose();
     }
   }
+  // A current target is not retimed, but the block a hand left with older
+  // wording and a blank line is still rewritten as the one generated line,
+  // with no heading edit and no decision; the generated line itself is a
+  // no-op, with or without an observed tag.
   const f = fixture({ target: "v0.15.0" });
   try {
+    for (const plan of [
+      f.plan(),
+      planReleasePreparation(f.root, f.state, undefined, "2026-09-07"),
+    ]) {
+      assert.equal(plan.target, "v0.15.0");
+      assert.equal(plan.decision, null);
+      assert.deepEqual(
+        plan.edits.map((edit) => edit.path),
+        [join(f.root, "README.md")],
+      );
+      assert.equal(plan.edits[0].after, generatedReadme("v0.15.0"));
+    }
+    applyReleasePreparation(f.plan());
+    assert.equal(f.snapshot()["README.md"], generatedReadme("v0.15.0"));
+    for (const path of Object.keys(f.sources).filter((p) => p !== "README.md"))
+      assert.equal(f.snapshot()[path], f.sources[path], path);
     assert.deepEqual(f.plan().edits, []);
     assert.deepEqual(
       planReleasePreparation(f.root, f.state, undefined, "2026-09-07").edits,
       [],
     );
+    assert.ok(!existsSync(join(f.root, decisionsPath)), "no decision recorded");
   } finally {
     f.dispose();
   }
@@ -442,20 +497,37 @@ test("a decisions record is never created outside the repository", () => {
   }
 });
 
-test("release preparation preserves prerelease examples when replacing the strict target", () => {
+test("release preparation preserves prerelease examples in the heading and outside the block when replacing the strict target", () => {
   const f = fixture();
   try {
-    for (const path of [f.state.workOrderPath, "README.md"])
-      writeFileSync(
-        join(f.root, path),
-        f.sources[path].replace("v0.13.2", "v0.13.2-beta then v0.13.2"),
-      );
+    writeFileSync(
+      join(f.root, f.state.workOrderPath),
+      f.sources[f.state.workOrderPath].replace(
+        "v0.13.2",
+        "v0.13.2-beta then v0.13.2",
+      ),
+    );
+    // Prose outside the markers is the page's own and is never touched; the
+    // block itself holds nothing but the generated line afterwards.
+    writeFileSync(
+      join(f.root, "README.md"),
+      f.sources["README.md"].replace(
+        "Historical v0.1.0 stays.",
+        "Historical v0.1.0-beta then v0.1.0 stays.",
+      ),
+    );
     applyReleasePreparation(f.plan());
-    for (const path of [f.state.workOrderPath, "README.md"])
-      assert.match(
-        readFileSync(join(f.root, path), "utf8"),
-        /v0.13.2-beta then v0.13.3/,
-      );
+    assert.match(
+      readFileSync(join(f.root, f.state.workOrderPath), "utf8"),
+      /v0.13.2-beta then v0.13.3/,
+    );
+    assert.equal(
+      readFileSync(join(f.root, "README.md"), "utf8"),
+      generatedReadme("v0.13.3").replace(
+        "Historical v0.1.0 stays.",
+        "Historical v0.1.0-beta then v0.1.0 stays.",
+      ),
+    );
   } finally {
     f.dispose();
   }

@@ -20,6 +20,11 @@ import {
 // The heading an order carries until its target is assigned.
 export const activationPlaceholder = "(version assigned at activation)";
 
+// The only line the README release block holds: the version claim this
+// command writes and the release surfaces compare with tag truth.
+export const releaseClaimLine = (version) =>
+  `This source prepares DotLn \`${version}\`.`;
+
 const dispatches = {
   active: "next",
   "ready-to-verify": "verify",
@@ -164,7 +169,8 @@ export function planReleasePreparation(
     );
   const start = lines.indexOf(begin) + 1;
   const finish = lines.indexOf(end);
-  const block = lines.slice(start, finish).join("\n");
+  const blockLines = lines.slice(start, finish).filter((line) => line.trim());
+  const block = blockLines.join("\n");
   const claims = strictVersionsIn(block);
   if (claims.length !== 1 || (!unassigned && claims[0] !== previous))
     throw new Error(
@@ -175,6 +181,20 @@ export function planReleasePreparation(
   if (unassigned && !latest)
     throw new Error(
       "release prepare cannot assign a target without an observed release tag; assign the heading and README claim by hand",
+    );
+  // The block is this command's to write and holds nothing but the claim: a
+  // second line, or words beside the claim on its line, is someone's prose,
+  // which must move out before a retime rather than vanish under one. The two
+  // older spellings of the claim are admitted so an unretimed page still
+  // prepares; the write below always produces the current spelling.
+  const claimForms = [
+    releaseClaimLine(claims[0]),
+    `This source prepares \`${claims[0]}\`.`,
+    `This source is DotLn \`${claims[0]}\`.`,
+  ];
+  if (blockLines.length !== 1 || !claimForms.includes(blockLines[0].trim()))
+    throw new Error(
+      "release prepare requires the README release block to hold only its version line; move other text out of the block",
     );
   // The order's decisions record holds any assignment or collision this
   // command records (WO-086). It is refused while conflicted in every mode,
@@ -226,7 +246,16 @@ export function planReleasePreparation(
     throw new Error(
       `release prepare refuses while ${decisionsPath} has an authored conflict; resolve it, stage it with git add -- ${decisionsPath}, then rerun ${integration ? `npm run worktree -- integrate ${state.workOrderId} --continue` : "npm run release -- prepare"}. Nothing was written.`,
     );
-  if (!unassigned && (!latest || compareVersions(previous, latest) > 0))
+  // A current target leaves the heading alone; the block is still rewritten
+  // as the one generated line when a hand or an older spelling left anything
+  // else there, so every admitted input ends in the same bytes.
+  if (!unassigned && (!latest || compareVersions(previous, latest) > 0)) {
+    const generated = lines.toSpliced(
+      start,
+      finish - start,
+      releaseClaimLine(previous),
+    );
+    const after = generated.join("\n");
     return {
       previous,
       target: previous,
@@ -234,8 +263,10 @@ export function planReleasePreparation(
       latest,
       assigned: false,
       decision: null,
-      edits: [],
+      edits:
+        after === readme ? [] : [{ path: paths[1], before: readme, after }],
     };
+  }
 
   const parts = semver(latest);
   const axis = { major: 0, minor: 1, patch: 2 }[classification];
@@ -254,11 +285,9 @@ export function planReleasePreparation(
   const newHeading = unassigned
     ? `${heading.trimEnd().slice(0, -activationPlaceholder.length)}(${target})`
     : heading.replace(boundary(previous), target);
-  lines.splice(
-    start,
-    finish - start,
-    block.replace(boundary(claims[0]), target),
-  );
+  // Whatever spacing or wording surrounded the claim, the block is rewritten
+  // as the one generated line.
+  lines.splice(start, finish - start, releaseClaimLine(target));
 
   // The one record of an assignment or a collision: a decision in the
   // order's evidence, never a product-document or README paragraph.

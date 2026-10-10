@@ -159,7 +159,7 @@ await test("test-concurrent-control", async (t) => {
         write(
           root,
           "README.md",
-          `# Fixture\n\n<!-- DOTLN-RELEASE-BEGIN -->\n\nThis source is DotLn \`${version}\`.\n<!-- DOTLN-RELEASE-END -->\n`,
+          `# Fixture\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn \`${version}\`.\n<!-- DOTLN-RELEASE-END -->\n`,
         );
         runGit(root, ["add", "."], { ...fixtureGitOptions, cwd: root });
         recordGateChecks(root, [

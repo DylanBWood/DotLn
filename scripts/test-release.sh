@@ -297,7 +297,7 @@ write_release_block() {
     '' \
     '<!-- DOTLN-RELEASE-BEGIN -->' \
     '' \
-    "This source is DotLn \`$version\`." \
+    "This source prepares DotLn \`$version\`." \
     '<!-- DOTLN-RELEASE-END -->' >"$repository/README.md"
 }
 
@@ -512,15 +512,15 @@ printf '# No release block\n' >"$main/README.md"
 assert_surface_failure 'observed 0 begin marker(s), 0 end marker(s)'
 printf '%s\n' \
   '<!-- DOTLN-RELEASE-END -->' \
-  'This source is DotLn `v0.2.1`.' \
+  'This source prepares DotLn `v0.2.1`.' \
   '<!-- DOTLN-RELEASE-BEGIN -->' >"$main/README.md"
 assert_surface_failure 'observed 1 begin marker(s), 1 end marker(s), order invalid'
 printf '%s\n' \
   '<!-- DOTLN-RELEASE-BEGIN -->' \
-  'This source is DotLn `v0.2.1`.' \
+  'This source prepares DotLn `v0.2.1`.' \
   '<!-- DOTLN-RELEASE-END -->' \
   '<!-- DOTLN-RELEASE-BEGIN -->' \
-  'This source is DotLn `v0.2.1`.' \
+  'This source prepares DotLn `v0.2.1`.' \
   '<!-- DOTLN-RELEASE-END -->' >"$main/README.md"
 assert_surface_failure 'observed 2 begin marker(s), 2 end marker(s)'
 write_release_block "$main" v0.2.1
@@ -530,9 +530,20 @@ write_release_block "$main" v0.2.1-beta
 assert_surface_failure 'observed no strict version; expected exactly one v0.2.1'
 printf '%s\n' \
   '<!-- DOTLN-RELEASE-BEGIN -->' \
-  'This source is DotLn `v0.2.1`, not `v9.9.9`.' \
+  'This source prepares DotLn `v0.2.1`, not `v9.9.9`.' \
   '<!-- DOTLN-RELEASE-END -->' >"$main/README.md"
 assert_surface_failure 'observed v0.2.1, v9.9.9; expected exactly one v0.2.1'
+printf '%s\n' \
+  '<!-- DOTLN-RELEASE-BEGIN -->' \
+  'This source prepares DotLn `v0.2.1`.' \
+  'A sentence an order appended.' \
+  '<!-- DOTLN-RELEASE-END -->' >"$main/README.md"
+assert_surface_failure 'observed 2 non-empty lines between the markers; expected exactly the generated line "This source prepares DotLn `v0.2.1`."; move other text outside the markers and rerun npm run release -- prepare'
+printf '%s\n' \
+  '<!-- DOTLN-RELEASE-BEGIN -->' \
+  'This source prepares DotLn `v0.2.1`, and now also compiles tables.' \
+  '<!-- DOTLN-RELEASE-END -->' >"$main/README.md"
+assert_surface_failure 'observed line "This source prepares DotLn `v0.2.1`, and now also compiles tables."; expected exactly the generated line "This source prepares DotLn `v0.2.1`."'
 write_release_block "$main" v0.2.1
 printf '# WO-099 — malformed fixture target, v0.2.1-beta\n\n**Objective:** Reject a non-strict target.\n\n**Non-goals:** No distribution.\n' >"$main/docs/work-orders/WO-099-fixture.md"
 if malformed_authority="$(release_command check-surfaces 2>&1)"; then
