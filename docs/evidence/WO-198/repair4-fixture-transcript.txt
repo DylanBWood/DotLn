@@ -1,0 +1,44 @@
+✔ WO-198 shared-ref comparisons name absence transitions and isolate unreadable fields (1.351709ms)
+ℹ PROOF WO-198 comparison: absent creation/removal, both interval directions, each unreadable field on either side, all-unreadable and malformed baselines
+✔ WO-198 origin/main created between failed linked-worktree gates is named exactly once (1020.161875ms)
+ℹ PROOF WO-198 branch creation shared refs moved: since previous: origin/main absent..b285555aea3a2fd5e2a8e502e99d4201ca74901f
+✔ WO-198 shared refs tolerate absent branches and count only annotated v tags (218.80525ms)
+✔ WO-198 branch reads distinguish clean unresolved refs from unavailable reads (331.045792ms)
+ℹ PROOF WO-198 Git reads: missing, removed, dangling and non-commit refs resolve absent; a launch failure records every field unreadable without throwing
+✔ WO-198 failed shared-ref enumerations retain unknown fields instead of partial counts (268.825667ms)
+ℹ PROOF WO-198 unreadable enumerations: dangling tag degrades only tags; recovery restores counts; damaged packed-refs degrades all four reads without throwing
+✔ WO-198 unreadable shared tags before and during a passing linked-worktree gate preserve its row and summary (1326.133041ms)
+ℹ PROOF WO-198 unreadable tag before document gate: exit 0, one durable row, four-field snapshots, one summary, no delta
+ℹ PROOF WO-198 unreadable tag during plain gate: exit 0, one durable row, four-field snapshots, one summary, no delta
+✔ WO-198 unreadable enumerations and unresolved branches preserve a failed gate and its observed movement (1408.603708ms)
+ℹ PROOF WO-198 failed tag read before gate: exit 1, one durable failed row, four-field snapshots, one summary, no fabricated delta
+ℹ PROOF WO-198 failed unresolved branch during gate: exit 1, one durable failed row, four-field snapshots, one summary, clean unresolved commit named absent
+✔ WO-198 a sibling merge and tag during a worktree's gates change no result and are named on the row (2208.594834ms)
+ℹ PROOF WO-198 sibling {"checkId":"npm run test:docs","before":{"start":{"originMain":"acf37541fa39ac741c882cf09215e9e0f287ade5","main":"acf37541fa39ac741c882cf09215e9e0f287ade5","tags":{"count":0,"newest":"absent"},"dotlnRefs":0},"end":{"originMain":"acf37541fa39ac741c882cf09215e9e0f287ade5","main":"acf37541fa39ac741c882cf09215e9e0f287ade5","tags":{"count":0,"newest":"absent"},"dotlnRefs":0}},"after":{"start":{"originMain":"75f045730b55e1ec0cfcb7f28f946aa09ff97040","main":"75f045730b55e1ec0cfcb7f28f946aa09ff97040","tags":{"count":1,"newest":"v9000.0.1"},"dotlnRefs":1},"end":{"originMain":"75f045730b55e1ec0cfcb7f28f946aa09ff97040","main":"75f045730b55e1ec0cfcb7f28f946aa09ff97040","tags":{"count":1,"newest":"v9000.0.1"},"dotlnRefs":1}},"tasks":[{"name":"document-barrier","exitCode":0},{"name":"alpha","exitCode":0},{"name":"beta","exitCode":0}],"deltaLines":0}
+ℹ PROOF WO-198 sibling {"checkId":"npm test","before":{"start":{"originMain":"acf37541fa39ac741c882cf09215e9e0f287ade5","main":"acf37541fa39ac741c882cf09215e9e0f287ade5","tags":{"count":0,"newest":"absent"},"dotlnRefs":0},"end":{"originMain":"acf37541fa39ac741c882cf09215e9e0f287ade5","main":"acf37541fa39ac741c882cf09215e9e0f287ade5","tags":{"count":0,"newest":"absent"},"dotlnRefs":0}},"after":{"start":{"originMain":"75f045730b55e1ec0cfcb7f28f946aa09ff97040","main":"75f045730b55e1ec0cfcb7f28f946aa09ff97040","tags":{"count":1,"newest":"v9000.0.1"},"dotlnRefs":1},"end":{"originMain":"75f045730b55e1ec0cfcb7f28f946aa09ff97040","main":"75f045730b55e1ec0cfcb7f28f946aa09ff97040","tags":{"count":1,"newest":"v9000.0.1"},"dotlnRefs":1}},"tasks":[{"name":"build","exitCode":0},{"name":"alpha","exitCode":0},{"name":"beta","exitCode":0}],"deltaLines":0}
+✔ WO-198 a failed row names movement since its own check's previous row exactly once (2049.878708ms)
+ℹ PROOF WO-198 forced failure shared refs moved: since previous: origin/main 4ed1a972486e294043953fa0abe5fc15f011e9f1..1e8869d565812244212498ce5f535301a974e226; since previous: main 4ed1a972486e294043953fa0abe5fc15f011e9f1..1e8869d565812244212498ce5f535301a974e226; since previous: tags +v9000.0.1 (count 0..1, newest absent..v9000.0.1); since previous: refs/dotln/ 0..1
+✔ WO-198 damaged archive JSON cannot prevent recording a failed gate (513.402167ms)
+ℹ PROOF WO-198 damaged archive: exit 1, two hot rows, complete snapshot, one summary, no delta
+✔ WO-198 an unselectable archived timestamp still permits movement during the failed run (824.42225ms)
+ℹ PROOF WO-198 unselectable history shared refs moved: during run: origin/main fd1d3ae41954978dbb56b9c64f86d5bb54eaddd0..93fd358a343cbec0705e3083660260f202376778; during run: main fd1d3ae41954978dbb56b9c64f86d5bb54eaddd0..93fd358a343cbec0705e3083660260f202376778; during run: tags +v9000.0.1 (count 0..1, newest absent..v9000.0.1); during run: refs/dotln/ 0..1
+✔ WO-198 snapshot validation rejects malformed shapes without starting a gate (0.372416ms)
+ℹ PROOF WO-198 snapshot validator: 21 malformed shapes rejected, two valid controls accepted, no fixture gates
+▶ WO-198 incomplete earlier snapshots never prevent recording a failed gate
+  ✔ empty snapshot (547.831042ms)
+  ✔ missing tags (553.082709ms)
+✔ WO-198 incomplete earlier snapshots never prevent recording a failed gate (1101.39575ms)
+ℹ PROOF WO-198 malformed snapshots: 2 variants recorded exit 1, complete snapshots and one summary without an invented delta
+✔ WO-198 an incomplete earlier snapshot still permits movement during the failed run (837.955958ms)
+ℹ PROOF WO-198 incomplete baseline shared refs moved: during run: origin/main 8e949d26ef053617ca68b653688ea3d8c795d643..5dffc49e0912ecd2fb414df27111ac0725553cda; during run: main 8e949d26ef053617ca68b653688ea3d8c795d643..5dffc49e0912ecd2fb414df27111ac0725553cda; during run: tags +v9000.0.1 (count 0..1, newest absent..v9000.0.1); during run: refs/dotln/ 0..1
+✔ WO-198 first and legacy rows detect movement during a failed run, including a return to the previous value (1318.640334ms)
+ℹ PROOF WO-198 during-run shared refs moved: during run: origin/main db0b79a363fd6d27d3db52cbc4552d0e58bf0686..8f2f686812bbf388088de99fc28f43cf16a29574; during run: main db0b79a363fd6d27d3db52cbc4552d0e58bf0686..8f2f686812bbf388088de99fc28f43cf16a29574; during run: tags +v9000.0.1 (count 0..1, newest absent..v9000.0.1); during run: refs/dotln/ 0..1
+ℹ PROOF WO-198 round-trip shared refs moved: since previous: origin/main 8f2f686812bbf388088de99fc28f43cf16a29574..db0b79a363fd6d27d3db52cbc4552d0e58bf0686; during run: origin/main db0b79a363fd6d27d3db52cbc4552d0e58bf0686..8f2f686812bbf388088de99fc28f43cf16a29574
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13502.231834

@@ -1,0 +1,101 @@
+
+> test:docs
+> node scripts/test-runner.mjs --document
+
+PROGRESS [format] 0.0 s started
+PASS format 7.63 s
+PROGRESS [build] 0.0 s started
+PASS build 0.77 s
+PROGRESS [release-surfaces] 0.0 s started
+PROGRESS [license-surfaces] 0.0 s started
+PROGRESS [publication] 0.0 s started
+PROGRESS [docs-check] 0.0 s started
+PASS publication 0.21 s
+PROGRESS [comment-labels] 0.0 s started
+PASS comment-labels 1.29 s
+PROGRESS [index] 0.0 s started
+PASS index 2.40 s
+PROGRESS [lineage] 0.0 s started
+PASS lineage 0.07 s
+PROGRESS [authority-evidence] 0.0 s started
+PASS authority-evidence 0.70 s
+PROGRESS [harness] 0.0 s started
+PASS harness 0.17 s
+PROGRESS [harness-context] 0.0 s started
+PASS harness-context 0.18 s
+PROGRESS [harness-evidence] 0.0 s started
+PASS harness-evidence 0.38 s
+PROGRESS [artifact-evidence] 0.0 s started
+PASS license-surfaces 5.76 s
+PASS release-surfaces 5.79 s
+PROGRESS [verification-evidence] 0.0 s started
+PROGRESS [feedback-evidence] 0.0 s started
+PASS artifact-evidence 0.29 s
+PROGRESS [meta] 0.0 s started
+PASS verification-evidence 1.65 s
+PASS feedback-evidence 3.29 s
+PASS meta 3.43 s
+PROGRESS [docs-check] 15.0 s running task: docs-check (reports no cases); last report: waiting for the next case report
+PASS docs-check 21.13 s
+  [docs-check] NEWER local release tags not in docs/product/06-roadmap.md: v0.66.0, v0.66.1, v0.66.2, v0.66.3, v0.67.0, v0.67.1, v0.68.0, v0.69.0, v0.69.1, v0.69.2, v0.70.0, v0.71.0, v0.71.1, v0.72.0, v0.73.0; the table stays valid for its recorded tags; run npm run release -- list --markdown --write to add them
+PROGRESS [resume] 0.0 s started
+PROGRESS [launchpad-docs] 0.0 s started
+PROGRESS [docs-check-fixtures] 0.0 s started
+PROGRESS [comment-labels-fixtures] 0.0 s started
+PROGRESS [comment-labels-fixtures] 0.6 s # Subtest: a new comment line that carries a finding label, a bare decision number or a leading order identifier fails; an explanation passes
+PASS comment-labels-fixtures 0.63 s
+PROGRESS [lineage-fixtures] 0.0 s started
+PROGRESS [lineage-fixtures] 0.6 s # Subtest: index counts lead memberships, wrapped labels and prose-only/reference sections
+PASS lineage-fixtures 0.64 s
+PROGRESS [kernel-docs] 0.0 s started
+PROGRESS [kernel-docs] 0.2 s # Subtest: packages/kernel/dist/test/ac1-purity.test.js
+PROGRESS [kernel-docs] 1.2 s # Subtest: [document] WO-045 committed EventEnvelope streams decode and round-trip byte-identically
+PASS kernel-docs 1.23 s
+PROGRESS [skeleton-docs] 0.0 s started
+PROGRESS [skeleton-docs] 0.1 s # Subtest: packages/skeleton/dist/test/artifact-identity.test.js
+PROGRESS [launchpad-docs] 4.2 s # Subtest: [document] WO-075 criterion 4: the cold-start bytes of each role inside the export are not larger than core's
+PASS launchpad-docs 4.24 s
+PROGRESS [console-docs] 0.0 s started
+PROGRESS [docs-check-fixtures] 5.2 s # Subtest: WO-178 attributed operator words advise by record, with capture and fingerprinted baseline exceptions
+PROGRESS [docs-check-fixtures] 6.5 s # Subtest: document gate prints each ceiling advisory once and refuses invalid metadata at default and relocated roots
+PROGRESS [docs-check-fixtures] 7.8 s     # Subtest: records
+PROGRESS [skeleton-docs] 6.0 s # Subtest: [document] WO-180 AC1: named base failure precedes the repaired candidate and survives replay
+PROGRESS [docs-check-fixtures] 9.8 s # Subtest: document gate forwards explicit success diagnostics and preserves full failure output
+PASS docs-check-fixtures 9.81 s
+PROGRESS [resident-bind] 0.0 s started
+PROGRESS [console-docs] 5.8 s # Subtest: [document] WO-174 console fixture generator checks the current lazy exports
+PROGRESS [skeleton-docs] 11.2 s # Subtest: [document] WO-011 selfhost executes the real repository audit, recovers its saved result, and independently verifies once
+PROGRESS [resume] 15.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [console-docs] 16.5 s # Subtest: [document] WO-115 a bound resident serves terminal bytes and events under the terminal's compiled authority, refuses in terminal shape and replays its receipts
+PROGRESS [resident-bind] 12.1 s # Subtest: bind writes a store the runtime accepts and aims at the bound worktree
+PASS resident-bind 12.15 s
+PROGRESS [local-runner-double] 0.0 s started
+PROGRESS [local-runner-double] 0.6 s # Subtest: WO-138 matrix pre-registers 30 baselines, five one-factor cells and three failure cells
+PROGRESS [local-runner-double] 3.0 s # Subtest: WO-110 the smoke records an envelope as shapes and keeps model text out
+PROGRESS [console-docs] 20.9 s # Subtest: [document] WO-115 the compiled envelope admits or refuses each command by the terminal classifier's effect, through the terminal hooks' decider
+PASS local-runner-double 3.99 s
+PROGRESS [plan-refutation-current] 0.0 s started
+PROGRESS [skeleton-docs] 25.8 s # Subtest: [document] WO-184 R9: committed no-notice replay preserves the pre-edit command and prompt
+PROGRESS [skeleton-docs] 27.2 s # Subtest: [document] WO-125 observed efforts reach the process and durable launch claim without effective readback
+PROGRESS [resume] 30.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PASS plan-refutation-current 4.08 s
+PROGRESS [artifact-corpus] 0.0 s started
+PROGRESS [artifact-corpus] 0.3 s # Subtest: WO-101 independent pair-arithmetic hash is planted on published FNV-1a-64 values
+PASS artifact-corpus 0.29 s
+PROGRESS [registrations] 0.0 s started
+PROGRESS [skeleton-docs] 28.7 s # Subtest: [document] WO-009 AC1/4 one process replaces only the executor; status is read-only and replay is identical
+PASS skeleton-docs 28.77 s
+PASS registrations 0.96 s
+PROGRESS [plan] 0.0 s started
+PROGRESS [entropy] 0.0 s started
+PASS entropy 0.35 s
+PROGRESS [console-docs] 29.3 s # Subtest: [document] WO-115 every contract command keeps its terminal parser, refusal bytes and events over loopback
+PASS plan 3.89 s
+PROGRESS [console-docs] 32.6 s # Subtest: [document] WO-116 the served audit command returns the terminal's bytes for each store and selection, the text host shows the three labeled projections, and the resident's own store audits
+PASS console-docs 32.64 s
+PROGRESS [resume] 45.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [resume] 60.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [resume] 75.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PROGRESS [resume] 90.0 s running task: resume (reports no cases); last report: waiting for the next case report
+PASS resume 96.02 s
+npm run test:docs: 32 passed; 0 failed; 126.06 s; 32 fresh tasks

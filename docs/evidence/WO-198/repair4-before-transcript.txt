@@ -1,0 +1,59 @@
+✖ WO-198 shared-ref comparisons name absence transitions and isolate unreadable fields (1.566667ms)
+✖ WO-198 origin/main created between failed linked-worktree gates is named exactly once (1006.65475ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1075.578167
+
+✖ failing tests:
+
+test at scripts/test-runner.test.mjs:2881:1
+✖ WO-198 shared-ref comparisons name absence transitions and isolate unreadable fields (1.566667ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  -   'origin/main absent..origin-commit',
+  -   'main absent..main-commit',
+      'tags +v1.0.0 (count 0..1, newest absent..v1.0.0)',
+      'refs/dotln/ 0..1'
+    ]
+  
+      at TestContext.<anonymous> (file:///Users/dylanwood/Projects/DotLn-wo198/scripts/test-runner.test.mjs:2900:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'tags +v1.0.0 (count 0..1, newest absent..v1.0.0)', 'refs/dotln/ 0..1' ],
+    expected: [ 'origin/main absent..origin-commit', 'main absent..main-commit', 'tags +v1.0.0 (count 0..1, newest absent..v1.0.0)', 'refs/dotln/ 0..1' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/test-runner.test.mjs:2950:1
+✖ WO-198 origin/main created between failed linked-worktree gates is named exactly once (1006.65475ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + []
+  - [
+  -   'shared refs moved: since previous: origin/main absent..803d4ff611ce26d25a38b5823645e2a5030cea88'
+  - ]
+  
+      at TestContext.<anonymous> (file:///Users/dylanwood/Projects/DotLn-wo198/scripts/test-runner.test.mjs:2967:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [ 'shared refs moved: since previous: origin/main absent..803d4ff611ce26d25a38b5823645e2a5030cea88' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,397 @@
+WO-198 third-repair gate transcript
+Compact selection from captured command output; full diagnostics remain in the gate output references.
+
+First required document gate (repair3-docs.log)
+PASS format 8.55 s
+PASS build 0.87 s
+PASS publication 0.23 s
+PASS comment-labels 1.54 s
+PASS index 2.53 s
+PASS lineage 0.08 s
+PASS license-surfaces 4.82 s
+PASS harness 0.18 s
+PASS authority-evidence 0.75 s
+PASS harness-context 0.20 s
+PASS release-surfaces 5.28 s
+PASS artifact-evidence 0.38 s
+PASS harness-evidence 0.48 s
+PASS verification-evidence 1.72 s
+PASS feedback-evidence 3.46 s
+PASS meta 3.60 s
+PASS docs-check 25.22 s
+PASS comment-labels-fixtures 0.68 s
+PASS lineage-fixtures 0.71 s
+PASS kernel-docs 1.26 s
+PASS launchpad-docs 4.37 s
+PASS docs-check-fixtures 10.08 s
+PASS resident-bind 12.64 s
+PASS local-runner-double 4.00 s
+PASS plan-refutation-current 3.72 s
+PASS artifact-corpus 0.26 s
+PASS registrations 0.77 s
+PASS skeleton-docs 29.59 s
+PASS entropy 0.33 s
+PASS plan 4.07 s
+PASS console-docs 33.29 s
+PASS resume 107.24 s
+npm run test:docs: 32 passed; 0 failed; 142.38 s; 32 fresh tasks
+
+First required review: historical Git read failure (repair3-review.log)
+PASS format 8.39 s
+PASS build 0.86 s
+PASS harness 0.21 s
+FAIL authority-evidence 0.26 s
+  [authority-evidence] Error: Command failed: git show 4ead1d0ea1f1fea049f8369d99c852da602f9278:packages/compiler/fixtures/wo029-entropy-reducer.json
+  [authority-evidence]   status: 255,
+  [authority-evidence]   stderr: ''
+FAIL registrations 0.00 s
+FAIL runner-fixtures 0.00 s
+FAIL configuration-root 0.00 s
+FAIL authority-grants 0.00 s
+FAIL codex-continuation 0.00 s
+FAIL portfolio 0.00 s
+FAIL derived-orders 0.00 s
+FAIL adjacent-queue 0.00 s
+FAIL browser-evidence 0.00 s
+FAIL console 0.00 s
+FAIL compiler 0.00 s
+FAIL kernel 0.00 s
+FAIL work-orders-fixtures 0.00 s
+FAIL worktree-integration 0.00 s
+FAIL checkpoint 0.00 s
+FAIL beacon-portability 0.00 s
+FAIL launchpad 0.00 s
+FAIL backup-intake 0.00 s
+FAIL publication-fixtures 0.00 s
+FAIL license-fixtures 0.00 s
+FAIL vertical 0.00 s
+FAIL target-publish 0.00 s
+FAIL outward-lint 0.00 s
+FAIL github-body 0.00 s
+FAIL release-preparation 0.00 s
+FAIL release:case:close_receipt_recovery 0.00 s
+FAIL release:case:close_retry_paths 0.00 s
+FAIL release:case:close_leftover 0.00 s
+FAIL release:case:close_sealed 0.00 s
+FAIL release:case:close_completion 0.00 s
+FAIL release:case:material 0.00 s
+FAIL release:case:concurrent 0.00 s
+FAIL release:case:composed_evidence 0.00 s
+FAIL release:case:cached_evidence 0.00 s
+FAIL release:case:firstrelease 0.00 s
+FAIL release:case:edition 0.00 s
+FAIL release:case:success 0.00 s
+FAIL release:case:runtime_refresh 0.00 s
+FAIL release:case:stale_helpers 0.00 s
+FAIL release:case:malformed_material 0.00 s
+FAIL release:case:submodule_force 0.00 s
+FAIL release:case:createrecovery 0.00 s
+FAIL release:case:refrecovery 0.00 s
+FAIL release:case:pushfail 0.00 s
+FAIL release:case:missinglocalprevious 0.00 s
+FAIL release:case:prepare 0.00 s
+FAIL release:case:nestedtag 0.00 s
+FAIL release:case:localconflict 0.00 s
+FAIL release:case:conflict 0.00 s
+FAIL release:case:cadence_inconsistent 0.00 s
+FAIL release:case:cadence_missing 0.00 s
+FAIL release:case:failures 0.00 s
+FAIL release:case:lower 0.00 s
+FAIL release:case:splitorigin 0.00 s
+FAIL release:case:unauthenticated 0.00 s
+FAIL release:case:missinggh 0.00 s
+FAIL release:case:malformed 0.00 s
+FAIL release:case:divergence 0.00 s
+FAIL release:case:nonmain 0.00 s
+FAIL release:case:settings_scope 0.00 s
+FAIL release:case:derived 0.00 s
+FAIL release:case:unreachable 0.00 s
+FAIL release:case:dirty 0.00 s
+FAIL release:case:bodyclose 0.00 s
+FAIL release:case:surfaceclose_linked 0.00 s
+FAIL release:case:surfaceclose 0.00 s
+FAIL release:case:surfaces_new_component 0.00 s
+FAIL release:case:surfaces_non_source 0.00 s
+FAIL release:case:surfaces_component 0.00 s
+FAIL release:case:surfaces_first 0.00 s
+FAIL release:case:surfaces_lower 0.00 s
+FAIL release:case:surfaces_committed_readme 0.00 s
+FAIL release:case:license_surfaces 0.00 s
+FAIL release:case:prepare_independent 0.00 s
+FAIL release:case:surfaces_local_snapshot 0.00 s
+FAIL release:case:surfaces 0.00 s
+FAIL release:case:preflight 0.00 s
+FAIL skeleton 0.00 s
+FAIL worktree 0.00 s
+FAIL release:prepare 0.00 s
+FAIL process-debt 0.00 s
+FAIL harness-fixtures 0.00 s
+PASS artifact-evidence 0.38 s
+PASS harness-evidence 0.50 s
+PASS verification-evidence 1.54 s
+PASS feedback-evidence 3.34 s
+shared refs moved: since previous: refs/dotln/ 1644..1648
+npm test: 7 passed; 31 failed; 13.29 s; 8 fresh tasks
+
+Isolated authority control (repair3-authority-control.log)
+PASS build 0.82 s
+PASS authority-evidence 0.78 s
+
+Required document gate before full review rerun (repair3-docs-rerun.log)
+PASS format 8.45 s
+PASS build 0.86 s
+PASS publication 0.22 s
+PASS comment-labels 1.45 s
+PASS index 2.55 s
+PASS lineage 0.08 s
+PASS license-surfaces 4.72 s
+PASS harness 0.18 s
+PASS release-surfaces 5.05 s
+PASS authority-evidence 0.75 s
+PASS harness-context 0.20 s
+PASS harness-evidence 0.48 s
+PASS artifact-evidence 0.36 s
+PASS verification-evidence 1.69 s
+PASS feedback-evidence 3.36 s
+PASS meta 3.51 s
+PASS docs-check 25.36 s
+PASS comment-labels-fixtures 0.67 s
+PASS lineage-fixtures 0.66 s
+PASS kernel-docs 1.28 s
+PASS launchpad-docs 4.62 s
+PASS docs-check-fixtures 10.01 s
+PASS resident-bind 12.89 s
+PASS local-runner-double 4.00 s
+PASS plan-refutation-current 3.73 s
+PASS artifact-corpus 0.26 s
+PASS registrations 0.74 s
+PASS skeleton-docs 29.87 s
+PASS entropy 0.31 s
+PASS plan 3.94 s
+PASS console-docs 33.30 s
+PASS resume 106.76 s
+npm run test:docs: 32 passed; 0 failed; 141.88 s; 32 fresh tasks
+
+Full review rerun: vertical deadline failure (repair3-review-rerun.log)
+PASS format 8.62 s
+REUSE build from worktree row 2026-10-09T22:05:00.199Z
+REUSE harness from worktree row 2026-10-09T22:05:00.199Z
+REUSE harness-evidence from worktree row 2026-10-09T22:05:00.199Z
+REUSE artifact-evidence from worktree row 2026-10-09T22:05:00.199Z
+REUSE verification-evidence from worktree row 2026-10-09T22:05:00.199Z
+REUSE feedback-evidence from worktree row 2026-10-09T22:05:00.199Z
+PASS authority-evidence 0.78 s
+PASS harness-fixtures 370.11 s
+PASS process-debt 164.73 s
+PASS release:prepare 1.48 s
+PASS release:case:preflight 0.26 s
+PASS release-preparation 4.77 s
+PASS release:case:surfaces_local_snapshot 1.57 s
+PASS release:case:surfaces 6.27 s
+PASS release:case:prepare_independent 4.10 s
+PASS release:case:surfaces_committed_readme 1.90 s
+PASS release:case:surfaces_lower 1.52 s
+PASS release:case:surfaces_first 1.14 s
+PASS release:case:surfaces_component 2.79 s
+PASS release:case:license_surfaces 10.90 s
+PASS release:case:surfaces_non_source 1.23 s
+PASS release:case:surfaces_new_component 1.35 s
+PASS release:case:surfaceclose_linked 2.52 s
+PASS release:case:surfaceclose 3.93 s
+PASS release:case:bodyclose 2.21 s
+PASS release:case:dirty 4.44 s
+PASS release:case:unreachable 4.25 s
+PASS release:case:settings_scope 4.57 s
+PASS release:case:derived 6.83 s
+PASS release:case:nonmain 1.09 s
+PASS release:case:divergence 1.46 s
+PASS release:case:malformed 1.44 s
+PASS release:case:unauthenticated 2.44 s
+PASS release:case:splitorigin 1.41 s
+PASS release:case:missinggh 5.36 s
+PASS release:case:lower 2.24 s
+PASS release:case:failures 3.46 s
+PASS release:case:cadence_missing 2.61 s
+PASS release:case:conflict 2.81 s
+PASS release:case:localconflict 2.50 s
+PASS release:case:cadence_inconsistent 7.09 s
+PASS release:case:nestedtag 2.61 s
+PASS release:case:prepare 5.27 s
+PASS release:case:missinglocalprevious 5.22 s
+PASS release:case:pushfail 5.51 s
+PASS release:case:refrecovery 7.89 s
+PASS release:case:submodule_force 9.10 s
+PASS release:case:malformed_material 2.09 s
+PASS release:case:createrecovery 21.82 s
+PASS release:case:stale_helpers 15.15 s
+PASS release:case:success 34.10 s
+PASS release:case:runtime_refresh 49.01 s
+PASS release:case:edition 13.44 s
+PASS release:case:firstrelease 6.80 s
+PASS release:case:composed_evidence 11.52 s
+PASS release:case:cached_evidence 12.67 s
+PASS release:case:concurrent 26.86 s
+PASS release:case:close_completion 14.21 s
+PASS release:case:close_sealed 11.50 s
+PASS worktree 229.04 s
+PASS release:case:material 78.38 s
+PASS release:case:close_retry_paths 7.35 s
+PASS github-body 0.32 s
+PASS outward-lint 0.79 s
+PASS release:case:close_leftover 66.88 s
+PASS release:case:close_receipt_recovery 45.08 s
+PASS publication-fixtures 1.34 s
+PASS backup-intake 0.51 s
+PASS license-fixtures 23.05 s
+PASS beacon-portability 1.37 s
+PASS skeleton 299.47 s
+PASS checkpoint 12.99 s
+PASS launchpad 57.67 s
+PASS kernel 0.72 s
+PASS compiler 1.47 s
+PASS work-orders-fixtures 31.31 s
+PASS console 22.02 s
+PASS adjacent-queue 0.70 s
+PASS browser-evidence 29.37 s
+PASS derived-orders 11.26 s
+PASS codex-continuation 10.13 s
+PASS authority-grants 0.33 s
+PASS target-publish 147.47 s
+PASS configuration-root 8.26 s
+PASS registrations 0.83 s
+PASS portfolio 34.15 s
+PASS worktree-integration 209.68 s
+PASS runner-fixtures 129.31 s
+FAIL vertical 900.17 s
+  [vertical] Suite vertical timed out after 900174 ms
+npm test: 37 passed; 1 failed; 1849.06 s; 84 fresh tasks
+
+Required document gate after documentation correction (repair3-docs-final.log)
+PASS format 7.30 s
+PASS build 0.68 s
+PASS publication 0.19 s
+PASS comment-labels 1.22 s
+PASS index 2.24 s
+PASS lineage 0.07 s
+PASS authority-evidence 0.66 s
+PASS license-surfaces 4.46 s
+PASS harness 0.15 s
+PASS harness-context 0.17 s
+PASS release-surfaces 4.76 s
+PASS artifact-evidence 0.27 s
+PASS harness-evidence 0.35 s
+PASS verification-evidence 1.34 s
+PASS feedback-evidence 2.82 s
+PASS meta 2.96 s
+PASS docs-check 20.98 s
+PASS comment-labels-fixtures 0.53 s
+PASS lineage-fixtures 0.55 s
+PASS kernel-docs 0.96 s
+PASS launchpad-docs 3.39 s
+PASS docs-check-fixtures 7.77 s
+PASS resident-bind 10.07 s
+PASS local-runner-double 3.80 s
+PASS plan-refutation-current 3.06 s
+PASS artifact-corpus 0.22 s
+PASS registrations 0.62 s
+PASS skeleton-docs 24.16 s
+PASS entropy 0.27 s
+PASS plan 3.41 s
+PASS console-docs 27.67 s
+PASS resume 85.37 s
+npm run test:docs: 32 passed; 0 failed; 114.71 s; 32 fresh tasks
+
+Passing current-identity review (repair3-review-final.log)
+PASS format 7.27 s
+REUSE build from worktree row 2026-10-09T22:05:00.199Z
+REUSE release-preparation from worktree row 2026-10-09T22:41:04.262Z
+REUSE github-body from worktree row 2026-10-09T22:41:04.262Z
+REUSE outward-lint from worktree row 2026-10-09T22:41:04.262Z
+REUSE target-publish from worktree row 2026-10-09T22:41:04.262Z
+REUSE license-fixtures from worktree row 2026-10-09T22:41:04.262Z
+REUSE publication-fixtures from worktree row 2026-10-09T22:41:04.262Z
+REUSE backup-intake from worktree row 2026-10-09T22:41:04.262Z
+REUSE launchpad from worktree row 2026-10-09T22:41:04.262Z
+REUSE beacon-portability from worktree row 2026-10-09T22:41:04.262Z
+REUSE checkpoint from worktree row 2026-10-09T22:41:04.262Z
+REUSE worktree from worktree row 2026-10-09T22:41:04.262Z
+REUSE worktree-integration from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:prepare from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:preflight from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:surfaces from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:surfaces_local_snapshot from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:prepare_independent from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:license_surfaces from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:surfaces_committed_readme from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:surfaces_lower from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:surfaces_first from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:surfaces_component from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:surfaces_non_source from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:surfaces_new_component from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:surfaceclose from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:surfaceclose_linked from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:bodyclose from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:dirty from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:unreachable from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:derived from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:settings_scope from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:nonmain from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:divergence from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:malformed from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:missinggh from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:unauthenticated from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:splitorigin from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:lower from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:failures from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:cadence_missing from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:cadence_inconsistent from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:conflict from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:localconflict from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:nestedtag from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:prepare from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:missinglocalprevious from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:pushfail from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:refrecovery from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:createrecovery from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:submodule_force from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:malformed_material from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:stale_helpers from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:runtime_refresh from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:success from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:edition from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:firstrelease from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:cached_evidence from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:composed_evidence from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:concurrent from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:material from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:close_completion from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:close_sealed from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:close_leftover from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:close_retry_paths from worktree row 2026-10-09T22:41:04.262Z
+REUSE release:case:close_receipt_recovery from worktree row 2026-10-09T22:41:04.262Z
+REUSE work-orders-fixtures from worktree row 2026-10-09T22:41:04.262Z
+REUSE kernel from worktree row 2026-10-09T22:41:04.262Z
+REUSE compiler from worktree row 2026-10-09T22:41:04.262Z
+REUSE skeleton from worktree row 2026-10-09T22:41:04.262Z
+REUSE console from worktree row 2026-10-09T22:41:04.262Z
+REUSE browser-evidence from worktree row 2026-10-09T22:41:04.262Z
+REUSE adjacent-queue from worktree row 2026-10-09T22:41:04.262Z
+REUSE derived-orders from worktree row 2026-10-09T22:41:04.262Z
+REUSE portfolio from worktree row 2026-10-09T22:41:04.262Z
+REUSE codex-continuation from worktree row 2026-10-09T22:41:04.262Z
+REUSE authority-grants from worktree row 2026-10-09T22:41:04.262Z
+REUSE configuration-root from worktree row 2026-10-09T22:41:04.262Z
+REUSE authority-evidence from worktree row 2026-10-09T22:41:04.262Z
+REUSE harness-fixtures from worktree row 2026-10-09T22:41:04.262Z
+REUSE harness from worktree row 2026-10-09T22:05:00.199Z
+REUSE harness-evidence from worktree row 2026-10-09T22:05:00.199Z
+REUSE artifact-evidence from worktree row 2026-10-09T22:05:00.199Z
+REUSE verification-evidence from worktree row 2026-10-09T22:05:00.199Z
+REUSE feedback-evidence from worktree row 2026-10-09T22:05:00.199Z
+REUSE runner-fixtures from worktree row 2026-10-09T22:41:04.262Z
+REUSE process-debt from worktree row 2026-10-09T22:41:04.262Z
+REUSE registrations from worktree row 2026-10-09T22:41:04.262Z
+PASS vertical 763.46 s
+npm test: 38 passed; 0 failed; 771.10 s; 2 fresh tasks
+
+Publication: npm run publication:check exited 0 after the source-lock refresh; 254/254 headings indexed, both audience locks current. D014 records the checked edit.

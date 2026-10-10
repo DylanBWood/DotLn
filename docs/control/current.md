@@ -1,22 +1,23 @@
 # Current control state
 
-## WO-073
+## WO-198
 
-- Work order: WO-073
-- Work-order path: docs/work-orders/WO-073-repository-class-and-profile.md
+- Work order: WO-198
+- Work-order path: docs/work-orders/WO-198-a-worktree-gate-names-what-moved.md
 - Phase: closed
-- Latest verification: VER-001
-- Verification path: docs/verifications/WO-073/VER-001.md
+- Latest verification: VER-005
+- Verification path: docs/verifications/WO-198/VER-005.md
 - Latest verdict: pass
 - Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-073/FINAL-001.md
+- Final-review path: docs/final-reviews/WO-198/FINAL-001.md
 - Latest attestation: harness claude-code; version 2.1.296; model claude-fable-5-1; effort xhigh; source claude-session-readback; account not-applicable
 - Effort drift: max -> xhigh
-- Latest recordedAt: 2026-10-09T20:39:37.099Z
-- Elapsed implementation: 4277632 ms
-- Elapsed verification: 2333196 ms
-- Elapsed finalReview: 1062956 ms
-- Latest checkpoint: 71c435e134a2749c9f41d4c6aec8bcab84af5ccf (restore: `git checkout refs/dotln/checkpoint/WO-073/7 -- .`)
+- Latest recordedAt: 2026-10-10T01:38:01.323Z
+- Elapsed implementation: 2477636 ms
+- Elapsed verification: 902908 ms
+- Elapsed repair: 2668307 ms
+- Elapsed finalReview: 1573262 ms
+- Latest checkpoint: cdbc4baea05c56cfb0e2d644e8d9ad11965fd0e6 (restore: `git checkout refs/dotln/checkpoint/WO-198/24 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct
 

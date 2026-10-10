@@ -39,6 +39,8 @@ import {
   beginGateRun,
   gateTreeHash,
   gateCodeIdentity,
+  readGateChecks,
+  readSharedRefs,
   recordGateChecks,
 } from "./lib/gate-evidence.mjs";
 import {
@@ -1900,6 +1902,68 @@ export function aggregateSuiteRows(selected, tasks, rows, codeIdentity) {
   });
 }
 
+export function completeSharedRefs(snapshot) {
+  const name = (value) => typeof value === "string" && value.length > 0;
+  const count = (value) =>
+    value === "unreadable" || (Number.isSafeInteger(value) && value >= 0);
+  return (
+    snapshot !== null &&
+    typeof snapshot === "object" &&
+    !Array.isArray(snapshot) &&
+    name(snapshot.originMain) &&
+    name(snapshot.main) &&
+    snapshot.tags !== null &&
+    typeof snapshot.tags === "object" &&
+    !Array.isArray(snapshot.tags) &&
+    count(snapshot.tags.count) &&
+    name(snapshot.tags.newest) &&
+    count(snapshot.dotlnRefs)
+  );
+}
+
+// Keep both intervals: a ref may move during the run back to the previous
+// row's value. Missing or malformed snapshots supply no comparison baseline;
+// their diagnostic metadata must not prevent recording the failed gate.
+// Absence is observed and comparable. An unreadable field withholds only its
+// own comparison, while the remaining fields keep their observed movement.
+export function sharedRefChanges(before, after) {
+  if (!completeSharedRefs(before) || !completeSharedRefs(after)) return [];
+  const changes = [];
+  for (const [field, label] of [
+    ["originMain", "origin/main"],
+    ["main", "main"],
+  ])
+    if (
+      before[field] !== "unreadable" &&
+      after[field] !== "unreadable" &&
+      before[field] !== after[field]
+    )
+      changes.push(`${label} ${before[field]}..${after[field]}`);
+  if (
+    before.tags.count !== "unreadable" &&
+    after.tags.count !== "unreadable" &&
+    before.tags.newest !== "unreadable" &&
+    after.tags.newest !== "unreadable"
+  ) {
+    const tags = [];
+    if (before.tags.count !== after.tags.count)
+      tags.push(`count ${before.tags.count}..${after.tags.count}`);
+    if (before.tags.newest !== after.tags.newest)
+      tags.push(`newest ${before.tags.newest}..${after.tags.newest}`);
+    if (tags.length)
+      changes.push(
+        `tags ${after.tags.count > before.tags.count && after.tags.newest !== before.tags.newest ? `+${after.tags.newest} ` : ""}(${tags.join(", ")})`,
+      );
+  }
+  if (
+    before.dotlnRefs !== "unreadable" &&
+    after.dotlnRefs !== "unreadable" &&
+    before.dotlnRefs !== after.dotlnRefs
+  )
+    changes.push(`refs/dotln/ ${before.dotlnRefs}..${after.dotlnRefs}`);
+  return changes;
+}
+
 export async function runGate(
   args = process.argv.slice(2),
   repo = root,
@@ -2014,6 +2078,8 @@ async function runGateChecks(
       );
     return { exitCode: 0 };
   }
+  const sharedRefsStart = readSharedRefs(repo);
+  const refsStartedAt = Date.now();
   let reused = new Map();
   let reuseIdentity;
   // Plain and review selections compose the latest passing task executions.
@@ -2380,6 +2446,7 @@ async function runGateChecks(
       checkId,
       treeHash,
       codeIdentity,
+      sharedRefs: { start: sharedRefsStart, end: readSharedRefs(repo) },
       subject: treeHash,
       durationMs: Date.now() - started,
       exitCode:
@@ -2473,6 +2540,32 @@ async function runGateChecks(
     // A single-suite or machinery run is not gate evidence: its row is kept
     // under its own check, which answers no claim, so that the lookup knows
     // how each task last ran at this identity.
+    if (check.exitCode !== 0) {
+      let previous;
+      try {
+        previous = readGateChecks(repo)
+          .filter(
+            (row) =>
+              row.checkId === checkId &&
+              Date.parse(row.recordedAt) <= refsStartedAt,
+          )
+          .at(-1);
+      } catch {
+        // Unreadable history supplies no baseline. This diagnostic must not
+        // prevent recording the failed gate or comparing its own snapshots.
+      }
+      const changes = [
+        ...sharedRefChanges(
+          previous?.sharedRefs?.end,
+          check.sharedRefs.start,
+        ).map((change) => `since previous: ${change}`),
+        ...sharedRefChanges(check.sharedRefs.start, check.sharedRefs.end).map(
+          (change) => `during run: ${change}`,
+        ),
+      ];
+      if (changes.length)
+        console.log(`shared refs moved: ${changes.join("; ")}`);
+    }
     recordGateChecks(repo, [check]);
     console.log(
       `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(check.durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh tasks${unchanged ? "" : "; code changed"}${outputUnchanged ? "" : "; build output changed during the gate"}${abandoned.length ? `; abandoned fixture roots: ${abandoned.join(", ")}` : ""}${confinedPartial ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,

@@ -12,7 +12,7 @@
 - [x] [WO-075] — Kit runtime and harness bundle in the export · **final-reviewed** · pair 3
 - [x] [WO-190] — Index and roadmap lead with the work ahead · **final-reviewed** · pair 3
 - [x] [WO-073] — Repository class and profile documents · **final-reviewed** · pair 4
-- [ ] [WO-198] — A worktree's gate names what moved · **queued** · pair 4
+- [x] [WO-198] — A worktree's gate names what moved · **final-reviewed** · pair 4
 - [ ] [WO-077] — Launchpad export update · **queued** · pair 5
 - [ ] [WO-189] — The front page, rewritten once and guarded · **queued** · pair 5
 - [ ] [WO-078] — Sibling registry and export receipts · **queued** · pair 6
@@ -56,23 +56,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-198
-
-[WO-198 — A worktree's gate judges only what its branch can see, records the shared refs it saw, and names the ones that moved when a task fails (version assigned at activation)](WO-198-a-worktree-gate-names-what-moved.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-196: hard (met) — the runner's preflight and review composition this order's fixture runs under; both orders edit scripts/test-runner.mjs.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer any.
-- Track: machinery
-- Cost: adds a &#96;sharedRefs&#96; record on every gate row (&#96;scripts/test-runner.mjs&#96;, the row built around line 2360; &#96;packages/skeleton/src/gate-evidence.mjs&#96; &#96;beginGateRun&#96;, line 405), one delta line on a failed row, one &#96;runner-fixtures&#96; case that advances &#96;main&#96; and adds a tag while a linked worktree runs its document and plain gates (&#96;scripts/test-runner.test.mjs&#96;), and one sentence in product 07 §Independent workflows and integration. Removes: the hour an operator spends finding out that a passing suite failed because a sibling merged (the operator reported it on 2026-10-07 as happening more than once; the record holds one documented instance, WO-179 D012, 2026-10-01, a review selection taken against the moving &#96;origin/main&#96; tip, which WO-186 answered with the merge base). Re-mints: &#96;gate-evidence.mjs&#96; is a registered evidence source in three editions (&#96;scripts/lib/evidence-sources.mjs&#96;), re-minted deterministically; no feedback-judged file changes, so no live episode; &#96;scripts/test-runner.mjs&#96; is a declared machinery source, so &#96;npm test -- --review&#96; runs before handoff. Wall-clock, tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-198-a-worktree-gate-names-what-moved.md](WO-198-a-worktree-gate-names-what-moved.md)
 
 ### WO-077
 

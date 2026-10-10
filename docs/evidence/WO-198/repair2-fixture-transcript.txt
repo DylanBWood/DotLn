@@ -1,0 +1,33 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+✔ WO-198 shared refs tolerate absent branches and count only annotated v tags (197.559541ms)
+✔ WO-198 a sibling merge and tag during a worktree's gates change no result and are named on the row (2028.354ms)
+ℹ PROOF WO-198 sibling {"checkId":"npm run test:docs","before":{"start":{"originMain":"b8f9dec711c1316800ee7d06a9e0a270fda09943","main":"b8f9dec711c1316800ee7d06a9e0a270fda09943","tags":{"count":0,"newest":"absent"},"dotlnRefs":0},"end":{"originMain":"b8f9dec711c1316800ee7d06a9e0a270fda09943","main":"b8f9dec711c1316800ee7d06a9e0a270fda09943","tags":{"count":0,"newest":"absent"},"dotlnRefs":0}},"after":{"start":{"originMain":"169dd4cee1d5592e2dc4394c470ad437890f1860","main":"169dd4cee1d5592e2dc4394c470ad437890f1860","tags":{"count":1,"newest":"v9000.0.1"},"dotlnRefs":1},"end":{"originMain":"169dd4cee1d5592e2dc4394c470ad437890f1860","main":"169dd4cee1d5592e2dc4394c470ad437890f1860","tags":{"count":1,"newest":"v9000.0.1"},"dotlnRefs":1}},"tasks":[{"name":"document-barrier","exitCode":0},{"name":"alpha","exitCode":0},{"name":"beta","exitCode":0}],"deltaLines":0}
+ℹ PROOF WO-198 sibling {"checkId":"npm test","before":{"start":{"originMain":"b8f9dec711c1316800ee7d06a9e0a270fda09943","main":"b8f9dec711c1316800ee7d06a9e0a270fda09943","tags":{"count":0,"newest":"absent"},"dotlnRefs":0},"end":{"originMain":"b8f9dec711c1316800ee7d06a9e0a270fda09943","main":"b8f9dec711c1316800ee7d06a9e0a270fda09943","tags":{"count":0,"newest":"absent"},"dotlnRefs":0}},"after":{"start":{"originMain":"169dd4cee1d5592e2dc4394c470ad437890f1860","main":"169dd4cee1d5592e2dc4394c470ad437890f1860","tags":{"count":1,"newest":"v9000.0.1"},"dotlnRefs":1},"end":{"originMain":"169dd4cee1d5592e2dc4394c470ad437890f1860","main":"169dd4cee1d5592e2dc4394c470ad437890f1860","tags":{"count":1,"newest":"v9000.0.1"},"dotlnRefs":1}},"tasks":[{"name":"build","exitCode":0},{"name":"alpha","exitCode":0},{"name":"beta","exitCode":0}],"deltaLines":0}
+✔ WO-198 a failed row names movement since its own check's previous row exactly once (1820.930666ms)
+ℹ PROOF WO-198 forced failure shared refs moved: since previous: origin/main 65930abb7e81c512d7040749e00423c08eaa6c14..9298413f511e6e5bd94cfebc63893fa12a701dc6; since previous: main 65930abb7e81c512d7040749e00423c08eaa6c14..9298413f511e6e5bd94cfebc63893fa12a701dc6; since previous: tags +v9000.0.1 (count 0..1, newest absent..v9000.0.1); since previous: refs/dotln/ 0..1
+✔ WO-198 damaged archive JSON cannot prevent recording a failed gate (477.322791ms)
+ℹ PROOF WO-198 damaged archive: exit 1, two hot rows, complete snapshot, one summary, no delta
+✔ WO-198 an unselectable archived timestamp still permits movement during the failed run (753.356792ms)
+ℹ PROOF WO-198 unselectable history shared refs moved: during run: origin/main 2ddb84919a8419726be7ccc1de4e55dee7649552..a72302335559149c295fdf846b716438e4d66a16; during run: main 2ddb84919a8419726be7ccc1de4e55dee7649552..a72302335559149c295fdf846b716438e4d66a16; during run: tags +v9000.0.1 (count 0..1, newest absent..v9000.0.1); during run: refs/dotln/ 0..1
+✔ WO-198 snapshot validation rejects malformed shapes without starting a gate (0.379458ms)
+ℹ PROOF WO-198 snapshot validator: 21 malformed shapes rejected, two valid controls accepted, no fixture gates
+▶ WO-198 incomplete earlier snapshots never prevent recording a failed gate
+  ✔ empty snapshot (488.384875ms)
+  ✔ missing tags (492.808625ms)
+✔ WO-198 incomplete earlier snapshots never prevent recording a failed gate (981.743958ms)
+ℹ PROOF WO-198 malformed snapshots: 2 variants recorded exit 1, complete snapshots and one summary without an invented delta
+✔ WO-198 an incomplete earlier snapshot still permits movement during the failed run (766.158666ms)
+ℹ PROOF WO-198 incomplete baseline shared refs moved: during run: origin/main d5462dae15d625d4e761c4eaf2bb7046313fad03..7f02f1c087adcd0d66c3d0079e09a3f75dd26b06; during run: main d5462dae15d625d4e761c4eaf2bb7046313fad03..7f02f1c087adcd0d66c3d0079e09a3f75dd26b06; during run: tags +v9000.0.1 (count 0..1, newest absent..v9000.0.1); during run: refs/dotln/ 0..1
+✔ WO-198 first and legacy rows detect movement during a failed run, including a return to the previous value (1153.392417ms)
+ℹ PROOF WO-198 during-run shared refs moved: during run: origin/main 457ca79a94c8cdd6bb4a280b10dc7565008ba3a6..72eb2c53fdcca8f0e90d82fa9b81e86aba0ad8b0; during run: main 457ca79a94c8cdd6bb4a280b10dc7565008ba3a6..72eb2c53fdcca8f0e90d82fa9b81e86aba0ad8b0; during run: tags +v9000.0.1 (count 0..1, newest absent..v9000.0.1); during run: refs/dotln/ 0..1
+ℹ PROOF WO-198 round-trip shared refs moved: since previous: origin/main 72eb2c53fdcca8f0e90d82fa9b81e86aba0ad8b0..457ca79a94c8cdd6bb4a280b10dc7565008ba3a6; during run: origin/main 457ca79a94c8cdd6bb4a280b10dc7565008ba3a6..72eb2c53fdcca8f0e90d82fa9b81e86aba0ad8b0
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8244.667125
+bounded-result {"name":"bounded-probe","durationMs":8301,"slowestCases":[{"name":"bounded-probe","durationMs":8301,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":69706704,"peakRssBytes":174702592,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T20:41:43.481Z","finishedAt":"2026-10-09T20:41:51.783Z","exitCode":0,"executed":true}

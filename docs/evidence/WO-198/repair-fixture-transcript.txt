@@ -1,0 +1,40 @@
+Command: node scripts/harness.mjs bounded -- node --test --test-name-pattern=WO-198 scripts/test-runner.test.mjs
+✔ WO-198 shared refs tolerate absent branches and count only annotated v tags (156.152292ms)
+✔ WO-198 a sibling merge and tag during a worktree's gates change no result and are named on the row (1602.657625ms)
+ℹ PROOF WO-198 sibling {"checkId":"npm run test:docs","before":{"start":{"originMain":"bf8f2179e3be14ed2644e4e58320db436a046640","main":"bf8f2179e3be14ed2644e4e58320db436a046640","tags":{"count":0,"newest":"absent"},"dotlnRefs":0},"end":{"originMain":"bf8f2179e3be14ed2644e4e58320db436a046640","main":"bf8f2179e3be14ed2644e4e58320db436a046640","tags":{"count":0,"newest":"absent"},"dotlnRefs":0}},"after":{"start":{"originMain":"19dd60d0512c8c915a63f1b63c44cd0bace04ee5","main":"19dd60d0512c8c915a63f1b63c44cd0bace04ee5","tags":{"count":1,"newest":"v9000.0.1"},"dotlnRefs":1},"end":{"originMain":"19dd60d0512c8c915a63f1b63c44cd0bace04ee5","main":"19dd60d0512c8c915a63f1b63c44cd0bace04ee5","tags":{"count":1,"newest":"v9000.0.1"},"dotlnRefs":1}},"tasks":[{"name":"document-barrier","exitCode":0},{"name":"alpha","exitCode":0},{"name":"beta","exitCode":0}],"deltaLines":0}
+ℹ PROOF WO-198 sibling {"checkId":"npm test","before":{"start":{"originMain":"bf8f2179e3be14ed2644e4e58320db436a046640","main":"bf8f2179e3be14ed2644e4e58320db436a046640","tags":{"count":0,"newest":"absent"},"dotlnRefs":0},"end":{"originMain":"bf8f2179e3be14ed2644e4e58320db436a046640","main":"bf8f2179e3be14ed2644e4e58320db436a046640","tags":{"count":0,"newest":"absent"},"dotlnRefs":0}},"after":{"start":{"originMain":"19dd60d0512c8c915a63f1b63c44cd0bace04ee5","main":"19dd60d0512c8c915a63f1b63c44cd0bace04ee5","tags":{"count":1,"newest":"v9000.0.1"},"dotlnRefs":1},"end":{"originMain":"19dd60d0512c8c915a63f1b63c44cd0bace04ee5","main":"19dd60d0512c8c915a63f1b63c44cd0bace04ee5","tags":{"count":1,"newest":"v9000.0.1"},"dotlnRefs":1}},"tasks":[{"name":"build","exitCode":0},{"name":"alpha","exitCode":0},{"name":"beta","exitCode":0}],"deltaLines":0}
+✔ WO-198 a failed row names movement since its own check's previous row exactly once (1463.459ms)
+ℹ PROOF WO-198 forced failure shared refs moved: since previous: origin/main bec1f307e92fdff3da157071c4b25a6e54983fa4..14294da7fbaa6f039966ee2aea7ebc077f86c978; since previous: main bec1f307e92fdff3da157071c4b25a6e54983fa4..14294da7fbaa6f039966ee2aea7ebc077f86c978; since previous: tags +v9000.0.1 (count 0..1, newest absent..v9000.0.1); since previous: refs/dotln/ 0..1
+▶ WO-198 incomplete and malformed earlier snapshots never prevent recording a failed gate
+  ✔ empty snapshot (392.834334ms)
+  ✔ missing originMain (392.878208ms)
+  ✔ missing main (385.206459ms)
+  ✔ missing tags (379.00175ms)
+  ✔ missing dotlnRefs (383.312167ms)
+  ✔ missing tags.count (388.789833ms)
+  ✔ missing tags.newest (397.302542ms)
+  ✔ malformed tags null (395.984083ms)
+  ✔ malformed tags "not an object" (387.621417ms)
+  ✔ malformed tags [] (380.370375ms)
+  ✔ non-string originMain (388.70925ms)
+  ✔ empty main (388.714584ms)
+  ✔ non-numeric tag count (384.153167ms)
+  ✔ negative tag count (390.3605ms)
+  ✔ non-string newest tag (383.448417ms)
+  ✔ fractional ref count (390.716125ms)
+✔ WO-198 incomplete and malformed earlier snapshots never prevent recording a failed gate (6211.449042ms)
+ℹ PROOF WO-198 malformed snapshots: 16 variants recorded exit 1, complete snapshots and one summary without an invented delta
+✔ WO-198 an incomplete earlier snapshot still permits movement during the failed run (618.632375ms)
+ℹ PROOF WO-198 incomplete baseline shared refs moved: during run: origin/main 9caa7481537a76a36c099c86841251c14b683bbc..e47180334d72e4a291a14db2e67876e01bb8b657; during run: main 9caa7481537a76a36c099c86841251c14b683bbc..e47180334d72e4a291a14db2e67876e01bb8b657; during run: tags +v9000.0.1 (count 0..1, newest absent..v9000.0.1); during run: refs/dotln/ 0..1
+✔ WO-198 first and legacy rows detect movement during a failed run, including a return to the previous value (937.739125ms)
+ℹ PROOF WO-198 during-run shared refs moved: during run: origin/main 1b0921c10f25ba6d8c86dc3840a47fbe333d9903..f2dc5cae8fbf0bef20db07a1cbaf31fb40b1bdb0; during run: main 1b0921c10f25ba6d8c86dc3840a47fbe333d9903..f2dc5cae8fbf0bef20db07a1cbaf31fb40b1bdb0; during run: tags +v9000.0.1 (count 0..1, newest absent..v9000.0.1); during run: refs/dotln/ 0..1
+ℹ PROOF WO-198 round-trip shared refs moved: since previous: origin/main f2dc5cae8fbf0bef20db07a1cbaf31fb40b1bdb0..1b0921c10f25ba6d8c86dc3840a47fbe333d9903; during run: origin/main 1b0921c10f25ba6d8c86dc3840a47fbe333d9903..f2dc5cae8fbf0bef20db07a1cbaf31fb40b1bdb0
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11045.518
+bounded-result {"name":"bounded-probe","durationMs":11093,"slowestCases":[{"name":"bounded-probe","durationMs":11093,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":97186032,"peakRssBytes":218906624,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T19:44:14.318Z","finishedAt":"2026-10-09T19:44:25.411Z","exitCode":0,"executed":true}

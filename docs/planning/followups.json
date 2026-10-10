@@ -31365,6 +31365,145 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-f5f10101e717d59b",
+      "key": "decision:docs/evidence/WO-198/decisions.md#wo-198-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9c51bbe21ce4db96e240c9e8fd2d0c7c56d91b0e210dc62f5089a0b9c53a8204",
+          "ref": "docs/evidence/WO-198/decisions.md#wo-198-d004--verification-fail-on-a-regression-a-malformed-earlier-snapshot-shows-one-defect-outside-the-surfaces-boarded",
+          "title": "WO-198-D004: WO-198 resume: fix. (F1) sharedRefChanges must treat a snapshot that lacks originMain, main, a tags object with count and newest, or dotlnRefs as no baseline, the same as a legacy row wit",
+          "summary": "{ \"id\": \"WO-198-D004\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on one blocking finding. Criteria 1 to 5 are met. F1: when the latest earlier row of the same check has an object sharedRefs.end with no tags object (forged, damaged or stale), a failed gate throws \\\"TypeError: Cannot read properties of undefined (reading 'count')\\\". The throw comes from sharedRefChanges (scripts/test-runner.mjs:1916), called in the failure block (lines 2505-2524) before recordGateChecks (line 2525). So the gate records no row and prints no summary. Main's code (HEAD b06c6081) records the failed row and exits 1 on the same index. The change therefo",
+          "missing": false
+        },
+        {
+          "hash": "69fcba7abab604a04c8b36af7b405c8a0c0fea7dce935c7248872b7ccabae061",
+          "ref": "docs/evidence/WO-198/decisions.md#wo-198-d004--verification-fail-on-a-regression-a-malformed-earlier-snapshot-shows-one-defect-outside-the-surfaces-boarded",
+          "title": "WO-198-D004: WO-198 resume: fix. (F1) sharedRefChanges must treat a snapshot that lacks originMain, main, a tags object with count and newest, or dotlnRefs as no baseline, the same as a legacy row wit",
+          "summary": "{ \"id\": \"WO-198-D004\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on one blocking finding. Criteria 1 to 5 are met. F1: when the latest earlier row of the same check has an object sharedRefs.end with no tags object (forged, damaged or stale), a failed gate throws \\\"TypeError: Cannot read properties of undefined (reading 'count')\\\". The throw comes from sharedRefChanges (scripts/test-runner.mjs:1916), called in the failure block (lines 2505-2524) before recordGateChecks (line 2525). So the gate records no row and prints no summary. Main's code (HEAD b06c6081) records the failed row and exits 1 on the same index. The change therefo",
+          "missing": false
+        },
+        {
+          "hash": "d7aafd1e0ae99c30b48cbedd0928c730f3a80847a594b4509011da63f068b99f",
+          "ref": "docs/evidence/WO-198/decisions.md#wo-198-d004--verification-fail-on-a-regression-a-malformed-earlier-snapshot-shows-one-defect-outside-the-surfaces-boarded",
+          "title": "WO-198-D004: WO-198 resume: fix. (F1) sharedRefChanges must treat a snapshot that lacks originMain, main, a tags object with count and newest, or dotlnRefs as no baseline, the same as a legacy row wit",
+          "summary": "{ \"id\": \"WO-198-D004\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on one blocking finding. Criteria 1 to 5 are met. F1: when the latest earlier row of the same check has an object sharedRefs.end with no tags object (forged, damaged or stale), a failed gate throws \\\"TypeError: Cannot read properties of undefined (reading 'count')\\\". The throw comes from sharedRefChanges (scripts/test-runner.mjs:1916), called in the failure block (lines 2505-2524) before recordGateChecks (line 2525). So the gate records no row and prints no summary. Main's code (HEAD b06c6081) records the failed row and exits 1 on the same index. The change therefo",
+          "missing": false
+        },
+        {
+          "hash": "6a69b448b9135c59ae44f8b7907bbc4ceec47c0b0ad8608968cdb46877173537",
+          "ref": "docs/evidence/WO-198/decisions.md#wo-198-d004--verification-fail-on-a-regression-a-malformed-earlier-snapshot-shows-one-defect-outside-the-surfaces-boarded",
+          "title": "WO-198-D004: WO-198 resume: fix. (F1) sharedRefChanges must treat a snapshot that lacks originMain, main, a tags object with count and newest, or dotlnRefs as no baseline, the same as a legacy row wit",
+          "summary": "{ \"id\": \"WO-198-D004\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on one blocking finding. Criteria 1 to 5 are met. F1: when the latest earlier row of the same check has an object sharedRefs.end with no tags object (forged, damaged or stale), a failed gate throws \\\"TypeError: Cannot read properties of undefined (reading 'count')\\\". The throw comes from sharedRefChanges (scripts/test-runner.mjs:1916), called in the failure block (lines 2505-2524) before recordGateChecks (line 2525). So the gate records no row and prints no summary. Main's code (HEAD b06c6081) records the failed row and exits 1 on the same index. The change therefo",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "F1 is repaired. D007 reconsiders B1 while containing selection errors, preserves the latest-row interval and retains the harness-writer fix for the next order editing runHarnessEvidenceChecks. The snapshot-less host row is a separate documented diagnostic limitation.",
+          "reopenWhen": "The next order edits runHarnessEvidenceChecks in packages/skeleton/src/harness-host.ts, or a failed gate after harness evidence and a ref move prints no since-previous diagnostic.",
+          "targets": [],
+          "at": "2026-10-09T21:19:32.239Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6f4da93aa109f4f1",
+      "key": "decision:docs/evidence/WO-198/decisions.md#wo-198-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2f4a8ad27f6dc6e1a23b83cabea5a6e419b356bf6d0b73e2e2bc917ad555a9d2",
+          "ref": "docs/evidence/WO-198/decisions.md#wo-198-d006--verification-f1-repaired-fail-on-a-damaged-gate-history-archive-that-stops-a-failed-gate-from-recording-the-repairs-test-cost-boarded",
+          "title": "WO-198-D006: WO-198 resume: fix. (F2) No failure while reading or selecting the previous row of the same check may escape the failure block. That covers reading the hot index or an archive, parsing, s",
+          "summary": "{ \"id\": \"WO-198-D006\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Fail VER-002 on one blocking finding. Criteria 1 to 5 are met, and VER-001 F1 is repaired. F2: the failure block reads the gate history with readGateChecks(repo) (scripts/test-runner.mjs:2525). This order added that read. It reads the hot index and every archive in docs/control/local/harness/check-history. A damaged archive makes the read throw (packages/skeleton/src/gate-evidence.mjs:876-877 and the sort at :899). The throw escapes before recordGateChecks (scripts/test-runner.mjs:2544), so the failed gate records no row and prints no summary. Main's runner (HEAD b06c6081) neve",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-198-D007 and D008 repair F2 and F3. The archive and timestamp regressions pass, snapshot variants retain two whole-gate witnesses, and the integrated document and review gates pass at f940fd38. B1 was explicitly carried on D004 and remains deferred there.",
+          "reopenWhen": "A diagnostic history read or selection error again interrupts recording, or a distinct malformed-input caller behavior escapes the retained integration and direct-validator tests.",
+          "targets": [],
+          "at": "2026-10-09T21:19:32.176Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2e2e883bf668446d",
+      "key": "decision:docs/evidence/WO-198/decisions.md#wo-198-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d319b3d9cbf53eac9e3667aadd964c53fe2e94d7c1a73a1f097d033a676afc34",
+          "ref": "docs/evidence/WO-198/decisions.md#wo-198-d011--verification-f2-and-f3-repaired-fail-on-a-shared-ref-snapshot-read-that-throws-on-a-broken-tag-ref-or-damaged-packed-refs",
+          "title": "WO-198-D011: WO-198 resume: fix. (F4) No failure of a shared-ref read, at gate start or at the end, may change the gate's exit code, prevent recording its row or suppress its summary. That covers ever",
+          "summary": "{ \"id\": \"WO-198-D011\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-003\", \"kind\": \"finding\", \"decision\": \"Fail VER-003 on one blocking finding. Criteria 1 to 5 are met, VER-002 F2 is repaired, and F3 is folded in. F4: readSharedRefs (packages/skeleton/src/gate-evidence.mjs:479-511) enumerates v tags and refs/dotln/ through git(), which throws on any non-zero exit (:465-474). The runner calls it at gate start (scripts/test-runner.mjs:2063) and again inside the row literal after the last task (:2431), with no catch around either call. Two ref states make git for-each-ref exit 128 while main's gate path, which reads no refs, passes. One is a refs/tags/v* ref naming a missing object ('",
+          "missing": false
+        },
+        {
+          "hash": "167c8259eb02947a9b3602b3e33695194a41f5c13ae15d8faeccf2e9beebf14c",
+          "ref": "docs/evidence/WO-198/decisions.md#wo-198-d011--verification-f2-and-f3-repaired-fail-on-a-shared-ref-snapshot-read-that-throws-on-a-broken-tag-ref-or-damaged-packed-refs",
+          "title": "WO-198-D011: WO-198 resume: fix. (F4) No failure of a shared-ref read, at gate start or at the end, may change the gate's exit code, prevent recording its row or suppress its summary. That covers ever",
+          "summary": "{ \"id\": \"WO-198-D011\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-003\", \"kind\": \"finding\", \"decision\": \"Fail VER-003 on one blocking finding. Criteria 1 to 5 are met, VER-002 F2 is repaired, and F3 is folded in. F4: readSharedRefs (packages/skeleton/src/gate-evidence.mjs:479-511) enumerates v tags and refs/dotln/ through git(), which throws on any non-zero exit (:465-474). The runner calls it at gate start (scripts/test-runner.mjs:2063) and again inside the row literal after the last task (:2431), with no catch around either call. Two ref states make git for-each-ref exit 128 while main's gate path, which enumerates no refs, passes. One is a refs/tags/v* ref naming a missing obje",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-198 D012 repairs all four diagnostic Git reads and adds unreadable tag, damaged packed-refs, branch-read failure and recovery regressions. The 14 focused tests, 32-check document gate and full current-identity review pass; repair3-row-readback.json and repair3-gate-transcript.txt preserve passing and failed attempts. The review carries eligible passing tasks and freshly passes vertical within the unchanged deadline.",
+          "reopenWhen": "A shared-ref read failure changes the gate exit code, interrupts its durable row or summary, or lets an unobserved field or partial enumeration supply a movement baseline.",
+          "targets": [],
+          "at": "2026-10-09T23:03:12.697Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3ff0f28b45270ead",
+      "key": "decision:docs/evidence/WO-198/decisions.md#wo-198-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e3abec669367379a3ee6b3d79cef6bc6413057691e9d00897764d821dc188813",
+          "ref": "docs/evidence/WO-198/decisions.md#wo-198-d015--verification-f4-repaired-fail-on-criterion-2-a-comparison-that-withholds-changed-fields-both-snapshots-read",
+          "title": "WO-198-D015: WO-198 resume: fix. (F5) Criterion 2 holds for every field that both compared snapshots read, since the previous row and during the run. (1) A branch Git reports as not existing reads abs",
+          "summary": "{ \"id\": \"WO-198-D015\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: verify; VER-004\", \"kind\": \"finding\", \"decision\": \"Fail VER-004 on criterion 2. VER-003 F4 is repaired: no shared-ref state tried changes a gate's exit code, row or summary. The repair introduced F5. sharedRefChanges (scripts/test-runner.mjs:1927) now skips a branch whenever either side reads absent (:1935-1937). readSharedRefs (packages/skeleton/src/gate-evidence.mjs:497) still maps every failed branch read, missing or unreadable, to absent. A branch that is created or removed by ordinary Git use is therefore never named. Examples are origin/main created by a first push, a removed remote, or a created main. The repair also rej",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-198 D017 repairs F5 by comparing absent and withholding only unreadable fields; D019 and repair4-row-readback.json record passing document and complete fresh review rows at the repaired identity. All 17 focused tests and the current-identity runner-fixtures suite pass; the linked-worktree creation witness emits exactly one line and retains both failed rows.",
+          "reopenWhen": "A failed gate omits a field observed at both samples, names an unreadable field, or a diagnostic read changes its exit code, durable row or summary.",
+          "targets": [],
+          "at": "2026-10-10T00:37:09.250Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8bac5e3bddd12494",
+      "key": "decision:docs/evidence/WO-198/decisions.md#wo-198-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1c767989035153d66da9779ef0c3136bc2f8928da298855a58ce7974545b39c4",
+          "ref": "docs/evidence/WO-198/decisions.md#wo-198-d021--final-review-pass-at-the-integrated-subject-the-receipts-cost-condition-recorded-for-planning",
+          "title": "WO-198-D021: Planning, with the next pass that judges WO-198's catalog row or WO-197's task-growth rule: the refutation receipt 041 criterion-3 known issue on WO-198 fired. The runner-fixtures fresh t",
+          "summary": "{ \"id\": \"WO-198-D021\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass FINAL-001. All five criteria are met at the integrated subject, code identity a5923da78b9a4172b5178361bacfab9b5ecdec98d3912331f378e79a28ea67c8, byte-identical to VER-005's subject. No new defect: the findings block is empty, B1 stays deferred on FUP-f5f10101e717d59b, and no touching follow-up row's seam was opened. The planning receipt's criterion-3 known issue on runner-fixtures holds as written and is routed to planning with its readings rather than repaired in review. Commit the reviewed state as coherent commits and publish the wo-198 branch with the PR body in docs/final-reviews/WO-198/PR.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

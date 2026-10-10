@@ -31,6 +31,8 @@ import {
   expandSuiteTasks,
   aggregateSuiteRows,
   changedMachinery,
+  completeSharedRefs,
+  sharedRefChanges,
 } from "./test-runner.mjs";
 import {
   activeGateRuns,
@@ -45,6 +47,7 @@ import {
   GATE_RUN_ENVIRONMENT,
   recordGateChecks,
   readGateChecks,
+  readSharedRefs,
   requestGateStop,
 } from "./lib/gate-evidence.mjs";
 import {
@@ -2821,6 +2824,832 @@ function taskReuseFixture(t) {
       : [];
   return { repo, table, observed };
 }
+
+function sharedRefsFixture(t) {
+  const fixture = taskReuseFixture(t);
+  const { repo } = fixture;
+  writeFileSync(join(repo, "scripts/branch-value"), "base\n");
+  writeFileSync(
+    join(repo, "scripts/alpha.mjs"),
+    'import fs from "node:fs"; if(fs.readFileSync("scripts/branch-value", "utf8") !== "base\\n") process.exit(1);\n',
+  );
+  runGit(repo, ["add", "."]);
+  runGit(repo, ["commit", "-qm", "branch-local gate input"]);
+  const origin = mkdtempSync(join(tmpdir(), "dotln-shared-origin-"));
+  const worktree = `${repo}-worktree`;
+  t.after(() => {
+    rmSync(worktree, { recursive: true, force: true });
+    rmSync(origin, { recursive: true, force: true });
+  });
+  runGit(origin, ["init", "--bare", "-q"]);
+  runGit(origin, ["config", "maintenance.auto", "false"]);
+  runGit(repo, ["remote", "add", "origin", origin]);
+  runGit(repo, ["push", "-q", "-u", "origin", "main"]);
+  runGit(repo, ["worktree", "add", "-q", "-b", "wo-900", worktree]);
+  const table = fixture.table.map((row) =>
+    ["alpha", "beta"].includes(row.name)
+      ? {
+          ...row,
+          document: true,
+          ...(row.name === "alpha" ? { preflight: true } : {}),
+        }
+      : row,
+  );
+  const advance = () => {
+    writeFileSync(join(repo, "scripts/branch-value"), "sibling\n");
+    runGit(repo, ["commit", "-qam", "sibling lands on main"]);
+    runGit(repo, ["tag", "-a", "v9000.0.1", "-m", "sibling release"]);
+    runGit(repo, ["update-ref", "refs/dotln/checkpoint/WO-901/1", "HEAD"]);
+    runGit(repo, ["push", "-q", "origin", "main", "refs/tags/v9000.0.1"]);
+  };
+  return { ...fixture, table, worktree, advance };
+}
+
+async function captureGate(args, repo, options) {
+  const lines = [];
+  const log = console.log;
+  console.log = (...values) => {
+    lines.push(values.join(" "));
+  };
+  try {
+    return { row: await runGate(args, repo, options), lines };
+  } finally {
+    console.log = log;
+  }
+}
+
+test("WO-198 shared-ref comparisons name absence transitions and isolate unreadable fields", (t) => {
+  const before = {
+    originMain: "absent",
+    main: "absent",
+    tags: { count: 0, newest: "absent" },
+    dotlnRefs: 0,
+  };
+  const after = {
+    originMain: "origin-commit",
+    main: "main-commit",
+    tags: { count: 1, newest: "v1.0.0" },
+    dotlnRefs: 1,
+  };
+  const expected = [
+    "origin/main absent..origin-commit",
+    "main absent..main-commit",
+    "tags +v1.0.0 (count 0..1, newest absent..v1.0.0)",
+    "refs/dotln/ 0..1",
+  ];
+  assert.deepEqual(sharedRefChanges(before, after), expected);
+  assert.deepEqual(sharedRefChanges(after, before), [
+    "origin/main origin-commit..absent",
+    "main main-commit..absent",
+    "tags (count 1..0, newest v1.0.0..absent)",
+    "refs/dotln/ 1..0",
+  ]);
+  assert.deepEqual(sharedRefChanges(after, after), []);
+  const fields = ["originMain", "main", "tags", "dotlnRefs"];
+  for (const [index, field] of fields.entries()) {
+    for (const side of ["before", "after"]) {
+      const left = structuredClone(before);
+      const right = structuredClone(after);
+      const snapshot = side === "before" ? left : right;
+      snapshot[field] =
+        field === "tags"
+          ? { count: "unreadable", newest: "unreadable" }
+          : "unreadable";
+      assert.equal(completeSharedRefs(snapshot), true, `${field} ${side}`);
+      assert.deepEqual(
+        sharedRefChanges(left, right),
+        expected.filter((_, expectedIndex) => expectedIndex !== index),
+        `${field} ${side} withholds only its own comparison`,
+      );
+    }
+  }
+  const unreadable = {
+    originMain: "unreadable",
+    main: "unreadable",
+    tags: { count: "unreadable", newest: "unreadable" },
+    dotlnRefs: "unreadable",
+  };
+  assert.equal(completeSharedRefs(unreadable), true);
+  assert.deepEqual(sharedRefChanges(before, unreadable), []);
+  assert.deepEqual(sharedRefChanges(unreadable, after), []);
+  assert.deepEqual(sharedRefChanges(unreadable, unreadable), []);
+  for (const malformed of [
+    undefined,
+    {},
+    { ...before, tags: null },
+    { ...before, tags: { count: "absent", newest: "absent" } },
+  ]) {
+    assert.deepEqual(sharedRefChanges(malformed, after), []);
+    assert.deepEqual(sharedRefChanges(before, malformed), []);
+  }
+  t.diagnostic(
+    "PROOF WO-198 comparison: absent creation/removal, both interval directions, each unreadable field on either side, all-unreadable and malformed baselines",
+  );
+});
+
+test("WO-198 origin/main created between failed linked-worktree gates is named exactly once", async (t) => {
+  const { repo, worktree, table } = sharedRefsFixture(t);
+  runGit(repo, ["update-ref", "-d", "refs/remotes/origin/main"]);
+  writeFileSync(join(worktree, "fail-beta"), "fail\n");
+  const options = {
+    table: table.filter((row) => ["build", "beta"].includes(row.name)),
+  };
+  const first = await captureGate(["--serial", "--again"], worktree, options);
+  assert.equal(first.row.exitCode, 1);
+  assert.equal(first.row.sharedRefs.end.originMain, "absent");
+  assert.ok(
+    first.lines.every((line) => !line.startsWith("shared refs moved:")),
+  );
+  const commit = runGit(repo, ["rev-parse", "HEAD"]);
+  runGit(repo, ["update-ref", "refs/remotes/origin/main", commit]);
+  const second = await captureGate(["--serial", "--again"], worktree, options);
+  assert.equal(second.row.exitCode, 1);
+  assert.equal(second.row.sharedRefs.start.originMain, commit);
+  const lines = second.lines.filter((line) =>
+    line.startsWith("shared refs moved:"),
+  );
+  assert.deepEqual(lines, [
+    `shared refs moved: since previous: origin/main absent..${commit}`,
+  ]);
+  const stored = JSON.parse(
+    readFileSync(
+      join(worktree, "docs/control/local/harness/checks.json"),
+      "utf8",
+    ),
+  );
+  assert.equal(stored.length, 2);
+  assert.ok(stored.every((row) => row.exitCode === 1));
+  assert.deepEqual(stored.at(-1).sharedRefs, second.row.sharedRefs);
+  assert.equal(
+    second.lines.filter((line) => /^npm test: \d+ passed;/u.test(line)).length,
+    1,
+  );
+  t.diagnostic("PROOF WO-198 branch creation " + lines[0]);
+});
+
+test("WO-198 shared refs tolerate absent branches and count only annotated v tags", (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-shared-absent-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  runGit(repo, ["init", "-q", "-b", "topic"]);
+  assert.deepEqual(readSharedRefs(repo), {
+    originMain: "absent",
+    main: "absent",
+    tags: { count: 0, newest: "absent" },
+    dotlnRefs: 0,
+  });
+  const fixture = taskReuseFixture(t);
+  runGit(fixture.repo, ["tag", "v-lightweight"]);
+  runGit(fixture.repo, ["tag", "-a", "unrelated", "-m", "not a v tag"]);
+  assert.deepEqual(readSharedRefs(fixture.repo).tags, {
+    count: 0,
+    newest: "absent",
+  });
+  for (const [name, date] of [
+    ["v9000.0.2", "2020-01-01T00:00:00Z"],
+    ["v9000.0.1", "2020-01-02T00:00:00Z"],
+  ])
+    runGit(fixture.repo, ["tag", "-a", name, "-m", "dated tag"], {
+      env: { ...process.env, GIT_COMMITTER_DATE: date },
+    });
+  assert.deepEqual(readSharedRefs(fixture.repo).tags, {
+    count: 2,
+    newest: "v9000.0.1",
+  });
+});
+
+test("WO-198 branch reads distinguish clean unresolved refs from unavailable reads", (t) => {
+  const { repo } = taskReuseFixture(t);
+  const ref = "refs/remotes/origin/main";
+  const quiet = ["rev-parse", "--verify", "--quiet", `${ref}^{commit}`];
+  assert.equal(spawnGit(quiet, { cwd: repo }).status, 1);
+  assert.equal(readSharedRefs(repo).originMain, "absent");
+  runGit(repo, ["update-ref", ref, "HEAD"]);
+  assert.equal(
+    readSharedRefs(repo).originMain,
+    runGit(repo, ["rev-parse", "HEAD"]),
+  );
+  runGit(repo, ["update-ref", ref, runGit(repo, ["rev-parse", "HEAD^{tree}"])]);
+  assert.equal(spawnGit(quiet, { cwd: repo }).status, 1);
+  assert.equal(readSharedRefs(repo).originMain, "absent");
+  writeFileSync(join(repo, ".git", ref), `${"1".repeat(40)}\n`);
+  assert.equal(spawnGit(quiet, { cwd: repo }).status, 1);
+  assert.equal(readSharedRefs(repo).originMain, "absent");
+  runGit(repo, ["update-ref", "-d", ref]);
+  assert.equal(readSharedRefs(repo).originMain, "absent");
+  // A missing working directory prevents Git from launching, unlike a
+  // completed read that simply cannot resolve the requested branch.
+  const unavailable = readSharedRefs(join(repo, "missing-checkout"));
+  assert.deepEqual(unavailable, {
+    originMain: "unreadable",
+    main: "unreadable",
+    tags: { count: "unreadable", newest: "unreadable" },
+    dotlnRefs: "unreadable",
+  });
+  assert.deepEqual(sharedRefChanges(readSharedRefs(repo), unavailable), []);
+  t.diagnostic(
+    "PROOF WO-198 Git reads: missing, removed, dangling and non-commit refs resolve absent; a launch failure records every field unreadable without throwing",
+  );
+});
+
+test("WO-198 failed shared-ref enumerations retain unknown fields instead of partial counts", (t) => {
+  const { repo } = taskReuseFixture(t);
+  runGit(repo, ["tag", "-a", "v1.0.0", "-m", "readable tag"]);
+  runGit(repo, ["update-ref", "refs/remotes/origin/main", "HEAD"]);
+  runGit(repo, ["update-ref", "refs/dotln/fixture", "HEAD"]);
+  const healthy = readSharedRefs(repo);
+  assert.equal(healthy.tags.count, 1);
+  assert.equal(healthy.dotlnRefs, 1);
+  const tagFile = join(repo, ".git/refs/tags/v9.9.9");
+  writeFileSync(tagFile, `${"1".repeat(40)}\n`);
+  assert.notEqual(
+    spawnGit(["for-each-ref", "--format=%(objecttype)", "refs/tags/v*"], {
+      cwd: repo,
+    }).status,
+    0,
+  );
+  assert.deepEqual(readSharedRefs(repo), {
+    ...healthy,
+    tags: { count: "unreadable", newest: "unreadable" },
+  });
+  rmSync(tagFile);
+  assert.deepEqual(readSharedRefs(repo), healthy);
+  runGit(repo, ["pack-refs", "--all"]);
+  const packed = join(repo, ".git/packed-refs");
+  writeFileSync(packed, readFileSync(packed, "utf8") + "garbage line\n");
+  for (const args of [
+    ["rev-parse", "--verify", "refs/remotes/origin/main^{commit}"],
+    ["rev-parse", "--verify", "refs/heads/main^{commit}"],
+    ["for-each-ref", "--format=%(objecttype)", "refs/tags/v*"],
+    ["for-each-ref", "--format=%(refname)", "refs/dotln/"],
+  ])
+    assert.notEqual(spawnGit(args, { cwd: repo }).status, 0);
+  const degraded = readSharedRefs(repo);
+  assert.deepEqual(degraded, {
+    originMain: "unreadable",
+    main: "unreadable",
+    tags: { count: "unreadable", newest: "unreadable" },
+    dotlnRefs: "unreadable",
+  });
+  assert.equal(completeSharedRefs(degraded), true);
+  assert.deepEqual(sharedRefChanges(healthy, degraded), []);
+  assert.deepEqual(sharedRefChanges(degraded, healthy), []);
+  t.diagnostic(
+    "PROOF WO-198 unreadable enumerations: dangling tag degrades only tags; recovery restores counts; damaged packed-refs degrades all four reads without throwing",
+  );
+});
+
+test("WO-198 unreadable shared tags before and during a passing linked-worktree gate preserve its row and summary", async (t) => {
+  for (const during of [false, true]) {
+    const { repo, worktree, table, observed } = sharedRefsFixture(t);
+    const healthy = readSharedRefs(worktree);
+    const breakTag = () => {
+      mkdirSync(join(repo, ".git/refs/tags"), { recursive: true });
+      writeFileSync(join(repo, ".git/refs/tags/v9.9.9"), `${"1".repeat(40)}\n`);
+    };
+    if (!during) breakTag();
+    let damaged = !during;
+    const passed = await captureGate(
+      during ? ["--serial", "--again"] : ["--document", "--serial"],
+      worktree,
+      {
+        table,
+        stopRequested: () => {
+          if (!damaged && observed(worktree).includes("build")) {
+            damaged = true;
+            breakTag();
+          }
+          return false;
+        },
+      },
+    );
+    assert.ok(damaged);
+    assert.equal(passed.row.exitCode, 0);
+    const degraded = {
+      ...healthy,
+      tags: { count: "unreadable", newest: "unreadable" },
+    };
+    assert.deepEqual(passed.row.sharedRefs, {
+      start: during ? healthy : degraded,
+      end: degraded,
+    });
+    const stored = JSON.parse(
+      readFileSync(
+        join(worktree, "docs/control/local/harness/checks.json"),
+        "utf8",
+      ),
+    );
+    assert.equal(stored.length, 1);
+    assert.equal(stored[0].exitCode, 0);
+    assert.deepEqual(stored[0].sharedRefs, passed.row.sharedRefs);
+    assert.equal(
+      passed.lines.filter((line) => line.startsWith(`${passed.row.checkId}: `))
+        .length,
+      1,
+    );
+    assert.ok(
+      passed.lines.every((line) => !line.startsWith("shared refs moved:")),
+    );
+    t.diagnostic(
+      `PROOF WO-198 unreadable tag ${during ? "during plain" : "before document"} gate: exit 0, one durable row, four-field snapshots, one summary, no delta`,
+    );
+  }
+});
+
+test("WO-198 unreadable enumerations and unresolved branches preserve a failed gate and its observed movement", async (t) => {
+  for (const during of [false, true]) {
+    const { repo, worktree, table, observed } = sharedRefsFixture(t);
+    const healthy = readSharedRefs(worktree);
+    if (!during) {
+      mkdirSync(join(repo, ".git/refs/tags"), { recursive: true });
+      writeFileSync(join(repo, ".git/refs/tags/v9.9.9"), `${"1".repeat(40)}\n`);
+    }
+    writeFileSync(join(worktree, "fail-beta"), "fail\n");
+    let damaged = !during;
+    const failed = await captureGate(["--serial", "--again"], worktree, {
+      table,
+      stopRequested: () => {
+        if (!damaged && observed(worktree).includes("build")) {
+          damaged = true;
+          writeFileSync(
+            join(repo, ".git/refs/remotes/origin/main"),
+            `${"1".repeat(40)}\n`,
+          );
+        }
+        return false;
+      },
+    });
+    assert.ok(damaged);
+    assert.equal(failed.row.exitCode, 1);
+    const degraded = during
+      ? { ...healthy, originMain: "absent" }
+      : { ...healthy, tags: { count: "unreadable", newest: "unreadable" } };
+    assert.deepEqual(failed.row.sharedRefs, {
+      start: during ? healthy : degraded,
+      end: degraded,
+    });
+    const stored = JSON.parse(
+      readFileSync(
+        join(worktree, "docs/control/local/harness/checks.json"),
+        "utf8",
+      ),
+    );
+    assert.equal(stored.length, 1);
+    assert.equal(stored[0].exitCode, 1);
+    assert.deepEqual(stored[0].sharedRefs, failed.row.sharedRefs);
+    assert.equal(
+      failed.lines.filter((line) => /^npm test: \d+ passed;/u.test(line))
+        .length,
+      1,
+    );
+    assert.deepEqual(
+      failed.lines.filter((line) => line.startsWith("shared refs moved:")),
+      during
+        ? [
+            `shared refs moved: during run: origin/main ${healthy.originMain}..absent`,
+          ]
+        : [],
+    );
+    t.diagnostic(
+      `PROOF WO-198 failed ${during ? "unresolved branch during" : "tag read before"} gate: exit 1, one durable failed row, four-field snapshots, one summary, ${during ? "clean unresolved commit named absent" : "no fabricated delta"}`,
+    );
+  }
+});
+
+test("WO-198 a sibling merge and tag during a worktree's gates change no result and are named on the row", async (t) => {
+  const { repo, worktree, table, advance } = sharedRefsFixture(t);
+  const selections = [["--document", "--serial"], ["--serial"]];
+  const first = [];
+  for (const args of selections)
+    first.push(await captureGate(args, worktree, { table }));
+  advance();
+  assert.equal(
+    readFileSync(join(repo, "scripts/branch-value"), "utf8"),
+    "sibling\n",
+  );
+  for (const [index, args] of selections.entries()) {
+    // Force execution to prove the tasks still pass, beyond merely carrying
+    // their old passes; the plain composed run is checked separately below.
+    const second = await captureGate([...args, "--again"], worktree, { table });
+    const before = first[index].row;
+    assert.equal(before.exitCode, 0);
+    assert.equal(second.row.exitCode, 0);
+    assert.equal(second.row.codeIdentity, before.codeIdentity);
+    assert.deepEqual(
+      second.row.cases.map(({ name, exitCode }) => ({ name, exitCode })),
+      before.cases.map(({ name, exitCode }) => ({ name, exitCode })),
+    );
+    for (const row of [before, second.row]) {
+      assert.deepEqual(Object.keys(row.sharedRefs.start).sort(), [
+        "dotlnRefs",
+        "main",
+        "originMain",
+        "tags",
+      ]);
+      assert.deepEqual(row.sharedRefs.start, row.sharedRefs.end);
+      assert.deepEqual(
+        readGateChecks(worktree).find(
+          (stored) => stored.recordedAt === row.recordedAt,
+        ).sharedRefs,
+        row.sharedRefs,
+      );
+    }
+    assert.equal(
+      second.row.sharedRefs.start.tags.count,
+      before.sharedRefs.start.tags.count + 1,
+    );
+    assert.notEqual(
+      second.row.sharedRefs.start.originMain,
+      before.sharedRefs.start.originMain,
+    );
+    assert.equal(
+      second.row.sharedRefs.start.main,
+      second.row.sharedRefs.start.originMain,
+    );
+    assert.equal(
+      second.row.sharedRefs.start.dotlnRefs,
+      before.sharedRefs.start.dotlnRefs + 1,
+    );
+    assert.ok(
+      [...first[index].lines, ...second.lines].every(
+        (line) => !line.startsWith("shared refs moved:"),
+      ),
+    );
+    t.diagnostic(
+      "PROOF WO-198 sibling " +
+        JSON.stringify({
+          checkId: before.checkId,
+          before: before.sharedRefs,
+          after: second.row.sharedRefs,
+          tasks: second.row.cases.map(({ name, exitCode }) => ({
+            name,
+            exitCode,
+          })),
+          deltaLines: 0,
+        }),
+    );
+  }
+  const composed = await captureGate(["--serial"], worktree, { table });
+  assert.equal(composed.row.exitCode, 0);
+  assert.equal(composed.row.executionMode, "composed");
+  assert.deepEqual(composed.row.sharedRefs.start, readSharedRefs(worktree));
+  assert.ok(
+    composed.lines.every((line) => !line.startsWith("shared refs moved:")),
+  );
+});
+
+test("WO-198 a failed row names movement since its own check's previous row exactly once", async (t) => {
+  const { worktree, table, advance } = sharedRefsFixture(t);
+  const before = await captureGate(["--serial"], worktree, { table });
+  advance();
+  // A more recent row for another check must not hide the movement.
+  await captureGate(["--document", "--serial"], worktree, { table });
+  writeFileSync(join(worktree, "fail-beta"), "fail\n");
+  const failed = await captureGate(["--serial", "--again"], worktree, {
+    table,
+  });
+  assert.equal(failed.row.exitCode, 1);
+  const delta = failed.lines.filter((line) =>
+    line.startsWith("shared refs moved:"),
+  );
+  assert.equal(delta.length, 1);
+  for (const field of [
+    "origin/main",
+    "main",
+    "tags +v9000.0.1",
+    "count 0..1",
+    "newest absent..v9000.0.1",
+    "refs/dotln/ 0..1",
+  ])
+    assert.ok(delta[0].includes(field), delta[0]);
+  assert.ok(delta[0].includes(before.row.sharedRefs.end.originMain));
+  t.diagnostic("PROOF WO-198 forced failure " + delta[0]);
+  const unchanged = await captureGate(["--serial", "--again"], worktree, {
+    table,
+  });
+  assert.equal(unchanged.row.exitCode, 1);
+  assert.ok(
+    unchanged.lines.every((line) => !line.startsWith("shared refs moved:")),
+  );
+});
+
+test("WO-198 damaged archive JSON cannot prevent recording a failed gate", async (t) => {
+  const { repo, table } = taskReuseFixture(t);
+  const original = readSharedRefs(repo);
+  recordGateChecks(repo, [
+    {
+      checkId: "npm test",
+      treeHash: gateTreeHash(repo),
+      subject: "fixture",
+      durationMs: 0,
+      exitCode: 1,
+      executed: true,
+      evidenceRef: "fixture:before-damaged-archive",
+      recordedAt: new Date(0).toISOString(),
+      sharedRefs: { start: original, end: original },
+    },
+  ]);
+  const history = join(repo, "docs/control/local/harness/check-history");
+  mkdirSync(history, { recursive: true });
+  writeFileSync(join(history, `${"a".repeat(40)}.json`), "not json\n");
+  writeFileSync(join(repo, "fail-beta"), "fail\n");
+  const failed = await captureGate(["--serial", "--again"], repo, {
+    table: table.filter((row) => ["build", "beta"].includes(row.name)),
+  });
+  assert.equal(failed.row.exitCode, 1);
+  // Read the hot index independently: the archive deliberately remains damaged.
+  const stored = JSON.parse(
+    readFileSync(join(repo, "docs/control/local/harness/checks.json"), "utf8"),
+  );
+  assert.equal(stored.length, 2);
+  assert.equal(stored.at(-1).exitCode, 1);
+  assert.equal(stored.at(-1).recordedAt, failed.row.recordedAt);
+  assert.deepEqual(stored.at(-1).sharedRefs, {
+    start: original,
+    end: original,
+  });
+  assert.equal(
+    failed.lines.filter((line) => /^npm test: \d+ passed;/u.test(line)).length,
+    1,
+  );
+  assert.ok(
+    failed.lines.every((line) => !line.startsWith("shared refs moved:")),
+  );
+  t.diagnostic(
+    "PROOF WO-198 damaged archive: exit 1, two hot rows, complete snapshot, one summary, no delta",
+  );
+});
+
+test("WO-198 an unselectable archived timestamp still permits movement during the failed run", async (t) => {
+  const { worktree, table, advance, observed } = sharedRefsFixture(t);
+  const original = readSharedRefs(worktree);
+  const history = join(worktree, "docs/control/local/harness/check-history");
+  mkdirSync(history, { recursive: true });
+  // One archive row skips sorting and reaches Date.parse in row selection.
+  writeFileSync(
+    join(history, `${"b".repeat(40)}.json`),
+    JSON.stringify([{ checkId: "npm test", recordedAt: { toString: null } }]),
+  );
+  writeFileSync(join(worktree, "fail-beta"), "fail\n");
+  let moved = false;
+  const failed = await captureGate(["--serial", "--again"], worktree, {
+    table,
+    stopRequested: () => {
+      if (!moved && observed(worktree).includes("build")) {
+        moved = true;
+        advance();
+      }
+      return false;
+    },
+  });
+  assert.ok(moved);
+  assert.equal(failed.row.exitCode, 1);
+  const stored = JSON.parse(
+    readFileSync(
+      join(worktree, "docs/control/local/harness/checks.json"),
+      "utf8",
+    ),
+  );
+  assert.equal(stored.length, 1);
+  assert.equal(stored[0].exitCode, 1);
+  assert.equal(stored[0].recordedAt, failed.row.recordedAt);
+  assert.deepEqual(stored[0].sharedRefs, {
+    start: original,
+    end: readSharedRefs(worktree),
+  });
+  assert.equal(
+    failed.lines.filter((line) => /^npm test: \d+ passed;/u.test(line)).length,
+    1,
+  );
+  const delta = failed.lines.filter((line) =>
+    line.startsWith("shared refs moved:"),
+  );
+  assert.equal(delta.length, 1);
+  assert.doesNotMatch(delta[0], /since previous:/u);
+  for (const field of ["origin/main", "main", "tags +v9000.0.1", "refs/dotln/"])
+    assert.ok(delta[0].includes(`during run: ${field}`), delta[0]);
+  t.diagnostic("PROOF WO-198 unselectable history " + delta[0]);
+});
+
+test("WO-198 snapshot validation rejects malformed shapes without starting a gate", (t) => {
+  const complete = {
+    originMain: "earlier-origin",
+    main: "earlier-main",
+    tags: { count: 1, newest: "v-earlier" },
+    dotlnRefs: 1,
+  };
+  const without = (value, field) =>
+    Object.fromEntries(Object.entries(value).filter(([key]) => key !== field));
+  const variants = [
+    ["missing snapshot", undefined],
+    ["null snapshot", null],
+    ["string snapshot", "not an object"],
+    ["array snapshot", []],
+    ["empty snapshot", {}],
+    ...["originMain", "main", "tags", "dotlnRefs"].map((field) => [
+      `missing ${field}`,
+      without(complete, field),
+    ]),
+    ...["count", "newest"].map((field) => [
+      `missing tags.${field}`,
+      { ...complete, tags: without(complete.tags, field) },
+    ]),
+    ...[null, "not an object", []].map((tags) => [
+      `malformed tags ${JSON.stringify(tags)}`,
+      { ...complete, tags },
+    ]),
+    ["non-string originMain", { ...complete, originMain: null }],
+    ["empty main", { ...complete, main: "" }],
+    [
+      "non-numeric tag count",
+      { ...complete, tags: { ...complete.tags, count: "1" } },
+    ],
+    [
+      "negative tag count",
+      { ...complete, tags: { ...complete.tags, count: -1 } },
+    ],
+    [
+      "non-string newest tag",
+      { ...complete, tags: { ...complete.tags, newest: 1 } },
+    ],
+    ["fractional ref count", { ...complete, dotlnRefs: 0.5 }],
+    [
+      "unsafe tag count",
+      { ...complete, tags: { ...complete.tags, count: 1e21 } },
+    ],
+  ];
+  for (const [name, snapshot] of variants)
+    assert.equal(completeSharedRefs(snapshot), false, name);
+  assert.equal(completeSharedRefs(complete), true);
+  assert.equal(
+    completeSharedRefs({
+      originMain: "absent",
+      main: "absent",
+      tags: { count: 0, newest: "absent" },
+      dotlnRefs: 0,
+    }),
+    true,
+  );
+  t.diagnostic(
+    `PROOF WO-198 snapshot validator: ${variants.length} malformed shapes rejected, two valid controls accepted, no fixture gates`,
+  );
+});
+
+test("WO-198 incomplete earlier snapshots never prevent recording a failed gate", async (t) => {
+  const variants = [
+    ["empty snapshot", {}],
+    [
+      "missing tags",
+      { originMain: "earlier-origin", main: "earlier-main", dotlnRefs: 1 },
+    ],
+  ];
+  let confirmed = 0;
+  for (const [name, end] of variants)
+    await t.test(name, async (t) => {
+      const { repo, table } = taskReuseFixture(t);
+      recordGateChecks(repo, [
+        {
+          checkId: "npm test",
+          treeHash: gateTreeHash(repo),
+          subject: "fixture",
+          durationMs: 0,
+          exitCode: 1,
+          executed: true,
+          evidenceRef: "fixture:incomplete-snapshot",
+          recordedAt: new Date(0).toISOString(),
+          sharedRefs: { start: {}, end },
+        },
+      ]);
+      writeFileSync(join(repo, "fail-beta"), "fail\n");
+      const failed = await captureGate(["--serial", "--again"], repo, {
+        table: table.filter((row) => ["build", "beta"].includes(row.name)),
+      });
+      assert.equal(failed.row.exitCode, 1);
+      const stored = readGateChecks(repo);
+      assert.equal(stored.length, 2);
+      assert.equal(stored.at(-1).exitCode, 1);
+      assert.equal(stored.at(-1).recordedAt, failed.row.recordedAt);
+      assert.deepEqual(stored.at(-1).sharedRefs, {
+        start: readSharedRefs(repo),
+        end: readSharedRefs(repo),
+      });
+      assert.equal(
+        failed.lines.filter((line) => line.startsWith("npm test:")).length,
+        1,
+      );
+      assert.ok(
+        failed.lines.every((line) => !line.startsWith("shared refs moved:")),
+      );
+      confirmed++;
+    });
+  assert.equal(confirmed, variants.length);
+  t.diagnostic(
+    `PROOF WO-198 malformed snapshots: ${variants.length} variants recorded exit 1, complete snapshots and one summary without an invented delta`,
+  );
+});
+
+test("WO-198 an incomplete earlier snapshot still permits movement during the failed run", async (t) => {
+  const { worktree, table, advance, observed } = sharedRefsFixture(t);
+  const original = readSharedRefs(worktree);
+  recordGateChecks(worktree, [
+    {
+      checkId: "npm test",
+      treeHash: gateTreeHash(worktree),
+      subject: "fixture",
+      durationMs: 0,
+      exitCode: 1,
+      executed: true,
+      evidenceRef: "fixture:incomplete-snapshot",
+      recordedAt: new Date(0).toISOString(),
+      sharedRefs: { start: {}, end: { ...original, tags: null } },
+    },
+  ]);
+  writeFileSync(join(worktree, "fail-beta"), "fail\n");
+  let moved = false;
+  const failed = await captureGate(["--serial", "--again"], worktree, {
+    table,
+    stopRequested: () => {
+      if (!moved && observed(worktree).includes("build")) {
+        moved = true;
+        advance();
+      }
+      return false;
+    },
+  });
+  assert.ok(moved);
+  assert.equal(failed.row.exitCode, 1);
+  assert.equal(readGateChecks(worktree).length, 2);
+  const delta = failed.lines.filter((line) =>
+    line.startsWith("shared refs moved:"),
+  );
+  assert.equal(delta.length, 1);
+  assert.doesNotMatch(delta[0], /since previous:/);
+  for (const field of ["origin/main", "main", "tags +v9000.0.1", "refs/dotln/"])
+    assert.ok(delta[0].includes(`during run: ${field}`), delta[0]);
+  t.diagnostic("PROOF WO-198 incomplete baseline " + delta[0]);
+});
+
+test("WO-198 first and legacy rows detect movement during a failed run, including a return to the previous value", async (t) => {
+  const { repo, worktree, table, advance, observed } = sharedRefsFixture(t);
+  const original = readSharedRefs(worktree);
+  // A historical row supplies no invented baseline.
+  recordGateChecks(worktree, [
+    {
+      checkId: "npm test",
+      treeHash: gateTreeHash(worktree),
+      subject: "fixture",
+      durationMs: 0,
+      exitCode: 0,
+      executed: true,
+      evidenceRef: "fixture:legacy",
+      recordedAt: new Date(0).toISOString(),
+    },
+  ]);
+  writeFileSync(join(worktree, "fail-beta"), "fail\n");
+  let moved = false;
+  const failed = await captureGate(["--serial", "--again"], worktree, {
+    table,
+    stopRequested: () => {
+      if (!moved && observed(worktree).includes("build")) {
+        moved = true;
+        advance();
+      }
+      return false;
+    },
+  });
+  assert.ok(moved);
+  assert.equal(failed.row.exitCode, 1);
+  assert.deepEqual(failed.row.sharedRefs.start, original);
+  assert.notDeepEqual(failed.row.sharedRefs.start, failed.row.sharedRefs.end);
+  const delta = failed.lines.filter((line) =>
+    line.startsWith("shared refs moved:"),
+  );
+  assert.equal(delta.length, 1);
+  assert.match(delta[0], /during run: origin\/main/);
+  assert.match(delta[0], /tags \+v9000\.0\.1/);
+  assert.doesNotMatch(delta[0], /since previous:/);
+  // Move out and back: comparing only the two runs' final values misses it.
+  const advanced = failed.row.sharedRefs.end.originMain;
+  runGit(repo, ["update-ref", "refs/remotes/origin/main", original.originMain]);
+  let returned = false;
+  const roundTrip = await captureGate(["--serial", "--again"], worktree, {
+    table,
+    stopRequested: () => {
+      if (!returned) {
+        returned = true;
+        runGit(repo, ["update-ref", "refs/remotes/origin/main", advanced]);
+      }
+      return false;
+    },
+  });
+  const roundTripDelta = roundTrip.lines.filter((line) =>
+    line.startsWith("shared refs moved:"),
+  );
+  assert.equal(roundTripDelta.length, 1);
+  assert.match(roundTripDelta[0], /since previous: origin\/main/);
+  assert.match(roundTripDelta[0], /during run: origin\/main/);
+  t.diagnostic("PROOF WO-198 during-run " + delta[0]);
+  t.diagnostic("PROOF WO-198 round-trip " + roundTripDelta[0]);
+});
 
 const gateProof = (row) => ({
   codeIdentity: row.codeIdentity,

@@ -1,0 +1,212 @@
+{
+  "source": "readGateChecks(process.cwd()), filtered to the current code identity",
+  "identity": "e985b95a9c5f8e7f54e776a39fd3bee984148136747604aff369d9c13359eb1e",
+  "rows": [
+    {
+      "checkId": "suite:format",
+      "codeIdentity": "e985b95a9c5f8e7f54e776a39fd3bee984148136747604aff369d9c13359eb1e",
+      "gateSelection": "single",
+      "exitCode": 0,
+      "recordedAt": "2026-10-09T18:30:13.114Z",
+      "sharedRefs": {
+        "start": {
+          "originMain": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "main": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "tags": {
+            "count": 152,
+            "newest": "v0.72.0"
+          },
+          "dotlnRefs": 1629
+        },
+        "end": {
+          "originMain": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "main": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "tags": {
+            "count": 152,
+            "newest": "v0.72.0"
+          },
+          "dotlnRefs": 1629
+        }
+      },
+      "durationMs": 6223,
+      "requiredSuites": [
+        "document-barrier",
+        "format"
+      ],
+      "freshSuites": 2,
+      "reusedSuites": 0,
+      "identityUnchanged": true
+    },
+    {
+      "checkId": "suite:runner-fixtures",
+      "codeIdentity": "e985b95a9c5f8e7f54e776a39fd3bee984148136747604aff369d9c13359eb1e",
+      "gateSelection": "single",
+      "exitCode": 0,
+      "recordedAt": "2026-10-09T18:33:17.089Z",
+      "sharedRefs": {
+        "start": {
+          "originMain": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "main": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "tags": {
+            "count": 152,
+            "newest": "v0.72.0"
+          },
+          "dotlnRefs": 1629
+        },
+        "end": {
+          "originMain": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "main": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "tags": {
+            "count": 152,
+            "newest": "v0.72.0"
+          },
+          "dotlnRefs": 1629
+        }
+      },
+      "durationMs": 78590,
+      "requiredSuites": [
+        "build",
+        "runner-fixtures"
+      ],
+      "freshSuites": 2,
+      "reusedSuites": 0,
+      "identityUnchanged": true
+    },
+    {
+      "checkId": "npm run test:docs",
+      "codeIdentity": "e985b95a9c5f8e7f54e776a39fd3bee984148136747604aff369d9c13359eb1e",
+      "gateSelection": "document",
+      "exitCode": 0,
+      "recordedAt": "2026-10-09T18:36:53.303Z",
+      "sharedRefs": {
+        "start": {
+          "originMain": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "main": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "tags": {
+            "count": 152,
+            "newest": "v0.72.0"
+          },
+          "dotlnRefs": 1629
+        },
+        "end": {
+          "originMain": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "main": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "tags": {
+            "count": 152,
+            "newest": "v0.72.0"
+          },
+          "dotlnRefs": 1629
+        }
+      },
+      "durationMs": 98652,
+      "requiredSuites": [
+        "build",
+        "format",
+        "release-surfaces",
+        "license-surfaces",
+        "resume",
+        "launchpad-docs",
+        "publication",
+        "docs-check",
+        "docs-check-fixtures",
+        "comment-labels",
+        "comment-labels-fixtures",
+        "index",
+        "lineage",
+        "lineage-fixtures",
+        "kernel-docs",
+        "skeleton-docs",
+        "console-docs",
+        "resident-bind",
+        "local-runner-double",
+        "authority-evidence",
+        "harness",
+        "harness-context",
+        "harness-evidence",
+        "plan-refutation-current",
+        "artifact-corpus",
+        "artifact-evidence",
+        "verification-evidence",
+        "feedback-evidence",
+        "meta",
+        "registrations",
+        "plan",
+        "entropy"
+      ],
+      "freshSuites": 32,
+      "reusedSuites": 0,
+      "identityUnchanged": true
+    },
+    {
+      "checkId": "npm test",
+      "codeIdentity": "e985b95a9c5f8e7f54e776a39fd3bee984148136747604aff369d9c13359eb1e",
+      "gateSelection": "review",
+      "exitCode": 0,
+      "recordedAt": "2026-10-09T19:00:19.368Z",
+      "sharedRefs": {
+        "start": {
+          "originMain": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "main": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "tags": {
+            "count": 152,
+            "newest": "v0.72.0"
+          },
+          "dotlnRefs": 1629
+        },
+        "end": {
+          "originMain": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "main": "b06c60812cf7a533d9a2286479893abe6904c4b2",
+          "tags": {
+            "count": 152,
+            "newest": "v0.72.0"
+          },
+          "dotlnRefs": 1629
+        }
+      },
+      "durationMs": 1396333,
+      "requiredSuites": [
+        "build",
+        "format",
+        "release-preparation",
+        "github-body",
+        "outward-lint",
+        "target-publish",
+        "vertical",
+        "license-fixtures",
+        "publication-fixtures",
+        "backup-intake",
+        "launchpad",
+        "beacon-portability",
+        "checkpoint",
+        "worktree",
+        "worktree-integration",
+        "release",
+        "work-orders-fixtures",
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console",
+        "browser-evidence",
+        "adjacent-queue",
+        "derived-orders",
+        "portfolio",
+        "codex-continuation",
+        "authority-grants",
+        "configuration-root",
+        "authority-evidence",
+        "harness-fixtures",
+        "harness",
+        "harness-evidence",
+        "artifact-evidence",
+        "verification-evidence",
+        "feedback-evidence",
+        "runner-fixtures",
+        "process-debt",
+        "registrations"
+      ],
+      "freshSuites": 90,
+      "reusedSuites": 0,
+      "identityUnchanged": true
+    }
+  ]
+}

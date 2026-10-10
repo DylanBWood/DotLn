@@ -1,0 +1,34 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+✔ WO-198 damaged archive JSON cannot prevent recording a failed gate (496.768584ms)
+ℹ PROOF WO-198 damaged archive: exit 1, two hot rows, complete snapshot, one summary, no delta
+✔ WO-198 an unselectable archived timestamp still permits movement during the failed run (745.019625ms)
+ℹ PROOF WO-198 unselectable history shared refs moved: during run: origin/main 75df691b86a55e6a367328b3b941c06248e0351a..8ec2d8cc3924f628477d388555b175a2ff00455f; during run: main 75df691b86a55e6a367328b3b941c06248e0351a..8ec2d8cc3924f628477d388555b175a2ff00455f; during run: tags +v9000.0.1 (count 0..1, newest absent..v9000.0.1); during run: refs/dotln/ 0..1
+▶ WO-198 incomplete and malformed earlier snapshots never prevent recording a failed gate
+  ✔ empty snapshot (497.063375ms)
+  ✔ missing originMain (497.275375ms)
+  ✔ missing main (491.203042ms)
+  ✔ missing tags (490.891917ms)
+  ✔ missing dotlnRefs (494.500458ms)
+  ✔ missing tags.count (481.883166ms)
+  ✔ missing tags.newest (485.784208ms)
+  ✔ malformed tags null (490.166667ms)
+  ✔ malformed tags "not an object" (493.996666ms)
+  ✔ malformed tags [] (483.102875ms)
+  ✔ non-string originMain (487.154209ms)
+  ✔ empty main (488.711333ms)
+  ✔ non-numeric tag count (497.058083ms)
+  ✔ negative tag count (492.097708ms)
+  ✔ non-string newest tag (486.406584ms)
+  ✔ fractional ref count (491.469541ms)
+✔ WO-198 incomplete and malformed earlier snapshots never prevent recording a failed gate (7851.750583ms)
+ℹ PROOF WO-198 malformed snapshots: 16 variants recorded exit 1, complete snapshots and one summary without an invented delta
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9160.620833
+bounded-result {"name":"bounded-probe","durationMs":9219,"slowestCases":[{"name":"bounded-probe","durationMs":9219,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":87666184,"peakRssBytes":197820416,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-09T20:40:52.775Z","finishedAt":"2026-10-09T20:41:01.994Z","exitCode":0,"executed":true}
