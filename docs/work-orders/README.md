@@ -14,7 +14,7 @@
 - [x] [WO-073] — Repository class and profile documents · **final-reviewed** · pair 4
 - [x] [WO-198] — A worktree's gate names what moved · **final-reviewed** · pair 4
 - [x] [WO-077] — Launchpad export update · **final-reviewed** · pair 5
-- [ ] [WO-189] — The front page, rewritten once and guarded · **queued** · pair 5
+- [x] [WO-189] — The front page, rewritten once and guarded · **final-reviewed** · pair 5
 - [ ] [WO-078] — Sibling registry and export receipts · **queued** · pair 6
 - [ ] [WO-191] — Reader profiles for published text · **queued** · pair 6
 - [ ] [WO-072] — Target worktree lifecycle · **queued**
@@ -56,23 +56,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-189
-
-[WO-189 — The front page is rewritten once from what it already says well, chosen by the operator from three candidates, and then guarded so that an order cannot append to it (version assigned at activation)](WO-189-front-page.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-068: satisfied-by-close (met) — the release block, its markers and the fifteen-sentence rule this order replaces with a mechanism; WO-086: satisfied-by-close (met) — the generated release history the front page links instead of restating.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer any.
-- Track: machinery
-- Cost: adds a paragraph inventory of &#96;README.md&#96;, three complete candidate front pages with a reader score each, the chosen one as the new &#96;README.md&#96;, a release block that holds only the generated version line (&#96;scripts/lib/release-preparation.mjs&#96;, &#96;scripts/release.mjs&#96; &#96;releaseBlockRule&#96;), a refusal of README changes outside its generated blocks for an order whose criteria do not name the file (&#96;scripts/docs-check.mjs&#96;), and a sentence budget for the section that says what runs. Removes: the release block's 7,894 bytes and about 46 sentences against a fifteen-sentence rule that only prose stated; the duty that made 138 of 181 merged pull requests touch the front page; about 10.4 KB of receipts and implementation inventory on the page most visitors read; three stale statements (a map that lists three of six packages, a console called read-only, a link to a plan of 2026-09-06 as the way ahead). Re-mints: none; &#96;scripts/release.mjs&#96; is a declared source of the harness-fixture and process-debt suites, so &#96;npm test -- --review&#96; runs before handoff. Three writing episodes and three reader episodes are sub-agent work of unmeasured cost. Wall-clock, tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-189-front-page.md](WO-189-front-page.md)
 
 ### WO-078
 

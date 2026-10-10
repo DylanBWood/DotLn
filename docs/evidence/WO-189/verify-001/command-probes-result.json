@@ -1,0 +1,10 @@
+{
+  "recordedAt": "2026-10-10T13:32:26.788Z",
+  "command": [
+    "node",
+    "docs/evidence/WO-189/verify-001/command-probes.mjs"
+  ],
+  "exitCode": 0,
+  "output": "{\"command\":\"npm install\",\"status\":0,\"durationMs\":449,\"outputLines\":8,\"observations\":[\"added 13 packages, and audited 20 packages in 386ms\"]}\n{\"command\":\"npm run skeleton\",\"status\":0,\"durationMs\":1177,\"outputLines\":39,\"observations\":[\"Built browser-evidence, compiler, console, kernel, skeleton with atomic file replacement; installed harness snapshots remain immutable\",\"verified=true candidates=1\"]}\n{\"command\":\"npm run console -- board\",\"status\":0,\"durationMs\":2906,\"outputLines\":46702,\"observations\":[\"Built browser-evidence, compiler, console, kernel, skeleton with atomic file replacement; installed harness snapshots remain immutable\",\"Actor board v0 [publication-6442e7bb64369a89]\",\"Actor board role service [publication-69be9fb47cd17851]\"]}\n{\"command\":\"npm run dotln -- intent \\\"Describe the work\\\"\",\"status\":0,\"durationMs\":1173,\"outputLines\":7,\"observations\":[\"Built browser-evidence, compiler, console, kernel, skeleton with atomic file replacement; installed harness snapshots remain immutable\",\"Filed draft WO-900: docs/work-orders/derived/WO-900-derived.md\"]}\n{\"probe\":\"four README commands as written, in a temporary mirror of the recorded subject on the same host; effects confined to the mirror\",\"lockfileUnchanged\":true,\"allPassed\":true}\n",
+  "error": ""
+}

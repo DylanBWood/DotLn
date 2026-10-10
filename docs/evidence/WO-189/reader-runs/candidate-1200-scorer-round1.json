@@ -1,0 +1,166 @@
+{
+  "launch": {
+    "command": "claude",
+    "args": [
+      "-p",
+      "--tools",
+      "",
+      "--setting-sources",
+      "project",
+      "--no-session-persistence",
+      "--output-format",
+      "json",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "xhigh",
+      "--max-budget-usd",
+      "3",
+      "--system-prompt",
+      "You are scoring a reader's answers about a software project's front page against… (756 chars)",
+      "--json-schema",
+      "{\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"required\": [\"scores\"],… (558 chars)"
+    ],
+    "cwd": "/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln/462d95276846dea799fb9bf2c624e6786854ad13a66d4670c335f5acfbfa8a7e/scratch/dotln-scorer-J9jNKf",
+    "startedAt": "2026-10-10T02:44:08.193Z",
+    "finishedAt": "2026-10-10T02:44:39.325Z",
+    "model": "claude-opus-5-5",
+    "effort": "xhigh",
+    "effortSource": "launch flag --effort; the CLI reports no effective-effort readback"
+  },
+  "status": 0,
+  "stderr": "",
+  "output": {
+    "duration_api_ms": 30432,
+    "stop_reason": "tool_use",
+    "session_id": "ecedb981-b823-4c32-95ef-820e8464999a",
+    "total_cost_usd": 0.09885599999999999,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 4411,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 3178,
+      "output_tokens_details": {
+        "thinking_tokens": 2520
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 4411,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 3178,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 4411,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 4411
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-opus-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 3178,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 4411,
+        "webSearchRequests": 0,
+        "costUSD": 0.09885599999999999,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 2520,
+        "canonicalModel": "claude-opus-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"scores\":[{\"id\":\"q1\",\"score\":2,\"reason\":\"The answer states that DotLn is a local-first, model-agnostic compiler and runtime for human judgment, and that it is an agentic platform or shared ground rather than an agent, harness or orchestration layer; both quotes back these points, and it also partly covers turning corrections into mechanisms.\"},{\"id\":\"q2\",\"score\":2,\"reason\":\"The answer gives two keyed facts: people who work with AI agents and end up babysitting them (it also notes the rules are the author's own setup), and the five UIFA roles; the quotes support both, though the claim about business-book readers is unquoted and not in the key.\"},{\"id\":\"q3\",\"score\":2,\"reason\":\"The answer gives the kernel and compiler with the authority envelope, the Repo Gardener plus Seiri scenario replayed from an event log, the Claude/Codex worker episodes in isolated worktrees with a separate verifier, and the actor board and text console (it touches the resident host and publication only briefly); both quotes carry their claims, though only the first two facts are quoted.\"},{\"id\":\"q4\",\"score\":2,\"reason\":\"The answer names npm run skeleton after npm install, and the quoted command lines support it.\"},{\"id\":\"q5\",\"score\":2,\"reason\":\"The answer lists general source-writing worker profiles, composition beyond the Seiri subset, saved community builds, an interactive web or spatial console, SQLite, hosting or a package, the complete verified pipeline, and portable starter export; the quoted 'Not yet built' lines support at least three of these.\"},{\"id\":\"q6\",\"score\":2,\"reason\":\"The answer gives all four paths: the vision (00-vision.md), the domain model and architecture (02/03), the skeleton README and docs/PLAYBOOK.md; the quotes support the vision and architecture paths, which meets the two required.\"}]}",
+    "structured_output": {
+      "scores": [
+        {
+          "id": "q1",
+          "score": 2,
+          "reason": "The answer states that DotLn is a local-first, model-agnostic compiler and runtime for human judgment, and that it is an agentic platform or shared ground rather than an agent, harness or orchestration layer; both quotes back these points, and it also partly covers turning corrections into mechanisms."
+        },
+        {
+          "id": "q2",
+          "score": 2,
+          "reason": "The answer gives two keyed facts: people who work with AI agents and end up babysitting them (it also notes the rules are the author's own setup), and the five UIFA roles; the quotes support both, though the claim about business-book readers is unquoted and not in the key."
+        },
+        {
+          "id": "q3",
+          "score": 2,
+          "reason": "The answer gives the kernel and compiler with the authority envelope, the Repo Gardener plus Seiri scenario replayed from an event log, the Claude/Codex worker episodes in isolated worktrees with a separate verifier, and the actor board and text console (it touches the resident host and publication only briefly); both quotes carry their claims, though only the first two facts are quoted."
+        },
+        {
+          "id": "q4",
+          "score": 2,
+          "reason": "The answer names npm run skeleton after npm install, and the quoted command lines support it."
+        },
+        {
+          "id": "q5",
+          "score": 2,
+          "reason": "The answer lists general source-writing worker profiles, composition beyond the Seiri subset, saved community builds, an interactive web or spatial console, SQLite, hosting or a package, the complete verified pipeline, and portable starter export; the quoted 'Not yet built' lines support at least three of these."
+        },
+        {
+          "id": "q6",
+          "score": 2,
+          "reason": "The answer gives all four paths: the vision (00-vision.md), the domain model and architecture (02/03), the skeleton README and docs/PLAYBOOK.md; the quotes support the vision and architecture paths, which meets the two required."
+        }
+      ]
+    },
+    "ttft_ms": 25310,
+    "type": "result",
+    "duration_ms": 30461,
+    "uuid": "0e849d79-88f8-4ec7-8139-1dfb97b09c1d",
+    "ttft_stream_ms": 1040,
+    "time_to_request_ms": 30,
+    "first_content_frame_ms": 1040,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

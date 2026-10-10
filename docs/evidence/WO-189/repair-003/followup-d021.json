@@ -1,0 +1,9 @@
+{
+  "expectedRevision": "175b39e361dbaf9d9c7833402406cbf9226acc735e0f0cbf46ec0e96afcfc71e",
+  "id": "FUP-89e29438bd71c524",
+  "sourceRevision": 2,
+  "status": "deferred",
+  "reason": "The front-page guard's recorded limits stay rows of scripts/fixtures/front-page-corpus.json, and WO-088 lists its generated block in the control record when it runs; no current order needs either now.",
+  "reopenWhen": "An order relies on a recorded limit to put text on the front page, or WO-088 is activated without listing its block in docs/control/front-page.json.",
+  "targets": []
+}

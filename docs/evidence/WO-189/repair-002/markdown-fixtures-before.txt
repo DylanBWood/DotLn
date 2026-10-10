@@ -1,0 +1,90 @@
+✖ What runs today judges rendered sentences across inline Markdown, before and after formatting (144.966792ms)
+✖ What runs today uses rendered heading identity and parsed section boundaries for every Markdown spelling (129.470125ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 369.618
+
+✖ failing tests:
+
+test at scripts/test-docs-check.mjs:2006:1
+✖ What runs today judges rendered sentences across inline Markdown, before and after formatting (144.966792ms)
+  AssertionError [ERR_ASSERTION]: # Page
+  
+  ## What runs today
+  
+  <!-- DOTLN-RELEASE-BEGIN -->
+  This source prepares DotLn `v0.1.0`.
+  <!-- DOTLN-RELEASE-END -->
+  
+  <!-- dotln-what-runs:start -->
+  **One runs.**
+  _Two runs._
+  [Three runs.](docs/product/00-fixture.md)
+  <!-- dotln-what-runs:end -->
+  
+  ## Next
+  
+  A closing paragraph.
+  
+  + actual - expected
+  
+  + [
+  +   'README.md:10: a "What runs today" line does not end a sentence: **One runs.**',
+  +   'README.md:11: a "What runs today" line does not end a sentence: _Two runs._',
+  +   'README.md:12: a "What runs today" line does not end a sentence: [Three runs.](docs/product/00-fixture.md)'
+  + ]
+  - []
+  
+      at check (file:///Users/dylanwood/Projects/DotLn-wo189/scripts/test-docs-check.mjs:2032:19)
+      at async TestContext.<anonymous> (file:///Users/dylanwood/Projects/DotLn-wo189/scripts/test-docs-check.mjs:2035:34)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'README.md:10: a "What runs today" line does not end a sentence: **One runs.**', 'README.md:11: a "What runs today" line does not end a sentence: _Two runs._', 'README.md:12: a "What runs today" line does not end a sentence: [Three runs.](docs/product/00-fixture.md)' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/test-docs-check.mjs:2049:1
+✖ What runs today uses rendered heading identity and parsed section boundaries for every Markdown spelling (129.470125ms)
+  AssertionError [ERR_ASSERTION]: # Page
+  
+  ## **What runs today**
+  
+  <!-- DOTLN-RELEASE-BEGIN -->
+  This source prepares DotLn `v0.1.0`.
+  <!-- DOTLN-RELEASE-END -->
+  
+  <!-- dotln-what-runs:start -->
+  The kernel replays.
+  The skeleton runs.
+  <!-- dotln-what-runs:end -->
+  
+  ## Next
+  
+  A closing paragraph.
+  
+  + actual - expected
+  
+  + [
+  +   'README.md: needs the heading ## What runs today'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/dylanwood/Projects/DotLn-wo189/scripts/test-docs-check.mjs:2073:21)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'README.md: needs the heading ## What runs today' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,101 @@
+[
+  {
+    "expectedRevision": "229d638b57d2ff7e577eb6f977973355e0d813f5b4526e66a69364cb08c34506",
+    "id": "FUP-84bc6f15abd1e45f",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settled at WO-189's final review as D006 directs: the front page is rewritten as the operator's chosen candidate (D002), the release block between its markers holds only the version line that npm run release -- prepare writes, releaseBlockRule refuses any other content there (D014) and the document check refuses every other front-page change (D001, D021); release notes, not the page, carry per-order detail. [WO-189 FINAL-001, D026]",
+    "reopenWhen": "a reader of the front page reports it as a log again, or main's release block holds more than its generated line",
+    "targets": []
+  },
+  {
+    "expectedRevision": "229d638b57d2ff7e577eb6f977973355e0d813f5b4526e66a69364cb08c34506",
+    "id": "FUP-6e5ddcd44b2e7932",
+    "sourceRevision": 2,
+    "status": "settled",
+    "reason": "Repaired within WO-189 by D013 (repair-001): VER-002 reran VER-001's probe source unchanged with no missed refusal, and VER-004 passes criterion 5 with the corpus. [WO-189 FINAL-001, D026]",
+    "reopenWhen": "A refuse row of scripts/fixtures/front-page-corpus.json is admitted or an admit row refused, or GitHub's rendering shows a namesake or more sentences than counted lines on a page the guard admits.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "229d638b57d2ff7e577eb6f977973355e0d813f5b4526e66a69364cb08c34506",
+    "id": "FUP-b5b3e26976408c94",
+    "sourceRevision": 2,
+    "status": "settled",
+    "reason": "Repaired within WO-189 by D014: a current target rewrites the block as its generated line without retiming; VER-002 criterion 4 reproduced it and the release-preparation suite's 16 cases pass at the integrated tree. [WO-189 FINAL-001, D026]",
+    "reopenWhen": "release prepare leaves any text other than its generated line between the markers",
+    "targets": []
+  },
+  {
+    "expectedRevision": "229d638b57d2ff7e577eb6f977973355e0d813f5b4526e66a69364cb08c34506",
+    "id": "FUP-9dd4c0a807c54b02",
+    "sourceRevision": 2,
+    "status": "settled",
+    "reason": "Repaired within WO-189 by D015: the b025 anchor names the fact and both alternate candidates pass their anchor checks (VER-002 criterion 1, VER-004 criterion 1). [WO-189 FINAL-001, D026]",
+    "reopenWhen": "a candidate's anchor check fails against the inventory",
+    "targets": []
+  },
+  {
+    "expectedRevision": "229d638b57d2ff7e577eb6f977973355e0d813f5b4526e66a69364cb08c34506",
+    "id": "FUP-bfa0c87318fa5974",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "D013's one-range rule was reopened by D016 (emphasis bypass) and re-decided by D017, then D021; VER-004 reran the three earlier probe sources with no missed refusal and the 915-row corpus passes. [WO-189 FINAL-001, D026]",
+    "reopenWhen": "A refuse row of scripts/fixtures/front-page-corpus.json is admitted or an admit row refused, or GitHub's rendering shows a namesake or more sentences than counted lines on a page the guard admits.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "229d638b57d2ff7e577eb6f977973355e0d813f5b4526e66a69364cb08c34506",
+    "id": "FUP-4e6c063a2519487e",
+    "sourceRevision": 2,
+    "status": "settled",
+    "reason": "Allocated to WO-189 and done there by D017, then closed by D021; VER-003 reran VER-002's probe source with no missed refusal and VER-004 passes. [WO-189 FINAL-001, D026]",
+    "reopenWhen": "A refuse row of scripts/fixtures/front-page-corpus.json is admitted or an admit row refused, or GitHub's rendering shows a namesake or more sentences than counted lines on a page the guard admits.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "229d638b57d2ff7e577eb6f977973355e0d813f5b4526e66a69364cb08c34506",
+    "id": "FUP-daa06c89c2fffd1a",
+    "sourceRevision": 3,
+    "status": "settled",
+    "reason": "D017's parser rule was reopened by D019 (parser-extension text and an HTML heading) and superseded by D021 within the order; VER-004 passes. [WO-189 FINAL-001, D026]",
+    "reopenWhen": "A refuse row of scripts/fixtures/front-page-corpus.json is admitted or an admit row refused, or GitHub's rendering shows a namesake or more sentences than counted lines on a page the guard admits.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "229d638b57d2ff7e577eb6f977973355e0d813f5b4526e66a69364cb08c34506",
+    "id": "FUP-6d95d0885c703ef0",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Allocated to WO-189 and done there by D021 (repair-003): VER-004 reran VER-003's probe source with no missed refusal, judged 26 new shape cases and 7 ownership cases with no mismatch, and the corpus passes at the integrated tree. [WO-189 FINAL-001, D026]",
+    "reopenWhen": "A refuse row of scripts/fixtures/front-page-corpus.json is admitted or an admit row refused, or GitHub's rendering shows a namesake or more sentences than counted lines on a page the guard admits.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "229d638b57d2ff7e577eb6f977973355e0d813f5b4526e66a69364cb08c34506",
+    "id": "FUP-de8f8fd8ec8ff654",
+    "sourceRevision": 2,
+    "status": "settled",
+    "reason": "Taken within WO-189 by D021 inside the Boy Scout bound: invisible characters read as spaces and the ellipsis and ideographic terminators end a sentence; VER-004 passes. [WO-189 FINAL-001, D026]",
+    "reopenWhen": "an order uses an orthographic or invisible-character shape the corpus does not decide to put more sentences under What runs today than its budget counts",
+    "targets": []
+  },
+  {
+    "expectedRevision": "229d638b57d2ff7e577eb6f977973355e0d813f5b4526e66a69364cb08c34506",
+    "id": "FUP-6e12e29626183923",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Reconciled at WO-189's final review: repair-003/readme-vs-candidate-1200.diff.txt is regenerated from the actual page, VER-004's readme-record probe rerun reports currentMatchesSavedDiff true, and the ten restorations D023 described are recorded as not on the page and left to a later front-page order under D002's reopening. [WO-189 FINAL-001, D026]",
+    "reopenWhen": "a later evidence comparison again describes README bytes the page does not hold, or the operator asks for the restored lines",
+    "targets": []
+  },
+  {
+    "expectedRevision": "229d638b57d2ff7e577eb6f977973355e0d813f5b4526e66a69364cb08c34506",
+    "id": "FUP-5de3c35ef3d05142",
+    "sourceRevision": 3,
+    "status": "deferred",
+    "reason": "Re-disposed unchanged after D023's same-day correction revised the row: the planning items (WO-095 and WO-118 text against the new page, two lines of headroom against three queued sentences, WO-088's block registration, the Poincaré row's rights fields) belong to the next planning pass, not to this order's close. [WO-189 FINAL-001, D026]",
+    "reopenWhen": "A planning pass runs, or WO-095, WO-098, WO-118 or WO-088 is activated.",
+    "targets": []
+  }
+]

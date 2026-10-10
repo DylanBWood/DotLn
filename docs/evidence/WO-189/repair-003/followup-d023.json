@@ -1,0 +1,9 @@
+{
+  "expectedRevision": "705abd2d616667c531961b12840dd7cae944309690eebba38f034b7ea9036a1a",
+  "id": "FUP-5de3c35ef3d05142",
+  "sourceRevision": 2,
+  "status": "deferred",
+  "reason": "The planning items (WO-095 and WO-118 text against the new page, headroom for three queued sentences in two lines, WO-088's block registration, the Poincaré row's rights fields) belong to the next planning pass, not to this order.",
+  "reopenWhen": "A planning pass runs, or WO-095, WO-098, WO-118 or WO-088 is activated.",
+  "targets": []
+}

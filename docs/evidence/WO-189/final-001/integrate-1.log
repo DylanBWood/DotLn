@@ -1,0 +1,19 @@
+Checkpoint: refs/dotln/checkpoint/WO-189/20
+Retained stash: WO-189 integrate 2026-10-10 (9f91918d62e65f10bcd6ca882ac709e241688a70)
+Regenerated: runtime
+Regenerated: harness bundle and manifest
+Regenerated: current control projection
+Regenerated: release preparation
+Regenerated: integration decision stub
+Regenerated: decisions index, follow-up register and meta
+Regenerated: work-order index
+Regenerated: publication locks
+Bases: c676909066d278c92cacd94d998a42a8fb5d4a9a -> d17ce0047f7fe196105b47cdacade2c4956d27b4
+Authored conflicts: none
+Affected checks (not run):
+  npm test -- --review
+  npm run publication:check
+  node scripts/harness.mjs check
+  npm run release -- check-surfaces --local
+Reviewer: complete the integration decision's carried-forward claims; assess component-version collisions and changed evidence inputs. No lifecycle event or acceptance result was appended.
+Integration mechanics complete. Preservation and merge identities are in the receipt; recovery refs and stash retained.

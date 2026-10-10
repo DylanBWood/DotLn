@@ -1,0 +1,11 @@
+{
+  "expectedRevision": "8a4cdc13206083d6567651e89df18479292deeefc99253a44c4ce6297f9a791e",
+  "id": "FUP-6d95d0885c703ef0",
+  "sourceRevision": 1,
+  "status": "allocated",
+  "reason": "VER-003 F1 is repaired in the active WO-189 by D021: the front page holds no raw HTML or parser extension, each counted line is read raw and through the parser, and the unchanged VER-003 probe refuses every expected case.",
+  "reopenWhen": "Independent verification finds a front-page bypass the corpus does not decide, or a refuse row of scripts/fixtures/front-page-corpus.json is admitted.",
+  "targets": [
+    "WO-189"
+  ]
+}

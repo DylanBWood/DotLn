@@ -1,0 +1,10 @@
+✔ What runs today judges rendered sentences across inline Markdown, before and after formatting (2091.087458ms)
+✔ What runs today uses rendered heading identity and parsed section boundaries for every Markdown spelling (2144.198542ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4335.252042

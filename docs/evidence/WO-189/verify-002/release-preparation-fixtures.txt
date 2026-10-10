@@ -1,0 +1,24 @@
+✔ release preparation records a collision once, as the order's decision, and touches no product document (95.0425ms)
+✔ release preparation appends the next decision id after existing entries (40.7875ms)
+✔ under --integration a collision leaves its record to the integration decision (45.0085ms)
+✔ a conflicted decisions record refuses with its path and writes nothing (524.741208ms)
+✔ a placeholder heading is assigned the next version and its decision keeps the base (112.916291ms)
+✔ the release block becomes the one generated line, and prose beside or below the claim refuses before any write (168.561375ms)
+✔ release preparation follows the existing classification and skips an available target (208.978709ms)
+✔ release preparation uses only the selected order's open state (892.136416ms)
+✔ release preparation refuses malformed or ambiguous inputs before writing (398.447625ms)
+✔ a decisions record is never created outside the repository (49.547208ms)
+✔ release preparation preserves prerelease examples in the heading and outside the block when replacing the strict target (40.569292ms)
+✔ release preparation refuses wrong worktrees, escaped sources, and stale plans (90.713791ms)
+✔ release preparation recovers prior source bytes after a write failure (79.931ms)
+✔ a lone conflict marker line is an authored conflict; a setext underline alone is not (470.087916ms)
+✔ a decisions record behind a symlinked evidence directory inside the repository is refused in every mode (78.672708ms)
+✔ prepare --integration is refused once the stub is written or a saved outcome waits (19.71725ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3378.323833

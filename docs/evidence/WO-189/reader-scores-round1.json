@@ -1,0 +1,296 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-189",
+  "key": "reader-key.json",
+  "procedure": "Each reader was a fresh Claude Code print run with cwd in an empty directory, tools disabled, the default system prompt replaced and only one candidate page and the six questions as input; each scorer was a second such run given the key and that reader's answers and quotes, never the page. Raw CLI output for every run is in reader-runs/. Model is the CLI's modelUsage readback; effort is the launch selection, because the CLI reports no effective effort.",
+  "fullScore": "every question scores 2; the fallback candidate is the shortest one with a full score",
+  "runs": [
+    {
+      "candidate": "candidate-1200",
+      "reader": {
+        "status": 0,
+        "costUsd": 0.13916,
+        "model": "claude-opus-5-5",
+        "durationMs": 29923
+      },
+      "scorer": {
+        "status": 0,
+        "costUsd": 0.09885599999999999,
+        "model": "claude-opus-5-5",
+        "durationMs": 30461
+      },
+      "total": 12,
+      "full": true
+    },
+    {
+      "candidate": "candidate-2000",
+      "reader": {
+        "status": 0,
+        "costUsd": 0.1408954,
+        "model": "claude-opus-5-5",
+        "durationMs": 32828
+      },
+      "scorer": {
+        "status": 0,
+        "costUsd": 0.116708,
+        "model": "claude-opus-5-5",
+        "durationMs": 25499
+      },
+      "total": 12,
+      "full": true
+    },
+    {
+      "candidate": "candidate-3000",
+      "reader": {
+        "status": 0,
+        "costUsd": 0.16496,
+        "model": "claude-opus-5-5",
+        "durationMs": 32671
+      },
+      "scorer": {
+        "status": 0,
+        "costUsd": 0.1023116,
+        "model": "claude-opus-5-5",
+        "durationMs": 29298
+      },
+      "total": 12,
+      "full": true
+    }
+  ],
+  "rows": [
+    {
+      "candidate": "candidate-1200",
+      "question": "q1",
+      "quote": "DotLn is a local-first, model-agnostic **compiler and runtime for human | It is not an agent, not an agent harness, and not an orchestration layer. It",
+      "answer": "DotLn is a local-first compiler and runtime for human judgment that works with any model. You give it your taste, standards and corrections. It turns each one into the smallest mechanism that can carry it and gives every task only the rules that task needs. It enforces the hard rules outside the model and keeps a record of what happened that can be replayed. The page says it is not an agent, an agent harness or an orchestration layer. It calls itself an \"agentic platform\": shared ground where people and software actors hold work, authority and evidence.",
+      "score": 2,
+      "reason": "The answer states that DotLn is a local-first, model-agnostic compiler and runtime for human judgment, and that it is an agentic platform or shared ground rather than an agent, harness or orchestration layer; both quotes back these points, and it also partly covers turning corrections into mechanisms.",
+      "scorer": "isolated print run given the key and the answers, never the page",
+      "model": "claude-opus-5-5",
+      "effort": "xhigh (launch flag; no effective-effort readback)",
+      "readerModel": "claude-opus-5-5",
+      "readerEffort": "xhigh (launch flag; no effective-effort readback)"
+    },
+    {
+      "candidate": "candidate-1200",
+      "question": "q2",
+      "quote": "Working with AI agents drifts into babysitting: restating context, checking | (“wee-fuh”, User Interfaces for Actors): product lead, showrunner, engineer,",
+      "answer": "The page never names a target audience directly. It implies two groups. First, people who work with AI agents and are tired of \"babysitting\" them: repeating context, checking \"done\" claims and rescuing stalled work. Second, readers of business and leadership books, who it says will already know features of the app. It also names five roles for the people around the work: product lead, showrunner, engineer, tester and devops. The page says it is a personal project and that the rules in the repository are the author's own setup, not rules for everyone.",
+      "score": 2,
+      "reason": "The answer gives two keyed facts: people who work with AI agents and end up babysitting them (it also notes the rules are the author's own setup), and the five UIFA roles; the quotes support both, though the claim about business-book readers is unquoted and not in the key.",
+      "scorer": "isolated print run given the key and the answers, never the page",
+      "model": "claude-opus-5-5",
+      "effort": "xhigh (launch flag; no effective-effort readback)",
+      "readerModel": "claude-opus-5-5",
+      "readerEffort": "xhigh (launch flag; no effective-effort readback)"
+    },
+    {
+      "candidate": "candidate-1200",
+      "question": "q3",
+      "quote": "A deterministic kernel and compiler turn a loadout graph into a bounded program and an authority envelope that is checked on every decision, and a typed reactor folds durable events into replayable state. | The Repo Gardener plus Seiri scenario runs end to end from a JSONL event log, refuses deletion structurally and verifies its candidates with a separate verifier.",
+      "answer": "The source prepares version v0.73.1. The page lists these as working now:\n- A deterministic kernel and compiler that turn a loadout graph into a bounded program, plus permission limits checked on every decision. Events are saved and can be replayed into state.\n- The full Repo Gardener + Seiri scenario. It runs from a JSONL event log, is blocked from deleting things by design, and has a separate verifier check its candidates.\n- Short-lived worker sessions on Claude Code and Codex. They change code in isolated worktrees and must pass the project's own tests before committing. A verifier that can't see who did the work judges each change.\n- `worktree publish`, which opens pull requests only with operator permission, and `dotln vertical`, which runs the whole loop from a filed issue through review triage.\n- A resident host (`dotln resident`, `dotln presence`).\n- A browser evidence adapter.\n- An `intent` command that files draft work orders.\n- An actor board, a text console and a live console.\n- The repository itself runs on this same machinery.",
+      "score": 2,
+      "reason": "The answer gives the kernel and compiler with the authority envelope, the Repo Gardener plus Seiri scenario replayed from an event log, the Claude/Codex worker episodes in isolated worktrees with a separate verifier, and the actor board and text console (it touches the resident host and publication only briefly); both quotes carry their claims, though only the first two facts are quoted.",
+      "scorer": "isolated print run given the key and the answers, never the page",
+      "model": "claude-opus-5-5",
+      "effort": "xhigh (launch flag; no effective-effort readback)",
+      "readerModel": "claude-opus-5-5",
+      "readerEffort": "xhigh (launch flag; no effective-effort readback)"
+    },
+    {
+      "candidate": "candidate-1200",
+      "question": "q4",
+      "quote": "npm install | npm run skeleton",
+      "answer": "The page doesn't give a true one-command start. Its \"Try it\" section has two commands: run `npm install`, then `npm run skeleton`. That runs a demo in which a Repo Gardener inspects a sample repository. It is blocked from deleting things and has its findings checked by a separate verifier. You get a numbered timeline, a line of glyphs and a receipt. The skeleton README documents every flag.",
+      "score": 2,
+      "reason": "The answer names npm run skeleton after npm install, and the quoted command lines support it.",
+      "scorer": "isolated print run given the key and the answers, never the page",
+      "model": "claude-opus-5-5",
+      "effort": "xhigh (launch flag; no effective-effort readback)",
+      "readerModel": "claude-opus-5-5",
+      "readerEffort": "xhigh (launch flag; no effective-effort readback)"
+    },
+    {
+      "candidate": "candidate-1200",
+      "question": "q5",
+      "quote": "**Not yet built, and not claimed:** general source-writing worker profiles; | composition beyond the Seiri subset; saved community builds; an interactive",
+      "answer": "The page lists these as not built and not claimed:\n- general worker profiles that write code\n- composition beyond the Seiri subset\n- saved community builds\n- an interactive web or spatial console\n- SQLite persistence, hosted operation or a published package\n- the complete verified pipeline from source to deliverable\n- portable starter export\n\nIt also admits there is \"more blueprint than code.\"",
+      "score": 2,
+      "reason": "The answer lists general source-writing worker profiles, composition beyond the Seiri subset, saved community builds, an interactive web or spatial console, SQLite, hosting or a package, the complete verified pipeline, and portable starter export; the quoted 'Not yet built' lines support at least three of these.",
+      "scorer": "isolated print run given the key and the answers, never the page",
+      "model": "claude-opus-5-5",
+      "effort": "xhigh (launch flag; no effective-effort readback)",
+      "readerModel": "claude-opus-5-5",
+      "readerEffort": "xhigh (launch flag; no effective-effort readback)"
+    },
+    {
+      "candidate": "candidate-1200",
+      "question": "q6",
+      "quote": "Idea first: [the vision](/docs/product/00-vision.md). Machinery: | [architecture](/docs/product/03-architecture.md). Something moving:",
+      "answer": "The page suggests a path by interest:\n- For the idea: the vision (docs/product/00-vision.md).\n- For how it works: the domain model (docs/product/02-domain-model.md) and the architecture (docs/product/03-architecture.md).\n- To see something run: the skeleton README (packages/skeleton/README.md).\n\nIt also points to CONTRIBUTING.md for the toolchain and tests, the operator playbook (docs/PLAYBOOK.md) for the full workflow, and the roadmap (docs/product/06-roadmap.md).",
+      "score": 2,
+      "reason": "The answer gives all four paths: the vision (00-vision.md), the domain model and architecture (02/03), the skeleton README and docs/PLAYBOOK.md; the quotes support the vision and architecture paths, which meets the two required.",
+      "scorer": "isolated print run given the key and the answers, never the page",
+      "model": "claude-opus-5-5",
+      "effort": "xhigh (launch flag; no effective-effort readback)",
+      "readerModel": "claude-opus-5-5",
+      "readerEffort": "xhigh (launch flag; no effective-effort readback)"
+    },
+    {
+      "candidate": "candidate-2000",
+      "question": "q1",
+      "quote": "DotLn is a local-first, model-agnostic **compiler and runtime for human | judgment**. This repository develops the reusable platform and the author's",
+      "answer": "DotLn describes itself as a local-first compiler and runtime for human judgment that works with any model. It takes the rules and ways of working a person has learned and turns them into programs that AI teams can run and that people can inspect. Each task gets only the rules it needs. The hard rules it chooses are enforced outside the model, and it keeps a record of what happened that can be replayed. The page says it is not an agent, an agent harness or an orchestration layer. It calls itself an \"agentic platform\": shared ground where people and software hold work, authority and evidence. The repository builds the reusable platform and the author's own opinionated setup side by side.",
+      "score": 2,
+      "reason": "The answer has all three keyed facts: DotLn is a local-first, model-agnostic compiler and runtime for human judgment; it is an agentic platform, not an agent, harness or orchestration layer; and it turns ways of working into inspectable programs for AI teams. The quoted lines directly support the first fact.",
+      "scorer": "isolated print run given the key and the answers, never the page",
+      "model": "claude-opus-5-5",
+      "effort": "xhigh (launch flag; no effective-effort readback)",
+      "readerModel": "claude-opus-5-5",
+      "readerEffort": "xhigh (launch flag; no effective-effort readback)"
+    },
+    {
+      "candidate": "candidate-2000",
+      "question": "q2",
+      "quote": "Working with AI agents drifts into babysitting. You restate context, supply | bring the taste, standards and corrections you have already paid for once;",
+      "answer": "The page never names a target audience directly. It speaks to people who work with AI agents and are tired of babysitting them: repeating context, checking claims that work is \"done\", and restarting stalled work. In its words, you bring the taste, standards and corrections you have already learned, and DotLn carries them forward. Right now the setup is the author's own personal project. The platform is meant to be reused, though, and another owner can choose different rules.",
+      "score": 2,
+      "reason": "The answer has two keyed facts: people who work with AI agents and are tired of babysitting them, with the author's own setup as the current user; and any other owner who reuses the platform and chooses their own rules. Both quotes support these, though the answer misses the five UIFA roles and wrongly says the page names no audience directly.",
+      "scorer": "isolated print run given the key and the answers, never the page",
+      "model": "claude-opus-5-5",
+      "effort": "xhigh (launch flag; no effective-effort readback)",
+      "readerModel": "claude-opus-5-5",
+      "readerEffort": "xhigh (launch flag; no effective-effort readback)"
+    },
+    {
+      "candidate": "candidate-2000",
+      "question": "q3",
+      "quote": "Read the loop above from left to right; each stage below is running code. | Run: the Repo Gardener plus Seiri scenario runs end to end from a JSONL event log, and `npm run skeleton` prints its timeline and receipt.",
+      "answer": "The source prepares version v0.73.1, and the page says every stage of its main loop is working code:\n- **Compile:** a fixed, predictable compiler turns a chosen set of behaviors into a bounded program, plus a set of permissions that is checked on every decision.\n- **Recovery:** events are saved and rebuilt into state, so a crash does not repeat work that already happened.\n- **Run:** the Repo Gardener plus Seiri scenario runs from start to finish from a JSONL event log.\n- **Resident host:** a background host reacts to when the operator steps away and comes back, and stops further unattended work if it finds drift.\n- **Change:** short-lived workers on Claude Code and Codex change code in isolated worktrees.\n- **Verify:** a separate verifier, given nothing from the implementer, checks each change, with a limited repair loop. A browser adapter supplies screenshots and other evidence.\n- **Publish:** pull requests can be opened, but only with the operator's permission.\n- **Intend:** `dotln intent` files draft work orders.\n- **Inspect:** an actor board and a live text console show what is happening.\n- **Govern:** the repository itself runs on this same machinery.",
+      "score": 2,
+      "reason": "The answer has well over three keyed facts: the predictable compiler that makes a bounded program with permissions checked on every decision; the Repo Gardener plus Seiri scenario replayed from the event log; Claude and Codex workers in isolated worktrees with a separate verifier; the resident host that responds to presence and holds work on drift; and the actor board and text console. The quoted lines support the running-code claim and the Seiri replay.",
+      "scorer": "isolated print run given the key and the answers, never the page",
+      "model": "claude-opus-5-5",
+      "effort": "xhigh (launch flag; no effective-effort readback)",
+      "readerModel": "claude-opus-5-5",
+      "readerEffort": "xhigh (launch flag; no effective-effort readback)"
+    },
+    {
+      "candidate": "candidate-2000",
+      "question": "q4",
+      "quote": "npm install | npm run skeleton",
+      "answer": "The page doesn't give a single command. It lists two: run `npm install` first, then `npm run skeleton`. The second runs the Repo Gardener / Seiri demo. It prints a numbered timeline built from the JSONL event log, a one-line glyph summary of the same log, and a receipt.",
+      "score": 2,
+      "reason": "The answer names `npm run skeleton` after `npm install`, and both commands are quoted, which meets the key even though the answer objects that this is two commands.",
+      "scorer": "isolated print run given the key and the answers, never the page",
+      "model": "claude-opus-5-5",
+      "effort": "xhigh (launch flag; no effective-effort readback)",
+      "readerModel": "claude-opus-5-5",
+      "readerEffort": "xhigh (launch flag; no effective-effort readback)"
+    },
+    {
+      "candidate": "candidate-2000",
+      "question": "q5",
+      "quote": "**Not yet built, and not claimed:** general source-writing worker profiles | beyond the bounded transports above; composition semantics beyond the bounded",
+      "answer": "The page lists these as not built and not claimed:\n- general code-writing worker setups beyond the limited ones already described\n- ways to combine behaviors beyond the limited Seiri subset\n- saved community builds or compatibility migration\n- an interactive web, spatial or drag-and-drop console\n- SQLite storage, hosted operation or a published package\n- the complete, independently verified pipeline from source to finished deliverable\n- portable starter export, a portfolio in the operator's own repositories, and a measured payoff curve for time spent away\n\nIt also says the packages stay private until a separate decision is made to publish them.",
+      "score": 2,
+      "reason": "The answer lists all seven keyed gaps: general source-writing workers, composition beyond Seiri, community builds and migration, an interactive console, SQLite/hosted/published package, the full verified pipeline, and starter export/portfolio/payoff curve. The quoted lines support the first two.",
+      "scorer": "isolated print run given the key and the answers, never the page",
+      "model": "claude-opus-5-5",
+      "effort": "xhigh (launch flag; no effective-effort readback)",
+      "readerModel": "claude-opus-5-5",
+      "readerEffort": "xhigh (launch flag; no effective-effort readback)"
+    },
+    {
+      "candidate": "candidate-2000",
+      "question": "q6",
+      "quote": "If you want the idea first, read [the vision](/docs/product/00-vision.md). If | [the domain model](/docs/product/02-domain-model.md) and",
+      "answer": "It depends on what you want:\n- **The idea first:** read the vision (/docs/product/00-vision.md).\n- **The machinery:** start with the domain model (/docs/product/02-domain-model.md) and the architecture (/docs/product/03-architecture.md).\n- **To see something move:** run the skeleton (/packages/skeleton/README.md).\n\nThe page also points to CONTRIBUTING.md for the toolchain and tests, and to the operator playbook (/docs/PLAYBOOK.md) for the whole loop.",
+      "score": 2,
+      "reason": "The answer gives all four keyed destinations with their paths: the vision (00-vision.md), the domain model and architecture (02-domain-model.md, 03-architecture.md), the skeleton README, and the PLAYBOOK. The quotes support the vision and domain-model links.",
+      "scorer": "isolated print run given the key and the answers, never the page",
+      "model": "claude-opus-5-5",
+      "effort": "xhigh (launch flag; no effective-effort readback)",
+      "readerModel": "claude-opus-5-5",
+      "readerEffort": "xhigh (launch flag; no effective-effort readback)"
+    },
+    {
+      "candidate": "candidate-3000",
+      "question": "q1",
+      "quote": "DotLn is a local-first, model-agnostic **compiler and runtime for human | is an **agentic platform**: the shared substrate on which people and software",
+      "answer": "DotLn describes itself as a local-first tool that works with any AI model. It acts as a compiler and runtime for human judgment. It turns hard-won ways of working into programs that AI teams follow and people can inspect. Each rule is compiled into the smallest mechanism that can carry it, and each task gets only the rules it needs. Some hard rules are enforced outside the model, and a replayable record of what happened is kept. The page says plainly that DotLn is not an agent, an agent harness or an orchestration layer. It calls itself an 'agentic platform': a shared base on which people and software hold work, authority and evidence. The repository builds two things together: the reusable platform and the author's own opinionated setup.",
+      "score": 2,
+      "reason": "The answer gives two keyed facts, and its quotes support both: DotLn is a local-first, model-agnostic compiler and runtime for human judgment, and it is an agentic platform or shared substrate rather than an agent, harness or orchestration layer. It also gives the third fact, turning ways of working into inspectable programs for AI teams, without a quote.",
+      "scorer": "isolated print run given the key and the answers, never the page",
+      "model": "claude-opus-5-5",
+      "effort": "xhigh (launch flag; no effective-effort readback)",
+      "readerModel": "claude-opus-5-5",
+      "readerEffort": "xhigh (launch flag; no effective-effort readback)"
+    },
+    {
+      "candidate": "candidate-3000",
+      "question": "q2",
+      "quote": "Working with AI agents drifts into babysitting. You restate context, supply | bring the taste, standards, and corrections you have already paid for once;",
+      "answer": "The page never names a target audience directly. It is written for people who work with AI agents and are tired of 'babysitting' them: restating context, supplying procedure and checking 'done' claims that lack evidence. Those people bring the taste, standards and corrections they have already learned the hard way. Right now the setup on display is the author's personal one, but the platform is meant to let other 'owners' choose their own rules. The page also describes five human 'UIFA' roles, and says one person can play all five.",
+      "score": 2,
+      "reason": "The answer gives two keyed facts: the audience is people who babysit AI agents, with the author's own setup first, which a quote supports; and owners bring their own taste, standards and corrections, which the 'bring the taste, standards, and corrections' quote supports. It mentions five UIFA roles but does not name them, which does not affect the score.",
+      "scorer": "isolated print run given the key and the answers, never the page",
+      "model": "claude-opus-5-5",
+      "effort": "xhigh (launch flag; no effective-effort readback)",
+      "readerModel": "claude-opus-5-5",
+      "readerEffort": "xhigh (launch flag; no effective-effort readback)"
+    },
+    {
+      "candidate": "candidate-3000",
+      "question": "q3",
+      "quote": "The order is executed in an isolated worktree by a disposable worker episode on Claude Code or Codex, which changes source, passes the host's own test and commits; a killed host recovers the existing commit instead of dispatching a second writer. | The first proof still walks: the Repo Gardener plus Seiri scenario runs end to end from a JSONL event log, refuses deletion structurally and verifies its candidates with a separate verifier, and `npm run skeleton` prints its timeline and receipt.",
+      "answer": "The page says this source prepares version v0.73.1, and it lists a working end-to-end loop:\n- **Filing work:** you file an intent as a draft work order.\n- **Compiling:** a deterministic kernel and compiler turn the order into a bounded program, with authority limits checked on every decision.\n- **Doing the work:** a short-lived worker on Claude Code or Codex works in an isolated worktree (a separate checkout). It changes code, passes the tests and commits.\n- **Checking the work:** a separate 'blinded' verifier checks the change, with a bounded repair loop. For web pages, a browser adapter supplies screenshot, DOM, network and console evidence.\n- **Publishing:** `worktree publish` opens a pull request, but only with an operator's permission and after a lint check passes.\n- **Running unattended:** `dotln vertical` runs the whole loop by itself, starting from a filed issue.\n- **Background host:** a resident host acts on the operator's presence or absence. It holds unattended work if a mission check finds drift.\n- **Inspection:** an actor board and a live text console show what happened.\n- **First demo:** the original Repo Gardener + Seiri demo still runs end to end.\n- **Rule hooks:** generated hooks enforce the hard rules outside the model.\n\nThe repository is also built using this same process.",
+      "score": 2,
+      "reason": "The answer gives more than three keyed facts: the kernel and compiler with authority checked on every decision, the Repo Gardener plus Seiri scenario from an event log, disposable Claude and Codex workers in isolated worktrees with a separate verifier, the resident host with a mission check, and the actor board and text console. The two quotes support the worker-episode and Seiri facts.",
+      "scorer": "isolated print run given the key and the answers, never the page",
+      "model": "claude-opus-5-5",
+      "effort": "xhigh (launch flag; no effective-effort readback)",
+      "readerModel": "claude-opus-5-5",
+      "readerEffort": "xhigh (launch flag; no effective-effort readback)"
+    },
+    {
+      "candidate": "candidate-3000",
+      "question": "q4",
+      "quote": "npm install | npm run skeleton",
+      "answer": "The page gives no single command. Its 'Try it' section lists two: `npm install`, then `npm run skeleton`. The second runs the Repo Gardener + Seiri demo. It prints a numbered timeline, a line of glyphs and a receipt.",
+      "score": 2,
+      "reason": "The answer names `npm run skeleton` after `npm install`, which is the keyed fact, and its quotes support it.",
+      "scorer": "isolated print run given the key and the answers, never the page",
+      "model": "claude-opus-5-5",
+      "effort": "xhigh (launch flag; no effective-effort readback)",
+      "readerModel": "claude-opus-5-5",
+      "readerEffort": "xhigh (launch flag; no effective-effort readback)"
+    },
+    {
+      "candidate": "candidate-3000",
+      "question": "q5",
+      "quote": "**Not yet built, and not claimed:** general source-writing worker profiles | interactive web, spatial, or drag-and-drop console; SQLite persistence, hosted",
+      "answer": "The page lists these as not yet built and not claimed:\n- general code-writing worker profiles beyond the current limited ones\n- composition semantics (how rules combine) beyond the small Seiri subset\n- saved community builds and compatibility migration\n- an interactive web, spatial or drag-and-drop console\n- SQLite storage, hosted operation or a published package\n- the complete, independently verified pipeline from source to deliverable\n- portable starter export, a portfolio in the operator's own repositories, and a measured payoff curve for operator absence\n\nElsewhere it adds:\n- other active mechanics, saved builds and interactive editing are deferred\n- packages stay private until a separate decision to publish\n- version 1.0 has not been reached",
+      "score": 2,
+      "reason": "The answer lists all seven keyed items: general source-writing workers, composition beyond the Seiri subset, community builds and migration, an interactive console, SQLite, hosting or a published package, the verified source-to-deliverable pipeline, and starter export, portfolio and absence payoff curve. The quoted 'Not yet built, and not claimed' lines support them.",
+      "scorer": "isolated print run given the key and the answers, never the page",
+      "model": "claude-opus-5-5",
+      "effort": "xhigh (launch flag; no effective-effort readback)",
+      "readerModel": "claude-opus-5-5",
+      "readerEffort": "xhigh (launch flag; no effective-effort readback)"
+    },
+    {
+      "candidate": "candidate-3000",
+      "question": "q6",
+      "quote": "If you want the idea first, read [the vision](/docs/product/00-vision.md). If | [the domain model](/docs/product/02-domain-model.md) and",
+      "answer": "The page points to different places depending on what you want:\n- **The idea first:** the vision document (/docs/product/00-vision.md).\n- **The machinery:** the domain model (/docs/product/02-domain-model.md) and the architecture (/docs/product/03-architecture.md).\n- **Seeing it run:** the skeleton README (/packages/skeleton/README.md).\n- **Also mentioned:** CONTRIBUTING.md for the toolchain and tests, and the operator playbook (/docs/PLAYBOOK.md) for the whole loop.",
+      "score": 2,
+      "reason": "The answer gives all four keyed destinations with their paths: the vision (00-vision.md), the domain model and architecture (02 and 03), the skeleton README and docs/PLAYBOOK.md. The quotes support the vision and domain-model paths.",
+      "scorer": "isolated print run given the key and the answers, never the page",
+      "model": "claude-opus-5-5",
+      "effort": "xhigh (launch flag; no effective-effort readback)",
+      "readerModel": "claude-opus-5-5",
+      "readerEffort": "xhigh (launch flag; no effective-effort readback)"
+    }
+  ]
+}

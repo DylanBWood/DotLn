@@ -1,0 +1,20 @@
+=== publication:check
+PASS index coverage: 254/254 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+CURRENT everyday-ai-user-toc.md: 29 linked source sections match
+CURRENT software-engineer-toc.md: 45 linked source sections match
+PASS publication bootstrap checks
+exit 0
+=== harness check
+harness check: 34 generated surfaces; local-terms list: unavailable
+exit 0
+=== release check-surfaces --local
+PASS license-surfaces docs/LEGAL.md NOTICE pin: observed 645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c; expected 645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c
+PASS license-surfaces package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/beacons/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/browser-evidence/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/compiler/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/console/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/kernel/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/skeleton/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+exit 0

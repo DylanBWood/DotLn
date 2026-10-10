@@ -1,0 +1,10 @@
+{
+  "recordedAt": "2026-10-10T13:32:19.093Z",
+  "command": [
+    "node",
+    "docs/evidence/WO-189/verify-001/release-line-probes.mjs"
+  ],
+  "exitCode": 0,
+  "output": "{\n  \"subject\": \"current WO-189 README; synthetic wo-999 with patch target\",\n  \"cases\": [\n    {\n      \"name\": \"canonical line with version collision\",\n      \"target\": \"v0.73.3\",\n      \"edits\": 3,\n      \"content\": \"This source prepares DotLn `v0.73.3`.\",\n      \"outsideUnchanged\": true,\n      \"exactGeneratedLine\": true\n    },\n    {\n      \"name\": \"legacy line with version collision\",\n      \"target\": \"v0.73.3\",\n      \"edits\": 3,\n      \"content\": \"This source prepares DotLn `v0.73.3`.\",\n      \"outsideUnchanged\": true,\n      \"exactGeneratedLine\": true\n    },\n    {\n      \"name\": \"legacy line with available target\",\n      \"target\": \"v0.73.2\",\n      \"edits\": 0,\n      \"content\": \"This source prepares `v0.73.2`.\",\n      \"outsideUnchanged\": true,\n      \"exactGeneratedLine\": false\n    },\n    {\n      \"name\": \"second non-empty line\",\n      \"refused\": \"release prepare requires the README release block to hold only its version line; move other text out of the block\",\n      \"readmeUnchanged\": true\n    },\n    {\n      \"name\": \"second sentence beside claim\",\n      \"refused\": \"release prepare requires the README release block to hold only its version line; move other text out of the block\",\n      \"readmeUnchanged\": true\n    },\n    {\n      \"name\": \"blank lines around canonical claim\",\n      \"target\": \"v0.73.3\",\n      \"edits\": 3,\n      \"content\": \"This source prepares DotLn `v0.73.3`.\",\n      \"outsideUnchanged\": true,\n      \"exactGeneratedLine\": true\n    }\n  ]\n}\n",
+  "error": ""
+}

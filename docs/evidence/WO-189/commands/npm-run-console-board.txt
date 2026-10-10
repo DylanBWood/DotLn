@@ -1,0 +1,82 @@
+# npm run console -- board (bounded run, 2026-10-10; excerpt: first 60 and last 20 lines of 21,560; the full board is reproducible from the command)
+[output tail; dropped 1363360 bytes]
+/lineage/decisions-index.md [evidence-2529]
+  -> Evidence: WO-055-repair-continuation.md [evidence-2715]
+
+WO-056 [indexed-order-01708d4c89b66fdd]
+  title: WO-056 — Live blinded verification and repair: a planted defect in a
+real repository is caught by a live verifier, repaired by a fresh worker, and
+re-verified from the original contract, recorded from an outside terminal
+(v0.33.2) [evidence-2716]
+  State: closed. [evidence-2716]
+  Application target: v0.33.2. [evidence-2716]
+  Dependencies: typed; activation not applicable. [evidence-2716]
+  References: WO-055: hard (met) — the loop the episode runs; WO-053: hard
+(met) — the live primitive and receipt shape it extends. [evidence-2716]
+  Verification: VER-001 (pass). [evidence-2716]
+  Final review: FINAL-001 (pass). [evidence-2716]
+  Release: v0.33.2 (manifest workOrder.id). [evidence-2716]
+  Model: the actual local harnesses for the worker and verifier episodes, run
+by the operator from a terminal outside the sandbox; launch claims recorded per
+episode (07-execution-guide.md §Model-specific notes). [evidence-2716]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-2716]
+  Track: unknown [evidence-2716]
+  Cost: Legacy declaration unavailable: added and removed wall-clock, context
+bytes, commands, tokens and steps were not measured. No reduction is claimed;
+the next planning refutation must judge this missing cost evidence (WO-126,
+2026-09-09). [evidence-2716]
+  Inherited ledger duty: discharge with this order's decisions and its row in
+the decisions index; no lifecycle ledger append. [evidence-2716]
+  Latest attestation: harness claude-code; version 2.1.278; model
+claude-opus-5&#91;1m&#93;; effort xhigh; source operator-attested; account
+not-applicable. [evidence-2716]
+  Authority: docs/work-orders/WO-056-live-verification-and-repair.md
+[evidence-2716]
+  -> Evidence: ../../docs/verifications/WO-056/VER-001.md [evidence-2717]
+  -> Evidence: ../../docs/final-reviews/WO-056/FINAL-001.md [evidence-2718]
+  -> Evidence: ../evidence/WO-056/decisions.md [evidence-2719]
+  -> Evidence: ../lineage/decisions-index.md [evidence-2529]
+  -> Evidence: WO-056-live-verification-and-repair.md [evidence-2720]
+
+WO-057 [indexed-order-01708c4c89b66e2a]
+  title: WO-057 — Browser runtime truth: observe whether a Playwright runtime
+can be installed, launched headless and killed inside a confined checkout in
+this environment without the harness's connected server, and record the
+dependency decision as an ADR-0002 amendment (v0.56.4) [evidence-2721]
+  State: closed. [evidence-2721]
+  Application target: v0.56.4. [evidence-2721]
+  Dependencies: typed; activation not applicable. [evidence-2721]
+  References: WO-004: satisfied-by-close (met) — the environment record it
+extends; WO-056: reference-only (non-blocking) — recommended after the
+real-repository loop so the adapter has a consumer. [evidence-2721]
+  Verification: VER-001 (pass). [evidence-2721]
+  Final review: FINAL-001 (pass). [evidence-2721]
+  Release: v0.56.4 (manifest workOrder.id). [evidence-2721]
+  Model: any capable model for the probe; the executor runs every row on the
+actual host, whose sessions run with network access and no host sandbox. State
+the model and effort actually run (07-execution-guide.md §Model-specific
+notes). [evidence-2721]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-2721]
+  Track: unknown [evidence-2721]
+  Cost: adds &#96;docs/discovery/browser-runtime-&lt;date&gt;.md&#96; and its
+[…]
+  orders:WO-093
+[evidence-4497]
+docs/planning/refutations/2026-10-07-planning-c351cfc3b65e74e5-041.json
+  orders:WO-094
+[evidence-4498]
+docs/planning/refutations/2026-10-07-planning-c351cfc3b65e74e5-041.json
+  orders:WO-095
+[evidence-4499]
+docs/planning/refutations/2026-10-07-planning-c351cfc3b65e74e5-041.json
+  orders:WO-089
+[evidence-4500]
+docs/planning/refutations/2026-10-07-planning-c351cfc3b65e74e5-041.json
+  orders:WO-088
+[evidence-4501]
+docs/planning/refutations/2026-10-07-planning-c351cfc3b65e74e5-041.json
+  orders:WO-014
+[evidence-4502]
+docs/planning/refutations/2026-10-07-planning-c351cfc3b65e74e5-041.json
+  orders:WO-083
+bounded-result {"name":"bounded-probe","durationMs":8445,"slowestCases":[{"name":"bounded-probe","durationMs":8445,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":433449040,"peakRssBytes":599670784,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":1363360,"startedAt":"2026-10-10T03:00:47.957Z","finishedAt":"2026-10-10T03:00:56.402Z","exitCode":0,"executed":true}

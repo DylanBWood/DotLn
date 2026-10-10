@@ -23194,6 +23194,14 @@
             "WO-189"
           ],
           "at": "2026-10-02T06:02:35.984Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled at WO-189's final review as D006 directs: the front page is rewritten as the operator's chosen candidate (D002), the release block between its markers holds only the version line that npm run release -- prepare writes, releaseBlockRule refuses any other content there (D014) and the document check refuses every other front-page change (D001, D021); release notes, not the page, carry per-order detail. [WO-189 FINAL-001, D026]",
+          "reopenWhen": "a reader of the front page reports it as a log again, or main's release block holds more than its generated line",
+          "targets": [],
+          "at": "2026-10-10T22:25:15.106Z"
         }
       ]
     },
@@ -31519,6 +31527,378 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-6e5ddcd44b2e7932",
+      "key": "decision:docs/evidence/WO-189/decisions.md#wo-189-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3f7e085aeb2dc51420438790fb07da694567dafb988095a1982a7bac29997d63",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d010--verification-the-section-budget-can-be-bypassed",
+          "title": "WO-189-D010: WO-189 repair F1: close the reproduced marker-placement and same-line sentence bypasses in scripts/docs-check.mjs with fixtures, preserving the declared scope and nine-line budget.",
+          "summary": "{ \"id\": \"WO-189-D010\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: verify; independently attack criterion 5\", \"decision\": \"Record F1 as blocking criterion 5. A declared front-page order can append twelve running-capability sentences immediately below the closing marker within What runs today, put the marker pair before the heading, or place thirteen sentences on one counted line using lowercase sentence starts; frontPageFindings reports no failure in all three cases. A minimal repository also passes the full checkDocs entry point with thirteen running-capability sentences under the heading against the unchanged nine-line budget. The verifier preserves the implementation and records a failed v",
+          "missing": false
+        },
+        {
+          "hash": "eb14c606d5a2dc6515545f25618cc5f7bd62bfca5384fb0266415ba4b9839037",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d010--verification-the-section-budget-can-be-bypassed",
+          "title": "WO-189-D010: WO-189 repair F1: close the reproduced marker-placement and same-line sentence bypasses in scripts/docs-check.mjs with fixtures, preserving the declared scope and nine-line budget.",
+          "summary": "{ \"id\": \"WO-189-D010\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: verify; independently attack criterion 5\", \"decision\": \"Record F1 as blocking criterion 5. A declared front-page order can append twelve running-capability sentences immediately below the closing marker within What runs today, put the marker pair before the heading, or place thirteen sentences on one counted line using lowercase sentence starts; frontPageFindings reports no failure in all three cases. A minimal repository also passes the full checkDocs entry point with thirteen running-capability sentences under the heading against the unchanged nine-line budget. The verifier preserves the implementation and records a failed v",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Repaired within WO-189 by D013 (repair-001): VER-002 reran VER-001's probe source unchanged with no missed refusal, and VER-004 passes criterion 5 with the corpus. [WO-189 FINAL-001, D026]",
+          "reopenWhen": "A refuse row of scripts/fixtures/front-page-corpus.json is admitted or an admit row refused, or GitHub's rendering shows a namesake or more sentences than counted lines on a page the guard admits.",
+          "targets": [],
+          "at": "2026-10-10T22:25:15.175Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b5b3e26976408c94",
+      "key": "decision:docs/evidence/WO-189/decisions.md#wo-189-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e7c9c9551f33c2304a71306975579c427b635ff75176f0d3fd308667a25aa44f",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d011--verification-follow-up-legacy-wording-survives-a-no-op-prepare",
+          "title": "WO-189-D011: WO-189 adjacent repair F2: make an available legacy claim normalize without retiming, or explicitly refuse it before reporting preparation complete; cover the no-op target case.",
+          "summary": "{ \"id\": \"WO-189-D011\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: verify; vary the release-preparation target state\", \"decision\": \"Board F2 as a nonblocking follow-up. With target v0.73.2, latest tag v0.73.1 and the admitted legacy line This source prepares `v0.73.2`., planReleasePreparation returns edits: [] and leaves that wording unchanged. On a version collision, the same input is normalized to the generated DotLn line and only the block changes. The current subject already has the canonical line, and the required write and refusal cases pass, so criterion 4 is met; this finding concerns consistency of the accepted legacy-input and no-op paths.\", \"evidence\": [ \"docs/evidence/WO-189/verif",
+          "missing": false
+        },
+        {
+          "hash": "08ad67ac516c689da7f3a33efa17ef3221d3a1c41d62852caad10aa7a52a817c",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d011--verification-follow-up-legacy-wording-survives-a-no-op-prepare",
+          "title": "WO-189-D011: WO-189 adjacent repair F2: make an available legacy claim normalize without retiming, or explicitly refuse it before reporting preparation complete; cover the no-op target case.",
+          "summary": "{ \"id\": \"WO-189-D011\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: verify; vary the release-preparation target state\", \"decision\": \"Board F2 as a nonblocking follow-up. With target v0.73.2, latest tag v0.73.1 and the admitted legacy line This source prepares `v0.73.2`., planReleasePreparation returns edits: [] and leaves that wording unchanged. On a version collision, the same input is normalized to the generated DotLn line and only the block changes. The current subject already has the canonical line, and the required write and refusal cases pass, so criterion 4 is met; this finding concerns consistency of the accepted legacy-input and no-op paths.\", \"evidence\": [ \"docs/evidence/WO-189/verif",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Repaired within WO-189 by D014: a current target rewrites the block as its generated line without retiming; VER-002 criterion 4 reproduced it and the release-preparation suite's 16 cases pass at the integrated tree. [WO-189 FINAL-001, D026]",
+          "reopenWhen": "release prepare leaves any text other than its generated line between the markers",
+          "targets": [],
+          "at": "2026-10-10T22:25:15.240Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9dd4c0a807c54b02",
+      "key": "decision:docs/evidence/WO-189/decisions.md#wo-189-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4de22b8e8c03e08b2c4735383753adafe83611e2aa4400dd668a17390d37601b",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d012--verification-follow-up-alternate-candidates-miss-an-inventory-anchor",
+          "title": "WO-189-D012: WO-189 adjacent repair F3: reconcile the b025 anchor and the two alternate candidates, then refresh the candidate-check evidence and the execution claims to describe the actual results.",
+          "summary": "{ \"id\": \"WO-189-D012\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: verify; run the inventory check on each candidate\", \"decision\": \"Board F3 as a nonblocking evidence follow-up. The inventory check passes for the selected README and candidate-1200, but exits 1 for both candidate-2000 and candidate-3000: b025's literal anchor browser adapter is absent. Both alternate pages describe the browser evidence adapter, so this is an anchor/evidence inconsistency rather than an observed missing capability fact. The handoff and D003 claim that each candidate's check passes; those unfiled execution claims need reconciliation. Criterion 1's actual chosen-page destinations are covered, and criterion 2's th",
+          "missing": false
+        },
+        {
+          "hash": "d67c2ae59fb6886e8a8cedb9d872180d970d06e9cd5675199d4b22e328afd8f1",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d012--verification-follow-up-alternate-candidates-miss-an-inventory-anchor",
+          "title": "WO-189-D012: WO-189 adjacent repair F3: reconcile the b025 anchor and the two alternate candidates, then refresh the candidate-check evidence and the execution claims to describe the actual results.",
+          "summary": "{ \"id\": \"WO-189-D012\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: verify; run the inventory check on each candidate\", \"decision\": \"Board F3 as a nonblocking evidence follow-up. The inventory check passes for the selected README and candidate-1200, but exits 1 for both candidate-2000 and candidate-3000: b025's literal anchor browser adapter is absent. Both alternate pages describe the browser evidence adapter, so this is an anchor/evidence inconsistency rather than an observed missing capability fact. The handoff and D003 claim that each candidate's check passes; those unfiled execution claims need reconciliation. Criterion 1's actual chosen-page destinations are covered, and criterion 2's th",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Repaired within WO-189 by D015: the b025 anchor names the fact and both alternate candidates pass their anchor checks (VER-002 criterion 1, VER-004 criterion 1). [WO-189 FINAL-001, D026]",
+          "reopenWhen": "a candidate's anchor check fails against the inventory",
+          "targets": [],
+          "at": "2026-10-10T22:25:15.305Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-bfa0c87318fa5974",
+      "key": "decision:docs/evidence/WO-189/decisions.md#wo-189-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0ea708332e599c2d5a60f07dccc3d2e058506b79019f2331b0b6862f28ace883",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d013--repair-what-runs-today-is-judged-as-one-range",
+          "title": "WO-189-D013: The document check judges What runs today as one range from its heading to the next heading of the same or a higher level: the marker pair stands inside that range in order; nothing in th",
+          "summary": "{ \"id\": \"WO-189-D013\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: fix; repair VER-001 F1 (criterion 5)\", \"decision\": \"The document check judges What runs today as one range from its heading to the next heading of the same or a higher level: the marker pair stands inside that range in order; nothing in the range but blank lines, generated blocks and the markers stands outside the pair; every non-empty line between the markers is one sentence, where a terminator followed by a space and more text is a second sentence whatever it starts with; the heading occurs once; and the count of those lines is the budget. The page's closing paragraph under the heading, the not-built disclosure and the where",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "D013's one-range rule was reopened by D016 (emphasis bypass) and re-decided by D017, then D021; VER-004 reran the three earlier probe sources with no missed refusal and the 915-row corpus passes. [WO-189 FINAL-001, D026]",
+          "reopenWhen": "A refuse row of scripts/fixtures/front-page-corpus.json is admitted or an admit row refused, or GitHub's rendering shows a namesake or more sentences than counted lines on a page the guard admits.",
+          "targets": [],
+          "at": "2026-10-10T22:25:15.368Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4e6c063a2519487e",
+      "key": "decision:docs/evidence/WO-189/decisions.md#wo-189-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1935eb140627f751990dba9e0ee6f9a10f835e5abce3f835a4d6911d70874c38",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d016--verification-markdown-emphasis-still-bypasses-the-section-budget",
+          "title": "WO-189-D016: WO-189 repair VER-002 F1: enforce one rendered sentence per marked line and one rendered What runs today heading across Markdown emphasis, with refusal fixtures and unchanged authorized/b",
+          "summary": "{ \"id\": \"WO-189-D016\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: verify; attack the repaired range with Markdown syntax\", \"decision\": \"Record VER-002 F1 as blocking under criterion 5. The original VER-001 bypasses are refused, but the repaired checker still admits thirteen rendered sentences on one physical line when twelve sentence endings sit inside bold or italic spans and a final plain sentence ends the line. A second level-two heading written as ## **What runs today** also admits twelve sentences outside the marked range. All three inputs pass the full checkDocs entry point after formatting and at the formatter's fixed point, against the unchanged eleven-line budget. The verifier leave",
+          "missing": false
+        },
+        {
+          "hash": "de2ac17702051a6d8e591a73538861be53eea03014aa3551dcdf74285d9d559b",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d016--verification-markdown-emphasis-still-bypasses-the-section-budget",
+          "title": "WO-189-D016: WO-189 repair VER-002 F1: enforce one rendered sentence per marked line and one rendered What runs today heading across Markdown emphasis, with refusal fixtures and unchanged authorized/b",
+          "summary": "{ \"id\": \"WO-189-D016\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: verify; attack the repaired range with Markdown syntax\", \"decision\": \"Record VER-002 F1 as blocking under criterion 5. The original VER-001 bypasses are refused, but the repaired checker still admits thirteen rendered sentences on one physical line when twelve sentence endings sit inside bold or italic spans and a final plain sentence ends the line. A second level-two heading written as ## **What runs today** also admits twelve sentences outside the marked range. All three inputs pass the full checkDocs entry point after formatting and at the formatter's fixed point, against the unchanged eleven-line budget. The verifier leave",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "VER-002 F1 is repaired in the active WO-189 by D017; the unchanged seventeen-case verifier probe and the expanded full-checkDocs fixtures pass. The current repair completes its required gates and then returns to independent verification.",
+          "reopenWhen": "Independent verification finds a formatting-stable Markdown sentence or heading bypass at the repaired subject, or a valid one-sentence line is refused.",
+          "targets": [
+            "WO-189"
+          ],
+          "at": "2026-10-10T15:38:42.250Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Allocated to WO-189 and done there by D017, then closed by D021; VER-003 reran VER-002's probe source with no missed refusal and VER-004 passes. [WO-189 FINAL-001, D026]",
+          "reopenWhen": "A refuse row of scripts/fixtures/front-page-corpus.json is admitted or an admit row refused, or GitHub's rendering shows a namesake or more sentences than counted lines on a page the guard admits.",
+          "targets": [],
+          "at": "2026-10-10T22:25:15.432Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-daa06c89c2fffd1a",
+      "key": "decision:docs/evidence/WO-189/decisions.md#wo-189-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b703f6c87fdde3affa9d0335c66d1265cb21dbbf3f0fb45d1350cafe3b082568",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d017--repair-one-markdown-grammar-for-sentences-and-headings",
+          "title": "WO-189-D017: The existing pinned Markdown parser judges both heading identity and rendered sentence lines. Exactly one heading renders as What runs today, and it is a top-level level-two heading; its ",
+          "summary": "{ \"id\": \"WO-189-D017\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: fix; repair VER-002 F1 (criterion 5)\", \"decision\": \"The existing pinned Markdown parser judges both heading identity and rendered sentence lines. Exactly one heading renders as What runs today, and it is a top-level level-two heading; its range closes at the next parsed top-level heading of the same or a higher level. The ordered marker pair stays inside that range. Paragraph text is rendered without emphasis delimiters or link destinations, with physical soft and hard line breaks preserved and mapped back to source rows. Each counted row ends a rendered sentence and has no terminator followed by whitespace and further rendere",
+          "missing": false
+        },
+        {
+          "hash": "731d6bcd405cedc47d396be553d0cc9108f6dd0bf9923509b6c2ea87b65cecaf",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d017--repair-one-markdown-grammar-for-sentences-and-headings",
+          "title": "WO-189-D017: The existing pinned Markdown parser judges both heading identity and rendered sentence lines. Exactly one heading renders as What runs today, and it is a top-level level-two heading; its ",
+          "summary": "{ \"id\": \"WO-189-D017\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: fix; repair VER-002 F1 (criterion 5)\", \"decision\": \"The existing pinned Markdown parser judges both heading identity and rendered sentence lines. Exactly one heading renders as What runs today, and it is a top-level level-two heading; its range closes at the next parsed top-level heading of the same or a higher level. The ordered marker pair stays inside that range. Paragraph text is rendered without emphasis delimiters or link destinations, with physical soft and hard line breaks preserved and mapped back to source rows. Each counted row ends a rendered sentence and has no terminator followed by whitespace and further rendere",
+          "missing": false
+        },
+        {
+          "hash": "e11a19e993040e3d6fd833f4efc7862b1a3e62acb39290b14121f165cf5b8dcd",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d017--repair-one-markdown-grammar-for-sentences-and-headings",
+          "title": "WO-189-D017: The existing pinned Markdown parser judges both heading identity and rendered sentence lines. Exactly one heading renders as What runs today, and it is a top-level level-two heading; its ",
+          "summary": "{ \"id\": \"WO-189-D017\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: fix; repair VER-002 F1 (criterion 5)\", \"decision\": \"The existing pinned Markdown parser judges both heading identity and rendered sentence lines. Exactly one heading renders as What runs today, and it is a top-level level-two heading; its range closes at the next parsed top-level heading of the same or a higher level. The ordered marker pair stays inside that range. Paragraph text is rendered without emphasis delimiters or link destinations, with physical soft and hard line breaks preserved and mapped back to source rows. Each counted row ends a rendered sentence and has no terminator followed by whitespace and further rendere",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "D017's parser rule was reopened by D019 (parser-extension text and an HTML heading) and superseded by D021 within the order; VER-004 passes. [WO-189 FINAL-001, D026]",
+          "reopenWhen": "A refuse row of scripts/fixtures/front-page-corpus.json is admitted or an admit row refused, or GitHub's rendering shows a namesake or more sentences than counted lines on a page the guard admits.",
+          "targets": [],
+          "at": "2026-10-10T22:25:15.499Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6d95d0885c703ef0",
+      "key": "decision:docs/evidence/WO-189/decisions.md#wo-189-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d9a0269f3bf095948656f072dbffea8c2d4dab22e98d1916643fcf52ee0e79e1",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d019--verification-parser-extension-text-and-an-html-heading-escape-the-section-budget",
+          "title": "WO-189-D019: WO-189 repair VER-003 F1: judge a counted What runs today line only from inline node types whose rendered text the checker knows, and refuse every other node type (liquid, wiki link, inli",
+          "summary": "{ \"id\": \"WO-189-D019\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: verify; attack the repaired Markdown grammar (VER-003)\", \"decision\": \"Record VER-003 F1 as blocking under criterion 5. The repaired checker silently drops the text of inline nodes that its pinned parser adds beyond CommonMark and GFM. A counted line `Capability 1 runs. {{ … }}`, `{% … %}` or `[[ … ]]` that carries twelve more sentences passes the full checkDocs entry point. It passes before and after formatting, at the formatter's fixed point, against the unchanged eleven-line budget. Inline math is dropped the same way. A raw HTML `<h2>What runs today</h2>` under another top-level section, followed by twelve sentences, also p",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "VER-003 F1 is repaired in the active WO-189 by D021: the front page holds no raw HTML or parser extension, each counted line is read raw and through the parser, and the unchanged VER-003 probe refuses every expected case.",
+          "reopenWhen": "Independent verification finds a front-page bypass the corpus does not decide, or a refuse row of scripts/fixtures/front-page-corpus.json is admitted.",
+          "targets": [
+            "WO-189"
+          ],
+          "at": "2026-10-10T20:26:40.825Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Allocated to WO-189 and done there by D021 (repair-003): VER-004 reran VER-003's probe source with no missed refusal, judged 26 new shape cases and 7 ownership cases with no mismatch, and the corpus passes at the integrated tree. [WO-189 FINAL-001, D026]",
+          "reopenWhen": "A refuse row of scripts/fixtures/front-page-corpus.json is admitted or an admit row refused, or GitHub's rendering shows a namesake or more sentences than counted lines on a page the guard admits.",
+          "targets": [],
+          "at": "2026-10-10T22:25:15.562Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-de8f8fd8ec8ff654",
+      "key": "decision:docs/evidence/WO-189/decisions.md#wo-189-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f5964a4e43612c9b6aaa974598a7394942ace88817f219be021444bc20a2fcb8",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d020--verification-follow-up-orthographic-and-invisible-character-limits-of-the-sentence-and-heading-rules",
+          "title": "WO-189-D020: Front-page check: remove Unicode format characters and soft hyphens before comparing heading and sentence text, treat the ellipsis and fullwidth or ideographic terminators as sentence end",
+          "summary": "{ \"id\": \"WO-189-D020\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: verify; record residual limits of the repaired rules (VER-003)\", \"decision\": \"Record as a non-blocking follow-up, not a criterion failure, five admitted shapes. The sentence rule, a terminator followed by whitespace, admits thirteen sentences joined with no space, joined by zero-width spaces, ended by an ellipsis character or ended by fullwidth full stops. Heading identity admits a duplicate What runs today heading spelled with a soft-hyphen or zero-width-space character reference. The checker reads all of this text. Each shape needs malformed spacing, a non-ASCII terminator or an invisible character. The handoff discloses tha",
+          "missing": false
+        },
+        {
+          "hash": "0e06d0742c3004653e08059034935e27d7322cba384f8c89ed1646542aa5b34e",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d020--verification-follow-up-orthographic-and-invisible-character-limits-of-the-sentence-and-heading-rules",
+          "title": "WO-189-D020: Front-page check: remove Unicode format characters and soft hyphens before comparing heading and sentence text, treat the ellipsis and fullwidth or ideographic terminators as sentence end",
+          "summary": "{ \"id\": \"WO-189-D020\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: verify; record residual limits of the repaired rules (VER-003)\", \"decision\": \"Record as a non-blocking follow-up, not a criterion failure, six admitted shapes. The sentence rule, a terminator followed by whitespace, admits thirteen sentences joined with no space, joined by zero-width spaces, ended by an ellipsis character or ended by fullwidth full stops. Heading identity admits a duplicate What runs today heading spelled with a soft-hyphen or zero-width-space character reference. The checker reads all of this text. Each shape needs malformed spacing, a non-ASCII terminator or an invisible character. The handoff discloses that",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "D020's narrowing is taken in the active WO-189 by D021: invisible characters read as spaces, ellipsis and ideographic and fullwidth stops end sentences, and headings are compared after invisible-character removal, with corpus rows for each shape.",
+          "reopenWhen": "An order uses an orthographic or invisible-character shape the corpus does not decide to put more sentences under What runs today than its budget.",
+          "targets": [
+            "WO-189"
+          ],
+          "at": "2026-10-10T20:26:42.654Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Taken within WO-189 by D021 inside the Boy Scout bound: invisible characters read as spaces and the ellipsis and ideographic terminators end a sentence; VER-004 passes. [WO-189 FINAL-001, D026]",
+          "reopenWhen": "an order uses an orthographic or invisible-character shape the corpus does not decide to put more sentences under What runs today than its budget counts",
+          "targets": [],
+          "at": "2026-10-10T22:25:15.624Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-89e29438bd71c524",
+      "key": "decision:docs/evidence/WO-189/decisions.md#wo-189-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b65e202184309d3d302d5422e59f8ca7d2b29e9cbcd56bf28838025d90863d56",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d021--repair-close-the-surfaces-where-github-and-the-parser-disagree-and-judge-each-line-twice",
+          "title": "WO-189-D021: Front-page guard limits the corpus records: a generated block outside What runs today is judged only by its writer's check (WO-088 must list its block in the record and pin its content); ",
+          "summary": "{ \"id\": \"WO-189-D021\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: fix; repair VER-003 F1 (criterion 5), taking D020's follow-up within the bound, under the operator's steering recorded in D022\", \"decision\": \"The front-page guard closes the surfaces where GitHub's renderer and the check's parser disagree instead of modelling them, and judges what remains twice. Page-wide, outside code and the registered marker lines, the page holds no raw HTML (an autolink is a link, an escaped bracket is text), none of the parser's extensions GitHub does not share (front matter, math, template tags, wiki links), no bidirectional control typed or written as a reference, and no carriage return without a line f",
+          "missing": false
+        },
+        {
+          "hash": "bd1b0e5c29e5e830903daa1a3183f029ddbb84e10ee88d4a81c8482a98ecd248",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d021--repair-close-the-surfaces-where-github-and-the-parser-disagree-and-judge-each-line-twice",
+          "title": "WO-189-D021: Front-page guard limits the corpus records: a generated block outside What runs today is judged only by its writer's check (WO-088 must list its block in the record and pin its content); ",
+          "summary": "{ \"id\": \"WO-189-D021\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: fix; repair VER-003 F1 (criterion 5), taking D020's follow-up within the bound, under the operator's steering recorded in D022\", \"decision\": \"The front-page guard closes the surfaces where GitHub's renderer and the check's parser disagree instead of modelling them, and judges what remains twice. Page-wide, outside code and the registered marker lines, the page holds no raw HTML (an autolink is a link, an escaped bracket is text), none of the parser's extensions GitHub does not share (front matter, math, template tags, wiki links), no bidirectional control typed or written as a reference, no control character other than tab and",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "The front-page guard's recorded limits stay rows of scripts/fixtures/front-page-corpus.json, and WO-088 lists its generated block in the control record when it runs; no current order needs either now.",
+          "reopenWhen": "An order relies on a recorded limit to put text on the front page, or WO-088 is activated without listing its block in docs/control/front-page.json.",
+          "targets": [],
+          "at": "2026-10-10T21:13:15.585Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5de3c35ef3d05142",
+      "key": "decision:docs/evidence/WO-189/decisions.md#wo-189-d023",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "65b57b66592e93896455b3be14ef09c6392797d14d9b65c72e9d9c212e307009",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d023--repair-the-front-page-follows-the-operators-recorded-judgment-claims-and-voice-alike",
+          "title": "WO-189-D023: Planning: correct WO-095 (its references to the old page's lines and the removed block comment) and WO-118 (its cost line and step that write into the release block); resolve the headroom",
+          "summary": "{ \"id\": \"WO-189-D023\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: fix; operator chose to correct the panel's five overclaims and directed that README changes follow the operator's judgment as the repository records it, not a question per change or the executor's taste\", \"decision\": \"README.md is candidate-1200 (D002) with the changes the operator's recorded judgment decides, and no others; docs/evidence/WO-189/repair-003/readme-vs-candidate-1200.diff lists them. Five What runs today lines, chosen by the operator, now say what their evidence shows: intent files a draft the operator or an authorized resident admits; a failed change returns to a fresh worker until the contract passes or the rep",
+          "missing": false
+        },
+        {
+          "hash": "fe3b6f5e5d1f52801bec2c5185c0cb0d97e3c525ac7c2d50f19964c9f89243b4",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d023--repair-the-front-page-follows-the-operators-recorded-judgment-claims-and-voice-alike",
+          "title": "WO-189-D023: Planning: correct WO-095 (its references to the old page's lines and the removed block comment) and WO-118 (its cost line and step that write into the release block); resolve the headroom",
+          "summary": "{ \"id\": \"WO-189-D023\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: fix; operator chose to correct the panel's five overclaims and directed that README changes follow the operator's judgment as the repository records it, not a question per change or the executor's taste\", \"decision\": \"README.md is candidate-1200 (D002) with the changes the operator's recorded judgment decides, and no others; docs/evidence/WO-189/repair-003/readme-vs-candidate-1200.diff.txt lists them. Five What runs today lines, chosen by the operator, now say what their evidence shows: intent files a draft the operator or an authorized resident admits; a failed change returns to a fresh worker until the contract passes or the",
+          "missing": false
+        },
+        {
+          "hash": "283a96dcc5facadb5f92554f29752ef52d62dc110e16b514e91ebcf442b97d4b",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d023--repair-the-front-page-follows-the-operators-recorded-judgment-claims-and-voice-alike",
+          "title": "WO-189-D023: Planning: correct WO-095 (its references to the old page's lines and the removed block comment) and WO-118 (its cost line and step that write into the release block); resolve the headroom",
+          "summary": "{ \"id\": \"WO-189-D023\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: fix; operator chose to correct the panel's five overclaims and directed that README changes follow the operator's judgment as the repository records it, not a question per change or the executor's taste\", \"decision\": \"README.md is candidate-1200 (D002) with the changes the operator's recorded judgment decides, and no others; docs/evidence/WO-189/repair-003/readme-vs-candidate-1200.diff.txt lists them. Five What runs today lines, chosen by the operator, now say what their evidence shows: intent files a draft the operator or an authorized resident admits; a failed change returns to a fresh worker until the contract passes or the",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "The planning items (WO-095 and WO-118 text against the new page, headroom for three queued sentences in two lines, WO-088's block registration, the Poincaré row's rights fields) belong to the next planning pass, not to this order.",
+          "reopenWhen": "A planning pass runs, or WO-095, WO-098, WO-118 or WO-088 is activated.",
+          "targets": [],
+          "at": "2026-10-10T21:13:17.173Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "Re-disposed unchanged after D023's same-day correction revised the row: the planning items (WO-095 and WO-118 text against the new page, two lines of headroom against three queued sentences, WO-088's block registration, the Poincaré row's rights fields) belong to the next planning pass, not to this order's close. [WO-189 FINAL-001, D026]",
+          "reopenWhen": "A planning pass runs, or WO-095, WO-098, WO-118 or WO-088 is activated.",
+          "targets": [],
+          "at": "2026-10-10T22:25:15.751Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6e12e29626183923",
+      "key": "decision:docs/evidence/WO-189/decisions.md#wo-189-d024",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "25a9a80c72bfb7f6b4299879671441c18db8283e48fcba2d8c37eb6396e5d872",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d024--verification-follow-up-the-restoration-record-describes-another-readme",
+          "title": "WO-189-D024: Front-page evidence consistency: at the next authorized README or evidence reconciliation, align D023's claimed restorations and the saved comparison with the actual page using the record",
+          "summary": "{ \"id\": \"WO-189-D024\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: verify; independently compare the current README with D023 and its saved diff\", \"decision\": \"Correct the current-output claim the same day: D023 and repair-003/readme-vs-candidate-1200.diff.txt describe ten wording restorations absent from README.md. The saved diff applies cleanly to the scored candidate but does not reconstruct the current page. Its current bytes equal repair-complete checkpoint 16, so this verification did not remove them. Board the mismatch as VER-004 F1, a low evidence-consistency follow-up. Do not change the implementation or the scored candidate in verification. The operator-selected candidate and the cu",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Reconciled at WO-189's final review: repair-003/readme-vs-candidate-1200.diff.txt is regenerated from the actual page, VER-004's readme-record probe rerun reports currentMatchesSavedDiff true, and the ten restorations D023 described are recorded as not on the page and left to a later front-page order under D002's reopening. [WO-189 FINAL-001, D026]",
+          "reopenWhen": "a later evidence comparison again describes README bytes the page does not hold, or the operator asks for the restored lines",
+          "targets": [],
+          "at": "2026-10-10T22:25:15.687Z"
+        }
+      ]
     }
   ]
 }

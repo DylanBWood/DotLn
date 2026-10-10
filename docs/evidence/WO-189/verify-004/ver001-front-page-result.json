@@ -1,0 +1,132 @@
+{
+  "cutoff": "2026-10-10T21:51:06.979Z",
+  "missedRefusals": [],
+  "subject": "WO-189 current README and front-page record; synthetic main/wo-999 order",
+  "runs": [
+    {
+      "name": "unchanged authorized baseline",
+      "declares": true,
+      "failures": [],
+      "notices": []
+    },
+    {
+      "name": "unchanged undeclared baseline",
+      "declares": false,
+      "failures": [],
+      "notices": []
+    },
+    {
+      "name": "undeclared prose addition",
+      "declares": false,
+      "failures": [
+        "README.md: changed outside its generated blocks while WO-999's leading header at the merge base declares no `**Front page:**` field; the header is read on main, so adding or fixing it on this branch changes nothing, and planning files it there; see `git diff 3ec87f4ed3f9 -- README.md`; the front page changes only through an order whose leading header carries `**Front page:** README.md`, and a sentence the page should carry is proposed in the order's evidence README. If the change is a command's output between marker lines, that block is not in docs/control/front-page.json's generatedBlocks; a front-page order lists it"
+      ],
+      "notices": []
+    },
+    {
+      "name": "declared prose addition outside What runs today",
+      "declares": true,
+      "failures": [],
+      "notices": []
+    },
+    {
+      "name": "generated version change only",
+      "declares": false,
+      "failures": [],
+      "notices": []
+    },
+    {
+      "name": "in-marker over-budget section",
+      "declares": true,
+      "failures": [
+        "README.md: \"What runs today\" holds 21 counted lines (the non-empty lines between its markers); the budget in docs/control/front-page.json at the merge base is 11. Rewrite the line your capability supersedes, or fold it into a related line as one sentence; planning moves the budget on main"
+      ],
+      "notices": []
+    },
+    {
+      "name": "twelve sentences directly below end marker within same heading",
+      "declares": true,
+      "failures": [
+        "README.md:81-92: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; move each sentence between them, where the budget counts it, or end the section with a Markdown heading"
+      ],
+      "notices": []
+    },
+    {
+      "name": "twelve sentences directly above start marker",
+      "declares": true,
+      "failures": [
+        "README.md:68-79: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; move each sentence between them, where the budget counts it, or end the section with a Markdown heading"
+      ],
+      "notices": []
+    },
+    {
+      "name": "marker pair moved before What runs today heading with uncounted section",
+      "declares": true,
+      "failures": [
+        "README.md: the marker lines <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end --> stand under ## What runs today and before the next heading; found them at lines 62 and 73"
+      ],
+      "notices": []
+    },
+    {
+      "name": "thirteen sentences on one physical line with lowercase starts",
+      "declares": true,
+      "failures": [
+        "README.md:69: a \"What runs today\" line holds more than one sentence; the next starts at \"another capability runs. another capabil…\". A stop followed by a space, or by a capitalized word with no space, starts a sentence wherever it stands (after an abbreviation such as \"e.g.\", inside quotation marks, at the end of inline code), so put each sentence on its own line, or reword that stop; a dotted name belongs in inline code: \"One capability runs. another capability …\""
+      ],
+      "notices": []
+    },
+    {
+      "name": "missing end marker",
+      "declares": true,
+      "failures": [
+        "README.md: needs exactly one ordered pair of marker lines <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end --> around \"What runs today\""
+      ],
+      "notices": []
+    },
+    {
+      "name": "branch-added permission",
+      "declares": false,
+      "failures": [
+        "README.md: changed outside its generated blocks while WO-999's leading header at the merge base declares no `**Front page:**` field; the header is read on main, so adding or fixing it on this branch changes nothing, and planning files it there; see `git diff dc327d0aca49 -- README.md`; the front page changes only through an order whose leading header carries `**Front page:** README.md`, and a sentence the page should carry is proposed in the order's evidence README. If the change is a command's output between marker lines, that block is not in docs/control/front-page.json's generatedBlocks; a front-page order lists it"
+      ],
+      "notices": []
+    },
+    {
+      "name": "deleted control record",
+      "declares": false,
+      "failures": [
+        "docs/control/front-page.json: differs from its version at the merge base with main while WO-999's leading header at the merge base declares no `**Front page:**` field; the header is read on main, so adding or fixing it on this branch changes nothing, and planning files it there; the record moves only with a front-page order",
+        "README.md: changed outside its generated blocks while WO-999's leading header at the merge base declares no `**Front page:**` field; the header is read on main, so adding or fixing it on this branch changes nothing, and planning files it there; see `git diff dc327d0aca49 -- README.md`; the front page changes only through an order whose leading header carries `**Front page:** README.md`, and a sentence the page should carry is proposed in the order's evidence README. If the change is a command's output between marker lines, that block is not in docs/control/front-page.json's generatedBlocks; a front-page order lists it"
+      ],
+      "notices": []
+    },
+    {
+      "name": "full checkDocs unchanged minimal baseline",
+      "rows": [
+        {
+          "document": "docs/product/00-probe.md",
+          "bytes": 26,
+          "exemptBytes": 0,
+          "ceiling": 1000,
+          "headroom": 974
+        }
+      ],
+      "failures": [],
+      "historicalLinks": 0,
+      "historicalHomePaths": 0,
+      "notices": [],
+      "operatorWords": {
+        "current": 0,
+        "historical": 0,
+        "rows": []
+      }
+    },
+    {
+      "name": "full checkDocs twelve sentences below end marker before next heading",
+      "failures": [
+        "README.md:13-24: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; move each sentence between them, where the budget counts it, or end the section with a Markdown heading"
+      ],
+      "notices": []
+    }
+  ]
+}

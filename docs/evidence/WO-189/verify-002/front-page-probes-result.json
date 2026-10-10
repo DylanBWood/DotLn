@@ -1,0 +1,165 @@
+{
+  "cutoff": "2026-10-10T14:57:54.867Z",
+  "missedRefusals": [],
+  "subject": "WO-189 current README and front-page record; synthetic main/wo-999 order",
+  "runs": [
+    {
+      "name": "unchanged authorized baseline",
+      "declares": true,
+      "failures": [],
+      "notices": []
+    },
+    {
+      "name": "unchanged undeclared baseline",
+      "declares": false,
+      "failures": [],
+      "notices": []
+    },
+    {
+      "name": "undeclared prose addition",
+      "declares": false,
+      "failures": [
+        "README.md: changed outside its generated blocks while WO-999 declares no `**Front page:**` field in its leading header; see `git diff 52e8789f6d9b -- README.md`; the front page changes only through an order whose leading header carries `**Front page:** README.md`, and a sentence the page should carry is proposed in the order's evidence README"
+      ],
+      "notices": []
+    },
+    {
+      "name": "declared prose addition outside What runs today",
+      "declares": true,
+      "failures": [],
+      "notices": []
+    },
+    {
+      "name": "generated version change only",
+      "declares": false,
+      "failures": [],
+      "notices": []
+    },
+    {
+      "name": "in-marker over-budget section",
+      "declares": true,
+      "failures": [
+        "README.md: \"What runs today\" holds 21 lines, one sentence each; the budget in docs/control/front-page.json is 11, which only a front-page order moves"
+      ],
+      "notices": []
+    },
+    {
+      "name": "twelve sentences directly below end marker within same heading",
+      "declares": true,
+      "failures": [
+        "README.md:81: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:82: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:83: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:84: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:85: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:86: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:87: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:88: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:89: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:90: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:91: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:92: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it"
+      ],
+      "notices": []
+    },
+    {
+      "name": "twelve sentences directly above start marker",
+      "declares": true,
+      "failures": [
+        "README.md:68: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:69: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:70: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:71: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:72: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:73: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:74: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:75: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:76: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:77: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:78: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:79: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it"
+      ],
+      "notices": []
+    },
+    {
+      "name": "marker pair moved before What runs today heading with uncounted section",
+      "declares": true,
+      "failures": [
+        "README.md: the marker lines <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end --> stand under ## What runs today and before the next heading; found them at lines 62 and 73"
+      ],
+      "notices": []
+    },
+    {
+      "name": "thirteen sentences on one physical line with lowercase starts",
+      "declares": true,
+      "failures": [
+        "README.md:69: a \"What runs today\" line holds more than one sentence; write one sentence per line: One capability runs. another capability runs. another capabi…"
+      ],
+      "notices": []
+    },
+    {
+      "name": "missing end marker",
+      "declares": true,
+      "failures": [
+        "README.md: needs exactly one ordered pair of marker lines <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end --> around \"What runs today\""
+      ],
+      "notices": []
+    },
+    {
+      "name": "branch-added permission",
+      "declares": false,
+      "failures": [
+        "README.md: changed outside its generated blocks while WO-999 declares no `**Front page:**` field in its leading header; see `git diff f596b61dd0a8 -- README.md`; the front page changes only through an order whose leading header carries `**Front page:** README.md`, and a sentence the page should carry is proposed in the order's evidence README"
+      ],
+      "notices": []
+    },
+    {
+      "name": "deleted control record",
+      "declares": false,
+      "failures": [
+        "docs/control/front-page.json: differs from its version at the merge base with main while WO-999 declares no `**Front page:**` field in its leading header; the record moves only with a front-page order",
+        "README.md: changed outside its generated blocks while WO-999 declares no `**Front page:**` field in its leading header; see `git diff f596b61dd0a8 -- README.md`; the front page changes only through an order whose leading header carries `**Front page:** README.md`, and a sentence the page should carry is proposed in the order's evidence README"
+      ],
+      "notices": []
+    },
+    {
+      "name": "full checkDocs unchanged minimal baseline",
+      "rows": [
+        {
+          "document": "docs/product/00-probe.md",
+          "bytes": 26,
+          "exemptBytes": 0,
+          "ceiling": 1000,
+          "headroom": 974
+        }
+      ],
+      "failures": [],
+      "historicalLinks": 0,
+      "historicalHomePaths": 0,
+      "notices": [],
+      "operatorWords": {
+        "current": 0,
+        "historical": 0,
+        "rows": []
+      }
+    },
+    {
+      "name": "full checkDocs twelve sentences below end marker before next heading",
+      "failures": [
+        "README.md:13: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:14: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:15: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:16: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:17: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:18: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:19: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:20: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:21: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:22: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:23: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:24: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it"
+      ],
+      "notices": []
+    }
+  ]
+}

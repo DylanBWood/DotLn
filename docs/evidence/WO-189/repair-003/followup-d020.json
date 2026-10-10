@@ -1,0 +1,11 @@
+{
+  "expectedRevision": "849c85c4d83991e16c2742bf7e37289085c2cb6ff916e7d4becf4df7e360285d",
+  "id": "FUP-de8f8fd8ec8ff654",
+  "sourceRevision": 2,
+  "status": "allocated",
+  "reason": "D020's narrowing is taken in the active WO-189 by D021: invisible characters read as spaces, ellipsis and ideographic and fullwidth stops end sentences, and headings are compared after invisible-character removal, with corpus rows for each shape.",
+  "reopenWhen": "An order uses an orthographic or invisible-character shape the corpus does not decide to put more sentences under What runs today than its budget.",
+  "targets": [
+    "WO-189"
+  ]
+}

@@ -1,0 +1,166 @@
+{
+  "launch": {
+    "command": "claude",
+    "args": [
+      "-p",
+      "--tools",
+      "",
+      "--setting-sources",
+      "project",
+      "--no-session-persistence",
+      "--output-format",
+      "json",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "xhigh",
+      "--max-budget-usd",
+      "3",
+      "--system-prompt",
+      "You are scoring a reader's answers about a software project's front page against… (756 chars)",
+      "--json-schema",
+      "{\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"required\": [\"scores\"],… (558 chars)"
+    ],
+    "cwd": "/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln/462d95276846dea799fb9bf2c624e6786854ad13a66d4670c335f5acfbfa8a7e/scratch/dotln-scorer-9LcDav",
+    "startedAt": "2026-10-10T02:44:39.328Z",
+    "finishedAt": "2026-10-10T02:45:05.971Z",
+    "model": "claude-opus-5-5",
+    "effort": "xhigh",
+    "effortSource": "launch flag --effort; the CLI reports no effective-effort readback"
+  },
+  "status": 0,
+  "stderr": "",
+  "output": {
+    "duration_api_ms": 25467,
+    "stop_reason": "tool_use",
+    "session_id": "c84af138-d980-4305-9e2a-340a3c2e5b16",
+    "total_cost_usd": 0.116708,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 7495,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 2837,
+      "output_tokens_details": {
+        "thinking_tokens": 2089
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 7495,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 2837,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 7495,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 7495
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-opus-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 2837,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 7495,
+        "webSearchRequests": 0,
+        "costUSD": 0.116708,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 2089,
+        "canonicalModel": "claude-opus-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"scores\":[{\"id\":\"q1\",\"score\":2,\"reason\":\"The answer has all three keyed facts: DotLn is a local-first, model-agnostic compiler and runtime for human judgment; it is an agentic platform, not an agent, harness or orchestration layer; and it turns ways of working into inspectable programs for AI teams. The quoted lines directly support the first fact.\"},{\"id\":\"q2\",\"score\":2,\"reason\":\"The answer has two keyed facts: people who work with AI agents and are tired of babysitting them, with the author's own setup as the current user; and any other owner who reuses the platform and chooses their own rules. Both quotes support these, though the answer misses the five UIFA roles and wrongly says the page names no audience directly.\"},{\"id\":\"q3\",\"score\":2,\"reason\":\"The answer has well over three keyed facts: the predictable compiler that makes a bounded program with permissions checked on every decision; the Repo Gardener plus Seiri scenario replayed from the event log; Claude and Codex workers in isolated worktrees with a separate verifier; the resident host that responds to presence and holds work on drift; and the actor board and text console. The quoted lines support the running-code claim and the Seiri replay.\"},{\"id\":\"q4\",\"score\":2,\"reason\":\"The answer names `npm run skeleton` after `npm install`, and both commands are quoted, which meets the key even though the answer objects that this is two commands.\"},{\"id\":\"q5\",\"score\":2,\"reason\":\"The answer lists all seven keyed gaps: general source-writing workers, composition beyond Seiri, community builds and migration, an interactive console, SQLite/hosted/published package, the full verified pipeline, and starter export/portfolio/payoff curve. The quoted lines support the first two.\"},{\"id\":\"q6\",\"score\":2,\"reason\":\"The answer gives all four keyed destinations with their paths: the vision (00-vision.md), the domain model and architecture (02-domain-model.md, 03-architecture.md), the skeleton README, and the PLAYBOOK. The quotes support the vision and domain-model links.\"}]}",
+    "structured_output": {
+      "scores": [
+        {
+          "id": "q1",
+          "score": 2,
+          "reason": "The answer has all three keyed facts: DotLn is a local-first, model-agnostic compiler and runtime for human judgment; it is an agentic platform, not an agent, harness or orchestration layer; and it turns ways of working into inspectable programs for AI teams. The quoted lines directly support the first fact."
+        },
+        {
+          "id": "q2",
+          "score": 2,
+          "reason": "The answer has two keyed facts: people who work with AI agents and are tired of babysitting them, with the author's own setup as the current user; and any other owner who reuses the platform and chooses their own rules. Both quotes support these, though the answer misses the five UIFA roles and wrongly says the page names no audience directly."
+        },
+        {
+          "id": "q3",
+          "score": 2,
+          "reason": "The answer has well over three keyed facts: the predictable compiler that makes a bounded program with permissions checked on every decision; the Repo Gardener plus Seiri scenario replayed from the event log; Claude and Codex workers in isolated worktrees with a separate verifier; the resident host that responds to presence and holds work on drift; and the actor board and text console. The quoted lines support the running-code claim and the Seiri replay."
+        },
+        {
+          "id": "q4",
+          "score": 2,
+          "reason": "The answer names `npm run skeleton` after `npm install`, and both commands are quoted, which meets the key even though the answer objects that this is two commands."
+        },
+        {
+          "id": "q5",
+          "score": 2,
+          "reason": "The answer lists all seven keyed gaps: general source-writing workers, composition beyond Seiri, community builds and migration, an interactive console, SQLite/hosted/published package, the full verified pipeline, and starter export/portfolio/payoff curve. The quoted lines support the first two."
+        },
+        {
+          "id": "q6",
+          "score": 2,
+          "reason": "The answer gives all four keyed destinations with their paths: the vision (00-vision.md), the domain model and architecture (02-domain-model.md, 03-architecture.md), the skeleton README, and the PLAYBOOK. The quotes support the vision and domain-model links."
+        }
+      ]
+    },
+    "ttft_ms": 19918,
+    "type": "result",
+    "duration_ms": 25499,
+    "uuid": "8b0445b1-753d-41c6-8846-507499a23edc",
+    "ttft_stream_ms": 542,
+    "time_to_request_ms": 29,
+    "first_content_frame_ms": 543,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}

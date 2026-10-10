@@ -1,0 +1,31 @@
+=== docs-check
+docs/product/11-proteino.md | 2058 | 0 | 2264 | 206
+docs/product/11-protino.md | 30626 | 0 | 33689 | 3063
+docs/product/12-workstream-application.md | 18327 | 0 | 20160 | 1833
+docs/product/13-uifa-roles.md | 27015 | 0 | 29661 | 2646
+NEWER local release tags not in docs/product/06-roadmap.md: v0.66.0, v0.66.1, v0.66.2, v0.66.3, v0.67.0, v0.67.1, v0.68.0, v0.69.0, v0.69.1, v0.69.2, v0.70.0, v0.71.0, v0.71.1, v0.72.0, v0.73.0, v0.73.1, v0.74.0; the table stays valid for its recorded tags; run npm run release -- list --markdown --write to add them
+ADVISORY docs/evidence/WO-189/decisions.md#WO-189-D023: operator-attributed words need a capture digest (SHA-256 or --capture-hash), or a paraphrase
+Operator-word advisories: 1; historical baseline: 334.
+PASS docs check: 15 product documents; 412 declared historical link occurrences; 218 declared historical home-path lines; 0 failures
+exit 0
+=== work-orders index --check
+PASS docs/work-orders/README.md is current
+PASS docs/work-orders/HISTORY.md is current
+exit 0
+=== format:check
+Checking formatting...
+All matched files use Prettier code style!
+exit 0
+=== diff --check
+exit 0
+exit 0
+=== harness-context --check
+        "delta": null,
+        "cause": "no-acceptance"
+      },
+      "metric": "coldStartBytes.refuter",
+      "verdict": "unset"
+    }
+  ]
+}
+exit 0

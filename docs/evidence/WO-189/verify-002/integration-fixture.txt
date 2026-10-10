@@ -1,0 +1,10 @@
+PROGRESS integration case ended {"event":"end","name":"the one-line release block reconciles across a merge where main and the subject each changed its version","file":"scripts/test-worktree-integration.mjs","nesting":0,"durationMs":3865.383417}
+✔ the one-line release block reconciles across a merge where main and the subject each changed its version (4141.732042ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4364.1245

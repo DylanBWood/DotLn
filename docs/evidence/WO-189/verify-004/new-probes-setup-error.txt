@@ -1,0 +1,18 @@
+node:fs:1843
+  const result = binding.readdirRecursive(basePath, options.encoding, withFileTypes);
+                         ^
+
+Error: ENOENT: no such file or directory, scandir '<tmp>'
+    at readdirSyncRecursive (node:fs:1843:26)
+    at readdirSync (node:fs:1925:12)
+    at checkDocs (file://<worktree>/scripts/docs-check.mjs:1481:20)
+    at judge (file://<worktree>/docs/evidence/WO-189/verify-004/new-probes.mjs:76:20)
+    at file://<worktree>/docs/evidence/WO-189/verify-004/new-probes.mjs:79:3
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'scandir',
+  path: '<tmp>'
+}
+
+Node.js v26.9.0

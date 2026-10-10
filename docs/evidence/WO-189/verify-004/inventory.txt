@@ -1,0 +1,2 @@
+inventory: 131 rows over 131 blocks at c6769090; keep 90 rows/22961 bytes, cut 40 rows/13224 bytes, move 1 rows/2638 bytes; page README.md: 13393 bytes, What runs today 9 sentences of 11
+PASS inventory check: 0 failures

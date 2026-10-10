@@ -1,0 +1,312 @@
+{
+  "cutoff": "2026-10-10T16:39:22.357Z",
+  "lineBudget": 11,
+  "mismatches": [
+    "liquid output tag hides twelve sentences",
+    "liquid tag hides twelve sentences",
+    "wiki link hides twelve sentences",
+    "HTML level-two heading under another section"
+  ],
+  "recorded": [
+    {
+      "name": "inline math hides twelve sentences",
+      "refused": false,
+      "refusedAfterFormat": false
+    },
+    {
+      "name": "thirteen sentences joined without a space",
+      "refused": false,
+      "refusedAfterFormat": false
+    },
+    {
+      "name": "thirteen sentences joined by zero-width spaces",
+      "refused": false,
+      "refusedAfterFormat": false
+    },
+    {
+      "name": "thirteen sentences ending in an ellipsis character",
+      "refused": false,
+      "refusedAfterFormat": false
+    },
+    {
+      "name": "thirteen sentences with fullwidth full stops",
+      "refused": false,
+      "refusedAfterFormat": false
+    },
+    {
+      "name": "soft-hyphen duplicate heading",
+      "refused": false,
+      "refusedAfterFormat": false
+    },
+    {
+      "name": "zero-width duplicate heading",
+      "refused": false,
+      "refusedAfterFormat": false
+    }
+  ],
+  "runs": [
+    {
+      "name": "control: unchanged",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "control: exact budget",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "control: styled single sentence",
+      "expectation": false,
+      "failures": [],
+      "formattedFailures": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "liquid output tag hides twelve sentences",
+      "expectation": true,
+      "failures": [],
+      "formattedFailures": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": [
+        {
+          "type": "liquidNode",
+          "value": "{{ Extra capability 1 runs. Extra capability 2 runs. Extra capability 3 runs. Extra capability 4 runs. Extra capability 5 runs. Extra capability 6 runs. Extra capability 7 runs. Extra capability 8 runs. Extra capability 9 runs. Extra capability 10 runs. Extra capability 11 runs. Extra capability 12 runs. }}"
+        }
+      ]
+    },
+    {
+      "name": "liquid tag hides twelve sentences",
+      "expectation": true,
+      "failures": [],
+      "formattedFailures": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": [
+        {
+          "type": "liquidNode",
+          "value": "{% Extra capability 1 runs. Extra capability 2 runs. Extra capability 3 runs. Extra capability 4 runs. Extra capability 5 runs. Extra capability 6 runs. Extra capability 7 runs. Extra capability 8 runs. Extra capability 9 runs. Extra capability 10 runs. Extra capability 11 runs. Extra capability 12 runs. %}"
+        }
+      ]
+    },
+    {
+      "name": "wiki link hides twelve sentences",
+      "expectation": true,
+      "failures": [],
+      "formattedFailures": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": [
+        {
+          "type": "wikiLink",
+          "value": "Extra capability 1 runs. Extra capability 2 runs. Extra capability 3 runs. Extra capability 4 runs. Extra capability 5 runs. Extra capability 6 runs. Extra capability 7 runs. Extra capability 8 runs. Extra capability 9 runs. Extra capability 10 runs. Extra capability 11 runs. Extra capability 12 runs."
+        }
+      ]
+    },
+    {
+      "name": "inline math hides twelve sentences",
+      "expectation": null,
+      "failures": [],
+      "formattedFailures": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": [
+        {
+          "type": "inlineMath",
+          "value": "Extra capability 1 runs. Extra capability 2 runs. Extra capability 3 runs. Extra capability 4 runs. Extra capability 5 runs. Extra capability 6 runs. Extra capability 7 runs. Extra capability 8 runs. Extra capability 9 runs. Extra capability 10 runs. Extra capability 11 runs. Extra capability 12 runs."
+        }
+      ]
+    },
+    {
+      "name": "thirteen sentences joined without a space",
+      "expectation": null,
+      "failures": [],
+      "formattedFailures": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "thirteen sentences joined by zero-width spaces",
+      "expectation": null,
+      "failures": [],
+      "formattedFailures": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "thirteen sentences ending in an ellipsis character",
+      "expectation": null,
+      "failures": [],
+      "formattedFailures": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "thirteen sentences with fullwidth full stops",
+      "expectation": null,
+      "failures": [],
+      "formattedFailures": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "control: nbsp entity join",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence; write one sentence per line: Extra capability 1 runs.&nbsp;Extra capability 2 runs.&nbsp;…"
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence; write one sentence per line: Extra capability 1 runs.&nbsp;Extra capability 2 runs.&nbsp;…"
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "control: space entity join",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence; write one sentence per line: Extra capability 1 runs.&#32;Extra capability 2 runs.&#32;Ex…"
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence; write one sentence per line: Extra capability 1 runs.&#32;Extra capability 2 runs.&#32;Ex…"
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "control: image alt sentences",
+      "expectation": true,
+      "failures": [
+        "README.md:10: missing file: x.png",
+        "README.md:10: a \"What runs today\" line holds more than one sentence; write one sentence per line: ![Extra capability 1 runs. Extra capability 2 runs. Extra ca…"
+      ],
+      "formattedFailures": [
+        "README.md:12: missing file: x.png",
+        "README.md:12: a \"What runs today\" line holds more than one sentence; write one sentence per line: ![Extra capability 1 runs. Extra capability 2 runs. Extra ca…"
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "control: footnote reference join",
+      "expectation": true,
+      "failures": [
+        "README.md:10: a \"What runs today\" line holds more than one sentence; write one sentence per line: Extra capability runs.[^1] Last capability runs."
+      ],
+      "formattedFailures": [
+        "README.md:12: a \"What runs today\" line holds more than one sentence; write one sentence per line: Extra capability runs.[^1] Last capability runs."
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "HTML level-two heading under another section",
+      "expectation": true,
+      "failures": [],
+      "formattedFailures": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "control: HTML heading directly after the closing marker",
+      "expectation": true,
+      "failures": [
+        "README.md:21: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:23: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:24: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:25: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:26: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:27: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:28: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:29: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:30: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:31: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:32: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:33: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:34: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it"
+      ],
+      "formattedFailures": [
+        "README.md:23: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:25: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:26: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:27: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:28: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:29: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:30: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:31: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:32: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:33: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:34: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:35: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it",
+        "README.md:36: prose under ## What runs today outside the markers <!-- dotln-what-runs:start --> and <!-- dotln-what-runs:end -->; every sentence of the section stands on its own line between them, where the budget counts it"
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "control: setext duplicate under another section",
+      "expectation": true,
+      "failures": [
+        "README.md: needs exactly one heading ## What runs today; found 2"
+      ],
+      "formattedFailures": [
+        "README.md: needs exactly one heading ## What runs today; found 2"
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "control: nbsp duplicate heading",
+      "expectation": true,
+      "failures": [
+        "README.md: needs exactly one heading ## What runs today; found 2"
+      ],
+      "formattedFailures": [
+        "README.md: needs exactly one heading ## What runs today; found 2"
+      ],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "soft-hyphen duplicate heading",
+      "expectation": null,
+      "failures": [],
+      "formattedFailures": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    },
+    {
+      "name": "zero-width duplicate heading",
+      "expectation": null,
+      "failures": [],
+      "formattedFailures": [],
+      "formatterStable": false,
+      "formatterFixedPoint": true,
+      "droppedNodes": []
+    }
+  ]
+}

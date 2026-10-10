@@ -1,0 +1,20 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+✔ the front page changes outside its generated blocks only through an order whose header declared it at the merge base (518.966834ms)
+✔ the control record that governs is the merge base's, so a branch cannot switch the guard off (454.979916ms)
+✔ What runs today keeps one sentence per line within its recorded budget, and the page names no receipt (814.676708ms)
+✔ What runs today is one range from its heading to the next heading: no sentence escapes the count and the markers cannot leave the heading (530.707708ms)
+✔ What runs today judges rendered sentences across inline Markdown, before and after formatting (2048.955ms)
+✔ What runs today uses rendered heading identity and parsed section boundaries across Markdown spellings (2140.351958ms)
+✔ a page whose base carries no markers is being brought under guard: shape and budget are judged, the change is not compared (270.252584ms)
+✔ the leading header's Front page field is read as typed data, never from criteria prose (0.659125ms)
+✔ the refusal is new: the document check at 08845c71 admits the same undeclared change (281.523375ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7160.774875
+bounded-result {"name":"bounded-probe","durationMs":7223,"slowestCases":[{"name":"bounded-probe","durationMs":7223,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":99562528,"peakRssBytes":193462272,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-10T16:38:17.900Z","finishedAt":"2026-10-10T16:38:25.123Z","exitCode":0,"executed":true}

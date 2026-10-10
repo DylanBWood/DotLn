@@ -1,0 +1,184 @@
+{
+  "launch": {
+    "command": "claude",
+    "args": [
+      "-p",
+      "--tools",
+      "",
+      "--setting-sources",
+      "project",
+      "--no-session-persistence",
+      "--output-format",
+      "json",
+      "--model",
+      "claude-opus-5-5",
+      "--effort",
+      "xhigh",
+      "--max-budget-usd",
+      "3",
+      "--system-prompt",
+      "You are a stranger to this project: you have never seen it, its repository or it… (475 chars)",
+      "--json-schema",
+      "{\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"required\": [\"answers\"]… (563 chars)"
+    ],
+    "cwd": "/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln/462d95276846dea799fb9bf2c624e6786854ad13a66d4670c335f5acfbfa8a7e/scratch/dotln-reader-dlLclT",
+    "startedAt": "2026-10-10T04:12:52.263Z",
+    "finishedAt": "2026-10-10T04:13:25.956Z",
+    "model": "claude-opus-5-5",
+    "effort": "xhigh",
+    "effortSource": "launch flag --effort; the CLI reports no effective-effort readback"
+  },
+  "status": 0,
+  "stderr": "",
+  "output": {
+    "duration_api_ms": 32573,
+    "stop_reason": "tool_use",
+    "session_id": "c3c8bad5-64d0-42ff-83cf-ff8e1b564527",
+    "total_cost_usd": 0.12965939999999998,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 6053,
+      "cache_read_input_tokens": 3037,
+      "output_tokens": 4031,
+      "output_tokens_details": {
+        "thinking_tokens": 2260
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 6053,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 4031,
+          "cache_read_input_tokens": 3037,
+          "cache_creation_input_tokens": 6053,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 6053
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-opus-5-5": {
+        "inputTokens": 2,
+        "outputTokens": 4031,
+        "cacheReadInputTokens": 3037,
+        "cacheCreationInputTokens": 6053,
+        "webSearchRequests": 0,
+        "costUSD": 0.12965939999999998,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 2260,
+        "canonicalModel": "claude-opus-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "safety_stops": 0,
+    "is_error": false,
+    "num_turns": 2,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "{\"answers\":[{\"id\":\"q1\",\"answer\":\"DotLn is a local-first tool that works with any AI model. The page calls it a compiler and runtime for human judgment. You give it the standards, taste and corrections you have already learned. It turns each one into the smallest mechanism that can carry it and gives each task only the rules that task needs. It enforces the hard rules outside the model and keeps a record of what happened that you can replay. The page says it is not an agent, an agent harness or an orchestration layer. Instead it calls itself an \\\"agentic platform\\\": a shared base where people and software actors hold work, authority and evidence.\",\"quotes\":[\"DotLn is a local-first, model-agnostic **compiler and runtime for human\",\"and not an orchestration layer. It is an **agentic platform**: the shared\"]},{\"id\":\"q2\",\"answer\":\"It is for people who work with AI agents and would rather spend their attention on the idea than on babysitting the agents. It is also for any owner who brings their own rules and way of working to a shared platform. The author's own setup is its first user. The page also names five roles for the people around the work: product lead, showrunner, engineer, tester and devops.\",\"quotes\":[\"It is for people who work with AI agents and would rather spend their\",\"attention on the idea than on the babysitting, and for any owner who brings\"]},{\"id\":\"q3\",\"answer\":\"The source prepares version v0.73.1. Here is what the page says works now:\\n- You give it one sentence of intent and it files a bounded work order.\\n- The compiler turns that order into a program and a set of permissions that the kernel checks on every decision. If a worker tries something it was never allowed to do, it is refused, and the refusal is logged as an event you can replay.\\n- A throwaway worker running on Claude Code or Codex does the job in its own worktree, passes the host's test and commits.\\n- A separate \\\"blinded\\\" verifier that never saw the worker judges the change against the contract. If it fails, the work goes to a fresh worker until the original contract passes.\\n- A publish step opens a pull request, waits for the automated reviewer and answers each comment with evidence. The page says these runs are so far only recorded test proofs on made-up modules.\\n- A browser adapter can add screenshot, network and console evidence when the subject is a web page.\\n- While you are away, a background host keeps the work going under a presence policy you set. A mission check pauses any unattended task as soon as the work drifts from its contract.\\n- Everything writes to one event log. The actor board and live console show it, and the first proof (Repo Gardener plus Seiri) still replays from that log.\\n\\nThe page also says the repository itself is built with this loop.\",\"quotes\":[\"Hand DotLn one sentence of intent and it files a bounded work order; from there the machinery, not your attention, carries the rules.\",\"A disposable worker on Claude Code or Codex does the work in its own worktree, passes the host's test and commits, and a blinded verifier that never saw the worker judges the change against the contract, sending it back to a fresh worker until the original contract passes.\"]},{\"id\":\"q4\",\"answer\":\"Run `npm install` first, then the one command is `npm run skeleton`. It runs the first proof. A \\\"Repo Gardener\\\" with one active rule (\\\"Seiri\\\") inspects a sample repository while the operator is away. It is blocked from the deletion it tries to make. A separate fake verifier checks its candidates, and it stops when the operator comes back. You get a numbered timeline built from the event log, one line of symbols drawn from the same log, and a receipt.\",\"quotes\":[\"After `npm install`, one command runs the first proof:\",\"npm run skeleton\"]},{\"id\":\"q5\",\"answer\":\"The page lists these as not yet built and not claimed:\\n- general worker profiles that write source code\\n- composition beyond the Seiri subset\\n- saved community builds\\n- an interactive web or spatial console\\n- SQLite persistence, hosted operation or a published package\\n- the complete, verified pipeline from source to deliverable\\n- portable starter export\\n- a portfolio in the operator's own repositories\\n- a measured \\\"absence payoff curve\\\"\\n\\nThe page also admits there is more blueprint than code. The \\\"teammate-ready\\\" release is still a roadmap goal.\",\"quotes\":[\"**Not yet built, and not claimed:** general source-writing worker profiles;\",\"composition beyond the Seiri subset; saved community builds; an interactive\"]},{\"id\":\"q6\",\"answer\":\"The page suggests a reading order:\\n1. For the idea, read the vision (/docs/product/00-vision.md).\\n2. For how it works, read the domain model (/docs/product/02-domain-model.md) and the architecture (/docs/product/03-architecture.md).\\n3. To see something running, read the skeleton README (/packages/skeleton/README.md).\\n\\nIt also points to:\\n- the operator playbook (/docs/PLAYBOOK.md) for the whole loop\\n- the roadmap (/docs/product/06-roadmap.md)\\n- CONTRIBUTING.md for the toolchain and tests\",\"quotes\":[\"Idea first: [the vision](/docs/product/00-vision.md). Machinery:\",\"[the skeleton](/packages/skeleton/README.md).\"]}]}",
+    "structured_output": {
+      "answers": [
+        {
+          "id": "q1",
+          "answer": "DotLn is a local-first tool that works with any AI model. The page calls it a compiler and runtime for human judgment. You give it the standards, taste and corrections you have already learned. It turns each one into the smallest mechanism that can carry it and gives each task only the rules that task needs. It enforces the hard rules outside the model and keeps a record of what happened that you can replay. The page says it is not an agent, an agent harness or an orchestration layer. Instead it calls itself an \"agentic platform\": a shared base where people and software actors hold work, authority and evidence.",
+          "quotes": [
+            "DotLn is a local-first, model-agnostic **compiler and runtime for human",
+            "and not an orchestration layer. It is an **agentic platform**: the shared"
+          ]
+        },
+        {
+          "id": "q2",
+          "answer": "It is for people who work with AI agents and would rather spend their attention on the idea than on babysitting the agents. It is also for any owner who brings their own rules and way of working to a shared platform. The author's own setup is its first user. The page also names five roles for the people around the work: product lead, showrunner, engineer, tester and devops.",
+          "quotes": [
+            "It is for people who work with AI agents and would rather spend their",
+            "attention on the idea than on the babysitting, and for any owner who brings"
+          ]
+        },
+        {
+          "id": "q3",
+          "answer": "The source prepares version v0.73.1. Here is what the page says works now:\n- You give it one sentence of intent and it files a bounded work order.\n- The compiler turns that order into a program and a set of permissions that the kernel checks on every decision. If a worker tries something it was never allowed to do, it is refused, and the refusal is logged as an event you can replay.\n- A throwaway worker running on Claude Code or Codex does the job in its own worktree, passes the host's test and commits.\n- A separate \"blinded\" verifier that never saw the worker judges the change against the contract. If it fails, the work goes to a fresh worker until the original contract passes.\n- A publish step opens a pull request, waits for the automated reviewer and answers each comment with evidence. The page says these runs are so far only recorded test proofs on made-up modules.\n- A browser adapter can add screenshot, network and console evidence when the subject is a web page.\n- While you are away, a background host keeps the work going under a presence policy you set. A mission check pauses any unattended task as soon as the work drifts from its contract.\n- Everything writes to one event log. The actor board and live console show it, and the first proof (Repo Gardener plus Seiri) still replays from that log.\n\nThe page also says the repository itself is built with this loop.",
+          "quotes": [
+            "Hand DotLn one sentence of intent and it files a bounded work order; from there the machinery, not your attention, carries the rules.",
+            "A disposable worker on Claude Code or Codex does the work in its own worktree, passes the host's test and commits, and a blinded verifier that never saw the worker judges the change against the contract, sending it back to a fresh worker until the original contract passes."
+          ]
+        },
+        {
+          "id": "q4",
+          "answer": "Run `npm install` first, then the one command is `npm run skeleton`. It runs the first proof. A \"Repo Gardener\" with one active rule (\"Seiri\") inspects a sample repository while the operator is away. It is blocked from the deletion it tries to make. A separate fake verifier checks its candidates, and it stops when the operator comes back. You get a numbered timeline built from the event log, one line of symbols drawn from the same log, and a receipt.",
+          "quotes": [
+            "After `npm install`, one command runs the first proof:",
+            "npm run skeleton"
+          ]
+        },
+        {
+          "id": "q5",
+          "answer": "The page lists these as not yet built and not claimed:\n- general worker profiles that write source code\n- composition beyond the Seiri subset\n- saved community builds\n- an interactive web or spatial console\n- SQLite persistence, hosted operation or a published package\n- the complete, verified pipeline from source to deliverable\n- portable starter export\n- a portfolio in the operator's own repositories\n- a measured \"absence payoff curve\"\n\nThe page also admits there is more blueprint than code. The \"teammate-ready\" release is still a roadmap goal.",
+          "quotes": [
+            "**Not yet built, and not claimed:** general source-writing worker profiles;",
+            "composition beyond the Seiri subset; saved community builds; an interactive"
+          ]
+        },
+        {
+          "id": "q6",
+          "answer": "The page suggests a reading order:\n1. For the idea, read the vision (/docs/product/00-vision.md).\n2. For how it works, read the domain model (/docs/product/02-domain-model.md) and the architecture (/docs/product/03-architecture.md).\n3. To see something running, read the skeleton README (/packages/skeleton/README.md).\n\nIt also points to:\n- the operator playbook (/docs/PLAYBOOK.md) for the whole loop\n- the roadmap (/docs/product/06-roadmap.md)\n- CONTRIBUTING.md for the toolchain and tests",
+          "quotes": [
+            "Idea first: [the vision](/docs/product/00-vision.md). Machinery:",
+            "[the skeleton](/packages/skeleton/README.md)."
+          ]
+        }
+      ]
+    },
+    "ttft_ms": 19549,
+    "type": "result",
+    "duration_ms": 32598,
+    "uuid": "29ad491f-f95d-428d-9d25-4f98b388f71b",
+    "ttft_stream_ms": 983,
+    "time_to_request_ms": 25,
+    "first_content_frame_ms": 983,
+    "queued_turn_count": 0,
+    "result_index": 0
+  }
+}
