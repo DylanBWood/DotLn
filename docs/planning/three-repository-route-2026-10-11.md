@@ -416,9 +416,101 @@ The product write-backs passed `npm run publication:check` with both edition
 locks refreshed. `node scripts/siblings.mjs index --check` passed on the
 regenerated registry. `npm run work-orders -- index --check` passed on the
 new sequence. `node scripts/docs-check.mjs` passed with 15 product documents
-once this document existed (its earlier failures were the links to it). The
-plan check refuses until the receipt exists, as the mechanism requires.
+and zero failures once this document existed (its earlier failures were the
+links to it), with one operator-word advisory on this document answered by
+the capture digest in §4. The plan check refused until the receipt existed,
+as the mechanism requires.
 
-The refutation receipt, the worker's statistics, this pass's document gate
-and the known issues carried onto the catalog rows are recorded below after
-filing.
+[Receipt 044](refutations/2026-10-11-planning-fb68306765535a9d-044.md)
+binds committed subject `c35dcd83` (subject hash `sha256:1a21ba81…`). Its
+scope is this pass: the twelve orders whose judged text is new or changed
+(WO-201 to WO-209, WO-083, WO-118, WO-192) plus the sequence, with 21
+unchanged order verdicts carried by hash. One fresh background
+`dotln-worker` received only the canonical prompt (181,732 bytes, in the
+system temporary directory outside the repository) and the shared goal card.
+Its statement says it read the file whole in fifteen slices with read-only
+shell commands plus three auxiliary listings, read no other repository file,
+planning document or receipt, made no repository or Git write (one attempt
+to write its result into the session scratchpad was refused by the
+outside-project write refusal of WO-144 and nothing was written), validated
+its result against the schema through standard input, spawned no agent, and
+reports its model as the host's system prompt names it (claude-opus-5-5)
+and its effective effort as unknown (`CLAUDE_EFFORT=xhigh` in its
+environment may be inherited). It returned `aligned-with-findings` for the
+plan, `aligned` for WO-204 and `aligned-with-findings` for the other
+eleven, twenty-three known issues and no hold. Dispatch to filing took
+1,008,918 ms; the worker ran 872,288 ms over 24 tool uses and 200,904
+tokens by the host's count. The helper committed the pair as `dcef5dff`
+and passed `plan check`: judged, committed and workspace subject hashes
+were equal, with no continuation update. Every known issue is carried on
+its order's catalog row in the map, as product 07 places a receipt's known
+issue for an order the receipt finds frozen; the planner's readings of the
+material ones, each for the next amendment of its order:
+
+- **WO-206's commit and ref ordering** is the sharpest: a writer worktree
+  attached to a branch would advance a shared ref to a commit that exists
+  only in the private store before the import. The order must have the
+  writer commit on a detached HEAD, or in a ref namespace inside the
+  private store, and the host move the shared ref only after
+  `CandidateImported`; the row carries the reopening observation and the
+  next amendment states it before activation.
+- **WO-205's objective overstates criterion 1.** A sparse checkout carries
+  `skip-worktree` on unmodified out-of-cone entries; criterion 1 (a flag
+  on a modified, deleted or executable-bit-changed file) is the governing
+  rule, and the next amendment aligns the objective and adds the
+  sparse-checkout case.
+- **WO-083's preflight sentence** names WO-118 and the three boundaries but
+  not WO-201 and WO-202, which this pass added as typed hard edges; the
+  edges hold the dependency through the plan check and the index, and the
+  next amendment adds them to the sentence. Its non-goal that WO-192 to
+  WO-194 serve the work instance reads against the objective's router
+  route; criterion 1's route statement governs and the next amendment
+  rewords the non-goal.
+- **WO-201's core-only declaration** can drop any suite with a free-text
+  reason; the next amendment requires each declared row to name an input
+  absent from the manifest and the fixture to check it. Criterion 5's two
+  requirements fall on different README sections (the drafted sentences on
+  §Kit files and §Taking upstream updates; the observed lists on §What
+  runs here), which the next amendment states so.
+- **WO-202's optional inputs** must stay failures in a core checkout; the
+  next amendment distinguishes core from a kit by the detection WO-201
+  adds.
+- **WO-208's unconsumed adapter kinds** should be validated by shape
+  without running a module's top-level code until a consumer asks; a
+  malformed section refusing every vertical is the configuration's existing
+  rule for every section and stays.
+- **WO-209's guard** checks the compiler's major version; within a major,
+  criterion 4's equality case (the emit from the pin equals the pinned
+  revision's bundle) is the compatibility check, and the row carries the
+  observation.
+- **WO-207** must refuse before writing when the rollback lane is
+  unwritable (fail-closed); its place after WO-083 is the operator's
+  ("rollback may follow"), and the R3 replan may reorder it.
+- **WO-203** sits before WO-118 at the operator's direction (the preview
+  before the first real update), not on a gate's chain; recorded.
+- **WO-192's router root** gains its budgets entry in step 3; the next
+  amendment names the ceiling rule (measured bytes plus one 4 KB step under
+  the standing route). Its live evidence stops at final review by design;
+  WO-083's run is the first live publication through it.
+- **WO-118's declared outward-leak set and outside-write grants** are its
+  standing carry-ins (the WO-144 note on its row) and stay there.
+
+The worker made no repository or Git write and spawned no agent. One worker
+ran in this pass, as planned. Completion uses `npm run test:docs` over this
+branch after the receipt and these map and document updates; its executed
+verdict, wall-clock and summed task work are recorded in the sentence that
+follows once it has run, and the handoff and the pull request report the
+same figures.
+
+New inputs beyond the entry set: the conversation-only capture in full; the
+2026-10-07 capture in full; WO-112 D033, D043 and D044, WO-074 D007 and
+WO-075 D011 in full; the source decisions of the twenty-two disposed rows;
+`scripts/launchpad.mjs` (the kit file set, the update planner, the CLI),
+`scripts/test-runner.mjs` (the suites table and the build selection),
+`scripts/lib/harness.mjs` (the installation and check), `scripts/lib/config.mjs`
+(the section keys), `scripts/lib/vertical-runtime.mjs` (the configuration
+reader and the fetch seam), the source-change and verification worktree
+symbols the boundary orders name, the sibling declaration and generator, the
+kit's client README and templates, the harness manifest's installed list,
+and the orders WO-072, WO-076, WO-200, WO-080, WO-081, WO-082, WO-193,
+WO-194, WO-071, WO-073 and WO-049 in their headers and placements.
