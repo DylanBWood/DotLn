@@ -1,0 +1,72 @@
+{
+  "audience": {
+    "maintainer": [
+      "The runner adds `sharedRefs.start` and `sharedRefs.end` without changing code identity or the verdict.",
+      "A failed gate compares this run with the previous row of the same check, then compares the current start and end."
+    ],
+    "contributor": [
+      "If a gate fails after another worktree merges, the new line shows which shared refs moved.",
+      "Use the linked review to check the covered cases and snapshot limits before judging the cause."
+    ],
+    "newcomer": [
+      "Parallel worktrees share Git references, so a merge or release tag can become visible while your tests run.",
+      "A failed gate now shows what moved, giving you a clue for the investigation."
+    ]
+  },
+  "density": {
+    "headline": [
+      "Failed gates name shared refs that moved.",
+      "Every runner row saves the refs the gate saw."
+    ],
+    "account": [
+      "Each runner row saves shared refs at start and end, and a failed gate prints the fields that changed.",
+      "The line reports correlation and can miss movement between samples."
+    ],
+    "record": [
+      "Each snapshot records the `origin/main` and `main` commit ids, the annotated `v*` tag count and newest name, and the count of `refs/dotln/` refs.",
+      "`sharedRefChanges` compares complete snapshots field by field, names transitions to or from `absent`, and withholds only a field that is `unreadable` on either side."
+    ]
+  },
+  "identifiers": {
+    "none in prose": [
+      "A failed gate now shows which shared Git references moved.",
+      "The linked review records the evidence and limits."
+    ],
+    "where they help": [
+      "The `shared refs moved:` line names observed changes.",
+      "A failed `npm test` under `node scripts/harness.mjs evidence` has a known gap in the next comparison with the previous run."
+    ],
+    "every claim": [
+      "WO-198 adds `sharedRefs.start` and `sharedRefs.end` through `scripts/test-runner.mjs`.",
+      "WO-198 D017 records `absent` as an observed value and withholds only `unreadable` fields from `sharedRefChanges`."
+    ]
+  },
+  "machineDetail": {
+    "linked": [
+      "A failed gate saves a start-and-end snapshot and names the fields that changed.",
+      "The [final review](https://github.com/DylanBWood/DotLn/blob/c676909066d278c92cacd94d998a42a8fb5d4a9a/docs/final-reviews/WO-198/FINAL-001.md) keeps the validation results and recorded code identity together."
+    ],
+    "summarized": [
+      "Final review passed all 17 new cases and all 32 document suites.",
+      "The review gate composed passing executor evidence at the same code identity, with format preflight always fresh."
+    ],
+    "inline": [
+      "At code identity `a5923da7…`, `npm test -- --review` composes 38 passing suites in 7.82 s.",
+      "Its executor row records 90 fresh tasks in 1,731.7 s with exit 0, and the format preflight runs fresh."
+    ]
+  },
+  "voice": {
+    "plain": [
+      "Every runner row records the shared refs visible at its start and end.",
+      "When a task fails, one line names the fields that changed."
+    ],
+    "warm": [
+      "If a gate fails after another worktree merges, you can now see which shared refs moved.",
+      "Use that line as a clue and follow the linked evidence to check its limits."
+    ],
+    "expressive": [
+      "A failed gate leaves a clearer trail: the shared refs it saw and the fields that moved.",
+      "Follow the trail to investigate; the line still reports correlation."
+    ]
+  }
+}

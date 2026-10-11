@@ -1,0 +1,58 @@
+{
+  "release": "v0.73.1",
+  "sameFactsAndLimits": true,
+  "reviewer": {
+    "model": "gpt-6.1-sol",
+    "effort": "max",
+    "source": "launch-selected; effective readback unavailable"
+  },
+  "surfaces": {
+    "prTitle": {
+      "sameFactsAndLimits": true,
+      "notes": "All three versions preserve the worktree gate, recording of shared refs and identification of movement when a task fails."
+    },
+    "prBody": {
+      "sameFactsAndLimits": true,
+      "notes": "The repaired reader version explicitly preserves the failed verdicts of VER-001–004. All versions retain the behavior, snapshot limits, component versions and validation account; machine detail is presented inline, summarized or through evidence links."
+    },
+    "commitSubject": {
+      "sameFactsAndLimits": true,
+      "notes": "All three versions preserve recording the shared refs seen by the worktree gate and naming their movement when a task fails."
+    },
+    "releaseNotes": {
+      "sameFactsAndLimits": true,
+      "notes": "The repaired variants preserve every verification verdict, behavior, compatibility statement and coverage limitation. The record's relative evidence links now retain their original source destinations at the tagged commit; this transformation is disclosed and preserves wording."
+    },
+    "releasePage": {
+      "sameFactsAndLimits": true,
+      "notes": "Both repaired rewrites explicitly preserve the branch-scope claim and failed verification verdicts. They retain the release behavior, limits, component and schema versions, cadence classifications, source-only distribution and linked machine evidence."
+    }
+  },
+  "exampleHashes": {
+    "prTitle": {
+      "record": "sha256:b66ad8c56bcd915d2458af71d3a925bb0a39c64c1a088289aba2fbf924371453",
+      "balanced": "sha256:22bade60c2887595994f1fdf17000c55d067b29cc890b1a7c37daa5e7b2a176f",
+      "reader": "sha256:76c855cdf6465c19a059a5b862ed52fa7770eb24e598b4f9d5e56fc74990fa38"
+    },
+    "prBody": {
+      "record": "sha256:2df56a5d96450273bc867a3685e235a400577d5e117ea9de9a1d884b11f520a2",
+      "balanced": "sha256:37efc4fc5f017a8762cd231368ba774d159fa853478d8d54043222f429b61fc2",
+      "reader": "sha256:da0b84f23b3768c99c4ac013d5b47b3f6a3fadc07275602cc5de6142a0d53b67"
+    },
+    "commitSubject": {
+      "record": "sha256:4bcb82cdf5e5b7c563b83ad5aa71a7f3cfe54703dbb2089510faeb7a44c09b8d",
+      "balanced": "sha256:214b424b6e407de2a2cd1816b33337e3ecd6db9aa491cb92ac68ce5b95994115",
+      "reader": "sha256:1eef845f5bffb106c1903aa3c762db4f70befe61dc20bfc07fe6a376bc5d7628"
+    },
+    "releaseNotes": {
+      "record": "sha256:237dbf67efa110f0af8e9914f76fe1bdd5043a53cec4c28d709bfc0c93a3c63e",
+      "balanced": "sha256:6bc6f2e803b3fb9c3ea9852dff1789f493b01291b34415dad6067a2bfa286f92",
+      "reader": "sha256:ca07877e6d82f02d1290e5fb7cc5c751927d36e6703de9a62bca5c47700ffb81"
+    },
+    "releasePage": {
+      "record": "sha256:4845b426eb042df779f299ed10a6fd58bcd78e9a836be72ca6d5493ee4f34cfc",
+      "balanced": "sha256:0a012fc714dc0a435d06687e35b22aa717503003d0f3bec441a3a5f3f4a98411",
+      "reader": "sha256:9c3aa13c709f60597e942d48eda9d54e34f7f7991fef055ba5d41e45e4ee77f6"
+    }
+  }
+}

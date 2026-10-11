@@ -78,6 +78,7 @@ import { fold, parseControlEvents } from "./lib/control.mjs";
 import { runGit } from "./lib/git.mjs";
 import { isCorrection } from "./lib/meta.mjs";
 import { main as plan } from "./refute-plan.mjs";
+import { publishedReleases, recordScores } from "./lib/reader-profiles.mjs";
 import {
   beginDirectRefutation,
   fileDirectRefutation,
@@ -885,7 +886,52 @@ export async function fixtures() {
           ).length,
           3,
         );
+        write(
+          repo,
+          "docs/control/reader-profiles.json",
+          read(root, "docs/control/reader-profiles.json"),
+        );
+        runGit(repo, ["add", "docs/control/reader-profiles.json"]);
+        runGit(repo, ["commit", "-qm", "Fixture reader profile"]);
+        runGit(repo, [
+          "tag",
+          "-a",
+          "v90.0.0",
+          "-m",
+          "DotLn v90.0.0\n\nAn operator can inspect the evidence.\n\nDOTLN-MANIFEST-BEGIN\n{}\nDOTLN-MANIFEST-END\n",
+        ]);
+        const publication = publishedReleases(repo).find(
+          (row) => row.release === "v90.0.0",
+        );
+        recordScores(
+          {
+            schemaVersion: 1,
+            reader: { model: "fixture", effort: "fixture", source: "fixture" },
+            releases: [
+              {
+                release: publication.release,
+                textSha256: publication.textSha256,
+                answers: ["change", "action", "limits", "evidence"].map(
+                  (question) => ({
+                    question,
+                    quote:
+                      question === "evidence"
+                        ? "An operator can inspect the evidence."
+                        : null,
+                  }),
+                ),
+              },
+            ],
+          },
+          repo,
+        );
+        runGit(repo, ["add", "docs/publication/reader-scores.jsonl"]);
+        runGit(repo, ["commit", "-qm", "Fixture reader score"]);
         const before = await plan(["start", "operator-record"], repo);
+        assert.equal(before.readerScores.figures[0].found, 1);
+        assert.equal(before.readerScores.figures[0].questions, 4);
+        assert.ok(before.readerScores.figures[0].medianPosition > 0);
+        assert.equal(before.readerScores.readerDue, false);
         assert.equal(before.failures.localReleaseCloses, 1);
         assert.equal(before.failures.localHostDenials, 1);
         assert.equal(before.failures.interventions.count, 3);
@@ -5707,9 +5753,12 @@ else {
           "phase",
           "authority",
           "failures",
+          "readerScores",
           "conditions",
           "followups",
         ]);
+        assert.equal(started.readerScores.readerDue, false);
+        assert.match(started.readerScores.unavailable, /reader-profiles\.json/);
         assert.equal(started.conditions.command, "npm run plan -- conditions");
         // This fixture has no numeric table sources; an unavailable count
         // remains a bounded advisory alongside the failure counts.

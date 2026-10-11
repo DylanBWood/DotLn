@@ -3021,6 +3021,12 @@ const main = async () => {
     writeOutput(
       `${outcome}\n${plan.decision ? `Recorded ${plan.decision} in ${relative(toolRoot, plan.edits.at(-1).path)}.\n` : ""}${written.length ? `Files changed:\n${written.map((path) => `  ${relative(toolRoot, path)}`).join("\n")}` : "no files changed."}\n${snapshotLine}Tag observation: ${localOnly ? "local snapshot only" : "origin"}.\n`,
     );
+    // Integration stores this output as its release-outcome receipt; writing
+    // guidance belongs to the operator's preparation command.
+    if (!args.includes("--integration")) {
+      const { writingGuidance } = await import("./lib/reader-profiles.mjs");
+      writeOutput(`${writingGuidance("releaseNotes", toolRoot)}\n`);
+    }
     return;
   }
   if (action === "check-surfaces") {

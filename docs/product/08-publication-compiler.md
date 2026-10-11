@@ -245,6 +245,31 @@ publication equivalent of DotLn's mechanics inspector.
 
 ## PRs and commits
 
+Style is set per surface in `docs/control/reader-profiles.json`: pull-request
+title and body, commit subject, release notes and Release page. Each chooses an
+audience, density, identifier treatment, machine-detail treatment and voice.
+`npm run reader -- preview prTitle` shows the three examples; substitute
+`prBody`, `commitSubject`, `releaseNotes` or `releasePage` for another surface.
+`profile` prints the committed guidance and nearest example. Without an operator
+choice, each surface uses the balanced profile. A planning pass changes the
+choices after previewing them. Publish prints title/body guidance beside the
+subject series, and release preparation prints release-note guidance. Profiles
+change presentation; facts, limits, required sections and attribution remain
+governed here. The dated corrections below remain the history behind this rule.
+
+`npm run reader -- score` supplies one fresh reader with up to ten unscored
+releases' immutable Release text, asking what changed, whether to act, what is
+not covered and where the evidence is. `score --record` validates literal
+quotations and records their positions with the profile read from each tag;
+releases before the profile file have a null revision with a reason. Plan start
+shows answers found and median position by revision. A changed profile pays one
+reader after three unscored releases, or at the operator's word. A typed
+`score --correction` records the affected surface and capture hash beside those
+figures. Scores measure findability on the Release page, not the quality of the
+other surfaces or the operator's taste, and never refuse or rewrite published
+text. The [examples and scoring guide](../publication/examples/README.md)
+describes the inputs and their limits.
+
 A PR title names the main change in concise, ordinary prose after the required
 gitmoji shortcode. Choose enough detail to distinguish the change in a PR list.
 Put explanations, implementation inventories, and validation in the body. Write

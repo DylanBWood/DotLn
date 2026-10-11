@@ -1,4 +1,4 @@
-# WO-191 — What DotLn publishes is written to a committed reader profile per surface, chosen from examples and scored by fresh readers (version assigned at activation)
+# WO-191 — What DotLn publishes is written to a committed reader profile per surface, chosen from examples and scored by fresh readers (v0.74.2)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

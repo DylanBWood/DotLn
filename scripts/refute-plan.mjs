@@ -357,6 +357,8 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     // What failed since the latest planning receipt, read before the register;
     // a count that cannot be computed never keeps the branch shut (WO-172).
     const failures = failuresAtStart(root);
+    const { readerScoresAtStart } = await import("./lib/reader-profiles.mjs");
+    const readerScores = readerScoresAtStart(root);
     const conditions = await conditionsAtStart(root);
     const branch = `planning/${new Date().toISOString().slice(0, 10)}-${rest[0]}`;
     runGit(root, ["switch", "-c", branch]);
@@ -365,6 +367,7 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
       phase: "planning",
       authority: "document-only planning dispatch",
       failures,
+      readerScores,
       conditions,
       followups,
     };

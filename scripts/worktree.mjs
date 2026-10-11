@@ -633,6 +633,10 @@ const main = async () => {
     for (const row of mergedSubjects(mainPath))
       process.stdout.write(`  ${row.characters}: ${row.title}\n`);
     process.stdout.write(`Proposed ${[...title].length}: ${title}\n`);
+    const { writingGuidance } = await import("./lib/reader-profiles.mjs");
+    process.stdout.write(
+      `${writingGuidance("prTitle", subject)}\n${writingGuidance("prBody", subject)}\n`,
+    );
     const gate = reviewedProductGate(subject, workOrderId);
     const gateBlock = productGateBody(gate);
     const publicationBody = body.includes("<!-- dotln-product-gate:start -->")
