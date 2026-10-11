@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-191",
+  "recordedAt": "2026-10-11T14:45:59.148Z",
+  "inputs": [
+    "docs/work-orders/WO-191-reader-profiles.md",
+    "implementation diff"
+  ],
+  "boundary": "Two fresh workers, given only the order and diff, with repository writes forbidden. Each reused for a read-only repair review. No effective model or effort readback was exposed.",
+  "reviewer": {
+    "model": "gpt-6.1-sol",
+    "effort": "max",
+    "source": "launch-selected; effective readback unavailable"
+  },
+  "found": 5,
+  "fixed": 5,
+  "recorded": 0,
+  "reviews": [
+    {
+      "role": "criteria adversary",
+      "found": 2,
+      "fixed": 2,
+      "recorded": 0,
+      "findings": [
+        {
+          "severity": "P2",
+          "finding": "Both Release-page rewrites omitted the branch-scope claim.",
+          "resolution": "Restore the claim and its literal fact anchor in all Release-page variants."
+        },
+        {
+          "severity": "P2",
+          "finding": "PR-body reader and Release-page/release-note rewrites omitted explicit failed verification verdicts.",
+          "resolution": "State the failed verdicts while preserving each surface’s disclosed historical account."
+        }
+      ],
+      "recheck": "Two original findings fixed; zero pending; no new findings. Actual per-surface comparison passes and is bound to example bytes in comparison.json."
+    },
+    {
+      "role": "design improver",
+      "found": 3,
+      "fixed": 3,
+      "recorded": 0,
+      "findings": [
+        {
+          "severity": "P2",
+          "finding": "Saved scores were validated only by shape and accepted invented subjects and positions.",
+          "resolution": "Validate the immutable tag, human text hash, tagged profile, quotation and calculated first Unicode position; require releasePage."
+        },
+        {
+          "severity": "P2",
+          "finding": "Unknown reader metadata could be copied into the public log.",
+          "resolution": "Reject keys outside model, effort and source in submitted and saved reader metadata."
+        },
+        {
+          "severity": "P2",
+          "finding": "An automatic reader prompt could omit the revision that triggered it and keep readerDue true.",
+          "resolution": "Use one selection function for planner and prompt; when due, select up to ten releases of that revision."
+        }
+      ],
+      "recheck": "Three original findings fixed; zero pending; no concrete regressions. Read-only repair review; no test or lifecycle rerun by this worker."
+    }
+  ]
+}

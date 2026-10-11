@@ -32898,6 +32898,51 @@
           "at": "2026-10-11T01:26:26.292Z"
         }
       ]
+    },
+    {
+      "id": "FUP-8b8eb522d1d136c0",
+      "key": "decision:docs/evidence/WO-191/decisions.md#wo-191-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6dd351abce2f96e10540df659dba367af93650bc194ed57a8f4ee929bddbe48d",
+          "ref": "docs/evidence/WO-191/decisions.md#wo-191-d010",
+          "title": "WO-191-D010: The next WO-191 repair, or the next order that edits scripts/lib/reader-profiles.mjs. Rule a repair must hold: a score row whose tag object is absent locally must not fail npm run test:do",
+          "summary": "{ \"id\": \"WO-191-D010\", \"date\": \"2026-10-11\", \"dispatch\": \"resume: verify\", \"decision\": \"Board VER-001 F1 as a follow-up. The document check `node scripts/reader.mjs check`, now a `npm run test:docs` row, re-reads every recorded score's annotated tag object through `git cat-file tag`. When a scored release's tag object is missing from the local object store, the gate fails with a raw Git error that names no release or remedy. A tag can be deleted and pruned, or a clone can be made with `--no-tags` or a shallow history. No acceptance criterion is broken: the gate passes in this worktree, where all ten baseline tags exist, and main had no such row.\", \"evidence\": [ \"docs/evidence/WO-191/verifica",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a4b2cdfb03ddbd2e",
+      "key": "decision:docs/evidence/WO-191/decisions.md#wo-191-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "43280e32d8be43b648f665123160a3e3c2441d8ceacd6652f4ec799a10fda088",
+          "ref": "docs/evidence/WO-191/decisions.md#wo-191-d011",
+          "title": "WO-191-D011: The next WO-191 repair, or the next order that edits scripts/lib/reader-profiles.mjs. Rule a repair must hold: a malformed reader result, including a non-object answer or release entry, i",
+          "summary": "{ \"id\": \"WO-191-D011\", \"date\": \"2026-10-11\", \"dispatch\": \"resume: verify\", \"decision\": \"Board VER-001 F2 as a follow-up. `npm run reader -- score --record <file>` refuses a result whose answer entry is not an object, such as `answers: [null, null, null, null]`, with a raw `Cannot read properties of null (reading 'question')` TypeError. The message does not name the release or the expected answer shape. Nothing is appended, so no score is corrupted and no criterion is broken.\", \"evidence\": [ \"docs/evidence/WO-191/verification-001/transcript.txt, line `F2: null answer entries => REFUSED: Cannot read properties of null (reading 'question')`, followed by a valid record appending one row and an i",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a566ba26ee9f909a",
+      "key": "decision:docs/evidence/WO-191/decisions.md#wo-191-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "421f35c937a8b4b0243ccbcfc440f6e5234d57fe658b192ed8fbcf4fb846bf74",
+          "ref": "docs/evidence/WO-191/decisions.md#wo-191-d013",
+          "title": "WO-191-D013: Planning, low priority: at the next pass, compare this review's fresh document-gate row (1,465.8 s of wall-clock for 223.3 s of task work, recorded 2026-10-11T17:47:41.090Z at code identi",
+          "summary": "{ \"id\": \"WO-191-D013\", \"date\": \"2026-10-11\", \"dispatch\": \"resume: final review; FINAL-001\", \"decision\": \"Pass final review of WO-191 at the integrated subject with no source change. The three examples per surface were presented to the operator in FINAL-001 and in the review response: the title and commit-subject variants in full, the body, release-note and Release-page variants by their preview command, paths and sizes. No operator choice was recorded during execution, verification or this review, so the committed profile stays balanced on all five surfaces, as the order's fallback directs, and the examples stay for a later planning-pass edit previewed first. The two verifier boards, D010 an",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
