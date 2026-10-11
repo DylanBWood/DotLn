@@ -28302,6 +28302,14 @@
           "reopenWhen": "An order's criteria or design touch scripts/worktree.mjs action dispatch or argument checks, a gate again fails target-publish's usage case while no worktree has main checked out, or an operator meets the misleading error at a real target publish.",
           "targets": [],
           "at": "2026-10-08T22:01:33.557Z"
+        },
+        {
+          "sourceRevision": 6,
+          "status": "deferred",
+          "reason": "Deferred again by WO-072's final review. The row's reopening condition occurred by its letter: WO-072's design adds the clone action to the scripts/worktree.mjs dispatch with its own argument check (lines 583 to 589), which also runs after mainWorktree(toolRoot) at line 581; clone writes main's clone map, so for it only the first error shown changes when no worktree is on main. The publish --target ordering the row names is unchanged, no WO-072 criterion depends on it, and this review's gate did not meet the defect because main is checked out. A fix is new behavioral code, which a reviewer may not write and certify. [WO-072 final review (docs/final-reviews/WO-072/FINAL-001.md)]",
+          "reopenWhen": "An order's criteria or design touch scripts/worktree.mjs action dispatch or argument checks, a gate again fails target-publish's usage case while no worktree has main checked out, or an operator meets the misleading error at a real target publish.",
+          "targets": [],
+          "at": "2026-10-11T23:34:02.560Z"
         }
       ]
     },
@@ -30001,6 +30009,14 @@
           "reopenWhen": "a real verify dispatch errors after recording; a final review misclasses a finding for want of the definitions; a reviewer self-fix goes unlisted; an advisoryDecision is used again; or the next order that edits scripts/resume.mjs or the reviewer loadout activates",
           "targets": [],
           "at": "2026-10-11T01:26:25.097Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-072's final review. The disposition's condition 'the next order that edits scripts/resume.mjs' occurred: WO-072 adds the registered-target selection block to run and changes nothing else in that file. Item 1's verify-briefing order of operations and items 2 to 5 are untouched; both of this order's verify dispatches recorded without error, and this review classed its one finding from product 07's definitions. [WO-072 final review (docs/final-reviews/WO-072/FINAL-001.md)]",
+          "reopenWhen": "a real verify dispatch errors after recording; a final review misclasses a finding for want of the definitions; a reviewer self-fix goes unlisted; an advisoryDecision is used again; or the next order that edits scripts/resume.mjs or the reviewer loadout activates",
+          "targets": [],
+          "at": "2026-10-11T23:34:02.620Z"
         }
       ]
     },
@@ -33426,6 +33442,60 @@
           "at": "2026-10-11T20:45:56.939Z"
         }
       ]
+    },
+    {
+      "id": "FUP-57533538348d8f5f",
+      "key": "decision:docs/evidence/WO-072/decisions.md#wo-072-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4f77bcf86ba0e223551a57b4e41820120a28fd72f7c5a092216cfc8c2fc87670",
+          "ref": "docs/evidence/WO-072/decisions.md#wo-072-d006--verification-fail-on-a-launchpad-spelling-regression-criteria-1-to-6-hold",
+          "title": "WO-072-D006: WO-072 resume: fix. (F1) Compare launchpad identities physically. The launchpad's own checkout selects its branch order whatever spelling DOTLN_LAUNCHPAD or the script path gives it, as a",
+          "summary": "{ \"id\": \"WO-072-D006\", \"date\": \"2026-10-11\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on F1. All six criteria are met at code identity f4fd5f453da41c9bb9d40ba410327a8cdf7bfb5cdefe571f0715fe30cff3dd70, but the new selection check in scripts/resume.mjs breaks behavior main had. In a launchpad whose configuration declares repositories, or that holds a target registry, resume run from the launchpad's own checkout selects no order when the launchpad is spelled other than its physical identity: DOTLN_LAUNCHPAD through a symlink or in another letter case, or the scripts invoked through a case-variant path. At the activation base the same invocations select",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-072-D007 repairs VER-001 F1 with physical launchpad identity at both selection comparisons and F2 with a nonzero no-selection JSON refusal. New regression tests fail before F1's source repair and pass after it; the complete bounded target-worktree suite passed all 10 tests at 2026-10-11T22:30:43.512Z, including case, volume, chained-symlink and subdirectory routes, registry-only self selection, report ownership, and unchanged control on JSON refusal. Independent re-verification remains the next lifecycle dispatch.",
+          "reopenWhen": "Launchpad or target selection changes, findLaunchpad returns a different directory identity, or a supported host cannot obtain physical pwd.",
+          "targets": [],
+          "at": "2026-10-11T22:32:19.754Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f82660a8edb23a4d",
+      "key": "decision:docs/evidence/WO-072/decisions.md#wo-072-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "80d023f669e33b65366e55799c73ca59eb8ffb4e1cfac7bd71c07cea67b453ba",
+          "ref": "docs/evidence/WO-072/decisions.md#wo-072-d008--verification-pass-ver-001-f1-and-f2-repaired-the-targets-no-selection-message-is-a-follow-up",
+          "title": "WO-072-D008: WO-072 follow-up (operator flow, output accuracy). In scripts/lib/target-worktrees.mjs registeredOrder and the no-selection branch of scripts/resume.mjs run: when the selected launchpad's",
+          "summary": "{ \"id\": \"WO-072-D008\", \"date\": \"2026-10-11\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002 at code identity 4c2df81b24c0292f38654a02395d4207b3e9e9349301a1d56c5200e04903a414. All six criteria are met, and the repair closes VER-001 F1 and F2. Board one follow-up in the declared surface that breaks no criterion and no behavior main had. Run from a registered target worktree, main's own scripts (no DOTLN_LAUNCHPAD) print '<target> is not a registered target worktree; no order selected'. That sentence is false: main's target-worktrees.json lists the target, with its order launchpad as entry.launchpad, and the sentence does not name the launchpad that does sel",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-00b15d92d53011b2",
+      "key": "decision:docs/evidence/WO-072/decisions.md#wo-072-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "26f1088cbfab5f05ff7561615567ef0aa58b7867299f88ff5c88a9a028a6e73d",
+          "ref": "docs/evidence/WO-072/decisions.md#wo-072-d010--final-review-pass-final-001-board-the-target-closes-ignored-material-refusal-which-lists-every-file-and-names-no-remedy",
+          "title": "WO-072-D010: WO-072 follow-up (operator flow, teardown refusal). In scripts/lib/target-worktree-close.mjs closeTargetWorktree: when the target holds ignored material outside the bundle manifest, keep ",
+          "summary": "{ \"id\": \"WO-072-D010\", \"date\": \"2026-10-11\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Pass final review of WO-072 at code identity 4c2df81b24c0292f38654a02395d4207b3e9e9349301a1d56c5200e04903a414 with no source change. All six criteria hold at the integrated subject, the verification sequence VER-001 (fail), repair, VER-002 (pass) is complete, and this review's own bounded run of scripts/test-target-worktree.mjs passed 10 of 10 with the case variants and the volume alias exercised. Board one follow-up in the declared surface that breaks no criterion and no behavior main had: release close for a target whose worktree holds ignored material outside the bun",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

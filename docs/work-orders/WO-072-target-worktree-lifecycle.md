@@ -1,4 +1,4 @@
-# WO-072 — Target worktree lifecycle: `worktree start` for a registered target creates the worktree from the declared base, emits the governed bundle into it, and `resume` commands run from that worktree select the order through the launchpad (version assigned at activation)
+# WO-072 — Target worktree lifecycle: `worktree start` for a registered target creates the worktree from the declared base, emits the governed bundle into it, and `resume` commands run from that worktree select the order through the launchpad (v0.75.0)
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).

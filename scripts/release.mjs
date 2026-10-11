@@ -77,6 +77,7 @@ import {
   retainedWorktreeRemovalSubjects,
 } from "./lib/worktree-removal.mjs";
 import { releaseListCache } from "./lib/release-list-cache.mjs";
+import { targetWorktreeForOrder } from "./lib/target-worktrees.mjs";
 import {
   inventoryMaterial,
   materialCloseCommand,
@@ -210,7 +211,9 @@ export function releaseCloseSummary(record) {
     String(value).replace(/\s+/gu, " ").trim().slice(0, 1000);
   const publication = record.publication;
   const lines = [
-    `${record.workOrderId}${record.dryRun ? " dry run" : ""}: ${publication.outcome}; tag ${publication.tag ?? "unknown"}; GitHub Release ${publication.release ?? (record.dryRun ? "would reconcile/create" : "not verified")}${publication.releaseCarried ? " (carried from an earlier attempt)" : ""}.`,
+    publication.outcome === "no-release" && publication.tag === null
+      ? `${record.workOrderId}${record.dryRun ? " dry run" : ""}: no-release; no tag or GitHub Release is due.`
+      : `${record.workOrderId}${record.dryRun ? " dry run" : ""}: ${publication.outcome}; tag ${publication.tag ?? "unknown"}; GitHub Release ${publication.release ?? (record.dryRun ? "would reconcile/create" : "not verified")}${publication.releaseCarried ? " (carried from an earlier attempt)" : ""}.`,
   ];
   // Keep the small concluding outcome sentences useful to existing consumers.
   for (const text of closeTranscript ?? [])
@@ -222,6 +225,10 @@ export function releaseCloseSummary(record) {
       )
         lines.push(line(textLine));
   lines.push(`Cleanup: ${record.cleanup.outcome}.`);
+  if (record.targetCleanup)
+    lines.push(
+      `Target worktree ${record.targetCleanup.path}; branch ${record.targetCleanup.branch}: ${record.targetCleanup.outcome}.`,
+    );
   for (const row of record.cleanup.worktrees)
     lines.push(`Worktree ${row.path}: ${row.outcome}.`);
   for (const row of record.removals ?? [])
@@ -401,6 +408,12 @@ const controlState = (projection, source) => {
     workOrderId: projection.workOrder ?? undefined,
     workOrderPath: projection.workOrderPath ?? undefined,
     phase: projection.phase,
+    ...(projection.repositoryId
+      ? {
+          repositoryId: projection.repositoryId,
+          baseCommit: projection.baseCommit,
+        }
+      : {}),
   };
 };
 const parseControlState = (root, workOrderId) => {
@@ -2242,7 +2255,7 @@ const publishTag = (root, tag, commit, message, tagger, publication) => {
   }
   return object;
 };
-const close = (workOrderId, parsed, record) => {
+const close = async (workOrderId, parsed, record) => {
   const { flags, material: overrides } = parsed;
   const publish = flags.includes("--publish");
   const root = findMainWorktree(toolRoot);
@@ -2251,10 +2264,16 @@ const close = (workOrderId, parsed, record) => {
       `release close must run from the main control-plane checkout: ${root}`,
     );
   const dryRun = flags.includes("--dry-run");
-  const reachable = ensureOriginReachable(root);
+  const targetOrder =
+    targetWorktreeForOrder(root, workOrderId) ||
+    readControl(root).orders.get(workOrderId)?.state.repositoryId;
+  const reachable = targetOrder
+    ? (runGit(root, ["ls-remote", "--exit-code", "--heads", "origin", "main"]),
+      { host: "origin" })
+    : ensureOriginReachable(root);
   if (dryRun)
     writeOutput(
-      `Origin reachable: ${reachable.host} (git ls-remote); publication also needs gh authentication there.\n`,
+      `Origin reachable: ${reachable.host} (git ls-remote)${targetOrder ? "." : "; publication also needs gh authentication there."}\n`,
     );
   if (dryRun) {
     ensureTrackedClean(root);
@@ -2277,6 +2296,28 @@ const close = (workOrderId, parsed, record) => {
     throw new Error(
       `merged control state is for ${state.workOrderId ?? "none"}, not ${workOrderId}`,
     );
+  if (state.repositoryId) {
+    if (state.phase !== "closed")
+      throw new Error(
+        `release close requires a closed work order; observed ${state.phase}`,
+      );
+    record.publication.outcome = "no-release";
+    if (publish || dryRun) {
+      const { closeTargetWorktree } =
+        await import("./lib/target-worktree-close.mjs");
+      try {
+        await closeTargetWorktree(root, state, dryRun, record);
+      } catch (error) {
+        record.cleanup.outcome = "blocked";
+        throw error;
+      }
+      finishPublishedWorktree(root, workOrderId, dryRun, record, overrides);
+    }
+    writeOutput(
+      `${workOrderId} closes a registered target; no release tag is due in either repository.\n`,
+    );
+    return;
+  }
   const authority = workOrderAuthority(root, state, sourceRevision);
   record.publication.tag = authority.version;
   let local = localTags(root);
@@ -2873,7 +2914,7 @@ const main = async () => {
         }
       }
       if (parseError) throw parseError;
-      const result = close(workOrderId, parsed, record);
+      const result = await close(workOrderId, parsed, record);
       if (!process.exitCode && record.cleanup.outcome !== "blocked")
         releaseWriter?.();
       return result;

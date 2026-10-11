@@ -623,6 +623,14 @@ The working directory never selects a launchpad. A copied script tree is
 routinely driven from an unrelated directory, and a working-directory ascent
 would let one checkout's session write into another checkout's documents.
 
+Target orders pair a code worktree with a launchpad order worktree. Run that
+launchpad's scripts, or name it with `DOTLN_LAUNCHPAD`; its ignored target
+registry selects the order by branch. Selection compares physical launchpad
+identity, so alternate spellings keep the same order. With repository
+declarations or a target registry, an unregistered foreign directory selects
+no order; `status --json` then refuses with a nonzero exit. Reports stay in the
+launchpad.
+
 `dotln.config.json` at the launchpad root declares schema `version: 1` and the
 optional sections `roots`, `classes`, `repositories`, `build`, `release`, `kit`, `derivedOrders` and `portfolios` (§Declaring a portfolio). **Its absence
 means today's layout, byte for byte**, so this repository ships no such file and
@@ -1480,6 +1488,10 @@ idempotent retry only when the immutable tag names the same commit and manifest;
 a differing Release body refuses without editing it. If Release creation fails
 after tag push, rerun the same command. A lower target is an explicit no-release
 outcome. A deliberately deferred eligible release needs a durable disposition.
+
+A registered target closes with `no-release`: prove its branch merged into
+the declared base, remove its local bundle, worktree and branch, then close
+the launchpad worktree. Neither repository gets a tag.
 
 Publication refuses tracked dirt; cleanup is best effort. Finish/settle preserve
 intake and non-disposable control in main's ignored
