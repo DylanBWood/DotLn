@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-078] — Sibling registry and export receipts · **queued** · pair 1
+- [x] [WO-078] — Sibling registry and export receipts · **final-reviewed** · pair 1
 - [x] [WO-191] — Reader profiles for published text · **final-reviewed** · pair 1
 - [ ] [WO-072] — Target worktree lifecycle · **queued**
 - [ ] [WO-076] — Instance build overlay · **queued** · pair 2
@@ -46,23 +46,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-078
-
-[WO-078 — Sibling registry and export receipts: core tracks the starter and the Angular consumer as siblings with their kit version and build hash, and every export appends a receipt (version assigned at activation)](WO-078-sibling-registry.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-074: hard (met) — the first export receipt; WO-075: hard (met) — the build hash a receipt records; WO-077: hard (met) — --update, which writes a receipt; WO-167: hard (met) — closed at v0.53.1; the fold this order's product 07 write-back followed.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Track: delivery
-- Cost: adds one receipt written inside the export and update commands (&#96;scripts/launchpad.mjs&#96;; bytes on disk, no step, command or prompt), a generator for &#96;docs/siblings/README.md&#96; with a check in the manner of the work-order index and its suite row in &#96;scripts/test-runner.mjs&#96;, the once-per-sibling declaration, a document root key for &#96;docs/siblings/&#96; in &#96;scripts/lib/config.mjs&#96;, and at most 150 bytes in product 07; the fixture records the generator's wall-clock and the table's bytes. Removes the manual lookup of each sibling's kit manifest version and build hash in its own checkout before every update, planning pass or receipt that names the sibling, one checkout read per sibling per occasion, and the risk that the recorded version is memory: the removal receipt 009's hold asked for. No recurring bookkeeping is added: the once-per-sibling declaration is written at registration, not per export. Re-mints: none; the generator, its check, &#96;scripts/launchpad.mjs&#96; and the documents are in no evidence inventory, and &#96;scripts/lib/config.mjs&#96; is excluded from every inventory with a recorded reason. If the generator gains a &#96;package.json&#96; script, each edition whose check that entry stales is re-minted deterministically, a feedback edition by carry; no live episode. Wall-clock, tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-078-sibling-registry.md](WO-078-sibling-registry.md)
 
 ### WO-072
 
@@ -156,8 +139,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-078.
-- References: WO-074: hard (met) — the kit file set and manifest the request command joins; WO-077: hard (met) — the update and the instance-actions note that reports fulfilled requests; WO-078: hard (unmet) — the sibling receipt that gains request identifiers; WO-062: satisfied-by-close (met) — the read-only screened issue reader used by the planning intake; WO-063: satisfied-by-close (met) — the outward lint run over a draft before it may be filed; WO-060: satisfied-by-close (met) — the declared screen run over a draft and over each fetched issue.
+- Dependencies: typed; dependency-ready.
+- References: WO-074: hard (met) — the kit file set and manifest the request command joins; WO-077: hard (met) — the update and the instance-actions note that reports fulfilled requests; WO-078: hard (met) — the sibling receipt that gains request identifiers; WO-062: satisfied-by-close (met) — the read-only screened issue reader used by the planning intake; WO-063: satisfied-by-close (met) — the outward lint run over a draft before it may be filed; WO-060: satisfied-by-close (met) — the declared screen run over a draft and over each fetched issue.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -464,8 +447,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-118, WO-082, WO-078.
-- References: WO-118: hard (unmet) — the resident-owned loop is proven from a starter instance before the fork runs it against a real target; satisfied only by WO-118's criterion 1 recorded observed, never by a waiver; WO-082: hard (unmet) — the synthetic pilot precedes the witnessed run; WO-073: hard (met) — the profile convention the fork's profile follows; WO-078: hard (unmet) — the generated sibling registry whose Angular consumer entry the run changes.
+- Dependencies: typed; blocked on WO-118, WO-082.
+- References: WO-118: hard (unmet) — the resident-owned loop is proven from a starter instance before the fork runs it against a real target; satisfied only by WO-118's criterion 1 recorded observed, never by a waiver; WO-082: hard (unmet) — the synthetic pilot precedes the witnessed run; WO-073: hard (met) — the profile convention the fork's profile follows; WO-078: hard (met) — the generated sibling registry whose Angular consumer entry the run changes.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

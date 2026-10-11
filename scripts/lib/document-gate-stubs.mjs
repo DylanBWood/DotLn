@@ -10,6 +10,7 @@ export const DOCUMENT_GATE_STUBS = [
   "comment-labels.mjs",
   "test-comment-labels.mjs",
   "work-orders.mjs",
+  "siblings.mjs",
   "lineage.mjs",
   "test-lineage.mjs",
   "refute-plan.mjs",

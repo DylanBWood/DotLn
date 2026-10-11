@@ -38,6 +38,10 @@ docs/decisions/    ADRs — settled questions
 docs/proposals/    filed Entropy Reducer proposal packets (filing is not promotion)
 docs/work-orders/  stable scope addresses + the generated evidence index:
                    README.md (the work ahead) and HISTORY.md (settled orders)
+docs/siblings/     generated sibling registry (node scripts/siblings.mjs index):
+                   one entry per declared sibling with purpose, upstream
+                   relation, kit version, build hash and receipts; siblings.json
+                   is the once-per-sibling declaration
 docs/verifications/ immutable numbered verifier reports, grouped by work order
 docs/final-reviews/ immutable numbered closeout reports and PR handoffs
 docs/control/       legacy resume log, per-order segments, generated overview,
@@ -51,7 +55,8 @@ docs/control/       legacy resume log, per-order segments, generated overview,
 docs/control/local/ ignored gate/session/usage observations, private terms and opaque account-label meanings
 docs/evidence/      per-order decisions, handoffs, evidence editions, bounded
                     comparisons and fixture transcripts; current.json — the
-                    edition each evidence kind currently reads
+                    edition each evidence kind currently reads; siblings/
+                    holds the receipts launchpad export and --update write
 docs/releases/     historical v0.2.0 records + forward tag-manifest template;
                    later immutable manifests/notes live in annotated tags
 docs/discovery/    labeled machine-audit outputs, runtime target maps, and the

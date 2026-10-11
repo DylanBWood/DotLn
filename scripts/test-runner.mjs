@@ -709,6 +709,18 @@ export const suites = [
     document: true,
     preflight: true,
   }),
+  node("siblings", "scripts/siblings.mjs", {
+    args: ["index", "--check"],
+    document: true,
+    preflight: true,
+    protects:
+      "the sibling registry is the generated projection of its declaration, its receipts and this repository's tags and control records; a hand edit or a stale manifest hash refuses",
+  }),
+  nodeTests("siblings-fixtures", "scripts/test-siblings.mjs", {
+    needsBuild: false,
+    protects:
+      "the registry generator carries each receipt's fields, the kit version from Git and the orders closed between receipts, reads not evidenced where no receipt supplies a field, and refuses a hand-edited entry, a manifest hash that is not the latest receipt's and an undecodable receipt",
+  }),
   node("lineage", "scripts/lineage.mjs", {
     args: ["index", "--check"],
     document: true,

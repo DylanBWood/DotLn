@@ -40,6 +40,7 @@ const ROOT_SEGMENTS = {
   observations: "observations",
   decisions: "decisions",
   repositoryProfiles: "repositories",
+  siblings: "siblings",
 };
 
 // Roots whose default is carried by another root, so that moving the parent

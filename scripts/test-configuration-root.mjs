@@ -147,6 +147,7 @@ await test("configuration root", async (t) => {
         observations: "docs/observations",
         decisions: "docs/decisions",
         repositoryProfiles: "docs/repositories",
+        siblings: "docs/siblings",
         orders: "docs/control/orders",
         derivedWorkOrders: "docs/work-orders/derived",
         refutations: "docs/planning/refutations",

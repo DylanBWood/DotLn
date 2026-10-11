@@ -62,7 +62,7 @@ files a draft work order from one sentence. The
 ## What runs today
 
 <!-- DOTLN-RELEASE-BEGIN -->
-This source prepares DotLn `v0.74.2`.
+This source prepares DotLn `v0.74.3`.
 <!-- DOTLN-RELEASE-END -->
 
 <!-- dotln-what-runs:start -->

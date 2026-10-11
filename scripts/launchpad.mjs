@@ -21,6 +21,7 @@ import {
   findLaunchpad,
 } from "./lib/config.mjs";
 import {
+  describeTag,
   failureOf,
   readGitObjects,
   runGit,
@@ -30,6 +31,8 @@ import { parseGitHubTarget } from "./lib/github-repository.mjs";
 import { json, sha256Hex } from "./lib/helpers.mjs";
 import { hasPackageSources, isMainModule } from "./lib/paths.mjs";
 import { checkLocalTerms } from "./lib/terms.mjs";
+import { buildHashOf, resolveReceipt, writeReceipt } from "./lib/siblings.mjs";
+import { writeRegistry } from "./siblings.mjs";
 import { atomicBuild } from "./build.mjs";
 import { spawnSync } from "node:child_process";
 import {
@@ -51,6 +54,10 @@ import { basename, dirname, join, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 
 export const KIT_MANIFEST = "KIT-MANIFEST.json";
+// The manifest an update plans, written beside the current one before the
+// first kit write and removed after the last, so a retry after an interrupted
+// update knows which bytes the interrupted run wrote.
+export const KIT_MANIFEST_PENDING = "KIT-MANIFEST.pending.json";
 export const KIT_MANIFEST_SCHEMA_VERSION = 1;
 export const UPSTREAM = "UPSTREAM.md";
 export const LICENSE_FILES = Object.freeze([
@@ -389,21 +396,6 @@ export function kitLockfile(coreLock, kitPackageJson) {
     ]),
   };
 }
-
-const describeTag = (root, commit) => {
-  const exact = runGit(root, [
-    "tag",
-    "--points-at",
-    commit,
-    "--sort=-v:refname",
-  ])
-    .split("\n")
-    .filter(Boolean);
-  const nearest = runGit(root, ["describe", "--tags", "--abbrev=0", commit], {
-    onFailure: () => null,
-  });
-  return { tag: exact[0] ?? null, nearest: nearest || null };
-};
 
 /** The origin remote as a forge target (host/owner/repo), or null: a local
  * path, a credentialed URL or any other shape the parser refuses never
@@ -1003,13 +995,58 @@ export async function prepareKit({
   };
 }
 
+/** The destination's own repository name, read from its origin remote when
+ * it has one: an update into a clone or worktree named otherwise still
+ * records its receipt under the declared sibling. */
+const destinationNames = (target) => {
+  if (!lstatSync(join(target, ".git"), { throwIfNoEntry: false })) return [];
+  const url = runGit(target, ["config", "--get", "remote.origin.url"], {
+    env: exportEnvironment(),
+    onFailure: () => "",
+  });
+  try {
+    return url ? [parseGitHubTarget(url).selector.split("/").at(-1)] : [];
+  } catch {
+    return [];
+  }
+};
+
+/** The receipt that closes a complete export or update, and the registry page
+ * regenerated from it: written when the destination resolved to a declared
+ * sibling, otherwise the reason none is. The manifest is already in place, so
+ * a failure here names the complete command rather than a partial one. */
+const closeWithReceipt = (launchpad, resolved, fields, command, target) => {
+  if (!resolved.sibling)
+    return { path: null, reason: resolved.reason, registry: null };
+  let receipt;
+  try {
+    receipt = writeReceipt(launchpad, { sibling: resolved.sibling, ...fields });
+  } catch (error) {
+    throw new Error(
+      `the ${command} at ${target} is complete, but its sibling receipt was not written: ${error.message}`,
+    );
+  }
+  try {
+    return { ...receipt, registry: writeRegistry(launchpad) };
+  } catch (error) {
+    throw new Error(
+      `the ${command} at ${target} is complete and its receipt ${receipt.path} is written, but the sibling registry was not regenerated: ${error.message}`,
+    );
+  }
+};
+
 /** Export into an empty destination, initialize its repository and run its
  * own harness emit/check. A post-write failure leaves a partial export for
- * inspection without a manifest. */
+ * inspection without a manifest; a receipt failure leaves a complete one. */
 export async function exportKit(destination, options = {}) {
   const target = checkDestination(destination);
+  const { launchpad = TOOL_ROOT } = options;
+  // Resolved before the build and before any write, so a malformed sibling
+  // declaration refuses here and never after a complete export.
+  const resolved = resolveReceipt(launchpad, target);
   const { manifest, manifestBytes, writes, bundle, summary } =
     await prepareKit(options);
+  const buildHash = buildHashOf(bundle.snapshot);
   mkdirSync(target, { recursive: true });
   for (const { path, bytes, mode } of writes) {
     const file = join(target, path);
@@ -1065,7 +1102,17 @@ export async function exportKit(destination, options = {}) {
     );
   }
   writeFileSync(join(target, KIT_MANIFEST), manifestBytes);
-  return { destination: target, ...summary };
+  // The receipt closes the manifest step: once the manifest is written the
+  // export is complete, and a destination named as a declared sibling leaves
+  // the record of what it carries under the launchpad's evidence root.
+  const receipt = closeWithReceipt(
+    launchpad,
+    resolved,
+    { coreCommit: manifest.commit, manifestBytes, buildHash },
+    "export",
+    target,
+  );
+  return { destination: target, ...summary, receipt };
 }
 
 export const KIT_ACTIONS = "scripts/kit/KIT-ACTIONS.json";
@@ -1165,12 +1212,23 @@ const readJson = (bytes, path) => {
   }
 };
 
+/** The manifest an interrupted update planned, or null when none is pending. */
+export function readPendingManifest(destination) {
+  const root = resolve(destination);
+  if (!destinationStat(root, KIT_MANIFEST_PENDING)) return null;
+  return readManifestFile(root, KIT_MANIFEST_PENDING);
+}
+
 export function readPriorManifest(destination) {
   const root = resolve(destination);
   if (!lstatSync(root, { throwIfNoEntry: false })?.isDirectory())
     throw new Error(`update destination is not a regular directory: ${root}`);
-  const label = join(root, KIT_MANIFEST);
-  const prior = readJson(readDestination(root, KIT_MANIFEST), label);
+  return readManifestFile(root, KIT_MANIFEST);
+}
+
+const readManifestFile = (root, name) => {
+  const label = join(root, name);
+  const prior = readJson(readDestination(root, name), label);
   knownKeys(prior, ["schemaVersion", "commit", "tag", "files"], label);
   if (
     prior.schemaVersion !== KIT_MANIFEST_SCHEMA_VERSION ||
@@ -1207,43 +1265,61 @@ export function readPriorManifest(destination) {
         throw new Error(`overlapping paths in ${label}: ${path}`);
   }
   return prior;
-}
+};
 
-/** Plan the whole update before writing. A missing/unreadable prior file is
- * an input failure; a readable local edit is a refusal retained in the plan. */
-export function planUpdate(prior, next, directory) {
+/** Plan the whole update before writing. A prior file the incoming kit
+ * still carries must be present, and every present path must be a readable
+ * regular file; otherwise the plan refuses as an input failure. A file whose
+ * bytes already equal the incoming kit's, or equal what the pending manifest
+ * of an interrupted update planned for it, is kept: never refused, and the
+ * manifest records the incoming hash. A readable local edit is a refusal
+ * retained in the plan. A dropped prior path that is already absent counts as
+ * removed, and a path the interrupted update dropped that the incoming kit
+ * carries again is added, so a retry completes at any later commit. */
+export function planUpdate(prior, next, directory, pending = null) {
   const previous = new Map(prior.files.map((entry) => [entry.path, entry]));
   const following = new Map(next.files.map((entry) => [entry.path, entry]));
+  const planned = new Map(
+    (pending?.files ?? []).map((entry) => [entry.path, entry.sha256]),
+  );
   const plan = [];
   for (const path of [
     ...new Set([...previous.keys(), ...following.keys()]),
   ].sort()) {
     if (!kitPath(path)) throw new Error(`invalid kit path: ${path}`);
     const old = previous.get(path);
-    if (old) {
-      const unmodified =
-        sha256Hex(readDestination(directory, path)) === old.sha256;
+    const incoming = following.get(path);
+    const stat = destinationStat(directory, path);
+    // Absence is expected only where the interrupted update removed the file.
+    const dropped = pending !== null && !planned.has(path);
+    if (!stat && old && incoming && !dropped)
+      throw new Error(`cannot read regular file: ${join(directory, path)}`);
+    const current = stat ? sha256Hex(readDestination(directory, path)) : null;
+    const kept =
+      current !== null &&
+      (current === incoming?.sha256 ||
+        current === old?.sha256 ||
+        current === planned.get(path));
+    if (!old)
+      plan.push(
+        stat && !kept
+          ? { path, kind: "refuse", reason: "instance-owned collision" }
+          : { path, kind: "add" },
+      );
+    else if (!stat)
+      plan.push(
+        incoming
+          ? { path, kind: "add" }
+          : { path, kind: "remove", absent: true },
+      );
+    else if (!kept)
       plan.push({
         path,
-        kind: !unmodified
-          ? "refuse"
-          : following.has(path)
-            ? "replace"
-            : "remove",
-        ...(unmodified ? {} : { reason: "locally modified", retained: old }),
+        kind: "refuse",
+        reason: "locally modified",
+        retained: old,
       });
-    } else {
-      const stat = destinationStat(directory, path);
-      if (stat && !stat.isFile())
-        throw new Error(`cannot read regular file: ${join(directory, path)}`);
-      // Read collisions too: an unreadable file refuses before any write.
-      if (stat) readDestination(directory, path);
-      plan.push({
-        path,
-        kind: stat ? "refuse" : "add",
-        ...(stat ? { reason: "instance-owned collision" } : {}),
-      });
-    }
+    else plan.push({ path, kind: incoming ? "replace" : "remove" });
   }
   return plan;
 }
@@ -1346,12 +1422,14 @@ function planInstanceActions(directory, actions, kitPaths) {
       !contained(path) ||
       [
         KIT_MANIFEST,
+        KIT_MANIFEST_PENDING,
         CONFIG_FILENAME,
         INSTRUCTION_FILE,
         "AGENTS.md",
         "node_modules",
         ".runtime",
       ].some((reserved) => overlaps(path, reserved)) ||
+      kitPath(path) ||
       kitPaths.some((kit) => overlaps(kit, path))
     )
       throw new Error(`instance root overlaps a protected path: ${path}`);
@@ -1385,8 +1463,21 @@ function planInstanceActions(directory, actions, kitPaths) {
       ];
       const from = destinationStat(directory, action.from);
       const to = destinationStat(directory, action.to);
+      const adopt = () => {
+        draft.roots ??= {};
+        for (const [key, path] of Object.entries(draft.roots))
+          if (path === action.from || path.startsWith(`${action.from}/`))
+            draft.roots[key] = action.to + path.slice(action.from.length);
+        draft.roots[action.root] = action.to;
+        changed = true;
+      };
       if (current === action.to && !from && to?.isDirectory()) {
         inspectTree(action.to);
+      } else if (current === action.from && !from && to?.isDirectory()) {
+        // The directory moved and the configuration did not, as after an
+        // update interrupted between the two: record the root, move nothing.
+        inspectTree(action.to);
+        adopt();
       } else {
         if (current !== action.from || !from?.isDirectory() || to)
           throw new Error(
@@ -1394,12 +1485,7 @@ function planInstanceActions(directory, actions, kitPaths) {
           );
         inspectTree(action.from);
         renames.push(action);
-        draft.roots ??= {};
-        for (const [key, path] of Object.entries(draft.roots))
-          if (path === action.from || path.startsWith(`${action.from}/`))
-            draft.roots[key] = action.to + path.slice(action.from.length);
-        draft.roots[action.root] = action.to;
-        changed = true;
+        adopt();
       }
     } else if (action.kind === "add-config-field") {
       const parts = action.field.split(".");
@@ -1464,8 +1550,14 @@ export async function updateKit(
 ) {
   const target = resolve(destination);
   const prior = readPriorManifest(target);
-  // Establish readable prior inputs and opt-in before the source build.
-  for (const { path } of prior.files) readDestination(target, path);
+  const pending = readPendingManifest(target);
+  const resolved = resolveReceipt(launchpad, target, {
+    names: destinationNames(target),
+  });
+  // Establish readable prior inputs and opt-in before the source build; a
+  // prior path that is absent is judged once the incoming kit is known.
+  for (const { path } of prior.files)
+    if (destinationStat(target, path)) readDestination(target, path);
   if (apply) {
     if (destinationStat(target, CONFIG_FILENAME))
       readDestination(target, CONFIG_FILENAME);
@@ -1479,12 +1571,13 @@ export async function updateKit(
     ? "none"
     : "default";
   const prepared = await prepareKit({ launchpad, license });
+  const buildHash = buildHashOf(prepared.bundle.snapshot);
   const candidates = new Map(prepared.writes.map((file) => [file.path, file]));
   for (const [path, contents] of prepared.bundle.surfaces)
     if (path !== INSTRUCTION_FILE)
       candidates.set(path, { path, bytes: Buffer.from(contents), mode: 0o644 });
   const actions = readKitActions(candidates.get(KIT_ACTIONS).bytes);
-  const plan = planUpdate(prior, prepared.manifest, target);
+  const plan = planUpdate(prior, prepared.manifest, target, pending);
   const instance = apply
     ? planInstanceActions(target, actions, [
         ...new Set(
@@ -1507,8 +1600,12 @@ export async function updateKit(
           ],
   );
   const manifest = kitManifest({ ...prepared.manifest, files: retained });
+  // The planned manifest is journaled before the first write and removed
+  // after the last, so an interrupted run leaves its plan for the retry.
+  writeReplacement(target, KIT_MANIFEST_PENDING, json(manifest));
   for (const entry of plan) {
-    if (entry.kind === "remove") unlinkSync(join(target, entry.path));
+    if (entry.kind === "remove" && !entry.absent)
+      unlinkSync(join(target, entry.path));
     if (entry.kind === "add" || entry.kind === "replace") {
       const file = candidates.get(entry.path);
       writeReplacement(target, entry.path, file.bytes, file.mode);
@@ -1522,7 +1619,16 @@ export async function updateKit(
     for (const [path, { bytes, mode }] of instance.writes)
       writeReplacement(target, path, bytes, mode);
   }
-  writeReplacement(target, KIT_MANIFEST, json(manifest));
+  const manifestBytes = Buffer.from(json(manifest), "utf8");
+  writeReplacement(target, KIT_MANIFEST, manifestBytes);
+  unlinkSync(join(target, KIT_MANIFEST_PENDING));
+  const receipt = closeWithReceipt(
+    launchpad,
+    resolved,
+    { coreCommit: manifest.commit, manifestBytes, buildHash },
+    "update",
+    target,
+  );
   return {
     destination: target,
     ...prepared.summary,
@@ -1530,6 +1636,7 @@ export async function updateKit(
     actions,
     applied: instance?.results ?? [],
     optedIn: apply,
+    receipt,
   };
 }
 
@@ -1597,6 +1704,11 @@ if (isMainModule(import.meta.url)) {
     }
     console.log(
       `local-terms list: ${result.terms}${result.terms === "present" ? ` (${result.surfaces} texts checked)` : "; no text was checked against a local-terms list"}`,
+    );
+    console.log(
+      result.receipt.path
+        ? `sibling receipt: ${result.receipt.path}; sibling registry: ${result.receipt.registry.path} ${result.receipt.registry.written ? "regenerated" : "unchanged"}`
+        : `sibling receipt: none (${result.receipt.reason})`,
     );
     if (result.dirty)
       console.log(
