@@ -216,6 +216,15 @@ again at final review. No live row.
 
 **Known issues and carry-ins:**
 
+- 2026-10-11 standard pass: two low rows in `scripts/launchpad.mjs`, which
+  this order edits, are allocated here for the Boy Scout bound or a
+  recorded reason to leave each: FUP-eaad73517ca2a395 (WO-077 D007: a
+  declared `rename-root` into a kit-owned prefix refuses before any write;
+  a prior kit file whose bytes already equal the incoming candidate is
+  converged, not refused; a retry after a run that failed after its kit
+  writes completes) and FUP-06de60fa5d19fe5a (WO-074 D010: the fork's
+  publish check reads its operator author identity from instance data,
+  not `scripts/lib/contributions.mjs`'s constant).
 - Stale on 2026-10-07 and corrected above: WO-167 and the 07 co-writers;
   the missing `DOCUMENT_GATE_STUBS` step is now step 5.
 - Decided by the 2026-10-07 pass: capability rows are a typed id list in

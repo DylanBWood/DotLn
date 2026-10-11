@@ -256,7 +256,9 @@ write-backs below.
 5. Every edition the Cost line names is re-minted or carried, the console
    re-pinned with its self-host fixtures and the harness bundle
    regenerated; nothing under `packages/console/src/` changes; the
-   decisions file records each.
+   decisions file records each, with the cascade's elapsed wall-clock
+   recorded apart from the scenario and render work, so a later pass can
+   judge whether a render-only compiler release should pin differently.
 6. `npm test -- --review` and `npm run test:docs` green; `git diff
    --check` clean; no new dependency; kernel unchanged.
 
@@ -272,6 +274,9 @@ episode, owed only if `reactor.ts` changes.
 
 **Known issues and carry-ins:**
 
+- 2026-10-11 standard pass (receipt 042's known issue): criterion 5
+  records the re-mint cascade's elapsed share apart from the render work;
+  the scenario stays out of `reactor.ts` where criterion 3 allows it.
 - 2026-10-10 entropy pass (WO-189 D023): the old page's line references and
   the release block's rule comment left with WO-189's rewrite; this order's
   README sentence rewrites the Repo Gardener line in place and adds no line,

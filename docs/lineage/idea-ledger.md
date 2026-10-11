@@ -40,6 +40,52 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-11 — Planning pass: receipt 042's known issues become amendments, fifty-two register rows disposed, no new order
+
+Source: the operator's bare `planning:` dispatch of 2026-10-11 UTC, captured
+in ignored intake (`docs/intake/notes/planning-standard-pass-2026-10-11.md`,
+SHA-256 `e1e146ec35fc721c3c494a63e9434b7f073a8028da92d28cc2d92117c4d00ddb`);
+receipt 042's twelve known issues; the conditions listing and one fresh gate
+row; the register's two needs-review, nineteen open and thirty-one untriaged
+rows with their source decisions. Planner synthesis; the clean-room screen
+found no stop condition. The record is
+[the planning document](../planning/standard-pass-2026-10-11.md).
+
+- **A receipt's known issue becomes the next pass's amendment** `adopted`
+  - Receipt 042 found the orders frozen; this pass amends the six orders it
+    judged (WO-118's gap restated at the base, one byte rule in WO-118 and
+    WO-083, both control scenarios named, WO-083's dependency on an observed
+    run, per-profile governance counts in WO-096 and WO-098, a directed load
+    that may not rise in WO-098, WO-095's cascade share, WO-200's single
+    anchor) and the critical path's gate V row.
+- **The product exit's dependency is an observed run, never a waiver** `adopted`
+  - WO-083 runs the loop on the operator's own repository; its typed edge on
+    WO-118 is satisfied only by WO-118's criterion 1 recorded observed, and
+    its activation preflight names the three WO-112 source-writer boundaries
+    planning must dispose first.
+- **Always-on text may not grow through a migration batch** `adopted`
+  - Four receipts found that WO-098's reported-only directed load let the
+    order pass while role skills grew; the total may not be higher than at
+    WO-097's base, an exceeded ceiling is boarded, and a unit's line is
+    emitted only into the role skills whose loadout equips it.
+- **A verifier routes a blocking finding on its own authority** `adopted`
+  - WO-187 D042's incident becomes one sentence in product 07; the
+    verifier-root sentence waits for the rule-migration batch or the next
+    order that edits the loadout.
+- **A probe copy leaves out the Beacon lane** `adopted`
+  - Two probe copies filled the host volume on 2026-10-06 (WO-187 D053);
+    product 07's Discipline now says so beside the bounded wrapper.
+- **The excluded inputs the product gate copies** `candidate`
+  - Legal and license files are read fresh by the document gate; the
+    budgets file and the tag-manifest template are to be keyed into the
+    identity by the next order that edits `gate-evidence.mjs` or the
+    release suite.
+- **Gate growth keeps its 2026-10-10 NoOps** `deferred`
+  - The week's evidence growth (27.1 MB), the `worktree` task (226.7 s) and
+    the executor cold start (28,112 bytes) measure as on 2026-10-10 with no
+    order closed since; the document gate's one fresh row is 129.4 s with
+    `resume` at 98.1 s on its critical path.
+
 ## 2026-10-10 — Planning pass: REVIEW-006 consumed, one order from a red hash-pinned lane (WO-200), seven queued orders corrected on their fired triggers
 
 Source: the operator's `planning: entropy reducer` dispatch of 2026-10-10,

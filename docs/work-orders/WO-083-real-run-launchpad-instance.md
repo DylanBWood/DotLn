@@ -12,8 +12,9 @@ repositories. Assigned at activation under the standing opt-out default.
 `docs/evidence/WO-083/`, with sanitized transcripts, sanitized copies of
 `WS-001` and the fork's Angular repository profile, fired-unit counts and
 the verifier's count of four measures; the Angular consumer's entry changed
-through WO-078's generator; a capability-table row; and at most 200 bytes
-each in products 12, 04, 13 and 06. Removes nothing that runs today: it is
+through WO-078's generator; a capability-table row; and about 200 bytes
+each in products 12, 04, 13 and 06 (the planner's estimates, never bounds:
+the document ceilings are planning's). Removes nothing that runs today: it is
 the first evidence for the fork route product 12 records as a candidate.
 Re-mints: none; the receipt, the registry and the documents it writes are
 not registered evidence sources, and the live step is the operator's run in
@@ -34,8 +35,10 @@ to this order among others, are carried here
 §10). Planner-synthesized draft. Opaque identifier, not a priority.
 Clean-room screen: the operator's own public repositories; the baseline
 practice is described only as counts.
-**Depends on:** WO-118 merged (the resident-owned loop is proven from a
-starter instance before the fork runs it against a real target); WO-082
+**Depends on:** WO-118 merged with its criterion 1 recorded observed, not
+waived (the resident-owned loop is proven from a starter instance before
+the fork runs it against a real target; a waived criterion 1 leaves this
+dependency unmet whatever the typed graph admits); WO-082
 merged (the synthetic pilot precedes the witnessed run); WO-073 merged (the
 profile convention the fork's profile follows); WO-078 merged (the sibling
 registry, generated from receipts, whose Angular consumer entry this run
@@ -53,7 +56,7 @@ token.
   {
     "workOrderId": "WO-118",
     "relation": "hard",
-    "reason": "the resident-owned loop is proven from a starter instance before the fork runs it against a real target"
+    "reason": "the resident-owned loop is proven from a starter instance before the fork runs it against a real target; satisfied only by WO-118's criterion 1 recorded observed, never by a waiver"
   },
   {
     "workOrderId": "WO-082",
@@ -237,7 +240,14 @@ and fired-unit counts; the write-backs below.
    If the operator's run has not happened by handoff, the executor records
    criteria 1 to 4 unmet with the steps the operator runs (the Objective's
    sequence); criterion 5 is judged; each closes by the operator's run or
-   by a recorded waiver.
+   by a recorded waiver. Activation preflight, recorded in the activation
+   decision: WO-118's criterion 1 is recorded observed (a waived or unmet
+   criterion 1 leaves the dependency unmet), and the three WO-112
+   source-writer boundaries (FUP-6b6274b0176af00d, cleanup revocation;
+   FUP-7777b9f12644e560, writer-writable Git interpretation;
+   FUP-fadd2376e82a909e, shared-object protection) have each been disposed
+   by a planning pass before this run touches the operator's repository:
+   an order filed and closed, or the risk accepted in writing.
 2. The verifier counts four measures (context restatements, manual
    handoffs, unnecessary interruptions, time to a trusted return state;
    outcome quality, product 12's fifth comparison item, is not counted here)
@@ -284,6 +294,12 @@ receipt records (criterion 1).
 
 **Known issues and carry-ins:**
 
+- 2026-10-11 standard pass (receipt 042's two known issues): the Cost
+  line's byte figures are estimates; the typed WO-118 edge and criterion 1
+  need WO-118's criterion 1 observed; the non-goals carry the reason this
+  order is last; criterion 1's activation preflight names the three
+  WO-112 source-writer boundaries planning must dispose before the run
+  touches the operator's repository.
 - 2026-10-10 entropy pass (WO-190 D006): the two citations of the roadmap
   heading drop the `→ WO-033 + WO-034` suffix WO-190 removed.
 - 2026-10-07 pass: stale and corrected above: WO-112 and WO-123 are
@@ -298,7 +314,11 @@ receipt records (criterion 1).
 - Blocked on WO-118, WO-082, WO-073, WO-080 and WO-078.
 
 **Non-goals:** manually opened sessions as the executors (that is the
-predecessor's shape); console v1 beyond the slice; any external
+predecessor's shape); a place in the sequence ahead of the workshop and
+migration orders while this order needs the operator's fork on the
+operator's own machine, where DotLn may not be installed for some time
+(operator direction, 2026-10-07): it is last so that nothing before it
+needs that machine; console v1 beyond the slice; any external
 organization's fork; the stranger test (register row FUP-0073, which the
 planning map's catalog row reopens at this order's close: the roadmap's
 v1.0.0 exit is a witnessed run by a non-author).

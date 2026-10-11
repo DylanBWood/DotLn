@@ -1644,7 +1644,10 @@ the operator can make, evidence, alternatives and consequence. The verdict
 is bound to the criteria: WO-112's VER-002 to VER-006 each met every
 criterion and failed on new in-surface defects, and the order closed by
 override after seven verifications [2026-10-07 pass]. Maintainability alone
-is a follow-up. §Discipline's Adjacent Repair boundary still applies: the
+is a follow-up. The verifier routes a blocking finding with its repair rule
+on its own authority; `operator` is for a choice outside the order's
+criteria and declared surfaces, never a request to authorize a repair
+inside them [WO-187 D042, 2026-10-06; 2026-10-11 pass]. §Discipline's Adjacent Repair boundary still applies: the
 next repair, if one happens, fixes boarded follow-ups in the declared
 surfaces within the Boy Scout bound. The verifier writes evidence and its
 immutable report, never the implementation it judges.
@@ -1780,7 +1783,11 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   startup, pressure and swap growth take earlier censuses. At the recorded
   3.4 GiB/s growth rate those intervals allow nominal growth of 3.4 and
   13.6 GiB respectively, plus census and cleanup latency (WO-185 D026).
-  Run probes under the bounded wrapper, one process at a time. The wrapper
+  Run probes under the bounded wrapper, one process at a time. A probe's
+  copy of a repository leaves out `.control-beacons` and guards per-file
+  size: a Beacon group file is sparse and a recursive copy writes its
+  logical size in full (two probe copies filled the host volume on
+  2026-10-06; WO-187 D053) [2026-10-11 pass]. The wrapper
   preserves argv, the caller's environment, working directory and ordinary exit
   status, with the existing 900-second deadline and bounded output tail; a
   memory-budget stop exits 125. On the measured

@@ -376,6 +376,18 @@ deterministic re-mints; `npm test -- --review` before
 **Write-back duty:** as listed in criterion 10.
 
 **Known issues and carry-ins:**
+- 2026-10-11 standard pass: two rows on the agent definitions this order
+  regenerates are allocated here, for the Boy Scout bound or a recorded
+  reason to leave each: FUP-82e9f0bda503c40c (WO-187 D020: the worker pin
+  is written in the role text and in the worker constant with nothing
+  comparing them; the Claude worker type shares its name with the Codex
+  permission profile and restricts no tools; the compiler's worker-name
+  pattern admits digits and the installer's agent-path pattern does not)
+  and FUP-ea936acad1506e18 (the runtime pin list in
+  `scripts/lib/harness.mjs` is kept by hand while the import closure grows;
+  this order changes the bundle's shape again, the row's trigger). The
+  rows' `plan failures` item (escapes 0 for an order with no measured
+  review) stays with planning.
 - Stale on 2026-10-07 and corrected above: the Cost line's "the other roots
   are unchanged" (the router's refusal now lives in its own root, so it
   holds); the gap's "none of this has been probed" (WO-139's probe
