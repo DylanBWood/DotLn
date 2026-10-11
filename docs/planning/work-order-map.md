@@ -187,6 +187,36 @@ WO-195 and the sequence aligned-with-findings with no hold; its six known
 issues are on WO-195's catalog row. The record is
 [the planning document](release-close-finishes-2026-10-03.md) §11.
 
+**Entropy review pass (2026-10-10):** the bare phrase `planning: entropy
+reducer` (`main` at `9c18aa54`, WO-189 closed and v0.74.1 published). No
+filed review was both refuted and undisposed, so the pass paid for
+[REVIEW-006](../instance/entropy-reducer/runs/REVIEW-006.md) (704 s,
+USD 4.38) and [REFUTATION-007](../instance/entropy-reducer/runs/REFUTATION-007.md)
+(135 s, USD 0.65): two measured minor findings, both survived, both
+re-measured by the planner. Filed:
+[WO-200](../work-orders/WO-200-pinned-collector-bytes-observed.md) (the
+four files the WO-107 provenance hash pins carry a declared Git attribute
+the comment scan honors and the formatter ignore list repeats, the lane's
+schema test runs in the review gate when they change, and the comment-only
+drift of 2026-10-09 is recorded under WO-107 D001 and reversed), paired
+with WO-076 after WO-072. ER6-002's stale sentence is corrected in product
+03 in this pass. The eleven orders closed since the machinery reset leave
+the sequence. Four bare order-lifecycle triggers had fired and were left
+by the pass before (FUP-0044, FUP-0091 on WO-112; FUP-b3454d6ce3594ef3 on
+WO-188; FUP-8111fc3dd4c22331 on WO-189): REVIEW-005's reversal condition
+on the anchored parser is reached, the parser stays declined as the prose
+reading the 2026-10-07 screen forbids, the typed field is a candidate
+below, and product 07's planning preconditions carry the entry duty. Seven
+queued orders are corrected on the triggers that named this pass (WO-095,
+WO-118 and WO-088 for WO-189 D023; WO-083, WO-096 and WO-098 for WO-190
+D006; WO-113 for WO-190 D003); the roadmap's pending rungs name their
+carriers' successors (WO-190 D008); the release table is refreshed (156
+tags). Gate growth since the reset is measured and recorded with its
+causes, and no gate-time order is filed. The record is
+[the planning document](entropy-review-006-2026-10-10.md); the section
+[REVIEW-006 consumed](#review-006-consumed--dispositions-and-routes-2026-10-10)
+carries the routes.
+
 **Process debt (2026-09-09):** the operator opened an emergency pass after
 the `v0.16.0` close with eleven observed failures of the lifecycle machinery
 and one direction: one order, first in line, exempt from the one-seam rule.
@@ -2342,6 +2372,51 @@ orders. Items it weighed and left, each with its reopening observation:
     them live from the local registry instead (they would churn across
     hosts). Reopen: a consumer needs them committed.
 
+## Candidates — returns from the entropy pass (recorded 2026-10-10)
+
+The [2026-10-10 pass](entropy-review-006-2026-10-10.md) consumed REVIEW-006
+and read the conditions and the failures feed since the machinery reset.
+Items it weighed and left, each with its reopening observation:
+
+1. **The export's own test command (FUP-8fb7ae17dd0fad5b).** WO-075 closed
+   with `node scripts/harness.mjs check` inside an export; `npm test` there
+   still fails at the build, and the client README says so. Reopen: WO-118's
+   exported instance runs `npm test` and the README does not say what
+   fails, or WO-083's fork needs core's suites in place.
+2. **A typed order-lifecycle reopening field on register dispositions.**
+   REVIEW-005's anchored prose parser reached its reversal and stays
+   declined as prose reading; a `reopenOn` field (order, phase) listed by
+   `plan conditions` is the admissible mechanism. Eight deferred rows
+   opened with a bare lifecycle event on 2026-10-10 and four had fired.
+   Reopen: a third pass leaves a named fired trigger, or such rows pass
+   ten.
+3. **The `resume` suite ends the document gate's critical path.** The gate's
+   recorded median is 110.9 s over 151 fresh rows since 2026-10-07 (39.0 s
+   over 140 rows from 2026-10-01 to 2026-10-04); `resume` is 84.4 s of it,
+   moved there by WO-186. About seven document gates an order is about
+   thirteen minutes against a median order of 9.1 hours. Reopen: the
+   median passes 180 s, a pass measures gates above a quarter of phase
+   time, or the suite passes 120 s.
+4. **WO-198's whole-gate witnesses.** The `worktree` task moved from a
+   122 s plateau to 207 to 237 s at WO-198's fourth row and stayed there
+   after its merge; `runner-fixtures` read 126.5 s against a 21.8 s median
+   (WO-198 D021). The growth is named by the order that made it, which is
+   the rule WO-197's conditions exist to serve. Reopen: a gate task holds
+   at a row whose order's decisions do not name the growth, or the gates'
+   share passes a quarter of phase time.
+5. **The regression-clause verification loop.** Five of the fourteen failed
+   verifications since the reset failed with every criterion met, on a
+   regression against `main` found by a fresh probe (WO-198 VER-001 to
+   VER-003, WO-199 VER-001, WO-188 VER-003); each round took one to two
+   hours and each finding failed closed. Reopen: an order pays more than
+   three verifications whose failures are all regression-clause findings,
+   or the operator names the loop.
+6. **WO-150-D003's cold-start predicate.** The conditions listing holds
+   `coldStartBytes.executor` 28,112 against the decision's 24,576 at every
+   entry while the budget ceiling is 29,246; a `reopens` record settles a
+   decision condition, and no planning pass writes one. Reopen: the next
+   order that edits `docs/control/budgets.json` records it.
+
 ## Moved from the execution guide (2026-09-28)
 
 WO-167 moved these nine candidates here from product 07 under their slugs.
@@ -3790,6 +3865,31 @@ the correction without editing the earlier pass or any immutable receipt.
 The full retirement query in this pass matched 50 pending rows; textual
 matches unrelated to these decisions retain their status and conditions.
 
+## REVIEW-006 consumed — dispositions and routes (2026-10-10)
+
+[REVIEW-006](../instance/entropy-reducer/runs/REVIEW-006.md) and
+[REFUTATION-007](../instance/entropy-reducer/runs/REFUTATION-007.md) cost
+838.499 s and USD 5.0290774 together. Both measured minor findings survived.
+The [generated review document](entropy-reviews/REVIEW-006.md) holds the
+accepted findings; [the planning document](entropy-review-006-2026-10-10.md)
+§5 holds the decisions and the NoOpIntent comparisons.
+
+| Item | Disposition and route | Reopen |
+| --- | --- | --- |
+| ER6-001, a red hash-pinned lane | Accepted; WO-200 filed: declared attribute, formatter ignore, review-gate row, drift record, restored comment. FUP-8f0561e50754114f and FUP-069dff5d52d98e0d allocated to it for the WO-107 lane. | A hash-pinned file drifts outside a gate after WO-200. |
+| ER6-002, the corpus entry-point sentence | Accepted; product 03 §Corpus policy corrected in this pass; settled. | A lane's commands move again. |
+| Packet `pinned-collector-bytes-observed` | Accepted and filed under `docs/proposals/`; WO-200 takes options (a) and (b); re-collection declined. | A consumer of the WO-107 records needs fresh observations. |
+| FUP-0044, FUP-0091 (WO-112 closed) | Re-deferred: WO-112 closed under two overrides as a scratch proof; the comparison and the continuity observation wait for WO-118's run. | WO-118 closes with its measures, or a session is observed losing its owned task after compaction. |
+| FUP-b3454d6ce3594ef3 (WO-188 closed) | Re-deferred: items 7 and 9 changed what the direction reader counts; the fresh-battery agreement needs a worker battery. | The count is used for a decision, or the operator asks for the figure. |
+| FUP-8111fc3dd4c22331 (WO-189 closed) | Re-deferred: `docs/README.md` is 21,107 bytes, 8,294 of them the config log. | The file passes 25,000 bytes, or a reader reports the map as a log. |
+| FUP-5de3c35ef3d05142, FUP-168dc7b8d999574b, FUP-1a12e83d22825ee3, FUP-0e82c9b04b051f66 | Settled: the seven order corrections, the roadmap retargeting and the Poincaré rights row are in this pass. | — |
+| FUP-fb8cbeabbddef397, FUP-511b5a41d831fe83 | Deferred with the cause named (candidate 3). | Candidate 3's condition. |
+| FUP-e96221b106cd136a, FUP-8bac5e3bddd12494, FUP-edf3b0375b7c0eda | The thirty-day medians stand; the growth is attributed to WO-198's witnesses (candidate 4); WO-197's baselines are retained as recorded. | Candidate 4's condition, or the plain gate's median passes 360 s. |
+| FUP-8a4e201d861208ad, FUP-be1103fbfdd14653 | Re-deferred: 27.1 MB this week, 10.8 MB of it from the ten orders closed after WO-196, 3.65 MB from the six that passed verification in at most two attempts. | A week in which every closed order passed verification in at most two attempts adds more than 10 MB. |
+| FUP-c64a12400f061738 (WO-187 D041) | Declined: the loops since the reset found new regressions, not repeats of an earlier finding, so rerunning earlier reproductions would not have ended them. | A failed verification after WO-196 reproduces an earlier report's finding unchanged. |
+| FUP-ec75a4295bf36696 | Re-deferred: no capability/role-text mismatch observed on Claude Code 2.1.296 against the manifest's 2.1.263. | Unchanged; reassess at the next entropy pass. |
+| FUP-8fb7ae17dd0fad5b | Deferred as candidate 1. | Candidate 1's condition. |
+
 ## Direct-draft provenance for the 2026-09-02 batch
 
 WO-016 through WO-022 were supplied by the operator as complete public drafts
@@ -4092,6 +4192,7 @@ Retained dependency wording is dated planning context, not a second state source
 | [WO-197](../work-orders/WO-197-slow-suites-back-to-their-medians.md) | machinery, gate time — three gate tasks that crossed their thirty-day medians (`target-publish` twentyfold, `worktree-integration`, `harness-fixtures`) repaired at their cause with a bound assertion each, and the vertical suite's three slowest cases named | WO-196 and WO-186 closed; the first pair's machinery lane beside WO-074; filed 2026-10-07 from the three holding gate-task conditions; assign version at activation (patch) Receipt 041 known issues (2026-10-07): Bound assertions at twice the repaired duration turn host load into gate failures. Gates run at the same time in linked worktrees (the premise of WO-198), so a correct case can fail under contention, and guard refusals or reruns rise (policy resistance) (criterion 3); reopen when A bound assertion added by WO-197 fails in a gate row where that case's functional assertions pass, or a fresh rerun at the same identity passes the same case. | implementer, then independent verifier | per-case durations on the gate rows | `scripts/test-target-publish.mjs`, `scripts/test-worktree-integration.mjs`, `scripts/test-harness.mjs`, the library files their causes name, `docs/evidence/WO-197/` |
 | [WO-198](../work-orders/WO-198-a-worktree-gate-names-what-moved.md) | machinery, gates in worktrees — every gate row records the shared refs it saw (origin/main, main, tags, refs/dotln), a failed row names the ones that moved, and a fixture runs a worktree's gates across a sibling merge and tag; a task the fixture shows flipping is repaired at its cause | WO-196 closed (hard: both edit the runner); the second pair's machinery lane beside WO-075; filed 2026-10-07 from the operator's report that a passing suite fails when main is merged; assign version at activation (patch) Receipt 041 known issues (2026-10-07): The new runner-fixtures case runs a worktree's document and plain gates twice, with a commit, an annotated tag and a push in between. If those are real gates rather than fixture-sized ones, every later runner-fixtures run pays for them. That is the same kind of task growth WO-197 is spending an order to reverse (tragedy of the commons) (criterion 3); reopen when The runner-fixtures task duration after WO-198 is above its thirty-day median before WO-198 plus one quarter (the rule WO-197 uses). | implementer, then independent verifier | a launchpad fixture with a linked worktree and a bare origin | `scripts/test-runner.mjs`, `scripts/test-runner.test.mjs`, `packages/skeleton/src/gate-evidence.mjs`, product 07 |
 | [WO-199](../work-orders/WO-199-the-vertical-survives-an-interrupt.md) | delivery, the vertical — a writer launched through the vertical records its process group so a crash recovers like the direct transport; an interrupted `dotln vertical` stops its writer and resumes on rerun; a host refusal after a writer's result records its own reason (WO-112 D060, D065, D066) | WO-112 and WO-123 closed; the first pair's delivery lane beside WO-197; WO-118 depends on it (hard); filed 2026-10-07 from WO-112 FINAL-001's handoff and the no-code screen of WO-118; assign version at activation (patch); one live feedback episode (source-change-host.ts and vertical.ts are feedback-judged) Receipt 041 known issues (2026-10-07): After a host crash or SIGKILL no handler runs, so the writer group keeps acting on the governed worktree until a later dotln vertical run performs recovery. The objective accepts this ("a writer a dead host left alive is stopped by the next run's recovery"). For the crash case, then, the D060 hazard (edits after the host stopped) lasts for an unbounded interval. This is constructible, not observed (criterion 1); reopen when A crash-vertical probe run records a governed-worktree write after the host died and before the next run, or WO-118's resident restart finds a writer group from the dead host still writing. | implementer, then independent verifier | the WO-112 recovery probe; a stub writer | `scripts/lib/vertical-transport.mjs`, `packages/skeleton/src/source-change-host.ts`, `packages/skeleton/src/dotln.ts`, `scripts/test-vertical.mjs`, `packages/skeleton/test/source-change-integrity.test.ts`, the skeleton README |
+| [WO-200](../work-orders/WO-200-pinned-collector-bytes-observed.md) | machinery, evidence lanes — the four files the WO-107 provenance hash pins carry a declared Git attribute the comment scan honors and the formatter ignore list repeats; the lane's schema test is a review-gate row selected when they change; the 2026-10-09 comment-only drift is recorded under WO-107 D001 and the comment restored | no queued dependency; the machinery lane beside WO-076 after WO-072 (it edits `scripts/test-runner.mjs`, as WO-078 and WO-072 do); filed 2026-10-10 from REVIEW-006 ER6-001 and its packet; assign version at activation (patch) | implementer, then independent verifier | the built tree; a scratch copy for the two drift cases | `.gitattributes`, `.prettierignore`, `scripts/lib/comment-labels.mjs`, `scripts/test-comment-labels.mjs`, `scripts/test-runner.mjs`, `corpus/harness/profile.mjs`, `corpus/harness/wo107-schema.test.mjs`, product 03, `corpus/baselines/SCHEMA-WO-107.md` |
 | [WO-101](../work-orders/WO-101-program-and-hash-corpus.md)            | evidence/corpus — Program and identity regression floor                                                                                                                                                                                                                                        | not applicable                                                                                                                                                                                                             | deterministic corpus executor                                                                             | offline harness                                                                                                                                                       | `corpus/harness/`, fixtures, manifests                                                                                                                                                                           |
 | [WO-102](../work-orders/WO-102-cadence-corpus.md)                     | evidence/corpus — cadence boundary sweep                                                                                                                                                                                                                                                       | assign version and close disposition; pin suitable base/deps and governed closeout path Amended 2026-09-28: re-observed at `5f3849ec` and brought to the current order form (both gates, re-mints, declared sets, bounded write-backs, the executor's live steps; the planning document §10.4). | deterministic corpus executor                                                                             | offline harness                                                                                                                                                       | cadence fixtures and manifests                                                                                                                                                                                   |
 | [WO-103](../work-orders/WO-103-authority-outbox-corpus.md)            | evidence/corpus — authority/outbox decision table                                                                                                                                                                                                                                              | assign version and close disposition; pin the landed WO-017 base and governed closeout path Cleanup pass 2026-09-19 carry-in: the audit under-links a caller-error refusal and this oracle has no such cell (WO-017 FINAL-001 adjudication 8). Amended 2026-09-28: re-observed at `5f3849ec` and brought to the current order form (both gates, re-mints, declared sets, bounded write-backs, the executor's live steps; the planning document §10.4). | deterministic corpus executor                                                                             | offline harness                                                                                                                                                       | authority/outbox fixtures and manifests                                                                                                                                                                          |

@@ -165,7 +165,10 @@ a stale copy; `docs/README.md`'s copy becomes a pointer.
    section's opening paragraph, outside list item 2, so its bytes equal the other copies);
    `docs/PLAYBOOK.md` §"## Resume command surface" (the list becomes the pair); `README.md`
    §"## The repo runs on itself" (the list becomes the pair; this order's `**Front page:**`
-   field admits the edit under WO-189's guard); `docs/README.md` §"## Resuming the control
+   field admits the edit under WO-189's guard); `docs/control/front-page.json`
+   `generatedBlocks`: one entry for the phrase pair (`start`, `end`, `writer`
+   `node scripts/resume.mjs phrases --write`), so the document check admits the generated
+   bytes outside §What runs today (WO-189 D023); `docs/README.md` §"## Resuming the control
    loop" (one line linking `PLAYBOOK.md#resume-command-surface`);
    `docs/publication/software-engineer-toc.md` `Source lock:` from
    `node scripts/check-publication.mjs --print-locks`; `docs/evidence/WO-088/decisions.md`
@@ -214,8 +217,14 @@ again at final review. No live row.
 - Decided by the 2026-10-07 pass: declaration order for the generated
   list; the table rows read from the mdast node (prose-parsing screen);
   the `**Front page:**` field for WO-189's guard. Reopen: a copy diverges.
-- Blocked on WO-189 (the README rewrite), WO-192 (the `drive:` row the
-  list must ignore) and WO-073 (`resume.mjs` anchors).
+- Blocked on WO-192 (the `drive:` row the list must ignore); WO-189 (the
+  README rewrite) and WO-073 (`resume.mjs` anchors) closed on 2026-10-10 and
+  2026-10-09.
+- 2026-10-10 entropy pass: the gap is absent for a fourth pass (`README.md`
+  and `docs/README.md` list the same seven phrases in the same order,
+  `docs/PLAYBOOK.md` the same seven with `next` last, product 07 holds no
+  list); step 7 gains the front-page record's `generatedBlocks` entry
+  (WO-189 D023).
 
 **Non-goals:** changing any phrase; the `planning:` and `ideation:`
 phrases; the procedure columns of the guide's table.

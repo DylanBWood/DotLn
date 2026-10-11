@@ -15,8 +15,9 @@ a starter instance (the resident's actor episodes, a push and a pull
 request under standing grants, an actor killed and the resident
 restarted), and `docs/evidence/WO-118/README.md` with the sanitized event
 log, the console transcript, the measures and the parity scores; at most
-250 bytes in product 00 and 150 in product 12; a README sentence folded
-into its release block; one appended capability-table section. Removes
+250 bytes in product 00 and 150 in product 12; one README sentence inside
+§What runs today's marked section (one of the two lines free under WO-189's
+budget on 2026-10-10); one appended capability-table section. Removes
 the absence of the product exit's evidence: no record shows the runtime
 carrying an intent to a pull request from a starter. It unblocks WO-083
 (gate P of the critical path). Re-mints: none; the order edits no
@@ -269,8 +270,9 @@ reason, and nothing else returning to the operator.
    `node scripts/check-registrations.mjs`.
 8. Write-backs: `docs/product/00-vision.md` §"## The one-paragraph story" (one sentence, in
    place); `docs/product/12-workstream-application.md` §"## Replacing a successful but costly
-   workflow" (extend the WO-112 sentence); `README.md` release block: rewrite the paragraph
-   that says the `dotln vertical` command runs unaided; `docs/planning/capability-table.md`:
+   workflow" (extend the WO-112 sentence); `README.md` §What runs today: one new sentence inside the
+   marked section stating what the receipt observed (the release block holds
+   only the generated version line); `docs/planning/capability-table.md`:
    append `## WO-118 dated reassessment (<date>)` after the WO-112 section;
    `docs/evidence/WO-118/decisions.md`; `npm run meta`;
    `node scripts/lineage.mjs index --check`; `node scripts/check-publication.mjs --print-locks`;
@@ -321,9 +323,9 @@ parity checklist; the write-backs below.
    observed, in place with no dated paragraph (ceilings are planning's: the 2026-10-07 pass set every product document's ceiling at measured bytes plus one tenth)); 12 §Replacing a successful but costly workflow (the
    evidence for the rows this run observed, extending the WO-112 sentence
    in place; WO-080, WO-082, WO-193 and WO-194 also write 12 after it);
-   `README.md` §What runs today (one sentence inside the marked section
-   WO-189 defines, named by this order's `**Front page:**` field; if WO-189
-   has not landed, folded into the existing prose, never appended to); the
+   `README.md` §What runs today (one new sentence inside the marked section
+   WO-189 defines, named by this order's `**Front page:**` field; WO-189
+   landed on 2026-10-10 with two free lines, one of them this order's); the
    capability table, an
    appended `## WO-118 dated reassessment (YYYY-MM-DD)` section rating
    `runtime.resident` and `vertical.source-to-pr` on the table's scale,
@@ -348,6 +350,11 @@ witnesses (criterion 1).
 
 **Known issues and carry-ins:**
 
+- 2026-10-10 entropy pass (WO-189 D023): the Cost line and step 8 named the
+  release block, which now holds only the generated version line; both now
+  name §What runs today and the line budget. The budget's two free lines on
+  2026-10-10 are this order's one new sentence and one spare; WO-095 and
+  WO-098 rewrite existing lines.
 - The 2026-10-07 pass found this order planned as evidence-only while its
   criterion 2 needs recovery the tree lacks (D060, D065); WO-199 now
   supplies it and is a hard dependency. Stale and corrected: WO-123,

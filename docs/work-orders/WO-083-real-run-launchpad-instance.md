@@ -79,7 +79,7 @@ comparison items) and §One workstream across repositories; 13-uifa-roles.md
 §UIFA showrunner and §Assistance the platform owes each role;
 04-interfaces.md §Plural UI hosts, one projection contract and §Later
 console hosts; 06-roadmap.md §Application version pending — Launchpad and
-cross-repository workstreams → WO-033 + WO-034; 07-execution-guide.md
+cross-repository workstreams; 07-execution-guide.md
 §Operator recovery controls (`withdraw`);
 `docs/work-orders/WO-078-sibling-registry.md` (the generated registry and
 its check); `scripts/outward-lint.mjs` and
@@ -264,10 +264,11 @@ and fired-unit counts; the write-backs below.
    hosts, one projection contract and its §Later console hosts (the
    framework decision's evidence and console v1's status; WO-081, WO-092
    and WO-094 also write 04); 13 §Assistance the platform owes each role
-   (the showrunner and engineer rows; WO-098 also writes 13); 06, the
-   pending rung heading that names WO-033 and WO-034, found by those names
-   at the base because WO-190 renames it (the rung's status; WO-095,
-   WO-096, WO-098 and WO-183 also write it).
+   (the showrunner and engineer rows; WO-098 also writes 13); 06
+   §Application version pending — Launchpad and cross-repository
+   workstreams (WO-190 renamed it on 2026-10-09 without the carrier
+   suffix; the rung's status; WO-095, WO-096, WO-098 and WO-183 also
+   write it).
    No byte figure binds these write-backs. The decisions file; the publication locks refreshed.
 5. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
    clean; no new dependency.
@@ -283,6 +284,8 @@ receipt records (criterion 1).
 
 **Known issues and carry-ins:**
 
+- 2026-10-10 entropy pass (WO-190 D006): the two citations of the roadmap
+  heading drop the `→ WO-033 + WO-034` suffix WO-190 removed.
 - 2026-10-07 pass: stale and corrected above: WO-112 and WO-123 are
   closed (only WO-118 is queued); the headroom figures; WO-086, WO-087,
   WO-061, WO-066, WO-124, WO-116 and WO-117 closed.

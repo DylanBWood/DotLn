@@ -202,9 +202,10 @@ dark and the three view hashes.
 10. Write-backs: product 06, the pending rung heading for the pattern workshop (found by name at
     the base, because WO-190 moves the rungs): replace the "wave 4" clause of its second
     paragraph, in place; `README.md` §"What runs today" (one sentence inside the marked
-    section, under WO-189's rules; this order's `**Front page:**` field names the file) and
-    lines 421 to 422 (set bonuses are no longer future); `packages/compiler/README.md` lines
-    113 to 114 (the same); `packages/skeleton/src/portfolio.ts` lines 25 to 26 (the comment
+    section, under WO-189's rules; this order's `**Front page:**` field names the file;
+    rewrite the Repo Gardener line in place and add no line, the 2026-10-10 pass's headroom
+    decision; the old page's set-bonus lines left with WO-189's rewrite); `packages/compiler/README.md` lines
+    113 to 114 (set bonuses are no longer future); `packages/skeleton/src/portfolio.ts` lines 25 to 26 (the comment
     that WO-093 extends the vocabulary, corrected while this order re-mints anyway);
     `docs/planning/capability-table.md`: append `## WO-095 dated addition (<date>)` with the
     header `Capability and scope | Current assessment | Evidence and remaining gate` and a
@@ -244,8 +245,9 @@ write-backs below.
    v1, in place with no dated paragraph (its second paragraph names the
    compiled slice instead of wave 4, in place with no dated paragraph (ceilings are planning's since the 2026-10-07 pass); WO-083, WO-096, WO-098 and
    WO-183 also write 06, and WO-190 moves its rungs); one sentence
-   folded into README §What runs today, rewriting what it supersedes, as
-   the block's own rule says; an appended
+   folded into README §What runs today, rewriting the Repo Gardener line in place and
+   adding no line (WO-189's line budget in `docs/control/front-page.json`; the 2026-10-10
+   pass's headroom decision); an appended
    `## WO-095 dated addition (YYYY-MM-DD)` section in the capability table
    assessing
    `compiler.five-s-set` at the level its evidence supports (level 1 —
@@ -270,6 +272,10 @@ episode, owed only if `reactor.ts` changes.
 
 **Known issues and carry-ins:**
 
+- 2026-10-10 entropy pass (WO-189 D023): the old page's line references and
+  the release block's rule comment left with WO-189's rewrite; this order's
+  README sentence rewrites the Repo Gardener line in place and adds no line,
+  so WO-118 keeps one of the budget's two free lines and one stays spare.
 - 2026-10-07 pass: the Cost line's "the reactor if the scenario needs
   it" is certain (step 2), so the live feedback episode is planned, not
   conditional. Stale and corrected: product 06's figures; the console

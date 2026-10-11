@@ -227,8 +227,11 @@ one-line pointer; the umbrella records' prose moves beside the typed
    WO-040); move each `**Umbrella record (...)**` paragraph and WO-035's
    `**Redirect note (2026-09-06):**` byte for byte; rewrite WO-036's
    `[WO-126](WO-126-process-debt.md)` to `../../work-orders/WO-126-process-debt.md`; leave a
-   dateless pointer. These six orders are not in the sequence, so plan continuation does not
-   bind them. Check: `npm run test:docs` (`docs-check` `linkFailures`).
+   dateless pointer that keeps the undated `**Umbrella record:**` label in the leading header,
+   and leave the typed `superseded` entries in the header block: `umbrellaRecord` in
+   `scripts/lib/dependencies.mjs` reads the class from both, and removing either turns the six
+   into open work that fails coverage and activates (WO-190 D003). These six orders are not in
+   the sequence, so plan continuation does not bind them. Check: `npm run test:docs` (`docs-check` `linkFailures`).
 6. `git diff --stat <base> -- docs/work-orders/` lists only the six orders and `README.md`
    (criterion 3).
 7. Write-backs: product 07 §"## Discipline" (the five surfaces, the allowed fields and the
@@ -280,6 +283,12 @@ source of harness-fixtures and process-debt, and again at final review.
 No live row.
 
 **Write-back duty:** as listed in criterion 4.
+
+**Known issues and carry-ins:**
+
+- 2026-10-10 entropy pass (WO-190 D003): step 5's pointer keeps the
+  umbrella label and the typed `superseded` entries stay in the header, or the
+  six umbrella records become open work.
 
 **Non-goals:** product-doc receipts (WO-085); front matter; editing closed
 orders; an open order's older-form sections other than its dated notes;

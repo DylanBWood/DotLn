@@ -1083,7 +1083,8 @@ nothing runs a review unless the operator opens a pass this way. A pass opened
 any other way may still consume an earlier review's surviving findings as one
 input among others. Consumptions: [[REVIEW-002 pass](../planning/entropy-review-002-2026-09-22.md),
 2026-09-22]; [[off-ramps pass](../planning/off-ramps-5s-entropy-2026-09-25.md)
-§9, 2026-09-25].
+§9, 2026-09-25]; [[REVIEW-006 pass](../planning/entropy-review-006-2026-10-10.md),
+2026-10-10: one order from one finding, one product sentence from the other].
 
 Preconditions and inputs:
 
@@ -1100,6 +1101,11 @@ Preconditions and inputs:
    repeated gates and eight recent closes' tracks (WO-178).
    `plan start` counts numeric reopening conditions; `npm run plan -- conditions`
    lists them without refusing entry (`--slow` for gate timings, WO-175).
+   Read the deferred register rows whose reopening condition opens with an
+   order's lifecycle event against the control phases and re-dispose each
+   fired one in the pass: the REVIEW-005 and REVIEW-006 passes each found
+   fired triggers the pass before had left (FUP-0086 and FUP-0113 on
+   2026-10-02; FUP-0044 and FUP-0091 on 2026-10-10).
    Read canonical status, [the sequence](../planning/sequence.md), and this
    guide's planning and ideation sections. Use scoped candidate, ledger and
    order lookups as the current pass requires. The generated index and map
@@ -1318,7 +1324,9 @@ no code ships is checked against every cited design for work assigned to it
 ("a model episode in WO-NNN", "supplied by WO-NNN") and against every
 criterion that needs capability the tree lacks (WO-112 D018: planned as
 evidence-only, it needed four code repairs under override); and no criterion
-requires a deterministic reading of natural language or free-form Markdown.
+requires a deterministic reading of natural language or free-form Markdown,
+which includes counting its sentences (WO-189's criterion 5 cost three failed
+verifications on 2026-10-10 before a line count replaced the sentence count).
 A classification of wording is a persisted judgment supplied as input; a
 record inside a document is a marker block holding JSON or a typed field.
 WO-123 (criterion 5, four repairs) and WO-187 (criteria 2 and 4, four
