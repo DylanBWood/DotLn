@@ -1108,6 +1108,14 @@
           "reopenWhen": "WO-112 closes with its measures recorded",
           "targets": [],
           "at": "2026-10-02T06:02:36.108Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The trigger fired: WO-112 closed on 2026-10-07 (seven verifications, two operator overrides) as a scratch proof on synthetic modules; its measures do not supply one real order through each surface. The 2026-10-07 pass left the row after the close. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 3)]",
+          "reopenWhen": "WO-118 closes with its measures recorded, or WO-083's run supplies a real order through a second surface",
+          "targets": [],
+          "at": "2026-10-11T00:22:27.553Z"
         }
       ]
     },
@@ -2588,6 +2596,14 @@
           "reopenWhen": "WO-112 activates, or a session is observed losing its owned task after compaction",
           "targets": [],
           "at": "2026-09-27T01:45:56.638Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "The trigger fired: WO-112 activated and closed (2026-10-07). This pass found no decision in the window's 43 feed rows naming a session that lost its owned task after compaction; beyond those rows the observation is unknown. The 2026-10-07 pass left the row after the close. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 3)]",
+          "reopenWhen": "WO-118 activates (the first long unattended run from a starter), or a session is observed losing its owned task after compaction",
+          "targets": [],
+          "at": "2026-10-11T00:22:27.608Z"
         }
       ]
     },
@@ -12682,6 +12698,14 @@
           "reopenWhen": "an observed capability/role-text mismatch on a newer CLI, a changed harness integration contract, or operator-directed requalification; reassess at the next entropy pass",
           "targets": [],
           "at": "2026-10-02T04:08:21.942Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Reassessed at this entropy pass: no capability/role-text mismatch observed on Claude Code 2.1.296 against the manifest's 2.1.263, no integration contract changed, no operator direction; a broad re-probe stays declined. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 5)]",
+          "reopenWhen": "an observed capability/role-text mismatch on a newer CLI, a changed harness integration contract, or operator-directed requalification; reassess at the next entropy pass",
+          "targets": [],
+          "at": "2026-10-11T00:22:28.511Z"
         }
       ]
     },
@@ -12754,6 +12778,14 @@
           "reopenWhen": "a week after WO-196 merges adds more than 10 MB of tracked evidence with orders that passed verification in at most two attempts",
           "targets": [],
           "at": "2026-10-07T06:46:23.424Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "This week's trigger occurred: 27,123,775 bytes since 2026-10-05, 10.8 MB of it from the ten orders closed after WO-196 and 3.65 MB from the six of them that passed verification in at most two attempts (WO-197 2.47 MB the largest). Immutable evidence retained; pruning not authorized; the Codex session-identity join remains unexamined. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 3)]",
+          "reopenWhen": "a week in which every closed order passed verification in at most two attempts adds more than 10 MB of tracked evidence, or two consecutive orders each commit more than 1 MB of distinct evidence blobs; preserve the authority writer-edit/10% condition",
+          "targets": [],
+          "at": "2026-10-11T00:22:28.282Z"
         }
       ]
     },
@@ -18309,6 +18341,14 @@
           "reopenWhen": "a week after WO-196 merges adds more than 10 MB of tracked evidence with orders that passed verification in at most two attempts",
           "targets": [],
           "at": "2026-10-07T06:46:23.481Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Same reading as FUP-8a4e201d861208ad: 27.1 MB this week, 3.65 MB from orders that passed verification in at most two attempts; a ceiling would still be a mechanism with no removal. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 3)]",
+          "reopenWhen": "a week in which every closed order passed verification in at most two attempts adds more than 10 MB of tracked evidence, or two consecutive orders each commit more than 1 MB of distinct evidence blobs; preserve the authority writer-edit/10% condition",
+          "targets": [],
+          "at": "2026-10-11T00:22:28.340Z"
         }
       ]
     },
@@ -22828,6 +22868,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-08T00:19:26.936Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "gate-task:worktree holds (226.7 s against an 88.8 s median): the task moved from a 122 s plateau to 207 to 237 s at WO-198's fourth row and stayed there after its merge, growth the order's own witnesses explain (an inference from the row timings). The thirty-day rule stands. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 5)]",
+          "reopenWhen": "a gate task holds at a row whose order's decisions do not name the growth, the gates' share of phase time passes one quarter in a planning pass's measurement, or the plain gate's thirty-day median passes 360 s",
+          "targets": [],
+          "at": "2026-10-11T00:22:28.113Z"
         }
       ]
     },
@@ -24376,6 +24424,14 @@
           "reopenWhen": "WO-188 closes, or the operator sets another agreement figure",
           "targets": [],
           "at": "2026-10-02T06:02:36.917Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The trigger fired: WO-188 closed on 2026-10-09 and its items 7 and 9 changed what the direction reader counts. Measuring agreement again needs a fresh worker battery, which this pass did not spend. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 3)]",
+          "reopenWhen": "the direction count is used for a decision, or the operator asks for the agreement figure",
+          "targets": [],
+          "at": "2026-10-11T00:22:27.662Z"
         }
       ]
     },
@@ -25511,6 +25567,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-05T21:05:23.230Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The 60 s condition holds twice over: 110.9 s median over 151 fresh passing document rows since 2026-10-07 (39.0 s over 140 rows from 2026-10-01 to 2026-10-04), the resume suite ending the critical path at 84.4 s and docs-check at 17.6 s. The cause is named and no gate-time order is filed: about thirteen minutes an order against a median order of 9.1 hours set by its verification loop. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 5)]",
+          "reopenWhen": "the document gate's thirty-day median of fresh passing rows passes 180 s, a planning pass measures gates above one quarter of phase time, or the resume suite passes 120 s",
+          "targets": [],
+          "at": "2026-10-11T00:22:28.002Z"
         }
       ]
     },
@@ -27328,6 +27392,16 @@
           "reopenWhen": "an order edits the WO-107 lane, its fixture entry or its collector",
           "targets": [],
           "at": "2026-10-02T06:02:36.450Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Its condition occurred: WO-188 (1aea2dea) edited the WO-107 collector corpus/harness/profile.mjs, a comment-only rewrite that moved the protocol hash and turned the lane red. WO-200 records the drift and applies the after-base rule that a change to the pinned bytes is judged in the review gate of the order that makes it; D010's three WO-107-keyed checks are left as they are and their state recorded. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 5)]",
+          "reopenWhen": "WO-200 closes with D010's three WO-107-keyed checks still failing, or an order edits the WO-107 lane after it",
+          "targets": [
+            "WO-200"
+          ],
+          "at": "2026-10-11T00:22:27.439Z"
         }
       ]
     },
@@ -27593,6 +27667,14 @@
           "reopenWhen": "WO-189 closes, or the file passes 25,000 bytes",
           "targets": [],
           "at": "2026-10-02T06:02:37.299Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The trigger fired: WO-189 closed on 2026-10-10. docs/README.md is 21,107 bytes, 8,294 of them the dated config log, below the 25,000-byte limb of the condition; applying WO-189's inventory and reader method to the documentation map is declined now. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 3)]",
+          "reopenWhen": "docs/README.md passes 25,000 bytes, or a reader reports the documentation map as a log",
+          "targets": [],
+          "at": "2026-10-11T00:22:27.719Z"
         }
       ]
     },
@@ -27697,6 +27779,16 @@
           "reopenWhen": "a merged kernel or compiler change is later found to fail a lane, or an order edits the WO-105 or WO-107 lane",
           "targets": [],
           "at": "2026-10-02T06:02:37.552Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Its condition occurred for the WO-107 lane (an order edited its collector); WO-200 takes that lane. The WO-105 lane was not edited and keeps FUP-d093f77bd927f9dc's condition. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 5)]",
+          "reopenWhen": "a merged kernel or compiler change is later found to fail a lane, or an order edits the WO-105 lane",
+          "targets": [
+            "WO-200"
+          ],
+          "at": "2026-10-11T00:22:27.496Z"
         }
       ]
     },
@@ -28437,7 +28529,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "The document-gate part is measured in this pass (110.9 s median, resume 84.4 s) and routed with FUP-fb8cbeabbddef397; the lock-matrix lane question had no controlled run and is unexamined. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 5)]",
+          "reopenWhen": "a controlled run separates the lock matrix's effect on its lane peers, or the plain gate's thirty-day median passes 360 s",
+          "targets": [],
+          "at": "2026-10-11T00:22:28.057Z"
+        }
+      ]
     },
     {
       "id": "FUP-5e52eb500e395237",
@@ -29439,6 +29540,14 @@
           "reason": "Open for the next planning pass. Receipt 040's criterion-3 reopening condition occurred twice in WO-187: VER-003 and VER-004 each blocked after a self-reviewed repair (WO-187-D041). The fourth repair's self-review preceded VER-005's pass.",
           "reopenWhen": null,
           "at": "2026-10-06T14:39:37.966Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Judged: the verification loops since the reset (WO-198 five, WO-188 four, WO-189 four) failed on new regressions or new bypasses, never on an earlier report's finding returning, so an obligation to rerun earlier reproductions before repair-complete would not have ended them. The self-review keeps its count line. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 5)]",
+          "reopenWhen": "a failed verification after WO-196 reproduces an earlier report's finding unchanged",
+          "targets": [],
+          "at": "2026-10-11T00:22:28.455Z"
         }
       ]
     },
@@ -30332,7 +30441,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Its condition fired in a bounded way: this pass read the fifteen failed reports' verdict lines in one grep over their first lines, at small cost while every report opens with a verdict line and final reviews carry a findings block. A typed feed row is deferred on that reading. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 2)]",
+          "reopenWhen": "a pass classifies more than twenty failed reports by hand, or a report lacks its opening verdict line",
+          "targets": [],
+          "at": "2026-10-11T00:22:29.124Z"
+        }
+      ]
     },
     {
       "id": "FUP-9b0632b0ec72d168",
@@ -30347,7 +30465,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The gap is absent for a fourth pass on 2026-10-10 (README.md and docs/README.md list the same seven phrases in the same order; the playbook the same seven with next last); WO-088 stays near the end for the operator's withdraw. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 6)]",
+          "reopenWhen": "a phrase copy diverges, or the operator withdraws WO-088",
+          "targets": [],
+          "at": "2026-10-11T00:22:29.403Z"
+        }
+      ]
     },
     {
       "id": "FUP-ed7136a8228e83f8",
@@ -30362,7 +30489,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "The 2026-10-07 map item restates FUP-8a4e201d861208ad and FUP-be1103fbfdd14653. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 6)]",
+          "reopenWhen": "a week in which every closed order passed verification in at most two attempts adds more than 10 MB of tracked evidence, or two consecutive orders each commit more than 1 MB of distinct evidence blobs; preserve the authority writer-edit/10% condition",
+          "targets": [
+            "FUP-8a4e201d861208ad"
+          ],
+          "at": "2026-10-11T00:22:28.398Z"
+        }
+      ]
     },
     {
       "id": "FUP-6e6bf2f4d6671e18",
@@ -30377,7 +30515,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Narrowed by the 2026-10-07 pass with this condition; register disposition filed here. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 6)]",
+          "reopenWhen": "a host channel reports approval requests",
+          "targets": [],
+          "at": "2026-10-11T00:22:29.292Z"
+        }
+      ]
     },
     {
       "id": "FUP-0d2a940087f0036d",
@@ -30392,7 +30539,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded by the 2026-10-07 pass with this condition; register disposition filed here. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 6)]",
+          "reopenWhen": "WO-083's run needs the operator's NeedsHuman answer consumed",
+          "targets": [],
+          "at": "2026-10-11T00:22:29.068Z"
+        }
+      ]
     },
     {
       "id": "FUP-1bd1a1561feb3a57",
@@ -30407,7 +30563,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Declined by the 2026-10-07 pass section 12 with this condition; register disposition filed here. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 6)]",
+          "reopenWhen": "a record write during a review gate after WO-196",
+          "targets": [],
+          "at": "2026-10-11T00:22:29.012Z"
+        }
+      ]
     },
     {
       "id": "FUP-a0a5ff5624f75eb2",
@@ -30422,7 +30587,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Declined by the 2026-10-07 pass section 12 with this condition; register disposition filed here. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 6)]",
+          "reopenWhen": "a gate is lost to formatting or to a record write after WO-196",
+          "targets": [],
+          "at": "2026-10-11T00:22:28.956Z"
+        }
+      ]
     },
     {
       "id": "FUP-95626cc3b7352359",
@@ -30437,7 +30611,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Declined by the 2026-10-07 pass section 6 with this condition; register disposition filed here. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 6)]",
+          "reopenWhen": "the known-issues reader drops a section of an order filed after 2026-10-07",
+          "targets": [],
+          "at": "2026-10-11T00:22:29.236Z"
+        }
+      ]
     },
     {
       "id": "FUP-b28d36edaa8630b1",
@@ -30452,7 +30635,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Narrowed by the 2026-10-07 pass with this condition; register disposition filed here. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 6)]",
+          "reopenWhen": "an order builds one of the four demonstrations, or product 12's claims about them are to be proved",
+          "targets": [],
+          "at": "2026-10-11T00:22:29.346Z"
+        }
+      ]
     },
     {
       "id": "FUP-7d1f987c4cfbb93f",
@@ -30467,7 +30659,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded by the 2026-10-07 pass with this condition; register disposition filed here. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 6)]",
+          "reopenWhen": "a consumer needs target facts committed in the work-order index",
+          "targets": [],
+          "at": "2026-10-11T00:22:29.179Z"
+        }
+      ]
     },
     {
       "id": "FUP-b8fd526baef52c4f",
@@ -30602,6 +30803,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-07T20:38:47.678Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-197 criterion 2's aggregate baselines are retained as the thirty-day medians the conditions listing computes; the first crossings' missing case timing is recorded as unavailable; no re-base. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 5)]",
+          "reopenWhen": "planning changes the gate-task rule or its thirty-day window",
+          "targets": [],
+          "at": "2026-10-11T00:22:28.225Z"
         }
       ]
     },
@@ -30742,6 +30951,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-09T17:34:45.863Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-075 closed with the harness check inside an export; npm test there still fails at the build and the client README says so. WO-118's run will show what an exported instance's gate needs; no order is filed before it. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 5)]",
+          "reopenWhen": "WO-118's exported instance runs npm test and the client README does not say what fails, or WO-083's fork needs core's suites in place",
+          "targets": [],
+          "at": "2026-10-11T00:22:28.567Z"
         }
       ]
     },
@@ -31155,7 +31372,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-113 step 5 now keeps the undated umbrella label in the leading header and the typed superseded entries in the header block, naming WO-190 D003. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 6)]",
+          "reopenWhen": "WO-113 moves the umbrella paragraphs, or an umbrella record gains control state",
+          "targets": [],
+          "at": "2026-10-11T00:22:27.888Z"
+        }
+      ]
     },
     {
       "id": "FUP-168dc7b8d999574b",
@@ -31184,7 +31410,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "WO-083, WO-096 and WO-098 cite the renamed roadmap headings without the carrier suffixes. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 6)]",
+          "reopenWhen": "a planning pass renames a roadmap rung heading again",
+          "targets": [],
+          "at": "2026-10-11T00:22:27.832Z"
+        }
+      ]
     },
     {
       "id": "FUP-bd3e66761dc301ed",
@@ -31214,7 +31449,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "This pass touched product 06 (the release table) and retargeted the four umbrella carriers in the pending rung bodies to their successors as the history page lists them. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 6)]",
+          "reopenWhen": "a reader of a pending rung activates a carrier it names, or a planning pass rewrites the rungs",
+          "targets": [],
+          "at": "2026-10-11T00:22:27.945Z"
+        }
+      ]
     },
     {
       "id": "FUP-72a61540baa55755",
@@ -31511,7 +31755,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "runner-fixtures 126.5 s against a 21.8 s median and worktree 227 s against 88.8 s are WO-198's whole-gate witnesses, growth its decisions name; the thirty-day median is not re-based and no fixture-cost pass is filed. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 5)]",
+          "reopenWhen": "a gate task holds at a row whose order's decisions do not name the growth, the gates' share of phase time passes one quarter in a planning pass's measurement, or the plain gate's thirty-day median passes 360 s",
+          "targets": [],
+          "at": "2026-10-11T00:22:28.169Z"
+        }
+      ]
     },
     {
       "id": "FUP-eaad73517ca2a395",
@@ -31873,6 +32126,14 @@
           "reopenWhen": "A planning pass runs, or WO-095, WO-098, WO-118 or WO-088 is activated.",
           "targets": [],
           "at": "2026-10-10T22:25:15.751Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "A planning pass ran: WO-095 and WO-118 cite the new page and the line budget, the two free lines are settled (WO-095 and WO-098 rewrite lines in place, WO-118 takes one new line), WO-088 registers its generated block, and the Poincaré epigraph has its rights row in docs/lineage/inspirations.md. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 6)]",
+          "reopenWhen": "a front-page claim is again contradicted by repository evidence, or the operator's record changes a judgment WO-189 D023 applied",
+          "targets": [],
+          "at": "2026-10-11T00:22:27.775Z"
         }
       ]
     },
@@ -31897,6 +32158,202 @@
           "reopenWhen": "a later evidence comparison again describes README bytes the page does not hold, or the operator asks for the restored lines",
           "targets": [],
           "at": "2026-10-10T22:25:15.687Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7bc02b74edd230c6",
+      "key": "candidate:docs/planning/entropy-reviews/REVIEW-006.md#candidates--accepted-entropy-reducer-findings-review-review-006-recorded-2026-10-11::772be883d9aad705ee53407de609a292bd7a79382aacbc43ba60dc7f6180002b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5c71c39cf60440d14bc13dce34fac96c34ed2adf78320942c2bfad7bd6e67f71",
+          "ref": "docs/planning/entropy-reviews/REVIEW-006.md#candidates--accepted-entropy-reducer-findings-review-review-006-recorded-2026-10-11",
+          "title": "ER6-002 — Durable product doctrine describes where corpus lane commands live, consistent with what the lane orders settled (product 07: the repo docs are the shared memor",
+          "summary": "- **ER6-002 — Durable product doctrine describes where corpus lane commands live, consistent with what the lane orders settled (product 07: the repo docs are the shared memor** Surface `docs/product/03-architecture.md §Corpus policy`, severity minor, altitude 6, evidence measured. Observed: docs/product/03-architecture.md:2348 says the corpus entry point 'links each lane's commands and limits'. corpus/README.md (49 lines) names only WO-101's lanes and links WO-108's mutation runbook. Of the 13 corpus/harness/*.test.mjs files, 9 are named in neither corpus/README.md nor a runner row: WO-102 x3, WO-103 x3, WO-105 x2 and WO-107 x1. The three WO-102 files are exercised in one scripts/tes Expecte",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "ER6-002 survived REFUTATION-007 and was re-measured (9 of 13 corpus/harness test files named in neither corpus/README.md nor a runner row). Product 03 section Corpus policy now states the arrangement WO-102, WO-103, WO-105 and WO-107 settled under their operator-review assumption 2; no README edit. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 5)]",
+          "reopenWhen": "a corpus lane's commands move again, or product 03 section Corpus policy is rewritten",
+          "targets": [],
+          "at": "2026-10-11T00:22:27.380Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-50a91ef7b6e6c442",
+      "key": "candidate:docs/planning/entropy-reviews/REVIEW-006.md#candidates--accepted-entropy-reducer-findings-review-review-006-recorded-2026-10-11::c96c5b17d5199068f3b49908db1785ec4de839bea11c30b12b5f31a7ceb3186a",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "2cdb4fe9a88ae879dab75e986e0c0cf5d5be898a06d7107114ae267d6583f1a2",
+          "ref": "docs/planning/entropy-reviews/REVIEW-006.md#candidates--accepted-entropy-reducer-findings-review-review-006-recorded-2026-10-11",
+          "title": "ER6-001 — A hash-pinned evidence lane stays green, or its drift is recorded before the protocol changes. WO-107's decision record says: 'A failed observation, source drif",
+          "summary": "- **ER6-001 — A hash-pinned evidence lane stays green, or its drift is recorded before the protocol changes. WO-107's decision record says: 'A failed observation, source drif** Surface `corpus/harness/profile.mjs (protocolLineage, validateProvenance); corpus/harness/wo107-schema.test.mjs; scripts/test-runner.mjs (suites); scripts/lib/comment-labels.mjs (commentFiles); .prettierignore`, severity minor, altitude 6, evidence measured. Observed: At 9c18aa54, `node --test corpus/harness/wo107-schema.test.mjs` runs 13 tests: 11 pass and 2 fail ('corpus every committed record has a complete schema…' and 'corpus generated comparison is byte identical…'). Both fail at validateProvenance with 'known c",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "ER6-001 survived REFUTATION-007 and was re-measured at 9c18aa54 (13 tests, 11 pass, 2 fail on known collector revision; the one comment edit in 1aea2dea). WO-200 declares the four pinned files, keeps the formatter and the comment scan off them, runs the schema test in the review gate when they change, records the drift under WO-107 D001 and restores the comment. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 5)]",
+          "reopenWhen": "a hash-pinned file drifts outside a gate after WO-200 closes",
+          "targets": [
+            "WO-200"
+          ],
+          "at": "2026-10-11T00:22:27.319Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8c32785620aa6b66",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-entropy-pass-recorded-2026-10-10::015db44cb8cc4a36f94f85bd7b9b64b23ac927aa68096d215baff6edba04e30b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "991f1af5d2e8c4d87cacaf3c565cec2c32d4dbe73311b69adc0487f4111c444a",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-entropy-pass-recorded-2026-10-10",
+          "title": "The export's own test command (FUP-8fb7ae17dd0fad5b).",
+          "summary": "1. **The export's own test command (FUP-8fb7ae17dd0fad5b).** WO-075 closed with `node scripts/harness.mjs check` inside an export; `npm test` there still fails at the build, and the client README says so. Reopen: WO-118's exported instance runs `npm test` and the README does not say what fails, or WO-083's fork needs core's suites in place.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "The 2026-10-10 map candidate restates FUP-8fb7ae17dd0fad5b. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 6)]",
+          "reopenWhen": "WO-118's exported instance runs npm test and the client README does not say what fails, or WO-083's fork needs core's suites in place",
+          "targets": [
+            "FUP-8fb7ae17dd0fad5b"
+          ],
+          "at": "2026-10-11T00:22:28.623Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ccfa814ea5258feb",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-entropy-pass-recorded-2026-10-10::34ba19ea1b430b054e47c424be88fbd428e4e12856f5df980e6c7b6f777aaf29",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "60a3bb84ada2e98dc8563d23ec494dccbcaf8f4db5fe4285405a810e4bb30c6d",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-entropy-pass-recorded-2026-10-10",
+          "title": "The resume suite ends the document gate's critical path.",
+          "summary": "3. **The `resume` suite ends the document gate's critical path.** The gate's recorded median is 110.9 s over 151 fresh rows since 2026-10-07 (39.0 s over 140 rows from 2026-10-01 to 2026-10-04); `resume` is 84.4 s of it, moved there by WO-186. About seven document gates an order is about thirteen minutes against a median order of 9.1 hours. Reopen: the median passes 180 s, a pass measures gates above a quarter of phase time, or the suite passes 120 s.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Measured in this pass; routed with FUP-fb8cbeabbddef397. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 5)]",
+          "reopenWhen": "the document gate's thirty-day median of fresh passing rows passes 180 s, a planning pass measures gates above one quarter of phase time, or the resume suite passes 120 s",
+          "targets": [],
+          "at": "2026-10-11T00:22:28.731Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0ab1b0514609405d",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-entropy-pass-recorded-2026-10-10::50983a9dc660d2f6409f7e83d6b9864f8a7c2cc2f31c123bce41d542b0c45279",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a7f2f31b1d2714656e098f27fe535d6365cbb2d7baade44cd0fe93eb2478fd6f",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-entropy-pass-recorded-2026-10-10",
+          "title": "A typed order-lifecycle reopening field on register dispositions.",
+          "summary": "2. **A typed order-lifecycle reopening field on register dispositions.** REVIEW-005's anchored prose parser reached its reversal and stays declined as prose reading; a `reopenOn` field (order, phase) listed by `plan conditions` is the admissible mechanism. Eight deferred rows opened with a bare lifecycle event on 2026-10-10 and four had fired. Reopen: a third pass leaves a named fired trigger, or such rows pass ten.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "REVIEW-005's reversal condition was reached (the 2026-10-07 pass left FUP-0044 and FUP-0091); the anchored parser stays declined as prose reading and the typed field waits for a count. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 5)]",
+          "reopenWhen": "a third pass leaves a named fired lifecycle trigger, or the deferred rows whose condition opens with an order's lifecycle event pass ten",
+          "targets": [],
+          "at": "2026-10-11T00:22:28.677Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f5192c757032730e",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-entropy-pass-recorded-2026-10-10::519d601285c1bef4c0bc7a1b579793480b7b7c12a9d8dbe46a88803186b7192f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "df711732939786141cf7f17f4d1b147c336448600bac936f276e200c2a8cdc00",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-entropy-pass-recorded-2026-10-10",
+          "title": "WO-198's whole-gate witnesses.",
+          "summary": "4. **WO-198's whole-gate witnesses.** The `worktree` task moved from a 122 s plateau to 207 to 237 s at WO-198's fourth row and stayed there after its merge; `runner-fixtures` read 126.5 s against a 21.8 s median (WO-198 D021). The growth is named by the order that made it, which is the rule WO-197's conditions exist to serve. Reopen: a gate task holds at a row whose order's decisions do not name the growth, or the gates' share passes a quarter of phase time.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Measured in this pass; routed with FUP-8bac5e3bddd12494. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 5)]",
+          "reopenWhen": "a gate task holds at a row whose order's decisions do not name the growth, the gates' share of phase time passes one quarter in a planning pass's measurement, or the plain gate's thirty-day median passes 360 s",
+          "targets": [],
+          "at": "2026-10-11T00:22:28.789Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b52ae0aecfb75710",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-entropy-pass-recorded-2026-10-10::680d28f5e2a3559e918c4c03830ad4443a4b3de496f848bbf391b5c437d85c43",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "612c8347e6dffe58fb41e1a15bb70c2f2a47fcd2c836ce7e7cc28adabe466112",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-entropy-pass-recorded-2026-10-10",
+          "title": "The regression-clause verification loop.",
+          "summary": "5. **The regression-clause verification loop.** Five of the fourteen failed verifications since the reset failed with every criterion met, on a regression against `main` found by a fresh probe (WO-198 VER-001 to VER-003, WO-199 VER-001, WO-188 VER-003); each round took one to two hours and each finding failed closed. Reopen: an order pays more than three verifications whose failures are all regression-clause findings, or the operator names the loop.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Five of fourteen failed verifications since the reset failed with every criterion met on a regression against main; each round took one to two hours and failed closed. Recorded, no rule change. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 5)]",
+          "reopenWhen": "an order pays more than three verifications whose failures are all regression-clause findings outside its criteria, or the operator names the loop",
+          "targets": [],
+          "at": "2026-10-11T00:22:28.844Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3054caf98649935d",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-entropy-pass-recorded-2026-10-10::e6218c51ba2c6a0b10e18ce01dbf0552316c460fa4b727cc65f8d403b86da60b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5639cc86de011c7fe34610cdd95a1e95a28689db5d66c2063496cdae677b45e4",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-entropy-pass-recorded-2026-10-10",
+          "title": "WO-150-D003's cold-start predicate.",
+          "summary": "6. **WO-150-D003's cold-start predicate.** The conditions listing holds `coldStartBytes.executor` 28,112 against the decision's 24,576 at every entry while the budget ceiling is 29,246; a `reopens` record settles a decision condition, and no planning pass writes one. Reopen: the next order that edits `docs/control/budgets.json` records it.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The listing holds the decision's 24,576 predicate at every entry while the ceiling is 29,246 and the measurement 28,112; only a reopens record settles it. [2026-10-10 entropy planning pass (docs/planning/entropy-review-006-2026-10-10.md section 3)]",
+          "reopenWhen": "the next order that edits docs/control/budgets.json records the reopens observation",
+          "targets": [],
+          "at": "2026-10-11T00:22:28.899Z"
         }
       ]
     }

@@ -4,21 +4,11 @@
 
 ## Proposed order
 
-- [x] [WO-196] — The handoff is one command · **final-reviewed**
-- [x] [WO-199] — The vertical survives an interrupt and a host crash · **final-reviewed** · pair 1
-- [x] [WO-197] — Slow suites back to their medians · **final-reviewed** · pair 1
-- [x] [WO-074] — Launchpad export kit · **final-reviewed** · pair 2
-- [x] [WO-188] — Twenty-four boarded machinery items · **final-reviewed** · pair 2
-- [x] [WO-075] — Kit runtime and harness bundle in the export · **final-reviewed** · pair 3
-- [x] [WO-190] — Index and roadmap lead with the work ahead · **final-reviewed** · pair 3
-- [x] [WO-073] — Repository class and profile documents · **final-reviewed** · pair 4
-- [x] [WO-198] — A worktree's gate names what moved · **final-reviewed** · pair 4
-- [x] [WO-077] — Launchpad export update · **final-reviewed** · pair 5
-- [x] [WO-189] — The front page, rewritten once and guarded · **final-reviewed** · pair 5
-- [ ] [WO-078] — Sibling registry and export receipts · **queued** · pair 6
-- [ ] [WO-191] — Reader profiles for published text · **queued** · pair 6
+- [ ] [WO-078] — Sibling registry and export receipts · **queued** · pair 1
+- [ ] [WO-191] — Reader profiles for published text · **queued** · pair 1
 - [ ] [WO-072] — Target worktree lifecycle · **queued**
-- [ ] [WO-076] — Instance build overlay · **queued**
+- [ ] [WO-076] — Instance build overlay · **queued** · pair 2
+- [ ] [WO-200] — Pinned collector bytes are watched where they change · **queued** · pair 2
 - [ ] [WO-118] — The resident-owned loop from a starter instance · **queued**
 - [ ] [WO-192] — A router drives an order through its lifecycle · **queued**
 - [ ] [WO-193] — Capability requests from an instance · **queued**
@@ -125,6 +115,23 @@ None.
 - Cost: adds the overlay's positive decoding and its composition in &#96;harness emit&#96; (&#96;scripts/harness.mjs&#96;, &#96;scripts/lib/harness.mjs&#96;), the overlay's hash in the manifest, fixture overlays, the client README template's first section, a note in ADR-0006 and at most 200 bytes in product 10. Removes the need to edit kit files to change a fork's build: &#96;harness emit&#96; admits one loadout and the support switches are a programmatic option no command sets. WO-118 depends on it. Re-mints: deterministic, the authority and harness editions that &#96;scripts/lib/harness.mjs&#96; stales (it is registered in those two and excluded with a reason from the other three); with no overlay declared the committed bundle does not change. If the composition is placed in &#96;packages/compiler/src/harness.ts&#96;, a common source, each edition it stales is re-minted and the compiler release carries the feedback edition (&#96;feedback-evidence --carry&#96;), re-pins the console and moves the console self-host fixtures that hold the compiler label (WO-154 D011; WO-162 D012); no source the feedback verifier judges is edited, so no live episode. Wall-clock, tokens and context bytes are unknown until run.
 - Authority: [docs/work-orders/WO-076-instance-build-overlay.md](WO-076-instance-build-overlay.md)
 
+### WO-200
+
+[WO-200 — Pinned collector bytes are watched where they change: the WO-107 lane's hashed sources are declared, left alone by the formatter and the comment scan, checked in the review gate when they change, and the comment-only drift is recorded and reversed (version assigned at activation)](WO-200-pinned-collector-bytes-observed.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: none declared.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer any.
+- Track: machinery
+- Cost: adds a &#96;dotln-pinned-bytes&#96; attribute on the four files &#96;protocolLineage&#96; hashes (&#96;.gitattributes&#96;), the same four paths in &#96;.prettierignore&#96;'s exact-bytes group, one more attribute name in &#96;commentFiles&#96; (&#96;scripts/lib/comment-labels.mjs&#96;, the &#96;check-attr&#96; call at line 60), one machinery row &#96;wo107-schema&#96; with its &#96;machinerySources&#96; entry and &#96;protection&#96; sentence (&#96;scripts/test-runner.mjs&#96;, lines 108 and 855), two fixture cases in &#96;scripts/test-comment-labels.mjs&#96;, one case in &#96;corpus/harness/wo107-schema.test.mjs&#96;, the restored comment line in &#96;corpus/harness/profile.mjs&#96;, &#96;docs/evidence/WO-200/decisions.md&#96;, one sentence in product 03 §Corpus policy and one dated line in &#96;corpus/baselines/SCHEMA-WO-107.md&#96;. Steady-state cost: the row runs only when one of its five declared sources changed against the merge base (about one second of test time; its thirteen cases ran in under one second each at &#96;9c18aa54&#96;); the comment scan reads four fewer files. Removes: a red lane since 2026-10-09 (36 of the 72 committed WO-107 records carry a protocol hash no current source produces), the class of silent invalidation in which a repository-wide rewriter reaches hash-pinned bytes outside every gate (WO-105 D012 and WO-107 are the two instances), and the manual lane run before any consumer of the baseline. Re-mints: &#96;scripts/test-runner.mjs&#96; is a declared machinery source, so &#96;npm test -- --review&#96; runs before handoff; &#96;comment-labels.mjs&#96;, &#96;profile.mjs&#96;, &#96;.gitattributes&#96; and &#96;.prettierignore&#96; are in no evidence inventory and no file the feedback verifier judges changes, so no edition is re-minted and no live episode runs. Wall-clock, tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-200-pinned-collector-bytes-observed.md](WO-200-pinned-collector-bytes-observed.md)
+
 ### WO-118
 
 [WO-118 — The resident-owned loop from a starter instance: one initial intent and standing grants carry work through derivation, dispatch, verification, repair, delivery and the pull-request loop under the durable runtime, surviving an actor's death and a resident restart, with only material decisions returned to the operator (version assigned at activation)](WO-118-resident-owned-loop-from-starter.md)
@@ -139,7 +146,7 @@ None.
 - Model: the actual local harnesses as actors, launched by the instance's resident; the operator witnesses from the operator's terminal; launch claims recorded per episode (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Track: delivery
-- Cost: adds the instance export receipt and one witnessed live run from a starter instance (the resident's actor episodes, a push and a pull request under standing grants, an actor killed and the resident restarted), and &#96;docs/evidence/WO-118/README.md&#96; with the sanitized event log, the console transcript, the measures and the parity scores; at most 250 bytes in product 00 and 150 in product 12; a README sentence folded into its release block; one appended capability-table section. Removes the absence of the product exit's evidence: no record shows the runtime carrying an intent to a pull request from a starter. It unblocks WO-083 (gate P of the critical path). Re-mints: none; the order edits no registered or judged source. Wall-clock, tokens and context bytes are unknown until run.
+- Cost: adds the instance export receipt and one witnessed live run from a starter instance (the resident's actor episodes, a push and a pull request under standing grants, an actor killed and the resident restarted), and &#96;docs/evidence/WO-118/README.md&#96; with the sanitized event log, the console transcript, the measures and the parity scores; at most 250 bytes in product 00 and 150 in product 12; one README sentence inside §What runs today's marked section (one of the two lines free under WO-189's budget on 2026-10-10); one appended capability-table section. Removes the absence of the product exit's evidence: no record shows the runtime carrying an intent to a pull request from a starter. It unblocks WO-083 (gate P of the critical path). Re-mints: none; the order edits no registered or judged source. Wall-clock, tokens and context bytes are unknown until run.
 - Delivery: target publication requires `worktree publish WO-NNN --target <request> --require-deliverable-ready` (WO-182); record every absent item before retrying.
 - Authority: [docs/work-orders/WO-118-resident-owned-loop-from-starter.md](WO-118-resident-owned-loop-from-starter.md)
 
@@ -487,11 +494,7 @@ None.
 
 [WO-014]: WO-014-approval-burden-contract.md
 [WO-072]: WO-072-target-worktree-lifecycle.md
-[WO-073]: WO-073-repository-class-and-profile.md
-[WO-074]: WO-074-launchpad-export-kit.md
-[WO-075]: WO-075-kit-runtime-and-bundle.md
 [WO-076]: WO-076-instance-build-overlay.md
-[WO-077]: WO-077-launchpad-export-update.md
 [WO-078]: WO-078-sibling-registry.md
 [WO-080]: WO-080-workstream-document-and-index.md
 [WO-081]: WO-081-board-workstreams-section.md
@@ -510,14 +513,8 @@ None.
 [WO-113]: WO-113-work-order-files-stable-contracts.md
 [WO-118]: WO-118-resident-owned-loop-from-starter.md
 [WO-183]: WO-183-intent-declaration-and-the-stranger-test.md
-[WO-188]: WO-188-boarded-machinery-items.md
-[WO-189]: WO-189-front-page.md
-[WO-190]: WO-190-index-and-roadmap-show-the-work-ahead.md
 [WO-191]: WO-191-reader-profiles.md
 [WO-192]: WO-192-router-drives-an-order.md
 [WO-193]: WO-193-instance-capability-requests.md
 [WO-194]: WO-194-private-predecessor-map.md
-[WO-196]: WO-196-the-handoff-is-one-command.md
-[WO-197]: WO-197-slow-suites-back-to-their-medians.md
-[WO-198]: WO-198-a-worktree-gate-names-what-moved.md
-[WO-199]: WO-199-the-vertical-survives-an-interrupt.md
+[WO-200]: WO-200-pinned-collector-bytes-observed.md

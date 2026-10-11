@@ -61,7 +61,7 @@ A recommendation, not a dependency token.
 
 **Cites (read these sections):** 02-domain-model.md §Feedback (the
 mechanism hierarchy) and §Feedback compiler v1; 06-roadmap.md §Application
-version pending — Harness lowering and rule migration → WO-039 + WO-040;
+version pending — Harness lowering and rule migration;
 13-uifa-roles.md §Assistance the platform owes each role; `README.md` §What
 runs today; `docs/work-orders/WO-096-migration-ledger.md` (the always-on set
 and the selection rule); `docs/work-orders/WO-097-rule-migration-batch-1a.md`
@@ -110,7 +110,8 @@ batch two's candidates named in the ledger.
   in the engineer and tester rows, and 06's harness-lowering rung says the
   Contributor holds the ten personal units.
 - Ceilings are planning's since the 2026-10-07 pass; WO-086 and WO-087
-  closed (v0.56.1, v0.56.3) and WO-190 may rename the 06 rung heading.
+  closed (v0.56.1, v0.56.3); WO-190 renamed the 06 rung heading on
+  2026-10-09, dropping its carrier suffix.
 
 **Design (scope discipline):**
 
@@ -191,7 +192,8 @@ batch two's candidates named in the ledger.
     `--edition WO-098`.
 11. `npm run terms -- check corpus/feedback/migration.json packages/skeleton/src/loadouts/feedback.ts`.
 12. Write-backs as criterion 6 lists them, plus `README.md` §"## What runs today" (one
-    sentence within WO-189's rule), `docs/planning/capability-table.md` (a
+    sentence rewriting the compiler line in place and adding no line: WO-189's line
+    budget, the 2026-10-10 pass's headroom decision), `docs/planning/capability-table.md` (a
     `## WO-098 dated addition (<date>)` section with a three-column `feedback.migration`
     row), `docs/evidence/WO-098/decisions.md` (the template and batch-two candidates);
     `node scripts/meta.mjs`; `node scripts/check-publication.mjs --print-locks`;
@@ -234,14 +236,14 @@ the write-backs below.
    candidates.
 6. Write-backs land, each in place with no dated paragraph: 02 §Feedback
    compiler v1 (the batch and the extension, in place with no dated paragraph (ceilings are planning's: the 2026-10-07 pass set every product document's ceiling at measured bytes plus one tenth); WO-097, WO-091 and
-   WO-092 also write 02); 06, the pending rung heading that names WO-039
-   and WO-040, found by those names at the base because WO-190 may rename
-   it (the rung's status; the section also says "four roles" while six role
+   WO-092 also write 02); 06 §Application version pending — Harness lowering
+   and rule migration (WO-190 renamed it on 2026-10-09 without the carrier
+   suffix; the rung's status; the section also says "four roles" while six role
    skills exist, corrected in the same edit; WO-083, WO-095, WO-096 and
    WO-183 also write 06); 13 §Assistance the platform owes each role (the
    engineer and tester rows; WO-083 also writes 13). The root README §What
-   runs today (one
-   sentence folded in, rewriting what it supersedes); a dated
+   runs today (one sentence rewriting the compiler line in place, adding no
+   line); a dated
    capability-table row `feedback.migration` with the counts; the decisions
    file; the publication locks refreshed.
 7. The deterministic re-mints the Cost line names are recorded. After the
@@ -272,6 +274,10 @@ review. The live row is the executor's feedback self-host episode
 
 **Known issues and carry-ins:**
 
+- 2026-10-10 entropy pass (WO-190 D006, WO-189 D023): the roadmap heading
+  citations drop the carrier suffix WO-190 removed; the README sentence
+  rewrites the compiler line in place and adds no line, so the budget's two
+  free lines are WO-118's and one spare.
 - Stale on 2026-10-07 and corrected above: WO-167's fold; the headroom
   and co-writer lists; "no handler has rung seven" (prose-kind units
   already lower at rung 7, `feedback.ts` line 213); `measureHarnessContext`

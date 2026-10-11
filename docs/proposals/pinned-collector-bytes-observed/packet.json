@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "kind": "FiledProductSuggestionPacket",
+  "filedAt": "2026-10-11T00:04:26.997Z",
+  "sourceReceiptId": "REVIEW-006",
+  "sourceReceiptPath": "docs/instance/entropy-reducer/runs/REVIEW-006.md",
+  "operatorReason": "Accepted and filed. WO-200 takes the packet's option (a), a review-gate row selected only by changes to the four protocolLineage sources, together with the exact-bytes and comment-scan exclusion of option (b) through one declared list, and records the current collector-revision drift under WO-107 D001's rule before re-pinning. Re-collecting the baseline is declined in the order's design: the byte change is one comment and the records' semantics are unchanged; a later consumer that needs fresh observations reopens it.",
+  "promotion": "Filing records the packet. Promotion to a work order remains an operator-authorized planning act.",
+  "packet": {
+    "schemaVersion": 1,
+    "kind": "ProductSuggestionPacket",
+    "proposedPath": "docs/proposals/pinned-collector-bytes-observed/",
+    "sourceEpisodeId": "ep_entropy_47ed74333b9cbb64",
+    "provenance": [
+      "entropy-reducer@1 review episode ep_entropy_47ed74333b9cbb64 (claude-opus-5-5 per dispatch; effective model and effort not read back)",
+      "frozen subject 9c18aa5417c1ea6834a284d38e70362732d5f16d",
+      "lenses: verification-and-evidence, runtime-and-authority; finding ER6-001"
+    ],
+    "corroboratingEvidenceRefs": [
+      "wo107-schema.test.mjs at 9c18aa54: 2 of 13 fail 'known collector revision'",
+      "scratch archive: restoring only profile.mjs from 1aea2dea^ clears both provenance failures",
+      "docs/evidence/WO-188/verifier-004/checks.txt:211 (profile.mjs classed onlyComments)",
+      "docs/control/comment-baseline.json (0 corpus entries) and .prettierignore (pinned collector not in the exact-bytes group)"
+    ],
+    "dissentingEvidenceRefs": [
+      "docs/work-orders/WO-107-profiling-baseline.md:17 ('nothing joins the root npm test')",
+      "docs/evidence/WO-105/decisions.md D012 (base-keyed byte-pin drift accepted for a sibling lane)",
+      "docs/verifications/WO-188/VER-004.md:25 (the comment-only classification is stated as a supplement, not a semantic-equivalence claim)"
+    ],
+    "suggestion": {
+      "suggestionId": "pinned-collector-bytes-observed",
+      "submittedBy": "entropy-reducer@1 (review episode ep_entropy_47ed74333b9cbb64)",
+      "problemOrOpportunity": "WO-107's provenance check hashes the raw bytes of four collector files. Those files sit outside every gate, yet repository-wide guards (the comment-label rule, the formatter) may rewrite them. A comment-only cleanup in 1aea2dea invalidated the provenance of every committed WO-107 baseline record. No gate, verifier or register row noticed.",
+      "scope": "Choose one: (a) add a runner row, selected only by changes to the four protocolLineage sources, that runs corpus/harness/wo107-schema.test.mjs (about 1 s); or (b) add those four files to .prettierignore's exact-bytes group and leave them out of comment-label scanning. Separately, record the current collector-revision change under WO-107's reopen condition. Whether to re-collect or to admit the comment-only revision stays an operator choice.",
+      "evidenceRefs": [
+        "corpus/harness/profile.mjs:258-320",
+        "corpus/harness/wo107-schema.test.mjs",
+        "scripts/test-runner.mjs",
+        "scripts/lib/comment-labels.mjs",
+        "docs/control/comment-baseline.json",
+        ".prettierignore",
+        "docs/evidence/WO-107/decisions.md:33"
+      ],
+      "affectedUsers": [
+        "executors and verifiers of orders whose cleanup touches corpus/harness",
+        "planner consuming the WO-107 baseline for the declared-versus-observed cost loop"
+      ],
+      "affectedSystems": [
+        "corpus/harness/profile.mjs",
+        "scripts/test-runner.mjs",
+        "scripts/lib/comment-labels.mjs",
+        ".prettierignore"
+      ],
+      "expectedValue": "A rewrite of hash-pinned collector bytes is seen in the order that makes it, not at the next baseline consumer, and the first observed cost baseline stays verifiable.",
+      "altitude": 6,
+      "uncertainty": "Only one lane is affected today, and this episode did not establish a near-term consumer of the WO-107 records (a register candidate names profile.mjs for reuse). Two archive-only test failures were not diagnosed; both pass in the frozen copy. I inferred, without executing it, that the comment rule forced the edit.",
+      "risks": [
+        "A new runner row departs from WO-107's 'nothing joins the root npm test' scope",
+        "Exempting files from the comment rule leaves report-local labels in them",
+        "Admitting comment-only revisions into protocolLineage weakens the byte pin"
+      ],
+      "alternatives": [
+        "Hash a comment-stripped or AST form of the collector instead of raw bytes",
+        "Accept the drift as WO-105 D012 did and record it whenever an order touches corpus/harness",
+        "Run the provenance check from the planning-entry conditions listing instead of the gate"
+      ],
+      "duplicationHints": [
+        "docs/proposals/machinery-selection-follows-imports/ (WO-174's source-selected runner rows, which option (a) would use)",
+        "docs/proposals/gate-identity-covers-suite-inputs/",
+        "WO-105 D012 (base-keyed byte pins accepted as drift)"
+      ],
+      "urgencyRationale": "Low. No runtime path consumes the records today. The cost is that the first observed cost-loop baseline cannot be verified until re-derived, and the next collector or formatter edit repeats the drift silently."
+    }
+  }
+}

@@ -40,6 +40,53 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-10 — Planning pass: REVIEW-006 consumed, one order from a red hash-pinned lane (WO-200), seven queued orders corrected on their fired triggers
+
+Source: the operator's `planning: entropy reducer` dispatch of 2026-10-10,
+captured in ignored intake
+(`docs/intake/notes/2026-10-10-entropy-reducer-planning.md`, SHA-256
+`af15db6c04e4529cad3c3532a21f5a46060c650159a637899d4ece48e8438726`);
+REVIEW-006 and its blinded REFUTATION-007; the failures feed, the conditions
+listing, the gate rows, the register and the decisions of the eleven orders
+closed since the last receipt. Planner synthesis; the clean-room screen found
+no stop condition. The record is
+[the planning document](../planning/entropy-review-006-2026-10-10.md).
+
+- **Bytes a provenance hash pins are declared once and watched where they change** `adopted`
+  - ER6-001 survived refutation: a comment-only edit in WO-188 moved the
+    WO-107 collector's hash, 36 committed records lost their provenance and
+    no gate noticed. WO-200 declares the four files with a Git attribute the
+    comment scan honors and the formatter ignore list repeats, runs the
+    lane's schema test in the review gate when they change, records the
+    drift under WO-107's own rule and restores the comment. Reopen: a
+    hash-pinned file drifts again outside a gate.
+- **Later corpus lanes keep their commands in their own manifests** `adopted`
+  - ER6-002 survived: product 03 said the corpus entry point links each
+    lane's commands while four lanes settled otherwise. The sentence is
+    corrected in place; no README edit.
+- **A fired lifecycle trigger is read at planning entry** `adopted`
+  - REVIEW-005's NoOp on the anchored prose parser reached its reversal:
+    the 2026-10-07 pass left FUP-0044 and FUP-0091 after WO-112 closed. The
+    parser stays declined (it is the prose reading the 2026-10-07 screen
+    forbids); the typed field is a candidate with a reopening count; product
+    07's planning preconditions now carry the duty, and this pass
+    re-disposed the eight bare lifecycle openers.
+- **Gate growth since the reset has named causes and no order yet** `deferred`
+  - The document gate's recorded median is 110.9 s (151 rows since
+    2026-10-07) with the `resume` suite ending its critical path at 84.4 s;
+    the `worktree` task doubled to about 227 s and `runner-fixtures` grew
+    sixfold with WO-198's whole-gate witnesses. Each is recorded with its
+    cause; no gate-time order is filed while the verification loop, not the
+    gate, sets an order's hours. Reopen: the document gate's median passes
+    180 s, a pass measures gates above one quarter of phase time, or a task
+    holds at a row whose order's decisions do not name the growth.
+- **Front-page headroom is settled by rewriting, not appending** `adopted`
+  - WO-189 left two free lines for three queued sentences. WO-095 and WO-098
+    rewrite existing lines in place; WO-118 takes one new line; one stays
+    spare. WO-088 registers its generated phrase block; WO-113's umbrella
+    pointer keeps the class readable; WO-083, WO-096 and WO-098 cite the
+    renamed roadmap heading.
+
 ## 2026-10-07 — Planning pass: the machinery reset (WO-196, WO-197; every queued order rewritten with an execution plan)
 
 Source: the operator's dispatch `planning:` on 2026-10-07 and five mid-turn

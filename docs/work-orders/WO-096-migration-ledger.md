@@ -279,11 +279,11 @@ write-backs below.
    rule, six for WO-097 and six for WO-098, and at least one `reference`
    row.
 4. Write-backs land, each in place with no dated paragraph: 06
-   §Application version pending — Harness lowering and rule migration →
-   WO-039 + WO-040 (the migration rung's status, in place with no dated paragraph (ceilings are planning's: the 2026-10-07 pass set every product document's ceiling at measured bytes plus one tenth); WO-190 may rename
-   this heading before this order runs, so the executor finds it by its
-   WO-039 and WO-040 names at the base; WO-083, WO-095, WO-098 and WO-183
-   also write 06); `corpus/README.md` (the lane); the
+   §Application version pending — Harness lowering and rule migration (the
+   migration rung's status, in place with no dated paragraph (ceilings are planning's: the 2026-10-07 pass set every product document's ceiling at measured bytes plus one tenth); WO-190 renamed
+   the heading on 2026-10-09, dropping its `→ WO-039 + WO-040` suffix; the
+   rung's body names WO-040 as cut into WO-096 to WO-098 since 2026-10-10;
+   WO-083, WO-095, WO-098 and WO-183 also write 06); `corpus/README.md` (the lane); the
    decisions file; the publication locks refreshed.
 5. The re-mints the Cost line names are recorded; `npm test -- --review`
    and `npm run test:docs` green; `git diff --check` clean; no new
@@ -299,6 +299,9 @@ live row.
 
 **Known issues and carry-ins:**
 
+- 2026-10-10 entropy pass (WO-190 D006): the roadmap heading citation drops
+  the carrier suffix WO-190 removed; the rung body now names this order as
+  WO-040's ledger successor.
 - Stale on 2026-10-07 and corrected above: product 06's bytes and
   co-writers (WO-086, WO-087, WO-061, WO-066, WO-124 closed; WO-112
   closed); product 02 names four refusals, not five, and this order
