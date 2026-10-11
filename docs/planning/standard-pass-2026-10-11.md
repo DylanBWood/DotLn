@@ -278,5 +278,77 @@ No order carries a byte bound.
 
 ## 10. Validation and independent judgment
 
-Pending at the time of writing: the refutation receipt and the document
-gate are recorded here once filed.
+The product write-back passed `npm run publication:check` with both
+edition locks current after the software-engineer lock was refreshed.
+`node scripts/docs-check.mjs` passed with 15 product documents and zero
+failures; `node scripts/lineage.mjs index` regenerated the ledger index
+the first document gate found stale. The plan check refused until the
+receipt existed, as the mechanism requires.
+
+[Receipt 043](refutations/2026-10-11-planning-459906ce68143107-043.md)
+binds committed subject `743f5a6e`. Its scope is this pass: the six orders
+whose judged text changed (WO-200, WO-118, WO-096, WO-098, WO-095, WO-083)
+plus the sequence, with 20 unchanged order verdicts carried by hash;
+WO-072, WO-076, WO-078 and WO-192 changed only in their carry-ins, outside
+the judged fields. One fresh background `dotln-worker` received only the
+canonical prompt (152,095 bytes, in session scratch outside the
+repository) and read it whole with read-only shell commands. It returned
+`aligned-with-findings`, seventeen known issues and no hold; every order
+is `aligned-with-findings`. Dispatch to filing took 815.345 s; the worker
+ran 727.978 s over 20 tool uses and 166,627 tokens by the host's count.
+The helper committed the pair as `52e4a744` and passed `plan check`:
+judged, committed and workspace subject hashes were equal, with no
+continuation update. Every known issue is carried on its order's catalog
+row in the map, as product 07 places a receipt's known issue for an order
+the receipt finds frozen; the planner's readings of the material ones:
+
+- **WO-118's closed list of human events** omits the actor kill, the
+  resident restart and the filing of the ambiguous control intent. This is
+  the planner's own miss in this pass's amendment: the executor performs
+  those under D007's delegation and step 7 counts every operator-origin
+  event, so a strict verifier could find criterion 1 unmet by
+  construction. The orders are frozen by the receipt; the next amendment
+  of WO-118 adds the fault injections and the control-intent filing to the
+  admitted events, and the row carries the reopening observation.
+- **WO-098's headroom and the review gate.** The refuter asks whether a
+  cold-start overrun fails `npm test -- --review`, which would put
+  criterion 3 (board, never raise) against criterion 9 (gates green). The
+  planner's reading: a cold-start breach is an advisory boarded for
+  optimization under product 07's byte-headroom rule (the 2026-10-05
+  direction; FUP-f1c7a256bec46737's record that the 4 KB raise is
+  retired), so both criteria can hold; the row carries the observation.
+- **WO-096's and WO-083's unscreened material.** WO-096's criterion 2
+  records nothing unmet when the executor's run with the list present did
+  not happen, and WO-083's criterion 1 screens the transcripts but not the
+  committed WS-001 and profile copies. Both are clean-room gaps in judged
+  text; both wait for the next amendment, with the rows naming the
+  observation (a receipt that commits unscreened copies, or a later run
+  with the list that flags a committed file).
+- **WO-083's gap** was not restated by this pass while WO-118's was; the
+  next amendment of WO-083 restates it at its base.
+- **WO-118's waiver** guards WO-083 and the capability rating but not
+  WO-183 or a status sentence; **WO-200** claims the silent-invalidation
+  class removed while WO-105's lane stays a non-goal; **WO-095** pins no
+  dark bonus. Each is carried with its observation.
+
+The worker made no repository or Git write and spawned no agent; its
+statement names one directory listing of the scratch directory, whose
+other files it did not open. One worker ran in this pass, as planned.
+Completion uses `npm run test:docs` over this branch after the receipt and
+these map and document updates; the handoff and the pull request report
+its executed verdict. The final usage observation stays in the ignored
+session receipt and the handoff, as the process-cost rule requires.
+
+New inputs beyond the entry set: receipt 042's twelve findings in full;
+the source decisions of the fifty-two non-deferred rows (WO-187 D013,
+D020, D021, D023, D034, D042, D043, D045, D052, D053; WO-186 D033, D038,
+D039, D047; WO-112 D033, D043, D044, D046, D050, D056; WO-188 D001, D003,
+D006, D009, D026, D044 to D049; WO-184 D013, D032, D034, D040; WO-199
+D011, D015; WO-073 D010, D011; WO-074 D010, D011; WO-075 D008, D012, D017;
+WO-077 D007; WO-190 D007; WO-196 D014; WO-065 D008; WO-054 D006; WO-174
+D013; WO-185 D014); WO-123 D040 and D044 through their rows;
+`gateCodeIdentity`'s selection in `gate-evidence.mjs` and `.gitattributes`;
+the one fresh gate row and its task durations; the six judged orders and
+the four carry-in orders in full; the critical path's gate table and
+replan points; product 07 §Verification review and attack and the
+bounded-wrapper passage of §Discipline.
