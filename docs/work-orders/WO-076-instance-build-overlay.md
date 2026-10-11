@@ -215,6 +215,12 @@ and again at final review. No live row.
 
 **Known issues and carry-ins:**
 
+- 2026-10-11 standard pass: FUP-44639ec9a751d8d1 (WO-075 D008) is
+  allocated here: emit the Start here `Read[role]` directives from the
+  compiled Contributor bundle instead of hand-writing them in core's
+  `CLAUDE.md` floor and the kit's `CLAUDE.template.md`, so the two floors
+  cannot drift; `harness emit` is this order's surface. Fix it inside the
+  Boy Scout bound or record it as left in the decisions.
 - Stale on 2026-10-07 and corrected above: product 10 headroom (950, not
   507) and its co-writers; the Observed gap's line counts (now 337, 853 and
   1,376); the Cost line's "harness edition" is the inventory check of step 6.

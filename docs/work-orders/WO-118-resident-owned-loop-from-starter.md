@@ -14,9 +14,10 @@ default.
 a starter instance (the resident's actor episodes, a push and a pull
 request under standing grants, an actor killed and the resident
 restarted), and `docs/evidence/WO-118/README.md` with the sanitized event
-log, the console transcript, the measures and the parity scores; at most
-250 bytes in product 00 and 150 in product 12; one README sentence inside
-§What runs today's marked section (one of the two lines free under WO-189's
+log, the console transcript, the measures and the parity scores; about
+250 bytes in product 00 and 150 in product 12 (the planner's estimates,
+never bounds: the document ceilings are planning's); one README sentence
+inside §What runs today's marked section (one of the two lines free under WO-189's
 budget on 2026-10-10); one appended capability-table section. Removes
 the absence of the product exit's evidence: no record shows the runtime
 carrying an intent to a pull request from a starter. It unblocks WO-083
@@ -169,26 +170,34 @@ pull-request loop through a delayed automated comment to a terminal state
 (WO-065, WO-066); an actor session killed mid-episode and replaced by the
 resident; the resident itself restarted mid-loop and resuming under the
 same identities; every phase handoff performed by the runtime; the whole
-run visible in the live console (WO-117) and audited (WO-116); one
-deliberately ambiguous control intent returning `NeedsHuman` with its
-reason, and nothing else returning to the operator.
+run visible in the live console (WO-117) and audited (WO-116); the two
+control scenarios inside the same run, one deliberately ambiguous control
+intent returning `NeedsHuman` with its reason, which the operator answers,
+and one incorrect review suggestion the operator plants on the pull
+request, which the runtime rejects with recorded evidence; and nothing
+else returning to the operator.
 
-**Observed gap (dated 2026-09-28, `main` at `5f3849ec`; first observed
-2026-09-08 at `33e2c25`):**
+**Observed gap (restated 2026-10-11 at `main` `5328814f`; dated 2026-09-28
+at `5f3849ec`; first observed 2026-09-08 at `33e2c25`):**
 
-- No starter instance can be exported yet: WO-074 to WO-078 are open, and
-  the README lists portable starter export as later work. No end-to-end
-  run exists from core either (WO-123 and WO-112 are open).
-- The resident has run live scratch portfolio windows (WO-111), and the
-  console serves status, commands and invocation (WO-114, WO-115); the
-  audit view and the live console are open (WO-116, WO-117).
+- A starter instance exports with the commit's compiled runtime and
+  updates (WO-074, WO-075 and WO-077 closed on 2026-10-09 and 2026-10-10);
+  WO-076's overlay and WO-078's registry are queued. The loop is proven
+  from core against a scratch target (WO-112 closed 2026-10-07;
+  `vertical.source-to-pr` level 1 by VER-007 and FINAL-001 at the
+  operator's override); no run from a starter instance exists.
+- The resident has run live scratch portfolio windows (WO-111); the
+  console serves status, commands and invocation (WO-114, WO-115), the
+  audit view reproduces a run afterward (WO-116, closed) and the live
+  console shows one (WO-117, closed 2026-09-29).
 - The present WO-083 has the fork's resident drive the order with its own
   actors and depends on this order; the critical path places the third
   replan checkpoint after WO-083.
 - The capability table rates a row by level and evidence
   (fixture-evidenced, live-evidenced); no document defines an
-  instance-evidenced level. `runtime.resident` has five assessments, and
-  an addition or a reassessment is an appended dated section.
+  instance-evidenced level. `runtime.resident` has five assessments and
+  `vertical.source-to-pr` one (WO-112, 2026-10-05); an addition or a
+  reassessment is an appended dated section.
 - Product 00 §The one-paragraph story holds no status sentence. Ceilings
   are planning's since the 2026-10-07 pass; no byte figure binds this order.
 - The export directory and the scratch target lie outside this
@@ -288,10 +297,13 @@ parity checklist; the write-backs below.
 
 1. From the filed intent to the terminal state, the control log shows
    every phase transition performed by the resident's actors; the human
-   events before the terminal state are only the initial intent, the
-   operator's inputs to the two control scenarios and the witness line,
-   each named in the receipt; the representative scenario reaches its
-   terminal state with every automated item resolved and no `NeedsHuman`.
+   events before the terminal state are only the initial intent, the one
+   `dotln presence away` setup event, the operator's inputs to the two
+   control scenarios the Objective defines (the answer to the ambiguous
+   intent's `NeedsHuman`; the planted incorrect suggestion) and the
+   witness line, each named in the receipt; the representative scenario
+   reaches its terminal state with every automated item resolved and no
+   `NeedsHuman`.
    If the witnessed run has not happened by handoff, the executor records
    this criterion unmet with the commands the operator runs in the
    exported instance (`dotln resident --store <directory> --policy <id>`,
@@ -299,7 +311,10 @@ parity checklist; the write-backs below.
    the run needs from the operator (the control scenarios' inputs, the
    automated reviewer's setting on the scratch repository WO-064's smoke
    used, and the root and remote grants); the other criteria are judged;
-   the criterion closes by the operator's run or by a recorded waiver.
+   the criterion closes by the operator's run or by a recorded waiver that
+   names the evidence standing in for the run. WO-083's dependency on this
+   order is satisfied only by this criterion recorded observed, never by a
+   waiver.
 2. The killed actor session is replaced by the resident without a second
    commit, and the resident restart resumes the loop under the same order
    and episode identities; both are events in the log.
@@ -331,10 +346,11 @@ parity checklist; the write-backs below.
    `runtime.resident` and `vertical.source-to-pr` on the table's scale,
    live-evidenced from a starter instance, never a row edited in place,
    and a rating rises only from a run criterion 1 records as observed,
-   never from a waived one; the decisions file; the publication locks refreshed. The executor
-   re-measures the headroom at its base; where the bound does not fit, it
-   consolidates the section it edits in the same change; a ceiling is
-   raised only by a planning-document decision.
+   never from a waived one; the decisions file; the publication locks refreshed. The Cost line's
+   byte figures are the planner's estimates, never bounds: the document
+   ceilings are planning's, the document check reports an overrun as an
+   advisory, the executor consolidates the section it edits only where the
+   ceiling does not fit, and no role trims reviewed text to a number.
 7. `npm test -- --review` and `npm run test:docs` green;
    `git diff --check` clean; no new dependency.
 
@@ -350,6 +366,20 @@ witnesses (criterion 1).
 
 **Known issues and carry-ins:**
 
+- 2026-10-11 standard pass (receipt 042's four known issues): the gap is
+  restated at `5328814f`; the Cost line's byte figures are estimates and
+  criterion 6 says so; the Objective names both control scenarios;
+  criterion 1 names the setup event, what a waiver owes, and that WO-083's
+  dependency needs this criterion observed. Carried from WO-123:
+  FUP-faae1df8f1022634 (D040) means the executor checks at the base that
+  the admitted intent carries each issue's `baselineAssessment` as D037
+  and D038 define it (WO-112's `admitIntake` path does); if the intent
+  path does not, the run stops at baseline and that is a core order filed
+  before this one runs again. FUP-82750a69c54c2ced (D044) lists five items
+  outside WO-123's fixes (the unchecked `worktree add`, the read-once
+  `vertical.json`, kill-on-return ending a continuation, holds for unfiled
+  draft ids, an uninformative unbound-authority reason); the executor reads
+  them at the base and the receipt records which the run met.
 - 2026-10-10 entropy pass (WO-189 D023): the Cost line and step 8 named the
   release block, which now holds only the generated version line; both now
   name §What runs today and the line budget. The budget's two free lines on

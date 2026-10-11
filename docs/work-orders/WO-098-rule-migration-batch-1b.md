@@ -134,21 +134,26 @@ batch two's candidates named in the ledger.
   by WO-039's criterion 6 method at both points; the hand-written always-on
   sentences that remain, each with why it could not be retired here; the
   verifier's restatement search over the always-on set WO-096 declares.
-- **Directed load is reported, not required to fall.** The generated
-  line each unit adds to every role skill counts in that role's load, so
-  twelve units add text before any retirement. Each role's total is
-  reported at both points with the bytes the units' generated text adds
-  and the bytes the retirements remove; a role whose total rose is named
-  with that split. The direction the order requires is in the counts:
-  more `mechanism`, less `prose`.
+- **Directed load does not rise.** The generated line each unit adds to
+  a role skill counts in that role's load, so the units add text before
+  any retirement; a unit's line is emitted only into the role skills whose
+  loadout equips that unit. Each role's total is reported at both points
+  with the bytes the units' generated text adds and the bytes the
+  retirements remove; a role whose total is higher after this order than
+  at WO-097's activation base is named with that split and leaves
+  criterion 4 unmet. The counts the order requires to move are
+  `mechanism` up and `prose` down, given per profile.
 - **The batch template.** The result records the procedure as a template
   (selection rule, classification, unit shape, lowering, measurement,
   write-backs) so that batch two is cut by copying it, and the rows name
   batch two's candidates.
 - **Declined alternatives, recorded:** every role's directed load
-  strictly lower, as the umbrella required (the generated role text each
-  unit adds makes it depend on retirements no order bounds; reopen when
-  the generated line per unit leaves the role skills); a scoring model for
+  strictly lower, as the umbrella required (declined 2026-09-28; adopted
+  as not higher by the 2026-10-11 pass after receipts 033, 036, 041 and
+  042 each found that a reported-only total let the order pass while the
+  always-on text grew, and the per-loadout emit bounds the generated
+  lines); a ceiling raise or dated acceptance for the generated lines
+  (product 07's byte-headroom rule boards an overrun instead); a scoring model for
   which rule
   matters (the attention policy's frequency baseline is measured, not
   assumed); migrating every shape in one order; prose units at rung nine
@@ -221,12 +226,18 @@ the write-backs below.
    pinned and its absence asserted; the reverse-mapping fixture maps every
    sentence removed across the twelve to a covering unit and fails on a
    fixture removal without one; a cold-start ceiling the regenerated text
-   exceeds is raised or accepted as `docs/control/budgets.json` states.
+   exceeds is neither raised nor accepted by this order: the overrun is
+   boarded with its measurement for a planning decision, and a unit's
+   generated line is emitted only into the role skills whose loadout
+   equips that unit.
 4. The measurement is directional and derived: the `mechanism` count is
    higher and the `prose` count lower after this order than at WO-097's
-   activation base; every role's directed-load total by WO-039's criterion
-   6 method is reported at both points with the split the Design states;
-   the verifier searches the always-on set WO-096
+   activation base, and the `mechanism` count is given per profile, a
+   hook-lowered unit counting as `mechanism` only under the profiles whose
+   hooks fire for it; every role's directed-load total by WO-039's
+   criterion 6 method is reported at both points with the split the Design
+   states, and no role's total is higher after this order than at that
+   base (a higher total leaves this criterion unmet); the verifier searches the always-on set WO-096
    declares for a restatement of each `mechanism` row, records the search,
    and a restatement found reverts that row to `prose` before the counts are
    reported; the remaining sentences are listed with reasons. The criterion
@@ -274,6 +285,12 @@ review. The live row is the executor's feedback self-host episode
 
 **Known issues and carry-ins:**
 
+- 2026-10-11 standard pass (receipt 042's two known issues, the fourth
+  receipt to find them): no role's directed-load total may be higher than
+  at WO-097's base (criterion 4); a ceiling the generated text exceeds is
+  boarded, never raised or accepted, and a unit's line is emitted only
+  into the role skills whose loadout equips it (criterion 3); the
+  `mechanism` count is per profile (criterion 4).
 - 2026-10-10 entropy pass (WO-190 D006, WO-189 D023): the roadmap heading
   citations drop the carrier suffix WO-190 removed; the README sentence
   rewrites the compiler line in place and adds no line, so the budget's two

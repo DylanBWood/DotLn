@@ -292,6 +292,12 @@ final review. No live row.
 
 **Known issues and carry-ins:**
 
+- 2026-10-11 standard pass: FUP-bd3e66761dc301ed (WO-190 D007) is
+  allocated here for its worktree half: `worktree start` creates the
+  worktree and branch before `resume activate` refuses an umbrella record,
+  leaving a worktree to remove; a pre-check through `umbrellaRecord` before
+  `git worktree add` closes it. Fix it inside the Boy Scout bound or record
+  it as left in the decisions; the kit-seed half stays with the row.
 - Stale on 2026-10-07 and corrected above: WO-167, WO-123, WO-173,
   WO-172 and WO-086 are closed and FUP-8369f2b4284e70a8 settled; the
   Observed gap's line counts are now 853, 2,212 and 2,978;

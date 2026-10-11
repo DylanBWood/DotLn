@@ -168,7 +168,8 @@ batch 1a and 1b candidates named.
   block names, and every other tool and completion judgment is advisory
   (02 §Feedback compiler v1). Where a harness profile's residue carries a
   `mechanism` row's unit as role text (Codex, for the six hook-lowered
-  units at `5f3849ec`), the render names that profile beside the row.
+  units at `5f3849ec`), the render names that profile beside the row and
+  gives the governance counts per profile.
 - **Render and check.** `npm run feedback -- migration` renders the rows
   with counts per status and per governance mode and states the two points
   above beside the counts; the renderer resolves the `lineage` root through
@@ -265,15 +266,22 @@ write-backs below.
    shapes only as counts per exclusion class; the capture's SHA-256 pinned
    and the executor's count disclosed; rows plus exclusion counts equal to
    that count; and the render gives the counts per status and governance
-   mode. The verifier judges the digest, the disclosure, the sum and each
+   mode, and beside them per profile: a `mechanism` row whose unit is
+   hook-lowered counts as `mechanism` only under the profiles whose hooks
+   fire for it and as `prose` under a profile whose residue carries it as
+   role text (Codex, for the six hook-lowered units at `5f3849ec`). The
+   verifier judges the digest, the disclosure, the sum and each
    derivation; it does not re-read the intake. The criterion is judged
    against the declared set; a case outside it is a follow-up, not a
    failure.
 2. `--check` refuses a stale render, an equipped unit missing from the
    rows, a fixture `mechanism` row whose pinned retired sentence is
    present, and a fixture row carrying a synthetic local term; without the
-   list it reports `unavailable`, never a pass, and a malformed list
-   refuses. The criterion is judged against the declared set; a case
+   list it reports `unavailable` in the gate's output and in the receipt,
+   never a pass and never a gate failure on that alone (`npm test --
+   --review` and `npm run test:docs` stay green on a machine without the
+   operator's list; the executor's run with the list present is the
+   screening evidence), and a malformed list refuses. The criterion is judged against the declared set; a case
    outside it is a follow-up, not a failure.
 3. The rows name batch one's twelve candidates under the Design's selection
    rule, six for WO-097 and six for WO-098, and at least one `reference`
@@ -299,6 +307,9 @@ live row.
 
 **Known issues and carry-ins:**
 
+- 2026-10-11 standard pass (receipt 042's two known issues): the render
+  gives the governance counts per profile (criterion 1) and an
+  `unavailable` local-terms check never fails a gate (criterion 2).
 - 2026-10-10 entropy pass (WO-190 D006): the roadmap heading citation drops
   the carrier suffix WO-190 removed; the rung body now names this order as
   WO-040's ledger successor.
