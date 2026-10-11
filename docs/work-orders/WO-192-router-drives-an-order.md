@@ -1,4 +1,4 @@
-# WO-192 — One session drives an order through its whole lifecycle: a router that only routes starts a fresh worker for each phase and hands it nothing but the phrase (version assigned at activation)
+# WO-192 — One session drives an order through its whole lifecycle: a router that only routes starts a fresh worker for each phase and hands it nothing but the phrase, for the launchpad's own orders and for a registered target's, whose phase workers run in the target worktree under WO-049's bundle (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -48,17 +48,29 @@ Planner-synthesized. Opaque identifier, not a priority. Clean-room
 screen: applies; the constrained managed host is named only in generic
 terms, no fact about any such host is recorded here, and what such a
 host meters is observed by the instance's own first order, never by
-this one.
-**Depends on:** WO-187 (the generated agent definition for spawned
-workers, which this order extends to one per role); WO-139 merged (the
+this one. Amended by the 2026-10-11 route pass (operator direction, item
+(k), captured in ignored intake, SHA-256
+`d570ff00e50f064027423cfaec2c0ae4de4ecc19c33282bef1a1f474bfa09bc8`): the
+router drives target orders as well as launchpad orders; each phase's
+worker runs in the target worktree WO-072 created, governed by WO-049's
+bundle, launched from the instance; WO-072 is a hard dependency; placed
+before WO-083 so the measured run is driven the way the operator drives
+orders.
+**Depends on:** WO-072 (hard: the target worktree lifecycle whose
+worktree a target order's phase workers run in and whose local registry
+resolves the worktree grant); WO-187 merged (closed, v0.67.1: the generated
+agent definition for spawned workers, which this order extends to one per
+role); WO-139 merged (the
 sub-agent counter; closed); WO-135 merged (the writer reservation;
 closed); WO-130 merged (the phrase records its own dispatch; closed);
 WO-158 merged (off-ramps the router stops for; closed).
-**Recommended placement:** after WO-118, first of the three orders that
-make a starter instance workable on a constrained managed host; the
-operator's notes ask for it once the starter exists, and the loop from a
-starter instance is placed ahead so that no instance order waits in
-front of the product exit. It has no
+**Recommended placement:** after WO-206 and directly before WO-083
+(operator direction, 2026-10-11: the measured run is driven the way the
+operator will drive orders), first of the three orders that make a starter
+instance workable on a constrained managed host; the operator's notes ask
+for it once the starter exists, and the loop from a starter instance is
+placed ahead so that no instance order waits in front of the product exit.
+WO-072, its hard dependency, runs first in the sequence. It has no
 dependency on the export orders: a build that already carries the
 router is exported with it, and an earlier export receives it through
 WO-077's update. It may move into the machinery lane after WO-188 at
@@ -71,6 +83,11 @@ phase-by-phase dispatch here. This order edits `harness-host.ts`,
 
 <!-- dotln-dependencies:start -->
 [
+  {
+    "workOrderId": "WO-072",
+    "relation": "hard",
+    "reason": "the target worktree lifecycle whose worktree a target order's phase workers run in and whose local registry resolves the worktree grant"
+  },
   {
     "workOrderId": "WO-187",
     "relation": "hard",
@@ -122,7 +139,11 @@ session carries it from its current phase to a pull request ready to
 merge, then, typed again after the merge, through release close. That
 session only routes: every phase is done by a fresh worker that
 received the phrase and nothing else, runs its own dispatch, keeps its
-own sub-agent budget and records its own completion.
+own sub-agent budget and records its own completion. The order may be the
+launchpad's own or a registered target's (WO-071, WO-072): for a target
+order each phase's worker runs in the target worktree WO-072 created,
+governed by the bundle WO-049 emitted there, and is launched from the
+instance, so the operator never opens a session in a target repository.
 
 **Observed gap (dated 2026-10-02, `main` at `08845c71`):**
 
@@ -163,9 +184,11 @@ own sub-agent budget and records its own completion.
 - **Probe first.** Before any mechanism: on the installed host version,
   record what a tool call inside a spawned agent carries (agent
   identifier, type, effort), whether the spawning call inside a worker
-  names that worker, whether a worker can write in a directory added
-  after the session started, and whether a definition's pinned effort
-  is the effort the host reports. The design below stands on those
+  names that worker, whether a worker can write in a directory added after the session
+  started, whether a worker whose working directory is a target worktree
+  carrying WO-049's bundle is governed by that bundle's hooks or by the
+  parent session's, and whether a definition's pinned effort is the effort
+  the host reports. The design below stands on those
   rows. Where a row fails, the order takes the fallback named at the
   end of this section and says so; it does not build on an unobserved
   behavior.
@@ -194,9 +217,17 @@ own sub-agent budget and records its own completion.
   a ceiling for a driven session, by default the cap times the four
   lifecycle phases, and a drive that reaches it stops.
 - **Where work happens.** The router runs in the main checkout. A worker
-  for an order with a worktree is granted that worktree's root by a
-  grant kind derived from the order's recorded worktree, never from the
-  prompt.
+  for an order with a worktree is granted that worktree's root by a grant
+  kind derived from the order's recorded worktree, never from the prompt.
+  For a target order the worker's working directory is the target worktree
+  WO-072 created; the bundle WO-049 emitted there (hooks importing the
+  launchpad's runtime snapshot by absolute path, the deny list,
+  `CLAUDE.local.md`) governs its tool calls by construction in the
+  separate-session form, and the probe records whether it does in the
+  in-process form, whose host runs the parent session's hooks; where it does
+  not, target orders take the separate-session form and launchpad orders may
+  keep the in-process one. The `order-worktree` grant for a target order
+  resolves through WO-072's local registry of worktree paths.
 - **Stops, each with the next step in one line.** A pull request waiting
   for the operator's merge; a finding routed to the operator; an
   off-ramp or a typed correction; `analysis:` or `operator override:`;
@@ -246,7 +277,8 @@ own sub-agent budget and records its own completion.
    309); add the new lib to `machinerySources["harness-probe"]` in `scripts/test-runner.mjs`.
    Rows: the child's `agent_id`, `agent_type` and `effort.level`; a nested Agent call names
    its worker; a write under a directory added after the spawn; the pinned effort equals the
-   child's reported level. WO-139's probe (`docs/evidence/WO-139/subagent-probe-2.json`,
+   child's reported level; a worker whose working directory is a target worktree carrying
+   WO-049's bundle (emitted into WO-072's fixture) reports which hooks judged its tool call. WO-139's probe (`docs/evidence/WO-139/subagent-probe-2.json`,
    Claude 2.1.276) already observed the first three fields on a spawned agent; nested spawns,
    late directories and pinned effort are new. Check:
    `DOTLN_LIVE_HARNESS=1 node scripts/harness-probe.mjs --agent-identity docs/evidence/WO-192/host-probe.json`;
@@ -285,8 +317,8 @@ own sub-agent budget and records its own completion.
    `budgets.json` `drivenSessionCeiling` (default four times the cap). Check:
    `npm run build && node --test packages/skeleton/dist/test/subagent-budget.test.js`.
 7. Grant: `OutsideWriteGrant` (`harness.ts` lines 176 to 183) and its validator (300 to 316)
-   gain `order-worktree`; `harness-host.ts` line 3636 resolves it from
-   `git worktree list --porcelain` for the order's recorded branch; `contributor.ts` line 225
+   gain `order-worktree`; `harness-host.ts` line 3636 resolves it from `git worktree list --porcelain` for the order's
+   recorded branch, and for a target order from WO-072's local registry of worktree paths; `contributor.ts` line 225
    adds it with its source. Check: `npm test -- --only harness-fixtures`.
 8. Route: `projectOrder` (`scripts/resume.mjs` lines 752 to 791) adds `route` from
    `legalActions` (208 to 228); merged is `git merge-base --is-ancestor <branch> origin/main`
@@ -296,7 +328,9 @@ own sub-agent budget and records its own completion.
    `docs/control/local/retained/<WO>/release-close.json` (`scripts/release.mjs` lines 2636 to
    2640). Re-entry and stop cases in `scripts/test-control-segments.mjs` (run by
    `scripts/test-resume.sh` line 1018). Check: `npm test -- --only resume`.
-9. Live drive (criterion 9): a scratch clone with a local bare remote.
+9. Live drive (criterion 9): a registered target's order from a fixture launchpad (WO-072's
+   fixture) against a scratch target with a local bare remote, so the driven route is the one
+   the operator uses; the launchpad-order route is covered by criterion 8's table tests.
 10. Write-backs: product 07 §"## Operator resume phrases" (the `drive:` phrase and the router,
     in place); product 05 §"### Orchestration and quality policies" (one sentence);
     `docs/AI-HARNESS-SECURITY.md` §"## DotLn hook boundary" (the spawn refusal and the
@@ -346,17 +380,21 @@ status reading; one live driven order; the write-backs below.
    ceiling; the unattributable case is counted as a stated minimum, as
    today.
 7. A worker for an order with a recorded worktree may write under that
-   worktree's root and is refused under another order's; the grant
+   worktree's root and is refused under another order's; for a target order
+   the root is the target worktree WO-072's registry resolves; the grant
    appears in the worker's role record with its source.
 8. Table tests cover re-entry: resume of an addressable worker,
    re-dispatch of an interrupted phase with the same briefing, the
    repair loop to its bound, each listed stop, and release close after
    an observed merge.
-9. One order is driven live in a scratch clone with a local remote from
-   `active` to a passing final review by one session: the record shows
-   one phrase typed, each phase's worker, model and effort as the host
-   reports them, each worker's sub-agent count, and usage split between
-   the router and its workers as far as the host exposes it. Publication
+9. One order is driven live from `active` to a passing final review by one
+   session: a registered target's order from a fixture launchpad against a
+   scratch target with a local remote; the record shows one phrase typed,
+   each phase's worker with its working directory in the target worktree,
+   the model and effort as the host reports them, which hooks governed each
+   worker's tool calls (the bundle's or the parent session's, as the probe
+   found), each worker's sub-agent count, and usage split between the router
+   and its workers as far as the host exposes it. Publication
    and release close are covered by criterion 8's fixtures, not by this
    run.
 10. Write-backs: product 07 §Operator resume phrases gains the phrase
@@ -376,6 +414,11 @@ deterministic re-mints; `npm test -- --review` before
 **Write-back duty:** as listed in criterion 10.
 
 **Known issues and carry-ins:**
+- 2026-10-11 route pass (operator direction, item (k)): target orders are
+  in scope; each phase's worker runs in the target worktree under WO-049's
+  bundle, launched from the instance; the probe gains the target-worktree
+  row and the live drive is a target order; WO-072 is a typed hard edge;
+  placed directly before WO-083.
 - 2026-10-11 standard pass: two rows on the agent definitions this order
   regenerates are allocated here, for the Boy Scout bound or a recorded
   reason to leave each: FUP-82e9f0bda503c40c (WO-187 D020: the worker pin
@@ -424,8 +467,9 @@ deterministic re-mints; `npm test -- --review` before
 
 **Non-goals:** merging a pull request; driving more than one order per
 phrase; any scheduler or queue; observing or naming what a particular
-managed host meters; changing what any phase does; the resident, the
-portfolio or target orders; a control event for release close.
+managed host meters; changing what any phase does; the resident and the
+portfolio (target orders are in scope since 2026-10-11); a control event
+for release close.
 
 **Operator-review assumptions**
 
@@ -439,6 +483,6 @@ portfolio or target orders; a control event for release close.
 4. If the host does not expose what the design needs, the fallback of
    one separate session per phase is delivered instead, and the order
    says which.
-5. This order is placed after WO-118 because the notes ask for it once
-   the starter exists and the product exit should not wait behind it;
-   nothing in it depends on the export.
+5. This order is placed after WO-206 and directly before WO-083 at the
+   operator's direction of 2026-10-11, so the measured run is driven the way
+   the operator drives orders; nothing in it depends on the export.

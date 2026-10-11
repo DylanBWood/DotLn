@@ -4,20 +4,28 @@
 
 ## Proposed order
 
-- [x] [WO-078] — Sibling registry and export receipts · **final-reviewed** · pair 1
-- [x] [WO-191] — Reader profiles for published text · **final-reviewed** · pair 1
 - [ ] [WO-072] — Target worktree lifecycle · **queued**
-- [ ] [WO-076] — Instance build overlay · **queued** · pair 2
-- [ ] [WO-200] — Pinned collector bytes are watched where they change · **queued** · pair 2
+- [ ] [WO-076] — Instance build overlay · **queued** · pair 1
+- [ ] [WO-200] — Pinned collector bytes are watched where they change · **queued** · pair 1
+- [ ] [WO-201] — The export runs core's suites · **queued**
+- [ ] [WO-202] — The planning machinery runs in an instance · **queued**
+- [ ] [WO-203] — Update preview · **queued**
 - [ ] [WO-118] — The resident-owned loop from a starter instance · **queued**
+- [ ] [WO-080] — Workstream document and index grouping · **queued** · pair 2
+- [ ] [WO-204] — Source-writer cleanup revocation survives host failures · **queued** · pair 2
+- [ ] [WO-082] — Synthetic pilot · **queued** · pair 3
+- [ ] [WO-205] — Writer-resistant Git interpretation · **queued** · pair 3
+- [ ] [WO-206] — Source-writer object-store protection · **queued**
 - [ ] [WO-192] — A router drives an order through its lifecycle · **queued**
+- [ ] [WO-083] — The real run from the operator's instance · **queued**
+- [ ] [WO-207] — Update rollback · **queued**
+- [ ] [WO-208] — Instance extension point · **queued**
+- [ ] [WO-209] — The build as a selectable update channel · **queued**
+- [ ] [WO-081] — Board Workstreams section · **queued**
 - [ ] [WO-193] — Capability requests from an instance · **queued**
 - [ ] [WO-194] — Private predecessor map · **queued**
 - [ ] [WO-183] — Intent declaration and the stranger test · **queued**
 - [ ] [WO-113] — Work-order files are stable contracts · **queued**
-- [ ] [WO-080] — Workstream document and index grouping · **queued**
-- [ ] [WO-081] — Board Workstreams section · **queued**
-- [ ] [WO-082] — Synthetic pilot · **queued**
 - [ ] [WO-096] — Migration ledger · **queued**
 - [ ] [WO-097] — Rule migration batch 1a · **queued**
 - [ ] [WO-098] — Rule migration batch 1b · **queued**
@@ -29,7 +37,6 @@
 - [ ] [WO-089] — Capability table fold · **queued**
 - [ ] [WO-088] — One source for the phrase table · **queued**
 - [ ] [WO-014] — Approval-burden baseline · **queued**
-- [ ] [WO-083] — The real run from the operator's launchpad instance · **queued**
 
 Order and short labels come from [the proposed sequence](../planning/sequence.md); rows sharing a `pair N` mark are a lane pair, two parallel worktrees, and unmarked rows run one at a time.
 Checks mean passing final review. Settled orders (closed, withdrawn, superseded and historical), this index's sources and limits and its release-tag record are on [the history page](HISTORY.md).
@@ -98,6 +105,57 @@ None.
 - Cost: adds a &#96;dotln-pinned-bytes&#96; attribute on the four files &#96;protocolLineage&#96; hashes (&#96;.gitattributes&#96;), the same four paths in &#96;.prettierignore&#96;'s exact-bytes group, one more attribute name in &#96;commentFiles&#96; (&#96;scripts/lib/comment-labels.mjs&#96;, the &#96;check-attr&#96; call at line 60), one machinery row &#96;wo107-schema&#96; with its &#96;machinerySources&#96; entry and &#96;protection&#96; sentence (&#96;scripts/test-runner.mjs&#96;, lines 108 and 855), two fixture cases in &#96;scripts/test-comment-labels.mjs&#96;, one case in &#96;corpus/harness/wo107-schema.test.mjs&#96;, the restored comment line in &#96;corpus/harness/profile.mjs&#96;, &#96;docs/evidence/WO-200/decisions.md&#96;, one sentence in product 03 §Corpus policy and one dated line in &#96;corpus/baselines/SCHEMA-WO-107.md&#96;. Steady-state cost: the row runs only when one of its five declared sources changed against the merge base (about one second of test time; its thirteen cases ran in under one second each at &#96;9c18aa54&#96;); the comment scan reads four fewer files. Removes: a red lane since 2026-10-09 (36 of the 72 committed WO-107 records carry a protocol hash no current source produces), the class of silent invalidation in which a repository-wide rewriter reaches hash-pinned bytes outside every gate (WO-105 D012 and WO-107 are the two instances), and the manual lane run before any consumer of the baseline. Re-mints: &#96;scripts/test-runner.mjs&#96; is a declared machinery source, so &#96;npm test -- --review&#96; runs before handoff; &#96;comment-labels.mjs&#96;, &#96;profile.mjs&#96;, &#96;.gitattributes&#96; and &#96;.prettierignore&#96; are in no evidence inventory and no file the feedback verifier judges changes, so no edition is re-minted and no live episode runs. Wall-clock, tokens and context bytes are unknown until run.
 - Authority: [docs/work-orders/WO-200-pinned-collector-bytes-observed.md](WO-200-pinned-collector-bytes-observed.md)
 
+### WO-201
+
+[WO-201 — The export runs core's suites: &#96;npm test&#96;, &#96;npm run test:docs&#96; and &#96;npm test -- --review&#96; run inside a kit that holds no package source, verifying the carried runtime by its manifest instead of building, and the client README says which suites run in a fork, which stay core's, where the instance's orders live and what editing a kit file means (version assigned at activation)](WO-201-export-runs-core-suites.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-075: satisfied-by-close (met) — the compiled runtime the kit carries and the suites run against; WO-077: satisfied-by-close (met) — the update that carries the kit mode and the compiled tests to an existing export; WO-078: satisfied-by-close (met) — the receipt step every export fixture now runs through.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor max; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds a kit mode to &#96;scripts/test-runner.mjs&#96; (the &#96;build&#96; task replaced by a manifest verification task when the root holds &#96;KIT-MANIFEST.json&#96; and &#96;hasPackageSources&#96; in &#96;scripts/lib/paths.mjs&#96; is false; rows declared core-only listed by name and skipped), a &#96;verify&#96; form in &#96;scripts/launchpad.mjs&#96;, the compiled tests &#96;packages/&lt;name&gt;/dist/test/**&#96; and the fixtures they read in the kit's file set (the kit's byte growth is measured by the fixture and recorded), one fixture case in &#96;scripts/test-launchpad.mjs&#96; that runs the three gate selections inside one export under the bounded wrapper, and the client README's §What runs here, §Kit files and instance files and §Taking upstream updates rewritten. Removes the kit's recorded limit (&#96;npm test&#96; fails at the build; WO-074 D007), the README paragraph that records it, and the state in which no order in an instance can pass verification or final review on the instance's own gate. Wall-clock: the &#96;launchpad&#96; gate task grows by one export plus three gate runs inside it; that task's latest fresh row already read 123.776 s against a 49.691 s thirty-day median (25 samples) at &#96;plan conditions&#96; on 2026-10-11T19:18Z after WO-078's two export cases, so the fixture reuses one export for the three selections and records its own duration (criterion 1). Re-mints: &#96;scripts/test-runner.mjs&#96;, &#96;scripts/launchpad.mjs&#96; and &#96;scripts/kit/README.client.md&#96; are not registered evidence sources (&#96;scripts/lib/evidence-sources.mjs&#96;), so no edition re-mints and no live feedback episode; the runner and the launchpad are declared sources of machinery suites, so &#96;npm test -- --review&#96; runs before handoff. Tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-201-export-runs-core-suites.md](WO-201-export-runs-core-suites.md)
+
+### WO-202
+
+[WO-202 — The planning machinery runs in an instance: plan start, the follow-up register, refute and receipt, the entropy review, meta, the work-order index, the document gate, the publication check and what a release close reads, each observed on a fixture export and fixed where the kit lacks it (version assigned at activation)](WO-202-planning-machinery-runs-in-an-instance.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-201.
+- References: WO-201: hard (unmet) — the document and review gates run inside a kit only with WO-201's kit mode; WO-078: satisfied-by-close (met) — the export's receipt step the fixture runs through.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor max; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds a fixture suite &#96;scripts/test-launchpad-planning.mjs&#96; (one export, then every command of the planning list run inside it, first as a probe at the base and then as assertions), its row in &#96;scripts/test-runner.mjs&#96;, the instance seeds the probe shows missing (written once by &#96;scripts/launchpad.mjs&#96;, never manifest-listed), optional handling of core-only inputs in the planning scripts the probe names (&#96;scripts/refute-plan.mjs&#96;, &#96;scripts/lib/planning-followups.mjs&#96;, &#96;scripts/docs-check.mjs&#96;, &#96;scripts/check-publication.mjs&#96;, &#96;scripts/lib/reader-profiles.mjs&#96; and &#96;scripts/meta.mjs&#96; are the candidates the gap names), and a §Planning in this instance section in &#96;scripts/kit/README.client.md&#96;. Removes the unobserved state: no planning pass, refutation, entropy review or document gate has run inside an export, and an instance today depends on core for its planning. Wall-clock: the new suite costs one export plus the command list (the probe records each command's duration); the &#96;launchpad&#96; task's growth is WO-201's watch and this suite is a separate row. Re-mints: none of the named scripts is a registered evidence source (&#96;scripts/lib/evidence-sources.mjs&#96;), so no edition re-mint and no live feedback episode; the launchpad and the runner are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff. Tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-202-planning-machinery-runs-in-an-instance.md](WO-202-planning-machinery-runs-in-an-instance.md)
+
+### WO-203
+
+[WO-203 — Update preview: before any write, an update shows what it will replace, add, remove and refuse and which instance actions it would apply or preserve, from core against a starter or an instance and inside an instance against the starter revision it is about to merge (version assigned at activation)](WO-203-update-preview.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-077: satisfied-by-close (met) — the update whose plan the preview shows before any write; WO-078: satisfied-by-close (met) — the receipt and registry a preview must leave unwritten.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor max; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds a split of &#96;updateKit&#96; in &#96;scripts/launchpad.mjs&#96; into a planning half and an applying half, a &#96;--preview&#96; flag that runs the first half and prints, one renderer shared by the preview and the update's summary, a &#96;preview --from &lt;ref&gt;&#96; form that reads the incoming manifest and actions from a Git revision inside an instance, two fixture cases in &#96;scripts/test-launchpad.mjs&#96;, and the client README's §Taking upstream updates extended. Removes the point of no return the operator named on 2026-10-11: today the first time an instance learns what an update changes is after it has written. Wall-clock: the from-core preview costs the source build &#96;prepareKit&#96; already pays (tens of seconds, measured by the fixture); the in-instance form costs two &#96;git show&#96; reads and a hash of the tree. Re-mints: &#96;scripts/launchpad.mjs&#96; is not a registered evidence source; no edition re-mint, no live feedback episode; the launchpad is a declared machinery source, so &#96;npm test -- --review&#96; runs before handoff. Tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-203-update-preview.md](WO-203-update-preview.md)
+
 ### WO-118
 
 [WO-118 — The resident-owned loop from a starter instance: one initial intent and standing grants carry work through derivation, dispatch, verification, repair, delivery and the pull-request loop under the durable runtime, surviving an actor's death and a resident restart, with only material decisions returned to the operator (version assigned at activation)](WO-118-resident-owned-loop-from-starter.md)
@@ -116,14 +174,99 @@ None.
 - Delivery: target publication requires `worktree publish WO-NNN --target <request> --require-deliverable-ready` (WO-182); record every absent item before retrying.
 - Authority: [docs/work-orders/WO-118-resident-owned-loop-from-starter.md](WO-118-resident-owned-loop-from-starter.md)
 
-### WO-192
+### WO-080
 
-[WO-192 — One session drives an order through its whole lifecycle: a router that only routes starts a fresh worker for each phase and hands it nothing but the phrase (version assigned at activation)](WO-192-router-drives-an-order.md)
+[WO-080 — Workstream document, field and index grouping: a launchpad holds one document per outcome, member orders declare it, and the index groups members with repository, base, phase, verdict, integration state and staleness (version assigned at activation)](WO-080-workstream-document-and-index.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-072.
+- References: WO-072: hard (unmet) — the id-to-clone mapping and target worktree lifecycle whose Git state the members report; WO-167: hard (met) — closed at v0.53.1; the fold this order's product 07 write-back followed; WO-071: hard (met) — member orders name registered repositories.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Track: delivery
+- Cost: adds a workstream document convention and its template under the configured &#96;workstreams&#96; root, one leading metadata field (&#96;**Workstream:** WS-NNN&#96;), a grouping of member orders in the generated index with repository, base, phase, verdict, integration state and a stale mark, a record in the index of the target facts it read, fixtures, and at most 350 bytes in product 12 and 200 in product 07. Removes nothing that runs today: no workstream document, field or grouping exists. It unblocks WO-081 and WO-082, which depend on it. Re-mints: none; &#96;scripts/work-orders.mjs&#96;, its fixtures and the template are not registered evidence sources (&#96;scripts/lib/evidence-sources.mjs&#96;); an edit to &#96;scripts/lib/git.mjs&#96;, &#96;scripts/lib/helpers.mjs&#96; or &#96;scripts/lib/paths.mjs&#96;, which every edition registers, would owe a deterministic re-mint of each edition it stales. Wall-clock, tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-080-workstream-document-and-index.md](WO-080-workstream-document-and-index.md)
+
+### WO-204
+
+[WO-204 — Source-writer command revocation survives host cleanup failures: the writer's owned command and profile files are removed independently, an absent file is tolerated, a surviving grant keeps refusing admission and after-tests, and process settlement, interruption and integrity are recorded even when cleanup fails (version assigned at activation)](WO-204-source-writer-cleanup-revocation.md)
 
 - State: draft.
 - Application target: unassigned.
 - Dependencies: typed; dependency-ready.
-- References: WO-187: hard (met) — the generated agent definition with a pinned model and effort, extended here to one per lifecycle role; WO-139: satisfied-by-close (met) — the sub-agent counter this order keys by spawning worker; WO-135: satisfied-by-close (met) — the writer reservation this order keys by session and agent; WO-130: satisfied-by-close (met) — phrase dispatch and the briefing a worker receives; WO-158: satisfied-by-close (met) — the off-ramps and recovery controls the router stops for.
+- References: WO-112: satisfied-by-close (met) — the source-change host, command and fixture this order repairs; WO-199: satisfied-by-close (met) — recovery through a recorded process group, which the restart case relies on.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor max; verifier xhigh; reviewer xhigh.
+- Track: machinery
+- Cost: adds absence-tolerant, independent removals and a recorded cleanup outcome in &#96;packages/skeleton/src/source-change-command.ts&#96;, a reordered settlement in &#96;packages/skeleton/src/source-change-host.ts&#96; (settle the process, record interruption and integrity, then clean up and record the cleanup's result), an injectable removal in the test fixture &#96;packages/skeleton/test/source-change-fixture.ts&#96;, and the fault matrix in &#96;packages/skeleton/test/source-change-host.test.ts&#96; and &#96;source-change-integrity.test.ts&#96;. Removes the boundary WO-112 D043 left: an unlink error that bypasses the &#96;WorkerInterrupted&#96; and integrity records and a revocation flag that can claim an effect that did not happen. Wall-clock: the skeleton suite grows by the matrix (each case a fixture episode; the executor records the suite's duration against its 289.9 s thirty-day median). Re-mints: &#96;source-change-command.ts&#96; and &#96;source-change-host.ts&#96; are registered evidence sources (&#96;scripts/lib/evidence-sources.mjs&#96; lines 49 and 50), so the editions they stale are re-minted deterministically; neither is a file the feedback verifier judges, so no live feedback episode; &#96;source-change-command.ts&#96; is a declared source of the &#96;harness-probe&#96; machinery suite (&#96;scripts/test-runner.mjs&#96; line 116), so &#96;npm test -- --review&#96; runs before handoff. Tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-204-source-writer-cleanup-revocation.md](WO-204-source-writer-cleanup-revocation.md)
+
+### WO-082
+
+[WO-082 — Synthetic pilot: product 12's six demonstrations pass as automated fixtures over a real-Git launchpad with three target repositories (version assigned at activation)](WO-082-synthetic-pilot-six-demonstrations.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-080, WO-072.
+- References: WO-080: hard (unmet) — the workstream the fixture exercises; WO-072: hard (unmet) — target worktrees from a launchpad; WO-075: hard (met) — a fixture launchpad exported with its build.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Track: delivery
+- Cost: adds one real-Git fixture suite that builds three target repositories (service, client, documentation) and a launchpad exported by WO-074 and WO-075, six named demonstration fixtures over one workstream, the suite's row in &#96;scripts/test-runner.mjs&#96;, and at most 200 bytes in product 12. Removes nothing that runs today: no demonstration has a fixture. It unblocks WO-083, which depends on it. Re-mints: none; the suite, its fixtures and &#96;scripts/test-runner.mjs&#96; are not registered evidence sources. A suite in the product gate counts against the stand-down plan's reversal condition, a fresh &#96;npm test&#96; above six minutes on the operator's host, so the executor records the suite's wall-clock. Wall-clock, tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-082-synthetic-pilot-six-demonstrations.md](WO-082-synthetic-pilot-six-demonstrations.md)
+
+### WO-205
+
+[WO-205 — Writer-resistant Git interpretation: hidden index flags and writer-controlled Git configuration cannot change the bytes the source host after-tests or the commit the verification judges, proven for modified, deleted and executable files, replace refs and commit graphs, with ordinary recovery intact (version assigned at activation)](WO-205-writer-resistant-git-interpretation.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-112: satisfied-by-close (met) — the source-change worktree and verification worktree this order repairs.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor max; verifier xhigh; reviewer xhigh.
+- Track: machinery
+- Cost: adds a committed-tree comparison in place of the porcelain clean check in &#96;packages/skeleton/src/source-change-worktree.ts&#96;, refusals of &#96;skip-worktree&#96; and &#96;assume-unchanged&#96; entries, the host's writer-resistant Git argument set applied to the local Git helper of &#96;packages/skeleton/src/verification-worktree.ts&#96;, and the cases in &#96;packages/skeleton/test/verification-worktree.test.ts&#96; and &#96;source-change-host.test.ts&#96; with their fixtures. Removes the boundary WO-112 D044 left: a clean porcelain status taken as proof of committed worktree bytes before after-tests, and verification reads that a writer's Git configuration, replace refs or commit graph could steer. Wall-clock: the skeleton suite grows by the cases (duration recorded against its 289.9 s thirty-day median). Re-mints: &#96;source-change-worktree.ts&#96; and &#96;verification-worktree.ts&#96; are registered evidence sources (&#96;scripts/lib/evidence-sources.mjs&#96; lines 59 and 86), so the editions they stale are re-minted deterministically; neither is a feedback-judged file, so no live feedback episode; &#96;npm test -- --review&#96; runs before handoff as the machinery-source rule requires for the skeleton's declared sources. Tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-205-writer-resistant-git-interpretation.md](WO-205-writer-resistant-git-interpretation.md)
+
+### WO-206
+
+[WO-206 — Source-writer object-store protection: a writer cannot change or delete existing shared repository objects because it writes into a private object store the host imports from after admission, proven against the retained counterexample with crash recovery and concurrent maintenance (version assigned at activation)](WO-206-source-writer-object-store-protection.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-112: satisfied-by-close (met) — the source writer, worktree and host whose object authority this order changes.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor max; verifier xhigh; reviewer xhigh.
+- Track: machinery
+- Cost: adds a private object directory per writer episode in &#96;packages/skeleton/src/source-change-worktree.ts&#96; (created with the worktree; the shared store reachable read-only through &#96;GIT_ALTERNATE_OBJECT_DIRECTORIES&#96;), writer access that excludes the shared &#96;objects/&#96; directory in &#96;packages/skeleton/src/worker-transport.ts&#96; (&#96;codexWriterAccess&#96; and its Claude counterpart), a host-owned import of the admitted candidate's objects into the shared store followed by the ref update in &#96;packages/skeleton/src/source-change-host.ts&#96;, an inventory of the shared refs and alternates kept as today in &#96;sharedState()&#96;, the retained counterexample (&#96;docs/evidence/WO-112/shared-object-counterexample.mjs&#96;) run as a case, and the matrix in &#96;packages/skeleton/test/source-change-integrity.test.ts&#96;, &#96;source-change-confinement.test.ts&#96; and &#96;source-change-host.test.ts&#96;. Removes the boundary WO-112 D033 left: a writer that can write existing shared objects while the durable observer inventories none of their bytes, and the narrowed claim (unchanged shared refs and alternates only) that stands in for shared-repository preservation. Wall-clock: one &#96;git fetch&#96; from the private store per admitted candidate (measured on the vertical fixture); the skeleton suite grows by the matrix. Re-mints: &#96;source-change-worktree.ts&#96;, &#96;source-change-host.ts&#96; and &#96;worker-transport.ts&#96; are registered evidence sources (&#96;scripts/lib/evidence-sources.mjs&#96; lines 50, 59 and 88), so the editions they stale are re-minted deterministically; none is a feedback-judged file, so no live feedback episode; &#96;worker-transport.ts&#96; is a declared source of the &#96;harness-fixtures&#96; machinery suite (&#96;scripts/test-runner.mjs&#96; lines 131 and 165), so &#96;npm test -- --review&#96; runs before handoff. Tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-206-source-writer-object-store-protection.md](WO-206-source-writer-object-store-protection.md)
+
+### WO-192
+
+[WO-192 — One session drives an order through its whole lifecycle: a router that only routes starts a fresh worker for each phase and hands it nothing but the phrase, for the launchpad's own orders and for a registered target's, whose phase workers run in the target worktree under WO-049's bundle (version assigned at activation)](WO-192-router-drives-an-order.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-072.
+- References: WO-072: hard (unmet) — the target worktree lifecycle whose worktree a target order's phase workers run in and whose local registry resolves the worktree grant; WO-187: hard (met) — the generated agent definition with a pinned model and effort, extended here to one per lifecycle role; WO-139: satisfied-by-close (met) — the sub-agent counter this order keys by spawning worker; WO-135: satisfied-by-close (met) — the writer reservation this order keys by session and agent; WO-130: satisfied-by-close (met) — phrase dispatch and the briefing a worker receives; WO-158: satisfied-by-close (met) — the off-ramps and recovery controls the router stops for.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -132,6 +275,91 @@ None.
 - Track: delivery
 - Cost: adds a &#96;router&#96; role and the phrase &#96;drive: WO-NNN&#96; to the Contributor build (&#96;packages/skeleton/src/loadouts/contributor.ts&#96;), one generated agent definition per lifecycle role and effort an open order names, from the generator and check rule WO-187 adds for spawned workers (&#96;packages/compiler/src/harness.ts&#96;), a session record, role and writer reservation keyed by session and agent (&#96;packages/skeleton/src/harness-host.ts&#96;), a sub-agent count kept per spawning worker (&#96;packages/skeleton/src/subagent-budget.ts&#96;), a refusal of any router spawn whose prompt is not a lifecycle phrase, a worktree root grant for the worker whose order owns that worktree, and a &#96;route&#96; reading of the canonical status (&#96;scripts/resume.mjs&#96;). Removes: the operator typing one phrase per phase into a separate terminal and carrying each handoff by hand (at least four sessions for an order that passes first time: execute, verify, final review and release close; more for each repair), and on a host that meters only the main thread, the phase work itself, which then runs in workers. The router's own context holds statuses, not work. Re-mints: &#96;harness-host.ts&#96;, &#96;subagent-budget.ts&#96;, &#96;harness.ts&#96; and &#96;contributor.ts&#96; are registered evidence sources, so the editions they stale are re-minted deterministically; none is a file the feedback verifier judges, so no live feedback episode; all are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff. One live driven order is paid in worker tokens (criterion 9). Cold-start bytes: a new root for the router; the other roots are unchanged. Wall-clock, tokens and context bytes are unknown until run.
 - Authority: [docs/work-orders/WO-192-router-drives-an-order.md](WO-192-router-drives-an-order.md)
+
+### WO-083
+
+[WO-083 — The real run: the operator's personal instance cuts one bounded Angular order through its own planning pass and drives it through its lifecycle the way core drives orders at that time, under the instance's emitted build, with a pre-run baseline block and the four product-12 measures counted by this repository's verifier (version assigned at activation)](WO-083-real-run-launchpad-instance.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-118, WO-082, WO-072, WO-201, WO-202.
+- References: WO-118: hard (unmet) — the resident-owned loop is proven from a starter instance before the operator's instance runs the workflow against a real target; satisfied only by WO-118's criterion 1 recorded observed, never by a waiver; WO-082: hard (unmet) — the synthetic pilot precedes the witnessed run; WO-072: hard (unmet) — the target worktree lifecycle the instance's Angular orders run through; WO-201: hard (unmet) — the instance's own gates, which verify the order this run drives; WO-202: hard (unmet) — the instance's own planning pass, which cuts the order this run drives; WO-073: satisfied-by-close (met) — the profile convention the instance's profile follows; WO-078: satisfied-by-close (met) — the generated sibling registry whose Angular consumer entry the run changes.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: the instance's sessions, the router's phase workers (WO-192) or hand-opened handoff sessions, run under the instance's own declarations and emitted bundle; the operator witnesses; launch claims recorded per session (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Track: delivery
+- Cost: adds the receipt of one operator-witnessed run under &#96;docs/evidence/WO-083/&#96;, with sanitized transcripts, sanitized copies of &#96;WS-001&#96; and the instance's Angular repository profile, fired-unit counts and the verifier's count of four measures; the Angular consumer's entry changed through WO-078's generator; a capability-table row; and about 200 bytes each in products 12, 04, 13 and 06 (the planner's estimates, never bounds: the document ceilings are planning's). Removes nothing that runs today: it is the first evidence for the instance route product 12 records. Re-mints: none; the receipt, the registry and the documents it writes are not registered evidence sources, and the live step is the operator's run in the instance and the target, not an evidence edition. Wall-clock, tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-083-real-run-launchpad-instance.md](WO-083-real-run-launchpad-instance.md)
+
+### WO-207
+
+[WO-207 — Update rollback: an instance returns to the kit state before its last update, restoring every kit file the update replaced, added or removed, reversing the instance actions that can be reversed and naming those that cannot, from core or inside the instance, with a re-emit to follow (version assigned at activation)](WO-207-update-rollback.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-203.
+- References: WO-203: hard (unmet) — the update's planning and applying halves and the renderer the rollback reuses; WO-077: satisfied-by-close (met) — the update this order undoes.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor max; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds an update log the update appends inside the destination (&#96;docs/control/kit/updates.jsonl&#96;, instance-owned, never manifest-listed: the time, the prior and new core commits, the prior manifest's files and hashes, the pre-update commit of the destination when it has one, the plan and the applied actions), a retained copy of each file the update replaces or removes under the destination's ignored local lane, a &#96;rollback&#96; form in &#96;scripts/launchpad.mjs&#96; runnable from core (&#96;export --update &lt;dir&gt; --rollback&#96;) and inside the instance (&#96;node scripts/launchpad.mjs rollback&#96;), reversal of reversible instance actions, fixture cases in &#96;scripts/test-launchpad.mjs&#96;, and the client README's §Taking upstream updates extended. Removes the state the operator named on 2026-10-11 for the work instance: today the only way back from an update is Git archaeology by hand. Wall-clock: the update gains one copy per replaced file (measured by the fixture); a rollback costs the restores. Re-mints: &#96;scripts/launchpad.mjs&#96; is not a registered evidence source; no edition re-mint, no live feedback episode; the launchpad is a declared machinery source, so &#96;npm test -- --review&#96; runs before handoff. Tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-207-update-rollback.md](WO-207-update-rollback.md)
+
+### WO-208
+
+[WO-208 — Instance extension point: a configured, manifest-excluded location for instance-owned code that the kit's machinery loads through the SourceAdapter port and registers for the sibling ports, never touched by an update, recorded at load and reviewed under the executable-code burden, with a fixture adapter as its first consumer and the enterprise-tracker adapter left to the work instance (version assigned at activation)](WO-208-instance-extension-point.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-076.
+- References: WO-076: hard (unmet) — the instance-owned, manifest-excluded convention the extension root follows; WO-112: satisfied-by-close (met) — the vertical's intake and the fetch seam the adapter plugs into; WO-060: satisfied-by-close (met) — decodeSourceBundle, the port's input contract every adapter's output passes through.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor max; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds an &#96;extensions&#96; section to the configuration schema in &#96;scripts/lib/config.mjs&#96; (a root outside every kit tree and a registry of adapters by kind), a loader &#96;scripts/lib/extensions.mjs&#96; (resolve, contain, import, validate the export shape, record &#96;ExtensionLoaded&#96;), a &#96;source&#96; field on vertical issues read by &#96;readVerticalConfiguration&#96; in &#96;scripts/lib/vertical-runtime.mjs&#96; and selected at the fetch seam in &#96;prepare()&#96;, a fixture adapter under &#96;scripts/fixtures/extensions/&#96;, cases in &#96;scripts/test-vertical.mjs&#96; and &#96;scripts/test-launchpad.mjs&#96;, the &#96;extensions&#96; section in &#96;scripts/kit/dotln.config.example.json&#96;, and a §Instance extensions section in &#96;scripts/kit/README.client.md&#96;. Removes the state the record names: the &#96;SourceAdapter&#96; port is prose, the only adapter lives in core, and an instance has nowhere its own code is loaded from (FUP-3e22cf6f99f02005). Wall-clock: one dynamic import per declared adapter at vertical start. Re-mints: &#96;scripts/lib/config.mjs&#96; is a registered import sibling the editions deliberately exclude (&#96;scripts/lib/evidence-sources.mjs&#96; line 362 onward), and &#96;scripts/lib/vertical-runtime.mjs&#96; is not registered, so no edition re-mint and no live feedback episode; the vertical suite is a product suite and the launchpad a declared machinery source, so &#96;npm test -- --review&#96; runs before handoff. Tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-208-instance-extension-point.md](WO-208-instance-extension-point.md)
+
+### WO-209
+
+[WO-209 — The build as a selectable update channel: an instance takes machinery with its build pinned at the prior compiled definitions, both together, or the build alone, through a pinned build the emit composes from, with the compiler contract guarded and the overlay composing over whichever build is pinned (version assigned at activation)](WO-209-build-as-update-channel.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-076, WO-203.
+- References: WO-076: hard (unmet) — the overlay composes over the kit build, which this order makes the pinned build; both change harness emit; WO-203: hard (unmet) — the update's planning and applying halves the channel partitions; WO-077: satisfied-by-close (met) — the update the channel selects within.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor max; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds a build partition to the kit manifest written by &#96;scripts/launchpad.mjs&#96; (&#96;kitManifest&#96;: the compiled definition modules the emit lowers from, &#96;packages/skeleton/dist/src/loadouts/contributor.js&#96; and &#96;feedback.js&#96;, with the loadout's semantic hash and the compiler package version they were compiled with), a &#96;channel&#96; on the update (&#96;both&#96;, &#96;machinery&#96;, &#96;build&#96;; &#96;--channel&#96; on the command, &#96;build.channel&#96; in the configuration as the default) honored by &#96;planUpdate&#96;, a &#96;build.pin&#96; the configuration records (the pinned modules' hashes and the instance commit that holds them), &#96;harness emit&#96; lowering from the pinned modules and &#96;harness check&#96; accepting the declared pin, an in-instance form &#96;node scripts/launchpad.mjs build --pin&#124;--take&#96; for the merge path, a compiler-contract guard, fixture cases in &#96;scripts/test-launchpad.mjs&#96; and &#96;scripts/test-harness.mjs&#96;, and the client README's channel section. Removes the coupling the record names: today the operator's compiled definitions arrive with every machinery update, and an instance can neither take machinery while keeping its build nor take a build alone. Wall-clock: the update's plan gains a partition; the emit's cost is unchanged. Re-mints: &#96;scripts/lib/harness.mjs&#96; is a registered build-only source (&#96;scripts/lib/evidence-sources.mjs&#96; lines 176 and 384 to 392), so the editions it stales are re-minted deterministically; &#96;scripts/lib/config.mjs&#96; is an excluded import sibling; no feedback-judged file changes, so no live feedback episode; the launchpad and the harness library are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff. Tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-209-build-as-update-channel.md](WO-209-build-as-update-channel.md)
+
+### WO-081
+
+[WO-081 — Board Workstreams section: the actor board's Work panel renders workstreams over the same data the index groups, as an additive view-model extension with regenerated fixture expectations (version assigned at activation)](WO-081-board-workstreams-section.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-080.
+- References: WO-080: hard (unmet) — the data it renders; WO-032: satisfied-by-release (met) v0.14.0 — the board it extends.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Track: delivery
+- Cost: adds one section to the actor board's Work panel over the index's workstream grouping, one fixture case with its pinned inputs and expected outputs, the console's minor release, and at most 200 bytes in product 04. Removes nothing that runs today: the board shows orders, not outcomes. Re-mints: none; no path under &#96;packages/console&#96; is a registered evidence source, and the release label the console's minor release writes into &#96;package-lock.json&#96; is normalized out of every edition's projection (&#96;evidenceSourceContent&#96; in &#96;packages/skeleton/src/evidence-editions.mjs&#96;; &#96;feedbackSourceFile&#96; in &#96;packages/skeleton/src/feedback-audit.ts&#96;). Wall-clock, tokens and context bytes are unknown until run.
+- Authority: [docs/work-orders/WO-081-board-workstreams-section.md](WO-081-board-workstreams-section.md)
 
 ### WO-193
 
@@ -201,57 +429,6 @@ None.
 - Track: machinery
 - Cost: adds one check in &#96;scripts/work-orders.mjs&#96;, run by &#96;index --check&#96;, over the order files filed after the cutoff (the allowed fields in their order, a date only in the observed gap's lead, no dated heading and no receipt or reconciliation section), with fixtures; the move of the open orders' dated notes to their evidence READMEs with a pointer left behind; at most 700 bytes in product 07; the generated index's Sources and limits. Removes the dated notes open orders carry in their files (at &#96;5f3849ec&#96;: six umbrella records, one redirect note, four identity updates, one compatibility amendment, one scope split and one dated problem lead). Re-mints: none; &#96;scripts/work-orders.mjs&#96;, &#96;scripts/lib/derived-contract.mjs&#96; and &#96;scripts/lib/dependencies.mjs&#96; are not registered evidence sources, and no source the feedback verifier judges is edited. Wall-clock, tokens and context bytes are unknown until run.
 - Authority: [docs/work-orders/WO-113-work-order-files-stable-contracts.md](WO-113-work-order-files-stable-contracts.md)
-
-### WO-080
-
-[WO-080 — Workstream document, field and index grouping: a launchpad holds one document per outcome, member orders declare it, and the index groups members with repository, base, phase, verdict, integration state and staleness (version assigned at activation)](WO-080-workstream-document-and-index.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; blocked on WO-072.
-- References: WO-072: hard (unmet) — the id-to-clone mapping and target worktree lifecycle whose Git state the members report; WO-167: hard (met) — closed at v0.53.1; the fold this order's product 07 write-back followed; WO-071: hard (met) — member orders name registered repositories.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Track: delivery
-- Cost: adds a workstream document convention and its template under the configured &#96;workstreams&#96; root, one leading metadata field (&#96;**Workstream:** WS-NNN&#96;), a grouping of member orders in the generated index with repository, base, phase, verdict, integration state and a stale mark, a record in the index of the target facts it read, fixtures, and at most 350 bytes in product 12 and 200 in product 07. Removes nothing that runs today: no workstream document, field or grouping exists. It unblocks WO-081 and WO-082, which depend on it. Re-mints: none; &#96;scripts/work-orders.mjs&#96;, its fixtures and the template are not registered evidence sources (&#96;scripts/lib/evidence-sources.mjs&#96;); an edit to &#96;scripts/lib/git.mjs&#96;, &#96;scripts/lib/helpers.mjs&#96; or &#96;scripts/lib/paths.mjs&#96;, which every edition registers, would owe a deterministic re-mint of each edition it stales. Wall-clock, tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-080-workstream-document-and-index.md](WO-080-workstream-document-and-index.md)
-
-### WO-081
-
-[WO-081 — Board Workstreams section: the actor board's Work panel renders workstreams over the same data the index groups, as an additive view-model extension with regenerated fixture expectations (version assigned at activation)](WO-081-board-workstreams-section.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; blocked on WO-080.
-- References: WO-080: hard (unmet) — the data it renders; WO-032: satisfied-by-release (met) v0.14.0 — the board it extends.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Track: delivery
-- Cost: adds one section to the actor board's Work panel over the index's workstream grouping, one fixture case with its pinned inputs and expected outputs, the console's minor release, and at most 200 bytes in product 04. Removes nothing that runs today: the board shows orders, not outcomes. Re-mints: none; no path under &#96;packages/console&#96; is a registered evidence source, and the release label the console's minor release writes into &#96;package-lock.json&#96; is normalized out of every edition's projection (&#96;evidenceSourceContent&#96; in &#96;packages/skeleton/src/evidence-editions.mjs&#96;; &#96;feedbackSourceFile&#96; in &#96;packages/skeleton/src/feedback-audit.ts&#96;). Wall-clock, tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-081-board-workstreams-section.md](WO-081-board-workstreams-section.md)
-
-### WO-082
-
-[WO-082 — Synthetic pilot: product 12's six demonstrations pass as automated fixtures over a real-Git launchpad with three target repositories (version assigned at activation)](WO-082-synthetic-pilot-six-demonstrations.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; blocked on WO-080, WO-072.
-- References: WO-080: hard (unmet) — the workstream the fixture exercises; WO-072: hard (unmet) — target worktrees from a launchpad; WO-075: hard (met) — a fixture launchpad exported with its build.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Track: delivery
-- Cost: adds one real-Git fixture suite that builds three target repositories (service, client, documentation) and a launchpad exported by WO-074 and WO-075, six named demonstration fixtures over one workstream, the suite's row in &#96;scripts/test-runner.mjs&#96;, and at most 200 bytes in product 12. Removes nothing that runs today: no demonstration has a fixture. It unblocks WO-083, which depends on it. Re-mints: none; the suite, its fixtures and &#96;scripts/test-runner.mjs&#96; are not registered evidence sources. A suite in the product gate counts against the stand-down plan's reversal condition, a fresh &#96;npm test&#96; above six minutes on the operator's host, so the executor records the suite's wall-clock. Wall-clock, tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-082-synthetic-pilot-six-demonstrations.md](WO-082-synthetic-pilot-six-demonstrations.md)
 
 ### WO-096
 
@@ -441,27 +618,9 @@ None.
 - Cost: adds the phase-1 reconciliation (the runbook's recorded-posture row and post-correction paragraph as dated observations with a drift rule; forward-pointing Amendments entries in ADR-0003 and ADR-0004), baseline and final approval-surface matrices per harness under &#96;docs/discovery/&#96; with the sanitized transcripts they cite, a synthetic approval-surface fixture under &#96;scripts/&#96;, the script, path or invocation fixes the baseline names with a test each, the runbook's observed-behaviour section with an approval budget per scenario, the verifier's reproduction and the operator-witnessed run record. Removes the unnecessary boundary crossings the baseline finds, unknown until it runs. Re-mints: none planned; a fix to a registered evidence source (among them &#96;scripts/build.mjs&#96;, &#96;scripts/lib/helpers.mjs&#96;, &#96;git.mjs&#96; and &#96;paths.mjs&#96;) would owe a deterministic re-mint of each edition it stales, and a fix to a file the feedback verifier judges one live feedback self-host episode, which the executor runs on a configuration the operator's 2026-09-28 direction accepts; the baseline decides whether either happens. The fresh sessions per harness, the verifier's reproduction and the witnessed run are live sessions of unmeasured cost. Wall-clock, tokens and context bytes are unknown until run.
 - Authority: [docs/work-orders/WO-014-approval-burden-contract.md](WO-014-approval-burden-contract.md)
 
-### WO-083
-
-[WO-083 — The real run: the operator's launchpad instance drives the first bounded slice of the Angular shell, planned in that fork, through executor, verifier and reviewer sessions under the fork's emitted build, with a pre-run baseline block and the four product-12 measures counted by the verifier (version assigned at activation)](WO-083-real-run-launchpad-instance.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; blocked on WO-118, WO-082.
-- References: WO-118: hard (unmet) — the resident-owned loop is proven from a starter instance before the fork runs it against a real target; satisfied only by WO-118's criterion 1 recorded observed, never by a waiver; WO-082: hard (unmet) — the synthetic pilot precedes the witnessed run; WO-073: hard (met) — the profile convention the fork's profile follows; WO-078: hard (met) — the generated sibling registry whose Angular consumer entry the run changes.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: the launchpad-dispatched sessions run under the fork's own declarations and emitted bundle; the operator witnesses; launch claims recorded per session (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Track: delivery
-- Cost: adds the receipt of one operator-witnessed run under &#96;docs/evidence/WO-083/&#96;, with sanitized transcripts, sanitized copies of &#96;WS-001&#96; and the fork's Angular repository profile, fired-unit counts and the verifier's count of four measures; the Angular consumer's entry changed through WO-078's generator; a capability-table row; and about 200 bytes each in products 12, 04, 13 and 06 (the planner's estimates, never bounds: the document ceilings are planning's). Removes nothing that runs today: it is the first evidence for the fork route product 12 records as a candidate. Re-mints: none; the receipt, the registry and the documents it writes are not registered evidence sources, and the live step is the operator's run in the fork and the target, not an evidence edition. Wall-clock, tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-083-real-run-launchpad-instance.md](WO-083-real-run-launchpad-instance.md)
-
 [WO-014]: WO-014-approval-burden-contract.md
 [WO-072]: WO-072-target-worktree-lifecycle.md
 [WO-076]: WO-076-instance-build-overlay.md
-[WO-078]: WO-078-sibling-registry.md
 [WO-080]: WO-080-workstream-document-and-index.md
 [WO-081]: WO-081-board-workstreams-section.md
 [WO-082]: WO-082-synthetic-pilot-six-demonstrations.md
@@ -479,8 +638,16 @@ None.
 [WO-113]: WO-113-work-order-files-stable-contracts.md
 [WO-118]: WO-118-resident-owned-loop-from-starter.md
 [WO-183]: WO-183-intent-declaration-and-the-stranger-test.md
-[WO-191]: WO-191-reader-profiles.md
 [WO-192]: WO-192-router-drives-an-order.md
 [WO-193]: WO-193-instance-capability-requests.md
 [WO-194]: WO-194-private-predecessor-map.md
 [WO-200]: WO-200-pinned-collector-bytes-observed.md
+[WO-201]: WO-201-export-runs-core-suites.md
+[WO-202]: WO-202-planning-machinery-runs-in-an-instance.md
+[WO-203]: WO-203-update-preview.md
+[WO-204]: WO-204-source-writer-cleanup-revocation.md
+[WO-205]: WO-205-writer-resistant-git-interpretation.md
+[WO-206]: WO-206-source-writer-object-store-protection.md
+[WO-207]: WO-207-update-rollback.md
+[WO-208]: WO-208-instance-extension-point.md
+[WO-209]: WO-209-build-as-update-channel.md

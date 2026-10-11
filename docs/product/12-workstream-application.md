@@ -32,6 +32,17 @@ available repository access, execution transports, and persistence capabilities.
 The view names what is usable, unavailable, or still unobserved. It does not
 promise an install, a remote worker, a provider connection, background operation,
 or access to another machine. Deployment topology is an open product choice.
+The operator's work instance is this case [operator direction, 2026-10-11]: a
+separate, private fork of the starter on a constrained managed host where
+core is never installed. It takes the kit by a Git merge from the starter when
+its operator chooses, previewed first and reversible (WO-203, WO-207), with
+the operator's build taken or pinned per update (WO-209); its repository
+profiles may pin DotLn-Angular as an upstream reference (WO-073's convention)
+and nothing more, since that repository is not used at work; it reaches core
+only through generic capability requests (WO-193) and keeps its predecessor
+map (WO-194) private; and its own code, an enterprise-tracker source adapter
+among the first, lives at the instance extension point (WO-208), never in
+core.
 
 The operator selects repositories and the boundary of a proposed task. The
 reference profile previews where its inputs and outputs would go and which
@@ -105,33 +116,53 @@ not establish that result. This is one candidate adoption path, not a canonical
 topology or an implementation claim. Other paths remain open under the same
 outcome and evidence requirements. See the [sibling-repository intentions](03-architecture.md#platform-and-instance-boundary).
 
-The 2026-09-06 planning pass, as redirected the same day, takes that path
-as the first pilot and files its two bounded routes. WO-033 makes the control
-plane relocatable and exports a launchpad instance that carries a compiled
-build: the Contributor loadout lowered by WO-039 into the settings
-permissions, hooks, role skills, and instruction block a harness enforces,
-plus the pinned runtime build those hooks import. The operator's fork or
-clone of that starter becomes their launchpad instance, running its sessions
-on that build from its first commit, composing its own overlay (registered
-target repositories, classes, extra units) over it, and holding its orders,
-control segments, and evidence, while each target receives only conventional
-branches and pull requests and carries the emitted bundle only in ignored
-worktree state. WO-034 adds the workstream document and projections without
-a new control event, proves the six demonstrations below on synthetic
-repositories, and then runs one operator-witnessed real workstream into
-`DotLn-Angular` whose first member scaffolds a UIFA v1 shell over the actor
-board's `uifa-board-v1` view model. The executors in that run are the
-operator's model and human sessions opened from the launchpad's handoffs
-under the fork's build; DotLn runtime transports executing target work remain
-later roadmap work. A session opened in the fork is governed and oriented by
-that build: the role skill for the active order loads the workstream
-document and the target's repository profile, with its pinned references
-into this blueprint, on demand, so the operator never restates the vision
-per session, and the fork's hook logs report which compiled units fired
-there. Other organizations are expected to fork the same starter as their
-own launchpad instances; their workstreams, repositories, and evidence stay
-in their forks, and kit updates reach them as reviewed upstream merges
-followed by a re-emit of their own build.
+The 2026-09-06 planning pass, as redirected the same day, took that path as
+the first pilot and filed its two bounded routes (WO-033, cut into WO-049,
+WO-064 and WO-069 to WO-079; WO-034, cut into WO-080 to WO-083). The route
+runs across four repositories with four jobs [operator direction,
+2026-10-11]. **Core** builds the control plane and the runtime, ships
+releases and holds no Angular order; its own control records, orders,
+evidence and reports are core's instance files and never enter the kit: the
+kit is the product, not core's history. **DotLn-Enterprise-Starter is the
+kit**, the export of core: public, under core's license files, never exported
+with `--license none`, forkable by anyone, holding no orders of its own, and
+refreshed by `launchpad export --update`, which the operator runs by hand
+after a release close and WO-078's receipts record. **The operator's personal
+instance** is a public fork of the starter on the operator's own account,
+under the same license posture and the same clean-room floor as core, on the
+operator's own machine where core is installed; it runs exactly what core
+runs (planning passes, orders cut by planning, the lifecycle by resume
+phrases in worktrees, verification, final review, release close, and the
+resident with intents where core uses them; intents and enterprise-tracker
+items are additional entry points, never the only one), composes its own
+overlay over the kit's build, registers DotLn-Angular as a target with an
+Angular UI class and a repository profile, and holds `WS-001`, the Angular
+orders, their evidence, verification and final-review reports and its own
+planning documents; it takes the starter by a Git merge the operator chooses,
+previewed first (WO-203), followed by a re-emit of its own build. **DotLn-Angular**
+is public under the same posture, receives only conventional branches and
+pull requests, and has three purposes: the reference for the architecture the
+operator wants Angular applications to follow (Angular, Nx, NgRx Signal Store
+with events, Transloco, as product 03 records), the demonstration that an
+instance builds another repository through the workflow, and a console for
+DotLn over the actor board's `uifa-board-v1` view model; its early work is
+foundational and visual output verifies that things work. The loop closes
+with generic capability requests from an instance to core (WO-193). The
+terms: from an instance, the repositories the operator cuts orders for are
+**registered target repositories** (WO-071); **sibling** stays core's term
+for the starter and the Angular consumer in its registry (WO-078). The
+operator works from the instance; an order names one repository; a
+workstream spans several; a session in a target is rare, because the router
+(WO-192) runs each phase's worker in the target worktree under WO-049's
+bundle, launched from the instance. A session opened in the instance is
+governed and oriented by its build: the role skill for the active order loads
+the workstream document and the target's repository profile, with its pinned
+references into this blueprint, on demand, so the operator never restates the
+vision per session, and the instance's hook logs report which compiled units
+fired there. WO-083 records one such run as its receipt. Other organizations
+fork the same starter as their own instances; their workstreams,
+repositories and evidence stay in their forks, and kit updates reach them as
+reviewed upstream merges followed by a re-emit of their own build.
 
 A workstream owns an outcome spanning repositories and time. A repository owns
 its local code history, branch/worktree, tests, and delivery boundaries. Each

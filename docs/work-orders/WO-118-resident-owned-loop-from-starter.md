@@ -34,11 +34,14 @@ not a priority. Clean-room screen: the instance and target are scratch
 artifacts. Amended by the 2026-09-28 planning pass, which re-observed the
 order on `main` at `5f3849ec`: the terminal state is WO-112's; the third
 replan checkpoint follows WO-083; the capability write-back uses the
-table's own levels; the audit dependency is typed; the operator's steps
-have a fallback; the outside-root carry-in is written in; the final
+table's own levels; the audit dependency is typed; the operator's steps have a fallback; the outside-root carry-in is written in; the final
 criterion names both gates
 ([planning document](../planning/failures-across-phases-2026-09-28.md)
-§10).
+§10). Amended by the 2026-10-11 route pass (operator direction, item (e),
+declined with reasons the operator accepted in the same pass; receipt 043's
+known issues): criterion 1's admitted human events name the control-intent
+filing and the executor's fault injections, and its waiver clause names what
+a waived run leaves.
 **Depends on:** WO-199 merged (the vertical survives an interrupt and a
 host crash: D060 and D065, which criterion 2 needs); WO-075 and WO-076
 merged (a starter instance with the build and its overlay); WO-121 and WO-122 merged (presence with origin; the
@@ -296,12 +299,13 @@ parity checklist; the write-backs below.
 **Acceptance criteria (all required)**
 
 1. From the filed intent to the terminal state, the control log shows
-   every phase transition performed by the resident's actors; the human
-   events before the terminal state are only the initial intent, the one
-   `dotln presence away` setup event, the operator's inputs to the two
-   control scenarios the Objective defines (the answer to the ambiguous
-   intent's `NeedsHuman`; the planted incorrect suggestion) and the
-   witness line, each named in the receipt; the representative scenario
+   every phase transition performed by the resident's actors; the human events before the terminal state are only the initial intent, the one
+   `dotln presence away` setup event, the filing of the ambiguous control
+   intent, the executor's fault injections under D007's delegation (the
+   actor kill `kill.json` records and the resident's SIGTERM and relaunch),
+   the operator's inputs to the two control scenarios the Objective defines
+   (the answer to the ambiguous intent's `NeedsHuman`; the planted incorrect
+   suggestion) and the witness line, each named in the receipt; the representative scenario
    reaches its terminal state with every automated item resolved and no
    `NeedsHuman`.
    If the witnessed run has not happened by handoff, the executor records
@@ -314,7 +318,10 @@ parity checklist; the write-backs below.
    the criterion closes by the operator's run or by a recorded waiver that
    names the evidence standing in for the run. WO-083's dependency on this
    order is satisfied only by this criterion recorded observed, never by a
-   waiver.
+   waiver. A waived criterion 1 leaves the product 00 and `README.md`
+   sentences stating what was observed and that the run was waived, and no
+   dependent (WO-083, WO-183, the capability rating) reads the run as
+   observed.
 2. The killed actor session is replaced by the resident without a second
    commit, and the resident restart resumes the loop under the same order
    and episode identities; both are events in the log.
@@ -366,6 +373,21 @@ witnesses (criterion 1).
 
 **Known issues and carry-ins:**
 
+- 2026-10-11 route pass (operator direction, item (e)): the operator asked
+  that the scratch instance cut its order through its own planning pass
+  before the resident runs it, or that the reason for declining be recorded.
+  Declined, with the operator's agreement in the same pass: this order's
+  hard edges (WO-120, WO-123) prove the intent-admitted, derived order,
+  which is the product exit; nothing carries a planning-cut order through
+  the resident until WO-192's router, which the operator placed after this
+  order; WO-202 proves the planning commands in a fixture export before this
+  order, and WO-083 proves planning-cut orders driven from the operator's
+  instance. Reopen: the operator asks again after the instance's first
+  planning pass, WO-192 lands before this order activates, or the resident
+  gains a route for a planning-cut order. Receipt 043's known issues
+  answered here: criterion 1's admitted events name the fault injections
+  and the control-intent filing; a waived criterion 1 leaves the status
+  sentences stating the waiver and no dependent reads the run as observed.
 - 2026-10-11 standard pass (receipt 042's four known issues): the gap is
   restated at `5328814f`; the Cost line's byte figures are estimates and
   criterion 6 says so; the Objective names both control scenarios;
