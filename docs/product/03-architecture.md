@@ -142,9 +142,10 @@ as a coordination repo that issues work orders for multiple target repos.
 During the trial, changes to the Angular target go through that fork's workflow.
 The fork is of the starter, not of DotLn core. This is one candidate route to
 test the [workstream application](12-workstream-application.md#one-workstream-across-repositories),
-not a canonical topology or an implemented multi-repo coordinator. It simulates
-an organization user's needs with personal/synthetic material. Packaging,
-licensing, compatibility, update strategy, and the first task still need evidence.
+not a canonical topology or an implemented multi-repo coordinator. It simulates an organization user's needs with personal/synthetic material.
+Packaging and the update path exist (WO-074 to WO-078); the license posture
+is decided below; the update's preview, rollback and channel and the first
+task are queued orders (WO-203, WO-207, WO-209, WO-083).
 
 The 2026-09-06 planning pass, as redirected the same day, selects that
 route as the first physical slice of this boundary under ADR-0006 Decision
@@ -210,6 +211,27 @@ fresh clone's `node scripts/bootstrap.mjs` installs and re-emits it; until
 then each hook reports `snapshot-missing` once per session and leaves the
 decision to host permissions. Running core's suites in place still needs the
 TypeScript source the kit omits.
+
+The siblings' license posture and the instance boundary [operator direction,
+2026-10-11]: the starter is exported under core's three license files
+(Apache-2.0 for code, CC-BY-4.0 for documentation, `NOTICE`) and never with
+`--license none`; the operator's personal instance, a public fork of the
+starter on the operator's own account, and DotLn-Angular carry the same
+posture and the same clean-room floor as core; the operator's work instance
+is a private fork of the starter on a constrained managed host where core is
+never installed, and it carries the kit's license files unchanged. Core's own
+control records, orders, evidence and reports are core's instance files and
+never enter the kit: the kit is the product, not core's history. An instance
+runs what core runs; the kit's gates and planning commands inside an export
+are the subject of WO-201 and WO-202. An instance's own executable code
+(source adapters, effect adapters, projections) lives at a configured,
+manifest-excluded extension point the kit's machinery loads through the
+ports and an update never touches, under the review burden §Package
+ecosystem names (WO-208). An update is previewed before it writes (WO-203),
+can be rolled back to the prior kit state (WO-207), and takes a channel:
+machinery with the build pinned at the prior compiled definitions, both
+together, or the build alone (WO-209); editing a kit file inside an instance
+is choosing the true-fork path, which the client README states.
 
 Playwright and Context7 are optional environment adapters. The operator reports
 adding MCP access and Context7 integrations for the two local coding harnesses;

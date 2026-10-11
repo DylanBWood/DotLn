@@ -3,14 +3,22 @@
   "siblings": [
     {
       "id": "DotLn-Enterprise-Starter",
-      "purpose": "A reusable launchpad for organization-owned implementations: the exported kit (control-plane scripts, the compiled runtime and the harness bundle) with the instance's own orders, evidence and overlays. An operator-stated intention, not an inspected implementation claim.",
-      "relation": { "kind": "export", "coreCommit": null },
-      "capabilityRows": ["launchpad.starter"]
+      "purpose": "A reusable launchpad for organization-owned implementations: the exported kit (control-plane scripts, the compiled runtime and the harness bundle) with the instance's own orders, evidence and overlays. Public under core's license files (Apache-2.0, CC-BY-4.0 for documentation, NOTICE), never exported with --license none; anyone may fork it; it holds no orders of its own. The operator's personal instance and work instance are forks of it, registered nowhere in this registry [operator direction, 2026-10-11]. An operator-stated intention, not an inspected implementation claim.",
+      "relation": {
+        "kind": "export",
+        "coreCommit": null
+      },
+      "capabilityRows": [
+        "launchpad.starter"
+      ]
     },
     {
       "id": "DotLn-Angular",
-      "purpose": "An example consumer using Angular, Nx, NgRx Signal Store with events and Transloco, whose first change is a UIFA v1 shell over the uifa-board-v1 view model. A target of the starter's work orders, never an export destination. An operator-stated intention, not an inspected implementation claim.",
-      "relation": { "kind": "consumer", "contractVersion": "uifa-board-v1" },
+      "purpose": "Three purposes [operator direction, 2026-10-11]: the reference for the architecture the operator wants Angular applications to follow (Angular, Nx, NgRx Signal Store with events and Transloco, as product 03 records); the demonstration that an instance builds another repository through the workflow; and a console for DotLn over the uifa-board-v1 view model. Public under core's license posture; a registered target of the operator's personal instance, never an export destination and never used at work; early work is foundational, and visual output verifies that things work. An operator-stated intention, not an inspected implementation claim.",
+      "relation": {
+        "kind": "consumer",
+        "contractVersion": "uifa-board-v1"
+      },
       "capabilityRows": []
     }
   ]

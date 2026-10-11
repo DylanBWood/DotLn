@@ -3974,6 +3974,13 @@
           "title": "Workstream application — end-user workflow candidate",
           "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
           "missing": false
+        },
+        {
+          "hash": "db3481213962b0d66c640f2a91018071efe0d87557dab55e28e0a1fa37edc271",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -4028,6 +4035,19 @@
             "WO-083"
           ],
           "at": "2026-10-11T01:26:24.697Z"
+        },
+        {
+          "sourceRevision": 8,
+          "status": "allocated",
+          "reason": "Re-recorded at source revision 8 (product 12 §Arriving at the desk and §One workstream across repositories were rewritten by the 2026-10-11 route pass with the four-repository picture and the operator's terminology): the workstream application is still WO-080 to WO-083, all queued; WO-083 is the operator's personal run, returned to its recommended placement after WO-082 with WO-192 before it. [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "WO-080 is withdrawn, or closes with this item returned to the register",
+          "targets": [
+            "WO-080",
+            "WO-081",
+            "WO-082",
+            "WO-083"
+          ],
+          "at": "2026-10-11T20:18:59.505Z"
         }
       ]
     },
@@ -12394,6 +12414,14 @@
           "reopenWhen": "a planning pass that accepts the re-keying, or WO-056's live record",
           "targets": [],
           "at": "2026-09-19T01:20:06.402Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-206 edits worker-transport.ts for the writer's object authority only and leaves the ultra flag, the Seiri evidence argument, the reactor discriminators and the demo prompt as they are; the re-keying still needs its own acceptance. [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "a planning pass that accepts the re-keying, or WO-056's live record",
+          "targets": [],
+          "at": "2026-10-11T20:18:59.772Z"
         }
       ]
     },
@@ -19797,6 +19825,16 @@
           "reopenWhen": "A launchpad separate from the scripts' checkout, or one declaring non-default roots, must run these paths; or a kit command fails on the two module identities.",
           "targets": [],
           "at": "2026-10-09T08:47:32.912Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The trigger named a launchpad separate from the scripts' checkout; WO-202's fixture export is one, and its step 7 runs the build-free module and harness-probe paths there, fixing within the Boy Scout bound or recording each as left with its reason. [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "WO-202 records a path left unfixed, or a launchpad declaring non-default roots fails one of these paths",
+          "targets": [
+            "WO-202"
+          ],
+          "at": "2026-10-11T20:18:58.982Z"
         }
       ]
     },
@@ -22907,6 +22945,14 @@
           "reopenWhen": "a gate task holds at a row whose order's decisions do not name the growth, the gates' share of phase time passes one quarter in a planning pass's measurement, or the plain gate's thirty-day median passes 360 s",
           "targets": [],
           "at": "2026-10-11T00:22:28.113Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "gate-task:launchpad holds (123.776 s against a 49.691 s thirty-day median over 25 samples at 2026-10-11T19:18Z) after WO-078 added the export-receipt and update cases; WO-201, WO-203 and WO-207 add more export fixtures, so WO-201 carries the watch (FUP-b531e850b70f6d4e). The thirty-day rule stands and no fixture-cost order is filed. [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "the launchpad task exceeds twice its median at a handoff after WO-201, a pass finds the suite on the gate's critical path, or another gate task crosses its threshold",
+          "targets": [],
+          "at": "2026-10-11T20:18:59.719Z"
         }
       ]
     },
@@ -27634,6 +27680,16 @@
           "reopenWhen": "an instance's parity map carries an unmapped row for a source and a request asks for the port",
           "targets": [],
           "at": "2026-10-02T06:02:37.256Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The request the row waited for arrived as the operator's direction of 2026-10-11 (item (g)): WO-208 adds the configured, manifest-excluded extension root, binds a declared source adapter through the SourceAdapter port with a fixture adapter as the first consumer, and leaves the enterprise-tracker adapter to the work instance. [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "WO-208 is withdrawn, or an instance's adapter needs more than the GitHub source's contract and no WO-193 request carries it",
+          "targets": [
+            "WO-208"
+          ],
+          "at": "2026-10-11T20:18:59.399Z"
         }
       ]
     },
@@ -30153,6 +30209,16 @@
           "reopenWhen": "the pass that places WO-083 within the next pair, or a shared-repository preservation claim is drafted",
           "targets": [],
           "at": "2026-10-11T01:26:25.469Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Operator direction (2026-10-11, item (c)): WO-206 records the comparison D033 asked for (a private writer object store with host admission, chosen; a files-only writer with a host-owned commit, the reopening alternative), builds the first, and runs the retained counterexample as a case; WO-083's preflight names it as a closed order. [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "WO-206 is withdrawn, or its host-owned import proves unsound in a case it cannot make pass",
+          "targets": [
+            "WO-206"
+          ],
+          "at": "2026-10-11T20:18:59.347Z"
         }
       ]
     },
@@ -30244,6 +30310,16 @@
           "reopenWhen": "the pass that places WO-083 within the next pair, a host command/profile unlink failure is observed, or a shared-repository preservation claim is drafted",
           "targets": [],
           "at": "2026-10-11T01:26:25.330Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Operator direction (2026-10-11, item (c)): the boundary becomes an order, not a written acceptance. WO-204 repairs source-writer command revocation under partial and persistent cleanup failures with the fault matrix D043 asked for, before WO-083 touches the operator's repository; WO-083's preflight names it as a closed order. [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "WO-204 is withdrawn, or a host unlink failure is observed before it closes",
+          "targets": [
+            "WO-204"
+          ],
+          "at": "2026-10-11T20:18:59.242Z"
         }
       ]
     },
@@ -30276,6 +30352,16 @@
           "reopenWhen": "the pass that places WO-083 within the next pair, an index-flag or configuration counterexample reaches this path, or host after-tests are claimed to always execute committed bytes",
           "targets": [],
           "at": "2026-10-11T01:26:25.403Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Operator direction (2026-10-11, item (c)): WO-205 judges the worktree against the committed tree before after-tests, refuses index flags, and applies the host's writer-resistant Git interpretation to the verification worktree, proven against planted flags, replace refs, commit graphs and hooks; WO-083's preflight names it as a closed order. [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "WO-205 is withdrawn, or an index-flag or configuration counterexample reaches these paths live before it closes",
+          "targets": [
+            "WO-205"
+          ],
+          "at": "2026-10-11T20:18:59.294Z"
         }
       ]
     },
@@ -31274,6 +31360,16 @@
           "reopenWhen": "WO-118's exported instance runs npm test and the client README does not say what fails, or WO-083's fork needs core's suites in place",
           "targets": [],
           "at": "2026-10-11T00:22:28.567Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Its reopening condition occurred by operator direction (2026-10-11, item (a)): the operator's instance needs core's suites in place. WO-201 wires the three gate selections inside a kit (a manifest verification task in place of the build, the compiled tests carried, core-only suites declared and listed) and rewrites the client README's limits paragraph from the fixture's observed lists. [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "WO-201 is withdrawn, or closes with an export's gates still failing at the build",
+          "targets": [
+            "WO-201"
+          ],
+          "at": "2026-10-11T20:18:58.872Z"
         }
       ]
     },
@@ -31339,6 +31435,16 @@
           "reopenWhen": "a fork's export carries a fixture derived from a report the fork never had, or an exported suite fails for want of an excluded fixture",
           "targets": [],
           "at": "2026-10-11T01:26:28.056Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-201 runs every suite in a fixture export and decides this row by observation (step 6): the fixture derived from core's records is admitted as public kit data or excluded with its suite as core-only, recorded in WO-201's decisions and the README. [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "WO-201 closes without recording the decision, or an exported suite later fails for want of an excluded fixture",
+          "targets": [
+            "WO-201"
+          ],
+          "at": "2026-10-11T20:18:58.930Z"
         }
       ]
     },
@@ -31956,6 +32062,16 @@
           "reopenWhen": "WO-118's exported instance or a fork reports the warning as a failure, or the projection comparison is tightened",
           "targets": [],
           "at": "2026-10-11T01:26:27.277Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "WO-202's probe runs resume status in a fresh export; its step 6 treats an absent projection over an empty fold as agreement within the Boy Scout bound if the probe meets the warning, else records it as not met. [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "WO-202 records the warning as not met and a fork later reports it as a failure",
+          "targets": [
+            "WO-202"
+          ],
+          "at": "2026-10-11T20:18:59.086Z"
         }
       ]
     },
@@ -32928,7 +33044,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "An instance never holds core's scored release tags, so the reader check's raw Git error is WO-202's case: step 3 applies the row's rule (an unverifiable row named with its release, tag object and the restoring fetch). [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "WO-202 closes with the raw Git error still reachable from a clone without the tag objects",
+          "targets": [
+            "WO-202"
+          ],
+          "at": "2026-10-11T20:18:59.034Z"
+        }
+      ]
     },
     {
       "id": "FUP-a4b2cdfb03ddbd2e",
@@ -32943,7 +33070,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-202's step 3 edits scripts/lib/reader-profiles.mjs for the tag-object rule, so the malformed-result refusal is taken within the Boy Scout bound with its fixture case or recorded as left; WO-202's Known issues name the row. [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "WO-202 closes with the raw TypeError still reachable, or the score result schema changes",
+          "targets": [
+            "WO-202"
+          ],
+          "at": "2026-10-11T20:18:59.137Z"
+        }
+      ]
     },
     {
       "id": "FUP-a566ba26ee9f909a",
@@ -32958,7 +33096,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The comparison the row asks for needs the thirty-day median of fresh document rows, which the slow conditions probe cannot measure inside its wall budget (the 2026-10-11 standard pass's candidate 2); this pass records its own document gate's wall-clock and summed task work in its planning document section 12 as one more observation and files no order. [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "the operator records a profile choice or a style correction on a profiled surface; a fresh document gate in this repository again runs longer than 600 s with summed task work under a quarter of its wall-clock; or a scoring run is recorded with no decision citing it",
+          "targets": [],
+          "at": "2026-10-11T20:18:59.665Z"
+        }
+      ]
     },
     {
       "id": "FUP-88ceacf550262cea",
@@ -32997,7 +33144,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-078 D004 records the three update defects of FUP-eaad73517ca2a395 fixed inside WO-078's edit of the launchpad, with no outstanding action; the author-identity row stays its own (FUP-06de60fa5d19fe5a, deferred). [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "a kit author declares an action the refusal predicate does not cover, or an operator reports the post-build refusal of an absent kit file as a cost worth a preflight",
+          "targets": [],
+          "at": "2026-10-11T20:18:59.612Z"
+        }
+      ]
     },
     {
       "id": "FUP-8c5dc05351e8c130",
@@ -33043,7 +33199,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-203 restructures the update path these three Boy Scout items sit on (preflight absent still-carried kit inputs before the build, destination and receipt state in post-manifest failure summaries, the shared validators); its step 5 fixes each or records it as left. [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "WO-203 records an item left and a later adjacent change reopens the seam",
+          "targets": [
+            "WO-203"
+          ],
+          "at": "2026-10-11T20:18:59.189Z"
+        }
+      ]
     },
     {
       "id": "FUP-995f9b2aacc209d2",
@@ -33065,7 +33232,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-078 D010 records the VER-001 F1 repair (the generator's tag observations captured in tag-observations.json, the check deriving every expected version from it) with no outstanding action; the decision's reopening observations stay with it. [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "a page-only edit can still affect the expected version, an unedited page fails solely because a later tag was added, or the registry needs authentication against coordinated edits to its source records",
+          "targets": [],
+          "at": "2026-10-11T20:18:59.559Z"
+        }
+      ]
     },
     {
       "id": "FUP-1e8ba454d811954f",
@@ -33102,6 +33278,128 @@
           "reopenWhen": "A captured non-null version passes without a literal Git tag at the required receipt-commit relationship, or an unedited captured version becomes stale solely because another tag was added.",
           "targets": [],
           "at": "2026-10-11T17:18:03.328Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d2897b117391bb26",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-three-repository-route-pass-recorded-2026-10-11-second::09cf4b18c7392c50267dcebddbc86a9af79c42ca28a145e518821f7a54baf496",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "51553fd5fb401946b6c5fd8acb3b105804c290c9c1822c2866696aa3fb272437",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-three-repository-route-pass-recorded-2026-10-11-second",
+          "title": "The Contributor loadout as a definition pack.",
+          "summary": "3. **The Contributor loadout as a definition pack.** WO-209 chose the pinned build; the pack would make the loadout data the current compiler reads, which is the rule migration's subject (WO-097, WO-098) and product 10's IR work. Reopen: the loadout's definitions compile from data, or a second owner needs a build core does not ship.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-209 chose the pinned build; the definition pack would make the loadout data the current compiler reads, which is the rule migration's subject (WO-097, WO-098) and product 10's IR work. [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "the loadout's definitions compile from data, or a second owner needs a build core does not ship",
+          "targets": [],
+          "at": "2026-10-11T20:18:59.932Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-82c6c63771a87233",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-three-repository-route-pass-recorded-2026-10-11-second::1e7172d104fb13d018dfc7bb5f68963b0b4a086c26471735081696f9809899c2",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a3e235773add1f8c046901a523d9b46001a688bac2c76b5932c1eb7b35a26525",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-three-repository-route-pass-recorded-2026-10-11-second",
+          "title": "Seeding the instance's first Angular planning pass from core's ideation.",
+          "summary": "1. **Seeding the instance's first Angular planning pass from core's ideation.** The operator holds the Angular UI ideation in core's intake and ledger and named three routes: the instance's planning pass reads core's public records (the kit carries product 07 and 08 whole and `UPSTREAM.md` points at the rest; a repository profile pins references, WO-073); a seed set of Angular orders in the instance; or a conversation-only session in core that produces a prompt for the instance's pass. The third needs nothing filed and the operator leans to it; core never files a target-application order (the 2026-09-08 correction). Reopen: the operator opens the instance's first planning pass and asks for a",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The operator named three routes for seeding the instance's first Angular planning pass from core's ideation and leans to a conversation-only session in core that produces a prompt, which needs nothing filed; core never files a target-application order (the 2026-09-08 correction). [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "the operator opens the instance's first planning pass and asks for a seed, or a WO-193 request asks core for one",
+          "targets": [],
+          "at": "2026-10-11T20:18:59.826Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b531e850b70f6d4e",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-three-repository-route-pass-recorded-2026-10-11-second::4d3dde6e7ce061bbea16a4da79aabda9d2b67e1f153f89b9721db63674103906",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "9e3a7defbf756fd29532522e8987ecd3ef17923b32e069681d6f944c242165ac",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-three-repository-route-pass-recorded-2026-10-11-second",
+          "title": "The launchpad gate task's growth.",
+          "summary": "5. **The `launchpad` gate task's growth.** The latest fresh task read 123.776 s against a 49.691 s thirty-day median (25 samples) at `plan conditions` on 2026-10-11 after WO-078 added two export cases; WO-201, WO-203 and WO-207 add more. WO-201 carries the watch (one export reused for three gate runs; the duration recorded). Reopen: the task exceeds twice its median at a handoff after WO-201, or a pass finds the suite the gate's critical path.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The launchpad gate task read 123.776 s against a 49.691 s thirty-day median (25 samples) at plan conditions on 2026-10-11T19:18Z after WO-078's two export cases; WO-201 adds the next export fixture and carries the watch (one export reused for its three gate runs, the duration recorded, growth above twice the median a decision), named in its Known issues. [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "the task exceeds twice its median at a handoff after WO-201, or a pass finds the suite on the gate's critical path",
+          "targets": [
+            "WO-201"
+          ],
+          "at": "2026-10-11T20:18:59.452Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-efcc590126413a41",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-three-repository-route-pass-recorded-2026-10-11-second::5b0d770408a9c8288379b285ac9cf5771db8285c0db25fda0976878baefc5fb9",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "4bebe4cf2e76e29603e719f430a47be34cad564854d58d7adf1281a200698535",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-three-repository-route-pass-recorded-2026-10-11-second",
+          "title": "Core-to-starter update automation at release close.",
+          "summary": "2. **Core-to-starter update automation at release close.** The operator runs `launchpad export --update` by hand after a release close (answer 5 of the conversation-only session); WO-078's receipts record each run. Reopen: the operator asks, or three hand-run updates are recorded by receipts.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The operator runs launchpad export --update by hand after a release close (answer 5 of the 2026-10-11 conversation-only session) and WO-078's receipts record each run; no automation order is filed. [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "the operator asks, or three hand-run updates are recorded by receipts",
+          "targets": [],
+          "at": "2026-10-11T20:18:59.879Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7787c6f1867375f8",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-three-repository-route-pass-recorded-2026-10-11-second::c375fad8a9678f57f0be767bbcb4a532cab2278d2ee5deeb160f910cc8c8333e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6f53305acd2630feeb09424fd38877cb750633e2e93ea10bd4813f47ef9ac5b1",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-three-repository-route-pass-recorded-2026-10-11-second",
+          "title": "A resident route for a planning-cut order.",
+          "summary": "4. **A resident route for a planning-cut order.** Item (e) was declined for WO-118: the resident carries intent-derived orders and WO-192's router carries planning-cut ones in an attended session. Reopen: an instance wants unattended lifecycle runs of planning-cut orders, or the operator asks after the instance's first planning pass.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Item (e) was declined for WO-118 with the operator's agreement: the resident carries intent-derived orders and WO-192's router carries planning-cut ones in an attended session; a resident route for a planning-cut order has no consumer yet. [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 10)]",
+          "reopenWhen": "an instance wants unattended lifecycle runs of planning-cut orders, or the operator asks after the instance's first planning pass",
+          "targets": [],
+          "at": "2026-10-11T20:18:59.987Z"
         }
       ]
     }

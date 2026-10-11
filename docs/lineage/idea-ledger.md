@@ -40,6 +40,132 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-11 — Ideation: the sibling and instance picture (the three-repository route)
+
+Source: the `ideation:` paragraph of the operator's three-repository route
+dispatch of 2026-10-11 UTC (ignored capture
+`docs/intake/notes/planning-three-repository-route-2026-10-11.md`, SHA-256
+`d570ff00e50f064027423cfaec2c0ae4de4ecc19c33282bef1a1f474bfa09bc8`) and the
+conversation-only session of the same day that produced it (ignored capture
+`docs/intake/chats/2026-10-11-three-repository-route-conversation.md`,
+SHA-256 `f4fbb3cf35c2608244f373f1b12c404cc724dbb2dc838a80c6795e5d3c287d85`).
+Planner synthesis under the public destination loadout; the clean-room screen
+replaced the one vendor name in the conversation with the generic term and
+found no other stop condition. Write-backs: product 12 §Arriving at the desk
+and §One workstream across repositories, product 03 §Platform and instance
+boundary, the sibling declaration (`docs/siblings/siblings.json`) through
+WO-078's generator; the kit's client README sentences are drafted in the
+planning document and carried by WO-201. The record is
+[the planning document](../planning/three-repository-route-2026-10-11.md).
+
+- **Four repositories, four jobs** `adopted`
+  - Core builds and releases and holds no Angular order; the starter is the
+    public kit, exported under core's license files and never with
+    `--license none`, forkable by anyone, holding no orders; the operator's
+    personal instance is a public fork on the operator's own account, on the
+    machine where core is installed, holding `WS-001`, the Angular orders,
+    reports and planning documents; DotLn-Angular is a public target that
+    receives only branches and pull requests.
+- **The kit is the product, not core's history** `adopted`
+  - Core's own control records, orders, evidence and reports are core's
+    instance files and never enter the kit (operator correction 4; the kit's
+    file set already draws the line).
+- **Machinery parity: an instance runs what core runs** `adopted`
+  - Planning passes, planning-cut orders, the lifecycle by resume phrases in
+    worktrees, verification, final review, release close and the resident
+    with intents; intents and enterprise-tracker items are additional entry
+    points, never the only one (operator correction 2). WO-201 and WO-202
+    make it observed inside an export.
+- **DotLn-Angular's three purposes** `adopted`
+  - The reference architecture for the Angular applications the operator
+    wants (Angular, Nx, NgRx Signal Store with events, Transloco); the
+    demonstration that an instance builds another repository through the
+    workflow; a console for DotLn over `uifa-board-v1`. Early work is
+    foundational, visual output verifies; not used at work. Written into the
+    sibling declaration.
+- **The work instance** `adopted`
+  - A separate, private fork of the starter on a constrained managed host;
+    core never installed there; profiles may pin DotLn-Angular as an upstream
+    reference and nothing more; it reaches core only through WO-193 requests
+    and keeps its predecessor map private; its own code lives at the
+    extension point (WO-208).
+- **The update loop across the repositories** `adopted`
+  - Core to starter by `launchpad export --update`, run by the operator
+    after a release close and recorded by WO-078's receipts; starter to
+    instance by a Git merge the operator chooses, previewed first (WO-203),
+    reversible (WO-207), with the build taken or pinned (WO-209), followed by
+    a re-emit; instance to core by generic capability requests.
+- **Terminology: registered targets and siblings** `adopted`
+  - From an instance, the repositories the operator cuts orders for are
+    registered target repositories (WO-071); "sibling" stays core's term for
+    the starter and the Angular consumer; the operator works from the
+    instance, an order names one repository, a workstream spans several, and
+    a session in a target is rare (WO-192's router runs phase workers there).
+- **Two kinds of idea in core: product-baked and operator-owned** `adopted`
+  - The kit carries the product; the operator's compiled definitions are
+    the build, now a selectable update channel (WO-209): machinery with the
+    build pinned, both, or the build alone; the definition pack is the
+    recorded alternative.
+- **Editing a kit file is choosing the true-fork path** `adopted`
+  - From then on the update refuses that file and keeps its prior manifest
+    hash; the client README states it (carried by WO-201, since a planning
+    branch refuses writes to kit templates).
+- **Seeding the instance's first Angular planning pass from core's ideation** `candidate`
+  - The operator holds the Angular UI ideation in core's intake and ledger
+    and named three routes: the instance's pass reads the public records
+    (core's product documents are upstream pointers the kit carries, and a
+    profile pins references), a seed set of Angular orders in the instance,
+    or a conversation-only session in core that produces a prompt for the
+    instance's pass. The operator leans to the third, which needs nothing
+    filed; recorded in the planning map with its reopening condition.
+- **A resident route for a planning-cut order** `candidate`
+  - Item (e) was declined for WO-118 with the operator's agreement: the
+    resident carries intent-derived orders and the router carries
+    planning-cut ones; a resident route for a planning-cut order is a
+    candidate with its reopening condition.
+
+## 2026-10-11 — Planning pass: the three-repository route (WO-201 to WO-209 filed; WO-083 corrected and returned to its place; WO-118 and WO-192 amended)
+
+Source: the operator's `planning:` dispatch of 2026-10-11 UTC (the capture
+above), its four corrections, eleven lettered items and sequence paragraph;
+the register at entry; the conditions listing; the two orders closed since
+receipt 043 (WO-078, WO-191). Planner synthesis; the clean-room screen found
+no stop condition. The record is
+[the planning document](../planning/three-repository-route-2026-10-11.md).
+
+- **WO-083 is the personal run on the operator's machine; the "may not be installed" reason is struck** `adopted`
+  - The 2026-10-07 pass attributed the reason to an operator direction the
+    2026-10-07 capture does not contain (four messages, none about a machine
+    or an install); it is struck from WO-083, the sequence prose and the map
+    row, and recorded as the planner's error. WO-083 returns to its
+    recommended placement after WO-082, with WO-192 directly before it.
+- **Nine orders for the route** `adopted`
+  - WO-201 (the export runs core's suites), WO-202 (the planning machinery
+    in an instance), WO-203 (update preview), WO-204, WO-205 and WO-206 (the
+    three WO-112 source-writer boundaries as orders), WO-207 (update
+    rollback), WO-208 (instance extension point), WO-209 (the build as a
+    selectable update channel), each authorized by the dispatch.
+- **The instance becomes usable after WO-203** `adopted`
+  - After WO-072, WO-076, WO-201, WO-202 and WO-203 the operator exports,
+    pushes, forks and opens the instance's first planning pass; WO-203 joins
+    the operator's reading because WO-118's close is the first update the
+    instance could take.
+- **WO-118 keeps the derivation proof; item (e) declined** `adopted`
+  - Reasons recorded in WO-118's Known issues with the reopening condition;
+    receipt 043's known issues on WO-118 answered in criterion 1.
+- **WO-192 drives target orders** `adopted`
+  - Each phase's worker runs in the target worktree under WO-049's bundle,
+    launched from the instance; WO-072 is a typed hard edge; the live drive
+    is a target order.
+- **The three boundaries placed after WO-082, not before WO-118** `adopted`
+  - WO-204 and WO-205 as the machinery lanes beside WO-080 and WO-082, WO-206
+    alone before WO-192; the scratch-target risk accepted on 2026-10-11 stands
+    for WO-118; the operator confirmed the placement in the pass.
+- **The kit's client README sentences ride in WO-201** `adopted`
+  - A planning branch refuses writes outside `docs/` and root Markdown and a
+    kit template is kit content; the text is drafted in the planning document
+    and the operator chose the route in the pass.
+
 ## 2026-10-11 — Planning pass: receipt 042's known issues become amendments, fifty-two register rows disposed, no new order
 
 Source: the operator's bare `planning:` dispatch of 2026-10-11 UTC, captured

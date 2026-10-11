@@ -3,8 +3,8 @@
 The operator-authored sequence below is the single editable input to the
 index and refutation subject. It grants no activation authority. For rationale see
 [the planning map](work-order-map.md). Closed and withdrawn entries leave the
-list at the next planning pass (operator direction, 2026-09-22; WO-158); the
-generated work-order index is their record, and the map and archive keep their
+list at the next planning pass (operator direction, 2026-09-22; WO-158);
+the generated work-order index is their record, and the map and archive keep their
 rationale.
 
 Planning entry returns the pending [follow-up register](followups.json) in
@@ -21,49 +21,73 @@ between blank lines runs alone. The entries after the last pair run one at
 a time.
 
 Every open order has a place in this list
-([2026-10-02 pass](standard-pass-2026-10-02.md)). The machinery reset
-([2026-10-07 pass](machinery-reset-2026-10-07.md)) ran WO-196 first and cut
-six pairs on the orders' primary source files; five of those pairs and
-WO-196 closed between 2026-10-07 and 2026-10-10 and leave the list here
-([2026-10-10 entropy pass](entropy-review-006-2026-10-10.md) §6). WO-078
-and WO-191 are the pair that remains; both depend on nothing queued. WO-072
-runs alone because every machinery order shares `resume.mjs`,
-`release.mjs` or `worktree.mjs` with it. WO-200, filed from REVIEW-006,
-pairs with WO-076: it depends on no queued order, and WO-076 is the first
-delivery order that does not edit `scripts/test-runner.mjs`, which WO-078
-and WO-072 both edit. WO-118 follows WO-199, WO-075 and WO-076. WO-192,
-WO-193 and WO-194 follow WO-118, the loop from a starter instance: the
-operator asked for them once the starter exists, and the product exit does
-not wait behind them. Nothing in WO-192 depends on the export, so it may
-move into the machinery lane at the operator's word. WO-088 and WO-089
-stay near the end under their 2026-09-19 holds; WO-088's gap was absent
-for a fourth pass on 2026-10-10 and it stays for the operator to withdraw.
-WO-014 is last but one until a pass finds approval friction recorded as
-the constraint. WO-083 is last: it needs the operator's fork on the
-operator's own machine, where DotLn may not be installed for some time
-(operator direction, 2026-10-07), and nothing before it needs that. The
-period below `v1.0.0` is early access (operator direction, 2026-09-30).
-The order of everything after the first pair is the planner's, as the
-operator said on 2026-10-07.
+([2026-10-02 pass](standard-pass-2026-10-02.md)). The
+[2026-10-11 route pass](three-repository-route-2026-10-11.md) retires
+WO-078 and WO-191 (closed, v0.74.3 and v0.74.2) and cuts the delivery lane
+as the three-repository route the operator directed, in dependency order.
+WO-072 runs alone because every machinery order shares `resume.mjs`,
+`release.mjs` or `worktree.mjs` with it. WO-200 pairs with WO-076: it
+depends on no queued order, and WO-076 does not edit
+`scripts/test-runner.mjs`, which WO-072 and WO-201 do. WO-201 (the export
+runs core's suites) follows that pair alone, WO-202 (the planning
+machinery runs in an instance) follows it because the document gate inside
+an export needs WO-201's kit mode, and WO-203 (update preview) follows
+WO-202 so that the preview exists before the first core change the
+operator may take into a real instance. **The instance becomes usable for
+the operator's own planning and orders after WO-203: WO-072 (target
+worktrees), WO-076 (the overlay), WO-201 (the gates in a kit), WO-202 (the
+planning pass in a kit) and WO-203 (the preview)** are the point at which
+the operator exports, pushes, forks and opens the instance's first planning
+pass; the pass found nothing else that must come first, and WO-203 is added
+to the operator's reading only because WO-118's release close is the first
+update the instance could take (operator direction, 2026-10-11). WO-118
+runs alone after them. WO-080 pairs with WO-204 and WO-082 with WO-205 (the
+two bounded WO-112 source-writer repairs; disjoint files, no edge). WO-206
+(shared-object protection) runs alone, then WO-192 (the router, which now
+drives target orders) directly before WO-083, which returns to its own
+recommended placement after WO-082: the reason the 2026-10-07 pass gave
+for placing it last was unsupported by that day's capture and is struck
+(operator correction 1, 2026-10-11). The tail runs one at a time: WO-207
+(rollback), WO-208 (the instance extension point), WO-209 (the build
+channel), WO-081, WO-193, WO-194, then the remaining orders in their former
+order. WO-088 and WO-089 stay near the end under their 2026-09-19 holds;
+WO-088's gap was absent for a fourth pass on 2026-10-10 and it stays for
+the operator to withdraw. WO-014 is last until a pass finds approval
+friction recorded as the constraint. The period below `v1.0.0` is early
+access (operator direction, 2026-09-30). The order of everything the
+operator did not place is the planner's.
 
 <!-- dotln-work-order-sequence:start -->
-- WO-078 — Sibling registry and export receipts
-- WO-191 — Reader profiles for published text
-
 - WO-072 — Target worktree lifecycle
 
 - WO-076 — Instance build overlay
 - WO-200 — Pinned collector bytes are watched where they change
 
+- WO-201 — The export runs core's suites
+
+- WO-202 — The planning machinery runs in an instance
+
+- WO-203 — Update preview
+
 - WO-118 — The resident-owned loop from a starter instance
+
+- WO-080 — Workstream document and index grouping
+- WO-204 — Source-writer cleanup revocation survives host failures
+
+- WO-082 — Synthetic pilot
+- WO-205 — Writer-resistant Git interpretation
+
+- WO-206 — Source-writer object-store protection
 - WO-192 — A router drives an order through its lifecycle
+- WO-083 — The real run from the operator's instance
+- WO-207 — Update rollback
+- WO-208 — Instance extension point
+- WO-209 — The build as a selectable update channel
+- WO-081 — Board Workstreams section
 - WO-193 — Capability requests from an instance
 - WO-194 — Private predecessor map
 - WO-183 — Intent declaration and the stranger test
 - WO-113 — Work-order files are stable contracts
-- WO-080 — Workstream document and index grouping
-- WO-081 — Board Workstreams section
-- WO-082 — Synthetic pilot
 - WO-096 — Migration ledger
 - WO-097 — Rule migration batch 1a
 - WO-098 — Rule migration batch 1b
@@ -75,6 +99,5 @@ operator said on 2026-10-07.
 - WO-089 — Capability table fold
 - WO-088 — One source for the phrase table
 - WO-014 — Approval-burden baseline
-- WO-083 — The real run from the operator's launchpad instance
 
 <!-- dotln-work-order-sequence:end -->
