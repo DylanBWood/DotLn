@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-072] — Target worktree lifecycle · **queued**
+- [x] [WO-072] — Target worktree lifecycle · **final-reviewed**
 - [ ] [WO-076] — Instance build overlay · **queued** · pair 1
 - [ ] [WO-200] — Pinned collector bytes are watched where they change · **queued** · pair 1
 - [ ] [WO-201] — The export runs core's suites · **queued**
@@ -53,23 +53,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-072
-
-[WO-072 — Target worktree lifecycle: &#96;worktree start&#96; for a registered target creates the worktree from the declared base, emits the governed bundle into it, and &#96;resume&#96; commands run from that worktree select the order through the launchpad (version assigned at activation)](WO-072-target-worktree-lifecycle.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-071: hard (met) — the registration it starts worktrees from; WO-049: hard (met) — the emit into the target worktree; WO-030: satisfied-by-release (met) v0.7.0 — per-order segments; WO-167: hard (met) — closed at v0.53.1; the fold this order's product 07 write-back followed; WO-123: hard (met) — the source-change guard refuses variant path spellings before worktreeParent has a reader (FUP-8369f2b4284e70a8); WO-052: reference-only (non-blocking) — the worktree creation helper this order reuses where it fits.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Track: delivery
-- Cost: adds the target path of &#96;worktree start&#96; (a worktree from the registered base under the resolved parent, WO-049's target-worker bundle emitted into it, the profile echoed), an ignored local registry, order selection from a target worktree in &#96;scripts/resume.mjs&#96;, a no-release close for target orders in &#96;scripts/release.mjs&#96;, a real-Git launchpad-and-target fixture, and at most 500 bytes in product 07. Removes nothing that runs today: &#96;worktree start&#96; creates sibling worktrees of this repository only and &#96;release close&#96; has no target branch. WO-082 depends on it. Re-mints: none; &#96;scripts/worktree.mjs&#96;, &#96;scripts/resume.mjs&#96; and &#96;scripts/release.mjs&#96; are in no evidence inventory. A new helper in &#96;scripts/lib/git.mjs&#96; or &#96;scripts/lib/paths.mjs&#96;, common registered sources, would owe the deterministic re-mint of each edition it stales, and an edit to &#96;packages/skeleton/src/source-change-worktree.ts&#96;, which the feedback verifier judges, a live feedback episode the executor runs on Codex &#96;gpt-6.1-sol&#96; at &#96;max&#96; or Claude Code &#96;claude-opus-5-5&#96; at &#96;xhigh&#96;; importing WO-052's helper needs neither. Wall-clock, tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-072-target-worktree-lifecycle.md](WO-072-target-worktree-lifecycle.md)
 
 ### WO-076
 
@@ -180,8 +163,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-072.
-- References: WO-072: hard (unmet) — the id-to-clone mapping and target worktree lifecycle whose Git state the members report; WO-167: hard (met) — closed at v0.53.1; the fold this order's product 07 write-back followed; WO-071: hard (met) — member orders name registered repositories.
+- Dependencies: typed; dependency-ready.
+- References: WO-072: hard (met) — the id-to-clone mapping and target worktree lifecycle whose Git state the members report; WO-167: hard (met) — closed at v0.53.1; the fold this order's product 07 write-back followed; WO-071: hard (met) — member orders name registered repositories.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -214,8 +197,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-080, WO-072.
-- References: WO-080: hard (unmet) — the workstream the fixture exercises; WO-072: hard (unmet) — target worktrees from a launchpad; WO-075: hard (met) — a fixture launchpad exported with its build.
+- Dependencies: typed; blocked on WO-080.
+- References: WO-080: hard (unmet) — the workstream the fixture exercises; WO-072: hard (met) — target worktrees from a launchpad; WO-075: hard (met) — a fixture launchpad exported with its build.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -265,8 +248,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-072.
-- References: WO-072: hard (unmet) — the target worktree lifecycle whose worktree a target order's phase workers run in and whose local registry resolves the worktree grant; WO-187: hard (met) — the generated agent definition with a pinned model and effort, extended here to one per lifecycle role; WO-139: satisfied-by-close (met) — the sub-agent counter this order keys by spawning worker; WO-135: satisfied-by-close (met) — the writer reservation this order keys by session and agent; WO-130: satisfied-by-close (met) — phrase dispatch and the briefing a worker receives; WO-158: satisfied-by-close (met) — the off-ramps and recovery controls the router stops for.
+- Dependencies: typed; dependency-ready.
+- References: WO-072: hard (met) — the target worktree lifecycle whose worktree a target order's phase workers run in and whose local registry resolves the worktree grant; WO-187: hard (met) — the generated agent definition with a pinned model and effort, extended here to one per lifecycle role; WO-139: satisfied-by-close (met) — the sub-agent counter this order keys by spawning worker; WO-135: satisfied-by-close (met) — the writer reservation this order keys by session and agent; WO-130: satisfied-by-close (met) — phrase dispatch and the briefing a worker receives; WO-158: satisfied-by-close (met) — the off-ramps and recovery controls the router stops for.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -282,8 +265,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-118, WO-082, WO-072, WO-201, WO-202.
-- References: WO-118: hard (unmet) — the resident-owned loop is proven from a starter instance before the operator's instance runs the workflow against a real target; satisfied only by WO-118's criterion 1 recorded observed, never by a waiver; WO-082: hard (unmet) — the synthetic pilot precedes the witnessed run; WO-072: hard (unmet) — the target worktree lifecycle the instance's Angular orders run through; WO-201: hard (unmet) — the instance's own gates, which verify the order this run drives; WO-202: hard (unmet) — the instance's own planning pass, which cuts the order this run drives; WO-073: satisfied-by-close (met) — the profile convention the instance's profile follows; WO-078: satisfied-by-close (met) — the generated sibling registry whose Angular consumer entry the run changes.
+- Dependencies: typed; blocked on WO-118, WO-082, WO-201, WO-202.
+- References: WO-118: hard (unmet) — the resident-owned loop is proven from a starter instance before the operator's instance runs the workflow against a real target; satisfied only by WO-118's criterion 1 recorded observed, never by a waiver; WO-082: hard (unmet) — the synthetic pilot precedes the witnessed run; WO-072: hard (met) — the target worktree lifecycle the instance's Angular orders run through; WO-201: hard (unmet) — the instance's own gates, which verify the order this run drives; WO-202: hard (unmet) — the instance's own planning pass, which cuts the order this run drives; WO-073: satisfied-by-close (met) — the profile convention the instance's profile follows; WO-078: satisfied-by-close (met) — the generated sibling registry whose Angular consumer entry the run changes.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
