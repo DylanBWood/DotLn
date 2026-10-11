@@ -344,17 +344,67 @@ the next pass's reset.
 
 ## 9. Validation and independent judgment
 
-The product write-backs passed `npm run publication:check` (both edition
-locks current). `node scripts/docs-check.mjs` and `npm run test:docs` are
-run at the end of this pass over the committed subject and their verdicts
-are recorded in the handoff; the planning refutation receipt is filed
-after this document's first commit and this section is completed in the
-receipt's commit. New inputs beyond the entry set: REVIEW-006 and
-REFUTATION-007 in full; the gate rows since 2026-10-01; the control
-segments of the eleven closed orders; the fifteen failed reports' opening
-lines; the decisions D001 and D010 of WO-107, D012 of WO-105, D023 and D026
-of WO-189, D003, D006 and D008 of WO-190, D021 of WO-198, D002 of WO-197,
-D007 of WO-074, D041 of WO-187, D036 of WO-186; `profile.mjs`,
-`comment-labels.mjs`, `.gitattributes`, `.prettierignore` and the runner's
-machinery declarations; the eight collector hashes; the four phrase
-surfaces; the roadmap's pending rungs.
+The product write-backs passed `npm run publication:check` with both
+edition locks current. `node scripts/docs-check.mjs` passed with 15 product
+documents and zero failures after the write-backs, and `entropy check`
+proves the two new filed pairs in the chain. The plan check refused until
+the receipt existed, as the mechanism requires.
+
+[Receipt 042](refutations/2026-10-11-planning-e3afc2052c1d4de4-042.md)
+binds committed subject `515794ee`. Its scope is this pass: WO-200 and the
+five queued orders whose judged text changed (WO-118, WO-096, WO-098,
+WO-095, WO-083) plus the sequence, with 20 unchanged order verdicts carried
+by hash; WO-088 and WO-113 changed only in their execution plans and
+carry-ins, outside the judged fields. One fresh background `dotln-worker`
+received only the canonical prompt (the dispatch JSON: the theses, the goal
+card, the six orders, the sequence, the cost table, the output
+instructions and the closed schema) and read it with read-only shell
+commands. It returned `aligned-with-findings`, twelve known issues and no
+hold; every order is `aligned-with-findings`. Dispatch to filing took
+888.015 s. The helper committed the pair and passed `plan check`: judged,
+committed and workspace subject hashes were equal, with no continuation
+update. Every known issue is carried on its order's catalog row in the
+map, as product 07 places a receipt's known issue for an order the receipt
+finds frozen; the planner's readings of the material ones:
+
+- WO-098's generated unit lines (about 190 bytes each per role skill, some
+  2,280 bytes across the two batches against 1,134 bytes of executor
+  headroom) can pass while the executor's cold start grows past its
+  ceiling. The cold-start route keeps a reviewed rule whole and boards the
+  overrun; the row's reopening observation is the directed-load total
+  after WO-097 or WO-098 against WO-097's base.
+- WO-096's and WO-098's governance column has no harness dimension, so a
+  hook-lowered unit counts as mechanism where Codex carries it as role
+  text; a per-profile split is the improvement, left to the order that
+  first renders the ledger.
+- WO-118 may close criterion 1 by waiver while WO-083's typed dependency has
+  no guard; WO-118's and WO-083's Cost-line byte figures read beside "no
+  byte figure binds" as two rules, where product 07 makes a Cost figure the
+  planner's estimate and never a bound; WO-118's gap is dated 2026-09-28
+  and lists closed orders as open. These are amendments for the next pass
+  that touches those orders, not changes to the judged bytes after the
+  receipt.
+- WO-083 sits last while its typed prerequisites are met earlier; the
+  sequence prose records the reason (the operator's fork on the operator's
+  own machine), which the judged list does not carry.
+- The critical path's gate V row places R3 after WO-118 while WO-118's gap
+  places it after WO-083; the next pass that touches the critical-path
+  document reconciles them.
+
+The worker made no repository or Git write and spawned no agent. Three
+workers ran in this pass, as planned: the external reviewer, the blinded
+entropy refuter and this planning refuter. Completion uses
+`npm run test:docs` over this branch after the receipt and these map and
+document updates; the handoff and the pull request report its executed
+verdict. The final usage observation stays in the ignored session receipt
+and the handoff, as the process-cost rule requires.
+
+New inputs beyond the entry set: REVIEW-006 and REFUTATION-007 in full;
+the gate rows since 2026-10-01; the control segments of the eleven closed
+orders; the fifteen failed reports' opening lines; the decisions D001 and
+D010 of WO-107, D012 of WO-105, D023 and D026 of WO-189, D003, D006 and
+D008 of WO-190, D021 of WO-198, D002 of WO-197, D007 of WO-074, D041 of
+WO-187, D036 of WO-186; `profile.mjs`, `comment-labels.mjs`,
+`.gitattributes`, `.prettierignore` and the runner's machinery
+declarations; the eight collector hashes; the four phrase surfaces; the
+roadmap's pending rungs; receipt 042's twelve findings.
