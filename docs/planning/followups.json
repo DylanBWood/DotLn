@@ -31307,6 +31307,14 @@
             "WO-078"
           ],
           "at": "2026-10-11T01:26:26.364Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Returned to the register at WO-078's final review (FINAL-001): the order left it with a recorded reason (WO-078-D004). The fix needs a configuration field in scripts/lib/config.mjs with its validation, product 07 text and the publish check's fixtures, none of which WO-078's surfaces or criteria cover; the identity is public and the check only exempts it from the sign-off rule.",
+          "reopenWhen": "A fork's worktree publish exempts core's operator identity instead of its own, an exported kit must carry no personal identifier, or the next order that edits the publish check or the registration fields of scripts/lib/config.mjs.",
+          "targets": [],
+          "at": "2026-10-11T18:30:14.495Z"
         }
       ]
     },
@@ -32272,6 +32280,14 @@
             "WO-078"
           ],
           "at": "2026-10-11T01:26:28.211Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-078-D004 fixed the three update defects inside this order's edit of scripts/launchpad.mjs: planInstanceActions refuses a declared rename-root into a kit-owned prefix before any write; planUpdate keeps a prior kit file whose bytes equal the incoming candidate (converged, never refused, recorded at the incoming hash); the update journals its planned manifest as KIT-MANIFEST.pending.json before its first kit write, so a retry after a run that failed after its kit writes completes at the same or a later commit, including after the second of two renames. Evidence: the export update cases of scripts/test-launchpad.mjs in the passing npm test -- --review rows (executor, code identity 08345dada9b32b66aea18810ab01be4c591fc200e234d231d6acc2e06c4f4faa, 2026-10-11T17:45:57Z; FINAL-001 at the integrated tree), read by VER-001 to VER-003 and judged at FINAL-001.",
+          "reopenWhen": "An update in an operator's starter or fork meets one of the three defects again, or a kit author declares an action the refusal predicate does not cover (WO-078-D004).",
+          "targets": [],
+          "at": "2026-10-11T18:30:14.439Z"
         }
       ]
     },
