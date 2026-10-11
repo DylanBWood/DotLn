@@ -113,6 +113,8 @@ const pureProjection = (root, path) =>
     docRelative(root, "workOrders", "README.md"),
     docRelative(root, "workOrders", "HISTORY.md"),
     docRelative(root, "lineage", "decisions-index.md"),
+    docRelative(root, "siblings", "README.md"),
+    docRelative(root, "siblings", "tag-observations.json"),
     ".claude/settings.json",
     ".codex/config.toml",
     ".codex/hooks.json",
@@ -426,6 +428,10 @@ function regenerate(root, receipt) {
     node("scripts/meta.mjs"),
   );
   run("work-order index", () => node("scripts/work-orders.mjs", "index"));
+  // The sibling registry is generated from receipts both branches may have
+  // added; a launchpad that declares no siblings has no page to regenerate.
+  if (existsSync(join(root, docRelative(root, "siblings", "siblings.json"))))
+    run("sibling registry", () => node("scripts/siblings.mjs", "index"));
   run("publication locks", () => {
     const output = node("scripts/check-publication.mjs", "--print-locks");
     for (const path of editionPages(root)) {

@@ -32943,6 +32943,151 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-88ceacf550262cea",
+      "key": "decision:docs/evidence/WO-078/decisions.md#wo-078-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "929c15a8014db3e5aa51a65f4ebf4e9e12d48124613ac172e488598519378bfd",
+          "ref": "docs/evidence/WO-078/decisions.md#wo-078-d002--the-generator-derives-the-entry-from-the-declaration-the-receipts-and-this-repositorys-git",
+          "title": "WO-078-D002: scripts/siblings.mjs index renders docs/siblings/README.md with one entry per declared sibling: purpose and upstream relation from the declaration (an export's origin commit is the declar",
+          "summary": "{ \"id\": \"WO-078-D002\", \"date\": \"2026-10-11\", \"dispatch\": \"resume: next\", \"decision\": \"scripts/siblings.mjs index renders docs/siblings/README.md with one entry per declared sibling: purpose and upstream relation from the declaration (an export's origin commit is the declared coreCommit, else the earliest receipt's commit, else not evidenced; a consumer names its contract version); kit version, core commit, manifest hash, build hash and last receipt from the latest receipt; the orders in core that advanced it as the orders whose committed control segment reads closed at a receipt's commit and not at the previous receipt's (the declared origin commit serves as the first receipt's predecessor w",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-078-D010 repairs VER-001 F1 with independent tag-observations.json input; 13 sibling tests and the export/update receipt fixture pass, including invented and existing-tag page substitutions and unchanged later-tag acceptance. See docs/evidence/WO-078/repair-001.md.",
+          "reopenWhen": "A page-only edit changes the expected kit version or an untouched page fails solely because a later tag was added.",
+          "targets": [],
+          "at": "2026-10-11T15:10:02.635Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c6da24aea75994e6",
+      "key": "decision:docs/evidence/WO-078/decisions.md#wo-078-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7ab955449ddb9e0cc2bb44aea4360753cc43ca5e9c0ba7367b1034e13a636c16",
+          "ref": "docs/evidence/WO-078/decisions.md#wo-078-d004--boy-scout-bound-the-three-update-defects-are-fixed-the-author-identity-row-is-left",
+          "title": "WO-078-D004: FUP-eaad73517ca2a395 (WO-077 D007's three update defects) is fixed inside this order's edit of scripts/launchpad.mjs. F1: planInstanceActions refuses a declared rename whose source or des",
+          "summary": "{ \"id\": \"WO-078-D004\", \"date\": \"2026-10-11\", \"dispatch\": \"resume: next\", \"decision\": \"FUP-eaad73517ca2a395 (WO-077 D007's three update defects) is fixed inside this order's edit of scripts/launchpad.mjs. F1: planInstanceActions refuses a declared rename whose source or destination is kit-owned by the same predicate the manifest uses (kitPath), not only a listed kit file, before any write. F2: planUpdate treats a kit file whose current bytes equal the incoming kit's as converged, whether a fork applied core's change by hand or an earlier update wrote it: it is replaced in place, never refused, and the manifest records the incoming hash; a new kit path already holding the incoming bytes is add",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-8c5dc05351e8c130",
+      "key": "decision:docs/evidence/WO-078/decisions.md#wo-078-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0a4df81555aefb56737775eaadd3a604515e15302ba65f598d08767260f0794b",
+          "ref": "docs/evidence/WO-078/decisions.md#wo-078-d008--verification-a-forged-tag-observation-defeats-the-required-hand-edit-refusal",
+          "title": "WO-078-D008: Repair VER-001 F1 in scripts/siblings.mjs: bind the recorded kit-version observation to a source outside the page being checked, reject the combined displayed-version and tag-record edit,",
+          "summary": "{ \"id\": \"WO-078-D008\", \"date\": \"2026-10-11\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 routes a blocking criterion 1 finding to repair. With a valid receipt at a commit tagged v1.0.0, changing only the registry page's displayed kit versions and embedded dotln-sibling-tags record to v9.8.7-forged makes siblings index --check exit 0, print PASS and retain the forged page. Git, the declaration and the receipt remain unchanged. A visible version edit alone exits 1. readTagRecord consumes the judged page as a source of the expected version, commitFacts trusts it, and writeRegistry prints disagreement with live tags as NEWER evidence rather than refusing. The repair must reject the compou",
+          "missing": false
+        },
+        {
+          "hash": "6c9d230960bcf02b6dd2352f4f8f28fccb2afd42aab3e8ab37cdc7b77f97baf4",
+          "ref": "docs/evidence/WO-078/decisions.md#wo-078-d008--verification-a-forged-tag-observation-defeats-the-required-hand-edit-refusal",
+          "title": "WO-078-D008: Repair VER-001 F1 in scripts/siblings.mjs: bind the recorded kit-version observation to a source outside the page being checked, reject the combined displayed-version and tag-record edit,",
+          "summary": "{ \"id\": \"WO-078-D008\", \"date\": \"2026-10-11\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 routes a blocking criterion 1 finding to repair. With a valid receipt at a commit tagged v1.0.0, changing only the registry page's displayed kit versions and embedded dotln-sibling-tags record to v9.8.7-forged makes siblings index --check exit 0, print PASS and retain the forged page. Git, the declaration and the receipt remain unchanged. A visible version edit alone exits 1. readTagRecord consumes the judged page as a source of the expected version, commitFacts trusts it, and writeRegistry prints disagreement with live tags as NEWER evidence rather than refusing. The repair must reject the compou",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-078-D010 repairs VER-001 F1 with independent tag-observations.json input; 13 sibling tests and the export/update receipt fixture pass, including invented and existing-tag page substitutions and unchanged later-tag acceptance. See docs/evidence/WO-078/repair-001.md.",
+          "reopenWhen": "A page-only edit changes the expected kit version or an untouched page fails solely because a later tag was added.",
+          "targets": [],
+          "at": "2026-10-11T15:10:02.706Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-584d6021928bdfdb",
+      "key": "decision:docs/evidence/WO-078/decisions.md#wo-078-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c505e16310f2b5b0846e2518d6247c2516785477b1ee7fdac137f2969a90c7b8",
+          "ref": "docs/evidence/WO-078/decisions.md#wo-078-d009--preserve-the-worker-dispositions-as-structured-follow-ups",
+          "title": "WO-078-D009: When adjacent launchpad or generator work justifies the Boy Scout bound, preflight absent still-carried kit inputs before the build, include the completed destination and receipt state wi",
+          "summary": "{ \"id\": \"WO-078-D009\", \"date\": \"2026-10-11\", \"dispatch\": \"resume: verify\", \"decision\": \"The three recorded worker findings in D004 remain nonblocking: an absent prior kit file still carried upstream refuses after a build, post-manifest receipt or regeneration errors omit the normal success summary, and the new modules duplicate small private validators and the first-differing-line calculation. Source review confirms those dispositions. The passing update fixtures show the absent-file case refuses before destination writes; these rows break no required criterion and are preserved here with an actionable followup instead of becoming additional reasons to fail. The existing author-identity and ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-995f9b2aacc209d2",
+      "key": "decision:docs/evidence/WO-078/decisions.md#wo-078-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5dbd4e64bddb474fcc71f6fc4240681a8943b40fe6d821481f6c3f20d9a1c2f5",
+          "ref": "docs/evidence/WO-078/decisions.md#wo-078-d010--repair-expected-versions-come-from-a-separate-captured-input",
+          "title": "WO-078-D010: Repair VER-001 F1 by capturing the generator's Git tag observations in tag-observations.json under the configured siblings root. The file holds schemaVersion 1 and the known receipt commi",
+          "summary": "{ \"id\": \"WO-078-D010\", \"date\": \"2026-10-11\", \"dispatch\": \"resume: fix\", \"decision\": \"Repair VER-001 F1 by capturing the generator's Git tag observations in tag-observations.json under the configured siblings root. The file holds schemaVersion 1 and the known receipt commits' tag/nearest observations. index writes that input and the page in the same invocation, including when export or update calls it; --check reads the independent file, validates its shape and commit coverage, and derives every expected version from it. The page's embedded record is now output only. A later tag is still reported as newer evidence without changing either file; an explicit generation refreshes both from Git. M",
+          "missing": false
+        },
+        {
+          "hash": "671fe1bf65abe840cf2f5d8041a0688d942007c6a200a2ad9ba3e5c8161680ec",
+          "ref": "docs/evidence/WO-078/decisions.md#wo-078-d010--repair-expected-versions-come-from-a-separate-captured-input",
+          "title": "WO-078-D010: Repair VER-001 F1 by capturing the generator's Git tag observations in tag-observations.json under the configured siblings root. The file holds schemaVersion 1 and the known receipt commi",
+          "summary": "{ \"id\": \"WO-078-D010\", \"date\": \"2026-10-11\", \"dispatch\": \"resume: fix\", \"decision\": \"Repair VER-001 F1 by capturing the generator's Git tag observations in tag-observations.json under the configured siblings root. The file holds schemaVersion 1 and the known receipt commits' tag/nearest observations. index writes that input and the page in the same invocation, including when export or update calls it; --check reads the independent file, validates its shape and commit coverage, and derives every expected version from it. The page's embedded record is now output only. A later tag is still reported as newer evidence without changing either file; an explicit generation refreshes both from Git. M",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1e8ba454d811954f",
+      "key": "decision:docs/evidence/WO-078/decisions.md#wo-078-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4409d851f58cc3db77cc4b60b5ae2e3f8b9c8edde36d73a0528e3b812769b450",
+          "ref": "docs/evidence/WO-078/decisions.md#wo-078-d011--verification-a-coordinated-edit-of-both-generated-sibling-files-still-admits-an-invented-kit-version",
+          "title": "WO-078-D011: Repair VER-002 F1 in scripts/siblings.mjs: refuse, without a write, any recorded observation whose tag does not point at its receipt commit or whose nearest is not a tag at or below that ",
+          "summary": "{ \"id\": \"WO-078-D011\", \"date\": \"2026-10-11\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-002 routes a blocking criterion 1 finding to repair. D010 moved the check's expected kit version from the page's embedded record to tag-observations.json, a second file the same generator writes, which .gitattributes marks dotln-generated and worktree integration regenerates as a pure projection. With a valid receipt at a commit tagged v1.0.0, replacing v1.0.0 with v9.8.7-forged in both the page and tag-observations.json makes siblings index --check exit 0. It prints NEWER tag evidence naming the true v1.0.0, then PASS, and keeps the forged page. Git holds no v9.8.7-forged tag, the receipt and declara",
+          "missing": false
+        },
+        {
+          "hash": "1e0c0090e15896e55eb1c369c8b6fca5ad8a079f9394671f964de41ecd9b324a",
+          "ref": "docs/evidence/WO-078/decisions.md#wo-078-d011--verification-a-coordinated-edit-of-both-generated-sibling-files-still-admits-an-invented-kit-version",
+          "title": "WO-078-D011: Repair VER-002 F1 in scripts/siblings.mjs: refuse, without a write, any recorded observation whose tag does not point at its receipt commit or whose nearest is not a tag at or below that ",
+          "summary": "{ \"id\": \"WO-078-D011\", \"date\": \"2026-10-11\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-002 routes a blocking criterion 1 finding to repair. D010 moved the check's expected kit version from the page's embedded record to tag-observations.json, a second file the same generator writes, which .gitattributes marks dotln-generated and worktree integration regenerates as a pure projection. With a valid receipt at a commit tagged v1.0.0, replacing v1.0.0 with v9.8.7-forged in both the page and tag-observations.json makes siblings index --check exit 0. It prints NEWER tag evidence naming the true v1.0.0, then PASS, and keeps the forged page. Git holds no v9.8.7-forged tag, the receipt and declara",
+          "missing": false
+        },
+        {
+          "hash": "8312e271647c1605f1271f5d917a8b31c46035006a555f3ac14a2514874e6648",
+          "ref": "docs/evidence/WO-078/decisions.md#wo-078-d011--verification-a-coordinated-edit-of-both-generated-sibling-files-still-admits-an-invented-kit-version",
+          "title": "WO-078-D011: Repair VER-002 F1 in scripts/siblings.mjs: refuse, without a write, any recorded observation whose tag does not point at its receipt commit or whose nearest is not a tag at or below that ",
+          "summary": "{ \"id\": \"WO-078-D011\", \"date\": \"2026-10-11\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-002 routes a blocking criterion 1 finding to repair. D010 moved the check's expected kit version from the page's embedded record to tag-observations.json, a second file the same generator writes, which .gitattributes marks dotln-generated and worktree integration regenerates as a pure projection. With a valid receipt at a commit tagged v1.0.0, replacing v1.0.0 with v9.8.7-forged in both the page and tag-observations.json makes siblings index --check exit 0. It prints NEWER tag evidence naming the true v1.0.0, then PASS, and keeps the forged page. Git holds no v9.8.7-forged tag, the receipt and declara",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "WO-078-D012 repairs VER-002 F1: the repeated verifier probe now refuses the coordinated invented-tag edit with exit 1 while its unedited later-tag case passes; all 15 sibling fixtures pass, including real wrong-commit and future nearest tags, revision expressions and refusal without writes. Evidence: docs/evidence/WO-078/repair-002.md and scripts/test-siblings.mjs.",
+          "reopenWhen": "A captured non-null version passes without a literal Git tag at the required receipt-commit relationship, or an unedited captured version becomes stale solely because another tag was added.",
+          "targets": [],
+          "at": "2026-10-11T17:18:03.328Z"
+        }
+      ]
     }
   ]
 }

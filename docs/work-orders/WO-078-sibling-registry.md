@@ -1,4 +1,4 @@
-# WO-078 — Sibling registry and export receipts: core tracks the starter and the Angular consumer as siblings with their kit version and build hash, and every export appends a receipt (version assigned at activation)
+# WO-078 — Sibling registry and export receipts: core tracks the starter and the Angular consumer as siblings with their kit version and build hash, and every export appends a receipt (v0.74.3)
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).

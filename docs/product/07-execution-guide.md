@@ -634,7 +634,7 @@ release manifest derived over the real log are unchanged by its introduction.
 names are `docs` (the document base), `control`, `orders`, `workOrders`,
 `verifications`, `finalReviews`, `evidence`, `releases`, `planning`,
 `refutations`, `derivedWorkOrders`, `publication`, `intake`, `workstreams`, `lineage`, `product`,
-`discovery`, `observations`, `decisions` and `repositoryProfiles` (default
+`discovery`, `observations`, `decisions`, `siblings` and `repositoryProfiles` (default
 `docs/repositories`). An undeclared root defaults under
 the document base — `orders` under `control` and `refutations` under `planning`
 — with `derivedWorkOrders` under `workOrders/derived`, so moving a parent moves

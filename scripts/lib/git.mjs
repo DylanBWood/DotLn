@@ -38,6 +38,24 @@ export const runGit = (cwd, args, options = {}) => {
   return trim ? result.stdout.trim() : result.stdout;
 };
 
+/** The tag at `commit`, highest version first, and the nearest tag below it,
+ * or null for each. The kit manifest's tag and the sibling registry's kit
+ * version come from these same two lookups. */
+export const describeTag = (root, commit) => {
+  const exact = runGit(root, [
+    "tag",
+    "--points-at",
+    commit,
+    "--sort=-v:refname",
+  ])
+    .split("\n")
+    .filter(Boolean);
+  const nearest = runGit(root, ["describe", "--tags", "--abbrev=0", commit], {
+    onFailure: () => null,
+  });
+  return { tag: exact[0] ?? null, nearest: nearest || null };
+};
+
 // Byte-framed batch reads preserve Unicode payloads without spawning one Git
 // process per immutable object. Duplicate requests share the returned bytes.
 export const readGitObjects = (root, objectIds, type) => {

@@ -25,7 +25,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { defaultRoots, loadConfig } from "./lib/config.mjs";
 import { measureColdStarts } from "./lib/process-budget.mjs";
@@ -1528,6 +1528,201 @@ test("WO-074 design: a kit file absent at the commit refuses by name, and a dest
   }
 });
 
+// This case commits a sibling declaration and one kit file into the shared
+// copy and leaves the receipts it writes under the copy's evidence root; the
+// update case after it commits its own revisions on top and reads none of
+// them.
+test("WO-078 criterion 1: an export to a declared sibling writes its receipt inside the manifest step and regenerates the entry, and an update records the sibling by its repository name", (t) => {
+  const siblings = "docs/siblings/siblings.json";
+  write(
+    siblings,
+    JSON.stringify(
+      {
+        schemaVersion: 1,
+        siblings: [
+          {
+            id: "starter-fixture",
+            purpose: "The exported launchpad fixture.",
+            relation: { kind: "export", coreCommit: null },
+            capabilityRows: ["launchpad.starter"],
+          },
+        ],
+      },
+      null,
+      2,
+    ) + "\n",
+  );
+  git(source, ["add", siblings]);
+  git(source, ["commit", "-qm", "fixture sibling declaration"]);
+  const head = git(source, ["rev-parse", "HEAD"]).stdout.trim();
+  const generator = (args) =>
+    run(process.execPath, [join(source, "scripts/siblings.mjs"), ...args], {
+      cwd: scratch,
+    });
+  const receiptLine =
+    /^sibling receipt: (docs\/evidence\/siblings\/starter-fixture\/([^/\s]+)\.json); sibling registry: docs\/siblings\/README\.md (regenerated|unchanged)$/mu;
+  const manifestHash = (directory) =>
+    `sha256:${sha256(readFileSync(join(directory, "KIT-MANIFEST.json")))}`;
+  const registryPath = join(source, "docs/siblings/README.md");
+
+  // A destination no declaration names writes no receipt and says so.
+  const undeclared = join(scratch, "undeclared-destination");
+  const plain = ok(
+    runExport(undeclared),
+    "export to an undeclared destination",
+  );
+  assert.match(
+    plain.stdout,
+    /^sibling receipt: none \(undeclared-destination is not declared in docs\/siblings\/siblings\.json\)$/mu,
+  );
+  assert.equal(existsSync(join(source, "docs/evidence/siblings")), false);
+  assert.equal(existsSync(registryPath), false);
+
+  const destination = join(scratch, "starter-fixture");
+  const result = ok(runExport(destination), "export to the declared sibling");
+  const line = receiptLine.exec(result.stdout);
+  assert.ok(line, result.stdout);
+  assert.equal(line[3], "regenerated");
+  const receipt = JSON.parse(readFileSync(join(source, line[1]), "utf8"));
+  assert.deepEqual(Object.keys(receipt).sort(), [
+    "buildHash",
+    "coreCommit",
+    "date",
+    "manifestHash",
+    "sibling",
+  ]);
+  assert.equal(receipt.sibling, "starter-fixture");
+  assert.equal(receipt.coreCommit, head);
+  assert.equal(receipt.manifestHash, manifestHash(destination));
+  const snapshot = /snapshot \.runtime\/harness\/([0-9a-f]{16})\.$/mu.exec(
+    result.stdout,
+  );
+  assert.ok(snapshot, result.stdout);
+  assert.equal(receipt.buildHash, `fnv1a64:${snapshot[1]}`);
+  assert.match(receipt.date, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/u);
+  assert.equal(line[2], receipt.date.replace(/[:.]/gu, "-"));
+  // The receipt is the launchpad's evidence, never the export's content.
+  assert.equal(existsSync(join(destination, "docs/evidence/siblings")), false);
+  assert.ok(
+    !manifestOf(destination).files.some(({ path }) =>
+      path.startsWith("docs/evidence/"),
+    ),
+  );
+
+  // The export regenerated the page itself; no further command is needed.
+  const registry = readFileSync(registryPath, "utf8");
+  const observations = JSON.parse(
+    readFileSync(join(source, "docs/siblings/tag-observations.json"), "utf8"),
+  );
+  assert.deepEqual(observations.commits[head], {
+    tag: null,
+    nearest: "v9.9.9-fixture",
+  });
+  assert.match(
+    registry,
+    new RegExp(
+      `^- \\*\\*Upstream relation:\\*\\* an export of core at commit \`${head}\` \\(the earliest receipt's\\)$`,
+      "mu",
+    ),
+  );
+  assert.match(
+    registry,
+    /^- \*\*Kit version:\*\* none at the commit \(nearest below: `v9\.9\.9-fixture`\)$/mu,
+  );
+  assert.match(
+    registry,
+    new RegExp(`^- \\*\\*Core commit:\\*\\* \`${head}\`$`, "mu"),
+  );
+  assert.match(
+    registry,
+    new RegExp(
+      `^- \\*\\*Manifest hash:\\*\\* \`${receipt.manifestHash}\`$`,
+      "mu",
+    ),
+  );
+  assert.match(
+    registry,
+    new RegExp(`^- \\*\\*Build hash:\\*\\* \`${receipt.buildHash}\`$`, "mu"),
+  );
+  assert.match(registry, /\| first receipt \| \[/u);
+  ok(generator(["index", "--check"]), "the page the export wrote is current");
+  // The generator rebuilds the same page from the receipt alone.
+  rmSync(registryPath);
+  const started = performance.now();
+  ok(generator(["index"]), "siblings index");
+  const generatorMs = performance.now() - started;
+  assert.equal(readFileSync(registryPath, "utf8"), registry);
+
+  // A kit change, then an update into a worktree-named copy whose origin
+  // remote names the sibling: the receipt records the declared sibling, and
+  // the page regenerates with the new commit and the retained manifest's hash.
+  write("scripts/sibling-fixture.txt", "a kit change after the export\n");
+  git(source, ["add", "scripts/sibling-fixture.txt"]);
+  git(source, ["commit", "-qm", "fixture kit change for the sibling update"]);
+  const next = git(source, ["rev-parse", "HEAD"]).stdout.trim();
+  const worktree = join(scratch, "Starter-Fixture-wo001");
+  cpSync(destination, worktree, { recursive: true, verbatimSymlinks: true });
+  git(worktree, [
+    "remote",
+    "add",
+    "origin",
+    "https://example.invalid/owner/starter-fixture.git",
+  ]);
+  const updated = ok(
+    run(
+      process.execPath,
+      [join(source, "scripts/launchpad.mjs"), "export", "--update", worktree],
+      { cwd: scratch },
+    ),
+    "update the declared sibling through its worktree",
+  );
+  const second = receiptLine.exec(updated.stdout);
+  assert.ok(second && second[1] !== line[1], updated.stdout);
+  assert.equal(second[3], "regenerated");
+  const later = JSON.parse(readFileSync(join(source, second[1]), "utf8"));
+  assert.equal(later.sibling, "starter-fixture");
+  assert.equal(later.coreCommit, next);
+  assert.equal(later.manifestHash, manifestHash(worktree));
+  assert.notEqual(later.manifestHash, receipt.manifestHash);
+  assert.equal(later.buildHash, receipt.buildHash, "the same runtime build");
+  const regenerated = readFileSync(registryPath, "utf8");
+  assert.match(
+    regenerated,
+    new RegExp(
+      `^- \\*\\*Manifest hash:\\*\\* \`${later.manifestHash}\`$`,
+      "mu",
+    ),
+  );
+  assert.match(
+    regenerated,
+    /^- \*\*Orders in core that advanced it:\*\* none closed between the compared commits$/mu,
+  );
+  assert.equal(
+    regenerated.split("\n").filter((row) => row.startsWith("| 20")).length,
+    2,
+  );
+  ok(generator(["index", "--check"]), "the page the update wrote is current");
+  // The page the export wrote, put back by hand, is stale against the later
+  // receipt and the check names that receipt.
+  writeFileSync(registryPath, registry);
+  const stale = generator(["index", "--check"]);
+  assert.equal(stale.status, 1, stale.stdout);
+  assert.equal(
+    stale.stderr,
+    `error: docs/siblings/README.md: the starter-fixture entry records manifest hash \`${receipt.manifestHash}\`, and its latest receipt ${second[1]} records \`${later.manifestHash}\`; run node scripts/siblings.mjs index\n`,
+  );
+  assert.equal(
+    readFileSync(registryPath, "utf8"),
+    registry,
+    "the check writes nothing",
+  );
+  ok(generator(["index"]), "siblings index after the update");
+  assert.equal(readFileSync(registryPath, "utf8"), regenerated);
+  t.diagnostic(
+    `sibling receipts ${basename(line[1])} and ${basename(second[1])}; generator wall-clock ${Math.round(generatorMs)} ms; registry ${Buffer.byteLength(regenerated)} bytes`,
+  );
+});
+
 test("export update preserves ownership, validates actions and keeps the exported resident", async (t) => {
   const kitActions = "scripts/kit/KIT-ACTIONS.json";
   const changed = "scripts/update-changed.txt";
@@ -1618,6 +1813,9 @@ test("export update preserves ownership, validates actions and keeps the exporte
       const target = instance("ownership");
       writeFileSync(join(target, modified), "local kit edit\n");
       writeFileSync(join(target, droppedModified), "local dropped edit\n");
+      // A fork that took core's change by hand holds the incoming bytes
+      // already: converged, never refused, recorded at the incoming hash.
+      writeFileSync(join(target, changed), "revision B\n");
       mkdirSync(join(target, "build"));
       writeFileSync(
         join(target, "build/overlay.json"),
@@ -1635,6 +1833,11 @@ test("export update preserves ownership, validates actions and keeps the exporte
       assert.match(result.stdout, /re-emit: node scripts\/harness.mjs emit/);
       for (const path of [modified, droppedModified])
         assert.ok(result.stdout.includes(`refused: ${path}`));
+      assert.ok(!result.stdout.includes(`refused: ${changed}`));
+      assert.match(
+        result.stdout,
+        /^kit files: \d+ replaced; 1 added; 1 removed; 2 refused\.$/m,
+      );
       const after = snapshot(target);
       const priorPaths = new Set(prior.files.map(({ path }) => path));
       for (const [path, hash] of Object.entries(before))
@@ -1683,6 +1886,25 @@ test("export update preserves ownership, validates actions and keeps the exporte
         );
         assert.ok(!manifestOf(target).files.some(({ path }) => path === added));
       }
+      const converged = instance("converged-add");
+      writeFileSync(join(converged, added), "new in B\n");
+      rmSync(join(converged, dropped));
+      const result = ok(runUpdate(converged), "converged new path");
+      assert.ok(!result.stdout.includes("refused:"), result.stdout);
+      // Both dropped files leave: the one removed by hand is absent and
+      // counted as removed, the other is unmodified in this fresh instance.
+      assert.match(
+        result.stdout,
+        /^kit files: \d+ replaced; 1 added; 2 removed; 0 refused\.$/m,
+      );
+      const manifest = manifestOf(converged);
+      assert.equal(manifest.commit, revisionB);
+      assert.equal(
+        manifest.files.find(({ path }) => path === added)?.sha256,
+        sha256(Buffer.from("new in B\n")),
+      );
+      assert.ok(!manifest.files.some(({ path }) => path === dropped));
+      assert.equal(existsSync(join(converged, dropped)), false);
     },
   );
 
@@ -1824,6 +2046,173 @@ test("export update preserves ownership, validates actions and keeps the exporte
       write(kitActions, JSON.stringify({ schemaVersion: 1, actions }) + "\n");
       git(source, ["add", kitActions]);
       git(source, ["commit", "-qm", "fixture restore declared actions"]);
+      const intoKit = instance("into-kit", true);
+      const intoKitBefore = snapshot(intoKit);
+      write(
+        kitActions,
+        JSON.stringify({
+          schemaVersion: 1,
+          actions: [
+            {
+              id: "into-kit",
+              date: "2026-10-11",
+              kind: "rename-root",
+              root: "evidence",
+              from: "docs/evidence",
+              to: "scripts/evidence",
+            },
+          ],
+        }) + "\n",
+      );
+      git(source, ["add", kitActions]);
+      git(source, ["commit", "-qm", "fixture rename into a kit tree"]);
+      const kitOwned = runUpdate(intoKit, ["--apply"]);
+      assert.equal(kitOwned.status, 1, kitOwned.stdout);
+      assert.match(
+        kitOwned.stderr,
+        /instance root overlaps a protected path: scripts\/evidence/,
+      );
+      assert.deepEqual(snapshot(intoKit), intoKitBefore);
+      write(kitActions, JSON.stringify({ schemaVersion: 1, actions }) + "\n");
+      git(source, ["add", kitActions]);
+      git(source, ["commit", "-qm", "fixture restore declared actions again"]);
+    },
+  );
+
+  await t.test(
+    "a retry after an update that failed after its kit writes completes with no refusal, at a later commit too",
+    {
+      skip: root ? "runs as root, for whom every directory is writable" : false,
+    },
+    () => {
+      const target = instance("interrupted", true);
+      mkdirSync(join(target, "records"));
+      chmodSync(join(target, "records"), 0o500);
+      let failed;
+      try {
+        failed = runUpdate(target, ["--apply"]);
+      } finally {
+        chmodSync(join(target, "records"), 0o755);
+      }
+      assert.equal(failed.status, 1, failed.stdout);
+      assert.match(failed.stderr, /EACCES|EPERM/);
+      // The kit writes and removals landed and the planned manifest is
+      // journaled; the manifest itself did not change.
+      assert.equal(manifestOf(target).commit, revisionA);
+      assert.equal(existsSync(join(target, "KIT-MANIFEST.pending.json")), true);
+      assert.equal(readFileSync(join(target, changed), "utf8"), "revision B\n");
+      assert.equal(readFileSync(join(target, added), "utf8"), "new in B\n");
+      assert.equal(existsSync(join(target, dropped)), false);
+      // Core moves on before the retry: a file the failed run wrote changes
+      // again upstream and a dropped file returns.
+      write(changed, "revision C\n");
+      write(dropped, "back in C\n");
+      git(source, ["add", "scripts"]);
+      git(source, ["commit", "-qm", "fixture kit revision C"]);
+      const revisionC = git(source, ["rev-parse", "HEAD"]).stdout.trim();
+      try {
+        const retried = ok(
+          runUpdate(target, ["--apply"]),
+          "retry at a later commit",
+        );
+        assert.ok(!retried.stdout.includes("refused:"), retried.stdout);
+        assert.match(retried.stdout, /^applied: move-evidence/m);
+        const manifest = manifestOf(target);
+        assert.equal(manifest.commit, revisionC);
+        for (const { path, sha256: hash } of manifest.files)
+          assert.equal(hash, sha256(readFileSync(join(target, path))), path);
+        assert.equal(
+          readFileSync(join(target, changed), "utf8"),
+          "revision C\n",
+        );
+        assert.equal(
+          readFileSync(join(target, dropped), "utf8"),
+          "back in C\n",
+        );
+        assert.equal(
+          existsSync(join(target, "KIT-MANIFEST.pending.json")),
+          false,
+        );
+        assert.equal(existsSync(join(target, "records/evidence")), true);
+        assert.equal(existsSync(join(target, "docs/evidence")), false);
+        t.diagnostic(
+          `${failed.stderr.trim().split("\n")[0]}\n${retried.stdout.trim().split("\n").slice(0, 2).join("\n")}`,
+        );
+      } finally {
+        // Restore revision B's kit for the cases after this one.
+        write(changed, "revision B\n");
+        rmSync(join(source, dropped));
+        git(source, ["add", "scripts"]);
+        git(source, ["commit", "-qm", "fixture kit revision B restored"]);
+      }
+    },
+  );
+
+  await t.test(
+    "a retry after the second of two renames failed adopts the first without moving it again",
+    {
+      skip: root ? "runs as root, for whom every directory is writable" : false,
+    },
+    () => {
+      const target = instance("two-renames", true);
+      write(
+        kitActions,
+        JSON.stringify({
+          schemaVersion: 1,
+          actions: [
+            ...actions,
+            {
+              id: "move-verifications",
+              date: "2026-10-11",
+              kind: "rename-root",
+              root: "verifications",
+              from: "docs/verifications",
+              to: "locked/verifications",
+            },
+          ],
+        }) + "\n",
+      );
+      git(source, ["add", kitActions]);
+      git(source, ["commit", "-qm", "fixture second rename"]);
+      try {
+        mkdirSync(join(target, "locked"));
+        chmodSync(join(target, "locked"), 0o500);
+        let failed;
+        try {
+          failed = runUpdate(target, ["--apply"]);
+        } finally {
+          chmodSync(join(target, "locked"), 0o755);
+        }
+        assert.equal(failed.status, 1, failed.stdout);
+        assert.match(failed.stderr, /EACCES|EPERM/);
+        // The first rename landed; the configuration still names the old root.
+        assert.equal(existsSync(join(target, "records/evidence")), true);
+        assert.equal(existsSync(join(target, "docs/evidence")), false);
+        assert.equal(loadConfig(target).roots.evidence, "docs/evidence");
+        const retried = ok(
+          runUpdate(target, ["--apply"]),
+          "retry after the second rename failed",
+        );
+        assert.ok(!retried.stdout.includes("refused:"), retried.stdout);
+        assert.equal(loadConfig(target).roots.evidence, "records/evidence");
+        assert.equal(
+          loadConfig(target).roots.verifications,
+          "locked/verifications",
+        );
+        assert.equal(existsSync(join(target, "locked/verifications")), true);
+        assert.equal(
+          existsSync(join(target, "KIT-MANIFEST.pending.json")),
+          false,
+        );
+      } finally {
+        write(kitActions, JSON.stringify({ schemaVersion: 1, actions }) + "\n");
+        git(source, ["add", kitActions]);
+        git(source, [
+          "commit",
+          "-qm",
+          "fixture restore declared actions after the second rename",
+        ]);
+      }
     },
   );
 

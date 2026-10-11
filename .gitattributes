@@ -1,5 +1,7 @@
 /docs/work-orders/README.md dotln-generated dotln-check=suite:index
 /docs/work-orders/HISTORY.md dotln-generated dotln-check=suite:index
+/docs/siblings/README.md dotln-generated dotln-check=suite:siblings
+/docs/siblings/tag-observations.json dotln-generated dotln-check=suite:siblings
 /docs/product/03-architecture.md dotln-check=suite:publication
 /docs/lineage/decisions-index.md dotln-generated dotln-check=suite:meta
 /docs/planning/cost-table.json dotln-generated
