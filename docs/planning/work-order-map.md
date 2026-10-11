@@ -2526,6 +2526,16 @@ with its reopening observation:
    for three gate runs; the duration recorded). Reopen: the task exceeds
    twice its median at a handoff after WO-201, or a pass finds the suite the
    gate's critical path.
+6. **A receipt statement that names a private path.** Receipt 044's worker
+   was handed the prompt's absolute path in the system temporary directory
+   and its truthful statement repeated it; the receipt helper screens the
+   local-terms list and not private paths, so the immutable receipt's
+   rendered line failed the document check's home-path rule and is declared
+   historical by fingerprint in `docs/control/doc-baseline.json`. Route: the
+   helper refuses or redacts a home or private temporary path in a statement
+   before filing, and the parent hands a worker a `<tmp>/` placeholder or a
+   repository-relative lane. Reopen: a receipt statement names such a path
+   again, or an order edits `scripts/lib/plan-receipts.mjs`.
 
 ## Moved from the execution guide (2026-09-28)
 

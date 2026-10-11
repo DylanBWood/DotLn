@@ -376,7 +376,9 @@ semantic-hash items alone). Open: FUP-f1c7a256bec46737, the operator's
 reserved efficiency pass, unchanged at 28,112 bytes.
 
 After the batch: 1,042 rows, 229 pending (1 open, 228 deferred, none
-untriaged and none awaiting review).
+untriaged and none awaiting review). One more row was minted and deferred
+after the receipt, the receipt-screen candidate of §12: 1,043 rows, 230
+pending.
 
 ## 11. Goal alignment and cost
 
@@ -484,8 +486,9 @@ material ones, each for the next amendment of its order:
   revision's bundle) is the compatibility check, and the row carries the
   observation.
 - **WO-207** must refuse before writing when the rollback lane is
-  unwritable (fail-closed); its place after WO-083 is the operator's
-  ("rollback may follow"), and the R3 replan may reorder it.
+  unwritable (fail-closed); its place after WO-083 follows the operator's
+  direction that the rollback could come later than the preview, and the R3
+  replan may reorder it.
 - **WO-203** sits before WO-118 at the operator's direction (the preview
   before the first real update), not on a gate's chain; recorded.
 - **WO-192's router root** gains its budgets entry in step 3; the next
@@ -496,11 +499,24 @@ material ones, each for the next amendment of its order:
   standing carry-ins (the WO-144 note on its row) and stay there.
 
 The worker made no repository or Git write and spawned no agent. One worker
-ran in this pass, as planned. Completion uses `npm run test:docs` over this
-branch after the receipt and these map and document updates; its executed
-verdict, wall-clock and summed task work are recorded in the sentence that
-follows once it has run, and the handoff and the pull request report the
-same figures.
+ran in this pass, as planned.
+
+**The receipt's statement names a private path.** The parent handed the
+worker the prompt's absolute path in the system temporary directory, and the
+worker's truthful statement repeated it; the receipt helper's screen (the
+local-terms list) does not judge private paths, so the filed receipt's
+rendered statement line fails the document check's home-path rule. The
+receipt is immutable (its Markdown must equal the render of its hashed JSON),
+so the line is declared historical by its fingerprint in
+`docs/control/doc-ceilings.json`'s sibling `docs/control/doc-baseline.json`,
+the route the check provides for records that cannot change, and the gap is
+recorded as a candidate in the map (the helper should refuse or redact such a
+path before filing, and the parent should hand a worker a placeholder or a
+repository-relative lane). The first document gate over the branch
+(`npm run test:docs` at `f30428d4`) stopped at that preflight after 45.14 s
+with 17 tasks passed and 18 failed before their fixtures were prepared, so
+its task work is the preflight's alone; the gate over the final commit is
+reported in the handoff and the pull request.
 
 New inputs beyond the entry set: the conversation-only capture in full; the
 2026-10-07 capture in full; WO-112 D033, D043 and D044, WO-074 D007 and

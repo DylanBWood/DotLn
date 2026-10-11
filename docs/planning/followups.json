@@ -33402,6 +33402,30 @@
           "at": "2026-10-11T20:18:59.987Z"
         }
       ]
+    },
+    {
+      "id": "FUP-7e0490f3c107e919",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-three-repository-route-pass-recorded-2026-10-11-second::090f28789889932ad4e8ea38bbb73bf6decec926af938ef912bd20f48a996d5b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "25ddbe5162d76cb12e22d2e281a25f3908e47f38855021d3ee74a25acd9ec9c2",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-three-repository-route-pass-recorded-2026-10-11-second",
+          "title": "A receipt statement that names a private path.",
+          "summary": "6. **A receipt statement that names a private path.** Receipt 044's worker was handed the prompt's absolute path in the system temporary directory and its truthful statement repeated it; the receipt helper screens the local-terms list and not private paths, so the immutable receipt's rendered line failed the document check's home-path rule and is declared historical by fingerprint in `docs/control/doc-baseline.json`. Route: the helper refuses or redacts a home or private temporary path in a statement before filing, and the parent hands a worker a `<tmp>/` placeholder or a repository-relative lane. Reopen: a receipt statement names such a path again, or an order edits `scripts/lib/plan-receip",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Receipt 044's statement named the prompt's private temporary path; the immutable receipt line is declared historical by fingerprint in docs/control/doc-baseline.json and the helper's screen gap is this candidate; no order is filed for one occurrence. [2026-10-11 route planning pass (docs/planning/three-repository-route-2026-10-11.md section 12)]",
+          "reopenWhen": "a receipt statement names a home or private temporary path again, or an order edits scripts/lib/plan-receipts.mjs",
+          "targets": [],
+          "at": "2026-10-11T20:45:56.939Z"
+        }
+      ]
     }
   ]
 }
