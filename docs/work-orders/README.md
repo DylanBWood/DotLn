@@ -5,7 +5,7 @@
 ## Proposed order
 
 - [ ] [WO-078] — Sibling registry and export receipts · **queued** · pair 1
-- [ ] [WO-191] — Reader profiles for published text · **queued** · pair 1
+- [x] [WO-191] — Reader profiles for published text · **final-reviewed** · pair 1
 - [ ] [WO-072] — Target worktree lifecycle · **queued**
 - [ ] [WO-076] — Instance build overlay · **queued** · pair 2
 - [ ] [WO-200] — Pinned collector bytes are watched where they change · **queued** · pair 2
@@ -63,23 +63,6 @@ None.
 - Track: delivery
 - Cost: adds one receipt written inside the export and update commands (&#96;scripts/launchpad.mjs&#96;; bytes on disk, no step, command or prompt), a generator for &#96;docs/siblings/README.md&#96; with a check in the manner of the work-order index and its suite row in &#96;scripts/test-runner.mjs&#96;, the once-per-sibling declaration, a document root key for &#96;docs/siblings/&#96; in &#96;scripts/lib/config.mjs&#96;, and at most 150 bytes in product 07; the fixture records the generator's wall-clock and the table's bytes. Removes the manual lookup of each sibling's kit manifest version and build hash in its own checkout before every update, planning pass or receipt that names the sibling, one checkout read per sibling per occasion, and the risk that the recorded version is memory: the removal receipt 009's hold asked for. No recurring bookkeeping is added: the once-per-sibling declaration is written at registration, not per export. Re-mints: none; the generator, its check, &#96;scripts/launchpad.mjs&#96; and the documents are in no evidence inventory, and &#96;scripts/lib/config.mjs&#96; is excluded from every inventory with a recorded reason. If the generator gains a &#96;package.json&#96; script, each edition whose check that entry stales is re-minted deterministically, a feedback edition by carry; no live episode. Wall-clock, tokens and context bytes are unknown until run.
 - Authority: [docs/work-orders/WO-078-sibling-registry.md](WO-078-sibling-registry.md)
-
-### WO-191
-
-[WO-191 — What DotLn publishes is written to a committed reader profile per surface, chosen from examples and scored by fresh readers (version assigned at activation)](WO-191-reader-profiles.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-188: hard (met) — item 24 repairs the pull-request body and Release page defects the examples would otherwise copy; WO-126: satisfied-by-close (met) — the headline rule and the series print shown while a title is written.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier high; reviewer any.
-- Track: machinery
-- Cost: adds &#96;docs/control/reader-profiles.json&#96; (five surfaces, five dimensions, three positions each), an examples library under &#96;docs/publication/examples/&#96;, &#96;npm run reader -- profile&#124;preview&#124;score&#96; (&#96;scripts/reader.mjs&#96;), the profile's guidance printed by &#96;worktree publish&#96; and &#96;release prepare&#96; beside the draft (&#96;scripts/worktree.mjs&#96;, &#96;scripts/release.mjs&#96;), one sentence in the reviewer role and one in the planner role (&#96;packages/skeleton/src/loadouts/contributor.ts&#96;), a score file (&#96;docs/publication/reader-scores.jsonl&#96;) and one line at &#96;plan start&#96;. Removes: the operator's only present way to change how published text reads, which is a correction after the fact repeated per surface (three dated corrections on titles and commit style in product 08, on 2026-09-05, 2026-09-07 and 2026-09-09). A planning pass pays one reader agent only after a profile changes and three releases have followed it, or when the operator asks. Re-mints: &#96;contributor.ts&#96; is a registered evidence source, so the editions it stales are re-minted deterministically; it, &#96;scripts/release.mjs&#96; and &#96;scripts/worktree.mjs&#96; are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff; no file the feedback verifier judges changes. Cold-start bytes of the reviewer and planner roots rise by one sentence each; the acceptance route applies. The examples are sub-agent work of unmeasured cost. Wall-clock, tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-191-reader-profiles.md](WO-191-reader-profiles.md)
 
 ### WO-072
 

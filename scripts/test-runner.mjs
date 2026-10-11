@@ -222,6 +222,7 @@ const machinerySources = {
     "packages/skeleton/src/worker-transport.ts",
     "scripts/test-plan-refutation.mjs",
     "scripts/refute-plan.mjs",
+    "scripts/lib/reader-profiles.mjs",
     "scripts/lib/plan-",
     // plan-failures reads the persisted correction ids through meta.mjs.
     "scripts/lib/meta.mjs",
@@ -288,6 +289,7 @@ const machinerySources = {
     "scripts/test-gate-deadlines.mjs",
     "scripts/test-release-fixtures.mjs",
     "scripts/test-release.sh",
+    "scripts/test-reader-fixture.mjs",
     "scripts/test-close-admission.mjs",
     "scripts/lib/worktree-removal.mjs",
     "packages/skeleton/src/writer-teardown.mjs",
@@ -345,6 +347,7 @@ const machinerySources = {
     "packages/skeleton/fixtures/wo196-role-baseline.json",
     "packages/skeleton/fixtures/wo188-role-baseline.json",
     "packages/skeleton/fixtures/wo073-role-baseline.json",
+    "packages/skeleton/fixtures/wo191-role-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
     "scripts/lib/git.mjs",
@@ -886,6 +889,18 @@ export const suites = [
     needsBuild: true,
   }),
   node("plan", "scripts/refute-plan.mjs", { args: ["check"], document: true }),
+  node("reader-profiles", "scripts/reader.mjs", {
+    args: ["check"],
+    document: true,
+    protects:
+      "committed reader choices, complete example variants, fact anchors, comparison hashes and immutable score subjects agree",
+  }),
+  nodeTests("reader-fixtures", "scripts/test-reader.mjs", {
+    document: true,
+    needsBuild: false,
+    protects:
+      "reader commands reject invalid profiles and quotations, select the nearest example, retain tag profiles and record scores idempotently",
+  }),
   node("entropy", "scripts/entropy.mjs", { args: ["check"], document: true }),
 ].map(classifySuite);
 

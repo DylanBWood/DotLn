@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "surfaces": {
+    "prTitle": { "audience": "contributor", "density": "account", "identifiers": "where they help", "machineDetail": "summarized", "voice": "plain" },
+    "prBody": { "audience": "contributor", "density": "account", "identifiers": "where they help", "machineDetail": "summarized", "voice": "plain" },
+    "commitSubject": { "audience": "contributor", "density": "account", "identifiers": "where they help", "machineDetail": "summarized", "voice": "plain" },
+    "releaseNotes": { "audience": "contributor", "density": "account", "identifiers": "where they help", "machineDetail": "summarized", "voice": "plain" },
+    "releasePage": { "audience": "contributor", "density": "account", "identifiers": "where they help", "machineDetail": "summarized", "voice": "plain" }
+  }
+}

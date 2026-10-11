@@ -579,6 +579,7 @@ printf 'local release surfaces ignored an unrelated sibling tag and passed witho
 
 release_case_prepare_independent() {
 make_repo prepare_independent
+"$node_bin" "$script_dir/test-reader-fixture.mjs" "$main"
 git -C "$main" switch -c wo-099 >/dev/null 2>&1
 mkdir -p "$main/docs/control/orders" "$main/docs/product"
 printf '# WO-099 — fixture (v0.2.0)\n\n**Release classification:** patch. Existing scope.\n\n**Objective:** Fixture retiming.\n' >"$main/docs/work-orders/WO-099-fixture.md"
@@ -609,6 +610,8 @@ cmp "$main/docs/product/06-roadmap.md" "$fixture/roadmap-before"
 grep -Fxq '# WO-099 — fixture (v0.2.0)' "$main/docs/work-orders/WO-099-fixture.md"
 rm -rf "$main/docs/control/local" "$main/docs/evidence/WO-099"
 prepared="$(release_command prepare --local)"
+grep -Fq 'Reader profile (releaseNotes):' <<<"$prepared"
+grep -Fq 'Nearest example: docs/publication/examples/releaseNotes/' <<<"$prepared"
 grep -Fxq 'Retimed WO-099: v0.2.0 → v0.2.1 above the observed release baseline v0.2.0.' <<<"$prepared"
 # The collision is the order's decision; no product document changes (WO-086).
 grep -Fxq 'Recorded WO-099-D001 in docs/evidence/WO-099/decisions.md.' <<<"$prepared"
@@ -1878,15 +1881,21 @@ printf 'reviewer evidence notes are truthful; both historical note formats recon
 
 release_case_composed_evidence() {
 make_repo composed_evidence
+"$node_bin" "$script_dir/test-reader-fixture.mjs" "$main"
 git -C "$main" config user.email dylanwoodconsulting@gmail.com
 git -C "$main" config user.name 'Dylan Wood'
+git -C "$main" add docs/control/reader-profiles.json docs/publication/examples
+git -C "$main" commit -m 'Fixture publication profiles' >/dev/null
 subject="$fixture/project-wo099"
 git -C "$main" worktree add -b wo-099 "$subject" main >/dev/null 2>&1
 write_release_block "$subject" v0.2.1
 "$node_bin" "$script_dir/test-release-composition.mjs" prepare "$subject"
 export DOTLN_ONE_GATE_LOG="$fixture/one-gate.jsonl"
 (cd "$subject" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$script_dir/test-release-composition.mjs" lifecycle "$subject") >"$fixture/lifecycle.log"
-PATH="$bin:$PATH" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title 'Fixture one-gate lifecycle' --body-file docs/final-reviews/WO-099/PR.md >"$fixture/publish.log"
+PATH="$bin:$PATH" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title 'Fixture one-gate lifecycle' --body-file docs/final-reviews/WO-099/PR.md >"$fixture/publish.log" || { cat "$fixture/publish.log"; exit 1; }
+grep -Fq 'Reader profile (prTitle):' "$fixture/publish.log"
+grep -Fq 'Reader profile (prBody):' "$fixture/publish.log"
+grep -Fq 'Nearest example: docs/publication/examples/prTitle/' "$fixture/publish.log"
 printf 'Main-only documentation after review.\n' >"$main/docs/merge-note.md"
 git -C "$main" add docs/merge-note.md
 git -C "$main" commit -m 'Synthetic main-only document' >/dev/null

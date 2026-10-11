@@ -1,0 +1,52 @@
+# WO-191 VER-001 probe transcript (2026-10-11)
+# Each scratch clone: base b7741e38d68ac659921db757ac19054f84743495 plus the subject's uncommitted files.
+
+## control-mutations.sh <clone>
+unknown surface | exit=1 | Reader profiles: surface: unknown frontPage; known: prTitle, prBody, commitSubject, releaseNotes, releasePage
+missing surface | exit=1 | Reader profiles: surface: missing commitSubject
+unknown dimension | exit=1 | Reader profiles: prBody dimension: unknown tone; known: audience, density, identifiers, machineDetail, voice
+missing dimension | exit=1 | Reader profiles: prBody dimension: missing voice
+unknown position | exit=1 | Reader profiles: releasePage.voice: unknown position "loud"; known: plain, warm, expressive
+wrong-case position | exit=1 | Reader profiles: releasePage.voice: unknown position "Plain"; known: plain, warm, expressive
+array position | exit=1 | Reader profiles: releasePage.voice: unknown position ["plain"]; known: plain, warm, expressive
+schemaVersion 2 | exit=1 | Reader profiles: schemaVersion must be 1
+extra top key | exit=1 | Reader profiles: profile: unknown extra; known: schemaVersion, surfaces
+__proto__ surface key | exit=1 | Reader profiles: surface: unknown __proto__; known: prTitle, prBody, commitSubject, releaseNotes, releasePage
+surfaces is array | exit=1 | Reader profiles: surface must be an object
+unchanged control (control) | exit=0 | 
+
+## score-probes.mjs <clone>
+real corpus: quote not in text => REFUSED: Reader profiles: v0.69.0/change: quotation is not in the published text: "This release makes everything perfect."
+  file unchanged: true
+real corpus: whitespace-changed quote => REFUSED: Reader profiles: v0.69.0/change: quotation is not in the published text: "This  release  makes  the  handoff  at  the  end  of  each  role  one  ordered  sequence,  and  the  gate  enforces  its  first  step.  Formatting
+eleven releases => REFUSED: Reader profiles: score result needs 1 to 10 releases
+unknown release => REFUSED: Reader profiles: unknown published release v9.9.9
+F2: null answer entries => REFUSED: Cannot read properties of null (reading 'question')
+real corpus: valid quote => OK {"appended":1,"alreadyScored":0}
+repeat valid quote (idempotent) => OK {"appended":0,"alreadyScored":1}
+rows now 11 last v0.69.0
+before tags: {"readerDue":false,"unscored":0}
+two tags: {"readerDue":false,"unscored":2}
+three tags: {"readerDue":true,"unscored":3}
+prompt releases: "release": "v0.74.4" "release": "v0.74.3" "release": "v0.74.2"
+
+## body-profile.mjs <root> (subject worktree, read-only)
+prBody/record: profileFailures=0 relativeLinks=0
+prBody/balanced: profileFailures=0 relativeLinks=0
+prBody/reader: profileFailures=0 relativeLinks=0
+releaseNotes/record: profileFailures=0 relativeLinks=0
+releaseNotes/balanced: profileFailures=0 relativeLinks=0
+releaseNotes/reader: profileFailures=0 relativeLinks=0
+releasePage/record: profileFailures=0 relativeLinks=0
+releasePage/balanced: profileFailures=0 relativeLinks=0
+releasePage/reader: profileFailures=0 relativeLinks=0
+
+## Baseline prompt identity: score prompt with the score log removed
+sha256 53e05ce5e8184b433eaad18f83bd43aab18f59c6ad1f562d8d4b3b25650c14b5; recorded in baseline-run.json: 53e05ce5e8184b433eaad18f83bd43aab18f59c6ad1f562d8d4b3b25650c14b5
+
+## F1: prune the tag object of scored release v0.69.1, then run the document check row
+tag object cdf18c11f9d2f648611b62388c80c602bbdd6877
+before deletion: reader check exit=0
+tag name deleted, object still present: reader check exit=0
+after git gc --prune=now: cat-file -t => fatal: git cat-file: could not get object info
+reader check exit=1 :: fatal: git cat-file cdf18c11f9d2f648611b62388c80c602bbdd6877: bad file

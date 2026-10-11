@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "harness": "claude-code",
+  "harnessVersion": "2.1.296",
+  "model": "claude-opus-5-5",
+  "effort": "xhigh",
+  "source": "modelUsage readback; launch-selected effort, effective effort unavailable",
+  "promptSha256": "53e05ce5e8184b433eaad18f83bd43aab18f59c6ad1f562d8d4b3b25650c14b5",
+  "promptBytes": 138259,
+  "releaseTags": [
+    "v0.74.1",
+    "v0.74.0",
+    "v0.73.1",
+    "v0.73.0",
+    "v0.72.0",
+    "v0.71.1",
+    "v0.71.0",
+    "v0.70.0",
+    "v0.69.2",
+    "v0.69.1"
+  ],
+  "boundary": "empty temporary cwd; tools disabled; project settings only; replaced system prompt; fresh print run",
+  "durationMs": 85614,
+  "modelUsage": {
+    "claude-opus-5-5": {
+      "inputTokens": 2,
+      "outputTokens": 11174,
+      "cacheReadInputTokens": 0,
+      "cacheCreationInputTokens": 54658,
+      "webSearchRequests": 0,
+      "costUSD": 0.660752,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 6371,
+      "canonicalModel": "claude-opus-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "quotedAnswers": 40
+}

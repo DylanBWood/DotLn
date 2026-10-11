@@ -24,6 +24,8 @@ export const DOCUMENT_GATE_STUBS = [
   "harness-context.mjs",
   "harness-evidence.mjs",
   "meta.mjs",
+  "reader.mjs",
+  "test-reader.mjs",
   "check-registrations.mjs",
   "build.mjs",
   "license-surfaces.mjs",

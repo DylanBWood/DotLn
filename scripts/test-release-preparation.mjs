@@ -1,6 +1,8 @@
 import { execGit } from "./lib/git.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
+import { writingGuidance } from "./lib/reader-profiles.mjs";
+import { seedReaderProfiles } from "./test-reader-fixture.mjs";
 
 import {
   existsSync,
@@ -22,6 +24,25 @@ import {
 } from "./lib/release-preparation.mjs";
 
 const decisionsPath = "docs/evidence/WO-099/decisions.md";
+test("release preparation guidance gives the release-note profile without editing the draft", (t) => {
+  const f = fixture();
+  t.after(f.dispose);
+  const root = f.root;
+  seedReaderProfiles(root);
+  const example = join(
+    root,
+    "docs/publication/examples/releaseNotes/balanced.md",
+  );
+  const before = readFileSync(example, "utf8");
+  const guidance = writingGuidance("releaseNotes", root);
+  assert.match(guidance, /Reader profile \(releaseNotes\):/);
+  assert.match(guidance, /neither refuses nor rewrites text/);
+  assert.match(
+    guidance,
+    /Nearest example: docs\/publication\/examples\/releaseNotes\/(record|balanced|reader)\.md/,
+  );
+  assert.equal(readFileSync(example, "utf8"), before);
+});
 const readmeWith = (blockLine, leading = "") =>
   `# Fixture\n\n<!-- DOTLN-RELEASE-BEGIN -->\n${leading}${blockLine}\n<!-- DOTLN-RELEASE-END -->\n\nHistorical v0.1.0 stays.\n`;
 const generatedReadme = (version) =>
