@@ -238,6 +238,25 @@ the ledger stays with ideation and planning.
 
 **2. Implement (Codex, fresh session, own worktree).**
 
+For a registered target, first record its physical local clone with
+`worktree clone <repository-id> <absolute-path>`. The ignored clone map lives
+under the launchpad's control local directory; `worktreeParent` resolves
+relative to the main launchpad and must already exist with its physical
+filesystem spelling. `worktree start` creates two `wo-NNN` branches: target
+code at the declared base and launchpad records in its usual order worktree.
+The target receives the ignored target-worker bundle and no role skill. The
+handoff echoes the authority profile and the launchpad command to invoke from
+the target. Use that order launchpad's scripts, or set `DOTLN_LAUNCHPAD` to it;
+the local registry selects the matching target branch. Unregistered target
+directories select no order. Keep evidence and reports in the launchpad.
+If preparation fails, correct the reported condition and repeat the printed
+start command; an ignored pending-start receipt resumes the same pair and
+preserves existing work.
+After both branches merge, target release close records `no-release`, removes
+the target bundle and merged worktree/branch, then cleans the launchpad
+worktree. It creates no tag in either repository; target publication policy
+remains separate.
+
 ```bash
 cd ~/Projects/DotLn
 npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-name.md

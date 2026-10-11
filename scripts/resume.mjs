@@ -89,6 +89,11 @@ import {
   checkGeneratedSections,
 } from "./lib/derived-contract.mjs";
 import { parseRepositoryDeclaration } from "./lib/work-order-repository.mjs";
+import {
+  directoryIdentity,
+  registeredOrder,
+  targetRegistryPath,
+} from "./lib/target-worktrees.mjs";
 
 import {
   CONTROL_LOG_SCHEMA_VERSION,
@@ -1161,7 +1166,32 @@ const run = async (argv) => {
   reportHarnessRuntime(repoRoot);
   const { args, workOrder } = selectionArgs(rawArgs);
   let control = readControl(repoRoot);
-  const branch = action === "usage" ? undefined : branchWorkOrder(repoRoot);
+  let branch = action === "usage" ? undefined : branchWorkOrder(repoRoot);
+  // Foreign worktrees need registration even when the launchpad has an order
+  // branch. Compare its physical identity so aliases keep self selection;
+  // launchpads without target configuration retain their copied-script resolver.
+  if (
+    !["usage", "times", "activate"].includes(action) &&
+    !(action === "status" && args.includes("--all")) &&
+    (existsSync(targetRegistryPath(repoRoot)) ||
+      Object.keys(loadConfig(repoRoot).repositories).length > 0) &&
+    runGit(process.cwd(), ["rev-parse", "--show-toplevel"], {
+      onFailure: () => undefined,
+    }) !== directoryIdentity(repoRoot)
+  ) {
+    branch = registeredOrder(repoRoot, process.cwd());
+    if (!branch) {
+      const reason = `${process.cwd()} is not a registered target worktree; no order selected`;
+      if (action === "status" && args.includes("--json"))
+        throw new Error(reason);
+      process.stdout.write(`${reason}\n`);
+      return;
+    }
+    if (workOrder && workOrder !== branch)
+      throw new Error(
+        `target worktree selects ${branch}; --work-order differs`,
+      );
+  }
   let latestClosed =
     action === "usage"
       ? undefined

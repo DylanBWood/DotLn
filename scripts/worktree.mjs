@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 import { refreshHarnessRuntime } from "./lib/harness-runtime.mjs";
-import { findLaunchpad } from "./lib/config.mjs";
-import { existsSync, lstatSync, realpathSync } from "node:fs";
+import { findLaunchpad, loadConfig } from "./lib/config.mjs";
+import { existsSync, lstatSync, readFileSync, realpathSync } from "node:fs";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import {
   absoluteBodyLinks,
   assertGitHubBodyProfile,
@@ -53,6 +54,17 @@ import {
   removeScratchRepositories,
 } from "./lib/worktree-material.mjs";
 import { scratchMaterial } from "./lib/intake-reconciliation.mjs";
+import { parseRepositoryDeclaration } from "./lib/work-order-repository.mjs";
+import { umbrellaRecord } from "./lib/dependencies.mjs";
+import {
+  recordRepositoryClone,
+  recordTargetWorktree,
+  targetStartPlan,
+  physicalDirectory,
+  readTargetStart,
+  recordTargetStart,
+  forgetTargetStart,
+} from "./lib/target-worktrees.mjs";
 
 // Scratch repositories leave once every preserved byte is proven and just
 // before the worktree itself; each removal is printed as it lands, with its
@@ -345,6 +357,117 @@ const reconcileDerivedWorktrees = (
   }
   return lines;
 };
+// A retained start receipt owns only the exact pair it preflighted. Retrying
+// resumes preparation; it never adopts a different directory or resets a branch.
+const startTargetWorktree = async (mainPath, entry) => {
+  const {
+    target,
+    clone,
+    branch,
+    baseCommit,
+    launchpad,
+    launchpadBase,
+    workOrderId,
+    workOrderPath,
+  } = entry;
+  const ensureWorktree = (root, directory, base) => {
+    const worktrees = parseWorktrees(root);
+    const registered = worktrees.find((item) => item.worktree === directory);
+    if (existsSync(directory)) {
+      physicalDirectory(directory);
+      if (
+        registered?.branch !== `refs/heads/${branch}` ||
+        runGit(directory, ["rev-parse", "--show-toplevel"]) !== directory ||
+        runGit(directory, ["symbolic-ref", "--short", "HEAD"]) !== branch
+      )
+        throw new Error(
+          "pending start worktree identity differs; source retained",
+        );
+      runGit(directory, ["merge-base", "--is-ancestor", base, "HEAD"]);
+      return;
+    }
+    if (
+      registered ||
+      worktrees.some((item) => item.branch === `refs/heads/${branch}`)
+    )
+      throw new Error(
+        "pending start has a missing or differently registered worktree; source retained",
+      );
+    const existing = runGit(root, ["branch", "--list", branch]);
+    if (existing) {
+      if (runGit(root, ["rev-parse", branch]) !== base)
+        throw new Error(
+          "pending start branch differs from its base; source retained",
+        );
+      runGit(root, ["worktree", "add", directory, branch]);
+    } else runGit(root, ["worktree", "add", "-b", branch, directory, base]);
+  };
+  try {
+    ensureWorktree(clone, target, baseCommit);
+    ensureWorktree(mainPath, launchpad, launchpadBase);
+    const source = readFileSync(
+      workOrderAuthorityPath(launchpad, workOrderId, workOrderPath),
+      "utf8",
+    );
+    if (
+      createHash("sha256").update(source).digest("hex") !== entry.authorityHash
+    )
+      throw new Error("pending start authority differs; source retained");
+    const state = readControl(launchpad).orders.get(workOrderId)?.state;
+    if (!state || ["closed", "withdrawn"].includes(state.phase)) {
+      const activated = spawnSync(
+        process.execPath,
+        [
+          join(launchpad, "scripts/resume.mjs"),
+          "activate",
+          workOrderId,
+          workOrderPath,
+        ],
+        {
+          cwd: launchpad,
+          encoding: "utf8",
+          env: { ...process.env, DOTLN_LAUNCHPAD: launchpad },
+        },
+      );
+      if (activated.status !== 0)
+        throw new Error(
+          `resume activation failed: ${(activated.stderr || activated.stdout).trim()}`,
+        );
+    } else if (
+      state.phase !== "active" ||
+      state.repositoryId !== entry.repositoryId ||
+      state.baseCommit !== baseCommit
+    ) {
+      throw new Error("pending start activation differs; source retained");
+    }
+    const bootstrap = join(launchpad, "scripts/bootstrap.mjs");
+    if (existsSync(bootstrap)) {
+      const prepared = spawnSync(process.execPath, [bootstrap], {
+        cwd: launchpad,
+        stdio: "inherit",
+        env: { ...process.env, DOTLN_LAUNCHPAD: launchpad },
+      });
+      if (prepared.status !== 0)
+        throw new Error("launchpad preparation failed");
+    }
+    const { emitTargetHarness, checkTargetHarness } =
+      await import("./lib/harness.mjs");
+    const options = { runtimeRoot: mainPath };
+    emitTargetHarness(target, options);
+    checkTargetHarness(target, options);
+    recordTargetWorktree(mainPath, entry);
+    recordTargetWorktree(launchpad, entry);
+    forgetTargetStart(mainPath, workOrderId);
+    process.stdout.write(
+      `Target worktree ${target} on ${branch}.\nAuthority profile: ${JSON.stringify(loadConfig(mainPath).repositories[entry.repositoryId].authorityProfile)}\nTarget status: DOTLN_LAUNCHPAD=${shellQuote(launchpad)} node ${shellQuote(join(launchpad, "scripts/resume.mjs"))} status\nCreated ${launchpad} on ${branch}.\nActivated ${workOrderId}.\nPhase: active.\nNext (run manually):\n  cd ${shellQuote(target)}\n  codex\n  enter: resume: next\n`,
+    );
+  } catch (error) {
+    throw new Error(
+      `${error.message}. Target start is preserved; correct the reported condition and retry from ${mainPath}: node ${shellQuote(join(mainPath, "scripts/worktree.mjs"))} start ${workOrderId} ${shellQuote(workOrderPath)}`,
+    );
+  }
+};
+
 const main = async () => {
   const [action, workOrderId, ...actionArgs] = process.argv.slice(2);
   if (action === "integrate") {
@@ -457,6 +580,14 @@ const main = async () => {
   }
   const mainPath = mainWorktree(toolRoot);
 
+  if (action === "clone") {
+    if (!workOrderId || actionArgs.length !== 1)
+      throw new Error("usage: worktree clone <repository-id> <absolute-path>");
+    recordRepositoryClone(mainPath, workOrderId, actionArgs[0]);
+    process.stdout.write(`Recorded local clone for ${workOrderId}.\n`);
+    return;
+  }
+
   const workOrderPath = actionArgs[0];
   if (!/^WO-[0-9]{3}$/.test(workOrderId ?? ""))
     throw new Error("work order id must look like WO-003");
@@ -473,13 +604,65 @@ const main = async () => {
       throw new Error(
         "usage: worktree start WO-NNN docs/work-orders/<file>.md",
       );
-    workOrderAuthorityPath(mainPath, workOrderId, workOrderPath);
+    const pending = readTargetStart(mainPath, workOrderId);
+    const readStartAuthority = (recovery = false) => {
+      const source = readFileSync(
+        workOrderAuthorityPath(mainPath, workOrderId, workOrderPath),
+        "utf8",
+      );
+      const umbrella = umbrellaRecord(source, workOrderPath, workOrderId);
+      if (umbrella)
+        throw new Error(
+          `${workOrderId} is an umbrella record superseded by ${umbrella.successors.join(", ")}; activate a successor instead`,
+        );
+      const declaration = parseRepositoryDeclaration(source, workOrderPath);
+      return declaration
+        ? targetStartPlan(mainPath, declaration, workOrderId, { recovery })
+        : undefined;
+    };
+    const initial = readStartAuthority(Boolean(pending));
     ensureClean(mainPath);
+    if (pending) {
+      if (
+        !initial ||
+        Object.entries(initial).some(
+          ([key, value]) => pending[key] !== value,
+        ) ||
+        pending.launchpad !== target ||
+        pending.runtimeRoot !== mainPath ||
+        pending.workOrderPath !== workOrderPath ||
+        createHash("sha256")
+          .update(readFileSync(join(mainPath, workOrderPath)))
+          .digest("hex") !== pending.authorityHash
+      )
+        throw new Error(
+          "pending target start differs from the current authority; source retained",
+        );
+      await startTargetWorktree(mainPath, pending);
+      return;
+    }
     if (existsSync(target)) throw new Error(`target already exists: ${target}`);
     if (runGit(mainPath, ["branch", "--list", branch]) !== "")
       throw new Error(`branch already exists: ${branch}`);
     runGit(mainPath, ["fetch", "origin", "main"]);
     runGit(mainPath, ["merge", "--ff-only", "origin/main"]);
+    // Re-read the authority after fast-forwarding, before either worktree exists.
+    const targetPlan = readStartAuthority();
+    if (targetPlan) {
+      const entry = {
+        ...targetPlan,
+        launchpad: target,
+        runtimeRoot: mainPath,
+        workOrderPath,
+        launchpadBase: runGit(mainPath, ["rev-parse", "origin/main"]),
+        authorityHash: createHash("sha256")
+          .update(readFileSync(join(mainPath, workOrderPath)))
+          .digest("hex"),
+      };
+      recordTargetStart(mainPath, entry);
+      await startTargetWorktree(mainPath, entry);
+      return;
+    }
     runGit(mainPath, ["worktree", "add", target, "-b", branch, "origin/main"]);
     const activated = spawnSync(
       "node",
@@ -489,7 +672,11 @@ const main = async () => {
         workOrderId,
         workOrderPath,
       ],
-      { cwd: target, encoding: "utf8" },
+      {
+        cwd: target,
+        encoding: "utf8",
+        env: { ...process.env, DOTLN_LAUNCHPAD: target },
+      },
     );
     if (activated.status !== 0)
       throw new Error(
@@ -852,7 +1039,7 @@ const main = async () => {
     );
   } else {
     throw new Error(
-      "usage: worktree start WO-NNN <work-order-path> | worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue] | worktree publish WO-NNN --title <title> --body-file <path> | worktree publish WO-NNN --target <request.json> [--require-deliverable-ready] | worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO] | worktree resolve-pr --request <review-loop-request.json> | worktree finish WO-NNN [--dry-run] | worktree settle WO-NNN [--dry-run]",
+      "usage: worktree clone <repository-id> <absolute-path> | worktree start WO-NNN <work-order-path> | worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue] | worktree publish WO-NNN --title <title> --body-file <path> | worktree publish WO-NNN --target <request.json> [--require-deliverable-ready] | worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO] | worktree resolve-pr --request <review-loop-request.json> | worktree finish WO-NNN [--dry-run] | worktree settle WO-NNN [--dry-run]",
     );
   }
 };

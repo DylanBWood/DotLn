@@ -476,6 +476,8 @@ const protection = {
     "outward artifacts have conventional shape and redacted vocabulary checks",
   "target-publish":
     "a target branch reaches its remote only from a bound episode, under an operator grant and after the outward lint",
+  "target-worktree":
+    "target start, selection, recovery and merged teardown keep code separate from launchpad records",
   "license-fixtures":
     "source-only publication preserves license and package privacy",
   "license-surfaces": "shipped license and private-package pins remain valid",
@@ -624,6 +626,7 @@ export const suites = [
     needsBuild: false,
   }),
   nodeTests("target-publish", "scripts/test-target-publish.mjs"),
+  nodeTests("target-worktree", "scripts/test-target-worktree.mjs"),
   nodeTests("vertical", "scripts/test-vertical.mjs", {
     // Node starts files in name order; keep the main file in the first pair.
     args: [
