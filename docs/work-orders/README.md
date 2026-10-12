@@ -5,7 +5,7 @@
 ## Proposed order
 
 - [x] [WO-072] — Target worktree lifecycle · **final-reviewed**
-- [ ] [WO-076] — Instance build overlay · **queued** · pair 1
+- [x] [WO-076] — Instance build overlay · **final-reviewed** · pair 1
 - [ ] [WO-200] — Pinned collector bytes are watched where they change · **queued** · pair 1
 - [ ] [WO-201] — The export runs core's suites · **queued**
 - [ ] [WO-202] — The planning machinery runs in an instance · **queued**
@@ -53,23 +53,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-076
-
-[WO-076 — Instance build overlay: a fork's &#96;build/overlay.json&#96; composes over the kit's Contributor build to replace the identity, unequip units, narrow the envelope, widen it only by provenance-bearing grants, or declare no build (version assigned at activation)](WO-076-instance-build-overlay.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-075: hard (met) — the kit build the overlay composes over; WO-074: hard (met) — the client README template this order writes into; WO-042: hard (met) — widening within the fork's posture is a provenance-bearing grant.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Track: delivery
-- Cost: adds the overlay's positive decoding and its composition in &#96;harness emit&#96; (&#96;scripts/harness.mjs&#96;, &#96;scripts/lib/harness.mjs&#96;), the overlay's hash in the manifest, fixture overlays, the client README template's first section, a note in ADR-0006 and at most 200 bytes in product 10. Removes the need to edit kit files to change a fork's build: &#96;harness emit&#96; admits one loadout and the support switches are a programmatic option no command sets. WO-118 depends on it. Re-mints: deterministic, the authority and harness editions that &#96;scripts/lib/harness.mjs&#96; stales (it is registered in those two and excluded with a reason from the other three); with no overlay declared the committed bundle does not change. If the composition is placed in &#96;packages/compiler/src/harness.ts&#96;, a common source, each edition it stales is re-minted and the compiler release carries the feedback edition (&#96;feedback-evidence --carry&#96;), re-pins the console and moves the console self-host fixtures that hold the compiler label (WO-154 D011; WO-162 D012); no source the feedback verifier judges is edited, so no live episode. Wall-clock, tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-076-instance-build-overlay.md](WO-076-instance-build-overlay.md)
 
 ### WO-200
 
@@ -145,8 +128,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-076.
-- References: WO-199: hard (met) — an actor killed and the resident restarted (criterion 2) needs the vertical's recovery through a recorded process group and an interrupt handler; WO-075: hard (met) — a starter instance with the build; WO-076: hard (unmet) — the instance's overlay; WO-121: hard (met) — presence with origin; WO-122: hard (met) — the cli-worker and human-handoff actors; WO-100: hard (met) — derivation inside a portfolio; WO-120: hard (met) — derived work as durable records; WO-124: hard (met) — surfaces derived from the contract; WO-112: hard (met) — the loop proven from core first; WO-111: hard (met) — the unattended hour; WO-066: hard (met) — the pull-request loop with dispositions; WO-114: hard (met) — the run is visible in the status projection; WO-116: hard (met) — the audit view that reproduces the run afterward; WO-117: hard (met) — the run is visible in the live console; WO-123: hard (met) — the resident admits a filed intent under standing authorization and owns the vertical continuation.
+- Dependencies: typed; dependency-ready.
+- References: WO-199: hard (met) — an actor killed and the resident restarted (criterion 2) needs the vertical's recovery through a recorded process group and an interrupt handler; WO-075: hard (met) — a starter instance with the build; WO-076: hard (met) — the instance's overlay; WO-121: hard (met) — presence with origin; WO-122: hard (met) — the cli-worker and human-handoff actors; WO-100: hard (met) — derivation inside a portfolio; WO-120: hard (met) — derived work as durable records; WO-124: hard (met) — surfaces derived from the contract; WO-112: hard (met) — the loop proven from core first; WO-111: hard (met) — the unattended hour; WO-066: hard (met) — the pull-request loop with dispositions; WO-114: hard (met) — the run is visible in the status projection; WO-116: hard (met) — the audit view that reproduces the run afterward; WO-117: hard (met) — the run is visible in the live console; WO-123: hard (met) — the resident admits a filed intent under standing authorization and owns the vertical continuation.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -299,8 +282,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-076.
-- References: WO-076: hard (unmet) — the instance-owned, manifest-excluded convention the extension root follows; WO-112: satisfied-by-close (met) — the vertical's intake and the fetch seam the adapter plugs into; WO-060: satisfied-by-close (met) — decodeSourceBundle, the port's input contract every adapter's output passes through.
+- Dependencies: typed; dependency-ready.
+- References: WO-076: hard (met) — the instance-owned, manifest-excluded convention the extension root follows; WO-112: satisfied-by-close (met) — the vertical's intake and the fetch seam the adapter plugs into; WO-060: satisfied-by-close (met) — decodeSourceBundle, the port's input contract every adapter's output passes through.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -316,8 +299,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-076, WO-203.
-- References: WO-076: hard (unmet) — the overlay composes over the kit build, which this order makes the pinned build; both change harness emit; WO-203: hard (unmet) — the update's planning and applying halves the channel partitions; WO-077: satisfied-by-close (met) — the update the channel selects within.
+- Dependencies: typed; blocked on WO-203.
+- References: WO-076: hard (met) — the overlay composes over the kit build, which this order makes the pinned build; both change harness emit; WO-203: hard (unmet) — the update's planning and applying halves the channel partitions; WO-077: satisfied-by-close (met) — the update the channel selects within.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -368,8 +351,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-076, WO-193.
-- References: WO-074: hard (met) — the kit file set and manifest the parity command joins; WO-076: hard (unmet) — the instance-owned files and emitted build a row's carrier is checked against; WO-193: hard (unmet) — the request draft that an unmapped row prefills with its generic statement.
+- Dependencies: typed; blocked on WO-193.
+- References: WO-074: hard (met) — the kit file set and manifest the parity command joins; WO-076: hard (met) — the instance-owned files and emitted build a row's carrier is checked against; WO-193: hard (unmet) — the request draft that an unmapped row prefills with its generic statement.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

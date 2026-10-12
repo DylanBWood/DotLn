@@ -1,0 +1,30 @@
+{
+  "document": {
+    "checkId": "npm run test:docs",
+    "codeIdentity": "d43b5afa42bb68116270fdf7f9a4366f0df823da6e7474341e93bc0a23a54321",
+    "recordedAt": "2026-10-12T00:54:48.491Z",
+    "durationMs": 116502,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:d43b5afa42bb68116270fdf7f9a4366f0df823da6e7474341e93bc0a23a54321:npm run test:docs",
+    "gateSelection": "document",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "passed": 35,
+    "failed": []
+  },
+  "review": {
+    "checkId": "npm test",
+    "codeIdentity": "d43b5afa42bb68116270fdf7f9a4366f0df823da6e7474341e93bc0a23a54321",
+    "recordedAt": "2026-10-12T01:20:31.460Z",
+    "durationMs": 1535003,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:d43b5afa42bb68116270fdf7f9a4366f0df823da6e7474341e93bc0a23a54321:npm test",
+    "gateSelection": "review",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "passed": 41,
+    "failed": []
+  }
+}

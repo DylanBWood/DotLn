@@ -1,23 +1,22 @@
 # Current control state
 
-## WO-072
+## WO-076
 
-- Work order: WO-072
-- Work-order path: docs/work-orders/WO-072-target-worktree-lifecycle.md
+- Work order: WO-076
+- Work-order path: docs/work-orders/WO-076-instance-build-overlay.md
 - Phase: closed
-- Latest verification: VER-002
-- Verification path: docs/verifications/WO-072/VER-002.md
+- Latest verification: VER-001
+- Verification path: docs/verifications/WO-076/VER-001.md
 - Latest verdict: pass
 - Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-072/FINAL-001.md
+- Final-review path: docs/final-reviews/WO-076/FINAL-001.md
 - Latest attestation: harness claude-code; version 2.1.296; model claude-fable-5-1; effort xhigh; source claude-session-readback; account not-applicable
-- Effort drift: xhigh (subagents) (raw: ultra) -> xhigh -> max
-- Latest recordedAt: 2026-10-11T23:43:59.691Z
-- Elapsed implementation: 4278115 ms
-- Elapsed verification: 849729 ms
-- Elapsed repair: 2127110 ms
-- Elapsed finalReview: 1535852 ms
-- Latest checkpoint: bfe3c810373ec712f36f8ea0087ddccf9c9be7d6 (restore: `git checkout refs/dotln/checkpoint/WO-072/11 -- .`)
+- Effort drift: xhigh (subagents) (raw: ultra) -> xhigh
+- Latest recordedAt: 2026-10-12T02:34:32.980Z
+- Elapsed implementation: 5584079 ms
+- Elapsed verification: 1196143 ms
+- Elapsed finalReview: 2073049 ms
+- Latest checkpoint: 265ac498b15103767cf204cfffa436a1c7c8ff40 (restore: `git checkout refs/dotln/checkpoint/WO-076/7 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct
 

@@ -1,0 +1,525 @@
+{
+ "narrowOther": {
+  "emit": {
+   "status": 0,
+   "out": "harness emit: 34 generated surfaces; local-terms list: unavailable"
+  },
+  "check": {
+   "status": 0,
+   "out": "harness check: 34 generated surfaces; local-terms list: unavailable"
+  },
+  "diff": {
+   "changed": 30,
+   "removed": [],
+   "shapes": [
+    "- <!-- Origin: {\"ids\":[\"contributor.executor\",\"contributor.planner\",\"contributor.refuter\",\"contributor.release-close\",\"contributor.reviewer\",\"contributor.verifier\"],\"loadoutId\":\"contributor\",\"semanticHash\":\"H\"} -->",
+    "+ <!-- Origin: {\"ids\":[\"contributor.executor\",\"contributor.planner\",\"contributor.refuter\",\"contributor.release-close\",\"contributor.reviewer\",\"contributor.verifier\"],\"loadoutId\":\"contributor\",\"semanticHash\":\"H\"} -->",
+    "- \"semanticHash\": \"H\",",
+    "- \"targetHash\": \"H\"",
+    "- \"hash\": \"H\",",
+    "- \"semanticHash\": \"H\"",
+    "+ \"semanticHash\": \"H\",",
+    "+ \"targetHash\": \"H\"",
+    "+ \"hash\": \"H\",",
+    "+ \"semanticHash\": \"H\"",
+    "+ },",
+    "+ \"overlay\": {",
+    "+ \"path\": \"build/overlay.json\",",
+    "+ \"sha256\": \"e059813e9306d211c21bc5e1e26759e98c816b10dad06a1b3d21bea0a94f616e\"",
+    "- // Origin: {\"ids\":[\"no-attribution\"],\"loadoutId\":\"contributor\",\"semanticHash\":\"H\"}",
+    "+ // Origin: {\"ids\":[\"no-attribution\"],\"loadoutId\":\"contributor\",\"semanticHash\":\"H\"}",
+    "- // Origin: {\"ids\":[\"concurrent-work-requires-worktrees\",\"contributor.executor\",\"contributor.planner\",\"contributor.refuter\",\"contributor.release-close\",\"contributor.reviewer\",\"contributor.verifier\"],\"loadoutId\":\"contribut",
+    "- \"package.publish\"",
+    "- \"expiresAt\": 9007199254740991,",
+    "- \"revocationEventTypes\": []",
+    "+ // Origin: {\"ids\":[\"concurrent-work-requires-worktrees\",\"contributor.executor\",\"contributor.planner\",\"contributor.refuter\",\"contributor.release-close\",\"contributor.reviewer\",\"contributor.verifier\"],\"loadoutId\":\"contribut",
+    "+ \"package.publish\",",
+    "+ \"remote.push\"",
+    "+ \"expiresAt\": 4102444800000,",
+    "+ \"revocationEventTypes\": [",
+    "+ \"instance.revoked\"",
+    "+ ]",
+    "- // Origin: {\"ids\":[\"contributor.executor\",\"contributor.planner\",\"contributor.refuter\",\"contributor.release-close\",\"contributor.reviewer\",\"contributor.verifier\"],\"loadoutId\":\"contributor\",\"semanticHash\":\"H\"}",
+    "+ // Origin: {\"ids\":[\"contributor.executor\",\"contributor.planner\",\"contributor.refuter\",\"contributor.release-close\",\"contributor.reviewer\",\"contributor.verifier\"],\"loadoutId\":\"contributor\",\"semanticHash\":\"H\"}",
+    "- // Origin: {\"ids\":[\"anti-oscillation\",\"bounded-boy-scout-cleanup\",\"concurrent-work-requires-worktrees\",\"contributor.executor\",\"contributor.planner\",\"contributor.refuter\",\"contributor.release-close\",\"contributor.reviewer\"",
+    "+ // Origin: {\"ids\":[\"anti-oscillation\",\"bounded-boy-scout-cleanup\",\"concurrent-work-requires-worktrees\",\"contributor.executor\",\"contributor.planner\",\"contributor.refuter\",\"contributor.release-close\",\"contributor.reviewer\"",
+    "- // Origin: {\"ids\":[\"contributor.executor\",\"contributor.planner\",\"contributor.refuter\",\"contributor.release-close\",\"contributor.reviewer\",\"contributor.verifier\",\"no-attribution\"],\"loadoutId\":\"contributor\",\"semanticHash\":\"",
+    "+ // Origin: {\"ids\":[\"contributor.executor\",\"contributor.planner\",\"contributor.refuter\",\"contributor.release-close\",\"contributor.reviewer\",\"contributor.verifier\",\"no-attribution\"],\"loadoutId\":\"contributor\",\"semanticHash\":\"",
+    "- // Origin: {\"ids\":[\"contributor.executor\",\"contributor.planner\",\"contributor.refuter\",\"contributor.release-close\",\"contributor.reviewer\",\"contributor.verifier\",\"no-lint-type-disables-as-fixes\"],\"loadoutId\":\"contributor\",",
+    "+ // Origin: {\"ids\":[\"contributor.executor\",\"contributor.planner\",\"contributor.refuter\",\"contributor.release-close\",\"contributor.reviewer\",\"contributor.verifier\",\"no-lint-type-disables-as-fixes\"],\"loadoutId\":\"contributor\",",
+    "- // Origin: {\"ids\":[\"contributor.executor\",\"contributor.permissions\",\"contributor.planner\",\"contributor.refuter\",\"contributor.release-close\",\"contributor.reviewer\",\"contributor.verifier\"],\"loadoutId\":\"contributor\",\"semant",
+    "+ // Origin: {\"ids\":[\"contributor.executor\",\"contributor.permissions\",\"contributor.planner\",\"contributor.refuter\",\"contributor.release-close\",\"contributor.reviewer\",\"contributor.verifier\"],\"loadoutId\":\"contributor\",\"semant",
+    "- // Origin: {\"ids\":[],\"loadoutId\":\"contributor\",\"semanticHash\":\"H\"}",
+    "+ // Origin: {\"ids\":[],\"loadoutId\":\"contributor\",\"semanticHash\":\"H\"}",
+    "- // Origin: {\"ids\":[\"contributor.executor\",\"contributor.planner\",\"contributor.refuter\",\"contributor.release-close\",\"contributor.reviewer\",\"contributor.verifier\",\"read-your-own-output\",\"verify-app-before-done\"],\"loadoutId\"",
+    "+ // Origin: {\"ids\":[\"contributor.executor\",\"contributor.planner\",\"contributor.refuter\",\"contributor.release-close\",\"contributor.reviewer\",\"contributor.verifier\",\"read-your-own-output\",\"verify-app-before-done\"],\"loadoutId\"",
+    "- // Origin: {\"ids\":[\"contributor.executor\",\"contributor.planner\",\"contributor.refuter\",\"contributor.release-close\",\"contributor.reviewer\",\"contributor.verifier\",\"read-your-own-output\"],\"loadoutId\":\"contributor\",\"semanticH",
+    "+ // Origin: {\"ids\":[\"contributor.executor\",\"contributor.planner\",\"contributor.refuter\",\"contributor.release-close\",\"contributor.reviewer\",\"contributor.verifier\",\"read-your-own-output\"],\"loadoutId\":\"contributor\",\"semanticH",
+    "- <!-- Origin: {\"ids\":[\"adjacent-repair\",\"anti-oscillation\",\"bounded-boy-scout-cleanup\",\"communication-intent\",\"concurrent-work-requires-worktrees\",\"contributor.executor\",\"correctness-over-sycophancy\",\"decision-receipts\",\"",
+    "+ <!-- Origin: {\"ids\":[\"adjacent-repair\",\"anti-oscillation\",\"bounded-boy-scout-cleanup\",\"communication-intent\",\"concurrent-work-requires-worktrees\",\"contributor.executor\",\"correctness-over-sycophancy\",\"decision-receipts\",\"",
+    "- <!-- Origin: {\"ids\":[\"anti-oscillation\",\"bounded-boy-scout-cleanup\",\"concurrent-work-requires-worktrees\",\"contributor.planner\",\"correctness-over-sycophancy\",\"fail-conservative-correction\",\"goal-alignment\",\"no-attribution",
+    "+ <!-- Origin: {\"ids\":[\"anti-oscillation\",\"bounded-boy-scout-cleanup\",\"concurrent-work-requires-worktrees\",\"contributor.planner\",\"correctness-over-sycophancy\",\"fail-conservative-correction\",\"goal-alignment\",\"no-attribution",
+    "- <!-- Origin: {\"ids\":[\"anti-oscillation\",\"bounded-boy-scout-cleanup\",\"concurrent-work-requires-worktrees\",\"contributor.refuter\",\"correctness-over-sycophancy\",\"fail-conservative-correction\",\"goal-alignment\",\"no-attribution",
+    "+ <!-- Origin: {\"ids\":[\"anti-oscillation\",\"bounded-boy-scout-cleanup\",\"concurrent-work-requires-worktrees\",\"contributor.refuter\",\"correctness-over-sycophancy\",\"fail-conservative-correction\",\"goal-alignment\",\"no-attribution",
+    "- <!-- Origin: {\"ids\":[\"anti-oscillation\",\"bounded-boy-scout-cleanup\",\"concurrent-work-requires-worktrees\",\"contributor.release-close\",\"correctness-over-sycophancy\",\"fail-conservative-correction\",\"goal-alignment\",\"no-attri",
+    "+ <!-- Origin: {\"ids\":[\"anti-oscillation\",\"bounded-boy-scout-cleanup\",\"concurrent-work-requires-worktrees\",\"contributor.release-close\",\"correctness-over-sycophancy\",\"fail-conservative-correction\",\"goal-alignment\",\"no-attri",
+    "- <!-- Origin: {\"ids\":[\"anti-oscillation\",\"bounded-boy-scout-cleanup\",\"concurrent-work-requires-worktrees\",\"contributor.reviewer\",\"correctness-over-sycophancy\",\"fail-conservative-correction\",\"goal-alignment\",\"no-attributio",
+    "+ <!-- Origin: {\"ids\":[\"anti-oscillation\",\"bounded-boy-scout-cleanup\",\"concurrent-work-requires-worktrees\",\"contributor.reviewer\",\"correctness-over-sycophancy\",\"fail-conservative-correction\",\"goal-alignment\",\"no-attributio",
+    "- <!-- Origin: {\"ids\":[\"anti-oscillation\",\"bounded-boy-scout-cleanup\",\"concurrent-work-requires-worktrees\",\"contributor.verifier\",\"correctness-over-sycophancy\",\"fail-conservative-correction\",\"goal-alignment\",\"no-attributio",
+    "+ <!-- Origin: {\"ids\":[\"anti-oscillation\",\"bounded-boy-scout-cleanup\",\"concurrent-work-requires-worktrees\",\"contributor.verifier\",\"correctness-over-sycophancy\",\"fail-conservative-correction\",\"goal-alignment\",\"no-attributio"
+   ]
+  },
+  "envelope": {
+   "allowedEffects": [
+    "repo.read",
+    "repo.write",
+    "shell.run",
+    "git.local",
+    "lifecycle.run",
+    "outside.write:host-scratchpad",
+    "outside.write:session-scratch",
+    "outside.write:system-temp"
+   ],
+   "authorityEnvelopeId": "contributor.bounded",
+   "deniedEffects": [
+    "credentials.access",
+    "transport.ssh",
+    "settings.user",
+    "sandbox.disable",
+    "remote.unapproved",
+    "package.publish",
+    "remote.push"
+   ],
+   "expiresAt": 4102444800000,
+   "requiredEvidence": [
+    "resolved-worktree"
+   ],
+   "resourceLimits": {
+    "writers": 1
+   },
+   "revocationConditions": [],
+   "revocationEventTypes": [
+    "instance.revoked"
+   ]
+  }
+ },
+ "narrowAllowed": {
+  "emit": {
+   "status": 0,
+   "out": "harness emit: 34 generated surfaces; local-terms list: unavailable"
+  },
+  "check": {
+   "status": 0,
+   "out": "harness check: 34 generated surfaces; local-terms list: unavailable"
+  },
+  "diffChanged": 30,
+  "allowed": [
+   "repo.read",
+   "repo.write",
+   "git.local",
+   "lifecycle.run",
+   "outside.write:host-scratchpad",
+   "outside.write:session-scratch",
+   "outside.write:system-temp"
+  ],
+  "denied": [
+   "credentials.access",
+   "transport.ssh",
+   "settings.user",
+   "sandbox.disable",
+   "remote.unapproved",
+   "package.publish"
+  ]
+ },
+ "emptyOverlay": {
+  "emit": {
+   "status": 0,
+   "out": "harness emit: 34 generated surfaces; local-terms list: unavailable"
+  },
+  "check": {
+   "status": 0,
+   "out": "harness check: 34 generated surfaces; local-terms list: unavailable"
+  },
+  "diff": {
+   "changed": 1,
+   "removed": [],
+   "shapes": [
+    "+ },",
+    "+ \"overlay\": {",
+    "+ \"path\": \"build/overlay.json\",",
+    "+ \"sha256\": \"4b8894d57dfa621e534ef4eb25263e8f00254cbcb4327f1f98796314ac279dde\""
+   ]
+  }
+ },
+ "identityUnequip": {
+  "emit": {
+   "status": 0,
+   "out": "harness emit: 34 generated surfaces; local-terms list: unavailable"
+  },
+  "check": {
+   "status": 0,
+   "out": "harness check: 34 generated surfaces; local-terms list: unavailable"
+  },
+  "originHasUnits": [
+   false,
+   false
+  ],
+  "processCostText": false,
+  "goalText": false,
+  "identityText": true,
+  "oldIdentityId": [
+   null,
+   null,
+   null
+  ]
+ },
+ "buildNone": {
+  "emit": {
+   "status": 0,
+   "out": "harness emit: 2 generated surfaces; local-terms list: unavailable"
+  },
+  "check": {
+   "status": 0,
+   "out": "harness check: 1 generated surfaces; local-terms list: unavailable"
+  },
+  "checkNoRuntime": {
+   "status": 0,
+   "out": "harness check: 1 generated surfaces; local-terms list: unavailable"
+  },
+  "remaining": [
+   ".claude/harness-manifest.json"
+  ],
+  "floorBytes": 3346,
+  "floorEqualsHandWritten": "(elided: the core hand-written floor, 3346 bytes; see skillRefs and statesNoCompiled)",
+  "statesNoCompiled": false,
+  "skillRefs": [
+   "dotln-executor",
+   "dotln-verifier",
+   "dotln-reviewer",
+   "dotln-release-close",
+   "dotln-planner"
+  ],
+  "missingRefs": [
+   "dotln-executor",
+   "dotln-verifier",
+   "dotln-reviewer",
+   "dotln-release-close",
+   "dotln-planner"
+  ],
+  "reEnable": {
+   "status": 0,
+   "out": "harness emit: 34 generated surfaces; local-terms list: unavailable"
+  },
+  "reEnableCheck": {
+   "status": 0,
+   "out": "harness check: 34 generated surfaces; local-terms list: unavailable"
+  },
+  "restoredDiff": []
+ },
+ "widenings": {
+  "allowDenied": {
+   "status": 1,
+   "out": "invalid build overlay in build/overlay.json: AUTHORITY WIDENING: build overlay narrow.allowedEffects allows package.publish without a grant",
+   "unchanged": true,
+   "outCreated": false
+  },
+  "allowNew": {
+   "status": 1,
+   "out": "invalid build overlay in build/overlay.json: AUTHORITY WIDENING: build overlay narrow.allowedEffects allows network.request without a grant",
+   "unchanged": true,
+   "outCreated": false
+  },
+  "writers2": {
+   "status": 1,
+   "out": "invalid build overlay in build/overlay.json: AUTHORITY WIDENING: build overlay narrow.resourceLimits.writers exceeds the kit ceiling",
+   "unchanged": true,
+   "outCreated": false
+  },
+  "newResource": {
+   "status": 1,
+   "out": "invalid build overlay in build/overlay.json: AUTHORITY WIDENING: build overlay narrow.resourceLimits.agents exceeds the kit ceiling",
+   "unchanged": true,
+   "outCreated": false
+  },
+  "newResource0": {
+   "status": 0,
+   "out": "harness emit: 34 generated surfaces; local-terms list: unavailable",
+   "unchanged": true,
+   "outCreated": true
+  }
+ },
+ "grants": {
+  "operatorGrant": {
+   "status": 0,
+   "out": "harness emit: 34 generated surfaces; local-terms list: unavailable",
+   "check": 0,
+   "provenance": [
+    [
+     "contributor.outside-temporary:operator:outside.write:host-scratchpad,outside.write:session-scratch,outside.write:system-temp",
+     "fork.publish:operator:package.publish"
+    ],
+    [
+     "contributor.outside-temporary:operator:outside.write:host-scratchpad,outside.write:session-scratch,outside.write:system-temp",
+     "fork.publish:operator:package.publish"
+    ],
+    [
+     "contributor.outside-temporary:operator:outside.write:host-scratchpad,outside.write:session-scratch,outside.write:system-temp",
+     "fork.publish:operator:package.publish"
+    ]
+   ],
+   "envAllowed": [
+    "repo.read",
+    "repo.write",
+    "shell.run",
+    "git.local",
+    "lifecycle.run",
+    "outside.write:host-scratchpad",
+    "outside.write:session-scratch",
+    "outside.write:system-temp",
+    "package.publish"
+   ],
+   "envDenied": [
+    "credentials.access",
+    "transport.ssh",
+    "settings.user",
+    "sandbox.disable",
+    "remote.unapproved"
+   ]
+  },
+  "hostPolicyGrant": {
+   "status": 0,
+   "out": "harness emit: 34 generated surfaces; local-terms list: unavailable",
+   "check": 0,
+   "provenance": [
+    [
+     "contributor.outside-temporary:operator:outside.write:host-scratchpad,outside.write:session-scratch,outside.write:system-temp",
+     "fork.publish:host-policy:package.publish"
+    ],
+    [
+     "contributor.outside-temporary:operator:outside.write:host-scratchpad,outside.write:session-scratch,outside.write:system-temp",
+     "fork.publish:host-policy:package.publish"
+    ],
+    [
+     "contributor.outside-temporary:operator:outside.write:host-scratchpad,outside.write:session-scratch,outside.write:system-temp",
+     "fork.publish:host-policy:package.publish"
+    ]
+   ],
+   "envAllowed": [
+    "repo.read",
+    "repo.write",
+    "shell.run",
+    "git.local",
+    "lifecycle.run",
+    "outside.write:host-scratchpad",
+    "outside.write:session-scratch",
+    "outside.write:system-temp",
+    "package.publish"
+   ],
+   "envDenied": [
+    "credentials.access",
+    "transport.ssh",
+    "settings.user",
+    "sandbox.disable",
+    "remote.unapproved"
+   ]
+  },
+  "allowWithGrant": {
+   "status": 0,
+   "out": "harness emit: 34 generated surfaces; local-terms list: unavailable",
+   "check": 0,
+   "provenance": [
+    [
+     "contributor.outside-temporary:operator:outside.write:host-scratchpad,outside.write:session-scratch,outside.write:system-temp",
+     "fork.publish:operator:network.request"
+    ],
+    [
+     "contributor.outside-temporary:operator:outside.write:host-scratchpad,outside.write:session-scratch,outside.write:system-temp",
+     "fork.publish:operator:network.request"
+    ],
+    [
+     "contributor.outside-temporary:operator:outside.write:host-scratchpad,outside.write:session-scratch,outside.write:system-temp",
+     "fork.publish:operator:network.request"
+    ]
+   ],
+   "envAllowed": [
+    "repo.read",
+    "outside.write:host-scratchpad",
+    "outside.write:session-scratch",
+    "outside.write:system-temp",
+    "network.request"
+   ],
+   "envDenied": [
+    "credentials.access",
+    "transport.ssh",
+    "settings.user",
+    "sandbox.disable",
+    "remote.unapproved",
+    "package.publish"
+   ]
+  },
+  "shadowKitGrantId": {
+   "status": 1,
+   "out": "invalid build overlay in build/overlay.json: INVALID GRAPH: authorityGrants has duplicate grantId \"contributor.outside-temporary\"",
+   "provenance": null,
+   "envAllowed": null,
+   "envDenied": null
+  },
+  "wildcardDenyThenGrant": {
+   "status": 1,
+   "out": "invalid build overlay in build/overlay.json: SEMANTICS UNSUPPORTED: authorityGrants grant \"fork.publish\" effects \"package.publish\" cannot override wildcard denial \"package*\" without widening other authority.\nSEMANTICS UNSUPPORTED: authorityGrants grant \"fork.publish\" operations \"package.publish\" can",
+   "provenance": null,
+   "envAllowed": null,
+   "envDenied": null
+  },
+  "agentGrantedBy": {
+   "status": 1,
+   "out": "invalid build overlay in build/overlay.json: grants[0].grantedBy must be operator or host-policy",
+   "provenance": null,
+   "envAllowed": null,
+   "envDenied": null
+  }
+ },
+ "denyKitGranted": {
+  "kitGranted": [
+   "outside.write:host-scratchpad",
+   "outside.write:session-scratch",
+   "outside.write:system-temp"
+  ],
+  "denied": "outside.write:host-scratchpad",
+  "status": 0,
+  "out": "harness emit: 34 generated surfaces; local-terms list: unavailable",
+  "stillAllowed": true,
+  "inDenied": false
+ },
+ "refusals": {
+  "directory": {
+   "emit": 1,
+   "emitOut": "invalid build overlay in build/dir: build.overlay must name a readable regular file inside the launchpad",
+   "check": 1,
+   "checkOut": "invalid build overlay in build/dir: build.overlay must name a readable regular file inside the launchpad",
+   "unchanged": true,
+   "outCreated": false
+  },
+  "symlinkOutside": {
+   "emit": 1,
+   "emitOut": "invalid build overlay in build/link.json: build.overlay must name a readable regular file inside the launchpad",
+   "check": 1,
+   "checkOut": "invalid build overlay in build/link.json: build.overlay must name a readable regular file inside the launchpad",
+   "unchanged": true,
+   "outCreated": false
+  },
+  "dotdotEscape": {
+   "emit": 1,
+   "emitOut": "invalid build overlay in ../outside/overlay.json: build.overlay must name a readable regular file inside the launchpad",
+   "check": 1,
+   "checkOut": "invalid build overlay in ../outside/overlay.json: build.overlay must name a readable regular file inside the launchpad",
+   "unchanged": true,
+   "outCreated": false
+  },
+  "absoluteOutside": {
+   "emit": 1,
+   "emitOut": "invalid build overlay in <scratch>/outside/overlay.json: build.overlay must name a readable regular file inside the launch",
+   "check": 1,
+   "checkOut": "invalid build overlay in <scratch>/outside",
+   "unchanged": true,
+   "outCreated": false
+  },
+  "empty": {
+   "emit": 1,
+   "emitOut": "invalid build overlay in build/overlay.json: root must be JSON",
+   "check": 1,
+   "checkOut": "invalid build overlay in build/overlay.json: root must be JSON",
+   "unchanged": true,
+   "outCreated": false
+  },
+  "nullJson": {
+   "emit": 1,
+   "emitOut": "invalid build overlay in build/overlay.json: overlay must be an object",
+   "check": 1,
+   "checkOut": "invalid build overlay in build/overlay.json: overlay must be an object",
+   "unchanged": true,
+   "outCreated": false
+  },
+  "arrayJson": {
+   "emit": 1,
+   "emitOut": "invalid build overlay in build/overlay.json: overlay must be an object",
+   "check": 1,
+   "checkOut": "invalid build overlay in build/overlay.json: overlay must be an object",
+   "unchanged": true,
+   "outCreated": false
+  },
+  "bomJson": {
+   "emit": 1,
+   "emitOut": "invalid build overlay in build/overlay.json: root must be JSON",
+   "check": 1,
+   "checkOut": "invalid build overlay in build/overlay.json: root must be JSON",
+   "unchanged": true,
+   "outCreated": false
+  },
+  "versionString": {
+   "emit": 1,
+   "emitOut": "invalid build overlay in build/overlay.json: version must be 1",
+   "check": 1,
+   "checkOut": "invalid build overlay in build/overlay.json: version must be 1",
+   "unchanged": true,
+   "outCreated": false
+  },
+  "nestedIdentityKey": {
+   "emit": 1,
+   "emitOut": "invalid build overlay in build/overlay.json: unknown key identity.extra",
+   "check": 1,
+   "checkOut": "invalid build overlay in build/overlay.json: unknown key identity.extra",
+   "unchanged": true,
+   "outCreated": false
+  },
+  "identityMissingField": {
+   "emit": 1,
+   "emitOut": "invalid build overlay in build/overlay.json: identity.dispositions must be an array",
+   "check": 1,
+   "checkOut": "invalid build overlay in build/overlay.json: identity.dispositions must be an array",
+   "unchanged": true,
+   "outCreated": false
+  },
+  "grantRepo": {
+   "emit": 1,
+   "emitOut": "invalid build overlay in build/overlay.json: grants[0].repo must be project",
+   "check": 1,
+   "checkOut": "invalid build overlay in build/overlay.json: grants[0].repo must be project",
+   "unchanged": true,
+   "outCreated": false
+  },
+  "unknownTop": {
+   "emit": 1,
+   "emitOut": "invalid build overlay in build/overlay.json: unknown key overlay.repositories",
+   "check": 1,
+   "checkOut": "invalid build overlay in build/overlay.json: unknown key overlay.repositories",
+   "unchanged": true,
+   "outCreated": false
+  },
+  "classesTop": {
+   "emit": 1,
+   "emitOut": "invalid build overlay in build/overlay.json: unknown key overlay.classes",
+   "check": 1,
+   "checkOut": "invalid build overlay in build/overlay.json: unknown key overlay.classes",
+   "unchanged": true,
+   "outCreated": false
+  },
+  "truncated": {
+   "emit": 1,
+   "emitOut": "invalid build overlay in build/overlay.json: root must be JSON",
+   "check": 1,
+   "checkOut": "invalid build overlay in build/overlay.json: root must be JSON",
+   "unchanged": true,
+   "outCreated": false
+  }
+ },
+ "tamper": {
+  "emit": 0,
+  "checkAfterTamper": {
+   "status": 1,
+   "out": "harness drift: manifest"
+  },
+  "reEmit": 0,
+  "checkAfterReEmit": 0
+ }
+}

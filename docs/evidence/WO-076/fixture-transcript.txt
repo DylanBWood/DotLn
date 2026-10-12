@@ -1,0 +1,89 @@
+WO-076 executor fixture evidence, 2026-10-12 UTC
+
+Command:
+node scripts/harness.mjs bounded -- node --test --test-name-pattern=WO-076 scripts/test-harness.mjs
+Observed completion: 2026-10-12T00:11:11.564Z
+Bounded duration: 3802 ms; peak footprint: 164941336 bytes; exit 0.
+
+PASS WO-076 no overlay preserves emitted bytes and narrows only declared envelope fields
+PASS WO-076 identity replacement, two unequips and a newly equipped switch reach the bundle
+PASS WO-076 build none removes owned surfaces, keeps the floor and checks without a runtime snapshot
+PASS WO-076 ungranted widening refuses; grants retain provenance and the envelope hook without static denies
+PASS WO-076 unreadable and invalid overlays refuse by path before output creation or bundle writes
+PASS WO-076 closed overlay schema rejects nested keys, malformed grants and switch ambiguity
+tests 6; pass 6; fail 0; cancelled 0; skipped 0; todo 0.
+
+Recorded narrowing diagnostic:
+declared: resourceLimits.writers = 0; requiredEvidence adds instance-check.
+before: writers = 1; requiredEvidence = [resolved-worktree].
+after: writers = 0; requiredEvidence = [resolved-worktree, instance-check].
+All other envelope fields retained their exact values.
+The assertions compare every merged and per-profile generated file after only
+these declared substitutions and the resulting semantic hash substitution.
+They compare the entire manifest after only derived file/target hashes and
+overlay path/SHA-256 metadata are substituted. The installed file set is equal.
+Derived differences: semantic and target hashes; file hashes; overlay path and SHA-256.
+Unrelated changes: [].
+Changed installed paths:
+.agents/skills/dotln-executor/SKILL.md
+.agents/skills/dotln-planner/SKILL.md
+.agents/skills/dotln-refuter/SKILL.md
+.agents/skills/dotln-release-close/SKILL.md
+.agents/skills/dotln-reviewer/SKILL.md
+.agents/skills/dotln-verifier/SKILL.md
+.claude/agents/dotln-worker.md
+.claude/harness-manifest.json
+.claude/hooks/commit-msg.mjs
+.claude/hooks/concurrent-work-requires-worktrees.mjs
+.claude/hooks/failure-observer.mjs
+.claude/hooks/finish.mjs
+.claude/hooks/no-attribution.mjs
+.claude/hooks/no-lint-type-disables-as-fixes.mjs
+.claude/hooks/permission-denied.mjs
+.claude/hooks/permissions.mjs
+.claude/hooks/presence-posttooluse.mjs
+.claude/hooks/presence-pretooluse.mjs
+.claude/hooks/presence-stop.mjs
+.claude/hooks/presence-userpromptsubmit.mjs
+.claude/hooks/read-observer.mjs
+.claude/hooks/session.mjs
+.claude/hooks/write-observer.mjs
+.claude/skills/dotln-executor/SKILL.md
+.claude/skills/dotln-planner/SKILL.md
+.claude/skills/dotln-refuter/SKILL.md
+.claude/skills/dotln-release-close/SKILL.md
+.claude/skills/dotln-reviewer/SKILL.md
+.claude/skills/dotln-verifier/SKILL.md
+.codex/hooks/continuation.mjs
+
+Following format/build and root emit:
+node scripts/harness.mjs check
+harness check: 34 generated surfaces; local-terms list: unavailable
+
+npm test -- --only harness-fixtures
+PASS build 0.77 s
+PASS harness-fixtures 311.85 s
+suite:harness-fixtures: 2 passed; 0 failed; 313.01 s; 2 fresh tasks
+
+npm test -- --only harness-evidence
+PASS build 0.77 s
+PASS harness-evidence 0.38 s
+suite:harness-evidence: 2 passed; 0 failed; 1.46 s; 2 fresh tasks
+
+First full review gate, before the integration fixture repair:
+npm test -- --review
+Recorded at 2026-10-12T00:50:43.308Z.
+npm test: 40 passed; 1 failed; 1772.47 s; 93 fresh tasks
+Failed suite: worktree-integration (19 cases passed, 5 failed).
+Diagnostic: the requested Contributor module does not provide an export named
+contributorSupportIds. The fixture combined current scripts/lib with committed
+compiler/skeleton source. WO-076-D006 records the source-coherence repair.
+
+After the fixture repair:
+node scripts/harness.mjs bounded -- node --test '--test-name-pattern=real Git' scripts/test-worktree-integration.mjs
+Observed completion: 2026-10-12T00:51:43.990Z.
+PASS real Git fast-forward preserves recovery, histories and authored conflicts with real generators
+PASS real Git reviewed merge preserves recovery, histories and authored conflicts with real generators
+tests 2; pass 2; fail 0; bounded duration 28649 ms; exit 0.
+Both cases retained recovery refs/stash, retimed to v9000.0.2 and reported
+unchangedControl:true and realGenerators:true.
