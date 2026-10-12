@@ -1,0 +1,639 @@
+{
+  "selections": [
+    {
+      "command": "npm test",
+      "wallDurationMs": 42362,
+      "firstTask": "kit-verify",
+      "gate": {
+        "checkId": "npm test",
+        "treeHash": "78fd6548bf5c2a7f82dc422e9dd925e832c52975",
+        "codeIdentity": "85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0",
+        "evidenceRef": "host-gate:85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0:npm test",
+        "recordedAt": "2026-10-12T06:55:28.192Z",
+        "durationMs": 41739,
+        "exitCode": 0,
+        "executed": true,
+        "identityUnchanged": true,
+        "executionMode": "fresh",
+        "requiredSuites": [
+          "kit-verify",
+          "format",
+          "release-preparation",
+          "target-worktree",
+          "publication-fixtures",
+          "backup-intake",
+          "beacon-portability",
+          "checkpoint",
+          "work-orders-fixtures",
+          "siblings-fixtures",
+          "adjacent-queue",
+          "derived-orders",
+          "portfolio",
+          "codex-continuation",
+          "authority-grants"
+        ],
+        "cases": [
+          {
+            "name": "kit-verify",
+            "durationMs": 117,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "format",
+            "durationMs": 3552,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "release-preparation",
+            "durationMs": 3439,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "target-worktree",
+            "durationMs": 37856,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "publication-fixtures",
+            "durationMs": 958,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "backup-intake",
+            "durationMs": 311,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "beacon-portability",
+            "durationMs": 841,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "checkpoint",
+            "durationMs": 8231,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "work-orders-fixtures",
+            "durationMs": 23681,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "siblings-fixtures",
+            "durationMs": 11767,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "adjacent-queue",
+            "durationMs": 489,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "derived-orders",
+            "durationMs": 7761,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "portfolio",
+            "durationMs": 20798,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "codex-continuation",
+            "durationMs": 6158,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "authority-grants",
+            "durationMs": 176,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          }
+        ]
+      }
+    },
+    {
+      "command": "npm run test:docs",
+      "wallDurationMs": 14565,
+      "firstTask": "kit-verify",
+      "gate": {
+        "checkId": "npm run test:docs",
+        "treeHash": "78fd6548bf5c2a7f82dc422e9dd925e832c52975",
+        "codeIdentity": "85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0",
+        "evidenceRef": "host-gate:85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0:npm run test:docs",
+        "recordedAt": "2026-10-12T06:55:42.862Z",
+        "durationMs": 14008,
+        "exitCode": 0,
+        "executed": true,
+        "identityUnchanged": true,
+        "executionMode": "fresh",
+        "requiredSuites": [
+          "kit-verify",
+          "format",
+          "index",
+          "siblings",
+          "resident-bind",
+          "harness",
+          "harness-context",
+          "artifact-corpus",
+          "meta",
+          "registrations",
+          "entropy"
+        ],
+        "cases": [
+          {
+            "name": "kit-verify",
+            "durationMs": 126,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "format",
+            "durationMs": 3445,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "index",
+            "durationMs": 79,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "siblings",
+            "durationMs": 59,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "resident-bind",
+            "durationMs": 9989,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "harness",
+            "durationMs": 152,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "harness-context",
+            "durationMs": 95,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "artifact-corpus",
+            "durationMs": 207,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "meta",
+            "durationMs": 178,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "registrations",
+            "durationMs": 78,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "entropy",
+            "durationMs": 100,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          }
+        ]
+      }
+    },
+    {
+      "command": "npm test -- --review",
+      "wallDurationMs": 10501,
+      "firstTask": "kit-verify",
+      "gate": {
+        "checkId": "npm test",
+        "treeHash": "78fd6548bf5c2a7f82dc422e9dd925e832c52975",
+        "codeIdentity": "85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0",
+        "evidenceRef": "host-gate:85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0:npm test",
+        "recordedAt": "2026-10-12T06:55:53.489Z",
+        "durationMs": 9870,
+        "exitCode": 0,
+        "executed": true,
+        "identityUnchanged": true,
+        "executionMode": "composed",
+        "requiredSuites": [
+          "kit-verify",
+          "format",
+          "release-preparation",
+          "target-worktree",
+          "publication-fixtures",
+          "backup-intake",
+          "beacon-portability",
+          "checkpoint",
+          "work-orders-fixtures",
+          "siblings-fixtures",
+          "adjacent-queue",
+          "derived-orders",
+          "portfolio",
+          "codex-continuation",
+          "authority-grants",
+          "fixture-temp-root",
+          "configuration-root",
+          "harness",
+          "harness-context",
+          "mutation",
+          "meta",
+          "registrations"
+        ],
+        "cases": [
+          {
+            "name": "kit-verify",
+            "durationMs": 125,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "format",
+            "durationMs": 3426,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "release-preparation",
+            "durationMs": 0,
+            "exitCode": 0,
+            "executed": true,
+            "reused": true,
+            "sourceRow": {
+              "task": "release-preparation",
+              "recordedAt": "2026-10-12T06:55:28.192Z",
+              "codeIdentity": "85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0",
+              "evidenceRef": "host-gate:85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0:npm test"
+            }
+          },
+          {
+            "name": "target-worktree",
+            "durationMs": 0,
+            "exitCode": 0,
+            "executed": true,
+            "reused": true,
+            "sourceRow": {
+              "task": "target-worktree",
+              "recordedAt": "2026-10-12T06:55:28.192Z",
+              "codeIdentity": "85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0",
+              "evidenceRef": "host-gate:85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0:npm test"
+            }
+          },
+          {
+            "name": "publication-fixtures",
+            "durationMs": 0,
+            "exitCode": 0,
+            "executed": true,
+            "reused": true,
+            "sourceRow": {
+              "task": "publication-fixtures",
+              "recordedAt": "2026-10-12T06:55:28.192Z",
+              "codeIdentity": "85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0",
+              "evidenceRef": "host-gate:85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0:npm test"
+            }
+          },
+          {
+            "name": "backup-intake",
+            "durationMs": 0,
+            "exitCode": 0,
+            "executed": true,
+            "reused": true,
+            "sourceRow": {
+              "task": "backup-intake",
+              "recordedAt": "2026-10-12T06:55:28.192Z",
+              "codeIdentity": "85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0",
+              "evidenceRef": "host-gate:85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0:npm test"
+            }
+          },
+          {
+            "name": "beacon-portability",
+            "durationMs": 0,
+            "exitCode": 0,
+            "executed": true,
+            "reused": true,
+            "sourceRow": {
+              "task": "beacon-portability",
+              "recordedAt": "2026-10-12T06:55:28.192Z",
+              "codeIdentity": "85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0",
+              "evidenceRef": "host-gate:85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0:npm test"
+            }
+          },
+          {
+            "name": "checkpoint",
+            "durationMs": 0,
+            "exitCode": 0,
+            "executed": true,
+            "reused": true,
+            "sourceRow": {
+              "task": "checkpoint",
+              "recordedAt": "2026-10-12T06:55:28.192Z",
+              "codeIdentity": "85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0",
+              "evidenceRef": "host-gate:85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0:npm test"
+            }
+          },
+          {
+            "name": "work-orders-fixtures",
+            "durationMs": 0,
+            "exitCode": 0,
+            "executed": true,
+            "reused": true,
+            "sourceRow": {
+              "task": "work-orders-fixtures",
+              "recordedAt": "2026-10-12T06:55:28.192Z",
+              "codeIdentity": "85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0",
+              "evidenceRef": "host-gate:85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0:npm test"
+            }
+          },
+          {
+            "name": "siblings-fixtures",
+            "durationMs": 0,
+            "exitCode": 0,
+            "executed": true,
+            "reused": true,
+            "sourceRow": {
+              "task": "siblings-fixtures",
+              "recordedAt": "2026-10-12T06:55:28.192Z",
+              "codeIdentity": "85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0",
+              "evidenceRef": "host-gate:85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0:npm test"
+            }
+          },
+          {
+            "name": "adjacent-queue",
+            "durationMs": 0,
+            "exitCode": 0,
+            "executed": true,
+            "reused": true,
+            "sourceRow": {
+              "task": "adjacent-queue",
+              "recordedAt": "2026-10-12T06:55:28.192Z",
+              "codeIdentity": "85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0",
+              "evidenceRef": "host-gate:85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0:npm test"
+            }
+          },
+          {
+            "name": "derived-orders",
+            "durationMs": 0,
+            "exitCode": 0,
+            "executed": true,
+            "reused": true,
+            "sourceRow": {
+              "task": "derived-orders",
+              "recordedAt": "2026-10-12T06:55:28.192Z",
+              "codeIdentity": "85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0",
+              "evidenceRef": "host-gate:85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0:npm test"
+            }
+          },
+          {
+            "name": "portfolio",
+            "durationMs": 0,
+            "exitCode": 0,
+            "executed": true,
+            "reused": true,
+            "sourceRow": {
+              "task": "portfolio",
+              "recordedAt": "2026-10-12T06:55:28.192Z",
+              "codeIdentity": "85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0",
+              "evidenceRef": "host-gate:85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0:npm test"
+            }
+          },
+          {
+            "name": "codex-continuation",
+            "durationMs": 0,
+            "exitCode": 0,
+            "executed": true,
+            "reused": true,
+            "sourceRow": {
+              "task": "codex-continuation",
+              "recordedAt": "2026-10-12T06:55:28.192Z",
+              "codeIdentity": "85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0",
+              "evidenceRef": "host-gate:85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0:npm test"
+            }
+          },
+          {
+            "name": "authority-grants",
+            "durationMs": 0,
+            "exitCode": 0,
+            "executed": true,
+            "reused": true,
+            "sourceRow": {
+              "task": "authority-grants",
+              "recordedAt": "2026-10-12T06:55:28.192Z",
+              "codeIdentity": "85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0",
+              "evidenceRef": "host-gate:85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0:npm test"
+            }
+          },
+          {
+            "name": "fixture-temp-root",
+            "durationMs": 575,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "configuration-root",
+            "durationMs": 5619,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "harness",
+            "durationMs": 150,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "harness-context",
+            "durationMs": 95,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "mutation",
+            "durationMs": 5908,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "meta",
+            "durationMs": 172,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          },
+          {
+            "name": "registrations",
+            "durationMs": 81,
+            "exitCode": 0,
+            "executed": true,
+            "reused": false
+          }
+        ]
+      }
+    }
+  ],
+  "notCarried": [
+    "kit: artifact-evidence not carried (package sources and core artifact-identity evidence edition)",
+    "kit: authority-evidence not carried (core authority evidence edition and historical Git objects)",
+    "kit: browser-evidence not carried (browser-evidence package and browser runtime are not shipped)",
+    "kit: comment-labels not carried (core comment fingerprint baseline)",
+    "kit: comment-labels-fixtures not carried (core corpus profile collector)",
+    "kit: compiler not carried (compiler package source audits)",
+    "kit: console not carried (console package is not shipped)",
+    "kit: console-docs not carried (console package is not shipped)",
+    "kit: docs-check not carried (core document ceilings and baseline)",
+    "kit: docs-check-fixtures not carried (core product roadmap)",
+    "kit: evidence-sources not carried (console build, package sources and recorded evidence editions)",
+    "kit: feedback-evidence not carried (core feedback evidence edition)",
+    "kit: github-body not carried (core outward-vocabulary control data)",
+    "kit: harness-evidence not carried (package sources, historical harness baseline and live evidence)",
+    "kit: harness-fixtures not carried (Entropy Reducer baseline history and package sources)",
+    "kit: harness-probe not carried (core security, budget and discovery records plus package sources)",
+    "kit: kernel not carried (kernel package source audits and package README)",
+    "kit: kernel-docs not carried (kernel recorded product evidence and documentation)",
+    "kit: launchpad not carried (package TypeScript and build configuration needed to export)",
+    "kit: launchpad-docs not carried (package TypeScript and build configuration needed to export)",
+    "kit: license-fixtures not carried (docs/LEGAL.md and core license fixtures)",
+    "kit: license-surfaces not carried (docs/LEGAL.md license pins)",
+    "kit: lineage not carried (core idea ledger)",
+    "kit: lineage-fixtures not carried (core idea ledger)",
+    "kit: local-runner-double not carried (role-qualification oracle reads core verification report WO-052/VER-001)",
+    "kit: outward-lint not carried (core outward-vocabulary control data)",
+    "kit: plan not carried (unseeded planning ledger and receipts; instance planning is pending WO-202)",
+    "kit: plan-refutation not carried (core reader profiles, planning history, budgets and historical Git objects)",
+    "kit: plan-refutation-current not carried (unseeded planning ledger and receipts; instance planning is pending WO-202)",
+    "kit: process-debt not carried (historical Git trees, package sources, core budgets and work orders)",
+    "kit: publication not carried (core publication audience index and outlines)",
+    "kit: reader-fixtures not carried (core historical publication examples and their recorded comparison)",
+    "kit: reader-profiles not carried (core editorial profiles, examples, scores and release tag objects)",
+    "kit: release not carried (core tag-manifest template, TypeScript and release records)",
+    "kit: release-surfaces not carried (core release records and docs/LEGAL.md)",
+    "kit: resume not carried (core legacy lifecycle and timing observations WO-030)",
+    "kit: runner-fixtures not carried (package sources, core build inventory and license pins)",
+    "kit: skeleton not carried (skeleton package source audits)",
+    "kit: skeleton-docs not carried (skeleton recorded product evidence and documentation)",
+    "kit: target-publish not carried (core outward-vocabulary control data)",
+    "kit: verification-evidence not carried (package sources and core verification evidence edition)",
+    "kit: vertical not carried (core outward-vocabulary control data)",
+    "kit: wo107-schema not carried (historical corpus observations, collector and Git objects)",
+    "kit: worktree not carried (docs/LEGAL.md and core release inputs)",
+    "kit: worktree-integration not carried (console package, core source and publication inputs)"
+  ],
+  "carried": [
+    "adjacent-queue",
+    "artifact-corpus",
+    "authority-grants",
+    "backup-intake",
+    "beacon-portability",
+    "checkpoint",
+    "codex-continuation",
+    "configuration-root",
+    "derived-orders",
+    "entropy",
+    "fixture-temp-root",
+    "format",
+    "harness",
+    "harness-context",
+    "index",
+    "kit-verify",
+    "meta",
+    "mutation",
+    "portfolio",
+    "publication-fixtures",
+    "registrations",
+    "release-preparation",
+    "resident-bind",
+    "siblings",
+    "siblings-fixtures",
+    "target-worktree",
+    "work-orders-fixtures"
+  ],
+  "unavailableSelections": [
+    {
+      "name": "publication",
+      "exitCode": 1,
+      "gateRecorded": false
+    },
+    {
+      "name": "runner-fixtures",
+      "exitCode": 1,
+      "gateRecorded": false
+    }
+  ],
+  "refusal": {
+    "path": "packages/kernel/dist/test/ac1-purity.test.js",
+    "exitCode": 1,
+    "trackedCodeIdentityChanged": true
+  },
+  "kitFiles": 863,
+  "kitBytes": 15971669,
+  "addedFiles": 259,
+  "addedBytes": 6150768,
+  "excludedFixtureBytes": 3947,
+  "netFileSetGrowthBytes": 6146821,
+  "durationMs": 74490,
+  "source": "scripts/test-launchpad.mjs; bounded focused repair fixture, 2026-10-12T06:54:36.137Z to 2026-10-12T06:55:56.493Z; three tests passed",
+  "projection": "Recorded export gate identities, outcomes, task coverage and durations; repetitive process diagnostics and machine-local paths omitted by the fixture.",
+  "baseline": {
+    "sourceCommit": "69f830ba2495d94b663c623c318291bb44351570",
+    "fixtureCommit": "bfd191dde9722b604a188a849fdf3eefcace6d0a",
+    "kitFiles": 605,
+    "kitBytes": 9793574,
+    "measuredAt": "2026-10-12T05:24:10.422Z"
+  },
+  "wholeKitGrowthBytes": 6178095
+}
