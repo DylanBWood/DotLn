@@ -3981,6 +3981,20 @@
           "title": "Workstream application — end-user workflow candidate",
           "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
           "missing": false
+        },
+        {
+          "hash": "e4681a92465ebe9cee89d3bf865593479b992a6dfe71f6852311bf963475d16f",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
+        },
+        {
+          "hash": "660e49ba695e5e16e931d6f207344b4857456dda88cb14c190d855f5d062c497",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -19805,6 +19819,13 @@
           "title": "WO-070-D009: Plane/kit root resolution, carried from WO-069 D005, D016 and D017 (FUP-a7175a13eca745f2, FUP-ec23fc47b2aabafe, FUP-99ec03a092896aa7): settle one module identity for the remaining build-f",
           "summary": "{ \"id\": \"WO-070-D009\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; carry-ins on the WO-070 row of docs/planning/work-order-map.md\", \"decision\": \"At the operator's direction, dispose the four follow-ups allocated to WO-070 without code change. WO-069-D005 (FUP-a7175a13eca745f2), D016 (FUP-ec23fc47b2aabafe) and D017 (FUP-99ec03a092896aa7) are deferred together to the plane/kit root-resolution follow-up below; WO-158-D006 (FUP-09a2fb517f0ffbc4) stays deferred to the next Beacon codebook revision, which WO-070 is not.\", \"evidence\": [ \"Operator answer in this dispatch, 2026-09-25: 'Defer, as recommended (Recommended)' to the question naming all four carry-ins and the recommended disposition\"",
           "missing": false
+        },
+        {
+          "hash": "b9ec0d5a339d077510b38959384b230e7e928ad14c3892626600ae1b319067a0",
+          "ref": "docs/evidence/WO-070/decisions.md#wo-070-d009",
+          "title": "WO-070-D009: Plane/kit root resolution, carried from WO-069 D005, D016 and D017 (FUP-a7175a13eca745f2, FUP-ec23fc47b2aabafe, FUP-99ec03a092896aa7): settle one module identity for the remaining build-f",
+          "summary": "{ \"id\": \"WO-070-D009\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; carry-ins on the WO-070 row of docs/planning/work-order-map.md\", \"decision\": \"At the operator's direction, dispose the four follow-ups allocated to WO-070 without code change. WO-069-D005 (FUP-a7175a13eca745f2), D016 (FUP-ec23fc47b2aabafe) and D017 (FUP-99ec03a092896aa7) are deferred together to the plane/kit root-resolution follow-up below; WO-158-D006 (FUP-09a2fb517f0ffbc4) stays deferred to the next Beacon codebook revision, which WO-070 is not.\", \"evidence\": [ \"Operator answer in this dispatch, 2026-09-25: 'Defer, as recommended (Recommended)' to the question naming all four carry-ins and the recommended disposition\"",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -19835,6 +19856,14 @@
             "WO-202"
           ],
           "at": "2026-10-11T20:18:58.982Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Default export qualified by WO-202 (D005, step 7): operator-control status, both harness-probe reports and the four build-free module calls run inside the fixture export (commands-final.json rows 23 to 26; reproduced by VER-001 and by FINAL-001's bounded run). The non-default remainder (a DOTLN_LAUNCHPAD separate from the scripts checkout, relocated document roots, the ignored local lane) is re-boarded as FUP-cb5c3b3e7d0b0c0d by D005's followup, so this row is settled by that split rather than left unfixed. [WO-202 final review (docs/final-reviews/WO-202/FINAL-001.md), D016]",
+          "reopenWhen": "FUP-cb5c3b3e7d0b0c0d is declined without its remainder being run, or a default export fails one of these paths.",
+          "targets": [],
+          "at": "2026-10-12T17:05:51.439Z"
         }
       ]
     },
@@ -30049,6 +30078,14 @@
           "reopenWhen": "a real verify dispatch errors after recording; a final review misclasses a finding for want of the definitions; a reviewer self-fix goes unlisted; an advisoryDecision is used again; or the next order that edits scripts/resume.mjs or the reviewer loadout activates",
           "targets": [],
           "at": "2026-10-11T23:34:02.620Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-202's final review. The condition 'the next order that edits scripts/resume.mjs' occurred: WO-202 changes only warnIfProjectionDisagrees (an absent projection over an empty fold is agreement) and nothing in the verify briefing's order of operations. Both dispatches that record a report (verify, final review) recorded without error, this review classed its findings from product 07's definitions, and its one self-fix (D015) is listed in FINAL-001 and in this register. [WO-202 final review (docs/final-reviews/WO-202/FINAL-001.md)]",
+          "reopenWhen": "a real verify dispatch errors after recording; a final review misclasses a finding for want of the definitions; a reviewer self-fix goes unlisted; an advisoryDecision is used again; or the next order that edits scripts/resume.mjs or the reviewer loadout activates",
+          "targets": [],
+          "at": "2026-10-12T17:05:51.566Z"
         }
       ]
     },
@@ -32143,6 +32180,14 @@
             "WO-202"
           ],
           "at": "2026-10-11T20:18:59.086Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Met at the base and fixed by WO-202 (D004): main's resume.mjs warns 'disagrees with the canonical fold' on the first status in a fresh export; the subject treats a missing projection over an empty order map as agreement. The planning fixture's first assertion covers it, VER-001's base reconstruction shows the unmodified suite failing at that assertion against main, and FINAL-001's bounded run passes it.",
+          "reopenWhen": "A fresh export warns on its first resume status, or a non-empty fold is read as agreement with an absent projection.",
+          "targets": [],
+          "at": "2026-10-12T17:05:51.308Z"
         }
       ]
     },
@@ -33140,6 +33185,14 @@
             "WO-202"
           ],
           "at": "2026-10-11T20:18:59.034Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-202 (D004, criterion 4): readPublication tests the recorded object before reading it; an absent tag object fails with 'Reader profiles: <release> unverifiable: tag object <sha> absent; run git fetch --tags origin', never a raw Git error, and the check recovers after the fetch. Fixture: scripts/test-reader.mjs 'a missing recorded tag names the release and fetch, then verifies after restoration', failing against main's reader scripts; reproduced by VER-001 and read at FINAL-001.",
+          "reopenWhen": "A recorded score row fails the reader check with a raw Git error, or a remote other than origin must restore the recorded tag.",
+          "targets": [],
+          "at": "2026-10-12T17:05:51.242Z"
         }
       ]
     },
@@ -33166,6 +33219,14 @@
             "WO-202"
           ],
           "at": "2026-10-11T20:18:59.137Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Fixed by WO-202 (D004): recordScores checks each release row and each answer as an object before property access; null, scalar and array entries give contextual 'Reader profiles:' errors, never a TypeError, and no partial row is appended (fixture case in scripts/test-reader.mjs; VER-001 tried 12 further shapes).",
+          "reopenWhen": "A malformed score result raises a TypeError or appends a partial row.",
+          "targets": [],
+          "at": "2026-10-12T17:05:51.373Z"
         }
       ]
     },
@@ -33726,6 +33787,136 @@
           "at": "2026-10-12T08:40:38.917Z"
         }
       ]
+    },
+    {
+      "id": "FUP-cb5c3b3e7d0b0c0d",
+      "key": "decision:docs/evidence/WO-202/decisions.md#wo-202-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e4fb264a4df3e52d137ccc8c0ea14cb2a2e3db3415555ac7ba4dda1d714acff8",
+          "ref": "docs/evidence/WO-202/decisions.md#wo-202-d005",
+          "title": "WO-202-D005: Finish the non-default plane/kit root-resolution remainder of FUP-a058e82c0bbd9b6d: resolve the ignored local lane and the tool-root versus launchpad-root distinction for gate-evidence, w",
+          "summary": "{ \"id\": \"WO-202-D005\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: next\", \"decision\": \"Qualify the default export and retain the non-default root-resolution remainder explicitly.\", \"evidence\": [ \"FUP-a058e82c0bbd9b6d: the fixture runs operator-control status, writing-worker and authority harness-probe report paths, and imports/calls activeGateRuns, writerTeardownBlocker, usageObservation and codexContinuation from the exported build-free sources. These are non-live smoke checks, not provider or interactive qualification.\", \"The default export contains both its scripts and its runtime. This proves an independent exported checkout works; it does not prove a DOTLN_LAUNCHPAD separated from its sc",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3b39865f91df30a7",
+      "key": "decision:docs/evidence/WO-202/decisions.md#wo-202-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3a0863b44810d44a8377bbea6e19e0d39f5095405313159d9ddc95133b7c4e6d",
+          "ref": "docs/evidence/WO-202/decisions.md#wo-202-d008",
+          "title": "WO-202-D008: Investigate the intermittent five-second readiness failure in packages/skeleton/test/resident-actors.test.ts built CLI supervisor signal case, observed during WO-202 full review. Cause un",
+          "summary": "{ \"id\": \"WO-202-D008\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: next; unchanged-code gate revalidation\", \"decision\": \"Retain the supervisor startup timeout as an unresolved observation and revalidate the unchanged code before handoff.\", \"evidence\": [ \"The repaired npm test -- --review run completed with 37 passing suites and one failure in 1480.18 seconds. Both suites repaired in D007 passed. Skeleton reported 508 passing cases and one failed case: built CLI supervisors kill their episode group on all terminal signals, with episode group never started from its five-second readiness timer. The first full review had passed skeleton.\", \"The case failed before its process-group and signal asse",
+          "missing": false
+        },
+        {
+          "hash": "f7115194f5235706d5be8893f4db95ec4fd57c0daf1cfe3b2276289295368be8",
+          "ref": "docs/evidence/WO-202/decisions.md#wo-202-d008",
+          "title": "WO-202-D008: Investigate the intermittent five-second readiness failure in packages/skeleton/test/resident-actors.test.ts built CLI supervisor signal case, observed during WO-202 full review. Cause un",
+          "summary": "{ \"id\": \"WO-202-D008\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: next; unchanged-code gate revalidation\", \"decision\": \"Retain the supervisor startup timeout as an unresolved observation and revalidate the unchanged code before handoff.\", \"evidence\": [ \"The repaired npm test -- --review run completed with 37 passing suites and one failure in 1480.18 seconds. Both suites repaired in D007 passed. Skeleton reported 508 passing cases and one failed case: built CLI supervisors kill their episode group on all terminal signals, with episode group never started from its five-second readiness timer. The first full review had passed skeleton.\", \"The case failed before its process-group and signal asse",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "Opened by WO-202's final review: the readiness timeout recurred in its fresh review gate at code identity 527e4e17… ('episode group never started' after 5,114 ms, failure kind surviving-process, host load per CPU 0.98) and the isolated case passed again under the bounded wrapper; two failures in three fresh full reviews of this subject, so the row is no longer low priority pending recurrence. Planning decides its reproduction; a third fresh full-review failure or a failure in a composed rerun raises it further. The composed rerun is recorded in FINAL-001. [WO-202 final review (docs/final-reviews/WO-202/FINAL-001.md), D017]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-12T17:42:07.035Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-272d6f1078ad6b3b",
+      "key": "decision:docs/evidence/WO-202/decisions.md#wo-202-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "89a771eee06d95cad74b525fdd7176f516b9e41199f636a5cb3d39c1f4db9c3c",
+          "ref": "docs/evidence/WO-202/decisions.md#wo-202-d009--verification-pass-ver-001-board-the-client-readmes-two-stale-pending-planning-sentences",
+          "title": "WO-202-D009: Before the operator's first export, remove or rewrite the two sentences in scripts/kit/README.client.md that call instance planning pending: 'Planning commands inside a fresh instance rem",
+          "summary": "{ \"id\": \"WO-202-D009\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Pass VER-001: criteria 1 to 7 are met at code identity 5da914ad2b8b2032c6347690f4ad78e0212585af709ccba85cdfaaa1859f9ebe. Board F1 (follow-up): two older paragraphs of scripts/kit/README.client.md still call instance planning pending. Section 'What runs here, and what does not' (lines 255-256) reads 'Planning commands inside a fresh instance remain pending upstream WO-202'. Section 'Kit files and instance files' (lines 316-317) reads 'Running planning commands inside a fresh kit is a separate pending capability; the upstream WO-202 tracks it.' Both contradict the 'Planning in th",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Fixed by WO-202's final review (D015) inside the declared surface: both sentences calling instance planning pending are replaced in scripts/kit/README.client.md; the limits paragraph points to §Planning in this instance and names the remaining limits (the console row, live transports, docs/LEGAL.md in the release-surface read once an order carries a version), and the kit-files paragraph points to the same section. grep finds no 'pending upstream WO-202' or 'WO-202 tracks it'; launchpad-planning passed under the bounded wrapper at the new identity, and the launchpad suite runs fresh in the review gate recorded in FINAL-001.",
+          "reopenWhen": "An exported README again calls instance planning pending.",
+          "targets": [],
+          "at": "2026-10-12T17:05:51.501Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a065bc5b99e40660",
+      "key": "decision:docs/evidence/WO-202/decisions.md#wo-202-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0cd05638249e1074560debb4df6cd8783f3da95ae92037849943535527b37003",
+          "ref": "docs/evidence/WO-202/decisions.md#wo-202-d010--verification-board-the-release-surface-read-which-fails-on-docslegalmd-once-an-instance-order-exists",
+          "title": "WO-202-D010: Make the local release-surface read hold in an instance with a prepared order. Either the instance owns docs/LEGAL.md (a seed or a declared instance action, with pins from its own license",
+          "summary": "{ \"id\": \"WO-202-D010\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Board F2 (follow-up). The fixture runs npm run release -- check-surfaces --local only with no lifecycle order. There the new kit branch (scripts/release.mjs line 3086) prints 'release surfaces unavailable in this fresh instance'. In my export, after the README's own first-steps item 6 (activate WO-001), the read exits 1 because the seed heading has no version. Core gives the same order-state error before release prepare. With a version in the heading, the read exits 1 on two FAIL lines. One is the release block, order state that release prepare writes. The other is 'license-sur",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-acdc329e47638889",
+      "key": "decision:docs/evidence/WO-202/decisions.md#wo-202-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "72ac861f0d86be725c12826ff865843a8af458759f6da191fc277760ca327f73",
+          "ref": "docs/evidence/WO-202/decisions.md#wo-202-d011--verification-board-publicationchecks-absence-rule-which-does-not-distinguish-an-undeclared-instance-from-a-core-checkout-missing-its-editions",
+          "title": "WO-202-D011: Distinguish an undeclared publication from a missing one in scripts/check-publication.mjs. Pass with 'publication: no editions declared' only when no publication declaration exists: no au",
+          "summary": "{ \"id\": \"WO-202-D011\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Board F3 (follow-up). publication:check's new early exit (scripts/check-publication.mjs line 48) passes whenever both edition files are absent, before any other check and in any checkout. In a core clone of the subject, deleting both edition files exits 0 with 'publication: no editions declared' (main exits 1). That also skips the audience-index coverage and dual-voice checks while the index is present. In my export, a present audience-status-index.md with no editions passes unchecked, and --expect-stale and --print-locks exit 0 with nothing to compare. A partial declaration st",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3cceac0fff2dba94",
+      "key": "decision:docs/evidence/WO-202/decisions.md#wo-202-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d49dfde0e5898ff2def690c2bffaffcd71969fa63a429722132d38163c9e7316",
+          "ref": "docs/evidence/WO-202/decisions.md#wo-202-d012--verification-board-the-instance-refutations-goal-standard-which-carries-cores-purpose-and-critical-path-targets",
+          "title": "WO-202-D012: In a kit, keep core's purpose and critical-path targets out of the instance's refutation goal standard. Either read it from an instance-owned declaration, reported unavailable by name whe",
+          "summary": "{ \"id\": \"WO-202-D012\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Board F4 (follow-up). In an export, npm run plan -- refute reports the instance's vision, roles, capability table and critical path as unavailable. But the goal-review subject still reads the 'Goal-aligned decisions' section from the carried docs/product/07-execution-guide.md (scripts/lib/plan-subject.mjs line 562). That text states core's purpose and its critical-path targets: product 07 line 69, 'The current critical-path plan targets the always-on runtime, its first real external source change and an independently verified source-to-deliverable loop'. It also links a critica",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9bf47c37df1cc049",
+      "key": "decision:docs/evidence/WO-202/decisions.md#wo-202-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "60e067b01c36fb6004b3abc8836f92777218a7a532536a854799b9021ee25c7d",
+          "ref": "docs/evidence/WO-202/decisions.md#wo-202-d013--verification-planning-receipt-044s-criterion4-reopening-condition-for-wo-202-has-occurred-through-its-score-row-branch-independently-of-this-order",
+          "title": "WO-202-D013: Next planning pass: reopen receipt 044's criterion:4 known issue for WO-202, as its condition requires. Decide whether npm run reader -- check should know which published releases must ca",
+          "summary": "{ \"id\": \"WO-202-D013\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Record that the reopening condition of planning receipt 2026-10-11-planning-fb68306765535a9d-044's criterion:4 known issue for WO-202 has occurred through its score-row branch. In a core clone of the subject, removing one score row from docs/publication/reader-scores.jsonl leaves npm run reader -- check at exit 0. The same probe with main's reader scripts also exits 0, so the behavior predates this order and is not caused by its optional handling. The new no-records path also requires docs/control/reader-profiles.json and docs/publication/examples to be absent, and with every s",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

@@ -8,7 +8,7 @@
 - [x] [WO-076] — Instance build overlay · **final-reviewed** · pair 1
 - [x] [WO-200] — Pinned collector bytes are watched where they change · **final-reviewed** · pair 1
 - [x] [WO-201] — The export runs core's suites · **final-reviewed**
-- [ ] [WO-202] — The planning machinery runs in an instance · **queued**
+- [x] [WO-202] — The planning machinery runs in an instance · **final-reviewed**
 - [ ] [WO-203] — Update preview · **queued**
 - [ ] [WO-118] — The resident-owned loop from a starter instance · **queued**
 - [ ] [WO-080] — Workstream document and index grouping · **queued** · pair 2
@@ -53,23 +53,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-202
-
-[WO-202 — The planning machinery runs in an instance: plan start, the follow-up register, refute and receipt, the entropy review, meta, the work-order index, the document gate, the publication check and what a release close reads, each observed on a fixture export and fixed where the kit lacks it (version assigned at activation)](WO-202-planning-machinery-runs-in-an-instance.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-201: hard (met) — the document and review gates run inside a kit only with WO-201's kit mode; WO-078: satisfied-by-close (met) — the export's receipt step the fixture runs through.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor max; verifier xhigh; reviewer xhigh.
-- Track: delivery
-- Cost: adds a fixture suite &#96;scripts/test-launchpad-planning.mjs&#96; (one export, then every command of the planning list run inside it, first as a probe at the base and then as assertions), its row in &#96;scripts/test-runner.mjs&#96;, the instance seeds the probe shows missing (written once by &#96;scripts/launchpad.mjs&#96;, never manifest-listed), optional handling of core-only inputs in the planning scripts the probe names (&#96;scripts/refute-plan.mjs&#96;, &#96;scripts/lib/planning-followups.mjs&#96;, &#96;scripts/docs-check.mjs&#96;, &#96;scripts/check-publication.mjs&#96;, &#96;scripts/lib/reader-profiles.mjs&#96; and &#96;scripts/meta.mjs&#96; are the candidates the gap names), and a §Planning in this instance section in &#96;scripts/kit/README.client.md&#96;. Removes the unobserved state: no planning pass, refutation, entropy review or document gate has run inside an export, and an instance today depends on core for its planning. Wall-clock: the new suite costs one export plus the command list (the probe records each command's duration); the &#96;launchpad&#96; task's growth is WO-201's watch and this suite is a separate row. Re-mints: none of the named scripts is a registered evidence source (&#96;scripts/lib/evidence-sources.mjs&#96;), so no edition re-mint and no live feedback episode; the launchpad and the runner are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff. Tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-202-planning-machinery-runs-in-an-instance.md](WO-202-planning-machinery-runs-in-an-instance.md)
 
 ### WO-203
 
@@ -214,8 +197,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-118, WO-082, WO-202.
-- References: WO-118: hard (unmet) — the resident-owned loop is proven from a starter instance before the operator's instance runs the workflow against a real target; satisfied only by WO-118's criterion 1 recorded observed, never by a waiver; WO-082: hard (unmet) — the synthetic pilot precedes the witnessed run; WO-072: hard (met) — the target worktree lifecycle the instance's Angular orders run through; WO-201: hard (met) — the instance's own gates, which verify the order this run drives; WO-202: hard (unmet) — the instance's own planning pass, which cuts the order this run drives; WO-073: satisfied-by-close (met) — the profile convention the instance's profile follows; WO-078: satisfied-by-close (met) — the generated sibling registry whose Angular consumer entry the run changes.
+- Dependencies: typed; blocked on WO-118, WO-082.
+- References: WO-118: hard (unmet) — the resident-owned loop is proven from a starter instance before the operator's instance runs the workflow against a real target; satisfied only by WO-118's criterion 1 recorded observed, never by a waiver; WO-082: hard (unmet) — the synthetic pilot precedes the witnessed run; WO-072: hard (met) — the target worktree lifecycle the instance's Angular orders run through; WO-201: hard (met) — the instance's own gates, which verify the order this run drives; WO-202: hard (met) — the instance's own planning pass, which cuts the order this run drives; WO-073: satisfied-by-close (met) — the profile convention the instance's profile follows; WO-078: satisfied-by-close (met) — the generated sibling registry whose Angular consumer entry the run changes.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
