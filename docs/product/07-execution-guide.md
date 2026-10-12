@@ -1055,6 +1055,8 @@ candidate intake control in `03-architecture.md` remains future work.
 
 ## Operator-opened planning pass
 
+The same planning commands run in an exported instance using its own records, with absent core inputs named explicitly ([fixture evidence](../evidence/WO-202/commands-final.json)).
+
 A message prefixed `planning:`, or an explicit instruction to run a planning
 session, dispatches a planning pass. It is the step the playbook calls “Plan
 (Fable, main checkout)” made explicit, and it is distinct from the other two

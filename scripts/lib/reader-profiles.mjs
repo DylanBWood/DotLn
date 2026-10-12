@@ -403,6 +403,17 @@ function appendRows(root, rows) {
   );
 }
 function readPublication(root, release, tagObject) {
+  const type = runGit(root, ["cat-file", "-t", tagObject], {
+    onFailure: () => null,
+  });
+  requireValue(
+    type !== null,
+    `${release} unverifiable: tag object ${tagObject} absent; run git fetch --tags origin`,
+  );
+  requireValue(
+    type === "tag",
+    `${release}: recorded object ${tagObject} is not an annotated tag`,
+  );
   const raw = runGit(root, ["cat-file", "tag", tagObject], { trim: false });
   const boundary = raw.indexOf("\n\n");
   const header = raw.slice(0, boundary);
@@ -527,6 +538,16 @@ export function recordScores(
     "score result needs 1 to 10 releases",
   );
   requireValue(
+    input.releases.every((row, index) => {
+      requireValue(
+        object(row) && typeof row.release === "string",
+        `releases[${index}]: expected a release object with release, textSha256 and answers`,
+      );
+      return true;
+    }),
+    "invalid release result",
+  );
+  requireValue(
     new Set(input.releases.map((row) => row.release)).size ===
       input.releases.length,
     "duplicate release in result",
@@ -549,8 +570,9 @@ export function recordScores(
     requireValue(
       Array.isArray(result.answers) &&
         result.answers.length === 4 &&
+        result.answers.every((answer) => object(answer)) &&
         new Set(result.answers.map((answer) => answer.question)).size === 4,
-      `${result.release}: expected all four questions once`,
+      `${result.release}: expected all four questions once as {question, quote} objects`,
     );
     const answers = result.answers.map(({ question, quote }) =>
       scoredAnswer(publication, question, quote),

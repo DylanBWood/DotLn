@@ -1,4 +1,4 @@
-# WO-202 — The planning machinery runs in an instance: plan start, the follow-up register, refute and receipt, the entropy review, meta, the work-order index, the document gate, the publication check and what a release close reads, each observed on a fixture export and fixed where the kit lacks it (version assigned at activation)
+# WO-202 — The planning machinery runs in an instance: plan start, the follow-up register, refute and receipt, the entropy review, meta, the work-order index, the document gate, the publication check and what a release close reads, each observed on a fixture export and fixed where the kit lacks it (v0.78.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

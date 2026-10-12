@@ -1,6 +1,6 @@
 import { sha256Hex } from "./helpers.mjs";
 export { sha256Hex } from "./helpers.mjs";
-import { readFileSync } from "node:fs";
+import { lstatSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseHeader, parseSequence } from "../work-orders.mjs";
 import { readGitObjects, runGit } from "./git.mjs";
@@ -328,12 +328,23 @@ export function buildPlanSubject(
       throw new Error(`expected one committed order file for ${id}`);
     return paths[0];
   });
+  const kit = committed.paths.includes("KIT-MANIFEST.json");
+  const standardPaths = [
+    docRelative(root, "product", "00-vision.md"),
+    docRelative(root, "product", "13-uifa-roles.md"),
+    docRelative(root, "planning", "capability-table.md"),
+  ];
+  const missing = (path) =>
+    workspace
+      ? !lstatSync(join(root, path), { throwIfNoEntry: false })
+      : !committed.paths.includes(path);
+  const unavailable = kit ? standardPaths.filter(missing) : [];
+  const optionalRead = (path) =>
+    unavailable.includes(path) ? null : read(path);
   if (!workspace)
     committed.readMany([
       ...orderPaths,
-      docRelative(root, "product", "00-vision.md"),
-      docRelative(root, "product", "13-uifa-roles.md"),
-      docRelative(root, "planning", "capability-table.md"),
+      ...standardPaths.filter((path) => !unavailable.includes(path)),
       ...(includeCost ? [budgetPath] : []),
       ...(includeCost && has(docRelative(root, "planning", "cost-table.json"))
         ? [docRelative(root, "planning", "cost-table.json")]
@@ -345,13 +356,15 @@ export function buildPlanSubject(
     parts.push([path, source]);
     return parsePlanOrder(source, path, id, { includeCost });
   });
-  const vision = read(docRelative(root, "product", "00-vision.md"));
-  const theses = THESIS_HEADINGS.map(([id, title]) => {
+  const vision = optionalRead(standardPaths[0]);
+  if (vision === null) parts.push(["vision:unavailable", standardPaths[0]]);
+  const theses = (vision === null ? [] : THESIS_HEADINGS).map(([id, title]) => {
     const text = section(vision, title);
     parts.push([`vision:${id}`, text]);
     return { id, title, text };
   });
-  const exclusionsSource = section(vision, "What DotLn is not");
+  const exclusionsSource =
+    vision === null ? "" : section(vision, "What DotLn is not");
   parts.push(["vision:what-dotln-is-not", exclusionsSource]);
   const exclusions = [
     ...exclusionsSource.matchAll(/^- ([\s\S]*?)(?=^- |\n\n)/gm),
@@ -359,11 +372,13 @@ export function buildPlanSubject(
     id: `what-dotln-is-not:${i + 1}`,
     text: match[1].trim(),
   }));
-  if (!exclusions.length) throw new Error("vision exclusions missing");
-  const rolesText = section(
-    read(docRelative(root, "product", "13-uifa-roles.md")),
-    "The five roles",
-  ).split(/^### /m)[0];
+  if (vision !== null && !exclusions.length)
+    throw new Error("vision exclusions missing");
+  const rolesSource = optionalRead(standardPaths[1]);
+  const rolesText =
+    rolesSource === null
+      ? ""
+      : section(rolesSource, "The five roles").split(/^### /m)[0];
   const rolesTable = rolesText
     .split(/\r?\n/)
     .filter((line) => line.startsWith("|"))
@@ -371,14 +386,18 @@ export function buildPlanSubject(
   const roles = [...rolesTable.matchAll(/\*\*(UIFA [^*]+)\*\*/g)].map(
     ([, role]) => role,
   );
-  if (roles.length !== 5 || new Set(roles).size !== 5)
+  if (rolesSource !== null && (roles.length !== 5 || new Set(roles).size !== 5))
     throw new Error("expected the five-role table");
   // Preserve CRLF as well as spaces in the judged table.
   const rolesBytes = rolesText.match(/^\|[^\n]*(?:\n|$)/gm)?.join("") ?? "";
-  parts.push(["roles", rolesBytes]);
-  const capabilities = read(
-    docRelative(root, "planning", "capability-table.md"),
-  )
+  parts.push([
+    "roles",
+    rolesSource === null ? `unavailable: ${standardPaths[1]}` : rolesBytes,
+  ]);
+  const capabilitiesSource = optionalRead(standardPaths[2]);
+  if (capabilitiesSource === null)
+    parts.push(["capability:unavailable", standardPaths[2]]);
+  const capabilities = (capabilitiesSource ?? "")
     .split(/\r?\n/)
     .filter((line) => line.startsWith("|"))
     .flatMap((line) => {
@@ -391,7 +410,7 @@ export function buildPlanSubject(
       parts.push([`capability:${id}`, [cells[0], cells[1]]]);
       return [{ id, level: cells[1].trim() }];
     });
-  if (!capabilities.length)
+  if (capabilitiesSource !== null && !capabilities.length)
     throw new Error("capability table has no identified rows");
   const deferrals = orders.flatMap((order, index) =>
     [
@@ -493,7 +512,14 @@ export function buildPlanSubject(
       name,
       hash: sha256(typeof bytes === "string" ? bytes : JSON.stringify(bytes)),
     })),
-    standard: { theses, exclusions, roles, rolesTable, capabilities },
+    standard: {
+      theses,
+      exclusions,
+      roles,
+      rolesTable,
+      capabilities,
+      ...(unavailable.length ? { unavailable } : {}),
+    },
     orders,
     deferrals,
     ...(costs ? { costTable: costs } : {}),
@@ -534,10 +560,18 @@ function buildGoalSubject(root, revision, { workspace }) {
   if (!platformStandard)
     throw new Error("product 07 platform-first standard missing");
   const goalStandard = section(guide, "Goal-aligned decisions");
-  const criticalPath = section(
-    read(docRelative(root, "planning", "critical-path-2026-09-08.md")),
-    "The critical path",
+  const criticalPathSource = docRelative(
+    root,
+    "planning",
+    "critical-path-2026-09-08.md",
   );
+  const criticalPath =
+    committed.paths.includes("KIT-MANIFEST.json") &&
+    (workspace
+      ? !lstatSync(join(root, criticalPathSource), { throwIfNoEntry: false })
+      : !committed.paths.includes(criticalPathSource))
+      ? `unavailable: ${criticalPathSource}; this instance has not declared a critical path`
+      : section(read(criticalPathSource), "The critical path");
   const path = docRelative(root, "planning", "cost-table.json");
   const costs = has(path) ? JSON.parse(read(path)) : null;
   const costEvidenceStatus = costs

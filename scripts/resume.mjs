@@ -883,11 +883,12 @@ export function refreshControlProjection(root) {
   writeFileSync(path, body);
 }
 
-const warnIfProjectionDisagrees = (rendered) => {
+const warnIfProjectionDisagrees = (rendered, emptyFold = false) => {
   let current;
   try {
     current = readFileSync(currentPath, "utf8");
-  } catch {
+  } catch (error) {
+    if (error.code === "ENOENT" && emptyFold) return;
     current = undefined;
   }
   if (current !== rendered)
@@ -1243,7 +1244,7 @@ const run = async (argv) => {
           "usage: resume status [--json] | resume status --all --json",
         );
       const rendered = render(control, latestClosed, storage, branch);
-      warnIfProjectionDisagrees(rendered);
+      warnIfProjectionDisagrees(rendered, control.orders.size === 0);
       if (allOrders) {
         // One fold returns the per-order form's objects for every order, in
         // id order; the release set dependency edges read is read once.

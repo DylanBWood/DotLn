@@ -102,7 +102,7 @@ test("kit --only refuses unavailable suites without running or recording a check
   const log = console.log;
   try {
     console.log = (line) => lines.push(String(line));
-    for (const name of ["kernel", "publication", "runner-fixtures"]) {
+    for (const name of ["kernel", "release-surfaces", "runner-fixtures"]) {
       const row = suites.find((row) => row.name === name);
       for (const flags of [[], ["--list"]])
         await assert.rejects(runGate(["--only", name, ...flags], repo), {

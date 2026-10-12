@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { cpus, loadavg } from "node:os";
 import { join } from "node:path";
@@ -395,7 +395,12 @@ export async function planningConditions(
   const started = performance.now();
   const decisions = readDecisions(root),
     register = readFollowups(root);
-  validateConditionTable(table, decisions, register);
+  const kit = existsSync(join(root, "KIT-MANIFEST.json"));
+  if (!kit) validateConditionTable(table, decisions, register);
+  const knownSources = new Set([
+    ...decisions.map((row) => row.id),
+    ...register.entries.map((row) => row.id),
+  ]);
   const context = {
     now,
     remaining: () =>
@@ -421,10 +426,22 @@ export async function planningConditions(
     const values = Array.isArray(measurement.value)
       ? measurement.value
       : [measurement.value];
-    const holds =
+    let holds =
       values.length === (row.consecutive ?? 1) && values.every(Number.isFinite)
         ? values.every((value) => value > row.threshold)
         : null;
+    if (kit) {
+      const missing = row.sources.filter((id) => !knownSources.has(id));
+      if (missing.length) {
+        holds = null;
+        measurement.unavailable = [
+          measurement.unavailable,
+          `core condition sources absent: ${missing.join(", ")}`,
+        ]
+          .filter(Boolean)
+          .join("; ");
+      }
+    }
     rows.push({ ...row, ...measurement, holds });
   }
   if (table === CONDITION_TABLE) {

@@ -199,6 +199,7 @@ const KIT_INPUTS = Object.freeze(["package.json", "package-lock.json"]);
 export const KIT_TEMPLATES = "scripts/kit";
 export const KIT_TEMPLATE_FILES = Object.freeze([
   "AI-HARNESS-SECURITY.template.md",
+  "budgets.template.json",
   "CLAUDE.template.md",
   "README.client.md",
   "dotln.config.example.json",
@@ -974,6 +975,26 @@ export async function prepareKit({
     ].join("\n"),
   );
   addSeed(defaultDocRelative("intake", ".gitkeep"), "");
+  addSeed(
+    defaultDocRelative("planning", "followups.json"),
+    json({ schemaVersion: 1, entries: [] }),
+  );
+  addSeed(
+    defaultDocRelative("control", "doc-ceilings.json"),
+    json({ schemaVersion: 1, documents: {} }),
+  );
+  addSeed(
+    defaultDocRelative("control", "doc-baseline.json"),
+    json({ schemaVersion: 1, products: {}, dispatches: {}, links: [] }),
+  );
+  addSeed(
+    defaultDocRelative("control", "budgets.json"),
+    template("budgets.template.json"),
+  );
+  addSeed(
+    defaultDocRelative("lineage", "idea-ledger.md"),
+    "# Idea ledger\n\nStatuses: `adopted`, `preserved`, `raw`, `superseded`, `transformed`, `rejected`, `deferred`, `candidate`, `open`, `specified`.\n\nInsert this instance's dated sessions below, newest first.\n",
+  );
   // scripts/lib/authority-grants.mjs reads the committed registry with no
   // optional fallback; the empty registry is instance authority data.
   addSeed("packages/skeleton/loadouts/grants.json", "[]\n");

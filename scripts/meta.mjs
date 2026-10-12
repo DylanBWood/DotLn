@@ -107,6 +107,8 @@ export async function metaMain(args = process.argv.slice(2), repo = root) {
     });
     if (!subject.costTable)
       throw new Error("Planning cost collection needs the budget contract");
+    for (const path of subject.standard.unavailable ?? [])
+      console.log(`Planning cost input unavailable: ${path}`);
     writeFileSync(
       docPath(repo, "planning", "cost-table.json"),
       planCostText(planCostTable(meta, subject)),

@@ -469,3 +469,91 @@ test("planning asks for one reader after a new profile has three unscored releas
   assert.equal(figures.at(-1).corrections.prTitle, 1);
   assert.equal(figures[0].found, 9);
 });
+
+test("an instance without editorial declarations or scores has nothing to verify", (t) => {
+  const root = fixture(t);
+  const result = main(["check"], root);
+  assert.equal(result.passed, true);
+  assert.equal(result.surfaces, 0);
+  assert.deepEqual(result.figures, []);
+  assert.ok(result.unavailable.includes("no score rows declared"));
+  write(root, "docs/control/reader-profiles.json", "{}");
+  assert.throws(() => main(["check"], root), /Reader profiles:/);
+});
+
+test("a missing recorded tag names the release and fetch, then verifies after restoration", (t) => {
+  const root = fixture(t);
+  chooseProfile(root);
+  cpSync(
+    join(source, "docs/publication/examples"),
+    join(root, "docs/publication/examples"),
+    { recursive: true },
+  );
+  tag(root, "v1.0.0");
+  recordScores(answers(root), root);
+  const tagObject = readScores(root)[0].tagObject;
+  const remote = mkdtempSync(join(tmpdir(), "dotln-reader-remote-"));
+  t.after(() => rmSync(remote, { recursive: true, force: true }));
+  runGit(remote, ["init", "--bare", "--quiet"]);
+  runGit(root, ["remote", "add", "origin", remote]);
+  runGit(root, ["push", "--quiet", "origin", "v1.0.0"]);
+  runGit(root, ["tag", "-d", "v1.0.0"]);
+  assert.equal(
+    main(["check"], root).passed,
+    true,
+    "a retained immutable object still verifies without its tag ref",
+  );
+  runGit(root, ["reflog", "expire", "--expire=now", "--all"]);
+  runGit(root, ["gc", "--prune=now"]);
+  assert.equal(
+    runGit(root, ["cat-file", "-e", tagObject], { onFailure: () => null }),
+    null,
+  );
+  assert.throws(
+    () => main(["check"], root),
+    (error) => {
+      assert.equal(
+        error.message,
+        `Reader profiles: v1.0.0 unverifiable: tag object ${tagObject} absent; run git fetch --tags origin`,
+      );
+      assert.doesNotMatch(error.message, /fatal:|bad file/);
+      return true;
+    },
+  );
+  runGit(root, ["fetch", "--tags", "origin"]);
+  assert.equal(main(["check"], root).passed, true);
+});
+
+test("malformed score entries name the expected shape and never append partial rows", (t) => {
+  const root = fixture(t);
+  tag(root, "v1.0.0");
+  const path = "docs/publication/reader-scores.jsonl";
+  for (const recorded of [false, true]) {
+    if (recorded) recordScores(answers(root), root);
+    const before = recorded ? readFileSync(join(root, path), "utf8") : null;
+    for (const malformed of [null, 1, "bad", []]) {
+      for (const field of ["release", "answer"]) {
+        const input = answers(root);
+        if (field === "release") input.releases[0] = malformed;
+        else input.releases[0].answers[1] = malformed;
+        assert.throws(
+          () => recordScores(input, root),
+          (error) => {
+            assert.ok(!(error instanceof TypeError));
+            assert.match(error.message, /^Reader profiles:/);
+            assert.match(
+              error.message,
+              field === "release"
+                ? /releases\[0\]: expected a release object/
+                : /v1\.0\.0:.*\{question, quote\} objects/,
+            );
+            return true;
+          },
+        );
+        if (recorded)
+          assert.equal(readFileSync(join(root, path), "utf8"), before);
+        else assert.deepEqual(readScores(root), []);
+      }
+    }
+  }
+});
