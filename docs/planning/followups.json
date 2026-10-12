@@ -29840,6 +29840,14 @@
           "reopenWhen": "a verifier again asks the operator to authorize a repair rule inside the order's criteria and surfaces, WO-096 names batch candidates, or an order edits the verifier loadout",
           "targets": [],
           "at": "2026-10-11T01:26:26.026Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-076's final review. Its condition 'an order edits the verifier loadout' occurred by its letter: WO-076 edits packages/skeleton/src/loadouts/contributor.ts, but only the overlay composition (overlayContributor, contributorProgram, contributorConfiguredProgram, contributorSupportIds and the instance.identity facet); the verifier role text is unchanged and its emitted SKILL.md differs only by hashes. The remaining sentence is role text a reviewer may not write at final review.",
+          "reopenWhen": "a verifier again asks the operator to authorize a repair rule inside the order's criteria and surfaces, WO-096 names batch candidates, or an order edits the verifier role text in the Contributor loadout",
+          "targets": [],
+          "at": "2026-10-12T02:23:27.943Z"
         }
       ]
     },
@@ -32116,6 +32124,13 @@
           "title": "WO-075-D008: Emit the Start here Read[role] directives from the compiled Contributor bundle instead of hand-writing them in core's CLAUDE.md floor and the kit's CLAUDE.template.md, so the two floors c",
           "summary": "{ \"id\": \"WO-075-D008\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next; criterion 4\", \"decision\": \"measureColdStarts (scripts/lib/process-budget.mjs) was run inside the evidence export and in this worktree at the committed copy's bytes; docs/evidence/WO-075/cold-start.json records both and the per-role difference. The export's CLAUDE.md is the kit template floor (3,326 bytes with its kit block) plus the generated block; core's is its hand-written floor (3,368 bytes) plus the same block, and the role skills are byte-identical, so every role is 41 bytes smaller in the export in both skill roots. The fixture asserts the inequality for every installed role against the running checkout, in the do",
           "missing": false
+        },
+        {
+          "hash": "9d78e2bf3f05d44b70be35a3ff9e00b6a187354940acb7aab77cbe52e4e22b5f",
+          "ref": "docs/evidence/WO-075/decisions.md#wo-075-d008--cold-start-bytes-inside-the-export",
+          "title": "WO-075-D008: Emit the Start here Read[role] directives from the compiled Contributor bundle instead of hand-writing them in core's CLAUDE.md floor and the kit's CLAUDE.template.md, so the two floors c",
+          "summary": "{ \"id\": \"WO-075-D008\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next; criterion 4\", \"decision\": \"measureColdStarts (scripts/lib/process-budget.mjs) was run inside the evidence export and in this worktree at the committed copy's bytes; docs/evidence/WO-075/cold-start.json records both and the per-role difference. The export's CLAUDE.md is the kit template floor (3,326 bytes with its kit block) plus the generated block; core's is its hand-written floor (3,368 bytes) plus the same block, and the role skills are byte-identical, so every role is 41 bytes smaller in the export in both skill roots. The fixture asserts the inequality for every installed role against the running checkout, in the do",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -32128,6 +32143,14 @@
             "WO-076"
           ],
           "at": "2026-10-11T01:26:26.646Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "WO-076-D003 leaves the allocated floor-directive migration: it intentionally changes no-overlay instruction bytes. The order permits this carry-in to remain recorded; retain the export drift check.",
+          "reopenWhen": "A later harness/floor migration explicitly owns the default-byte change, or the existing launchpad-docs comparison detects drift.",
+          "targets": [],
+          "at": "2026-10-12T00:12:36.073Z"
         }
       ]
     },
@@ -33492,6 +33515,66 @@
           "ref": "docs/evidence/WO-072/decisions.md#wo-072-d010--final-review-pass-final-001-board-the-target-closes-ignored-material-refusal-which-lists-every-file-and-names-no-remedy",
           "title": "WO-072-D010: WO-072 follow-up (operator flow, teardown refusal). In scripts/lib/target-worktree-close.mjs closeTargetWorktree: when the target holds ignored material outside the bundle manifest, keep ",
           "summary": "{ \"id\": \"WO-072-D010\", \"date\": \"2026-10-11\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Pass final review of WO-072 at code identity 4c2df81b24c0292f38654a02395d4207b3e9e9349301a1d56c5200e04903a414 with no source change. All six criteria hold at the integrated subject, the verification sequence VER-001 (fail), repair, VER-002 (pass) is complete, and this review's own bounded run of scripts/test-target-worktree.mjs passed 10 of 10 with the case variants and the volume alias exercised. Board one follow-up in the declared surface that breaks no criterion and no behavior main had: release close for a target whose worktree holds ignored material outside the bun",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d72bf62d3c82ca3f",
+      "key": "decision:docs/evidence/WO-076/decisions.md#wo-076-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a007f26a84e5687889f260e217f6040c1745599be093839dc4fe10c86a815519",
+          "ref": "docs/evidence/WO-076/decisions.md#wo-076-d007",
+          "title": "WO-076-D007: Planning, with FUP-44639ec9a751d8d1: the next order that edits harness emit or either hand-written floor. Rule a repair must hold: a build: none emit leaves an operating contract that nam",
+          "summary": "{ \"id\": \"WO-076-D007\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Board VER-001 F1 as a follow-up. On the real core floor, a build: none emit leaves CLAUDE.md as the hand-written floor alone and harness check passes, as criterion 2 requires. That floor still carries the five Start here Read[role] directives to @skills/dotln-executor, dotln-verifier, dotln-reviewer, dotln-release-close and dotln-planner, and the same emit removes all five skills. It has no sentence saying that no compiled refusal, hook or verification governs the instance. Planning receipt 2026-10-11-planning-fb68306765535a9d-044 recorded the second point as a criterion-2 know",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d5d0ef5cf034102e",
+      "key": "decision:docs/evidence/WO-076/decisions.md#wo-076-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "194865b0c7df724397ffe2efab4669c7d0052230fcb8b24b8742b16eb45c1b93",
+          "ref": "docs/evidence/WO-076/decisions.md#wo-076-d008",
+          "title": "WO-076-D008: The next WO-076 repair, or the next order that edits scripts/lib/harness.mjs decodeBuildOverlay or contributor.ts overlayContributor. Rule a repair must hold: an overlay narrowing that a ",
+          "summary": "{ \"id\": \"WO-076-D008\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Board VER-001 F2 as a follow-up. An overlay whose narrow.deniedEffects names an effect that the kit's contributor.outside-temporary grant adds (outside.write:system-temp, session-scratch or host-scratchpad) is accepted. The emit and check pass, but the enforced envelope still allows the effect and does not deny it, and the role skills still advertise the grant. The only change is the semantic hash. The same holds for narrow.allowedEffects, which cannot remove a kit-granted effect. WO-076-D002 chose pre-grant narrowing, and the client README says a granted effect removes its exa",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-620f25409f65f4aa",
+      "key": "decision:docs/evidence/WO-076/decisions.md#wo-076-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "766631fb3120573d20b2c2fe0eecd3c4f1f36926c927bc9c130f47523be93be1",
+          "ref": "docs/evidence/WO-076/decisions.md#wo-076-d009",
+          "title": "WO-076-D009: The next WO-076 repair, or the next order that edits scripts/lib/harness.mjs decodeBuildOverlay. Rule a repair must hold: overlay text that would reach a generated surface is refused befo",
+          "summary": "{ \"id\": \"WO-076-D009\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Board VER-001 F3 as a follow-up. The decoder admits identity strings that contain the generated-block markers. With identity.name 'X <!-- dotln-harness:end -->', emit succeeds and writes the instance identity fragment into the CLAUDE.md block, so the file holds five marker occurrences. harness check then refuses with 'harness instruction requires one ordered marker pair'. Every later emit refuses the same way, even after the overlay is corrected to {\\\"version\\\":1}, until CLAUDE.md is repaired by hand. The case is outside criterion 4's declared set (not JSON, unknown key, unread",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9d397b57910ae6ed",
+      "key": "decision:docs/evidence/WO-076/decisions.md#wo-076-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b493e3abc263a804db311949cb4505ec5deafabfe1705e3ea6313ea7f5d2147f",
+          "ref": "docs/evidence/WO-076/decisions.md#wo-076-d011",
+          "title": "WO-076-D011: The next WO-076 repair, or the next order that edits scripts/lib/harness-runtime.mjs or the build none manifest in scripts/lib/harness.mjs harnessInstallation. Rule a repair must hold: a ",
+          "summary": "{ \"id\": \"WO-076-D011\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Pass final review of WO-076 at code identity d43b5afa42bb68116270fdf7f9a4366f0df823da6e7474341e93bc0a23a54321 with no source change. All six criteria hold at the integrated subject, which keeps every judged byte of VER-001's subject; the verification sequence is the one passing verification; the executor's self-review found and fixed three gaps; VER-001's three follow-ups (D007 to D009) stay boarded. Board one new follow-up that breaks no criterion and no behavior main had: the build none manifest, whose profiles list is empty by design, reads as runtime-unavailable to ",
           "missing": false
         }
       ],

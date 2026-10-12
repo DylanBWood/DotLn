@@ -4,7 +4,12 @@ import {
   json as prettyJson,
   sha256Hex as targetDigest,
 } from "./helpers.mjs";
-import { TOOL_ROOT, docRelative, findLaunchpad } from "./config.mjs";
+import {
+  TOOL_ROOT,
+  docRelative,
+  findLaunchpad,
+  loadConfig,
+} from "./config.mjs";
 import {
   cpSync,
   existsSync,
@@ -23,6 +28,7 @@ import { dirname, join, relative, resolve, sep } from "node:path";
 
 import {
   canonicalStringify,
+  COMPILER_PACKAGE_VERSION,
   fnv1a64,
   HARNESS_START,
   HARNESS_END,
@@ -31,6 +37,7 @@ import {
 } from "../../packages/compiler/dist/src/index.js";
 import {
   contributorConfiguredProgram,
+  contributorSupportIds,
   contributorProfiles,
   targetWorkerProfiles,
 } from "../../packages/skeleton/dist/src/loadouts/contributor.js";
@@ -39,6 +46,204 @@ import { checkLocalTerms } from "./terms.mjs";
 import { containedRegularFile } from "./paths.mjs";
 
 const manifestPath = ".claude/harness-manifest.json";
+export const OVERLAY_KEYS = [
+  "version",
+  "build",
+  "identity",
+  "unequip",
+  "equip",
+  "narrow",
+  "grants",
+];
+const overlayError = (path, detail) =>
+  new Error(`invalid build overlay in ${path}: ${detail}`);
+
+/** Instance-owned data has a closed schema; it cannot replace kit code or the floor. */
+export function decodeBuildOverlay(path, text) {
+  const fail = (detail) => {
+    throw overlayError(path, detail);
+  };
+  const object = (value, keys, label) => {
+    if (!value || typeof value !== "object" || Array.isArray(value))
+      fail(`${label} must be an object`);
+    for (const key of Object.keys(value))
+      if (!keys.includes(key)) fail(`unknown key ${label}.${key}`);
+  };
+  const string = (value, label) => {
+    if (
+      typeof value !== "string" ||
+      !value.trim() ||
+      /[\u0000-\u001f\u007f\u2028\u2029]/u.test(value)
+    )
+      fail(`${label} must be a non-empty string without control characters`);
+  };
+  const integer = (value, label, min = 0) => {
+    if (!Number.isSafeInteger(value) || value < min)
+      fail(`${label} must be a safe integer >= ${min}`);
+  };
+  const strings = (value, label, pattern) => {
+    if (!Array.isArray(value)) fail(`${label} must be an array`);
+    for (const [index, entry] of value.entries()) {
+      string(entry, `${label}[${index}]`);
+      if (pattern && !pattern.test(entry))
+        fail(`${label}[${index}] has an invalid effect pattern`);
+    }
+    if (new Set(value).size !== value.length) fail(`${label} has duplicates`);
+  };
+  const exactEffect = /^[^\s*\u0000-\u001f\u007f]+$/u;
+  const effectPattern = /^[^\s*\u0000-\u001f\u007f]+\*?$/u;
+  let value;
+  try {
+    value = JSON.parse(text);
+  } catch {
+    fail("root must be JSON");
+  }
+  object(value, OVERLAY_KEYS, "overlay");
+  if (value.version !== 1) fail("version must be 1");
+  if (
+    value.build !== undefined &&
+    !["contributor", "none"].includes(value.build)
+  )
+    fail('build must be "contributor" or "none"');
+  if (
+    value.build === "none" &&
+    Object.keys(value).some((key) => !["version", "build"].includes(key))
+  )
+    fail('build "none" accepts only version and build');
+  for (const key of ["equip", "unequip"]) {
+    if (value[key] === undefined) continue;
+    strings(value[key], key);
+    for (const id of value[key])
+      if (!contributorSupportIds.includes(id))
+        fail(`${key} names unknown support ${id}`);
+  }
+  if (value.equip?.some((id) => value.unequip?.includes(id)))
+    fail("equip and unequip must not name the same support");
+  if (value.identity !== undefined) {
+    object(
+      value.identity,
+      [
+        "identityId",
+        "version",
+        "name",
+        "dispositions",
+        "invariants",
+        "updateLaws",
+        "lineage",
+      ],
+      "identity",
+    );
+    for (const key of ["identityId", "name"])
+      string(value.identity[key], `identity.${key}`);
+    integer(value.identity.version, "identity.version", 1);
+    for (const key of ["dispositions", "invariants", "updateLaws", "lineage"])
+      strings(value.identity[key], `identity.${key}`);
+  }
+  if (value.narrow !== undefined) {
+    const narrow = value.narrow;
+    object(
+      narrow,
+      [
+        "allowedEffects",
+        "deniedEffects",
+        "resourceLimits",
+        "requiredEvidence",
+        "expiresAt",
+        "revocationEventTypes",
+        "revocationConditions",
+      ],
+      "narrow",
+    );
+    for (const key of [
+      "allowedEffects",
+      "deniedEffects",
+      "requiredEvidence",
+      "revocationEventTypes",
+    ])
+      if (narrow[key] !== undefined)
+        strings(
+          narrow[key],
+          `narrow.${key}`,
+          key.endsWith("Effects") ? effectPattern : undefined,
+        );
+    if (narrow.resourceLimits !== undefined) {
+      const limits = narrow.resourceLimits;
+      object(limits, Object.keys(limits ?? {}), "narrow.resourceLimits");
+      for (const [key, quantity] of Object.entries(limits)) {
+        string(key, "narrow.resourceLimits key");
+        integer(quantity, `narrow.resourceLimits.${key}`);
+      }
+    }
+    if (narrow.expiresAt !== undefined)
+      integer(narrow.expiresAt, "narrow.expiresAt");
+    if (narrow.revocationConditions !== undefined) {
+      if (!Array.isArray(narrow.revocationConditions))
+        fail("narrow.revocationConditions must be an array");
+      for (const [index, condition] of narrow.revocationConditions.entries()) {
+        const label = `narrow.revocationConditions[${index}]`;
+        object(condition, ["registryId", "version", "params"], label);
+        string(condition.registryId, `${label}.registryId`);
+        integer(condition.version, `${label}.version`, 1);
+        if (condition.params !== undefined)
+          object(
+            condition.params,
+            Object.keys(condition.params ?? {}),
+            `${label}.params`,
+          );
+      }
+    }
+  }
+  if (value.grants !== undefined) {
+    if (!Array.isArray(value.grants)) fail("grants must be an array");
+    const ids = new Set();
+    for (const [index, grant] of value.grants.entries()) {
+      const label = `grants[${index}]`;
+      object(
+        grant,
+        [
+          "grantId",
+          "version",
+          "grantedBy",
+          "effects",
+          "operations",
+          "repo",
+          "reason",
+        ],
+        label,
+      );
+      for (const key of ["grantId", "reason"])
+        string(grant[key], `${label}.${key}`);
+      integer(grant.version, `${label}.version`, 1);
+      if (!["operator", "host-policy"].includes(grant.grantedBy))
+        fail(`${label}.grantedBy must be operator or host-policy`);
+      if (grant.repo !== "project") fail(`${label}.repo must be project`);
+      strings(grant.effects, `${label}.effects`, exactEffect);
+      if (grant.operations !== undefined)
+        strings(grant.operations, `${label}.operations`, exactEffect);
+      if (ids.has(grant.grantId)) fail(`${label}.grantId must be unique`);
+      ids.add(grant.grantId);
+    }
+  }
+  return value;
+}
+
+export function readBuildOverlay(launchpad) {
+  const path = loadConfig(launchpad).build.overlay;
+  if (path === null) return undefined;
+  const absolute = resolve(launchpad, path);
+  let text;
+  try {
+    if (!containedRegularFile(absolute, launchpad)) throw new Error();
+    text = readFileSync(absolute);
+  } catch {
+    throw overlayError(
+      path,
+      "build.overlay must name a readable regular file inside the launchpad",
+    );
+  }
+  decodeBuildOverlay(path, text.toString("utf8"));
+  return { path, bytes: text };
+}
 const hash = (text) => `fnv1a64:${fnv1a64(text)}`;
 const allowed = (path) =>
   path === "CLAUDE.md" ||
@@ -98,8 +303,45 @@ export function harnessInstallation(options = {}) {
     (profile) => !options.profile || profile.profileId === options.profile,
   );
   if (!profiles.length) throw new Error("unknown harness profile");
-  const program =
-    options.program ?? contributorConfiguredProgram(options.supports);
+  const overlay = options.overlay;
+  if (overlay && !Buffer.isBuffer(overlay.bytes))
+    throw overlayError(overlay.path, "overlay bytes must be a Buffer");
+  const value =
+    overlay && decodeBuildOverlay(overlay.path, overlay.bytes.toString("utf8"));
+  const overlayManifest = overlay && {
+    overlay: { path: overlay.path, sha256: targetDigest(overlay.bytes) },
+  };
+  if (overlay && options.program)
+    throw overlayError(
+      overlay.path,
+      "cannot combine an overlay with a program override",
+    );
+  if (value?.build === "none")
+    return {
+      files: [],
+      bundles: [],
+      runtimeFiles: [],
+      runtimeSnapshot: null,
+      manifest: {
+        contractVersion: "harness-v1",
+        compilerPackageVersion: COMPILER_PACKAGE_VERSION,
+        build: "none",
+        profiles: [],
+        installed: [],
+        residue: [],
+        ...overlayManifest,
+      },
+    };
+  const switches = { ...options.supports };
+  for (const id of value?.unequip ?? []) switches[id] = false;
+  for (const id of value?.equip ?? []) switches[id] = true;
+  let program;
+  try {
+    program = options.program ?? contributorConfiguredProgram(switches, value);
+  } catch (error) {
+    if (overlay) throw overlayError(overlay.path, error.message);
+    throw error;
+  }
   const feedback = options.feedback ?? personalFeedback();
   const sourceRoot = options.runtimeRoot ?? TOOL_ROOT;
   const runtimeFiles = [
@@ -207,6 +449,7 @@ export function harnessInstallation(options = {}) {
         ...new Set(bundles.flatMap((bundle) => bundle.manifest.origin.ids)),
       ].sort(),
     },
+    ...overlayManifest,
   };
   return {
     files,
@@ -238,32 +481,53 @@ const walkOwned = (root) => {
     ? JSON.parse(readFileSync(manifest, "utf8"))
     : null;
   for (const file of previous?.installed ?? [])
-    if (
-      (file.path.startsWith(".codex/") ||
-        file.path.startsWith(".claude/agents/")) &&
-      existsSync(join(root, file.path))
-    )
+    if (file.path !== "CLAUDE.md" && existsSync(join(root, file.path)))
       paths.push(file.path);
   for (const skills of [".claude/skills", ".agents/skills"])
     if (existsSync(join(root, skills)))
       for (const name of readdirSync(join(root, skills)))
         if (name.startsWith("dotln-")) walk(join(root, skills, name));
-  return paths;
+  return [...new Set(paths)];
 };
-export function emitHarness(root, options = {}) {
+export function emitHarness(
+  root,
+  options = {},
+  installation = harnessInstallation(options),
+) {
   root = realpathSync(root);
-  const installation = harnessInstallation(options);
   const writes = installation.files.map((file) => ({
     path: contained(root, file.path),
     contents: file.contents,
   }));
-  const instruction = writes.find(
+  let instruction = writes.find(
     (file) => file.path === join(root, "CLAUDE.md"),
   );
+  if (!instruction) {
+    instruction = { path: contained(root, "CLAUDE.md"), contents: "" };
+    writes.push(instruction);
+  }
   const floor = existsSync(instruction.path)
     ? readFileSync(instruction.path, "utf8")
     : options.instructionFloor;
-  instruction.contents = composeHarnessInstruction(floor, instruction.contents);
+  if (installation.manifest.build === "none") {
+    if (typeof floor !== "string" || !floor.trim())
+      throw new Error(
+        "harness emit requires the hand-written clean-room floor",
+      );
+    instruction.contents =
+      (floor.includes(HARNESS_START) || floor.includes(HARNESS_END)
+        ? floor.replace(harnessInstructionBlock(floor).trimEnd(), "")
+        : floor
+      ).trimEnd() + "\n";
+    if (!instruction.contents.trim())
+      throw new Error(
+        "harness emit requires the hand-written clean-room floor outside the generated block",
+      );
+  } else
+    instruction.contents = composeHarnessInstruction(
+      floor,
+      instruction.contents,
+    );
   const expected = new Set(installation.files.map((file) => file.path));
   const obsolete = walkOwned(root).filter((path) => !expected.has(path));
   const previous = existsSync(join(root, manifestPath))
@@ -296,7 +560,7 @@ export function emitHarness(root, options = {}) {
     })),
     { name: manifestPath, text: manifestText },
   ]);
-  preserveHarnessRuntime(root, installation);
+  if (installation.runtimeSnapshot) preserveHarnessRuntime(root, installation);
   for (const file of writes) {
     if (
       existsSync(file.path) &&
@@ -376,6 +640,18 @@ export function preserveHarnessRuntime(
 export function checkHarness(root, options = {}) {
   root = realpathSync(root);
   const expected = harnessInstallation(options);
+  if (expected.manifest.build === "none") {
+    const floor = contained(root, "CLAUDE.md");
+    const text = existsSync(floor) ? readFileSync(floor, "utf8") : "";
+    if (
+      !text.trim() ||
+      text.includes(HARNESS_START) ||
+      text.includes(HARNESS_END)
+    )
+      throw new Error(
+        "harness drift: build none requires the hand-written floor alone",
+      );
+  }
   for (const file of expected.runtimeFiles) {
     const path = join(root, expected.runtimeSnapshot, file.path);
     if (
@@ -410,6 +686,14 @@ export function checkHarness(root, options = {}) {
   return {
     files: expected.files.length + 1,
     localTerms: checkLocalTerms(options.termsRoot ?? root, [
+      ...(expected.manifest.build === "none"
+        ? [
+            {
+              name: "CLAUDE.md",
+              text: readFileSync(contained(root, "CLAUDE.md"), "utf8"),
+            },
+          ]
+        : []),
       ...expected.files.map((file) => ({
         name: file.path,
         text: readFileSync(contained(root, file.path), "utf8"),

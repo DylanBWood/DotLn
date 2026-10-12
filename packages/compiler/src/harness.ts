@@ -577,12 +577,12 @@ export function lowerToHarness(
     );
     if (facet.kind === "permission-guard")
       ensure(
-        facet.matchers.length > 0 &&
-          facet.matchers.every(
-            (matcher) =>
-              envelope.deniedEffects.includes(matcher.effect) &&
-              /^Bash\([a-zA-Z0-9 ._/*:-]+\)$/.test(matcher.deny),
-          ),
+        // The envelope hook still applies when no static Bash denial remains.
+        facet.matchers.every(
+          (matcher) =>
+            envelope.deniedEffects.includes(matcher.effect) &&
+            /^Bash\([a-zA-Z0-9 ._/*:-]+\)$/.test(matcher.deny),
+        ),
         "deny matchers must name a denied build effect and the observed Bash shape",
       );
     if (facet.kind === "role-procedure") {

@@ -14,6 +14,66 @@ the control records, work orders, evidence, verification and final-review
 reports, the operating contract's hand-written floor and this instance's
 overlays.
 
+The Contributor build is starter content, not kit law. The instance owns its
+build through a JSON overlay, conventionally `build/overlay.json`, selected by
+`"build": { "overlay": "build/overlay.json" }` in `dotln.config.json`
+(`"version": 1`). With no overlay selected, emit preserves the default build.
+The overlay is instance-owned and stays outside `KIT-MANIFEST.json`; its path
+and file SHA-256 appear in `.claude/harness-manifest.json`. Repositories and
+classes remain in `dotln.config.json`, independently of this build.
+
+For example, this overlay reduces writer authority and removes two optional
+supports:
+
+```json
+{
+  "version": 1,
+  "unequip": ["tinkerer-economy", "process-cost"],
+  "narrow": { "resourceLimits": { "writers": 0 } }
+}
+```
+
+Run `node scripts/harness.mjs emit`, then `node scripts/harness.mjs check`.
+Overlay version 1 has only these keys:
+
+- `version`: required, `1`; `build`: optional, `"contributor"` or `"none"`.
+  `{"version":1,"build":"none"}` removes the owned generated surfaces,
+  preserves the hand-written floor and keeps an empty harness manifest for
+  `check`. It accepts no other overlay keys. Re-enable the build by removing
+  `build: none` or the configuration's overlay selection, then emit again.
+- `identity`: a complete replacement with `identityId`, positive integer
+  `version`, `name`, and string arrays `dispositions`, `invariants`,
+  `updateLaws` and `lineage`. Its text reaches the bundle; it cannot rewrite
+  the hand-written Clean Room floor or the active Clean Room mechanism.
+- `equip` and `unequip`: distinct arrays of existing support switch IDs:
+  `adjacent-repair`, `decision-receipts`, `follow-up-queue`,
+  `operator-check-in`, `communication-observation`,
+  `communication-recommendation`, `communication-intent`, `tinkerer-economy`,
+  `process-cost`, `goal-alignment`. An ID cannot appear in both arrays;
+  competing communication supports still refuse. These switches do not
+  define new units or remove the locked floor.
+- `narrow`: optional `allowedEffects` replaces the kit's pre-grant allow
+  list; `deniedEffects`, `requiredEvidence`, `revocationEventTypes` and
+  `revocationConditions` add restrictions. A revocation condition has
+  `registryId`, positive integer `version`, and optional object `params`.
+  `resourceLimits` lowers named nonnegative integer ceilings; `expiresAt`
+  shortens expiry. The inherited presence phase is narrowed with the build.
+  Ungranted widening refuses with `AUTHORITY WIDENING`.
+- `grants`: explicit additions applied by the compiler after narrowing,
+  alongside the kit's existing temporary-write grants. Each has `grantId`,
+  positive integer `version`, `grantedBy` (`operator` or `host-policy`),
+  exact `effects`, optional exact `operations`, `repo: "project"` and a
+  nonempty `reason`. The manifest preserves this provenance. Grants cannot
+  raise resource ceilings, extend expiry, bypass the hand-written floor or
+  change the host's own permissions. A granted effect removes its exact
+  denial; a wider wildcard denial still refuses. Omit grants to retain the
+  kit's existing grant set.
+
+Unreadable files, non-JSON, unknown keys and wrong types refuse by overlay
+path before emit creates its output or changes the bundle. The file must be
+a regular file contained in the launchpad. Re-emitting the same overlay and
+runtime produces the same bytes; `check` detects drift against both.
+
 ## First steps
 
 1. The export is already a Git repository on `main` with no commit: review the

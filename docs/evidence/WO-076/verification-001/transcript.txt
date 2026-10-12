@@ -1,0 +1,133 @@
+WO-076 VER-001 verifier transcript, 2026-10-12 UTC
+
+<repo> is this worktree. <scratch> is the session's DotLn scratch directory.
+<copy> is a scratch copy of the subject made by mkcopy.sh: scripts/, the
+compiler, kernel, skeleton, browser-evidence and console package.json and
+dist/, packages/beacons, CLAUDE.md, package.json, .claude/, .agents/, .codex/
+and .runtime/harness/, with node_modules/@dotln links to the copy and a fresh
+`git init`. The worktree itself was only read.
+
+== Subject identity ==
+coveringGateCheck(<repo>, ...) at entry and before writing:
+code identity d43b5afa42bb68116270fdf7f9a4366f0df823da6e7474341e93bc0a23a54321
+npm test row: recorded 2026-10-12T01:20:31.460Z, 1535.00 s, 41 suites,
+  gateSelection review, exit 0, displaced none (the executor's row; consumed)
+npm run test:docs row: recorded 2026-10-12T01:44:19.097Z, 113.33 s,
+  35 suites, gateSelection document, exit 0 (this verifier's fresh run)
+
+== Real worktree check ==
+$ node scripts/harness.mjs bounded -- node scripts/harness.mjs check
+harness check: 34 generated surfaces; local-terms list: unavailable
+exit 0
+
+== No overlay against main (noverlay.mjs <repo>) ==
+16 generated files differ from HEAD ffff74e1 (.claude/harness-manifest.json
+and 15 hooks). After replacing every fnv1a64 hash, the compiler version
+0.26.0/0.27.0 and the .runtime/harness/<id> snapshot id with placeholders,
+no file differs (residual []). Manifest origin semanticHash
+fnv1a64:c0a496bda5f362de before and after; installed path list equal; no
+"overlay" key. Changed line shapes: compilerPackageVersion, runtime file
+hashes, snapshot path, feedbackPolicyHash, policyHash, file hashes and the
+hook import paths that name the snapshot.
+
+== No overlay, same runtime ==
+$ (in <copy>) DOTLN_LAUNCHPAD=<copy> node scripts/harness.mjs emit
+harness emit: 34 generated surfaces; local-terms list: unavailable
+diff -r against <repo>: .claude same; .agents same; .codex same;
+CLAUDE.md same.
+
+== Overlay probes (probe.mjs <scratch>; results in probe-results.json) ==
+Each case is a fresh copy of <copy>; the CLI runs with DOTLN_LAUNCHPAD set.
+- narrowOther: narrow.deniedEffects [remote.push], expiresAt 4102444800000,
+  revocationEventTypes [instance.revoked]. emit 0, check 0. 30 files change;
+  with hashes normalized the only changed lines are those three fields, the
+  Origin comments' semantic hash and the manifest's overlay path/SHA-256.
+- narrowAllowed: allowedEffects without shell.run. emit 0, check 0;
+  enforced allowedEffects lose shell.run only.
+- emptyOverlay {"version":1}: emit 0, check 0; one file changes (the
+  manifest gains overlay path and SHA-256).
+- identityUnequip: identity fork.curator v2 and unequip process-cost and
+  goal-alignment. emit 0, check 0; neither id in manifest origin; no
+  "Process Cost:" or "Goal Alignment:" text; "Instance identity: Fork
+  curator (fork.curator, version 2)" present.
+- buildNone on the real core floor: emit 0 ("2 generated surfaces"), check 0,
+  check 0 again after removing .runtime; only .claude/harness-manifest.json
+  and CLAUDE.md remain. The remaining floor (3346 bytes) still holds five
+  Read[role] directives to @skills/dotln-{executor,verifier,reviewer,
+  release-close,planner}/SKILL.md, all five now missing, and no sentence
+  saying that no compiled refusal, hook or verification governs the
+  instance. Deselecting the overlay and emitting restores every file
+  byte-for-byte (restoredDiff []), and check passes.
+- widenings (each with --out never-<label>): allowedEffects adding
+  package.publish (kit-denied), adding network.request (absent),
+  resourceLimits.writers 2, resourceLimits.agents 1 each exit 1 with
+  "invalid build overlay in build/overlay.json: AUTHORITY WIDENING: ...",
+  bundle unchanged, no output directory. resourceLimits.agents 0 emits.
+- grants: operator and host-policy grants of package.publish emit and check
+  0; every profile's manifest grants list
+  "fork.publish:<grantedBy>:package.publish" beside the kit's
+  contributor.outside-temporary; enforced envelope allows package.publish
+  and no longer denies it. A grant reusing contributor.outside-temporary
+  refuses ("INVALID GRAPH: authorityGrants has duplicate grantId"). A
+  wildcard deny package* plus a package.publish grant refuses ("SEMANTICS
+  UNSUPPORTED"). grantedBy "agent" refuses.
+- denyKitGranted: narrow.deniedEffects [outside.write:host-scratchpad]
+  emits 0; the enforced envelope still allows it and does not deny it.
+- refusals (emit with --out never-<label>, then check): directory, symlink
+  to a file outside the launchpad, ../ escape, absolute path outside, empty
+  file, null, [], BOM-prefixed JSON, "version":"1", identity.extra,
+  identity missing fields, grants[0].repo "other", top-level repositories,
+  top-level classes, truncated JSON. Every emit and check exits 1 naming
+  the configured path and the key or condition; bundle unchanged; no
+  output directory created.
+- tamper: emit with an overlay, then append a newline to the overlay: check
+  exits 1 "harness drift: manifest"; re-emit then check 0.
+
+== Follow-up reproductions (single cases in a fresh <copy>) ==
+F2, deny of a kit-granted effect:
+  build/overlay.json {"version":1,"narrow":{"deniedEffects":
+  ["outside.write:system-temp"]}}
+  emit 0; check 0. .claude/hooks/permissions.mjs differs from the base only
+  in the Origin semantic hash; its envelope allows
+  outside.write:system-temp (true) and does not deny it (false). The
+  verifier SKILL.md is unchanged apart from hashes.
+F3, harness marker in identity text:
+  build/overlay.json identity.name "X <!-- dotln-harness:end -->"
+  CLAUDE.md marker lines before: 2. emit 0. Marker occurrences after: 5;
+  the identity fragment is written into CLAUDE.md.
+  check exit 1: "harness instruction requires one ordered marker pair".
+  Overlay replaced with {"version":1}; emit exit 1 with the same message.
+
+== Launchpad and stale selection ==
+In <copy>, without DOTLN_LAUNCHPAD, from the root: emit 0 with the overlay
+applied (manifest overlay path recorded; writers 0 in permissions.mjs);
+check 0. From <copy>/scripts: "Harness requires the verified worktree root"
+(unchanged behavior; the variation does not apply). Overlay deselected:
+check 1 "harness drift: .agents/skills/dotln-executor/SKILL.md". Overlay
+switched to build none without emitting: check 1 "harness drift: build none
+requires the hand-written floor alone".
+
+== Profile subsets (broadened owned-file removal) ==
+In <copy>: emit then check --profile claude-code-2.1.263, codex-cli-0.153.4,
+copilot-cli-1.0.86 each exit 0; the codex profile removes
+.claude/settings.json and the others remove .codex/config.toml. A full emit
+then check exit 0 and every file equals <repo> again.
+Historical manifests: no `installed` entry in any committed
+.claude/harness-manifest.json names a path outside the allowed surfaces.
+
+== Executor fixtures ==
+$ node scripts/harness.mjs bounded -- node --test --test-reporter=tap \
+    --test-name-pattern=WO-076 scripts/test-harness.mjs
+ok 1 - WO-076 no overlay preserves emitted bytes and narrows only declared envelope fields
+ok 2 - WO-076 identity replacement, two unequips and a newly equipped switch reach the bundle
+ok 3 - WO-076 build none removes owned surfaces, keeps the floor and checks without a runtime snapshot
+ok 4 - WO-076 ungranted widening refuses; grants retain provenance and the envelope hook without static denies
+ok 5 - WO-076 unreadable and invalid overlays refuse by path before output creation or bundle writes
+ok 6 - WO-076 closed overlay schema rejects nested keys, malformed grants and switch ambiguity
+# tests 6  # pass 6  # fail 0
+
+== Checks ==
+npm run format:check: All matched files use Prettier code style! (exit 0)
+git diff --check: exit 0, no output
+npm run publication:check: exit 0; both TOC locks CURRENT; bootstrap PASS
+npm run test:docs: 35 passed; 0 failed; 113.33 s; 35 fresh tasks

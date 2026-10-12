@@ -1,0 +1,32 @@
+{
+  "baseline": "Pre-edit default installation captured before source changes in this executor dispatch",
+  "comparison": "Exact generated file contents after substituting only compiler package version, the two changed runtime file pins, runtime snapshot, derived target hashes and feedback policy hashes recomputed from unchanged policy contents with the new compiler version; no blanket hash stripping",
+  "compilerBefore": "0.26.0",
+  "compilerAfter": "0.27.0",
+  "semanticHash": "fnv1a64:c0a496bda5f362de",
+  "files": 33,
+  "changedPins": [
+    "packages/compiler/dist/src/artifact-identity.js",
+    "packages/compiler/dist/src/harness.js"
+  ],
+  "changedFiles": [
+    ".claude/hooks/commit-msg.mjs",
+    ".claude/hooks/concurrent-work-requires-worktrees.mjs",
+    ".claude/hooks/failure-observer.mjs",
+    ".claude/hooks/finish.mjs",
+    ".claude/hooks/no-attribution.mjs",
+    ".claude/hooks/no-lint-type-disables-as-fixes.mjs",
+    ".claude/hooks/permission-denied.mjs",
+    ".claude/hooks/permissions.mjs",
+    ".claude/hooks/presence-posttooluse.mjs",
+    ".claude/hooks/presence-pretooluse.mjs",
+    ".claude/hooks/presence-stop.mjs",
+    ".claude/hooks/presence-userpromptsubmit.mjs",
+    ".claude/hooks/read-observer.mjs",
+    ".claude/hooks/session.mjs",
+    ".claude/hooks/write-observer.mjs"
+  ],
+  "unexpectedContentChanges": [],
+  "sameRuntimeNoOverlayByteIdentity": "scripts/test-harness.mjs WO-076 no-overlay fixture",
+  "limitation": "A compiler/runtime release intentionally changes generated runtime pins; this is not a claim of byte equality across releases."
+}

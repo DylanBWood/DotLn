@@ -278,13 +278,19 @@ function overlayImplementation(root) {
     "README.md",
     "# Integration fixture\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v0.0.1`.\n<!-- DOTLN-RELEASE-END -->\n",
   );
-  // The working-tree libraries, their build-free Beacon peers and the console
-  // package its regenerator executes travel together; static imports must not
-  // split across revisions. Build output and dependency links are left out:
+  // The working-tree libraries and their compiler, Contributor, Beacon and
+  // console peers travel together; static imports must not split across
+  // revisions. Build output and dependency links are left out:
   // the fixture rebuilds them from its own sources. The console's generated
   // fixture outputs and their manifest name the evidence editions of the
   // revision that recorded them, so the fixture keeps its own committed copy.
-  for (const path of ["scripts/lib", "packages/beacons", "packages/console"])
+  for (const path of [
+    "scripts/lib",
+    "packages/compiler",
+    "packages/skeleton",
+    "packages/beacons",
+    "packages/console",
+  ])
     cpSync(join(source, path), join(root, path), {
       recursive: true,
       filter: (from) =>
