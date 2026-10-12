@@ -1,0 +1,291 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+Scratch baseline commit 7f0ccc85389c16fd13ace8d4bb3c621779c59c90
+unchanged: npm test -- --review --list; wo107-schema selected=false
+> test
+> node scripts/test-runner.mjs --review --list
+
+format — protects: source and documentation retain the shared formatting rules
+build — protects: source compiles into runnable packages
+release-preparation — protects: release preparation preserves source and chooses the classified target
+github-body — protects: published descriptions preserve reviewed content
+outward-lint — protects: outward artifacts have conventional shape and redacted vocabulary checks
+target-publish — protects: a target branch reaches its remote only from a bound episode, under an operator grant and after the outward lint
+target-worktree — protects: target start, selection, recovery and merged teardown keep code separate from launchpad records
+vertical — protects: filed intent admission, common restartable vertical, repair lineage, readiness, typed stops and directory identity before effects — needs: outside-sandbox
+license-fixtures — protects: source-only publication preserves license and package privacy
+publication-fixtures — protects: public editions retain their reviewed source boundaries
+backup-intake — protects: private intake survives backup and recovery
+launchpad — protects: launchpad export writes only manifest-listed kit files and instance seeds from the scripts' checkout's commit, carries the commit's compiled runtime and the harness bundle the export's own emit writes, refuses a non-empty destination, a dirty pinned input and a local-terms match, and the export passes harness check, activates its first order, emits control Beacons and reserves a Codex writer without package source
+beacon-portability — protects: control Beacon leaves keep one build-free home that no script imports from skeleton source or dist, and a copied control plane without the skeleton emits a decodable control Beacon
+checkpoint — protects: pending work can be recovered from named checkpoints
+worktree — protects: isolated work and intake survive publish and close
+worktree-integration — protects: integration preserves recovery, both histories and authored conflicts without lifecycle events
+release — protects: reviewed releases publish idempotently from merged main
+work-orders-fixtures — protects: work-order lookup and dependencies identify executable work
+siblings-fixtures — protects: the registry generator carries each receipt's fields, the kit version from Git and the orders closed between receipts, reads not evidenced where no receipt supplies a field, and refuses a hand-edited entry, a manifest hash that is not the latest receipt's and an undecodable receipt
+kernel — protects: domain events and human judgment contracts replay consistently
+compiler — protects: supports compile to the intended constraints and harness behavior
+skeleton — protects: the local runtime executes work within admitted authority — needs: outside-sandbox
+console — protects: operators can inspect current work and recorded evidence
+browser-evidence — protects: standalone browser scenarios produce admitted witnesses, replay and recover owned processes — needs: outside-sandbox
+adjacent-queue — protects: operator steering controls the next bounded repair
+derived-orders — protects: derived work identity, activation, draft filing, allocation recovery and resident restart remain one control contract
+portfolio — protects: a preauthorized portfolio derives bounded orders from WO-119 candidates, materializes them through WO-120 and advances the presence curve only after WO-052 changes and WO-054 verifies them — needs: outside-sandbox
+codex-continuation — protects: Codex restores only its owned unfinished task after compaction, continues once and yields to recovery controls
+authority-grants — protects: workers cannot grant themselves additional authority
+collector changed against merge base: npm test -- --review --list; wo107-schema selected=true
+> test
+> node scripts/test-runner.mjs --review --list
+
+format — protects: source and documentation retain the shared formatting rules
+build — protects: source compiles into runnable packages
+release-preparation — protects: release preparation preserves source and chooses the classified target
+github-body — protects: published descriptions preserve reviewed content
+outward-lint — protects: outward artifacts have conventional shape and redacted vocabulary checks
+target-publish — protects: a target branch reaches its remote only from a bound episode, under an operator grant and after the outward lint
+target-worktree — protects: target start, selection, recovery and merged teardown keep code separate from launchpad records
+vertical — protects: filed intent admission, common restartable vertical, repair lineage, readiness, typed stops and directory identity before effects — needs: outside-sandbox
+license-fixtures — protects: source-only publication preserves license and package privacy
+publication-fixtures — protects: public editions retain their reviewed source boundaries
+backup-intake — protects: private intake survives backup and recovery
+launchpad — protects: launchpad export writes only manifest-listed kit files and instance seeds from the scripts' checkout's commit, carries the commit's compiled runtime and the harness bundle the export's own emit writes, refuses a non-empty destination, a dirty pinned input and a local-terms match, and the export passes harness check, activates its first order, emits control Beacons and reserves a Codex writer without package source
+beacon-portability — protects: control Beacon leaves keep one build-free home that no script imports from skeleton source or dist, and a copied control plane without the skeleton emits a decodable control Beacon
+checkpoint — protects: pending work can be recovered from named checkpoints
+worktree — protects: isolated work and intake survive publish and close
+worktree-integration — protects: integration preserves recovery, both histories and authored conflicts without lifecycle events
+release — protects: reviewed releases publish idempotently from merged main
+work-orders-fixtures — protects: work-order lookup and dependencies identify executable work
+siblings-fixtures — protects: the registry generator carries each receipt's fields, the kit version from Git and the orders closed between receipts, reads not evidenced where no receipt supplies a field, and refuses a hand-edited entry, a manifest hash that is not the latest receipt's and an undecodable receipt
+kernel — protects: domain events and human judgment contracts replay consistently
+compiler — protects: supports compile to the intended constraints and harness behavior
+skeleton — protects: the local runtime executes work within admitted authority — needs: outside-sandbox
+console — protects: operators can inspect current work and recorded evidence
+browser-evidence — protects: standalone browser scenarios produce admitted witnesses, replay and recover owned processes — needs: outside-sandbox
+adjacent-queue — protects: operator steering controls the next bounded repair
+derived-orders — protects: derived work identity, activation, draft filing, allocation recovery and resident restart remain one control contract
+portfolio — protects: a preauthorized portfolio derives bounded orders from WO-119 candidates, materializes them through WO-120 and advances the presence curve only after WO-052 changes and WO-054 verifies them — needs: outside-sandbox
+codex-continuation — protects: Codex restores only its owned unfinished task after compaction, continues once and yields to recovery controls
+authority-grants — protects: workers cannot grant themselves additional authority
+wo107-schema — protects: the WO-107 baseline's provenance hash matches its pinned collector bytes
+plain despite changed collector: npm test -- --list; wo107-schema selected=false
+> test
+> node scripts/test-runner.mjs --list
+
+format — protects: source and documentation retain the shared formatting rules
+build — protects: source compiles into runnable packages
+release-preparation — protects: release preparation preserves source and chooses the classified target
+github-body — protects: published descriptions preserve reviewed content
+outward-lint — protects: outward artifacts have conventional shape and redacted vocabulary checks
+target-publish — protects: a target branch reaches its remote only from a bound episode, under an operator grant and after the outward lint
+target-worktree — protects: target start, selection, recovery and merged teardown keep code separate from launchpad records
+vertical — protects: filed intent admission, common restartable vertical, repair lineage, readiness, typed stops and directory identity before effects — needs: outside-sandbox
+license-fixtures — protects: source-only publication preserves license and package privacy
+publication-fixtures — protects: public editions retain their reviewed source boundaries
+backup-intake — protects: private intake survives backup and recovery
+launchpad — protects: launchpad export writes only manifest-listed kit files and instance seeds from the scripts' checkout's commit, carries the commit's compiled runtime and the harness bundle the export's own emit writes, refuses a non-empty destination, a dirty pinned input and a local-terms match, and the export passes harness check, activates its first order, emits control Beacons and reserves a Codex writer without package source
+beacon-portability — protects: control Beacon leaves keep one build-free home that no script imports from skeleton source or dist, and a copied control plane without the skeleton emits a decodable control Beacon
+checkpoint — protects: pending work can be recovered from named checkpoints
+worktree — protects: isolated work and intake survive publish and close
+worktree-integration — protects: integration preserves recovery, both histories and authored conflicts without lifecycle events
+release — protects: reviewed releases publish idempotently from merged main
+work-orders-fixtures — protects: work-order lookup and dependencies identify executable work
+siblings-fixtures — protects: the registry generator carries each receipt's fields, the kit version from Git and the orders closed between receipts, reads not evidenced where no receipt supplies a field, and refuses a hand-edited entry, a manifest hash that is not the latest receipt's and an undecodable receipt
+kernel — protects: domain events and human judgment contracts replay consistently
+compiler — protects: supports compile to the intended constraints and harness behavior
+skeleton — protects: the local runtime executes work within admitted authority — needs: outside-sandbox
+console — protects: operators can inspect current work and recorded evidence
+browser-evidence — protects: standalone browser scenarios produce admitted witnesses, replay and recover owned processes — needs: outside-sandbox
+adjacent-queue — protects: operator steering controls the next bounded repair
+derived-orders — protects: derived work identity, activation, draft filing, allocation recovery and resident restart remain one control contract
+portfolio — protects: a preauthorized portfolio derives bounded orders from WO-119 candidates, materializes them through WO-120 and advances the presence curve only after WO-052 changes and WO-054 verifies them — needs: outside-sandbox
+codex-continuation — protects: Codex restores only its owned unfinished task after compaction, continues once and yields to recovery controls
+authority-grants — protects: workers cannot grant themselves additional authority
+anchor baseline: node --test --test-name-pattern=WO-200 every path scripts/test-comment-labels.mjs; exit=0
+✔ WO-200 every path with dotln-pinned-bytes set is listed in .prettierignore (46.34875ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 131.858834
+anchor baseline: node --test --test-name-pattern=corpus the hashed collector corpus/harness/wo107-schema.test.mjs; exit=0
+✔ corpus the hashed collector files are exactly the pinned-bytes files (42.532417ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 118.394875
+classification baseline: node --test --test-name-pattern=harness classification exception corpus/harness/wo107-schema.test.mjs; exit=0
+✔ harness classification exception is exact and both collector revisions preserve timed bytes (24.512083ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 93.478
+missing attribute: node --test --test-name-pattern=WO-200 every path scripts/test-comment-labels.mjs; exit=1
+✖ WO-200 every path with dotln-pinned-bytes set is listed in .prettierignore (37.489167ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 101.342791
+✖ failing tests:
+✖ WO-200 every path with dotln-pinned-bytes set is listed in .prettierignore (37.489167ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+missing attribute: node --test --test-name-pattern=corpus the hashed collector corpus/harness/wo107-schema.test.mjs; exit=1
+✖ corpus the hashed collector files are exactly the pinned-bytes files (39.022833ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 107.066875
+✖ failing tests:
+✖ corpus the hashed collector files are exactly the pinned-bytes files (39.022833ms)
+  AssertionError [ERR_ASSERTION]: attributes follow the hashed inputs
+missing ignore: node --test --test-name-pattern=WO-200 every path scripts/test-comment-labels.mjs; exit=1
+✖ WO-200 every path with dotln-pinned-bytes set is listed in .prettierignore (38.045334ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 106.709542
+✖ failing tests:
+✖ WO-200 every path with dotln-pinned-bytes set is listed in .prettierignore (38.045334ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+missing ignore: node --test --test-name-pattern=corpus the hashed collector corpus/harness/wo107-schema.test.mjs; exit=1
+✖ corpus the hashed collector files are exactly the pinned-bytes files (38.7765ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 100.427417
+✖ failing tests:
+✖ corpus the hashed collector files are exactly the pinned-bytes files (38.7765ms)
+  AssertionError [ERR_ASSERTION]: formatter ignores follow the hashed inputs
+missing review source: node --test --test-name-pattern=corpus the hashed collector corpus/harness/wo107-schema.test.mjs; exit=1
+✖ corpus the hashed collector files are exactly the pinned-bytes files (39.1925ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 105.273334
+✖ failing tests:
+✖ corpus the hashed collector files are exactly the pinned-bytes files (39.1925ms)
+  AssertionError [ERR_ASSERTION]: review sources follow the hashed inputs
+fifth lineage input: node --test --test-name-pattern=WO-200 every path scripts/test-comment-labels.mjs; exit=1
+✖ WO-200 every path with dotln-pinned-bytes set is listed in .prettierignore (38.40575ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 103.194
+✖ failing tests:
+✖ WO-200 every path with dotln-pinned-bytes set is listed in .prettierignore (38.40575ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+fifth lineage input: node --test --test-name-pattern=corpus the hashed collector corpus/harness/wo107-schema.test.mjs; exit=1
+✖ corpus the hashed collector files are exactly the pinned-bytes files (1.600584ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 70.22625
+✖ failing tests:
+✖ corpus the hashed collector files are exactly the pinned-bytes files (1.600584ms)
+  AssertionError [ERR_ASSERTION]: lineage and live hash read the same ordered inputs
+removed lineage input: node --test --test-name-pattern=WO-200 every path scripts/test-comment-labels.mjs; exit=1
+✖ WO-200 every path with dotln-pinned-bytes set is listed in .prettierignore (38.650916ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 103.7095
+✖ failing tests:
+✖ WO-200 every path with dotln-pinned-bytes set is listed in .prettierignore (38.650916ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+removed lineage input: node --test --test-name-pattern=corpus the hashed collector corpus/harness/wo107-schema.test.mjs; exit=1
+✖ corpus the hashed collector files are exactly the pinned-bytes files (1.543792ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 64.594833
+✖ failing tests:
+✖ corpus the hashed collector files are exactly the pinned-bytes files (1.543792ms)
+  AssertionError [ERR_ASSERTION]: lineage and live hash read the same ordered inputs
+fifth live hash input: node --test --test-name-pattern=corpus the hashed collector corpus/harness/wo107-schema.test.mjs; exit=1
+✖ corpus the hashed collector files are exactly the pinned-bytes files (1.932459ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 63.83525
+✖ failing tests:
+✖ corpus the hashed collector files are exactly the pinned-bytes files (1.932459ms)
+  AssertionError [ERR_ASSERTION]: lineage and live hash read the same ordered inputs
+deleted current classification: node --test --test-name-pattern=harness classification exception corpus/harness/wo107-schema.test.mjs; exit=1
+✖ harness classification exception is exact and both collector revisions preserve timed bytes (21.368041ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 89.47275
+✖ failing tests:
+✖ harness classification exception is exact and both collector revisions preserve timed bytes (21.368041ms)
+  AssertionError [ERR_ASSERTION]: the live registry retains the exact profiling declaration
+changed current classification: node --test --test-name-pattern=harness classification exception corpus/harness/wo107-schema.test.mjs; exit=1
+✖ harness classification exception is exact and both collector revisions preserve timed bytes (22.586333ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 88.272417
+✖ failing tests:
+✖ harness classification exception is exact and both collector revisions preserve timed bytes (22.586333ms)
+  AssertionError [ERR_ASSERTION]: the live registry retains the exact profiling declaration
+Removed scratch repository with head 3b00ecf388ef7f8b71f4dda1ea239584ffc9a812
+bounded-result {"name":"bounded-probe","durationMs":6137,"slowestCases":[{"name":"bounded-probe","durationMs":6137,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":130157280,"peakRssBytes":215203840,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T02:48:00.693Z","finishedAt":"2026-10-12T02:48:06.831Z","exitCode":0,"executed":true}

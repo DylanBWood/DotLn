@@ -6,7 +6,7 @@
 
 - [x] [WO-072] — Target worktree lifecycle · **final-reviewed**
 - [x] [WO-076] — Instance build overlay · **final-reviewed** · pair 1
-- [ ] [WO-200] — Pinned collector bytes are watched where they change · **queued** · pair 1
+- [x] [WO-200] — Pinned collector bytes are watched where they change · **final-reviewed** · pair 1
 - [ ] [WO-201] — The export runs core's suites · **queued**
 - [ ] [WO-202] — The planning machinery runs in an instance · **queued**
 - [ ] [WO-203] — Update preview · **queued**
@@ -53,23 +53,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-200
-
-[WO-200 — Pinned collector bytes are watched where they change: the WO-107 lane's hashed sources are declared, left alone by the formatter and the comment scan, checked in the review gate when they change, and the comment-only drift is recorded and reversed (version assigned at activation)](WO-200-pinned-collector-bytes-observed.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: none declared.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer any.
-- Track: machinery
-- Cost: adds a &#96;dotln-pinned-bytes&#96; attribute on the four files &#96;protocolLineage&#96; hashes (&#96;.gitattributes&#96;), the same four paths in &#96;.prettierignore&#96;'s exact-bytes group, one more attribute name in &#96;commentFiles&#96; (&#96;scripts/lib/comment-labels.mjs&#96;, the &#96;check-attr&#96; call at line 60), one machinery row &#96;wo107-schema&#96; with its &#96;machinerySources&#96; entry and &#96;protection&#96; sentence (&#96;scripts/test-runner.mjs&#96;, lines 108 and 855), two fixture cases in &#96;scripts/test-comment-labels.mjs&#96;, one case in &#96;corpus/harness/wo107-schema.test.mjs&#96;, the restored comment line in &#96;corpus/harness/profile.mjs&#96;, &#96;docs/evidence/WO-200/decisions.md&#96;, one sentence in product 03 §Corpus policy and one dated line in &#96;corpus/baselines/SCHEMA-WO-107.md&#96;. Steady-state cost: the row runs only when one of its five declared sources changed against the merge base (about one second of test time; its thirteen cases ran in under one second each at &#96;9c18aa54&#96;); the comment scan reads four fewer files. Removes: a red lane since 2026-10-09 (36 of the 72 committed WO-107 records carry a protocol hash no current source produces), the class of silent invalidation in which a repository-wide rewriter reaches hash-pinned bytes outside every gate (WO-105 D012 and WO-107 are the two instances), and the manual lane run before any consumer of the baseline. Re-mints: &#96;scripts/test-runner.mjs&#96; is a declared machinery source, so &#96;npm test -- --review&#96; runs before handoff; &#96;comment-labels.mjs&#96;, &#96;profile.mjs&#96;, &#96;.gitattributes&#96; and &#96;.prettierignore&#96; are in no evidence inventory and no file the feedback verifier judges changes, so no edition is re-minted and no live episode runs. Wall-clock, tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-200-pinned-collector-bytes-observed.md](WO-200-pinned-collector-bytes-observed.md)
 
 ### WO-201
 

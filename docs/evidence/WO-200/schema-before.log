@@ -1,0 +1,91 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+✔ harness distributions interpolate quantiles and retain an outlier (3.123459ms)
+✔ harness deterministic dummy proves order, interleaving, warmups and every repetition (0.646792ms)
+✔ harness stops at a failed sample and retains its observer event (0.202042ms)
+✔ harness resource sample derives throughput and explicitly scopes memory (12.499792ms)
+✔ harness registry covers every declared scenario and command source file (310.79325ms)
+✔ harness watchdog tracks owned descendants without claiming unrelated processes (0.204292ms)
+✔ harness watchdog ends a tiny synthetic child and leaves a bystander alive (77.304417ms)
+✔ harness watchdog records normal completion and sampled headroom (337.143042ms)
+✔ harness full dummy executions round-trip through schema and comparison (46.540042ms)
+✖ harness classification exception is exact and both collector revisions preserve timed bytes (12.487916ms)
+✖ corpus every committed record has a complete schema, distinct execution seeds and retained statistics (15.670084ms)
+✔ corpus schema refuses omissions, nonfinite values, lost outliers, duplicated execution and fabricated statistics (134.92725ms)
+✖ corpus generated comparison is byte identical and check never appends or rewrites (11.737875ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 10
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1031.997459
+
+✖ failing tests:
+
+test at corpus/harness/wo107-schema.test.mjs:276:1
+✖ harness classification exception is exact and both collector revisions preserve timed bytes (12.487916ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '541bb6fb6dba2d9d7cd4a7eed61766d151bd4e1e3732a51fd79578f3a0f76a31'
+  - '335e66e7d907abf7f3ef54cbb606a9bccb6853886adfb31533a97ca02891156a'
+  
+      at validateClassification (file:///Users/dylanwood/Projects/DotLn-wo200/corpus/harness/profile.mjs:181:10)
+      at TestContext.<anonymous> (file:///Users/dylanwood/Projects/DotLn-wo200/corpus/harness/wo107-schema.test.mjs:282:3)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '541bb6fb6dba2d9d7cd4a7eed61766d151bd4e1e3732a51fd79578f3a0f76a31',
+    expected: '335e66e7d907abf7f3ef54cbb606a9bccb6853886adfb31533a97ca02891156a',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at corpus/harness/wo107-schema.test.mjs:310:1
+✖ corpus every committed record has a complete schema, distinct execution seeds and retained statistics (15.670084ms)
+  AssertionError [ERR_ASSERTION]: known collector revision
+      at validateProvenance (file:///Users/dylanwood/Projects/DotLn-wo200/corpus/harness/profile.mjs:315:12)
+      at TestContext.<anonymous> (file:///Users/dylanwood/Projects/DotLn-wo200/corpus/harness/wo107-schema.test.mjs:319:43)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at corpus/harness/wo107-schema.test.mjs:393:1
+✖ corpus generated comparison is byte identical and check never appends or rewrites (11.737875ms)
+  AssertionError [ERR_ASSERTION]: known collector revision
+      at validateProvenance (file:///Users/dylanwood/Projects/DotLn-wo200/corpus/harness/profile.mjs:315:12)
+      at TestContext.<anonymous> (file:///Users/dylanwood/Projects/DotLn-wo200/corpus/harness/wo107-schema.test.mjs:397:36)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+bounded-result {"name":"bounded-probe","durationMs":1097,"slowestCases":[{"name":"bounded-probe","durationMs":1097,"exitCode":1,"granularity":"task"}],"peakFootprintBytes":181174544,"peakRssBytes":267878400,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T02:44:11.573Z","finishedAt":"2026-10-12T02:44:12.671Z","exitCode":1,"executed":true}

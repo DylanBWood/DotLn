@@ -1,0 +1,51 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+✔ harness distributions interpolate quantiles and retain an outlier (4.21325ms)
+✔ harness deterministic dummy proves order, interleaving, warmups and every repetition (0.663833ms)
+✔ harness stops at a failed sample and retains its observer event (0.224375ms)
+✔ harness resource sample derives throughput and explicitly scopes memory (11.6165ms)
+✔ harness registry covers every declared scenario and command source file (309.342083ms)
+✔ harness watchdog tracks owned descendants without claiming unrelated processes (0.277083ms)
+✔ harness watchdog ends a tiny synthetic child and leaves a bystander alive (79.006709ms)
+✔ harness watchdog records normal completion and sampled headroom (336.368459ms)
+✔ harness full dummy executions round-trip through schema and comparison (46.883666ms)
+✖ harness classification exception is exact and both collector revisions preserve timed bytes (10.385167ms)
+✔ corpus every committed record has a complete schema, distinct execution seeds and retained statistics (33.337583ms)
+✔ corpus schema refuses omissions, nonfinite values, lost outliers, duplicated execution and fabricated statistics (149.772709ms)
+✔ corpus generated comparison is byte identical and check never appends or rewrites (259.044083ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 12
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1305.7575
+
+✖ failing tests:
+
+test at corpus/harness/wo107-schema.test.mjs:276:1
+✖ harness classification exception is exact and both collector revisions preserve timed bytes (10.385167ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '541bb6fb6dba2d9d7cd4a7eed61766d151bd4e1e3732a51fd79578f3a0f76a31'
+  - '335e66e7d907abf7f3ef54cbb606a9bccb6853886adfb31533a97ca02891156a'
+  
+      at validateClassification (file:///Users/dylanwood/Projects/DotLn-wo200/corpus/harness/profile.mjs:181:10)
+      at TestContext.<anonymous> (file:///Users/dylanwood/Projects/DotLn-wo200/corpus/harness/wo107-schema.test.mjs:282:3)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '541bb6fb6dba2d9d7cd4a7eed61766d151bd4e1e3732a51fd79578f3a0f76a31',
+    expected: '335e66e7d907abf7f3ef54cbb606a9bccb6853886adfb31533a97ca02891156a',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+bounded-result {"name":"bounded-probe","durationMs":1370,"slowestCases":[{"name":"bounded-probe","durationMs":1370,"exitCode":1,"granularity":"task"}],"peakFootprintBytes":190138536,"peakRssBytes":275546112,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T02:44:31.363Z","finishedAt":"2026-10-12T02:44:32.733Z","exitCode":1,"executed":true}

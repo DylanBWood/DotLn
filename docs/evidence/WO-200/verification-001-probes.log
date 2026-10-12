@@ -1,0 +1,151 @@
+# WO-200 VER-001 probe transcripts (verifier, 2026-10-12 UTC)
+# Setup: git clone -q --shared --no-checkout <worktree> <scratch>/clone; checkout 73061e52 as branch probe;
+# copy every path in 'git diff --name-only HEAD' from the worktree; symlink node_modules (excluded);
+# commit the overlay as b85099eb; set refs/remotes/origin/main and refs/heads/main to it;
+# copy packages/*/dist from the worktree (no package source differs from HEAD).
+# First mutation attempt stopped on two probe-setup errors (no dist in the clone; an intent-to-add
+# entry left by restore); both were fixed in the probe and the run below is complete.
+
+## schema.log
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+✔ harness distributions interpolate quantiles and retain an outlier (4.586042ms)
+✔ harness deterministic dummy proves order, interleaving, warmups and every repetition (0.798542ms)
+✔ harness stops at a failed sample and retains its observer event (0.281959ms)
+✔ harness resource sample derives throughput and explicitly scopes memory (14.307708ms)
+✔ harness registry covers every declared scenario and command source file (388.678292ms)
+✔ harness watchdog tracks owned descendants without claiming unrelated processes (0.251125ms)
+✔ harness watchdog ends a tiny synthetic child and leaves a bystander alive (94.414542ms)
+✔ harness watchdog records normal completion and sampled headroom (346.738375ms)
+✔ harness full dummy executions round-trip through schema and comparison (52.396ms)
+✔ harness classification exception is exact and both collector revisions preserve timed bytes (25.632167ms)
+✔ corpus every committed record has a complete schema, distinct execution seeds and retained statistics (39.716417ms)
+✔ corpus schema refuses omissions, nonfinite values, lost outliers, duplicated execution and fabricated statistics (181.092583ms)
+✔ corpus generated comparison is byte identical and check never appends or rewrites (302.013667ms)
+✔ corpus the hashed collector files are exactly the pinned-bytes files (47.151125ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1581.693208
+bounded-result {"name":"bounded-probe","durationMs":1652,"slowestCases":[{"name":"bounded-probe","durationMs":1652,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":114603304,"peakRssBytes":203669504,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T03:55:39.655Z","finishedAt":"2026-10-12T03:55:41.308Z","exitCode":0,"executed":true}
+
+## comment.log
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+PASS comment labels: 548 code files; 81 baselined lines; 0 failures
+bounded-result {"name":"bounded-probe","durationMs":1528,"slowestCases":[{"name":"bounded-probe","durationMs":1528,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":703118848,"peakRssBytes":745144320,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T03:55:58.831Z","finishedAt":"2026-10-12T03:56:00.359Z","exitCode":0,"executed":true}
+
+## comment-fixtures.log
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+✔ a new comment line that carries a finding label, a bare decision number or a leading order identifier fails; an explanation passes (64.246209ms)
+✔ today's lines pass by fingerprint baseline; an edited baselined line fails and its old entry is stale; a fixed line shrinks the baseline (108.014542ms)
+✔ shell comments count, including JavaScript comments inside heredocs; generated and documentation files are left out (40.546083ms)
+✔ the baseline writer shrinks, never grows, and the command prints its failures (338.842959ms)
+✔ the comment check and its fixtures run only in the document selection (0.216458ms)
+✔ WO-200 a file whose dotln-pinned-bytes attribute is set is left out of the scan (79.306709ms)
+✔ WO-200 every path with dotln-pinned-bytes set is listed in .prettierignore (42.469292ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 753.974333
+bounded-result {"name":"bounded-probe","durationMs":823,"slowestCases":[{"name":"bounded-probe","durationMs":823,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":38081744,"peakRssBytes":124977152,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T03:56:07.065Z","finishedAt":"2026-10-12T03:56:07.888Z","exitCode":0,"executed":true}
+
+## mutate.log
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+== M0 baseline (no mutation)
+   schemaAnchor: exit 0 pass 1 fail 0
+   classification: exit 0 pass 1 fail 0
+   commentPrettier: exit 0 pass 1 fail 0
+   commentFixture: exit 0 pass 1 fail 0
+== M1 drop the wo107-bounded attribute row
+   schemaAnchor: exit 1 pass 0 fail 1 — AssertionError [ERR_ASSERTION]: attributes follow the hashed inputs
+   commentPrettier: exit 1 pass 0 fail 1 — AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+== M2 drop the wo107-records prettierignore line
+   schemaAnchor: exit 1 pass 0 fail 1 — AssertionError [ERR_ASSERTION]: formatter ignores follow the hashed inputs
+   commentPrettier: exit 1 pass 0 fail 1 — AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+== M3 drop wo107-scenarios from machinerySources
+   schemaAnchor: exit 1 pass 0 fail 1 — AssertionError [ERR_ASSERTION]: review sources follow the hashed inputs
+   commentPrettier: exit 0 pass 1 fail 0
+== M4 add a fifth hashed file in both literals, no other list follows
+   schemaAnchor: exit 1 pass 0 fail 1 — AssertionError [ERR_ASSERTION]: attributes follow the hashed inputs
+   commentPrettier: exit 1 pass 0 fail 1 — AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+== M4b fifth hashed file with attribute, ignore line and machinery source all following
+   schemaAnchor: exit 0 pass 1 fail 0
+   commentPrettier: exit 0 pass 1 fail 0
+== M5 attribute an unrelated corpus file
+   schemaAnchor: exit 1 pass 0 fail 1 — AssertionError [ERR_ASSERTION]: attributes follow the hashed inputs
+   commentPrettier: exit 1 pass 0 fail 1 — AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+== M6 reorder lineage names only (live hash literal unchanged)
+   schemaAnchor: exit 1 pass 0 fail 1 — AssertionError [ERR_ASSERTION]: lineage and live hash read the same ordered inputs
+   commentPrettier: exit 0 pass 1 fail 0
+== M7 remove wo107-bounded from both literals
+   schemaAnchor: exit 1 pass 0 fail 1 — AssertionError [ERR_ASSERTION]: attributes follow the hashed inputs
+   commentPrettier: exit 1 pass 0 fail 1 — AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+== M8 delete WO-107's live classification declaration
+   classification: exit 1 pass 0 fail 1 — AssertionError [ERR_ASSERTION]: the live registry retains the exact profiling declaration
+== M8b change WO-107's live classification declaration text
+   classification: exit 1 pass 0 fail 1 — AssertionError [ERR_ASSERTION]: the live registry retains the exact profiling declaration
+== M8c add another unrelated live declaration (sibling registration)
+   classification: exit 0 pass 1 fail 0
+== M9 replace three ignore lines with an equivalent glob
+   schemaAnchor: exit 1 pass 0 fail 1 — AssertionError [ERR_ASSERTION]: formatter ignores follow the hashed inputs
+   commentPrettier: exit 1 pass 0 fail 1 — AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+== M10 set the attribute through a directory pattern covering the schema test too
+   schemaAnchor: exit 1 pass 0 fail 1 — AssertionError [ERR_ASSERTION]: attributes follow the hashed inputs
+   commentPrettier: exit 1 pass 0 fail 1 — AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+bounded-result {"name":"bounded-probe","durationMs":5345,"slowestCases":[{"name":"bounded-probe","durationMs":5345,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":58384208,"peakRssBytes":191905792,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T03:58:37.755Z","finishedAt":"2026-10-12T03:58:43.100Z","exitCode":0,"executed":true}
+
+## select.log
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+merge base b85099ebeaa58a10ccce0c841d4766f5568fadfa head b85099ebeaa58a10ccce0c841d4766f5568fadfa
+== S0 no change against the merge base: review absent; plain absent
+== S1 uncommitted comment edit to wo107-bounded.mjs: review selected; plain absent
+== S2 committed comment edit to profile.mjs: review selected; plain absent
+== S3 edit to wo107-schema.test.mjs only: review selected; plain absent
+== S4 edit to scripts/test-runner.mjs only: review absent; plain absent
+== S5 edit to .gitattributes only: review absent; plain absent
+== S6 new untracked corpus/harness file: review absent; plain absent
+== F1 prettier --write corpus/harness/: exit 0; unformatted collector line kept true; hash unchanged by prettier true
+== F2 prettier --check on the named collector: exit 0; All matched files use Prettier code style!
+== hash after restore 1d618f2f6e81f6dcb3b06aba2f9bb525ce50d854d1cf664155f1b75fafde34cd (before 1d618f2f6e81f6dcb3b06aba2f9bb525ce50d854d1cf664155f1b75fafde34cd)
+bounded-result {"name":"bounded-probe","durationMs":6997,"slowestCases":[{"name":"bounded-probe","durationMs":6997,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":45110888,"peakRssBytes":141803520,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T03:59:08.835Z","finishedAt":"2026-10-12T03:59:15.833Z","exitCode":0,"executed":true}
+
+## coverage.log
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+== drop corpus/harness/profile.mjs from the row's sources: review selects runner-fixtures true, wo107-schema false; WO-174 coverage exit 1 (wo107-schema: uncovered corpus/harness/profile.mjs)
+== drop corpus/harness/wo107-scenarios.mjs from the row's sources: review selects runner-fixtures true, wo107-schema false; WO-174 coverage exit 1 (wo107-schema: uncovered corpus/harness/wo107-scenarios.mjs)
+== drop corpus/harness/wo107-schema.test.mjs from the row's sources: review selects runner-fixtures true, wo107-schema false; WO-174 coverage exit 1 (wo107-schema: uncovered corpus/harness/wo107-schema.test.mjs)
+bounded-result {"name":"bounded-probe","durationMs":2269,"slowestCases":[{"name":"bounded-probe","durationMs":2269,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":39588952,"peakRssBytes":133300224,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T04:02:20.476Z","finishedAt":"2026-10-12T04:02:22.745Z","exitCode":0,"executed":true}
+
+## variations.log
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+== V1 cwd=scripts/: comment WO-200 ignore test exit 1 (AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:)
+== V1 cwd=corpus/harness/: schema pinned-bytes case exit 1 (AssertionError [ERR_ASSERTION]: attributes follow the hashed inputs)
+== V1 cwd=corpus/harness/: pre-existing classification case exit 1 (Error: ENOENT: no such file or directory, open 'packages/kernel/test/fixtures/jsonl-protocols.json')
+== V2 negation line appended: prettier --file-info {"ignored":false,"inferredParser":"babel"}
+   schema pinned-bytes case exit 0; comment ignore test exit 0
+bounded-result {"name":"bounded-probe","durationMs":1500,"slowestCases":[{"name":"bounded-probe","durationMs":1500,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":66297848,"peakRssBytes":163840000,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T04:02:58.710Z","finishedAt":"2026-10-12T04:03:00.210Z","exitCode":0,"executed":true}
+
+## format.log
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+
+> format:check
+> prettier --check . --ignore-unknown
+
+Checking formatting...
+All matched files use Prettier code style!
+bounded-result {"name":"bounded-probe","durationMs":7923,"slowestCases":[{"name":"bounded-probe","durationMs":7923,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":388722848,"peakRssBytes":468566016,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T04:05:27.743Z","finishedAt":"2026-10-12T04:05:35.666Z","exitCode":0,"executed":true}
