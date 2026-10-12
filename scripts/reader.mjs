@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { readFileSync } from "node:fs";
-import { findLaunchpad } from "./lib/config.mjs";
+import { existsSync, readFileSync } from "node:fs";
+import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import {
   checkExamples,
@@ -30,9 +30,27 @@ export function main(args = process.argv.slice(2), root = findLaunchpad()) {
   )
     return recordCorrection(rest[1], rest[3], root);
   if (action === "check" && rest.length === 0) {
+    const scores = readScores(root);
+    if (
+      !scores.length &&
+      !existsSync(docPath(root, "control", "reader-profiles.json")) &&
+      !existsSync(docPath(root, "publication", "examples"))
+    )
+      return {
+        passed: true,
+        surfaces: 0,
+        examples: 0,
+        illustrations: 0,
+        figures: [],
+        unavailable: [
+          docRelative(root, "control", "reader-profiles.json"),
+          docRelative(root, "publication", "examples"),
+          "no score rows declared",
+        ],
+      };
     readReaderProfiles(root);
     checkExamples(root);
-    const figures = scoreRows(readScores(root));
+    const figures = scoreRows(scores);
     return {
       passed: true,
       surfaces: 5,

@@ -108,6 +108,33 @@ const shell = (name, file) => ({
 
 // Machinery declarations select optional review checks by their own source paths.
 export const machinerySources = {
+  "launchpad-planning": [
+    "scripts/launchpad.mjs",
+    "scripts/kit/",
+    "scripts/refute-plan.mjs",
+    "scripts/lib/planning-followups.mjs",
+    "scripts/lib/planning-conditions.mjs",
+    "scripts/lib/plan-",
+    "scripts/entropy.mjs",
+    "scripts/lib/entropy-review.mjs",
+    "scripts/meta.mjs",
+    "scripts/lib/meta.mjs",
+    "scripts/docs-check.mjs",
+    "scripts/check-publication.mjs",
+    "scripts/lib/reader-profiles.mjs",
+    "scripts/reader.mjs",
+    "scripts/work-orders.mjs",
+    "scripts/lineage.mjs",
+    "scripts/resume.mjs",
+    "scripts/release.mjs",
+    "scripts/harness-probe.mjs",
+    "scripts/operator-control.mjs",
+    "packages/skeleton/src/gate-evidence.mjs",
+    "packages/skeleton/src/writer-teardown.mjs",
+    "packages/skeleton/src/usage-observation.mjs",
+    "packages/compiler/src/codex-continuation.mjs",
+    "scripts/test-launchpad-planning.mjs",
+  ],
   "wo107-schema": [
     "corpus/harness/wo107-schema.test.mjs",
     "corpus/harness/profile.mjs",
@@ -696,6 +723,12 @@ export const suites = [
     protects:
       "launchpad export writes only manifest-listed kit files and instance seeds from the scripts' checkout's commit, carries the commit's compiled runtime and the harness bundle the export's own emit writes, refuses a non-empty destination, a dirty pinned input and a local-terms match, and the export passes harness check, activates its first order, emits control Beacons and reserves a Codex writer without package source",
   }),
+  nodeTests("launchpad-planning", "scripts/test-launchpad-planning.mjs", {
+    kit: "core-only: package TypeScript and build configuration needed to export",
+    needsBuild: false,
+    protects:
+      "the planning command surface runs in an exported instance using its own records and synthetic judgments",
+  }),
   nodeTests("launchpad-docs", "scripts/test-launchpad.mjs", {
     kit: "core-only: package TypeScript and build configuration needed to export",
     document: true,
@@ -724,13 +757,11 @@ export const suites = [
   },
   shell("work-orders-fixtures", "scripts/test-work-orders.sh"),
   node("publication", "scripts/check-publication.mjs", {
-    kit: "core-only: core publication audience index and outlines",
     fast: true,
     document: true,
     preflight: true,
   }),
   node("docs-check", "scripts/docs-check.mjs", {
-    kit: "core-only: core document ceilings and baseline",
     document: true,
     preflight: true,
     protects:
@@ -776,7 +807,6 @@ export const suites = [
       "the registry generator carries each receipt's fields, the kit version from Git and the orders closed between receipts, reads not evidenced where no receipt supplies a field, and refuses a hand-edited entry, a manifest hash that is not the latest receipt's and an undecodable receipt",
   }),
   node("lineage", "scripts/lineage.mjs", {
-    kit: "core-only: core idea ledger",
     args: ["index", "--check"],
     document: true,
     preflight: true,
@@ -931,7 +961,6 @@ export const suites = [
       "planning receipts and Entropy Reducer receipts preserve judgments, blinding, immutability and carried orders",
   }),
   node("plan-refutation-current", "scripts/test-plan-refutation.mjs", {
-    kit: "core-only: unseeded planning ledger and receipts; instance planning is pending WO-202",
     args: ["--check-only"],
     document: true,
   }),
@@ -979,12 +1008,10 @@ export const suites = [
     needsBuild: true,
   }),
   node("plan", "scripts/refute-plan.mjs", {
-    kit: "core-only: unseeded planning ledger and receipts; instance planning is pending WO-202",
     args: ["check"],
     document: true,
   }),
   node("reader-profiles", "scripts/reader.mjs", {
-    kit: "core-only: core editorial profiles, examples, scores and release tag objects",
     args: ["check"],
     document: true,
     protects:

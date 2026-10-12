@@ -471,6 +471,14 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
       legacy: storage.legacy,
       orders: storage.segment("WO-NNN"),
       legacyRelease: docRelative(root, "releases", "v0.2.0.md"),
+      ...(!existsSync(docPath(root, "planning", "work-order-map.md"))
+        ? {
+            sequenceLink: posix.relative(
+              docRelative(root, "workOrders"),
+              planningSource,
+            ),
+          }
+        : {}),
     },
   };
 };
@@ -709,7 +717,9 @@ const renderSources = (releases, paths) => {
     "",
     "Release attribution is explicitly refreshed by `index`. Check requires every recorded tag object to remain available and unchanged; newer local release tags are reported without invalidating that attribution snapshot. Typed release dependencies use current local ancestry in both index and status; changing a referenced release's availability can stale the dependency projection. Header/control changes still require regeneration after lifecycle transitions. No command fetches tags.",
     "",
-    "See [the human planning map](../planning/work-order-map.md) for recommendation, rationale, tracks, and activation preflight. Dependency-ready does not grant activation or effect authority.",
+    paths.sequenceLink
+      ? `See [the proposed sequence](${paths.sequenceLink}) for this instance's work ahead. Dependency-ready does not grant activation or effect authority.`
+      : "See [the human planning map](../planning/work-order-map.md) for recommendation, rationale, tracks, and activation preflight. Dependency-ready does not grant activation or effect authority.",
     "",
   ];
   lines.push(

@@ -131,7 +131,7 @@ after a release close and WO-078's receipts record. **The operator's personal
 instance** is a public fork of the starter on the operator's own account,
 under the same license posture and the same clean-room floor as core, on the
 operator's own machine where core is installed; it runs exactly what core
-runs (planning passes, orders cut by planning, the lifecycle by resume
+runs ([planning fixture evidence](../evidence/WO-202/commands-final.json); planning passes, orders cut by planning, the lifecycle by resume
 phrases in worktrees, verification, final review, release close, and the
 resident with intents where core uses them; intents and enterprise-tracker
 items are additional entry points, never the only one), composes its own

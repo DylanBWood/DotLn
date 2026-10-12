@@ -108,10 +108,67 @@ runtime produces the same bytes; `check` detects drift against both.
    then `npm run resume -- status` (`--json` is the canonical record).
    Run `npm run meta` to generate the decision index from this instance's own
    records before its first gate, and again whenever its decisions change.
+   Run `node scripts/lineage.mjs index` to generate the lineage index.
 7. Open a session that reads the operating contract (`CLAUDE.md`, symlinked as
    `AGENTS.md`); its generated harness block routes each resume phrase to the
    role skill under `.claude/skills/` or `.agents/skills/`, and the generated
    hooks enforce the compiled refusals where the harness runs them.
+
+## Planning in this instance
+
+The same planning commands run here using this instance's records. Commit the
+export and install its pinned dependencies first. On clean `main`, run
+`npm run plan -- start first-pass`; it creates the planning branch and reads
+the current follow-up feed. Draft this instance's orders and sequence, then
+record its dated planning pass in `docs/lineage/idea-ledger.md`.
+
+- `npm run plan -- followups` pages the register; `--export <file>` exports it;
+  `--apply <batch.json>` applies dispositions against the revision read.
+  `npm run plan -- followups --sync` reconciles changed public sources.
+- `npm run plan -- failures` and `npm run plan -- conditions` report local
+  evidence. Core condition sources absent here are named and have unknown
+  verdicts; `collect-sources` reports the unavailable console package.
+- `npm run meta` refreshes the decision index and register.
+  `npm run meta -- --plan-cost` records costs for the committed orders and
+  current planning inputs. Commit the planning subject and cost table before
+  refutation; keep them fixed through receipt filing.
+- The installed planner skill dispatches the independent refutation worker.
+  `npm run plan -- refute` prints its canonical prompt from this instance's
+  sequence and orders. `npm run plan -- receipt <result.json> --statement
+  <statement.txt>` validates and commits the returned judgment;
+  `npm run plan -- check` checks the receipt and continuing subject.
+- `npm run entropy -- subject` names the next review action. Live review and
+  refutation belong to the operator's instance; the export fixture exercises
+  only `review --transport fake` and its receipt, never a live model.
+- Refresh `npm run work-orders -- index` and `node scripts/lineage.mjs index`;
+  their `--check` forms check the projections. Run `node scripts/docs-check.mjs`,
+  `npm run publication:check`, `npm run reader -- check` and
+  `npm run test:docs` before handing off the planning pass.
+- Release-close reads can be inspected with `npm run release -- check-surfaces
+  --local` and `npm run resume -- status`. With no lifecycle order declared,
+  the former reports that release surfaces are unavailable. These reads do
+  not publish anything.
+
+Export writes these instance-owned seeds once; updates leave their bytes alone:
+`docs/planning/sequence.md`, `docs/planning/followups.json` (empty schema-1
+register), `docs/control/doc-ceilings.json` (no documents),
+`docs/control/doc-baseline.json` (empty editorial baseline),
+`docs/control/budgets.json` (kit defaults, no acceptances), and
+`docs/lineage/idea-ledger.md` (header and status vocabulary only). None is
+manifest-listed. Generated decision, work-order and lineage indexes are
+created by their commands. Core's register, ledger, editions and score history
+are not copied.
+
+A fresh instance has no `docs/product/00-vision.md`,
+`docs/product/13-uifa-roles.md`, `docs/planning/capability-table.md` or
+`docs/planning/critical-path-2026-09-08.md`. The planning subject names absent
+inputs as unavailable; it invents no product goals. Declaring one makes its
+normal format validation apply. The document check judges instance-owned
+product documents and links; carried operating documents retain their
+upstream history. No publication editions means `publication: no editions
+declared`. No reader profiles, examples or score rows means no editorial
+records to verify; a recorded score whose tag object is missing fails with
+its release, object and restoring fetch command.
 
 ## What runs here, and what does not
 
@@ -127,7 +184,7 @@ the same check.
 The observed selections in a fresh fixture instance are:
 
 - `npm test`: `kit-verify`, `format`, `release-preparation`, `target-worktree`, `publication-fixtures`, `backup-intake`, `beacon-portability`, `checkpoint`, `work-orders-fixtures`, `siblings-fixtures`, `adjacent-queue`, `derived-orders`, `portfolio`, `codex-continuation`, `authority-grants`.
-- `npm run test:docs`: `kit-verify`, `format`, `index`, `siblings`, `resident-bind`, `harness`, `harness-context`, `artifact-corpus`, `meta`, `registrations`, `entropy`.
+- `npm run test:docs`: `kit-verify`, `format`, `publication`, `docs-check`, `index`, `siblings`, `lineage`, `resident-bind`, `harness`, `harness-context`, `plan-refutation-current`, `artifact-corpus`, `meta`, `registrations`, `plan`, `reader-profiles`, `entropy`.
 - `npm test -- --review`: `kit-verify`, `format`, `release-preparation`, `target-worktree`, `publication-fixtures`, `backup-intake`, `beacon-portability`, `checkpoint`, `work-orders-fixtures`, `siblings-fixtures`, `adjacent-queue`, `derived-orders`, `portfolio`, `codex-continuation`, `authority-grants`, `fixture-temp-root`, `configuration-root`, `harness`, `harness-context`, `mutation`, `meta`, `registrations`.
 
 Review uses the shared runner's changed-machinery selection. This fixture
@@ -152,7 +209,6 @@ reason, including with `--list`, and records no gate result.
 | `compiler` | compiler package source audits |
 | `console` | console package is not shipped |
 | `console-docs` | console package is not shipped |
-| `docs-check` | core document ceilings and baseline |
 | `docs-check-fixtures` | core product roadmap |
 | `evidence-sources` | console build, package sources and recorded evidence editions |
 | `feedback-evidence` | core feedback evidence edition |
@@ -164,19 +220,15 @@ reason, including with `--list`, and records no gate result.
 | `kernel-docs` | kernel recorded product evidence and documentation |
 | `launchpad` | package TypeScript and build configuration needed to export |
 | `launchpad-docs` | package TypeScript and build configuration needed to export |
+| `launchpad-planning` | package TypeScript and build configuration needed to export |
 | `license-fixtures` | docs/LEGAL.md and core license fixtures |
 | `license-surfaces` | docs/LEGAL.md license pins |
-| `lineage` | core idea ledger |
 | `lineage-fixtures` | core idea ledger |
 | `local-runner-double` | role-qualification oracle reads core verification report WO-052/VER-001 |
 | `outward-lint` | core outward-vocabulary control data |
-| `plan` | unseeded planning ledger and receipts; instance planning is pending WO-202 |
 | `plan-refutation` | core reader profiles, planning history, budgets and historical Git objects |
-| `plan-refutation-current` | unseeded planning ledger and receipts; instance planning is pending WO-202 |
 | `process-debt` | historical Git trees, package sources, core budgets and work orders |
-| `publication` | core publication audience index and outlines |
 | `reader-fixtures` | core historical publication examples and their recorded comparison |
-| `reader-profiles` | core editorial profiles, examples, scores and release tag objects |
 | `release` | core tag-manifest template, TypeScript and release records |
 | `release-surfaces` | core release records and docs/LEGAL.md |
 | `resume` | core legacy lifecycle and timing observations WO-030 |
@@ -200,10 +252,14 @@ Lifecycle commands run on the carried runtime, including Codex dispatches
 that reserve a writer. `node scripts/harness.mjs check` and `emit` verify and
 regenerate the bundle. `npm run build` and the build-first `npm run harness`
 need the omitted TypeScript source. Console fixtures and browser evidence
-need their uncarried packages. Planning commands inside a fresh instance
-remain pending upstream WO-202; `npm run plan -- conditions` can report its
-console-dependent collection as unavailable. `UPSTREAM.md` names the core
-commit to inspect for each of these limits.
+need their uncarried packages. Planning commands run here (§Planning in this
+instance) with these limits: `npm run plan -- conditions` reports its
+console-dependent collection as unavailable, a live refutation or entropy
+review is run by this instance's operator rather than by any fixture, and
+`npm run release -- check-surfaces --local` still reads `docs/LEGAL.md`, which
+the kit does not seed, once an order carries a version (`release-surfaces` in
+the table above). `UPSTREAM.md` names the core commit to inspect for each of
+these limits.
 
 ## Attestations
 
@@ -261,8 +317,8 @@ instance cuts, `docs/evidence/`, `docs/verifications/` and
 cut them. The first planning pass is this instance's own: `npm run plan --
 start <slug>` cuts its orders from its own sequence; the pre-drafted WO-001
 is the only order the kit seeds, and no order of core's ever arrives in an
-update. Running planning commands inside a fresh kit is a separate pending
-capability; the upstream WO-202 tracks it.
+update. §Planning in this instance names the commands a planning pass runs
+here and the seeds it reads.
 
 ## Taking upstream updates
 

@@ -1433,6 +1433,16 @@ export function frontPageFindings(root) {
 }
 
 export function checkDocs(root, { ceilings, baseline, files } = {}) {
+  // Carried operating documents retain upstream history and links. This
+  // instance owns the ceilings and editorial baseline for its own documents.
+  const manifestPath = join(root, "KIT-MANIFEST.json");
+  const kitFiles = existsSync(manifestPath)
+    ? new Set(
+        JSON.parse(readFileSync(manifestPath, "utf8")).files.map(
+          (entry) => entry.path,
+        ),
+      )
+    : null;
   ceilings ??= JSON.parse(
     readFileSync(docPath(root, "control", "doc-ceilings.json"), "utf8"),
   );
@@ -1480,6 +1490,12 @@ export function checkDocs(root, { ceilings, baseline, files } = {}) {
   const directory = docPath(root, "product");
   const products = readdirSync(directory, { recursive: true })
     .filter((file) => file.endsWith(".md"))
+    .filter(
+      (file) =>
+        !kitFiles ||
+        (!kitFiles.has(docRelative(root, "product", file)) &&
+          file !== "README.md"),
+    )
     .sort();
   const notices = [];
   for (const name of products) {
@@ -1557,7 +1573,10 @@ export function checkDocs(root, { ceilings, baseline, files } = {}) {
       entry.count,
     );
   let historicalLinks = 0;
-  for (const failure of linkFailures(root, files)) {
+  for (const failure of linkFailures(
+    root,
+    files.filter((file) => !kitFiles?.has(file)),
+  )) {
     const key = `${failure.file}\0${failure.href}\0${failure.reason}`,
       count = exceptions.get(key) ?? 0;
     if (count > 0) {

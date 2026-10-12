@@ -449,13 +449,18 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     "README.md",
     "docs/README.md",
     "docs/control/README.md",
+    "docs/control/budgets.json",
+    "docs/control/doc-baseline.json",
+    "docs/control/doc-ceilings.json",
     "docs/decisions/README.md",
     "docs/discovery/README.md",
     "docs/evidence/README.md",
     "docs/final-reviews/README.md",
     "docs/intake/.gitkeep",
+    "docs/lineage/idea-ledger.md",
     "docs/observations/README.md",
     "docs/planning/README.md",
+    "docs/planning/followups.json",
     "docs/planning/sequence.md",
     "docs/product/README.md",
     "docs/publication/README.md",
@@ -746,6 +751,12 @@ test("WO-201 criteria 1 to 3: the three gate selections run inside an export", (
     run(process.execPath, ["scripts/meta.mjs"], { cwd: destination }),
     "generate the instance decision index",
   );
+  ok(
+    run(process.execPath, ["scripts/lineage.mjs", "index"], {
+      cwd: destination,
+    }),
+    "generate the instance lineage index",
+  );
   const notCarried = suites
     .filter((row) => row.kit)
     .map(
@@ -871,7 +882,7 @@ test("WO-201 criteria 1 to 3: the three gate selections run inside an export", (
     );
   }
   const unavailableSelections = [];
-  for (const name of ["publication", "runner-fixtures"]) {
+  for (const name of ["release-surfaces", "runner-fixtures"]) {
     const before = readGateChecks(destination);
     const result = run(
       process.execPath,
@@ -2176,6 +2187,14 @@ test("export update preserves ownership, validates actions and keeps the exporte
         '{"instance":"overlay"}\n',
       );
       writeFileSync(join(target, "README.md"), "instance front door\n");
+      for (const path of [
+        "docs/control/budgets.json",
+        "docs/control/doc-baseline.json",
+        "docs/control/doc-ceilings.json",
+        "docs/planning/followups.json",
+        "docs/lineage/idea-ledger.md",
+      ])
+        writeFileSync(join(target, path), `instance-owned ${path}\n`);
       const before = snapshot(target);
       const result = ok(runUpdate(target), "update revision B");
       assert.match(result.stdout, /update without opt-in/);

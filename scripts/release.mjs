@@ -3082,6 +3082,17 @@ const main = async () => {
       throw new Error(
         "usage: release check-surfaces [--local] [--committed [WO-NNN]]",
       );
+    if (
+      localOnly &&
+      selection.length === 0 &&
+      existsSync(join(toolRoot, "KIT-MANIFEST.json")) &&
+      readControl(toolRoot).orders.size === 0
+    ) {
+      writeOutput(
+        "release: no work order or release declared; release surfaces unavailable in this fresh instance\n",
+      );
+      return;
+    }
     const result = checkSurfaces(toolRoot, {
       revision: selection.includes("--committed") ? sourceRevision : undefined,
       expectedWorkOrderId: selection[1],

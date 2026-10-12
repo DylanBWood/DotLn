@@ -2,7 +2,7 @@
 
 import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
 import { createHash } from "node:crypto";
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 
 import { runGit } from "./lib/git.mjs";
@@ -43,6 +43,11 @@ if (unknownArgs.length > 0) {
 if (expectStale && printLocks) {
   console.error("--expect-stale and --print-locks cannot be combined");
   process.exit(2);
+}
+
+if (editionPaths.every((file) => !existsSync(file))) {
+  console.log("publication: no editions declared");
+  process.exit(0);
 }
 
 function relative(filePath) {
