@@ -53,6 +53,8 @@ Do not collapse these identities into one version number:
 - application/runtime version;
 - IR schema version;
 - artifact/configuration version;
+- instance build-overlay schema (`version: 1`), independent of its file
+  SHA-256 and the compiled build's semantic hash;
 - identity, active-mechanic, and support-facet versions;
 - transformation-set/compiler version;
 - implementation-doctrine/profile version, including any `PresencePolicy`, and

@@ -57,6 +57,7 @@ import {
   seiriLoadout,
   requireCompiled,
   outsideWriteEffect,
+  fnv1a64,
 } from "../packages/compiler/dist/src/index.js";
 import {
   contributorProgram,
@@ -103,8 +104,11 @@ import {
 import { operatorControl } from "../packages/compiler/src/operator-control.mjs";
 import {
   checkHarness,
+  decodeBuildOverlay,
   emitHarness,
   harnessInstallation,
+  harnessInstructionBlock,
+  readBuildOverlay,
 } from "./lib/harness.mjs";
 import { termsCheck } from "./terms.mjs";
 import { executorWriterRelease } from "./lib/executor-handoff.mjs";
@@ -3425,6 +3429,433 @@ test("WO-039 installed bundle detects content, missing, unexpected and manifest 
     removeFixture(root, { recursive: true });
     removeFixture(outside, { recursive: true });
   }
+});
+
+const overlayFixture = (root, value, path = "build/overlay.json") => {
+  write(
+    root,
+    "dotln.config.json",
+    json({ version: 1, build: { overlay: path } }),
+  );
+  write(root, path, json(value));
+  return { overlay: readBuildOverlay(root) };
+};
+const overlayCommand = (root, action, args = []) =>
+  spawnSync(process.execPath, ["scripts/harness.mjs", action, ...args], {
+    cwd: root,
+    env: { ...process.env, DOTLN_LAUNCHPAD: root },
+    encoding: "utf8",
+  });
+const installedOverlayBytes = (root) => {
+  const manifest = ".claude/harness-manifest.json";
+  const paths = new Set([
+    "CLAUDE.md",
+    manifest,
+    ...JSON.parse(readFileSync(join(root, manifest), "utf8")).installed.map(
+      (file) => file.path,
+    ),
+  ]);
+  return Object.fromEntries(
+    [...paths]
+      .sort()
+      .map((path) => [path, readFileSync(join(root, path), "utf8")]),
+  );
+};
+
+test("WO-076 no overlay preserves emitted bytes and narrows only declared envelope fields", (t) => {
+  const root = fixture();
+  try {
+    const before = installedOverlayBytes(root);
+    assert.equal(readBuildOverlay(root), undefined);
+    const unchanged = overlayCommand(root, "emit");
+    assert.equal(unchanged.status, 0, unchanged.stderr);
+    assert.deepEqual(installedOverlayBytes(root), before);
+    const base = contributorProgram();
+    const value = {
+      version: 1,
+      narrow: {
+        resourceLimits: { writers: 0 },
+        requiredEvidence: ["instance-check"],
+      },
+    };
+    const options = overlayFixture(root, value, "instance/build.json");
+    const narrowed = contributorProgram(defaultContributorSupportIds, value);
+    assert.deepEqual(narrowed.loadout.authorityEnvelope, {
+      ...base.loadout.authorityEnvelope,
+      resourceLimits: { writers: 0 },
+      requiredEvidence: [
+        ...base.loadout.authorityEnvelope.requiredEvidence,
+        "instance-check",
+      ],
+    });
+    const result = overlayCommand(root, "emit");
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(overlayCommand(root, "check").status, 0);
+    const after = installedOverlayBytes(root);
+    const changed = Object.keys(after).filter(
+      (path) => after[path] !== before[path],
+    );
+    const baseInstallation = harnessInstallation();
+    const installation = harnessInstallation(options);
+    const baseSemantic = baseInstallation.manifest.origin.semanticHash;
+    const nextSemantic = installation.manifest.origin.semanticHash;
+    const declaredChanges = (text) =>
+      text
+        .replaceAll(baseSemantic, nextSemantic)
+        .replaceAll('"writers": 1', '"writers": 0')
+        .replace(
+          /("requiredEvidence": \[\n)( +)"resolved-worktree"\n/g,
+          '$1$2"resolved-worktree",\n$2"instance-check"\n',
+        );
+    const hashes = new Map([[baseSemantic, nextSemantic]]);
+    const compareFiles = (original, actual) => {
+      assert.deepEqual(
+        actual.map((file) => file.path),
+        original.map((file) => file.path),
+      );
+      for (const [index, file] of original.entries()) {
+        const expected = declaredChanges(file.contents);
+        assert.equal(
+          actual[index].contents,
+          expected,
+          `only declared changes: ${file.path}`,
+        );
+        hashes.set(
+          `fnv1a64:${fnv1a64(file.contents)}`,
+          `fnv1a64:${fnv1a64(expected)}`,
+        );
+      }
+    };
+    compareFiles(baseInstallation.files, installation.files);
+    for (const [index, bundle] of baseInstallation.bundles.entries()) {
+      compareFiles(bundle.files, installation.bundles[index].files);
+      hashes.set(
+        bundle.manifest.loadout.targetHash,
+        installation.bundles[index].manifest.loadout.targetHash,
+      );
+    }
+    const expectedManifest = JSON.parse(
+      JSON.stringify(baseInstallation.manifest).replace(
+        /fnv1a64:[0-9a-f]{16}/g,
+        (hash) => hashes.get(hash) ?? hash,
+      ),
+    );
+    expectedManifest.overlay = {
+      path: options.overlay.path,
+      sha256: sha256(options.overlay.bytes),
+    };
+    assert.deepEqual(installation.manifest, expectedManifest);
+    assert.deepEqual(Object.keys(after), Object.keys(before));
+    for (const path of Object.keys(before).filter(
+      (path) => path !== ".claude/harness-manifest.json",
+    ))
+      assert.equal(
+        after[path],
+        declaredChanges(before[path]),
+        `installed declared changes: ${path}`,
+      );
+    assert.deepEqual(
+      configFor(root, "permissions").envelope,
+      narrowed.loadout.authorityEnvelope,
+    );
+    assert.deepEqual(
+      JSON.parse(after[".claude/harness-manifest.json"]).overlay,
+      {
+        path: "instance/build.json",
+        sha256: sha256(json(value)),
+      },
+    );
+    const repeated = overlayCommand(root, "emit");
+    assert.equal(repeated.status, 0, repeated.stderr);
+    assert.deepEqual(installedOverlayBytes(root), after);
+    t.diagnostic(
+      `overlay narrowing diff: ${json({ declared: value.narrow, before: base.loadout.authorityEnvelope, after: narrowed.loadout.authorityEnvelope, changed, derived: ["semantic and target hashes", "file hashes", "overlay path and SHA-256"], unrelatedChanges: [] }).trim()}`,
+    );
+    assert.ok(checkHarness(root, options).files > 1);
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-076 identity replacement, two unequips and a newly equipped switch reach the bundle", () => {
+  const root = fixture();
+  try {
+    const identity = {
+      identityId: "instance.curator",
+      version: 1,
+      name: "Instance curator",
+      dispositions: ["Keep decisions inspectable"],
+      invariants: ["Preserve the hand-written floor"],
+      updateLaws: ["Review each build change"],
+      lineage: ["instance-owned"],
+    };
+    const options = overlayFixture(root, {
+      version: 1,
+      identity,
+      unequip: ["tinkerer-economy", "communication-intent"],
+      equip: ["communication-observation"],
+    });
+    emitHarness(root, options);
+    checkHarness(root, options);
+    const manifest = JSON.parse(
+      readFileSync(join(root, ".claude/harness-manifest.json"), "utf8"),
+    );
+    const body = Object.values(installedOverlayBytes(root)).join("\n");
+    for (const id of ["tinkerer-economy", "communication-intent"])
+      assert.ok(!manifest.origin.ids.includes(id), `${id} is absent`);
+    assert.doesNotMatch(body, /Tinkerer — Economy:|Intent to Act:/);
+    assert.match(body, /Observation: Report the finding/);
+    assert.match(body, /Instance identity: Instance curator/);
+    for (const text of [
+      ...identity.dispositions,
+      ...identity.invariants,
+      ...identity.updateLaws,
+      ...identity.lineage,
+    ])
+      assert.ok(body.includes(text));
+    const program = contributorProgram([], { identity });
+    assert.equal(program.loadout.phenotype.identityId, identity.identityId);
+    const original = harnessInstallation(options);
+    const changed = harnessInstallation({
+      ...options,
+      overlay: {
+        ...options.overlay,
+        bytes: Buffer.from(
+          json({
+            ...JSON.parse(options.overlay.bytes.toString("utf8")),
+            identity: { ...identity, dispositions: ["A revised disposition"] },
+          }),
+        ),
+      },
+    });
+    assert.notEqual(
+      original.manifest.profiles[0].loadout.targetHash,
+      changed.manifest.profiles[0].loadout.targetHash,
+    );
+    assert.notEqual(
+      original.manifest.overlay.sha256,
+      changed.manifest.overlay.sha256,
+    );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-076 build none removes owned surfaces, keeps the floor and checks without a runtime snapshot", () => {
+  const root = fixture();
+  try {
+    const previous = JSON.parse(
+      readFileSync(join(root, ".claude/harness-manifest.json"), "utf8"),
+    );
+    const floor = "# Fixture locked floor\nKeep fixture source isolated.\n";
+    const options = overlayFixture(root, { version: 1, build: "none" });
+    const original = readFileSync(join(root, "CLAUDE.md"), "utf8");
+    write(root, "CLAUDE.md", harnessInstructionBlock(original));
+    const blockOnly = installedOverlayBytes(root);
+    assert.throws(
+      () => emitHarness(root, options),
+      /floor outside the generated block/,
+    );
+    assert.deepEqual(installedOverlayBytes(root), blockOnly);
+    write(root, "CLAUDE.md", original);
+    const result = overlayCommand(root, "emit");
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(readFileSync(join(root, "CLAUDE.md"), "utf8"), floor);
+    for (const file of previous.installed)
+      if (file.path !== "CLAUDE.md")
+        assert.equal(existsSync(join(root, file.path)), false, file.path);
+    const manifest = JSON.parse(
+      readFileSync(join(root, ".claude/harness-manifest.json"), "utf8"),
+    );
+    assert.deepEqual(manifest.installed, []);
+    assert.deepEqual(manifest.profiles, []);
+    removeFixture(join(root, ".runtime"), { recursive: true, force: true });
+    assert.equal(overlayCommand(root, "check").status, 0);
+    const before = installedOverlayBytes(root);
+    emitHarness(root, options);
+    assert.deepEqual(installedOverlayBytes(root), before);
+    write(
+      root,
+      "CLAUDE.md",
+      `${floor}\n<!-- dotln-harness:start -->\nresidue\n<!-- dotln-harness:end -->\n`,
+    );
+    assert.throws(() => checkHarness(root, options), /floor alone/);
+    emitHarness(root, options);
+    assert.equal(readFileSync(join(root, "CLAUDE.md"), "utf8"), floor);
+    const restored = overlayFixture(root, { version: 1 });
+    emitHarness(root, restored);
+    assert.ok(checkHarness(root, restored).files > 1);
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-076 ungranted widening refuses; grants retain provenance and the envelope hook without static denies", () => {
+  const root = fixture();
+  try {
+    const value = {
+      version: 1,
+      narrow: { allowedEffects: ["repo.read", "network.request"] },
+    };
+    overlayFixture(root, value);
+    const before = installedOverlayBytes(root);
+    const refused = overlayCommand(root, "emit", ["--out", "refused-output"]);
+    assert.equal(refused.status, 1);
+    assert.match(refused.stderr, /AUTHORITY WIDENING/);
+    assert.deepEqual(installedOverlayBytes(root), before);
+    assert.equal(existsSync(join(root, "refused-output")), false);
+    for (const grantedBy of ["operator", "host-policy"]) {
+      const grant = {
+        grantId: "instance.network",
+        version: 1,
+        grantedBy,
+        effects: ["network.request", "transport.ssh", "package.publish"],
+        operations: ["network.request", "transport.ssh", "package.publish"],
+        repo: "project",
+        reason: "Fixture owner posture",
+      };
+      const options = overlayFixture(root, { ...value, grants: [grant] });
+      emitHarness(root, options);
+      checkHarness(root, options);
+      const installation = harnessInstallation(options);
+      for (const profile of installation.manifest.profiles)
+        assert.deepEqual(
+          profile.grants.find((entry) => entry.grantId === grant.grantId),
+          {
+            ...grant,
+            effects: [...grant.effects].sort(),
+            operations: [...grant.operations].sort(),
+          },
+        );
+      const permission = configFor(root, "permissions");
+      assert.ok(permission.envelope.allowedEffects.includes("network.request"));
+      assert.ok(!permission.envelope.deniedEffects.includes("transport.ssh"));
+      assert.deepEqual(permission.facets[0].matchers, []);
+      assert.ok(existsSync(join(root, ".claude/hooks/permissions.mjs")));
+    }
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-076 unreadable and invalid overlays refuse by path before output creation or bundle writes", () => {
+  const root = fixture();
+  try {
+    const before = installedOverlayBytes(root);
+    write(
+      root,
+      "dotln.config.json",
+      json({ version: 1, build: { overlay: "build/overlay.json" } }),
+    );
+    for (const [label, contents, detail] of [
+      ["missing", null, /readable regular file/],
+      ["non-json", "not JSON", /root must be JSON/],
+      [
+        "unknown-key",
+        '{"version":1,"repositories":{}}',
+        /overlay.repositories/,
+      ],
+      [
+        "wrong-type",
+        '{"version":1,"unequip":"process-cost"}',
+        /unequip must be an array/,
+      ],
+    ]) {
+      if (contents !== null) write(root, "build/overlay.json", contents);
+      const result = overlayCommand(root, "emit", [
+        "--out",
+        `refused-${label}`,
+      ]);
+      assert.equal(result.status, 1, label);
+      assert.match(
+        result.stderr,
+        /invalid build overlay in build\/overlay\.json/,
+      );
+      assert.match(result.stderr, detail);
+      assert.equal(existsSync(join(root, `refused-${label}`)), false);
+      assert.deepEqual(installedOverlayBytes(root), before);
+    }
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-076 closed overlay schema rejects nested keys, malformed grants and switch ambiguity", () => {
+  for (const [value, field] of [
+    [{ version: 2 }, /version/],
+    [{ version: 1, build: "none", equip: [] }, /build/],
+    [{ version: 1, narrow: { unexpected: true } }, /narrow.unexpected/],
+    [{ version: 1, equip: ["unknown-unit"] }, /equip/],
+    [
+      { version: 1, equip: ["process-cost"], unequip: ["process-cost"] },
+      /equip and unequip/,
+    ],
+    [
+      { version: 1, narrow: { resourceLimits: { writers: -1 } } },
+      /resourceLimits.writers/,
+    ],
+    [
+      {
+        version: 1,
+        narrow: {
+          revocationConditions: [
+            { registryId: "condition", version: 1, unknown: true },
+          ],
+        },
+      },
+      /unknown/,
+    ],
+    [
+      {
+        version: 1,
+        grants: [
+          {
+            grantId: "instance",
+            version: 1,
+            grantedBy: "registered-repository",
+            effects: [],
+            repo: "project",
+            reason: "fixture",
+          },
+        ],
+      },
+      /grantedBy/,
+    ],
+    [
+      {
+        version: 1,
+        grants: [
+          {
+            grantId: "instance",
+            version: 1,
+            grantedBy: "operator",
+            effects: ["*"],
+            repo: "project",
+            reason: "fixture",
+          },
+        ],
+      },
+      /effects/,
+    ],
+  ])
+    assert.throws(
+      () => decodeBuildOverlay("build/overlay.json", json(value)),
+      field,
+    );
+  assert.throws(
+    () =>
+      contributorProgram(undefined, {
+        narrow: { resourceLimits: { writers: 2 } },
+      }),
+    /AUTHORITY WIDENING/,
+  );
+  const noRead = contributorProgram(undefined, {
+    narrow: { allowedEffects: [] },
+  });
+  assert.deepEqual(
+    noRead.loadout.presence[0].phases[0].envelope.allowedEffects,
+    [],
+  );
 });
 
 test("WO-054 Codex installation preserves unowned configuration before any bundle write", () => {

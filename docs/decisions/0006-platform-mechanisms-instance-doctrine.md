@@ -101,6 +101,14 @@ to inherit the founding instance's doctrine.
 
 ## Amendments
 
+- 2026-10-12, WO-076: the configured instance build overlay now composes
+  identity, existing support switches, envelope restrictions and explicit
+  operator or host-policy grants over the Contributor starter. It can select
+  no build while retaining the hand-written floor and a checkable empty
+  manifest. The overlay stays instance-owned; registration and classes keep
+  their single home in configuration. This implements Decisions 1 and 7,
+  without replacing the Clean Room floor or the host's permission policy.
+
 - 2026-09-06, phase-two planning pass: Decision 7's "later work order" is
   nominated as WO-033. The representative implementation shape is the
   operator's `DotLn-Enterprise-Starter`, an exported launchpad instance of

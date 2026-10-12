@@ -8,7 +8,10 @@ import {
   emitTargetHarness,
   checkTargetHarness,
   removeTargetHarness,
+  readBuildOverlay,
+  harnessInstallation,
 } from "./lib/harness.mjs";
+import { findLaunchpad } from "./lib/config.mjs";
 import {
   activeGateRuns,
   beginGateRun,
@@ -315,15 +318,19 @@ try {
         if (action === "remove" || options["runtime-root"])
           throw new Error("remove and --runtime-root require --target");
         const out = resolve(root, options.out ?? ".");
-        if (action === "emit") mkdirSync(out, { recursive: true });
         options.termsRoot = root;
+        options.overlay = readBuildOverlay(findLaunchpad());
         options.instructionFloor = readFileSync(
           resolve(root, "CLAUDE.md"),
           "utf8",
         );
         const result =
           action === "emit"
-            ? emitHarness(realpathSync(out), options)
+            ? (() => {
+                const installation = harnessInstallation(options);
+                mkdirSync(out, { recursive: true });
+                return emitHarness(realpathSync(out), options, installation);
+              })()
             : checkHarness(realpathSync(out), options);
         console.log(
           `harness ${action}: ${result.files} generated surfaces; local-terms list: ${result.localTerms.status}`,

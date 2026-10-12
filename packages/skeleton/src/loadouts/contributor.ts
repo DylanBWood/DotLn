@@ -11,6 +11,7 @@ import {
   type HarnessRole,
   type LoadoutGraph,
   type PresencePolicy,
+  type PresenceNarrowing,
   PRESENCE_AXES,
 } from "@dotln/compiler";
 import { personalFeedbackUnits } from "./feedback.js";
@@ -44,6 +45,9 @@ export const contributorOutsideAuthority: readonly AuthorityGrant[] = [
 ];
 const sharedIds = sharedSupports.map((support) => support.supportFacetId);
 const contributorSupports = [...executorSupports, ...sharedSupports];
+export const contributorSupportIds = contributorSupports.map(
+  ({ supportFacetId }) => supportFacetId,
+);
 export const defaultContributorSupportIds = [
   ...defaultExecutorSupportIds,
   ...sharedIds,
@@ -677,24 +681,173 @@ export function contributorRolesFor(
   });
 }
 
+export interface ContributorBuildOverlay {
+  readonly identity?: LoadoutGraph["identity"];
+  readonly narrow?: PresenceNarrowing;
+  readonly grants?: readonly AuthorityGrant[];
+}
+
+/** Narrow the saved base before compilation; only the compiler applies grants.
+ * The ceiling is the kit's immutable envelope, never the submitted replacement. */
+const overlayContributor = (
+  graph: LoadoutGraph,
+  overlay: ContributorBuildOverlay,
+): LoadoutGraph => {
+  const narrow = overlay.narrow ?? {};
+  const grants = [...contributorOutsideAuthority, ...(overlay.grants ?? [])];
+  const additions = grants.flatMap((grant) => grant.effects);
+  const widening = (field: string): never => {
+    throw new Error(`AUTHORITY WIDENING: build overlay narrow.${field}`);
+  };
+  for (const effect of narrow.allowedEffects ?? [])
+    if (
+      (!contributorEnvelope.allowedEffects.includes(effect) ||
+        contributorEnvelope.deniedEffects.includes(effect)) &&
+      !additions.includes(effect)
+    )
+      widening(`allowedEffects allows ${effect} without a grant`);
+  for (const [resource, quantity] of Object.entries(
+    narrow.resourceLimits ?? {},
+  ))
+    if (
+      quantity >
+      (Object.hasOwn(contributorEnvelope.resourceLimits, resource)
+        ? contributorEnvelope.resourceLimits[resource]!
+        : 0)
+    )
+      widening(`resourceLimits.${resource} exceeds the kit ceiling`);
+  if (
+    narrow.expiresAt !== undefined &&
+    narrow.expiresAt > contributorEnvelope.expiresAt
+  )
+    widening("expiresAt extends the kit ceiling");
+  const append = (base: readonly string[], extra: readonly string[] = []) => [
+    ...new Set([...base, ...extra]),
+  ];
+  return {
+    ...graph,
+    identity: overlay.identity ?? graph.identity,
+    authorityGrants: grants,
+    supportFacets: graph.supportFacets.map((support) => ({
+      ...support,
+      inspection: {
+        ...support.inspection,
+        ...(support.inspection.restrictions === undefined
+          ? {}
+          : {
+              restrictions: support.inspection.restrictions.filter(
+                (effect) => !additions.includes(effect),
+              ),
+            }),
+      },
+    })),
+    presence: (graph.presence ?? []).map((policy) => ({
+      ...policy,
+      phases: policy.phases.map((phase) => ({
+        ...phase,
+        envelope: {
+          ...phase.envelope,
+          ...(phase.envelope.allowedEffects === undefined
+            ? {}
+            : {
+                allowedEffects: phase.envelope.allowedEffects.filter(
+                  (effect) =>
+                    additions.includes(effect) ||
+                    ((
+                      narrow.allowedEffects ??
+                      contributorEnvelope.allowedEffects
+                    ).includes(effect) &&
+                      !(narrow.deniedEffects ?? []).some(
+                        (pattern) =>
+                          pattern === effect ||
+                          (pattern.endsWith("*") &&
+                            effect.startsWith(pattern.slice(0, -1))),
+                      )),
+                ),
+              }),
+        },
+      })),
+    })),
+    activeMechanics: graph.activeMechanics.map((active) => {
+      const base = active.authorityEnvelope;
+      const allowedEffects =
+        narrow.allowedEffects === undefined
+          ? base.allowedEffects
+          : narrow.allowedEffects.filter((effect) =>
+              base.allowedEffects.includes(effect),
+            );
+      const deniedEffects = append(base.deniedEffects, narrow.deniedEffects);
+      return {
+        ...active,
+        inspection: {
+          ...active.inspection,
+          restrictions: active.inspection.restrictions.filter(
+            (effect) => !additions.includes(effect),
+          ),
+        },
+        authorityEnvelope: {
+          ...base,
+          allowedEffects,
+          deniedEffects,
+          resourceLimits: { ...base.resourceLimits, ...narrow.resourceLimits },
+          requiredEvidence: append(
+            base.requiredEvidence,
+            narrow.requiredEvidence,
+          ),
+          expiresAt: narrow.expiresAt ?? base.expiresAt,
+          revocationEventTypes: append(
+            base.revocationEventTypes,
+            narrow.revocationEventTypes,
+          ),
+          ...(narrow.revocationConditions === undefined
+            ? {}
+            : {
+                revocationConditions: [
+                  ...(base.revocationConditions ?? []),
+                  ...narrow.revocationConditions,
+                ],
+              }),
+        },
+        workOrder: {
+          ...active.workOrder,
+          allowedOperations: active.workOrder.allowedOperations.filter(
+            (effect) => allowedEffects.includes(effect),
+          ),
+          prohibitedOperations: append(
+            active.workOrder.prohibitedOperations,
+            narrow.deniedEffects,
+          ),
+          requiredEvidence: append(
+            active.workOrder.requiredEvidence,
+            narrow.requiredEvidence,
+          ),
+        },
+      };
+    }),
+  };
+};
+
 export const contributorProgram = (
   supportIds: readonly string[] = defaultContributorSupportIds,
+  overlay?: ContributorBuildOverlay,
 ): HarnessProgram => {
-  const loadout = requireCompiled(
-    compileLoadout(
-      {
-        ...contributorWithSupports(supportIds),
+  const graph = contributorWithSupports(supportIds);
+  const composed = overlay
+    ? overlayContributor(graph, overlay)
+    : {
+        ...graph,
         authorityGrants: contributorOutsideAuthority,
-      },
-      {
-        environmentId: "contributor.project",
-        version: 1,
-        capabilities: [],
-        repo: "project",
-        baseCommit: "0".repeat(40),
-        authorityGrantRegistry: contributorOutsideAuthority,
-      },
-    ),
+      };
+  const loadout = requireCompiled(
+    compileLoadout(composed, {
+      environmentId: "contributor.project",
+      version: 1,
+      capabilities: [],
+      repo: "project",
+      baseCommit: "0".repeat(40),
+      authorityGrantRegistry:
+        composed.authorityGrants ?? contributorOutsideAuthority,
+    }),
   );
   return {
     contractVersion: "harness-v1",
@@ -702,7 +855,33 @@ export const contributorProgram = (
     worker: { name: "dotln-worker", model: "claude-opus-5-5", effort: "xhigh" },
     roles: contributorRolesFor(loadout),
     facets: [
-      permissions,
+      ...((): HarnessFacet[] => {
+        if (!overlay || permissions.kind !== "permission-guard")
+          return [permissions];
+        const matchers = permissions.matchers.filter(({ effect }) =>
+          loadout.authorityEnvelope.deniedEffects.includes(effect),
+        );
+        return [{ ...permissions, matchers }];
+      })(),
+      ...(overlay?.identity
+        ? [
+            {
+              facetId: "instance.identity",
+              kind: "prompt-fragment" as const,
+              text: `Instance identity: ${overlay.identity.name} (${overlay.identity.identityId}, version ${overlay.identity.version}). ${[
+                ["Dispositions", overlay.identity.dispositions],
+                ["Invariants", overlay.identity.invariants],
+                ["Update laws", overlay.identity.updateLaws],
+                ["Lineage", overlay.identity.lineage],
+              ]
+                .map(
+                  ([label, values]) =>
+                    `${label}: ${(values as readonly string[]).join("; ")}`,
+                )
+                .join(". ")}`,
+            },
+          ]
+        : []),
       ...contributorSupports.flatMap((support): HarnessFacet[] =>
         supportIds.includes(support.supportFacetId)
           ? support.emissions.flatMap((emission) =>
@@ -736,6 +915,7 @@ export const contributorProgram = (
 };
 export const contributorConfiguredProgram = (
   switches: ContributorSupportSwitches = {},
+  overlay?: ContributorBuildOverlay,
 ): HarnessProgram => {
   const {
     "process-cost": cost = true,
@@ -744,11 +924,14 @@ export const contributorConfiguredProgram = (
   } = switches;
   if (typeof cost !== "boolean" || typeof goal !== "boolean")
     throw new Error("shared support switches require ON/OFF booleans");
-  return contributorProgram([
-    ...executorSupportIds(executor),
-    ...(cost ? [processCost.supportFacetId] : []),
-    ...(goal ? [goalAlignment.supportFacetId] : []),
-  ]);
+  return contributorProgram(
+    [
+      ...executorSupportIds(executor),
+      ...(cost ? [processCost.supportFacetId] : []),
+      ...(goal ? [goalAlignment.supportFacetId] : []),
+    ],
+    overlay,
+  );
 };
 
 const record = "docs/discovery/harness-smoke-2026-09-07.md";
