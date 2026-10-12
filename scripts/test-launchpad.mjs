@@ -29,8 +29,17 @@ import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { defaultRoots, loadConfig } from "./lib/config.mjs";
 import { measureColdStarts } from "./lib/process-budget.mjs";
-import { BUILD_INPUTS, EMIT_CLOSURE } from "./launchpad.mjs";
+import {
+  BUILD_INPUTS,
+  EMIT_CLOSURE,
+  KIT_FILES,
+  TEST_FIXTURE_TREES,
+  TEST_SUPPORT_FILES,
+} from "./launchpad.mjs";
 import { licenseHashes } from "./license-surfaces.mjs";
+import { gateCodeIdentity, readGateChecks } from "./lib/gate-evidence.mjs";
+import { hasPackageSources } from "./lib/paths.mjs";
+import { suites } from "./test-runner.mjs";
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const scratch = realpathSync(mkdtempSync(join(tmpdir(), "dotln-launchpad-")));
@@ -198,8 +207,10 @@ mkdirSync(source, { recursive: true });
 for (const path of [
   "scripts",
   "packages/beacons",
+  ...TEST_FIXTURE_TREES,
   "package.json",
   "package-lock.json",
+  ...TEST_SUPPORT_FILES,
   "tsconfig.json",
   "LICENSE",
   "LICENSE-docs",
@@ -343,7 +354,7 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
   assert.ok(!existsSync(join(kit, "docs/LEGAL.md")));
   assert.match(
     upstream,
-    /^- `packages\/skeleton\/package\.json`, `packages\/skeleton\/dist\/src\/\*\*`: \d+ files, the compiled `@dotln\/skeleton` runtime/mu,
+    /^- `packages\/skeleton\/package\.json`, `packages\/skeleton\/dist\/\{src,test\}\/\*\*`: \d+ files, the compiled `@dotln\/skeleton` runtime and tests/mu,
   );
   // The build-free modules stay listed one per line, outside the runtime groups.
   assert.match(upstream, /^- `packages\/skeleton\/src\/gate-evidence\.mjs`$/mu);
@@ -361,13 +372,9 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
   );
   for (const [path, hash] of listed)
     assert.equal(sha256(readFileSync(join(kit, path))), hash, path);
-  // Every scripts/** and packages/beacons/** blob at the commit, and only
-  // those; the runtime packages' package.json files are blobs too.
-  const verbatim = [
-    "scripts",
-    "packages/beacons",
-    ...RUNTIME_PACKAGES.map((name) => `packages/${name}/package.json`),
-  ];
+  // Every allowlisted tree and explicit file stays byte-identical to its
+  // source blob; explicitly excluded core-record fixtures never travel.
+  const verbatim = [...KIT_FILES.trees, ...KIT_FILES.files];
   const tree = new Map(
     git(source, ["ls-tree", "-r", "-z", commit, "--", ...verbatim])
       .stdout.split("\0")
@@ -375,15 +382,17 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
       .map((entry) => {
         const [meta, path] = entry.split("\t");
         return [path, meta.split(" ")];
-      }),
+      })
+      .filter(([path]) => !KIT_FILES.excluded.includes(path)),
   );
   const copied = [...listed.keys()].filter(
     (path) =>
-      path.startsWith("scripts/") ||
-      path.startsWith("packages/beacons/") ||
-      /^packages\/[^/]+\/package\.json$/u.test(path),
+      KIT_FILES.trees.some((tree) => path.startsWith(`${tree}/`)) ||
+      KIT_FILES.files.includes(path),
   );
   assert.deepEqual(copied.sort(), [...tree.keys()].sort());
+  for (const path of KIT_FILES.excluded)
+    assert.ok(!existsSync(join(kit, path)), path);
   for (const path of copied) {
     const [mode, , object] = tree.get(path);
     const bytes = readFileSync(join(kit, path));
@@ -582,7 +591,7 @@ test("WO-074 criterion 1: an offline npm ci against the exported lockfile succee
 test("WO-075 criterion 1: the exported runtime is byte-identical to a rebuild at the named commit, sits at the paths the scripts import, is manifest-listed and holds no package source", () => {
   const listed = new Set(manifestOf(kit).files.map(({ path }) => path));
   const runtimePaths = [...listed].filter((path) =>
-    /^packages\/(?:kernel|compiler|skeleton)\/dist\/src\//u.test(path),
+    /^packages\/(?:kernel|compiler|skeleton)\/dist\/(?:src|test)\//u.test(path),
   );
   assert.ok(runtimePaths.length >= 200, `${runtimePaths.length} runtime files`);
   for (const path of files(kit)) {
@@ -593,7 +602,6 @@ test("WO-075 criterion 1: the exported runtime is byte-identical to a rebuild at
       /^packages\/(?!beacons\/)[^/]+\/src\/.*\.(?:[cm]?ts|tsx)$/u,
       path,
     );
-    assert.doesNotMatch(path, /^packages\/[^/]+\/dist\/test\//u, path);
     assert.doesNotMatch(path, /\.tsbuildinfo$/u, path);
     if (/^packages\/[^/]+\/dist\//u.test(path))
       assert.ok(listed.has(path), `${path} is manifest-listed`);
@@ -626,18 +634,362 @@ test("WO-075 criterion 1: the exported runtime is byte-identical to a rebuild at
       `${path} differs from the rebuild at ${commit}`,
     );
   for (const name of RUNTIME_PACKAGES) {
-    const built = files(join(clone, `packages/${name}/dist/src`))
-      .filter((path) => !path.endsWith(".tsbuildinfo"))
-      .map((path) => `packages/${name}/dist/src/${path}`)
+    const built = ["src", "test"]
+      .flatMap((output) =>
+        files(join(clone, `packages/${name}/dist/${output}`))
+          .filter((path) => !path.endsWith(".tsbuildinfo"))
+          .map((path) => `packages/${name}/dist/${output}/${path}`),
+      )
       .sort();
     assert.deepEqual(
       runtimePaths
         .filter((path) => path.startsWith(`packages/${name}/`))
         .sort(),
       built,
-      `${name}: the kit carries exactly the rebuilt dist/src`,
+      `${name}: the kit carries exactly the rebuilt dist/src and dist/test`,
     );
   }
+});
+
+test("WO-201 criterion 4: verify checks runtime and compiled tests, and reports other kit edits without refusing", () => {
+  const verify = (args = [], cwd = kit) =>
+    run(
+      process.execPath,
+      [join(kit, "scripts/launchpad.mjs"), "verify", ...args],
+      { cwd },
+    );
+  const fresh = ok(verify(), "fresh manifest");
+  assert.match(
+    fresh.stdout,
+    new RegExp(`^kit: \\d+ files verified at ${commit}$`, "m"),
+  );
+  ok(verify([kit], scratch), "explicit directory");
+  ok(
+    run(process.execPath, [join(kit, "scripts/launchpad.mjs"), "verify"], {
+      cwd: kit,
+      env: { ...env, DOTLN_LAUNCHPAD: source },
+    }),
+    "verify the current kit even with an external launchpad override",
+  );
+  for (const output of ["src", "test"]) {
+    const path = manifestOf(kit).files.find(
+      ({ path }) =>
+        path.startsWith(`packages/kernel/dist/${output}/`) &&
+        path.endsWith(".js"),
+    ).path;
+    const original = readFileSync(join(kit, path));
+    try {
+      const changed = Buffer.from(original);
+      changed[0] ^= 1;
+      writeFileSync(join(kit, path), changed);
+      const refused = verify();
+      assert.equal(refused.status, 1, refused.stdout);
+      assert.ok(refused.stderr.includes(path), refused.stderr);
+    } finally {
+      writeFileSync(join(kit, path), original);
+    }
+  }
+  const script = join(kit, "scripts/bootstrap.mjs");
+  const original = readFileSync(script);
+  try {
+    writeFileSync(
+      script,
+      Buffer.concat([original, Buffer.from("\n// Instance edit.\n")]),
+    );
+    const advisory = ok(verify(), "edited kit file");
+    assert.equal(
+      advisory.stdout
+        .split("\n")
+        .filter((line) => line.includes("kit files differ")).length,
+      1,
+    );
+    assert.match(
+      advisory.stdout,
+      /^kit: 1 kit files differ from the manifest$/m,
+    );
+  } finally {
+    writeFileSync(script, original);
+  }
+});
+
+test("WO-201 criteria 1 to 3: the three gate selections run inside an export", (t) => {
+  const started = performance.now();
+  const destination = commitExport(join(scratch, "gate-kit"));
+  // With no main comparison ref, review selects every machinery row. This
+  // makes the three selections together exercise the entire carried inventory.
+  git(destination, ["branch", "-m", "instance"]);
+  assert.equal(hasPackageSources(destination), false);
+  ok(
+    run(
+      "npm",
+      ["ci", "--offline", "--no-audit", "--no-fund", "--loglevel=error"],
+      { cwd: destination },
+    ),
+    "gate kit offline install",
+  );
+  // Follow the kit's documented first steps: activation creates this
+  // instance's own indexes, without importing any of core's control history.
+  ok(
+    run(
+      process.execPath,
+      [
+        "scripts/resume.mjs",
+        "activate",
+        "WO-001",
+        "docs/work-orders/WO-001-environment-truth.md",
+      ],
+      { cwd: destination },
+    ),
+    "activate the kit's first order",
+  );
+  ok(
+    run(process.execPath, ["scripts/meta.mjs"], { cwd: destination }),
+    "generate the instance decision index",
+  );
+  const notCarried = suites
+    .filter((row) => row.kit)
+    .map(
+      (row) =>
+        `kit: ${row.name} not carried (${row.kit.slice("core-only: ".length)})`,
+    )
+    .sort();
+  const exclusions = (text) =>
+    text
+      .split("\n")
+      .filter((line) => /^kit: .+ not carried \(/u.test(line))
+      .sort();
+  const inventory = suites
+    .filter((row) => !row.kit)
+    .map((row) => (row.build ? "kit-verify" : row.name))
+    .sort();
+  const selections = [
+    { command: ["test"], args: [] },
+    { command: ["run", "test:docs"], args: ["--document"] },
+    { command: ["test", "--", "--review"], args: ["--review"] },
+  ];
+  const observed = [];
+  const ran = new Set();
+  for (const { command, args } of selections) {
+    const list = ok(
+      run(process.execPath, ["scripts/test-runner.mjs", ...args, "--list"], {
+        cwd: destination,
+      }),
+      "kit suite list",
+    );
+    assert.deepEqual(exclusions(list.stdout), notCarried);
+    const names = list.stdout
+      .split("\n")
+      .filter((line) => line.includes(" — protects:"))
+      .map((line) => line.split(" — ")[0]);
+    assert.equal(names[0], "kit-verify");
+    assert.ok(!names.includes("build"));
+    // These suites use carried inputs and create their own fixture records.
+    // Keep them in both product selections even if the declarations change.
+    if (!args.includes("--document"))
+      for (const name of ["publication-fixtures", "beacon-portability"])
+        assert.ok(names.includes(name), `${name} must run in the kit`);
+    const before = gateCodeIdentity(destination);
+    const selectionStarted = performance.now();
+    const result = ok(
+      run(
+        process.execPath,
+        ["scripts/harness.mjs", "bounded", "--", "npm", ...command],
+        { cwd: destination },
+      ),
+      `kit npm ${command.join(" ")}`,
+    );
+    assert.deepEqual(exclusions(result.stdout), notCarried);
+    assert.doesNotMatch(
+      result.stdout,
+      /PROGRESS \[build\]|scripts\/build\.mjs/u,
+    );
+    const first = /^PROGRESS \[(?!bounded-probe\])([^\]]+)\]/mu.exec(
+      result.stdout,
+    );
+    assert.equal(first?.[1], "kit-verify", result.stdout);
+    const row = readGateChecks(destination).at(-1);
+    assert.equal(row.exitCode, 0);
+    assert.equal(row.codeIdentity, before);
+    assert.equal(gateCodeIdentity(destination), before);
+    assert.deepEqual(
+      row.cases.map((suite) => suite.name).sort(),
+      [...names].sort(),
+    );
+    for (const suite of row.cases) ran.add(suite.name);
+    observed.push({
+      command: `npm ${command.join(" ")}`,
+      wallDurationMs: Math.round(performance.now() - selectionStarted),
+      firstTask: first[1],
+      gate: {
+        checkId: row.checkId,
+        treeHash: row.treeHash,
+        codeIdentity: row.codeIdentity,
+        evidenceRef: row.evidenceRef,
+        recordedAt: row.recordedAt,
+        durationMs: row.durationMs,
+        exitCode: row.exitCode,
+        executed: row.executed,
+        identityUnchanged: row.identityUnchanged,
+        executionMode: row.executionMode,
+        requiredSuites: row.requiredSuites,
+        cases: row.cases.map((suite) => ({
+          name: suite.name,
+          durationMs: suite.durationMs,
+          exitCode: suite.exitCode,
+          executed: suite.executed,
+          reused: Boolean(suite.reused),
+          ...(suite.sourceRow
+            ? {
+                sourceRow: {
+                  task: suite.sourceRow.task,
+                  recordedAt: suite.sourceRow.recordedAt,
+                  codeIdentity: suite.sourceRow.codeIdentity,
+                  evidenceRef: suite.sourceRow.evidenceRef,
+                },
+              }
+            : {}),
+        })),
+      },
+    });
+  }
+  assert.deepEqual([...ran].sort(), inventory);
+  const readme = readFileSync(join(destination, "README.md"), "utf8")
+    .split("## What runs here, and what does not")[1]
+    .split("## Attestations")[0];
+  for (const row of suites.filter((row) => row.kit))
+    assert.ok(
+      readme.includes(
+        `| \`${row.name}\` | ${row.kit.slice("core-only: ".length)} |`,
+      ),
+      `README omission: ${row.name}`,
+    );
+  for (const { command, gate } of observed) {
+    const declared = `- \`${command}\`: ${gate.requiredSuites.map((name) => `\`${name}\``).join(", ")}.`;
+    assert.ok(
+      readme.includes(declared),
+      `README selection differs: ${command}`,
+    );
+  }
+  const unavailableSelections = [];
+  for (const name of ["publication", "runner-fixtures"]) {
+    const before = readGateChecks(destination);
+    const result = run(
+      process.execPath,
+      [
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "npm",
+        "test",
+        "--",
+        "--only",
+        name,
+      ],
+      { cwd: destination },
+    );
+    assert.equal(result.status, 1, result.stdout + result.stderr);
+    assert.ok(
+      (result.stdout + result.stderr).includes(
+        `Suite ${name} is not carried in this kit (${suites.find((row) => row.name === name).kit})`,
+      ),
+      result.stdout + result.stderr,
+    );
+    assert.deepEqual(readGateChecks(destination), before);
+    unavailableSelections.push({
+      name,
+      exitCode: result.status,
+      gateRecorded: false,
+    });
+  }
+  const editedScript = join(destination, "scripts/bootstrap.mjs");
+  const scriptBytes = readFileSync(editedScript);
+  try {
+    writeFileSync(
+      editedScript,
+      Buffer.concat([scriptBytes, Buffer.from("\n// Instance edit.\n")]),
+    );
+    const advisory = ok(
+      run(
+        process.execPath,
+        [
+          "scripts/harness.mjs",
+          "bounded",
+          "--",
+          "npm",
+          "test",
+          "--",
+          "--only",
+          "kit-verify",
+        ],
+        { cwd: destination },
+      ),
+      "gate forwards edited-kit advisory",
+    );
+    assert.match(
+      advisory.stdout,
+      /\[kit-verify\] kit: 1 kit files differ from the manifest/u,
+    );
+  } finally {
+    writeFileSync(editedScript, scriptBytes);
+  }
+  const listed = manifestOf(destination).files;
+  const changedPath = listed.find(
+    ({ path }) =>
+      path.startsWith("packages/kernel/dist/test/") && path.endsWith(".js"),
+  ).path;
+  const original = readFileSync(join(destination, changedPath));
+  const identity = gateCodeIdentity(destination);
+  let refused;
+  try {
+    const changed = Buffer.from(original);
+    changed[0] ^= 1;
+    writeFileSync(join(destination, changedPath), changed);
+    assert.notEqual(
+      gateCodeIdentity(destination),
+      identity,
+      "the ordinary gate identity includes tracked compiled tests",
+    );
+    refused = run(
+      process.execPath,
+      ["scripts/harness.mjs", "bounded", "--", "npm", "test"],
+      { cwd: destination },
+    );
+    assert.equal(refused.status, 1);
+    assert.ok(
+      refused.stdout.includes(changedPath),
+      refused.stdout + refused.stderr,
+    );
+    const failure = readGateChecks(destination).at(-1);
+    assert.equal(
+      failure.cases.find((row) => row.name === "kit-verify").exitCode,
+      1,
+    );
+    assert.ok(
+      failure.cases
+        .filter((row) => row.executed)
+        .every((row) => row.name === "kit-verify"),
+    );
+  } finally {
+    writeFileSync(join(destination, changedPath), original);
+  }
+  assert.equal(gateCodeIdentity(destination), identity);
+  const bytes = (entries) =>
+    entries.reduce(
+      (sum, { path }) => sum + readFileSync(join(destination, path)).length,
+      0,
+    );
+  const added = listed.filter(
+    ({ path }) =>
+      /^packages\/[^/]+\/dist\/test\//u.test(path) ||
+      TEST_FIXTURE_TREES.some((tree) => path.startsWith(`${tree}/`)) ||
+      TEST_SUPPORT_FILES.includes(path),
+  );
+  const excludedFixtureBytes = readFileSync(
+    join(source, KIT_FILES.excluded[0]),
+  ).length;
+  t.diagnostic(
+    `WO201_GATE_IN_KIT ${JSON.stringify({ selections: observed, notCarried, carried: inventory, unavailableSelections, refusal: { path: changedPath, exitCode: refused.status, trackedCodeIdentityChanged: true }, kitFiles: listed.length, kitBytes: bytes(listed), addedFiles: added.length, addedBytes: bytes(added), excludedFixtureBytes, netFileSetGrowthBytes: bytes(added) - excludedFixtureBytes, durationMs: Math.round(performance.now() - started) })}`,
+  );
 });
 
 test("WO-075 criterion 2: harness check passes inside the export and refuses a one-byte drift, no hook imports by absolute path, the snapshot is ignored, a second emit changes no listed byte, and every installed Read directive resolves", () => {
@@ -785,7 +1137,9 @@ test("WO-074 criteria 1, 2 and 5: without package source the export activates it
     .filter((path) => path.startsWith("packages/skeleton/"))
     .sort();
   assert.deepEqual(
-    skeleton.filter((path) => !path.startsWith("packages/skeleton/dist/src/")),
+    skeleton.filter(
+      (path) => !/^packages\/skeleton\/(?:dist|fixtures)\//u.test(path),
+    ),
     [
       "packages/skeleton/loadouts/grants.json",
       "packages/skeleton/package.json",

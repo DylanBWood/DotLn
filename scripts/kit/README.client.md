@@ -3,7 +3,7 @@
 This repository is a launchpad instance exported from DotLn core: the control
 plane under `scripts/` with its suites, the compiled runtime of
 `@dotln/kernel`, `@dotln/compiler` and `@dotln/skeleton` under
-`packages/<name>/dist/src/`, the build-free Beacon workspace under
+`packages/<name>/dist/src/` and compiled tests under `dist/test/`, the build-free Beacon workspace under
 `packages/beacons`, the Contributor harness bundle under `.claude/`,
 `.agents/` and `.codex/` that the export's own `node scripts/harness.mjs emit`
 wrote from that runtime, the operating documents and the templates a new
@@ -106,6 +106,8 @@ runtime produces the same bytes; `check` detects drift against both.
 6. Activate the pre-drafted first order:
    `npm run resume -- activate WO-001 docs/work-orders/WO-001-environment-truth.md`,
    then `npm run resume -- status` (`--json` is the canonical record).
+   Run `npm run meta` to generate the decision index from this instance's own
+   records before its first gate, and again whenever its decisions change.
 7. Open a session that reads the operating contract (`CLAUDE.md`, symlinked as
    `AGENTS.md`); its generated harness block routes each resume phrase to the
    role skill under `.claude/skills/` or `.agents/skills/`, and the generated
@@ -113,19 +115,95 @@ runtime produces the same bytes; `check` detects drift against both.
 
 ## What runs here, and what does not
 
-With the runtime present, every lifecycle command runs here, including the
-Codex dispatches that reserve a writer (`next`, `verify`, `fix`,
-`final-review`, `release-close`), and `node scripts/harness.mjs check` and
-`emit` verify and regenerate the bundle. `npm run build` needs the TypeScript
-source core keeps, and `npm test` and `npm run harness` build before they run,
-so neither runs here; that is a recorded limit of the kit (core's follow-up
-FUP-8fb7ae17dd0fad5b in `docs/planning/followups.json` at the commit
-`UPSTREAM.md` names), not a defect of your instance. `scripts/console-fixtures.mjs`
-imports `@dotln/console`, which the kit does not carry, and fails at import
-here; the vertical's browser evidence reaches `@dotln/browser-evidence` only
-on the path that uses it, and `npm run plan -- conditions` reports its
-collect-sources row as unavailable because that row reaches `@dotln/console`.
-`UPSTREAM.md` names the commit to read them at.
+After the first steps above, `npm test`, `npm run test:docs` and
+`npm test -- --review` run inside this instance without package source. Each
+selection first runs `kit-verify` instead of `build`. It hashes every
+manifest-listed compiled runtime and test file, and refuses a changed,
+missing or nonregular compiled file by path before any other task. Other
+kit-file changes produce one advisory line, so your script edits can still
+be judged by the gates. Run `node scripts/launchpad.mjs verify` directly for
+the same check.
+
+The observed selections in a fresh fixture instance are:
+
+- `npm test`: `kit-verify`, `format`, `release-preparation`, `target-worktree`, `publication-fixtures`, `backup-intake`, `beacon-portability`, `checkpoint`, `work-orders-fixtures`, `siblings-fixtures`, `adjacent-queue`, `derived-orders`, `portfolio`, `codex-continuation`, `authority-grants`.
+- `npm run test:docs`: `kit-verify`, `format`, `index`, `siblings`, `resident-bind`, `harness`, `harness-context`, `artifact-corpus`, `meta`, `registrations`, `entropy`.
+- `npm test -- --review`: `kit-verify`, `format`, `release-preparation`, `target-worktree`, `publication-fixtures`, `backup-intake`, `beacon-portability`, `checkpoint`, `work-orders-fixtures`, `siblings-fixtures`, `adjacent-queue`, `derived-orders`, `portfolio`, `codex-continuation`, `authority-grants`, `fixture-temp-root`, `configuration-root`, `harness`, `harness-context`, `mutation`, `meta`, `registrations`.
+
+Review uses the shared runner's changed-machinery selection. This fixture
+has no upstream comparison ref, so its review selects every carried
+machinery row; an instance with a comparison ref runs those selected by
+its changes. Passing tasks at the same code identity may be reused;
+`kit-verify` always runs fresh.
+
+These suite rows stay core-only. Every selection, including `--list`, prints
+each name and its reason. A row without a declaration runs in its ordinary
+selection; these declarations do not change core's gate. An explicit
+`--only <suite>` request for an unavailable row fails with its name and
+reason, including with `--list`, and records no gate result.
+
+| Suite | Input the kit does not carry |
+| --- | --- |
+| `artifact-evidence` | package sources and core artifact-identity evidence edition |
+| `authority-evidence` | core authority evidence edition and historical Git objects |
+| `browser-evidence` | browser-evidence package and browser runtime are not shipped |
+| `comment-labels` | core comment fingerprint baseline |
+| `comment-labels-fixtures` | core corpus profile collector |
+| `compiler` | compiler package source audits |
+| `console` | console package is not shipped |
+| `console-docs` | console package is not shipped |
+| `docs-check` | core document ceilings and baseline |
+| `docs-check-fixtures` | core product roadmap |
+| `evidence-sources` | console build, package sources and recorded evidence editions |
+| `feedback-evidence` | core feedback evidence edition |
+| `github-body` | core outward-vocabulary control data |
+| `harness-evidence` | package sources, historical harness baseline and live evidence |
+| `harness-fixtures` | Entropy Reducer baseline history and package sources |
+| `harness-probe` | core security, budget and discovery records plus package sources |
+| `kernel` | kernel package source audits and package README |
+| `kernel-docs` | kernel recorded product evidence and documentation |
+| `launchpad` | package TypeScript and build configuration needed to export |
+| `launchpad-docs` | package TypeScript and build configuration needed to export |
+| `license-fixtures` | docs/LEGAL.md and core license fixtures |
+| `license-surfaces` | docs/LEGAL.md license pins |
+| `lineage` | core idea ledger |
+| `lineage-fixtures` | core idea ledger |
+| `local-runner-double` | role-qualification oracle reads core verification report WO-052/VER-001 |
+| `outward-lint` | core outward-vocabulary control data |
+| `plan` | unseeded planning ledger and receipts; instance planning is pending WO-202 |
+| `plan-refutation` | core reader profiles, planning history, budgets and historical Git objects |
+| `plan-refutation-current` | unseeded planning ledger and receipts; instance planning is pending WO-202 |
+| `process-debt` | historical Git trees, package sources, core budgets and work orders |
+| `publication` | core publication audience index and outlines |
+| `reader-fixtures` | core historical publication examples and their recorded comparison |
+| `reader-profiles` | core editorial profiles, examples, scores and release tag objects |
+| `release` | core tag-manifest template, TypeScript and release records |
+| `release-surfaces` | core release records and docs/LEGAL.md |
+| `resume` | core legacy lifecycle and timing observations WO-030 |
+| `runner-fixtures` | package sources, core build inventory and license pins |
+| `skeleton` | skeleton package source audits |
+| `skeleton-docs` | skeleton recorded product evidence and documentation |
+| `target-publish` | core outward-vocabulary control data |
+| `verification-evidence` | package sources and core verification evidence edition |
+| `vertical` | core outward-vocabulary control data |
+| `wo107-schema` | historical corpus observations, collector and Git objects |
+| `worktree` | docs/LEGAL.md and core release inputs |
+| `worktree-integration` | console package, core source and publication inputs |
+
+The compiled kernel, compiler and skeleton tests travel in the kit. Their
+combined package rows also contain source audits or checks of core's
+recorded product evidence, so those complete rows remain core-only as listed
+above. The excluded `scripts/fixtures/wo138-local-role-qualification.json`
+is derived from core's WO-052 verification report and does not travel.
+
+Lifecycle commands run on the carried runtime, including Codex dispatches
+that reserve a writer. `node scripts/harness.mjs check` and `emit` verify and
+regenerate the bundle. `npm run build` and the build-first `npm run harness`
+need the omitted TypeScript source. Console fixtures and browser evidence
+need their uncarried packages. Planning commands inside a fresh instance
+remain pending upstream WO-202; `npm run plan -- conditions` can report its
+console-dependent collection as unavailable. `UPSTREAM.md` names the core
+commit to inspect for each of these limits.
 
 ## Attestations
 
@@ -144,9 +222,16 @@ same.
 ## Kit files and instance files
 
 Kit files are the manifest-listed set: `scripts/**` (the kit templates under
-`scripts/kit/` among them), `packages/beacons/**`, the compiled runtime
-`packages/<name>/dist/src/**` with its `package.json` for kernel, compiler and
-skeleton, the build-free modules under `packages/*/src/*.mjs`, the harness
+`scripts/kit/` among them, excluding the core-report qualification fixture),
+`packages/beacons/**`, the compiled runtime and tests
+`packages/<name>/dist/{src,test}/**` with their `package.json` for kernel,
+compiler and skeleton, the data and executable doubles under
+`packages/kernel/test/fixtures/`, `packages/compiler/fixtures/` and
+`packages/skeleton/fixtures/`, the identity corpus test, its two helpers, manifest and synthetic ID vectors
+under `corpus/`, and the three mutation self-test modules under
+`corpus/mutation/`,
+`.prettierignore`, `.prettierrc.json`, the build-free modules under
+`packages/*/src/*.mjs`, the harness
 bundle under `.claude/`, `.agents/` and `.codex/` (`.claude/harness-manifest.json`
 among them), `package.json`, `package-lock.json`, `dotln.config.example.json`,
 `UPSTREAM.md`, the license files, `docs/product/07-execution-guide.md`,
@@ -170,6 +255,15 @@ settings belong in the ignored `.claude/settings.local.json`. Two READMEs are ge
 (`activate`) and `docs/lineage/` gets its index from
 `node scripts/lineage.mjs index` once a ledger exists.
 
+**Your orders live here.** `docs/work-orders/` holds the orders this
+instance cuts, `docs/evidence/`, `docs/verifications/` and
+`docs/final-reviews/` their records, and `docs/planning/` the passes that
+cut them. The first planning pass is this instance's own: `npm run plan --
+start <slug>` cuts its orders from its own sequence; the pre-drafted WO-001
+is the only order the kit seeds, and no order of core's ever arrives in an
+update. Running planning commands inside a fresh kit is a separate pending
+capability; the upstream WO-202 tracks it.
+
 ## Taking upstream updates
 
 From a clean DotLn core checkout at the commit you want to take, with its
@@ -187,6 +281,19 @@ Locally edited files are listed as refused and keep their prior manifest hashes,
 including dropped files, so a repeat update refuses them again. A new kit path
 occupied by an instance file is also refused and stays outside the manifest.
 Resolve these files by hand and review the update before committing it.
+
+**Editing a kit file is choosing the true-fork path.** While its bytes differ
+from both its prior manifest hash and the incoming kit, every update lists
+that file as refused and keeps its prior manifest hash; nothing merges core's
+change into it. If your bytes already equal the incoming kit, the update keeps
+them and records the incoming hash. `node scripts/launchpad.mjs verify`
+reports other kit files as differing from the manifest while the gates run
+on your bytes; a changed file under `packages/<name>/dist/` instead refuses
+verification by path. Update preview is pending upstream WO-203; the current
+update reports its refused files when run. To return, restore the file to the
+manifest's bytes before the next update, or keep the fork and take nothing
+more for that file. Instance files are yours and are outside the kit-file
+refusal list; explicitly opted-in instance actions have their own checks below.
 
 The manifest records the new source commit; refused files can still come from
 an older revision. `UPSTREAM.md` takes the new provenance when it is unmodified.
@@ -242,6 +349,6 @@ The license files this export carries are listed in the manifest and
 generated `package.json` says `UNLICENSED`; replace both with the terms the
 owner of this repository decides. The verbatim `packages/*/package.json` files
 keep upstream's label in either export because they are byte-identical to the
-commit. The compiled runtime is this project's own output under the same
+commit. The compiled runtime and tests are this project's own output under the same
 terms; the export bundles no third-party file, and `npm ci` installs the
 pinned development dependencies from the registry or a local cache.

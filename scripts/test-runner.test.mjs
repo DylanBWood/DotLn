@@ -65,6 +65,58 @@ import {
 
 const root = resolve(import.meta.dirname, "..");
 const barrier = { name: "build", command: ["build"], build: true };
+test("kit mode follows the gate repository, including its list and exclusions", async (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-kit-list-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  writeFileSync(join(repo, "KIT-MANIFEST.json"), "{}\n");
+  const lines = [];
+  const log = console.log;
+  try {
+    console.log = (line) => lines.push(String(line));
+    assert.equal((await runGate(["--list"], repo)).exitCode, 0);
+  } finally {
+    console.log = log;
+  }
+  assert.ok(lines.some((line) => line.startsWith("kit-verify — protects:")));
+  assert.ok(!lines.some((line) => line.startsWith("build — protects:")));
+  assert.ok(
+    lines.some((line) => line.startsWith("publication-fixtures — protects:")),
+  );
+  assert.deepEqual(
+    lines.filter((line) => line.startsWith("kit: ")).sort(),
+    suites
+      .filter((row) => row.kit)
+      .map(
+        (row) =>
+          `kit: ${row.name} not carried (${row.kit.slice("core-only: ".length)})`,
+      )
+      .sort(),
+  );
+});
+
+test("kit --only refuses unavailable suites without running or recording a check, including list requests", async (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-kit-only-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  writeFileSync(join(repo, "KIT-MANIFEST.json"), "{}\n");
+  const lines = [];
+  const log = console.log;
+  try {
+    console.log = (line) => lines.push(String(line));
+    for (const name of ["kernel", "publication", "runner-fixtures"]) {
+      const row = suites.find((row) => row.name === name);
+      for (const flags of [[], ["--list"]])
+        await assert.rejects(runGate(["--only", name, ...flags], repo), {
+          message: `Suite ${name} is not carried in this kit (${row.kit})`,
+        });
+    }
+  } finally {
+    console.log = log;
+  }
+  assert.ok(lines.every((line) => /^kit: .+ not carried \(/u.test(line)));
+  assert.deepEqual(readGateChecks(repo), []);
+  assert.deepEqual(activeGateRuns(repo), []);
+});
+
 test("WO-174 product read guard fails the task and names the case and excluded tracked input, including inherited Node children", async (t) => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-product-reads-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
@@ -906,6 +958,51 @@ test("stale generated evidence stops the gate before expensive fixtures", async 
     false,
   );
 });
+test("a kit verifies carried code before formatting and refuses every later task on drift", async () => {
+  const table = [
+    { name: "kit-verify", build: true, command: ["verify"], outputs: [] },
+    { name: "format", preflight: true, command: ["format"] },
+    { name: "test", command: ["test"] },
+  ];
+  for (const failure of [undefined, "kit-verify", "format"]) {
+    const executed = [];
+    const result = await scheduleSuites(table, {
+      concurrency: 1,
+      execute: async (row) => {
+        executed.push(row.name);
+        return {
+          name: row.name,
+          exitCode: row.name === failure ? 1 : 0,
+          executed: true,
+          durationMs: 1,
+          output: "",
+        };
+      },
+    });
+    assert.deepEqual(
+      executed,
+      failure === "kit-verify"
+        ? ["kit-verify"]
+        : failure === "format"
+          ? ["kit-verify", "format"]
+          : ["kit-verify", "format", "test"],
+    );
+    assert.equal(new Set(result.map((row) => row.name)).size, result.length);
+    assert.equal(result[0].name, "kit-verify");
+    if (failure !== "kit-verify")
+      assert.deepEqual(
+        result.find((row) => row.name === "format").predecessors,
+        ["kit-verify"],
+      );
+    if (!failure)
+      assert.ok(
+        result
+          .find((row) => row.name === "test")
+          .predecessors.includes("format"),
+      );
+  }
+});
+
 test("package tests and fixtures wait for preflights and never start after a failed preflight", async () => {
   for (const indexExit of [0, 1]) {
     const selected = suites.filter((row) =>

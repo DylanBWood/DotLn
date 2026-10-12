@@ -79,6 +79,25 @@ export const RUNTIME_PACKAGES = Object.freeze([
 ]);
 // The compiled output a runtime package ships, relative to its directory.
 export const RUNTIME_OUTPUT = "dist/src";
+export const RUNTIME_TEST_OUTPUT = "dist/test";
+export const TEST_FIXTURE_TREES = Object.freeze([
+  "packages/kernel/test/fixtures",
+  "packages/compiler/fixtures",
+  "packages/skeleton/fixtures",
+]);
+export const TEST_SUPPORT_FILES = Object.freeze([
+  ".prettierignore",
+  ".prettierrc.json",
+  "corpus/harness/id-corpus-lib.mjs",
+  "corpus/harness/wo101-support.mjs",
+  "corpus/harness/wo101-id-corpus.test.mjs",
+  "corpus/manifests/WO-101.json",
+  "corpus/fixtures/ids/stable-hash-vectors.jsonl",
+  "corpus/fixtures/ids/command-id-vectors.jsonl",
+  "corpus/mutation/enumerate.mjs",
+  "corpus/mutation/mutate.mjs",
+  "corpus/mutation/wo108-selftest.test.mjs",
+]);
 // The workspaces the kit carries, each with its node_modules link in the
 // lockfile: the build-free Beacon workspace and the three compiled packages.
 export const KIT_WORKSPACES = Object.freeze([
@@ -150,10 +169,14 @@ export const BUILD_FREE_MODULES = Object.freeze([
  * [root key, ...segments], read through the kit root's configuration and
  * written at the kit's default layout. Instance files are never here. */
 export const KIT_FILES = Object.freeze({
-  trees: Object.freeze(["scripts", "packages/beacons"]),
+  trees: Object.freeze(["scripts", "packages/beacons", ...TEST_FIXTURE_TREES]),
   files: Object.freeze([
+    ...TEST_SUPPORT_FILES,
     ...BUILD_FREE_MODULES,
     ...RUNTIME_PACKAGES.map((name) => `packages/${name}/package.json`),
+  ]),
+  excluded: Object.freeze([
+    "scripts/fixtures/wo138-local-role-qualification.json",
   ]),
   licenses: LICENSE_FILES,
   // 08 travels because the emitted reviewer skill directs a read of its
@@ -269,8 +292,10 @@ export function readKitSources(root, commit, { license = "default" } = {}) {
     ...explicit,
     ...entries
       .map((entry) => entry.path)
-      .filter((path) =>
-        KIT_FILES.trees.some((tree) => path.startsWith(`${tree}/`)),
+      .filter(
+        (path) =>
+          KIT_FILES.trees.some((tree) => path.startsWith(`${tree}/`)) &&
+          !KIT_FILES.excluded.includes(path),
       ),
   ]);
   for (const path of wanted) {
@@ -506,17 +531,30 @@ const upstreamDocument = (
   // [label, prefixes, what the group is]; a file outside every group is listed
   // on its own line.
   const groups = [
-    ["`scripts/**`", ["scripts/"], "byte-identical to the commit"],
+    [
+      "`scripts/**`",
+      ["scripts/"],
+      "byte-identical to the commit except the excluded core-report qualification fixture",
+    ],
     [
       "`packages/beacons/**`",
       ["packages/beacons/"],
       "byte-identical to the commit",
     ],
     ...RUNTIME_PACKAGES.map((name) => [
-      `\`packages/${name}/package.json\`, \`packages/${name}/${RUNTIME_OUTPUT}/**\``,
-      [`packages/${name}/package.json`, `packages/${name}/${RUNTIME_OUTPUT}/`],
-      `the compiled \`@dotln/${name}\` runtime: \`package.json\` byte-identical to the commit, \`${RUNTIME_OUTPUT}/\` built from the commit's sources at export time`,
+      `\`packages/${name}/package.json\`, \`packages/${name}/dist/{src,test}/**\``,
+      [
+        `packages/${name}/package.json`,
+        `packages/${name}/${RUNTIME_OUTPUT}/`,
+        `packages/${name}/${RUNTIME_TEST_OUTPUT}/`,
+      ],
+      `the compiled \`@dotln/${name}\` runtime and tests: \`package.json\` byte-identical to the commit, \`dist/{src,test}/\` built from the commit's sources at export time`,
     ]),
+    [
+      "test fixtures",
+      TEST_FIXTURE_TREES.map((tree) => `${tree}/`),
+      "byte-identical fixture data and executable doubles from the commit",
+    ],
     [
       "`.claude/**`, `.agents/**`, `.codex/**`",
       [".claude/", ".agents/", ".codex/"],
@@ -542,7 +580,7 @@ const upstreamDocument = (
     "This launchpad was exported from DotLn core by `launchpad export`. The kit is the",
     "manifest-listed set: its verbatim files are Git blobs at the commit below;",
     "`package.json`, `package-lock.json` and this file are generated from them; the",
-    "compiled runtime under `packages/<name>/dist/src/` was built at export time from",
+    "compiled runtime and tests under `packages/<name>/dist/{src,test}/` were built at export time from",
     "the work tree after its package sources, project files and build script were",
     "verified equal to the commit; and the harness bundle was emitted inside this",
     "export from that runtime and verified against the bundle core's compiled",
@@ -683,7 +721,7 @@ const binTargets = (sources) =>
   );
 
 /** The compiled runtime the kit carries: every regular file under
- * packages/<name>/dist/src of each runtime package, read from the build
+ * packages/<name>/dist/src and dist/test of each runtime package, read from the build
  * atomicBuild just published. A symlink or any other entry refuses. The
  * manifest sorts; this map's order is the walk's. */
 const readRuntime = (root) => {
@@ -707,7 +745,8 @@ const readRuntime = (root) => {
     }
   };
   for (const name of RUNTIME_PACKAGES)
-    walk(`packages/${name}/${RUNTIME_OUTPUT}`);
+    for (const output of [RUNTIME_OUTPUT, RUNTIME_TEST_OUTPUT])
+      walk(`packages/${name}/${output}`);
   return files;
 };
 
@@ -1154,7 +1193,11 @@ const kitPath = (path) =>
   ].includes(path) ||
     [
       ...KIT_FILES.trees,
-      ...RUNTIME_PACKAGES.map((name) => `packages/${name}/${RUNTIME_OUTPUT}`),
+      ...RUNTIME_PACKAGES.flatMap((name) =>
+        [RUNTIME_OUTPUT, RUNTIME_TEST_OUTPUT].map(
+          (output) => `packages/${name}/${output}`,
+        ),
+      ),
       ".claude/hooks",
       ".claude/skills",
       ".claude/agents",
@@ -1224,6 +1267,36 @@ export function readPriorManifest(destination) {
   if (!lstatSync(root, { throwIfNoEntry: false })?.isDirectory())
     throw new Error(`update destination is not a regular directory: ${root}`);
   return readManifestFile(root, KIT_MANIFEST);
+}
+
+/** Verify carried compiled code before running it. Other kit edits belong to
+ * the instance and are advisory, including missing or nonregular files. */
+export function verifyKit(root = process.cwd()) {
+  root = resolve(root);
+  const manifest = readPriorManifest(root);
+  let differing = 0;
+  for (const entry of manifest.files) {
+    let matches = false;
+    try {
+      matches = sha256Hex(readDestination(root, entry.path)) === entry.sha256;
+    } catch {
+      // An unreadable listed file differs just as a changed file does.
+    }
+    if (matches) continue;
+    if (/^packages\/[^/]+\/dist\//u.test(entry.path))
+      throw new Error(`kit runtime differs from the manifest: ${entry.path}`);
+    differing++;
+  }
+  if (differing)
+    console.log(`kit: ${differing} kit files differ from the manifest`);
+  console.log(
+    `kit: ${manifest.files.length - differing} files verified at ${manifest.commit}`,
+  );
+  return {
+    commit: manifest.commit,
+    verified: manifest.files.length - differing,
+    differing,
+  };
 }
 
 const readManifestFile = (root, name) => {
@@ -1646,74 +1719,82 @@ if (isMainModule(import.meta.url)) {
     const updating = args[0] === "--update";
     const [destination, ...rest] = updating ? args.slice(1) : args;
     const usage =
-      "usage: launchpad export <dir> [--license none] | launchpad export --update <dir> [--apply]";
-    if (action !== "export" || !destination || destination.startsWith("--"))
-      throw new Error(usage);
-    if (
-      updating
-        ? !(rest.length === 0 || (rest.length === 1 && rest[0] === "--apply"))
-        : !(
-            rest.length === 0 ||
-            (rest.length === 2 && rest[0] === "--license" && rest[1] === "none")
-          )
-    )
-      throw new Error(usage);
-    const result = updating
-      ? await updateKit(destination, {
-          apply: rest.includes("--apply"),
-          launchpad: findLaunchpad(),
-        })
-      : await exportKit(destination, {
-          license: rest.length ? "none" : "default",
-          launchpad: findLaunchpad(),
-        });
-    if (updating) {
-      console.log(
-        `Updated the DotLn kit to ${result.commit} in ${result.destination}.`,
-      );
-      const counts = Object.fromEntries(
-        ["replace", "add", "remove", "refuse"].map((kind) => [
-          kind,
-          result.plan.filter((entry) => entry.kind === kind).length,
-        ]),
-      );
-      console.log(
-        `kit files: ${counts.replace} replaced; ${counts.add} added; ${counts.remove} removed; ${counts.refuse} refused.`,
-      );
-      console.log(
-        `Instance-actions note (${new Date().toISOString().slice(0, 10)}): ${result.optedIn ? "opted-in update" : "update without opt-in"}.`,
-      );
-      for (const action of result.actions)
-        console.log(`action: ${JSON.stringify(action)}`);
-      if (!result.actions.length) console.log("No instance actions declared.");
-      for (const entry of result.plan.filter(
-        (entry) => entry.kind === "refuse",
-      ))
-        console.log(
-          `refused: ${entry.path} (${entry.reason}; ${entry.retained ? "prior hash retained" : "remains instance-owned"})`,
-        );
-      for (const line of result.applied) console.log(line);
-      console.log("re-emit: node scripts/harness.mjs emit");
+      "usage: launchpad export <dir> [--license none] | launchpad export --update <dir> [--apply] | launchpad verify [<dir>]";
+    if (action === "verify") {
+      if (args.length > 1 || args[0]?.startsWith("--")) throw new Error(usage);
+      verifyKit(args[0] ?? process.cwd());
     } else {
+      if (action !== "export" || !destination || destination.startsWith("--"))
+        throw new Error(usage);
+      if (
+        updating
+          ? !(rest.length === 0 || (rest.length === 1 && rest[0] === "--apply"))
+          : !(
+              rest.length === 0 ||
+              (rest.length === 2 &&
+                rest[0] === "--license" &&
+                rest[1] === "none")
+            )
+      )
+        throw new Error(usage);
+      const result = updating
+        ? await updateKit(destination, {
+            apply: rest.includes("--apply"),
+            launchpad: findLaunchpad(),
+          })
+        : await exportKit(destination, {
+            license: rest.length ? "none" : "default",
+            launchpad: findLaunchpad(),
+          });
+      if (updating) {
+        console.log(
+          `Updated the DotLn kit to ${result.commit} in ${result.destination}.`,
+        );
+        const counts = Object.fromEntries(
+          ["replace", "add", "remove", "refuse"].map((kind) => [
+            kind,
+            result.plan.filter((entry) => entry.kind === kind).length,
+          ]),
+        );
+        console.log(
+          `kit files: ${counts.replace} replaced; ${counts.add} added; ${counts.remove} removed; ${counts.refuse} refused.`,
+        );
+        console.log(
+          `Instance-actions note (${new Date().toISOString().slice(0, 10)}): ${result.optedIn ? "opted-in update" : "update without opt-in"}.`,
+        );
+        for (const action of result.actions)
+          console.log(`action: ${JSON.stringify(action)}`);
+        if (!result.actions.length)
+          console.log("No instance actions declared.");
+        for (const entry of result.plan.filter(
+          (entry) => entry.kind === "refuse",
+        ))
+          console.log(
+            `refused: ${entry.path} (${entry.reason}; ${entry.retained ? "prior hash retained" : "remains instance-owned"})`,
+          );
+        for (const line of result.applied) console.log(line);
+        console.log("re-emit: node scripts/harness.mjs emit");
+      } else {
+        console.log(
+          `Exported the DotLn kit of ${result.commit} (${result.tag ? `tag ${result.tag}` : "untagged"}) to ${result.destination}: ${result.files} kit files in ${KIT_MANIFEST}, ${result.seeds.length} instance seeds.`,
+        );
+        console.log(
+          `runtime: ${result.runtimeFiles} compiled files built from the commit's package sources; harness bundle: ${result.harnessSurfaces + 1} surfaces emitted and checked inside the export, ${result.harnessSurfaces} manifest-listed (${INSTRUCTION_FILE}'s block is checked through ${HARNESS_MANIFEST}); snapshot ${result.snapshot}.`,
+        );
+      }
       console.log(
-        `Exported the DotLn kit of ${result.commit} (${result.tag ? `tag ${result.tag}` : "untagged"}) to ${result.destination}: ${result.files} kit files in ${KIT_MANIFEST}, ${result.seeds.length} instance seeds.`,
+        `local-terms list: ${result.terms}${result.terms === "present" ? ` (${result.surfaces} texts checked)` : "; no text was checked against a local-terms list"}`,
       );
       console.log(
-        `runtime: ${result.runtimeFiles} compiled files built from the commit's package sources; harness bundle: ${result.harnessSurfaces + 1} surfaces emitted and checked inside the export, ${result.harnessSurfaces} manifest-listed (${INSTRUCTION_FILE}'s block is checked through ${HARNESS_MANIFEST}); snapshot ${result.snapshot}.`,
+        result.receipt.path
+          ? `sibling receipt: ${result.receipt.path}; sibling registry: ${result.receipt.registry.path} ${result.receipt.registry.written ? "regenerated" : "unchanged"}`
+          : `sibling receipt: none (${result.receipt.reason})`,
       );
+      if (result.dirty)
+        console.log(
+          `advisory: ${result.dirty} kit ${result.dirty === 1 ? "path differs" : "paths differ"} from HEAD in the work tree; the export carries commit ${result.commit}, not those changes.`,
+        );
     }
-    console.log(
-      `local-terms list: ${result.terms}${result.terms === "present" ? ` (${result.surfaces} texts checked)` : "; no text was checked against a local-terms list"}`,
-    );
-    console.log(
-      result.receipt.path
-        ? `sibling receipt: ${result.receipt.path}; sibling registry: ${result.receipt.registry.path} ${result.receipt.registry.written ? "regenerated" : "unchanged"}`
-        : `sibling receipt: none (${result.receipt.reason})`,
-    );
-    if (result.dirty)
-      console.log(
-        `advisory: ${result.dirty} kit ${result.dirty === 1 ? "path differs" : "paths differ"} from HEAD in the work tree; the export carries commit ${result.commit}, not those changes.`,
-      );
   } catch (error) {
     console.error(`error: ${error.message}`);
     process.exitCode = 1;

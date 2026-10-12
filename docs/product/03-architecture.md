@@ -209,8 +209,13 @@ included, and prints its status, and a match, or a list present but empty,
 refuses it before any write. The snapshot the hooks import is ignored, so a
 fresh clone's `node scripts/bootstrap.mjs` installs and re-emits it; until
 then each hook reports `snapshot-missing` once per session and leaves the
-decision to host permissions. Running core's suites in place still needs the
-TypeScript source the kit omits.
+decision to host permissions. The kit carries the compiled tests and their
+fixture data. Its `npm test`, `npm run test:docs` and `npm test -- --review`
+verify every manifest-listed compiled file before running the carried suites,
+without building; rows needing core-only source, history or documents are
+declared and printed by name with their reason. Edits to other kit files are
+advisory, so an instance's gates can judge its own script changes. An explicit
+`--only` request for an uncarried suite refuses without recording a gate result.
 
 The siblings' license posture and the instance boundary [operator direction,
 2026-10-11]: the starter is exported under core's three license files

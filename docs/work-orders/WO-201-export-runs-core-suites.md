@@ -1,4 +1,4 @@
-# WO-201 — The export runs core's suites: `npm test`, `npm run test:docs` and `npm test -- --review` run inside a kit that holds no package source, verifying the carried runtime by its manifest instead of building, and the client README says which suites run in a fork, which stay core's, where the instance's orders live and what editing a kit file means (version assigned at activation)
+# WO-201 — The export runs core's suites: `npm test`, `npm run test:docs` and `npm test -- --review` run inside a kit that holds no package source, verifying the carried runtime by its manifest instead of building, and the client README says which suites run in a fork, which stay core's, where the instance's orders live and what editing a kit file means (v0.77.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
