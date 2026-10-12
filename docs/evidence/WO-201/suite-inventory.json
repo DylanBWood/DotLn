@@ -1,0 +1,590 @@
+{
+  "scope": "Exploratory executions of every suite in a disposable export, retaining initial and clean-second-batch observations. Initial-batch failures alone do not establish exclusions. The repair records fresh passing carried-suite evidence and cites clean missing-input validation for each remaining exclusion; historical observations are not current passing-gate evidence.",
+  "initialBatch": {
+    "durationMs": 900126,
+    "exitCode": 1,
+    "reason": "outer bounded command timed out after 56 completed rows; its reported process ids no longer existed when checked"
+  },
+  "cleanSecondBatch": {
+    "durationMs": 416251,
+    "exitCode": 0,
+    "completedRows": 24
+  },
+  "rows": [
+    {
+      "name": "format",
+      "exitCode": 0,
+      "durationMs": 3922,
+      "probe": "clean-second-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "kit-verify",
+      "exitCode": 0,
+      "durationMs": 138,
+      "probe": "clean-second-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "release-surfaces",
+      "exitCode": 1,
+      "durationMs": 250,
+      "probe": "initial-batch",
+      "disposition": "core-only: core release records and docs/LEGAL.md",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "release-preparation",
+      "exitCode": 0,
+      "durationMs": 3625,
+      "probe": "initial-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "github-body",
+      "exitCode": 1,
+      "durationMs": 195,
+      "probe": "clean-second-batch",
+      "disposition": "core-only: core outward-vocabulary control data",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "outward-lint",
+      "exitCode": 1,
+      "durationMs": 152,
+      "probe": "initial-batch",
+      "disposition": "core-only: core outward-vocabulary control data",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "target-publish",
+      "exitCode": 1,
+      "durationMs": 205,
+      "probe": "initial-batch",
+      "disposition": "core-only: core outward-vocabulary control data",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "target-worktree",
+      "exitCode": 0,
+      "durationMs": 40749,
+      "probe": "initial-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "vertical",
+      "exitCode": 1,
+      "durationMs": 90614,
+      "probe": "initial-batch",
+      "disposition": "core-only: core outward-vocabulary control data",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "license-fixtures",
+      "exitCode": 1,
+      "durationMs": 170,
+      "probe": "initial-batch",
+      "disposition": "core-only: docs/LEGAL.md and core license fixtures",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "license-surfaces",
+      "exitCode": 1,
+      "durationMs": 3211,
+      "probe": "initial-batch",
+      "disposition": "core-only: docs/LEGAL.md license pins",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "fixture-temp-root",
+      "exitCode": 0,
+      "durationMs": 691,
+      "probe": "initial-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "publication-fixtures",
+      "exitCode": 0,
+      "durationMs": 958,
+      "probe": "repair-clean-export",
+      "disposition": "carried; fresh product execution passes and review reuses it at the same code identity",
+      "previousObservation": {
+        "exitCode": 1,
+        "durationMs": 334,
+        "probe": "initial-batch",
+        "disposition": "core-only: core publication audience index and outlines"
+      },
+      "evidenceRef": "host-gate:85db5e06d9c02ddea42a328efa82881aafe76128c75a1b945906a23e5f9517f0:npm test"
+    },
+    {
+      "name": "backup-intake",
+      "exitCode": 0,
+      "durationMs": 349,
+      "probe": "initial-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "resume",
+      "exitCode": 1,
+      "durationMs": 84220,
+      "probe": "clean-second-batch",
+      "disposition": "core-only: core legacy lifecycle and timing observations WO-030",
+      "cleanExclusionEvidence": "clean-second-batch observation above; VER-001 F1 boundary"
+    },
+    {
+      "name": "launchpad",
+      "exitCode": 1,
+      "durationMs": 215,
+      "probe": "initial-batch",
+      "disposition": "core-only: package TypeScript and build configuration needed to export",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "launchpad-docs",
+      "exitCode": 1,
+      "durationMs": 191,
+      "probe": "initial-batch",
+      "disposition": "core-only: package TypeScript and build configuration needed to export",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "beacon-portability",
+      "exitCode": 0,
+      "durationMs": 903,
+      "probe": "initial-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "checkpoint",
+      "exitCode": 0,
+      "durationMs": 8951,
+      "probe": "clean-second-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "worktree",
+      "exitCode": 1,
+      "durationMs": 456,
+      "probe": "initial-batch",
+      "disposition": "core-only: docs/LEGAL.md and core release inputs",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "worktree-integration",
+      "exitCode": 1,
+      "durationMs": 6933,
+      "probe": "initial-batch",
+      "disposition": "core-only: console package, core source and publication inputs",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "release",
+      "exitCode": 1,
+      "durationMs": 321,
+      "probe": "initial-batch",
+      "disposition": "core-only: core tag-manifest template, TypeScript and release records",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "work-orders-fixtures",
+      "exitCode": 0,
+      "durationMs": 24439,
+      "probe": "clean-second-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "publication",
+      "exitCode": 1,
+      "durationMs": 81,
+      "probe": "initial-batch",
+      "disposition": "core-only: core publication audience index and outlines",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "docs-check",
+      "exitCode": 1,
+      "durationMs": 90,
+      "probe": "initial-batch",
+      "disposition": "core-only: core document ceilings and baseline",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "docs-check-fixtures",
+      "exitCode": 1,
+      "durationMs": 19378,
+      "probe": "initial-batch",
+      "disposition": "core-only: core product roadmap",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "comment-labels",
+      "exitCode": 1,
+      "durationMs": 1235,
+      "probe": "initial-batch",
+      "disposition": "core-only: core comment fingerprint baseline",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "comment-labels-fixtures",
+      "exitCode": 1,
+      "durationMs": 122,
+      "probe": "initial-batch",
+      "disposition": "core-only: core corpus profile collector",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "index",
+      "exitCode": 0,
+      "durationMs": 99,
+      "probe": "initial-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "siblings",
+      "exitCode": 0,
+      "durationMs": 73,
+      "probe": "initial-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "siblings-fixtures",
+      "exitCode": 0,
+      "durationMs": 12945,
+      "probe": "initial-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "lineage",
+      "exitCode": 1,
+      "durationMs": 68,
+      "probe": "initial-batch",
+      "disposition": "core-only: core idea ledger",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "lineage-fixtures",
+      "exitCode": 1,
+      "durationMs": 572,
+      "probe": "initial-batch",
+      "disposition": "core-only: core idea ledger",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "kernel",
+      "exitCode": 1,
+      "durationMs": 560,
+      "probe": "initial-batch",
+      "disposition": "core-only: kernel package source audits and package README",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "compiler",
+      "exitCode": 1,
+      "durationMs": 824,
+      "probe": "initial-batch",
+      "disposition": "core-only: compiler package source audits",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "skeleton",
+      "exitCode": 1,
+      "durationMs": 263682,
+      "probe": "initial-batch",
+      "disposition": "core-only: skeleton package source audits",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "console",
+      "exitCode": 1,
+      "durationMs": 5,
+      "failureKind": "setup",
+      "probe": "initial-batch",
+      "disposition": "core-only: console package is not shipped",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "browser-evidence",
+      "exitCode": 1,
+      "durationMs": 90,
+      "probe": "initial-batch",
+      "disposition": "core-only: browser-evidence package and browser runtime are not shipped",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "kernel-docs",
+      "exitCode": 1,
+      "durationMs": 437,
+      "probe": "initial-batch",
+      "disposition": "core-only: kernel recorded product evidence and documentation",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "skeleton-docs",
+      "exitCode": 1,
+      "durationMs": 7486,
+      "probe": "initial-batch",
+      "disposition": "core-only: skeleton recorded product evidence and documentation",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "console-docs",
+      "exitCode": 1,
+      "durationMs": 5,
+      "failureKind": "setup",
+      "probe": "initial-batch",
+      "disposition": "core-only: console package is not shipped",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "adjacent-queue",
+      "exitCode": 0,
+      "durationMs": 540,
+      "probe": "initial-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "evidence-sources",
+      "exitCode": 1,
+      "durationMs": 1217,
+      "probe": "initial-batch",
+      "disposition": "core-only: console build, package sources and recorded evidence editions",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "resident-bind",
+      "exitCode": 0,
+      "durationMs": 10612,
+      "probe": "initial-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "derived-orders",
+      "exitCode": 0,
+      "durationMs": 8498,
+      "probe": "initial-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "portfolio",
+      "exitCode": 0,
+      "durationMs": 25794,
+      "probe": "initial-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "configuration-root",
+      "exitCode": 0,
+      "durationMs": 6161,
+      "probe": "clean-second-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "codex-continuation",
+      "exitCode": 0,
+      "durationMs": 7296,
+      "probe": "clean-second-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "harness-probe",
+      "exitCode": 1,
+      "durationMs": 55360,
+      "probe": "initial-batch",
+      "disposition": "core-only: core security, budget and discovery records plus package sources",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "authority-grants",
+      "exitCode": 0,
+      "durationMs": 215,
+      "probe": "initial-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "local-runner-double",
+      "exitCode": 1,
+      "durationMs": 3282,
+      "probe": "initial-batch",
+      "disposition": "core-only: role-qualification oracle reads core verification report WO-052/VER-001",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "authority-evidence",
+      "exitCode": 1,
+      "durationMs": 93,
+      "probe": "initial-batch",
+      "disposition": "core-only: core authority evidence edition and historical Git objects",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "harness-fixtures",
+      "exitCode": 1,
+      "durationMs": 286157,
+      "probe": "initial-batch",
+      "disposition": "core-only: Entropy Reducer baseline history and package sources",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "harness",
+      "exitCode": 0,
+      "durationMs": 185,
+      "probe": "initial-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "harness-context",
+      "exitCode": 0,
+      "durationMs": 112,
+      "probe": "initial-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "harness-evidence",
+      "exitCode": 1,
+      "durationMs": 88,
+      "probe": "initial-batch",
+      "disposition": "core-only: package sources, historical harness baseline and live evidence",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "plan-refutation",
+      "exitCode": 1,
+      "durationMs": 61552,
+      "probe": "clean-second-batch",
+      "disposition": "core-only: core reader profiles, planning history, budgets and historical Git objects",
+      "cleanExclusionEvidence": "clean-second-batch observation above; VER-001 F1 boundary"
+    },
+    {
+      "name": "plan-refutation-current",
+      "exitCode": 1,
+      "durationMs": 195,
+      "probe": "clean-second-batch",
+      "disposition": "core-only: unseeded planning ledger and receipts; instance planning is pending WO-202",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "wo107-schema",
+      "exitCode": 1,
+      "durationMs": 73,
+      "probe": "clean-second-batch",
+      "disposition": "core-only: historical corpus observations, collector and Git objects",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "artifact-corpus",
+      "exitCode": 1,
+      "durationMs": 73,
+      "probe": "clean-second-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "artifact-evidence",
+      "exitCode": 1,
+      "durationMs": 95,
+      "probe": "clean-second-batch",
+      "disposition": "core-only: package sources and core artifact-identity evidence edition",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "verification-evidence",
+      "exitCode": 1,
+      "durationMs": 96,
+      "probe": "clean-second-batch",
+      "disposition": "core-only: package sources and core verification evidence edition",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "feedback-evidence",
+      "exitCode": 1,
+      "durationMs": 95,
+      "probe": "clean-second-batch",
+      "disposition": "core-only: core feedback evidence edition",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "mutation",
+      "exitCode": 1,
+      "durationMs": 71,
+      "probe": "clean-second-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "runner-fixtures",
+      "exitCode": 1,
+      "durationMs": 95695,
+      "probe": "clean-second-batch",
+      "disposition": "core-only: package sources, core build inventory and license pins",
+      "cleanExclusionEvidence": "clean-second-batch observation above; VER-001 F1 boundary"
+    },
+    {
+      "name": "process-debt",
+      "exitCode": 1,
+      "durationMs": 109691,
+      "probe": "clean-second-batch",
+      "disposition": "core-only: historical Git trees, package sources, core budgets and work orders",
+      "cleanExclusionEvidence": "clean-second-batch observation above; VER-001 F1 boundary"
+    },
+    {
+      "name": "meta",
+      "exitCode": 1,
+      "durationMs": 86,
+      "probe": "clean-second-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "registrations",
+      "exitCode": 1,
+      "durationMs": 99,
+      "probe": "clean-second-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    },
+    {
+      "name": "plan",
+      "exitCode": 1,
+      "durationMs": 217,
+      "probe": "clean-second-batch",
+      "disposition": "core-only: unseeded planning ledger and receipts; instance planning is pending WO-202",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "reader-profiles",
+      "exitCode": 1,
+      "durationMs": 72,
+      "probe": "clean-second-batch",
+      "disposition": "core-only: core editorial profiles, examples, scores and release tag objects",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "reader-fixtures",
+      "exitCode": 1,
+      "durationMs": 6354,
+      "probe": "clean-second-batch",
+      "disposition": "core-only: core historical publication examples and their recorded comparison",
+      "cleanExclusionEvidence": "docs/verifications/WO-201/VER-001.md F1: clean export failure and named input, with its stated observation limits"
+    },
+    {
+      "name": "entropy",
+      "exitCode": 0,
+      "durationMs": 121,
+      "probe": "clean-second-batch",
+      "disposition": "carried; final three-selection fixture judges current bytes"
+    }
+  ],
+  "repair": {
+    "date": "2026-10-12",
+    "source": "docs/verifications/WO-201/VER-001.md F1; docs/evidence/WO-201/decisions.md D014",
+    "carriedRows": 27,
+    "excludedRows": 45,
+    "rule": "Declare a row core-only only after a clean export execution fails on its named uncarried input.",
+    "cleanExclusionCoverage": {
+      "verificationRows": 41,
+      "cleanSecondBatchRows": [
+        "resume",
+        "plan-refutation",
+        "runner-fixtures",
+        "process-debt"
+      ],
+      "boundary": "VER-001 F1 retains the exact execution/source-inspection limits of its clean runs; the initial contaminated batch is not the exclusion authority."
+    }
+  }
+}

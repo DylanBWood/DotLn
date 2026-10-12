@@ -7,7 +7,7 @@
 - [x] [WO-072] — Target worktree lifecycle · **final-reviewed**
 - [x] [WO-076] — Instance build overlay · **final-reviewed** · pair 1
 - [x] [WO-200] — Pinned collector bytes are watched where they change · **final-reviewed** · pair 1
-- [ ] [WO-201] — The export runs core's suites · **queued**
+- [x] [WO-201] — The export runs core's suites · **final-reviewed**
 - [ ] [WO-202] — The planning machinery runs in an instance · **queued**
 - [ ] [WO-203] — Update preview · **queued**
 - [ ] [WO-118] — The resident-owned loop from a starter instance · **queued**
@@ -54,31 +54,14 @@ None.
 
 ## Open
 
-### WO-201
-
-[WO-201 — The export runs core's suites: &#96;npm test&#96;, &#96;npm run test:docs&#96; and &#96;npm test -- --review&#96; run inside a kit that holds no package source, verifying the carried runtime by its manifest instead of building, and the client README says which suites run in a fork, which stay core's, where the instance's orders live and what editing a kit file means (version assigned at activation)](WO-201-export-runs-core-suites.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-075: satisfied-by-close (met) — the compiled runtime the kit carries and the suites run against; WO-077: satisfied-by-close (met) — the update that carries the kit mode and the compiled tests to an existing export; WO-078: satisfied-by-close (met) — the receipt step every export fixture now runs through.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor max; verifier xhigh; reviewer xhigh.
-- Track: delivery
-- Cost: adds a kit mode to &#96;scripts/test-runner.mjs&#96; (the &#96;build&#96; task replaced by a manifest verification task when the root holds &#96;KIT-MANIFEST.json&#96; and &#96;hasPackageSources&#96; in &#96;scripts/lib/paths.mjs&#96; is false; rows declared core-only listed by name and skipped), a &#96;verify&#96; form in &#96;scripts/launchpad.mjs&#96;, the compiled tests &#96;packages/&lt;name&gt;/dist/test/**&#96; and the fixtures they read in the kit's file set (the kit's byte growth is measured by the fixture and recorded), one fixture case in &#96;scripts/test-launchpad.mjs&#96; that runs the three gate selections inside one export under the bounded wrapper, and the client README's §What runs here, §Kit files and instance files and §Taking upstream updates rewritten. Removes the kit's recorded limit (&#96;npm test&#96; fails at the build; WO-074 D007), the README paragraph that records it, and the state in which no order in an instance can pass verification or final review on the instance's own gate. Wall-clock: the &#96;launchpad&#96; gate task grows by one export plus three gate runs inside it; that task's latest fresh row already read 123.776 s against a 49.691 s thirty-day median (25 samples) at &#96;plan conditions&#96; on 2026-10-11T19:18Z after WO-078's two export cases, so the fixture reuses one export for the three selections and records its own duration (criterion 1). Re-mints: &#96;scripts/test-runner.mjs&#96;, &#96;scripts/launchpad.mjs&#96; and &#96;scripts/kit/README.client.md&#96; are not registered evidence sources (&#96;scripts/lib/evidence-sources.mjs&#96;), so no edition re-mints and no live feedback episode; the runner and the launchpad are declared sources of machinery suites, so &#96;npm test -- --review&#96; runs before handoff. Tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-201-export-runs-core-suites.md](WO-201-export-runs-core-suites.md)
-
 ### WO-202
 
 [WO-202 — The planning machinery runs in an instance: plan start, the follow-up register, refute and receipt, the entropy review, meta, the work-order index, the document gate, the publication check and what a release close reads, each observed on a fixture export and fixed where the kit lacks it (version assigned at activation)](WO-202-planning-machinery-runs-in-an-instance.md)
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-201.
-- References: WO-201: hard (unmet) — the document and review gates run inside a kit only with WO-201's kit mode; WO-078: satisfied-by-close (met) — the export's receipt step the fixture runs through.
+- Dependencies: typed; dependency-ready.
+- References: WO-201: hard (met) — the document and review gates run inside a kit only with WO-201's kit mode; WO-078: satisfied-by-close (met) — the export's receipt step the fixture runs through.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -231,8 +214,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-118, WO-082, WO-201, WO-202.
-- References: WO-118: hard (unmet) — the resident-owned loop is proven from a starter instance before the operator's instance runs the workflow against a real target; satisfied only by WO-118's criterion 1 recorded observed, never by a waiver; WO-082: hard (unmet) — the synthetic pilot precedes the witnessed run; WO-072: hard (met) — the target worktree lifecycle the instance's Angular orders run through; WO-201: hard (unmet) — the instance's own gates, which verify the order this run drives; WO-202: hard (unmet) — the instance's own planning pass, which cuts the order this run drives; WO-073: satisfied-by-close (met) — the profile convention the instance's profile follows; WO-078: satisfied-by-close (met) — the generated sibling registry whose Angular consumer entry the run changes.
+- Dependencies: typed; blocked on WO-118, WO-082, WO-202.
+- References: WO-118: hard (unmet) — the resident-owned loop is proven from a starter instance before the operator's instance runs the workflow against a real target; satisfied only by WO-118's criterion 1 recorded observed, never by a waiver; WO-082: hard (unmet) — the synthetic pilot precedes the witnessed run; WO-072: hard (met) — the target worktree lifecycle the instance's Angular orders run through; WO-201: hard (met) — the instance's own gates, which verify the order this run drives; WO-202: hard (unmet) — the instance's own planning pass, which cuts the order this run drives; WO-073: satisfied-by-close (met) — the profile convention the instance's profile follows; WO-078: satisfied-by-close (met) — the generated sibling registry whose Angular consumer entry the run changes.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

@@ -22953,6 +22953,14 @@
           "reopenWhen": "the launchpad task exceeds twice its median at a handoff after WO-201, a pass finds the suite on the gate's critical path, or another gate task crosses its threshold",
           "targets": [],
           "at": "2026-10-11T20:18:59.719Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Returned to open by WO-201's final review: its launchpad reopening condition occurred at WO-201's handoff (409254 ms, then 328008 ms in the repair's passing review gate, against a 99382 ms median-based threshold and a 247552 ms pre-order-reading threshold; WO-201 D011, D017 and D019 record the measured contributors and the retained selections). The thirty-day rule and the decision between a bound, a structural cut and a fixture-cost order stay with planning. [WO-201 FINAL-001]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-12T08:40:38.863Z"
         }
       ]
     },
@@ -31410,6 +31418,14 @@
             "WO-201"
           ],
           "at": "2026-10-11T20:18:58.872Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-201's final review (FINAL-001): inside a source-free export, npm test, npm run test:docs and npm test -- --review exit 0 with kit-verify (a manifest verification of every carried compiled file) in place of the build, 27 suite rows carried and 45 declared core-only by name with their reason, and the client README's limits paragraph rewritten from the fixture's observed lists. Reproduced in independent exports by VER-001, VER-002 and the final review (docs/evidence/WO-201/gate-in-kit.json, WO-201 D019).",
+          "reopenWhen": "an export's gate fails at a build task, a clean export runs a row declared core-only, or the client README's suite lists differ from the kit's observed selections",
+          "targets": [],
+          "at": "2026-10-12T08:40:38.696Z"
         }
       ]
     },
@@ -31465,6 +31481,13 @@
           "title": "WO-074-D011: Decide whether scripts/fixtures data derived from this repository's records (wo138-local-role-qualification.json carries a verification report's verdict and durations) belongs in the expo",
           "summary": "{ \"id\": \"WO-074-D011\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next\", \"decision\": \"Two fresh dotln-workers reviewed the order and the diff before implementation-ready, an adversary of the criteria (16 findings) and an improver of design, simplicity and maintainability (21 findings; docs/evidence/WO-074/adversary.md and improver.md hold both reports with each finding's disposition). Fixed: the license-shaped template name and the fixture's scripts/ exclusion (criterion 4); the product 03 and protects wording that said the kit is read from the launchpad's commit; the client README's claim that the later transitions run without a build (in a Codex session next, verify, fix, final-review and ",
           "missing": false
+        },
+        {
+          "hash": "054d301013bad269ee6ccdae1e06f5884500ffe92e570a27f616787fb2a34f22",
+          "ref": "docs/evidence/WO-074/decisions.md#wo-074-d011--self-review-findings-and-a-follow-up-outside-criterion-3s-declared-set",
+          "title": "WO-074-D011: Decide whether scripts/fixtures data derived from this repository's records (wo138-local-role-qualification.json carries a verification report's verdict and durations) belongs in the expo",
+          "summary": "{ \"id\": \"WO-074-D011\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next\", \"decision\": \"Two fresh dotln-workers reviewed the order and the diff before implementation-ready, an adversary of the criteria (16 findings) and an improver of design, simplicity and maintainability (21 findings; docs/evidence/WO-074/adversary.md and improver.md hold both reports with each finding's disposition). Fixed: the license-shaped template name and the fixture's scripts/ exclusion (criterion 4); the product 03 and protects wording that said the kit is read from the launchpad's commit; the client README's claim that the later transitions run without a build (in a Codex session next, verify, fix, final-review and ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -31485,6 +31508,14 @@
             "WO-201"
           ],
           "at": "2026-10-11T20:18:58.930Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Decided by WO-201 D004 and settled at its final review: scripts/fixtures/wo138-local-role-qualification.json is excluded from KIT_FILES, its local-runner-double row is declared core-only because the suite reads the core WO-052 verification report the oracle was derived from, the WO-074 criterion 1 case asserts the exclusion, and the client README names it. VER-001 and VER-002 confirm the fixture is neither listed nor present in an export and that the row fails only on that path.",
+          "reopenWhen": "an exported suite fails for want of the excluded fixture, or the role-qualification row is refactored to self-contained synthetic inputs",
+          "targets": [],
+          "at": "2026-10-12T08:40:38.753Z"
         }
       ]
     },
@@ -33407,6 +33438,14 @@
             "WO-201"
           ],
           "at": "2026-10-11T20:18:59.452Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Returned to open by WO-201's final review: the watch's condition occurred. The launchpad task read 409254 ms in the implementation-ready review gate and 328008 ms in the repair's passing review gate, above twice the 49691 ms thirty-day median (99382 ms) and twice the pre-order 123776 ms reading (247552 ms). WO-201 D011 and D017 record the contributors: the three-selection export case 191260 ms and the existing update case 74466 ms under three concurrent peers, the focused case alone 67.6 s to 74.5 s, the kit grown from 9793574 to 15971669 manifest-listed bytes. All three selections are retained as the order required. Planning owns a bound or a structural cut; WO-202, WO-203 and WO-207 add more export cases. [WO-201 FINAL-001; docs/evidence/WO-201/decisions.md D019]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-12T08:40:38.808Z"
         }
       ]
     },
@@ -33625,6 +33664,68 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-0cff4c27b1874d9d",
+      "key": "decision:docs/evidence/WO-201/decisions.md#wo-201-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "48efb3db3e024d29ac127cdfd1781f74e7d1de2b6f5d8f8a52c393c8da1de0f8",
+          "ref": "docs/evidence/WO-201/decisions.md#wo-201-d009--preserve-suite-rows-and-make-the-observed-exclusions-explicit",
+          "title": "WO-201-D009: Retain the existing suite boundaries. Of 72 rows, 46 declare their specific uncarried inputs and 26 remain carried, including kit-verify in place of build. Whole package rows stay core-on",
+          "summary": "{ \"id\": \"WO-201-D009\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: next; every-suite export probes\", \"decision\": \"Retain the existing suite boundaries. Of 72 rows, 46 declare their specific uncarried inputs and 26 remain carried, including kit-verify in place of build. Whole package rows stay core-only because they combine runtime cases with source audits or recorded product evidence; the compiled tests still travel byte-identically, without inventing kit-specific name filters. Keep checkpoint, work-orders-fixtures, configuration-root and codex-continuation after their clean reruns pass. Exclude resume only after the clean run reaches WO-030's actual legacy lifecycle/timing observations.\", \"e",
+          "missing": false
+        },
+        {
+          "hash": "3ba4e0cc090fd6d1567fc085bb0a966f3fce78ff3e75370935dd623f92e9d107",
+          "ref": "docs/evidence/WO-201/decisions.md#wo-201-d009--preserve-suite-rows-and-make-the-observed-exclusions-explicit",
+          "title": "WO-201-D009: Retain the existing suite boundaries. Of 72 rows, 46 declare their specific uncarried inputs and 26 remain carried, including kit-verify in place of build. Whole package rows stay core-on",
+          "summary": "{ \"id\": \"WO-201-D009\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: next; every-suite export probes\", \"decision\": \"Retain the existing suite boundaries. Of 72 rows, 46 declare their specific uncarried inputs and 26 remain carried, including kit-verify in place of build. Whole package rows stay core-only because they combine runtime cases with source audits or recorded product evidence; the compiled tests still travel byte-identically, without inventing kit-specific name filters. Keep checkpoint, work-orders-fixtures, configuration-root and codex-continuation after their clean reruns pass. Exclude resume only after the clean run reaches WO-030's actual legacy lifecycle/timing observations.\", \"e",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "D009's reopening by D013 (one of its 46 declarations unfounded) is answered by D014: the remaining 45 declarations each rest on a clean export failure on the named uncarried input (41 rerun by VER-001, 43 by VER-002, skeleton and harness-fixtures carried from VER-001 with their inputs unchanged), the suite inventory cites that evidence per row, and the retained suite boundaries stand. [WO-201 FINAL-001; D019]",
+          "reopenWhen": "a suite is split upstream, acquires or loses a required input, a clean export runs a row declared core-only, or an instance provisions its own planning or editorial surfaces",
+          "targets": [],
+          "at": "2026-10-12T08:40:38.973Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8ea5ac7538fe92d8",
+      "key": "decision:docs/evidence/WO-201/decisions.md#wo-201-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c0c2fb4a4cfdf2315d1b7b27b219478cf4c5e6fe410b383baec57999fa5ac3d8",
+          "ref": "docs/evidence/WO-201/decisions.md#wo-201-d013--verification-fail-on-an-unfounded-core-only-declaration-criteria-2-and-5-are-unmet",
+          "title": "WO-201-D013: WO-201 resume: fix. (F1) Declare no row core-only unless a clean export execution of that row fails for want of its named input. Remove the publication-fixtures declaration so the row run",
+          "summary": "{ \"id\": \"WO-201-D013\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on F1. Criteria 1, 3, 4, 6 and 7 are met at code identity 24c91fedcdc1add00076f814bc1536ebd2c9ad352d9498749095709d3c50cfa3; criteria 2 and 5 are unmet. F1 (blocking): publication-fixtures is declared kit: \\\"core-only: core publication audience index and outlines\\\", but scripts/test-publication.sh builds its own fixture repository and writes its own audience index, outline and edition files. Every input it reads is a carried scripts/ file, and the row passes in a clean export. The order's objective runs every suite whose inputs the kit carries, and its design admits",
+          "missing": false
+        },
+        {
+          "hash": "087e8b08dec0f499a7ad04771e688051cea1fcee26684ebe8f3f9ff8502a552b",
+          "ref": "docs/evidence/WO-201/decisions.md#wo-201-d013--verification-fail-on-an-unfounded-core-only-declaration-criteria-2-and-5-are-unmet",
+          "title": "WO-201-D013: WO-201 resume: fix. (F1) Declare no row core-only unless a clean export execution of that row fails for want of its named input. Remove the publication-fixtures declaration so the row run",
+          "summary": "{ \"id\": \"WO-201-D013\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on F1. Criteria 1, 3, 4, 6 and 7 are met at code identity 24c91fedcdc1add00076f814bc1536ebd2c9ad352d9498749095709d3c50cfa3; criteria 2 and 5 are unmet. F1 (blocking): publication-fixtures is declared kit: \\\"core-only: core publication audience index and outlines\\\", but scripts/test-publication.sh builds its own fixture repository and writes its own audience index, outline and edition files. Every input it reads is a carried scripts/ file, and the row passes in a clean export. The order's objective runs every suite whose inputs the kit carries, and its design admits",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "D013's repair rule is discharged: D014 removed the publication-fixtures declaration and corrected the inventory, README lists and table, gate-in-kit.json, capability-table counts and handoff to 27 carried and 45 declared; D015 makes a kit --only request for a declared row refuse with its name and declaration before any task or gate result, including with --list. VER-002 reproduced both in a clean export and found none of the remaining 45 declarations unfounded; WO-201's final review observed both unavailable requests refusing with no gate row and publication-fixtures running fresh in the kit's npm test. [WO-201 FINAL-001; D019]",
+          "reopenWhen": "a clean export runs a row declared core-only, or a kit --only selection records a gate row for a suite that did not execute",
+          "targets": [],
+          "at": "2026-10-12T08:40:38.917Z"
+        }
+      ]
     }
   ]
 }

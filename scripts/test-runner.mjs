@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { spawnGit } from "./lib/git.mjs";
-import { isMainModule } from "./lib/paths.mjs";
+import { hasPackageSources, isMainModule } from "./lib/paths.mjs";
 import { spawn } from "node:child_process";
 import { performance } from "node:perf_hooks";
 import { createProcessMonitor } from "./lib/process-monitor.mjs";
@@ -72,6 +72,8 @@ import {
 const recordedSources = evidenceSources(findLaunchpad());
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+export const isKitRoot = (root) =>
+  existsSync(join(root, "KIT-MANIFEST.json")) && !hasPackageSources(root);
 const node = (name, file, options = {}) => ({
   name,
   command: [process.execPath, file],
@@ -476,6 +478,7 @@ const protection = {
   plan: "planning authority, dependencies and follow-up records remain consistent",
 
   build: "source compiles into runnable packages",
+  "kit-verify": "carried compiled files match the kit manifest",
   "release-surfaces":
     "release claims match component versions and reviewed notes",
   "release-preparation":
@@ -607,6 +610,20 @@ export function changedMachinery(repo, table = suites, base = "origin/main") {
   );
 }
 
+const buildSuite = (repo) =>
+  isKitRoot(repo)
+    ? node("kit-verify", "scripts/launchpad.mjs", {
+        args: ["verify"],
+        build: true,
+        fast: true,
+        outputs: [],
+      })
+    : node("build", "scripts/build.mjs", {
+        fast: true,
+        build: true,
+        outputs: ["packages/*/dist"],
+      });
+
 // Every command from the 2026-09-09 chain has one declared owner below. Build
 // deletion and shell glob assertions are replaced by atomic-build and expand().
 export const suites = [
@@ -618,25 +635,28 @@ export const suites = [
     preflight: true,
   },
   // The published runtime is ignored; its digest rides on the build's result.
-  node("build", "scripts/build.mjs", {
-    fast: true,
-    build: true,
-    outputs: ["packages/*/dist"],
-  }),
+  buildSuite(root),
   node("release-surfaces", "scripts/release.mjs", {
+    kit: "core-only: core release records and docs/LEGAL.md",
     args: ["check-surfaces", "--local"],
     fast: true,
     needsBuild: true,
     preflight: true,
   }),
   nodeTests("release-preparation", "scripts/test-release-preparation.mjs"),
-  nodeTests("github-body", "scripts/test-github-body.mjs"),
+  nodeTests("github-body", "scripts/test-github-body.mjs", {
+    kit: "core-only: core outward-vocabulary control data",
+  }),
   nodeTests("outward-lint", "scripts/test-outward-lint.mjs", {
+    kit: "core-only: core outward-vocabulary control data",
     needsBuild: false,
   }),
-  nodeTests("target-publish", "scripts/test-target-publish.mjs"),
+  nodeTests("target-publish", "scripts/test-target-publish.mjs", {
+    kit: "core-only: core outward-vocabulary control data",
+  }),
   nodeTests("target-worktree", "scripts/test-target-worktree.mjs"),
   nodeTests("vertical", "scripts/test-vertical.mjs", {
+    kit: "core-only: core outward-vocabulary control data",
     // Node starts files in name order; keep the main file in the first pair.
     args: [
       "scripts/test-vertical-judgment.mjs",
@@ -649,16 +669,24 @@ export const suites = [
     protects:
       "filed intent admission, common restartable vertical, repair lineage, readiness, typed stops and directory identity before effects",
   }),
-  nodeTests("license-fixtures", "scripts/test-license-surfaces.mjs"),
+  nodeTests("license-fixtures", "scripts/test-license-surfaces.mjs", {
+    kit: "core-only: docs/LEGAL.md and core license fixtures",
+  }),
   node("license-surfaces", "scripts/license-surfaces.mjs", {
+    kit: "core-only: docs/LEGAL.md license pins",
     preflight: true,
     document: true,
   }),
   shell("fixture-temp-root", "scripts/test-fixture-temp-root.sh"),
   shell("publication-fixtures", "scripts/test-publication.sh"),
   shell("backup-intake", "scripts/test-backup-intake.sh"),
-  { ...shell("resume", "scripts/test-resume.sh"), document: true },
+  {
+    ...shell("resume", "scripts/test-resume.sh"),
+    kit: "core-only: core legacy lifecycle and timing observations WO-030",
+    document: true,
+  },
   nodeTests("launchpad", "scripts/test-launchpad.mjs", {
+    kit: "core-only: package TypeScript and build configuration needed to export",
     // The fixture builds its committed copy's own packages with the running
     // install's toolchain and reads that copy's dist, never this checkout's.
     // The cold-start comparison reads this checkout's installed floor and
@@ -669,6 +697,7 @@ export const suites = [
       "launchpad export writes only manifest-listed kit files and instance seeds from the scripts' checkout's commit, carries the commit's compiled runtime and the harness bundle the export's own emit writes, refuses a non-empty destination, a dirty pinned input and a local-terms match, and the export passes harness check, activates its first order, emits control Beacons and reserves a Codex writer without package source",
   }),
   nodeTests("launchpad-docs", "scripts/test-launchpad.mjs", {
+    kit: "core-only: package TypeScript and build configuration needed to export",
     document: true,
     namePattern: "\\[document\\]",
     protects:
@@ -682,28 +711,40 @@ export const suites = [
       "control Beacon leaves keep one build-free home that no script imports from skeleton source or dist, and a copied control plane without the skeleton emits a decodable control Beacon",
   }),
   shell("checkpoint", "scripts/test-checkpoint.sh"),
-  shell("worktree", "scripts/test-worktree.sh"),
-  nodeTests("worktree-integration", "scripts/test-worktree-integration.mjs"),
-  shell("release", "scripts/test-release.sh"),
+  {
+    ...shell("worktree", "scripts/test-worktree.sh"),
+    kit: "core-only: docs/LEGAL.md and core release inputs",
+  },
+  nodeTests("worktree-integration", "scripts/test-worktree-integration.mjs", {
+    kit: "core-only: console package, core source and publication inputs",
+  }),
+  {
+    ...shell("release", "scripts/test-release.sh"),
+    kit: "core-only: core tag-manifest template, TypeScript and release records",
+  },
   shell("work-orders-fixtures", "scripts/test-work-orders.sh"),
   node("publication", "scripts/check-publication.mjs", {
+    kit: "core-only: core publication audience index and outlines",
     fast: true,
     document: true,
     preflight: true,
   }),
   node("docs-check", "scripts/docs-check.mjs", {
+    kit: "core-only: core document ceilings and baseline",
     document: true,
     preflight: true,
     protects:
       "product byte ceilings, receipt and dispatch boundaries, and repository documentation links hold",
   }),
   nodeTests("docs-check-fixtures", "scripts/test-docs-check.mjs", {
+    kit: "core-only: core product roadmap",
     document: true,
     needsBuild: false,
     protects:
       "document checks reject new growth and broken navigation while preserving declared exceptions",
   }),
   node("comment-labels", "scripts/comment-labels.mjs", {
+    kit: "core-only: core comment fingerprint baseline",
     document: true,
     needsBuild: true,
     preflight: true,
@@ -711,6 +752,7 @@ export const suites = [
       "a new or changed code comment carries no report-local label and leads with no order identifier; today's lines pass by a baseline that only shrinks",
   }),
   nodeTests("comment-labels-fixtures", "scripts/test-comment-labels.mjs", {
+    kit: "core-only: core corpus profile collector",
     document: true,
     protects:
       "the comment check refuses labels and leading identifiers, honours its fingerprint baseline and shrinks it on a fix",
@@ -734,16 +776,19 @@ export const suites = [
       "the registry generator carries each receipt's fields, the kit version from Git and the orders closed between receipts, reads not evidenced where no receipt supplies a field, and refuses a hand-edited entry, a manifest hash that is not the latest receipt's and an undecodable receipt",
   }),
   node("lineage", "scripts/lineage.mjs", {
+    kit: "core-only: core idea ledger",
     args: ["index", "--check"],
     document: true,
     preflight: true,
   }),
   nodeTests("lineage-fixtures", "scripts/test-lineage.mjs", {
+    kit: "core-only: core idea ledger",
     document: true,
     needsBuild: false,
   }),
   ...["kernel", "compiler", "skeleton", "console"].map((name) =>
     nodeTests(name, `packages/${name}/dist/test/*.test.js`, {
+      kit: `core-only: ${name === "console" ? "console package is not shipped" : `${name} package source audits${name === "kernel" ? " and package README" : ""}`}`,
       fast: true,
       packageTest: true,
       ...(name === "skeleton"
@@ -771,6 +816,7 @@ export const suites = [
     "browser-evidence",
     "packages/browser-evidence/test/scenario.test.mjs",
     {
+      kit: "core-only: browser-evidence package and browser runtime are not shipped",
       fast: true,
       packageTest: true,
       group: "package-tests",
@@ -783,6 +829,7 @@ export const suites = [
   ),
   ...["kernel", "skeleton", "console"].map((name) =>
     nodeTests(`${name}-docs`, `packages/${name}/dist/test/*.test.js`, {
+      kit: `core-only: ${name === "console" ? "console package is not shipped" : `${name} recorded product evidence and documentation`}`,
       document: true,
       namePattern: "\\[document\\]",
       ...(name === "skeleton" ? { needs: OUTSIDE_CONFINEMENT } : {}),
@@ -792,7 +839,9 @@ export const suites = [
     }),
   ),
   nodeTests("adjacent-queue", "scripts/test-adjacent-queue.mjs"),
-  nodeTests("evidence-sources", "scripts/test-evidence-sources.mjs"),
+  nodeTests("evidence-sources", "scripts/test-evidence-sources.mjs", {
+    kit: "core-only: console build, package sources and recorded evidence editions",
+  }),
   nodeTests("resident-bind", "scripts/test-resident-bind.mjs", {
     document: true,
   }),
@@ -815,6 +864,7 @@ export const suites = [
   }),
   nodeTests("codex-continuation", "scripts/test-codex-continuation.mjs"),
   nodeTests("harness-probe", "scripts/test-harness-probe.mjs", {
+    kit: "core-only: core security, budget and discovery records plus package sources",
     command: [
       process.execPath,
       "--test",
@@ -829,6 +879,7 @@ export const suites = [
     "local-runner-double",
     "scripts/probes/local-runner-smoke.test.mjs",
     {
+      kit: "core-only: role-qualification oracle reads core verification report WO-052/VER-001",
       document: true,
       command: [
         process.execPath,
@@ -845,11 +896,13 @@ export const suites = [
     },
   ),
   node("authority-evidence", "scripts/authority-evidence.mjs", {
+    kit: "core-only: core authority evidence edition and historical Git objects",
     args: ["--check"],
     needsBuild: true,
     preflight: true,
   }),
   nodeTests("harness-fixtures", "scripts/test-harness.mjs", {
+    kit: "core-only: Entropy Reducer baseline history and package sources",
     group: "hook-heavy",
     exclusive: true,
   }),
@@ -866,43 +919,53 @@ export const suites = [
     preflight: true,
   }),
   node("harness-evidence", "scripts/harness-evidence.mjs", {
+    kit: "core-only: package sources, historical harness baseline and live evidence",
     needsBuild: true,
     preflight: true,
   }),
   node("plan-refutation", "scripts/test-plan-refutation.mjs", {
+    kit: "core-only: core reader profiles, planning history, budgets and historical Git objects",
     args: ["--fixtures-only"],
     needsBuild: true,
     protects:
       "planning receipts and Entropy Reducer receipts preserve judgments, blinding, immutability and carried orders",
   }),
   node("plan-refutation-current", "scripts/test-plan-refutation.mjs", {
+    kit: "core-only: unseeded planning ledger and receipts; instance planning is pending WO-202",
     args: ["--check-only"],
     document: true,
   }),
   nodeTests("wo107-schema", "corpus/harness/wo107-schema.test.mjs", {
+    kit: "core-only: historical corpus observations, collector and Git objects",
     needsBuild: true,
   }),
   nodeTests("artifact-corpus", "corpus/harness/wo101-id-corpus.test.mjs", {
     document: true,
   }),
   node("artifact-evidence", "scripts/artifact-identity-evidence.mjs", {
+    kit: "core-only: package sources and core artifact-identity evidence edition",
     args: ["--check"],
     needsBuild: true,
     preflight: true,
   }),
   node("verification-evidence", "scripts/verification-evidence.mjs", {
+    kit: "core-only: package sources and core verification evidence edition",
     args: ["--check"],
     needsBuild: true,
     preflight: true,
   }),
   node("feedback-evidence", "scripts/feedback-evidence.mjs", {
+    kit: "core-only: core feedback evidence edition",
     args: ["--check"],
     needsBuild: true,
     preflight: true,
   }),
   nodeTests("mutation", "corpus/mutation/wo108-selftest.test.mjs"),
-  nodeTests("runner-fixtures", "scripts/test-runner.test.mjs"),
+  nodeTests("runner-fixtures", "scripts/test-runner.test.mjs", {
+    kit: "core-only: package sources, core build inventory and license pins",
+  }),
   nodeTests("process-debt", "scripts/test-process-debt.mjs", {
+    kit: "core-only: historical Git trees, package sources, core budgets and work orders",
     group: "hook-heavy",
     exclusive: true,
   }),
@@ -915,14 +978,20 @@ export const suites = [
     document: true,
     needsBuild: true,
   }),
-  node("plan", "scripts/refute-plan.mjs", { args: ["check"], document: true }),
+  node("plan", "scripts/refute-plan.mjs", {
+    kit: "core-only: unseeded planning ledger and receipts; instance planning is pending WO-202",
+    args: ["check"],
+    document: true,
+  }),
   node("reader-profiles", "scripts/reader.mjs", {
+    kit: "core-only: core editorial profiles, examples, scores and release tag objects",
     args: ["check"],
     document: true,
     protects:
       "committed reader choices, complete example variants, fact anchors, comparison hashes and immutable score subjects agree",
   }),
   nodeTests("reader-fixtures", "scripts/test-reader.mjs", {
+    kit: "core-only: core historical publication examples and their recorded comparison",
     document: true,
     needsBuild: false,
     protects:
@@ -957,6 +1026,9 @@ export function validateSuites(table) {
   for (const row of table)
     if (row.needs !== undefined && row.needs !== OUTSIDE_CONFINEMENT)
       throw new Error(`Unknown suite need: ${row.name} needs ${row.needs}`);
+  for (const row of table)
+    if (row.kit !== undefined && !/^core-only: \S.+/u.test(row.kit))
+      throw new Error(`Invalid kit exclusion: ${row.name}`);
   // A fixture shortens the heartbeat to observe it; a gate never does.
   for (const row of table)
     if (row.heartbeatMs !== undefined)
@@ -1696,6 +1768,21 @@ export async function scheduleSuites(
     results.push(result);
     onResult(result);
   };
+  // A kit verifies its carried code before any other task. Core still runs
+  // formatting before its build; no compiler runs in a kit.
+  const verifiedKit = build.name === "kit-verify";
+  if (verifiedKit) {
+    onActiveChange([build.name]);
+    finish(
+      await executeTask(
+        build,
+        lanes.map((_, index) => index),
+        [],
+      ),
+    );
+    onActiveChange([]);
+    if (results[0].exitCode !== 0) return results;
+  }
   // A configured formatter can read bytes outside the code identity. Run its
   // preflight before building or carrying product results.
   const format = table.find((row) => row.name === "format" && row.preflight);
@@ -1704,12 +1791,14 @@ export async function scheduleSuites(
     const result = await executeTask(
       format,
       lanes.map((_, index) => index),
-      [],
+      verifiedKit ? [build.name] : [],
     );
     finish(result);
     onActiveChange([]);
     if (result.exitCode !== 0) {
-      for (const row of table.filter((row) => row !== format))
+      for (const row of table.filter(
+        (row) => row !== format && !(verifiedKit && row === build),
+      ))
         finish({
           name: row.name,
           exitCode: 1,
@@ -1721,8 +1810,13 @@ export async function scheduleSuites(
     }
   }
   for (const row of table)
-    if (row !== format && reused.has(row.name)) finish(reused.get(row.name));
-  if (!reused.has(build.name)) {
+    if (
+      row !== format &&
+      !(verifiedKit && row === build) &&
+      reused.has(row.name)
+    )
+      finish(reused.get(row.name));
+  if (!verifiedKit && !reused.has(build.name)) {
     onActiveChange([build.name]);
     finish(
       await executeTask(
@@ -1734,7 +1828,12 @@ export async function scheduleSuites(
   }
   onActiveChange([]);
   for (const lane of lanes)
-    lane.previous = reused.has(build.name) ? null : build.name;
+    lane.previous =
+      verifiedKit && format
+        ? format.name
+        : reused.has(build.name)
+          ? null
+          : build.name;
   if (results.find((row) => row.name === build.name)?.exitCode !== 0)
     return results;
   const pending = table.filter(
@@ -2054,7 +2153,9 @@ async function runGateChecks(
   {
     stopRequested = () => false,
     sandbox: sandboxOptions,
-    table = suites,
+    table = suites.map((row) =>
+      row.build ? classifySuite(buildSuite(repo)) : row,
+    ),
     hostDirectory = hostStateRoot(),
   } = {},
 ) {
@@ -2111,6 +2212,23 @@ async function runGateChecks(
     if (format)
       selected = [format, ...selected.filter((row) => row !== format)];
   }
+  if (isKitRoot(repo)) {
+    const unavailable = table.filter((row) =>
+      row.kit?.startsWith("core-only: "),
+    );
+    for (const row of unavailable)
+      console.log(
+        `kit: ${row.name} not carried (${row.kit.slice("core-only: ".length)})`,
+      );
+    const requested = unavailable.find((row) => row.name === only);
+    if (requested)
+      throw new Error(
+        `Suite ${requested.name} is not carried in this kit (${requested.kit})`,
+      );
+    selected = selected.filter((row) => !row.kit?.startsWith("core-only: "));
+    const verify = table.find((row) => row.build);
+    selected = [verify, ...selected.filter((row) => row !== verify)];
+  }
   if (list) {
     for (const row of confinedPartial
       ? selected.filter((row) => !row.needs)
@@ -2139,6 +2257,7 @@ async function runGateChecks(
       covering = await coveringTaskResults(repo, "npm test", tasks);
       reused = covering.results;
       reused.delete("format");
+      reused.delete("kit-verify");
       reuseIdentity = covering.codeIdentity;
     } catch (error) {
       console.log(
@@ -2403,7 +2522,11 @@ async function runGateChecks(
         );
         // Successful checks still deliver their explicit diagnostics.
         for (const line of (row.output ?? "").trimEnd().split("\n"))
-          if (row.exitCode !== 0 || /^(?:ADVISORY|NEWER)\b/u.test(line))
+          if (
+            row.exitCode !== 0 ||
+            /^(?:ADVISORY|NEWER)\b/u.test(line) ||
+            (row.name === "kit-verify" && line.startsWith("kit: "))
+          )
             console.log(`  [${row.name}] ${line}`);
       },
     });

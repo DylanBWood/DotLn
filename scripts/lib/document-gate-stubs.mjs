@@ -29,6 +29,7 @@ export const DOCUMENT_GATE_STUBS = [
   "test-reader.mjs",
   "check-registrations.mjs",
   "build.mjs",
+  "launchpad.mjs",
   "license-surfaces.mjs",
   "test-resume.sh",
   "test-resident-bind.mjs",
