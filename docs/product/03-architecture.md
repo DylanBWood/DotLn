@@ -2372,6 +2372,9 @@ limits and WO-108's mutation runbook; the later lanes (WO-102, WO-103, WO-105
 and WO-107) record their commands in their own manifests and schema files
 under `corpus/manifests/` and `corpus/baselines/`, as each order's
 operator-review assumption 2 settled (REVIEW-006 ER6-002, 2026-10-10).
+Hash-pinned collector bytes carry `dotln-pinned-bytes`, which keeps the formatter
+and comment scan off them; the lane's schema test runs in the review gate when
+those bytes or that test change (WO-200).
 Unmeasured candidates and compile failures do not establish test-suite
 strength. This 2026-09-06 synchronization closes the layout follow-up left by
 WO-101; it does not change incident-source retention policy.

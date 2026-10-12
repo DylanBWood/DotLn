@@ -27495,6 +27495,14 @@
             "WO-200"
           ],
           "at": "2026-10-11T00:22:27.439Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred again by WO-200's final review (docs/final-reviews/WO-200/FINAL-001.md, WO-200-D008). Done: WO-200 decided the WO-107 lane's after-base rule (a change to the four pinned collector modules is judged by the wo107-schema review row, selected when one of its five declared sources changed against the merge base), repaired the classification self-test to validate the historical fixture and require WO-107's exact declaration (WO-200-D002), restored the collectors to protocol 1d618f2f… and recorded the rule in SCHEMA-WO-107.md; D010's three checks pass at code identity 1acd288a…. Not done, because each edits the pinned bytes WO-200 declines to change: archiving the second collector revision beside wo107-initial-protocol with validateProvenance accepting archived revisions, labelling the registry self-test base-only, and ending the comparison report with one newline. WO-105's rule stays on FUP-d093f77bd927f9dc.",
+          "reopenWhen": "an order needs a semantic edit to profile.mjs, wo107-records.mjs, wo107-scenarios.mjs or wo107-bounded.mjs (archive protocol 1d618f2f… first), the registry self-test fails on a kernel or skeleton change, the wo107-schema row does not select or does not fail on a collector edit, or WO-105's after-base rule is decided on FUP-d093f77bd927f9dc",
+          "targets": [],
+          "at": "2026-10-12T04:34:15.305Z"
         }
       ]
     },
@@ -27900,6 +27908,14 @@
             "WO-200"
           ],
           "at": "2026-10-11T00:22:27.496Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-200's final review (docs/final-reviews/WO-200/FINAL-001.md, WO-200-D008): the WO-107 lane now runs in the review gate as the machinery row wo107-schema when one of its five declared sources changed against the merge base, and its duration is recorded in the gate row (1,494 ms at the executor's review row). The other eleven corpus test files that run in no gate, including WO-105's lane, keep their orders' design and FUP-d093f77bd927f9dc's condition.",
+          "reopenWhen": "a merged kernel or compiler change is later found to fail a lane, or an order edits the WO-105 lane",
+          "targets": [],
+          "at": "2026-10-12T04:34:15.375Z"
         }
       ]
     },
@@ -33575,6 +33591,36 @@
           "ref": "docs/evidence/WO-076/decisions.md#wo-076-d011",
           "title": "WO-076-D011: The next WO-076 repair, or the next order that edits scripts/lib/harness-runtime.mjs or the build none manifest in scripts/lib/harness.mjs harnessInstallation. Rule a repair must hold: a ",
           "summary": "{ \"id\": \"WO-076-D011\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Pass final review of WO-076 at code identity d43b5afa42bb68116270fdf7f9a4366f0df823da6e7474341e93bc0a23a54321 with no source change. All six criteria hold at the integrated subject, which keeps every judged byte of VER-001's subject; the verification sequence is the one passing verification; the executor's self-review found and fixed three gaps; VER-001's three follow-ups (D007 to D009) stay boarded. Board one new follow-up that breaks no criterion and no behavior main had: the build none manifest, whose profiles list is empty by design, reads as runtime-unavailable to ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-984094128fe71900",
+      "key": "decision:docs/evidence/WO-200/decisions.md#wo-200-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "47549a0170bed86ddff56ab8d6347cc8e7113fbabc3987dfe8d25f96eca919bd",
+          "ref": "docs/evidence/WO-200/decisions.md#wo-200-d005--verification-pass-ver-001-board-the-declaration-tests-textual-reading-of-the-formatter-ignore-list-which-a-negation-line-defeats",
+          "title": "WO-200-D005: Assert the formatter's effective exclusion of every collector input. In the comment-labels ignore case (document gate, every run) and the schema pinned-bytes case, resolve each protocolLi",
+          "summary": "{ \"id\": \"WO-200-D005\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Pass VER-001: criteria 1 to 5 are met at code identity 1acd288a7b1119d141c3413027731d51b8e9d647d7544562f6bcd682e5ff3cc7. Board F1 (follow-up). Both declaration tests read .prettierignore as text, keeping the lines that start with corpus/harness/, and compare them with protocolLineage's input list; neither asks the formatter whether it ignores those files. Appending the negation line !corpus/harness/profile.mjs makes prettier --file-info report ignored false for profile.mjs, while the schema pinned-bytes case and the comment-labels ignore case both still pass. A later formatter ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2eddaaaa1ea5d3c3",
+      "key": "decision:docs/evidence/WO-200/decisions.md#wo-200-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a309c765a26591f607b39362c58c7b7ed48c8f5011984d430995f660bcabec02",
+          "ref": "docs/evidence/WO-200/decisions.md#wo-200-d006--verification-planning-receipt-044s-criterion-5-reopening-condition-for-wo-200-has-occurred",
+          "title": "WO-200-D006: Next planning pass: reopen receipt 044's criterion-5 finding for WO-200 as its condition requires. Name the consumer of the WO-107 baseline or record that none exists, and judge whether W",
+          "summary": "{ \"id\": \"WO-200-D006\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Record that the reopening condition of planning receipt 2026-10-11-planning-fb68306765535a9d-044's criterion-5 known issue for WO-200 has occurred: WO-200 activated with D001 naming no consumer of the WO-107 baseline. Route: planning, not blocking. The condition belongs to the planning goal standard, under which risk-reduction work names the blocked outcome it enables. No WO-200 acceptance criterion asks D001 to name a consumer, and VER-001 judges the criteria on their own text. The receipt's other condition, WO-118's activation recorded as delayed by WO-200, is not observed.\",",
           "missing": false
         }
       ],

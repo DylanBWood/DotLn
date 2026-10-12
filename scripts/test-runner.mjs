@@ -105,7 +105,14 @@ const shell = (name, file) => ({
 });
 
 // Machinery declarations select optional review checks by their own source paths.
-const machinerySources = {
+export const machinerySources = {
+  "wo107-schema": [
+    "corpus/harness/wo107-schema.test.mjs",
+    "corpus/harness/profile.mjs",
+    "corpus/harness/wo107-records.mjs",
+    "corpus/harness/wo107-scenarios.mjs",
+    "corpus/harness/wo107-bounded.mjs",
+  ],
   "fixture-temp-root": [
     "scripts/test-temp-root.sh",
     "scripts/test-fixture-temp-root.sh",
@@ -420,6 +427,8 @@ const machinerySources = {
   ],
 };
 const protection = {
+  "wo107-schema":
+    "the WO-107 baseline's provenance hash matches its pinned collector bytes",
   format: "source and documentation retain the shared formatting rules",
   "fixture-temp-root":
     "temporary fixture cleanup stays inside its owned directory",
@@ -869,6 +878,9 @@ export const suites = [
   node("plan-refutation-current", "scripts/test-plan-refutation.mjs", {
     args: ["--check-only"],
     document: true,
+  }),
+  nodeTests("wo107-schema", "corpus/harness/wo107-schema.test.mjs", {
+    needsBuild: true,
   }),
   nodeTests("artifact-corpus", "corpus/harness/wo101-id-corpus.test.mjs", {
     document: true,

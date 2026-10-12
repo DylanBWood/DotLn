@@ -12,6 +12,10 @@ export const machineryCoverageScope =
 // changing them alone need not run every consumer's expensive fixture suite.
 // Every other direct import or literal first-party script must be declared.
 export const machinerySourceExclusions = {
+  "wo107-schema": {
+    "scripts/test-runner.mjs":
+      "This schema case reads the classified source declaration; runner-fixtures checks runner metadata and selection for runner changes. The collector lane stays selected by its test and pinned collector bytes.",
+  },
   "*": {
     "scripts/lib/git.mjs":
       "Git invocation transport is covered by the product worktree, checkpoint and release fixtures; not every machinery consumer needs a rerun for a transport-only edit.",

@@ -1,3 +1,4 @@
+import { suites, machinerySources } from "../../scripts/test-runner.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync, existsSync, mkdtempSync } from "node:fs";
@@ -278,10 +279,21 @@ test("harness classification exception is exact and both collector revisions pre
     "show",
     `${BASE}:${CLASSIFICATION.path}`,
   ]);
-  const currentBytes = readFileSync(CLASSIFICATION.path);
-  validateClassification(baseBytes, currentBytes);
+  // Validate the original exception against its historical fixture. Later
+  // consumers may add independent declarations to the shared registry.
+  const historicalBytes = execFileSync("git", [
+    "show",
+    `3e29dd9d:${CLASSIFICATION.path}`,
+  ]);
+  const live = JSON.parse(readFileSync(CLASSIFICATION.path, "utf8"));
+  assert.equal(
+    live.nonEventPaths[CLASSIFICATION.addedPath],
+    CLASSIFICATION.declaration,
+    "the live registry retains the exact profiling declaration",
+  );
+  validateClassification(baseBytes, historicalBytes);
   assert.throws(() => validateClassification(baseBytes, baseBytes));
-  const widened = JSON.parse(currentBytes);
+  const widened = JSON.parse(historicalBytes);
   widened.nonEventPaths["corpus/unapproved.jsonl"] = "unapproved";
   assert.throws(() =>
     validateClassification(baseBytes, JSON.stringify(widened)),
@@ -425,4 +437,71 @@ test("corpus generated comparison is byte identical and check never appends or r
   assert.notEqual(absent.status, 0);
   assert.ok(!existsSync(temporary));
   assert.deepEqual(readFileSync(observations), original);
+});
+
+test("corpus the hashed collector files are exactly the pinned-bytes files", () => {
+  const declaration = /const names = (\[[^\]]+\]);/u.exec(
+    protocolLineage.toString(),
+  );
+  assert.ok(
+    declaration,
+    "collector input names must remain an explicit literal array",
+  );
+  const names = JSON.parse(declaration[1].replace(/,\s*\]/u, "]"));
+  assert.ok(
+    names.length > 0 && names.every((name) => /^[\w-]+\.mjs$/u.test(name)),
+  );
+  assert.equal(
+    new Set(names).size,
+    names.length,
+    "collector inputs are unique",
+  );
+  const profile = readFileSync(new URL("profile.mjs", import.meta.url), "utf8");
+  const hashInputs =
+    /const protocolHash = \(\) =>\s*digest\(\s*(\[[^\]]+\])/u.exec(profile);
+  assert.ok(
+    hashInputs,
+    "protocol hash inputs must remain an explicit literal array",
+  );
+  assert.deepEqual(
+    JSON.parse(hashInputs[1].replace(/,\s*\]/u, "]")),
+    names,
+    "lineage and live hash read the same ordered inputs",
+  );
+  const inputs = names.map((name) => `corpus/harness/${name}`).sort();
+  const tracked = execFileSync("git", ["ls-files", "-z"], { encoding: "utf8" });
+  const fields = execFileSync(
+    "git",
+    ["check-attr", "-z", "--stdin", "dotln-pinned-bytes"],
+    {
+      input: tracked,
+      encoding: "utf8",
+    },
+  ).split("\0");
+  const pinned = [];
+  for (let index = 0; index + 2 < fields.length; index += 3)
+    if (fields[index + 2] === "set") pinned.push(fields[index]);
+  assert.deepEqual(
+    pinned.sort(),
+    inputs,
+    "attributes follow the hashed inputs",
+  );
+  const ignored = readFileSync(".prettierignore", "utf8")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith("corpus/harness/"));
+  assert.deepEqual(
+    ignored.sort(),
+    inputs,
+    "formatter ignores follow the hashed inputs",
+  );
+  const row = suites.find((entry) => entry.name === "wo107-schema");
+  assert.ok(row?.machinery && !row.product && !row.document);
+  assert.deepEqual(
+    machinerySources["wo107-schema"]
+      .filter((file) => file !== "corpus/harness/wo107-schema.test.mjs")
+      .sort(),
+    inputs,
+    "review sources follow the hashed inputs",
+  );
 });

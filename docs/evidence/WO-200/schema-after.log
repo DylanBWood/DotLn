@@ -1,0 +1,25 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+✔ harness distributions interpolate quantiles and retain an outlier (4.047083ms)
+✔ harness deterministic dummy proves order, interleaving, warmups and every repetition (0.598792ms)
+✔ harness stops at a failed sample and retains its observer event (0.225709ms)
+✔ harness resource sample derives throughput and explicitly scopes memory (12.529ms)
+✔ harness registry covers every declared scenario and command source file (317.127709ms)
+✔ harness watchdog tracks owned descendants without claiming unrelated processes (0.196208ms)
+✔ harness watchdog ends a tiny synthetic child and leaves a bystander alive (77.139166ms)
+✔ harness watchdog records normal completion and sampled headroom (336.130916ms)
+✔ harness full dummy executions round-trip through schema and comparison (43.89025ms)
+✔ harness classification exception is exact and both collector revisions preserve timed bytes (21.427791ms)
+✔ corpus every committed record has a complete schema, distinct execution seeds and retained statistics (32.93725ms)
+✔ corpus schema refuses omissions, nonfinite values, lost outliers, duplicated execution and fabricated statistics (163.851834ms)
+✔ corpus generated comparison is byte identical and check never appends or rewrites (261.820083ms)
+✔ corpus the hashed collector files are exactly the pinned-bytes files (20.093708ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1369.726166
+bounded-result {"name":"bounded-probe","durationMs":1441,"slowestCases":[{"name":"bounded-probe","durationMs":1441,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":168264120,"peakRssBytes":255049728,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T02:45:28.623Z","finishedAt":"2026-10-12T02:45:30.064Z","exitCode":0,"executed":true}
