@@ -1,4 +1,4 @@
-# WO-200 — Pinned collector bytes are watched where they change: the WO-107 lane's hashed sources are declared, left alone by the formatter and the comment scan, checked in the review gate when they change, and the comment-only drift is recorded and reversed (version assigned at activation)
+# WO-200 — Pinned collector bytes are watched where they change: the WO-107 lane's hashed sources are declared, left alone by the formatter and the comment scan, checked in the review gate when they change, and the comment-only drift is recorded and reversed (v0.76.1)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -152,6 +152,7 @@ recorded under WO-107's own rule.
 6. `scripts/test-comment-labels.mjs`: add `test("WO-200 a file whose dotln-pinned-bytes attribute is set is left out of the scan")` in the fixture repository of the case at line 149 (set the attribute in the fixture's `.gitattributes`, write a bare `D007` comment, assert the file is absent from `commentFiles` and the check passes), and `test("WO-200 every path with dotln-pinned-bytes set is listed in .prettierignore")` over the real repository (`git ls-files -z` through `check-attr`, compared with the ignore file's non-comment lines). Check: `node --test scripts/test-comment-labels.mjs`.
 7. `corpus/harness/wo107-schema.test.mjs`: add `test("corpus the hashed collector files are exactly the pinned-bytes files")`: `protocolLineage`'s own input list, as `corpus/harness/` paths, is the single anchor, and three sets each equal it: the paths `git check-attr dotln-pinned-bytes` reports `set` over `git ls-files corpus/harness`, the `corpus/harness/` entries of `.prettierignore`'s exact-bytes group, and the `machinerySources["wo107-schema"]` entry of `scripts/test-runner.mjs` without the test file itself (read from the runner module, never a hand-copied list in the test). Check: `node --test corpus/harness/wo107-schema.test.mjs` (14 pass).
 8. `scripts/test-runner.mjs`: add `nodeTests("wo107-schema", "corpus/harness/wo107-schema.test.mjs", { needsBuild: true })` beside the `artifact-corpus` row (line 855); add `"wo107-schema": ["corpus/harness/wo107-schema.test.mjs", "corpus/harness/profile.mjs", "corpus/harness/wo107-records.mjs", "corpus/harness/wo107-scenarios.mjs", "corpus/harness/wo107-bounded.mjs"]` to `machinerySources` (line 108) and `"wo107-schema": "the WO-107 baseline's provenance hash matches its pinned collector bytes"` to `protection`. Check: `node --test scripts/test-runner.test.mjs` (the WO-174 coverage case at line 220 accepts the row); `npm test -- --review` at an identity where none of the five sources changed does not select `wo107-schema`, and does after `touch`-free edit of one of them in a scratch commit (record both selections in the handoff).
+8a. Operator-authorized extension (2026-10-12, WO-200-D002): repair only the existing classification schema case as described in Known issues and carry-ins. Validate the historical fixture with the unchanged collector validator and separately assert today's exact WO-107 declaration.
 9. Write-backs: `docs/product/03-architecture.md` §"Corpus policy", one sentence in place after the entry-point sentence: hash-pinned collector bytes carry `dotln-pinned-bytes`, which keeps the formatter and the comment scan off them, and the lane's schema test runs in the review gate when they change; `corpus/baselines/SCHEMA-WO-107.md` §"## Commands and retention", one dated line: the review-gate row and the 2026-10-09 drift reversed by this order; `docs/evidence/WO-200/decisions.md`; `npm run publication:check` for the locks.
 10. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`; complete `docs/evidence/WO-200/handoff.md`; `npm run resume -- implementation-ready <flags>`.
 
@@ -161,7 +162,7 @@ schema-test case, D001 and the write-backs.
 
 **Acceptance criteria (all required)**
 
-1. At this order's identity `node --test corpus/harness/wo107-schema.test.mjs` passes every case in the built tree, and the four hashed files produce `1d618f2f6e81f6dcb3b06aba2f9bb525ce50d854d1cf664155f1b75fafde34cd`, with no byte change in `corpus/harness/` outside the restored comment.
+1. At this order's identity `node --test corpus/harness/wo107-schema.test.mjs` passes every case in the built tree, and the four hashed files produce `1d618f2f6e81f6dcb3b06aba2f9bb525ce50d854d1cf664155f1b75fafde34cd`, with no collector byte change outside the restored comment; the new schema case and the operator-authorized classification-test repair are the only other harness changes.
 2. `git check-attr dotln-pinned-bytes` reports `set` for exactly the files `protocolLineage` hashes, `.prettierignore` lists the same paths, and the row's declared sources name them; `protocolLineage`'s own input list is the anchor the tests of steps 6 and 7 compare each of the three against (never one list against another), so a file added to or removed from the hashed set fails them until every list follows; each test is shown failing once in a scratch copy and recorded in the handoff.
 3. `node scripts/comment-labels.mjs` passes with no corpus entry in `docs/control/comment-baseline.json`, and the fixture case shows an attributed file left out of the scan.
 4. `wo107-schema` is a machinery row: `npm test -- --review` selects it when one of its five declared sources changed against the merge base and not otherwise, and the plain gate never runs it; both selections are recorded.
@@ -180,8 +181,13 @@ review. No live row.
   checks keyed to WO-107's bytes) and FUP-069dff5d52d98e0d (manual corpus
   lanes) are allocated here for the WO-107 lane: the after-base rule is
   that a change to the pinned bytes is judged in the review gate of the
-  order that makes it. D010's three WO-107-keyed checks are left as they
-  are; this order edits none of them and records whether they still pass.
+  order that makes it. The registry and collector-provenance checks remain unchanged. The operator
+  authorized on 2026-10-12 (WO-200-D002) repairing the classification check
+  after commit 209e2499 added a reader-score declaration to the shared fixture:
+  validate the exact historical fixture from WO-107's commit, then require
+  today's fixture to retain WO-107's exact declaration. Leave the pinned
+  collector validator and shared fixture unchanged; prove that deleting or
+  changing WO-107's declaration fails the repaired test.
 - 2026-10-11 standard pass (receipt 042's known issue): `protocolLineage`'s
   input list anchors the attribute set, the ignore group and the row's
   declared sources (step 7, criterion 2), so a fifth hashed file cannot

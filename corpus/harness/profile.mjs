@@ -252,8 +252,7 @@ const protocolHash = () =>
       .join("\n"),
   );
 
-// Only provenance, preflight, validation and reporting changed after the
-// one-entry classification fix (WO-107 D007).
+// Only provenance, preflight, validation and reporting changed after D007.
 // The initial archive is hash-pinned; all timed paths must remain exact bytes.
 export function protocolLineage() {
   const names = [

@@ -24,6 +24,8 @@ state; it is not an isolated allocation measurement of the function under test.
 
 ## Commands and retention
 
+2026-10-12 (WO-200): the `wo107-schema` review-gate row checks changed pinned collector bytes or its schema test; the comment-only provenance drift of 2026-10-09 is reversed, and the classification test validates the historical fixture exactly while requiring today's registry to retain this lane's declaration.
+
 Run from the repository root with its installed, pinned dependencies. No new
 dependency, installation, model invocation, or root test-script entry is needed.
 

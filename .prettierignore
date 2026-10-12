@@ -14,6 +14,10 @@ node_modules/
 # Recorded fixture bytes and generated harness code keep their exact bytes.
 corpus/fixtures/
 corpus/manifests/
+corpus/harness/profile.mjs
+corpus/harness/wo107-records.mjs
+corpus/harness/wo107-scenarios.mjs
+corpus/harness/wo107-bounded.mjs
 packages/console/fixtures/inputs/
 packages/console/fixtures/expected/
 .claude/hooks/

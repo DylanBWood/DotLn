@@ -30,7 +30,7 @@ const inside = (root, path) =>
   path === root || path.startsWith(`${root}${sep}`);
 
 /** The tracked and untracked code files the check reads: documentation roots,
- * generated surfaces, build output and dependency trees are left out. */
+ * generated and hash-pinned surfaces, build output and dependency trees are left out. */
 export function commentFiles(root) {
   const roots = Object.values(loadConfig(root).roots).map((path) =>
     resolve(root, path),
@@ -57,7 +57,15 @@ export function commentFiles(root) {
     .sort();
   if (!candidates.length) return [];
   const attributes = spawnGit(
-    ["-C", root, "check-attr", "-z", "--stdin", "dotln-generated"],
+    [
+      "-C",
+      root,
+      "check-attr",
+      "-z",
+      "--stdin",
+      "dotln-generated",
+      "dotln-pinned-bytes",
+    ],
     {
       encoding: "utf8",
       input: candidates.join("\0") + "\0",
@@ -65,12 +73,12 @@ export function commentFiles(root) {
     },
   );
   if (attributes.status !== 0)
-    throw new Error("Generated source classification unavailable");
+    throw new Error("Generated or pinned source classification unavailable");
   const fields = attributes.stdout.split("\0"),
-    generated = new Set();
+    excluded = new Set();
   for (let index = 0; index + 2 < fields.length; index += 3)
-    if (fields[index + 2] === "set") generated.add(fields[index]);
-  return candidates.filter((file) => !generated.has(file));
+    if (fields[index + 2] === "set") excluded.add(fields[index]);
+  return candidates.filter((file) => !excluded.has(file));
 }
 
 // Physical comment lines of one file: shell comments by line, JavaScript and

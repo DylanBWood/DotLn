@@ -17,6 +17,7 @@ import {
   commentFiles,
   writeCommentBaseline,
 } from "./lib/comment-labels.mjs";
+import { protocolLineage } from "../corpus/harness/profile.mjs";
 import { suites } from "./test-runner.mjs";
 
 const normalized = (text) => text.replace(/\s+/gu, " ").trim();
@@ -231,4 +232,50 @@ test("the comment check and its fixtures run only in the document selection", ()
     assert.equal(row.product, false, name);
     assert.equal(row.machinery, false, name);
   }
+});
+
+test("WO-200 a file whose dotln-pinned-bytes attribute is set is left out of the scan", (t) => {
+  const f = fixture(t);
+  f.write(
+    ".gitattributes",
+    "/collector.mjs dotln-pinned-bytes\n/ordinary.mjs -dotln-pinned-bytes\n",
+  );
+  f.write("collector.mjs", "// after D007.\n");
+  f.write("ordinary.mjs", "// Explains itself.\n");
+  assert.deepEqual(commentFiles(f.root), ["ordinary.mjs"]);
+  assert.deepEqual(f.check().failures, []);
+  assert.equal(f.check(["collector.mjs"]).findings[0].kind, "decision-number");
+});
+
+test("WO-200 every path with dotln-pinned-bytes set is listed in .prettierignore", () => {
+  const declaration = /const names = (\[[^\]]+\]);/u.exec(
+    protocolLineage.toString(),
+  );
+  assert.ok(
+    declaration,
+    "collector input names must remain an explicit literal array",
+  );
+  const inputs = JSON.parse(declaration[1].replace(/,\s*\]/u, "]"))
+    .map((name) => `corpus/harness/${name}`)
+    .sort();
+  const tracked = spawnGit(["ls-files", "-z"], { encoding: "utf8" });
+  assert.equal(tracked.status, 0, tracked.stderr);
+  const attributes = spawnGit(
+    ["check-attr", "-z", "--stdin", "dotln-pinned-bytes"],
+    {
+      input: tracked.stdout,
+      encoding: "utf8",
+    },
+  );
+  assert.equal(attributes.status, 0, attributes.stderr);
+  const fields = attributes.stdout.split("\0"),
+    pinned = [];
+  for (let index = 0; index + 2 < fields.length; index += 3)
+    if (fields[index + 2] === "set") pinned.push(fields[index]);
+  assert.deepEqual(pinned.sort(), inputs);
+  const ignored = readFileSync(".prettierignore", "utf8")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith("corpus/harness/"));
+  assert.deepEqual(ignored.sort(), inputs);
 });
