@@ -1,0 +1,578 @@
+{
+  "schemaVersion": 1,
+  "format": "Sanitized event summaries, not EventEnvelope JSONL",
+  "resident": [
+    {
+      "eventId": "evt_1",
+      "type": "ResidentConfigured",
+      "at": 0
+    },
+    {
+      "eventId": "evt_8",
+      "type": "OperatorPresenceObserved",
+      "at": 1791888717020
+    },
+    {
+      "eventId": "evt_12",
+      "type": "IntentHeld",
+      "at": 1791888757314,
+      "draftId": "WO-900",
+      "step": "contract"
+    },
+    {
+      "eventId": "evt_15",
+      "type": "ActorUnavailable",
+      "at": 1791888758378
+    },
+    {
+      "eventId": "evt_18",
+      "type": "IntentAdmitted",
+      "at": 1791888805025,
+      "draftId": "WO-901"
+    },
+    {
+      "eventId": "evt_20",
+      "type": "IntentStepStarted",
+      "at": 1791888806381,
+      "commandId": "cmd_vertical_325871a8c7eb3895"
+    },
+    {
+      "eventId": "evt_22",
+      "type": "IntentStepSettled",
+      "at": 1791888806427,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_325871a8c7eb3895"
+    },
+    {
+      "eventId": "evt_25",
+      "type": "IntentStepStarted",
+      "at": 1791888806967,
+      "commandId": "cmd_vertical_44f3fc44eb711b9b"
+    },
+    {
+      "eventId": "evt_27",
+      "type": "IntentStepSettled",
+      "at": 1791888807012,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_44f3fc44eb711b9b"
+    },
+    {
+      "eventId": "evt_30",
+      "type": "IntentStepStarted",
+      "at": 1791888808187,
+      "commandId": "cmd_vertical_13df592e5baee385"
+    },
+    {
+      "eventId": "evt_32",
+      "type": "IntentStepSettled",
+      "at": 1791888808234,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_13df592e5baee385"
+    },
+    {
+      "eventId": "evt_35",
+      "type": "IntentStepStarted",
+      "at": 1791888809407,
+      "commandId": "cmd_vertical_edd0eff6aa699f09"
+    },
+    {
+      "eventId": "evt_37",
+      "type": "IntentStepSettled",
+      "at": 1791888809448,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_edd0eff6aa699f09"
+    },
+    {
+      "eventId": "evt_40",
+      "type": "IntentStepStarted",
+      "at": 1791888810608,
+      "commandId": "cmd_vertical_79ca2af65a099d7a"
+    },
+    {
+      "eventId": "evt_43",
+      "type": "IntentStepSettled",
+      "at": 1791888830268,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_79ca2af65a099d7a"
+    },
+    {
+      "eventId": "evt_46",
+      "type": "IntentStepStarted",
+      "at": 1791888831438,
+      "commandId": "cmd_vertical_1ffd2d9004ff5705"
+    },
+    {
+      "eventId": "evt_53",
+      "type": "IntentStepSettled",
+      "at": 1791888951796,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_1ffd2d9004ff5705"
+    },
+    {
+      "eventId": "evt_56",
+      "type": "IntentStepStarted",
+      "at": 1791888952956,
+      "commandId": "cmd_vertical_108418ad232d6c56"
+    },
+    {
+      "eventId": "evt_58",
+      "type": "IntentStepSettled",
+      "at": 1791888953193,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_108418ad232d6c56"
+    },
+    {
+      "eventId": "evt_61",
+      "type": "IntentStepStarted",
+      "at": 1791888954366,
+      "commandId": "cmd_vertical_91def61ff4959e16"
+    },
+    {
+      "eventId": "evt_64",
+      "type": "IntentStepSettled",
+      "at": 1791888979213,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_91def61ff4959e16"
+    },
+    {
+      "eventId": "evt_67",
+      "type": "IntentStepStarted",
+      "at": 1791888980374,
+      "commandId": "cmd_vertical_670834426a1324e1"
+    },
+    {
+      "eventId": "evt_70",
+      "type": "IntentStepSettled",
+      "at": 1791889008715,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_670834426a1324e1"
+    },
+    {
+      "eventId": "evt_73",
+      "type": "IntentStepStarted",
+      "at": 1791889009890,
+      "commandId": "cmd_vertical_bbdf4f51a3ed8dd8"
+    },
+    {
+      "eventId": "evt_75",
+      "type": "IntentStepSettled",
+      "at": 1791889009941,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_bbdf4f51a3ed8dd8"
+    },
+    {
+      "eventId": "evt_78",
+      "type": "IntentStepStarted",
+      "at": 1791889011135,
+      "commandId": "cmd_vertical_05f964dd02511eac"
+    },
+    {
+      "eventId": "evt_80",
+      "type": "IntentStepSettled",
+      "at": 1791889011321,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_05f964dd02511eac"
+    },
+    {
+      "eventId": "evt_83",
+      "type": "IntentStepStarted",
+      "at": 1791889012510,
+      "commandId": "cmd_vertical_9df40a59a80fc96e"
+    },
+    {
+      "eventId": "evt_85",
+      "type": "IntentStepSettled",
+      "at": 1791889016578,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_9df40a59a80fc96e"
+    },
+    {
+      "eventId": "evt_88",
+      "type": "IntentStepStarted",
+      "at": 1791889017759,
+      "commandId": "cmd_vertical_c7f06d5a7a7da33b"
+    },
+    {
+      "eventId": "evt_91",
+      "type": "IntentStepSettled",
+      "at": 1791889037778,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_c7f06d5a7a7da33b"
+    },
+    {
+      "eventId": "evt_94",
+      "type": "IntentStepStarted",
+      "at": 1791889038954,
+      "commandId": "cmd_vertical_00bc9bc51eaf14e3"
+    },
+    {
+      "eventId": "evt_102",
+      "type": "IntentStepSettled",
+      "at": 1791889265309,
+      "result": "completed",
+      "terminal": true,
+      "commandId": "cmd_vertical_00bc9bc51eaf14e3"
+    }
+  ],
+  "vertical": [
+    {
+      "eventId": "evt_1",
+      "type": "VerticalOpened",
+      "at": 1791888806331
+    },
+    {
+      "eventId": "evt_2",
+      "type": "VerticalCommandPersisted",
+      "at": 1791888806344,
+      "step": "bundle",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_3",
+      "type": "VerticalStepCompleted",
+      "at": 1791888806392,
+      "step": "bundle",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_4",
+      "type": "VerticalCommandPersisted",
+      "at": 1791888806933,
+      "step": "contract",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_5",
+      "type": "VerticalStepCompleted",
+      "at": 1791888806978,
+      "step": "contract",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_6",
+      "type": "VerticalCommandPersisted",
+      "at": 1791888808144,
+      "step": "surfaces",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_7",
+      "type": "VerticalStepCompleted",
+      "at": 1791888808198,
+      "step": "surfaces",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_8",
+      "type": "VerticalCommandPersisted",
+      "at": 1791888809370,
+      "step": "derived-order",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_9",
+      "type": "VerticalStepCompleted",
+      "at": 1791888809418,
+      "step": "derived-order",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_10",
+      "type": "VerticalCommandPersisted",
+      "at": 1791888810576,
+      "step": "baseline",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_11",
+      "type": "VerticalStepCompleted",
+      "at": 1791888830234,
+      "step": "baseline",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_12",
+      "type": "VerticalCommandPersisted",
+      "at": 1791888831404,
+      "step": "source-change",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_13",
+      "type": "VerticalStepCompleted",
+      "at": 1791888951757,
+      "step": "source-change",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_14",
+      "type": "VerticalCommandPersisted",
+      "at": 1791888952922,
+      "step": "witnesses",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_15",
+      "type": "VerticalStepCompleted",
+      "at": 1791888953153,
+      "step": "witnesses",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_16",
+      "type": "VerticalCommandPersisted",
+      "at": 1791888954330,
+      "step": "verification",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_17",
+      "type": "VerticalStepCompleted",
+      "at": 1791888979174,
+      "step": "verification",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_18",
+      "type": "VerticalCommandPersisted",
+      "at": 1791888980339,
+      "step": "review",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_19",
+      "type": "VerticalStepCompleted",
+      "at": 1791889008678,
+      "step": "review",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_20",
+      "type": "VerticalCommandPersisted",
+      "at": 1791889009856,
+      "step": "preparation",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_21",
+      "type": "VerticalStepCompleted",
+      "at": 1791889009904,
+      "step": "preparation",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_22",
+      "type": "VerticalCommandPersisted",
+      "at": 1791889011087,
+      "step": "lint",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_23",
+      "type": "VerticalStepCompleted",
+      "at": 1791889011276,
+      "step": "lint",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_24",
+      "type": "VerticalCommandPersisted",
+      "at": 1791889012472,
+      "step": "publish",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_25",
+      "type": "VerticalStepCompleted",
+      "at": 1791889016539,
+      "step": "publish",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_26",
+      "type": "VerticalCommandPersisted",
+      "at": 1791889017722,
+      "step": "observation",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_27",
+      "type": "VerticalStepCompleted",
+      "at": 1791889037721,
+      "step": "observation",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_28",
+      "type": "VerticalCommandPersisted",
+      "at": 1791889038916,
+      "step": "resolution",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_29",
+      "type": "VerticalStepCompleted",
+      "at": 1791889265217,
+      "step": "resolution",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    }
+  ],
+  "source": [
+    {
+      "eventId": "evt_1",
+      "type": "ArtifactIdentityEnforcementStarted",
+      "at": 1791888831544
+    },
+    {
+      "eventId": "evt_2",
+      "type": "SourceChangeRequested",
+      "at": 1791888831544
+    },
+    {
+      "eventId": "evt_3",
+      "type": "CommandPersisted",
+      "at": 1791888831554
+    },
+    {
+      "eventId": "evt_4",
+      "type": "WorkerAttemptStarted",
+      "at": 1791888832319
+    },
+    {
+      "eventId": "evt_5",
+      "type": "SourceChangeProcessStarted",
+      "at": 1791888832421
+    },
+    {
+      "eventId": "evt_6",
+      "type": "CommandReceipt",
+      "at": 1791888832426
+    },
+    {
+      "eventId": "evt_8",
+      "type": "SourceChangeProcessStopped",
+      "at": 1791888833571
+    },
+    {
+      "eventId": "evt_9",
+      "type": "SourceChangeIntegrityChecked",
+      "at": 1791888833600
+    },
+    {
+      "eventId": "evt_10",
+      "type": "WorkerInterrupted",
+      "at": 1791888833605
+    },
+    {
+      "eventId": "evt_11",
+      "type": "SourceChangeIntegrityChecked",
+      "at": 1791888834904
+    },
+    {
+      "eventId": "evt_12",
+      "type": "WorkerAttemptStarted",
+      "at": 1791888835418
+    },
+    {
+      "eventId": "evt_13",
+      "type": "SourceChangeProcessStarted",
+      "at": 1791888835512
+    },
+    {
+      "eventId": "evt_14",
+      "type": "CommandReceipt",
+      "at": 1791888835517
+    },
+    {
+      "eventId": "evt_130",
+      "type": "SourceChangeProcessStopped",
+      "at": 1791888950698
+    },
+    {
+      "eventId": "evt_131",
+      "type": "WorkerResultObserved",
+      "at": 1791888950705
+    },
+    {
+      "eventId": "evt_132",
+      "type": "SourceChangeIntegrityChecked",
+      "at": 1791888950737
+    },
+    {
+      "eventId": "evt_133",
+      "type": "SourceChangeIntegrityChecked",
+      "at": 1791888951724
+    },
+    {
+      "eventId": "evt_134",
+      "type": "SourceChangeObserved",
+      "at": 1791888951739
+    },
+    {
+      "eventId": "evt_135",
+      "type": "CommandResult",
+      "at": 1791888951745,
+      "result": "observed"
+    },
+    {
+      "eventId": "evt_136",
+      "type": "WorkerCompleted",
+      "at": 1791888951750
+    }
+  ]
+}

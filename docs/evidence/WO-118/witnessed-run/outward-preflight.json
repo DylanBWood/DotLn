@@ -1,0 +1,82 @@
+{
+  "samples": [
+    {
+      "kind": "branch",
+      "result": {
+        "kind": "branch",
+        "status": "pass",
+        "checks": {
+          "format": {
+            "status": "pass"
+          },
+          "launchpad": {
+            "status": "pass"
+          },
+          "localTerms": {
+            "status": "pass"
+          }
+        },
+        "findings": []
+      }
+    },
+    {
+      "kind": "commit",
+      "result": {
+        "kind": "commit",
+        "status": "pass",
+        "checks": {
+          "format": {
+            "status": "pass"
+          },
+          "launchpad": {
+            "status": "pass"
+          },
+          "localTerms": {
+            "status": "pass"
+          }
+        },
+        "findings": []
+      }
+    },
+    {
+      "kind": "pr-title",
+      "result": {
+        "kind": "pr-title",
+        "status": "pass",
+        "checks": {
+          "format": {
+            "status": "pass"
+          },
+          "launchpad": {
+            "status": "pass"
+          },
+          "localTerms": {
+            "status": "pass"
+          }
+        },
+        "findings": []
+      }
+    },
+    {
+      "kind": "pr-body",
+      "result": {
+        "kind": "pr-body",
+        "status": "pass",
+        "checks": {
+          "format": {
+            "status": "pass"
+          },
+          "launchpad": {
+            "status": "pass"
+          },
+          "localTerms": {
+            "status": "pass"
+          }
+        },
+        "findings": []
+      }
+    }
+  ],
+  "syntheticControlStatus": "refused",
+  "scope": "Public outward vocabulary plus one synthetic instance-owned deny marker; no private list imported."
+}

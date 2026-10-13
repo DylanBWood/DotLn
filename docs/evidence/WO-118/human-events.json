@@ -1,0 +1,20 @@
+[
+  {
+    "store": "resident",
+    "eventId": "evt_4",
+    "type": "OperatorPresenceObserved",
+    "purpose": "setup"
+  },
+  {
+    "store": "instance-control",
+    "eventId": "WO-900:WorkOrderIdentityAllocated",
+    "type": "WorkOrderIdentityAllocated",
+    "purpose": "initial-intent"
+  },
+  {
+    "store": "instance-control",
+    "eventId": "WO-901:WorkOrderIdentityAllocated",
+    "type": "WorkOrderIdentityAllocated",
+    "purpose": "ambiguous-control-intent"
+  }
+]

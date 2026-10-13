@@ -1,0 +1,54 @@
+{
+  "label": "observed",
+  "publicTerms": [
+    "DotLn",
+    "launchpad",
+    "gem",
+    "gems",
+    "mask",
+    "masks",
+    "ScratchForbiddenMarker"
+  ],
+  "pathPrefixes": [
+    "docs/work-orders",
+    "docs/control",
+    ".runtime",
+    "dotln.config",
+    "packages/skeleton"
+  ],
+  "trackedFiles": 6,
+  "treeFindings": [],
+  "lint": [
+    {
+      "kind": "branch",
+      "source": "generated",
+      "status": "pass"
+    },
+    {
+      "kind": "pr-title",
+      "source": "generated",
+      "status": "pass"
+    },
+    {
+      "kind": "pr-body",
+      "source": "generated",
+      "status": "pass"
+    },
+    {
+      "kind": "commit",
+      "source": "generated",
+      "status": "pass"
+    },
+    {
+      "kind": "commit",
+      "source": "generated",
+      "status": "pass"
+    },
+    {
+      "kind": "pr-body",
+      "source": "runtime-reply",
+      "status": "pass"
+    }
+  ],
+  "scope": "Configured public vocabulary plus one synthetic local deny marker; generated branch, title, body and commits, and every runtime reply on the pull request."
+}

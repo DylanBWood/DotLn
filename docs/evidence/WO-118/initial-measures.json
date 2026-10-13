@@ -1,0 +1,156 @@
+[
+  {
+    "item": "Representative cycle time ms",
+    "score": 22750,
+    "label": "observed",
+    "method": "Last minus first vertical event occurredAt; starts after model intake. Confirmed below.",
+    "evidence": "event-log.json"
+  },
+  {
+    "item": "Driver observation wall ms",
+    "score": 112265,
+    "label": "observed",
+    "method": "Driver finishedAt minus startedAt; includes representative and ambiguous control.",
+    "evidence": "initial-run.json"
+  },
+  {
+    "item": "Native model episode launches",
+    "score": 4,
+    "label": "observed",
+    "method": "Two saved intake provenance records, one baseline WorkerAttemptStarted and one source WorkerAttemptStarted. Includes the killed writer.",
+    "evidence": "initial-run.json; preserved local stores"
+  },
+  {
+    "item": "Resident launches",
+    "score": 2,
+    "label": "observed",
+    "method": "Driver process records; one initial start and one SIGTERM/relaunch.",
+    "evidence": "initial-run.json"
+  },
+  {
+    "item": "Source writer attempts",
+    "score": 1,
+    "label": "observed",
+    "method": "Count of WorkerAttemptStarted in the source store.",
+    "evidence": "initial-run.json"
+  },
+  {
+    "item": "Source commits",
+    "score": 0,
+    "label": "observed",
+    "method": "git rev-list --count main..fix/intent-<key> in the scratch target returned 0.",
+    "evidence": "initial-run.json"
+  },
+  {
+    "item": "Repair episodes",
+    "score": 0,
+    "label": "observed",
+    "method": "Vertical refused before verification/review/repair.",
+    "evidence": "event-log.json"
+  },
+  {
+    "item": "Original-criterion coverage at delivered head",
+    "score": null,
+    "label": "unknown",
+    "method": "No source commit or delivered head exists.",
+    "evidence": "initial-run.json"
+  },
+  {
+    "item": "Main-thread context growth during live run",
+    "score": null,
+    "label": "unknown",
+    "method": "No corresponding per-live-run counter or active-human timer was collected; root dispatch counters are not actor usage.",
+    "evidence": "initial-run.json"
+  },
+  {
+    "item": "Model input tokens",
+    "score": null,
+    "label": "unknown",
+    "method": "No corresponding per-live-run counter or active-human timer was collected; root dispatch counters are not actor usage.",
+    "evidence": "initial-run.json"
+  },
+  {
+    "item": "Model output tokens",
+    "score": null,
+    "label": "unknown",
+    "method": "No corresponding per-live-run counter or active-human timer was collected; root dispatch counters are not actor usage.",
+    "evidence": "initial-run.json"
+  },
+  {
+    "item": "Human touch time",
+    "score": null,
+    "label": "unknown",
+    "method": "No corresponding per-live-run counter or active-human timer was collected; root dispatch counters are not actor usage.",
+    "evidence": "initial-run.json"
+  },
+  {
+    "item": "Cost USD",
+    "score": null,
+    "label": "unknown",
+    "method": "No corresponding per-live-run counter or active-human timer was collected; root dispatch counters are not actor usage.",
+    "evidence": "initial-run.json"
+  },
+  {
+    "item": "Worker model and effort",
+    "score": "gpt-6.1-sol / max",
+    "label": "launch-claim",
+    "method": "Saved native episode launch selections; no effective selection readback.",
+    "evidence": "export-receipt.json"
+  },
+  {
+    "item": "Parity: Linked source: one scratch issue",
+    "score": "observed-met",
+    "label": "observed",
+    "method": "Resident fetched the configured scratch issue.",
+    "evidence": "initial-run.json; event-log.json"
+  },
+  {
+    "item": "Parity: Intake and understanding",
+    "score": "observed-met",
+    "label": "observed",
+    "method": "Runtime model intake produced the contract and source-bound baseline assessment; baseline reproduced the defect.",
+    "evidence": "initial-run.json; event-log.json"
+  },
+  {
+    "item": "Parity: Branch",
+    "score": "observed-met",
+    "label": "observed",
+    "method": "Governed source branch exists at the original base.",
+    "evidence": "initial-run.json; event-log.json"
+  },
+  {
+    "item": "Parity: Change",
+    "score": "observed-unmet",
+    "label": "observed",
+    "method": "Killed before an accepted source change.",
+    "evidence": "initial-run.json; event-log.json"
+  },
+  {
+    "item": "Parity: Conventional commits",
+    "score": "observed-unmet",
+    "label": "observed",
+    "method": "Source branch has no new commit.",
+    "evidence": "initial-run.json; event-log.json"
+  },
+  {
+    "item": "Parity: Generated pull-request title and body",
+    "score": "observed-unmet",
+    "label": "observed",
+    "method": "Publication was not reached.",
+    "evidence": "initial-run.json; event-log.json"
+  },
+  {
+    "item": "Parity: Every automated review comment resolved",
+    "score": "observed-unmet",
+    "label": "observed",
+    "method": "No new pull request or review loop exists for this run.",
+    "evidence": "initial-run.json; event-log.json"
+  },
+  {
+    "item": "Parity: No operator tending of a harness",
+    "score": "observed-unmet",
+    "label": "observed",
+    "method": "The prescribed fault injection left a terminal refusal; resident replacement was absent.",
+    "evidence": "initial-run.json; event-log.json"
+  }
+]

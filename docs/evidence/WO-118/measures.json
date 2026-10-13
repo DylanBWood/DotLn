@@ -1,0 +1,156 @@
+[
+  {
+    "item": "Representative cycle time ms",
+    "score": 504900,
+    "label": "observed",
+    "method": "Last minus first vertical event occurredAt; intake precedes this interval.",
+    "evidence": "completed-run/event-log.json"
+  },
+  {
+    "item": "Driver observation wall ms",
+    "score": 575246,
+    "label": "observed",
+    "method": "Driver finishedAt minus startedAt; includes both controls, injected faults and review waiting.",
+    "evidence": "completed-run/receipt.json"
+  },
+  {
+    "item": "Native model episode launches",
+    "score": 13,
+    "label": "observed",
+    "method": "Two saved intake provenance records, seven WorkerAttemptStarted events and four model triage records.",
+    "evidence": "completed-run/receipt.json"
+  },
+  {
+    "item": "Resident launches",
+    "score": 2,
+    "label": "observed",
+    "method": "One start and one deliberate SIGTERM/relaunch.",
+    "evidence": "completed-run/receipt.json"
+  },
+  {
+    "item": "Source writer attempts",
+    "score": 2,
+    "label": "observed",
+    "method": "Same command and episode before and after native writer SIGKILL.",
+    "evidence": "completed-run/receipt.json"
+  },
+  {
+    "item": "Source commits before review",
+    "score": 1,
+    "label": "observed",
+    "method": "One SourceChangeObserved and one source commit; replacement introduces no duplicate commit.",
+    "evidence": "completed-run/receipt.json"
+  },
+  {
+    "item": "Review repair episodes / commits",
+    "score": "1 / 1",
+    "label": "observed",
+    "method": "Accepted whitespace review finding produces one repair child and one additional delivered commit.",
+    "evidence": "completed-run/receipt.json"
+  },
+  {
+    "item": "Original-criterion coverage at delivered head",
+    "score": "1 / 1",
+    "label": "observed",
+    "method": "Repair verification pins the delivered commit and reports its original criterion met; host witness passes.",
+    "evidence": "completed-run/receipt.json"
+  },
+  {
+    "item": "Main-thread context growth during live run",
+    "score": null,
+    "label": "unknown",
+    "method": "No corresponding per-run counter or active-human timer was collected. Root dispatch usage is not actor usage.",
+    "evidence": "completed-run/receipt.json"
+  },
+  {
+    "item": "Model input tokens",
+    "score": null,
+    "label": "unknown",
+    "method": "No corresponding per-run counter or active-human timer was collected. Root dispatch usage is not actor usage.",
+    "evidence": "completed-run/receipt.json"
+  },
+  {
+    "item": "Model output tokens",
+    "score": null,
+    "label": "unknown",
+    "method": "No corresponding per-run counter or active-human timer was collected. Root dispatch usage is not actor usage.",
+    "evidence": "completed-run/receipt.json"
+  },
+  {
+    "item": "Human touch time",
+    "score": null,
+    "label": "unknown",
+    "method": "No corresponding per-run counter or active-human timer was collected. Root dispatch usage is not actor usage.",
+    "evidence": "completed-run/receipt.json"
+  },
+  {
+    "item": "Cost USD",
+    "score": null,
+    "label": "unknown",
+    "method": "No corresponding per-run counter or active-human timer was collected. Root dispatch usage is not actor usage.",
+    "evidence": "completed-run/receipt.json"
+  },
+  {
+    "item": "Worker model and effort",
+    "score": "gpt-6.1-sol / max",
+    "label": "launch-claim",
+    "method": "Saved native launch selections; effective model and effort remain unknown.",
+    "evidence": "completed-run/receipt.json"
+  },
+  {
+    "item": "Parity: Linked source: one scratch issue",
+    "score": "observed-met",
+    "label": "observed",
+    "method": "Runtime fetched the configured scratch issue.",
+    "evidence": "completed-run/receipt.json"
+  },
+  {
+    "item": "Parity: Intake and understanding",
+    "score": "observed-met",
+    "label": "observed",
+    "method": "Model intake created the contract; a model-produced baseline assessment reproduced the defect.",
+    "evidence": "completed-run/receipt.json"
+  },
+  {
+    "item": "Parity: Branch",
+    "score": "observed-met",
+    "label": "observed",
+    "method": "Governed source branch and repair child exist with the recorded ancestry.",
+    "evidence": "completed-run/receipt.json"
+  },
+  {
+    "item": "Parity: Change",
+    "score": "observed-met",
+    "label": "observed",
+    "method": "Delivered page says Ready and preserves the requested attributes and heading.",
+    "evidence": "completed-run/receipt.json"
+  },
+  {
+    "item": "Parity: Conventional commits",
+    "score": "observed-met",
+    "label": "observed",
+    "method": "Source and repair commits use fix: subjects.",
+    "evidence": "completed-run/receipt.json"
+  },
+  {
+    "item": "Parity: Generated pull-request title and body",
+    "score": "observed-met",
+    "label": "observed",
+    "method": "Runtime publication generated both; configured outward lint passed.",
+    "evidence": "completed-run/receipt.json"
+  },
+  {
+    "item": "Parity: Every automated review comment resolved",
+    "score": "observed-met",
+    "label": "observed",
+    "method": "Fresh final observation is resolved after a valid repair and evidence-backed rejection of the incorrect suggestion.",
+    "evidence": "completed-run/receipt.json"
+  },
+  {
+    "item": "Parity: No operator tending of a harness",
+    "score": "observed-met",
+    "label": "observed",
+    "method": "Resident carried phases, native replacement, verification, publication and repair. Recorded human actions are intent, presence, fault injections and control inputs.",
+    "evidence": "completed-run/receipt.json"
+  }
+]

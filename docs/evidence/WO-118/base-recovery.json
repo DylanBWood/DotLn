@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "label": "observed",
+  "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-112/final-001-vertical-recovery-probe.mjs",
+  "startedAt": "2026-10-13T01:11:33.423Z",
+  "finishedAt": "2026-10-13T01:11:38.836Z",
+  "exitCode": 0,
+  "durationMs": 5413,
+  "rows": [
+    {
+      "case": "crash-vertical",
+      "hostSignal": "SIGKILL",
+      "processGroupRecorded": true,
+      "recovery": "observed"
+    },
+    {
+      "case": "crash-direct",
+      "hostSignal": "SIGKILL",
+      "processGroupRecorded": true,
+      "recovery": "observed"
+    },
+    {
+      "case": "revoke-vertical",
+      "firstError": "interrupted: vertical running authority was interrupted",
+      "processStoppedRecorded": true,
+      "workerInterruptedRecorded": true,
+      "lastEvent": "WorkerInterrupted"
+    }
+  ],
+  "limit": "Host-death recovery and authority interruption; not evidence of resident replacement after killing only its actor."
+}

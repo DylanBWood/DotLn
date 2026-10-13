@@ -1,0 +1,63 @@
+{
+  "viewModelVersion": "runtime-status-v1",
+  "observedAt": 1791854376777,
+  "actors": [
+    {
+      "phase": "probe",
+      "kind": "portfolio",
+      "availability": "unknown",
+      "lastEpisode": null
+    }
+  ],
+  "liveEpisodes": [],
+  "presence": {
+    "signal": "away",
+    "present": false,
+    "phase": "probe",
+    "cadences": [
+      {
+        "phase": "probe",
+        "nextFireAt": 1791854376787
+      }
+    ]
+  },
+  "holds": [],
+  "budget": {
+    "status": "configured",
+    "episodes": {
+      "consumed": 0,
+      "remaining": 2
+    },
+    "wallMs": {
+      "consumed": 0,
+      "remaining": 3600000
+    },
+    "tokens": {
+      "consumed": 0,
+      "remaining": null
+    }
+  },
+  "workOrders": {
+    "status": "available",
+    "items": [
+      {
+        "order": "WO-902",
+        "phase": "active",
+        "dependency": "ready",
+        "verdict": null
+      },
+      {
+        "order": "WO-900",
+        "phase": "draft",
+        "dependency": "ready",
+        "verdict": null
+      },
+      {
+        "order": "WO-901",
+        "phase": "draft",
+        "dependency": "ready",
+        "verdict": null
+      }
+    ]
+  }
+}

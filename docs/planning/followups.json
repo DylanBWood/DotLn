@@ -2604,6 +2604,14 @@
           "reopenWhen": "WO-118 activates (the first long unattended run from a starter), or a session is observed losing its owned task after compaction",
           "targets": [],
           "at": "2026-10-11T00:22:27.608Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "Re-disposed by WO-118's final review: the trigger fired when WO-118 activated on 2026-10-13. Its witnessed starter run lasted 560 s with 13 short native episodes (2 intake records, 7 worker attempts, 4 triage records), so it was not a long unattended session and recorded no automatic compaction; no WO-118 decision, handoff, verification or final-review record names a session that lost its owned task after compaction. Beyond those records the observation is unknown. The first long resident-owned run in an operator's instance is WO-083's. [WO-118 final review (docs/final-reviews/WO-118/FINAL-001.md)]",
+          "reopenWhen": "WO-083 activates (the first resident-owned run in an operator's instance), or a session is observed losing its owned task after compaction",
+          "targets": [],
+          "at": "2026-10-13T14:49:26.973Z"
         }
       ]
     },
@@ -4005,6 +4013,20 @@
         },
         {
           "hash": "eeb7cff24e2d3217a986bb964164e046aa71d922a2cfd415238608c1dfb831e6",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
+        },
+        {
+          "hash": "a3900a3addbf401b8791b87edd3822a8937e59e5ad78e6b86da2e1266179b143",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
+        },
+        {
+          "hash": "cf64f3009e53806c9047762540ce652806a8bd70c5c46515f65bddfd9f5da5de",
           "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
           "title": "Workstream application — end-user workflow candidate",
           "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
@@ -13971,6 +13993,14 @@
           "reopenWhen": "a queued or filed order's criteria name an edit to the goal-alignment section of product 07",
           "targets": [],
           "at": "2026-10-02T06:02:36.151Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "Re-disposed by WO-118's final review, which opened an adjacent seam: WO-118-D004, under the operator's authorization, adds a bounded executor route for one goal-standard input. An amendment decision binds the exact accepted bytes of product 00's The one-paragraph story to an unchanged reviewed criterion, and the gate reports them as authorized-execution-writeback (product 07; scripts/lib/plan-continuation.mjs). That route needs no fresh refutation and does not cover the goal-alignment section of product 07 this row names, which still has no executor route. [WO-118 final review (docs/final-reviews/WO-118/FINAL-001.md)]",
+          "reopenWhen": "a queued or filed order's criteria name an edit to the goal-alignment section of product 07, or another product section needs an execution-writeback route (WO-118-D004's reopening condition)",
+          "targets": [],
+          "at": "2026-10-13T14:49:27.307Z"
         }
       ]
     },
@@ -18038,6 +18068,14 @@
           "reopenWhen": "WO-118 activates, or a resident receipt contradicts the curve product 03 states",
           "targets": [],
           "at": "2026-09-25T21:30:01.418Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "Re-disposed by WO-118's final review: the trigger fired when WO-118 activated on 2026-10-13. Its witnessed run demonstrates the resident-owned loop from a starter at level 1, but presence stayed away throughout under the finish in-flight policy, so the run exercised no part of the rising and descending curve, and no WO-118 receipt contradicts the curve product 03 states. The experiment's prerequisite reaches main when WO-118 closes. [WO-118 final review (docs/final-reviews/WO-118/FINAL-001.md)]",
+          "reopenWhen": "WO-118 closes, or a resident receipt contradicts the curve product 03 states",
+          "targets": [],
+          "at": "2026-10-13T14:49:27.089Z"
         }
       ]
     },
@@ -22655,6 +22693,14 @@
           "reopenWhen": "a second bound decision is edited after its amendment row, or the next order that changes how scripts/lib/plan-receipts.mjs binds or withdraws an amendment",
           "targets": [],
           "at": "2026-09-29T23:48:50.427Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-disposed by WO-118's final review: both halves of the trigger occurred in WO-118. WO-118-D004 and WO-118-D007 were each edited after their first amendment row, and WO-118-D004 changes how plan-receipts.mjs validates a bound decision by adding the executionWritebacks binding. Each edited decision was re-bound by a later amend-order row of the same decision, which checkPlanGate validates while the earlier row is checked without its decision hash (the WO-112 D023 re-binding rule), and npm run plan -- check passes at the final review. Superseding a corrected decision therefore works. Withdrawing a row whose bound decision has since changed still validates that row's decision hash against the current decision (withdrawPlanAmendment calls validateAmendment with the decision check); no WO-118 step needed a withdrawal. [WO-118 final review (docs/final-reviews/WO-118/FINAL-001.md)]",
+          "reopenWhen": "an amendment row whose bound decision has changed must be withdrawn rather than re-bound, or the next order that changes how scripts/lib/plan-receipts.mjs binds or withdraws an amendment",
+          "targets": [],
+          "at": "2026-10-13T14:49:27.199Z"
         }
       ]
     },
@@ -23663,6 +23709,14 @@
           "reopenWhen": "an audit of a resident store is judged unusable without the summaries, or WO-118's run is audited",
           "targets": [],
           "at": "2026-10-02T06:02:36.577Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "Re-disposed by WO-118's final review: the trigger fired when WO-118's runs were audited. dotln audit over the vertical store (completed and witnessed runs) and over the resident store (witnessed run) gives empty L0 receipts and L1 entries; only the governed raw view shows the 29 vertical events and the resident's events. VER-001 and VER-002 judged criterion 4 on that raw view, which reproduced every event, so for this scratch scenario the audit was usable without the summaries. The candidate stands; its next consumer is an operator instance's run. [WO-118 final review (docs/final-reviews/WO-118/FINAL-001.md)]",
+          "reopenWhen": "an audit of a resident or vertical store is judged unusable without the summaries, or WO-083's run is audited",
+          "targets": [],
+          "at": "2026-10-13T14:49:27.032Z"
         }
       ]
     },
@@ -30124,6 +30178,14 @@
           "reopenWhen": "A Codex release changes its metadata or helper rules, or a live Codex writer fails to commit through these grants.",
           "targets": [],
           "at": "2026-10-06T03:13:31.734Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Reopened by WO-118's final review (WO-118-D019, which reopens WO-112-D017): the settlement's condition, a live Codex writer failing to commit through these grants, occurred in substance. In every WO-118 starter run on 2026-10-13 the codex-cli-exec 0.162.1 source writer reported that the supplied git commit exited 128 after sandbox denials on .git/packed-refs.lock and .git/rr-cache; each commit landed and matched the host's observation, and each writer returned blocked with requiresHuman true. D017 qualified the grants at 0.160.0, and the host's Git configuration enables rerere. Requalify before WO-083's run against an operator repository. [WO-118 final review (docs/final-reviews/WO-118/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-13T14:49:27.362Z"
         }
       ]
     },
@@ -30535,6 +30597,14 @@
           "reopenWhen": "Before WO-118's live run, when D046's follow-up is scheduled, or when a replayed record's validation failure is observed in a run.",
           "targets": [],
           "at": "2026-10-07T00:13:03.703Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-disposed by WO-118's final review: the 'before WO-118's live run' trigger passed without the follow-up being scheduled; WO-118's live starter runs ran on 2026-10-13. None of them observed a replayed record failing validation: each resident restart fell between steps and every later step completed (the witnessed receipt records 14 completed steps and a resolved representative with no NeedsHuman). The next live run of the loop against an operator repository is WO-083's. [WO-118 final review (docs/final-reviews/WO-118/FINAL-001.md)]",
+          "reopenWhen": "Before WO-083's live run, when D046's follow-up is scheduled, or when a replayed record's validation failure is observed in a run.",
+          "targets": [],
+          "at": "2026-10-13T14:49:27.253Z"
         }
       ]
     },
@@ -33601,6 +33671,14 @@
           "reopenWhen": "a receipt statement names a home or private temporary path again, or an order edits scripts/lib/plan-receipts.mjs",
           "targets": [],
           "at": "2026-10-11T20:45:56.939Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-disposed by WO-118's final review: the trigger fired because WO-118 edits scripts/lib/plan-receipts.mjs. The edit only validates an amendment decision's optional executionWritebacks binding (WO-118-D004): one exact product 00 story writeback, its unchanged reviewed criterion and the receipt's section hash. It changes no receipt statement, its rendering or its screening, and no WO-118 record names a receipt statement with a private path. The candidate stands as written. [WO-118 final review (docs/final-reviews/WO-118/FINAL-001.md)]",
+          "reopenWhen": "a receipt statement names a home or private temporary path again, or the next order that changes how scripts/lib/plan-receipts.mjs renders or screens a receipt statement",
+          "targets": [],
+          "at": "2026-10-13T14:49:27.145Z"
         }
       ]
     },
@@ -34112,6 +34190,209 @@
           "ref": "docs/evidence/WO-203/decisions.md#wo-203-d016--verification-follow-up-the-from-core-preview-lists-byte-identical-paths-as-replace",
           "title": "WO-203-D016: The shared renderUpdatePlan labels and counts byte-identical replace rows as unchanged in the from-core preview and in the update's own summary alike, as it already does in the revision p",
           "summary": "{ \"id\": \"WO-203-D016\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Board VER-002 F2 as a follow-up; it does not block. On the real corpus, the from-core preview prints a replace row for every carried kit path whose bytes the update would rewrite unchanged, so the operator cannot read from it which kit files will change. Class: undifferentiated core preview rows (operator flow), in the declared shared renderer. Criterion 1 asks for each path's planned replace, add, remove or refuse, and the update does rewrite those paths, so the rows are accurate and criterion 1 holds. The README says replace includes files whose bytes already match. D002 and ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1b4aeae6d87b3c7e",
+      "key": "decision:docs/evidence/WO-118/decisions.md#wo-118-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "890cd693c79f8634087de7d09b2b500b4b2a75af06526e8ce9e0a017a4b5a7ee",
+          "ref": "docs/evidence/WO-118/decisions.md#wo-118-d009--verification-fail-criterion-4-is-unmet-because-no-run-was-both-shown-live-and-audited",
+          "title": "WO-118-D009: WO-118 resume: fix. (F1) From a fresh export of the repaired subject, run the representative scenario again from the filed intent to its terminal state. Include the actor kill, the reside",
+          "summary": "{ \"id\": \"WO-118-D009\", \"date\": \"2026-10-13\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 on F1. At code identity d8ffd82c432b71a70d504da5f1b8df04eb44a457fe8987da65ddb60dfbf9a7d3, criteria 1, 2, 3, 5, 6 and 7 are met and criterion 4 is unmet. F1 (blocking, criterion 4): no run was both shown in the live console with its actors, phases and holds and reproduced by the audit afterward. Through all 14 phases of the completed starter run the console showed one portfolio actor, no live episode and no hold, also after the ambiguous control's IntentHeld. The repaired display was witnessed only in a separate fresh-export run that stopped after source-change, ran",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-118's repair dispatch. WO-118-D013 records the witnessed run from a fresh export of the repaired subject: the actor kill, the resident restart and both controls, with the shipped console live from before the first command to after the terminal state. Status snapshots cover every settlement, and dotln audit transcripts cover the vertical and resident stores, so one run carries criteria 1 to 5. The review-control author mapping was setup, before the resident started and before the first intent. WO-118-D012 retires finished continuations from live status, adds a test with several finished intents and aligns the kit README. The witnessed receipt records WO-123-D044's five items. check-witnessed-run.mjs passes against the retained stores.",
+          "reopenWhen": "A later verification finds that the witnessed run's console, snapshots or audit do not cover it from the filed intent to its terminal state, or live status again keeps finished continuations.",
+          "targets": [],
+          "at": "2026-10-13T11:07:40.042Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a272d577fd351b43",
+      "key": "decision:docs/evidence/WO-118/decisions.md#wo-118-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "83b611bb4701df62b69c4a556dac4e302ff9ae1b6ce0735538f47d074df33eb3",
+          "ref": "docs/evidence/WO-118/decisions.md#wo-118-d010--verification-follow-up-target-facing-text-carries-runtime-identifiers-outside-the-declared-outward-set",
+          "title": "WO-118-D010: Planner, before WO-083's run against an operator repository: decide whether runtime evidence identifiers belong in target-facing text (generated pull-request bodies, disposition replies, ",
+          "summary": "{ \"id\": \"WO-118-D010\", \"date\": \"2026-10-13\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Board VER-001 F2 as a follow-up; it does not block. The delivered pull request carries DotLn runtime identifiers outside the configured outward vocabulary and outside the receipt's listed terms and prefixes. The generated body cites verification:vertical_<key>_0, source-event, baseline-event and review-event ids of the form evt_N, and delivery-preparation#/ pointers. The runtime's rejection reply posts a JSON object with disposition and evidenceRefs, including a contract:<id> reference. The branch is fix/intent-<key>. Criterion 3 is judged against its declared set and passes. T",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e18e6a5422109bfb",
+      "key": "decision:docs/evidence/WO-118/decisions.md#wo-118-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a38297db06c7c5074d90a2bdf90a23b5b263d949bc64c02fc424e099554c67d8",
+          "ref": "docs/evidence/WO-118/decisions.md#wo-118-d011--repair-dispatch-run-the-witnessed-rerun-and-restore-the-host-guard",
+          "title": "WO-118-D011: Machinery planner: a long-lived host guard can lose its guard.json record while it still holds guard.flock (observed 2026-10-13, cause unknown; one candidate is the operating system's cle",
+          "summary": "{ \"id\": \"WO-118-D011\", \"date\": \"2026-10-13\", \"dispatch\": \"resume: fix; VER-001 repair; two operator decisions in this dispatch\", \"decision\": \"Repair the blocking criterion-4 finding by its own rule: one fresh witnessed run from a new export of the repaired subject, writing to the operator's scratch repository under this dispatch's authorization. Restore the host guard by stopping the stale guard and the waiting guards behind it, so the bounded wrapper and both gates run again. Count native model launches against this dispatch's subagent cap of 20: the run aborts at its eighteenth launch, and at most two Claude review workers follow it.\", \"evidence\": [ \"Asked how the repair should proceed, th",
+          "missing": false
+        },
+        {
+          "hash": "8c6371274affe784ba0f8ad93ed2f378ff007d3f1f40728b5337f89bf688a5f0",
+          "ref": "docs/evidence/WO-118/decisions.md#wo-118-d011--repair-dispatch-run-the-witnessed-rerun-and-restore-the-host-guard",
+          "title": "WO-118-D011: Machinery planner: a long-lived host guard can lose its guard.json record while it still holds guard.flock (observed 2026-10-13, cause unknown; one candidate is the operating system's cle",
+          "summary": "{ \"id\": \"WO-118-D011\", \"date\": \"2026-10-13\", \"dispatch\": \"resume: fix; VER-001 repair; two operator decisions in this dispatch\", \"decision\": \"Repair the blocking criterion-4 finding by its own rule: one fresh witnessed run from a new export of the repaired subject, writing to the operator's scratch repository under this dispatch's authorization. Restore the host guard by stopping the stale guard and the waiting guards behind it, so the bounded wrapper and both gates run again. Count native model launches with subagents under this dispatch's cap of 20: the driver aborts the run at its eighteenth native launch, and at most two Claude review workers follow it.\", \"evidence\": [ \"Asked how the rep",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-eeb25ea9315438ad",
+      "key": "decision:docs/evidence/WO-118/decisions.md#wo-118-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7c6069733f5bbc85ec521112b5c24379a3af793705ec9ebcea3abc73f632cc56",
+          "ref": "docs/evidence/WO-118/decisions.md#wo-118-d013--the-witnessed-run-carries-criteria-1-to-5",
+          "title": "WO-118-D013: Planner, before WO-083's run: a starter resident whose portfolio actor has no bound execution hosts records ActorUnavailable whenever its cadence finds no draft or runnable continuation. ",
+          "summary": "{ \"id\": \"WO-118-D013\", \"date\": \"2026-10-13\", \"dispatch\": \"resume: fix; the VER-001 repair rule in WO-118-D009 for the live view, the carry-in record and the run\", \"decision\": \"Record the witnessed run from a fresh export of the repaired subject as the run that carries criteria 1 to 5, and keep every earlier run as evidence. The repair holds this rule for the live-view class: one run carries the criteria. Its shipped console runs from before the first command until after the terminal state. It paints every step that lasts two console refreshes or more as live vertical work, the hold while work runs, the derived order's status, the work after the resident restart and the finished state. Its st",
+          "missing": false
+        },
+        {
+          "hash": "e7937771655d372b7576afa1e50879cc75cc8d84c1e496c69ebe044bbf5c8679",
+          "ref": "docs/evidence/WO-118/decisions.md#wo-118-d013--the-witnessed-run-carries-criteria-1-to-5",
+          "title": "WO-118-D013: Planner, before WO-083's run: a starter resident whose portfolio actor has no bound execution hosts records ActorUnavailable whenever its cadence finds no draft or runnable continuation. ",
+          "summary": "{ \"id\": \"WO-118-D013\", \"date\": \"2026-10-13\", \"dispatch\": \"resume: fix; the VER-001 repair rule in WO-118-D009 for the live view, the carry-in record and the run\", \"decision\": \"Record the witnessed run from a fresh export of the repaired subject as the run that carries criteria 1 to 5, and keep every earlier run as evidence. The repair holds this rule for the live-view class: one run carries the criteria. Its shipped console runs from before the first command until after the terminal state. In its change-driven frames it paints every step that lasts two console refreshes (two seconds) or more as live vertical work, the hold while work runs, the derived order's status, the work after the resid",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-589c1d588cb302a9",
+      "key": "decision:docs/evidence/WO-118/decisions.md#wo-118-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f9a5aa6abe20ec9b64925e75d3076599974f3bc52c260d07fdc66281896079e1",
+          "ref": "docs/evidence/WO-118/decisions.md#wo-118-d014--independent-review-of-the-repair",
+          "title": "WO-118-D014: Planner, privacy cleanup: at HEAD, docs/evidence/WO-187/decisions.md (WO-187-D043), three WO-187 evidence files (verification-002/root-probes.json, repair-004/review-gate.json, repair-004",
+          "summary": "{ \"id\": \"WO-118-D014\", \"date\": \"2026-10-13\", \"dispatch\": \"resume: fix; two fresh dotln-worker reviews of the repair\", \"decision\": \"Two fresh read-only reviewers judged the repair diff and the retained run. A criteria adversary and a design improver each found no blocking issue, and the adversary could not refute that the witnessed run closes VER-001's live-view, status-row and carry-in findings. Fix every finding about evidence accuracy and checker strength. Decline the changes to files the witnessed export carries: after the run they would make the final subject differ from the export the run used, for wording or naming alone. Route the pre-existing home-directory paths both reviewers met i",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ca4ac7a4862415c4",
+      "key": "decision:docs/evidence/WO-118/decisions.md#wo-118-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b4a88ae09c080b0f206b05f7500905ca960636064e36444ff901035f449fb4f0",
+          "ref": "docs/evidence/WO-118/decisions.md#wo-118-d015--verification-board-the-checkers-build-drift-exit-behavior",
+          "title": "WO-118-D015: Evidence maintainer, before reusing check-witnessed-run.mjs to certify another subject: make current build versus recorded export equality an asserted check, and give missing current buil",
+          "summary": "{ \"id\": \"WO-118-D015\", \"date\": \"2026-10-13\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Board the witnessed-run checker's build-drift exit behavior as a nonblocking follow-up. Its final currentBuildMatchesExport field reports a mismatch, but the process still exits zero. The recorded export and current subject do match: independent verifier assertions compared all 241 exported JavaScript files with the current build, all 662 candidate source files with the subject, and all 913 manifest entries with the exported files. This does not break a WO-118 criterion at the recorded subject or behavior main had, so it does not fail the verdict. The verifier leaves the implem",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-baed69b4ca53afa1",
+      "key": "decision:docs/evidence/WO-118/decisions.md#wo-118-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c3f74fe14b37ea369c639f3ce6060203cf79313b784e04cd9be92b1cbc10e12a",
+          "ref": "docs/evidence/WO-118/decisions.md#wo-118-d016--verification-retain-a-documentation-inventory-follow-up",
+          "title": "WO-118-D016: Documentation maintainer, at the next starter-export or product 03 maintenance change: update Platform and instance boundary's kit inventory to include console and five workspaces, or des",
+          "summary": "{ \"id\": \"WO-118-D016\", \"date\": \"2026-10-13\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Record product 03's stale starter inventory as a nonblocking documentation follow-up. Its Platform and instance boundary section still describes the compiled runtime as kernel, compiler and skeleton and the export as four workspaces. WO-118 adds console, making four runtime packages and five workspaces including beacons. The kit README already names the four runtime packages correctly. Product 03 is outside criterion 6's named write-backs and this order's declared document repairs, and the export actually carries the console, so this does not fail an acceptance criterion or reg",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-7f40c3911091d5ad",
+      "key": "decision:docs/evidence/WO-112/decisions.md#wo-112-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "60883196e81f086e94ce7ce1cd8981420d46b5f326312c6ca791c7060210d34a",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d017--the-codex-writer-commits-inside-codexs-sandbox-through-its-documented-writable-roots",
+          "title": "WO-112-D017: Give the Codex source writer the same abilities as the Claude writer (edit the declared surfaces, run the declared test, commit) through Codex's own documented permission model, not by tu",
+          "summary": "{ \"id\": \"WO-112-D017\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: fix; operator scope expansion (paraphrase): fix the Codex writer's sandbox failure; the writer must make its own commits and actors must be interchangeable\", \"decision\": \"Give the Codex source writer the same abilities as the Claude writer (edit the declared surfaces, run the declared test, commit) through Codex's own documented permission model, not by turning its sandbox off. Codex keeps a worktree's .git pointer and its resolved gitdir read-only unless a more specific writable root covers the path. The adapter therefore resolves this worktree's gitdir and common directory and grants, in the dotln-writer profile: read of the",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3dba7f634a6a1795",
+      "key": "decision:docs/evidence/WO-118/decisions.md#wo-118-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4948f804453b7e2b980d21195e2ea1311e959e61c09d41893eb75193a0bfe347",
+          "ref": "docs/evidence/WO-118/decisions.md#wo-118-d004--exact-authorized-status-writeback",
+          "title": "WO-118-D004: Repair the planning continuation gate so the unchanged reviewed acceptance criterion can own an exact authorized vision status writeback. Bind the reviewed and current story-section hashe",
+          "summary": "{ \"id\": \"WO-118-D004\", \"date\": \"2026-10-13\", \"dispatch\": \"resume: next; additional explicit operator scope expansion\", \"decision\": \"Repair the planning continuation gate so the unchanged reviewed acceptance criterion can own an exact authorized vision status writeback. Bind the reviewed and current story-section hashes in this decision through the current execution amendment; preserve all other planning input checks and historical receipts.\", \"evidence\": [ \"Operator answered: Repair the document gate in WO-118 (Recommended).\", \"The scope question explicitly named the required vision status sentence and rejection of other planning changes.\", \"npm run plan -- check refused sequence, vision, ro",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2b9a8e696b38fb97",
+      "key": "decision:docs/evidence/WO-118/decisions.md#wo-118-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "45f89c118ef8f43e9b2229e229194b7c5dacc31a4f3c5d241247e84197c5d32e",
+          "ref": "docs/evidence/WO-118/decisions.md#wo-118-d018--final-review-follow-up-live-status-misses-how-a-resident-owned-continuation-ends",
+          "title": "WO-118-D018: Planner, before WO-083's run: make live status show how every resident-owned continuation ends. (F1) When a continuation's authority or wall budget expires between steps, either have the ",
+          "summary": "{ \"id\": \"WO-118-D018\", \"date\": \"2026-10-13\", \"dispatch\": \"resume: final review; FINAL-001 F1, F4, F6 and F11\", \"kind\": \"finding\", \"decision\": \"Board, not fix, four gaps in how live status shows resident-owned work. None fails a criterion or breaks behavior main had, because main's status showed no vertical work at all. F1, in this order's D012 surface: a continuation whose authority or wall budget expires between steps ends NeedsHuman in its vertical store only. No terminal IntentStepSettled reaches the resident ledger, so status keeps the last settled step as a vertical-host actor row with availability unknown and shows no hold, contrary to the kit README's sentence that a continuation whic",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6c444dbf9a4d92bb",
+      "key": "decision:docs/evidence/WO-118/decisions.md#wo-118-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c773e4ebda09483c3e2b9efe602bf84435007a3e6bd3eee4ea4bb101261f345c",
+          "ref": "docs/evidence/WO-118/decisions.md#wo-118-d019--final-review-follow-up-the-source-host-drops-a-writers-requireshuman-and-the-codex-writers-commit-command-fails-under-its-git-grants",
+          "title": "WO-118-D019: Planner, before WO-083's run against an operator repository: (F2) decide whether the source-change host turns a writer's blocked status or requiresHuman into a typed hold, or records an e",
+          "summary": "{ \"id\": \"WO-118-D019\", \"date\": \"2026-10-13\", \"dispatch\": \"resume: final review; FINAL-001 F2, F3 and F5\", \"kind\": \"finding\", \"decision\": \"Board three source-actor items found in the retained runs and the diff. None fails a criterion or breaks behavior main had. F2: in every WO-118 starter run, each native source writer that returned a result reported status blocked with requiresHuman true, including both writers of the witnessed run, the source writer's replacement attempt and the review repair's writer. The source-change host, which this order does not change, records the envelope and admits the step on its own integrity, worktree, effect, observed-commit and test observations; it never rea",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c8ec65f056105759",
+      "key": "decision:docs/evidence/WO-118/decisions.md#wo-118-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "51f7029a380202bd42f3a8bd2d143a8496ad847e3135585b0d99afce84c694c7",
+          "ref": "docs/evidence/WO-118/decisions.md#wo-118-d020--final-review-follow-up-an-authorized-story-writeback-does-not-compose-with-a-vision-citation-relocation",
+          "title": "WO-118-D020: Machinery planner: let an authorized story writeback compose with other admitted vision continuations. Prove a vision citation relocation against the current vision with the authorized st",
+          "summary": "{ \"id\": \"WO-118-D020\", \"date\": \"2026-10-13\", \"dispatch\": \"resume: final review; FINAL-001 F7 and F8\", \"kind\": \"finding\", \"decision\": \"Board F7 and fix F8. F7: checkPlanContinuation proves a vision citation relocation over the whole product 00 file. Once the authorized story writeback is committed, the story no longer equals its judged bytes and carries one more inline link, so the gate refuses a relocated planning link that main admits until the next planning pass judges the new vision. No order in the current sequence relocates a vision citation, and for every input state the new code admits at least what main admits, so nothing main had breaks. F8: product 07 placed the writeback sentences",
           "missing": false
         }
       ],

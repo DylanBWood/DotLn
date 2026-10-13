@@ -1,0 +1,763 @@
+Public transcript of dotln audit over the run's resident store, with payloads reduced as for the vertical audit.
+L0 RECEIPT
+{
+  "schemaVersion": 1,
+  "projection": "l0-receipt",
+  "fidelity": "L0",
+  "projectionRef": "audit-projection:ws:resident:l0-receipt",
+  "artifactIdentity": {
+    "assurance": "deterministic-content-equality-only",
+    "availability": "unavailable",
+    "records": [],
+    "limitations": [
+      "FNV equality is not cryptographic integrity, collision resistance, or authenticity",
+      "graph and pin can be rewritten together; hidden adapter effects are not excluded",
+      "outer confinement evidence is separate and not collected by this receipt",
+      "a queued pulse has no artifact stamp; a reused schedule id does not prove its equip of origin"
+    ]
+  },
+  "governance": {
+    "audience": [
+      "operator"
+    ],
+    "purpose": "everyday-confirmation",
+    "intendedAccess": "not-defined",
+    "enforcement": "deferred",
+    "persistenceClass": "projections",
+    "retentionClass": "not-defined"
+  },
+  "omissions": [
+    "event payloads and decision-trace internals",
+    "correlation and causation detail",
+    "class-specific timeline detail including association labels, evidence reasons, and verification subjects",
+    "non-consequential context events",
+    "policy, runtime fingerprints, cryptographic integrity/authenticity, redaction, and recorded-at data not collected by the fixture",
+    "verifier independence not established by the recorded actor identity"
+  ],
+  "deeperProjection": {
+    "projection": "causal-timeline",
+    "projectionRef": "audit-projection:ws:resident:causal-timeline",
+    "availability": "exists",
+    "intendedAccess": "not-defined",
+    "enforcement": "deferred"
+  },
+  "receipts": []
+}
+CAUSAL TIMELINE
+{
+  "schemaVersion": 1,
+  "projection": "causal-timeline",
+  "fidelity": "L1",
+  "projectionRef": "audit-projection:ws:resident:causal-timeline",
+  "governance": {
+    "audience": [
+      "operator",
+      "verifier"
+    ],
+    "purpose": "causal-review",
+    "intendedAccess": "not-defined",
+    "enforcement": "deferred",
+    "persistenceClass": "projections",
+    "retentionClass": "not-defined"
+  },
+  "orderPolicy": [
+    "explicit causation references order every record derived from the source event before dependents",
+    "correlation references form explicit append-stable groups and never assert causation",
+    "canonical append ordinal is the stable fallback and tie-break",
+    "occurredAt is displayed data, never the sole ordering key"
+  ],
+  "correlationGroups": [],
+  "omissions": [
+    "raw event payload bodies",
+    "context events without a consequential AuditRecord",
+    "links absent from source events are not invented",
+    "an unlinked deletion-attempt/refusal association uses same-episode, same-time adjacency, not canonical causation; explicit source links are labeled separately",
+    "a verification request association without an explicit event link is labeled as a single-request-in-scope derivation",
+    "policy, runtime, integrity, redaction, and recorded-at data not collected by the fixture"
+  ],
+  "deeperProjection": {
+    "projection": "governed-raw-json",
+    "projectionRef": "audit-projection:ws:resident:governed-raw-json",
+    "availability": "exists",
+    "intendedAccess": "restricted",
+    "enforcement": "deferred"
+  },
+  "entries": []
+}
+GOVERNED RAW JSON — sanitized event fields
+{
+  "schemaVersion": 1,
+  "projection": "governed-raw-json",
+  "fidelity": "L4",
+  "projectionRef": "audit-projection:ws:resident:governed-raw-json",
+  "artifactIdentity": {
+    "assurance": "deterministic-content-equality-only",
+    "availability": "unavailable",
+    "records": [],
+    "limitations": [
+      "FNV equality is not cryptographic integrity, collision resistance, or authenticity",
+      "graph and pin can be rewritten together; hidden adapter effects are not excluded",
+      "outer confinement evidence is separate and not collected by this receipt",
+      "a queued pulse has no artifact stamp; a reused schedule id does not prove its equip of origin"
+    ]
+  },
+  "governance": {
+    "audience": [
+      "verifier"
+    ],
+    "intendedAccess": "restricted",
+    "enforcement": "deferred",
+    "purpose": "bounded-audit-reconstruction",
+    "sourcePersistenceClass": "canonical",
+    "projectionPersistenceClass": "projections",
+    "retentionClass": "not-defined"
+  },
+  "completeness": {
+    "eventFieldOmissions": [],
+    "unavailable": [
+      "separately controlled artifacts are not present in this fixture",
+      "recorded-at time, policy versions, runtime fingerprints, cryptographic integrity hashes, authenticity, and redaction state were never collected"
+    ]
+  },
+  "events": [
+    {
+      "eventId": "evt_1",
+      "type": "ResidentConfigured",
+      "at": 0
+    },
+    {
+      "eventId": "evt_2",
+      "type": "ClockSampled",
+      "at": 1791888714865
+    },
+    {
+      "eventId": "evt_3",
+      "type": "ClockSampled",
+      "at": 1791888714890
+    },
+    {
+      "eventId": "evt_4",
+      "type": "ClockSampled",
+      "at": 1791888715923
+    },
+    {
+      "eventId": "evt_5",
+      "type": "ClockSampled",
+      "at": 1791888715955
+    },
+    {
+      "eventId": "evt_6",
+      "type": "ClockSampled",
+      "at": 1791888716985
+    },
+    {
+      "eventId": "evt_7",
+      "type": "ClockSampled",
+      "at": 1791888717020
+    },
+    {
+      "eventId": "evt_8",
+      "type": "OperatorPresenceObserved",
+      "at": 1791888717020
+    },
+    {
+      "eventId": "evt_9",
+      "type": "ClockSampled",
+      "at": 1791888716992
+    },
+    {
+      "eventId": "evt_10",
+      "type": "ClockSampled",
+      "at": 1791888718058
+    },
+    {
+      "eventId": "evt_11",
+      "type": "ClockSampled",
+      "at": 1791888757314
+    },
+    {
+      "eventId": "evt_12",
+      "type": "IntentHeld",
+      "at": 1791888757314,
+      "draftId": "WO-900",
+      "step": "contract"
+    },
+    {
+      "eventId": "evt_13",
+      "type": "ClockSampled",
+      "at": 1791888758350
+    },
+    {
+      "eventId": "evt_14",
+      "type": "ClockSampled",
+      "at": 1791888758378
+    },
+    {
+      "eventId": "evt_15",
+      "type": "ActorUnavailable",
+      "at": 1791888758378
+    },
+    {
+      "eventId": "evt_16",
+      "type": "ClockSampled",
+      "at": 1791888759411
+    },
+    {
+      "eventId": "evt_17",
+      "type": "ClockSampled",
+      "at": 1791888805025
+    },
+    {
+      "eventId": "evt_18",
+      "type": "IntentAdmitted",
+      "at": 1791888805025,
+      "draftId": "WO-901"
+    },
+    {
+      "eventId": "evt_19",
+      "type": "ClockSampled",
+      "at": 1791888806381
+    },
+    {
+      "eventId": "evt_20",
+      "type": "IntentStepStarted",
+      "at": 1791888806381,
+      "commandId": "cmd_vertical_325871a8c7eb3895"
+    },
+    {
+      "eventId": "evt_21",
+      "type": "ClockSampled",
+      "at": 1791888806427
+    },
+    {
+      "eventId": "evt_22",
+      "type": "IntentStepSettled",
+      "at": 1791888806427,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_325871a8c7eb3895"
+    },
+    {
+      "eventId": "evt_23",
+      "type": "ClockSampled",
+      "at": 1791888806869
+    },
+    {
+      "eventId": "evt_24",
+      "type": "ClockSampled",
+      "at": 1791888806967
+    },
+    {
+      "eventId": "evt_25",
+      "type": "IntentStepStarted",
+      "at": 1791888806967,
+      "commandId": "cmd_vertical_44f3fc44eb711b9b"
+    },
+    {
+      "eventId": "evt_26",
+      "type": "ClockSampled",
+      "at": 1791888807012
+    },
+    {
+      "eventId": "evt_27",
+      "type": "IntentStepSettled",
+      "at": 1791888807012,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_44f3fc44eb711b9b"
+    },
+    {
+      "eventId": "evt_28",
+      "type": "ClockSampled",
+      "at": 1791888808075
+    },
+    {
+      "eventId": "evt_29",
+      "type": "ClockSampled",
+      "at": 1791888808187
+    },
+    {
+      "eventId": "evt_30",
+      "type": "IntentStepStarted",
+      "at": 1791888808187,
+      "commandId": "cmd_vertical_13df592e5baee385"
+    },
+    {
+      "eventId": "evt_31",
+      "type": "ClockSampled",
+      "at": 1791888808234
+    },
+    {
+      "eventId": "evt_32",
+      "type": "IntentStepSettled",
+      "at": 1791888808234,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_13df592e5baee385"
+    },
+    {
+      "eventId": "evt_33",
+      "type": "ClockSampled",
+      "at": 1791888809287
+    },
+    {
+      "eventId": "evt_34",
+      "type": "ClockSampled",
+      "at": 1791888809407
+    },
+    {
+      "eventId": "evt_35",
+      "type": "IntentStepStarted",
+      "at": 1791888809407,
+      "commandId": "cmd_vertical_edd0eff6aa699f09"
+    },
+    {
+      "eventId": "evt_36",
+      "type": "ClockSampled",
+      "at": 1791888809448
+    },
+    {
+      "eventId": "evt_37",
+      "type": "IntentStepSettled",
+      "at": 1791888809448,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_edd0eff6aa699f09"
+    },
+    {
+      "eventId": "evt_38",
+      "type": "ClockSampled",
+      "at": 1791888810503
+    },
+    {
+      "eventId": "evt_39",
+      "type": "ClockSampled",
+      "at": 1791888810608
+    },
+    {
+      "eventId": "evt_40",
+      "type": "IntentStepStarted",
+      "at": 1791888810608,
+      "commandId": "cmd_vertical_79ca2af65a099d7a"
+    },
+    {
+      "eventId": "evt_41",
+      "type": "ClockSampled",
+      "at": 1791888810862
+    },
+    {
+      "eventId": "evt_42",
+      "type": "ClockSampled",
+      "at": 1791888830268
+    },
+    {
+      "eventId": "evt_43",
+      "type": "IntentStepSettled",
+      "at": 1791888830268,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_79ca2af65a099d7a"
+    },
+    {
+      "eventId": "evt_44",
+      "type": "ClockSampled",
+      "at": 1791888831329
+    },
+    {
+      "eventId": "evt_45",
+      "type": "ClockSampled",
+      "at": 1791888831438
+    },
+    {
+      "eventId": "evt_46",
+      "type": "IntentStepStarted",
+      "at": 1791888831438,
+      "commandId": "cmd_vertical_1ffd2d9004ff5705"
+    },
+    {
+      "eventId": "evt_47",
+      "type": "ClockSampled",
+      "at": 1791888832325
+    },
+    {
+      "eventId": "evt_48",
+      "type": "ClockSampled",
+      "at": 1791888833610
+    },
+    {
+      "eventId": "evt_49",
+      "type": "ClockSampled",
+      "at": 1791888834685
+    },
+    {
+      "eventId": "evt_50",
+      "type": "ClockSampled",
+      "at": 1791888834793
+    },
+    {
+      "eventId": "evt_51",
+      "type": "ClockSampled",
+      "at": 1791888835424
+    },
+    {
+      "eventId": "evt_52",
+      "type": "ClockSampled",
+      "at": 1791888951796
+    },
+    {
+      "eventId": "evt_53",
+      "type": "IntentStepSettled",
+      "at": 1791888951796,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_1ffd2d9004ff5705"
+    },
+    {
+      "eventId": "evt_54",
+      "type": "ClockSampled",
+      "at": 1791888952846
+    },
+    {
+      "eventId": "evt_55",
+      "type": "ClockSampled",
+      "at": 1791888952956
+    },
+    {
+      "eventId": "evt_56",
+      "type": "IntentStepStarted",
+      "at": 1791888952956,
+      "commandId": "cmd_vertical_108418ad232d6c56"
+    },
+    {
+      "eventId": "evt_57",
+      "type": "ClockSampled",
+      "at": 1791888953193
+    },
+    {
+      "eventId": "evt_58",
+      "type": "IntentStepSettled",
+      "at": 1791888953193,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_108418ad232d6c56"
+    },
+    {
+      "eventId": "evt_59",
+      "type": "ClockSampled",
+      "at": 1791888954252
+    },
+    {
+      "eventId": "evt_60",
+      "type": "ClockSampled",
+      "at": 1791888954366
+    },
+    {
+      "eventId": "evt_61",
+      "type": "IntentStepStarted",
+      "at": 1791888954366,
+      "commandId": "cmd_vertical_91def61ff4959e16"
+    },
+    {
+      "eventId": "evt_62",
+      "type": "ClockSampled",
+      "at": 1791888954434
+    },
+    {
+      "eventId": "evt_63",
+      "type": "ClockSampled",
+      "at": 1791888979213
+    },
+    {
+      "eventId": "evt_64",
+      "type": "IntentStepSettled",
+      "at": 1791888979213,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_91def61ff4959e16"
+    },
+    {
+      "eventId": "evt_65",
+      "type": "ClockSampled",
+      "at": 1791888980263
+    },
+    {
+      "eventId": "evt_66",
+      "type": "ClockSampled",
+      "at": 1791888980374
+    },
+    {
+      "eventId": "evt_67",
+      "type": "IntentStepStarted",
+      "at": 1791888980374,
+      "commandId": "cmd_vertical_670834426a1324e1"
+    },
+    {
+      "eventId": "evt_68",
+      "type": "ClockSampled",
+      "at": 1791888980457
+    },
+    {
+      "eventId": "evt_69",
+      "type": "ClockSampled",
+      "at": 1791889008715
+    },
+    {
+      "eventId": "evt_70",
+      "type": "IntentStepSettled",
+      "at": 1791889008715,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_670834426a1324e1"
+    },
+    {
+      "eventId": "evt_71",
+      "type": "ClockSampled",
+      "at": 1791889009775
+    },
+    {
+      "eventId": "evt_72",
+      "type": "ClockSampled",
+      "at": 1791889009890
+    },
+    {
+      "eventId": "evt_73",
+      "type": "IntentStepStarted",
+      "at": 1791889009890,
+      "commandId": "cmd_vertical_bbdf4f51a3ed8dd8"
+    },
+    {
+      "eventId": "evt_74",
+      "type": "ClockSampled",
+      "at": 1791889009941
+    },
+    {
+      "eventId": "evt_75",
+      "type": "IntentStepSettled",
+      "at": 1791889009941,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_bbdf4f51a3ed8dd8"
+    },
+    {
+      "eventId": "evt_76",
+      "type": "ClockSampled",
+      "at": 1791889010994
+    },
+    {
+      "eventId": "evt_77",
+      "type": "ClockSampled",
+      "at": 1791889011135
+    },
+    {
+      "eventId": "evt_78",
+      "type": "IntentStepStarted",
+      "at": 1791889011135,
+      "commandId": "cmd_vertical_05f964dd02511eac"
+    },
+    {
+      "eventId": "evt_79",
+      "type": "ClockSampled",
+      "at": 1791889011321
+    },
+    {
+      "eventId": "evt_80",
+      "type": "IntentStepSettled",
+      "at": 1791889011321,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_05f964dd02511eac"
+    },
+    {
+      "eventId": "evt_81",
+      "type": "ClockSampled",
+      "at": 1791889012385
+    },
+    {
+      "eventId": "evt_82",
+      "type": "ClockSampled",
+      "at": 1791889012510
+    },
+    {
+      "eventId": "evt_83",
+      "type": "IntentStepStarted",
+      "at": 1791889012510,
+      "commandId": "cmd_vertical_9df40a59a80fc96e"
+    },
+    {
+      "eventId": "evt_84",
+      "type": "ClockSampled",
+      "at": 1791889016578
+    },
+    {
+      "eventId": "evt_85",
+      "type": "IntentStepSettled",
+      "at": 1791889016578,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_9df40a59a80fc96e"
+    },
+    {
+      "eventId": "evt_86",
+      "type": "ClockSampled",
+      "at": 1791889017640
+    },
+    {
+      "eventId": "evt_87",
+      "type": "ClockSampled",
+      "at": 1791889017759
+    },
+    {
+      "eventId": "evt_88",
+      "type": "IntentStepStarted",
+      "at": 1791889017759,
+      "commandId": "cmd_vertical_c7f06d5a7a7da33b"
+    },
+    {
+      "eventId": "evt_89",
+      "type": "ClockSampled",
+      "at": 1791889020085
+    },
+    {
+      "eventId": "evt_90",
+      "type": "ClockSampled",
+      "at": 1791889037778
+    },
+    {
+      "eventId": "evt_91",
+      "type": "IntentStepSettled",
+      "at": 1791889037778,
+      "result": "completed",
+      "terminal": false,
+      "commandId": "cmd_vertical_c7f06d5a7a7da33b"
+    },
+    {
+      "eventId": "evt_92",
+      "type": "ClockSampled",
+      "at": 1791889038831
+    },
+    {
+      "eventId": "evt_93",
+      "type": "ClockSampled",
+      "at": 1791889038954
+    },
+    {
+      "eventId": "evt_94",
+      "type": "IntentStepStarted",
+      "at": 1791889038954,
+      "commandId": "cmd_vertical_00bc9bc51eaf14e3"
+    },
+    {
+      "eventId": "evt_95",
+      "type": "ClockSampled",
+      "at": 1791889041828
+    },
+    {
+      "eventId": "evt_96",
+      "type": "ClockSampled",
+      "at": 1791889060469
+    },
+    {
+      "eventId": "evt_97",
+      "type": "ClockSampled",
+      "at": 1791889077159
+    },
+    {
+      "eventId": "evt_98",
+      "type": "ClockSampled",
+      "at": 1791889169261
+    },
+    {
+      "eventId": "evt_99",
+      "type": "ClockSampled",
+      "at": 1791889214363
+    },
+    {
+      "eventId": "evt_100",
+      "type": "ClockSampled",
+      "at": 1791889243559
+    },
+    {
+      "eventId": "evt_101",
+      "type": "ClockSampled",
+      "at": 1791889265309
+    },
+    {
+      "eventId": "evt_102",
+      "type": "IntentStepSettled",
+      "at": 1791889265309,
+      "result": "completed",
+      "terminal": true,
+      "commandId": "cmd_vertical_00bc9bc51eaf14e3"
+    },
+    {
+      "eventId": "evt_103",
+      "type": "ClockSampled",
+      "at": 1791889266393
+    },
+    {
+      "eventId": "evt_104",
+      "type": "ClockSampled",
+      "at": 1791889266436
+    },
+    {
+      "eventId": "evt_105",
+      "type": "ClockSampled",
+      "at": 1791889267499
+    },
+    {
+      "eventId": "evt_106",
+      "type": "ClockSampled",
+      "at": 1791889267539
+    },
+    {
+      "eventId": "evt_107",
+      "type": "ClockSampled",
+      "at": 1791889268601
+    },
+    {
+      "eventId": "evt_108",
+      "type": "ClockSampled",
+      "at": 1791889268641
+    },
+    {
+      "eventId": "evt_109",
+      "type": "ClockSampled",
+      "at": 1791889269702
+    },
+    {
+      "eventId": "evt_110",
+      "type": "ClockSampled",
+      "at": 1791889269748
+    },
+    {
+      "eventId": "evt_111",
+      "type": "ClockSampled",
+      "at": 1791889270810
+    },
+    {
+      "eventId": "evt_112",
+      "type": "ClockSampled",
+      "at": 1791889270854
+    },
+    {
+      "eventId": "evt_113",
+      "type": "ClockSampled",
+      "at": 1791889271914
+    },
+    {
+      "eventId": "evt_114",
+      "type": "ClockSampled",
+      "at": 1791889271957
+    },
+    {
+      "eventId": "evt_115",
+      "type": "ClockSampled",
+      "at": 1791889273011
+    },
+    {
+      "eventId": "evt_116",
+      "type": "ClockSampled",
+      "at": 1791889273049
+    }
+  ]
+}

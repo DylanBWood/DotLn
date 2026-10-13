@@ -1,0 +1,50 @@
+[
+  {
+    "type": "resident-start",
+    "at": "2026-10-13T02:03:15.766Z"
+  },
+  {
+    "type": "resident-SIGTERM",
+    "at": "2026-10-13T02:03:43.563Z"
+  },
+  {
+    "type": "resident-exit",
+    "at": "2026-10-13T02:03:43.568Z"
+  },
+  {
+    "type": "resident-start",
+    "at": "2026-10-13T02:03:43.665Z"
+  },
+  {
+    "type": "actor-kill",
+    "at": "2026-10-13T02:04:07.160Z",
+    "signal": "SIGKILL",
+    "residentKeptAlive": true
+  },
+  {
+    "type": "review-control-author-setup",
+    "source": "separate setup receipt",
+    "at": "2026-10-13T02:06:20.319Z",
+    "purpose": "incorrect-review-control fixture author mapping",
+    "timing": "after initial intent; before planting control suggestion",
+    "scope": "Recognize only the authorized scratch fixture principal as automation; no triage disposition or authority grant supplied.",
+    "modelJudgmentsSupplied": 0
+  },
+  {
+    "type": "incorrect-review-suggestion",
+    "at": "2026-10-13T02:07:25.746Z"
+  },
+  {
+    "type": "ambiguous-answer",
+    "at": "2026-10-13T02:12:50.161Z",
+    "consumedByRuntime": false
+  },
+  {
+    "type": "resident-SIGTERM",
+    "at": "2026-10-13T02:12:50.908Z"
+  },
+  {
+    "type": "resident-exit",
+    "at": "2026-10-13T02:12:50.917Z"
+  }
+]

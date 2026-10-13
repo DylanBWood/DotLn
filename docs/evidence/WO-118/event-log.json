@@ -1,0 +1,559 @@
+{
+  "schemaVersion": 1,
+  "label": "observed",
+  "method": "Selected fields of every event, grouped by stream in append order; omitted identities, source prose, paths, remote selectors and opaque runtime bindings. Raw immutable logs remain in local run material. This is a sanitized event summary, not an EventEnvelope replay stream.",
+  "events": [
+    {
+      "stream": "resident",
+      "eventId": "evt_1",
+      "type": "ResidentConfigured",
+      "occurredAt": 0,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_2",
+      "type": "ClockSampled",
+      "occurredAt": 1791854311706,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_3",
+      "type": "ClockSampled",
+      "occurredAt": 1791854311730,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_4",
+      "type": "OperatorPresenceObserved",
+      "occurredAt": 1791854311781,
+      "summary": {
+        "signal": {
+          "kind": "away"
+        },
+        "origin": "human",
+        "at": 1791854311781
+      }
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_5",
+      "type": "ClockSampled",
+      "occurredAt": 1791854311781,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_6",
+      "type": "ClockSampled",
+      "occurredAt": 1791854312760,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_7",
+      "type": "ClockSampled",
+      "occurredAt": 1791854353029,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_8",
+      "type": "IntentAdmitted",
+      "occurredAt": 1791854353029,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_9",
+      "type": "ClockSampled",
+      "occurredAt": 1791854354034,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_10",
+      "type": "IntentStepStarted",
+      "occurredAt": 1791854354034,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_11",
+      "type": "ClockSampled",
+      "occurredAt": 1791854354072,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_12",
+      "type": "IntentStepSettled",
+      "occurredAt": 1791854354072,
+      "summary": {
+        "result": "completed",
+        "terminal": false
+      }
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_13",
+      "type": "ClockSampled",
+      "occurredAt": 1791854354401,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_14",
+      "type": "ClockSampled",
+      "occurredAt": 1791854354482,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_15",
+      "type": "IntentStepStarted",
+      "occurredAt": 1791854354482,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_16",
+      "type": "ClockSampled",
+      "occurredAt": 1791854354518,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_17",
+      "type": "IntentStepSettled",
+      "occurredAt": 1791854354518,
+      "summary": {
+        "result": "completed",
+        "terminal": false
+      }
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_18",
+      "type": "ClockSampled",
+      "occurredAt": 1791854355553,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_19",
+      "type": "ClockSampled",
+      "occurredAt": 1791854355652,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_20",
+      "type": "IntentStepStarted",
+      "occurredAt": 1791854355652,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_21",
+      "type": "ClockSampled",
+      "occurredAt": 1791854355694,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_22",
+      "type": "IntentStepSettled",
+      "occurredAt": 1791854355694,
+      "summary": {
+        "result": "completed",
+        "terminal": false
+      }
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_23",
+      "type": "ClockSampled",
+      "occurredAt": 1791854356737,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_24",
+      "type": "ClockSampled",
+      "occurredAt": 1791854356829,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_25",
+      "type": "IntentStepStarted",
+      "occurredAt": 1791854356829,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_26",
+      "type": "ClockSampled",
+      "occurredAt": 1791854356872,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_27",
+      "type": "IntentStepSettled",
+      "occurredAt": 1791854356872,
+      "summary": {
+        "result": "completed",
+        "terminal": false
+      }
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_28",
+      "type": "ClockSampled",
+      "occurredAt": 1791854357917,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_29",
+      "type": "ClockSampled",
+      "occurredAt": 1791854358016,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_30",
+      "type": "IntentStepStarted",
+      "occurredAt": 1791854358016,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_31",
+      "type": "ClockSampled",
+      "occurredAt": 1791854358191,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_32",
+      "type": "ClockSampled",
+      "occurredAt": 1791854374861,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_33",
+      "type": "IntentStepSettled",
+      "occurredAt": 1791854374861,
+      "summary": {
+        "result": "completed",
+        "terminal": false
+      }
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_34",
+      "type": "ClockSampled",
+      "occurredAt": 1791854375905,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_35",
+      "type": "ClockSampled",
+      "occurredAt": 1791854376007,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_36",
+      "type": "IntentStepStarted",
+      "occurredAt": 1791854376007,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_37",
+      "type": "ClockSampled",
+      "occurredAt": 1791854376563,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_38",
+      "type": "ClockSampled",
+      "occurredAt": 1791854376777,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_39",
+      "type": "IntentStepSettled",
+      "occurredAt": 1791854376777,
+      "summary": {
+        "result": "refused",
+        "terminal": true
+      }
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_40",
+      "type": "ClockSampled",
+      "occurredAt": 1791854377832,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_41",
+      "type": "ClockSampled",
+      "occurredAt": 1791854423510,
+      "summary": {}
+    },
+    {
+      "stream": "resident",
+      "eventId": "evt_42",
+      "type": "IntentHeld",
+      "occurredAt": 1791854423510,
+      "summary": {
+        "reason": "contract has no executable criteria",
+        "step": "contract"
+      }
+    },
+    {
+      "stream": "vertical",
+      "eventId": "evt_1",
+      "type": "VerticalOpened",
+      "occurredAt": 1791854353996,
+      "summary": {}
+    },
+    {
+      "stream": "vertical",
+      "eventId": "evt_2",
+      "type": "VerticalCommandPersisted",
+      "occurredAt": 1791854354006,
+      "summary": {
+        "step": "bundle"
+      }
+    },
+    {
+      "stream": "vertical",
+      "eventId": "evt_3",
+      "type": "VerticalStepCompleted",
+      "occurredAt": 1791854354044,
+      "summary": {
+        "result": "completed",
+        "step": "bundle"
+      }
+    },
+    {
+      "stream": "vertical",
+      "eventId": "evt_4",
+      "type": "VerticalCommandPersisted",
+      "occurredAt": 1791854354453,
+      "summary": {
+        "step": "contract"
+      }
+    },
+    {
+      "stream": "vertical",
+      "eventId": "evt_5",
+      "type": "VerticalStepCompleted",
+      "occurredAt": 1791854354490,
+      "summary": {
+        "result": "completed",
+        "step": "contract"
+      }
+    },
+    {
+      "stream": "vertical",
+      "eventId": "evt_6",
+      "type": "VerticalCommandPersisted",
+      "occurredAt": 1791854355616,
+      "summary": {
+        "step": "surfaces"
+      }
+    },
+    {
+      "stream": "vertical",
+      "eventId": "evt_7",
+      "type": "VerticalStepCompleted",
+      "occurredAt": 1791854355662,
+      "summary": {
+        "result": "completed",
+        "step": "surfaces"
+      }
+    },
+    {
+      "stream": "vertical",
+      "eventId": "evt_8",
+      "type": "VerticalCommandPersisted",
+      "occurredAt": 1791854356799,
+      "summary": {
+        "step": "derived-order"
+      }
+    },
+    {
+      "stream": "vertical",
+      "eventId": "evt_9",
+      "type": "VerticalStepCompleted",
+      "occurredAt": 1791854356840,
+      "summary": {
+        "result": "completed",
+        "step": "derived-order"
+      }
+    },
+    {
+      "stream": "vertical",
+      "eventId": "evt_10",
+      "type": "VerticalCommandPersisted",
+      "occurredAt": 1791854357985,
+      "summary": {
+        "step": "baseline"
+      }
+    },
+    {
+      "stream": "vertical",
+      "eventId": "evt_11",
+      "type": "VerticalStepCompleted",
+      "occurredAt": 1791854374825,
+      "summary": {
+        "result": "completed",
+        "step": "baseline"
+      }
+    },
+    {
+      "stream": "vertical",
+      "eventId": "evt_12",
+      "type": "VerticalCommandPersisted",
+      "occurredAt": 1791854375972,
+      "summary": {
+        "step": "source-change"
+      }
+    },
+    {
+      "stream": "vertical",
+      "eventId": "evt_13",
+      "type": "VerticalStepCompleted",
+      "occurredAt": 1791854376746,
+      "summary": {
+        "result": "refused",
+        "step": "source-change"
+      }
+    },
+    {
+      "stream": "source",
+      "eventId": "evt_1",
+      "type": "ArtifactIdentityEnforcementStarted",
+      "occurredAt": 1791854376078,
+      "summary": {}
+    },
+    {
+      "stream": "source",
+      "eventId": "evt_2",
+      "type": "SourceChangeRequested",
+      "occurredAt": 1791854376078,
+      "summary": {}
+    },
+    {
+      "stream": "source",
+      "eventId": "evt_3",
+      "type": "CommandPersisted",
+      "occurredAt": 1791854376086,
+      "summary": {
+        "step": null
+      }
+    },
+    {
+      "stream": "source",
+      "eventId": "evt_4",
+      "type": "WorkerAttemptStarted",
+      "occurredAt": 1791854376557,
+      "summary": {}
+    },
+    {
+      "stream": "source",
+      "eventId": "evt_5",
+      "type": "SourceChangeProcessStarted",
+      "occurredAt": 1791854376634,
+      "summary": {}
+    },
+    {
+      "stream": "source",
+      "eventId": "evt_6",
+      "type": "CommandReceipt",
+      "occurredAt": 1791854376638,
+      "summary": {}
+    },
+    {
+      "stream": "source",
+      "eventId": "evt_7",
+      "type": "SourceChangeProcessStopped",
+      "occurredAt": 1791854376716,
+      "summary": {}
+    },
+    {
+      "stream": "source",
+      "eventId": "evt_8",
+      "type": "SourceChangeIntegrityChecked",
+      "occurredAt": 1791854376737,
+      "summary": {}
+    },
+    {
+      "stream": "source",
+      "eventId": "evt_9",
+      "type": "WorkerInterrupted",
+      "occurredAt": 1791854376742,
+      "summary": {
+        "reason": "interrupted"
+      }
+    }
+  ],
+  "hostObservations": [
+    {
+      "ordinal": 1,
+      "type": "resident-start",
+      "at": "2026-10-13T01:18:31.507Z"
+    },
+    {
+      "ordinal": 2,
+      "type": "resident-SIGTERM",
+      "at": "2026-10-13T01:19:14.084Z"
+    },
+    {
+      "ordinal": 3,
+      "type": "resident-exit",
+      "at": "2026-10-13T01:19:14.088Z",
+      "code": 0,
+      "signal": null
+    },
+    {
+      "ordinal": 4,
+      "type": "resident-start",
+      "at": "2026-10-13T01:19:14.186Z"
+    },
+    {
+      "ordinal": 5,
+      "type": "actor-kill",
+      "at": "2026-10-13T01:19:36.705Z",
+      "signal": "SIGKILL",
+      "residentKeptAlive": true
+    },
+    {
+      "ordinal": 6,
+      "type": "resident-SIGTERM",
+      "at": "2026-10-13T01:20:23.668Z"
+    },
+    {
+      "ordinal": 7,
+      "type": "resident-exit",
+      "at": "2026-10-13T01:20:23.673Z",
+      "code": 0,
+      "signal": null
+    }
+  ]
+}

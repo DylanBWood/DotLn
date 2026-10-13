@@ -10,7 +10,7 @@
 - [x] [WO-201] — The export runs core's suites · **final-reviewed**
 - [x] [WO-202] — The planning machinery runs in an instance · **final-reviewed**
 - [x] [WO-203] — Update preview · **final-reviewed**
-- [ ] [WO-118] — The resident-owned loop from a starter instance · **queued**
+- [x] [WO-118] — The resident-owned loop from a starter instance · **final-reviewed**
 - [ ] [WO-080] — Workstream document and index grouping · **queued** · pair 2
 - [ ] [WO-204] — Source-writer cleanup revocation survives host failures · **queued** · pair 2
 - [ ] [WO-082] — Synthetic pilot · **queued** · pair 3
@@ -53,24 +53,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-118
-
-[WO-118 — The resident-owned loop from a starter instance: one initial intent and standing grants carry work through derivation, dispatch, verification, repair, delivery and the pull-request loop under the durable runtime, surviving an actor's death and a resident restart, with only material decisions returned to the operator (version assigned at activation)](WO-118-resident-owned-loop-from-starter.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-199: hard (met) — an actor killed and the resident restarted (criterion 2) needs the vertical's recovery through a recorded process group and an interrupt handler; WO-075: hard (met) — a starter instance with the build; WO-076: hard (met) — the instance's overlay; WO-121: hard (met) — presence with origin; WO-122: hard (met) — the cli-worker and human-handoff actors; WO-100: hard (met) — derivation inside a portfolio; WO-120: hard (met) — derived work as durable records; WO-124: hard (met) — surfaces derived from the contract; WO-112: hard (met) — the loop proven from core first; WO-111: hard (met) — the unattended hour; WO-066: hard (met) — the pull-request loop with dispositions; WO-114: hard (met) — the run is visible in the status projection; WO-116: hard (met) — the audit view that reproduces the run afterward; WO-117: hard (met) — the run is visible in the live console; WO-123: hard (met) — the resident admits a filed intent under standing authorization and owns the vertical continuation.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: the actual local harnesses as actors, launched by the instance's resident; the operator witnesses from the operator's terminal; launch claims recorded per episode (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Track: delivery
-- Cost: adds the instance export receipt and one witnessed live run from a starter instance (the resident's actor episodes, a push and a pull request under standing grants, an actor killed and the resident restarted), and &#96;docs/evidence/WO-118/README.md&#96; with the sanitized event log, the console transcript, the measures and the parity scores; about 250 bytes in product 00 and 150 in product 12 (the planner's estimates, never bounds: the document ceilings are planning's); one README sentence inside §What runs today's marked section (one of the two lines free under WO-189's budget on 2026-10-10); one appended capability-table section. Removes the absence of the product exit's evidence: no record shows the runtime carrying an intent to a pull request from a starter. It unblocks WO-083 (gate P of the critical path). Re-mints: none; the order edits no registered or judged source. Wall-clock, tokens and context bytes are unknown until run.
-- Delivery: target publication requires `worktree publish WO-NNN --target <request> --require-deliverable-ready` (WO-182); record every absent item before retrying.
-- Authority: [docs/work-orders/WO-118-resident-owned-loop-from-starter.md](WO-118-resident-owned-loop-from-starter.md)
 
 ### WO-080
 
@@ -180,8 +162,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-118, WO-082.
-- References: WO-118: hard (unmet) — the resident-owned loop is proven from a starter instance before the operator's instance runs the workflow against a real target; satisfied only by WO-118's criterion 1 recorded observed, never by a waiver; WO-082: hard (unmet) — the synthetic pilot precedes the witnessed run; WO-072: hard (met) — the target worktree lifecycle the instance's Angular orders run through; WO-201: hard (met) — the instance's own gates, which verify the order this run drives; WO-202: hard (met) — the instance's own planning pass, which cuts the order this run drives; WO-073: satisfied-by-close (met) — the profile convention the instance's profile follows; WO-078: satisfied-by-close (met) — the generated sibling registry whose Angular consumer entry the run changes.
+- Dependencies: typed; blocked on WO-082.
+- References: WO-118: hard (met) — the resident-owned loop is proven from a starter instance before the operator's instance runs the workflow against a real target; satisfied only by WO-118's criterion 1 recorded observed, never by a waiver; WO-082: hard (unmet) — the synthetic pilot precedes the witnessed run; WO-072: hard (met) — the target worktree lifecycle the instance's Angular orders run through; WO-201: hard (met) — the instance's own gates, which verify the order this run drives; WO-202: hard (met) — the instance's own planning pass, which cuts the order this run drives; WO-073: satisfied-by-close (met) — the profile convention the instance's profile follows; WO-078: satisfied-by-close (met) — the generated sibling registry whose Angular consumer entry the run changes.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -300,8 +282,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-118.
-- References: WO-118: hard (unmet) — the resident-owned loop and the exported starter instance the intent enters; WO-115: satisfied-by-close (met) — the parity contract the command is defined over; WO-120: satisfied-by-close (met) — the durable derived order the intent materializes.
+- Dependencies: typed; dependency-ready.
+- References: WO-118: hard (met) — the resident-owned loop and the exported starter instance the intent enters; WO-115: satisfied-by-close (met) — the parity contract the command is defined over; WO-120: satisfied-by-close (met) — the durable derived order the intent materializes.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

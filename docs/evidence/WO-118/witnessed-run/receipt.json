@@ -1,0 +1,460 @@
+{
+  "schemaVersion": 1,
+  "label": "observed",
+  "startedAt": "2026-10-13T10:51:54.576Z",
+  "finishedAt": "2026-10-13T11:01:14.839Z",
+  "terminal": {
+    "kind": "resolved",
+    "step": "resolution",
+    "result": "completed",
+    "reason": "fresh observation has no unresolved items"
+  },
+  "residentLaunches": 2,
+  "sourceAttempts": 2,
+  "sameSourceCommandAndEpisode": true,
+  "processStoppedBeforeReplacement": true,
+  "sourceCommitsBeforeReview": 1,
+  "repairCommits": 1,
+  "restart": {
+    "betweenSteps": [
+      "bundle",
+      "contract"
+    ],
+    "admissions": 1,
+    "verticalOpened": 1,
+    "sameBindingKey": true
+  },
+  "kill": {
+    "step": "source-change",
+    "signal": "SIGKILL",
+    "heartbeatsBeforeKill": 1,
+    "commitsBeforeKill": 0,
+    "dirtyPathsBeforeKill": 0,
+    "residentKeptAlive": true
+  },
+  "modelLaunches": 13,
+  "launchBreakdown": {
+    "intake": 2,
+    "primitiveWorkers": 7,
+    "reviewTriage": 4
+  },
+  "steps": [
+    {
+      "eventId": "evt_3",
+      "type": "VerticalStepCompleted",
+      "at": 1791888806392,
+      "step": "bundle",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_5",
+      "type": "VerticalStepCompleted",
+      "at": 1791888806978,
+      "step": "contract",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_7",
+      "type": "VerticalStepCompleted",
+      "at": 1791888808198,
+      "step": "surfaces",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_9",
+      "type": "VerticalStepCompleted",
+      "at": 1791888809418,
+      "step": "derived-order",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_11",
+      "type": "VerticalStepCompleted",
+      "at": 1791888830234,
+      "step": "baseline",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_13",
+      "type": "VerticalStepCompleted",
+      "at": 1791888951757,
+      "step": "source-change",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_15",
+      "type": "VerticalStepCompleted",
+      "at": 1791888953153,
+      "step": "witnesses",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_17",
+      "type": "VerticalStepCompleted",
+      "at": 1791888979174,
+      "step": "verification",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_19",
+      "type": "VerticalStepCompleted",
+      "at": 1791889008678,
+      "step": "review",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_21",
+      "type": "VerticalStepCompleted",
+      "at": 1791889009904,
+      "step": "preparation",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_23",
+      "type": "VerticalStepCompleted",
+      "at": 1791889011276,
+      "step": "lint",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_25",
+      "type": "VerticalStepCompleted",
+      "at": 1791889016539,
+      "step": "publish",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_27",
+      "type": "VerticalStepCompleted",
+      "at": 1791889037721,
+      "step": "observation",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_29",
+      "type": "VerticalStepCompleted",
+      "at": 1791889265217,
+      "step": "resolution",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    }
+  ],
+  "stepTimings": [
+    {
+      "step": "bundle",
+      "startedAt": 1791888806381,
+      "settledAt": 1791888806427,
+      "durationMs": 46,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "step": "contract",
+      "startedAt": 1791888806967,
+      "settledAt": 1791888807012,
+      "durationMs": 45,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "step": "surfaces",
+      "startedAt": 1791888808187,
+      "settledAt": 1791888808234,
+      "durationMs": 47,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "step": "derived-order",
+      "startedAt": 1791888809407,
+      "settledAt": 1791888809448,
+      "durationMs": 41,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "step": "baseline",
+      "startedAt": 1791888810608,
+      "settledAt": 1791888830268,
+      "durationMs": 19660,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "step": "source-change",
+      "startedAt": 1791888831438,
+      "settledAt": 1791888951796,
+      "durationMs": 120358,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "step": "witnesses",
+      "startedAt": 1791888952956,
+      "settledAt": 1791888953193,
+      "durationMs": 237,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "step": "verification",
+      "startedAt": 1791888954366,
+      "settledAt": 1791888979213,
+      "durationMs": 24847,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "step": "review",
+      "startedAt": 1791888980374,
+      "settledAt": 1791889008715,
+      "durationMs": 28341,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "step": "preparation",
+      "startedAt": 1791889009890,
+      "settledAt": 1791889009941,
+      "durationMs": 51,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "step": "lint",
+      "startedAt": 1791889011135,
+      "settledAt": 1791889011321,
+      "durationMs": 186,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "step": "publish",
+      "startedAt": 1791889012510,
+      "settledAt": 1791889016578,
+      "durationMs": 4068,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "step": "observation",
+      "startedAt": 1791889017759,
+      "settledAt": 1791889037778,
+      "durationMs": 20019,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "step": "resolution",
+      "startedAt": 1791889038954,
+      "settledAt": 1791889265309,
+      "durationMs": 226355,
+      "result": "completed",
+      "terminal": true
+    }
+  ],
+  "reviewResults": [
+    {
+      "item": "Remove the trailing whitespace inside the status element; its text should be exactly Ready.",
+      "kind": "accept",
+      "evidenceRefCount": 3,
+      "producer": "model"
+    },
+    {
+      "item": "One suggested status correction.",
+      "kind": "acknowledge",
+      "evidenceRefCount": 2,
+      "producer": "model"
+    },
+    {
+      "item": "Set the status back to Pending until the build is confirmed.",
+      "kind": "reject",
+      "evidenceRefCount": 3,
+      "producer": "model"
+    },
+    {
+      "item": "Automated review summary: one inline suggestion on index.html.",
+      "kind": "acknowledge",
+      "evidenceRefCount": 3,
+      "producer": "model"
+    }
+  ],
+  "incorrectSuggestion": {
+    "kind": "reject",
+    "producer": "model",
+    "evidenceRefCount": 3
+  },
+  "validSuggestion": [
+    {
+      "kind": "accept",
+      "producer": "model"
+    }
+  ],
+  "ambiguousControl": {
+    "draftId": "WO-900",
+    "kind": "NeedsHuman",
+    "step": "contract",
+    "reason": "contract has no executable criteria",
+    "answerPosted": true,
+    "answerConsumed": false
+  },
+  "representative": {
+    "draftId": "WO-901",
+    "derivedOrder": "WO-902",
+    "needsHuman": false
+  },
+  "controlAuthorSetup": {
+    "at": "2026-10-13T10:51:21.848Z",
+    "purpose": "incorrect-review-control fixture author mapping",
+    "timing": "setup: before the resident starts and before the first intent",
+    "scope": "Recognize only the authorized scratch fixture principal as automation; no triage disposition or authority grant supplied.",
+    "modelJudgmentsSupplied": 0
+  },
+  "delivery": {
+    "state": "OPEN",
+    "generatedTitle": "fix: implement requested behavior",
+    "generatedBody": "## Contract\n\n**Objective:** In &#96;index.html&#96;, replace Pending in the status element with Ready. Preserve its role=status, accessible label Build status, and heading Scratch welcome. Change only that page and introduce no dependency.\n\n**Non-goals:** none declared\n\n## Acceptance\n\n| Criterion | Status |\n| --- | --- |\n| In &#96;index.html&#96;, replace Pending in the status element with Ready. Preserve its role=status, accessible label Build status, and heading Scratch welcome. Change only that page and introduce no dependency. | verified |\n\nIndependent verification: acceptance matrix for <opaque-id>: 1 verified, 0 failed, 0 stale, 0 incomplete.\n\nFocused test observed by the host: exit 1 before the change, exit 0 after it.\n\n## Change\n\n| Path | Added | Removed |\n| --- | ---: | ---: |\n| index.html | 1 | 1 |\n\n1 file changed from base <opaque-id> to head <opaque-id>.\n\n## Deliverable-ready\n\nDeliverable-ready: ready; every applicable item is evidenced.\n\n| Item | Status | Evidence or reason |\n| --- | --- | --- |\n| Current source revision | evidenced | commit:<opaque-id> |\n| Explicit contract | evidenced | source-event:evt&#95;3 |\n| No unresolved material ambiguity | evidenced | delivery-preparation&#35;/unresolvedMaterialAmbiguities |\n| Reproduced baseline | evidenced | baseline-event:evt&#95;28 |\n| Repo-native implementation | evidenced | review-event:evt&#95;69 |\n| No unexplained scope | evidenced | source-event:evt&#95;2; review-event:evt&#95;69 |\n| Tests/build/lint | evidenced | delivery-preparation&#35;/checks; verification:vertical&#95;<run-key>&#95;0; build not-applicable: The contract names no build step.; lint not-applicable: The contract names no lint step. |\n| Live behavior walked | evidenced | verification:vertical&#95;<run-key>&#95;0 |\n| Visual claims visually inspected | not-applicable | verification:vertical&#95;<run-key>&#95;0; The declared criteria contain no visual claims. |\n| Every acceptance criterion evidenced | evidenced | verification:vertical&#95;<run-key>&#95;0 |\n| Independent verification and review | evidenced | verification:vertical&#95;<run-key>&#95;0; review-event:evt&#95;69 |\n| Final diff read | evidenced | review-event:evt&#95;69 |\n| Grounded body | evidenced | &#35;acceptance; source-event:evt&#95;3; source-event:evt&#95;134 |\n| Monitored loop | evidenced | delivery-preparation&#35;/monitoring |\n",
+    "commits": 2,
+    "threads": {
+      "total": 2,
+      "resolved": 2
+    },
+    "reviews": 3,
+    "statusLine": "<p id=\"status\" role=\"status\" aria-label=\"Build status\">Ready</p>"
+  },
+  "deliveredHeadVerification": {
+    "originalCriteria": 1,
+    "passed": 1,
+    "findings": 0,
+    "requiresHuman": false,
+    "verifierSubjectMatchesDeliveredHead": true
+  },
+  "console": {
+    "frames": 73,
+    "changeFrames": 37,
+    "statusFrames": 18,
+    "repaintsAfterStatus": 18,
+    "phasesLiveCountedFrom": "change-driven frames only",
+    "phasesShown": [
+      "bundle",
+      "contract",
+      "surfaces",
+      "derived-order",
+      "baseline",
+      "source-change",
+      "witnesses",
+      "verification",
+      "review",
+      "preparation",
+      "lint",
+      "publish",
+      "observation",
+      "resolution"
+    ],
+    "phasesLive": [
+      "baseline",
+      "source-change",
+      "verification",
+      "review",
+      "lint",
+      "publish",
+      "observation",
+      "resolution"
+    ],
+    "stepsLastingTwoSecondsOrMore": [
+      "baseline",
+      "source-change",
+      "verification",
+      "review",
+      "publish",
+      "observation",
+      "resolution"
+    ],
+    "longStepsNotShownLive": [],
+    "holdShownWhileVerticalLive": true,
+    "derivedOrder": "WO-902",
+    "derivedOrderShownActive": true,
+    "finalFrame": {
+      "verticalRows": 0,
+      "holdShown": true
+    },
+    "ranThroughout": true
+  },
+  "audit": {
+    "vertical": "audit.txt",
+    "resident": "resident-audit.txt"
+  },
+  "carryIns": [
+    {
+      "item": 1,
+      "condition": "a resolution repair killed between its worktree add and removal",
+      "occurred": false,
+      "observed": "the only kill targeted the source-change writer; after the run the target lists 3 worktrees, 0 prunable"
+    },
+    {
+      "item": 2,
+      "condition": "an issue added to vertical.json after the resident started",
+      "occurred": false,
+      "observed": "both issues were written to vertical.json at setup, before the first resident start"
+    },
+    {
+      "item": 3,
+      "condition": "an operator return under a kill in-flight policy",
+      "occurred": false,
+      "observed": "the phase's in-flight policy is finish; presence kinds observed: away"
+    },
+    {
+      "item": 4,
+      "condition": "registered authority that cannot be decoded or bound",
+      "occurred": false,
+      "observed": "the resident admitted the representative intent with its grants; no store-level authority hold was recorded"
+    },
+    {
+      "item": 5,
+      "condition": "a live Claude writer through the vertical before WO-184 D038 G1 and G2 settle",
+      "occurred": false,
+      "observed": "worker transports: codex-cli-exec"
+    }
+  ],
+  "baselineAssessment": {
+    "present": true,
+    "producer": {
+      "kind": "model",
+      "name": "codex-cli-exec gpt-6.1-sol max intake episode ep_vertical_intake_fff9229a70126979"
+    }
+  },
+  "witness": {
+    "kind": "executor-observed",
+    "authority": "WO-112-D007 delegation carried by WO-118; resume: fix rerun authorized in WO-118-D011",
+    "separateOperatorTerminalAttestation": false
+  },
+  "allResidentProcessesStopped": true,
+  "runtimeCodeModifiedDuringRun": false
+}

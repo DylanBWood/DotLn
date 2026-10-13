@@ -1,0 +1,320 @@
+Changed: Initial view
+DotLn live console
+Runtime status unavailable; waiting for a valid update.
+Audit unavailable; waiting for a valid event log.
+away · back · diff · audit · orders · status · help · quit
+Changed: Status available
+DotLn live console
+Presence: away · signal away · phase probe
+Actors: probe: portfolio (unknown)
+Live episodes: none
+Cadence (UTC): probe 01:47:08
+Holds: none · Budget: configured, 0 episodes used
+Open work orders (unavailable): index-unreadable — 0 total; type orders for all
+Audit preview (partial; type audit for full projections)
+  L0 RECEIPT: no projected receipts
+  CAUSAL TIMELINE (L1): no projected entries
+  GOVERNED RAW JSON (L4): omitted here; type audit
+Recent resident events (raw names, clock samples omitted):
+  ResidentConfigured
+  Presence observed
+away · back · diff · audit · orders · status · help · quit
+Changed: Work orders changed
+DotLn live console
+Presence: away · signal away · phase probe
+Actors: probe: portfolio (unknown)
+Live episodes: none
+Cadence (UTC): probe 01:47:08
+Holds: none · Budget: configured, 0 episodes used
+Open work orders (available) — 2 total; type orders for all
+  WO-900: draft · dependencies ready · verdict unknown
+  WO-901: draft · dependencies ready · verdict unknown
+Audit preview (partial; type audit for full projections)
+  L0 RECEIPT: no projected receipts
+  CAUSAL TIMELINE (L1): no projected entries
+  GOVERNED RAW JSON (L4): omitted here; type audit
+Recent resident events (raw names, clock samples omitted):
+  ResidentConfigured
+  Presence observed
+away · back · diff · audit · orders · status · help · quit
+Changed: IntentAdmitted
+DotLn live console
+Presence: away · signal away · phase probe
+Actors: probe: portfolio (unknown)
+Live episodes: none
+Cadence (UTC): probe 01:47:08
+Holds: none · Budget: configured, 0 episodes used
+Open work orders (available) — 2 total; type orders for all
+  WO-900: draft · dependencies ready · verdict unknown
+  WO-901: draft · dependencies ready · verdict unknown
+Audit preview (partial; type audit for full projections)
+  L0 RECEIPT: no projected receipts
+  CAUSAL TIMELINE (L1): no projected entries
+  GOVERNED RAW JSON (L4): omitted here; type audit
+Recent resident events (raw names, clock samples omitted):
+  ResidentConfigured
+  Presence observed
+  IntentAdmitted
+away · back · diff · audit · orders · status · help · quit
+Changed: Work orders changed
+DotLn live console
+Presence: away · signal away · phase probe
+Actors: probe: portfolio (unknown)
+Live episodes: none
+Cadence (UTC): probe 01:47:08
+Holds: none · Budget: configured, 0 episodes used
+Open work orders (available) — 3 total; type orders for all
+  WO-902: active · dependencies ready · verdict unknown
+  WO-900: draft · dependencies ready · verdict unknown
+  WO-901: draft · dependencies ready · verdict unknown
+Audit preview (partial; type audit for full projections)
+  L0 RECEIPT: no projected receipts
+  CAUSAL TIMELINE (L1): no projected entries
+  GOVERNED RAW JSON (L4): omitted here; type audit
+Recent resident events (raw names, clock samples omitted):
+  IntentStepSettled
+  IntentStepStarted
+  IntentStepSettled
+away · back · diff · audit · orders · status · help · quit
+Changed: IntentStepStarted
+DotLn live console
+Presence: away · signal away · phase probe
+Actors: probe: portfolio (unknown)
+Live episodes: none
+Cadence (UTC): probe not armed
+Holds: none · Budget: configured, 0 episodes used
+Open work orders (available) — 3 total; type orders for all
+  WO-902: active · dependencies ready · verdict unknown
+  WO-900: draft · dependencies ready · verdict unknown
+  WO-901: draft · dependencies ready · verdict unknown
+Audit preview (partial; type audit for full projections)
+  L0 RECEIPT: no projected receipts
+  CAUSAL TIMELINE (L1): no projected entries
+  GOVERNED RAW JSON (L4): omitted here; type audit
+Recent resident events (raw names, clock samples omitted):
+  IntentStepStarted
+  IntentStepSettled
+  IntentStepStarted
+away · back · diff · audit · orders · status · help · quit
+Changed: IntentStepSettled
+DotLn live console
+Presence: away · signal away · phase probe
+Actors: probe: portfolio (unknown)
+Live episodes: none
+Cadence (UTC): probe 01:47:08
+Holds: none · Budget: configured, 0 episodes used
+Open work orders (available) — 3 total; type orders for all
+  WO-902: active · dependencies ready · verdict unknown
+  WO-900: draft · dependencies ready · verdict unknown
+  WO-901: draft · dependencies ready · verdict unknown
+Audit preview (partial; type audit for full projections)
+  L0 RECEIPT: no projected receipts
+  CAUSAL TIMELINE (L1): no projected entries
+  GOVERNED RAW JSON (L4): omitted here; type audit
+Recent resident events (raw names, clock samples omitted):
+  IntentStepSettled
+  IntentStepStarted
+  IntentStepSettled
+away · back · diff · audit · orders · status · help · quit
+Changed: IntentStepStarted
+DotLn live console
+Presence: away · signal away · phase probe
+Actors: probe: portfolio (unknown)
+Live episodes: none
+Cadence (UTC): probe not armed
+Holds: none · Budget: configured, 0 episodes used
+Open work orders (available) — 3 total; type orders for all
+  WO-902: active · dependencies ready · verdict unknown
+  WO-900: draft · dependencies ready · verdict unknown
+  WO-901: draft · dependencies ready · verdict unknown
+Audit preview (partial; type audit for full projections)
+  L0 RECEIPT: no projected receipts
+  CAUSAL TIMELINE (L1): no projected entries
+  GOVERNED RAW JSON (L4): omitted here; type audit
+Recent resident events (raw names, clock samples omitted):
+  IntentStepStarted
+  IntentStepSettled
+  IntentStepStarted
+away · back · diff · audit · orders · status · help · quit
+Changed: IntentStepSettled
+DotLn live console
+Presence: away · signal away · phase probe
+Actors: probe: portfolio (unknown)
+Live episodes: none
+Cadence (UTC): probe 01:47:08
+Holds: none · Budget: configured, 0 episodes used
+Open work orders (available) — 3 total; type orders for all
+  WO-902: active · dependencies ready · verdict unknown
+  WO-900: draft · dependencies ready · verdict unknown
+  WO-901: draft · dependencies ready · verdict unknown
+Audit preview (partial; type audit for full projections)
+  L0 RECEIPT: no projected receipts
+  CAUSAL TIMELINE (L1): no projected entries
+  GOVERNED RAW JSON (L4): omitted here; type audit
+Recent resident events (raw names, clock samples omitted):
+  IntentStepSettled
+  IntentStepStarted
+  IntentStepSettled
+away · back · diff · audit · orders · status · help · quit
+Changed: IntentStepStarted
+DotLn live console
+Presence: away · signal away · phase probe
+Actors: probe: portfolio (unknown)
+Live episodes: none
+Cadence (UTC): probe not armed
+Holds: none · Budget: configured, 0 episodes used
+Open work orders (available) — 3 total; type orders for all
+  WO-902: active · dependencies ready · verdict unknown
+  WO-900: draft · dependencies ready · verdict unknown
+  WO-901: draft · dependencies ready · verdict unknown
+Audit preview (partial; type audit for full projections)
+  L0 RECEIPT: no projected receipts
+  CAUSAL TIMELINE (L1): no projected entries
+  GOVERNED RAW JSON (L4): omitted here; type audit
+Recent resident events (raw names, clock samples omitted):
+  IntentStepStarted
+  IntentStepSettled
+  IntentStepStarted
+away · back · diff · audit · orders · status · help · quit
+Changed: IntentStepSettled
+DotLn live console
+Presence: away · signal away · phase probe
+Actors: probe: portfolio (unknown)
+Live episodes: none
+Cadence (UTC): probe 01:47:08
+Holds: none · Budget: configured, 0 episodes used
+Open work orders (available) — 3 total; type orders for all
+  WO-902: active · dependencies ready · verdict unknown
+  WO-900: draft · dependencies ready · verdict unknown
+  WO-901: draft · dependencies ready · verdict unknown
+Audit preview (partial; type audit for full projections)
+  L0 RECEIPT: no projected receipts
+  CAUSAL TIMELINE (L1): no projected entries
+  GOVERNED RAW JSON (L4): omitted here; type audit
+Recent resident events (raw names, clock samples omitted):
+  IntentStepSettled
+  IntentStepStarted
+  IntentStepSettled
+away · back · diff · audit · orders · status · help · quit
+Changed: IntentStepStarted
+DotLn live console
+Presence: away · signal away · phase probe
+Actors: probe: portfolio (unknown)
+Live episodes: none
+Cadence (UTC): probe not armed
+Holds: none · Budget: configured, 0 episodes used
+Open work orders (available) — 3 total; type orders for all
+  WO-902: active · dependencies ready · verdict unknown
+  WO-900: draft · dependencies ready · verdict unknown
+  WO-901: draft · dependencies ready · verdict unknown
+Audit preview (partial; type audit for full projections)
+  L0 RECEIPT: no projected receipts
+  CAUSAL TIMELINE (L1): no projected entries
+  GOVERNED RAW JSON (L4): omitted here; type audit
+Recent resident events (raw names, clock samples omitted):
+  IntentStepStarted
+  IntentStepSettled
+  IntentStepStarted
+away · back · diff · audit · orders · status · help · quit
+Changed: IntentStepSettled
+DotLn live console
+Presence: away · signal away · phase probe
+Actors: probe: portfolio (unknown)
+Live episodes: none
+Cadence (UTC): probe 01:47:08
+Holds: none · Budget: configured, 0 episodes used
+Open work orders (available) — 3 total; type orders for all
+  WO-902: active · dependencies ready · verdict unknown
+  WO-900: draft · dependencies ready · verdict unknown
+  WO-901: draft · dependencies ready · verdict unknown
+Audit preview (partial; type audit for full projections)
+  L0 RECEIPT: no projected receipts
+  CAUSAL TIMELINE (L1): no projected entries
+  GOVERNED RAW JSON (L4): omitted here; type audit
+Recent resident events (raw names, clock samples omitted):
+  IntentStepSettled
+  IntentStepStarted
+  IntentStepSettled
+away · back · diff · audit · orders · status · help · quit
+Changed: IntentStepSettled
+DotLn live console
+Presence: away · signal away · phase probe
+Actors: probe: portfolio (unknown)
+Live episodes: none
+Cadence (UTC): probe 01:51:00
+Holds: none · Budget: configured, 0 episodes used
+Open work orders (available) — 3 total; type orders for all
+  WO-902: active · dependencies ready · verdict unknown
+  WO-900: draft · dependencies ready · verdict unknown
+  WO-901: draft · dependencies ready · verdict unknown
+Audit preview (partial; type audit for full projections)
+  L0 RECEIPT: no projected receipts
+  CAUSAL TIMELINE (L1): no projected entries
+  GOVERNED RAW JSON (L4): omitted here; type audit
+Recent resident events (raw names, clock samples omitted):
+  IntentStepSettled
+  IntentStepStarted
+  IntentStepSettled
+away · back · diff · audit · orders · status · help · quit
+Changed: IntentHeld
+DotLn live console
+Presence: away · signal away · phase probe
+Actors: probe: portfolio (unknown)
+Live episodes: none
+Cadence (UTC): probe 01:51:00
+Holds: none · Budget: configured, 0 episodes used
+Open work orders (available) — 3 total; type orders for all
+  WO-902: active · dependencies ready · verdict unknown
+  WO-900: draft · dependencies ready · verdict unknown
+  WO-901: draft · dependencies ready · verdict unknown
+Audit preview (partial; type audit for full projections)
+  L0 RECEIPT: no projected receipts
+  CAUSAL TIMELINE (L1): no projected entries
+  GOVERNED RAW JSON (L4): omitted here; type audit
+Recent resident events (raw names, clock samples omitted):
+  IntentStepStarted
+  IntentStepSettled
+  IntentHeld
+away · back · diff · audit · orders · status · help · quit
+Runtime status (runtime-status-v1) · observed 1791856300533
+
+Actors
+  probe: portfolio · unknown · last unknown
+
+Live episodes
+  none
+
+Presence
+  away · signal away · phase probe
+  cadence probe: 1791856260674
+
+Holds
+  none
+
+Budget
+  configured · episodes 0 consumed / 2 remaining · wall 0 consumed / 3600000 remaining ms · tokens 0 consumed / unknown remaining
+
+Open work orders (available)
+  WO-902: active · dependencies ready · verdict unknown
+  WO-900: draft · dependencies ready · verdict unknown
+  WO-901: draft · dependencies ready · verdict unknown
+Changed: IntentHeld
+DotLn live console
+Presence: away · signal away · phase probe
+Actors: probe: portfolio (unknown)
+Live episodes: none
+Cadence (UTC): probe 01:51:00
+Holds: none · Budget: configured, 0 episodes used
+Open work orders (available) — 3 total; type orders for all
+  WO-902: active · dependencies ready · verdict unknown
+  WO-900: draft · dependencies ready · verdict unknown
+  WO-901: draft · dependencies ready · verdict unknown
+Audit preview (partial; type audit for full projections)
+  L0 RECEIPT: no projected receipts
+  CAUSAL TIMELINE (L1): no projected entries
+  GOVERNED RAW JSON (L4): omitted here; type audit
+Recent resident events (raw names, clock samples omitted):
+  IntentStepStarted
+  IntentStepSettled
+  IntentHeld
+away · back · diff · audit · orders · status · help · quit

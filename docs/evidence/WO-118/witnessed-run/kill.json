@@ -1,0 +1,15 @@
+{
+  "type": "actor-kill",
+  "at": "2026-10-13T10:53:53.557Z",
+  "step": "source-change",
+  "commandId": "cmd_cbd7c0ac18aef22e",
+  "signal": "SIGKILL",
+  "pid": 87052,
+  "processGroup": 87049,
+  "writerCommand": "<operator-home>/.codex/packages/standalone/releases/0.162.1-aarch64-apple-darwin/bin/codex",
+  "residentPid": 86541,
+  "residentKeptAlive": true,
+  "heartbeatsBeforeKill": 1,
+  "commitsBeforeKill": 0,
+  "dirtyPathsBeforeKill": 0
+}

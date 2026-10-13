@@ -1,0 +1,57 @@
+[
+  {
+    "type": "review-control-author-setup",
+    "source": "separate setup receipt",
+    "at": "2026-10-13T10:51:21.848Z",
+    "purpose": "incorrect-review-control fixture author mapping",
+    "timing": "setup: before the resident starts and before the first intent",
+    "scope": "Recognize only the authorized scratch fixture principal as automation; no triage disposition or authority grant supplied.",
+    "modelJudgmentsSupplied": 0
+  },
+  {
+    "type": "scratch-control-issue-setup",
+    "source": "scratch repository read-back",
+    "at": "2026-10-13T10:51:21Z",
+    "remoteWrite": "one new issue for the ambiguous control",
+    "reviewFixtureVariable": "read; already representative, not written"
+  },
+  {
+    "type": "resident-start",
+    "at": "2026-10-13T10:51:54.579Z"
+  },
+  {
+    "type": "ambiguous-answer",
+    "at": "2026-10-13T10:52:38.276Z",
+    "consumedByRuntime": false
+  },
+  {
+    "type": "resident-SIGTERM",
+    "at": "2026-10-13T10:53:26.499Z"
+  },
+  {
+    "type": "resident-exit",
+    "at": "2026-10-13T10:53:26.505Z"
+  },
+  {
+    "type": "resident-start",
+    "at": "2026-10-13T10:53:26.602Z"
+  },
+  {
+    "type": "actor-kill",
+    "at": "2026-10-13T10:53:53.557Z",
+    "signal": "SIGKILL",
+    "residentKeptAlive": true
+  },
+  {
+    "type": "incorrect-review-suggestion",
+    "at": "2026-10-13T10:56:58.362Z"
+  },
+  {
+    "type": "resident-SIGTERM",
+    "at": "2026-10-13T11:01:14.721Z"
+  },
+  {
+    "type": "resident-exit",
+    "at": "2026-10-13T11:01:14.742Z"
+  }
+]
