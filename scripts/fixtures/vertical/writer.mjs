@@ -6,6 +6,8 @@ const input = JSON.parse(readFileSync(0, "utf8"));
 const cfg = JSON.parse(
   readFileSync(process.env.DOTLN_VERTICAL_FIXTURE, "utf8"),
 );
+if (cfg.interruptWriter === "before-commit")
+  process.kill(process.pid, "SIGKILL");
 const content =
   cfg.plantReview && !input.workOrder.workOrderId.includes("_repair_")
     ? "changed by synthetic worker\n\n"
@@ -28,6 +30,8 @@ const git = (...args) =>
   );
 git("add", "-A");
 git("commit", "-F", input.commitCommand.slice("git commit -F ".length));
+if (cfg.interruptWriter === "after-commit")
+  process.kill(process.pid, "SIGKILL");
 const envelope = {
   workOrderId: input.workOrder.workOrderId,
   episodeId: input.episodeId,

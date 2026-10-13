@@ -8,6 +8,13 @@ import { decodeLog } from "@dotln/kernel";
 import { WorkerStore } from "../packages/skeleton/dist/src/worker-store.js";
 import { VerticalHost } from "../packages/skeleton/dist/src/vertical-host.js";
 import { WorkerFailure } from "../packages/skeleton/dist/src/worker-protocol.js";
+import { ResidentHost } from "../packages/skeleton/dist/src/resident-host.js";
+import { projectRuntimeStatus } from "../packages/skeleton/dist/src/runtime-status.js";
+import {
+  recordPresence,
+  replayResident,
+} from "../packages/skeleton/dist/src/resident-store.js";
+import { fixtureGit } from "../packages/skeleton/dist/test/source-change-fixture.js";
 import {
   CodexCliExecWorkOrderTransport,
   runWorkerProcess,
@@ -20,6 +27,7 @@ import {
 import {
   runVerticalIssue,
   readVerticalConfiguration,
+  createVerticalEntry,
 } from "./lib/vertical-runtime.mjs";
 import {
   crashRecovery,
@@ -157,6 +165,269 @@ async function stopWriter(group, ready) {
       process.kill(-target, "SIGKILL");
     } catch {}
 }
+
+for (const mode of [
+  "before-commit",
+  "after-commit",
+  "exhausted",
+  "revoke",
+  "return",
+])
+  test(`resident survives source actor death: ${mode}`, async () => {
+    const f = await verticalFixture({ onReturn: "kill" });
+    let host;
+    try {
+      const fixture = join(f.root, "fixture.json");
+      const settings = JSON.parse(readFileSync(fixture, "utf8"));
+      put(fixture, {
+        ...settings,
+        interruptWriter: mode === "after-commit" ? mode : "before-commit",
+      });
+      const writer = f.external.writer;
+      const external = {
+        ...f.external,
+        writer: {
+          name: writer.name,
+          harnessVersion: writer.harnessVersion,
+          supportsDeferredStart: writer.supportsDeferredStart,
+          dispatch(request, now, options) {
+            const dispatch = writer.dispatch(request, now, options);
+            return {
+              ...dispatch,
+              completed: dispatch.completed.catch(async (error) => {
+                if (mode === "revoke")
+                  await host.store.transaction((tx) =>
+                    tx.append("AuthorityRevoked", {}),
+                  );
+                if (mode === "return")
+                  await recordPresence(f.directory, "returned", f.now);
+                throw error;
+              }),
+            };
+          },
+        },
+      };
+      const configuration = readVerticalConfiguration(f.directory, f.launchpad);
+      const entry = createVerticalEntry({
+        directory: f.directory,
+        configuration,
+        now: f.now,
+        external,
+      });
+      host = new ResidentHost({
+        directory: f.directory,
+        configuration: configuration.resident,
+        policyId: configuration.resident.policyId,
+        now: f.now,
+        capabilities: () => ["adapter.fixture"],
+        vertical: entry.resident,
+      });
+      await host.start();
+      await recordPresence(f.directory, "away", f.now);
+      for (let i = 0; i < 6; i++) {
+        f.setTime(120 + i);
+        await host.tick();
+      }
+      const binding = replayResident(host.store.read()).state.resident.intents[
+        f.filed.workOrderId
+      ].binding;
+      const source = new WorkerStore(join(entry.runs, binding.key, "source"));
+      const rows = () => decodeLog(source.read());
+      const attempts = () =>
+        rows().filter((e) => e.type === "WorkerAttemptStarted");
+      const first = attempts()[0];
+      assert.ok(first);
+      const stopped = rows().find(
+        (e) => e.type === "SourceChangeProcessStopped",
+      );
+      assert.ok(stopped);
+      const group = rows().find((e) => e.type === "SourceChangeProcessStarted")
+        .payload.processGroup;
+      assert.throws(() => process.kill(-group, 0), { code: "ESRCH" });
+      const pending = runState(f.directory, binding.key);
+      if (["revoke", "return"].includes(mode)) {
+        assert.equal(pending.terminal.kind, "refused");
+        await host.tick();
+        assert.equal(attempts().length, 1);
+        return;
+      }
+      assert.equal(pending.terminal, null);
+      assert.equal(pending.pending.step, "source-change");
+      assert.equal(pending.receipts.at(-1).command.step, "baseline");
+      const commandId = pending.pending.commandId;
+      if (mode === "before-commit") {
+        await host.store.transaction((tx) =>
+          tx.append("IntentHeld", {
+            draftId: "WO-999",
+            step: "contract",
+            reason: "private host path must not reach status",
+          }),
+        );
+        const status = JSON.parse(
+          readFileSync(join(f.directory, "runtime-status-v1.json"), "utf8"),
+        );
+        const live = status.liveEpisodes.find(
+          (row) => row.actor === "vertical-host",
+        );
+        assert.equal(live.phase, "source-change");
+        assert.equal(live.episodeId, pending.pending.episodeId);
+        assert.equal(live.order, f.filed.workOrderId);
+        assert.deepEqual(live.launchClaims, {
+          source: "none",
+          model: null,
+          effort: null,
+        });
+        assert.ok(
+          status.actors.some(
+            (row) =>
+              row.kind === "vertical-host" && row.availability === "available",
+          ),
+        );
+        assert.ok(
+          status.holds.some(
+            (row) =>
+              row.order === "WO-999" &&
+              row.reason === "intent-needs-human:contract",
+          ),
+        );
+        assert.ok(!JSON.stringify(status).includes("private host path"));
+      }
+      if (mode !== "exhausted") put(fixture, settings);
+      f.tick();
+      await host.tick();
+      if (mode === "exhausted") {
+        assert.equal(
+          runState(f.directory, binding.key).pending.commandId,
+          commandId,
+        );
+        f.tick();
+        await host.tick();
+      }
+      const result = runState(f.directory, binding.key);
+      const receipt = result.receipts.at(-1);
+      assert.equal(receipt.command.commandId, commandId);
+      assert.equal(
+        receipt.result,
+        mode === "exhausted" ? "refused" : "completed",
+      );
+      if (mode === "exhausted")
+        assert.equal(
+          receipt.value.refusal.reason,
+          "recovery-dispatch-exhausted",
+        );
+      assert.equal(attempts().length, mode === "after-commit" ? 1 : 2);
+      assert.equal(new Set(attempts().map((e) => e.payload.commandId)).size, 1);
+      assert.equal(
+        rows().filter((e) => e.type === "SourceChangeRequested").length,
+        1,
+      );
+      if (attempts().length === 2)
+        assert.ok(
+          rows().findIndex((e) => e.eventId === stopped.eventId) <
+            rows().findIndex((e) => e.eventId === attempts()[1].eventId),
+        );
+      assert.equal(
+        Number(
+          fixtureGit(
+            f.target,
+            "rev-list",
+            "--count",
+            `main..fix/intent-${binding.key}`,
+          ),
+        ),
+        mode === "exhausted" ? 0 : 1,
+      );
+      const ledger = decodeLog(host.store.read());
+      for (const type of ["IntentStepStarted", "IntentStepSettled"])
+        assert.equal(
+          ledger.filter(
+            (e) => e.type === type && e.payload.commandId === commandId,
+          ).length,
+          1,
+        );
+      assert.equal(result.workOrder.workOrderId, pending.workOrder.workOrderId);
+      if (mode === "before-commit") {
+        const status = JSON.parse(
+          readFileSync(join(f.directory, "runtime-status-v1.json"), "utf8"),
+        );
+        assert.equal(
+          status.liveEpisodes.filter((row) => row.actor === "vertical-host")
+            .length,
+          0,
+        );
+        assert.ok(status.holds.some((row) => row.order === "WO-999"));
+        const state = replayResident(host.store.read()).state.resident;
+        const settlement = ledger.find(
+          (e) =>
+            e.type === "IntentStepSettled" && e.payload.commandId === commandId,
+        );
+        for (const outcome of [
+          "NeedsHuman",
+          "retry",
+          "repair",
+          "refused",
+          "completed",
+        ]) {
+          const events = ledger.map((e) =>
+            e === settlement
+              ? {
+                  ...e,
+                  payload: { ...e.payload, terminal: true, result: outcome },
+                }
+              : e,
+          );
+          const projected = projectRuntimeStatus(state, events, null);
+          const holds = projected.holds.filter(
+            (row) => row.order === f.filed.workOrderId,
+          );
+          assert.deepEqual(
+            holds,
+            outcome === "completed"
+              ? []
+              : [
+                  {
+                    kind: "dispatch",
+                    order: f.filed.workOrderId,
+                    reason: `${outcome === "refused" ? "intent-refused" : "intent-needs-human"}:source-change`,
+                  },
+                ],
+          );
+        }
+      }
+    } finally {
+      host?.close();
+      f.close();
+    }
+  });
+
+test("source actor invalid result and absent launch authority remain terminal", async () => {
+  for (const [code, active] of [
+    ["invalid-result", async () => true],
+    ["interrupted", undefined],
+  ]) {
+    const f = await verticalFixture();
+    try {
+      const state = await steps(f, 5);
+      const host = new VerticalHost({
+        directory: join(f.directory, "vertical", state.binding.key),
+        binding: state.binding,
+        now: f.now,
+        ...(active ? { active } : {}),
+        ports: {
+          async materialize() {
+            throw new Error("already open");
+          },
+          async execute() {
+            throw new WorkerFailure(code);
+          },
+        },
+      });
+      assert.equal((await host.run({ steps: 1 })).terminal.kind, "refused");
+    } finally {
+      f.close();
+    }
+  }
+});
 
 test("WO-199 dotln vertical forwards SIGINT, SIGTERM and SIGHUP and resumes the same issue", async () => {
   for (const [signal, expectedCode] of [
