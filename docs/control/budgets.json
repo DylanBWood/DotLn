@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "subagentCap": 40,
+  "subagentCap": 20,
   "memory": {
     "taskShare": 0.25,
     "gateShare": 0.5,

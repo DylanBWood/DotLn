@@ -1022,5 +1022,34 @@ Before the refutation:
   `npm run test:docs` runs after the planning commit, because its plan
   checks read committed order files.
 
-The refutation receipt, its holds and their dispositions are recorded below
-once the independent refuter has judged the committed subject.
+**The refutation.** One fresh background `dotln-worker` was given only the
+canonical prompt of `npm run plan -- refute` for commit `5cfaa44d`, and judged
+it in 1,079.0 s. Receipt 045 (`2026-10-13-planning-4f74762e1dd466b6-045`):
+- verdict aligned-with-findings, with no hold;
+- all fourteen orders aligned-with-findings;
+- twenty-two known issues, each with a reopening observation;
+- the judged, committed and working-tree subjects equal
+  (`sha256:7a1179fd…`).
+
+Each known issue is carried on its order's catalog row. The planner's
+readings of the most material:
+
+- **WO-215.** A refused refresh holds release close open for causes outside
+  the released order. That was the order's design choice (a refusal is a
+  close blocker with the same retry). It stays, and is reopened if a refused
+  refresh blocks a close whose release the operator wanted finished.
+- **WO-210.** The records-only commit is unreachable after a squash or rebase
+  merge in the target, and the operator merges pull requests. The first
+  target close that sees it records which merge the operator used.
+- **WO-210 and WO-192.** Between them, the role text names launchpad
+  `npm test`. The window is two orders wide, and WO-210's own text tells its
+  executor the target route.
+- **WO-083 and WO-207.** The fork's first starter updates come before WO-207's
+  controlled route. Until WO-207, the fork's planning pass cuts a plain
+  upgrade order with today's preview and merge (§12.1).
+- **WO-207.** The word "only" describes the operator's preference for the
+  operator's own fork, not a rule for every owner. It is reopened at
+  WO-207's activation if the wording still reads as a rule.
+
+Fan-out: 32 subagents of the temporary cap of 40, the refuter last. The last
+commit of the pass restores `subagentCap` to 20.
