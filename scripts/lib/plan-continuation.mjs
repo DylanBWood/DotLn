@@ -6,6 +6,7 @@ import {
   sha256,
   parsePlanOrder,
   planCostDeclaration,
+  goalEvidenceHash,
 } from "./plan-subject.mjs";
 import { containedRegularFile } from "./paths.mjs";
 import { LEGACY_COST_HEADER } from "./legacy-cost.mjs";
@@ -479,7 +480,58 @@ export function checkPlanContinuation(
     );
   const fixedBefore = fixedInputs(judged);
   const fixedAfter = fixedInputs(current);
-  const relocation = same(fixedBefore, fixedAfter)
+  const writebackUpdates = [];
+  const authorizedAfter = fixedAfter.map((input) => {
+    if (input.name !== "vision:the-one-paragraph-story") return input;
+    const before = fixedBefore.find((row) => row.name === input.name);
+    if (same(before, input)) return input;
+    for (const amendment of amendments) {
+      const order = judged.orders.find(
+        (row) => row.workOrderId === amendment.workOrderId,
+      );
+      if (
+        !order ||
+        !matchesExecutionAmendment(
+          original.read(order.path),
+          read(order.path),
+          amendment,
+        )
+      )
+        continue;
+      for (const writeback of amendment.executionWritebacks ?? []) {
+        if (
+          writeback.path !== docRelative(root, "product", "00-vision.md") ||
+          writeback.section !== "The one-paragraph story" ||
+          writeback.sourceHash !== before?.hash ||
+          writeback.acceptedHash !== input.hash
+        )
+          continue;
+        const criterion = current.orders
+          .find((row) => row.workOrderId === amendment.workOrderId)
+          ?.criteria.find((row) => row.id === writeback.criterionId);
+        const reviewed = order.criteria.find(
+          (row) => row.id === writeback.criterionId,
+        );
+        requireSamePlan(
+          criterion &&
+            reviewed &&
+            sha256(reviewed.text) === writeback.criterionHash &&
+            sha256(criterion.text) === writeback.criterionHash,
+          "execution writeback requires its unchanged reviewed criterion",
+        );
+        writebackUpdates.push({
+          path: writeback.path,
+          section: writeback.section,
+          workOrderId: amendment.workOrderId,
+          decisionId: amendment.decisionId,
+          kind: "authorized-execution-writeback",
+        });
+        return before;
+      }
+    }
+    return input;
+  });
+  const relocation = same(fixedBefore, authorizedAfter)
     ? { updates: [] }
     : relocatedLinks(root, original, read, {
         workspace,
@@ -490,7 +542,7 @@ export function checkPlanContinuation(
     linkUpdates !== null &&
       same(
         fixedBefore,
-        fixedAfter.map((input, index) =>
+        authorizedAfter.map((input, index) =>
           input.name.startsWith("vision:") &&
           input.name === fixedBefore[index]?.name &&
           linkUpdates.length
@@ -500,17 +552,32 @@ export function checkPlanContinuation(
       ),
     "sequence, vision, roles or order inventory changed",
   );
-  if (judged.goalReview)
+  if (judged.goalReview) {
+    // The exact authorized story was already checked above. Normalize only
+    // that thesis when comparing evidence; new observations still need review.
+    const standard = writebackUpdates.length
+      ? {
+          ...current.standard,
+          theses: current.standard.theses.map((thesis) =>
+            thesis.id === "the-one-paragraph-story"
+              ? judged.standard.theses.find((row) => row.id === thesis.id)
+              : thesis,
+          ),
+        }
+      : current.standard;
     requireSamePlan(
       current.goalReview &&
-        [
-          "platformStandard",
-          "goalStandard",
-          "criticalPath",
-          "evidenceHash",
-        ].every((key) => same(judged.goalReview[key], current.goalReview[key])),
+        ["platformStandard", "goalStandard", "criticalPath"].every((key) =>
+          same(judged.goalReview[key], current.goalReview[key]),
+        ),
       "observed evidence or goal standard changed",
     );
+    requireSamePlan(
+      judged.goalReview.evidenceHash ===
+        goalEvidenceHash(standard, current.goalReview.observations),
+      "observed evidence or goal standard changed",
+    );
+  }
   const updates = adoptsCost
     ? [
         {
@@ -523,6 +590,7 @@ export function checkPlanContinuation(
       ]
     : [];
   updates.push(...linkUpdates);
+  updates.push(...writebackUpdates);
   if (judged.goalReview && !same(judged.costTable, current.costTable))
     updates.push({
       path: docRelative(root, "planning", "cost-table.json"),

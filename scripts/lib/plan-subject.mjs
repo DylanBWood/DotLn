@@ -601,33 +601,11 @@ function buildGoalSubject(root, revision, { workspace }) {
         text: JSON.stringify(row),
       })),
   ];
-  const evidenceValues = (value) =>
-    Array.isArray(value)
-      ? value.map(evidenceValues)
-      : value && typeof value === "object"
-        ? Object.fromEntries(
-            Object.entries(value)
-              .filter(
-                ([key]) =>
-                  !["observedAt", "collectedAt", "subjectRevision"].includes(
-                    key,
-                  ),
-              )
-              .map(([key, item]) => [key, evidenceValues(item)]),
-          )
-        : value;
   const goalReview = {
     platformStandard,
     goalStandard,
     criticalPath,
-    evidenceHash: hashParts([
-      subject.standard.theses,
-      subject.standard.exclusions,
-      observations.map((row) => ({
-        id: row.id,
-        value: evidenceValues(JSON.parse(row.text)),
-      })),
-    ]),
+    evidenceHash: goalEvidenceHash(subject.standard, observations),
     observations,
     costEvidenceStatus,
   };
@@ -653,6 +631,33 @@ function buildGoalSubject(root, revision, { workspace }) {
     ...(costs ? { costTable: costs } : {}),
     goalReview,
   };
+}
+
+// Observation timestamps describe collection, not a changed body of evidence.
+export function goalEvidenceHash(standard, observations) {
+  const evidenceValues = (value) =>
+    Array.isArray(value)
+      ? value.map(evidenceValues)
+      : value && typeof value === "object"
+        ? Object.fromEntries(
+            Object.entries(value)
+              .filter(
+                ([key]) =>
+                  !["observedAt", "collectedAt", "subjectRevision"].includes(
+                    key,
+                  ),
+              )
+              .map(([key, item]) => [key, evidenceValues(item)]),
+          )
+        : value;
+  return hashParts([
+    standard.theses,
+    standard.exclusions,
+    observations.map((row) => ({
+      id: row.id,
+      value: evidenceValues(JSON.parse(row.text)),
+    })),
+  ]);
 }
 
 export const planningPasses = (ledger) =>
