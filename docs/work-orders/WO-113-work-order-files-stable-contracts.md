@@ -1,5 +1,7 @@
 # WO-113 — Work-order files are stable contracts: state changes live in control events, receipts in evidence directories, judgment in verifications and the release decision in final reviews, checked forward from a cutoff and migrated for the open orders (version assigned at activation)
 
+**Umbrella record (2026-10-13):** superseded whole by WO-088, which carries this order's obligations under the operator's 2026-10-13 order-size direction ([the 2026-10-13 standard pass](../planning/standard-pass-2026-10-13.md), §12.3); not activatable. The text below is this order's last committed form, kept as the record of what WO-088 absorbed.
+
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
@@ -51,20 +53,10 @@ it until the fold lands. A recommendation, not a dependency token.
 <!-- dotln-dependencies:start -->
 [
   {
-    "workOrderId": "WO-043",
-    "relation": "hard",
-    "reason": "supersession and deferral become typed entries"
-  },
-  {
-    "workOrderId": "WO-026",
-    "relation": "satisfied-by-release",
-    "release": "v0.5.2",
-    "reason": "the index"
-  },
-  {
-    "workOrderId": "WO-167",
-    "relation": "hard",
-    "reason": "closed at v0.53.1; the fold this order's product 07 write-back followed"
+    "workOrderId": "WO-088",
+    "relation": "superseded",
+    "reason": "2026-10-13 planning merge: this order's obligations are carried by WO-088.",
+    "by": "WO-088"
   }
 ]
 <!-- dotln-dependencies:end -->

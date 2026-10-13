@@ -3,94 +3,94 @@
   "policy": "UTF-8 bytes excluding the one registered generated block, 06-roadmap.md's dotln-release-history markers (WO-086), whose rows docs-check compares with their recorded tags; any other marker pair grants no exemption. Ceilings are planning's alone (operator direction, 2026-10-07; the 2026-10-07 pass): every planning pass sets each document's ceiling to its measured non-exempt bytes plus one tenth, records that size as nonExemptBytesAtLanding and cites its planning document; an increase outside a pass requires a resolving planning-document decision in the entry. The check reports an overrun as an advisory the next pass reads once WO-196 lands; until then an entry may name an advisoryDecision as before. No order carries a byte bound and no review asks the operator to settle bytes.",
   "documents": {
     "00-vision.md": {
-      "nonExemptBytesAtLanding": 28041,
-      "ceiling": 30846,
-      "date": "2026-10-11",
-      "decision": "docs/planning/three-repository-route-2026-10-11.md#9-document-ceilings"
+      "nonExemptBytesAtLanding": 28275,
+      "ceiling": 31103,
+      "date": "2026-10-13",
+      "decision": "docs/planning/standard-pass-2026-10-13.md#11-document-ceilings"
     },
     "01-principles.md": {
       "nonExemptBytesAtLanding": 9462,
       "ceiling": 10409,
-      "date": "2026-10-11",
-      "decision": "docs/planning/three-repository-route-2026-10-11.md#9-document-ceilings"
+      "date": "2026-10-13",
+      "decision": "docs/planning/standard-pass-2026-10-13.md#11-document-ceilings"
     },
     "02-domain-model.md": {
       "nonExemptBytesAtLanding": 149450,
       "ceiling": 164395,
-      "date": "2026-10-11",
-      "decision": "docs/planning/three-repository-route-2026-10-11.md#9-document-ceilings"
+      "date": "2026-10-13",
+      "decision": "docs/planning/standard-pass-2026-10-13.md#11-document-ceilings"
     },
     "03-architecture.md": {
-      "nonExemptBytesAtLanding": 181762,
-      "ceiling": 199939,
-      "date": "2026-10-11",
-      "decision": "docs/planning/three-repository-route-2026-10-11.md#9-document-ceilings"
+      "nonExemptBytesAtLanding": 183459,
+      "ceiling": 201805,
+      "date": "2026-10-13",
+      "decision": "docs/planning/standard-pass-2026-10-13.md#11-document-ceilings"
     },
     "04-interfaces.md": {
       "nonExemptBytesAtLanding": 60516,
       "ceiling": 66568,
-      "date": "2026-10-11",
-      "decision": "docs/planning/three-repository-route-2026-10-11.md#9-document-ceilings"
+      "date": "2026-10-13",
+      "decision": "docs/planning/standard-pass-2026-10-13.md#11-document-ceilings"
     },
     "05-pattern-library.md": {
-      "nonExemptBytesAtLanding": 135436,
-      "ceiling": 148980,
-      "date": "2026-10-11",
-      "decision": "docs/planning/three-repository-route-2026-10-11.md#9-document-ceilings"
+      "nonExemptBytesAtLanding": 135426,
+      "ceiling": 148969,
+      "date": "2026-10-13",
+      "decision": "docs/planning/standard-pass-2026-10-13.md#11-document-ceilings"
     },
     "06-roadmap.md": {
-      "nonExemptBytesAtLanding": 41653,
-      "ceiling": 45819,
-      "date": "2026-10-11",
-      "decision": "docs/planning/three-repository-route-2026-10-11.md#9-document-ceilings"
+      "nonExemptBytesAtLanding": 41953,
+      "ceiling": 46149,
+      "date": "2026-10-13",
+      "decision": "docs/planning/standard-pass-2026-10-13.md#11-document-ceilings"
     },
     "07-execution-guide.md": {
-      "nonExemptBytesAtLanding": 186633,
-      "ceiling": 205297,
-      "date": "2026-10-11",
-      "decision": "docs/planning/three-repository-route-2026-10-11.md#9-document-ceilings"
+      "nonExemptBytesAtLanding": 193011,
+      "ceiling": 212313,
+      "date": "2026-10-13",
+      "decision": "docs/planning/standard-pass-2026-10-13.md#11-document-ceilings"
     },
     "08-publication-compiler.md": {
       "nonExemptBytesAtLanding": 24867,
       "ceiling": 27354,
-      "date": "2026-10-11",
-      "decision": "docs/planning/three-repository-route-2026-10-11.md#9-document-ceilings"
+      "date": "2026-10-13",
+      "decision": "docs/planning/standard-pass-2026-10-13.md#11-document-ceilings"
     },
     "09-audit-resilience-privacy.md": {
-      "nonExemptBytesAtLanding": 51569,
-      "ceiling": 56726,
-      "date": "2026-10-11",
-      "decision": "docs/planning/three-repository-route-2026-10-11.md#9-document-ceilings"
+      "nonExemptBytesAtLanding": 51832,
+      "ceiling": 57016,
+      "date": "2026-10-13",
+      "decision": "docs/planning/standard-pass-2026-10-13.md#11-document-ceilings"
     },
     "10-ir-compatibility.md": {
-      "nonExemptBytesAtLanding": 25665,
-      "ceiling": 28232,
-      "date": "2026-10-11",
-      "decision": "docs/planning/three-repository-route-2026-10-11.md#9-document-ceilings"
+      "nonExemptBytesAtLanding": 25787,
+      "ceiling": 28366,
+      "date": "2026-10-13",
+      "decision": "docs/planning/standard-pass-2026-10-13.md#11-document-ceilings"
     },
     "11-proteino.md": {
       "nonExemptBytesAtLanding": 2058,
       "ceiling": 2264,
-      "date": "2026-10-11",
-      "decision": "docs/planning/three-repository-route-2026-10-11.md#9-document-ceilings"
+      "date": "2026-10-13",
+      "decision": "docs/planning/standard-pass-2026-10-13.md#11-document-ceilings"
     },
     "11-protino.md": {
       "nonExemptBytesAtLanding": 30626,
       "ceiling": 33689,
-      "date": "2026-10-11",
-      "decision": "docs/planning/three-repository-route-2026-10-11.md#9-document-ceilings"
+      "date": "2026-10-13",
+      "decision": "docs/planning/standard-pass-2026-10-13.md#11-document-ceilings"
     },
     "12-workstream-application.md": {
-      "nonExemptBytesAtLanding": 20626,
-      "ceiling": 22689,
-      "date": "2026-10-11",
-      "decision": "docs/planning/three-repository-route-2026-10-11.md#9-document-ceilings"
+      "nonExemptBytesAtLanding": 23227,
+      "ceiling": 25550,
+      "date": "2026-10-13",
+      "decision": "docs/planning/standard-pass-2026-10-13.md#11-document-ceilings"
     },
     "13-uifa-roles.md": {
       "nonExemptBytesAtLanding": 27015,
       "ceiling": 29717,
-      "date": "2026-10-11",
-      "decision": "docs/planning/three-repository-route-2026-10-11.md#9-document-ceilings"
+      "date": "2026-10-13",
+      "decision": "docs/planning/standard-pass-2026-10-13.md#11-document-ceilings"
     }
   }
 }

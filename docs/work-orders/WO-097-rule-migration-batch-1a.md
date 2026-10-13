@@ -1,5 +1,7 @@
 # WO-097 — Rule migration batch 1a: six new units at rung one or two compile through the harness target into the Contributor build, each retiring its always-on sentence with the reverse mapping proven (version assigned at activation)
 
+**Umbrella record (2026-10-13):** superseded whole by WO-096, which carries this order's obligations under the operator's 2026-10-13 order-size direction ([the 2026-10-13 standard pass](../planning/standard-pass-2026-10-13.md), §12.3); not activatable. The text below is this order's last committed form, kept as the record of what WO-096 absorbed.
+
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
@@ -58,8 +60,9 @@ edits the same surfaces. A recommendation, not a dependency token.
 [
   {
     "workOrderId": "WO-096",
-    "relation": "hard",
-    "reason": "the ledger rows the batch selects from"
+    "relation": "superseded",
+    "reason": "2026-10-13 planning merge: this order's obligations are carried by WO-096.",
+    "by": "WO-096"
   }
 ]
 <!-- dotln-dependencies:end -->

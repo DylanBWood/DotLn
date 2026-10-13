@@ -36,12 +36,12 @@ The operator's work instance is this case [operator direction, 2026-10-11]: a
 separate, private fork of the starter on a constrained managed host where
 core is never installed. It takes the kit by a Git merge from the starter when
 its operator chooses, previewed first and reversible (WO-203, WO-207), with
-the operator's build taken or pinned per update (WO-209); its repository
+the operator's build taken or pinned per update (WO-207); its repository
 profiles may pin DotLn-Angular as an upstream reference (WO-073's convention)
 and nothing more, since that repository is not used at work; it reaches core
 only through generic capability requests (WO-193) and keeps its predecessor
-map (WO-194) private; and its own code, an enterprise-tracker source adapter
-among the first, lives at the instance extension point (WO-208), never in
+map (WO-193) private; and its own code, an enterprise-tracker source adapter
+among the first, lives at the instance extension point (WO-207), never in
 core.
 
 The operator selects repositories and the boundary of a proposed task. The
@@ -126,8 +126,10 @@ evidence and reports are core's instance files and never enter the kit: the
 kit is the product, not core's history. **DotLn-Enterprise-Starter is the
 kit**, the export of core: public, under core's license files, never exported
 with `--license none`, forkable by anyone, holding no orders of its own, and
-refreshed by `launchpad export --update`, which the operator runs by hand
-after a release close and WO-078's receipts record. **The operator's personal
+refreshed by core's release close, which runs `launchpad export --update`
+and pushes it (WO-215; until then it runs on request, and WO-078's receipts
+record each run); an instance opts into a starter update through a planning
+pass that cuts the upgrade order (WO-207). **The operator's personal
 instance** is a public fork of the starter on the operator's own account,
 under the same license posture and the same clean-room floor as core, on the
 operator's own machine where core is installed; it runs exactly what core
@@ -137,13 +139,18 @@ resident with intents where core uses them; intents and enterprise-tracker
 items are additional entry points, never the only one), composes its own
 overlay over the kit's build, registers DotLn-Angular as a target with an
 Angular UI class and a repository profile, and holds `WS-001`, the Angular
-orders, their evidence, verification and final-review reports and its own
-planning documents; it takes the starter by a Git merge the operator chooses,
+orders' control state and raw evidence and its own planning documents, while
+DotLn-Angular holds its own product documents, its planning passes and each
+Angular order's file with its decisions, verification and final-review
+reports, so every fork that works on it shares one history, and the instance
+links each record where it lives (operator direction, 2026-10-13); it takes
+the starter by a Git merge the operator chooses,
 previewed first with `preview --from <ref>`, which distinguishes unchanged kit
 paths and reports incompatible manual actions individually ([WO-203 fixture
 evidence](../evidence/WO-203/handoff.md)), followed by a re-emit of its own build. **DotLn-Angular**
-is public under the same posture, receives only conventional branches and
-pull requests, and has three purposes: the reference for the architecture the
+is public under the same posture, receives conventional branches and pull
+requests (each order's carrying its records in a records-only commit after
+the reviewed change) and never a machinery file, and has three purposes: the reference for the architecture the
 operator wants Angular applications to follow (Angular, Nx, NgRx Signal Store
 with events, Transloco, as product 03 records), the demonstration that an
 instance builds another repository through the workflow, and a console for
@@ -164,7 +171,30 @@ vision per session, and the instance's hook logs report which compiled units
 fired there. WO-083 records one such run as its receipt. Other organizations
 fork the same starter as their own instances; their workstreams,
 repositories and evidence stay in their forks, and kit updates reach them as
-reviewed upstream merges followed by a re-emit of their own build.
+reviewed upstream merges followed by a re-emit of their own build. The
+operator's instance runs DotLn-Angular as its first workstream: the operator
+reads what it produces, gives product and architecture feedback, customizes
+the instance's own features and supports, and uses the DotLn UI there to
+understand DotLn. DotLn WoW Forever, a public repository the operator
+created empty on 2026-10-13, becomes a later target, and holes found along the way return to core through the request
+intake (WO-193). A work instance forked from the starter later starts from
+the delta between what the starter does and what v1 does. It keeps that
+delta in its private predecessor map, and returns only generic,
+clean-room-screened requests to core or the starter. An Angular order pays
+DotLn-Angular's own tests plus the instance's document gate, never core's
+product gate (WO-210). WO-207 proposes, for the operator's review, that the
+instance's gate run the carried kit suites once per kit update and its own
+declared suites for its own additions.
+The operator means to work only from instances, the personal one at home
+and a work one at work, so core itself becomes a registered target of the
+personal instance once the target route has carried an Angular order to
+release close; until then core is also worked directly. The operator makes
+no commits of their own in any repository, gives technical and product
+guidance, types the dispatch phrases and merges pull requests; every change
+comes through the workflow. The measure is
+progress in all five repositories at once, without babysitting, with
+feedback and bugs routed to where they belong and acted on (operator
+direction, 2026-10-13).
 
 A workstream owns an outcome spanning repositories and time. A repository owns
 its local code history, branch/worktree, tests, and delivery boundaries. Each

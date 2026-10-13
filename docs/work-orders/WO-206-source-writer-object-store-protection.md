@@ -1,5 +1,7 @@
 # WO-206 — Source-writer object-store protection: a writer cannot change or delete existing shared repository objects because it writes into a private object store the host imports from after admission, proven against the retained counterexample with crash recovery and concurrent maintenance (version assigned at activation)
 
+**Umbrella record (2026-10-13):** superseded whole by WO-204, which carries this order's obligations under the operator's 2026-10-13 order-size direction ([the 2026-10-13 standard pass](../planning/standard-pass-2026-10-13.md), §12.3); not activatable. The text below is this order's last committed form, kept as the record of what WO-204 absorbed.
+
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor max; verifier xhigh; reviewer xhigh.
@@ -61,9 +63,10 @@ recommendation, not a dependency token.
 <!-- dotln-dependencies:start -->
 [
   {
-    "workOrderId": "WO-112",
-    "relation": "satisfied-by-close",
-    "reason": "the source writer, worktree and host whose object authority this order changes"
+    "workOrderId": "WO-204",
+    "relation": "superseded",
+    "reason": "2026-10-13 planning merge: this order's obligations are carried by WO-204.",
+    "by": "WO-204"
   }
 ]
 <!-- dotln-dependencies:end -->

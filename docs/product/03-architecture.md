@@ -144,8 +144,10 @@ The fork is of the starter, not of DotLn core. This is one candidate route to
 test the [workstream application](12-workstream-application.md#one-workstream-across-repositories),
 not a canonical topology or an implemented multi-repo coordinator. It simulates an organization user's needs with personal/synthetic material.
 Packaging and the update path exist (WO-074 to WO-078); the license posture
-is decided below; an update shows its plan before writing (WO-203); rollback,
-channel selection and the first task remain queued (WO-207, WO-209, WO-083).
+is decided below; an update shows its plan before writing (WO-203);
+publication of an instance's own orders and of target orders worked in
+sessions, rollback, channel selection and the first task remain queued
+(WO-210, WO-207, WO-083).
 
 The 2026-09-06 planning pass, as redirected the same day, selects that
 route as the first physical slice of this boundary under ADR-0006 Decision
@@ -161,11 +163,18 @@ configuration root, registered target repositories whose authority profile
 is an envelope and whose class is a link group, a launchpad export with
 pinned provenance carrying that build, worktree-local harness emit for
 targets, Beacon emission that no longer depends on the skeleton package) and
-WO-034 runs the pilot. Core stays self-hosted, keeps the kernel, compiler,
-and skeleton source, and runs on its own generated configuration; the
-launchpad instance holds target orders and evidence and composes its own
-build overlay over the kit's; targets receive only conventional branches and
-pull requests and carry the emitted bundle only in ignored worktree state.
+WO-034 runs the pilot. Core stays self-hosted, keeps every package's
+source, and runs on its own generated configuration; the
+launchpad instance holds target orders' control state, cross-repository
+workstreams and raw evidence and composes its own build overlay over the
+kit's; a target receives conventional branches and pull requests, keeps its
+own product documents, planning passes and order records (each order's file,
+decisions, verification and final-review reports) in a documentation root
+that every fork working on it reads and extends (a fork holds its own data
+or a link to where each record's source of truth lives, never neither), and
+carries the emitted
+bundle, like all machinery, only in ignored worktree state (operator
+direction, 2026-10-13; WO-210).
 The starter is also intended for other organizations to fork as their own
 launchpad instances. Inside the starter, kit files (listed in a manifest
 with hashes, including the harness bundle and the runtime build) and
@@ -181,14 +190,17 @@ WO-075). Into an empty directory it writes, from the HEAD commit of the
 checkout that holds the running scripts, the control-plane scripts and
 suites, the build-free `packages/beacons` workspace and the build-free
 package modules the scripts import as Git blobs at that commit; the compiled
-runtime of kernel, compiler and skeleton under `packages/<name>/dist/src/`,
+runtime of the packages `RUNTIME_PACKAGES` in `scripts/launchpad.mjs`
+names (the hook closure of kernel, compiler and skeleton, and the operator
+console; the browser-evidence adapter stays out) under `packages/<name>/dist/src/`,
 built at export time after comparing tracked input bytes with the commit's
 blobs and walking package inputs regardless of Git flags or ignore rules,
 then hashed in the manifest, so the kit's scripts, the `resume` and
 `harness` commands and the generated hooks import it at the paths core's do,
 with no package source and no npm publication; a `package.json` with core's
 script names and exactly pinned development dependencies, a lockfile pruned to
-them and the four workspaces, the execution guide, the publication compiler
+them and the workspaces `KIT_WORKSPACES` names (the Beacon workspace and
+each runtime package), the execution guide, the publication compiler
 and the operator playbook whole, the implementation-overlay template, the kit
 templates, `LICENSE`, `LICENSE-docs` and `NOTICE` (or `LICENSE-PENDING.md`
 under `--license none`), `UPSTREAM.md` and `KIT-MANIFEST.json` (schema 1:
@@ -227,18 +239,20 @@ is a private fork of the starter on a constrained managed host where core is
 never installed, and it carries the kit's license files unchanged. Core's own
 control records, orders, evidence and reports are core's instance files and
 never enter the kit: the kit is the product, not core's history. An instance
-runs what core runs; the kit's gates and planning commands inside an export
-are the subject of WO-201 and WO-202. An instance's own executable code
+runs what core runs, its gates and planning commands included
+([WO-201 evidence](../evidence/WO-201/gate-in-kit.json);
+[WO-202 fixture evidence](../evidence/WO-202/commands-final.json)). An
+instance's own executable code
 (source adapters, effect adapters, projections) lives at a configured,
 manifest-excluded extension point the kit's machinery loads through the
 ports and an update never touches, under the review burden §Package
-ecosystem names (WO-208). An update is previewed before it writes, from core with `export --update <dir>
+ecosystem names (WO-207). An update is previewed before it writes, from core with `export --update <dir>
 --preview` or inside an instance with `preview --from <ref>` ([WO-203
 fixture evidence](../evidence/WO-203/handoff.md)), with revision previews
 distinguishing unchanged kit paths and reporting incompatible manual actions
 individually; it can be rolled back to the prior kit state (WO-207), and takes a channel:
 machinery with the build pinned at the prior compiled definitions, both
-together, or the build alone (WO-209); editing a kit file inside an instance
+together, or the build alone (WO-207); editing a kit file inside an instance
 is choosing the true-fork path, which the client README states.
 
 Playwright and Context7 are optional environment adapters. The operator reports

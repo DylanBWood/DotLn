@@ -1,5 +1,7 @@
 # WO-209 — The build as a selectable update channel: an instance takes machinery with its build pinned at the prior compiled definitions, both together, or the build alone, through a pinned build the emit composes from, with the compiler contract guarded and the overlay composing over whichever build is pinned (version assigned at activation)
 
+**Umbrella record (2026-10-13):** superseded whole by WO-207, which carries this order's obligations under the operator's 2026-10-13 order-size direction ([the 2026-10-13 standard pass](../planning/standard-pass-2026-10-13.md), §12.3); not activatable. The text below is this order's last committed form, kept as the record of what WO-207 absorbed.
+
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor max; verifier xhigh; reviewer xhigh.
@@ -58,19 +60,10 @@ edits `config.mjs` before it. A recommendation, not a dependency token.
 <!-- dotln-dependencies:start -->
 [
   {
-    "workOrderId": "WO-076",
-    "relation": "hard",
-    "reason": "the overlay composes over the kit build, which this order makes the pinned build; both change harness emit"
-  },
-  {
-    "workOrderId": "WO-203",
-    "relation": "hard",
-    "reason": "the update's planning and applying halves the channel partitions"
-  },
-  {
-    "workOrderId": "WO-077",
-    "relation": "satisfied-by-close",
-    "reason": "the update the channel selects within"
+    "workOrderId": "WO-207",
+    "relation": "superseded",
+    "reason": "2026-10-13 planning merge: this order's obligations are carried by WO-207.",
+    "by": "WO-207"
   }
 ]
 <!-- dotln-dependencies:end -->

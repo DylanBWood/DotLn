@@ -18,86 +18,86 @@ worktrees, the delivery order first and a machinery or evidence order
 second, with disjoint primary surfaces and no hard edge between them; one
 order at a time passes final review and release close. A single entry
 between blank lines runs alone. The entries after the last pair run one at
-a time.
+a time. Parallel orders stay the aim where they pay, never serial order as a
+standing rule (operator direction, 2026-10-13). For the next thirty core
+orders, though, the operator runs core one order at a time and parallelizes
+across repositories instead: the fork, DotLn-Angular and DotLn WoW Forever
+(operator direction, 2026-10-13). This list is therefore one serial group.
+Reopen pairs when the thirtieth of those orders closes, or on the operator's
+word ([the 2026-10-13 standard pass](standard-pass-2026-10-13.md), §12.2).
 
 Every open order has a place in this list
 ([2026-10-02 pass](standard-pass-2026-10-02.md)). The
-[2026-10-11 route pass](three-repository-route-2026-10-11.md) retires
-WO-078 and WO-191 (closed, v0.74.3 and v0.74.2) and cuts the delivery lane
-as the three-repository route the operator directed, in dependency order.
-WO-072 runs alone because every machinery order shares `resume.mjs`,
-`release.mjs` or `worktree.mjs` with it. WO-200 pairs with WO-076: it
-depends on no queued order, and WO-076 does not edit
-`scripts/test-runner.mjs`, which WO-072 and WO-201 do. WO-201 (the export
-runs core's suites) follows that pair alone, WO-202 (the planning
-machinery runs in an instance) follows it because the document gate inside
-an export needs WO-201's kit mode, and WO-203 (update preview) follows
-WO-202 so that the preview exists before the first core change the
-operator may take into a real instance. **The instance becomes usable for
-the operator's own planning and orders after WO-203: WO-072 (target
-worktrees), WO-076 (the overlay), WO-201 (the gates in a kit), WO-202 (the
-planning pass in a kit) and WO-203 (the preview)** are the point at which
-the operator exports, pushes, forks and opens the instance's first planning
-pass; the pass found nothing else that must come first, and WO-203 is added
-to the operator's reading only because WO-118's release close is the first
-update the instance could take (operator direction, 2026-10-11). WO-118
-runs alone after them. WO-080 pairs with WO-204 and WO-082 with WO-205 (the
-two bounded WO-112 source-writer repairs; disjoint files, no edge). WO-206
-(shared-object protection) runs alone, then WO-192 (the router, which now
-drives target orders) directly before WO-083, which returns to its own
-recommended placement after WO-082: the reason the 2026-10-07 pass gave
-for placing it last was unsupported by that day's capture and is struck
-(operator correction 1, 2026-10-11). The tail runs one at a time: WO-207
-(rollback), WO-208 (the instance extension point), WO-209 (the build
-channel), WO-081, WO-193, WO-194, then the remaining orders in their former
-order. WO-088 and WO-089 stay near the end under their 2026-09-19 holds;
-WO-088's gap was absent for a fourth pass on 2026-10-10 and it stays for
-the operator to withdraw. WO-014 is last until a pass finds approval
-friction recorded as the constraint. The period below `v1.0.0` is early
-access (operator direction, 2026-09-30). The order of everything the
-operator did not place is the planner's.
+[2026-10-11 route pass](three-repository-route-2026-10-11.md) cut the
+delivery lane as the three-repository route the operator directed, in
+dependency order, and the
+[2026-10-13 standard pass](standard-pass-2026-10-13.md) retires the seven
+orders of that route that have closed: WO-072 (v0.75.0), WO-076 (v0.76.0),
+WO-200 (v0.76.1), WO-201 (v0.77.0), WO-202 (v0.78.0), WO-203 (v0.79.0) and
+WO-118 (v0.80.0, the critical path's product exit).
+
+**One focus: the starter, the operator's fork of it and DotLn-Angular,
+with a DotLn UI** (operator direction, 2026-10-13). The win condition is
+progress in core, the starter, the fork, DotLn-Angular and DotLn WoW Forever
+at the same time, without babysitting, with feedback and bugs routed to
+where they belong and acted on. The fork does its foundational Angular work,
+the UI included, through its own planning passes and lifecycle as soon as it
+can run and publish them (operator correction 3, 2026-10-11). WO-210 is the
+point at which it can. WO-083's run then measures one bounded Angular order,
+not necessarily the repository's first change.
+
+The order, serial:
+- WO-215: core's release close pushes each release into the starter, so
+  every later release reaches the operator's fork's upstream on its own. The
+  starter holds no export yet, so WO-215's own release close makes its first
+  one. The fork is created from it, and opts into later updates through its
+  own planning pass (WO-207).
+- WO-210: the instance's own orders, including the Angular target order,
+  publish and reach release close with target-native text. The target's own
+  tests gate its orders, and the target keeps its own product documents,
+  planning passes and order records. It absorbed WO-211 and WO-214.
+- WO-213: private paths stay out of the public fork's committed records.
+- WO-080: the workstream document the run holds, the board's Workstreams
+  section and the synthetic pilot. It absorbed WO-081 and WO-082.
+- WO-204: the source writer is made safe before WO-083. It absorbed WO-205,
+  WO-206 and WO-212.
+- WO-192: the router, before WO-083, so the measured run is driven the way
+  the operator will drive orders (operator item k, 2026-10-11).
+- WO-083: the real run.
+- WO-207: rollback, the extension point for the fork's own features and
+  supports, and the build channel (the 2026-10-11 order). It absorbed WO-208
+  and WO-209.
+- WO-193: the fork's requests reach core's intake, carrying the holes and
+  bugs the operator finds. It also builds the private predecessor map a work
+  fork starts from, the delta between the starter and v1. It absorbed
+  WO-194.
+- WO-183: an intent enters the resident's loop, with less babysitting.
+- WO-088: planning documents as checked contracts, with pass registration
+  moved out of the idea ledger. It absorbed WO-089 and WO-113.
+- Then WO-091 (the full 5S set; it absorbed WO-092 to WO-095), WO-096 (rule
+  migration; it absorbed WO-097 and WO-098) and WO-014.
+
+Each merge joins orders on one subsystem that would have run one after
+another, so their order cycles and full gate runs are paid once
+([the 2026-10-13 standard pass](standard-pass-2026-10-13.md), §12.3).
+
+The period below `v1.0.0` is early access (operator direction, 2026-09-30).
+The order of everything the operator did not place is the planner's.
 
 <!-- dotln-work-order-sequence:start -->
-- WO-072 — Target worktree lifecycle
-
-- WO-076 — Instance build overlay
-- WO-200 — Pinned collector bytes are watched where they change
-
-- WO-201 — The export runs core's suites
-
-- WO-202 — The planning machinery runs in an instance
-
-- WO-203 — Update preview
-
-- WO-118 — The resident-owned loop from a starter instance
-
-- WO-080 — Workstream document and index grouping
-- WO-204 — Source-writer cleanup revocation survives host failures
-
-- WO-082 — Synthetic pilot
-- WO-205 — Writer-resistant Git interpretation
-
-- WO-206 — Source-writer object-store protection
+- WO-215 — Core's release close refreshes DotLn-Enterprise-Starter
+- WO-210 — An instance's own orders publish and reach release close
+- WO-213 — Private paths stay out of every committed record
+- WO-080 — Workstreams: document, index, board section and synthetic pilot
+- WO-204 — The source writer cannot damage the operator's repository
 - WO-192 — A router drives an order through its lifecycle
 - WO-083 — The real run from the operator's instance
-- WO-207 — Update rollback
-- WO-208 — Instance extension point
-- WO-209 — The build as a selectable update channel
-- WO-081 — Board Workstreams section
-- WO-193 — Capability requests from an instance
-- WO-194 — Private predecessor map
+- WO-207 — An instance's kit updates: rollback, extension point and build channel
+- WO-193 — An instance's requests to core and its predecessor map
 - WO-183 — Intent declaration and the stranger test
-- WO-113 — Work-order files are stable contracts
-- WO-096 — Migration ledger
-- WO-097 — Rule migration batch 1a
-- WO-098 — Rule migration batch 1b
-- WO-091 — Multi-active link groups
-- WO-092 — The sets graph extension
-- WO-093 — The 5S mechanics as data
-- WO-094 — Set bonuses lowered
-- WO-095 — Full-set scenario and set tooltip render
-- WO-089 — Capability table fold
-- WO-088 — One source for the phrase table
+- WO-088 — Planning documents as checked contracts
+- WO-091 — The full 5S set on the Repo Gardener
+- WO-096 — Feedback rule migration
 - WO-014 — Approval-burden baseline
 
 <!-- dotln-work-order-sequence:end -->

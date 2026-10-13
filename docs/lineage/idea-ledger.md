@@ -40,6 +40,119 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-13 — Ideation: the October picture, the gate and the ledger (operator messages during the standard pass)
+
+Source: ten operator messages sent during the 2026-10-13 standard planning
+pass, captured verbatim in ignored intake
+(`docs/intake/notes/planning-standard-pass-2026-10-13.md`; the planning
+document §1 records its SHA-256). Planner synthesis. The clean-room screen
+found no stop condition: v1 is named only generically, and nothing from the
+operator's employer is recorded. Write-backs: product 07 (order size,
+preflight and the idea ledger) and product 12 (the October picture). The
+record is [the planning document](../planning/standard-pass-2026-10-13.md),
+§12.
+
+- **The October picture: the starter, the operator's fork and DotLn-Angular move together** `adopted`
+  - Core keeps taking features, fixes and debt work, some of it for the
+    starter.
+  - The operator's fork runs DotLn-Angular as its first workstream. The
+    operator reads what it produces, gives product and architecture
+    feedback, customizes the fork's own features and supports, and uses the
+    DotLn UI to understand DotLn.
+  - Holes and bugs found along the way go back to core through the request
+    intake.
+- **A DotLn UI soon, from the fork's own Angular orders** `adopted`
+  - The fork builds the UI in DotLn-Angular through its own planning and
+    lifecycle as soon as it can publish target orders (WO-210). It need not
+    wait for WO-083, whose real run measures one bounded order and need not
+    be the first (correction 3 of 2026-10-11).
+- **DotLn WoW Forever, a later target** `candidate`
+  - A repository for game settings, auction-house plans and custom add-ons.
+    Its orders come from the operator's fork once the Angular route works.
+  - The operator created it public and empty during this pass
+    (`DylanBWood/DotLn-WoW-Forever`). The fork registers it as a target when
+    its first order is cut.
+- **A work instance starts from the starter-versus-v1 delta** `adopted`
+  - Later, a work instance forked from the starter first maps what the
+    starter does against what v1 does, which the operator called extremely
+    important.
+  - Generic parts return to core or the starter as clean-room-screened
+    requests. The rest stays the work instance's own.
+- **A repository keeps its own DotLn knowledge** `adopted`
+  - DotLn's machinery stays out of target repositories. Their product
+    documents, planning passes, and order files with their decisions,
+    verification and final-review reports live in the repository.
+  - Whoever works on a repository, from a shared work fork or their own
+    fork, reads and extends one history.
+  - The fork is never ignorant of a sibling: it holds its own data, or a link
+    to where the data and its source of truth live in that repository.
+  - Raw evidence stays in the fork.
+  - Settled before the real run: an order's records travel in the same pull
+    request as its change, in a records-only commit.
+- **Live in the fork; core becomes one more target** `adopted`
+  - The operator works only from a starter fork: the personal one at home, a
+    work one at work.
+  - Core becomes a registered target of the personal fork, its documents
+    staying in its own `docs/`. A work fork never targets core.
+  - The planner's sequencing: prove the target route on DotLn-Angular first,
+    then move core's own development onto the fork.
+- **Angular work pays its own tests** `adopted`
+  - Unit, integration and possibly end-to-end (Playwright) tests in
+    DotLn-Angular, never DotLn's full gate.
+- **The fork's test boundary** `open`
+  - Which of the fork's checks must match core, and which cover only its own
+    additions, is still open.
+  - The planner reads it as two tiers, awaiting the operator: the kit suites
+    run once per kit update, and the fork's own declared suites cover its
+    additions.
+- **Order size follows the gate, not a fixed cut** `adopted`
+  - The 2026-09-08 one-seam cut was a correction for its time.
+  - With full gate runs as the bottleneck, larger orders help when executors
+    run targeted preflight checks instead of rerunning the gate.
+- **No commits of the operator's own in any repository** `adopted`
+  - From now on the operator gives technical and product guidance and makes
+    no commits of their own, in DotLn-Angular or anywhere else.
+  - Every change comes through the workflow. A step once left to the
+    operator's hands is taken by a role on the operator's word.
+  - The operator still types the dispatch phrases and, for now, merges every
+    pull request. Automatic merging may come later.
+- **Releases reach the starter on their own; the fork opts in** `adopted`
+  - Core's release close pushes each release into DotLn-Enterprise-Starter.
+  - The operator's fork takes a starter update only through a dedicated
+    planning pass, or part of one, which cuts the upgrade order.
+- **The win condition: five repositories at once** `adopted`
+  - Progress in core, the starter, the operator's fork, DotLn-Angular and
+    DotLn WoW Forever at the same time.
+  - That means no babysitting, work continuing in several repositories at
+    once, and feedback and bugs routed to where they belong and acted on.
+- **Parallel orders where they pay** `adopted`
+  - Serial order is never a standing rule.
+  - For the next thirty core orders the operator keeps core serial and
+    parallelizes across repositories instead.
+- **More of the coding budget on code** `adopted`
+  - Spend more of each activation on code, remembering that activating a
+    resource is not utilizing it.
+- **The idea ledger holds the operator's ideas** `adopted`
+  - Planning passes and work orders keep their records elsewhere. The
+    information is fine; only its location is wrong.
+- **Most early ideas are still unbuilt** `open`
+  - This is the operator's estimate for the first three weeks' ideas. The
+    ledger records adoption, not implementation.
+  - A sample of 41 early entries, judged against code, evidence and open
+    orders during this pass: 5 implemented whole, 18 partly, 3 queued, 15
+    with no open plan. The population share is unknown.
+
+## 2026-10-13 — Planning pass: registration only; the record is the planning document
+
+This heading only registers the pass: the plan tooling finds planning passes
+by their dated ledger headings. Its capture is
+`docs/intake/notes/planning-standard-pass-2026-10-13.md` (ignored; the planning
+document §1 records its SHA-256). The idea ledger holds the operator's own ideas
+(operator direction, 2026-10-13); this pass's synthesis, decisions and sources
+are in [the planning document](../planning/standard-pass-2026-10-13.md), and
+WO-088 moves pass registration and the earlier planning-pass sections out of
+the ledger.
+
 ## 2026-10-11 — Ideation: the sibling and instance picture (the three-repository route)
 
 Source: the `ideation:` paragraph of the operator's three-repository route
