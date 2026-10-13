@@ -322,21 +322,40 @@ here and the seeds it reads.
 
 ## Taking upstream updates
 
-From a clean DotLn core checkout at the commit you want to take, with its
-pinned dependencies installed, run:
+Preview before every update. From a clean DotLn core checkout at the commit
+you want to take, with its pinned dependencies installed, run:
 
 ```sh
+node scripts/launchpad.mjs export --update /absolute/path/to/starter --preview
 node scripts/launchpad.mjs export --update /absolute/path/to/starter
 ```
 
-The destination must already contain a valid `KIT-MANIFEST.json`. Update
-checks every prior kit file before writing: missing, unreadable or nonregular
-files refuse the operation by path. It replaces files that still match their
-prior hashes, adds new kit files and removes dropped files only when unchanged.
-Locally edited files are listed as refused and keep their prior manifest hashes,
-including dropped files, so a repeat update refuses them again. A new kit path
-occupied by an instance file is also refused and stays outside the manifest.
-Resolve these files by hand and review the update before committing it.
+The preview and update share one plan. Each kit path is listed as `replace`,
+`add`, `remove`, or `refused`. A refusal names the local edit or instance-owned
+collision and the prior manifest hash retained (none for a collision).
+`replace` includes files whose bytes already match. The preview also names
+the incoming core commit and tag, the declared runtime build snapshot before
+and after, and the sibling receipt path it would write, or why no receipt
+applies. A declared build hash identifies the harness snapshot; it does not
+verify a locally edited runtime. An unreadable local snapshot is `unknown`.
+The receipt filename is reserved only by the actual update, so its timestamp
+can differ from an earlier preview.
+
+A preview writes nothing to the destination, its pending manifest, core's
+sibling receipts or core's sibling registry. It is not a receipt and does not
+advance the registry. The from-core form still builds core's pinned runtime
+to compute the incoming kit. Review the plan before running the update; run
+the preview again if either input changed.
+
+The destination must already contain a valid `KIT-MANIFEST.json`. Missing,
+unreadable or nonregular still-carried kit files refuse the operation by
+path; an absent dropped file can stay absent. Update replaces files that
+still match their prior hashes, adds new kit files and removes dropped files
+only when unchanged. Locally edited files are refused and keep their prior
+manifest hashes, including dropped files, so a repeat update refuses them
+again. A new kit path occupied by an instance file is also refused and stays
+outside the manifest. Resolve these files by hand and review the update
+before committing it.
 
 **Editing a kit file is choosing the true-fork path.** While its bytes differ
 from both its prior manifest hash and the incoming kit, every update lists
@@ -345,16 +364,50 @@ change into it. If your bytes already equal the incoming kit, the update keeps
 them and records the incoming hash. `node scripts/launchpad.mjs verify`
 reports other kit files as differing from the manifest while the gates run
 on your bytes; a changed file under `packages/<name>/dist/` instead refuses
-verification by path. Update preview is pending upstream WO-203; the current
-update reports its refused files when run. To return, restore the file to the
-manifest's bytes before the next update, or keep the fork and take nothing
-more for that file. Instance files are yours and are outside the kit-file
-refusal list; explicitly opted-in instance actions have their own checks below.
+verification by path. To return, restore the file to the manifest's bytes
+before the next update, or keep the fork and take nothing more for that file.
+Instance files are yours and are outside the kit-file refusal list;
+explicitly opted-in instance actions have their own checks below.
 
-The manifest records the new source commit; refused files can still come from
-an older revision. `UPSTREAM.md` takes the new provenance when it is unmodified.
-The export's original license posture is retained. The command prints the
-kit's dated instance actions and the instruction to run, inside the starter:
+Inside an instance, fetch the starter remote and preview the revision you
+intend to merge (this example uses a remote named `upstream`):
+
+```sh
+git fetch upstream
+node scripts/launchpad.mjs preview --from upstream/main
+git merge upstream/main
+node scripts/harness.mjs emit
+```
+
+This preview reads the incoming kit manifest, actions and harness snapshot
+metadata from the selected Git revision; it neither builds nor merges. It
+shows the same plan shape against this instance's current files. `replace`,
+`add` and `remove` identify byte changes against the incoming manifest;
+`unchanged` identifies paths already matching it, including an already-absent
+removal. These paths are counted separately, so an identical revision reports
+zero replacements, additions and removals. Locally modified kit paths and
+occupied new kit paths are flagged for review. A locally modified refusal
+whose incoming manifest hash equals its prior hash says `unchanged upstream;
+no merge conflict expected`. These are conservative manifest comparisons,
+not a prediction of Git's exact merge conflicts: Git can merge some edits,
+and a starter's own edits can differ from its retained manifest hashes.
+Files outside the manifests are outside the preview, including instance
+files a Git merge might change.
+Declared instance actions are assessed as manual work after the merge;
+`apply` on an action-plan row is hypothetical and performs nothing. An action
+that cannot fit this instance is listed as `cannot apply` with its reason;
+the kit rows and every other declared action still print. A failed hypothetical
+action does not alter the assessment of later actions. Core previews with
+`--apply` and actual updates instead refuse on an incompatible action before
+any destination write. Neither
+a merge nor this preview automatically applies instance actions or writes a
+core sibling receipt. A missing or malformed current/incoming manifest
+refuses the preview.
+
+The manifest records the new source commit; refused files can still come
+from an older revision. `UPSTREAM.md` takes the new provenance when it is
+unmodified. The export's original license posture is retained. After a
+from-core update, also run inside its destination:
 
 ```sh
 node scripts/harness.mjs emit
@@ -373,7 +426,10 @@ actions for you to carry out. To apply the kit's declared mechanical actions,
 set `"kit": { "applyInstanceActions": true }` in the instance's
 `dotln.config.json` (schema `"version": 1`) and pass `--apply` to the update
 command. Both are required. With either absent, no instance action runs;
-`--apply` without the configuration opt-in refuses before writing.
+`--apply` without the configuration opt-in refuses before writing. Add
+`--preview` to that same command first: it lists which actions would apply
+or preserve an existing value, with all writes disabled. Without `--apply`,
+the core preview lists every action as preserved/no opt-in.
 
 `scripts/kit/KIT-ACTIONS.json` is manifest-listed, schema 1, initially with an
 empty `actions` array. Every action has a distinct `id`, a `date` in

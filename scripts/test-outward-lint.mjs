@@ -297,6 +297,7 @@ test("copied CLI runs with relocated documents and no default document tree", (t
     "outward-lint.mjs",
     "lib/outward-lint.mjs",
     "lib/config.mjs",
+    "lib/validation.mjs",
     "lib/paths.mjs",
     "lib/git.mjs",
     "lib/terms.mjs",

@@ -180,6 +180,7 @@ export const machinerySources = {
     "scripts/lib/evidence-preparation.mjs",
     "scripts/lib/gate-evidence.mjs",
     "scripts/lib/terms.mjs",
+    "scripts/lib/validation.mjs",
     "scripts/release.mjs",
     "scripts/test-fixture-temporary.mjs",
     "packages/skeleton/src/presence-heartbeat.ts",

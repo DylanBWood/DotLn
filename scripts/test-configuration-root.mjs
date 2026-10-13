@@ -752,7 +752,12 @@ await test("configuration root", async (t) => {
       const launchpad = join(root, "launchpad");
       try {
         mkdirSync(join(tool, "scripts/lib"), { recursive: true });
-        for (const name of ["helpers.mjs", "paths.mjs", "git.mjs"])
+        for (const name of [
+          "helpers.mjs",
+          "paths.mjs",
+          "git.mjs",
+          "validation.mjs",
+        ])
           cpSync(
             join(sourceRoot, "scripts/lib", name),
             join(tool, "scripts/lib", name),

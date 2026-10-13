@@ -10,6 +10,7 @@
 // written. Tag observations are captured beside the page and validated
 // against Git before use, so a later tag is newer evidence while an invented
 // version in either generated file refuses.
+import { firstDifferingLine } from "./lib/validation.mjs";
 import { findLaunchpad } from "./lib/config.mjs";
 import { readControl } from "./lib/control-store.mjs";
 import { describeTag, runGit } from "./lib/git.mjs";
@@ -284,13 +285,8 @@ export const checkRegistry = ({ path, expected, actual, receipts }) => {
       );
     }
   }
-  const beforeLines = actual.split("\n");
-  const afterLines = expected.split("\n");
-  const line = afterLines.findIndex(
-    (value, index) => value !== beforeLines[index],
-  );
   throw new Error(
-    `${path} is stale at line ${line < 0 ? afterLines.length + 1 : line + 1}; run ${COMMAND}`,
+    `${path} is stale at line ${firstDifferingLine(expected, actual)}; run ${COMMAND}`,
   );
 };
 

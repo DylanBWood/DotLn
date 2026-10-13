@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { firstDifferingLine } from "./lib/validation.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import {
   defaultDocRelative,
@@ -775,11 +776,8 @@ export const readTagSnapshot = (
 
 export const checkIndex = (expected, actual, displayPath = indexPath) => {
   if (expected === actual) return;
-  const before = actual?.split("\n") ?? [];
-  const after = expected.split("\n");
-  const line = after.findIndex((value, index) => value !== before[index]);
   throw new Error(
-    `${displayPath} is stale at line ${line < 0 ? after.length + 1 : line + 1}; run npm run work-orders -- index`,
+    `${displayPath} is stale at line ${firstDifferingLine(expected, actual)}; run npm run work-orders -- index`,
   );
 };
 
