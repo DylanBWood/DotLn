@@ -1,0 +1,27 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+✔ WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals (931.364042ms)
+ℹ SIGINT startup: 212.4 ms; bound 5000 ms
+ℹ SIGTERM startup: 170.0 ms; bound 5000 ms
+ℹ SIGHUP startup: 169.4 ms; bound 5000 ms
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1025.743042
+✔ WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals (870.785792ms)
+ℹ SIGINT startup: 170.5 ms; bound 24000 ms
+ℹ SIGTERM startup: 168.3 ms; bound 24000 ms
+ℹ SIGHUP startup: 167.5 ms; bound 24000 ms
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 966.285834
+bounded-result {"name":"bounded-probe","durationMs":2118,"slowestCases":[{"name":"bounded-probe","durationMs":2118,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":109066712,"peakRssBytes":331759616,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T19:19:04.454Z","finishedAt":"2026-10-12T19:19:06.572Z","exitCode":0,"executed":true}

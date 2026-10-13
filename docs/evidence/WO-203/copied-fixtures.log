@@ -1,0 +1,90 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+Generated records/lineage/README.md
+▶ configuration root
+  ✔ WO-184 criterion 10: a configuration FIFO refuses promptly by path (47.308834ms)
+  ✔ an absent configuration means today's layout (1.696333ms)
+  ✔ a kit section admits only applyInstanceActions as a boolean (3.440875ms)
+  ✔ a declared root moves its documents and its children (1.059792ms)
+  ✔ registered repositories expose a validated public profile (0.806667ms)
+  ✔ WO-073 classes and optional registration declarations validate (3.238125ms)
+  ✔ WO-073 criterion 3: activation reads only a declared contained regular profile (1199.966333ms)
+  ✔ a malformed configuration refuses with its path (3.940709ms)
+  ✔ the launchpad is discovered, and the override wins (2.437375ms)
+  ✔ no control-plane script keeps a literal document root or a second root derivation (35.865333ms)
+  ✔ configured lineage and planning consumers use the launchpad ledger (116.849458ms)
+  ✔ configured follow-up references validate against their roots (13.599375ms)
+  ✔ writing-worker defaults separate tool inputs from configured outputs (8.764375ms)
+  ✖ a fixture launchpad with non-default roots drives the lifecycle (933.161125ms)
+  ✖ worktree start and finish use the configured roots (1284.311208ms)
+  ✔ every declared root key is reachable (2.0885ms)
+✖ configuration root (3661.050166ms)
+✔ WO-166 Codex dispatch refuses foreign holders before control events and preserves unknown liveness (939.542041ms)
+✔ WO-166 evidence wait exits for pass, failure, timeout and absent row (3991.156334ms)
+✔ WO-166 wait accepts cached invocation rows and outcome I/O cannot fail a gate (3155.921958ms)
+✔ WO-166 session start advises once for an unclosed same-worktree override (1344.356125ms)
+✔ WO-195 stale main prepares the runtime then records the normal release-close dispatch (1513.256583ms)
+✔ WO-067 compiler-only release installs a fresh compatible harness snapshot (774.879708ms)
+✔ WO-054 Codex installation preserves unowned configuration before any bundle write (483.259667ms)
+✔ copied CLI runs with relocated documents and no default document tree (49.311333ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 22
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12325.431
+
+✖ failing tests:
+
+test at scripts/test-configuration-root.mjs:804:11
+✖ a fixture launchpad with non-default roots drives the lifecycle (933.161125ms)
+  AssertionError [ERR_ASSERTION]: resume verify: error: Codex writer reservation unavailable; harness runtime is not built. Run npm run build before retrying this dispatch.
+  
+  
+  1 !== 0
+  
+      at run (file:///Users/dylanwood/Projects/DotLn-wo203/scripts/test-configuration-root.mjs:876:18)
+      at file:///Users/dylanwood/Projects/DotLn-wo203/scripts/test-configuration-root.mjs:937:24
+      at temporary (file:///Users/dylanwood/Projects/DotLn-wo203/scripts/test-configuration-root.mjs:45:12)
+      at TestContext.<anonymous> (file:///Users/dylanwood/Projects/DotLn-wo203/scripts/test-configuration-root.mjs:807:7)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (file:///Users/dylanwood/Projects/DotLn-wo203/scripts/test-configuration-root.mjs:804:11)
+      at async Test.run (node:internal/test_runner/test:1409:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/test-configuration-root.mjs:1024:11
+✖ worktree start and finish use the configured roots (1284.311208ms)
+  AssertionError [ERR_ASSERTION]: resume verify: error: Codex writer reservation unavailable; harness runtime is not built. Run npm run build before retrying this dispatch.
+  
+  
+  1 !== 0
+  
+      at resume (file:///Users/dylanwood/Projects/DotLn-wo203/scripts/test-configuration-root.mjs:1125:18)
+      at file:///Users/dylanwood/Projects/DotLn-wo203/scripts/test-configuration-root.mjs:1133:9
+      at temporary (file:///Users/dylanwood/Projects/DotLn-wo203/scripts/test-configuration-root.mjs:45:12)
+      at TestContext.<anonymous> (file:///Users/dylanwood/Projects/DotLn-wo203/scripts/test-configuration-root.mjs:1028:7)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (file:///Users/dylanwood/Projects/DotLn-wo203/scripts/test-configuration-root.mjs:1024:11)
+      at async Test.run (node:internal/test_runner/test:1409:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+bounded-result {"name":"bounded-probe","durationMs":12393,"slowestCases":[{"name":"bounded-probe","durationMs":12393,"exitCode":1,"granularity":"task"}],"peakFootprintBytes":144869520,"peakRssBytes":344604672,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T18:19:22.578Z","finishedAt":"2026-10-12T18:19:34.971Z","exitCode":1,"executed":true}

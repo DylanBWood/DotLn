@@ -1,0 +1,12 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+✔ hypothetical defaults preserve their incoming declaration objects (128.327208ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 196.922416
+bounded-result {"name":"bounded-probe","durationMs":261,"slowestCases":[{"name":"bounded-probe","durationMs":261,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":39179784,"peakRssBytes":130482176,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T22:26:02.065Z","finishedAt":"2026-10-12T22:26:02.327Z","exitCode":0,"executed":true}

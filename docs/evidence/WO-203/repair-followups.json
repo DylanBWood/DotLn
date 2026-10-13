@@ -1,0 +1,20 @@
+[
+  {
+    "expectedRevision": "f786471b2f970d2e2e3d3702bbab2d295dd134789b42fabfa64012e0fb7c61b5",
+    "id": "FUP-d6f9f987da539a68",
+    "sourceRevision": 3,
+    "status": "settled",
+    "reason": "WO-203-D012 implements D011's two blocking repair rules and its unchanged-upstream clarification in the existing planner, renderer, README and fixture. The harness-bounded update fixture passes all 14 tests at 2026-10-12T22:14:12.582Z, including no-op and converged revision rows, incompatible manual actions of every declared kind, state isolation and pre-write refusal of both core --apply forms. The repaired handoff records the required full gates separately.",
+    "reopenWhen": "A revision preview labels byte-identical kit paths as changed, an incompatible manual action suppresses kit or later action rows, or the preserved core refusal/write behavior regresses.",
+    "targets": []
+  },
+  {
+    "expectedRevision": "f786471b2f970d2e2e3d3702bbab2d295dd134789b42fabfa64012e0fb7c61b5",
+    "id": "FUP-b64323c8a204d067",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "D011's reopening of WO-203-D002 is discharged by D012: unchanged paths retain core mutation kinds while revision rendering distinguishes their byte comparisons. The bounded update fixture passed both preview/update row-parity states and the unchanged revision cases; no second planner was introduced.",
+    "reopenWhen": "A preview and immediate update disagree on unchanged inputs, or revision rendering loses its distinct unchanged rows.",
+    "targets": []
+  }
+]

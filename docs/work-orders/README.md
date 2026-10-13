@@ -9,7 +9,7 @@
 - [x] [WO-200] — Pinned collector bytes are watched where they change · **final-reviewed** · pair 1
 - [x] [WO-201] — The export runs core's suites · **final-reviewed**
 - [x] [WO-202] — The planning machinery runs in an instance · **final-reviewed**
-- [ ] [WO-203] — Update preview · **queued**
+- [x] [WO-203] — Update preview · **final-reviewed**
 - [ ] [WO-118] — The resident-owned loop from a starter instance · **queued**
 - [ ] [WO-080] — Workstream document and index grouping · **queued** · pair 2
 - [ ] [WO-204] — Source-writer cleanup revocation survives host failures · **queued** · pair 2
@@ -53,23 +53,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-203
-
-[WO-203 — Update preview: before any write, an update shows what it will replace, add, remove and refuse and which instance actions it would apply or preserve, from core against a starter or an instance and inside an instance against the starter revision it is about to merge (version assigned at activation)](WO-203-update-preview.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-077: satisfied-by-close (met) — the update whose plan the preview shows before any write; WO-078: satisfied-by-close (met) — the receipt and registry a preview must leave unwritten.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor max; verifier xhigh; reviewer xhigh.
-- Track: delivery
-- Cost: adds a split of &#96;updateKit&#96; in &#96;scripts/launchpad.mjs&#96; into a planning half and an applying half, a &#96;--preview&#96; flag that runs the first half and prints, one renderer shared by the preview and the update's summary, a &#96;preview --from &lt;ref&gt;&#96; form that reads the incoming manifest and actions from a Git revision inside an instance, two fixture cases in &#96;scripts/test-launchpad.mjs&#96;, and the client README's §Taking upstream updates extended. Removes the point of no return the operator named on 2026-10-11: today the first time an instance learns what an update changes is after it has written. Wall-clock: the from-core preview costs the source build &#96;prepareKit&#96; already pays (tens of seconds, measured by the fixture); the in-instance form costs two &#96;git show&#96; reads and a hash of the tree. Re-mints: &#96;scripts/launchpad.mjs&#96; is not a registered evidence source; no edition re-mint, no live feedback episode; the launchpad is a declared machinery source, so &#96;npm test -- --review&#96; runs before handoff. Tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-203-update-preview.md](WO-203-update-preview.md)
 
 ### WO-118
 
@@ -214,8 +197,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-203.
-- References: WO-203: hard (unmet) — the update's planning and applying halves and the renderer the rollback reuses; WO-077: satisfied-by-close (met) — the update this order undoes.
+- Dependencies: typed; dependency-ready.
+- References: WO-203: hard (met) — the update's planning and applying halves and the renderer the rollback reuses; WO-077: satisfied-by-close (met) — the update this order undoes.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -248,8 +231,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-203.
-- References: WO-076: hard (met) — the overlay composes over the kit build, which this order makes the pinned build; both change harness emit; WO-203: hard (unmet) — the update's planning and applying halves the channel partitions; WO-077: satisfied-by-close (met) — the update the channel selects within.
+- Dependencies: typed; dependency-ready.
+- References: WO-076: hard (met) — the overlay composes over the kit build, which this order makes the pinned build; both change harness emit; WO-203: hard (met) — the update's planning and applying halves the channel partitions; WO-077: satisfied-by-close (met) — the update the channel selects within.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

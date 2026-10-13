@@ -1,0 +1,101 @@
+[
+  {
+    "recordedAt": "2026-10-12T19:56:06.977Z",
+    "codeIdentity": "390d236011f85807871da407e56145870a554319e43d4d7c9b148fe962e4ae91",
+    "durationMs": 1922908,
+    "exitCode": 1,
+    "executionMode": "fresh",
+    "freshSuites": 87,
+    "reusedSuites": 0,
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "vertical": {
+      "durationMs": 900184,
+      "failureKind": "timeout",
+      "concurrentAtStart": [
+        "launchpad",
+        "worktree-integration"
+      ],
+      "slowestCases": [
+        {
+          "name": "WO-199 terminal signals during post-result host calls admit no observation or refusal; reruns reuse the commit without redispatch",
+          "file": "scripts/test-vertical.recovery.mjs",
+          "durationMs": 138940.273875,
+          "exitCode": 0
+        },
+        {
+          "name": "WO-199 dotln vertical forwards SIGINT, SIGTERM and SIGHUP and resumes the same issue",
+          "file": "scripts/test-vertical.recovery.mjs",
+          "durationMs": 68771.905375,
+          "exitCode": 0
+        },
+        {
+          "name": "WO-112 VER-004 F1 continuation backoff caps repeated failures and never defers authority expiry",
+          "file": "scripts/test-vertical-judgment.mjs",
+          "durationMs": 39965.415625,
+          "exitCode": 0
+        },
+        {
+          "name": "WO-199 a signal during a repair writer stops its group, records the signal and a rerun resumes the repair",
+          "file": "scripts/test-vertical.recovery.mjs",
+          "durationMs": 33719.123959,
+          "exitCode": 0
+        },
+        {
+          "name": "WO-112 cached resolution preparation refuses child and receipt aliases before retrying triage",
+          "file": "scripts/test-vertical-judgment.mjs",
+          "durationMs": 33649.788542,
+          "exitCode": 0
+        }
+      ]
+    }
+  },
+  {
+    "recordedAt": "2026-10-12T20:12:20.587Z",
+    "codeIdentity": "390d236011f85807871da407e56145870a554319e43d4d7c9b148fe962e4ae91",
+    "durationMs": 909385,
+    "exitCode": 1,
+    "executionMode": "composed",
+    "freshSuites": 2,
+    "reusedSuites": 85,
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "vertical": {
+      "durationMs": 900178,
+      "failureKind": "timeout",
+      "concurrentAtStart": [],
+      "slowestCases": [
+        {
+          "name": "WO-199 terminal signals during post-result host calls admit no observation or refusal; reruns reuse the commit without redispatch",
+          "file": "scripts/test-vertical.recovery.mjs",
+          "durationMs": 141070.142417,
+          "exitCode": 0
+        },
+        {
+          "name": "WO-199 dotln vertical forwards SIGINT, SIGTERM and SIGHUP and resumes the same issue",
+          "file": "scripts/test-vertical.recovery.mjs",
+          "durationMs": 66748.101458,
+          "exitCode": 0
+        },
+        {
+          "name": "WO-112 VER-004 F1 continuation backoff caps repeated failures and never defers authority expiry",
+          "file": "scripts/test-vertical-judgment.mjs",
+          "durationMs": 38109.283208,
+          "exitCode": 0
+        },
+        {
+          "name": "WO-199 a signal during a repair writer stops its group, records the signal and a rerun resumes the repair",
+          "file": "scripts/test-vertical.recovery.mjs",
+          "durationMs": 34722.837708,
+          "exitCode": 0
+        },
+        {
+          "name": "WO-112 cached resolution preparation refuses child and receipt aliases before retrying triage",
+          "file": "scripts/test-vertical-judgment.mjs",
+          "durationMs": 32841.985292,
+          "exitCode": 0
+        }
+      ]
+    }
+  }
+]

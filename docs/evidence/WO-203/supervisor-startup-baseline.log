@@ -1,0 +1,29 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+PROGRESS [bounded-probe] # Subtest: WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals
+{"name":"wo203-supervisor-diagnostic","message":"started","elapsedMs":0}
+{"name":"wo203-supervisor-diagnostic","message":"# Subtest: WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals","elapsedMs":4085}
+TAP version 13
+PROGRESS CASE {"event":"start","file":"packages/skeleton/dist/test/resident-actors.diagnostic.test.js","name":"WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals","nesting":0,"entryFile":"packages/skeleton/dist/test/resident-actors.diagnostic.test.js","testId":1}
+# STARTUP_BASELINE {"signal":"SIGINT","startupMs":2985}
+# STARTUP_BASELINE {"signal":"SIGTERM","startupMs":245}
+# STARTUP_BASELINE {"signal":"SIGHUP","startupMs":275}
+PROGRESS CASE {"event":"end","file":"packages/skeleton/dist/test/resident-actors.diagnostic.test.js","name":"WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals","nesting":0,"entryFile":"packages/skeleton/dist/test/resident-actors.diagnostic.test.js","testId":1,"durationMs":3877.009208,"exitCode":0}
+# Subtest: WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals
+ok 1 - WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals
+  ---
+  duration_ms: 3877.009208
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3987.107
+
+{"exitCode":0,"durationMs":4100}
+bounded-result {"name":"bounded-probe","durationMs":4169,"slowestCases":[{"name":"WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals","file":"packages/skeleton/dist/test/resident-actors.diagnostic.test.js","durationMs":3877.009208,"exitCode":0}],"peakFootprintBytes":164090520,"peakRssBytes":442286080,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T19:16:32.754Z","finishedAt":"2026-10-12T19:16:36.923Z","exitCode":0,"executed":true}

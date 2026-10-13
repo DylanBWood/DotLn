@@ -3995,6 +3995,20 @@
           "title": "Workstream application — end-user workflow candidate",
           "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
           "missing": false
+        },
+        {
+          "hash": "8762dba2c628b10eca13675e5f609996b56f0d64480a5eeab6b27b451bbfe7c2",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
+        },
+        {
+          "hash": "eeb7cff24e2d3217a986bb964164e046aa71d922a2cfd415238608c1dfb831e6",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -33356,6 +33370,14 @@
             "WO-203"
           ],
           "at": "2026-10-11T20:18:59.189Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "targets": [],
+          "reason": "WO-203 D004 fixes source-backed pre-build absence checks, update post-manifest diagnostics, shared validators and stale-line logic. The generated-path preflight cost remainder is tracked separately as FUP-dc79b4b1065bf66e.",
+          "reopenWhen": "A regression breaks a fixed carry-in behavior; generated-path preflight continues at FUP-dc79b4b1065bf66e.",
+          "at": "2026-10-12T18:07:35.710Z"
         }
       ]
     },
@@ -33831,6 +33853,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-12T17:42:07.035Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by WO-203's final review: WO-203-D009 repaired the fixture's readiness observation in packages/skeleton/test/resident-actors.test.ts (it polls the durable readiness file instead of trusting one filesystem event, surfaces an early supervisor error, message or exit as the failure, bounds the wait with the measured 3000 ms solo baseline under deadlineLimit and the unchanged 5000 ms standalone minimum, and asks the supervisor to retire its group before forcing it). After the repair the case passed in the executor's two complete review gates at code identities 45c3b5d5 and 4de390c1 (the first failed only on the vertical task clock) and its skeleton task is reused in the final review's composed gate at 4de390c1. The historical timeout's exact cause is not established; the fixture now exposes the next failure's cause instead of hiding it behind a timer.",
+          "reopenWhen": "The calibrated deadline is hit within declared load, early-failure diagnostics identify a runtime defect, the fixture leaves a process group after failure, or the readiness case fails again in any gate.",
+          "targets": [],
+          "at": "2026-10-13T00:47:07.396Z"
         }
       ]
     },
@@ -33913,6 +33943,175 @@
           "ref": "docs/evidence/WO-202/decisions.md#wo-202-d013--verification-planning-receipt-044s-criterion4-reopening-condition-for-wo-202-has-occurred-through-its-score-row-branch-independently-of-this-order",
           "title": "WO-202-D013: Next planning pass: reopen receipt 044's criterion:4 known issue for WO-202, as its condition requires. Decide whether npm run reader -- check should know which published releases must ca",
           "summary": "{ \"id\": \"WO-202-D013\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Record that the reopening condition of planning receipt 2026-10-11-planning-fb68306765535a9d-044's criterion:4 known issue for WO-202 has occurred through its score-row branch. In a core clone of the subject, removing one score row from docs/publication/reader-scores.jsonl leaves npm run reader -- check at exit 0. The same probe with main's reader scripts also exits 0, so the behavior predates this order and is not caused by its optional handling. The new no-records path also requires docs/control/reader-profiles.json and docs/publication/examples to be absent, and with every s",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-dc79b4b1065bf66e",
+      "key": "decision:docs/evidence/WO-203/decisions.md#wo-203-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2de257ff17ae1f6a3f0b94a968033c81ed810a7d6ad58de8bbd8a4987ca4bc8b",
+          "ref": "docs/evidence/WO-203/decisions.md#wo-203-d004--carry-in-dispositions-and-the-remaining-pre-build-bound",
+          "title": "WO-203-D004: If a future compiler or harness change exposes an authoritative incoming generated-path inventory before atomicBuild, use it in the update preflight to reject absent still-carried compile",
+          "summary": "{ \"id\": \"WO-203-D004\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: next\", \"decision\": \"Address FUP-584d6021928bdfdb's three allocated items. First, preparation calls an update preflight after reading the pinned commit's sources and before building: absent still-carried source paths and determinable derived paths refuse there, preserving the interrupted-update dropped-path exception. Generated compiled and emitted paths still receive their full check after building because their incoming set is not yet known; that optimization remainder is left. Second, post-manifest receipt/registry failures carry the completed update plan into the CLI summary and retain exit 1 with distinct destination/recei",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "targets": [],
+          "reason": "The generated incoming file set is authoritative only after the build. Retain the safe final check; no destination or sibling write occurs on refusal. A new inventory mechanism exceeds the bounded preview refactor.",
+          "reopenWhen": "A compiler or harness change exposes an authoritative generated-path inventory before atomicBuild, or operator-observed cost justifies that inventory.",
+          "at": "2026-10-12T18:07:35.776Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b64323c8a204d067",
+      "key": "decision:docs/evidence/WO-203/decisions.md#wo-203-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7ba22daf80d018dc1c98a910725742e7cf3737e2614308bbeb39211fa2b34922",
+          "ref": "docs/evidence/WO-203/decisions.md#wo-203-d002--one-plan-one-rendering-the-existing-update-rules",
+          "title": "WO-203-D002: Split updateKit into planKitUpdate and applyKitUpdate, keep updateKit as their immediate composition, and use renderUpdatePlan for both CLI forms and the completed update. The planned val",
+          "summary": "{ \"id\": \"WO-203-D002\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: next\", \"decision\": \"Split updateKit into planKitUpdate and applyKitUpdate, keep updateKit as their immediate composition, and use renderUpdatePlan for both CLI forms and the completed update. The planned value carries the candidate bytes, retained manifest, instance mutations and proposed receipt date/path; only apply writes the destination, pending journal, receipt and registry. The receipt writer shares its filename calculation with planning. Unchanged kept paths retain the existing replace classification, and instance-owned collisions retain no manifest hash. A core preview without --apply lists actions as preserved/no opt-",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "D011's reopening of WO-203-D002 is discharged by D012: unchanged paths retain core mutation kinds while revision rendering distinguishes their byte comparisons. The bounded update fixture passed both preview/update row-parity states and the unchanged revision cases; no second planner was introduced.",
+          "reopenWhen": "A preview and immediate update disagree on unchanged inputs, or revision rendering loses its distinct unchanged rows.",
+          "targets": [],
+          "at": "2026-10-12T22:15:49.874Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d6f9f987da539a68",
+      "key": "decision:docs/evidence/WO-203/decisions.md#wo-203-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d0d3e85208e37b4cb733bec914a279cb7c9a2c1d9e618daeb000e3ff73cd3e8f",
+          "ref": "docs/evidence/WO-203/decisions.md#wo-203-d011--verification-fail-criterion-3-is-unmet-because-the-revision-preview-cannot-show-what-the-merge-changes",
+          "title": "WO-203-D011: WO-203 resume: fix. (F1) preview --from <ref> identifies the kit files whose incoming manifest hash differs from the instance's current bytes, separately from kit files the merge leaves u",
+          "summary": "{ \"id\": \"WO-203-D011\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001. At code identity 5dada0db317a1eb9181f2f944ef18acc39d52ab6374476cab6b6797aca3269fe, criteria 1, 2, 4, 5 and 6 are met and criterion 3 is unmet. F1 (blocking, criterion 3): preview --from <ref> does not identify the kit files the merge will change. planUpdate classifies every kept path as replace, including paths whose incoming manifest hash equals the instance's current bytes, and renderUpdatePlan prints one undifferentiated replace row for each. F2 (blocking, criterion 3): the report-only revision preview refuses outright, printing no plan row and no declared acti",
+          "missing": false
+        },
+        {
+          "hash": "2c369a5d06f3fd664679b7845107c48d19f62d323814bea483117e98c8ebc49b",
+          "ref": "docs/evidence/WO-203/decisions.md#wo-203-d011--verification-fail-criterion-3-is-unmet-because-the-revision-preview-cannot-show-what-the-merge-changes",
+          "title": "WO-203-D011: WO-203 resume: fix. (F1) preview --from <ref> identifies the kit files whose incoming manifest hash differs from the instance's current bytes, separately from kit files the merge leaves u",
+          "summary": "{ \"id\": \"WO-203-D011\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001. At code identity 5dada0db317a1eb9181f2f944ef18acc39d52ab6374476cab6b6797aca3269fe, criteria 1, 2, 4, 5 and 6 are met and criterion 3 is unmet. F1 (blocking, criterion 3): preview --from <ref> does not identify the kit files the merge will change. planUpdate classifies every kept path as replace, including paths whose incoming manifest hash equals the instance's current bytes, and renderUpdatePlan prints one undifferentiated replace row for each. F2 (blocking, criterion 3): the report-only revision preview refuses outright, printing no plan row and no declared acti",
+          "missing": false
+        },
+        {
+          "hash": "b243c3a15fb9ed683f64043996fb3fb9986d8e9dd61881253a31624c77e2b883",
+          "ref": "docs/evidence/WO-203/decisions.md#wo-203-d011--verification-fail-criterion-3-is-unmet-because-the-revision-preview-cannot-show-what-the-merge-changes",
+          "title": "WO-203-D011: WO-203 resume: fix. (F1) preview --from <ref> identifies the kit files whose incoming manifest hash differs from the instance's current bytes, separately from kit files the merge leaves u",
+          "summary": "{ \"id\": \"WO-203-D011\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001. At code identity 5dada0db317a1eb9181f2f944ef18acc39d52ab6374476cab6b6797aca3269fe, criteria 1, 2, 4, 5 and 6 are met and criterion 3 is unmet. F1 (blocking, criterion 3): preview --from <ref> does not identify the kit files the merge will change. planUpdate classifies every kept path as replace, including paths whose incoming manifest hash equals the instance's current bytes, and renderUpdatePlan prints one undifferentiated replace row for each. F2 (blocking, criterion 3): the report-only revision preview refuses outright, printing no plan row and no declared acti",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "WO-203-D012 implements D011's two blocking repair rules and its unchanged-upstream clarification in the existing planner, renderer, README and fixture. The harness-bounded update fixture passes all 14 tests at 2026-10-12T22:14:12.582Z, including no-op and converged revision rows, incompatible manual actions of every declared kind, state isolation and pre-write refusal of both core --apply forms. The repaired handoff records the required full gates separately.",
+          "reopenWhen": "A revision preview labels byte-identical kit paths as changed, an incompatible manual action suppresses kit or later action rows, or the preserved core refusal/write behavior regresses.",
+          "targets": [],
+          "at": "2026-10-12T22:15:49.806Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-59e4ca45614477fd",
+      "key": "decision:docs/evidence/WO-203/decisions.md#wo-203-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3b2e59da4bb95446bd030a1cf3a6d4a1f24dc14e5956ee54b8b93c9f3c6c64a4",
+          "ref": "docs/evidence/WO-203/decisions.md#wo-203-d010--give-each-vertical-test-file-its-own-bounded-task",
+          "title": "WO-203-D010: Expand the existing vertical suite into three canonical file tasks, retaining its declared files, Node flags, product-read guards, confinement requirements and the existing 900000 ms task",
+          "summary": "{ \"id\": \"WO-203-D010\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: next; adjacent-0001 revision 2\", \"decision\": \"Expand the existing vertical suite into three canonical file tasks, retaining its declared files, Node flags, product-read guards, confinement requirements and the existing 900000 ms task limit. Each file task retains two reserved scheduler slots, so capacity four admits at most two vertical files concurrently. Existing prefix aggregation requires every file task to pass. Keep the already passing supervisor fixture repair.\", \"evidence\": [ \"docs/evidence/WO-203/vertical-timeouts.json: two complete gates at the unchanged code identity failed only vertical, with no completed-case asse",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-203-D014 preserves D010's file tasks and partitions the large main file into complementary statement and workflow tasks. The bounded dispatch fixtures execute all selected families, ordinary and future workflow names, and a nested selected case once, and reject incomplete or failed aggregates. The complete runner suite passes. npm test -- --review records exit 0 at code identity 4de390c177f92ce4bb932ad47a79b8d3f592bed430674a702d377ce47958f7d1 on 2026-10-13T00:00:37.363Z: 36 suites, 91 fresh tasks, zero failures. The four vertical tasks pass in 566246, 361423, 558337 and 382468 ms, each below 900000 ms and with zero excluded product-record reads. The documentation gate passes at the same code identity.",
+          "reopenWhen": "A vertical task omits or duplicates a case, loses its product guard or task bound, or a required partition again exceeds its deadline.",
+          "targets": [],
+          "at": "2026-10-13T00:01:35.751Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6b524fd853eeccab",
+      "key": "decision:docs/evidence/WO-203/decisions.md#wo-203-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "273bf80ad642938c0aa8c3e05de6f3d975e6850d9d505ecca917e55bb440807b",
+          "ref": "docs/evidence/WO-203/decisions.md#wo-203-d012--repair-the-revision-rows-and-isolate-incompatible-manual-actions",
+          "title": "WO-203-D012: Keep planUpdate's mutation kinds, retained hashes and apply semantics, and add its observed current/incoming and prior/incoming hash comparisons to each row. The shared renderer uses thos",
+          "summary": "{ \"id\": \"WO-203-D012\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: fix; VER-001\", \"decision\": \"Keep planUpdate's mutation kinds, retained hashes and apply semantics, and add its observed current/incoming and prior/incoming hash comparisons to each row. The shared renderer uses those comparisons in revision previews to classify byte-identical paths as unchanged, counting them separately from replacements, additions and removals. A refused local edit with an unchanged incoming manifest hash is annotated unchanged upstream, no merge conflict expected. In report-only action planning, isolate each hypothetical action's configuration, writes and renames: an incompatible action becomes a cannot-appl",
+          "missing": false
+        },
+        {
+          "hash": "f520f4314e502bac079d726ad723050c0f177da2402aa10b932b30686cb3e856",
+          "ref": "docs/evidence/WO-203/decisions.md#wo-203-d012--repair-the-revision-rows-and-isolate-incompatible-manual-actions",
+          "title": "WO-203-D012: Keep planUpdate's mutation kinds, retained hashes and apply semantics, and add its observed current/incoming and prior/incoming hash comparisons to each row. The shared renderer uses thos",
+          "summary": "{ \"id\": \"WO-203-D012\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: fix; VER-001\", \"decision\": \"Keep planUpdate's mutation kinds, retained hashes and apply semantics, and add its observed current/incoming and prior/incoming hash comparisons to each row. The shared renderer uses those comparisons in revision previews to classify byte-identical paths as unchanged, counting them separately from replacements, additions and removals. A refused local edit with an unchanged incoming manifest hash is annotated unchanged upstream, no merge conflict expected. In report-only action planning, isolate each hypothetical action's configuration, writes and renames: an incompatible action becomes a cannot-appl",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9c558fa0f869290e",
+      "key": "decision:docs/evidence/WO-203/decisions.md#wo-203-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "74f0e3ff789c646d67ca8ed839d15b62b64afdece84c5bba886c27a8cf2eae8c",
+          "ref": "docs/evidence/WO-203/decisions.md#wo-203-d015--verification-follow-up-a-revision-preview-refuses-when-the-instance-removed-a-kit-file",
+          "title": "WO-203-D015: In the in-instance revision preview only (preview --from <ref>), an absent manifest-listed kit path that the incoming manifest still carries becomes its own row naming a local removal. Wh",
+          "summary": "{ \"id\": \"WO-203-D015\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Board VER-002 F1 as a follow-up; it does not block. At code identity 4de390c177f92ce4bb932ad47a79b8d3f592bed430674a702d377ce47958f7d1, preview --from <ref> refuses the whole preview when the instance has removed a manifest-listed kit file that the incoming revision still carries. It prints no plan row and no declared action, while Git merges that revision without touching the removal. Class: report-only refusal on a kit input (operator flow), in the declared planUpdate and previewFromRevision surfaces. It breaks no criterion. Criterion 3 names locally modified kit files, occupi",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-bf112b957627334d",
+      "key": "decision:docs/evidence/WO-203/decisions.md#wo-203-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f41218bae38a1ee90f8eb3cba8d72ba25b3226162045a06de35020c8b1a96acc",
+          "ref": "docs/evidence/WO-203/decisions.md#wo-203-d016--verification-follow-up-the-from-core-preview-lists-byte-identical-paths-as-replace",
+          "title": "WO-203-D016: The shared renderUpdatePlan labels and counts byte-identical replace rows as unchanged in the from-core preview and in the update's own summary alike, as it already does in the revision p",
+          "summary": "{ \"id\": \"WO-203-D016\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Board VER-002 F2 as a follow-up; it does not block. On the real corpus, the from-core preview prints a replace row for every carried kit path whose bytes the update would rewrite unchanged, so the operator cannot read from it which kit files will change. Class: undifferentiated core preview rows (operator flow), in the declared shared renderer. Criterion 1 asks for each path's planned replace, add, remove or refuse, and the update does rewrite those paths, so the rows are accurate and criterion 1 holds. The README says replace includes files whose bytes already match. D002 and ",
+          "missing": false
+        },
+        {
+          "hash": "70c353f313886e42f3b6d0b3eaadad18c66d7bd766d12a4ea099a724a24f1df5",
+          "ref": "docs/evidence/WO-203/decisions.md#wo-203-d016--verification-follow-up-the-from-core-preview-lists-byte-identical-paths-as-replace",
+          "title": "WO-203-D016: The shared renderUpdatePlan labels and counts byte-identical replace rows as unchanged in the from-core preview and in the update's own summary alike, as it already does in the revision p",
+          "summary": "{ \"id\": \"WO-203-D016\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Board VER-002 F2 as a follow-up; it does not block. On the real corpus, the from-core preview prints a replace row for every carried kit path whose bytes the update would rewrite unchanged, so the operator cannot read from it which kit files will change. Class: undifferentiated core preview rows (operator flow), in the declared shared renderer. Criterion 1 asks for each path's planned replace, add, remove or refuse, and the update does rewrite those paths, so the rows are accurate and criterion 1 holds. The README says replace includes files whose bytes already match. D002 and ",
           "missing": false
         }
       ],

@@ -1,0 +1,26 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+PROGRESS [bounded-probe] # Subtest: WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals
+{"name":"wo203-supervisor-diagnostic","message":"started","elapsedMs":0}
+{"name":"wo203-supervisor-diagnostic","message":"# Subtest: WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals","elapsedMs":2906}
+TAP version 13
+PROGRESS CASE {"event":"start","file":"../../../../private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln/a77394e752df50d1627cb2bb586872a07952f80bac1b6ca70743ae4d24f32e4b/scratch/wo203-supervisor-diagnostic.test.mjs","name":"WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals","nesting":0,"entryFile":"../../../../private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln/a77394e752df50d1627cb2bb586872a07952f80bac1b6ca70743ae4d24f32e4b/scratch/wo203-supervisor-diagnostic.test.mjs","testId":1}
+PROGRESS CASE {"event":"end","file":"../../../../private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln/a77394e752df50d1627cb2bb586872a07952f80bac1b6ca70743ae4d24f32e4b/scratch/wo203-supervisor-diagnostic.test.mjs","name":"WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals","nesting":0,"entryFile":"../../../../private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln/a77394e752df50d1627cb2bb586872a07952f80bac1b6ca70743ae4d24f32e4b/scratch/wo203-supervisor-diagnostic.test.mjs","testId":1,"durationMs":2669.288792,"exitCode":0}
+# Subtest: WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals
+ok 1 - WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals
+  ---
+  duration_ms: 2669.288792
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2792.4395
+
+{"exitCode":0,"durationMs":2926}
+bounded-result {"name":"bounded-probe","durationMs":3003,"slowestCases":[{"name":"WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals","file":"../../../../private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln/a77394e752df50d1627cb2bb586872a07952f80bac1b6ca70743ae4d24f32e4b/scratch/wo203-supervisor-diagnostic.test.mjs","durationMs":2669.288792,"exitCode":0}],"peakFootprintBytes":161419808,"peakRssBytes":439648256,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T19:02:37.899Z","finishedAt":"2026-10-12T19:02:40.903Z","exitCode":0,"executed":true}

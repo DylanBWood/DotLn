@@ -1,0 +1,13 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+✔ vertical tasks preserve complementary coverage, guards and the two-task concurrency bound (26.927167ms)
+✔ vertical task dispatch executes every declared case exactly once across partitions (616.496334ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 711.351375
+bounded-result {"name":"bounded-probe","durationMs":772,"slowestCases":[{"name":"bounded-probe","durationMs":772,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":42931696,"peakRssBytes":130809856,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T23:16:23.786Z","finishedAt":"2026-10-12T23:16:24.558Z","exitCode":0,"executed":true}

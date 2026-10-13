@@ -1,0 +1,2701 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-203",
+  "gates": [
+    {
+      "checkId": "npm run test:docs",
+      "codeIdentity": "4de390c177f92ce4bb932ad47a79b8d3f592bed430674a702d377ce47958f7d1",
+      "treeHash": "6ef6947123ec5d4682bc4f0a4e0b63f767923ab0",
+      "recordedAt": "2026-10-12T23:24:37.797Z",
+      "durationMs": 133780,
+      "exitCode": 0,
+      "executed": true,
+      "gateSelection": "document",
+      "executionMode": "fresh",
+      "freshSuites": 35,
+      "reusedSuites": 0,
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "evidenceRef": "host-gate:4de390c177f92ce4bb932ad47a79b8d3f592bed430674a702d377ce47958f7d1:npm run test:docs",
+      "requiredSuites": [
+        "build",
+        "format",
+        "release-surfaces",
+        "license-surfaces",
+        "resume",
+        "launchpad-docs",
+        "publication",
+        "docs-check",
+        "docs-check-fixtures",
+        "comment-labels",
+        "comment-labels-fixtures",
+        "index",
+        "siblings",
+        "lineage",
+        "lineage-fixtures",
+        "kernel-docs",
+        "skeleton-docs",
+        "console-docs",
+        "resident-bind",
+        "local-runner-double",
+        "authority-evidence",
+        "harness",
+        "harness-context",
+        "harness-evidence",
+        "plan-refutation-current",
+        "artifact-corpus",
+        "artifact-evidence",
+        "verification-evidence",
+        "feedback-evidence",
+        "meta",
+        "registrations",
+        "plan",
+        "reader-profiles",
+        "reader-fixtures",
+        "entropy"
+      ],
+      "suiteCount": 35,
+      "taskCount": 35,
+      "tasks": [
+        {
+          "name": "format",
+          "durationMs": 8439,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 4,
+          "startedAt": "2026-10-12T23:22:24.055Z",
+          "finishedAt": "2026-10-12T23:22:32.506Z"
+        },
+        {
+          "name": "build",
+          "durationMs": 809,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 4,
+          "startedAt": "2026-10-12T23:22:32.516Z",
+          "finishedAt": "2026-10-12T23:22:33.351Z"
+        },
+        {
+          "name": "publication",
+          "durationMs": 227,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:33.361Z",
+          "finishedAt": "2026-10-12T23:22:33.639Z"
+        },
+        {
+          "name": "comment-labels",
+          "durationMs": 1472,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:33.649Z",
+          "finishedAt": "2026-10-12T23:22:35.130Z"
+        },
+        {
+          "name": "index",
+          "durationMs": 2765,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:35.140Z",
+          "finishedAt": "2026-10-12T23:22:37.914Z"
+        },
+        {
+          "name": "siblings",
+          "durationMs": 76,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:37.923Z",
+          "finishedAt": "2026-10-12T23:22:38.008Z"
+        },
+        {
+          "name": "lineage",
+          "durationMs": 80,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:38.018Z",
+          "finishedAt": "2026-10-12T23:22:38.107Z"
+        },
+        {
+          "name": "authority-evidence",
+          "durationMs": 730,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:38.119Z",
+          "finishedAt": "2026-10-12T23:22:38.859Z"
+        },
+        {
+          "name": "harness",
+          "durationMs": 164,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:38.868Z",
+          "finishedAt": "2026-10-12T23:22:39.041Z"
+        },
+        {
+          "name": "harness-context",
+          "durationMs": 197,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:39.050Z",
+          "finishedAt": "2026-10-12T23:22:39.255Z"
+        },
+        {
+          "name": "harness-evidence",
+          "durationMs": 387,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:39.264Z",
+          "finishedAt": "2026-10-12T23:22:39.660Z"
+        },
+        {
+          "name": "artifact-evidence",
+          "durationMs": 285,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:39.669Z",
+          "finishedAt": "2026-10-12T23:22:39.962Z"
+        },
+        {
+          "name": "license-surfaces",
+          "durationMs": 7193,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:33.361Z",
+          "finishedAt": "2026-10-12T23:22:40.590Z"
+        },
+        {
+          "name": "release-surfaces",
+          "durationMs": 7226,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:33.361Z",
+          "finishedAt": "2026-10-12T23:22:40.605Z"
+        },
+        {
+          "name": "verification-evidence",
+          "durationMs": 1593,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:39.972Z",
+          "finishedAt": "2026-10-12T23:22:41.574Z"
+        },
+        {
+          "name": "feedback-evidence",
+          "durationMs": 3251,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:40.606Z",
+          "finishedAt": "2026-10-12T23:22:43.871Z"
+        },
+        {
+          "name": "meta",
+          "durationMs": 3581,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:40.619Z",
+          "finishedAt": "2026-10-12T23:22:44.220Z"
+        },
+        {
+          "name": "docs-check",
+          "durationMs": 22929,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:33.362Z",
+          "finishedAt": "2026-10-12T23:22:56.356Z"
+        },
+        {
+          "name": "comment-labels-fixtures",
+          "durationMs": 841,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:56.366Z",
+          "finishedAt": "2026-10-12T23:22:57.257Z"
+        },
+        {
+          "name": "lineage-fixtures",
+          "durationMs": 761,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:57.266Z",
+          "finishedAt": "2026-10-12T23:22:58.036Z"
+        },
+        {
+          "name": "kernel-docs",
+          "durationMs": 1718,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:58.047Z",
+          "finishedAt": "2026-10-12T23:22:59.775Z"
+        },
+        {
+          "name": "launchpad-docs",
+          "durationMs": 5700,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:56.365Z",
+          "finishedAt": "2026-10-12T23:23:02.096Z"
+        },
+        {
+          "name": "docs-check-fixtures",
+          "durationMs": 23422,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:56.365Z",
+          "finishedAt": "2026-10-12T23:23:19.853Z"
+        },
+        {
+          "name": "skeleton-docs",
+          "durationMs": 28669,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:59.786Z",
+          "finishedAt": "2026-10-12T23:23:28.468Z"
+        },
+        {
+          "name": "local-runner-double",
+          "durationMs": 4055,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:23:28.477Z",
+          "finishedAt": "2026-10-12T23:23:32.546Z"
+        },
+        {
+          "name": "resident-bind",
+          "durationMs": 12686,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:23:19.861Z",
+          "finishedAt": "2026-10-12T23:23:32.555Z"
+        },
+        {
+          "name": "artifact-corpus",
+          "durationMs": 298,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:23:32.568Z",
+          "finishedAt": "2026-10-12T23:23:32.903Z"
+        },
+        {
+          "name": "registrations",
+          "durationMs": 1165,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:23:32.914Z",
+          "finishedAt": "2026-10-12T23:23:34.100Z"
+        },
+        {
+          "name": "console-docs",
+          "durationMs": 32761,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:23:02.118Z",
+          "finishedAt": "2026-10-12T23:23:34.894Z"
+        },
+        {
+          "name": "reader-profiles",
+          "durationMs": 446,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:23:34.905Z",
+          "finishedAt": "2026-10-12T23:23:35.360Z"
+        },
+        {
+          "name": "plan-refutation-current",
+          "durationMs": 4677,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:23:32.566Z",
+          "finishedAt": "2026-10-12T23:23:37.257Z"
+        },
+        {
+          "name": "entropy",
+          "durationMs": 364,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:23:37.267Z",
+          "finishedAt": "2026-10-12T23:23:37.641Z"
+        },
+        {
+          "name": "plan",
+          "durationMs": 4623,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:23:34.111Z",
+          "finishedAt": "2026-10-12T23:23:38.745Z"
+        },
+        {
+          "name": "reader-fixtures",
+          "durationMs": 11093,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:23:35.370Z",
+          "finishedAt": "2026-10-12T23:23:46.471Z"
+        },
+        {
+          "name": "resume",
+          "durationMs": 101028,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:56.365Z",
+          "finishedAt": "2026-10-12T23:24:37.406Z"
+        }
+      ],
+      "suites": [
+        {
+          "name": "build",
+          "durationMs": 809,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 4,
+          "startedAt": "2026-10-12T23:22:32.516Z",
+          "finishedAt": "2026-10-12T23:22:33.351Z",
+          "outputDigest": "f0c955d0ffe94c29132eeef4474b5f2f948c70db7ecb0feb864df595b2ebd55e"
+        },
+        {
+          "name": "format",
+          "durationMs": 8439,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 4,
+          "startedAt": "2026-10-12T23:22:24.055Z",
+          "finishedAt": "2026-10-12T23:22:32.506Z"
+        },
+        {
+          "name": "release-surfaces",
+          "durationMs": 7226,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:33.361Z",
+          "finishedAt": "2026-10-12T23:22:40.605Z"
+        },
+        {
+          "name": "license-surfaces",
+          "durationMs": 7193,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:33.361Z",
+          "finishedAt": "2026-10-12T23:22:40.590Z"
+        },
+        {
+          "name": "resume",
+          "durationMs": 101028,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:56.365Z",
+          "finishedAt": "2026-10-12T23:24:37.406Z"
+        },
+        {
+          "name": "launchpad-docs",
+          "durationMs": 5700,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:56.365Z",
+          "finishedAt": "2026-10-12T23:23:02.096Z"
+        },
+        {
+          "name": "publication",
+          "durationMs": 227,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:33.361Z",
+          "finishedAt": "2026-10-12T23:22:33.639Z"
+        },
+        {
+          "name": "docs-check",
+          "durationMs": 22929,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:33.362Z",
+          "finishedAt": "2026-10-12T23:22:56.356Z"
+        },
+        {
+          "name": "docs-check-fixtures",
+          "durationMs": 23422,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:56.365Z",
+          "finishedAt": "2026-10-12T23:23:19.853Z"
+        },
+        {
+          "name": "comment-labels",
+          "durationMs": 1472,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:33.649Z",
+          "finishedAt": "2026-10-12T23:22:35.130Z"
+        },
+        {
+          "name": "comment-labels-fixtures",
+          "durationMs": 841,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:56.366Z",
+          "finishedAt": "2026-10-12T23:22:57.257Z"
+        },
+        {
+          "name": "index",
+          "durationMs": 2765,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:35.140Z",
+          "finishedAt": "2026-10-12T23:22:37.914Z"
+        },
+        {
+          "name": "siblings",
+          "durationMs": 76,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:37.923Z",
+          "finishedAt": "2026-10-12T23:22:38.008Z"
+        },
+        {
+          "name": "lineage",
+          "durationMs": 80,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:38.018Z",
+          "finishedAt": "2026-10-12T23:22:38.107Z"
+        },
+        {
+          "name": "lineage-fixtures",
+          "durationMs": 761,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:57.266Z",
+          "finishedAt": "2026-10-12T23:22:58.036Z"
+        },
+        {
+          "name": "kernel-docs",
+          "durationMs": 1718,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:58.047Z",
+          "finishedAt": "2026-10-12T23:22:59.775Z"
+        },
+        {
+          "name": "skeleton-docs",
+          "durationMs": 28669,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:59.786Z",
+          "finishedAt": "2026-10-12T23:23:28.468Z"
+        },
+        {
+          "name": "console-docs",
+          "durationMs": 32761,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:23:02.118Z",
+          "finishedAt": "2026-10-12T23:23:34.894Z"
+        },
+        {
+          "name": "resident-bind",
+          "durationMs": 12686,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:23:19.861Z",
+          "finishedAt": "2026-10-12T23:23:32.555Z"
+        },
+        {
+          "name": "local-runner-double",
+          "durationMs": 4055,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:23:28.477Z",
+          "finishedAt": "2026-10-12T23:23:32.546Z"
+        },
+        {
+          "name": "authority-evidence",
+          "durationMs": 730,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:38.119Z",
+          "finishedAt": "2026-10-12T23:22:38.859Z"
+        },
+        {
+          "name": "harness",
+          "durationMs": 164,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:38.868Z",
+          "finishedAt": "2026-10-12T23:22:39.041Z"
+        },
+        {
+          "name": "harness-context",
+          "durationMs": 197,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:39.050Z",
+          "finishedAt": "2026-10-12T23:22:39.255Z"
+        },
+        {
+          "name": "harness-evidence",
+          "durationMs": 387,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:39.264Z",
+          "finishedAt": "2026-10-12T23:22:39.660Z"
+        },
+        {
+          "name": "plan-refutation-current",
+          "durationMs": 4677,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:23:32.566Z",
+          "finishedAt": "2026-10-12T23:23:37.257Z"
+        },
+        {
+          "name": "artifact-corpus",
+          "durationMs": 298,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:23:32.568Z",
+          "finishedAt": "2026-10-12T23:23:32.903Z"
+        },
+        {
+          "name": "artifact-evidence",
+          "durationMs": 285,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:39.669Z",
+          "finishedAt": "2026-10-12T23:22:39.962Z"
+        },
+        {
+          "name": "verification-evidence",
+          "durationMs": 1593,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:39.972Z",
+          "finishedAt": "2026-10-12T23:22:41.574Z"
+        },
+        {
+          "name": "feedback-evidence",
+          "durationMs": 3251,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:40.606Z",
+          "finishedAt": "2026-10-12T23:22:43.871Z"
+        },
+        {
+          "name": "meta",
+          "durationMs": 3581,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:22:40.619Z",
+          "finishedAt": "2026-10-12T23:22:44.220Z"
+        },
+        {
+          "name": "registrations",
+          "durationMs": 1165,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:23:32.914Z",
+          "finishedAt": "2026-10-12T23:23:34.100Z"
+        },
+        {
+          "name": "plan",
+          "durationMs": 4623,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:23:34.111Z",
+          "finishedAt": "2026-10-12T23:23:38.745Z"
+        },
+        {
+          "name": "reader-profiles",
+          "durationMs": 446,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:23:34.905Z",
+          "finishedAt": "2026-10-12T23:23:35.360Z"
+        },
+        {
+          "name": "reader-fixtures",
+          "durationMs": 11093,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:23:35.370Z",
+          "finishedAt": "2026-10-12T23:23:46.471Z"
+        },
+        {
+          "name": "entropy",
+          "durationMs": 364,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:23:37.267Z",
+          "finishedAt": "2026-10-12T23:23:37.641Z"
+        }
+      ]
+    },
+    {
+      "checkId": "npm test",
+      "codeIdentity": "4de390c177f92ce4bb932ad47a79b8d3f592bed430674a702d377ce47958f7d1",
+      "treeHash": "6ef6947123ec5d4682bc4f0a4e0b63f767923ab0",
+      "recordedAt": "2026-10-13T00:00:37.363Z",
+      "durationMs": 2137999,
+      "exitCode": 0,
+      "executed": true,
+      "gateSelection": "review",
+      "executionMode": "fresh",
+      "freshSuites": 91,
+      "reusedSuites": 0,
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "evidenceRef": "host-gate:4de390c177f92ce4bb932ad47a79b8d3f592bed430674a702d377ce47958f7d1:npm test",
+      "requiredSuites": [
+        "build",
+        "format",
+        "release-preparation",
+        "github-body",
+        "outward-lint",
+        "target-publish",
+        "target-worktree",
+        "vertical",
+        "license-fixtures",
+        "publication-fixtures",
+        "backup-intake",
+        "launchpad",
+        "beacon-portability",
+        "checkpoint",
+        "worktree",
+        "worktree-integration",
+        "release",
+        "work-orders-fixtures",
+        "siblings-fixtures",
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console",
+        "browser-evidence",
+        "adjacent-queue",
+        "derived-orders",
+        "portfolio",
+        "codex-continuation",
+        "authority-grants",
+        "launchpad-planning",
+        "configuration-root",
+        "harness-fixtures",
+        "plan-refutation",
+        "runner-fixtures",
+        "process-debt",
+        "registrations"
+      ],
+      "suiteCount": 36,
+      "taskCount": 91,
+      "tasks": [
+        {
+          "name": "format",
+          "durationMs": 8947,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 4,
+          "startedAt": "2026-10-12T23:24:59.402Z",
+          "finishedAt": "2026-10-12T23:25:08.361Z"
+        },
+        {
+          "name": "build",
+          "durationMs": 938,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 4,
+          "startedAt": "2026-10-12T23:25:08.372Z",
+          "finishedAt": "2026-10-12T23:25:09.336Z"
+        },
+        {
+          "name": "harness-fixtures",
+          "durationMs": 319216,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 4,
+          "startedAt": "2026-10-12T23:25:09.346Z",
+          "finishedAt": "2026-10-12T23:30:28.571Z"
+        },
+        {
+          "name": "process-debt",
+          "durationMs": 142169,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 4,
+          "startedAt": "2026-10-12T23:30:28.582Z",
+          "finishedAt": "2026-10-12T23:32:50.760Z"
+        },
+        {
+          "name": "release:prepare",
+          "durationMs": 1063,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:32:50.770Z",
+          "finishedAt": "2026-10-12T23:32:51.847Z"
+        },
+        {
+          "name": "release:case:preflight",
+          "durationMs": 192,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:32:51.853Z",
+          "finishedAt": "2026-10-12T23:32:52.051Z"
+        },
+        {
+          "name": "release-preparation",
+          "durationMs": 3718,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:32:50.771Z",
+          "finishedAt": "2026-10-12T23:32:54.672Z"
+        },
+        {
+          "name": "release:case:surfaces_local_snapshot",
+          "durationMs": 1245,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:32:54.679Z",
+          "finishedAt": "2026-10-12T23:32:55.929Z"
+        },
+        {
+          "name": "release:case:surfaces",
+          "durationMs": 5268,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:32:52.058Z",
+          "finishedAt": "2026-10-12T23:32:57.333Z"
+        },
+        {
+          "name": "release:case:prepare_independent",
+          "durationMs": 3433,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:32:55.937Z",
+          "finishedAt": "2026-10-12T23:32:59.377Z"
+        },
+        {
+          "name": "release:case:surfaces_committed_readme",
+          "durationMs": 2022,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:32:59.384Z",
+          "finishedAt": "2026-10-12T23:33:01.413Z"
+        },
+        {
+          "name": "release:case:license_surfaces",
+          "durationMs": 5501,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:32:57.339Z",
+          "finishedAt": "2026-10-12T23:33:02.847Z"
+        },
+        {
+          "name": "release:case:surfaces_lower",
+          "durationMs": 1491,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:01.421Z",
+          "finishedAt": "2026-10-12T23:33:02.922Z"
+        },
+        {
+          "name": "release:case:surfaces_first",
+          "durationMs": 1102,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:02.854Z",
+          "finishedAt": "2026-10-12T23:33:03.962Z"
+        },
+        {
+          "name": "release:case:surfaces_non_source",
+          "durationMs": 1136,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:03.977Z",
+          "finishedAt": "2026-10-12T23:33:05.122Z"
+        },
+        {
+          "name": "release:case:surfaces_component",
+          "durationMs": 2206,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:02.928Z",
+          "finishedAt": "2026-10-12T23:33:05.140Z"
+        },
+        {
+          "name": "release:case:surfaces_new_component",
+          "durationMs": 1214,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:05.129Z",
+          "finishedAt": "2026-10-12T23:33:06.356Z"
+        },
+        {
+          "name": "release:case:surfaceclose_linked",
+          "durationMs": 1901,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:06.364Z",
+          "finishedAt": "2026-10-12T23:33:08.274Z"
+        },
+        {
+          "name": "release:case:surfaceclose",
+          "durationMs": 3215,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:05.196Z",
+          "finishedAt": "2026-10-12T23:33:08.417Z"
+        },
+        {
+          "name": "release:case:bodyclose",
+          "durationMs": 1764,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:08.280Z",
+          "finishedAt": "2026-10-12T23:33:10.050Z"
+        },
+        {
+          "name": "release:case:dirty",
+          "durationMs": 3924,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:08.424Z",
+          "finishedAt": "2026-10-12T23:33:12.357Z"
+        },
+        {
+          "name": "release:case:unreachable",
+          "durationMs": 3764,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:10.076Z",
+          "finishedAt": "2026-10-12T23:33:13.849Z"
+        },
+        {
+          "name": "release:case:derived",
+          "durationMs": 5755,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:12.365Z",
+          "finishedAt": "2026-10-12T23:33:18.128Z"
+        },
+        {
+          "name": "release:case:settings_scope",
+          "durationMs": 4964,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:13.871Z",
+          "finishedAt": "2026-10-12T23:33:18.855Z"
+        },
+        {
+          "name": "release:case:nonmain",
+          "durationMs": 1483,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:18.143Z",
+          "finishedAt": "2026-10-12T23:33:19.638Z"
+        },
+        {
+          "name": "release:case:divergence",
+          "durationMs": 1313,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:18.871Z",
+          "finishedAt": "2026-10-12T23:33:20.194Z"
+        },
+        {
+          "name": "release:case:malformed",
+          "durationMs": 1237,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:19.647Z",
+          "finishedAt": "2026-10-12T23:33:20.892Z"
+        },
+        {
+          "name": "release:case:unauthenticated",
+          "durationMs": 2187,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:20.901Z",
+          "finishedAt": "2026-10-12T23:33:23.098Z"
+        },
+        {
+          "name": "release:case:splitorigin",
+          "durationMs": 1227,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:23.106Z",
+          "finishedAt": "2026-10-12T23:33:24.341Z"
+        },
+        {
+          "name": "release:case:lower",
+          "durationMs": 2485,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:24.349Z",
+          "finishedAt": "2026-10-12T23:33:26.847Z"
+        },
+        {
+          "name": "release:case:failures",
+          "durationMs": 3579,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:26.855Z",
+          "finishedAt": "2026-10-12T23:33:30.443Z"
+        },
+        {
+          "name": "release:case:cadence_missing",
+          "durationMs": 3313,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:30.452Z",
+          "finishedAt": "2026-10-12T23:33:33.780Z"
+        },
+        {
+          "name": "release:case:missinggh",
+          "durationMs": 18443,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:20.203Z",
+          "finishedAt": "2026-10-12T23:33:38.656Z"
+        },
+        {
+          "name": "release:case:cadence_inconsistent",
+          "durationMs": 6785,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:33.792Z",
+          "finishedAt": "2026-10-12T23:33:40.598Z"
+        },
+        {
+          "name": "release:case:conflict",
+          "durationMs": 3166,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:38.665Z",
+          "finishedAt": "2026-10-12T23:33:41.839Z"
+        },
+        {
+          "name": "release:case:localconflict",
+          "durationMs": 3160,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:40.620Z",
+          "finishedAt": "2026-10-12T23:33:43.797Z"
+        },
+        {
+          "name": "release:case:nestedtag",
+          "durationMs": 3022,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:41.849Z",
+          "finishedAt": "2026-10-12T23:33:44.881Z"
+        },
+        {
+          "name": "release:case:prepare",
+          "durationMs": 4936,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:43.810Z",
+          "finishedAt": "2026-10-12T23:33:48.754Z"
+        },
+        {
+          "name": "release:case:missinglocalprevious",
+          "durationMs": 4944,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:44.891Z",
+          "finishedAt": "2026-10-12T23:33:49.845Z"
+        },
+        {
+          "name": "release:case:pushfail",
+          "durationMs": 5105,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:48.765Z",
+          "finishedAt": "2026-10-12T23:33:53.878Z"
+        },
+        {
+          "name": "release:case:refrecovery",
+          "durationMs": 7450,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:49.855Z",
+          "finishedAt": "2026-10-12T23:33:57.313Z"
+        },
+        {
+          "name": "release:case:submodule_force",
+          "durationMs": 8638,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:57.332Z",
+          "finishedAt": "2026-10-12T23:34:05.987Z"
+        },
+        {
+          "name": "release:case:malformed_material",
+          "durationMs": 2441,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:34:06.014Z",
+          "finishedAt": "2026-10-12T23:34:08.478Z"
+        },
+        {
+          "name": "release:case:createrecovery",
+          "durationMs": 21652,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:33:53.888Z",
+          "finishedAt": "2026-10-12T23:34:15.551Z"
+        },
+        {
+          "name": "release:case:stale_helpers",
+          "durationMs": 15161,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:34:08.516Z",
+          "finishedAt": "2026-10-12T23:34:23.700Z"
+        },
+        {
+          "name": "release:case:success",
+          "durationMs": 33828,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:34:23.711Z",
+          "finishedAt": "2026-10-12T23:34:57.550Z"
+        },
+        {
+          "name": "release:case:runtime_refresh",
+          "durationMs": 44149,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:34:15.576Z",
+          "finishedAt": "2026-10-12T23:34:59.738Z"
+        },
+        {
+          "name": "release:case:firstrelease",
+          "durationMs": 6486,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:34:59.751Z",
+          "finishedAt": "2026-10-12T23:35:06.252Z"
+        },
+        {
+          "name": "release:case:edition",
+          "durationMs": 12986,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:34:57.570Z",
+          "finishedAt": "2026-10-12T23:35:10.567Z"
+        },
+        {
+          "name": "release:case:cached_evidence",
+          "durationMs": 11880,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:35:06.271Z",
+          "finishedAt": "2026-10-12T23:35:18.168Z"
+        },
+        {
+          "name": "release:case:composed_evidence",
+          "durationMs": 10289,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:35:10.578Z",
+          "finishedAt": "2026-10-12T23:35:20.876Z"
+        },
+        {
+          "name": "release:case:concurrent",
+          "durationMs": 26670,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:35:18.183Z",
+          "finishedAt": "2026-10-12T23:35:44.865Z"
+        },
+        {
+          "name": "release:case:close_completion",
+          "durationMs": 14164,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:35:44.878Z",
+          "finishedAt": "2026-10-12T23:35:59.051Z"
+        },
+        {
+          "name": "release:case:close_sealed",
+          "durationMs": 11381,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:35:59.060Z",
+          "finishedAt": "2026-10-12T23:36:10.450Z"
+        },
+        {
+          "name": "release:case:material",
+          "durationMs": 75717,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:35:20.885Z",
+          "finishedAt": "2026-10-12T23:36:36.615Z"
+        },
+        {
+          "name": "release:case:close_retry_paths",
+          "durationMs": 7427,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:36:36.624Z",
+          "finishedAt": "2026-10-12T23:36:44.062Z"
+        },
+        {
+          "name": "release:case:close_leftover",
+          "durationMs": 62922,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:36:10.465Z",
+          "finishedAt": "2026-10-12T23:37:13.402Z"
+        },
+        {
+          "name": "github-body",
+          "durationMs": 267,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:37:13.411Z",
+          "finishedAt": "2026-10-12T23:37:13.688Z"
+        },
+        {
+          "name": "outward-lint",
+          "durationMs": 727,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:37:13.698Z",
+          "finishedAt": "2026-10-12T23:37:14.433Z"
+        },
+        {
+          "name": "worktree",
+          "durationMs": 272916,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:32:50.770Z",
+          "finishedAt": "2026-10-12T23:37:23.766Z"
+        },
+        {
+          "name": "release:case:close_receipt_recovery",
+          "durationMs": 43267,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:36:44.068Z",
+          "finishedAt": "2026-10-12T23:37:27.344Z"
+        },
+        {
+          "name": "skeleton",
+          "durationMs": 283328,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:32:50.770Z",
+          "finishedAt": "2026-10-12T23:37:34.238Z"
+        },
+        {
+          "name": "publication-fixtures",
+          "durationMs": 1260,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:37:34.248Z",
+          "finishedAt": "2026-10-12T23:37:35.516Z"
+        },
+        {
+          "name": "backup-intake",
+          "durationMs": 451,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:37:35.526Z",
+          "finishedAt": "2026-10-12T23:37:35.985Z"
+        },
+        {
+          "name": "license-fixtures",
+          "durationMs": 42107,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:37:27.353Z",
+          "finishedAt": "2026-10-12T23:38:09.469Z"
+        },
+        {
+          "name": "beacon-portability",
+          "durationMs": 1467,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:38:09.493Z",
+          "finishedAt": "2026-10-12T23:38:10.971Z"
+        },
+        {
+          "name": "target-worktree",
+          "durationMs": 49937,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:37:23.786Z",
+          "finishedAt": "2026-10-12T23:38:13.736Z"
+        },
+        {
+          "name": "checkpoint",
+          "durationMs": 12016,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:38:10.981Z",
+          "finishedAt": "2026-10-12T23:38:23.007Z"
+        },
+        {
+          "name": "work-orders-fixtures",
+          "durationMs": 29775,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:38:23.024Z",
+          "finishedAt": "2026-10-12T23:38:52.815Z"
+        },
+        {
+          "name": "siblings-fixtures",
+          "durationMs": 16304,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:38:52.830Z",
+          "finishedAt": "2026-10-12T23:39:09.146Z"
+        },
+        {
+          "name": "kernel",
+          "durationMs": 786,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:39:09.159Z",
+          "finishedAt": "2026-10-12T23:39:09.959Z"
+        },
+        {
+          "name": "compiler",
+          "durationMs": 1392,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:39:09.973Z",
+          "finishedAt": "2026-10-12T23:39:11.373Z"
+        },
+        {
+          "name": "console",
+          "durationMs": 25173,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:39:11.387Z",
+          "finishedAt": "2026-10-12T23:39:36.573Z"
+        },
+        {
+          "name": "target-publish",
+          "durationMs": 143264,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:37:14.443Z",
+          "finishedAt": "2026-10-12T23:39:37.717Z"
+        },
+        {
+          "name": "adjacent-queue",
+          "durationMs": 786,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:39:37.728Z",
+          "finishedAt": "2026-10-12T23:39:38.524Z"
+        },
+        {
+          "name": "derived-orders",
+          "durationMs": 10287,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:39:38.534Z",
+          "finishedAt": "2026-10-12T23:39:48.835Z"
+        },
+        {
+          "name": "browser-evidence",
+          "durationMs": 35050,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:39:36.600Z",
+          "finishedAt": "2026-10-12T23:40:11.667Z"
+        },
+        {
+          "name": "codex-continuation",
+          "durationMs": 7679,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:40:11.676Z",
+          "finishedAt": "2026-10-12T23:40:19.366Z"
+        },
+        {
+          "name": "authority-grants",
+          "durationMs": 247,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:40:19.374Z",
+          "finishedAt": "2026-10-12T23:40:19.630Z"
+        },
+        {
+          "name": "portfolio",
+          "durationMs": 37620,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:39:48.845Z",
+          "finishedAt": "2026-10-12T23:40:26.474Z"
+        },
+        {
+          "name": "configuration-root",
+          "durationMs": 7450,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:40:26.484Z",
+          "finishedAt": "2026-10-12T23:40:33.943Z"
+        },
+        {
+          "name": "launchpad-planning",
+          "durationMs": 57493,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:40:19.638Z",
+          "finishedAt": "2026-10-12T23:41:17.142Z"
+        },
+        {
+          "name": "worktree-integration",
+          "durationMs": 216319,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:38:13.745Z",
+          "finishedAt": "2026-10-12T23:41:50.075Z"
+        },
+        {
+          "name": "registrations",
+          "durationMs": 804,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:41:50.082Z",
+          "finishedAt": "2026-10-12T23:41:50.894Z"
+        },
+        {
+          "name": "plan-refutation",
+          "durationMs": 78273,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:40:33.951Z",
+          "finishedAt": "2026-10-12T23:41:52.232Z"
+        },
+        {
+          "name": "runner-fixtures",
+          "durationMs": 132263,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:41:17.153Z",
+          "finishedAt": "2026-10-12T23:43:29.425Z"
+        },
+        {
+          "name": "launchpad",
+          "durationMs": 480677,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:37:35.993Z",
+          "finishedAt": "2026-10-12T23:45:36.683Z"
+        },
+        {
+          "name": "vertical:file:test-vertical.mjs:statements",
+          "durationMs": 566246,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 2,
+          "startedAt": "2026-10-12T23:41:52.241Z",
+          "finishedAt": "2026-10-12T23:51:18.516Z"
+        },
+        {
+          "name": "vertical:file:test-vertical.mjs:workflow",
+          "durationMs": 361423,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 2,
+          "startedAt": "2026-10-12T23:45:36.694Z",
+          "finishedAt": "2026-10-12T23:51:38.140Z"
+        },
+        {
+          "name": "vertical:file:test-vertical.recovery.mjs",
+          "durationMs": 382468,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 2,
+          "startedAt": "2026-10-12T23:51:38.149Z",
+          "finishedAt": "2026-10-12T23:58:00.637Z"
+        },
+        {
+          "name": "vertical:file:test-vertical-judgment.mjs",
+          "durationMs": 558337,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 2,
+          "startedAt": "2026-10-12T23:51:18.535Z",
+          "finishedAt": "2026-10-13T00:00:36.894Z"
+        }
+      ],
+      "suites": [
+        {
+          "name": "build",
+          "durationMs": 938,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 4,
+          "startedAt": "2026-10-12T23:25:08.372Z",
+          "finishedAt": "2026-10-12T23:25:09.336Z",
+          "outputDigest": "f0c955d0ffe94c29132eeef4474b5f2f948c70db7ecb0feb864df595b2ebd55e"
+        },
+        {
+          "name": "format",
+          "durationMs": 8947,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 4,
+          "startedAt": "2026-10-12T23:24:59.402Z",
+          "finishedAt": "2026-10-12T23:25:08.361Z"
+        },
+        {
+          "name": "release-preparation",
+          "durationMs": 3718,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:32:50.771Z",
+          "finishedAt": "2026-10-12T23:32:54.672Z"
+        },
+        {
+          "name": "github-body",
+          "durationMs": 267,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:37:13.411Z",
+          "finishedAt": "2026-10-12T23:37:13.688Z"
+        },
+        {
+          "name": "outward-lint",
+          "durationMs": 727,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:37:13.698Z",
+          "finishedAt": "2026-10-12T23:37:14.433Z"
+        },
+        {
+          "name": "target-publish",
+          "durationMs": 143264,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:37:14.443Z",
+          "finishedAt": "2026-10-12T23:39:37.717Z"
+        },
+        {
+          "name": "target-worktree",
+          "durationMs": 49937,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:37:23.786Z",
+          "finishedAt": "2026-10-12T23:38:13.736Z"
+        },
+        {
+          "name": "vertical",
+          "durationMs": 1124653,
+          "exitCode": 0,
+          "executed": true,
+          "reused": false,
+          "expectedCases": [
+            "vertical:file:test-vertical.mjs:statements",
+            "vertical:file:test-vertical.mjs:workflow",
+            "vertical:file:test-vertical-judgment.mjs",
+            "vertical:file:test-vertical.recovery.mjs"
+          ],
+          "cases": [
+            {
+              "name": "vertical:file:test-vertical.mjs:statements",
+              "durationMs": 566246,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 2,
+              "startedAt": "2026-10-12T23:41:52.241Z",
+              "finishedAt": "2026-10-12T23:51:18.516Z"
+            },
+            {
+              "name": "vertical:file:test-vertical.mjs:workflow",
+              "durationMs": 361423,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 2,
+              "startedAt": "2026-10-12T23:45:36.694Z",
+              "finishedAt": "2026-10-12T23:51:38.140Z"
+            },
+            {
+              "name": "vertical:file:test-vertical.recovery.mjs",
+              "durationMs": 382468,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 2,
+              "startedAt": "2026-10-12T23:51:38.149Z",
+              "finishedAt": "2026-10-12T23:58:00.637Z"
+            },
+            {
+              "name": "vertical:file:test-vertical-judgment.mjs",
+              "durationMs": 558337,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 2,
+              "startedAt": "2026-10-12T23:51:18.535Z",
+              "finishedAt": "2026-10-13T00:00:36.894Z"
+            }
+          ]
+        },
+        {
+          "name": "license-fixtures",
+          "durationMs": 42107,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:37:27.353Z",
+          "finishedAt": "2026-10-12T23:38:09.469Z"
+        },
+        {
+          "name": "publication-fixtures",
+          "durationMs": 1260,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:37:34.248Z",
+          "finishedAt": "2026-10-12T23:37:35.516Z"
+        },
+        {
+          "name": "backup-intake",
+          "durationMs": 451,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:37:35.526Z",
+          "finishedAt": "2026-10-12T23:37:35.985Z"
+        },
+        {
+          "name": "launchpad",
+          "durationMs": 480677,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:37:35.993Z",
+          "finishedAt": "2026-10-12T23:45:36.683Z"
+        },
+        {
+          "name": "beacon-portability",
+          "durationMs": 1467,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:38:09.493Z",
+          "finishedAt": "2026-10-12T23:38:10.971Z"
+        },
+        {
+          "name": "checkpoint",
+          "durationMs": 12016,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:38:10.981Z",
+          "finishedAt": "2026-10-12T23:38:23.007Z"
+        },
+        {
+          "name": "worktree",
+          "durationMs": 272916,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:32:50.770Z",
+          "finishedAt": "2026-10-12T23:37:23.766Z"
+        },
+        {
+          "name": "worktree-integration",
+          "durationMs": 216319,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:38:13.745Z",
+          "finishedAt": "2026-10-12T23:41:50.075Z"
+        },
+        {
+          "name": "release",
+          "durationMs": 276574,
+          "exitCode": 0,
+          "executed": true,
+          "reused": false,
+          "expectedCases": [
+            "release:prepare",
+            "release:case:preflight",
+            "release:case:surfaces",
+            "release:case:surfaces_local_snapshot",
+            "release:case:prepare_independent",
+            "release:case:license_surfaces",
+            "release:case:surfaces_committed_readme",
+            "release:case:surfaces_lower",
+            "release:case:surfaces_first",
+            "release:case:surfaces_component",
+            "release:case:surfaces_non_source",
+            "release:case:surfaces_new_component",
+            "release:case:surfaceclose",
+            "release:case:surfaceclose_linked",
+            "release:case:bodyclose",
+            "release:case:dirty",
+            "release:case:unreachable",
+            "release:case:derived",
+            "release:case:settings_scope",
+            "release:case:nonmain",
+            "release:case:divergence",
+            "release:case:malformed",
+            "release:case:missinggh",
+            "release:case:unauthenticated",
+            "release:case:splitorigin",
+            "release:case:lower",
+            "release:case:failures",
+            "release:case:cadence_missing",
+            "release:case:cadence_inconsistent",
+            "release:case:conflict",
+            "release:case:localconflict",
+            "release:case:nestedtag",
+            "release:case:prepare",
+            "release:case:missinglocalprevious",
+            "release:case:pushfail",
+            "release:case:refrecovery",
+            "release:case:createrecovery",
+            "release:case:submodule_force",
+            "release:case:malformed_material",
+            "release:case:stale_helpers",
+            "release:case:runtime_refresh",
+            "release:case:success",
+            "release:case:edition",
+            "release:case:firstrelease",
+            "release:case:cached_evidence",
+            "release:case:composed_evidence",
+            "release:case:concurrent",
+            "release:case:material",
+            "release:case:close_completion",
+            "release:case:close_sealed",
+            "release:case:close_leftover",
+            "release:case:close_retry_paths",
+            "release:case:close_receipt_recovery"
+          ],
+          "cases": [
+            {
+              "name": "release:prepare",
+              "durationMs": 1063,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:32:50.770Z",
+              "finishedAt": "2026-10-12T23:32:51.847Z"
+            },
+            {
+              "name": "release:case:preflight",
+              "durationMs": 192,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:32:51.853Z",
+              "finishedAt": "2026-10-12T23:32:52.051Z"
+            },
+            {
+              "name": "release:case:surfaces_local_snapshot",
+              "durationMs": 1245,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:32:54.679Z",
+              "finishedAt": "2026-10-12T23:32:55.929Z"
+            },
+            {
+              "name": "release:case:surfaces",
+              "durationMs": 5268,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:32:52.058Z",
+              "finishedAt": "2026-10-12T23:32:57.333Z"
+            },
+            {
+              "name": "release:case:prepare_independent",
+              "durationMs": 3433,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:32:55.937Z",
+              "finishedAt": "2026-10-12T23:32:59.377Z"
+            },
+            {
+              "name": "release:case:surfaces_committed_readme",
+              "durationMs": 2022,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:32:59.384Z",
+              "finishedAt": "2026-10-12T23:33:01.413Z"
+            },
+            {
+              "name": "release:case:license_surfaces",
+              "durationMs": 5501,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:32:57.339Z",
+              "finishedAt": "2026-10-12T23:33:02.847Z"
+            },
+            {
+              "name": "release:case:surfaces_lower",
+              "durationMs": 1491,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:01.421Z",
+              "finishedAt": "2026-10-12T23:33:02.922Z"
+            },
+            {
+              "name": "release:case:surfaces_first",
+              "durationMs": 1102,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:02.854Z",
+              "finishedAt": "2026-10-12T23:33:03.962Z"
+            },
+            {
+              "name": "release:case:surfaces_non_source",
+              "durationMs": 1136,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:03.977Z",
+              "finishedAt": "2026-10-12T23:33:05.122Z"
+            },
+            {
+              "name": "release:case:surfaces_component",
+              "durationMs": 2206,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:02.928Z",
+              "finishedAt": "2026-10-12T23:33:05.140Z"
+            },
+            {
+              "name": "release:case:surfaces_new_component",
+              "durationMs": 1214,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:05.129Z",
+              "finishedAt": "2026-10-12T23:33:06.356Z"
+            },
+            {
+              "name": "release:case:surfaceclose_linked",
+              "durationMs": 1901,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:06.364Z",
+              "finishedAt": "2026-10-12T23:33:08.274Z"
+            },
+            {
+              "name": "release:case:surfaceclose",
+              "durationMs": 3215,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:05.196Z",
+              "finishedAt": "2026-10-12T23:33:08.417Z"
+            },
+            {
+              "name": "release:case:bodyclose",
+              "durationMs": 1764,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:08.280Z",
+              "finishedAt": "2026-10-12T23:33:10.050Z"
+            },
+            {
+              "name": "release:case:dirty",
+              "durationMs": 3924,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:08.424Z",
+              "finishedAt": "2026-10-12T23:33:12.357Z"
+            },
+            {
+              "name": "release:case:unreachable",
+              "durationMs": 3764,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:10.076Z",
+              "finishedAt": "2026-10-12T23:33:13.849Z"
+            },
+            {
+              "name": "release:case:derived",
+              "durationMs": 5755,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:12.365Z",
+              "finishedAt": "2026-10-12T23:33:18.128Z"
+            },
+            {
+              "name": "release:case:settings_scope",
+              "durationMs": 4964,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:13.871Z",
+              "finishedAt": "2026-10-12T23:33:18.855Z"
+            },
+            {
+              "name": "release:case:nonmain",
+              "durationMs": 1483,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:18.143Z",
+              "finishedAt": "2026-10-12T23:33:19.638Z"
+            },
+            {
+              "name": "release:case:divergence",
+              "durationMs": 1313,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:18.871Z",
+              "finishedAt": "2026-10-12T23:33:20.194Z"
+            },
+            {
+              "name": "release:case:malformed",
+              "durationMs": 1237,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:19.647Z",
+              "finishedAt": "2026-10-12T23:33:20.892Z"
+            },
+            {
+              "name": "release:case:unauthenticated",
+              "durationMs": 2187,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:20.901Z",
+              "finishedAt": "2026-10-12T23:33:23.098Z"
+            },
+            {
+              "name": "release:case:splitorigin",
+              "durationMs": 1227,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:23.106Z",
+              "finishedAt": "2026-10-12T23:33:24.341Z"
+            },
+            {
+              "name": "release:case:lower",
+              "durationMs": 2485,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:24.349Z",
+              "finishedAt": "2026-10-12T23:33:26.847Z"
+            },
+            {
+              "name": "release:case:failures",
+              "durationMs": 3579,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:26.855Z",
+              "finishedAt": "2026-10-12T23:33:30.443Z"
+            },
+            {
+              "name": "release:case:cadence_missing",
+              "durationMs": 3313,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:30.452Z",
+              "finishedAt": "2026-10-12T23:33:33.780Z"
+            },
+            {
+              "name": "release:case:missinggh",
+              "durationMs": 18443,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:20.203Z",
+              "finishedAt": "2026-10-12T23:33:38.656Z"
+            },
+            {
+              "name": "release:case:cadence_inconsistent",
+              "durationMs": 6785,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:33.792Z",
+              "finishedAt": "2026-10-12T23:33:40.598Z"
+            },
+            {
+              "name": "release:case:conflict",
+              "durationMs": 3166,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:38.665Z",
+              "finishedAt": "2026-10-12T23:33:41.839Z"
+            },
+            {
+              "name": "release:case:localconflict",
+              "durationMs": 3160,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:40.620Z",
+              "finishedAt": "2026-10-12T23:33:43.797Z"
+            },
+            {
+              "name": "release:case:nestedtag",
+              "durationMs": 3022,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:41.849Z",
+              "finishedAt": "2026-10-12T23:33:44.881Z"
+            },
+            {
+              "name": "release:case:prepare",
+              "durationMs": 4936,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:43.810Z",
+              "finishedAt": "2026-10-12T23:33:48.754Z"
+            },
+            {
+              "name": "release:case:missinglocalprevious",
+              "durationMs": 4944,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:44.891Z",
+              "finishedAt": "2026-10-12T23:33:49.845Z"
+            },
+            {
+              "name": "release:case:pushfail",
+              "durationMs": 5105,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:48.765Z",
+              "finishedAt": "2026-10-12T23:33:53.878Z"
+            },
+            {
+              "name": "release:case:refrecovery",
+              "durationMs": 7450,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:49.855Z",
+              "finishedAt": "2026-10-12T23:33:57.313Z"
+            },
+            {
+              "name": "release:case:submodule_force",
+              "durationMs": 8638,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:57.332Z",
+              "finishedAt": "2026-10-12T23:34:05.987Z"
+            },
+            {
+              "name": "release:case:malformed_material",
+              "durationMs": 2441,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:34:06.014Z",
+              "finishedAt": "2026-10-12T23:34:08.478Z"
+            },
+            {
+              "name": "release:case:createrecovery",
+              "durationMs": 21652,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:33:53.888Z",
+              "finishedAt": "2026-10-12T23:34:15.551Z"
+            },
+            {
+              "name": "release:case:stale_helpers",
+              "durationMs": 15161,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:34:08.516Z",
+              "finishedAt": "2026-10-12T23:34:23.700Z"
+            },
+            {
+              "name": "release:case:success",
+              "durationMs": 33828,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:34:23.711Z",
+              "finishedAt": "2026-10-12T23:34:57.550Z"
+            },
+            {
+              "name": "release:case:runtime_refresh",
+              "durationMs": 44149,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:34:15.576Z",
+              "finishedAt": "2026-10-12T23:34:59.738Z"
+            },
+            {
+              "name": "release:case:firstrelease",
+              "durationMs": 6486,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:34:59.751Z",
+              "finishedAt": "2026-10-12T23:35:06.252Z"
+            },
+            {
+              "name": "release:case:edition",
+              "durationMs": 12986,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:34:57.570Z",
+              "finishedAt": "2026-10-12T23:35:10.567Z"
+            },
+            {
+              "name": "release:case:cached_evidence",
+              "durationMs": 11880,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:35:06.271Z",
+              "finishedAt": "2026-10-12T23:35:18.168Z"
+            },
+            {
+              "name": "release:case:composed_evidence",
+              "durationMs": 10289,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:35:10.578Z",
+              "finishedAt": "2026-10-12T23:35:20.876Z"
+            },
+            {
+              "name": "release:case:concurrent",
+              "durationMs": 26670,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:35:18.183Z",
+              "finishedAt": "2026-10-12T23:35:44.865Z"
+            },
+            {
+              "name": "release:case:close_completion",
+              "durationMs": 14164,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:35:44.878Z",
+              "finishedAt": "2026-10-12T23:35:59.051Z"
+            },
+            {
+              "name": "release:case:close_sealed",
+              "durationMs": 11381,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:35:59.060Z",
+              "finishedAt": "2026-10-12T23:36:10.450Z"
+            },
+            {
+              "name": "release:case:material",
+              "durationMs": 75717,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:35:20.885Z",
+              "finishedAt": "2026-10-12T23:36:36.615Z"
+            },
+            {
+              "name": "release:case:close_retry_paths",
+              "durationMs": 7427,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:36:36.624Z",
+              "finishedAt": "2026-10-12T23:36:44.062Z"
+            },
+            {
+              "name": "release:case:close_leftover",
+              "durationMs": 62922,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:36:10.465Z",
+              "finishedAt": "2026-10-12T23:37:13.402Z"
+            },
+            {
+              "name": "release:case:close_receipt_recovery",
+              "durationMs": 43267,
+              "exitCode": 0,
+              "executed": true,
+              "excludedReads": 0,
+              "reservedSlots": 1,
+              "startedAt": "2026-10-12T23:36:44.068Z",
+              "finishedAt": "2026-10-12T23:37:27.344Z"
+            }
+          ]
+        },
+        {
+          "name": "work-orders-fixtures",
+          "durationMs": 29775,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:38:23.024Z",
+          "finishedAt": "2026-10-12T23:38:52.815Z"
+        },
+        {
+          "name": "siblings-fixtures",
+          "durationMs": 16304,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:38:52.830Z",
+          "finishedAt": "2026-10-12T23:39:09.146Z"
+        },
+        {
+          "name": "kernel",
+          "durationMs": 786,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:39:09.159Z",
+          "finishedAt": "2026-10-12T23:39:09.959Z"
+        },
+        {
+          "name": "compiler",
+          "durationMs": 1392,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:39:09.973Z",
+          "finishedAt": "2026-10-12T23:39:11.373Z"
+        },
+        {
+          "name": "skeleton",
+          "durationMs": 283328,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:32:50.770Z",
+          "finishedAt": "2026-10-12T23:37:34.238Z"
+        },
+        {
+          "name": "console",
+          "durationMs": 25173,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:39:11.387Z",
+          "finishedAt": "2026-10-12T23:39:36.573Z"
+        },
+        {
+          "name": "browser-evidence",
+          "durationMs": 35050,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:39:36.600Z",
+          "finishedAt": "2026-10-12T23:40:11.667Z"
+        },
+        {
+          "name": "adjacent-queue",
+          "durationMs": 786,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:39:37.728Z",
+          "finishedAt": "2026-10-12T23:39:38.524Z"
+        },
+        {
+          "name": "derived-orders",
+          "durationMs": 10287,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:39:38.534Z",
+          "finishedAt": "2026-10-12T23:39:48.835Z"
+        },
+        {
+          "name": "portfolio",
+          "durationMs": 37620,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:39:48.845Z",
+          "finishedAt": "2026-10-12T23:40:26.474Z"
+        },
+        {
+          "name": "codex-continuation",
+          "durationMs": 7679,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:40:11.676Z",
+          "finishedAt": "2026-10-12T23:40:19.366Z"
+        },
+        {
+          "name": "authority-grants",
+          "durationMs": 247,
+          "exitCode": 0,
+          "executed": true,
+          "excludedReads": 0,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:40:19.374Z",
+          "finishedAt": "2026-10-12T23:40:19.630Z"
+        },
+        {
+          "name": "launchpad-planning",
+          "durationMs": 57493,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:40:19.638Z",
+          "finishedAt": "2026-10-12T23:41:17.142Z"
+        },
+        {
+          "name": "configuration-root",
+          "durationMs": 7450,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:40:26.484Z",
+          "finishedAt": "2026-10-12T23:40:33.943Z"
+        },
+        {
+          "name": "harness-fixtures",
+          "durationMs": 319216,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 4,
+          "startedAt": "2026-10-12T23:25:09.346Z",
+          "finishedAt": "2026-10-12T23:30:28.571Z"
+        },
+        {
+          "name": "plan-refutation",
+          "durationMs": 78273,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:40:33.951Z",
+          "finishedAt": "2026-10-12T23:41:52.232Z"
+        },
+        {
+          "name": "runner-fixtures",
+          "durationMs": 132263,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:41:17.153Z",
+          "finishedAt": "2026-10-12T23:43:29.425Z"
+        },
+        {
+          "name": "process-debt",
+          "durationMs": 142169,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 4,
+          "startedAt": "2026-10-12T23:30:28.582Z",
+          "finishedAt": "2026-10-12T23:32:50.760Z"
+        },
+        {
+          "name": "registrations",
+          "durationMs": 804,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:41:50.082Z",
+          "finishedAt": "2026-10-12T23:41:50.894Z"
+        }
+      ]
+    },
+    {
+      "checkId": "suite:runner-fixtures",
+      "codeIdentity": "4de390c177f92ce4bb932ad47a79b8d3f592bed430674a702d377ce47958f7d1",
+      "treeHash": "6ef6947123ec5d4682bc4f0a4e0b63f767923ab0",
+      "recordedAt": "2026-10-12T23:21:14.049Z",
+      "durationMs": 118889,
+      "exitCode": 0,
+      "executed": true,
+      "gateSelection": "single",
+      "executionMode": "fresh",
+      "freshSuites": 2,
+      "reusedSuites": 0,
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "evidenceRef": "host-gate:4de390c177f92ce4bb932ad47a79b8d3f592bed430674a702d377ce47958f7d1:runner-fixtures",
+      "requiredSuites": [
+        "build",
+        "runner-fixtures"
+      ],
+      "suiteCount": 2,
+      "taskCount": 2,
+      "tasks": [
+        {
+          "name": "build",
+          "durationMs": 863,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 4,
+          "startedAt": "2026-10-12T23:19:15.198Z",
+          "finishedAt": "2026-10-12T23:19:16.090Z"
+        },
+        {
+          "name": "runner-fixtures",
+          "durationMs": 117465,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:19:16.100Z",
+          "finishedAt": "2026-10-12T23:21:13.577Z"
+        }
+      ],
+      "suites": [
+        {
+          "name": "build",
+          "durationMs": 863,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 4,
+          "startedAt": "2026-10-12T23:19:15.198Z",
+          "finishedAt": "2026-10-12T23:19:16.090Z",
+          "outputDigest": "f0c955d0ffe94c29132eeef4474b5f2f948c70db7ecb0feb864df595b2ebd55e"
+        },
+        {
+          "name": "runner-fixtures",
+          "durationMs": 117465,
+          "exitCode": 0,
+          "executed": true,
+          "reservedSlots": 1,
+          "startedAt": "2026-10-12T23:19:16.100Z",
+          "finishedAt": "2026-10-12T23:21:13.577Z"
+        }
+      ]
+    }
+  ]
+}
