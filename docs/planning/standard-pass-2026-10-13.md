@@ -372,6 +372,10 @@ The register changed in four steps:
 4. **After all batches:** revision `9d5fe7a9…`, 1,089 rows, 246 pending (2
    open, 244 deferred, none untriaged and none awaiting review). That is
    eighteen fewer pending rows than at entry.
+5. **After the receipt, at the operator's word,** the map's candidate 10 (a
+   stale gate marker revived by a reused process id) was minted and deferred
+   as FUP-d40313eade76b8af. The register is then at revision `0e90a7c9…`,
+   with 1,090 rows and 247 pending, seventeen fewer than at entry.
 
 | Target | Rows | What the order's text says |
 | --- | --- | --- |
@@ -472,7 +476,8 @@ paragraph is added.
   - the sequence is one serial group, the operator's choice for the next
     thirty orders;
   - the map holds this pass's paragraph, the adjacent-track paragraph, the
-    candidates (eight, three of them added mid-pass) and the catalog rows;
+    candidates (ten: five from the first round, four added mid-pass and one
+    after the receipt) and the catalog rows;
   - the ledger holds a registration heading for this pass and one ideation
     section for the operator's own ideas;
   - the reader scores gain nine rows.

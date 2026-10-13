@@ -2687,6 +2687,29 @@ and left, each with its reopening observation:
    one up, a core pass needs one for a queued order (for example, WO-210's
    target gate declaration written from a target's own manifests), or the
    operator asks.
+10. **A stale gate marker revived by a reused process id.** A gate run on
+    2026-09-16 (`48933d91…`, pid 43275) left its active-run marker under
+    `docs/control/local/harness/active-gates/` when it ended.
+    - **Why it revived.** The marker carries no process start time
+      (`processStartedAt: null`). So `gateOwnerAlive`
+      (`packages/skeleton/src/gate-evidence.mjs` lines 341 to 358) treats it
+      as live whenever any process holds pid 43275.
+    - **What was observed.** On 2026-10-13 at about 20:11Z the hook refused a
+      read-only command as a write during that "active" gate. A minute later
+      `ps -p 43275` showed no process, and the same command passed.
+      Inference: a short-lived process held the pid at that instant.
+    - **Cleanup.** The planner removed the marker after the pass's receipt,
+      at the operator's word, and kept a copy in its scratch.
+    - **Still exposed.** New markers record their start time (line 418), but
+      `gateProcessStart` returns null wherever `ps` fails, so a marker made
+      there can be revived the same way. A marker whose run is killed is
+      never removed.
+
+    Route: treat a marker without a start time as dead once it is older
+    than the gate's longest deadline or predates the host's boot, and sweep
+    markers whose owners are dead. Reopen: a gate refusal names a run whose
+    marker is older than the gate's longest deadline, or an order edits
+    `packages/skeleton/src/gate-evidence.mjs`.
 
 ## Moved from the execution guide (2026-09-28)
 

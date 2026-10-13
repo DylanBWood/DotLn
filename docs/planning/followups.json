@@ -35313,6 +35313,30 @@
           "at": "2026-10-13T19:07:14.385Z"
         }
       ]
+    },
+    {
+      "id": "FUP-d40313eade76b8af",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-13::b264bce22253ef754e15ec36e3d549b28879338a09677aeae3c10f7d17858881",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "04536f039b19269cd4d97b175230aaae9dbb8e22dd1271e2af76063a5a66da38",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-13",
+          "title": "A stale gate marker revived by a reused process id.",
+          "summary": "10. **A stale gate marker revived by a reused process id.** A gate run on 2026-09-16 (`48933d91…`, pid 43275) left its active-run marker under `docs/control/local/harness/active-gates/` when it ended. - **Why it revived.** The marker carries no process start time (`processStartedAt: null`). So `gateOwnerAlive` (`packages/skeleton/src/gate-evidence.mjs` lines 341 to 358) treats it as live whenever any process holds pid 43275. - **What was observed.** On 2026-10-13 at about 20:11Z the hook refused a read-only command as a write during that \"active\" gate. A minute later `ps -p 43275` showed no process, and the same command passed. Inference: a short-lived process held the pid at that instant. -",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The one stale marker (run 48933d91, pid 43275, written 2026-09-16 without a process start time) was removed at the operator's word after the pass's receipt, so nothing now blocks; no queued order edits packages/skeleton/src/gate-evidence.mjs, and new markers carry a start time wherever ps works. [2026-10-13 standard planning pass (docs/planning/work-order-map.md, Candidates — returns from the standard pass, item 10)]",
+          "reopenWhen": "a gate refusal names a run whose marker is older than the gate's longest deadline, or an order edits packages/skeleton/src/gate-evidence.mjs",
+          "targets": [],
+          "at": "2026-10-13T20:14:56.017Z"
+        }
+      ]
     }
   ]
 }
