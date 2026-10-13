@@ -1051,5 +1051,12 @@ readings of the most material:
   operator's own fork, not a rule for every owner. It is reopened at
   WO-207's activation if the wording still reads as a rule.
 
+Two operator-word advisories remain in this pass's order text: WO-014's and
+WO-091's provenance quote a section and an entry title beside the word
+operator. They are advisories, not failures. A paraphrase made after the
+receipt changed judged order bytes, which the continuation check refuses, so
+the judged bytes stand and the next pass that amends either order
+paraphrases them.
+
 Fan-out: 32 subagents of the temporary cap of 40, the refuter last. The last
 commit of the pass restores `subagentCap` to 20.

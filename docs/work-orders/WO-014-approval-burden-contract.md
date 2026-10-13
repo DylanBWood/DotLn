@@ -42,8 +42,8 @@ review and created under operator direction; see
 `docs/final-reviews/WO-006/FINAL-001.md` §Follow-up work-order nominations.
 The identifier is an opaque stable reference assigned at creation, not a
 priority or an activation decision. It is the separately activated
-dedicated work order that WO-006's operator deferral (its paragraph on the
-operator deferral for the VER-002 repair, in
+dedicated work order that WO-006's operator deferral (the paragraph
+"Operator deferral for the VER-002 repair" in
 `docs/work-orders/WO-006-publication-bootstrap.md`) and
 `docs/verifications/WO-006/VER-003.md` §Operator-deferred axes — recorded,
 not scored call for; its first phase reconciles the personal posture

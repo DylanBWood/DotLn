@@ -64,7 +64,7 @@ in one order instead of 44 across five, with one handoff, one Preflight
 line and one full gate run before handoff.
 **Nomination provenance:** WO-037's design items, each cut into a bounded
 child at the operator's 2026-09-08 correction: multi-active link groups
-(its first item; the ledger entry on shared supports across multiple actives),
+(its first item; the ledger's "Shared supports across multiple actives"),
 the set definitions, the 5S set as data (product 05 §5S / 6S — the
 maintenance organism), the bonuses, and the scenario and tooltip items.
 Planner-synthesized drafts. Opaque identifier, not a priority. Clean-room
