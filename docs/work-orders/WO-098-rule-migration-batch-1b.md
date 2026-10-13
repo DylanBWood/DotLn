@@ -1,5 +1,7 @@
 # WO-098 — Rule migration batch 1b: six more units including one role-skill unit and one cadence unit complete the selection rule, the whole-set measurement is reported, and the batch template names batch two (version assigned at activation)
 
+**Umbrella record (2026-10-13):** superseded whole by WO-096, which carries this order's obligations under the operator's 2026-10-13 order-size direction ([the 2026-10-13 standard pass](../planning/standard-pass-2026-10-13.md), §12.3); not activatable. The text below is this order's last committed form, kept as the record of what WO-096 absorbed.
+
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
@@ -52,9 +54,10 @@ A recommendation, not a dependency token.
 <!-- dotln-dependencies:start -->
 [
   {
-    "workOrderId": "WO-097",
-    "relation": "hard",
-    "reason": "the first half-batch's retirements and bookkeeping"
+    "workOrderId": "WO-096",
+    "relation": "superseded",
+    "reason": "2026-10-13 planning merge: this order's obligations are carried by WO-096.",
+    "by": "WO-096"
   }
 ]
 <!-- dotln-dependencies:end -->

@@ -1,5 +1,7 @@
 # WO-093 — The 5S mechanics as data: Seiton, Seisō, Seiketsu, Shitsuke and Safety join Seiri as typed active mechanics with their terms, seeds, envelopes and tooltip collections, compiling alone and together in one group (version assigned at activation)
 
+**Umbrella record (2026-10-13):** superseded whole by WO-091, which carries this order's obligations under the operator's 2026-10-13 order-size direction ([the 2026-10-13 standard pass](../planning/standard-pass-2026-10-13.md), §12.3); not activatable. The text below is this order's last committed form, kept as the record of what WO-091 absorbed.
+
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
@@ -49,8 +51,9 @@ and also writes product 05. A recommendation, not a dependency token.
 [
   {
     "workOrderId": "WO-091",
-    "relation": "hard",
-    "reason": "the six mechanics compile in one group"
+    "relation": "superseded",
+    "reason": "2026-10-13 planning merge: this order's obligations are carried by WO-091.",
+    "by": "WO-091"
   }
 ]
 <!-- dotln-dependencies:end -->

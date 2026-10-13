@@ -105,7 +105,7 @@ placement and stale generated files to Sort, recurring repairs to Standardize.
 A portfolio names which pieces run unattended; a candidate of another piece is
 a product suggestion. Sort keeps its first-authority rule: a stale generated
 file's removal needs deletion, which no derived order carries, so it asks a
-human. Seiton and the remaining pieces join the vocabulary as WO-093 compiles
+human. Seiton and the remaining pieces join the vocabulary as WO-091 compiles
 them. Evidence: [WO-100 decisions](../evidence/WO-100/decisions.md).
 
 ## Leadership & autonomy — Marquet
@@ -1056,9 +1056,9 @@ warns that aggregating fragments can recreate the original rule/context burden.
 
 This leaves a planning gap: test actual entry, diagnosed adjacent work, deliberate
 chat steering and resumed behavior from a fresh session without operator
-coaching. WO-096 classifies governance; WO-097 replaces rules with executable
-checks/hooks and removes their sentences; WO-098 requires lower context for
-every role and detects restatement. Those orders do not yet guarantee this
+coaching. WO-096 classifies governance, replaces rules with executable
+checks/hooks and removes their sentences, and requires lower context for
+every role and detects restatement. That order does not yet guarantee this
 behavior. The next pass should map the gap to mechanical host facts or a bounded
 judgment, require an ablation and fresh-session demonstration, and compare
 context cost and operator interventions. The separate chat-intent issue may be

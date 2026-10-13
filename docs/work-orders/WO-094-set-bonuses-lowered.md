@@ -1,5 +1,7 @@
 # WO-094 — Set bonuses lowered: the five 5S bonuses compile to real emissions that arm at their piece counts and go dark one piece short, and the Safety gate compiles and refuses (version assigned at activation)
 
+**Umbrella record (2026-10-13):** superseded whole by WO-091, which carries this order's obligations under the operator's 2026-10-13 order-size direction ([the 2026-10-13 standard pass](../planning/standard-pass-2026-10-13.md), §12.3); not activatable. The text below is this order's last committed form, kept as the record of what WO-091 absorbed.
+
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
@@ -44,14 +46,10 @@ set. A recommendation, not a dependency token.
 <!-- dotln-dependencies:start -->
 [
   {
-    "workOrderId": "WO-092",
-    "relation": "hard",
-    "reason": "bonus emissions live in the sets collection"
-  },
-  {
-    "workOrderId": "WO-093",
-    "relation": "hard",
-    "reason": "the pieces the bonuses count"
+    "workOrderId": "WO-091",
+    "relation": "superseded",
+    "reason": "2026-10-13 planning merge: this order's obligations are carried by WO-091.",
+    "by": "WO-091"
   }
 ]
 <!-- dotln-dependencies:end -->

@@ -1,5 +1,7 @@
 # WO-208 — Instance extension point: a configured, manifest-excluded location for instance-owned code that the kit's machinery loads through the SourceAdapter port and registers for the sibling ports, never touched by an update, recorded at load and reviewed under the executable-code burden, with a fixture adapter as its first consumer and the enterprise-tracker adapter left to the work instance (version assigned at activation)
 
+**Umbrella record (2026-10-13):** superseded whole by WO-207, which carries this order's obligations under the operator's 2026-10-13 order-size direction ([the 2026-10-13 standard pass](../planning/standard-pass-2026-10-13.md), §12.3); not activatable. The text below is this order's last committed form, kept as the record of what WO-207 absorbed.
+
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor max; verifier xhigh; reviewer xhigh.
@@ -55,19 +57,10 @@ configuration and README, and products 03 and 12; WO-209 edits
 <!-- dotln-dependencies:start -->
 [
   {
-    "workOrderId": "WO-076",
-    "relation": "hard",
-    "reason": "the instance-owned, manifest-excluded convention the extension root follows"
-  },
-  {
-    "workOrderId": "WO-112",
-    "relation": "satisfied-by-close",
-    "reason": "the vertical's intake and the fetch seam the adapter plugs into"
-  },
-  {
-    "workOrderId": "WO-060",
-    "relation": "satisfied-by-close",
-    "reason": "decodeSourceBundle, the port's input contract every adapter's output passes through"
+    "workOrderId": "WO-207",
+    "relation": "superseded",
+    "reason": "2026-10-13 planning merge: this order's obligations are carried by WO-207.",
+    "by": "WO-207"
   }
 ]
 <!-- dotln-dependencies:end -->

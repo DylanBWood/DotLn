@@ -1,5 +1,7 @@
 # WO-194 — An instance keeps a private map from what its predecessors did to what carries it now, and can say when it is at least as capable; core ships the mechanism and never sees a row (version assigned at activation)
 
+**Umbrella record (2026-10-13):** superseded whole by WO-193, which carries this order's obligations under the operator's 2026-10-13 order-size direction ([the 2026-10-13 standard pass](../planning/standard-pass-2026-10-13.md), §12.3); not activatable. The text below is this order's last committed form, kept as the record of what WO-193 absorbed.
+
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer high.
@@ -49,19 +51,10 @@ generic vocabulary. A recommendation, not a dependency token.
 <!-- dotln-dependencies:start -->
 [
   {
-    "workOrderId": "WO-074",
-    "relation": "hard",
-    "reason": "the kit file set and manifest the parity command joins"
-  },
-  {
-    "workOrderId": "WO-076",
-    "relation": "hard",
-    "reason": "the instance-owned files and emitted build a row's carrier is checked against"
-  },
-  {
     "workOrderId": "WO-193",
-    "relation": "hard",
-    "reason": "the request draft that an unmapped row prefills with its generic statement"
+    "relation": "superseded",
+    "reason": "2026-10-13 planning merge: this order's obligations are carried by WO-193.",
+    "by": "WO-193"
   }
 ]
 <!-- dotln-dependencies:end -->

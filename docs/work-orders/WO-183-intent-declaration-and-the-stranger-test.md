@@ -24,8 +24,11 @@ Removes: the hand-written work order as the only way an intent enters
 this repository (the map's candidate since 2026-09-06), and the absence
 of any order for the `v1.0.0` exit. Re-mints: `dotln.ts` and the parity
 contract's sources are registered evidence sources (deterministic
-re-mint); the executor checks `FEEDBACK_SOURCE_PATHS`. Wall-clock, tokens
-and context bytes are unknown until run.
+re-mint); the executor checks `FEEDBACK_SOURCE_PATHS`. Commands: no new
+command name; `dotln intent` gains `--target`, `--help` and the receipt
+(step 1: the command exists). Steps: one witnessed run by a non-author, or
+the substitute run (step 9). Wall-clock, tokens and context bytes are
+unknown until run.
 **Nomination provenance:** the operator's message of 2026-09-30 (are
 product orders missing?), captured in ignored intake (SHA-256 in the
 ledger section); the map's candidate "Intent declaration and the stranger
@@ -37,13 +40,23 @@ taxonomy and without a giant transcript; exit: witnessed run by a
 non-author"); product 12's journeys as the scenarios. Planner-synthesized.
 Opaque identifier, not a priority. Clean-room screen: public product text;
 the non-author's identity stays out of the record; no stop condition.
+Carries FUP-0073 (the stranger test, allocated here by the 2026-09-30
+pass). Amended by the 2026-10-13 standard pass under the operator's sizing
+direction ([planning document](../planning/standard-pass-2026-10-13.md)
+§12): the queue is serial, so the placement names its position; a
+Preflight line is added; FUP-0073 and the two deferred rows whose
+reopening names this order's activation are carried below.
 **Depends on:** WO-118 merged (the resident-owned loop the intent enters
-and the exported starter instance); WO-115 merged (the parity contract;
-closed); WO-120 merged (derived work identity; closed).
-**Recommended placement:** immediately after WO-118 in the serial run,
-before WO-113, as a single entry; it is the product exit the run leads
-to and shares WO-118's surfaces. A recommendation, not a dependency
-token.
+and the exported starter instance; closed, v0.80.0); WO-115 merged (the
+parity contract; closed); WO-120 merged (derived work identity; closed).
+**Recommended placement:** position 10 of the serial queue (the operator
+keeps core's next thirty orders serial; planning document §12.4), after
+WO-193 and before WO-088, because it keeps the place the 2026-10-11 route
+pass gave it in the one-at-a-time tail, after the instance's request
+orders and ahead of WO-113, now part of WO-088
+([route pass](../planning/three-repository-route-2026-10-11.md) §6); with
+WO-118, its one hard dependency, closed, nothing else fixes it. A
+recommendation, not a dependency token.
 
 <!-- dotln-dependencies:start -->
 [
@@ -75,7 +88,8 @@ instance); `docs/work-orders/WO-123-vertical-composition.md` (the
 `intent` portfolio class); `docs/work-orders/WO-061-story-contract-compile.md`
 (the labeled inference episode); `docs/work-orders/WO-120-*.md` (derived
 identity); `packages/skeleton/src/dotln.ts`; the console's loopback
-command surface.
+command surface; 07-execution-guide.md §Preflight before the full gate
+(the **Preflight:** line below).
 
 **Objective:** a person who has not read these documents types one
 command with a bounded intent in their own words and receives, in one
@@ -190,6 +204,14 @@ product write-backs; the decisions.
 6. `npm test -- --review` and `npm run test:docs` green; `git diff
    --check` clean; no new dependency.
 
+**Preflight:** `npm test -- --only evidence-sources` for step 2,
+`npm test -- --only derived-orders` for steps 3–4 and 6,
+`npm test -- --only resume` for step 5, `npm test -- --only console-docs`
+for step 7, and `npm run test:docs` when a document changes (steps 9 and
+10), each under `node scripts/harness.mjs bounded --`; then one
+`npm test -- --review` (07-execution-guide.md §Preflight before the full
+gate).
+
 **Evidence gate:** the fixtures of criteria 1 to 3; the witnessed or
 substitute run; `npm test -- --review` before `implementation-ready`;
 the editions re-minted deterministically; a live feedback episode only if
@@ -208,8 +230,15 @@ a judged feedback source changes.
   WO-118's run or the substitute record (typed, prose-parsing screen).
   Reopen: a fork needs the intent filed as a forge issue.
 - Blocked on WO-118 for the starter and the admission path without an
-  issue binding; WO-190 may reorder 06 rungs (the heading is re-checked
-  at the base).
+  issue binding (met: WO-118 closed at v0.80.0 on 2026-10-13); WO-190 may
+  reorder 06 rungs (the heading is re-checked at the base).
+- FUP-0073 (the stranger test) is allocated here by the 2026-09-30 pass;
+  this order is its exit's shape.
+- FUP-eeb25ea9315438ad and FUP-2b9a8e696b38fb97 (WO-118 D013 and D018:
+  live status of resident-owned work) are deferred with this order's
+  activation among their reopening conditions, because its stranger watches
+  the console those rows describe (planning document §4); the activation
+  decision reads them.
 
 **Non-goals:** the loop's primitives and the resident (WO-118); a chat
 interface; the Angular shell (WO-083's fork); teaching the taxonomy (the

@@ -1,5 +1,7 @@
 # WO-089 — Capability table fold: the dated addenda fold into the rows they reassess in a prepared table that a planning pass installs, and the fold raises no level (version assigned at activation)
 
+**Umbrella record (2026-10-13):** superseded whole by WO-088, which carries this order's obligations under the operator's 2026-10-13 order-size direction ([the 2026-10-13 standard pass](../planning/standard-pass-2026-10-13.md), §12.3); not activatable. The text below is this order's last committed form, kept as the record of what WO-088 absorbed.
+
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
@@ -47,11 +49,10 @@ section present at its base. A recommendation, not a dependency token.
 <!-- dotln-dependencies:start -->
 [
   {
-    "workOrderId": "WO-053",
-    "relation": "planning-deferral",
-    "date": "2026-09-08",
-    "reason": "documentation structure is not the product bottleneck",
-    "until": "WO-053"
+    "workOrderId": "WO-088",
+    "relation": "superseded",
+    "reason": "2026-10-13 planning merge: this order's obligations are carried by WO-088.",
+    "by": "WO-088"
   }
 ]
 <!-- dotln-dependencies:end -->

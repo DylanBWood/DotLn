@@ -1,5 +1,7 @@
 # WO-205 — Writer-resistant Git interpretation: hidden index flags and writer-controlled Git configuration cannot change the bytes the source host after-tests or the commit the verification judges, proven for modified, deleted and executable files, replace refs and commit graphs, with ordinary recovery intact (version assigned at activation)
 
+**Umbrella record (2026-10-13):** superseded whole by WO-204, which carries this order's obligations under the operator's 2026-10-13 order-size direction ([the 2026-10-13 standard pass](../planning/standard-pass-2026-10-13.md), §12.3); not activatable. The text below is this order's last committed form, kept as the record of what WO-204 absorbed.
+
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor max; verifier xhigh; reviewer xhigh.
@@ -47,9 +49,10 @@ recommendation, not a dependency token.
 <!-- dotln-dependencies:start -->
 [
   {
-    "workOrderId": "WO-112",
-    "relation": "satisfied-by-close",
-    "reason": "the source-change worktree and verification worktree this order repairs"
+    "workOrderId": "WO-204",
+    "relation": "superseded",
+    "reason": "2026-10-13 planning merge: this order's obligations are carried by WO-204.",
+    "by": "WO-204"
   }
 ]
 <!-- dotln-dependencies:end -->

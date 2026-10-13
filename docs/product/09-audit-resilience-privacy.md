@@ -540,10 +540,13 @@ any real diagnostic source is connected.
 
 The 2026-10-02 reassessment adopts WO-062 D002's boundary: its adapter
 reads and stores deterministically and invokes no model. Its activation
-trigger has occurred; the candidate now reopens at the first consuming
-model invocation (including WO-123's composition review) or a proposed
-private-material reader. Neither the adapter nor its declared screen
-implements this plan ([decision](../evidence/WO-062/decisions.md#wo-062-d002--contract-and-exposure-boundary)).
+trigger has occurred, and so has the first consuming model invocation: the
+vertical's live intake and triage episodes read fetched scratch-issue
+bundles in WO-112's witnessed run and WO-118's starter runs, all synthetic
+and public, so no exposure plan was owed (2026-10-13 pass). The candidate
+now reopens at a proposed private-material reader or a live run whose
+source bundle carries material its profile classes as non-public. Neither
+the adapter nor its declared screen implements this plan ([decision](../evidence/WO-062/decisions.md#wo-062-d002--contract-and-exposure-boundary)).
 
 “Uses a model” is too coarse a privacy disclosure. Before a possible model
 invocation crosses its execution boundary, the compiler should be able to emit

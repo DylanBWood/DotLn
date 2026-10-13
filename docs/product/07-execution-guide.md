@@ -68,14 +68,18 @@ preserving correctness, authority, evidence, privacy and recoverability.
 
 The current [critical-path plan](../planning/critical-path-2026-09-08.md) targets
 the always-on runtime, its first real external source change and an independently
-verified source-to-deliverable loop. The [sequence](../planning/sequence.md) and
-selected work order determine current placement and authority. The mission is
-the outcome; the critical path is the dependency route to the next outcome.
-Useful prerequisite or risk-reduction work must name the blocked outcome it
-enables. Process activity, receipt volume and agent utilization are not progress
-by themselves. Goal alignment grants no authority to reorder or expand work.
-In all phases, the Goal Alignment and Process Cost procedure lives in the
-generated role skills [WO-043, 2026-09-11].
+verified source-to-deliverable loop.
+
+<!-- dotln-goal-rules:start -->
+
+The [sequence](../planning/sequence.md) and selected work order determine
+current placement and authority. The mission is the outcome; the critical path
+is the dependency route to the next outcome. Useful prerequisite or
+risk-reduction work must name the blocked outcome it enables. Process activity,
+receipt volume and agent utilization are not progress by themselves. Goal
+alignment grants no authority to reorder or expand work. In all phases, the Goal
+Alignment and Process Cost procedure lives in the generated role skills
+[WO-043, 2026-09-11].
 
 Accuracy takes priority over agreement in every phase. The already-equipped
 Correctness over Sycophancy rule applies to operator suggestions and the agent's
@@ -109,6 +113,8 @@ Required legal or release actions retain their existing authority; NoOp is a
 considered alternative, not an ambient veto or permission to abandon authorized
 work.
 
+<!-- dotln-goal-rules:end -->
+
 **Platform lens.** Four checks from the platforms lesson the operator
 pointed at (Steve Yegge's 2011 account of the Amazon service mandate) apply
 to any capability a plan or order lands: it arrives as an interface
@@ -122,6 +128,8 @@ accessibility failure [[vision-into-use pass](../planning/vision-into-use-2026-0
 §12, 2026-09-17]. The planning refuter's platform-first standard is
 unchanged.
 
+<!-- dotln-goal-rules:start -->
+
 Material choices and rationales go in existing phase evidence: per-order
 `docs/evidence/WO-NNN/decisions.md` and cited product sections for work-order
 decisions; planning dispositions/candidate records for planning choices; the
@@ -129,6 +137,8 @@ independent report or refutation receipt for its judgment; retained closeout
 evidence for release decisions. The decisions index exposes per-order records.
 Reuse and link a current rationale until its assumptions change; do not create
 a parallel decision log or an extra approval ritual.
+
+<!-- dotln-goal-rules:end -->
 
 The shared supports carry these duties and their compiled identity in both
 harnesses. They are instruction-level judgment, not proof that an agent applied
@@ -1263,7 +1273,11 @@ pre-mechanism evidence and are never rewritten or re-run by this gate.
 Standard artifacts, all doc-only:
 
 - a compaction-safety capture of the dispatch in ignored intake;
-- one dated ledger section for the pass (and one for any ideation batch);
+- for an ideation batch, one dated ledger section; a planning pass adds only
+  a dated registration heading that links its planning document, because the
+  plan tooling still finds passes by their ledger headings, until WO-088 moves
+  registration out of the ledger (the idea ledger holds the operator's own
+  ideas; operator direction, 2026-10-13);
 - the sequence revision, from which closed entries leave at each pass (the
   Closed section of the generated index's history page is their record) [REVIEW-002 pass,
   2026-09-22], and scoped map rationale, tracks, preflight, candidates,
@@ -1277,7 +1291,9 @@ Standard artifacts, all doc-only:
   wall-clock, context bytes, commands, tokens and steps, provenance, a dated
   observed gap, acceptance criteria whose last names both `npm test` and
   `npm run test:docs` [off-ramps pass, 2026-09-25; WO-111 VER-001 B3],
-  evidence, non-goals, and operator-review assumptions; an order
+  a Preflight line naming the single-suite checks for its steps
+  (§Preflight before the full gate; 2026-10-13 pass), evidence, non-goals,
+  and operator-review assumptions; an order
   that changes a file the feedback verifier judges (`FEEDBACK_SOURCE_PATHS`
   in `packages/skeleton/src/feedback-audit.ts`) beyond a component release
   label, or changes the regenerated feedback report, names the feedback
@@ -1352,7 +1368,36 @@ A classification of wording is a persisted judgment supplied as input; a
 record inside a document is a marker block holding JSON or a typed field.
 WO-123 (criterion 5, four repairs) and WO-187 (criteria 2 and 4, four
 repairs) spent 39.9 hours between them before each reader was replaced by a
-structured input.
+structured input. Two more screens [2026-10-13 pass]: verification judges
+each criterion as written, so a scope decision recorded in a Design, a step
+or a known issue is written into every criterion it narrows, and no step
+contradicts a criterion (WO-118's VER-001 failed criterion 4, whose phases
+step 7 had moved onto receipts while the criterion still required the
+console to show them); and an order whose criteria need a live run names, at
+its base, each surface the run must show, write or traverse, and whether it
+exists and has been run (WO-118 needed three mid-run scope amendments for
+four such surfaces, and WO-083's publication step named a command that
+publishes only a source-change episode). Order size [2026-10-13 pass,
+operator direction]: the 2026-09-08 cut (one seam and one outcome per order,
+split again above four hours) was a correction for its time and no longer
+binds. The binding cost is now the full gate run and the fixed cycle every
+order pays (activation, verification, final review and release close). A
+pass weighs filing a chain of orders on one subsystem, whose members would
+run one after another, as one order with one outcome. That order pays the
+cycle once and owes one live feedback episode and one re-mint where any part
+owes one, against a larger first verification. Unrelated subsystems are not
+bundled to save runs. Each order names its Preflight line. Parallel orders stay the aim
+where they pay (operator direction, 2026-10-13): two orders run side by side
+when their surfaces are disjoint, no hard edge joins them, and the operator
+will run both at once. Today's gate charges a pair one extra full run,
+because the order that lands second integrates the moved main at final review
+and pays a full run instead of reusing its last one (WO-078, 22.9 minutes).
+That is less than the implementation a pair overlaps (median 72.9 minutes),
+and a gate that reused what the moved main did not touch would remove it.
+Serial order is a pass's reading of its evidence, never a standing rule.
+Reopen the order-size rule when the full run's median falls to half its 24.9
+minutes, or when merged orders fail first verification more often than the
+five-of-eight baseline (the 2026-10-13 planning document, §12).
 
 A planning pass never activates, implements, tags, publishes, merges, edits
 immutable evidence, or reopens a decision without its stated evidence or
@@ -1827,7 +1872,13 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   A process that loses every descriptor mark before any observed ancestry edge,
   or an unwrapped bare tree with such an edge missing, can still escape polling.
   WO-185 records this limit; supervision is not absolute containment. Test
-  commands attribute incidents to disposable fixture repositories.
+  commands attribute incidents to disposable fixture repositories. A guard
+  that loses its `guard.json` record while it still holds `guard.flock` makes
+  each later registration start another waiter that fails after five
+  seconds, so the bounded wrapper and every gate fail on the host; stop the
+  stale guard and the waiters queued behind it, and the next registration
+  starts a fresh guard (WO-118 D011; the repair is FUP-e18e6a5422109bfb)
+  [2026-10-13 pass].
 
 - **Outward artifacts (WO-063).** The [pure lint and stdin CLI](../evidence/WO-063/implementation.md) check conventional commit subjects, PR titles and branch names plus the configured public vocabulary and redacted local-term check, report absent local coverage as `unavailable`, and leave publication integration to WO-064.
 
@@ -1978,7 +2029,8 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   `docs/evidence/WO-NNN/decisions.md` with dispatch source, evidence, rejected
   alternatives and reopening condition; `npm run meta` builds the decisions
   index and reopen candidates. Update affected product docs in the same pass.
-  The ledger is for operator ideation and planning synthesis. An inherited
+  The ledger holds the operator's own ideas; a planning pass's synthesis
+  lives in its planning document (operator direction, 2026-10-13). An inherited
   pre-2026-09-09 ledger-entry duty is discharged by the decisions file and its
   index row; the work-order index marks this substitution. WO-084 retains its
   separately authorized byte-preserving historical migration.
@@ -2493,6 +2545,29 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
 - **Return shape.** End with a compact result: what changed, evidence pointers,
   deviations from the work order, open questions. Terse; no narration theater,
   no apology theater.
+
+### Preflight before the full gate
+
+The full review gate is the scarce resource. After receipt 044 its full runs
+took a median of 24.9 minutes and at most 37.2, six of sixteen failed, and a
+closed order paid 2.29 of them (the 2026-10-13 planning document, §12). Every
+order therefore names a **Preflight:** line: the single-suite checks
+(`npm test -- --only <suite>`, each under the bounded wrapper) that cover its
+steps, plus `npm run test:docs` when a document changes. The executor, and
+every repair, runs that line before the first full gate and again after each
+repair, fixes what fails, and only then runs the full gate once. A full run is
+repeated only after a relevant change or a diagnosed invalidation of its
+evidence (a stopped run, an environment fault), with the reason recorded;
+never to look again at the same failure. Every code edit (any path outside
+`docs/`, `.claude/`, `.agents/` and root Markdown that its Git attributes do
+not mark generated or documentation, plus
+`docs/control/outward-vocabulary.json`) is made before the last full run:
+document and evidence edits after it keep the identity, so final review
+reuses that run in seconds instead of paying a full one. A target order's own
+checks follow its repository's declared gate (WO-210), not core's suites.
+WO-192
+puts this into the executor's role text; until it closes, each order's
+Preflight line and this section carry it (operator direction, 2026-10-13).
 
 ## Model-specific notes
 

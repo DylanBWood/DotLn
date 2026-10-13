@@ -30,8 +30,13 @@ a file the feedback verifier judges one live feedback self-host episode,
 which the executor runs on a configuration the operator's 2026-09-28
 direction accepts; the baseline decides whether either happens. The
 fresh sessions per harness, the verifier's reproduction and the witnessed
-run are live sessions of unmeasured cost. Wall-clock, tokens and context
-bytes are unknown until run.
+run are live sessions of unmeasured cost. Commands: none added; phase 1
+runs the existing `npm run discover -- harness <name>` readback (step 4).
+Steps: phase 1 is documents and readback (steps 1 to 5); the fresh
+sessions and the verifier's reproduction belong to the scope step 1
+boards, and the witnessed run is a typed record, `unknown` where no run
+exists (criterion 15). Wall-clock, tokens and context bytes are
+unknown until run.
 **Nomination provenance:** nominated by the operator during the WO-006 final
 review and created under operator direction; see
 `docs/final-reviews/WO-006/FINAL-001.md` §Follow-up work-order nominations.
@@ -50,19 +55,28 @@ criteria that presumed one are stated for each harness's recorded mode,
 the two steps the operator witnesses have fallbacks, and the moved rule
 and renamed runbook section are cited where they stand
 ([planning document](../planning/failures-across-phases-2026-09-28.md)
-§10).
+§10). Amended by the 2026-10-13 standard pass under the operator's sizing
+direction ([planning document](../planning/standard-pass-2026-10-13.md)
+§12): the queue is serial, so the placement names its position, and a
+Preflight line is added; and, under the operator's direction of the same
+day that roles make every repository change (planning document §12.1),
+the settings readback, the witnessed session's mode, the final run's
+judgment and any waiver are recorded by a role on the operator's word,
+while the witnessing stays the operator's.
 **Depends on:** WO-013 merged (its verified result removed the one known
 artificial sandbox escape, so the baseline is not dominated by an
 already-understood defect; closed, `v0.3.1`); WO-006 merged (the runbook,
 ADR-0003 through ADR-0005 and the deferral this order discharges; closed,
 `v0.2.3`).
-**Recommended placement:** last in the sequence (placed there by the
-2026-10-02 planning pass, so that every open order has a position and
-none floats beside the list). It moves up when a pass finds approval
-friction recorded as a constraint under the posture recorded on
-2026-09-17 and reaffirmed on 2026-09-25, no host sandbox in Claude Code,
-Codex or Copilot (operator-review assumption 1); the pass that reaches
-it re-observes that gap and withdraws the order if it is absent. It edits
+**Recommended placement:** position 14 of the serial queue (the operator
+keeps core's next thirty orders serial; planning document §12.4), after
+WO-096 and last, because no pass has yet found approval friction recorded
+as a constraint under the posture recorded on 2026-09-17 and reaffirmed on
+2026-09-25, no host sandbox in Claude Code, Codex or Copilot, the one
+finding that moves it up (operator-review assumption 1). It has been last
+since the 2026-10-02 planning pass placed it there, so that every open
+order has a position and none floats beside the list; the pass that
+reaches it re-observes that gap and withdraws the order if it is absent. It edits
 `docs/AI-HARNESS-SECURITY.md`, the Amendments of ADR-0003 and ADR-0004,
 `docs/discovery/`, a synthetic fixture under `scripts/` and the scripts
 its baseline names. A recommendation, not a dependency token.
@@ -106,7 +120,8 @@ Amendments (the 2026-09-25 entry supersedes the sandbox-on posture);
 approval rule, moved from product 07 by WO-090 and scoped by WO-161 to the
 retained `workspace-write` plus `on-request` mode); 07-execution-guide.md
 §Discipline (no config mutation of safety boundaries without explicit
-work-order authority — this order grants none) and §Model-specific notes;
+work-order authority — this order grants none), §Model-specific notes and
+§Preflight before the full gate (the **Preflight:** line below);
 01-principles.md Principles 5, 6, 8, 10, and 14;
 `docs/work-orders/WO-006-publication-bootstrap.md` (the operator deferral
 paragraph and §Claude startup correction receipt — 2026-09-01);
@@ -270,8 +285,10 @@ allow rule.
    append the two forward-pointing entries (ADR-0003 Decision 2 to ADR-0004 Decision 1;
    ADR-0004 Decision 4 to ADR-0005 Decision 1). Check: `git diff` shows appends only.
 4. Readback: `npm run discover -- harness claude-code`, then `codex-cli` and `copilot-cli`,
-   for versions; the pinned axes are personal settings the operator reads, recorded as a
-   dated observation or `unknown`.
+   for versions. The pinned axes live in personal settings: the executor reads them, the
+   pinned axes alone and sanitized, only on the operator's word granting that read, records
+   the word, and writes the result as a dated observation; without the word it records
+   `unknown`.
 5. `docs/evidence/WO-014/decisions.md` (new): the scope decision, the observations, the
    three later partial observations the gap did not name
    (`docs/discovery/copilot-cli-2026-09-20.json` line 9451;
@@ -297,15 +314,17 @@ record.
 
 1. Phase 1 is complete: readback matches ADR-0005 on every pinned axis or
    the divergence is recorded as a dated observation; a fresh,
-   unoverridden session was witnessed by the operator and its displayed
-   mode is recorded; the runbook's "Remembered command rules" row is a
-   dated observation with the drift rule; ADR-0003 and ADR-0004 carry
+   unoverridden session was witnessed by the operator and a role records
+   its displayed mode on the operator's word; the runbook's "Remembered
+   command rules" row is a dated observation with the drift rule; ADR-0003 and ADR-0004 carry
    append-only Amendments entries pointing forward; no decision body,
    WO-006 text or numbered record was edited. If the witnessed session has
    not happened by handoff, the executor records this criterion unmet with
-   the command the operator runs (a fresh launch of each harness with no
-   mode override); the other criteria are judged; the criterion closes by
-   the operator's run or by a recorded waiver.
+   the launch the operator would witness (a fresh launch of each harness
+   with no mode override, which changes no repository); the other criteria
+   are judged; the criterion closes when a role records that witnessed
+   launch on the operator's word, or by a waiver a role records on the
+   operator's word.
 2. Settings readback is treated as configuration evidence, not proof of
    reduced approval burden, in every document this order writes.
 3. A fresh-session baseline and a final run exist for each harness the
@@ -340,17 +359,18 @@ record.
 12. This order disables no sandbox, enables no unsandboxed fallback and
     adds no broad or persistent allow rule in any harness; personal
     settings are unchanged by this order unless the operator separately
-    decides otherwise and records it.
+    decides otherwise, a decision a role records on the operator's word.
 13. The final evidence reports approval counts by scenario and compares
     them with the baseline.
 14. An independent verifier reproduces the representative workflow in
     genuinely fresh sessions and records its own counts.
-15. The operator witnesses at least one final interactive run and records
-    whether the remaining interruptions are predictable and materially
-    bounded. If that run has not happened by handoff, the executor records
-    this criterion unmet with the command the operator runs; the other
-    criteria are judged; the criterion closes by the operator's run or by
-    a recorded waiver.
+15. The operator witnesses at least one final interactive run, and a role
+    records, on the operator's word, whether the remaining interruptions
+    are predictable and materially bounded. If that run has not happened
+    by handoff, the executor records this criterion unmet with the run the
+    operator would witness; the other criteria are judged; the criterion
+    closes when a role records the witnessed run on the operator's word, or
+    by a waiver a role records on the operator's word.
 16. The full, unchanged `npm test` passes in each harness's recorded mode;
     where a host sandbox is in force the runner refuses the full selection,
     because the skeleton and portfolio suites need the outside, so the
@@ -369,12 +389,19 @@ record.
 18. `npm test -- --review` and `npm run test:docs` green; `git diff
     --check` clean; no new dependency.
 
+**Preflight:** `npm test -- --only meta` for step 5, and
+`npm run test:docs` when a document changes (steps 2, 3 and 5), each under
+`node scripts/harness.mjs bounded --`; then one `npm test -- --review`
+(07-execution-guide.md §Preflight before the full gate). Phase 1 changes
+documents only; a script, path or invocation fix the remaining scope would
+add names its own suite when that scope is reopened.
+
 **Evidence gate:** baseline and final approval-surface matrices; sanitized
 fresh-session transcripts; exact harness versions, modes and sanitized
 effective settings; the denial-and-recovery reproduction; the full
 unchanged `npm test` result; the independent verifier's result; the
-operator-witnessed count and disposition, or the unmet criteria and their
-commands; `npm run test:docs`; `npm test -- --review` before
+operator-witnessed count and disposition, or the unmet criteria and the
+runs the operator would witness; `npm run test:docs`; `npm test -- --review` before
 `implementation-ready`, because the fixture and the fixes land under
 `scripts/`, every file of which is a declared source of the
 configuration-root suite, and again at final review. The live rows are the

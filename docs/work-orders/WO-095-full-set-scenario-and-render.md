@@ -1,5 +1,7 @@
 # WO-095 — Full-set scenario and set tooltip render: the Repo Gardener equips all six pieces in a second deterministic scenario with live and replay identity, and `--compiled-diff --loadout` renders each piece and the set with its bonuses armed or dark (version assigned at activation)
 
+**Umbrella record (2026-10-13):** superseded whole by WO-091, which carries this order's obligations under the operator's 2026-10-13 order-size direction ([the 2026-10-13 standard pass](../planning/standard-pass-2026-10-13.md), §12.3); not activatable. The text below is this order's last committed form, kept as the record of what WO-091 absorbed.
+
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
@@ -56,20 +58,10 @@ dependency token.
 <!-- dotln-dependencies:start -->
 [
   {
-    "workOrderId": "WO-094",
-    "relation": "hard",
-    "reason": "the bonuses the scenario exercises"
-  },
-  {
-    "workOrderId": "WO-032",
-    "relation": "satisfied-by-release",
-    "release": "v0.14.0",
-    "reason": "the board renders the set through the compiler render"
-  },
-  {
-    "workOrderId": "WO-042",
-    "relation": "reference-only",
-    "reason": "the Safety piece's deny at safety-invariants remains legal"
+    "workOrderId": "WO-091",
+    "relation": "superseded",
+    "reason": "2026-10-13 planning merge: this order's obligations are carried by WO-091.",
+    "by": "WO-091"
   }
 ]
 <!-- dotln-dependencies:end -->
