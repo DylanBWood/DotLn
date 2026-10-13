@@ -1,3 +1,8 @@
+import {
+  isObject,
+  isText,
+  requireKnownKeys as checkKnownKeys,
+} from "./validation.mjs";
 // The sibling registry's shared shapes: the once-per-sibling declaration the
 // operator writes, the receipt every launchpad export and update writes, and
 // the configured paths both live at. The generator (scripts/siblings.mjs) and
@@ -55,22 +60,8 @@ export const receiptsPath = (root, ...segments) =>
   docRelative(root, "evidence", RECEIPTS_DIRECTORY, ...segments);
 
 const refuse = (path, detail) => new Error(`${path}: ${detail}`);
-const isObject = (value) =>
-  value !== null && typeof value === "object" && !Array.isArray(value);
-// A non-empty string without control characters, the text the configuration
-// loader admits.
-const isText = (value) =>
-  typeof value === "string" &&
-  value !== "" &&
-  !/[\u0000-\u001f\u007f\u2028\u2029]/u.test(value);
-const requireKnownKeys = (path, value, known, label) => {
-  for (const key of Object.keys(value))
-    if (!known.includes(key))
-      throw refuse(
-        path,
-        `unknown ${label} key ${JSON.stringify(key)}; known keys: ${known.join(", ")}`,
-      );
-};
+const requireKnownKeys = (path, value, known, label) =>
+  checkKnownKeys(value, known, label, (detail) => refuse(path, detail));
 
 /** The declaration's typed form, or a refusal naming the path and the field. */
 const decodeDeclaration = (source, path) => {
@@ -197,6 +188,8 @@ const decodeReceipt = (source, path) => {
 // A receipt is named by its date with the characters a file name cannot
 // carry replaced, so a sorted directory listing is the receipts' order.
 const receiptFileName = (date) => `${date.replace(/[:.]/gu, "-")}.json`;
+export const receiptPath = (root, sibling, date) =>
+  receiptsPath(root, sibling, receiptFileName(date));
 
 /** Whether an export or update to `destination` records a receipt, and for
  * which declared sibling: the destination's own repository name when the
@@ -239,9 +232,14 @@ export function buildHashOf(snapshot) {
  * place, which refuses rather than overwrites a receipt of the same date. */
 export function writeReceipt(
   root,
-  { sibling, coreCommit, manifestBytes, buildHash },
+  {
+    sibling,
+    coreCommit,
+    manifestBytes,
+    buildHash,
+    date = new Date().toISOString(),
+  },
 ) {
-  const date = new Date().toISOString();
   const receipt = {
     sibling,
     coreCommit,
@@ -249,7 +247,7 @@ export function writeReceipt(
     buildHash,
     date,
   };
-  const path = receiptsPath(root, sibling, receiptFileName(date));
+  const path = receiptPath(root, sibling, date);
   const file = join(root, path);
   const temporary = `${file}.${randomUUID()}.tmp`;
   try {

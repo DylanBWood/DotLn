@@ -1,0 +1,38 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+Generated records/lineage/README.md
+▶ configuration root
+  ✔ WO-184 criterion 10: a configuration FIFO refuses promptly by path (43.381375ms)
+  ✔ an absent configuration means today's layout (1.013916ms)
+  ✔ a kit section admits only applyInstanceActions as a boolean (3.02125ms)
+  ✔ a declared root moves its documents and its children (1.1815ms)
+  ✔ registered repositories expose a validated public profile (1.661708ms)
+  ✔ WO-073 classes and optional registration declarations validate (3.50275ms)
+  ✔ WO-073 criterion 3: activation reads only a declared contained regular profile (1306.469167ms)
+  ✔ a malformed configuration refuses with its path (4.391875ms)
+  ✔ the launchpad is discovered, and the override wins (1.879792ms)
+  ✔ no control-plane script keeps a literal document root or a second root derivation (33.098208ms)
+  ✔ configured lineage and planning consumers use the launchpad ledger (101.79175ms)
+  ✔ configured follow-up references validate against their roots (11.138083ms)
+  ✔ writing-worker defaults separate tool inputs from configured outputs (7.381417ms)
+  ✔ a fixture launchpad with non-default roots drives the lifecycle (1869.512583ms)
+  ✔ worktree start and finish use the configured roots (2805.630791ms)
+  ✔ every declared root key is reachable (1.370958ms)
+✔ configuration root (6199.185959ms)
+✔ WO-166 Codex dispatch refuses foreign holders before control events and preserves unknown liveness (1123.898125ms)
+✔ WO-166 evidence wait exits for pass, failure, timeout and absent row (3948.064292ms)
+✔ WO-166 wait accepts cached invocation rows and outcome I/O cannot fail a gate (3066.76025ms)
+✔ WO-166 session start advises once for an unclosed same-worktree override (1307.576917ms)
+✔ WO-195 stale main prepares the runtime then records the normal release-close dispatch (1407.04725ms)
+✔ WO-067 compiler-only release installs a fresh compatible harness snapshot (754.434209ms)
+✔ WO-054 Codex installation preserves unowned configuration before any bundle write (439.91925ms)
+✔ copied CLI runs with relocated documents and no default document tree (49.072709ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12174.45975
+bounded-result {"name":"bounded-probe","durationMs":12280,"slowestCases":[{"name":"bounded-probe","durationMs":12280,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":175380584,"peakRssBytes":449003520,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T18:20:49.410Z","finishedAt":"2026-10-12T18:21:01.691Z","exitCode":0,"executed":true}

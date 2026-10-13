@@ -30,7 +30,7 @@ import {
   rmSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { startDeadline } from "../packages/skeleton/src/gate-deadlines.mjs";
 import { evidenceSourceContent } from "../packages/skeleton/src/evidence-editions.mjs";
@@ -99,6 +99,8 @@ const nodeTests = (name, pattern, options = {}) => ({
   needsBuild: true,
   ...options,
 });
+const VERTICAL_STATEMENT_PATTERN =
+  "composed baseline (?:records source-bound failure judgments|walks requirement-voice wording)|resident consumes source-bound failure judgments|healthy negative wording";
 // These shells each own a checked temporary root, Git repository and PATH.
 const shell = (name, file) => ({
   name,
@@ -178,6 +180,7 @@ export const machinerySources = {
     "scripts/lib/evidence-preparation.mjs",
     "scripts/lib/gate-evidence.mjs",
     "scripts/lib/terms.mjs",
+    "scripts/lib/validation.mjs",
     "scripts/release.mjs",
     "scripts/test-fixture-temporary.mjs",
     "packages/skeleton/src/presence-heartbeat.ts",
@@ -318,6 +321,9 @@ export const machinerySources = {
     "scripts/test-runner.mjs",
     "packages/skeleton/src/evidence-editions.mjs",
     "scripts/test-runner.test.mjs",
+    "scripts/test-vertical.mjs",
+    "scripts/test-vertical-judgment.mjs",
+    "scripts/test-vertical.recovery.mjs",
     "scripts/lib/document-gate-stubs.mjs",
     "scripts/lib/document-failures.mjs",
     "scripts/lib/evidence-jsonl.mjs",
@@ -684,7 +690,7 @@ export const suites = [
   nodeTests("target-worktree", "scripts/test-target-worktree.mjs"),
   nodeTests("vertical", "scripts/test-vertical.mjs", {
     kit: "core-only: core outward-vocabulary control data",
-    // Node starts files in name order; keep the main file in the first pair.
+    // Files expand into bounded tasks, partitioning the large statement matrix.
     args: [
       "scripts/test-vertical-judgment.mjs",
       "scripts/test-vertical.recovery.mjs",
@@ -1980,6 +1986,43 @@ export function expandSuiteTasks(selected, repo, template) {
     .map((row) => row.name);
   return selected
     .flatMap((row) => {
+      if (row.name === "vertical") {
+        // Separate clocks keep queued files and large matrices from spending
+        // another task's deadline. Two reserved slots cap parallel tasks at two.
+        const prefix = row.command.slice(0, -1);
+        return [row.command.at(-1), ...(row.args ?? [])].flatMap((file) => {
+          const task = {
+            ...row,
+            name: `vertical:file:${basename(file)}`,
+            command: [...prefix, file],
+            args: [],
+          };
+          if (basename(file) !== "test-vertical.mjs") return [task];
+          // Identical complementary filters retain each current and future case.
+          return [
+            {
+              ...task,
+              name: `${task.name}:statements`,
+              namePattern: VERTICAL_STATEMENT_PATTERN,
+              command: [
+                ...prefix,
+                `--test-name-pattern=${VERTICAL_STATEMENT_PATTERN}`,
+                file,
+              ],
+            },
+            {
+              ...task,
+              name: `${task.name}:workflow`,
+              skipPattern: VERTICAL_STATEMENT_PATTERN,
+              command: [
+                ...prefix,
+                `--test-skip-pattern=${VERTICAL_STATEMENT_PATTERN}`,
+                file,
+              ],
+            },
+          ];
+        });
+      }
       if (row.name === "release") {
         if (!template) throw new Error("Release fixture template is required");
         return [

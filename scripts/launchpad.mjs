@@ -31,7 +31,12 @@ import { parseGitHubTarget } from "./lib/github-repository.mjs";
 import { json, sha256Hex } from "./lib/helpers.mjs";
 import { hasPackageSources, isMainModule } from "./lib/paths.mjs";
 import { checkLocalTerms } from "./lib/terms.mjs";
-import { buildHashOf, resolveReceipt, writeReceipt } from "./lib/siblings.mjs";
+import {
+  buildHashOf,
+  receiptPath,
+  resolveReceipt,
+  writeReceipt,
+} from "./lib/siblings.mjs";
 import { writeRegistry } from "./siblings.mjs";
 import { atomicBuild } from "./build.mjs";
 import { spawnSync } from "node:child_process";
@@ -128,6 +133,7 @@ export const EMIT_CLOSURE = Object.freeze([
   "scripts/lib/helpers.mjs",
   "scripts/lib/paths.mjs",
   "scripts/lib/terms.mjs",
+  "scripts/lib/validation.mjs",
 ]);
 // Git's own environment never reaches the export's repository or its emit: an
 // inherited GIT_DIR would initialize another repository and leave the export
@@ -816,6 +822,7 @@ const rootReadme = (key, convention) =>
 export async function prepareKit({
   license = "default",
   launchpad = TOOL_ROOT,
+  preflight = () => {},
 } = {}) {
   const root = TOOL_ROOT;
   if (!["default", "none"].includes(license))
@@ -828,6 +835,7 @@ export async function prepareKit({
   const { tag, nearest } = describeTag(root, commit);
   const forge = originTarget(root);
   const sources = readKitSources(root, commit, { license });
+  preflight(sources);
   const dirty = dirtyKitPathCount(root, sources);
   const pinned = dirtyPinnedInputs(root, commit);
   if (pinned.buildInputs.length || pinned.emit.length || pinned.added.length)
@@ -1321,8 +1329,12 @@ export function verifyKit(root = process.cwd()) {
 }
 
 const readManifestFile = (root, name) => {
-  const label = join(root, name);
-  const prior = readJson(readDestination(root, name), label);
+  return readManifest(readDestination(root, name), join(root, name));
+};
+
+// Disk manifests and revision previews accept exactly the same schema.
+const readManifest = (bytes, label) => {
+  const prior = readJson(bytes, label);
   knownKeys(prior, ["schemaVersion", "commit", "tag", "files"], label);
   if (
     prior.schemaVersion !== KIT_MANIFEST_SCHEMA_VERSION ||
@@ -1394,26 +1406,31 @@ export function planUpdate(prior, next, directory, pending = null) {
       (current === incoming?.sha256 ||
         current === old?.sha256 ||
         current === planned.get(path));
+    let entry;
     if (!old)
-      plan.push(
+      entry =
         stat && !kept
           ? { path, kind: "refuse", reason: "instance-owned collision" }
-          : { path, kind: "add" },
-      );
+          : { path, kind: "add" };
     else if (!stat)
-      plan.push(
-        incoming
-          ? { path, kind: "add" }
-          : { path, kind: "remove", absent: true },
-      );
+      entry = incoming
+        ? { path, kind: "add" }
+        : { path, kind: "remove", absent: true };
     else if (!kept)
-      plan.push({
+      entry = {
         path,
         kind: "refuse",
         reason: "locally modified",
         retained: old,
-      });
-    else plan.push({ path, kind: incoming ? "replace" : "remove" });
+      };
+    else entry = { path, kind: incoming ? "replace" : "remove" };
+    // Byte comparisons distinguish revision changes without altering the
+    // mutation kinds or retained hashes the core update applies.
+    plan.push({
+      ...entry,
+      unchanged: current === (incoming?.sha256 ?? null),
+      upstreamUnchanged: !!old && old.sha256 === incoming?.sha256,
+    });
   }
   return plan;
 }
@@ -1498,15 +1515,24 @@ const writeReplacement = (root, path, bytes, mode = 0o644) => {
 };
 
 /** Preflight every declared instance action, then return its mutations. The
- * caller applies this plan only after the kit plan has also been validated. */
-function planInstanceActions(directory, actions, kitPaths) {
+ * caller applies this plan only after the kit plan has also been validated.
+ * Report-only failures describe manual work and leave later actions intact. */
+function planInstanceActions(
+  directory,
+  actions,
+  kitPaths,
+  { reportOnly = false } = {},
+) {
   const config = loadConfig(directory);
-  if (!config.kit.applyInstanceActions)
+  if (!reportOnly && !config.kit.applyInstanceActions)
     throw new Error(
       `${join(directory, CONFIG_FILENAME)}: --apply requires kit.applyInstanceActions: true`,
     );
-  const before = readDestination(directory, CONFIG_FILENAME);
-  const draft = readJson(before, join(directory, CONFIG_FILENAME));
+  const before =
+    reportOnly && !destinationStat(directory, CONFIG_FILENAME)
+      ? Buffer.from(json({ version: 1 }))
+      : readDestination(directory, CONFIG_FILENAME);
+  let draft = readJson(before, join(directory, CONFIG_FILENAME));
   const original = JSON.stringify(draft);
   const renames = [];
   const writes = new Map();
@@ -1539,7 +1565,7 @@ function planInstanceActions(directory, actions, kitPaths) {
       else readDestination(directory, child);
     }
   };
-  for (const action of actions) {
+  const planAction = (action) => {
     let changed = false;
     if (action.kind === "rename-root") {
       instancePath(action.from);
@@ -1594,7 +1620,7 @@ function planInstanceActions(directory, actions, kitPaths) {
       }
       const key = parts.at(-1);
       if (!Object.hasOwn(parent, key)) {
-        parent[key] = action.value;
+        parent[key] = structuredClone(action.value);
         changed = true;
       }
     } else if (action.kind === "change-phrase") {
@@ -1623,9 +1649,34 @@ function planInstanceActions(directory, actions, kitPaths) {
         );
     } else
       throw new Error(`${KIT_ACTIONS}: undeclared action kind ${action.kind}`);
-    results.push(
-      `${changed ? "applied" : "preserved/already applied"}: ${action.id} (${action.date}, ${action.kind})`,
-    );
+    return changed;
+  };
+  for (const action of actions) {
+    const checkpoint = reportOnly
+      ? {
+          draft: structuredClone(draft),
+          renames: renames.length,
+          writes: new Map(writes),
+        }
+      : null;
+    try {
+      const changed = planAction(action);
+      if (reportOnly)
+        validateConfig(join(directory, CONFIG_FILENAME), json(draft));
+      results.push(
+        `${changed ? "applied" : "preserved/already applied"}: ${action.id} (${action.date}, ${action.kind})`,
+      );
+    } catch (error) {
+      if (!reportOnly) throw error;
+      // Failed hypothetical actions must not contaminate subsequent results.
+      draft = checkpoint.draft;
+      renames.length = checkpoint.renames;
+      writes.clear();
+      for (const [path, write] of checkpoint.writes) writes.set(path, write);
+      results.push(
+        `cannot apply: ${action.id} (${action.date}, ${action.kind}; ${error.message})`,
+      );
+    }
   }
   // Validate new defaults and root declarations through the same closed
   // configuration loader before a single instance or kit mutation.
@@ -1633,12 +1684,16 @@ function planInstanceActions(directory, actions, kitPaths) {
   if (JSON.stringify(draft) !== original)
     writes.set(CONFIG_FILENAME, {
       bytes: Buffer.from(json(draft)),
-      mode: destinationStat(directory, CONFIG_FILENAME).mode & 0o777,
+      mode:
+        (destinationStat(directory, CONFIG_FILENAME)?.mode ?? 0o644) & 0o777,
     });
   return { renames, writes, results };
 }
 
-export async function updateKit(
+/** Plan from core without changing the destination, receipts or registry.
+ * Preparation still builds core's pinned runtime. Apply the returned plan
+ * immediately, while its destination inputs are still current. */
+export async function planKitUpdate(
   destination,
   { apply = false, launchpad = TOOL_ROOT } = {},
 ) {
@@ -1648,8 +1703,7 @@ export async function updateKit(
   const resolved = resolveReceipt(launchpad, target, {
     names: destinationNames(target),
   });
-  // Establish readable prior inputs and opt-in before the source build; a
-  // prior path that is absent is judged once the incoming kit is known.
+  // Establish readable prior inputs and opt-in before the source build.
   for (const { path } of prior.files)
     if (destinationStat(target, path)) readDestination(target, path);
   if (apply) {
@@ -1664,7 +1718,30 @@ export async function updateKit(
   const license = prior.files.some(({ path }) => path === LICENSE_PENDING)
     ? "none"
     : "default";
-  const prepared = await prepareKit({ launchpad, license });
+  const prepared = await prepareKit({
+    launchpad,
+    license,
+    preflight(sources) {
+      const carried = new Set([
+        ...[...sources.values()]
+          .filter((file) => !file.input)
+          .map((file) => file.destination),
+        "package.json",
+        "package-lock.json",
+        "dotln.config.example.json",
+        UPSTREAM,
+        ...(license === "none" ? [LICENSE_PENDING] : []),
+      ]);
+      const pendingPaths = new Set(pending?.files.map(({ path }) => path));
+      for (const { path } of prior.files)
+        if (
+          carried.has(path) &&
+          (!pending || pendingPaths.has(path)) &&
+          !destinationStat(target, path)
+        )
+          throw new Error(`cannot read regular file: ${join(target, path)}`);
+    },
+  });
   const buildHash = buildHashOf(prepared.bundle.snapshot);
   const candidates = new Map(prepared.writes.map((file) => [file.path, file]));
   for (const [path, contents] of prepared.bundle.surfaces)
@@ -1694,6 +1771,44 @@ export async function updateKit(
           ],
   );
   const manifest = kitManifest({ ...prepared.manifest, files: retained });
+  const date = new Date().toISOString();
+  return {
+    destination: target,
+    launchpad,
+    ...prepared.summary,
+    prior,
+    prepared,
+    plan,
+    actions,
+    instance,
+    manifest,
+    candidates,
+    buildHash,
+    priorBuildHash: installedBuildHash(target),
+    applied: instance?.results ?? [],
+    optedIn: apply,
+    receipt: {
+      ...resolved,
+      date,
+      path: resolved.sibling
+        ? receiptPath(launchpad, resolved.sibling, date)
+        : null,
+    },
+  };
+}
+
+/** Apply the exact plan used by the preview, retaining the interrupted-update
+ * journal and the existing last-step receipt/registry ordering. */
+export function applyKitUpdate(planned) {
+  const {
+    destination: target,
+    launchpad,
+    manifest,
+    plan,
+    candidates,
+    instance,
+    buildHash,
+  } = planned;
   // The planned manifest is journaled before the first write and removed
   // after the last, so an interrupted run leaves its plan for the retry.
   writeReplacement(target, KIT_MANIFEST_PENDING, json(manifest));
@@ -1715,23 +1830,178 @@ export async function updateKit(
   }
   const manifestBytes = Buffer.from(json(manifest), "utf8");
   writeReplacement(target, KIT_MANIFEST, manifestBytes);
-  unlinkSync(join(target, KIT_MANIFEST_PENDING));
-  const receipt = closeWithReceipt(
-    launchpad,
-    resolved,
-    { coreCommit: manifest.commit, manifestBytes, buildHash },
-    "update",
-    target,
+  try {
+    unlinkSync(join(target, KIT_MANIFEST_PENDING));
+  } catch (error) {
+    const failure = new Error(
+      `the update at ${target} has written ${KIT_MANIFEST}, but its pending manifest was not removed; sibling receipt not written: ${error.message}`,
+    );
+    failure.updatePlan = planned;
+    throw failure;
+  }
+  try {
+    const receipt = closeWithReceipt(
+      launchpad,
+      planned.receipt,
+      {
+        coreCommit: manifest.commit,
+        manifestBytes,
+        buildHash,
+        date: planned.receipt.date,
+      },
+      "update",
+      target,
+    );
+    return { ...planned, receipt };
+  } catch (error) {
+    error.updatePlan = planned;
+    throw error;
+  }
+}
+
+export async function updateKit(destination, options = {}) {
+  return applyKitUpdate(await planKitUpdate(destination, options));
+}
+
+const manifestBuildHash = (bytes, label) => {
+  const manifest = readJson(bytes, label);
+  const snapshots = manifest.profiles?.map(
+    (entry) => entry.profile?.runtime?.snapshot,
+  );
+  if (
+    !Array.isArray(snapshots) ||
+    !snapshots.length ||
+    new Set(snapshots).size !== 1
+  )
+    throw new Error(`no single runtime snapshot in ${label}`);
+  return buildHashOf(snapshots[0]);
+};
+const installedBuildHash = (root) => {
+  try {
+    return manifestBuildHash(
+      readDestination(root, HARNESS_MANIFEST),
+      join(root, HARNESS_MANIFEST),
+    );
+  } catch {
+    // A locally edited harness manifest is an ordinary retained kit refusal;
+    // missing snapshot metadata must not prevent updating the remaining kit.
+    return `unknown (${HARNESS_MANIFEST} has no readable runtime snapshot)`;
+  }
+};
+
+/** Inspect a fetched starter revision. Git performs no merge, and action
+ * results describe the manual work after it, never permission to apply it. */
+export async function previewFromRevision(root, ref) {
+  root = resolve(root);
+  const prior = readPriorManifest(root);
+  const pending = readPendingManifest(root);
+  if (typeof ref !== "string" || !ref || /[\x00-\x1f]/u.test(ref))
+    throw new Error("preview requires a Git revision");
+  const env = exportEnvironment();
+  const revision = runGit(
+    root,
+    ["rev-parse", "--verify", "--end-of-options", `${ref}^{commit}`],
+    { env },
+  );
+  const blob = (path) =>
+    runGit(root, ["show", `${revision}:${path}`], {
+      env,
+      trim: false,
+      encoding: null,
+    });
+  const incoming = readManifest(blob(KIT_MANIFEST), `${ref}:${KIT_MANIFEST}`);
+  // A starter may itself be a true fork or have re-emitted its harness.
+  // Its manifest deliberately retains old kit hashes for those edits; the
+  // pinned revision's typed metadata is what the operator is taking.
+  const actions = readKitActions(blob(KIT_ACTIONS));
+  const plan = planUpdate(prior, incoming, root, pending);
+  const instance = planInstanceActions(
+    root,
+    actions,
+    [...new Set([...prior.files, ...incoming.files].map(({ path }) => path))],
+    { reportOnly: true },
   );
   return {
-    destination: target,
-    ...prepared.summary,
+    destination: root,
+    prior,
+    manifest: incoming,
+    commit: incoming.commit,
+    tag: incoming.tag,
+    revision,
     plan,
     actions,
-    applied: instance?.results ?? [],
-    optedIn: apply,
-    receipt,
+    instance,
+    applied: instance.results,
+    optedIn: false,
+    manualActions: true,
+    priorBuildHash: installedBuildHash(root),
+    buildHash: manifestBuildHash(
+      blob(HARNESS_MANIFEST),
+      `${ref}:${HARNESS_MANIFEST}`,
+    ),
+    receipt: {
+      path: null,
+      reason: "a starter merge writes no core sibling receipt",
+    },
   };
+}
+
+/** The preview and completed update share every plan row. Metadata says
+ * whether these judgments are proposed or have been applied. */
+export function renderUpdatePlan(planned, { preview = false } = {}) {
+  const rowKind = (entry) =>
+    planned.revision && entry.kind !== "refuse" && entry.unchanged
+      ? "unchanged"
+      : entry.kind;
+  const counts = Object.fromEntries(
+    ["replace", "add", "remove", "refuse", "unchanged"].map((kind) => [
+      kind,
+      planned.plan.filter((entry) => rowKind(entry) === kind).length,
+    ]),
+  );
+  const lines = [
+    `${preview ? "Preview of" : "Updated"} the DotLn kit ${preview ? "at" : "to"} ${planned.commit} in ${planned.destination}.`,
+    `kit files: ${counts.replace} replaced; ${counts.add} added; ${counts.remove} removed; ${counts.refuse} refused${planned.revision ? `; ${counts.unchanged} unchanged` : ""}.`,
+  ];
+  if (preview)
+    lines.push(
+      `incoming: ${planned.commit} (${planned.tag ?? "untagged"})`,
+      ...(planned.revision
+        ? [
+            `starter revision: ${planned.revision}`,
+            "scope: manifest-listed kit files; Git merge results may differ; instance actions are manual after the merge.",
+          ]
+        : []),
+      `build: ${planned.priorBuildHash} -> ${planned.buildHash}`,
+      planned.receipt.path
+        ? `receipt: would write ${planned.receipt.path}`
+        : `receipt: none (${planned.receipt.reason})`,
+    );
+  for (const entry of planned.plan)
+    lines.push(
+      entry.kind === "refuse"
+        ? `refused: ${entry.path} (${entry.reason}; ${entry.retained ? `prior hash retained: ${entry.retained.sha256}` : "remains instance-owned; retained hash: none"}${planned.revision && entry.upstreamUnchanged ? "; unchanged upstream; no merge conflict expected" : ""})`
+        : `${rowKind(entry)}: ${entry.path}`,
+    );
+  lines.push(
+    `Instance-actions note (${new Date().toISOString().slice(0, 10)}): ${planned.manualActions ? "manual after merge" : planned.optedIn ? "opted-in update" : "update without opt-in"}.`,
+  );
+  for (const action of planned.actions)
+    lines.push(`action: ${JSON.stringify(action)}`);
+  if (!planned.actions.length) lines.push("No instance actions declared.");
+  const results =
+    planned.instance?.results ??
+    planned.actions.map(
+      (action) =>
+        `preserved/no opt-in: ${action.id} (${action.date}, ${action.kind})`,
+    );
+  for (const result of results)
+    lines.push(`action plan: ${result.replace(/^applied:/u, "apply:")}`);
+  if (!preview) lines.push(...planned.applied);
+  lines.push("re-emit: node scripts/harness.mjs emit");
+  if (preview)
+    lines.push("Preview only: no destination, receipt or registry writes.");
+  return lines.join("\n");
 }
 
 if (isMainModule(import.meta.url)) {
@@ -1740,8 +2010,15 @@ if (isMainModule(import.meta.url)) {
     const updating = args[0] === "--update";
     const [destination, ...rest] = updating ? args.slice(1) : args;
     const usage =
-      "usage: launchpad export <dir> [--license none] | launchpad export --update <dir> [--apply] | launchpad verify [<dir>]";
-    if (action === "verify") {
+      "usage: launchpad export <dir> [--license none] | launchpad export --update <dir> [--apply] [--preview] | launchpad preview --from <ref> | launchpad verify [<dir>]";
+    if (action === "preview") {
+      if (args.length !== 2 || args[0] !== "--from") throw new Error(usage);
+      console.log(
+        renderUpdatePlan(await previewFromRevision(process.cwd(), args[1]), {
+          preview: true,
+        }),
+      );
+    } else if (action === "verify") {
       if (args.length > 1 || args[0]?.startsWith("--")) throw new Error(usage);
       verifyKit(args[0] ?? process.cwd());
     } else {
@@ -1749,7 +2026,10 @@ if (isMainModule(import.meta.url)) {
         throw new Error(usage);
       if (
         updating
-          ? !(rest.length === 0 || (rest.length === 1 && rest[0] === "--apply"))
+          ? !(
+              new Set(rest).size === rest.length &&
+              rest.every((flag) => ["--apply", "--preview"].includes(flag))
+            )
           : !(
               rest.length === 0 ||
               (rest.length === 2 &&
@@ -1758,8 +2038,9 @@ if (isMainModule(import.meta.url)) {
             )
       )
         throw new Error(usage);
+      const preview = rest.includes("--preview");
       const result = updating
-        ? await updateKit(destination, {
+        ? await (preview ? planKitUpdate : updateKit)(destination, {
             apply: rest.includes("--apply"),
             launchpad: findLaunchpad(),
           })
@@ -1768,33 +2049,7 @@ if (isMainModule(import.meta.url)) {
             launchpad: findLaunchpad(),
           });
       if (updating) {
-        console.log(
-          `Updated the DotLn kit to ${result.commit} in ${result.destination}.`,
-        );
-        const counts = Object.fromEntries(
-          ["replace", "add", "remove", "refuse"].map((kind) => [
-            kind,
-            result.plan.filter((entry) => entry.kind === kind).length,
-          ]),
-        );
-        console.log(
-          `kit files: ${counts.replace} replaced; ${counts.add} added; ${counts.remove} removed; ${counts.refuse} refused.`,
-        );
-        console.log(
-          `Instance-actions note (${new Date().toISOString().slice(0, 10)}): ${result.optedIn ? "opted-in update" : "update without opt-in"}.`,
-        );
-        for (const action of result.actions)
-          console.log(`action: ${JSON.stringify(action)}`);
-        if (!result.actions.length)
-          console.log("No instance actions declared.");
-        for (const entry of result.plan.filter(
-          (entry) => entry.kind === "refuse",
-        ))
-          console.log(
-            `refused: ${entry.path} (${entry.reason}; ${entry.retained ? "prior hash retained" : "remains instance-owned"})`,
-          );
-        for (const line of result.applied) console.log(line);
-        console.log("re-emit: node scripts/harness.mjs emit");
+        console.log(renderUpdatePlan(result, { preview }));
       } else {
         console.log(
           `Exported the DotLn kit of ${result.commit} (${result.tag ? `tag ${result.tag}` : "untagged"}) to ${result.destination}: ${result.files} kit files in ${KIT_MANIFEST}, ${result.seeds.length} instance seeds.`,
@@ -1806,17 +2061,19 @@ if (isMainModule(import.meta.url)) {
       console.log(
         `local-terms list: ${result.terms}${result.terms === "present" ? ` (${result.surfaces} texts checked)` : "; no text was checked against a local-terms list"}`,
       );
-      console.log(
-        result.receipt.path
-          ? `sibling receipt: ${result.receipt.path}; sibling registry: ${result.receipt.registry.path} ${result.receipt.registry.written ? "regenerated" : "unchanged"}`
-          : `sibling receipt: none (${result.receipt.reason})`,
-      );
+      if (!preview)
+        console.log(
+          result.receipt.path
+            ? `sibling receipt: ${result.receipt.path}; sibling registry: ${result.receipt.registry.path} ${result.receipt.registry.written ? "regenerated" : "unchanged"}`
+            : `sibling receipt: none (${result.receipt.reason})`,
+        );
       if (result.dirty)
         console.log(
           `advisory: ${result.dirty} kit ${result.dirty === 1 ? "path differs" : "paths differ"} from HEAD in the work tree; the export carries commit ${result.commit}, not those changes.`,
         );
     }
   } catch (error) {
+    if (error.updatePlan) console.log(renderUpdatePlan(error.updatePlan));
     console.error(`error: ${error.message}`);
     process.exitCode = 1;
   }

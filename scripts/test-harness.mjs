@@ -267,6 +267,7 @@ function fixture() {
   for (const path of [
     "scripts/harness.mjs",
     "scripts/lib/config.mjs",
+    "scripts/lib/validation.mjs",
     "scripts/lib/harness.mjs",
     "scripts/lib/terms.mjs",
     "scripts/lib/paths.mjs",

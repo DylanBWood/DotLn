@@ -1,0 +1,46 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+✖ hypothetical defaults preserve their incoming declaration objects (139.406375ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 216.0285
+
+✖ failing tests:
+
+test at docs/evidence/WO-203/action-value-probe.mjs:16:1
+✖ hypothetical defaults preserve their incoming declaration objects (139.406375ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      {
+        date: '2026-10-12',
+        field: 'release',
+        id: 'empty-release',
+        kind: 'add-config-field',
+  +     value: {
+  +       invalidDefault: true
+  +     }
+  -     value: {}
+      },
+      {
+        date: '2026-10-12',
+        field: 'release.invalidDefault',
+        id: 'invalid-default',
+  
+      at TestContext.<anonymous> (file:///Users/dylanwood/Projects/DotLn-wo203/docs/evidence/WO-203/action-value-probe.mjs:89:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { id: 'empty-release', date: '2026-10-12', kind: 'add-config-field', field: 'release', value: [Object] }, { id: 'invalid-default', date: '2026-10-12', kind: 'add-config-field', field: 'release.invalidDefault', value: true }, { id: 'valid-default', date: '2026-10-12', kind: 'add-config-field', field: 'release.corpus', value: false } ],
+    expected: [ { id: 'empty-release', date: '2026-10-12', kind: 'add-config-field', field: 'release', value: {} }, { id: 'invalid-default', date: '2026-10-12', kind: 'add-config-field', field: 'release.invalidDefault', value: true }, { id: 'valid-default', date: '2026-10-12', kind: 'add-config-field', field: 'release.corpus', value: false } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+bounded-result {"name":"bounded-probe","durationMs":285,"slowestCases":[{"name":"bounded-probe","durationMs":285,"exitCode":1,"granularity":"task"}],"peakFootprintBytes":36787168,"peakRssBytes":123699200,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T22:23:23.323Z","finishedAt":"2026-10-12T22:23:23.608Z","exitCode":1,"executed":true}

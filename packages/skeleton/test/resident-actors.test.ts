@@ -1,12 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {
-  readFileSync,
-  readdirSync,
-  mkdirSync,
-  writeFileSync,
-  watch,
-} from "node:fs";
+import { readFileSync, readdirSync, mkdirSync, writeFileSync } from "node:fs";
 import { fork, execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { setTimeout as delay } from "node:timers/promises";
@@ -27,17 +21,19 @@ import {
 } from "../src/resident-state.js";
 import { WorkerFailure } from "../src/worker-protocol.js";
 import { runWorkerProcess } from "../src/worker-transport.js";
+import { deadlineLimit, startDeadline } from "../src/gate-deadlines.mjs";
 import { actorFixture, completedRunner } from "./resident-actors.fixture.js";
 const state = (h: ResidentHost) =>
   replayResident(h.store.read()).state.resident as unknown as ResidentState;
 const events = (h: ResidentHost, type: string) =>
   decodeLog(h.store.read()).filter((e) => e.type === type);
 
-test("WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals", async () => {
+test("WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals", async (t) => {
   for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"] as const) {
     const f = actorFixture("inspection");
     let group: number | undefined;
     let supervisor: ReturnType<typeof fork> | undefined;
+    let closed: Promise<void> | undefined;
     try {
       const bin = join(f.root, "bin"),
         ready = join(f.root, "group.json");
@@ -53,21 +49,11 @@ process.stdin.resume(); setInterval(()=>{},1000);
 `,
         { mode: 0o700 },
       );
-      const started = new Promise<{ group: number; child: number }>(
-        (resolve, reject) => {
-          const timer = setTimeout(() => {
-            watcher.close();
-            reject(new Error("episode group never started"));
-          }, 5000);
-          const watcher = watch(f.root, () => {
-            try {
-              const value = JSON.parse(readFileSync(ready, "utf8"));
-              clearTimeout(timer);
-              watcher.close();
-              resolve(value);
-            } catch {}
-          });
-        },
+      // The guarded solo startup measured at most 2,985 ms. Preserve the
+      // standalone five-second bound; shared gates use their declared load.
+      const startup = startDeadline(
+        "resident:supervisor-startup",
+        deadlineLimit(3000, 5000),
       );
       supervisor = fork(
         fileURLToPath(new URL("../src/cli-episode.js", import.meta.url)),
@@ -83,14 +69,50 @@ process.stdin.resume(); setInterval(()=>{},1000);
           },
         },
       );
-      const closed = new Promise<void>((resolve) =>
-        supervisor!.once("close", () => resolve()),
-      );
+      let startupFailure: string | undefined;
+      supervisor.once("error", (error) => {
+        startupFailure = error.message;
+      });
+      supervisor.on("message", (result) => {
+        startupFailure = JSON.stringify(result);
+      });
+      closed = new Promise<void>((resolve) => {
+        supervisor!.once("close", (code, stoppedBy) => {
+          startupFailure ??= `supervisor closed: ${code ?? stoppedBy}`;
+          resolve();
+        });
+      });
       supervisor.send({
         spec: f.configuration.actors.probe!.worker,
         context: { residentStore: f.directory, episodeId: `wo184_${signal}` },
       });
-      const observed = await started;
+      let observed: { group: number; child: number } | undefined;
+      try {
+        while (!observed) {
+          // Observe durable readiness, including a write whose filesystem
+          // notification arrived before its JSON bytes were complete.
+          try {
+            observed = JSON.parse(readFileSync(ready, "utf8"));
+          } catch (error) {
+            if (
+              !(error instanceof SyntaxError) &&
+              (error as NodeJS.ErrnoException).code !== "ENOENT"
+            )
+              throw error;
+          }
+          if (observed) break;
+          if (startupFailure)
+            throw new Error(`episode startup failed: ${startupFailure}`);
+          startup.check();
+          await delay(20);
+        }
+      } finally {
+        const timing = startup.finish();
+        t.diagnostic(
+          `${signal} startup: ${timing.durationMs.toFixed(1)} ms; bound ${timing.timeoutMs} ms`,
+        );
+      }
+      assert.ok(observed);
       group = observed.group;
       assert.equal(
         Number(
@@ -119,7 +141,25 @@ process.stdin.resume(); setInterval(()=>{},1000);
       }
       assert.equal(alive, "", `${signal} left an episode group member alive`);
     } finally {
-      supervisor?.kill("SIGKILL");
+      if (
+        supervisor &&
+        supervisor.exitCode === null &&
+        supervisor.signalCode === null
+      ) {
+        // Let the supervisor retire its detached group even when readiness
+        // failed before this test learned the group's id.
+        supervisor.kill("SIGTERM");
+        await Promise.race([closed ?? Promise.resolve(), delay(1000)]);
+        supervisor.kill("SIGKILL");
+      }
+      if (group === undefined) {
+        try {
+          const recorded = JSON.parse(
+            readFileSync(join(f.root, "group.json"), "utf8"),
+          ).group;
+          if (Number.isSafeInteger(recorded) && recorded > 0) group = recorded;
+        } catch {}
+      }
       if (group) {
         try {
           process.kill(-group, "SIGKILL");

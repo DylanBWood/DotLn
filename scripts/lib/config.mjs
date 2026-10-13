@@ -1,4 +1,9 @@
 import {
+  isObject as isPlainObject,
+  isText,
+  requireKnownKeys as checkKnownKeys,
+} from "./validation.mjs";
+import {
   closeSync,
   constants,
   existsSync,
@@ -133,30 +138,16 @@ const resolveRoots = (declared) => {
 const refuse = (path, detail) =>
   new Error(`invalid DotLn configuration in ${path}: ${detail}`);
 
-const isPlainObject = (value) =>
-  typeof value === "object" && value !== null && !Array.isArray(value);
-
 const requireObject = (path, value, label) => {
   if (!isPlainObject(value)) throw refuse(path, `${label} must be an object`);
   return value;
 };
 
-const requireKnownKeys = (path, value, known, label) => {
-  for (const key of Object.keys(value))
-    if (!known.includes(key))
-      throw refuse(
-        path,
-        `unknown ${label} key ${JSON.stringify(key)}; known keys: ${known.join(", ")}`,
-      );
-};
+const requireKnownKeys = (path, value, known, label) =>
+  checkKnownKeys(value, known, label, (detail) => refuse(path, detail));
 
 const requireText = (path, value, label, pattern) => {
-  if (
-    typeof value !== "string" ||
-    !value ||
-    /[\u0000-\u001f\u007f\u2028\u2029]/u.test(value) ||
-    (pattern && !pattern.test(value))
-  )
+  if (!isText(value) || (pattern && !pattern.test(value)))
     throw refuse(path, `${label} must be a non-empty valid string`);
   return value;
 };

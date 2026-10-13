@@ -136,6 +136,25 @@ const files = (root, directory = "") =>
       return entry.isDirectory() ? files(root, path) : [path];
     },
   );
+// Preview must preserve every destination byte, including ignored state and
+// Git metadata. Record symlinks without traversing their external targets.
+const treeSnapshot = (root) => {
+  const result = {};
+  const visit = (path) => {
+    const file = join(root, path);
+    const stat = lstatSync(file, { throwIfNoEntry: false });
+    if (!stat) result[path] = "absent";
+    else if (stat.isSymbolicLink()) result[path] = `link:${readlinkSync(file)}`;
+    else if (stat.isDirectory()) {
+      result[path] = "directory";
+      for (const name of readdirSync(file).sort())
+        visit(path ? `${path}/${name}` : name);
+    } else result[path] = `${stat.mode}:${sha256(readFileSync(file))}`;
+  };
+  visit("");
+  return result;
+};
+
 // A real node_modules for a copy of the checkout: one link per third-party
 // entry of the running install and relative links to the copy's own
 // workspaces, as atomicBuild stages them, so a package-name import resolves
@@ -2091,11 +2110,20 @@ test("WO-078 criterion 1: an export to a declared sibling writes its receipt ins
 test("export update preserves ownership, validates actions and keeps the exported resident", async (t) => {
   const kitActions = "scripts/kit/KIT-ACTIONS.json";
   const changed = "scripts/update-changed.txt";
+  const unchanged = "scripts/update-unchanged.txt";
+  const unchangedModified = "scripts/update-unchanged-modified.txt";
   const modified = "scripts/update-modified.txt";
   const dropped = "scripts/update-dropped.txt";
   const droppedModified = "scripts/update-dropped-modified.txt";
   const added = "scripts/update-added.txt";
-  for (const path of [changed, modified, dropped, droppedModified])
+  for (const path of [
+    changed,
+    unchanged,
+    unchangedModified,
+    modified,
+    dropped,
+    droppedModified,
+  ])
     write(path, "revision A\n");
   git(source, ["add", "scripts"]);
   git(source, ["commit", "-qm", "fixture kit revision A"]);
@@ -2171,6 +2199,486 @@ test("export update preserves ownership, validates actions and keeps the exporte
   git(source, ["commit", "-qm", "fixture kit revision B"]);
   const revisionB = git(source, ["rev-parse", "HEAD"]).stdout.trim();
   assert.notEqual(revisionA, revisionB);
+
+  await t.test(
+    "preview from core preserves every byte and renders the following update's plan",
+    () => {
+      const declaration = "docs/siblings/siblings.json";
+      write(
+        declaration,
+        JSON.stringify({
+          schemaVersion: 1,
+          siblings: [
+            {
+              id: "update-preview",
+              purpose: "Preview fixture",
+              relation: { kind: "export", coreCommit: null },
+              capabilityRows: [],
+            },
+            {
+              id: "starter-fixture",
+              purpose: "Existing fixture",
+              relation: { kind: "export", coreCommit: null },
+              capabilityRows: [],
+            },
+          ],
+        }) + "\n",
+      );
+      const incoming = git(source, ["rev-parse", "HEAD"]).stdout.trim();
+      git(source, ["tag", "preview-fixture"]);
+      const rows = (output) =>
+        output
+          .split("\n")
+          .filter((line) =>
+            /^(?:kit files:|replace:|add:|remove:|refused:|action:|action plan:)/u.test(
+              line,
+            ),
+          );
+      for (const apply of [false, true]) {
+        const target = instance(apply ? "preview-apply" : "preview", apply);
+        if (apply) {
+          writeFileSync(
+            join(target, "dotln.config.json"),
+            JSON.stringify({
+              version: 1,
+              kit: { applyInstanceActions: true },
+              release: { corpus: false },
+            }) + "\n",
+          );
+        }
+        writeFileSync(join(target, modified), "local kit edit\n");
+        if (!apply)
+          writeFileSync(join(target, added), "instance-owned new path\n");
+        const receiptRoot = join(source, "docs/evidence/siblings");
+        const registryRoot = join(source, "docs/siblings");
+        const before = {
+          destination: treeSnapshot(target),
+          receipts: treeSnapshot(receiptRoot),
+          registry: treeSnapshot(registryRoot),
+        };
+        const flags = apply ? ["--apply"] : [];
+        const started = performance.now();
+        const preview = ok(
+          runUpdate(target, [...flags, "--preview"]),
+          "preview core update",
+        );
+        const elapsed = Math.round(performance.now() - started);
+        assert.deepEqual(
+          {
+            destination: treeSnapshot(target),
+            receipts: treeSnapshot(receiptRoot),
+            registry: treeSnapshot(registryRoot),
+          },
+          before,
+        );
+        assert.equal(
+          existsSync(join(target, "KIT-MANIFEST.pending.json")),
+          false,
+        );
+        assert.ok(
+          preview.stdout.includes(`incoming: ${incoming} (preview-fixture)`),
+        );
+        assert.match(
+          preview.stdout,
+          /^build: fnv1a64:[0-9a-f]{16} -> fnv1a64:[0-9a-f]{16}$/mu,
+        );
+        assert.ok(
+          preview.stdout.includes(
+            `refused: ${modified} (locally modified; prior hash retained: ${prior.files.find((entry) => entry.path === modified).sha256})`,
+          ),
+        );
+        assert.ok(
+          preview.stdout.includes(
+            apply
+              ? `add: ${added}`
+              : `refused: ${added} (instance-owned collision; remains instance-owned; retained hash: none)`,
+          ),
+        );
+        assert.ok(preview.stdout.includes(`replace: ${changed}`));
+        assert.ok(preview.stdout.includes(`remove: ${dropped}`));
+        if (apply) {
+          assert.match(preview.stdout, /^action plan: apply: move-evidence/mu);
+          assert.match(
+            preview.stdout,
+            /^action plan: preserved\/already applied: release-default/mu,
+          );
+          assert.match(preview.stdout, /^receipt: none /mu);
+        } else {
+          assert.match(
+            preview.stdout,
+            /^action plan: preserved\/no opt-in: move-evidence/mu,
+          );
+          assert.match(
+            preview.stdout,
+            /^receipt: would write docs\/evidence\/siblings\/update-preview\/.*\.json$/mu,
+          );
+        }
+        const updated = ok(runUpdate(target, flags), "apply previewed update");
+        assert.deepEqual(rows(preview.stdout), rows(updated.stdout));
+        t.diagnostic(
+          `core preview ${apply ? "with" : "without"} --apply: ${elapsed} ms; ${rows(preview.stdout).length} matching plan rows; all three trees unchanged`,
+        );
+      }
+      const editedMetadata = instance("preview-unknown-snapshot");
+      writeFileSync(
+        join(editedMetadata, HARNESS_MANIFEST),
+        "local metadata edit\n",
+      );
+      const editedBefore = treeSnapshot(editedMetadata);
+      const editedPreview = ok(
+        runUpdate(editedMetadata, ["--preview"]),
+        "preview with local snapshot edits",
+      );
+      assert.match(editedPreview.stdout, /^build: unknown \(/mu);
+      assert.ok(
+        editedPreview.stdout.includes(
+          `refused: ${HARNESS_MANIFEST} (locally modified`,
+        ),
+      );
+      assert.deepEqual(treeSnapshot(editedMetadata), editedBefore);
+      ok(runUpdate(editedMetadata), "update preserves local snapshot edits");
+      assert.equal(
+        readFileSync(join(editedMetadata, HARNESS_MANIFEST), "utf8"),
+        "local metadata edit\n",
+      );
+      const bad = runExport(join(scratch, "preview-without-update"), [
+        "--preview",
+      ]);
+      assert.equal(bad.status, 1);
+      assert.match(bad.stderr, /usage:/u);
+      assert.equal(existsSync(join(scratch, "preview-without-update")), false);
+    },
+  );
+
+  await t.test(
+    "preview inside a fork reads the fetched starter revision without merging or writing",
+    () => {
+      const starter = join(scratch, "preview-starter");
+      cpSync(base, starter, { recursive: true, verbatimSymlinks: true });
+      configureRepository(starter);
+      git(starter, ["add", "."]);
+      git(starter, ["commit", "-qm", "starter revision A"]);
+      const remote = join(scratch, "preview-starter.git");
+      git(scratch, ["clone", "--bare", starter, remote]);
+      const fork = join(scratch, "preview-fork");
+      git(scratch, ["clone", remote, fork]);
+      configureRepository(fork);
+      const invoke = (ref, cwd = fork) =>
+        run(
+          process.execPath,
+          [join(fork, "scripts/launchpad.mjs"), "preview", "--from", ref],
+          { cwd },
+        );
+      const noOpBefore = treeSnapshot(fork);
+      const noOp = ok(invoke("HEAD"), "preview an identical revision");
+      assert.match(
+        noOp.stdout,
+        /^kit files: 0 replaced; 0 added; 0 removed; 0 refused; \d+ unchanged\.$/mu,
+      );
+      assert.doesNotMatch(noOp.stdout, /^(?:replace|add|remove|refused):/mu);
+      assert.ok(noOp.stdout.includes(`unchanged: ${unchanged}`));
+      assert.deepEqual(treeSnapshot(fork), noOpBefore);
+      ok(runUpdate(starter), "update starter to revision B");
+      const starterActions = [
+        ...actions,
+        {
+          id: "starter-action",
+          date: "2026-10-12",
+          kind: "add-config-field",
+          field: "release.readmeBlock",
+          value: false,
+        },
+      ];
+      writeFileSync(
+        join(starter, kitActions),
+        JSON.stringify({ schemaVersion: 1, actions: starterActions }) + "\n",
+      );
+      // A valid starter edit/re-emit can retain the original manifest hashes.
+      const metadata = join(starter, HARNESS_MANIFEST);
+      writeFileSync(metadata, readFileSync(metadata, "utf8") + " \n");
+      for (const path of [kitActions, HARNESS_MANIFEST])
+        assert.notEqual(
+          sha256(readFileSync(join(starter, path))),
+          manifestOf(starter).files.find((entry) => entry.path === path).sha256,
+        );
+      git(starter, ["add", "."]);
+      git(starter, ["commit", "-qm", "starter revision B"]);
+      git(starter, ["push", remote, "main"]);
+      git(fork, ["fetch", "origin"]);
+      writeFileSync(join(fork, modified), "local kit edit\n");
+      writeFileSync(join(fork, unchangedModified), "local-only kit edit\n");
+      writeFileSync(join(fork, added), "instance-owned collision\n");
+      // Prove the incoming action declaration is read from Git, not this copy.
+      writeFileSync(
+        join(fork, kitActions),
+        JSON.stringify({ schemaVersion: 1, actions: [] }) + "\n",
+      );
+      const before = treeSnapshot(fork);
+      const preview = ok(
+        invoke("origin/main"),
+        "preview fetched revision inside the instance",
+      );
+      assert.deepEqual(treeSnapshot(fork), before);
+      assert.ok(preview.stdout.includes(`replace: ${changed}`));
+      assert.ok(preview.stdout.includes(`unchanged: ${unchanged}`));
+      assert.ok(!preview.stdout.includes(`replace: ${unchanged}\n`));
+      assert.ok(
+        preview.stdout.includes(
+          `refused: ${unchangedModified} (locally modified; prior hash retained: ${prior.files.find(({ path }) => path === unchangedModified).sha256}; unchanged upstream; no merge conflict expected)`,
+        ),
+      );
+      assert.ok(preview.stdout.includes(`remove: ${dropped}`));
+      assert.ok(
+        preview.stdout.includes(`refused: ${modified} (locally modified`),
+      );
+      assert.ok(
+        preview.stdout.includes(`refused: ${added} (instance-owned collision`),
+      );
+      assert.match(preview.stdout, /^action plan: apply: move-evidence/mu);
+      assert.match(preview.stdout, /^action plan: apply: contract-heading/mu);
+      assert.match(preview.stdout, /^action plan: apply: starter-action/mu);
+      assert.match(
+        preview.stdout,
+        /^receipt: none \(a starter merge writes no core sibling receipt\)$/mu,
+      );
+      assert.match(
+        preview.stdout,
+        /instance actions are manual after the merge/u,
+      );
+      assert.match(
+        preview.stdout,
+        /^build: fnv1a64:[0-9a-f]{16} -> fnv1a64:[0-9a-f]{16}$/mu,
+      );
+      const noRootManifest = invoke("origin/main", scratch);
+      assert.equal(noRootManifest.status, 1);
+      assert.match(noRootManifest.stderr, /KIT-MANIFEST\.json/u);
+      const isolated = ok(
+        run(
+          process.execPath,
+          [
+            join(fork, "scripts/launchpad.mjs"),
+            "preview",
+            "--from",
+            "origin/main",
+          ],
+          {
+            cwd: fork,
+            env: {
+              ...env,
+              GIT_DIR: join(source, ".git"),
+              GIT_WORK_TREE: source,
+              DOTLN_LAUNCHPAD: source,
+            },
+          },
+        ),
+        "preview ignores inherited Git routing",
+      );
+      assert.equal(isolated.stdout, preview.stdout);
+      // Already-converged additions and absent removals change no byte either.
+      const converged = join(scratch, "preview-converged");
+      cpSync(fork, converged, { recursive: true, verbatimSymlinks: true });
+      writeFileSync(join(converged, changed), "revision B\n");
+      writeFileSync(join(converged, added), "new in B\n");
+      rmSync(join(converged, dropped));
+      const convergedBefore = treeSnapshot(converged);
+      const convergedPreview = ok(
+        invoke("origin/main", converged),
+        "preview already-converged paths",
+      );
+      for (const path of [changed, added, dropped]) {
+        assert.ok(convergedPreview.stdout.includes(`unchanged: ${path}`));
+        assert.ok(
+          !convergedPreview.stdout
+            .split("\n")
+            .some((line) =>
+              ["replace", "add", "remove"].some(
+                (kind) => line === `${kind}: ${path}`,
+              ),
+            ),
+        );
+      }
+      assert.deepEqual(treeSnapshot(converged), convergedBefore);
+
+      // All manual actions remain visible even when several cannot fit the fork.
+      const unfitActions = [
+        {
+          id: "empty-release",
+          date: "2026-10-12",
+          kind: "add-config-field",
+          field: "release",
+          value: {},
+        },
+        ...actions,
+        {
+          id: "invalid-default",
+          date: "2026-10-12",
+          kind: "add-config-field",
+          field: "release.invalidDefault",
+          value: true,
+        },
+        {
+          id: "occupied-orders",
+          date: "2026-10-12",
+          kind: "rename-root",
+          root: "workOrders",
+          from: "docs/work-orders",
+          to: "records/orders",
+        },
+        starterActions.at(-1),
+      ];
+      writeFileSync(
+        join(starter, kitActions),
+        JSON.stringify({ schemaVersion: 1, actions: unfitActions }) + "\n",
+      );
+      git(starter, ["add", kitActions]);
+      git(starter, [
+        "commit",
+        "-qm",
+        "starter actions needing manual resolution",
+      ]);
+      git(starter, ["push", remote, "main"]);
+      git(fork, ["fetch", "origin"]);
+      mkdirSync(join(fork, "records"), { recursive: true });
+      writeFileSync(join(fork, "records/orders"), "occupied instance path\n");
+      for (const contract of [
+        "custom contract without the old phrase\n",
+        "# Launchpad\n# Launchpad\n",
+      ]) {
+        writeFileSync(join(fork, "CLAUDE.md"), contract);
+        const unfitBefore = treeSnapshot(fork);
+        const unfitPreview = ok(
+          invoke("origin/main"),
+          "preview unfit manual actions",
+        );
+        assert.ok(unfitPreview.stdout.includes(`replace: ${changed}`));
+        assert.ok(unfitPreview.stdout.includes(`unchanged: ${unchanged}`));
+        for (const action of unfitActions)
+          assert.ok(
+            unfitPreview.stdout.includes(`action: ${JSON.stringify(action)}`),
+          );
+        assert.equal(
+          unfitPreview.stdout
+            .split("\n")
+            .filter((line) => line.startsWith("action plan:")).length,
+          unfitActions.length,
+        );
+        assert.match(
+          unfitPreview.stdout,
+          /^action plan: cannot apply: contract-heading .*expected one phrase/mu,
+        );
+        assert.match(
+          unfitPreview.stdout,
+          /^action plan: cannot apply: invalid-default .*invalidDefault/mu,
+        );
+        assert.match(
+          unfitPreview.stdout,
+          /^action plan: cannot apply: occupied-orders .*expected root workOrders/mu,
+        );
+        assert.match(
+          unfitPreview.stdout,
+          /^action plan: apply: starter-action/mu,
+        );
+        assert.deepEqual(treeSnapshot(fork), unfitBefore);
+      }
+      const noRevision = invoke("absent-revision");
+      assert.equal(noRevision.status, 1);
+      git(starter, ["rm", "KIT-MANIFEST.json"]);
+      git(starter, ["commit", "-qm", "starter with no manifest"]);
+      git(starter, ["push", remote, "main"]);
+      git(fork, ["fetch", "origin"]);
+      const noManifestBefore = treeSnapshot(fork);
+      const noManifest = invoke("origin/main");
+      assert.equal(noManifest.status, 1);
+      assert.match(noManifest.stderr, /KIT-MANIFEST\.json/u);
+      assert.deepEqual(treeSnapshot(fork), noManifestBefore);
+      writeFileSync(
+        join(starter, "KIT-MANIFEST.json"),
+        JSON.stringify({
+          ...prior,
+          files: [{ path: "../escape", sha256: "a".repeat(64) }],
+        }),
+      );
+      git(starter, ["add", "KIT-MANIFEST.json"]);
+      git(starter, ["commit", "-qm", "malformed starter manifest"]);
+      git(starter, ["push", remote, "main"]);
+      git(fork, ["fetch", "origin"]);
+      const malformedBefore = treeSnapshot(fork);
+      const malformed = invoke("origin/main");
+      assert.equal(malformed.status, 1);
+      assert.match(malformed.stderr, /malformed prior manifest entry/u);
+      assert.deepEqual(treeSnapshot(fork), malformedBefore);
+    },
+  );
+
+  await t.test(
+    "post-manifest failures retain the plan summary and distinguish receipt state",
+    () => {
+      for (const failure of ["receipt", "registry"]) {
+        const target = instance(`failed-${failure}`);
+        const host = join(scratch, `receipt-host-${failure}`);
+        mkdirSync(join(host, "docs/siblings"), { recursive: true });
+        writeFileSync(
+          join(host, "docs/siblings/siblings.json"),
+          JSON.stringify({
+            schemaVersion: 1,
+            siblings: [
+              {
+                id: basename(target),
+                purpose: "Failure fixture",
+                relation: { kind: "export", coreCommit: null },
+                capabilityRows: [],
+              },
+            ],
+          }),
+        );
+        if (failure === "receipt")
+          writeFileSync(
+            join(host, "docs/evidence"),
+            "blocks receipt directory",
+          );
+        if (failure === "registry")
+          mkdirSync(join(host, "docs/siblings/README.md"));
+        // A nonregular registry path fails after the receipt lands.
+        const result = run(
+          process.execPath,
+          [join(source, "scripts/launchpad.mjs"), "export", "--update", target],
+          {
+            cwd: scratch,
+            env: { ...env, DOTLN_LAUNCHPAD: host },
+          },
+        );
+        assert.equal(
+          result.status,
+          1,
+          `${failure}: ${result.stderr}\n${result.stdout}`,
+        );
+        assert.equal(manifestOf(target).commit, revisionB);
+        assert.equal(
+          existsSync(join(target, "KIT-MANIFEST.pending.json")),
+          false,
+        );
+        assert.ok(result.stdout.includes(`in ${target}.`));
+        assert.ok(result.stdout.includes(`replace: ${changed}`));
+        if (failure === "receipt")
+          assert.match(
+            result.stderr,
+            /is complete, but its sibling receipt was not written/u,
+          );
+        else {
+          assert.match(
+            result.stderr,
+            /receipt .* is written, but the sibling registry was not regenerated/u,
+          );
+          assert.equal(
+            readdirSync(join(host, "docs/evidence/siblings", basename(target)))
+              .length,
+            1,
+          );
+        }
+        assert.doesNotMatch(result.stdout, /^sibling receipt:/mu);
+      }
+    },
+  );
 
   await t.test(
     "unmodified files update; edited and dropped edits keep prior hashes on repeated updates",
@@ -2357,9 +2865,21 @@ test("export update preserves ownership, validates actions and keeps the exporte
         const target = instance(name);
         mutate(target);
         const before = snapshot(target);
+        const buildFile = join(source, "packages/skeleton/dist/src/version.js");
+        const buildBefore = lstatSync(buildFile);
         const result = runUpdate(target);
         assert.equal(result.status, 1, result.stdout);
         assert.match(result.stderr, pattern);
+        assert.equal(
+          lstatSync(buildFile).ino,
+          buildBefore.ino,
+          `${name}: no runtime build`,
+        );
+        assert.equal(
+          lstatSync(buildFile).mtimeMs,
+          buildBefore.mtimeMs,
+          `${name}: no runtime build`,
+        );
         assert.deepEqual(snapshot(target), before, name);
       }
       const target = instance("unreadable");
@@ -2391,10 +2911,16 @@ test("export update preserves ownership, validates actions and keeps the exporte
         "a custom contract without the declared phrase\n",
       );
       const invalidBefore = snapshot(invalid);
-      const refused = runUpdate(invalid, ["--apply"]);
-      assert.equal(refused.status, 1);
-      assert.match(refused.stderr, /contract-heading.*CLAUDE\.md/);
-      assert.deepEqual(snapshot(invalid), invalidBefore);
+      for (const flags of [["--apply", "--preview"], ["--apply"]]) {
+        const refused = runUpdate(invalid, flags);
+        assert.equal(refused.status, 1);
+        assert.match(refused.stderr, /contract-heading.*CLAUDE\.md/);
+        assert.deepEqual(snapshot(invalid), invalidBefore);
+        assert.equal(
+          existsSync(join(invalid, "KIT-MANIFEST.pending.json")),
+          false,
+        );
+      }
       const unknown = instance("unknown-kind", true);
       const unknownBefore = snapshot(unknown);
       write(
@@ -2476,6 +3002,12 @@ test("export update preserves ownership, validates actions and keeps the exporte
       assert.equal(readFileSync(join(target, changed), "utf8"), "revision B\n");
       assert.equal(readFileSync(join(target, added), "utf8"), "new in B\n");
       assert.equal(existsSync(join(target, dropped)), false);
+      const interruptedBefore = treeSnapshot(target);
+      ok(
+        runUpdate(target, ["--apply", "--preview"]),
+        "preview an interrupted update",
+      );
+      assert.deepEqual(treeSnapshot(target), interruptedBefore);
       // Core moves on before the retry: a file the failed run wrote changes
       // again upstream and a dropped file returns.
       write(changed, "revision C\n");

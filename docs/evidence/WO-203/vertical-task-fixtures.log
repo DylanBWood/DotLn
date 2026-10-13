@@ -1,0 +1,17 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+Direct entry files, runtime relative imports and literal first-party script paths in entry code; transitive imports and paths built at run time are outside this check. Script literals are conservative: a copied script can later be spawned through a variable.
+✔ WO-174 every machinery suite covers its direct entry imports and literal script paths (109.770792ms)
+✔ failed split-case diagnostics survive aggregate evidence as addressed logs (3.855667ms)
+✔ product suites describe protection, machinery is separate and only release and vertical expand (0.359875ms)
+✔ vertical file tasks preserve coverage, guards and the two-file concurrency bound (23.46575ms)
+✔ vertical file task dispatch executes every declared file exactly once (345.340958ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 539.926959
+bounded-result {"name":"bounded-probe","durationMs":587,"slowestCases":[{"name":"bounded-probe","durationMs":587,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":53614784,"peakRssBytes":145129472,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T20:36:01.935Z","finishedAt":"2026-10-12T20:36:02.522Z","exitCode":0,"executed":true}

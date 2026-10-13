@@ -1,0 +1,9 @@
+{
+  "expectedRevision": "12a7e65cdfb1fca910031bd8abcbcdadfb30a58f01c40390e73f0cd0dcb723ea",
+  "id": "FUP-59e4ca45614477fd",
+  "sourceRevision": 1,
+  "status": "settled",
+  "reason": "WO-203-D014 preserves D010's file tasks and partitions the large main file into complementary statement and workflow tasks. The bounded dispatch fixtures execute all selected families, ordinary and future workflow names, and a nested selected case once, and reject incomplete or failed aggregates. The complete runner suite passes. npm test -- --review records exit 0 at code identity 4de390c177f92ce4bb932ad47a79b8d3f592bed430674a702d377ce47958f7d1 on 2026-10-13T00:00:37.363Z: 36 suites, 91 fresh tasks, zero failures. The four vertical tasks pass in 566246, 361423, 558337 and 382468 ms, each below 900000 ms and with zero excluded product-record reads. The documentation gate passes at the same code identity.",
+  "reopenWhen": "A vertical task omits or duplicates a case, loses its product guard or task bound, or a required partition again exceeds its deadline.",
+  "targets": []
+}

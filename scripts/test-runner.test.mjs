@@ -1076,7 +1076,7 @@ test("failed split-case diagnostics survive aggregate evidence as addressed logs
       .every((row) => !row.outputRef),
   );
 });
-test("product suites describe protection, machinery is separate and only release expands", () => {
+test("product suites describe protection, machinery is separate and only release and vertical expand", () => {
   for (const row of suites) {
     assert.ok(row.protects?.length > 10, row.name);
     assert.ok(
@@ -1094,13 +1094,154 @@ test("product suites describe protection, machinery is separate and only release
     assert.ok(skeleton.sources.includes(path));
   for (const row of suites.filter((row) => row.machinery))
     assert.ok(row.sources.length, row.name);
-  const selected = suites.filter((row) => row.name !== "release");
+  const selected = suites.filter(
+    (row) => !["release", "vertical"].includes(row.name),
+  );
   assert.deepEqual(
     expandSuiteTasks(selected, root).map((row) => row.name),
     selected.map((row) => row.name),
   );
   for (const name of ["harness-fixtures", "process-debt"])
     assert.equal(suites.find((row) => row.name === name).exclusive, true);
+});
+test("vertical tasks preserve complementary coverage, guards and the two-task concurrency bound", async () => {
+  const suite = suites.find((row) => row.name === "vertical");
+  const tasks = expandSuiteTasks([suite], root);
+  assert.deepEqual(tasks.map((row) => row.command.at(-1)).sort(), [
+    "scripts/test-vertical-judgment.mjs",
+    "scripts/test-vertical.mjs",
+    "scripts/test-vertical.mjs",
+    "scripts/test-vertical.recovery.mjs",
+  ]);
+  const main = tasks.filter(
+    (row) => row.command.at(-1) === "scripts/test-vertical.mjs",
+  );
+  const statements = main.find((row) => row.name.endsWith(":statements"));
+  const workflow = main.find((row) => row.name.endsWith(":workflow"));
+  assert.equal(main.length, 2);
+  assert.equal(statements.namePattern, workflow.skipPattern);
+  assert.ok(
+    statements.command.includes(
+      `--test-name-pattern=${statements.namePattern}`,
+    ),
+  );
+  assert.ok(
+    workflow.command.includes(`--test-skip-pattern=${statements.namePattern}`),
+  );
+  for (const task of tasks) {
+    assert.deepEqual(
+      task.command
+        .slice(0, -1)
+        .filter(
+          (part) =>
+            !part.startsWith("--test-name-pattern=") &&
+            !part.startsWith("--test-skip-pattern="),
+        ),
+      suite.command.slice(0, -1),
+    );
+    assert.deepEqual(task.args, []);
+    assert.equal(task.product, true);
+    assert.equal(task.needs, OUTSIDE_CONFINEMENT);
+    assert.equal(task.loadSlots, 2);
+  }
+  let active = 0,
+    peak = 0;
+  const rows = await scheduleSuites([barrier, ...tasks], {
+    concurrency: 4,
+    execute: async (row) => {
+      if (!row.build) {
+        peak = Math.max(peak, ++active);
+        await new Promise((done) => setTimeout(done, 10));
+        active--;
+      }
+      return { name: row.name, executed: true, exitCode: 0, durationMs: 1 };
+    },
+  });
+  assert.equal(peak, 2);
+  const judged = rows.filter((row) => row.name !== "build");
+  const verdict = (observed) => aggregateSuiteRows([suite], tasks, observed)[0];
+  assert.equal(verdict(judged).exitCode, 0);
+  assert.deepEqual(
+    verdict(judged).expectedCases,
+    tasks.map((row) => row.name),
+  );
+  assert.equal(verdict([...judged, judged[0]]).exitCode, 1);
+  for (const task of tasks) {
+    assert.equal(
+      verdict(judged.filter((row) => row.name !== task.name)).exitCode,
+      1,
+    );
+    for (const failure of [
+      { exitCode: 1 },
+      { failureKind: "timeout" },
+      { executed: false },
+    ])
+      assert.equal(
+        verdict(
+          judged.map((row) =>
+            row.name === task.name ? { ...row, ...failure } : row,
+          ),
+        ).exitCode,
+        1,
+      );
+  }
+});
+test("vertical task dispatch executes every declared case exactly once across partitions", async (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-vertical-dispatch-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  execGit(["init", "-q"], { cwd: repo });
+  mkdirSync(join(repo, "scripts"));
+  const files = [
+    "scripts/test-vertical.mjs",
+    "scripts/test-vertical-judgment.mjs",
+    "scripts/test-vertical.recovery.mjs",
+  ];
+  const matrix = [
+    "composed baseline records source-bound failure judgments: fixture",
+    "composed baseline walks requirement-voice wording: fixture",
+    "resident consumes source-bound failure judgments: fixture",
+    "healthy negative wording: fixture",
+  ];
+  const ordinary = [
+    "ordinary workflow",
+    "future workflow without a matching family",
+  ];
+  for (const file of files)
+    writeFileSync(
+      join(repo, file),
+      file === "scripts/test-vertical.mjs"
+        ? `import test from 'node:test';\n${[...matrix, ...ordinary].map((name) => `test(${JSON.stringify(name)}, () => {});`).join("\n")}\ntest('healthy negative wording: nested fixture', async t => { await t.test('nested selected case', () => {}); });\n`
+        : `import test from 'node:test'; test(${JSON.stringify(file)}, () => {});\n`,
+    );
+  const tasks = expandSuiteTasks(
+    [suites.find((row) => row.name === "vertical")],
+    repo,
+  );
+  const observed = [];
+  for (const task of tasks) {
+    const result = await executeSuite(task, repo);
+    assert.equal(result.exitCode, 0, result.output);
+    observed.push(
+      ...[...result.output.matchAll(/^\s*ok \d+ - (.+)$/gm)]
+        .map((match) => match[1])
+        .filter((name) => !name.includes("# SKIP")),
+    );
+    if (task.name.endsWith(":statements")) {
+      assert.ok(result.output.includes("nested selected case"));
+      assert.ok(!result.output.includes("ordinary workflow"));
+    }
+  }
+  assert.deepEqual(
+    observed.sort(),
+    [
+      ...matrix,
+      ...ordinary,
+      "healthy negative wording: nested fixture",
+      "nested selected case",
+      "scripts/test-vertical-judgment.mjs",
+      "scripts/test-vertical.recovery.mjs",
+    ].sort(),
+  );
 });
 test("exclusive suites run alone and shared suites use remaining lane capacity", async () => {
   const selected = suites.filter((row) =>

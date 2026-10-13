@@ -1,4 +1,4 @@
-# WO-203 — Update preview: before any write, an update shows what it will replace, add, remove and refuse and which instance actions it would apply or preserve, from core against a starter or an instance and inside an instance against the starter revision it is about to merge (version assigned at activation)
+# WO-203 — Update preview: before any write, an update shows what it will replace, add, remove and refuse and which instance actions it would apply or preserve, from core against a starter or an instance and inside an instance against the starter revision it is about to merge (v0.79.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

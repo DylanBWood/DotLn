@@ -139,7 +139,9 @@ overlay over the kit's build, registers DotLn-Angular as a target with an
 Angular UI class and a repository profile, and holds `WS-001`, the Angular
 orders, their evidence, verification and final-review reports and its own
 planning documents; it takes the starter by a Git merge the operator chooses,
-previewed first (WO-203), followed by a re-emit of its own build. **DotLn-Angular**
+previewed first with `preview --from <ref>`, which distinguishes unchanged kit
+paths and reports incompatible manual actions individually ([WO-203 fixture
+evidence](../evidence/WO-203/handoff.md)), followed by a re-emit of its own build. **DotLn-Angular**
 is public under the same posture, receives only conventional branches and
 pull requests, and has three purposes: the reference for the architecture the
 operator wants Angular applications to follow (Angular, Nx, NgRx Signal Store

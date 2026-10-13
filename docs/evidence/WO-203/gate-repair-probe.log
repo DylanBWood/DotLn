@@ -1,0 +1,21 @@
+bounded-start {"budgetBytes":12884901888,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+✔ WO-184 criterion 17: built CLI supervisors kill their episode group on all terminal signals (1313.356333ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1416.226458
+✔ WO-075 design: the emit closure the export predicts with is pinned to HEAD, named from the import graph, and a dirty copy refuses before any write (3434.84975ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7659.929833
+bounded-result {"name":"bounded-probe","durationMs":9219,"slowestCases":[{"name":"bounded-probe","durationMs":9219,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":342388304,"peakRssBytes":536051712,"memoryBudgetBytes":12884901888,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-12T18:45:39.018Z","finishedAt":"2026-10-12T18:45:48.237Z","exitCode":0,"executed":true}

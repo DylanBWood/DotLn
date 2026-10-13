@@ -144,8 +144,8 @@ The fork is of the starter, not of DotLn core. This is one candidate route to
 test the [workstream application](12-workstream-application.md#one-workstream-across-repositories),
 not a canonical topology or an implemented multi-repo coordinator. It simulates an organization user's needs with personal/synthetic material.
 Packaging and the update path exist (WO-074 to WO-078); the license posture
-is decided below; the update's preview, rollback and channel and the first
-task are queued orders (WO-203, WO-207, WO-209, WO-083).
+is decided below; an update shows its plan before writing (WO-203); rollback,
+channel selection and the first task remain queued (WO-207, WO-209, WO-083).
 
 The 2026-09-06 planning pass, as redirected the same day, selects that
 route as the first physical slice of this boundary under ADR-0006 Decision
@@ -232,8 +232,11 @@ are the subject of WO-201 and WO-202. An instance's own executable code
 (source adapters, effect adapters, projections) lives at a configured,
 manifest-excluded extension point the kit's machinery loads through the
 ports and an update never touches, under the review burden §Package
-ecosystem names (WO-208). An update is previewed before it writes (WO-203),
-can be rolled back to the prior kit state (WO-207), and takes a channel:
+ecosystem names (WO-208). An update is previewed before it writes, from core with `export --update <dir>
+--preview` or inside an instance with `preview --from <ref>` ([WO-203
+fixture evidence](../evidence/WO-203/handoff.md)), with revision previews
+distinguishing unchanged kit paths and reporting incompatible manual actions
+individually; it can be rolled back to the prior kit state (WO-207), and takes a channel:
 machinery with the build pinned at the prior compiled definitions, both
 together, or the build alone (WO-209); editing a kit file inside an instance
 is choosing the true-fork path, which the client README states.
