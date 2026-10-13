@@ -755,7 +755,7 @@ export const suites = [
     kit: "core-only: docs/LEGAL.md and core release inputs",
   },
   nodeTests("worktree-integration", "scripts/test-worktree-integration.mjs", {
-    kit: "core-only: console package, core source and publication inputs",
+    kit: "core-only: core source and publication inputs",
   }),
   {
     ...shell("release", "scripts/test-release.sh"),
@@ -824,7 +824,7 @@ export const suites = [
   }),
   ...["kernel", "compiler", "skeleton", "console"].map((name) =>
     nodeTests(name, `packages/${name}/dist/test/*.test.js`, {
-      kit: `core-only: ${name === "console" ? "console package is not shipped" : `${name} package source audits${name === "kernel" ? " and package README" : ""}`}`,
+      kit: `core-only: ${name === "console" ? "console fixtures and recorded product evidence" : `${name} package source audits${name === "kernel" ? " and package README" : ""}`}`,
       fast: true,
       packageTest: true,
       ...(name === "skeleton"
@@ -865,7 +865,7 @@ export const suites = [
   ),
   ...["kernel", "skeleton", "console"].map((name) =>
     nodeTests(`${name}-docs`, `packages/${name}/dist/test/*.test.js`, {
-      kit: `core-only: ${name === "console" ? "console package is not shipped" : `${name} recorded product evidence and documentation`}`,
+      kit: `core-only: ${name === "console" ? "console fixtures and recorded product evidence" : `${name} recorded product evidence and documentation`}`,
       document: true,
       namePattern: "\\[document\\]",
       ...(name === "skeleton" ? { needs: OUTSIDE_CONFINEMENT } : {}),
@@ -876,7 +876,7 @@ export const suites = [
   ),
   nodeTests("adjacent-queue", "scripts/test-adjacent-queue.mjs"),
   nodeTests("evidence-sources", "scripts/test-evidence-sources.mjs", {
-    kit: "core-only: console build, package sources and recorded evidence editions",
+    kit: "core-only: package sources and recorded evidence editions",
   }),
   nodeTests("resident-bind", "scripts/test-resident-bind.mjs", {
     document: true,

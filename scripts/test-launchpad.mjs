@@ -44,7 +44,7 @@ import { suites } from "./test-runner.mjs";
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const scratch = realpathSync(mkdtempSync(join(tmpdir(), "dotln-launchpad-")));
 const source = join(scratch, "source");
-const RUNTIME_PACKAGES = ["kernel", "compiler", "skeleton"];
+const RUNTIME_PACKAGES = ["kernel", "compiler", "skeleton", "console"];
 const HARNESS_MANIFEST = ".claude/harness-manifest.json";
 // Built at runtime from reversed parts: the suite is itself a kit file, and
 // the terms check joins consecutive tokens, so the literal must not appear.
@@ -583,7 +583,7 @@ test("WO-074 criterion 1: an offline npm ci against the exported lockfile succee
   }
   assert.ok(
     !Object.keys(lock.packages).some((key) =>
-      /console|browser-evidence|playwright/u.test(key),
+      /browser-evidence|playwright/u.test(key),
     ),
   );
   // The export seeded the workspace links its own emit needed; the install
@@ -615,7 +615,9 @@ test("WO-074 criterion 1: an offline npm ci against the exported lockfile succee
 test("WO-075 criterion 1: the exported runtime is byte-identical to a rebuild at the named commit, sits at the paths the scripts import, is manifest-listed and holds no package source", () => {
   const listed = new Set(manifestOf(kit).files.map(({ path }) => path));
   const runtimePaths = [...listed].filter((path) =>
-    /^packages\/(?:kernel|compiler|skeleton)\/dist\/(?:src|test)\//u.test(path),
+    /^packages\/(?:kernel|compiler|skeleton|console)\/dist\/(?:src|test)\//u.test(
+      path,
+    ),
   );
   assert.ok(runtimePaths.length >= 200, `${runtimePaths.length} runtime files`);
   for (const path of files(kit)) {
@@ -631,7 +633,7 @@ test("WO-075 criterion 1: the exported runtime is byte-identical to a rebuild at
       assert.ok(listed.has(path), `${path} is manifest-listed`);
     if (path.startsWith("packages/"))
       assert.ok(
-        /^packages\/(?:beacons|kernel|compiler|skeleton)\//u.test(path),
+        /^packages\/(?:beacons|kernel|compiler|skeleton|console)\//u.test(path),
         `${path} belongs to a kit workspace`,
       );
   }
@@ -3260,6 +3262,12 @@ test("export update preserves ownership, validates actions and keeps the exporte
         await recordPresence('.runtime/resident', 'away', () => 0);
         await host.tick();
         const log = host.store.read();
+        const consoleRun = spawnSync(process.execPath, ['packages/console/dist/src/cli.js', 'live', '--store', '.runtime/resident'], {encoding: 'utf8', input: 'status\\nquit\\n'});
+        assert.equal(consoleRun.status, 0, consoleRun.stderr);
+        assert.match(consoleRun.stderr, /DotLn live console/);
+        assert.match(consoleRun.stderr, /Actors:/);
+        assert.doesNotMatch(consoleRun.stderr, /Runtime status unavailable/);
+        assert.match(consoleRun.stdout, /Runtime status/);
         assert.equal(residentMachine(replayResident(log).state.resident).due(10), 10);
         writeFileSync('.runtime/resident/resident.json', JSON.stringify(configuration));
         writeFileSync('.runtime/fixture-expected.json', JSON.stringify({log, identity: derived.workOrderId, compiled}));

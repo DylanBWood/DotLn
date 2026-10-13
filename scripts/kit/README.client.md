@@ -2,7 +2,7 @@
 
 This repository is a launchpad instance exported from DotLn core: the control
 plane under `scripts/` with its suites, the compiled runtime of
-`@dotln/kernel`, `@dotln/compiler` and `@dotln/skeleton` under
+`@dotln/kernel`, `@dotln/compiler`, `@dotln/skeleton` and `@dotln/console` under
 `packages/<name>/dist/src/` and compiled tests under `dist/test/`, the build-free Beacon workspace under
 `packages/beacons`, the Contributor harness bundle under `.claude/`,
 `.agents/` and `.codex/` that the export's own `node scripts/harness.mjs emit`
@@ -127,7 +127,7 @@ record its dated planning pass in `docs/lineage/idea-ledger.md`.
   `npm run plan -- followups --sync` reconciles changed public sources.
 - `npm run plan -- failures` and `npm run plan -- conditions` report local
   evidence. Core condition sources absent here are named and have unknown
-  verdicts; `collect-sources` reports the unavailable console package.
+  verdicts; the console collector reports the availability of each source.
 - `npm run meta` refreshes the decision index and register.
   `npm run meta -- --plan-cost` records costs for the committed orders and
   current planning inputs. Commit the planning subject and cost table before
@@ -207,10 +207,10 @@ reason, including with `--list`, and records no gate result.
 | `comment-labels` | core comment fingerprint baseline |
 | `comment-labels-fixtures` | core corpus profile collector |
 | `compiler` | compiler package source audits |
-| `console` | console package is not shipped |
-| `console-docs` | console package is not shipped |
+| `console` | console fixtures and recorded product evidence |
+| `console-docs` | console fixtures and recorded product evidence |
 | `docs-check-fixtures` | core product roadmap |
-| `evidence-sources` | console build, package sources and recorded evidence editions |
+| `evidence-sources` | package sources and recorded evidence editions |
 | `feedback-evidence` | core feedback evidence edition |
 | `github-body` | core outward-vocabulary control data |
 | `harness-evidence` | package sources, historical harness baseline and live evidence |
@@ -240,9 +240,9 @@ reason, including with `--list`, and records no gate result.
 | `vertical` | core outward-vocabulary control data |
 | `wo107-schema` | historical corpus observations, collector and Git objects |
 | `worktree` | docs/LEGAL.md and core release inputs |
-| `worktree-integration` | console package, core source and publication inputs |
+| `worktree-integration` | core source and publication inputs |
 
-The compiled kernel, compiler and skeleton tests travel in the kit. Their
+The compiled kernel, compiler, skeleton and console tests travel in the kit. Their
 combined package rows also contain source audits or checks of core's
 recorded product evidence, so those complete rows remain core-only as listed
 above. The excluded `scripts/fixtures/wo138-local-role-qualification.json`
@@ -251,10 +251,18 @@ is derived from core's WO-052 verification report and does not travel.
 Lifecycle commands run on the carried runtime, including Codex dispatches
 that reserve a writer. `node scripts/harness.mjs check` and `emit` verify and
 regenerate the bundle. `npm run build` and the build-first `npm run harness`
-need the omitted TypeScript source. Console fixtures and browser evidence
-need their uncarried packages. Planning commands run here (§Planning in this
-instance) with these limits: `npm run plan -- conditions` reports its
-console-dependent collection as unavailable, a live refutation or entropy
+need the omitted TypeScript source. Open the shipped console without building:
+`node packages/console/dist/src/cli.js live --store .runtime/resident`.
+The status view labels resident-owned continuation steps as logical
+`vertical-host` episodes and displays intent decision holds. Those rows do not
+claim a native model launch; the child stores retain native-worker evidence.
+The episode links to its filed intent; the work-order list separately shows
+the allocated derived order. A continuation whose last step settled terminally
+leaves the actor list; one that ended awaiting a decision keeps its hold.
+Hold reason codes omit private raw diagnostics.
+Console fixture suites need core fixture data and recorded product evidence;
+browser evidence needs its uncarried package. Planning commands run here
+(§Planning in this instance) with these limits: a live refutation or entropy
 review is run by this instance's operator rather than by any fixture, and
 `npm run release -- check-surfaces --local` still reads `docs/LEGAL.md`, which
 the kit does not seed, once an order carries a version (`release-surfaces` in
@@ -281,7 +289,7 @@ Kit files are the manifest-listed set: `scripts/**` (the kit templates under
 `scripts/kit/` among them, excluding the core-report qualification fixture),
 `packages/beacons/**`, the compiled runtime and tests
 `packages/<name>/dist/{src,test}/**` with their `package.json` for kernel,
-compiler and skeleton, the data and executable doubles under
+compiler, skeleton and console, the data and executable doubles under
 `packages/kernel/test/fixtures/`, `packages/compiler/fixtures/` and
 `packages/skeleton/fixtures/`, the identity corpus test, its two helpers, manifest and synthetic ID vectors
 under `corpus/`, and the three mutation self-test modules under
