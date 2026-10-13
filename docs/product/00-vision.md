@@ -130,7 +130,7 @@ permission, a guard, a reactor, an evaluator, a transformer, a workflow gate)
 attached only where relevant. A session in that profile gets **a build, not a
 biography** — one active behavior, a handful of linked supports, its selected
 safety layer, and the exact task state. The platform supplies the compiler and
-mechanism contracts without prescribing that loadout.
+mechanism contracts without prescribing that loadout. The [starter proof](../evidence/WO-118/README.md) completed resident-owned scratch delivery and review repair with writer replacement and resident restart; a fresh export demonstrated live status, while efficiency remains unmeasured.
 
 ## The core bet
 
