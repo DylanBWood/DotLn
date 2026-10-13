@@ -1,0 +1,17 @@
+{
+  "coreBase": "6421221bb46fcb42ed85af112f0c1c2b539200b8",
+  "candidateCommit": "7a5b035ba66c4f2ae5801ae71b4f7859ddff605d",
+  "diffSha256": "0603552978c2f649aec02163a047f508a975093fbdceea75fc2519a0d798c894",
+  "fileCount": 913,
+  "consolePresent": true,
+  "runtimeHashes": {
+    "packages/skeleton/dist/src/vertical-host.js": "c28cdf11e8197c8e4e202a2c63a5aeeccd4f6966b7ab38be4793a0b5ba7355ef",
+    "packages/skeleton/dist/src/runtime-status.js": "f06acbaea21aa65a849b960f2570fa8eb0165a7320f3cc579cdc436237c011e5",
+    "packages/console/dist/src/cli.js": "538fa6de9f7ff34f7abba4ce722d9fff58398211cc43e2b8df5f6fa9e699ed24"
+  },
+  "coreBuildHashes": {
+    "packages/skeleton/dist/src/vertical-host.js": "c28cdf11e8197c8e4e202a2c63a5aeeccd4f6966b7ab38be4793a0b5ba7355ef",
+    "packages/skeleton/dist/src/runtime-status.js": "f06acbaea21aa65a849b960f2570fa8eb0165a7320f3cc579cdc436237c011e5",
+    "packages/console/dist/src/cli.js": "538fa6de9f7ff34f7abba4ce722d9fff58398211cc43e2b8df5f6fa9e699ed24"
+  }
+}

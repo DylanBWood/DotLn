@@ -1,0 +1,872 @@
+{
+  "schemaVersion": 1,
+  "format": "Sanitized event summaries, not EventEnvelope JSONL",
+  "resident": [
+    {
+      "eventId": "evt_1",
+      "type": "ResidentConfigured",
+      "at": 0
+    },
+    {
+      "eventId": "evt_2",
+      "type": "ClockSampled",
+      "at": 1791856995972
+    },
+    {
+      "eventId": "evt_3",
+      "type": "ClockSampled",
+      "at": 1791856995996
+    },
+    {
+      "eventId": "evt_4",
+      "type": "OperatorPresenceObserved",
+      "at": 1791856996040
+    },
+    {
+      "eventId": "evt_5",
+      "type": "ClockSampled",
+      "at": 1791856996040
+    },
+    {
+      "eventId": "evt_6",
+      "type": "ClockSampled",
+      "at": 1791856997023
+    },
+    {
+      "eventId": "evt_7",
+      "type": "ClockSampled",
+      "at": 1791857022471
+    },
+    {
+      "eventId": "evt_8",
+      "type": "IntentAdmitted",
+      "at": 1791857022471
+    },
+    {
+      "eventId": "evt_9",
+      "type": "ClockSampled",
+      "at": 1791857023471
+    },
+    {
+      "eventId": "evt_10",
+      "type": "IntentStepStarted",
+      "at": 1791857023471
+    },
+    {
+      "eventId": "evt_11",
+      "type": "ClockSampled",
+      "at": 1791857023511
+    },
+    {
+      "eventId": "evt_12",
+      "type": "IntentStepSettled",
+      "at": 1791857023511,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "eventId": "evt_13",
+      "type": "ClockSampled",
+      "at": 1791857023893
+    },
+    {
+      "eventId": "evt_14",
+      "type": "ClockSampled",
+      "at": 1791857023978
+    },
+    {
+      "eventId": "evt_15",
+      "type": "IntentStepStarted",
+      "at": 1791857023978
+    },
+    {
+      "eventId": "evt_16",
+      "type": "ClockSampled",
+      "at": 1791857024018
+    },
+    {
+      "eventId": "evt_17",
+      "type": "IntentStepSettled",
+      "at": 1791857024018,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "eventId": "evt_18",
+      "type": "ClockSampled",
+      "at": 1791857025059
+    },
+    {
+      "eventId": "evt_19",
+      "type": "ClockSampled",
+      "at": 1791857025147
+    },
+    {
+      "eventId": "evt_20",
+      "type": "IntentStepStarted",
+      "at": 1791857025147
+    },
+    {
+      "eventId": "evt_21",
+      "type": "ClockSampled",
+      "at": 1791857025186
+    },
+    {
+      "eventId": "evt_22",
+      "type": "IntentStepSettled",
+      "at": 1791857025186,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "eventId": "evt_23",
+      "type": "ClockSampled",
+      "at": 1791857026228
+    },
+    {
+      "eventId": "evt_24",
+      "type": "ClockSampled",
+      "at": 1791857026331
+    },
+    {
+      "eventId": "evt_25",
+      "type": "IntentStepStarted",
+      "at": 1791857026331
+    },
+    {
+      "eventId": "evt_26",
+      "type": "ClockSampled",
+      "at": 1791857026374
+    },
+    {
+      "eventId": "evt_27",
+      "type": "IntentStepSettled",
+      "at": 1791857026374,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "eventId": "evt_28",
+      "type": "ClockSampled",
+      "at": 1791857027416
+    },
+    {
+      "eventId": "evt_29",
+      "type": "ClockSampled",
+      "at": 1791857027505
+    },
+    {
+      "eventId": "evt_30",
+      "type": "IntentStepStarted",
+      "at": 1791857027505
+    },
+    {
+      "eventId": "evt_31",
+      "type": "ClockSampled",
+      "at": 1791857027674
+    },
+    {
+      "eventId": "evt_32",
+      "type": "ClockSampled",
+      "at": 1791857045356
+    },
+    {
+      "eventId": "evt_33",
+      "type": "IntentStepSettled",
+      "at": 1791857045356,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "eventId": "evt_34",
+      "type": "ClockSampled",
+      "at": 1791857046399
+    },
+    {
+      "eventId": "evt_35",
+      "type": "ClockSampled",
+      "at": 1791857046497
+    },
+    {
+      "eventId": "evt_36",
+      "type": "IntentStepStarted",
+      "at": 1791857046497
+    },
+    {
+      "eventId": "evt_37",
+      "type": "ClockSampled",
+      "at": 1791857047054
+    },
+    {
+      "eventId": "evt_38",
+      "type": "ClockSampled",
+      "at": 1791857047193
+    },
+    {
+      "eventId": "evt_39",
+      "type": "ClockSampled",
+      "at": 1791857048253
+    },
+    {
+      "eventId": "evt_40",
+      "type": "ClockSampled",
+      "at": 1791857048351
+    },
+    {
+      "eventId": "evt_41",
+      "type": "ClockSampled",
+      "at": 1791857048770
+    },
+    {
+      "eventId": "evt_42",
+      "type": "ClockSampled",
+      "at": 1791857174722
+    },
+    {
+      "eventId": "evt_43",
+      "type": "IntentStepSettled",
+      "at": 1791857174722,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "eventId": "evt_44",
+      "type": "ClockSampled",
+      "at": 1791857175771
+    },
+    {
+      "eventId": "evt_45",
+      "type": "ClockSampled",
+      "at": 1791857175880
+    },
+    {
+      "eventId": "evt_46",
+      "type": "IntentStepStarted",
+      "at": 1791857175880
+    },
+    {
+      "eventId": "evt_47",
+      "type": "ClockSampled",
+      "at": 1791857176064
+    },
+    {
+      "eventId": "evt_48",
+      "type": "IntentStepSettled",
+      "at": 1791857176064,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "eventId": "evt_49",
+      "type": "ClockSampled",
+      "at": 1791857177109
+    },
+    {
+      "eventId": "evt_50",
+      "type": "ClockSampled",
+      "at": 1791857177220
+    },
+    {
+      "eventId": "evt_51",
+      "type": "IntentStepStarted",
+      "at": 1791857177220
+    },
+    {
+      "eventId": "evt_52",
+      "type": "ClockSampled",
+      "at": 1791857177284
+    },
+    {
+      "eventId": "evt_53",
+      "type": "ClockSampled",
+      "at": 1791857207529
+    },
+    {
+      "eventId": "evt_54",
+      "type": "IntentStepSettled",
+      "at": 1791857207529,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "eventId": "evt_55",
+      "type": "ClockSampled",
+      "at": 1791857208573
+    },
+    {
+      "eventId": "evt_56",
+      "type": "ClockSampled",
+      "at": 1791857208686
+    },
+    {
+      "eventId": "evt_57",
+      "type": "IntentStepStarted",
+      "at": 1791857208686
+    },
+    {
+      "eventId": "evt_58",
+      "type": "ClockSampled",
+      "at": 1791857208759
+    },
+    {
+      "eventId": "evt_59",
+      "type": "ClockSampled",
+      "at": 1791857237109
+    },
+    {
+      "eventId": "evt_60",
+      "type": "IntentStepSettled",
+      "at": 1791857237109,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "eventId": "evt_61",
+      "type": "ClockSampled",
+      "at": 1791857238159
+    },
+    {
+      "eventId": "evt_62",
+      "type": "ClockSampled",
+      "at": 1791857238272
+    },
+    {
+      "eventId": "evt_63",
+      "type": "IntentStepStarted",
+      "at": 1791857238272
+    },
+    {
+      "eventId": "evt_64",
+      "type": "ClockSampled",
+      "at": 1791857238314
+    },
+    {
+      "eventId": "evt_65",
+      "type": "IntentStepSettled",
+      "at": 1791857238314,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "eventId": "evt_66",
+      "type": "ClockSampled",
+      "at": 1791857239355
+    },
+    {
+      "eventId": "evt_67",
+      "type": "ClockSampled",
+      "at": 1791857239472
+    },
+    {
+      "eventId": "evt_68",
+      "type": "IntentStepStarted",
+      "at": 1791857239472
+    },
+    {
+      "eventId": "evt_69",
+      "type": "ClockSampled",
+      "at": 1791857239598
+    },
+    {
+      "eventId": "evt_70",
+      "type": "IntentStepSettled",
+      "at": 1791857239598,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "eventId": "evt_71",
+      "type": "ClockSampled",
+      "at": 1791857240644
+    },
+    {
+      "eventId": "evt_72",
+      "type": "ClockSampled",
+      "at": 1791857240761
+    },
+    {
+      "eventId": "evt_73",
+      "type": "IntentStepStarted",
+      "at": 1791857240761
+    },
+    {
+      "eventId": "evt_74",
+      "type": "ClockSampled",
+      "at": 1791857244155
+    },
+    {
+      "eventId": "evt_75",
+      "type": "IntentStepSettled",
+      "at": 1791857244155,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "eventId": "evt_76",
+      "type": "ClockSampled",
+      "at": 1791857245201
+    },
+    {
+      "eventId": "evt_77",
+      "type": "ClockSampled",
+      "at": 1791857245315
+    },
+    {
+      "eventId": "evt_78",
+      "type": "IntentStepStarted",
+      "at": 1791857245315
+    },
+    {
+      "eventId": "evt_79",
+      "type": "ClockSampled",
+      "at": 1791857247383
+    },
+    {
+      "eventId": "evt_80",
+      "type": "ClockSampled",
+      "at": 1791857264665
+    },
+    {
+      "eventId": "evt_81",
+      "type": "IntentStepSettled",
+      "at": 1791857264665,
+      "result": "completed",
+      "terminal": false
+    },
+    {
+      "eventId": "evt_82",
+      "type": "ClockSampled",
+      "at": 1791857265712
+    },
+    {
+      "eventId": "evt_83",
+      "type": "ClockSampled",
+      "at": 1791857265823
+    },
+    {
+      "eventId": "evt_84",
+      "type": "IntentStepStarted",
+      "at": 1791857265823
+    },
+    {
+      "eventId": "evt_85",
+      "type": "ClockSampled",
+      "at": 1791857268138
+    },
+    {
+      "eventId": "evt_86",
+      "type": "ClockSampled",
+      "at": 1791857287487
+    },
+    {
+      "eventId": "evt_87",
+      "type": "ClockSampled",
+      "at": 1791857299924
+    },
+    {
+      "eventId": "evt_88",
+      "type": "ClockSampled",
+      "at": 1791857434679
+    },
+    {
+      "eventId": "evt_89",
+      "type": "ClockSampled",
+      "at": 1791857481197
+    },
+    {
+      "eventId": "evt_90",
+      "type": "ClockSampled",
+      "at": 1791857506282
+    },
+    {
+      "eventId": "evt_91",
+      "type": "ClockSampled",
+      "at": 1791857528371
+    },
+    {
+      "eventId": "evt_92",
+      "type": "IntentStepSettled",
+      "at": 1791857528371,
+      "result": "completed",
+      "terminal": true
+    },
+    {
+      "eventId": "evt_93",
+      "type": "ClockSampled",
+      "at": 1791857529421
+    },
+    {
+      "eventId": "evt_94",
+      "type": "ClockSampled",
+      "at": 1791857569285
+    },
+    {
+      "eventId": "evt_95",
+      "type": "IntentHeld",
+      "at": 1791857569285
+    },
+    {
+      "eventId": "evt_96",
+      "type": "ClockSampled",
+      "at": 1791857570329
+    },
+    {
+      "eventId": "evt_97",
+      "type": "ClockSampled",
+      "at": 1791857570370
+    },
+    {
+      "eventId": "evt_98",
+      "type": "ActorUnavailable",
+      "at": 1791857570370
+    }
+  ],
+  "vertical": [
+    {
+      "eventId": "evt_1",
+      "type": "VerticalOpened",
+      "at": 1791857023429
+    },
+    {
+      "eventId": "evt_2",
+      "type": "VerticalCommandPersisted",
+      "at": 1791857023441,
+      "step": "bundle",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_3",
+      "type": "VerticalStepCompleted",
+      "at": 1791857023481,
+      "step": "bundle",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_4",
+      "type": "VerticalCommandPersisted",
+      "at": 1791857023948,
+      "step": "contract",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_5",
+      "type": "VerticalStepCompleted",
+      "at": 1791857023988,
+      "step": "contract",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_6",
+      "type": "VerticalCommandPersisted",
+      "at": 1791857025118,
+      "step": "surfaces",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_7",
+      "type": "VerticalStepCompleted",
+      "at": 1791857025158,
+      "step": "surfaces",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_8",
+      "type": "VerticalCommandPersisted",
+      "at": 1791857026295,
+      "step": "derived-order",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_9",
+      "type": "VerticalStepCompleted",
+      "at": 1791857026341,
+      "step": "derived-order",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_10",
+      "type": "VerticalCommandPersisted",
+      "at": 1791857027477,
+      "step": "baseline",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_11",
+      "type": "VerticalStepCompleted",
+      "at": 1791857045322,
+      "step": "baseline",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_12",
+      "type": "VerticalCommandPersisted",
+      "at": 1791857046466,
+      "step": "source-change",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_13",
+      "type": "VerticalStepCompleted",
+      "at": 1791857174688,
+      "step": "source-change",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_14",
+      "type": "VerticalCommandPersisted",
+      "at": 1791857175847,
+      "step": "witnesses",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_15",
+      "type": "VerticalStepCompleted",
+      "at": 1791857176029,
+      "step": "witnesses",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_16",
+      "type": "VerticalCommandPersisted",
+      "at": 1791857177187,
+      "step": "verification",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_17",
+      "type": "VerticalStepCompleted",
+      "at": 1791857207492,
+      "step": "verification",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_18",
+      "type": "VerticalCommandPersisted",
+      "at": 1791857208653,
+      "step": "review",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_19",
+      "type": "VerticalStepCompleted",
+      "at": 1791857237071,
+      "step": "review",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_20",
+      "type": "VerticalCommandPersisted",
+      "at": 1791857238240,
+      "step": "preparation",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_21",
+      "type": "VerticalStepCompleted",
+      "at": 1791857238282,
+      "step": "preparation",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_22",
+      "type": "VerticalCommandPersisted",
+      "at": 1791857239439,
+      "step": "lint",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_23",
+      "type": "VerticalStepCompleted",
+      "at": 1791857239564,
+      "step": "lint",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_24",
+      "type": "VerticalCommandPersisted",
+      "at": 1791857240727,
+      "step": "publish",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_25",
+      "type": "VerticalStepCompleted",
+      "at": 1791857244115,
+      "step": "publish",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_26",
+      "type": "VerticalCommandPersisted",
+      "at": 1791857245282,
+      "step": "observation",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_27",
+      "type": "VerticalStepCompleted",
+      "at": 1791857264623,
+      "step": "observation",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_28",
+      "type": "VerticalCommandPersisted",
+      "at": 1791857265789,
+      "step": "resolution",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_29",
+      "type": "VerticalStepCompleted",
+      "at": 1791857528329,
+      "step": "resolution",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    }
+  ],
+  "source": [
+    {
+      "eventId": "evt_1",
+      "type": "ArtifactIdentityEnforcementStarted",
+      "at": 1791857046573
+    },
+    {
+      "eventId": "evt_2",
+      "type": "SourceChangeRequested",
+      "at": 1791857046573
+    },
+    {
+      "eventId": "evt_3",
+      "type": "CommandPersisted",
+      "at": 1791857046582
+    },
+    {
+      "eventId": "evt_4",
+      "type": "WorkerAttemptStarted",
+      "at": 1791857047048
+    },
+    {
+      "eventId": "evt_5",
+      "type": "SourceChangeProcessStarted",
+      "at": 1791857047124
+    },
+    {
+      "eventId": "evt_6",
+      "type": "CommandReceipt",
+      "at": 1791857047128
+    },
+    {
+      "eventId": "evt_7",
+      "type": "SourceChangeProcessStopped",
+      "at": 1791857047163
+    },
+    {
+      "eventId": "evt_8",
+      "type": "SourceChangeIntegrityChecked",
+      "at": 1791857047184
+    },
+    {
+      "eventId": "evt_9",
+      "type": "WorkerInterrupted",
+      "at": 1791857047189
+    },
+    {
+      "eventId": "evt_10",
+      "type": "SourceChangeIntegrityChecked",
+      "at": 1791857048429
+    },
+    {
+      "eventId": "evt_11",
+      "type": "WorkerAttemptStarted",
+      "at": 1791857048765
+    },
+    {
+      "eventId": "evt_12",
+      "type": "SourceChangeProcessStarted",
+      "at": 1791857048839
+    },
+    {
+      "eventId": "evt_13",
+      "type": "CommandReceipt",
+      "at": 1791857048843
+    },
+    {
+      "eventId": "evt_139",
+      "type": "SourceChangeProcessStopped",
+      "at": 1791857173983
+    },
+    {
+      "eventId": "evt_140",
+      "type": "WorkerResultObserved",
+      "at": 1791857173990
+    },
+    {
+      "eventId": "evt_141",
+      "type": "SourceChangeIntegrityChecked",
+      "at": 1791857174014
+    },
+    {
+      "eventId": "evt_142",
+      "type": "SourceChangeIntegrityChecked",
+      "at": 1791857174657
+    },
+    {
+      "eventId": "evt_143",
+      "type": "SourceChangeObserved",
+      "at": 1791857174671
+    },
+    {
+      "eventId": "evt_144",
+      "type": "CommandResult",
+      "at": 1791857174678,
+      "result": "observed"
+    },
+    {
+      "eventId": "evt_145",
+      "type": "WorkerCompleted",
+      "at": 1791857174683
+    }
+  ]
+}

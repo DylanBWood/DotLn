@@ -1,0 +1,212 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-118",
+  "verification": "VER-002",
+  "subjectCodeIdentity": "99fb21b175c81af5e893fdbd22fe96663e9ae34df959772247cd2dac98f35448",
+  "readOnlyProbes": {
+    "local-probe": {
+      "checkedAt": "2026-10-13T13:41:57.975Z",
+      "phases": [
+        {
+          "phase": "bundle",
+          "durationMs": 46,
+          "liveAtStart": true,
+          "retiredAtTerminal": false
+        },
+        {
+          "phase": "contract",
+          "durationMs": 45,
+          "liveAtStart": true,
+          "retiredAtTerminal": false
+        },
+        {
+          "phase": "surfaces",
+          "durationMs": 47,
+          "liveAtStart": true,
+          "retiredAtTerminal": false
+        },
+        {
+          "phase": "derived-order",
+          "durationMs": 41,
+          "liveAtStart": true,
+          "retiredAtTerminal": false
+        },
+        {
+          "phase": "baseline",
+          "durationMs": 19660,
+          "liveAtStart": true,
+          "retiredAtTerminal": false
+        },
+        {
+          "phase": "source-change",
+          "durationMs": 120358,
+          "liveAtStart": true,
+          "retiredAtTerminal": false
+        },
+        {
+          "phase": "witnesses",
+          "durationMs": 237,
+          "liveAtStart": true,
+          "retiredAtTerminal": false
+        },
+        {
+          "phase": "verification",
+          "durationMs": 24847,
+          "liveAtStart": true,
+          "retiredAtTerminal": false
+        },
+        {
+          "phase": "review",
+          "durationMs": 28341,
+          "liveAtStart": true,
+          "retiredAtTerminal": false
+        },
+        {
+          "phase": "preparation",
+          "durationMs": 51,
+          "liveAtStart": true,
+          "retiredAtTerminal": false
+        },
+        {
+          "phase": "lint",
+          "durationMs": 186,
+          "liveAtStart": true,
+          "retiredAtTerminal": false
+        },
+        {
+          "phase": "publish",
+          "durationMs": 4068,
+          "liveAtStart": true,
+          "retiredAtTerminal": false
+        },
+        {
+          "phase": "observation",
+          "durationMs": 20019,
+          "liveAtStart": true,
+          "retiredAtTerminal": false
+        },
+        {
+          "phase": "resolution",
+          "durationMs": 226355,
+          "liveAtStart": true,
+          "retiredAtTerminal": true
+        }
+      ],
+      "livePhases": [
+        "baseline",
+        "source-change",
+        "verification",
+        "review",
+        "lint",
+        "publish",
+        "observation",
+        "resolution"
+      ],
+      "changeDrivenFrames": 37,
+      "liveFramesWithHold": 17,
+      "snapshotsReplayed": 17,
+      "logs": 11,
+      "events": 558,
+      "humanPresenceEvents": 1,
+      "sourceAttempts": 2,
+      "verticalAuditEvents": 29,
+      "residentAuditEvents": 116,
+      "allExportedJsFilesEqualCurrentBuild": 241
+    },
+    "projection-probe": {
+      "checkedAt": "2026-10-13T13:42:07.358Z",
+      "empty": true,
+      "terminalOutcomes": [
+        "completed",
+        "refused",
+        "NeedsHuman",
+        "retry",
+        "repair"
+      ],
+      "duplicateSettlementsNoDuplicateHold": true,
+      "staleTerminalDoesNotRetireDifferentLiveCommand": true,
+      "nonterminalPauseRetained": true,
+      "unknownCommandOmitted": true,
+      "privateHoldFieldsOmitted": true,
+      "finishedContinuations": 500,
+      "finishedActorRows": 0
+    },
+    "remote-probe": {
+      "checkedAt": "2026-10-13T13:42:08.646Z",
+      "state": "OPEN",
+      "headAndGeneratedTextMatchRecordedRun": true,
+      "commits": 2,
+      "threads": 2,
+      "resolvedThreads": 2,
+      "outwardArtifactsPassed": 10,
+      "trackedFiles": 6,
+      "sourceCommits": 1,
+      "repairCommits": 1,
+      "runtimeRejectionHasEvidence": true,
+      "existingFollowupIdentifierForms": [
+        "verification:vertical",
+        "source-event:evt",
+        "baseline-event:evt",
+        "review-event:evt",
+        "delivery-preparation",
+        "contract:"
+      ]
+    },
+    "checker-negative-probe": {
+      "checkedAt": "2026-10-13T13:44:21.672Z",
+      "variation": "process-local read interception supplies synthetic extra bytes for the current runtime-status build; no file modified",
+      "checkerExitCode": 0,
+      "currentBuildMatchesExport": false,
+      "subjectFileUnchanged": true
+    }
+  },
+  "exportCandidate": {
+    "sourceFilesCompared": 662,
+    "sourceFilesDiffering": 0,
+    "manifestFilesVerified": 913,
+    "manifestFilesDiffering": 0,
+    "checkedAt": "2026-10-13T13:46:13.118Z"
+  },
+  "runtimeStatusTests": {
+    "passed": 10,
+    "failed": 0,
+    "durationMs": 2258,
+    "finishedAt": "2026-10-13T13:39:17.751Z"
+  },
+  "consumedReviewGate": {
+    "checkId": "npm test",
+    "gateSelection": "review",
+    "codeIdentity": "99fb21b175c81af5e893fdbd22fe96663e9ae34df959772247cd2dac98f35448",
+    "recordedAt": "2026-10-13T11:58:03.830Z",
+    "durationMs": 1335688,
+    "freshSuites": 91,
+    "exitCode": 0,
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "coveringGateCheck": "passing row at current identity, no missing or displaced tasks"
+  },
+  "limits": [
+    "Live run performed by the executor; verification independently checked retained raw material and current read-only remote observations.",
+    "No operator-terminal witness or effective model/effort readback inferred.",
+    "The transient candidate-comparison probe initially imported realpathSync from node:path and did not execute; corrected to node:fs, then passed."
+  ],
+  "documentGate": {
+    "command": "npm run test:docs",
+    "exitCode": 0,
+    "freshTasks": 35,
+    "failures": 0,
+    "durationMs": 100498,
+    "recordedAt": "2026-10-13T13:50:13.512Z",
+    "codeIdentity": "99fb21b175c81af5e893fdbd22fe96663e9ae34df959772247cd2dac98f35448",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "cutoff": "After D015 and probe evidence; before D016 and VER-002. The verification-result transition runs the document gate again over the completed report."
+  },
+  "formatCheck": {
+    "command": "npm run format:check",
+    "exitCode": 0,
+    "durationMs": 6323,
+    "finishedAt": "2026-10-13T13:46:19.549Z",
+    "cutoff": "Implementation checked before verifier report and evidence writes; document gate also includes format."
+  }
+}

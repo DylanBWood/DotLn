@@ -1,0 +1,175 @@
+[
+  {
+    "at": "2026-10-13T02:35:16.476Z",
+    "kind": "active-source-with-hold",
+    "view": {
+      "viewModelVersion": "runtime-status-v1",
+      "observedAt": 1791858916297,
+      "actors": [
+        {
+          "phase": "probe",
+          "kind": "portfolio",
+          "availability": "unknown",
+          "lastEpisode": null
+        },
+        {
+          "phase": "source-change",
+          "kind": "vertical-host",
+          "availability": "available",
+          "lastEpisode": "vertical_<run-key>_source-change_0_0"
+        }
+      ],
+      "liveEpisodes": [
+        {
+          "episodeId": "vertical_<run-key>_source-change_0_0",
+          "order": "WO-901",
+          "actor": "vertical-host",
+          "transport": "resident",
+          "phase": "source-change",
+          "startedAt": 1791858915449,
+          "elapsedMs": 848,
+          "launchClaims": {
+            "source": "none",
+            "model": null,
+            "effort": null
+          }
+        }
+      ],
+      "presence": {
+        "signal": "away",
+        "present": false,
+        "phase": "probe",
+        "cadences": [
+          {
+            "phase": "probe",
+            "nextFireAt": null
+          }
+        ]
+      },
+      "holds": [
+        {
+          "kind": "dispatch",
+          "reason": "intent-needs-human:contract",
+          "order": "WO-900"
+        }
+      ],
+      "budget": {
+        "status": "configured",
+        "episodes": {
+          "consumed": 0,
+          "remaining": 2
+        },
+        "wallMs": {
+          "consumed": 0,
+          "remaining": 3600000
+        },
+        "tokens": {
+          "consumed": 0,
+          "remaining": null
+        }
+      },
+      "workOrders": {
+        "status": "available",
+        "items": [
+          {
+            "order": "WO-902",
+            "phase": "active",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-900",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-901",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "at": "2026-10-13T02:37:22.206Z",
+    "kind": "returned-after-source",
+    "view": {
+      "viewModelVersion": "runtime-status-v1",
+      "observedAt": 1791859042082,
+      "actors": [
+        {
+          "phase": "probe",
+          "kind": "portfolio",
+          "availability": "unknown",
+          "lastEpisode": null
+        },
+        {
+          "phase": "source-change",
+          "kind": "vertical-host",
+          "availability": "unknown",
+          "lastEpisode": "vertical_<run-key>_source-change_0_0"
+        }
+      ],
+      "liveEpisodes": [],
+      "presence": {
+        "signal": "back",
+        "present": true,
+        "phase": "present",
+        "cadences": [
+          {
+            "phase": "probe",
+            "nextFireAt": null
+          }
+        ]
+      },
+      "holds": [
+        {
+          "kind": "dispatch",
+          "reason": "intent-needs-human:contract",
+          "order": "WO-900"
+        }
+      ],
+      "budget": {
+        "status": "configured",
+        "episodes": {
+          "consumed": 0,
+          "remaining": 2
+        },
+        "wallMs": {
+          "consumed": 0,
+          "remaining": 3600000
+        },
+        "tokens": {
+          "consumed": 0,
+          "remaining": null
+        }
+      },
+      "workOrders": {
+        "status": "available",
+        "items": [
+          {
+            "order": "WO-902",
+            "phase": "active",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-900",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-901",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          }
+        ]
+      }
+    }
+  }
+]

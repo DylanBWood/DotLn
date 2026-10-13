@@ -1,4 +1,4 @@
-# WO-118 — The resident-owned loop from a starter instance: one initial intent and standing grants carry work through derivation, dispatch, verification, repair, delivery and the pull-request loop under the durable runtime, surviving an actor's death and a resident restart, with only material decisions returned to the operator (version assigned at activation)
+# WO-118 — The resident-owned loop from a starter instance: one initial intent and standing grants carry work through derivation, dispatch, verification, repair, delivery and the pull-request loop under the durable runtime, surviving an actor's death and a resident restart, with only material decisions returned to the operator (v0.80.0)
 
 **Model:** the actual local harnesses as actors, launched by the instance's
 resident; the operator witnesses from the operator's terminal; launch
@@ -7,8 +7,10 @@ claims recorded per episode (07-execution-guide.md §Model-specific notes).
 **Track:** delivery
 **Front page:** README.md
 **Release classification:** minor. The product exit's composition inside a
-starter instance plus its evidence record; a defect found in a primitive is
-a separate bounded order. Assigned at activation under the standing opt-out
+starter instance plus its evidence record. The operator authorized the bounded
+actor-replacement and console-export repairs in WO-118-D003 and the exact
+vision-writeback planning-gate repair in WO-118-D004 and live-status projection repair in WO-118-D007; other primitive
+defects remain separate bounded orders. Assigned at activation under the standing opt-out
 default.
 **Cost:** adds the instance export receipt and one witnessed live run from
 a starter instance (the resident's actor episodes, a push and a pull
@@ -21,8 +23,8 @@ inside §What runs today's marked section (one of the two lines free under WO-18
 budget on 2026-10-10); one appended capability-table section. Removes
 the absence of the product exit's evidence: no record shows the runtime
 carrying an intent to a pull request from a starter. It unblocks WO-083
-(gate P of the critical path). Re-mints: none; the order edits no
-registered or judged source. Wall-clock, tokens and context bytes are
+(gate P of the critical path). Re-mints: neither runtime repair source is a registered evidence or feedback
+source; check the existing editions. No public schema or authority expansion. Wall-clock, tokens and context bytes are
 unknown until run.
 **Nomination provenance:** the external review of the revised plan
 (2026-09-08, finding 1: the product proof did not require the resident or
@@ -211,9 +213,18 @@ at `5f3849ec`; first observed 2026-09-08 at `33e2c25`):**
 
 **Design (scope discipline):**
 
-- Nothing new is built here; the order composes and witnesses. If the
-  instance needs a command core lacks, that command is a core order filed
-  before this one runs again.
+- The order composes and witnesses. Operator scope expansion WO-118-D003
+  additionally repairs typed source-actor interruption under current authority
+  using existing bounded recovery, and includes the compiled console in the
+  starter export. Both require regression checks and a fresh exported run;
+  the initial failure remains evidence. Other missing core commands require
+  a separate order. WO-118-D004 additionally authorizes the planning-gate
+  repair for the exact vision status writeback required by unchanged criterion
+  6: bind its reviewed/current section hashes to the authorized decision, reject
+  unrelated planning changes, and test workspace and committed continuation.
+  WO-118-D007 also repairs the existing status projection for logical vertical
+  work and intent holds; retain native-child evidence separately and verify the
+  display from a fresh export without changing acceptance obligations.
 - The two control scenarios (the ambiguous intent; a review comment that
   is wrong and must be rejected with evidence) are part of the same run so
   that escalation is proven legitimate rather than assumed.
@@ -426,7 +437,9 @@ witnesses (criterion 1).
   for the overlay path; step 2 records what the kit lacks.
 
 **Non-goals:** the operator's repositories (WO-083 is the fork's run);
-cross-repository workstreams; any runtime fix (a separate order); merging
+cross-repository workstreams; runtime fixes beyond the two authorized in
+WO-118-D003 and the live-status projection repair in WO-118-D007, or planning-gate changes beyond the exact writeback repair in
+WO-118-D004 (a separate order); merging
 the pull request (WO-066's non-goal); the third replan checkpoint,
 answered after WO-083; budget-window work-order ladders, register row
 FUP-0107, which the planning map notes reopens at this order's close, for

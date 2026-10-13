@@ -1,0 +1,368 @@
+Public transcript of dotln audit over the run's vertical store: event payloads are reduced to phase, result and terminal status; the checker compares the complete raw events with the retained vertical log.
+L0 RECEIPT
+{
+  "schemaVersion": 1,
+  "projection": "l0-receipt",
+  "fidelity": "L0",
+  "projectionRef": "audit-projection:ws:vertical_<run-key>:l0-receipt",
+  "artifactIdentity": {
+    "assurance": "deterministic-content-equality-only",
+    "availability": "unavailable",
+    "records": [],
+    "limitations": [
+      "FNV equality is not cryptographic integrity, collision resistance, or authenticity",
+      "graph and pin can be rewritten together; hidden adapter effects are not excluded",
+      "outer confinement evidence is separate and not collected by this receipt",
+      "a queued pulse has no artifact stamp; a reused schedule id does not prove its equip of origin"
+    ]
+  },
+  "governance": {
+    "audience": [
+      "operator"
+    ],
+    "purpose": "everyday-confirmation",
+    "intendedAccess": "not-defined",
+    "enforcement": "deferred",
+    "persistenceClass": "projections",
+    "retentionClass": "not-defined"
+  },
+  "omissions": [
+    "event payloads and decision-trace internals",
+    "correlation and causation detail",
+    "class-specific timeline detail including association labels, evidence reasons, and verification subjects",
+    "non-consequential context events",
+    "policy, runtime fingerprints, cryptographic integrity/authenticity, redaction, and recorded-at data not collected by the fixture",
+    "verifier independence not established by the recorded actor identity"
+  ],
+  "deeperProjection": {
+    "projection": "causal-timeline",
+    "projectionRef": "audit-projection:ws:vertical_<run-key>:causal-timeline",
+    "availability": "exists",
+    "intendedAccess": "not-defined",
+    "enforcement": "deferred"
+  },
+  "receipts": []
+}
+CAUSAL TIMELINE
+{
+  "schemaVersion": 1,
+  "projection": "causal-timeline",
+  "fidelity": "L1",
+  "projectionRef": "audit-projection:ws:vertical_<run-key>:causal-timeline",
+  "governance": {
+    "audience": [
+      "operator",
+      "verifier"
+    ],
+    "purpose": "causal-review",
+    "intendedAccess": "not-defined",
+    "enforcement": "deferred",
+    "persistenceClass": "projections",
+    "retentionClass": "not-defined"
+  },
+  "orderPolicy": [
+    "explicit causation references order every record derived from the source event before dependents",
+    "correlation references form explicit append-stable groups and never assert causation",
+    "canonical append ordinal is the stable fallback and tie-break",
+    "occurredAt is displayed data, never the sole ordering key"
+  ],
+  "correlationGroups": [],
+  "omissions": [
+    "raw event payload bodies",
+    "context events without a consequential AuditRecord",
+    "links absent from source events are not invented",
+    "an unlinked deletion-attempt/refusal association uses same-episode, same-time adjacency, not canonical causation; explicit source links are labeled separately",
+    "a verification request association without an explicit event link is labeled as a single-request-in-scope derivation",
+    "policy, runtime, integrity, redaction, and recorded-at data not collected by the fixture"
+  ],
+  "deeperProjection": {
+    "projection": "governed-raw-json",
+    "projectionRef": "audit-projection:ws:vertical_<run-key>:governed-raw-json",
+    "availability": "exists",
+    "intendedAccess": "restricted",
+    "enforcement": "deferred"
+  },
+  "entries": []
+}
+GOVERNED RAW JSON — sanitized event fields
+{
+  "schemaVersion": 1,
+  "projection": "governed-raw-json",
+  "fidelity": "L4",
+  "projectionRef": "audit-projection:ws:vertical_<run-key>:governed-raw-json",
+  "artifactIdentity": {
+    "assurance": "deterministic-content-equality-only",
+    "availability": "unavailable",
+    "records": [],
+    "limitations": [
+      "FNV equality is not cryptographic integrity, collision resistance, or authenticity",
+      "graph and pin can be rewritten together; hidden adapter effects are not excluded",
+      "outer confinement evidence is separate and not collected by this receipt",
+      "a queued pulse has no artifact stamp; a reused schedule id does not prove its equip of origin"
+    ]
+  },
+  "governance": {
+    "audience": [
+      "verifier"
+    ],
+    "intendedAccess": "restricted",
+    "enforcement": "deferred",
+    "purpose": "bounded-audit-reconstruction",
+    "sourcePersistenceClass": "canonical",
+    "projectionPersistenceClass": "projections",
+    "retentionClass": "not-defined"
+  },
+  "completeness": {
+    "eventFieldOmissions": [],
+    "unavailable": [
+      "separately controlled artifacts are not present in this fixture",
+      "recorded-at time, policy versions, runtime fingerprints, cryptographic integrity hashes, authenticity, and redaction state were never collected"
+    ]
+  },
+  "events": [
+    {
+      "eventId": "evt_1",
+      "type": "VerticalOpened",
+      "at": 1791888806331
+    },
+    {
+      "eventId": "evt_2",
+      "type": "VerticalCommandPersisted",
+      "at": 1791888806344,
+      "step": "bundle",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_3",
+      "type": "VerticalStepCompleted",
+      "at": 1791888806392,
+      "step": "bundle",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_4",
+      "type": "VerticalCommandPersisted",
+      "at": 1791888806933,
+      "step": "contract",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_5",
+      "type": "VerticalStepCompleted",
+      "at": 1791888806978,
+      "step": "contract",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_6",
+      "type": "VerticalCommandPersisted",
+      "at": 1791888808144,
+      "step": "surfaces",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_7",
+      "type": "VerticalStepCompleted",
+      "at": 1791888808198,
+      "step": "surfaces",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_8",
+      "type": "VerticalCommandPersisted",
+      "at": 1791888809370,
+      "step": "derived-order",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_9",
+      "type": "VerticalStepCompleted",
+      "at": 1791888809418,
+      "step": "derived-order",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_10",
+      "type": "VerticalCommandPersisted",
+      "at": 1791888810576,
+      "step": "baseline",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_11",
+      "type": "VerticalStepCompleted",
+      "at": 1791888830234,
+      "step": "baseline",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_12",
+      "type": "VerticalCommandPersisted",
+      "at": 1791888831404,
+      "step": "source-change",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_13",
+      "type": "VerticalStepCompleted",
+      "at": 1791888951757,
+      "step": "source-change",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_14",
+      "type": "VerticalCommandPersisted",
+      "at": 1791888952922,
+      "step": "witnesses",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_15",
+      "type": "VerticalStepCompleted",
+      "at": 1791888953153,
+      "step": "witnesses",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_16",
+      "type": "VerticalCommandPersisted",
+      "at": 1791888954330,
+      "step": "verification",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_17",
+      "type": "VerticalStepCompleted",
+      "at": 1791888979174,
+      "step": "verification",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_18",
+      "type": "VerticalCommandPersisted",
+      "at": 1791888980339,
+      "step": "review",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_19",
+      "type": "VerticalStepCompleted",
+      "at": 1791889008678,
+      "step": "review",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_20",
+      "type": "VerticalCommandPersisted",
+      "at": 1791889009856,
+      "step": "preparation",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_21",
+      "type": "VerticalStepCompleted",
+      "at": 1791889009904,
+      "step": "preparation",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_22",
+      "type": "VerticalCommandPersisted",
+      "at": 1791889011087,
+      "step": "lint",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_23",
+      "type": "VerticalStepCompleted",
+      "at": 1791889011276,
+      "step": "lint",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_24",
+      "type": "VerticalCommandPersisted",
+      "at": 1791889012472,
+      "step": "publish",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_25",
+      "type": "VerticalStepCompleted",
+      "at": 1791889016539,
+      "step": "publish",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_26",
+      "type": "VerticalCommandPersisted",
+      "at": 1791889017722,
+      "step": "observation",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_27",
+      "type": "VerticalStepCompleted",
+      "at": 1791889037721,
+      "step": "observation",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_28",
+      "type": "VerticalCommandPersisted",
+      "at": 1791889038916,
+      "step": "resolution",
+      "round": 0,
+      "attempt": 0
+    },
+    {
+      "eventId": "evt_29",
+      "type": "VerticalStepCompleted",
+      "at": 1791889265217,
+      "step": "resolution",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed",
+      "status": "resolved"
+    }
+  ]
+}

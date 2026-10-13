@@ -1,0 +1,165 @@
+[
+  {
+    "item": "Representative cycle time ms",
+    "score": 458886,
+    "label": "observed",
+    "method": "Last minus first vertical event occurredAt; intake precedes this interval.",
+    "evidence": "witnessed-run/event-log.json"
+  },
+  {
+    "item": "Driver observation wall ms",
+    "score": 560263,
+    "label": "observed",
+    "method": "Driver finishedAt minus startedAt; includes both controls, the injected faults, review waiting and both audits.",
+    "evidence": "witnessed-run/receipt.json"
+  },
+  {
+    "item": "Native model episode launches",
+    "score": 13,
+    "label": "observed",
+    "method": "Saved intake records (2), WorkerAttemptStarted events (7) and model triage records (4).",
+    "evidence": "witnessed-run/receipt.json"
+  },
+  {
+    "item": "Resident launches",
+    "score": 2,
+    "label": "observed",
+    "method": "One start and one deliberate SIGTERM and relaunch between steps.",
+    "evidence": "witnessed-run/receipt.json"
+  },
+  {
+    "item": "Source writer attempts",
+    "score": 2,
+    "label": "observed",
+    "method": "The same command and episode before and after the native writer SIGKILL.",
+    "evidence": "witnessed-run/receipt.json"
+  },
+  {
+    "item": "Source commits before review",
+    "score": 1,
+    "label": "observed",
+    "method": "Commits on the source branch above main; the replacement adds no duplicate commit.",
+    "evidence": "witnessed-run/receipt.json"
+  },
+  {
+    "item": "Review repair commits",
+    "score": 1,
+    "label": "observed",
+    "method": "Commits from the first delivered head to the final delivered head.",
+    "evidence": "witnessed-run/receipt.json"
+  },
+  {
+    "item": "Original-criterion coverage at delivered head",
+    "score": "1 / 1",
+    "label": "observed",
+    "method": "The final verification pins the delivered head and judges the original criteria.",
+    "evidence": "witnessed-run/receipt.json"
+  },
+  {
+    "item": "Console frames painted during the run",
+    "score": 73,
+    "label": "observed",
+    "method": "Frames the shipped live console painted: 37 on observed changes, 18 full status frames the driver requested and 18 repaints after them.",
+    "evidence": "witnessed-run/console.txt"
+  },
+  {
+    "item": "Phases painted live",
+    "score": "8 / 14",
+    "label": "observed",
+    "method": "Distinct phases the console showed as an available vertical-host actor in change-driven frames; every step lasting two console refreshes (two seconds) or more is among them.",
+    "evidence": "witnessed-run/console.txt"
+  },
+  {
+    "item": "Main-thread context growth during live run",
+    "score": null,
+    "label": "unknown",
+    "method": "No per-run counter or active-human timer was collected. Root dispatch usage is not actor usage."
+  },
+  {
+    "item": "Model input tokens",
+    "score": null,
+    "label": "unknown",
+    "method": "No per-run counter or active-human timer was collected. Root dispatch usage is not actor usage."
+  },
+  {
+    "item": "Model output tokens",
+    "score": null,
+    "label": "unknown",
+    "method": "No per-run counter or active-human timer was collected. Root dispatch usage is not actor usage."
+  },
+  {
+    "item": "Human touch time",
+    "score": null,
+    "label": "unknown",
+    "method": "No per-run counter or active-human timer was collected. Root dispatch usage is not actor usage."
+  },
+  {
+    "item": "Cost USD",
+    "score": null,
+    "label": "unknown",
+    "method": "No per-run counter or active-human timer was collected. Root dispatch usage is not actor usage."
+  },
+  {
+    "item": "Worker model and effort",
+    "score": "gpt-6.1-sol / max",
+    "label": "launch-claim",
+    "method": "Saved native launch selections; effective model and effort remain unknown.",
+    "evidence": "witnessed-run/receipt.json"
+  },
+  {
+    "item": "Parity: Linked source: one scratch issue",
+    "score": "observed-met",
+    "label": "observed",
+    "method": "The runtime fetched the configured scratch issue into its source bundle.",
+    "evidence": "witnessed-run/receipt.json"
+  },
+  {
+    "item": "Parity: Intake and understanding",
+    "score": "observed-met",
+    "label": "observed",
+    "method": "Model intake produced the contract, and the admitted intent carries its baseline assessment.",
+    "evidence": "witnessed-run/receipt.json"
+  },
+  {
+    "item": "Parity: Branch",
+    "score": "observed-met",
+    "label": "observed",
+    "method": "The governed source branch holds one commit and the repair adds one, with the recorded ancestry.",
+    "evidence": "witnessed-run/receipt.json"
+  },
+  {
+    "item": "Parity: Change",
+    "score": "observed-met",
+    "label": "observed",
+    "method": "The delivered page says Ready and keeps the requested attributes and heading.",
+    "evidence": "witnessed-run/receipt.json"
+  },
+  {
+    "item": "Parity: Conventional commits",
+    "score": "observed-met",
+    "label": "observed",
+    "method": "The source and repair commits use fix: subjects (the checker asserts each subject).",
+    "evidence": "witnessed-run/receipt.json"
+  },
+  {
+    "item": "Parity: Generated pull-request title and body",
+    "score": "observed-met",
+    "label": "observed",
+    "method": "Runtime publication generated both, and the configured outward lint passed.",
+    "evidence": "witnessed-run/receipt.json"
+  },
+  {
+    "item": "Parity: Every automated review comment resolved",
+    "score": "observed-met",
+    "label": "observed",
+    "method": "The fresh final observation is resolved and every review thread is resolved, after a valid repair and an evidence-backed rejection of the incorrect suggestion.",
+    "evidence": "witnessed-run/receipt.json"
+  },
+  {
+    "item": "Parity: No operator tending of a harness",
+    "score": "observed-met",
+    "label": "observed",
+    "method": "The resident carried every phase, the replacement, verification, publication and repair; recorded human-side actions are the filings, presence, the fault injections and the control inputs.",
+    "evidence": "witnessed-run/receipt.json"
+  }
+]

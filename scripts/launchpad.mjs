@@ -74,13 +74,12 @@ export const LICENSE_PENDING = "LICENSE-PENDING.md";
 export const KIT_PACKAGE_NAME = "dotln-launchpad";
 // The compiled packages whose dist the kit carries: the hook closure the
 // generated hooks and the kit's `resume` and `harness` commands import
-// (WO-075). `console` and `browser-evidence` stay out; the kit scripts whose
-// import closure needs them fail at import in an export and are named in the
-// order's decisions.
+// and the operator console. The browser-evidence adapter stays separate.
 export const RUNTIME_PACKAGES = Object.freeze([
   "kernel",
   "compiler",
   "skeleton",
+  "console",
 ]);
 // The compiled output a runtime package ships, relative to its directory.
 export const RUNTIME_OUTPUT = "dist/src";
@@ -104,7 +103,7 @@ export const TEST_SUPPORT_FILES = Object.freeze([
   "corpus/mutation/wo108-selftest.test.mjs",
 ]);
 // The workspaces the kit carries, each with its node_modules link in the
-// lockfile: the build-free Beacon workspace and the three compiled packages.
+// lockfile: the build-free Beacon workspace and the compiled packages.
 export const KIT_WORKSPACES = Object.freeze([
   "packages/beacons",
   ...RUNTIME_PACKAGES.map((name) => `packages/${name}`),

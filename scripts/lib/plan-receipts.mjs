@@ -1241,7 +1241,32 @@ const amendmentDecision = (root, decisionId) => {
   );
   check(decision, `execution amendment needs recorded decision ${decisionId}`);
   const { path: decisionPath, workOrder, ...entry } = decision;
-  return { workOrder, hash: sha256(stable(entry)) };
+  const executionWritebacks = entry.executionWritebacks ?? [];
+  if (Object.hasOwn(entry, "executionWritebacks"))
+    check(
+      Array.isArray(executionWritebacks) &&
+        executionWritebacks.length === 1 &&
+        executionWritebacks.every(
+          (row) =>
+            exact(row, [
+              "path",
+              "section",
+              "criterionId",
+              "criterionHash",
+              "sourceHash",
+              "acceptedHash",
+            ]) &&
+            row.path === docRelative(root, "product", "00-vision.md") &&
+            row.section === "The one-paragraph story" &&
+            /^criterion:[1-9]\d*$/u.test(row.criterionId) &&
+            [row.criterionHash, row.sourceHash, row.acceptedHash].every(
+              validDigest,
+            ) &&
+            row.sourceHash !== row.acceptedHash,
+        ),
+      "execution writeback must bind one exact vision story section and reviewed criterion",
+    );
+  return { workOrder, hash: sha256(stable(entry)), executionWritebacks };
 };
 const validateAmendment = (root, event, receipts, { decision = true } = {}) => {
   const receipt = receipts.find(
@@ -1270,6 +1295,19 @@ const validateAmendment = (root, event, receipts, { decision = true } = {}) => {
     bound.workOrder === event.workOrderId && bound.hash === event.decisionHash,
     "execution amendment decision binding differs",
   );
+  for (const writeback of bound.executionWritebacks) {
+    const criterion = order.criteria.find(
+      (row) => row.id === writeback.criterionId,
+    );
+    check(
+      criterion &&
+        sha256(criterion.text) === writeback.criterionHash &&
+        receipt.subject.inputs.find(
+          (row) => row.name === "vision:the-one-paragraph-story",
+        )?.hash === writeback.sourceHash,
+      "execution writeback reviewed criterion or section binding differs",
+    );
+  }
 };
 
 export async function withdrawPlanAmendment(
@@ -1566,7 +1604,12 @@ export async function checkPlanGate(root) {
       "override names missing receipt or hold",
     );
   }
-  const amendments = currentAmendments(overrides);
+  const amendments = currentAmendments(overrides).map((row) => ({
+    ...row,
+    rowOrdinal: row.rowOrdinal,
+    executionWritebacks: amendmentDecision(root, row.decisionId)
+      .executionWritebacks,
+  }));
   requireMatchedAmendments(root, amendments, receipts);
   const { passes, enforcement } = planningPassScope(root);
   if (!enforcement)

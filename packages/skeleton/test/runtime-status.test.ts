@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import { syncBuiltinESMExports } from "node:module";
 import { spawnSync } from "node:child_process";
-import { decodeLog } from "@dotln/kernel";
+import { decodeLog, type Event, type ExecutableProgramV1 } from "@dotln/kernel";
 import { createHash } from "node:crypto";
 import {
   mkdtempSync,
@@ -33,6 +33,11 @@ import {
   type ResidentState,
 } from "../src/resident-state.js";
 import { projectRuntimeStatus } from "../src/runtime-status.js";
+import {
+  verticalProgram,
+  type IntentBinding,
+  type VerticalCommand,
+} from "../src/vertical.js";
 
 const index = `# Work orders
 
@@ -201,6 +206,202 @@ function configuration(directory: string) {
     evidence: ["verified-input"],
   });
 }
+
+test("intent holds survive replay and restart without exposing raw diagnostics", async (t) => {
+  const directory = mkdtempSync(join(tmpdir(), "dotln-intent-status-"));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const indexPath = join(directory, "index.md");
+  writeFileSync(indexPath, index);
+  let at = 0;
+  const options = {
+    directory,
+    configuration: configuration(directory),
+    policyId: "fixture.progressive",
+    workOrderIndexPath: indexPath,
+    now: () => at,
+  };
+  const first = new ResidentHost(options);
+  await first.start();
+  try {
+    await first.store.transaction((tx) => {
+      tx.sample(++at);
+      tx.append("IntentHeld", {
+        draftId: "WO-997",
+        step: "contract",
+        reason: "private raw diagnostic",
+      });
+      tx.append("IntentHeld", {
+        draftId: "WO-998",
+        step: "private host path",
+        reason: "another private diagnostic",
+      });
+    });
+    const view = JSON.parse(read(directory));
+    assert.deepEqual(view.holds, [
+      {
+        kind: "dispatch",
+        reason: "intent-needs-human:contract",
+        order: "WO-997",
+      },
+      { kind: "dispatch", reason: "intent-needs-human", order: "WO-998" },
+    ]);
+    assert.ok(!read(directory).includes("private"));
+    const log = first.store.read();
+    const state = replayResident(log).state
+      .resident as unknown as ResidentState;
+    assert.deepEqual(projectRuntimeStatus(state, decodeLog(log), index), view);
+  } finally {
+    first.close();
+  }
+  ++at;
+  const restarted = new ResidentHost(options);
+  try {
+    await restarted.start();
+    assert.equal(JSON.parse(read(directory)).holds.length, 2);
+    assert.ok(!read(directory).includes("private"));
+  } finally {
+    restarted.close();
+  }
+});
+
+// Every command of one continuation, with the identities a recorded log uses.
+function verticalCommands(key: string): VerticalCommand[] {
+  const found: VerticalCommand[] = [];
+  const pending = [verticalProgram(key)];
+  const seen = new Set<ExecutableProgramV1>();
+  while (pending.length) {
+    const program = pending.shift()!;
+    if (seen.has(program)) continue;
+    seen.add(program);
+    if (program.kind !== "Invoke") continue;
+    found.push(program.command.payload as unknown as VerticalCommand);
+    pending.push(...Object.values(program.continuationByResult));
+  }
+  return found;
+}
+
+test("finished vertical continuations leave live status and keep at most one hold each", () => {
+  let at = 0;
+  const events: Event[] = [];
+  const intents: NonNullable<ResidentState["intents"]> = {};
+  const record = (type: string, payload: Record<string, unknown>) =>
+    events.push({
+      eventId: `evt_${events.length + 1}`,
+      type,
+      actorId: "resident-host",
+      occurredAt: ++at,
+      payload,
+    } as unknown as Event);
+  const admit = (draftId: string) => {
+    const key = `intent_${draftId.toLowerCase()}`;
+    intents[draftId] = {
+      kind: "admitted",
+      binding: { key } as unknown as IntentBinding,
+    };
+    return key;
+  };
+  const command = (key: string, step: string) =>
+    verticalCommands(key).find((c) => c.step === step && c.round === 0)!;
+  const start = (key: string, step: string) => {
+    record("IntentStepStarted", {
+      key,
+      commandId: command(key, step).commandId,
+    });
+    return command(key, step);
+  };
+  const settle = (
+    key: string,
+    step: string,
+    result: string,
+    terminal: boolean,
+  ) =>
+    record("IntentStepSettled", {
+      key,
+      commandId: command(key, step).commandId,
+      result,
+      terminal,
+    });
+  const run = (key: string, last: string, result: string) => {
+    start(key, "bundle");
+    settle(key, "bundle", "completed", false);
+    start(key, last);
+    settle(key, last, result, true);
+  };
+  for (let n = 0; n < 20; n++)
+    run(admit(`WO-${900 + n}`), "resolution", "completed");
+  for (const draftId of ["WO-920", "WO-921", "WO-922"])
+    run(admit(draftId), "source-change", "refused");
+  run(admit("WO-923"), "contract", "NeedsHuman");
+  run(admit("WO-924"), "review", "repair");
+  // A pause between steps is not a finish: the row stays, not live.
+  const paused = admit("WO-925");
+  start(paused, "bundle");
+  settle(paused, "bundle", "completed", false);
+  // An earlier settled step does not retire the step running now.
+  const running = admit("WO-926");
+  start(running, "bundle");
+  settle(running, "bundle", "completed", false);
+  const live = start(running, "source-change");
+  intents["WO-927"] = {
+    kind: "NeedsHuman",
+    step: "contract",
+    reason: "private raw diagnostic",
+  };
+  const state = (step: ResidentState["intentStep"]) =>
+    ({ at: ++at, intents, intentStep: step }) as unknown as ResidentState;
+  const view = projectRuntimeStatus(
+    state({ key: running, commandId: live.commandId }),
+    events,
+    null,
+  );
+  assert.deepEqual(view.actors, [
+    {
+      phase: "bundle",
+      kind: "vertical-host",
+      availability: "unknown",
+      lastEpisode: command(paused, "bundle").episodeId,
+    },
+    {
+      phase: "source-change",
+      kind: "vertical-host",
+      availability: "available",
+      lastEpisode: live.episodeId,
+    },
+  ]);
+  assert.deepEqual(
+    view.liveEpisodes.map((row) => [row.order, row.phase, row.episodeId]),
+    [["WO-926", "source-change", live.episodeId]],
+  );
+  const holds = [
+    ...["WO-920", "WO-921", "WO-922"].map((order) => ({
+      kind: "dispatch",
+      reason: "intent-refused:source-change",
+      order,
+    })),
+    {
+      kind: "dispatch",
+      reason: "intent-needs-human:contract",
+      order: "WO-923",
+    },
+    { kind: "dispatch", reason: "intent-needs-human:review", order: "WO-924" },
+    {
+      kind: "dispatch",
+      reason: "intent-needs-human:contract",
+      order: "WO-927",
+    },
+  ];
+  assert.deepEqual(view.holds, holds);
+  assert.ok(!JSON.stringify(view).includes("private"));
+  // When the running step settles terminally its row and episode retire too.
+  settle(running, "source-change", "completed", true);
+  const finished = projectRuntimeStatus(state(null), events, null);
+  assert.deepEqual(
+    finished.actors.map((row) => [row.phase, row.availability]),
+    [["bundle", "unknown"]],
+  );
+  assert.deepEqual(finished.liveEpisodes, []);
+  assert.deepEqual(finished.holds, holds);
+});
 
 test("[document] WO-114 helper and installed-snapshot heartbeat share the host's index and replay every publication", async (t) => {
   const directory = mkdtempSync(join(tmpdir(), "dotln-status-writers-"));

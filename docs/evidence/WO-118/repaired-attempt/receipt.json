@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "label": "observed",
+  "startedAt": "2026-10-13T01:47:07.808Z",
+  "finishedAt": "2026-10-13T01:51:42.027Z",
+  "modelLaunches": 7,
+  "residentLaunches": 2,
+  "sourceAttempts": 2,
+  "sourceCommits": 1,
+  "sameSourceCommandAndEpisode": true,
+  "processStoppedBeforeReplacement": true,
+  "sourceTestBefore": 1,
+  "sourceTestAfter": 0,
+  "steps": [
+    {
+      "eventId": "evt_3",
+      "at": 1791856074247,
+      "step": "bundle",
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_5",
+      "at": 1791856074767,
+      "step": "contract",
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_7",
+      "at": 1791856075939,
+      "step": "surfaces",
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_9",
+      "at": 1791856077116,
+      "step": "derived-order",
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_11",
+      "at": 1791856094863,
+      "step": "baseline",
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_13",
+      "at": 1791856202157,
+      "step": "source-change",
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_15",
+      "at": 1791856203443,
+      "step": "witnesses",
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_17",
+      "at": 1791856230783,
+      "step": "verification",
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_19",
+      "at": 1791856258161,
+      "step": "review",
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_21",
+      "at": 1791856259361,
+      "step": "preparation",
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_23",
+      "at": 1791856260631,
+      "step": "lint",
+      "result": "refused"
+    }
+  ],
+  "terminal": {
+    "kind": "refused",
+    "step": "lint",
+    "reason": "lint host failed or was unavailable"
+  },
+  "diagnosis": {
+    "command": "checkOutwardArtifact(instance, valid pr-title)",
+    "error": "outward vocabulary must be a contained regular file",
+    "missingFiles": [
+      "docs/control/outward-vocabulary.json",
+      "docs/control/local/terms.txt"
+    ],
+    "ownership": "executor instance configuration"
+  },
+  "consoleAvailable": true,
+  "ambiguousControl": {
+    "kind": "NeedsHuman",
+    "reason": "contract has no executable criteria",
+    "answerPosted": true,
+    "answerConsumed": false
+  },
+  "delivery": "not reached"
+}

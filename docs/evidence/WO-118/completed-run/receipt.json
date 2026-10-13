@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "label": "observed",
+  "startedAt": "2026-10-13T02:03:15.765Z",
+  "finishedAt": "2026-10-13T02:12:51.011Z",
+  "terminal": {
+    "kind": "resolved",
+    "reason": "fresh observation has no unresolved items"
+  },
+  "residentLaunches": 2,
+  "sourceAttempts": 2,
+  "sourceCommitsBeforeReview": 1,
+  "repairCommits": 1,
+  "sameSourceCommandAndEpisode": true,
+  "sameAdmittedIdentityAcrossRestart": true,
+  "modelLaunches": 13,
+  "launchBreakdown": {
+    "intake": 2,
+    "primitiveWorkers": 7,
+    "reviewTriage": 4
+  },
+  "steps": [
+    {
+      "eventId": "evt_3",
+      "type": "VerticalStepCompleted",
+      "at": 1791857023481,
+      "step": "bundle",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_5",
+      "type": "VerticalStepCompleted",
+      "at": 1791857023988,
+      "step": "contract",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_7",
+      "type": "VerticalStepCompleted",
+      "at": 1791857025158,
+      "step": "surfaces",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_9",
+      "type": "VerticalStepCompleted",
+      "at": 1791857026341,
+      "step": "derived-order",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_11",
+      "type": "VerticalStepCompleted",
+      "at": 1791857045322,
+      "step": "baseline",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_13",
+      "type": "VerticalStepCompleted",
+      "at": 1791857174688,
+      "step": "source-change",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_15",
+      "type": "VerticalStepCompleted",
+      "at": 1791857176029,
+      "step": "witnesses",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_17",
+      "type": "VerticalStepCompleted",
+      "at": 1791857207492,
+      "step": "verification",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_19",
+      "type": "VerticalStepCompleted",
+      "at": 1791857237071,
+      "step": "review",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_21",
+      "type": "VerticalStepCompleted",
+      "at": 1791857238282,
+      "step": "preparation",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_23",
+      "type": "VerticalStepCompleted",
+      "at": 1791857239564,
+      "step": "lint",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_25",
+      "type": "VerticalStepCompleted",
+      "at": 1791857244115,
+      "step": "publish",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_27",
+      "type": "VerticalStepCompleted",
+      "at": 1791857264623,
+      "step": "observation",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_29",
+      "type": "VerticalStepCompleted",
+      "at": 1791857528329,
+      "step": "resolution",
+      "round": 0,
+      "attempt": 0,
+      "result": "completed"
+    }
+  ],
+  "reviewResults": [
+    {
+      "item": "Remove the trailing whitespace inside the status element; its text should be exactly Ready.\n\n```suggestion\n<p id=\"status\" role=\"status\" aria-label=\"Build status\">Ready</p>\n```",
+      "kind": "accept",
+      "reason": "Removing the trailing space leaves Ready and preserves the required role, accessible label, heading, and page-only scope.",
+      "evidenceRefCount": 3,
+      "producer": "model"
+    },
+    {
+      "item": "One suggested status correction.",
+      "kind": "acknowledge",
+      "reason": "The pathless review body only summarizes a suggestion; index.html already shows Ready and the focused host test passes.",
+      "evidenceRefCount": 2,
+      "producer": "model"
+    },
+    {
+      "item": "Automated review summary: one inline suggestion on index.html.",
+      "kind": "acknowledge",
+      "reason": "The review body has no path or line and only summarizes an inline suggestion, requesting no additional change.",
+      "evidenceRefCount": 3,
+      "producer": "model"
+    },
+    {
+      "item": "Set the status back to Pending until the build is confirmed.\n\n```suggestion\n<p id=\"status\" role=\"status\" aria-label=\"Build status\">Pending</p>\n```",
+      "kind": "reject",
+      "reason": "The contract requires Ready; changing the verified status back to Pending would violate that requirement.",
+      "evidenceRefCount": 3,
+      "producer": "model"
+    }
+  ],
+  "ambiguousControl": {
+    "kind": "NeedsHuman",
+    "reason": "contract has no executable criteria",
+    "answerPosted": true,
+    "answerConsumed": false
+  },
+  "controlAuthorSetup": {
+    "at": "2026-10-13T02:06:20.319Z",
+    "purpose": "incorrect-review-control fixture author mapping",
+    "timing": "after initial intent; before planting control suggestion",
+    "scope": "Recognize only the authorized scratch fixture principal as automation; no triage disposition or authority grant supplied.",
+    "modelJudgmentsSupplied": 0
+  },
+  "delivery": {
+    "state": "OPEN",
+    "generatedTitle": "fix: implement requested behavior",
+    "generatedBody": "## Contract\n\n**Objective:** In &#96;index.html&#96;, replace Pending in the status element with Ready. Preserve its role=status, accessible label Build status, and heading Scratch welcome. Change only that page and introduce no dependency.\n\n**Non-goals:** none declared\n\n## Acceptance\n\n| Criterion | Status |\n| --- | --- |\n| In &#96;index.html&#96;, replace Pending in the status element with Ready. Preserve its role=status, accessible label Build status, and heading Scratch welcome. Change only that page and introduce no dependency. | verified |\n\nIndependent verification: acceptance matrix for <opaque-id>: 1 verified, 0 failed, 0 stale, 0 incomplete.\n\nFocused test observed by the host: exit 1 before the change, exit 0 after it.\n\n## Change\n\n| Path | Added | Removed |\n| --- | ---: | ---: |\n| index.html | 1 | 1 |\n\n1 file changed from base <opaque-id> to head <opaque-id>.\n\n## Deliverable-ready\n\nDeliverable-ready: ready; every applicable item is evidenced.\n\n| Item | Status | Evidence or reason |\n| --- | --- | --- |\n| Current source revision | evidenced | commit:<opaque-id> |\n| Explicit contract | evidenced | source-event:evt&#95;3 |\n| No unresolved material ambiguity | evidenced | delivery-preparation&#35;/unresolvedMaterialAmbiguities |\n| Reproduced baseline | evidenced | baseline-event:evt&#95;26 |\n| Repo-native implementation | evidenced | review-event:evt&#95;75 |\n| No unexplained scope | evidenced | source-event:evt&#95;2; review-event:evt&#95;75 |\n| Tests/build/lint | evidenced | delivery-preparation&#35;/checks; verification:vertical&#95;<run-key>&#95;0; build not-applicable: The contract names no build step.; lint not-applicable: The contract names no lint step. |\n| Live behavior walked | evidenced | verification:vertical&#95;<run-key>&#95;0 |\n| Visual claims visually inspected | not-applicable | verification:vertical&#95;<run-key>&#95;0; The declared criteria contain no visual claims. |\n| Every acceptance criterion evidenced | evidenced | verification:vertical&#95;<run-key>&#95;0 |\n| Independent verification and review | evidenced | verification:vertical&#95;<run-key>&#95;0; review-event:evt&#95;75 |\n| Final diff read | evidenced | review-event:evt&#95;75 |\n| Grounded body | evidenced | &#35;acceptance; source-event:evt&#95;3; source-event:evt&#95;143 |\n| Monitored loop | evidenced | delivery-preparation&#35;/monitoring |\n",
+    "commits": 2,
+    "outwardLintPassed": true
+  },
+  "allResidentProcessesStopped": true,
+  "runtimeCodeModifiedDuringRun": false,
+  "consoleLimitation": "The original console omits logical vertical episodes and intent holds; repaired visibility is witnessed separately.",
+  "deliveredHeadVerification": {
+    "originalCriteria": 1,
+    "passed": 1,
+    "namedTests": 1,
+    "testsPassed": 1,
+    "verifierSubjectMatchesDeliveredHead": true,
+    "repairPushMatchesDeliveredHead": true
+  },
+  "audit": {
+    "verticalEvents": 29,
+    "governedRawEventsEqualLog": true,
+    "l0Entries": 0,
+    "l1Entries": 0,
+    "nestedWorkerLogs": "retained separately"
+  },
+  "witness": {
+    "kind": "executor-observed",
+    "authority": "WO-112-D007 delegation carried by WO-118",
+    "separateOperatorTerminalAttestation": false
+  }
+}

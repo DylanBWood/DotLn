@@ -1,0 +1,24 @@
+{
+  "label": "observed",
+  "startedAt": "2026-10-13T02:33:22.190Z",
+  "finishedAt": "2026-10-13T02:37:23.211Z",
+  "scope": "Supplemental live status witness; intentional return after source, no delivery claim.",
+  "modelLaunches": 4,
+  "launchBreakdown": {
+    "intake": 2,
+    "baseline": 1,
+    "source": 1
+  },
+  "liveActor": "logical vertical-host",
+  "phase": "source-change",
+  "filedIntent": "WO-901",
+  "derivedOrder": "WO-902",
+  "heldIntent": "WO-900",
+  "hold": "intent-needs-human:contract",
+  "rawNativeLaunchClaims": false,
+  "sourceCompleted": true,
+  "presenceReturnStoppedFurtherWork": true,
+  "residentStopped": true,
+  "consoleStopped": true,
+  "runtimeStatusSha256": "087ac69f71494ffe470d704da4c9a37bf0697f68dafbc11e7df3f8672d7ede09"
+}

@@ -98,7 +98,7 @@ then exercise an authorized external worker and delivery boundary; finally
 prove coordination across repositories. These are candidate adoption slices,
 not a new build-order commitment. Keep a known-good way to finish the current
 task until the corresponding slice has passed its acceptance demonstration.
-[Scratch-loop proof](../evidence/WO-112/README.md) observes unaided intake, scope, tests, review triage and delivery on Claude and Codex; efficiency remains open.
+[Scratch-loop proof](../evidence/WO-112/README.md) observes unaided intake, scope, tests, review triage and delivery on Claude and Codex; the [starter proof](../evidence/WO-118/README.md) adds resident-owned delivery, writer replacement, restart and review repair with all eight representative parity items observed-met, plus fresh-export live status; efficiency remains unmeasured.
 Reusing an established working environment as a temporary execution edge is a
 future adapter choice, not permission to bring its implementation here.
 

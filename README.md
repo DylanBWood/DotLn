@@ -62,7 +62,7 @@ files a draft work order from one sentence. The
 ## What runs today
 
 <!-- DOTLN-RELEASE-BEGIN -->
-This source prepares DotLn `v0.79.0`.
+This source prepares DotLn `v0.80.0`.
 <!-- DOTLN-RELEASE-END -->
 
 <!-- dotln-what-runs:start -->
@@ -71,6 +71,7 @@ The compiler turns that order's loadout into a program and an authority envelope
 A disposable worker on Claude Code or Codex does the work in its own worktree, passes the host's test and commits, and a blinded verifier that never saw the worker judges the change against the contract, sending it back to a fresh worker until the original contract passes or the repair budget runs out and a person decides.
 When the change is good, a publish step opens the pull request, waits for the automated reviewer and answers each comment with evidence; so far these runs are recorded scratch proofs on synthetic modules, and a browser adapter can add screenshot, network and console witnesses when the subject is a web page.
 While you are away, a resident host keeps the loop moving under a presence policy you set, and a mission check on a fixed cadence holds unattended dispatch whenever it finds the work off its contract or cannot tell.
+An exported starter completed a resident-owned scratch request through verified delivery and review repair, including writer replacement and resident restart; a fresh export also demonstrated live status.
 Everything above records its events in typed, versioned logs, so the actor board and the live console can show you the actors, builds and evidence in those logs, and the first proof, the Repo Gardener plus Seiri scenario, still replays from its own log today.
 This repository is built with the same roles: a work order merges after an independent verification and a final review, a release close follows, each step resumes from one phrase, and this page now changes only through such an order.
 

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "dispatch": "resume: fix (VER-001)",
+  "checks": [
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "at": "2026-10-13T10:32Z",
+      "meaning": "Built the five TypeScript packages with the live-status retirement repair. It ran directly: the bounded wrapper failed at host-guard start until WO-118-D011's guard restart."
+    },
+    {
+      "command": "node --test scripts/test-vertical.recovery.mjs",
+      "exitCode": 0,
+      "tests": 15,
+      "passed": 15,
+      "durationMs": 372262,
+      "startedAt": "2026-10-13T10:33:24.560Z",
+      "finishedAt": "2026-10-13T10:39:36.708Z",
+      "meaning": "The native recovery suite with the repaired projection, including the terminal NeedsHuman, retry, repair and refused hold cases. It ran directly, before the guard restart, for the same reason."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test packages/skeleton/dist/test/runtime-status.test.js",
+      "exitCode": 0,
+      "tests": 10,
+      "passed": 10,
+      "durationMs": 2633,
+      "startedAt": "2026-10-13T10:47:26.938Z",
+      "finishedAt": "2026-10-13T10:47:29.571Z",
+      "meaning": "Includes the new case: twenty resolved, three refused, one terminal NeedsHuman and one terminal repair continuation leave no actor row; a paused one keeps its row and the running one its live episode; each terminal hold appears once; the running row retires when its step settles terminally."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-118/probe-status-retirement.mjs",
+      "exitCode": 0,
+      "at": "2026-10-13T11:31:07Z",
+      "observed": {
+        "preRepair": {
+          "whileRunning": { "verticalRows": 27, "liveEpisodes": 1, "holds": 6 },
+          "afterRunningSettles": {
+            "verticalRows": 27,
+            "liveEpisodes": 0,
+            "holds": 6
+          }
+        },
+        "repaired": {
+          "whileRunning": { "verticalRows": 2, "liveEpisodes": 1, "holds": 6 },
+          "afterRunningSettles": {
+            "verticalRows": 1,
+            "liveEpisodes": 0,
+            "holds": 6
+          }
+        }
+      },
+      "meaning": "The new status test's own ledger, replayed through the pre-repair projection the visibility run exported and through the current build. Before the repair every continuation that ever started a step keeps a row; after it only the paused and running ones do, and the running one leaves when its step settles terminally. The six holds are unchanged, so the new test fails on the pre-repair code."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-118/check-witnessed-run.mjs",
+      "exitCode": 0,
+      "at": "2026-10-13T11:30:27Z",
+      "meaning": "Re-derives the witnessed run's claims from the retained stores and compares them with the committed evidence. The current core build's runtime files equal the export the run used."
+    }
+  ]
+}

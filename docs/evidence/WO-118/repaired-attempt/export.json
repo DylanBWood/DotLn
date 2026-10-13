@@ -1,0 +1,11 @@
+{
+  "coreBase": "6421221bb46fcb42ed85af112f0c1c2b539200b8",
+  "candidateCommit": "d647880cd27c0f77ac4e874a183edd78c09745d1",
+  "diffSha256": "1458ca2069c92f9698b94d6daafb2abf4e257ef08a392b138d74d0e6283990dd",
+  "fileCount": 913,
+  "consolePresent": true,
+  "runtimeHashes": {
+    "packages/skeleton/dist/src/vertical-host.js": "c28cdf11e8197c8e4e202a2c63a5aeeccd4f6966b7ab38be4793a0b5ba7355ef",
+    "packages/console/dist/src/cli.js": "538fa6de9f7ff34f7abba4ce722d9fff58398211cc43e2b8df5f6fa9e699ed24"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "step": "source-change",
+  "commandId": "cmd_cbd7c0ac18aef22e",
+  "signal": "SIGKILL",
+  "at": "2026-10-13T01:19:36.705Z",
+  "residentKeptAlive": true,
+  "target": "native Codex writer inside the source host recorded process group",
+  "identityCheck": "Observed ps pid/ppid/pgid/comm, matched native codex in recorded group immediately before SIGKILL",
+  "processIds": "retained only in local run material"
+}

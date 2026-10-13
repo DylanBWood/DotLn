@@ -1,0 +1,1469 @@
+[
+  {
+    "event": "IntentHeld",
+    "eventId": "evt_12",
+    "at": "2026-10-13T10:52:37.404Z",
+    "result": null,
+    "terminal": null,
+    "view": {
+      "viewModelVersion": "runtime-status-v1",
+      "observedAt": 1791888757314,
+      "actors": [
+        {
+          "phase": "probe",
+          "kind": "portfolio",
+          "availability": "unknown",
+          "lastEpisode": null
+        }
+      ],
+      "liveEpisodes": [],
+      "presence": {
+        "signal": "away",
+        "present": false,
+        "phase": "probe",
+        "cadences": [
+          {
+            "phase": "probe",
+            "nextFireAt": 1791888717030
+          }
+        ]
+      },
+      "holds": [
+        {
+          "kind": "dispatch",
+          "reason": "intent-needs-human:contract",
+          "order": "WO-900"
+        }
+      ],
+      "budget": {
+        "status": "configured",
+        "episodes": {
+          "consumed": 0,
+          "remaining": 2
+        },
+        "wallMs": {
+          "consumed": 0,
+          "remaining": 3600000
+        },
+        "tokens": {
+          "consumed": 0,
+          "remaining": null
+        }
+      },
+      "workOrders": {
+        "status": "available",
+        "items": [
+          {
+            "order": "WO-900",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "event": "IntentStepSettled",
+    "eventId": "evt_22",
+    "at": "2026-10-13T10:53:26.497Z",
+    "result": "completed",
+    "terminal": false,
+    "view": {
+      "viewModelVersion": "runtime-status-v1",
+      "observedAt": 1791888806427,
+      "actors": [
+        {
+          "phase": "probe",
+          "kind": "portfolio",
+          "availability": "unavailable",
+          "lastEpisode": null
+        },
+        {
+          "phase": "bundle",
+          "kind": "vertical-host",
+          "availability": "unknown",
+          "lastEpisode": "vertical_<run-key>_bundle_0_0"
+        }
+      ],
+      "liveEpisodes": [],
+      "presence": {
+        "signal": "away",
+        "present": false,
+        "phase": "probe",
+        "cadences": [
+          {
+            "phase": "probe",
+            "nextFireAt": 1791888717030
+          }
+        ]
+      },
+      "holds": [
+        {
+          "kind": "dispatch",
+          "reason": "intent-needs-human:contract",
+          "order": "WO-900"
+        },
+        {
+          "kind": "dispatch",
+          "reason": "actor-unavailable",
+          "order": null
+        }
+      ],
+      "budget": {
+        "status": "configured",
+        "episodes": {
+          "consumed": 0,
+          "remaining": 2
+        },
+        "wallMs": {
+          "consumed": 0,
+          "remaining": 3600000
+        },
+        "tokens": {
+          "consumed": 0,
+          "remaining": null
+        }
+      },
+      "workOrders": {
+        "status": "available",
+        "items": [
+          {
+            "order": "WO-902",
+            "phase": "active",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-900",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-901",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "event": "resident-restarted",
+    "eventId": null,
+    "at": "2026-10-13T10:53:26.603Z",
+    "result": null,
+    "terminal": null,
+    "view": null
+  },
+  {
+    "event": "IntentStepSettled",
+    "eventId": "evt_27",
+    "at": "2026-10-13T10:53:27.114Z",
+    "result": "completed",
+    "terminal": false,
+    "view": {
+      "viewModelVersion": "runtime-status-v1",
+      "observedAt": 1791888807012,
+      "actors": [
+        {
+          "phase": "probe",
+          "kind": "portfolio",
+          "availability": "unavailable",
+          "lastEpisode": null
+        },
+        {
+          "phase": "contract",
+          "kind": "vertical-host",
+          "availability": "unknown",
+          "lastEpisode": "vertical_<run-key>_contract_0_0"
+        }
+      ],
+      "liveEpisodes": [],
+      "presence": {
+        "signal": "away",
+        "present": false,
+        "phase": "probe",
+        "cadences": [
+          {
+            "phase": "probe",
+            "nextFireAt": 1791888717030
+          }
+        ]
+      },
+      "holds": [
+        {
+          "kind": "dispatch",
+          "reason": "intent-needs-human:contract",
+          "order": "WO-900"
+        },
+        {
+          "kind": "dispatch",
+          "reason": "actor-unavailable",
+          "order": null
+        }
+      ],
+      "budget": {
+        "status": "configured",
+        "episodes": {
+          "consumed": 0,
+          "remaining": 2
+        },
+        "wallMs": {
+          "consumed": 0,
+          "remaining": 3600000
+        },
+        "tokens": {
+          "consumed": 0,
+          "remaining": null
+        }
+      },
+      "workOrders": {
+        "status": "available",
+        "items": [
+          {
+            "order": "WO-902",
+            "phase": "active",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-900",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-901",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "event": "IntentStepSettled",
+    "eventId": "evt_32",
+    "at": "2026-10-13T10:53:28.255Z",
+    "result": "completed",
+    "terminal": false,
+    "view": {
+      "viewModelVersion": "runtime-status-v1",
+      "observedAt": 1791888808234,
+      "actors": [
+        {
+          "phase": "probe",
+          "kind": "portfolio",
+          "availability": "unavailable",
+          "lastEpisode": null
+        },
+        {
+          "phase": "surfaces",
+          "kind": "vertical-host",
+          "availability": "unknown",
+          "lastEpisode": "vertical_<run-key>_surfaces_0_0"
+        }
+      ],
+      "liveEpisodes": [],
+      "presence": {
+        "signal": "away",
+        "present": false,
+        "phase": "probe",
+        "cadences": [
+          {
+            "phase": "probe",
+            "nextFireAt": 1791888717030
+          }
+        ]
+      },
+      "holds": [
+        {
+          "kind": "dispatch",
+          "reason": "intent-needs-human:contract",
+          "order": "WO-900"
+        },
+        {
+          "kind": "dispatch",
+          "reason": "actor-unavailable",
+          "order": null
+        }
+      ],
+      "budget": {
+        "status": "configured",
+        "episodes": {
+          "consumed": 0,
+          "remaining": 2
+        },
+        "wallMs": {
+          "consumed": 0,
+          "remaining": 3600000
+        },
+        "tokens": {
+          "consumed": 0,
+          "remaining": null
+        }
+      },
+      "workOrders": {
+        "status": "available",
+        "items": [
+          {
+            "order": "WO-902",
+            "phase": "active",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-900",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-901",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "event": "IntentStepSettled",
+    "eventId": "evt_37",
+    "at": "2026-10-13T10:53:29.500Z",
+    "result": "completed",
+    "terminal": false,
+    "view": {
+      "viewModelVersion": "runtime-status-v1",
+      "observedAt": 1791888809448,
+      "actors": [
+        {
+          "phase": "probe",
+          "kind": "portfolio",
+          "availability": "unavailable",
+          "lastEpisode": null
+        },
+        {
+          "phase": "derived-order",
+          "kind": "vertical-host",
+          "availability": "unknown",
+          "lastEpisode": "vertical_<run-key>_derived-order_0_0"
+        }
+      ],
+      "liveEpisodes": [],
+      "presence": {
+        "signal": "away",
+        "present": false,
+        "phase": "probe",
+        "cadences": [
+          {
+            "phase": "probe",
+            "nextFireAt": 1791888717030
+          }
+        ]
+      },
+      "holds": [
+        {
+          "kind": "dispatch",
+          "reason": "intent-needs-human:contract",
+          "order": "WO-900"
+        },
+        {
+          "kind": "dispatch",
+          "reason": "actor-unavailable",
+          "order": null
+        }
+      ],
+      "budget": {
+        "status": "configured",
+        "episodes": {
+          "consumed": 0,
+          "remaining": 2
+        },
+        "wallMs": {
+          "consumed": 0,
+          "remaining": 3600000
+        },
+        "tokens": {
+          "consumed": 0,
+          "remaining": null
+        }
+      },
+      "workOrders": {
+        "status": "available",
+        "items": [
+          {
+            "order": "WO-902",
+            "phase": "active",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-900",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-901",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "event": "IntentStepSettled",
+    "eventId": "evt_43",
+    "at": "2026-10-13T10:53:50.376Z",
+    "result": "completed",
+    "terminal": false,
+    "view": {
+      "viewModelVersion": "runtime-status-v1",
+      "observedAt": 1791888830268,
+      "actors": [
+        {
+          "phase": "probe",
+          "kind": "portfolio",
+          "availability": "unavailable",
+          "lastEpisode": null
+        },
+        {
+          "phase": "baseline",
+          "kind": "vertical-host",
+          "availability": "unknown",
+          "lastEpisode": "vertical_<run-key>_baseline_0_0"
+        }
+      ],
+      "liveEpisodes": [],
+      "presence": {
+        "signal": "away",
+        "present": false,
+        "phase": "probe",
+        "cadences": [
+          {
+            "phase": "probe",
+            "nextFireAt": 1791888717030
+          }
+        ]
+      },
+      "holds": [
+        {
+          "kind": "dispatch",
+          "reason": "intent-needs-human:contract",
+          "order": "WO-900"
+        },
+        {
+          "kind": "dispatch",
+          "reason": "actor-unavailable",
+          "order": null
+        }
+      ],
+      "budget": {
+        "status": "configured",
+        "episodes": {
+          "consumed": 0,
+          "remaining": 2
+        },
+        "wallMs": {
+          "consumed": 0,
+          "remaining": 3600000
+        },
+        "tokens": {
+          "consumed": 0,
+          "remaining": null
+        }
+      },
+      "workOrders": {
+        "status": "available",
+        "items": [
+          {
+            "order": "WO-902",
+            "phase": "active",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-900",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-901",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "event": "actor-kill",
+    "eventId": null,
+    "at": "2026-10-13T10:53:53.557Z",
+    "result": null,
+    "terminal": null,
+    "view": {
+      "viewModelVersion": "runtime-status-v1",
+      "observedAt": 1791888832325,
+      "actors": [
+        {
+          "phase": "probe",
+          "kind": "portfolio",
+          "availability": "unavailable",
+          "lastEpisode": null
+        },
+        {
+          "phase": "source-change",
+          "kind": "vertical-host",
+          "availability": "available",
+          "lastEpisode": "vertical_<run-key>_source-change_0_0"
+        }
+      ],
+      "liveEpisodes": [
+        {
+          "episodeId": "vertical_<run-key>_source-change_0_0",
+          "order": "WO-901",
+          "actor": "vertical-host",
+          "transport": "resident",
+          "phase": "source-change",
+          "startedAt": 1791888831438,
+          "elapsedMs": 887,
+          "launchClaims": {
+            "source": "none",
+            "model": null,
+            "effort": null
+          }
+        }
+      ],
+      "presence": {
+        "signal": "away",
+        "present": false,
+        "phase": "probe",
+        "cadences": [
+          {
+            "phase": "probe",
+            "nextFireAt": null
+          }
+        ]
+      },
+      "holds": [
+        {
+          "kind": "dispatch",
+          "reason": "intent-needs-human:contract",
+          "order": "WO-900"
+        },
+        {
+          "kind": "dispatch",
+          "reason": "actor-unavailable",
+          "order": null
+        }
+      ],
+      "budget": {
+        "status": "configured",
+        "episodes": {
+          "consumed": 0,
+          "remaining": 2
+        },
+        "wallMs": {
+          "consumed": 0,
+          "remaining": 3600000
+        },
+        "tokens": {
+          "consumed": 0,
+          "remaining": null
+        }
+      },
+      "workOrders": {
+        "status": "available",
+        "items": [
+          {
+            "order": "WO-902",
+            "phase": "active",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-900",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-901",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "event": "IntentStepSettled",
+    "eventId": "evt_53",
+    "at": "2026-10-13T10:55:51.847Z",
+    "result": "completed",
+    "terminal": false,
+    "view": {
+      "viewModelVersion": "runtime-status-v1",
+      "observedAt": 1791888951796,
+      "actors": [
+        {
+          "phase": "probe",
+          "kind": "portfolio",
+          "availability": "unavailable",
+          "lastEpisode": null
+        },
+        {
+          "phase": "source-change",
+          "kind": "vertical-host",
+          "availability": "unknown",
+          "lastEpisode": "vertical_<run-key>_source-change_0_0"
+        }
+      ],
+      "liveEpisodes": [],
+      "presence": {
+        "signal": "away",
+        "present": false,
+        "phase": "probe",
+        "cadences": [
+          {
+            "phase": "probe",
+            "nextFireAt": 1791888717030
+          }
+        ]
+      },
+      "holds": [
+        {
+          "kind": "dispatch",
+          "reason": "intent-needs-human:contract",
+          "order": "WO-900"
+        },
+        {
+          "kind": "dispatch",
+          "reason": "actor-unavailable",
+          "order": null
+        }
+      ],
+      "budget": {
+        "status": "configured",
+        "episodes": {
+          "consumed": 0,
+          "remaining": 2
+        },
+        "wallMs": {
+          "consumed": 0,
+          "remaining": 3600000
+        },
+        "tokens": {
+          "consumed": 0,
+          "remaining": null
+        }
+      },
+      "workOrders": {
+        "status": "available",
+        "items": [
+          {
+            "order": "WO-902",
+            "phase": "active",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-900",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-901",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "event": "IntentStepSettled",
+    "eventId": "evt_58",
+    "at": "2026-10-13T10:55:53.298Z",
+    "result": "completed",
+    "terminal": false,
+    "view": {
+      "viewModelVersion": "runtime-status-v1",
+      "observedAt": 1791888953193,
+      "actors": [
+        {
+          "phase": "probe",
+          "kind": "portfolio",
+          "availability": "unavailable",
+          "lastEpisode": null
+        },
+        {
+          "phase": "witnesses",
+          "kind": "vertical-host",
+          "availability": "unknown",
+          "lastEpisode": "vertical_<run-key>_witnesses_0_0"
+        }
+      ],
+      "liveEpisodes": [],
+      "presence": {
+        "signal": "away",
+        "present": false,
+        "phase": "probe",
+        "cadences": [
+          {
+            "phase": "probe",
+            "nextFireAt": 1791888717030
+          }
+        ]
+      },
+      "holds": [
+        {
+          "kind": "dispatch",
+          "reason": "intent-needs-human:contract",
+          "order": "WO-900"
+        },
+        {
+          "kind": "dispatch",
+          "reason": "actor-unavailable",
+          "order": null
+        }
+      ],
+      "budget": {
+        "status": "configured",
+        "episodes": {
+          "consumed": 0,
+          "remaining": 2
+        },
+        "wallMs": {
+          "consumed": 0,
+          "remaining": 3600000
+        },
+        "tokens": {
+          "consumed": 0,
+          "remaining": null
+        }
+      },
+      "workOrders": {
+        "status": "available",
+        "items": [
+          {
+            "order": "WO-902",
+            "phase": "active",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-900",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-901",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "event": "IntentStepSettled",
+    "eventId": "evt_64",
+    "at": "2026-10-13T10:56:19.314Z",
+    "result": "completed",
+    "terminal": false,
+    "view": {
+      "viewModelVersion": "runtime-status-v1",
+      "observedAt": 1791888979213,
+      "actors": [
+        {
+          "phase": "probe",
+          "kind": "portfolio",
+          "availability": "unavailable",
+          "lastEpisode": null
+        },
+        {
+          "phase": "verification",
+          "kind": "vertical-host",
+          "availability": "unknown",
+          "lastEpisode": "vertical_<run-key>_verification_0_0"
+        }
+      ],
+      "liveEpisodes": [],
+      "presence": {
+        "signal": "away",
+        "present": false,
+        "phase": "probe",
+        "cadences": [
+          {
+            "phase": "probe",
+            "nextFireAt": 1791888717030
+          }
+        ]
+      },
+      "holds": [
+        {
+          "kind": "dispatch",
+          "reason": "intent-needs-human:contract",
+          "order": "WO-900"
+        },
+        {
+          "kind": "dispatch",
+          "reason": "actor-unavailable",
+          "order": null
+        }
+      ],
+      "budget": {
+        "status": "configured",
+        "episodes": {
+          "consumed": 0,
+          "remaining": 2
+        },
+        "wallMs": {
+          "consumed": 0,
+          "remaining": 3600000
+        },
+        "tokens": {
+          "consumed": 0,
+          "remaining": null
+        }
+      },
+      "workOrders": {
+        "status": "available",
+        "items": [
+          {
+            "order": "WO-902",
+            "phase": "active",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-900",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-901",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "event": "IntentStepSettled",
+    "eventId": "evt_70",
+    "at": "2026-10-13T10:56:48.726Z",
+    "result": "completed",
+    "terminal": false,
+    "view": {
+      "viewModelVersion": "runtime-status-v1",
+      "observedAt": 1791889008715,
+      "actors": [
+        {
+          "phase": "probe",
+          "kind": "portfolio",
+          "availability": "unavailable",
+          "lastEpisode": null
+        },
+        {
+          "phase": "review",
+          "kind": "vertical-host",
+          "availability": "unknown",
+          "lastEpisode": "vertical_<run-key>_review_0_0"
+        }
+      ],
+      "liveEpisodes": [],
+      "presence": {
+        "signal": "away",
+        "present": false,
+        "phase": "probe",
+        "cadences": [
+          {
+            "phase": "probe",
+            "nextFireAt": 1791888717030
+          }
+        ]
+      },
+      "holds": [
+        {
+          "kind": "dispatch",
+          "reason": "intent-needs-human:contract",
+          "order": "WO-900"
+        },
+        {
+          "kind": "dispatch",
+          "reason": "actor-unavailable",
+          "order": null
+        }
+      ],
+      "budget": {
+        "status": "configured",
+        "episodes": {
+          "consumed": 0,
+          "remaining": 2
+        },
+        "wallMs": {
+          "consumed": 0,
+          "remaining": 3600000
+        },
+        "tokens": {
+          "consumed": 0,
+          "remaining": null
+        }
+      },
+      "workOrders": {
+        "status": "available",
+        "items": [
+          {
+            "order": "WO-902",
+            "phase": "active",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-900",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-901",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "event": "IntentStepSettled",
+    "eventId": "evt_75",
+    "at": "2026-10-13T10:56:49.982Z",
+    "result": "completed",
+    "terminal": false,
+    "view": {
+      "viewModelVersion": "runtime-status-v1",
+      "observedAt": 1791889009941,
+      "actors": [
+        {
+          "phase": "probe",
+          "kind": "portfolio",
+          "availability": "unavailable",
+          "lastEpisode": null
+        },
+        {
+          "phase": "preparation",
+          "kind": "vertical-host",
+          "availability": "unknown",
+          "lastEpisode": "vertical_<run-key>_preparation_0_0"
+        }
+      ],
+      "liveEpisodes": [],
+      "presence": {
+        "signal": "away",
+        "present": false,
+        "phase": "probe",
+        "cadences": [
+          {
+            "phase": "probe",
+            "nextFireAt": 1791888717030
+          }
+        ]
+      },
+      "holds": [
+        {
+          "kind": "dispatch",
+          "reason": "intent-needs-human:contract",
+          "order": "WO-900"
+        },
+        {
+          "kind": "dispatch",
+          "reason": "actor-unavailable",
+          "order": null
+        }
+      ],
+      "budget": {
+        "status": "configured",
+        "episodes": {
+          "consumed": 0,
+          "remaining": 2
+        },
+        "wallMs": {
+          "consumed": 0,
+          "remaining": 3600000
+        },
+        "tokens": {
+          "consumed": 0,
+          "remaining": null
+        }
+      },
+      "workOrders": {
+        "status": "available",
+        "items": [
+          {
+            "order": "WO-902",
+            "phase": "active",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-900",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-901",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "event": "IntentStepSettled",
+    "eventId": "evt_80",
+    "at": "2026-10-13T10:56:51.343Z",
+    "result": "completed",
+    "terminal": false,
+    "view": {
+      "viewModelVersion": "runtime-status-v1",
+      "observedAt": 1791889011321,
+      "actors": [
+        {
+          "phase": "probe",
+          "kind": "portfolio",
+          "availability": "unavailable",
+          "lastEpisode": null
+        },
+        {
+          "phase": "lint",
+          "kind": "vertical-host",
+          "availability": "unknown",
+          "lastEpisode": "vertical_<run-key>_lint_0_0"
+        }
+      ],
+      "liveEpisodes": [],
+      "presence": {
+        "signal": "away",
+        "present": false,
+        "phase": "probe",
+        "cadences": [
+          {
+            "phase": "probe",
+            "nextFireAt": 1791888717030
+          }
+        ]
+      },
+      "holds": [
+        {
+          "kind": "dispatch",
+          "reason": "intent-needs-human:contract",
+          "order": "WO-900"
+        },
+        {
+          "kind": "dispatch",
+          "reason": "actor-unavailable",
+          "order": null
+        }
+      ],
+      "budget": {
+        "status": "configured",
+        "episodes": {
+          "consumed": 0,
+          "remaining": 2
+        },
+        "wallMs": {
+          "consumed": 0,
+          "remaining": 3600000
+        },
+        "tokens": {
+          "consumed": 0,
+          "remaining": null
+        }
+      },
+      "workOrders": {
+        "status": "available",
+        "items": [
+          {
+            "order": "WO-902",
+            "phase": "active",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-900",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-901",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "event": "IntentStepSettled",
+    "eventId": "evt_85",
+    "at": "2026-10-13T10:56:56.629Z",
+    "result": "completed",
+    "terminal": false,
+    "view": {
+      "viewModelVersion": "runtime-status-v1",
+      "observedAt": 1791889016578,
+      "actors": [
+        {
+          "phase": "probe",
+          "kind": "portfolio",
+          "availability": "unavailable",
+          "lastEpisode": null
+        },
+        {
+          "phase": "publish",
+          "kind": "vertical-host",
+          "availability": "unknown",
+          "lastEpisode": "vertical_<run-key>_publish_0_0"
+        }
+      ],
+      "liveEpisodes": [],
+      "presence": {
+        "signal": "away",
+        "present": false,
+        "phase": "probe",
+        "cadences": [
+          {
+            "phase": "probe",
+            "nextFireAt": 1791888717030
+          }
+        ]
+      },
+      "holds": [
+        {
+          "kind": "dispatch",
+          "reason": "intent-needs-human:contract",
+          "order": "WO-900"
+        },
+        {
+          "kind": "dispatch",
+          "reason": "actor-unavailable",
+          "order": null
+        }
+      ],
+      "budget": {
+        "status": "configured",
+        "episodes": {
+          "consumed": 0,
+          "remaining": 2
+        },
+        "wallMs": {
+          "consumed": 0,
+          "remaining": 3600000
+        },
+        "tokens": {
+          "consumed": 0,
+          "remaining": null
+        }
+      },
+      "workOrders": {
+        "status": "available",
+        "items": [
+          {
+            "order": "WO-902",
+            "phase": "active",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-900",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-901",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "event": "IntentStepSettled",
+    "eventId": "evt_91",
+    "at": "2026-10-13T10:57:17.808Z",
+    "result": "completed",
+    "terminal": false,
+    "view": {
+      "viewModelVersion": "runtime-status-v1",
+      "observedAt": 1791889037778,
+      "actors": [
+        {
+          "phase": "probe",
+          "kind": "portfolio",
+          "availability": "unavailable",
+          "lastEpisode": null
+        },
+        {
+          "phase": "observation",
+          "kind": "vertical-host",
+          "availability": "unknown",
+          "lastEpisode": "vertical_<run-key>_observation_0_0"
+        }
+      ],
+      "liveEpisodes": [],
+      "presence": {
+        "signal": "away",
+        "present": false,
+        "phase": "probe",
+        "cadences": [
+          {
+            "phase": "probe",
+            "nextFireAt": 1791888717030
+          }
+        ]
+      },
+      "holds": [
+        {
+          "kind": "dispatch",
+          "reason": "intent-needs-human:contract",
+          "order": "WO-900"
+        },
+        {
+          "kind": "dispatch",
+          "reason": "actor-unavailable",
+          "order": null
+        }
+      ],
+      "budget": {
+        "status": "configured",
+        "episodes": {
+          "consumed": 0,
+          "remaining": 2
+        },
+        "wallMs": {
+          "consumed": 0,
+          "remaining": 3600000
+        },
+        "tokens": {
+          "consumed": 0,
+          "remaining": null
+        }
+      },
+      "workOrders": {
+        "status": "available",
+        "items": [
+          {
+            "order": "WO-902",
+            "phase": "active",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-900",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-901",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "event": "IntentStepSettled",
+    "eventId": "evt_102",
+    "at": "2026-10-13T11:01:05.417Z",
+    "result": "completed",
+    "terminal": true,
+    "view": {
+      "viewModelVersion": "runtime-status-v1",
+      "observedAt": 1791889265309,
+      "actors": [
+        {
+          "phase": "probe",
+          "kind": "portfolio",
+          "availability": "unavailable",
+          "lastEpisode": null
+        }
+      ],
+      "liveEpisodes": [],
+      "presence": {
+        "signal": "away",
+        "present": false,
+        "phase": "probe",
+        "cadences": [
+          {
+            "phase": "probe",
+            "nextFireAt": 1791889265319
+          }
+        ]
+      },
+      "holds": [
+        {
+          "kind": "dispatch",
+          "reason": "intent-needs-human:contract",
+          "order": "WO-900"
+        },
+        {
+          "kind": "dispatch",
+          "reason": "actor-unavailable",
+          "order": null
+        }
+      ],
+      "budget": {
+        "status": "configured",
+        "episodes": {
+          "consumed": 0,
+          "remaining": 2
+        },
+        "wallMs": {
+          "consumed": 0,
+          "remaining": 3600000
+        },
+        "tokens": {
+          "consumed": 0,
+          "remaining": null
+        }
+      },
+      "workOrders": {
+        "status": "available",
+        "items": [
+          {
+            "order": "WO-902",
+            "phase": "active",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-900",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-901",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "event": "terminal",
+    "eventId": null,
+    "at": "2026-10-13T11:01:11.425Z",
+    "result": null,
+    "terminal": null,
+    "view": {
+      "viewModelVersion": "runtime-status-v1",
+      "observedAt": 1791889270854,
+      "actors": [
+        {
+          "phase": "probe",
+          "kind": "portfolio",
+          "availability": "unavailable",
+          "lastEpisode": null
+        }
+      ],
+      "liveEpisodes": [],
+      "presence": {
+        "signal": "away",
+        "present": false,
+        "phase": "probe",
+        "cadences": [
+          {
+            "phase": "probe",
+            "nextFireAt": 1791889265319
+          }
+        ]
+      },
+      "holds": [
+        {
+          "kind": "dispatch",
+          "reason": "intent-needs-human:contract",
+          "order": "WO-900"
+        },
+        {
+          "kind": "dispatch",
+          "reason": "actor-unavailable",
+          "order": null
+        }
+      ],
+      "budget": {
+        "status": "configured",
+        "episodes": {
+          "consumed": 0,
+          "remaining": 2
+        },
+        "wallMs": {
+          "consumed": 0,
+          "remaining": 3600000
+        },
+        "tokens": {
+          "consumed": 0,
+          "remaining": null
+        }
+      },
+      "workOrders": {
+        "status": "available",
+        "items": [
+          {
+            "order": "WO-902",
+            "phase": "active",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-900",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          },
+          {
+            "order": "WO-901",
+            "phase": "draft",
+            "dependency": "ready",
+            "verdict": null
+          }
+        ]
+      }
+    }
+  }
+]

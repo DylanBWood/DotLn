@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "label": "observed",
+  "startedAt": "2026-10-13T01:18:31.505Z",
+  "finishedAt": "2026-10-13T01:20:23.770Z",
+  "entry": "Exported packages/skeleton/dist/src/dotln.js resident; public intent/presence commands",
+  "residentLaunches": 2,
+  "restartAfter": "bundle step settled; SIGTERM then relaunch before next step",
+  "actorKilled": true,
+  "sourceAttempts": 1,
+  "sourceCommits": 0,
+  "sourceEventTypes": [
+    "ArtifactIdentityEnforcementStarted",
+    "SourceChangeRequested",
+    "CommandPersisted",
+    "WorkerAttemptStarted",
+    "SourceChangeProcessStarted",
+    "CommandReceipt",
+    "SourceChangeProcessStopped",
+    "SourceChangeIntegrityChecked",
+    "WorkerInterrupted"
+  ],
+  "steps": [
+    {
+      "eventId": "evt_3",
+      "at": 1791854354044,
+      "step": "bundle",
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_5",
+      "at": 1791854354490,
+      "step": "contract",
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_7",
+      "at": 1791854355662,
+      "step": "surfaces",
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_9",
+      "at": 1791854356840,
+      "step": "derived-order",
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_11",
+      "at": 1791854374825,
+      "step": "baseline",
+      "result": "completed"
+    },
+    {
+      "eventId": "evt_13",
+      "at": 1791854376746,
+      "step": "source-change",
+      "result": "refused",
+      "reason": "source-change host failed or was unavailable"
+    }
+  ],
+  "terminal": {
+    "kind": "refused",
+    "step": "source-change",
+    "reason": "source-change host failed or was unavailable"
+  },
+  "baselineAssessment": {
+    "producerKind": "model",
+    "assertions": [
+      {
+        "kind": "no-existing-failure"
+      },
+      {
+        "kind": "existing-failure"
+      },
+      {
+        "kind": "existing-failure"
+      },
+      {
+        "kind": "no-existing-failure"
+      },
+      {
+        "kind": "existing-failure"
+      }
+    ]
+  },
+  "ambiguousControl": {
+    "kind": "NeedsHuman",
+    "step": "contract",
+    "reason": "contract has no executable criteria",
+    "answerConsumed": false
+  },
+  "delivery": "not reached",
+  "console": "package executable absent",
+  "audit": {
+    "command": "node packages/skeleton/dist/src/dotln.js audit --store <store>/vertical/<key>",
+    "exitCode": 0
+  },
+  "allResidentProcessesStopped": true,
+  "runtimeCodeModified": false
+}

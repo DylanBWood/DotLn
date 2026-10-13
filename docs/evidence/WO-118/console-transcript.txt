@@ -1,0 +1,9 @@
+Initial starter observation, 2026-10-13 UTC
+
+The exported kit does not contain packages/console/dist/src/cli.js.
+Harness emit and check each passed with 34 generated surfaces.
+The resident created runtime-status-v1.json; six snapshots are retained.
+The last snapshot shows the probe portfolio, operator away, derived order active,
+no live episodes and no holds. It does not show the vertical source-change refusal.
+No live-console UI was run. Criterion 4 remains unmet.
+The separate audit command exited 0; audit-transcript.txt records its output.

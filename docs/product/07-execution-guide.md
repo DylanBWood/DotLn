@@ -1222,7 +1222,18 @@ change can fail without naming its order. The decision records the authorization
 the `PlanExecutionAmended` event binds that decision but has no actor field.
 Neither is a fresh planning verdict or a way to discharge an independent hold. Do this during authorized execution rather than carrying an
 inherited failure through later reviews [WO-139-D002, the WO-053 amendment,
-2026-09-18]. If committed execution overwrote an existing capability row, restore the judged
+2026-09-18]. An authorized status writeback to
+product 00's The one-paragraph story can be bound in that decision's optional
+`executionWritebacks` array: one entry names `path`, `section`, `criterionId`,
+`criterionHash`, `sourceHash` and `acceptedHash`. The criterion hash is SHA-256
+of the exact reviewed criterion text; the section hashes are its reviewed and
+accepted planning-input hashes. The current amendment must bind the decision
+and order, and the named criterion must remain unchanged. Only those exact
+story-section bytes continue; other planning inputs retain their checks.
+Changing accepted bytes requires rebinding through `amend-order`. The gate
+reads a writeback only from the order's current amendment, so a later
+amendment of that order restates it. This is
+reported separately as `authorized-execution-writeback` [WO-118-D004 and D007, 2026-10-13]. If committed execution overwrote an existing capability row, restore the judged
 source and append the exact newer row as a dated reassessment. The continuing-work
 check reports a pending history repair before commit only when every changed HEAD
 line is a same-ID capability row preserved byte-for-byte in that appendix, with

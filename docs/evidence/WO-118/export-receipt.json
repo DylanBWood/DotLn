@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "label": "observed",
+  "exportedAt": "2026-10-13T01:12:09.163Z",
+  "coreCommit": "6421221bb46fcb42ed85af112f0c1c2b539200b8",
+  "tag": "v0.79.0",
+  "instance": "<system-temp>/dotln-wo118-<run>/instance",
+  "target": "<system-temp>/dotln-wo118-<run>/target",
+  "worktrees": "<system-temp>/dotln-wo118-<run>/trees",
+  "store": "<system-temp>/dotln-wo118-<run>/store",
+  "outsideWriteAuthority": "executor system-temp grant; every run directory is under os.tmpdir(), using its physical /private/var spelling",
+  "kitFiles": 866,
+  "runtimeCompiledFiles": 454,
+  "instanceSeeds": 28,
+  "harnessEmit": {
+    "exitCode": 0,
+    "generatedSurfaces": 34
+  },
+  "harnessCheck": {
+    "exitCode": 0,
+    "generatedSurfaces": 34
+  },
+  "kitVerifyAfterConfiguration": {
+    "exitCode": 0,
+    "verifiedFiles": 866,
+    "differentFiles": 0
+  },
+  "localTerms": "unavailable",
+  "requiredPaths": [
+    {
+      "path": "packages/skeleton/dist/src/dotln.js",
+      "present": true
+    },
+    {
+      "path": "scripts/lib/vertical-runtime.mjs",
+      "present": true
+    },
+    {
+      "path": "scripts/lib/vertical-primitives.mjs",
+      "present": true
+    },
+    {
+      "path": "scripts/lib/vertical-transport.mjs",
+      "present": true
+    },
+    {
+      "path": "packages/console/dist/src/cli.js",
+      "present": false
+    }
+  ],
+  "verticalFiles": [
+    "vertical-judgment.mjs",
+    "vertical-primitives.mjs",
+    "vertical-runtime.mjs",
+    "vertical-transport.mjs"
+  ],
+  "configuration": {
+    "admissionFailure": null,
+    "workers": {
+      "transport": "codex-cli-exec",
+      "model": "gpt-6.1-sol",
+      "effort": "max",
+      "label": "launch-claim"
+    },
+    "issueIntake": "model",
+    "suppliedClassifications": 0,
+    "suppliedAssessments": 0,
+    "suppliedReviewJudgments": 0,
+    "policy": "instance-owned single probe phase; no overlay declares a resident policy",
+    "remoteGrantEffects": [
+      "repo.push",
+      "pr.open",
+      "pr.thread.resolve"
+    ],
+    "remoteGrantProvenance": "Operator resume: next and explicit scratch repository selection during this dispatch; execution delegation WO-112-D007 carried by WO-118."
+  }
+}

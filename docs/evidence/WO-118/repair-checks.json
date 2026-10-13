@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "checks": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test scripts/test-vertical.recovery.mjs",
+      "exitCode": 0,
+      "tests": 15,
+      "passed": 15,
+      "startedAt": "2026-10-13T01:36:23.385Z",
+      "finishedAt": "2026-10-13T01:41:07.547Z",
+      "durationMs": 284162,
+      "meaning": "Fixture recovery regressions; the live starter proof remains separate."
+    },
+    {
+      "command": "npm run release -- check-surfaces --local",
+      "exitCode": 0,
+      "meaning": "skeleton 0.58.1 source patch and exact console dependency pin accepted; no new dependency."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test scripts/test-launchpad.mjs",
+      "exitCode": 0,
+      "tests": 39,
+      "passed": 39,
+      "testDurationMs": 193368.457167,
+      "meaning": "Export inventory, offline install, byte-identical rebuild, all three gate selections in kit, and exported live console against running resident passed. Subsequent documentation corrections update stale console-omission text; final review gate covers final bytes."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test scripts/test-plan-refutation.mjs",
+      "exitCode": 0,
+      "tests": 88,
+      "passed": 88,
+      "durationMs": 80706,
+      "startedAt": "2026-10-13T02:15:43.340Z",
+      "finishedAt": "2026-10-13T02:17:04.046Z",
+      "meaning": "Includes plain and goal-review exact status writeback admission, refusal of new goal evidence and standards, workspace/committed continuation, preserved historical receipts and existing amendment ordinal diagnostics."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test scripts/test-vertical.recovery.mjs",
+      "exitCode": 0,
+      "tests": 15,
+      "passed": 15,
+      "durationMs": 362876,
+      "startedAt": "2026-10-13T02:22:02.877Z",
+      "finishedAt": "2026-10-13T02:28:05.753Z",
+      "meaning": "Full native recovery suite with initial logical status assertions; terminal-hold additions subsequently covered by focused case."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern='resident survives source actor death: before-commit|intent holds survive' scripts/test-vertical.recovery.mjs packages/skeleton/dist/test/runtime-status.test.js",
+      "exitCode": 0,
+      "tests": 2,
+      "passed": 2,
+      "durationMs": 13698,
+      "startedAt": "2026-10-13T02:31:50.310Z",
+      "finishedAt": "2026-10-13T02:32:04.008Z",
+      "meaning": "Includes final terminal NeedsHuman/retry/repair/refused projection cases and privacy/replay/restart."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test packages/skeleton/dist/test/runtime-status.test.js",
+      "exitCode": 0,
+      "tests": 9,
+      "passed": 9,
+      "durationMs": 2561,
+      "startedAt": "2026-10-13T02:38:27.482Z",
+      "finishedAt": "2026-10-13T02:38:30.043Z"
+    },
+    {
+      "command": "fresh exported live-console visibility witness",
+      "exitCode": 0,
+      "durationMs": 241092,
+      "startedAt": "2026-10-13T02:33:22.135Z",
+      "finishedAt": "2026-10-13T02:37:23.227Z",
+      "evidence": "visibility-run/receipt.json"
+    },
+    {
+      "command": "bounded completed-run collector",
+      "exitCode": 0,
+      "durationMs": 947,
+      "startedAt": "2026-10-13T02:38:16.990Z",
+      "finishedAt": "2026-10-13T02:38:17.937Z",
+      "evidence": "completed-run/receipt.json"
+    }
+  ]
+}

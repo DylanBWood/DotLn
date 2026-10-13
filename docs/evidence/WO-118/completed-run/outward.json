@@ -1,0 +1,104 @@
+{
+  "label": "observed",
+  "publicTerms": [
+    "DotLn",
+    "launchpad",
+    "gem",
+    "gems",
+    "mask",
+    "masks",
+    "ScratchForbiddenMarker"
+  ],
+  "pathPrefixes": [
+    "docs/work-orders",
+    "docs/control",
+    ".runtime",
+    "dotln.config",
+    "packages/skeleton"
+  ],
+  "trackedFiles": 6,
+  "treeFindings": [],
+  "lint": [
+    {
+      "kind": "branch",
+      "status": "pass",
+      "checks": {
+        "format": {
+          "status": "pass"
+        },
+        "launchpad": {
+          "status": "pass"
+        },
+        "localTerms": {
+          "status": "pass"
+        }
+      },
+      "findings": []
+    },
+    {
+      "kind": "pr-title",
+      "status": "pass",
+      "checks": {
+        "format": {
+          "status": "pass"
+        },
+        "launchpad": {
+          "status": "pass"
+        },
+        "localTerms": {
+          "status": "pass"
+        }
+      },
+      "findings": []
+    },
+    {
+      "kind": "pr-body",
+      "status": "pass",
+      "checks": {
+        "format": {
+          "status": "pass"
+        },
+        "launchpad": {
+          "status": "pass"
+        },
+        "localTerms": {
+          "status": "pass"
+        }
+      },
+      "findings": []
+    },
+    {
+      "kind": "commit",
+      "status": "pass",
+      "checks": {
+        "format": {
+          "status": "pass"
+        },
+        "launchpad": {
+          "status": "pass"
+        },
+        "localTerms": {
+          "status": "pass"
+        }
+      },
+      "findings": []
+    },
+    {
+      "kind": "commit",
+      "status": "pass",
+      "checks": {
+        "format": {
+          "status": "pass"
+        },
+        "launchpad": {
+          "status": "pass"
+        },
+        "localTerms": {
+          "status": "pass"
+        }
+      },
+      "findings": []
+    }
+  ],
+  "scope": "Configured public vocabulary plus one synthetic local deny marker; no private list imported."
+}

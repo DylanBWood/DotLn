@@ -248,8 +248,13 @@ const directEpisode = (result) => ({
   statement: "Synthetic direct-session attestation for deterministic fixtures.",
   result,
 });
-const writeDirectReceipt = (repo, result = passResult, dispositions = []) => {
-  const subject = buildPlanSubject(repo);
+const writeDirectReceipt = (
+  repo,
+  result = passResult,
+  dispositions = [],
+  options = {},
+) => {
+  const subject = buildPlanSubject(repo, "HEAD", options);
   return writePlanReceipt(repo, {
     pass: passFor(repo),
     slug: "direct-fixture",
@@ -3377,6 +3382,247 @@ else {
         write(repo, OVERRIDES, log);
       },
     );
+    for (const goalReview of [false, true])
+      await check(
+        `execution writeback admits only exact authorized story bytes with an unchanged reviewed criterion (goal review: ${goalReview})`,
+        async () => {
+          const repo = makeRepo(parent, `execution-writeback-${goalReview}`);
+          const path = orderPath("WO-901");
+          const vision = "docs/product/00-vision.md";
+          const decisionPath = "docs/evidence/WO-901/decisions.md";
+          write(
+            repo,
+            path,
+            read(repo, path).replace(
+              "Keep a bounded result.",
+              "Record the observed status in The one-paragraph story of product 00.",
+            ),
+          );
+          commit(repo, "declare status writeback");
+          const receipt = await writeDirectReceipt(
+            repo,
+            goalReview ? cannedGoalReview : passResult,
+            [],
+            { goalReview },
+          );
+          commit(repo, "record judged status writeback");
+          const receiptBytes = read(
+            repo,
+            `${RECEIPTS}/${receipt.receiptId}.json`,
+          );
+          const beforeVision = read(repo, vision);
+          const afterVision = beforeVision.replace(
+            "Evidence describes the shape.",
+            "Evidence describes the shape. The bounded run was observed.",
+          );
+          write(repo, vision, afterVision);
+          const approvedOrder = read(repo, path).replace(
+            "Other shapes.",
+            "Other shapes beyond the authorized repair.",
+          );
+          write(repo, path, approvedOrder);
+          const inputName = "vision:the-one-paragraph-story";
+          const writeback = {
+            path: vision,
+            section: "The one-paragraph story",
+            criterionId: "criterion:2",
+            criterionHash: sha256(
+              receipt.subject.orders.find((o) => o.workOrderId === "WO-901")
+                .criteria[1].text,
+            ),
+            sourceHash: receipt.subject.inputs.find(
+              (row) => row.name === inputName,
+            ).hash,
+            acceptedHash: buildPlanSubject(repo, "HEAD", {
+              workspace: true,
+            }).inputs.find((row) => row.name === inputName).hash,
+          };
+          const decision = {
+            id: "WO-901-D001",
+            date: "2030-01-02",
+            dispatch:
+              "scope expand: operator authorizes exact status writeback",
+            decision: "Bind the required status writeback",
+            evidence: ["operator authorization; observed run"],
+            rejected: ["NoOp leaves the required writeback blocked"],
+            reopenWhen: "Different accepted bytes",
+            executionWritebacks: [writeback],
+          };
+          const saveDecision = (value) =>
+            write(
+              repo,
+              decisionPath,
+              "# Decisions\n\n```json\n" + JSON.stringify(value) + "\n```\n",
+            );
+          const amend = () =>
+            amendPlanOrder(repo, {
+              workOrderId: "WO-901",
+              decisionId: decision.id,
+              reason: "Operator authorized the exact status writeback",
+              now: () => "2030-01-02T13:00:00.000Z",
+            });
+          saveDecision({ ...decision, executionWritebacks: undefined });
+          await amend();
+          await assert.rejects(
+            checkPlanGate(repo),
+            /sequence, vision, roles or order inventory changed/,
+          );
+          saveDecision(decision);
+          const event = await amend();
+          const approvedLog = read(repo, OVERRIDES);
+          const accepted = await checkPlanGate(repo);
+          assert.ok(
+            accepted.continuation.workspaceUpdates.some(
+              (row) =>
+                row.kind === "authorized-execution-writeback" &&
+                row.decisionId === decision.id,
+            ),
+          );
+          for (const change of [
+            { path: "docs/product/13-uifa-roles.md" },
+            { section: "The core bet" },
+            { sourceHash: sha256("stale") },
+            { criterionHash: sha256("different criterion") },
+          ]) {
+            saveDecision({
+              ...decision,
+              executionWritebacks: [{ ...writeback, ...change }],
+            });
+            await assert.rejects(amend, /execution writeback/);
+            saveDecision(decision);
+          }
+          // A declaration cannot approve bytes by changing an existing bound decision.
+          saveDecision({
+            ...decision,
+            executionWritebacks: [
+              { ...writeback, acceptedHash: sha256("different") },
+            ],
+          });
+          await assert.rejects(checkPlanGate(repo), /decision binding differs/);
+          saveDecision(decision);
+          for (const [file, changed] of [
+            [
+              vision,
+              afterVision.replace(
+                "bounded run was observed.",
+                "bounded run was observed. ",
+              ),
+            ],
+            [
+              vision,
+              afterVision.replace(
+                "## The core bet\n\nEvidence describes the shape.",
+                "## The core bet\n\nAnother thesis.",
+              ),
+            ],
+            [
+              "docs/product/13-uifa-roles.md",
+              read(repo, "docs/product/13-uifa-roles.md").replace(
+                "A useful shape.",
+                "Another role.",
+              ),
+            ],
+            [
+              PLAN_MAP,
+              read(repo, PLAN_MAP).replace(
+                "- WO-901 — First\n- WO-902 — Second",
+                "- WO-902 — Second\n- WO-901 — First",
+              ),
+            ],
+          ]) {
+            const original = read(repo, file);
+            assert.notEqual(changed, original);
+            write(repo, file, changed);
+            await assert.rejects(checkPlanGate(repo));
+            write(repo, file, original);
+          }
+          if (goalReview) {
+            const guide = "docs/product/07-execution-guide.md";
+            const originalGuide = read(repo, guide);
+            write(
+              repo,
+              guide,
+              originalGuide.replace(
+                "Consider all eight system traps",
+                "Ignore all eight system traps",
+              ),
+            );
+            await assert.rejects(
+              checkPlanGate(repo),
+              /observed evidence or goal standard changed/,
+            );
+            write(repo, guide, originalGuide);
+            const costs = "docs/planning/cost-table.json";
+            const previousCosts = existsSync(join(repo, costs))
+              ? read(repo, costs)
+              : null;
+            write(
+              repo,
+              costs,
+              JSON.stringify({
+                rows: [{ workOrder: "WO-901", metrics: { gateMs: 605000 } }],
+              }),
+            );
+            await assert.rejects(
+              checkPlanGate(repo),
+              /observed evidence or goal standard changed/,
+            );
+            if (previousCosts === null) rmSync(join(repo, costs));
+            else write(repo, costs, previousCosts);
+          }
+          saveDecision({
+            ...decision,
+            executionWritebacks: [
+              { ...writeback, acceptedHash: sha256("stale accepted bytes") },
+            ],
+          });
+          await amend();
+          await assert.rejects(
+            checkPlanGate(repo),
+            /sequence, vision, roles or order inventory changed/,
+          );
+          saveDecision(decision);
+          write(repo, OVERRIDES, approvedLog);
+          // Even a newly rebound order may not change the criterion used as authority.
+          write(
+            repo,
+            path,
+            approvedOrder.replace(
+              "Record the observed status",
+              "Record a different status",
+            ),
+          );
+          await amend();
+          await assert.rejects(
+            checkPlanGate(repo),
+            /unchanged reviewed criterion/,
+          );
+          write(repo, path, approvedOrder);
+          write(repo, OVERRIDES, approvedLog);
+          const row = readOverrides(repo).find(
+            (e) => e.decisionHash === event.decisionHash,
+          );
+          await withdrawPlanAmendment(repo, {
+            workOrderId: "WO-901",
+            ordinal: row.rowOrdinal,
+            reason: "Operator withdrew this amendment",
+            now: () => "2030-01-02T14:00:00.000Z",
+          });
+          await assert.rejects(checkPlanGate(repo));
+          write(repo, OVERRIDES, approvedLog);
+          assert.equal((await checkPlanGate(repo)).passes, 1);
+          commit(repo, "record exact authorized execution writeback");
+          assert.ok(
+            (await checkPlanGate(repo)).continuation.committedUpdates.some(
+              (row) => row.kind === "authorized-execution-writeback",
+            ),
+          );
+          assert.equal(
+            read(repo, `${RECEIPTS}/${receipt.receiptId}.json`),
+            receiptBytes,
+          );
+        },
+      );
     await check(
       "WO-160 unmatched amendments name their physical row and withdrawal preserves history",
       async () => {

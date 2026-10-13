@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { appendEvent, decodeLog, type JsonValue } from "@dotln/kernel";
 import type { WorkOrder } from "@dotln/compiler";
 import { WorkerStore } from "./worker-store.js";
+import { WorkerFailure } from "./worker-protocol.js";
 import { RetryableTriageError } from "./vertical-judgment-host.js";
 import {
   deliverPendingSignal,
@@ -214,6 +215,16 @@ export class VerticalHost {
             );
           } catch (error) {
             if (await deliverPendingSignal(this.options.signal)) throw error;
+            // An actor can die while its resident survives. Keep the same
+            // command for the next tick only if another launch is admitted;
+            // the source host proves termination and bounds its recovery.
+            if (
+              command.step === "source-change" &&
+              error instanceof WorkerFailure &&
+              error.code === "interrupted" &&
+              (await this.options.active?.(true)) === true
+            )
+              break;
             if (
               command.step === "resolution" &&
               error instanceof RetryableTriageError

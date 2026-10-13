@@ -1,9 +1,18 @@
-import { type Event, type PredicateRegistry } from "@dotln/kernel";
+import {
+  type Event,
+  type PredicateRegistry,
+  type ExecutableProgramV1,
+} from "@dotln/kernel";
 import {
   runtimeOrdersFromIndex,
   type RuntimeStatusV1,
 } from "./runtime-status-contract.js";
 import { residentMachine, type ResidentState } from "./resident-state.js";
+import {
+  verticalProgram,
+  VERTICAL_STEPS,
+  type VerticalCommand,
+} from "./vertical.js";
 
 const orderId = (value: unknown): string | null =>
   typeof value === "string" && /^WO-\d{3}$/u.test(value) ? value : null;
@@ -12,6 +21,35 @@ const publicClaim = (value: string): string | null =>
   !/^[0-9a-f]{8}-[0-9a-f-]{27,}$/iu.test(value)
     ? value
     : null;
+
+// Resolve only a command in the host's known continuation. This also serves
+// historical logs without copying an arbitrary event payload into the UI.
+function verticalCommand(
+  key: string,
+  commandId: string,
+): VerticalCommand | null {
+  const pending = [verticalProgram(key)];
+  const seen = new Set<ExecutableProgramV1>();
+  while (pending.length) {
+    const program = pending.pop()!;
+    if (seen.has(program)) continue;
+    seen.add(program);
+    if (program.kind !== "Invoke") continue;
+    if (program.commandId === commandId)
+      return program.command.payload as unknown as VerticalCommand;
+    pending.push(...Object.values(program.continuationByResult));
+  }
+  return null;
+}
+
+const intentHoldReason = (step: string, refused = false): string => {
+  const reason = refused ? "intent-refused" : "intent-needs-human";
+  return (
+    [...VERTICAL_STEPS, "repair", "admission"] as readonly string[]
+  ).includes(step)
+    ? `${reason}:${step}`
+    : reason;
+};
 
 /** A pure, allowlisted projection. The event log supplies timestamps and
  * observed signal; the fold supplies current state. Neither raw payloads nor
@@ -25,10 +63,18 @@ export function projectRuntimeStatus(
   const configured = state?.configuration;
   const dispatches = new Map<string, Event>();
   const lastByPhase = new Map<string, string>();
+  const verticalStarts = new Map<string, Event>();
+  const verticalSettlements = new Map<string, Event>();
   let signal: RuntimeStatusV1["presence"]["signal"] = "unknown";
   let lastNoOp: { type: string; phase: string } | null = null;
   for (const event of events) {
     const payload = event.payload as Record<string, unknown>;
+    if (typeof payload["key"] === "string") {
+      if (event.type === "IntentStepStarted")
+        verticalStarts.set(payload["key"], event);
+      if (event.type === "IntentStepSettled")
+        verticalSettlements.set(payload["key"], event);
+    }
     if (event.type === "ScriptEpisodeDispatched") {
       const episode = payload["episodeId"];
       const phase = payload["phaseId"];
@@ -112,6 +158,63 @@ export function projectRuntimeStatus(
         : null,
   }));
   const holds: RuntimeStatusV1["holds"] = [];
+  for (const [draftId, intent] of Object.entries(state?.intents ?? {})) {
+    if (intent.kind === "NeedsHuman") {
+      holds.push({
+        kind: "dispatch",
+        reason: intentHoldReason(intent.step),
+        order: orderId(draftId),
+      });
+      continue;
+    }
+    const started = verticalStarts.get(intent.binding.key);
+    if (!started) continue;
+    const commandId = (started.payload as Record<string, unknown>)["commandId"];
+    if (typeof commandId !== "string") continue;
+    const command = verticalCommand(intent.binding.key, commandId);
+    if (!command) continue;
+    // A continuation whose latest step settled terminally has finished. It
+    // leaves the actor list, so finished intents never accumulate there; an
+    // outcome that still awaits a human stays visible as its one hold.
+    const outcome = verticalSettlements.get(intent.binding.key)?.payload as
+      Record<string, unknown> | undefined;
+    if (outcome?.["commandId"] === commandId && outcome["terminal"] === true) {
+      if (
+        ["NeedsHuman", "retry", "repair", "refused"].includes(
+          String(outcome["result"]),
+        )
+      )
+        holds.push({
+          kind: "dispatch",
+          reason: intentHoldReason(
+            command.step,
+            outcome["result"] === "refused",
+          ),
+          order: orderId(draftId),
+        });
+      continue;
+    }
+    const live =
+      state?.intentStep?.key === intent.binding.key &&
+      state.intentStep.commandId === commandId;
+    actors.push({
+      phase: command.step,
+      kind: "vertical-host",
+      availability: live ? "available" : "unknown",
+      lastEpisode: command.episodeId,
+    });
+    if (live)
+      liveEpisodes.push({
+        episodeId: command.episodeId,
+        order: orderId(draftId),
+        actor: "vertical-host",
+        transport: "resident",
+        phase: command.step,
+        startedAt: started.occurredAt,
+        elapsedMs: Math.max(0, state!.at - started.occurredAt),
+        launchClaims: { source: "none", model: null, effort: null },
+      });
+  }
   if (state?.dispatchHeld)
     holds.push({
       kind: "mission",
