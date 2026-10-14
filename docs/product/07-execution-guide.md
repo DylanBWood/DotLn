@@ -270,7 +270,7 @@ table includes the shared goal card and the refuter's separate subject boundary.
    | `resume: fix`           | `npm run resume -- fix`                                                                                                                                                                                                    | repair, reading BOTH the original work order and named failure source; if a repair was prematurely marked complete, the phrase may reopen it only while that unresolved source remains                                                                                   |
    | `resume: verify`        | `npm run resume -- verify`                                                                                                                                                                                                 | verify, writing the exact `VER-NNN` path it allocates                                                                                                                                                                                                                    |
    | `resume: final review`  | `npm run resume -- final-review`                                                                                                                                                                                           | review into the allocated `FINAL-NNN`; on pass, record it, commit the reviewed state, push only the WO branch, and open its PR                                                                                                                                           |
-   | `resume: release close` | in a main-checkout session, dispatch `npm run resume -- release-close --work-order WO-NNN`, then run its printed `node <main>/scripts/release.mjs close WO-NNN --publish` helper there (`worktree publish` prints it too); a subject dispatch prints this route; use main's copy after subject removal | update main, consume reviewer gate, publish validated tag and Release, attempt cleanup, and write `docs/control/local/retained/WO-NNN/release-close.json`; rerun from updated main if Release creation fails |
+   | `resume: release close` | in a main-checkout session, dispatch `npm run resume -- release-close --work-order WO-NNN`, then run its printed `node <main>/scripts/release.mjs close WO-NNN --publish` helper there (`worktree publish` prints it too); a subject dispatch prints this route; use main's copy after subject removal | update main, consume reviewer gate, publish validated tag and Release, attempt cleanup, refresh each declared export sibling through its recorded checkout with one fast-forward commit to that sibling's main, and write `docs/control/local/retained/WO-NNN/release-close.json`; rerun from updated main if Release creation fails or a starter refresh refuses |
    | the operator accepts criterion N unmet (words captured) | `npm run resume -- waive N --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` from the operator's terminal, a verifier or a reviewer session (WO-158) | the report records `**Criterion N:** unmet, waived by <ordinal>`; the order's executor never records a waiver |
    | the operator withdraws the order (words captured) | `npm run resume -- withdraw --disposition failed\|superseded\|abandoned --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` (WO-158) | stop: `withdrawn` is terminal, and only `npm run resume -- activate` of a changed revision with a new dated `**Reactivation (YYYY-MM-DD):**` note leaves it |
    | a recorded attestation, report path or checkpoint is wrong, or a recorded passing final review carries no product gate | `npm run resume -- correct <ordinal\|report-path> --set <field>=<value> --reason <text> <actor-flags>` (WO-158); `--set productGate=<evidenceRef>` binds a complete passing `npm test` row whose code identity is the one the pass recorded in its checkpoint and still the working tree's, once, and is the only correction legal in `closed` (WO-115) | never correct a verdict or edit a filed report; a wrong verdict takes a later report; a changed subject takes a fresh final review; publication and release close read the bound gate from the committed correction |
@@ -444,10 +444,12 @@ isolated by this mechanism. See 09 §Privacy and minimization for that boundary.
 `resume: final review` and `resume: release close` carry narrowly scoped
 external-effect authority. A passing final reviewer may commit the reviewed
 state, push only its work-order branch, and open the mergeable PR; it may never
-merge it. Release close may create and push only the validated annotated tag and
-create the matching GitHub Release as a projection of that tag's reviewed human
-layer; it may never edit a published Release, push `main`, publish
-packages/binaries, or change repository settings. The operator retains PR merge
+merge it. Release close may create and push only the validated annotated tag, create the
+matching GitHub Release as a projection of that tag's reviewed human layer, and
+push one verified fast-forward commit to the `main` of each declared export
+sibling from its recorded checkout (§Workflow closeout and releases, Starter
+refresh); it may never edit a published Release, push core's `main` or any other
+branch or repository, publish packages/binaries, or change repository settings. The operator retains PR merge
 authority and explicitly supplies the release-close phrase before tag and
 Release publication.
 
@@ -1518,7 +1520,8 @@ pipe. Its stdout is a summary; the full output is retained beside
 `release-close.json` and the summary names that report. A close is done when
 the tag and Release exist, no worktree for the order appears in
 `git worktree list`, its directory is gone and `git branch --list wo-NNN` is
-empty. The lower-version no-release outcome remains explicit. Diagnose and
+empty, and no starter-refresh blocker remains. The lower-version no-release
+outcome remains explicit. Diagnose and
 finish cleanup blockers in the dispatched session; re-running the same command
 re-checks an existing Release and never publishes twice. A retry after main
 moves can refuse and remains a blocker. Retry a host denial of the exact
@@ -1538,14 +1541,44 @@ trees, the code identity, duration, time and evidence reference. It runs no suit
 `npm ci` or CLI smoke. Reports, control events, generated indexes, PR bodies and
 release notes may follow the gate without changing its identity.
 
-`--publish` creates and pushes only the validated annotated tag, then creates
+`--publish` first creates and pushes the validated annotated tag, then creates
 its matching GitHub Release. The current human notes remain byte-exact from
 review through tag and Release. Never move a tag, edit a published Release,
-push main or imply package/binary/hosted distribution. An equal target is an
+push core’s main or imply package/binary/hosted distribution. An equal target is an
 idempotent retry only when the immutable tag names the same commit and manifest;
 a differing Release body refuses without editing it. If Release creation fails
 after tag push, rerun the same command. A lower target is an explicit no-release
 outcome. A deliberately deferred eligible release needs a durable disposition.
+
+**Starter refresh (WO-215).** After the tag and Release exist, the phrase
+authorizes one further external effect: one verified commit pushed as a
+fast-forward to `main` of each declared export sibling, bound to core’s origin
+host and owner and the sibling’s name. Record its physical checkout once with
+`worktree clone <sibling-id> <absolute-path>`; that path stays in the ignored
+clone map. The helper checks the published head, checkout identity, branch,
+cleanliness, remote binding and ancestry, then updates a disposable worktree
+(or exports the kit for the first time). The export’s own emit, predicted
+bundle comparison, harness check, kit verify and exact staged-file check run
+before the hookless push. Seeds survive later updates and instance actions
+remain unapplied. Dirty, missing, ahead, diverged or misbound checkouts and
+failed checks refuse; later core commits are skipped and retries report
+current without another push. An ignored ownership record retains disposable
+worktree and branch cleanup across failures; retries finish that cleanup before
+reporting current or skipped. If the clone map has changed, inspect the ignored
+`<control-root>/local/starter-refresh/<sibling-id>.json`, restore its `checkout`
+with `worktree clone <sibling-id> <absolute-path>`, retry close to finish cleanup,
+then record the replacement checkout. Cleanup never adopts that replacement's
+objects. The checkout fast-forwards after success.
+The five-field sibling receipt waits in main’s ignored pending lane; the next
+`worktree start` carries it into the new order’s reviewed change and regenerates
+its registry before consuming the pending file. `release-close.json` and the
+summary record each refresh without the local path. A refusal is a close
+blocker with the same retry command and leaves publication unchanged. Target
+orders, older-version closes and non-publishing closes refresh nothing;
+dry runs judge the head main would fast-forward to and preview the checks
+without changing checkout files or publishing. Pending refresh or validated
+cleanup work reports `preview`; an already current starter reports `current`,
+and a cleanup ownership mismatch refuses with the same recovery guidance.
 
 A registered target closes with `no-release`: prove its branch merged into
 the declared base, remove its local bundle, worktree and branch, then close

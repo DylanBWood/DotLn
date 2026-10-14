@@ -178,7 +178,7 @@ export const contributorRoles: readonly HarnessRole[] = [
     facetId: "contributor.release-close",
     name: "release-close",
     description:
-      "Close a merged DotLn worktree and publish its validated source tag and matching Release only on resume: release close.",
+      "Close a merged DotLn worktree and publish its validated source tag and matching Release, and refresh declared export siblings only on resume: release close.",
     intents: ["resume: release close"],
     feedbackHandlers: handlers,
     procedure: [
@@ -188,8 +188,9 @@ export const contributorRoles: readonly HarnessRole[] = [
       "Read: `@citations`",
       "Read: `@final-review`",
       "Run the exact `npm run resume -- release-close` or worktree-publish handoff in main; after removal use main's helper. Use it for partial-publication retries too. It proves network egress to the GitHub host first. Use the host permission flow for required egress; the authorized session finishes the command. `--dry-run` previews the same publication and manifest.",
-      `The helper fast-forwards main, checks release surfaces, builds missing dist, consumes the committed reviewer npm test row by code identity, and publishes the annotated tag and Release. It runs no suite, npm ci or CLI smoke. ${releaseCloseRemedy}`,
-      "Publish only the validated tag/Release; report no-release or remaining work. Never edit Releases, push main, merge PRs, publish packages/binaries or change settings.",
+      `The helper fast-forwards main, checks release surfaces, builds missing dist, consumes the committed reviewer npm test row by code identity, and publishes the annotated tag and Release. Where the launchpad declares an export sibling, it then refreshes its recorded checkout through a disposable worktree and pushes one fast-forward commit to that sibling’s main. It runs no suite, npm ci or CLI smoke. ${releaseCloseRemedy}`,
+      "Publish only the validated tag/Release and the helper’s declared starter refresh; report no-release or remaining work. Never edit Releases, push core’s main or any other branch or repository, force-push, merge PRs, publish packages/binaries or change settings.",
+      "A starter-refresh refusal is a blocker: report it, ask one focused question when its checkout is unrecorded or dirty, and never clean, reset or commit in the starter checkout.",
     ],
   },
   {
@@ -546,8 +547,9 @@ const targetRoles: readonly HarnessRole[] = contributorRoles.map((role) => {
           "Read: `@citations`",
           "Read: `@final-review`",
           "Use main's exact release-close/worktree-publish handoff; use its helper after removal or partial publication. It proves network egress to the GitHub host first. Use the host permission flow for required egress; the authorized session finishes the command. `--dry-run` previews the same publication and manifest.",
-          `Helper checks release prerequisites, reconciles intake and retains state/collisions in ignored retained/WO-NNN. Keep terms.txt and gate-evidence handoff. \`--dry-run\` previews. ${releaseCloseRemedy}`,
-          "Publish only that tag/Release; report no-release/remaining work. No Release edits, main pushes, PR merges, package/binary publication or settings changes.",
+          `Helper checks release prerequisites, reconciles intake and retains state/collisions in ignored retained/WO-NNN. Keep terms.txt and gate-evidence handoff. Where the launchpad declares an export sibling, the helper then refreshes its recorded checkout through a disposable worktree and pushes one fast-forward commit to that sibling’s main. \`--dry-run\` previews. ${releaseCloseRemedy}`,
+          "Publish only that tag/Release and the helper’s declared starter refresh; report no-release/remaining work. No Release edits, pushes to core’s main or any other branch or repository, force-pushes, PR merges, package/binary publication or settings changes.",
+          "A starter-refresh refusal is a blocker: report it, ask one focused question when its checkout is unrecorded or dirty, and never clean, reset or commit in the starter checkout.",
         ]
       : role.procedure;
   return {
@@ -555,7 +557,7 @@ const targetRoles: readonly HarnessRole[] = contributorRoles.map((role) => {
     ...(role.name === "release-close"
       ? {
           description:
-            "Only resume: release close: close the merged worktree; publish its validated tag/Release.",
+            "Only resume: release close: close the merged worktree, publish its validated tag/Release and refresh declared export siblings.",
         }
       : {}),
     procedure: [

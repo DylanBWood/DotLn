@@ -8,9 +8,14 @@ import {
 // the configured paths both live at. The generator (scripts/siblings.mjs) and
 // the export command (scripts/launchpad.mjs) read and write through here, so
 // neither holds a second copy of either shape.
-import { docPath, docRelative } from "./config.mjs";
+import { runGit } from "./git.mjs";
+import { docRelative } from "./config.mjs";
 import { exact, json, sha256Hex, timestamp, validDigest } from "./helpers.mjs";
-import { disposableBasename, parseJson } from "./paths.mjs";
+import {
+  containedRegularFile,
+  disposableBasename,
+  parseJson,
+} from "./paths.mjs";
 import { randomUUID } from "node:crypto";
 import {
   linkSync,
@@ -56,6 +61,11 @@ export const registryPath = (root) =>
   docRelative(root, "siblings", REGISTRY_FILE);
 export const tagObservationsPath = (root) =>
   docRelative(root, "siblings", TAG_OBSERVATIONS_FILE);
+export const exportSiblings = (declaration) =>
+  declaration?.siblings.filter((entry) => entry.relation.kind === "export") ??
+  [];
+const pendingReceiptsPath = (root, ...segments) =>
+  docRelative(root, "control", "local", "sibling-receipts", ...segments);
 export const receiptsPath = (root, ...segments) =>
   docRelative(root, "evidence", RECEIPTS_DIRECTORY, ...segments);
 
@@ -166,7 +176,7 @@ export function readDeclaration(root) {
 }
 
 /** A receipt's typed form: exactly the five fields, each in its shape. */
-const decodeReceipt = (source, path) => {
+export const decodeReceipt = (source, path) => {
   const parsed = parseJson(source, path);
   if (!exact(parsed, RECEIPT_FIELDS))
     throw refuse(path, `a receipt holds exactly ${RECEIPT_FIELDS.join(", ")}`);
@@ -188,6 +198,8 @@ const decodeReceipt = (source, path) => {
 // A receipt is named by its date with the characters a file name cannot
 // carry replaced, so a sorted directory listing is the receipts' order.
 const receiptFileName = (date) => `${date.replace(/[:.]/gu, "-")}.json`;
+export const pendingReceiptPath = (root, sibling, date) =>
+  pendingReceiptsPath(root, sibling, receiptFileName(date));
 export const receiptPath = (root, sibling, date) =>
   receiptsPath(root, sibling, receiptFileName(date));
 
@@ -227,6 +239,19 @@ export function buildHashOf(snapshot) {
   return `fnv1a64:${match[1]}`;
 }
 
+/** Receipt paths may be newly created, but existing parents must not redirect
+ * reads or writes through symbolic links. */
+export function assertReceiptParents(root, path) {
+  const pieces = path.split("/");
+  for (let i = 1; i < pieces.length; i++) {
+    const parent = lstatSync(join(root, ...pieces.slice(0, i)), {
+      throwIfNoEntry: false,
+    });
+    if (parent && !parent.isDirectory())
+      throw refuse(path, "receipt parent must be a physical directory");
+  }
+}
+
 /** Write a resolved sibling's receipt under the launchpad's evidence root.
  * The file lands whole: it is written beside its final name and linked into
  * place, which refuses rather than overwrites a receipt of the same date. */
@@ -239,6 +264,7 @@ export function writeReceipt(
     buildHash,
     date = new Date().toISOString(),
   },
+  { pending = false } = {},
 ) {
   const receipt = {
     sibling,
@@ -247,7 +273,18 @@ export function writeReceipt(
     buildHash,
     date,
   };
-  const path = receiptPath(root, sibling, date);
+  const path = (pending ? pendingReceiptPath : receiptPath)(
+    root,
+    sibling,
+    date,
+  );
+  decodeReceipt(json(receipt), path);
+  assertReceiptParents(root, path);
+  if (pending) {
+    runGit(root, ["check-ignore", "--quiet", "--no-index", path]);
+    if (runGit(root, ["ls-files", "--", path]))
+      throw refuse(path, "pending receipts must be ignored and untracked");
+  }
   const file = join(root, path);
   const temporary = `${file}.${randomUUID()}.tmp`;
   try {
@@ -268,18 +305,19 @@ export function writeReceipt(
 /** Every receipt under the evidence root by sibling, oldest first. A receipt
  * that cannot be read or decoded, that is not named by its date, or that
  * sits under a sibling the declaration does not name refuses by path. */
-export function readReceipts(root, declaration) {
+function readReceiptLane(root, declaration, lane) {
   const bySibling = new Map(
-    declaration.siblings.map((entry) => [entry.id, []]),
+    (declaration?.siblings ?? []).map((entry) => [entry.id, []]),
   );
-  const directory = docPath(root, "evidence", RECEIPTS_DIRECTORY);
+  assertReceiptParents(root, `${lane(root)}/receipt`);
+  const directory = join(root, lane(root));
   const stat = lstatSync(directory, { throwIfNoEntry: false });
   if (!stat) return bySibling;
   if (!stat.isDirectory())
-    throw refuse(receiptsPath(root), "expected the receipts directory");
+    throw refuse(lane(root), "expected the receipts directory");
   for (const name of readdirSync(directory).sort()) {
     if (disposableBasename(name)) continue;
-    const entry = receiptsPath(root, name);
+    const entry = lane(root, name);
     if (!lstatSync(join(directory, name)).isDirectory())
       throw refuse(entry, "expected a sibling's receipt directory");
     if (!bySibling.has(name))
@@ -289,7 +327,7 @@ export function readReceipts(root, declaration) {
       );
     for (const file of readdirSync(join(directory, name)).sort()) {
       if (disposableBasename(file)) continue;
-      const path = receiptsPath(root, name, file);
+      const path = lane(root, name, file);
       if (
         !file.endsWith(".json") ||
         !lstatSync(join(directory, name, file)).isFile()
@@ -319,4 +357,48 @@ export function readReceipts(root, declaration) {
     }
   }
   return bySibling;
+}
+
+export const readReceipts = (root, declaration) =>
+  readReceiptLane(root, declaration, receiptsPath);
+export const readPendingReceipts = (
+  root,
+  declaration = readDeclaration(root),
+) => readReceiptLane(root, declaration, pendingReceiptsPath);
+
+/** Decode both lanes before accepting an existing receipt, including recovery
+ * after a remote push succeeded but its local receipt write did not. */
+export function receiptRecorded(root, sibling, manifestHash) {
+  const declaration = readDeclaration(root);
+  const lanes = [
+    readReceipts(root, declaration),
+    readPendingReceipts(root, declaration),
+  ];
+  return lanes.some((lane) =>
+    lane.get(sibling)?.some((receipt) => receipt.manifestHash === manifestHash),
+  );
+}
+
+export const manifestBuildHash = (bytes, label) => {
+  const manifest = parseJson(String(bytes), label);
+  const snapshots = manifest.profiles?.map(
+    (entry) => entry.profile?.runtime?.snapshot,
+  );
+  if (
+    !Array.isArray(snapshots) ||
+    !snapshots.length ||
+    new Set(snapshots).size !== 1
+  )
+    throw new Error(`no single runtime snapshot in ${label}`);
+  return buildHashOf(snapshots[0]);
+};
+
+/** Freeze the cohort a start will carry, including exact source bytes. */
+export function capturePendingReceipts(root) {
+  return [...readPendingReceipts(root).values()].flat().map((row) => {
+    const source = join(root, row.path);
+    if (!containedRegularFile(source, root))
+      throw refuse(row.path, "expected a contained receipt");
+    return { ...row, sha256: sha256Hex(readFileSync(source)) };
+  });
 }

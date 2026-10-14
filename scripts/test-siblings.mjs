@@ -13,6 +13,8 @@ import {
   mkdirSync,
   mkdtempSync,
   readFileSync,
+  readdirSync,
+  symlinkSync,
   realpathSync,
   rmSync,
   writeFileSync,
@@ -22,7 +24,16 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { runGit } from "./lib/git.mjs";
 import { json, sha256Hex as sha256 } from "./lib/helpers.mjs";
-import { resolveReceipt } from "./lib/siblings.mjs";
+import {
+  exportSiblings,
+  capturePendingReceipts,
+  receiptPath as carriedReceiptPath,
+  pendingReceiptPath,
+  readPendingReceipts,
+  receiptRecorded,
+  writeReceipt as recordReceipt,
+  resolveReceipt,
+} from "./lib/siblings.mjs";
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const generator = join(repository, "scripts/siblings.mjs");
@@ -998,4 +1009,151 @@ test("sibling registry", async (t) => {
       ok(run(["index", "--check"]), "current again");
     },
   );
+});
+
+test("pending receipts keep the registry unchanged and validate the complete lane", () => {
+  resetBaseline();
+  write(".gitignore", "docs/control/local/\n");
+  const before = registry();
+  assert.deepEqual(
+    exportSiblings(declaration).map(({ id }) => id),
+    ["starter-fixture"],
+  );
+  assert.deepEqual(exportSiblings(null), []);
+  const fields = {
+    sibling: "starter-fixture",
+    coreCommit: second,
+    manifestBytes: "pending kit",
+    buildHash: "fnv1a64:1234567890abcdef",
+    date: "2026-10-13T12:00:00.000Z",
+  };
+  const result = recordReceipt(launchpad, fields, { pending: true });
+  assert.equal(
+    result.path,
+    pendingReceiptPath(launchpad, fields.sibling, fields.date),
+  );
+  assert.equal(registry(), before);
+  assert.deepEqual(
+    readPendingReceipts(launchpad, declaration).get(fields.sibling),
+    [{ path: result.path, ...result.receipt }],
+  );
+  assert.equal(
+    receiptRecorded(launchpad, fields.sibling, result.receipt.manifestHash),
+    true,
+  );
+  assert.equal(
+    receiptRecorded(launchpad, fields.sibling, baseline[0].manifestHash),
+    true,
+  );
+  assert.equal(
+    receiptRecorded(launchpad, fields.sibling, `sha256:${"0".repeat(64)}`),
+    false,
+  );
+  assert.throws(
+    () => recordReceipt(launchpad, fields, { pending: true }),
+    /EEXIST/,
+  );
+  write(result.path, "{}\n");
+  assert.throws(
+    () => readPendingReceipts(launchpad, declaration),
+    /sibling-receipts.*exactly/,
+  );
+  write(result.path, json(result.receipt));
+  assert.throws(
+    () => readPendingReceipts(launchpad, { siblings: [] }),
+    /sibling the declaration does not name/,
+  );
+  rmSync(join(launchpad, result.path));
+});
+
+test("captured pending receipts survive registry failure and resume only their bound cohort", async () => {
+  resetBaseline();
+  write(".gitignore", "docs/control/local/\n");
+  const { carryPendingReceipts, writeRegistry } =
+    await import("./siblings.mjs");
+  const target = join(scratch, "carry-target");
+  rmSync(target, { recursive: true, force: true });
+  git(["clone", "--quiet", launchpad, target]);
+  mkdirSync(dirname(join(target, declarationPath)), { recursive: true });
+  cpSync(join(launchpad, declarationPath), join(target, declarationPath));
+  const fields = {
+    sibling: "starter-fixture",
+    coreCommit: second,
+    manifestBytes: "captured kit",
+    buildHash: "fnv1a64:1234567890abcdef",
+    date: "2026-10-13T13:00:00.000Z",
+  };
+  const receipt = recordReceipt(launchpad, fields, { pending: true });
+  const cohort = capturePendingReceipts(launchpad);
+  const destination = join(
+    target,
+    carriedReceiptPath(target, fields.sibling, fields.date),
+  );
+  const source = join(launchpad, receipt.path);
+  try {
+    const before = readFileSync(source);
+    mkdirSync(dirname(destination), { recursive: true });
+    writeFileSync(destination, "collision");
+    assert.throws(
+      () => carryPendingReceipts(launchpad, target, cohort),
+      /collision/,
+    );
+    assert.deepEqual(readFileSync(source), before);
+    rmSync(destination);
+    const outside = join(scratch, "carry-outside");
+    mkdirSync(outside, { recursive: true });
+    const parent = dirname(destination);
+    rmSync(parent, { recursive: true, force: true });
+    symlinkSync(outside, parent);
+    assert.throws(
+      () => carryPendingReceipts(launchpad, target, cohort),
+      /physical directory/,
+    );
+    assert.deepEqual(readdirSync(outside), []);
+    rmSync(parent);
+    mkdirSync(parent);
+    const page = join(target, registryPath);
+    rmSync(page, { force: true });
+    mkdirSync(page, { recursive: true });
+    assert.throws(
+      () => carryPendingReceipts(launchpad, target, cohort),
+      /contained regular file/,
+    );
+    assert.deepEqual(readFileSync(destination), before);
+    assert.deepEqual(readFileSync(source), before);
+    // A different successful start may have consumed this source. Recovery
+    // still regenerates from its exact captured destination and leaves newer
+    // receipts for the next worktree.
+    rmSync(source);
+    const newer = recordReceipt(
+      launchpad,
+      { ...fields, date: "2026-10-13T14:00:00.000Z" },
+      { pending: true },
+    );
+    rmSync(page, { recursive: true });
+    assert.deepEqual(carryPendingReceipts(launchpad, target, cohort), [
+      carriedReceiptPath(target, fields.sibling, fields.date),
+    ]);
+    writeRegistry(target, { check: true });
+    assert.ok(existsSync(join(launchpad, newer.path)));
+    rmSync(destination);
+    assert.throws(
+      () => carryPendingReceipts(launchpad, target, cohort),
+      /missing/,
+    );
+    rmSync(join(launchpad, newer.path));
+    const lane = dirname(source);
+    rmSync(lane, { recursive: true });
+    symlinkSync(outside, lane);
+    assert.throws(
+      () => recordReceipt(launchpad, fields, { pending: true }),
+      /physical directory/,
+    );
+    assert.throws(() => capturePendingReceipts(launchpad), /receipt directory/);
+    assert.deepEqual(readdirSync(outside), []);
+    rmSync(lane);
+  } finally {
+    rmSync(target, { recursive: true, force: true });
+    rmSync(dirname(source), { recursive: true, force: true });
+  }
 });

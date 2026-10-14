@@ -10,6 +10,7 @@ import {
 } from "node:fs";
 import { basename, dirname, join, resolve, sep } from "node:path";
 import { docPath, loadConfig } from "./config.mjs";
+import { exportSiblings, readDeclaration } from "./siblings.mjs";
 import { runGit } from "./git.mjs";
 
 export const targetRegistryPath = (launchpad) =>
@@ -54,7 +55,13 @@ const readMap = (file) => {
   if (!existsSync(file)) return {};
   if (!lstatSync(file).isFile() || lstatSync(file).isSymbolicLink())
     throw new Error(`local registry is not a regular file: ${file}`);
-  const value = JSON.parse(readFileSync(file, "utf8"));
+  const bytes = readFileSync(file, "utf8");
+  let value;
+  try {
+    value = JSON.parse(bytes);
+  } catch {
+    throw new Error(`invalid local registry: ${file}`);
+  }
   if (!value || typeof value !== "object" || Array.isArray(value))
     throw new Error(`invalid local registry: ${file}`);
   return value;
@@ -86,12 +93,18 @@ const gitTopLevel = (clone) => {
 };
 
 export const recordRepositoryClone = (launchpad, id, clone) => {
-  if (!Object.hasOwn(loadConfig(launchpad).repositories, id))
+  if (
+    !Object.hasOwn(loadConfig(launchpad).repositories, id) &&
+    !exportSiblings(readDeclaration(launchpad)).some((entry) => entry.id === id)
+  )
     throw new Error(`unknown repository id ${JSON.stringify(id)}`);
   gitTopLevel(clone);
   const file = cloneMapPath(launchpad);
   writeMap(launchpad, file, { ...readMap(file), [id]: clone });
 };
+
+export const recordedRepositoryClone = (launchpad, id) =>
+  readMap(cloneMapPath(launchpad))[id];
 
 export const resolveTargetStart = (launchpad, id) => {
   try {

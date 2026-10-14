@@ -31,7 +31,7 @@ git -C "$main" config "url.$test_root/origin.git.insteadOf" "$github_origin"
 git -C "$main" remote set-url origin "$github_origin"
 git -C "$main" switch -c main >/dev/null 2>&1
 mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control" "$main/docs/discovery" "$main/packages/kernel"
-cp "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$script_dir/release.mjs" "$script_dir/license-surfaces.mjs" "$main/scripts/"
+cp "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$script_dir/release.mjs" "$script_dir/license-surfaces.mjs" "$script_dir/siblings.mjs" "$main/scripts/"
 cp -R "$script_dir/lib" "$main/scripts/lib"
 # The copied helpers resolve the launchpad's installed Markdown parser as the
 # launchpad does: through a node_modules above them.
@@ -58,6 +58,8 @@ node "$script_dir/test-license-fixture.mjs" "$main"
 cp "$script_dir/../.gitignore" "$main/.gitignore"
 printf 'EXAMPLE=tracked\n' >"$main/.env.example"
 printf '%s\n' 'import {mkdirSync,writeFileSync} from "node:fs"; mkdirSync(".runtime",{recursive:true}); writeFileSync(".runtime/bootstrap-ready", "prepared before launch");' >"$main/scripts/bootstrap.mjs"
+mkdir -p "$main/docs/siblings"
+printf '%s\n' '{"schemaVersion":1,"siblings":[{"id":"starter-fixture","purpose":"Fixture export","relation":{"kind":"export","coreCommit":null},"capabilityRows":[]}]}' >"$main/docs/siblings/siblings.json"
 git -C "$main" add .
 git -C "$main" commit -m initial >/dev/null
 git -C "$main" push -u origin main >/dev/null 2>&1
@@ -94,6 +96,19 @@ printf '%s\n' \
 chmod +x "$test_root/bin/git"
 printf '#!/usr/bin/env bash\nprintf invoked >"%s"\n' "$test_root/codex-invoked" >"$test_root/bin/codex"
 chmod +x "$test_root/bin/codex"
+# Malformed pending evidence refuses before a branch or worktree is created.
+pending_lane="$main/docs/control/local/sibling-receipts/starter-fixture"
+mkdir -p "$pending_lane"
+printf '{}\n' >"$pending_lane/2026-10-13T12-00-00-000Z.json"
+if malformed_output="$(node "$main/scripts/worktree.mjs" start WO-099 docs/work-orders/WO-099-fixture.md 2>&1)"; then
+  printf 'malformed pending receipt was admitted\n' >&2; exit 1
+fi
+grep -Fq 'exactly sibling' <<<"$malformed_output"
+test ! -d "$test_root/project-wo099"
+test -z "$(git -C "$main" branch --list wo-099)"
+"$node_bin" - "$pending_lane/2026-10-13T12-00-00-000Z.json" "$(git -C "$main" rev-parse HEAD)" <<'JS'
+const fs=require('node:fs');fs.writeFileSync(process.argv[2],JSON.stringify({sibling:'starter-fixture',coreCommit:process.argv[3],manifestHash:`sha256:${'1'.repeat(64)}`,buildHash:'fnv1a64:1234567890abcdef',date:'2026-10-13T12:00:00.000Z'})+'\n');
+JS
 start_output="$(PATH="$test_root/bin:$PATH" node "$main/scripts/worktree.mjs" start WO-099 docs/work-orders/WO-099-fixture.md)"
 subject="$test_root/project-wo099"
 test -d "$subject"
@@ -102,6 +117,13 @@ grep -q '"workOrderId":"WO-099"' "$subject/docs/control/orders/WO-099.jsonl"
 grep -Fq "cd '$subject'" <<<"$start_output"
 grep -Fq '  codex' <<<"$start_output"
 grep -Fq 'resume: next' <<<"$start_output"
+grep -Fq 'Carried sibling receipts:' <<<"$start_output"
+test -f "$subject/docs/evidence/siblings/starter-fixture/2026-10-13T12-00-00-000Z.json"
+test ! -f "$pending_lane/2026-10-13T12-00-00-000Z.json"
+(cd "$subject" && node scripts/siblings.mjs index --check)
+test -z "$(git -C "$main" status --porcelain --untracked-files=all)"
+# The carried files belong to this order's reviewed change, alongside control.
+git -C "$subject" add docs/evidence/siblings docs/siblings
 test ! -e "$test_root/codex-invoked"
 if wrong_root_output="$(node "$main/scripts/worktree.mjs" finish WO-099 2>&1)"; then printf 'error: finish accepted a foreign invocation root\n' >&2; exit 1; fi
 grep -Fq "run finish from the main control-plane checkout: $main" <<<"$wrong_root_output"

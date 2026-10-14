@@ -289,11 +289,14 @@ export function harnessInstructionBlock(text) {
 export function composeHarnessInstruction(floor, block) {
   if (typeof floor !== "string" || !floor.trim())
     throw new Error("harness emit requires the hand-written clean-room floor");
-  if (floor.includes(HARNESS_START) || floor.includes(HARNESS_END))
-    return floor.replace(
-      harnessInstructionBlock(floor).trimEnd(),
-      block.trimEnd(),
-    );
+  if (floor.includes(HARNESS_START) || floor.includes(HARNESS_END)) {
+    const prior = harnessInstructionBlock(floor).trimEnd();
+    if (!floor.replace(prior, "").trim())
+      throw new Error(
+        "harness emit requires the hand-written clean-room floor outside the generated block",
+      );
+    return floor.replace(prior, block.trimEnd());
+  }
   return floor.trimEnd() + "\n\n" + block;
 }
 export function harnessInstallation(options = {}) {

@@ -41,7 +41,11 @@ import {
   executeGh,
   parseGitHubTarget,
   HOST_GIT_READ,
+  pushUrl,
+  pushObservedCommit,
 } from "./github-repository.mjs";
+
+export { pushUrl, pushObservedCommit } from "./github-repository.mjs";
 
 // Remote effects owned by the publication host, never the source-change writer.
 export const PUBLICATION_EFFECTS = Object.freeze([
@@ -169,78 +173,6 @@ const targetGitOptions = {
     );
   },
 };
-/** The push URL origin's configuration names, before any URL rewrite, which
- * must be the GitHub repository ensureGh resolved: a rewrite the target's
- * configuration adds cannot redirect the push (WO-157). */
-const pushUrl = (repo, repository) => {
-  const values = (key) =>
-    spawnGit(["-C", repo, ...HOOKLESS, "config", "--get-all", key], {
-      encoding: "utf8",
-    })
-      .stdout.split("\n")
-      .filter(Boolean);
-  const pushed = values("remote.origin.pushurl");
-  const urls = pushed.length ? pushed : values("remote.origin.url");
-  if (urls.length !== 1) throw refuse("origin must name exactly one push URL");
-  let target;
-  try {
-    target = parseGitHubTarget(urls[0]);
-  } catch {
-    throw refuse("origin's configured push URL is not a GitHub repository");
-  }
-  if (target.identity !== repository.selector.toLowerCase())
-    throw refuse(
-      `origin's configured push URL names ${target.selector}, but its resolved target is ${repository.selector}`,
-    );
-  return urls[0];
-};
-/** Push the observed commit from a host-created bare repository, so neither
- * the target's hooks nor its repository configuration (core.sshCommand,
- * include.path, remote.<name>.receivepack, credential helpers, URL rewrites)
- * runs in the operator's publish process; only the operator's global and
- * system configuration apply (WO-157). */
-function pushObservedCommit(repo, url, branch, commit, destination = branch) {
-  const lane = mkdtempSync(join(tmpdir(), "dotln-target-push-"));
-  try {
-    const init = spawnGit(["init", "--quiet", "--bare", lane], {
-      encoding: "utf8",
-    });
-    if (init.status !== 0)
-      throw refuse(`git init failed for the publish lane: ${init.stderr}`);
-    const inLane = (args) => {
-      const result = spawnGit(["-C", lane, ...HOOKLESS, ...args], {
-        encoding: "utf8",
-        maxBuffer: 16 * 1024 * 1024,
-      });
-      if (result.status !== 0)
-        throw refuse(
-          `git ${args[0]} failed in the publish lane: ${String(result.stderr ?? "").trim()}`,
-        );
-      return result.stdout.trim();
-    };
-    inLane([
-      "fetch",
-      "--quiet",
-      "--no-tags",
-      repo,
-      `+refs/heads/${branch}:refs/heads/${branch}`,
-    ]);
-    if (
-      inLane(["rev-parse", "--verify", `refs/heads/${branch}^{commit}`]) !==
-      commit
-    )
-      throw refuse(`branch ${branch} no longer names the observed commit`);
-    inLane([
-      "push",
-      "--no-follow-tags",
-      url,
-      `${commit}:refs/heads/${destination}`,
-    ]);
-  } finally {
-    rmSync(lane, { recursive: true, force: true });
-  }
-}
-
 /** Compile the original publisher again, never a repair worker's authority.
  * All local bindings and grants are checked before gh or a remote Git call. */
 function reviewPublicationContext(

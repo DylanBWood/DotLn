@@ -126,9 +126,11 @@ evidence and reports are core's instance files and never enter the kit: the
 kit is the product, not core's history. **DotLn-Enterprise-Starter is the
 kit**, the export of core: public, under core's license files, never exported
 with `--license none`, forkable by anyone, holding no orders of its own, and
-refreshed by core's release close, which runs `launchpad export --update`
-and pushes it (WO-215; until then it runs on request, and WO-078's receipts
-record each run); an instance opts into a starter update through a planning
+refreshed by core's release close, which runs the export update in a
+disposable worktree of the starter's recorded checkout, verifies it and pushes
+one fast-forward commit to the starter's main (WO-215), performing the first
+export when needed; WO-078’s receipts record each successful run in the next
+order’s reviewed change; an instance opts into a starter update through a planning
 pass that cuts the upgrade order (WO-207). **The operator's personal
 instance** is a public fork of the starter on the operator's own account,
 under the same license posture and the same clean-room floor as core, on the

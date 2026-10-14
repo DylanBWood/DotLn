@@ -1,4 +1,7 @@
 import { spawnGit } from "./git.mjs";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
 const failure =
@@ -124,3 +127,90 @@ export const ensureGh = (path) => {
     );
   return repository;
 };
+
+const publishRefusal = (reason) =>
+  new Error(`target publish refused: ${reason}`);
+/** The push URL origin's configuration names, before any URL rewrite, which
+ * must be the GitHub repository ensureGh resolved: a rewrite the target's
+ * configuration adds cannot redirect the push (WO-157). */
+export const pushUrl = (repo, repository) => {
+  const values = (key) =>
+    spawnGit(["-C", repo, ...HOST_GIT_READ, "config", "--get-all", key], {
+      encoding: "utf8",
+    })
+      .stdout.split("\n")
+      .filter(Boolean);
+  const pushed = values("remote.origin.pushurl");
+  const urls = pushed.length ? pushed : values("remote.origin.url");
+  if (urls.length !== 1)
+    throw publishRefusal("origin must name exactly one push URL");
+  let target;
+  try {
+    target = parseGitHubTarget(urls[0]);
+  } catch {
+    throw publishRefusal(
+      "origin's configured push URL is not a GitHub repository",
+    );
+  }
+  if (target.identity !== repository.selector.toLowerCase())
+    throw publishRefusal(
+      `origin's configured push URL names ${target.selector}, but its resolved target is ${repository.selector}`,
+    );
+  return urls[0];
+};
+/** Push the observed commit from a host-created bare repository, so neither
+ * the target's hooks nor its repository configuration (core.sshCommand,
+ * include.path, remote.<name>.receivepack, credential helpers, URL rewrites)
+ * runs in the operator's publish process; only the operator's global and
+ * system configuration apply (WO-157). */
+export function pushObservedCommit(
+  repo,
+  url,
+  branch,
+  commit,
+  destination = branch,
+) {
+  const lane = mkdtempSync(join(tmpdir(), "dotln-target-push-"));
+  try {
+    const init = spawnGit(["init", "--quiet", "--bare", lane], {
+      encoding: "utf8",
+    });
+    if (init.status !== 0)
+      throw publishRefusal(
+        `git init failed for the publish lane: ${init.stderr}`,
+      );
+    const inLane = (args) => {
+      const result = spawnGit(["-C", lane, ...HOST_GIT_READ, ...args], {
+        encoding: "utf8",
+        maxBuffer: 16 * 1024 * 1024,
+      });
+      if (result.status !== 0)
+        throw publishRefusal(
+          `git ${args[0]} failed in the publish lane: ${String(result.stderr ?? "").trim()}`,
+        );
+      return result.stdout.trim();
+    };
+    inLane([
+      "fetch",
+      "--quiet",
+      "--no-tags",
+      repo,
+      `+refs/heads/${branch}:refs/heads/${branch}`,
+    ]);
+    if (
+      inLane(["rev-parse", "--verify", `refs/heads/${branch}^{commit}`]) !==
+      commit
+    )
+      throw publishRefusal(
+        `branch ${branch} no longer names the observed commit`,
+      );
+    inLane([
+      "push",
+      "--no-follow-tags",
+      url,
+      `${commit}:refs/heads/${destination}`,
+    ]);
+  } finally {
+    rmSync(lane, { recursive: true, force: true });
+  }
+}

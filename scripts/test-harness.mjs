@@ -3653,6 +3653,8 @@ test("WO-076 build none removes owned surfaces, keeps the floor and checks witho
     const original = readFileSync(join(root, "CLAUDE.md"), "utf8");
     write(root, "CLAUDE.md", harnessInstructionBlock(original));
     const blockOnly = installedOverlayBytes(root);
+    assert.throws(() => emitHarness(root), /floor outside the generated block/);
+    assert.deepEqual(installedOverlayBytes(root), blockOnly);
     assert.throws(
       () => emitHarness(root, options),
       /floor outside the generated block/,

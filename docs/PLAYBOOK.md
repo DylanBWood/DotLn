@@ -238,9 +238,11 @@ the ledger stays with ideation and planning.
 
 **2. Implement (Codex, fresh session, own worktree).**
 
-For a registered target, first record its physical local clone with
-`worktree clone <repository-id> <absolute-path>`. The ignored clone map lives
-under the launchpad's control local directory; `worktreeParent` resolves
+For a registered target or a declared export sibling, record its physical
+local clone with `worktree clone <repository-or-export-sibling-id> <absolute-path>`.
+An export sibling uses this mapping for release close’s starter refresh. The ignored clone map lives
+under the launchpad's control local directory. For a registered target,
+`worktreeParent` resolves
 relative to the main launchpad and must already exist with its physical
 filesystem spelling. `worktree start` creates two `wo-NNN` branches: target
 code at the declared base and launchpad records in its usual order worktree.
@@ -689,8 +691,12 @@ Without `--publish`, close may fast-forward main, fetch the latest existing rele
 when missing before choosing a close path, and rebuild missing or mismatched runtime output;
 it creates no new release tag or GitHub Release. `--dry-run` previews the steps and manifest.
 A deliberately deferred eligible release needs a reviewed durable reason.
-Neither form pushes a main commit or publishes a package, binary, container or
-hosted artifact.
+Neither form pushes to core’s main or publishes a package, binary, container or
+hosted artifact. The publish form also refreshes each declared export sibling
+through its recorded checkout, verifies it, and pushes one fast-forward commit
+to that sibling’s main. A refused refresh is a close blocker with the same
+retry; a successful refresh's receipt enters the next order through
+`worktree start`.
 
 Forward manifests and layered notes live in the annotated tag message; the
 checked-in `v0.2.0` files remain the immutable historical exception. If Release

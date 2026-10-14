@@ -27,14 +27,78 @@ create_test_temp_root "$tmp_base" "$test_root_prefix"
 test_root="$test_temp_root_result"
 install_test_temp_root_traps "$tmp_base" "$test_root" "$test_root_prefix"
 node_bin="$(command -v node)"
+release_restricted_beacons=()
+release_root_identity="$("$node_bin" - "$test_root" <<'JS'
+const fs=require('node:fs'),p=require('node:path'),root=process.argv[2],stat=fs.lstatSync(root);
+console.log(JSON.stringify({root,device:stat.dev,inode:stat.ino,owner:fs.readFileSync(p.join(root,'.dotln-test-root-owner'),'utf8')}));
+JS
+)"
+record_restricted_release_beacon() {
+  local identity
+  identity="$("$node_bin" - "$test_root" "$1" <<'JS'
+const assert=require('node:assert/strict'),fs=require('node:fs'),[root,file]=process.argv.slice(2),stat=fs.lstatSync(file);
+assert.ok(file.startsWith(root+'/') && stat.isDirectory() && !stat.isSymbolicLink());
+assert.equal(fs.realpathSync(file),file);
+assert.equal(stat.uid,process.getuid());
+console.log(JSON.stringify({file,device:stat.dev,inode:stat.ino}));
+JS
+)"
+  release_restricted_beacons+=("$identity")
+}
+finish_release_test_root() {
+  local exit_code="$1"
+  trap - EXIT INT TERM
+  # Cancellation can precede the case's normal permission restoration. Restore
+  # only these captured fixture objects before the guarded root removal.
+  if (( ${#release_restricted_beacons[@]} )); then
+    if ! "$node_bin" - "$release_root_identity" "${release_restricted_beacons[@]}" <<'JS'
+const assert=require('node:assert/strict'),fs=require('node:fs'),p=require('node:path');
+const root=JSON.parse(process.argv[2]),stat=fs.lstatSync(root.root);
+assert.ok(stat.isDirectory() && !stat.isSymbolicLink());
+assert.equal(fs.realpathSync(root.root),root.root);
+assert.equal(stat.uid,process.getuid());
+assert.equal(stat.dev,root.device);assert.equal(stat.ino,root.inode);
+const marker=p.join(root.root,'.dotln-test-root-owner'),markerStat=fs.lstatSync(marker);
+assert.ok(markerStat.isFile() && !markerStat.isSymbolicLink());
+assert.equal(fs.readFileSync(marker,'utf8'),root.owner);
+const surviving=[];
+for(const value of process.argv.slice(3)) {
+ const item=JSON.parse(value),current=fs.lstatSync(item.file,{throwIfNoEntry:false});
+ if(!current) continue;
+ assert.ok(item.file.startsWith(root.root+'/') && current.isDirectory() && !current.isSymbolicLink());
+ assert.equal(fs.realpathSync(item.file),item.file);
+ assert.equal(current.uid,process.getuid());
+ assert.equal(current.dev,item.device);assert.equal(current.ino,item.inode);
+ surviving.push(item.file);
+}
+for(const file of surviving) fs.chmodSync(file,0o700);
+JS
+    then
+      printf 'error: release fixture beacon identity changed; root retained\n' >&2
+      exit 1
+    fi
+  fi
+  _dotln_finish_test_temp_root "$exit_code"
+}
+trap 'finish_release_test_root "$?"' EXIT
+trap 'finish_release_test_root 130' INT
+trap 'finish_release_test_root 143' TERM
 if [[ -n "$signal_probe_ready" ]]; then
   # Signal tests enter the real suite after its cleanup traps are installed.
+  signal_beacon="$test_root/signal-beacon"
+  mkdir "$signal_beacon"
+  printf 'disposable beacon\n' >"$signal_beacon/signal"
+  record_restricted_release_beacon "$signal_beacon"
+  chmod 111 "$signal_beacon"
   # A waiting foreground child makes shell-only signal delivery fail reliably.
   "$node_bin" --input-type=module -e '
     import fs from "node:fs";
-    fs.writeFileSync(process.argv[1], "ready\n", { flag: "wx" });
+    const pending=process.argv[1]+".pending";
+    fs.writeFileSync(pending, JSON.stringify({beacon:process.argv[2]})+"\n", { flag: "wx" });
+    try { fs.linkSync(pending,process.argv[1]); }
+    finally { fs.rmSync(pending); }
     setInterval(() => {}, 1000);
-  ' "$signal_probe_ready"
+  ' "$signal_probe_ready" "$signal_beacon"
   exit 1
 fi
 real_git="$(command -v git)"
@@ -2281,6 +2345,7 @@ printf 'original preserved intake\n' >"$subject/docs/intake/kept.md"
 beacon_dir="$subject/.control-beacons/restricted/$(printf '%064d' 0)"
 mkdir -p "$beacon_dir"
 printf 'disposable beacon\n' >"$beacon_dir/signal"
+record_restricted_release_beacon "$beacon_dir"
 chmod 111 "$beacon_dir"
 # The child Git fixture models partial removal: administration has gone but
 # source remains. Corrupt a destination to keep the first recovery blocked.
@@ -2502,6 +2567,121 @@ assert.equal(record.cleanup.outcome,'clean');
 assert.equal(record.cleanup.branch.outcome,'deleted');
 JS
 done
+}
+
+release_case_starter_refresh() {
+  make_repo starter_refresh
+  mkdir -p "$main/docs/siblings"
+  printf '%s\n' '{"schemaVersion":1,"siblings":[{"id":"starter-fixture","purpose":"Fixture starter","relation":{"kind":"export","coreCommit":null},"capabilityRows":[]}]}' >"$main/docs/siblings/siblings.json"
+  git -C "$main" add docs/siblings
+  git -C "$main" commit -qm 'declare fixture starter'
+  git -C "$main" push origin main >/dev/null 2>&1
+  git clone -q "$origin" "$fixture/integrator"
+  git -C "$fixture/integrator" config user.email fixture@example.invalid
+  git -C "$fixture/integrator" config user.name 'DotLn Fixture Integrator'
+  git -C "$fixture/integrator" switch main >/dev/null 2>&1
+  commit_candidate "$fixture/integrator" WO-099 v0.2.1
+  git -C "$fixture/integrator" push origin main >/dev/null 2>&1
+  local local_head merged_head output
+  local_head="$(git -C "$main" rev-parse HEAD)"
+  merged_head="$(git --git-dir="$origin" rev-parse main)"
+  test "$local_head" != "$merged_head"
+  if output="$(release_close_summary WO-099 --publish --dry-run)"; then
+    printf 'missing starter checkout did not block preview before fast-forward\n' >&2; return 1
+  fi
+  grep -Fq 'no recorded checkout' <<<"$output"
+  local preview_starter="$fixture/preview-starter" preview_remote="$fixture/preview-starter.git" preview_config="$fixture/preview.gitconfig"
+  git init -q -b main "$preview_starter"
+  git -C "$preview_starter" config user.name Fixture
+  git -C "$preview_starter" config user.email fixture@example.invalid
+  git -C "$preview_starter" commit --allow-empty -qm 'initial fixture starter'
+  git clone -q --bare "$preview_starter" "$preview_remote"
+  git -C "$preview_starter" remote add origin https://github.com/dotln-fixture/starter-fixture.git
+  printf '[url "%s"]\n insteadOf = https://github.com/dotln-fixture/starter-fixture.git\n' "$preview_remote" >"$preview_config"
+  mkdir -p "$main/docs/control/local"
+  "$node_bin" -e 'require("node:fs").writeFileSync(process.argv[1],JSON.stringify({"starter-fixture":process.argv[2]}))' "$main/docs/control/local/repository-clones.json" "$preview_starter"
+  local preview_head preview_refs
+  preview_head="$(git -C "$preview_starter" rev-parse HEAD)"
+  preview_refs="$(git --git-dir="$preview_remote" for-each-ref --format='%(refname) %(objectname)')"
+  output="$(GIT_CONFIG_GLOBAL="$preview_config" release_close_summary WO-099 --publish --dry-run)"
+  grep -Fq 'Starter refresh starter-fixture: preview' <<<"$output"
+  grep -Fq "would fast-forward main to $merged_head" <<<"$output"
+  grep -Fq "would refresh $preview_head to $merged_head" <<<"$output"
+  test "$(git -C "$main" rev-parse HEAD)" = "$local_head"
+  test "$(git -C "$preview_starter" rev-parse HEAD)" = "$preview_head"
+  test -z "$(git -C "$preview_starter" status --porcelain --untracked-files=all)"
+  test "$(git --git-dir="$preview_remote" for-each-ref --format='%(refname) %(objectname)')" = "$preview_refs"
+  test "$(git -C "$preview_starter" worktree list --porcelain | grep -c '^worktree ')" = 1
+  test ! -e "$main/docs/control/local/sibling-receipts"
+  assert_no_candidate_tag "$main" "$origin"
+  test ! -e "$gh_state/v0.2.1.body"
+  rm "$main/docs/control/local/repository-clones.json"
+  output="$(release_close_summary WO-099 --dry-run)"
+  "$node_bin" -e 'const r=JSON.parse(require("node:fs").readFileSync(process.argv[1]));require("node:assert/strict").deepEqual(r.starterRefresh,[])' "$main/docs/control/local/retained/WO-099/release-close.json"
+  seed_release_close_writer
+  if output="$(CODEX_THREAD_ID=fixture-close-session release_close_summary WO-099 --publish)"; then
+    printf 'missing starter checkout did not block close\n' >&2; return 1
+  fi
+  grep -Fq 'Starter refresh starter-fixture: refused' <<<"$output"
+  grep -Fq 'starter-refresh' <<<"$output"
+  grep -Fq 'Retry:' <<<"$output"
+  test -f "$main/docs/control/local/harness/writer.json"
+  local record="$main/docs/control/local/retained/WO-099/release-close.json"
+  "$node_bin" - "$record" <<'JS'
+const assert=require('node:assert/strict'), fs=require('node:fs');const r=JSON.parse(fs.readFileSync(process.argv[2]));
+assert.equal(r.publication.outcome,'published');assert.equal(r.starterRefresh[0].outcome,'refused');assert.equal(r.blockers.at(-1).action,'starter-refresh');assert.equal(r.blockers.at(-1).command,r.retryCommand);
+JS
+  local starter="$fixture/starter" starter_remote="$fixture/starter.git" core_head
+  core_head="$(git -C "$main" rev-parse HEAD)"
+  git init -q -b main "$starter"
+  git -C "$starter" config user.name Fixture
+  git -C "$starter" config user.email fixture@example.invalid
+  mkdir -p "$starter/.claude"
+  printf '{"commit":"%s","tag":"v0.2.1"}\n' "$core_head" >"$starter/KIT-MANIFEST.json"
+  printf '%s\n' '{"profiles":[{"profile":{"runtime":{"snapshot":".runtime/harness/1234567890abcdef"}}}]}' >"$starter/.claude/harness-manifest.json"
+  git -C "$starter" add .
+  git -C "$starter" commit -qm 'current fixture kit'
+  git clone -q --bare "$starter" "$starter_remote"
+  git -C "$starter" remote add origin https://github.com/wrong-owner/starter-fixture.git
+  mkdir -p "$main/docs/control/local"
+  "$node_bin" -e 'require("node:fs").writeFileSync(process.argv[1],JSON.stringify({"starter-fixture":process.argv[2]}))' "$main/docs/control/local/repository-clones.json" "$starter"
+  local before
+  before="$(git --git-dir="$starter_remote" rev-parse main)"
+  if output="$(CODEX_THREAD_ID=fixture-close-session release_close_summary WO-099 --publish)"; then
+    printf 'misbound starter did not block close\n' >&2; return 1
+  fi
+  grep -Fq "origin's configured push URL" <<<"$output"
+  test "$(git --git-dir="$starter_remote" rev-parse main)" = "$before"
+  git -C "$starter" remote set-url origin https://github.com/dotln-fixture/starter-fixture.git
+  local config="$fixture/refresh.gitconfig"
+  printf '[url "%s"]\n insteadOf = https://github.com/dotln-fixture/starter-fixture.git\n' "$starter_remote" >"$config"
+  output="$(GIT_CONFIG_GLOBAL="$config" CODEX_THREAD_ID=fixture-close-session release_close_summary WO-099 --publish)"
+  grep -Fq 'Starter refresh starter-fixture: current' <<<"$output"
+  test ! -e "$main/docs/control/local/harness/writer.json"
+  test "$(git --git-dir="$starter_remote" rev-parse main)" = "$before"
+  "$node_bin" - "$record" "$main" "$starter" <<'JS'
+const assert=require('node:assert/strict'),fs=require('node:fs'),p=require('node:path');const r=JSON.parse(fs.readFileSync(process.argv[2]));
+assert.equal(r.publication.outcome,'already-published');assert.equal(r.blockers.length,0);assert.equal(r.starterRefresh[0].outcome,'current');assert.ok(!JSON.stringify(r.starterRefresh).includes(process.argv[4]));const dir=p.join(process.argv[3],'docs/control/local/sibling-receipts/starter-fixture');assert.equal(fs.readdirSync(dir).length,1);
+JS
+  local pending_before
+  pending_before="$(git -C "$main" status --porcelain --untracked-files=all)"
+  # The existing-release preview also judges the proposed head while main is behind.
+  git -C "$main" reset --hard "$local_head" >/dev/null
+  output="$(GIT_CONFIG_GLOBAL="$config" release_close_summary WO-099 --publish --dry-run)"
+  grep -Fq 'Starter refresh starter-fixture: current' <<<"$output"
+  grep -Fq 'preview writes nothing' <<<"$output"
+  test "$(git -C "$main" status --porcelain --untracked-files=all)" = "$pending_before"
+  test "$(git -C "$main" rev-parse HEAD)" = "$local_head"
+  test "$(git --git-dir="$starter_remote" rev-parse main)" = "$before"
+  output="$(release_close_summary WO-099 --dry-run)"
+  "$node_bin" -e 'const r=JSON.parse(require("node:fs").readFileSync(process.argv[1]));require("node:assert/strict").deepEqual(r.starterRefresh,[])' "$record"
+  git -C "$main" reset --hard "$core_head" >/dev/null
+  output="$(release_close_summary WO-099)"
+  "$node_bin" -e 'const r=JSON.parse(require("node:fs").readFileSync(process.argv[1]));require("node:assert/strict").deepEqual(r.starterRefresh,[])' "$record"
+  # A lower-version close never touches the declaration, even with no map.
+  rm "$main/docs/control/local/repository-clones.json"
+  output="$(release_close_summary WO-003 --publish)"
+  "$node_bin" -e 'const r=JSON.parse(require("node:fs").readFileSync(process.argv[1]));require("node:assert/strict").deepEqual(r.starterRefresh,[])' "$main/docs/control/local/retained/WO-003/release-close.json"
 }
 
 if [[ -n "$prepare_template" ]]; then

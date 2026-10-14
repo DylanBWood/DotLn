@@ -6029,7 +6029,7 @@ test("meter diff bytes include newly authored untracked source", (t) => {
   );
 });
 
-test("WO-145 optional economy support preserves historical snapshots through WO-191 and changes only executor instructions on", () => {
+test("WO-145 optional economy support preserves historical snapshots through the current release-close role and changes only executor instructions on", () => {
   const historical = JSON.parse(
     readFileSync(
       join(source, "packages/skeleton/fixtures/wo145-role-baseline.json"),
@@ -6049,10 +6049,11 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
   // Publication guidance and conditional reader scoring preserve the prior role oracle and all its history.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo191-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo215-role-baseline.json"),
       "utf8",
     ),
   );
+  assert.equal(baseline.historicalBaseline, "wo191-role-baseline.json");
   assert.equal(baseline.upstreamBaseline, "wo185-role-baseline.json");
   const chains = [
     baseline,

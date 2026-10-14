@@ -56,7 +56,8 @@ docs/control/local/ ignored gate/session/usage observations, private terms and o
 docs/evidence/      per-order decisions, handoffs, evidence editions, bounded
                     comparisons and fixture transcripts; current.json — the
                     edition each evidence kind currently reads; siblings/
-                    holds the receipts launchpad export and --update write
+                    holds export/update and starter-refresh receipts, the latter
+                    carried from release close by the next worktree start
 docs/releases/     historical v0.2.0 records + forward tag-manifest template;
                    later immutable manifests/notes live in annotated tags
 docs/discovery/    labeled machine-audit outputs, runtime target maps, and the

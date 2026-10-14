@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-215] — Core's release close refreshes DotLn-Enterprise-Starter · **queued**
+- [x] [WO-215] — Core's release close refreshes DotLn-Enterprise-Starter · **final-reviewed**
 - [ ] [WO-210] — An instance's own orders publish and reach release close · **queued**
 - [ ] [WO-213] — Private paths stay out of every committed record · **queued**
 - [ ] [WO-080] — Workstreams: document, index, board section and synthetic pilot · **queued**
@@ -34,23 +34,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-215
-
-[WO-215 — Core's release close refreshes DotLn-Enterprise-Starter: after a published release, &#96;resume: release close&#96; runs the export update (the first export, while the starter holds none) into the starter's recorded checkout inside a disposable worktree, verifies the result as an export verifies itself, pushes exactly one fast-forward commit to the starter's main, records the run and holds WO-078's receipt for the next order's change; a missing, dirty, diverged or misbound checkout or a failed verification refuses with nothing pushed and is recorded, and the operator's fork is never touched (version assigned at activation)](WO-215-release-close-refreshes-the-starter.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-078: satisfied-by-close (met) — the sibling declaration, the five-field receipt and the registry generator a refresh records into; WO-203: satisfied-by-close (met) — planKitUpdate and applyKitUpdate, the update's halves the refresh runs between its checks; WO-157: satisfied-by-close (met) — the hookless bare-lane push and the push URL read before any rewrite, which the refresh reuses; WO-201: satisfied-by-close (met) — launchpad verify and the export's three gate selections that core's review gate already runs; WO-072: satisfied-by-close (met) — the ignored clone map and worktree clone this order extends to a declared export sibling.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor max; verifier xhigh; reviewer xhigh.
-- Track: delivery
-- Cost: adds &#96;scripts/lib/starter-refresh.mjs&#96; (new: the checkout and remote checks, a disposable worktree of the recorded checkout, the update through &#96;planKitUpdate&#96; and &#96;applyKitUpdate&#96; with the receipt held back, or the first export through &#96;exportKit&#96; into an empty directory copied into that worktree, the export's own verification, one commit, the bare-lane push, the fast-forward and the pending receipt); a refresh row in release close's record and summary (&#96;scripts/release.mjs&#96;); a pending receipt lane and its carry at &#96;worktree start&#96; (&#96;scripts/lib/siblings.mjs&#96;, &#96;scripts/siblings.mjs&#96;, &#96;scripts/worktree.mjs&#96;); an export-sibling admission in &#96;worktree clone&#96; (&#96;scripts/lib/target-worktrees.mjs&#96;); the export's self-verification factored out of &#96;exportKit&#96; and the two push helpers exported unchanged (&#96;scripts/launchpad.mjs&#96;, &#96;scripts/lib/target-publish.mjs&#96;); fixtures in &#96;scripts/test-launchpad.mjs&#96;, &#96;scripts/test-release.sh&#96;, &#96;scripts/test-worktree.sh&#96;, &#96;scripts/test-target-worktree.mjs&#96; and &#96;scripts/test-siblings.mjs&#96;; one sentence pair in the release-close role text (&#96;packages/skeleton/src/loadouts/contributor.ts&#96;). Removes the hand-run &#96;launchpad export --update&#96; after each core release, the separate starter commit and push it needed, and the receipt commit WO-078's operator-review assumption 2 left to the change in which the operator ran the update (FUP-efcc590126413a41). Wall-clock: each publishing release close pays one kit preparation (&#96;prepareKit&#96;, &#96;scripts/launchpad.mjs&#96; line 821: the commit's build, the predicted bundle and the local-terms screen), one update, an emit, a check and a kit verify inside the starter, one commit, one fetch and one push; unknown until measured (step 12 records the fixture's figures; the first live figure is this order's own release close, which is a first export). The &#96;launchpad&#96; gate task gains at most three kit preparations, the first export, one update and one failed verification (FUP-b531e850b70f6d4e's watch, step 12). Context bytes: the release-close role text grows by about two sentences at cold start (bounded by the &#96;harness-context&#96; and &#96;launchpad-docs&#96; suites); the close summary gains one line per declared export sibling. Commands: none added for the operator; &#96;worktree clone&#96; admits one more kind of id; release close gains one effect under its existing phrase. Tokens: unknown until run; a refusal adds one diagnosis to the close session. Steps: none added on success; the receipt rides in the next order's reviewed change, not a step of its own. Re-mints: &#96;packages/skeleton/src/loadouts/contributor.ts&#96; is a registered evidence source in the authority, feedback and harness inventories (&#96;scripts/lib/evidence-sources.mjs&#96; lines 163, 261 and 332), so each edition its change stales is re-minted deterministically and the harness bundle is re-emitted; no edited file is in &#96;FEEDBACK_SOURCE_PATHS&#96; (&#96;packages/skeleton/src/feedback-audit.ts&#96; lines 15 to 78), so no live feedback episode is owed; &#96;scripts/launchpad.mjs&#96;, &#96;scripts/release.mjs&#96;, &#96;scripts/worktree.mjs&#96; and the loadouts directory are declared machinery sources (&#96;scripts/test-runner.mjs&#96; lines 114, 131, 184, 209, 219, 238, 300 and 366), so &#96;npm test -- --review&#96; runs before handoff. None of the other edited scripts is a registered evidence source; the order does not edit &#96;scripts/lib/git.mjs&#96;, which is.
-- Authority: [docs/work-orders/WO-215-release-close-refreshes-the-starter.md](WO-215-release-close-refreshes-the-starter.md)
 
 ### WO-210
 

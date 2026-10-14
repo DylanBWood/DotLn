@@ -144,8 +144,10 @@ The fork is of the starter, not of DotLn core. This is one candidate route to
 test the [workstream application](12-workstream-application.md#one-workstream-across-repositories),
 not a canonical topology or an implemented multi-repo coordinator. It simulates an organization user's needs with personal/synthetic material.
 Packaging and the update path exist (WO-074 to WO-078); the license posture
-is decided below; an update shows its plan before writing (WO-203);
-publication of an instance's own orders and of target orders worked in
+is decided below; an update shows its plan before writing (WO-203).
+Release close refreshes the starter after each release (WO-215); an instance
+takes a starter update through its own planning pass (WO-207).
+Publication of an instance's own orders and of target orders worked in
 sessions, rollback, channel selection and the first task remain queued
 (WO-210, WO-207, WO-083).
 
