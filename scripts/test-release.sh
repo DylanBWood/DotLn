@@ -27,14 +27,78 @@ create_test_temp_root "$tmp_base" "$test_root_prefix"
 test_root="$test_temp_root_result"
 install_test_temp_root_traps "$tmp_base" "$test_root" "$test_root_prefix"
 node_bin="$(command -v node)"
+release_restricted_beacons=()
+release_root_identity="$("$node_bin" - "$test_root" <<'JS'
+const fs=require('node:fs'),p=require('node:path'),root=process.argv[2],stat=fs.lstatSync(root);
+console.log(JSON.stringify({root,device:stat.dev,inode:stat.ino,owner:fs.readFileSync(p.join(root,'.dotln-test-root-owner'),'utf8')}));
+JS
+)"
+record_restricted_release_beacon() {
+  local identity
+  identity="$("$node_bin" - "$test_root" "$1" <<'JS'
+const assert=require('node:assert/strict'),fs=require('node:fs'),[root,file]=process.argv.slice(2),stat=fs.lstatSync(file);
+assert.ok(file.startsWith(root+'/') && stat.isDirectory() && !stat.isSymbolicLink());
+assert.equal(fs.realpathSync(file),file);
+assert.equal(stat.uid,process.getuid());
+console.log(JSON.stringify({file,device:stat.dev,inode:stat.ino}));
+JS
+)"
+  release_restricted_beacons+=("$identity")
+}
+finish_release_test_root() {
+  local exit_code="$1"
+  trap - EXIT INT TERM
+  # Cancellation can precede the case's normal permission restoration. Restore
+  # only these captured fixture objects before the guarded root removal.
+  if (( ${#release_restricted_beacons[@]} )); then
+    if ! "$node_bin" - "$release_root_identity" "${release_restricted_beacons[@]}" <<'JS'
+const assert=require('node:assert/strict'),fs=require('node:fs'),p=require('node:path');
+const root=JSON.parse(process.argv[2]),stat=fs.lstatSync(root.root);
+assert.ok(stat.isDirectory() && !stat.isSymbolicLink());
+assert.equal(fs.realpathSync(root.root),root.root);
+assert.equal(stat.uid,process.getuid());
+assert.equal(stat.dev,root.device);assert.equal(stat.ino,root.inode);
+const marker=p.join(root.root,'.dotln-test-root-owner'),markerStat=fs.lstatSync(marker);
+assert.ok(markerStat.isFile() && !markerStat.isSymbolicLink());
+assert.equal(fs.readFileSync(marker,'utf8'),root.owner);
+const surviving=[];
+for(const value of process.argv.slice(3)) {
+ const item=JSON.parse(value),current=fs.lstatSync(item.file,{throwIfNoEntry:false});
+ if(!current) continue;
+ assert.ok(item.file.startsWith(root.root+'/') && current.isDirectory() && !current.isSymbolicLink());
+ assert.equal(fs.realpathSync(item.file),item.file);
+ assert.equal(current.uid,process.getuid());
+ assert.equal(current.dev,item.device);assert.equal(current.ino,item.inode);
+ surviving.push(item.file);
+}
+for(const file of surviving) fs.chmodSync(file,0o700);
+JS
+    then
+      printf 'error: release fixture beacon identity changed; root retained\n' >&2
+      exit 1
+    fi
+  fi
+  _dotln_finish_test_temp_root "$exit_code"
+}
+trap 'finish_release_test_root "$?"' EXIT
+trap 'finish_release_test_root 130' INT
+trap 'finish_release_test_root 143' TERM
 if [[ -n "$signal_probe_ready" ]]; then
   # Signal tests enter the real suite after its cleanup traps are installed.
+  signal_beacon="$test_root/signal-beacon"
+  mkdir "$signal_beacon"
+  printf 'disposable beacon\n' >"$signal_beacon/signal"
+  record_restricted_release_beacon "$signal_beacon"
+  chmod 111 "$signal_beacon"
   # A waiting foreground child makes shell-only signal delivery fail reliably.
   "$node_bin" --input-type=module -e '
     import fs from "node:fs";
-    fs.writeFileSync(process.argv[1], "ready\n", { flag: "wx" });
+    const pending=process.argv[1]+".pending";
+    fs.writeFileSync(pending, JSON.stringify({beacon:process.argv[2]})+"\n", { flag: "wx" });
+    try { fs.linkSync(pending,process.argv[1]); }
+    finally { fs.rmSync(pending); }
     setInterval(() => {}, 1000);
-  ' "$signal_probe_ready"
+  ' "$signal_probe_ready" "$signal_beacon"
   exit 1
 fi
 real_git="$(command -v git)"
@@ -2281,6 +2345,7 @@ printf 'original preserved intake\n' >"$subject/docs/intake/kept.md"
 beacon_dir="$subject/.control-beacons/restricted/$(printf '%064d' 0)"
 mkdir -p "$beacon_dir"
 printf 'disposable beacon\n' >"$beacon_dir/signal"
+record_restricted_release_beacon "$beacon_dir"
 chmod 111 "$beacon_dir"
 # The child Git fixture models partial removal: administration has gone but
 # source remains. Corrupt a destination to keep the first recovery blocked.

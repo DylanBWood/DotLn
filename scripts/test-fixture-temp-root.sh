@@ -306,14 +306,17 @@ printf 'PASS unsafe EXIT trap: cleanup refusal forced a non-zero exit and remove
 exercise_suite_signal() {
   local signal="$1"
   local expected_status="$2"
-  local signal_base="$test_root/signal-$signal"
+  local beacon_mode="${3:-owned}"
+  local signal_base="$test_root/signal-$signal-$beacon_mode"
   local signal_output
 
   mkdir -p -- "$signal_base"
   signal_output="$(TMPDIR="$signal_base" "$node_bin" --input-type=module -e '
     import fs from "node:fs";
+    import assert from "node:assert/strict";
+    import path from "node:path";
     import { spawn } from "node:child_process";
-    const [suite, base, signal, expectedText, deadlineModule] = process.argv.slice(1);
+    const [suite, base, signal, expectedText, deadlineModule, beaconMode] = process.argv.slice(1);
     const { startDeadline } = await import(deadlineModule);
     const expected = Number(expectedText);
     const ready = `${base}/signal-ready`;
@@ -328,42 +331,138 @@ exercise_suite_signal() {
     };
     let foundRoot = false;
     let sent = false;
+    let beacon;
+    let proof;
+    let failure;
+    let forcedKill = false;
+    let killTimer;
     const deadline = startDeadline("fixture-temp-root:signal-cleanup", 15000);
-    const poll = setInterval(() => {
-      try { deadline.check(); } catch (error) {
-        clearInterval(poll);
-        signalGroup("SIGKILL");
-        process.stderr.write(`timed out waiting for release-suite signal cleanup: root=${foundRoot} sent=${sent}\n`);
-        process.exitCode = 1;
-        return;
+    const captureAvailableProof = (entries) => {
+      if(proof?.beacon) return;
+      const name=entries.find(entry=>/^dotln-release-test\.[^/]{6}$/.test(entry));
+      if(!name) return;
+      const root=path.join(base,name),marker=path.join(root,".dotln-test-root-owner");
+      const owner=`${name}:${child.pid}:0\n`;
+      if(!fs.existsSync(marker) || fs.readFileSync(marker,"utf8")!==owner) return;
+      const stat=fs.lstatSync(root),markerStat=fs.lstatSync(marker);
+      assert.ok(stat.isDirectory() && !stat.isSymbolicLink() && markerStat.isFile() && !markerStat.isSymbolicLink());
+      assert.equal(fs.realpathSync(root),root);assert.equal(stat.uid,process.getuid());
+      proof ??= {root,device:stat.dev,inode:stat.ino,owner};
+      const file=path.join(root,"signal-beacon"),item=fs.lstatSync(file,{throwIfNoEntry:false});
+      if(item && !proof.beacon) {
+        assert.ok(item.isDirectory() && !item.isSymbolicLink());
+        assert.equal(fs.realpathSync(file),file);assert.equal(item.uid,process.getuid());
+        proof.beacon={file,device:item.dev,inode:item.ino};
       }
+    };
+    const restoreKilledBeacon = () => {
+      if(!proof || !fs.existsSync(proof.root)) return;
+      const stat=fs.lstatSync(proof.root),marker=path.join(proof.root,".dotln-test-root-owner"),markerStat=fs.lstatSync(marker);
+      assert.ok(stat.isDirectory() && !stat.isSymbolicLink() && markerStat.isFile() && !markerStat.isSymbolicLink());
+      assert.equal(fs.realpathSync(proof.root),proof.root);assert.equal(path.dirname(proof.root),base);
+      assert.equal(stat.uid,process.getuid());assert.equal(stat.dev,proof.device);assert.equal(stat.ino,proof.inode);
+      assert.equal(fs.readFileSync(marker,"utf8"),proof.owner);
+      if(!proof.beacon) return;
+      const item=proof.beacon,current=fs.lstatSync(item.file,{throwIfNoEntry:false});
+      if(!current) return;
+      assert.ok(current.isDirectory() && !current.isSymbolicLink());
+      assert.equal(fs.realpathSync(item.file),item.file);assert.equal(current.uid,process.getuid());
+      assert.equal(current.dev,item.device);assert.equal(current.ino,item.inode);
+      assert.equal(fs.readFileSync(path.join(item.file,"signal"),"utf8"),"disposable beacon\n");
+      fs.chmodSync(item.file,0o700);
+    };
+    const fail = (error) => {
+      if(failure) return;
+      failure=error;
+      clearInterval(poll);
+      signalGroup("SIGTERM");
+      killTimer=setTimeout(()=>{
+        try { captureAvailableProof(fs.readdirSync(base)); }
+        catch(error) { failure=error; }
+        forcedKill=true;
+        signalGroup("SIGKILL");
+      },1000);
+    };
+    const poll = setInterval(() => {
+      try {
+      deadline.check();
+      if(sent) return;
       const entries = fs.readdirSync(base);
+      captureAvailableProof(entries);
       foundRoot ||= entries.some((entry) => /^dotln-release-test\.[^/]{6}$/.test(entry));
       if (foundRoot && fs.existsSync(ready) && !sent) {
+        beacon = JSON.parse(fs.readFileSync(ready,"utf8")).beacon;
+        assert.equal(fs.statSync(beacon).mode & 0o777,0o111,"signal interrupts the restricted beacon");
+        assert.equal(beacon,proof.beacon.file);
+        if(beaconMode === "driver-failure") throw new Error("synthetic signal-driver assertion");
+        if(beaconMode === "forced-kill") {
+          signalGroup("SIGSTOP");
+          throw new Error("synthetic stopped-child deadline");
+        }
+        if(beaconMode === "substituted") {
+          fs.renameSync(beacon,beacon+".saved");
+          fs.mkdirSync(beacon);
+          fs.writeFileSync(path.join(beacon,"replacement"),"retain replacement\n");
+        }
         sent = true;
         signalGroup(signal);
       }
+      } catch(error) { fail(error); }
     }, 10);
     child.on("exit", (code, exitSignal) => {
       deadline.finish();
       clearInterval(poll);
+      clearTimeout(killTimer);
+      try {
+      if(forcedKill) restoreKilledBeacon();
+      if(failure) {
+        if(beaconMode === "driver-failure") {
+          assert.equal(forcedKill,false);assert.equal(code,143);assert.equal(exitSignal,null);
+          assert.equal(fs.existsSync(proof.root),false,"failed driver reaps the restoring child");
+        } else if(beaconMode === "forced-kill") {
+          assert.equal(forcedKill,true);assert.equal(exitSignal,"SIGKILL");
+          assert.equal(fs.statSync(beacon).mode & 0o777,0o700,"forced-kill cleanup restores only captured beacon");
+          assert.ok(fs.existsSync(path.join(proof.root,".dotln-test-root-owner")));
+          fs.rmSync(proof.root,{recursive:true});
+        } else throw failure;
+        process.stdout.write("status=1\n");
+        return;
+      }
       if (!foundRoot || !sent || code !== expected || exitSignal !== null) {
         process.stderr.write(`unexpected ${signal} result: root=${foundRoot} code=${code} signal=${exitSignal}\n`);
         process.exitCode = 1;
         return;
       }
+      if(beaconMode === "substituted") {
+        const root=path.dirname(beacon);
+        assert.equal(path.dirname(root),base);
+        assert.equal(fs.realpathSync(root),root);
+        assert.equal(fs.readFileSync(path.join(beacon,"replacement"),"utf8"),"retain replacement\n");
+        assert.equal(fs.statSync(beacon+".saved").mode & 0o777,0o111,"refusal preserves original permissions");
+        assert.ok(fs.existsSync(path.join(root,".dotln-test-root-owner")),"refusal retains ownership marker");
+        fs.chmodSync(beacon+".saved",0o700);
+        assert.equal(fs.readFileSync(path.join(beacon+".saved","signal"),"utf8"),"disposable beacon\n");
+        fs.rmSync(root,{recursive:true});
+      }
       process.stdout.write(`status=${code}\n`);
+      } catch(error) {
+        process.stderr.write(`signal-driver failure: ${error.message}\n`);
+        process.exitCode=1;
+      }
     });
-  ' "$script_dir/test-release.sh" "$signal_base" "SIG$signal" "$expected_status" "$script_dir/../packages/skeleton/src/gate-deadlines.mjs")"
+  ' "$script_dir/test-release.sh" "$signal_base" "SIG$signal" "$expected_status" "$script_dir/../packages/skeleton/src/gate-deadlines.mjs" "$beacon_mode")"
   grep -Fq "status=$expected_status" <<<"$signal_output"
   if find "$signal_base" -mindepth 1 -maxdepth 1 -type d -name 'dotln-release-test.??????' | grep -q .; then
     printf 'error: %s left release-suite fixture residue\n' "$signal" >&2
     exit 1
   fi
-  printf 'PASS %s trap: suite exited %s with no fixture residue\n' "$signal" "$expected_status"
+  printf 'PASS %s trap (%s beacon): suite exited %s with no fixture residue\n' "$signal" "$beacon_mode" "$expected_status"
 }
 
 exercise_suite_signal INT 130
 exercise_suite_signal TERM 143
+exercise_suite_signal TERM 1 substituted
+exercise_suite_signal TERM 1 driver-failure
+exercise_suite_signal TERM 1 forced-kill
 
 printf 'fixture temp-root tests passed\n'
