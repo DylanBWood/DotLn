@@ -4130,6 +4130,20 @@
           "title": "Workstream application — end-user workflow candidate",
           "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
           "missing": false
+        },
+        {
+          "hash": "2d45099186f90dafa4b586916cc1189d8bffaaacfd617d3eb8dcac5f0d4e3412",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
+        },
+        {
+          "hash": "c9d76acc8b0bb80b81fa6a7596f24cbf924989612a4d723bdbdbce9c1f9ac1bd",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -33962,6 +33976,14 @@
             "WO-215"
           ],
           "at": "2026-10-13T19:07:14.330Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Implemented by WO-215's release-close half: after a published release, release close refreshes each declared export sibling through its recorded checkout with one verified fast-forward commit to that sibling's main and holds WO-078's receipt in the pending lane for the next worktree start; WO-207 carries the fork's opt-in. [WO-215 FINAL-001 (docs/final-reviews/WO-215/FINAL-001.md); docs/evidence/WO-215/decisions.md D020]",
+          "reopenWhen": "WO-215 is withdrawn before its release close, or the first live refresh cannot establish the route and the operator returns to the hand-run update",
+          "targets": [],
+          "at": "2026-10-14T04:23:49.891Z"
         }
       ]
     },
@@ -35337,6 +35359,106 @@
           "at": "2026-10-13T20:14:56.017Z"
         }
       ]
+    },
+    {
+      "id": "FUP-1168a9810a0063c8",
+      "key": "decision:docs/evidence/WO-215/decisions.md#wo-215-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3290b0df0bc667eb7ab94b78e586e7c1084122c1d5e817242f87d92b55fc2a70",
+          "ref": "docs/evidence/WO-215/decisions.md#wo-215-d005--treat-refresh-refusal-as-a-close-blocker-without-changing-publication",
+          "title": "WO-215-D005: Record one starterRefresh row and summary line per declared export sibling. A refusal adds a starter-refresh blocker with the existing retry command, returns nonzero and keeps the writer.",
+          "summary": "{ \"id\": \"WO-215-D005\", \"date\": \"2026-10-13\", \"dispatch\": \"resume: next\", \"decision\": \"Record one starterRefresh row and summary line per declared export sibling. A refusal adds a starter-refresh blocker with the existing retry command, returns nonzero and keeps the writer. Current and skipped rows do not block. The refresh contains its own failures and leaves publication and cleanup outcomes intact. Dry-run performs the bound fetch and checks but creates no refresh worktree, changes no checkout work-tree file, writes no receipt and pushes nothing. No declaration, target orders, lower versions and non-publishing closes attempt no refresh.\", \"evidence\": [ \"scripts/release.mjs refreshPublishedS",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Reopened by D011 (the dry run returned skipped before the checks when main was behind the merged head); repaired by D012 (the preview judges the head main would fast-forward to and runs the checks with the fetch) and verified by VER-002 and by FINAL-001's bounded rerun of the release starter_refresh case. [WO-215 FINAL-001; docs/evidence/WO-215/decisions.md D020]",
+          "reopenWhen": "a publishing dry run skips the starter checks while main can fast-forward to the merged head, or a refused refresh changes the publication outcome",
+          "targets": [],
+          "at": "2026-10-14T04:23:50.006Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e6f9cf6f37934a4f",
+      "key": "decision:docs/evidence/WO-215/decisions.md#wo-215-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "658bb4dd00d3ab82b76069ba1fa2b8953d6d7aac5a807c6cfe32971391d62b9e",
+          "ref": "docs/evidence/WO-215/decisions.md#wo-215-d011--verification-fail-criteria-6-and-11-are-unmet-because-the-dry-run-preview-misreports-and-the-release-close-row-omits-the-refresh",
+          "title": "WO-215-D011: WO-215 resume: fix. (F1) In product 07 §Operator resume phrases — how you get dispatched, add to the last cell of the resume: release close row, in place and with no date, that where the ",
+          "summary": "{ \"id\": \"WO-215-D011\", \"date\": \"2026-10-13\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001. At code identity 52824a36ba06b8d817012f2b3d5326347b2b8134b2929264ffd4eb7b3ba5cf3a, criteria 1 to 5, 7 to 10 and 12 are met and criteria 6 and 11 are unmet. F1 (blocking, criterion 11): product 07's `resume: release close` row in §Operator resume phrases — how you get dispatched is byte-identical to the base, so it does not say that the helper refreshes each declared export sibling with a recorded checkout, as step 13 and criterion 11 require. F2 (blocking, criterion 6): a release-close dry run taken before main is fast-forwarded, which is the state right after the",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "D011's repair instruction was executed by the repair (D012 for F1 and F2, D013 for F3 to F5) and verified by VER-002 at code identity b9a1a58a…: the dispatch row names the refresh, a publishing dry run before main's fast-forward judges the merged head and runs the checks, pending work previews as preview, the remapped-checkout refusal names its route and the registry preamble names the carried receipts. [WO-215 FINAL-001; docs/evidence/WO-215/decisions.md D020]",
+          "reopenWhen": "a dry run taken before main's fast-forward again reports a starter row that a real close at that head would not, or product 07's release-close row again omits an external effect",
+          "targets": [],
+          "at": "2026-10-14T04:23:49.950Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-eee6c2fa1ef76215",
+      "key": "decision:docs/evidence/WO-215/decisions.md#wo-215-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "10062f9b4bda9cdefb5cbc6a5c1d371d6108ceb865afb761744d6fb72b0c94f8",
+          "ref": "docs/evidence/WO-215/decisions.md#wo-215-d013--repair-pending-previews-preserve-cleanup-ownership-and-name-receipt-provenance",
+          "title": "WO-215-D013: Complete the bounded follow-up class in the touched refresh and registry surfaces. Pending would-refresh and cleanup rows use preview; genuinely current rows retain current. Dry-run clean",
+          "summary": "{ \"id\": \"WO-215-D013\", \"date\": \"2026-10-13\", \"dispatch\": \"resume: fix; VER-001 F3–F5; adjacent-0002\", \"decision\": \"Complete the bounded follow-up class in the touched refresh and registry surfaces. Pending would-refresh and cleanup rows use preview; genuinely current rows retain current. Dry-run cleanup validates the same ownership, scratch, worktree and branch identities as a real retry without deleting anything, so a mismatch refuses rather than promising cleanup. A remapped checkout refusal names the ignored ownership record and the restoration route: restore its checkout with worktree clone, retry close, then record the replacement. Product 07 carries that recovery. The registry generato",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d8297b92b32c8304",
+      "key": "decision:docs/evidence/WO-215/decisions.md#wo-215-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "228908685fc3cca7d266ee567a36e5ef4b4ff73803e3fe0fa72c9bee320473af",
+          "ref": "docs/evidence/WO-215/decisions.md#wo-215-d018--verification-pass-ver-001s-findings-are-repaired-and-two-follow-ups-are-boarded",
+          "title": "WO-215-D018: WO-215 next repair, or the planning pass that disposes of these rows. (FU1, reopening D013) When a retained starter-refresh cleanup record names a checkout that no longer exists or is no ",
+          "summary": "{ \"id\": \"WO-215-D018\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002. At code identity b9a1a58aaaf7ca03929669bc490d1d3f7a4f63ce019797e2e9b6b15b1a592ddc, criteria 1 to 12 are met. VER-001's two blocking findings are repaired. F1: product 07's `resume: release close` row now names the starter refresh. F2: a publishing dry run taken before main's fast-forward now judges the merged head and runs the checkout, branch, cleanliness, binding, fetch, ancestry and manifest checks. The real close keeps its main-HEAD and tag guards. The F3 to F5 follow-ups are resolved. Two new follow-ups are boarded; neither breaks a criterion or a behavior ma",
+          "missing": false
+        },
+        {
+          "hash": "d4617bedad9bfa0484129eb1f74aafb3021077743d837f800b12fa4fac41e926",
+          "ref": "docs/evidence/WO-215/decisions.md#wo-215-d018--verification-pass-ver-001s-findings-are-repaired-and-two-follow-ups-are-boarded",
+          "title": "WO-215-D018: WO-215 next repair, or the planning pass that disposes of these rows. (FU1, reopening D013) When a retained starter-refresh cleanup record names a checkout that no longer exists or is no ",
+          "summary": "{ \"id\": \"WO-215-D018\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002. At code identity b9a1a58aaaf7ca03929669bc490d1d3f7a4f63ce019797e2e9b6b15b1a592ddc, criteria 1 to 12 are met. VER-001's two blocking findings are repaired. F1: product 07's `resume: release close` row now names the starter refresh. F2: a publishing dry run taken before main's fast-forward now judges the merged head and runs the checkout, branch, cleanliness, binding, fetch, ancestry and manifest checks. The real close keeps its main-HEAD and tag guards. The F3 to F5 follow-ups are resolved. Two new follow-ups are boarded; neither breaks a criterion or a behavior ma",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-94f789b2dcdd30e7",
+      "key": "decision:docs/evidence/WO-215/decisions.md#wo-215-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f53344befb2edc69f1c6e52537be6ef523d1435e59538f031c6d177bd60edad6",
+          "ref": "docs/evidence/WO-215/decisions.md#wo-215-d020--final-review-pass-final-001-at-the-integrated-subject-two-register-rows-settled-the-orders-follow-ups-left-for-planning",
+          "title": "WO-215-D020: Planning, or the next order that edits these surfaces; none blocks the first live refresh, which is this order's own release close. (F1, remainder) docs/product/04-interfaces.md's release",
+          "summary": "{ \"id\": \"WO-215-D020\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Pass the final review of WO-215 at the integrated subject, code identity b9a1a58aaaf7ca03929669bc490d1d3f7a4f63ce019797e2e9b6b15b1a592ddc, the identity VER-002 judged; integration changed no judged byte (D019). All twelve criteria hold: after a published release the helper refreshes each declared export sibling through its recorded checkout in a disposable worktree, by the export update or the first export over the initial commit, verified by the export's own emit, predicted-surface comparison, harness check and launchpad verify with the staged set exactly the plan's ro",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

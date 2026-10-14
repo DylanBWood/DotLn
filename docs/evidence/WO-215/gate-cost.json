@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "before": {
+    "launchpadMs": 350967,
+    "recordedAt": "2026-10-13T11:58:03.830Z",
+    "source": "latest fresh launchpad task in main readGateChecks at entry"
+  },
+  "reviewRuns": [
+    {
+      "recordedAt": "2026-10-13T21:54:48.929Z",
+      "evidenceRef": "host-gate:6ec192b28104a1d4b3dd5223d66ed36ca90ec05ae50bd26b4459ac67083f5280:npm test",
+      "exitCode": 1,
+      "executionMode": "fresh",
+      "freshSuites": 96,
+      "reusedSuites": 0,
+      "gateMs": 1626780,
+      "spanMs": 1626391,
+      "slotWeightedMs": 6160869,
+      "lanes": 4,
+      "boundMs": 1540217.25,
+      "spanOverBound": 1.0559490877017512,
+      "launchpadMs": 387576,
+      "launchpadShare": 0.06290930711235704,
+      "longestVertical": {
+        "name": "vertical:file:test-vertical.mjs:statements",
+        "durationMs": 446176
+      },
+      "criticalPath": [
+        "format",
+        "build",
+        "harness",
+        "feedback-evidence",
+        "harness-fixtures",
+        "process-debt",
+        "skeleton",
+        "worktree-integration",
+        "vertical:file:test-vertical.mjs:statements",
+        "vertical:file:test-vertical-judgment.mjs"
+      ],
+      "launchpadCritical": false,
+      "conditions": {
+        "span": false,
+        "share": false,
+        "vertical": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-13T22:27:09.680Z",
+      "evidenceRef": "host-gate:52824a36ba06b8d817012f2b3d5326347b2b8134b2929264ffd4eb7b3ba5cf3a:npm test",
+      "exitCode": 0,
+      "executionMode": "fresh",
+      "freshSuites": 96,
+      "reusedSuites": 0,
+      "gateMs": 1611724,
+      "spanMs": 1611411,
+      "slotWeightedMs": 6096072,
+      "lanes": 4,
+      "boundMs": 1524018,
+      "spanOverBound": 1.0573438108998712,
+      "launchpadMs": 383163,
+      "launchpadShare": 0.06285408046361657,
+      "longestVertical": {
+        "name": "vertical:file:test-vertical.mjs:statements",
+        "durationMs": 441926
+      },
+      "criticalPath": [
+        "format",
+        "build",
+        "harness",
+        "feedback-evidence",
+        "harness-fixtures",
+        "process-debt",
+        "release:prepare",
+        "release:case:preflight",
+        "release:case:surfaces",
+        "release:case:license_surfaces",
+        "release:case:surfaces_component",
+        "release:case:surfaceclose",
+        "release:case:dirty",
+        "release:case:derived",
+        "release:case:divergence",
+        "release:case:missinggh",
+        "release:case:lower",
+        "release:case:cadence_missing",
+        "release:case:conflict",
+        "release:case:localconflict",
+        "release:case:nestedtag",
+        "release:case:missinglocalprevious",
+        "release:case:refrecovery",
+        "release:case:submodule_force",
+        "release:case:malformed_material",
+        "release:case:stale_helpers",
+        "release:case:success",
+        "release:case:edition",
+        "release:case:cached_evidence",
+        "release:case:concurrent",
+        "release:case:close_leftover",
+        "target-worktree",
+        "beacon-portability",
+        "checkpoint",
+        "worktree-integration",
+        "vertical:file:test-vertical.mjs:statements",
+        "vertical:file:test-vertical-judgment.mjs"
+      ],
+      "launchpadCritical": false,
+      "conditions": {
+        "span": false,
+        "share": false,
+        "vertical": false
+      }
+    },
+    {
+      "recordedAt": "2026-10-14T01:56:35.799Z",
+      "evidenceRef": "host-gate:b9a1a58aaaf7ca03929669bc490d1d3f7a4f63ce019797e2e9b6b15b1a592ddc:npm test",
+      "codeIdentity": "b9a1a58aaaf7ca03929669bc490d1d3f7a4f63ce019797e2e9b6b15b1a592ddc",
+      "exitCode": 0,
+      "executionMode": "fresh",
+      "freshSuites": 97,
+      "reusedSuites": 0,
+      "gateMs": 2171365,
+      "spanMs": 2170897,
+      "slotWeightedMs": 8357526,
+      "lanes": 4,
+      "boundMs": 2089381.5,
+      "spanOverBound": 1.0390141771619974,
+      "launchpadMs": 512605,
+      "launchpadShare": 0.061334538474663435,
+      "longestVertical": {
+        "name": "vertical:file:test-vertical.mjs:statements",
+        "durationMs": 561841
+      },
+      "criticalPath": [
+        "format",
+        "build",
+        "harness",
+        "feedback-evidence",
+        "harness-fixtures",
+        "process-debt",
+        "skeleton",
+        "license-fixtures",
+        "beacon-portability",
+        "checkpoint",
+        "worktree-integration",
+        "vertical:file:test-vertical.mjs:statements",
+        "vertical:file:test-vertical-judgment.mjs"
+      ],
+      "launchpadCritical": false,
+      "comparable": true,
+      "conditions": {
+        "span": false,
+        "share": false,
+        "vertical": false
+      }
+    }
+  ]
+}
