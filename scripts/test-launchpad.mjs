@@ -22,6 +22,7 @@ import {
   realpathSync,
   rmSync,
   symlinkSync,
+  utimesSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -3327,5 +3328,715 @@ test("export update preserves ownership, validates actions and keeps the exporte
       );
       t.diagnostic(result.stdout.trim());
     },
+  );
+});
+
+test("starter refresh publishes one verified commit and preserves every refusal boundary", (t) => {
+  const root = join(scratch, "starter-refresh-fixture");
+  mkdirSync(root);
+  const core = join(root, "core");
+  git(scratch, ["clone", "--quiet", source, core]);
+  configureRepository(core);
+  linkInstall(core);
+  for (const name of RUNTIME_PACKAGES)
+    cpSync(
+      join(source, "packages", name, "dist"),
+      join(core, "packages", name, "dist"),
+      { recursive: true },
+    );
+  const seed = join(root, "seed"),
+    remote = join(root, "starter.git"),
+    checkout = join(root, "checkout");
+  mkdirSync(seed);
+  initRepository(seed);
+  writeFileSync(join(seed, "README.md"), "initial readme\n");
+  chmodSync(join(seed, "README.md"), 0o755);
+  writeFileSync(join(seed, "keep.txt"), "initial retained file\n");
+  git(seed, ["add", "."]);
+  git(seed, ["commit", "-qm", "initial starter"]);
+  const initial = git(seed, ["rev-parse", "HEAD"]).stdout.trim();
+  git(root, ["clone", "--quiet", "--bare", seed, remote]);
+  git(root, ["clone", "--quiet", remote, checkout]);
+  configureRepository(checkout);
+  const coreUrl = "https://github.com/refresh-fixture/core.git",
+    starterUrl = "https://github.com/refresh-fixture/starter-fixture.git";
+  git(core, ["remote", "set-url", "origin", coreUrl]);
+  git(checkout, ["remote", "set-url", "origin", starterUrl]);
+  const global = join(root, "gitconfig");
+  writeFileSync(
+    global,
+    `[url "${remote.slice(0, -4)}"]\n insteadOf = ${starterUrl.slice(0, -4)}\n[url "${source}"]\n insteadOf = ${coreUrl}\n[user]\n name = DotLn Fixture\n email = fixture@example.invalid\n[commit]\n gpgSign = false\n`,
+  );
+  const fixtureEnv = {
+    ...env,
+    GIT_CONFIG_GLOBAL: global,
+    GIT_CONFIG_NOSYSTEM: "1",
+    GIT_TERMINAL_PROMPT: "0",
+  };
+  const sibling = "starter-fixture";
+  const declaration = join(core, "docs/siblings/siblings.json");
+  mkdirSync(dirname(declaration), { recursive: true });
+  writeFileSync(
+    declaration,
+    JSON.stringify({
+      schemaVersion: 1,
+      siblings: [
+        {
+          id: sibling,
+          purpose: "Fixture export",
+          relation: { kind: "export", coreCommit: null },
+          capabilityRows: [],
+        },
+      ],
+    }),
+  );
+  git(core, ["add", "."]);
+  git(core, ["commit", "-qm", "declare starter refresh"]);
+  const map = join(core, "docs/control/local/repository-clones.json");
+  mkdirSync(dirname(map), { recursive: true });
+  const mapCheckout = (value = checkout) =>
+    writeFileSync(map, JSON.stringify({ [sibling]: value }));
+  mapCheckout();
+  const runCore = (code) =>
+    run(process.execPath, ["--input-type=module", "-e", code], {
+      cwd: core,
+      env: fixtureEnv,
+    });
+  const refresh = (tag, head, dryRun = false) => {
+    const result = ok(
+      runCore(
+        `import {refreshStarters} from './scripts/lib/starter-refresh.mjs'; console.log('REFRESH '+JSON.stringify(await refreshStarters({main:process.cwd(),tag:${JSON.stringify(tag)},head:${JSON.stringify(head)},dryRun:${dryRun}})));`,
+      ),
+      "refresh driver",
+    );
+    const rows = JSON.parse(
+      result.stdout
+        .split("\n")
+        .find((line) => line.startsWith("REFRESH "))
+        .slice(8),
+    );
+    assert.ok(
+      !JSON.stringify(rows).includes(root),
+      "no machine-local path in row",
+    );
+    return rows;
+  };
+  const refs = () =>
+    git(remote, ["for-each-ref", "--format=%(refname) %(objectname)"]).stdout;
+  const remoteHead = () =>
+    git(remote, ["rev-parse", "refs/heads/main"]).stdout.trim();
+  const state = () =>
+    git(core, ["status", "--porcelain", "--untracked-files=all"]).stdout;
+  const worktrees = () =>
+    git(checkout, ["worktree", "list", "--porcelain"]).stdout;
+  const pending = () => {
+    const dir = join(core, "docs/control/local/sibling-receipts", sibling);
+    return existsSync(dir)
+      ? readdirSync(dir)
+          .sort()
+          .map((name) => JSON.parse(readFileSync(join(dir, name), "utf8")))
+      : [];
+  };
+  const measured = (name, fn) => {
+    const start = performance.now();
+    try {
+      return fn();
+    } finally {
+      t.diagnostic(
+        `starter case ${name}: ${Math.round(performance.now() - start)} ms`,
+      );
+    }
+  };
+  let tag = "v10.0.0",
+    head = git(core, ["rev-parse", "HEAD"]).stdout.trim();
+  git(core, ["tag", tag]);
+  const beforeCore = state();
+  const wrongRemote = join(root, "wrong-repository.git");
+  git(checkout, ["config", `url.${wrongRemote}.insteadOf`, starterUrl]);
+  // Compare the checkout-configured transport with the host-owned lane. The
+  // longer local rewrite wins even with a fixture-global GitHub mapping.
+  const direct = run(
+    "git",
+    [
+      "-c",
+      "core.hooksPath=/dev/null",
+      "ls-remote",
+      starterUrl,
+      "refs/heads/main",
+    ],
+    { cwd: checkout, env: fixtureEnv },
+  );
+  assert.notEqual(direct.status, 0);
+  const wrongPath = join(root, "redirected-temporary-path");
+  git(checkout, [
+    "config",
+    `url.${wrongPath}.insteadOf`,
+    realpathSync(tmpdir()),
+  ]);
+  const first = measured("j first export", () => refresh(tag, head)[0]);
+  assert.equal(first.outcome, "refreshed", JSON.stringify(first));
+  assert.equal(first.firstExport, true);
+  t.diagnostic(
+    `fetch comparison: checkout-configured arm refused (${direct.status}); host-owned lane reached only the bound starter`,
+  );
+  git(checkout, ["config", "--unset", `url.${wrongRemote}.insteadOf`]);
+  git(checkout, ["config", "--unset", `url.${wrongPath}.insteadOf`]);
+  assert.deepEqual(first.kept, ["keep.txt"]);
+  assert.deepEqual(first.replaced, ["README.md"]);
+  assert.match(
+    git(checkout, ["ls-files", "--stage", "README.md"]).stdout,
+    /^100644 /,
+  );
+  assert.equal(git(remote, ["rev-parse", "main^"]).stdout.trim(), initial);
+  assert.equal(git(remote, ["rev-list", "--count", "main"]).stdout.trim(), "2");
+  assert.equal(refs().split("\n").filter(Boolean).length, 1);
+  assert.equal(git(checkout, ["status", "--porcelain"]).stdout, "");
+  assert.equal(
+    git(checkout, ["rev-parse", "HEAD"]).stdout.trim(),
+    remoteHead(),
+  );
+  assert.equal(
+    readFileSync(join(checkout, "keep.txt"), "utf8"),
+    "initial retained file\n",
+  );
+  assert.notEqual(
+    readFileSync(join(checkout, "README.md"), "utf8"),
+    "initial readme\n",
+  );
+  assert.ok(lstatSync(join(checkout, "AGENTS.md")).isSymbolicLink());
+  assert.equal(manifestOf(checkout).commit, head);
+  assert.equal(manifestOf(checkout).tag, tag);
+  assert.equal(
+    pending().at(-1).manifestHash,
+    `sha256:${sha256(readFileSync(join(checkout, "KIT-MANIFEST.json")))}`,
+  );
+  assert.equal(state(), beforeCore);
+  const cleanWorktrees = worktrees();
+  assert.equal(cleanWorktrees.match(/^worktree /gm).length, 1);
+  const verifyFresh = (name) => {
+    const clone = join(root, name);
+    git(root, ["clone", "--quiet", remote, clone]);
+    ok(
+      run(process.execPath, ["scripts/launchpad.mjs", "verify"], {
+        cwd: clone,
+        env: fixtureEnv,
+      }),
+      "fresh clone kit verify",
+    );
+    // Workspace links are the no-install links the export's self-check uses.
+    mkdirSync(join(clone, "node_modules/@dotln"), { recursive: true });
+    for (const name of ["kernel", "compiler", "skeleton", "beacons"])
+      symlinkSync(
+        `../../packages/${name}`,
+        join(clone, "node_modules/@dotln", name),
+      );
+    ok(
+      run(process.execPath, ["scripts/harness.mjs", "emit"], {
+        cwd: clone,
+        env: fixtureEnv,
+      }),
+      "fresh clone harness emit",
+    );
+    ok(
+      run(process.execPath, ["scripts/harness.mjs", "check"], {
+        cwd: clone,
+        env: fixtureEnv,
+      }),
+      "fresh clone harness check",
+    );
+  };
+  verifyFresh("first-fresh");
+  t.diagnostic(`starter first-export phases: ${JSON.stringify(first.timings)}`);
+  // Initial-commit refusals share a second local remote and perform no kit preparation.
+  const other = join(root, "initial-checkout"),
+    otherRemote = join(root, "initial.git");
+  git(root, ["clone", "--quiet", "--bare", seed, otherRemote]);
+  git(root, ["clone", "--quiet", otherRemote, other]);
+  configureRepository(other);
+  git(other, ["remote", "set-url", "origin", starterUrl]);
+  const setRemote = (file) =>
+    writeFileSync(
+      global,
+      readFileSync(global, "utf8").replace(
+        /^\[url "[^\n]+"\]\n insteadOf = [^\n]+/u,
+        `[url "${file.slice(0, -4)}"]\n insteadOf = ${starterUrl.slice(0, -4)}`,
+      ),
+    );
+  setRemote(otherRemote);
+  mapCheckout(other);
+  const initialRef = git(otherRemote, ["rev-parse", "main"]).stdout;
+  writeFileSync(join(other, "dirty"), "dirty");
+  assert.match(
+    measured("k initial dirty", () => refresh(tag, head)[0]).reason,
+    /changes/,
+  );
+  rmSync(join(other, "dirty"));
+  git(other, ["commit", "--allow-empty", "-qm", "ahead"]);
+  assert.match(
+    measured("k initial ahead", () => refresh(tag, head)[0]).reason,
+    /ahead.*diverged/,
+  );
+  git(other, ["reset", "--hard", initial]);
+  git(other, [
+    "remote",
+    "set-url",
+    "origin",
+    "https://github.com/another-owner/starter-fixture.git",
+  ]);
+  assert.match(
+    measured("k initial misbound", () => refresh(tag, head)[0]).reason,
+    /push URL/,
+  );
+  git(other, ["remote", "set-url", "origin", starterUrl]);
+  mkdirSync(join(other, "KIT-MANIFEST.json"));
+  writeFileSync(join(other, "KIT-MANIFEST.json", "child"), "collision");
+  git(other, ["add", "."]);
+  git(other, ["commit", "-qm", "initial type collision"]);
+  git(other, ["push", otherRemote, "main"]);
+  const collided = git(otherRemote, ["rev-parse", "main"]).stdout;
+  assert.match(
+    measured("j initial collision", () => refresh(tag, head)[0]).reason,
+    /type collision/,
+  );
+  assert.equal(git(otherRemote, ["rev-parse", "main"]).stdout, collided);
+  assert.notEqual(initialRef, collided);
+  setRemote(remote);
+  mapCheckout();
+  // One actual kit change exercises the update (second preparation).
+  writeFileSync(
+    join(core, "scripts/kit/README.client.md"),
+    readFileSync(join(core, "scripts/kit/README.client.md"), "utf8") +
+      "\nFixture kit revision.\n",
+  );
+  git(core, ["add", "."]);
+  git(core, ["commit", "-qm", "advance kit"]);
+  tag = "v10.1.0";
+  head = git(core, ["rev-parse", "HEAD"]).stdout.trim();
+  git(core, ["tag", tag]);
+  const prior = remoteHead(),
+    seedReadme = readFileSync(join(checkout, "README.md"), "utf8"),
+    floor = readFileSync(join(checkout, "CLAUDE.md"), "utf8");
+  const beforeUpdate = state();
+  // A merged release can be ahead of local main when close previews its
+  // fast-forward. Checkout refusals must still be visible before publication.
+  git(core, ["reset", "--hard", first.coreCommit]);
+  const previewBefore = {
+    refs: refs(),
+    head: git(checkout, ["rev-parse", "HEAD"]).stdout,
+    trees: worktrees(),
+    receipts: JSON.stringify(pending()),
+  };
+  const behindPreview = measured(
+    "preview with core behind",
+    () => refresh(tag, head, true)[0],
+  );
+  assert.equal(behindPreview.outcome, "preview");
+  assert.match(behindPreview.reason, /would refresh/);
+  assert.equal(behindPreview.coreCommit, head);
+  assert.equal(
+    refresh(tag, head)[0].outcome,
+    "skipped",
+    "real close retains its main-head guard",
+  );
+  rmSync(map);
+  assert.match(refresh(tag, head, true)[0].reason, /no recorded checkout/);
+  mapCheckout();
+  writeFileSync(join(checkout, "untracked"), "preview dirt");
+  assert.match(refresh(tag, head, true)[0].reason, /changes/);
+  rmSync(join(checkout, "untracked"));
+  git(checkout, [
+    "remote",
+    "set-url",
+    "origin",
+    "https://github.com/wrong-owner/starter-fixture.git",
+  ]);
+  assert.match(refresh(tag, head, true)[0].reason, /push URL/);
+  git(checkout, ["remote", "set-url", "origin", starterUrl]);
+  assert.equal(refs(), previewBefore.refs);
+  assert.equal(git(checkout, ["rev-parse", "HEAD"]).stdout, previewBefore.head);
+  assert.equal(worktrees(), previewBefore.trees);
+  assert.equal(JSON.stringify(pending()), previewBefore.receipts);
+  assert.equal(
+    git(core, ["rev-parse", "HEAD"]).stdout.trim(),
+    first.coreCommit,
+  );
+  git(core, ["reset", "--hard", head]);
+  // Fail cleanup before removal, then after Git unregisters the worktree.
+  // Both retries reuse this update's one kit preparation and published commit.
+  const wrapperDirectory = join(root, "git-wrapper");
+  mkdirSync(wrapperDirectory);
+  const realGit = ok(run("which", ["git"]), "locate fixture git").stdout.trim();
+  const fault = join(root, "cleanup-fault");
+  const wrapper = join(wrapperDirectory, "git");
+  writeFileSync(
+    wrapper,
+    `#!${process.execPath}\nconst {spawnSync}=require('node:child_process');
+const {readFileSync,existsSync}=require('node:fs');
+const {basename,dirname}=require('node:path');
+const args=process.argv.slice(2);
+const removing=args.includes('worktree')&&args.includes('remove')&&basename(dirname(args.at(-1))).startsWith('dotln-starter-refresh-');
+const fault=${JSON.stringify(fault)}, real=${JSON.stringify(realGit)};
+if(removing&&existsSync(fault)){if(readFileSync(fault,'utf8')==='after') {const result=spawnSync(real,args,{stdio:'inherit'});if(result.status!==0)process.exit(result.status??1);}process.stderr.write('injected disposable cleanup failure\\n');process.exit(77);}
+const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??1);
+`,
+  );
+  chmodSync(wrapper, 0o755);
+  const priorPath = fixtureEnv.PATH;
+  fixtureEnv.PATH = `${wrapperDirectory}:${priorPath}`;
+  writeFileSync(fault, "before");
+  const update = measured(
+    "a update with cleanup fault",
+    () => refresh(tag, head)[0],
+  );
+  assert.equal(update.outcome, "refused", JSON.stringify(update));
+  assert.match(update.reason, /disposable refresh cleanup failed/);
+  const cleanupRecord = join(
+    core,
+    "docs/control/local/starter-refresh",
+    `${sibling}.json`,
+  );
+  assert.ok(existsSync(cleanupRecord));
+  const owned = JSON.parse(readFileSync(cleanupRecord, "utf8"));
+  assert.ok(existsSync(owned.worktree));
+  assert.equal(worktrees().match(/^worktree /gm).length, 2);
+  const publishedRefs = refs();
+  // Retained recovery can fail before the caller knows its checkout. Neither
+  // those failures nor malformed ignored inputs may disclose their contents.
+  const savedCleanup = readFileSync(cleanupRecord, "utf8"),
+    savedMap = readFileSync(map, "utf8"),
+    privateCheckout = "/dotln-fixture-private/check out",
+    privateMapValue = "/dotln-fixture-other-checkout";
+  const privacyCases = [
+    {
+      record: JSON.stringify({ ...owned, checkout: privateCheckout }),
+      map: JSON.stringify({ [sibling]: privateCheckout }),
+      reason: /unreadable/,
+    },
+    {
+      record: privateCheckout,
+      map: savedMap,
+      reason: /cleanup record is invalid JSON/,
+    },
+    ...[null, false, 0, privateCheckout, []].map((value) => ({
+      record: JSON.stringify(value),
+      map: savedMap,
+      reason: /cleanup record is not an object/,
+    })),
+    ...[null, false, 8675309, [], {}].map((value) => ({
+      record: JSON.stringify({ ...owned, checkout: value }),
+      map: JSON.stringify({ [sibling]: value }),
+      reason: /cleanup ownership does not match/,
+    })),
+    {
+      record: savedCleanup,
+      map: privateMapValue,
+      reason: /invalid local registry/,
+    },
+    {
+      record: savedCleanup,
+      map: savedMap,
+      temporaryBase: "/dotln-fixture-missing-temporary-base",
+      reason: /ENOENT.*'<checkout>'/,
+    },
+  ];
+  const privacyTrees = worktrees();
+  for (const input of privacyCases) {
+    for (const dryRun of [true, false]) {
+      writeFileSync(cleanupRecord, input.record);
+      writeFileSync(map, input.map);
+      const savedTemporaryBase = fixtureEnv.TMPDIR;
+      let refused;
+      try {
+        if (input.temporaryBase) fixtureEnv.TMPDIR = input.temporaryBase;
+        refused = refresh(tag, head, dryRun)[0];
+      } finally {
+        if (savedTemporaryBase === undefined) delete fixtureEnv.TMPDIR;
+        else fixtureEnv.TMPDIR = savedTemporaryBase;
+      }
+      assert.equal(refused.outcome, "refused");
+      assert.match(refused.reason, input.reason);
+      assert.ok(
+        !JSON.stringify(refused).includes("/dotln-fixture-"),
+        "no private path or source excerpt in refusal",
+      );
+      assert.equal(readFileSync(cleanupRecord, "utf8"), input.record);
+      assert.equal(readFileSync(map, "utf8"), input.map);
+      assert.equal(refs(), publishedRefs);
+      assert.equal(worktrees(), privacyTrees);
+      assert.ok(existsSync(owned.worktree));
+    }
+  }
+  writeFileSync(cleanupRecord, savedCleanup);
+  writeFileSync(map, savedMap);
+  // Remapping a clone cannot adopt another checkout's cleanup objects. Both
+  // preview and retry explain how to restore the original cleanup binding.
+  const replacement = join(root, "replacement-checkout");
+  git(root, ["clone", "--quiet", remote, replacement]);
+  configureRepository(replacement);
+  git(replacement, ["remote", "set-url", "origin", starterUrl]);
+  const replacementHead = git(replacement, ["rev-parse", "HEAD"]).stdout,
+    retainedRecord = readFileSync(cleanupRecord, "utf8"),
+    retainedTrees = worktrees();
+  mapCheckout(replacement);
+  for (const dryRun of [true, false]) {
+    const remapped = refresh(tag, head, dryRun)[0];
+    assert.equal(remapped.outcome, "refused");
+    assert.match(
+      remapped.reason,
+      /inspect the ignored .*starter-refresh.*restore its checkout with worktree clone starter-fixture <absolute-path>.*retry close.*replacement checkout/,
+    );
+    assert.equal(readFileSync(cleanupRecord, "utf8"), retainedRecord);
+    assert.equal(worktrees(), retainedTrees);
+    assert.equal(refs(), publishedRefs);
+    assert.equal(
+      git(replacement, ["rev-parse", "HEAD"]).stdout,
+      replacementHead,
+    );
+    assert.equal(git(replacement, ["status", "--porcelain"]).stdout, "");
+  }
+  mapCheckout();
+  // Reconstruct the durable state if the commit succeeded but its subsequent
+  // journal rewrite failed. No branch was created yet in that failure window.
+  git(checkout, [
+    "update-ref",
+    "-d",
+    `refs/heads/${owned.branch}`,
+    owned.commit,
+  ]);
+  writeFileSync(
+    cleanupRecord,
+    JSON.stringify({ ...owned, branch: null, commit: null }),
+  );
+  writeFileSync(fault, "after");
+  const partial = refresh(tag, head)[0];
+  assert.equal(partial.outcome, "refused");
+  assert.match(partial.reason, /injected disposable cleanup failure/);
+  assert.equal(worktrees().match(/^worktree /gm).length, 1);
+  assert.ok(existsSync(cleanupRecord));
+  const partialRecord = readFileSync(cleanupRecord, "utf8");
+  writeFileSync(
+    cleanupRecord,
+    JSON.stringify({ ...JSON.parse(partialRecord), inode: owned.inode + 1 }),
+  );
+  const unsafePreview = refresh(tag, head, true)[0];
+  assert.equal(unsafePreview.outcome, "refused");
+  assert.match(unsafePreview.reason, /scratch identity changed/);
+  assert.ok(existsSync(owned.scratch));
+  writeFileSync(cleanupRecord, partialRecord);
+  const previewCleanup = refresh(tag, head, true)[0];
+  assert.equal(previewCleanup.outcome, "preview");
+  assert.match(previewCleanup.reason, /would finish pending.*cleanup/);
+  assert.ok(existsSync(cleanupRecord));
+  assert.equal(readFileSync(cleanupRecord, "utf8"), partialRecord);
+  fixtureEnv.PATH = priorPath;
+  const recovered = measured("cleanup recovery", () => refresh(tag, head)[0]);
+  assert.equal(recovered.outcome, "current", JSON.stringify(recovered));
+  assert.deepEqual(recovered.timings, {});
+  assert.equal(refs(), publishedRefs);
+  assert.equal(existsSync(cleanupRecord), false);
+  assert.equal(existsSync(owned.scratch), false);
+  assert.equal(
+    git(checkout, ["branch", "--list", "dotln-starter-refresh-*"]).stdout,
+    "",
+  );
+  assert.equal(update.firstExport, false);
+  assert.equal(git(remote, ["rev-parse", "main^"]).stdout.trim(), prior);
+  assert.equal(refs().split("\n").filter(Boolean).length, 1);
+  assert.equal(manifestOf(checkout).commit, head);
+  assert.equal(manifestOf(checkout).tag, tag);
+  assert.equal(readFileSync(join(checkout, "README.md"), "utf8"), seedReadme);
+  assert.equal(readFileSync(join(checkout, "CLAUDE.md"), "utf8"), floor);
+  assert.equal(git(checkout, ["status", "--porcelain"]).stdout, "");
+  assert.equal(worktrees(), cleanWorktrees.replace(first.after, update.after));
+  assert.equal(state(), beforeUpdate);
+  assert.equal(pending().length, 2);
+  assert.deepEqual(Object.keys(pending().at(-1)), [
+    "sibling",
+    "coreCommit",
+    "manifestHash",
+    "buildHash",
+    "date",
+  ]);
+  verifyFresh("update-fresh");
+  t.diagnostic(`starter update phases: ${JSON.stringify(update.timings)}`);
+  const stableRefs = refs();
+  assert.equal(
+    measured("b current", () => refresh(tag, head)[0]).outcome,
+    "current",
+  );
+  assert.equal(pending().length, 2);
+  assert.equal(refs(), stableRefs);
+  const pendingDirectory = join(
+    core,
+    "docs/control/local/sibling-receipts",
+    sibling,
+  );
+  rmSync(join(pendingDirectory, readdirSync(pendingDirectory).sort().at(-1)));
+  assert.equal(refresh(tag, head)[0].outcome, "current");
+  assert.equal(pending().length, 2);
+  assert.equal(refs(), stableRefs);
+  git(checkout, ["reset", "--hard", prior]);
+  assert.equal(
+    measured("c behind", () => refresh(tag, head)[0]).outcome,
+    "current",
+  );
+  assert.equal(
+    git(checkout, ["rev-parse", "HEAD"]).stdout.trim(),
+    update.after,
+  );
+  const refuseUnchanged = (name, pattern) => {
+    const before = refs(),
+      checkoutHead = git(checkout, ["rev-parse", "HEAD"]).stdout;
+    const row = measured(name, () => refresh(tag, head)[0]);
+    assert.equal(row.outcome, "refused", JSON.stringify(row));
+    assert.match(row.reason, pattern);
+    assert.equal(refs(), before);
+    assert.equal(git(checkout, ["rev-parse", "HEAD"]).stdout, checkoutHead);
+  };
+  writeFileSync(join(checkout, "keep.txt"), "tracked edit");
+  refuseUnchanged("d tracked", /changes/);
+  writeFileSync(join(checkout, "keep.txt"), "initial retained file\n");
+  writeFileSync(join(checkout, "untracked"), "untracked");
+  refuseUnchanged("d untracked", /changes/);
+  rmSync(join(checkout, "untracked"));
+  git(checkout, ["commit", "--allow-empty", "-qm", "local ahead"]);
+  refuseUnchanged("e ahead", /ahead.*diverged/);
+  const peer = join(root, "peer");
+  git(root, ["clone", "--quiet", remote, peer]);
+  configureRepository(peer);
+  git(peer, ["commit", "--allow-empty", "-qm", "remote advances"]);
+  git(peer, ["push", "origin", "main"]);
+  refuseUnchanged("e diverged", /ahead.*diverged/);
+  git(checkout, [
+    "reset",
+    "--hard",
+    git(peer, ["rev-parse", "HEAD"]).stdout.trim(),
+  ]);
+  for (const url of [
+    "https://github.com/refresh-fixture/wrong.git",
+    "https://github.com/wrong-owner/starter-fixture.git",
+  ]) {
+    git(checkout, ["remote", "set-url", "origin", url]);
+    refuseUnchanged("f misbound", /push URL/);
+  }
+  git(checkout, ["remote", "set-url", "origin", starterUrl]);
+  // No checkout, non-root, wrong branch and empty remote need no preparation.
+  rmSync(map);
+  refuseUnchanged("missing checkout", /no recorded/);
+  mapCheckout(join(checkout, "scripts"));
+  refuseUnchanged("non-root", /top level/);
+  mapCheckout();
+  git(checkout, ["switch", "-c", "other"]);
+  refuseUnchanged("wrong branch", /must be on main/);
+  git(checkout, ["switch", "main"]);
+  const empty = join(root, "empty.git");
+  git(root, ["init", "--quiet", "--bare", empty]);
+  setRemote(empty);
+  const absent = refresh(tag, head)[0];
+  assert.equal(absent.outcome, "refused");
+  assert.match(absent.reason, /remote ref|main/);
+  setRemote(remote);
+  const futureHead = head,
+    futureTag = tag;
+  git(core, ["commit", "--allow-empty", "-qm", "main moved beyond tag"]);
+  assert.equal(
+    measured("i main past tag", () => refresh(tag, head)[0]).outcome,
+    "skipped",
+  );
+  git(core, ["reset", "--hard", first.coreCommit]);
+  assert.equal(
+    measured("i later manifest", () => refresh("v10.0.0", first.coreCommit)[0])
+      .outcome,
+    "skipped",
+  );
+  git(core, ["reset", "--hard", futureHead]);
+  assert.equal(
+    refresh("v10.0.0", futureHead)[0].outcome,
+    "skipped",
+    "real close retains its immutable-tag guard when main matches head",
+  );
+  const declared = readFileSync(declaration);
+  rmSync(declaration);
+  assert.deepEqual(
+    measured("h no declaration", () => refresh(tag, head)),
+    [],
+  );
+  writeFileSync(declaration, declared);
+  const dryBefore = git(checkout, ["rev-parse", "HEAD"]).stdout,
+    receiptsBefore = JSON.stringify(pending());
+  const currentPreview = measured(
+    "preview",
+    () => refresh(futureTag, futureHead, true)[0],
+  );
+  assert.equal(currentPreview.outcome, "current");
+  assert.match(currentPreview.reason, /preview/);
+  assert.equal(git(checkout, ["rev-parse", "HEAD"]).stdout, dryBefore);
+  assert.equal(JSON.stringify(pending()), receiptsBefore);
+  // Remove the floor on the remote. A new core commit enters verification
+  // (third and last preparation) and fails without dirtying its checkout.
+  const contract = readFileSync(join(checkout, "CLAUDE.md"), "utf8");
+  writeFileSync(
+    join(checkout, "CLAUDE.md"),
+    contract.slice(contract.indexOf("<!-- dotln-harness:start -->")),
+  );
+  git(checkout, ["add", "CLAUDE.md"]);
+  git(checkout, ["commit", "-qm", "fixture missing floor"]);
+  git(checkout, ["push", remote, "main"]);
+  git(core, ["commit", "--allow-empty", "-qm", "next release"]);
+  head = git(core, ["rev-parse", "HEAD"]).stdout.trim();
+  tag = "v10.2.0";
+  git(core, ["tag", tag]);
+  const beforeFailed = refs(),
+    failedHead = git(checkout, ["rev-parse", "HEAD"]).stdout,
+    priorReceipts = JSON.stringify(pending());
+  const failed = measured("g failed verification", () => refresh(tag, head)[0]);
+  assert.equal(failed.outcome, "refused", JSON.stringify(failed));
+  assert.match(failed.reason, /floor|instruction|harness emit/);
+  assert.equal(refs(), beforeFailed);
+  assert.equal(git(checkout, ["rev-parse", "HEAD"]).stdout, failedHead);
+  assert.equal(git(checkout, ["status", "--porcelain"]).stdout, "");
+  assert.equal(JSON.stringify(pending()), priorReceipts);
+  assert.equal(worktrees().match(/^worktree /gm).length, 1);
+});
+
+test("starter staged tree refuses clean-filter changes to verified bytes", async () => {
+  const { assertStagedTree } = await import("./lib/starter-refresh.mjs");
+  const root = join(scratch, "starter-stage-filter");
+  mkdirSync(root);
+  initRepository(root);
+  writeFileSync(join(root, "KIT-MANIFEST.json"), "verified\n");
+  // Keep this file outside Git's racy-timestamp window: changing attributes
+  // alone must not restage it by chance through a metadata-cache refresh.
+  const priorTime = new Date("2000-01-01T00:00:00Z");
+  utimesSync(join(root, "KIT-MANIFEST.json"), priorTime, priorTime);
+  writeFileSync(
+    join(root, ".git/info/attributes"),
+    "KIT-MANIFEST.json filter=fixture\n",
+  );
+  git(root, ["config", "filter.fixture.clean", "sed s/verified/changed/g"]);
+  git(root, ["add", "KIT-MANIFEST.json"]);
+  assert.throws(
+    () => assertStagedTree(root, ["KIT-MANIFEST.json"]),
+    /staged tree differs from verified bytes/,
+  );
+  rmSync(join(root, ".git/info/attributes"));
+  git(root, ["add", "--renormalize", "--", "KIT-MANIFEST.json"]);
+  assert.doesNotThrow(() => assertStagedTree(root, ["KIT-MANIFEST.json"]));
+  git(root, ["commit", "-qm", "prior verified bytes"]);
+  writeFileSync(join(root, "KIT-MANIFEST.json"), "new verified bytes\n");
+  writeFileSync(
+    join(root, ".git/info/attributes"),
+    "KIT-MANIFEST.json filter=fixture\n",
+  );
+  git(root, [
+    "config",
+    "filter.fixture.clean",
+    "git show HEAD:KIT-MANIFEST.json",
+  ]);
+  git(root, ["add", "KIT-MANIFEST.json"]);
+  assert.equal(git(root, ["diff", "--cached", "--name-only"]).stdout, "");
+  assert.throws(
+    () => assertStagedTree(root, ["KIT-MANIFEST.json"]),
+    /staged tree differs from verified bytes/,
   );
 });

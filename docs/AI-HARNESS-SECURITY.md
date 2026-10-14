@@ -350,7 +350,10 @@ compatibility or effective settings. Host approval and actual CLI failures still
 apply. WO-132 changes repository policy; it does not alter account settings.
 
 Release close consumes the reviewer's committed product-gate row and runs no
-suite or dependency install. Its egress preflight and the host's permissions
+suite or dependency install. After publication it refreshes each declared export
+sibling through its recorded checkout, verifies the disposable worktree, and
+pushes one fast-forward commit to that sibling’s bound main through the
+hookless bare lane; no checkout configuration governs that push. Its egress preflight and the host's permissions
 still govern publication. Worktree cleanup follows publication as best effort;
 protected local settings or intake can block cleanup without undoing the release.
 

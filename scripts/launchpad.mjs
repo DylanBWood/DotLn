@@ -33,6 +33,7 @@ import { hasPackageSources, isMainModule } from "./lib/paths.mjs";
 import { checkLocalTerms } from "./lib/terms.mjs";
 import {
   buildHashOf,
+  manifestBuildHash,
   receiptPath,
   resolveReceipt,
   writeReceipt,
@@ -57,6 +58,8 @@ import {
 } from "node:fs";
 import { basename, dirname, join, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
+
+export { manifestBuildHash } from "./lib/siblings.mjs";
 
 export const KIT_MANIFEST = "KIT-MANIFEST.json";
 // The manifest an update plans, written beside the current one before the
@@ -1102,6 +1105,44 @@ const closeWithReceipt = (launchpad, resolved, fields, command, target) => {
   }
 };
 
+/** Reproduce and check the predicted bundle inside an exported tree. Existing
+ * instances keep their seed floor; only its generated block must match. */
+export async function verifyExportTree(
+  target,
+  bundle,
+  { instructionBlock = false } = {},
+) {
+  // The workspace links npm ci will recreate, so the export's own emit can
+  // import its runtime before the fork installs anything.
+  mkdirSync(join(target, "node_modules/@dotln"), { recursive: true });
+  for (const workspace of KIT_WORKSPACES) {
+    const link = join(target, "node_modules/@dotln", basename(workspace));
+    if (lstatSync(link, { throwIfNoEntry: false })) continue;
+    symlinkSync(`../../${workspace}`, link);
+  }
+  const { harnessInstructionBlock } = await import("./lib/harness.mjs");
+  harnessInExport(target, "emit");
+  for (const [path, contents] of bundle.surfaces) {
+    const file = join(target, path);
+    if (!lstatSync(file, { throwIfNoEntry: false })?.isFile())
+      throw new Error(
+        `the export's harness emit wrote no regular file at a predicted surface: ${path}`,
+      );
+    const actual = readFileSync(file, "utf8");
+    const compare =
+      instructionBlock && path === INSTRUCTION_FILE
+        ? harnessInstructionBlock
+        : (text) => text;
+    if (compare(actual) !== compare(contents))
+      throw new Error(
+        `the export's harness emit differs from the bundle core's compiled packages predicted: ${path}`,
+      );
+  }
+  // The export verifies itself: its own check over the snapshot its emit
+  // installed and every generated surface.
+  harnessInExport(target, "check");
+}
+
 /** Export into an empty destination, initialize its repository and run its
  * own harness emit/check. A post-write failure leaves a partial export for
  * inspection without a manifest; a receipt failure leaves a complete one. */
@@ -1140,29 +1181,7 @@ export async function exportKit(destination, options = {}) {
       throw new Error(
         `the fork's Git would ignore ${ignored.length} kit ${ignored.length === 1 ? "file" : "files"}, so its first commit would lack them: ${ignored.slice(0, 5).join(", ")}${ignored.length > 5 ? ", ..." : ""}. A host excludes file (core.excludesFile) is the usual cause; remove its pattern or negate it in the export's .gitignore`,
       );
-    // The workspace links npm ci will recreate, so the export's own emit can
-    // import its runtime before the fork installs anything.
-    mkdirSync(join(target, "node_modules/@dotln"), { recursive: true });
-    for (const workspace of KIT_WORKSPACES)
-      symlinkSync(
-        `../../${workspace}`,
-        join(target, "node_modules/@dotln", basename(workspace)),
-      );
-    harnessInExport(target, "emit");
-    for (const [path, contents] of bundle.surfaces) {
-      const file = join(target, path);
-      if (!lstatSync(file, { throwIfNoEntry: false })?.isFile())
-        throw new Error(
-          `the export's harness emit wrote no regular file at a predicted surface: ${path}`,
-        );
-      if (readFileSync(file, "utf8") !== contents)
-        throw new Error(
-          `the export's harness emit differs from the bundle core's compiled packages predicted: ${path}`,
-        );
-    }
-    // The export verifies itself: its own check over the snapshot its emit
-    // installed and every generated surface.
-    harnessInExport(target, "check");
+    await verifyExportTree(target, bundle);
   } catch (error) {
     throw new Error(
       `${error.message}; the partial export at ${target} has no ${KIT_MANIFEST}: remove it before exporting again`,
@@ -1179,7 +1198,7 @@ export async function exportKit(destination, options = {}) {
     "export",
     target,
   );
-  return { destination: target, ...summary, receipt };
+  return { destination: target, ...summary, receipt, bundle };
 }
 
 export const KIT_ACTIONS = "scripts/kit/KIT-ACTIONS.json";
@@ -1862,19 +1881,6 @@ export async function updateKit(destination, options = {}) {
   return applyKitUpdate(await planKitUpdate(destination, options));
 }
 
-const manifestBuildHash = (bytes, label) => {
-  const manifest = readJson(bytes, label);
-  const snapshots = manifest.profiles?.map(
-    (entry) => entry.profile?.runtime?.snapshot,
-  );
-  if (
-    !Array.isArray(snapshots) ||
-    !snapshots.length ||
-    new Set(snapshots).size !== 1
-  )
-    throw new Error(`no single runtime snapshot in ${label}`);
-  return buildHashOf(snapshots[0]);
-};
 const installedBuildHash = (root) => {
   try {
     return manifestBuildHash(

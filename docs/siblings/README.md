@@ -1,6 +1,6 @@
 # Siblings
 
-One entry per declared sibling of this repository: its purpose and upstream relation from [the declaration](siblings.json); the kit version, build hash and manifest hash it carries, its receipts and the orders closed in core between consecutive receipts from the receipts `launchpad export` and `--update` write under `docs/evidence/siblings/`, read with the tag and the committed control records at each receipt's commit. A field no receipt supplies reads "not evidenced".
+One entry per declared sibling of this repository: its purpose and upstream relation from [the declaration](siblings.json); the kit version, build hash and manifest hash it carries, its receipts and the orders closed in core between consecutive receipts from the receipts under `docs/evidence/siblings/`, written by `launchpad export` and `--update` or carried by the next `worktree start` from release close's pending starter-refresh lane, read with the tag and the committed control records at each receipt's commit. A field no receipt supplies reads "not evidenced".
 
 The check validates [captured tag observations](tag-observations.json) against this repository's Git: an exact tag must point at its receipt commit, and a nearest tag must be at or below it. Later tags are reported as newer evidence until the next generation refreshes both files.
 

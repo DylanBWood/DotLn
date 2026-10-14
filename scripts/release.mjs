@@ -7,6 +7,7 @@ import {
   currentHarnessSessionReport,
   refreshHarnessRuntime,
 } from "./lib/harness-runtime.mjs";
+import { exportSiblings, readDeclaration } from "./lib/siblings.mjs";
 import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
 
 import {
@@ -224,6 +225,10 @@ export function releaseCloseSummary(record) {
         )
       )
         lines.push(line(textLine));
+  for (const row of record.starterRefresh ?? [])
+    lines.push(
+      `Starter refresh ${row.sibling}: ${row.outcome}; ${line(row.reason ?? `${row.before} -> ${row.after}`)}${row.outcome === "refreshed" ? `; ${row.before} -> ${row.after}` : ""}.`,
+    );
   lines.push(`Cleanup: ${record.cleanup.outcome}.`);
   if (record.targetCleanup)
     lines.push(
@@ -2255,6 +2260,47 @@ const publishTag = (root, tag, commit, message, tagger, publication) => {
   }
   return object;
 };
+// A refresh failure is a completion blocker of an already published release.
+// Declaration and import failures are recorded here too; none changes its
+// publication or cleanup outcome.
+const refreshPublishedStarters = async (
+  root,
+  head,
+  tag,
+  workOrderId,
+  dryRun,
+  record,
+) => {
+  try {
+    if (!exportSiblings(readDeclaration(root)).length) return;
+    const { refreshStarters } = await import("./lib/starter-refresh.mjs");
+    record.starterRefresh = await refreshStarters({
+      main: root,
+      head,
+      tag,
+      dryRun,
+    });
+  } catch (error) {
+    record.starterRefresh = [
+      {
+        sibling: "declaration",
+        outcome: "refused",
+        reason: String(error.message).replaceAll(root, "<launchpad>"),
+      },
+    ];
+  }
+  for (const row of record.starterRefresh.filter(
+    (row) => row.outcome === "refused",
+  )) {
+    record.blockers.push({
+      action: "starter-refresh",
+      reason: `${row.sibling}: ${row.reason}`,
+      command: releaseCloseCommand(root, workOrderId),
+    });
+    process.exitCode = 1;
+  }
+};
+
 const close = async (workOrderId, parsed, record) => {
   const { flags, material: overrides } = parsed;
   const publish = flags.includes("--publish");
@@ -2402,6 +2448,15 @@ const close = async (workOrderId, parsed, record) => {
         `Dry run: would fast-forward main to ${head}, validate the recorded reviewer gate, and reconcile the existing Release.\n${JSON.stringify(existing.manifest, null, 2)}\n`,
       );
       finishPublishedWorktree(root, workOrderId, true, record, overrides);
+      if (publish)
+        await refreshPublishedStarters(
+          root,
+          head,
+          authority.version,
+          workOrderId,
+          true,
+          record,
+        );
       return;
     }
     const projection = publish
@@ -2414,8 +2469,17 @@ const close = async (workOrderId, parsed, record) => {
       : undefined;
     record.publication.outcome = "already-published";
     record.publication.release = projection ?? null;
-    if (publish)
+    if (publish) {
       finishPublishedWorktree(root, workOrderId, false, record, overrides);
+      await refreshPublishedStarters(
+        root,
+        head,
+        authority.version,
+        workOrderId,
+        false,
+        record,
+      );
+    }
     writeOutput(
       `${authority.version} is already published from ${head}${projection ? `; GitHub Release ${projection}` : ""}. ${mainStatus}\n`,
     );
@@ -2455,6 +2519,15 @@ const close = async (workOrderId, parsed, record) => {
       `Dry run: would fast-forward main to ${head}, run surface checks, build missing or mismatched pinned runtime, validate this reviewer-gate manifest, ${publish ? "create and push the annotated tag and create the Release" : "prepare the release"}, then attempt worktree cleanup. No suite, install or CLI smoke runs.\n${JSON.stringify(manifest, null, 2)}\n`,
     );
     finishPublishedWorktree(root, workOrderId, true, record, overrides);
+    if (publish)
+      await refreshPublishedStarters(
+        root,
+        head,
+        authority.version,
+        workOrderId,
+        true,
+        record,
+      );
     return;
   }
   const humanLayer = releaseEdition(root, manifest);
@@ -2484,6 +2557,14 @@ const close = async (workOrderId, parsed, record) => {
   record.publication.release = projection;
   ensureTrackedClean(root);
   finishPublishedWorktree(root, workOrderId, false, record, overrides);
+  await refreshPublishedStarters(
+    root,
+    head,
+    authority.version,
+    workOrderId,
+    false,
+    record,
+  );
   writeOutput(
     `Published annotated ${authority.version} (${tagObject}) for ${head}; GitHub Release ${projection}. ${mainStatus}\n`,
   );
@@ -2850,6 +2931,7 @@ const main = async () => {
         refusal: null,
       },
       cleanup: { outcome: "not-attempted", worktrees: [] },
+      starterRefresh: [],
       material: [],
       removals: [],
       overrides: parsed.material,

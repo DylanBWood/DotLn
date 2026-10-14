@@ -129,6 +129,7 @@ const fixture = (base) => {
     "resume.mjs",
     "release.mjs",
     "license-surfaces.mjs",
+    "siblings.mjs",
   ])
     cpSync(join(TOOL_ROOT, "scripts", name), join(main, "scripts", name), {
       recursive: false,
@@ -502,8 +503,45 @@ test("WO-072 criterion 3: unreadable start inputs refuse without worktree, branc
 
 test("WO-072 criterion 4: target close requires containment, removes both worktrees, creates no tag and retries", () =>
   withFixture((f) => {
+    write(
+      f.main,
+      "records/siblings/siblings.json",
+      JSON.stringify({
+        schemaVersion: 1,
+        siblings: [
+          {
+            id: "starter-fixture",
+            purpose: "Export fixture",
+            relation: { kind: "export", coreCommit: null },
+            capabilityRows: [],
+          },
+        ],
+      }),
+    );
+    git(f.main, "add", "records/siblings/siblings.json");
+    git(f.main, "commit", "-qm", "Declare export sibling");
+    git(f.main, "push", "-q", "origin", "main");
     f.mapClone();
+    const pending =
+      "records/state/local/sibling-receipts/starter-fixture/2026-10-13T12-00-00-000Z.json";
+    write(
+      f.main,
+      pending,
+      JSON.stringify({
+        sibling: "starter-fixture",
+        coreCommit: git(f.main, "rev-parse", "HEAD"),
+        manifestHash: `sha256:${"1".repeat(64)}`,
+        buildHash: "fnv1a64:1234567890abcdef",
+        date: "2026-10-13T12:00:00.000Z",
+      }) + "\n",
+    );
     f.start();
+    assert.equal(existsSync(join(f.main, pending)), false);
+    assert.match(
+      f.ok(f.call(f.orderRoot, f.orderRoot, "siblings", ["index", "--check"])),
+      /current/,
+    );
+
     write(f.target, "change.txt", "changed\n");
     git(f.target, "add", "-A");
     git(f.target, "commit", "-qm", "Target change");
@@ -557,6 +595,7 @@ test("WO-072 criterion 4: target close requires containment, removes both worktr
         "utf8",
       ),
     );
+    assert.deepEqual(record.starterRefresh, []);
     assert.equal(record.publication.outcome, "no-release");
     assert.equal(record.publication.tag, null);
     assert.equal(record.targetCleanup.outcome, "removed");
@@ -671,3 +710,132 @@ test("preparation retry resumes the recorded pair after bootstrap or harness fai
       );
     });
 });
+
+test("clone admits declared export siblings, never consumers or unknown names", () =>
+  withFixture((f) => {
+    write(
+      f.main,
+      "records/siblings/siblings.json",
+      JSON.stringify({
+        schemaVersion: 1,
+        siblings: [
+          {
+            id: "starter-fixture",
+            purpose: "Fixture export",
+            relation: { kind: "export", coreCommit: null },
+            capabilityRows: [],
+          },
+          {
+            id: "consumer-fixture",
+            purpose: "Fixture consumer",
+            relation: { kind: "consumer", contractVersion: "v1" },
+            capabilityRows: [],
+          },
+        ],
+      }),
+    );
+    f.ok(f.worktree("clone", "starter-fixture", f.clone));
+    assert.equal(
+      JSON.parse(readFileSync(cloneMapPath(f.main), "utf8"))["starter-fixture"],
+      f.clone,
+    );
+    assert.equal(git(f.main, "ls-files", "--", cloneMapPath(f.main)), "");
+    git(f.main, "check-ignore", "--quiet", "--no-index", cloneMapPath(f.main));
+    for (const id of ["consumer-fixture", "undeclared"]) {
+      const refused = f.worktree("clone", id, f.clone);
+      assert.equal(refused.status, 1);
+      assert.match(refused.stderr, /unknown repository id/);
+    }
+  }));
+
+test("self start preserves a failed receipt carry and its printed retry completes activation", () =>
+  withFixture((f) => {
+    write(
+      f.main,
+      "records/siblings/siblings.json",
+      JSON.stringify({
+        schemaVersion: 1,
+        siblings: [
+          {
+            id: "starter-fixture",
+            purpose: "Fixture export",
+            relation: { kind: "export", coreCommit: null },
+            capabilityRows: [],
+          },
+        ],
+      }),
+    );
+    write(
+      f.main,
+      "records/siblings/README.md/obstruction",
+      "registry failure fixture",
+    );
+    const authority = readFileSync(join(f.main, f.order), "utf8").replace(
+      /^\*\*Repository:\*\*.*\n/m,
+      "",
+    );
+    write(f.main, f.order, authority);
+    git(f.main, "add", "-A");
+    git(f.main, "commit", "-qm", "Self carry failure fixture");
+    git(f.main, "push", "-q", "origin", "main");
+    const pending =
+      "records/state/local/sibling-receipts/starter-fixture/2026-10-13T12-00-00-000Z.json";
+    write(
+      f.main,
+      pending,
+      JSON.stringify({
+        sibling: "starter-fixture",
+        coreCommit: git(f.main, "rev-parse", "HEAD"),
+        manifestHash: `sha256:${"1".repeat(64)}`,
+        buildHash: "fnv1a64:1234567890abcdef",
+        date: "2026-10-13T12:00:00.000Z",
+      }) + "\n",
+    );
+    const failed = f.worktree("start", "WO-999", f.order);
+    assert.notEqual(failed.status, 0);
+    assert.match(
+      failed.stderr,
+      /created and preserved.*contained regular file/,
+    );
+    assert.ok(existsSync(f.orderRoot));
+    assert.ok(existsSync(join(f.main, pending)));
+    assert.equal(
+      existsSync(join(f.orderRoot, "records/state/orders/WO-999.jsonl")),
+      false,
+    );
+    const carried = join(
+      f.orderRoot,
+      "records/evidence/siblings/starter-fixture/2026-10-13T12-00-00-000Z.json",
+    );
+    assert.deepEqual(
+      readFileSync(carried),
+      readFileSync(join(f.main, pending)),
+    );
+    rmSync(join(f.orderRoot, "records/siblings/README.md"), {
+      recursive: true,
+    });
+    const command = failed.stderr.match(
+      /retry: (node --input-type=module -e .*)/,
+    )[1];
+    const retried = spawnSync("/bin/zsh", ["-c", command], {
+      cwd: f.main,
+      env: f.env,
+      encoding: "utf8",
+    });
+    assert.equal(retried.status, 0, retried.stderr || retried.stdout);
+    assert.equal(existsSync(join(f.main, pending)), false);
+    assert.match(
+      f.ok(f.call(f.orderRoot, f.orderRoot, "siblings", ["index", "--check"])),
+      /current/,
+    );
+    assert.equal(
+      JSON.parse(
+        f.ok(f.call(f.orderRoot, f.orderRoot, "resume", ["status", "--json"])),
+      ).phase,
+      "active",
+    );
+    assert.equal(
+      git(f.main, "status", "--porcelain", "--untracked-files=all"),
+      "",
+    );
+  }));

@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+import { pathToFileURL } from "node:url";
+import {
+  capturePendingReceipts,
+  readPendingReceipts,
+} from "./lib/siblings.mjs";
 import { refreshHarnessRuntime } from "./lib/harness-runtime.mjs";
 import { findLaunchpad, loadConfig } from "./lib/config.mjs";
 import { existsSync, lstatSync, readFileSync, realpathSync } from "node:fs";
@@ -35,6 +40,7 @@ import {
   containedRegularFile,
   describeIgnoredMaterial,
   workOrderAuthorityPath,
+  isMainModule,
 } from "./lib/paths.mjs";
 import { statusProjection } from "./resume.mjs";
 import { readControl } from "./lib/control-store.mjs";
@@ -357,6 +363,93 @@ const reconcileDerivedWorktrees = (
   }
   return lines;
 };
+const carrySiblingReceipts = async (mainPath, target, pending) => {
+  if (!pending.length) return;
+  const { carryPendingReceipts } = await import("./siblings.mjs");
+  const carried = carryPendingReceipts(mainPath, target, pending);
+  process.stdout.write(`Carried sibling receipts: ${carried.join(", ")}.\n`);
+};
+
+// A registry failure preserves the new worktree. The printed recovery invokes
+// the same finish sequence with the branch, base and authority bound to the
+// initial creation, rather than creating a second branch or discarding files.
+export async function completeSelfStart(
+  mainPath,
+  target,
+  branch,
+  base,
+  workOrderId,
+  workOrderPath,
+  authorityHash,
+  siblingReceipts,
+) {
+  physicalDirectory(mainPath);
+  if (
+    runGit(mainPath, ["rev-parse", "--show-toplevel"]) !== mainPath ||
+    mainWorktree(mainPath) !== mainPath ||
+    runGit(mainPath, ["symbolic-ref", "--short", "HEAD"]) !== "main"
+  )
+    throw new Error("preserved start main identity differs");
+  const registered = parseWorktrees(mainPath).find(
+    (row) => row.worktree === target,
+  );
+  physicalDirectory(target);
+  if (
+    registered?.branch !== `refs/heads/${branch}` ||
+    runGit(target, ["rev-parse", "--show-toplevel"]) !== target ||
+    runGit(target, ["rev-parse", "HEAD"]) !== base ||
+    runGit(target, ["symbolic-ref", "--short", "HEAD"]) !== branch
+  )
+    throw new Error(
+      "preserved start worktree differs from its creation identity",
+    );
+  if (
+    createHash("sha256")
+      .update(
+        readFileSync(
+          workOrderAuthorityPath(target, workOrderId, workOrderPath),
+        ),
+      )
+      .digest("hex") !== authorityHash
+  )
+    throw new Error("preserved start authority differs");
+  await carrySiblingReceipts(mainPath, target, siblingReceipts);
+  const state = readControl(target).orders.get(workOrderId)?.state;
+  let output = "";
+  if (!state || ["closed", "withdrawn"].includes(state.phase)) {
+    const activated = spawnSync(
+      process.execPath,
+      [
+        join(target, "scripts/resume.mjs"),
+        "activate",
+        workOrderId,
+        workOrderPath,
+      ],
+      {
+        cwd: target,
+        encoding: "utf8",
+        env: { ...process.env, DOTLN_LAUNCHPAD: target },
+      },
+    );
+    if (activated.status !== 0)
+      throw new Error(
+        `resume activation failed: ${(activated.stderr || activated.stdout).trim()}`,
+      );
+    output = activated.stdout;
+  } else if (state.phase !== "active" || state.workOrderPath !== workOrderPath)
+    throw new Error("preserved start activation differs");
+  const bootstrap = join(target, "scripts/bootstrap.mjs");
+  if (existsSync(bootstrap)) {
+    const prepared = spawnSync(process.execPath, [bootstrap], {
+      cwd: target,
+      stdio: "inherit",
+      env: { ...process.env, DOTLN_LAUNCHPAD: target },
+    });
+    if (prepared.status !== 0) throw new Error("worktree preparation failed");
+  }
+  return output;
+}
+
 // A retained start receipt owns only the exact pair it preflighted. Retrying
 // resumes preparation; it never adopts a different directory or resets a branch.
 const startTargetWorktree = async (mainPath, entry) => {
@@ -413,6 +506,11 @@ const startTargetWorktree = async (mainPath, entry) => {
       createHash("sha256").update(source).digest("hex") !== entry.authorityHash
     )
       throw new Error("pending start authority differs; source retained");
+    await carrySiblingReceipts(
+      mainPath,
+      launchpad,
+      entry.siblingReceipts ?? capturePendingReceipts(mainPath),
+    );
     const state = readControl(launchpad).orders.get(workOrderId)?.state;
     if (!state || ["closed", "withdrawn"].includes(state.phase)) {
       const activated = spawnSync(
@@ -582,7 +680,9 @@ const main = async () => {
 
   if (action === "clone") {
     if (!workOrderId || actionArgs.length !== 1)
-      throw new Error("usage: worktree clone <repository-id> <absolute-path>");
+      throw new Error(
+        "usage: worktree clone <repository-or-export-sibling-id> <absolute-path>",
+      );
     recordRepositoryClone(mainPath, workOrderId, actionArgs[0]);
     process.stdout.write(`Recorded local clone for ${workOrderId}.\n`);
     return;
@@ -622,6 +722,7 @@ const main = async () => {
     };
     const initial = readStartAuthority(Boolean(pending));
     ensureClean(mainPath);
+    readPendingReceipts(mainPath);
     if (pending) {
       if (
         !initial ||
@@ -648,9 +749,11 @@ const main = async () => {
     runGit(mainPath, ["merge", "--ff-only", "origin/main"]);
     // Re-read the authority after fast-forwarding, before either worktree exists.
     const targetPlan = readStartAuthority();
+    const siblingReceipts = capturePendingReceipts(mainPath);
     if (targetPlan) {
       const entry = {
         ...targetPlan,
+        siblingReceipts,
         launchpad: target,
         runtimeRoot: mainPath,
         workOrderPath,
@@ -664,39 +767,31 @@ const main = async () => {
       return;
     }
     runGit(mainPath, ["worktree", "add", target, "-b", branch, "origin/main"]);
-    const activated = spawnSync(
-      "node",
-      [
-        join(target, "scripts/resume.mjs"),
-        "activate",
-        workOrderId,
-        workOrderPath,
-      ],
-      {
-        cwd: target,
-        encoding: "utf8",
-        env: { ...process.env, DOTLN_LAUNCHPAD: target },
-      },
-    );
-    if (activated.status !== 0)
+    const base = runGit(target, ["rev-parse", "HEAD"]);
+    const authorityHash = createHash("sha256")
+      .update(readFileSync(join(target, workOrderPath)))
+      .digest("hex");
+    const bindings = [
+      mainPath,
+      target,
+      branch,
+      base,
+      workOrderId,
+      workOrderPath,
+      authorityHash,
+      siblingReceipts,
+    ];
+    let activatedOutput;
+    try {
+      activatedOutput = await completeSelfStart(...bindings);
+    } catch (error) {
+      const program = `import {completeSelfStart} from ${JSON.stringify(pathToFileURL(join(mainPath, "scripts/worktree.mjs")).href)}; await completeSelfStart(...${JSON.stringify(bindings)});`;
       throw new Error(
-        `worktree created but resume activation failed: ${(activated.stderr || activated.stdout).trim()}`,
+        `worktree created and preserved at ${target}; ${error.message}. Correct the reported condition and retry: node --input-type=module -e ${shellQuote(program)}`,
       );
-    // A fresh Git worktree has no ignored dependencies or pinned hook runtime.
-    // Prepare it before telling the operator to enter either model session.
-    const bootstrap = join(target, "scripts/bootstrap.mjs");
-    if (existsSync(bootstrap)) {
-      const prepared = spawnSync(process.execPath, [bootstrap], {
-        cwd: target,
-        stdio: "inherit",
-      });
-      if (prepared.status !== 0)
-        throw new Error(
-          `worktree created and preserved at ${target}; preparation failed. Retry node scripts/bootstrap.mjs there. Prompts remain available.`,
-        );
     }
     process.stdout.write(
-      `Created ${target} on ${branch}.\n${activated.stdout}Phase: active.\nNext (run manually):\n  cd ${shellQuote(target)}\n  codex\n  enter: resume: next\n`,
+      `Created ${target} on ${branch}.\n${activatedOutput}Phase: active.\nNext (run manually):\n  cd ${shellQuote(target)}\n  codex\n  enter: resume: next\n`,
     );
   } else if (action === "publish" && actionArgs[0] === "--target") {
     // A target order publishes its source-change episode in the target
@@ -1039,16 +1134,17 @@ const main = async () => {
     );
   } else {
     throw new Error(
-      "usage: worktree clone <repository-id> <absolute-path> | worktree start WO-NNN <work-order-path> | worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue] | worktree publish WO-NNN --title <title> --body-file <path> | worktree publish WO-NNN --target <request.json> [--require-deliverable-ready] | worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO] | worktree resolve-pr --request <review-loop-request.json> | worktree finish WO-NNN [--dry-run] | worktree settle WO-NNN [--dry-run]",
+      "usage: worktree clone <repository-or-export-sibling-id> <absolute-path> | worktree start WO-NNN <work-order-path> | worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue] | worktree publish WO-NNN --title <title> --body-file <path> | worktree publish WO-NNN --target <request.json> [--require-deliverable-ready] | worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO] | worktree resolve-pr --request <review-loop-request.json> | worktree finish WO-NNN [--dry-run] | worktree settle WO-NNN [--dry-run]",
     );
   }
 };
 
-try {
-  await main();
-} catch (error) {
-  process.stderr.write(
-    `error: ${error instanceof Error ? error.message : String(error)}\n`,
-  );
-  process.exitCode = 1;
-}
+if (isMainModule(import.meta.url))
+  try {
+    await main();
+  } catch (error) {
+    process.stderr.write(
+      `error: ${error instanceof Error ? error.message : String(error)}\n`,
+    );
+    process.exitCode = 1;
+  }

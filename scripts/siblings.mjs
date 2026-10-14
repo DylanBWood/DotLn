@@ -1,4 +1,11 @@
 #!/usr/bin/env node
+import {
+  decodeReceipt,
+  assertReceiptParents,
+  capturePendingReceipts,
+  pendingReceiptPath,
+  receiptPath,
+} from "./lib/siblings.mjs";
 // `siblings index` writes the sibling registry: one entry per declared
 // sibling with its purpose and upstream relation from the declaration, and
 // the kit version, build hash, receipts and the orders closed in core
@@ -14,7 +21,7 @@ import { firstDifferingLine } from "./lib/validation.mjs";
 import { findLaunchpad } from "./lib/config.mjs";
 import { readControl } from "./lib/control-store.mjs";
 import { describeTag, runGit } from "./lib/git.mjs";
-import { exact, json } from "./lib/helpers.mjs";
+import { exact, json, sha256Hex } from "./lib/helpers.mjs";
 import { containedRegularFile, isMainModule, parseJson } from "./lib/paths.mjs";
 import {
   COMMIT,
@@ -28,6 +35,7 @@ import {
 } from "./lib/siblings.mjs";
 import {
   existsSync,
+  lstatSync,
   mkdirSync,
   readFileSync,
   renameSync,
@@ -158,7 +166,7 @@ export const renderRegistry = ({ root, declaration, receipts, facts }) => {
   const lines = [
     "# Siblings",
     "",
-    `One entry per declared sibling of this repository: its purpose and upstream relation from [the declaration](${DECLARATION_FILE}); the kit version, build hash and manifest hash it carries, its receipts and the orders closed in core between consecutive receipts from the receipts \`launchpad export\` and \`--update\` write under \`${receiptsPath(root)}/\`, read with the tag and the committed control records at each receipt's commit. A field no receipt supplies reads "${NOT_EVIDENCED}".`,
+    `One entry per declared sibling of this repository: its purpose and upstream relation from [the declaration](${DECLARATION_FILE}); the kit version, build hash and manifest hash it carries, its receipts and the orders closed in core between consecutive receipts from the receipts under \`${receiptsPath(root)}/\`, written by \`launchpad export\` and \`--update\` or carried by the next \`worktree start\` from release close's pending starter-refresh lane, read with the tag and the committed control records at each receipt's commit. A field no receipt supplies reads "${NOT_EVIDENCED}".`,
     "",
     `The check validates [captured tag observations](${relativeTo(tagObservationsPath(root))}) against this repository's Git: an exact tag must point at its receipt commit, and a nearest tag must be at or below it. Later tags are reported as newer evidence until the next generation refreshes both files.`,
     "",
@@ -289,6 +297,61 @@ export const checkRegistry = ({ path, expected, actual, receipts }) => {
     `${path} is stale at line ${firstDifferingLine(expected, actual)}; run ${COMMAND}`,
   );
 };
+
+/** Copy the start's captured receipt cohort and consume sources only after
+ * registry generation. A retry can finish from identical carried bytes even
+ * after another start consumed the pending lane. */
+export function carryPendingReceipts(
+  main,
+  target,
+  rows = capturePendingReceipts(main),
+) {
+  if (!rows.length) return [];
+  const readBound = (root, path, hash) => {
+    assertReceiptParents(root, path);
+    const file = join(root, path);
+    if (!lstatSync(file, { throwIfNoEntry: false })) return null;
+    if (!containedRegularFile(file, root))
+      throw new Error(`receipt is not a contained regular file: ${path}`);
+    const bytes = readFileSync(file);
+    if (sha256Hex(bytes) !== hash)
+      throw new Error(`carried receipt collision or changed source: ${path}`);
+    return bytes;
+  };
+  const copies = rows.map((row) => {
+    const { path: recordedPath, sha256: recordedHash, ...receipt } = row;
+    decodeReceipt(json(receipt), "captured receipt");
+    const source = pendingReceiptPath(main, row.sibling, row.date);
+    const path = receiptPath(target, row.sibling, row.date);
+    if (recordedPath !== source || !/^[0-9a-f]{64}$/.test(recordedHash))
+      throw new Error("invalid captured receipt binding");
+    const incoming = readBound(main, source, row.sha256);
+    const existing = readBound(target, path, row.sha256);
+    if (!incoming && !existing)
+      throw new Error(`captured receipt is missing: ${source}`);
+    return { source, path, hash: row.sha256, bytes: incoming ?? existing };
+  });
+  for (const { path, bytes, hash } of copies) {
+    assertReceiptParents(target, path);
+    const destination = join(target, path);
+    mkdirSync(dirname(destination), { recursive: true });
+    try {
+      writeFileSync(destination, bytes, { flag: "wx" });
+    } catch (error) {
+      if (error.code !== "EEXIST") throw error;
+    }
+    readBound(target, path, hash);
+  }
+  writeRegistry(target);
+  for (const { source, path, hash } of copies) {
+    if (!readBound(target, path, hash))
+      throw new Error(`carried receipt disappeared: ${path}`);
+    readBound(main, source, hash);
+  }
+  for (const { source, hash } of copies)
+    if (readBound(main, source, hash)) rmSync(join(main, source));
+  return copies.map(({ path }) => path);
+}
 
 /** Generate the registry, or check it when `check` is set: the receipts are
  * read and decoded before a line is rendered or written; a generation writes
