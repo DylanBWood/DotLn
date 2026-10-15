@@ -4144,6 +4144,20 @@
           "title": "Workstream application — end-user workflow candidate",
           "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
           "missing": false
+        },
+        {
+          "hash": "4164f9a19796b9992516d2d97b4f762e8207b3f7c44ef54351a98f907f21b9c7",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
+        },
+        {
+          "hash": "bf181f4de53b0f345cf5cce7ffc7646e440b119a2815df3bc53c00473978de31",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -26217,6 +26231,14 @@
           "reopenWhen": "a reused npm test row is shown to have passed over a changed input named here, or an order edits gate-evidence.mjs or the release suite",
           "targets": [],
           "at": "2026-10-11T01:26:25.017Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-recorded by WO-210's final review (FINAL-001, D027) because the condition 'an order edits the release suite' fired: WO-210 adds a target-order surface case and Finder-metadata cases to scripts/test-release.sh and makes the kit's license-surfaces row read docs/LEGAL.md where the instance declares it, as core's row does. The suite gained no read of an identity-excluded input (its new fixture copies scripts/kit/, which the code identity covers), gate-evidence.mjs is unchanged, and no reused row has been shown to pass over a changed copy; the remainder stays with planning as the 2026-10-11 pass routed it (candidate FUP-369525016cc270e1).",
+          "reopenWhen": "a reused npm test row is shown to have passed over a changed input named here, or an order edits gate-evidence.mjs or the release suite's reads of control or release inputs",
+          "targets": [],
+          "at": "2026-10-14T21:36:49.645Z"
         }
       ]
     },
@@ -28664,6 +28686,14 @@
             "WO-210"
           ],
           "at": "2026-10-13T19:07:13.667Z"
+        },
+        {
+          "sourceRevision": 6,
+          "status": "settled",
+          "reason": "WO-210-D010: malformed target publication arguments refuse before main-worktree lookup in the passing target-publish suite.",
+          "reopenWhen": "The recorded behavior fails in an instance or its regression fixture.",
+          "targets": [],
+          "at": "2026-10-14T11:14:49.068Z"
         }
       ]
     },
@@ -29203,6 +29233,14 @@
           "reopenWhen": "a reused npm test row is shown to have passed over a changed input named here, an order edits gate-evidence.mjs or the release suite, or a product task legitimately needs a recursive walk from the root",
           "targets": [],
           "at": "2026-10-11T01:26:24.937Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Re-recorded by WO-210's final review (FINAL-001, D027) because the condition 'an order edits the release suite' fired on WO-210's scripts/test-release.sh edit (a target-order surface case and Finder-metadata cases). The route stands: the legal and license files are read fresh by the document gate's license-surfaces and release-surfaces rows, which after WO-210 also run in a kit; docs/control/budgets.json and docs/releases/tag-manifest.template.json (now carried by the kit as well) are still to be keyed into gateCodeIdentity by the order that edits gate-evidence.mjs; copy, shell and native reads stay outside the observed boundary.",
+          "reopenWhen": "a reused npm test row is shown to have passed over a changed input named here, an order edits gate-evidence.mjs or the release suite's reads of control or release inputs, or a product task legitimately needs a recursive walk from the root",
+          "targets": [],
+          "at": "2026-10-14T21:36:49.712Z"
         }
       ]
     },
@@ -30387,6 +30425,14 @@
           "reopenWhen": "a real verify dispatch errors after recording; a final review misclasses a finding for want of the definitions; a reviewer self-fix goes unlisted; an advisoryDecision is used again; or the next order that edits scripts/resume.mjs or the reviewer loadout activates",
           "targets": [],
           "at": "2026-10-12T17:05:51.566Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-recorded by WO-210's final review (FINAL-001, D027) because the condition 'the next order that edits scripts/resume.mjs' fired. Item (1)'s hazard occurred inside WO-210: VER-001 F3 found a target order's briefing throwing a TypeError after verify and final-review had appended their transition while the repository was unregistered; WO-210-D016 repaired the briefing to name the missing registration, with a fixture across next, verify, final-review and fix, and left the append order unchanged. The other items' conditions did not occur: both report-recording dispatches recorded without error, this review classed its findings from product 07's definitions, and no reviewer self-fix went unlisted.",
+          "reopenWhen": "a real verify dispatch errors after recording; a final review misclasses a finding for want of the definitions; a reviewer self-fix goes unlisted; an advisoryDecision is used again; or the next order that edits scripts/resume.mjs or the reviewer loadout activates",
+          "targets": [],
+          "at": "2026-10-14T21:36:49.778Z"
         }
       ]
     },
@@ -31865,6 +31911,20 @@
           "title": "WO-074-D010: A fork's publish check should read its operator author identity from instance data rather than scripts/lib/contributions.mjs's constant, so the kit carries no instance identity in a byte-",
           "summary": "{ \"id\": \"WO-074-D010\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next\", \"decision\": \"Write-backs landed in place: product 03 §Platform and instance boundary gains one undated paragraph naming the kit's first slice (the command, what it carries, the manifest, the seeds, the terms check and what a kit without package source runs), about 1,400 bytes under the ceiling the 2026-10-07 pass reset, which supersedes the Cost line's older 400-byte bound as the order's Known issues record; docs/LEGAL.md §Current state gains the dated observation that the kit carries the three license files by default and no bundled third-party material; docs/README.md §Map gains one line for scripts/kit/; the two publ",
           "missing": false
+        },
+        {
+          "hash": "13678fd1558febdc8a71b659cd689962d418a14085ebd41866a77ffd5caf5f8e",
+          "ref": "docs/evidence/WO-074/decisions.md#wo-074-d010--write-backs-carry-ins-and-the-kits-instance-identity",
+          "title": "WO-074-D010: A fork's publish check should read its operator author identity from instance data rather than scripts/lib/contributions.mjs's constant, so the kit carries no instance identity in a…",
+          "summary": "{ \"id\": \"WO-074-D010\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next\", \"decision\": \"Write-backs landed in place: product 03 §Platform and instance boundary gains one undated paragraph naming the kit's first slice (the command, what it carries, the manifest, the seeds, the terms check and what a kit without package source runs), about 1,400 bytes under the ceiling the 2026-10-07 pass reset, which supersedes the Cost line's older 400-byte bound as the order's Known issues record; docs/LEGAL.md §Current state gains the dated observation that the kit carries the three license files by default and no bundled third-party material; docs/README.md §Map gains one line for scripts/kit/; the two publ",
+          "missing": false
+        },
+        {
+          "hash": "39c8ca32115d6587e8d257a92a79488c8c7ab7bca3a6d0023cf65cf99b69819d",
+          "ref": "docs/evidence/WO-074/decisions.md#wo-074-d010--write-backs-carry-ins-and-the-kits-instance-identity",
+          "title": "WO-074-D010: A fork's publish check should read its operator author identity from instance data rather than scripts/lib/contributions.mjs's constant, so the kit carries no instance identity in a…",
+          "summary": "{ \"id\": \"WO-074-D010\", \"date\": \"2026-10-09\", \"dispatch\": \"resume: next\", \"decision\": \"Write-backs landed in place: product 03 §Platform and instance boundary gains one undated paragraph naming the kit's first slice (the command, what it carries, the manifest, the seeds, the terms check and what a kit without package source runs), about 1,400 bytes under the ceiling the 2026-10-07 pass reset, which supersedes the Cost line's older 400-byte bound as the order's Known issues record; docs/LEGAL.md §Current state gains the dated observation that the kit carries the three license files by default and no bundled third-party material; docs/README.md §Map gains one line for scripts/kit/; the two publ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -31895,6 +31955,22 @@
             "WO-210"
           ],
           "at": "2026-10-13T19:09:33.402Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "WO-210-D008 and D010: a distinct author with matching DCO sign-offs publishes, but configuring the exemption remains an explicit non-goal. contributions.mjs retains the core constant; return the configuration work to planning.",
+          "reopenWhen": "An operator-authorized order addresses instance-specific contribution exemption identity.",
+          "targets": [],
+          "at": "2026-10-14T11:14:49.131Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "Re-recorded by WO-210's final review (FINAL-001, D027): the deferral of 2026-10-14T11:14Z stood at source revision 3 and the source reached revision 4. The judgment is unchanged: WO-210's export case publishes under a distinct synthetic author with matching DCO sign-offs and scripts/lib/contributions.mjs keeps its core constant; configuring an instance-specific exemption is the order's explicit non-goal (WO-210-D008, D010).",
+          "reopenWhen": "An operator-authorized order addresses instance-specific contribution exemption identity, or a fork's worktree publish exempts core's operator identity instead of its own.",
+          "targets": [],
+          "at": "2026-10-14T21:36:49.578Z"
         }
       ]
     },
@@ -34134,6 +34210,22 @@
             "WO-210"
           ],
           "at": "2026-10-13T19:07:13.832Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-210-D010: the target close fixture lists ignored directories once, prints the exact remedy, retains material and closes after remediation.",
+          "reopenWhen": "The recorded behavior fails in an instance or its regression fixture.",
+          "targets": [],
+          "at": "2026-10-14T11:14:49.190Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-210-D015: corrected listing never names a bundle ancestor, lists foreign paths once and prints the exact remedy; the repaired complete target-worktree suite passes.",
+          "reopenWhen": "The repaired behavior fails in an instance or its executable regression.",
+          "targets": [],
+          "at": "2026-10-14T16:19:05.124Z"
         }
       ]
     },
@@ -34453,6 +34545,14 @@
             "WO-210"
           ],
           "at": "2026-10-13T16:53:34.999Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-210-D010: the complete exported-instance fixture passes local and committed release surfaces with optional docs/LEGAL.md pins.",
+          "reopenWhen": "The recorded behavior fails in an instance or its regression fixture.",
+          "targets": [],
+          "at": "2026-10-14T11:14:49.250Z"
         }
       ]
     },
@@ -34503,6 +34603,14 @@
             "WO-210"
           ],
           "at": "2026-10-13T16:53:34.270Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-210-D010: the exported goal-standard fixture passes with shared rule blocks and the instance purpose or its named unavailability.",
+          "reopenWhen": "The recorded behavior fails in an instance or its regression fixture.",
+          "targets": [],
+          "at": "2026-10-14T11:14:49.308Z"
         }
       ]
     },
@@ -34799,6 +34907,14 @@
             "WO-210"
           ],
           "at": "2026-10-13T19:07:13.942Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-210-D010: outward-lint, github-body and target-publish suites pass native outward references while retaining internal evidence.",
+          "reopenWhen": "The recorded behavior fails in an instance or its regression fixture.",
+          "targets": [],
+          "at": "2026-10-14T11:14:49.365Z"
         }
       ]
     },
@@ -35455,6 +35571,554 @@
           "ref": "docs/evidence/WO-215/decisions.md#wo-215-d020--final-review-pass-final-001-at-the-integrated-subject-two-register-rows-settled-the-orders-follow-ups-left-for-planning",
           "title": "WO-215-D020: Planning, or the next order that edits these surfaces; none blocks the first live refresh, which is this order's own release close. (F1, remainder) docs/product/04-interfaces.md's release",
           "summary": "{ \"id\": \"WO-215-D020\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Pass the final review of WO-215 at the integrated subject, code identity b9a1a58aaaf7ca03929669bc490d1d3f7a4f63ce019797e2e9b6b15b1a592ddc, the identity VER-002 judged; integration changed no judged byte (D019). All twelve criteria hold: after a published release the helper refreshes each declared export sibling through its recorded checkout in a disposable worktree, by the export update or the first export over the initial commit, verified by the export's own emit, predicted-surface comparison, harness check and launchpad verify with the staged set exactly the plan's ro",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b46754ad55a891d6",
+      "key": "decision:docs/evidence/WO-210/decisions.md#wo-210-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "dd285ad440cc2b6353547853d25263516ff1a8471e93763bf8b6fe5cbf177106",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d006--complete-target-closeout-and-planning-publication-in-the-existing-lanes",
+          "title": "WO-210-D006: Let release close fetch and fast-forward the target clone's base, list foreign ignored directories once, and publish target planning through the same authorized host lane.",
+          "summary": "{ \"id\": \"WO-210-D006\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: next\", \"decision\": \"Let release close fetch and fast-forward the target clone's base, list foreign ignored directories once, and publish target planning through the same authorized host lane.\", \"evidence\": [ \"Close first refuses a dirty base checkout, fetches objects with an empty refmap, and proves fast-forwardability before changing refs. Dry-run updates only the remote-tracking observation. Ignored material is listed with --directory after filtering bundle-owned files, with the exact releaseCloseCommand remedy. A target that has only bundle-owned ignored files remains disposable under the existing checks.\", \"The extended lo",
+          "missing": false
+        },
+        {
+          "hash": "3ae2f8d20b0faeffe42039824688b4bd483f09d0d8c2fdfe99916dd11e7fe2eb",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d006--complete-target-closeout-and-planning-publication-in-the-existing-lanes",
+          "title": "WO-210-D006: Let release close fetch and fast-forward the target clone's base, list foreign ignored directories once, and publish target planning through the same authorized host lane.",
+          "summary": "{ \"id\": \"WO-210-D006\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: next\", \"decision\": \"Let release close fetch and fast-forward the target clone's base, list foreign ignored directories once, and publish target planning through the same authorized host lane.\", \"evidence\": [ \"Close first refuses a dirty base checkout, fetches objects with an empty refmap, and proves fast-forwardability before changing refs. Dry-run updates only the remote-tracking observation. Ignored material is listed with --directory after filtering bundle-owned files, with the exact releaseCloseCommand remedy. A target that has only bundle-owned ignored files remains disposable under the existing checks.\", \"The extended lo",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-210-D015/D016/D019/D021: safe ignored-material listing, per-command mutation attribution, committed planning authority and guarded target cleanup pass target-worktree at the repaired identity.",
+          "reopenWhen": "The repaired behavior fails in an instance or its executable regression.",
+          "targets": [],
+          "at": "2026-10-14T16:19:05.012Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b332899ec1254d12",
+      "key": "decision:docs/evidence/WO-210/decisions.md#wo-210-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8aa6e2c2295fb8f30f33260acda3e264542c913adc65c4f0e6f4fff274d5bef2",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d012--verification-fail-the-target-closes-ignored-material-listing-names-a-bundle-directory-a-behavior-main-had-right",
+          "title": "WO-210-D012: WO-210 resume: fix. (F1) In scripts/lib/target-worktree-close.mjs list only ignored material the bundle does not own. List a directory entry only when no bundle-owned path lies under it;…",
+          "summary": "{ \"id\": \"WO-210-D012\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001. At code identity 482f71bd8b0cab2e17703b80c90f970796c9ab22eff155a76b1794662e327433 criteria 1 to 24 are met as written. F1 (blocking): the change breaks a behavior main had, and a probe on both trees shows it. A registered target holds an ignored file that the bundle does not own inside a directory that also holds bundle-owned files, here .claude/settings.local.json. Release close then refuses naming '.claude/, .claude/settings.local.json'. Its new remedy says to move or remove the listed paths, and that covers the bundle's hooks, settings and manifest. Main named ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-210-D015/D016/D021: all VER-001 F1–F5 repairs pass the final-identity target-worktree, resume and release preflights; immutable VER-001 remains unchanged.",
+          "reopenWhen": "The repaired behavior fails in an instance or its executable regression.",
+          "targets": [],
+          "at": "2026-10-14T16:19:04.952Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-92711a92e1d05874",
+      "key": "decision:docs/evidence/WO-210/decisions.md#wo-210-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "545e1358fc1407eb6a621babdc89d60884a65280da371d61adecf36317fc1295",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d013--verification-the-target-suites-growth-recorded-for-the-planning-receipts-criterion24-condition",
+          "title": "WO-210-D013: Planning: judge criterion:24's reopening condition against these figures and the next counted order's elapsedPerCodeByte. Any reduction keeps every case, as the order's known issue…",
+          "summary": "{ \"id\": \"WO-210-D013\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Record the figures behind the reopening condition of planning receipt 2026-10-13-planning-4f74762e1dd466b6-045's criterion:24 known issue for WO-210. That condition reads: launchpad-planning or target-worktree grows by a material share of the full gate. The receipt does not define 'material', so the planner judges whether the condition has occurred. The order's own watch holds: launchpad-planning runs above twice WO-202's 33.15 s, and D008 records the cause, the added release, records and publication drives, without dropping a case. Route: planning, not blocking.\", \"evidence\": ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-210-D013 explicitly routes the gate-growth judgment to planning, not repair. The expanded full target-worktree and launchpad-planning preflights pass in 233.87 s and 129.34 s; required cases are retained. The planner judges the existing criterion:24 reopening condition with the next counted order.",
+          "reopenWhen": "At the next planning pass, judge criterion:24 gate growth and the next counted order elapsedPerCodeByte; any reduction must retain all cases.",
+          "targets": [],
+          "at": "2026-10-14T16:19:05.235Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9458f0db725731cc",
+      "key": "decision:docs/evidence/WO-072/decisions.md#wo-072-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e1a2db34db15c29b564cd4c7b3b8529ca16e6627d8ab5101c7c0feffcd7480f9",
+          "ref": "docs/evidence/WO-072/decisions.md#wo-072-d003",
+          "title": "WO-072-D003: Select foreign target worktrees only through the already-selected launchpad's registry and require the target branch to match its order, including when the launchpad is itself on wo-NNN.…",
+          "summary": "{ \"id\": \"WO-072-D003\", \"date\": \"2026-10-11\", \"dispatch\": \"resume: next\", \"decision\": \"Select foreign target worktrees only through the already-selected launchpad's registry and require the target branch to match its order, including when the launchpad is itself on wo-NNN. Apply that restriction where a target registry or repository registration exists; self-only copied-script invocations preserve their prior resolver. Keep usage, times and all-order status independent of local target state. Preserve repository identity in release's control-state adapter, then take the no-release branch before version/surface/tag handling. Check target containment, cleanliness, bundle ownership and writer sta",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-210-D016/D019: missing-manifest and missing-directory ownership refuse with retained source; clone writer, hook and metadata regressions pass in the full target-worktree suite.",
+          "reopenWhen": "The repaired behavior fails in an instance or its executable regression.",
+          "targets": [],
+          "at": "2026-10-14T16:19:05.069Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a82ccc79f22fba40",
+      "key": "decision:docs/evidence/WO-215/decisions.md#wo-215-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a4a8652c6cf864a28450708dc8b5558fb326a6810d1f0f731f69f0446a8937ac",
+          "ref": "docs/evidence/WO-215/decisions.md#wo-215-d002--publish-only-the-verified-starter-commit-through-the-declared-binding",
+          "title": "WO-215-D002: Implement the release-close effect after publication and cleanup, bound to core origin host and owner and each declared export sibling name. Use a disposable detached worktree;…",
+          "summary": "{ \"id\": \"WO-215-D002\", \"date\": \"2026-10-13\", \"dispatch\": \"resume: next\", \"decision\": \"Implement the release-close effect after publication and cleanup, bound to core origin host and owner and each declared export sibling name. Use a disposable detached worktree; first-export from the initial commit when no kit manifest exists; otherwise use the existing update plan. Leave seeds and instance actions under their existing ownership rules.\", \"evidence\": [ \"WO-215 design and criteria 1–6; operator dispatch resume: next\", \"The read-only base probe found one empty initial commit and no KIT-MANIFEST.json; README records the public observation.\", \"The local bare-remote fixture passes first export, up",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-210-D020/D022: guarded prior-export seed refresh, named customization refusals, rewritten seed rows and the exact legacy verified-main recovery pass full launchpad and launchpad-planning preflights.",
+          "reopenWhen": "The repaired behavior fails in an instance or its executable regression.",
+          "targets": [],
+          "at": "2026-10-14T16:19:05.180Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b46121cc32c9db7a",
+      "key": "decision:docs/evidence/WO-210/decisions.md#wo-210-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e1a5d3a206bf628c52a1c49f78dcbbd0a85312566508669d4ee09c6390ee4559",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d020--refresh-unchanged-starter-seeds-and-recover-the-verified-main-activation",
+          "title": "WO-210-D020: Extend WO-210 while retaining VER-001 F1–F5. Starter refresh must carry changed seed templates into the starter only when each affected starter copy matches a prior export; any other…",
+          "summary": "{ \"id\": \"WO-210-D020\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: fix; explicit operator scope expansion for starter seeds and exact fork recovery\", \"decision\": \"Extend WO-210 while retaining VER-001 F1–F5. Starter refresh must carry changed seed templates into the starter only when each affected starter copy matches a prior export; any other difference refuses with its path before a push. Record every rewritten seed in the refresh row. Add the operator's v0.81.0 recovery scenario: verified-pass WO-001 on main with all control and report records uncommitted, followed by starter refresh, an instance-session fast-forward and recovery into wo-001. Prove release preparation, committed surfaces a",
+          "missing": false
+        },
+        {
+          "hash": "444b8f692e0a999ca8c42eb4ed9e2fd893f654526ece0e2a2ceddc9a38f6b742",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d020--refresh-unchanged-starter-seeds-and-recover-the-verified-main-activation",
+          "title": "WO-210-D020: Extend WO-210 while retaining VER-001 F1–F5. Starter refresh must carry changed seed templates into the starter only when each affected starter copy matches a prior export; any other…",
+          "summary": "{ \"id\": \"WO-210-D020\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: fix; explicit operator scope expansion for starter seeds and exact fork recovery\", \"decision\": \"Extend WO-210 while retaining VER-001 F1–F5. Starter refresh must carry changed seed templates into the starter only when each affected starter copy matches a prior export; any other difference refuses with its path before a push. Record every rewritten seed in the refresh row. Add the operator's v0.81.0 recovery scenario: verified-pass WO-001 on main with all control and report records uncommitted, followed by starter refresh, an instance-session fast-forward and recovery into wo-001. Prove release preparation, committed surfaces a",
+          "missing": false
+        },
+        {
+          "hash": "7f6b77ab27e7ac955eaa0556a4b462248b4bc8556bf1d4f2117ef00c44a137a3",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d020--refresh-unchanged-starter-seeds-and-recover-the-verified-main-activation",
+          "title": "WO-210-D020: Extend WO-210 while retaining VER-001 F1–F5. Starter refresh must carry changed seed templates into the starter only when each affected starter copy matches a prior export; any other…",
+          "summary": "{ \"id\": \"WO-210-D020\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: fix; explicit operator scope expansion for starter seeds and exact fork recovery\", \"decision\": \"Extend WO-210 while retaining VER-001 F1–F5. Starter refresh must carry changed seed templates into the starter only when each affected starter copy matches a prior export; any other difference refuses with its path before a push. Record every rewritten seed in the refresh row. Add the operator's v0.81.0 recovery scenario: verified-pass WO-001 on main with all control and report records uncommitted, followed by starter refresh, an instance-session fast-forward and recovery into wo-001. Prove release preparation, committed surfaces a",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-210-D025 answers the reopening of D020 by D024: the legacy recovery now runs v0.81.0's own scripts and runtime through the README's documented preview and update pull request, and preserves the verified order's records through release preparation, final review and the publication surface step.",
+          "reopenWhen": "The legacy verified recovery loses records, needs a hand edit, or no longer runs on v0.81.0's own runtime.",
+          "targets": [],
+          "at": "2026-10-14T18:27:05.161Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "The D028 operator-delegated choice narrows D020's seed refusal to changed templates. Historical proof still advances older exported copies after kit-only updates; customized, missing and non-regular unchanged seeds are preserved, and changed unproven seeds refuse before push. The complete launchpad preflight and v0.81.0-runtime launchpad-planning recovery pass, including clean main after bootstrap and a later order start.",
+          "reopenWhen": "An unchanged seed blocks a kit refresh solely because of customization, an unproven changed seed is overwritten, or the older-instance update/recovery procedure fails.",
+          "targets": [],
+          "at": "2026-10-14T23:35:54.167Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-07398c4ecf01c4a8",
+      "key": "decision:docs/evidence/WO-210/decisions.md#wo-210-d024",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5122df2114d38a660005f22701e32a97b8dd040b7865cd6e57aae5c1233cd3b8",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d024--verification-fail-an-instance-on-v0810-cannot-take-this-release-by-the-readmes-documented-update",
+          "title": "WO-210-D024: WO-210 resume: fix. (F1) An instance exported at v0.81.0 can follow the README's procedure for taking this release without a refusal: its documented preview either runs as written, or…",
+          "summary": "{ \"id\": \"WO-210-D024\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: verify; VER-002; operator question on the fork plan, with authorization to fail\", \"kind\": \"finding\", \"decision\": \"Fail VER-002 under the operator's explicit authorization. At code identity f1004335dc84b31e7bed8e88e2fa387381eebbd0b7e20bd723670d4020392c39 criteria 1 to 28 are met as written, and VER-001's F1 to F5 are repaired. The operator asked whether their fork plan holds once this order is released, and authorized a failing verdict if it does not hold for reasons tied to criteria 27 and 28. It does not. F1 (blocking): an instance exported at v0.81.0 cannot run the README's documented pre-merge preview of this release. v0.81",
+          "missing": false
+        },
+        {
+          "hash": "78e2deada77d818a3244bdf1b3c6f08276053b3dfd0c3a3ba1e7d4a0478e461d",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d024--verification-fail-an-instance-on-v0810-cannot-take-this-release-by-the-readmes-documented-update",
+          "title": "WO-210-D024: WO-210 resume: fix. (F1) An instance exported at v0.81.0 can follow the README's procedure for taking this release without a refusal: its documented preview either runs as written, or…",
+          "summary": "{ \"id\": \"WO-210-D024\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: verify; VER-002; operator question on the fork plan, with authorization to fail\", \"kind\": \"finding\", \"decision\": \"Fail VER-002 under the operator's explicit authorization. At code identity f1004335dc84b31e7bed8e88e2fa387381eebbd0b7e20bd723670d4020392c39 criteria 1 to 28 are met as written, and VER-001's F1 to F5 are repaired. The operator asked whether their fork plan holds once this order is released, and authorized a failing verdict if it does not hold for reasons tied to criteria 27 and 28. It does not. F1 (blocking): an instance exported at v0.81.0 cannot run the README's documented pre-merge preview of this release. v0.81",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-210-D025 repairs VER-002 F1 to F3. The README previews with the incoming revision's launchpad and lands the starter update through its own pull request before wo-001 is cut; the new worktree's files belong to the session opened there. The launchpad-planning case runs v0.81.0's own scripts and runtime through that procedure, with a negative control on the old preview form. The planning remainder continues as FUP-aa129ef63aeef2b1. Immutable VER-002 remains unchanged.",
+          "reopenWhen": "An instance on an earlier release cannot preview or take a later one by the README's procedure, or its order's pull request carries starter commits.",
+          "targets": [],
+          "at": "2026-10-14T18:27:05.089Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-95f69c0eaf30490e",
+      "key": "decision:docs/evidence/WO-210/decisions.md#wo-210-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6ef4f115585f72f7a82044c4f541ed0cd77d80758519753ba2a19374d90fc0ff",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d022--prove-prior-export-seeds-before-session-owned-recovery",
+          "title": "WO-210-D022: Preflight starter template seeds from committed trees before updating or pushing. Admit a changed seed only when its regular-file bytes match an exported template in reachable starter…",
+          "summary": "{ \"id\": \"WO-210-D022\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: fix; bound operator expansion WO-210-D020\", \"decision\": \"Preflight starter template seeds from committed trees before updating or pushing. Admit a changed seed only when its regular-file bytes match an exported template in reachable starter history, whose manifest hash and ancestor core template agree. Handle current-manifest stale seeds and list rewritten paths. Keep ordinary kit updates and generated control/planning records unchanged. Exercise the exact v0.81.0 seed blobs with the current runtime in the existing export fixture, preserving the verified uncommitted order through actual starter refresh and session-owned fast-f",
+          "missing": false
+        },
+        {
+          "hash": "76529fd42434d52514d4e7004212e1514b53fcec541dbcdc40f487dfa17981b9",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d022--prove-prior-export-seeds-before-session-owned-recovery",
+          "title": "WO-210-D022: Preflight starter template seeds from committed trees before updating or pushing. Admit a changed seed only when its regular-file bytes match an exported template in reachable starter…",
+          "summary": "{ \"id\": \"WO-210-D022\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: fix; bound operator expansion WO-210-D020\", \"decision\": \"Preflight starter template seeds from committed trees before updating or pushing. Admit a changed seed only when its regular-file bytes match an exported template in reachable starter history, whose manifest hash and ancestor core template agree. Handle current-manifest stale seeds and list rewritten paths. Keep ordinary kit updates and generated control/planning records unchanged. Exercise the exact v0.81.0 seed blobs with the current runtime in the existing export fixture, preserving the verified uncommitted order through actual starter refresh and session-owned fast-f",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-210-D025 reopens D022 only to record that its seed-blob fixture could not observe the v0.81.0 runtime's refusal; the same decision replaces that recovery with the v0.81.0 runtime case in launchpad-planning.",
+          "reopenWhen": "The v0.81.0 runtime case is removed or stops exercising the README's procedure.",
+          "targets": [],
+          "at": "2026-10-14T18:27:05.227Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-210-D025 reopens D022 only to record that its seed-blob fixture could not observe the v0.81.0 runtime's refusal; the same decision replaces that recovery with the v0.81.0 runtime case in launchpad-planning.",
+          "reopenWhen": "The v0.81.0 runtime case is removed or stops exercising the README's procedure.",
+          "targets": [],
+          "at": "2026-10-14T18:40:35.375Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-aa129ef63aeef2b1",
+      "key": "decision:docs/evidence/WO-210/decisions.md#wo-210-d025",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ae2338ca0bde6e570865c366ef1ec5f416833e9e08ce6383c278dc3abacdc68f",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d025--take-this-release-in-an-older-instance-through-the-incoming-launchpad-and-an-update-pull-request",
+          "title": "WO-210-D025: Planning: each manifest reader judges every entry against its own release's kit list (scripts/launchpad.mjs kitPath), with no list of retired paths. The README's update now always uses…",
+          "summary": "{ \"id\": \"WO-210-D025\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: fix; VER-002 F1 to F3 under WO-210-D024; adjacent-0004\", \"decision\": \"Repair the update path for existing instances in the client README, and bind it with a fixture that runs v0.81.0's own scripts and runtime. The repaired subject holds this rule. An instance previews a starter revision with that revision's own launchpad, run from a temporary detached worktree under the ignored .runtime/ directory, so the reader always knows every kit path the incoming manifest lists. The starter update reaches the fork's main through its own update pull request, merged by any method, before wo-001 is cut from that main, so wo-001's pull reque",
+          "missing": false
+        },
+        {
+          "hash": "c9f6d3cfe5b14053c9d58311677114f080d848571e8d43b6adc4fa9ede9157c4",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d025--take-this-release-in-an-older-instance-through-the-incoming-launchpad-and-an-update-pull-request",
+          "title": "WO-210-D025: Planning: each manifest reader judges every entry against its own release's kit list (scripts/launchpad.mjs kitPath), with no list of retired paths. The README's update now always uses…",
+          "summary": "{ \"id\": \"WO-210-D025\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: fix; VER-002 F1 to F3 under WO-210-D024; adjacent-0004\", \"decision\": \"Repair the update path for existing instances in the client README, and bind it with a fixture that runs v0.81.0's own scripts and runtime. The repaired subject holds this rule. An instance previews a starter revision with that revision's own launchpad, run from a temporary detached worktree under the ignored .runtime/ directory, so the reader always knows every kit path the incoming manifest lists. The starter update reaches the fork's main through its own update pull request, merged with a merge commit, before wo-001 is cut from that main. wo-001's pull re",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Routed to planning by WO-210-D025, as D024 routes the manifest-reader question. No release has dropped a named kit path, and the README's update now uses the incoming release's reader, so no current instance is refused.",
+          "reopenWhen": "A planned order drops a named kit path from scripts/launchpad.mjs KIT_FILES, or an instance's own preview is required for a release that adds kit paths.",
+          "targets": [],
+          "at": "2026-10-14T18:27:05.293Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Routed to planning by WO-210-D025, as D024 routes the manifest-reader question. No release has dropped a named kit path, and the README's update now uses the incoming release's reader, so no current instance is refused.",
+          "reopenWhen": "A planned order drops a named kit path from scripts/launchpad.mjs KIT_FILES, or an instance's own preview is required for a release that adds kit paths.",
+          "targets": [],
+          "at": "2026-10-14T18:40:35.448Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2a2be2cc2807f530",
+      "key": "decision:docs/evidence/WO-210/decisions.md#wo-210-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "75c88379fe57385f03493e334892bcf1da268556613cc100afce8f5ef8c88d55",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d003--integrate-the-operators-first-order-findings",
+          "title": "WO-210-D003: Accept the operator's explicit scope expansion: give the seeded order the ordinary wo-001 worktree path and preserve already-started main work through named recovery; repair effort…",
+          "summary": "{ \"id\": \"WO-210-D003\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: next\", \"decision\": \"Accept the operator's explicit scope expansion: give the seeded order the ordinary wo-001 worktree path and preserve already-started main work through named recovery; repair effort discovery, export closure, upstream pointers, lineage initialization and readable follow-up titles. Document host access without changing sandbox settings or registered host-lock runtime.\", \"evidence\": [ \"The operator supplied a seven-item report from their personal Enterprise Starter fork at kit v0.81.0, citing its WO-001-D004 through D008 and discovery record. Those fork files were not independently read; the supplied observati",
+          "missing": false
+        },
+        {
+          "hash": "0761fa562d61e2aa8da3ae5dd66d2f919dc9ebdb31bfbda688debca3534d663c",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d003--integrate-the-operators-first-order-findings",
+          "title": "WO-210-D003: Accept the operator's explicit scope expansion: give the seeded order the ordinary wo-001 worktree path and preserve already-started main work through named recovery; repair effort…",
+          "summary": "{ \"id\": \"WO-210-D003\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: next\", \"decision\": \"Accept the operator's explicit scope expansion: give the seeded order the ordinary wo-001 worktree path and preserve already-started main work through named recovery; repair effort discovery, export closure, upstream pointers, lineage initialization and readable follow-up titles. Document host access without changing sandbox settings or registered host-lock runtime.\", \"evidence\": [ \"The operator supplied a seven-item report from their personal Enterprise Starter fork at kit v0.81.0, citing its WO-001-D004 through D008 and discovery record. Those fork files were not independently read; the supplied observati",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9e65e93568842620",
+      "key": "decision:docs/evidence/WO-210/decisions.md#wo-210-d027",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3de2cc2f460fb0462545179d73fcd6d40f71e46b572e33a7584896e19a02745f",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d027--final-review-fail-final-001-on-three-regressions-of-mains-behavior-twenty-three-follow-ups-boarded-two-operator-packets-four-register-rows-re-recorded",
+          "title": "WO-210-D027: WO-210 resume: fix. (F1) scripts/discover.mjs: effortSelectorFromHelp parses the real help forms, including a parenthesized comma list on the flag's line or its continuation, beside…",
+          "summary": "{ \"id\": \"WO-210-D027\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: final review; FINAL-001; three read-only reviewers and one refuter\", \"kind\": \"finding\", \"decision\": \"Fail the final review of WO-210 at the integrated subject, code identity e0d1dbeb72cb7e1056a63bfff2ab1b33c922443dd8b11d8a9a4759a1b96751ee, the identity VER-003 judged; integration changed no judged byte (D026) and all twenty-eight criteria hold as written. The verdict rests on three regressions of behavior main had, each shown by a probe, inside the subject's changed files. F1: scripts/discover.mjs effortSelectorFromHelp recognises only a `choices:`/`possible values:` list or a pipe list, while Claude Code 2.1.300's real `claud",
+          "missing": false
+        },
+        {
+          "hash": "06ea6810ab0d39cf1abd42e2d5bf6c1ca56c8afa74d8f1a3d2c584e8d108ddc8",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d027--final-review-fail-final-001-on-three-regressions-of-mains-behavior-twenty-three-follow-ups-boarded-two-operator-packets-four-register-rows-re-recorded",
+          "title": "WO-210-D027: WO-210 resume: fix. (F1) scripts/discover.mjs: effortSelectorFromHelp parses the real help forms, including a parenthesized comma list on the flag's line or its continuation, beside…",
+          "summary": "{ \"id\": \"WO-210-D027\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: final review; FINAL-001; three read-only reviewers and one refuter\", \"kind\": \"finding\", \"decision\": \"Fail the final review of WO-210 at the integrated subject, code identity e0d1dbeb72cb7e1056a63bfff2ab1b33c922443dd8b11d8a9a4759a1b96751ee, the identity VER-003 judged; integration changed no judged byte (D026) and all twenty-eight criteria hold as written. The verdict rests on three regressions of behavior main had, each shown by a probe, inside the subject's changed files. F1: scripts/discover.mjs effortSelectorFromHelp recognises only a `choices:`/`possible values:` list or a pipe list, while Claude Code 2.1.300's real `claud",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "FINAL-001 triage is complete under WO-210-D028, D029 and D030: F1-F7, F9-F10, F13-F14, F16-F20, F22, F25 and the delegated F27-F28 choices are repaired and covered by passing named preflights; F26 retains D009's locked ancestry proof. The seven unimplemented findings are explicitly split onto deferred FUP-c9dc1abccd1f1a9d (six findings) and FUP-cf950d70e66c50bf (F21), so this umbrella triage row has no unassigned remainder.",
+          "reopenWhen": "A current repair check or independent review finds that a named repair does not hold, or a finding lacks its recorded disposition.",
+          "targets": [],
+          "at": "2026-10-14T23:35:54.086Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c9dc1abccd1f1a9d",
+      "key": "decision:docs/evidence/WO-210/decisions.md#wo-210-d029",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e315ab71754f094bb31576b39137a2cc959c60240457867e6601a89abc922fb7",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d029--repair-the-final-review-regressions-and-bounded-findings-retain-six-planning-follow-ups",
+          "title": "WO-210-D029: Planning remainder from FINAL-001 and D027, six findings. F8: add a contained immutable record reader for targetRecords-bound repository/commit/path/hash, use it in scripts/lib/meta.mjs…",
+          "summary": "{ \"id\": \"WO-210-D029\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: fix; FINAL-001; adjacent-0005; operator delegates the review's defaults and recommended options\", \"decision\": \"Repair FINAL-001 F1 to F3 at their causes and the bounded findings F4 to F7, F9 to F10, F13 to F14, F16 to F22 and F25. D028 resolves F27 and F28. Retain the containment-proven branch deletion for F26 under D009. Defer F8, F11, F12, F15, F23 and F24 to the follow-up below, with their known limitations explicit. The order's older seed-remedy prose is aligned with the already authorized update-first recovery procedure; this changes no acceptance obligation.\", \"evidence\": [ \"F1. scripts/discover.mjs parses parenthesized ",
+          "missing": false
+        },
+        {
+          "hash": "132096f551d17f50736923b5a722f2e2c124294abc1d1b4ec639097e7a5a0ef0",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d029--repair-the-final-review-regressions-and-bounded-findings-retain-six-planning-follow-ups",
+          "title": "WO-210-D029: Planning remainder from FINAL-001 and D027, six findings. F8: add a contained immutable record reader for targetRecords-bound repository/commit/path/hash, use it in scripts/lib/meta.mjs…",
+          "summary": "{ \"id\": \"WO-210-D029\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: fix; FINAL-001; adjacent-0005; operator delegates the review's defaults and recommended options\", \"decision\": \"Repair FINAL-001 F1 to F3 at their causes and the bounded findings F4 to F7, F9 to F10, F13 to F14, F16 to F22 and F25. D028 resolves F27 and F28. Retain the containment-proven branch deletion for F26 under D009. Defer F8, F11, F12, F15, F23 and F24 to the follow-up below, with their known limitations explicit. The order's older seed-remedy prose is aligned with the already authorized update-first recovery procedure; this changes no acceptance obligation.\", \"evidence\": [ \"F1. scripts/discover.mjs parses parenthesized ",
+          "missing": false
+        },
+        {
+          "hash": "f84238a38aee215dee73e3c424cf5cff9772d6db58ce37ea676b7458d2edc6e8",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d029--repair-the-final-review-regressions-and-bounded-findings-retain-six-planning-follow-ups",
+          "title": "WO-210-D029: Planning remainder from FINAL-001 and D027, six findings. F8: add a contained immutable record reader for targetRecords-bound repository/commit/path/hash, use it in scripts/lib/meta.mjs…",
+          "summary": "{ \"id\": \"WO-210-D029\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: fix; FINAL-001; adjacent-0005; operator delegates the review's defaults and recommended options\", \"decision\": \"Repair FINAL-001 F1 to F3 at their causes and the bounded findings F4 to F7, F9 to F10, F13 to F14, F16 to F22 and F25. D028 resolves F27 and F28. Retain the containment-proven branch deletion for F26 under D009. Defer F8, F11, F12, F15, F23 and F24 to the follow-up below, with their known limitations explicit. The order's older seed-remedy prose is aligned with the already authorized update-first recovery procedure; this changes no acceptance obligation.\", \"evidence\": [ \"F1. scripts/discover.mjs parses parenthesized ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-210-D029 records the six remaining FINAL-001 findings F8, F11, F12, F15, F23 and F24 with causes, paths and checks. Moved-decision continuity needs a verified cross-repository reader; changed pending inputs and absent bundle ownership need an explicit preservation/recovery protocol; pre-pass commit lint, isolated fetch and planning file types need separately authorized publication policy. The bounded repair fixes the three regressions and its other listed findings; these six remain for planning.",
+          "reopenWhen": "A planning pass allocates this remainder, a target workflow needs moved-decision reopening or recovery of changed pending inputs/absent bundle ownership, or the operator authorizes the three publication-policy additions.",
+          "targets": [],
+          "at": "2026-10-14T23:35:53.907Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-cf950d70e66c50bf",
+      "key": "decision:docs/evidence/WO-210/decisions.md#wo-210-d030",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a8119cfa3f50a30bff862be054f4bd391252eab5c6c2fcf191a5bbe881e1643f",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d030--keep-seed-preflight-independent-of-the-compiled-harness-defer-shared-composition",
+          "title": "WO-210-D030: FINAL-001 F21, deferred with D030's pre-build counterexample: move harnessInstructionBlock and composeHarnessInstruction, with their marker constants, into a dependency-free shared…",
+          "summary": "{ \"id\": \"WO-210-D030\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: fix; FINAL-001 F21; adjacent-0005; release preflight failure\", \"decision\": \"Correct D029's F21 disposition: the attempted direct import from scripts/lib/harness.mjs introduces a pre-build runtime dependency, so retain the existing local seed comparison and defer the shared-composition cleanup below. D028's seed policy and publication defaults remain the implemented choices. The repair has seven planning remainders: D029's six plus this one.\", \"evidence\": [ \"npm test -- --only release at 2026-10-14T23:06:13Z failed only release:case:starter_refresh. A bounded diagnostic of that case at 23:07:17Z found its first missing-checkout",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-210-D030 corrects D029 for FINAL-001 F21. Direct harness-helper reuse made starter preview import absent compiler output before the optional build; the release fixture exposed the production dependency. The existing local comparison is retained and the corrected starter-refresh case and release suite pass. A dependency-free shared helper must preserve composition proof and register/re-mint the affected authority and harness evidence sources, beyond this order's no-re-mint boundary.",
+          "reopenWhen": "An order changes harness instruction composition or authorizes a dependency-free shared-helper extraction with the affected evidence re-mints.",
+          "targets": [],
+          "at": "2026-10-14T23:35:54.002Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5682890b65853e70",
+      "key": "decision:docs/evidence/WO-210/decisions.md#wo-210-d033",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "187161efaa88aecf245e47cfce785e04105da15749ee51e693150feed5aa31c8",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d033--verification-retain-the-passing-update-and-board-the-stale-bootstrap-sentence",
+          "title": "WO-210-D033: VER-004 F1: correct scripts/kit/README.client.md First steps item 7 so it no longer promises that bootstrap generates a missing lineage index. Keep the update paragraph's explicit…",
+          "summary": "{ \"id\": \"WO-210-D033\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: verify; VER-004\", \"kind\": \"finding\", \"decision\": \"Board VER-004 F1 as a documentation follow-up. The client README's First steps item 7 still says bootstrap generates the lineage index when an older instance lacks it. The third repair deliberately removed that bootstrap step so main stays clean, and the README's update paragraph correctly assigns lineage generation to the update branch. The repaired update, recovery and next ordinary worktree start pass; this stale sentence breaks no declared criterion and no behavior main had. Keep the implementation read-only in verification.\", \"evidence\": [ \"The bounded ver004-doc-probe.mjs",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "The fourth repair corrected the client README's first-steps item 7 and its kit-files section: the export seeds the lineage index, an older export generates and commits it in its first steps or on the update branch, and bootstrap never writes it; the v0.81.0 case asserts the sentences and runs the first-steps command on a fresh fork (WO-210-D036).",
+          "reopenWhen": "The client README's first-steps or bootstrap and lineage guidance is edited again, or an older instance follows a stale sentence.",
+          "targets": [],
+          "at": "2026-10-15T12:24:47.672Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-92963ad2ed30089d",
+      "key": "decision:docs/evidence/WO-210/decisions.md#wo-210-d035",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "82a50a0ce1405ea38c12bb21815b9c9b135c3cf9f67f0157d843fdc193bd55fc",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d035--final-review-fail-final-002-on-one-regression-of-mains-behavior-eighteen-follow-ups-boarded-draft-release-surfaces-retained",
+          "title": "WO-210-D035: WO-210 resume: fix. (F1) scripts/lib/target-worktree-close.mjs: select the base checkout only among worktrees whose directory exists on disk, treating a prunable, locked-and-deleted or…",
+          "summary": "{ \"id\": \"WO-210-D035\", \"date\": \"2026-10-15\", \"dispatch\": \"resume: final review; FINAL-002; two read-only reviewers and one refuter\", \"kind\": \"finding\", \"decision\": \"Fail the final review of WO-210 at the integrated subject, code identity 51591a530eb63113f44fb5798cbfeb3ce33602bfd72cc8c80004e497876ae62e, the identity VER-004 judged; integration changed no judged byte (D034) and all twenty-eight criteria hold as written. The verdict rests on one regression of behavior main had, shown by a probe on both trees, inside the subject's changed files: scripts/lib/target-worktree-close.mjs selects the clone's base checkout as the first worktree Git lists on refs/heads/<base>, parseWorktrees keeps an en",
+          "missing": false
+        },
+        {
+          "hash": "9ca1d4573c1fb9d86900a888e4493218fb7bd470ca8953d11704cd973801a915",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d035--final-review-fail-final-002-on-one-regression-of-mains-behavior-eighteen-follow-ups-boarded-draft-release-surfaces-retained",
+          "title": "WO-210-D035: WO-210 resume: fix. (F1) scripts/lib/target-worktree-close.mjs: select the base checkout only among worktrees whose directory exists on disk, treating a prunable, locked-and-deleted or…",
+          "summary": "{ \"id\": \"WO-210-D035\", \"date\": \"2026-10-15\", \"dispatch\": \"resume: final review; FINAL-002; two read-only reviewers and one refuter\", \"kind\": \"finding\", \"decision\": \"Fail the final review of WO-210 at the integrated subject, code identity 51591a530eb63113f44fb5798cbfeb3ce33602bfd72cc8c80004e497876ae62e, the identity VER-004 judged; integration changed no judged byte (D034) and all twenty-eight criteria hold as written. The verdict rests on one regression of behavior main had, shown by a probe on both trees, inside the subject's changed files: scripts/lib/target-worktree-close.mjs selects the clone's base checkout as the first worktree Git lists on refs/heads/<base>, parseWorktrees keeps an en",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "The fourth repair fixed F1 at the close's base-checkout selection and took in F2 to F15 and F17 with cases the review did not quote (WO-210-D036, D038); the three new-scope findings F16, F18 and F19 continue as the planning remainder minted from D036 (FUP-69bd004155a6ec30).",
+          "reopenWhen": "Verification finds a stated repair rule not held by the repaired bytes.",
+          "targets": [],
+          "at": "2026-10-15T12:24:47.732Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-13d9674e38ef3b49",
+      "key": "decision:docs/evidence/WO-210/decisions.md#wo-210-d028",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "130412342747d7a9162fdd27ee3a560826f8b82f2373e61b5f60a34096d63091",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d028--apply-the-operator-delegated-seed-and-publication-authority-defaults",
+          "title": "WO-210-D028: Resolve FINAL-001 F27 by preserving customized, missing or non-regular starter seeds when their incoming templates equal the latest proven exported templates. A seed that still matches…",
+          "summary": "{ \"id\": \"WO-210-D028\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: fix; operator delegates FINAL-001's decision packets to the executor's default or recommended choices; adjacent-0005\", \"decision\": \"Resolve FINAL-001 F27 by preserving customized, missing or non-regular starter seeds when their incoming templates equal the latest proven exported templates. A seed that still matches an older proven export can advance, including after a kit-only update. When an incoming template changed, an unproven destination still refuses by path before any push, with a preservation and restoration remedy. Resolve F28 by authorizing session target publication only from the main checkout's committed grant regi",
+          "missing": false
+        },
+        {
+          "hash": "cc57061b65d1d0709eeba96523b9f1602ebb30da3b23eeb55bd8796f512fd999",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d028--apply-the-operator-delegated-seed-and-publication-authority-defaults",
+          "title": "WO-210-D028: Resolve FINAL-001 F27 by preserving customized, missing or non-regular starter seeds when their incoming templates equal the latest proven exported templates. A seed that still matches…",
+          "summary": "{ \"id\": \"WO-210-D028\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: fix; operator delegates FINAL-001's decision packets to the executor's default or recommended choices; adjacent-0005\", \"decision\": \"Resolve FINAL-001 F27 by preserving customized, missing or non-regular starter seeds when their incoming templates equal the latest proven exported templates. A seed that still matches an older proven export can advance, including after a kit-only update. When an incoming template changed, an unproven destination still refuses by path before any push, with a preservation and restoration remedy. Resolve F28 by authorizing session target publication only from the main checkout's committed grant regi",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-69bd004155a6ec30",
+      "key": "decision:docs/evidence/WO-210/decisions.md#wo-210-d036",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fc5ad2c842c0cd1876f08a28824ae670fcae2fa4e1b31b73bc9b96306aeee24a",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d036--repair-the-closes-base-checkout-selection-and-fifteen-boarded-follow-ups-defer-three-new-scope-findings",
+          "title": "WO-210-D036: Planning remainder from FINAL-002 and this repair. F16: decide whether the body lint folds invisible and look-alike characters NFKC keeps (a zero-width space, a word joiner, a soft…",
+          "summary": "{ \"id\": \"WO-210-D036\", \"date\": \"2026-10-15\", \"dispatch\": \"resume: fix; FINAL-002; adjacent-0006; operator direction to use the whole subagent budget\", \"decision\": \"Repair FINAL-002 F1 at its cause and take in F2 to F15 and F17 within the Boy Scout bound; defer F16, F18 and F19 to planning as the review routed them. The close counts a worktree entry as the base checkout only while its directory holds .git, so an entry whose directory is gone, emptied or replaced by a file, whether Git marks it prunable or keeps it locked, means the base is not checked out and the close moves the branch by its ref and leaves the entry alone; a checkout it cannot inspect refuses naming the branch; every close r",
+          "missing": false
+        },
+        {
+          "hash": "3caae66128ffdec06540ba1b9bfe76d3ed700e0d04bb23be928a13aea29d27d7",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d036--repair-the-closes-base-checkout-selection-and-fifteen-boarded-follow-ups-defer-three-new-scope-findings",
+          "title": "WO-210-D036: Planning remainder from FINAL-002 and this repair. F16: decide whether the body lint folds invisible and look-alike characters NFKC keeps (a zero-width space, a word joiner, a soft…",
+          "summary": "{ \"id\": \"WO-210-D036\", \"date\": \"2026-10-15\", \"dispatch\": \"resume: fix; FINAL-002; adjacent-0006; operator direction to use the whole subagent budget\", \"decision\": \"Repair FINAL-002 F1 at its cause and take in F2 to F15 and F17 within the Boy Scout bound; defer F16, F18 and F19 to planning as the review routed them. The close counts a worktree entry as the base checkout only while its directory holds .git. An unlocked entry whose directory is gone, emptied or replaced by a file is one Git itself would prune, so the base is not checked out and the close moves the branch by its ref and leaves the entry alone; a locked entry in that state may be an unmounted volume, so the branch is never moved ",
+          "missing": false
+        },
+        {
+          "hash": "a5d00ee63e667c9843bc3e24efce3ba94ef1dfc484bf39423adbba1e06293ed6",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d036--repair-the-closes-base-checkout-selection-and-fifteen-boarded-follow-ups-defer-three-new-scope-findings",
+          "title": "WO-210-D036: Planning remainder from FINAL-002 and this repair. F16: decide whether the body lint folds invisible and look-alike characters NFKC keeps (a zero-width space, a word joiner, a soft…",
+          "summary": "{ \"id\": \"WO-210-D036\", \"date\": \"2026-10-15\", \"dispatch\": \"resume: fix; FINAL-002; adjacent-0006; operator direction to use the whole subagent budget\", \"decision\": \"Repair FINAL-002 F1 at its cause and take in F2 to F15 and F17 within the Boy Scout bound; defer F16, F18 and F19 to planning as the review routed them. A worktree entry counts as the base checkout only when its directory holds this clone's checkout of the base branch (its Git common directory is the clone's and its HEAD is the base's symbolic ref); any other entry for the base, gone, emptied, replaced by a file, reused by another repository, prunable or locked, is not a checkout, and the close never moves the base branch undernea",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b3c1a8260bca40b7",
+      "key": "decision:docs/evidence/WO-210/decisions.md#wo-210-d039",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "bb30659cceb4f75914807c3c7d58d87a71609321f7243f0d0d108f66e09f0270",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d039--verification-meta-failures-excessive-context-consumption-and-omitted-logging-commitment",
+          "title": "WO-210-D039: VER005-META-1: In the next verifier-process revision, specify bounded result projection and aggregate read budgets before emitting audit or repository output, with a check for nested…",
+          "summary": "{ \"id\": \"WO-210-D039\", \"date\": \"2026-10-15\", \"dispatch\": \"resume: verify; operator correction during VER-005\", \"kind\": \"finding\", \"decision\": \"Record two verifier meta failures. First, the verifier pulled an oversized audit result and too much repository text, consuming context and requiring early compaction. Second, its explanation did not state whether or how it would log that failure. The operator clarified that the first failure is the excessive inspection output itself. Record these two failures specifically; neither establishes a product acceptance failure.\", \"evidence\": [ \"The verifier's ver005-audit.mjs audit emitted a full nested gate result instead of a bounded summary. Subsequent ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-fd6bb22a13e561e4",
+      "key": "decision:docs/evidence/WO-210/decisions.md#wo-210-d040",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "28372878e22392e3ad05f90c3911e19f141127c8cd8eccf0ad19a655b980679a",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d040--verification-board-the-pre-restoration-status-instruction",
+          "title": "WO-210-D040: VER005-DOC-1: When next editing scripts/kit/README.client.md First steps recovery, place the recorded-phase confirmation after stash restoration in wo-001, or explicitly describe the…",
+          "summary": "{ \"id\": \"WO-210-D040\", \"date\": \"2026-10-15\", \"dispatch\": \"resume: verify; VER-005\", \"kind\": \"finding\", \"decision\": \"Board VER-005 F1 as a documentation follow-up. The client README asks the main session to confirm the order's recorded phase after the update fast-forward but before the saved control and reports are restored into wo-001. At that point status correctly reports no selected order. The procedure subsequently restores the records and explicitly checks the recorded phase in the new worktree; the independent historical-runtime recovery passes. Keep the implementation read-only and judge criteria 27 and 28 met.\", \"evidence\": [ \"scripts/kit/README.client.md First steps recovery paragra",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0674090dc3c1e64d",
+      "key": "decision:docs/evidence/WO-210/decisions.md#wo-210-d042",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5b2b7d936dc661c7e1f0301cfada99586ac74866c79bd4b0c4cfd34d649c8296",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d042--final-review-pass-final-003-six-low-follow-ups-boarded-none-breaks-a-behavior-main-had",
+          "title": "WO-210-D042: Next order that edits these surfaces, low priority. (A1) scripts/lib/target-worktree-close.mjs: when a stale entry holds the base and the local base already contains the order branch,…",
+          "summary": "{ \"id\": \"WO-210-D042\", \"date\": \"2026-10-15\", \"dispatch\": \"resume: final review; FINAL-003; three read-only reviewers\", \"kind\": \"finding\", \"decision\": \"Pass the final review of WO-210 at the integrated subject, code identity 0c0748d762645dd71479a88a61bfd0ea76cc648c295d16efeb993af54a4b9b11, the identity VER-005 judged and the executor's fresh npm test -- --review row passed; integration changed no judged byte (D041) and all twenty-eight criteria hold. FINAL-002's blocking F1 is repaired at its cause, and no item this review found breaks a behavior main had in a route the product supports. A1: with a stale worktree entry holding the clone's base, a local base that already contains the merged or",
           "missing": false
         }
       ],

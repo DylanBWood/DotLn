@@ -1,0 +1,48 @@
+[
+  {
+    "command": "node scripts/release.mjs prepare --local",
+    "exitCode": 0,
+    "durationMs": 294,
+    "nonPass": [
+      "WO-001 target v0.1.0 remains current.",
+      "Files changed:",
+      "  docs/final-reviews/WO-001/PR.md",
+      "Meter snapshot not written: this checkout holds no session journal of WO-001.",
+      "Tag observation: local snapshot only.",
+      "Reader profile (releaseNotes) unavailable: ENOENT: no such file or directory, open '<fixture>/kit/docs/control/reader-profiles.json'"
+    ]
+  },
+  {
+    "command": "node scripts/release.mjs check-surfaces --local",
+    "exitCode": 1,
+    "durationMs": 1615,
+    "nonPass": [
+      "Tag observation: local ancestors of HEAD only; publication checks origin.",
+      "FAIL license-surfaces docs/LEGAL.md pins: observed docs/LEGAL.md is missing or is not a contained regular file; expected the three decided SHA-256 pins"
+    ]
+  },
+  {
+    "command": "node scripts/release.mjs check-surfaces --committed WO-001",
+    "exitCode": 1,
+    "durationMs": 1603,
+    "nonPass": [
+      "FAIL license-surfaces docs/LEGAL.md pins: observed docs/LEGAL.md is missing or is not a regular file in HEAD; expected the three decided SHA-256 pins"
+    ]
+  },
+  {
+    "command": "node scripts/license-surfaces.mjs",
+    "exitCode": 1,
+    "durationMs": 1305,
+    "nonPass": [
+      "FAIL license-surfaces docs/LEGAL.md pins: observed docs/LEGAL.md is missing or is not a contained regular file; expected the three decided SHA-256 pins"
+    ]
+  },
+  {
+    "command": "node scripts/license-surfaces.mjs --committed",
+    "exitCode": 1,
+    "durationMs": 1465,
+    "nonPass": [
+      "FAIL license-surfaces docs/LEGAL.md pins: observed docs/LEGAL.md is missing or is not a regular file in HEAD; expected the three decided SHA-256 pins"
+    ]
+  }
+]

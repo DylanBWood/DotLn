@@ -1,23 +1,23 @@
 # Current control state
 
-## WO-215
+## WO-210
 
-- Work order: WO-215
-- Work-order path: docs/work-orders/WO-215-release-close-refreshes-the-starter.md
+- Work order: WO-210
+- Work-order path: docs/work-orders/WO-210-instance-orders-reach-release-close.md
 - Phase: closed
-- Latest verification: VER-002
-- Verification path: docs/verifications/WO-215/VER-002.md
+- Latest verification: VER-005
+- Verification path: docs/verifications/WO-210/VER-005.md
 - Latest verdict: pass
-- Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-215/FINAL-001.md
-- Latest attestation: harness claude-code; version 2.1.299; model claude-fable-5-1; effort max; source claude-session-readback; account not-applicable
-- Effort drift: xhigh (subagents) (raw: ultra) -> max
-- Latest recordedAt: 2026-10-14T04:40:00.945Z
-- Elapsed implementation: 7766483 ms
-- Elapsed verification: 2139176 ms
-- Elapsed repair: 10232708 ms
-- Elapsed finalReview: 3142067 ms
-- Latest checkpoint: afa25f2fdfbd9c9a39aa7b0806a148581eb3e4de (restore: `git checkout refs/dotln/checkpoint/WO-215/11 -- .`)
+- Final review: FINAL-003
+- Final-review path: docs/final-reviews/WO-210/FINAL-003.md
+- Latest attestation: harness claude-code; version 2.1.300; model claude-opus-5-5; effort max; source claude-session-readback; account not-applicable
+- Effort drift: max -> xhigh
+- Latest recordedAt: 2026-10-15T13:37:17.990Z
+- Elapsed implementation: 13085752 ms
+- Elapsed verification: 1303365 ms
+- Elapsed repair: 32814935 ms
+- Elapsed finalReview: 2506391 ms
+- Latest checkpoint: 5d961b3628ed292a4c36c523152c31153640bf3e (restore: `git checkout refs/dotln/checkpoint/WO-210/29 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct
 
