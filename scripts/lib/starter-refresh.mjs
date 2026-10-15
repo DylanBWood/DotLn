@@ -16,7 +16,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, dirname, join } from "node:path";
-import { parseWorktrees, runGit } from "./git.mjs";
+import { parseWorktrees, redactPaths, runGit } from "./git.mjs";
 import {
   HOST_GIT_READ,
   parseGitHubTarget,
@@ -38,6 +38,11 @@ import {
 } from "./siblings.mjs";
 import { sha256Hex } from "./helpers.mjs";
 import { docRelative } from "./config.mjs";
+import {
+  assertFinderMetadataTypes,
+  isFinderMetadata,
+} from "./finder-metadata.mjs";
+import { planStarterSeeds } from "./starter-seeds.mjs";
 
 const git = (root, args, options) =>
   runGit(root, [...HOST_GIT_READ, ...args], options);
@@ -51,19 +56,23 @@ const ancestor = (root, before, after) =>
   }) !== false;
 const manifestFile = "KIT-MANIFEST.json";
 const harnessFile = ".claude/harness-manifest.json";
-const clean = (root) =>
-  !git(root, ["status", "--porcelain", "--untracked-files=all"]);
-const redact = (error, privatePaths) => {
-  let text = String(error.message ?? error);
-  for (const path of privatePaths
-    .filter(Boolean)
-    .sort((a, b) => b.length - a.length))
-    text = text.replaceAll(path, "<checkout>");
-  return text.replace(
-    /(?:\/Users\/|\/home\/|\/var\/folders\/|\/private\/var\/|\/tmp\/)[^\s'";]+/gu,
-    "<local>",
+const clean = (root, observeScan) => {
+  const scan = assertFinderMetadataTypes(root);
+  observeScan?.(scan);
+  return paths(root, [
+    "status",
+    "--porcelain=v1",
+    "--untracked-files=all",
+  ]).every(
+    (entry) =>
+      entry.startsWith("?? ") && isFinderMetadata(root, entry.slice(3)),
   );
 };
+const redact = (error, privatePaths) =>
+  redactPaths(
+    String(error.message ?? error),
+    privatePaths.map((path) => [path, "<checkout>"]),
+  );
 const ownCommand = (root, script, action) => {
   const env = { ...process.env };
   for (const key of [
@@ -379,7 +388,9 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
     receipt: null,
     reason: null,
     actions: [],
+    rewrittenSeeds: [],
     timings: {},
+    finderMetadata: [],
   };
   let checkout,
     scratch,
@@ -432,7 +443,7 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
       }) !== "main"
     )
       throw new Error("recorded checkout must be on main");
-    if (!clean(checkout))
+    if (!clean(checkout, (scan) => row.finderMetadata.push(scan)))
       throw new Error("recorded checkout has tracked or untracked changes");
     const origin = parseGitHubTarget(
       git(main, ["config", "--get", "remote.origin.url"]),
@@ -474,10 +485,21 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
           );
       }
     }
+    const seedPlan = prior
+      ? planStarterSeeds({
+          main,
+          head,
+          checkout,
+          remote,
+          updatesKit: prior.commit !== head,
+        })
+      : [];
     if (dryRun) {
-      row.outcome = prior?.commit === head ? "current" : "preview";
+      row.seedChanges = seedPlan.map(({ path }) => path);
+      row.outcome =
+        prior?.commit === head && !seedPlan.length ? "current" : "preview";
       row.reason =
-        prior?.commit === head
+        row.outcome === "current"
           ? "already current; preview writes nothing"
           : `would refresh ${remote} to ${head}`;
       return row;
@@ -499,7 +521,7 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
           { pending: true },
         ).path;
     };
-    if (prior?.commit === head) {
+    if (prior?.commit === head && !seedPlan.length) {
       row.buildHash = manifestBuildHash(
         git(checkout, ["show", `${remote}:${harnessFile}`], { trim: false }),
         harnessFile,
@@ -580,8 +602,27 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
           .filter((entry) => !entry.unchanged)
           .map((entry) => entry.path),
       );
-      required.add(manifestFile);
+      if (JSON.stringify(planned.manifest, null, 2) + "\n" !== manifestBytes)
+        required.add(manifestFile);
+      for (const seed of seedPlan) required.add(seed.path);
       allowed = new Set([...required, "CLAUDE.md"]);
+      // Only committed, proven seed paths are admitted. The worktree starts at
+      // the observed remote, so none of these writes can follow a local link.
+      for (const seed of seedPlan) {
+        const prepared = planned.prepared.writes.find(
+          ({ path }) => path === seed.path,
+        );
+        if (!prepared || prepared.bytes.toString("utf8") !== seed.bytes)
+          throw new Error(`prepared seed differs from plan: ${seed.path}`);
+      }
+      for (const seed of seedPlan) {
+        const bytes =
+          seed.path === "CLAUDE.md"
+            ? planned.prepared.bundle.surfaces.get(seed.path)
+            : seed.bytes;
+        writeFileSync(join(worktree, seed.path), bytes);
+        chmodSync(join(worktree, seed.path), 0o644);
+      }
       await timed("update", () =>
         applyKitUpdate({
           ...planned,
@@ -602,11 +643,64 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
       "--name-only",
       "--no-renames",
     ]);
-    if (
-      changed.some((path) => !allowed.has(path)) ||
-      [...required].some((path) => !changed.includes(path))
-    )
-      throw new Error("staged change set differs from the export/update plan");
+    const unplanned = changed.filter((path) => !allowed.has(path)),
+      unstaged = [...required].filter((path) => !changed.includes(path));
+    if (unplanned.length || unstaged.length) {
+      const raw = git(
+        worktree,
+        ["diff", "--cached", "--raw", "--no-renames", "--no-abbrev", "-z"],
+        { trim: false },
+      ).split("\0");
+      const kinds = new Map(),
+        statuses = new Map();
+      for (let i = 0; i + 1 < raw.length; i += 2) {
+        const [oldMode, newMode, oldId, newId, status] = raw[i]
+          .slice(1)
+          .split(" ");
+        statuses.set(raw[i + 1], status);
+        kinds.set(
+          raw[i + 1],
+          status === "A"
+            ? newMode === "120000"
+              ? "added link"
+              : "added"
+            : status === "D"
+              ? "deleted"
+              : oldId === newId
+                ? `mode ${oldMode} to ${newMode}`
+                : oldMode === newMode
+                  ? "content"
+                  : `content and mode ${oldMode} to ${newMode}`,
+        );
+      }
+      const listed = (items) =>
+        `${items
+          .slice(0, 5)
+          .map((path) =>
+            kinds.has(path) ? `${path} (${kinds.get(path)})` : path,
+          )
+          .join(
+            ", ",
+          )}${items.length > 5 ? `, ... (${items.length} paths)` : ""}`;
+      // Only an added path or an unstaged planned path can come from ignore
+      // rules: a tracked path's change is staged whatever .gitignore says.
+      // A tracked planned path that stayed unstaged did not fall to an ignore
+      // rule either: Git stages a tracked path's change whatever the rules say.
+      const ignoreRules =
+        unstaged.some(
+          (path) => !git(worktree, ["ls-files", "--", path], { trim: false }),
+        ) || unplanned.some((path) => statuses.get(path) === "A");
+      throw new Error(
+        `staged change set differs from the export/update plan: ${[
+          unplanned.length && `staged outside the plan: ${listed(unplanned)}`,
+          unstaged.length && `planned but not staged: ${listed(unstaged)}`,
+        ]
+          .filter(Boolean)
+          .join(
+            "; ",
+          )}. ${ignoreRules ? "One possible cause is ignore rules: the starter's .gitignore or the host's core.excludesFile can admit an untracked path or hide a planned one; compare the starter's .gitignore with scripts/kit/gitignore.template. " : ""}Inspect each named difference against the update plan; no commit was made or pushed. Retry refresh once it is resolved`,
+      );
+    }
     if (
       row.firstExport &&
       paths(worktree, ["diff", "--cached", "--name-only", "--diff-filter=D"])
@@ -643,7 +737,10 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
       throw new Error(
         "refresh commit parent differs from observed remote main",
       );
-    if (git(checkout, ["rev-parse", "HEAD"]) !== remote || !clean(checkout))
+    if (
+      git(checkout, ["rev-parse", "HEAD"]) !== remote ||
+      !clean(checkout, (scan) => row.finderMetadata.push(scan))
+    )
       throw new Error("checkout changed while the refresh was prepared");
     branch = `dotln-starter-refresh-${randomUUID()}`;
     saveCleanup(main, sibling.id, { ...ownership, branch, commit });
@@ -651,6 +748,7 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
     await timed("push", () =>
       pushObservedCommit(checkout, url, branch, commit, "main"),
     );
+    row.rewrittenSeeds = seedPlan.map(({ path }) => path);
     row.after = commit;
     git(checkout, ["merge", "--ff-only", commit]);
     git(checkout, ["update-ref", "refs/remotes/origin/main", commit, remote]);

@@ -1,4 +1,4 @@
-# WO-210 — An instance's own orders, a registered target's among them, publish and reach release close: an exported instance's release surfaces, seeds and refutation goal standard stop failing on core-only inputs; a target order is gated by the target's own declared tests, its passing final review binds the target commit and those tests' rows, its records land in the target's own documentation root as a records-only commit that `worktree publish --target-worktree` pushes after the reviewed commit and opens a pull request for under the registered profile and an operator grant, the instance keeps the control segment and a link to each record and publishes them with no release, a target-scoped planning pass publishes its documents into the same root, its close updates the clone's base itself and lists ignored directories once, and target-facing text names only target-native references (version assigned at activation)
+# WO-210 — An instance's own orders, a registered target's among them, publish and reach release close: an exported instance's release surfaces, seeds and refutation goal standard stop failing on core-only inputs; a target order is gated by the target's own declared tests, its passing final review binds the target commit and those tests' rows, its records land in the target's own documentation root as a records-only commit that `worktree publish --target-worktree` pushes after the reviewed commit and opens a pull request for under the registered profile and an operator grant, the instance keeps the control segment and a link to each record and publishes them with no release, a target-scoped planning pass publishes its documents into the same root, its close updates the clone's base itself and lists ignored directories once, and target-facing text names only target-native references (v0.82.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -600,11 +600,11 @@ how a registered repository declares its gate and documentation root.
   `(v0.1.0)` and gains a minor Release classification with one sentence. The
   first order prepares with no tag (prepare keeps a current target when no
   tag is observed, lines 252-269); later orders are assigned above the
-  instance's own tags. Seeds are written once: in an instance exported
-  earlier, the executor of its next order adds the block and the version as
-  the named remedy states, on the operator's dispatch, and records it in its
-  decisions; the README says so, and in a kit the zero-marker failure names
-  the two marker lines and the claim line to add.
+  instance's own tags. In an instance exported earlier, the executor first
+  follows the README's update procedure on the operator's dispatch. If the
+  block remains absent afterwards, it adds the two marker lines and claim
+  line named by the zero-marker remedy, supplies the order's version and
+  records the repair in its decisions. No hand step belongs to the operator.
 - **Release close inputs.** The kit carries
   `docs/releases/tag-manifest.template.json` (schema-1 shape only). In a kit,
   `compatibility` reads the schema version from
@@ -755,6 +755,35 @@ how a registered repository declares its gate and documentation root.
   not listed), and names the remedy with the exact close command
   (`releaseCloseCommand`, `scripts/lib/git.mjs` lines 161-167): move or remove
   the listed paths, then rerun it.
+- **Disposable Finder metadata (operator scope expansion, 2026-10-14).**
+  Regular untracked `.DS_Store` files at any depth do not make the target
+  worktree or its clone's base checkout dirty at release close, whether Git
+  ignores them or not. Dry runs preserve them; a publishing close may delete
+  them before its Git operations. Tracked changes, symlinks, directories
+  named `.DS_Store` and every other foreign file keep their existing checks.
+  WO-210-D014 records the operator's authorization and the bounded exception
+  to D003's ignored-material refusal.
+  The same exception applies to starter refresh's checkout-cleanliness check
+  (`scripts/lib/starter-refresh.mjs`), covered by the existing
+  `scripts/test-release.sh` starter-refresh case. WO-210-D017 records this
+  second release-close route under the same operator direction.
+- **Starter seeds and verified-main recovery (operator expansion, 2026-10-14).**
+  On release close, refresh a changed seed template into the starter only
+  when its destination still matches a prior export. A customized, missing or
+  non-regular destination for a changed template refuses by path before
+  publication; an unchanged template leaves such a destination intact. A
+  destination matching an older proven export can still advance after a
+  kit-only update. The operator delegated this final-review choice on
+  2026-10-14 (WO-210-D028). The refresh row
+  names every rewritten seed. Keep ordinary instance ownership and actions.
+  Extend the recovery drive from v0.81.0's seeds: WO-001 is activated on main,
+  verified pass with its control segment and reports uncommitted, then the
+  starter receives this release. The instance's session fast-forwards that
+  update and recovers the order into wo-001 without hand-editing release inputs
+  or losing its control and records. The README assigns those operations to
+  the session after operator direction; the operator supplies phrases and
+  merges pull requests. WO-210-D020 binds this expansion and reopens WO-215's
+  seed-refresh known issue. The original F1–F5 repair remains in scope.
 - **The close updates the clone's base itself.** Before its containment
   check, a publishing close runs `git fetch origin <baseBranch>` in the clone
   and fast-forwards the clone's local base branch to `origin/<baseBranch>`
@@ -1682,6 +1711,34 @@ extended export case; the client README; the write-backs below.
     edited by this order. No byte figure binds these write-backs.
 24. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
     clean; no new dependency. No re-mint and no live feedback episode is owed.
+25. Regular untracked `.DS_Store` files at the root and under nested
+    directories, both ignored and non-ignored, do not block a registered
+    target's release close or the clone base's cleanliness check. A dry run
+    keeps their bytes; a publishing close completes without an operator
+    cleanup step. A tracked change, a `.DS_Store` symlink, a directory with
+    that name and unrelated ignored material still refuse and remain intact.
+    The target-close fixtures exercise these cases and verify the bundle's
+    exclude block is removed after a successful close.
+    Starter refresh also admits regular untracked Finder metadata in its
+    recorded checkout, preserves it in a dry run, and continues to refuse
+    tracked changes, unrelated untracked files and symbolic links.
+26. Release-close starter refresh updates changed seed templates in the
+    starter only where the destination matches a prior export. Every other
+    difference for a changed template refuses with the destination path
+    before any push; customized, missing or non-regular copies of unchanged
+    templates are preserved. The refresh
+    row records every seed rewritten. Fixtures exercise unchanged prior-export
+    copies, customized copies, refusal without publication and retry.
+27. The recovery fixture starts with v0.81.0's seed bytes, WO-001 activated on
+    main and verified pass, and all of its control and report records still
+    uncommitted. It refreshes the starter with this release, has the instance's
+    session fast-forward that update and recover WO-001 into wo-001, then passes
+    `release prepare --local`, `check-surfaces --committed WO-001` and the
+    publication surface step without hand-editing release inputs. The order's
+    control segment and records survive the update and recovery.
+28. The instance README makes its own session responsible for update and
+    recovery after the operator's instruction. The operator's workflow uses
+    phrases and pull-request merges and requires no hand-run Git commands.
 
 **Preflight:** `npm test -- --only launchpad-planning` for steps 1 and 57,
 `npm test -- --only license-fixtures` and `npm test -- --only
@@ -1785,9 +1842,10 @@ run is one of those orders.
 - Instances exported before this order keep their seeds (README §Kit files and
   instance files); once they take the update and hold an order, their
   `release-surfaces` row fails until the README's one-time remedy is applied:
-  the executor of the instance's next order adds the block and the version
-  as the named remedy states, on the operator's dispatch, and records it in
-  its decisions; no step is left to the operator's hands.
+  the executor follows the documented update first and adds a missing block
+  and version only if they remain absent afterwards, on the operator's
+  dispatch, recording the repair in its decisions; no step is left to the
+  operator's hands.
 - An instance still declares its critical path at core's dated path
   (`scripts/lib/plan-subject.mjs` lines 563-567), and the generated claim line
   names DotLn (`scripts/lib/release-preparation.mjs` lines 25-26); both are
@@ -1910,8 +1968,10 @@ orders; the fork's own test tiers (WO-207).
    reviewer's, screened by the same lint.
 7. The registered authority profile is the envelope for session publication,
    and an operator grant naming the registered id in the committed grant
-   registry is the operator's authorization (WO-064's rule, with the profile in
-   place of a compiled loadout).
+   registry is the operator's authorization. Both the profile and the grant
+   registry come from main's committed bytes; the order branch cannot grant
+   its own publication (operator-delegated default, WO-210-D028; WO-064's
+   effect rule, with the profile in place of a compiled loadout).
 8. Runtime evidence identifiers never belong in target-facing text, the
    pull request's branch, commit messages, title, body and replies
    (FUP-a272d577fd351b43's first branch); the records under the

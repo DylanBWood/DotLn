@@ -67,7 +67,7 @@ import {
 
 const toolRoot = findLaunchpad();
 const usage =
-  "plan subject | check | conditions [--slow] | failures […] | refute [--direct] [--scope pass|full] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model <model>] [--effort <level>] [--dispositions <file>] [--evidence-only] | dispose <receipt-id> <hold-id> <reason> | amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason> | amend-order <WO-NNN> --withdraw <row-ordinal> <reason> | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> [actor-flags]";
+  "plan subject | check | target-publish <repository-id> --base <commit> --from <directory> --branch docs/<slug> --title <title> --body-file <path> | conditions [--slow] | failures […] | refute [--direct] [--scope pass|full] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model <model>] [--effort <level>] [--dispositions <file>] [--evidence-only] | dispose <receipt-id> <hold-id> <reason> | amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason> | amend-order <WO-NNN> --withdraw <row-ordinal> <reason> | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> [actor-flags]";
 const followupsUsage =
   "usage: plan followups [--all] [--cursor <cursor>] | --sync | --show <FUP-id> | --apply <request.json or batch.json> | --touching [<path or WO-NNN>…] [--cursor <cursor>] | --touching --work-order <WO-NNN> [--cursor <cursor>] | --export <file> [--all]";
 const failuresUsage =
@@ -342,6 +342,38 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     return planningFailures(root, {
       ...options.window,
       cursor: options.cursor,
+    });
+  }
+  if (command === "target-publish") {
+    const [repositoryId, ...flags] = rest;
+    const keys = ["--base", "--from", "--branch", "--title", "--body-file"];
+    if (
+      !repositoryId ||
+      flags.length !== keys.length * 2 ||
+      flags.some(
+        (value, index) =>
+          index % 2 === 0 &&
+          (!keys.includes(value) || flags.indexOf(value) !== index),
+      ) ||
+      flags.some(
+        (value, index) => index % 2 === 1 && (!value || value.startsWith("--")),
+      )
+    )
+      throw new Error(
+        "usage: plan target-publish <repository-id> --base <commit> --from <directory> --branch docs/<slug> --title <title> --body-file <path>",
+      );
+    const values = Object.fromEntries(
+      keys.map((key) => [key, flags[flags.indexOf(key) + 1]]),
+    );
+    const { publishTargetPlanning } = await import("./lib/target-planning.mjs");
+    return publishTargetPlanning({
+      launchpad: root,
+      repositoryId,
+      base: values["--base"],
+      from: resolve(values["--from"]),
+      branch: values["--branch"],
+      title: values["--title"],
+      bodyFile: resolve(values["--body-file"]),
     });
   }
   if (command === "start") {

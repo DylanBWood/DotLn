@@ -92,7 +92,11 @@ import { parseRepositoryDeclaration } from "./lib/work-order-repository.mjs";
 import {
   directoryIdentity,
   registeredOrder,
+  launchpadInvocation,
+  targetGateCommand,
+  targetRecordsUnfinished,
   targetRegistryPath,
+  targetWorktreeForOrder,
 } from "./lib/target-worktrees.mjs";
 
 import {
@@ -222,7 +226,14 @@ const legalActions = (state) => {
       repairing: ["repair-complete"],
       verified: ["final-review"],
       "final-review": ["final-review-result"],
-      closed: ["release-close", "next", "activate"],
+      closed: [
+        ...(state.repositoryId && state.targetSubject && !state.targetRecords
+          ? ["target-records"]
+          : []),
+        "release-close",
+        "next",
+        "activate",
+      ],
       // Terminal: only a reactivation of a changed revision leaves it.
       withdrawn: ["activate"],
     }[state.phase] ?? [];
@@ -232,6 +243,22 @@ const legalActions = (state) => {
     ? ["verify", "fix"]
     : actions;
 };
+
+// Local recovery state the fold cannot hold: once its event folds, a records
+// removal that was interrupted still needs the rerun that finishes it. Only
+// the live views show it (status --json, refusal hints and one status line
+// after the projection); the committed projection stays a fold of segments.
+const recoveryActions = (state, events) =>
+  state.phase === "closed" &&
+  state.repositoryId &&
+  state.targetRecords &&
+  targetRecordsUnfinished(repoRoot, state, events)
+    ? ["target-records"]
+    : [];
+const liveActions = (state, events) => [
+  ...recoveryActions(state, events),
+  ...legalActions(state),
+];
 
 // Off-ramps sit beside the lifecycle's next actions: each records a typed
 // event in the phases listed and changes no phase except `withdraw` (WO-158).
@@ -284,6 +311,7 @@ const commandFor = (action, workOrderId) => {
       "repair-complete": actorCommand("repair-complete"),
       "final-review": "npm run resume -- final-review",
       "final-review-result": actorCommand("final-review-result", "pass|fail"),
+      "target-records": actorCommand("target-records"),
       "release-close": "npm run release -- close WO-NNN --publish",
       ...Object.fromEntries(
         Object.entries(offRampPositional).map(([route, positional]) => [
@@ -298,14 +326,24 @@ const commandFor = (action, workOrderId) => {
 };
 
 // A withdrawn order's worktree already exists, so its one legal action is the
-// in-place activation of a changed revision, not a new worktree.
-const legalCommands = (state) =>
+// in-place activation of a changed revision, not a new worktree. A session
+// runs its other commands from its own worktree, so a target order's hints
+// print them in the launchpad form. Activation and release close run in the
+// main checkout instead: their hints keep the npm form, and a target order's
+// hint says so beside the qualified commands around it.
+const mainCheckoutActions = new Set(["activate", "release-close"]);
+const legalCommands = (state, events) =>
   state.phase === "withdrawn"
     ? [
-        `npm run resume -- activate ${state.workOrderId} ${state.workOrderPath} (after the changed authority gains a new **Reactivation (YYYY-MM-DD):** note)`,
+        briefingCommands(
+          state,
+          `npm run resume -- activate ${state.workOrderId} ${state.workOrderPath} (after the changed authority gains a new **Reactivation (YYYY-MM-DD):** note)`,
+        ),
       ]
-    : legalActions(state).map((action) =>
-        commandFor(action, state.workOrderId),
+    : liveActions(state, events).map((action) =>
+        mainCheckoutActions.has(action)
+          ? `${commandFor(action, state.workOrderId)}${state.repositoryId ? " (in the main checkout)" : ""}`
+          : briefingCommands(state, commandFor(action, state.workOrderId)),
       );
 
 const checkpoint = (action, workOrderId) => {
@@ -799,7 +837,7 @@ const projectOrder = (state, events) => {
       : state.checkpointUnavailable
         ? { unavailable: true }
         : null,
-    legalNextActions: legalActions(state),
+    legalNextActions: liveActions(state, events),
     legalOffRamps: legalOffRamps(state),
     waivedCriteria: state.waivedCriteria ?? [],
     unmetCriteria: state.unmetCriteria ?? [],
@@ -919,17 +957,17 @@ const selectionArgs = (args) => {
   return { args: remaining, workOrder };
 };
 
-const requirePhase = (state, ...phases) => {
+const requirePhase = (state, events, ...phases) => {
   if (phases.includes(state.phase)) return;
-  const commands = legalCommands(state);
+  const commands = legalCommands(state, events);
   throw new Error(
     `cannot perform action in phase ${state.phase}; run: ${commands.join(" or ") || "no command is currently legal"}`,
   );
 };
 
-const requireOffRamp = (state, route) => {
+const requireOffRamp = (state, events, route) => {
   if (legalOffRamps(state).includes(route)) return;
-  const commands = legalCommands(state);
+  const commands = legalCommands(state, events);
   throw new Error(
     `${route} is not legal in phase ${state.phase}; it is legal in ${OFF_RAMP_PHASES[route].join(", ")}. Legal off-ramps here: ${legalOffRamps(state).join(", ") || "none"}; run: ${commands.join(" or ") || "no command is currently legal"}`,
   );
@@ -1076,6 +1114,26 @@ const operatorMessageSentence =
 const gateClaimSentence =
   "A met criterion naming npm test or npm run test:docs stands on that gate's passing row at the subject or an inline run.";
 const verifySentence = `A finding names its class and the rule a repair must hold. ${defectBoundarySentence} ${offRampSentence} ${operatorMessageSentence} ${gateClaimSentence}`;
+// A target session works in the target worktree, where `npm run` reads the
+// target's own package.json. Texts are written in npm form, and each printed
+// text passes once through briefingCommands, which gives a target order every
+// `npm run <script> --` form in the launchpad form the start handoff prints.
+// The claim text `npm run test:docs` takes no `--` and stays as written.
+// This map mirrors package.json's scripts entries for the forms printed.
+const launchpadScripts = {
+  resume: "resume",
+  worktree: "worktree",
+  plan: "refute-plan",
+  adjacent: "adjacent-work",
+};
+const briefingCommands = (state, text) =>
+  state.repositoryId
+    ? text.replace(/npm run ([a-z]+) --/gu, (form, name) =>
+        launchpadScripts[name]
+          ? launchpadInvocation(repoRoot, launchpadScripts[name])
+          : form,
+      )
+    : text;
 // A criterion the record already waives needs neither route.
 const unmetBriefing = (state) => {
   const waived = new Set(
@@ -1087,16 +1145,37 @@ const unmetBriefing = (state) => {
   if (!ids.length) return "";
   return `\nThe executor recorded ${ids.length === 1 ? "criterion" : "criteria"} ${ids.join(", ")} unmet in ${handoffLedgerPath(repoRoot, state.workOrderId)}. A waiver this session records from the operator's capture (npm run resume -- waive ${ids.length === 1 ? ids[0] : "<criterion>"} --reason <text> ${captureUsage} <actor flags> --work-order ${state.workOrderId}) or an authorized amendment (npm run plan -- amend-order) spares the cycle; without either the criterion is judged as it stands.`;
 };
+const targetBriefing = (state, review = false) => {
+  if (!state.repositoryId) return "";
+  const repository = loadConfig(repoRoot).repositories[state.repositoryId];
+  if (!repository)
+    return `\nTarget repositories.${state.repositoryId} is not registered; restore its repository declaration before running target checks or completing this phase.`;
+  const entry = targetWorktreeForOrder(repoRoot, state.workOrderId);
+  const location = entry
+    ? join(entry.target, repository.documentationRoot)
+    : `${state.repositoryId}/${repository.documentationRoot} (target worktree not registered)`;
+  return `\nRepo-native authority includes ${location} and the registered profile. Target gate claims stand on ${review ? targetGateCommand(repoRoot, state.workOrderId, "review") : `${targetGateCommand(repoRoot, state.workOrderId, "plain")} [--review]`}; the instance document gate, which a criterion names as npm run test:docs, runs as ${launchpadInvocation(repoRoot, "test-runner")} --document. This target order records no release; release prepare returns that outcome without assigning a version.${review ? ` Commit the reviewed target change on wo-${state.workOrderId.slice(3)} before final-review-result pass; run npm run resume -- target-records <actor flags> after the pass, then commit the instance records. Publish the target with npm run worktree -- publish ${state.workOrderId} --target-worktree --branch <type>/<slug> --title <title> --body-file <path>, and publish the instance records with npm run worktree -- publish ${state.workOrderId} --title <title> --body-file <path>.` : ""}`;
+};
 const executionBriefing = (state) => {
   const declaration = activeWorkOrderDeclaration(state);
-  return `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}${declaration.experimentSource ? `\n${declaration.experimentSource}` : ""}\nRead that authority and only its cited blueprint sections; when its deliverable and evidence exist, run ${commandFor("implementation-ready", state.workOrderId)}.${ledgerBriefing(state, "that command")}${executorEntryBriefing(repoRoot, state.workOrderId)}`;
+  return briefingCommands(
+    state,
+    `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}${declaration.experimentSource ? `\n${declaration.experimentSource}` : ""}\nRead that authority and only its cited blueprint sections; when its deliverable and evidence exist, run ${commandFor("implementation-ready", state.workOrderId)}.${ledgerBriefing(state, "that command")}${executorEntryBriefing(repoRoot, state.workOrderId)}${targetBriefing(state)}`,
+  );
 };
 const repairBriefing = (state) =>
-  `Repair ${state.workOrderPath} using ${state.failureSourcePath}; read both artifacts. ${repairSentence}${ledgerBriefing(state, "repair-complete")}${executorEntryBriefing(repoRoot, state.workOrderId)}`;
+  briefingCommands(
+    state,
+    `Repair ${state.workOrderPath} using ${state.failureSourcePath}; read both artifacts. ${repairSentence}${ledgerBriefing(state, "repair-complete")}${executorEntryBriefing(repoRoot, state.workOrderId)}${targetBriefing(state)}`,
+  );
+// The order's own known-issues text is quoted as written, outside the rewrite.
 const verificationBriefing = (state, reportPath) =>
-  `Verify ${state.workOrderPath}; write the immutable report to ${reportPath}. ${costLineBriefing}\n${verifySentence}${unmetBriefing(state)}${verificationKnownIssues(repoRoot, state)}`;
+  `${briefingCommands(state, `Verify ${state.workOrderPath}; write the immutable report to ${reportPath}. ${costLineBriefing}\n${verifySentence}${unmetBriefing(state)}`)}${verificationKnownIssues(repoRoot, state)}${briefingCommands(state, targetBriefing(state))}`;
 const finalReviewBriefing = (state, reportPath) =>
-  `Final-review ${state.workOrderPath}, the complete verification sequence, and ideation receipt; write ${reportPath}. ${costLineBriefing}\n${defectBoundarySentence} ${offRampSentence} ${operatorMessageSentence} ${gateClaimSentence}${unmetBriefing(state)}`;
+  briefingCommands(
+    state,
+    `Final-review ${state.workOrderPath}, the complete verification sequence, and ideation receipt; write ${reportPath}. ${costLineBriefing}\n${defectBoundarySentence} ${offRampSentence} ${operatorMessageSentence} ${gateClaimSentence}${unmetBriefing(state)}${targetBriefing(state, true)}`,
+  );
 // The advisories and rows the handoff produced ride on the completion's
 // evidence, beside the diff check's.
 const completionHandoff = (evidence, handoff, gates) => {
@@ -1104,6 +1183,7 @@ const completionHandoff = (evidence, handoff, gates) => {
     console.warn(`Advisory: ${message}`);
   evidence.advisories.push(...handoff.advisories, ...gates.advisories);
   if (gates.productGate) evidence.productGate = gates.productGate;
+  if (gates.targetGate) evidence.targetGate = gates.targetGate;
   if (gates.documentGate) evidence.documentGate = gates.documentGate;
 };
 const recordedBriefings = {
@@ -1216,6 +1296,7 @@ const run = async (argv) => {
           allowAmbiguous: action === "status" && !args.includes("--json"),
         });
   let state = control.orders.get(selected)?.state ?? fold([]);
+  const orderEvents = selected ? eventsForOrder(control, selected) : [];
   let message;
   let statuses;
 
@@ -1275,6 +1356,8 @@ const run = async (argv) => {
               2,
             )
           : rendered;
+      if (args[0] !== "--json" && recoveryActions(state, orderEvents).length)
+        message += `\nLocal recovery (${state.workOrderId}): target-records can rerun; a records receipt or moved source remains.\n`;
       if (
         args[0] !== "--json" &&
         existsSync(docPath(repoRoot, "control", "budgets.json"))
@@ -1309,14 +1392,15 @@ const run = async (argv) => {
       if (!recorded)
         throw new Error(
           `no dispatch is recorded in phase ${state.phase}; run: ${
-            legalCommands(state).join(" or ") || "no command is currently legal"
+            legalCommands(state, orderEvents).join(" or ") ||
+            "no command is currently legal"
           }`,
         );
       message = recorded(state);
       break;
     }
     case "activate": {
-      requirePhase(state, "none", "closed", "withdrawn");
+      requirePhase(state, orderEvents, "none", "closed", "withdrawn");
       const [workOrderId, workOrderPath] = args;
       if (!/^WO-\d{3}$/.test(workOrderId ?? "") || !workOrderPath)
         throw new Error(
@@ -1393,6 +1477,9 @@ const run = async (argv) => {
           ? {
               repositoryId: repository.id,
               baseCommit: repository.baseCommit,
+              documentationRoot:
+                loadConfig(repoRoot).repositories[repository.id]
+                  .documentationRoot,
             }
           : {}),
       });
@@ -1400,7 +1487,7 @@ const run = async (argv) => {
       break;
     }
     case "implementation-ready": {
-      requirePhase(state, "active");
+      requirePhase(state, orderEvents, "active");
       const actor = completionActor(action, args, state, "executor");
       // The handoff ledger is read first; a claim the record contradicts is
       // refused before anything else runs, and a handoff never is (WO-173).
@@ -1415,6 +1502,7 @@ const run = async (argv) => {
       // The gates a met criterion names, the document gate last and inline;
       // a gate index the diff check could not write is reported there once.
       const gates = await requireGateClaims(repoRoot, handoff, {
+        state,
         gateIndexError,
       });
       completionHandoff(evidence, handoff, gates);
@@ -1429,7 +1517,7 @@ const run = async (argv) => {
       break;
     }
     case "verify": {
-      requirePhase(state, "ready-to-verify");
+      requirePhase(state, orderEvents, "ready-to-verify");
       await reserveCodexDispatch();
       const verificationId = nextVerification(state);
       const reportPath = docRelative(
@@ -1448,7 +1536,7 @@ const run = async (argv) => {
       break;
     }
     case "verification-result": {
-      requirePhase(state, "verifying");
+      requirePhase(state, orderEvents, "verifying");
       const [verdict, ...actorArgs] = args;
       if (verdict !== "pass" && verdict !== "fail")
         throw new Error(actorUsage(action, "pass|fail"));
@@ -1499,6 +1587,7 @@ const run = async (argv) => {
         state.workOrderId,
       );
       const gates = await requireGateClaims(repoRoot, claims, {
+        state,
         gateIndexError,
       });
       completionHandoff(evidence, claims, gates);
@@ -1524,7 +1613,7 @@ const run = async (argv) => {
           state.failureSourcePath
         )
       )
-        requirePhase(state, "needs-fix");
+        requirePhase(state, orderEvents, "needs-fix");
       await reserveCodexDispatch();
       message = repairBriefing(state);
       appendTransition(action, {
@@ -1536,7 +1625,7 @@ const run = async (argv) => {
       break;
     }
     case "repair-complete": {
-      requirePhase(state, "repairing");
+      requirePhase(state, orderEvents, "repairing");
       const actor = completionActor(action, args, state, "executor");
       const handoff = readHandoffLedger(repoRoot, state, { selfReview: false });
       releaseExecutorWriter = await executorWriterRelease(repoRoot);
@@ -1547,6 +1636,7 @@ const run = async (argv) => {
         state.workOrderId,
       );
       const gates = await requireGateClaims(repoRoot, handoff, {
+        state,
         gateIndexError,
       });
       completionHandoff(evidence, handoff, gates);
@@ -1562,7 +1652,7 @@ const run = async (argv) => {
       break;
     }
     case "final-review": {
-      requirePhase(state, "verified");
+      requirePhase(state, orderEvents, "verified");
       await reserveCodexDispatch();
       const finalReviewId = nextFinalReview(state);
       const reportPath = docRelative(
@@ -1582,7 +1672,7 @@ const run = async (argv) => {
       break;
     }
     case "final-review-result": {
-      requirePhase(state, "final-review");
+      requirePhase(state, orderEvents, "final-review");
       const [verdict, ...actorArgs] = args;
       if (verdict !== "pass" && verdict !== "fail")
         throw new Error(actorUsage(action, "pass|fail"));
@@ -1593,6 +1683,21 @@ const run = async (argv) => {
         "reviewer",
         "pass|fail",
       );
+      const targetSubject =
+        verdict === "pass" && state.repositoryId
+          ? (await import("./lib/target-worktrees.mjs")).reviewedTargetSubject(
+              repoRoot,
+              state,
+            )
+          : undefined;
+      const targetGate = targetSubject
+        ? (await import("./lib/target-gate.mjs")).targetGateEvidence(
+            repoRoot,
+            state,
+            "review",
+            targetSubject.commit,
+          )
+        : undefined;
       releaseExecutorWriter = await executorWriterRelease(repoRoot);
       const finalReviewRoot = docPath(
         repoRoot,
@@ -1625,6 +1730,7 @@ const run = async (argv) => {
         action,
         verdict,
         state.workOrderId,
+        { targetGate },
       );
       // Only the report's findings block is read. A block that cannot give a
       // complete count records none, never a lower one; either way one
@@ -1637,6 +1743,8 @@ const run = async (argv) => {
       }
       appendTransition(action, {
         type: "FinalReviewCompleted",
+        ...(targetSubject ? { targetSubject } : {}),
+        ...(targetGate ? { targetGate } : {}),
         ...(findings.measured ? { findingCounts: findings.counts } : {}),
         ...(evidence ? { evidence } : {}),
         workOrderId: state.workOrderId,
@@ -1646,14 +1754,40 @@ const run = async (argv) => {
         verdict,
         actor,
       });
-      message =
+      message = briefingCommands(
+        state,
         verdict === "pass"
-          ? `Recorded final review pass; commit the reviewed state, then run npm run worktree -- publish ${state.workOrderId} --title "<title>" --body-file <contained-reviewed-body-path>.`
-          : "Recorded final review failure; return to bounded repair.";
+          ? targetSubject
+            ? `Recorded final review pass for target change committed before this result at ${targetSubject.commit}. Run npm run resume -- target-records <actor flags>, then commit the instance records. Publish the target with npm run worktree -- publish ${state.workOrderId} --target-worktree --branch <type>/<slug> --title "<title>" --body-file <contained-reviewed-body-path>, and publish the records with npm run worktree -- publish ${state.workOrderId} --title "<title>" --body-file <contained-reviewed-body-path>.`
+            : `Recorded final review pass; commit the reviewed state, then run npm run worktree -- publish ${state.workOrderId} --title "<title>" --body-file <contained-reviewed-body-path>.`
+          : "Recorded final review failure; return to bounded repair.",
+      );
+      break;
+    }
+    case "target-records": {
+      requirePhase(state, orderEvents, "closed");
+      const actor = completionActor(action, args, state, "reviewer");
+      const { commitTargetRecords, removeMovedTargetRecords } =
+        await import("./lib/target-records.mjs");
+      const result = commitTargetRecords(
+        repoRoot,
+        state,
+        readControl(repoRoot),
+      );
+      if (!result.already) {
+        appendTransition(action, {
+          type: "TargetRecordsCommitted",
+          workOrderId: state.workOrderId,
+          ...result.payload,
+          actor,
+        });
+      }
+      removeMovedTargetRecords(repoRoot, result.moved, state.workOrderId);
+      message = `${result.already ? "Already recorded" : "Recorded"} target records for ${state.repositoryId} at ${result.payload.commit}: ${result.payload.records.map((row) => row.path).join(", ")}. Commit the instance's control segment and record removals before publishing both branches.`;
       break;
     }
     case "waive": {
-      requireOffRamp(state, action);
+      requireOffRamp(state, orderEvents, action);
       const [criterionId, ...rest] = args;
       if (!CRITERION_ID.test(criterionId ?? ""))
         throw new Error(`usage: ${commandFor(action)}`);
@@ -1701,7 +1835,7 @@ const run = async (argv) => {
       break;
     }
     case "withdraw": {
-      requireOffRamp(state, action);
+      requireOffRamp(state, orderEvents, action);
       const { values, actorArgs } = routeArgs(action, args, {
         "--disposition": "one",
         "--reason": "one",
@@ -1742,7 +1876,7 @@ const run = async (argv) => {
       break;
     }
     case "correct": {
-      requireOffRamp(state, action);
+      requireOffRamp(state, orderEvents, action);
       const [subjectArg, ...rest] = args;
       if (!subjectArg || subjectArg.startsWith("--"))
         throw new Error(`usage: ${commandFor(action)}`);
@@ -2055,7 +2189,7 @@ const run = async (argv) => {
       break;
     }
     case "override-record": {
-      requireOffRamp(state, action);
+      requireOffRamp(state, orderEvents, action);
       const { values, actorArgs } = routeArgs(action, args, {
         "--bypassed": "one",
         "--effects": "one",
@@ -2091,7 +2225,7 @@ const run = async (argv) => {
       break;
     }
     case "next": {
-      requirePhase(state, "active", "closed");
+      requirePhase(state, orderEvents, "active", "closed");
       let restricted = "";
       if (args.length) {
         if (
@@ -2112,7 +2246,7 @@ const run = async (argv) => {
       break;
     }
     case "release-close": {
-      requirePhase(state, "closed");
+      requirePhase(state, orderEvents, "closed");
       let mainPath = repoRoot;
       try {
         mainPath = mainWorktree(repoRoot);

@@ -17,6 +17,7 @@ export async function requireLifecycleEvidence(
   action,
   verdict,
   workOrder,
+  { targetGate } = {},
 ) {
   const started = Date.now();
   // Untracked files are read too: they join the diff as intent-to-add entries
@@ -122,10 +123,15 @@ export async function requireLifecycleEvidence(
       );
   }
   const gate =
-    action === "final-review-result" && verdict !== "fail"
+    action === "final-review-result" && verdict !== "fail" && !targetGate
       ? findGateCheck(root, "npm test", treeHash)
       : null;
-  if (action === "final-review-result" && verdict !== "fail" && !gate)
+  if (
+    action === "final-review-result" &&
+    verdict !== "fail" &&
+    !targetGate &&
+    !gate
+  )
     advise(
       "No passing product gate at this code identity; the reviewer runs npm test before publication.",
     );
@@ -247,6 +253,7 @@ export async function requireLifecycleEvidence(
     treeHash,
     ...(executor ? { material } : {}),
     ...(productGate ? { productGate } : {}),
+    ...(targetGate ? { targetGate } : {}),
     advisories,
     ...(checksClaims && gateIndexError ? { gateIndexError } : {}),
   };

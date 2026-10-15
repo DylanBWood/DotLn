@@ -3,10 +3,13 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import {
   cpSync,
+  chmodSync,
   existsSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
+  readdirSync,
+  readlinkSync,
   realpathSync,
   renameSync,
   rmSync,
@@ -15,17 +18,32 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { TOOL_ROOT, docPath } from "./lib/config.mjs";
-import { runGit } from "./lib/git.mjs";
+import { redactPaths, releaseCloseCommand, runGit } from "./lib/git.mjs";
+import { assertFinderMetadataTypes } from "./lib/finder-metadata.mjs";
 import { write } from "./lib/helpers.mjs";
 import { checkTargetHarness, runtimeModuleDirectory } from "./lib/harness.mjs";
 import {
   cloneMapPath,
   readTargetStart,
+  reviewedTargetSubject,
   targetRegistryPath,
 } from "./lib/target-worktrees.mjs";
+import { readControl } from "./lib/control-store.mjs";
 import { installBeaconFixture } from "./test-beacon-fixture.mjs";
+import {
+  installTargetPublicationFixture,
+  publicationVocabulary,
+  publicationGrant,
+} from "./test-target-publication-fixture.mjs";
+import { createHash } from "node:crypto";
+import {
+  gateTreeHash,
+  readGateChecks,
+  recordGateChecks,
+  checksPath,
+} from "./lib/gate-evidence.mjs";
 
 const git = (root, ...args) => runGit(root, args);
 const runtimePackages = Object.keys(
@@ -108,6 +126,20 @@ const fixture = (base) => {
         worktreeParent: "../Targets",
         repositoryClass: "fixture",
         authorityProfile: profile,
+        gate: {
+          commands: {
+            test: {
+              argv: [
+                process.execPath,
+                "-e",
+                "if (!require('node:fs').existsSync('source.txt')) process.exit(2)",
+              ],
+              timeoutMs: 5000,
+            },
+          },
+          plain: ["test"],
+          review: ["test"],
+        },
       },
     },
   };
@@ -120,7 +152,7 @@ const fixture = (base) => {
   write(
     main,
     ".gitignore",
-    "/records/state/local/\n.control-beacons/\ndist/\nnode_modules/\n.runtime/\n",
+    "/records/state/local/\n/docs/control/local/\n.control-beacons/\ndist/\nnode_modules/\n.runtime/\n",
   );
   write(main, "package.json", '{"private":true}\n');
   mkdirSync(join(main, "scripts"));
@@ -130,6 +162,11 @@ const fixture = (base) => {
     "release.mjs",
     "license-surfaces.mjs",
     "siblings.mjs",
+    "outward-lint.mjs",
+    "target-gate.mjs",
+    "test-runner.mjs",
+    "refute-plan.mjs",
+    "work-orders.mjs",
   ])
     cpSync(join(TOOL_ROOT, "scripts", name), join(main, "scripts", name), {
       recursive: false,
@@ -138,13 +175,17 @@ const fixture = (base) => {
     recursive: true,
   });
   installBeaconFixture(main);
+  cpSync(
+    join(TOOL_ROOT, "packages/skeleton/src/evidence-editions.mjs"),
+    join(main, "packages/skeleton/src/evidence-editions.mjs"),
+  );
   // The fixture's bootstrap provides the installed build without a dependency
   // install; both launchpad worktrees still run the real lifecycle commands.
   write(
     main,
     "scripts/bootstrap.mjs",
     `import { cpSync, existsSync, mkdirSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 if (process.env.DOTLN_FIXTURE_BOOTSTRAP_FAIL) process.exit(7);
 for (const name of ${JSON.stringify(runtimePackages)}) {
   const source = join(process.env.DOTLN_FIXTURE_RUNTIME, "packages", name);
@@ -223,7 +264,16 @@ const withFixture = (run) => {
     rmSync(base, { recursive: true, force: true });
   }
 };
-const closeOrder = (f, override = {}) => {
+const prepareFinalReview = (f, override = {}) => {
+  f.ok(
+    f.call(
+      f.orderRoot,
+      f.orderRoot,
+      "target-gate",
+      ["WO-999", "--review"],
+      override,
+    ),
+  );
   f.ok(f.resume(["implementation-ready", ...actorArgs], override));
   f.ok(f.resume(["verify"], override));
   const verification = docPath(
@@ -248,9 +298,1744 @@ const closeOrder = (f, override = {}) => {
     "records/final-reviews/WO-999/FINAL-001.md",
     `# Final fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n`,
   );
-  f.ok(f.resume(["final-review-result", "pass", ...actorArgs], override));
   return { verification, finalReview };
 };
+const closeOrder = (f, override = {}) => {
+  const reports = prepareFinalReview(f, override);
+  f.ok(f.resume(["final-review-result", "pass", ...actorArgs], override));
+  return reports;
+};
+
+const publicationSetup = (f) => {
+  f.config.repositories.target.authorityProfile = {
+    ...profile,
+    allowedEffects: [...profile.allowedEffects, "repo.push", "pr.open"],
+    deniedEffects: [],
+  };
+  write(f.main, "dotln.config.json", JSON.stringify(f.config));
+  write(
+    f.main,
+    "records/state/outward-vocabulary.json",
+    JSON.stringify(publicationVocabulary),
+  );
+  write(f.main, "records/state/local/terms.txt", "Private Fixture Term\n");
+  write(
+    f.main,
+    "packages/skeleton/loadouts/grants.json",
+    JSON.stringify([publicationGrant]),
+  );
+  git(f.main, "add", "-A");
+  git(f.main, "commit", "-qm", "test: declare publication policy");
+  git(f.main, "push", "-q", "origin", "main");
+  const url = "https://github.com/dotln-fixture/target.git";
+  const forge = installTargetPublicationFixture(f.base, f.env, [
+    { url, origin: join(f.base, "target.git") },
+  ]);
+  git(f.clone, "remote", "set-url", "origin", url);
+  return forge;
+};
+
+test("target release preparation is a read-only no-release outcome", () =>
+  withFixture((f) => {
+    write(
+      f.main,
+      "README.md",
+      "# Fixture\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v1.0.0`.\n<!-- DOTLN-RELEASE-END -->\n",
+    );
+    git(f.main, "add", "README.md");
+    git(f.main, "commit", "-qm", "docs: instance release claim");
+    git(f.main, "push", "-q", "origin", "main");
+    f.mapClone();
+    f.start();
+    const before = git(f.orderRoot, "status", "--porcelain"),
+      segment = readFileSync(docPath(f.orderRoot, "orders", "WO-999.jsonl"));
+    const output = f.ok(
+      f.call(f.orderRoot, f.orderRoot, "release", ["prepare", "--local"]),
+    );
+    assert.match(output, /target order records no release/u);
+    assert.equal(git(f.orderRoot, "status", "--porcelain"), before);
+    assert.deepEqual(
+      readFileSync(docPath(f.orderRoot, "orders", "WO-999.jsonl")),
+      segment,
+    );
+    git(f.orderRoot, "switch", "-qc", "wrong-preparation-branch");
+    const wrongBranch = f.call(f.orderRoot, f.orderRoot, "release", [
+      "prepare",
+      "--local",
+    ]);
+    assert.notEqual(wrongBranch.status, 0);
+    assert.match(wrongBranch.stderr, /selected wo-NNN worktree/u);
+    git(f.orderRoot, "switch", "-q", "wo-999");
+    closeOrder(f);
+    const closed = f.call(f.orderRoot, f.orderRoot, "release", [
+      "prepare",
+      "--local",
+    ]);
+    assert.notEqual(closed.status, 0);
+    assert.match(closed.stderr, /unpublished, open work order/u);
+  }));
+
+test("target records preserve reviewed reports, refuse changed inputs and publish only the bound records commit", () =>
+  withFixture((f) => {
+    const forge = publicationSetup(f);
+    f.mapClone();
+    f.start();
+    write(f.target, "reviewed.txt", "Reviewed change.\n");
+    write(f.target, ".gitignore", "deps/\n");
+    git(f.target, "add", "reviewed.txt", ".gitignore");
+    git(f.target, "commit", "-qm", "fix: preserve reviewed text");
+    const reviewed = git(f.target, "rev-parse", "HEAD");
+    const reports = closeOrder(f);
+    const decisions = "records/evidence/WO-999/decisions.md";
+    write(
+      f.orderRoot,
+      decisions,
+      "# Decisions\n\nThe fixture keeps the reviewed behavior.\n",
+    );
+    const segment = docPath(f.orderRoot, "orders", "WO-999.jsonl");
+    const before = readFileSync(segment);
+    const refuse = (pattern) => {
+      const result = f.resume(["target-records", ...actorArgs]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, pattern);
+      assert.deepEqual(readFileSync(segment), before);
+      assert.equal(git(f.target, "rev-parse", "HEAD"), reviewed);
+      assert.equal(git(f.target, "status", "--porcelain"), "");
+    };
+    const report = readFileSync(reports.verification);
+    writeFileSync(reports.verification, "Changed report bytes.\n");
+    refuse(/report hash differs/u);
+    writeFileSync(reports.verification, report);
+    const decisionBytes = readFileSync(join(f.orderRoot, decisions));
+    write(f.orderRoot, decisions, "# Decisions\n\nPrivate Fixture Term\n");
+    refuse(/local-terms.*line/u);
+    writeFileSync(join(f.orderRoot, decisions), decisionBytes);
+    renameSync(
+      join(f.orderRoot, decisions),
+      join(f.orderRoot, `${decisions}.saved`),
+    );
+    symlinkSync(
+      `${decisions.split("/").at(-1)}.saved`,
+      join(f.orderRoot, decisions),
+    );
+    refuse(/contained regular file/u);
+    rmSync(join(f.orderRoot, decisions));
+    renameSync(
+      join(f.orderRoot, `${decisions}.saved`),
+      join(f.orderRoot, decisions),
+    );
+    f.ok(f.resume(["target-records", ...actorArgs]));
+    const event = readFileSync(segment, "utf8")
+      .trim()
+      .split("\n")
+      .map(JSON.parse)
+      .filter((row) => row.type === "TargetRecordsCommitted")
+      .at(-1);
+    assert.equal(event.parent, reviewed);
+    assert.equal(event.root, "docs");
+    assert.equal(event.records.length, 4);
+    assert.equal(
+      git(f.target, "rev-list", "--parents", "-n", "1", "HEAD"),
+      `${event.commit} ${reviewed}`,
+    );
+    for (const row of event.records)
+      assert.equal(
+        createHash("sha256")
+          .update(readFileSync(join(f.target, row.path)))
+          .digest("hex"),
+        row.sha256,
+      );
+    assert.ok(existsSync(join(f.orderRoot, f.order)));
+    assert.ok(!existsSync(join(f.orderRoot, decisions)));
+    assert.ok(!existsSync(reports.verification));
+    assert.ok(!existsSync(reports.finalReview));
+    assert.match(
+      f.ok(f.resume(["target-records", ...actorArgs])),
+      /Already recorded/u,
+    );
+    write(
+      f.orderRoot,
+      "reviewed-body.md",
+      "## Result\n\nPreserve reviewed text and its validation.\n",
+    );
+    git(f.orderRoot, "add", "-A");
+    git(f.orderRoot, "commit", "-qm", "docs: preserve validation links");
+    const launchpadHead = git(f.orderRoot, "rev-parse", "HEAD");
+    const publish = (...args) =>
+      f.worktree(
+        "publish",
+        "WO-999",
+        "--target-worktree",
+        "--branch",
+        "fix/preserve-reviewed-text",
+        "--title",
+        "fix: preserve reviewed text",
+        "--body-file",
+        "reviewed-body.md",
+        ...args,
+      );
+    const origin = join(f.base, "target.git"),
+      originRefs = git(origin, "show-ref");
+    const noPublish = (pattern, options = {}) => {
+      const result = f.worktree(
+        "publish",
+        "WO-999",
+        "--target-worktree",
+        "--branch",
+        options.branch ?? "fix/preserve-reviewed-text",
+        "--title",
+        options.title ?? "fix: preserve reviewed text",
+        "--body-file",
+        options.body ?? "reviewed-body.md",
+      );
+      assert.notEqual(result.status, 0, "invalid publication must refuse");
+      assert.match(result.stderr, pattern);
+      assert.equal(git(origin, "show-ref"), originRefs);
+      assert.equal(
+        existsSync(forge.log),
+        false,
+        "local refusal must precede gh",
+      );
+      return result;
+    };
+    const save = (path) => readFileSync(join(f.orderRoot, path));
+    const committedMutation = (path, bytes, pattern, root = f.orderRoot) => {
+      const original = readFileSync(join(root, path));
+      write(root, path, bytes);
+      git(root, "add", "-A");
+      git(root, "commit", "-qm", "test: invalid publication input");
+      noPublish(pattern);
+      write(root, path, original);
+      git(root, "add", "-A");
+      git(root, "commit", "-qm", "test: restore publication input");
+    };
+    for (const [root, path] of [
+      [f.target, "reviewed.txt"],
+      [f.target, "untracked.txt"],
+      [f.orderRoot, "reviewed-body.md"],
+      [f.orderRoot, "untracked.txt"],
+    ]) {
+      const file = join(root, path),
+        original = existsSync(file) ? readFileSync(file) : undefined;
+      write(root, path, "dirty fixture input\n");
+      const refusal = noPublish(/dirty|uncommitted|untracked|changes|clean/u);
+      if (root === f.target) {
+        assert.ok(refusal.stderr.includes(path));
+        assert.match(
+          refusal.stderr,
+          /do not add a commit after the passing review/u,
+        );
+      }
+      if (original) writeFileSync(file, original);
+      else rmSync(file);
+    }
+    const committedEvents = readFileSync(segment, "utf8")
+      .trim()
+      .split("\n")
+      .map(JSON.parse);
+    for (const field of ["targetSubject", "targetGate", "records"]) {
+      const invalid = structuredClone(committedEvents).filter((row) =>
+        field === "records" ? row.type !== "TargetRecordsCommitted" : true,
+      );
+      if (field !== "records") {
+        // A historical final review may lack optional bindings; records cannot
+        // exist without a subject, so remove that dependent event as well.
+        delete invalid.findLast((row) => row.type === "FinalReviewCompleted")[
+          field
+        ];
+        if (field === "targetSubject") {
+          delete invalid.findLast((row) => row.type === "FinalReviewCompleted")
+            .targetGate;
+          invalid.splice(
+            invalid.findIndex((row) => row.type === "TargetRecordsCommitted"),
+            1,
+          );
+        }
+      }
+      committedMutation(
+        "records/state/orders/WO-999.jsonl",
+        invalid.map((row) => JSON.stringify(row)).join("\n") + "\n",
+        /targetSubject|targetGate|TargetRecordsCommitted/u,
+      );
+    }
+    const unfinished = committedEvents.filter(
+      (row) =>
+        !["FinalReviewCompleted", "TargetRecordsCommitted"].includes(row.type),
+    );
+    committedMutation(
+      "records/state/orders/WO-999.jsonl",
+      unfinished.map((row) => JSON.stringify(row)).join("\n") + "\n",
+      /no committed passing final review/u,
+    );
+    const unchangedSubject = structuredClone(committedEvents);
+    const unchangedReview = unchangedSubject.findLast(
+      (row) => row.type === "FinalReviewCompleted",
+    );
+    unchangedReview.targetSubject.commit = f.baseCommit;
+    unchangedReview.targetGate.commit = f.baseCommit;
+    unchangedSubject.findLast(
+      (row) => row.type === "TargetRecordsCommitted",
+    ).parent = f.baseCommit;
+    committedMutation(
+      "records/state/orders/WO-999.jsonl",
+      unchangedSubject.map(JSON.stringify).join("\n") + "\n",
+      /reviewed target commit equals the base/u,
+    );
+    const badMessage = git(
+      f.target,
+      "commit-tree",
+      `${event.commit}^{tree}`,
+      "-p",
+      reviewed,
+      "-m",
+      "docs: record evt_123",
+    );
+    git(f.target, "update-ref", "refs/heads/wo-999", badMessage);
+    const badMessageEvents = structuredClone(committedEvents);
+    badMessageEvents.findLast(
+      (row) => row.type === "TargetRecordsCommitted",
+    ).commit = badMessage;
+    committedMutation(
+      "records/state/orders/WO-999.jsonl",
+      badMessageEvents.map(JSON.stringify).join("\n") + "\n",
+      /identifier.runtime/u,
+    );
+    git(f.target, "update-ref", "refs/heads/wo-999", event.commit);
+    const bundlePath = join(f.target, ".claude/target-worker-manifest.json"),
+      bundleBytes = readFileSync(bundlePath);
+    const bundle = JSON.parse(bundleBytes);
+    bundle.installed.push({ path: "reviewed.txt" });
+    writeFileSync(bundlePath, JSON.stringify(bundle));
+    noPublish(/bundle ownership.*manifest/u);
+    writeFileSync(bundlePath, bundleBytes);
+    rmSync(bundlePath);
+    noPublish(/bundle ownership/u);
+    writeFileSync(bundlePath, bundleBytes);
+    const changedHead = git(
+      f.target,
+      "commit-tree",
+      `${event.commit}^{tree}`,
+      "-p",
+      event.commit,
+      "-m",
+      "docs: later target commit",
+    );
+    git(f.target, "update-ref", "refs/heads/wo-999", changedHead);
+    noPublish(/differs from records commit/u);
+    git(f.target, "update-ref", "refs/heads/wo-999", event.commit);
+    const config = JSON.parse(save("dotln.config.json"));
+    for (const override of [
+      { deniedEffects: ["repo.push"] },
+      { allowedEffects: ["repo.read"] },
+      { expiresAt: 1 },
+      { requiredEvidence: ["needed"] },
+      { revocationConditions: [{ registryId: "unknown", version: 1 }] },
+    ]) {
+      const invalid = structuredClone(config);
+      Object.assign(invalid.repositories.target.authorityProfile, override);
+      committedMutation(
+        "dotln.config.json",
+        JSON.stringify(invalid),
+        /repo.push|pr.open|revocation|authority/u,
+        f.main,
+      );
+    }
+    for (const grant of [
+      null,
+      { ...publicationGrant, grantedBy: "host-policy" },
+      { ...publicationGrant, repo: "another" },
+      { ...publicationGrant, effects: ["repo.push"] },
+      { ...publicationGrant, operations: ["repo.push"] },
+    ])
+      committedMutation(
+        "packages/skeleton/loadouts/grants.json",
+        JSON.stringify(grant ? [grant] : []),
+        /operator grant|cannot admit/u,
+        f.main,
+      );
+    for (const path of [
+      "dotln.config.json",
+      "packages/skeleton/loadouts/grants.json",
+    ]) {
+      const original = readFileSync(join(f.main, path));
+      const changed = path === "dotln.config.json" ? JSON.parse(original) : [];
+      if (changed.repositories)
+        changed.repositories.target.authorityProfile.deniedEffects = [
+          "repo.push",
+        ];
+      write(f.main, path, JSON.stringify(changed));
+      noPublish(/main's publication authority.*committed/u);
+      writeFileSync(join(f.main, path), original);
+    }
+    // The order branch commits authority main lacks. The session publication
+    // reads only main's committed profile and grant registry, so it refuses
+    // before any push while the branch holds a valid grant or profile.
+    const onBranchOnly = (path, lacking, pattern) => {
+      const granted = readFileSync(join(f.orderRoot, path), "utf8");
+      for (const bytes of [lacking, granted]) {
+        write(f.orderRoot, path, bytes);
+        git(f.orderRoot, "add", "-A");
+        git(f.orderRoot, "commit", "-qm", "test: order branch authority");
+      }
+      committedMutation(path, lacking, pattern, f.main);
+      assert.equal(readFileSync(join(f.orderRoot, path), "utf8"), granted);
+    };
+    onBranchOnly(
+      "packages/skeleton/loadouts/grants.json",
+      "[]",
+      /operator grant naming target/u,
+    );
+    const unpublishable = structuredClone(config);
+    unpublishable.repositories.target.authorityProfile.allowedEffects = [
+      "repo.read",
+    ];
+    onBranchOnly(
+      "dotln.config.json",
+      JSON.stringify(unpublishable),
+      /repo\.push/u,
+    );
+    const unregistered = structuredClone(config);
+    delete unregistered.repositories.target;
+    onBranchOnly(
+      "dotln.config.json",
+      JSON.stringify(unregistered),
+      /repository target is not registered in main's committed authority/u,
+    );
+    git(
+      f.target,
+      "config",
+      "--add",
+      "remote.origin.pushurl",
+      "https://github.com/dotln-fixture/target.git",
+    );
+    git(
+      f.target,
+      "config",
+      "--add",
+      "remote.origin.pushurl",
+      "https://github.com/dotln-fixture/second.git",
+    );
+    noPublish(/one push URL/u);
+    git(f.target, "config", "--unset-all", "remote.origin.pushurl");
+    git(
+      f.target,
+      "config",
+      "remote.origin.pushurl",
+      "https://example.invalid/owner/repo.git",
+    );
+    noPublish(/GitHub/u);
+    git(f.target, "config", "--unset-all", "remote.origin.pushurl");
+    noPublish(/identifier.runtime/u, { branch: "fix/evt_123" });
+    noPublish(/identifier.runtime/u, { title: "fix: preserve evt_123" });
+    committedMutation(
+      "reviewed-body.md",
+      "## Result\n\nReview source-event:123.\n",
+      /identifier.runtime/u,
+    );
+    committedMutation(
+      "reviewed-body.md",
+      "## Result\n\nGenerated with ChatGPT\n",
+      /attribution/u,
+    );
+    committedMutation(
+      "reviewed-body.md",
+      "## Result\n\nA paragraph split\nacross physical lines.\n",
+      /body|wrap|paragraph/u,
+    );
+    const terms = join(f.main, "records/state/local/terms.txt"),
+      termBytes = readFileSync(terms);
+    rmSync(terms);
+    noPublish(/local-terms list absent/u);
+    writeFileSync(terms, termBytes);
+    noPublish(/contained regular file/u, { body: "../missing.md" });
+    write(
+      f.orderRoot,
+      "records/state/local/body.md",
+      "## Result\n\nIgnored body.\n",
+    );
+    noPublish(/committed|tracked|HEAD/u, {
+      body: "records/state/local/body.md",
+    });
+    rmSync(join(f.orderRoot, "records/state/local/body.md"));
+    symlinkSync("reviewed-body.md", join(f.orderRoot, "body-link.md"));
+    git(f.orderRoot, "add", "body-link.md");
+    git(f.orderRoot, "commit", "-qm", "test: symbolic body");
+    noPublish(/contained regular file/u, { body: "body-link.md" });
+    rmSync(join(f.orderRoot, "body-link.md"));
+    git(f.orderRoot, "add", "-A");
+    git(f.orderRoot, "commit", "-qm", "test: remove symbolic body");
+    const gitWrapper = join(forge.bin, "git"),
+      gitWrapperBytes = readFileSync(gitWrapper);
+    writeFileSync(
+      gitWrapper,
+      gitWrapperBytes
+        .toString("utf8")
+        .replace(
+          "process.stdout.write(result.stdout); process.exit(result.status ?? 1);",
+          "process.stdout.write('https://github.com/dotln-fixture/other.git\\n'); process.exit(0);",
+        ),
+    );
+    const wrongForge = publish();
+    assert.notEqual(wrongForge.status, 0);
+    assert.match(
+      wrongForge.stderr,
+      /origin differs from the bound target repository/u,
+    );
+    assert.equal(git(origin, "show-ref"), originRefs);
+    assert.ok(!readFileSync(forge.log, "utf8").includes('"pr","create"'));
+    writeFileSync(gitWrapper, gitWrapperBytes);
+    rmSync(forge.log);
+    const validLaunchpadHead = git(f.orderRoot, "rev-parse", "HEAD");
+    const instanceRefs = git(f.main, "show-ref"),
+      instanceOriginRefs = git(join(f.base, "launchpad.git"), "show-ref");
+    const output = f.ok(publish());
+    assert.match(output, /opened pull request #7/u);
+    assert.equal(git(f.main, "show-ref"), instanceRefs);
+    assert.equal(
+      git(join(f.base, "launchpad.git"), "show-ref"),
+      instanceOriginRefs,
+    );
+    assert.equal(
+      git(
+        join(f.base, "target.git"),
+        "rev-parse",
+        "refs/heads/fix/preserve-reviewed-text",
+      ),
+      event.commit,
+    );
+    const calls = readFileSync(forge.log, "utf8");
+    assert.match(f.ok(publish()), /Already published/u);
+    assert.equal(readFileSync(forge.log, "utf8"), calls);
+    assert.notEqual(validLaunchpadHead, launchpadHead);
+    assert.equal(git(f.orderRoot, "rev-parse", "HEAD"), validLaunchpadHead);
+    const body = readFileSync(forge.body, "utf8");
+    assert.match(body, /## Change/u);
+    assert.match(body, /## Target checks/u);
+    assert.ok(body.includes(reviewed));
+    assert.doesNotMatch(body, /target-gate:|source-event:|argv/u);
+    git(f.main, "merge", "-q", "--no-ff", "-m", "Merge records", "wo-999");
+    git(f.main, "push", "-q", "origin", "main");
+    write(
+      f.orderRoot,
+      "docs/control/local/harness/unrelated.json",
+      "Retain this unknown ignored file.\n",
+    );
+    const unknownCache = f.worktree("finish", "WO-999", "--dry-run");
+    assert.notEqual(unknownCache.status, 0);
+    assert.match(unknownCache.stderr, /ignored material[\s\S]*unrelated.json/u);
+    assert.ok(
+      existsSync(
+        join(f.orderRoot, "docs/control/local/harness/unrelated.json"),
+      ),
+    );
+    rmSync(join(f.orderRoot, "docs/control/local/harness/unrelated.json"));
+    const cloneBase = git(f.clone, "rev-parse", "main");
+    const merged = join(f.base, "forge-merge");
+    git(f.base, "clone", "-q", join(f.base, "target.git"), merged);
+    git(merged, "config", "user.name", "Fixture");
+    git(merged, "config", "user.email", "fixture@example.invalid");
+    git(
+      merged,
+      "merge",
+      "-q",
+      "--no-ff",
+      "-m",
+      "Merge reviewed change",
+      "origin/fix/preserve-reviewed-text",
+    );
+    git(merged, "push", "-q", "origin", "main");
+    assert.equal(
+      git(f.clone, "rev-parse", "main"),
+      cloneBase,
+      "only the forge has merged the target",
+    );
+    const fetchedBase = git(merged, "rev-parse", "HEAD");
+    const cloneRefs = git(f.clone, "show-ref"),
+      sourceBytes = readFileSync(join(f.clone, "source.txt"));
+    const refusedClose = (pattern, refs = cloneRefs, mode = "--publish") => {
+      const result = f.close(mode);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, pattern);
+      assert.ok(
+        result.stderr.includes(releaseCloseCommand(f.main, "WO-999", mode)),
+        result.stderr,
+      );
+      assert.equal(git(f.clone, "show-ref"), refs);
+      assert.ok(existsSync(f.orderRoot));
+      assert.ok(
+        existsSync(join(f.target, ".claude/target-worker-manifest.json")),
+      );
+    };
+    write(f.clone, "source.txt", "dirty clone base\n");
+    refusedClose(/source.txt/u);
+    refusedClose(/source.txt/u, cloneRefs, "--dry-run");
+    writeFileSync(join(f.clone, "source.txt"), sourceBytes);
+    const divergent = git(
+      f.clone,
+      "commit-tree",
+      `${cloneBase}^{tree}`,
+      "-p",
+      cloneBase,
+      "-m",
+      "test: divergent clone base",
+    );
+    git(f.clone, "update-ref", "refs/heads/main", divergent);
+    refusedClose(/cannot fast-forward/u, git(f.clone, "show-ref"));
+    refusedClose(/cannot fast-forward/u, git(f.clone, "show-ref"), "--dry-run");
+    git(f.clone, "update-ref", "refs/heads/main", cloneBase);
+    const cloneUrl = git(f.clone, "config", "remote.origin.url");
+    git(
+      f.clone,
+      "config",
+      "remote.origin.url",
+      join(f.base, "absent-origin.git"),
+    );
+    refusedClose(/fetch failed/u);
+    git(f.clone, "config", "remote.origin.url", cloneUrl);
+    assert.match(f.ok(f.close("--dry-run")), /would-remove/u);
+    assert.equal(git(f.clone, "rev-parse", "main"), cloneBase);
+    write(f.target, "deps/pkg/one.txt", "ignored one\n");
+    write(f.target, "deps/pkg/two.txt", "ignored two\n");
+    const dryIgnored = f.close("--dry-run");
+    assert.notEqual(dryIgnored.status, 0);
+    assert.match(dryIgnored.stderr, /ignored material.*deps\//u);
+    assert.doesNotMatch(
+      dryIgnored.stderr,
+      /deps\/pkg\/|target-worker-manifest/u,
+    );
+    assert.match(dryIgnored.stderr, /close WO-999 --dry-run/u);
+    git(f.clone, "switch", "--detach", "-q", "HEAD");
+    const ignored = f.close("--publish");
+    assert.notEqual(ignored.status, 0);
+    assert.match(ignored.stderr, /ignored material.*deps\//u);
+    assert.doesNotMatch(ignored.stderr, /deps\/pkg\/|target-worker-manifest/u);
+    assert.match(
+      ignored.stderr,
+      /Move or remove.*release.mjs.*close WO-999 --publish/u,
+    );
+    assert.ok(existsSync(f.orderRoot));
+    assert.ok(
+      existsSync(join(f.target, ".claude/target-worker-manifest.json")),
+    );
+    rmSync(join(f.target, "deps"), { recursive: true });
+    assert.match(f.ok(f.close("--publish")), /no-release/u);
+    assert.equal(git(f.clone, "rev-parse", "main"), fetchedBase);
+    for (const root of [f.main, f.clone]) {
+      assert.equal(git(root, "branch", "--list", "wo-999"), "");
+      assert.equal(git(root, "tag", "--list"), "");
+    }
+    assert.equal(existsSync(f.target), false);
+    assert.equal(existsSync(f.orderRoot), false);
+    git(f.clone, "switch", "-q", "main");
+    for (const row of event.records)
+      assert.ok(existsSync(join(f.clone, row.path)));
+  }));
+
+test("target records refuse missing review, dirty targets and destination collisions without losing inputs", () =>
+  withFixture((f) => {
+    publicationSetup(f);
+    f.mapClone();
+    f.start();
+    const early = f.resume(["target-records", ...actorArgs]);
+    assert.notEqual(early.status, 0);
+    assert.match(early.stderr, /closed|phase/u);
+    write(
+      f.target,
+      "docs/evidence/WO-999/decisions.md",
+      "Existing target history.\n",
+    );
+    git(f.target, "add", "docs");
+    git(f.target, "commit", "-qm", "docs: existing target history");
+    const reports = closeOrder(f);
+    write(
+      f.orderRoot,
+      "records/evidence/WO-999/decisions.md",
+      "# Decisions\n\nNew order history.\n",
+    );
+    const segment = docPath(f.orderRoot, "orders", "WO-999.jsonl"),
+      original = readFileSync(segment),
+      head = git(f.target, "rev-parse", "HEAD");
+    const refuse = (pattern) => {
+      const before = git(f.target, "status", "--porcelain");
+      const result = f.resume(["target-records", ...actorArgs]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, pattern);
+      assert.deepEqual(readFileSync(segment), original);
+      assert.equal(git(f.target, "rev-parse", "HEAD"), head);
+      assert.equal(git(f.target, "status", "--porcelain"), before);
+      assert.ok(existsSync(reports.verification));
+      assert.ok(existsSync(reports.finalReview));
+    };
+    refuse(/destination already holds different bytes/u);
+    const source = readFileSync(join(f.target, "source.txt"));
+    write(f.target, "source.txt", "dirty\n");
+    refuse(/tracked changes/u);
+    writeFileSync(join(f.target, "source.txt"), source);
+    write(f.target, "untracked.txt", "new input\n");
+    refuse(/untracked/u);
+    rmSync(join(f.target, "untracked.txt"));
+  }));
+
+test("target records resume interrupted commits and removals with literal document roots", async () => {
+  const { commitTargetRecords, targetRecordSources } =
+    await import("./lib/target-records.mjs");
+  const { readControl } = await import("./lib/control-store.mjs");
+  withFixture((f) => {
+    f.config.repositories.target.documentationRoot = ":(literal)manual";
+    publicationSetup(f);
+    f.mapClone();
+    f.start();
+    write(f.target, "reviewed.txt", "Reviewed change.\n");
+    git(f.target, "add", "reviewed.txt");
+    git(f.target, "commit", "-qm", "fix: reviewed change");
+    const reports = closeOrder(f);
+    write(
+      f.orderRoot,
+      "records/evidence/WO-999/decisions.md",
+      "# Decisions\n\nKeep reviewed behavior.\n",
+    );
+    const control = readControl(f.orderRoot),
+      state = control.orders.get("WO-999").state;
+    const verificationBytes = readFileSync(reports.verification);
+    const signer = join(f.base, "fixture-signer"),
+      signAttempt = join(f.base, "signing-requested");
+    writeFileSync(
+      signer,
+      `#!/bin/sh\nprintf attempted > '${signAttempt}'\nexit 1\n`,
+    );
+    chmodSync(signer, 0o755);
+    git(f.target, "config", "gpg.format", "openpgp");
+    git(f.target, "config", "gpg.program", signer);
+    git(f.target, "config", "commit.gpgsign", "true");
+    assert.throws(
+      () => commitTargetRecords(f.orderRoot, state, control),
+      /sign|gpg/u,
+    );
+    assert.ok(
+      existsSync(signAttempt),
+      "records commit honors the host signing policy",
+    );
+    assert.equal(
+      git(f.target, "rev-parse", "HEAD"),
+      state.targetSubject.commit,
+    );
+    assert.ok(existsSync(reports.verification));
+    git(f.target, "config", "commit.gpgsign", "false");
+    // Stop at the real commit/event boundary, then use the public command.
+    const result = commitTargetRecords(f.orderRoot, state, control);
+    const receipt = docPath(
+      f.orderRoot,
+      "control",
+      "local/target-operations/records/WO-999.json",
+    );
+    const receiptBytes = readFileSync(receipt);
+    const offered = () =>
+      JSON.parse(
+        f.ok(f.resume(["status", "--json"])),
+      ).legalNextActions.includes("target-records");
+    assert.equal(
+      readControl(f.orderRoot).orders.get("WO-999").state.targetRecords,
+      undefined,
+    );
+    assert.ok(existsSync(reports.verification));
+    assert.equal(
+      git(f.target, "ls-tree", "HEAD", "--", result.payload.records[0].path),
+      "",
+    );
+    assert.notEqual(
+      git(
+        f.target,
+        "ls-tree",
+        "HEAD",
+        "--",
+        `:(literal)${result.payload.records[0].path}`,
+      ),
+      "",
+    );
+    // A retry reads each -z entry whole: a staged rename in the target is
+    // named by both of its paths, and nothing records.
+    git(f.target, "mv", "reviewed.txt", "renamed-reviewed.txt");
+    const renamed = f.resume(["target-records", ...actorArgs]);
+    assert.notEqual(renamed.status, 0);
+    assert.match(
+      renamed.stderr,
+      /pending operation has changed or unrelated input: reviewed\.txt -> renamed-reviewed\.txt$/mu,
+    );
+    git(f.target, "mv", "renamed-reviewed.txt", "reviewed.txt");
+    assert.equal(
+      readControl(f.orderRoot).orders.get("WO-999").state.targetRecords,
+      undefined,
+    );
+    f.ok(f.resume(["target-records", ...actorArgs]));
+    assert.equal(git(f.target, "rev-parse", "HEAD"), result.payload.commit);
+    assert.equal(existsSync(reports.verification), false);
+    assert.equal(offered(), false);
+    // Model interruption after the event and the removals but before the
+    // receipt is forgotten: status keeps offering the rerun that finishes it.
+    writeFileSync(receipt, receiptBytes);
+    assert.equal(offered(), true);
+    // The committed projection stays a fold of the segments: the receipt
+    // shows only on one status line after it, and no drift is reported.
+    const projection = readFileSync(
+      docPath(f.orderRoot, "control", "current.md"),
+      "utf8",
+    );
+    assert.match(
+      projection,
+      /Legal next actions: release-close, next, activate/u,
+    );
+    const human = f.resume(["status"]);
+    assert.equal(human.status, 0, human.stderr);
+    assert.doesNotMatch(human.stderr, /disagrees/u);
+    assert.ok(human.stdout.startsWith(projection));
+    assert.match(
+      human.stdout.slice(projection.length),
+      /^\nLocal recovery \(WO-999\): target-records can rerun; a records receipt or moved source remains\.\n/u,
+    );
+    assert.match(
+      f.ok(f.resume(["target-records", ...actorArgs])),
+      /Already recorded/u,
+    );
+    assert.equal(existsSync(receipt), false);
+    assert.equal(offered(), false);
+    assert.doesNotMatch(f.ok(f.resume(["status"])), /Local recovery/u);
+    // Model interruption after the event and before every source is removed.
+    writeFileSync(reports.verification, "Changed source must survive.\n");
+    assert.equal(offered(), true);
+    const changedSource = f.resume(["target-records", ...actorArgs]);
+    assert.notEqual(changedSource.status, 0);
+    // The source is named relative to the launchpad, and the rerun in the
+    // launchpad form the briefings print.
+    assert.match(
+      changedSource.stderr,
+      /target records refused: records\/verifications\/WO-999\/VER-001\.md: moved source differs from its recorded bytes; source retained\./u,
+    );
+    const [rerun] = launchpadCommands(f, changedSource.stderr);
+    assert.equal(rerun.command, "scripts/resume.mjs target-records");
+    assert.equal(offered(), true);
+    assert.equal(
+      readFileSync(reports.verification, "utf8"),
+      "Changed source must survive.\n",
+    );
+    writeFileSync(reports.verification, verificationBytes);
+    const retry = rerun.run();
+    assert.equal(retry.status, 0, retry.stderr);
+    assert.match(retry.stdout, /Already recorded/u);
+    assert.equal(existsSync(reports.verification), false);
+    assert.equal(offered(), false);
+    // A file in place of a moved report's directory is local state the check
+    // reports on and never throws over: the report cannot be there, so status
+    // offers nothing; with the receipt back, the rerun finishes past it.
+    const reportDirectory = dirname(reports.verification);
+    rmSync(reportDirectory, { recursive: true });
+    writeFileSync(reportDirectory, "Not a directory.\n");
+    f.ok(f.resume(["status"]));
+    f.ok(f.resume(["next"]));
+    assert.equal(offered(), false);
+    writeFileSync(receipt, receiptBytes);
+    assert.equal(offered(), true);
+    assert.match(
+      f.ok(f.resume(["target-records", ...actorArgs])),
+      /Already recorded/u,
+    );
+    assert.equal(existsSync(receipt), false);
+    assert.equal(offered(), false);
+    rmSync(reportDirectory);
+    mkdirSync(reportDirectory);
+    assert.equal(git(f.target, "rev-parse", "HEAD"), result.payload.commit);
+    const original = "records/verifications/WO-999/VER-001.md",
+      corrected = "records/verifications/WO-999/filed/VER-001.md";
+    const rows = targetRecordSources(
+      f.orderRoot,
+      {
+        ...state,
+        corrections: [
+          {
+            subject: { type: "VerificationCompleted", reportPath: original },
+            fields: { reportPath: corrected },
+          },
+        ],
+      },
+      [
+        {
+          type: "VerificationCompleted",
+          reportPath: original,
+          reportHash: "sha256:" + "a".repeat(64),
+        },
+      ],
+    );
+    assert.equal(
+      rows.find((row) => row.kind === "verification").source,
+      corrected,
+    );
+  });
+});
+
+test("records publication validates parent, paths, modes and every recorded blob", async () => {
+  const { validateTargetRecordsCommit } =
+    await import("./lib/target-records.mjs");
+  withFixture((f) => {
+    write(f.clone, "docs/record.md", "Old record.\n");
+    git(f.clone, "add", "docs");
+    git(f.clone, "commit", "-qm", "docs: original record");
+    const parent = git(f.clone, "rev-parse", "HEAD"),
+      bytes = "Reviewed record.\n",
+      sha256 = createHash("sha256").update(bytes).digest("hex");
+    const blob = runGit(f.clone, ["hash-object", "-w", "--stdin"], {
+      input: bytes,
+    });
+    const env = {
+      ...process.env,
+      GIT_INDEX_FILE: join(f.base, "record-validation-index"),
+    };
+    const treeCommit = (changes, parents = [parent]) => {
+      runGit(f.clone, ["read-tree", parent], { env });
+      for (const [path, mode] of changes)
+        runGit(
+          f.clone,
+          mode
+            ? [
+                "update-index",
+                "--add",
+                "--cacheinfo",
+                `${mode},${blob},${path}`,
+              ]
+            : ["update-index", "--force-remove", path],
+          { env },
+        );
+      const tree = runGit(f.clone, ["write-tree"], { env });
+      return runGit(f.clone, [
+        "commit-tree",
+        tree,
+        ...parents.flatMap((value) => ["-p", value]),
+        "-m",
+        "docs: reviewed records",
+      ]);
+    };
+    const subject = {
+      repositoryId: "target",
+      branch: "wo-999",
+      baseCommit: f.baseCommit,
+      commit: parent,
+    };
+    const record = { kind: "decisions", path: "docs/record.md", sha256 };
+    const binding = (commit, records = [record]) => ({
+      repositoryId: "target",
+      branch: "wo-999",
+      parent,
+      commit,
+      root: "docs",
+      records,
+    });
+    const repository = { documentationRoot: "docs" };
+    const valid = treeCommit([[record.path, "100644"]]);
+    validateTargetRecordsCommit(f.clone, subject, binding(valid), repository);
+    const invalid = (commit, pattern, records) =>
+      assert.throws(
+        () =>
+          validateTargetRecordsCommit(
+            f.clone,
+            subject,
+            binding(commit, records),
+            repository,
+          ),
+        pattern,
+      );
+    invalid(
+      treeCommit([[record.path, "100644"]], [f.baseCommit]),
+      /single parent/u,
+    );
+    invalid(
+      treeCommit([[record.path, "100644"]], [parent, f.baseCommit]),
+      /single parent/u,
+    );
+    invalid(
+      treeCommit([
+        [record.path, "100644"],
+        ["outside.txt", "100644"],
+      ]),
+      /outside.txt/u,
+    );
+    invalid(treeCommit([[record.path, null]]), /docs\/record.md/u);
+    invalid(
+      treeCommit([
+        [record.path, null],
+        ["docs/renamed.md", "100644"],
+      ]),
+      /docs\/record.md/u,
+      [{ ...record, path: "docs/renamed.md" }],
+    );
+    invalid(treeCommit([[record.path, "100755"]]), /docs\/record.md/u);
+    invalid(
+      treeCommit([
+        [record.path, "100644"],
+        ["docs/unrecorded.md", "100644"],
+      ]),
+      /docs\/unrecorded.md/u,
+    );
+    invalid(valid, /recorded bytes differ.*docs\/record.md/u, [
+      { ...record, sha256: "0".repeat(64) },
+    ]);
+  });
+});
+
+test("target planning publishes only product and planning documents under the registered root", () =>
+  withFixture((f) => {
+    f.config.repositories.target.documentationRoot = ":(literal)manual";
+    const forge = publicationSetup(f);
+    f.mapClone();
+    const from = join(f.base, "planning-input"),
+      bodyFile = join(f.base, "planning-body.md");
+    write(from, "product/purpose.md", "# Purpose\n\nA synthetic target.\n");
+    write(
+      from,
+      "planning/next.md",
+      "# Plan\n\nImplement the reviewed change.\n",
+    );
+    writeFileSync(
+      bodyFile,
+      "## Result\n\nRecord the target purpose and plan.\n",
+    );
+    const call = (extra = {}) =>
+      f.call(f.main, f.main, "refute-plan", [
+        "target-publish",
+        "target",
+        "--base",
+        extra.base ?? f.baseCommit,
+        "--from",
+        from,
+        "--branch",
+        extra.branch ?? "docs/target-plan",
+        "--title",
+        extra.title ?? "docs(api): record target plan",
+        "--body-file",
+        bodyFile,
+      ]);
+    const refs = git(join(f.base, "target.git"), "show-ref");
+    const refuse = (pattern, extra) => {
+      const result = call(extra);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, pattern);
+      assert.equal(git(join(f.base, "target.git"), "show-ref"), refs);
+      assert.equal(existsSync(forge.log), false);
+      assert.equal(git(f.clone, "branch", "--list", "docs/target-plan"), "");
+    };
+    write(from, "source.txt", "not a document");
+    refuse(/only planning and product/u);
+    rmSync(join(from, "source.txt"));
+    symlinkSync(bodyFile, join(from, "planning/symbolic.md"));
+    refuse(/not a regular file/u);
+    rmSync(join(from, "planning/symbolic.md"));
+    write(from, "product/bad\\name.md", "Invalid path.\n");
+    refuse(/normalized path/u);
+    rmSync(join(from, "product/bad\\name.md"));
+    refuse(/outward lint.*identifier.runtime/u, {
+      title: "docs: record evt_123",
+    });
+    refuse(/title.*docs/u, { title: "feat: record target plan" });
+    refuse(/title.*docs/u, { title: "fix(api): record target plan" });
+    const configBytes = readFileSync(join(f.main, "dotln.config.json"));
+    f.config.repositories.target.authorityProfile.deniedEffects = ["repo.push"];
+    write(f.main, "dotln.config.json", JSON.stringify(f.config));
+    refuse(/repo.push/u);
+    writeFileSync(join(f.main, "dotln.config.json"), configBytes);
+    const grants = join(f.main, "packages/skeleton/loadouts/grants.json"),
+      grantBytes = readFileSync(grants);
+    writeFileSync(grants, "[]");
+    refuse(/operator grant/u);
+    git(f.main, "add", "packages/skeleton/loadouts/grants.json");
+    git(f.main, "commit", "-qm", "test: revoke committed grant");
+    writeFileSync(grants, grantBytes);
+    refuse(/grant registry differs from committed authority/u);
+    git(f.main, "add", "packages/skeleton/loadouts/grants.json");
+    git(f.main, "commit", "-qm", "test: restore committed grant");
+    const monitor = join(f.base, "monitor-fired"),
+      hook = join(f.base, "monitor.sh");
+    writeFileSync(
+      hook,
+      `#!/bin/sh\n: > '${monitor}'\nprintf 'token\\000/\\000'\n`,
+    );
+    chmodSync(hook, 0o755);
+    git(f.clone, "config", "core.fsmonitor", hook);
+    git(f.clone, "config", "core.fsmonitorHookVersion", "2");
+    git(f.clone, "switch", "-qc", "divergent-planning-base");
+    write(f.clone, "divergent.txt", "unmerged\n");
+    git(f.clone, "add", "-A");
+    git(f.clone, "commit", "-qm", "test: divergent base");
+    const divergent = git(f.clone, "rev-parse", "HEAD");
+    git(f.clone, "switch", "-q", "main");
+    refuse(/not an ancestor/u, { base: divergent });
+    rmSync(monitor, { force: true });
+    const gh = join(forge.bin, "gh"),
+      ghBytes = readFileSync(gh);
+    const signer = join(f.base, "planning-signer"),
+      signAttempt = join(f.base, "planning-signing-requested");
+    writeFileSync(
+      signer,
+      `#!/bin/sh\nprintf attempted > '${signAttempt}'\nexit 1\n`,
+    );
+    chmodSync(signer, 0o755);
+    git(f.clone, "config", "gpg.format", "openpgp");
+    git(f.clone, "config", "gpg.program", signer);
+    git(f.clone, "config", "commit.gpgsign", "true");
+    const signingRefused = call();
+    assert.notEqual(signingRefused.status, 0);
+    assert.ok(
+      existsSync(signAttempt),
+      "planning commit honors the host signing policy",
+    );
+    assert.equal(git(join(f.base, "target.git"), "show-ref"), refs);
+    git(f.clone, "config", "commit.gpgsign", "false");
+    writeFileSync(gh, "#!/bin/sh\nexit 71\n");
+    const interrupted = call();
+    assert.notEqual(interrupted.status, 0);
+    assert.match(
+      interrupted.stderr,
+      /planning recovery retained.*retry the same/u,
+    );
+    assert.match(
+      interrupted.stderr,
+      /gh is required before any remote mutation/u,
+    );
+    assert.equal(
+      existsSync(monitor),
+      false,
+      "publication must disable fsmonitor",
+    );
+    git(f.clone, "config", "core.fsmonitor", "false");
+    const retained = git(f.clone, "rev-parse", "docs/target-plan");
+    const originalPlan = readFileSync(join(from, "planning/next.md"));
+    write(from, "planning/next.md", "Changed plan.\n");
+    const changedInput = call();
+    assert.notEqual(changedInput.status, 0);
+    assert.match(changedInput.stderr, /pending publication differs/u);
+    assert.equal(git(f.clone, "rev-parse", "docs/target-plan"), retained);
+    writeFileSync(join(from, "planning/next.md"), originalPlan);
+    writeFileSync(gh, ghBytes);
+    const retainedWorktree = git(f.clone, "worktree", "list", "--porcelain")
+      .split("\n\n")
+      .find((row) => row.includes("branch refs/heads/docs/target-plan"))
+      .split("\n")[0]
+      .slice("worktree ".length);
+    const retainedNote = join(dirname(retainedWorktree), "operator-note.txt");
+    writeFileSync(retainedNote, "Preserve this fixture note.\n");
+    const cleanupInterrupted = call();
+    assert.notEqual(cleanupInterrupted.status, 0);
+    assert.match(
+      cleanupInterrupted.stderr,
+      /ENOTEMPTY.*planning recovery retained/u,
+    );
+    assert.equal(
+      readFileSync(retainedNote, "utf8"),
+      "Preserve this fixture note.\n",
+    );
+    rmSync(retainedNote);
+    const output = f.ok(call());
+    assert.equal(
+      readFileSync(forge.log, "utf8")
+        .split("\n")
+        .filter((line) => line.includes('"pr","create"')).length,
+      1,
+    );
+    assert.equal(
+      git(
+        join(f.base, "target.git"),
+        "rev-parse",
+        "refs/heads/docs/target-plan",
+      ),
+      retained,
+    );
+    const commit = git(
+      join(f.base, "target.git"),
+      "rev-parse",
+      "refs/heads/docs/target-plan",
+    );
+    assert.ok(output.includes(commit));
+    assert.match(output, /manual\/product\/purpose.md/u);
+    assert.match(output, /manual\/planning\/next.md/u);
+    assert.match(
+      git(
+        join(f.base, "target.git"),
+        "show",
+        `${commit}::(literal)manual/product/purpose.md`,
+      ),
+      /synthetic target/u,
+    );
+    assert.equal(git(f.clone, "branch", "--list", "docs/target-plan"), "");
+    assert.equal(
+      git(f.clone, "worktree", "list", "--porcelain").split("worktree ")
+        .length - 1,
+      1,
+    );
+    assert.ok(readFileSync(forge.log, "utf8").includes('"--base","main"'));
+  }));
+
+test("target gate runs selected commands with failures, deadlines and tree mutation evidence", () =>
+  withFixture((f) => {
+    f.config.repositories.target.gate = {
+      commands: {
+        pass: {
+          argv: [process.execPath, "-e", "console.log('synthetic output')"],
+          timeoutMs: 5000,
+        },
+        fail: {
+          argv: [
+            process.execPath,
+            "-e",
+            "console.error('synthetic failure'); process.exit(2)",
+          ],
+          timeoutMs: 5000,
+        },
+        slow: {
+          argv: [process.execPath, "-e", "setTimeout(() => {}, 10000)"],
+          timeoutMs: 150,
+        },
+        untracked: {
+          argv: [
+            process.execPath,
+            "-e",
+            "require('node:fs').writeFileSync('new.txt', 'changed')",
+          ],
+          timeoutMs: 5000,
+        },
+        mutate: {
+          argv: [
+            process.execPath,
+            "-e",
+            "require('node:fs').writeFileSync('source.txt', 'changed')",
+          ],
+          timeoutMs: 5000,
+        },
+        after: {
+          argv: [process.execPath, "-e", "process.exit(0)"],
+          timeoutMs: 5000,
+        },
+        restore: {
+          argv: [
+            process.execPath,
+            "-e",
+            "const fs=require('node:fs'); fs.writeFileSync('source.txt', 'declared base\\n'); fs.unlinkSync('new.txt')",
+          ],
+          timeoutMs: 5000,
+        },
+        "move-head": {
+          argv: [
+            "git",
+            "commit",
+            "--allow-empty",
+            "-qm",
+            "test: gate mutation",
+          ],
+          timeoutMs: 5000,
+        },
+        "last-pass": {
+          argv: [process.execPath, "-e", "process.exit(0)"],
+          timeoutMs: 5000,
+        },
+      },
+      plain: ["pass"],
+      review: [
+        "pass",
+        "fail",
+        "slow",
+        "untracked",
+        "mutate",
+        "after",
+        "restore",
+        "move-head",
+        "last-pass",
+      ],
+    };
+    write(f.main, "dotln.config.json", JSON.stringify(f.config));
+    git(f.main, "add", "-A");
+    git(f.main, "commit", "-qm", "test: declare gates");
+    git(f.main, "push", "-q", "origin", "main");
+    f.mapClone();
+    f.start();
+    const treeHash = gateTreeHash(f.target);
+    f.ok(f.call(f.orderRoot, f.orderRoot, "target-gate", ["WO-999"]));
+    const plain = readGateChecks(f.orderRoot)
+      .filter((row) => row.checkId === "target:target")
+      .at(-1);
+    assert.deepEqual(plain.names, ["pass"]);
+    assert.equal(plain.treeHash, treeHash);
+    assert.equal(plain.exitCode, 0);
+    const result = f.call(f.orderRoot, f.orderRoot, "target-gate", [
+      "WO-999",
+      "--review",
+    ]);
+    assert.equal(result.status, 1);
+    assert.match(result.stdout, /FAIL target target fail/u);
+    const failingOutput = result.stdout.match(
+      /FAIL target target fail[^\n]*; output: ([^\n]+)/u,
+    )?.[1];
+    assert.ok(failingOutput, result.stdout);
+    assert.match(readFileSync(failingOutput, "utf8"), /synthetic failure/u);
+    assert.match(result.stdout, /FAIL target target slow/u);
+    assert.match(result.stdout, /untracked .*changed target bytes/u);
+    assert.match(result.stdout, /mutate .*changed target bytes/u);
+    assert.match(result.stdout, /PASS target target after/u);
+    assert.match(result.stdout, /restore .*changed target bytes/u);
+    assert.match(result.stdout, /move-head .*changed target bytes or HEAD/u);
+    assert.match(result.stdout, /PASS target target last-pass/u);
+    const rows = readGateChecks(f.orderRoot);
+    const after = rows.find((row) => row.checkId === "target:target:after");
+    const last = rows.find((row) => row.checkId === "target:target:last-pass");
+    assert.equal(after.exitCode, 0);
+    assert.notEqual(after.treeHash, treeHash);
+    assert.equal(last.exitCode, 0);
+    assert.equal(last.treeHash, treeHash);
+    assert.equal(last.commit, git(f.target, "rev-parse", "HEAD"));
+    assert.notEqual(last.commit, after.commit);
+    assert.equal(
+      rows.filter((row) => row.checkId === "target:target").at(-1).exitCode,
+      1,
+    );
+    assert.equal(
+      rows.filter((row) => row.checkId.startsWith("target:target:")).length,
+      10,
+    );
+    const output = rows.find((row) => row.outputRef).outputRef;
+    assert.match(
+      readFileSync(join(f.orderRoot, output), "utf8"),
+      /synthetic output/u,
+    );
+    assert.equal(git(f.orderRoot, "check-ignore", output), output);
+    const recorded = readFileSync(checksPath(f.orderRoot));
+    delete f.config.repositories.target.gate;
+    write(f.orderRoot, "dotln.config.json", JSON.stringify(f.config));
+    const missing = f.call(f.orderRoot, f.orderRoot, "target-gate", ["WO-999"]);
+    assert.equal(missing.status, 1);
+    assert.match(missing.stderr, /gate is missing/u);
+    assert.deepEqual(readFileSync(checksPath(f.orderRoot)), recorded);
+  }));
+
+// The launchpad commands a target order's text tells its session to run. A
+// session works in the target worktree, where a bare npm run form reads the
+// target's own package.json, so each is printed in the start handoff's form:
+// DOTLN_LAUNCHPAD naming the order launchpad and node running that
+// launchpad's own script. `run` executes one there as printed, with its
+// placeholders filled.
+const launchpadCommands = (f, text) => {
+  assert.doesNotMatch(text, /npm run (?:resume|worktree|plan|adjacent) --/u);
+  const unquote = (value) => value.slice(1, -1).replaceAll("'\\''", "'");
+  return [
+    // The actor placeholder holds a space; read it as one token.
+    ...text
+      .replaceAll("<actor flags>", "<actor-flags>")
+      .matchAll(
+        /DOTLN_LAUNCHPAD=('[^']*') node ('[^']*') ([a-z-]+)((?: (?:[-<"[0-9]|WO-|sha256:)(?:[^\s,)]*[^\s,.)])?)*)/gu,
+      ),
+  ].map(([printed, launchpad, script, action, args]) => {
+    assert.equal(unquote(launchpad), f.orderRoot, printed);
+    assert.ok(existsSync(unquote(script)), printed);
+    const filled = args
+      .replace(
+        /--harness <harness> .*\[--account-label <label>\]/u,
+        actorArgs.join(" "),
+      )
+      .replaceAll("<actor-flags>", actorArgs.join(" "))
+      .replaceAll("<type>/<slug>", "fix/printed")
+      .replace(/"?<title>"?/gu, "printed")
+      .replaceAll("<text>", "printed")
+      .replaceAll("sha256:<digest>", `sha256:${"0".repeat(64)}`)
+      .replace(/<[a-z-]*path>/gu, "reviewed-body.md")
+      .replaceAll("<request.json>", join(f.base, "queue-request.json"));
+    assert.doesNotMatch(filled, /[<>]/u, printed);
+    return {
+      command: `${unquote(script).slice(f.orderRoot.length + 1)} ${action}`,
+      run: () =>
+        spawnSync(
+          "/bin/sh",
+          [
+            "-c",
+            `DOTLN_LAUNCHPAD=${launchpad} node ${script} ${action}${filled}`,
+          ],
+          { cwd: f.target, env: f.env, encoding: "utf8" },
+        ),
+    };
+  });
+};
+const printedCommands = [
+  "scripts/resume.mjs target-records",
+  "scripts/worktree.mjs publish",
+  "scripts/worktree.mjs publish",
+];
+const documentGate = "scripts/test-runner.mjs --document";
+const names = (commands) => commands.map(({ command }) => command);
+
+test("target briefings name a missing repository throughout dispatch and print launchpad commands that resolve from the target worktree", () => {
+  withFixture((f) => {
+    write(
+      f.main,
+      f.order,
+      `# WO-999 — target lifecycle fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Repository:** target @ ${f.baseCommit}\n\n**Acceptance criteria (all required)**\n\n1. Prose only.\n`,
+    );
+    git(f.main, "add", "-A");
+    git(f.main, "commit", "-qm", "Order with one criterion");
+    git(f.main, "push", "-q", "origin", "main");
+    f.mapClone();
+    f.start();
+    const configFile = join(f.orderRoot, "dotln.config.json");
+    const restore = () => writeFileSync(configFile, JSON.stringify(f.config));
+    const missing = (args, phase) => {
+      writeFileSync(
+        configFile,
+        JSON.stringify({
+          ...f.config,
+          repositories: { other: f.config.repositories.target },
+        }),
+      );
+      const output = f.ok(f.resume(args, {}, f.orderRoot));
+      assert.match(output, /repositories\.target.*not registered/u);
+      assert.doesNotMatch(output, /Cannot read properties|TypeError/u);
+      assert.equal(
+        JSON.parse(f.ok(f.resume(["status", "--json"], {}, f.orderRoot))).phase,
+        phase,
+      );
+      assert.match(
+        f.ok(f.resume(["briefing"], {}, f.orderRoot)),
+        /repositories\.target.*not registered/u,
+      );
+      restore();
+    };
+    missing(["next"], "active");
+    f.ok(
+      f.call(f.orderRoot, f.orderRoot, "target-gate", ["WO-999", "--review"]),
+    );
+    // With the Follow-up Queue equipped through the repair, each briefing's
+    // queue command is in the same form and reaches the launchpad's own queue:
+    // a request at a stale revision is refused against its revision 0.
+    const manifest = join(f.orderRoot, ".claude/harness-manifest.json");
+    const queueScript = join(f.orderRoot, "scripts/adjacent-work.mjs");
+    assert.ok(!existsSync(manifest) && !existsSync(queueScript));
+    write(
+      f.orderRoot,
+      ".claude/harness-manifest.json",
+      JSON.stringify({ origin: { ids: ["follow-up-queue"] } }),
+    );
+    cpSync(join(TOOL_ROOT, "scripts/adjacent-work.mjs"), queueScript);
+    writeFileSync(
+      join(f.base, "queue-request.json"),
+      JSON.stringify({ expectedRevision: 5, actor: "executor", action: {} }),
+    );
+    const queueRefuses = (command) => {
+      const result = command.run();
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /stale queue revision/u);
+    };
+    // The executor records the order's one criterion unmet.
+    write(
+      f.orderRoot,
+      "records/evidence/WO-999/handoff.md",
+      "**Criterion 1:** unmet. Not run in the fixture.\n\nself-review: found 0; fixed 0; recorded 0\n",
+    );
+    const execution = launchpadCommands(f, f.ok(f.resume(["briefing"])));
+    assert.deepEqual(names(execution), [
+      "scripts/resume.mjs implementation-ready",
+      "scripts/adjacent-work.mjs apply",
+      documentGate,
+    ]);
+    queueRefuses(execution[1]);
+    // The completion the execution briefing prints records from the target
+    // worktree as printed.
+    f.ok(execution[0].run());
+    missing(["verify"], "verifying");
+    // The routes past the unmet criterion run from the target worktree as
+    // printed and answer from the launchpad's own scripts.
+    const verification = launchpadCommands(f, f.ok(f.resume(["briefing"])));
+    assert.deepEqual(names(verification), [
+      "scripts/resume.mjs waive",
+      "scripts/refute-plan.mjs amend-order",
+      documentGate,
+    ]);
+    const waive = verification[0].run();
+    assert.notEqual(waive.status, 0);
+    assert.match(
+      waive.stderr,
+      /waive requires --capture <path> naming an ignored capture under records\/intake\//u,
+    );
+    const amend = verification[1].run();
+    assert.notEqual(amend.status, 0);
+    assert.match(amend.stderr, /usage: plan amend-order <WO-NNN>/u);
+    const report = `# Fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n`;
+    write(f.orderRoot, "records/verifications/WO-999/VER-001.md", report);
+    f.ok(f.resume(["verification-result", "pass", ...actorArgs]));
+    missing(["final-review"], "final-review");
+    const briefing = f.ok(f.resume(["briefing"]));
+    assert.ok(
+      existsSync(
+        /Target gate claims stand on node '([^']*)' WO-999 --review;/u.exec(
+          briefing,
+        )[1],
+      ),
+    );
+    assert.match(
+      briefing,
+      /the instance document gate, which a criterion names as npm run test:docs, runs as DOTLN_LAUNCHPAD=/u,
+    );
+    const printed = launchpadCommands(f, briefing);
+    assert.deepEqual(names(printed), [
+      "scripts/resume.mjs waive",
+      "scripts/refute-plan.mjs amend-order",
+      documentGate,
+      ...printedCommands,
+    ]);
+    const [, , gate, records, ...publications] = printed;
+    // Run from the target worktree, each reaches the launchpad's own script:
+    // the document gate reports what it reports from the launchpad itself,
+    // the records action refuses the phase, and both publications refuse the
+    // order worktree's uncommitted records.
+    const timings = (result) =>
+      `${result.status}\n${result.stdout}`
+        .replace(/[0-9]+\.[0-9]+ s/gu, "<t>")
+        .replace(/(dotln-[a-z-]+-)[A-Za-z0-9]{6}\b/gu, "$1<tmp>");
+    assert.equal(
+      timings(gate.run()),
+      timings(
+        spawnSync(process.execPath, ["scripts/test-runner.mjs", "--document"], {
+          cwd: f.orderRoot,
+          env: f.env,
+          encoding: "utf8",
+        }),
+      ),
+    );
+    const recordsRun = records.run();
+    assert.notEqual(recordsRun.status, 0);
+    assert.match(
+      recordsRun.stderr,
+      /cannot perform action in phase final-review/u,
+    );
+    for (const publication of publications) {
+      const result = publication.run();
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /working tree is not clean/u);
+    }
+    // A refusal's hint prints the legal command in the same form.
+    const hint = f.resume(["verify"]);
+    assert.notEqual(hint.status, 0);
+    assert.match(
+      hint.stderr,
+      /cannot perform action in phase final-review; run: DOTLN_LAUNCHPAD='[^']*' node '[^']*\/scripts\/resume\.mjs' final-review-result pass\|fail /u,
+    );
+    assert.doesNotMatch(hint.stderr, /npm run resume --/u);
+    write(f.orderRoot, "records/final-reviews/WO-999/FINAL-001.md", report);
+    f.ok(f.resume(["final-review-result", "fail", ...actorArgs]));
+    missing(["fix"], "repairing");
+    const repair = launchpadCommands(f, f.ok(f.resume(["briefing"])));
+    assert.deepEqual(names(repair), [
+      "scripts/adjacent-work.mjs apply",
+      documentGate,
+    ]);
+    queueRefuses(repair[0]);
+    rmSync(join(f.orderRoot, ".claude"), { recursive: true });
+    rmSync(queueScript);
+  });
+  // A self order prints no target sentence and no launchpad-qualified command.
+  withFixture((f) => {
+    write(
+      f.main,
+      f.order,
+      "# WO-999 — self fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n",
+    );
+    git(f.main, "add", "-A");
+    git(f.main, "commit", "-qm", "Self order fixture");
+    git(f.main, "push", "-q", "origin", "main");
+    f.start();
+    const briefing = f.ok(f.resume(["briefing"], {}, f.orderRoot));
+    assert.match(
+      briefing,
+      /^Execute records\/work-orders\/WO-999-fixture\.md\./u,
+    );
+    assert.doesNotMatch(
+      briefing,
+      /Repo-native|target-gate|target-records|DOTLN_LAUNCHPAD|--target-worktree/u,
+    );
+  });
+});
+
+test("WO-210 target final review binds clean commits through both launchpad routes and refuses without recording", () => {
+  for (const explicit of [false, true])
+    withFixture((f) => {
+      f.mapClone();
+      f.start();
+      const routed = {
+        ...f,
+        resume: (args, override = {}, cwd = f.target) =>
+          f.resume(
+            args,
+            {
+              ...override,
+              ...(explicit ? { DOTLN_LAUNCHPAD: f.orderRoot } : {}),
+            },
+            cwd,
+            explicit ? f.main : f.orderRoot,
+          ),
+      };
+      write(f.target, "reviewed.txt", "Reviewed target change.\n");
+      git(f.target, "add", "reviewed.txt");
+      git(f.target, "commit", "-qm", "fix: preserve reviewed source");
+      const commit = git(f.target, "rev-parse", "HEAD");
+      prepareFinalReview(routed);
+      const segment = docPath(f.orderRoot, "orders", "WO-999.jsonl");
+      const before = readFileSync(segment);
+      const refuse = (pattern, cwd = f.target) => {
+        const result = routed.resume(
+          ["final-review-result", "pass", ...actorArgs],
+          {},
+          cwd,
+        );
+        assert.notEqual(result.status, 0);
+        assert.match(result.stderr, pattern);
+        assert.deepEqual(readFileSync(segment), before);
+      };
+      const original = readFileSync(join(f.target, "source.txt"));
+      write(f.target, "source.txt", "Uncommitted edit.\n");
+      refuse(/tracked changes/u);
+      writeFileSync(join(f.target, "source.txt"), original);
+      write(f.target, "untracked.txt", "Not reviewed.\n");
+      refuse(/untracked files/u);
+      rmSync(join(f.target, "untracked.txt"));
+      // A staged rename is one entry naming its old and new path; beside a
+      // modified file it is listed under tracked changes, and the untracked
+      // file under its own heading, each named plainly with no status prefix.
+      mkdirSync(join(f.target, "moved notes"));
+      git(f.target, "mv", "source.txt", "moved notes/renamed source.txt");
+      write(f.target, "reviewed.txt", "Edited after the review.\n");
+      write(f.target, "draft notes.txt", "Not reviewed.\n");
+      refuse(
+        /target has tracked changes: source\.txt -> moved notes\/renamed source\.txt, reviewed\.txt; non-ignored untracked files: draft notes\.txt; commit the reviewed target change/u,
+      );
+      git(f.target, "mv", "moved notes/renamed source.txt", "source.txt");
+      git(f.target, "checkout", "--", "reviewed.txt");
+      rmSync(join(f.target, "draft notes.txt"));
+      // A pending record path admits only its own plain entry, never a rename
+      // onto it, even one whose original path ends in that pending path.
+      git(f.target, "mv", "reviewed.txt", "iewed.txt");
+      assert.throws(
+        () =>
+          reviewedTargetSubject(
+            f.orderRoot,
+            readControl(f.orderRoot).orders.get("WO-999").state,
+            { pendingRecordPaths: ["iewed.txt"] },
+          ),
+        /target has tracked changes: reviewed\.txt -> iewed\.txt;/u,
+      );
+      git(f.target, "mv", "iewed.txt", "reviewed.txt");
+      git(f.target, "switch", "-qc", "other-review-branch");
+      refuse(/branch differs/u);
+      git(f.target, "switch", "-q", "wo-999");
+      const registry = targetRegistryPath(f.orderRoot);
+      renameSync(registry, `${registry}.saved`);
+      refuse(/registry entry is missing/u, f.orderRoot);
+      renameSync(`${registry}.saved`, registry);
+      const configPath = join(f.orderRoot, "dotln.config.json");
+      const configBytes = readFileSync(configPath);
+      const missingGate = JSON.parse(configBytes);
+      delete missingGate.repositories.target.gate;
+      writeFileSync(configPath, JSON.stringify(missingGate));
+      refuse(/gate is missing/u);
+      writeFileSync(configPath, configBytes);
+      const gateFile = checksPath(f.orderRoot);
+      const savedRows = readFileSync(gateFile);
+      writeFileSync(gateFile, "[]\n");
+      refuse(/review target gate is missing/u);
+      const row = JSON.parse(savedRows)
+        .filter((row) => row.checkId === "target:target")
+        .at(-1);
+      writeFileSync(
+        gateFile,
+        JSON.stringify([{ ...row, treeHash: "f".repeat(40) }]),
+      );
+      refuse(/review target gate is stale/u);
+      writeFileSync(
+        gateFile,
+        JSON.stringify([
+          row,
+          {
+            ...row,
+            exitCode: 1,
+            evidenceRef: "fixture:failed",
+            recordedAt: new Date(Date.now() + 1000).toISOString(),
+          },
+        ]),
+      );
+      refuse(/review target gate is failed/u);
+      // A truncated index refuses in one line naming it and the rerun.
+      writeFileSync(gateFile, '[{"checkId":"target:');
+      refuse(
+        /^error: target review target gate index cannot be read: docs\/control\/local\/harness\/checks\.json [^\n]*target-gate\.mjs' WO-999 --review$/mu,
+      );
+      writeFileSync(gateFile, savedRows);
+      const output = routed.ok(
+        routed.resume(["final-review-result", "pass", ...actorArgs]),
+      );
+      assert.match(output, /committed before this result/u);
+      assert.deepEqual(
+        launchpadCommands(f, output).map(({ command }) => command),
+        printedCommands,
+      );
+      assert.match(output, /target-records <actor flags>, then commit/u);
+      assert.match(output, /publish WO-999 --target-worktree --branch/u);
+      // The closed order's hint qualifies what the session runs from its
+      // worktree and keeps the main-checkout commands in npm form, saying so.
+      const hint = routed.resume(["verify"]);
+      assert.notEqual(hint.status, 0);
+      assert.match(
+        hint.stderr,
+        /cannot perform action in phase closed; run: DOTLN_LAUNCHPAD='[^']*' node '[^']*\/scripts\/resume\.mjs' target-records --harness .*? --work-order WO-999 or npm run release -- close WO-NNN --publish \(in the main checkout\) or DOTLN_LAUNCHPAD='[^']*' node '[^']*\/scripts\/resume\.mjs' next --work-order WO-999 or npm run worktree -- start WO-NNN docs\/work-orders\/WO-NNN-name\.md \(in the main checkout\)$/mu,
+      );
+      assert.doesNotMatch(hint.stderr, /worktree\.mjs' start|release\.mjs/u);
+      const event = readFileSync(segment, "utf8")
+        .trim()
+        .split("\n")
+        .map(JSON.parse)
+        .filter((row) => row.type === "FinalReviewCompleted")
+        .at(-1);
+      assert.deepEqual(event.targetSubject, {
+        repositoryId: "target",
+        branch: "wo-999",
+        baseCommit: f.baseCommit,
+        commit,
+      });
+      assert.ok(!JSON.stringify(event.targetSubject).includes(f.base));
+      assert.deepEqual(Object.keys(event.targetGate).sort(), [
+        "commit",
+        "durationMs",
+        "evidenceRef",
+        "names",
+        "recordedAt",
+        "repositoryId",
+        "selection",
+        "treeHash",
+      ]);
+      assert.equal(event.targetGate.commit, commit);
+      assert.equal(event.targetGate.selection, "review");
+    });
+});
+
+test("WO-210 a failed target final review records no target subject", () =>
+  withFixture((f) => {
+    f.mapClone();
+    f.start();
+    prepareFinalReview(f);
+    write(
+      f.target,
+      "untracked.txt",
+      "Failing review retains uncommitted work.\n",
+    );
+    f.ok(f.resume(["final-review-result", "fail", ...actorArgs]));
+    const event = readFileSync(
+      docPath(f.orderRoot, "orders", "WO-999.jsonl"),
+      "utf8",
+    )
+      .trim()
+      .split("\n")
+      .map(JSON.parse)
+      .filter((row) => row.type === "FinalReviewCompleted")
+      .at(-1);
+    assert.equal(Object.hasOwn(event, "targetSubject"), false);
+  }));
 
 const launchpadSpellings = (f, t) => {
   const alias = join(f.base, "launchpad-alias");
@@ -543,6 +2328,11 @@ test("WO-072 criterion 4: target close requires containment, removes both worktr
     );
 
     write(f.target, "change.txt", "changed\n");
+    write(
+      f.target,
+      ".gitignore",
+      ".claude/settings.local.json\n.claude/hooks/local-cache/\ndeps/\n",
+    );
     git(f.target, "add", "-A");
     git(f.target, "commit", "-qm", "Target change");
     closeOrder(f);
@@ -574,13 +2364,83 @@ test("WO-072 criterion 4: target close requires containment, removes both worktr
       "Merge target change",
       "wo-999",
     );
+    git(f.clone, "push", "-q", "origin", "main");
+    write(f.target, ".claude/settings.local.json", "local settings\n");
+    write(f.target, ".claude/hooks/local-cache/entry.json", "local cache\n");
+    write(f.target, "deps/pkg/entry.txt", "local dependency\n");
+    for (const mode of ["--dry-run", "--publish"]) {
+      const refused = f.close(mode);
+      assert.notEqual(refused.status, 0);
+      const listed = refused.stderr
+        .match(
+          /target has ignored material; source retained: (.*)\. Move or remove/u,
+        )?.[1]
+        .split(", ");
+      assert.deepEqual(listed?.sort(), [
+        ".claude/hooks/local-cache/",
+        ".claude/settings.local.json",
+        "deps/",
+      ]);
+      assert.ok(refused.stderr.includes(`close WO-999 ${mode}`));
+      assert.ok(existsSync(join(f.target, ".claude/settings.local.json")));
+      assert.ok(existsSync(join(f.target, "deps/pkg/entry.txt")));
+      checkTargetHarness(f.target, { runtimeRoot: f.main });
+    }
+    rmSync(join(f.target, ".claude/settings.local.json"));
+    rmSync(join(f.target, ".claude/hooks/local-cache"), { recursive: true });
+    rmSync(join(f.target, "deps"), { recursive: true });
+    const bundle = JSON.parse(
+      readFileSync(
+        join(f.target, ".claude/target-worker-manifest.json"),
+        "utf8",
+      ),
+    ).installed.map(({ path }) => ({
+      path,
+      bytes: readFileSync(join(f.target, path)),
+    }));
+    const installation = docPath(
+      f.main,
+      "control",
+      "local/harness/targets",
+      createHash("sha256").update(f.target).digest("hex"),
+      "installation.json",
+    );
+    const installationBytes = readFileSync(installation);
+    const exclude = join(f.clone, ".git/info/exclude");
+    const excludeBytes = readFileSync(exclude);
+    const excludeRegistry = docPath(
+      f.main,
+      "control",
+      "local/harness/excludes",
+      `${createHash("sha256").update(exclude).digest("hex")}.json`,
+    );
+    const registryBytes = readFileSync(excludeRegistry);
+    for (const file of bundle) rmSync(join(f.target, file.path));
+    for (const keepReceipt of [true, false]) {
+      if (!keepReceipt) rmSync(installation);
+      for (const mode of ["--dry-run", "--publish"]) {
+        const refused = f.close(mode);
+        assert.notEqual(refused.status, 0);
+        assert.match(
+          refused.stderr,
+          /bundle manifest.*missing.*source retained/u,
+        );
+        assert.match(refused.stderr, /Restore.*target-worker-manifest/u);
+        assert.ok(existsSync(f.target));
+        assert.ok(existsSync(f.orderRoot));
+        assert.deepEqual(readFileSync(exclude), excludeBytes);
+        assert.deepEqual(readFileSync(excludeRegistry), registryBytes);
+      }
+    }
+    writeFileSync(installation, installationBytes);
+    for (const file of bundle) write(f.target, file.path, file.bytes);
     assert.match(f.ok(f.close("--dry-run")), /would-remove/);
     assert.ok(existsSync(f.target));
     assert.ok(existsSync(f.orderRoot));
     const result = f.ok(f.close("--publish"));
     assert.match(result, /no-release/);
     assert.equal(existsSync(f.target), false);
-    assert.equal(existsSync(f.orderRoot), false);
+    assert.equal(existsSync(f.orderRoot), false, result);
     for (const repo of [f.main, f.clone]) {
       assert.equal(git(repo, "branch", "--list", "wo-999"), "");
       assert.equal(git(repo, "tag", "--list"), "");
@@ -600,8 +2460,574 @@ test("WO-072 criterion 4: target close requires containment, removes both worktr
     assert.equal(record.publication.tag, null);
     assert.equal(record.targetCleanup.outcome, "removed");
     assert.equal(record.cleanup.outcome, "clean");
+    assert.doesNotMatch(
+      readFileSync(join(f.clone, ".git/info/exclude"), "utf8"),
+      /# target-worker/u,
+    );
     assert.match(f.ok(f.close("--publish")), /no-release/);
   }));
+
+test("Finder metadata scans retain unreadable ignored directories and name other unreadable paths relatively", (t) => {
+  if (process.getuid?.() === 0)
+    return t.skip("root bypasses directory read permissions");
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-finder-permissions-")),
+  );
+  const cache = join(root, "cache");
+  try {
+    git(root, "init", "-q");
+    write(root, ".gitignore", "cache/\n");
+    write(root, "cache/retained.txt", "retained\n");
+    chmodSync(cache, 0);
+    const scan = assertFinderMetadataTypes(root);
+    assert.deepEqual(scan.skippedIgnoredDirectories, ["cache"]);
+    assert.ok(scan.durationMs >= 0);
+    write(root, ".gitignore", "");
+    assert.throws(
+      () => assertFinderMetadataTypes(root),
+      (error) =>
+        /cannot inspect Finder metadata in cache .*restore directory read and search access/u.test(
+          error.message,
+        ) && !error.message.includes(root),
+    );
+  } finally {
+    if (existsSync(cache)) chmodSync(cache, 0o755);
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("refusal masking names passed paths by label and masks other absolute paths only where they start", () => {
+  const clone = "/srv/work/target";
+  assert.equal(
+    redactPaths(
+      `fatal: '${clone}.git' does not appear to be a git repository; see ${clone}/.git/packed-refs`,
+      [
+        [`${clone}.git`, "<target origin>"],
+        [clone, "<target clone>"],
+      ],
+    ),
+    "fatal: '<target origin>' does not appear to be a git repository; see <target clone>/.git/packed-refs",
+  );
+  assert.equal(
+    redactPaths(
+      "under /Volumes/Data/x and '/workspaces/p/.git/index' (src/tmp/cache.txt, web/home/index.html, https://example.invalid/a, <label>/index)",
+      [],
+    ),
+    "under <local> and '<local>' (src/tmp/cache.txt, web/home/index.html, https://example.invalid/a, <label>/index)",
+  );
+});
+
+for (const ignored of [false, true])
+  test(`target close tolerates ${ignored ? "ignored" : "non-ignored"} Finder metadata and preserves other material`, () =>
+    withFixture((f) => {
+      // Override any host-wide ignore rule so both Git-visible and ignored
+      // metadata are exercised on every host.
+      write(
+        f.clone,
+        ".gitignore",
+        `${ignored ? ".DS_Store" : "!.DS_Store"}\n/unreadable-cache/\n`,
+      );
+      write(f.clone, "tracked/.DS_Store", "tracked metadata\n");
+      git(f.clone, "add", ".gitignore");
+      git(f.clone, "add", "-f", "tracked/.DS_Store");
+      git(f.clone, "commit", "-qm", "test: declare metadata policy");
+      git(f.clone, "push", "-q", "origin", "main");
+      f.mapClone();
+      f.start();
+      git(f.target, "merge", "-q", "main");
+      closeOrder(f);
+      git(f.orderRoot, "add", "-A");
+      git(f.orderRoot, "commit", "-qm", "test: close target order");
+      git(f.main, "merge", "-q", "--no-ff", "-m", "Merge records", "wo-999");
+      git(f.main, "push", "-q", "origin", "main");
+      const metadata = [
+        ".DS_Store",
+        "assets with spaces/nested/.DS_Store",
+        ".claude/.DS_Store",
+      ];
+      for (const root of [f.target, f.clone])
+        for (const file of metadata) write(root, file, "Finder metadata\n");
+      const refuse = (pattern) => {
+        const result = f.close("--publish");
+        assert.notEqual(result.status, 0);
+        assert.match(result.stderr, pattern);
+        assert.ok(existsSync(f.target));
+        assert.ok(existsSync(f.orderRoot));
+        checkTargetHarness(f.target, { runtimeRoot: f.main });
+      };
+      write(f.target, "tracked/.DS_Store", "uncommitted tracked change\n");
+      refuse(/not clean/u);
+      write(f.target, "tracked/.DS_Store", "tracked metadata\n");
+      const link = join(f.target, ".DS_Store");
+      rmSync(link);
+      symlinkSync("source.txt", link);
+      refuse(/non-regular Finder metadata/u);
+      assert.equal(
+        readFileSync(join(f.target, "source.txt"), "utf8"),
+        "declared base\n",
+      );
+      rmSync(link);
+      write(f.target, ".DS_Store/keep.txt", "directory is not metadata\n");
+      refuse(/non-regular Finder metadata/u);
+      assert.equal(
+        readFileSync(join(link, "keep.txt"), "utf8"),
+        "directory is not metadata\n",
+      );
+      rmSync(link, { recursive: true });
+      mkdirSync(link);
+      refuse(/non-regular Finder metadata/u);
+      rmSync(link, { recursive: true });
+      write(f.target, ".DS_Store", "Finder metadata\n");
+      for (const kind of ["symlink", "directory"]) {
+        const cloneMetadata = join(f.clone, ".DS_Store");
+        rmSync(cloneMetadata, { force: true });
+        if (kind === "symlink") symlinkSync("source.txt", cloneMetadata);
+        else mkdirSync(cloneMetadata);
+        const before = git(f.clone, "rev-parse", "HEAD");
+        refuse(/non-regular Finder metadata/u);
+        assert.equal(git(f.clone, "rev-parse", "HEAD"), before);
+        rmSync(cloneMetadata, { recursive: true });
+      }
+      // Prior publishing attempts may already have cleared disposable metadata
+      // from the clone before the target's protected-material refusal.
+      for (const root of [f.target, f.clone])
+        for (const file of metadata) write(root, file, "Finder metadata\n");
+      const unreadable = join(f.clone, "unreadable-cache");
+      write(
+        f.clone,
+        "unreadable-cache/keep.txt",
+        "base ignored material stays\n",
+      );
+      chmodSync(unreadable, 0);
+      try {
+        assert.match(f.ok(f.close("--dry-run")), /would-remove/u);
+        for (const root of [f.target, f.clone])
+          for (const file of metadata)
+            assert.equal(
+              readFileSync(join(root, file), "utf8"),
+              "Finder metadata\n",
+            );
+        assert.match(f.ok(f.close("--publish")), /no-release/u);
+      } finally {
+        chmodSync(unreadable, 0o755);
+      }
+      assert.equal(
+        readFileSync(join(unreadable, "keep.txt"), "utf8"),
+        "base ignored material stays\n",
+      );
+      assert.equal(existsSync(f.target), false);
+      assert.equal(existsSync(f.orderRoot), false);
+      assert.equal(
+        readFileSync(join(f.clone, "tracked/.DS_Store"), "utf8"),
+        "tracked metadata\n",
+      );
+      assert.doesNotMatch(
+        readFileSync(join(f.clone, ".git/info/exclude"), "utf8"),
+        /# target-worker/u,
+      );
+    }));
+
+const mergedCloseFixture = (f) => {
+  closeOrder(f);
+  git(f.orderRoot, "add", "-A");
+  git(f.orderRoot, "commit", "-qm", "test: close target order");
+  git(f.main, "merge", "-q", "--no-ff", "-m", "Merge records", "wo-999");
+  git(f.main, "push", "-q", "origin", "main");
+};
+const cloneRefMap = (f) =>
+  Object.fromEntries(
+    git(f.clone, "for-each-ref", "--format=%(refname) %(objectname)")
+      .split("\n")
+      .map((line) => line.split(" ")),
+  );
+// A close refusal ends with the exact command to rerun; apart from that
+// command it names no absolute path of any fixture repository.
+const assertCloseRefusal = (f, refused, mode, pattern) => {
+  assert.notEqual(refused.status, 0);
+  assert.match(refused.stderr, pattern);
+  const rerun = releaseCloseCommand(f.main, "WO-999", mode);
+  assert.ok(refused.stderr.includes(rerun), refused.stderr);
+  assert.ok(
+    !refused.stderr.replace(rerun, "").includes(f.base),
+    refused.stderr,
+  );
+};
+// Both close modes refuse with the pattern and leave both worktrees, the
+// bundle and the clone's refs.
+const refuseCloseBoth = (f, pattern, refs) => {
+  for (const mode of ["--dry-run", "--publish"]) {
+    assertCloseRefusal(f, f.close(mode), mode, pattern);
+    assert.ok(existsSync(f.target));
+    assert.ok(existsSync(f.orderRoot));
+    checkTargetHarness(f.target, { runtimeRoot: f.main });
+    assert.deepEqual(cloneRefMap(f), refs);
+  }
+};
+
+// Every file under a tree by path with its bytes' digest, and links by target.
+const treeDigest = (root, { skipGit = false } = {}) => {
+  const digest = {};
+  const walk = (directory) => {
+    for (const item of readdirSync(join(root, directory), {
+      withFileTypes: true,
+    })) {
+      const path = join(directory, item.name);
+      if (skipGit && item.name === ".git") continue;
+      if (item.isSymbolicLink())
+        digest[path] = `link ${readlinkSync(join(root, path))}`;
+      else if (item.isDirectory()) walk(path);
+      else
+        digest[path] = createHash("sha256")
+          .update(readFileSync(join(root, path)))
+          .digest("hex");
+    }
+  };
+  walk("");
+  return digest;
+};
+
+for (const [stale, locked, remains, flavors] of [
+  ["deleted", false, null, [false, true]],
+  ["locked and deleted", true, null, [false, true]],
+  ["emptied", false, "directory", [false, true]],
+  ["locked and emptied", true, "directory", [false, true]],
+  ["replaced by a file", false, "file", [false, true]],
+  ["reused by another clone", false, "clone", [false, true]],
+  ["reused by another repository's worktree", false, "worktree", [false, true]],
+  ["reused by a link to the clone", false, "link", [false, true]],
+])
+  for (const behind of flavors)
+    test(`target close with a base branch whose worktree is ${stale} and a ${behind ? "behind" : "synced"} local base ${behind ? "refuses to move it" : "closes"} in both modes`, () =>
+      withFixture((f) => {
+        f.mapClone();
+        f.start();
+        write(f.target, "change.txt", "changed\n");
+        git(f.target, "add", "-A");
+        git(f.target, "commit", "-qm", "Target change");
+        mergedCloseFixture(f);
+        // The forge merges the target change; the clone has not fetched it.
+        const upstream = join(f.base, "upstream");
+        git(f.base, "clone", "-q", join(f.base, "target.git"), upstream);
+        git(upstream, "config", "user.email", "fixture@example.invalid");
+        git(upstream, "config", "user.name", "Fixture");
+        git(upstream, "fetch", "-q", f.clone, "wo-999");
+        git(upstream, "merge", "-q", "--no-ff", "-m", "Merge", "FETCH_HEAD");
+        git(upstream, "push", "-q", "origin", "main");
+        const merged = git(upstream, "rev-parse", "HEAD");
+        // The clone works on another branch while the base branch stays held by
+        // a linked worktree whose checkout is gone. A locked entry survives
+        // `git worktree prune`, so Git never reports it as prunable; an empty
+        // directory stands for an unmounted volume. A synced base took the
+        // merge in that worktree before it went.
+        const held = join(f.base, "held-main");
+        git(f.clone, "switch", "-qc", "work");
+        git(f.clone, "worktree", "add", "-q", held, "main");
+        if (!behind) {
+          git(f.clone, "fetch", "-q", "origin");
+          git(held, "merge", "-q", "--ff-only", "origin/main");
+        }
+        if (locked)
+          git(
+            f.clone,
+            "worktree",
+            "lock",
+            "--reason",
+            "removable volume",
+            held,
+          );
+        rmSync(held, { recursive: true });
+        if (remains === "directory") mkdirSync(held);
+        if (remains === "file") writeFileSync(held, "not a checkout\n");
+        if (locked) git(f.clone, "worktree", "prune");
+        // A reused path holds a `.git` that is not this clone's checkout of
+        // the base; the close must not run Git or delete files there.
+        const other = join(f.base, "other-repository");
+        if (remains === "clone" || remains === "worktree") {
+          const repository = remains === "clone" ? held : other;
+          git(f.base, "clone", "-q", join(f.base, "target.git"), repository);
+          git(repository, "reset", "-q", "--hard", "HEAD~1");
+          if (remains === "worktree") {
+            git(other, "branch", "side");
+            git(other, "worktree", "add", "-q", held, "side");
+          }
+          writeFileSync(join(held, ".DS_Store"), "Finder metadata\n");
+        }
+        if (remains === "link") symlinkSync(f.clone, held);
+        const reused = () =>
+          remains === "clone"
+            ? treeDigest(held)
+            : remains === "worktree"
+              ? { held: treeDigest(held), other: treeDigest(other) }
+              : remains === "link"
+                ? treeDigest(f.clone, { skipGit: true })
+                : null;
+        const reusedBefore = reused();
+        const heldEntry = () =>
+          git(f.clone, "worktree", "list", "--porcelain")
+            .split("\n\n")
+            .find((entry) => entry.startsWith(`worktree ${held}\n`)) ?? "";
+        assert.match(heldEntry(), /^branch refs\/heads\/main$/mu);
+        if (reusedBefore)
+          assert.doesNotMatch(heldEntry(), /^(?:prunable|locked)\b/mu);
+        else
+          assert.match(heldEntry(), locked ? /^locked\b/mu : /^prunable\b/mu);
+        if (locked) assert.doesNotMatch(heldEntry(), /^prunable/mu);
+        const localBase = git(f.clone, "rev-parse", "refs/heads/main");
+        assert.equal(localBase === merged, !behind);
+        const before = cloneRefMap(f);
+        if (behind) {
+          // Git still treats the branch as checked out there, so the close
+          // moves no ref until the entry is restored or cleared.
+          const [state, clear] = locked
+            ? [
+                "locked: removable volume",
+                "clear the entry with git worktree unlock, then git worktree prune",
+              ]
+            : reusedBefore
+              ? [
+                  "its path holds another checkout",
+                  "move what sits at its path elsewhere, then clear the entry with git worktree prune",
+                ]
+              : ["prunable", "clear the entry with git worktree prune"];
+          refuseCloseBoth(
+            f,
+            new RegExp(
+              `target clone base main is held by a worktree entry whose checkout is gone \\(${state}\\), so the close cannot move it to the fetched base; source retained\\. Restore or remount that worktree and fast-forward it, or ${clear} \\(git worktree list names it\\), then rerun `,
+              "u",
+            ),
+            before,
+          );
+          if (reusedBefore) {
+            assert.deepEqual(reused(), reusedBefore);
+            return;
+          }
+          // Once the entry is cleared, nothing holds the base and the close
+          // moves it by its ref.
+          if (locked) git(f.clone, "worktree", "unlock", held);
+          git(f.clone, "worktree", "prune");
+          assert.equal(heldEntry(), "");
+        }
+        assert.match(f.ok(f.close("--dry-run")), /would-remove/u);
+        assert.ok(existsSync(f.target));
+        assert.ok(existsSync(f.orderRoot));
+        assert.equal(git(f.clone, "rev-parse", "refs/heads/main"), localBase);
+        const result = f.ok(f.close("--publish"));
+        assert.match(result, /no-release/u);
+        assert.equal(existsSync(f.target), false);
+        assert.equal(existsSync(f.orderRoot), false, result);
+        for (const repo of [f.main, f.clone])
+          assert.equal(git(repo, "branch", "--list", "wo-999"), "");
+        const record = JSON.parse(
+          readFileSync(
+            docPath(
+              f.main,
+              "control",
+              "local/retained/WO-999/release-close.json",
+            ),
+            "utf8",
+          ),
+        );
+        assert.equal(record.publication.outcome, "no-release");
+        assert.equal(record.targetCleanup.outcome, "removed");
+        // Only the two base refs move and the closed branch goes; the close
+        // leaves the stale entry, and anything at its path, to its owner.
+        const after = cloneRefMap(f);
+        assert.equal(after["refs/heads/main"], merged);
+        assert.equal(after["refs/remotes/origin/main"], merged);
+        const others = (refs) =>
+          Object.entries(refs).filter(
+            ([name]) =>
+              ![
+                "refs/heads/main",
+                "refs/remotes/origin/main",
+                "refs/heads/wo-999",
+              ].includes(name),
+          );
+        assert.ok(others(before).some(([name]) => name === "refs/heads/work"));
+        assert.deepEqual(others(after), others(before));
+        if (!behind) assert.match(heldEntry(), /^branch refs\/heads\/main$/mu);
+        if (remains === "directory") assert.ok(statSync(held).isDirectory());
+        if (remains === "file")
+          assert.equal(readFileSync(held, "utf8"), "not a checkout\n");
+        if (reusedBefore) assert.deepEqual(reused(), reusedBefore);
+      }));
+
+test("target close refuses an unreadable, dirty or broken base and a dirty or broken target by role and relative path in both modes", (t) => {
+  if (process.getuid?.() === 0)
+    return t.skip("root bypasses directory read permissions");
+  return withFixture((f) => {
+    // Tracked content keeps the base checkout clean once read access returns.
+    write(f.clone, "assets/private/keep.txt", "tracked base material\n");
+    git(f.clone, "add", "-A");
+    git(f.clone, "commit", "-qm", "test: track nested base material");
+    git(f.clone, "push", "-q", "origin", "main");
+    f.mapClone();
+    f.start();
+    git(f.target, "merge", "-q", "main");
+    mergedCloseFixture(f);
+    const before = cloneRefMap(f);
+    const unreadable = join(f.clone, "assets/private");
+    chmodSync(unreadable, 0);
+    try {
+      refuseCloseBoth(
+        f,
+        /target clone base main cannot close: cannot inspect Finder metadata in assets\/private \((EACCES|EPERM)\); restore directory read and search access and retry; source retained/u,
+        before,
+      );
+    } finally {
+      chmodSync(unreadable, 0o755);
+    }
+    write(f.clone, "assets/private/keep.txt", "uncommitted base edit\n");
+    refuseCloseBoth(
+      f,
+      /target clone base main is not clean \(M assets\/private\/keep\.txt\); source retained\. Clean it, then rerun /u,
+      before,
+    );
+    write(f.clone, "assets/private/keep.txt", "tracked base material\n");
+    // A Git failure inside the base's cleanliness check still names the base.
+    const index = join(f.clone, ".git/index");
+    const indexBytes = readFileSync(index);
+    writeFileSync(index, "DIRC");
+    refuseCloseBoth(f, /target clone base main cannot close: .*index/u, before);
+    writeFileSync(index, indexBytes);
+    // A failed fetch from a local-path origin masks that path.
+    const origin = join(f.base, "target.git");
+    renameSync(origin, `${origin}.away`);
+    refuseCloseBoth(
+      f,
+      /target clone base main cannot close: fetch failed: fatal: '<target origin>' does not appear to be a git repository.*; source retained\. Fix the fetch, then rerun /su,
+      before,
+    );
+    renameSync(`${origin}.away`, origin);
+    // A stale ref lock makes the ref move fail; Git's text names the clone's
+    // Git directory, which the refusal quotes by role.
+    const refLock = join(f.clone, ".git/refs/remotes/origin/main.lock");
+    writeFileSync(refLock, "");
+    refuseCloseBoth(
+      f,
+      /target clone base main cannot close: .*'<target clone Git directory>\/refs\/remotes\/origin\/main\.lock'.*; source retained\. Fix what Git reports, then rerun /su,
+      before,
+    );
+    rmSync(refLock);
+    // One inside the target names its Git directory, kept in the clone, by role.
+    const targetIndex = join(
+      git(f.target, "rev-parse", "--absolute-git-dir"),
+      "index",
+    );
+    const targetIndexBytes = readFileSync(targetIndex);
+    writeFileSync(targetIndex, "DIRC");
+    for (const mode of ["--dry-run", "--publish"]) {
+      assertCloseRefusal(
+        f,
+        f.close(mode),
+        mode,
+        /target worktree cannot close: fatal: <target worktree Git directory>\/index: index file smaller than expected; source retained\. Fix what Git reports, then rerun /u,
+      );
+      assert.ok(existsSync(f.target));
+      assert.ok(existsSync(f.orderRoot));
+      assert.deepEqual(cloneRefMap(f), before);
+    }
+    writeFileSync(targetIndex, targetIndexBytes);
+    // The bundle check reads the target's index, so it runs once that is back.
+    checkTargetHarness(f.target, { runtimeRoot: f.main });
+    write(f.target, "notes.txt", "untracked target note\n");
+    refuseCloseBoth(
+      f,
+      /target worktree is not clean \(notes\.txt\); source retained\. Clean it, then rerun /u,
+      before,
+    );
+    rmSync(join(f.target, "notes.txt"));
+    assert.match(f.ok(f.close("--publish")), /no-release/u);
+    assert.equal(existsSync(f.target), false);
+    assert.equal(existsSync(f.orderRoot), false);
+    assert.equal(
+      readFileSync(join(unreadable, "keep.txt"), "utf8"),
+      "tracked base material\n",
+    );
+  });
+});
+
+for (const side of ["base", "target"])
+  test(`target close refuses a listable but unsearchable ${side} directory before any removal in both modes`, (t) => {
+    if (process.getuid?.() === 0)
+      return t.skip("root bypasses directory search permissions");
+    return withFixture((f) => {
+      write(f.clone, "assets/private/keep.txt", "tracked material\n");
+      git(f.clone, "add", "-A");
+      git(f.clone, "commit", "-qm", "test: track nested material");
+      git(f.clone, "push", "-q", "origin", "main");
+      f.mapClone();
+      f.start();
+      git(f.target, "merge", "-q", "main");
+      mergedCloseFixture(f);
+      // Mode 0644 lets a directory be listed but not searched, so Git's status
+      // cannot see the tracked edit inside it.
+      const root = side === "base" ? f.clone : f.target;
+      write(root, "assets/private/keep.txt", "uncommitted edit\n");
+      const before = cloneRefMap(f);
+      const hidden = join(root, "assets/private");
+      chmodSync(hidden, 0o644);
+      try {
+        refuseCloseBoth(
+          f,
+          new RegExp(
+            `^error: target ${side === "base" ? "clone base main" : "worktree"} cannot close: cannot inspect Finder metadata in assets/private \\((EACCES|EPERM)\\); restore directory read and search access and retry; source retained\\. Then rerun `,
+            "mu",
+          ),
+          before,
+        );
+      } finally {
+        chmodSync(hidden, 0o755);
+      }
+      // Once searchable again, the same edit refuses as a dirty tree.
+      const dirty = f.close("--dry-run");
+      assert.notEqual(dirty.status, 0);
+      assert.match(
+        dirty.stderr,
+        side === "base"
+          ? /target clone base main is not clean \(M assets\/private\/keep\.txt\)/u
+          : /target worktree is not clean \(M assets\/private\/keep\.txt\)/u,
+      );
+      assert.equal(
+        readFileSync(join(hidden, "keep.txt"), "utf8"),
+        "uncommitted edit\n",
+      );
+    });
+  });
+
+test("target close refuses a linked base checkout it cannot reach without naming its path, then closes it", (t) => {
+  if (process.getuid?.() === 0)
+    return t.skip("root bypasses directory read permissions");
+  return withFixture((f) => {
+    f.mapClone();
+    f.start();
+    git(f.target, "merge", "-q", "main");
+    mergedCloseFixture(f);
+    const box = join(f.base, "box");
+    const held = join(box, "held-main");
+    git(f.clone, "switch", "-qc", "work");
+    git(f.clone, "worktree", "add", "-q", held, "main");
+    const before = cloneRefMap(f);
+    chmodSync(box, 0);
+    try {
+      refuseCloseBoth(
+        f,
+        /target clone base main checkout cannot be inspected \((EACCES|EPERM)\); source retained\. Restore access to the worktree that holds main, which git worktree list names, then rerun /u,
+        before,
+      );
+    } finally {
+      chmodSync(box, 0o755);
+    }
+    // A reachable linked base checkout still closes through its own checkout.
+    assert.match(f.ok(f.close("--publish")), /no-release/u);
+    assert.equal(existsSync(f.target), false);
+    assert.equal(
+      git(held, "rev-parse", "HEAD"),
+      git(f.clone, "rev-parse", "refs/remotes/origin/main"),
+    );
+    assert.equal(git(held, "status", "--porcelain"), "");
+  });
+});
 
 test("umbrella start refuses before creating the launchpad or target worktree", () =>
   withFixture((f) => {
@@ -838,4 +3264,124 @@ test("self start preserves a failed receipt carry and its printed retry complete
       git(f.main, "status", "--porcelain", "--untracked-files=all"),
       "",
     );
+  }));
+
+for (const kind of [
+  "absent-target",
+  "clone-hook",
+  "clone-writer",
+  "missing-base",
+])
+  test(`target close protects ownership and disables hooks: ${kind}`, () =>
+    withFixture((f) => {
+      write(f.clone, ".gitignore", ".DS_Store\n/docs/control/local/\n");
+      git(f.clone, "add", ".gitignore");
+      git(f.clone, "commit", "-qm", "test: ignore metadata and writer state");
+      git(f.clone, "push", "-q", "origin", "main");
+      f.mapClone();
+      f.start();
+      git(f.target, "merge", "-q", "main");
+      write(f.target, "change.txt", "target change\n");
+      git(f.target, "add", "change.txt");
+      git(f.target, "commit", "-qm", "test: target change");
+      closeOrder(f);
+      git(f.orderRoot, "add", "-A");
+      git(f.orderRoot, "commit", "-qm", "test: close records");
+      git(f.main, "merge", "-q", "--no-ff", "-m", "Merge records", "wo-999");
+      git(f.main, "push", "-q", "origin", "main");
+      git(f.target, "push", "-q", "origin", "HEAD:refs/heads/main");
+      const before = git(f.clone, "rev-parse", "HEAD");
+      const mergedTarget = git(f.target, "rev-parse", "HEAD");
+      if (kind === "missing-base") {
+        git(f.clone, "switch", "--detach", "-q");
+        git(f.clone, "branch", "-D", "main");
+        assert.match(f.ok(f.close("--dry-run")), /would-remove/u);
+        assert.equal(git(f.clone, "branch", "--list", "main"), "");
+      }
+      if (kind === "clone-writer")
+        write(f.clone, "docs/control/local/harness/writer.json", "{}\n");
+      if (kind === "absent-target")
+        git(f.clone, "worktree", "remove", "--force", f.target);
+      const sentinel = join(f.base, "hook-fired");
+      if (kind === "clone-hook") {
+        const hook = join(f.clone, ".git/hooks/post-merge");
+        writeFileSync(hook, `#!/bin/sh\n: > '${sentinel}'\n`);
+        chmodSync(hook, 0o755);
+      }
+      const result = f.close("--publish");
+
+      if (["clone-hook", "missing-base"].includes(kind)) {
+        assert.equal(result.status, 0, result.stderr);
+        assert.equal(git(f.clone, "rev-parse", "main"), mergedTarget);
+        assert.equal(
+          existsSync(sentinel),
+          false,
+          "close must not execute a target hook",
+        );
+      } else {
+        assert.notEqual(
+          result.status,
+          0,
+          `${kind} should retain ownership residue`,
+        );
+        if (kind === "clone-writer")
+          assert.match(
+            result.stderr,
+            /target clone base main: writer reservation \(not proven released\); source retained\. Release that writer, then rerun /u,
+          );
+        assert.equal(git(f.clone, "rev-parse", "HEAD"), before);
+        assert.ok(existsSync(f.orderRoot));
+        assert.ok(
+          JSON.parse(readFileSync(targetRegistryPath(f.main), "utf8"))[
+            f.target
+          ],
+        );
+      }
+    }));
+
+test("target publication retains installation ownership when its live manifest disappears", () =>
+  withFixture((f) => {
+    const forge = publicationSetup(f);
+    f.mapClone();
+    f.start();
+    const manifest = join(f.target, ".claude/target-worker-manifest.json");
+    const bytes = readFileSync(manifest);
+    write(f.target, "reviewed.txt", "Reviewed change.\n");
+    git(f.target, "add", "reviewed.txt");
+    git(f.target, "add", "-f", ".claude/settings.json");
+    git(f.target, "commit", "-qm", "fix: preserve reviewed behavior");
+    closeOrder(f);
+    write(
+      f.orderRoot,
+      "records/evidence/WO-999/decisions.md",
+      "# Decisions\n\nPreserve reviewed behavior.\n",
+    );
+    f.ok(f.resume(["target-records", ...actorArgs]));
+    write(
+      f.orderRoot,
+      "reviewed-body.md",
+      "## Result\n\nPreserve reviewed behavior.\n",
+    );
+    git(f.orderRoot, "add", "-A");
+    git(f.orderRoot, "commit", "-qm", "docs: record validation");
+    const before = git(join(f.base, "target.git"), "show-ref");
+    for (const missing of [false, true]) {
+      if (missing) rmSync(manifest);
+      const result = f.worktree(
+        "publish",
+        "WO-999",
+        "--target-worktree",
+        "--branch",
+        "fix/reviewed-behavior",
+        "--title",
+        "fix: preserve reviewed behavior",
+        "--body-file",
+        "reviewed-body.md",
+      );
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /bundle ownership/u);
+      assert.equal(git(join(f.base, "target.git"), "show-ref"), before);
+      assert.equal(existsSync(forge.log), false);
+    }
+    writeFileSync(manifest, bytes);
   }));

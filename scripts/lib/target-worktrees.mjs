@@ -6,12 +6,25 @@ import {
   readFileSync,
   realpathSync,
   renameSync,
+  rmSync,
   writeFileSync,
 } from "node:fs";
 import { basename, dirname, join, resolve, sep } from "node:path";
-import { docPath, loadConfig } from "./config.mjs";
+import {
+  docPath,
+  docRelative,
+  loadConfig,
+  targetDocRelative,
+} from "./config.mjs";
 import { exportSiblings, readDeclaration } from "./siblings.mjs";
-import { runGit } from "./git.mjs";
+import {
+  porcelainEntries,
+  porcelainEntryName,
+  runGit,
+  runGitPathList,
+  shellQuote,
+} from "./git.mjs";
+import { HOST_GIT_READ } from "./github-repository.mjs";
 
 export const targetRegistryPath = (launchpad) =>
   docPath(launchpad, "control", "local/target-worktrees.json");
@@ -81,6 +94,146 @@ const writeMap = (root, file, value) => {
   });
   renameSync(temporary, file);
 };
+
+const operationPath = (root, kind, key) => {
+  if (!/^(records|planning)$/u.test(kind) || !/^[a-zA-Z0-9-]+$/u.test(key))
+    throw new Error("invalid target operation receipt key");
+  return docPath(
+    root,
+    "control",
+    "local/target-operations",
+    kind,
+    `${key}.json`,
+  );
+};
+export const readTargetOperation = (root, kind, key) => {
+  const file = operationPath(root, kind, key);
+  return existsSync(file) ? readMap(file) : undefined;
+};
+export const recordTargetOperation = (root, kind, key, value) =>
+  writeMap(root, operationPath(root, kind, key), value);
+export const forgetTargetOperation = (root, kind, key) => {
+  const file = operationPath(root, kind, key);
+  if (existsSync(file)) {
+    readMap(file);
+    rmSync(file);
+  }
+};
+/** The launchpad files a target order's records commit carries: the order,
+ * its decisions file and each report its events record, at the path a
+ * recorded correction moved it to. It lives here, not in target-records.mjs,
+ * so resume can judge an unfinished removal without loading that module and
+ * the outward lint it imports. */
+export const targetRecordSources = (root, state, events) => {
+  const repository = loadConfig(root).repositories[state.repositoryId];
+  const reports = events
+    .map((event) => ({
+      ...event,
+      reportPath:
+        (state.corrections ?? [])
+          .filter(
+            (correction) =>
+              correction.subject.type === event.type &&
+              correction.subject.reportPath === event.reportPath &&
+              correction.fields.reportPath !== undefined,
+          )
+          .at(-1)?.fields.reportPath ?? event.reportPath,
+    }))
+    .filter((event) =>
+      ["VerificationCompleted", "FinalReviewCompleted"].includes(event.type),
+    );
+  const rows = [
+    {
+      kind: "order",
+      source: state.workOrderPath,
+      path: targetDocRelative(
+        repository,
+        "workOrders",
+        basename(state.workOrderPath),
+      ),
+    },
+    {
+      kind: "decisions",
+      source: docRelative(root, "evidence", state.workOrderId, "decisions.md"),
+      path: targetDocRelative(
+        repository,
+        "evidence",
+        state.workOrderId,
+        "decisions.md",
+      ),
+    },
+    ...reports.map((event) => ({
+      kind:
+        event.type === "VerificationCompleted"
+          ? "verification"
+          : "final-review",
+      source: event.reportPath,
+      expectedHash: event.reportHash,
+      path: targetDocRelative(
+        repository,
+        event.type === "VerificationCompleted"
+          ? "verifications"
+          : "finalReviews",
+        state.workOrderId,
+        basename(event.reportPath),
+      ),
+    })),
+  ];
+  const unique = new Map();
+  for (const row of rows) {
+    if (
+      unique.has(row.path) &&
+      unique.get(row.path).expectedHash !== row.expectedHash
+    )
+      throw new Error(
+        `target records refused: ${row.source}: reports disagree on the recorded hash`,
+      );
+    unique.set(row.path, row);
+  }
+  return [...unique.values()];
+};
+
+/** Once its event folds, the records action still owes a removal while its
+ * saved receipt or a moved source (every record but the order's file) is
+ * present; only a rerun of the action finishes that removal. */
+export const targetRecordsUnfinished = (root, state, events) =>
+  existsSync(operationPath(root, "records", state.workOrderId)) ||
+  (Boolean(loadConfig(root).repositories[state.repositoryId]) &&
+    targetRecordSources(root, state, events).some((row) => {
+      if (row.kind === "order") return false;
+      // This check reports and never throws on local state: a source it
+      // cannot inspect counts as retained, so the rerun reports it.
+      try {
+        return movedSourceStat(join(root, row.source)) !== undefined;
+      } catch {
+        return true;
+      }
+    }));
+
+/** A moved source's lstat, or undefined when it cannot be on disk: no entry,
+ * or a parent that is not a directory. Any other entry, a directory or a
+ * link among them, is returned, and the removal retains it. */
+export const movedSourceStat = (path) => {
+  try {
+    return lstatSync(path, { throwIfNoEntry: false });
+  } catch (error) {
+    if (error.code === "ENOTDIR") return undefined;
+    throw error;
+  }
+};
+
+/** A launchpad script in the form the start handoff prints: it runs from a
+ * target worktree, where `npm run` would read the target's package.json.
+ * A remedy or briefing command is copy-paste runnable from the target worktree
+ * and therefore carries the launchpad's absolute path: the one stated
+ * exception to the rule that a refusal names no absolute path. */
+export const launchpadInvocation = (launchpad, script) =>
+  `DOTLN_LAUNCHPAD=${shellQuote(launchpad)} node ${shellQuote(join(launchpad, `scripts/${script}.mjs`))}`;
+/** The target gate runner's command. The runner's own path selects its
+ * launchpad (findLaunchpad falls back to the script's location), so it needs
+ * no DOTLN_LAUNCHPAD; like launchpadInvocation it carries the absolute path. */
+export const targetGateCommand = (launchpad, workOrderId, selection) =>
+  `node ${shellQuote(join(launchpad, "scripts/target-gate.mjs"))} ${workOrderId}${selection === "review" ? " --review" : ""}`;
 const gitTopLevel = (clone) => {
   physicalDirectory(clone);
   if (
@@ -227,4 +380,90 @@ export const registeredOrder = (launchpad, cwd) => {
   if (branch !== `wo-${entry.workOrderId?.slice(3)}`)
     throw new Error("registered target worktree branch differs from its order");
   return entry.workOrderId;
+};
+
+/** Bind a review to clean committed target bytes, never to a local path. */
+export const reviewedTargetSubject = (
+  launchpad,
+  state,
+  { pendingRecordPaths = [] } = {},
+) => {
+  const entry = targetWorktreeForOrder(launchpad, state.workOrderId);
+  if (!entry) throw new Error("target worktree registry entry is missing");
+  const branch = `wo-${state.workOrderId.slice(3)}`;
+  const remedy = state.targetSubject
+    ? `preserve and move aside the unexpected changes, keeping ${branch} at its bound commit; do not add a commit after the passing review`
+    : `commit the reviewed target change on ${branch} before final-review-result pass`;
+  if (
+    !state.repositoryId ||
+    !loadConfig(launchpad).repositories[state.repositoryId] ||
+    entry.repositoryId !== state.repositoryId ||
+    entry.baseCommit !== state.baseCommit ||
+    entry.branch !== branch
+  )
+    throw new Error(
+      "target registry repository, base or branch differs from the activated order",
+    );
+  const target = physicalDirectory(entry.target);
+  const git = (...args) => runGit(target, [...HOST_GIT_READ, ...args]);
+  if (git("rev-parse", "--show-toplevel") !== target)
+    throw new Error("target is not its registered Git root");
+  if (
+    runGit(
+      target,
+      [...HOST_GIT_READ, "symbolic-ref", "--quiet", "--short", "HEAD"],
+      { onFailure: () => undefined },
+    ) !== branch
+  )
+    throw new Error(
+      `target branch differs from ${branch}; return to the registered branch before continuing; ${remedy}`,
+    );
+  const entries = porcelainEntries(
+    runGitPathList(target, [
+      ...HOST_GIT_READ,
+      "status",
+      "--porcelain=v1",
+      "-z",
+      "--untracked-files=all",
+    ]),
+  );
+  // Only a plain entry for one of the saved records' own paths is expected.
+  const unexpected = entries.filter(
+    ({ path, origin }) =>
+      origin !== undefined || !pendingRecordPaths.includes(path),
+  );
+  const named = (rows) => rows.map(porcelainEntryName).join(", ");
+  const tracked = unexpected.filter(({ status }) => status !== "??");
+  const untracked = unexpected.filter(({ status }) => status === "??");
+  if (tracked.length)
+    throw new Error(
+      `target has tracked changes: ${named(tracked)}${untracked.length ? `; non-ignored untracked files: ${named(untracked)}` : ""}; ${remedy}`,
+    );
+  if (untracked.length)
+    throw new Error(
+      `target has non-ignored untracked files: ${named(untracked)}; ${remedy}`,
+    );
+  const commit = git("rev-parse", "HEAD");
+  if (
+    runGit(
+      target,
+      [
+        ...HOST_GIT_READ,
+        "merge-base",
+        "--is-ancestor",
+        state.baseCommit,
+        commit,
+      ],
+      { onFailure: () => false },
+    ) === false
+  )
+    throw new Error(
+      "target HEAD does not descend from the activated base commit",
+    );
+  return {
+    repositoryId: state.repositoryId,
+    branch,
+    baseCommit: state.baseCommit,
+    commit,
+  };
 };

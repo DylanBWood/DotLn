@@ -146,13 +146,14 @@ DotLn-Angular holds its own product documents, its planning passes and each
 Angular order's file with its decisions, verification and final-review
 reports, so every fork that works on it shares one history, and the instance
 links each record where it lives (operator direction, 2026-10-13); it takes
-the starter by a Git merge the operator chooses,
-previewed first with `preview --from <ref>`, which distinguishes unchanged kit
+the starter by a Git merge the operator chooses, landed through its own
+update pull request and previewed first by the incoming revision's launchpad
+with `preview --from <ref>`, which distinguishes unchanged kit
 paths and reports incompatible manual actions individually ([WO-203 fixture
-evidence](../evidence/WO-203/handoff.md)), followed by a re-emit of its own build. **DotLn-Angular**
+evidence](../evidence/WO-203/handoff.md); WO-210), followed by a re-emit of its own build. **DotLn-Angular**
 is public under the same posture, receives conventional branches and pull
-requests (each order's carrying its records in a records-only commit after
-the reviewed change) and never a machinery file, and has three purposes: the reference for the architecture the
+requests (each order's carrying its records under the registered
+`documentationRoot` in a records-only commit after the reviewed change) and never a machinery file, and has three purposes: the reference for the architecture the
 operator wants Angular applications to follow (Angular, Nx, NgRx Signal Store
 with events, Transloco, as product 03 records), the demonstration that an
 instance builds another repository through the workflow, and a console for
@@ -183,8 +184,8 @@ intake (WO-193). A work instance forked from the starter later starts from
 the delta between what the starter does and what v1 does. It keeps that
 delta in its private predecessor map, and returns only generic,
 clean-room-screened requests to core or the starter. An Angular order pays
-DotLn-Angular's own tests plus the instance's document gate, never core's
-product gate (WO-210). WO-207 proposes, for the operator's review, that the
+DotLn-Angular's declared repository `gate` through the target gate runner,
+plus the instance's document gate, never core's product gate (WO-210). WO-207 proposes, for the operator's review, that the
 instance's gate run the carried kit suites once per kit update and its own
 declared suites for its own additions.
 The operator means to work only from instances, the personal one at home

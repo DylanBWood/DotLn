@@ -724,6 +724,92 @@ await check(
 );
 
 await check(
+  "target record cards point at the committed repository records",
+  () => {
+    const fixture = makeRepo("target-record-links"),
+      baseCommit = "a".repeat(40),
+      reviewed = "b".repeat(40),
+      commitId = "c".repeat(40);
+    write(
+      fixture,
+      authorityPath("WO-901"),
+      header("WO-901", "unassigned").replace(
+        "**Depends on:** nothing",
+        `**Repository:** target @ ${baseCommit}\n**Depends on:** nothing`,
+      ),
+    );
+    const events = completed("WO-901");
+    Object.assign(events[0], {
+      repositoryId: "target",
+      baseCommit,
+      documentationRoot: "manual",
+    });
+    Object.assign(events.at(-1), {
+      targetSubject: {
+        repositoryId: "target",
+        branch: "wo-901",
+        baseCommit,
+        commit: reviewed,
+      },
+    });
+    const records = [
+      {
+        kind: "order",
+        path: "manual/work-orders/WO-901-fixture.md",
+        sha256: "d".repeat(64),
+      },
+      {
+        kind: "decisions",
+        path: "manual/evidence/WO-901/decisions.md",
+        sha256: "e".repeat(64),
+      },
+      {
+        kind: "verification",
+        path: "manual/verifications/WO-901/VER-001.md",
+        sha256: "f".repeat(64),
+      },
+      {
+        kind: "verification",
+        path: "manual/verifications/WO-901/VER-002.md",
+        sha256: "1".repeat(64),
+      },
+      {
+        kind: "final-review",
+        path: "manual/final-reviews/WO-901/FINAL-001.md",
+        sha256: "0".repeat(64),
+      },
+    ];
+    events.push({
+      type: "TargetRecordsCommitted",
+      workOrderId: "WO-901",
+      repositoryId: "target",
+      branch: "wo-901",
+      parent: reviewed,
+      commit: commitId,
+      root: "manual",
+      records,
+    });
+    writeLog(fixture, events);
+    commit(fixture, "target records fixture");
+    const rendered = renderHistory(readIndex(fixture));
+    assert.ok(rendered.includes(`Records: target at commit ${commitId}`));
+    for (const record of records) {
+      assert.ok(rendered.includes(record.path));
+      assert.ok(rendered.includes(record.sha256));
+    }
+    const fields = [...rendered.matchAll(/^- (Record [^:]+): /gmu)].map(
+      (match) => match[1],
+    );
+    assert.equal(fields.length, records.length);
+    assert.equal(new Set(fields).size, records.length);
+    assert.doesNotMatch(
+      rendered,
+      /\]\(\.\.\/(?:evidence|verifications|final-reviews)\/WO-901\//u,
+    );
+  },
+);
+
+await check(
   "registered repository identity is parsed and projected without a path",
   () => {
     const fixture = makeRepo("registered-repository-index");

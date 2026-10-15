@@ -444,7 +444,15 @@ isolated by this mechanism. See 09 §Privacy and minimization for that boundary.
 `resume: final review` and `resume: release close` carry narrowly scoped
 external-effect authority. A passing final reviewer may commit the reviewed
 state, push only its work-order branch, and open the mergeable PR; it may never
-merge it. Release close may create and push only the validated annotated tag, create the
+merge it. For a registered-target order the reviewer commits the reviewed
+target change on its `wo-NNN` branch before recording the passing result,
+records the order's records in the target's documentation root as one
+records-only commit after it, and may push that commit to one conventional
+branch on the target's origin and open its pull request with `worktree publish
+WO-NNN --target-worktree` under an admitted operator grant; it never merges
+either. Release close of a target order fetches the target's base branch and
+fast-forwards the clone's base branch before it judges containment. Release
+close may create and push only the validated annotated tag, create the
 matching GitHub Release as a projection of that tag's reviewed human layer, and
 push one verified fast-forward commit to the `main` of each declared export
 sibling from its recorded checkout (§Workflow closeout and releases, Starter
@@ -640,8 +648,11 @@ launchpad's scripts, or name it with `DOTLN_LAUNCHPAD`; its ignored target
 registry selects the order by branch. Selection compares physical launchpad
 identity, so alternate spellings keep the same order. With repository
 declarations or a target registry, an unregistered foreign directory selects
-no order; `status --json` then refuses with a nonzero exit. Reports stay in the
-launchpad.
+no order; `status --json` then refuses with a nonzero exit. A passing final
+review binds the clean target commit and its review gate. Reports are drafted
+in the launchpad; `resume target-records` copies the order and moves its
+decisions and filed reports into the target's `documentationRoot`, retaining
+control state, raw evidence and links in the launchpad.
 
 `dotln.config.json` at the launchpad root declares schema `version: 1` and the
 optional sections `roots`, `classes`, `repositories`, `build`, `release`, `kit`, `derivedOrders` and `portfolios` (§Declaring a portfolio). **Its absence
@@ -1189,6 +1200,9 @@ After the refutation receipt is filed with its holds answered and
 `npm run test:docs` is green, a planning or ideation pass on a planning branch
 pushes that branch and opens its `:memo:` pull request. The dispatch phrase is
 the operator's authorization for those two effects; the pass never merges.
+A target-scoped pass publishes its product and planning files with `plan
+target-publish` under the registered profile and operator grant, then records
+the printed repository, commit and paths in its own planning document.
 
 The refuter's platform-first standard is the operator's direction of 2026-09-12: the point is to create a platform, not to prove every
 constructible case before filing, and the refutation pass must be made worth
@@ -1198,6 +1212,14 @@ observed failure or a supplied vision passage holds. A constructible counterexam
 reopening observation. Each judgment answers critical-path and NoOp cost,
 all eight system traps, removal balance, and failure behavior. Missing cost
 observations remain unknown.
+
+In an exported instance the refutation goal standard composes the guide's
+marked `dotln-goal-rules` blocks with one nonempty `dotln-purpose` block in
+`docs/product/purpose.md`, or names that purpose unavailable when absent.
+The instance declares that contained regular file itself. Malformed markers
+or a malformed declaration refuse; core's purpose and critical-path sentence
+are not substituted. Core's whole-section standard and historical subjects
+keep their bytes and meaning.
 
 There is one judgment per planning pass. Repair a named criterion and record
 `npm run plan -- dispose <receipt-id> <hold-id> '<disposition and reason>'`.
@@ -1559,10 +1581,46 @@ clone map. The helper checks the published head, checkout identity, branch,
 cleanliness, remote binding and ancestry, then updates a disposable worktree
 (or exports the kit for the first time). The export’s own emit, predicted
 bundle comparison, harness check, kit verify and exact staged-file check run
-before the hookless push. Seeds survive later updates and instance actions
-remain unapplied. Dirty, missing, ahead, diverged or misbound checkouts and
+before the hookless push. Direct template seeds are refreshed only when each
+changed copy exactly matches a prior exported template, including its regular
+file mode. Historical starter manifests and ancestor core templates prove the
+baseline, including seeds left behind by kit-only updates. A custom edit,
+missing path or changed type for a changed template refuses by path before
+any push; preserve the customization and restore its prior exported template
+through a reviewed change before retrying. An unchanged template preserves a
+customized working copy without blocking unrelated kit changes; a copy of
+`CLAUDE.md` or `.gitignore` the refresh itself could not use, missing,
+non-regular, without its hand-written floor or with a broken marker pair,
+refuses by path before any write, naming the remedy. The refresh row
+lists rewritten seeds; an already-current manifest can still need a seed-only
+refresh. Generated control/planning records and opted-in instance actions
+remain unchanged. Ordinary instance kit updates still preserve seed ownership;
+the instance's own session previews the refreshed starter with the incoming
+revision's launchpad, merges it on an update branch, re-emits and generates
+the lineage index there, and commits the regenerated files in that update
+pull request. Before its named stash the session deletes a generated untracked
+lineage index on main, which the update branch regenerates, so the stash later
+restores every record into the order worktree. After the operator merges it
+with a merge commit, the session fast-forwards main and bootstraps without
+leaving generated tracked-path files uncommitted. A fork of a starter exported
+before the index was seeded generates and commits the index with its setup
+commit before its first document gate; the lineage check names a missing index
+and the command that writes it. It preserves the instance's records and
+recovers an already
+verified main activation into its order worktree. A missing release-block
+remedy follows that update first and adds the block only if still absent.
+The operator uses phrases and merges
+pull requests; the session executes the update and recovery commands. Dirty,
+missing, ahead, diverged or misbound checkouts and
 failed checks refuse; later core commits are skipped and retries report
-current without another push. An ignored ownership record retains disposable
+current without another push. Regular untracked `.DS_Store` files at any depth
+do not make the recorded checkout dirty; preview and refresh preserve them.
+Tracked changes and unrelated untracked files retain their ordinary checks.
+Symlinks and directories named `.DS_Store` refuse even when ignored or empty.
+Unreadable ignored directories are retained; other unreadable directories
+name a relative path and the read-access remedy. Refresh and target-close
+receipts record metadata-scan durations and skipped ignored directories.
+An ignored ownership record retains disposable
 worktree and branch cleanup across failures; retries finish that cleanup before
 reporting current or skipped. If the clone map has changed, inspect the ignored
 `<control-root>/local/starter-refresh/<sibling-id>.json`, restore its `checkout`
@@ -1580,9 +1638,43 @@ without changing checkout files or publishing. Pending refresh or validated
 cleanup work reports `preview`; an already current starter reports `current`,
 and a cleanup ownership mismatch refuses with the same recovery guidance.
 
-A registered target closes with `no-release`: prove its branch merged into
-the declared base, remove its local bundle, worktree and branch, then close
-the launchpad worktree. Neither repository gets a tag.
+A registered target closes with `no-release`: fetch the declared base,
+fast-forward the clone's base, prove the target branch merged into it, remove
+its local bundle, worktree and branch, then close the launchpad worktree.
+A dirty base checkout, failed fetch or non-fast-forward base refuses before
+changing clone refs; dry-run fetches for the containment preview without
+moving the local base. The base counts as checked out only where a worktree
+entry holds this clone's checkout of the base branch; any other entry for
+the base, gone, reused or locked, is not one, and the close never moves the
+branch underneath it: it completes when the base needs no move and otherwise
+refuses naming the entry and the remedy; a checkout it cannot inspect
+refuses. A close refusal that names a path names it relative to its tree, by
+the tree's role, never as an absolute path; the rerun command it prints is
+the one exception, carrying the launchpad's real path so it runs as pasted. An
+ignored-material refusal lists each foreign path
+once, collapsing a directory only when it contains no bundle-owned path, and
+prints the exact close command to rerun after moving or removing the listed
+paths. Regular untracked `.DS_Store` files at any depth are disposable Finder
+metadata, whether Git ignores them or not: they do not make the target or its
+clone's base checkout dirty at close. Dry runs keep them; a publishing close
+may remove them before its Git operations. Tracked changes and non-regular
+entries keep the ordinary protections; ignored symlinks and empty directories
+named `.DS_Store` also refuse. Base updates hold the clone writer reservation
+lock and disable repository hooks and filesystem monitors. Both worktrees and the bundle remain
+until cleanup is safe. If the bundle manifest is missing while its installation
+receipt or shared-exclude registry member remains, close retains the source
+even if the target directory is absent, and names restoring the installed
+manifest and bundle files before the exact
+retry command. It cannot report a clean close with that ownership residue.
+Neither repository gets a tag.
+
+A target order's records branch is versionless and requires one well-formed
+README release claim at least as new as the latest release. It needs no
+release notes; `release prepare --local` reports no release without assigning
+a version or changing files. An instance self order keeps the version, notes, component and
+workspace-pin checks; its manifest uses the carried tag template and compiled
+schema declarations. Kit license surfaces check `docs/LEGAL.md` pins only when
+the instance declares the file; missing pins in a declared file still fail.
 
 Publication refuses tracked dirt; cleanup is best effort. Finish/settle preserve
 intake and non-disposable control in main's ignored
@@ -1657,6 +1749,66 @@ the existing `gh` helper and appends `PullRequestOpened` to
 `<store>/publication/`. A rerun for the same head reports the recorded pull
 request and pushes nothing. Merging and releasing on the target stay with the
 operator; [decisions](../evidence/WO-064/decisions.md) record the limits.
+The generated body and disposition replies cite target-native commits, files,
+criteria and declared references, omitting unmappable evidence with a count.
+The outward lint rejects runtime evidence identifiers in branches, commit
+messages, titles, bodies and replies; event payload references remain intact.
+
+For a session order, `worktree publish WO-NNN --target-worktree --branch
+<type>/<slug> --title <title> --body-file <path>` reads a committed contained
+regular body file from the clean order launchpad. Its latest passing final
+review must bind `targetSubject` and `targetGate`, and `TargetRecordsCommitted`
+must bind the target's current clean HEAD as a records-only child of the
+reviewed commit. It validates installed bundle ownership before reading its
+file list; a missing or drifted manifest cannot erase that ownership. It
+rechecks each recorded blob, path and mode, refuses bundle files and a reviewed base with no change, screens every pushed commit and the
+final body, and requires both effects in the registered profile and an
+operator grant for that repository. Session publication reads both from
+main's committed configuration and registry, requiring the working files to
+match those blobs; the publishing branch cannot authorize itself. It uses the same isolated push lane and
+forge identity check as the episode route. The body appends the change and
+target check results, never command text or runtime identifiers. The main
+checkout's ignored control-local `target-publications/WO-NNN` log records
+`PullRequestOpened`; a rerun reports the same commit's publication without
+pushing. No launchpad branch moves. Publish the launchpad's records branch
+separately with the self form: it carries the control segment and record
+links, refuses re-added moved reports, and proves equal code identities at
+HEAD and its merge base with `origin/main` in place of a reviewer product gate.
+A changed code identity still requires that reviewed gate.
+
+Each registered repository declares `gate.commands` (named argv and positive
+`timeoutMs`), `plain` and covering `review` selections, and an optional
+`documentationRoot` (default `docs`, with the launchpad's default segments).
+`node scripts/target-gate.mjs WO-NNN [--review]` runs in the target worktree
+and binds each command and selection row to its non-ignored bytes and HEAD;
+a command's mutation judgment compares its own before and after state. A later
+innocent command can pass, but any failure, timeout or mutation still fails the
+selection, even if another command restores the initial bytes. A missing
+repository registration produces a named briefing diagnostic. Target-order product-gate
+claims resolve only to these rows, with the latest covering row for the current
+command definitions deciding;
+the launchpad document gate still judges its documents. Passing final review
+records `targetGate` at the clean reviewed commit. `npm run resume --
+target-records` copies the order and moves decisions and every filed report
+into that root as one records-only commit, recording paths and hashes in
+`TargetRecordsCommitted`. An ignored pending receipt lets the same command
+resume an interrupted commit or source removal after verifying the exact bytes.
+Records-only and planning commits use the host's signing policy, as starter
+refresh does; hooks and filesystem monitors stay disabled. A signing failure
+retains the pending work for retry.
+Changed inputs refuse with the work retained. Raw evidence and the body stay in the instance.
+`npm run plan -- target-publish <repository-id> --base <commit> --from
+<directory> --branch docs/<slug> --title <title> --body-file <path>` publishes
+only product and planning documents under the same root from the planner's
+read commit. The title becomes the commit subject and must use the conventional
+`docs:` or `docs(scope):` type; other types refuse before remote access.
+Its operator-grant registry must match committed authority bytes; unrelated
+planning drafts may remain. The target cleanliness check disables configured
+filesystem monitors as the other host Git reads do.
+It prints links for the instance's planning document and leaves
+refutation scoped to the instance subject. A failed publication preserves its
+temporary worktree and pending receipt; rerunning the same command validates
+and resumes that commit, then completes cleanup after publication.
 
 ## Documentation freshness and ownership
 
@@ -2597,7 +2749,9 @@ not mark generated or documentation, plus
 `docs/control/outward-vocabulary.json`) is made before the last full run:
 document and evidence edits after it keep the identity, so final review
 reuses that run in seconds instead of paying a full one. A target order's own
-checks follow its repository's declared gate (WO-210), not core's suites.
+checks run its repository's declared gate through `node scripts/target-gate.mjs
+WO-NNN [--review]`; target claims use those rows and the launchpad document
+gate, rather than core's product suites.
 WO-192
 puts this into the executor's role text; until it closes, each order's
 Preflight line and this section carry it (operator direction, 2026-10-13).

@@ -1,7 +1,8 @@
-# WO-001 — Environment truth for this launchpad (bounded)
+# WO-001 — Environment truth for this launchpad (bounded) (v0.1.0)
 
 **Model:** any capable model.
 **Effort:** executor any; verifier any; reviewer any.
+**Release classification:** minor. The instance's first release: its environment-truth record.
 **Depends on:** nothing (first executable work order of this instance).
 
 **Objective:** Establish, with epistemic labels, what this launchpad's machine

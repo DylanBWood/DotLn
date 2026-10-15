@@ -31,6 +31,141 @@ import {
 } from "./lib/control-store.mjs";
 import { statusProjection } from "./resume.mjs";
 import { recoverControlTimes } from "./lib/control-time.mjs";
+await test("WO-210 target review subjects bind exactly to the activation", () => {
+  const activation = {
+    type: "WorkOrderActivated",
+    workOrderId: "WO-999",
+    workOrderPath: "docs/work-orders/WO-999-fixture.md",
+    repositoryId: "target",
+    baseCommit: "a".repeat(40),
+  };
+  const targetSubject = {
+    repositoryId: "target",
+    branch: "wo-999",
+    baseCommit: activation.baseCommit,
+    commit: "b".repeat(40),
+  };
+  const review = {
+    type: "FinalReviewCompleted",
+    workOrderId: "WO-999",
+    verdict: "pass",
+    targetSubject,
+  };
+  const state = (events) => foldWorkOrders(events).orders.get("WO-999").state;
+  assert.deepEqual(state([activation, review]).targetSubject, targetSubject);
+  const targetGate = {
+    repositoryId: "target",
+    commit: targetSubject.commit,
+    treeHash: "d".repeat(64),
+    selection: "review",
+    names: ["test"],
+    durationMs: 1,
+    evidenceRef: "fixture:gate",
+    recordedAt: "2026-10-14T10:00:00.000Z",
+  };
+  assert.deepEqual(
+    state([activation, { ...review, targetGate }]).targetGate,
+    targetGate,
+  );
+  const records = {
+    type: "TargetRecordsCommitted",
+    workOrderId: "WO-999",
+    repositoryId: "target",
+    branch: "wo-999",
+    parent: targetSubject.commit,
+    commit: "c".repeat(40),
+    root: "docs",
+    records: [
+      {
+        kind: "order",
+        path: "docs/work-orders/WO-999-fixture.md",
+        sha256: "e".repeat(64),
+      },
+    ],
+  };
+  assert.equal(
+    state([activation, review, records]).targetRecords.commit,
+    records.commit,
+  );
+  assert.throws(
+    () =>
+      state([{ ...activation, documentationRoot: "notes" }, review, records]),
+    /target records documentation root/u,
+  );
+  for (const events of [
+    [activation, records],
+    [
+      activation,
+      { ...review, verdict: "fail", targetSubject: undefined },
+      records,
+    ],
+    ...[
+      { ...records, repositoryId: "other" },
+      { ...records, branch: "main" },
+      { ...records, parent: activation.baseCommit },
+      { ...records, commit: "bad" },
+      { ...records, root: "../outside" },
+      {
+        ...records,
+        records: [{ ...records.records[0], path: "outside/record.md" }],
+      },
+      {
+        ...records,
+        records: [{ ...records.records[0], path: "docs/../outside.md" }],
+      },
+    ].map((record) => [activation, review, record]),
+  ])
+    assert.throws(() => state(events), /target records/u);
+  for (const gate of [
+    null,
+    {},
+    { ...targetGate, extra: true },
+    { ...targetGate, commit: activation.baseCommit },
+    { ...targetGate, repositoryId: "other" },
+    { ...targetGate, selection: "plain" },
+    { ...targetGate, names: [] },
+    { ...targetGate, durationMs: -1 },
+    { ...targetGate, evidenceRef: "" },
+    { ...targetGate, recordedAt: "bad" },
+  ])
+    assert.throws(
+      () => state([activation, { ...review, targetGate: gate }]),
+      /target gate/u,
+    );
+  assert.equal(
+    state([activation, { ...review, targetSubject: undefined }]).targetSubject,
+    undefined,
+  );
+  for (const subject of [
+    null,
+    {},
+    { ...targetSubject, extra: true },
+    { ...targetSubject, repositoryId: "other" },
+    { ...targetSubject, baseCommit: "c".repeat(40) },
+    { ...targetSubject, branch: "main" },
+    { ...targetSubject, commit: "bad" },
+  ])
+    assert.throws(
+      () => state([activation, { ...review, targetSubject: subject }]),
+      /target subject/u,
+    );
+  assert.throws(
+    () =>
+      state([
+        { ...activation, repositoryId: undefined, baseCommit: undefined },
+        review,
+      ]),
+    /target subject/u,
+  );
+  assert.throws(
+    () => state([activation, { ...review, verdict: "fail" }]),
+    /target subject/u,
+  );
+  assert.equal(
+    state([activation, review, activation]).targetSubject,
+    undefined,
+  );
+});
 await test("test-control-segments", async (t) => {
   let scriptRoot,
     root,

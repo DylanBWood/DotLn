@@ -1,5 +1,6 @@
 import { readControl } from "./control-store.mjs";
 import { gateCodeIdentity, partialGateCheck } from "./gate-evidence.mjs";
+import { runGit } from "./git.mjs";
 import {
   historicalWorkOrders,
   localTags,
@@ -136,6 +137,31 @@ export const reviewedProductGate = (root, workOrderId, revision = "HEAD") => {
       `${workOrderId} reviewed code identity differs from ${revision}; source changed after the product gate`,
     );
   return gate;
+};
+
+export const reviewedLaunchpadIdentity = (
+  root,
+  workOrderId,
+  revision = "HEAD",
+) => {
+  const baseCommit = runGit(root, ["merge-base", revision, "origin/main"]);
+  const headIdentity = gateCodeIdentity(root, revision),
+    baseIdentity = gateCodeIdentity(root, baseCommit);
+  return headIdentity === baseIdentity
+    ? {
+        unchanged: true,
+        headIdentity,
+        baseIdentity,
+        baseCommit,
+        body: `<!-- dotln-product-gate:start -->\n## Launchpad identity\n\nNo launchpad code changed. HEAD code identity \`${headIdentity}\` equals code identity \`${baseIdentity}\` at merge base \`${baseCommit}\`. Target validation is bound in the recorded final review.\n\n<!-- dotln-product-gate:end -->`,
+      }
+    : {
+        unchanged: false,
+        headIdentity,
+        baseIdentity,
+        baseCommit,
+        body: productGateBody(reviewedProductGate(root, workOrderId, revision)),
+      };
 };
 
 export const productGateBody = (gate) => {

@@ -5,7 +5,13 @@ import { ensureHostGuard } from "./host-guard-state.mjs";
 export async function boundedCommand(
   args,
   repo,
-  { directory = hostStateRoot(), report = console.error } = {},
+  {
+    directory = hostStateRoot(),
+    report = console.error,
+    cwd = repo,
+    timeoutMs = 900_000,
+    output = (text) => process.stdout.write(text),
+  } = {},
 ) {
   const limits = memoryBudgets(repo);
   let index = 0;
@@ -48,12 +54,12 @@ export async function boundedCommand(
         memoryLimits: limits,
         hostDirectory: directory,
       },
-      repo,
-      900_000,
+      cwd,
+      timeoutMs,
       ({ message }) => report(`PROGRESS [bounded-probe] ${message}`),
       controller.signal,
     );
-    if (result.output) process.stdout.write(result.output);
+    if (result.output) output(result.output);
     report(
       `bounded-result ${JSON.stringify({ ...result, output: undefined })}`,
     );

@@ -1056,10 +1056,13 @@ await test("WO-182 AC3: readiness refusal precedes every remote call; operator p
   assert.equal(published.status, 0, published.stderr);
   const body = readFileSync(subject.body, "utf8");
   assert.match(body, /## Deliverable-ready\n\nDeliverable-ready: not ready;/u);
-  assert.match(body, /\| Reproduced baseline \| absent \| BaselineWitnessed/u);
   assert.match(
     body,
-    /\| Independent verification and review \| absent \| .*ReviewCompleted/u,
+    /\| Reproduced baseline \| absent \| Baseline observation/u,
+  );
+  assert.match(
+    body,
+    /\| Independent verification and review \| absent \| .*Independent review/u,
   );
   assert.equal(subject.ghCalls().length, 3);
 });
@@ -1515,19 +1518,49 @@ await test("WO-157: publication runs no hook or repository configuration the tar
   );
 });
 
-await test("WO-064: the CLI names its usage for a malformed target request", () => {
-  const run = spawnSync(
-    process.execPath,
-    [cli, "publish", "WO-064", "--target"],
-    {
+await test("WO-210 malformed publication arguments are diagnosed without a main worktree", () => {
+  const root = join(shared, "no-main-worktree");
+  mkdirSync(root);
+  fixtureGit(root, "init", "-q", "-b", "side");
+  for (const [args, expected] of [
+    [["publish", "bad", "--target"], /work order id/],
+    [
+      ["publish", "WO-064", "--target"],
+      /usage: worktree publish WO-NNN --target <target-publish-request\.json>/u,
+    ],
+    [
+      ["publish", "WO-064", "--target-worktree"],
+      /usage: worktree publish WO-NNN --target-worktree/u,
+    ],
+    [
+      [
+        "publish",
+        "WO-064",
+        "--target-worktree",
+        "--branch",
+        "fix/input",
+        "--title",
+        "fix: input",
+        "--body-file",
+        "PR.md",
+        "--require-deliverable-ready",
+      ],
+      /usage: worktree publish WO-NNN --target-worktree/u,
+    ],
+    [
+      ["publish", "WO-064", "--title"],
+      /usage: worktree publish WO-NNN --title/u,
+    ],
+  ]) {
+    const run = spawnSync(process.execPath, [cli, ...args], {
+      cwd: root,
+      env: { ...process.env, DOTLN_LAUNCHPAD: root },
       encoding: "utf8",
-    },
-  );
-  assert.equal(run.status, 1);
-  assert.match(
-    run.stderr,
-    /usage: worktree publish WO-NNN --target <target-publish-request\.json>/u,
-  );
+    });
+    assert.equal(run.status, 1);
+    assert.match(run.stderr, expected);
+    assert.doesNotMatch(run.stderr, /no.*main.*worktree/u);
+  }
 });
 
 await test("WO-066 AC5: a signed-header commit runs planted gpg on ordinary log, never publication; request binds origin before remote calls", async (t) => {
@@ -3098,6 +3131,36 @@ await test("WO-066 AC1/AC3: an accepted automated thread repairs, verifies, push
   );
   assert.ok(repairLog.some((e) => e.type === "CommandResult"));
   assert.equal(subject.remoteBranch(), pushed.payload.headSha);
+  assert.deepEqual(
+    disposed.payload.evidenceRefs,
+    item.results.triage.judgment.evidenceRefs,
+  );
+  const mapped = disposeReviewThread({
+    ...subject.config.publication,
+    itemKey: `${item.key}-native`,
+    item: item.item,
+    judgment: { kind: "reject", evidenceRefs: ["file:fixture.txt", "HEAD"] },
+    now: 20,
+  });
+  assert.ok(
+    subject.calls().includes(`fixture.txt at ${pushed.payload.headSha}`),
+  );
+  assert.ok(subject.calls().includes(`commit ${pushed.payload.headSha}`));
+  assert.deepEqual(mapped.payload.evidenceRefs, ["file:fixture.txt", "HEAD"]);
+  disposeReviewThread({
+    ...subject.config.publication,
+    itemKey: `${item.key}-fallback`,
+    item: item.item,
+    judgment: { kind: "reject", evidenceRefs: ["source-event:retained"] },
+    now: 20,
+  });
+  assert.ok(
+    subject
+      .calls()
+      .includes(
+        `body={"disposition":"rejected","evidenceRefs":["commit ${pushed.payload.headSha}"],"omittedReferences":1}`,
+      ),
+  );
   process.stdout.write(
     "WO-066 accepted-thread transcript: one fresh writer; WO-054 pass; one push; granted disposition; recorded resolved observation; interrupted push resumed.\n",
   );
@@ -3124,6 +3187,10 @@ await test("WO-066 AC1: a mapped failing check repairs and is freshly observed s
 await test("WO-066 AC2: reject carries evidence to the thread; human comments never dispatch or dispose; outside paths and unmapped checks name NeedsHuman", async (t) => {
   const reject = await reviewScenario(t);
   reject.config.judgments.R1.kind = "reject";
+  reject.config.judgments.R1.evidenceRefs = [
+    "source-event:synthetic-contract",
+    "review-event:synthetic-diff",
+  ];
   assert.equal((await resolveReviewComments(reject.config)).status, "resolved");
   assert.equal(reject.launches().length, 0);
   assert.equal(
@@ -3131,9 +3198,28 @@ await test("WO-066 AC2: reject carries evidence to the thread; human comments ne
       .disposition,
     "reject",
   );
-  assert.match(
-    reject.calls(),
-    /body=\{"disposition":"rejected","evidenceRefs":\["synthetic-contract","synthetic-diff"\]\}/,
+  assert.ok(
+    reject
+      .calls()
+      .includes(
+        `body={"disposition":"rejected","evidenceRefs":["commit ${reject.remoteBranch()}"],"omittedReferences":2}`,
+      ),
+  );
+  assert.deepEqual(
+    reject.events().find((event) => event.type === "PullRequestThreadDisposed")
+      .payload.evidenceRefs,
+    reject.config.judgments.R1.evidenceRefs,
+  );
+  const posted = reject.calls().split("body=")[1].split("\n")[0];
+  assert.doesNotMatch(posted, /source-event:|review-event:/u);
+  assert.equal(
+    lintOutwardArtifact({
+      kind: "pr-body",
+      text: posted,
+      vocabulary,
+      localTerms: { status: "present" },
+    }).status,
+    "pass",
   );
   const human = guardReviewScenario(t, {
     items: [{ id: "H1", role: "human", path: "fixture.txt", line: 1 }],
@@ -3651,7 +3737,7 @@ await test("WO-112 an unsupplied automated item is judged by the triage episode;
   assert.equal(reject.launches().length, 0);
   assert.match(
     reject.calls(),
-    /body=\{"disposition":"rejected","evidenceRefs":\["synthetic-contract"\]\}/,
+    /body=\{"disposition":"rejected","evidenceRefs":\["commit [a-f0-9]{40}"\],"omittedReferences":1\}/,
   );
 
   const human = guardReviewScenario(t);

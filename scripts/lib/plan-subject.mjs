@@ -4,7 +4,7 @@ import { lstatSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseHeader, parseSequence } from "../work-orders.mjs";
 import { readGitObjects, runGit } from "./git.mjs";
-import { containedRegularFile } from "./paths.mjs";
+import { containedRegularFile, hasPackageSources } from "./paths.mjs";
 import { defaultDocRelative, docRelative, rootPattern } from "./config.mjs";
 
 // Default-layout names for peers that hold no launchpad; `planPaths` resolves
@@ -537,11 +537,30 @@ function buildGoalSubject(root, revision, { workspace }) {
     workspace
       ? containedRegularFile(join(root, path), root)
       : committed.paths.includes(path);
+  const kit =
+    !hasPackageSources(root) &&
+    (workspace
+      ? Boolean(
+          lstatSync(join(root, "KIT-MANIFEST.json"), { throwIfNoEntry: false }),
+        )
+      : committed.paths.includes("KIT-MANIFEST.json"));
+  const purposePath = docRelative(root, "product", "purpose.md");
+  const purposePresent =
+    kit &&
+    (workspace
+      ? Boolean(lstatSync(join(root, purposePath), { throwIfNoEntry: false }))
+      : committed.paths.some(
+          (path) =>
+            path === purposePath ||
+            path.startsWith(`${purposePath}/`) ||
+            purposePath.startsWith(`${path}/`),
+        ));
   if (!workspace)
     committed.readMany(
       [
         docRelative(root, "product", "07-execution-guide.md"),
         docRelative(root, "planning", "critical-path-2026-09-08.md"),
+        ...(purposePresent ? [purposePath] : []),
       ].filter(has),
     );
   const read = (path) => {
@@ -559,14 +578,59 @@ function buildGoalSubject(root, revision, { workspace }) {
   )?.[0];
   if (!platformStandard)
     throw new Error("product 07 platform-first standard missing");
-  const goalStandard = section(guide, "Goal-aligned decisions");
+  let goalStandard = section(guide, "Goal-aligned decisions");
+  if (kit) {
+    const blocks = (source, name, path) => {
+      const start = `<!-- ${name}:start -->`,
+        end = `<!-- ${name}:end -->`;
+      const contents = [];
+      let open = null;
+      for (const line of source.match(/[^\n]*\n|[^\n]+$/g) ?? []) {
+        const marker = line.replace(/\r?\n$/, "");
+        if (marker === start) {
+          if (open !== null)
+            throw new Error(`${path}: unbalanced ${name} markers`);
+          open = "";
+        } else if (marker === end) {
+          if (open === null)
+            throw new Error(`${path}: unbalanced ${name} markers`);
+          contents.push(open);
+          open = null;
+        } else {
+          if (line.includes(`<!-- ${name}:`))
+            throw new Error(`${path}: malformed ${name} marker`);
+          if (open !== null) open += line;
+        }
+      }
+      if (open !== null || contents.length === 0)
+        throw new Error(`${path}: missing or unbalanced ${name} markers`);
+      return contents;
+    };
+    const rules = blocks(
+      goalStandard,
+      "dotln-goal-rules",
+      docRelative(root, "product", "07-execution-guide.md"),
+    );
+    let purpose = `unavailable: ${purposePath}; this instance has not declared its purpose`;
+    if (purposePresent) {
+      const declared = blocks(read(purposePath), "dotln-purpose", purposePath);
+      if (declared.length !== 1 || !declared[0].trim())
+        throw new Error(
+          `${purposePath}: expected exactly one nonempty dotln-purpose block`,
+        );
+      purpose = declared[0];
+    }
+    goalStandard = [goalStandard.split("\n", 1)[0], ...rules, purpose].join(
+      "\n",
+    );
+  }
   const criticalPathSource = docRelative(
     root,
     "planning",
     "critical-path-2026-09-08.md",
   );
   const criticalPath =
-    committed.paths.includes("KIT-MANIFEST.json") &&
+    kit &&
     (workspace
       ? !lstatSync(join(root, criticalPathSource), { throwIfNoEntry: false })
       : !committed.paths.includes(criticalPathSource))

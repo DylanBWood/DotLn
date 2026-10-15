@@ -227,6 +227,13 @@ export function main(args = process.argv.slice(2), root = findLaunchpad()) {
     ),
   });
   if (args[1] === "--check") {
+    // An absent index means its generating command has not run here, as in
+    // an older export: name the file by its repository-relative path and the
+    // command that writes it.
+    if (!existsSync(resolve(root, indexPath)))
+      throw new Error(
+        `Missing ${indexPath}; run node scripts/lineage.mjs index`,
+      );
     if (readFileSync(resolve(root, indexPath), "utf8") !== rendered)
       throw new Error(`Stale ${indexPath}; run node scripts/lineage.mjs index`);
     console.log(`PASS lineage index: ${ledger.sections.length} sections`);

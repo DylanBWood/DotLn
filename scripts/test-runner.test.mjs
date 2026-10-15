@@ -65,6 +65,323 @@ import {
 
 const root = resolve(import.meta.dirname, "..");
 const barrier = { name: "build", command: ["build"], build: true };
+test("target runner claims do not change self-order handoff or verification claims", async (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-self-claims-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  mkdirSync(join(repo, "docs/work-orders"), { recursive: true });
+  mkdirSync(join(repo, "docs/evidence/WO-999"), { recursive: true });
+  const workOrderPath = "docs/work-orders/WO-999-fixture.md";
+  writeFileSync(
+    join(repo, workOrderPath),
+    "# WO-999 — fixture\n\n**Acceptance criteria (all required)**\n\n1. node scripts/target-gate.mjs WO-999 --review passes.\n",
+  );
+  const report = "docs/evidence/WO-999/handoff.md";
+  writeFileSync(
+    join(repo, report),
+    "**Criterion 1:** met — fixture.\nself-review: found 0; fixed 0; recorded 0\n",
+  );
+  const { readHandoffLedger, readReportGateClaims } =
+    await import("./lib/handoff-ledger.mjs");
+  const state = { workOrderId: "WO-999", workOrderPath };
+  for (const read of [
+    () => readHandoffLedger(repo, state),
+    () => readReportGateClaims(repo, state, report),
+  ])
+    assert.deepEqual(read().claims, { document: [], review: [], plain: [] });
+  state.repositoryId = "target";
+  assert.deepEqual(readHandoffLedger(repo, state).claims, {
+    document: [],
+    review: ["1"],
+    plain: ["1"],
+  });
+});
+
+test("target claims use only current target selection rows and still run the document gate", async (t) => {
+  const base = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-target-claims-")),
+  );
+  t.after(() => rmSync(base, { recursive: true, force: true }));
+  const repo = join(base, "launchpad"),
+    target = join(base, "target");
+  for (const path of [repo, target]) {
+    mkdirSync(path);
+    runGit(path, ["init", "-q", "-b", "wo-999"]);
+    runGit(path, ["config", "user.name", "Fixture"]);
+    runGit(path, ["config", "user.email", "fixture@example.invalid"]);
+    writeFileSync(join(path, ".gitignore"), "/docs/control/local/\n");
+    runGit(path, ["add", ".gitignore"]);
+    runGit(path, ["commit", "-qm", "test: base"]);
+  }
+  const commit = runGit(target, ["rev-parse", "HEAD"]);
+  const state = {
+    workOrderId: "WO-999",
+    repositoryId: "target",
+    baseCommit: commit,
+  };
+  writeFileSync(
+    join(repo, "dotln.config.json"),
+    JSON.stringify({
+      version: 1,
+      classes: { fixture: { checks: [], supports: [] } },
+      repositories: {
+        target: {
+          baseBranch: "main",
+          worktreeParent: "../targets",
+          repositoryClass: "fixture",
+          authorityProfile: {
+            authorityEnvelopeId: "fixture",
+            allowedEffects: ["repo.test"],
+            deniedEffects: [],
+            resourceLimits: {},
+            requiredEvidence: [],
+            expiresAt: Number.MAX_SAFE_INTEGER,
+            revocationEventTypes: [],
+          },
+          gate: {
+            commands: {
+              test: { argv: ["node", "test.mjs"], timeoutMs: 1000 },
+              lint: { argv: ["node", "lint.mjs"], timeoutMs: 1000 },
+            },
+            plain: ["test"],
+            review: ["test", "lint"],
+          },
+        },
+      },
+    }),
+  );
+  const { recordTargetWorktree } = await import("./lib/target-worktrees.mjs");
+  recordTargetWorktree(repo, {
+    ...state,
+    target,
+    launchpad: repo,
+    branch: "wo-999",
+  });
+  const { requireGateClaims } = await import("./lib/handoff-ledger.mjs");
+  const { gateCommandsHash } = await import("./lib/target-gate.mjs");
+  const config = JSON.parse(
+    readFileSync(join(repo, "dotln.config.json"), "utf8"),
+  );
+  const ledger = {
+    checked: true,
+    claims: { plain: ["1"], review: [], document: [] },
+  };
+  const check = () => requireGateClaims(repo, ledger, { state });
+  await assert.rejects(
+    check,
+    (error) =>
+      /plain target gate is missing/u.test(error.message) &&
+      error.message.includes(
+        `run node '${join(repo, "scripts/target-gate.mjs")}' WO-999`,
+      ),
+  );
+  const row = {
+    checkId: "target:target",
+    repositoryId: "target",
+    commit,
+    selection: "plain",
+    names: ["test"],
+    commandsHash: gateCommandsHash(config.repositories.target.gate, ["test"]),
+    treeHash: gateTreeHash(target),
+    executed: true,
+    exitCode: 0,
+    durationMs: 1,
+    evidenceRef: "fixture:target",
+    recordedAt: "2026-10-14T10:00:00.000Z",
+  };
+  recordGateChecks(repo, [row]);
+  assert.equal((await check()).targetGate.commit, commit);
+  assert.equal((await check()).productGate, undefined);
+  assert.equal(
+    (
+      await requireGateClaims(repo, ledger, {
+        state,
+        gateIndexError: "fixture unavailable",
+        log: { warn() {} },
+      })
+    ).targetGate.commit,
+    commit,
+  );
+  ledger.claims.review = ["2"];
+  await assert.rejects(check, /review target gate is missing/u);
+  const review = {
+    ...row,
+    selection: "review",
+    names: ["test", "lint"],
+    commandsHash: gateCommandsHash(config.repositories.target.gate, [
+      "test",
+      "lint",
+    ]),
+    evidenceRef: "fixture:review",
+    recordedAt: "2026-10-14T10:00:01.000Z",
+  };
+  recordGateChecks(repo, [review]);
+  assert.deepEqual((await check()).targetGate.names, ["test", "lint"]);
+  recordGateChecks(repo, [
+    {
+      ...review,
+      exitCode: 1,
+      evidenceRef: "fixture:failure",
+      recordedAt: "2026-10-14T10:00:02.000Z",
+    },
+  ]);
+  await assert.rejects(check, /review target gate is failed/u);
+  recordGateChecks(repo, [
+    {
+      ...review,
+      evidenceRef: "fixture:repair",
+      recordedAt: "2026-10-14T10:00:03.000Z",
+    },
+  ]);
+  assert.ok((await check()).targetGate);
+  config.repositories.target.gate.commands.test.argv = [
+    "node",
+    "changed-test.mjs",
+  ];
+  writeFileSync(join(repo, "dotln.config.json"), JSON.stringify(config));
+  await assert.rejects(check, /review target gate is missing/u);
+  config.repositories.target.gate.commands.test.argv = ["node", "test.mjs"];
+  writeFileSync(join(repo, "dotln.config.json"), JSON.stringify(config));
+  writeFileSync(join(target, "untracked.txt"), "new bytes");
+  await assert.rejects(check, /review target gate is stale/u);
+  rmSync(join(target, "untracked.txt"));
+  // implementation-ready, repair-complete and verification-result all resolve
+  // target claims here. A damaged index refuses each selection in one line
+  // naming the index relative to the launchpad and the rerun, with or without
+  // the diff check's failed write, and leaves the damaged bytes in place.
+  const index = join(repo, "docs/control/local/harness/checks.json");
+  const indexBytes = readFileSync(index);
+  for (const damaged of ['[{"checkId":"target:', '["row"]', '{"rows":[]}'])
+    for (const selection of ["plain", "review"])
+      for (const gateIndexError of [undefined, "fixture unavailable"]) {
+        writeFileSync(index, damaged);
+        const warnings = [];
+        await assert.rejects(
+          () =>
+            requireGateClaims(
+              repo,
+              {
+                checked: true,
+                claims: {
+                  plain: ["1"],
+                  review: selection === "review" ? ["2"] : [],
+                  document: [],
+                },
+              },
+              {
+                state,
+                gateIndexError,
+                log: { warn: (line) => warnings.push(line) },
+              },
+            ),
+          (error) => {
+            assert.equal(
+              error.message,
+              `target ${selection} target gate index cannot be read: docs/control/local/harness/checks.json or an archive in docs/control/local/harness/check-history is unreadable or malformed; move the damaged file aside, then run node '${join(repo, "scripts/target-gate.mjs")}' WO-999${selection === "review" ? " --review" : ""}`,
+            );
+            return true;
+          },
+        );
+        assert.deepEqual(warnings, []);
+        assert.equal(readFileSync(index, "utf8"), damaged);
+      }
+  writeFileSync(index, indexBytes);
+  assert.ok((await check()).targetGate);
+  // A damaged check-history archive beside an intact index refuses the same.
+  const archive = join(
+    repo,
+    "docs/control/local/harness/check-history",
+    `${"a".repeat(40)}.json`,
+  );
+  mkdirSync(dirname(archive), { recursive: true });
+  writeFileSync(archive, "{");
+  await assert.rejects(
+    check,
+    (error) =>
+      error.message ===
+      `target review target gate index cannot be read: docs/control/local/harness/checks.json or an archive in docs/control/local/harness/check-history is unreadable or malformed; move the damaged file aside, then run node '${join(repo, "scripts/target-gate.mjs")}' WO-999 --review`,
+  );
+  assert.equal(readFileSync(archive, "utf8"), "{");
+  rmSync(archive);
+  assert.ok((await check()).targetGate);
+  ledger.claims.document = ["3"];
+  const runner = join(base, "document-runner.mjs");
+  writeFileSync(
+    runner,
+    "console.error('FAIL document fixture'); process.exit(1);\n",
+  );
+  await assert.rejects(
+    () =>
+      requireGateClaims(repo, ledger, {
+        state,
+        runner,
+        log: { log() {}, warn() {} },
+      }),
+    /document gate failed/u,
+  );
+});
+
+test("records publication proves unchanged launchpad identity or requires the reviewer gate", async (t) => {
+  const repo = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-records-identity-")),
+  );
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  runGit(repo, ["init", "-q", "-b", "wo-999"]);
+  runGit(repo, ["config", "user.name", "Fixture"]);
+  runGit(repo, ["config", "user.email", "fixture@example.invalid"]);
+  writeFileSync(join(repo, "source.txt"), "source\n");
+  runGit(repo, ["add", "-A"]);
+  runGit(repo, ["commit", "-qm", "test: source"]);
+  runGit(repo, ["update-ref", "refs/remotes/origin/main", "HEAD"]);
+  mkdirSync(join(repo, "docs"));
+  writeFileSync(join(repo, "docs/record.md"), "record\n");
+  runGit(repo, ["add", "-A"]);
+  runGit(repo, ["commit", "-qm", "docs: records"]);
+  const { reviewedLaunchpadIdentity } =
+    await import("./lib/release-records.mjs");
+  const { assertGitHubBodyProfile } = await import("./lib/github-body.mjs");
+  const proof = reviewedLaunchpadIdentity(repo, "WO-999");
+  assert.equal(proof.unchanged, true);
+  assert.equal(proof.headIdentity, proof.baseIdentity);
+  assert.ok(proof.body.includes(proof.headIdentity));
+  assertGitHubBodyProfile(proof.body, "records publication proof");
+  writeFileSync(join(repo, "source.txt"), "changed\n");
+  runGit(repo, ["add", "-A"]);
+  runGit(repo, ["commit", "-qm", "fix: source"]);
+  assert.throws(
+    () => reviewedLaunchpadIdentity(repo, "WO-999"),
+    /no recorded passing reviewer npm test row/u,
+  );
+});
+test("bounded command uses the requested cwd and deadline with launchpad budgets", async (t) => {
+  const directory = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-bounded-cwd-")),
+  );
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const { boundedCommand } = await import("./lib/bounded-command.mjs");
+  const lines = [];
+  const result = await boundedCommand(
+    [
+      "--",
+      process.execPath,
+      "-e",
+      "console.log(process.cwd()); setTimeout(() => {}, 10000)",
+    ],
+    root,
+    {
+      cwd: directory,
+      timeoutMs: 500,
+      report: (line) => lines.push(line),
+      output: () => {},
+    },
+  );
+  assert.match(
+    result.output,
+    new RegExp(directory.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+  );
+  assert.notEqual(result.exitCode, 0);
+  assert.ok(result.durationMs < 5000);
+  assert.ok(lines.some((line) => line.startsWith("bounded-start ")));
+});
 test("kit mode follows the gate repository, including its list and exclusions", async (t) => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-kit-list-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
@@ -102,7 +419,7 @@ test("kit --only refuses unavailable suites without running or recording a check
   const log = console.log;
   try {
     console.log = (line) => lines.push(String(line));
-    for (const name of ["kernel", "release-surfaces", "runner-fixtures"]) {
+    for (const name of ["kernel", "release", "runner-fixtures"]) {
       const row = suites.find((row) => row.name === name);
       for (const flags of [[], ["--list"]])
         await assert.rejects(runGate(["--only", name, ...flags], repo), {
@@ -1244,6 +1561,12 @@ test("vertical task dispatch executes every declared case exactly once across pa
   );
 });
 test("exclusive suites run alone and shared suites use remaining lane capacity", async () => {
+  const isolatedNames = new Set([
+    "harness-fixtures",
+    "process-debt",
+    "launchpad",
+    "worktree-integration",
+  ]);
   const selected = suites.filter((row) =>
     [
       "build",
@@ -1251,6 +1574,8 @@ test("exclusive suites run alone and shared suites use remaining lane capacity",
       "console",
       "harness-fixtures",
       "process-debt",
+      "launchpad",
+      "worktree-integration",
     ].includes(row.name),
   );
   const active = new Map(),
@@ -1267,7 +1592,8 @@ test("exclusive suites run alone and shared suites use remaining lane capacity",
           row.gateContext.reservedSlots <=
           4,
       );
-      if (["harness-fixtures", "process-debt"].includes(row.name)) {
+      assert.ok(![...active.keys()].some((name) => isolatedNames.has(name)));
+      if (isolatedNames.has(row.name)) {
         assert.equal(active.size, 0);
         assert.equal(row.gateContext.reservedSlots, 4);
         assert.equal(row.gateContext.concurrency, 1);

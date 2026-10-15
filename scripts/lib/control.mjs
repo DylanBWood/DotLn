@@ -253,6 +253,25 @@ const scanControl = (events, visit) => {
         });
         break;
       case "WorkOrderActivated":
+        delete state.targetSubject;
+        delete state.targetGate;
+        delete state.targetRecords;
+        delete state.documentationRoot;
+        if (event.documentationRoot !== undefined) {
+          if (
+            !event.repositoryId ||
+            typeof event.documentationRoot !== "string" ||
+            event.documentationRoot.startsWith("/") ||
+            event.documentationRoot.includes("\\") ||
+            event.documentationRoot
+              .split("/")
+              .some((part) => !part || part === "." || part === "..")
+          )
+            throw new Error(
+              `invalid target documentation root at line ${index + 1}`,
+            );
+          state.documentationRoot = event.documentationRoot;
+        }
         if (state.allocation && state.workOrderPath !== event.workOrderPath)
           throw new Error(
             `allocated authority path differs at line ${index + 1}`,
@@ -334,6 +353,56 @@ const scanControl = (events, visit) => {
         });
         break;
       case "FinalReviewCompleted":
+        if (event.targetSubject !== undefined) {
+          const subject = event.targetSubject;
+          if (
+            !subject ||
+            typeof subject !== "object" ||
+            Array.isArray(subject) ||
+            Object.keys(subject).sort().join(",") !==
+              "baseCommit,branch,commit,repositoryId" ||
+            event.verdict !== "pass" ||
+            !state.repositoryId ||
+            subject.repositoryId !== state.repositoryId ||
+            subject.baseCommit !== state.baseCommit ||
+            subject.branch !== `wo-${state.workOrderId.slice(3)}` ||
+            !TREE_HASH.test(subject.commit ?? "")
+          )
+            throw new Error(`invalid target subject at line ${index + 1}`);
+        }
+        if (event.targetGate !== undefined) {
+          const gate = event.targetGate;
+          if (
+            !gate ||
+            typeof gate !== "object" ||
+            Array.isArray(gate) ||
+            Object.keys(gate).sort().join(",") !==
+              "commit,durationMs,evidenceRef,names,recordedAt,repositoryId,selection,treeHash" ||
+            !event.targetSubject ||
+            gate.repositoryId !== event.targetSubject.repositoryId ||
+            gate.commit !== event.targetSubject.commit ||
+            gate.selection !== "review" ||
+            !TREE_HASH.test(gate.treeHash ?? "") ||
+            !Array.isArray(gate.names) ||
+            !gate.names.length ||
+            !gate.names.every(
+              (name) =>
+                typeof name === "string" && /^[a-z][a-z0-9-]*$/u.test(name),
+            ) ||
+            new Set(gate.names).size !== gate.names.length ||
+            !Number.isFinite(gate.durationMs) ||
+            gate.durationMs < 0 ||
+            typeof gate.evidenceRef !== "string" ||
+            !gate.evidenceRef ||
+            !Number.isFinite(Date.parse(gate.recordedAt))
+          )
+            throw new Error(`invalid target gate at line ${index + 1}`);
+        }
+        delete state.targetSubject;
+        delete state.targetGate;
+        delete state.targetRecords;
+        if (event.targetSubject) state.targetSubject = event.targetSubject;
+        if (event.targetGate) state.targetGate = event.targetGate;
         Object.assign(state, {
           phase: event.verdict === "pass" ? "closed" : "needs-fix",
           failureSourceId:
@@ -342,6 +411,55 @@ const scanControl = (events, visit) => {
             event.verdict === "fail" ? event.reportPath : undefined,
         });
         break;
+      case "TargetRecordsCommitted": {
+        const subject = state.targetSubject;
+        const root = event.root;
+        if (
+          state.documentationRoot !== undefined &&
+          root !== state.documentationRoot
+        )
+          throw new Error(
+            `invalid target records documentation root at line ${index + 1}`,
+          );
+        const contained = (path) =>
+          typeof path === "string" &&
+          !path.startsWith("/") &&
+          !path.includes("\\") &&
+          path
+            .split("/")
+            .every((part) => part && part !== "." && part !== "..");
+        if (
+          state.phase !== "closed" ||
+          !subject ||
+          event.repositoryId !== subject.repositoryId ||
+          event.branch !== subject.branch ||
+          event.parent !== subject.commit ||
+          !TREE_HASH.test(event.commit ?? "") ||
+          !contained(root) ||
+          !Array.isArray(event.records) ||
+          !event.records.length ||
+          event.records.some(
+            (row) =>
+              !row ||
+              Object.keys(row).sort().join(",") !== "kind,path,sha256" ||
+              !["order", "decisions", "verification", "final-review"].includes(
+                row.kind,
+              ) ||
+              !contained(row.path) ||
+              !row.path.startsWith(`${root}/`) ||
+              !HEX_64.test(row.sha256 ?? ""),
+          ) ||
+          new Set(event.records.map((row) => row.path)).size !==
+            event.records.length
+        )
+          throw new Error(`invalid target records at line ${index + 1}`);
+        state.targetRecords = Object.fromEntries(
+          ["repositoryId", "branch", "parent", "commit", "root", "records"].map(
+            (key) => [key, event[key]],
+          ),
+        );
+        break;
+      }
       // None of these changes the phase except the withdrawal, and
       // none is an attested completion of the order's own work (WO-158).
       case "CriterionWaived":

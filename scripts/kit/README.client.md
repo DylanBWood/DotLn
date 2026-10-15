@@ -76,10 +76,31 @@ runtime produces the same bytes; `check` detects drift against both.
 
 ## First steps
 
+The gate runner needs host access beyond the checkout: the shared Git metadata
+for linked worktrees, sibling worktree destinations, the ignored local control
+and `.runtime/` directories, and its private host coordination directory. On
+macOS that directory is `dotln-host-v1-<uid>` under the path returned by
+`getconf DARWIN_USER_TEMP_DIR`; on other supported hosts it is under `/tmp`.
+The runner must compile and execute its native helpers and acquire kernel
+locks there. `TMPDIR` does not relocate this shared coordination directory.
+A user-level Claude Code sandbox can prevent those operations or the nested
+confinement probe. Run with an operator-approved sandbox policy that admits
+these paths and operations, or outside that user-level sandbox. Check the
+settings actually loaded; project settings do not establish the effective
+user-level posture. Record it in the root `AI-HARNESS-SECURITY.md`.
+
+Preserve any failure's stderr before changing settings. `inForce: false` is the confinement probe's observation;
+confirm lock acquisition and release separately. The kit does not change
+operator sandbox settings.
+
 1. The export is already a Git repository on `main` with no commit: review the
    files and commit them before any control-plane command. The control plane
    records checkpoints as Git refs and needs at least one commit. An export
    made inside another repository's work tree is an embedded repository there.
+   If `docs/lineage/README.md` is absent, as in a fork of a starter exported
+   by an older release even after a starter refresh, run
+   `node scripts/lineage.mjs index` and commit the generated index with the
+   fork's setup commit, before its first `npm run test:docs`.
 2. `npm ci` (or `npm ci --offline` with a warm cache): installs the pinned
    development dependencies from the exported lockfile and links the four
    `@dotln/*` workspaces. The export seeds the same links under
@@ -97,22 +118,93 @@ runtime produces the same bytes; `check` detects drift against both.
 4. Register the private local-terms list at `docs/control/local/terms.txt`,
    one term per line; the directory is ignored by Git. `npm run terms -- check
    <paths>` prints `local-terms list: present` or `unavailable`, and refuses on
-   a match by file and line without printing the term.
+   a match by file and line without printing the term. Target publication also
+   needs the instance's own `docs/control/outward-vocabulary.json` and an
+   operator grant naming the registered repository in
+   `packages/skeleton/loadouts/grants.json`; the kit carries neither an
+   instance vocabulary nor such a grant. An instance order's executor commits
+   both on the operator's stated values, retaining that word and its SHA-256
+   in ignored intake, and writes the ignored local-terms list from the terms
+   the operator states. The operator merges that authority change first:
+   session publication reads the grant registry and registered profile from
+   main's committed bytes, never from the publishing order's branch.
+   The session form is `npm run worktree -- publish
+   WO-NNN --target-worktree --branch <type>/<slug> --title <title> --body-file
+   <committed-reviewed-body-path>`.
 5. Copy `dotln.config.example.json` to `dotln.config.json` only when this
    instance moves a document root; an absent file means the default layout
    under `docs/`. The example declares only the `docs` base, from which every
    other root derives; a root declared on its own stays where it is declared
-   when the base moves.
-6. Activate the pre-drafted first order:
-   `npm run resume -- activate WO-001 docs/work-orders/WO-001-environment-truth.md`,
-   then `npm run resume -- status` (`--json` is the canonical record).
-   Run `npm run meta` to generate the decision index from this instance's own
-   records before its first gate, and again whenever its decisions change.
-   Run `node scripts/lineage.mjs index` to generate the lineage index.
-7. Open a session that reads the operating contract (`CLAUDE.md`, symlinked as
-   `AGENTS.md`); its generated harness block routes each resume phrase to the
-   role skill under `.claude/skills/` or `.agents/skills/`, and the generated
-   hooks enforce the compiled refusals where the harness runs them.
+   when the base moves. A registered repository declares its own `gate`
+   (named argv commands with timeouts and plain/review selections) and optional
+   `documentationRoot` (default `docs`); a target order runs that gate and
+   keeps its order, decisions and reports under that root's launchpad layout.
+6. Tell this instance's own session: **Start WO-001 in its own worktree.**
+   The session starts from clean `main` whose export/setup commit is on
+   `origin/main`, with the pre-drafted order carrying first release `v0.1.0`:
+   `npm run worktree -- start WO-001 docs/work-orders/WO-001-environment-truth.md`.
+   The command creates the sibling worktree on `wo-001`, activates the order
+   there and prepares its runtime. The session started in `main` writes no
+   other file in that worktree: the harness refuses its writes outside its
+   own checkout, so the worktree's files belong to the session opened there.
+7. Open a session in that `wo-001` worktree. It registers its own ignored
+   local-terms list, a copy of the main checkout's list or the terms the
+   operator states, and runs `npm run resume -- status` (`--json` is the
+   canonical record). It runs `npm run meta` to generate the decision index
+   from this instance's own records before its first gate, and again whenever
+   its decisions change. The export seeds the lineage index; for an older
+   export, step 1 or the update branch of §Taking upstream updates generates
+   and commits it, and bootstrap never writes it. Run
+   `node scripts/lineage.mjs index` after editing the ledger. Then enter
+   `resume: next`. The session reads the operating contract (`CLAUDE.md`,
+   symlinked as `AGENTS.md`); its generated harness block routes each resume
+   phrase to the role skill under `.claude/skills/` or `.agents/skills/`, and
+   the generated hooks enforce the compiled refusals where the harness runs
+   them. The operator merges each pull request with a merge commit: release
+   close requires the order's branch in `origin/main`'s history, which a
+   squash or rebase merge rewrites.
+
+If an older instance already activated WO-001 on `main`, tell **that instance's
+own session**: **Update from the refreshed starter and recover WO-001 into its
+own worktree by the refreshed starter's README, preserving its verified work
+and records.** This instruction authorizes the session to perform the update
+and recovery. The operator types phrases and merges pull requests; the session
+performs the Git commands. The phrase names the refreshed starter's README
+because an instance exported before this procedure holds an older copy; its
+session reads this section from the refreshed starter, for example `git show
+upstream/main:README.md`.
+
+The session in `main` first stops competing writers, preserves ignored intake
+in the original checkout, and previews the starter revision as §Taking upstream
+updates shows, stopping for the operator on any refused kit path. If `git
+status --porcelain --untracked-files=all` then lists an untracked lineage
+index (`docs/lineage/README.md` under the default documentation root), the
+session deletes that file before the stash: it is the generated index an
+older README had the instance write on `main`, the update branch regenerates
+and commits it, and the stash could not restore it over that committed copy.
+The session saves tracked and non-ignored untracked
+work in a named `git stash push
+--include-untracked -m 'WO-001 main recovery'`, records the exact stash hash
+and keeps that ref throughout recovery. A clean original checkout creates no
+stash. It takes the update through the update pull request that section
+describes. Once the operator has merged it, the session fast-forwards `main`
+(`git fetch origin` and `git merge --ff-only origin/main`), confirms the
+order's recorded phase with `npm run resume -- status`, creates a sibling
+`wo-001` worktree from that `main` (`git worktree add -b wo-001 <sibling
+path> main`) and applies the saved stash there (`git -C <worktree> stash
+apply <stash hash>`); it writes nothing else in that worktree. Existing
+branches, directories, divergence or
+conflicts require inspection and preservation, never overwrite or a forced
+update.
+
+The operator then opens a session in `wo-001`. That session runs `node
+scripts/bootstrap.mjs`, registers its own ignored local-terms list and runs
+`npm run meta` as in step 7, and checks `npm run resume -- status` and the preserved control
+segment, handoff, decisions and verification records. It continues the
+recorded phase without activating WO-001 again or repeating a completed
+verification. Release preparation and final review run in `wo-001`. Because
+`wo-001` starts from the fork's merged `main`, its pull request carries only
+WO-001's own commits.
 
 ## Planning in this instance
 
@@ -146,18 +238,32 @@ record its dated planning pass in `docs/lineage/idea-ledger.md`.
   `npm run test:docs` before handing off the planning pass.
 - Release-close reads can be inspected with `npm run release -- check-surfaces
   --local` and `npm run resume -- status`. With no lifecycle order declared,
-  the former reports that release surfaces are unavailable. These reads do
-  not publish anything.
+  the former reports that release surfaces are unavailable. With an order,
+  it checks the instance's release declaration and license surfaces as described
+  below; a target order records no release. These reads do not publish anything.
 
-Export writes these instance-owned seeds once; updates leave their bytes alone:
+Export writes these instance-owned seeds once; ordinary kit updates leave their bytes alone:
 `docs/planning/sequence.md`, `docs/planning/followups.json` (empty schema-1
 register), `docs/control/doc-ceilings.json` (no documents),
 `docs/control/doc-baseline.json` (empty editorial baseline),
 `docs/control/budgets.json` (kit defaults, no acceptances), and
 `docs/lineage/idea-ledger.md` (header and status vocabulary only). None is
-manifest-listed. Generated decision, work-order and lineage indexes are
-created by their commands. Core's register, ledger, editions and score history
+manifest-listed. The initial lineage index is seeded; its command regenerates
+it after ledger edits. Decision and work-order indexes are generated by their commands. Core's register, ledger, editions and score history
 are not copied.
+
+Release close refreshes the declared starter's template seeds as well as its
+kit files. Each replaced seed must still match a proven prior export; a custom
+edit, missing path or changed file type refuses by path and pushes nothing
+when that seed's template changed. Unchanged templates leave a customized
+working copy intact; a `CLAUDE.md` or `.gitignore` copy the refresh could not
+use (missing, not a regular file, or without its hand-written floor) refuses
+by path with the remedy before any write. Preserve an affected customization
+and restore its
+prior exported template through a reviewed change before retrying.
+The refresh result lists the rewritten seeds. Forks receive those starter
+commits through their own session's update on the operator's word; their
+control records and instance work are preserved through that update.
 
 A fresh instance has no `docs/product/00-vision.md`,
 `docs/product/13-uifa-roles.md`, `docs/planning/capability-table.md` or
@@ -169,6 +275,49 @@ upstream history. No publication editions means `publication: no editions
 declared`. No reader profiles, examples or score rows means no editorial
 records to verify; a recorded score whose tag object is missing fails with
 its release, object and restoring fetch command.
+
+The refutation goal standard contains the execution guide's marked
+`dotln-goal-rules` blocks and this instance's purpose, or an explicit
+unavailable observation. It does not import core's purpose or critical-path
+sentence into that standard. Declare the purpose in a contained regular
+`docs/product/purpose.md` with exactly one nonempty block between
+`<!-- dotln-purpose:start -->` and `<!-- dotln-purpose:end -->`; the kit seeds
+no purpose. Missing or malformed rule markers and malformed declared purposes
+refuse instead of substituting core's goals. Other planning inputs remain
+separately visible, including an absent critical-path declaration.
+
+A target-scoped planning pass uses `npm run plan -- target-publish
+<repository-id> --base <commit> --from <directory> --branch docs/<slug>
+--title <title> --body-file <path>`. It publishes only the directory's
+`product/` and `planning/` files under the target's documentation root, from
+the target commit the planner read, under the registered profile and operator
+grant. It prints repository, commit and path links to keep in the instance's
+planning document; refutation still judges the instance's subject.
+
+## Releases in this instance
+
+<!-- DOTLN-RELEASE-BEGIN -->
+This source prepares DotLn `v0.1.0`.
+<!-- DOTLN-RELEASE-END -->
+
+Release surfaces check this block, component versions and workspace pins,
+the PR and release-notes body profile, license files and package publication
+guards. `docs/LEGAL.md`'s three pins are checked only where this instance
+actually declares that file; absence reports unavailable for those pins alone.
+The seeded WO-001 carries `v0.1.0`; `npm run release -- prepare --local`
+assigns later versions above this instance's own tags. A target order's
+launchpad records branch records no release, keeps one well-formed release
+claim at least as new as the latest release, and carries links to the records
+committed in the target. It needs no release-notes file; `release prepare
+--local` reports no release and changes no files for that target order.
+
+For an unmodified older export missing the block, first-order version or
+release classification, the instance's own session updates from the refreshed
+starter on the operator's word using the recovery above. The starter supplies
+the release block, `(v0.1.0)` heading and `Release classification: minor`.
+If the instance customized those seeds, its session preserves the edits and
+resolves the update against the operator's instruction, recording the chosen
+values in the order's decisions before release preparation.
 
 ## What runs here, and what does not
 
@@ -184,7 +333,7 @@ the same check.
 The observed selections in a fresh fixture instance are:
 
 - `npm test`: `kit-verify`, `format`, `release-preparation`, `target-worktree`, `publication-fixtures`, `backup-intake`, `beacon-portability`, `checkpoint`, `work-orders-fixtures`, `siblings-fixtures`, `adjacent-queue`, `derived-orders`, `portfolio`, `codex-continuation`, `authority-grants`.
-- `npm run test:docs`: `kit-verify`, `format`, `publication`, `docs-check`, `index`, `siblings`, `lineage`, `resident-bind`, `harness`, `harness-context`, `plan-refutation-current`, `artifact-corpus`, `meta`, `registrations`, `plan`, `reader-profiles`, `entropy`.
+- `npm run test:docs`: `kit-verify`, `format`, `release-surfaces`, `license-surfaces`, `publication`, `docs-check`, `index`, `siblings`, `lineage`, `resident-bind`, `harness`, `harness-context`, `plan-refutation-current`, `artifact-corpus`, `meta`, `registrations`, `plan`, `reader-profiles`, `entropy`.
 - `npm test -- --review`: `kit-verify`, `format`, `release-preparation`, `target-worktree`, `publication-fixtures`, `backup-intake`, `beacon-portability`, `checkpoint`, `work-orders-fixtures`, `siblings-fixtures`, `adjacent-queue`, `derived-orders`, `portfolio`, `codex-continuation`, `authority-grants`, `fixture-temp-root`, `configuration-root`, `harness`, `harness-context`, `mutation`, `meta`, `registrations`.
 
 Review uses the shared runner's changed-machinery selection. This fixture
@@ -222,15 +371,13 @@ reason, including with `--list`, and records no gate result.
 | `launchpad-docs` | package TypeScript and build configuration needed to export |
 | `launchpad-planning` | package TypeScript and build configuration needed to export |
 | `license-fixtures` | docs/LEGAL.md and core license fixtures |
-| `license-surfaces` | docs/LEGAL.md license pins |
 | `lineage-fixtures` | core idea ledger |
 | `local-runner-double` | role-qualification oracle reads core verification report WO-052/VER-001 |
 | `outward-lint` | core outward-vocabulary control data |
 | `plan-refutation` | core reader profiles, planning history, budgets and historical Git objects |
 | `process-debt` | historical Git trees, package sources, core budgets and work orders |
 | `reader-fixtures` | core historical publication examples and their recorded comparison |
-| `release` | core tag-manifest template, TypeScript and release records |
-| `release-surfaces` | core release records and docs/LEGAL.md |
+| `release` | core TypeScript and release records |
 | `resume` | core legacy lifecycle and timing observations WO-030 |
 | `runner-fixtures` | package sources, core build inventory and license pins |
 | `skeleton` | skeleton package source audits |
@@ -263,11 +410,11 @@ Hold reason codes omit private raw diagnostics.
 Console fixture suites need core fixture data and recorded product evidence;
 browser evidence needs its uncarried package. Planning commands run here
 (§Planning in this instance) with these limits: a live refutation or entropy
-review is run by this instance's operator rather than by any fixture, and
-`npm run release -- check-surfaces --local` still reads `docs/LEGAL.md`, which
-the kit does not seed, once an order carries a version (`release-surfaces` in
-the table above). `UPSTREAM.md` names the core commit to inspect for each of
-these limits.
+review is run by this instance's operator rather than by any fixture.
+`npm run release -- check-surfaces --local` judges the instance's release
+surfaces. The `docs/LEGAL.md` pin rule reports unavailable when that file is
+absent; a declared file must pass its normal validation. `UPSTREAM.md` names
+the core commit to inspect for the carried runtime.
 
 ## Attestations
 
@@ -314,10 +461,12 @@ export seeded once, the workstream and repository-profile conventions
 included; their upstream sources stay under `scripts/kit/` for a later
 revision to refresh. The generated `.claude/settings.json`, hooks, skills and
 Codex files are kit files a re-emit rewrites; operator-owned Claude Code
-settings belong in the ignored `.claude/settings.local.json`. Two READMEs are generated rather than seeded:
-`docs/work-orders/` gets the index at the first lifecycle transition
-(`activate`) and `docs/lineage/` gets its index from
-`node scripts/lineage.mjs index` once a ledger exists.
+settings belong in the ignored `.claude/settings.local.json`. The work-order
+README is generated rather than seeded: `docs/work-orders/` gets the index at
+the first lifecycle transition (`activate`). The export seeds the lineage
+index at `docs/lineage/README.md`; `node scripts/lineage.mjs index`
+regenerates it after ledger edits and generates it for an older export, in
+step 1 or on the update branch, and bootstrap never writes it.
 
 **Your orders live here.** `docs/work-orders/` holds the orders this
 instance cuts, `docs/evidence/`, `docs/verifications/` and
@@ -377,14 +526,18 @@ before the next update, or keep the fork and take nothing more for that file.
 Instance files are yours and are outside the kit-file refusal list;
 explicitly opted-in instance actions have their own checks below.
 
-Inside an instance, fetch the starter remote and preview the revision you
-intend to merge (this example uses a remote named `upstream`):
+Inside an instance, its own session takes a starter update on the operator's
+word. It previews the revision with that revision's own launchpad, run from a
+temporary detached worktree under the ignored `.runtime/` directory. The
+instance's launchpad knows only the kit paths of its export and refuses a
+manifest naming a later one; the incoming launchpad knows every path it
+ships. This example names the starter remote `upstream`:
 
 ```sh
 git fetch upstream
-node scripts/launchpad.mjs preview --from upstream/main
-git merge upstream/main
-node scripts/harness.mjs emit
+git worktree add --detach .runtime/upstream-preview upstream/main
+node .runtime/upstream-preview/scripts/launchpad.mjs preview --from upstream/main
+git worktree remove .runtime/upstream-preview
 ```
 
 This preview reads the incoming kit manifest, actions and harness snapshot
@@ -412,6 +565,26 @@ a merge nor this preview automatically applies instance actions or writes a
 core sibling receipt. A missing or malformed current/incoming manifest
 refuses the preview.
 
+The update reaches the instance's `main` through its own update pull request,
+so a later order's pull request carries only that order's commits. From clean
+`main`, the session creates a branch (for example `chore/starter-update`),
+merges the previewed revision into it (a fast-forward when `main` has no
+commits of its own), runs `node
+scripts/harness.mjs emit` and `node scripts/lineage.mjs index`, and commits
+the regenerated bytes on that update branch. This includes a lineage index
+missing from an older export. It pushes the
+branch to `origin` and opens a pull request against `main`, which the operator
+reviews and merges with a merge commit, so `main` keeps the starter's history
+and the next update does not apply this one again. The session then switches
+back to `main`, fetches `origin`, fast-forwards it to `origin/main` and runs
+`node scripts/bootstrap.mjs`; main stays clean and ready for the next
+worktree.
+Bootstrap prepares local dependencies and harness files without generating
+the tracked lineage index on main. A `.runtime/upstream-preview` left by an interrupted
+preview holds only a detached checkout: the session removes it with `git
+worktree remove --force .runtime/upstream-preview`, or `git worktree prune`
+when its directory is already gone, before previewing again.
+
 The manifest records the new source commit; refused files can still come
 from an older revision. `UPSTREAM.md` takes the new provenance when it is
 unmodified. The export's original license posture is retained. After a
@@ -423,7 +596,7 @@ node scripts/harness.mjs emit
 
 Review that re-emit with this instance's configuration and overlay. Updates
 flow from core into the starter as a reviewed change, then from the starter
-into forks through each fork's ordinary upstream merge and reviewed re-emit.
+into forks through each fork's update pull request and its re-emit.
 An agent running the update needs its destination inside a granted write root;
 an order naming a destination alone does not grant it.
 
