@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import {
   mkdtempSync,
   mkdirSync,
@@ -11,6 +12,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   ADJACENT_QUEUE,
   applyAdjacentCommand,
@@ -313,6 +315,73 @@ test("WO-042 actual queue CLI uses the selected work order and read-only listing
       /executor\/fixer phase/u,
     );
     assert.equal(main(["list"], root).items.length, 1);
+  }));
+
+test("queue CLI run outside the launchpad reads the one DOTLN_LAUNCHPAD names, from its physical Git root only", () =>
+  fixture((root) => {
+    runGit(root, ["init", "-q", "-b", "wo-999"]);
+    mkdirSync(join(root, "docs/control/orders"), { recursive: true });
+    writeFileSync(
+      join(root, "docs/control/orders/WO-999.jsonl"),
+      JSON.stringify({
+        schemaVersion: 1,
+        type: "WorkOrderActivated",
+        workOrderId: workOrder,
+        workOrderPath: "docs/work-orders/WO-999-fixture.md",
+        recordedAt: at,
+      }) + "\n",
+    );
+    const elsewhere = join(root, "elsewhere");
+    mkdirSync(elsewhere);
+    const inherited = { ...process.env };
+    delete inherited.DOTLN_LAUNCHPAD;
+    const cli = (launchpad, ...args) =>
+      spawnSync(
+        process.execPath,
+        [
+          fileURLToPath(new URL("./adjacent-work.mjs", import.meta.url)),
+          ...args,
+        ],
+        {
+          cwd: elsewhere,
+          env: launchpad
+            ? { ...inherited, DOTLN_LAUNCHPAD: launchpad }
+            : inherited,
+          encoding: "utf8",
+        },
+      );
+    // Without the variable the working directory is the launchpad, and a
+    // directory below the Git root is refused.
+    assert.match(cli(undefined, "list").stderr, /physical Git root/u);
+    const request = join(root, "request.json");
+    writeFileSync(
+      request,
+      JSON.stringify({
+        expectedRevision: 0,
+        actor: "executor",
+        action: { kind: "queue", item: spec("Queued from another directory") },
+      }),
+    );
+    const applied = cli(root, "apply", "--file", request);
+    assert.equal(applied.status, 0, applied.stderr);
+    assert.equal(JSON.parse(applied.stdout).next, "adjacent-0001");
+    assert.equal(main(["list"], root).revision, 1);
+    assert.equal(JSON.parse(cli(root, "list").stdout).revision, 1);
+    // A relative request path resolves against the directory the session
+    // runs in, not against the launchpad.
+    writeFileSync(
+      join(elsewhere, "relative-request.json"),
+      JSON.stringify({
+        expectedRevision: 1,
+        actor: "executor",
+        action: { kind: "queue", item: spec("Queued by a relative path") },
+      }),
+    );
+    const relative = cli(root, "apply", "--file", "relative-request.json");
+    assert.equal(relative.status, 0, relative.stderr);
+    assert.equal(main(["list"], root).revision, 2);
+    // The named launchpad must itself be the physical Git root.
+    assert.match(cli(elsewhere, "list").stderr, /physical Git root/u);
   }));
 
 test("WO-157 retarget moves only a deferred item's target onto an existing FUP, also at final review", () =>

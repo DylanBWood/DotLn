@@ -22,6 +22,7 @@ import {
   realpathSync,
   rmSync,
   symlinkSync,
+  unlinkSync,
   utimesSync,
   writeFileSync,
 } from "node:fs";
@@ -40,6 +41,7 @@ import {
 import { licenseHashes } from "./license-surfaces.mjs";
 import { gateCodeIdentity, readGateChecks } from "./lib/gate-evidence.mjs";
 import { hasPackageSources } from "./lib/paths.mjs";
+import { markdownLinks } from "./docs-check.mjs";
 import { suites } from "./test-runner.mjs";
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -94,7 +96,11 @@ const run = (file, args, options = {}) =>
     ...options,
   });
 const ok = (result, label) => {
-  assert.equal(result.status, 0, `${label}: ${result.stderr || result.stdout}`);
+  assert.equal(
+    result.status,
+    0,
+    `${label}: ${result.stderr}\n${result.stdout}`,
+  );
   return result;
 };
 const git = (cwd, args) =>
@@ -242,6 +248,7 @@ for (const path of [
   "docs/publication/implementation-overlay-template.md",
   // Not a kit file: an upstream pointer the export names and does not carry.
   "docs/LEGAL.md",
+  "docs/releases/tag-manifest.template.json",
 ])
   copy(path);
 // Every workspace the root project graph references, so the build compiles
@@ -372,6 +379,33 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     "the upstream pointer list names a core document the kit does not carry",
   );
   assert.ok(!existsSync(join(kit, "docs/LEGAL.md")));
+  for (const [key, ...parts] of KIT_FILES.documents) {
+    const path = ["docs", ...(key === "docs" ? [] : [key]), ...parts].join("/");
+    if (!path.endsWith(".md")) continue;
+    const document = readFileSync(join(kit, path), "utf8");
+    for (const { href } of markdownLinks(document)) {
+      if (/^[a-z][a-z0-9+.-]*:|^\/\/|^#/iu.test(href)) continue;
+      const target = resolve(
+        kit,
+        dirname(path),
+        decodeURIComponent(href.split(/[?#]/u)[0]),
+      );
+      if (href.includes("AI-HARNESS-SECURITY.md")) {
+        assert.equal(target, join(kit, "AI-HARNESS-SECURITY.md"));
+        assert.ok(
+          !href.includes("#"),
+          "instance-owned headings have no core fragment",
+        );
+      }
+      if (!existsSync(target)) {
+        const relativeTarget = target.slice(kit.length + 1);
+        assert.ok(
+          upstream.includes(` ${relativeTarget}\``),
+          `${path}: ${href} has a pinned upstream pointer`,
+        );
+      }
+    }
+  }
   assert.match(
     upstream,
     /^- `packages\/skeleton\/package\.json`, `packages\/skeleton\/dist\/\{src,test\}\/\*\*`: \d+ files, the compiled `@dotln\/skeleton` runtime and tests/mu,
@@ -477,6 +511,7 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     "docs/evidence/README.md",
     "docs/final-reviews/README.md",
     "docs/intake/.gitkeep",
+    "docs/lineage/README.md",
     "docs/lineage/idea-ledger.md",
     "docs/observations/README.md",
     "docs/planning/README.md",
@@ -491,10 +526,20 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     "docs/workstreams/README.md",
     "packages/skeleton/loadouts/grants.json",
   ]);
-  // Generator-owned READMEs are not seeded: the index and the lineage index
-  // would refuse a hand-written file at their paths.
+  // The lineage index is generated from the seed ledger. The work-order index
+  // is generated when activation records an order.
   assert.ok(!existsSync(join(kit, "docs/work-orders/README.md")));
-  assert.ok(!existsSync(join(kit, "docs/lineage/README.md")));
+  assert.ok(existsSync(join(kit, "docs/lineage/README.md")));
+  ok(
+    run(process.execPath, ["scripts/lineage.mjs", "index", "--check"], {
+      cwd: kit,
+    }),
+    "seeded lineage index is current",
+  );
+  // The seeded roots overview says the same: the export seeds that index.
+  const overview = readFileSync(join(kit, "docs/README.md"), "utf8");
+  assert.match(overview, /its README is the index the export seeds/u);
+  assert.doesNotMatch(overview, /once a ledger exists/u);
   assert.equal(readlinkSync(join(kit, "AGENTS.md")), "CLAUDE.md");
   const contract = readFileSync(join(kit, "CLAUDE.md"), "utf8");
   const block = /<!-- dotln-kit:start -->([\s\S]*)<!-- dotln-kit:end -->/u.exec(
@@ -774,10 +819,10 @@ test("WO-201 criteria 1 to 3: the three gate selections run inside an export", (
     "generate the instance decision index",
   );
   ok(
-    run(process.execPath, ["scripts/lineage.mjs", "index"], {
+    run(process.execPath, ["scripts/lineage.mjs", "index", "--check"], {
       cwd: destination,
     }),
-    "generate the instance lineage index",
+    "the exported lineage index is already current",
   );
   const notCarried = suites
     .filter((row) => row.kit)
@@ -904,7 +949,7 @@ test("WO-201 criteria 1 to 3: the three gate selections run inside an export", (
     );
   }
   const unavailableSelections = [];
-  for (const name of ["release-surfaces", "runner-fixtures"]) {
+  for (const name of ["kernel", "runner-fixtures"]) {
     const before = readGateChecks(destination);
     const result = run(
       process.execPath,
@@ -1846,8 +1891,14 @@ test("WO-075 design: a fresh clone of the committed export lacks the ignored sna
     before.stderr + before.stdout,
     /harness drift: pinned snapshot missing or changed/u,
   );
-  // The compiled hook advisory names bootstrap: in a kit it has no build step
-  // (no tsconfig.json) and runs the emit that installs the snapshot.
+  // Older exports lacked the generated lineage index. Bootstrap installs the
+  // ignored runtime snapshot without creating an untracked index on main;
+  // the documented update branch supplies that index in its reviewed commit.
+  ok(git(clone, ["rm", "docs/lineage/README.md"]), "remove the later seed");
+  ok(
+    git(clone, ["commit", "-qm", "test: model an older export"]),
+    "record the older seed set",
+  );
   const bootstrap = ok(
     run(process.execPath, ["scripts/bootstrap.mjs"], { cwd: clone }),
     "bootstrap in the clone",
@@ -1856,6 +1907,8 @@ test("WO-075 design: a fresh clone of the committed export lacks the ignored sna
     bootstrap.stdout,
     /Worktree ready for Claude or Codex \(1 preparation steps\)\./u,
   );
+  assert.equal(existsSync(join(clone, "docs/lineage/README.md")), false);
+  assert.equal(git(clone, ["status", "--porcelain"]).stdout, "");
   assert.doesNotMatch(bootstrap.stdout + bootstrap.stderr, /npm run build/u);
   assert.ok(
     existsSync(
@@ -3331,7 +3384,20 @@ test("export update preserves ownership, validates actions and keeps the exporte
   );
 });
 
-test("starter refresh publishes one verified commit and preserves every refusal boundary", (t) => {
+test("starter refresh publishes one verified commit and preserves every refusal boundary", async (t) => {
+  const { releaseCloseSummary } = await import("./release.mjs");
+  // Release close prints each refresh row through its summary line.
+  const printed = (row) =>
+    releaseCloseSummary({
+      workOrderId: "WO-001",
+      publication: { outcome: "no-release", tag: null },
+      starterRefresh: [row],
+      cleanup: { outcome: "clean", worktrees: [] },
+      blockers: [],
+      reportPath: "release-close.md",
+    })
+      .split("\n")
+      .find((line) => line.startsWith("Starter refresh "));
   const root = join(scratch, "starter-refresh-fixture");
   mkdirSync(root);
   const core = join(root, "core");
@@ -3602,11 +3668,21 @@ test("starter refresh publishes one verified commit and preserves every refusal 
   assert.notEqual(initialRef, collided);
   setRemote(remote);
   mapCheckout();
-  // One actual kit change exercises the update (second preparation).
+  // Template changes must reach the unmodified starter copies.
   writeFileSync(
     join(core, "scripts/kit/README.client.md"),
     readFileSync(join(core, "scripts/kit/README.client.md"), "utf8") +
       "\nFixture kit revision.\n",
+  );
+  writeFileSync(
+    join(core, "scripts/kit/first-order.template.md"),
+    readFileSync(join(core, "scripts/kit/first-order.template.md"), "utf8") +
+      "\nFixture first-order revision.\n",
+  );
+  writeFileSync(
+    join(core, "scripts/kit/CLAUDE.template.md"),
+    readFileSync(join(core, "scripts/kit/CLAUDE.template.md"), "utf8") +
+      "\nFixture contract revision.\n",
   );
   git(core, ["add", "."]);
   git(core, ["commit", "-qm", "advance kit"]);
@@ -3661,6 +3737,67 @@ test("starter refresh publishes one verified commit and preserves every refusal 
     first.coreCommit,
   );
   git(core, ["reset", "--hard", head]);
+  // Every committed customization refuses before a push, including a file
+  // mode, absent path, symlink and an ancestor redirected outside the tree.
+  for (const kind of [
+    "bytes",
+    "mode",
+    "missing",
+    "symlink",
+    "ancestor",
+    "contract-tail",
+    "contract-markers",
+  ]) {
+    if (kind === "contract-tail")
+      writeFileSync(
+        join(checkout, "CLAUDE.md"),
+        floor + "\nKeep these operator instructions.\n",
+      );
+    if (kind === "contract-markers")
+      writeFileSync(
+        join(checkout, "CLAUDE.md"),
+        floor + "\n<!-- dotln-harness:start -->\n",
+      );
+    if (kind === "bytes")
+      writeFileSync(join(checkout, "README.md"), "Customized starter.\n");
+    if (kind === "mode") chmodSync(join(checkout, "README.md"), 0o755);
+    if (["missing", "symlink"].includes(kind))
+      rmSync(join(checkout, "README.md"));
+    if (kind === "symlink")
+      symlinkSync("scripts/kit/README.client.md", join(checkout, "README.md"));
+    if (kind === "ancestor") {
+      rmSync(join(checkout, "docs/work-orders"), { recursive: true });
+      symlinkSync(
+        join(root, "outside-orders"),
+        join(checkout, "docs/work-orders"),
+      );
+    }
+    git(checkout, ["add", "-A"]);
+    git(checkout, ["commit", "-qm", `test: seed ${kind}`]);
+    git(checkout, ["push", remote, "main"]);
+    const protectedRefs = refs(),
+      protectedHead = remoteHead();
+    for (const preview of [true, false]) {
+      const refusal = refresh(tag, head, preview)[0];
+      assert.equal(refusal.outcome, "refused", JSON.stringify(refusal));
+      assert.match(
+        refusal.reason,
+        kind === "ancestor"
+          ? /docs\/work-orders\/WO-001/
+          : kind.startsWith("contract-")
+            ? /CLAUDE\.md/
+            : /README\.md/,
+      );
+      assert.equal(refs(), protectedRefs);
+      assert.equal(
+        git(checkout, ["rev-parse", "HEAD"]).stdout.trim(),
+        protectedHead,
+      );
+      assert.deepEqual(refusal.rewrittenSeeds, []);
+    }
+    git(checkout, ["reset", "--hard", prior]);
+    git(checkout, ["push", "--force", remote, "main"]);
+  }
   // Fail cleanup before removal, then after Git unregisters the worktree.
   // Both retries reuse this update's one kit preparation and published commit.
   const wrapperDirectory = join(root, "git-wrapper");
@@ -3844,8 +3981,19 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   assert.equal(refs().split("\n").filter(Boolean).length, 1);
   assert.equal(manifestOf(checkout).commit, head);
   assert.equal(manifestOf(checkout).tag, tag);
-  assert.equal(readFileSync(join(checkout, "README.md"), "utf8"), seedReadme);
-  assert.equal(readFileSync(join(checkout, "CLAUDE.md"), "utf8"), floor);
+  assert.equal(
+    readFileSync(join(checkout, "README.md"), "utf8"),
+    readFileSync(join(core, "scripts/kit/README.client.md"), "utf8"),
+  );
+  assert.deepEqual(update.rewrittenSeeds, [
+    "CLAUDE.md",
+    "docs/work-orders/WO-001-environment-truth.md",
+    "README.md",
+  ]);
+  assert.match(
+    readFileSync(join(checkout, "CLAUDE.md"), "utf8"),
+    /Fixture contract revision\./u,
+  );
   assert.equal(git(checkout, ["status", "--porcelain"]).stdout, "");
   assert.equal(worktrees(), cleanWorktrees.replace(first.after, update.after));
   assert.equal(state(), beforeUpdate);
@@ -3866,6 +4014,31 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   );
   assert.equal(pending().length, 2);
   assert.equal(refs(), stableRefs);
+  const unreadableCache = join(checkout, ".runtime/finder-unreadable");
+  mkdirSync(unreadableCache, { recursive: true });
+  writeFileSync(
+    join(unreadableCache, "retained.txt"),
+    "retained ignored data\n",
+  );
+  chmodSync(unreadableCache, 0);
+  try {
+    for (const dryRun of [true, false]) {
+      const scanned = refresh(tag, head, dryRun)[0];
+      assert.equal(scanned.outcome, "current", JSON.stringify(scanned));
+      assert.ok(scanned.finderMetadata.every((scan) => scan.durationMs >= 0));
+      if (process.getuid?.() !== 0)
+        assert.ok(
+          scanned.finderMetadata.some((scan) =>
+            scan.skippedIgnoredDirectories.includes(
+              ".runtime/finder-unreadable",
+            ),
+          ),
+        );
+    }
+  } finally {
+    chmodSync(unreadableCache, 0o755);
+    rmSync(unreadableCache, { recursive: true });
+  }
   const pendingDirectory = join(
     core,
     "docs/control/local/sibling-receipts",
@@ -3972,8 +4145,160 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   assert.match(currentPreview.reason, /preview/);
   assert.equal(git(checkout, ["rev-parse", "HEAD"]).stdout, dryBefore);
   assert.equal(JSON.stringify(pending()), receiptsBefore);
-  // Remove the floor on the remote. A new core commit enters verification
-  // (third and last preparation) and fails without dirtying its checkout.
+  // Reproduce a kit-only refresh: the manifest already names this release,
+  // but its seed still matches an older export reachable in starter history.
+  writeFileSync(join(checkout, "README.md"), seedReadme);
+  git(checkout, ["add", "README.md"]);
+  git(checkout, ["commit", "-qm", "test: historical kit-only refresh"]);
+  git(checkout, ["push", remote, "main"]);
+  const seedOnlyRefs = refs();
+  const seedPreview = refresh(tag, head, true)[0];
+  assert.equal(seedPreview.outcome, "preview", JSON.stringify(seedPreview));
+  assert.deepEqual(seedPreview.seedChanges, ["README.md"]);
+  assert.match(printed(seedPreview), /; seeds would change: README\.md\.$/u);
+  assert.doesNotMatch(printed(seedPreview), /seeds published/u);
+  assert.equal(refs(), seedOnlyRefs);
+  const seedOnly = refresh(tag, head)[0];
+  assert.equal(seedOnly.outcome, "refreshed", JSON.stringify(seedOnly));
+  assert.deepEqual(seedOnly.rewrittenSeeds, ["README.md"]);
+  assert.match(
+    printed(seedOnly),
+    new RegExp(`-> ${seedOnly.after}; seeds published: README\\.md\\.$`, "u"),
+  );
+  const seedOnlyPublished = refs();
+  assert.equal(refresh(tag, head)[0].outcome, "current");
+  assert.equal(refs(), seedOnlyPublished);
+  // A seed whose incoming template did not change can remain customized or
+  // absent without obstructing unrelated kit updates. The planner keeps it.
+  const seedHead = git(checkout, ["rev-parse", "HEAD"]).stdout.trim();
+  const unchangedReadme = readFileSync(join(checkout, "README.md"));
+  for (const kind of ["custom", "missing", "mode", "symlink"]) {
+    if (kind === "custom")
+      writeFileSync(
+        join(checkout, "README.md"),
+        Buffer.concat([
+          unchangedReadme,
+          Buffer.from("\nStarter customization.\n"),
+        ]),
+      );
+    if (["missing", "symlink"].includes(kind))
+      rmSync(join(checkout, "README.md"));
+    if (kind === "mode") chmodSync(join(checkout, "README.md"), 0o755);
+    if (kind === "symlink")
+      symlinkSync("scripts/kit/README.client.md", join(checkout, "README.md"));
+    git(checkout, ["add", "-A"]);
+    git(checkout, ["commit", "-qm", `test: preserve unchanged ${kind} seed`]);
+    const planned = ok(
+      runCore(
+        `import {planStarterSeeds} from './scripts/lib/starter-seeds.mjs'; console.log(JSON.stringify(planStarterSeeds({main:process.cwd(),head:${JSON.stringify(head)},checkout:${JSON.stringify(checkout)},remote:'HEAD'})));`,
+      ),
+      "unchanged template preserves customized seed",
+    );
+    assert.deepEqual(JSON.parse(planned.stdout), []);
+    git(checkout, ["reset", "--hard", seedHead]);
+  }
+  // Verification reads CLAUDE.md as its emit floor and .gitignore as its
+  // ignore rules. A kit-only release changes no seed template, so a kept copy
+  // it cannot use refuses by path in both modes before any write, while a
+  // usable customization or mode survives verification and publication. The
+  // starter at its own release verifies nothing and stays current in both
+  // modes. Broken markers are repaired, keeping the operator's text.
+  const keptTag = tag,
+    keptCoreHead = head;
+  git(core, ["commit", "--allow-empty", "-qm", "kit-only release"]);
+  tag = "v10.1.1";
+  head = git(core, ["rev-parse", "HEAD"]).stdout.trim();
+  git(core, ["tag", tag]);
+  for (const [path, kind, refusal, remedy] of [
+    [".gitignore", "missing", /\.gitignore \(missing\)/u],
+    [".gitignore", "symlink", /\.gitignore \(not a regular file\)/u],
+    [".gitignore", "mode", null],
+    ["CLAUDE.md", "missing", /CLAUDE\.md \(missing\)/u],
+    ["CLAUDE.md", "symlink", /CLAUDE\.md \(not a regular file\)/u],
+    ["CLAUDE.md", "floor", /CLAUDE\.md \(no hand-written floor/u],
+    [
+      "CLAUDE.md",
+      "markers",
+      /CLAUDE\.md \(harness markers are not one ordered pair\)/u,
+      /no seed replaced or pushed\. Repair CLAUDE\.md to keep its hand-written text with one ordered <!-- dotln-harness:start --> … <!-- dotln-harness:end --> pair or no markers, or restore CLAUDE\.md from scripts\/kit\/CLAUDE\.template\.md in a reviewed starter change/u,
+    ],
+    ["CLAUDE.md", "custom", null],
+  ]) {
+    const target = join(checkout, path),
+      bytes = readFileSync(target, "utf8");
+    if (["missing", "symlink"].includes(kind)) rmSync(target);
+    if (kind === "symlink")
+      symlinkSync(
+        path === "CLAUDE.md"
+          ? "scripts/kit/CLAUDE.template.md"
+          : "scripts/kit/gitignore.template",
+        target,
+      );
+    if (kind === "mode") chmodSync(target, 0o755);
+    if (kind === "floor")
+      writeFileSync(
+        target,
+        bytes.slice(bytes.indexOf("<!-- dotln-harness:start -->")),
+      );
+    if (kind === "custom")
+      writeFileSync(target, bytes + "\nKeep these operator instructions.\n");
+    if (kind === "markers")
+      writeFileSync(target, bytes + "\n<!-- dotln-harness:start -->\n");
+    git(checkout, ["add", "-A"]);
+    git(checkout, ["commit", "-qm", `test: unchanged ${path} ${kind}`]);
+    git(checkout, ["push", remote, "main"]);
+    const keptRefs = refs(),
+      keptHead = remoteHead(),
+      keptTrees = worktrees();
+    git(core, ["reset", "--hard", keptCoreHead]);
+    for (const preview of [true, false])
+      assert.equal(
+        refresh(keptTag, keptCoreHead, preview)[0].outcome,
+        "current",
+        `${path} ${kind}`,
+      );
+    assert.equal(refs(), keptRefs);
+    git(core, ["reset", "--hard", head]);
+    for (const preview of refusal ? [true, false] : []) {
+      const row = refresh(tag, head, preview)[0];
+      assert.equal(row.outcome, "refused", `${path} ${kind}`);
+      assert.match(row.reason, refusal);
+      assert.match(
+        row.reason,
+        remedy ??
+          new RegExp(
+            `no seed replaced or pushed\\. Restore ${path.replace(".", "\\.")} from scripts/kit/`,
+            "u",
+          ),
+      );
+      assert.deepEqual(row.rewrittenSeeds, []);
+      assert.equal(refs(), keptRefs);
+      assert.equal(
+        git(checkout, ["rev-parse", "HEAD"]).stdout.trim(),
+        keptHead,
+      );
+      assert.equal(worktrees(), keptTrees);
+    }
+    if (!refusal) {
+      const kept = refresh(tag, head)[0];
+      assert.equal(kept.outcome, "refreshed", JSON.stringify(kept));
+      assert.deepEqual(kept.rewrittenSeeds, []);
+      assert.equal(manifestOf(checkout).commit, head);
+      assert.match(
+        git(checkout, ["ls-files", "--stage", path]).stdout,
+        kind === "mode" ? /^100755 / : /^100644 /,
+      );
+      if (kind === "custom")
+        assert.match(
+          readFileSync(target, "utf8"),
+          /<!-- dotln-harness:end -->\n\nKeep these operator instructions\.\n$/u,
+        );
+    }
+    git(checkout, ["reset", "--hard", seedHead]);
+    git(checkout, ["push", "--force", remote, "main"]);
+  }
+  // Remove the floor on the remote while the next release changes the
+  // contract template: the planner refuses the customized copy by path.
   const contract = readFileSync(join(checkout, "CLAUDE.md"), "utf8");
   writeFileSync(
     join(checkout, "CLAUDE.md"),
@@ -3982,21 +4307,159 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   git(checkout, ["add", "CLAUDE.md"]);
   git(checkout, ["commit", "-qm", "fixture missing floor"]);
   git(checkout, ["push", remote, "main"]);
-  git(core, ["commit", "--allow-empty", "-qm", "next release"]);
+  writeFileSync(
+    join(core, "scripts/kit/CLAUDE.template.md"),
+    readFileSync(join(core, "scripts/kit/CLAUDE.template.md"), "utf8") +
+      "\nChanged contract template.\n",
+  );
+  git(core, ["add", "scripts/kit/CLAUDE.template.md"]);
+  git(core, ["commit", "-qm", "next release"]);
   head = git(core, ["rev-parse", "HEAD"]).stdout.trim();
   tag = "v10.2.0";
   git(core, ["tag", tag]);
   const beforeFailed = refs(),
     failedHead = git(checkout, ["rev-parse", "HEAD"]).stdout,
     priorReceipts = JSON.stringify(pending());
-  const failed = measured("g failed verification", () => refresh(tag, head)[0]);
+  const failed = measured("g customized contract", () => refresh(tag, head)[0]);
   assert.equal(failed.outcome, "refused", JSON.stringify(failed));
-  assert.match(failed.reason, /floor|instruction|harness emit/);
+  assert.match(failed.reason, /starter seed.*CLAUDE.md/);
   assert.equal(refs(), beforeFailed);
   assert.equal(git(checkout, ["rev-parse", "HEAD"]).stdout, failedHead);
   assert.equal(git(checkout, ["status", "--porcelain"]).stdout, "");
   assert.equal(JSON.stringify(pending()), priorReceipts);
   assert.equal(worktrees().match(/^worktree /gm).length, 1);
+  // A kept .gitignore that no longer ignores node_modules/ lets Git stage
+  // the verification's workspace links after the proven contract seed is
+  // written. The refusal names those paths and nothing reports a seed as
+  // published.
+  git(checkout, ["reset", "--hard", seedHead]);
+  git(checkout, ["push", "--force", remote, "main"]);
+  const ignoreRules = readFileSync(join(checkout, ".gitignore"), "utf8");
+  assert.match(ignoreRules, /^node_modules\/$/mu);
+  writeFileSync(
+    join(checkout, ".gitignore"),
+    ignoreRules.replace(/^node_modules\/\n/mu, ""),
+  );
+  git(checkout, ["add", ".gitignore"]);
+  git(checkout, ["commit", "-qm", "test: starter stops ignoring dependencies"]);
+  git(checkout, ["push", remote, "main"]);
+  const writtenRefs = refs(),
+    writtenHead = git(checkout, ["rev-parse", "HEAD"]).stdout,
+    writtenReceipts = JSON.stringify(pending());
+  const wouldWrite = refresh(tag, head, true)[0];
+  assert.equal(wouldWrite.outcome, "preview", JSON.stringify(wouldWrite));
+  assert.deepEqual(wouldWrite.seedChanges, ["CLAUDE.md"]);
+  assert.match(printed(wouldWrite), /; seeds would change: CLAUDE\.md\.$/u);
+  const afterWrite = measured(
+    "g refused after seed write",
+    () => refresh(tag, head)[0],
+  );
+  assert.equal(afterWrite.outcome, "refused", JSON.stringify(afterWrite));
+  assert.ok(Number.isInteger(afterWrite.timings.verification));
+  assert.match(
+    afterWrite.reason,
+    /staged outside the plan: node_modules\/@dotln\/[a-z]+ \(added link\).*One possible cause is ignore rules.*compare the starter's \.gitignore with scripts\/kit\/gitignore\.template/u,
+  );
+  // The contract seed was written and staged: only the links differ.
+  assert.doesNotMatch(afterWrite.reason, /planned but not staged/u);
+  assert.deepEqual(afterWrite.rewrittenSeeds, []);
+  assert.match(
+    printed(afterWrite),
+    /^Starter refresh starter-fixture: refused; staged change set differs/u,
+  );
+  assert.doesNotMatch(printed(afterWrite), /seeds (?:published|would change)/u);
+  assert.equal(refs(), writtenRefs);
+  assert.equal(git(checkout, ["rev-parse", "HEAD"]).stdout, writtenHead);
+  assert.equal(git(checkout, ["status", "--porcelain"]).stdout, "");
+  assert.equal(JSON.stringify(pending()), writtenReceipts);
+  assert.equal(worktrees().match(/^worktree /gm).length, 1);
+  // Two more refusals after the contract seed is written, from the intact
+  // starter: verification itself, and a staged difference ignore rules
+  // cannot cause. Neither publishes or reports a seed.
+  const refusedAfterWrite = (name, setup) => {
+    git(checkout, ["reset", "--hard", seedHead]);
+    git(checkout, ["push", "--force", remote, "main"]);
+    setup();
+    const before = refs(),
+      beforeHead = git(checkout, ["rev-parse", "HEAD"]).stdout,
+      receipts = JSON.stringify(pending());
+    const row = measured(name, () => refresh(tag, head)[0]);
+    assert.equal(row.outcome, "refused", JSON.stringify(row));
+    assert.ok(Number.isInteger(row.timings.verification));
+    assert.deepEqual(row.rewrittenSeeds, []);
+    assert.doesNotMatch(printed(row), /seeds (?:published|would change)/u);
+    assert.equal(refs(), before);
+    assert.equal(git(checkout, ["rev-parse", "HEAD"]).stdout, beforeHead);
+    assert.equal(git(checkout, ["status", "--porcelain"]).stdout, "");
+    assert.equal(JSON.stringify(pending()), receipts);
+    assert.equal(worktrees().match(/^worktree /gm).length, 1);
+    return row;
+  };
+  // A starter file in the harness's owned hook directory stops the export's
+  // own emit, which names it.
+  const unowned = refusedAfterWrite("g failed verification", () => {
+    mkdirSync(join(checkout, ".claude/hooks"), { recursive: true });
+    writeFileSync(
+      join(checkout, ".claude/hooks/operator-custom.mjs"),
+      "// operator hook\n",
+    );
+    git(checkout, ["add", "-A"]);
+    git(checkout, ["commit", "-qm", "test: starter adds an unowned hook"]);
+    git(checkout, ["push", remote, "main"]);
+  });
+  assert.match(
+    unowned.reason,
+    /harness emit failed.*unowned harness output refuses replacement: \.claude\/hooks\/operator-custom\.mjs/su,
+  );
+  assert.match(
+    printed(unowned),
+    /^Starter refresh starter-fixture: refused; the export's own harness emit failed/u,
+  );
+  // A kit file whose only change is its mode is staged outside the byte-only
+  // plan; the refusal names that difference and does not blame ignore rules.
+  const modeOnly = refusedAfterWrite("g mode-only kit change", () => {
+    chmodSync(join(core, "scripts/lineage.mjs"), 0o755);
+    git(core, ["add", "scripts/lineage.mjs"]);
+    git(core, ["commit", "-qm", "mode-only kit change"]);
+    head = git(core, ["rev-parse", "HEAD"]).stdout.trim();
+    tag = "v10.2.1";
+    git(core, ["tag", tag]);
+  });
+  assert.match(
+    modeOnly.reason,
+    /staged outside the plan: scripts\/lineage\.mjs \(mode 100644 to 100755\)\. Inspect each named difference against the update plan; no commit was made or pushed/u,
+  );
+  assert.doesNotMatch(modeOnly.reason, /ignore rules|planned but not staged/u);
+});
+
+test("starter seed floor rule agrees with the harness emit's composition", async () => {
+  const { floorFault } = await import("./lib/starter-seeds.mjs");
+  const { composeHarnessInstruction } = await import("./lib/harness.mjs");
+  const start = "<!-- dotln-harness:start -->",
+    end = "<!-- dotln-harness:end -->",
+    block = `${start}\ngenerated\n${end}\n`;
+  // Every sequence of up to three pieces: text, whitespace, invisible
+  // characters and markers, in and out of order.
+  const pieces = ["text", " ", "\r\n", "\uFEFF", "\u200B", start, end];
+  const floors = [""];
+  let level = [""];
+  for (let depth = 0; depth < 3; depth++) {
+    level = level.flatMap((floor) => pieces.map((piece) => floor + piece));
+    floors.push(...level);
+  }
+  assert.equal(floors.length, 400);
+  const seen = { markers: 0, floor: 0, usable: 0 };
+  for (const floor of floors) {
+    let emit = null;
+    try {
+      composeHarnessInstruction(floor, block);
+    } catch (error) {
+      emit = /ordered marker pair/u.test(error.message) ? "markers" : "floor";
+    }
+    assert.equal(floorFault(floor), emit, JSON.stringify(floor));
+    seen[emit ?? "usable"]++;
+  }
+  for (const kind of Object.keys(seen)) assert.ok(seen[kind] > 0, kind);
 });
 
 test("starter staged tree refuses clean-filter changes to verified bytes", async () => {

@@ -40,6 +40,10 @@ import {
 } from "./lib/siblings.mjs";
 import { writeRegistry } from "./siblings.mjs";
 import { atomicBuild } from "./build.mjs";
+import {
+  inspectLedger,
+  renderIndex as renderLineageIndex,
+} from "./lineage.mjs";
 import { spawnSync } from "node:child_process";
 import {
   closeSync,
@@ -56,7 +60,7 @@ import {
   unlinkSync,
   writeFileSync,
 } from "node:fs";
-import { basename, dirname, join, resolve } from "node:path";
+import { basename, dirname, join, posix, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 
 export { manifestBuildHash } from "./lib/siblings.mjs";
@@ -185,6 +189,9 @@ export const KIT_FILES = Object.freeze({
   ]),
   excluded: Object.freeze([
     "scripts/fixtures/wo138-local-role-qualification.json",
+    "scripts/test-runner.test.mjs",
+    "scripts/test-gate-deadlines.mjs",
+    "scripts/test-host-guard.test.mjs",
   ]),
   licenses: LICENSE_FILES,
   // 08 travels because the emitted reviewer skill directs a read of its
@@ -195,6 +202,7 @@ export const KIT_FILES = Object.freeze({
     ["product", "07-execution-guide.md"],
     ["product", "08-publication-compiler.md"],
     ["publication", "implementation-overlay-template.md"],
+    ["releases", "tag-manifest.template.json"],
   ]),
 });
 
@@ -464,7 +472,7 @@ const dirtyKitPathCount = (root, sources) =>
 const upstreamDocument = (
   root,
   commit,
-  { tag, nearest, target, license, kit, seeds },
+  { tag, nearest, target, license, kit, seeds, sources, markdownLinks },
 ) => {
   // owner/repo@commit path, the form the repository-profile references use.
   const slug = target ? target.selector.split("/").slice(1).join("/") : null;
@@ -472,6 +480,38 @@ const upstreamDocument = (
     slug ? `\`${slug}@${commit.slice(0, 12)} ${path}\`` : `\`${path}\``;
   const productRoot = docRelative(root, "product");
   const carried = new Set(kit.map((file) => file.path));
+  const available = new Set([...carried, ...seeds]);
+  const availablePath = (path) =>
+    available.has(path) ||
+    [...available].some((file) => file.startsWith(`${path}/`));
+  const linked = new Map();
+  for (const [sourcePath, source] of sources) {
+    if (
+      !KIT_FILES.documents.some(
+        ([key, ...parts]) => docRelative(root, key, ...parts) === sourcePath,
+      ) ||
+      !sourcePath.endsWith(".md")
+    )
+      continue;
+    for (const { href } of markdownLinks(
+      kitDocumentBytes(source).toString("utf8"),
+    )) {
+      if (/^[a-z][a-z0-9+.-]*:|^\/\/|^#/iu.test(href)) continue;
+      const linkPath = decodeURIComponent(href.split(/[?#]/u)[0]);
+      if (!linkPath) continue;
+      const destination = posix.normalize(
+        posix.join(posix.dirname(source.destination), linkPath),
+      );
+      if (availablePath(destination)) continue;
+      const original = posix.normalize(
+        posix.join(posix.dirname(sourcePath), linkPath),
+      );
+      linked.set(
+        original,
+        `referenced by \`${source.destination}\`; not carried in this instance`,
+      );
+    }
+  }
   const candidates = [
     ...runGitPathList(root, [
       "ls-tree",
@@ -524,6 +564,7 @@ const upstreamDocument = (
       docRelative(root, "decisions", "0007-presence-is-a-policy-input.md"),
       "presence as a policy input with no universal direction",
     ],
+    ...linked,
   ];
   const present = new Set(
     runGitPathList(root, [
@@ -536,14 +577,21 @@ const upstreamDocument = (
       ...candidates.map(([path]) => path),
     ]),
   );
-  const pointers = candidates.filter(([path]) => present.has(path));
+  const presentPath = (path) =>
+    present.has(path) ||
+    [...present].some((file) => file.startsWith(`${path}/`));
+  const pointers = [
+    ...new Map(
+      candidates.filter(([path]) => presentPath(path) || linked.has(path)),
+    ).entries(),
+  ];
   // [label, prefixes, what the group is]; a file outside every group is listed
   // on its own line.
   const groups = [
     [
       "`scripts/**`",
       ["scripts/"],
-      "byte-identical to the commit except the excluded core-report qualification fixture",
+      "byte-identical to the commit except excluded core qualification and runner-fixtures tests",
     ],
     [
       "`packages/beacons/**`",
@@ -594,6 +642,8 @@ const upstreamDocument = (
     "verified equal to the commit; and the harness bundle was emitted inside this",
     "export from that runtime and verified against the bundle core's compiled",
     "packages predicted. No other kit text was read from a work tree.",
+    "Carried operating documents rebase their harness-security links to the instance's",
+    "root `AI-HARNESS-SECURITY.md`; core-only section fragments are omitted there.",
     "An update can retain locally modified files at their prior manifest hashes;",
     "its dated output lists those exceptions to this source commit.",
     "",
@@ -624,9 +674,38 @@ const upstreamDocument = (
     "",
     "Core documents the kit does not carry, at the commit above:",
     "",
-    ...pointers.map(([path, why]) => `- ${pointer(path)} — ${why}`),
+    ...pointers.map(
+      ([path, why]) =>
+        `- ${pointer(path)} — ${why}${presentPath(path) ? "" : "; this referenced path is also absent at the pinned core commit"}`,
+    ),
     "",
   ].join("\n");
+};
+
+// The sanitized instance security record lives at the repository root and has
+// instance-owned headings. Rebase the carried documents' inline links only;
+// retain all other source bytes, including the marked goal-rule blocks.
+const kitDocumentBytes = (source) => {
+  if (
+    !KIT_FILES.documents.some(
+      ([key, ...parts]) =>
+        defaultDocRelative(key, ...parts) === source.destination,
+    ) ||
+    !source.destination.endsWith(".md")
+  )
+    return source.bytes;
+  const security = posix.relative(
+    posix.dirname(source.destination),
+    "AI-HARNESS-SECURITY.md",
+  );
+  return Buffer.from(
+    source.bytes
+      .toString("utf8")
+      .replace(
+        /\]\((?:\.\.\/)*AI-HARNESS-SECURITY\.md(?:#[^\s)]*)?\)/gu,
+        `](${security})`,
+      ),
+  );
 };
 
 /** Compare pinned files with the named commit's blobs, independent of index
@@ -899,7 +978,8 @@ export async function prepareKit({
     writes.push({ path, bytes: Buffer.from(bytes, "utf8"), mode: 0o644 });
   };
   for (const [, source] of sources)
-    if (!source.input) addKit(source.destination, source.bytes, source.mode);
+    if (!source.input)
+      addKit(source.destination, kitDocumentBytes(source), source.mode);
   const bins = binTargets(sources);
   for (const [path, bytes] of runtime)
     addKit(path, bytes, bins.has(path) ? 0o755 : 0o644);
@@ -957,7 +1037,7 @@ export async function prepareKit({
         (key) => `- \`${defaultDocRelative(key)}/\``,
       ),
       `- \`${defaultDocRelative("workOrders")}/\` — one scope authority per order, WO-NNN-<slug>.md, with **Model:** and **Effort:** as its leading metadata; its README is the index \`npm run work-orders -- index\` generates at the first lifecycle transition (activate)`,
-      `- \`${defaultDocRelative("lineage")}/\` — idea-ledger.md, an append-only idea history; its README is generated by \`node scripts/lineage.mjs index\` once a ledger exists`,
+      `- \`${defaultDocRelative("lineage")}/\` — idea-ledger.md, an append-only idea history; its README is the index the export seeds and \`node scripts/lineage.mjs index\` regenerates after ledger edits; an older export generates it on its update branch or in its first steps, and bootstrap never writes it`,
       `- \`${defaultDocRelative("intake")}/\` — ignored, single-copy raw material`,
       `- \`${defaultDocRelative("workstreams")}/\` — one document per outcome; the README holds the convention and template`,
       `- \`${defaultDocRelative("docs", "repositories")}/\` — one profile per registered repository; the README holds the convention and template`,
@@ -1001,13 +1081,22 @@ export async function prepareKit({
     defaultDocRelative("control", "budgets.json"),
     template("budgets.template.json"),
   );
+  const initialLedger =
+    "# Idea ledger\n\nStatuses: `adopted`, `preserved`, `raw`, `superseded`, `transformed`, `rejected`, `deferred`, `candidate`, `open`, `specified`.\n\nInsert this instance's dated sessions below, newest first.\n";
+  addSeed(defaultDocRelative("lineage", "idea-ledger.md"), initialLedger);
   addSeed(
-    defaultDocRelative("lineage", "idea-ledger.md"),
-    "# Idea ledger\n\nStatuses: `adopted`, `preserved`, `raw`, `superseded`, `transformed`, `rejected`, `deferred`, `candidate`, `open`, `specified`.\n\nInsert this instance's dated sessions below, newest first.\n",
+    defaultDocRelative("lineage", "README.md"),
+    renderLineageIndex(inspectLedger(initialLedger), {
+      resolutions: false,
+      inspirations: false,
+    }),
   );
   // scripts/lib/authority-grants.mjs reads the committed registry with no
   // optional fallback; the empty registry is instance authority data.
   addSeed("packages/skeleton/loadouts/grants.json", "[]\n");
+  // Verification and preview must load without an install. Only export
+  // preparation (which already requires the pinned toolchain) parses Markdown.
+  const { markdownLinks } = await import("./docs-check.mjs");
   const upstream = upstreamDocument(root, commit, {
     tag,
     nearest,
@@ -1015,6 +1104,8 @@ export async function prepareKit({
     license,
     kit: [...kit, { path: UPSTREAM }],
     seeds: [...seeds, "AGENTS.md"],
+    sources,
+    markdownLinks,
   });
   addKit(UPSTREAM, upstream);
   const manifest = kitManifest({ commit, tag, files: kit });

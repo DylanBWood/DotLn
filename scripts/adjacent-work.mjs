@@ -15,6 +15,7 @@ import {
   readControl,
   selectWorkOrder,
 } from "./lib/control-store.mjs";
+import { findLaunchpad } from "./lib/config.mjs";
 import { runGit } from "./lib/git.mjs";
 import {
   currentFollowupTarget,
@@ -22,7 +23,13 @@ import {
 } from "./lib/planning-followups.mjs";
 import { checkLocalTerms } from "./lib/terms.mjs";
 
-export function main(args, root = process.cwd()) {
+// DOTLN_LAUNCHPAD names the launchpad when the session works outside it, as
+// a target order's session does in its target worktree; the queue lives in
+// that launchpad. Otherwise the working directory is the launchpad.
+export function main(
+  args,
+  root = process.env.DOTLN_LAUNCHPAD ? findLaunchpad() : process.cwd(),
+) {
   root = realpathSync(root);
   if (realpathSync(runGit(root, ["rev-parse", "--show-toplevel"])) !== root)
     throw new Error("adjacent queue: run from the physical Git root");
@@ -34,7 +41,9 @@ export function main(args, root = process.cwd()) {
     state = readAdjacentQueue(root, workOrder);
   else if (args.length === 3 && args[0] === "apply" && args[1] === "--file") {
     const phase = control.orders.get(workOrder)?.state.phase;
-    const path = resolve(root, args[2]);
+    // A relative request path is the session's own, so it resolves against
+    // the directory the session runs in, wherever the launchpad is.
+    const path = resolve(process.cwd(), args[2]);
     const info = lstatSync(path);
     if (!info.isFile() || info.isSymbolicLink())
       throw new Error("adjacent queue: request must be a regular file");

@@ -1,4 +1,5 @@
 import { execFileSync, spawnSync } from "node:child_process";
+import { realpathSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 export const shellQuote = (value) => `'${value.replaceAll("'", `'\\''`)}'`;
@@ -7,6 +8,20 @@ export const failureOf = (result, fallback) =>
   [result.stderr, result.stdout, result.error?.message, fallback]
     .map((value) => (value == null ? "" : String(value).trim()))
     .find(Boolean) ?? "";
+
+// Name each private path in a diagnostic by its label, longest first so a
+// nested path wins over its parent, then mask every other absolute path. A
+// path counts as absolute only where it starts: after a word, a dot, a colon,
+// a slash or a label it continues something else (`src/tmp/x`, `https://`,
+// `<label>/index`) and is kept.
+export const redactPaths = (text, pairs) => {
+  let out = String(text);
+  for (const [path, label] of pairs
+    .filter(([path]) => path)
+    .sort((a, b) => b[0].length - a[0].length))
+    out = out.replaceAll(path, label);
+  return out.replace(/(?<![\w.~:/>-])\/[^\s'";]+/gu, "<local>");
+};
 
 // Keep raw status/byte consumers and execFileSync diagnostics intact while
 // giving Git subprocess invocation one home. These preserve the supplied argv.
@@ -110,6 +125,23 @@ export const runGitPathList = (cwd, args, options = {}) => {
   return result.stdout.slice(0, -1).split("\0");
 };
 
+/** The entries of `git status --porcelain=v1 -z` output, as runGitPathList
+ * splits it: each is "XY path", and a rename or copy carries its original
+ * path as the next field, which has no status of its own. */
+export const porcelainEntries = (fields) => {
+  const entries = [];
+  for (let index = 0; index < fields.length; index += 1) {
+    const status = fields[index].slice(0, 2);
+    const path = fields[index].slice(3);
+    const origin = /[RC]/u.test(status) ? fields[++index] : undefined;
+    entries.push({ status, path, origin });
+  }
+  return entries;
+};
+/** An entry's paths as a refusal names them, a rename or copy as old -> new. */
+export const porcelainEntryName = ({ path, origin }) =>
+  origin === undefined ? path : `${origin} -> ${path}`;
+
 export const ensureClean = (root) => {
   const dirty = runGit(root, [
     "status",
@@ -120,6 +152,30 @@ export const ensureClean = (root) => {
     throw new Error(
       `working tree is not clean: ${root} (${dirty.split("\n")[0]})`,
     );
+};
+
+// A worktree entry holds a checkout only while its directory holds `.git`.
+// Given an owner, the checkout must also belong to that Git common directory
+// and have its branch checked out: a reused path may hold another clone,
+// another repository's worktree or a link to some other checkout. A missing
+// path answers false; a stat failure, or a `.git` Git cannot read, throws.
+export const worktreeHasCheckout = (directory, owner) => {
+  if (
+    statSync(join(directory, ".git"), { throwIfNoEntry: false }) === undefined
+  )
+    return false;
+  if (!owner) return true;
+  const read = (args) =>
+    runGit(directory, [...(owner.gitArgs ?? []), ...args], {
+      onFailure: () => null,
+    });
+  const common = read(["rev-parse", "--git-common-dir"]);
+  if (common === null) throw new Error("Git cannot read the checkout");
+  return (
+    realpathSync(resolve(directory, common)) ===
+      realpathSync(owner.commonDirectory) &&
+    read(["symbolic-ref", "--quiet", "HEAD"]) === `refs/heads/${owner.branch}`
+  );
 };
 
 export const parseWorktrees = (root) =>

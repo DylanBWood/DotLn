@@ -123,8 +123,14 @@ WO-064 adds `PullRequestOpened { repositoryId, number, headSha }` under schema
 1, recorded by `target-publish-host` in the episode store's separate
 `publication/` log with the source-change workstream and command as
 correlation. `repositoryId` is the validated `HOST/OWNER/REPO` push target; no
-URL is kept. The event follows a push of exactly the observed commit under an
-operator-provenance grant for `repo.push` and `pr.open`. It is a host effect
+URL is kept. Session publication writes the same event to the main
+launchpad's ignored control-local `target-publications/WO-NNN` log. Its
+`FinalReviewCompleted.targetSubject` binds repository, branch, base and reviewed
+commit, and `targetGate` binds the review selection, tree, commit, command
+names, duration and evidence reference. `TargetRecordsCommitted` binds the
+records-only child commit, documentation root and each record's kind, path and
+SHA-256. The event follows a push of exactly the observed or bound records
+commit under an operator-provenance grant for `repo.push` and `pr.open`. It is a host effect
 observation, not a review or merge state; no reactor slice folds it yet, and
 WO-065 reads it with `npm run worktree -- observe-pr --store <episode-store>
 --number <N>`. Its correlated `PullRequestStateObserved { repositoryId,

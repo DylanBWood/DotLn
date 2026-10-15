@@ -50,3 +50,16 @@ previous class name without adding equipment. The registration's
 `automationLogins` and `linkHosts` arrays default to empty: they classify named
 machine accounts and admit additional link hosts for automation, while every
 item still goes through the existing source screen, triage and verification.
+
+Declare a repository's `gate` with a nonempty `commands` object: each lowercase
+command name has a nonempty string `argv` array and a positive safe-integer
+`timeoutMs`. Nonempty `plain` and `review` arrays select declared names without
+duplicates; review includes every plain name. The runner executes them in the
+target worktree and binds rows to the tested non-ignored bytes, HEAD and
+selection and command definitions; the latest covering row decides, and final review binds it to the
+clean reviewed commit. A missing declaration refuses a target gate claim.
+`documentationRoot` defaults to `docs`; another value must be a normalized
+relative POSIX path with no empty, dot or parent segment. It uses the launchpad's
+default work-orders, evidence, verifications, final-reviews, product and
+planning segments. The target order's briefings name that repo-native authority
+and `node scripts/target-gate.mjs WO-NNN [--review]`.

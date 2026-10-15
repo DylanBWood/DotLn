@@ -1,6 +1,6 @@
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, posix } from "node:path";
 import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
 
@@ -899,6 +899,106 @@ export function deliverableReady(artifacts = {}) {
   return rows;
 }
 
+// The characters of one path segment: printable ASCII except the characters
+// a path never needs and a reader or shell takes specially (backslash, colon,
+// angle brackets, quotes, backtick, pipe, question mark and asterisk) and the
+// ampersand, since a posted reply carries paths unescaped and GitHub would
+// decode "&#47;" in one as a slash; any non-ASCII letter or digit, and a
+// combining mark after one. Each character can match only one branch, so a
+// long segment is checked in linear time.
+const segmentCharacters =
+  /^(?:[ !#$%()+,\-.0-9;=@A-Z[\]^_a-z{}~]|(?![\x00-\x7f])[\p{L}\p{N}]|(?<=[\p{L}\p{N}\p{M}])\p{M})+$/u;
+/** Map only understood references. Unknown store aliases and command text
+ * remain in the evidence record and never become target-facing prose. */
+export const targetNativeReference = (ref, { head, base }) => {
+  if (typeof ref !== "string") return null;
+  // Every reference shape hands its path to this one check. A path maps only
+  // as a plain repository-relative path: each segment is made of the
+  // characters above, starts with neither a tilde nor a space, ends with no
+  // space and holds no doubled space, so the body prints what was judged; no
+  // code point is default-ignorable (invisible), no character is a
+  // compatibility (fullwidth) form, and no segment is empty, "." or "..".
+  // Anything else, a colon, a slash, tilde or colon look-alike, a control or
+  // other whitespace among them, maps to no reference.
+  const at = (path, commit) =>
+    path &&
+    path
+      .split("/")
+      .every(
+        (part) => segmentCharacters.test(part) && !/^[~ ]| $| {2}/u.test(part),
+      ) &&
+    !/\p{Default_Ignorable_Code_Point}/u.test(path) &&
+    path.normalize("NFKC") === path.normalize("NFC") &&
+    posix.normalize(path) === path &&
+    !path.split("/").some((part) => ["", ".", ".."].includes(part)) &&
+    commitId.test(commit ?? "")
+      ? `${path} at ${commit}`
+      : null;
+  const object = /^(?:commit:)?([a-f0-9]{40}|[a-f0-9]{64})(?::(.+))?$/u.exec(
+    ref,
+  );
+  if (object)
+    return object[2] ? at(object[2], object[1]) : `commit ${object[1]}`;
+  if (["head", "HEAD"].includes(ref))
+    return commitId.test(head ?? "") ? `commit ${head}` : null;
+  if (ref === "base")
+    return commitId.test(base ?? "") ? `commit ${base}` : null;
+  if (ref.startsWith("file:")) return at(ref.slice(5), head);
+  const criterion = /^contract:criterion:(0|[1-9][0-9]*)$/u.exec(ref);
+  if (criterion && Number.isSafeInteger(Number(criterion[1]) + 1))
+    return `acceptance criterion ${Number(criterion[1]) + 1}`;
+  if (ref === "#contract") return "Contract section";
+  if (ref === "#acceptance") return "Acceptance section";
+  if (["#change", "diff"].includes(ref))
+    return commitId.test(head ?? "") && commitId.test(base ?? "")
+      ? `Change section from ${base} to ${head}`
+      : null;
+  return null;
+};
+
+// These cells describe the host-judged row, not its storage alias. Template
+// substitutions are commit ids only; test argv and actor identifiers stay out.
+export const targetReadinessEvidence = Object.freeze({
+  "source-revision": "Source revision matched head commit {head}.",
+  contract: "Contract section.",
+  ambiguity: "No unresolved material ambiguity for commit {head}.",
+  baseline:
+    "Baseline reproduced or walked at commit {base} before implementation.",
+  "repo-native":
+    "Repository conventions independently reviewed at commit {head}.",
+  scope: "Changed paths checked against declared scope at commit {head}.",
+  checks: "Applicable tests, build and lint passed for commit {head}.",
+  "live-behavior": "Passing behavior evidence for commit {head}.",
+  visual: "Visual claims inspected for commit {head}.",
+  acceptance:
+    "Acceptance section; each criterion has passing evidence for commit {head}.",
+  independent: "Independent verification and review of commit {head}.",
+  "final-diff": "Final diff from {base} to {head} reviewed.",
+  "grounded-body":
+    "Contract, Acceptance and Change sections bound to commit {head}.",
+  monitoring: "Monitoring owner and stop policies recorded for commit {head}.",
+});
+
+export function targetGateSection(gate) {
+  return `## Target checks\n\nReviewed commit: \`${gate.commit}\`.\n\n| Command | Outcome |\n| --- | --- |\n${gate.names.map((name) => `| ${name} | Passed |`).join("\n")}\n\nTotal duration: ${gate.durationMs} ms (${gate.selection} selection).`;
+}
+
+export const targetChangeSection = ({ baseCommit, headCommit, files }) => {
+  const count = (value) => (value === null ? "binary" : String(value));
+  return [
+    "## Change",
+    "",
+    "| Path | Added | Removed |",
+    "| --- | ---: | ---: |",
+    ...files.map(
+      (file) =>
+        `| ${literal(file.path)} | ${count(file.added)} | ${count(file.deleted)} |`,
+    ),
+    "",
+    `${files.length} ${files.length === 1 ? "file" : "files"} changed from base ${baseCommit} to head ${headCommit}.`,
+  ].join("\n");
+};
+
 /** Pure over artifacts: the host commit message, the WorkOrder contract, the
  * host's test observations, the Git diff summary and, when supplied, the
  * acceptance matrix for the published head and this contract's criteria.
@@ -972,7 +1072,6 @@ export const generateTargetPullRequest = ({
       matrix.rows.filter((row) => row.status === status).length;
     verification = `Independent verification: acceptance matrix for ${diff.headCommit}: ${[...matrixStatuses].map((status) => `${count(status)} ${status}`).join(", ")}.`;
   }
-  const count = (value) => (value === null ? "binary" : String(value));
   const readiness = deliverableReady({
     ...readinessArtifacts,
     contract: readinessArtifacts.contract ?? {
@@ -996,6 +1095,35 @@ export const generateTargetPullRequest = ({
           (finding) => ["should", "nit"].includes(finding.severity),
         )
       : [];
+  const referenceContext = { head: diff.headCommit, base: diff.baseCommit };
+  const references = (refs) => {
+    const mapped = refs.map((ref) =>
+      targetNativeReference(ref, referenceContext),
+    );
+    return {
+      text: mapped.filter((ref) => ref !== null).join("; "),
+      omitted: mapped.filter((ref) => ref === null).length,
+    };
+  };
+  const omitted = readiness.reduce(
+    (total, row) => total + references(row.evidenceRefs).omitted,
+    0,
+  );
+  const targetReason = (reason) =>
+    (reason ?? "")
+      .replaceAll("BaselineWitnessed", "Baseline observation")
+      .replaceAll("ReviewCompleted", "Independent review");
+  const cell = (row) =>
+    [
+      ...(row.status === "evidenced"
+        ? [
+            targetReadinessEvidence[row.id]
+              .replaceAll("{head}", diff.headCommit)
+              .replaceAll("{base}", diff.baseCommit),
+          ]
+        : []),
+      ...(row.reason ? [targetReason(row.reason)] : []),
+    ].join("; ");
   const body = [
     "## Contract",
     "",
@@ -1015,16 +1143,7 @@ export const generateTargetPullRequest = ({
     "",
     `Focused test observed by the host: ${outcome(tests?.before, "before")} before the change, ${outcome(tests?.after, "after")} after it.`,
     "",
-    "## Change",
-    "",
-    "| Path | Added | Removed |",
-    "| --- | ---: | ---: |",
-    ...diff.files.map(
-      (file) =>
-        `| ${literal(file.path)} | ${count(file.added)} | ${count(file.deleted)} |`,
-    ),
-    "",
-    `${diff.files.length} ${diff.files.length === 1 ? "file" : "files"} changed from base ${diff.baseCommit} to head ${diff.headCommit}.`,
+    targetChangeSection(diff),
     "",
     "## Deliverable-ready",
     "",
@@ -1033,20 +1152,31 @@ export const generateTargetPullRequest = ({
     "| Item | Status | Evidence or reason |",
     "| --- | --- | --- |",
     ...readiness.map(
-      (row) =>
-        `| ${row.item} | ${row.status} | ${literal(row.evidenceRefs.length ? `${row.evidenceRefs.join("; ")}${row.reason ? `; ${row.reason}` : ""}` : row.reason)} |`,
+      (row) => `| ${row.item} | ${row.status} | ${literal(cell(row))} |`,
     ),
     "",
+    ...(omitted
+      ? [
+          `${omitted} evidence references omitted from this body; the evidence record retains them.`,
+          "",
+        ]
+      : []),
     ...(knownItems.length
       ? [
           "Known review items (recorded without expanding scope):",
           "",
           "| Severity | Observation | Expected | Evidence |",
           "| --- | --- | --- | --- |",
-          ...knownItems.map(
-            (finding) =>
-              `| ${finding.severity} | ${literal(finding.observed)} | ${literal(finding.expected)} | ${literal(finding.evidenceRefs.join("; "))} |`,
-          ),
+          ...knownItems.map((finding) => {
+            const refs = references(finding.evidenceRefs);
+            const evidence = [
+              refs.text,
+              ...(refs.omitted ? [`${refs.omitted} references omitted`] : []),
+            ]
+              .filter(Boolean)
+              .join("; ");
+            return `| ${finding.severity} | ${literal(finding.observed)} | ${literal(finding.expected)} | ${literal(evidence)} |`;
+          }),
           "",
         ]
       : []),

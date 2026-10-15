@@ -17,7 +17,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 
 import { runGit, runGitPathList } from "./lib/git.mjs";
-import { containedRegularFile } from "./lib/paths.mjs";
+import { containedRegularFile, hasPackageSources } from "./lib/paths.mjs";
 
 // docs/LEGAL.md, Decision — 2026-09-06. Changing the decision requires review.
 export const licenseHashes = {
@@ -217,20 +217,38 @@ export const licenseSurfaceRules = (root, revision) => {
   }
   const legalPath = docRelative(root, "docs", "LEGAL.md");
   try {
-    const legal = sourceFile(root, legalPath, revision).toString("utf8");
-    for (const [path, hash] of Object.entries(licenseHashes)) {
-      const pins = [
-        ...legal.matchAll(
-          new RegExp("- `" + path + "` — `sha256:([a-f0-9]{64})`", "g"),
-        ),
-      ];
-      rules.push(
-        rule(
-          `${legalPath} ${path} pin`,
-          pins.map((pin) => pin[1]).join(", ") || "missing",
-          hash,
-        ),
-      );
+    const present = (path) =>
+      revision
+        ? runGit(root, [
+            "ls-tree",
+            "-z",
+            revision,
+            "--",
+            `:(literal)${path}`,
+          ]) !== ""
+        : Boolean(lstatSync(join(root, path), { throwIfNoEntry: false }));
+    const kit = present("KIT-MANIFEST.json") && !hasPackageSources(root);
+    if (kit && !present(legalPath)) {
+      rules.push({
+        pass: true,
+        line: `unavailable license-surfaces ${legalPath} pins: core's pins are judged only where this instance declares ${legalPath}`,
+      });
+    } else {
+      const legal = sourceFile(root, legalPath, revision).toString("utf8");
+      for (const [path, hash] of Object.entries(licenseHashes)) {
+        const pins = [
+          ...legal.matchAll(
+            new RegExp("- `" + path + "` — `sha256:([a-f0-9]{64})`", "g"),
+          ),
+        ];
+        rules.push(
+          rule(
+            `${legalPath} ${path} pin`,
+            pins.map((pin) => pin[1]).join(", ") || "missing",
+            hash,
+          ),
+        );
+      }
     }
   } catch (error) {
     rules.push(

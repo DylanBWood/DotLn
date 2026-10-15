@@ -6,7 +6,10 @@ import { mkdtempSync, readFileSync, rmSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { lintOutwardArtifact } from "./lib/outward-lint.mjs";
+import {
+  lintOutwardArtifact,
+  runtimeIdentifierForms,
+} from "./lib/outward-lint.mjs";
 import { checkOutwardArtifact } from "./outward-lint.mjs";
 
 const policy = JSON.parse(
@@ -147,6 +150,257 @@ test("public vocabulary reports named terms and exact original spans in every ar
   );
 });
 
+test("runtime reference forms are refused with exact source spans in every outward kind", () => {
+  assert.ok(Object.isFrozen(runtimeIdentifierForms));
+  for (const form of runtimeIdentifierForms) {
+    const sample = form === "evt_<digits>" ? "evt_123" : form;
+    for (const kind of ["branch", "commit", "pr-title", "pr-body"]) {
+      const prefix =
+        kind === "branch" ? "fix/" : kind === "pr-body" ? "Evidence " : "fix: ";
+      const text = `${prefix}${sample}${form.endsWith(":") ? "id" : ""}`;
+      const finding = lint(kind, text).findings.find(
+        (row) => row.rule === "identifier.runtime",
+      );
+      assert.deepEqual(finding.span, {
+        start: prefix.length,
+        end: prefix.length + sample.length,
+        line: 1,
+        column: prefix.length + 1,
+        precision: "exact",
+      });
+      assert.equal(lint(kind, text).checks.runtime.status, "refused");
+    }
+  }
+  const unicode = "😀\r\n  ＣＯＮＴＲＡＣＴ：id";
+  const finding = lint("pr-body", unicode).findings.find(
+    (row) => row.rule === "identifier.runtime",
+  );
+  assert.deepEqual(finding.span, {
+    start: 6,
+    end: 15,
+    line: 2,
+    column: 3,
+    precision: "exact",
+  });
+  assert.equal(
+    unicode.slice(finding.span.start, finding.span.end),
+    "ＣＯＮＴＲＡＣＴ：",
+  );
+  for (const text of [
+    "Independent verification: acceptance matrix for a commit",
+    "**Contract:**",
+    "verification: ",
+    "evt_letters",
+    "subcontract:abc",
+    "precontract:x",
+    "prevt_1",
+    "evt_1ABC2",
+    "evt_12_external",
+    "external-contract:abc",
+  ])
+    assert.equal(lint("pr-body", text).status, "pass", text);
+});
+
+test("runtime references cannot hide behind rendered body escapes", () => {
+  for (const encoded of [
+    "evt&#95;12",
+    "evt&#x5f;12",
+    "evt\\_12",
+    "delivery-preparation&#35;",
+    "delivery-preparation\\#",
+    "contract&#58;",
+    "&#101;vt_12",
+  ]) {
+    const suffix = encoded.startsWith("contract") ? "id" : "";
+    const text = `Evidence ${encoded}${suffix}.`;
+    const finding = lint("pr-body", text).findings.find(
+      (row) => row.rule === "identifier.runtime",
+    );
+    assert.ok(finding, text);
+    assert.equal(text.slice(finding.span.start, finding.span.end), encoded);
+  }
+  assert.equal(
+    lint("pr-body", "External evt&#95;12ABC and subcontract&#58;x.").checks
+      .runtime.status,
+    "pass",
+  );
+});
+
+test("runtime references cannot hide behind named references, HTML comments or tags, or emphasis in a body", () => {
+  const runtimeSpans = (text) =>
+    lint("pr-body", text)
+      .findings.filter((row) => row.rule === "identifier.runtime")
+      .map((row) => text.slice(row.span.start, row.span.end));
+  for (const [written, shown] of [
+    ["evt&lowbar;12", "evt&lowbar;12"],
+    ["evt&UnderBar;12", "evt&UnderBar;12"],
+    ["review-event&colon;abc", "review-event&colon;"],
+    ["delivery-preparation&num;", "delivery-preparation&num;"],
+    ["source-event<!-- -->:abc", "source-event<!-- -->:"],
+    [
+      "contract<!-- a note\nover two lines -->:abc",
+      "contract<!-- a note\nover two lines -->:",
+    ],
+    ["<b>evt_</b>12", "evt_</b>12"],
+    ['<span class="id">evt_</span>34', "evt_</span>34"],
+    ["**evt_**123", "evt_**123"],
+    ["**evt**_123", "evt**_123"],
+    ["source-event:*abc*", "source-event:"],
+    ["<code>evt</code>_12", "evt</code>_12"],
+    ["_evt_12_", "evt_12"],
+    ["__evt_12__", "evt_12"],
+    ["evt_~~12~~", "evt_~~12"],
+    ["source-event:`abc`", "source-event:"],
+    ["<!-- source-event:abc -->", "source-event:"],
+    ['<a href="https://example.invalid/evt_12">a link</a>', "evt_12"],
+    ['evt_<i title=">"></i>12', 'evt_<i title=">"></i>12'],
+    ['evt_<span title="<"></span>12', 'evt_<span title="<"></span>12'],
+    [
+      'evt_<span\nclass="a"\nid="b"></span>12',
+      'evt_<span\nclass="a"\nid="b"></span>12',
+    ],
+    [
+      'evt_<b class="a" title="x\ny"></b>12',
+      'evt_<b class="a" title="x\ny"></b>12',
+    ],
+    ["evt_<?x?>12", "evt_<?x?>12"],
+    ["evt_<![CDATA[]]>12", "evt_<![CDATA[]]>12"],
+    ["evt_<!X>12", "evt_<!X>12"],
+    [
+      "[source-event](https://example.invalid):abc",
+      "source-event](https://example.invalid):",
+    ],
+    ["[evt_](https://example.invalid)12", "evt_](https://example.invalid)12"],
+    ["[evt](https://example.invalid)_12", "evt](https://example.invalid)_12"],
+    ["[evt_][r]12\n\n[r]: https://example.invalid", "evt_][r]12"],
+    ["contract:[abc](https://example.invalid)", "contract:"],
+    [
+      '[evt_](https://example.invalid\n"t")12',
+      'evt_](https://example.invalid\n"t")12',
+    ],
+    ["[twice](see evt&#95;12 below)", "evt&#95;12"],
+    ["[1][evt&#95;12]", "evt&#95;12"],
+    [
+      'delivery-preparation[#](https://example.invalid "a title")',
+      "delivery-preparation[#",
+    ],
+    ["source-event<!--\n#1 -->:abc", "source-event<!--\n#1 -->:"],
+    ["evt_<!--\n2. -->12", "evt_<!--\n2. -->12"],
+    ["evt_<?\n#?>12", "evt_<?\n#?>12"],
+    [
+      "contract<!--\n#tag and 3) more -->:x",
+      "contract<!--\n#tag and 3) more -->:",
+    ],
+    ["evt_<!--\n```js` -->12", "evt_<!--\n```js` -->12"],
+    ["[evt_][r]12\n\n> [r]: https://example.invalid", "evt_][r]12"],
+    [
+      "[source-event][r]:abc\n\n1. [r]: https://example.invalid",
+      "source-event][r]:",
+    ],
+    ["[evt_]12\n\n- [evt_]: https://example.invalid", "evt_]12"],
+    ["evt&#0000095;12", "evt&#0000095;12"],
+    ["evt&#x00005f;12", "evt&#x00005f;12"],
+    ["evt_1&#50;", "evt_1&#50;"],
+    ["evt_12&#51;", "evt_12&#51;"],
+  ])
+    assert.deepEqual(runtimeSpans(`Evidence ${written}.`), [shown], written);
+  // Inside a block quote, markup is judged on the quote's content.
+  for (const [text, shown] of [
+    ["> evt_<!--\n> -->12", "evt_<!--\n> -->12"],
+    ["> evt_<!--\n> #-->12", "evt_<!--\n> #-->12"],
+    ["> source-event<!--\n> x -->:abc", "source-event<!--\n> x -->:"],
+    ["> evt_<?\n> ?>12", "evt_<?\n> ?>12"],
+    ['> evt_<span\n> class="a">12', 'evt_<span\n> class="a">12'],
+    ["> > evt_<!--\n> > -->12", "evt_<!--\n> > -->12"],
+    ["- > evt_<!--\n  > -->12", "evt_<!--\n  > -->12"],
+    [
+      "> [evt_](\n> https://example.invalid)12",
+      "evt_](\n> https://example.invalid)12",
+    ],
+    [
+      "> evt_[](\n> https://example.invalid)12",
+      "evt_[](\n> https://example.invalid)12",
+    ],
+    ["> evt_<!--\n-->12", "evt_<!--\n-->12"],
+    ["> evt_<!--\nlazy\n> -->12", "evt_<!--\nlazy\n> -->12"],
+    ["> a\n> > evt_<!--\n> > -->12", "evt_<!--\n> > -->12"],
+    ["[evt_][r x]12\n\n[r\nx]: https://example.invalid", "evt_][r x]12"],
+    ["[evt_][r  x]12\n\n[r\n x]: https://example.invalid", "evt_][r  x]12"],
+  ])
+    assert.deepEqual(runtimeSpans(text), [shown], text);
+  for (const text of [
+    "**Contract:** Independent verification: acceptance matrix for a commit.",
+    "Pipeline my_evt_12 and evt_12_external stay intraword.",
+    "A &copy; sign, an &unknown; name and \\_ stay as written.",
+    'See [the contract](https://example.invalid "Contract") and [the notes][n].\n\n[n]: https://example.invalid',
+    "Undefined [evt_]12 and a bracketed [contract]:x keep their brackets.",
+    "[evt_][q]12 keeps its brackets.\n\n> [r]: https://example.invalid",
+    "evt&#x0000005f;12 and evt&#00000095;12 show as written.",
+    "A heading ends it: evt_<!--\n# -->12",
+    "A break ends it: evt_<!--\n***\n-->12",
+    "A first item ends it: evt_<!--\n1. a -->12",
+    "> A blank quote line ends it: evt_<!--\n>\n> -->12",
+    "A quote ends it: evt_<!--\n> -->12",
+  ])
+    assert.equal(lint("pr-body", text).checks.runtime.status, "pass", text);
+  assert.equal(
+    lint("commit", "fix: keep evt&lowbar;12 as plain text").checks.runtime
+      .status,
+    "pass",
+  );
+});
+
+test("code spans and fenced or indented code show their bytes, so references and escapes in code are not decoded, while raw HTML blocks are never code", () => {
+  for (const text of [
+    "Code: `evt&#95;12` literally.",
+    "Use ``contract&#58;x`` in the example.",
+    "```\nevt&#95;12\n```",
+    "~~~ text\nsource-event&colon;abc\n~~~",
+    "````\n```\nevt\\_12\n````\n",
+    "Escapes stay literal in code: `evt\\_12` and `source-event\\:abc`.",
+    "Example:\n\n    evt\\_12\n\tcontract&#58;x\n",
+    "<details>\n\n```\nevt&#95;12\n```\n\n</details>",
+    "Text `evt&#95;12\n#3` done.",
+    "Text `evt&#95;12\n2. more` done.",
+    "> Text `evt&#95;12\n> x` done.",
+    "> ```\n> evt&#95;12\n> ```",
+  ])
+    assert.equal(lint("pr-body", text).checks.runtime.status, "pass", text);
+  for (const [text, shown] of [
+    ["Code: `x` and then evt&#95;12.", "evt&#95;12"],
+    ["Code: `evt_12` stays a runtime form.", "evt_12"],
+    ["```\nreview-event:abc\n```", "review-event:"],
+    ["An open `tick\n\nthen evt&#95;12 in the next paragraph`.", "evt&#95;12"],
+    ["A paragraph line\n    evt&#95;12 continues it.", "evt&#95;12"],
+    ["- a list item\n\n    evt&#95;12 is its paragraph.", "evt&#95;12"],
+    [
+      "- a list item\nlazy text\n\n    evt&#95;12 is still its paragraph.",
+      "evt&#95;12",
+    ],
+    ["Example:\n\n    code\nevt&#95;12 after the block.", "evt&#95;12"],
+    ["Text[^1]\n\n[^1]: note\n\n    evt&#95;12", "evt&#95;12"],
+    ["<p>`evt&#95;12`</p>", "evt&#95;12"],
+    ["<div>`evt&lowbar;12`</div>", "evt&lowbar;12"],
+    ["<div>\n```\nevt&#95;12\n```\n</div>", "evt&#95;12"],
+    ["<div>\n`evt&#95;12`\n</div>", "evt&#95;12"],
+    ["Para\n<div>`evt&#95;12`</div>", "evt&#95;12"],
+    ["- <div>`evt&#95;12`</div>", "evt&#95;12"],
+    ["<pre>\n\n    evt&#95;12\n\n</pre>", "evt&#95;12"],
+    ["<pre>`evt&#95;12`</pre>", "evt&#95;12"],
+    ["<custom-el>\n```\nevt&#95;12\n```", "evt&#95;12"],
+    [
+      "<table><tr><td>`source-event&colon;abc`</td></tr></table>",
+      "source-event&colon;",
+    ],
+  ]) {
+    const finding = lint("pr-body", text).findings.find(
+      (row) => row.rule === "identifier.runtime",
+    );
+    assert.ok(finding, text);
+    assert.equal(text.slice(finding.span.start, finding.span.end), shown);
+  }
+});
+
 test("pure calls are deterministic, leave inputs intact, and never imply local coverage", () => {
   const input = Object.freeze({
     kind: "commit",
@@ -158,6 +412,7 @@ test("pure calls are deterministic, leave inputs intact, and never imply local c
   assert.deepEqual(first.checks, {
     format: { status: "pass" },
     launchpad: { status: "pass" },
+    runtime: { status: "pass" },
     localTerms: { status: "unavailable" },
   });
   first.findings.push({ rule: "caller mutation" });

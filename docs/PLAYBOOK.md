@@ -250,14 +250,16 @@ The target receives the ignored target-worker bundle and no role skill. The
 handoff echoes the authority profile and the launchpad command to invoke from
 the target. Use that order launchpad's scripts, or set `DOTLN_LAUNCHPAD` to it;
 the local registry selects the matching target branch. Unregistered target
-directories select no order. Keep evidence and reports in the launchpad.
+directories select no order. Draft evidence and reports in the launchpad;
+final review moves the filed records into the target's documentation root.
 If preparation fails, correct the reported condition and repeat the printed
 start command; an ignored pending-start receipt resumes the same pair and
 preserves existing work.
 After both branches merge, target release close records `no-release`, removes
 the target bundle and merged worktree/branch, then cleans the launchpad
-worktree. It creates no tag in either repository; target publication policy
-remains separate.
+worktree. It creates no tag in either repository. Target gate commands come
+from the registered `gate`; publication uses the registered profile and an
+operator grant through `worktree publish WO-NNN --target-worktree`.
 
 ```bash
 cd ~/Projects/DotLn
@@ -385,9 +387,16 @@ retiming does not itself fail review or require another verification. On pass, t
 phrase is explicit authority to write the immutable `FINAL-NNN`, the reviewed PR
 body, and `RELEASE-NOTES.md` with the five required release-note sections,
 record the pass, commit the reviewed state, push only the WO branch, and open a
-mergeable PR. The notes file is written even for a no-release work order so its
-reviewed prose can ride the next tag. It never merges the PR; that remains
-yours.
+mergeable PR. A self order writes the notes even when it records no release,
+so its prose can ride the next tag. A registered-target order instead commits
+the reviewed target change first, runs `node scripts/target-gate.mjs WO-NNN
+--review` at those bytes, records the passing result, and runs `npm run resume
+-- target-records` with its actor flags. That records-only child commit carries
+the order, decisions and reports under the target's `documentationRoot`.
+The reviewer publishes it through the session target form and publishes the
+launchpad records branch separately, with links and no release notes. An
+unchanged launchpad code identity proves its records-only publication without
+a launchpad product gate. Neither pull request is merged by the reviewer.
 
 After the last source edit, make new source files known to Git and run
 `npm test -- --review` once. Keep gate inputs and the success record unchanged
@@ -443,7 +452,13 @@ That phrase authorizes the agent to run this command from the main checkout:
 npm run release -- close WO-NNN --publish
 ```
 
-Close proves network egress first, fast-forwards main, checks release surfaces
+For a target order, merge both pull requests while preserving target commit
+ancestry (a merge commit; squash and rebase merges do not establish it).
+Release close fetches the target base and fast-forwards the clone itself before
+checking containment and removing both worktrees. Dirty or divergent clone
+bases refuse with the work preserved; no manual base update is required.
+
+For a self order, close proves network egress first, fast-forwards main, checks release surfaces
 and derives the tag manifest from committed source and the reviewer's passing
 `npm test` row in the final-review event. It builds missing runtime output when
 needed; it runs no suite, dependency installation or CLI smoke check. The

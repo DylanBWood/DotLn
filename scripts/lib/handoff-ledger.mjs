@@ -54,6 +54,10 @@ const GATE_NAMES = [
   ["review", /npm test\s+--\s+--review/u],
   ["plain", /\bnpm test\b/u],
 ];
+const TARGET_GATE_NAMES = [
+  ["review", /\btarget-gate(?:\.mjs)?\b[^`\n]*--review/u],
+  ["plain", /\btarget-gate(?:\.mjs)?\b/u],
+];
 
 const named = (ids) =>
   `${ids.length === 1 ? "criterion" : "criteria"} ${ids.join(", ")}`;
@@ -71,12 +75,16 @@ const readDeclaredCriteria = (root, state) => {
   }
 };
 
-const criterionGateClaims = (declared, met) => {
+const criterionGateClaims = (declared, met, state) => {
   const claims = { document: [], review: [], plain: [] };
+  const gates = state.repositoryId
+    ? [...GATE_NAMES, ...TARGET_GATE_NAMES]
+    : GATE_NAMES;
   for (const { id, text } of declared ?? [])
     if (met.includes(id))
-      for (const [gate, pattern] of GATE_NAMES)
-        if (pattern.test(text)) claims[gate].push(id);
+      for (const [gate, pattern] of gates)
+        if (pattern.test(text) && !claims[gate].includes(id))
+          claims[gate].push(id);
   return claims;
 };
 
@@ -88,7 +96,7 @@ export function readReportGateClaims(root, state, reportPath) {
     .map((judgment) => judgment.criterionId);
   return {
     checked: declared !== null,
-    claims: criterionGateClaims(declared, met),
+    claims: criterionGateClaims(declared, met, state),
     advisories: [],
   };
 }
@@ -157,7 +165,7 @@ export function readHandoffLedger(root, state, { selfReview = true } = {}) {
   if (problems.length) refuse(problems.join("; "));
   const met = ids.filter((id) => seen.get(id).met);
   const unmet = ids.filter((id) => !seen.get(id).met);
-  const claims = criterionGateClaims(declared, met);
+  const claims = criterionGateClaims(declared, met, state);
   return { checked: true, path, declared, met, unmet, claims, advisories };
 }
 
@@ -209,14 +217,16 @@ const gateFields = (row) =>
  * the current review selection; a criterion that names `npm run test:docs`
  * makes the completion run the document gate once, here, after every other
  * check. A failed gate or a missing row refuses the claim and prints the
- * command and the choice; a gate that cannot start or a gate index that
- * cannot be read prints one advisory and the completion records.
+ * command and the choice; a gate that cannot start prints one advisory and
+ * the completion records.
  *
- * Gate storage this completion cannot read or write never refuses the
- * handoff: one advisory names the claims it leaves as stated. `gateIndexError`
- * is the diff check's failed write to the live index; then no row is read and
- * the document gate is not run, since its runner could not record a row and
- * would exit as failed.
+ * For self orders, gate storage this completion cannot read or write leaves
+ * one advisory naming the claims as stated. A target claim requires readable
+ * passing target evidence, read first: an unreadable or malformed index
+ * refuses naming the index file and the target gate rerun, never one
+ * advisory. `gateIndexError` is the diff check's failed write to the live
+ * index; then no other row is read and the document gate is not run, since
+ * its runner could not record a row and would exit as failed.
  */
 export async function requireGateClaims(
   root,
@@ -225,6 +235,7 @@ export async function requireGateClaims(
     runner = join(root, "scripts/test-runner.mjs"),
     log = console,
     gateIndexError,
+    state,
   } = {},
 ) {
   const advisories = [];
@@ -240,6 +251,14 @@ export async function requireGateClaims(
     : { document: [], review: [], plain: [] };
   const instead = `record the criterion unmet with the reason instead (criterion lines: ${criterionLineForms})`;
   const productClaims = [...new Set([...claims.plain, ...claims.review])];
+  if (state?.repositoryId && productClaims.length) {
+    const { targetGateEvidence } = await import("./target-gate.mjs");
+    result.targetGate = targetGateEvidence(
+      root,
+      state,
+      claims.review.length ? "review" : "plain",
+    );
+  }
   const stated = (kinds) => {
     const clauses = kinds.map(
       ([gate, ids]) => `the ${gate} claim of ${named(ids)}`,
@@ -251,7 +270,7 @@ export async function requireGateClaims(
   if (gateIndexError) {
     const spared = stated(
       [
-        ["npm test", productClaims],
+        ["npm test", state?.repositoryId ? [] : productClaims],
         ["npm run test:docs", claims.document],
       ].filter(([, ids]) => ids.length),
     );
@@ -265,8 +284,9 @@ export async function requireGateClaims(
   // them, so a control plane without the skeleton still loads this module.
   const { coveringGateCheck, describeGateRow } =
     await import("./gate-reuse.mjs");
-  // Every read of the index goes through here: an unreadable index is one
-  // advisory and an undefined result, never a refusal.
+  // Every self-order read of the index goes through here: an unreadable
+  // index is one advisory and an undefined result, never a refusal. A target
+  // claim's read above refuses instead.
   const lookup = async (...args) => {
     try {
       return await coveringGateCheck(root, ...args);
@@ -276,7 +296,7 @@ export async function requireGateClaims(
       );
     }
   };
-  if (productClaims.length) {
+  if (productClaims.length && !state?.repositoryId) {
     const command = `npm test${claims.review.length ? " -- --review" : ""}`;
     const plain = await lookup("npm test", []);
     if (plain) {

@@ -7,12 +7,31 @@ import {
   githubBodyProfileFailures,
   deliverableReady,
   relativeLinkFailures,
+  targetNativeReference,
+  targetReadinessEvidence,
+  targetChangeSection,
+  targetGateSection,
 } from "./lib/github-body.mjs";
 import { readinessFixture } from "./fixtures/target-publish/readiness.mjs";
 
 const prettierConfig = JSON.parse(
   await readFile(new URL("../.prettierrc.json", import.meta.url), "utf8"),
 );
+await test("target gate section prints only reviewed outcomes and aggregate time", () => {
+  const text = targetGateSection({
+    commit: "a".repeat(40),
+    names: ["test", "lint"],
+    selection: "review",
+    durationMs: 321,
+    argv: ["/private/command"],
+    evidenceRef: "internal:reference",
+  });
+  assert.match(text, /test \| Passed/u);
+  assert.match(text, /lint \| Passed/u);
+  assert.ok(text.includes("a".repeat(40)));
+  assert.match(text, /Total duration: 321 ms/u);
+  assert.doesNotMatch(text, /private|internal|argv|evidenceRef/u);
+});
 await test("GitHub prose profile case 1", () => {
   assert.deepEqual(
     {
@@ -601,8 +620,140 @@ Focused test observed by the host: exit 1 before the change, signal SIGTERM afte
   assert.equal(githubBodyProfileFailures(body).length, 0);
 });
 
+await test("WO-210 target references admit commits, contained paths and acceptance criteria only", () => {
+  for (const [ref, expected] of [
+    [`${head}:src/view.ts`, `src/view.ts at ${head}`],
+    [`commit:${base}`, `commit ${base}`],
+    [`commit:${head}:src/view.ts`, `src/view.ts at ${head}`],
+    ["file:src/view.ts", `src/view.ts at ${head}`],
+    ["head", `commit ${head}`],
+    ["base", `commit ${base}`],
+    ["contract:criterion:0", "acceptance criterion 1"],
+    ["#contract", "Contract section"],
+    ["#acceptance", "Acceptance section"],
+    ["diff", `Change section from ${base} to ${head}`],
+    ["source-event:abc", null],
+    ["review-event:abc", null],
+    ["delivery-preparation#/checks", null],
+    ["evt_123", null],
+    ["file:../private.txt", null],
+    ["file:/private.txt", null],
+    ["file:~/private.txt", null],
+    ["file:~someone/private.txt", null],
+    ["file:C:/private.txt", null],
+    ["file:C:private.txt", null],
+    [`${head}:~/private.txt`, null],
+    [`${head}:D:/private.txt`, null],
+    ["npm test -- /machine/path", null],
+    [null, null],
+  ])
+    assert.equal(
+      targetNativeReference(ref, { head, base }),
+      expected,
+      String(ref),
+    );
+  const input = artifacts();
+  const generated = generateTargetPullRequest(input).body;
+  assert.equal(
+    generated.split("## Change\n")[1].split("\n\n## Deliverable-ready")[0],
+    targetChangeSection(input.diff).slice("## Change\n".length),
+  );
+});
+
+await test("target references omit a path holding a reserved, invisible or look-alike character, a leading tilde or a stray space", () => {
+  for (const [ref, expected] of [
+    ["file:src/a.ts", `src/a.ts at ${head}`],
+    ["file:docs/read me.md", `docs/read me.md at ${head}`],
+    ["file:src/e\u0301.ts", `src/e\u0301.ts at ${head}`],
+    [`${base}:src/\u00e9.ts`, `src/\u00e9.ts at ${base}`],
+    ["file:src/routes/+page.svelte", `src/routes/+page.svelte at ${head}`],
+    ["file:app/[id].tsx", `app/[id].tsx at ${head}`],
+    ["file:@scope/pkg/index.ts", `@scope/pkg/index.ts at ${head}`],
+    ["file:a%20b.ts", `a%20b.ts at ${head}`],
+    ["file:docs/a,b (draft) ~1.md", `docs/a,b (draft) ~1.md at ${head}`],
+    ["file:a*.ts", null],
+    ["file:a?.ts", null],
+    ["file:a|b.ts", null],
+    ['file:a"b.ts', null],
+    ["file:a'b.ts", null],
+    ["file:a<b>.ts", null],
+    ["file:a`b.ts", null],
+    ["file:src/~backup/a.ts", null],
+    ["file:&#47;home&#47;someone&#47;notes.txt", null],
+    [`${head}:docs/a&b.md`, null],
+    // A long segment ending in a reserved character is refused at once.
+    [`file:src/${"a".repeat(48)}*.ts`, null],
+    ["file:file:/home/someone/notes.txt", null],
+    [`${head}:src/file:/home/someone/notes.txt`, null],
+    [`commit:${head}:https:/example/notes.txt`, null],
+    [`commit:${head}:file:/home/someone/notes.txt`, null],
+    [`${head}: /home/someone/notes.txt`, null],
+    ["file: /home/someone/notes.txt", null],
+    ["file:src/a.ts ", null],
+    ["file:docs/read  me.md", null],
+    ["file:\u00a0/home/someone", null],
+    ["file:\u3000/home/someone", null],
+    ["file:\ufeff/home/someone", null],
+    ["file:\u200b/etc/hosts", null],
+    ["file:\u2060~/notes.txt", null],
+    ["file:\u202e/etc/hosts", null],
+    ["file:src/a.ts\u0085", null],
+    ["file:\uff5e/notes.txt", null],
+    ["file:\uff0fhome/someone", null],
+    ["file:\uff0e\uff0e/etc/hosts", null],
+    ["file:\u034f/home/someone/notes.txt", null],
+    ["file:\ufe0f/home/someone/notes.txt", null],
+    ["file:\u{e0100}/home/someone/notes.txt", null],
+    ["file:\u115f/home/someone/notes.txt", null],
+    ["file:\u1160/home/someone/notes.txt", null],
+    ["file:\u2800/home/someone/notes.txt", null],
+    ["file:file\ua789/home/someone/notes.txt", null],
+    ["file:C\ua789/Windows/notes.txt", null],
+    ["file:file\u2236/home/someone", null],
+    ["file:\u2044home\u2044someone", null],
+    ["file:\u29f8home\u29f8someone", null],
+    ["file:\u2215home\u2215someone", null],
+    ["file:\u223c/notes.txt", null],
+    ["file:\u301c/notes.txt", null],
+    ["file:src/ /home/someone", null],
+    ["file:src /home/someone", null],
+    ["file:src/\u0301a.ts", null],
+    ["file:src/a\u2060b.ts", null],
+  ])
+    assert.equal(
+      targetNativeReference(ref, { head, base }),
+      expected,
+      JSON.stringify(ref),
+    );
+  const { artifacts, bodyInputs } = readinessFixture();
+  artifacts.review.value.result.counts.should = 1;
+  artifacts.review.value.result.findings = [
+    {
+      class: "review",
+      severity: "should",
+      observed: "A helper name could be clearer.",
+      expected: "Use the existing naming convention.",
+      evidenceRefs: [
+        "file:src/view.ts",
+        "file:file:/home/someone/notes.txt",
+        "file: /home/someone/notes.txt",
+        "file:\u200b/home/someone/notes.txt",
+      ],
+    },
+  ];
+  const { body } = generateTargetPullRequest({
+    ...bodyInputs,
+    readinessArtifacts: artifacts,
+  });
+  assert.ok(body.includes(`src/view.ts at ${head}; 3 references omitted`));
+  assert.doesNotMatch(body, /home|someone/u);
+});
+
 await test("WO-182 AC1/AC2: fourteen evidenced rows resolve in the fixture artifact store and render through outward lint", () => {
   const fixture = readinessFixture();
+  for (const entry of fixture.artifacts.verification.value.evidence)
+    if (entry.hostTest)
+      entry.hostTest.command = "fixture-check /unpublished/machine-path";
   const rows = deliverableReady(fixture.artifacts);
   assert.equal(rows.length, 14);
   assert.equal(new Set(rows.map((row) => row.id)).size, 14);
@@ -612,6 +763,7 @@ await test("WO-182 AC1/AC2: fourteen evidenced rows resolve in the fixture artif
     for (const ref of row.evidenceRefs)
       assert.notEqual(fixture.resolveRef(ref), undefined, ref);
   }
+  const inputsBefore = structuredClone(fixture.artifacts);
   const { body } = generateTargetPullRequest({
     ...fixture.bodyInputs,
     readinessArtifacts: fixture.artifacts,
@@ -621,9 +773,25 @@ await test("WO-182 AC1/AC2: fourteen evidenced rows resolve in the fixture artif
     /## Deliverable-ready\n\nDeliverable-ready: ready; every applicable item is evidenced\./u,
   );
   assert.equal(body.match(/\| evidenced \|/gu).length, 14);
-  for (const row of rows)
-    for (const ref of row.evidenceRefs)
-      assert.ok(body.includes(ref.replaceAll("#", "&#35;")), ref);
+  assert.ok(Object.isFrozen(targetReadinessEvidence));
+  assert.deepEqual(
+    Object.keys(targetReadinessEvidence),
+    rows.map((row) => row.id),
+  );
+  for (const row of rows) {
+    const text = targetReadinessEvidence[row.id]
+      .replaceAll("{head}", head)
+      .replaceAll("{base}", base);
+    assert.ok(body.includes(`| ${row.item} | evidenced | ${text} |`), row.id);
+  }
+  assert.deepEqual(deliverableReady(fixture.artifacts), rows);
+  assert.deepEqual(fixture.artifacts, inputsBefore);
+  assert.match(body, /[1-9][0-9]* evidence references omitted/u);
+  assert.ok(!body.includes("/unpublished/machine-path"));
+  assert.doesNotMatch(
+    body,
+    /source-event:|baseline-event:|review-event:|verification:[^ ]|contract:[^ ]|delivery-preparation#|evt_[0-9]/iu,
+  );
   assert.equal(githubBodyProfileFailures(body).length, 0);
   assert.equal(
     lintOutwardArtifact({
@@ -671,7 +839,13 @@ await test("WO-182 carries minor independent review findings into known items wi
       severity: "should",
       observed: "A helper name could be clearer.",
       expected: "Use the existing naming convention.",
-      evidenceRefs: ["diff", "file:src/view.ts"],
+      evidenceRefs: [
+        "diff",
+        "file:src/view.ts",
+        "contract:criterion:0",
+        "source-event:hidden",
+        "unknown-alias",
+      ],
     },
   ];
   const before = structuredClone(artifacts);
@@ -685,6 +859,12 @@ await test("WO-182 carries minor independent review findings into known items wi
   );
   assert.match(body, /\| should \| A helper name could be clearer\./u);
   assert.match(body, /Deliverable-ready: ready;/u);
+  assert.ok(
+    body.includes(
+      `src/view.ts at ${head}; acceptance criterion 1; 2 references omitted`,
+    ),
+  );
+  assert.doesNotMatch(body, /source-event:|unknown-alias|contract:criterion:/u);
   assert.deepEqual(artifacts, before);
 });
 

@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  existsSync,
   mkdtempSync,
   mkdirSync,
   readFileSync,
@@ -9,6 +10,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { execFileSync, spawnSync } from "node:child_process";
 import { inspectLedger, renderIndex, statuses } from "./lineage.mjs";
 import { suites } from "./test-runner.mjs";
@@ -152,6 +154,35 @@ test("CLI generation is deterministic; --check refuses stale output and invalid 
     assert.equal(readFileSync(index, "utf8"), "stale\n");
   }
   assert.notEqual(run("index", "--unknown").status, 0);
+});
+
+test("CLI --check names an absent index by its configured relative path and generating command", (t) => {
+  const root = mkdtempSync(join(tmpdir(), "dotln-lineage-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  // A moved document root: the refusal follows the configuration and never
+  // names the temporary directory the launchpad lives in.
+  writeFileSync(
+    join(root, "dotln.config.json"),
+    JSON.stringify({ version: 1, roots: { docs: "records" } }),
+  );
+  mkdirSync(join(root, "records/lineage"), { recursive: true });
+  writeFileSync(join(root, "records/lineage/idea-ledger.md"), source);
+  const index = join(root, "records/lineage/README.md");
+  const cli = (...args) =>
+    spawnSync(
+      process.execPath,
+      [fileURLToPath(new URL("./lineage.mjs", import.meta.url)), ...args],
+      { encoding: "utf8", env: { ...process.env, DOTLN_LAUNCHPAD: root } },
+    );
+  const missing = cli("index", "--check");
+  assert.equal(missing.status, 1);
+  assert.equal(
+    missing.stderr,
+    "Missing records/lineage/README.md; run node scripts/lineage.mjs index\n",
+  );
+  assert.equal(existsSync(index), false);
+  assert.equal(cli("index").status, 0);
+  assert.equal(cli("index", "--check").status, 0);
 });
 
 test("current index matches independently counted lead statuses and stays outside the product gate", () => {

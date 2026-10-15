@@ -1,4 +1,9 @@
 {
   "schemaVersion": 1,
-  "commits": {}
+  "commits": {
+    "3b5e29e4d36956b680ac1339aeeca887947e7987": {
+      "tag": "v0.81.0",
+      "nearest": "v0.81.0"
+    }
+  }
 }

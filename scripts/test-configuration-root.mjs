@@ -24,6 +24,8 @@ import { main as lineageMain, statuses } from "./lineage.mjs";
 import { latestPlanningPass } from "./lib/plan-direct.mjs";
 import { planningPassScope } from "./lib/plan-receipts.mjs";
 import { syncFollowups } from "./lib/planning-followups.mjs";
+import { recordGateChecks, gateTreeHash } from "./lib/gate-evidence.mjs";
+import { gateCommandsHash } from "./lib/target-gate.mjs";
 import {
   CONFIG_FILENAME,
   CONFIG_SCHEMA_VERSION,
@@ -34,6 +36,7 @@ import {
   findLaunchpad,
   loadConfig,
   rootPattern,
+  targetDocRelative,
 } from "./lib/config.mjs";
 
 const scriptRoot = dirname(fileURLToPath(import.meta.url));
@@ -248,6 +251,7 @@ await test("configuration root", async (t) => {
         });
         assert.deepEqual(loadConfig(root).repositories.target, {
           id: "target",
+          documentationRoot: "docs",
           ...registeredRepository(),
         });
         assert.equal(
@@ -257,6 +261,101 @@ await test("configuration root", async (t) => {
           false,
           "registration carries no absolute local path",
         );
+      });
+    },
+  );
+
+  await t.test(
+    "target gate declarations and document layouts are validated",
+    () => {
+      temporary("target-gate-config", (root) => {
+        const gate = {
+          commands: {
+            test: { argv: ["node", "test.mjs"], timeoutMs: 5000 },
+            lint: { argv: ["node", "lint.mjs"], timeoutMs: 1000 },
+          },
+          plain: ["test"],
+          review: ["test", "lint"],
+        };
+        const body = {
+          version: 1,
+          repositories: { target: registeredRepository({ gate }) },
+        };
+        const check = () => {
+          declared({ root, body });
+          return loadConfig(root).repositories.target;
+        };
+        assert.deepEqual(check().gate, gate);
+        for (const base of ["docs", "records/native"]) {
+          body.repositories.target.documentationRoot = base;
+          const repository = check();
+          for (const [key, segment] of [
+            ["product", "product"],
+            ["planning", "planning"],
+            ["workOrders", "work-orders"],
+            ["evidence", "evidence"],
+            ["verifications", "verifications"],
+            ["finalReviews", "final-reviews"],
+          ])
+            assert.equal(
+              targetDocRelative(repository, key, "file.md"),
+              `${base}/${segment}/file.md`,
+            );
+        }
+        const original = structuredClone(body);
+        const refuses = (change, key) => {
+          body.repositories.target = structuredClone(
+            original.repositories.target,
+          );
+          change(body.repositories.target);
+          assert.throws(
+            check,
+            (error) =>
+              error.message.includes("dotln.config.json") &&
+              error.message.includes(`repositories.target.${key}`),
+          );
+        };
+        for (const root of [
+          "/abs",
+          "x/../y",
+          "x/./y",
+          "x//y",
+          "x/",
+          "x\\y",
+          "../outside",
+          ".",
+          "",
+        ])
+          refuses((r) => {
+            r.documentationRoot = root;
+          }, "documentationRoot");
+        refuses((r) => {
+          r.gate.extra = true;
+        }, "gate");
+        refuses((r) => {
+          r.gate.commands.Test = r.gate.commands.test;
+        }, "gate.commands.Test");
+        refuses((r) => {
+          r.gate.commands.test.extra = true;
+        }, "gate.commands.test");
+        for (const argv of [[], [null], [""], "node"])
+          refuses((r) => {
+            r.gate.commands.test.argv = argv;
+          }, "gate.commands.test.argv");
+        for (const timeout of [0, -1, 1.5, Number.MAX_SAFE_INTEGER + 1, "100"])
+          refuses((r) => {
+            r.gate.commands.test.timeoutMs = timeout;
+          }, "gate.commands.test.timeoutMs");
+        for (const plain of [[], ["missing"], ["test", "test"]])
+          refuses((r) => {
+            r.gate.plain = plain;
+          }, "gate.plain");
+        refuses((r) => {
+          r.gate.review = ["lint"];
+        }, "gate.review");
+        refuses((r) => {
+          r.gate.review = ["test", "missing"];
+        }, "gate.review");
       });
     },
   );
@@ -819,7 +918,28 @@ await test("configuration root", async (t) => {
           finalReviews: "records/reviews",
           evidence: "records/proof",
         };
-        const baseCommit = "a".repeat(40);
+        const target = join(root, "target");
+        mkdirSync(target);
+        runGit(target, ["init", "-q", "-b", "wo-999"], fixtureGitOptions);
+        runGit(
+          target,
+          [
+            "-c",
+            "user.email=fixture@example.invalid",
+            "-c",
+            "user.name=Fixture",
+            "commit",
+            "--allow-empty",
+            "-qm",
+            "test: base",
+          ],
+          fixtureGitOptions,
+        );
+        const baseCommit = runGit(
+          target,
+          ["rev-parse", "HEAD"],
+          fixtureGitOptions,
+        );
         declared({
           root,
           body: {
@@ -838,6 +958,7 @@ await test("configuration root", async (t) => {
         });
         installBeaconFixture(root);
         runGit(root, ["init", "-q", "-b", "wo-999"], fixtureGitOptions);
+        write(root, ".gitignore", "/target/\n");
         runGit(
           root,
           ["config", "user.email", "fixture@example.invalid"],
@@ -933,6 +1054,48 @@ await test("configuration root", async (t) => {
             repositories: { target: registeredRepository() },
           },
         });
+        const configured = JSON.parse(
+          readFileSync(join(root, CONFIG_FILENAME), "utf8"),
+        );
+        configured.repositories.target.gate = {
+          commands: { test: { argv: ["node", "test.mjs"], timeoutMs: 1000 } },
+          plain: ["test"],
+          review: ["test"],
+        };
+        write(root, CONFIG_FILENAME, prettyJson(configured));
+        write(
+          root,
+          `${roots.control}/local/target-worktrees.json`,
+          prettyJson({
+            [target]: {
+              workOrderId: "WO-999",
+              repositoryId: "target",
+              baseCommit,
+              branch: "wo-999",
+              target,
+              launchpad: root,
+            },
+          }),
+        );
+        recordGateChecks(root, [
+          {
+            checkId: "target:target",
+            repositoryId: "target",
+            commit: baseCommit,
+            treeHash: gateTreeHash(target),
+            selection: "review",
+            names: ["test"],
+            commandsHash: gateCommandsHash(
+              configured.repositories.target.gate,
+              ["test"],
+            ),
+            durationMs: 1,
+            executed: true,
+            exitCode: 0,
+            evidenceRef: "fixture:target-gate",
+            recordedAt: new Date().toISOString(),
+          },
+        ]);
         run("activate", "WO-999", order, ...actor);
         assert.ok(
           existsSync(join(root, `${roots.orders}/WO-999.jsonl`)),
@@ -999,6 +1162,8 @@ await test("configuration root", async (t) => {
           (path) =>
             !path.startsWith("records/") &&
             path !== CONFIG_FILENAME &&
+            path !== ".gitignore" &&
+            !path.startsWith("target/") &&
             !path.startsWith(".control-beacons/") &&
             !path.startsWith("docs/control/local/"),
         );

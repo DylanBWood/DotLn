@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { isMainModule } from "./lib/paths.mjs";
+import { hasPackageSources, isMainModule } from "./lib/paths.mjs";
 import { json as prettyJson, sha256Hex as sha256 } from "./lib/helpers.mjs";
 import {
   harnessRuntimeCause,
@@ -227,7 +227,7 @@ export function releaseCloseSummary(record) {
         lines.push(line(textLine));
   for (const row of record.starterRefresh ?? [])
     lines.push(
-      `Starter refresh ${row.sibling}: ${row.outcome}; ${line(row.reason ?? `${row.before} -> ${row.after}`)}${row.outcome === "refreshed" ? `; ${row.before} -> ${row.after}` : ""}.`,
+      `Starter refresh ${row.sibling}: ${row.outcome}; ${line(row.reason ?? `${row.before} -> ${row.after}`)}${row.outcome === "refreshed" ? `; ${row.before} -> ${row.after}` : ""}${row.rewrittenSeeds?.length ? `; seeds published: ${row.rewrittenSeeds.join(", ")}` : ""}${row.seedChanges?.length ? `; seeds would change: ${row.seedChanges.join(", ")}` : ""}.`,
     );
   lines.push(`Cleanup: ${record.cleanup.outcome}.`);
   if (record.targetCleanup)
@@ -459,7 +459,12 @@ const paragraph = (markdown, label) => {
   ).exec(markdown);
   return match?.[1].replace(/\s+/g, " ").trim();
 };
-const readWorkOrderAuthority = (root, state, revision) => {
+const readWorkOrderAuthority = (
+  root,
+  state,
+  revision,
+  { versioned = true } = {},
+) => {
   if (!/^WO-\d{3}$/.test(state.workOrderId ?? ""))
     throw new Error(
       `invalid current work-order id: ${state.workOrderId ?? "none"}`,
@@ -470,14 +475,14 @@ const readWorkOrderAuthority = (root, state, revision) => {
   const markdown = repositoryFile(root, state.workOrderPath, revision);
   const heading = markdown.split("\n", 1)[0];
   const versions = strictVersionsIn(heading);
-  if (versions.length !== 1 || !semver(versions[0]))
+  if (versioned && (versions.length !== 1 || !semver(versions[0])))
     throw new Error(
       `work-order heading must contain exactly one strict vX.Y.Z version: ${heading}`,
     );
   return {
     id: state.workOrderId,
     path: state.workOrderPath,
-    version: versions[0],
+    version: versioned ? versions[0] : undefined,
     title: heading.replace(/^#\s*/, ""),
     objective:
       paragraph(markdown, "Objective") ??
@@ -553,6 +558,12 @@ const componentPackages = (root, revision) => {
     );
 };
 
+const isKitRoot = (root, revision) =>
+  !hasPackageSources(root) &&
+  (revision
+    ? optionalGitFile(root, revision, "KIT-MANIFEST.json") !== undefined
+    : existsSync(join(root, "KIT-MANIFEST.json")));
+
 const releaseBlockRule = (
   root,
   authority,
@@ -560,11 +571,16 @@ const releaseBlockRule = (
   revision,
   localOnly = false,
 ) => {
-  const expected =
-    !latest || compareVersions(authority.version, latest) > 0
+  const targetOrder = authority.version === undefined;
+  const expected = targetOrder
+    ? latest
+    : !latest || compareVersions(authority.version, latest) > 0
       ? authority.version
       : latest;
-  const context = `(work-order target ${authority.version}; latest ${localOnly ? "local tag" : "published"} ${latest ?? "none"})`;
+  const expectation = targetOrder
+    ? `one strict version${latest ? ` at or above ${latest}` : ""}`
+    : expected;
+  const context = `(${targetOrder ? "target order records no release" : `work-order target ${authority.version}`}; latest ${localOnly ? "local tag" : "published"} ${latest ?? "none"})`;
   const source = repositoryFile(root, "README.md", revision);
   const lines = source.split("\n").map((line) => line.replace(/\r$/, ""));
   const beginMarker = "<!-- DOTLN-RELEASE-BEGIN -->";
@@ -578,7 +594,7 @@ const releaseBlockRule = (
   if (malformedMarker >= 0) {
     return {
       pass: false,
-      line: `FAIL release-block: observed malformed release marker at README.md:${malformedMarker + 1}; expected exact marker lines and exactly one ordered block containing exactly the generated version line for ${expected} ${context}`,
+      line: `FAIL release-block: observed malformed release marker at README.md:${malformedMarker + 1}; expected exact marker lines and exactly one ordered block containing exactly the generated version line for ${expectation} ${context}`,
     };
   }
   const begins = lines
@@ -588,9 +604,13 @@ const releaseBlockRule = (
     .map((line, index) => (line === endMarker ? index : -1))
     .filter((index) => index >= 0);
   if (begins.length !== 1 || ends.length !== 1 || begins[0] >= ends[0]) {
+    const remedy =
+      begins.length === 0 && ends.length === 0 && isKitRoot(root, revision)
+        ? `; on the next order's dispatch follow the refreshed starter README's update-pull-request procedure first, then record the repair in the order's decisions. Only if that update leaves the block absent, add exactly these three lines once: ${JSON.stringify(beginMarker)}, ${JSON.stringify(releaseClaimLine(expected ?? "v0.1.0"))}, ${JSON.stringify(endMarker)}`
+        : "";
     return {
       pass: false,
-      line: `FAIL release-block: observed ${begins.length} begin marker(s), ${ends.length} end marker(s), order ${begins[0] < ends[0] ? "begin-before-end" : "invalid"}; expected exactly one ordered block containing exactly the generated version line for ${expected} ${context}`,
+      line: `FAIL release-block: observed ${begins.length} begin marker(s), ${ends.length} end marker(s), order ${begins[0] < ends[0] ? "begin-before-end" : "invalid"}; expected exactly one ordered block containing exactly the generated version line for ${expectation} ${context}${remedy}`,
     };
   }
   // Between the markers stands the one line release preparation writes and
@@ -598,18 +618,25 @@ const releaseBlockRule = (
   const content = lines
     .slice(begins[0] + 1, ends[0])
     .filter((line) => line.trim());
-  const claim = releaseClaimLine(expected);
+  const versions = strictVersionsIn(content[0] ?? "");
+  const claim = releaseClaimLine(
+    targetOrder ? (versions[0] ?? latest ?? "v0.1.0") : expected,
+  );
   if (content.length !== 1) {
     return {
       pass: false,
       line: `FAIL release-block: observed ${content.length === 0 ? "no line" : `${content.length} non-empty lines`} between the markers; expected exactly the generated line ${JSON.stringify(claim)}; move other text outside the markers and rerun npm run release -- prepare ${context}`,
     };
   }
-  const versions = strictVersionsIn(content[0]);
-  if (versions.length !== 1 || versions[0] !== expected) {
+  if (
+    versions.length !== 1 ||
+    (targetOrder
+      ? latest && compareVersions(versions[0], latest) < 0
+      : versions[0] !== expected)
+  ) {
     return {
       pass: false,
-      line: `FAIL release-block: observed ${versions.length === 0 ? "no strict version" : versions.join(", ")}; expected exactly one ${expected} ${context}`,
+      line: `FAIL release-block: observed ${versions.length === 0 ? "no strict version" : versions.join(", ")}; expected ${targetOrder ? expectation : `exactly one ${expected}`} ${context}`,
     };
   }
   if (content[0] !== claim) {
@@ -620,7 +647,7 @@ const releaseBlockRule = (
   }
   return {
     pass: true,
-    line: `PASS release-block: observed ${versions[0]}; expected ${expected} ${context}`,
+    line: `PASS release-block: observed ${versions[0]}; expected ${expectation} ${context}`,
   };
 };
 
@@ -778,7 +805,10 @@ const checkSurfaces = (root, options = {}) => {
       `committed surface check requires closed ${expectedWorkOrderId ?? "work-order"} control state; observed ${state.workOrderId ?? "none"} in phase ${state.phase}`,
     );
   const authority =
-    options.authority ?? readWorkOrderAuthority(root, state, revision);
+    options.authority ??
+    readWorkOrderAuthority(root, state, revision, {
+      versioned: !state.repositoryId,
+    });
   const local =
     options.local ??
     (options.localOnly ? ancestralLocalTags(root) : localTags(root));
@@ -906,7 +936,9 @@ const builtKernelCadence = (root) => {
 const compatibility = (root) => {
   const types = repositoryFile(
     root,
-    "packages/kernel/src/types.ts",
+    isKitRoot(root, sourceRevision)
+      ? "packages/kernel/dist/src/types.d.ts"
+      : "packages/kernel/src/types.ts",
     sourceRevision,
   );
   const eventEnvelope = exactSchemaVersion(
@@ -1200,6 +1232,7 @@ const criticalNotes = (files, evidence) => {
     files.some(
       (path) =>
         path === "packages/kernel/src/types.ts" ||
+        path === "packages/kernel/dist/src/types.d.ts" ||
         /schema|compatibility/i.test(path),
     )
   )
@@ -1292,6 +1325,19 @@ const baseManifest = (
     },
   };
 };
+/** Exercise the closed-order builder without publication, evidence or writes. */
+export function previewReleaseManifest(root, workOrderId) {
+  const previous = sourceRevision;
+  try {
+    sourceRevision = runGit(root, ["rev-parse", "HEAD"]);
+    const state = parseControlStateAt(root, sourceRevision, workOrderId);
+    const authority = workOrderAuthority(root, state, sourceRevision);
+    return baseManifest(root, authority, latestVersion(localTags(root)), []);
+  } finally {
+    sourceRevision = previous;
+  }
+}
+
 const firstDifference = (expected, actual, path = "$") => {
   if (Object.is(expected, actual)) return undefined;
   if (
@@ -3077,6 +3123,39 @@ const main = async () => {
         throw new Error(
           `release prepare --integration refuses: ${refusal}; run npm run worktree -- integrate ${state.workOrderId} --continue. Nothing was written.`,
         );
+    }
+    if (state.repositoryId) {
+      if (
+        realpathSync(runGit(toolRoot, ["rev-parse", "--show-toplevel"])) !==
+        realpathSync(toolRoot)
+      )
+        throw new Error("release prepare requires the Git root");
+      if (
+        runGit(toolRoot, ["branch", "--show-current"]) !==
+        state.workOrderId.toLowerCase()
+      )
+        throw new Error(
+          "release prepare requires the selected wo-NNN worktree",
+        );
+      if (
+        ![
+          "active",
+          "ready-to-verify",
+          "verifying",
+          "needs-fix",
+          "repairing",
+          "verified",
+          "final-review",
+        ].includes(state.phase)
+      )
+        throw new Error(
+          "release prepare requires an unpublished, open work order",
+        );
+      readWorkOrderAuthority(toolRoot, state, null, { versioned: false });
+      writeOutput(
+        `${state.workOrderId}: target order records no release; no files changed.\n`,
+      );
+      return;
     }
     const latest = latestVersion(
       localOnly ? localTags(toolRoot) : remoteTags(toolRoot),

@@ -147,9 +147,9 @@ Packaging and the update path exist (WO-074 to WO-078); the license posture
 is decided below; an update shows its plan before writing (WO-203).
 Release close refreshes the starter after each release (WO-215); an instance
 takes a starter update through its own planning pass (WO-207).
-Publication of an instance's own orders and of target orders worked in
-sessions, rollback, channel selection and the first task remain queued
-(WO-210, WO-207, WO-083).
+Instance orders and session-driven target orders have publication and close
+routes (WO-210); rollback, channel selection and the first task remain queued
+(WO-207, WO-083).
 
 The 2026-09-06 planning pass, as redirected the same day, selects that
 route as the first physical slice of this boundary under ADR-0006 Decision
@@ -171,8 +171,9 @@ launchpad instance holds target orders' control state, cross-repository
 workstreams and raw evidence and composes its own build overlay over the
 kit's; a target receives conventional branches and pull requests, keeps its
 own product documents, planning passes and order records (each order's file,
-decisions, verification and final-review reports) in a documentation root
-that every fork working on it reads and extends (a fork holds its own data
+decisions, verification and final-review reports) in its registered
+`documentationRoot` (default `docs`, with the launchpad's default segments),
+with checks declared by `gate`, that every fork working on it reads and extends (a fork holds its own data
 or a link to where each record's source of truth lives, never neither), and
 carries the emitted
 bundle, like all machinery, only in ignored worktree state (operator
@@ -203,9 +204,11 @@ with no package source and no npm publication; a `package.json` with core's
 script names and exactly pinned development dependencies, a lockfile pruned to
 them and the workspaces `KIT_WORKSPACES` names (the Beacon workspace and
 each runtime package), the execution guide, the publication compiler
-and the operator playbook whole, the implementation-overlay template, the kit
-templates, `LICENSE`, `LICENSE-docs` and `NOTICE` (or `LICENSE-PENDING.md`
-under `--license none`), `UPSTREAM.md` and `KIT-MANIFEST.json` (schema 1:
+and the operator playbook whole, the implementation-overlay template,
+`docs/releases/tag-manifest.template.json`, the kit templates, `LICENSE`, `LICENSE-docs` and `NOTICE` (or `LICENSE-PENDING.md`
+under `--license none`); an instance's `docs/LEGAL.md` pins are judged only
+where it declares that file, while all other license checks remain in force;
+`UPSTREAM.md` and `KIT-MANIFEST.json` (schema 1:
 the commit, the tag and a SHA-256 per kit file). The export then initializes
 the fork's repository and runs its own `node scripts/harness.mjs emit` and
 `check`: the Contributor bundle (settings, hooks, role skills, the marked
@@ -249,8 +252,10 @@ instance's own executable code
 manifest-excluded extension point the kit's machinery loads through the
 ports and an update never touches, under the review burden §Package
 ecosystem names (WO-207). An update is previewed before it writes, from core with `export --update <dir>
---preview` or inside an instance with `preview --from <ref>` ([WO-203
-fixture evidence](../evidence/WO-203/handoff.md)), with revision previews
+--preview` or inside an instance with the incoming revision's own launchpad
+running `preview --from <ref>`, since an instance's launchpad refuses a
+manifest naming kit paths added after its export ([WO-203
+fixture evidence](../evidence/WO-203/handoff.md); WO-210), with revision previews
 distinguishing unchanged kit paths and reporting incompatible manual actions
 individually; it can be rolled back to the prior kit state (WO-207), and takes a channel:
 machinery with the build pinned at the prior compiled definitions, both

@@ -427,6 +427,7 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
         hasDecisions: existsSync(
           join(root, docRelative(root, "evidence", `${id}/decisions.md`)),
         ),
+        records: state?.targetRecords,
         section,
         phase,
         dependencies,
@@ -539,8 +540,17 @@ const renderCard = (row) => {
     `- Application target: ${cell(row.version)}.`,
     `- Dependencies: ${cell(row.dependencyState)}.`,
     `- References: ${cell(row.dependencies.entries.map((entry) => `${entry.workOrderId}: ${entry.relation ? `${entry.relation} (${entry.state}${entry.detail ? `: ${entry.detail}` : ""})` : `${entry.state}${entry.detail ? `: ${entry.detail}` : ""}`}${entry.release ? ` ${entry.release}` : ""}${entry.until ? ` until ${entry.until}` : ""}${entry.by ? ` by ${entry.by}` : ""}${entry.date ? ` dated ${entry.date}` : ""}${entry.reason ? ` — ${entry.reason}` : ""}`).join("; ") || "none declared")}.`,
-    `- Verification: ${report(state?.latestVerificationId, state?.latestVerdict, state?.latestVerificationPath)}.`,
-    `- Final review: ${report(state?.finalReviewId, row.finalReviewVerdict, state?.finalReviewPath)}.`,
+    `- Verification: ${report(state?.latestVerificationId, state?.latestVerdict, row.records ? undefined : state?.latestVerificationPath)}.`,
+    `- Final review: ${report(state?.finalReviewId, row.finalReviewVerdict, row.records ? undefined : state?.finalReviewPath)}.`,
+    ...(row.records
+      ? [
+          `- Records: ${cell(row.records.repositoryId)} at commit ${cell(row.records.commit)}.`,
+          ...row.records.records.map(
+            (record, index) =>
+              `- Record ${cell(record.kind)} ${index + 1}: ${cell(record.path)} (${cell(record.sha256)}).`,
+          ),
+        ]
+      : []),
     `- Release: ${cell(row.disposition)}.`,
     `- Model: ${cell(row.model)}`,
     `- Effort: ${cell(row.effort)}`,
@@ -551,7 +561,7 @@ const renderCard = (row) => {
           "- Delivery: target publication requires `worktree publish WO-NNN --target <request> --require-deliverable-ready` (WO-182); record every absent item before retrying.",
         ]
       : []),
-    ...(row.ledgerSubstitution
+    ...(row.ledgerSubstitution && !row.records
       ? [
           `- Inherited ledger duty: discharge with ${row.hasDecisions ? `[this order's decisions](../evidence/${row.id}/decisions.md)` : `this order's decisions file when recorded`} and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.`,
         ]

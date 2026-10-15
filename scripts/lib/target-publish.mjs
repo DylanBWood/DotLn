@@ -1,6 +1,23 @@
-import { spawnGit, runGit } from "./git.mjs";
-import { findLaunchpad, loadConfig } from "./config.mjs";
+import { spawnGit, runGit, ensureClean, mainWorktree } from "./git.mjs";
+import {
+  findLaunchpad,
+  loadConfig,
+  docPath,
+  CONFIG_FILENAME,
+} from "./config.mjs";
+import {
+  COMMITTED_AUTHORITY_GRANTS,
+  readAuthorityGrantRegistry,
+} from "./authority-grants.mjs";
+import { readControl, eventsForOrder } from "./control-store.mjs";
+import {
+  reviewedTargetSubject,
+  targetWorktreeForOrder,
+} from "./target-worktrees.mjs";
+import { containedRegularFile } from "./paths.mjs";
+import { validateTargetRecordsCommit } from "./target-records.mjs";
 import { repairedPublicationEpisode } from "./target-repair.mjs";
+import { checkTargetHarness } from "./harness.mjs";
 
 import { createHash } from "node:crypto";
 import {
@@ -34,6 +51,9 @@ import {
   deliveryContractHash,
   assertGitHubBodyProfile,
   generateTargetPullRequest,
+  targetNativeReference,
+  targetChangeSection,
+  targetGateSection,
   withTemporaryBody,
 } from "./github-body.mjs";
 import {
@@ -374,9 +394,31 @@ export function disposeReviewThread(options) {
     throw refuse(
       "thread disposition requires a judgment with evidence references",
     );
+  const publishedHead =
+    decodeLog(context.publication.read())
+      .filter(
+        (event) =>
+          event.actorId === TARGET_PUBLISH_HOST &&
+          event.type === "PullRequestRepairPushed" &&
+          event.causationId === context.opened.eventId &&
+          event.payload.repositoryId === request.repositoryId &&
+          event.payload.number === context.opened.payload.number,
+      )
+      .at(-1)?.payload.headSha ?? context.opened.payload.headSha;
+  if (!/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/u.test(publishedHead))
+    throw refuse("recorded published head is not a commit id");
+  const mappedRefs = judgment.evidenceRefs
+    .map((ref) =>
+      targetNativeReference(ref, {
+        head: publishedHead,
+        base: context.episode.request.baseCommit,
+      }),
+    )
+    .filter((ref) => ref !== null);
   const body = canonicalStringify({
     disposition: judgment.kind === "reject" ? "rejected" : "repaired",
-    evidenceRefs: judgment.evidenceRefs,
+    evidenceRefs: mappedRefs.length ? mappedRefs : [`commit ${publishedHead}`],
+    omittedReferences: judgment.evidenceRefs.length - mappedRefs.length,
   });
   lintArtifacts(options.launchpad, [{ kind: "pr-body", text: body }]);
   const payload = {
@@ -650,6 +692,12 @@ function observeTarget(episode) {
     .digest("hex");
   if (digest !== diffHash)
     throw refuse("the target diff differs from the effect receipt");
+  return targetChanges(repo, baseCommit, commit);
+}
+
+/** Observe the same commit objects for episode and session publication. */
+export function targetChanges(repo, baseCommit, commit) {
+  const diff = ["--no-ext-diff", "--no-textconv", "--no-renames"];
   const fields = gitText(
     repo,
     "diff",
@@ -683,6 +731,270 @@ function observeTarget(episode) {
       message: gitText(repo, "log", "-1", "--format=%B", sha).trimEnd(),
     }));
   return { files, commits };
+}
+
+export function authorizeRegisteredPublication(
+  repository,
+  registry,
+  now,
+  workstreamId,
+) {
+  const effects = ["repo.push", "pr.open"];
+  const grant = registry.find(
+    (entry) =>
+      entry.grantedBy === "operator" &&
+      entry.repo === repository.id &&
+      effects.every(
+        (effect) =>
+          entry.effects.includes(effect) && entry.operations?.includes(effect),
+      ),
+  );
+  if (!grant)
+    throw refuse(
+      `repo.push and pr.open require an admitted operator grant naming ${repository.id} in repo and both effects and operations`,
+    );
+  for (const [intentIndex, effect] of effects.entries()) {
+    const decision = authorize(
+      { kind: "Act", effect, payload: {} },
+      repository.authorityProfile,
+      {
+        now,
+        actorId: TARGET_PUBLISH_HOST,
+        workstreamId,
+        decisionIndex: 0,
+        intentIndex,
+        evidence: [],
+        revokedBy: [],
+      },
+    );
+    if (!decision.authorized)
+      throw refuse(`${effect}: ${decision.refusal.payload.reason}`);
+  }
+}
+
+/** Publish a session's bound review; no source-change episode is synthesized. */
+export function publishTargetWorktree({
+  launchpad,
+  workOrderId,
+  branch,
+  title,
+  body,
+  now = Date.now(),
+  log = (line) => process.stdout.write(`${line}\n`),
+}) {
+  ensureClean(launchpad);
+  const control = readControl(launchpad, "HEAD");
+  const state = control.orders.get(workOrderId)?.state;
+  const review = eventsForOrder(control, workOrderId)
+    .filter((event) => event.type === "FinalReviewCompleted")
+    .at(-1);
+  if (state?.phase !== "closed" || review?.verdict !== "pass")
+    throw refuse(`${workOrderId} has no committed passing final review`);
+  const subject = review.targetSubject;
+  if (!subject)
+    throw refuse(`${workOrderId} final review has no targetSubject`);
+  const observed = reviewedTargetSubject(launchpad, state);
+  const records = state.targetRecords;
+  if (!records)
+    throw refuse(`${workOrderId} has no committed TargetRecordsCommitted`);
+  const gate = review.targetGate;
+  if (
+    !gate ||
+    gate.commit !== subject.commit ||
+    gate.repositoryId !== subject.repositoryId ||
+    gate.selection !== "review"
+  )
+    throw refuse(
+      `${workOrderId} has no passing targetGate bound to the reviewed commit ${subject.commit}`,
+    );
+  if (observed.commit !== records.commit)
+    throw refuse(
+      `target commit ${observed.commit} differs from records commit ${records.commit} after reviewed commit ${subject.commit}; review the changed target before publication`,
+    );
+  if (subject.commit === subject.baseCommit)
+    throw refuse(
+      "reviewed target commit equals the base; no target change to publish",
+    );
+  const entry = targetWorktreeForOrder(launchpad, workOrderId);
+  const main = mainWorktree(launchpad);
+  for (const file of [CONFIG_FILENAME, COMMITTED_AUTHORITY_GRANTS]) {
+    const committed = runGit(main, [...HOST_GIT_READ, "show", `HEAD:${file}`], {
+      trim: false,
+      onFailure: () => null,
+    });
+    if (
+      committed === null ||
+      !containedRegularFile(join(main, file), main) ||
+      readFileSync(join(main, file), "utf8") !== committed ||
+      !/^100(?:644|755) blob /u.test(
+        runGit(main, [...HOST_GIT_READ, "ls-tree", "HEAD", "--", file]),
+      )
+    )
+      throw refuse(
+        `main's publication authority must match its committed ${file}; merge the authorized authority change into main before publication`,
+      );
+  }
+  const repository = loadConfig(main).repositories[subject.repositoryId];
+  if (!repository)
+    throw refuse(
+      `repository ${subject.repositoryId} is not registered in main's committed authority`,
+    );
+  validateTargetRecordsCommit(entry.target, subject, records, repository);
+  authorizeRegisteredPublication(
+    repository,
+    readAuthorityGrantRegistry(main),
+    now,
+    workOrderId,
+  );
+  const boundUrl = pushUrl(entry.target);
+  const forge = parseGitHubTarget(boundUrl);
+  const changes = targetChanges(
+    entry.target,
+    subject.baseCommit,
+    records.commit,
+  );
+  const manifestPath = ".claude/target-worker-manifest.json";
+  const manifestFile = join(entry.target, manifestPath);
+  try {
+    checkTargetHarness(entry.target, { runtimeRoot: entry.runtimeRoot });
+  } catch (error) {
+    throw refuse(`target bundle ownership is not valid: ${error.message}`);
+  }
+  const owned = new Set([manifestPath]);
+  if (lstatSync(manifestFile, { throwIfNoEntry: false })) {
+    if (!containedRegularFile(manifestFile, entry.target))
+      throw refuse("target bundle manifest is not a contained regular file");
+    for (const file of JSON.parse(readFileSync(manifestFile, "utf8")).installed)
+      owned.add(file.path);
+  }
+  const bundleChanges = changes.files.filter((file) => owned.has(file.path));
+  if (bundleChanges.length)
+    throw refuse(
+      `target changes include installed bundle files: ${bundleChanges.map((file) => file.path).join(", ")}`,
+    );
+  const publishedBody = `${body.trimEnd()}\n\n${targetChangeSection({ baseCommit: subject.baseCommit, headCommit: records.commit, files: changes.files })}\n\n${targetGateSection(gate)}\n`;
+  lintArtifacts(main, [
+    { kind: "branch", text: branch },
+    ...changes.commits.map(({ message }) => ({
+      kind: "commit",
+      text: message,
+    })),
+    { kind: "pr-title", text: title },
+    { kind: "pr-body", text: publishedBody },
+  ]);
+  assertGitHubBodyProfile(publishedBody, "reviewed target body");
+  if (
+    hasAiAttribution(title) ||
+    hasAiAttribution(publishedBody) ||
+    changes.commits.some(({ message }) => hasAiAttribution(message))
+  )
+    throw refuse("target publication contains AI attribution");
+  const publication = new WorkerStore(
+    docPath(main, "control", "local/target-publications", workOrderId),
+  );
+  return publishBoundTargetCommit({
+    target: entry.target,
+    sourceBranch: entry.branch,
+    commit: records.commit,
+    branch,
+    title,
+    body: publishedBody,
+    repository,
+    forge,
+    boundUrl,
+    publication,
+    workstreamId: workOrderId,
+    now,
+    log,
+  });
+}
+
+/** Shared remote lane after each route has checked its own local authority. */
+export function publishBoundTargetCommit({
+  target,
+  sourceBranch,
+  commit,
+  branch,
+  title,
+  body,
+  repository,
+  forge,
+  boundUrl,
+  publication,
+  workstreamId,
+  now,
+  log,
+}) {
+  const prior = () => readPublication(publication, commit)?.payload;
+  const already = (recorded) => {
+    log(
+      `Already published commit ${commit}: pull request #${recorded.number} on ${recorded.repositoryId}; nothing pushed.`,
+    );
+    return recorded;
+  };
+  const previous = prior();
+  if (previous) return already(previous);
+  publication.acquire();
+  try {
+    const raced = prior();
+    if (raced) return already(raced);
+    const resolved = ensureGh(target);
+    if (resolved.selector.toLowerCase() !== forge.identity)
+      throw refuse("origin differs from the bound target repository");
+    pushObservedCommit(target, boundUrl, sourceBranch, commit, branch);
+    const created = withTemporaryBody(body, (bodyPath) =>
+      executeGh(target, [
+        "pr",
+        "create",
+        "--repo",
+        forge.selector,
+        "--head",
+        branch,
+        "--base",
+        repository.baseBranch,
+        "--title",
+        title,
+        "--body-file",
+        bodyPath,
+      ]),
+    );
+    if (created.status !== 0)
+      throw refuse(
+        `branch pushed but pull-request creation failed (exit ${created.status ?? "unavailable"})`,
+      );
+    const url =
+      /^https:\/\/([^/\s]+)\/([^/\s]+)\/([^/\s]+)\/pull\/([1-9][0-9]*)$/u.exec(
+        created.stdout.trim().split("\n").at(-1) ?? "",
+      );
+    if (
+      !url ||
+      `${url[1]}/${url[2]}/${url[3]}`.toLowerCase() !== forge.identity
+    )
+      throw refuse(
+        "pull request created but its number could not be read; inspect the repository before retrying",
+      );
+    const payload = {
+      repositoryId: forge.selector,
+      number: Number(url[4]),
+      headSha: commit,
+    };
+    const { event } = appendEvent(publication.read(), {
+      schemaVersion: 1,
+      type: "PullRequestOpened",
+      occurredAt: now,
+      actorId: TARGET_PUBLISH_HOST,
+      workstreamId,
+      correlationId: workstreamId,
+      payload,
+    });
+    publication.append(event);
+    log(
+      `Pushed ${branch} at ${commit} and opened pull request #${payload.number} on ${forge.selector}.`,
+    );
+    return payload;
+  } finally {
+    publication.release();
+  }
 }
 
 function verificationArtifacts(path) {
@@ -952,7 +1264,7 @@ function readinessArtifacts(request, episode, target, workOrder, bodyInputs) {
   };
 }
 
-function lintArtifacts(launchpad, artifacts) {
+export function lintArtifacts(launchpad, artifacts) {
   const failures = [];
   for (const { kind, text } of artifacts) {
     const result = checkOutwardArtifact(launchpad, { kind, text });

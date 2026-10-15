@@ -79,6 +79,8 @@ const REPOSITORY_KEYS = [
   "profile",
   "automationLogins",
   "linkHosts",
+  "gate",
+  "documentationRoot",
 ];
 const AUTHORITY_PROFILE_KEYS = [
   "authorityEnvelopeId",
@@ -133,6 +135,16 @@ const resolveRoots = (declared) => {
   for (const [key, [parent, segment]] of Object.entries(NESTED_SEGMENTS))
     roots[key] = declared[key] ?? `${roots[parent]}/${segment}`;
   return roots;
+};
+
+/** Apply the launchpad document layout within a registered target. */
+export const targetDocRelative = (repository, key, ...segments) => {
+  const roots = resolveRoots({
+    docs: repository.documentationRoot ?? DEFAULT_DOCUMENT_BASE,
+  });
+  if (!Object.hasOwn(roots, key))
+    throw new Error(`unknown document root: ${key}`);
+  return posix.join(roots[key], ...segments);
 };
 
 const refuse = (path, detail) =>
@@ -365,6 +377,51 @@ const validateClasses = (path, declared) => {
   );
 };
 
+const validateTargetGate = (path, value, label) => {
+  requireObject(path, value, label);
+  requireKnownKeys(path, value, ["commands", "plain", "review"], label);
+  requireObject(path, value.commands, `${label}.commands`);
+  if (!Object.keys(value.commands).length)
+    throw refuse(path, `${label}.commands must declare at least one command`);
+  const commands = {};
+  for (const [name, command] of Object.entries(value.commands)) {
+    const key = `${label}.commands.${name}`;
+    requireText(path, name, key, /^[a-z][a-z0-9-]*$/u);
+    requireObject(path, command, key);
+    requireKnownKeys(path, command, ["argv", "timeoutMs"], key);
+    if (
+      !Array.isArray(command.argv) ||
+      !command.argv.length ||
+      !command.argv.every(isText)
+    )
+      throw refuse(
+        path,
+        `${key}.argv must be a non-empty array of non-empty strings`,
+      );
+    if (!Number.isSafeInteger(command.timeoutMs) || command.timeoutMs <= 0)
+      throw refuse(path, `${key}.timeoutMs must be a positive safe integer`);
+    commands[name] = { argv: [...command.argv], timeoutMs: command.timeoutMs };
+  }
+  for (const selection of ["plain", "review"]) {
+    const names = value[selection];
+    if (
+      !Array.isArray(names) ||
+      !names.length ||
+      !names.every(
+        (name) => typeof name === "string" && Object.hasOwn(commands, name),
+      ) ||
+      new Set(names).size !== names.length
+    )
+      throw refuse(
+        path,
+        `${label}.${selection} must be a non-empty list of distinct declared command names`,
+      );
+  }
+  if (value.plain.some((name) => !value.review.includes(name)))
+    throw refuse(path, `${label}.review must include every plain command`);
+  return { commands, plain: [...value.plain], review: [...value.review] };
+};
+
 const validateRepositories = (path, declared, classes) => {
   requireObject(path, declared, "repositories");
   const repositories = {};
@@ -431,11 +488,39 @@ const validateRepositories = (path, declared, classes) => {
           `repositories.${id}.profile must be a relative normalized POSIX path`,
         );
     }
+    const documentationRoot = value.documentationRoot ?? DEFAULT_DOCUMENT_BASE;
+    requireText(
+      path,
+      documentationRoot,
+      `repositories.${id}.documentationRoot`,
+    );
+    if (
+      documentationRoot.startsWith("/") ||
+      documentationRoot.includes("\\") ||
+      posix.normalize(documentationRoot) !== documentationRoot ||
+      documentationRoot
+        .split("/")
+        .some((segment) => !segment || segment === "." || segment === "..")
+    )
+      throw refuse(
+        path,
+        `repositories.${id}.documentationRoot must be a contained relative normalized POSIX path`,
+      );
     repositories[id] = {
       id,
       baseBranch,
       worktreeParent,
       repositoryClass,
+      documentationRoot,
+      ...(value.gate === undefined
+        ? {}
+        : {
+            gate: validateTargetGate(
+              path,
+              value.gate,
+              `repositories.${id}.gate`,
+            ),
+          }),
       ...(value.profile === undefined ? {} : { profile: value.profile }),
       automationLogins: validateStringSet(
         path,

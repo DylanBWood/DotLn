@@ -615,6 +615,26 @@ if malformed_authority="$(release_command check-surfaces 2>&1)"; then
   exit 1
 fi
 grep -Fq 'work-order heading must contain exactly one strict vX.Y.Z version' <<<"$malformed_authority"
+# A target order publishes records without releasing this launchpad.
+"$node_bin" - "$main" "$(git -C "$main" rev-parse HEAD)" <<'JS'
+const fs = require('node:fs'), p = require('node:path'), root = process.argv[2];
+const file = p.join(root, 'docs/control/resume.jsonl');
+const rows = fs.readFileSync(file, 'utf8').trim().split('\n').map(JSON.parse);
+for (const row of rows) if (row.type === 'WorkOrderActivated' && row.workOrderId === 'WO-099') {
+  row.repositoryId = 'fixture-target'; row.baseCommit = process.argv[3];
+}
+fs.writeFileSync(file, rows.map(JSON.stringify).join('\n') + '\n');
+fs.writeFileSync(p.join(root, 'docs/work-orders/WO-099-fixture.md'), '# WO-099 — target records fixture\n\n**Objective:** Publish records.\n');
+JS
+write_release_block "$main" v0.2.0
+release_command check-surfaces | grep -Fq 'target order records no release'
+git -C "$main" add .
+git -C "$main" commit -qm 'fixture: target records'
+release_command check-surfaces --committed WO-099 | grep -Fq 'target order records no release'
+write_release_block "$main" v0.1.0
+assert_surface_failure 'expected one strict version at or above v0.2.0'
+printf '%s\n' '<!-- DOTLN-RELEASE-BEGIN -->' 'This source prepares DotLn `v0.2.0`.' 'Unowned prose.' '<!-- DOTLN-RELEASE-END -->' >"$main/README.md"
+assert_surface_failure 'observed 2 non-empty lines'
 }
 
 release_case_surfaces_local_snapshot() {
@@ -2571,7 +2591,10 @@ done
 
 release_case_starter_refresh() {
   make_repo starter_refresh
-  mkdir -p "$main/docs/siblings"
+  mkdir -p "$main/docs/siblings" "$main/scripts/kit"
+  cp -R "$script_dir/kit/." "$main/scripts/kit/"
+  printf '%s\n' '!.DS_Store' >>"$main/scripts/kit/gitignore.template"
+  git -C "$main" add scripts/kit
   printf '%s\n' '{"schemaVersion":1,"siblings":[{"id":"starter-fixture","purpose":"Fixture starter","relation":{"kind":"export","coreCommit":null},"capabilityRows":[]}]}' >"$main/docs/siblings/siblings.json"
   git -C "$main" add docs/siblings
   git -C "$main" commit -qm 'declare fixture starter'
@@ -2594,7 +2617,9 @@ release_case_starter_refresh() {
   git init -q -b main "$preview_starter"
   git -C "$preview_starter" config user.name Fixture
   git -C "$preview_starter" config user.email fixture@example.invalid
-  git -C "$preview_starter" commit --allow-empty -qm 'initial fixture starter'
+  printf '%s\n' '!.DS_Store' >"$preview_starter/.gitignore"
+  git -C "$preview_starter" add .gitignore
+  git -C "$preview_starter" commit -qm 'initial fixture starter'
   git clone -q --bare "$preview_starter" "$preview_remote"
   git -C "$preview_starter" remote add origin https://github.com/dotln-fixture/starter-fixture.git
   printf '[url "%s"]\n insteadOf = https://github.com/dotln-fixture/starter-fixture.git\n' "$preview_remote" >"$preview_config"
@@ -2603,13 +2628,20 @@ release_case_starter_refresh() {
   local preview_head preview_refs
   preview_head="$(git -C "$preview_starter" rev-parse HEAD)"
   preview_refs="$(git --git-dir="$preview_remote" for-each-ref --format='%(refname) %(objectname)')"
-  output="$(GIT_CONFIG_GLOBAL="$preview_config" release_close_summary WO-099 --publish --dry-run)"
+  mkdir -p "$preview_starter/nested assets"
+  printf 'Finder metadata\n' >"$preview_starter/.DS_Store"
+  printf 'nested Finder metadata\n' >"$preview_starter/nested assets/.DS_Store"
+  local preview_status
+  preview_status="$(git -C "$preview_starter" status --porcelain --untracked-files=all)"
+  output="$(GIT_CONFIG_GLOBAL="$preview_config" release_close_summary WO-099 --publish --dry-run)" || { printf '%s\n' "$output" >&2; return 1; }
   grep -Fq 'Starter refresh starter-fixture: preview' <<<"$output"
   grep -Fq "would fast-forward main to $merged_head" <<<"$output"
   grep -Fq "would refresh $preview_head to $merged_head" <<<"$output"
   test "$(git -C "$main" rev-parse HEAD)" = "$local_head"
   test "$(git -C "$preview_starter" rev-parse HEAD)" = "$preview_head"
-  test -z "$(git -C "$preview_starter" status --porcelain --untracked-files=all)"
+  test "$(git -C "$preview_starter" status --porcelain --untracked-files=all)" = "$preview_status"
+  grep -Fxq 'Finder metadata' "$preview_starter/.DS_Store"
+  grep -Fxq 'nested Finder metadata' "$preview_starter/nested assets/.DS_Store"
   test "$(git --git-dir="$preview_remote" for-each-ref --format='%(refname) %(objectname)')" = "$preview_refs"
   test "$(git -C "$preview_starter" worktree list --porcelain | grep -c '^worktree ')" = 1
   test ! -e "$main/docs/control/local/sibling-receipts"
@@ -2639,6 +2671,10 @@ JS
   mkdir -p "$starter/.claude"
   printf '{"commit":"%s","tag":"v0.2.1"}\n' "$core_head" >"$starter/KIT-MANIFEST.json"
   printf '%s\n' '{"profiles":[{"profile":{"runtime":{"snapshot":".runtime/harness/1234567890abcdef"}}}]}' >"$starter/.claude/harness-manifest.json"
+  "$node_bin" - "$main" "$starter" <<'JS'
+const fs=require('node:fs'),p=require('node:path');
+for(const [dest,source] of [["README.md","README.client.md"],[".gitignore","gitignore.template"],["CLAUDE.md","CLAUDE.template.md"],["AI-HARNESS-SECURITY.md","AI-HARNESS-SECURITY.template.md"],["docs/workstreams/README.md","workstream.template.md"],["docs/repositories/README.md","repository-profile.template.md"],["docs/work-orders/WO-001-environment-truth.md","first-order.template.md"],["docs/control/budgets.json","budgets.template.json"]]) {const target=p.join(process.argv[3],dest);fs.mkdirSync(p.dirname(target),{recursive:true});fs.copyFileSync(p.join(process.argv[2],"scripts/kit",source),target);if(dest==="CLAUDE.md") fs.appendFileSync(target,"\n<!-- dotln-harness:start -->\nFixture block.\n<!-- dotln-harness:end -->\n");}
+JS
   git -C "$starter" add .
   git -C "$starter" commit -qm 'current fixture kit'
   git clone -q --bare "$starter" "$starter_remote"
@@ -2655,10 +2691,36 @@ JS
   git -C "$starter" remote set-url origin https://github.com/dotln-fixture/starter-fixture.git
   local config="$fixture/refresh.gitconfig"
   printf '[url "%s"]\n insteadOf = https://github.com/dotln-fixture/starter-fixture.git\n' "$starter_remote" >"$config"
+  printf 'keep unrelated work\n' >"$starter/local-work.txt"
+  if output="$(GIT_CONFIG_GLOBAL="$config" release_close_summary WO-099 --publish --dry-run)"; then
+    printf 'unrelated starter file did not block close preview\n' >&2; return 1
+  fi
+  grep -Fq 'tracked or untracked changes' <<<"$output"
+  grep -Fxq 'keep unrelated work' "$starter/local-work.txt"
+  rm "$starter/local-work.txt"
+  printf 'tracked change\n' >>"$starter/.gitignore"
+  if output="$(GIT_CONFIG_GLOBAL="$config" release_close_summary WO-099 --publish --dry-run)"; then
+    printf 'tracked starter edit did not block close preview\n' >&2; return 1
+  fi
+  grep -Fq 'tracked or untracked changes' <<<"$output"
+  grep -Fxq 'tracked change' "$starter/.gitignore"
+  cp "$main/scripts/kit/gitignore.template" "$starter/.gitignore"
+  ln -s KIT-MANIFEST.json "$starter/.DS_Store"
+  if output="$(GIT_CONFIG_GLOBAL="$config" release_close_summary WO-099 --publish --dry-run)"; then
+    printf 'metadata symlink did not block close preview\n' >&2; return 1
+  fi
+  grep -Fq 'non-regular Finder metadata' <<<"$output"
+  test -L "$starter/.DS_Store"
+  rm "$starter/.DS_Store"
+  printf 'Finder metadata\n' >"$starter/.DS_Store"
+  mkdir -p "$starter/nested assets"
+  printf 'nested Finder metadata\n' >"$starter/nested assets/.DS_Store"
   output="$(GIT_CONFIG_GLOBAL="$config" CODEX_THREAD_ID=fixture-close-session release_close_summary WO-099 --publish)"
   grep -Fq 'Starter refresh starter-fixture: current' <<<"$output"
   test ! -e "$main/docs/control/local/harness/writer.json"
   test "$(git --git-dir="$starter_remote" rev-parse main)" = "$before"
+  grep -Fxq 'Finder metadata' "$starter/.DS_Store"
+  grep -Fxq 'nested Finder metadata' "$starter/nested assets/.DS_Store"
   "$node_bin" - "$record" "$main" "$starter" <<'JS'
 const assert=require('node:assert/strict'),fs=require('node:fs'),p=require('node:path');const r=JSON.parse(fs.readFileSync(process.argv[2]));
 assert.equal(r.publication.outcome,'already-published');assert.equal(r.blockers.length,0);assert.equal(r.starterRefresh[0].outcome,'current');assert.ok(!JSON.stringify(r.starterRefresh).includes(process.argv[4]));const dir=p.join(process.argv[3],'docs/control/local/sibling-receipts/starter-fixture');assert.equal(fs.readdirSync(dir).length,1);

@@ -44,6 +44,58 @@ const changeManifest = (root, path, change) => {
   change(manifest);
   writeFileSync(join(root, path), JSON.stringify(manifest));
 };
+
+test("a kit names absent legal pins, while declared pins and every other license rule remain enforced", () =>
+  withFixture((root) => {
+    const legalPath = join(root, "docs/LEGAL.md");
+    const legal = readFileSync(legalPath, "utf8");
+    const baseline = licenseSurfaceRules(root);
+    writeFileSync(join(root, "KIT-MANIFEST.json"), "{}\n");
+    runGit(root, ["init", "-q", "-b", "main"]);
+    const snapshot = () =>
+      commit(
+        root,
+        "Fixture Author <author@example.invalid>",
+        "fixture: license state",
+      );
+    const check = (expected, pattern) => {
+      snapshot();
+      for (const revision of [undefined, "HEAD"]) {
+        const rules = licenseSurfaceRules(root, revision);
+        const pins = rules.filter(({ line }) => line.includes("docs/LEGAL.md"));
+        assert.equal(
+          pins.every(({ pass }) => pass),
+          expected,
+        );
+        assert.match(pins.map(({ line }) => line).join("\n"), pattern);
+        assert.deepEqual(
+          rules.filter(({ line }) => !line.includes("docs/LEGAL.md")),
+          baseline.filter(({ line }) => !line.includes("docs/LEGAL.md")),
+        );
+        if (pattern.source.startsWith("^unavailable"))
+          assert.equal(pins.length, 1);
+      }
+    };
+    check(true, /PASS license-surfaces docs\/LEGAL.md LICENSE pin/u);
+    rmSync(legalPath);
+    check(true, /^unavailable license-surfaces docs\/LEGAL.md pins:/u);
+    writeFileSync(legalPath, "# No pins\n");
+    check(false, /docs\/LEGAL.md LICENSE pin: observed missing/u);
+    rmSync(legalPath);
+    symlinkSync("missing.md", legalPath);
+    check(
+      false,
+      /docs\/LEGAL.md pins: observed docs\/LEGAL.md is missing or is not/u,
+    );
+    rmSync(legalPath);
+    rmSync(join(root, "KIT-MANIFEST.json"));
+    check(false, /FAIL license-surfaces docs\/LEGAL.md pins/u);
+    writeFileSync(join(root, "KIT-MANIFEST.json"), "{}\n");
+    mkdirSync(join(root, "packages/kernel"), { recursive: true });
+    writeFileSync(join(root, "packages/kernel/tsconfig.json"), "{}\n");
+    check(false, /FAIL license-surfaces docs\/LEGAL.md pins/u);
+    writeFileSync(legalPath, legal);
+  }));
 const commit = (root, author, message) => {
   runGit(root, ["add", "."]);
   runGit(

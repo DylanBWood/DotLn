@@ -111,6 +111,13 @@ const shell = (name, file) => ({
 // Machinery declarations select optional review checks by their own source paths.
 export const machinerySources = {
   "launchpad-planning": [
+    "packages/kernel/src/types.ts",
+    "scripts/bootstrap.mjs",
+    "scripts/harness.mjs",
+    "scripts/license-surfaces.mjs",
+    "scripts/target-gate.mjs",
+    "scripts/test-target-publication-fixture.mjs",
+    "scripts/worktree.mjs",
     "scripts/launchpad.mjs",
     "scripts/kit/",
     "scripts/refute-plan.mjs",
@@ -275,6 +282,10 @@ export const machinerySources = {
     "scripts/lib/entropy-review.mjs",
   ],
   "runner-fixtures": [
+    "scripts/lib/github-body.mjs",
+    "scripts/lib/target-gate.mjs",
+    "scripts/target-gate.mjs",
+    "scripts/lib/target-worktrees.mjs",
     "scripts/harness.mjs",
     "scripts/test-host-guard.test.mjs",
     "scripts/host-guard.mjs",
@@ -670,7 +681,6 @@ export const suites = [
   // The published runtime is ignored; its digest rides on the build's result.
   buildSuite(root),
   node("release-surfaces", "scripts/release.mjs", {
-    kit: "core-only: core release records and docs/LEGAL.md",
     args: ["check-surfaces", "--local"],
     fast: true,
     needsBuild: true,
@@ -706,7 +716,6 @@ export const suites = [
     kit: "core-only: docs/LEGAL.md and core license fixtures",
   }),
   node("license-surfaces", "scripts/license-surfaces.mjs", {
-    kit: "core-only: docs/LEGAL.md license pins",
     preflight: true,
     document: true,
   }),
@@ -720,6 +729,8 @@ export const suites = [
   },
   nodeTests("launchpad", "scripts/test-launchpad.mjs", {
     kit: "core-only: package TypeScript and build configuration needed to export",
+    // Its nested kit gates inherit this reservation rather than one lane.
+    exclusive: true,
     // The fixture builds its committed copy's own packages with the running
     // install's toolchain and reads that copy's dist, never this checkout's.
     // The cold-start comparison reads this checkout's installed floor and
@@ -756,10 +767,12 @@ export const suites = [
   },
   nodeTests("worktree-integration", "scripts/test-worktree-integration.mjs", {
     kit: "core-only: core source and publication inputs",
+    // Its duration bounds were measured with the suite running alone.
+    exclusive: true,
   }),
   {
     ...shell("release", "scripts/test-release.sh"),
-    kit: "core-only: core tag-manifest template, TypeScript and release records",
+    kit: "core-only: core TypeScript and release records",
   },
   shell("work-orders-fixtures", "scripts/test-work-orders.sh"),
   node("publication", "scripts/check-publication.mjs", {

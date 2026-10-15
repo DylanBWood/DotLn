@@ -1956,6 +1956,251 @@ test("WO-146 credit-only and incomplete-token logs remain recordable without inv
   }
 });
 
+test("WO-210 discovery recognizes each effort control and records only advertised values", (t) => {
+  const root = repo(t);
+  for (const [name, help, control, values] of [
+    [
+      "copilot-cli",
+      "--reasoning-effort none|minimal|low|medium|high|xhigh|max",
+      "--reasoning-effort",
+      ["none", "minimal", "low", "medium", "high", "xhigh", "max"],
+    ],
+    [
+      "copilot-cli",
+      '--reasoning-effort <level> (choices: "low", "medium", "high")',
+      "--reasoning-effort",
+      ["low", "medium", "high"],
+    ],
+    [
+      "codex-cli",
+      "-c, --config <key=value>\n    Override configuration",
+      "-c model_reasoning_effort=<value>",
+      "unknown",
+    ],
+    [
+      "claude-code",
+      "--effort <level>                      Effort level for the current session\n                                     (low, medium, high, xhigh, max)\n  --other <setting>",
+      "--effort",
+      ["low", "medium", "high", "xhigh", "max"],
+    ],
+    [
+      "codex-cli",
+      "-c, --config <key=value>\n  --effort <level> (low, medium,\n      high, xhigh)\n  --other <setting>",
+      "--effort",
+      ["low", "medium", "high", "xhigh"],
+    ],
+    [
+      "claude-code",
+      "--effort <level>\n  --other <setting>",
+      "--effort",
+      "unknown",
+    ],
+  ]) {
+    const row = probeHarness(
+      name,
+      (_command, args) => ({
+        status: 0,
+        stdout: args[0] === "--version" ? "0.162.1" : help,
+      }),
+      {},
+    );
+    assert.equal(row.probe.effortSelectorPresent, true);
+    assert.equal(row.probe.effortSelector.control, control);
+    assert.deepEqual(row.probe.effortSelector.values, values);
+    assert.equal(row.probe.readbackChannelPresent, false);
+    write(
+      root,
+      "docs/discovery/environment.json",
+      json({
+        effortReadbackProbe: { harnesses: { [name]: { versions: [] } } },
+      }),
+    );
+    discoverHarness(root, name, () => row);
+    const stored = JSON.parse(
+      readFileSync(join(root, "docs/discovery/environment.json"), "utf8"),
+    ).effortReadbackProbe.harnesses[name];
+    assert.deepEqual(stored.sessionEffortSelector, row.probe.effortSelector);
+    assert.equal(stored.effectiveEffortReadback, undefined);
+    const established = {
+      classification: "observed",
+      control,
+      values: ["low", "medium", "high"],
+      source: "fixture measured selector",
+    };
+    stored.sessionEffortSelector = established;
+    write(
+      root,
+      "docs/discovery/environment.json",
+      json({ effortReadbackProbe: { harnesses: { [name]: stored } } }),
+    );
+    discoverHarness(root, name, () => ({
+      ...row,
+      probe: {
+        ...row.probe,
+        effortSelector: { ...row.probe.effortSelector, values: "unknown" },
+      },
+    }));
+    assert.deepEqual(
+      JSON.parse(
+        readFileSync(join(root, "docs/discovery/environment.json"), "utf8"),
+      ).effortReadbackProbe.harnesses[name].sessionEffortSelector,
+      established,
+    );
+  }
+  assert.equal(
+    probeHarness(
+      "copilot-cli",
+      (_command, args) => ({
+        status: 0,
+        stdout:
+          args[0] === "--version"
+            ? "1.0.94"
+            : "--reasoning-effort-extra <value>",
+      }),
+      {},
+    ).probe.effortSelectorPresent,
+    false,
+  );
+});
+
+test("discovery keeps an evidence-backed selector for another control and keeps every advertised level name", (t) => {
+  const root = repo(t);
+  const probe = (name, help) =>
+    probeHarness(
+      name,
+      (_command, args) => ({
+        status: 0,
+        stdout: args[0] === "--version" ? "0.170.0" : help,
+      }),
+      {},
+    );
+  const discovered = (name, record, row) => {
+    write(
+      root,
+      "docs/discovery/environment.json",
+      json({ effortReadbackProbe: { harnesses: { [name]: record } } }),
+    );
+    discoverHarness(root, name, () => row);
+    return JSON.parse(
+      readFileSync(join(root, "docs/discovery/environment.json"), "utf8"),
+    ).effortReadbackProbe.harnesses[name].sessionEffortSelector;
+  };
+  // The installed record names its measured config key and evidence file.
+  const measured = JSON.parse(
+    readFileSync(join(source, "docs/discovery/environment.json"), "utf8"),
+  ).effortReadbackProbe.harnesses["codex-cli"];
+  assert.ok(measured.sessionEffortSelector.evidence);
+  for (const help of [
+    "-c, --config <key=value>\n  --effort <level> (low, high)",
+    "--effort <level>  levels: low|medium|high|xhigh|max|turbo\n  --other <setting>",
+    "-c, --config <key=value>\n    Override configuration",
+  ])
+    assert.deepEqual(
+      discovered(
+        "codex-cli",
+        { ...structuredClone(measured), versions: [] },
+        probe("codex-cli", help),
+      ),
+      measured.sessionEffortSelector,
+    );
+  // The same control, or a record without an evidence file, takes the
+  // advertised values.
+  const sameControl = probe("codex-cli", "--effort <level> (low, high)");
+  assert.deepEqual(
+    discovered(
+      "codex-cli",
+      {
+        versions: [],
+        sessionEffortSelector: {
+          ...measured.sessionEffortSelector,
+          control: "--effort",
+        },
+      },
+      sameControl,
+    ),
+    sameControl.probe.effortSelector,
+  );
+  const unbacked = probe("codex-cli", "--effort <level> (low, high)");
+  assert.deepEqual(
+    discovered(
+      "codex-cli",
+      {
+        versions: [],
+        sessionEffortSelector: {
+          classification: "observed",
+          control: "-c model_reasoning_effort=<level>",
+          values: ["low", "medium", "high", "xhigh", "max"],
+        },
+      },
+      unbacked,
+    ),
+    unbacked.probe.effortSelector,
+  );
+  // A list read across its line breaks keeps every name, and a level DotLn
+  // does not know is recorded beside the known ones.
+  for (const [name, help, values] of [
+    [
+      "copilot-cli",
+      "--reasoning-effort <level>\n    Set the level [possible values: none, minimal,\n    low, medium, high, xhigh,\n    max]\n  --context <tier>",
+      ["none", "minimal", "low", "medium", "high", "xhigh", "max"],
+    ],
+    [
+      "codex-cli",
+      '-c, --config <key=value>\n  --effort <level>  Reasoning effort (choices: "low",\n      "medium", "high", "turbo")\n  --other <setting>',
+      ["low", "medium", "high", "turbo"],
+    ],
+    [
+      "copilot-cli",
+      "--reasoning-effort <level>\n    Set the level [possible values: low, medium, high, ultra]",
+      ["low", "medium", "high", "ultra"],
+    ],
+    [
+      "claude-code",
+      "--effort <level>   Effort level\n                   (minimal, low, medium, or turbo)\n  --other <setting>",
+      ["minimal", "low", "medium", "turbo"],
+    ],
+    [
+      "copilot-cli",
+      "--reasoning-effort low|high|extreme",
+      ["low", "high", "extreme"],
+    ],
+    [
+      "copilot-cli",
+      "--reasoning-effort <level>\n          Set the reasoning effort level [possible values: none, minimal, low, medium, high, xhigh, max]\n      --context <tier>\n          Set the context window tier [possible values: default, long_context]",
+      ["none", "minimal", "low", "medium", "high", "xhigh", "max"],
+    ],
+    // A commander help ends its choices with keys such as default: or preset:.
+    [
+      "claude-code",
+      '--effort <level>  Effort level for the current session (choices: "low",\n                    "medium", "high", "xhigh", "max", default:\n                    "high")\n  --other <setting>',
+      ["low", "medium", "high", "xhigh", "max"],
+    ],
+    [
+      "claude-code",
+      '--effort [level]  Effort level (choices: "low", "high", preset: "high")',
+      ["low", "high"],
+    ],
+    [
+      "claude-code",
+      '--effort <level>  Effort level (choices: "minimal", "max", env: CLAUDE_EFFORT)',
+      ["minimal", "max"],
+    ],
+    [
+      "claude-code",
+      '--effort <level>  Effort level (choices: "low", "max", "default": "high")',
+      ["low", "max"],
+    ],
+    ["claude-code", "--effort <level> (json, text)", "unknown"],
+  ]) {
+    const row = probe(name, help);
+    assert.deepEqual(row.probe.effortSelector.values, values);
+    assert.deepEqual(
+      discovered(name, { versions: [] }, row),
+      row.probe.effortSelector,
+    );
+  }
+});
+
 test("WO-146 discovery admits the Copilot executable without declaring effective effort", (t) => {
   const root = repo(t);
   const commands = [];
@@ -6324,6 +6569,38 @@ const dispose = (root, entry, status, targets = []) =>
       status === "open" ? null : "Changed evidence or operator direction",
     targets,
   });
+
+test("WO-210 follow-up titles end at a word boundary with a visible omission", (t) => {
+  const root = repo(t);
+  const title = `Candidate — ${"complete word ".repeat(20)}remaining text`;
+  write(
+    root,
+    "docs/product/long-title.md",
+    `# Fixture\n\n## ${title}\n\nSource remains complete.\n`,
+  );
+  const [row] = collectFollowupSources(root);
+  assert.ok(row.source.title.length <= 200);
+  assert.match(row.source.title, /(?:complete|word)…$/u);
+  assert.ok(title.startsWith(row.source.title.slice(0, -1)));
+  const synced = syncFollowups(root);
+  assert.equal(synced.entries[0].revisions[0].title, row.source.title);
+  assert.equal(syncFollowups(root).entries[0].revisions.length, 1);
+  synced.entries[0].revisions[0].title = title.slice(0, 200);
+  write(root, "docs/planning/followups.json", json(synced));
+  execGit(["add", "."], { cwd: root });
+  execGit(["commit", "-qm", "Legacy excerpt"], { cwd: root });
+  dispose(root, synced.entries[0], "deferred");
+  assert.equal(syncFollowups(root).entries[0].revisions.length, 1);
+  assert.equal(planningFollowups(root).rows[0].status, "deferred");
+  write(
+    root,
+    "docs/product/long-title.md",
+    `# Fixture\n\n## ${title}\n\nChanged substantive scope.\n`,
+  );
+  const changed = syncFollowups(root).entries[0];
+  assert.equal(changed.revisions.length, 2);
+  assert.match(changed.revisions[1].title, /(?:complete|word)…$/u);
+});
 
 test("follow-ups retain changed, removed and overlapping public sources without importing local prose", (t) => {
   const root = repo(t);

@@ -152,7 +152,7 @@ export const pushUrl = (repo, repository) => {
       "origin's configured push URL is not a GitHub repository",
     );
   }
-  if (target.identity !== repository.selector.toLowerCase())
+  if (repository && target.identity !== repository.selector.toLowerCase())
     throw publishRefusal(
       `origin's configured push URL names ${target.selector}, but its resolved target is ${repository.selector}`,
     );

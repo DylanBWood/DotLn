@@ -5,6 +5,7 @@ import {
   readPendingReceipts,
 } from "./lib/siblings.mjs";
 import { refreshHarnessRuntime } from "./lib/harness-runtime.mjs";
+import { checksPath } from "./lib/gate-evidence.mjs";
 import { findLaunchpad, loadConfig } from "./lib/config.mjs";
 import { existsSync, lstatSync, readFileSync, realpathSync } from "node:fs";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
@@ -24,6 +25,7 @@ import {
   ensureGh,
   executeGh,
   resolveGitHubPushTarget,
+  HOST_GIT_READ,
 } from "./lib/github-repository.mjs";
 import {
   ensureClean,
@@ -52,6 +54,7 @@ import {
 import { contributionSignoffRules } from "./lib/contributions.mjs";
 import {
   reviewedProductGate,
+  reviewedLaunchpadIdentity,
   productGateBody,
 } from "./lib/release-records.mjs";
 import {
@@ -70,6 +73,7 @@ import {
   readTargetStart,
   recordTargetStart,
   forgetTargetStart,
+  launchpadInvocation,
 } from "./lib/target-worktrees.mjs";
 
 // Scratch repositories leave once every preserved byte is proven and just
@@ -101,19 +105,30 @@ const readTrackedTextAtHead = (root, path, displayPath) => {
     [
       "-C",
       root,
+      ...HOST_GIT_READ,
       "ls-tree",
       "-z",
-      "--format=%(objectname)",
+      "--format=%(objectmode) %(objecttype) %(objectname)",
       "HEAD",
       "--",
       `:(literal)${path}`,
     ],
     { encoding: "utf8" },
   );
-  if (tree.status !== 0 || !/^[0-9a-f]{40,64}\0$/.test(tree.stdout))
-    throw new Error(`${displayPath}: file is not tracked`);
-  const object = tree.stdout.slice(0, -1);
-  const blob = spawnGit(["-C", root, "cat-file", "blob", object]);
+  const tracked = /^100(?:644|755) blob ([0-9a-f]{40}|[0-9a-f]{64})\0$/u.exec(
+    tree.stdout,
+  );
+  if (tree.status !== 0 || !tracked)
+    throw new Error(`${displayPath}: file is not tracked as a regular file`);
+  const object = tracked[1];
+  const blob = spawnGit([
+    "-C",
+    root,
+    ...HOST_GIT_READ,
+    "cat-file",
+    "blob",
+    object,
+  ]);
   if (blob.status !== 0)
     throw new Error(`${displayPath}: committed file cannot be read`);
   try {
@@ -135,6 +150,19 @@ const ensureNoIgnoredMaterial = (
     ...receipt.files.map((row) => row.source),
     ...(receipt.nestedRepositories ?? []).map((row) => `${row.source}/`),
   ]);
+  // The unchanged gate store still owns its canonical cache when an instance
+  // moves the control root. Only its index and addressed history are derived;
+  // other ignored files retain the ordinary preservation/refusal rule.
+  const gateIndex = relative(path, checksPath(path));
+  const gateHistory = `${dirname(gateIndex)}/check-history/`;
+  const gateCache = (entry) =>
+    entry.kind === "file" &&
+    containedRegularFile(join(path, entry.path), path) &&
+    (entry.path === gateIndex ||
+      (entry.path.startsWith(gateHistory) &&
+        /^(?:[a-f0-9]{40}|[a-f0-9]{64}|legacy)\.json$/u.test(
+          entry.path.slice(gateHistory.length),
+        )));
   const blockers = runGitPathList(path, [
     "ls-files",
     "-z",
@@ -144,7 +172,7 @@ const ensureNoIgnoredMaterial = (
   ])
     .filter((candidate) => !reconciled.has(candidate))
     .map((candidate) => describeIgnoredMaterial(path, candidate))
-    .filter((entry) => !entry.disposable);
+    .filter((entry) => !entry.disposable && !gateCache(entry));
   if (blockers.length > 0)
     throw new Error(
       `worktree contains ignored material and will not be removed (${blockers.length} ${blockers.length === 1 ? "entry" : "entries"}; only scratch repositories are removed):\n${blockers
@@ -557,7 +585,7 @@ const startTargetWorktree = async (mainPath, entry) => {
     recordTargetWorktree(launchpad, entry);
     forgetTargetStart(mainPath, workOrderId);
     process.stdout.write(
-      `Target worktree ${target} on ${branch}.\nAuthority profile: ${JSON.stringify(loadConfig(mainPath).repositories[entry.repositoryId].authorityProfile)}\nTarget status: DOTLN_LAUNCHPAD=${shellQuote(launchpad)} node ${shellQuote(join(launchpad, "scripts/resume.mjs"))} status\nCreated ${launchpad} on ${branch}.\nActivated ${workOrderId}.\nPhase: active.\nNext (run manually):\n  cd ${shellQuote(target)}\n  codex\n  enter: resume: next\n`,
+      `Target worktree ${target} on ${branch}.\nAuthority profile: ${JSON.stringify(loadConfig(mainPath).repositories[entry.repositoryId].authorityProfile)}\nTarget status: ${launchpadInvocation(launchpad, "resume")} status\nCreated ${launchpad} on ${branch}.\nActivated ${workOrderId}.\nPhase: active.\nNext (run manually):\n  cd ${shellQuote(target)}\n  codex\n  enter: resume: next\n`,
     );
   } catch (error) {
     throw new Error(
@@ -676,21 +704,63 @@ const main = async () => {
     process.stdout.write(`${JSON.stringify(result)}\n`);
     return;
   }
-  const mainPath = mainWorktree(toolRoot);
-
+  // Usage is independent of whether this checkout has a main worktree.
   if (action === "clone") {
     if (!workOrderId || actionArgs.length !== 1)
       throw new Error(
         "usage: worktree clone <repository-or-export-sibling-id> <absolute-path>",
       );
+  } else if (!/^WO-[0-9]{3}$/.test(workOrderId ?? "")) {
+    throw new Error("work order id must look like WO-003");
+  }
+  if (action === "publish") {
+    if (actionArgs[0] === "--target") {
+      if (
+        ![2, 3].includes(actionArgs.length) ||
+        !actionArgs[1] ||
+        (actionArgs.length === 3 &&
+          actionArgs[2] !== "--require-deliverable-ready")
+      )
+        throw new Error(
+          "usage: worktree publish WO-NNN --target <target-publish-request.json> [--require-deliverable-ready]",
+        );
+    } else if (actionArgs[0] === "--target-worktree") {
+      const flags = actionArgs.filter((_, index) => index % 2 === 1);
+      if (
+        actionArgs.length !== 7 ||
+        new Set(flags).size !== 3 ||
+        flags.some(
+          (flag) => !["--branch", "--title", "--body-file"].includes(flag),
+        ) ||
+        actionArgs.some(
+          (value, index) => index > 0 && index % 2 === 0 && !value,
+        )
+      )
+        throw new Error(
+          'usage: worktree publish WO-NNN --target-worktree --branch <type>/<slug> --title "<title>" --body-file <contained reviewed path>',
+        );
+    } else if (
+      actionArgs.length !== 4 ||
+      !["--title", "--body-file"].includes(actionArgs[0]) ||
+      !["--title", "--body-file"].includes(actionArgs[2]) ||
+      actionArgs[0] === actionArgs[2] ||
+      !actionArgs[1] ||
+      !actionArgs[3]
+    ) {
+      throw new Error(
+        'usage: worktree publish WO-NNN --title "<title>" --body-file <contained regular-file path>; quote titles with spaces',
+      );
+    }
+  }
+  const mainPath = mainWorktree(toolRoot);
+
+  if (action === "clone") {
     recordRepositoryClone(mainPath, workOrderId, actionArgs[0]);
     process.stdout.write(`Recorded local clone for ${workOrderId}.\n`);
     return;
   }
 
   const workOrderPath = actionArgs[0];
-  if (!/^WO-[0-9]{3}$/.test(workOrderId ?? ""))
-    throw new Error("work order id must look like WO-003");
   const suffix = workOrderId.slice(workOrderId.indexOf("-") + 1);
   const branch = `wo-${suffix}`;
   const target = join(dirname(mainPath), `${basename(mainPath)}-wo${suffix}`);
@@ -796,15 +866,6 @@ const main = async () => {
   } else if (action === "publish" && actionArgs[0] === "--target") {
     // A target order publishes its source-change episode in the target
     // repository under an operator grant (WO-064); no launchpad branch moves.
-    if (
-      ![2, 3].includes(actionArgs.length) ||
-      !actionArgs[1] ||
-      (actionArgs.length === 3 &&
-        actionArgs[2] !== "--require-deliverable-ready")
-    )
-      throw new Error(
-        "usage: worktree publish WO-NNN --target <target-publish-request.json> [--require-deliverable-ready]",
-      );
     const { publishTargetOrder, readTargetPublishRequest } =
       await import("./lib/target-publish.mjs");
     const { readAuthorityGrantRegistry } =
@@ -818,18 +879,37 @@ const main = async () => {
         "--require-deliverable-ready",
       ),
     });
-  } else if (action === "publish") {
+  } else if (action === "publish" && actionArgs[0] === "--target-worktree") {
+    const item = parseWorktrees(repoRoot).find(
+      (candidate) => candidate.branch === `refs/heads/${branch}`,
+    );
+    if (!item?.worktree) throw new Error(`no worktree found for ${branch}`);
+    const subject = resolve(item.worktree);
+    ensureClean(subject);
+    const flag = (name) => actionArgs[actionArgs.indexOf(name) + 1];
+    const bodyFile = flag("--body-file");
+    const bodyPath = resolve(subject, bodyFile);
     if (
-      actionArgs.length !== 4 ||
-      !["--title", "--body-file"].includes(actionArgs[0]) ||
-      !["--title", "--body-file"].includes(actionArgs[2]) ||
-      actionArgs[0] === actionArgs[2] ||
-      !actionArgs[1] ||
-      !actionArgs[3]
+      !bodyPath.startsWith(`${subject}${sep}`) ||
+      !containedRegularFile(bodyPath, subject)
     )
       throw new Error(
-        'usage: worktree publish WO-NNN --title "<title>" --body-file <contained regular-file path>; quote titles with spaces',
+        `${bodyFile}: body must be a contained regular file of the order worktree`,
       );
+    const body = readTrackedTextAtHead(
+      subject,
+      relative(subject, bodyPath),
+      bodyFile,
+    );
+    const { publishTargetWorktree } = await import("./lib/target-publish.mjs");
+    publishTargetWorktree({
+      launchpad: subject,
+      workOrderId,
+      branch: flag("--branch"),
+      title: flag("--title"),
+      body,
+    });
+  } else if (action === "publish") {
     const item = parseWorktrees(repoRoot).find(
       (candidate) => candidate.branch === `refs/heads/${branch}`,
     );
@@ -876,29 +956,68 @@ const main = async () => {
       throw new Error(
         "PR title or body contains AI attribution or a session trailer/URL",
       );
-    const releaseNotesPath = releaseNotesPathFor(workOrderId, subject);
-    const releaseNotesFile = resolve(subject, releaseNotesPath);
-    if (!existsSync(releaseNotesFile))
-      throw new Error(`${releaseNotesPath}: release-notes file is missing`);
-    if (!lstatSync(releaseNotesFile).isFile())
-      throw new Error(
-        `${releaseNotesPath}: release-notes path is not a regular file`,
-      );
-    if (
-      !realpathSync(releaseNotesFile).startsWith(
-        `${realpathSync(subject)}${sep}`,
+    const control = readControl(subject, "HEAD");
+    const state = control.orders.get(workOrderId)?.state;
+    let gateBlock;
+    if (state?.repositoryId) {
+      if (!state.targetRecords)
+        throw new Error(
+          `${workOrderId}: committed control has no TargetRecordsCommitted`,
+        );
+      const { targetRecordSources } = await import("./lib/target-records.mjs");
+      const { eventsForOrder } = await import("./lib/control-store.mjs");
+      const moved = targetRecordSources(
+        subject,
+        state,
+        eventsForOrder(control, workOrderId),
       )
-    )
-      throw new Error(
-        `${releaseNotesPath}: release-notes file escapes its repository`,
+        .filter((row) => row.kind !== "order")
+        .map((row) => row.source);
+      const added = new Set(
+        runGitPathList(subject, [
+          "diff",
+          "--name-only",
+          "--diff-filter=A",
+          "-z",
+          "origin/main...HEAD",
+          "--",
+        ]),
       );
-    const releaseNotes = readTrackedTextAtHead(
-      subject,
-      releaseNotesPath,
-      releaseNotesPath,
-    );
-    parseReleaseNotes(releaseNotes, releaseNotesPath);
-    assertGitHubBodyProfile(releaseNotes, releaseNotesPath);
+      const copies = moved.filter((path) => added.has(path));
+      if (copies.length)
+        throw new Error(
+          `records branch adds moved target records: ${copies.join(", ")}`,
+        );
+      gateBlock = reviewedLaunchpadIdentity(subject, workOrderId).body;
+      process.stdout.write(
+        `${workOrderId}: target order records no release; records live in ${state.targetRecords.repositoryId} at ${state.targetRecords.commit}.\n`,
+      );
+    } else {
+      const releaseNotesPath = releaseNotesPathFor(workOrderId, subject);
+      const releaseNotesFile = resolve(subject, releaseNotesPath);
+      if (!existsSync(releaseNotesFile))
+        throw new Error(`${releaseNotesPath}: release-notes file is missing`);
+      if (!lstatSync(releaseNotesFile).isFile())
+        throw new Error(
+          `${releaseNotesPath}: release-notes path is not a regular file`,
+        );
+      if (
+        !realpathSync(releaseNotesFile).startsWith(
+          `${realpathSync(subject)}${sep}`,
+        )
+      )
+        throw new Error(
+          `${releaseNotesPath}: release-notes file escapes its repository`,
+        );
+      const releaseNotes = readTrackedTextAtHead(
+        subject,
+        releaseNotesPath,
+        releaseNotesPath,
+      );
+      parseReleaseNotes(releaseNotes, releaseNotesPath);
+      assertGitHubBodyProfile(releaseNotes, releaseNotesPath);
+      gateBlock = productGateBody(reviewedProductGate(subject, workOrderId));
+    }
     const contributions = contributionSignoffRules(subject);
     process.stdout.write(
       `${contributions.map(({ line }) => line).join("\n")}\n`,
@@ -919,8 +1038,6 @@ const main = async () => {
     process.stdout.write(
       `${writingGuidance("prTitle", subject)}\n${writingGuidance("prBody", subject)}\n`,
     );
-    const gate = reviewedProductGate(subject, workOrderId);
-    const gateBlock = productGateBody(gate);
     const publicationBody = body.includes("<!-- dotln-product-gate:start -->")
       ? body.replace(
           /<!-- dotln-product-gate:start -->[\s\S]*?<!-- dotln-product-gate:end -->/,
@@ -1134,7 +1251,7 @@ const main = async () => {
     );
   } else {
     throw new Error(
-      "usage: worktree clone <repository-or-export-sibling-id> <absolute-path> | worktree start WO-NNN <work-order-path> | worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue] | worktree publish WO-NNN --title <title> --body-file <path> | worktree publish WO-NNN --target <request.json> [--require-deliverable-ready] | worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO] | worktree resolve-pr --request <review-loop-request.json> | worktree finish WO-NNN [--dry-run] | worktree settle WO-NNN [--dry-run]",
+      "usage: worktree clone <repository-or-export-sibling-id> <absolute-path> | worktree start WO-NNN <work-order-path> | worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue] | worktree publish WO-NNN --title <title> --body-file <path> | worktree publish WO-NNN --target <request.json> [--require-deliverable-ready] | worktree publish WO-NNN --target-worktree --branch <type>/<slug> --title <title> --body-file <path> | worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO] | worktree resolve-pr --request <review-loop-request.json> | worktree finish WO-NNN [--dry-run] | worktree settle WO-NNN [--dry-run]",
     );
   }
 };
