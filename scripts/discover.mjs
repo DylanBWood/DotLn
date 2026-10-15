@@ -7,6 +7,61 @@ import { observedSpawnSync as spawnSync } from "../packages/skeleton/src/gate-de
 import { readFileSync, writeFileSync, realpathSync } from "node:fs";
 import { join } from "node:path";
 
+// A help text lists effort levels after "choices:" or "possible values:", in
+// parentheses, or joined by "|", and may wrap the list across lines. The
+// kinds are tried in that order, and lists of one kind by position; the
+// first list that names at least one level DotLn knows is the flag's list,
+// and every name in it is kept, so a level DotLn does not know yet is
+// recorded beside the known ones. A word followed by a colon, such as the
+// `default:`, `preset:` or `env:` a commander help prints after its choices,
+// ends the list and is never a level name, quoted or not.
+const KNOWN_LEVEL = /^(?:none|minimal|low|medium|high|xhigh|max)$/u;
+const NAME = String.raw`["']?[a-z][\w-]*(?![\w-])(?!["']?\s*:)["']?`;
+const SEPARATOR = String.raw`\s*(?:[,|]\s*(?:or\s+)?|\s+or\s+)\s*`;
+const LEVEL_LISTS = [
+  new RegExp(
+    String.raw`(?:choices|possible values):\s*(${NAME}(?:${SEPARATOR}${NAME})*)`,
+    "giu",
+  ),
+  new RegExp(String.raw`\(\s*(${NAME}(?:${SEPARATOR}${NAME})+)\s*\)`, "gu"),
+  new RegExp(String.raw`(${NAME}(?:\s*\|\s*${NAME})+)`, "gu"),
+];
+const advertisedLevels = (block) =>
+  LEVEL_LISTS.flatMap((pattern) => [...block.matchAll(pattern)])
+    .map((match) =>
+      match[1]
+        .split(new RegExp(SEPARATOR, "u"))
+        .map((name) => name.replace(/["']/gu, "")),
+    )
+    .find((names) => names.some((name) => KNOWN_LEVEL.test(name)));
+
+const effortSelectorFromHelp = (name, help) => {
+  const flag = name === "copilot-cli" ? "--reasoning-effort" : "--effort";
+  const matched = new RegExp(`(?:^|[\\s,])(${flag})(?=\\s|=|$)`, "u").exec(
+    help,
+  );
+  if (!matched)
+    return name === "codex-cli" && /--config\b/u.test(help)
+      ? {
+          classification: "observed",
+          control: "-c model_reasoning_effort=<value>",
+          values: "unknown",
+          source:
+            "CLI --help declares the config override; scripts/probe-codex-effort.mjs records this key. This help does not establish accepted effort values or effective effort.",
+        }
+      : null;
+  const start = matched.index + matched[0].length - flag.length;
+  const block = help.slice(start).split(/\n(?=\s*-\S)|\n\s*\n/u)[0];
+  const values = advertisedLevels(block);
+  return {
+    classification: "observed",
+    control: flag,
+    values: values?.length ? [...new Set(values)] : "unknown",
+    source:
+      "CLI --help; selected effort control, not effective-effort readback",
+  };
+};
+
 export function probeHarness(name, execute = spawnSync, env = process.env) {
   const fallback = {
     "claude-code": "claude",
@@ -43,6 +98,7 @@ export function probeHarness(name, execute = spawnSync, env = process.env) {
   const hasReadback = ["low", "medium", "high", "xhigh", "max"].includes(
     effort,
   );
+  const effortSelector = effortSelectorFromHelp(name, help.stdout ?? "");
   return {
     classification: "observed",
     value: version,
@@ -52,7 +108,8 @@ export function probeHarness(name, execute = spawnSync, env = process.env) {
       versionChannel,
       versionExitCode: versionRun.status,
       helpExitCode: help.status,
-      effortSelectorPresent: /--effort\b/.test(help.stdout ?? ""),
+      effortSelectorPresent: effortSelector !== null,
+      ...(effortSelector ? { effortSelector } : {}),
       configSelectorPresent: /--config\b/.test(help.stdout ?? ""),
       readbackChannel: name === "claude-code" ? "CLAUDE_EFFORT" : "unavailable",
       readbackChannelPresent: hasReadback,
@@ -86,12 +143,19 @@ export function discoverHarness(root, name, probe = probeHarness) {
     observedAt: row.observedAt,
     source: `bounded-cli-probe:${row.probe.versionChannel}`,
   });
-  if (row.probe.effortSelectorPresent)
-    record.sessionEffortSelector = {
-      classification: "observed",
-      control: "--effort",
-      values: ["low", "medium", "high", "xhigh", "max"],
-    };
+  // A probe fills an empty record. Over a recorded selector it needs
+  // advertised values and either the same control or a record no evidence
+  // file backs, so help that shows another flag never replaces a selector a
+  // measured probe established.
+  const selector = row.probe.effortSelectorPresent && row.probe.effortSelector;
+  const recorded = record.sessionEffortSelector;
+  if (
+    selector &&
+    (!recorded ||
+      (Array.isArray(selector.values) &&
+        (selector.control === recorded.control || !recorded.evidence)))
+  )
+    record.sessionEffortSelector = selector;
   // CLAUDE_EFFORT is the effort the Claude Code host selected for its own
   // session, not an effective-effort readback (WO-157 item 11, WO-152 D012).
   if (row.probe.readbackChannelPresent)

@@ -44,6 +44,17 @@ const exact = (value, keys) =>
   Object.keys(value).sort().join(",") === [...keys].sort().join(",");
 const compact = (value, limit) =>
   value.replace(/\s+/g, " ").trim().slice(0, limit);
+const titleExcerpt = (value) => {
+  const title = compact(value, Infinity);
+  if (title.length <= 200) return title;
+  const prefix = title.slice(0, 199);
+  const boundary = /\s/u.test(title[199])
+    ? prefix.length
+    : prefix.lastIndexOf(" ");
+  // The source ref and hash retain the complete source. A visible ellipsis
+  // distinguishes this bounded display title from an accidental clipped word.
+  return `${boundary > 0 ? prefix.slice(0, boundary) : prefix.replace(/[\uD800-\uDBFF]$/u, "")}…`;
+};
 const anchor = (value) =>
   value
     .toLowerCase()
@@ -109,7 +120,7 @@ export function collectFollowupSources(root) {
       source: {
         hash: hash(body),
         ref: `${path}#${fragment}`,
-        title: compact(title.replace(/\*|`/g, ""), 200),
+        title: titleExcerpt(title.replace(/\*|`/g, "")),
         summary: compact(body, 700),
         missing: false,
       },
@@ -416,7 +427,16 @@ function projected(root) {
       };
       state.entries.push(entry);
     }
-    if (encode(entry.revisions.at(-1)) !== encode(row.source))
+    // The full source hash carries meaning; a display-excerpt change alone
+    // must not reopen a disposition or rewrite an immutable old revision.
+    const identity = (source) =>
+      source &&
+      Object.fromEntries(
+        Object.entries(source).filter(([key]) => key !== "title"),
+      );
+    if (
+      encode(identity(entry.revisions.at(-1))) !== encode(identity(row.source))
+    )
       entry.revisions.push(row.source);
   }
   for (const entry of state.entries)
