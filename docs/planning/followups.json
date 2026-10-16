@@ -36123,6 +36123,216 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-d8769cd30e3501af",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16::1b2103e57e8f066384e5f522f10f6a8f508617b2de1fbf8293143ef3595b0bff",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "dfdd07bf0252e7feddb4c1ec55745c782f1b4460c6a5fdf95721f8a5995dae37",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16",
+          "title": "The continuation payload carries elapsed time, continuations used and unjudged criteria.",
+          "summary": "7. **The continuation payload carries elapsed time, continuations used and unjudged criteria.** The outside stop hook re-sends time spent, the continuation count and the original request on every attempt to finish. DotLn rebuilds the task from durable state, which is stronger, but the Codex continuation payload names only role, order, phase and completion event, and Claude's Stop advisory never blocks. Shape: the payload gains order-level time since dispatch, continuations used and unjudged criteria, all computed from the control fold; a Claude adapter needs a recorded operator exception like the Codex one. Nearest row: FUP-0091. Reopen: WO-083 activates, or a continuation repeats a complete",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-68c2a4615391cf3b",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16::391ea76fa2d240c7fceefa47035aca6ef575065c673486f886c4e3abe9df1fa4",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "9c67374b61926734cf15767a63458c95649e205705071bb532aad6b760952d8d",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16",
+          "title": "A growth-curve benchmark over record length.",
+          "summary": "5. **A growth-curve benchmark over record length.** The outside run measured per-turn cost after 0, 50 and 150 prior turns, because cost that grows with retained history shows only as a curve. DotLn's records are append-only by design (153 control segments, 1,183,023 bytes, the largest 93,210), product 05 §Candidate — success under growth names fold latency as a scenario to test, and no benchmark varies log length. Shape: an on-demand benchmark folds synthetic segments at 0, 50 and 150 closed orders and records events folded, bytes read and wall time per status or briefing call, outside the default gate, as evidence for that candidate. Reopen: a status or briefing call is recorded slower tha",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-8da07b81b2a06f93",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16::6906423be2facba84d32baf3fbbc0fea0b2f6801ed22b028793ba1875153613d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "38f90d2fa4d72ed1f0cf675904bc0432fa2001e2d561dd3de5ac9cda9558e72d",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16",
+          "title": "Verification lenses for edited assertions and defaults that keep the defect, and a deterministic importer index.",
+          "summary": "13. **Verification lenses for edited assertions and defaults that keep the defect, and a deterministic importer index.** The outside review guidance flags an edited test assertion, a flag whose default keeps the bug, a shared-layer fix one caller needed and an unneeded public name; the outside run traced callers, mock targets and shared references across forty files before editing. DotLn has no standing rule on edited assertions (WO-197 wrote one into a single order), and its ImpactMap is designed as a cartographer episode with no implementation. Shape: one clause in product 07 §Verification review and attack naming each pre-existing assertion the diff changed or removed, any new flag whose ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-177ce363c76144d3",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16::69d826cf2550b371f9e8d6942fbca9622dc2ff09a1f37fb06a4282dc5f4bf2dc",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c41bb5f2b6c036e90ebb52c9afdb618d647f94ea113afab69aa84dedcf4ca3dd",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16",
+          "title": "Overnight resident episodes with a priced morning handoff.",
+          "summary": "10. **Overnight resident episodes with a priced morning handoff.** The outside run lasted eleven unattended hours and stopped with a pull request ready, and the write-up gives no cost. DotLn has the resident, the mission check and a presence policy; its unattended runs so far are scratch proofs and the absence payoff curve is unbuilt. Shape: the resident dispatches bounded episodes overnight against one admitted order under a presence policy; the morning view is receipts with their Process cost lines, never one long session. Nearest rows: FUP-7787c6f1867375f8, FUP-441469088613e52a. Reopen: an instance wants an unattended lifecycle run, or a priced episode exists.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9db951dd380d7611",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16::6ad4efefff3cd7319a4389f99519414c88ab7f374b0f185795fa47a7d1ad1df6",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "fbb456481a20946536945174f254ebaf68d081aba3f8f7f891b9fb7c6afd9dd0",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16",
+          "title": "Canaries for assumptions about upstream internals.",
+          "summary": "12. **Canaries for assumptions about upstream internals.** The outside change pins an upstream library's model slots with a test that fails loudly on a release that adds state, and one optimization was cut for reading a private attribute that could break silently. DotLn prefers instruments that fail loudly and keeps version-indexed host observations, but the worker transport's version check passes newer hosts silently. Shape: each adapter assumption about undocumented host behavior is named beside the manifest's version rows and pinned by an out-of-gate probe or advisory that never refuses on a version change. Nearest rows: FUP-ec75a4295bf36696, WO-204. Reopen: a host upgrade changes an obse",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c1086ab57c145bac",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16::888ffe9ebd0770d84b04e82497e7f6c5d16009b7264c67a21901051087e94f3f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "f910866c62922f188883a332d2cbc151a714ba793123dd10e6bb2f49d2cdc7d6",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16",
+          "title": "Role-text economy: conditional procedure, refusal anchors and the re-attachment window.",
+          "summary": "6. **Role-text economy: conditional procedure, refusal anchors and the re-attachment window.** The outside guidance keeps a short index per skill and loads references on demand, and maps each failing hook to the reference that explains it. DotLn's executor cold start is 28,112 of 29,246 bytes; about 2.3 KB of fix-only, target-only and Codex-only lines load on every dispatch, and a 2,017-byte refusal paragraph loads in every cold start while refusal text names only the order. Claude Code keeps the first 5,000 tokens of an invoked skill after compaction, and the executor skill is 21,239 bytes with its loading path unknown. Shape: the loadout compiler emits dispatch-specific lines behind Read s",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4c8b4735503c4452",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16::9808a139c632ec6e1ae8dcedeba3798e7a6d4e096ea0af35b8a36a7769085e78",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e1eb53a1762ab38da7cc982013ff659f92d483e27e65848384595a3c67cb7b13",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16",
+          "title": "Prefix-cache ordering measured, and an exported-surface diff at release preparation.",
+          "summary": "14. **Prefix-cache ordering measured, and an exported-surface diff at release preparation.** The outside model guide puts static prompt content first for prefix caching, and the outside repository installs the candidate beside the previous release and fails on newly broken imports. DotLn's evidence capsule is serialized before its fixed instructions, usage observation already reads cache-read tokens, and release preparation diffs package sources against the previous tag without naming what changed in the exported surface. Shape: measure cache-read tokens on repeated evidence episodes before reordering the transport prompt, and record usage before and after; extend the component-version rule ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1241a4d027a07dce",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16::9dc09421b8bec4522ff41025de7dff8946933b080c5193b2f76f0b06c3f9ccf5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "de76144ba1bc2a3235c2d056d2d60e365a56a694bb918722a9c6a08990f7cda3",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16",
+          "title": "After a passing final review, pull-request feedback has no route.",
+          "summary": "2. **After a passing final review, pull-request feedback has no route.** Observed 2026-10-16: in `closed` the legal actions are release-close, next and activate; the only off-ramp is the product-gate correction; the WO-065 and WO-066 loop observes only pull requests the target-publish host recorded, and the self form of `worktree publish` records none; core registers no target repository; all 217 merged pull requests carry no review and no comment; the ruleset requires no check or approval. Three routes exist and are documented unevenly: board and merge (a follow-up by rule), a docs-only correction pushed to the branch (code identity unchanged; pull requests 81 and 84 did it), or a second cy",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-81c8f4915c7790d3",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16::c6a5e65889f92ee16021b007772f4c7ec6223501f95971c98cee9864357c4101",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "db39e7c6a2378381d2de6e3cc3125de1118fadbaded121edbe5a02d9ab6d92fe",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16",
+          "title": "A draft pull request at verified, with review threads and operator requests consumed by final review.",
+          "summary": "1. **A draft pull request at verified, with review threads and operator requests consumed by final review.** The operator's idea: when the verifier records a pass, the order's branch is pushed and a draft pull request opens, so the operator can read the change and a review bot can comment before final review; the final-review dispatch then reads the pull request's threads and the operator's stated requests and routes each as it routes any finding: board it (a decisions `followup`), discard it with the reason recorded, fix it in place when the correction is non-substantive and leaves code identity unchanged, or send it back through `fix` and a fresh verification; an item the operator marks as",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ea83176e777dd32f",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16::c929d81a3d8aa6934ca70a8ab29bd2c7e8c79c6bab8558751bd4b4ee51b4ce43",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "60b51e9b56858f24b3e6ec844a0d6ac4bae538b008e1809a96356e490123f69a",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16",
+          "title": "A target's own agent skills as convention input, and the open skills format declared.",
+          "summary": "11. **A target's own agent skills as convention input, and the open skills format declared.** The outside run read the target's guidance files before editing. The SKILL.md format is the open Agent Skills standard, whose `.agents/skills` location is a client convention Codex scans and Gemini CLI aliases, while the Claude Code documentation names no such location. DotLn's repository profiles carry pinned references as convention authority but no document names a target's skill directories; product 03 expects a runtime profile to declare its skill format with a conformance check, and the installed profiles record only availability and root; DotLn already emits byte-identical generated skills in",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1266034ceacdfa65",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16::d7dac563de3137b48da2eba85f4377f15d441e1d82fa6e9174e1f17c53e5db9e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e34d56123d458ae32c5d1e13337936cfff9f27f722c35685354e8045ebe4bf43",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16",
+          "title": "Each declared sibling's checks run against the candidate before the pass.",
+          "summary": "8. **Each declared sibling's checks run against the candidate before the pass.** The outside change passed 16,892 open tests while 25 internal targets broke on patched attributes. DotLn's product gate exports a fresh instance and checks it, but sibling-specific state is first checked by starter refresh after the tag and Release exist, where a mismatch refuses before any push. Shape: before final review passes a change to exported machinery, each declared sibling's own checks run read-only against the candidate from the recorded checkout, or the sibling set is recorded as unrun; no external effect precedes the release phrase. Nearest rows: WO-215-D020, WO-207. Reopen: a starter refresh refuse",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d175bb68e8cc0128",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16::ddc167dda4e1df110e5c499c966015e55d684c4c05bc001b3d7947c96728816e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "cce1dd0c79525fa0a9430ae6ce6283e6c9c676909884f562421a6878defb3021",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16",
+          "title": "A support ablation trial.",
+          "summary": "9. **A support ablation trial.** The outside write-up contrasts a run without guidance and a run with guidance, but it changed three things at once, so it gives the shape of an ablation, not a result. DotLn lists an ablation requirement as open, has ON/OFF support switches and pre-registered deciding observations, and ran one three-order trial mostly with the support on. Shape: one bounded order run twice from the same base with one support off and then on, the deciding observation pre-registered, both arms recorded, and the trial filed only when a decision depends on it. Nearest rows: WO-145-D001, FUP-2f0974e3d5d5063a. Reopen: a support's value is disputed in a pass.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-182984d482ca59ca",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16::ed5b40a49af064405b58c2aa492ef103d57bc41278e3e2228b2d57f90518d454",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7930264e8da5c2b5c2d769131976cdafaf2fc216a961a56b6294e3c871f38ed1",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16",
+          "title": "Measured claims: a judge-owned instrument, a symmetric baseline, per-component movement and the cold first-call row.",
+          "summary": "3. **Measured claims: a judge-owned instrument, a symmetric baseline, per-component movement and the cold first-call row.** From the outside read: the maintainers wrote their benchmark before the run and never showed it to the model; the model measured four workloads thirty times before its first edit and reported the same workloads after; one optimization was cut for moving nothing end to end; the flat cold-process row was kept beside the gain with its cause named. DotLn today: product 07 asks verifiers to reproduce consequential claims, WO-172 and WO-138 held out instruments, the template requires a dated observed gap, and WO-164 recorded cold beside warm; but no rule names a judge-owned i",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5cf6b2d3687bf805",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16::f221457f3193e68019136ccd27cd60bf7cbd326f82a749f2a28a32f1bd99e95b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "fcc38e3bd0c523971cb68392ba031a1598730ee3e7df9196bb502d165627a683",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16",
+          "title": "Structural performance guards in place of timers.",
+          "summary": "4. **Structural performance guards in place of timers.** The outside repository guards import cost by asserting, in a fresh interpreter, which modules are absent and which top-level packages loaded, so a regression fails under any host load. DotLn bounds performance only by durations (WO-197's two-times bounds, gate deadlines, hook timings), and product 07 says such comparisons do not establish reliability under all host loads; `--import` instrumentation already has precedent in DotLn tests. Shape: when a repair's cause is structural, such as an eagerly loaded runtime in a hook or CLI entry, the bound assertion pins that property in a fresh node process and replaces the case's duration bound",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

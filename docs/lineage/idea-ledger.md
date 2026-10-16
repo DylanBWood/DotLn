@@ -40,6 +40,106 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-16 — Ideation: a draft pull request at verified, and two commissioned research reads (operator messages, 2026-10-16)
+
+Source: seven operator messages in one session on main, between orders,
+captured verbatim in ignored intake
+(`docs/intake/chats/2026-10-16-ideation-draft-pr-and-argon-audit.md`, SHA-256
+`db0f1716a5557ffd1d0287e1f659a51f81241cf29da4153e6ef5ab6592d86c49`), with the
+two research reads the operator commissioned the same day captured beside them
+(`docs/intake/notes/2026-10-16-post-pass-routes-research.md`, SHA-256
+`bd6ced75da0e9456afe0b3b8b6ec931ab8d6ba584f6f133f67771980d366e050`;
+`docs/intake/notes/2026-10-16-argon-adk-audit.md`, SHA-256
+`898c088561dd197d8e0d42080802b6790b556ec865a64542cc374ca2b95a8189`). Planner
+synthesis under the saved public destination loadout: clean-room synthesis
+with no direct-draft fidelity. The clean-room screen found no stop condition:
+the outside material is a public write-up of an unattended optimization run,
+a public repository and its public commits; v1 is not named; nothing from the
+operator's employer appears. Review supports: the two research reads were
+judged by read-only `dotln-worker` refuters during the session (three
+background workflows, eighteen admissions against the cap of twenty); the
+ideation itself ran no refuter and spawned no agent. Write-backs: the planning
+map gains one candidates section
+([returns from ideation on 2026-10-16](../planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16)),
+fourteen register rows synced in this pass; no product document changes, because
+the idea is a candidate and the outside facts describe another system.
+Unresolved choices: which authority pushes a branch at `verified`, and whether
+the draft-pull-request candidate amends WO-192 or follows it. Required review:
+the next planning pass weighs the rows. This section is the breakout receipt;
+no work order is affected and no scope expands.
+
+- **A draft pull request at verified, reviewed by the operator and a review bot before final review** `candidate` `operator-directed`
+  - The operator's idea: when the verifier records a pass, the branch is
+    pushed and a draft pull request opens, so the operator reads the change
+    and, once connected, a review bot comments, before final review begins.
+  - The final-review dispatch then reads the pull request's threads and the
+    operator's stated requests and routes each item as it routes any finding:
+    board it as a follow-up, discard it with the reason recorded, fix it in
+    place when the correction is non-substantive and leaves code identity
+    unchanged, or send it back through `fix` and a fresh verification. An
+    item the operator marks as a criterion failure fails the review on that
+    criterion instead.
+  - What it answers: after a pass the phase machine has no route for
+    feedback, so the review window moves to before the pass, where repair
+    and re-verification are legal. Where the WO-065 observer is wired, a bot
+    reviewer is already an `automated-review` item and the operator's own
+    comments are `human-review`.
+  - What it touches: the rule that no branch commit precedes final review (a
+    draft needs pushed commits, and the checkpoint refs stay local); the
+    publish helper's requirement of a reviewed gate row (a draft form would
+    publish without one and mark the pull request ready at the pass, which
+    needs a body-update path that does not exist today); the final-review
+    phrase's authority, which today covers the push and the pull request at
+    the pass; and the reviewer's rule against writing and certifying a
+    behavioral fix, which the send-back route preserves. WO-192's router,
+    queued, stops at a pull request waiting for the operator's merge and
+    opens none early.
+- **Feedback on a pull request after the pass has no route** `open`
+  - Observed 2026-10-16: in `closed` the legal actions are release-close,
+    next and activate, the only off-ramp binds a missing product gate, the
+    WO-065 and WO-066 loop observes only pull requests the target-publish
+    host recorded, the self form of `worktree publish` records none, core
+    registers no target repository, all 217 merged pull requests carry no
+    review and no comment, and the ruleset requires no check or approval.
+  - Three routes exist: board and merge (a follow-up by rule), a docs-only
+    correction pushed to the branch (code identity unchanged; pull requests
+    81 and 84 did it), or a second cycle by `activate` from `closed`
+    (product 07 §Discipline; WO-115 on 2026-09-26, before any pull request).
+  - Two gaps: a second publish on a branch with an open pull request pushes,
+    then fails at pull-request creation with nothing recorded and no path
+    that edits the existing body, so its product-gate block stays stale; and
+    no typed step abandons a closed order, only `activate` then `withdraw`,
+    which no record has done.
+- **An outside overnight optimization run, read for strategies that fit** `candidate`
+  - The read: a public write-up of an eleven-hour unattended run that proposed
+    six optimizations across thirty-two files, of which maintainers kept two,
+    against a benchmark they wrote beforehand and never showed the model; the
+    shipped change landed as an internal-tool commit with no public pull
+    request, carries a model-attribution trailer, and reports no cost,
+    tokens or compaction count.
+  - Worth adapting, as map rows: measured claims with a judge-owned
+    instrument, a symmetric baseline, per-component movement and the cold
+    first-call row; structural performance guards in place of timers; a
+    growth-curve benchmark over record length; role-text economy; a richer
+    continuation payload; sibling checks before the pass; a support ablation
+    trial; priced overnight resident episodes; a target's own skills as
+    convention input and the open skills format declared; canaries for
+    upstream internals; verification lenses for edited assertions and a
+    deterministic importer index; prefix-cache ordering measured and an
+    exported-surface diff.
+  - Rejected as conflicts with DotLn's rules: the attribution trailer,
+    self-declared completion with no cap, harness-owned goal memory, a
+    speculative bundle for humans to cut, a headline taken from an isolation
+    condition, and hand-written guidance that drifts. Sixteen of its
+    practices DotLn already has. Every adapt row has a neighbor in the
+    register or the orders and none has an item naming the mechanism.
+- **A review bot is an automated-review item; the operator's own comments are human-review** `preserved`
+  - The observer classes a Bot author or a declared automation login as
+    automation, the pull request's author as reporter and everyone else as
+    reviewer; only automation items reach model triage, and WO-118 had to
+    add the operator's login to the automation list for a planted comment to
+    be triaged. Any draft-pull-request design inherits this split.
+
 ## 2026-10-13 — Ideation: the October picture, the gate and the ledger (operator messages during the standard pass)
 
 Source: ten operator messages sent during the 2026-10-13 standard planning
