@@ -2711,6 +2711,241 @@ and left, each with its reopening observation:
     marker is older than the gate's longest deadline, or an order edits
     `packages/skeleton/src/gate-evidence.mjs`.
 
+## Candidates — returns from ideation on 2026-10-16 (recorded 2026-10-16)
+
+Recorded from the operator's ideation dispatch of 2026-10-16 on main, between
+orders, which captured two research reads commissioned the same day and one
+new idea. The captures are ignored intake:
+`docs/intake/chats/2026-10-16-ideation-draft-pr-and-argon-audit.md` (SHA-256
+`db0f1716a5557ffd1d0287e1f659a51f81241cf29da4153e6ef5ab6592d86c49`),
+`docs/intake/notes/2026-10-16-post-pass-routes-research.md` (SHA-256
+`bd6ced75da0e9456afe0b3b8b6ec931ab8d6ba584f6f133f67771980d366e050`) and
+`docs/intake/notes/2026-10-16-argon-adk-audit.md` (SHA-256
+`898c088561dd197d8e0d42080802b6790b556ec865a64542cc374ca2b95a8189`); the
+ledger section of this date is the receipt. The outside read concerns a public
+write-up of an eleven-hour unattended optimization run on a public Python
+repository and that repository's agent guidance; every source is public and
+nothing from it is copied. None of these is allocated; this section grants no
+activation authority.
+
+1. **A draft pull request at verified, with review threads and operator
+   requests consumed by final review.** The operator's idea: when the
+   verifier records a pass, the order's branch is pushed and a draft pull
+   request opens, so the operator can read the change and a review bot can
+   comment before final review; the final-review dispatch then reads the
+   pull request's threads and the operator's stated requests and routes each
+   as it routes any finding: board it (a decisions `followup`), discard it
+   with the reason recorded, fix it in place when the correction is
+   non-substantive and leaves code identity unchanged, or send it back
+   through `fix` and a fresh verification; an item the operator marks as a
+   criterion failure fails the review on that criterion. Why it fits the
+   record: after a pass the phase machine has no route for feedback (item 2),
+   so moving the pull request to `verified` puts the review window before
+   the pass, where repair and re-verification are legal; where the WO-065
+   observer is wired, a bot reviewer is already an `automated-review` item
+   and the operator's own comments `human-review`. What it touches: the rule
+   that no branch commit precedes final review (a draft needs pushed commits,
+   and the checkpoint refs are local); `worktree publish`'s requirement of a
+   reviewed gate row (a draft form would publish without one and mark the
+   pull request ready at the pass, which needs a body-update path that does
+   not exist today); the final-review phrase's authority, which today covers
+   the push and the pull request at the pass; and the reviewer's rule against
+   writing and certifying a behavioral fix, which the send-back route
+   preserves. WO-192's router, queued, stops at a pull request waiting for
+   the operator's merge and opens none early. Route: the next planning pass
+   weighs this as an amendment to WO-192 or as its own order after it, and
+   names the authority that pushes at `verified`. Reopen: WO-192 is amended
+   or sequenced, or an order's pull request receives feedback the record
+   cannot route.
+2. **After a passing final review, pull-request feedback has no route.**
+   Observed 2026-10-16: in `closed` the legal actions are release-close, next
+   and activate; the only off-ramp is the product-gate correction; the WO-065
+   and WO-066 loop observes only pull requests the target-publish host
+   recorded, and the self form of `worktree publish` records none; core
+   registers no target repository; all 217 merged pull requests carry no
+   review and no comment; the ruleset requires no check or approval. Three
+   routes exist and are documented unevenly: board and merge (a follow-up by
+   rule), a docs-only correction pushed to the branch (code identity
+   unchanged; pull requests 81 and 84 did it), or a second cycle by
+   `activate` from `closed` (product 07 §Discipline; WO-115 on 2026-09-26,
+   before any pull request). Two gaps: a second `worktree publish` on a
+   branch with an open pull request pushes and then fails at `gh pr create`
+   with nothing recorded and no path that edits an existing pull-request
+   body, so the body's product-gate block stays stale; and no typed step
+   abandons a closed order, only `activate` then `withdraw`, which no record
+   has done. Route: fold the documented second cycle, the publish behavior
+   and the abandon path into product 07's closeout section, and make the
+   second publish report the existing pull request instead of failing after
+   its push. Reopen: a second cycle runs on a branch with an open pull
+   request, or a closed order is abandoned.
+3. **Measured claims: a judge-owned instrument, a symmetric baseline,
+   per-component movement and the cold first-call row.** From the outside
+   read: the maintainers wrote their benchmark before the run and never
+   showed it to the model; the model measured four workloads thirty times
+   before its first edit and reported the same workloads after; one
+   optimization was cut for moving nothing end to end; the flat cold-process
+   row was kept beside the gain with its cause named. DotLn today: product 07
+   asks verifiers to reproduce consequential claims, WO-172 and WO-138 held
+   out instruments, the template requires a dated observed gap, and WO-164
+   recorded cold beside warm; but no rule names a judge-owned instrument or
+   threshold, fixes instrument, workloads, sample count and statistic before
+   the first edit, requires each separable code-adding component to show its
+   own both-arms row, or keeps a first-call row for a once-per-process path.
+   PR #193's title claims a percentage from one gate sample on each side,
+   which product 01 forbids. Shape: a measured criterion names its
+   instrument, threshold, workloads, sample count and statistic at filing;
+   the verifier reruns that instrument; executor-written benchmarks count as
+   supporting evidence only; a component that moves nothing is removed or
+   boarded with its row. Nearest rows: WO-164-D007, FUP-7c909f0880237fba.
+   Reopen: the next order whose title or criterion claims a measured gain.
+4. **Structural performance guards in place of timers.** The outside
+   repository guards import cost by asserting, in a fresh interpreter, which
+   modules are absent and which top-level packages loaded, so a regression
+   fails under any host load. DotLn bounds performance only by durations
+   (WO-197's two-times bounds, gate deadlines, hook timings), and product 07
+   says such comparisons do not establish reliability under all host loads;
+   `--import` instrumentation already has precedent in DotLn tests. Shape:
+   when a repair's cause is structural, such as an eagerly loaded runtime in
+   a hook or CLI entry, the bound assertion pins that property in a fresh
+   node process and replaces the case's duration bound; a coarse duration
+   observation stays. Reopen: a repair names a structural cause, or a
+   duration bound fails under host load without a code change.
+5. **A growth-curve benchmark over record length.** The outside run measured
+   per-turn cost after 0, 50 and 150 prior turns, because cost that grows
+   with retained history shows only as a curve. DotLn's records are
+   append-only by design (153 control segments, 1,183,023 bytes, the largest
+   93,210), product 05 §Candidate — success under growth names fold latency
+   as a scenario to test, and no benchmark varies log length. Shape: an
+   on-demand benchmark folds synthetic segments at 0, 50 and 150 closed
+   orders and records events folded, bytes read and wall time per status or
+   briefing call, outside the default gate, as evidence for that candidate.
+   Reopen: a status or briefing call is recorded slower than its median by
+   half, or the candidate is sequenced.
+6. **Role-text economy: conditional procedure, refusal anchors and the
+   re-attachment window.** The outside guidance keeps a short index per
+   skill and loads references on demand, and maps each failing hook to the
+   reference that explains it. DotLn's executor cold start is 28,112 of
+   29,246 bytes; about 2.3 KB of fix-only, target-only and Codex-only lines
+   load on every dispatch, and a 2,017-byte refusal paragraph loads in every
+   cold start while refusal text names only the order. Claude Code keeps the
+   first 5,000 tokens of an invoked skill after compaction, and the executor
+   skill is 21,239 bytes with its loading path unknown. Shape: the loadout
+   compiler emits dispatch-specific lines behind Read selectors resolved from
+   canonical status, judged on whole-procedure bytes; each typed refusal
+   carries its product-document anchor and the generated paragraph shrinks
+   to names; the Claude profile records the re-attachment window and the
+   harness reports which binding lines fall outside it. Nearest rows:
+   FUP-f1c7a256bec46737 (the operator's reserved efficiency pass), FUP-0091,
+   WO-155, WO-196. Reopen: the efficiency pass opens, or a cold-start ceiling
+   is breached again.
+7. **The continuation payload carries elapsed time, continuations used and
+   unjudged criteria.** The outside stop hook re-sends time spent, the
+   continuation count and the original request on every attempt to finish.
+   DotLn rebuilds the task from durable state, which is stronger, but the
+   Codex continuation payload names only role, order, phase and completion
+   event, and Claude's Stop advisory never blocks. Shape: the payload gains
+   order-level time since dispatch, continuations used and unjudged
+   criteria, all computed from the control fold; a Claude adapter needs a
+   recorded operator exception like the Codex one. Nearest row: FUP-0091.
+   Reopen: WO-083 activates, or a continuation repeats a completed effect.
+8. **Each declared sibling's checks run against the candidate before the
+   pass.** The outside change passed 16,892 open tests while 25 internal
+   targets broke on patched attributes. DotLn's product gate exports a fresh
+   instance and checks it, but sibling-specific state is first checked by
+   starter refresh after the tag and Release exist, where a mismatch refuses
+   before any push. Shape: before final review passes a change to exported
+   machinery, each declared sibling's own checks run read-only against the
+   candidate from the recorded checkout, or the sibling set is recorded as
+   unrun; no external effect precedes the release phrase. Nearest rows:
+   WO-215-D020, WO-207. Reopen: a starter refresh refuses after a release,
+   or a sibling's own gate fails on a kit update.
+9. **A support ablation trial.** The outside write-up contrasts a run without
+   guidance and a run with guidance, but it changed three things at once, so
+   it gives the shape of an ablation, not a result. DotLn lists an ablation
+   requirement as open, has ON/OFF support switches and pre-registered
+   deciding observations, and ran one three-order trial mostly with the
+   support on. Shape: one bounded order run twice from the same base with
+   one support off and then on, the deciding observation pre-registered,
+   both arms recorded, and the trial filed only when a decision depends on
+   it. Nearest rows: WO-145-D001, FUP-2f0974e3d5d5063a. Reopen: a support's
+   value is disputed in a pass.
+10. **Overnight resident episodes with a priced morning handoff.** The
+    outside run lasted eleven unattended hours and stopped with a pull
+    request ready, and the write-up gives no cost. DotLn has the resident,
+    the mission check and a presence policy; its unattended runs so far are
+    scratch proofs and the absence payoff curve is unbuilt. Shape: the
+    resident dispatches bounded episodes overnight against one admitted
+    order under a presence policy; the morning view is receipts with their
+    Process cost lines, never one long session. Nearest rows:
+    FUP-7787c6f1867375f8, FUP-441469088613e52a. Reopen: an instance wants an
+    unattended lifecycle run, or a priced episode exists.
+11. **A target's own agent skills as convention input, and the open skills
+    format declared.** The outside run read the target's guidance files
+    before editing. The SKILL.md format is the open Agent Skills standard,
+    whose `.agents/skills` location is a client convention Codex scans and
+    Gemini CLI aliases, while the Claude Code documentation names no such
+    location. DotLn's repository profiles carry pinned references as
+    convention authority but no document names a target's skill directories;
+    product 03 expects a runtime profile to declare its skill format with a
+    conformance check, and the installed profiles record only availability
+    and root; DotLn already emits byte-identical generated skills into both
+    roots. Shape: the profile names the target's skill directories at a
+    pinned commit, with convention authority and no effect authority, and
+    runtime profiles declare the open format and discovery root with native
+    frontmatter conformance; the spec's experimental tool field never counts
+    as authority. Reopen: a target order runs under a client that discovers
+    the target's skills, or a profile adds a skill format.
+12. **Canaries for assumptions about upstream internals.** The outside change
+    pins an upstream library's model slots with a test that fails loudly on
+    a release that adds state, and one optimization was cut for reading a
+    private attribute that could break silently. DotLn prefers instruments
+    that fail loudly and keeps version-indexed host observations, but the
+    worker transport's version check passes newer hosts silently. Shape:
+    each adapter assumption about undocumented host behavior is named beside
+    the manifest's version rows and pinned by an out-of-gate probe or
+    advisory that never refuses on a version change. Nearest rows:
+    FUP-ec75a4295bf36696, WO-204. Reopen: a host upgrade changes an observed
+    capability without a probe noticing.
+13. **Verification lenses for edited assertions and defaults that keep the
+    defect, and a deterministic importer index.** The outside review
+    guidance flags an edited test assertion, a flag whose default keeps the
+    bug, a shared-layer fix one caller needed and an unneeded public name;
+    the outside run traced callers, mock targets and shared references
+    across forty files before editing. DotLn has no standing rule on edited
+    assertions (WO-197 wrote one into a single order), and its ImpactMap is
+    designed as a cartographer episode with no implementation. Shape: one
+    clause in product 07 §Verification review and attack naming each
+    pre-existing assertion the diff changed or removed, any new flag whose
+    default keeps the old defect and any new public name the criteria did
+    not need, each with its route; and an import and mock-target edge index
+    built by a reading adapter from the pinned snapshot as a new
+    `deriveSurfaces` input with its own rule origin, which changes the
+    ImpactMap's designed producer. Reopen: a verification misses a weakened
+    assertion, or WO-124's cartographer is sequenced.
+14. **Prefix-cache ordering measured, and an exported-surface diff at release
+    preparation.** The outside model guide puts static prompt content first
+    for prefix caching, and the outside repository installs the candidate
+    beside the previous release and fails on newly broken imports. DotLn's
+    evidence capsule is serialized before its fixed instructions, usage
+    observation already reads cache-read tokens, and release preparation
+    diffs package sources against the previous tag without naming what
+    changed in the exported surface. Shape: measure cache-read tokens on
+    repeated evidence episodes before reordering the transport prompt, and
+    record usage before and after; extend the component-version rule to
+    print exported names added and removed since the previous tag. Reopen:
+    cache-read tokens are observed low on repeated episodes, or an export
+    sibling breaks on a package import.
+
+Weighed and left as prose, not rows: the outside run's model-attribution
+trailer, self-declared completion with no iteration cap, harness-owned goal
+memory, a speculative bundle for humans to cut, a headline taken from an
+isolation condition and hand-written guidance that drifts conflict with
+products 01, 03, 05 and 07 and the no-attribution unit, and are rejected;
+sixteen of its practices DotLn already has, from evidence-mapped completion to
+artifact-derived counts. The captures hold the full tables with citations. The
+nomination check found every item above partial: a neighbor exists, and none
+names the mechanism.
+
 ## Moved from the execution guide (2026-09-28)
 
 WO-167 moved these nine candidates here from product 07 under their slugs.
