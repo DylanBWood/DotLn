@@ -1,0 +1,243 @@
+{
+  "base": "7b66f8b303a316ff4560b4827d6dc728cd7f504a",
+  "counts": {
+    ".json": {
+      "files": 28,
+      "lines": 262
+    },
+    ".txt": {
+      "files": 4,
+      "lines": 8
+    },
+    ".log": {
+      "files": 5,
+      "lines": 21
+    }
+  },
+  "files": [
+    {
+      "file": "docs/evidence/WO-074/verifier-001-probes.json",
+      "lines": 1,
+      "firstCommit": "0d34b5f640f4ff0479b52c73a39d6998d0ab8188",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/evidence/WO-185/repair-final001-host-fixtures.txt",
+      "lines": 2,
+      "firstCommit": "0d58d10139f6dced5a53d60a60ae1e05f7485099",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/evidence/WO-185/repair-ver002-integrated-review.txt",
+      "lines": 1,
+      "firstCommit": "0d58d10139f6dced5a53d60a60ae1e05f7485099",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/evidence/WO-186/verify-002-checks.json",
+      "lines": 1,
+      "firstCommit": "7fb2b5a24f34e15beb7d3dc08eccb0eb44ea909b",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/evidence/WO-187/repair-004/document-gate.json",
+      "lines": 1,
+      "firstCommit": "e2de99f136820dcdbc0a9287d7636bbc92483284",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/evidence/WO-187/repair-004/review-gate.json",
+      "lines": 74,
+      "firstCommit": "e2de99f136820dcdbc0a9287d7636bbc92483284",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/evidence/WO-187/verification-002/root-probes.json",
+      "lines": 1,
+      "firstCommit": "e2de99f136820dcdbc0a9287d7636bbc92483284",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/evidence/WO-189/repair-002/markdown-fixtures-before.txt",
+      "lines": 3,
+      "firstCommit": "1154daa779bfb82deded4d77d65147beb71f3bcf",
+      "afterScreen": true
+    },
+    {
+      "file": "docs/evidence/WO-189/repair-003/class-probes-after.json",
+      "lines": 1,
+      "firstCommit": "1154daa779bfb82deded4d77d65147beb71f3bcf",
+      "afterScreen": true
+    },
+    {
+      "file": "docs/evidence/WO-198/repair4-before-transcript.txt",
+      "lines": 2,
+      "firstCommit": "5b5ae9459257409c4312f98338cfe9b8a07ee324",
+      "afterScreen": true
+    },
+    {
+      "file": "docs/evidence/WO-199/repair-002-validation.json",
+      "lines": 1,
+      "firstCommit": "0cc97dc8569189a928f6dfb80945ffe5788cb1d0",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/evidence/WO-200/review-gate.json",
+      "lines": 1,
+      "firstCommit": "a37a1bb33e6075b33765a8b929abd6930b0c8ef5",
+      "afterScreen": true
+    },
+    {
+      "file": "docs/evidence/WO-200/schema-before.log",
+      "lines": 6,
+      "firstCommit": "a37a1bb33e6075b33765a8b929abd6930b0c8ef5",
+      "afterScreen": true
+    },
+    {
+      "file": "docs/evidence/WO-200/schema-restored.log",
+      "lines": 2,
+      "firstCommit": "a37a1bb33e6075b33765a8b929abd6930b0c8ef5",
+      "afterScreen": true
+    },
+    {
+      "file": "docs/evidence/WO-203/action-value-before.log",
+      "lines": 1,
+      "firstCommit": "1c915c1ce1cee5a2b07345947cf66fbc29634593",
+      "afterScreen": true
+    },
+    {
+      "file": "docs/evidence/WO-203/copied-fixtures.log",
+      "lines": 10,
+      "firstCommit": "1c915c1ce1cee5a2b07345947cf66fbc29634593",
+      "afterScreen": true
+    },
+    {
+      "file": "docs/evidence/WO-203/launchpad-targeted-final.log",
+      "lines": 2,
+      "firstCommit": "1c915c1ce1cee5a2b07345947cf66fbc29634593",
+      "afterScreen": true
+    },
+    {
+      "file": "docs/evidence/WO-203/repair-review-failed.json",
+      "lines": 162,
+      "firstCommit": "1c915c1ce1cee5a2b07345947cf66fbc29634593",
+      "afterScreen": true
+    },
+    {
+      "file": "docs/instance/entropy-reducer/runs/REFUTATION-002.json",
+      "lines": 1,
+      "firstCommit": "22204ff911888339772e28f6fa4cde71e2a29a03",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/instance/entropy-reducer/runs/REFUTATION-003.json",
+      "lines": 1,
+      "firstCommit": "22204ff911888339772e28f6fa4cde71e2a29a03",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/instance/entropy-reducer/runs/REFUTATION-004.json",
+      "lines": 1,
+      "firstCommit": "18ee5021d8a9418573f39fdbb873f3252a88504d",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/instance/entropy-reducer/runs/REFUTATION-005.json",
+      "lines": 1,
+      "firstCommit": "5e148d2cf2b30753f8f6869046cce8551a26f0ff",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/instance/entropy-reducer/runs/REFUTATION-006.json",
+      "lines": 1,
+      "firstCommit": "23f8a4c7a700771f9f507e1eeeba924ef81556c6",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/instance/entropy-reducer/runs/REVIEW-002.json",
+      "lines": 1,
+      "firstCommit": "22204ff911888339772e28f6fa4cde71e2a29a03",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/instance/entropy-reducer/runs/REVIEW-003.json",
+      "lines": 1,
+      "firstCommit": "18ee5021d8a9418573f39fdbb873f3252a88504d",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/instance/entropy-reducer/runs/REVIEW-004.json",
+      "lines": 1,
+      "firstCommit": "5e148d2cf2b30753f8f6869046cce8551a26f0ff",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/instance/entropy-reducer/runs/REVIEW-005.json",
+      "lines": 1,
+      "firstCommit": "23f8a4c7a700771f9f507e1eeeba924ef81556c6",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/planning/refutations/2026-09-15-planning-39243aa3f0fc8df2-013.json",
+      "lines": 1,
+      "firstCommit": "54e94845230bb9a1b71f348e41b99a152ea0db2a",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/planning/refutations/2026-09-20-planning-1a0fb634704921a3-020.json",
+      "lines": 1,
+      "firstCommit": "6f46d22b245143e937bfa103f2570ae4d2d8658d",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/planning/refutations/2026-09-21-planning-9d2888b45f687bc6-022.json",
+      "lines": 1,
+      "firstCommit": "c904d3dadeb31c6a402287e47ac67d95a4b8c85b",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/planning/refutations/2026-09-22-planning-162d093b92c13201-026.json",
+      "lines": 1,
+      "firstCommit": "0becd93bc039dda1f14238ac160188ab54ff2c9d",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/planning/refutations/2026-09-22-planning-72c46910a176d62e-025.json",
+      "lines": 1,
+      "firstCommit": "26ff1209d3f2fa7160c1413f82a078ddd80449de",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/planning/refutations/2026-09-22-planning-9244f56be13bcb2f-024.json",
+      "lines": 1,
+      "firstCommit": "d926d321221b6d9e6e5f8adee9be47aebdab0ed7",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/planning/refutations/2026-09-25-planning-8f567de659b31991-029.json",
+      "lines": 1,
+      "firstCommit": "2641af537d770e04d60e6eebb8cc165fb4a66170",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/planning/refutations/2026-09-25-planning-c93346fb3a92bb7f-030.json",
+      "lines": 1,
+      "firstCommit": "329d11074f2d0441b115576f60b2775843f71cef",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/planning/refutations/2026-09-25-planning-cb4e4076b7ec0078-028.json",
+      "lines": 1,
+      "firstCommit": "b42d9acb04cfa22806883911936f2b4a6396d30e",
+      "afterScreen": false
+    },
+    {
+      "file": "docs/planning/refutations/2026-10-07-planning-c351cfc3b65e74e5-041.json",
+      "lines": 1,
+      "firstCommit": "fd63b86e56ed1e669b112f76ec5d9f3bcf2aa762",
+      "afterScreen": false
+    }
+  ],
+  "existingHomePathsSha256": "79a4b95f0635918f61b97f8f4d7f7336a77e2131af48c2a43fc90cf86d985b3c",
+  "addedHomePathsSha256": "a72d0a5b1cf4fcdebf353f281805df96b435f29a2e27c6230bcbc577fad00446"
+}

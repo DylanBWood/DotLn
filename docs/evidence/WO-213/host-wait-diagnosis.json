@@ -1,0 +1,35 @@
+{
+  "kind": "historical-host-lane-diagnosis",
+  "observedAt": "2026-10-15",
+  "instance": {
+    "workOrder": "WO-001",
+    "task": "kit-verify",
+    "hostLaneWaitMs": 830458,
+    "executionMs": 193,
+    "gateDurationMs": 845021,
+    "gateFinishedAt": "2026-10-15T14:59:38.350Z",
+    "approximateAcquiredAt": "2026-10-15T14:59:23.797Z"
+  },
+  "core": {
+    "workOrder": "WO-213",
+    "command": "npm test -- --review",
+    "startedAt": "2026-10-15T14:43:02.753Z",
+    "observedTaskLogs": [
+      {
+        "task": "launchpad",
+        "firstWriteAt": "2026-10-15T14:43:18.449Z",
+        "lastWriteAt": "2026-10-15T14:56:50.167Z"
+      },
+      {
+        "task": "worktree-integration",
+        "firstWriteAt": "2026-10-15T14:56:55.648Z",
+        "lastWriteAt": "2026-10-15T14:59:23.655Z"
+      }
+    ],
+    "slotsPerTask": 4
+  },
+  "inference": "The observed exclusive core tasks account for the instance wait interval; acquisition followed the final observed task write by about 142 ms.",
+  "limit": "Historical lease identity was not retained. Task log write boundaries and source-proven lease ordering support the inference; they are not an exact lease trace.",
+  "repairedAccounting": "Count elapsed time at acquisition, including the first and final kernel-lock waits.",
+  "recurrenceEvidence": "Bounded path-free lock/capacity observations, periodic holder age/liveness and retained nested reservation counts."
+}

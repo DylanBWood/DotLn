@@ -1,0 +1,22 @@
+{
+  "observedAt": "2026-10-15T14:30:14.958Z",
+  "scope": "tracked and untracked, non-ignored record files under configured document roots, excluding intake and control/local",
+  "recordFiles": 3562,
+  "recordBytes": 217745707,
+  "trackedRecordFiles": 3555,
+  "trackedRecordBytes": 217728202,
+  "runs": [
+    {
+      "milliseconds": 22976,
+      "result": "PASS docs check: 15 product documents; 412 declared historical link occurrences; 510 declared historical home-path lines; 0 failures"
+    },
+    {
+      "milliseconds": 22159,
+      "result": "PASS docs check: 15 product documents; 412 declared historical link occurrences; 510 declared historical home-path lines; 0 failures"
+    },
+    {
+      "milliseconds": 22727,
+      "result": "PASS docs check: 15 product documents; 412 declared historical link occurrences; 510 declared historical home-path lines; 0 failures"
+    }
+  ]
+}

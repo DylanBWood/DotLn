@@ -1,0 +1,13 @@
+{
+  "checkedFiles": 203,
+  "literalHomePrefixMatches": 0,
+  "addedSuppressionDirectives": 0,
+  "diffCheck": true,
+  "codeIdentity": "b407908294cb66bc8010ab8dea5f66095dde8971cecb2b1e2d6236640b9efcf3",
+  "completeReviewStillCovers": true,
+  "documentGate": {
+    "recordedAt": "2026-10-17T14:27:17.060Z",
+    "durationMs": 146526,
+    "exitCode": 0
+  }
+}

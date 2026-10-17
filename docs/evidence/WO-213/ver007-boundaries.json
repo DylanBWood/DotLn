@@ -1,0 +1,29 @@
+[
+  {
+    "case": "lifecycle projection and separate host environment",
+    "currentCoverage": true,
+    "lifecycleClaims": true,
+    "freshTasks": 0,
+    "reusedTasks": 3
+  },
+  {
+    "case": "extensionless createRequire load",
+    "directExit": 13,
+    "changedCode": true,
+    "staleCoverage": false,
+    "lifecycleRefused": true,
+    "gateExit": 1,
+    "freshTasks": 3,
+    "reusedTasks": 0
+  },
+  {
+    "case": "URL-decoded dynamic import",
+    "directExit": 13,
+    "changedCode": true,
+    "staleCoverage": false,
+    "lifecycleRefused": true,
+    "gateExit": 1,
+    "freshTasks": 3,
+    "reusedTasks": 0
+  }
+]

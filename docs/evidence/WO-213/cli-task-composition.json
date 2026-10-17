@@ -1,0 +1,34 @@
+{
+  "results": [
+    {
+      "command": "npm test -- --only alpha --serial",
+      "exitCode": 0,
+      "summary": [
+        "suite:alpha: 2 passed; 0 failed; 0.18 s; 2 fresh tasks"
+      ]
+    },
+    {
+      "command": "npm test -- --only beta --serial",
+      "exitCode": 0,
+      "summary": [
+        "REUSE build from worktree row 2026-10-16T05:55:24.246Z",
+        "suite:beta: 2 passed; 0 failed; 0.12 s; 1 fresh tasks"
+      ]
+    },
+    {
+      "command": "npm test -- --serial",
+      "exitCode": 0,
+      "summary": [
+        "REUSE build from worktree row 2026-10-16T05:55:24.246Z",
+        "REUSE alpha from worktree row 2026-10-16T05:55:24.246Z",
+        "REUSE beta from worktree row 2026-10-16T05:55:24.659Z",
+        "npm test: 3 passed; 0 failed; 0.06 s; 0 fresh tasks"
+      ]
+    }
+  ],
+  "observed": [
+    "build",
+    "alpha",
+    "beta"
+  ]
+}

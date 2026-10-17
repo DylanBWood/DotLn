@@ -35400,6 +35400,14 @@
           "reopenWhen": "An order edits the runner's task record, or the record rule stops refusing a copied record that holds the absolute path.",
           "targets": [],
           "at": "2026-10-17T01:19:09.407Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-recorded by WO-213's final review (FINAL-003, D073) because the previous disposition describes a mechanism the order no longer contains: the fourth repair's version-2 inputBinding and never-started task results were withdrawn with the validation expansion (D072). At the reviewed subject the runner's task record gains only path-free hostLaneWaitObservations; productReadLog stays absolute (D007's non-goal), and the record rule refuses a copied record that holds it, so an executor copying one writes a placeholder, as the candidate anticipates.",
+          "reopenWhen": "An order edits the runner's task record, or the record rule stops refusing a copied record that holds the absolute path.",
+          "targets": [],
+          "at": "2026-10-17T17:14:23.972Z"
         }
       ]
     },
@@ -37400,6 +37408,21 @@
           "at": "2026-10-17T14:08:24.343Z"
         }
       ]
+    },
+    {
+      "id": "FUP-4290f78ca9e7e7ac",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d074",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8ec1bbd1940e3acb8fb8463740f7d3f34edc9b039f2cbca6f32ba116d99203c3",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d074",
+          "title": "WO-213-D074: Planning, or the next order that edits these surfaces. (F1) scripts/docs-check.mjs documentFiles and scripts/lib/paths.mjs documentEntry: decide whether an untracked dangling symbolic…",
+          "summary": "{ \"id\": \"WO-213-D074\", \"date\": \"2026-10-17\", \"dispatch\": \"resume: final review; FINAL-003; three read-only reviewers; operator direction during the review to board a theoretical issue rather than fail on it\", \"kind\": \"finding\", \"decision\": \"Pass the final review of WO-213 at the integrated subject, code identity b407908294cb66bc8010ab8dea5f66095dde8971cecb2b1e2d6236640b9efcf3, the identity VER-007 judged; integration took in main's two document-only commits and changed no judged byte (D073). All fourteen criteria are met. No finding blocks: the one candidate the reviewers raised as possibly blocking, the document listing refusing a dangling or unreachable Markdown or record entry by reposito",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

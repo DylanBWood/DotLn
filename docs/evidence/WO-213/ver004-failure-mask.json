@@ -1,0 +1,183 @@
+{
+  "crossProcessComposition": {
+    "npmSpellings": [
+      "silent",
+      "ordinary"
+    ],
+    "separateLoginShells": true,
+    "changedSessionLabels": true,
+    "observedAfterComposition": [
+      "build",
+      "alpha",
+      "beta"
+    ],
+    "fresh": 1,
+    "reused": 2
+  },
+  "failureMaskProbe": {
+    "expectedStandingRow": false,
+    "afterFailureHasStandingRow": false,
+    "afterPartialHasStandingRow": false,
+    "afterPartialThenOtherContractHasStandingRow": true,
+    "restoredOriginalRow": true,
+    "lifecycleClaimIncorrectlyAccepted": true
+  },
+  "events": [
+    {
+      "command": "npm test --silent -- --only alpha --serial",
+      "exitCode": 0,
+      "selection": "single",
+      "partial": false,
+      "fresh": 2,
+      "reused": 0,
+      "notCarried": {
+        "it has no execution at this code identity": [
+          "build"
+        ]
+      },
+      "taskContracts": [
+        {
+          "name": "build",
+          "taskContract": "4f7d2e1cb62a43bbfca3964830395e8c15300090ca1605b809a0d6e3158706a5",
+          "exitCode": 0,
+          "reused": false
+        },
+        {
+          "name": "alpha",
+          "taskContract": "6a5e6c6fe25a58f91218fd56c51c1f353ef439ebc5963e19de29cfebaceccdc3",
+          "exitCode": 0,
+          "reused": false
+        }
+      ]
+    },
+    {
+      "command": "npm test -- --serial",
+      "exitCode": 0,
+      "selection": "plain",
+      "partial": false,
+      "fresh": 1,
+      "reused": 2,
+      "notCarried": {
+        "it has no execution at this code identity": [
+          "beta"
+        ]
+      },
+      "taskContracts": [
+        {
+          "name": "build",
+          "taskContract": "4f7d2e1cb62a43bbfca3964830395e8c15300090ca1605b809a0d6e3158706a5",
+          "exitCode": 0,
+          "reused": true
+        },
+        {
+          "name": "alpha",
+          "taskContract": "6a5e6c6fe25a58f91218fd56c51c1f353ef439ebc5963e19de29cfebaceccdc3",
+          "exitCode": 0,
+          "reused": true
+        },
+        {
+          "name": "beta",
+          "taskContract": "b7117e69bd815e74dd65dd32d0d2b86b007cb70260e923b55c60b620dad80df7",
+          "exitCode": 0,
+          "reused": false
+        }
+      ]
+    },
+    {
+      "command": "npm test --silent -- --only beta --serial",
+      "exitCode": 0,
+      "selection": "single",
+      "partial": false,
+      "fresh": 1,
+      "reused": 1,
+      "notCarried": {},
+      "taskContracts": [
+        {
+          "name": "build",
+          "taskContract": "4f7d2e1cb62a43bbfca3964830395e8c15300090ca1605b809a0d6e3158706a5",
+          "exitCode": 0,
+          "reused": true
+        },
+        {
+          "name": "beta",
+          "taskContract": "b7117e69bd815e74dd65dd32d0d2b86b007cb70260e923b55c60b620dad80df7",
+          "exitCode": 0,
+          "reused": false
+        }
+      ]
+    },
+    {
+      "command": "npm test -- --only beta --serial",
+      "exitCode": 1,
+      "selection": "single",
+      "partial": false,
+      "fresh": 1,
+      "reused": 1,
+      "notCarried": {},
+      "taskContracts": [
+        {
+          "name": "build",
+          "taskContract": "4f7d2e1cb62a43bbfca3964830395e8c15300090ca1605b809a0d6e3158706a5",
+          "exitCode": 0,
+          "reused": true
+        },
+        {
+          "name": "beta",
+          "taskContract": "b7117e69bd815e74dd65dd32d0d2b86b007cb70260e923b55c60b620dad80df7",
+          "exitCode": 1,
+          "reused": false
+        }
+      ]
+    },
+    {
+      "command": "npm test -- --only beta --confined-partial --serial",
+      "exitCode": 0,
+      "selection": "single",
+      "partial": true,
+      "fresh": 2,
+      "reused": 0,
+      "notCarried": {},
+      "taskContracts": [
+        {
+          "name": "build",
+          "taskContract": "4f7d2e1cb62a43bbfca3964830395e8c15300090ca1605b809a0d6e3158706a5",
+          "exitCode": 0,
+          "reused": false
+        },
+        {
+          "name": "beta",
+          "taskContract": "b7117e69bd815e74dd65dd32d0d2b86b007cb70260e923b55c60b620dad80df7",
+          "exitCode": 0,
+          "reused": false
+        }
+      ]
+    },
+    {
+      "command": "npm test -- --only beta --serial",
+      "exitCode": 0,
+      "selection": "single",
+      "partial": false,
+      "fresh": 2,
+      "reused": 0,
+      "notCarried": {
+        "LC_TIME added": [
+          "build"
+        ]
+      },
+      "taskContracts": [
+        {
+          "name": "build",
+          "taskContract": "9d1de520d9bf542193caf483651493930e3b6c499203c493c3aa48d4e22ffd4e",
+          "exitCode": 0,
+          "reused": false
+        },
+        {
+          "name": "beta",
+          "taskContract": "c775d369814521e11d261c738321b3e6c77d70cbdeca31d5c2ea0e018a77901e",
+          "exitCode": 0,
+          "reused": false
+        }
+      ]
+    }
+  ]
+}

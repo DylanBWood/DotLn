@@ -1,0 +1,23 @@
+{
+  "base": "7b66f8b303a316ff4560b4827d6dc728cd7f504a",
+  "baselineExactlyReproduced": true,
+  "existingEntriesPreserved": 128,
+  "recordFilesAdded": 37,
+  "recordLinesAdded": 291,
+  "registerHomePathLines": 0,
+  "originalRegisterEntriesPreserved": 1115,
+  "registerEntries": 1116,
+  "originalRevisionCountsAndDispositionsPreserved": true,
+  "newSettledReopening": "FUP-9b7d3e0de0a4c268",
+  "newReopeningSourceRevisions": 2,
+  "authoredFilesScanned": 117,
+  "literalHomePrefixMatchingLines": 0,
+  "gitGrepExitCode": 1,
+  "newDependencies": 0,
+  "changedWorkspaceComponents": [
+    "compiler",
+    "skeleton"
+  ],
+  "diffCheck": "pass",
+  "outsideIntakeNestedRepositories": []
+}

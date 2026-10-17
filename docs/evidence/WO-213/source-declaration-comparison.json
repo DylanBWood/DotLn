@@ -1,0 +1,9 @@
+{
+  "historicalSource": "7b66f8b303a316ff4560b4827d6dc728cd7f504a:scripts/test-runner.mjs",
+  "baseCommit": "7b66f8b303a316ff4560b4827d6dc728cd7f504a",
+  "scope": "Literal manual declarations only; expressions selecting recorded evidence inputs remain separately owned and are excluded from this comparison.",
+  "previousDeclarations": 307,
+  "currentExplicitDeclarations": 52,
+  "missing": [],
+  "exclusions": []
+}
