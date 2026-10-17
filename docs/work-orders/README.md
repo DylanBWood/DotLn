@@ -4,9 +4,11 @@
 
 ## Proposed order
 
-- [x] [WO-215] — Core's release close refreshes DotLn-Enterprise-Starter · **final-reviewed**
-- [x] [WO-210] — An instance's own orders publish and reach release close · **final-reviewed**
-- [x] [WO-213] — Private paths stay out of every committed record · **final-reviewed**
+- [ ] [WO-216] — No gate fails late on bookkeeping · **queued**
+- [ ] [WO-217] — Boarded follow-ups, batch 1: the gate · **queued**
+- [ ] [WO-218] — Boarded follow-ups, batch 2: the instance and publication · **queued**
+- [ ] [WO-219] — Boarded follow-ups, batch 3: records, roles and the harness · **queued**
+- [ ] [WO-220] — Boarded follow-ups, batch 4: the resident and the vertical · **queued**
 - [ ] [WO-080] — Workstreams: document, index, board section and synthetic pilot · **queued**
 - [ ] [WO-204] — The source writer cannot damage the operator's repository · **queued**
 - [ ] [WO-192] — A router drives an order through its lifecycle · **queued**
@@ -34,6 +36,93 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
+
+### WO-216
+
+[WO-216 — No gate fails late on bookkeeping: every gate and every handoff runs a structural phase first, in seconds, that checks formatting, source declarations and copied-fixture closures, the freshness of every generated artifact and the host's memory state, and stops at its first failure naming the one command that regenerates what is stale; a run stops starting tasks at its first failure; the complete gate runs once per order, fresh, at final review, while handoffs require the order's own Preflight suites; the launchpad suite runs as file lanes under their own deadlines; a stopped run records what finished (version assigned at activation)](WO-216-no-gate-fails-late-on-bookkeeping.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-213: satisfied-by-close (met) — the restored runner, gate lookup and claim checks this order changes, and the validation-expansion history it answers; WO-192: reference-only (non-blocking) — queued after; its step 9 compiles the Preflight before the full gate section as this order leaves it.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: machinery
+- Cost: adds the structural phase and its rows, the sync command, the fail-fast stop, the claim changes, the launchpad file rows, role text, an oracle and fixtures. Removes, measured in this checkout's gate index since receipt 045 (2026-10-13T19:35Z to 2026-10-17T18:00Z): of the seven complete &#96;npm test&#96; failures, none found a product defect; two were formatting (6 s), one the role-oracle snapshot not re-minted after a role-text change (failed at minute 5.6, the run continued to 27.1), one a &#96;machinerySources&#96; declaration missing (minute 22.2 of 41.3), one a fixture refusing under host memory pressure (minute 21.2 of 38.1), two the launchpad suite at its 900 s deadline (44.7 and 18.5 minute runs, once with four peers and once alone). Of the seventeen &#96;npm run test:docs&#96; failures, fourteen were stale generated artifacts (&#96;meta&#96; six, &#96;release-surfaces&#96; three, &#96;index&#96; one, evidence editions three, &#96;harness&#96; two, the planning receipt one), five &#96;docs-check&#96;. Complete runs: 33, eleven per closed order, median 1,689 s, 754 minutes; one missing declaration surfaced after 1,420.4 s on 2026-10-16 (WO-213 D039) and a copied-fixture closure missed a file in a second run (D038). Inference from the same rows: the structural phase would have failed each bookkeeping run inside its first minute instead of at minutes 5.6 to 22.2, the host precondition would have refused the pressure-dependent run before it started, and the file lanes bound the launchpad cap to one file; the complete gate falls from eleven runs per order to one fresh run at final review plus the Preflight suites per handoff. Measured claim (FUP-182984d482ca59ca), read by the next planning pass over the five closes after this order's: instrument, the rows &#96;readGateChecks&#96; returns from main's gate index; statistics, complete runs per closed order (baseline 11), structural-class failures inside runs longer than two minutes per closed order (baseline 1.3: four over three orders) and gate task minutes per closed order (baseline 545). Wall-clock: the structural phase's own duration is unknown until step 16 measures it (the isolated coverage case ran in about 19 s on 2026-10-16; &#96;meta --check&#96;, &#96;index --check&#96; and the evidence checks are 0 to 3 s each in the rows above); a fail-fast run ends at its first failure. Context bytes: role sentences replaced at about equal length (&#96;harness-context&#96; bounds the cold start); product 07's section body rewritten in place. Commands: one script and one flag. Tokens: unknown until run. Steps: &#96;npm run sync&#96; joins the handoff sequence in place of the separate regeneration commands. Re-mints: &#96;contributor.ts&#96; and &#96;harness-host.ts&#96; are in the authority, feedback and harness inventories (&#96;scripts/lib/evidence-sources.mjs&#96; lines 160 to 164, 258 to 262, 329 to 333), so each staled edition is re-minted deterministically and the bundle re-emitted; neither is in &#96;FEEDBACK_SOURCE_PATHS&#96; (&#96;packages/skeleton/src/feedback-audit.ts&#96; lines 15 to 78), so no live feedback episode is owed; &#96;gate-deadlines.mjs&#96; (feedback-judged) and the registered &#96;gate-evidence.mjs&#96; are untouched. &#96;scripts/test-runner.mjs&#96;, &#96;scripts/resume.mjs&#96;, &#96;scripts/lib/handoff-ledger.mjs&#96;, &#96;scripts/lib/gate-reuse.mjs&#96; and the loadouts directory are declared machinery sources, so &#96;npm test -- --review&#96; is in the final criterion.
+- Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Authority: [docs/work-orders/WO-216-no-gate-fails-late-on-bookkeeping.md](WO-216-no-gate-fails-late-on-bookkeeping.md)
+
+### WO-217
+
+[WO-217 — Boarded follow-ups, batch 1: the gate, the runner, the host guard, gate evidence and the fixtures: every one of the 31 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (version assigned at activation)](WO-217-boarded-follow-ups-the-gate.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-216: reference-only (non-blocking) — placed before this batch in the serial queue; no hard edge.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: machinery
+- Cost: adds the fixes and fixture cases the listed rows need, across &#96;scripts/test-runner.mjs&#96;, &#96;scripts/lib/gate-reuse.mjs&#96;, &#96;scripts/lib/host-guard-state.mjs&#96;, &#96;scripts/host-guard.mjs&#96;, &#96;scripts/lib/machinery-coverage.mjs&#96;, &#96;packages/skeleton/src/observed-facts.ts&#96;, &#96;packages/skeleton/src/gate-evidence.mjs&#96;, &#96;scripts/lib/product-read-guard.mjs&#96; and the fixtures the rows name; unknown until each row is triaged, and the README records the per-row command and case. Removes 31 pending rows from the register, which at the base holds 281 pending rows, 130 of them decision rows boarded by closed orders across 53 orders (the oldest from WO-054, 2026-09-18), 88 of them follow-ups boarded in the week of 2026-10-13 to 2026-10-17 alone; the rule that "the next order that edits the surface" takes a row delivered none of these 31 (each still pending at &#96;7b8206f4&#96;). Wall-clock: one triage per row plus the fixes; unknown until run. Context bytes: this order's row list is read once. Commands: none added. Tokens: unknown until run. Steps: 15. Re-mints: the executor checks each edited file against &#96;scripts/lib/evidence-sources.mjs&#96; (a registered source owes its edition's deterministic re-mint) and &#96;FEEDBACK_SOURCE_PATHS&#96; in &#96;packages/skeleton/src/feedback-audit.ts&#96; (an edited judged source owes one live feedback self-host episode on Codex &#96;gpt-6.1-sol&#96; at &#96;max&#96; or Claude Code &#96;claude-opus-5-5&#96; at &#96;xhigh&#96;, no authorization needed, cost accepted); any edited declared machinery source (&#96;machinerySources&#96; in &#96;scripts/test-runner.mjs&#96;) puts &#96;npm test -- --review&#96; in the final criterion, which names it already.
+- Authority: [docs/work-orders/WO-217-boarded-follow-ups-the-gate.md](WO-217-boarded-follow-ups-the-gate.md)
+
+### WO-218
+
+[WO-218 — Boarded follow-ups, batch 2: the instance lifecycle, export and kit, publication, release close, the starter and worktrees: every one of the 32 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (version assigned at activation)](WO-218-boarded-follow-ups-the-instance-and-publication.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-217: reference-only (non-blocking) — placed before this batch in the serial queue; no hard edge.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds the fixes and fixture cases the listed rows need, across &#96;scripts/launchpad.mjs&#96;, &#96;scripts/lib/target-worktree-close.mjs&#96;, &#96;scripts/lib/target-worktrees.mjs&#96;, &#96;scripts/lib/starter-refresh.mjs&#96;, &#96;scripts/release.mjs&#96;, &#96;scripts/check-publication.mjs&#96;, &#96;scripts/lib/harness.mjs&#96;, &#96;scripts/lib/harness-runtime.mjs&#96;, &#96;scripts/lib/config.mjs&#96;, &#96;scripts/lib/stash-drop.mjs&#96;, &#96;scripts/worktree.mjs&#96;, &#96;scripts/kit/README.client.md&#96; and the fixtures the rows name; unknown until each row is triaged, and the README records the per-row command and case. Removes 32 pending rows from the register, which at the base holds 281 pending rows, 130 of them decision rows boarded by closed orders across 53 orders (the oldest from WO-054, 2026-09-18), 88 of them follow-ups boarded in the week of 2026-10-13 to 2026-10-17 alone; the rule that "the next order that edits the surface" takes a row delivered none of these 32 (each still pending at &#96;7b8206f4&#96;). Wall-clock: one triage per row plus the fixes; unknown until run. Context bytes: this order's row list is read once. Commands: none added. Tokens: unknown until run. Steps: 20. Re-mints: the executor checks each edited file against &#96;scripts/lib/evidence-sources.mjs&#96; (a registered source owes its edition's deterministic re-mint) and &#96;FEEDBACK_SOURCE_PATHS&#96; in &#96;packages/skeleton/src/feedback-audit.ts&#96; (an edited judged source owes one live feedback self-host episode on Codex &#96;gpt-6.1-sol&#96; at &#96;max&#96; or Claude Code &#96;claude-opus-5-5&#96; at &#96;xhigh&#96;, no authorization needed, cost accepted); any edited declared machinery source (&#96;machinerySources&#96; in &#96;scripts/test-runner.mjs&#96;) puts &#96;npm test -- --review&#96; in the final criterion, which names it already.
+- Authority: [docs/work-orders/WO-218-boarded-follow-ups-the-instance-and-publication.md](WO-218-boarded-follow-ups-the-instance-and-publication.md)
+
+### WO-219
+
+[WO-219 — Boarded follow-ups, batch 3: lifecycle records, attestation, role text, hooks, the harness and planning machinery: every one of the 40 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (version assigned at activation)](WO-219-boarded-follow-ups-records-roles-and-the-harness.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-218: reference-only (non-blocking) — placed before this batch in the serial queue; no hard edge.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: machinery
+- Cost: adds the fixes and fixture cases the listed rows need, across &#96;scripts/resume.mjs&#96;, &#96;scripts/lib/handoff-ledger.mjs&#96;, &#96;scripts/lib/verification-briefing.mjs&#96;, &#96;scripts/lib/review-findings.mjs&#96;, &#96;scripts/lib/comment-labels.mjs&#96;, &#96;scripts/lib/plan-receipts.mjs&#96;, &#96;scripts/lib/planning-followups.mjs&#96;, &#96;packages/skeleton/src/loadouts/contributor.ts&#96;, &#96;packages/skeleton/src/harness-host.ts&#96;, &#96;packages/kernel/src/core.ts&#96;, &#96;packages/kernel/src/store.ts&#96;, &#96;packages/compiler/src/source-bundle.ts&#96;, the hooks under &#96;.claude/hooks/&#96; and the fixtures the rows name; unknown until each row is triaged, and the README records the per-row command and case. Removes 40 pending rows from the register, which at the base holds 281 pending rows, 130 of them decision rows boarded by closed orders across 53 orders (the oldest from WO-054, 2026-09-18), 88 of them follow-ups boarded in the week of 2026-10-13 to 2026-10-17 alone; the rule that "the next order that edits the surface" takes a row delivered none of these 40 (each still pending at &#96;7b8206f4&#96;). Wall-clock: one triage per row plus the fixes; unknown until run. Context bytes: this order's row list is read once. Commands: none added. Tokens: unknown until run. Steps: 18. Re-mints: the executor checks each edited file against &#96;scripts/lib/evidence-sources.mjs&#96; (a registered source owes its edition's deterministic re-mint) and &#96;FEEDBACK_SOURCE_PATHS&#96; in &#96;packages/skeleton/src/feedback-audit.ts&#96; (an edited judged source owes one live feedback self-host episode on Codex &#96;gpt-6.1-sol&#96; at &#96;max&#96; or Claude Code &#96;claude-opus-5-5&#96; at &#96;xhigh&#96;, no authorization needed, cost accepted); any edited declared machinery source (&#96;machinerySources&#96; in &#96;scripts/test-runner.mjs&#96;) puts &#96;npm test -- --review&#96; in the final criterion, which names it already.
+- Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Authority: [docs/work-orders/WO-219-boarded-follow-ups-records-roles-and-the-harness.md](WO-219-boarded-follow-ups-records-roles-and-the-harness.md)
+
+### WO-220
+
+[WO-220 — Boarded follow-ups, batch 4: the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission: every one of the 20 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (version assigned at activation)](WO-220-boarded-follow-ups-the-resident-and-the-vertical.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-219: reference-only (non-blocking) — placed before this batch in the serial queue; no hard edge.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds the fixes and fixture cases the listed rows need, across &#96;packages/skeleton/src/vertical.ts&#96;, &#96;packages/skeleton/src/resident-state.ts&#96;, &#96;packages/skeleton/src/resident-host.ts&#96;, &#96;packages/console&#96;, &#96;packages/kernel/src/core.ts&#96;, &#96;corpus/&#96; and the fixtures the rows name; unknown until each row is triaged, and the README records the per-row command and case. Removes 20 pending rows from the register, which at the base holds 281 pending rows, 130 of them decision rows boarded by closed orders across 53 orders (the oldest from WO-054, 2026-09-18), 88 of them follow-ups boarded in the week of 2026-10-13 to 2026-10-17 alone; the rule that "the next order that edits the surface" takes a row delivered none of these 20 (each still pending at &#96;7b8206f4&#96;). Wall-clock: one triage per row plus the fixes; unknown until run. Context bytes: this order's row list is read once. Commands: none added. Tokens: unknown until run. Steps: 7. Re-mints: the executor checks each edited file against &#96;scripts/lib/evidence-sources.mjs&#96; (a registered source owes its edition's deterministic re-mint) and &#96;FEEDBACK_SOURCE_PATHS&#96; in &#96;packages/skeleton/src/feedback-audit.ts&#96; (an edited judged source owes one live feedback self-host episode on Codex &#96;gpt-6.1-sol&#96; at &#96;max&#96; or Claude Code &#96;claude-opus-5-5&#96; at &#96;xhigh&#96;, no authorization needed, cost accepted); any edited declared machinery source (&#96;machinerySources&#96; in &#96;scripts/test-runner.mjs&#96;) puts &#96;npm test -- --review&#96; in the final criterion, which names it already.
+- Authority: [docs/work-orders/WO-220-boarded-follow-ups-the-resident-and-the-vertical.md](WO-220-boarded-follow-ups-the-resident-and-the-vertical.md)
 
 ### WO-080
 
@@ -235,6 +324,8 @@ None.
 [WO-193]: WO-193-instance-capability-requests.md
 [WO-204]: WO-204-source-writer-cleanup-revocation.md
 [WO-207]: WO-207-update-rollback.md
-[WO-210]: WO-210-instance-orders-reach-release-close.md
-[WO-213]: WO-213-private-paths-in-every-record.md
-[WO-215]: WO-215-release-close-refreshes-the-starter.md
+[WO-216]: WO-216-no-gate-fails-late-on-bookkeeping.md
+[WO-217]: WO-217-boarded-follow-ups-the-gate.md
+[WO-218]: WO-218-boarded-follow-ups-the-instance-and-publication.md
+[WO-219]: WO-219-boarded-follow-ups-records-roles-and-the-harness.md
+[WO-220]: WO-220-boarded-follow-ups-the-resident-and-the-vertical.md

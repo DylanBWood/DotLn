@@ -670,6 +670,59 @@ Product 07 gains:
 Product 12 gains the October picture. The record is
 [the planning document](standard-pass-2026-10-13.md), §12.
 
+**Standard pass (2026-10-17):** `planning: standard planning pass with
+some comments`. `main` was at `7b8206f4`, and three orders had closed since
+receipt 045 (WO-215, WO-210 and WO-213, v0.81.0 to v0.83.0). The pass
+retired those three. The operator's five comments, sent during the pass,
+were each read against the record (the planning document, §4): the
+agreement openers the operator hears are rare in the operator's own
+transcripts and follow named errors, but replies open by agreeing 3.4 times
+as often as by disagreeing and nothing measures whether an agent abandons a
+correct position; the tinkerer support has recorded nothing since WO-196
+made a decline unrecorded; every final review that spawned reviewer workers
+recorded findings (about ten per worker) while fifteen of twenty-two reviews
+without one recorded none; the behaviours complained of are prose units;
+and the complete gate ran eleven times per closed order at a 28-minute
+median, with 43 hours of repair against 9 of implementation over WO-210 and
+WO-213, most of it the withdrawn validation expansion and the review
+fan-out's blocking findings.
+
+Filed:
+- [WO-216](../work-orders/WO-216-no-gate-fails-late-on-bookkeeping.md):
+  on the operator's direction after the readings, from the gate index's
+  failure rows (of seven complete-gate failures none found a product
+  defect; fourteen of seventeen document-gate failures were stale generated
+  artifacts): a structural phase first in every gate and handoff, fail-fast
+  with `npm run sync` as the remedy, the complete gate once per order at
+  final review with handoffs on the order's Preflight suites, launchpad as
+  file lanes, stopped runs recorded. It takes the WO-213 expansion's
+  directions 1 and 2 and none of its reuse.
+
+- [WO-217](../work-orders/WO-217-boarded-follow-ups-the-gate.md),
+  [WO-218](../work-orders/WO-218-boarded-follow-ups-the-instance-and-publication.md),
+  [WO-219](../work-orders/WO-219-boarded-follow-ups-records-roles-and-the-harness.md)
+  and [WO-220](../work-orders/WO-220-boarded-follow-ups-the-resident-and-the-vertical.md):
+  on the operator's direction that every boarded, follow-up and reopened
+  row is resolved by a work order. The register's 130 pending decision rows
+  (boarded by closed orders across 53 orders; 88 in the week of 2026-10-13)
+  are cut by subsystem into four batches of 31, 32, 40 and 20 rows; each
+  row is fixed with a fixture case or declined with its recorded reason,
+  the register disposition is the record, a row only the operator can
+  decide leaves as an operator packet, and at most a third of a batch may
+  be declined. The standard is in the planning document §4.6: a later pass
+  cuts the next batch the same way when a subsystem's boarded rows pass
+  twenty.
+
+Declined before filing, at the operator's word: a review order, a
+time-budgeted gate and a recut of WO-096; their shapes are candidate 6 of
+this pass's section below. The sequence is the 2026-10-13 order with the
+three closes removed, WO-216 first and the four batches after it.  Product 05 records the tinkerer
+reading and the first consumer of Beware of Naive Interventionism; product
+07 gains reviewers for cause, the Alternatives element, the rule that a
+behavioural correction is filed as a typed check, and the three post-pass
+feedback routes. The record is
+[the planning document](standard-pass-2026-10-17.md).
+
 For adjacent evidence and corpus work, the filed orders (WO-102, WO-103,
 WO-105, WO-107, WO-108 and WO-109) are closed; the generated index's
 history page records each. The WO-107 baseline has no named consumer
@@ -2946,6 +2999,88 @@ artifact-derived counts. The captures hold the full tables with citations. The
 nomination check found every item above partial: a neighbor exists, and none
 names the mechanism.
 
+## Candidates — returns from the standard pass with the operator's comments (recorded 2026-10-17)
+
+Recorded by the [2026-10-17 standard pass](standard-pass-2026-10-17.md) from
+its reading of the three closes and the operator's five comments. None is
+allocated; this section grants no activation authority. Each is a NoOp or an
+observation with the condition that makes it worth an order. One observation
+is recorded as prose, not a row: in the nine final reviews that spawned
+reviewer workers the finding count tracked the number of workers (6 to 28,
+about ten per worker), while twenty-two reviews without one recorded 0 to 2;
+WO-215 (41 files) and WO-213 (92 paths) each recorded about six per worker,
+so the reviewer count, not the order's size, predicts a review's findings.
+An inference from nine rows; it reopens the order-size rule only through the
+conditions product 07 names.
+
+1. **A measure of reply register.** The pass counted, in the operator's own
+   Claude Code transcripts of the DotLn-family projects, 34 replies opening
+   with agreement against 10 opening with disagreement, and 46 texts with an
+   agreement or apology phrase in 33 of about 470 sessions; nearly every
+   instance read follows a named error. No check observes replies, and a
+   phrase filter at Stop time would teach phrasing, not checking. Shape:
+   none filed. Reopen: the operator cites a session in which an agent
+   abandoned a correct position without new evidence, or a harness exposes
+   a reply-level observation point that a role's evidence rule can bind.
+2. **The document gate's run count.** `npm run test:docs` ran 125 times in
+   four days over three orders (17 failed, median 110 s, 233 minutes),
+   because lifecycle transitions and repairs each rerun it. Shape: a
+   document-gate row reused across a transition that changed no document
+   input, or the gate's slowest tasks named at their cause. Reopen: a closed
+   order records more than twenty document-gate runs, or the gate's median
+   exceeds 120 s.
+3. **Two fixes of older behaviour withdrawn with WO-213's expansion.** D042:
+   two wo107-schema watchdog cases refuse before spawning when the host's
+   health sample reports pressure 2, and the withdrawn change controlled
+   that sample inside the test process. D064: the pinned TypeScript scanner
+   in the import reader can stop advancing on shell text or malformed
+   JavaScript, latent while the only machinery shell entry has no comment.
+   Shape: each as a boy-scout item of the next order that edits the
+   wo107-schema cases or `scripts/lib/machinery-coverage.mjs`. Reopen: a
+   wo107-schema case refuses on a host whose gate otherwise passes, or the
+   coverage check stalls on a shell entry or a malformed file.
+4. **Verification token counters.** VER-003 and VER-006 of WO-213 record
+   23.5 M and 19.0 M tokens; the verifier's audit output and repository
+   reads exceeded their limits (WO-210-D039). Shape: a per-dispatch token
+   reading in `plan failures`, beside the escapes, for the operator's
+   reserved efficiency pass (FUP-f1c7a256bec46737). Reopen: a verification
+   records more than 20 M tokens again, or the efficiency pass opens.
+5. **A mid-run scope expansion onto gate or runner surfaces.** WO-213's
+   validation expansion was authorized inside a repair (D039, D051, D052),
+   so none of the planning filing screens applied, and it was withdrawn
+   after four failed verifications and about 8.9 hours of gate wall time.
+   Shape: `plan amend-order` refuses an execution amendment whose approved
+   text adds a criterion over the runner, gate reuse, gate evidence or the
+   hooks, printing the planning route instead; the operator's own route, so
+   the operator's word decides it. Reopen: the operator asks for it, or a
+   second mid-run expansion onto those surfaces fails a verification.
+6. **Three drafts declined on 2026-10-17.** Each was drafted by the pass on
+   one of the operator's comments and declined by the operator before
+   filing; none is a record. (a) A review can return nothing:
+   `final-review-result` refuses a finding without a one-line `breaks`
+   (a criterion, a behavior `main` had, or the use the Objective names) and
+   a one-line `reproduction`; a reviewer spawns a worker only above 2,000
+   changed lines or for a named lens, with a brief that says the expected
+   result is no item; `docs/control/budgets.json` holds a worker cap per
+   role under `subagentCap`, raised for one session only by an
+   operator-attributed `scope expand: subagents <n>`; `plan failures`
+   reports findings by route and the register delta per closed order.
+   (b) A bounded pre-handoff gate: `npm test -- --budget [seconds]`
+   (default 300) runs the structural checks first and then the suites whose
+   declared sources the change touches, starting no task after the budget
+   and recording the unrun; completions accept that row; the complete gate
+   runs once per order, fresh, at final review; a suite whose thirty-day
+   median exceeds half the budget is review-only and printed as a cut list;
+   nothing is carried between runs. The record against it: three gate
+   orders closed in October and the gate doubled anyway as WO-210 and
+   WO-213 added suites. (c) WO-096 recut: each Contributor prose unit gains
+   a typed mechanism with a fixture case or a recorded reason it cannot be
+   lowered; the compiler refuses a new prose unit without such a reason;
+   the tinkerer unit becomes an order-contract check (a Design naming a
+   rejected alternative and its axis, for orders dated from 2026-10-17) and
+   a `fork:` handoff line the completion reads. Reopen: the operator
+   directs any of the three, or names what a useful one would show.
+
 ## Moved from the execution guide (2026-09-28)
 
 WO-167 moved these nine candidates here from product 07 under their slugs.
@@ -4733,6 +4868,11 @@ Retained dependency wording is dated planning context, not a second state source
 | [WO-209](../work-orders/WO-209-build-as-update-channel.md) | delivery, launchpad — the kit manifest names its build (the compiled definition modules the emit lowers from); an update takes `both`, `machinery` (build pinned, pin recorded, emit and check honor it) or `build`; a compiler-contract guard; `build --pin|--take` on the merge path; the overlay composes over the pinned build; the definition pack recorded as the alternative | WO-076 (hard: the overlay) and WO-203 (hard: the update's halves); WO-077 closed; the serial tail after WO-208; filed 2026-10-11 (route pass, item (h)); assign version at activation (minor) Receipt 044 known issues (2026-10-11): criterion 3: The guard checks only the compiler package's major version. New machinery (hooks, scripts) running over pinned definitions from the same major is not checked for compatibility, and pinning the hooks' runtime is excluded. (reopen when a `machinery` update under a pin within the same compiler major passes `harness check`, and a hook or emitted unit then fails in the fixture or an instance) criterion 2: The channel and pin multiply update states across both routes, ahead of any supplied observation that an instance needed to keep its build across a machinery update, and the order is committed before the R3 replan. (reopen when the R3 replan after WO-083 records whether any instance asked to keep its build across a machinery update, or drops or reorders WO-209) Amended 2026-10-13 (standard pass): WO-076 widened the boundary this order partitions (four imports from `contributor.js`, the overlay parameter, a `build: none` manifest without an origin); the guard compares the minor below 1.0 and the imports; the channel under `build: none` is stated; carried: FUP-9c558fa0f869290e (step 3b). | implementer, then independent verifier | fixture instances updated under each channel; a merged starter revision | Umbrella record (2026-10-13): superseded whole by WO-207, which carries its obligations (merged; the 2026-10-13 standard pass §12.3). `scripts/launchpad.mjs`, `scripts/lib/harness.mjs`, `scripts/lib/config.mjs`, `scripts/test-launchpad.mjs`, `scripts/test-harness.mjs`, `scripts/kit/README.client.md`, products 03 and 12 |
 | [WO-210](../work-orders/WO-210-instance-orders-reach-release-close.md) | delivery, launchpad — in an exported instance the release surfaces judge the instance's own surfaces and name core-only inputs unavailable (`docs/LEGAL.md`'s pins), a self order prepares from seeds carrying `v0.1.0`, release close reads inputs the kit carries and the refutation's goal standard is product 07's `dotln-goal-rules` blocks plus the instance's declared purpose; a target order's passing final review records the reviewed target commit, `worktree publish WO-NNN --target-worktree` pushes exactly that commit and opens the target's pull request under the registered profile and an operator grant, its records branch passes the committed check without a version and publishes with no release notes, and its close lists each ignored directory once with its remedy; the outward lint refuses runtime store identifiers and the episode route's body and disposition reply cite target-native references | WO-072, WO-201, WO-202, WO-064, WO-066 and WO-118 closed; position 2 of the serial queue; WO-192 and WO-083 depend on it (hard); merged 2026-10-13 (standard pass) from WO-210, WO-211 and WO-214, undoing the split of WO-214 out of WO-211 under the retired 2026-09-08 cut; carry-ins FUP-a065bc5b99e40660, FUP-3cceac0fff2dba94, FUP-00b15d92d53011b2, FUP-a5c6ac8cb40bd52a and FUP-a272d577fd351b43; this pass writes the product 07 marker blocks the order reads; assign version at activation (minor) | implementer, then independent verifier | the export fixture of `scripts/test-launchpad-planning.mjs` with a release drive and a registered target order published to a `gh` stub; WO-072's real-Git fixture with a `gh` stub and a bare target origin; the outward-lint, github-body and target-publish fixtures | `scripts/license-surfaces.mjs`, `scripts/release.mjs`, `scripts/lib/plan-subject.mjs`, `scripts/launchpad.mjs` (`KIT_FILES`), `scripts/test-runner.mjs` (kit lines), `scripts/kit/README.client.md`, `scripts/kit/first-order.template.md`, `scripts/lib/outward-lint.mjs`, `scripts/lib/github-body.mjs`, `scripts/lib/target-publish.mjs`, `scripts/worktree.mjs`, `scripts/resume.mjs`, `scripts/lib/control.mjs`, `scripts/lib/target-worktrees.mjs`, `scripts/lib/target-worktree-close.mjs`, their tests (including `scripts/test-launchpad.mjs` and `scripts/test-runner.test.mjs`), products 07, 03 and 02, `docs/PLAYBOOK.md`, `docs/LEGAL.md` Receipt 045 known issues (2026-10-13): after `resume target-records` the decisions and reports live only in the target's records-only commit, which a squash or rebase merge there leaves unreachable from its base; between WO-210 and WO-192 the role text still names launchpad `npm test` while target completions refuse it; instance-only scenarios join core suites every later gate runs (criteria 18, 17, 24). |
 | [WO-213](../work-orders/WO-213-private-paths-in-every-record.md) | machinery, privacy — a new line naming an absolute home path in a JSON, JSONL, log or text record under the document roots fails the document check as Markdown already does, against a fingerprint baseline of today's lines; the register projects `<home>` and rewrites its one stored copy; the receipt helper refuses a private path before it writes | WO-188 closed; the machinery half of the head pair with WO-210; filed 2026-10-13 (standard pass): ten non-Markdown records carried the operator's home path past the Markdown-only screen, against WO-188's assumption 7 and the operator's standing instruction; carries FUP-589c1d588cb302a9 and FUP-7e0490f3c107e919; assign version at activation (minor) | implementer, then independent verifier | docs-check, register and receipt fixtures; the real register's one sync | `scripts/lib/private-paths.mjs` (new), `scripts/docs-check.mjs`, `scripts/lib/planning-followups.mjs`, `scripts/lib/plan-receipts.mjs`, four test files, `docs/control/doc-baseline.json`, `docs/planning/followups.json` (by sync), `docs/README.md`, product 09 Amended 2026-10-13 (reshape): position 3 of the serial queue, a Preflight line, absorbed orders retargeted to their carriers. Receipt 045 known issues (2026-10-13): the fingerprint baseline accepts 291 committed home-path lines in 37 files, and earlier bytes stay in history and any pushed remote (criterion 2). |
+| [WO-216](../work-orders/WO-216-no-gate-fails-late-on-bookkeeping.md) | machinery, gate — a structural phase first in every gate and handoff (formatting, declarations and copied-fixture closures, generated-artifact freshness, host memory state) with fail-fast and `npm run sync` as the remedy; the complete gate once per order at final review, handoffs on the order's Preflight suites; launchpad as file lanes under their own deadlines; stopped runs recorded; nothing carried between runs | WO-213 closed (v0.83.0); position 1 of the serial queue (the 2026-10-17 standard pass, on the operator's direction of that day); carry-ins FUP-201956913dc8ea85, FUP-92bdaad7521fd511, FUP-e96221b106cd136a and FUP-182984d482ca59ca; the measured claim is read by the next pass after five closes; assign version at activation (minor) | machinery implementer, then independent verifier (fixture-based criteria plus the order's own handoff rows) | runner, resume and process-debt fixtures; the split launchpad files; one fresh complete review at final review | `scripts/test-runner.mjs`, `scripts/sync.mjs`, `scripts/lib/gate-reuse.mjs`, `scripts/lib/handoff-ledger.mjs`, `scripts/resume.mjs`, `packages/skeleton/src/loadouts/contributor.ts`, product 07 |
+| [WO-217](../work-orders/WO-217-boarded-follow-ups-the-gate.md) | machinery, boarded follow-ups — batch 1: 31 register rows on the gate, the runner, the host guard, gate evidence and the fixtures, each fixed with a fixture case or declined with its reason | WO-216 placed before (reference only); position 2 of the serial queue; the 2026-10-17 standard pass on the operator's direction; every listed row is a carry-in by id; assign version at activation from the fixes made | executor triages each row at its source, then independent verifier reads the register dispositions and the cases | `runner-fixtures`, `harness-fixtures`, `process-debt`, `resume` and the fixtures the rows name; the register dispositions (`followups --show` per row) | the surfaces the rows name, `docs/evidence/WO-217/` |
+| [WO-218](../work-orders/WO-218-boarded-follow-ups-the-instance-and-publication.md) | delivery, boarded follow-ups — batch 2: 32 register rows on the instance lifecycle, export and kit, publication, release close, the starter and worktrees | WO-217 placed before (reference only); position 3 of the serial queue; the 2026-10-17 standard pass on the operator's direction; every listed row is a carry-in by id; assign version at activation from the fixes made | executor triages each row at its source, then independent verifier reads the register dispositions and the cases | `launchpad`, `target-worktree`, `target-publish`, `release`, `worktree`, `siblings-fixtures` and the fixtures the rows name; the register dispositions (`followups --show` per row) | the surfaces the rows name, `docs/evidence/WO-218/` |
+| [WO-219](../work-orders/WO-219-boarded-follow-ups-records-roles-and-the-harness.md) | machinery, boarded follow-ups — batch 3: 40 register rows on lifecycle records, attestation, role text, hooks, the harness and planning machinery | WO-218 placed before (reference only); position 4 of the serial queue; the 2026-10-17 standard pass on the operator's direction; every listed row is a carry-in by id; assign version at activation from the fixes made | executor triages each row at its source, then independent verifier reads the register dispositions and the cases | `resume`, `harness`, `harness-context`, `harness-fixtures`, `process-debt`, `plan-refutation` and the fixtures the rows name; the register dispositions (`followups --show` per row) | the surfaces the rows name, `docs/evidence/WO-219/` |
+| [WO-220](../work-orders/WO-220-boarded-follow-ups-the-resident-and-the-vertical.md) | delivery, boarded follow-ups — batch 4: 20 register rows on the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission | WO-219 placed before (reference only); position 5 of the serial queue; edits to feedback-judged sources (vertical, resident) owe one live feedback episode; the 2026-10-17 standard pass on the operator's direction; every listed row is a carry-in by id; assign version at activation from the fixes made | executor triages each row at its source, then independent verifier reads the register dispositions and the cases | `vertical`, `skeleton`, `console`, `wo107-schema` and the corpus lanes the rows name; the register dispositions (`followups --show` per row) | the surfaces the rows name, `docs/evidence/WO-220/` |
 | [WO-215](../work-orders/WO-215-release-close-refreshes-the-starter.md) | delivery, launchpad — after a published release, `resume: release close` runs the export update (the first export while the starter holds none, as on 2026-10-13) into the starter's recorded checkout in a disposable worktree, verifies it as an export verifies itself, pushes exactly one fast-forward commit to the starter's main (bound to core's origin host and owner and the sibling's name), records the run and leaves WO-078's receipt for the next `worktree start` to carry into a reviewed change; a missing, dirty, diverged or misbound checkout or a failed verification refuses as a close blocker with nothing pushed; the operator's fork is never touched | WO-072, WO-078, WO-157, WO-201 and WO-203 closed; position 1 of the serial queue, before WO-210; filed 2026-10-13 (standard pass) on the operator's answer to the planner's question about the starter refresh (§12.1); carries FUP-efcc590126413a41; its own release close is the first live refresh, a first export (the starter held only its initial commit at 2026-10-13T18:57Z), and needs the starter checkout recorded with `worktree clone` first, a role's step on the operator's word; assign version at activation (minor) | implementer, then independent verifier | the refresh fixture in `scripts/test-launchpad.mjs` over local bare remotes (at most three kit preparations: first export, update, failed verification); release, worktree, target-worktree and siblings cases; no test reaches a network remote | `scripts/lib/starter-refresh.mjs` (new), `scripts/release.mjs`, `scripts/launchpad.mjs`, `scripts/worktree.mjs`, `scripts/lib/siblings.mjs`, `scripts/siblings.mjs`, `scripts/lib/target-worktrees.mjs`, `scripts/lib/target-publish.mjs`, five test files, `packages/skeleton/src/loadouts/contributor.ts` and the regenerated bundle, products 07, 03 and 12, `docs/PLAYBOOK.md`, `docs/AI-HARNESS-SECURITY.md`, `docs/README.md` Receipt 045 known issues (2026-10-13): a refused starter refresh holds release close open for causes outside the released order (a dirty, diverged or misbound checkout, or no remote `main`); the refresh's receipt waits in main's ignored lane and rides in the next order's reviewed change, lost if that order is withdrawn (criteria 5, 7). |
 | [WO-101](../work-orders/WO-101-program-and-hash-corpus.md)            | evidence/corpus — Program and identity regression floor                                                                                                                                                                                                                                        | not applicable                                                                                                                                                                                                             | deterministic corpus executor                                                                             | offline harness                                                                                                                                                       | `corpus/harness/`, fixtures, manifests                                                                                                                                                                           |
 | [WO-102](../work-orders/WO-102-cadence-corpus.md)                     | evidence/corpus — cadence boundary sweep                                                                                                                                                                                                                                                       | assign version and close disposition; pin suitable base/deps and governed closeout path Amended 2026-09-28: re-observed at `5f3849ec` and brought to the current order form (both gates, re-mints, declared sets, bounded write-backs, the executor's live steps; the planning document §10.4). | deterministic corpus executor                                                                             | offline harness                                                                                                                                                       | cadence fixtures and manifests                                                                                                                                                                                   |

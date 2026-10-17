@@ -30,11 +30,11 @@ Every open order has a place in this list
 ([2026-10-02 pass](standard-pass-2026-10-02.md)). The
 [2026-10-11 route pass](three-repository-route-2026-10-11.md) cut the
 delivery lane as the three-repository route the operator directed, in
-dependency order, and the
-[2026-10-13 standard pass](standard-pass-2026-10-13.md) retires the seven
-orders of that route that have closed: WO-072 (v0.75.0), WO-076 (v0.76.0),
-WO-200 (v0.76.1), WO-201 (v0.77.0), WO-202 (v0.78.0), WO-203 (v0.79.0) and
-WO-118 (v0.80.0, the critical path's product exit).
+dependency order; the [2026-10-13 standard pass](standard-pass-2026-10-13.md)
+retired the seven orders of that route that had closed, and the
+[2026-10-17 standard pass](standard-pass-2026-10-17.md) retires the three
+it filed or placed first that have since closed: WO-215 (v0.81.0), WO-210
+(v0.82.0) and WO-213 (v0.83.0).
 
 **One focus: the starter, the operator's fork of it and DotLn-Angular,
 with a DotLn UI** (operator direction, 2026-10-13). The win condition is
@@ -42,21 +42,51 @@ progress in core, the starter, the fork, DotLn-Angular and DotLn WoW Forever
 at the same time, without babysitting, with feedback and bugs routed to
 where they belong and acted on. The fork does its foundational Angular work,
 the UI included, through its own planning passes and lifecycle as soon as it
-can run and publish them (operator correction 3, 2026-10-11). WO-210 is the
-point at which it can. WO-083's run then measures one bounded Angular order,
-not necessarily the repository's first change.
+can run and publish them (operator correction 3, 2026-10-11); WO-210
+(closed) is the point at which it can. WO-083's run then measures one
+bounded Angular order, not necessarily the repository's first change.
+
+**One order first: the gate stops failing late on bookkeeping** (the
+2026-10-17 pass, on the operator's direction of that day). Of the seven
+complete-gate failures since receipt 045 none found a product defect: two
+were formatting, one a stale role-oracle snapshot, one a missing
+`machinerySources` declaration found at minute 22, one a fixture refusing
+under host memory pressure at minute 21, two the launchpad suite at its
+900 s deadline; fourteen of seventeen document-gate failures were stale
+generated artifacts. WO-216 runs a structural phase first in every gate and
+handoff, stops at the first failure naming `npm run sync`, pays the
+complete gate once per order at final review, and splits launchpad into
+file lanes. Three other drafts of the pass (a review order, a time-budgeted
+gate, a recut of WO-096) were declined by the operator before filing and
+are candidates in the map ([the planning document](standard-pass-2026-10-17.md),
+§4.5 and §5). The reversal condition is in the pass's §8.
+
+**Then the boarded follow-ups, in four batches** (the same pass, on the
+operator's direction that every boarded, follow-up and reopened row is
+resolved by a work order). The register held 130 pending decision rows
+boarded by closed orders across 53 orders, the oldest from 2026-09-18, 88
+of them boarded in one week; the rule that the next order editing a surface
+takes its rows delivered none. WO-217 to WO-220 cut them by subsystem (the
+gate; the instance and publication; records, roles and the harness; the
+resident and the vertical), each row fixed with a case or declined with its
+reason, the register showing it. The operator may interleave them with the
+focus orders by one sequence edit.
 
 The order, serial:
-- WO-215: core's release close pushes each release into the starter, so
-  every later release reaches the operator's fork's upstream on its own. The
-  starter holds no export yet, so WO-215's own release close makes its first
-  one. The fork is created from it, and opts into later updates through its
-  own planning pass (WO-207).
-- WO-210: the instance's own orders, including the Angular target order,
-  publish and reach release close with target-native text. The target's own
-  tests gate its orders, and the target keeps its own product documents,
-  planning passes and order records. It absorbed WO-211 and WO-214.
-- WO-213: private paths stay out of the public fork's committed records.
+- WO-216: no gate fails late on bookkeeping. A structural phase first, in
+  seconds, in every gate and handoff; fail-fast with `npm run sync` as the
+  remedy for a stale artifact; the complete gate once per order at final
+  review, handoffs on the order's Preflight suites; launchpad as file lanes;
+  stopped runs recorded.
+- WO-217: boarded follow-ups, batch 1: the gate, the runner, the host guard,
+  gate evidence and the fixtures (31 rows).
+- WO-218: boarded follow-ups, batch 2: the instance lifecycle, export and
+  kit, publication, release close, the starter and worktrees (32 rows).
+- WO-219: boarded follow-ups, batch 3: lifecycle records, attestation, role
+  text, hooks, the harness and planning machinery (40 rows).
+- WO-220: boarded follow-ups, batch 4: the resident, the vertical, the
+  console, intake and triage, audit, the corpus lanes and the kernel's
+  admission (20 rows).
 - WO-080: the workstream document the run holds, the board's Workstreams
   section and the synthetic pilot. It absorbed WO-081 and WO-082.
 - WO-204: the source writer is made safe before WO-083. It absorbed WO-205,
@@ -85,9 +115,11 @@ The period below `v1.0.0` is early access (operator direction, 2026-09-30).
 The order of everything the operator did not place is the planner's.
 
 <!-- dotln-work-order-sequence:start -->
-- WO-215 — Core's release close refreshes DotLn-Enterprise-Starter
-- WO-210 — An instance's own orders publish and reach release close
-- WO-213 — Private paths stay out of every committed record
+- WO-216 — No gate fails late on bookkeeping
+- WO-217 — Boarded follow-ups, batch 1: the gate
+- WO-218 — Boarded follow-ups, batch 2: the instance and publication
+- WO-219 — Boarded follow-ups, batch 3: records, roles and the harness
+- WO-220 — Boarded follow-ups, batch 4: the resident and the vertical
 - WO-080 — Workstreams: document, index, board section and synthetic pilot
 - WO-204 — The source writer cannot damage the operator's repository
 - WO-192 — A router drives an order through its lifecycle
