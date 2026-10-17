@@ -33,11 +33,22 @@ export function showHarnessAdvisory(
   }
 }
 
+/** A dispatch may lead a longer message, separated from its direction by a
+ * newline or semicolon. Quoted phrases and word continuations are prose. */
+export function harnessPromptIntent(prompt: string | undefined): string {
+  const text = prompt?.trim() ?? "";
+  return (
+    /^(resume: (?:next|fix|verify|final review|release close|status|times))(?=$|[ \t]*(?:;|\r?\n))/u.exec(
+      text,
+    )?.[1] ?? text
+  );
+}
+
 /** Source for the emitted stale-main recovery hook. Generated hook text is
  * data; the compiler never loads Node built-ins or executes this recovery. */
 const releaseCloseRecovery = `async function recoverReleaseClose(root, hook, input, event) {
     if (event !== "UserPromptSubmit" ||
-        input?.prompt?.trim() !== "resume: release close" ||
+        (${harnessPromptIntent.toString()})(input?.prompt) !== "resume: release close" ||
         process.env.COPILOT_PROJECT_DIR ||
         process.env.COPILOT_AGENT_SESSION_ID)
         return null;

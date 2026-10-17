@@ -275,6 +275,10 @@ upstream history. No publication editions means `publication: no editions
 declared`. No reader profiles, examples or score rows means no editorial
 records to verify; a recorded score whose tag object is missing fails with
 its release, object and restoring fetch command.
+`npm run reader -- profile <surface>` still supplies the balanced default
+when no profile is declared. It creates no editorial records and links an
+example only when examples are present. A malformed declared profile remains
+an error; publication guidance reports it without rewriting the text.
 
 The refutation goal standard contains the execution guide's marked
 `dotln-goal-rules` blocks and this instance's purpose, or an explicit
@@ -296,14 +300,31 @@ planning document; refutation still judges the instance's subject.
 
 ## Releases in this instance
 
+For an operator-authorized scope change, `npm run plan -- amend-order`
+binds only an order in the latest judged planning horizon. The never-judged
+seed WO-001 has no receipt to amend: record the actual authorization and
+bounded scope in its structured decisions and run the ordinary planning,
+document and lifecycle checks. This supplies no additional authority,
+planning verdict or hold disposition. A required missing planning receipt
+still needs normal planning/refutation; do not create a fictitious pass to
+enable amendment.
+
 <!-- DOTLN-RELEASE-BEGIN -->
-This source prepares DotLn `v0.1.0`.
+This source prepares DotLn-Enterprise-Starter `v0.1.0`.
 <!-- DOTLN-RELEASE-END -->
 
 Release surfaces check this block, component versions and workspace pins,
 the PR and release-notes body profile, license files and package publication
 guards. `docs/LEGAL.md`'s three pins are checked only where this instance
 actually declares that file; absence reports unavailable for those pins alone.
+Set `release.displayName` in this instance's `dotln.config.json` to choose
+its release name, then run `npm run release -- prepare --local` to refresh
+the version claim. Fresh exports use `DotLn-Enterprise-Starter`; absent
+configuration preserves the historical `DotLn` default. The name must be
+nonempty, trimmed and single-line, without control characters, backticks or
+release version tokens. Updates preserve this instance-owned configuration.
+Each release retains the name configured at its release commit; changing
+the name affects future releases, not older tags or Releases.
 The seeded WO-001 carries `v0.1.0`; `npm run release -- prepare --local`
 assigns later versions above this instance's own tags. A target order's
 launchpad records branch records no release, keeps one well-formed release
@@ -326,25 +347,42 @@ After the first steps above, `npm test`, `npm run test:docs` and
 selection first runs `kit-verify` instead of `build`. It hashes every
 manifest-listed compiled runtime and test file, and refuses a changed,
 missing or nonregular compiled file by path before any other task. Other
-kit-file changes produce one advisory line, so your script edits can still
-be judged by the gates. Run `node scripts/launchpad.mjs verify` directly for
-the same check.
+kit-file changes produce one advisory line. The following `harness` check
+validates the active pinned snapshot and generated bundle. Run
+`node scripts/launchpad.mjs verify` directly for the manifest check.
+
+The instance coordinates work in registered sibling repositories. Its
+ordinary `npm test` and review check the installed DotLn runtime; they do
+not test a sibling's implementation. `node scripts/target-gate.mjs WO-NNN
+[--review]` runs that repository's declared checks in its target worktree
+and binds the result to its current bytes. `npm run test:docs` separately
+checks the instance's coordination records. Each order still needs its
+declared evidence, including the first order's observed harness smoke.
 
 The observed selections in a fresh fixture instance are:
 
-- `npm test`: `kit-verify`, `format`, `release-preparation`, `target-worktree`, `publication-fixtures`, `backup-intake`, `beacon-portability`, `checkpoint`, `work-orders-fixtures`, `siblings-fixtures`, `adjacent-queue`, `derived-orders`, `portfolio`, `codex-continuation`, `authority-grants`.
-- `npm run test:docs`: `kit-verify`, `format`, `release-surfaces`, `license-surfaces`, `publication`, `docs-check`, `index`, `siblings`, `lineage`, `resident-bind`, `harness`, `harness-context`, `plan-refutation-current`, `artifact-corpus`, `meta`, `registrations`, `plan`, `reader-profiles`, `entropy`.
-- `npm test -- --review`: `kit-verify`, `format`, `release-preparation`, `target-worktree`, `publication-fixtures`, `backup-intake`, `beacon-portability`, `checkpoint`, `work-orders-fixtures`, `siblings-fixtures`, `adjacent-queue`, `derived-orders`, `portfolio`, `codex-continuation`, `authority-grants`, `fixture-temp-root`, `configuration-root`, `harness`, `harness-context`, `mutation`, `meta`, `registrations`.
+- `npm test`: `kit-verify`, `harness`.
+- `npm run test:docs`: `kit-verify`, `format`, `release-surfaces`, `license-surfaces`, `publication`, `docs-check`, `index`, `siblings`, `lineage`, `harness`, `harness-context`, `plan-refutation-current`, `meta`, `registrations`, `plan`, `reader-profiles`, `entropy`.
+- `npm test -- --review`: `kit-verify`, `harness`.
 
-Review uses the shared runner's changed-machinery selection. This fixture
-has no upstream comparison ref, so its review selects every carried
-machinery row; an instance with a comparison ref runs those selected by
-its changes. Passing tasks at the same code identity may be reused;
-`kit-verify` always runs fresh.
+These checks run fresh: the active snapshot and coordination records can
+change without changing code identity. A missing upstream comparison ref
+or an upstream kit update does not expand the selection into platform
+regression.
 
-These suite rows stay core-only. Every selection, including `--list`, prints
-each name and its reason. A row without a declaration runs in its ordinary
-selection; these declarations do not change core's gate. An explicit
+Each of these selections is a document-kind gate run, because the harness
+check reads the harness surfaces: while it runs, writes to the active
+order's own evidence, verification and final-review directories are
+refused. Write that evidence before the gate or after it passes. Core development still runs its product and changed-machinery
+suites. An instance that intentionally changes carried machinery needs
+order-specific evidence and can request a carried fixture with
+`npm test -- --only <suite>` or machinery diagnostics with
+`npm run test:machinery`.
+
+These suite rows stay core-only. Explicit diagnostic selections, including
+their `--list` form, print each unavailable name and reason. Shipped fixture
+rows are available only when deliberately requested; these declarations do
+not change core's gate. An explicit
 `--only <suite>` request for an unavailable row fails with its name and
 reason, including with `--list`, and records no gate result.
 

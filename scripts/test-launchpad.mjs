@@ -40,7 +40,8 @@ import {
 } from "./launchpad.mjs";
 import { licenseHashes } from "./license-surfaces.mjs";
 import { gateCodeIdentity, readGateChecks } from "./lib/gate-evidence.mjs";
-import { hasPackageSources } from "./lib/paths.mjs";
+import { hasPackageSources } from "../packages/skeleton/src/runtime-inputs.mjs";
+import { namedStarterSeed } from "./lib/starter-seeds.mjs";
 import { markdownLinks } from "./docs-check.mjs";
 import { suites } from "./test-runner.mjs";
 
@@ -524,6 +525,7 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     "docs/verifications/README.md",
     "docs/work-orders/WO-001-environment-truth.md",
     "docs/workstreams/README.md",
+    "dotln.config.json",
     "packages/skeleton/loadouts/grants.json",
   ]);
   // The lineage index is generated from the seed ledger. The work-order index
@@ -582,6 +584,15 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     join(configured, "dotln.config.json"),
   );
   const config = loadConfig(configured);
+  assert.equal(loadConfig(kit).release.displayName, "DotLn-Enterprise-Starter");
+  assert.doesNotMatch(
+    readFileSync(join(kit, "docs/README.md"), "utf8"),
+    /is absent/u,
+  );
+  assert.match(
+    readFileSync(join(kit, "README.md"), "utf8"),
+    /This source prepares DotLn-Enterprise-Starter/u,
+  );
   assert.deepEqual(config.roots, defaultRoots());
   assert.deepEqual(config.derivedOrders, { first: "WO-900", last: "WO-999" });
   // A starter commits its runtime: the kit never ignores dist (WO-075).
@@ -784,11 +795,11 @@ test("WO-201 criterion 4: verify checks runtime and compiled tests, and reports 
   }
 });
 
-test("WO-201 criteria 1 to 3: the three gate selections run inside an export", (t) => {
+test("the exported instance checks runtime, coordination records and explicit diagnostics separately", (t) => {
   const started = performance.now();
   const destination = commitExport(join(scratch, "gate-kit"));
-  // With no main comparison ref, review selects every machinery row. This
-  // makes the three selections together exercise the entire carried inventory.
+  // A new consumer has no upstream comparison ref. That must not select
+  // every shipped platform fixture for its ordinary review.
   git(destination, ["branch", "-m", "instance"]);
   assert.equal(hasPackageSources(destination), false);
   ok(
@@ -818,6 +829,14 @@ test("WO-201 criteria 1 to 3: the three gate selections run inside an export", (
     run(process.execPath, ["scripts/meta.mjs"], { cwd: destination }),
     "generate the instance decision index",
   );
+  const guidance = ok(
+    run(process.execPath, ["scripts/reader.mjs", "profile", "releasePage"], {
+      cwd: destination,
+    }),
+    "default reader guidance in an instance",
+  );
+  assert.match(guidance.stdout, /Profile source: balanced default/);
+  assert.doesNotMatch(guidance.stdout, /ENOENT|Nearest example:/);
   ok(
     run(process.execPath, ["scripts/lineage.mjs", "index", "--check"], {
       cwd: destination,
@@ -837,7 +856,7 @@ test("WO-201 criteria 1 to 3: the three gate selections run inside an export", (
       .filter((line) => /^kit: .+ not carried \(/u.test(line))
       .sort();
   const inventory = suites
-    .filter((row) => !row.kit)
+    .filter((row) => row.build || row.instance)
     .map((row) => (row.build ? "kit-verify" : row.name))
     .sort();
   const selections = [
@@ -845,6 +864,49 @@ test("WO-201 criteria 1 to 3: the three gate selections run inside an export", (
     { command: ["run", "test:docs"], args: ["--document"] },
     { command: ["test", "--", "--review"], args: ["--review"] },
   ];
+  const runtimeState = () =>
+    JSON.parse(
+      ok(
+        run(
+          process.execPath,
+          [
+            "--input-type=module",
+            "-e",
+            `
+    import { createHash } from 'node:crypto';
+    import { readFileSync } from 'node:fs';
+    import { gateInstanceInputDigest } from './scripts/lib/gate-evidence.mjs';
+    import { runtimePackageInventory, runtimeSnapshotPath } from './scripts/lib/harness.mjs';
+    const runtime = JSON.parse(readFileSync('.claude/harness-manifest.json', 'utf8')).profiles[0].profile.runtime;
+    const inventory = runtimePackageInventory(process.cwd());
+    console.log(JSON.stringify({digest: gateInstanceInputDigest(process.cwd()), snapshot: runtime.snapshot,
+      predicted: runtimeSnapshotPath(runtime.files, inventory),
+      inventory: createHash('sha256').update(JSON.stringify(inventory)).digest('hex')}));
+  `,
+          ],
+          { cwd: destination },
+        ),
+        "observe exported runtime inputs",
+      ).stdout,
+    );
+  const cleanRuntime = runtimeState();
+  assert.equal(cleanRuntime.snapshot, cleanRuntime.predicted);
+  const noise = [
+    "packages/.DS_Store",
+    "packages/skeleton/dist/.DS_Store",
+    "packages/skeleton/dist/local.tsbuildinfo",
+    "packages/beacons/src/.DS_Store",
+    `${cleanRuntime.snapshot}/packages/compiler/dist/.DS_Store`,
+  ];
+  for (const path of noise) {
+    assert.equal(existsSync(join(destination, path)), false);
+    writeFileSync(join(destination, path), "incidental host metadata\n");
+  }
+  const bin = join(destination, "packages/skeleton/dist/src/dotln.js");
+  const binMode = lstatSync(bin).mode & 0o777;
+  assert.ok(binMode & 0o111);
+  chmodSync(bin, 0o700);
+  assert.deepEqual(runtimeState(), cleanRuntime);
   const observed = [];
   const ran = new Set();
   for (const { command, args } of selections) {
@@ -854,18 +916,25 @@ test("WO-201 criteria 1 to 3: the three gate selections run inside an export", (
       }),
       "kit suite list",
     );
-    assert.deepEqual(exclusions(list.stdout), notCarried);
+    assert.deepEqual(exclusions(list.stdout), []);
     const names = list.stdout
       .split("\n")
       .filter((line) => line.includes(" — protects:"))
       .map((line) => line.split(" — ")[0]);
     assert.equal(names[0], "kit-verify");
     assert.ok(!names.includes("build"));
-    // These suites use carried inputs and create their own fixture records.
-    // Keep them in both product selections even if the declarations change.
-    if (!args.includes("--document"))
-      for (const name of ["publication-fixtures", "beacon-portability"])
-        assert.ok(names.includes(name), `${name} must run in the kit`);
+    assert.deepEqual(
+      [...names].sort(),
+      args.includes("--document") ? inventory : ["harness", "kit-verify"],
+    );
+    for (const name of [
+      "target-worktree",
+      "publication-fixtures",
+      "beacon-portability",
+      "resident-bind",
+      "artifact-corpus",
+    ])
+      assert.ok(!names.includes(name), `${name} is a platform diagnostic`);
     const before = gateCodeIdentity(destination);
     const selectionStarted = performance.now();
     const result = ok(
@@ -876,7 +945,7 @@ test("WO-201 criteria 1 to 3: the three gate selections run inside an export", (
       ),
       `kit npm ${command.join(" ")}`,
     );
-    assert.deepEqual(exclusions(result.stdout), notCarried);
+    assert.deepEqual(exclusions(result.stdout), []);
     assert.doesNotMatch(
       result.stdout,
       /PROGRESS \[build\]|scripts\/build\.mjs/u,
@@ -889,6 +958,9 @@ test("WO-201 criteria 1 to 3: the three gate selections run inside an export", (
     assert.equal(row.exitCode, 0);
     assert.equal(row.codeIdentity, before);
     assert.equal(gateCodeIdentity(destination), before);
+    assert.equal(row.reusedSuites, 0);
+    assert.equal(row.partial, undefined);
+    assert.equal(row.excludedSuites, undefined);
     assert.deepEqual(
       row.cases.map((suite) => suite.name).sort(),
       [...names].sort(),
@@ -931,6 +1003,61 @@ test("WO-201 criteria 1 to 3: the three gate selections run inside an export", (
     });
   }
   assert.deepEqual([...ran].sort(), inventory);
+  ok(
+    run(
+      process.execPath,
+      [
+        "--input-type=module",
+        "-e",
+        `
+    import assert from 'node:assert/strict';
+    import { readFileSync, rmSync } from 'node:fs';
+    import { findGateCheck, readGateChecks, gateInstanceInputDigest } from './scripts/lib/gate-evidence.mjs';
+    import { gateCandidates, coveringGateCheck } from './scripts/lib/gate-reuse.mjs';
+    import { prepareKitReleaseRuntime } from './scripts/lib/release-kit-runtime.mjs';
+    const root = process.cwd();
+    const row = readGateChecks(root).filter(row => row.checkId === 'npm test').at(-1);
+    assert.equal(findGateCheck(root, 'npm test', row.treeHash).evidenceRef, row.evidenceRef);
+    assert.equal((await gateCandidates(root, 'npm test')).rows.at(-1).evidenceRef, row.evidenceRef);
+    assert.equal((await coveringGateCheck(root, 'npm test', ['kit-verify', 'harness'])).row.evidenceRef, row.evidenceRef);
+    await prepareKitReleaseRuntime(root);
+    const runtime = JSON.parse(readFileSync('.claude/harness-manifest.json', 'utf8')).profiles[0].profile.runtime;
+    rmSync(runtime.snapshot, {recursive: true});
+    await prepareKitReleaseRuntime(root);
+    assert.equal(gateInstanceInputDigest(root), row.instanceInputDigest);
+  `,
+      ],
+      { cwd: destination },
+    ),
+    "metadata leaves evidence consumers and release restoration usable",
+  );
+  chmodSync(bin, binMode);
+  for (const path of noise) rmSync(join(destination, path), { force: true });
+  assert.deepEqual(runtimeState(), cleanRuntime);
+  const record = join(destination, "docs/invalid-instance-record.md");
+  const recordIdentity = gateCodeIdentity(destination);
+  try {
+    writeFileSync(
+      record,
+      "# Invalid record\n\n[Missing](missing-coordination-record.md)\n",
+    );
+    assert.equal(gateCodeIdentity(destination), recordIdentity);
+    const invalid = run(
+      process.execPath,
+      ["scripts/harness.mjs", "bounded", "--", "npm", "run", "test:docs"],
+      { cwd: destination },
+    );
+    assert.equal(invalid.status, 1, invalid.stdout + invalid.stderr);
+    const failed = readGateChecks(destination).at(-1);
+    assert.equal(failed.codeIdentity, recordIdentity);
+    assert.equal(failed.reusedSuites, 0);
+    assert.equal(
+      failed.cases.find((row) => row.name === "docs-check").exitCode,
+      1,
+    );
+  } finally {
+    rmSync(record, { force: true });
+  }
   const readme = readFileSync(join(destination, "README.md"), "utf8")
     .split("## What runs here, and what does not")[1]
     .split("## Attestations")[0];
@@ -1225,6 +1352,7 @@ test("WO-074 criteria 1, 2 and 5: without package source the export activates it
       "packages/skeleton/src/evidence-editions.mjs",
       "packages/skeleton/src/gate-deadlines.mjs",
       "packages/skeleton/src/gate-evidence.mjs",
+      "packages/skeleton/src/runtime-inputs.mjs",
       "packages/skeleton/src/usage-observation.mjs",
       "packages/skeleton/src/writer-teardown.mjs",
     ],
@@ -3418,6 +3546,16 @@ test("starter refresh publishes one verified commit and preserves every refusal 
   writeFileSync(join(seed, "README.md"), "initial readme\n");
   chmodSync(join(seed, "README.md"), 0o755);
   writeFileSync(join(seed, "keep.txt"), "initial retained file\n");
+  const initialConfiguration =
+    JSON.stringify(
+      {
+        version: 1,
+        release: { displayName: "Initial Starter", corpus: false },
+      },
+      null,
+      2,
+    ) + "\n";
+  writeFileSync(join(seed, "dotln.config.json"), initialConfiguration);
   git(seed, ["add", "."]);
   git(seed, ["commit", "-qm", "initial starter"]);
   const initial = git(seed, ["rev-parse", "HEAD"]).stdout.trim();
@@ -3547,8 +3685,16 @@ test("starter refresh publishes one verified commit and preserves every refusal 
   );
   git(checkout, ["config", "--unset", `url.${wrongRemote}.insteadOf`]);
   git(checkout, ["config", "--unset", `url.${wrongPath}.insteadOf`]);
-  assert.deepEqual(first.kept, ["keep.txt"]);
+  assert.deepEqual(first.kept, ["dotln.config.json", "keep.txt"]);
   assert.deepEqual(first.replaced, ["README.md"]);
+  assert.equal(
+    readFileSync(join(checkout, "dotln.config.json"), "utf8"),
+    initialConfiguration,
+  );
+  assert.match(
+    readFileSync(join(checkout, "README.md"), "utf8"),
+    /This source prepares Initial Starter/u,
+  );
   assert.match(
     git(checkout, ["ls-files", "--stage", "README.md"]).stdout,
     /^100644 /,
@@ -3654,6 +3800,31 @@ test("starter refresh publishes one verified commit and preserves every refusal 
     /push URL/,
   );
   git(other, ["remote", "set-url", "origin", starterUrl]);
+  git(other, ["rm", "dotln.config.json"]);
+  git(other, ["commit", "-qm", "fixture without declared configuration"]);
+  git(other, ["push", otherRemote, "main"]);
+  const withoutConfiguration = git(otherRemote, ["rev-parse", "main"]).stdout;
+  writeFileSync(join(other, ".git/info/exclude"), "dotln.config.json\n");
+  writeFileSync(join(other, "dotln.config.json"), initialConfiguration);
+  for (const preview of [true, false]) {
+    const ignored = refresh(tag, head, preview)[0];
+    assert.equal(ignored.outcome, "refused");
+    assert.match(
+      ignored.reason,
+      /local dotln\.config\.json is untracked or ignored/,
+    );
+    assert.equal(
+      git(otherRemote, ["rev-parse", "main"]).stdout,
+      withoutConfiguration,
+    );
+    assert.equal(
+      readFileSync(join(other, "dotln.config.json"), "utf8"),
+      initialConfiguration,
+    );
+  }
+  git(other, ["add", "-f", "dotln.config.json"]);
+  git(other, ["commit", "-qm", "restore declared configuration"]);
+  git(other, ["push", otherRemote, "main"]);
   mkdirSync(join(other, "KIT-MANIFEST.json"));
   writeFileSync(join(other, "KIT-MANIFEST.json", "child"), "collision");
   git(other, ["add", "."]);
@@ -3983,7 +4154,15 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   assert.equal(manifestOf(checkout).tag, tag);
   assert.equal(
     readFileSync(join(checkout, "README.md"), "utf8"),
-    readFileSync(join(core, "scripts/kit/README.client.md"), "utf8"),
+    namedStarterSeed(
+      "README.md",
+      readFileSync(join(core, "scripts/kit/README.client.md"), "utf8"),
+      "Initial Starter",
+    ),
+  );
+  assert.equal(
+    readFileSync(join(checkout, "dotln.config.json"), "utf8"),
+    initialConfiguration,
   );
   assert.deepEqual(update.rewrittenSeeds, [
     "CLAUDE.md",
@@ -4168,6 +4347,42 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   const seedOnlyPublished = refs();
   assert.equal(refresh(tag, head)[0].outcome, "current");
   assert.equal(refs(), seedOnlyPublished);
+  // Refresh keeps an absent legacy configuration absent, and a configured
+  // name belongs to the destination rather than the incoming starter seed.
+  const identityHead = git(checkout, ["rev-parse", "HEAD"]).stdout.trim();
+  for (const displayName of [null, "Example Starter"]) {
+    const configurationPath = join(checkout, "dotln.config.json");
+    if (displayName === null) rmSync(configurationPath, { force: true });
+    else
+      writeFileSync(
+        configurationPath,
+        JSON.stringify({ version: 1, release: { displayName } }, null, 2) +
+          "\n",
+      );
+    const heldConfiguration = existsSync(configurationPath)
+      ? readFileSync(configurationPath, "utf8")
+      : null;
+    writeFileSync(join(checkout, "README.md"), seedReadme);
+    git(checkout, ["add", "-A"]);
+    git(checkout, ["commit", "-qm", "test: instance-owned release identity"]);
+    git(checkout, ["push", remote, "main"]);
+    const renamed = refresh(tag, head)[0];
+    assert.equal(renamed.outcome, "refreshed", JSON.stringify(renamed));
+    assert.equal(
+      existsSync(configurationPath)
+        ? readFileSync(configurationPath, "utf8")
+        : null,
+      heldConfiguration,
+    );
+    assert.ok(
+      readFileSync(join(checkout, "README.md"), "utf8").includes(
+        `This source prepares ${displayName ?? "DotLn"} `,
+      ),
+    );
+    assert.equal(refresh(tag, head)[0].outcome, "current");
+  }
+  git(checkout, ["reset", "--hard", identityHead]);
+  git(checkout, ["push", "--force", remote, "main"]);
   // A seed whose incoming template did not change can remain customized or
   // absent without obstructing unrelated kit updates. The planner keeps it.
   const seedHead = git(checkout, ["rev-parse", "HEAD"]).stdout.trim();

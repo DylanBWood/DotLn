@@ -37,12 +37,12 @@ import {
   writeReceipt,
 } from "./siblings.mjs";
 import { sha256Hex } from "./helpers.mjs";
-import { docRelative } from "./config.mjs";
+import { CONFIG_FILENAME, docRelative, loadConfig } from "./config.mjs";
 import {
   assertFinderMetadataTypes,
   isFinderMetadata,
 } from "./finder-metadata.mjs";
-import { planStarterSeeds } from "./starter-seeds.mjs";
+import { namedStarterSeed, planStarterSeeds } from "./starter-seeds.mjs";
 
 const git = (root, args, options) =>
   runGit(root, [...HOST_GIT_READ, ...args], options);
@@ -67,6 +67,15 @@ const clean = (root, observeScan) => {
     (entry) =>
       entry.startsWith("?? ") && isFinderMetadata(root, entry.slice(3)),
   );
+};
+const assertCommittedConfiguration = (root) => {
+  if (
+    lstatSync(join(root, CONFIG_FILENAME), { throwIfNoEntry: false }) &&
+    !git(root, ["ls-files", "--", CONFIG_FILENAME])
+  )
+    throw new Error(
+      `local ${CONFIG_FILENAME} is untracked or ignored; commit the intended configuration before refreshing the starter`,
+    );
 };
 const redact = (error, privatePaths) =>
   redactPaths(
@@ -156,7 +165,17 @@ const firstTree = (source, target) => {
     )
       throw new Error(`first-export type collision: ${path}`);
   }
-  for (const path of incoming) {
+  // Configuration already belongs to the destination before its first kit
+  // manifest exists. Preserve its bytes and use its identity in the new seed.
+  const configured = lstatSync(join(target, CONFIG_FILENAME), {
+    throwIfNoEntry: false,
+  });
+  const displayName = loadConfig(configured ? target : source).release
+    .displayName;
+  const copied = incoming.filter(
+    (path) => !(configured && path === CONFIG_FILENAME),
+  );
+  for (const path of copied) {
     const from = join(source, path),
       to = join(target, path);
     mkdirSync(dirname(to), { recursive: true });
@@ -164,13 +183,18 @@ const firstTree = (source, target) => {
       rmSync(to, { force: true });
       symlinkSync(readlinkSync(from), to);
     } else {
-      copyFileSync(from, to);
+      if (path === "README.md")
+        writeFileSync(
+          to,
+          namedStarterSeed(path, readFileSync(from, "utf8"), displayName),
+        );
+      else copyFileSync(from, to);
       chmodSync(to, lstatSync(from).mode & 0o777);
     }
   }
-  const set = new Set(incoming);
+  const set = new Set(copied);
   return {
-    incoming,
+    incoming: copied,
     kept: prior.filter((path) => !set.has(path)),
     replaced: prior.filter((path) => set.has(path)),
   };
@@ -445,6 +469,7 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
       throw new Error("recorded checkout must be on main");
     if (!clean(checkout, (scan) => row.finderMetadata.push(scan)))
       throw new Error("recorded checkout has tracked or untracked changes");
+    assertCommittedConfiguration(checkout);
     const origin = parseGitHubTarget(
       git(main, ["config", "--get", "remote.origin.url"]),
     );
@@ -612,7 +637,7 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
         const prepared = planned.prepared.writes.find(
           ({ path }) => path === seed.path,
         );
-        if (!prepared || prepared.bytes.toString("utf8") !== seed.bytes)
+        if (!prepared || prepared.bytes.toString("utf8") !== seed.templateBytes)
           throw new Error(`prepared seed differs from plan: ${seed.path}`);
       }
       for (const seed of seedPlan) {
@@ -742,6 +767,7 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
       !clean(checkout, (scan) => row.finderMetadata.push(scan))
     )
       throw new Error("checkout changed while the refresh was prepared");
+    assertCommittedConfiguration(checkout);
     branch = `dotln-starter-refresh-${randomUUID()}`;
     saveCleanup(main, sibling.id, { ...ownership, branch, commit });
     git(checkout, ["branch", branch, commit]);

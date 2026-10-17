@@ -1,6 +1,13 @@
-import { readJsonFile } from "./paths.mjs";
+import {
+  readJsonFile,
+  containedRegularFile,
+  documentEntry,
+  readDocumentDirectory,
+  readDocumentInput,
+} from "./paths.mjs";
+import { PRIVATE_PATH } from "./private-paths.mjs";
 import { json as prettyJson } from "./helpers.mjs";
-import { runGit, spawnGit } from "./git.mjs";
+import { runGit, spawnGit, mainWorktree, worktreeHasCheckout } from "./git.mjs";
 import { docPath, docRelative, rootPattern } from "./config.mjs";
 import { createHash } from "node:crypto";
 import {
@@ -9,9 +16,10 @@ import {
   mkdirSync,
   readdirSync,
   readFileSync,
+  realpathSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { usageRecordIdentity } from "../../packages/skeleton/src/usage-observation.mjs";
 import { correctionCounts } from "../../packages/skeleton/src/correction-observation.mjs";
@@ -52,6 +60,8 @@ const git = (root, args) =>
     maxBuffer: 8 * 1024 * 1024,
     onFailure: () => null,
   })?.trimEnd() ?? null;
+const decisionDiagnostic = (value) =>
+  PRIVATE_PATH.test(String(value)) ? "<private path>" : value;
 const roleForPhase = {
   implementation: "executor",
   repair: "executor",
@@ -243,7 +253,7 @@ export function evaluateDecisionConditions(decisions, orders, budgetRows) {
       const condition = row.reopenWhen;
       if (!knownReopeningMetric(condition.metric))
         throw new Error(
-          `${row.id}: unresolved reopening metric ${condition.metric}`,
+          `${decisionDiagnostic(row.id)}: unresolved reopening metric ${decisionDiagnostic(condition.metric)}`,
         );
       const consecutive = condition.consecutive ?? 1;
       const samples = BUDGET_METRICS.has(condition.metric)
@@ -279,17 +289,17 @@ export function evaluateDecisionConditions(decisions, orders, budgetRows) {
 }
 
 export function readDecisions(root, { workOrder } = {}) {
-  const directory = docPath(root, "evidence");
+  const directory = docRelative(root, "evidence");
   const decisions = [];
-  if (!existsSync(directory)) return decisions;
-  for (const name of readdirSync(directory)
+  if (!documentEntry(root, directory)) return decisions;
+  for (const name of readDocumentDirectory(root, directory)
     .sort()
     .filter(
       (name) => /^WO-\d{3}$/.test(name) && (!workOrder || name === workOrder),
     )) {
     const path = docRelative(root, "evidence", `${name}/decisions.md`);
-    if (!existsSync(join(root, path))) continue;
-    const source = readFileSync(join(root, path), "utf8");
+    if (!documentEntry(root, path)) continue;
+    const source = readDocumentInput(root, path);
     const headings = markdownHeadings(source);
     const entries = [...source.matchAll(/^```json\n([\s\S]*?)^```/gm)];
     if (!entries.length)
@@ -359,10 +369,12 @@ export function readDecisions(root, { workOrder } = {}) {
         !knownReopeningMetric(condition.metric)
       )
         throw new Error(
-          `${entry.id}: unresolved reopening metric ${condition.metric}`,
+          `${decisionDiagnostic(entry.id)}: unresolved reopening metric ${decisionDiagnostic(condition.metric)}`,
         );
       if (decisions.some((prior) => prior.id === entry.id))
-        throw new Error(`Duplicate decision id: ${entry.id}`);
+        throw new Error(
+          `Duplicate decision id: ${decisionDiagnostic(entry.id)}`,
+        );
       if (
         entry.followup !== undefined &&
         !(typeof entry.followup === "string" && entry.followup.trim())
@@ -416,9 +428,7 @@ export function writeDecisionsIndex(root, { check = false } = {}) {
   const expected = renderDecisionsIndex(decisions);
   if (check) {
     for (const row of decisions) {
-      const anchors = markdownHeadings(
-        readFileSync(join(root, row.path), "utf8"),
-      );
+      const anchors = markdownHeadings(readDocumentInput(root, row.path));
       if (
         !row.anchor ||
         !anchors.some((heading) => heading.anchor === row.anchor)
@@ -497,40 +507,130 @@ export function codeDiffBytes(root, revision) {
   return total;
 }
 
-function hookObservations(root, workOrder) {
+// Recovery may move an open order while its ignored session observations
+// remain in main. Only the registered checkout of this same repository can
+// contribute observations; the current checkout still owns canonical state.
+function observationRoots(root) {
+  try {
+    const main = mainWorktree(root);
+    if (
+      realpathSync(main) !== realpathSync(root) &&
+      worktreeHasCheckout(main, {
+        commonDirectory: resolve(
+          root,
+          runGit(root, ["rev-parse", "--git-common-dir"]),
+        ),
+        branch: "main",
+      })
+    )
+      return [main, root];
+  } catch {
+    // A missing original checkout cannot supply observations. Parsing an
+    // admitted journal happens outside this discovery fallback and stays strict.
+  }
+  return [root];
+}
+
+const requireObservationFile = (root, path) => {
+  if (
+    existsSync(join(root, path)) &&
+    !containedRegularFile(join(root, path), root)
+  )
+    throw new Error(
+      "Supplemental meter observations must be contained regular files in the registered main checkout",
+    );
+};
+function journalCopies(root, supplemental = false) {
   const directory = docPath(root, "control", "local/harness");
   if (!existsSync(directory)) return [];
+  if (
+    supplemental &&
+    (!lstatSync(directory).isDirectory() ||
+      realpathSync(directory) !== resolve(directory))
+  )
+    throw new Error(
+      "Supplemental meter journals must stay within the registered main checkout",
+    );
   return readdirSync(directory)
     .filter((name) => /^[a-f0-9]{64}\.jsonl$/.test(name))
-    .flatMap((name) => {
+    .map((name) => {
+      if (supplemental) {
+        requireObservationFile(
+          root,
+          docRelative(root, "control", `local/harness/${name}`),
+        );
+        requireObservationFile(
+          root,
+          docRelative(root, "control", `local/harness/${name.slice(0, -1)}`),
+        );
+      }
       const state = json(
         root,
         docRelative(root, "control", `local/harness/${name.slice(0, -1)}`),
         {},
       );
       let role;
-      return jsonl(root, docRelative(root, "control", `local/harness/${name}`))
-        .filter(
-          (row) =>
-            (Object.hasOwn(row, "workOrder")
-              ? row.workOrder
-              : state.workOrder) === workOrder,
-        )
-        .map((row) => {
+      const raw = jsonl(
+        root,
+        docRelative(root, "control", `local/harness/${name}`),
+      );
+      return {
+        name,
+        raw,
+        rows: raw.map((row) => {
           if (row.role) role = row.role;
           // Timing follows the evaluated event. Attribute it from the preceding
           // observed role, without an extra session-file read on every hook call.
           return {
             ...row,
+            workOrder: Object.hasOwn(row, "workOrder")
+              ? row.workOrder
+              : state.workOrder,
             journal: name,
             ...(row.hookTiming && !row.role && role ? { role } : {}),
           };
-        });
+        }),
+      };
     });
 }
-function usageRows(root, workOrder) {
+function hookObservations(root, workOrder, roots = [root]) {
+  const journals = new Map();
+  for (const source of roots)
+    for (const copy of journalCopies(source, source !== root)) {
+      const prior = journals.get(copy.name);
+      if (!prior) {
+        journals.set(copy.name, copy);
+        continue;
+      }
+      // A copied journal shares its original prefix. Deduplicate that prefix
+      // only, preserving identical later events and both divergent suffixes.
+      let prefix = 0;
+      while (
+        prefix < prior.raw.length &&
+        prefix < copy.raw.length &&
+        JSON.stringify(prior.raw[prefix]) === JSON.stringify(copy.raw[prefix])
+      )
+        prefix++;
+      // Raw events are shared; sidecar attribution is a checkout projection.
+      // A stale supplemental projection cannot erase the current one's known
+      // order. Explicit event attribution is already identical in both copies.
+      if (source === root)
+        for (let index = 0; index < prefix; index++)
+          if (copy.rows[index].workOrder !== undefined)
+            prior.rows[index] = copy.rows[index];
+      prior.rows.push(...copy.rows.slice(prefix));
+    }
+  return [...journals.values()].flatMap(({ rows }) =>
+    rows.filter((row) => row.workOrder === workOrder),
+  );
+}
+function usageRows(root, workOrder, roots = [root]) {
   return latestUsage(
-    jsonl(root, docRelative(root, "control", "local/process/usage.jsonl")),
+    roots.flatMap((source) => {
+      const path = docRelative(source, "control", "local/process/usage.jsonl");
+      if (source !== root) requireObservationFile(source, path);
+      return jsonl(source, path);
+    }),
     workOrder,
   );
 }
@@ -952,8 +1052,9 @@ export function writeOrderSnapshot(root, meta, workOrder) {
         ? `${workOrder} is ${phase}; its committed snapshot is its record`
         : `${workOrder} is not a row of this meter`,
     };
+  const roots = observationRoots(root);
   const journals = new Set(
-    hookObservations(root, workOrder).map((row) => row.journal),
+    hookObservations(root, workOrder, roots).map((row) => row.journal),
   ).size;
   if (!journals)
     return {
@@ -965,7 +1066,7 @@ export function writeOrderSnapshot(root, meta, workOrder) {
     orderSnapshot(
       meta,
       workOrder,
-      `the order's checkout: ${journals} session journal${journals === 1 ? "" : "s"}, its usage observations, gate rows and the canonical control fold`,
+      `${roots.length > 1 ? "the order's checkout and its registered main checkout" : "the order's checkout"}: ${journals} session journal${journals === 1 ? "" : "s"}, their available usage observations, current-checkout gate rows and canonical control fold`,
     ),
   );
   const size = Buffer.byteLength(text);
@@ -1431,7 +1532,10 @@ export async function collectMeta(
     // no snapshot row, a journal-derived value is unavailable, never zero.
     const closedOrder = row.state.phase === "closed";
     const journalSnapshot = prior?.corrections?.source === "session-journal";
-    const hook = closedOrder ? [] : hookObservations(root, workOrder);
+    const roots = ["closed", "withdrawn"].includes(row.state.phase)
+      ? [root]
+      : observationRoots(root);
+    const hook = closedOrder ? [] : hookObservations(root, workOrder, roots);
     const held =
       !hook.length &&
       (journalSnapshot ||
@@ -1450,7 +1554,7 @@ export async function collectMeta(
     );
     // Usage by role: this checkout's observations, then the order's snapshot,
     // then a retained usage copy; a role none of them holds stays unobserved.
-    const liveUsage = usageRows(root, workOrder);
+    const liveUsage = usageRows(root, workOrder, roots);
     const copies = retainedUsageCopies(root, workOrder);
     const retainedRows = retainedUsage(copies, workOrder);
     const unreadable = copies.reduce((sum, copy) => sum + copy.unreadable, 0);
@@ -1464,7 +1568,10 @@ export async function collectMeta(
     ])) {
       if (liveUsage.some((value) => value.role === role))
         usageByRole[role] = {
-          source: "this checkout's usage observations",
+          source:
+            roots.length > 1
+              ? "current and registered main checkout usage observations"
+              : "this checkout's usage observations",
           ...usageTotals(liveUsage)[role],
         };
       else if (heldUsage[role])

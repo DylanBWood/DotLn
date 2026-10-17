@@ -337,15 +337,16 @@ make_repo() {
     '  if [[ "${DOTLN_FIXTURE_GH_FAIL:-}" == "view404" ]]; then printf "HTTP 404: Not Found\\n" >&2; exit 1; fi' \
     '  if [[ "${DOTLN_FIXTURE_GH_FAIL:-}" == "invalidjson" ]]; then printf "{\\n"; exit 0; fi' \
     '  if [[ ! -f "$body" ]]; then printf "release not found\\n" >&2; exit 1; fi' \
-    '  node -e '\''const fs=require("node:fs"); process.stdout.write(JSON.stringify({body:fs.readFileSync(process.argv[1],"utf8"),name:process.env.DOTLN_FIXTURE_GH_METADATA === "name" ? "Different title" : `DotLn ${process.argv[2]}`,isDraft:process.env.DOTLN_FIXTURE_GH_METADATA === "draft",isPrerelease:process.env.DOTLN_FIXTURE_GH_METADATA === "prerelease",assets:process.env.DOTLN_FIXTURE_GH_METADATA === "assets" ? [{name:"unexpected"}] : []}));'\'' "$body" "$tag"' \
+    '  node -e '\''const fs=require("node:fs"); process.stdout.write(JSON.stringify({body:fs.readFileSync(process.argv[1],"utf8"),name:process.env.DOTLN_FIXTURE_GH_METADATA === "name" ? "Different title" : (fs.existsSync(process.argv[1]+".title") ? fs.readFileSync(process.argv[1]+".title","utf8") : `DotLn ${process.argv[2]}`),isDraft:process.env.DOTLN_FIXTURE_GH_METADATA === "draft",isPrerelease:process.env.DOTLN_FIXTURE_GH_METADATA === "prerelease",assets:process.env.DOTLN_FIXTURE_GH_METADATA === "assets" ? [{name:"unexpected"}] : []}));'\'' "$body" "$tag"' \
     '  exit 0' \
     'fi' \
     'if [[ "${1:-} ${2:-}" == "release create" ]]; then' \
     '  if [[ "${DOTLN_FIXTURE_GH_FAIL:-}" == "create" ]]; then printf "fixture create failure\\n" >&2; exit 5; fi' \
-    '  tag="$3"; shift 3; notes_file=""' \
-    '  while (( "$#" )); do if [[ "$1" == "--notes-file" ]]; then notes_file="$2"; shift 2; else shift; fi; done' \
+    '  tag="$3"; shift 3; notes_file=""; release_title=""' \
+    '  while (( "$#" )); do if [[ "$1" == "--notes-file" ]]; then notes_file="$2"; shift 2; elif [[ "$1" == "--title" ]]; then release_title="$2"; shift 2; else shift; fi; done' \
     '  if [[ -z "$notes_file" || ! -f "$notes_file" ]]; then printf "missing notes file\\n" >&2; exit 64; fi' \
     '  cp "$notes_file" "$DOTLN_GH_STATE/$tag.body"' \
+    '  printf "%s" "$release_title" >"$DOTLN_GH_STATE/$tag.body.title"' \
     '  printf "https://example.invalid/releases/%s\\n" "$tag"' \
     '  exit 0' \
     'fi' \
@@ -1748,6 +1749,48 @@ for mutation in commit application component toolchain schema evidence cadence; 
 done
 }
 
+release_case_custom_identity() {
+make_repo custom_identity
+printf '{"version":1,"release":{"displayName":"Example Starter"}}\n' >"$main/dotln.config.json"
+commit_reviewed_candidate "$main" WO-024 v0.2.1
+"$node_bin" - "$main/README.md" <<'JS'
+const fs = require("node:fs"), file = process.argv[2];
+fs.writeFileSync(file, fs.readFileSync(file, "utf8").replace("This source prepares DotLn ", "This source prepares Example Starter "));
+JS
+git -C "$main" add README.md
+git -C "$main" commit -qm 'test: configured release claim'
+git -C "$main" push origin main >/dev/null 2>&1
+release_close WO-024 --publish >/dev/null
+test "$(cat "$gh_state/v0.2.1.body.title")" = 'Example Starter v0.2.1'
+release_command notes v0.2.1 >"$fixture/custom-notes.md"
+grep -Fxq 'Example Starter v0.2.1' "$fixture/custom-notes.md"
+release_command list >"$fixture/custom-list.txt"
+grep -Fq v0.2.1 "$fixture/custom-list.txt"
+custom_tag="$(git -C "$main" rev-parse refs/tags/v0.2.1)"
+release_close WO-024 --publish >/dev/null
+test "$(git -C "$main" rev-parse refs/tags/v0.2.1)" = "$custom_tag"
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
+printf '{"version":1,"release":{"displayName":"Renamed Starter"}}\n' >"$main/dotln.config.json"
+git -C "$main" add dotln.config.json
+git -C "$main" commit -qm 'test: later instance rename'
+PATH="$bin:$PATH" "$node_bin" --input-type=module - "$main" "$fixture/custom-notes.md" <<'JS'
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import { pathToFileURL } from "node:url";
+const [root, notes] = process.argv.slice(2);
+const { regeneratedReleaseText } = await import(pathToFileURL(`${root}/scripts/release.mjs`));
+assert.equal(regeneratedReleaseText(root, "v0.2.1") + "\n", fs.readFileSync(notes, "utf8"));
+const { localReleaseRecords } = await import(pathToFileURL(`${root}/scripts/lib/release-records.mjs`));
+// The synthetic baseline has deliberately minimal attribution; select the
+// complete custom release using its immutable tag observation.
+const { localTags } = await import(pathToFileURL(`${root}/scripts/lib/release-tags.mjs`));
+assert.equal(localReleaseRecords(root, [localTags(root).get("v0.2.1")])[0].name, "v0.2.1");
+JS
+release_command notes v0.2.1 >"$fixture/custom-notes-after.md"
+cmp "$fixture/custom-notes.md" "$fixture/custom-notes-after.md"
+test "$(git -C "$main" rev-parse refs/tags/v0.2.1)" = "$custom_tag"
+}
+
 release_case_edition() {
 make_repo edition
 git -C "$main" switch -c fixture-legacy >/dev/null 2>&1
@@ -2674,6 +2717,9 @@ JS
   "$node_bin" - "$main" "$starter" <<'JS'
 const fs=require('node:fs'),p=require('node:path');
 for(const [dest,source] of [["README.md","README.client.md"],[".gitignore","gitignore.template"],["CLAUDE.md","CLAUDE.template.md"],["AI-HARNESS-SECURITY.md","AI-HARNESS-SECURITY.template.md"],["docs/workstreams/README.md","workstream.template.md"],["docs/repositories/README.md","repository-profile.template.md"],["docs/work-orders/WO-001-environment-truth.md","first-order.template.md"],["docs/control/budgets.json","budgets.template.json"]]) {const target=p.join(process.argv[3],dest);fs.mkdirSync(p.dirname(target),{recursive:true});fs.copyFileSync(p.join(process.argv[2],"scripts/kit",source),target);if(dest==="CLAUDE.md") fs.appendFileSync(target,"\n<!-- dotln-harness:start -->\nFixture block.\n<!-- dotln-harness:end -->\n");}
+// This legacy fixture has no instance configuration and keeps the default release name.
+const readme=p.join(process.argv[3],"README.md");
+fs.writeFileSync(readme,fs.readFileSync(readme,"utf8").replace("This source prepares DotLn-Enterprise-Starter ","This source prepares DotLn "));
 JS
   git -C "$starter" add .
   git -C "$starter" commit -qm 'current fixture kit'

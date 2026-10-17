@@ -118,6 +118,47 @@ const git = (root, ...args) =>
     { stdio: "pipe" },
   );
 
+test("release preparation carries configured names through normalization, renaming and collision retiming", (t) => {
+  const f = fixture();
+  t.after(f.dispose);
+  const configure = (displayName) =>
+    writeFileSync(
+      join(f.root, "dotln.config.json"),
+      JSON.stringify({ version: 1, release: { displayName } }) + "\n",
+    );
+  configure("Example 🚀");
+  const current = f.plan("v0.13.1");
+  assert.equal(current.target, "v0.13.2");
+  assert.equal(current.decision, null);
+  applyReleasePreparation(current);
+  assert.equal(
+    readFileSync(join(f.root, "README.md"), "utf8"),
+    readmeWith("This source prepares Example 🚀 `v0.13.2`."),
+  );
+  assert.equal(existsSync(join(f.root, decisionsPath)), false);
+  configure("Renamed Starter");
+  applyReleasePreparation(f.plan("v0.13.1"));
+  assert.equal(
+    readFileSync(join(f.root, "README.md"), "utf8"),
+    readmeWith("This source prepares Renamed Starter `v0.13.2`."),
+  );
+  assert.equal(
+    readFileSync(join(f.root, f.state.workOrderPath), "utf8"),
+    f.sources[f.state.workOrderPath],
+  );
+  const collided = f.plan("v0.13.2");
+  assert.equal(collided.target, "v0.13.3");
+  applyReleasePreparation(collided);
+  assert.equal(
+    readFileSync(join(f.root, "README.md"), "utf8"),
+    readmeWith("This source prepares Renamed Starter `v0.13.3`."),
+  );
+  const decisions = readFileSync(join(f.root, decisionsPath), "utf8");
+  assert.equal(decisionsIn(decisions).length, 1);
+  assert.deepEqual(applyReleasePreparation(f.plan("v0.13.2")), []);
+  assert.equal(readFileSync(join(f.root, decisionsPath), "utf8"), decisions);
+});
+
 test("release preparation records a collision once, as the order's decision, and touches no product document", () => {
   const f = fixture();
   try {

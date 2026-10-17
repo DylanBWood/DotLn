@@ -83,7 +83,10 @@ effort then prints no advisory.
 
 **Evidence gate:** the recorded commands and outputs in `environment.md`;
 `npm run resume -- status --json` after `implementation-ready` shows the
-attestation recorded.
+attestation recorded. Ordinary instance `npm test` checks installed runtime
+and harness integrity, while `npm run test:docs` checks coordination records;
+neither replaces this order's observed smoke. Later work in a registered
+sibling repository uses that repository's declared target gate.
 
 **Non-goals:** benchmarking, rate-limit probing, package or framework
 selection, running core's suites in this instance, and any work in a target

@@ -17,7 +17,8 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 
 import { runGit, runGitPathList } from "./lib/git.mjs";
-import { containedRegularFile, hasPackageSources } from "./lib/paths.mjs";
+import { containedRegularFile } from "./lib/paths.mjs";
+import { hasPackageSources } from "../packages/skeleton/src/runtime-inputs.mjs";
 
 // docs/LEGAL.md, Decision — 2026-09-06. Changing the decision requires review.
 export const licenseHashes = {

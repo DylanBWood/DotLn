@@ -2,14 +2,82 @@ import { runGit } from "./git.mjs";
 import { defaultDocRelative, docPath, docRelative } from "./config.mjs";
 
 import {
+  closeSync,
+  constants,
   existsSync,
+  fstatSync,
   lstatSync,
+  openSync,
   readdirSync,
   readFileSync,
   realpathSync,
 } from "node:fs";
 import { basename, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+
+// Document diagnostics expose only the caller's repository-relative label and
+// an error code. System and parser messages may quote private paths or text.
+const documentError = (file, kind, code) =>
+  new Error(
+    `${file}: ${kind} is not a readable regular file (${code}); replace the link or restore read permission, or move it out of the document roots`,
+  );
+export function documentEntry(root, file) {
+  try {
+    return lstatSync(join(root, file));
+  } catch (error) {
+    if (error.code === "ENOENT") return undefined;
+    throw new Error(
+      `${file}: document entry is unreadable (${error.code ?? "unreadable"})`,
+    );
+  }
+}
+export function readDocumentInput(root, file, kind = "document") {
+  let descriptor;
+  try {
+    const target = realpathSync(join(root, file));
+    if (!target.startsWith(`${realpathSync(root)}${sep}`))
+      throw Object.assign(new Error(), { code: "OUTSIDE_ROOT" });
+    // Nonblocking open plus descriptor inspection also refuses a FIFO swapped
+    // in after listing, without waiting for a writer or following a new read.
+    descriptor = openSync(target, constants.O_RDONLY | constants.O_NONBLOCK);
+    const info = fstatSync(descriptor);
+    if (!info.isFile())
+      throw Object.assign(new Error(), {
+        code: info.isDirectory() ? "EISDIR" : "ENOTFILE",
+      });
+    return readFileSync(descriptor, "utf8");
+  } catch (error) {
+    throw documentError(file, kind, error.code ?? "unreadable");
+  } finally {
+    if (descriptor !== undefined) closeSync(descriptor);
+  }
+}
+export function readDocumentDirectory(root, file, options = {}) {
+  try {
+    if (!lstatSync(join(root, file)).isDirectory())
+      throw Object.assign(new Error(), { code: "ENOTDIR" });
+    const directory = realpathSync(join(root, file));
+    const physicalRoot = realpathSync(root);
+    if (
+      directory !== physicalRoot &&
+      !directory.startsWith(`${physicalRoot}${sep}`)
+    )
+      throw Object.assign(new Error(), { code: "OUTSIDE_ROOT" });
+    return readdirSync(join(root, file), options);
+  } catch (error) {
+    throw new Error(
+      `${file}: document directory is unreadable (${error.code ?? "unreadable"}); restore a readable directory`,
+    );
+  }
+}
+export function readDocumentJson(root, file) {
+  const text = readDocumentInput(root, file, "record");
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(`${file}: invalid JSON`);
+  }
+}
 
 export const containedRegularFile = (path, root) =>
   existsSync(path) &&
@@ -345,19 +413,6 @@ export function describeIgnoredMaterial(root, candidate) {
       "scratch; removed with the worktree and recorded with its head commit and whether a remote held it",
   };
 }
-
-/** A checkout that holds package sources to build: a packages/<name> with its
- * own tsconfig.json, atomicBuild's own criterion. A kit export carries only
- * the compiled runtime and has none, so it has no build step. */
-export const hasPackageSources = (root) => {
-  const packages = join(root, "packages");
-  return (
-    existsSync(packages) &&
-    readdirSync(packages).some((name) =>
-      existsSync(join(packages, name, "tsconfig.json")),
-    )
-  );
-};
 
 export const isMainModule = (moduleUrl, entry = process.argv[1]) => {
   if (!entry) return false;

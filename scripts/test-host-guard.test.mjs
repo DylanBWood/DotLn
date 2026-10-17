@@ -1198,6 +1198,179 @@ test(
   },
 );
 
+test("host lane elapsed time includes the first lock wait even with free capacity", async (t) => {
+  const f = await fixture(t);
+  let unlock;
+  let ready;
+  const locked = new Promise((resolve) => {
+    ready = resolve;
+  });
+  const hold = withHostLock(
+    f.directory,
+    "lanes",
+    () =>
+      new Promise((resolve) => {
+        unlock = resolve;
+        ready();
+      }),
+  );
+  await locked;
+  const observations = [];
+  const pending = acquireHostLanes({
+    directory: f.directory,
+    worktree: f.repo,
+    task: "first-lock-wait",
+    parentLease: null,
+    waitHeartbeatMs: 50,
+    onWait: (_holders, row) => observations.push(row),
+  });
+  await delay(180);
+  unlock();
+  await hold;
+  const lease = await pending;
+  try {
+    assert.ok(
+      lease.waitedMs >= 150,
+      `${lease.waitedMs} ms includes the lock wait`,
+    );
+    assert.ok(observations.length >= 1);
+    assert.deepEqual(lease.waitObservations, observations);
+    assert.ok(
+      observations.every(
+        (row) => row.phase === "lock" && row.holders.length === 0,
+      ),
+    );
+    assert.ok(!JSON.stringify(observations).includes(f.directory));
+  } finally {
+    await lease.release();
+  }
+});
+
+test("host lane callback failure and cancellation drain lock waiters without leases", async (t) => {
+  const f = await fixture(t);
+  for (const reason of ["callback", "abort"]) {
+    let unlock;
+    let ready;
+    const locked = new Promise((resolve) => {
+      ready = resolve;
+    });
+    const hold = withHostLock(
+      f.directory,
+      "lanes",
+      () =>
+        new Promise((resolve) => {
+          unlock = resolve;
+          ready();
+        }),
+    );
+    await locked;
+    const controller = new AbortController();
+    const failure = new Error("fixture wait observer failed");
+    let calls = 0;
+    let acquired;
+    let rescued = false;
+    const rescue = setTimeout(() => {
+      rescued = true;
+      unlock();
+    }, 2000);
+    try {
+      const pending = acquireHostLanes({
+        directory: f.directory,
+        worktree: f.repo,
+        task: `lock-${reason}`,
+        parentLease: null,
+        signal: controller.signal,
+        waitHeartbeatMs: 25,
+        onWait() {
+          calls++;
+          if (reason === "callback") throw failure;
+          controller.abort();
+        },
+      }).then((lease) => {
+        acquired = lease;
+        return lease;
+      });
+      await assert.rejects(
+        pending,
+        reason === "callback"
+          ? (error) => error === failure
+          : /Host lane wait stopped/u,
+      );
+      assert.equal(
+        rescued,
+        false,
+        "rejection must not wait for the unrelated holder to unlock",
+      );
+      assert.equal(calls, 1);
+      await delay(80);
+      assert.equal(
+        calls,
+        1,
+        "the timer is gone before rejection reaches the caller",
+      );
+      assert.equal(readRecords(f.directory, "lanes").length, 0);
+    } finally {
+      clearTimeout(rescue);
+      unlock();
+      await hold;
+      await acquired?.release();
+    }
+    const lease = await acquireHostLanes({
+      directory: f.directory,
+      worktree: f.repo,
+      task: "after-lock-failure",
+      slots: 4,
+      parentLease: null,
+    });
+    await lease.release();
+  }
+});
+
+test("host lane capacity callback rejection leaves only the existing holder", async (t) => {
+  const f = await fixture(t);
+  const owner = await acquireHostLanes({
+    directory: f.directory,
+    worktree: f.repo,
+    task: "capacity-holder",
+    slots: 4,
+    parentLease: null,
+  });
+  const failure = new Error("fixture capacity observer failed");
+  let calls = 0;
+  try {
+    await assert.rejects(
+      acquireHostLanes({
+        directory: f.directory,
+        worktree: f.repo,
+        task: "capacity-failure",
+        parentLease: null,
+        onWait(_holders, observation) {
+          calls++;
+          assert.equal(observation.phase, "capacity");
+          throw failure;
+        },
+      }),
+      (error) => error === failure,
+    );
+    await delay(80);
+    assert.equal(calls, 1);
+    assert.deepEqual(
+      readRecords(f.directory, "lanes").map((row) => row.file),
+      [owner.file],
+    );
+  } finally {
+    await owner.release();
+  }
+  const lease = await acquireHostLanes({
+    directory: f.directory,
+    worktree: f.repo,
+    task: "after-capacity-failure",
+    slots: 4,
+    parentLease: null,
+  });
+  await lease.release();
+});
+
 test("WO-185 nested gates suballocate one reservation and a dead runner's live task retains its lanes", async (t) => {
   const f = await fixture(t);
   const parent = await acquireHostLanes({
@@ -1221,26 +1394,78 @@ test("WO-185 nested gates suballocate one reservation and a dead runner's live t
   });
   let acquired = false,
     waited = false;
+  const observations = [];
   const pending = acquireHostLanes({
     slots: 4,
     directory: f.directory,
     worktree: f.repo,
     task: "nested-two",
     parentLease: token,
-    onWait() {
+    waitHeartbeatMs: 50,
+    onWait(_holders, observation) {
       waited = true;
+      observations.push(observation);
     },
   }).then((lease) => {
     acquired = true;
     return lease;
   });
-  await delay(150);
+  for (
+    let attempt = 0;
+    attempt < 100 &&
+    observations.filter((row) => row.phase === "capacity").length < 2;
+    attempt++
+  )
+    await delay(20);
   assert.equal(acquired, false);
   assert.equal(waited, true);
   await one.release();
   const two = await pending;
-  await two.release();
+  assert.ok(
+    observations.filter((row) => row.phase === "capacity").length >= 2,
+    "unchanged holders still produce wait updates",
+  );
+  assert.deepEqual(two.waitObservations, observations);
+  assert.ok(
+    observations
+      .filter((row) => row.phase === "capacity")
+      .every(
+        (row) =>
+          row.holders[0].task === "nested-one" &&
+          row.holders[0].slots === 4 &&
+          row.holders[0].nested &&
+          row.holders[0].ownerAlive,
+      ),
+  );
+  assert.ok(!JSON.stringify(observations).includes(f.repo));
+  assert.ok(!JSON.stringify(observations).includes(f.directory));
+  parent.update({ pid: 2147483647, birth: "fixture-exited" });
   await parent.release();
+  const retained = [];
+  const topPending = acquireHostLanes({
+    slots: 4,
+    directory: f.directory,
+    worktree: f.repo,
+    task: "top-waiter",
+    parentLease: null,
+    onWait: (_holders, row) => retained.push(row),
+  });
+  for (let attempt = 0; attempt < 100 && !retained.length; attempt++)
+    await delay(20);
+  await two.release();
+  const top = await topPending;
+  assert.ok(
+    retained.some((row) =>
+      row.holders.some(
+        (holder) =>
+          holder.task === "parent" &&
+          holder.released &&
+          !holder.ownerAlive &&
+          holder.retainedSubleases === 1,
+      ),
+    ),
+  );
+  await top.release();
   const child = spawn(process.execPath, ["-e", "setTimeout(()=>{},600)"], {
     detached: true,
     stdio: "ignore",

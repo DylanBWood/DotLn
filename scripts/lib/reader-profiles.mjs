@@ -3,6 +3,14 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { docPath, docRelative, findLaunchpad } from "./config.mjs";
 import { runGit } from "./git.mjs";
+import { isDotLnRelease } from "./release-tags.mjs";
+import {
+  documentEntry,
+  readDocumentInput,
+  readDocumentDirectory,
+  readDocumentJson,
+} from "./paths.mjs";
+import { PRIVATE_PATH } from "./private-paths.mjs";
 
 export const surfaces = Object.freeze([
   "prTitle",
@@ -19,6 +27,13 @@ export const dimensions = Object.freeze({
   voice: ["plain", "warm", "expressive"],
 });
 export const variants = Object.freeze(["record", "balanced", "reader"]);
+const balancedProfile = Object.freeze({
+  audience: "contributor",
+  density: "account",
+  identifiers: "where they help",
+  machineDetail: "summarized",
+  voice: "plain",
+});
 export const questions = Object.freeze({
   change: "What changed for me?",
   action: "Must I act?",
@@ -32,12 +47,14 @@ const object = (value) =>
 const requireValue = (condition, message) => {
   if (!condition) throw new Error(`Reader profiles: ${message}`);
 };
+const profileDiagnostic = (value) =>
+  PRIVATE_PATH.test(String(value)) ? "<private path>" : value;
 const exactKeys = (value, keys, label) => {
   requireValue(object(value), `${label} must be an object`);
   for (const key of Object.keys(value))
     requireValue(
       keys.includes(key),
-      `${label}: unknown ${key}; known: ${keys.join(", ")}`,
+      `${label}: unknown ${profileDiagnostic(key)}; known: ${keys.join(", ")}`,
     );
   for (const key of keys)
     requireValue(Object.hasOwn(value, key), `${label}: missing ${key}`);
@@ -54,7 +71,7 @@ function validatePositions(profile, label) {
   for (const [dimension, positions] of Object.entries(dimensions))
     requireValue(
       positions.includes(profile[dimension]),
-      `${label}.${dimension}: unknown position ${JSON.stringify(profile[dimension])}; known: ${positions.join(", ")}`,
+      `${label}.${dimension}: unknown position ${profileDiagnostic(JSON.stringify(profile[dimension]))}; known: ${positions.join(", ")}`,
     );
   return profile;
 }
@@ -68,8 +85,9 @@ export function validateReaderProfiles(value) {
 }
 export const readReaderProfiles = (root = findLaunchpad()) =>
   validateReaderProfiles(
-    JSON.parse(
-      readFileSync(docPath(root, "control", "reader-profiles.json"), "utf8"),
+    readDocumentJson(
+      root,
+      docRelative(root, "control", "reader-profiles.json"),
     ),
   );
 export const profileRevision = (value) =>
@@ -93,10 +111,15 @@ const examplePath = (root, surface, variant) =>
   docRelative(root, "publication", `examples/${surface}/${variant}.md`);
 export function readExample(root, surface, variant) {
   const path = examplePath(root, requireSurface(surface), variant);
-  const source = readFileSync(join(root, path), "utf8");
+  const source = readDocumentInput(root, path);
   const match = /^---\n([\s\S]+?)\n---\n\n([\s\S]+)$/.exec(source);
   requireValue(match, `${path}: expected JSON front matter and example text`);
-  const metadata = JSON.parse(match[1]);
+  let metadata;
+  try {
+    metadata = JSON.parse(match[1]);
+  } catch {
+    throw new Error(`${path}: invalid JSON front matter`);
+  }
   requireValue(
     metadata.surface === surface && metadata.variant === variant,
     `${path}: surface/variant differs`,
@@ -141,10 +164,20 @@ const guidance = {
 };
 export function profileGuidance(surface, root = findLaunchpad()) {
   requireSurface(surface);
-  const profile = readReaderProfiles(root).surfaces[surface];
-  const examples = variants.map((variant) =>
-    readExample(root, surface, variant),
+  // Any entry at the path is a declaration, a dangling link included: the
+  // malformed route then reports it instead of a silent balanced default.
+  const declared = Boolean(
+    documentEntry(root, docRelative(root, "control", "reader-profiles.json")),
   );
+  const profile = declared
+    ? readReaderProfiles(root).surfaces[surface]
+    : balancedProfile;
+  const examplesRoot = docRelative(root, "publication", "examples");
+  const examplesDeclared = documentEntry(root, examplesRoot);
+  if (examplesDeclared) readDocumentDirectory(root, examplesRoot);
+  const examples = examplesDeclared
+    ? variants.map((variant) => readExample(root, surface, variant))
+    : [];
   // Ties prefer the default, so an equally near choice remains predictable.
   const priority = ["balanced", "reader", "record"];
   examples.sort((a, b) => {
@@ -160,9 +193,12 @@ export function profileGuidance(surface, root = findLaunchpad()) {
   });
   return [
     `Reader profile (${surface}): ${Object.values(profile).join(" / ")}.`,
+    ...(!declared
+      ? ["Profile source: balanced default; no reader profile declared."]
+      : []),
     ...Object.keys(dimensions).map((key) => guidance[key][profile[key]]),
     "Preserve facts, limits, required sections and the attribution rule; this guidance neither refuses nor rewrites text.",
-    `Nearest example: ${examples[0].path}`,
+    ...(examples.length ? [`Nearest example: ${examples[0].path}`] : []),
   ].join("\n");
 }
 // An exported launchpad without DotLn's editorial files keeps its existing
@@ -421,7 +457,7 @@ function readPublication(root, release, tagObject) {
   const separator = "\n\nDOTLN-MANIFEST-BEGIN\n";
   if (
     !header.split("\n").includes(`tag ${release}`) ||
-    !annotation.startsWith(`DotLn ${release}\n\n`) ||
+    !isDotLnRelease(annotation, release) ||
     !annotation.includes(separator)
   )
     return null;

@@ -35,7 +35,7 @@ import {
   resolve,
   sep,
 } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { text as streamText } from "node:stream/consumers";
 import type { DecodeResult } from "@dotln/kernel";
 import {
@@ -44,6 +44,7 @@ import {
   COMPILER_PACKAGE_VERSION,
   fnv1a64,
   showHarnessAdvisory,
+  harnessPromptIntent,
   assertOutsideWriteGrants,
   outsideWriteEffect,
   type AuthorityEnvelope,
@@ -342,6 +343,14 @@ export interface HarnessSession {
   versionObservation?: { value: string; channel: string };
   workOrder?: string;
   releaseCloseDispatch?: { workOrder: string; recordedAt: string };
+  pendingCliDispatch?: {
+    toolUseId: string;
+    command: string;
+    action: string;
+    workOrder: string;
+    eventCount: number;
+    eventPrefixHash: string;
+  };
 }
 interface HarnessByteRead {
   readonly path: string;
@@ -388,6 +397,8 @@ interface ControlView {
   readonly phase: string;
   readonly latestVerdict: string | null;
   readonly legalNextActions?: readonly string[];
+  readonly latestVerification?: string | null;
+  readonly finalReview?: string | null;
 }
 interface ReadRange {
   readonly path: string;
@@ -561,10 +572,15 @@ const localEvents = (
       : [],
   );
 };
-export function harnessControl(root: string): ControlView {
+export function harnessControl(root: string, workOrder?: string): ControlView {
   const result = spawnSync(
     process.execPath,
-    [join(root, "scripts/resume.mjs"), "status", "--json"],
+    [
+      join(root, "scripts/resume.mjs"),
+      "status",
+      "--json",
+      ...(workOrder ? ["--work-order", workOrder] : []),
+    ],
     {
       cwd: root,
       encoding: "utf8",
@@ -673,6 +689,232 @@ const recordedBriefing = (root: string) =>
     timeout: 10_000,
     maxBuffer: 4 * 1024 * 1024,
   });
+
+// Observe only an entire foreground lifecycle command. Shell wrappers and
+// command lists cannot establish that this particular dispatch succeeded.
+const cliDispatchCommand = (input: HarnessInput) => {
+  if (
+    input.tool_name !== "Bash" ||
+    input.tool_input?.run_in_background ||
+    input.tool_input?.background
+  )
+    return null;
+  const command = input.tool_input?.command;
+  if (typeof command !== "string") return null;
+  const match =
+    /^(?:npm(?: --silent)? run(?: --silent)? resume(?: --silent)? --|node scripts\/resume\.mjs) (next|fix|verify|final-review|release-close)(?: --work-order (WO-\d{3}))?$/u.exec(
+      command.trim(),
+    );
+  return match ? { command, action: match[1]!, workOrder: match[2] } : null;
+};
+const cliDispatchSnapshot = async (root: string, workOrder?: string) => {
+  const control = harnessControl(root, workOrder);
+  const store = await import(
+    pathToFileURL(join(root, "scripts/lib/control-store.mjs")).href
+  );
+  try {
+    const events = store.eventsForOrder(
+      store.readControl(root),
+      control.workOrder,
+    ) as Record<string, unknown>[];
+    return { control, events };
+  } catch {
+    // The journal may become unreadable after the status subprocess succeeds.
+    throw new Error("Canonical lifecycle observation unavailable");
+  }
+};
+async function observeCliDispatch(
+  root: string,
+  input: HarnessInput,
+  session: HarnessSession,
+): Promise<Record<string, unknown>> {
+  const observationOnly =
+    session.role === "executor" &&
+    ["resume: status", "resume: times"].includes(session.intent ?? "") &&
+    !session.workOrder &&
+    !session.expectedEvent;
+  if (
+    (session.role && !observationOnly) ||
+    !input.tool_use_id ||
+    input.agent_id
+  )
+    return {};
+  const command = cliDispatchCommand(input);
+  // A dispatch naming an order whose canonical status cannot be read is the
+  // command's own failure to report: the binding is skipped with one advisory
+  // and the call's ordinary observation continues.
+  const readDispatchStatus = async (
+    action: string,
+    workOrder: string | undefined,
+  ) => {
+    try {
+      return await cliDispatchSnapshot(root, workOrder);
+    } catch (error) {
+      // Only the lifecycle's own refusal is absorbed; a broken runtime still
+      // surfaces through the hook's generic failure path.
+      if (
+        !(error instanceof Error) ||
+        error.message !== "Canonical lifecycle observation unavailable"
+      )
+        throw error;
+      record(root, input, {
+        advisory: `CLI dispatch binding skipped for ${action}${workOrder ? ` ${workOrder}` : ""}: canonical status unreadable`,
+      });
+      return null;
+    }
+  };
+  if (input.hook_event_name === "PreToolUse") {
+    if (!command) return {};
+    delete session.pendingCliDispatch;
+    const before = await readDispatchStatus(command.action, command.workOrder);
+    if (!before) return {};
+    const { control, events } = before;
+    if (
+      !control.workOrder ||
+      !control.legalNextActions?.includes(command.action) ||
+      (command.action === "next" && control.phase !== "active") ||
+      (command.action === "release-close" &&
+        (control.phase !== "closed" ||
+          git(root, ["branch", "--show-current"]).trim() !== "main"))
+    )
+      return {};
+    session.pendingCliDispatch = {
+      toolUseId: input.tool_use_id,
+      command: command.command,
+      action: command.action,
+      workOrder: control.workOrder,
+      eventCount: events.length,
+      eventPrefixHash: textDigest(JSON.stringify(events)),
+    };
+    return {};
+  }
+  const pending = session.pendingCliDispatch;
+  if (!pending || pending.toolUseId !== input.tool_use_id) return {};
+  delete session.pendingCliDispatch;
+  const response = input.tool_response;
+  if (
+    input.hook_event_name !== "PostToolUse" ||
+    !command ||
+    pending.command !== command.command ||
+    response?.success === false ||
+    response?.is_error ||
+    response?.is_interrupt ||
+    response?.interrupted ||
+    response?.isAsync ||
+    response?.backgroundTaskId ||
+    (response?.task as Record<string, unknown> | undefined)?.backgroundTaskId ||
+    [response?.exit_code, response?.exitCode].some(
+      (code) => code !== undefined && code !== 0,
+    )
+  )
+    return {};
+  const after = await readDispatchStatus(pending.action, pending.workOrder);
+  if (!after) return {};
+  const { control, events } = after;
+  if (
+    control.workOrder !== pending.workOrder ||
+    events.length < pending.eventCount ||
+    textDigest(JSON.stringify(events.slice(0, pending.eventCount))) !==
+      pending.eventPrefixHash
+  )
+    return {};
+  const contracts: Record<
+    string,
+    {
+      phase: string;
+      role: string;
+      intent: string;
+      expected?: string;
+      request?: string;
+      id?: string | null;
+      idKey?: string;
+    }
+  > = {
+    next: {
+      phase: "active",
+      role: "executor",
+      intent: "resume: next",
+      expected: "ImplementationReady",
+    },
+    fix: {
+      phase: "repairing",
+      role: "executor",
+      intent: "resume: fix",
+      expected: "RepairCompleted",
+      request: "RepairRequested",
+    },
+    verify: {
+      phase: "verifying",
+      role: "verifier",
+      intent: "resume: verify",
+      expected: "VerificationCompleted",
+      request: "VerificationRequested",
+      id: control.latestVerification ?? null,
+      idKey: "verificationId",
+    },
+    "final-review": {
+      phase: "final-review",
+      role: "reviewer",
+      intent: "resume: final review",
+      expected: "FinalReviewCompleted",
+      request: "FinalReviewRequested",
+      id: control.finalReview ?? null,
+      idKey: "finalReviewId",
+    },
+    "release-close": {
+      phase: "closed",
+      role: "release-close",
+      intent: "resume: release close",
+    },
+  };
+  const contract = contracts[pending.action]!;
+  const appended = events.slice(pending.eventCount);
+  if (
+    control.phase !== contract.phase ||
+    (contract.request &&
+      (appended.length !== 1 ||
+        appended[0]?.type !== contract.request ||
+        appended[0]?.workOrderId !== pending.workOrder ||
+        (contract.idKey &&
+          (!contract.id || appended[0]?.[contract.idKey] !== contract.id)))) ||
+    (!contract.request && appended.length !== 0) ||
+    (pending.action === "release-close" &&
+      git(root, ["branch", "--show-current"]).trim() !== "main")
+  )
+    return {};
+  session.role = contract.role;
+  session.intent = contract.intent;
+  session.workOrder = pending.workOrder;
+  session.startingEventCount = events.length;
+  session.startingRevision = git(root, ["rev-parse", "HEAD"]).trim();
+  session.startedAt ??= new Date().toISOString();
+  session.usageSessionKey ??= sessionKey(input);
+  session.beforeOutputs ??= outputSnapshot(root);
+  session.authoredPaths ??= [];
+  if (contract.expected) session.expectedEvent = contract.expected;
+  else delete session.expectedEvent;
+  // Never set releaseCloseDispatch here: recordDispatch sets it after the
+  // operator's resume: release close phrase, and the publish admission reads
+  // only that field.
+  record(root, input, {
+    role: contract.role,
+    workOrder: pending.workOrder,
+    source: "observed-cli-dispatch",
+    dispatch: { action: pending.action, recorded: true },
+  });
+  const scratch = ensureHarnessSessionScratch(input.session_id);
+  const admission =
+    pending.action === "release-close"
+      ? " The release-close publish admission stays withheld: only the operator's resume: release close phrase records the dispatch that keys it."
+      : "";
+  return {
+    systemMessage: `DotLn: observed successful npm run resume -- ${pending.action} for ${pending.workOrder}; bound this session as ${contract.role}.${admission}`,
+    hookSpecificOutput: {
+      hookEventName: "PostToolUse",
+      additionalContext: `Load the dotln-${contract.role} skill and continue the recorded dispatch without repeating it. DotLn session scratch: ${scratch.path}. ${scratch.advisory ?? "Use this path for temporary work."}\n${usageReadbackLine(input.session_id)}`,
+    },
+  };
+}
 function recordDispatch(
   root: string,
   input: HarnessInput,
@@ -2342,6 +2584,16 @@ export function beginHarnessSession(
   role: string,
   adoptCurrent: boolean | readonly string[] = false,
 ) {
+  return enterHarnessSession(root, sessionId, role, adoptCurrent, false);
+}
+
+function enterHarnessSession(
+  root: string,
+  sessionId: string,
+  role: string,
+  adoptCurrent: boolean | readonly string[],
+  allowRoleless: boolean,
+) {
   if (
     ![
       "executor",
@@ -2359,7 +2611,18 @@ export function beginHarnessSession(
     session_id: sessionId,
     hook_event_name: "UserPromptSubmit",
   };
-  if (existsSync(statePath(root, input)))
+  const present =
+    lstatSync(statePath(root, input), { throwIfNoEntry: false }) !== undefined;
+  if (present && !allowRoleless)
+    throw new Error("Session already began; do not erase its observations");
+  const prior = readJson<HarnessSession | null>(
+    statePath(root, input),
+    null,
+    true,
+  );
+  if (present && (!prior || typeof prior !== "object" || Array.isArray(prior)))
+    throw new Error("Invalid existing harness session state");
+  if (prior && (!allowRoleless || prior.role))
     throw new Error("Session already began; do not erase its observations");
   const snapshot = outputSnapshot(root);
   const adopted = Array.isArray(adoptCurrent)
@@ -2383,17 +2646,31 @@ export function beginHarnessSession(
           ? "FinalReviewCompleted"
           : null;
   const session: HarnessSession = {
+    ...prior,
     role,
+    intent:
+      role === "executor"
+        ? `resume: ${control.phase === "repairing" ? "fix" : "next"}`
+        : role === "verifier"
+          ? "resume: verify"
+          : role === "reviewer"
+            ? "resume: final review"
+            : role === "release-close"
+              ? "resume: release close"
+              : role,
     ...(control.workOrder ? { workOrder: control.workOrder } : {}),
     ...(expected && !["closed", "withdrawn"].includes(control.phase)
       ? { expectedEvent: expected }
       : {}),
-    startedAt: new Date().toISOString(),
-    usageSessionKey: usageSessionKey(process.env.CODEX_THREAD_ID || sessionId),
+    startedAt: prior?.startedAt ?? new Date().toISOString(),
+    usageSessionKey:
+      prior?.usageSessionKey ??
+      usageSessionKey(process.env.CODEX_THREAD_ID || sessionId),
     startingEventCount: localEvents(root, control.workOrder).length,
-    reads: [],
-    beforeOutputs: snapshot,
-    authoredPaths: adopted,
+    startingRevision: git(root, ["rev-parse", "HEAD"]).trim(),
+    reads: prior?.reads ?? [],
+    beforeOutputs: prior?.beforeOutputs ?? snapshot,
+    authoredPaths: [...new Set([...(prior?.authoredPaths ?? []), ...adopted])],
   };
   writeJson(statePath(root, input), session);
   const counterWarning = initializeSubagentCounter(
@@ -2413,7 +2690,8 @@ export function beginHarnessSession(
   } catch (error) {
     // An entry that cannot record its observation leaves no session behind, so
     // a readback says no-session and the entry can be retried (WO-153).
-    unlinkIfPresent(statePath(root, input));
+    if (prior) writeJson(statePath(root, input), prior);
+    else unlinkIfPresent(statePath(root, input));
     throw error;
   }
   const override = openOverrideAdvisory(root);
@@ -2436,7 +2714,7 @@ export function beginHarnessSessionOnce(
   role: string,
 ) {
   try {
-    return beginHarnessSession(root, sessionId, role);
+    return enterHarnessSession(root, sessionId, role, false, true);
   } catch (error) {
     if (
       error instanceof Error &&
@@ -4144,7 +4422,7 @@ async function evaluateExistingHarnessHook(
     let additionalContext: string | undefined;
     let receipt: string | undefined;
     let scratchAdvisory: string | undefined;
-    const intent = input.prompt?.trim() ?? "";
+    const intent = harnessPromptIntent(input.prompt);
     const role =
       config.roles?.find((role) => role.intents.includes(intent)) ??
       config.roles?.find(
@@ -4319,15 +4597,18 @@ async function evaluateExistingHarnessHook(
         : {};
   }
   if (config.kind === "observe") {
+    const cliBinding = await observeCliDispatch(root, input, session);
     // A failed call wrote no output to read; its shell diagnostic alone is
     // answered and counted, at the call itself.
-    if (input.hook_event_name === "PostToolUseFailure")
+    if (input.hook_event_name === "PostToolUseFailure") {
+      writeJson(statePath(root, input), session);
       return observeShellDiagnostics(
         root,
         input,
         session.role,
         observationScope,
       );
+    }
     if (
       input.hook_event_name === "PostToolUse" &&
       ["Agent", "Task"].includes(input.tool_name ?? "")
@@ -4384,12 +4665,34 @@ async function evaluateExistingHarnessHook(
       session.role,
       observationScope,
     );
+    const shellContext = shell.hookSpecificOutput as
+      { hookEventName?: string; additionalContext?: string } | undefined;
+    const bindingContext = cliBinding.hookSpecificOutput as
+      { hookEventName?: string; additionalContext?: string } | undefined;
+    const combined = {
+      ...shell,
+      ...cliBinding,
+      ...(shellContext || bindingContext
+        ? {
+            hookSpecificOutput: {
+              ...shellContext,
+              ...bindingContext,
+              additionalContext: [
+                shellContext?.additionalContext,
+                bindingContext?.additionalContext,
+              ]
+                .filter(Boolean)
+                .join("\n"),
+            },
+          }
+        : {}),
+    };
     if (outside.length)
       return {
         ...protocolAdvisory("observed read outside the directed set"),
-        ...shell,
+        ...combined,
       };
-    return shell;
+    return combined;
   }
   if (config.kind === "finish") {
     if (!config.policy) throw new Error("Missing compiled finish policy");

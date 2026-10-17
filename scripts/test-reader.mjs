@@ -2,11 +2,13 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import {
+  chmodSync,
   cpSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
   rmSync,
+  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -68,6 +70,7 @@ function tag(
   root,
   release,
   text = "A gate records shared refs.\nNo action is needed.\nTransient moves are not covered.\nEvidence is linked here.",
+  displayName = "DotLn",
 ) {
   runGit(root, [
     "tag",
@@ -75,7 +78,7 @@ function tag(
     release,
     "--cleanup=verbatim",
     "-m",
-    `DotLn ${release}\n\n${text}\n\nDOTLN-MANIFEST-BEGIN\n{}\nDOTLN-MANIFEST-END\n`,
+    `${displayName} ${release}\n\n${text}\n\nDOTLN-MANIFEST-BEGIN\n{}\nDOTLN-MANIFEST-END\n`,
   ]);
 }
 function chooseProfile(root, value = profiles) {
@@ -254,16 +257,108 @@ test("examples retain their fact anchors and a comparison bound to current bytes
     );
 });
 
-test("guidance remains advisory when editorial files are absent or malformed", (t) => {
+test("guidance uses the balanced default without creating editorial records and keeps malformed declarations visible", (t) => {
   const root = fixture(t);
-  assert.match(writingGuidance("prTitle", root), /unavailable/);
+  const before = runGit(root, ["status", "--porcelain"]);
+  for (const surface of surfaces) {
+    const guidance = main(["profile", surface], root);
+    assert.match(
+      guidance,
+      /contributor \/ account \/ where they help \/ summarized \/ plain/,
+    );
+    assert.match(
+      guidance,
+      /Profile source: balanced default; no reader profile declared/,
+    );
+    assert.doesNotMatch(guidance, /Nearest example:|unavailable|ENOENT/);
+    assert.equal(writingGuidance(surface, root), guidance);
+  }
+  assert.equal(runGit(root, ["status", "--porcelain"]), before);
+  assert.equal(main(["check"], root).surfaces, 0);
   write(root, "docs/control/reader-profiles.json", "broken JSON");
   assert.match(writingGuidance("releaseNotes", root), /unavailable/);
+  assert.throws(() => main(["profile", "releaseNotes"], root));
+  if (process.getuid?.() !== 0) {
+    chmodSync(join(root, "docs/control"), 0);
+    try {
+      const inaccessible = writingGuidance("releaseNotes", root);
+      assert.match(inaccessible, /EACCES/u);
+      assert.ok(!inaccessible.includes(root));
+    } finally {
+      chmodSync(join(root, "docs/control"), 0o755);
+    }
+  }
+  const malformedRoot = fixture(t);
+  rmSync(join(malformedRoot, "docs/control"), { recursive: true, force: true });
+  write(malformedRoot, "docs/control", "not a directory\n");
+  const malformed = writingGuidance("releaseNotes", malformedRoot);
+  assert.match(malformed, /document entry is unreadable \(ENOTDIR\)/u);
+  assert.ok(!malformed.includes(malformedRoot));
+  // A dangling link is a declaration too; it reports instead of defaulting.
+  rmSync(join(root, "docs/control/reader-profiles.json"));
+  symlinkSync(
+    "missing-profiles.json",
+    join(root, "docs/control/reader-profiles.json"),
+  );
+  const dangling = writingGuidance("releaseNotes", root);
+  assert.match(
+    dangling,
+    /unavailable: docs\/control\/reader-profiles\.json: record is not a readable regular file/u,
+  );
+  assert.ok(!dangling.includes(root));
+  assert.throws(() => main(["profile", "releaseNotes"], root));
+  rmSync(join(root, "docs/control/reader-profiles.json"));
+  mkdirSync(join(root, "docs/control/reader-profiles.json"));
+  assert.match(
+    writingGuidance("releaseNotes", root),
+    /record is not a readable regular file/u,
+  );
+  rmSync(join(root, "docs/control/reader-profiles.json"), { recursive: true });
+  symlinkSync(
+    "reader-profiles.json",
+    join(root, "docs/control/reader-profiles.json"),
+  );
+  const loop = writingGuidance("releaseNotes", root);
+  assert.match(loop, /ELOOP/u);
+  assert.ok(!loop.includes(root));
+  rmSync(join(root, "docs/control/reader-profiles.json"));
+  const invalidProfile = structuredClone(profiles);
+  invalidProfile.surfaces.releaseNotes.audience = "/Users/fixture-user/private";
+  write(
+    root,
+    "docs/control/reader-profiles.json",
+    JSON.stringify(invalidProfile),
+  );
+  const invalid = writingGuidance("releaseNotes", root);
+  assert.match(invalid, /unknown position <private path>/u);
+  assert.doesNotMatch(invalid, /fixture-user/u);
+  write(root, "docs/control/reader-profiles.json", JSON.stringify(profiles));
+  assert.doesNotMatch(
+    main(["profile", "releaseNotes"], root),
+    /default|Nearest example:/,
+  );
+  mkdirSync(join(root, "docs/publication"), { recursive: true });
+  symlinkSync("missing-examples", join(root, "docs/publication/examples"));
+  assert.throws(
+    () => main(["profile", "releaseNotes"], root),
+    /docs\/publication\/examples: document directory is unreadable/u,
+  );
+  const unavailable = writingGuidance("releaseNotes", root);
+  assert.match(unavailable, /unavailable: docs\/publication\/examples/u);
+  assert.ok(!unavailable.includes(root));
+  rmSync(join(root, "docs/publication/examples"));
+  write(
+    root,
+    "docs/publication/examples/releaseNotes/balanced.md",
+    "malformed declared example\n",
+  );
+  assert.throws(() => main(["profile", "releaseNotes"], root));
 });
 
 test("score prompt uses at most ten unscored published tags and no private repository context", (t) => {
   const root = fixture(t);
-  for (let n = 0; n < 12; n++) tag(root, `v1.0.${n}`);
+  for (let n = 0; n < 12; n++)
+    tag(root, `v1.0.${n}`, undefined, n === 11 ? "Example Starter" : "DotLn");
   runGit(root, ["tag", "v2.0.0"]);
   runGit(root, ["tag", "-a", "v3.0.0", "-m", "Unpublished lookalike"]);
   runGit(root, [

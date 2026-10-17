@@ -1016,7 +1016,11 @@ const main = async () => {
       );
       parseReleaseNotes(releaseNotes, releaseNotesPath);
       assertGitHubBodyProfile(releaseNotes, releaseNotesPath);
-      gateBlock = productGateBody(reviewedProductGate(subject, workOrderId));
+      gateBlock = productGateBody(
+        reviewedProductGate(subject, workOrderId, "HEAD", {
+          liveInstance: true,
+        }),
+      );
     }
     const contributions = contributionSignoffRules(subject);
     process.stdout.write(

@@ -87,9 +87,10 @@ function fixture(unrelated = false) {
       join(source, "packages", name, "package.json"),
       join(launchpad, "packages", name, "package.json"),
     );
-    symlinkSync(
+    cpSync(
       join(source, "packages", name, modules),
       join(launchpad, "packages", name, modules),
+      { recursive: true },
     );
   }
   return {

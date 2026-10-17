@@ -44,6 +44,11 @@ import {
 import { assertGitHubBodyProfile } from "./github-body.mjs";
 import { hasAiAttribution } from "../../packages/compiler/src/attribution.mjs";
 import { checkLocalTerms } from "./terms.mjs";
+import {
+  PRIVATE_PATH,
+  linesMatching,
+  privatePathLines,
+} from "./private-paths.mjs";
 import { WorkerStore } from "../../packages/skeleton/dist/src/worker-store.js";
 
 export function publishTargetPlanning({
@@ -174,6 +179,24 @@ export function publishTargetPlanning({
     ).status !== "present"
   )
     refuse("local-terms list absent");
+  for (const file of files) {
+    const [line] = privatePathLines(file.path, file.bytes.toString("utf8"));
+    if (line !== undefined)
+      refuse(
+        `${file.path}:${line}: private absolute path; write a repository-relative path or a placeholder such as <home>/, <worktree>/ or <tmp>/`,
+      );
+  }
+  // The title becomes the commit message and, with the body, the pull request
+  // the forge renders as Markdown; both take the Markdown rule.
+  if (linesMatching(PRIVATE_PATH, title).length)
+    refuse(
+      "pull-request title (also the commit message): private absolute path; write a repository-relative path or a placeholder such as <home>/, <worktree>/ or <tmp>/",
+    );
+  const [bodyLine] = linesMatching(PRIVATE_PATH, body);
+  if (bodyLine !== undefined)
+    refuse(
+      `pull-request body line ${bodyLine}: private absolute path; write a repository-relative path or a placeholder such as <home>/, <worktree>/ or <tmp>/`,
+    );
   runGit(clone, [...HOST_GIT_READ, "var", "GIT_AUTHOR_IDENT"]);
   const records = files.map((file) => ({
     kind: "planning",

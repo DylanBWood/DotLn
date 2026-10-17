@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { spawnGit } from "./lib/git.mjs";
-import { hasPackageSources, isMainModule } from "./lib/paths.mjs";
+import { isMainModule } from "./lib/paths.mjs";
 import { spawn } from "node:child_process";
 import { performance } from "node:perf_hooks";
 import { createProcessMonitor } from "./lib/process-monitor.mjs";
@@ -39,6 +39,7 @@ import {
   beginGateRun,
   gateTreeHash,
   gateCodeIdentity,
+  gateInstanceInputDigest,
   readGateChecks,
   readSharedRefs,
   recordGateChecks,
@@ -72,8 +73,10 @@ import {
 const recordedSources = evidenceSources(findLaunchpad());
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-export const isKitRoot = (root) =>
-  existsSync(join(root, "KIT-MANIFEST.json")) && !hasPackageSources(root);
+import { isKitRoot } from "../packages/skeleton/src/runtime-inputs.mjs";
+export { isKitRoot };
+const instanceSelection = (args, repo) =>
+  isKitRoot(repo) && !args.includes("--only") && !args.includes("--machinery");
 const node = (name, file, options = {}) => ({
   name,
   command: [process.execPath, file],
@@ -112,6 +115,9 @@ const shell = (name, file) => ({
 export const machinerySources = {
   "launchpad-planning": [
     "packages/kernel/src/types.ts",
+    "packages/compiler/src/harness.ts",
+    "packages/console/src/index.ts",
+    "scripts/build.mjs",
     "scripts/bootstrap.mjs",
     "scripts/harness.mjs",
     "scripts/license-surfaces.mjs",
@@ -136,9 +142,13 @@ export const machinerySources = {
     "scripts/lineage.mjs",
     "scripts/resume.mjs",
     "scripts/release.mjs",
+    "scripts/lib/release-kit-runtime.mjs",
+    "scripts/lib/release-records.mjs",
+    "scripts/lib/harness.mjs",
     "scripts/harness-probe.mjs",
     "scripts/operator-control.mjs",
     "packages/skeleton/src/gate-evidence.mjs",
+    "packages/skeleton/src/runtime-inputs.mjs",
     "packages/skeleton/src/writer-teardown.mjs",
     "packages/skeleton/src/usage-observation.mjs",
     "packages/compiler/src/codex-continuation.mjs",
@@ -177,6 +187,7 @@ export const machinerySources = {
   ],
   "harness-fixtures": [
     // Direct entry imports and literal first-party script inputs (WO-174).
+    "packages/kernel/src/index.ts",
     "packages/compiler/src/artifact-identity.ts",
     "packages/compiler/src/index.ts",
     "packages/compiler/src/operator-control.mjs",
@@ -198,13 +209,18 @@ export const machinerySources = {
     "scripts/lib/harness-context.mjs",
     "packages/skeleton/src/feedback-boundary.ts",
     "packages/skeleton/src/gate-evidence.mjs",
+    "packages/skeleton/src/runtime-inputs.mjs",
     "scripts/test-harness.mjs",
+    "scripts/test-runner.mjs",
     "scripts/lib/harness-prune.mjs",
     // Prune usage retention follows preservation's collision names (WO-171).
     "scripts/lib/intake-reconciliation.mjs",
     "scripts/lib/worktree-material.mjs",
     "scripts/lib/worktree-removal.mjs",
     "scripts/lib/git.mjs",
+    // The observer's journal-read failure case rewrites the control store's
+    // reader in its fixture copy.
+    "scripts/lib/control-store.mjs",
     "packages/skeleton/src/writer-teardown.mjs",
     "scripts/lib/stash-drop.mjs",
     // Prune lists stale Codex episode homes through the launcher (WO-159).
@@ -240,6 +256,7 @@ export const machinerySources = {
     "packages/skeleton/src/version.ts",
     "packages/skeleton/src/subagent-budget.ts",
     "packages/skeleton/src/gate-evidence.mjs",
+    "packages/skeleton/src/runtime-inputs.mjs",
     "scripts/lib/harness.mjs",
     "packages/compiler/src/harness.ts",
     "packages/skeleton/src/loadouts/",
@@ -351,6 +368,7 @@ export const machinerySources = {
     // The release shell runs the library through this entry point (WO-163).
     "scripts/release-fixtures.mjs",
     "packages/skeleton/src/gate-evidence.mjs",
+    "packages/skeleton/src/runtime-inputs.mjs",
     "packages/skeleton/src/gate-deadlines.mjs",
   ],
   "process-debt": [
@@ -387,6 +405,7 @@ export const machinerySources = {
     "packages/skeleton/src/writer-teardown.mjs",
     "scripts/lib/evidence-preparation.mjs",
     "scripts/lib/planning-followups.mjs",
+    "scripts/lib/private-paths.mjs",
     "scripts/lib/planning-conditions.mjs",
     "scripts/build.mjs",
     "scripts/work-orders.mjs",
@@ -415,6 +434,7 @@ export const machinerySources = {
     "packages/skeleton/src/version.ts",
     "packages/skeleton/src/subagent-budget.ts",
     "packages/skeleton/src/gate-evidence.mjs",
+    "packages/skeleton/src/runtime-inputs.mjs",
   ],
   mutation: [
     // Direct entry imports and literal first-party script inputs (WO-174).
@@ -677,10 +697,12 @@ export const suites = [
     fast: true,
     document: true,
     preflight: true,
+    instance: "document",
   },
   // The published runtime is ignored; its digest rides on the build's result.
   buildSuite(root),
   node("release-surfaces", "scripts/release.mjs", {
+    instance: "document",
     args: ["check-surfaces", "--local"],
     fast: true,
     needsBuild: true,
@@ -716,6 +738,7 @@ export const suites = [
     kit: "core-only: docs/LEGAL.md and core license fixtures",
   }),
   node("license-surfaces", "scripts/license-surfaces.mjs", {
+    instance: "document",
     preflight: true,
     document: true,
   }),
@@ -776,11 +799,13 @@ export const suites = [
   },
   shell("work-orders-fixtures", "scripts/test-work-orders.sh"),
   node("publication", "scripts/check-publication.mjs", {
+    instance: "document",
     fast: true,
     document: true,
     preflight: true,
   }),
   node("docs-check", "scripts/docs-check.mjs", {
+    instance: "document",
     document: true,
     preflight: true,
     protects:
@@ -808,12 +833,14 @@ export const suites = [
       "the comment check refuses labels and leading identifiers, honours its fingerprint baseline and shrinks it on a fix",
   }),
   node("index", "scripts/work-orders.mjs", {
+    instance: "document",
     args: ["index", "--check"],
     fast: true,
     document: true,
     preflight: true,
   }),
   node("siblings", "scripts/siblings.mjs", {
+    instance: "document",
     args: ["index", "--check"],
     document: true,
     preflight: true,
@@ -826,6 +853,7 @@ export const suites = [
       "the registry generator carries each receipt's fields, the kit version from Git and the orders closed between receipts, reads not evidenced where no receipt supplies a field, and refuses a hand-edited entry, a manifest hash that is not the latest receipt's and an undecodable receipt",
   }),
   node("lineage", "scripts/lineage.mjs", {
+    instance: "document",
     args: ["index", "--check"],
     document: true,
     preflight: true,
@@ -956,12 +984,14 @@ export const suites = [
     exclusive: true,
   }),
   node("harness", "scripts/harness.mjs", {
+    instance: "runtime",
     args: ["check"],
     fast: true,
     needsBuild: true,
     preflight: true,
   }),
   node("harness-context", "scripts/harness-context.mjs", {
+    instance: "document",
     args: ["--check"],
     fast: true,
     needsBuild: true,
@@ -980,6 +1010,7 @@ export const suites = [
       "planning receipts and Entropy Reducer receipts preserve judgments, blinding, immutability and carried orders",
   }),
   node("plan-refutation-current", "scripts/test-plan-refutation.mjs", {
+    instance: "document",
     args: ["--check-only"],
     document: true,
   }),
@@ -1018,19 +1049,23 @@ export const suites = [
     exclusive: true,
   }),
   node("meta", "scripts/meta.mjs", {
+    instance: "document",
     args: ["--check"],
     fast: true,
     preflight: true,
   }),
   node("registrations", "scripts/check-registrations.mjs", {
+    instance: "document",
     document: true,
     needsBuild: true,
   }),
   node("plan", "scripts/refute-plan.mjs", {
+    instance: "document",
     args: ["check"],
     document: true,
   }),
   node("reader-profiles", "scripts/reader.mjs", {
+    instance: "document",
     args: ["check"],
     document: true,
     protects:
@@ -1043,7 +1078,11 @@ export const suites = [
     protects:
       "reader commands reject invalid profiles and quotations, select the nearest example, retain tag profiles and record scores idempotently",
   }),
-  node("entropy", "scripts/entropy.mjs", { args: ["check"], document: true }),
+  node("entropy", "scripts/entropy.mjs", {
+    args: ["check"],
+    document: true,
+    instance: "document",
+  }),
 ].map(classifySuite);
 
 export function validateSuites(table) {
@@ -1075,6 +1114,12 @@ export function validateSuites(table) {
   for (const row of table)
     if (row.kit !== undefined && !/^core-only: \S.+/u.test(row.kit))
       throw new Error(`Invalid kit exclusion: ${row.name}`);
+  for (const row of table)
+    if (
+      row.instance !== undefined &&
+      (!["runtime", "document"].includes(row.instance) || row.kit)
+    )
+      throw new Error(`Invalid instance selection: ${row.name}`);
   // A fixture shortens the heartbeat to observe it; a gate never does.
   for (const row of table)
     if (row.heartbeatMs !== undefined)
@@ -1794,6 +1839,9 @@ export async function scheduleSuites(
           ? {
               hostLaneWaitMs: lease.waitedMs,
               hostLaneSlots: lease.record.slots,
+              ...(lease.waitObservations.length
+                ? { hostLaneWaitObservations: lease.waitObservations }
+                : {}),
             }
           : {}),
       };
@@ -2201,10 +2249,16 @@ export async function runGate(
       : (options.table ?? suites).find((row) => row.name === args[only + 1]);
   // Review also runs document-reading machinery, so it retains the full
   // refusal. Only a product selection that observes no own records grants
-  // report writes; --only must respect the selected suite's declaration.
+  // report writes; --only must respect the selected suite's declaration. An
+  // instance's selections are document runs: its harness row reads the
+  // harness surfaces and the root instruction file, which the product read
+  // guard excludes, so no product run of them can be observed and the order's
+  // record writes stay refused while they run.
   const active = beginGateRun(repo, "scripts/test-runner.mjs", {
     kind:
-      args.includes("--document") || single?.document
+      instanceSelection(args, repo) ||
+      args.includes("--document") ||
+      single?.document
         ? "document"
         : args.includes("--review") || args.includes("--full")
           ? "review"
@@ -2279,18 +2333,24 @@ async function runGateChecks(
     throw new Error("--against requires --document (npm run test:docs)");
   if (only && !table.some((row) => row.name === only))
     throw new Error(`Unknown suite: ${only}`);
+  // A consumer checks its installed runtime. Its separate document gate
+  // checks coordination records; sibling product checks run in the target.
+  // Shipping a fixture makes it available for an explicit diagnostic only.
+  const instance = instanceSelection(args, repo);
   let selected = table.filter((row) =>
-    only
-      ? row.name === only
-      : document
-        ? row.document
-        : machinery
-          ? row.machinery
-          : row.product,
+    instance
+      ? row.instance === "runtime" || (document && row.instance === "document")
+      : only
+        ? row.name === only
+        : document
+          ? row.document
+          : machinery
+            ? row.machinery
+            : row.product,
   );
-  if (review && !only && !document && !machinery)
+  if (review && !instance && !only && !document && !machinery)
     selected = [...new Set([...selected, ...changedMachinery(repo, table)])];
-  if (!only && !document && !machinery) {
+  if (!instance && !only && !document && !machinery) {
     const format = table.find((row) => row.name === "format");
     if (format)
       selected = [format, ...selected.filter((row) => row !== format)];
@@ -2299,10 +2359,11 @@ async function runGateChecks(
     const unavailable = table.filter((row) =>
       row.kit?.startsWith("core-only: "),
     );
-    for (const row of unavailable)
-      console.log(
-        `kit: ${row.name} not carried (${row.kit.slice("core-only: ".length)})`,
-      );
+    if (!instance)
+      for (const row of unavailable)
+        console.log(
+          `kit: ${row.name} not carried (${row.kit.slice("core-only: ".length)})`,
+        );
     const requested = unavailable.find((row) => row.name === only);
     if (requested)
       throw new Error(
@@ -2322,11 +2383,21 @@ async function runGateChecks(
     return { exitCode: 0 };
   }
   const sharedRefsStart = readSharedRefs(repo);
+  const instanceInputDigest = gateInstanceInputDigest(repo);
   const refsStartedAt = Date.now();
   let reused = new Map();
   let reuseIdentity;
   // Plain and review selections compose the latest passing task executions.
-  if (!again && !only && !document && !machinery && !confinedPartial) {
+  // Installed snapshots and coordination records are outside code identity.
+  // Consumer checks must observe them afresh, even after a prior pass.
+  if (
+    !instance &&
+    !again &&
+    !only &&
+    !document &&
+    !machinery &&
+    !confinedPartial
+  ) {
     const needsBuild = selected.some((row) => row.needsBuild || row.build);
     const inventory = [
       needsBuild
@@ -2664,7 +2735,9 @@ async function runGateChecks(
     if (stopping() && (interrupted || !resourceGateFailure))
       throw new Error("Gate stopped during base comparison; no check recorded");
     const rows = aggregateSuiteRows(selected, tasks, taskRows, codeIdentity);
-    const unchanged = gateCodeIdentity(repo) === codeIdentity;
+    const unchanged =
+      gateCodeIdentity(repo) === codeIdentity &&
+      gateInstanceInputDigest(repo) === instanceInputDigest;
     // Every task ran between the build's attestation and this check. An
     // output that changed in between leaves no task's pass tied to this
     // identity's build, exactly as changed code does.
@@ -2695,6 +2768,7 @@ async function runGateChecks(
       treeHash,
       codeIdentity,
       sharedRefs: { start: sharedRefsStart, end: readSharedRefs(repo) },
+      ...(instanceInputDigest === undefined ? {} : { instanceInputDigest }),
       subject: treeHash,
       durationMs: Date.now() - started,
       exitCode:
@@ -2727,13 +2801,15 @@ async function runGateChecks(
       ...(outputUnattested ? { buildOutputAttested: false } : {}),
       freshReason: again
         ? "requested"
-        : reused.size
-          ? onlyFreshFormat
-            ? "always-fresh-preflight"
-            : freshTasks.length
-              ? "missing-passing-tasks"
-              : "no-fresh-tasks"
-          : "no-passing-tasks",
+        : instance
+          ? "instance-inputs"
+          : reused.size
+            ? onlyFreshFormat
+              ? "always-fresh-preflight"
+              : freshTasks.length
+                ? "missing-passing-tasks"
+                : "no-fresh-tasks"
+            : "no-passing-tasks",
       freshSuites: freshTasks.length,
       reusedSuites: taskRows.filter((row) => row.reused).length,
       requiredSuites: selected.map((row) => row.name),

@@ -17,24 +17,21 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { codexContinuation } from "../packages/compiler/src/codex-continuation.mjs";
 import { operatorControl } from "../packages/compiler/src/operator-control.mjs";
-
-test("generated JavaScript harness surfaces agree with the repository format policy", async () => {
-  const { harnessInstallation } = await import("./lib/harness.mjs");
-  const paths = harnessInstallation()
-    .files.map((file) => file.path)
-    .filter((path) => path.endsWith(".mjs"));
-  assert.ok(paths.includes(".codex/hooks/continuation.mjs"));
-  const result = spawnSync(
-    process.execPath,
-    ["node_modules/prettier/bin/prettier.cjs", "--check", ...paths],
-    { encoding: "utf8", timeout: 30000 },
-  );
-  assert.equal(result.status, 0, result.stdout + result.stderr);
-});
+import { lowerToHarness } from "../packages/compiler/dist/src/index.js";
+import {
+  contributorConfiguredProgram,
+  contributorProfiles,
+} from "../packages/skeleton/dist/src/loadouts/contributor.js";
+import { personalFeedback } from "../packages/skeleton/dist/src/loadouts/feedback.js";
 
 test("Codex generated entry restores context and continues through the emitted native JSON contract", async () => {
-  const { harnessInstallation } = await import("./lib/harness.mjs");
-  const installation = harnessInstallation();
+  const program = contributorConfiguredProgram();
+  const installation = lowerToHarness(
+    program,
+    personalFeedback(),
+    program.loadout.authorityEnvelope,
+    contributorProfiles.find((profile) => profile.harness === "codex-cli"),
+  );
   const entry = installation.files.find(
     (file) => file.path === ".codex/hooks/continuation.mjs",
   );

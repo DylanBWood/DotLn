@@ -119,6 +119,7 @@ const commonSources = [
   "scripts/lib/helpers.mjs",
   "scripts/lib/git.mjs",
   "scripts/lib/paths.mjs",
+  "packages/skeleton/src/runtime-inputs.mjs",
   "tsconfig.json",
 ];
 

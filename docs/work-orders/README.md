@@ -1,12 +1,12 @@
 # Work orders
 
-**Now:** between work orders.
+**Now:** [WO-213] — final-review.
 
 ## Proposed order
 
 - [x] [WO-215] — Core's release close refreshes DotLn-Enterprise-Starter · **final-reviewed**
 - [x] [WO-210] — An instance's own orders publish and reach release close · **final-reviewed**
-- [ ] [WO-213] — Private paths stay out of every committed record · **queued**
+- [ ] [WO-213] — Private paths stay out of every committed record · **final-review**
 - [ ] [WO-080] — Workstreams: document, index, board section and synthetic pilot · **queued**
 - [ ] [WO-204] — The source writer cannot damage the operator's repository · **queued**
 - [ ] [WO-192] — A router drives an order through its lifecycle · **queued**
@@ -31,26 +31,25 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 
 ## Active
 
-None.
-
-## Open
-
 ### WO-213
 
-[WO-213 — Private paths stay out of every committed record: a new line that names an absolute home path in a JSON, JSONL, log or text record under the document roots fails the document check as Markdown already does, the follow-up register projects &#96;&lt;home&gt;&#96; in place of a home path and rewrites the one stored revision that holds one, the planning-receipt helper refuses a private path before it writes, and records bound for a registered target's documentation root pass the same screen before they are committed there (version assigned at activation)](WO-213-private-paths-in-every-record.md)
+[WO-213 — Private paths stay out of every committed record: a new line that names an absolute home path in a JSON, JSONL, log or text record under the document roots fails the document check as Markdown already does, the follow-up register projects &#96;&lt;home&gt;&#96; in place of a home path and rewrites the one stored revision that holds one, the planning-receipt helper refuses a private path before it writes, and records bound for a registered target's documentation root pass the same screen before they are committed there (v0.83.0)](WO-213-private-paths-in-every-record.md)
 
-- State: draft.
-- Application target: unassigned.
+- State: final-review.
+- Application target: v0.83.0.
 - Dependencies: typed; dependency-ready.
 - References: WO-188: satisfied-by-close (met) — the forward-only home-path screen, its fingerprint baseline and the records policy this order extends to non-Markdown records; WO-210: hard (met) — the records-only commit and the target-scoped planning publication whose writes into a registered target's documentation root this order screens.
-- Verification: none recorded.
-- Final review: none recorded.
+- Verification: [VER-007](../../docs/verifications/WO-213/VER-007.md) (pass).
+- Final review: FINAL-003 (pending).
 - Release: none recorded.
 - Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh; verifier xhigh; reviewer xhigh.
 - Track: machinery
 - Cost: adds &#96;scripts/lib/private-paths.mjs&#96; (the private-path pattern moved unchanged out of &#96;scripts/docs-check.mjs&#96; lines 514-515, its home-directory alternative, the record extensions, a per-file rule and a &#96;&lt;home&gt;&#96; substitution); a record listing and a per-type rule in &#96;scripts/docs-check.mjs&#96; (&#96;recordFiles&#96;, &#96;homePathFindings&#96;, &#96;checkDocs&#96;); the record lines that hold a home path today as fingerprints in &#96;docs/control/doc-baseline.json&#96; &#96;homePaths&#96; (291 lines in 37 files at &#96;6dbd8771&#96; once the register is rewritten); the substitution in &#96;scripts/lib/planning-followups.mjs&#96; (&#96;collectFollowupSources&#96;, &#96;projected&#96;, &#96;retained&#96;, &#96;unionFollowups&#96;); pre-write screens in &#96;scripts/lib/plan-receipts.mjs&#96; (&#96;writePlanReceipt&#96; and the four event appends); pre-write screens in WO-210's &#96;scripts/lib/target-records.mjs&#96; (the records-only commit) and &#96;scripts/lib/target-planning.mjs&#96; (the target-scoped planning publication); fixtures in &#96;scripts/test-docs-check.mjs&#96;, &#96;scripts/test-process-debt.mjs&#96;, &#96;scripts/test-worktree-integration.mjs&#96;, &#96;scripts/test-plan-refutation.mjs&#96; and &#96;scripts/test-target-worktree.mjs&#96;; one retained evidence script. Removes the Markdown-only reach of the screen (the first limit WO-188 D014 records), the register's one stored copy of a home path, the hand-baseline route receipt 044's statement line took (&#96;d28fcac0&#96;), and the chance that a record carries a home path into a public target repository (DotLn-Angular is public, product 12 §One workstream across repositories). Wall-clock: docs-check reads every record file under the roots on each run; at &#96;6dbd8771&#96; that is 3,544 files and 206.9 MB, which a whole-file test before line splitting read in 255 to 277 ms warm and 922 ms cold across this drafting worker's three rounds (host load average about 7 on 16 CPUs); the executor measures docs-check before and after (steps 1 and 14); the target screens add one whole-text test per record a target receives. Commands: none added; seven existing write paths refuse one more input class. Context bytes: the baseline grows by the fingerprints above (about 24 KB by estimate); no document a session reads at cold start grows except by the two write-back sentences. Tokens: unknown until run. Steps: one retained evidence script and one register sync the order runs once. Re-mints: none. &#96;scripts/docs-check.mjs&#96;, &#96;planning-followups.mjs&#96;, &#96;plan-receipts.mjs&#96;, the new module and WO-210's two target modules are neither registered evidence sources (&#96;scripts/lib/evidence-sources.mjs&#96;) nor feedback-judged files (&#96;FEEDBACK_SOURCE_PATHS&#96;, &#96;packages/skeleton/src/feedback-audit.ts&#96; line 15); the new module stays out of &#96;scripts/lib/helpers.mjs&#96; and &#96;scripts/lib/terms.mjs&#96;, which are registered (evidence-sources.mjs lines 119, 178 and 346). The three changed sources are declared machinery sources (&#96;scripts/test-runner.mjs&#96; lines 117, 119, 124, 265 and 378), so &#96;npm test -- --review&#96; runs before handoff.
+- Latest attestation: harness codex-cli; version 0.163.0; model gpt-6-astra; effort max; source codex-session-readback; account not-applicable.
 - Authority: [docs/work-orders/WO-213-private-paths-in-every-record.md](WO-213-private-paths-in-every-record.md)
+
+## Open
 
 ### WO-080
 

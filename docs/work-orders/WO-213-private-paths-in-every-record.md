@@ -1,4 +1,4 @@
-# WO-213 — Private paths stay out of every committed record: a new line that names an absolute home path in a JSON, JSONL, log or text record under the document roots fails the document check as Markdown already does, the follow-up register projects `<home>` in place of a home path and rewrites the one stored revision that holds one, the planning-receipt helper refuses a private path before it writes, and records bound for a registered target's documentation root pass the same screen before they are committed there (version assigned at activation)
+# WO-213 — Private paths stay out of every committed record: a new line that names an absolute home path in a JSON, JSONL, log or text record under the document roots fails the document check as Markdown already does, the follow-up register projects `<home>` in place of a home path and rewrites the one stored revision that holds one, the planning-receipt helper refuses a private path before it writes, and records bound for a registered target's documentation root pass the same screen before they are committed there (v0.83.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -581,6 +581,38 @@ their fixtures; the measurements; the decisions; the write-backs below.
    `npm test -- --review` and `npm run test:docs` green; `git diff --check`
    clean; no new dependency.
 
+10. In a launchpad instance consuming the pinned DotLn kit, ordinary plain
+    and review gates validate installed-runtime and harness integrity;
+    the document gate validates current coordination records, and the
+    registered target gate validates work in the sibling repository. They
+    do not run platform regression fixtures merely because those fixtures
+    are shipped. Core's
+    platform-development selection remains available, and an explicit
+    platform diagnostic remains deliberate rather than a consumer default.
+11. Selection and exported-instance fixtures prove that the first ordinary
+    instance order avoids platform regression suites, including document
+    fixtures; installed-runtime drift still refuses the ordinary gate and
+    invalid instance records still refuse the document gate. Relevant core
+    selection tests and the full review gate pass.
+    Starter instructions explain this boundary and preserve order-specific
+    and registered-target validation.
+12. Address the operator-relayed instance failures in integration
+    regeneration, explicit resume dispatch with following direction and CLI
+    session binding, absent reader-profile defaults, moved-session meter
+    lookup, and execution amendment of the seeded first order. Reproduce
+    each diagnosed defect with a bounded regression, preserve existing
+    authority and evidence bindings, and record any observation that cannot
+    be reproduced without inventing a cause or a passing result.
+13. Investigate the reported 830-second host-lane wait separately from suite
+    execution. Correct a reproduced defect within that scheduling path;
+    otherwise retain the observed boundary, evidence and a concrete route
+    to diagnose recurrence. Do not attribute the wait to an unseen gate.
+14. Let an instance configure its release display name, with a suitable
+    fresh-starter default and unchanged core default. Preparation, annotated
+    tags, publication, history and reader scoring agree; later config edits
+    preserve historical release identity and refresh preserves instance
+    configuration. Cover those claims with bounded regressions.
+
 **Preflight:** `npm test -- --only configuration-root` for step 2,
 `npm test -- --only docs-check-fixtures` for steps 3–4,
 `npm test -- --only process-debt` for steps 5–6,
@@ -663,6 +695,47 @@ closed (hard edge); neither exists at `6dbd8771`.
   absolute home path.
 - Line numbers cited here shift for WO-193, which later edits
   `collectFollowupSources`; it re-reads at its base.
+
+## Authorized scope expansion — instance validation
+
+The operator's 2026-10-15 `scope expand:` dispatch adds correction of the
+Enterprise Starter's default validation to this active order. An instance
+consumes an already tested platform release; its ordinary work must not pay
+for the platform's regression suite. The first environment-truth order
+already names running core's suites as a non-goal. The operator also requests
+two additional agents to improve, validate and challenge this correction.
+
+Implement the boundary in `scripts/test-runner.mjs` and the supporting kit
+selection/manifest logic if needed; cover it in `scripts/test-runner.test.mjs`
+and `scripts/test-launchpad.mjs`, with the relevant starter instructions in
+`scripts/kit/README.client.md`, `scripts/kit/first-order.template.md` and the
+cited execution-guide validation text updated in place. Preserve runtime
+integrity, current instance-record checks, per-order evidence and registered
+target gates. Core platform development still receives its platform checks.
+The executor records the design, bounded validation and amended planning
+subject in this order's evidence. Existing criteria remain required.
+
+The operator then clarified that the instance coordinates work in sibling
+repositories: ordinary instance checks cannot prove that sibling work. The
+runtime check, coordination-document gate and registered sibling gate remain
+separate subjects. The following explicit `scope expand:` authorizes
+addressing the relevant WO-001 final-review observations: integration
+regeneration's source-build and undeclared-publication assumptions, resume
+dispatch and session binding, the absent reader-profile default, host-lane
+waiting, carried regression after an update, moved-session meter lookup and
+seeded-order amendment. Relevant command implementations, generated support
+sources, tests and instructions enter scope as their diagnosis identifies
+them. This expansion supersedes the original client-README and amendment-
+semantics non-goals only for these authorized repairs. It does not authorize
+editing the active instance's worktree or publishing this branch.
+
+The operator also directs instance release naming to use the starter name
+or an instance-configured name. Add that capability to configuration,
+release preparation and publication, recognition/readers, starter export,
+their instructions and tests. Historical release identity remains bound to
+the release commit. Before the final full gate, use all twenty workers in
+this session's budget, address their findings, and retain the required fresh
+criteria/design review pair. Workers remain read-only.
 
 **Non-goals:** correcting, rewriting or deleting any filed record (assumption
 7) or Git history (earlier commits and any pushed remote keep the bytes);

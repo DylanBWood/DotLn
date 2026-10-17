@@ -205,6 +205,12 @@ naming the recorded command, work order, role and equipped supports, and the
 delivered context requires the reply to open with the `I intend to` line
 before any tool call ([WO-130-D013](../evidence/WO-130/decisions.md#wo-130-d013)).
 
+A successful foreground lifecycle command may bind a roleless observed session
+after checking the canonical transition; this observation grants no publication
+authority. A failed canonical read skips binding with one advisory and retains
+ordinary tool observations. Manual `harness begin` refuses every existing state
+path; only lifecycle-owned automatic entry may upgrade valid roleless state.
+
 **First-party session commands.** These prefixes are part of the supported
 command vocabulary alongside `resume:`, `planning:` and `ideation:`
 [WO-043, 2026-09-11]. They do not create lifecycle events:
@@ -683,7 +689,9 @@ configuration path. `build` carries the launchpad's saved `loadout`, `profile`
 and instance `overlay`, and `release` carries the surface toggles `readmeBlock`,
 `componentVersions`, `corpus` and `publicationCheck`. Version 1 validates and
 exposes these sections; the orders that own `build` and `release` consume
-them.
+them. `release.displayName` supplies the release claim's name, defaults to
+`DotLn`, and admits at most 64 UTF-16 code units of well-formed Unicode.
+Historical release recognition keeps its existing name-shape contract.
 
 `classes` maps each class id to `{ checks: string[], supports: string[] }`.
 The host adapter unions checks into each member order's compiled
@@ -1254,7 +1262,15 @@ appendices and release-title retiming remain admitted. Unrecorded changes
 still fail; criterion drift names its criterion, while a non-criterion byte
 change can fail without naming its order. The decision records the authorization;
 the `PlanExecutionAmended` event binds that decision but has no actor field.
-Neither is a fresh planning verdict or a way to discharge an independent hold. Do this during authorized execution rather than carrying an
+Neither is a fresh planning verdict or a way to discharge an independent hold.
+This route requires an order in the latest judged horizon. A never-judged
+seed order has no receipt to amend: record the actual operator authorization
+and bounded change in its structured decisions, then run the ordinary
+planning, document and lifecycle checks. That record grants no extra
+authority and supplies no planning verdict or hold disposition. A dated
+planning pass missing a required receipt must still complete normal
+planning/refutation; never fabricate a pass merely to enable amendment.
+Do this during authorized execution rather than carrying an
 inherited failure through later reviews [WO-139-D002, the WO-053 amendment,
 2026-09-18]. An authorized status writeback to
 product 00's The one-paragraph story can be bound in that decision's optional
@@ -1593,7 +1609,10 @@ customized working copy without blocking unrelated kit changes; a copy of
 non-regular, without its hand-written floor or with a broken marker pair,
 refuses by path before any write, naming the remedy. The refresh row
 lists rewritten seeds; an already-current manifest can still need a seed-only
-refresh. Generated control/planning records and opted-in instance actions
+refresh. First export preserves an existing committed configuration and renders
+the new README with its release name. An ignored or untracked local configuration
+refuses before publication; commit its intended declaration before retrying.
+Generated control/planning records and opted-in instance actions
 remain unchanged. Ordinary instance kit updates still preserve seed ownership;
 the instance's own session previews the refreshed starter with the incoming
 revision's launchpad, merges it on an update branch, re-emits and generates
@@ -2032,7 +2051,9 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   stops its task groups on interrupt, termination and hang-up without recording
   a gate row. Every gate shares four weighted host lanes; nested gates
   suballocate the parent reservation validated at gate entry and waits name the
-  holders. Swap growth triggers a footprint census relative to the last such
+  holders. A wait-notification failure rejects acquisition after cancelling and
+  draining its lock helper; it leaves no reservation or heartbeat behind.
+  Swap growth triggers a footprint census relative to the last such
   census, so past growth alone does not force a lifetime of fast sampling.
   Signal ticks are one second and steady footprint censuses four seconds;
   startup, pressure and swap growth take earlier censuses. At the recorded
@@ -2706,6 +2727,24 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   those sources or reasoned exclusions; transitive and computed paths stay
   outside the check (WO-174).
   Document-sensitive live checks remain in `npm run test:docs`.
+  An exported instance consumes that tested platform: its ordinary plain and
+  review selections run `kit-verify` and `harness` fresh, checking carried
+  compiled files and the active installed bundle. Its document selection
+  runs current coordination checks without platform fixtures. An upstream
+  update or missing comparison ref never expands these consumer defaults.
+  Runner selection and evidence use one package-source predicate. Runtime
+  identity binds declared regular workspaces, package metadata and their compiled
+  `dist` or build-free `src`, with execute permission represented as a boolean.
+  Inventory, snapshot copy, snapshot checking and input digests omit dot-prefixed
+  runtime entries and `.tsbuildinfo`; other ignored runtime files still count.
+  Ordinary files directly under `packages/` are not workspaces; malformed
+  declared inputs refuse by relative path. Hidden runtime payloads would require
+  reopening this selection rule. Generated harness surfaces retain their own
+  complete input inventory.
+  Sibling implementation claims use the registered target gate at that
+  sibling's bytes; a starter runtime pass cannot satisfy them. Carried
+  platform fixtures remain explicit `--only` or `--machinery` diagnostics,
+  with order-specific evidence required for intentional machinery changes.
   The scheduler retains load-derived deadlines, peer observations, a four-lane
   cap and bounded live progress. Harness fixtures and process-debt fixtures use
   exclusive scheduling, restoring the faster measured WO-128 D010 choice

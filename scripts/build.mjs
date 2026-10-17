@@ -3,6 +3,7 @@ import { TOOL_ROOT } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { spawnSync } from "node:child_process";
 import {
+  chmodSync,
   cpSync,
   existsSync,
   lstatSync,
@@ -121,6 +122,22 @@ export function atomicBuild(repo = root, observe = () => {}) {
       const destination = join(repo, "packages", name, "dist");
       if (!existsSync(source))
         throw new Error(`Build emitted no ${name} runtime`);
+      // npm's bin links make a declared bin target executable at install; the
+      // build writes it that way, so the runtime inventory and the snapshot
+      // it names do not change between a build and an install.
+      const manifest = JSON.parse(
+        readFileSync(join(repo, "packages", name, "package.json"), "utf8"),
+      );
+      const bin =
+        typeof manifest.bin === "string"
+          ? [manifest.bin]
+          : Object.values(manifest.bin ?? {});
+      for (const target of bin) {
+        const file = join(staging, "packages", name, target);
+        if (!existsSync(file))
+          throw new Error(`Build emitted no ${name} bin target ${target}`);
+        chmodSync(file, 0o755);
+      }
       observe(`before:${name}`);
       publishBuildTree(source, destination);
       observe(`after:${name}`);

@@ -1,4 +1,9 @@
-import { defaultDocRelative, docPath, rootPattern } from "./config.mjs";
+import {
+  defaultDocRelative,
+  docPath,
+  rootPattern,
+  validReleaseDisplayName,
+} from "./config.mjs";
 import { existsSync, readFileSync } from "node:fs";
 
 import { readGitObjects, runGit } from "./git.mjs";
@@ -65,10 +70,15 @@ export const humanLayerFromAnnotation = (annotation) => {
 };
 export const humanLayerFromTag = (root, tag) =>
   humanLayerFromAnnotation(tagAnnotation(root, tag));
-export const isDotLnRelease = (humanLayer, tag) => {
-  const firstLine = humanLayer.split("\n", 1)[0];
+export const isDotLnRelease = (annotation, tag) => {
+  const firstLine = annotation.split("\n", 1)[0];
+  const suffix = ` ${tag}`;
   return (
-    firstLine === `DotLn ${tag}` || firstLine.startsWith(`DotLn ${tag} — `)
+    firstLine === `DotLn ${tag}` ||
+    firstLine.startsWith(`DotLn ${tag} — `) ||
+    (firstLine.endsWith(suffix) &&
+      validReleaseDisplayName(firstLine.slice(0, -suffix.length)) &&
+      annotation.includes("\n\nDOTLN-MANIFEST-BEGIN\n"))
   );
 };
 export const manifestFromAnnotation = (annotation, tag) => {
@@ -155,9 +165,7 @@ export const releaseTagsFrom = (tags, annotations) =>
   [...tags]
     .filter(({ name, objectType }) => semver(name) && objectType === "tag")
     .sort((left, right) => compareVersions(left.name, right.name))
-    .filter(({ name }) =>
-      isDotLnRelease(humanLayerFromAnnotation(annotations.get(name)), name),
-    );
+    .filter(({ name }) => isDotLnRelease(annotations.get(name), name));
 
 export const localReleaseTags = (root) => {
   const tags = [...localTags(root).values()];

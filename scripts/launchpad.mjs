@@ -29,7 +29,11 @@ import {
 } from "./lib/git.mjs";
 import { parseGitHubTarget } from "./lib/github-repository.mjs";
 import { json, sha256Hex } from "./lib/helpers.mjs";
-import { hasPackageSources, isMainModule } from "./lib/paths.mjs";
+import { isMainModule } from "./lib/paths.mjs";
+import {
+  hasPackageSources,
+  runtimeEntryName,
+} from "../packages/skeleton/src/runtime-inputs.mjs";
 import { checkLocalTerms } from "./lib/terms.mjs";
 import {
   buildHashOf,
@@ -173,6 +177,7 @@ export const BUILD_FREE_MODULES = Object.freeze([
   "packages/skeleton/src/evidence-editions.mjs",
   "packages/skeleton/src/gate-deadlines.mjs",
   "packages/skeleton/src/gate-evidence.mjs",
+  "packages/skeleton/src/runtime-inputs.mjs",
   "packages/skeleton/src/usage-observation.mjs",
   "packages/skeleton/src/writer-teardown.mjs",
 ]);
@@ -822,6 +827,7 @@ const readRuntime = (root) => {
         `runtime output is not a regular directory: ${directory}`,
       );
     for (const entry of readdirSync(absolute, { withFileTypes: true })) {
+      if (!runtimeEntryName(entry.name)) continue;
       const path = `${directory}/${entry.name}`;
       if (entry.isSymbolicLink())
         throw new Error(`runtime output must not contain symlinks: ${path}`);
@@ -842,12 +848,15 @@ const readRuntime = (root) => {
  * over the runtime just built, with the operating contract composed by the
  * rule emitHarness uses. Computed before any write, so the local-terms screen
  * covers it and the spawned emit is judged against it. */
-async function expectedHarnessBundle(root, floor) {
+async function expectedHarnessBundle(root, floor, runtimePackageFiles) {
   // Imported after the build: a checkout that has never built has no dist for
   // scripts/lib/harness.mjs to load.
   const { composeHarnessInstruction, harnessInstallation } =
     await import("./lib/harness.mjs");
-  const installation = harnessInstallation({ runtimeRoot: root });
+  const installation = harnessInstallation({
+    runtimeRoot: root,
+    runtimePackageFiles,
+  });
   const surfaces = new Map();
   for (const file of installation.files)
     surfaces.set(
@@ -963,7 +972,6 @@ export async function prepareKit({
   atomicBuild(root);
   const runtime = readRuntime(root);
   const floor = template("CLAUDE.template.md");
-  const bundle = await expectedHarnessBundle(root, floor);
 
   const kit = [];
   const seeds = [];
@@ -988,6 +996,7 @@ export async function prepareKit({
   addKit("dotln.config.example.json", template("dotln.config.example.json"));
   if (license === "none")
     addKit(LICENSE_PENDING, template("pending-license.template.md"));
+  const bundle = await expectedHarnessBundle(root, floor, writes);
   // The harness bundle is written by the export's own emit after the kit
   // lands; every surface but the operating contract is a kit file, listed at
   // the bytes that emit must reproduce.
@@ -1003,6 +1012,10 @@ export async function prepareKit({
   // whose upstream sources stay kit files under scripts/kit for a later
   // revision to refresh (WO-077).
   addSeed("README.md", template("README.client.md"));
+  addSeed(
+    "dotln.config.json",
+    json({ version: 1, release: { displayName: "DotLn-Enterprise-Starter" } }),
+  );
   addSeed(".gitignore", template("gitignore.template"));
   addSeed(INSTRUCTION_FILE, floor);
   addSeed(
@@ -1028,8 +1041,8 @@ export async function prepareKit({
     [
       `# ${defaultDocRelative("docs")}`,
       "",
-      "The document roots of this launchpad, at the default layout (`dotln.config.json`",
-      "is absent). Each root's README states its convention; `UPSTREAM.md` at the",
+      "The document roots of this launchpad use the default layout; its instance-owned",
+      "`dotln.config.json` can override them. Each root's README states its convention; `UPSTREAM.md` at the",
       "repository root names the kit's commit and the upstream documents the kit",
       "points to.",
       "",
