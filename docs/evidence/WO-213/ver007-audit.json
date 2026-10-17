@@ -1,0 +1,25 @@
+{
+  "identity": "b407908294cb66bc8010ab8dea5f66095dde8971cecb2b1e2d6236640b9efcf3",
+  "selectionCount": 46,
+  "coverage": true,
+  "displaced": [],
+  "recordedAt": "2026-10-17T14:06:48.986Z",
+  "durationMs": 2976262,
+  "evidenceRef": "host-gate:b407908294cb66bc8010ab8dea5f66095dde8971cecb2b1e2d6236640b9efcf3:npm test",
+  "freshTasks": 103,
+  "buildOutputAttested": true,
+  "reconstructionIdentity": "e5d529961f02e7fc6bc8287b202969fd4a30bb0029b69276096cb685f441ce88",
+  "rawComparedFiles": 814,
+  "rawDifferences": [
+    "packages/console/fixtures/expected/selfhost.html",
+    "packages/console/fixtures/expected/selfhost.json",
+    "packages/console/fixtures/expected/selfhost.txt",
+    "packages/console/fixtures/manifest.json",
+    "scripts/test-runner.mjs"
+  ],
+  "latestDocument": {
+    "recordedAt": "2026-10-17T14:18:03.229Z",
+    "exitCode": 0,
+    "durationMs": 148514
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "subject": "the fourth repair's candidate before this session's changes, as the previous session left it",
+  "codeIdentity": "1b96a999a9d69148458e7c38a02dab65b523513157b3070112352a8ba3d01d6f",
+  "measuredAt": "2026-10-16T23:27:00.856Z",
+  "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-213/input-binding-coverage.mjs",
+  "selection": "every non-document, non-instance suite of the complete selection, expanded to tasks",
+  "tasks": 96,
+  "bindings": {
+    "declared": 4,
+    "declaredBy": { "static-analysis": 0, "source-graph-and-semantic-declarations": 4 },
+    "declaredTasks": ["build", "compiler", "adjacent-queue", "codex-continuation"],
+    "whole-code": 92,
+    "wholeCodeReasons": {
+      "static input analysis exceeded its deterministic work limit": 27,
+      "static input analysis exceeded its source-size limit": 1,
+      "shell filesystem/subprocess inputs need a declared boundary": 62,
+      "the command has no statically resolved source entry": 2
+    },
+    "bindingTimeMs": 6076
+  },
+  "carry": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-213/input-binding-carry.mjs",
+    "after": "the passing suite:runner-fixtures row recorded 2026-10-16T23:26:16.342Z at the same code identity",
+    "carried": [],
+    "declinedByReason": {
+      "its contract changed; its parts cannot be compared (the probe's own template label, not a defect)": 1,
+      "static input analysis exceeded its deterministic work limit; whole-code identity is required": 27,
+      "shell filesystem/subprocess inputs need a declared boundary; whole-code identity is required": 62,
+      "static input analysis exceeded its source-size limit; whole-code identity is required": 1,
+      "the command has no statically resolved source entry; whole-code identity is required": 2,
+      "its declared source or semantic inputs changed": 3
+    },
+    "finding": "runner-fixtures had just passed at this identity and was still declined: every undeclared task carried reusable:false, so no preflight pass could reach the complete gate"
+  },
+  "note": "Both probes read the gate index and bind tasks; neither executes a suite or writes a record. Paths in their output are repository-relative."
+}

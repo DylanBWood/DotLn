@@ -29,6 +29,7 @@ import {
   forgetTargetOperation,
 } from "./target-worktrees.mjs";
 import { checkLocalTerms } from "./terms.mjs";
+import { privatePathLines } from "./private-paths.mjs";
 import { checkOutwardArtifact } from "../outward-lint.mjs";
 
 // Publication reads the record sources through this module.
@@ -269,6 +270,13 @@ export function commitTargetRecords(root, state, control) {
     ).status !== "present"
   )
     throw refuse("local-terms list absent");
+  for (const row of rows) {
+    const [line] = privatePathLines(row.path, row.bytes.toString("utf8"));
+    if (line !== undefined)
+      throw refuse(
+        `${row.path}:${line}: private absolute path; write a repository-relative path or a placeholder such as <home>/, <worktree>/ or <tmp>/`,
+      );
+  }
   const message = "docs: record reviewed change and validation";
   const lint = checkOutwardArtifact(main, { kind: "commit", text: message });
   if (lint.status !== "pass")

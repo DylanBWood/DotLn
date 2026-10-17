@@ -1,15 +1,14 @@
 #!/usr/bin/env node
 import { sha256Hex as hash } from "./lib/helpers.mjs";
 
+import { existsSync, lstatSync, realpathSync, statSync } from "node:fs";
+import { dirname, join, relative, resolve, sep } from "node:path";
 import {
-  existsSync,
-  lstatSync,
-  readFileSync,
-  readdirSync,
-  realpathSync,
-  statSync,
-} from "node:fs";
-import { dirname, join, resolve, sep } from "node:path";
+  isMarkdownName,
+  isRecordName,
+  privatePathLines,
+  PRIVATE_PATH,
+} from "./lib/private-paths.mjs";
 import {
   CONFIG_FILENAME,
   configuredRoots,
@@ -20,7 +19,13 @@ import {
 } from "./lib/config.mjs";
 import { runGit, runGitPathList } from "./lib/git.mjs";
 import { branchFrontPage } from "./lib/front-page-scope.mjs";
-import { isMainModule } from "./lib/paths.mjs";
+import {
+  isMainModule,
+  documentEntry,
+  readDocumentInput,
+  readDocumentDirectory,
+  readDocumentJson,
+} from "./lib/paths.mjs";
 import { readDecisions } from "./lib/meta.mjs";
 import {
   RELEASE_HISTORY,
@@ -206,7 +211,7 @@ function anchors(source) {
   return result;
 }
 
-export function markdownFiles(root) {
+function documentFiles(root, accepts, includeRoot = false) {
   const roots = Object.values(loadConfig(root).roots).map((path) =>
     resolve(root, path),
   );
@@ -227,13 +232,44 @@ export function markdownFiles(root) {
   ]
     .filter(
       (file) =>
-        file.endsWith(".md") &&
-        existsSync(join(root, file)) &&
-        (dirname(file) === "." ||
+        accepts(file) &&
+        ((includeRoot && dirname(file) === ".") ||
           roots.some((path) => inside(path, resolve(root, file)))) &&
-        !privateRoots.some((path) => inside(path, resolve(root, file))),
+        !privateRoots.some((path) => inside(path, resolve(root, file))) &&
+        documentEntry(root, file),
     )
     .sort();
+}
+
+export function markdownFiles(root) {
+  return documentFiles(root, isMarkdownName, true);
+}
+
+export function recordFiles(root) {
+  return documentFiles(root, isRecordName);
+}
+
+// A listed entry may be a link to a directory or unreadable; every reader of
+// the listing refuses it by its repository-relative path, never by the
+// absolute one the system error carries.
+function readListed(root, file) {
+  return readDocumentInput(
+    root,
+    file,
+    isMarkdownName(file) ? "document" : "record",
+  );
+}
+
+function privateLinkText(href) {
+  let decoded = href;
+  try {
+    decoded = decodeURIComponent(href);
+  } catch {
+    /* Keep the original invalid URL for classification. */
+  }
+  return PRIVATE_PATH.test(href) || PRIVATE_PATH.test(decoded)
+    ? "<private path>"
+    : href;
 }
 
 export function linkFailures(root, files = markdownFiles(root)) {
@@ -241,7 +277,7 @@ export function linkFailures(root, files = markdownFiles(root)) {
     cache = new Map();
   const physicalRoot = realpathSync(root);
   for (const file of files) {
-    const source = readFileSync(join(root, file), "utf8");
+    const source = readListed(root, file);
     for (const { href, line } of markdownLinks(source)) {
       if (/^[a-z][a-z0-9+.-]*:|^\/\//i.test(href)) continue;
       let pathname, fragment;
@@ -266,16 +302,23 @@ export function linkFailures(root, files = markdownFiles(root)) {
         fail("destination escapes the repository");
         continue;
       }
-      if (!existsSync(target)) {
-        fail("missing file");
-        continue;
-      }
-      if (!inside(physicalRoot, realpathSync(target))) {
-        fail("destination escapes the repository through a symlink");
+      let targetInfo;
+      try {
+        targetInfo = statSync(target, { throwIfNoEntry: false });
+        if (!targetInfo) {
+          fail("missing file");
+          continue;
+        }
+        if (!inside(physicalRoot, realpathSync(target))) {
+          fail("destination escapes the repository through a symlink");
+          continue;
+        }
+      } catch (error) {
+        fail(`destination is unreadable (${error.code ?? "unreadable"})`);
         continue;
       }
       if (!fragment || !/\.md$/i.test(target)) continue;
-      if (!statSync(target).isFile()) {
+      if (!targetInfo.isFile()) {
         fail("anchor target is not a file");
         continue;
       }
@@ -288,22 +331,22 @@ export function linkFailures(root, files = markdownFiles(root)) {
         continue;
       }
       if (!cache.has(target)) {
-        const content = readFileSync(target, "utf8");
+        const content = readListed(root, relative(root, target));
         cache.set(target, {
           lines: content.trimEnd().split("\n").length,
           anchors: anchors(content),
         });
       }
-      const targetInfo = cache.get(target);
+      const anchorInfo = cache.get(target);
       const lineAnchor = /^L(\d+)(?:-L(\d+))?$/.exec(fragment);
       if (
         lineAnchor &&
         Number(lineAnchor[1]) > 0 &&
         Number(lineAnchor[2] ?? lineAnchor[1]) >= Number(lineAnchor[1]) &&
-        Number(lineAnchor[2] ?? lineAnchor[1]) <= targetInfo.lines
+        Number(lineAnchor[2] ?? lineAnchor[1]) <= anchorInfo.lines
       )
         continue;
-      if (!targetInfo.anchors.has(fragment)) fail("missing anchor");
+      if (!anchorInfo.anchors.has(fragment)) fail("missing anchor");
     }
   }
   return failures;
@@ -378,13 +421,15 @@ export function operatorWordFindings(root, files) {
       return;
     push(file, record, text, dispatch);
   };
-  const orders = docPath(root, "workOrders");
-  if (existsSync(orders))
-    for (const name of readdirSync(orders)
+  if (documentEntry(root, docRelative(root, "workOrders")))
+    for (const name of readDocumentDirectory(
+      root,
+      docRelative(root, "workOrders"),
+    )
       .filter((name) => /^WO-\d{3}.*\.md$/u.test(name))
       .sort()) {
       const file = docRelative(root, "workOrders", name),
-        source = readFileSync(join(orders, name), "utf8");
+        source = readListed(root, file);
       // Every provenance field counts in document order, whether or not it
       // attributes words, so a record's key never depends on an earlier one.
       let ordinal = 0;
@@ -402,10 +447,7 @@ export function operatorWordFindings(root, files) {
   const sections = new Map();
   for (const row of readDecisions(root)) {
     if (!sections.has(row.path))
-      sections.set(
-        row.path,
-        readFileSync(join(root, row.path), "utf8").split(/(?=^##\s)/mu),
-      );
+      sections.set(row.path, readListed(root, row.path).split(/(?=^##\s)/mu));
     const section =
       sections
         .get(row.path)
@@ -464,7 +506,7 @@ export function operatorWordFindings(root, files) {
   for (const file of files ?? markdownFiles(root)) {
     const absolute = resolve(root, file);
     if (!documentRoots.some((path) => inside(path, absolute))) continue;
-    const source = readFileSync(absolute, "utf8");
+    const source = readListed(root, file);
     if (!/operator/iu.test(source)) continue;
     const seen = new Map();
     for (const node of nodes(parseMarkdown(source))) {
@@ -508,24 +550,20 @@ export function operatorQuoteFailures(rows) {
   return failures;
 }
 
-// A private absolute path: a home directory or a private temporary directory.
-// Placeholders such as /Users/... and relative tails such as .runtime/tmp/ are
-// not paths; a bare /tmp/ mention names no file.
-const HOME_PATH =
-  /(?<![\w.~-])\/(?:(?:Users|home)\/[A-Za-z0-9_][\w.-]*|(?:private\/)?(?:var\/folders|tmp)\/[A-Za-z0-9_])/u;
 export function homePathFindings(root, files = markdownFiles(root)) {
   const findings = [];
-  for (const file of files)
-    readFileSync(join(root, file), "utf8")
-      .split("\n")
-      .forEach((text, index) => {
-        if (HOME_PATH.test(text))
-          findings.push({
-            file,
-            line: index + 1,
-            fingerprint: hash(normalized(text)),
-          });
+  for (const file of files) {
+    const source = readListed(root, file);
+    const matches = privatePathLines(file, source);
+    if (!matches.length) continue;
+    const lines = source.split("\n");
+    for (const line of matches)
+      findings.push({
+        file,
+        line,
+        fingerprint: hash(normalized(lines[line - 1])),
       });
+  }
   return findings;
 }
 
@@ -560,9 +598,9 @@ function parseFrontPageControl(text, label) {
   let control;
   try {
     control = JSON.parse(text);
-  } catch (error) {
+  } catch {
     return {
-      failure: `${label}: invalid front-page control record: ${error.message}`,
+      failure: `${label}: invalid front-page control record: invalid JSON`,
     };
   }
   const section = control?.whatRunsToday;
@@ -1275,9 +1313,8 @@ export function frontPageFindings(root) {
     );
     return { failures, notices };
   }
-  const recordFile = join(root, recordPath);
-  const workingText = existsSync(recordFile)
-    ? readFileSync(recordFile, "utf8")
+  const workingText = documentEntry(root, recordPath)
+    ? readListed(root, recordPath)
     : null;
   const baseText = base ? atBase(recordPath) : null;
   if (workingText === null && baseText === null) return { failures, notices };
@@ -1355,7 +1392,7 @@ export function frontPageFindings(root) {
     for (const directory of [".github", "."]) {
       const path = join(root, directory);
       if (!existsSync(path) || !lstatSync(path).isDirectory()) continue;
-      for (const name of readdirSync(path))
+      for (const name of readDocumentDirectory(root, directory))
         if (
           /^readme(?:\.[a-z0-9]+)?$/i.test(name) &&
           !(directory === "." && name === page)
@@ -1377,7 +1414,7 @@ export function frontPageFindings(root) {
     );
     return { failures, notices };
   }
-  const current = readFileSync(file, "utf8");
+  const current = readListed(root, page);
   const before = base === null ? null : atBase(page);
   const shape = frontPageShapeFindings(
     current,
@@ -1432,22 +1469,24 @@ export function frontPageFindings(root) {
   return { failures, notices };
 }
 
-export function checkDocs(root, { ceilings, baseline, files } = {}) {
+export function checkDocs(root, { ceilings, baseline, files, records } = {}) {
   // Carried operating documents retain upstream history and links. This
   // instance owns the ceilings and editorial baseline for its own documents.
   const manifestPath = join(root, "KIT-MANIFEST.json");
   const kitFiles = existsSync(manifestPath)
     ? new Set(
-        JSON.parse(readFileSync(manifestPath, "utf8")).files.map(
+        readDocumentJson(root, "KIT-MANIFEST.json").files.map(
           (entry) => entry.path,
         ),
       )
     : null;
-  ceilings ??= JSON.parse(
-    readFileSync(docPath(root, "control", "doc-ceilings.json"), "utf8"),
+  ceilings ??= readDocumentJson(
+    root,
+    docRelative(root, "control", "doc-ceilings.json"),
   );
-  baseline ??= JSON.parse(
-    readFileSync(docPath(root, "control", "doc-baseline.json"), "utf8"),
+  baseline ??= readDocumentJson(
+    root,
+    docRelative(root, "control", "doc-baseline.json"),
   );
   if (ceilings.schemaVersion !== 1 || baseline.schemaVersion !== 1)
     throw new Error("Unsupported document control schema");
@@ -1485,10 +1524,12 @@ export function checkDocs(root, { ceilings, baseline, files } = {}) {
       "Historical home-path exceptions require a file and SHA-256 line fingerprints",
     );
   files ??= markdownFiles(root);
+  records ??= recordFiles(root);
   const failures = [],
     rows = [];
-  const directory = docPath(root, "product");
-  const products = readdirSync(directory, { recursive: true })
+  const products = readDocumentDirectory(root, docRelative(root, "product"), {
+    recursive: true,
+  })
     .filter((file) => file.endsWith(".md"))
     .filter(
       (file) =>
@@ -1500,7 +1541,7 @@ export function checkDocs(root, { ceilings, baseline, files } = {}) {
   const notices = [];
   for (const name of products) {
     const file = docRelative(root, "product", name);
-    const source = readFileSync(join(directory, name), "utf8");
+    const source = readListed(root, file);
     const measured = productContent(name, source);
     failures.push(...measured.failures.map((failure) => `${file}: ${failure}`));
     if (name === RELEASE_HISTORY.product) {
@@ -1584,7 +1625,7 @@ export function checkDocs(root, { ceilings, baseline, files } = {}) {
       historicalLinks++;
     } else
       failures.push(
-        `${failure.file}:${failure.line}: ${failure.reason}: ${failure.href}`,
+        `${failure.file}:${failure.line}: ${failure.reason}: ${privateLinkText(failure.href)}`,
       );
   }
   // A line that holds a private path today passes by its fingerprint; a new
@@ -1593,7 +1634,7 @@ export function checkDocs(root, { ceilings, baseline, files } = {}) {
     Object.entries(homePaths).map(([file, list]) => [file, [...list]]),
   );
   let historicalHomePaths = 0;
-  for (const row of homePathFindings(root, files)) {
+  for (const row of homePathFindings(root, [...files, ...records])) {
     const list = remainingHomePaths.get(row.file) ?? [];
     const at = list.indexOf(row.fingerprint);
     if (at >= 0) {
@@ -1601,7 +1642,9 @@ export function checkDocs(root, { ceilings, baseline, files } = {}) {
       historicalHomePaths++;
     } else
       failures.push(
-        `${row.file}:${row.line}: absolute home or private temporary path; write a repository-relative path or a placeholder such as <worktree>/ or <tmp>/`,
+        isMarkdownName(row.file)
+          ? `${row.file}:${row.line}: absolute home or private temporary path; write a repository-relative path or a placeholder such as <worktree>/ or <tmp>/`
+          : `${row.file}:${row.line}: absolute home path in a record; write a repository-relative path or a placeholder such as <home>/ or <worktree>/`,
       );
   }
   const frontPage = frontPageFindings(root);

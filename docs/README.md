@@ -93,8 +93,12 @@ history between its `dotln-release-history` markers, whose rows the check
 compares with their recorded tags. Any other marker pair exempts nothing.
 A higher ceiling requires a cited planning
 decision. The [activation baseline](control/doc-baseline.json) identifies existing
-receipt labels, candidate headings, decision dispatch fingerprints and historical
-broken links; it is not regenerated to admit new violations. Decision dispatches
+receipt labels, candidate headings, decision dispatch fingerprints, historical
+broken links and historical private-path lines; it is not regenerated to admit new
+violations. A new or edited line naming an absolute home path fails in Markdown
+and in a JSON, JSONL, log or text record under the document roots, and a private
+temporary path fails in Markdown; write a repository-relative path or a
+placeholder instead. Decision dispatches
 use a control prefix and at most 240 characters of paraphrase; review still
 judges paraphrase. Links cover public root/configured-document Markdown,
 including generated indexes, full heading slugs, explicit anchors and GitHub

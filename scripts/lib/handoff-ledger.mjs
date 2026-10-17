@@ -200,6 +200,7 @@ const gateFields = (row) =>
       "checkId",
       "treeHash",
       "codeIdentity",
+      "instanceInputDigest",
       "durationMs",
       "evidenceRef",
       "recordedAt",

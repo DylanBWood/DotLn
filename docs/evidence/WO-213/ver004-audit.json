@@ -1,0 +1,79 @@
+{
+  "identity": "5c0a6468cf0c5f15de2cc4660a7d573e8f2e4767e4ca12b027f09cc57ee609b0",
+  "review": {
+    "recordedAt": "2026-10-16T17:45:03.309Z",
+    "requiredSuites": 47,
+    "currentSelection": 47,
+    "taskCount": 104,
+    "fresh": 91,
+    "reused": 13,
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "durationMs": 1689060,
+    "evidenceRef": "host-gate:5c0a6468cf0c5f15de2cc4660a7d573e8f2e4767e4ca12b027f09cc57ee609b0:npm test",
+    "carriedTasks": [
+      "build",
+      "target-worktree",
+      "worktree-integration",
+      "skeleton",
+      "launchpad-planning",
+      "evidence-sources",
+      "configuration-root",
+      "harness-probe",
+      "harness-fixtures",
+      "plan-refutation",
+      "wo107-schema",
+      "runner-fixtures",
+      "process-debt"
+    ],
+    "displaced": []
+  },
+  "baseline": {
+    "oldEntriesUnchanged": 128,
+    "newRecordEntries": 37,
+    "newRecordLines": 291,
+    "reproduced": true,
+    "counts": {
+      ".json": {
+        "files": 28,
+        "lines": 262
+      },
+      ".txt": {
+        "files": 4,
+        "lines": 8
+      },
+      ".log": {
+        "files": 5,
+        "lines": 21
+      }
+    },
+    "postScreenFiles": 10
+  },
+  "privacy": {
+    "scannedFiles": 181,
+    "homePrefixMatches": 0,
+    "registerHomeMatches": 0,
+    "patternVariants": 240,
+    "changedRevisions": [
+      {
+        "id": "FUP-de6162b279f66709",
+        "revision": 1,
+        "beforeLength": 700,
+        "afterLength": 680,
+        "beforeHash": "56b7a86bc33f19b9f21e54dd42e53c62dad658a413f77c9f6e37173f2137fc1e",
+        "afterHash": "440fbb3a6bcc19959a468bd35e06d9bdfa403af735b8c3f5f715767bcda121ab"
+      }
+    ]
+  },
+  "changedSourcesSincePreviousSubject": [
+    "packages/skeleton/src/loadouts/contributor.ts",
+    "packages/skeleton/test/executor-supports.test.ts",
+    "scripts/lib/gate-reuse.mjs",
+    "scripts/lib/suite-evidence.mjs",
+    "scripts/test-process-debt.mjs",
+    "scripts/test-runner.mjs",
+    "scripts/test-runner.test.mjs",
+    "packages/skeleton/fixtures/wo213-role-baseline.json"
+  ],
+  "scope": "Independent verification before authored report and decision; the new role baseline is included separately from tracked-file diff comparison."
+}

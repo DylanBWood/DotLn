@@ -28,6 +28,7 @@ import {
   sha256,
 } from "./plan-subject.mjs";
 import { checkLocalTerms } from "./terms.mjs";
+import { privatePathLines } from "./private-paths.mjs";
 import { containedRegularFile } from "./paths.mjs";
 import { runGit } from "./git.mjs";
 import { validateAccountLabel } from "./control-actor.mjs";
@@ -71,6 +72,13 @@ const stable = (value) =>
 const same = (a, b) => stable(a) === stable(b);
 const check = (condition, reason) => {
   if (!condition) throw new Error(reason);
+};
+const checkPrivatePaths = (name, text, ruleName = name) => {
+  const [line] = privatePathLines(ruleName, text);
+  if (line !== undefined)
+    throw new Error(
+      `${name}:${line}: private absolute path; write a repository-relative path or a placeholder such as <home>/, <worktree>/ or <tmp>/`,
+    );
 };
 const text = (value) =>
   typeof value === "string" &&
@@ -827,6 +835,9 @@ export async function writePlanReceipt(
       { name: "receipt.json", text: JSON.stringify(receipt) },
       { name: "receipt.md", text: md },
     ]);
+    const serialized = prettyJson(receipt);
+    checkPrivatePaths("receipt.json", serialized);
+    checkPrivatePaths("receipt.md", md);
     for (const ext of ["json", "md"])
       check(
         !existsSync(join(root, receiptsRoot(root), `${receiptId}.${ext}`)),
@@ -834,7 +845,7 @@ export async function writePlanReceipt(
       );
     writeFileSync(
       join(root, receiptsRoot(root), `${receiptId}.json`),
-      prettyJson(receipt),
+      serialized,
       { flag: "wx", mode: 0o644 },
     );
     writeFileSync(join(root, receiptsRoot(root), `${receiptId}.md`), md, {
@@ -1162,6 +1173,11 @@ export async function overridePlanHold(
     checkLocalTerms(root, [
       { name: "override-event", text: JSON.stringify(event) },
     ]);
+    checkPrivatePaths(
+      "override-event",
+      `${JSON.stringify(event)}\n`,
+      "event.jsonl",
+    );
     ensureDirectory(root, docRelative(root, "control"));
     appendFileSync(
       join(root, overridesPath(root)),
@@ -1217,6 +1233,11 @@ export async function disposePlanHold(
     checkLocalTerms(root, [
       { name: "disposition-event", text: JSON.stringify(event) },
     ]);
+    checkPrivatePaths(
+      "disposition-event",
+      `${JSON.stringify(event)}\n`,
+      "event.jsonl",
+    );
     ensureDirectory(root, docRelative(root, "control"));
     appendFileSync(
       join(root, overridesPath(root)),
@@ -1349,6 +1370,11 @@ export async function withdrawPlanAmendment(
     checkLocalTerms(root, [
       { name: "execution-amendment-withdrawal", text: JSON.stringify(event) },
     ]);
+    checkPrivatePaths(
+      "execution-amendment-withdrawal",
+      `${JSON.stringify(event)}\n`,
+      "event.jsonl",
+    );
     appendFileSync(
       join(root, overridesPath(root)),
       `${JSON.stringify(event)}\n`,
@@ -1417,6 +1443,10 @@ export async function amendPlanOrder(
     const receipt = [...receipts]
       .reverse()
       .find((row) => row.pass.kind === "planning");
+    check(
+      receipt,
+      "execution amendment requires a planning receipt: no judged horizon exists. For a never-judged seed order, record the actual operator authorization and bounded scope in its structured decisions, then run the ordinary planning, document and lifecycle checks. This supplies no planning verdict or hold disposition; a required missing planning receipt still needs normal planning/refutation.",
+    );
     const order = receipt?.subject.orders.find(
       (row) => row.workOrderId === workOrderId,
     );
@@ -1471,6 +1501,11 @@ export async function amendPlanOrder(
     checkLocalTerms(root, [
       { name: "execution-amendment-event", text: JSON.stringify(event) },
     ]);
+    checkPrivatePaths(
+      "execution-amendment-event",
+      `${JSON.stringify(event)}\n`,
+      "event.jsonl",
+    );
     ensureDirectory(root, docRelative(root, "control"));
     appendFileSync(
       join(root, overridesPath(root)),

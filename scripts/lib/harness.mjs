@@ -14,12 +14,15 @@ import {
   cpSync,
   existsSync,
   lstatSync,
+  mkdtempSync,
   mkdirSync,
   readFileSync,
   readdirSync,
+  readlinkSync,
   realpathSync,
   renameSync,
   rmdirSync,
+  rmSync,
   symlinkSync,
   unlinkSync,
   writeFileSync,
@@ -44,6 +47,14 @@ import {
 import { personalFeedback } from "../../packages/skeleton/dist/src/loadouts/feedback.js";
 import { checkLocalTerms } from "./terms.mjs";
 import { containedRegularFile } from "./paths.mjs";
+import {
+  runtimeDirectoryNames,
+  runtimeEntryName,
+  runtimeInfo,
+  runtimeModuleDirectory as packageModuleDirectory,
+  runtimePackageNames,
+  runtimeRead,
+} from "../../packages/skeleton/src/runtime-inputs.mjs";
 
 const manifestPath = ".claude/harness-manifest.json";
 export const OVERLAY_KEYS = [
@@ -367,6 +378,7 @@ export function harnessInstallation(options = {}) {
     "packages/skeleton/dist/src/harness-command.js",
     "packages/skeleton/dist/src/gate-evidence.mjs",
     "packages/skeleton/dist/src/gate-deadlines.mjs",
+    "packages/skeleton/dist/src/runtime-inputs.mjs",
     "packages/skeleton/dist/src/usage-observation.mjs",
     "packages/skeleton/dist/src/writer-teardown.mjs",
     "packages/skeleton/dist/src/reactor.js",
@@ -394,7 +406,10 @@ export function harnessInstallation(options = {}) {
     path,
     hash: hash(readFileSync(join(sourceRoot, path), "utf8")),
   }));
-  const runtimeSnapshot = `.runtime/harness/${fnv1a64(JSON.stringify(runtimeFiles))}`;
+  const runtimeInventory = options.runtimePackageFiles
+    ? runtimePackageInventoryFromFiles(options.runtimePackageFiles)
+    : runtimePackageInventory(sourceRoot);
+  const runtimeSnapshot = runtimeSnapshotPath(runtimeFiles, runtimeInventory);
   const bundles = profiles.map((profile) =>
     lowerToHarness(program, feedback, program.loadout.authorityEnvelope, {
       ...profile,
@@ -460,6 +475,7 @@ export function harnessInstallation(options = {}) {
     bundles,
     runtimeSnapshot,
     runtimeFiles,
+    runtimeInventory,
     sourceRoot,
   };
 }
@@ -586,12 +602,196 @@ export function emitHarness(
 /** The module directory a package ships at runtime: built packages ship dist;
  * build-free workspaces (package.json, no tsconfig.json) ship src. */
 export function runtimeModuleDirectory(packageRoot) {
-  if (existsSync(join(packageRoot, "dist"))) return "dist";
-  return existsSync(join(packageRoot, "package.json")) &&
-    !existsSync(join(packageRoot, "tsconfig.json")) &&
-    existsSync(join(packageRoot, "src"))
-    ? "src"
-    : null;
+  return packageModuleDirectory(packageRoot, ".");
+}
+
+const sortedRuntimeInventory = (entries) =>
+  entries.sort((a, b) => a.path.localeCompare(b.path, "en"));
+// One boolean for the executable bit: a restrictive umask leaves 700 where
+// another host leaves 755, the same executable file. The build marks bin
+// targets executable, so npm's bin links do not flip the bit either.
+const runtimeFileEntry = (path, bytes, mode) => ({
+  path,
+  kind: "file",
+  bytes: bytes.length,
+  sha256: targetDigest(bytes),
+  executable: (mode & 0o111) !== 0,
+});
+
+/** Every package byte copied into a snapshot, including build-free workspaces
+ * and compiled tests. Aliases are refused before any traversal or file read. */
+export function runtimePackageInventory(root) {
+  const entries = [];
+  const directory = (path) => {
+    const info = runtimeInfo(root, path);
+    if (!info?.isDirectory() || info.isSymbolicLink())
+      throw new Error(
+        `Runtime inventory requires a regular directory: ${path}`,
+      );
+    entries.push({ path, kind: "directory" });
+  };
+  const visit = (path) => {
+    const info = runtimeInfo(root, path);
+    if (!info)
+      throw new Error(`Runtime inventory is missing an input: ${path}`);
+    if (info.isDirectory()) {
+      directory(path);
+      for (const name of runtimeDirectoryNames(root, path))
+        if (runtimeEntryName(name)) visit(`${path}/${name}`);
+    } else if (info.isFile())
+      entries.push(
+        runtimeFileEntry(
+          path,
+          runtimeRead(path, () => readFileSync(join(root, path))),
+          info.mode,
+        ),
+      );
+    else
+      throw new Error(`Runtime inventory refuses a non-regular entry: ${path}`);
+  };
+  directory("packages");
+  // Use declared workspace roots, without consulting adjacent source or
+  // documentation directory names. Snapshot copying uses this same inventory.
+  for (const name of runtimePackageNames(root)) {
+    const path = `packages/${name}`;
+    const info = runtimeInfo(root, path);
+    // The lockfile names the workspace; its absence is reported by that name,
+    // never by the absolute path a system error would carry.
+    if (!info)
+      throw new Error(
+        `Runtime package declared in package-lock.json is missing on disk: ${path}; restore the workspace or run npm install before building`,
+      );
+    if (!info.isDirectory() || info.isSymbolicLink())
+      throw new Error(`Runtime package must be a regular directory: ${path}`);
+    const modules = packageModuleDirectory(root, path);
+    if (!modules) continue;
+    directory(path);
+    visit(`${path}/package.json`);
+    visit(`${path}/${modules}`);
+  }
+  return sortedRuntimeInventory(entries);
+}
+
+/** Predict the same inventory from an export's planned writes. Exported
+ * package selection and modes can differ from those of its source checkout. */
+export function runtimePackageInventoryFromFiles(files) {
+  const byPath = new Map(files.map((file) => [file.path, file]));
+  const entries = new Map([
+    ["packages", { path: "packages", kind: "directory" }],
+  ]);
+  const add = (file) => {
+    entries.set(file.path, runtimeFileEntry(file.path, file.bytes, file.mode));
+    for (let path = dirname(file.path); path !== "."; path = dirname(path))
+      entries.set(path, { path, kind: "directory" });
+  };
+  for (const file of files) {
+    const match = /^packages\/([^/]+)\/package\.json$/u.exec(file.path);
+    if (!match) continue;
+    const prefix = `packages/${match[1]}/`;
+    const candidates = files.filter((candidate) =>
+      candidate.path.startsWith(prefix),
+    );
+    const modules = candidates.some((candidate) =>
+      candidate.path.startsWith(`${prefix}dist/`),
+    )
+      ? "dist"
+      : !byPath.has(`${prefix}tsconfig.json`) &&
+          candidates.some((candidate) =>
+            candidate.path.startsWith(`${prefix}src/`),
+          )
+        ? "src"
+        : null;
+    if (!modules) continue;
+    add(file);
+    for (const candidate of candidates)
+      if (
+        candidate.path.startsWith(`${prefix}${modules}/`) &&
+        candidate.path
+          .slice(`${prefix}${modules}/`.length)
+          .split("/")
+          .every(runtimeEntryName)
+      )
+        add(candidate);
+  }
+  return sortedRuntimeInventory([...entries.values()]);
+}
+
+export const runtimeSnapshotPath = (files, inventory) =>
+  `.runtime/harness/${fnv1a64(canonicalStringify({ files, inventory }))}`;
+
+// A snapshot that no longer matches is replaced, never repaired in place; the
+// refusal says so and names the directory, which is inside the worktree.
+const snapshotRemedy = (snapshot) =>
+  `; remove ${snapshot} and run node scripts/bootstrap.mjs to install it again`;
+function checkRuntimeSnapshot(
+  root,
+  installation,
+  inventory,
+  remedyFor = installation.runtimeSnapshot,
+) {
+  const destination = join(root, installation.runtimeSnapshot);
+  let parent = root;
+  for (const part of installation.runtimeSnapshot.split("/")) {
+    parent = join(parent, part);
+    const info = runtimeInfo(root, relative(root, parent));
+    if (!info?.isDirectory() || info.isSymbolicLink())
+      throw new Error(
+        "Harness runtime snapshot must remain inside its worktree",
+      );
+  }
+  const expected = [
+    ...inventory,
+    { path: "node_modules", kind: "directory" },
+    { path: "node_modules/@dotln", kind: "directory" },
+  ];
+  const links = new Map();
+  for (const entry of inventory)
+    if (/^packages\/[^/]+$/u.test(entry.path) && entry.kind === "directory") {
+      const name = entry.path.slice("packages/".length);
+      const path = `node_modules/@dotln/${name}`;
+      const target = `../../packages/${name}`;
+      links.set(path, target);
+      expected.push({ path, kind: "link", target });
+    }
+  const actual = [];
+  const visit = (path) => {
+    const absolute = join(destination, path);
+    const info = runtimeInfo(destination, path);
+    if (!info)
+      throw new Error(
+        `Installed harness snapshot is missing ${path}${snapshotRemedy(remedyFor)}`,
+      );
+    if (info.isDirectory()) {
+      actual.push({ path, kind: "directory" });
+      for (const name of runtimeDirectoryNames(destination, path))
+        if (runtimeEntryName(name)) visit(`${path}/${name}`);
+    } else if (info.isFile())
+      actual.push(
+        runtimeFileEntry(
+          path,
+          runtimeRead(path, () => readFileSync(absolute)),
+          info.mode,
+        ),
+      );
+    else if (
+      info.isSymbolicLink() &&
+      links.get(path) === runtimeRead(path, () => readlinkSync(absolute))
+    )
+      actual.push({ path, kind: "link", target: links.get(path) });
+    else
+      throw new Error(
+        `Installed harness snapshot contains an unexpected alias or entry${snapshotRemedy(remedyFor)}`,
+      );
+  };
+  for (const name of runtimeDirectoryNames(root, installation.runtimeSnapshot))
+    if (runtimeEntryName(name)) visit(name);
+  if (
+    JSON.stringify(sortedRuntimeInventory(actual)) !==
+    JSON.stringify(sortedRuntimeInventory(expected))
+  )
+    throw new Error(
+      `Installed harness snapshot differs from its complete runtime inventory${snapshotRemedy(remedyFor)}`,
+    );
 }
 
 export function preserveHarnessRuntime(
@@ -599,6 +799,8 @@ export function preserveHarnessRuntime(
   installation = harnessInstallation(),
 ) {
   const snapshot = installation.runtimeSnapshot;
+  if (!/^\.runtime\/harness\/[a-f0-9]{16}$/u.test(snapshot))
+    throw new Error("Harness runtime snapshot selection is invalid");
   const destination = join(root, snapshot);
   for (const path of [".runtime", ".runtime/harness", snapshot])
     if (
@@ -608,37 +810,59 @@ export function preserveHarnessRuntime(
       throw new Error(
         "Harness runtime snapshot must remain inside its worktree",
       );
+  const source = installation.sourceRoot ?? TOOL_ROOT;
+  const inventory =
+    installation.runtimeInventory ?? runtimePackageInventory(source);
+  if (snapshot !== runtimeSnapshotPath(installation.runtimeFiles, inventory))
+    throw new Error(
+      "Selected harness snapshot cannot be reproduced from the carried runtime; refresh the harness",
+    );
   if (existsSync(destination)) {
+    checkRuntimeSnapshot(root, installation, inventory);
     for (const file of installation.runtimeFiles)
       if (
         hash(readFileSync(join(destination, file.path), "utf8")) !== file.hash
       )
         throw new Error(
-          "Installed harness snapshot differs from its pinned bytes",
+          `Installed harness snapshot differs from its pinned bytes${snapshotRemedy(snapshot)}`,
         );
     return;
   }
-  const source = installation.sourceRoot ?? TOOL_ROOT;
-  const staging = `${destination}.preparing-${process.pid}`;
-  mkdirSync(join(staging, "node_modules/@dotln"), { recursive: true });
-  for (const name of readdirSync(join(source, "packages"))) {
-    const from = join(source, "packages", name);
-    const modules = runtimeModuleDirectory(from);
-    if (!modules) continue;
-    const target = join(staging, "packages", name);
-    mkdirSync(target, { recursive: true });
-    cpSync(join(from, "package.json"), join(target, "package.json"));
-    cpSync(join(from, modules), join(target, modules), {
-      recursive: true,
-      // Installed roots may be replica mounts; snapshots own their bytes.
-      dereference: true,
-    });
-    symlinkSync(
-      `../../packages/${name}`,
-      join(staging, "node_modules/@dotln", name),
+  mkdirSync(dirname(destination), { recursive: true });
+  const staging = mkdtempSync(`${destination}.preparing-`);
+  try {
+    mkdirSync(join(staging, "node_modules/@dotln"), { recursive: true });
+    for (const entry of inventory) {
+      const target = join(staging, entry.path);
+      runtimeRead(entry.path, () => {
+        if (entry.kind === "directory") mkdirSync(target, { recursive: true });
+        else {
+          const info = runtimeInfo(source, entry.path);
+          if (!info?.isFile())
+            throw new Error("Runtime input changed during copy");
+          cpSync(join(source, entry.path), target, { dereference: false });
+        }
+      });
+      if (entry.kind === "directory" && /^packages\/[^/]+$/u.test(entry.path)) {
+        const name = entry.path.slice("packages/".length);
+        symlinkSync(
+          `../../packages/${name}`,
+          join(staging, "node_modules/@dotln", name),
+        );
+      }
+    }
+    // A staging tree that disagrees is removed below; the remedy names the
+    // snapshot it was meant to become.
+    checkRuntimeSnapshot(
+      root,
+      { ...installation, runtimeSnapshot: relative(root, staging) },
+      inventory,
+      snapshot,
     );
+    renameSync(staging, destination);
+  } finally {
+    rmSync(staging, { recursive: true, force: true });
   }
-  renameSync(staging, destination);
 }
 export function checkHarness(root, options = {}) {
   root = realpathSync(root);
@@ -665,6 +889,8 @@ export function checkHarness(root, options = {}) {
         `harness drift: pinned snapshot missing or changed (${file.path}); run the build bootstrap`,
       );
   }
+  if (expected.runtimeSnapshot)
+    checkRuntimeSnapshot(root, expected, expected.runtimeInventory);
   for (const file of expected.files) {
     const path = contained(root, file.path);
     if (!existsSync(path))

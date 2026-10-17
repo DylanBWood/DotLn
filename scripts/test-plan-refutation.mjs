@@ -110,6 +110,24 @@ const actor = {
   accountLabel: "fixture",
 };
 const read = (repo, path) => readFileSync(join(repo, path), "utf8");
+const privateEventRefuses = async (repo, part, writeEvent) => {
+  const bytes = () =>
+    existsSync(join(repo, OVERRIDES))
+      ? readFileSync(join(repo, OVERRIDES))
+      : null;
+  const before = bytes();
+  await assert.rejects(writeEvent, (error) => {
+    assert.ok(error.message.startsWith(`${part}:1:`), error.message);
+    assert.match(error.message, /private absolute path.*<home>/u);
+    assert.doesNotMatch(error.message, /fixture-user/u);
+    return true;
+  });
+  assert.deepEqual(
+    bytes(),
+    before,
+    "refusal preserves the event history bytes",
+  );
+};
 const commit = (repo, label, date = "2030-01-02T00:00:00Z") => {
   runGit(repo, ["add", "--all"]);
   runGit(
@@ -1560,6 +1578,14 @@ export async function fixtures() {
             "Evidence confirms the repaired useful shape.",
           ),
         );
+        await privateEventRefuses(repo, "disposition-event", () =>
+          disposePlanHold(repo, {
+            receiptId: held.receiptId,
+            holdId: held.holds[0].id,
+            reason: "Inspect /Users/fixture-user/x",
+            now: () => "2030-01-02T12:01:00.000Z",
+          }),
+        );
         await disposePlanHold(repo, {
           receiptId: held.receiptId,
           holdId: held.holds[0].id,
@@ -2081,6 +2107,77 @@ export async function fixtures() {
         );
         assert.deepEqual(await readReceipts(repo), []);
         assert.deepEqual(readdirSync(join(repo, RECEIPTS)), []);
+        const history = existsSync(join(repo, OVERRIDES))
+          ? read(repo, OVERRIDES)
+          : null;
+        const refusePrivate = async (receiptInput, part) => {
+          await assert.rejects(
+            writePlanReceipt(repo, receiptInput),
+            (error) => {
+              assert.ok(error.message.startsWith(`${part}:`), error.message);
+              assert.match(
+                error.message,
+                /:\d+: private absolute path.*<tmp>/u,
+              );
+              assert.doesNotMatch(error.message, /fixture-user/u);
+              return true;
+            },
+          );
+          assert.deepEqual(await readReceipts(repo), []);
+          assert.deepEqual(readdirSync(join(repo, RECEIPTS)), []);
+          assert.equal(
+            existsSync(join(repo, OVERRIDES)) ? read(repo, OVERRIDES) : null,
+            history,
+          );
+        };
+        for (const [statement, part] of [
+          ["Inspected /Users/fixture-user/x", "receipt.json"],
+          ["Inspected /private/var/folders/fixture-user/T/x", "receipt.md"],
+        ])
+          await refusePrivate(
+            {
+              ...input,
+              subject: current,
+              episode: { ...directEpisode(passResult(current)), statement },
+            },
+            part,
+          );
+        // Copied criteria live only in the JSON subject. Its home-only rule
+        // must still reject one when the Markdown projection contains none.
+        const path = orderPath("WO-901"),
+          clean = read(repo, path);
+        write(
+          repo,
+          path,
+          clean.replace("useful shape", "/home/fixture-user/x"),
+        );
+        commit(repo, "test: private copied criterion");
+        const privateSubject = buildPlanSubject(repo);
+        await refusePrivate(
+          {
+            ...input,
+            subject: privateSubject,
+            episode: directEpisode(passResult(privateSubject)),
+          },
+          "receipt.json",
+        );
+        write(
+          repo,
+          path,
+          clean.replace("useful shape", "<home>/x and /tmp/fixture/x"),
+        );
+        commit(repo, "test: safe copied criterion");
+        const safeSubject = buildPlanSubject(repo);
+        const filed = await writePlanReceipt(repo, {
+          ...input,
+          subject: safeSubject,
+          episode: {
+            ...directEpisode(passResult(safeSubject)),
+            statement: "Inspected <tmp>/x",
+          },
+        });
+        assert.equal((await readReceipts(repo)).length, 1);
+        assert.equal(filed.episode.statement, "Inspected <tmp>/x");
       },
     );
     await check(
@@ -2634,6 +2731,13 @@ export async function fixtures() {
         await assert.rejects(
           overridePlanHold(repo, { ...input, captureHash: sha256("wrong") }),
           /hash mismatch/u,
+        );
+        await privateEventRefuses(repo, "override-event", () =>
+          overridePlanHold(repo, {
+            ...input,
+            captureHash: sha256(read(repo, input.capture)),
+            reason: "Inspect /Users/fixture-user/x",
+          }),
         );
         const event = await overridePlanHold(repo, {
           ...input,
@@ -3239,6 +3343,14 @@ else {
           read(repo, path) +
             "\n## Execution record\n\nExisting approved evidence.\n",
         );
+        await privateEventRefuses(repo, "execution-amendment-event", () =>
+          amendPlanOrder(repo, {
+            workOrderId: "WO-901",
+            decisionId: decision.id,
+            reason: "Inspect /Users/fixture-user/x",
+            now: () => "2030-01-02T13:00:00.000Z",
+          }),
+        );
         const event = await amendPlanOrder(repo, {
           workOrderId: "WO-901",
           decisionId: decision.id,
@@ -3679,6 +3791,14 @@ else {
             reason: "absent row",
           }),
           /named order/,
+        );
+        await privateEventRefuses(repo, "execution-amendment-withdrawal", () =>
+          withdrawPlanAmendment(repo, {
+            workOrderId: "WO-901",
+            ordinal: 1,
+            reason: "Inspect /Users/fixture-user/x",
+            now: () => "2030-01-02T14:00:00.000Z",
+          }),
         );
         const withdrawal = await withdrawPlanAmendment(repo, {
           workOrderId: "WO-901",

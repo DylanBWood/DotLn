@@ -1,0 +1,23 @@
+[
+  {
+    "case": "new",
+    "exitCode": 1,
+    "diagnostic": "docs/evidence/new.json: matching record is absent at the base",
+    "treeUnchanged": true,
+    "baselineWritten": false
+  },
+  {
+    "case": "edited",
+    "exitCode": 1,
+    "diagnostic": "docs/evidence/record.json:1: matching line is new, edited or duplicated since the base",
+    "treeUnchanged": true,
+    "baselineWritten": false
+  },
+  {
+    "case": "duplicated",
+    "exitCode": 1,
+    "diagnostic": "docs/evidence/record.json:2: matching line is new, edited or duplicated since the base",
+    "treeUnchanged": true,
+    "baselineWritten": false
+  }
+]

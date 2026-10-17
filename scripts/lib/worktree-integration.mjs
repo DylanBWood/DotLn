@@ -22,7 +22,13 @@ import {
   shellQuote,
   spawnGit,
 } from "./git.mjs";
-import { containedRegularFile } from "./paths.mjs";
+import {
+  containedRegularFile,
+  documentEntry,
+  readDocumentInput,
+  readDocumentDirectory,
+} from "./paths.mjs";
+import { hasPackageSources } from "../../packages/skeleton/src/runtime-inputs.mjs";
 import { readControl } from "./control-store.mjs";
 import { followupsPath, unionFollowups } from "./planning-followups.mjs";
 import { strictVersionsIn } from "./release-records.mjs";
@@ -364,8 +370,9 @@ Affected checks are printed by the command; results remain untested until execut
 
 function regenerate(root, receipt) {
   const pending = [];
-  const run = (label, fn) => {
+  const run = (label, fn, selected = () => true) => {
     try {
+      if (!selected()) return;
       fn();
       console.log(`Regenerated: ${label}`);
     } catch (error) {
@@ -374,7 +381,13 @@ function regenerate(root, receipt) {
   };
   const node = (script, ...args) =>
     command(root, process.execPath, [script, ...args]);
-  run("runtime", () => command(root, "npm", ["run", "build", "--silent"]));
+  const kit =
+    existsSync(join(root, "KIT-MANIFEST.json")) && !hasPackageSources(root);
+  run("runtime", () =>
+    kit
+      ? node("scripts/launchpad.mjs", "verify")
+      : command(root, "npm", ["run", "build", "--silent"]),
+  );
   if (!pending.length && existsSync(join(root, manifest)))
     run("harness bundle and manifest", () =>
       node("scripts/harness.mjs", "emit"),
@@ -430,37 +443,58 @@ function regenerate(root, receipt) {
   run("work-order index", () => node("scripts/work-orders.mjs", "index"));
   // The sibling registry is generated from receipts both branches may have
   // added; a launchpad that declares no siblings has no page to regenerate.
-  if (existsSync(join(root, docRelative(root, "siblings", "siblings.json"))))
-    run("sibling registry", () => node("scripts/siblings.mjs", "index"));
-  run("publication locks", () => {
-    const output = node("scripts/check-publication.mjs", "--print-locks");
-    for (const path of editionPages(root)) {
-      const name = path.split("/").at(-1);
-      const hash = output
-        .split("\n")
-        .find((line) => line.startsWith(`LOCK ${name}: sha256:`))
-        ?.split("sha256:")[1];
-      if (!/^[a-f0-9]{64}$/.test(hash ?? ""))
-        throw new Error(`missing lock for ${path}`);
-      const before = readFileSync(join(root, path), "utf8");
-      if (!/^Source lock:.*$/m.test(before))
-        throw new Error(`missing lock line in ${path}`);
-      put(
+  run(
+    "sibling registry",
+    () => {
+      readDocumentInput(
         root,
-        path,
-        before.replace(/^Source lock:.*$/m, `Source lock: \`sha256:${hash}\``),
+        docRelative(root, "siblings", "siblings.json"),
+        "record",
       );
-    }
-  });
+      node("scripts/siblings.mjs", "index");
+    },
+    () => documentEntry(root, docRelative(root, "siblings", "siblings.json")),
+  );
+  run(
+    "publication locks",
+    () => {
+      const output = node("scripts/check-publication.mjs", "--print-locks");
+      for (const path of editionPages(root)) {
+        const name = path.split("/").at(-1);
+        const hash = output
+          .split("\n")
+          .find((line) => line.startsWith(`LOCK ${name}: sha256:`))
+          ?.split("sha256:")[1];
+        if (!/^[a-f0-9]{64}$/.test(hash ?? ""))
+          throw new Error(`missing lock for ${path}`);
+        const before = readDocumentInput(root, path);
+        if (!/^Source lock:.*$/m.test(before))
+          throw new Error(`missing lock line in ${path}`);
+        put(
+          root,
+          path,
+          before.replace(
+            /^Source lock:.*$/m,
+            `Source lock: \`sha256:${hash}\``,
+          ),
+        );
+      }
+    },
+    () => editionPages(root).some((path) => documentEntry(root, path)),
+  );
   // The fixture manifest is authored selection. Regenerate only its selected
   // expected cases; never repoint it to a different evidence edition.
-  if (
-    receipt.consoleSelected &&
-    !pending.some((row) => row.startsWith("runtime:"))
-  )
-    run("selected console fixtures", () =>
-      node("scripts/console-fixtures.mjs", "--write"),
-    );
+  run(
+    "selected console fixtures",
+    () => {
+      readDocumentDirectory(root, "packages/console/fixtures");
+      node("scripts/console-fixtures.mjs", "--write");
+    },
+    () =>
+      receipt.consoleSelected &&
+      !pending.some((row) => row.startsWith("runtime:")) &&
+      (!kit || documentEntry(root, "packages/console/fixtures")),
+  );
   return pending;
 }
 

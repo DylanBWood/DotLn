@@ -2021,8 +2021,12 @@ const run = async (argv) => {
           throw new Error(
             `correct refused: ordinal ${ordinal} records no checkpoint, so the bytes its verdict judged cannot be established`,
           );
-        const { readGateChecks, gateCodeIdentity } =
-          await import("./lib/gate-evidence.mjs");
+        const {
+          readGateChecks,
+          gateCodeIdentity,
+          gateInstanceInputDigest,
+          instanceDigestMismatch,
+        } = await import("./lib/gate-evidence.mjs");
         const { validProductGate } = await import("./lib/control.mjs");
         const row = readGateChecks(repoRoot)
           .filter(
@@ -2042,6 +2046,16 @@ const run = async (argv) => {
             `correct refused: ${fields.productGate} records code identity ${row.codeIdentity}, but ordinal ${ordinal} judged ${judged} (checkpoint ${subject.checkpointRef ?? subject.checkpointSha}); a bound gate must have run on the bytes the pass recorded`,
           );
         const identity = gateCodeIdentity(repoRoot);
+        const digestMismatch = instanceDigestMismatch(
+          row,
+          gateInstanceInputDigest(repoRoot),
+        );
+        if (digestMismatch)
+          throw new Error(
+            digestMismatch === "missing"
+              ? `correct refused: ${fields.productGate} records no installed-runtime digest; run the current instance gate and name its evidence reference`
+              : "correct refused: installed runtime changed after the product gate; run the current instance gate before binding its row",
+          );
         if (identity !== judged)
           throw new Error(
             `correct refused: the working tree's code identity ${identity} differs from the ${judged} ordinal ${ordinal} judged; bind before changing source, or take a fresh final review of the changed subject`,
@@ -2051,6 +2065,7 @@ const run = async (argv) => {
             "checkId",
             "treeHash",
             "codeIdentity",
+            "instanceInputDigest",
             "durationMs",
             "evidenceRef",
             "recordedAt",

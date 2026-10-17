@@ -17,6 +17,7 @@ import { readDecisions } from "./meta.mjs";
 import { runGit, runGitPathList, spawnGit } from "./git.mjs";
 import { readAdjacentQueue } from "./adjacent-queue.mjs";
 import { checkLocalTerms } from "./terms.mjs";
+import { withoutHomeDirectories } from "./private-paths.mjs";
 
 // The default-layout name peers and fixtures use; `followupsPath` resolves the
 // same record under a launchpad's configured planning root.
@@ -120,8 +121,8 @@ export function collectFollowupSources(root) {
       source: {
         hash: hash(body),
         ref: `${path}#${fragment}`,
-        title: titleExcerpt(title.replace(/\*|`/g, "")),
-        summary: compact(body, 700),
+        title: withoutHomeDirectories(titleExcerpt(title.replace(/\*|`/g, ""))),
+        summary: withoutHomeDirectories(compact(body, 700)),
         missing: false,
       },
     });
@@ -332,6 +333,12 @@ function committedState(root) {
     ? validate(JSON.parse(result.stdout), root)
     : empty();
 }
+const projectedRevision = (revision) => ({
+  ...revision,
+  title: withoutHomeDirectories(revision.title),
+  summary: withoutHomeDirectories(revision.summary),
+});
+
 function retained(previous, current) {
   for (const before of previous.entries) {
     const after = current.entries.find((entry) => entry.id === before.id);
@@ -339,8 +346,12 @@ function retained(previous, current) {
       after &&
         after.key === before.key &&
         after.kind === before.kind &&
-        encode(after.revisions.slice(0, before.revisions.length)) ===
-          encode(before.revisions) &&
+        before.revisions.every(
+          (revision, index) =>
+            encode(after.revisions[index]) === encode(revision) ||
+            encode(after.revisions[index]) ===
+              encode(projectedRevision(revision)),
+        ) &&
         encode(after.dispositions.slice(0, before.dispositions.length)) ===
           encode(before.dispositions),
       `${before.id}: committed source or disposition history was removed or rewritten`,
@@ -362,6 +373,8 @@ export function readFollowups(root) {
 // an explicit disposition rather than renumbering past source revisions.
 export function unionFollowups(primary, secondary, root) {
   const result = structuredClone(validate(primary, root));
+  for (const entry of result.entries)
+    entry.revisions = entry.revisions.map(projectedRevision);
   validate(secondary, root);
   const longer = (a, b, id) => {
     const length = Math.min(a.length, b.length);
@@ -371,7 +384,11 @@ export function unionFollowups(primary, secondary, root) {
     );
     return structuredClone(a.length >= b.length ? a : b);
   };
-  for (const entry of secondary.entries) {
+  for (const source of secondary.entries) {
+    const entry = {
+      ...source,
+      revisions: source.revisions.map(projectedRevision),
+    };
     const prior = result.entries.find((row) => row.id === entry.id);
     if (!prior) result.entries.push(structuredClone(entry));
     else {
@@ -413,6 +430,10 @@ function projected(root) {
   const state = readFollowups(root),
     sources = collectFollowupSources(root),
     present = new Set(sources.map((row) => row.key));
+  // Displayed excerpts are projections; source identity and disposition history
+  // stay unchanged when a private home prefix is replaced with its placeholder.
+  for (const entry of state.entries)
+    entry.revisions = entry.revisions.map(projectedRevision);
   for (const row of sources) {
     let entry = state.entries.find((entry) => entry.key === row.key);
     if (!entry) {
@@ -427,8 +448,8 @@ function projected(root) {
       };
       state.entries.push(entry);
     }
-    // The full source hash carries meaning; a display-excerpt change alone
-    // must not reopen a disposition or rewrite an immutable old revision.
+    // A title-excerpt change alone must not reopen a disposition. The raw
+    // source hash continues to carry identity after display normalization.
     const identity = (source) =>
       source &&
       Object.fromEntries(
@@ -440,7 +461,7 @@ function projected(root) {
       entry.revisions.push(row.source);
   }
   for (const entry of state.entries)
-    // Migration decision rows remain byte-for-byte history until explicitly
+    // Migration decision rows retain their source history until explicitly
     // nominated or reopened. Removing the old harvest rule is not a missing source.
     if (
       entry.kind !== "decision" &&

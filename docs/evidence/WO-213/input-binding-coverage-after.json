@@ -1,0 +1,20 @@
+{
+  "subject": "the fourth repair's candidate after this session removed the analyzer, measured before the final formatting pass",
+  "codeIdentity": "cf517ceee0b09044fedcb6328a5dde9a05c0ff76f46fe9bc1fb47c5fe017a79b",
+  "measuredAt": "2026-10-17T01:20:00.055Z",
+  "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-213/input-binding-coverage.mjs",
+  "selection": "every non-document, non-instance suite of the complete selection, expanded to tasks",
+  "tasks": 96,
+  "bindings": {
+    "declared": 4,
+    "declaredTasks": ["build", "compiler", "adjacent-queue", "codex-continuation"],
+    "declaredBindingMs": { "build": 1035, "compiler": 832, "adjacent-queue": 652, "codex-continuation": 813 },
+    "whole-code": 92,
+    "wholeCodeReasons": {
+      "the task declares no inputs; the whole code identity binds it": 92
+    },
+    "unbindableDeclarations": 0,
+    "bindingTimeMs": 3373
+  },
+  "note": "Every undeclared task is reusable at its code identity; the four declared tasks are bound by their declarations, the import closure of their entry and declared files, the scripts those modules name and the runner's own sources. The probe reads the gate index and binds tasks; it executes no suite and writes no record."
+}

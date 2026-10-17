@@ -13413,6 +13413,14 @@
           "reopenWhen": "an order next opens these consumers, a supported input exceeds the batch limit, or a real source-change workload reproduces the reported parser or progress cost",
           "targets": [],
           "at": "2026-10-05T21:05:23.376Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-213 second repair: The runner and observation consumers are examined again. This repair changes shared source classification and cancellation, not node() reporter selection, openProject test aliases, Git batch streaming, effort normalization or TypeScript parser strategy. The existing low-priority observation improvements remain on their named triggers. [docs/evidence/WO-213/decisions.md D035]",
+          "reopenWhen": "an order next opens these consumers, a supported input exceeds the batch limit, or a real source-change workload reproduces the reported parser or progress cost",
+          "targets": [],
+          "at": "2026-10-16T02:47:35.716Z"
         }
       ]
     },
@@ -15400,6 +15408,22 @@
           "reopenWhen": "another repair meets a changed reviewer draft it did not write, or the next order that edits release preparation",
           "targets": [],
           "at": "2026-09-29T19:49:12.478Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-recorded by WO-213's final review (FINAL-002, D028) because the condition 'the next order that edits release preparation' fired: WO-213 renders the configured release display name in the README claim line and admits a prior named claim; the ownership of the reviewer draft and the meter residue are untouched, and this review met no changed draft it did not write.",
+          "reopenWhen": "another repair meets a changed reviewer draft it did not write, or the next order that edits release preparation",
+          "targets": [],
+          "at": "2026-10-16T00:57:41.624Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-213 second repair: Second repair changes meta copied-prefix attribution and tests release preparation/renaming. It leaves reviewer-draft ownership, historical meter prose and the printed release-preparation residue policy unchanged; prepare --local explicitly reports the meter and draft files it changed. The older grouped residue remains planning work. [docs/evidence/WO-213/decisions.md D035]",
+          "reopenWhen": "another repair meets a changed reviewer draft it did not write, or the next order that edits release preparation",
+          "targets": [],
+          "at": "2026-10-16T02:47:35.603Z"
         }
       ]
     },
@@ -26239,6 +26263,22 @@
           "reopenWhen": "a reused npm test row is shown to have passed over a changed input named here, or an order edits gate-evidence.mjs or the release suite's reads of control or release inputs",
           "targets": [],
           "at": "2026-10-14T21:36:49.645Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-recorded by WO-213's final review (FINAL-002, D028) because the condition 'an order edits gate-evidence.mjs or the release suite' fired: WO-213 adds the instance input digest and its readers to gate-evidence.mjs and a custom-identity case to scripts/test-release.sh that reads only its fixture's configuration; which control or release inputs the product suites read is unchanged, so the question of excluded tracked inputs stays with planning as recorded.",
+          "reopenWhen": "a reused npm test row is shown to have passed over a changed input named here, or an order edits gate-evidence.mjs or the release suite's reads of control or release inputs",
+          "targets": [],
+          "at": "2026-10-16T00:57:41.445Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-213 second repair: The new gate-evidence edit is assessed again: it repairs instance runtime identity and leaves the excluded tracked-input/read-guard policy unchanged. Current document gates remain fresh; planning retains the grouped remainder for core copied inputs. [docs/evidence/WO-213/decisions.md D035]",
+          "reopenWhen": "a reused npm test row is shown to have passed over a changed input named here, or an order edits gate-evidence.mjs or the release suite's reads of control or release inputs",
+          "targets": [],
+          "at": "2026-10-16T02:47:35.376Z"
         }
       ]
     },
@@ -28830,6 +28870,14 @@
           "reopenWhen": "A plan failures count exceeds the stopped trees it reports, a guard-originated SIGTERM ends a gate as an operator stop with no row, a nested gate waits on its own parent's lanes, or a later order edits these guard or runner paths.",
           "targets": [],
           "at": "2026-10-05T21:05:23.424Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-213 second repair: The runner/host-lane seam is reopened for semantic input selection and wait-callback cancellation. The five listed residuals concern candidate incident marking, resource-stop classification, kill-error rows, withdrawal failure kinds and inherited-lease revalidation; none is changed by the callback repair or shown newly failing by the bounded lane cases. Keep them grouped for planning. [docs/evidence/WO-213/decisions.md D035]",
+          "reopenWhen": "A plan failures count exceeds the stopped trees it reports, a guard-originated SIGTERM ends a gate as an operator stop with no row, a nested gate waits on its own parent's lanes, or a later order edits these guard or runner paths.",
+          "targets": [],
+          "at": "2026-10-16T02:47:35.659Z"
         }
       ]
     },
@@ -29241,6 +29289,22 @@
           "reopenWhen": "a reused npm test row is shown to have passed over a changed input named here, an order edits gate-evidence.mjs or the release suite's reads of control or release inputs, or a product task legitimately needs a recursive walk from the root",
           "targets": [],
           "at": "2026-10-14T21:36:49.712Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Re-recorded by WO-213's final review (FINAL-002, D028) because the condition 'an order edits gate-evidence.mjs or the release suite' fired: WO-213 adds gateInstanceInputDigest, instanceDigestMismatch and the digest filter in findGateCheck, and adds the custom_identity case to scripts/test-release.sh, which reads only its fixture's configuration. The product read guard, gateCodeIdentity's key set and the suites' reads of control or release inputs are unchanged, and no reused row was shown to have passed over a changed input. The route stands: budgets.json and the tag-manifest template are still to be keyed into gateCodeIdentity by a planned order.",
+          "reopenWhen": "a reused npm test row is shown to have passed over a changed input named here, an order edits gate-evidence.mjs or the release suite's reads of control or release inputs, or a product task legitimately needs a recursive walk from the root",
+          "targets": [],
+          "at": "2026-10-16T00:57:41.382Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-213 second repair: Second repair opens gate-evidence runtime-input selection and descriptor-safe document reads. It does not change the product-read guard or code identity treatment of budgets and release-template inputs; the document readers use observed open/descriptor operations. The named copied-input policy remains for planning. [docs/evidence/WO-213/decisions.md D035]",
+          "reopenWhen": "a reused npm test row is shown to have passed over a changed input named here, an order edits gate-evidence.mjs or the release suite's reads of control or release inputs, or a product task legitimately needs a recursive walk from the root",
+          "targets": [],
+          "at": "2026-10-16T02:47:35.262Z"
         }
       ]
     },
@@ -29361,6 +29425,22 @@
           "reopenWhen": "a planning pass nominates keying the runtime snapshot on its import closure, or a hook loads a stale transitive module",
           "targets": [],
           "at": "2026-10-05T22:33:07.025Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-recorded by WO-213's final review (FINAL-002, D028) because the seam this candidate names changed: WO-213 keys the harness runtime snapshot on the pinned files plus the complete inventory of every declared workspace package's runtime files, directories, executable bits and workspace links (D019, D021), so a changed package module inside the workspaces renames the snapshot. Modules outside the workspaces, such as third-party dependencies, stay outside the key; planning judges whether the import-closure nomination is narrowed or settled by that.",
+          "reopenWhen": "a planning pass nominates keying the runtime snapshot on its import closure, or a hook loads a stale transitive module",
+          "targets": [],
+          "at": "2026-10-16T00:57:41.856Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-213 second repair: D032 keeps complete selected workspace runtime inventory, including build-free modules, and aligns digest/copy/check while excluding host metadata. This repairs package-byte freshness without claiming a third-party import closure. Planning must still judge whether the older full-import-closure nomination is narrowed or settled. [docs/evidence/WO-213/decisions.md D035]",
+          "reopenWhen": "a planning pass nominates keying the runtime snapshot on its import closure, or a hook loads a stale transitive module",
+          "targets": [],
+          "at": "2026-10-16T02:47:35.489Z"
         }
       ]
     },
@@ -30252,7 +30332,7 @@
           "hash": "3c2073f919f9ad47e1dc025601f8a01a914d81b3873d6041717add06130d80b4",
           "ref": "docs/evidence/WO-187/decisions.md#wo-187-d043--recording-a-verification-result-waits-on-another-worktrees-test-lanes",
           "title": "WO-187-D043: Make lifecycle recording independent of other worktrees' test lanes: a fail verdict records without waiting on an inline document gate (the met claim is recorded as stated with an advisor",
-          "summary": "{ \"id\": \"WO-187-D043\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: verify (VER-004); operator observation\", \"decision\": \"Board, outside this order's criteria and surfaces, that the verification-result transition runs npm run test:docs inline and that run queues for host lanes shared by every worktree, so one order's test run blocks another order's lifecycle step, including a fail verdict the gate cannot change.\", \"evidence\": [ \"The first VER-004 fail transition's inline document gate (started 2026-10-06T05:01:23.102Z) printed 'WAIT host lanes for /Users/dylanwood/Projects/DotLn-wo187 / build; held by /Users/dylanwood/Projects/DotLn-wo112 / vertical (1)' when rerun standalone, and failed after",
+          "summary": "{ \"id\": \"WO-187-D043\", \"date\": \"2026-10-06\", \"dispatch\": \"resume: verify (VER-004); operator observation\", \"decision\": \"Board, outside this order's criteria and surfaces, that the verification-result transition runs npm run test:docs inline and that run queues for host lanes shared by every worktree, so one order's test run blocks another order's lifecycle step, including a fail verdict the gate cannot change.\", \"evidence\": [ \"The first VER-004 fail transition's inline document gate (started 2026-10-06T05:01:23.102Z) printed 'WAIT host lanes for <home>/Projects/DotLn-wo187 / build; held by <home>/Projects/DotLn-wo112 / vertical (1)' when rerun standalone, and failed after",
           "missing": false
         }
       ],
@@ -30433,6 +30513,14 @@
           "reopenWhen": "a real verify dispatch errors after recording; a final review misclasses a finding for want of the definitions; a reviewer self-fix goes unlisted; an advisoryDecision is used again; or the next order that edits scripts/resume.mjs or the reviewer loadout activates",
           "targets": [],
           "at": "2026-10-14T21:36:49.778Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-recorded by WO-213's final review (FINAL-002, D028) because the condition 'the next order that edits scripts/resume.mjs' fired: WO-213 adds the installed-runtime digest refusal to correct and leaves the dispatch and report-recording paths unchanged; both report-recording dispatches of this order recorded without error, this review classed its findings from product 07's definitions, and no reviewer self-fix went unlisted.",
+          "reopenWhen": "a real verify dispatch errors after recording; a final review misclasses a finding for want of the definitions; a reviewer self-fix goes unlisted; an advisoryDecision is used again; or the next order that edits scripts/resume.mjs or the reviewer loadout activates",
+          "targets": [],
+          "at": "2026-10-16T00:57:41.740Z"
         }
       ]
     },
@@ -33630,6 +33718,14 @@
           "reopenWhen": "a reused npm test row is shown to have passed over a changed input named here, or such an order activates",
           "targets": [],
           "at": "2026-10-11T01:26:26.223Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-213 second repair: The gate-evidence edit fires the named surface condition. The repair keys installed runtime inputs, while the copied budgets/tag-template inputs remain the existing core identity policy; no reused pass over changed copies was observed. Keep the same planned inclusion of those inputs and its required fixture. [docs/evidence/WO-213/decisions.md D035]",
+          "reopenWhen": "a reused npm test row is shown to have passed over a changed input named here, or such an order activates",
+          "targets": [],
+          "at": "2026-10-16T02:47:35.319Z"
         }
       ]
     },
@@ -34322,6 +34418,14 @@
           "reopenWhen": "An instance selects build none and runs a lifecycle, worktree or release command; harnessRuntimeCause gains another consumer; or an order plans an edit to scripts/lib/harness-runtime.mjs or the build-none branch of harnessInstallation",
           "targets": [],
           "at": "2026-10-13T16:53:34.934Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-recorded by WO-213's final review (FINAL-002, D028) because the condition 'harnessRuntimeCause gains another consumer' fired: scripts/lib/release-kit-runtime.mjs reads it after restoring a kit's selected snapshot, so a release in a kit refuses while the carried runtime remains unavailable; scripts/lib/harness-runtime.mjs and the build-none branch of harnessInstallation are unchanged, and build none is still not expected soon.",
+          "reopenWhen": "An instance selects build none and runs a lifecycle, worktree or release command; harnessRuntimeCause gains another consumer; or an order plans an edit to scripts/lib/harness-runtime.mjs or the build-none branch of harnessInstallation",
+          "targets": [],
+          "at": "2026-10-16T00:57:41.798Z"
         }
       ]
     },
@@ -34456,6 +34560,22 @@
           "reopenWhen": "An instance uses DOTLN_LAUNCHPAD with a separate scripts checkout or changes document roots before the remainder lands, or an order plans an edit to gate-evidence.mjs, writer-teardown.mjs or codex-continuation.mjs",
           "targets": [],
           "at": "2026-10-13T16:53:35.465Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-recorded by WO-213's final review (FINAL-002, D028) because the condition 'an order plans an edit to gate-evidence.mjs' fired: WO-213's authorized instance repairs add the instance input digest there and leave the literal docs/control/local/harness lane join in gate-evidence.mjs, writer-teardown.mjs and codex-continuation.mjs as it was; the root-resolution remainder stays with planning.",
+          "reopenWhen": "An instance uses DOTLN_LAUNCHPAD with a separate scripts checkout or changes document roots before the remainder lands, or an order plans an edit to gate-evidence.mjs, writer-teardown.mjs or codex-continuation.mjs",
+          "targets": [],
+          "at": "2026-10-16T00:57:41.564Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-213 second repair: Second repair changes gate-evidence package selection and shares the runtime-source predicate. It does not move the ignored harness lane or split tool-root from launchpad-root; that root-resolution policy remains for planning with the separate-checkout and relocated-root fixtures named in the source. [docs/evidence/WO-213/decisions.md D035]",
+          "reopenWhen": "An instance uses DOTLN_LAUNCHPAD with a separate scripts checkout or changes document roots before the remainder lands, or an order plans an edit to gate-evidence.mjs, writer-teardown.mjs or codex-continuation.mjs",
+          "targets": [],
+          "at": "2026-10-16T02:47:35.432Z"
         }
       ]
     },
@@ -35264,6 +35384,30 @@
           "reopenWhen": "an executor's copied gate record is refused by the record rule, or an order edits the runner's task record",
           "targets": [],
           "at": "2026-10-13T16:53:37.010Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-recorded by WO-213's final review (FINAL-002, D028) because the condition 'an order edits the runner's task record' fired: WO-213 adds path-free hostLaneWaitObservations to the task record and leaves productReadLog absolute (D007's non-goal); the record rule now refuses a copied record that holds the absolute path, so an executor copying one writes a placeholder, as the candidate anticipates.",
+          "reopenWhen": "an executor's copied gate record is refused by the record rule, or an order edits the runner's task record",
+          "targets": [],
+          "at": "2026-10-16T00:57:41.682Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-recorded by WO-213's fourth repair because the condition 'an order edits the runner's task record' fired again: the task record gains a version-2 inputBinding and never-started results for a selection that stopped at its first failure, while productReadLog stays absolute (D007's non-goal) and the record rule still refuses a copied record that holds it, so an executor copying one writes a placeholder.",
+          "reopenWhen": "An order edits the runner's task record, or the record rule stops refusing a copied record that holds the absolute path.",
+          "targets": [],
+          "at": "2026-10-17T01:19:09.407Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-recorded by WO-213's final review (FINAL-003, D073) because the previous disposition describes a mechanism the order no longer contains: the fourth repair's version-2 inputBinding and never-started task results were withdrawn with the validation expansion (D072). At the reviewed subject the runner's task record gains only path-free hostLaneWaitObservations; productReadLog stays absolute (D007's non-goal), and the record rule refuses a copied record that holds it, so an executor copying one writes a placeholder, as the candidate anticipates.",
+          "reopenWhen": "An order edits the runner's task record, or the record rule stops refusing a copied record that holds the absolute path.",
+          "targets": [],
+          "at": "2026-10-17T17:14:23.972Z"
         }
       ]
     },
@@ -35473,6 +35617,22 @@
           "reopenWhen": "a gate refusal names a run whose marker is older than the gate's longest deadline, or an order edits packages/skeleton/src/gate-evidence.mjs",
           "targets": [],
           "at": "2026-10-13T20:14:56.017Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-recorded by WO-213's final review (FINAL-002, D028) because the condition 'an order edits packages/skeleton/src/gate-evidence.mjs' fired: WO-213 adds the instance input digest and the digest-mismatch reader there and touches neither gate markers, the process-start observation nor marker removal, so the stale-marker candidate stands as recorded.",
+          "reopenWhen": "a gate refusal names a run whose marker is older than the gate's longest deadline, or an order edits packages/skeleton/src/gate-evidence.mjs",
+          "targets": [],
+          "at": "2026-10-16T00:57:41.505Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-213 second repair: The gate-evidence edit fires the broad file condition again. The repair changes runtime input selection and digest, not gate-marker liveness, missing process-start identity or marker removal. Preserve the existing stale-marker candidate and its reproduction. [docs/evidence/WO-213/decisions.md D035]",
+          "reopenWhen": "a gate refusal names a run whose marker is older than the gate's longest deadline, or an order edits packages/skeleton/src/gate-evidence.mjs",
+          "targets": [],
+          "at": "2026-10-16T02:47:35.546Z"
         }
       ]
     },
@@ -35574,7 +35734,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-213 second repair: The next-surface condition is met by first-export configuration preservation and runtime inventory declarations. D034 fixes configuration ownership and an ignored local collision; it does not decide the grouped role wording, redaction labels, post-push reporting, receipt deduplication or other named lifecycle policies. Retain the source list for planning; this disposition does not claim every historical item remains unfixed. [docs/evidence/WO-213/decisions.md D035]",
+          "reopenWhen": "A criterion judged met is shown unmet at this identity, the first live refresh refuses on a cause boarded here, or a register disposition above is shown wrong.",
+          "targets": [],
+          "at": "2026-10-16T02:47:35.831Z"
+        }
+      ]
     },
     {
       "id": "FUP-b46754ad55a891d6",
@@ -35946,6 +36115,14 @@
           "reopenWhen": "A planning pass allocates this remainder, a target workflow needs moved-decision reopening or recovery of changed pending inputs/absent bundle ownership, or the operator authorizes the three publication-policy additions.",
           "targets": [],
           "at": "2026-10-14T23:35:53.907Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "WO-213 second repair: Reassessed at its current source revision. This repair changes local document readers and runtime selection, not moved target-decision retrieval, changed-pending-input recovery, target commit policy, isolated target fetch or admitted publication file types. The six-item planning remainder and its scope distinctions remain as recorded. [docs/evidence/WO-213/decisions.md D035]",
+          "reopenWhen": "A planning pass allocates this remainder, a target workflow needs moved-decision reopening or recovery of changed pending inputs/absent bundle ownership, or the operator authorizes the three publication-policy additions.",
+          "targets": [],
+          "at": "2026-10-16T02:47:35.887Z"
         }
       ]
     },
@@ -36329,6 +36506,919 @@
           "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16",
           "title": "Structural performance guards in place of timers.",
           "summary": "4. **Structural performance guards in place of timers.** The outside repository guards import cost by asserting, in a fresh interpreter, which modules are absent and which top-level packages loaded, so a regression fails under any host load. DotLn bounds performance only by durations (WO-197's two-times bounds, gate deadlines, hook timings), and product 07 says such comparisons do not establish reliability under all host loads; `--import` instrumentation already has precedent in DotLn tests. Shape: when a repair's cause is structural, such as an eagerly loaded runtime in a hook or CLI entry, the bound assertion pins that property in a fresh node process and replaces the case's duration bound",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9b7d3e0de0a4c268",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d40c6d267ce3df8cac565552fd6a7a9fa5fa41869c3ac98f8f04eec3543e7bfa",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d007",
+          "title": "WO-213-D007: Keep the change at the classified v0.83.0 application minor; no package component, dependency, schema, command or flag changes. Correct the initial hash-bound-report fixture by supplying…",
+          "summary": "{ \"id\": \"WO-213-D007\", \"date\": \"2026-10-15\", \"dispatch\": \"resume: next; WO-213 implementation\", \"decision\": \"Keep the change at the classified v0.83.0 application minor; no package component, dependency, schema, command or flag changes. Correct the initial hash-bound-report fixture by supplying its required decisions file, then rerun the focused case and complete target-worktree suite.\", \"evidence\": [ \"release prepare --local assigned v0.83.0 from the local v0.82.0 baseline. The initial document preflight identified the unassigned release heading, which the required release preparation resolved.\", \"The first target-worktree run passed 51 of 52 cases and refused the new fixture before its int",
+          "missing": false
+        },
+        {
+          "hash": "d293f52d9a2a32d7c52a521fa7622864db216cd474011fac1de3b232d4f943e5",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d007",
+          "title": "WO-213-D007: Keep the change at the classified v0.83.0 application minor; no package component, dependency, schema, command or flag changes. Correct the initial hash-bound-report fixture by supplying…",
+          "summary": "{ \"id\": \"WO-213-D007\", \"date\": \"2026-10-15\", \"dispatch\": \"resume: next; WO-213 implementation\", \"decision\": \"Keep the change at the classified v0.83.0 application minor; no package component, dependency, schema, command or flag changes. Correct the initial hash-bound-report fixture by supplying its required decisions file, then rerun the focused case and complete target-worktree suite.\", \"evidence\": [ \"release prepare --local assigned v0.83.0 from the local v0.82.0 baseline. The initial document preflight identified the unassigned release heading, which the required release preparation resolved.\", \"The first target-worktree run passed 51 of 52 cases and refused the new fixture before its int",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-213-D013 resolves this observed reopening: the authorized instance repairs change compiler and skeleton source, so patch their versions and exact workspace pins while retaining application target v0.83.0.",
+          "reopenWhen": "A public compatibility break or another changed component is demonstrated before final review.",
+          "targets": [],
+          "at": "2026-10-15T16:08:24.843Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "The D013 dispatch-prefix correction changed the source receipt format only; compiler 0.27.1 and skeleton 0.59.1 already resolve the same reopening, with application target v0.83.0 retained.",
+          "reopenWhen": "A public compatibility break or another changed component is demonstrated before final review.",
+          "targets": [],
+          "at": "2026-10-15T16:46:36.938Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1212466f61988e7e",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "15957d09f37c01c12390918b814a5864e3ea4a3d74fa6e9db1a05fd0ff5a7d8f",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d016",
+          "title": "WO-213-D016: Recognize a leading canonical resume phrase followed by a newline or semicolon while preserving the complete operator prompt. Bind a roleless Claude hook session after an observed whole…",
+          "summary": "{ \"id\": \"WO-213-D016\", \"date\": \"2026-10-15\", \"dispatch\": \"scope expand: address the instance resume dispatch and missing role issue\", \"decision\": \"Recognize a leading canonical resume phrase followed by a newline or semicolon while preserving the complete operator prompt. Bind a roleless Claude hook session after an observed whole foreground CLI dispatch succeeds at its expected canonical lifecycle boundary; keep its earlier read receipts, authored paths and usage identity. Never infer a session from a process id or replay the lifecycle command.\", \"evidence\": [ \"The compiler helper is shared by ordinary prompt dispatch and stale-main release-close recovery. Quoted, embedded and word-continue",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "The observed CLI dispatch binding no longer sets the field that keys the release-close publish admission (WO-213-D024, F1); D016's binding stands with that limit and its message says so.",
+          "reopenWhen": "An observed command is found to key the publish admission.",
+          "targets": [],
+          "at": "2026-10-15T23:16:37.025Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4d829800ed0c24c3",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d023",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "566e11fd7d6949b3562bfa24a5e9066604fdad62f53054d86bc7c11577f26e7f",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d023",
+          "title": "WO-213-D023: WO-213 resume: fix. (F1) packages/skeleton/src/harness-host.ts: bind the role, intent, order and expected event on an observed CLI dispatch without setting releaseCloseDispatch, so the…",
+          "summary": "{ \"id\": \"WO-213-D023\", \"date\": \"2026-10-15\", \"dispatch\": \"resume: final review; FINAL-001; three read-only reviewers\", \"kind\": \"finding\", \"decision\": \"Fail the final review of WO-213 at the integrated subject, code identity e9c386f3d3952fa2918659b4b108be83c0f1202d907d13ddc611da0a5e4a8e62, the identity VER-001 judged; integration changed no judged byte (D022). The verdict rests on two blocking findings inside the subject's declared surfaces. F1: packages/skeleton/src/harness-host.ts observeCliDispatch sets session.releaseCloseDispatch after it observes a model-run npm run resume -- release-close in a roleless session, and releaseCloseAdmission keys WO-178's first admission (permissionDecision",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Performed by the resume: fix repair recorded in WO-213-D024 and WO-213-D025: F1 and F2 repaired with fixtures, fourteen boarded follow-ups repaired inside the Adjacent Repair bound, F10 and F16 deferred onto the follow-up row minted from D024.",
+          "reopenWhen": "Fresh verification or the next final review finds one of the named findings not closed.",
+          "targets": [],
+          "at": "2026-10-15T23:16:36.962Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-eca730fcb4198f14",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cd55d9054de827bd6751c50903790a2644b6952f3598738965dab6bc9e5e7650",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d017",
+          "title": "WO-213-D017: Keep host scheduling admission and reclamation unchanged. Correct elapsed wait accounting to include the initial and final lock wait, and record bounded path-free lock/capacity…",
+          "summary": "{ \"id\": \"WO-213-D017\", \"date\": \"2026-10-15\", \"dispatch\": \"scope expand: investigate the reported 830-second wait and recovery meter omissions\", \"decision\": \"Keep host scheduling admission and reclamation unchanged. Correct elapsed wait accounting to include the initial and final lock wait, and record bounded path-free lock/capacity observations with periodic holder summaries. For open recovered orders, combine observations from the registered main checkout and the current checkout, deduplicate only the raw shared journal prefix and superseded usage identities, and write the snapshot only in the current checkout. Closed-order snapshots remain immutable.\", \"evidence\": [ \"host-wait-diagnosis.js",
+          "missing": false
+        },
+        {
+          "hash": "e36029384e65d8295e234af3b5b8666124ac7a1680101874e5eeb0abd862d11c",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d017",
+          "title": "WO-213-D017: Keep host scheduling admission and reclamation unchanged. Correct elapsed wait accounting to include the initial and final lock wait, and record bounded path-free lock/capacity…",
+          "summary": "{ \"id\": \"WO-213-D017\", \"date\": \"2026-10-15\", \"dispatch\": \"scope expand: investigate the reported 830-second wait and recovery meter omissions\", \"decision\": \"Keep host scheduling admission and reclamation unchanged. Correct elapsed wait accounting to include the initial and final lock wait, and record bounded path-free lock/capacity observations with periodic holder summaries. For open recovered orders, combine observations from the registered main checkout and the current checkout, deduplicate only the raw shared journal prefix and superseded usage identities, and write the snapshot only in the current checkout. Closed-order snapshots remain immutable.\", \"evidence\": [ \"host-wait-diagnosis.js",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-213 second repair: D024 corrected recovered to open linked-worktree observations; D034 now preserves current-copy attribution for a shared raw prefix when the main sidecar is absent or stale. Lane accounting/cleanup and copied-journal fixtures pass. The recovery signal and strict-versus-lenient supplemental parsing policy remain separately deferred on FUP-6125f53234c75af3. [docs/evidence/WO-213/decisions.md D035]",
+          "reopenWhen": "A recurring wait loses holder observations or an admitted current journal loses attributable observations.",
+          "targets": [],
+          "at": "2026-10-16T02:47:35.206Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6125f53234c75af3",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d024",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "646bb2d6903a4084fc37d60e9c6f1f6286b9c344e77500bdbd0b77f438ea4c71",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d024",
+          "title": "WO-213-D024: Planning: decide whether the release, worktree and license fixtures may configure the committed public author identity scripts/lib/contributions.mjs exports as operatorAuthor or must use…",
+          "summary": "{ \"id\": \"WO-213-D024\", \"date\": \"2026-10-15\", \"dispatch\": \"resume: fix; FINAL-001 findings F1 and F2 with sixteen boarded follow-ups\", \"decision\": \"Repair the two blocking findings and close fourteen of the sixteen boarded follow-ups inside the Adjacent Repair bound; defer two to planning. F1: an observed CLI dispatch binds the session's role, intent, order and expected event and never sets releaseCloseDispatch, so WO-178's publish admission is keyed only to the dispatch the harness records from the operator's resume: release close phrase, and the binding's message says the admission stays withheld. F2: withoutHomeDirectories repeats the replacement until the home-directory rule finds nothing",
+          "missing": false
+        },
+        {
+          "hash": "c4a1c38e05c0fcaf322b0ccc0eb61de81ff0ffc54244734f9e676a8d7a4767a6",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d024",
+          "title": "WO-213-D024: Planning: decide whether the release, worktree and license fixtures may configure the committed public author identity scripts/lib/contributions.mjs exports as operatorAuthor or must use…",
+          "summary": "{ \"id\": \"WO-213-D024\", \"date\": \"2026-10-15\", \"dispatch\": \"resume: fix; FINAL-001 findings F1 and F2 with sixteen boarded follow-ups\", \"decision\": \"Repair the two blocking findings and close fourteen of the sixteen boarded follow-ups inside the Adjacent Repair bound; defer two to planning. F1: an observed CLI dispatch binds the session's role, intent, order and expected event and never sets releaseCloseDispatch, so WO-178's publish admission is keyed only to the dispatch the harness records from the operator's resume: release close phrase, and the binding's message says the admission stays withheld. F2: withoutHomeDirectories repeats the replacement until the home-directory rule finds nothing",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Questions the repair cannot settle, routed to planning: fixture use of the committed public author identity, the recovery signal and journal parsing for the meter's main-checkout supplement, the record rule's remaining escaped shapes and the Markdown boundary, and the other reader-profile declaration sites.",
+          "reopenWhen": "The next planning pass takes them up or an operator decision resolves one of them.",
+          "targets": [],
+          "at": "2026-10-15T23:16:37.084Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-213 second repair: Fresh repair evidence narrows this grouped remainder: build-free source classification is unified, writing-guidance declaration reads are typed, and copied-prefix attribution is fixed. Fixture-author identity, the recovery signal and supplemental parsing policy, ANSI/escaped-solidus record shapes, the pinned Markdown rule, the other reader-profile declaration consumers and Stop selection policy remain planning questions. No observed-command route acquires publication authority. [docs/evidence/WO-213/decisions.md D035]",
+          "reopenWhen": "The next planning pass takes them up or an operator decision resolves one of them.",
+          "targets": [],
+          "at": "2026-10-16T02:47:35.774Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5b80d605db95d263",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d3e507e544361749782b0a7ee55f7015137e9c97086a445fa2ab623a4de4774e",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d014",
+          "title": "WO-213-D014: Select kit-verify and harness for ordinary instance plain/review gates, and seventeen current coordination validators for test:docs. Preserve explicit carried diagnostics and all core…",
+          "summary": "{ \"id\": \"WO-213-D014\", \"date\": \"2026-10-15\", \"dispatch\": \"scope expand: fix ordinary instance validation; operator clarification that product work occurs in sibling repositories\", \"decision\": \"Select kit-verify and harness for ordinary instance plain/review gates, and seventeen current coordination validators for test:docs. Preserve explicit carried diagnostics and all core regression selections. Run ordinary instance checks fresh and bind npm-test claims and live publication to the installed runtime digest as well as committed code identity; historical release readers retain their recorded subject.\", \"evidence\": [ \"The suite table marks runtime and document instance checks explicitly; newly",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-213 second repair: D025 resolved the document-kind selection qualification, and D032 repairs complete runtime identity. The exported-instance fixture passed all three ordinary selections on 2026-10-16T02:42:50.685Z. Product-read admission remains separately deferred on FUP-eafff4f96686f67d. [docs/evidence/WO-213/decisions.md D035]",
+          "reopenWhen": "A default consumer gate selects a platform fixture, stale installed input consumes a pass, or a sibling claim accepts starter evidence.",
+          "targets": [],
+          "at": "2026-10-16T02:47:35.149Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-eafff4f96686f67d",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d025",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1159d3130e24b753913a44c8545c1e91ce4876f077280ae6bb05456802b43a4e",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d025",
+          "title": "WO-213-D025: Planning: decide whether an instance's runtime rows should take a product read guard whose exclusion set is narrowed to the active order's record roots, so an instance's plain gate can…",
+          "summary": "{ \"id\": \"WO-213-D025\", \"date\": \"2026-10-15\", \"dispatch\": \"resume: fix; worker review of the repair diff\", \"decision\": \"Keep an instance's plain and review gates document-kind runs, as the implementation chose, instead of the product-kind plain gate the first pass of this repair made. The product read guard excludes every tracked file under docs/, .claude/ and .agents/ and every top-level Markdown file, and the instance's harness row reads the harness surfaces and the root instruction file by design, so no product run of that selection can be observed; a product kind would grant the order's record-write admission on a premise nothing enforces. The client README states the consequence: while a",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Whether an instance's runtime rows take a product read guard with an exclusion set narrowed to the active order's record roots is a design decision for planning.",
+          "reopenWhen": "The next planning pass takes it up or the guard's exclusion set is narrowed by decision.",
+          "targets": [],
+          "at": "2026-10-15T23:16:37.142Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0356227c9f854fb7",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d027",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1ccc158393099afd7eccb3b2ad7b421a3ac31c605bc716e23e66b12ca96b8d75",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d027",
+          "title": "WO-213-D027: Planning: route the product-document measurement read in scripts/docs-check.mjs checkDocs through the same relative-path diagnostic boundary as listed documents. Add a non-root…",
+          "summary": "{ \"id\": \"WO-213-D027\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: verify; independent re-verification of the repaired WO-213\", \"kind\": \"finding\", \"decision\": \"Board a low-severity inherited diagnostic gap in the product-document measurement reader as a follow-up, without failing a criterion. The repaired listing readers report unreadable Markdown and records by repository-relative path, but checkDocs reads each product document directly with readFileSync before those readers run. An unreadable product document therefore throws EACCES with the absolute checkout path in its message. The same bounded probe reproduces the result in the base docs-check source and the current subject. This narrows",
+          "missing": false
+        },
+        {
+          "hash": "dcdfbffee5d45d0ccfccbbc8c5f31ac0be9e37e4fb0bbff0003fd95cf72465d0",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d027",
+          "title": "WO-213-D027: Planning: route the product-document measurement read in scripts/docs-check.mjs checkDocs through the same relative-path diagnostic boundary as listed documents. Add a non-root…",
+          "summary": "{ \"id\": \"WO-213-D027\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: verify; independent re-verification of the repaired WO-213\", \"kind\": \"finding\", \"decision\": \"Board a low-severity inherited diagnostic gap in the product-document measurement reader as a follow-up, without failing a criterion. The repaired listing readers report unreadable Markdown and records by repository-relative path, but checkDocs reads each product document directly with readFileSync before those readers run. An unreadable product document therefore throws EACCES with the absolute checkout path in its message. The same bounded probe reproduces the result in the base docs-check source and the current subject. This narrows",
+          "missing": false
+        },
+        {
+          "hash": "0707b60c400394c838200159e31ce816a91abc261d5daa3471cde1befeb41e31",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d027",
+          "title": "WO-213-D027: Planning: route the product-document measurement read in scripts/docs-check.mjs checkDocs through the same relative-path diagnostic boundary as listed documents. Add a non-root…",
+          "summary": "{ \"id\": \"WO-213-D027\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: verify; independent re-verification of the repaired WO-213\", \"kind\": \"finding\", \"decision\": \"Board a low-severity inherited diagnostic gap in the product-document measurement reader as a follow-up, without failing a criterion. The repaired listing readers report unreadable Markdown and records by repository-relative path, but checkDocs reads each product document directly with readFileSync before those readers run. An unreadable product document therefore throws EACCES with the absolute checkout path in its message. The same bounded probe reproduces the result in the base docs-check source and the current subject. This narrows",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "WO-213 second repair: D033 closes the inherited product-reader gap and the additional decision/anchor/directory cases through typed relative diagnostics; the 65-case document fixture pass includes unreadable product input, directory links and FIFO refusal. [docs/evidence/WO-213/decisions.md D035]",
+          "reopenWhen": "A document reader again emits a private filesystem path or blocks on a non-file input.",
+          "targets": [],
+          "at": "2026-10-16T02:47:35.031Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-999942a433723fb9",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d030",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fc094be0f23fcfe0f3d124528503315a6ee5075295aa758c504a484dbd718c9e",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d030",
+          "title": "WO-213-D030: WO-213 resume: fix. (F1) packages/skeleton/src/gate-evidence.mjs and scripts/lib/harness.mjs: the installed-input roots, the instance input digest, the runtime inventory, the snapshot…",
+          "summary": "{ \"id\": \"WO-213-D030\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: final review; FINAL-002; three read-only reviewers\", \"kind\": \"finding\", \"decision\": \"Fail the final review of WO-213 at the integrated subject, code identity c2028281766bb74c4ec899f06d0d0db9507737dcd76b41176383d64d4807755d, the identity VER-002 judged; integration changed no judged byte (D028). The verdict rests on one blocking finding inside the subject's declared surfaces. F1: in an exported instance the new runtime inventory and instance input digest walk every directory entry under packages/, so a stray regular file directly under packages/ (a Finder .DS_Store, which the kit's own ignore file anticipates) makes gateInstanc",
+          "missing": false
+        },
+        {
+          "hash": "17aecbca64d1343b2fba89bd26d52ad5e27102960fe4ed0cef69893142ef6ea8",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d030",
+          "title": "WO-213-D030: WO-213 resume: fix. (F1) packages/skeleton/src/gate-evidence.mjs and scripts/lib/harness.mjs: the installed-input roots, the instance input digest, the runtime inventory, the snapshot…",
+          "summary": "{ \"id\": \"WO-213-D030\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: final review; FINAL-002; three read-only reviewers\", \"kind\": \"finding\", \"decision\": \"Fail the final review of WO-213 at the integrated subject, code identity c2028281766bb74c4ec899f06d0d0db9507737dcd76b41176383d64d4807755d, the identity VER-002 judged; integration changed no judged byte (D028). The verdict rests on one blocking finding inside the subject's declared surfaces. F1: in an exported instance the new runtime inventory and instance input digest walk every directory entry under packages/, so a stray regular file directly under packages/ (a Finder .DS_Store, which the kit's own ignore file anticipates) makes gateInstanc",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-213 second repair: Second repair D032-D034 closes all ten FINAL-002 findings. The exported kit passes plain/document/review gates with metadata and mode variation, evidence lookups and release restoration; rebuilt lane and foreground-dispatch fixtures pass, as do privacy/suffix tests. D032 replaces blanket Git-ignore exclusion with explicit metadata selection, retaining real ignored runtime bytes. [docs/evidence/WO-213/decisions.md D035]",
+          "reopenWhen": "Fresh verification finds one of the recorded repair invariants unmet.",
+          "targets": [],
+          "at": "2026-10-16T02:47:35.092Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-19f03e78a941104d",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d043",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4cdc0207170f645aa7433e5e9b86ea2aa0c28fdd2cb0bd661cd39125f1c67a0c",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d043",
+          "title": "WO-213-D043: In scripts/lib/suite-evidence.mjs, treat names that identify the agent process or the terminal rather than an input to an offline suite (CLAUDE_PID, CLAUDE_CODE_EXECPATH, LC_TERMINAL,…",
+          "summary": "{ \"id\": \"WO-213-D043\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: verify; independent re-verification of the second WO-213 repair (VER-003)\", \"kind\": \"finding\", \"decision\": \"Board, as a follow-up inside the declared validation surfaces, that a task's execution contract binds labels that identify the agent process and the terminal rather than an input to an offline suite. The task environment in scripts/lib/suite-evidence.mjs keeps CLAUDE_PID, CLAUDE_CODE_EXECPATH and CLAUDE_EFFORT by name and admits LC_TERMINAL and LC_TERMINAL_VERSION through the LC_ prefix, while it omits DOTLN_SESSION_ID for exactly the reason D041 records. A bound task therefore never composes into another session's selec",
+          "missing": false
+        },
+        {
+          "hash": "f28944ac4dab8846ea6d5f0124cb7d4273c8856da05e9fc182ae92274c6c29a0",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d043",
+          "title": "WO-213-D043: WO-213 resume: fix. (1) scripts/lib/suite-evidence.mjs: treat names that identify the agent process or the terminal rather than an input to an offline suite (CLAUDE_PID,…",
+          "summary": "{ \"id\": \"WO-213-D043\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: verify; independent re-verification of the second WO-213 repair (VER-003)\", \"kind\": \"finding\", \"decision\": \"Fail the verification of the second WO-213 repair at code identity 8e90b44d420d898c85ff61870c6d4bc4405658dff2f5d318dd64531501d5acc8 on one blocking finding inside the declared validation surfaces, with the other sixteen criteria met and FINAL-002's blocker reproduced closed. A task's execution contract binds inputs that are not inputs to an offline suite, and a later passing execution under a different contract displaces the standing complete row. The task environment in scripts/lib/suite-evidence.mjs keeps CLAUDE_PID, C",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-213 third repair: task contracts bind exactly the child environment, which withholds agent-host, DotLn session and resident-episode, terminal and npm output-only labels and binds existing search directories by resolved location; a later pass under another contract neither supplies nor displaces a standing complete row and cannot answer a later failure under the row contract; the runner prints and records why each task it could have carried runs, naming no value. Fixtures fail on the checkpoint sources and pass after. [docs/evidence/WO-213/decisions.md D044]",
+          "reopenWhen": "Fresh verification finds a contract split between sessions, shells or npm spellings at an unchanged code identity on one host, or a passing diagnostic removes a standing complete row.",
+          "targets": [],
+          "at": "2026-10-16T14:59:49.849Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "Withdrawn by D072: the task contracts this finding concerned were removed with criteria 15 to 19, so the fix that settled it no longer exists and the finding no longer applies. [docs/evidence/WO-213/decisions.md D072]",
+          "reopenWhen": "The operator or a planning pass re-authorizes the withdrawn mechanism.",
+          "targets": [],
+          "at": "2026-10-17T13:04:33.773Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3cb6f0518cb0cd43",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d045",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "04a1436bf75e0b1284279dc7ab7a5d397b05833aa4f454821320ce592ba68d00",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d045",
+          "title": "WO-213-D045: Plan an order that keys reusable task results by each task's declared inputs, in the manner of a build system's per-target input hash, instead of the whole-code identity: declare inputs…",
+          "summary": "{ \"id\": \"WO-213-D045\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: fix; operator direction during the third repair that targeted-first validation is required, not optional\", \"kind\": \"correction\", \"misread\": \"This executor, like the guidance it followed, read the single validation flow (D039, D040; product 07 §Preflight before the full gate) as making targeted diagnostics optional: product 07 said a Preflight line 'does not require every suite to execute separately' and to run `--only` 'when a targeted diagnosis is useful', and executor step 9 said only to run the full gate. This repair ran two targeted diagnostics and then a complete review gate that executed 101 of 104 tasks fresh in 3062825",
+          "missing": false
+        },
+        {
+          "hash": "b34df8dfe3aa34636895808daeaadca64c500e2a1a82f98b6488c0bc2e52e40d",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d045",
+          "title": "WO-213-D045: Plan an order that keys reusable task results by each task's declared inputs, in the manner of a build system's per-target input hash, instead of the whole-code identity: declare inputs…",
+          "summary": "{ \"id\": \"WO-213-D045\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: fix; operator direction during the third repair that targeted-first validation is required, not optional\", \"kind\": \"correction\", \"misread\": \"This executor, like the guidance it followed, read the single validation flow (D039, D040; product 07 §Preflight before the full gate) as making targeted diagnostics optional: product 07 said a Preflight line 'does not require every suite to execute separately' and to run `--only` 'when a targeted diagnosis is useful', and executor step 9 said only to run the full gate. This repair ran two targeted diagnostics and then a complete review gate that executed 101 of 104 tasks fresh in 3062825",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Implemented the operator-authorized input-bound flow in this repair (D052-D057): compiler-resolved closures and reader wrappers, declared semantic inputs, fresh unresolved effects, source-execution revalidation, fix-and-rerun counters and generated/prerequisite inputs. The final runner regression passes all 181 tests.",
+          "reopenWhen": "An unaffected supported task reruns after a fix, a changed input supplies stale reuse or a source execution cannot be revalidated.",
+          "targets": [],
+          "at": "2026-10-16T21:10:53.253Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by D065's mechanism rather than the one the earlier disposition described: a suite that declares its inputs is bound by them, by the import closure of its entry and declared files and by the runner's own sources, and its pass is carried across a fix elsewhere; an undeclared suite keeps the whole code identity. The compiler-based analysis named before was removed because it bound no real suite.",
+          "reopenWhen": "A declared suite's pass is carried although an input it should be bound by changed, or an undeclared pass is carried across a code change.",
+          "targets": [],
+          "at": "2026-10-17T00:31:43.292Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "reason": "The mechanism that settled this row was withdrawn by D072; keying reuse by a task's own inputs returns to planning through D072's follow-up and the expansion history. [docs/evidence/WO-213/decisions.md D072]",
+          "reopenWhen": "The operator or a planning pass re-authorizes the withdrawn mechanism.",
+          "targets": [
+            "FUP-201956913dc8ea85"
+          ],
+          "at": "2026-10-17T13:04:33.577Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7a9a276dcbe3b379",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d046",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "bdcaae85753e0d40117291b3afdc0a2be38257690200f5f80acb358b2ad962f4",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d046",
+          "title": "WO-213-D046: Plan an order that lets npm test -- --only name several suites, schedules them across the gate's host lanes with the complete gate's ordering, prints each failure as it occurs, and…",
+          "summary": "{ \"id\": \"WO-213-D046\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: fix; operator objection to the wall-clock cost of the serial targeted-first sequence\", \"decision\": \"Keep the required targeted-first sequence of D045 for this repair and record its measured cost. Board the change that makes it fast: a targeted selection of several named suites, scheduled across the gate's lanes and carried like a single bound suite, so the touched set costs about its slowest suite rather than the sum of all.\", \"evidence\": [ \"Serial targeted sequence at code identity 5c0a6468cf0c5f15de2cc4660a7d573e8f2e4767e4ca12b027f09cc57ee609b0 after the role-text change: process-debt (141.3 s) and then 20 suites one at a ti",
+          "missing": false
+        },
+        {
+          "hash": "51f28eddef602c4ee0cb51e26676763f1414ae5776626b4eac2badbd2b7645e6",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d046",
+          "title": "WO-213-D046: Plan an order that lets npm test -- --only name several suites, schedules them across the gate's host lanes with the complete gate's ordering, prints each failure as it occurs, and…",
+          "summary": "{ \"id\": \"WO-213-D046\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: fix; operator objection to the wall-clock cost of the serial targeted-first sequence\", \"decision\": \"Keep the required targeted-first sequence of D045 for this repair and record its measured cost. Board the change that makes it fast: a targeted selection of several named suites, scheduled across the gate's lanes and carried like a single bound suite, so the touched set costs about its slowest suite rather than the sum of all.\", \"evidence\": [ \"Serial targeted sequence at code identity 5c0a6468cf0c5f15de2cc4660a7d573e8f2e4767e4ca12b027f09cc57ee609b0 after the role-text change: process-debt (141.3 s) and then 20 suites one at a ti",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Implemented multi-suite targeted selection through the full scheduler with shared build, ordering, limits, early failure reporting and complete-gate composition (D051-D054). Serial/parallel counters and the final 181-test runner regression pass; standing executor guidance requires the combined set.",
+          "reopenWhen": "A targeted selection serializes independent tasks, repeats eligible work in its complete gate or supplies a complete claim by itself.",
+          "targets": [],
+          "at": "2026-10-16T21:10:53.326Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "reason": "The multi-suite targeted selection that settled this row was withdrawn by D072; the idea and its measured cost return to planning through D072's follow-up. [docs/evidence/WO-213/decisions.md D072]",
+          "reopenWhen": "The operator or a planning pass re-authorizes the withdrawn mechanism.",
+          "targets": [
+            "FUP-201956913dc8ea85"
+          ],
+          "at": "2026-10-17T13:04:33.641Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c02bbd520202f796",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d047",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "313de55fdd9de48c35cbd49bbc57de7b43a34b8598413670b61577e9ae3ad4a0",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d047",
+          "title": "WO-213-D047: WO-213 resume: fix, V4-F1. Make contract-scoped failure resolution honor the same execution-eligibility boundary as task reuse: a passing partial or confined row cannot clear a failure…",
+          "summary": "{ \"id\": \"WO-213-D047\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: verify; independent verification of the third WO-213 repair (VER-004)\", \"kind\": \"finding\", \"decision\": \"Fail criterion 16 on V4-F1: a confined partial pass under the contract of an earlier failing task can erase that failure from the contract-scoped check once a later bound passing diagnostic under another contract becomes the deciding execution. coveringGateCheck then revives the original complete row and requireGateClaims accepts its product-gate claim. The repaired session-label and npm-spelling composition works, and a later passing diagnostic alone preserves the standing complete row, closing VER-003 V3-F1; this separate ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Resolved V4-F1 in D049: passing partial observations supply neither current nor contract-scoped failure recovery; machinery contract chronology is also vetoed. Real-child single/partial/machinery failure variants and all 181 runner regressions pass.",
+          "reopenWhen": "A passing partial or non-supplying other-contract observation resolves a relevant failure or revives an invalid complete claim.",
+          "targets": [],
+          "at": "2026-10-16T21:10:53.392Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Withdrawn by D072: contract-scoped failure resolution was removed with criteria 15 to 19, so the fix that settled this row no longer exists and the finding no longer applies. [docs/evidence/WO-213/decisions.md D072]",
+          "reopenWhen": "The operator or a planning pass re-authorizes the withdrawn mechanism.",
+          "targets": [],
+          "at": "2026-10-17T13:04:33.838Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-42bdf591bf991687",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d048",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b991fbfb314f1c3b59c152e35547cad761e4a95c141dffd9ef29c85efc2bc024",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d048",
+          "title": "WO-213-D048: Planner: consolidate the execution guide validation and reuse guidance to recover at least the currently observed 407 bytes of headroom while preserving the required targeted-first…",
+          "summary": "{ \"id\": \"WO-213-D048\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: verify; current document-gate observation during VER-004\", \"kind\": \"finding\", \"decision\": \"Board the execution guide byte-ceiling overrun as nonblocking V4-F2. The current document gate passes and reports docs/product/07-execution-guide.md 407 bytes over its recorded ceiling. Product 07 asks that overruns be boarded for optimization with equivalent usefulness. Criterion 8 assigns no byte figure to the write-backs, so the advisory does not fail a criterion; the verifier does not rewrite guidance or raise a planning-owned ceiling.\", \"evidence\": [ \"npm run test:docs passed 35 suites at 2026-10-16T18:27:49.706Z, duration 110765 ms",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Consolidated the validation guidance in place without raising its 212313-byte ceiling (D050-D057). It now measures 212248 bytes and retains combined preflights, input-bound reruns, a final complete gate and task/wall accounting. Publication check passes with the refreshed lock.",
+          "reopenWhen": "Equivalent validation obligations are lost or this guide exceeds its existing byte ceiling again.",
+          "targets": [],
+          "at": "2026-10-16T21:10:53.456Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Withdrawn by D072: product 07 returned to its pre-expansion text at 209,524 bytes under its 212,313-byte ceiling, and the guidance this row consolidated was removed. [docs/evidence/WO-213/decisions.md D072]",
+          "reopenWhen": "Product 07 again exceeds its byte ceiling.",
+          "targets": [],
+          "at": "2026-10-17T13:04:33.902Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8be05f7be074c356",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d061",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0dd07c419fe7dae1f9f2b98b1c06c3064d1958d796a31e7a404c65acb3799536",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d061",
+          "title": "WO-213-D061: Add typed Git-state, installed-runtime/link-target and live-record input observations to scripts/lib/task-inputs.mjs and task-input-analysis.mjs, then audit declarations for…",
+          "summary": "{ \"id\": \"WO-213-D061\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: fix; audit the practical reuse boundary of the expensive preflight fixtures\", \"decision\": \"Keep worktree-integration, harness-fixtures and process-debt fresh while their automatic input coverage remains unresolved. Do not label a broad tracked-prefix declaration complete when these fixtures also consume moving Git state, ignored build outputs, linked installed tools or live control records. Retain this cost in the actual timing report and defer typed support for those observations through the canonical follow-up register.\", \"evidence\": [ \"A reused read-only design worker audited the three fixtures and recommended fresh executi",
+          "missing": false
+        },
+        {
+          "hash": "35cef21a508ac355091f8fff1303c777873ae42bc214809c3e9bf9769f65aec7",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d061",
+          "title": "WO-213-D061: Add typed Git-state, installed-runtime/link-target and live-record input observations to scripts/lib/task-inputs.mjs and task-input-analysis.mjs, then audit declarations for…",
+          "summary": "{ \"id\": \"WO-213-D061\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: fix; audit the practical reuse boundary of the expensive preflight fixtures\", \"decision\": \"Keep worktree-integration, harness-fixtures and process-debt fresh while their automatic input coverage remains unresolved. Do not label a broad tracked-prefix declaration complete when these fixtures also consume moving Git state, ignored build outputs, linked installed tools or live control records. Retain this cost in the actual timing report and defer typed support for those observations through the canonical follow-up register.\", \"evidence\": [ \"A reused read-only design worker audited the three fixtures and recommended fresh executi",
+          "missing": false
+        },
+        {
+          "hash": "179474b14aea4114a8f9632ab4a18651faea602ba38a6d6d144ab69a7b5fe083",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d061",
+          "title": "WO-213-D061: Add typed Git-state, installed-runtime/link-target and live-record input observations to scripts/lib/task-inputs.mjs and task-input-analysis.mjs, then audit declarations for…",
+          "summary": "{ \"id\": \"WO-213-D061\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: fix; audit the practical reuse boundary of the expensive preflight fixtures\", \"decision\": \"Keep worktree-integration, harness-fixtures and process-debt fresh while their automatic input coverage remains unresolved. Do not label a broad tracked-prefix declaration complete when these fixtures also consume moving Git state, ignored build outputs, linked installed tools or live control records. Retain this cost in the actual timing report and defer typed support for those observations through the canonical follow-up register.\", \"evidence\": [ \"A reused read-only design worker audited the three fixtures and recommended fresh executi",
+          "missing": false
+        },
+        {
+          "hash": "336ad5f423bc119aab819b8ab4fdae5d7686750cb47672a7baafb1654534875b",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d061",
+          "title": "WO-213-D061: Add typed Git-state, installed-runtime/link-target and live-record input observations to scripts/lib/task-inputs.mjs and task-input-analysis.mjs, then audit declarations for…",
+          "summary": "{ \"id\": \"WO-213-D061\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: fix; audit the practical reuse boundary of the expensive preflight fixtures\", \"decision\": \"Keep worktree-integration, harness-fixtures and process-debt fresh while their automatic input coverage remains unresolved. Do not label a broad tracked-prefix declaration complete when these fixtures also consume moving Git state, ignored build outputs, linked installed tools or live control records. Retain this cost in the actual timing report and defer typed support for those observations through the canonical follow-up register.\", \"evidence\": [ \"A reused read-only design worker audited the three fixtures and recommended fresh executi",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "D061 records the audited Git, ignored-output, linked-tool and live-record inputs of worktree-integration, harness-fixtures and process-debt. Criterion 19 retains safe fresh execution for unknown coverage. Typed observation kinds and fixture audits need a separately bounded implementation with negative and carry proofs; no complete narrower declaration is established here.",
+          "reopenWhen": "A planning order authorizes typed Git-state, installed-runtime/link-target and live-record inputs, or an audited complete narrower input proof becomes available for one of the three fixtures.",
+          "targets": [],
+          "at": "2026-10-16T21:50:21.730Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "D065 removed the compiler analyzer D061 built on; task inputs are now hand-written declarations in scripts/lib/task-inputs.mjs, and the three suites D061 kept fresh are carried at an unchanged code identity as before this repair. Binding their Git-state, linked-tool and live-record inputs so they can also be carried across a fix needs a planning order with typed observation kinds and negative and carry proofs; no such declaration is established here.",
+          "reopenWhen": "A planning order authorizes typed Git-state, installed-runtime or live-record inputs for scripts/lib/task-inputs.mjs, or an audited complete input declaration becomes available for one of the three suites.",
+          "targets": [],
+          "at": "2026-10-17T00:34:59.490Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "Correction of the previous disposition's location: the hand-written input declarations are the inputs fields of suite rows in scripts/test-runner.mjs, which scripts/lib/task-inputs.mjs binds. The three suites D061 kept fresh are carried at an unchanged code identity as before this repair; binding their Git-state, linked-tool and live-record inputs so they can also be carried across a fix needs a planning order with typed observation kinds and negative and carry proofs.",
+          "reopenWhen": "A planning order authorizes typed Git-state, installed-runtime or live-record inputs for the binder, or an audited complete input declaration becomes available for one of the three suites.",
+          "targets": [],
+          "at": "2026-10-17T01:19:06.050Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "duplicate",
+          "reason": "D072 withdrew the input bindings this row would extend; typed Git-state, runtime and live-record inputs remain part of the hermetic-task direction in the expansion history. [docs/evidence/WO-213/decisions.md D072]",
+          "reopenWhen": "The operator or a planning pass re-authorizes the withdrawn mechanism.",
+          "targets": [
+            "FUP-201956913dc8ea85"
+          ],
+          "at": "2026-10-17T13:04:33.708Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6d662a0eeb71476a",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d053",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "12b1cfcc10a417c6e7e3b691ae7d403c7489fe0c457217e4a75ea310462a1e79",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d053",
+          "title": "WO-213-D053: Use one multi-suite --only request through the complete gate scheduler. Bind each task to its unexcluded transitive runtime-import graph, runner implementation and locked toolchain, plus…",
+          "summary": "{ \"id\": \"WO-213-D053\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: fix; implement the D051/D052 flow and the operator correction about automatic dependency analysis\", \"authorization\": \"The operator asks that dependency analysis drive affected work automatically and specifically requires coverage of helpers wrapping read/write operations. This refines criterion 19 within the already authorized input-bound validation flow.\", \"decision\": \"Use one multi-suite --only request through the complete gate scheduler. Bind each task to its unexcluded transitive runtime-import graph, runner implementation and locked toolchain, plus compiler-derived file inputs or explicit semantic declarations. The TypeSc",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "The multi-suite targeted selection through the complete gate's scheduler that D053 directed is implemented (D051, D053, D066). The compiler-derived file inputs D053 also named were removed by D065 in favor of declared inputs, the derived import closure of entry and declared files and the runner's own sources; a suite without a declaration keeps the whole code identity.",
+          "reopenWhen": "A targeted selection repeats eligible work in its complete gate or supplies a complete claim by itself, or a declared suite's pass is carried although an input it should be bound by changed.",
+          "targets": [],
+          "at": "2026-10-17T00:56:49.854Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Withdrawn by D072: the multi-suite selection and input analysis this decision implemented were removed with criteria 15 to 19. [docs/evidence/WO-213/decisions.md D072]",
+          "reopenWhen": "The operator or a planning pass re-authorizes the withdrawn mechanism.",
+          "targets": [],
+          "at": "2026-10-17T13:04:33.966Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-92bdaad7521fd511",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d065",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "78b6322942a6f09023eeb35f9a059faf41b929043465892ba1f63b129b6383d4",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d065",
+          "title": "WO-213-D065: Plan an order that removes the class of late bookkeeping failures this order's history shows: one command that regenerates every derived artifact that is safe to regenerate (the…",
+          "summary": "{ \"id\": \"WO-213-D065\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: fix; the operator redirects the fourth repair after the previous session's input-analysis work\", \"authorization\": \"Paraphrase of the operator's direction in this session: the previous session's compiler-based input analyzer is to be fixed, because the aim was to stop executors wasting time on gates that fail late over bookkeeping drift and to let preflight suite passes be reused by the full gate. Asked, with the measurements below, whether to remove the analyzer, keep it as it was or keep extending it, the operator chose removal.\", \"decision\": \"Remove scripts/lib/task-input-analysis.mjs and the thirteen synthetic regressions t",
+          "missing": false
+        },
+        {
+          "hash": "5b4a584c55e7e35ecf14fe63a89514f62dcb5745d5710318200c31263f527aa3",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d065",
+          "title": "WO-213-D065: Plan an order that removes the class of late bookkeeping failures this order's history shows: one command that regenerates every derived artifact that is safe to regenerate (the…",
+          "summary": "{ \"id\": \"WO-213-D065\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: fix; the operator redirects the fourth repair after the previous session's input-analysis work\", \"authorization\": \"Paraphrase of the operator's direction in this session: the previous session's compiler-based input analyzer is to be fixed, because the aim was to stop executors wasting time on gates that fail late over bookkeeping drift and to let preflight suite passes be reused by the full gate. Asked, with the measurements below, whether to remove the analyzer, keep it as it was or keep extending it, the operator chose removal.\", \"decision\": \"Remove scripts/lib/task-input-analysis.mjs and the thirteen synthetic regressions t",
+          "missing": false
+        },
+        {
+          "hash": "75daf51d2c18ced39061144cf0c7005f01bd5420f1917667eadb37300041dc98",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d065",
+          "title": "WO-213-D065: Plan an order that removes the class of late bookkeeping failures this order's history shows: one command that regenerates every derived artifact that is safe to regenerate (the…",
+          "summary": "{ \"id\": \"WO-213-D065\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: fix; the operator redirects the fourth repair after the previous session's input-analysis work\", \"authorization\": \"Paraphrase of the operator's direction in this session: the previous session's compiler-based input analyzer is to be fixed, because the aim was to stop executors wasting time on gates that fail late over bookkeeping drift and to let preflight suite passes be reused by the full gate. Asked, with the measurements below, whether to remove the analyzer, keep it as it was or keep extending it, the operator chose removal.\", \"decision\": \"Remove scripts/lib/task-input-analysis.mjs and the thirteen synthetic regressions t",
+          "missing": false
+        },
+        {
+          "hash": "d26b59195d3fe69bbed2c3aaa7befe1b717665cb38820a976e3f4dea48ca5096",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d065",
+          "title": "WO-213-D065: Plan an order that removes the class of late bookkeeping failures this order's history shows: one command that regenerates every derived artifact that is safe to regenerate (the…",
+          "summary": "{ \"id\": \"WO-213-D065\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: fix; the operator redirects the fourth repair after the previous session's input-analysis work\", \"authorization\": \"Paraphrase of the operator's direction in this session: the previous session's compiler-based input analyzer is to be fixed, because the aim was to stop executors wasting time on gates that fail late over bookkeeping drift and to let preflight suite passes be reused by the full gate. Asked, with the measurements below, whether to remove the analyzer, keep it as it was or keep extending it, the operator chose removal.\", \"decision\": \"Remove scripts/lib/task-input-analysis.mjs and the thirteen synthetic regressions t",
+          "missing": false
+        },
+        {
+          "hash": "2508504a0871a8f8fb714f5f67038c80c0705305b70eda20e41634e3320c5ebd",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d065",
+          "title": "WO-213-D065: Plan an order that removes the class of late bookkeeping failures this order's history shows: one command that regenerates every derived artifact that is safe to regenerate (the…",
+          "summary": "{ \"id\": \"WO-213-D065\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: fix; the operator redirects the fourth repair after the previous session's input-analysis work\", \"authorization\": \"Paraphrase of the operator's direction in this session: the previous session's compiler-based input analyzer is to be fixed, because the aim was to stop executors wasting time on gates that fail late over bookkeeping drift and to let preflight suite passes be reused by the full gate. Asked, with the measurements below, whether to remove the analyzer, keep it as it was or keep extending it, the operator chose removal.\", \"decision\": \"Remove scripts/lib/task-input-analysis.mjs and the thirteen synthetic regressions t",
+          "missing": false
+        },
+        {
+          "hash": "9a7aaad8b297a47527f407a87050ed6a42633332da2c606982f91124200616d7",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d065",
+          "title": "WO-213-D065: Plan an order that removes the class of late bookkeeping failures this order's history shows: one command that regenerates every derived artifact that is safe to regenerate (the…",
+          "summary": "{ \"id\": \"WO-213-D065\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: fix; the operator redirects the fourth repair after the previous session's input-analysis work\", \"authorization\": \"Paraphrase of the operator's direction in this session: the previous session's compiler-based input analyzer is to be fixed, because the aim was to stop executors wasting time on gates that fail late over bookkeeping drift and to let preflight suite passes be reused by the full gate. Asked, with the measurements below, whether to remove the analyzer, keep it as it was or keep extending it, the operator chose removal.\", \"decision\": \"Remove scripts/lib/task-input-analysis.mjs and the thirteen synthetic regressions t",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 6,
+          "status": "deferred",
+          "reason": "Still relevant after the undo: a structural phase before any suite and one regeneration command are independent of the withdrawn reuse code; they are directions 1 and 2 of docs/evidence/WO-213/validation-expansion-history.md. [docs/evidence/WO-213/decisions.md D072]",
+          "reopenWhen": "A planning pass sequences validation work, or a late bookkeeping failure recurs inside a complete gate.",
+          "targets": [],
+          "at": "2026-10-17T13:04:33.451Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3f112f7ebcfbd1a7",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d066",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ecf1d0bcf834d0a950278dd455f8947e5027513600b7d69b2d3e4164618cc034",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d066",
+          "title": "WO-213-D066: Plan a field on a targeted selection's gate record that says it stopped at its first failure and names the tasks it never started, so readers need not infer the stop from each case's…",
+          "summary": "{ \"id\": \"WO-213-D066\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: fix; the operator chooses that the multi-suite preflight stops at its first failure\", \"authorization\": \"Paraphrase of the operator's choice in this session: the targeted preflight should stop launching suites after the first failure while the suites in flight finish and keep their passes; the complete gate keeps running everything.\", \"decision\": \"A targeted selection of several suites launches no further task once an executed task has failed. The tasks in flight finish and keep their results; a carried task whose prerequisites passed is still carried, the rest are recorded as not started with one fixed message, and the row rec",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Withdrawn by D072: targeted selections and their first-failure stop were removed, so no such gate record exists to extend. [docs/evidence/WO-213/decisions.md D072]",
+          "reopenWhen": "The operator or a planning pass re-authorizes the withdrawn mechanism.",
+          "targets": [],
+          "at": "2026-10-17T13:04:34.029Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-dce396224175af3b",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d067",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3f731ecabf0bafec6bc1b814784dee058899f3b081ba5f7a79d4367e80197e90",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d067",
+          "title": "WO-213-D067: WO-213 repair V5-F1: normalize and validate repository-contained command paths before discovering their entry/import closure, or mark unresolved spellings unbindable and non-reusable.…",
+          "summary": "{ \"id\": \"WO-213-D067\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: verify; independent VER-005 command-path attack\", \"kind\": \"finding\", \"decision\": \"Record blocking V5-F1 against criteria 16 and 19: a declared task whose command uses a valid interior dot segment or repeated separator can omit its entry file from the binding, carry a stale pass across a change to that file and supply an accepted complete lifecycle claim. The verifier leaves implementation unchanged and routes the repair inside this order's declared runner/input-binding surfaces.\", \"evidence\": [ \"node scripts/harness.mjs bounded -- node docs/evidence/WO-213/ver005-path-alias.mjs runs real tasks in a disposable Git fixture. The ",
+          "missing": false
+        },
+        {
+          "hash": "0dc303da215bc26b4fbe5c9ebbffad860520b0a2afcf457de17a817dab20d85f",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d067",
+          "title": "WO-213-D067: WO-213 repair V5-F1: normalize and validate repository-contained command paths before discovering their entry/import closure, or mark unresolved spellings unbindable and non-reusable.…",
+          "summary": "{ \"id\": \"WO-213-D067\", \"date\": \"2026-10-16\", \"dispatch\": \"resume: verify; independent VER-005 command-path attack\", \"kind\": \"finding\", \"decision\": \"Record blocking V5-F1 against criteria 16, 17 and 19: a declared task whose command uses a valid interior dot segment or repeated separator can omit its entry file from the binding, carry a stale pass across a change to that file and supply an accepted complete lifecycle claim. This also breaks criterion 17's requirement that invalidated work actually executes. The verifier leaves implementation unchanged and routes the repair inside this order's declared runner/input-binding surfaces.\", \"evidence\": [ \"node scripts/harness.mjs bounded -- node doc",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-213 fifth repair: D068 reads a declared command only in shapes whose every file the binder establishes, resolves each spelled path as the operating system reaches it, and extends the closure to sibling, manifest, literal and package-metadata routes; real-child regressions and the retained adversary probes refuse every reproduced stale claim. [docs/evidence/WO-213/decisions.md D068]",
+          "reopenWhen": "A declared, reusable binding keeps its digest while a file its command spells or its closure names statically changes.",
+          "targets": [],
+          "at": "2026-10-17T04:29:23.830Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "Withdrawn by D072: the declared-task binder this finding concerned was removed, so the fix that settled it no longer exists and the finding no longer applies. [docs/evidence/WO-213/decisions.md D072]",
+          "reopenWhen": "The operator or a planning pass re-authorizes the withdrawn mechanism.",
+          "targets": [],
+          "at": "2026-10-17T13:04:34.093Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-13c4df49367463fb",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d068",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "625f26a4dd024e88a177b433b7347b32a3c9231d71e8ab78d528448be8da8da4",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d068",
+          "title": "WO-213-D068: A declared task is bound only from what the binder can read exactly; anything else is bound by the whole code identity and runs on every request. The command is read by shape. Node may…",
+          "summary": "{ \"id\": \"WO-213-D068\", \"date\": \"2026-10-17\", \"dispatch\": \"resume: fix; repair VER-005 V5-F1 (D067)\", \"decision\": \"A declared task is bound only from what the binder can read exactly; anything else is bound by the whole code identity and runs on every request. The command is read by shape. Node may carry an allowlist of options that read no file and module options naming an existing first-party module (--import, --loader and --experimental-loader as URLs, --require as a path), then a main entry and its program arguments or, with --test, test files and the runner's own <directory>/*.test.js pattern, which the binder expands as the runner does, binding each file and requiring the directory's de",
+          "missing": false
+        },
+        {
+          "hash": "fdd10cc5b4a99df4ea5483fa5f27d271696f9a1a806b09a0ae6fd22913590e79",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d068",
+          "title": "WO-213-D068: A declared task is bound only from what the binder can read exactly; anything else is bound by the whole code identity and runs on every request. The command is read by shape. Node may…",
+          "summary": "{ \"id\": \"WO-213-D068\", \"date\": \"2026-10-17\", \"dispatch\": \"resume: fix; repair VER-005 V5-F1 (D067)\", \"decision\": \"A declared task is bound only from what the binder can read exactly; anything else is bound by the whole code identity and runs on every request. The command is read by shape. Node may carry an allowlist of options that read no file and module options naming an existing first-party module (--import, --loader and --experimental-loader as URLs, --require as a path), then a main entry and its program arguments or, with --test, test files and the runner's own <directory>/*.test.js pattern, which the binder expands as the runner does, binding each file and requiring the directory's de",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "Withdrawn by D072: the command-shape binder this decision built was removed with criteria 15 to 19. [docs/evidence/WO-213/decisions.md D072]",
+          "reopenWhen": "The operator or a planning pass re-authorizes the withdrawn mechanism.",
+          "targets": [],
+          "at": "2026-10-17T13:04:34.156Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8e2668fadda42947",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d069",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8d56d0ad02728e70bdec18bcc4f31ad98c32fd5f943eb9b355cf01c20579a619",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d069",
+          "title": "WO-213-D069: WO-213 repair V6-F1: bind the resolved file for supported statically named runtime loads, or refuse reuse when the loader spelling cannot be established. Regress extensionless CommonJS…",
+          "summary": "{ \"id\": \"WO-213-D069\", \"date\": \"2026-10-17\", \"dispatch\": \"resume: verify; VER-006 independent runtime-import attack\", \"kind\": \"finding\", \"decision\": \"Record blocking V6-F1 against criteria 16, 17 and 19. A declared reusable binding omits a statically named module reached by an extensionless createRequire alias or a percent-encoded module-relative URL. After that module changes to exit 13, the complete runner carries its old pass and both coverage and lifecycle consumers accept the claim. The verifier changes no implementation and routes the class within the existing binder and runner surfaces.\", \"evidence\": [ \"node scripts/harness.mjs bounded -- node docs/evidence/WO-213/ver006-import-routes",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Withdrawn by D072: VER-006 V6-F1 concerned the removed binder; no task binding remains for a loader route to escape. [docs/evidence/WO-213/decisions.md D072]",
+          "reopenWhen": "The operator or a planning pass re-authorizes the withdrawn mechanism.",
+          "targets": [],
+          "at": "2026-10-17T13:04:34.221Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-223a19dd2931c92b",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d070",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2d4e27f315b187b18ad23427fad89e1c17e0ffaa05bb3a585202b8d685fa8a53",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d070",
+          "title": "WO-213-D070: WO-213 repair V6-F2: keep unrelated lifecycle projections out of product-task input bindings while preserving genuine declared semantic inputs and fresh coordination-document validation.…",
+          "summary": "{ \"id\": \"WO-213-D070\", \"date\": \"2026-10-17\", \"dispatch\": \"resume: verify; VER-006 investigation of the displaced complete review row\", \"kind\": \"finding\", \"decision\": \"Record blocking V6-F2 against criterion 17 and the existing handoff behavior. The expanded literal closure binds docs/control/current.md into every shipped declared task through scripts/test-codex-session.mjs, including tasks that do not run that status fixture. A normal lifecycle projection change therefore displaces the complete passing gate at unchanged code identity and unchanged build output. The verifier does not restore projections to match the row.\", \"evidence\": [ \"At entry, code identity matches the executor's 2026-10-",
+          "missing": false
+        },
+        {
+          "hash": "19d448fcca0e4e8ac7443574a26588f057f15ca141f20d5a684342452797b286",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d070",
+          "title": "WO-213-D070: WO-213 repair V6-F2: keep unrelated lifecycle projections out of product-task input bindings while preserving genuine declared semantic inputs and fresh coordination-document validation.…",
+          "summary": "{ \"id\": \"WO-213-D070\", \"date\": \"2026-10-17\", \"dispatch\": \"resume: verify; VER-006 investigation of the displaced complete review row\", \"kind\": \"finding\", \"decision\": \"Record blocking V6-F2 against criterion 17 and the existing handoff behavior. The expanded literal closure binds docs/control/current.md into every shipped declared task through scripts/test-codex-session.mjs, including tasks that do not run that status fixture. A normal lifecycle projection change therefore displaces the complete passing gate at unchanged code identity and unchanged build output. The verifier does not restore projections to match the row.\", \"evidence\": [ \"At entry, code identity matches the executor's 2026-10-",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "Withdrawn by D072: VER-006 V6-F2 concerned the removed per-task bindings; the restored gate binds only the whole code identity, which excludes lifecycle projections. [docs/evidence/WO-213/decisions.md D072]",
+          "reopenWhen": "The operator or a planning pass re-authorizes the withdrawn mechanism.",
+          "targets": [],
+          "at": "2026-10-17T13:04:34.286Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7931c86a3831b747",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d071",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a0b86823324649dfce228256db25541471538713b74813e9a25abfa592b3106a",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d071",
+          "title": "WO-213-D071: WO-213 reuse repair: establish a stable execution environment for ordinary cross-session validation, or bind the environment inputs a task actually depends on. Prove executor-to-verifier…",
+          "summary": "{ \"id\": \"WO-213-D071\", \"date\": \"2026-10-17\", \"dispatch\": \"resume: verify; operator challenges the repeated full gate because the code has not changed\", \"kind\": \"finding\", \"decision\": \"Record blocking V6-F3 against criterion 17: ordinary executor-to-verifier environment differences invalidate unchanged product work instead of reusing it. The operator explicitly clarified that these invalidation causes are failures of the required reuse behavior. The verifier's initial follow-up classification and blanket rerun were errors. The code identity matches the earlier passing review. Four declared bindings were displaced by the lifecycle projection (D070); the new invocation separately rejected ninet",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Withdrawn by D072: VER-006 V6-F3 concerned the removed per-task environment contracts; a controlled task environment remains a candidate direction in the expansion history. [docs/evidence/WO-213/decisions.md D072]",
+          "reopenWhen": "The operator or a planning pass re-authorizes the withdrawn mechanism.",
+          "targets": [],
+          "at": "2026-10-17T13:04:34.349Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-360df0856e57fd8e",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d039",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "bb6bebc1866b4341b96ca05a22ee053f5ab1be9d28dc6a1a727291f0a4f95070",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d039",
+          "title": "WO-213-D039: Extend the active repair to remove the structural causes of repeated dependency and fixture failures for future work orders, and replace the mandatory separate preflight/full-gate…",
+          "summary": "{ \"id\": \"WO-213-D039\", \"date\": \"2026-10-16\", \"dispatch\": \"scope expand: permanent testing-system repair and removal of duplicate preflight/full-gate execution\", \"decision\": \"Extend the active repair to remove the structural causes of repeated dependency and fixture failures for future work orders, and replace the mandatory separate preflight/full-gate sequence with one validation flow. Derive dependency information where the source already declares it, admit cheap structural checks before expensive execution, and allow individually executed passing tasks to contribute to a complete current gate under checked evidence bindings. Preserve every existing criterion, independent verification, publ",
+          "missing": false
+        },
+        {
+          "hash": "edc2d0e0eaec020395b20aa551bb8a84353742c5f21cceef038ead7b9acf17e0",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d039",
+          "title": "WO-213-D039: Extend the active repair to remove the structural causes of repeated dependency and fixture failures for future work orders, and replace the mandatory separate preflight/full-gate…",
+          "summary": "{ \"id\": \"WO-213-D039\", \"date\": \"2026-10-16\", \"dispatch\": \"scope expand: permanent testing-system repair and removal of duplicate preflight/full-gate execution\", \"decision\": \"Extend the active repair to remove the structural causes of repeated dependency and fixture failures for future work orders, and replace the mandatory separate preflight/full-gate sequence with one validation flow. Derive dependency information where the source already declares it, admit cheap structural checks before expensive execution, and allow individually executed passing tasks to contribute to a complete current gate under checked evidence bindings. Preserve every existing criterion, independent verification, publ",
+          "missing": false
+        },
+        {
+          "hash": "49bbb8119a089e8bd43cacd91128f31c9404de5e7c491dd45f0ca0730e47e370",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d039",
+          "title": "WO-213-D039: Extend the active repair to remove the structural causes of repeated dependency and fixture failures for future work orders, and replace the mandatory separate preflight/full-gate…",
+          "summary": "{ \"id\": \"WO-213-D039\", \"date\": \"2026-10-16\", \"dispatch\": \"scope expand: permanent testing-system repair and removal of duplicate preflight/full-gate execution\", \"decision\": \"Extend the active repair to remove the structural causes of repeated dependency and fixture failures for future work orders, and replace the mandatory separate preflight/full-gate sequence with one validation flow. Derive dependency information where the source already declares it, admit cheap structural checks before expensive execution, and allow individually executed passing tasks to contribute to a complete current gate under checked evidence bindings. Preserve every existing criterion, independent verification, publ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "reason": "D072 withdrew the expansion D039 authorized; the planning question its reopening raises is carried by D072's follow-up. [docs/evidence/WO-213/decisions.md D072]",
+          "reopenWhen": "The operator re-authorizes the expansion D039 recorded.",
+          "targets": [
+            "FUP-201956913dc8ea85"
+          ],
+          "at": "2026-10-17T13:04:33.514Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "duplicate",
+          "reason": "D072 withdrew the expansion D039 authorized; the planning question its reopening raises is carried by D072's follow-up. [docs/evidence/WO-213/decisions.md D072]",
+          "reopenWhen": "The operator re-authorizes the expansion D039 recorded.",
+          "targets": [
+            "FUP-201956913dc8ea85"
+          ],
+          "at": "2026-10-17T14:08:24.413Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-201956913dc8ea85",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d072",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "870220914b90ff99b9768888d325cbd1a5dbf08ccd97686f6fd3f46edfccc7c6",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d072",
+          "title": "WO-213-D072: Planning: corpus/harness/wo107-schema.test.mjs's tiny-child kill and bystander case and its normal-completion receipt case refuse before spawning when the host's native health sample…",
+          "summary": "{ \"id\": \"WO-213-D072\", \"date\": \"2026-10-17\", \"dispatch\": \"resume: fix; the operator directs undoing the validation-system scope expansion (criteria 15 to 19)\", \"authorization\": \"The operator's direction during this repair: \\\"undo every change related to the new criteria around gates and testing\\\". Asked whether that meant criteria 15 to 19 only, criteria 10 and 11 as well, or a rollback to checkpoint 15, the operator chose criteria 15 to 19 only.\", \"decision\": \"Withdraw the 2026-10-16 validation-system expansion from this order: criteria 15 to 19, the two scope-expansion sections (validation reliability; parallel targeted validation) and the rewritten Preflight paragraph leave the order, whi",
+          "missing": false
+        },
+        {
+          "hash": "e1bf87e1ef0ba4db67d40c67b83c7be0fd4f70f096d216ce5397dab767aa8e93",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d072",
+          "title": "WO-213-D072: Planning: read docs/evidence/WO-213/validation-expansion-history.md, the account of every idea, attempt, measurement and failure of the withdrawn validation expansion, and decide whether…",
+          "summary": "{ \"id\": \"WO-213-D072\", \"date\": \"2026-10-17\", \"dispatch\": \"resume: fix; the operator directs undoing the validation-system scope expansion (criteria 15 to 19)\", \"authorization\": \"The operator's direction during this repair: \\\"undo every change related to the new criteria around gates and testing\\\". Asked whether that meant criteria 15 to 19 only, criteria 10 and 11 as well, or a rollback to checkpoint 15, the operator chose criteria 15 to 19 only.\", \"decision\": \"Withdraw the 2026-10-16 validation-system expansion from this order: criteria 15 to 19, the two scope-expansion sections (validation reliability; parallel targeted validation) and the rewritten Preflight paragraph leave the order, whi",
+          "missing": false
+        },
+        {
+          "hash": "4bce52250daf90d7d1200d0b610e8349bfce35160e20088a6348cd4f8b6a01ee",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d072",
+          "title": "WO-213-D072: Planning: read docs/evidence/WO-213/validation-expansion-history.md, the account of every idea, attempt, measurement and failure of the withdrawn validation expansion, and decide whether…",
+          "summary": "{ \"id\": \"WO-213-D072\", \"date\": \"2026-10-17\", \"dispatch\": \"resume: fix; the operator directs undoing the validation-system scope expansion (criteria 15 to 19)\", \"authorization\": \"Paraphrase of the operator's directions during this repair: undo every change related to the order's new gate and testing criteria. Asked whether that meant criteria 15 to 19 only, criteria 10 and 11 as well, or a rollback to checkpoint 15, the operator chose criteria 15 to 19 only. The operator then asked for at least ten and up to twenty independent workers to check that the undo is correct and that the original order and its fixes are in place, and for every idea and attempt to be documented so that a planning pas",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Planning carrier for the withdrawn validation expansion and the three fixes of older behaviour withdrawn with it; docs/evidence/WO-213/validation-expansion-history.md is its account of ideas, attempts, measurements and failures. [docs/evidence/WO-213/decisions.md D072]",
+          "reopenWhen": "A planning pass takes up validation cost, late bookkeeping failures or one of the three withdrawn fixes, or a gate fails on one of them.",
+          "targets": [],
+          "at": "2026-10-17T13:04:33.378Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "Planning carrier for the withdrawn validation expansion and the three fixes of older behaviour withdrawn with it; docs/evidence/WO-213/validation-expansion-history.md is its account of ideas, attempts, measurements and failures. [docs/evidence/WO-213/decisions.md D072]",
+          "reopenWhen": "A planning pass takes up validation cost, late bookkeeping failures or one of the three withdrawn fixes, or a gate fails on one of them.",
+          "targets": [],
+          "at": "2026-10-17T14:08:24.343Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4290f78ca9e7e7ac",
+      "key": "decision:docs/evidence/WO-213/decisions.md#wo-213-d074",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8ec1bbd1940e3acb8fb8463740f7d3f34edc9b039f2cbca6f32ba116d99203c3",
+          "ref": "docs/evidence/WO-213/decisions.md#wo-213-d074",
+          "title": "WO-213-D074: Planning, or the next order that edits these surfaces. (F1) scripts/docs-check.mjs documentFiles and scripts/lib/paths.mjs documentEntry: decide whether an untracked dangling symbolic…",
+          "summary": "{ \"id\": \"WO-213-D074\", \"date\": \"2026-10-17\", \"dispatch\": \"resume: final review; FINAL-003; three read-only reviewers; operator direction during the review to board a theoretical issue rather than fail on it\", \"kind\": \"finding\", \"decision\": \"Pass the final review of WO-213 at the integrated subject, code identity b407908294cb66bc8010ab8dea5f66095dde8971cecb2b1e2d6236640b9efcf3, the identity VER-007 judged; integration took in main's two document-only commits and changed no judged byte (D073). All fourteen criteria are met. No finding blocks: the one candidate the reviewers raised as possibly blocking, the document listing refusing a dangling or unreachable Markdown or record entry by reposito",
           "missing": false
         }
       ],

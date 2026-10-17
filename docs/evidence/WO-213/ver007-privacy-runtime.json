@@ -1,0 +1,42 @@
+{
+  "projectionVariants": 210,
+  "baseline": {
+    "oldEntries": 128,
+    "addedFiles": 37,
+    "addedLines": 291,
+    "counts": {
+      ".json": {
+        "files": 28,
+        "lines": 262
+      },
+      ".txt": {
+        "files": 4,
+        "lines": 8
+      },
+      ".log": {
+        "files": 5,
+        "lines": 21
+      }
+    }
+  },
+  "originalRegisterEntries": 1115,
+  "summaryChanges": [
+    {
+      "id": "FUP-de6162b279f66709",
+      "revision": 1,
+      "beforeLength": 700,
+      "afterLength": 680,
+      "beforeSha256": "56b7a86bc33f19b9f21e54dd42e53c62dad658a413f77c9f6e37173f2137fc1e",
+      "afterSha256": "440fbb3a6bcc19959a468bd35e06d9bdfa403af735b8c3f5f715767bcda121ab"
+    }
+  ],
+  "documentRootsAndMultiplicity": true,
+  "runtimeMetadataStable": true,
+  "runtimeBytesAndExecutableBitBound": true,
+  "malformedSourceDeclarationRefused": true,
+  "readerDefault": true,
+  "releaseNames": {
+    "accepted": 3,
+    "refused": 8
+  }
+}

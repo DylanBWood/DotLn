@@ -128,12 +128,16 @@ const DOCUMENT_GATE = "npm run test:docs";
  * a task last ran. Main's index is read at most once, and only when a caller
  * asks; reads never modify main or copy its index here. */
 async function identityRows(root, checkId, codeIdentity) {
-  const { gateCodeIdentity, readGateChecks } =
+  const { gateCodeIdentity, readGateChecks, gateInstanceInputDigest } =
     await import("./gate-evidence.mjs");
   const identity = codeIdentity ?? gateCodeIdentity(root);
+  const instanceInputDigest = gateInstanceInputDigest(root);
   const at = (path) => {
     const rows = readGateChecks(path).filter(
-      (row) => row.codeIdentity === identity,
+      (row) =>
+        row.codeIdentity === identity &&
+        (instanceInputDigest === undefined ||
+          row.instanceInputDigest === instanceInputDigest),
     );
     return {
       rows: rows.filter((row) => row.checkId === checkId),
@@ -323,6 +327,7 @@ export async function coveringTaskResults(root, checkId, tasks, codeIdentity) {
       lanes,
       schedulerDurationMs,
       hostLaneWaitMs,
+      hostLaneWaitObservations,
       ...retained
     } = pass.result;
     results.set(task.name, {

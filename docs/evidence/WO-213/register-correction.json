@@ -1,0 +1,33 @@
+{
+  "command": "npm run plan -- followups --sync",
+  "changes": [
+    {
+      "id": "FUP-de6162b279f66709",
+      "revision": 1,
+      "field": "summary",
+      "before": {
+        "length": 700,
+        "sha256": "56b7a86bc33f19b9f21e54dd42e53c62dad658a413f77c9f6e37173f2137fc1e"
+      },
+      "after": {
+        "length": 680,
+        "sha256": "440fbb3a6bcc19959a468bd35e06d9bdfa403af735b8c3f5f715767bcda121ab"
+      }
+    }
+  ],
+  "preserved": {
+    "entryCount": 1115,
+    "revisionCounts": true,
+    "dispositions": true
+  },
+  "selectedEntry": {
+    "id": "FUP-de6162b279f66709",
+    "sourceRevisions": 1,
+    "sourceHash": "3c2073f919f9ad47e1dc025601f8a01a914d81b3873d6041717add06130d80b4",
+    "sourceRef": "docs/evidence/WO-187/decisions.md#wo-187-d043--recording-a-verification-result-waits-on-another-worktrees-test-lanes",
+    "titleUnchanged": true,
+    "missing": false,
+    "dispositions": 2,
+    "status": "deferred"
+  }
+}

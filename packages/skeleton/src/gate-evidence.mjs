@@ -1,5 +1,15 @@
 import { observedSpawnSync as spawnSync } from "./gate-deadlines.mjs";
 import { startDeadline } from "./gate-deadlines.mjs";
+import {
+  isKitRoot,
+  packageDirectories,
+  runtimeDirectoryNames,
+  runtimeEntryName,
+  runtimeInfo,
+  runtimeModuleDirectory,
+  runtimePackageNames,
+  runtimeRead,
+} from "./runtime-inputs.mjs";
 import { createHash, randomUUID } from "node:crypto";
 import {
   existsSync,
@@ -52,12 +62,146 @@ export function gateInstalledInputRoots(root) {
   return [
     "node_modules",
     ...runtimeRoots,
-    ...(existsSync(join(root, "packages"))
-      ? readdirSync(join(root, "packages"))
-          .sort()
-          .map((name) => `packages/${name}/dist`)
-      : []),
+    ...packageDirectories(root).flatMap((name) => [
+      `packages/${name}/dist`,
+      `packages/${name}/src`,
+    ]),
   ];
+}
+/** A consumer pass also binds the installed runtime that Git does not track.
+ * Core source evidence keeps its existing identity. Invalid aliases refuse
+ * instead of attesting bytes outside the selected installation.
+ * @param {string} root */
+export function gateInstanceInputDigest(root) {
+  if (!isKitRoot(root)) return undefined;
+  root = realpathSync(root);
+  const digest = createHash("sha256").update("dotln-instance-inputs-v1\0");
+  // Check every existing component before any selection read, including the
+  // parents of missing inputs. A missing descendant cannot hide an alias.
+  /** @param {string} path @param {boolean} [allowFinalLink] */
+  const containedInput = (path, allowFinalLink = false) => {
+    let absolute = root;
+    for (const part of path.split("/")) {
+      absolute = join(absolute, part);
+      const logical = relative(root, absolute);
+      const info = runtimeInfo(root, logical);
+      if (!info) return;
+      if (
+        info.isSymbolicLink() &&
+        allowFinalLink &&
+        absolute === join(root, path)
+      )
+        return;
+      if (
+        info.isSymbolicLink() ||
+        runtimeRead(logical, () => realpathSync(absolute)) !== absolute
+      )
+        throw new Error(
+          "Instance runtime input must stay within its selected installation",
+        );
+    }
+  };
+  for (const path of [
+    "KIT-MANIFEST.json",
+    ".claude/harness-manifest.json",
+    "packages",
+  ])
+    containedInput(path);
+  const generated = new Set([".claude/hooks", "CLAUDE.md"]);
+  const manifestPath = join(root, ".claude/harness-manifest.json");
+  if (existsSync(manifestPath)) {
+    const manifest = runtimeRead(".claude/harness-manifest.json", () =>
+      JSON.parse(readFileSync(manifestPath, "utf8")),
+    );
+    for (const file of manifest.installed ?? []) {
+      const path = file.path;
+      if (
+        typeof path !== "string" ||
+        path
+          .split("/")
+          .some((part) => !part || part === "." || part === "..") ||
+        !/^(?:CLAUDE\.md|\.claude\/(?:hooks\/[^\n]+|agents\/dotln-worker\.md|settings\.json|skills\/dotln-[^/]+\/[^\n]+)|\.agents\/skills\/dotln-[^/]+\/[^\n]+|\.codex\/(?:config\.toml|hooks\.json|hooks\/[^\n]+))$/u.test(
+          path,
+        )
+      )
+        throw new Error("Instance harness input is not a generated surface");
+      generated.add(path);
+    }
+  }
+  // Match the harness-owned inventory, including unexpected hooks and skill
+  // files. Local settings, transcripts and unrelated personal skills stay out.
+  for (const directory of [".claude/skills", ".agents/skills"]) {
+    containedInput(directory);
+    for (const name of runtimeDirectoryNames(root, directory, true))
+      if (name.startsWith("dotln-")) generated.add(`${directory}/${name}`);
+  }
+  /** @param {string} path @param {boolean} [runtime] */
+  const visit = (path, runtime = false) => {
+    const workspace =
+      /^(\.runtime\/harness\/[a-f0-9]{16})\/node_modules\/@dotln\/([a-z0-9-]+)$/u.exec(
+        path,
+      );
+    containedInput(path, Boolean(workspace));
+    const absolute = join(root, path);
+    const info = runtimeInfo(root, path);
+    digest.update(path).update("\0");
+    if (!info) {
+      digest.update("absent\0");
+      return;
+    }
+    if (info.isSymbolicLink() && workspace) {
+      // Emit's workspace links point to directories visited in this same
+      // snapshot. Bind the link text without following it during selection.
+      const target = runtimeRead(path, () => readlinkSync(absolute));
+      const selected = `${workspace[1]}/packages/${workspace[2]}`;
+      if (target !== `../../packages/${workspace[2]}`)
+        throw new Error(
+          "Instance runtime workspace link differs from its selected package",
+        );
+      containedInput(selected);
+      if (!runtimeInfo(root, selected)?.isDirectory())
+        throw new Error(
+          "Instance runtime workspace link has no selected package",
+        );
+      digest
+        .update(`link:${Buffer.byteLength(target)}\0`)
+        .update(target)
+        .update("\0");
+    } else if (info.isDirectory()) {
+      digest.update("directory\0");
+      for (const name of runtimeDirectoryNames(root, path))
+        if (!runtime || runtimeEntryName(name))
+          visit(`${path}/${name}`, runtime);
+    } else if (info.isFile()) {
+      const bytes = runtimeRead(path, () => readFileSync(absolute));
+      digest
+        .update(`file:${Boolean(info.mode & 0o111)}:${bytes.length}\0`)
+        .update(bytes)
+        .update("\0");
+    } else
+      throw new Error(
+        "Instance runtime input must be a regular file or directory",
+      );
+  };
+  for (const path of [
+    ".claude/harness-manifest.json",
+    ...[...generated].sort(),
+  ])
+    visit(path);
+  for (const path of gateInstalledInputRoots(root).filter((path) =>
+    path.startsWith(".runtime/"),
+  ))
+    visit(path, true);
+  for (const name of runtimePackageNames(root)) {
+    const path = `packages/${name}`;
+    containedInput(path);
+    if (!runtimeInfo(root, path)?.isDirectory())
+      throw new Error(`Runtime package must be a regular directory: ${path}`);
+    const modules = runtimeModuleDirectory(root, path);
+    visit(`${path}/package.json`);
+    if (modules) visit(`${path}/${modules}`, true);
+  }
+  return `sha256:${digest.digest("hex")}`;
 }
 /** Walk before normalizing parents: the kernel follows a directory symlink
  * before applying `..`, and follows a dangling final link when creating a file.
@@ -460,7 +604,7 @@ export function beginGateRun(root, command, { kind } = {}) {
 
 /** @typedef {{exitCode: number, executed: boolean, output?: string, outputRef?: string, cases?: GateDiagnostic[]}} GateDiagnostic */
 /** @typedef {{originMain: string, main: string, tags: {count: number|"unreadable", newest: string}, dotlnRefs: number|"unreadable"}} SharedRefs */
-/** @typedef {GateDiagnostic & {checkId: string, treeHash: string, codeIdentity?: string, subject: string, durationMs: number, evidenceRef: string, recordedAt: string, sharedRefs?: {start: SharedRefs, end: SharedRefs}}} GateCheck */
+/** @typedef {GateDiagnostic & {checkId: string, treeHash: string, codeIdentity?: string, instanceInputDigest?: string, subject: string, durationMs: number, evidenceRef: string, recordedAt: string, sharedRefs?: {start: SharedRefs, end: SharedRefs}}} GateCheck */
 /** @param {string} root @param {string[]} args */
 function git(root, args) {
   const run = spawnSync("git", args, {
@@ -1001,17 +1145,32 @@ export const partialGateCheck = (row) =>
   (row.partial !== undefined && row.partial !== false) ||
   (row.excludedSuites !== undefined &&
     !(Array.isArray(row.excludedSuites) && row.excludedSuites.length === 0));
+/** Why a recorded npm test row cannot stand for the current installed runtime:
+ * "missing" when the row records no digest (its gate ran where none was
+ * computed), "different" when it records another one; null when they agree or
+ * none is computed here.
+ * @param {{instanceInputDigest?: string}} row @param {string|undefined} current */
+export const instanceDigestMismatch = (row, current) =>
+  current === undefined || row.instanceInputDigest === current
+    ? null
+    : row.instanceInputDigest === undefined
+      ? "missing"
+      : "different";
 /** A failed attempt does not erase a later or earlier successful run at identical bytes.
  * @param {string} root @param {string} checkId @param {string} treeHash
  */
 export const findGateCheck = (root, checkId, treeHash) => {
   const codeIdentity =
     checkId === "npm test" ? gateCodeIdentity(root) : undefined;
+  const instanceInputDigest =
+    checkId === "npm test" ? gateInstanceInputDigest(root) : undefined;
   return readGateChecks(root, checkId === "npm test" ? undefined : treeHash)
     .reverse()
     .find(
       (row) =>
         row.checkId === checkId &&
+        (instanceInputDigest === undefined ||
+          row.instanceInputDigest === instanceInputDigest) &&
         (checkId === "npm test"
           ? row.codeIdentity === codeIdentity
           : row.treeHash === treeHash) &&

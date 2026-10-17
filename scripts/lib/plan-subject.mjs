@@ -4,7 +4,8 @@ import { lstatSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseHeader, parseSequence } from "../work-orders.mjs";
 import { readGitObjects, runGit } from "./git.mjs";
-import { containedRegularFile, hasPackageSources } from "./paths.mjs";
+import { containedRegularFile } from "./paths.mjs";
+import { hasPackageSources } from "../../packages/skeleton/src/runtime-inputs.mjs";
 import { defaultDocRelative, docRelative, rootPattern } from "./config.mjs";
 
 // Default-layout names for peers that hold no launchpad; `planPaths` resolves

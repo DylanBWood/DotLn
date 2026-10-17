@@ -5,6 +5,7 @@ import {
   cpSync,
   chmodSync,
   existsSync,
+  lstatSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -46,6 +47,32 @@ import {
 } from "./lib/gate-evidence.mjs";
 
 const git = (root, ...args) => runGit(root, args);
+const recordTreeSnapshot = (root) => {
+  const rows = [];
+  const visit = (prefix = "") => {
+    for (const name of readdirSync(join(root, prefix)).sort()) {
+      if (!prefix && name === ".git") continue;
+      const path = prefix ? `${prefix}/${name}` : name;
+      const file = join(root, path),
+        stat = lstatSync(file);
+      if (stat.isDirectory()) {
+        rows.push({ path, mode: stat.mode, directory: true });
+        visit(path);
+      } else
+        rows.push({
+          path,
+          mode: stat.mode,
+          sha256: createHash("sha256")
+            .update(
+              stat.isSymbolicLink() ? readlinkSync(file) : readFileSync(file),
+            )
+            .digest("hex"),
+        });
+    }
+  };
+  visit();
+  return rows;
+};
 const runtimePackages = Object.keys(
   JSON.parse(readFileSync(join(TOOL_ROOT, "package-lock.json"), "utf8"))
     .packages,
@@ -264,7 +291,7 @@ const withFixture = (run) => {
     rmSync(base, { recursive: true, force: true });
   }
 };
-const prepareFinalReview = (f, override = {}) => {
+const prepareFinalReview = (f, override = {}, verificationSuffix = "") => {
   f.ok(
     f.call(
       f.orderRoot,
@@ -284,7 +311,7 @@ const prepareFinalReview = (f, override = {}) => {
   write(
     f.orderRoot,
     "records/verifications/WO-999/VER-001.md",
-    `# Verification fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n`,
+    `# Verification fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n${verificationSuffix}`,
   );
   f.ok(f.resume(["verification-result", "pass", ...actorArgs], override));
   f.ok(f.resume(["final-review"], override));
@@ -300,8 +327,8 @@ const prepareFinalReview = (f, override = {}) => {
   );
   return { verification, finalReview };
 };
-const closeOrder = (f, override = {}) => {
-  const reports = prepareFinalReview(f, override);
+const closeOrder = (f, override = {}, verificationSuffix = "") => {
+  const reports = prepareFinalReview(f, override, verificationSuffix);
   f.ok(f.resume(["final-review-result", "pass", ...actorArgs], override));
   return reports;
 };
@@ -390,10 +417,13 @@ test("target records preserve reviewed reports, refuse changed inputs and publis
     write(
       f.orderRoot,
       decisions,
-      "# Decisions\n\nThe fixture keeps the reviewed behavior.\n",
+      "# Decisions\n\nThe fixture keeps the reviewed behavior at <home>/x.\n",
     );
     const segment = docPath(f.orderRoot, "orders", "WO-999.jsonl");
     const before = readFileSync(segment);
+    const targetBefore = recordTreeSnapshot(f.target),
+      refsBefore = git(f.target, "show-ref"),
+      originBefore = git(join(f.base, "target.git"), "show-ref");
     const refuse = (pattern) => {
       const result = f.resume(["target-records", ...actorArgs]);
       assert.notEqual(result.status, 0);
@@ -401,12 +431,30 @@ test("target records preserve reviewed reports, refuse changed inputs and publis
       assert.deepEqual(readFileSync(segment), before);
       assert.equal(git(f.target, "rev-parse", "HEAD"), reviewed);
       assert.equal(git(f.target, "status", "--porcelain"), "");
+      assert.deepEqual(recordTreeSnapshot(f.target), targetBefore);
+      assert.equal(git(f.target, "show-ref"), refsBefore);
+      assert.equal(git(join(f.base, "target.git"), "show-ref"), originBefore);
+      assert.equal(existsSync(forge.log), false);
+      return result;
     };
     const report = readFileSync(reports.verification);
     writeFileSync(reports.verification, "Changed report bytes.\n");
     refuse(/report hash differs/u);
     writeFileSync(reports.verification, report);
     const decisionBytes = readFileSync(join(f.orderRoot, decisions));
+    write(
+      f.orderRoot,
+      decisions,
+      decisionBytes.toString("utf8").replace("<home>", "/Users/fixture-user"),
+    );
+    const privateDecision = refuse(
+      /docs\/evidence\/WO-999\/decisions\.md:3: private absolute path/u,
+    );
+    assert.doesNotMatch(
+      privateDecision.stdout + privateDecision.stderr,
+      /fixture-user/u,
+    );
+    assert.match(privateDecision.stderr, /<home>/u);
     write(f.orderRoot, decisions, "# Decisions\n\nPrivate Fixture Term\n");
     refuse(/local-terms.*line/u);
     writeFileSync(join(f.orderRoot, decisions), decisionBytes);
@@ -434,6 +482,10 @@ test("target records preserve reviewed reports, refuse changed inputs and publis
     assert.equal(event.parent, reviewed);
     assert.equal(event.root, "docs");
     assert.equal(event.records.length, 4);
+    assert.match(
+      readFileSync(join(f.target, "docs/evidence/WO-999/decisions.md"), "utf8"),
+      /<home>\/x/u,
+    );
     assert.equal(
       git(f.target, "rev-list", "--parents", "-n", "1", "HEAD"),
       `${event.commit} ${reviewed}`,
@@ -976,6 +1028,52 @@ test("target records refuse missing review, dirty targets and destination collis
     rmSync(join(f.target, "untracked.txt"));
   }));
 
+test("target records screen a hash-bound verification before writing and admit its placeholder", () => {
+  for (const [location, refused] of [
+    ["/private/var/folders/fixture-user/T/x", true],
+    ["<tmp>/x", false],
+  ])
+    withFixture((f) => {
+      const forge = publicationSetup(f);
+      f.mapClone();
+      f.start();
+      const reports = closeOrder(f, {}, `\nInspected ${location}.\n`);
+      write(
+        f.orderRoot,
+        "records/evidence/WO-999/decisions.md",
+        "# Decisions\n\nPreserve the reviewed fixture behavior.\n",
+      );
+      const segment = docPath(f.orderRoot, "orders", "WO-999.jsonl");
+      const before = readFileSync(segment),
+        files = recordTreeSnapshot(f.target),
+        refs = git(f.target, "show-ref"),
+        origin = git(join(f.base, "target.git"), "show-ref"),
+        verification = readFileSync(reports.verification);
+      const result = f.resume(["target-records", ...actorArgs]);
+      if (refused) {
+        assert.notEqual(result.status, 0);
+        assert.match(
+          result.stderr,
+          /docs\/verifications\/WO-999\/VER-001\.md:\d+: private absolute path/u,
+        );
+        assert.doesNotMatch(result.stdout + result.stderr, /fixture-user/u);
+        assert.match(result.stderr, /<tmp>/u);
+        assert.deepEqual(readFileSync(segment), before);
+        assert.deepEqual(recordTreeSnapshot(f.target), files);
+        assert.equal(git(f.target, "show-ref"), refs);
+        assert.deepEqual(readFileSync(reports.verification), verification);
+      } else {
+        f.ok(result);
+        assert.deepEqual(
+          readFileSync(join(f.target, "docs/verifications/WO-999/VER-001.md")),
+          verification,
+        );
+      }
+      assert.equal(git(join(f.base, "target.git"), "show-ref"), origin);
+      assert.equal(existsSync(forge.log), false);
+    });
+});
+
 test("target records resume interrupted commits and removals with literal document roots", async () => {
   const { commitTargetRecords, targetRecordSources } =
     await import("./lib/target-records.mjs");
@@ -1313,13 +1411,60 @@ test("target planning publishes only product and planning documents under the re
       ]);
     const refs = git(join(f.base, "target.git"), "show-ref");
     const refuse = (pattern, extra) => {
+      const cloneBefore = recordTreeSnapshot(f.clone),
+        cloneRefs = git(f.clone, "show-ref"),
+        worktrees = git(f.clone, "worktree", "list", "--porcelain");
       const result = call(extra);
       assert.notEqual(result.status, 0);
       assert.match(result.stderr, pattern);
       assert.equal(git(join(f.base, "target.git"), "show-ref"), refs);
       assert.equal(existsSync(forge.log), false);
       assert.equal(git(f.clone, "branch", "--list", "docs/target-plan"), "");
+      assert.deepEqual(recordTreeSnapshot(f.clone), cloneBefore);
+      assert.equal(git(f.clone, "show-ref"), cloneRefs);
+      assert.equal(git(f.clone, "worktree", "list", "--porcelain"), worktrees);
+      return result;
     };
+    for (const [path, location] of [
+      ["planning/next.md", "/Users/fixture-user/x"],
+      ["product/purpose.md", "/private/var/folders/fixture-user/T/x"],
+      ["planning/record.json", "/home/fixture-user/x"],
+      ["planning/.jsonl", "/home/fixture-user/x"],
+      ["product/record.JSON", "/home/fixture-user/x"],
+    ]) {
+      const original = existsSync(join(from, path))
+        ? readFileSync(join(from, path))
+        : null;
+      write(from, path, `Inspected ${location}.\n`);
+      const result = refuse(
+        /manual\/(?:planning|product)\/[^:]+:1: private absolute path/u,
+      );
+      assert.doesNotMatch(result.stdout + result.stderr, /fixture-user/u);
+      assert.match(result.stderr, /<home>/u);
+      if (original) writeFileSync(join(from, path), original);
+      else rmSync(join(from, path));
+    }
+    // The title and body reach the commit and the forge; both take the
+    // Markdown rule before any write, commit or forge call.
+    let screened = refuse(
+      /pull-request title \(also the commit message\): private absolute path/u,
+      { title: "docs(api): record /Users/fixture-user/x" },
+    );
+    assert.doesNotMatch(screened.stdout + screened.stderr, /fixture-user/u);
+    const bodyBytes = readFileSync(bodyFile);
+    writeFileSync(
+      bodyFile,
+      "## Result\n\nInspect /private/var/folders/fixture-user/T/x.\n",
+    );
+    screened = refuse(/pull-request body line 3: private absolute path/u);
+    assert.doesNotMatch(screened.stdout + screened.stderr, /fixture-user/u);
+    writeFileSync(bodyFile, bodyBytes);
+    write(from, "planning/next.md", "# Plan\n\nInspect <home>/x.\n");
+    write(
+      from,
+      "planning/record.json",
+      '{"path":"<home>/x","temporary":"/tmp/fixture/x"}\n',
+    );
     write(from, "source.txt", "not a document");
     refuse(/only planning and product/u);
     rmSync(join(from, "source.txt"));

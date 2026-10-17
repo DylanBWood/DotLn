@@ -1,7 +1,12 @@
 import { runGit } from "./git.mjs";
 import { HOST_GIT_READ } from "./github-repository.mjs";
 import { sha256Hex } from "./helpers.mjs";
-import { defaultDocRelative } from "./config.mjs";
+import {
+  defaultDocRelative,
+  CONFIG_FILENAME,
+  validateConfig,
+} from "./config.mjs";
+import { releaseClaimLine } from "./release-preparation.mjs";
 
 // These are the direct template seeds emitted by prepareKit. Generated
 // indexes, control records and planning history are never refresh inputs.
@@ -28,6 +33,19 @@ const blob = (root, ref, path) =>
     trim: false,
     onFailure: () => null,
   });
+const releaseName = (root, ref) => {
+  const configuration = blob(root, ref, CONFIG_FILENAME);
+  return configuration === null
+    ? "DotLn"
+    : validateConfig(CONFIG_FILENAME, configuration).release.displayName;
+};
+export const namedStarterSeed = (path, source, name) =>
+  path === "README.md"
+    ? source.replace(
+        /^(This source prepares .+) `(v\d+\.\d+\.\d+)`\.$/mu,
+        (_line, _prefix, version) => releaseClaimLine(version, name),
+      )
+    : source;
 // A tree entry's mode: 100644 is a regular file, 100755 an executable file,
 // 120000 a symbolic link; null when the path is absent from the tree.
 const entryMode = (root, ref, path) =>
@@ -80,20 +98,25 @@ export function planStarterSeeds({
   updatesKit = true,
 }) {
   const pending = [];
+  const displayName = releaseName(checkout, remote);
   for (const [path, name] of seeds) {
     const template = `scripts/kit/${name}`;
     const incoming = blob(main, head, template);
     if (incoming === null)
       throw new Error(`seed template unavailable: ${template}`);
     const current = blob(checkout, remote, path);
+    // The display name belongs to the destination. Updating instructions must
+    // not change a legacy default or overwrite its instance configuration.
+    const bytes = namedStarterSeed(path, incoming, displayName);
     const mode = entryMode(checkout, remote, path);
     const regularFile = mode === "100644";
-    if (!regularFile || !matches(path, current, incoming))
+    if (!regularFile || !matches(path, current, bytes))
       pending.push({
         path,
         template,
         current,
-        bytes: incoming,
+        bytes,
+        templateBytes: incoming,
         mode,
         regularFile,
       });
@@ -138,11 +161,20 @@ export function planStarterSeeds({
         continue;
       if (!latestTemplates.has(item.path))
         latestTemplates.set(item.path, source);
+      const previousSeed = blob(checkout, revision, item.path);
+      const rendered = namedStarterSeed(
+        item.path,
+        source,
+        releaseName(checkout, revision),
+      );
       if (
         item.regularFile &&
         entryMode(checkout, revision, item.path) === "100644" &&
-        matches(item.path, item.current, source) &&
-        matches(item.path, blob(checkout, revision, item.path), source)
+        (item.path === "README.md"
+          ? item.current === previousSeed
+          : matches(item.path, item.current, source)) &&
+        (matches(item.path, previousSeed, source) ||
+          matches(item.path, previousSeed, rendered))
       )
         proven.add(item.path);
     }
@@ -152,7 +184,8 @@ export function planStarterSeeds({
   // refresh. A known older exported copy still advances to the incoming seed.
   const refused = pending.filter(
     (item) =>
-      !proven.has(item.path) && latestTemplates.get(item.path) !== item.bytes,
+      !proven.has(item.path) &&
+      latestTemplates.get(item.path) !== item.templateBytes,
   );
   if (refused.length)
     throw new Error(

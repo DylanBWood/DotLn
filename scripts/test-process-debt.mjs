@@ -156,6 +156,7 @@ import {
   followupStatus,
   requirePlanningHandoffs,
 } from "./lib/planning-followups.mjs";
+import { HOME_DIRECTORY, privatePathLines } from "./lib/private-paths.mjs";
 import {
   applyAdjacentCommand,
   readAdjacentQueue,
@@ -1288,6 +1289,198 @@ test("WO-172 the direction reader names the operator step a dispatch records, an
     "takeover",
     "answer",
   ]);
+});
+
+test("recovered open order merges registered main observations without duplicating copied journals", async (t) => {
+  const main = repo(t);
+  const root = `${main}-recovered`;
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  runGit(main, ["branch", "-m", "main"], fixtureGitOptions);
+  runGit(
+    main,
+    ["worktree", "add", "-q", "-b", "wo-999", root],
+    fixtureGitOptions,
+  );
+  const workOrder = "WO-999";
+  // Main's stale lifecycle projection must never replace the recovered one.
+  closeFixtureOrder(main);
+  const prefix = [
+    { workOrder, role: "executor", event: "SessionStart" },
+    { workOrder, event: "PreToolUse", toolStep: true, commandRun: true },
+  ];
+  const timing = { workOrder, hookTiming: { durationMs: 7 } };
+  writeJournal(main, "copied", [
+    ...prefix,
+    { workOrder, role: "verifier", event: "SessionStart" },
+    timing,
+    timing,
+  ]);
+  writeJournal(root, "copied", [
+    ...prefix,
+    { workOrder, role: "reviewer", event: "SessionStart" },
+    timing,
+  ]);
+  writeJournal(main, "separate", [
+    {
+      workOrder,
+      role: "executor",
+      event: "PreToolUse",
+      toolStep: true,
+      commandRun: true,
+    },
+  ]);
+  const usage = (sessionKey, tokens) => ({
+    ...usageRow(workOrder, "executor", "2026-09-27T00:00:00.000Z", tokens),
+    sessionKey,
+  });
+  const old = usage("copied", 10);
+  const revised = {
+    ...usage("copied", 30),
+    recordedAt: "2026-09-27T01:00:00.000Z",
+    supersedes: [usageRecordIdentity(old)],
+  };
+  write(
+    main,
+    "docs/control/local/process/usage.jsonl",
+    jsonLines([old, usage("other", 20)]),
+  );
+  write(
+    root,
+    "docs/control/local/process/usage.jsonl",
+    jsonLines([old, revised]),
+  );
+  const meta = await collectMeta(root);
+  const row = meta.orders.find((value) => value.workOrder === workOrder);
+  assert.equal(row.phase, "active");
+  assert.equal(row.metrics.commandsRun, 2);
+  assert.equal(row.metrics.tokens, 50);
+  assert.equal(row.metrics.hookMs, 21);
+  assert.equal(
+    row.dispatches.find((value) => value.role === "verifier").hookMs,
+    14,
+  );
+  assert.equal(
+    row.dispatches.find((value) => value.role === "reviewer").hookMs,
+    7,
+  );
+  const written = writeOrderSnapshot(root, meta, workOrder);
+  assert.equal(written.written, true, written.reason);
+  const held = readFileSync(join(root, written.path), "utf8");
+  assert.match(
+    JSON.parse(held).source,
+    /registered main checkout: 2 session journals/u,
+  );
+  assert.ok(!held.includes(main));
+  assert.equal(existsSync(join(main, written.path)), false);
+  // A divergence on another order still ends the shared prefix. Identical
+  // later observations are two real events, not a second copied prefix.
+  writeJournal(main, "cross-order", [
+    { workOrder: "WO-998", event: "SessionStart" },
+    {
+      workOrder,
+      role: "executor",
+      event: "PreToolUse",
+      toolStep: true,
+      commandRun: true,
+    },
+  ]);
+  writeJournal(root, "cross-order", [
+    { workOrder: "WO-997", event: "SessionStart" },
+    {
+      workOrder,
+      role: "executor",
+      event: "PreToolUse",
+      toolStep: true,
+      commandRun: true,
+    },
+  ]);
+  assert.equal((await metaRow(root)).metrics.commandsRun, 4);
+  const journal = join(
+    main,
+    "docs/control/local/harness",
+    `${digest("cross-order")}.jsonl`,
+  );
+  const journalBytes = readFileSync(journal, "utf8");
+  writeFileSync(journal, "invalid-json\n");
+  await assert.rejects(collectMeta(root), SyntaxError);
+  writeFileSync(journal, journalBytes);
+  const sidecar = journal.replace(/\.jsonl$/u, ".json");
+  writeFileSync(sidecar, "invalid-json\n");
+  await assert.rejects(collectMeta(root), SyntaxError);
+  rmSync(sidecar);
+  rmSync(journal);
+  symlinkSync(join(root, "docs/control/local/process/usage.jsonl"), journal);
+  await assert.rejects(
+    collectMeta(root),
+    /Supplemental meter observations must be contained/u,
+  );
+  rmSync(journal);
+  // Malformed admitted observations are errors, never a discovery fallback.
+  write(main, "docs/control/local/process/usage.jsonl", "invalid-json\n");
+  await assert.rejects(collectMeta(root), SyntaxError);
+  closeFixtureOrder(root);
+  assert.equal((await metaRow(root)).metrics.hookMs, 21);
+  assert.equal(
+    writeOrderSnapshot(root, await collectMeta(root), workOrder).written,
+    false,
+  );
+  assert.equal(readFileSync(join(root, written.path), "utf8"), held);
+});
+
+test("copied journal prefixes retain current attribution with missing or stale supplemental sidecars", async (t) => {
+  const main = repo(t);
+  const root = `${main}-current`;
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  runGit(main, ["branch", "-m", "main"], fixtureGitOptions);
+  runGit(
+    main,
+    ["worktree", "add", "-q", "-b", "wo-999", root],
+    fixtureGitOptions,
+  );
+  const workOrder = "WO-999";
+  const session = "copied-attribution";
+  const statePath = `docs/control/local/harness/${digest(session)}.json`;
+  const prefix = [
+    { role: "executor", event: "SessionStart" },
+    { event: "PreToolUse", toolStep: true, commandRun: true },
+    { event: "PostToolUse", hookTiming: { durationMs: 7 } },
+    {
+      workOrder: "WO-998",
+      event: "PreToolUse",
+      toolStep: true,
+      commandRun: true,
+    },
+  ];
+  writeJournal(main, session, [
+    ...prefix,
+    { workOrder, event: "PreToolUse", toolStep: true, commandRun: true },
+  ]);
+  writeJournal(root, session, prefix);
+  write(root, statePath, json({ workOrder }));
+  for (const supplemental of [null, "WO-998"]) {
+    if (supplemental === null) rmSync(join(main, statePath), { force: true });
+    else write(main, statePath, json({ workOrder: supplemental }));
+    const row = await metaRow(root);
+    assert.equal(
+      row.metrics.commandsRun,
+      2,
+      `supplemental sidecar: ${supplemental}`,
+    );
+    assert.equal(row.metrics.hookMs, 7);
+    assert.equal(
+      row.dispatches.find((entry) => entry.role === "executor").hookMs,
+      7,
+    );
+  }
+  // The same command after divergence is a second event, even if its bytes
+  // happen to equal the supplemental suffix. Explicit foreign attribution
+  // inside the shared prefix never acquires the sidecar's order.
+  writeJournal(root, session, [
+    ...prefix,
+    { workOrder, event: "SessionStart", role: "reviewer" },
+    { workOrder, event: "PreToolUse", toolStep: true, commandRun: true },
+  ]);
+  assert.equal((await metaRow(root)).metrics.commandsRun, 3);
 });
 
 test("WO-170 the order's snapshot is its own bounded row, written only where its journals are", async (t) => {
@@ -4745,6 +4938,7 @@ test("harness evidence --fail records only the diff check the failing verdict re
   mkdirSync(join(root, "packages/skeleton/src"), { recursive: true });
   for (const name of [
     "gate-evidence.mjs",
+    "runtime-inputs.mjs",
     "gate-deadlines.mjs",
     "usage-observation.mjs",
     "correction-observation.mjs",
@@ -6602,6 +6796,153 @@ test("WO-210 follow-up titles end at a word boundary with a visible omission", (
   assert.match(changed.revisions[1].title, /(?:complete|word)…$/u);
 });
 
+test("follow-up home placeholders correct only display history without reopening its disposition", (t) => {
+  const root = repo(t);
+  const home = "/Users/fixture-user";
+  const decision = {
+    id: "WO-999-D001",
+    date: "2026-10-15",
+    dispatch: "resume: next; synthetic fixture",
+    decision: "Keep the recorded behavior",
+    evidence: ["fixture"],
+    rejected: [],
+    followup: `Inspect ${home}/x and /home/fixture-user/y`,
+    reopenWhen: "The fixture changes",
+  };
+  write(
+    root,
+    "docs/evidence/WO-999/decisions.md",
+    `# Decisions\n\n## WO-999-D001\n\n\`\`\`json\n${json(decision)}\`\`\`\n`,
+  );
+  const sources = collectFollowupSources(root);
+  assert.equal(sources.length, 1);
+  for (const field of ["title", "summary"]) {
+    assert.match(sources[0].source[field], /<home>\/x and <home>\/y/u);
+    assert.doesNotMatch(sources[0].source[field], /fixture-user/u);
+  }
+  const oldHome = process.env.HOME;
+  try {
+    process.env.HOME = "/home/another-fixture";
+    assert.deepEqual(collectFollowupSources(root), sources);
+  } finally {
+    if (oldHome === undefined) delete process.env.HOME;
+    else process.env.HOME = oldHome;
+  }
+  let state = syncFollowups(root);
+  dispose(root, state.entries[0], "deferred");
+  state = readFollowups(root);
+  // Model the old projection using the exact raw excerpts it stored.
+  for (const field of ["title", "summary"])
+    state.entries[0].revisions[0][field] = state.entries[0].revisions[0][field]
+      .replace("<home>/x", `${home}/x`)
+      .replace("<home>/y", "/home/fixture-user/y");
+  write(root, FOLLOWUPS, json(state));
+  runGit(root, ["add", "."], fixtureGitOptions);
+  runGit(
+    root,
+    ["commit", "-qm", "test: legacy home excerpts"],
+    fixtureGitOptions,
+  );
+  const legacy = structuredClone(state.entries[0]);
+  assert.throws(
+    () => syncFollowups(root, { check: true }),
+    /register is stale/u,
+  );
+  const corrected = syncFollowups(root).entries[0];
+  assert.equal(corrected.revisions.length, 1);
+  assert.deepEqual(corrected.revisions[0], sources[0].source);
+  assert.deepEqual(corrected.dispositions, legacy.dispositions);
+  assert.equal(followupStatus(corrected), followupStatus(legacy));
+  syncFollowups(root, { check: true });
+  const valid = readFileSync(join(root, FOLLOWUPS), "utf8");
+  for (const change of [
+    (entry) => {
+      entry.revisions[0].summary += " changed";
+    },
+    (entry) => {
+      entry.revisions[0].hash = "0".repeat(64);
+    },
+    (entry) => {
+      entry.revisions[0].ref += "-changed";
+    },
+    (entry) => {
+      entry.revisions[0].missing = true;
+    },
+    (entry) => {
+      entry.dispositions[0].reason += " changed";
+    },
+  ]) {
+    const altered = JSON.parse(valid);
+    change(altered.entries[0]);
+    write(root, FOLLOWUPS, json(altered));
+    assert.throws(
+      () => readFollowups(root),
+      /committed source or disposition history was removed or rewritten/u,
+    );
+  }
+  write(root, FOLLOWUPS, valid);
+});
+
+test("follow-up home placeholders converge for an adjacent chained home path and keep the register current", (t) => {
+  const root = repo(t);
+  const decision = {
+    id: "WO-999-D001",
+    date: "2026-10-15",
+    dispatch: "resume: next; synthetic fixture",
+    decision: "Keep the recorded behavior",
+    evidence: ["fixture"],
+    rejected: [],
+    followup:
+      "Inspect /Users/fixture-user/home/other and /home/fixture-user/Users/x",
+    reopenWhen: "The fixture changes",
+  };
+  write(
+    root,
+    "docs/evidence/WO-999/decisions.md",
+    `# Decisions\n\n## WO-999-D001\n\n\`\`\`json\n${json(decision)}\`\`\`\n`,
+  );
+  const [source] = collectFollowupSources(root);
+  for (const field of ["title", "summary"]) {
+    assert.match(source.source[field], /<home><home> and <home><home>/u);
+    assert.doesNotMatch(source.source[field], /fixture-user/u);
+    assert.doesNotMatch(source.source[field], HOME_DIRECTORY);
+  }
+  // Every sync projects the stored revision again; a fixed point appends
+  // nothing, check mode stays current and the register passes the record rule.
+  assert.equal(syncFollowups(root).entries[0].revisions.length, 1);
+  syncFollowups(root, { check: true });
+  assert.equal(syncFollowups(root).entries[0].revisions.length, 1);
+  assert.deepEqual(
+    privatePathLines(FOLLOWUPS, readFileSync(join(root, FOLLOWUPS), "utf8")),
+    [],
+  );
+  // A committed register holding the residue of a single pass is rewritten in
+  // place by the next sync, with no appended revision.
+  const state = readFollowups(root);
+  for (const field of ["title", "summary"])
+    state.entries[0].revisions[0][field] = state.entries[0].revisions[0][
+      field
+    ].replace(
+      "<home><home> and <home><home>",
+      "<home>/home/other and <home>/Users/x",
+    );
+  write(root, FOLLOWUPS, json(state));
+  runGit(root, ["add", "."], fixtureGitOptions);
+  runGit(
+    root,
+    ["commit", "-qm", "test: single-pass residue"],
+    fixtureGitOptions,
+  );
+  assert.throws(
+    () => syncFollowups(root, { check: true }),
+    /register is stale/u,
+  );
+  const corrected = syncFollowups(root).entries[0];
+  assert.equal(corrected.revisions.length, 1);
+  assert.deepEqual(corrected.revisions[0], source.source);
+  syncFollowups(root, { check: true });
+});
+
 test("follow-ups retain changed, removed and overlapping public sources without importing local prose", (t) => {
   const root = repo(t);
   const path = "docs/product/candidates.md";
@@ -7926,6 +8267,17 @@ test("Node-only staged builds keep installed hooks executable throughout publica
     writeFileSync(stop, "stop");
   }
   await complete;
+  // The build marks the declared bin target executable, as npm's bin links
+  // would, so the runtime inventory does not change between the two.
+  const skeletonBin = JSON.parse(
+    readFileSync(join(root, "packages/skeleton/package.json"), "utf8"),
+  ).bin;
+  for (const target of Object.values(skeletonBin))
+    assert.notEqual(
+      statSync(join(root, "packages/skeleton", target)).mode & 0o111,
+      0,
+      target,
+    );
   const observations = readFileSync(progress, "utf8")
     .trim()
     .split("\n")
@@ -9676,7 +10028,9 @@ if (action === "status") {
       ),
     ).phase;
   assert.equal(events(), 1);
-  const recorded = await call("dispatch-fix", "resume: fix");
+  const dispatchPrompt =
+    "resume: fix\n\nKeep the operator's following direction in the observation.";
+  const recorded = await call("dispatch-fix", dispatchPrompt);
   assert.match(
     recorded.hookSpecificOutput.additionalContext,
     /Dispatch recorded by the harness: npm run resume -- fix\. Never repeat it\./,
@@ -9698,10 +10052,22 @@ if (action === "status") {
   assert.equal(events(), 2);
   assert.equal(phase(), "repairing");
   assert.equal(state(root, "dispatch-fix").expectedEvent, "RepairCompleted");
+  assert.equal(state(root, "dispatch-fix").intent, "resume: fix");
+  assert.match(
+    recorded.hookSpecificOutput.additionalContext,
+    /DotLn session scratch:/,
+  );
+  assert.match(
+    recorded.hookSpecificOutput.additionalContext,
+    /harness.mjs usage dispatch-fix/,
+  );
   assert.equal(state(root, "dispatch-fix").startingEventCount, 2);
   // A session resuming the recorded repair receives the same briefing and
   // receipt from the lifecycle's read-only projection, without a transition.
-  const again = await call("dispatch-again", "resume: fix");
+  const again = await call(
+    "dispatch-again",
+    "resume: fix; retain the accepted scope.",
+  );
   assert.match(
     again.hookSpecificOutput.additionalContext,
     /Dispatch fix is already recorded \(phase repairing\); continue without repeating it\. Open the reply with one line that begins 'I intend to' and names the concrete initial action, before any tool call\.\nRepair docs\/work-orders\/WO-999-fixture\.md using docs\/verifications\/WO-999\/VER-001\.md; read both artifacts\.\nExecutor entry duties:\nIntent to Act is equipped: fixture\./,
@@ -9712,6 +10078,17 @@ if (action === "status") {
   );
   assert.equal(events(), 2);
   assert.equal(phase(), "repairing");
+  for (const [index, prompt] of [
+    '"resume: fix"',
+    "Explain resume: fix",
+    "resume: fixed",
+    "resume: fix later",
+  ].entries()) {
+    const result = await call(`dispatch-prose-${index}`, prompt);
+    assert.equal(result.systemMessage, undefined);
+    assert.equal(state(root, `dispatch-prose-${index}`).role, undefined);
+    assert.equal(events(), 2);
+  }
   const illegal = await call("dispatch-verify", "resume: verify");
   assert.equal(illegal.decision, undefined);
   assert.match(
@@ -9922,7 +10299,10 @@ test("WO-131 prompt submission stays open while dispatches retain the ordinary c
     equivalent,
   ).hookSpecificOutput;
   assert.equal(gateDenied.permissionDecision, "deny");
-  const gatedPrompt = prompt("gated-session", "resume: verify");
+  const gatedPrompt = prompt(
+    "gated-session",
+    "resume: verify\r\nRetain the ordinary admission checks.",
+  );
   assert.equal(gatedPrompt.decision, undefined);
   assert.ok(
     gatedPrompt.hookSpecificOutput.additionalContext.includes(

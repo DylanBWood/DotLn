@@ -1,5 +1,10 @@
 import { readControl } from "./control-store.mjs";
-import { gateCodeIdentity, partialGateCheck } from "./gate-evidence.mjs";
+import {
+  gateCodeIdentity,
+  gateInstanceInputDigest,
+  instanceDigestMismatch,
+  partialGateCheck,
+} from "./gate-evidence.mjs";
 import { runGit } from "./git.mjs";
 import {
   historicalWorkOrders,
@@ -89,7 +94,12 @@ export const localReleaseRecords = (root, snapshot) => {
 
 // Publication consumes the reviewer's observation from committed control history.
 // Local gate caches and the review worktree may already be absent on main.
-export const reviewedProductGate = (root, workOrderId, revision = "HEAD") => {
+export const reviewedProductGate = (
+  root,
+  workOrderId,
+  revision = "HEAD",
+  { liveInstance = false, installationRoot = root } = {},
+) => {
   const control = readControl(root, revision);
   let review, gate;
   for (const events of control.eventSegments.values()) {
@@ -136,6 +146,18 @@ export const reviewedProductGate = (root, workOrderId, revision = "HEAD") => {
     throw new Error(
       `${workOrderId} reviewed code identity differs from ${revision}; source changed after the product gate`,
     );
+  if (liveInstance) {
+    const digestMismatch = instanceDigestMismatch(
+      gate,
+      gateInstanceInputDigest(installationRoot),
+    );
+    if (digestMismatch)
+      throw new Error(
+        digestMismatch === "missing"
+          ? `${workOrderId} reviewed npm test row records no installed-runtime digest; run the instance gate and record a fresh review before publication`
+          : `${workOrderId} reviewed installed runtime differs from the current instance; run the instance gate and record a fresh review before publication`,
+      );
+  }
   return gate;
 };
 
@@ -160,7 +182,11 @@ export const reviewedLaunchpadIdentity = (
         headIdentity,
         baseIdentity,
         baseCommit,
-        body: productGateBody(reviewedProductGate(root, workOrderId, revision)),
+        body: productGateBody(
+          reviewedProductGate(root, workOrderId, revision, {
+            liveInstance: true,
+          }),
+        ),
       };
 };
 
@@ -168,6 +194,9 @@ export const productGateBody = (gate) => {
   const record = {
     checkId: gate.checkId,
     codeIdentity: gate.codeIdentity,
+    ...(gate.instanceInputDigest === undefined
+      ? {}
+      : { instanceInputDigest: gate.instanceInputDigest }),
     reviewedTree: gate.treeHash,
     durationMs: gate.durationMs,
     exitCode: gate.exitCode,

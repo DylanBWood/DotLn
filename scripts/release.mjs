@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import { hasPackageSources, isMainModule } from "./lib/paths.mjs";
+import { isMainModule } from "./lib/paths.mjs";
+import { hasPackageSources } from "../packages/skeleton/src/runtime-inputs.mjs";
 import { json as prettyJson, sha256Hex as sha256 } from "./lib/helpers.mjs";
 import {
   harnessRuntimeCause,
@@ -8,7 +9,14 @@ import {
   refreshHarnessRuntime,
 } from "./lib/harness-runtime.mjs";
 import { exportSiblings, readDeclaration } from "./lib/siblings.mjs";
-import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
+import {
+  docPath,
+  docRelative,
+  findLaunchpad,
+  loadConfig,
+  validateConfig,
+  CONFIG_FILENAME,
+} from "./lib/config.mjs";
 
 import {
   existsSync,
@@ -271,6 +279,13 @@ const optionalGitFile = (root, revision, path) => {
   const result = execute("git", ["-C", root, "show", `${revision}:${path}`]);
   if (result.status !== 0) return undefined;
   return result.stdout;
+};
+const releaseDisplayName = (root, revision) => {
+  if (!revision) return loadConfig(root).release.displayName;
+  const source = optionalGitFile(root, revision, CONFIG_FILENAME);
+  return source === undefined
+    ? "DotLn"
+    : validateConfig(CONFIG_FILENAME, source).release.displayName;
 };
 const repositoryFile = (root, path, revision) => {
   if (!revision) return readFileSync(join(root, path), "utf8");
@@ -572,6 +587,7 @@ const releaseBlockRule = (
   localOnly = false,
 ) => {
   const targetOrder = authority.version === undefined;
+  const displayName = releaseDisplayName(root, revision);
   const expected = targetOrder
     ? latest
     : !latest || compareVersions(authority.version, latest) > 0
@@ -606,7 +622,7 @@ const releaseBlockRule = (
   if (begins.length !== 1 || ends.length !== 1 || begins[0] >= ends[0]) {
     const remedy =
       begins.length === 0 && ends.length === 0 && isKitRoot(root, revision)
-        ? `; on the next order's dispatch follow the refreshed starter README's update-pull-request procedure first, then record the repair in the order's decisions. Only if that update leaves the block absent, add exactly these three lines once: ${JSON.stringify(beginMarker)}, ${JSON.stringify(releaseClaimLine(expected ?? "v0.1.0"))}, ${JSON.stringify(endMarker)}`
+        ? `; on the next order's dispatch follow the refreshed starter README's update-pull-request procedure first, then record the repair in the order's decisions. Only if that update leaves the block absent, add exactly these three lines once: ${JSON.stringify(beginMarker)}, ${JSON.stringify(releaseClaimLine(expected ?? "v0.1.0", displayName))}, ${JSON.stringify(endMarker)}`
         : "";
     return {
       pass: false,
@@ -621,6 +637,7 @@ const releaseBlockRule = (
   const versions = strictVersionsIn(content[0] ?? "");
   const claim = releaseClaimLine(
     targetOrder ? (versions[0] ?? latest ?? "v0.1.0") : expected,
+    displayName,
   );
   if (content.length !== 1) {
     return {
@@ -1497,8 +1514,8 @@ const validatePublishedManifest = (root, manifest) => {
     );
   return manifest;
 };
-const releaseEvidence = (root, workOrderId) => {
-  const gate = reviewedProductGate(root, workOrderId, sourceRevision);
+const releaseEvidence = (root, workOrderId, options) => {
+  const gate = reviewedProductGate(root, workOrderId, sourceRevision, options);
   return [
     {
       command: "npm test",
@@ -1527,6 +1544,19 @@ const ensureReleaseRuntime = (root) => {
     )
   )
     return;
+  if (existsSync(join(root, "KIT-MANIFEST.json")) && !hasPackageSources(root)) {
+    writeOutput("Preparing the carried release runtime (no source build).\n");
+    const prepared = execute(
+      process.execPath,
+      [join(root, "scripts/lib/release-kit-runtime.mjs"), root],
+      { cwd: root },
+    );
+    if (prepared.status !== 0)
+      throw new Error(
+        `release kit runtime preparation failed: ${failureOf(prepared, "carried runtime unavailable")}`,
+      );
+    return;
+  }
   writeOutput(
     "Building release metadata runtime (no installation or test suite).\n",
   );
@@ -1555,7 +1585,27 @@ const withPreviewRuntime = (root, operation) => {
       env,
     });
     rmSync(join(temporary, ".preview-index"));
-    if (existsSync(join(root, "node_modules")))
+    const kitPreview =
+      existsSync(join(temporary, "KIT-MANIFEST.json")) &&
+      !hasPackageSources(temporary);
+    if (kitPreview) {
+      // Resolve workspace imports from the preview's carried packages even
+      // when main still has an older installed runtime.
+      mkdirSync(join(temporary, "node_modules/@dotln"), { recursive: true });
+      for (const name of readdirSync(join(temporary, "packages")))
+        if (existsSync(join(temporary, "packages", name, "package.json")))
+          symlinkSync(
+            `../../packages/${name}`,
+            join(temporary, "node_modules/@dotln", name),
+          );
+      if (existsSync(join(root, "node_modules")))
+        for (const name of readdirSync(join(root, "node_modules")))
+          if (name !== "@dotln")
+            symlinkSync(
+              join(root, "node_modules", name),
+              join(temporary, "node_modules", name),
+            );
+    } else if (existsSync(join(root, "node_modules")))
       symlinkSync(join(root, "node_modules"), join(temporary, "node_modules"));
     // Installed dist can satisfy a byte-identical source preview without build.
     const kernelDelta = runGit(root, [
@@ -1567,7 +1617,10 @@ const withPreviewRuntime = (root, operation) => {
       "packages/kernel",
       "packages/skeleton",
     ]);
-    if (
+    if (kitPreview) {
+      ensureReleaseRuntime(temporary);
+      previewRuntimeRoot = temporary;
+    } else if (
       !kernelDelta &&
       existsSync(join(root, "packages/kernel/dist/src/index.js")) &&
       existsSync(join(root, "packages/skeleton/dist/src/cli.js"))
@@ -1577,7 +1630,7 @@ const withPreviewRuntime = (root, operation) => {
       ensureReleaseRuntime(temporary);
       previewRuntimeRoot = temporary;
     }
-    return operation();
+    return operation(previewRuntimeRoot);
   } finally {
     previewRuntimeRoot = undefined;
     rmSync(temporary, { recursive: true, force: true });
@@ -1645,7 +1698,9 @@ const releaseEdition = (root, manifest) => {
       repository,
       revision: manifest.release.commit,
     });
-  const lines = [`DotLn ${manifest.release.application}`];
+  const lines = [
+    `${releaseDisplayName(root, manifest.release.commit)} ${manifest.release.application}`,
+  ];
   for (const heading of releaseNoteHeadings) {
     lines.push("", `## ${heading}`);
     for (const entry of entries) {
@@ -2217,17 +2272,27 @@ const viewedGitHubRelease = (root, repository, tag) => {
     );
   }
 };
-const ensureGitHubRelease = (root, repository, tag, expectedBody) => {
+const releaseTitle = (tag, humanLayer) =>
+  humanLayer.startsWith(`DotLn ${tag} — `)
+    ? `DotLn ${tag}`
+    : humanLayer.split("\n", 1)[0];
+const ensureGitHubRelease = (
+  root,
+  repository,
+  tag,
+  expectedBody,
+  expectedTitle,
+) => {
   const existing = viewedGitHubRelease(root, repository, tag);
   if (existing !== undefined) {
     if (
-      existing.name !== `DotLn ${tag}` ||
+      existing.name !== expectedTitle ||
       existing.isDraft ||
       existing.isPrerelease ||
       existing.assets.length > 0
     )
       throw new Error(
-        `${tag} GitHub Release metadata differs: expected title ${JSON.stringify(`DotLn ${tag}`)}, not draft, not prerelease, and no assets`,
+        `${tag} GitHub Release metadata differs: expected title ${JSON.stringify(expectedTitle)}, not draft, not prerelease, and no assets`,
       );
     const difference = firstDifferingLine(expectedBody, existing.body);
     if (difference)
@@ -2249,7 +2314,7 @@ const ensureGitHubRelease = (root, repository, tag, expectedBody) => {
           repository.selector,
           "--verify-tag",
           "--title",
-          `DotLn ${tag}`,
+          expectedTitle,
           "--notes-file",
           bodyPath,
         ]),
@@ -2511,6 +2576,7 @@ const close = async (workOrderId, parsed, record) => {
           repository,
           authority.version,
           projectedReleaseBody(authority.version, existing.humanLayer),
+          releaseTitle(authority.version, existing.humanLayer),
         )
       : undefined;
     record.publication.outcome = "already-published";
@@ -2550,9 +2616,19 @@ const close = async (workOrderId, parsed, record) => {
     publish && !dryRun
       ? runGit(root, ["var", "GIT_COMMITTER_IDENT"])
       : undefined;
-  const evidence = releaseEvidence(root, workOrderId);
-  const prepareManifest = () =>
-    validateManifest(root, baseManifest(root, authority, latest, evidence));
+  const prepareManifest = (installationRoot = root) =>
+    validateManifest(
+      root,
+      baseManifest(
+        root,
+        authority,
+        latest,
+        releaseEvidence(root, workOrderId, {
+          liveInstance: true,
+          installationRoot,
+        }),
+      ),
+    );
   let manifest;
   if (dryRun) manifest = withPreviewRuntime(root, prepareManifest);
   else {
@@ -2598,6 +2674,7 @@ const close = async (workOrderId, parsed, record) => {
     repository,
     authority.version,
     projectedReleaseBody(authority.version, humanLayer),
+    releaseTitle(authority.version, humanLayer),
   );
   record.publication.outcome = "published";
   record.publication.release = projection;
@@ -2625,8 +2702,9 @@ const requireLocalAnnotatedRelease = (root, tag) => {
 };
 const renderPublishedNotes = (tag) => {
   requireLocalAnnotatedRelease(toolRoot, tag);
-  const humanLayer = humanLayerFromTag(toolRoot, tag);
-  if (!isDotLnRelease(humanLayer, tag))
+  const annotation = tagAnnotation(toolRoot, tag);
+  const humanLayer = humanLayerFromAnnotation(annotation);
+  if (!isDotLnRelease(annotation, tag))
     throw new Error(`${tag} is not a DotLn release tag`);
   writeOutput(`${humanLayer}\n`);
 };
@@ -2771,7 +2849,7 @@ export const listPublishedReleases = (
       const cached = cache.get(name, object);
       if (cached) return [name, cached];
       const annotation = annotations.get(name);
-      if (!isDotLnRelease(humanLayerFromAnnotation(annotation), name))
+      if (!isDotLnRelease(annotation, name))
         return [name, { object, dotln: false }];
       let manifest;
       try {
@@ -2894,8 +2972,9 @@ const publishHistoricalNotes = (tag) => {
     localTag.target !== remoteTag?.target
   )
     throw new Error(`${tag} differs between local and origin`);
-  const humanLayer = humanLayerFromTag(root, tag);
-  if (!isDotLnRelease(humanLayer, tag))
+  const annotation = tagAnnotation(root, tag);
+  const humanLayer = humanLayerFromAnnotation(annotation);
+  if (!isDotLnRelease(annotation, tag))
     throw new Error(`${tag} is not a DotLn release tag`);
   if (notesContractWasActive(root, tag))
     throw new Error(
@@ -2907,6 +2986,7 @@ const publishHistoricalNotes = (tag) => {
     repository,
     tag,
     backfillReleaseBody(tag, humanLayer),
+    releaseTitle(tag, humanLayer),
   );
   writeOutput(
     `GitHub Release ${projection} for historical annotated ${tag}.\n`,

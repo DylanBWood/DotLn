@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { TOOL_ROOT } from "./lib/config.mjs";
-import { hasPackageSources, isMainModule } from "./lib/paths.mjs";
+import { isMainModule } from "./lib/paths.mjs";
+import { hasPackageSources } from "../packages/skeleton/src/runtime-inputs.mjs";
 import { existsSync, realpathSync } from "node:fs";
 import { join } from "node:path";
 

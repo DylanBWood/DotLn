@@ -689,8 +689,31 @@ test("planning and release-close reads run in a fresh exported instance", () => 
       ]),
       "start the seeded first instance order in its own worktree",
     );
+    const instanceMain = kit;
     kit = `${kit}-wo001`;
     assert.equal(git(kit, ["branch", "--show-current"]), "wo-001");
+    const planningLog = "docs/control/plan-refutations.jsonl";
+    const planningBefore = existsSync(join(kit, planningLog))
+      ? readFileSync(join(kit, planningLog), "utf8")
+      : null;
+    const seedAmendment = run(kit, process.execPath, [
+      "scripts/refute-plan.mjs",
+      "amend-order",
+      "WO-001",
+      "WO-001-D001",
+      "Operator-authorized fixture scope",
+    ]);
+    assert.notEqual(seedAmendment.status, 0);
+    assert.match(
+      `${seedAmendment.stdout}${seedAmendment.stderr}`,
+      /no judged horizon exists.*never-judged seed order.*structured decisions/su,
+    );
+    assert.equal(
+      existsSync(join(kit, planningLog))
+        ? readFileSync(join(kit, planningLog), "utf8")
+        : null,
+      planningBefore,
+    );
     assert.match(
       readFileSync(join(kit, orderPath), "utf8"),
       /^# .+ \(v0\.1\.0\)$/mu,
@@ -733,9 +756,155 @@ test("planning and release-close reads run in a fresh exported instance", () => 
     write(kit, "docs/verifications/WO-001/VER-001.md", report);
     resume("verification-result", "pass", ...actorArgs);
     resume("final-review");
+    // Keep a separate older main for release-close preview and preparation.
+    // Its origin is a disposable local bare repository, never the live forge.
+    const releaseOrigin = join(scratch, "release-instance.git");
+    const releaseMain = join(scratch, "release-main");
+    git(scratch, ["clone", "-q", "--bare", origin, releaseOrigin]);
+    git(scratch, ["clone", "-q", releaseOrigin, releaseMain]);
+    configure(releaseMain);
+    linkDependencies(releaseMain);
+    ok(
+      run(releaseMain, process.execPath, ["scripts/harness.mjs", "emit"]),
+      "install older main runtime",
+    );
+    const oldReleaseHead = git(releaseMain, ["rev-parse", "HEAD"]);
+    // A real upstream kit update can change compiled console code without
+    // declaring any of core's source fixtures in the consuming instance.
+    const consoleSource = "packages/console/src/index.ts";
+    write(
+      source,
+      consoleSource,
+      readFileSync(join(source, consoleSource), "utf8") +
+        "\n// Fixture upstream console revision.\n",
+    );
+    commit(source, "test: upstream console runtime update");
+    ok(
+      run(source, process.execPath, ["scripts/build.mjs"]),
+      "build the upstream update",
+    );
+    ok(
+      run(source, process.execPath, [
+        "scripts/launchpad.mjs",
+        "export",
+        "--update",
+        instanceMain,
+      ]),
+      "update the instance main from core",
+    );
+    commit(instanceMain, "test: consume upstream console runtime update");
+    git(instanceMain, ["push", "-q", "origin", "main"]);
+    const integrated = releaseObserve([
+      "scripts/worktree.mjs",
+      "integrate",
+      "WO-001",
+    ]);
+    assert.match(integrated.stdout, /Regenerated: runtime/u);
+    assert.doesNotMatch(
+      integrated.stdout,
+      /Pending:|publication locks|selected console fixtures/u,
+    );
+    assert.equal(existsSync(join(kit, "packages/console/fixtures")), false);
+    assert.equal(
+      JSON.parse(
+        readFileSync(join(kit, "docs/control/local/integration.json"), "utf8"),
+      ).consoleSelected,
+      true,
+    );
+    assert.equal(existsSync(join(kit, "tsconfig.json")), false);
+    assert.equal(
+      existsSync(join(kit, "packages/compiler/tsconfig.json")),
+      false,
+    );
+    assert.equal(
+      existsSync(join(kit, "packages/compiler/src/harness.ts")),
+      false,
+    );
+    assert.equal(
+      existsSync(join(kit, "docs/publication/software-engineer-toc.md")),
+      false,
+    );
+    assert.deepEqual(
+      JSON.parse(
+        readFileSync(join(kit, "docs/control/local/integration.json"), "utf8"),
+      ).pending,
+      [],
+    );
+    ok(
+      run(kit, "npm", ["test", "--", "--review"]),
+      "review the actual integrated kit runtime",
+    );
     write(kit, "docs/final-reviews/WO-001/FINAL-001.md", report);
     resume("final-review-result", "pass", ...actorArgs);
     commit(kit, "fixture closed instance order");
+    git(kit, ["push", "-q", releaseOrigin, "HEAD:refs/heads/main"]);
+    const releaseEnvironment = { ...env };
+    const releaseForge = join(scratch, "release-forge");
+    mkdirSync(releaseForge);
+    const releaseUrl = "https://github.com/dotln-fixture/release-instance.git";
+    installTargetPublicationFixture(releaseForge, releaseEnvironment, [
+      { url: releaseUrl, origin: releaseOrigin },
+    ]);
+    git(releaseMain, ["remote", "set-url", "origin", releaseUrl]);
+    const selectedSnapshot = JSON.parse(
+      readFileSync(join(kit, ".claude/harness-manifest.json"), "utf8"),
+    ).profiles[0].profile.runtime.snapshot;
+    assert.equal(existsSync(join(releaseMain, selectedSnapshot)), false);
+    const previewClose = ok(
+      run(
+        releaseMain,
+        process.execPath,
+        ["scripts/release.mjs", "close", "WO-001", "--dry-run"],
+        releaseEnvironment,
+      ),
+      "preview release against reviewed runtime with older main installed",
+    );
+    const closeDetail = () => {
+      const record = JSON.parse(
+        readFileSync(
+          join(
+            releaseMain,
+            "docs/control/local/retained/WO-001/release-close.json",
+          ),
+          "utf8",
+        ),
+      );
+      return readFileSync(join(releaseMain, record.reportPath), "utf8");
+    };
+    assert.match(previewClose.stdout, /dry run: preview/u);
+    assert.match(closeDetail(), /Preparing the carried release runtime/u);
+    assert.doesNotMatch(closeDetail(), /Building release metadata runtime/u);
+    assert.equal(git(releaseMain, ["rev-parse", "HEAD"]), oldReleaseHead);
+    assert.equal(existsSync(join(releaseMain, selectedSnapshot)), false);
+    const prepareClose = ok(
+      run(
+        releaseMain,
+        process.execPath,
+        ["scripts/release.mjs", "close", "WO-001"],
+        releaseEnvironment,
+      ),
+      "prepare the reviewed release without a source build or publication",
+    );
+    assert.match(prepareClose.stdout, /prepared/u);
+    assert.match(closeDetail(), /Preparing the carried release runtime/u);
+    assert.doesNotMatch(closeDetail(), /Building release metadata runtime/u);
+    assert.equal(existsSync(join(releaseMain, selectedSnapshot)), true);
+    write(
+      releaseMain,
+      `${selectedSnapshot}/packages/kernel/dist/src/index.js`,
+      "// Altered installed runtime.\n",
+    );
+    const alteredClose = run(
+      releaseMain,
+      process.execPath,
+      ["scripts/release.mjs", "close", "WO-001"],
+      releaseEnvironment,
+    );
+    assert.notEqual(alteredClose.status, 0);
+    assert.match(
+      `${alteredClose.stdout}${alteredClose.stderr}`,
+      /reviewed installed runtime differs/u,
+    );
     releaseObserve([
       "scripts/release.mjs",
       "check-surfaces",
@@ -815,7 +984,7 @@ test("planning and release-close reads run in a fresh exported instance", () => 
     assert.notEqual(missingMarker.status, 0);
     for (const text of [
       "<!-- DOTLN-RELEASE-BEGIN -->",
-      "This source prepares DotLn `v0.1.0`.",
+      "This source prepares DotLn-Enterprise-Starter `v0.1.0`.",
       "<!-- DOTLN-RELEASE-END -->",
     ])
       assert.ok(
@@ -863,6 +1032,7 @@ test("planning and release-close reads run in a fresh exported instance", () => 
     kit = kitMain;
     mkdirSync(join(scratch, "Targets"));
     write(kit, "dotln.config.json", {
+      ...JSON.parse(readFileSync(join(kit, "dotln.config.json"), "utf8")),
       version: 1,
       classes: { fixture: { checks: [], supports: [] } },
       repositories: {

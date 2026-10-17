@@ -34,6 +34,7 @@ export const installBeaconFixture = (root) => {
   for (const name of [
     "gate-deadlines.mjs",
     "gate-evidence.mjs",
+    "runtime-inputs.mjs",
     "writer-teardown.mjs",
     "usage-observation.mjs",
     "correction-observation.mjs",

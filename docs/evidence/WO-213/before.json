@@ -1,0 +1,187 @@
+{
+  "base": "7b66f8b303a316ff4560b4827d6dc728cd7f504a",
+  "recordFiles": 3555,
+  "recordBytes": 217704060,
+  "literalHomeCounts": {
+    ".json": {
+      "files": 29,
+      "lines": 263
+    },
+    ".txt": {
+      "files": 4,
+      "lines": 8
+    },
+    ".log": {
+      "files": 5,
+      "lines": 21
+    }
+  },
+  "files": [
+    {
+      "file": "docs/evidence/WO-074/verifier-001-probes.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/evidence/WO-185/repair-final001-host-fixtures.txt",
+      "lines": 2
+    },
+    {
+      "file": "docs/evidence/WO-185/repair-ver002-integrated-review.txt",
+      "lines": 1
+    },
+    {
+      "file": "docs/evidence/WO-186/verify-002-checks.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/evidence/WO-187/repair-004/document-gate.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/evidence/WO-187/repair-004/review-gate.json",
+      "lines": 74
+    },
+    {
+      "file": "docs/evidence/WO-187/verification-002/root-probes.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/evidence/WO-189/repair-002/markdown-fixtures-before.txt",
+      "lines": 3
+    },
+    {
+      "file": "docs/evidence/WO-189/repair-003/class-probes-after.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/evidence/WO-198/repair4-before-transcript.txt",
+      "lines": 2
+    },
+    {
+      "file": "docs/evidence/WO-199/repair-002-validation.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/evidence/WO-200/review-gate.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/evidence/WO-200/schema-before.log",
+      "lines": 6
+    },
+    {
+      "file": "docs/evidence/WO-200/schema-restored.log",
+      "lines": 2
+    },
+    {
+      "file": "docs/evidence/WO-203/action-value-before.log",
+      "lines": 1
+    },
+    {
+      "file": "docs/evidence/WO-203/copied-fixtures.log",
+      "lines": 10
+    },
+    {
+      "file": "docs/evidence/WO-203/launchpad-targeted-final.log",
+      "lines": 2
+    },
+    {
+      "file": "docs/evidence/WO-203/repair-review-failed.json",
+      "lines": 162
+    },
+    {
+      "file": "docs/instance/entropy-reducer/runs/REFUTATION-002.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/instance/entropy-reducer/runs/REFUTATION-003.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/instance/entropy-reducer/runs/REFUTATION-004.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/instance/entropy-reducer/runs/REFUTATION-005.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/instance/entropy-reducer/runs/REFUTATION-006.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/instance/entropy-reducer/runs/REVIEW-002.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/instance/entropy-reducer/runs/REVIEW-003.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/instance/entropy-reducer/runs/REVIEW-004.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/instance/entropy-reducer/runs/REVIEW-005.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/planning/followups.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/planning/refutations/2026-09-15-planning-39243aa3f0fc8df2-013.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/planning/refutations/2026-09-20-planning-1a0fb634704921a3-020.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/planning/refutations/2026-09-21-planning-9d2888b45f687bc6-022.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/planning/refutations/2026-09-22-planning-162d093b92c13201-026.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/planning/refutations/2026-09-22-planning-72c46910a176d62e-025.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/planning/refutations/2026-09-22-planning-9244f56be13bcb2f-024.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/planning/refutations/2026-09-25-planning-8f567de659b31991-029.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/planning/refutations/2026-09-25-planning-c93346fb3a92bb7f-030.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/planning/refutations/2026-09-25-planning-cb4e4076b7ec0078-028.json",
+      "lines": 1
+    },
+    {
+      "file": "docs/planning/refutations/2026-10-07-planning-c351cfc3b65e74e5-041.json",
+      "lines": 1
+    }
+  ],
+  "runs": [
+    {
+      "milliseconds": 23253,
+      "result": "PASS docs check: 15 product documents; 412 declared historical link occurrences; 219 declared historical home-path lines; 0 failures"
+    },
+    {
+      "milliseconds": 21213,
+      "result": "PASS docs check: 15 product documents; 412 declared historical link occurrences; 219 declared historical home-path lines; 0 failures"
+    },
+    {
+      "milliseconds": 21550,
+      "result": "PASS docs check: 15 product documents; 412 declared historical link occurrences; 219 declared historical home-path lines; 0 failures"
+    }
+  ]
+}

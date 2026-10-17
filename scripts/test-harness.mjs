@@ -42,13 +42,14 @@ import {
   readdirSync,
   readFileSync,
   realpathSync,
+  renameSync,
   rmSync,
   symlinkSync,
   utimesSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, isAbsolute, join, resolve } from "node:path";
+import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import {
   compileFeedbackUnits,
@@ -108,7 +109,10 @@ import {
   emitHarness,
   harnessInstallation,
   harnessInstructionBlock,
+  preserveHarnessRuntime,
   readBuildOverlay,
+  runtimePackageInventory,
+  runtimeSnapshotPath,
 } from "./lib/harness.mjs";
 import { termsCheck } from "./terms.mjs";
 import { executorWriterRelease } from "./lib/executor-handoff.mjs";
@@ -273,6 +277,7 @@ function fixture() {
     "scripts/lib/paths.mjs",
     "scripts/lib/helpers.mjs",
     "scripts/lib/git.mjs",
+    "packages/skeleton/src/runtime-inputs.mjs",
   ]) {
     mkdirSync(dirname(join(root, path)), { recursive: true });
     cpSync(join(sourceRoot, path), join(root, path));
@@ -315,6 +320,475 @@ const input = (root, event, extra = {}) => ({
   session_id: "synthetic-session",
   hook_event_name: event,
   ...extra,
+});
+
+test("generated JavaScript harness surfaces agree with the repository format policy", () => {
+  const paths = harnessInstallation()
+    .files.map((file) => file.path)
+    .filter((path) => path.endsWith(".mjs"));
+  assert.ok(paths.includes(".codex/hooks/continuation.mjs"));
+  const result = spawnSync(
+    process.execPath,
+    ["node_modules/prettier/bin/prettier.cjs", "--check", ...paths],
+    { encoding: "utf8", timeout: 30000 },
+  );
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+});
+
+test("foreground CLI dispatch binds the actual roleless hook session and preserves observations", async () => {
+  const root = fixture();
+  try {
+    for (const path of [
+      "scripts/resume.mjs",
+      "scripts/work-orders.mjs",
+      "scripts/lib",
+      "packages/skeleton/src",
+    ])
+      cpSync(join(sourceRoot, path), join(root, path), { recursive: true });
+    rmSync(join(root, "docs/control/orders/WO-999.jsonl"));
+    write(
+      root,
+      "docs/work-orders/WO-999-fixture.md",
+      "# WO-999 — Fixture\n\n**Model:** fixture.\n**Effort:** executor any; verifier any; reviewer any.\n**Objective:** exercise observed CLI binding.\n",
+    );
+    write(
+      root,
+      "docs/planning/sequence.md",
+      "<!-- dotln-work-order-sequence:start -->\n- WO-999 — Fixture\n<!-- dotln-work-order-sequence:end -->\n",
+    );
+    const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+    pkg.scripts.resume = "node scripts/resume.mjs";
+    pkg.scripts["work-orders"] = "node scripts/work-orders.mjs";
+    write(root, "package.json", json(pkg));
+    const environment = { CODEX_THREAD_ID: "" };
+    const actor = [
+      "--harness",
+      "codex-cli",
+      "--harness-version",
+      "fixture",
+      "--model",
+      "fixture",
+      "--effort",
+      "high",
+      "--source",
+      "self-reported",
+    ];
+    const resume = (...args) => {
+      const result = spawnSync(
+        process.execPath,
+        ["scripts/resume.mjs", ...args],
+        {
+          cwd: root,
+          encoding: "utf8",
+          env: { ...process.env, ...environment },
+        },
+      );
+      assert.equal(result.status, 0, `${args.join(" ")}: ${result.stderr}`);
+      return result;
+    };
+    const statePath = (id) =>
+      join(
+        root,
+        "docs/control/local/harness",
+        `${sha256(Buffer.from(id))}.json`,
+      );
+    const state = (id) => JSON.parse(readFileSync(statePath(id), "utf8"));
+    const observe = (
+      id,
+      event,
+      command,
+      response = {},
+      toolId = id,
+      extra = {},
+    ) =>
+      invoke(
+        root,
+        event === "PreToolUse"
+          ? "write-observer"
+          : event === "PostToolUseFailure"
+            ? "failure-observer"
+            : "read-observer",
+        input(root, event, {
+          session_id: id,
+          tool_name: "Bash",
+          tool_use_id: toolId,
+          tool_input: { command, ...extra },
+          tool_response: response,
+        }),
+        false,
+        environment,
+      );
+    resume("activate", "WO-999", "docs/work-orders/WO-999-fixture.md");
+    for (const [index, command] of [
+      "echo 'npm run resume -- next'",
+      "! npm run resume -- next",
+      "npm run resume -- next &",
+      "npm run resume -- next; true",
+      "npm run resume -- next || true",
+      "(npm run resume -- next)",
+      "env npm run resume -- next",
+      "X=1 npm run resume -- next",
+      "npm run resume -- next > dispatch.txt",
+    ].entries()) {
+      const id = `misleading-${index}`;
+      observe(id, "PreToolUse", command);
+      observe(id, "PostToolUse", command);
+      assert.equal(state(id).role, undefined, command);
+    }
+    for (const [id, event, response, extra] of [
+      ["failed-next", "PostToolUse", { exit_code: 1 }, {}],
+      ["failed-success", "PostToolUse", { success: false }, {}],
+      ["failure-event", "PostToolUseFailure", {}, {}],
+      ["background-next", "PostToolUse", {}, { run_in_background: true }],
+      ["automatic-background", "PostToolUse", { backgroundTaskId: "task" }, {}],
+      [
+        "nested-background",
+        "PostToolUse",
+        { task: { backgroundTaskId: "task" } },
+        {},
+      ],
+      ["async-result", "PostToolUse", { isAsync: true }, {}],
+      ["interrupted-result", "PostToolUse", { interrupted: true }, {}],
+    ]) {
+      observe(id, "PreToolUse", "npm run resume -- next", {}, id, extra);
+      observe(id, event, "npm run resume -- next", response, id, extra);
+      assert.equal(state(id).role, undefined);
+      assert.equal(state(id).pendingCliDispatch, undefined);
+    }
+    // A mistyped or unknown order never degrades the hook: the observer skips
+    // the binding and the call's ordinary observation continues.
+    for (const [id, command] of [
+      ["long-order", "npm run resume -- next --work-order WO-9999"],
+      ["unknown-order", "npm run resume -- next --work-order WO-998"],
+    ]) {
+      for (const event of ["PreToolUse", "PostToolUse"]) {
+        const response = observe(id, event, command);
+        assert.doesNotMatch(
+          JSON.stringify(response),
+          /bootstrap|runtime-unavailable/u,
+          `${id} ${event}`,
+        );
+      }
+      assert.equal(state(id).role, undefined, id);
+      assert.equal(state(id).pendingCliDispatch, undefined, id);
+      // A four-digit order never reaches status; an unknown one is read once,
+      // at the call, and skipped with one advisory while the call's own step
+      // is still journaled.
+      const rows = readFileSync(
+        statePath(id).replace(/\.json$/u, ".jsonl"),
+        "utf8",
+      )
+        .trim()
+        .split("\n")
+        .map(JSON.parse);
+      assert.equal(
+        rows.filter((row) =>
+          /CLI dispatch binding skipped/u.test(row.advisory ?? ""),
+        ).length,
+        id === "long-order" ? 0 : 1,
+        id,
+      );
+      assert.ok(
+        rows.some((row) => row.toolStep === true),
+        id,
+      );
+    }
+    // Fail only the observer's journal read, after its status subprocess has
+    // succeeded. Both sides of a call retain the ordinary tool observation.
+    const controlStorePath = join(root, "scripts/lib/control-store.mjs");
+    const controlStore = readFileSync(controlStorePath, "utf8");
+    const readControlEntry = "export const readControl = (root, revision) => {";
+    assert.ok(controlStore.includes(readControlEntry));
+    writeFileSync(
+      controlStorePath,
+      controlStore.replace(
+        readControlEntry,
+        `${readControlEntry}\n  if (process.env.DOTLN_FIXTURE_CONTROL_READ_FAILURE && process.argv[1]?.includes('/.claude/hooks/')) throw new Error('fixture journal read failed');`,
+      ),
+    );
+    try {
+      for (const failedEvent of ["PreToolUse", "PostToolUse"]) {
+        const session = `journal-failure-${failedEvent}`;
+        for (const event of ["PreToolUse", "PostToolUse"]) {
+          if (event === failedEvent)
+            environment.DOTLN_FIXTURE_CONTROL_READ_FAILURE = "1";
+          else delete environment.DOTLN_FIXTURE_CONTROL_READ_FAILURE;
+          const response = observe(session, event, "npm run resume -- next");
+          assert.doesNotMatch(
+            JSON.stringify(response),
+            /bootstrap|runtime-unavailable/u,
+          );
+        }
+        assert.equal(state(session).role, undefined);
+        assert.equal(state(session).pendingCliDispatch, undefined);
+        const rows = readFileSync(
+          statePath(session).replace(/\.json$/u, ".jsonl"),
+          "utf8",
+        )
+          .trim()
+          .split("\n")
+          .map(JSON.parse);
+        assert.equal(
+          rows.filter((row) =>
+            /CLI dispatch binding skipped/u.test(row.advisory ?? ""),
+          ).length,
+          1,
+        );
+        assert.ok(rows.some((row) => row.toolStep === true));
+        assert.ok(
+          rows.some(
+            (row) =>
+              row.event === "PostToolUse" &&
+              Array.isArray(row.receipts) &&
+              Array.isArray(row.byteReads),
+          ),
+          "the ordinary post-call observation survives a binding failure",
+        );
+      }
+    } finally {
+      delete environment.DOTLN_FIXTURE_CONTROL_READ_FAILURE;
+      writeFileSync(controlStorePath, controlStore);
+    }
+    const id = "observed-next";
+    const prior = {
+      startingEventCount: 0,
+      reads: [{ path: "fixture.ts", hash: "held", evidenceRef: "fixture" }],
+      byteReads: [
+        { path: "fixture.ts", hash: "held", startByte: 0, endByte: 2 },
+      ],
+      beforeOutputs: { "own.txt": "held" },
+      authoredPaths: ["own.txt"],
+      versionWarning: "held-version",
+    };
+    write(root, relative(root, statePath(id)), json(prior));
+    write(
+      root,
+      relative(root, statePath(id)).replace(/\.json$/u, ".jsonl"),
+      JSON.stringify({
+        event: "PostToolUse",
+        receipts: prior.reads,
+        byteReads: prior.byteReads,
+      }) + "\n",
+    );
+    const writerBefore = harnessWriterView(root);
+    observe(id, "PreToolUse", "npm run resume --silent -- next");
+    invoke(
+      root,
+      "write-observer",
+      input(root, "PreToolUse", {
+        session_id: id,
+        tool_name: "Read",
+        tool_use_id: "interleaved-read",
+        tool_input: { file_path: join(root, "fixture.ts") },
+      }),
+      false,
+      environment,
+    );
+    resume("next");
+    const transcript = join(root, ".fixture-transcripts/observed-next.jsonl");
+    write(
+      root,
+      relative(root, transcript),
+      [
+        {
+          type: "assistant",
+          message: {
+            role: "assistant",
+            content: [
+              {
+                type: "tool_use",
+                id: "earlier-failure",
+                name: "Bash",
+                input: { command: "echo ===== start" },
+              },
+            ],
+          },
+        },
+        {
+          type: "user",
+          message: {
+            role: "user",
+            content: [
+              {
+                type: "tool_result",
+                tool_use_id: "earlier-failure",
+                content: "Exit code 1\n(eval):1: ==== not found",
+                is_error: true,
+              },
+            ],
+          },
+        },
+      ]
+        .map(JSON.stringify)
+        .join("\n") + "\n",
+    );
+    const bound = invoke(
+      root,
+      "read-observer",
+      input(root, "PostToolUse", {
+        session_id: id,
+        tool_name: "Bash",
+        tool_use_id: id,
+        tool_input: { command: "npm run resume --silent -- next" },
+        tool_response: {},
+        transcript_path: transcript,
+      }),
+      false,
+      environment,
+    );
+    assert.match(
+      bound.systemMessage,
+      /observed successful.*bound this session as executor/u,
+    );
+    assert.match(
+      bound.hookSpecificOutput.additionalContext,
+      /session scratch:.*\n.*usage/su,
+    );
+    assert.match(
+      bound.hookSpecificOutput.additionalContext,
+      /DotLn shell diagnostic, for an earlier command/u,
+    );
+    const after = state(id);
+    for (const key of ["reads", "byteReads", "versionWarning"])
+      assert.deepEqual(after[key], prior[key], key);
+    assert.ok(after.authoredPaths.includes("own.txt"));
+    // The ordinary tool observer advances its per-call output snapshot;
+    // binding does not erase authored membership or read receipts.
+    assert.equal(typeof after.beforeOutputs["scripts/resume.mjs"], "string");
+    assert.equal(after.intent, "resume: next");
+    assert.equal(after.workOrder, "WO-999");
+    assert.equal(after.expectedEvent, "ImplementationReady");
+    assert.deepEqual(harnessWriterView(root), writerBefore);
+    observe(id, "PostToolUse", "npm run resume --silent -- next");
+    assert.equal(state(id).startedAt, after.startedAt);
+    assert.equal(state(id).startingEventCount, after.startingEventCount);
+    for (const intent of ["resume: status", "resume: times"]) {
+      const session = `auxiliary-${intent.split(": ")[1]}`;
+      invoke(
+        root,
+        "session",
+        input(root, "UserPromptSubmit", {
+          session_id: session,
+          prompt: intent,
+        }),
+        false,
+        environment,
+      );
+      const auxiliary = state(session);
+      assert.equal(auxiliary.role, "executor");
+      assert.equal(auxiliary.workOrder, undefined);
+      assert.equal(auxiliary.expectedEvent, undefined);
+      observe(session, "PreToolUse", "npm run resume -- next");
+      resume("next");
+      observe(session, "PostToolUse", "npm run resume -- next");
+      assert.equal(state(session).workOrder, "WO-999");
+      assert.equal(state(session).intent, "resume: next");
+      assert.equal(state(session).expectedEvent, "ImplementationReady");
+      assert.equal(state(session).startedAt, auxiliary.startedAt);
+      assert.equal(state(session).usageSessionKey, auxiliary.usageSessionKey);
+    }
+    // Manual entry cannot turn existing observations into an arbitrary role.
+    write(root, relative(root, statePath("manual")), json(prior));
+    for (const role of ["executor", "reviewer", "release-close"])
+      assert.throws(
+        () => beginHarnessSession(root, "manual", role),
+        /Session already began/u,
+      );
+    assert.deepEqual(state("manual"), prior);
+    write(root, relative(root, statePath("manual-null")), "null\n");
+    assert.throws(
+      () => beginHarnessSession(root, "manual-null", "executor"),
+      /Session already began/u,
+    );
+    assert.equal(readFileSync(statePath("manual-null"), "utf8"), "null\n");
+    assert.deepEqual(harnessWriterView(root), writerBefore);
+    // The lifecycle's automatic entry still adopts a roleless Codex session.
+    write(root, relative(root, statePath("automatic")), json(prior));
+    environment.CODEX_THREAD_ID = "automatic";
+    resume("next");
+    assert.equal(state("automatic").role, "executor");
+    assert.equal(state("automatic").expectedEvent, "ImplementationReady");
+    for (const key of ["reads", "byteReads", "beforeOutputs", "authoredPaths"])
+      assert.deepEqual(state("automatic")[key], prior[key], key);
+    resume("implementation-ready", ...actor);
+    assert.equal(harnessWriterView(root).reserved, false);
+    environment.CODEX_THREAD_ID = "";
+    const bind = (action, role, expected, auxiliaryIntent) => {
+      const session = `observed-${action}-${expected}`;
+      const command = `node scripts/resume.mjs ${action} --work-order WO-999`;
+      if (auxiliaryIntent)
+        invoke(
+          root,
+          "session",
+          input(root, "UserPromptSubmit", {
+            session_id: session,
+            prompt: auxiliaryIntent,
+          }),
+          false,
+          environment,
+        );
+      observe(session, "PreToolUse", command);
+      resume(action, "--work-order", "WO-999");
+      // A different tool result cannot finish the pending dispatch.
+      observe(session, "PostToolUse", command, {}, "different-tool");
+      assert.equal(
+        state(session).role,
+        auxiliaryIntent ? "executor" : undefined,
+      );
+      observe(session, "PostToolUse", command);
+      assert.equal(state(session).role, role);
+      assert.equal(state(session).expectedEvent, expected);
+      return session;
+    };
+    bind("verify", "verifier", "VerificationCompleted", "resume: status");
+    observe("stale-verify", "PreToolUse", "npm run resume -- verify");
+    observe("stale-verify", "PostToolUse", "npm run resume -- verify");
+    assert.equal(state("stale-verify").role, undefined);
+    const report =
+      '# Fixture report\n\n**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture","model":"fixture","effort":"high","source":"self-reported"}\n\n**Process cost:** unknown; cause no-session\n';
+    write(root, "docs/verifications/WO-999/VER-001.md", report);
+    resume("verification-result", "fail", ...actor);
+    bind("fix", "executor", "RepairCompleted");
+    resume("repair-complete", ...actor);
+    const second = "second-verifier";
+    observe(second, "PreToolUse", "npm run resume -- verify");
+    resume("verify");
+    observe(second, "PostToolUse", "npm run resume -- verify");
+    assert.equal(state(second).role, "verifier");
+    write(root, "docs/verifications/WO-999/VER-002.md", report);
+    resume("verification-result", "pass", ...actor);
+    bind("final-review", "reviewer", "FinalReviewCompleted");
+    write(root, "docs/final-reviews/WO-999/FINAL-001.md", report);
+    resume("final-review-result", "pass", ...actor);
+    observe("closed-next", "PreToolUse", "npm run resume -- next");
+    resume("next");
+    observe("closed-next", "PostToolUse", "npm run resume -- next");
+    assert.equal(state("closed-next").role, undefined);
+    runGit(root, ["switch", "-c", "main"], fixtureGitOptions);
+    const closed = bind("release-close", "release-close", undefined);
+    // An observed command never keys the publish admission for the byte-exact
+    // release-close helper; only the dispatch the harness records from the
+    // operator's resume: release close phrase does.
+    assert.equal(state(closed).releaseCloseDispatch, undefined);
+    const withheld = invoke(
+      root,
+      "permissions",
+      input(root, "PreToolUse", {
+        session_id: closed,
+        tool_name: "Bash",
+        tool_input: { command: releaseCloseCommand(root, "WO-999") },
+      }),
+      false,
+      environment,
+    );
+    assert.notEqual(withheld.hookSpecificOutput?.permissionDecision, "allow");
+    assert.match(
+      withheld.systemMessage ?? "",
+      /recorded release-close dispatch missing/u,
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
 });
 
 test("WO-139 Codex executor and fix completion automatically release after the final index", async () => {
@@ -1455,7 +1929,10 @@ test("WO-178 exact close helper admission requires the recorded dispatch, main a
     invoke(
       root,
       "session",
-      input(root, "UserPromptSubmit", { prompt: "resume: release close" }),
+      input(root, "UserPromptSubmit", {
+        prompt:
+          "resume: release close; preserve the operator's following direction.",
+      }),
     );
     for (const suffix of [
       "--publish",
@@ -2123,6 +2600,273 @@ test("WO-139 cap-module-only changes refresh the runtime and snapshot damage is 
       );
       assert.notEqual(response.hookSpecificOutput?.permissionDecision, "deny");
     }
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("declared runtime packages preserve complete inventories within the product-read boundary", async () => {
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-runtime-inventory-")),
+  );
+  try {
+    const lock = JSON.stringify({
+      packages: { "": {}, "packages/runtime": {} },
+    });
+    write(root, "package-lock.json", lock);
+    for (const name of ["runtime", "adjacent"])
+      write(root, `packages/${name}/package.json`, JSON.stringify({ name }));
+    write(root, "packages/runtime/src/index.mjs", "export const value = 1;\n");
+    write(root, "packages/adjacent/src/index.mjs", "export const value = 2;\n");
+    write(
+      root,
+      "packages/runtime/README.md",
+      "Documentation is not a runtime input.\n",
+    );
+    write(
+      root,
+      ".gitattributes",
+      "/packages/*/README.md dotln-documentation\n",
+    );
+    runGit(root, ["init", "-q"], fixtureGitOptions);
+    runGit(root, ["add", "."], fixtureGitOptions);
+    const before = runtimePackageInventory(root);
+    assert.ok(
+      before.some((entry) => entry.path === "packages/runtime/src/index.mjs"),
+    );
+    assert.ok(
+      before.every((entry) => !entry.path.startsWith("packages/adjacent")),
+    );
+    const { executeSuite } = await import("./test-runner.mjs");
+    const result = await executeSuite(
+      {
+        name: "runtime-inventory-product-inputs",
+        product: true,
+        command: [
+          process.execPath,
+          "--input-type=module",
+          "--eval",
+          `import {runtimePackageInventory} from ${JSON.stringify(new URL("./lib/harness.mjs", import.meta.url).href)}; runtimePackageInventory(process.cwd());`,
+        ],
+      },
+      root,
+    );
+    assert.equal(result.exitCode, 0, result.output);
+    const broadRead = await executeSuite(
+      {
+        name: "runtime-inventory-excluded-directory-control",
+        product: true,
+        command: [
+          process.execPath,
+          "--eval",
+          'require("node:fs").readdirSync("packages");',
+        ],
+      },
+      root,
+    );
+    assert.equal(broadRead.exitCode, 1, broadRead.output);
+    assert.match(broadRead.output, /reads packages \(readdirSync\)/u);
+    write(root, "packages/runtime/src/index.mjs", "export const value = 3;\n");
+    assert.notDeepEqual(runtimePackageInventory(root), before);
+    for (const invalid of [
+      "{",
+      "{}",
+      '{"packages":[]}',
+      '{"packages":{"packages/..":{}}}',
+      '{"packages":{"packages/runtime":null}}',
+      '{"packages":{"packages/runtime":[]}}',
+      '{"packages":{"packages/runtime":"invalid"}}',
+    ]) {
+      write(root, "package-lock.json", invalid);
+      assert.throws(
+        () => runtimePackageInventory(root),
+        /valid regular package-lock\.json/u,
+      );
+    }
+    write(
+      root,
+      "package-lock.json",
+      JSON.stringify({
+        packages: { "packages/runtime": {}, "packages/ghost": {} },
+      }),
+    );
+    assert.throws(
+      () => runtimePackageInventory(root),
+      (error) => {
+        assert.match(
+          error.message,
+          /declared in package-lock\.json is missing on disk: packages\/ghost; restore the workspace/u,
+        );
+        assert.ok(!error.message.includes(root));
+        return true;
+      },
+    );
+    write(root, "package-lock.json", lock);
+    renameSync(join(root, "package-lock.json"), join(root, "lock-source.json"));
+    symlinkSync("lock-source.json", join(root, "package-lock.json"));
+    assert.throws(
+      () => runtimePackageInventory(root),
+      /valid regular package-lock\.json/u,
+    );
+    rmSync(join(root, "package-lock.json"));
+    renameSync(join(root, "lock-source.json"), join(root, "package-lock.json"));
+    rmSync(join(root, "packages/runtime/src"), { recursive: true });
+    symlinkSync("../adjacent/src", join(root, "packages/runtime/src"));
+    assert.throws(() => runtimePackageInventory(root), /non-regular entry/u);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("the runtime inventory binds the executable bit as one boolean whatever modes the writing host left", () => {
+  const root = mkdtempSync(join(tmpdir(), "dotln-inventory-modes-"));
+  try {
+    const files = {
+      "packages/runtime/package.json": '{"name":"@dotln/runtime"}\n',
+      "packages/runtime/dist/index.mjs": "export {};\n",
+      "packages/runtime/dist/bin.mjs": "export {};\n",
+    };
+    for (const [path, text] of Object.entries(files)) write(root, path, text);
+    const inventory = (regular, executable) => {
+      for (const path of Object.keys(files))
+        chmodSync(
+          join(root, path),
+          path.endsWith("bin.mjs") ? executable : regular,
+        );
+      return runtimePackageInventory(root);
+    };
+    // A 022 umask leaves 644 and 755; a 077 umask leaves 600 and 700. The
+    // snapshot name must not follow that difference, only the bit itself.
+    const open = inventory(0o644, 0o755);
+    const restrictive = inventory(0o600, 0o700);
+    assert.deepEqual(restrictive, open);
+    assert.equal(
+      runtimeSnapshotPath([], restrictive),
+      runtimeSnapshotPath([], open),
+    );
+    const entry = (path) => open.find((row) => row.path === path);
+    assert.equal(entry("packages/runtime/dist/bin.mjs").executable, true);
+    assert.equal(entry("packages/runtime/dist/index.mjs").executable, false);
+    assert.notDeepEqual(inventory(0o644, 0o644), open);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("runtime snapshots ignore host and build metadata across inventory, copying and checking", () => {
+  const root = fixture();
+  const options = { runtimeRoot: root };
+  try {
+    emitHarness(root, options);
+    const original = harnessInstallation(options);
+    const snapshot = original.runtimeSnapshot;
+    for (const path of [
+      "packages/.DS_Store",
+      "packages/README.txt",
+      "packages/skeleton/dist/.DS_Store",
+      "packages/skeleton/dist/.cache/state",
+      "packages/skeleton/dist/tsconfig.tsbuildinfo",
+      "packages/beacons/src/.DS_Store",
+      `${snapshot}/packages/skeleton/dist/.DS_Store`,
+      `${snapshot}/packages/skeleton/dist/tsconfig.tsbuildinfo`,
+    ])
+      write(root, path, "host metadata\n");
+    const current = harnessInstallation(options);
+    assert.equal(current.runtimeSnapshot, snapshot);
+    assert.deepEqual(current.runtimeInventory, original.runtimeInventory);
+    checkHarness(root, options);
+    rmSync(join(root, snapshot), { recursive: true });
+    preserveHarnessRuntime(root, current);
+    assert.equal(
+      existsSync(join(root, snapshot, "packages/skeleton/dist/.DS_Store")),
+      false,
+    );
+    assert.equal(
+      existsSync(
+        join(root, snapshot, "packages/skeleton/dist/tsconfig.tsbuildinfo"),
+      ),
+      false,
+    );
+    checkHarness(root, options);
+    write(root, "packages/skeleton/dist/src/extra-runtime.js", "export {};\n");
+    assert.notEqual(harnessInstallation(options).runtimeSnapshot, snapshot);
+    rmSync(join(root, "packages/beacons/package.json"));
+    mkdirSync(join(root, "packages/beacons/package.json"));
+    assert.throws(
+      () => harnessInstallation(options),
+      /metadata must be a regular file/u,
+    );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("runtime snapshots identify all copied package bytes and restore only exact inventories", () => {
+  const root = fixture();
+  const options = { runtimeRoot: root };
+  try {
+    emitHarness(root, options);
+    let previous = harnessInstallation(options);
+    for (const path of [
+      "packages/kernel/dist/src/index.js",
+      `packages/beacons/src/${readdirSync(join(root, "packages/beacons/src")).find((name) => name.endsWith(".mjs"))}`,
+      "packages/kernel/package.json",
+    ]) {
+      const original = readFileSync(join(root, path), "utf8");
+      write(
+        root,
+        path,
+        path.endsWith("package.json")
+          ? JSON.stringify({ ...JSON.parse(original), fixtureRevision: true })
+          : `${original}\n// Fixture runtime revision.\n`,
+      );
+      emitHarness(root, options);
+      const current = harnessInstallation(options);
+      assert.notEqual(current.runtimeSnapshot, previous.runtimeSnapshot, path);
+      assert.equal(
+        readFileSync(join(root, previous.runtimeSnapshot, path), "utf8"),
+        original,
+      );
+      checkHarness(root, options);
+      previous = current;
+    }
+    const executable = "packages/kernel/dist/src/index.js";
+    const mode = lstatSync(join(root, executable)).mode;
+    chmodSync(join(root, executable), mode ^ 0o100);
+    emitHarness(root, options);
+    const current = harnessInstallation(options);
+    assert.notEqual(current.runtimeSnapshot, previous.runtimeSnapshot);
+    const carried = JSON.parse(
+      readFileSync(join(root, ".claude/harness-manifest.json"), "utf8"),
+    ).profiles[0].profile.runtime;
+    assert.equal(
+      runtimeSnapshotPath(carried.files, current.runtimeInventory),
+      current.runtimeSnapshot,
+    );
+    const snapshot = join(root, current.runtimeSnapshot);
+    const inventory = runtimePackageInventory(snapshot);
+    const damage = join(snapshot, executable);
+    const bytes = readFileSync(damage);
+    writeFileSync(damage, "changed unpinned runtime\n");
+    assert.throws(
+      () => checkHarness(root, options),
+      /complete runtime inventory/u,
+    );
+    assert.throws(
+      () => preserveHarnessRuntime(root, current),
+      /complete runtime inventory; remove \.runtime\/harness\/[a-f0-9]{16} and run node scripts\/bootstrap\.mjs to install it again/u,
+    );
+    writeFileSync(damage, bytes);
+    mkdirSync(join(snapshot, "unexpected"));
+    assert.throws(
+      () => checkHarness(root, options),
+      /complete runtime inventory/u,
+    );
+    rmSync(join(snapshot, "unexpected"), { recursive: true });
+    rmSync(snapshot, { recursive: true });
+    preserveHarnessRuntime(root, current);
+    assert.deepEqual(runtimePackageInventory(snapshot), inventory);
+    checkHarness(root, options);
   } finally {
     removeFixture(root, { recursive: true, force: true });
   }
@@ -3466,6 +4210,8 @@ const installedOverlayBytes = (root) => {
 test("WO-076 no overlay preserves emitted bytes and narrows only declared envelope fields", (t) => {
   const root = fixture();
   try {
+    const runtime = { runtimeRoot: root };
+    emitHarness(root, runtime);
     const before = installedOverlayBytes(root);
     assert.equal(readBuildOverlay(root), undefined);
     const unchanged = overlayCommand(root, "emit");
@@ -3479,7 +4225,10 @@ test("WO-076 no overlay preserves emitted bytes and narrows only declared envelo
         requiredEvidence: ["instance-check"],
       },
     };
-    const options = overlayFixture(root, value, "instance/build.json");
+    const options = {
+      ...runtime,
+      ...overlayFixture(root, value, "instance/build.json"),
+    };
     const narrowed = contributorProgram(defaultContributorSupportIds, value);
     assert.deepEqual(narrowed.loadout.authorityEnvelope, {
       ...base.loadout.authorityEnvelope,
@@ -3496,7 +4245,7 @@ test("WO-076 no overlay preserves emitted bytes and narrows only declared envelo
     const changed = Object.keys(after).filter(
       (path) => after[path] !== before[path],
     );
-    const baseInstallation = harnessInstallation();
+    const baseInstallation = harnessInstallation(runtime);
     const installation = harnessInstallation(options);
     const baseSemantic = baseInstallation.manifest.origin.semanticHash;
     const nextSemantic = installation.manifest.origin.semanticHash;

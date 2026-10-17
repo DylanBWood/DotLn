@@ -33,12 +33,15 @@ import {
   changedMachinery,
   completeSharedRefs,
   sharedRefChanges,
+  isKitRoot,
 } from "./test-runner.mjs";
 import {
   activeGateRuns,
   beginGateRun,
   gateInputPath,
   gateCodeIdentity,
+  gateInstanceInputDigest,
+  instanceDigestMismatch,
   gateTreeHash,
   findGateCheck,
   partialGateCheck,
@@ -382,7 +385,7 @@ test("bounded command uses the requested cwd and deadline with launchpad budgets
   assert.ok(result.durationMs < 5000);
   assert.ok(lines.some((line) => line.startsWith("bounded-start ")));
 });
-test("kit mode follows the gate repository, including its list and exclusions", async (t) => {
+test("kit defaults separate runtime integrity from documents and explicit platform diagnostics", async (t) => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-kit-list-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   writeFileSync(join(repo, "KIT-MANIFEST.json"), "{}\n");
@@ -390,24 +393,606 @@ test("kit mode follows the gate repository, including its list and exclusions", 
   const log = console.log;
   try {
     console.log = (line) => lines.push(String(line));
-    assert.equal((await runGate(["--list"], repo)).exitCode, 0);
+    for (const args of [[], ["--review"], ["--full"], ["--document"]]) {
+      lines.length = 0;
+      assert.equal((await runGate([...args, "--list"], repo)).exitCode, 0);
+      assert.deepEqual(
+        lines
+          .filter((line) => line.includes(" — protects:"))
+          .map((line) => line.split(" — ")[0]),
+        args.includes("--document")
+          ? [
+              "kit-verify",
+              "format",
+              "release-surfaces",
+              "license-surfaces",
+              "publication",
+              "docs-check",
+              "index",
+              "siblings",
+              "lineage",
+              "harness",
+              "harness-context",
+              "plan-refutation-current",
+              "meta",
+              "registrations",
+              "plan",
+              "reader-profiles",
+              "entropy",
+            ]
+          : ["kit-verify", "harness"],
+      );
+      assert.ok(!lines.some((line) => line.startsWith("kit: ")));
+    }
+    for (const args of [["--only", "target-worktree"], ["--machinery"]]) {
+      lines.length = 0;
+      assert.equal((await runGate([...args, "--list"], repo)).exitCode, 0);
+      const names = lines
+        .filter((line) => line.includes(" — protects:"))
+        .map((line) => line.split(" — ")[0]);
+      assert.equal(names[0], "kit-verify");
+      assert.ok(
+        names.includes(
+          args.includes("--only") ? "target-worktree" : "fixture-temp-root",
+        ),
+      );
+      assert.deepEqual(
+        lines.filter((line) => line.startsWith("kit: ")).sort(),
+        suites
+          .filter((row) => row.kit)
+          .map(
+            (row) =>
+              `kit: ${row.name} not carried (${row.kit.slice("core-only: ".length)})`,
+          )
+          .sort(),
+      );
+    }
+    lines.length = 0;
+    assert.equal((await runGate(["--list"], root)).exitCode, 0);
+    assert.ok(
+      lines.some((line) => line.startsWith("target-worktree — protects:")),
+    );
+    assert.ok(lines.some((line) => line.startsWith("build — protects:")));
   } finally {
     console.log = log;
   }
-  assert.ok(lines.some((line) => line.startsWith("kit-verify — protects:")));
-  assert.ok(!lines.some((line) => line.startsWith("build — protects:")));
-  assert.ok(
-    lines.some((line) => line.startsWith("publication-fixtures — protects:")),
+});
+
+test("the installed-runtime digest comparison names a missing recorded digest apart from a different one", () => {
+  assert.equal(instanceDigestMismatch({}, undefined), null);
+  assert.equal(
+    instanceDigestMismatch({ instanceInputDigest: "a" }, undefined),
+    null,
   );
+  assert.equal(instanceDigestMismatch({ instanceInputDigest: "a" }, "a"), null);
+  assert.equal(instanceDigestMismatch({}, "a"), "missing");
+  assert.equal(
+    instanceDigestMismatch({ instanceInputDigest: "b" }, "a"),
+    "different",
+  );
+});
+
+test("instance runtime digests reject aliases before selection and frame arbitrary file bytes", (t) => {
+  const base = mkdtempSync(join(tmpdir(), "dotln-runtime-digest-"));
+  t.after(() => rmSync(base, { recursive: true, force: true }));
+  const repo = join(base, "instance"),
+    outside = join(base, "outside");
+  mkdirSync(repo);
+  mkdirSync(outside);
+  writeFileSync(join(repo, "KIT-MANIFEST.json"), "{}\n");
+  for (const alias of [".claude", "packages", ".runtime"]) {
+    symlinkSync(outside, join(repo, alias), "dir");
+    assert.throws(
+      () => gateInstanceInputDigest(repo),
+      /must stay within/u,
+      alias,
+    );
+    rmSync(join(repo, alias));
+  }
+  mkdirSync(join(repo, "packages"));
+  symlinkSync(outside, join(repo, "packages/alias"), "dir");
+  assert.throws(() => gateInstanceInputDigest(repo), /must stay within/u);
+  rmSync(join(repo, "packages"), { recursive: true });
+  for (const path of [
+    ".claude/hooks/finish.mjs",
+    ".claude/settings.json",
+    ".agents/skills/dotln-executor/SKILL.md",
+    ".codex/hooks/continuation.mjs",
+    "CLAUDE.md",
+  ]) {
+    mkdirSync(dirname(join(repo, path)), { recursive: true });
+    writeFileSync(join(repo, path), "valid\n");
+  }
+  writeFileSync(
+    join(repo, ".claude/harness-manifest.json"),
+    JSON.stringify({
+      installed: [
+        ".claude/hooks/finish.mjs",
+        ".claude/settings.json",
+        ".agents/skills/dotln-executor/SKILL.md",
+        ".codex/hooks/continuation.mjs",
+        "CLAUDE.md",
+      ].map((path) => ({ path })),
+    }),
+  );
+  const surfaces = gateInstanceInputDigest(repo);
+  for (const path of [
+    ".claude/hooks/finish.mjs",
+    ".claude/settings.json",
+    ".agents/skills/dotln-executor/SKILL.md",
+    ".codex/hooks/continuation.mjs",
+    "CLAUDE.md",
+  ]) {
+    writeFileSync(join(repo, path), "changed\n");
+    assert.notEqual(gateInstanceInputDigest(repo), surfaces, path);
+    rmSync(join(repo, path));
+    assert.notEqual(gateInstanceInputDigest(repo), surfaces, `missing ${path}`);
+    symlinkSync(join(outside, "missing"), join(repo, path));
+    assert.throws(
+      () => gateInstanceInputDigest(repo),
+      /must stay within/u,
+      path,
+    );
+    rmSync(join(repo, path));
+    writeFileSync(join(repo, path), "valid\n");
+  }
+  writeFileSync(join(repo, ".claude/hooks/unexpected.mjs"), "export {};\n");
+  assert.notEqual(gateInstanceInputDigest(repo), surfaces);
+  rmSync(join(repo, ".claude/hooks/unexpected.mjs"));
+  assert.equal(gateInstanceInputDigest(repo), surfaces);
+  const runtime = join(repo, ".runtime/harness");
+  mkdirSync(runtime, { recursive: true });
+  writeFileSync(join(runtime, "a"), "A\0.runtime/harness/b\0file:0\0B");
+  const framed = gateInstanceInputDigest(repo);
+  writeFileSync(join(runtime, "a"), "A");
+  writeFileSync(join(runtime, "b"), "B");
+  assert.notEqual(gateInstanceInputDigest(repo), framed);
+  const snapshot = join(runtime, "0123456789abcdef");
+  mkdirSync(join(snapshot, "packages/compiler"), { recursive: true });
+  mkdirSync(join(snapshot, "node_modules/@dotln"), { recursive: true });
+  writeFileSync(join(snapshot, "packages/compiler/index.js"), "export {};\n");
+  const link = join(snapshot, "node_modules/@dotln/compiler");
+  symlinkSync("../../packages/compiler", link, "dir");
+  const installed = gateInstanceInputDigest(repo);
+  writeFileSync(
+    join(snapshot, "packages/compiler/index.js"),
+    "export const changed = true;\n",
+  );
+  assert.notEqual(gateInstanceInputDigest(repo), installed);
+  rmSync(link);
+  symlinkSync(outside, link, "dir");
+  assert.throws(() => gateInstanceInputDigest(repo), /workspace link differs/u);
+  // Package sources make the root core, whose evidence keeps its committed
+  // identity: no installed-input digest, as the runner's kit-root test decides.
+  mkdirSync(join(repo, "packages/core"), { recursive: true });
+  writeFileSync(join(repo, "packages/core/tsconfig.json"), "{}\n");
+  assert.equal(gateInstanceInputDigest(repo), undefined);
+  rmSync(join(repo, "packages/core"), { recursive: true });
+  assert.throws(() => gateInstanceInputDigest(repo), /workspace link differs/u);
+});
+
+test("instance runtime identity ignores host metadata and normalizes permissions while retaining real drift", (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-runtime-inputs-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  execGit(["init", "-q"], { cwd: repo });
+  const write = (path, text = "incidental\n") => {
+    mkdirSync(dirname(join(repo, path)), { recursive: true });
+    writeFileSync(join(repo, path), text);
+  };
+  write("KIT-MANIFEST.json", "{}\n");
+  write("packages/runtime/package.json", '{"name":"@dotln/runtime"}\n');
+  const module = "packages/runtime/dist/index.js";
+  write(module, "export {};\n");
+  chmodSync(join(repo, module), 0o755);
+  const before = gateInstanceInputDigest(repo);
+  for (const path of [
+    "packages/.DS_Store",
+    "packages/README.txt",
+    "packages/runtime/dist/.DS_Store",
+    "packages/runtime/dist/.cache/state",
+    "packages/runtime/dist/tsconfig.tsbuildinfo",
+  ]) {
+    write(path);
+    assert.equal(gateInstanceInputDigest(repo), before, path);
+  }
+  chmodSync(join(repo, module), 0o700);
+  assert.equal(gateInstanceInputDigest(repo), before);
+  chmodSync(join(repo, module), 0o600);
+  const regular = gateInstanceInputDigest(repo);
+  assert.notEqual(regular, before);
+  chmodSync(join(repo, module), 0o644);
+  assert.equal(gateInstanceInputDigest(repo), regular);
+  write(module, "export const changed = true;\n");
+  assert.notEqual(gateInstanceInputDigest(repo), regular);
+  write(module, "export {};\n");
+  write("packages/runtime/dist/extra.js", "export {};\n");
+  assert.notEqual(gateInstanceInputDigest(repo), regular);
+  rmSync(join(repo, "packages/runtime/dist/extra.js"));
+  assert.equal(gateInstanceInputDigest(repo), regular);
+  write("packages/free/package.json", '{"name":"@dotln/free"}\n');
+  write("packages/free/src/index.mjs", "export {};\n");
+  write(".gitignore", "packages/free/src/local/\n");
+  const withSource = gateInstanceInputDigest(repo);
+  write("packages/free/src/local/added.mjs", "export {};\n");
+  // Compare the review's blanket ignore proposal with the runtime policy:
+  // Git excludes a real module, while runtime identity must still bind it.
+  assert.equal(
+    spawnGit(["check-ignore", "--quiet", "packages/free/src/local/added.mjs"], {
+      cwd: repo,
+    }).status,
+    0,
+  );
+  assert.notEqual(gateInstanceInputDigest(repo), withSource);
+  rmSync(join(repo, "packages/free/src/local"), { recursive: true });
+  assert.equal(gateInstanceInputDigest(repo), withSource);
+  rmSync(join(repo, "packages/free/package.json"));
+  mkdirSync(join(repo, "packages/free/package.json"));
+  assert.throws(
+    () => gateInstanceInputDigest(repo),
+    /metadata must be a regular file/u,
+  );
+  rmSync(join(repo, "packages/free"), { recursive: true });
+  write(".claude/skills", "not a directory\n");
+  assert.throws(
+    () => gateInstanceInputDigest(repo),
+    (error) => {
+      assert.match(error.message, /regular directory: \.claude\/skills/u);
+      assert.ok(!error.message.includes(repo));
+      return true;
+    },
+  );
+});
+
+test("instance selection and evidence agree on malformed package-source declarations", async (t) => {
+  const { hasPackageSources } =
+    await import("../packages/skeleton/src/runtime-inputs.mjs");
+  const repo = mkdtempSync(join(tmpdir(), "dotln-runtime-shape-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  writeFileSync(join(repo, "KIT-MANIFEST.json"), "{}\n");
+  mkdirSync(join(repo, "packages/core"), { recursive: true });
+  const config = join(repo, "packages/core/tsconfig.json");
+  const readers = [isKitRoot, gateInstanceInputDigest, hasPackageSources];
+  for (const kind of ["directory", "link", "dangling"]) {
+    if (kind === "directory") mkdirSync(config);
+    else
+      symlinkSync(
+        kind === "link" ? "../../KIT-MANIFEST.json" : "missing",
+        config,
+      );
+    for (const reader of readers)
+      assert.throws(
+        () => reader(repo),
+        (error) => {
+          assert.match(error.message, /regular.*tsconfig|tsconfig.*regular/u);
+          assert.ok(!error.message.includes(repo));
+          return true;
+        },
+        `${reader.name}: ${kind}`,
+      );
+    rmSync(config, { recursive: true });
+  }
+  writeFileSync(config, "{}\n");
+  assert.equal(hasPackageSources(repo), true);
+  assert.equal(isKitRoot(repo), false);
+  assert.equal(gateInstanceInputDigest(repo), undefined);
+  rmSync(join(repo, "packages/core"), { recursive: true });
+  symlinkSync("../missing", join(repo, "packages/core"));
+  for (const reader of readers)
+    assert.throws(
+      () => reader(repo),
+      (error) => {
+        assert.ok(!error.message.includes(repo));
+        return true;
+      },
+    );
+});
+
+test("kit checks execute fresh against ignored runtime and document inputs under full gate protection", async (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-kit-current-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  execGit(["init", "-q"], { cwd: repo });
+  mkdirSync(join(repo, "scripts"));
+  mkdirSync(join(repo, "docs"));
+  mkdirSync(join(repo, ".runtime/harness"), { recursive: true });
+  mkdirSync(join(repo, ".claude/hooks"), { recursive: true });
+  writeFileSync(join(repo, ".claude/hooks/finish.mjs"), "valid\n");
+  writeFileSync(join(repo, "KIT-MANIFEST.json"), "{}\n");
+  writeFileSync(
+    join(repo, ".gitignore"),
+    ".runtime/\ndocs/control/local/\nobserved.jsonl\n.DS_Store\n*.tsbuildinfo\n",
+  );
+  writeFileSync(join(repo, "scripts/verify.mjs"), "export {};\n");
+  for (const [name, input] of [
+    ["harness", ".runtime/harness/snapshot.txt"],
+    ["records", "docs/record.md"],
+  ]) {
+    writeFileSync(join(repo, input), "valid\n");
+    writeFileSync(
+      join(repo, `scripts/${name}.mjs`),
+      `import fs from "node:fs";\nimport { activeGateRuns } from ${JSON.stringify(pathToFileURL(join(root, "scripts/lib/gate-evidence.mjs")).href)};\nfs.appendFileSync("observed.jsonl", JSON.stringify({ name: ${JSON.stringify(name)}, kind: activeGateRuns(process.cwd())[0]?.kind }) + "\\n");\nprocess.exitCode = fs.readFileSync(${JSON.stringify(input)}, "utf8") === "valid\\n" ? 0 : 1;\n`,
+    );
+  }
+  execGit(["add", "."], { cwd: repo });
+  execGit(
+    [
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "commit",
+      "-qm",
+      "Kit current inputs",
+    ],
+    { cwd: repo },
+  );
+  const table = [
+    {
+      name: "kit-verify",
+      command: [process.execPath, "scripts/verify.mjs"],
+      build: true,
+      outputs: [],
+    },
+    {
+      name: "harness",
+      command: [process.execPath, "scripts/harness.mjs"],
+      instance: "runtime",
+      document: true,
+      needsBuild: true,
+    },
+    {
+      name: "records",
+      command: [process.execPath, "scripts/records.mjs"],
+      instance: "document",
+      document: true,
+    },
+    {
+      name: "new-platform-fixture",
+      command: [process.execPath, "-e", "process.exit(99)"],
+      product: true,
+      document: true,
+    },
+  ];
+  const log = console.log;
+  console.log = () => {};
+  t.after(() => (console.log = log));
+  const identity = gateCodeIdentity(repo);
+  // The two fixture scripts journal the live gate run's kind; the verify row
+  // writes nothing. Each selection runs twice (the pass, then the drift
+  // failure). Every instance selection is a document run: its harness row
+  // reads the harness surfaces the product read guard excludes, so the
+  // order's record writes stay refused while it runs.
+  const observedKinds = [];
+  for (const args of [[], ["--review"], ["--full"], ["--document"]]) {
+    const document = args.includes("--document");
+    const names = document
+      ? ["kit-verify", "harness", "records"]
+      : ["kit-verify", "harness"];
+    const kind = "document";
+    const perRun = names
+      .filter((name) => name !== "kit-verify")
+      .map((name) => `${name}:${kind}`);
+    observedKinds.push(...perRun, ...perRun);
+    const gate = () => runGate(["--serial", ...args], repo, { table });
+    const first = await gate();
+    assert.equal(first.exitCode, 0);
+    assert.deepEqual(first.requiredSuites, names);
+    assert.equal(first.checkId, document ? "npm run test:docs" : "npm test");
+    assert.equal(first.partial, undefined);
+    assert.equal(first.excludedSuites, undefined);
+    let publication;
+    if (args.length === 0) {
+      const { requireLifecycleEvidence } =
+        await import("./lib/lifecycle-evidence.mjs");
+      const { requireGateClaims } = await import("./lib/handoff-ledger.mjs");
+      const warn = console.warn;
+      let carried;
+      try {
+        console.warn = () => {};
+        carried = (
+          await requireLifecycleEvidence(
+            repo,
+            "final-review-result",
+            "pass",
+            "WO-999",
+          )
+        ).productGate;
+      } finally {
+        console.warn = warn;
+      }
+      assert.equal(carried.instanceInputDigest, first.instanceInputDigest);
+      const claimed = await requireGateClaims(repo, {
+        checked: true,
+        claims: { plain: ["1"], review: [], document: [] },
+      });
+      assert.equal(
+        claimed.productGate.instanceInputDigest,
+        first.instanceInputDigest,
+      );
+      mkdirSync(join(repo, "docs/control/orders"), { recursive: true });
+      const base = { schemaVersion: 1, workOrderId: "WO-999" };
+      writeFileSync(
+        join(repo, "docs/control/orders/WO-999.jsonl"),
+        [
+          {
+            ...base,
+            type: "WorkOrderActivated",
+            workOrderPath: "docs/work-orders/WO-999-fixture.md",
+            recordedAt: "2026-09-20T00:00:01.000Z",
+          },
+          {
+            ...base,
+            type: "FinalReviewCompleted",
+            finalReviewId: "FINAL-001",
+            verdict: "pass",
+            evidence: { productGate: carried },
+            recordedAt: "2026-09-20T00:00:02.000Z",
+          },
+        ]
+          .map(JSON.stringify)
+          .join("\n") + "\n",
+      );
+      execGit(["add", "docs/control/orders"], { cwd: repo });
+      execGit(
+        [
+          "-c",
+          "user.name=Fixture",
+          "-c",
+          "user.email=fixture@example.invalid",
+          "commit",
+          "-qm",
+          "Bind instance reviewer observation",
+        ],
+        { cwd: repo },
+      );
+      const { reviewedProductGate } = await import("./lib/release-records.mjs");
+      publication = () =>
+        reviewedProductGate(repo, "WO-999", "HEAD", { liveInstance: true });
+      assert.equal(
+        publication().instanceInputDigest,
+        first.instanceInputDigest,
+      );
+      // The live publication reader and evidence consumers must accept the
+      // same harmless installation changes as the ordinary instance gate.
+      const metadata = [
+        "packages/.DS_Store",
+        ".runtime/harness/.DS_Store",
+        ".runtime/harness/local.tsbuildinfo",
+      ];
+      mkdirSync(join(repo, "packages"));
+      for (const path of metadata)
+        writeFileSync(join(repo, path), "metadata\n");
+      const { gateCandidates, coveringGateCheck } =
+        await import("./lib/gate-reuse.mjs");
+      assert.equal(gateInstanceInputDigest(repo), first.instanceInputDigest);
+      assert.equal(
+        findGateCheck(repo, "npm test", first.treeHash).evidenceRef,
+        first.evidenceRef,
+      );
+      assert.equal(
+        (await gateCandidates(repo, "npm test")).rows.at(-1).evidenceRef,
+        first.evidenceRef,
+      );
+      assert.equal(
+        (await coveringGateCheck(repo, "npm test", names)).row.evidenceRef,
+        first.evidenceRef,
+      );
+      assert.equal(
+        publication().instanceInputDigest,
+        first.instanceInputDigest,
+      );
+      for (const path of metadata) rmSync(join(repo, path));
+      // A row recorded before this instance bound its installed runtime
+      // carries no digest; the refusal names that, not a changed runtime.
+      const orders = join(repo, "docs/control/orders/WO-999.jsonl");
+      const boundLog = readFileSync(orders, "utf8");
+      const undigested = { ...carried };
+      delete undigested.instanceInputDigest;
+      writeFileSync(
+        orders,
+        boundLog.replace(JSON.stringify(carried), JSON.stringify(undigested)),
+      );
+      const recommit = (message) =>
+        execGit(
+          [
+            "-c",
+            "user.name=Fixture",
+            "-c",
+            "user.email=fixture@example.invalid",
+            "commit",
+            "-qam",
+            message,
+          ],
+          { cwd: repo },
+        );
+      recommit("Carry a row without an installed-runtime digest");
+      assert.throws(
+        publication,
+        /WO-999 reviewed npm test row records no installed-runtime digest/u,
+      );
+      writeFileSync(orders, boundLog);
+      recommit("Restore the digest-bearing row");
+      assert.equal(
+        publication().instanceInputDigest,
+        first.instanceInputDigest,
+      );
+    }
+    if (!document) {
+      const { coveringGateCheck } = await import("./lib/gate-reuse.mjs");
+      const hook = join(repo, ".claude/hooks/finish.mjs");
+      for (const contents of ["invalid\n", null]) {
+        if (contents === null) rmSync(hook);
+        else writeFileSync(hook, contents);
+        assert.equal(gateCodeIdentity(repo), identity);
+        assert.equal(
+          (await coveringGateCheck(repo, "npm test", names)).row,
+          undefined,
+        );
+        assert.equal(
+          findGateCheck(repo, "npm test", first.treeHash),
+          undefined,
+        );
+        if (publication)
+          assert.throws(publication, /reviewed installed runtime differs/u);
+      }
+      writeFileSync(hook, "valid\n");
+      assert.equal(
+        findGateCheck(repo, "npm test", first.treeHash).instanceInputDigest,
+        first.instanceInputDigest,
+      );
+    }
+    const input = join(
+      repo,
+      document ? "docs/record.md" : ".runtime/harness/snapshot.txt",
+    );
+    writeFileSync(input, "invalid\n");
+    assert.equal(gateCodeIdentity(repo), identity);
+    if (!document) {
+      const { coveringGateCheck } = await import("./lib/gate-reuse.mjs");
+      assert.equal(
+        (await coveringGateCheck(repo, "npm test", names)).row,
+        undefined,
+        "a claim cannot consume the earlier pass after ignored runtime drift",
+      );
+      assert.equal(findGateCheck(repo, "npm test", first.treeHash), undefined);
+      if (publication) {
+        assert.throws(publication, /reviewed installed runtime differs/u);
+        const { reviewedProductGate } =
+          await import("./lib/release-records.mjs");
+        assert.equal(
+          reviewedProductGate(repo, "WO-999").instanceInputDigest,
+          first.instanceInputDigest,
+          "historical review readers retain their recorded subject",
+        );
+      }
+    }
+    const failed = await gate();
+    assert.equal(failed.exitCode, 1);
+    assert.equal(failed.codeIdentity, identity);
+    assert.equal(failed.reusedSuites, 0);
+    assert.equal(failed.freshReason, "instance-inputs");
+    assert.deepEqual(
+      failed.cases.map((row) => row.name),
+      names,
+    );
+    assert.deepEqual(
+      failed.taskTimeline.map((row) => row.name),
+      names,
+    );
+    assert.equal(
+      failed.cases.find(
+        (row) => row.name === (document ? "records" : "harness"),
+      ).executed,
+      true,
+    );
+    writeFileSync(input, "valid\n");
+  }
+  const observed = readFileSync(join(repo, "observed.jsonl"), "utf8")
+    .trim()
+    .split("\n")
+    .map(JSON.parse);
   assert.deepEqual(
-    lines.filter((line) => line.startsWith("kit: ")).sort(),
-    suites
-      .filter((row) => row.kit)
-      .map(
-        (row) =>
-          `kit: ${row.name} not carried (${row.kit.slice("core-only: ".length)})`,
-      )
-      .sort(),
+    observed.map((row) => `${row.name}:${row.kind}`),
+    observedKinds,
   );
 });
 
@@ -4267,6 +4852,33 @@ function gateInAnotherSession(repo, table, session) {
       .slice(4),
   );
 }
+
+test("reused task evidence never carries historical host-wait observations", async (t) => {
+  const { repo, table } = taskReuseFixture(t);
+  const pass = await runGate(["--serial", "--again"], repo, { table });
+  assert.equal(pass.exitCode, 0);
+  recordGateChecks(repo, [
+    {
+      ...pass,
+      recordedAt: new Date(Date.parse(pass.recordedAt) + 1).toISOString(),
+      taskTimeline: pass.taskTimeline.map((row) => ({
+        ...row,
+        hostLaneWaitMs: 123,
+        hostLaneWaitObservations: [{ waitedMs: 123, holders: [] }],
+      })),
+    },
+  ]);
+  const { coveringTaskResults } = await import("./lib/gate-reuse.mjs");
+  const { results } = await coveringTaskResults(repo, "npm test", table);
+  assert.deepEqual(
+    [...results.keys()].sort(),
+    pass.taskTimeline.map((row) => row.name).sort(),
+  );
+  for (const result of results.values()) {
+    assert.equal(result.hostLaneWaitMs, undefined);
+    assert.equal(result.hostLaneWaitObservations, undefined);
+  }
+});
 
 test("WO-186 one failed task reruns alone in another shell and session, composes a claimable row and carries it into review", async (t) => {
   const { repo, table, observed } = taskReuseFixture(t);

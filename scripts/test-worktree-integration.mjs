@@ -12,6 +12,7 @@ import {
   mkdirSync,
   mkdtempSync,
   readFileSync,
+  readdirSync,
   realpathSync,
   rmSync,
   symlinkSync,
@@ -200,14 +201,15 @@ const generatedConflicts = (root, name) => {
     `${name} projection\n`,
   );
   const edition = "docs/publication/software-engineer-toc.md";
-  put(
-    root,
-    edition,
-    text(root, edition).replace(
-      /^Source lock:.*$/m,
-      `Source lock: \`sha256:${(name === "local" ? "a" : "b").repeat(64)}\``,
-    ),
-  );
+  if (existsSync(join(root, edition)))
+    put(
+      root,
+      edition,
+      text(root, edition).replace(
+        /^Source lock:.*$/m,
+        `Source lock: \`sha256:${(name === "local" ? "a" : "b").repeat(64)}\``,
+      ),
+    );
 };
 const event = (workOrderId, type, extra = {}) =>
   JSON.stringify({
@@ -268,6 +270,9 @@ function overlayImplementation(root) {
     "scripts/resume.mjs",
     "scripts/release.mjs",
     "scripts/console-fixtures.mjs",
+    "scripts/bootstrap.mjs",
+    "scripts/launchpad.mjs",
+    "scripts/license-surfaces.mjs",
   ])
     cpSync(join(source, path), join(root, path));
   // The fixture's front page holds only what the integration reads: the one
@@ -406,6 +411,8 @@ function fixture(
     third = "active",
     authored = true,
     generators = "real",
+    kit = false,
+    editions = true,
   } = {},
 ) {
   const temporary = realpathSync(
@@ -464,6 +471,22 @@ function fixture(
   ])
     runGit(main, ["config", key, value], fixtureGitOptions);
   if (generators === "real") overlayImplementation(main);
+  if (kit) {
+    rmSync(join(main, "tsconfig.json"), { force: true });
+    for (const name of readdirSync(join(main, "packages")))
+      rmSync(join(main, "packages", name, "tsconfig.json"), { force: true });
+    put(main, "KIT-MANIFEST.json", "{}\n");
+    put(
+      main,
+      "scripts/launchpad.mjs",
+      `import assert from "node:assert/strict";\nassert.deepEqual(process.argv.slice(2), ["verify"]);\n${generatorRecord("kit-verify")}`,
+    );
+  }
+  if (editions !== true)
+    for (const name of editions === false
+      ? ["software-engineer-toc.md", "everyday-ai-user-toc.md"]
+      : ["everyday-ai-user-toc.md"])
+      rmSync(join(main, "docs/publication", name), { force: true });
   for (const id of ["WO-997", "WO-998", "WO-999"]) {
     const path = `docs/work-orders/${id}-fixture.md`;
     put(
@@ -674,7 +697,10 @@ function fixture(
     }
     return result;
   };
-  const invoke = (...args) => invokeStages(generatorStages, args);
+  const stages = generatorStages
+    .map((stage) => (kit && stage === "build" ? "kit-verify" : stage))
+    .filter((stage) => editions !== false || stage !== "publication");
+  const invoke = (...args) => invokeStages(stages, args);
   return {
     temporary,
     origin,
@@ -686,7 +712,7 @@ function fixture(
     control,
     invoke,
     continueWithStub: () =>
-      invokeStages(generatorStages, ["--continue"], ["prepare", "--local"]),
+      invokeStages(stages, ["--continue"], ["prepare", "--local"]),
     invokeWithoutRelease: (...args) =>
       invokeStages(
         generatorStages.filter((stage) => stage !== "release"),
@@ -694,6 +720,139 @@ function fixture(
       ),
   };
 }
+
+test("instance integration verifies its installed runtime and needs no undeclared publication editions", (t) => {
+  const f = fixture(t, {
+    generators: "focused",
+    authored: false,
+    kit: true,
+    editions: false,
+  });
+  const result = f.invoke();
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  const receipt = JSON.parse(
+    text(f.subject, "docs/control/local/integration.json"),
+  );
+  assert.deepEqual(receipt.pending, []);
+  assert.match(result.stdout, /Regenerated: runtime/);
+  assert.doesNotMatch(result.stdout, /publication locks/);
+  assert.equal(existsSync(join(f.subject, "tsconfig.json")), false);
+  assert.equal(
+    existsSync(join(f.subject, "docs/publication/software-engineer-toc.md")),
+    false,
+  );
+});
+
+test("instance integration retains a pending refusal for a partially declared publication edition", (t) => {
+  const f = fixture(t, {
+    generators: "focused",
+    authored: false,
+    kit: true,
+    editions: "partial",
+  });
+  const result = f.invoke();
+  assert.equal(result.status, 1, result.stdout + result.stderr);
+  const receipt = JSON.parse(
+    text(f.subject, "docs/control/local/integration.json"),
+  );
+  assert.ok(
+    receipt.pending.some((line) => line.startsWith("publication locks:")),
+    result.stdout + result.stderr,
+  );
+  assert.ok(!receipt.pending.some((line) => line.startsWith("runtime:")));
+});
+
+test("instance integration keeps dangling declared surfaces pending", (t) => {
+  const f = fixture(t, {
+    generators: "focused",
+    authored: false,
+    kit: true,
+    editions: "partial",
+  });
+  assert.equal(f.invoke().status, 1);
+  for (const [path, target] of [
+    ["docs/publication/software-engineer-toc.md", "missing-edition.md"],
+    ["docs/siblings/siblings.json", "missing-siblings.json"],
+    ["packages/console/fixtures", "missing-fixtures"],
+  ]) {
+    rmSync(join(f.subject, path), { recursive: true, force: true });
+    mkdirSync(dirname(join(f.subject, path)), { recursive: true });
+    symlinkSync(target, join(f.subject, path));
+  }
+  const result = run(f.subject, process.execPath, [
+    "scripts/worktree.mjs",
+    "integrate",
+    "WO-998",
+    "--continue",
+  ]);
+  assert.equal(result.status, 1, result.stdout + result.stderr);
+  const receipt = JSON.parse(
+    text(f.subject, "docs/control/local/integration.json"),
+  );
+  for (const label of [
+    "publication locks",
+    "sibling registry",
+    "selected console fixtures",
+  ])
+    assert.ok(
+      receipt.pending.some((line) => line.startsWith(`${label}:`)),
+      JSON.stringify(receipt.pending),
+    );
+  assert.ok(!receipt.pending.join("\n").includes(f.subject));
+  assert.equal(
+    existsSync(join(f.subject, "packages/console/missing-fixtures")),
+    false,
+  );
+});
+
+for (const obstacle of ["regular file", "alias loop"])
+  test(`instance integration retains optional declaration failures behind a ${obstacle}`, (t) => {
+    const f = fixture(t, {
+      generators: "focused",
+      authored: false,
+      kit: true,
+      editions: "partial",
+    });
+    const first = f.invoke();
+    assert.equal(first.status, 1, first.stdout + first.stderr);
+    assert.match(first.stdout, /Pending: publication locks:/);
+    const roots = ["docs/siblings", "docs/publication"];
+    const edition = text(
+      f.subject,
+      "docs/publication/software-engineer-toc.md",
+    );
+    for (const path of roots) {
+      rmSync(join(f.subject, path), { recursive: true, force: true });
+      if (obstacle === "regular file") put(f.subject, path, "blocked\n");
+      else symlinkSync(path.split("/").at(-1), join(f.subject, path));
+    }
+    const refused = run(f.subject, process.execPath, [
+      "scripts/worktree.mjs",
+      "integrate",
+      "WO-998",
+      "--continue",
+    ]);
+    assert.equal(refused.status, 1, refused.stdout + refused.stderr);
+    const receiptPath = "docs/control/local/integration.json";
+    const receipt = JSON.parse(text(f.subject, receiptPath));
+    assert.equal(receipt.complete, false, refused.stdout + refused.stderr);
+    for (const label of ["sibling registry", "publication locks"])
+      assert.ok(
+        receipt.pending.some(
+          (line) =>
+            line.startsWith(`${label}:`) &&
+            line.includes(obstacle === "regular file" ? "ENOTDIR" : "ELOOP"),
+        ),
+        JSON.stringify(receipt.pending),
+      );
+    assert.ok(!receipt.pending.join("\n").includes(f.subject));
+    for (const path of roots) rmSync(join(f.subject, path));
+    for (const name of ["software-engineer-toc.md", "everyday-ai-user-toc.md"])
+      put(f.subject, `docs/publication/${name}`, edition);
+    const continued = f.continueWithStub();
+    assert.equal(continued.status, 0, continued.stdout + continued.stderr);
+    assert.equal(JSON.parse(text(f.subject, receiptPath)).complete, true);
+  });
 
 for (const reviewed of [false, true])
   test(`real Git ${reviewed ? "reviewed merge" : "fast-forward"} preserves recovery, histories and authored conflicts with real generators`, (t) => {
@@ -1242,6 +1401,32 @@ test("follow-up union preserves compatible histories and refuses divergent same-
     /divergent history/,
   );
   assert.equal(a.revisions.length, 1, "input is immutable");
+  const raw = entry("private-display");
+  raw.revisions[0].title = "Inspect /Users/fixture-user/x";
+  raw.revisions[0].summary = "Inspect /home/fixture-user/y";
+  const rewritten = structuredClone(raw);
+  rewritten.revisions[0].title = "Inspect <home>/x";
+  rewritten.revisions[0].summary = "Inspect <home>/y";
+  for (const [left, right] of [
+    [raw, rewritten],
+    [rewritten, raw],
+  ])
+    assert.deepEqual(unionFollowups(state([left]), state([right])).entries, [
+      rewritten,
+    ]);
+  assert.deepEqual(unionFollowups(state([]), state([raw])).entries, [
+    rewritten,
+  ]);
+  assert.deepEqual(unionFollowups(state([raw]), state([])).entries, [
+    rewritten,
+  ]);
+  assert.equal(raw.revisions[0].title, "Inspect /Users/fixture-user/x");
+  const divergent = structuredClone(rewritten);
+  divergent.revisions[0].summary = "A distinct meaning";
+  assert.throws(
+    () => unionFollowups(state([raw]), state([divergent])),
+    /divergent history/u,
+  );
 });
 
 test("untracked stash collision remains explicit and recoverable until continuation", (t) => {
@@ -1523,6 +1708,33 @@ for (const blocker of ["PR directory", "PR file"])
     );
   });
 
+test("integration refuses a blocked evidence ancestor before retiming and recovers on continuation", (t) => {
+  const f = fixture(t, { authored: false, generators: "focused" });
+  const authority = "docs/work-orders/WO-998-fixture.md";
+  const receipt = "docs/control/local/integration.json";
+  const before = text(f.subject, authority);
+  const readmeBefore = text(f.subject, "README.md");
+  put(f.subject, "docs/evidence/WO-998", "blocked\n");
+  const refused = f.invoke();
+  assert.equal(refused.status, 1, refused.stdout + refused.stderr);
+  assert.match(
+    refused.stdout,
+    /Pending: release preparation: .*decisions\.md: document entry is unreadable \(ENOTDIR\)/,
+  );
+  assert.match(
+    refused.stdout,
+    /Pending: integration decision stub: awaits release preparation/,
+  );
+  assert.equal(text(f.subject, authority), before);
+  assert.equal(text(f.subject, "README.md"), readmeBefore);
+  assert.equal(JSON.parse(text(f.subject, receipt)).release, undefined);
+  rmSync(join(f.subject, "docs/evidence/WO-998"));
+  const continued = f.invoke("--continue");
+  assert.equal(continued.status, 0, continued.stdout + continued.stderr);
+  assert.match(text(f.subject, authority).split("\n")[0], /\(v9000\.0\.2\)$/);
+  assert.equal(JSON.parse(text(f.subject, receipt)).complete, true);
+});
+
 for (const [blocker, newerTag] of [
   ["regular file", false],
   ["regular file with a newer tag during retry", true],
@@ -1530,7 +1742,22 @@ for (const [blocker, newerTag] of [
   test(`WO-086 a stub blocked by a ${blocker} retains its saved collision through continuation`, (t) => {
     const f = fixture(t, { authored: false, generators: "focused" });
     const directory = join(f.subject, "docs/evidence/WO-998");
-    put(f.subject, "docs/evidence/WO-998", "blocked\n");
+    // The meter refuses an existing blocked ancestor before retiming. Create
+    // this obstruction after the real preparation succeeds so the fixture
+    // reaches the saved-outcome recovery path it is intended to judge.
+    const releaseScript = "scripts/release.mjs";
+    const releaseSource = text(f.subject, releaseScript);
+    const releaseEntry = "    await main();";
+    assert.equal(releaseSource.split(releaseEntry).length, 2);
+    put(
+      f.subject,
+      releaseScript,
+      releaseSource.replace(
+        releaseEntry,
+        releaseEntry +
+          '\n    if (process.argv.includes("--integration")) writeFileSync("docs/evidence/WO-998", "blocked\\n");',
+      ),
+    );
     const authority = "docs/work-orders/WO-998-fixture.md";
     const decisions = "docs/evidence/WO-998/decisions.md";
     const receipt = "docs/control/local/integration.json";
@@ -1734,6 +1961,10 @@ test("the fixture overlay carries the console package and its fixture script fro
     "packages/console/src/index.ts",
     "scripts/console-fixtures.mjs",
     "scripts/lib/worktree-integration.mjs",
+    "scripts/bootstrap.mjs",
+    "scripts/launchpad.mjs",
+    "scripts/license-surfaces.mjs",
+    "packages/skeleton/src/runtime-inputs.mjs",
   ])
     assert.equal(
       readFileSync(join(root, path), "utf8"),

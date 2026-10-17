@@ -330,10 +330,37 @@ const validateBuild = (path, declared) => {
   return build;
 };
 
+// The bound applies where a name is declared. The shape predicate below also
+// recognizes names in existing tag annotations and README text, which were
+// admitted at any length, so it does not bound them. A tag's first line is
+// the name, a space and a version such as v0.83.0: 64 keeps it within 72
+// columns.
+const RELEASE_DISPLAY_NAME_LIMIT = 64;
+export const validReleaseDisplayName = (value) =>
+  typeof value === "string" &&
+  value.length > 0 &&
+  value.trim() === value &&
+  !/[\p{Cc}\p{Cf}\p{Cs}\u2028\u2029`]/u.test(value) &&
+  !/(?<![A-Za-z0-9._+\-])v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?![A-Za-z0-9._+\-])/u.test(
+    value,
+  );
+
 const validateRelease = (path, declared) => {
   requireObject(path, declared, "release");
-  requireKnownKeys(path, declared, RELEASE_KEYS, "release");
-  const release = Object.fromEntries(RELEASE_KEYS.map((key) => [key, true]));
+  requireKnownKeys(path, declared, [...RELEASE_KEYS, "displayName"], "release");
+  const release = {
+    ...Object.fromEntries(RELEASE_KEYS.map((key) => [key, true])),
+    displayName:
+      declared.displayName === undefined ? "DotLn" : declared.displayName,
+  };
+  if (
+    !validReleaseDisplayName(release.displayName) ||
+    release.displayName.length > RELEASE_DISPLAY_NAME_LIMIT
+  )
+    throw refuse(
+      path,
+      `release.displayName must be a non-empty trimmed single-line name of at most ${RELEASE_DISPLAY_NAME_LIMIT} characters without control or format characters, backticks or release version tokens; use well-formed Unicode`,
+    );
   for (const key of RELEASE_KEYS) {
     if (declared[key] === undefined) continue;
     if (typeof declared[key] !== "boolean")
@@ -801,7 +828,7 @@ const absentConfig = () => ({
   portfolios: {},
   derivedOrders: { first: "WO-900", last: "WO-999" },
   build: { loadout: null, profile: null, overlay: null },
-  release: Object.fromEntries(RELEASE_KEYS.map((key) => [key, true])),
+  release: validateRelease(CONFIG_FILENAME, {}),
   kit: { applyInstanceActions: false },
 });
 

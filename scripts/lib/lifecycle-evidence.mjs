@@ -241,6 +241,7 @@ export async function requireLifecycleEvidence(
         "checkId",
         "treeHash",
         "codeIdentity",
+        "instanceInputDigest",
         "durationMs",
         "evidenceRef",
         "recordedAt",

@@ -2,7 +2,14 @@ import { write as writeFixture } from "./lib/helpers.mjs";
 import { spawnGit } from "./lib/git.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, rmSync, symlinkSync } from "node:fs";
+import {
+  chmodSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  symlinkSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -25,10 +32,18 @@ import {
   operatorWordAdvisories,
   operatorWordFindings,
   homePathFindings,
+  recordFiles,
   frontPageFindings,
   frontPageShapeFindings,
   proseText,
 } from "./docs-check.mjs";
+import {
+  HOME_DIRECTORY,
+  PRIVATE_PATH,
+  privatePathRule,
+  withoutHomeDirectories,
+} from "./lib/private-paths.mjs";
+import { readDecisions } from "./lib/meta.mjs";
 
 test("WO-178 attributed operator words advise by record, with capture and fingerprinted baseline exceptions", (t) => {
   const f = fixture(t);
@@ -1498,6 +1513,373 @@ test("a home or private temporary path in a document fails at its line; baseline
     /FAIL docs\/evidence\/WO-999\/README\.md:1: absolute home/,
   );
   assert.doesNotMatch(cli.stdout + cli.stderr, /fixture-user/);
+});
+
+test("records reject new home-path lines by type, root and counted fingerprint without revealing them", (t) => {
+  for (const roots of [{}, { docs: "manual", evidence: "proof" }]) {
+    const f = fixture(t, roots);
+    const docs = roots.docs ?? "docs";
+    const evidence = roots.evidence ?? `${docs}/evidence`;
+    const source = '{\n  "path": "/Users/fixture-user/x"\n}\n';
+    const message =
+      "absolute home path in a record; write a repository-relative path or a placeholder such as <home>/ or <worktree>/";
+    const files = ["json", "jsonl", "log", "txt"].map(
+      (extension) => `${evidence}/WO-999/record.${extension}`,
+    );
+    for (const file of files) f.write(file, source);
+    assert.equal(spawnGit(["add", "--", files[0]], { cwd: f.root }).status, 0);
+    assert.deepEqual(recordFiles(f.root), [...files].sort());
+    let result = f.check();
+    assert.deepEqual(
+      result.failures,
+      [...files].sort().map((file) => `${file}:2: ${message}`),
+    );
+    assert.doesNotMatch(result.failures.join("\n"), /fixture-user/u);
+    f.baseline.homePaths = Object.fromEntries(
+      homePathFindings(f.root, files).map(({ file, fingerprint }) => [
+        file,
+        [fingerprint],
+      ]),
+    );
+    assert.deepEqual(f.check().failures, []);
+    assert.equal(f.check().historicalHomePaths, 4);
+    f.write(files[0], source.replace("/x", "/edited"));
+    assert.deepEqual(f.check().failures, [`${files[0]}:2: ${message}`]);
+    f.write(files[0], source + source);
+    assert.deepEqual(f.check().failures, [`${files[0]}:5: ${message}`]);
+    for (const file of files)
+      f.write(file, "/tmp/fixture/x\n/private/var/folders/ab/T/x\n");
+    for (const file of [
+      "root.json",
+      `${docs}/intake/private.json`,
+      `${docs}/control/local/private.json`,
+      `${evidence}/probe.mjs`,
+      `${evidence}/ignored.json`,
+    ])
+      f.write(file, source);
+    f.write(".gitignore", `${evidence}/ignored.json\n`);
+    assert.deepEqual(recordFiles(f.root), [...files].sort());
+    assert.deepEqual(f.check().failures, []);
+    f.write(files[1], "/home/fixture-user/x\n");
+    f.controls();
+    const cli = spawnSync(process.execPath, [script], {
+      cwd: f.root,
+      env: { ...process.env, DOTLN_LAUNCHPAD: f.root },
+      encoding: "utf8",
+    });
+    assert.equal(cli.status, 1);
+    assert.ok(cli.stderr.includes(`${files[1]}:1: ${message}`));
+    assert.doesNotMatch(cli.stdout + cli.stderr, /fixture-user/u);
+  }
+});
+
+test("the home placeholder substitution reaches a fixed point that the record rule passes", () => {
+  // A second home prefix directly after an account name is left by one pass
+  // and would match again; the result below holds no match, so projecting it
+  // again changes nothing. A non-adjacent second prefix was already stable.
+  for (const [text, expected] of [
+    ["/Users/fixture-user/home/other", "<home><home>"],
+    [
+      "/home/fixture-user/Users/x and /Users/fixture-user/x/home/y",
+      "<home><home> and <home>/x/home/y",
+    ],
+    ["/Users/fixture-user/Users/second/home/third/x", "<home><home><home>/x"],
+    ["<home>/home/other", "<home><home>"],
+    ["Inspect <home>/x and ~/x", "Inspect <home>/x and ~/x"],
+  ]) {
+    const once = withoutHomeDirectories(text);
+    assert.equal(once, expected, text);
+    assert.equal(withoutHomeDirectories(once), once, text);
+    assert.doesNotMatch(once, HOME_DIRECTORY, text);
+    assert.doesNotMatch(once, /fixture-user/u, text);
+  }
+});
+
+test("a bare .md basename keeps the Markdown rule the listing gives it", (t) => {
+  const f = fixture(t);
+  // markdownFiles lists by suffix; the rule must not depend on extname, which
+  // is empty for a basename that is only an extension.
+  assert.equal(privatePathRule(".md"), PRIVATE_PATH);
+  assert.equal(privatePathRule("docs/evidence/.md"), PRIVATE_PATH);
+  assert.equal(privatePathRule("notes.md.json"), HOME_DIRECTORY);
+  assert.equal(privatePathRule("notes.md.sh"), null);
+  const file = "docs/evidence/WO-999/.md";
+  f.write(file, "Ran in /Users/fixture-user/work/repo.\n");
+  assert.deepEqual(f.check().failures, [
+    `${file}:1: absolute home or private temporary path; write a repository-relative path or a placeholder such as <worktree>/ or <tmp>/`,
+  ]);
+});
+
+test("an unreadable entry or a link to a directory refuses by its own path and never names the root", (t) => {
+  const f = fixture(t);
+  f.write("docs/evidence/WO-999/README.md", "A readable record set.\n");
+  const remedy =
+    "replace the link or restore read permission, or move it out of the document roots";
+  const refuses = (file, expected) =>
+    assert.throws(
+      () => f.check(),
+      (error) => {
+        assert.equal(error.message, expected);
+        return true;
+      },
+      file,
+    );
+  const link = "docs/evidence/WO-999/link.json";
+  symlinkSync(".", join(f.root, link));
+  const expected = `${link}: record is not a readable regular file (EISDIR); ${remedy}`;
+  refuses(link, expected);
+  f.controls();
+  const cli = spawnSync(process.execPath, [script], {
+    cwd: f.root,
+    env: { ...process.env, DOTLN_LAUNCHPAD: f.root },
+    encoding: "utf8",
+  });
+  assert.equal(cli.status, 1);
+  assert.ok(cli.stderr.includes(`FAIL docs check: ${expected}`), cli.stderr);
+  assert.ok(!(cli.stdout + cli.stderr).includes(f.root));
+  rmSync(join(f.root, link));
+  // A document is read by the link check before the private-path screen; the
+  // same refusal covers it there.
+  const documentLink = "docs/evidence/WO-999/link.md";
+  symlinkSync(".", join(f.root, documentLink));
+  refuses(
+    documentLink,
+    `${documentLink}: document is not a readable regular file (EISDIR); ${remedy}`,
+  );
+  rmSync(join(f.root, documentLink));
+  // A directory error carries no path, a permission error does; the refusal
+  // still names only the repository-relative one. Root can read anything.
+  if (process.getuid?.() !== 0)
+    for (const [file, kind] of [
+      ["docs/evidence/WO-999/locked.json", "record"],
+      ["docs/evidence/WO-999/locked.md", "document"],
+    ]) {
+      f.write(file, "No path here.\n");
+      chmodSync(join(f.root, file), 0);
+      refuses(
+        file,
+        `${file}: ${kind} is not a readable regular file (EACCES); ${remedy}`,
+      );
+      chmodSync(join(f.root, file), 0o644);
+      rmSync(join(f.root, file));
+    }
+});
+
+test("document readers refuse dangling, unreadable and non-file inputs without disclosing their root", (t) => {
+  const f = fixture(t);
+  const refuses = (operation, file) =>
+    assert.throws(operation, (error) => {
+      assert.ok(error.message.includes(file), error.message);
+      assert.ok(!error.message.includes(f.root), error.message);
+      assert.doesNotMatch(error.message, /fixture-user/u);
+      return true;
+    });
+  f.record("resume: next");
+  const decision = "docs/evidence/WO-999/decisions.md";
+  rmSync(join(f.root, decision));
+  symlinkSync("absent.md", join(f.root, decision));
+  refuses(() => readDecisions(f.root), decision);
+  refuses(f.check, decision);
+  rmSync(join(f.root, decision));
+  f.record("resume: next");
+  const product = "docs/product/dangling.md";
+  symlinkSync("absent.md", join(f.root, product));
+  refuses(f.check, product);
+  rmSync(join(f.root, product));
+  const record = "docs/evidence/WO-999/dangling.json";
+  symlinkSync("absent.json", join(f.root, record));
+  assert.ok(recordFiles(f.root).includes(record));
+  refuses(f.check, record);
+  rmSync(join(f.root, record));
+  if (process.getuid?.() !== 0) {
+    for (const [file, operation] of [
+      [decision, () => readDecisions(f.root)],
+      ["docs/product/00-fixture.md", f.check],
+      [
+        "outside-list.md",
+        () => linkFailures(f.root, ["docs/evidence/WO-999/link.md"]),
+      ],
+    ]) {
+      if (file === "outside-list.md") {
+        f.write(file, "# Target\n");
+        f.write(
+          "docs/evidence/WO-999/link.md",
+          "[target](../../../outside-list.md#target)\n",
+        );
+      }
+      chmodSync(join(f.root, file), 0);
+      try {
+        refuses(operation, file);
+      } finally {
+        chmodSync(join(f.root, file), 0o644);
+      }
+    }
+    const directory = "docs/product/unreadable";
+    mkdirSync(join(f.root, directory));
+    chmodSync(join(f.root, directory), 0);
+    try {
+      refuses(f.check, "docs/product");
+    } finally {
+      chmodSync(join(f.root, directory), 0o755);
+    }
+  }
+  const linked = fixture(t);
+  rmSync(join(linked.root, "docs/product"), { recursive: true });
+  symlinkSync("evidence", join(linked.root, "docs/product"));
+  assert.throws(
+    linked.check,
+    /docs\/product: document directory is unreadable \(ENOTDIR\)/u,
+  );
+  if (process.platform !== "win32") {
+    const file = "docs/evidence/WO-999/pipe.json";
+    f.write(file, "{}\n");
+    assert.equal(spawnGit(["add", "--", file], { cwd: f.root }).status, 0);
+    rmSync(join(f.root, file));
+    assert.equal(spawnSync("mkfifo", [join(f.root, file)]).status, 0);
+    f.controls();
+    const cli = spawnSync(process.execPath, [script], {
+      cwd: f.root,
+      env: { ...process.env, DOTLN_LAUNCHPAD: f.root },
+      encoding: "utf8",
+      timeout: 2000,
+    });
+    assert.equal(cli.status, 1, cli.stderr || cli.error?.message);
+    assert.match(
+      cli.stderr,
+      /pipe\.json: record is not a readable regular file \(ENOTFILE\)/u,
+    );
+    assert.ok(!(cli.stdout + cli.stderr).includes(f.root));
+  }
+});
+
+test("document diagnostics omit private link text and parser excerpts while preserving baseline identity", (t) => {
+  const f = fixture(t);
+  const file = "docs/evidence/WO-999/links.md";
+  f.write(
+    file,
+    "[home](/Users/fixture-user/missing.md#anchor)\n[encoded](/home/%66ixture-user/missing.md)\n",
+  );
+  const links = linkFailures(f.root);
+  assert.ok(
+    links.some((row) => row.href.includes("fixture-user")),
+    "baseline identity retains the original destination",
+  );
+  const result = f.check();
+  assert.ok(result.failures.some((row) => row.endsWith("<private path>")));
+  assert.doesNotMatch(
+    result.failures.join("\n"),
+    /fixture-user|%66ixture-user/u,
+  );
+  f.baseline.links = links.map(({ file, href, reason }) => ({
+    file,
+    href,
+    reason,
+    count: 1,
+  }));
+  assert.equal(f.check().historicalLinks, links.length);
+  f.controls();
+  for (const record of ["doc-ceilings.json", "doc-baseline.json"]) {
+    f.controls();
+    f.write(`docs/control/${record}`, '{"bad": /Users/fixture-user/invalid}\n');
+    assert.throws(
+      () => checkDocs(f.root),
+      (error) => {
+        assert.equal(error.message, `docs/control/${record}: invalid JSON`);
+        return true;
+      },
+    );
+  }
+  f.record("resume: next", {
+    reopenWhen: {
+      metric: "/Users/fixture-user/value",
+      operator: ">",
+      value: 1,
+    },
+  });
+  assert.throws(
+    () => readDecisions(f.root),
+    /WO-999-D001: unresolved reopening metric <private path>/u,
+  );
+});
+
+test("bare and case-variant record suffixes share listing and privacy rules", (t) => {
+  const f = fixture(t);
+  const names = [
+    ".json",
+    ".jsonl",
+    "record.JSON",
+    "record.JsonL",
+    "record.LOG",
+    "record.TxT",
+  ];
+  const files = names.map((name) => `docs/evidence/WO-999/${name}`);
+  for (const file of files) {
+    assert.equal(privatePathRule(file), HOME_DIRECTORY);
+    f.write(file, '"/home/fixture-user/work"\n');
+  }
+  assert.deepEqual(recordFiles(f.root), [...files].sort());
+  const result = f.check();
+  assert.equal(result.failures.length, files.length);
+  assert.doesNotMatch(result.failures.join("\n"), /fixture-user/u);
+  for (const file of files) f.write(file, '"<home>/work"\n');
+  assert.deepEqual(f.check().failures, []);
+  assert.equal(privatePathRule("unchanged.MD"), null);
+});
+
+test("document listing excludes private and package roots before inspecting unreadable cached entries", (t) => {
+  if (process.getuid?.() === 0) return t.skip("root bypasses file permissions");
+  const f = fixture(t);
+  const directories = [
+    "packages/fixture-private",
+    "docs/intake/private",
+    "docs/control/local/private",
+  ];
+  const files = directories.map((directory) => `${directory}/cached.json`);
+  for (const file of files) f.write(file, '"/Users/fixture-user/excluded"\n');
+  assert.equal(
+    spawnGit(["add", "-f", "--", ...files], { cwd: f.root }).status,
+    0,
+  );
+  for (const directory of directories) chmodSync(join(f.root, directory), 0);
+  try {
+    assert.deepEqual(recordFiles(f.root), []);
+    assert.deepEqual(f.check().failures, []);
+  } finally {
+    for (const directory of directories)
+      chmodSync(join(f.root, directory), 0o755);
+  }
+});
+
+test("a home path directly after a JSON escape sequence fails the record rule and is substituted", (t) => {
+  const f = fixture(t);
+  const message =
+    "absolute home path in a record; write a repository-relative path or a placeholder such as <home>/ or <worktree>/";
+  const files = ["json", "jsonl"].map(
+    (extension) => `docs/evidence/WO-999/captured.${extension}`,
+  );
+  // Captured output stored as a JSON string: the letter of an escape is no
+  // word boundary, so the path after it is still a home path.
+  const captured =
+    '{"output":"first line\\n/Users/fixture-user/x\\t/home/fixture-user/y","unicode":"a\\u000a/home/fixture-user/z"}\n';
+  for (const file of files) f.write(file, captured);
+  const failures = files.map((file) => `${file}:1: ${message}`);
+  let result = f.check();
+  assert.deepEqual(result.failures, failures);
+  assert.doesNotMatch(result.failures.join("\n"), /fixture-user/u);
+  // Markdown keeps its plain boundary: escaped forms in prose stay outside
+  // this screen.
+  const document = "docs/evidence/WO-999/README.md";
+  f.write(document, 'Output: "line\\n/Users/fixture-user/x"\n');
+  assert.deepEqual(f.check().failures, failures);
+  for (const file of files)
+    f.write(file, '{"output":"first line\\n<home>/x\\t<home>/y"}\n');
+  assert.deepEqual(f.check().failures, []);
+  assert.equal(
+    withoutHomeDirectories(
+      '"line\\n/Users/fixture-user/x\\t/home/fixture-user/y\\u000a/home/fixture-user/z"',
+    ),
+    '"line\\n<home>/x\\t<home>/y\\u000a<home>/z"',
+  );
 });
 
 test("a typed operator quotation needs its capture digest; a quoted field or report paragraph advises by its own record", (t) => {

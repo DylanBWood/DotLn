@@ -37,10 +37,17 @@ import {
   loadConfig,
   rootPattern,
   targetDocRelative,
+  validReleaseDisplayName,
 } from "./lib/config.mjs";
 
 const scriptRoot = dirname(fileURLToPath(import.meta.url));
 const sourceRoot = join(scriptRoot, "..");
+// These disposable lifecycle fixtures are not live host sessions.
+const fixtureEnvironment = {
+  ...process.env,
+  CODEX_THREAD_ID: "",
+  COPILOT_AGENT_SESSION_ID: "",
+};
 
 const temporary = (prefix, run) => {
   const root = realpathSync(mkdtempSync(join(tmpdir(), `dotln-${prefix}-`)));
@@ -164,6 +171,7 @@ await test("configuration root", async (t) => {
         overlay: null,
       });
       assert.deepEqual(config.release, {
+        displayName: "DotLn",
         readmeBlock: true,
         componentVersions: true,
         corpus: true,
@@ -638,6 +646,41 @@ await test("configuration root", async (t) => {
       refuses({ version: 1, build: { other: "x" } }, /unknown build key/);
       refuses({ version: 1, release: { corpus: "yes" } }, /release\.corpus/);
       refuses({ version: 1, release: { other: true } }, /unknown release key/);
+      for (const displayName of [
+        null,
+        3,
+        "",
+        " padded",
+        "padded ",
+        "two\nlines",
+        "tab\tname",
+        "bad`name",
+        "bad\u2028name",
+        "bad\u202ename",
+        "bad\ud800name",
+        "bad\udfffname",
+        "Project v2.0.0",
+        "x".repeat(65),
+      ])
+        refuses(
+          { version: 1, release: { displayName } },
+          /release\.displayName/,
+        );
+      // The refusal names every class it rejects, the bound included.
+      refuses(
+        { version: 1, release: { displayName: "bad\u202ename" } },
+        /at most 64 characters without control or format characters, backticks or release version tokens/,
+      );
+      writeFileSync(
+        path,
+        `${JSON.stringify({ classes: { "fixture-class": { checks: [], supports: [] } }, version: 1, release: { displayName: "x".repeat(64) } })}\n`,
+      );
+      assert.equal(loadConfig(root).release.displayName, "x".repeat(64));
+      // The shape predicate also recognizes names already in tag annotations
+      // and README text, which were admitted at any length; only a declared
+      // name is bounded.
+      assert.equal(validReleaseDisplayName("x".repeat(65)), true);
+      assert.equal(validReleaseDisplayName("Example 🚀"), true);
     });
   });
 
@@ -995,7 +1038,7 @@ await test("configuration root", async (t) => {
           spawnSync(
             process.execPath,
             [join(root, "scripts/resume.mjs"), ...args],
-            { encoding: "utf8", cwd: root },
+            { encoding: "utf8", cwd: root, env: fixtureEnvironment },
           );
         const run = (...args) => {
           const result = call(...args);
@@ -1249,7 +1292,7 @@ await test("configuration root", async (t) => {
           const result = spawnSync(
             process.execPath,
             [join(main, "scripts/worktree.mjs"), ...args],
-            { encoding: "utf8", cwd },
+            { encoding: "utf8", cwd, env: fixtureEnvironment },
           );
           return result;
         };
@@ -1290,7 +1333,7 @@ await test("configuration root", async (t) => {
           const result = spawnSync(
             process.execPath,
             [join(subject, "scripts/resume.mjs"), ...args],
-            { encoding: "utf8", cwd: subject },
+            { encoding: "utf8", cwd: subject, env: fixtureEnvironment },
           );
           assert.equal(
             result.status,

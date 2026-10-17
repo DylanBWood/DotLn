@@ -1,0 +1,121 @@
+{
+  "subject": "7ef627e0c9b9cab1c970143d8115b2553ab26d081c40d138dbbc38c76d4cbc34",
+  "importRoutes": [
+    {
+      "scenario": "repaired-command-alias",
+      "coverage": "declared",
+      "reusable": true,
+      "codeIdentityChanged": true,
+      "bindingChanged": true,
+      "directChangedExit": 13,
+      "secondGateExit": 1,
+      "staleAlphaReused": false,
+      "completeCoverageAccepted": false,
+      "lifecycleClaimAccepted": false
+    },
+    {
+      "scenario": "renamed-require-extensionless",
+      "coverage": "declared",
+      "reusable": true,
+      "codeIdentityChanged": true,
+      "bindingChanged": false,
+      "directChangedExit": 13,
+      "secondGateExit": 0,
+      "staleAlphaReused": true,
+      "completeCoverageAccepted": true,
+      "lifecycleClaimAccepted": true
+    },
+    {
+      "scenario": "encoded-module-url",
+      "coverage": "declared",
+      "reusable": true,
+      "codeIdentityChanged": true,
+      "bindingChanged": false,
+      "directChangedExit": 13,
+      "secondGateExit": 0,
+      "staleAlphaReused": true,
+      "completeCoverageAccepted": true,
+      "lifecycleClaimAccepted": true
+    },
+    {
+      "scenario": "explicit-semantic-control",
+      "coverage": "declared",
+      "reusable": true,
+      "codeIdentityChanged": true,
+      "bindingChanged": true,
+      "directChangedExit": 13,
+      "secondGateExit": 1,
+      "staleAlphaReused": false,
+      "completeCoverageAccepted": false,
+      "lifecycleClaimAccepted": false
+    }
+  ],
+  "projectionBoundary": {
+    "codeIdentityUnchanged": true,
+    "fixtureTaskReadsProjection": false,
+    "taskStillPasses": true,
+    "currentClaimAccepted": false,
+    "mainCoverageBoundaryAccepts": true,
+    "mainComparisonScope": "HEAD gate-reuse module with relative import locations redirected to current Git and gate-evidence helpers",
+    "displaced": [
+      "alpha"
+    ]
+  },
+  "projectionDiagnosis": {
+    "instrument": "scratch copy with read-only single-input digest override; no gate claim consumed and no repository byte restored",
+    "identity": "7ef627e0c9b9cab1c970143d8115b2553ab26d081c40d138dbbc38c76d4cbc34",
+    "task": "adjacent-queue",
+    "recordedDigest": "9c91054f4a7a9210ccf7d12aefd2932872597fd29f1c7ce45e3d5d92165c18dd",
+    "currentDigest": "0d0c6ff76f5c2ed28f1253c69b7d7de27ea046b23b47991ba8dfcd0a8b21efac",
+    "sourceOrigins": [
+      "scripts/test-codex-session.mjs"
+    ],
+    "versions": [
+      {
+        "checkpointOrdinal": 27,
+        "digest": "3e07fac0009ad9be4a8013cb8fc630b7b1f5d2d8058a9c7aaf79e08df8863a3d",
+        "matchesRecorded": false
+      },
+      {
+        "checkpointOrdinal": 28,
+        "digest": "9c91054f4a7a9210ccf7d12aefd2932872597fd29f1c7ce45e3d5d92165c18dd",
+        "matchesRecorded": true
+      },
+      {
+        "checkpointOrdinal": 29,
+        "digest": "291f1dcc53ab196c80be3312f12a4c58f9219f527e1ebf91c7ad252eb2efefd3",
+        "matchesRecorded": false
+      }
+    ],
+    "allDeclaredTasks": [
+      {
+        "name": "build",
+        "projectionAloneExplainsDrift": true,
+        "sourceOrigins": [
+          "scripts/test-codex-session.mjs"
+        ]
+      },
+      {
+        "name": "compiler",
+        "projectionAloneExplainsDrift": true,
+        "sourceOrigins": [
+          "scripts/test-codex-session.mjs"
+        ]
+      },
+      {
+        "name": "adjacent-queue",
+        "projectionAloneExplainsDrift": true,
+        "sourceOrigins": [
+          "scripts/test-codex-session.mjs"
+        ]
+      },
+      {
+        "name": "codex-continuation",
+        "projectionAloneExplainsDrift": true,
+        "sourceOrigins": [
+          "scripts/test-codex-session.mjs"
+        ]
+      }
+    ]
+  }
+}

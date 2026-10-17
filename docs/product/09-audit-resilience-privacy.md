@@ -505,6 +505,19 @@ timing plus other public activity may help re-identification. This profile
 accepts that disclosure when the operator opts in; a stricter profile omits the
 field. Opaque syntax and an ignored mapping are not anonymity guarantees.
 
+New committed records name no absolute home path: the follow-up register
+substitutes `<home>`, the planning receipt helper refuses unsafe content before
+writing, and records bound for a registered target's documentation root pass
+the same per-type screen before writing or committing;
+[existing filed records stay as written](../evidence/WO-213/README.md).
+Record suffixes are case-insensitive and include bare `.json`, `.jsonl`, `.log`
+and `.txt` names; Markdown selection and its pattern stay unchanged. Declared
+document readers refuse unreadable, dangling or non-file inputs with a relative
+path and error class, without system-path or parser-content excerpts. Descriptor
+checks and nonblocking opens prevent a FIFO from hanging these reads. Link
+diagnostics omit private destinations while baseline identity retains the raw
+link. Excluded document roots are filtered before filesystem inspection.
+
 ## Candidate — minimized incident reporting
 
 A failure-triggered active, projected into supported runtimes as an agent skill,

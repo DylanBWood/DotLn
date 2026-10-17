@@ -544,6 +544,33 @@ await check(
 );
 
 await check(
+  "custom release candidates retain strict manifest attribution validation",
+  () => {
+    const original = readFileSync(indexFile, "utf8");
+    for (const [body, refusal] of [
+      ["DOTLN-MANIFEST-BEGIN\n{}", /manifest/iu],
+      ["DOTLN-MANIFEST-BEGIN\n{\nDOTLN-MANIFEST-END", /manifest|JSON/iu],
+      [
+        "DOTLN-MANIFEST-BEGIN\nnull\nDOTLN-MANIFEST-END",
+        /malformed release attribution/u,
+      ],
+    ]) {
+      runGit(repo, [
+        "tag",
+        "-a",
+        "v4.0.0",
+        "-m",
+        `Example Starter v4.0.0\n\n${body}`,
+      ]);
+      assert.throws(() => localReleaseRecords(repo), refusal);
+      assert.match(cli(repo, ["index"], false), refusal);
+      assert.equal(readFileSync(indexFile, "utf8"), original);
+      runGit(repo, ["tag", "-d", "v4.0.0"]);
+    }
+  },
+);
+
+await check(
   "missing or changed recorded tag objects refuse without rewriting the index",
   () => {
     const original = readFileSync(indexFile, "utf8");

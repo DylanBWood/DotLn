@@ -1,4 +1,4 @@
-import { docRelative } from "./config.mjs";
+import { docRelative, loadConfig, validReleaseDisplayName } from "./config.mjs";
 import {
   lstatSync,
   mkdirSync,
@@ -22,8 +22,8 @@ export const activationPlaceholder = "(version assigned at activation)";
 
 // The only line the README release block holds: the version claim this
 // command writes and the release surfaces compare with tag truth.
-export const releaseClaimLine = (version) =>
-  `This source prepares DotLn \`${version}\`.`;
+export const releaseClaimLine = (version, displayName = "DotLn") =>
+  `This source prepares ${displayName} \`${version}\`.`;
 
 const dispatches = {
   active: "next",
@@ -192,7 +192,14 @@ export function planReleasePreparation(
     `This source prepares \`${claims[0]}\`.`,
     `This source is DotLn \`${claims[0]}\`.`,
   ];
-  if (blockLines.length !== 1 || !claimForms.includes(blockLines[0].trim()))
+  const priorName = /^This source prepares (.+) `v\d+\.\d+\.\d+`\.$/u.exec(
+    blockLines[0]?.trim() ?? "",
+  )?.[1];
+  if (
+    blockLines.length !== 1 ||
+    (!claimForms.includes(blockLines[0].trim()) &&
+      !validReleaseDisplayName(priorName))
+  )
     throw new Error(
       "release prepare requires the README release block to hold only its version line; move other text out of the block",
     );
@@ -253,7 +260,7 @@ export function planReleasePreparation(
     const generated = lines.toSpliced(
       start,
       finish - start,
-      releaseClaimLine(previous),
+      releaseClaimLine(previous, loadConfig(root).release.displayName),
     );
     const after = generated.join("\n");
     return {
@@ -287,7 +294,11 @@ export function planReleasePreparation(
     : heading.replace(boundary(previous), target);
   // Whatever spacing or wording surrounded the claim, the block is rewritten
   // as the one generated line.
-  lines.splice(start, finish - start, releaseClaimLine(target));
+  lines.splice(
+    start,
+    finish - start,
+    releaseClaimLine(target, loadConfig(root).release.displayName),
+  );
 
   // The one record of an assignment or a collision: a decision in the
   // order's evidence, never a product-document or README paragraph.
