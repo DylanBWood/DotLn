@@ -446,10 +446,14 @@ minutes. The gate index of this checkout holds the rows:
 | 2026-10-16 07:02Z | WO-213 | 38.1 min | 21.2 min | wo107-schema: a watchdog fixture refusing under host memory pressure (D042) | host state |
 
 None of the seven found a product defect. Of the seventeen failed document
-gates, fourteen failed on a stale generated artifact (the meta index six
-times, release surfaces three, the work-order index once, evidence editions
-three, the harness bundle twice, the planning receipt once) and five on
-`docs-check`. Two more declaration failures stopped complete reviews on
+gates, fifteen involved a stale generated artifact (the meta index six
+times, release surfaces three, the work-order index once, the
+authority-evidence edition five, the other evidence editions beside it,
+the harness bundle twice, the publication editions once, the planning
+receipt once) and four failed on `docs-check` (the receipt's recount from
+the same rows; WO-216's Cost line carries the planner's earlier tally of
+three evidence runs and five `docs-check` runs as a known issue on its
+catalog row). Two more declaration failures stopped complete reviews on
 2026-10-16 without a row: a copied CLI fixture missing `runtime-inputs.mjs`
 (D038) and `harness-fixtures` not declaring `control-store.mjs`, found after
 1,420 s (D039). The runner continues after a failed task: the 2026-10-13
@@ -728,6 +732,72 @@ refreshed inside its exempt block (`npm run release -- list --markdown
 
 ## 12. Validation and independent judgment
 
-(Completed after the checks and the refutation receipt; see the end of this
-section.)
+**Checks run on the working tree after the last write**, all passing:
+`node scripts/docs-check.mjs` (0 failures; 14 historical operator-word
+advisories, none in this pass's files); `node scripts/lineage.mjs index
+--check` (175 sections); `node scripts/work-orders.mjs index --check`;
+`npm run publication:check` (255 of 255 headings; both editions' locks
+refreshed); `npm run format:check`. `npm run test:docs` runs after the
+receipt, because its plan checks read the committed subject.
 
+**The refutation.** One fresh background `dotln-worker` was given only the
+canonical prompt of `npm run plan -- refute` for commit `a38a592e` and
+judged it in 938.6 s. Receipt 046 (`2026-10-17-planning-69fa20e1554282a6-046`):
+- verdict aligned-with-findings, with no hold;
+- all five orders aligned-with-findings;
+- thirty-four known issues, each with a reopening observation;
+- the judged, committed and working-tree subjects equal
+  (`sha256:9069b25e…`).
+
+Each known issue is carried on its order's catalog row. The planner's
+readings of the most material, and one error owned:
+
+- **Criterion 4 of the four batches cannot be met as written.** It makes
+  `followups --touching` over the changed files a completion check, but
+  that listing names deferred rows, candidate rows and the other batches'
+  rows that a touched file names, so a batch would fail on rows outside its
+  list. The planner wrote the criterion in haste; the order text is frozen
+  by this receipt, so the repair is recorded on each catalog row as the
+  amendment the activation records under the operator's authorization
+  (`amend-order`): the criterion reads "lists no row of this order's list
+  that is still pending".
+- **WO-216's `generated` row and feedback editions.** A judged source
+  edited mid-order makes its feedback edition stale until a live episode,
+  so a `generated` row that fails on it would refuse every focused run of
+  that order. The executor treats an edition whose re-mint needs a live
+  episode as an advisory while the order is active; the row names the
+  reopening observation.
+- **Launchpad file lanes** must keep the suite's exclusive reservation
+  unless a measured run shows two lanes under the host's memory share; the
+  pressure-dependent failure the rows show is the reason.
+- **The inflow.** The batches take the stock of boarded rows while about
+  29 rows per close were boarded in the window. The order that would have
+  bounded the inflow is the declined review draft (map candidate 6(a)); the
+  reopening observation is the decision-row count when WO-220 closes.
+- **Leverage.** WO-218 and WO-220 are the batches the fork's run passes
+  through; their READMEs name which rows WO-083 would hit, so a later pass
+  can sequence them by leverage rather than as peers.
+- **The Cost line's tally** in WO-216 miscounts the document-gate roots by
+  the receipt's recount (§4.5 holds the corrected figures); the executor's
+  README re-counts from the index at its base.
+
+**Cost of this pass.**
+
+- **Session usage.** The readback at entry was 90,037 total tokens. At
+  2026-10-17T19:54:46Z it read 30,785,704 total tokens, 315,705 of them
+  output tokens (source `claude-transcript-message-usage`, scope dispatch;
+  29,828,334 cached input, 639,777 cache-write); 198 steps and 190
+  commands. The cost in US dollars is unavailable.
+- **Agents, by their completion notices:** three drafters whose drafts were
+  declined (366,221, 406,328 and 473,358 tokens; 157, 149 and 165 tool
+  uses; 21.6, 28.2 and 35.4 minutes) and the refuter (205,557 tokens, 66
+  tool uses, 15.6 minutes); four admissions of twenty, no descendants.
+- **The operator's time**: the pass ran from about 18:00Z to 20:00Z with
+  the operator present and correcting it twice (§4.5).
+
+The outcome matched the aim as finally read: the three closes are retired,
+the register is at 156 pending rows from 281, the operator's five comments
+are answered from the record with the disagreements written, the gate's
+own failures have an order that fixes their causes, and the boarded rows
+have four. It did not match the planner's first two readings, which the
+operator corrected.
