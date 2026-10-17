@@ -1160,7 +1160,7 @@ Preconditions and inputs:
    condition, in the `NoOpIntent` shape, so a later pass sees what was weighed.
    A standard pass files an order only for a reopening condition that has
    occurred or an operator direction, and disposes every other row it reads
-   ([2026-09-27 pass](../planning/onesie-twosie-followup-drain-2026-09-27.md#13-the-operators-answer-decisions-made-under-delegation)).
+   ([2026-09-27 pass](../planning/onesie-twosie-followup-drain-2026-09-27.md#13-the-operators-answer-decisions-made-under-delegation)). 
 4. `ideation:` entries in the same dispatch run the complete ideation pipeline
    first; their synthesis is planning input.
 
@@ -1332,7 +1332,9 @@ Standard artifacts, all doc-only:
   observed gap, acceptance criteria whose last names both `npm test` and
   `npm run test:docs` [off-ramps pass, 2026-09-25; WO-111 VER-001 B3],
   a Preflight line naming the single-suite checks for its steps
-  (§Preflight before the full gate; 2026-10-13 pass), evidence, non-goals,
+  (§Preflight before the full gate; 2026-10-13 pass), a Design naming at
+  least one rejected alternative and the axis it differs on (2026-10-17
+  pass), evidence, non-goals,
   and operator-review assumptions; an order
   that changes a file the feedback verifier judges (`FEEDBACK_SOURCE_PATHS`
   in `packages/skeleton/src/feedback-audit.ts`) beyond a component release
@@ -1965,7 +1967,7 @@ differs from it.
 Final review is acceptance: the criteria, the integration and the release
 surfaces. A finding outside the criteria that breaks no behavior `main` had
 is a follow-up by rule, never blocking; the class counts below still measure
-escapes [2026-10-07 pass]. Its report lists every finding once, in
+escapes [2026-10-07 pass].  Its report lists every finding once, in
 one block: a `<!-- dotln-findings:start -->` line, a JSON array and a
 `<!-- dotln-findings:end -->` line. Each entry is
 `{"id": "F1", "route": "blocking", "class": "escape", "summary": "<one line>"}`:
@@ -2594,7 +2596,7 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   identity is the one the pass recorded in its checkpoint and still the
   working tree's, and `worktree publish` and `release close` read the bound
   row from the committed correction. A subject changed after the pass takes
-  a fresh final review (`activate` is legal from `closed`). Executor and
+  a fresh final review (`activate` is legal from `closed`). Feedback on a merged pull request after the pass has three routes: board it as a follow-up and merge; push a documentation-only correction to the branch, which leaves code identity unchanged; or a second cycle by `activate` from `closed`. A second `worktree publish` on a branch whose pull request is open pushes and then fails at creation with nothing recorded (observed 2026-10-16; FUP-1241a4d027a07dce carries the repair). Executor and
   verifier run product tests when useful to their evidence.
   WO-133 keeps the host and both profiles' skeleton version in
   `packages/skeleton/src/version.ts`, outside machinery source declarations but

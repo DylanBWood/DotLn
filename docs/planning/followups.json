@@ -2586,6 +2586,13 @@
           "title": "Candidate — Beware of Naive Interventionism",
           "summary": "## Candidate — Beware of Naive Interventionism **\"Beware of naive interventionism\"** is a candidate support for any active mechanic that proposes changing an existing system. It challenges the hidden premise that detecting an imperfection makes intervention net-beneficial. The support is a counterweight to action bias, novelty bias, cleanup enthusiasm, and locally correct changes that damage adaptations elsewhere. It asks for an explicit comparison between intervention and non-intervention: - What observable harm exists now, and how strong is the evidence? - What useful or compensating function might the current behavior serve? - Which consumers, equilibria, or learned workflows depend on it",
           "missing": false
+        },
+        {
+          "hash": "d2351fbe4d380ff89747324ba421437b6a6bd563bf865586bc91a14bfd4e3006",
+          "ref": "docs/product/05-pattern-library.md#candidate--beware-of-naive-interventionism",
+          "title": "Candidate — Beware of Naive Interventionism",
+          "summary": "## Candidate — Beware of Naive Interventionism **\"Beware of naive interventionism\"** is a candidate support for any active mechanic that proposes changing an existing system. It challenges the hidden premise that detecting an imperfection makes intervention net-beneficial. The support is a counterweight to action bias, novelty bias, cleanup enthusiasm, and locally correct changes that damage adaptations elsewhere. It asks for an explicit comparison between intervention and non-intervention: - What observable harm exists now, and how strong is the evidence? - What useful or compensating function might the current behavior serve? - Which consumers, equilibria, or learned workflows depend on it",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -2596,6 +2603,14 @@
           "reopenWhen": "a planning pass names a consumer scenario after WO-091 to WO-095 land (the pass's suggestion)",
           "targets": [],
           "at": "2026-09-19T01:19:52.303Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-17 standard pass: it named the candidate's first consumer scenario, final review's finding record (every review that spawned reviewer workers recorded findings, about ten per worker; fifteen of twenty-two without one recorded none), and drafted the order that would build the comparison as checks; the operator declined it. The typed support stays unbuilt and the scenario stays recorded in the planning document §4.3.",
+          "reopenWhen": "The operator directs the review checks, or WO-091 to WO-095 land, or a final review records more than ten findings from spawned workers again.",
+          "targets": [],
+          "at": "2026-10-17T19:34:06.156Z"
         }
       ]
     },
@@ -4249,6 +4264,16 @@
             "WO-083"
           ],
           "at": "2026-10-13T19:07:13.556Z"
+        },
+        {
+          "sourceRevision": 19,
+          "status": "allocated",
+          "reason": "Re-reviewed by the 2026-10-17 standard pass after product 12's 2026-10-13 edit: the candidate's source changed only in the October picture; WO-080 still carries the workstream application rows (its Known issues name FUP-0126).",
+          "reopenWhen": "WO-080 closes without the workstream application rows its Known issues carry, or product 12's candidate section changes its demonstrations.",
+          "targets": [
+            "WO-080"
+          ],
+          "at": "2026-10-17T19:34:05.856Z"
         }
       ]
     },
@@ -4427,6 +4452,16 @@
           "reopenWhen": "WO-113 activation",
           "targets": [],
           "at": "2026-09-27T15:59:33.985Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:11.296Z"
         }
       ]
     },
@@ -4668,6 +4703,13 @@
           "title": "Candidate — Tinkerer / Scientist",
           "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). **Allocated 2026-09-19 (second planning pass of that day).*",
           "missing": false
+        },
+        {
+          "hash": "f912e6d9fb48ce49f04c846428da45e0650a410eaf17abf830324f4a191b01e1",
+          "ref": "docs/product/05-pattern-library.md#candidate--tinkerer--scientist",
+          "title": "Candidate — Tinkerer / Scientist",
+          "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). **Allocated 2026-09-19 (second planning pass of that day).*",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -4760,6 +4802,14 @@
             "WO-188"
           ],
           "at": "2026-10-09T14:34:52.387Z"
+        },
+        {
+          "sourceRevision": 16,
+          "status": "deferred",
+          "reason": "Re-deferred by the 2026-10-17 standard pass after its source gained the 2026-10-17 reading (no experiment and no decline recorded by the four largest orders since WO-196); the recut of WO-096 that would lower the unit was declined by the operator, and the adaptive modifier stays unimplemented.",
+          "reopenWhen": "The operator directs the WO-096 recut, or an experiment record adopts an improvement, or ten equipped dispatches record an experiment or a decline.",
+          "targets": [],
+          "at": "2026-10-17T19:34:16.062Z"
         }
       ]
     },
@@ -13118,6 +13168,16 @@
           "reopenWhen": "A resident replay order changes NoOp deduplication, or a live row shows a same-reason refusal after re-arm under-recorded.",
           "targets": [],
           "at": "2026-09-29T17:38:44.326Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-220, boarded follow-ups batch 4 (the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-220 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-220"
+          ],
+          "at": "2026-10-17T19:34:14.610Z"
         }
       ]
     },
@@ -13142,6 +13202,16 @@
           "reopenWhen": "a separately judged order authorizes the payload-admission or returned-value change with its live/replay and historical-log equivalence checks",
           "targets": [],
           "at": "2026-09-21T06:59:00.381Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:12.408Z"
         }
       ]
     },
@@ -13278,6 +13348,16 @@
           "reopenWhen": "a corpus script is invoked through a symlinked path",
           "targets": [],
           "at": "2026-10-02T06:02:37.129Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:07.782Z"
         }
       ]
     },
@@ -13341,6 +13421,16 @@
           "reopenWhen": "a reserved-state read is added to kernel source in any form, or the next order that edits the AC3 coupling check",
           "targets": [],
           "at": "2026-09-21T06:59:01.401Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:11.501Z"
         }
       ]
     },
@@ -13421,6 +13511,16 @@
           "reopenWhen": "an order next opens these consumers, a supported input exceeds the batch limit, or a real source-change workload reproduces the reported parser or progress cost",
           "targets": [],
           "at": "2026-10-16T02:47:35.716Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:09.135Z"
         }
       ]
     },
@@ -13653,6 +13753,16 @@
           "reopenWhen": "the journals' stand-down rows pass fifty, or a journal shows a call admitted off-root that one of the four root-bound refusals would have refused from the worktree root (map candidate, 2026-09-21)",
           "targets": [],
           "at": "2026-09-21T06:59:02.927Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:12.480Z"
         }
       ]
     },
@@ -13684,6 +13794,16 @@
           "reopenWhen": "the journals' stand-down rows pass fifty, or a journal shows a call admitted off-root that one of the four root-bound refusals would have refused from the worktree root (map candidate, 2026-09-21)",
           "targets": [],
           "at": "2026-09-21T06:59:03.189Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:12.195Z"
         }
       ]
     },
@@ -13708,6 +13828,16 @@
           "reopenWhen": "a second refused read containing a quoted glob or an input redirect in a live gate, an admitted redirect that reaches an ungranted outside destination, or a gate input observed changed by an admitted metadata command (map candidate: shell destination adapter width, 2026-09-21)",
           "targets": [],
           "at": "2026-09-21T06:59:03.443Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:12.125Z"
         }
       ]
     },
@@ -13756,6 +13886,16 @@
           "reopenWhen": "a literal outside redirect beside an opaque one reaches the operator's folders, or a final-review gate again meets a deterministic failure in a suite no earlier run selected",
           "targets": [],
           "at": "2026-09-27T15:59:34.015Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:07.539Z"
         }
       ]
     },
@@ -13812,6 +13952,16 @@
           "reopenWhen": "a receipt names a suite that cannot pass inside a harness sandbox for an environmental cause, release fails inside on temporary roots reproducibly, or the next order edits the WO-068 native cases",
           "targets": [],
           "at": "2026-09-21T06:59:03.951Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:07.721Z"
         }
       ]
     },
@@ -13870,6 +14020,16 @@
           "reopenWhen": "a live Claude worker cannot resolve bare node; any verification authority declares a revocation event type; a live verifier still cannot satisfy the stated finding contract; or a stored stream again fails or dominates the skeleton suite (map candidate: verification and repair host residue, 2026-09-21)",
           "targets": [],
           "at": "2026-09-21T06:59:04.471Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:12.834Z"
         }
       ]
     },
@@ -13894,6 +14054,16 @@
           "reopenWhen": "a live Claude worker cannot resolve bare node; any verification authority declares a revocation event type; a live verifier still cannot satisfy the stated finding contract; or a stored stream again fails or dominates the skeleton suite (map candidate: verification and repair host residue, 2026-09-21)",
           "targets": [],
           "at": "2026-09-21T06:59:04.723Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:12.336Z"
         }
       ]
     },
@@ -13933,6 +14103,16 @@
           "reopenWhen": "a live Claude worker cannot resolve bare node; any verification authority declares a revocation event type; a live verifier still cannot satisfy the stated finding contract; or a stored stream again fails or dominates the skeleton suite",
           "targets": [],
           "at": "2026-09-30T15:30:44.374Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:12.055Z"
         }
       ]
     },
@@ -14005,6 +14185,16 @@
           "reopenWhen": "a live Claude worker cannot resolve bare node; any verification authority declares a revocation event type; a live verifier still cannot satisfy the stated finding contract; or a stored stream again fails or dominates the skeleton suite (map candidate: verification and repair host residue, 2026-09-21)",
           "targets": [],
           "at": "2026-09-21T06:59:05.237Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:11.364Z"
         }
       ]
     },
@@ -14168,6 +14358,16 @@
           "reopenWhen": "a queued or filed order's criteria name an edit to the goal-alignment section of product 07, or another product section needs an execution-writeback route (WO-118-D004's reopening condition)",
           "targets": [],
           "at": "2026-10-13T14:49:27.307Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:11.984Z"
         }
       ]
     },
@@ -14476,6 +14676,16 @@
           "reopenWhen": "the next Tinkerer trial dispatch, which must equip the support explicitly or record that the operator chose not to",
           "targets": [],
           "at": "2026-09-21T06:59:06.270Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:11.638Z"
         }
       ]
     },
@@ -14668,6 +14878,16 @@
           "reopenWhen": "a recorded run holds as unknown on an ordinary session because generated evidence crowds the capsule",
           "targets": [],
           "at": "2026-09-21T06:59:06.533Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-220, boarded follow-ups batch 4 (the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-220 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-220"
+          ],
+          "at": "2026-10-17T19:34:14.081Z"
         }
       ]
     },
@@ -15540,6 +15760,16 @@
           "reopenWhen": "an order recollects a T1 matrix",
           "targets": [],
           "at": "2026-09-22T00:34:44.840Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-220, boarded follow-ups batch 4 (the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-220 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-220"
+          ],
+          "at": "2026-10-17T19:34:14.384Z"
         }
       ]
     },
@@ -17877,6 +18107,16 @@
           "reopenWhen": "the receipts directory passes 32 MB",
           "targets": [],
           "at": "2026-09-28T14:59:04.948Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:13.200Z"
         }
       ]
     },
@@ -19194,6 +19434,16 @@
           "reopenWhen": "a withdrawn order exists on a branch and needs publication or teardown",
           "targets": [],
           "at": "2026-10-01T03:09:56.714Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:09.642Z"
         }
       ]
     },
@@ -19218,6 +19468,16 @@
           "reopenWhen": "the next beacon codebook revision",
           "targets": [],
           "at": "2026-09-25T21:30:00.530Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:09.579Z"
         }
       ]
     },
@@ -19335,6 +19595,16 @@
           "reopenWhen": "the next order that touches usage attribution in resume usage or the console board",
           "targets": [],
           "at": "2026-09-28T19:03:44.872Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:12.907Z"
         }
       ]
     },
@@ -20540,6 +20810,16 @@
           "reopenWhen": "the next order that edits the RecordCorrected fold in scripts/lib/control.mjs, or a committed segment carries a gate binding whose subject is not a passing final review",
           "targets": [],
           "at": "2026-09-27T00:36:25.362Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:13.489Z"
         }
       ]
     },
@@ -20966,6 +21246,16 @@
           "reopenWhen": "a real release close leaves main reserved or reclaims a live session's reservation, or the shell fixture's adapter diverges from the runtime's writer protocol",
           "targets": [],
           "at": "2026-10-04T16:21:50.357Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:10.160Z"
         }
       ]
     },
@@ -21450,6 +21740,16 @@
           "reopenWhen": "a real integration meets the stash-apply defect, or the next order that edits the stash-apply stage of scripts/lib/worktree-integration.mjs",
           "targets": [],
           "at": "2026-09-29T19:49:12.447Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:09.706Z"
         }
       ]
     },
@@ -21547,6 +21847,16 @@
           "reopenWhen": "a normal no-argument order diff reaches the page limit of followups --touching, or a planning pass needs one large explicit query to avoid losing a disposition",
           "targets": [],
           "at": "2026-09-27T14:35:55.829Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:13.271Z"
         }
       ]
     },
@@ -21668,6 +21978,16 @@
           "reopenWhen": "the next order that edits the outside-write guard, or a write lands outside every granted root through a swapped root or ancestor, or a session is refused under a real root it owns",
           "targets": [],
           "at": "2026-09-27T15:59:34.326Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:09.515Z"
         }
       ]
     },
@@ -21692,6 +22012,16 @@
           "reopenWhen": "the next order that edits the shell destination adapter or command effects; or a command the list admits writes a file, runs an unlisted program or expands; or a session beside a live gate is refused one of the four forms",
           "targets": [],
           "at": "2026-09-27T15:59:34.466Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:10.095Z"
         }
       ]
     },
@@ -21772,6 +22102,16 @@
           "reopenWhen": "a planning pass over the standing text, the next order that edits the writer text, or a session acts on one of the named sentences against the shipped behaviour",
           "targets": [],
           "at": "2026-09-28T19:03:44.931Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:14.006Z"
         }
       ]
     },
@@ -21804,6 +22144,16 @@
           "reopenWhen": "the next order that edits observed-facts.ts, or a hedge about a partial run is attributed to the full gate while both rows are in scope",
           "targets": [],
           "at": "2026-09-28T03:29:45.846Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:08.329Z"
         }
       ]
     },
@@ -21878,6 +22228,16 @@
           "reopenWhen": "the standing-text pass of FUP-fd05316b6030ef73 runs, or a session acts on product 07's destination-adapter paragraph or docs/AI-HARNESS-SECURITY.md against the shipped &> or = rule",
           "targets": [],
           "at": "2026-09-27T15:59:34.382Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:11.776Z"
         }
       ]
     },
@@ -21910,6 +22270,16 @@
           "reopenWhen": "the next order that edits observed-facts.ts, the harness or process-debt fixture temporary root, or the scripts/resume.mjs dispatch release; or a full-gate hedge is attributed to a partial row while both rows are in scope",
           "targets": [],
           "at": "2026-09-27T20:16:28.933Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:07.962Z"
         }
       ]
     },
@@ -21958,6 +22328,16 @@
           "reopenWhen": "retained lanes pass 200 MB or 100 lanes, or an order adds a commit step after release close",
           "targets": [],
           "at": "2026-10-02T06:02:37.087Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:13.708Z"
         }
       ]
     },
@@ -22014,6 +22394,16 @@
           "reopenWhen": "an operator apply is observed stopping at a stash in one of these states, or the next order that edits scripts/lib/stash-drop.mjs",
           "targets": [],
           "at": "2026-09-28T03:29:45.601Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:11.027Z"
         }
       ]
     },
@@ -22670,6 +23060,16 @@
           "reopenWhen": "an off-ramp is recorded by an executor's descendant without an operator capture",
           "targets": [],
           "at": "2026-09-28T14:59:04.827Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:13.856Z"
         }
       ]
     },
@@ -22781,6 +23181,16 @@
           "reopenWhen": "An order introduces a handoff-to-mission text transfer or a real accepted value is refused late.",
           "targets": [],
           "at": "2026-09-28T03:29:45.352Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:13.126Z"
         }
       ]
     },
@@ -22902,6 +23312,16 @@
           "reopenWhen": "an amendment row whose bound decision has changed must be withdrawn rather than re-bound, or the next order that changes how scripts/lib/plan-receipts.mjs binds or withdraws an amendment",
           "targets": [],
           "at": "2026-10-13T14:49:27.199Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:12.692Z"
         }
       ]
     },
@@ -23259,6 +23679,16 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-13T16:53:34.006Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass: WO-216 makes the first structural cut the candidate waited for, the launchpad suite as file lanes under their own deadlines (it exceeded its 900 s deadline alone on 2026-10-15), and records the rows the next pass reads for the rest of the critical path (vertical, skeleton, harness-fixtures).",
+          "reopenWhen": "WO-216 closes, and the pass after it reads the complete-run rows; or a complete run exceeds an hour after it.",
+          "targets": [
+            "WO-216"
+          ],
+          "at": "2026-10-17T19:34:05.919Z"
         }
       ]
     },
@@ -23545,6 +23975,16 @@
           "reopenWhen": "an adapter stores a URL userinfo password or a JWT without the Bearer word, or a planning pass schedules the next minor of the SourceBundle screen",
           "targets": [],
           "at": "2026-09-28T17:50:58.086Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:12.979Z"
         }
       ]
     },
@@ -23934,6 +24374,16 @@
           "reopenWhen": "an audit of a resident or vertical store is judged unusable without the summaries, or WO-083's run is audited",
           "targets": [],
           "at": "2026-10-13T14:49:27.032Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-220, boarded follow-ups batch 4 (the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-220 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-220"
+          ],
+          "at": "2026-10-17T19:34:14.458Z"
         }
       ]
     },
@@ -24084,6 +24534,16 @@
           "reopenWhen": "the operator directs the profile, or a root workflow task records fewer than three contributing agents while the enabled mode is claimed",
           "targets": [],
           "at": "2026-10-11T01:26:25.956Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-220, boarded follow-ups batch 4 (the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-220 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-220"
+          ],
+          "at": "2026-10-17T19:34:15.443Z"
         }
       ]
     },
@@ -24284,6 +24744,16 @@
           "reopenWhen": "an operator walkthrough or a resident run meets one of B2 to B5 or T1 again, a resident watched by the live console runs one day at the default tick (86,400 clock samples), or an order edits packages/console/src/live.ts's refresh, change notices, liveness display or terminal tests",
           "targets": [],
           "at": "2026-10-13T16:53:36.107Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-220, boarded follow-ups batch 4 (the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-220 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-220"
+          ],
+          "at": "2026-10-17T19:34:14.157Z"
         }
       ]
     },
@@ -24791,6 +25261,16 @@
           "reopenWhen": "an attestation records a spelling as xhigh for a session that ran at another effort, or the harness exposes the ultracode mode as a readback",
           "targets": [],
           "at": "2026-09-30T15:30:44.916Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:12.762Z"
         }
       ]
     },
@@ -24847,6 +25327,16 @@
           "reopenWhen": "the direction count is used for a decision, or the operator asks for the agreement figure",
           "targets": [],
           "at": "2026-10-11T00:22:27.662Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:13.052Z"
         }
       ]
     },
@@ -25554,6 +26044,16 @@
           "reopenWhen": "the pass that re-observes WO-088 or WO-089 before activation",
           "targets": [],
           "at": "2026-10-02T06:02:37.003Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:13.635Z"
         }
       ]
     },
@@ -26279,6 +26779,16 @@
           "reopenWhen": "a reused npm test row is shown to have passed over a changed input named here, or an order edits gate-evidence.mjs or the release suite's reads of control or release inputs",
           "targets": [],
           "at": "2026-10-16T02:47:35.376Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:08.513Z"
         }
       ]
     },
@@ -26726,6 +27236,16 @@
           "reopenWhen": "a protected intake repository is needed during a gate or completion, or the next order edits gateTreeHash",
           "targets": [],
           "at": "2026-10-01T03:09:56.751Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:08.575Z"
         }
       ]
     },
@@ -26895,6 +27415,16 @@
           "reopenWhen": "A real retry meets moved main, history storage becomes a measured bottleneck, overlapping closes lose an attempt, or an order changes ensureExistingRelease.",
           "targets": [],
           "at": "2026-10-04T16:21:50.408Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:10.893Z"
         }
       ]
     },
@@ -27055,6 +27585,16 @@
           "reopenWhen": "an order owns the audit projection and its linkage tests, or a recorded run produces such a partial trace",
           "targets": [],
           "at": "2026-10-02T06:02:36.281Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-220, boarded follow-ups batch 4 (the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-220 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-220"
+          ],
+          "at": "2026-10-17T19:34:14.233Z"
         }
       ]
     },
@@ -27079,6 +27619,16 @@
           "reopenWhen": "a kernel-owned order defines malformed-command admission, or a recorded run persists an incomplete command",
           "targets": [],
           "at": "2026-10-02T06:02:36.323Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-220, boarded follow-ups batch 4 (the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-220 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-220"
+          ],
+          "at": "2026-10-17T19:34:15.219Z"
         }
       ]
     },
@@ -27103,6 +27653,16 @@
           "reopenWhen": "the next order that edits the WO-103 corpus or the guard's effect-pattern rules",
           "targets": [],
           "at": "2026-10-02T06:02:36.366Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-220, boarded follow-ups batch 4 (the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-220 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-220"
+          ],
+          "at": "2026-10-17T19:34:15.369Z"
         }
       ]
     },
@@ -27300,6 +27860,16 @@
           "reopenWhen": "an order edits the WO-105 lane, or a role reports the base mismatch as a regression",
           "targets": [],
           "at": "2026-10-02T06:02:36.408Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-220, boarded follow-ups batch 4 (the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-220 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-220"
+          ],
+          "at": "2026-10-17T19:34:15.295Z"
         }
       ]
     },
@@ -27331,6 +27901,16 @@
           "reopenWhen": "An ordinary call reaches the bound, a stale claim blocks an answer, or repeated classification approaches the hook timeout",
           "targets": [],
           "at": "2026-10-01T15:47:39.199Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:12.622Z"
         }
       ]
     },
@@ -27505,6 +28085,16 @@
           "reopenWhen": "native hook evidence supplies a reliable route field, or a changed baseline record lacks capture provenance",
           "targets": [],
           "at": "2026-10-02T06:02:36.535Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:11.707Z"
         }
       ]
     },
@@ -27873,6 +28463,16 @@
           "reopenWhen": "an order needs a semantic edit to profile.mjs, wo107-records.mjs, wo107-scenarios.mjs or wo107-bounded.mjs (archive protocol 1d618f2f… first), the registry self-test fails on a kernel or skeleton change, the wo107-schema row does not select or does not fail on a collector edit, or WO-105's after-base rule is decided on FUP-d093f77bd927f9dc",
           "targets": [],
           "at": "2026-10-12T04:34:15.305Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-220, boarded follow-ups batch 4 (the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-220 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-220"
+          ],
+          "at": "2026-10-17T19:34:14.985Z"
         }
       ]
     },
@@ -28508,6 +29108,16 @@
           "reopenWhen": "WO-096 names batch candidates, or a reviewer or verifier session again repeats a refused line of work",
           "targets": [],
           "at": "2026-10-11T01:26:28.289Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:13.931Z"
         }
       ]
     },
@@ -28547,6 +29157,16 @@
           "reopenWhen": "A retained-descriptor descendant escapes, a real unattributed memory incident supplies new evidence, or an authorized privacy-preserving mechanism can cover no-mark or unwrapped ancestry gaps.",
           "targets": [],
           "at": "2026-10-03T05:04:13.470Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:08.884Z"
         }
       ]
     },
@@ -28631,6 +29251,16 @@
           "reopenWhen": "an order changes a host guard rule, a census adopts a process holding a socket the task did not hand it, or a guard tag survives from a registration absent after its census",
           "targets": [],
           "at": "2026-10-11T01:26:25.677Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:08.636Z"
         }
       ]
     },
@@ -28878,6 +29508,16 @@
           "reopenWhen": "A plan failures count exceeds the stopped trees it reports, a guard-originated SIGTERM ends a gate as an operator stop with no row, a nested gate waits on its own parent's lanes, or a later order edits these guard or runner paths.",
           "targets": [],
           "at": "2026-10-16T02:47:35.659Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:09.261Z"
         }
       ]
     },
@@ -29132,6 +29772,16 @@
           "reopenWhen": "a controlled run separates the lock matrix's effect on its lane peers, or the plain gate's thirty-day median passes 360 s",
           "targets": [],
           "at": "2026-10-11T00:22:28.057Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:07.902Z"
         }
       ]
     },
@@ -29156,6 +29806,16 @@
           "reopenWhen": "a hook, the evidence command or a product-gate correction accepts a pass at an identity whose latest run of that task failed, or a product task is found reading a runtime snapshot",
           "targets": [],
           "at": "2026-10-11T01:26:27.001Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:08.023Z"
         }
       ]
     },
@@ -29187,6 +29847,16 @@
           "reopenWhen": "the operator directs the record, or either host changes how it reports Ultracode, ultra or effort",
           "targets": [],
           "at": "2026-10-11T01:26:26.505Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:11.570Z"
         }
       ]
     },
@@ -29305,6 +29975,16 @@
           "reopenWhen": "a reused npm test row is shown to have passed over a changed input named here, an order edits gate-evidence.mjs or the release suite's reads of control or release inputs, or a product task legitimately needs a recursive walk from the root",
           "targets": [],
           "at": "2026-10-16T02:47:35.262Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:07.661Z"
         }
       ]
     },
@@ -29353,6 +30033,16 @@
           "reopenWhen": "a gate's live progress is needed to see an integration case end, a slowest-case list hides a slow case behind its parent, a carried pass is traced to a row missing from a concurrent index read, a product task globs an active order's records, or the next order edits scripts/lib/case-reporter.mjs, readGateChecks or scripts/lib/product-read-guard.mjs",
           "targets": [],
           "at": "2026-10-11T01:26:26.864Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:07.842Z"
         }
       ]
     },
@@ -29441,6 +30131,16 @@
           "reopenWhen": "a planning pass nominates keying the runtime snapshot on its import closure, or a hook loads a stale transitive module",
           "targets": [],
           "at": "2026-10-16T02:47:35.489Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:08.760Z"
         }
       ]
     },
@@ -29998,6 +30698,16 @@
           "reopenWhen": "the resume document suite fails again on scripts/test-off-ramps.mjs's checkpoint correction case, or a repeated isolated run reproduces it",
           "targets": [],
           "at": "2026-10-11T01:26:25.744Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:08.822Z"
         }
       ]
     },
@@ -30030,6 +30740,16 @@
           "reopenWhen": "a suite's teardown fails with a leftover objects/info/packs or info/refs, or an order edits those fixtures",
           "targets": [],
           "at": "2026-10-11T01:26:25.815Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:08.946Z"
         }
       ]
     },
@@ -30184,6 +30904,16 @@
           "reopenWhen": "a real handoff draws a false self-review advisory, a real report's recap or quote changes a recorded count, a real order uses a singular label, or plan failures misreports a passing review",
           "targets": [],
           "at": "2026-10-11T01:26:25.177Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:11.846Z"
         }
       ]
     },
@@ -30320,6 +31050,16 @@
           "reopenWhen": "a verifier again asks the operator to authorize a repair rule inside the order's criteria and surfaces, WO-096 names batch candidates, or an order edits the verifier role text in the Contributor loadout",
           "targets": [],
           "at": "2026-10-12T02:23:27.943Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:13.782Z"
         }
       ]
     },
@@ -30352,6 +31092,16 @@
           "reopenWhen": "a lifecycle transition again waits on a lane held by another worktree, a fail verdict is blocked by an inline gate, or WO-192 is planned at the head of the sequence",
           "targets": [],
           "at": "2026-10-11T01:26:25.885Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:09.009Z"
         }
       ]
     },
@@ -30391,6 +31141,16 @@
           "reopenWhen": "a real final review records unmeasured for a field that does not enter the count, or ten more orders close with the block",
           "targets": [],
           "at": "2026-10-11T01:26:25.254Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:12.266Z"
         }
       ]
     },
@@ -30415,6 +31175,16 @@
           "reason": "Deferred at the priority WO-187-D047 sets: no valid filed receipt loses an issue, and the product 07 follow-up stays open rather than allocated.",
           "reopenWhen": "A corrupt receipt reaches a verify briefing without its invalidity shown, a valid filed receipt loses known issues, or an overrun's optimization is allocated before the text fits its ceiling.",
           "at": "2026-10-06T14:39:38.020Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:13.415Z"
         }
       ]
     },
@@ -30521,6 +31291,16 @@
           "reopenWhen": "a real verify dispatch errors after recording; a final review misclasses a finding for want of the definitions; a reviewer self-fix goes unlisted; an advisoryDecision is used again; or the next order that edits scripts/resume.mjs or the reviewer loadout activates",
           "targets": [],
           "at": "2026-10-16T00:57:41.740Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:11.432Z"
         }
       ]
     },
@@ -30978,6 +31758,16 @@
           "reopenWhen": "an intent is filed in an instance against a repository the operator keeps, or an order plans a resident-owned run on one; a run stops at the review-body limit after the loop's own pushes, a reviewer floods new threads, a cached resolution input diverges from its observed head, or the operator asks to prioritize an item",
           "targets": [],
           "at": "2026-10-13T16:53:36.171Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-220, boarded follow-ups batch 4 (the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-220 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-220"
+          ],
+          "at": "2026-10-17T19:34:14.761Z"
         }
       ]
     },
@@ -31010,6 +31800,16 @@
           "reopenWhen": "Before WO-083's live run, when D046's follow-up is scheduled, or when a replayed record's validation failure is observed in a run.",
           "targets": [],
           "at": "2026-10-13T14:49:27.253Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-220, boarded follow-ups batch 4 (the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-220 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-220"
+          ],
+          "at": "2026-10-17T19:34:15.061Z"
         }
       ]
     },
@@ -31134,6 +31934,16 @@
           "targets": [],
           "sourceRevision": 1,
           "at": "2026-10-07T02:12:16.811Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-220, boarded follow-ups batch 4 (the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-220 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-220"
+          ],
+          "at": "2026-10-17T19:34:15.139Z"
         }
       ]
     },
@@ -31158,6 +31968,16 @@
           "reopenWhen": "the named case fails again in any gate, or the nested cause identifies a deterministic defect",
           "targets": [],
           "at": "2026-10-11T01:26:28.131Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:09.198Z"
         }
       ]
     },
@@ -31265,6 +32085,16 @@
           "reopenWhen": "a resident or vertical run relaunches a judgment episode that fails identically for the same subject",
           "targets": [],
           "at": "2026-10-13T16:53:36.235Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-220, boarded follow-ups batch 4 (the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-220 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-220"
+          ],
+          "at": "2026-10-17T19:34:14.687Z"
         }
       ]
     },
@@ -31880,6 +32710,16 @@
           "reopenWhen": "a vertical with a configured browserScenario is signalled or crashes during its witnesses step and the rerun is sealed refused, in WO-118's run or elsewhere, or the backstop fires there in a regression",
           "targets": [],
           "at": "2026-10-11T01:26:27.679Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-220, boarded follow-ups batch 4 (the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-220 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-220"
+          ],
+          "at": "2026-10-17T19:34:14.836Z"
         }
       ]
     },
@@ -31928,6 +32768,16 @@
           "reopenWhen": "a rerun or resident restart after an interrupted or crashed source-change step is sealed with the untyped refusal, in WO-118's run or elsewhere, or an order edits SourceChangeHost.run's recovery observation",
           "targets": [],
           "at": "2026-10-11T01:26:26.718Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-220, boarded follow-ups batch 4 (the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-220 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-220"
+          ],
+          "at": "2026-10-17T19:34:14.534Z"
         }
       ]
     },
@@ -32059,6 +32909,16 @@
           "reopenWhen": "An operator-authorized order addresses instance-specific contribution exemption identity, or a fork's worktree publish exempts core's operator identity instead of its own.",
           "targets": [],
           "at": "2026-10-14T21:36:49.578Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:09.451Z"
         }
       ]
     },
@@ -32139,6 +32999,16 @@
           "reopenWhen": "WO-096 names batch candidates, planning disposes the levers, or the next ten closed orders include fewer than three recorded comparisons with both arms",
           "targets": [],
           "at": "2026-10-11T01:26:27.473Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:12.551Z"
         }
       ]
     },
@@ -32177,6 +33047,16 @@
           "reopenWhen": "a close record names a removed repository whose commits no remote or retained ref held and the operator asks to recover it, or an intake or declared-submodule repository is removed by any path",
           "targets": [],
           "at": "2026-10-11T01:26:28.449Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:11.229Z"
         }
       ]
     },
@@ -32208,6 +33088,16 @@
           "reopenWhen": "an order needs a committed submodule, a close removes a submodule or forces a removal, or a retry loses a completed Release from its record",
           "targets": [],
           "at": "2026-10-11T01:26:26.434Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:07.600Z"
         }
       ]
     },
@@ -32232,6 +33122,16 @@
           "reopenWhen": "a host task notification is counted as an operator intervention, or an operator prompt is labelled a notification",
           "targets": [],
           "at": "2026-10-11T01:26:27.979Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:13.562Z"
         }
       ]
     },
@@ -32448,6 +33348,16 @@
           "reopenWhen": "a rendered link's rewritten path differs from the parser's url for the same source once encoded, or a sequence the parser renders as text is rewritten",
           "targets": [],
           "at": "2026-10-11T01:26:27.754Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:10.355Z"
         }
       ]
     },
@@ -32472,6 +33382,16 @@
           "reopenWhen": "the case fails again in any gate, with or without load",
           "targets": [],
           "at": "2026-10-11T01:26:27.209Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:08.146Z"
         }
       ]
     },
@@ -32503,6 +33423,16 @@
           "reopenWhen": "a reviewed body uses a nested empty, fragment or escaping destination and publication refuses after normalization, or a resulting relative destination passes the publication profile",
           "targets": [],
           "at": "2026-10-11T01:26:28.371Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:11.093Z"
         }
       ]
     },
@@ -32527,6 +33457,16 @@
           "reopenWhen": "a document gate fails on a comment token or a template path that names no private location, a Release page carries a relative link after publication, or a host task notification is counted as an operator intervention",
           "targets": [],
           "at": "2026-10-11T01:26:26.790Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:11.916Z"
         }
       ]
     },
@@ -32551,6 +33491,16 @@
           "reopenWhen": "a close prints a disposable retry that refuses when run as printed, an export lands on a reserved lane file, a nested worktree of the same repository blocks a close without a remedy, or a completion refuses on an unnamed tree entry with a scratch repository present",
           "targets": [],
           "at": "2026-10-11T01:26:27.903Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:10.623Z"
         }
       ]
     },
@@ -32798,6 +33748,16 @@
           "reopenWhen": "A later harness/floor migration explicitly owns the default-byte change, or the existing launchpad-docs comparison detects drift.",
           "targets": [],
           "at": "2026-10-12T00:12:36.073Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:09.770Z"
         }
       ]
     },
@@ -32853,6 +33813,16 @@
           "reopenWhen": "an export is recorded from a repository with refs/replace objects, or a workflow that creates blob replacements is adopted for core",
           "targets": [],
           "at": "2026-10-11T01:26:26.934Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:09.835Z"
         }
       ]
     },
@@ -32877,6 +33847,16 @@
           "reopenWhen": "a registration declares a linkHosts value the observer refuses, or an observation is refused with 'observer execution failed' while linkHosts is declared",
           "targets": [],
           "at": "2026-10-11T01:26:27.539Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:10.030Z"
         }
       ]
     },
@@ -32908,6 +33888,16 @@
           "reopenWhen": "the WO-111 seed is run again, or another committed generator writing a repositoryClass without a classes section is found",
           "targets": [],
           "at": "2026-10-11T01:26:27.343Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:09.965Z"
         }
       ]
     },
@@ -32953,6 +33943,16 @@
           "reopenWhen": "The next order edits runHarnessEvidenceChecks in packages/skeleton/src/harness-host.ts, or a failed gate after harness evidence and a ref move prints no since-previous diagnostic.",
           "targets": [],
           "at": "2026-10-09T21:19:32.239Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:09.388Z"
         }
       ]
     },
@@ -33064,6 +34064,16 @@
           "reopenWhen": "a gate task holds at a row whose growth no order's decisions name, or the plain gate's thirty-day median passes 360 s",
           "targets": [],
           "at": "2026-10-13T16:53:36.625Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:08.207Z"
         }
       ]
     },
@@ -33400,6 +34410,16 @@
           "reopenWhen": "An order relies on a recorded limit to put text on the front page, or WO-088 is activated without listing its block in docs/control/front-page.json.",
           "targets": [],
           "at": "2026-10-10T21:13:15.585Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-220, boarded follow-ups batch 4 (the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-220 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-220"
+          ],
+          "at": "2026-10-17T19:34:14.911Z"
         }
       ]
     },
@@ -33842,6 +34862,16 @@
           "reopenWhen": "the operator records a profile choice or a style correction on a profiled surface; a fresh document gate in this repository again runs longer than 600 s with summed task work under a quarter of its wall-clock; or a scoring run is recorded with no decision citing it",
           "targets": [],
           "at": "2026-10-11T20:18:59.665Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:08.452Z"
         }
       ]
     },
@@ -34270,6 +35300,16 @@
           "reopenWhen": "Launchpad selection or registry entry ownership changes (including WO-192 changing how a target worktree's order is selected), or main's registry stops recording the order launchpad for close",
           "targets": [],
           "at": "2026-10-13T16:53:35.787Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:11.162Z"
         }
       ]
     },
@@ -34346,6 +35386,16 @@
           "reopenWhen": "An instance selects build: none; or an order takes up FUP-44639ec9a751d8d1 or plans an edit to emitHarness's build-none branch or either hand-written floor",
           "targets": [],
           "at": "2026-10-13T16:53:35.598Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:10.826Z"
         }
       ]
     },
@@ -34370,6 +35420,16 @@
           "reopenWhen": "An instance overlay narrows an effect that a kit or overlay grant adds; WO-076-D002's pre-grant semantics reopen; or an order adds an effect to contributorOutsideAuthority or plans an edit to decodeBuildOverlay or overlayContributor (WO-192's order-worktree grant is read at its activation)",
           "targets": [],
           "at": "2026-10-13T16:53:35.531Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:10.758Z"
         }
       ]
     },
@@ -34394,6 +35454,16 @@
           "reopenWhen": "An overlay is reported to leave CLAUDE.md with more than one marker pair, another overlay string field reaches a generated surface, or an order plans an edit to decodeBuildOverlay",
           "targets": [],
           "at": "2026-10-13T16:53:34.470Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:09.900Z"
         }
       ]
     },
@@ -34426,6 +35496,16 @@
           "reopenWhen": "An instance selects build none and runs a lifecycle, worktree or release command; harnessRuntimeCause gains another consumer; or an order plans an edit to scripts/lib/harness-runtime.mjs or the build-none branch of harnessInstallation",
           "targets": [],
           "at": "2026-10-16T00:57:41.798Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:10.290Z"
         }
       ]
     },
@@ -34450,6 +35530,16 @@
           "reopenWhen": "prettier --file-info reports a collector input ignored false while both declaration tests pass; a repair changes how either test reads .prettierignore; or a change edits .prettierignore or upgrades prettier",
           "targets": [],
           "at": "2026-10-13T16:53:34.732Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:08.390Z"
         }
       ]
     },
@@ -34576,6 +35666,16 @@
           "reopenWhen": "An instance uses DOTLN_LAUNCHPAD with a separate scripts checkout or changes document roots before the remainder lands, or an order plans an edit to gate-evidence.mjs, writer-teardown.mjs or codex-continuation.mjs",
           "targets": [],
           "at": "2026-10-16T02:47:35.432Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:08.698Z"
         }
       ]
     },
@@ -34697,6 +35797,16 @@
           "reopenWhen": "A core checkout passes publication:check without its edition files; an instance adds a publication index without editions; or an order plans an edit to scripts/check-publication.mjs",
           "targets": [],
           "at": "2026-10-13T16:53:35.136Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:10.486Z"
         }
       ]
     },
@@ -34779,6 +35889,16 @@
           "reason": "The generated incoming file set is authoritative only after the build. Retain the safe final check; no destination or sibling write occurs on refusal. A new inventory mechanism exceeds the bounded preview refactor.",
           "reopenWhen": "A compiler or harness change exposes an authoritative generated-path inventory before atomicBuild, or operator-observed cost justifies that inventory.",
           "at": "2026-10-12T18:07:35.776Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:10.959Z"
         }
       ]
     },
@@ -35066,6 +36186,16 @@
           "reopenWhen": "The bounded wrapper or a gate fails with 'Host guard startup observation unavailable' while guard.json is absent and a live guard holds guard.flock, or an order edits host-guard.mjs or host-guard-state.mjs",
           "targets": [],
           "at": "2026-10-13T16:53:35.663Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:09.071Z"
         }
       ]
     },
@@ -35105,6 +36235,16 @@
           "reopenWhen": "an intent is filed in an instance against a repository the operator keeps, or an order plans a resident-owned run on one; WO-183 activates; a later run's console misses a step that lasts two refreshes or more, or the audit stops reproducing a store the console showed; or the unbound-actor behavior changes",
           "targets": [],
           "at": "2026-10-13T19:07:14.108Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-220, boarded follow-ups batch 4 (the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-220 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-220"
+          ],
+          "at": "2026-10-17T19:34:15.520Z"
         }
       ]
     },
@@ -35261,6 +36401,16 @@
           "reopenWhen": "an intent is filed in an instance against a repository the operator keeps, or an order plans a resident-owned run on one; WO-183 activates; a later run's console shows a stale vertical-host row or omits a hold for a continuation that ended; or an order changes runtime-status-v1's actors, holds or budget",
           "targets": [],
           "at": "2026-10-13T19:07:14.163Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-220, boarded follow-ups batch 4 (the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-220 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-220"
+          ],
+          "at": "2026-10-17T19:34:14.308Z"
         }
       ]
     },
@@ -35321,6 +36471,16 @@
           "reopenWhen": "An order's amendment binds a new executionWritebacks entry and an order or pass relocates a vision citation before the next planning pass, or another product section needs an execution-writeback route",
           "targets": [],
           "at": "2026-10-13T16:53:35.333Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:13.343Z"
         }
       ]
     },
@@ -35697,7 +36857,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:06.697Z"
+        }
+      ]
     },
     {
       "id": "FUP-d8297b92b32c8304",
@@ -35719,7 +36890,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:06.636Z"
+        }
+      ]
     },
     {
       "id": "FUP-94f789b2dcdd30e7",
@@ -35742,6 +36924,16 @@
           "reopenWhen": "A criterion judged met is shown unmet at this identity, the first live refresh refuses on a cause boarded here, or a register disposition above is shown wrong.",
           "targets": [],
           "at": "2026-10-16T02:47:35.831Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:10.224Z"
         }
       ]
     },
@@ -35821,6 +37013,16 @@
           "reopenWhen": "At the next planning pass, judge criterion:24 gate growth and the next counted order elapsedPerCodeByte; any reduction must retain all cases.",
           "targets": [],
           "at": "2026-10-14T16:19:05.235Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:08.268Z"
         }
       ]
     },
@@ -36024,6 +37226,16 @@
           "reopenWhen": "A planned order drops a named kit path from scripts/launchpad.mjs KIT_FILES, or an instance's own preview is required for a release that adds kit paths.",
           "targets": [],
           "at": "2026-10-14T18:40:35.448Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:10.420Z"
         }
       ]
     },
@@ -36047,7 +37259,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-17 standard pass: the expansion WO-210-D003 accepted (the seeded order's ordinary wo-001 path and the named recovery of started main work) landed in v0.82.0 and closed; the items its reviews left are WO-210-D042's rows (FUP-0674090dc3c1e64d).",
+          "reopenWhen": "The fork's seeded order fails the wo-001 path or the named recovery after a starter update.",
+          "targets": [],
+          "at": "2026-10-17T19:34:06.275Z"
+        }
+      ]
     },
     {
       "id": "FUP-9e65e93568842620",
@@ -36123,6 +37344,16 @@
           "reopenWhen": "A planning pass allocates this remainder, a target workflow needs moved-decision reopening or recovery of changed pending inputs/absent bundle ownership, or the operator authorizes the three publication-policy additions.",
           "targets": [],
           "at": "2026-10-16T02:47:35.887Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:10.555Z"
         }
       ]
     },
@@ -36147,6 +37378,16 @@
           "reopenWhen": "An order changes harness instruction composition or authorizes a dependency-free shared-helper extraction with the affected evidence re-mints.",
           "targets": [],
           "at": "2026-10-14T23:35:54.002Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:10.692Z"
         }
       ]
     },
@@ -36225,7 +37466,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-17 standard pass: WO-210-D028 records the operator-delegated seed default (unchanged customized seeds preserved; changed templates refused), which landed in v0.82.0 under the operator's merge of pull request 217.",
+          "reopenWhen": "The operator reverses the seed default, or a starter refresh refuses on an unchanged customized seed.",
+          "targets": [],
+          "at": "2026-10-17T19:34:06.335Z"
+        }
+      ]
     },
     {
       "id": "FUP-69bd004155a6ec30",
@@ -36254,7 +37504,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "declined",
+          "reason": "Declined by the 2026-10-17 standard pass: F16 (folding invisible and look-alike characters the lint's NFKC keeps), F18 (installing dependencies before emit when the incoming starter changes the lockfile) and F19 (counting every omitted reference) reach no use the order's Objective names; under the pass's finding rule they would not be recorded. F18 is the one with a user path, and WO-207's update route is where it is met.",
+          "reopenWhen": "A published body is found carrying a runtime identifier through a look-alike character, or a fork's documented update fails on a changed lockfile before WO-207.",
+          "targets": [],
+          "at": "2026-10-17T19:34:06.394Z"
+        }
+      ]
     },
     {
       "id": "FUP-b3c1a8260bca40b7",
@@ -36269,7 +37528,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-219, boarded follow-ups batch 3 (lifecycle records, attestation, role text, hooks, the harness and planning machinery), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-219 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-17T19:34:06.453Z"
+        }
+      ]
     },
     {
       "id": "FUP-fd6bb22a13e561e4",
@@ -36284,7 +37554,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:06.513Z"
+        }
+      ]
     },
     {
       "id": "FUP-0674090dc3c1e64d",
@@ -36299,7 +37580,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-218, boarded follow-ups batch 2 (the instance lifecycle, export and kit, publication, release close, the starter and worktrees), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-218 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-17T19:34:06.757Z"
+        }
+      ]
     },
     {
       "id": "FUP-d8769cd30e3501af",
@@ -36314,7 +37606,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-17 standard pass: WO-083 is not active and no continuation has repeated a completed effect.",
+          "reopenWhen": "WO-083 activates, or a continuation repeats a completed effect.",
+          "targets": [],
+          "at": "2026-10-17T19:34:07.059Z"
+        }
+      ]
     },
     {
       "id": "FUP-68c2a4615391cf3b",
@@ -36329,7 +37630,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-17 standard pass: no status or briefing call has been recorded slower than its median by half.",
+          "reopenWhen": "A status or briefing call is recorded slower than its median by half, or the success-under-growth candidate is sequenced.",
+          "targets": [],
+          "at": "2026-10-17T19:34:06.999Z"
+        }
+      ]
     },
     {
       "id": "FUP-8da07b81b2a06f93",
@@ -36344,7 +37654,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-17 standard pass: the edited-assertion lens is a verification lens; no verification has yet missed a weakened assertion, and no order in this pass changes verification's record.",
+          "reopenWhen": "A verification misses a weakened assertion, or WO-124's cartographer is sequenced.",
+          "targets": [],
+          "at": "2026-10-17T19:34:07.419Z"
+        }
+      ]
     },
     {
       "id": "FUP-177ce363c76144d3",
@@ -36359,7 +37678,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-17 standard pass: no instance has asked for an unattended lifecycle run and no priced episode exists.",
+          "reopenWhen": "An instance wants an unattended lifecycle run, or a priced episode exists.",
+          "targets": [],
+          "at": "2026-10-17T19:34:07.239Z"
+        }
+      ]
     },
     {
       "id": "FUP-9db951dd380d7611",
@@ -36374,7 +37702,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-17 standard pass: no host upgrade has changed an observed capability unnoticed.",
+          "reopenWhen": "A host upgrade changes an observed capability without a probe noticing.",
+          "targets": [],
+          "at": "2026-10-17T19:34:07.359Z"
+        }
+      ]
     },
     {
       "id": "FUP-c1086ab57c145bac",
@@ -36389,7 +37726,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-17 standard pass: a recut of WO-096 that retires prose units by lowering them to checks was drafted and declined by the operator; the re-attachment window and refusal anchors stay with the operator's reserved efficiency pass (FUP-f1c7a256bec46737).",
+          "reopenWhen": "The operator directs the WO-096 recut or opens the efficiency pass, or a cold-start ceiling is breached again.",
+          "targets": [],
+          "at": "2026-10-17T19:34:06.215Z"
+        }
+      ]
     },
     {
       "id": "FUP-4c8b4735503c4452",
@@ -36404,7 +37750,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-17 standard pass: cache-read tokens have not been observed low on repeated episodes and no export sibling has broken on a package import.",
+          "reopenWhen": "Cache-read tokens are observed low on repeated evidence episodes, or an export sibling breaks on a package import.",
+          "targets": [],
+          "at": "2026-10-17T19:34:07.479Z"
+        }
+      ]
     },
     {
       "id": "FUP-1241a4d027a07dce",
@@ -36419,7 +37774,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-17 standard pass: the documented half is done (product 07 §Workflow closeout names the three post-pass routes); the second publish's failure after its push is the remaining code change.",
+          "reopenWhen": "A second cycle runs on a branch with an open pull request, or a closed order is abandoned.",
+          "targets": [],
+          "at": "2026-10-17T19:34:06.878Z"
+        }
+      ]
     },
     {
       "id": "FUP-81c8f4915c7790d3",
@@ -36434,7 +37798,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-17 standard pass: a draft pull request at verified adds a push effect at verified that the router does not yet drive; weighed as an amendment to WO-192 and declined for now (planning document §8).",
+          "reopenWhen": "WO-192 closes, or an order's pull request receives feedback the record cannot route.",
+          "targets": [],
+          "at": "2026-10-17T19:34:06.817Z"
+        }
+      ]
     },
     {
       "id": "FUP-ea83176e777dd32f",
@@ -36449,7 +37822,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-17 standard pass: no target order has run under a client that discovers the target's skills.",
+          "reopenWhen": "A target order runs under a client that discovers the target's skills, or a profile adds a skill format.",
+          "targets": [],
+          "at": "2026-10-17T19:34:07.300Z"
+        }
+      ]
     },
     {
       "id": "FUP-1266034ceacdfa65",
@@ -36464,7 +37846,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-17 standard pass: no starter refresh has refused after a release since WO-215 landed.",
+          "reopenWhen": "A starter refresh refuses after a release, or a sibling's own gate fails on a kit update.",
+          "targets": [],
+          "at": "2026-10-17T19:34:07.119Z"
+        }
+      ]
     },
     {
       "id": "FUP-d175bb68e8cc0128",
@@ -36479,7 +37870,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-17 standard pass: this pass disputed the tinkerer support's value from the record (no experiment or decline in the four largest orders since WO-196) and drafted a lowering the operator declined; a trial waits for a decision that depends on it.",
+          "reopenWhen": "A support's value is disputed in a pass and a decision depends on the comparison, or the operator directs the WO-096 recut.",
+          "targets": [],
+          "at": "2026-10-17T19:34:07.180Z"
+        }
+      ]
     },
     {
       "id": "FUP-182984d482ca59ca",
@@ -36494,7 +37894,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass: WO-216's Cost line names its judge-owned instrument (the local gate index rows read by readGateChecks), three statistics with baselines (complete runs per closed order, 11; structural-class failures inside runs longer than two minutes per closed order, 1.3; gate task minutes per closed order, 545) and the reading the next pass takes after five closes; its own criteria are fixture-based plus its handoff rows.",
+          "reopenWhen": "WO-216 closes, or the next order whose title or criterion claims a measured gain names no instrument.",
+          "targets": [
+            "WO-216"
+          ],
+          "at": "2026-10-17T19:34:06.098Z"
+        }
+      ]
     },
     {
       "id": "FUP-5cf6b2d3687bf805",
@@ -36509,7 +37920,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-17 standard pass: no repair has named a structural cause since the row was recorded.",
+          "reopenWhen": "A repair names a structural cause, or a duration bound fails under host load without a code change.",
+          "targets": [],
+          "at": "2026-10-17T19:34:06.938Z"
+        }
+      ]
     },
     {
       "id": "FUP-9b7d3e0de0a4c268",
@@ -36665,6 +38085,16 @@
           "reopenWhen": "The next planning pass takes them up or an operator decision resolves one of them.",
           "targets": [],
           "at": "2026-10-16T02:47:35.774Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:08.084Z"
         }
       ]
     },
@@ -36713,6 +38143,16 @@
           "reopenWhen": "The next planning pass takes it up or the guard's exclusion set is narrowed by decision.",
           "targets": [],
           "at": "2026-10-15T23:16:37.142Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass to WO-217, boarded follow-ups batch 1 (the gate, the runner, the host guard, gate evidence and the fixtures), on the operator's direction that every boarded, follow-up and reopened row is resolved by a work order rather than left to the next order that edits its surface.",
+          "reopenWhen": "WO-217 closes without a terminal disposition for this row, or its fix is reverted.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-17T19:34:09.325Z"
         }
       ]
     },
@@ -37137,6 +38577,16 @@
           "reopenWhen": "A planning pass sequences validation work, or a late bookkeeping failure recurs inside a complete gate.",
           "targets": [],
           "at": "2026-10-17T13:04:33.451Z"
+        },
+        {
+          "sourceRevision": 6,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass: both of D065's directions land in WO-216, the structural phase before any suite and the one regeneration command (`npm run sync`).",
+          "reopenWhen": "WO-216 closes without either, or a declaration or policy failure surfaces inside a complete gate after it.",
+          "targets": [
+            "WO-216"
+          ],
+          "at": "2026-10-17T19:34:06.039Z"
         }
       ]
     },
@@ -37406,6 +38856,16 @@
           "reopenWhen": "A planning pass takes up validation cost, late bookkeeping failures or one of the three withdrawn fixes, or a gate fails on one of them.",
           "targets": [],
           "at": "2026-10-17T14:08:24.343Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-17 standard pass: WO-216 is planning's answer to WO-213-D072's follow-up. The expansion's goals (no late bookkeeping failures, no paying twice, fast failure feedback, the complete gate as the final check) are met by a structural phase that runs first in every gate, fail-fast, one regeneration command, and the complete gate once per order at final review; its reuse of passes across fixes is not taken, so the recorded failure classes (a stale pass admitted, unchanged work invalidated) cannot recur. Of the three withdrawn fixes: D055 is WO-216's boy-scout item; D042's fixture change is replaced by the host precondition; D064 is left, with its reopening condition in WO-216's Known issues.",
+          "reopenWhen": "WO-216 closes, or a late bookkeeping failure recurs inside a complete gate after it.",
+          "targets": [
+            "WO-216"
+          ],
+          "at": "2026-10-17T19:34:05.980Z"
         }
       ]
     },
@@ -37422,7 +38882,160 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-17 standard pass, deciding WO-213-D074's F1: an untracked dangling symbolic link under a document root stays refused by repository-relative path, because a link that resolves to nothing under a root is a defect to fix and silence hid it before; documentEntry's ENOTDIR and EACCES refusals take readDocumentInput's remedy text at the next edit of scripts/docs-check.mjs. F2 (the runner's build row at module load) is named in WO-216's Known issues for its executor to take within the Boy Scout bound.",
+          "reopenWhen": "An editor lock-file link refuses a document gate on an otherwise clean tree twice, or WO-216 closes without the build-row change.",
+          "targets": [],
+          "at": "2026-10-17T19:34:06.573Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8c2fbdcc3b3a0c51",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-with-the-operators-comments-recorded-2026-10-17::1711a0fc9a8017926afcd3e3abeb4b02a5870493cbba1b3179740b13372cae71",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "4468bd0bdbf647ff44f9c2f48fd866ff5ebcfa3e04f22301d2c1abbcfe6ecf6f",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-with-the-operators-comments-recorded-2026-10-17",
+          "title": "Two fixes of older behaviour withdrawn with WO-213's expansion.",
+          "summary": "3. **Two fixes of older behaviour withdrawn with WO-213's expansion.** D042: two wo107-schema watchdog cases refuse before spawning when the host's health sample reports pressure 2, and the withdrawn change controlled that sample inside the test process. D064: the pinned TypeScript scanner in the import reader can stop advancing on shell text or malformed JavaScript, latent while the only machinery shell entry has no comment. Shape: each as a boy-scout item of the next order that edits the wo107-schema cases or `scripts/lib/machinery-coverage.mjs`. Reopen: a wo107-schema case refuses on a host whose gate otherwise passes, or the coverage check stalls on a shell entry or a malformed file.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-17 standard pass, which recorded it: D042's fixture change is replaced by WO-216's host precondition, and D064's lexer guard is latent while the only machinery shell entry has no comment.",
+          "reopenWhen": "A wo107-schema case refuses on a host whose gate otherwise passes, or the coverage check stalls on a shell entry or a malformed file.",
+          "targets": [],
+          "at": "2026-10-17T19:34:15.909Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-94c0c0235e3aea67",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-with-the-operators-comments-recorded-2026-10-17::4c482868aafa56ffeead5a60c05bb28f27c8901df13fdd5709a12037b0ccec40",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "525c31ffc09e7dc1e8f1948fb38116018114da65a8382d6eae1afc4ec729bc13",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-with-the-operators-comments-recorded-2026-10-17",
+          "title": "Three drafts declined on 2026-10-17.",
+          "summary": "6. **Three drafts declined on 2026-10-17.** Each was drafted by the pass on one of the operator's comments and declined by the operator before filing; none is a record. (a) A review can return nothing: `final-review-result` refuses a finding without a one-line `breaks` (a criterion, a behavior `main` had, or the use the Objective names) and a one-line `reproduction`; a reviewer spawns a worker only above 2,000 changed lines or for a named lens, with a brief that says the expected result is no item; `docs/control/budgets.json` holds a worker cap per role under `subagentCap`, raised for one session only by an operator-attributed `scope expand: subagents <n>`; `plan failures` reports findings b",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-17 standard pass, which recorded it: the three drafts (a review order, a time-budgeted gate, a recut of WO-096) were declined by the operator before filing; their shapes are kept for the operator's word.",
+          "reopenWhen": "The operator directs any of the three, or names what a useful one would show.",
+          "targets": [],
+          "at": "2026-10-17T19:34:15.984Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8669c39d54febc13",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-with-the-operators-comments-recorded-2026-10-17::5c559bdaa5535a6957ac50e2456343a2e249f27bf8dec883716474bed036e8db",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d5254cdf547c39ef1eab0a1f2bbc071859617e99a9f5f31892a3c2804c634bd2",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-with-the-operators-comments-recorded-2026-10-17",
+          "title": "Verification token counters.",
+          "summary": "4. **Verification token counters.** VER-003 and VER-006 of WO-213 record 23.5 M and 19.0 M tokens; the verifier's audit output and repository reads exceeded their limits (WO-210-D039). Shape: a per-dispatch token reading in `plan failures`, beside the escapes, for the operator's reserved efficiency pass (FUP-f1c7a256bec46737). Reopen: a verification records more than 20 M tokens again, or the efficiency pass opens.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-17 standard pass, which recorded it: VER-003 and VER-006 of WO-213 recorded 23.5 M and 19.0 M tokens; a per-dispatch token reading in plan failures belongs to the operator's reserved efficiency pass (FUP-f1c7a256bec46737).",
+          "reopenWhen": "A verification records more than 20 M tokens again, or the efficiency pass opens.",
+          "targets": [],
+          "at": "2026-10-17T19:34:15.832Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7a8fa7218d811300",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-with-the-operators-comments-recorded-2026-10-17::912d68924b101110d4b0f16088b57369957f30dde52431e430b1c50ffb610538",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "948b7fcf0f9bdeb06d3b0f8f214816adb3d2733bec1523245319a88aa292e745",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-with-the-operators-comments-recorded-2026-10-17",
+          "title": "A measure of reply register.",
+          "summary": "1. **A measure of reply register.** The pass counted, in the operator's own Claude Code transcripts of the DotLn-family projects, 34 replies opening with agreement against 10 opening with disagreement, and 46 texts with an agreement or apology phrase in 33 of about 470 sessions; nearly every instance read follows a named error. No check observes replies, and a phrase filter at Stop time would teach phrasing, not checking. Shape: none filed. Reopen: the operator cites a session in which an agent abandoned a correct position without new evidence, or a harness exposes a reply-level observation point that a role's evidence rule can bind.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-17 standard pass, which recorded it: the operator's own transcripts show agreement openers rare and attached to named errors, with 34 agreeing openers to 10 disagreeing; no check observes replies and a phrase filter would teach phrasing.",
+          "reopenWhen": "The operator cites a session in which an agent abandoned a correct position without new evidence, or a harness exposes a reply-level observation point a role's evidence rule can bind.",
+          "targets": [],
+          "at": "2026-10-17T19:34:15.753Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0ae2ebca900c4a82",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-with-the-operators-comments-recorded-2026-10-17::a8bce87e7ccbf6afe3f9ff3d2f478a3bfd72246b5fbae5637a83a996c950842a",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d64c2da6baedcd92403fed227f8141b5057dba5eb4c8570ff60724c2b1943dbc",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-with-the-operators-comments-recorded-2026-10-17",
+          "title": "A mid-run scope expansion onto gate or runner surfaces.",
+          "summary": "5. **A mid-run scope expansion onto gate or runner surfaces.** WO-213's validation expansion was authorized inside a repair (D039, D051, D052), so none of the planning filing screens applied, and it was withdrawn after four failed verifications and about 8.9 hours of gate wall time. Shape: `plan amend-order` refuses an execution amendment whose approved text adds a criterion over the runner, gate reuse, gate evidence or the hooks, printing the planning route instead; the operator's own route, so the operator's word decides it. Reopen: the operator asks for it, or a second mid-run expansion onto those surfaces fails a verification.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-17 standard pass, which recorded it: the mid-run route that admitted WO-213's validation expansion is the operator's own authorization route, so refusing an execution amendment over gate, runner or hook surfaces needs the operator's word.",
+          "reopenWhen": "The operator asks for it, or a second mid-run expansion onto gate, runner or hook surfaces fails a verification.",
+          "targets": [],
+          "at": "2026-10-17T19:34:15.597Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-211986cdaa9f8c4f",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-with-the-operators-comments-recorded-2026-10-17::e60b161106ea7c86ba7a6ebdb0ffefa646067fb061e435f647de012597705edf",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "26595620b7b98da031854b7dac90ee4d3d49aa79b52b8403c7cc6f8bb27b1ce7",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-with-the-operators-comments-recorded-2026-10-17",
+          "title": "The document gate's run count.",
+          "summary": "2. **The document gate's run count.** `npm run test:docs` ran 125 times in four days over three orders (17 failed, median 110 s, 233 minutes), because lifecycle transitions and repairs each rerun it. Shape: a document-gate row reused across a transition that changed no document input, or the gate's slowest tasks named at their cause. Reopen: a closed order records more than twenty document-gate runs, or the gate's median exceeds 120 s.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-17 standard pass, which recorded it: 125 document-gate runs in four days over three orders (17 failed, median 110 s); WO-216's structural phase moves the generated-artifact checks before the suites and may change the count, so the reading follows it.",
+          "reopenWhen": "A closed order records more than twenty document-gate runs after WO-216, or the document gate's median exceeds 120 s.",
+          "targets": [],
+          "at": "2026-10-17T19:34:15.675Z"
+        }
+      ]
     }
   ]
 }

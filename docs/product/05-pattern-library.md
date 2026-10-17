@@ -1252,7 +1252,7 @@ and fewer than half doing either reconsiders the flip. Read on 2026-10-02: all
 those measured both arms. An experiment named before implementation has no
 alternative in view, so the timing fails and the equipment does not; WO-196
 moved the trigger to the point where the work shows a fork. The adaptive
-modifier and the broken-window pressure signal remain unimplemented.
+modifier and the broken-window pressure signal remain unimplemented. Read on 2026-10-17 (the standard pass of that day, §4.2): since WO-196 a decline is unrecorded, and the four largest orders since (WO-118, WO-215, WO-210 and WO-213) recorded no experiment and no decline, so the reopening observation cannot be evaluated; a recut of WO-096 that lowers the unit to an order-contract check (a Design naming a rejected alternative and its axis) and a `fork:` handoff line was drafted by that pass and declined by the operator, and is the planning map's candidate for the operator's word.
 
 
 
@@ -1585,7 +1585,7 @@ outcome stay open; the deferral and its reopening conditions are unchanged.
 mechanic that proposes changing an existing system. It challenges the hidden
 premise that detecting an imperfection makes intervention net-beneficial. The
 support is a counterweight to action bias, novelty bias, cleanup enthusiasm, and
-locally correct changes that damage adaptations elsewhere.
+locally correct changes that damage adaptations elsewhere. 
 
 It asks for an explicit comparison between intervention and non-intervention:
 

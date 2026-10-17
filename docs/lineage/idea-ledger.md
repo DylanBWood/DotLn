@@ -40,6 +40,78 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-17 — Ideation: five comments on agents, tinkering, reviews, prose and the gate (operator messages during the standard pass)
+
+Source: five operator messages sent during the 2026-10-17 standard planning
+pass, captured verbatim in ignored intake
+(`docs/intake/notes/planning-standard-pass-2026-10-17.md`; the planning
+document §1 records its SHA-256). Planner synthesis under the saved public
+destination loadout. The clean-room screen found no stop condition: nothing
+from the operator's employer is recorded and v1 is not named. Write-backs:
+product 05 (the tinkerer reading) and product 07 (reviewers for cause, the
+Alternatives element, the build-not-biography filing rule, the post-pass
+feedback routes). The record is
+[the planning document](../planning/standard-pass-2026-10-17.md), §4.
+
+- **A team that finds its way to the truth: agreement openers are not checking** `open` `operator-directed`
+  - The operator hears "you're right to push back" and "I shouldn't have
+    wasted your time" and says neither party is right that often. The pass
+    measured the operator's own transcripts: the openers are rare and follow
+    named errors, replies open by agreeing 3.4 times as often as by
+    disagreeing, and nothing measures whether an agent abandons a correct
+    position under pushback. No check can observe reply register without
+    teaching phrasing; the reason and its reopening observation are the
+    planning map's candidate 1 (planning document §4.1).
+- **Tinkering: alternatives and refactoring considered where speed or architecture has options** `open` `operator-directed`
+  - Since WO-196 made a decline unrecorded, the four largest orders recorded
+    no experiment and no decline. Every order filed from 2026-10-17 names a
+    rejected alternative and its axis (product 07). A recut of WO-096 that
+    lowers the tinkerer unit to two checks was drafted and declined by the
+    operator (planning document §4.2).
+- **A review can return nothing** `adopted` `operator-directed`
+  - Every final review that spawned reviewer workers recorded findings, about
+    ten per worker; fifteen of twenty-two reviews that read the subject
+    themselves recorded none. Adopted as product 07 rule text: a spawned
+    reviewer is for cause and told the null result is expected, and a
+    finding names what it breaks and the command that showed it. The order
+    that would build those as checks was drafted and declined by the
+    operator (planning document §4.3).
+- **A build, not a biography** `adopted` `operator-directed`
+  - Behaviour the operator corrects is built as a typed check with a case,
+    and written as role prose only with a recorded reason no check can
+    observe it (product 07's planning rule). A recut of WO-096 to this was
+    drafted and declined by the operator, who left the order as written
+    (planning document §4.4).
+- **Stop executors spending days per order on gates: fix why the complete gates fail** `adopted` `operator-directed`
+  - The operator asked why the last orders were nothing but gate runs and
+    failed fixes, named the causes (a dependency left undeclared; a sync
+    that did not occur; found after forty minutes) and directed the pass to
+    read what the WO-213 expansion tried and improve on it. The gate index
+    agreed: none of the seven complete-gate failures since receipt 045 found
+    a product defect, and fourteen of seventeen document-gate failures were
+    stale generated artifacts. WO-216: a structural phase first in every
+    gate and handoff, fail-fast with `npm run sync` as the remedy, the
+    complete gate once per order at final review, launchpad as file lanes.
+    The five-minute cap the operator mentioned was venting, and a
+    time-budgeted gate drafted on it was withdrawn (planning document §4.5).
+
+- **Work orders that resolve every boarded, follow-up and reopened row** `adopted` `operator-directed`
+  - The operator asked for standard work orders that resolve the boarded
+    rows instead of leaving them to the next order that edits a surface. The
+    register held 130 such rows across 53 orders, 88 boarded in one week,
+    none taken by a later order. WO-217 to WO-220 cut them by subsystem;
+    each row is fixed with a fixture case or declined with its reason, and
+    the register disposition is the record (planning document §4.6).
+
+## 2026-10-17 — Planning pass: registration only; the record is the planning document
+
+Dispatch: `planning: standard planning pass with some comments`, captured in
+`docs/intake/notes/planning-standard-pass-2026-10-17.md` (ignored; the planning
+document §1 records its SHA-256). The record is
+[the planning document](../planning/standard-pass-2026-10-17.md); this
+heading registers the pass for the plan tooling (WO-088 moves registration out
+of the ledger).
+
 ## 2026-10-16 — Ideation: a draft pull request at verified, and two commissioned research reads (operator messages, 2026-10-16)
 
 Source: seven operator messages in one session on main, between orders,
