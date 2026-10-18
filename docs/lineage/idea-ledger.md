@@ -40,6 +40,16 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-18 — Planning pass: registration only; the record is the planning document
+
+Dispatch: `planning: quick planning pass with some observations from running
+in the fork`, with five mid-turn messages, captured in
+`docs/intake/notes/planning-fork-observations-2026-10-18.md` (ignored; the
+planning document §1 records its SHA-256). The record is
+[the planning document](../planning/fork-observations-2026-10-18.md); this
+heading registers the pass for the plan tooling (WO-088 moves registration
+out of the ledger).
+
 ## 2026-10-17 — Ideation: five comments on agents, tinkering, reviews, prose and the gate (operator messages during the standard pass)
 
 Source: five operator messages sent during the 2026-10-17 standard planning

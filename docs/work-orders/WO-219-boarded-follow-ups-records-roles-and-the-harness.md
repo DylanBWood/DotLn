@@ -1,4 +1,4 @@
-# WO-219 — Boarded follow-ups, batch 3: lifecycle records, attestation, role text, hooks, the harness and planning machinery: every one of the 40 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (version assigned at activation)
+# WO-219 — Boarded follow-ups, batch 3: lifecycle records, attestation, role text, hooks, the harness and planning machinery: every one of the 41 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -9,12 +9,12 @@ unless a fix changes a command, flag, schema or refusal, which the decisions
 name; then minor). A declined row changes no behavior.
 **Cost:** adds the fixes and fixture cases the listed rows need, across
 `scripts/resume.mjs`, `scripts/lib/handoff-ledger.mjs`, `scripts/lib/verification-briefing.mjs`, `scripts/lib/review-findings.mjs`, `scripts/lib/comment-labels.mjs`, `scripts/lib/plan-receipts.mjs`, `scripts/lib/planning-followups.mjs`, `packages/skeleton/src/loadouts/contributor.ts`, `packages/skeleton/src/harness-host.ts`, `packages/kernel/src/core.ts`, `packages/kernel/src/store.ts`, `packages/compiler/src/source-bundle.ts`, the hooks under `.claude/hooks/` and the fixtures the rows name; unknown until each row is triaged, and the README records
-the per-row command and case. Removes 40 pending rows from the
+the per-row command and case. Removes 41 pending rows from the
 register, which at the base holds 281 pending rows, 130 of them decision
 rows boarded by closed orders across 53 orders (the oldest from WO-054,
 2026-09-18), 88 of them follow-ups boarded in the week of 2026-10-13 to
 2026-10-17 alone; the rule that "the next order that edits the surface"
-takes a row delivered none of these 40 (each still pending at
+takes a row delivered none of these 41 (each still pending at
 `7b8206f4`). Wall-clock: one triage per row plus the fixes; unknown until
 run. Context bytes: this order's row list is read once. Commands: none
 added. Tokens: unknown until run. Steps: 18. Re-mints: the
@@ -69,7 +69,7 @@ reviewer, recorded under product 07's boarded-defect rule, and deferred to
 "the next order that edits these surfaces", a planning pass or a repair
 that never came; the oldest listed below dates from 2026-09-18. In the week
 of 2026-10-13 to 2026-10-17, seven final reviews boarded 88 follow-ups and
-the pending count rose from 247 to 281. The 40 rows of this
+the pending count rose from 247 to 281. The 41 rows of this
 batch name lifecycle records, attestation, role text, hooks, the harness and planning machinery:
 
 - FUP-0132 (deferred): WO-126-D005: Finish the specified file-level authored-output contract and record its remaining migration cost. Nominate change-range review with an exact unchanged-byte proof for a later planning comp ([source](../evidence/WO-126/decisions.md#wo-126-d005))
@@ -112,6 +112,7 @@ batch name lifecycle records, attestation, role text, hooks, the harness and pla
 - FUP-ebaa803e38670545 (deferred): WO-184-D040: Reviewer and verifier role text: judge a confinement or security-boundary finding by the recorded rule and repair it defensively, never by working out circumvention paths; after one refus ([source](../evidence/WO-184/decisions.md#wo-184-d040--hard-error-the-first-final-review-session-looped-on-refusals-and-forced-a-restart))
 - FUP-fd05316b6030ef73 (deferred): WO-168-D009: Planner, low priority, one pass over the standing text: state the Codex dispatch reservation in docs/product/02-domain-model.md (the sentence Codex carries the same duties as role text in ([source](../evidence/WO-168/decisions.md#wo-168-d009--item-7-the-standing-sentences))
 - FUP-b3c1a8260bca40b7 (untriaged): WO-210-D039: VER005-META-1: In the next verifier-process revision, specify bounded result projection and aggregate read budgets before emitting audit or repository output, with a check for nested… ([source](../evidence/WO-210/decisions.md#wo-210-d039--verification-meta-failures-excessive-context-consumption-and-omitted-logging-commitment))
+- FUP-b0418fa8b09362be (untriaged): the 2026-10-18 pass's candidate 1: post-close records have a home a pull request carries: `override-record` admits only open phases (`scripts/resume.mjs` line 284), so the override at WO-216's release close had no event and the hook's advisory sent the record to the order's tracked decisions file, which clean `main` cannot carry; the shape is an ignored pending lane under the control root, as the sibling receipt uses, that `override-record` writes at a closed order and the next `worktree start` carries into its reviewed change ([source](../planning/work-order-map.md#candidates--returns-from-the-fork-observations-pass-recorded-2026-10-18))
 
 **Design (scope discipline):** one batch per subsystem, so verification
 judges one set of surfaces and one Preflight line, and each batch's
@@ -124,7 +125,7 @@ choice the operator reserved) leaves as an operator packet, deferred with a
 reopening condition naming this order's pull request. Rejected: one order
 for all 130 rows (axis: one subsystem per order; a verifier reading fifty
 surfaces); leaving the rows to the next order that edits each surface (axis:
-delivery; the record shows 40 rows that no later order took);
+delivery; the record shows 41 rows that no later order took);
 resolving by declining (axis: honesty of the triage; at most one third of
 the listed rows may be declined, and each decline carries its NoOp reason
 and reversal condition).
@@ -160,10 +161,16 @@ product statement.
    --check` clean; no new dependency; each re-mint and, where a judged
    source changed, the live feedback episode recorded.
 
-**Preflight:** `resume`, `harness`, `harness-context`, `harness-fixtures`, `process-debt`, `plan-refutation`, `launchpad-planning` and `skeleton`, each as `npm test -- --only <suite>` under
+**Preflight:** `npm test -- --only resume` and `npm test -- --only worktree` for the lifecycle, off-ramp and record-lane steps;
+`npm test -- --only harness`, `npm test -- --only harness-context` and `npm test -- --only harness-fixtures` for the hook and harness steps;
+`npm test -- --only process-debt` for the host-guard steps;
+`npm test -- --only plan-refutation` and `npm test -- --only launchpad-planning` for the planning-machinery steps;
+`npm test -- --only skeleton` for the loadout step;
+`npm test -- --only configuration-root` for every script step;
+`npm run test:docs` when a document changes; each under
 `node scripts/harness.mjs bounded --` for the steps that edit their
-declared sources, and `npm run test:docs` when a document changes; then the
-handoff gate the executor's role text names at the base.
+declared sources; then the handoff gate the executor's role text names at
+the base (explicit tokens added by the 2026-10-18 pass, FUP-17266e5072d4a25a).
 
 **Execution plan (the executor follows these steps in order; observed at `7b8206f4`, 2026-10-17):**
 
@@ -181,10 +188,11 @@ handoff gate the executor's role text names at the base.
 12. `scripts/lib/verification-briefing.mjs` (rows FUP-c95ffe4a84e49cbb): read each row's source decision in full, reproduce the recorded defect or restate the recorded question against the current source, then fix it with a fixture case that fails without the fix, or decline it with the recorded reason, and dispose the row with `npm run plan -- followups --apply` naming the case or the reason. Check: the suite that declares the file (`npm test -- --review --list` names it), under `node scripts/harness.mjs bounded --`.
 13. `packages/skeleton/src/loadouts/contributor.ts` (rows FUP-e835d826e9af5417): read each row's source decision in full, reproduce the recorded defect or restate the recorded question against the current source, then fix it with a fixture case that fails without the fix, or decline it with the recorded reason, and dispose the row with `npm run plan -- followups --apply` naming the case or the reason. Check: the suite that declares the file (`npm test -- --review --list` names it), under `node scripts/harness.mjs bounded --`.
 14. `docs/product/02-domain-model.md` (rows FUP-fd05316b6030ef73): read each row's source decision in full, reproduce the recorded defect or restate the recorded question against the current source, then fix it with a fixture case that fails without the fix, or decline it with the recorded reason, and dispose the row with `npm run plan -- followups --apply` naming the case or the reason. Check: the suite that declares the file (`npm test -- --review --list` names it), under `node scripts/harness.mjs bounded --`.
-15. `docs/evidence/WO-219/decisions.md`: one decision per disposed row or per cluster of rows fixed together, each naming the row ids, the chosen option, the rejected option, the fixture case or the decline reason, and the reversal condition; an operator packet for each row only the operator can decide, with its reopening condition naming this order's pull request. Then `npm run meta`. Check: `npm run meta -- --check`.
-16. `docs/evidence/WO-219/README.md`: the after table (each row's final status, the case or reason, the command) and the register's pending count before and after (`npm run plan -- followups`). Check: the README holds both tables.
-17. Write-backs, in place, only where a row's fix changes what a product document states (the row's source decision names the document and section; re-read the heading at the base). Check: `npm run test:docs`.
-18. Handoff: `npm run format`; `npm run test:docs`; the gate the executor's role text names at the base (the order's Preflight suites, then the handoff gate; `npm test -- --review` where a declared machinery source changed); complete `docs/evidence/WO-219/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+15. `scripts/resume.mjs` (`override-record`, `openPhases`) and `scripts/worktree.mjs` (`start`; rows FUP-b0418fa8b09362be): admit `override-record` at a closed order by writing the record into an ignored pending lane under the control root, and have the next `worktree start` carry the lane's records into the new order worktree's control segment and regenerate the projection there, as the sibling receipt is carried; a case that records an override after a fixture close and finds the event in the next order's segment. Check: `npm test -- --only resume` and `npm test -- --only worktree`.
+16. `docs/evidence/WO-219/decisions.md`: one decision per disposed row or per cluster of rows fixed together, each naming the row ids, the chosen option, the rejected option, the fixture case or the decline reason, and the reversal condition; an operator packet for each row only the operator can decide, with its reopening condition naming this order's pull request. Then `npm run meta`. Check: `npm run meta -- --check`.
+17. `docs/evidence/WO-219/README.md`: the after table (each row's final status, the case or reason, the command) and the register's pending count before and after (`npm run plan -- followups`). Check: the README holds both tables.
+18. Write-backs, in place, only where a row's fix changes what a product document states (the row's source decision names the document and section; re-read the heading at the base). Check: `npm run test:docs`.
+19. Handoff: `npm run format`; `npm run test:docs`; the gate the executor's role text names at the base (the order's Preflight suites, then the handoff gate; `npm test -- --review` where a declared machinery source changed); complete `docs/evidence/WO-219/handoff.md`; `npm run resume -- implementation-ready <flags>`.
 
 **Evidence gate:** the Preflight suites; the register dispositions
 (`followups --show` per row); `npm run test:docs`; the handoff gate.

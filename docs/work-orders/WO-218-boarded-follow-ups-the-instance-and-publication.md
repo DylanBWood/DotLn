@@ -152,10 +152,16 @@ product statement.
    --check` clean; no new dependency; each re-mint and, where a judged
    source changed, the live feedback episode recorded.
 
-**Preflight:** `launchpad`, `launchpad-planning`, `target-worktree`, `target-publish`, `release`, `worktree`, `worktree-integration`, `siblings-fixtures`, `harness` and `publication`, each as `npm test -- --only <suite>` under
+**Preflight:** `npm test -- --only launchpad` and `npm test -- --only launchpad-planning` for the launchpad and kit steps;
+`npm test -- --only target-worktree` and `npm test -- --only target-publish` for the target steps;
+`npm test -- --only release` and `npm test -- --only siblings-fixtures` for the release-close and starter steps;
+`npm test -- --only worktree` and `npm test -- --only worktree-integration` for the worktree steps;
+`npm test -- --only harness` and `npm test -- --only publication` for the harness and publication steps;
+`npm test -- --only configuration-root` for every script step;
+`npm run test:docs` when a document changes; each under
 `node scripts/harness.mjs bounded --` for the steps that edit their
-declared sources, and `npm run test:docs` when a document changes; then the
-handoff gate the executor's role text names at the base.
+declared sources; then the handoff gate the executor's role text names at
+the base (explicit tokens added by the 2026-10-18 pass, FUP-17266e5072d4a25a).
 
 **Execution plan (the executor follows these steps in order; observed at `7b8206f4`, 2026-10-17):**
 
