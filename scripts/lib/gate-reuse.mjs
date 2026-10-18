@@ -135,6 +135,7 @@ async function identityRows(root, checkId, codeIdentity) {
   const at = (path) => {
     const rows = readGateChecks(path).filter(
       (row) =>
+        !row.stopped &&
         row.codeIdentity === identity &&
         (instanceInputDigest === undefined ||
           row.instanceInputDigest === instanceInputDigest),
@@ -247,14 +248,15 @@ function latestExecution(rows, other, name, identity) {
     if (!supplies && !result) continue;
     const recorded = Date.parse(row.recordedAt);
     const finished = Date.parse(result?.finishedAt);
-    const at = Number.isFinite(finished) ? finished : recorded;
+    const future = Number.isFinite(finished) && finished > recorded;
+    const at = Number.isFinite(finished) && !future ? finished : recorded;
     // Rows arrive in recorded order, so an equal finish keeps the later row.
     if (!supplies) {
       if (!elsewhere || !(at < elsewhere.at))
         elsewhere = {
           row,
           at,
-          passed: intactExecutionRow(row) && passingResult(result),
+          passed: !future && intactExecutionRow(row) && passingResult(result),
         };
     } else if (!latest || !(at < latest.at)) latest = { row, result, at };
   }
@@ -294,7 +296,8 @@ function decidingPass(index, name, latest = decidingExecution(index, name)) {
     result &&
     carriableRow(row) &&
     passingResult(result) &&
-    Number.isFinite(Date.parse(result.finishedAt))
+    Number.isFinite(Date.parse(result.finishedAt)) &&
+    Date.parse(result.finishedAt) <= Date.parse(row.recordedAt)
     ? { row, result, location: latest.location }
     : undefined;
 }
@@ -383,6 +386,9 @@ export async function coveringGateCheck(
     return (Array.isArray(observed) ? observed : [])
       .map((result) => result?.name)
       .filter((name) => {
+        const result = observed.find((entry) => entry?.name === name);
+        if (Date.parse(result?.finishedAt) > Date.parse(row.recordedAt))
+          return true;
         if (!decided.has(name)) {
           const latest = decidingExecution(index, name);
           decided.set(name, {
@@ -421,6 +427,53 @@ export async function coveringGateCheck(
       ? { displaced: { row: newest, tasks: displacedTasks(newest) } }
       : {}),
   };
+}
+
+/** The six structural tasks every selection runs first, in order. */
+export const STRUCTURAL_SUITES = Object.freeze([
+  "format",
+  "configuration-root",
+  "registrations",
+  "declarations",
+  "generated",
+  "host",
+]);
+
+/** Handoffs consume focused runs only at the current identity. A later failed
+ * execution still displaces a pass through the same lookup used by review;
+ * a missing entry names the displaced tasks so a refusal can name the remedy. */
+export async function preflightRows(root, codeIdentity, suites) {
+  const rows = [],
+    missing = [];
+  for (const name of ["structural", ...new Set(suites)]) {
+    const checkId = name === "structural" ? name : `suite:${name}`;
+    const found = await coveringGateCheck(
+      root,
+      checkId,
+      name === "structural" ? [...STRUCTURAL_SUITES] : [name],
+      codeIdentity,
+    );
+    const latest = (await gateCandidates(root, checkId, codeIdentity)).rows.at(
+      -1,
+    );
+    const row = found.row;
+    if (
+      !row ||
+      row.recordedAt !== latest?.recordedAt ||
+      row.evidenceRef !== latest?.evidenceRef ||
+      (name !== "structural" && row.gateSelection !== "single")
+    )
+      missing.push({
+        suite: name,
+        checkId,
+        reason: latest
+          ? "latest row failed or no longer stands"
+          : "no row at the current code identity",
+        displaced: found.displaced?.tasks ?? [],
+      });
+    else rows.push(row);
+  }
+  return { codeIdentity, rows, missing };
 }
 
 /** One line a reader can act on. */

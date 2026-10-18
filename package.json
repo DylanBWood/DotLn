@@ -19,6 +19,7 @@
     "backup:intake": "bash scripts/backup-intake.sh",
     "format": "prettier --write . --ignore-unknown",
     "format:check": "prettier --check . --ignore-unknown",
+    "sync": "node scripts/sync.mjs",
     "publication:check": "node scripts/check-publication.mjs",
     "resume": "node scripts/resume.mjs",
     "worktree": "node scripts/worktree.mjs",

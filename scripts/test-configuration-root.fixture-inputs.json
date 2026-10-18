@@ -1,0 +1,37 @@
+[
+  {
+    "fixture": "configured control plane",
+    "entries": [
+      "scripts/resume.mjs",
+      "scripts/worktree.mjs",
+      "scripts/release.mjs"
+    ],
+    "files": [
+      "scripts/resume.mjs",
+      "scripts/worktree.mjs",
+      "scripts/release.mjs",
+      "scripts/license-surfaces.mjs",
+      "scripts/siblings.mjs"
+    ],
+    "directories": [
+      "scripts/lib"
+    ],
+    "includes": [
+      "scripts/test-beacon-fixture.fixture-inputs.json"
+    ]
+  },
+  {
+    "fixture": "configured writing worker",
+    "entries": [
+      "scripts/lib/writing-worker-probe.mjs"
+    ],
+    "files": [
+      "scripts/lib/writing-worker-probe.mjs",
+      "scripts/lib/helpers.mjs",
+      "scripts/lib/paths.mjs",
+      "scripts/lib/git.mjs",
+      "scripts/lib/validation.mjs",
+      "scripts/lib/config.mjs"
+    ]
+  }
+]

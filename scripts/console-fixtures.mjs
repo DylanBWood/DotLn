@@ -20,10 +20,15 @@ import {
 const [mode = "--check", ...rest] = process.argv.slice(2);
 if (
   rest.length ||
-  !["--write", "--check", "--record-current-selfhost"].includes(mode)
+  ![
+    "--write",
+    "--check",
+    "--check-current-selfhost",
+    "--record-current-selfhost",
+  ].includes(mode)
 )
   throw new Error(
-    "usage: console-fixtures.mjs [--write|--check|--record-current-selfhost] (build first)",
+    "usage: console-fixtures.mjs [--write|--check|--check-current-selfhost|--record-current-selfhost] (build first)",
   );
 const manifest = readFixtureManifest();
 if (mode === "--record-current-selfhost") {
@@ -61,7 +66,13 @@ if (mode === "--record-current-selfhost") {
   loadFixture("selfhost", manifest);
   writeFileSync(join(fixtureRoot, "manifest.json"), prettyJson(manifest));
 }
-const writing = mode !== "--check";
+if (mode === "--check-current-selfhost")
+  assert.equal(
+    manifest.inputs.maturity.path,
+    `${currentEvidence(root, "feedback").directory}/feedback.json`,
+    "console selfhost fixture must follow the selected feedback edition; run npm run sync",
+  );
+const writing = mode === "--write" || mode === "--record-current-selfhost";
 const directory = join(fixtureRoot, "expected");
 if (writing) mkdirSync(directory, { recursive: true });
 for (const name of mode === "--record-current-selfhost"

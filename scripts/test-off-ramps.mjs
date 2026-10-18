@@ -1,3 +1,4 @@
+import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import { spawnGit } from "./lib/git.mjs";
 // Off-ramps: each route appends its typed event with the actor attestation,
 // refuses outside its legal phases with the legal list, and projects in
@@ -26,7 +27,11 @@ const scripts = dirname(fileURLToPath(import.meta.url));
 const root = join(parent, "off-ramps");
 mkdirSync(join(root, "scripts"), { recursive: true });
 mkdirSync(join(root, "docs/work-orders"), { recursive: true });
-cpSync(join(scripts, "resume.mjs"), join(root, "scripts/resume.mjs"));
+copyFixtureFiles(
+  join(scripts, ".."),
+  root,
+  "scripts/test-off-ramps.fixture-inputs.json",
+);
 cpSync(join(scripts, "lib"), join(root, "scripts/lib"), { recursive: true });
 installBeaconFixture(root);
 assert.equal(spawnGit(["init", "-q", root]).status, 0);
@@ -1408,7 +1413,7 @@ assert.equal(
   "no npm test row at the gate-claim identity",
 );
 const noRow = new RegExp(
-  `^error: criteria 2, 3 recorded met names npm test -- --review, and no passing complete npm test row exists at the current code identity ${identity}\\. Run npm test -- --review, or ${instead}`,
+  `^error: criteria 2, 3 recorded met names npm test -- --review, and no passing complete npm test row exists at the current code identity ${identity}\\. Handoff rows missing or failed: structural[^\n]*Run the named Preflight suites, or ${instead}`,
   "m",
 );
 const completeAgent = ["implementation-ready", ...agentFlags];
@@ -1440,7 +1445,7 @@ assert.notEqual(reviewIdentity, identity);
 refuseOn(
   "WO-102",
   new RegExp(
-    `^error: criteria 2, 3 recorded met names npm test -- --review, and no passing complete npm test row exists at the current code identity ${reviewIdentity}\\. Run npm test -- --review, or ${instead}`,
+    `^error: criteria 2, 3 recorded met names npm test -- --review, and no passing complete npm test row exists at the current code identity ${reviewIdentity}\\. Handoff rows missing or failed: structural[^\n]*Run the named Preflight suites, or ${instead}`,
     "m",
   ),
   completeAgent,
@@ -1449,7 +1454,7 @@ recordGateChecks(root, [claimRow("host-gate:plain:npm test")]);
 refuseOn(
   "WO-102",
   new RegExp(
-    `^error: criterion 3 recorded met names npm test -- --review, and no passing complete npm test row at the current code identity ${reviewIdentity} covers the current review selection: the latest row \\(recorded [^,]+, 0\\.00 s, 2 suites, host-gate:plain:npm test\\) lacks stub-machinery\\. Run npm test -- --review, or ${instead}`,
+    `^error: criteria 2, 3 recorded met names npm test -- --review,[^\n]*current review selection lacks stub-machinery[^\n]*${instead}`,
     "m",
   ),
   completeAgent,

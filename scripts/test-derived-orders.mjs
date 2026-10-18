@@ -1,3 +1,4 @@
+import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import { runGit } from "./lib/git.mjs";
 import { write } from "./lib/helpers.mjs";
 import test from "node:test";
@@ -738,9 +739,10 @@ test("WO-157 an allocation written under a superseded section set folds after th
       );
       assert.notEqual(after, before, "the fixture changes the section list");
       writeFileSync(contract, after);
-      cpSync(
-        join(TOOL_ROOT, "scripts/work-orders.mjs"),
-        join(tool, "scripts/work-orders.mjs"),
+      copyFixtureFiles(
+        TOOL_ROOT,
+        tool,
+        "scripts/test-derived-orders.fixture-inputs.json",
       );
       const later = await import(
         pathToFileURL(join(tool, "scripts/lib/control-store.mjs")).href

@@ -1,0 +1,15 @@
+{
+  "fixture": "test-verification-review",
+  "entries": [
+    "scripts/resume.mjs"
+  ],
+  "files": [
+    "scripts/resume.mjs"
+  ],
+  "directories": [
+    "scripts/lib"
+  ],
+  "includes": [
+    "scripts/test-beacon-fixture.fixture-inputs.json"
+  ]
+}

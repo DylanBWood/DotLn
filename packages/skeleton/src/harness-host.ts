@@ -78,6 +78,7 @@ import {
   prospectiveRealpath,
   gateTreeHash,
   findGateCheck,
+  readGateChecks,
   recordGateChecks,
   gateCodeIdentity,
 } from "./gate-evidence.mjs";
@@ -3031,12 +3032,21 @@ function runHarnessEvidenceChecks(
 ): readonly HarnessCheck[] {
   const treeHash = gateTreeHash(root);
   // A stop request ends the gate at the next check boundary; an ended check
-  // is neither a pass nor a recorded failure.
+  // is neither a pass nor a recorded failure. The nested runner may have
+  // recorded its completed tasks as a stopped row, which supplies no pass;
+  // the message names that row when it exists.
   const honourStop = (checkId: string) => {
-    if (stopRequested())
-      throw new Error(
-        `Gate stopped by request during ${checkId}; no check recorded`,
+    if (!stopRequested()) return;
+    const stopped = [...readGateChecks(root, treeHash)]
+      .reverse()
+      .find(
+        (row: ReturnType<typeof readGateChecks>[number]) =>
+          row.checkId === checkId &&
+          (row as { stopped?: boolean }).stopped === true,
       );
+    throw new Error(
+      `Gate stopped by request during ${checkId}; ${stopped ? `the runner recorded its completed tasks as a stopped row (${stopped.evidenceRef}), which supplies no pass` : "no check recorded"}`,
+    );
   };
   // Explicit evidence remains a useful product-gate command. Completion uses
   // its own inline diff check and never requests this gate.
@@ -3583,7 +3593,7 @@ export function permissionEffect(
     return "repo.read";
   }
   // Ending a task this session started is the session's own process control:
-  // it writes no repository byte, and a gate ended this way records no check.
+  // it writes no repository byte, and a gate ended this way records completed tasks as stopped, supplying no pass.
   if (tool === "stop") return "shell.run";
   if (tool === "write" && !path) {
     const targets =
@@ -3679,7 +3689,7 @@ const GATE_STOP_COMMANDS = [
   "node scripts/harness.mjs evidence --stop",
   "npm run harness -- evidence --stop",
 ];
-export const GATE_STOP_TEXT = `Stop that gate from this session with ${GATE_STOP_COMMANDS[0]} (admitted now; it ends at its next boundary and records no check) or the harness's own task-stop tool, or wait for it to finish.`;
+export const GATE_STOP_TEXT = `Stop that gate from this session with ${GATE_STOP_COMMANDS[0]} (admitted now; it ends at its next boundary and records completed tasks as stopped, supplying no pass) or the harness's own task-stop tool, or wait for it to finish.`;
 const gateStopCommand = (command: unknown): boolean =>
   typeof command === "string" && GATE_STOP_COMMANDS.includes(command.trim());
 

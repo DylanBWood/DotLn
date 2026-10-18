@@ -1,3 +1,4 @@
+import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import { spawnGit } from "./lib/git.mjs";
 import assert from "node:assert/strict";
 import {
@@ -21,7 +22,11 @@ const scripts = dirname(fileURLToPath(import.meta.url));
 mkdirSync(join(root, "scripts"), { recursive: true });
 mkdirSync(join(root, "docs/work-orders"), { recursive: true });
 mkdirSync(join(root, "docs/control/orders"), { recursive: true });
-cpSync(join(scripts, "resume.mjs"), join(root, "scripts/resume.mjs"));
+copyFixtureFiles(
+  join(scripts, ".."),
+  root,
+  "scripts/test-dependency-resume.fixture-inputs.json",
+);
 cpSync(join(scripts, "lib"), join(root, "scripts/lib"), { recursive: true });
 installBeaconFixture(root);
 assert.equal(spawnGit(["init", "-q", root]).status, 0);

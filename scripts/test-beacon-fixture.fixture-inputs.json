@@ -1,0 +1,14 @@
+{
+  "fixture": "build-free control plane",
+  "entries": ["packages/skeleton/src/gate-evidence.mjs"],
+  "files": [
+    "packages/compiler/src/attribution.mjs",
+    "packages/skeleton/src/gate-deadlines.mjs",
+    "packages/skeleton/src/gate-evidence.mjs",
+    "packages/skeleton/src/runtime-inputs.mjs",
+    "packages/skeleton/src/writer-teardown.mjs",
+    "packages/skeleton/src/usage-observation.mjs",
+    "packages/skeleton/src/correction-observation.mjs"
+  ],
+  "directories": ["packages/beacons"]
+}

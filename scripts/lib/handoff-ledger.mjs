@@ -11,6 +11,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { docPath, docRelative } from "./config.mjs";
+import { runGitPathList } from "./git.mjs";
 import { containedRegularFile, workOrderAuthorityPath } from "./paths.mjs";
 import { criterionJudgments, criterionLineForms } from "./off-ramps.mjs";
 
@@ -43,6 +44,46 @@ export function declaredCriteria(text) {
   }
   return items.length ? items : null;
 }
+
+/** Read only the Preflight field, including its wrapped continuation lines. */
+export function readPreflightSuites(orderText) {
+  const field =
+    /(?:^|\n)\*\*Preflight:\*\*([^]*?)(?=\n\s*\n|\n\*\*|$)/u.exec(
+      orderText,
+    )?.[1] ?? "";
+  return [
+    ...new Set(
+      [...field.matchAll(/--only\s+([a-z][a-z0-9:-]*)/gu)].map(
+        (match) => match[1],
+      ),
+    ),
+  ];
+}
+
+const preflightSuites = (root, state) =>
+  state
+    ? readPreflightSuites(
+        readFileSync(
+          workOrderAuthorityPath(root, state.workOrderId, state.workOrderPath),
+          "utf8",
+        ),
+      )
+    : [];
+
+const changedDocuments = (root) =>
+  [
+    ...runGitPathList(root, ["diff", "--name-only", "-z", "HEAD"]),
+    ...runGitPathList(root, [
+      "ls-files",
+      "--others",
+      "--exclude-standard",
+      "-z",
+    ]),
+  ].some(
+    (path) =>
+      /\.md$/iu.test(path) ||
+      path.startsWith(docRelative(root, "evidence") + "/"),
+  );
 
 /** The launchpad-relative ledger path. */
 export const handoffLedgerPath = (root, workOrderId) =>
@@ -194,8 +235,9 @@ function reviewSelection(root, runner) {
     : { error: "npm test -- --review --list named no suite" };
 }
 
-const gateFields = (row) =>
-  Object.fromEntries(
+const gateFields = (row) => ({
+  evidenceRefs: [row.evidenceRef],
+  ...Object.fromEntries(
     [
       "checkId",
       "treeHash",
@@ -209,13 +251,13 @@ const gateFields = (row) =>
     ]
       .filter((key) => row[key] !== undefined)
       .map((key) => [key, row[key]]),
-  );
+  ),
+});
 
 /**
  * Check the gates the ledger's met criteria name. A criterion that names
- * `npm test` or `npm test -- --review` needs a passing complete row at the
- * current code identity, for the review form one whose required suites cover
- * the current review selection; a criterion that names `npm run test:docs`
+ * `npm test` or `npm test -- --review` consumes a passing complete row or
+ * the structural and declared Preflight rows at the current code identity; a criterion that names `npm run test:docs`
  * makes the completion run the document gate once, here, after every other
  * check. A failed gate or a missing row refuses the claim and prints the
  * command and the choice; a gate that cannot start prints one advisory and
@@ -283,8 +325,14 @@ export async function requireGateClaims(
   if (!ledger?.checked) return result;
   // The row lookups load the skeleton's gate index only when a claim needs
   // them, so a control plane without the skeleton still loads this module.
-  const { coveringGateCheck, describeGateRow } =
+  const { coveringGateCheck, describeGateRow, STRUCTURAL_SUITES } =
     await import("./gate-reuse.mjs");
+  // A structural task displaced by a later failed structural run is repaired
+  // by regenerating what it found stale, then a passing structural phase.
+  const structuralRemedy = (displaced) =>
+    displaced.some((name) => STRUCTURAL_SUITES.includes(name))
+      ? "; a later structural run failed: run npm run sync, then a passing structural phase (npm test -- --only format)"
+      : "";
   // Every self-order read of the index goes through here: an unreadable
   // index is one advisory and an undefined result, never a refusal. A target
   // claim's read above refuses instead.
@@ -297,38 +345,61 @@ export async function requireGateClaims(
       );
     }
   };
+  let focused;
   if (productClaims.length && !state?.repositoryId) {
     const command = `npm test${claims.review.length ? " -- --review" : ""}`;
     const plain = await lookup("npm test", []);
     if (plain) {
-      if (!plain.row)
-        throw new Error(
-          `${named(productClaims)} recorded met names ${command}, and no passing complete npm test row ${plain.displaced ? `stands at the current code identity ${plain.codeIdentity}: the latest complete row (${describeGateRow(plain.displaced.row)}) names ${plain.displaced.tasks.join(", ")}, whose latest execution there can no longer be carried (a later run did not pass, a later gate that ran it failed, or the row that executed it cannot be read)` : `exists at the current code identity ${plain.codeIdentity}`}. Run ${command}, or ${instead}.`,
-        );
-      result.productGate = gateFields(plain.row);
-      if (claims.review.length) {
+      let complete = plain;
+      if (plain.row && claims.review.length) {
         const selection = reviewSelection(root, runner);
         if (selection.error)
           advise(
             `Review selection unavailable (${selection.error}); the npm test -- --review claim of ${named(claims.review)} stands on the plain npm test row (${describeGateRow(plain.row)}).`,
           );
-        else {
-          const covering = await lookup(
-            "npm test",
-            selection.names,
-            plain.codeIdentity,
+        else
+          complete =
+            (await lookup("npm test", selection.names, plain.codeIdentity)) ??
+            plain;
+      }
+      if (complete.row) result.productGate = gateFields(complete.row);
+      else {
+        const { preflightRows } = await import("./gate-reuse.mjs");
+        focused = await preflightRows(
+          root,
+          plain.codeIdentity,
+          preflightSuites(root, state),
+        );
+        if (focused.missing.length)
+          throw new Error(
+            `${named(productClaims)} recorded met names ${command}, and no passing complete npm test row ${plain.displaced ? `stands at the current code identity ${plain.codeIdentity}: the latest complete row (${describeGateRow(plain.displaced.row)}) names ${plain.displaced.tasks.join(", ")}, whose latest execution there can no longer be carried` : `exists at the current code identity ${plain.codeIdentity}`}. Handoff rows missing or failed: ${focused.missing.map(({ suite, reason, displaced }) => `${suite} (${reason}${displaced.length ? `: ${displaced.join(", ")} displaced` : ""}); run ${displaced.some((name) => STRUCTURAL_SUITES.includes(name)) ? "npm run sync, then " : ""}npm test -- --only ${suite === "structural" ? "format" : suite}`).join("; ")}${complete.missing?.length ? `; current review selection lacks ${complete.missing.join(", ")}` : ""}${structuralRemedy(plain.displaced?.tasks ?? [])}. Run the named Preflight suites, or ${instead}.`,
           );
-          // If this read fails, the event keeps the plain row read above.
-          if (covering && !covering.row)
-            throw new Error(
-              `${named(claims.review)} recorded met names npm test -- --review, and no passing complete npm test row at the current code identity ${plain.codeIdentity} covers the current review selection: the latest row (${describeGateRow(plain.row)}) lacks ${covering.missing.join(", ")}. Run npm test -- --review, or ${instead}.`,
-            );
-          if (covering) result.productGate = gateFields(covering.row);
-        }
+        result.productGate = {
+          codeIdentity: plain.codeIdentity,
+          evidenceRefs: focused.rows.map((row) => row.evidenceRef),
+          rows: focused.rows.map(gateFields),
+        };
       }
     }
   }
-  if (claims.document.length) {
+  if (focused && (claims.document.length || changedDocuments(root))) {
+    const { gateCandidates, completePassingRow } =
+      await import("./gate-reuse.mjs");
+    const candidates = await gateCandidates(
+      root,
+      "npm run test:docs",
+      focused.codeIdentity,
+    );
+    const row = candidates.rows.at(-1);
+    if (!row || !completePassingRow(row))
+      throw new Error(
+        `Handoff document row missing or failed at the current code identity ${focused.codeIdentity}; run npm run test:docs before completing.`,
+      );
+    result.documentGate = gateFields(row);
+    result.productGate.rows.push(gateFields(row));
+    result.productGate.evidenceRefs.push(row.evidenceRef);
+  }
+  if (claims.document.length && !focused) {
     const claim = `the npm run test:docs claim of ${named(claims.document)}`;
     if (!existsSync(runner)) {
       advise(
@@ -376,6 +447,57 @@ export async function requireGateClaims(
     }
   }
   return result;
+}
+
+/** The final review pays for a complete, fresh review run after its dispatch.
+ * Target orders keep their own target gate and never acquire this core gate. */
+export async function requireFinalReviewGate(
+  root,
+  ledger,
+  { state, since, runner = join(root, "scripts/test-runner.mjs") } = {},
+) {
+  if (
+    state?.repositoryId ||
+    !ledger?.checked ||
+    !(ledger.claims.plain.length || ledger.claims.review.length)
+  )
+    return undefined;
+  const { coveringGateCheck, STRUCTURAL_SUITES } =
+    await import("./gate-reuse.mjs");
+  const selection = reviewSelection(root, runner);
+  const refuse = (reason) => {
+    throw new Error(
+      `Final review requires npm test -- --review --again after this review's FinalReviewRequested event: ${reason}.`,
+    );
+  };
+  if (selection.error) refuse(selection.error);
+  const found = await coveringGateCheck(root, "npm test", selection.names);
+  const dispatched = Date.parse(since);
+  // The newest standing fresh review row recorded after the dispatch supplies
+  // the claim. A later composed row reuses results, so it neither displaces
+  // that row nor supplies the claim; a later failed fresh run displaces it
+  // through the shared lookup and leaves no candidate.
+  const row = Number.isFinite(dispatched)
+    ? found.candidates.findLast(
+        (candidate) =>
+          candidate.gateSelection === "review" &&
+          candidate.reusedSuites === 0 &&
+          Date.parse(candidate.recordedAt) > dispatched &&
+          selection.names.every((name) =>
+            (Array.isArray(candidate.requiredSuites)
+              ? candidate.requiredSuites
+              : []
+            ).includes(name),
+          ),
+      )
+    : undefined;
+  if (!row) {
+    const displaced = found.displaced?.tasks ?? [];
+    refuse(
+      `no fresh passing complete review row at the current code identity ${found.codeIdentity}${displaced.length ? ` (the latest complete row names ${displaced.join(", ")}, whose latest execution there can no longer be carried${displaced.some((name) => STRUCTURAL_SUITES.includes(name)) ? "; a later structural run failed: run npm run sync, then a passing structural phase before the fresh review run" : ""})` : ""}`,
+    );
+  }
+  return gateFields(row);
 }
 
 /** One line for the completion's own message. */

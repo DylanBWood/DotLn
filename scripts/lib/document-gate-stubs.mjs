@@ -4,6 +4,8 @@
 // `npm run test:docs` refuses one that is missing (WO-157 item 13, WO-151 D021).
 export const DOCUMENT_GATE_STUBS = [
   "format.cjs",
+  "structural-checks.mjs",
+  "test-configuration-root.mjs",
   "check-publication.mjs",
   "docs-check.mjs",
   "test-docs-check.mjs",
@@ -33,7 +35,7 @@ export const DOCUMENT_GATE_STUBS = [
   "license-surfaces.mjs",
   "test-resume.sh",
   "test-resident-bind.mjs",
-  "test-launchpad.mjs",
+  "test-launchpad-export.mjs",
   "probes/local-runner-smoke.test.mjs",
   "probes/local-runner-load.test.mjs",
   "probes/local-model-transport-smoke.test.mjs",

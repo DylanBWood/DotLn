@@ -1,6 +1,6 @@
 // Declared-source selection stays the rule (WO-174). This direct closure check
 // prevents a suite's declaration from forgetting the entry or a literal input.
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, posix } from "node:path";
 import { createRequire } from "node:module";
 import { relativeImports } from "./evidence-sources.mjs";
@@ -94,6 +94,15 @@ function sourcePath(root, path) {
   }
   return path;
 }
+// Kits carry compiled package files without their TypeScript sources. The
+// same declaration covers the compiler's corresponding output path.
+const compiledSourcePath = (source) =>
+  source
+    .replace(/^packages\/([^/]+)\/(src|test)\//u, "packages/$1/dist/$2/")
+    .replace(/\.ts$/u, ".js");
+function declaredPathCovers(path, source) {
+  return path.startsWith(source) || path.startsWith(compiledSourcePath(source));
+}
 export function uncoveredMachinerySources(
   root,
   table,
@@ -130,10 +139,128 @@ export function uncoveredMachinerySources(
     }
     for (const path of [...required].sort())
       if (
-        !row.sources.some((source) => path.startsWith(source)) &&
-        !Object.hasOwn(excluded, path)
+        !row.sources.some((source) => declaredPathCovers(path, source)) &&
+        !Object.hasOwn(excluded, path) &&
+        !Object.keys(excluded).some(
+          (source) => path === compiledSourcePath(source),
+        )
       )
         findings.push({ suite: row.name, path });
+  }
+  return findings;
+}
+
+/** Each narrow source copy keeps a JSON declaration beside its fixture.
+ * The fixture consumes that same file when copying, so checking the closure
+ * cannot silently drift away from the actual copy list. Recursive trees and
+ * explicitly supplied doubles cover imports without expanding those trees. */
+export function copiedFixtureClosures(root) {
+  const declarations = [];
+  const visit = (directory) => {
+    if (!existsSync(join(root, directory))) return;
+    for (const entry of readdirSync(join(root, directory), {
+      withFileTypes: true,
+    })) {
+      const path = `${directory}/${entry.name}`;
+      if (entry.isDirectory()) visit(path);
+      else if (entry.name.endsWith(".fixture-inputs.json")) {
+        const value = JSON.parse(readFileSync(join(root, path), "utf8"));
+        for (const row of Array.isArray(value) ? value : [value]) {
+          if (
+            typeof row.fixture !== "string" ||
+            !Array.isArray(row.files) ||
+            !row.files.every((file) => typeof file === "string") ||
+            !Array.isArray(row.entries) ||
+            !row.entries.length
+          )
+            throw new Error(`Invalid copied-fixture declaration: ${path}`);
+          const include = (name, seen = new Set()) => {
+            if (seen.has(name))
+              throw new Error(`Cyclic copied-fixture declaration: ${name}`);
+            const inherited = JSON.parse(
+              readFileSync(join(root, name), "utf8"),
+            );
+            if (Array.isArray(inherited))
+              throw new Error(
+                `Included copied-fixture declaration must name one set: ${name}`,
+              );
+            const parents = (inherited.includes ?? []).map((next) =>
+              include(next, new Set([...seen, name])),
+            );
+            return Object.fromEntries(
+              ["files", "directories", "provided"].map((key) => [
+                key,
+                [
+                  ...new Set([
+                    ...(inherited[key] ?? []),
+                    ...parents.flatMap((parent) => parent[key]),
+                  ]),
+                ],
+              ]),
+            );
+          };
+          const parents = (row.includes ?? []).map((name) =>
+            include(name, new Set([path])),
+          );
+          declarations.push({
+            ...row,
+            ...Object.fromEntries(
+              ["files", "directories", "provided"].map((key) => [
+                key,
+                [
+                  ...new Set([
+                    ...(row[key] ?? []),
+                    ...parents.flatMap((parent) => parent[key]),
+                  ]),
+                ],
+              ]),
+            ),
+            declaration: path,
+          });
+        }
+      }
+    }
+  };
+  visit("scripts");
+  if (existsSync(join(root, "packages")))
+    for (const name of readdirSync(join(root, "packages")))
+      visit(`packages/${name}/test`);
+  return declarations;
+}
+
+export function uncoveredFixtureInputs(
+  root,
+  closures = copiedFixtureClosures(root),
+) {
+  const findings = [];
+  for (const row of closures) {
+    const files = new Set(row.files);
+    const covered = (path) =>
+      files.has(path) ||
+      (row.provided ?? []).includes(path) ||
+      (row.directories ?? []).some((directory) =>
+        path.startsWith(`${directory.replace(/\/$/u, "")}/`),
+      );
+    const required = new Set(row.entries);
+    for (const file of new Set([...row.files, ...row.entries]))
+      if (/\.(?:mjs|cjs|js|ts)$/u.test(file)) {
+        if (!existsSync(join(root, file))) required.add(file);
+        else
+          for (const path of relativeImports(root, file, {
+            sourcePaths: false,
+          }))
+            required.add(path);
+      }
+    for (const path of [...required].sort())
+      if (
+        !covered(path) ||
+        (!(row.provided ?? []).includes(path) && !existsSync(join(root, path)))
+      )
+        findings.push({
+          fixture: row.fixture,
+          path,
+          declaration: row.declaration,
+        });
   }
   return findings;
 }

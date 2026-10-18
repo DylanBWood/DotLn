@@ -23,6 +23,7 @@ import { dirname, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import {
   suites,
+  STRUCTURAL_TASKS,
   validateSuites,
   expand,
   executeSuite,
@@ -402,25 +403,17 @@ test("kit defaults separate runtime integrity from documents and explicit platfo
           .map((line) => line.split(" — ")[0]),
         args.includes("--document")
           ? [
+              ...STRUCTURAL_TASKS,
               "kit-verify",
-              "format",
-              "release-surfaces",
               "license-surfaces",
-              "publication",
               "docs-check",
-              "index",
-              "siblings",
-              "lineage",
-              "harness",
               "harness-context",
               "plan-refutation-current",
-              "meta",
-              "registrations",
               "plan",
               "reader-profiles",
               "entropy",
             ]
-          : ["kit-verify", "harness"],
+          : [...STRUCTURAL_TASKS, "kit-verify"],
       );
       assert.ok(!lines.some((line) => line.startsWith("kit: ")));
     }
@@ -430,7 +423,8 @@ test("kit defaults separate runtime integrity from documents and explicit platfo
       const names = lines
         .filter((line) => line.includes(" — protects:"))
         .map((line) => line.split(" — ")[0]);
-      assert.equal(names[0], "kit-verify");
+      assert.deepEqual(names.slice(0, 6), STRUCTURAL_TASKS);
+      assert.ok(names.includes("kit-verify"));
       assert.ok(
         names.includes(
           args.includes("--only") ? "target-worktree" : "fixture-temp-root",
@@ -1237,6 +1231,7 @@ test("release shell changes select their inventory guard during review", async (
       .filter(
         (row) =>
           row.machinery &&
+          row.name !== "registrations" &&
           messages.some((line) => line.startsWith(`${row.name} —`)),
       )
       .map((row) => row.name),
@@ -1565,8 +1560,8 @@ test("WO-169 a changed script outside the former eight sources selects the confi
   writeFileSync(other, "export const value = 2;\n");
   assert.deepEqual(changedMachinery(repo, suites, "main"), []);
   assert.ok(
-    !(await listed()).some((line) => line.startsWith("configuration-root —")),
-    "a change outside scripts/ leaves the suite unselected",
+    (await listed()).some((line) => line.startsWith("configuration-root —")),
+    "structural configuration checks run even for a change outside scripts/",
   );
   writeFileSync(script, "export const route = 2;\n");
   assert.ok(
@@ -1634,7 +1629,7 @@ test("WO-133 review selection ignores release-only changes and retains host beha
     } finally {
       console.log = saved;
     }
-    for (const row of suites.filter((row) => row.machinery))
+    for (const row of suites.filter((row) => row.machinery && !row.structural))
       assert.ok(
         !messages.some((line) => line.startsWith(`${row.name} —`)),
         row.name,
@@ -1853,14 +1848,14 @@ test("stale generated evidence stops the gate before expensive fixtures", async 
   assert.ok(!started.includes("harness-fixtures"));
   assert.match(
     rows.find((row) => row.name === "harness-fixtures").output,
-    /failed for harness-fixtures: authority-evidence/,
+    /Not started after authority-evidence failed/,
   );
   assert.equal(
     rows.find((row) => row.name === "harness-fixtures").executed,
     false,
   );
 });
-test("a kit verifies carried code before formatting and refuses every later task on drift", async () => {
+test("a kit formats before verifying carried code and refuses every later task on drift", async () => {
   const table = [
     { name: "kit-verify", build: true, command: ["verify"], outputs: [] },
     { name: "format", preflight: true, command: ["format"] },
@@ -1884,17 +1879,17 @@ test("a kit verifies carried code before formatting and refuses every later task
     assert.deepEqual(
       executed,
       failure === "kit-verify"
-        ? ["kit-verify"]
+        ? ["format", "kit-verify"]
         : failure === "format"
-          ? ["kit-verify", "format"]
-          : ["kit-verify", "format", "test"],
+          ? ["format"]
+          : ["format", "kit-verify", "test"],
     );
     assert.equal(new Set(result.map((row) => row.name)).size, result.length);
-    assert.equal(result[0].name, "kit-verify");
+    assert.equal(result[0].name, "format");
     if (failure !== "kit-verify")
       assert.deepEqual(
         result.find((row) => row.name === "format").predecessors,
-        ["kit-verify"],
+        [],
       );
     if (!failure)
       assert.ok(
@@ -1978,7 +1973,7 @@ test("failed split-case diagnostics survive aggregate evidence as addressed logs
       .every((row) => !row.outputRef),
   );
 });
-test("product suites describe protection, machinery is separate and only release and vertical expand", () => {
+test("product suites describe protection, machinery is separate and only release, vertical and launchpad expand", () => {
   for (const row of suites) {
     assert.ok(row.protects?.length > 10, row.name);
     assert.ok(
@@ -1997,7 +1992,7 @@ test("product suites describe protection, machinery is separate and only release
   for (const row of suites.filter((row) => row.machinery))
     assert.ok(row.sources.length, row.name);
   const selected = suites.filter(
-    (row) => !["release", "vertical"].includes(row.name),
+    (row) => !["release", "vertical", "launchpad"].includes(row.name),
   );
   assert.deepEqual(
     expandSuiteTasks(selected, root).map((row) => row.name),
@@ -2165,7 +2160,8 @@ test("exclusive suites run alone and shared suites use remaining lane capacity",
   );
   const active = new Map(),
     overlap = new Set();
-  const rows = await scheduleSuites(expandSuiteTasks(selected, root), {
+  const tasks = expandSuiteTasks(selected, root);
+  const rows = await scheduleSuites(tasks, {
     concurrency: 4,
     execute: async (row) => {
       assert.equal(
@@ -2206,7 +2202,7 @@ test("exclusive suites run alone and shared suites use remaining lane capacity",
       return { name: row.name, exitCode: 0, executed: true };
     },
   });
-  assert.equal(rows.length, selected.length);
+  assert.equal(rows.length, tasks.length);
   assert.equal(overlap.has("hook-light"), false);
   assert.ok(overlap.has("heavy-pair"));
   assert.equal(overlap.has("hooks"), false);
@@ -2343,7 +2339,7 @@ test("only and document CLI selection execute their declared checks with the pro
       .trim()
       .split("\n")
       .map(JSON.parse);
-    assert.equal(observed.length, 1);
+    assert.equal(observed.length, STRUCTURAL_TASKS.length);
     assert.ok(observed[0][0].endsWith("format.cjs"));
     assert.equal((await runGate(["--document", "--serial"], repo)).exitCode, 0);
     observed = readFileSync(join(repo, "observed.jsonl"), "utf8")
@@ -2351,13 +2347,13 @@ test("only and document CLI selection execute their declared checks with the pro
       .split("\n")
       .map(JSON.parse);
     const documentCount =
-      suites.filter((row) => row.document).length +
+      suites.filter((row) => row.document && !row.generated).length +
       1 +
       suites
         .find((row) => row.name === "local-runner-double")
         .command.filter((part) => part.endsWith(".mjs")).length -
       1;
-    assert.equal(observed.length, 1 + documentCount);
+    assert.equal(observed.length, STRUCTURAL_TASKS.length + documentCount);
     assert.ok(observed.some((row) => row[0].includes("build")));
     assert.deepEqual(observed.at(-1).slice(1), ["check"]);
     const repeated = await runGate(["--document", "--serial"], repo);
@@ -2365,7 +2361,7 @@ test("only and document CLI selection execute their declared checks with the pro
     assert.equal(
       readFileSync(join(repo, "observed.jsonl"), "utf8").trim().split("\n")
         .length,
-      1 + 2 * documentCount,
+      STRUCTURAL_TASKS.length + 2 * documentCount,
     );
     await assert.rejects(runGate(["--only", "unknown"], repo), /Unknown suite/);
     assert.deepEqual(
@@ -3865,7 +3861,13 @@ test("WO-160 document failures rerun at the base, retain red status and record i
   }));
   const before = runGit(repo, ["diff"], fixtureGitOptions);
   for (const flags of [["--against", base], []]) {
-    const result = await runGate(["--document", ...flags], repo, { table });
+    const result = await runGate(
+      ["--document", "--keep-going", ...flags],
+      repo,
+      {
+        table,
+      },
+    );
     assert.equal(result.exitCode, 1);
     assert.deepEqual(
       result.failureComparisons
@@ -4965,7 +4967,6 @@ test("WO-186 stopped, partial, timed-out and failed task observations never reus
   const first = await runGate(["--serial", "--again"], repo, { table });
   const { coveringTaskResults } = await import("./lib/gate-reuse.mjs");
   for (const extra of [
-    { stopped: true },
     { partial: true },
     { partial: null },
     { partial: 0 },
@@ -5295,7 +5296,6 @@ test("WO-186 VER-001 a later failed gate displaces older passes, and a carried r
     { abandonedRoots: ["/tmp/dotln-host-confinement-left"] },
     { memory: { failure: { failureKind: "memory-budget" } } },
     { identityUnchanged: false },
-    { stopped: true },
     { timedOut: true },
     { failureKind: "monitor-unavailable" },
   ]) {
@@ -5369,7 +5369,8 @@ test("WO-186 VER-001 a later failed gate displaces older passes, and a carried r
     writeFileSync(join(repo, "scripts/new.mjs"), text);
     return gateCodeIdentity(repo);
   };
-  const stamp = (ms) => new Date(Date.now() + ms).toISOString();
+  const stampBase = Date.now();
+  const stamp = (ms) => new Date(stampBase + ms).toISOString();
   const unfinished = identityFor("export const unfinished = 1;\n");
   recordGateChecks(repo, [
     {
@@ -5607,7 +5608,7 @@ test("WO-186 VER-001 a wildcard output beside a plain file is attested, a failed
   );
   value("good");
   writeFileSync(join(repo, "fail-alpha"), "fail\n");
-  const first = await runGate(["--serial"], repo, { table });
+  const first = await runGate(["--serial", "--keep-going"], repo, { table });
   assert.equal(first.exitCode, 1);
   assert.match(task(first, "build").outputDigest, /^[a-f0-9]{64}$/u);
   assert.equal(first.buildOutputUnchanged, true);
@@ -5617,7 +5618,7 @@ test("WO-186 VER-001 a wildcard output beside a plain file is attested, a failed
   rmSync(join(repo, "fail-alpha"));
   writeFileSync(join(repo, "drift"), "drift\n");
   let before = observed().length;
-  const drifted = await runGate(["--serial"], repo, { table });
+  const drifted = await runGate(["--serial", "--keep-going"], repo, { table });
   assert.deepEqual(observed().slice(before), ["alpha"]);
   assert.equal(task(drifted, "build").outputAttested, true);
   assert.equal(task(drifted, "alpha").exitCode, 0);
@@ -5626,7 +5627,7 @@ test("WO-186 VER-001 a wildcard output beside a plain file is attested, a failed
   // Nothing of that row is carried, and the output is rebuilt before a task.
   rmSync(join(repo, "drift"));
   before = observed().length;
-  const rebuilt = await runGate(["--serial"], repo, { table });
+  const rebuilt = await runGate(["--serial", "--keep-going"], repo, { table });
   assert.deepEqual(observed().slice(before), ["build", "alpha"]);
   assert.equal(rebuilt.exitCode, 0);
   assert.equal(task(rebuilt, "beta").sourceRow.recordedAt, first.recordedAt);
@@ -5874,7 +5875,7 @@ test("WO-186 VER-001 a pass carried from main has no execution to stand on while
   runGit(repo, ["checkout", "-q", "-b", "parked"]);
   await assert.rejects(
     () => requireGateClaims(worktree, ledger),
-    /names build, alpha, beta, whose latest execution there can no longer be carried \(a later run did not pass, a later gate that ran it failed, or the row that executed it cannot be read\)/u,
+    /names build, alpha, beta, whose latest execution there can no longer be carried/u,
   );
   const rerun = await runGate(["--serial"], worktree, { table });
   assert.deepEqual(observed(worktree), ["build", "alpha", "beta"]);
@@ -7128,7 +7129,6 @@ test("WO-186 FINAL-001 another check's row-level failure displaces the tasks it 
     { buildOutputUnchanged: false },
     { memory: { failure: { kind: "fixture:memory" } } },
     { identityUnchanged: false },
-    { stopped: true },
     { timedOut: true },
   ]) {
     const observation = (extra) => {
@@ -7362,11 +7362,11 @@ test("format preflight stops plain and review before product tasks, and stays fr
       /README\.md/,
     );
     assert.deepEqual(observed(), ["build", "alpha", "beta"]);
-    // The narrower selections do not acquire the formatting preflight.
+    // Narrow selections keep the structural formatting preflight.
     for (const args of [["--only", "alpha"], ["--machinery"]]) {
       const narrow = await gate(args);
-      assert.equal(narrow.exitCode, 0);
-      assert.ok(!narrow.requiredSuites.includes("format"));
+      assert.equal(narrow.exitCode, 1);
+      assert.ok(narrow.requiredSuites.includes("format"));
     }
   }
 });
@@ -7437,4 +7437,650 @@ test("review composition retains source rows and reruns a task whose latest sing
   assert.equal(repaired.exitCode, 0);
   assert.equal(repaired.executionMode, "composed");
   t.diagnostic("review composition " + JSON.stringify(gateProof(review)));
+});
+
+test("structural tasks lead every selection exactly once before a suite or build starts", async () => {
+  const { STRUCTURAL_TASKS } = await import("./test-runner.mjs");
+  for (const flags of [
+    [],
+    ["--review"],
+    ["--only", "runner-fixtures"],
+    ["--machinery"],
+    ["--document"],
+  ]) {
+    const { lines } = await captureGate([...flags, "--list"], root);
+    const names = lines.map((line) => line.split(" — ")[0]);
+    assert.deepEqual(names.slice(0, 6), STRUCTURAL_TASKS);
+    for (const name of STRUCTURAL_TASKS)
+      assert.equal(names.filter((entry) => entry === name).length, 1);
+    if (flags.includes("--document"))
+      for (const name of [
+        "meta",
+        "index",
+        "lineage",
+        "release-surfaces",
+        "harness",
+        "authority-evidence",
+        "artifact-evidence",
+        "verification-evidence",
+        "feedback-evidence",
+        "harness-evidence",
+        "publication",
+      ])
+        assert.ok(!names.includes(name), name);
+  }
+  const selected = suites.filter(
+    (row) => row.structural || ["build", "kernel"].includes(row.name),
+  );
+  for (const failure of STRUCTURAL_TASKS) {
+    const started = [];
+    await scheduleSuites(expandSuiteTasks(selected, root), {
+      execute: async (row) => {
+        started.push(row.name);
+        return {
+          name: row.name,
+          exitCode: row.name === failure ? 1 : 0,
+          executed: true,
+        };
+      },
+    });
+    assert.deepEqual(
+      started,
+      STRUCTURAL_TASKS.slice(0, STRUCTURAL_TASKS.indexOf(failure) + 1),
+    );
+  }
+});
+
+test("declarations diagnose missing suite imports and copied fixture inputs before execution", async (t) => {
+  const { checkDeclarations } = await import("./structural-checks.mjs");
+  const repo = mkdtempSync(join(tmpdir(), "dotln-structural-declarations-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  mkdirSync(join(repo, "scripts"));
+  writeFileSync(join(repo, "scripts/entry.mjs"), 'import "./leaf.mjs";\n');
+  writeFileSync(join(repo, "scripts/leaf.mjs"), "export {};\n");
+  const table = [
+    {
+      name: "fixture-suite",
+      machinery: true,
+      command: [process.execPath, "scripts/entry.mjs"],
+      sources: ["scripts/entry.mjs"],
+    },
+  ];
+  const closures = [
+    {
+      fixture: "copied CLI",
+      declaration: "scripts/entry.fixture-inputs.json",
+      entries: ["scripts/entry.mjs"],
+      files: ["scripts/entry.mjs"],
+    },
+  ];
+  const bad = checkDeclarations(repo, table, closures);
+  assert.equal(bad.exitCode, 1);
+  assert.match(bad.output, /fixture-suite: scripts\/leaf.mjs/);
+  assert.match(bad.output, /copied CLI: scripts\/leaf.mjs/);
+  table[0].sources.push("scripts/leaf.mjs");
+  closures[0].files.push("scripts/leaf.mjs");
+  assert.equal(checkDeclarations(repo, table, closures).exitCode, 0);
+  mkdirSync(join(repo, "packages/fixture/dist/src"), { recursive: true });
+  writeFileSync(
+    join(repo, "packages/fixture/dist/src/leaf.js"),
+    "export {};\n",
+  );
+  writeFileSync(
+    join(repo, "scripts/entry.mjs"),
+    'import "../packages/fixture/dist/src/leaf.js";\n',
+  );
+  const compiled = checkDeclarations(repo, table, []);
+  assert.match(compiled.output, /packages\/fixture\/dist\/src\/leaf\.js/);
+  table[0].sources.push("packages/fixture/src/leaf.ts");
+  assert.equal(checkDeclarations(repo, table, []).exitCode, 0);
+  assert.equal(
+    checkDeclarations(
+      root,
+      expandSuiteTasks(
+        suites.filter((row) => row.machinery),
+        root,
+      ),
+    ).exitCode,
+    0,
+  );
+});
+
+test("host structural check refuses warning and critical samples and reports their actual values", async () => {
+  const { checkHost } = await import("./structural-checks.mjs");
+  for (const [level, pressure] of [
+    ["normal", 1],
+    ["warning", 2],
+    ["critical", 4],
+  ]) {
+    const sample = {
+      level,
+      pressure,
+      swapBytes: 1234,
+      physicalBytes: 8192,
+      source: "fixture",
+    };
+    const result = checkHost(sample);
+    assert.equal(result.exitCode, level === "normal" ? 0 : 1);
+    assert.deepEqual(result.sample, sample);
+    assert.match(result.output, /swapBytes=1234; physicalBytes=8192/);
+  }
+});
+
+test("fail-fast keeps running tasks, starts no later task, and keep-going restores scheduling", async () => {
+  for (const keepGoing of [false, true]) {
+    const started = [],
+      finished = [];
+    const table = [
+      barrier,
+      { name: "slow", command: ["slow"] },
+      { name: "fail", command: ["fail"] },
+      { name: "later", command: ["later"], after: ["slow"] },
+    ];
+    const rows = await scheduleSuites(table, {
+      concurrency: 2,
+      keepGoing,
+      execute: async (row) => {
+        started.push(row.name);
+        if (row.name === "slow")
+          await new Promise((done) => setTimeout(done, 30));
+        finished.push(row.name);
+        return {
+          name: row.name,
+          executed: true,
+          exitCode: row.name === "fail" ? 1 : 0,
+          durationMs: 1,
+        };
+      },
+    });
+    assert.ok(finished.indexOf("fail") < finished.indexOf("slow"));
+    assert.ok(rows.find((row) => row.name === "slow").executed);
+    assert.equal(started.includes("later"), keepGoing);
+    assert.equal(rows.find((row) => row.name === "later").executed, keepGoing);
+  }
+});
+
+test("failed runs record the first failure and tasks never started; keep-going records all tasks", async (t) => {
+  const fixture = taskReuseFixture(t);
+  const table = [
+    ...fixture.table,
+    {
+      name: "later",
+      product: true,
+      command: [process.execPath, "scripts/alpha.mjs"],
+    },
+  ];
+  writeFileSync(join(fixture.repo, "fail-beta"), "fail");
+  const stopped = (await captureGate(["--serial"], fixture.repo, { table }))
+    .row;
+  assert.equal(stopped.failedFirst, "beta");
+  assert.deepEqual(stopped.unrunSuites, ["later"]);
+  assert.equal(stopped.exitCode, 1);
+  const all = (
+    await captureGate(["--serial", "--keep-going", "--again"], fixture.repo, {
+      table,
+    })
+  ).row;
+  assert.deepEqual(all.unrunSuites, []);
+  assert.ok(all.taskTimeline.every((row) => row.executed));
+});
+
+test("recorded rows keep no passing output at any depth and address failed child output", async (t) => {
+  const fixture = taskReuseFixture(t);
+  const { repo } = fixture;
+  writeFileSync(
+    join(repo, "scripts/alpha.mjs"),
+    'import fs from "node:fs"; fs.appendFileSync("observed.jsonl", "alpha\\n"); console.log("alpha passing noise");\n',
+  );
+  writeFileSync(
+    join(repo, "scripts/beta.mjs"),
+    'import fs from "node:fs"; fs.appendFileSync("observed.jsonl", "beta\\n"); if (fs.existsSync("fail-beta")) { console.log("beta failure details"); process.exit(1); }\n',
+  );
+  // A structural task reports child checks; a passing child's output is
+  // transient, a failed child's output is a diagnostic the index addresses.
+  writeFileSync(
+    join(repo, "scripts/generated.mjs"),
+    `console.log("CURRENT child-pass 0.001 s");\nconsole.log("STRUCTURAL_RESULT " + JSON.stringify({ exitCode: 0, stale: [], cases: [ { name: "child-pass", exitCode: 0, executed: true, durationMs: 1, output: "passing child noise" }, { name: "child-fail", exitCode: 1, executed: true, durationMs: 1, output: "kept child failure" } ] }));\n`,
+  );
+  writeFileSync(join(repo, "fail-beta"), "fail");
+  const table = [
+    {
+      name: "generated",
+      structural: true,
+      command: [process.execPath, "scripts/generated.mjs"],
+    },
+    ...fixture.table,
+  ];
+  const { row } = await captureGate(["--serial"], repo, { table });
+  assert.equal(row.exitCode, 1);
+  assert.equal(row.failedFirst, "beta");
+  const recorded = readGateChecks(repo);
+  assert.deepEqual(recorded.map((entry) => entry.checkId).sort(), [
+    "npm test",
+    "structural",
+  ]);
+  const walk = (entries, at, visit) => {
+    for (const [index, entry] of (entries ?? []).entries()) {
+      const here = `${at}[${index}:${entry.name}]`;
+      visit(entry, here);
+      walk(entry.cases, `${here}.cases`, visit);
+    }
+  };
+  for (const entry of recorded) {
+    walk(entry.taskTimeline, `${entry.checkId}.taskTimeline`, (item, at) => {
+      assert.ok(!Object.hasOwn(item, "output"), at);
+      assert.ok(!Object.hasOwn(item, "outputRef"), at);
+    });
+    walk(entry.cases, `${entry.checkId}.cases`, (item, at) => {
+      assert.ok(!Object.hasOwn(item, "output"), at);
+      if (item.exitCode === 0 && item.executed)
+        assert.ok(!Object.hasOwn(item, "outputRef"), at);
+    });
+  }
+  const gate = recorded.find((entry) => entry.checkId === "npm test");
+  const generated = gate.cases.find((entry) => entry.name === "generated");
+  const childFail = generated.cases.find(
+    (entry) => entry.name === "child-fail",
+  );
+  assert.equal(
+    readFileSync(join(repo, childFail.outputRef), "utf8"),
+    "kept child failure",
+  );
+  assert.equal(
+    readFileSync(
+      join(repo, gate.cases.find((entry) => entry.name === "beta").outputRef),
+      "utf8",
+    ).trim(),
+    "beta failure details",
+  );
+  const companion = recorded.find((entry) => entry.checkId === "structural");
+  assert.deepEqual(
+    companion.taskTimeline
+      .find((entry) => entry.name === "generated")
+      .cases.map((entry) => entry.name),
+    ["child-pass", "child-fail"],
+  );
+});
+
+test("impossible future finishes and stopped rows never provide a passing claim", async (t) => {
+  const { repo, table } = taskReuseFixture(t);
+  const { coveringGateCheck, coveringTaskResults } =
+    await import("./lib/gate-reuse.mjs");
+  const identity = gateCodeIdentity(repo);
+  const now = Date.now();
+  const row = (at, exitCode, extra = {}) => ({
+    checkId: "npm test",
+    codeIdentity: identity,
+    treeHash: gateTreeHash(repo),
+    durationMs: 1,
+    executed: true,
+    exitCode,
+    identityUnchanged: true,
+    requiredSuites: ["alpha"],
+    evidenceRef: `fixture:${at}`,
+    recordedAt: new Date(at).toISOString(),
+    taskTimeline: [
+      {
+        name: "alpha",
+        durationMs: 1,
+        executed: true,
+        exitCode,
+        finishedAt: new Date(at).toISOString(),
+      },
+    ],
+    ...extra,
+  });
+  recordGateChecks(repo, [
+    row(now, 0, {
+      taskTimeline: [
+        {
+          name: "alpha",
+          durationMs: 1,
+          executed: true,
+          exitCode: 0,
+          finishedAt: new Date(now + 60_000).toISOString(),
+        },
+      ],
+    }),
+  ]);
+  assert.equal(
+    (await coveringGateCheck(repo, "npm test", ["alpha"])).row,
+    undefined,
+  );
+  recordGateChecks(repo, [row(now + 1, 1)]);
+  assert.equal(
+    (await coveringTaskResults(repo, "npm test", table, identity)).results.has(
+      "alpha",
+    ),
+    false,
+  );
+  recordGateChecks(repo, [
+    row(now + 2, 0, { stopped: true, stoppedBy: "SIGTERM" }),
+  ]);
+  assert.equal(
+    (await coveringGateCheck(repo, "npm test", ["alpha"])).row,
+    undefined,
+  );
+  // A task result marked stopped inside a row that was not is no execution
+  // that can be carried, whatever the row's own exit code says.
+  recordGateChecks(repo, [
+    row(now + 3, 0, {
+      taskTimeline: [
+        {
+          name: "alpha",
+          durationMs: 1,
+          executed: true,
+          exitCode: 0,
+          stopped: true,
+          finishedAt: new Date(now + 3).toISOString(),
+        },
+      ],
+    }),
+  ]);
+  assert.equal(
+    (await coveringTaskResults(repo, "npm test", table, identity)).results.has(
+      "alpha",
+    ),
+    false,
+  );
+});
+
+test("request and interrupt signals preserve only completed tasks, and never record an empty stop", async (t) => {
+  for (const stoppedBy of ["request", "SIGINT", "SIGTERM", "SIGHUP"])
+    for (const completed of [false, true]) {
+      const { repo } = taskReuseFixture(t);
+      writeFileSync(
+        join(repo, ".gitignore"),
+        "docs/control/local/\nobserved.jsonl\nresident-started\n",
+      );
+      const marker = join(repo, "resident-started");
+      const resident = `require("node:fs").writeFileSync(${JSON.stringify(marker)}, "started"); setTimeout(() => {}, 10000);`;
+      const table = [
+        {
+          name: "build",
+          build: true,
+          product: true,
+          command: [
+            process.execPath,
+            "-e",
+            completed ? 'console.log("build passing noise")' : resident,
+          ],
+        },
+        {
+          name: "resident",
+          product: true,
+          command: [process.execPath, "-e", resident],
+        },
+      ];
+      const script = `
+import { existsSync } from "node:fs";
+import { runGate } from ${JSON.stringify(pathToFileURL(join(root, "scripts/test-runner.mjs")).href)};
+const mode = ${JSON.stringify(stoppedBy)};
+let sent = false;
+const poll = mode === "request" ? undefined : setInterval(() => {
+  if (!sent && existsSync(${JSON.stringify(marker)})) { sent = true; process.kill(process.pid, mode); }
+}, 20);
+try {
+  await runGate(["--serial", "--again"], ${JSON.stringify(repo)}, {
+    table: ${JSON.stringify(table)},
+    stopRequested: () => mode === "request" && existsSync(${JSON.stringify(marker)}),
+  });
+} catch (error) { console.log(error.message); process.exitCode = 1; }
+finally { clearInterval(poll); }
+`;
+      const result = spawnSync(
+        process.execPath,
+        ["--input-type=module", "-e", script],
+        { cwd: repo, encoding: "utf8", timeout: 15_000 },
+      );
+      assert.equal(
+        result.status,
+        1,
+        `${stoppedBy}: ${result.stdout}${result.stderr}`,
+      );
+      const rows = readGateChecks(repo);
+      assert.equal(
+        rows.length,
+        completed ? 1 : 0,
+        `${stoppedBy}: ${result.stdout}${result.stderr}`,
+      );
+      if (completed) {
+        assert.equal(rows[0].stopped, true);
+        assert.equal(rows[0].stoppedBy, stoppedBy);
+        assert.equal(rows[0].exitCode, 1);
+        assert.deepEqual(
+          rows[0].taskTimeline.map((row) => row.name),
+          ["build"],
+        );
+        for (const entry of [...rows[0].taskTimeline, ...rows[0].cases])
+          assert.ok(!Object.hasOwn(entry, "output"), entry.name);
+        assert.match(result.stdout, /stopped row recorded:/u);
+      }
+    }
+});
+
+test("launchpad files retain all 29 cases and run at most two independent deadline tasks", async () => {
+  const suite = suites.find((row) => row.name === "launchpad");
+  const tasks = expandSuiteTasks([suite], root);
+  assert.deepEqual(
+    tasks.map((row) => row.name),
+    [
+      "launchpad:file:test-launchpad-export.mjs",
+      "launchpad:file:test-launchpad-update.mjs",
+      "launchpad:file:test-launchpad-seeds.mjs",
+    ],
+  );
+  const names = tasks.flatMap((task) =>
+    [
+      ...readFileSync(join(root, task.command.at(-1)), "utf8").matchAll(
+        /^test\(\s*"([^"]+)"/gmu,
+      ),
+    ].map((match) => match[1]),
+  );
+  const baseline = JSON.parse(
+    readFileSync(join(root, "scripts/fixtures/launchpad-cases.json"), "utf8"),
+  );
+  assert.equal(names.length, 29);
+  assert.deepEqual(names.sort(), baseline.sort());
+  for (const task of tasks) {
+    assert.equal(task.timeoutMs, 900_000);
+    assert.equal(task.loadSlots, 2);
+  }
+  let active = 0,
+    peak = 0;
+  await scheduleSuites([barrier, ...tasks], {
+    concurrency: 4,
+    execute: async (row) => {
+      if (!row.build) {
+        peak = Math.max(peak, ++active);
+        await new Promise((done) => setTimeout(done, 10));
+        active--;
+      }
+      return { name: row.name, executed: true, exitCode: 0, durationMs: 1 };
+    },
+  });
+  assert.equal(peak, 2);
+});
+
+test("a malformed kit declaration reaches the CLI refusal instead of failing during import", (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-runner-import-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  for (const entry of [
+    "scripts",
+    "packages/skeleton/src",
+    "packages/beacons",
+  ]) {
+    mkdirSync(dirname(join(repo, entry)), { recursive: true });
+    cpSync(join(root, entry), join(repo, entry), { recursive: true });
+  }
+  runGit(repo, ["init", "-q"]);
+  writeFileSync(join(repo, "KIT-MANIFEST.json"), "{}\n");
+  mkdirSync(join(repo, "packages/core/tsconfig.json"), { recursive: true });
+  for (const flags of [["--list"], ["--only", "format", "--list"]]) {
+    const result = spawnSync(
+      process.execPath,
+      ["scripts/test-runner.mjs", ...flags],
+      { cwd: repo, encoding: "utf8" },
+    );
+    assert.equal(result.status, 1);
+    assert.equal(
+      result.stderr.trim(),
+      "Package source declaration must be a regular file: packages/core/tsconfig.json",
+    );
+    assert.ok(!result.stderr.includes(repo));
+  }
+  rmSync(join(repo, "KIT-MANIFEST.json"));
+  symlinkSync("missing", join(repo, "KIT-MANIFEST.json"));
+  const result = spawnSync(
+    process.execPath,
+    ["scripts/test-runner.mjs", "--list"],
+    { cwd: repo, encoding: "utf8" },
+  );
+  assert.equal(result.status, 1);
+  assert.equal(
+    result.stderr.trim(),
+    "KIT-MANIFEST.json must be a regular file",
+  );
+});
+
+test("fail-fast cancels a pending host lane without discarding completed results", async () => {
+  const started = [];
+  let waiting;
+  const waitingStarted = new Promise((resolve) => {
+    waiting = resolve;
+  });
+  const rows = await scheduleSuites(
+    [
+      barrier,
+      { name: "fail", command: ["fail"] },
+      { name: "waiting", command: ["waiting"] },
+      { name: "later", command: ["later"] },
+    ],
+    {
+      concurrency: 2,
+      hostLanes: { parentLease: null, directory: "fixture" },
+      acquireLanes: async ({ task, signal }) => {
+        if (task !== "waiting") return undefined;
+        waiting();
+        await new Promise((resolve, reject) => {
+          signal.addEventListener(
+            "abort",
+            () => reject(new Error("Host lane wait aborted")),
+            { once: true },
+          );
+        });
+      },
+      execute: async (row) => {
+        started.push(row.name);
+        if (row.name === "fail") await waitingStarted;
+        return {
+          name: row.name,
+          exitCode: row.name === "fail" ? 1 : 0,
+          durationMs: 1,
+          executed: true,
+        };
+      },
+    },
+  );
+  assert.deepEqual(started, ["build", "fail"]);
+  assert.equal(rows.find((row) => row.name === "fail").executed, true);
+  assert.equal(rows.find((row) => row.name === "waiting").executed, false);
+  assert.equal(rows.find((row) => row.name === "later").executed, false);
+});
+
+test("fail-fast retains a running peer's execution exception as a completed failure", async () => {
+  let failFinished;
+  const failure = new Promise((resolve) => {
+    failFinished = resolve;
+  });
+  const started = [];
+  const rows = await scheduleSuites(
+    [
+      barrier,
+      { name: "fail", command: ["fail"] },
+      { name: "throws", command: ["throws"] },
+      { name: "later", command: ["later"] },
+    ],
+    {
+      concurrency: 2,
+      onResult: (row) => {
+        if (row.name === "fail") failFinished();
+      },
+      execute: async (row) => {
+        started.push(row.name);
+        if (row.name === "fail")
+          await new Promise((resolve) => setImmediate(resolve));
+        if (row.name === "throws") {
+          await failure;
+          throw new Error("running peer failed");
+        }
+        return {
+          name: row.name,
+          exitCode: row.name === "fail" ? 1 : 0,
+          executed: true,
+          durationMs: 1,
+        };
+      },
+    },
+  );
+  assert.deepEqual(started, ["build", "fail", "throws"]);
+  const thrown = rows.find((row) => row.name === "throws");
+  assert.equal(thrown.executed, true);
+  assert.equal(thrown.exitCode, 1);
+  assert.match(thrown.output, /running peer failed/);
+  assert.ok(thrown.startedAt && thrown.finishedAt);
+});
+
+test("copied fixtures use the checked declaration and directory coverage never supplies absent files", async (t) => {
+  const { copyFixtureFiles } = await import("./lib/fixture-inputs.mjs");
+  const { uncoveredFixtureInputs, copiedFixtureClosures } =
+    await import("./lib/machinery-coverage.mjs");
+  const repo = mkdtempSync(join(tmpdir(), "dotln-declared-copy-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  mkdirSync(join(repo, "scripts"));
+  const row = {
+    fixture: "copy",
+    entries: ["scripts/entry.mjs"],
+    files: ["scripts/entry.mjs"],
+  };
+  const declaration = "scripts/entry.fixture-inputs.json";
+  const save = () =>
+    writeFileSync(join(repo, declaration), JSON.stringify(row));
+  writeFileSync(join(repo, "scripts/entry.mjs"), 'import "./leaf.mjs";\n');
+  writeFileSync(
+    join(repo, "scripts/leaf.mjs"),
+    'console.log("copied dependency");\n',
+  );
+  save();
+  assert.deepEqual(
+    uncoveredFixtureInputs(repo).map((row) => row.path),
+    ["scripts/leaf.mjs"],
+  );
+  row.files.push("scripts/leaf.mjs");
+  save();
+  assert.deepEqual(uncoveredFixtureInputs(repo), []);
+  const destination = join(repo, "copied");
+  copyFixtureFiles(repo, destination, declaration);
+  const run = spawnSync(process.execPath, ["scripts/entry.mjs"], {
+    cwd: destination,
+    encoding: "utf8",
+  });
+  assert.equal(run.status, 0, run.stderr);
+  assert.match(run.stdout, /copied dependency/);
+  row.files = [];
+  row.directories = ["scripts"];
+  save();
+  rmSync(join(repo, "scripts/leaf.mjs"));
+  assert.deepEqual(
+    uncoveredFixtureInputs(repo).map((row) => row.path),
+    ["scripts/leaf.mjs"],
+  );
+  rmSync(join(repo, "scripts/entry.mjs"));
+  assert.deepEqual(
+    uncoveredFixtureInputs(repo).map((row) => row.path),
+    ["scripts/entry.mjs"],
+  );
+  row.provided = ["scripts/entry.mjs"];
+  save();
+  assert.deepEqual(uncoveredFixtureInputs(repo), []);
 });

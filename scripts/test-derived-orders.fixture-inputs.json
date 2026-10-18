@@ -1,0 +1,14 @@
+{
+  "fixture": "derived-order allocation across section sets",
+  "entries": [
+    "scripts/work-orders.mjs",
+    "scripts/lib/control-store.mjs"
+  ],
+  "files": [
+    "scripts/work-orders.mjs"
+  ],
+  "directories": [
+    "scripts/lib",
+    "packages"
+  ]
+}

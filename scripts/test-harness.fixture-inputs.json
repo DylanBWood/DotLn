@@ -1,0 +1,23 @@
+{
+  "fixture": "harness CLI",
+  "entries": ["scripts/harness.mjs"],
+  "files": [
+    "scripts/harness.mjs",
+    "scripts/lib/config.mjs",
+    "scripts/lib/validation.mjs",
+    "scripts/lib/harness.mjs",
+    "scripts/lib/terms.mjs",
+    "scripts/lib/paths.mjs",
+    "scripts/lib/helpers.mjs",
+    "scripts/lib/git.mjs",
+    "packages/skeleton/src/runtime-inputs.mjs"
+  ],
+  "directories": [
+    "scripts/lib",
+    "packages/compiler/dist",
+    "packages/kernel/dist",
+    "packages/skeleton/dist",
+    "packages/beacons"
+  ],
+  "provided": ["scripts/resume.mjs"]
+}

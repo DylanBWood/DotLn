@@ -24,22 +24,16 @@ const beaconPackage = resolve(source, "../../beacons");
 // Bootstrap fixtures intentionally have no dependencies or ignored built output.
 export const installBeaconFixture = (root) => {
   cpSync(beaconPackage, join(root, "packages/beacons"), { recursive: true });
-  mkdirSync(join(root, "packages/compiler/src"), { recursive: true });
-  cpSync(
-    join(source, "../../compiler/src/attribution.mjs"),
-    join(root, "packages/compiler/src/attribution.mjs"),
-  );
-  const destination = join(root, "packages/skeleton/src");
-  mkdirSync(destination, { recursive: true });
-  for (const name of [
-    "gate-deadlines.mjs",
-    "gate-evidence.mjs",
-    "runtime-inputs.mjs",
-    "writer-teardown.mjs",
-    "usage-observation.mjs",
-    "correction-observation.mjs",
-  ])
-    cpSync(join(source, name), join(destination, name));
+  const repository = resolve(source, "../../..");
+  for (const path of JSON.parse(
+    readFileSync(
+      new URL("./test-beacon-fixture.fixture-inputs.json", import.meta.url),
+      "utf8",
+    ),
+  ).files) {
+    mkdirSync(dirname(join(root, path)), { recursive: true });
+    cpSync(join(repository, path), join(root, path));
+  }
 };
 export const snapshotBeacons = (root) => {
   const base = join(root, ".control-beacons");

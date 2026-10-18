@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { TOOL_ROOT } from "./lib/config.mjs";
+import { recordBuildFreshness } from "./lib/build-freshness.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { spawnSync } from "node:child_process";
 import {
@@ -142,6 +143,8 @@ export function atomicBuild(repo = root, observe = () => {}) {
       publishBuildTree(source, destination);
       observe(`after:${name}`);
     }
+    // Freshness is checked before gates load generated runtime consumers.
+    recordBuildFreshness(repo);
     return names;
   } finally {
     rmSync(staging, { recursive: true, force: true });

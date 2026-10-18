@@ -1,3 +1,4 @@
+import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import { execGit, runGit, runGitPathList } from "./lib/git.mjs";
 import {
   write,
@@ -2527,13 +2528,17 @@ test("WO-146 planning actors admit Copilot independently of a Claude or GPT mode
 test("WO-146 two actual completions retain Copilot, their different models and operator attestations", (t) => {
   for (const model of ["claude-sonnet-5", "gpt-6-astra"]) {
     const root = repo(t, { runtime: true });
-    cpSync(
-      join(source, "scripts/harness.mjs"),
-      join(root, "scripts/harness.mjs"),
+    copyFixtureFiles(
+      source,
+      root,
+      "scripts/test-process-debt.fixture-inputs.json",
+      "process-debt harness CLI",
     );
-    cpSync(
-      join(source, "scripts/resume.mjs"),
-      join(root, "scripts/resume.mjs"),
+    copyFixtureFiles(
+      source,
+      root,
+      "scripts/test-process-debt.fixture-inputs.json",
+      "process-debt lifecycle CLI",
     );
     cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
       recursive: true,
@@ -2858,7 +2863,7 @@ test("WO-132 spawn and classification advisories delegate to host permissions wh
     // the gate itself stays refused until it ends (WO-044).
     assert.match(
       refused.permissionDecisionReason,
-      /Stop that gate from this session with node scripts\/harness\.mjs evidence --stop \(admitted now; it ends at its next boundary and records no check\) or the harness's own task-stop tool, or wait for it to finish\./,
+      /Stop that gate from this session with node scripts\/harness\.mjs evidence --stop \(admitted now; it ends at its next boundary and records completed tasks as stopped, supplying no pass\) or the harness's own task-stop tool, or wait for it to finish\./,
     );
     for (const name of ["TaskStop", "KillShell"])
       assert.notEqual(
@@ -4927,8 +4932,12 @@ test("installed permission hook distinguishes classification advisories from run
 
 test("harness evidence --fail records only the diff check the failing verdict requires", async (t) => {
   const root = repo(t, { runtime: true });
-  for (const name of ["harness.mjs", "harness-entry.mjs", "work-orders.mjs"])
-    copyFileSync(join(source, "scripts", name), join(root, "scripts", name));
+  copyFixtureFiles(
+    source,
+    root,
+    "scripts/test-process-debt.fixture-inputs.json",
+    "process-debt harness CLI",
+  );
   // Keep the real preparation dependency graph local so relative imports
   // resolve to the fixture-owned source files.
   cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
@@ -4936,17 +4945,7 @@ test("harness evidence --fail records only the diff check the failing verdict re
     dereference: true,
   });
   mkdirSync(join(root, "packages/skeleton/src"), { recursive: true });
-  for (const name of [
-    "gate-evidence.mjs",
-    "runtime-inputs.mjs",
-    "gate-deadlines.mjs",
-    "usage-observation.mjs",
-    "correction-observation.mjs",
-  ])
-    copyFileSync(
-      join(source, "packages/skeleton/src", name),
-      join(root, "packages/skeleton/src", name),
-    );
+  installBeaconFixture(root);
   write(
     root,
     "docs/work-orders/WO-999-fixture.md",
@@ -6488,11 +6487,11 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // Publication guidance and conditional reader scoring preserve the prior role oracle and all its history.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo215-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo216-role-baseline.json"),
       "utf8",
     ),
   );
-  assert.equal(baseline.historicalBaseline, "wo191-role-baseline.json");
+  assert.equal(baseline.historicalBaseline, "wo215-role-baseline.json");
   assert.equal(baseline.upstreamBaseline, "wo185-role-baseline.json");
   const chains = [
     baseline,
@@ -8581,7 +8580,12 @@ test("bare executor next/fix project installed defaults and completion advises a
   cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
     recursive: true,
   });
-  cpSync(join(source, "scripts/resume.mjs"), join(root, "scripts/resume.mjs"));
+  copyFixtureFiles(
+    source,
+    root,
+    "scripts/test-process-debt.fixture-inputs.json",
+    "process-debt lifecycle CLI",
+  );
   installBeaconFixture(root);
   write(
     root,
@@ -8734,10 +8738,17 @@ test("WO-149 a Codex lifecycle dispatch begins one measurable session and preser
   cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
     recursive: true,
   });
-  cpSync(join(source, "scripts/resume.mjs"), join(root, "scripts/resume.mjs"));
-  cpSync(
-    join(source, "scripts/harness.mjs"),
-    join(root, "scripts/harness.mjs"),
+  copyFixtureFiles(
+    source,
+    root,
+    "scripts/test-process-debt.fixture-inputs.json",
+    "process-debt lifecycle CLI",
+  );
+  copyFixtureFiles(
+    source,
+    root,
+    "scripts/test-process-debt.fixture-inputs.json",
+    "process-debt harness CLI",
   );
   installBeaconFixture(root);
   write(
@@ -8877,7 +8888,12 @@ test("WO-166 an unbuilt Codex dispatch refuses before lifecycle writes and names
   cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
     recursive: true,
   });
-  cpSync(join(source, "scripts/resume.mjs"), join(root, "scripts/resume.mjs"));
+  copyFixtureFiles(
+    source,
+    root,
+    "scripts/test-process-debt.fixture-inputs.json",
+    "process-debt lifecycle CLI",
+  );
   installBeaconFixture(root);
   write(
     root,
@@ -8914,7 +8930,12 @@ test("WO-168 a Codex dispatch against a built runtime without the reservation en
   cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
     recursive: true,
   });
-  cpSync(join(source, "scripts/resume.mjs"), join(root, "scripts/resume.mjs"));
+  copyFixtureFiles(
+    source,
+    root,
+    "scripts/test-process-debt.fixture-inputs.json",
+    "process-debt lifecycle CLI",
+  );
   installBeaconFixture(root);
   write(
     root,
@@ -8961,9 +8982,11 @@ test("WO-153 a Codex dispatch whose session entry fails names the cause and stil
   cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
     recursive: true,
   });
-  cpSync(
-    join(source, "scripts/harness.mjs"),
-    join(root, "scripts/harness.mjs"),
+  copyFixtureFiles(
+    source,
+    root,
+    "scripts/test-process-debt.fixture-inputs.json",
+    "process-debt harness CLI",
   );
   const resume = readFileSync(join(source, "scripts/resume.mjs"), "utf8");
   const table = /const codexDispatchRoles = \{[^}]*\};/;
@@ -9151,7 +9174,12 @@ test("WO-153 a Codex dispatch whose session entry fails names the cause and stil
 
   // The real table: a successful begin and its repeat stay silent, and a
   // dispatch without a thread identity writes nothing.
-  cpSync(join(source, "scripts/resume.mjs"), join(root, "scripts/resume.mjs"));
+  copyFixtureFiles(
+    source,
+    root,
+    "scripts/test-process-debt.fixture-inputs.json",
+    "process-debt lifecycle CLI",
+  );
   write(root, segment, activated);
   const records = () =>
     readdirSync(join(root, "docs/control/local/harness")).filter((name) =>
@@ -9178,8 +9206,12 @@ test("WO-168 a Codex dispatch refused after placing its reservation releases it,
   cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
     recursive: true,
   });
-  for (const script of ["scripts/harness.mjs", "scripts/resume.mjs"])
-    cpSync(join(source, script), join(root, script));
+  copyFixtureFiles(
+    source,
+    root,
+    "scripts/test-process-debt.fixture-inputs.json",
+    "process-debt lifecycle CLI",
+  );
   installBeaconFixture(root);
   write(
     root,
@@ -9544,9 +9576,11 @@ test("WO-132 generated release-close handoff and preview use the main writer res
   cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
     recursive: true,
   });
-  copyFileSync(
-    join(source, "scripts/resume.mjs"),
-    join(root, "scripts/resume.mjs"),
+  copyFixtureFiles(
+    source,
+    root,
+    "scripts/test-process-debt.fixture-inputs.json",
+    "process-debt lifecycle CLI",
   );
   installBeaconFixture(root);
   write(
@@ -10139,7 +10173,12 @@ test("WO-131 prompt submission stays open while dispatches retain the ordinary c
   const root = repo(t, { runtime: true });
   // The real lifecycle, its libraries and the source modules they import, so
   // the guarded cases judge actual events, checkpoints and projections.
-  cpSync(join(source, "scripts/resume.mjs"), join(root, "scripts/resume.mjs"));
+  copyFixtureFiles(
+    source,
+    root,
+    "scripts/test-process-debt.fixture-inputs.json",
+    "process-debt lifecycle CLI",
+  );
   cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
     recursive: true,
   });
@@ -10846,22 +10885,25 @@ test("WO-140 the briefing names the session and the exact usage command the usag
       if (role === "verifier") {
         assert.match(
           skill,
-          /Consume the executor's recorded passing `npm test` row when its code identity matches the subject/,
+          /Consume the executor's structural, Preflight suite and document rows when their code identity matches the subject/,
         );
         assert.match(
           skill,
-          /run the gate only to reproduce a finding or when the identity differs, stating which/,
+          /Reproduce findings with `npm test -- --only <suite>`; rerun an affected Preflight suite when its identity differs, stating which/,
         );
         assert.doesNotMatch(skill, /Run the product gate with `npm test`/);
       } else {
-        assert.match(skill, /Run the product gate with `npm test`/);
         assert.match(
           skill,
-          /if the runner reports that the host confines the process/,
+          /start `npm test -- --review --again` in the background/,
         );
         assert.match(
           skill,
-          /resident-launched verification unable to run the full selection uses `npm test -- --confined-partial` and records its excluded suites as a partial result/,
+          /Await it with `node scripts\/harness\.mjs evidence --wait`/,
+        );
+        assert.match(
+          skill,
+          /A confined or partial run never supplies the complete review row; use the printed outside command under host permissions and existing authority/,
         );
       }
       assert.doesNotMatch(
@@ -11740,8 +11782,12 @@ test("an executor completion records lane material and advises once for scratch 
   cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
     recursive: true,
   });
-  for (const name of ["resume.mjs", "worktree.mjs"])
-    cpSync(join(source, "scripts", name), join(root, "scripts", name));
+  copyFixtureFiles(
+    source,
+    root,
+    "scripts/test-process-debt.fixture-inputs.json",
+    "process-debt lifecycle CLI",
+  );
   installBeaconFixture(root);
   write(
     root,

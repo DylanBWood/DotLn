@@ -114,6 +114,8 @@ const commonSources = [
   "packages/skeleton/src/portfolio-host.ts",
   "packages/skeleton/tsconfig.json",
   "scripts/build.mjs",
+  "scripts/lib/build-freshness.mjs",
+  "scripts/lib/gate-reuse.mjs",
   "scripts/lib/evidence-sources.mjs",
   // WO-162: evidence tools consume the shared byte serializers and Git/JSON IO.
   "scripts/lib/helpers.mjs",
@@ -583,12 +585,33 @@ function runtimeSpecifiers(text) {
  * `@dotln/<package>` imports at the package's source entry or named leaf. A compiled
  * `dist/(src|test)/x.js` target names its source file; other bare packages
  * are dependencies outside the repository. */
-export function relativeImports(root, path) {
+export function relativeImports(root, path, { sourcePaths = true } = {}) {
   const text = readFileSync(join(root, path), "utf8");
   const found = new Set();
   for (const spec of runtimeSpecifiers(text)) {
     const workspace = /^@dotln\/([^/]+)(?:\/(.+))?$/u.exec(spec);
     if (workspace) {
+      if (!sourcePaths) {
+        const directory = `packages/${workspace[1]}`;
+        const manifest = JSON.parse(
+          readFileSync(join(root, directory, "package.json"), "utf8"),
+        );
+        const select = (value) =>
+          typeof value === "string"
+            ? value
+            : (value?.import ?? value?.node ?? value?.default);
+        let target =
+          manifest.exports?.[workspace[2] ? `./${workspace[2]}` : "."] ??
+          (!workspace[2] ? (manifest.exports ?? manifest.main) : undefined);
+        while (target && typeof target !== "string") target = select(target);
+        if (typeof target === "string")
+          found.add(posix.join(directory, target));
+        else
+          throw new Error(
+            `Copied-fixture import has no declared runtime export: ${spec}`,
+          );
+        continue;
+      }
       const index = workspace[2]
         ? `packages/${workspace[1]}/src/${workspace[2]}`
         : `packages/${workspace[1]}/src/index.ts`;
@@ -600,13 +623,14 @@ export function relativeImports(root, path) {
     const built = /^packages\/([^/]+)\/dist\/(src|test)\/(.+)\.js$/u.exec(
       target,
     );
-    if (built) {
+    if (built && sourcePaths) {
       const stem = `packages/${built[1]}/${built[2]}/${built[3]}`;
       target =
         [".ts", ".mjs"]
           .map((extension) => stem + extension)
           .find((file) => existsSync(join(root, file))) ?? target;
     } else if (
+      sourcePaths &&
       target.endsWith(".js") &&
       existsSync(join(root, target.replace(/\.js$/u, ".ts")))
     )

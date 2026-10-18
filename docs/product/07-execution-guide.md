@@ -315,7 +315,9 @@ table includes the shared goal card and the refuter's separate subject boundary.
    resumes into the wrong phase. The remaining action,
    `npm run resume -- activate WO-NNN docs/work-orders/<file>.md`, opens a work
    order from phase `none` or `closed`; `npm run worktree -- start` runs it
-   automatically when creating a work-order worktree, then prints the shell-safe
+   automatically when creating a work-order worktree, carries the main
+   checkout's ignored local-terms list into it when one is registered there,
+   then prints the shell-safe
    absolute `cd`, `codex`, and `resume: next` handoff. It does not launch or
    inspect Codex in this projection; the operator performs those three handoff
    steps manually. If the operator finds that a repair was incomplete after
@@ -651,7 +653,12 @@ would let one checkout's session write into another checkout's documents.
 
 Target orders pair a code worktree with a launchpad order worktree. Run that
 launchpad's scripts, or name it with `DOTLN_LAUNCHPAD`; its ignored target
-registry selects the order by branch. Selection compares physical launchpad
+registry selects the order by branch. A registration lands on its order's
+branch before `main`: `worktree clone <id> <absolute-path>` records into the
+main checkout's ignored clone map and accepts an id that either the main
+checkout or the running checkout declares, so a registration order records
+its clone before the merge, while `worktree start` reads the merged
+registration from `main`. Selection compares physical launchpad
 identity, so alternate spellings keep the same order. With repository
 declarations or a target registry, an unregistered foreign directory selects
 no order; `status --json` then refuses with a nonzero exit. A passing final
@@ -1331,8 +1338,11 @@ Standard artifacts, all doc-only:
   wall-clock, context bytes, commands, tokens and steps, provenance, a dated
   observed gap, acceptance criteria whose last names both `npm test` and
   `npm run test:docs` [off-ramps pass, 2026-09-25; WO-111 VER-001 B3],
-  a Preflight line naming the single-suite checks for its steps
-  (§Preflight before the full gate; 2026-10-13 pass), a Design naming at
+  a Preflight line spelling each single-suite check as
+  `npm test -- --only <suite>` for its steps; these suites and the
+  structural phase are the order's handoff gate (a target order keeps its
+  repository's declared target gate), with the complete gate paid once at
+  final review (§Preflight before the full gate), a Design naming at
   least one rejected alternative and the axis it differs on (2026-10-17
   pass), evidence, non-goals,
   and operator-review assumptions; an order
@@ -1352,8 +1362,8 @@ Standard artifacts, all doc-only:
   version-only bump never makes an edition stale); an order that edits a
   declared source of a machinery suite (`machinerySources` in
   `scripts/test-runner.mjs`) names `npm test -- --review` in its final
-  criterion, so the suites its change selects run before verification
-  (WO-144 D010);
+  criterion: handoffs use the declared Preflight suites and final review
+  runs the complete review selection (WO-144 D010; WO-216);
 - product-doc write-back for durable understanding, with the publication
   index and edition locks repaired in the same pass;
 - `npm run meta -- --plan-cost` refreshes the bounded, subject-hashed cost
@@ -1431,11 +1441,12 @@ owes one, against a larger first verification. Unrelated subsystems are not
 bundled to save runs. Each order names its Preflight line. Parallel orders stay the aim
 where they pay (operator direction, 2026-10-13): two orders run side by side
 when their surfaces are disjoint, no hard edge joins them, and the operator
-will run both at once. Today's gate charges a pair one extra full run,
-because the order that lands second integrates the moved main at final review
-and pays a full run instead of reusing its last one (WO-078, 22.9 minutes).
-That is less than the implementation a pair overlaps (median 72.9 minutes),
-and a gate that reused what the moved main did not touch would remove it.
+will run both at once. Every order pays the complete gate once, fresh, at
+final review, whether or not main moved (§Preflight before the full gate);
+a pair therefore costs two fresh final-review runs and no reuse-dependent
+extra (WO-078 had measured that extra at 22.9 minutes under the earlier
+reuse rule). That is less than the implementation a pair overlaps (median
+72.9 minutes).
 Serial order is a pass's reading of its evidence, never a standing rule.
 Reopen the order-size rule when the full run's median falls to half its 24.9
 minutes, or when merged orders fail first verification more often than the
@@ -1896,8 +1907,9 @@ three duties in order; choose relevant lenses and state why in the report.
    the declared list or vocabulary; a second or repeated token; the real
    corpus instead of a fixture; and paths introduced by a repair. Name tried
    variations and explain those that do not apply. Consuming the executor's
-   passing product-gate row limits product-gate reruns, never independent
-   probes or affected checks. Check earlier findings as well.
+   passing handoff rows (the structural row, the Preflight rows and the
+   document row, or a complete row) limits product-gate reruns, never
+   independent probes or `--only` reproductions. Check earlier findings as well.
 2. **Review the implementation.** Read the whole subject diff, asking whether
    it is correct beyond the named criteria, whether a simpler alternative
    holds the same contract, what a maintainer will not understand in six
@@ -1997,18 +2009,19 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
 
 ## Discipline
 
-- **The handoff sequence (2026-10-07 pass).** A role that finishes
-  implementation, a repair, a verification or a final review runs, in this
-  order and nothing between: `npm run format`; `npm run test:docs` until
-  green; the product gate (`npm test`, or `npm test -- --review` when the
-  order's final criterion names it) while writing nothing under the
-  repository and starting no agent; the records that cite the passing rows;
-  the completion command. A write during the gate loses the gate (WO-112
-  D057, 1,861 s); a formatter run after the gate changes the code identity
-  and loses it (WO-112 D049, 1,863 s; the same in WO-164, WO-148, WO-146 and
-  WO-158). WO-196 makes the first step mechanical: the gate runs Prettier as
-  its first preflight and refuses to start otherwise, and a review gate at
-  an identity whose tasks already passed reuses them.
+- **The handoff sequence (2026-10-07 pass).** Finish source edits, run
+  `npm run format`, use `npm run sync` for stale generated artifacts, then
+  `npm run test:docs`. The executor and every repair run the structural
+  phase and the order's Preflight suites with `npm test -- --only <suite>`;
+  verification consumes those current-identity rows and uses focused probes.
+  Final review integrates main and runs `npm test -- --review --again` once
+  in the background after the last source edit and formatting, awaiting it
+  with `node scripts/harness.mjs evidence --wait` while reading the subject.
+  No role writes gate inputs or starts agents during that run. Complete the
+  records that cite the passing rows, then record the role's completion.
+  A source edit changes code identity, so every required handoff row must
+  run at the new identity, as must the final review; report, control and
+  generated-document edits keep code identity.
 - **Scratch repositories (WO-188).** A nested repository outside the intake
   lane that the tracked tree does not declare as a submodule is scratch. An
   executor removes each before `implementation-ready` or `repair-complete`
@@ -2561,9 +2574,13 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   root checkout. See [behavior, proof and activation](../evidence/WO-054/codex-continuation.md)
   and [D005](../evidence/WO-054/decisions.md#wo-054-d005). The original native
   probes did not exercise interruption; no native interruption proof is claimed.
-- **Write once, run once (WO-132).** The reviewer stages intended new source
-  files and runs `npm test -- --review` once after the last source edit. The
-  runner records `npm test` by tracked and non-ignored untracked code paths
+- **Write once, run once (WO-132).** Handoffs stand on the structural phase,
+  the declared Preflight suites and the document row at the current identity.
+  `npm run sync` refreshes stale generated artifacts before those checks.
+  The reviewer stages intended new source files, integrates main, formats and
+  starts `npm test -- --review --again` once in the background after the last
+  source edit. The completion consumes its fresh complete row recorded after
+  that review's dispatch, with no reused suites. The runner records `npm test` by tracked and non-ignored untracked code paths
   and bytes, independent of staging. Symbolic source aliases refuse the key
   rather than silently omitting their target bytes. The identity excludes `docs/` except
   `docs/control/outward-vocabulary.json`, `.claude/`, `.agents/`, root Markdown
@@ -2596,8 +2613,11 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   identity is the one the pass recorded in its checkpoint and still the
   working tree's, and `worktree publish` and `release close` read the bound
   row from the committed correction. A subject changed after the pass takes
-  a fresh final review (`activate` is legal from `closed`). Feedback on a merged pull request after the pass has three routes: board it as a follow-up and merge; push a documentation-only correction to the branch, which leaves code identity unchanged; or a second cycle by `activate` from `closed`. A second `worktree publish` on a branch whose pull request is open pushes and then fails at creation with nothing recorded (observed 2026-10-16; FUP-1241a4d027a07dce carries the repair). Executor and
-  verifier run product tests when useful to their evidence.
+  a fresh final review (`activate` is legal from `closed`). Feedback on a merged pull request after the pass has three routes: board it as a follow-up and merge; push a documentation-only correction to the branch, which leaves code identity unchanged; or a second cycle by `activate` from `closed`. A second `worktree publish` on a branch whose pull request is open pushes and then fails at creation with nothing recorded (observed 2026-10-16; FUP-1241a4d027a07dce carries the repair). The executor and
+  each repair run the structural phase and the order's Preflight suites
+  before handoff, the verifier consumes those rows and probes with `--only`,
+  and the complete gate runs once at final review (§Preflight before the
+  full gate).
   WO-133 keeps the host and both profiles' skeleton version in
   `packages/skeleton/src/version.ts`, outside machinery source declarations but
   inside runtime pins. Review selection uses the existing evidence content
@@ -2607,18 +2627,21 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   reports/attestations without read or usage prerequisites. The executor
   completions also read `docs/evidence/WO-NNN/handoff.md`, one line per
   declared criterion in the report's forms [WO-173, 2026-09-28]: a criterion
-  recorded met that names `npm run test:docs` runs that gate inline; one
-  that names `npm test` or `npm test -- --review` needs a passing row at
-  the current code identity covering the change's review selection; one
-  recorded unmet always records and is shown at the next dispatch. `npm
+  recorded met that names `npm run test:docs` consumes the latest passing
+  document row at the current code identity; one that names `npm test` or
+  `npm test -- --review` consumes the structural row, the order's Preflight
+  rows and the document row at that identity, or a passing complete row
+  that covers the change's review selection (§Preflight before the full
+  gate); one recorded unmet always records and is shown at the next dispatch. `npm
   test` runs only the selected tasks whose latest recorded run at that
   identity is not a pass, and records a complete row in which each carried
   result names the row that executed it. A later failed or timed-out run of
   a task, in a gate or in a failed single-suite, machinery or partial run,
   and a later failed gate are never masked by an older pass; a carried
-  result is never itself evidence. Unpersisted runs (stops/signals or errors
-  in final identity, deadline parsing or index locking) leave no row and
-  displace nothing. Both lookups choose worktree executions first, across
+  result is never itself evidence. A stop or signal after a task completed
+  records the completed tasks as a stopped row, which supplies no pass; a
+  stop before any completion and errors in final identity, deadline parsing
+  or index locking leave no row and displace nothing. Both lookups choose worktree executions first, across
   checks. A row stands while each task's latest run supplies its result or
   a pass that may be carried; integrity failures displace their executed
   tasks. Identity errors (including symbolic aliases) and unreadable consulted
@@ -2730,8 +2753,9 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   outside the check (WO-174).
   Document-sensitive live checks remain in `npm run test:docs`.
   An exported instance consumes that tested platform: its ordinary plain and
-  review selections run `kit-verify` and `harness` fresh, checking carried
-  compiled files and the active installed bundle. Its document selection
+  review selections run the six structural tasks, whose `generated` check
+  covers the active installed bundle, and `kit-verify` fresh, checking
+  carried compiled files. Its document selection
   runs current coordination checks without platform fixtures. An upstream
   update or missing comparison ref never expands these consumer defaults.
   Runner selection and evidence use one package-source predicate. Runtime
@@ -2774,28 +2798,60 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
 
 ### Preflight before the full gate
 
-The full review gate is the scarce resource. After receipt 044 its full runs
-took a median of 24.9 minutes and at most 37.2, six of sixteen failed, and a
-closed order paid 2.29 of them (the 2026-10-13 planning document, §12). Every
-order therefore names a **Preflight:** line: the single-suite checks
-(`npm test -- --only <suite>`, each under the bounded wrapper) that cover its
-steps, plus `npm run test:docs` when a document changes. The executor, and
-every repair, runs that line before the first full gate and again after each
-repair, fixes what fails, and only then runs the full gate once. A full run is
-repeated only after a relevant change or a diagnosed invalidation of its
-evidence (a stopped run, an environment fault), with the reason recorded;
-never to look again at the same failure. Every code edit (any path outside
-`docs/`, `.claude/`, `.agents/` and root Markdown that its Git attributes do
-not mark generated or documentation, plus
-`docs/control/outward-vocabulary.json`) is made before the last full run:
-document and evidence edits after it keep the identity, so final review
-reuses that run in seconds instead of paying a full one. A target order's own
-checks run its repository's declared gate through `node scripts/target-gate.mjs
-WO-NNN [--review]`; target claims use those rows and the launchpad document
-gate, rather than core's product suites.
-WO-192
-puts this into the executor's role text; until it closes, each order's
-Preflight line and this section carry it (operator direction, 2026-10-13).
+Every selection begins with six structural tasks, in order: `format`,
+`configuration-root`, `registrations`, `declarations`, `generated` and
+`host`. They finish before a build or selected suite starts. Declarations
+check machinery inputs and declared copied-fixture closures. Generated
+checks retain their own short deadlines and name all stale artifacts in the
+row; `npm run sync` regenerates them in dependency order and changes nothing
+on a second current run. It refuses a role oracle without its authorizing
+update, a feedback edition whose judged sources require a live episode,
+and manual baseline fingerprints. Host admission refuses measured warning
+or critical memory pressure and records its sampled values.
+
+Each order's **Preflight:** field spells every required suite as
+`npm test -- --only <suite>`, under `node scripts/harness.mjs bounded --`.
+The executor and each repair finish formatting and regeneration, run those
+suites and `npm run test:docs` when documents change, then complete handoff.
+The completion consumes passing structural, focused and document rows at
+the current code identity and records their evidence references; a passing
+complete row can also cover the claim. The verifier consumes the same rows
+and reproduces a finding with `--only`. A queued order's older instruction
+to follow Preflight with a complete run is read under this handoff rule.
+
+Final review integrates main, finishes source edits and formatting, then
+starts `npm test -- --review --again` in the background. It awaits the run
+with `node scripts/harness.mjs evidence --wait` and reads the subject in the
+meantime. A met `npm test` claim at final review needs a passing complete
+review row recorded after that review's `FinalReviewRequested` event with
+`reusedSuites: 0`. No pass crosses a code identity. Source changes require
+all required handoff rows at the new identity and a new final review run;
+report and generated-document edits do not. Target orders retain their repository's declared target gate
+and the launchpad document gate.
+
+Scheduling stops starting tasks after the first failure, lets running tasks
+finish, and records the first failure and unrun tasks. `--keep-going`
+continues independent work without bypassing failed prerequisites. A stop
+request or SIGINT, SIGTERM or SIGHUP records only tasks already finished,
+with `stopped: true`; a stop before any completion records nothing. A stopped
+row supplies no passing claim. An execution finishing after its row was
+recorded also supplies no pass. Launchpad's export/verify, update/refresh and
+seeds/staging files run two at a time, each with its own 900-second deadline.
+
+The [WO-216 measurements](../evidence/WO-216/README.md) retain the base's
+seven complete and seventeen document failures with their task timelines,
+three timings of the reused checks it names (the `siblings` and
+`baseline-fingerprints` checks were not timed at the base), the handoff
+structural phase and its
+individual tasks, and each split launchpad file. The base direct-check
+medians were 7.204 seconds for formatting, 6.097 for configuration,
+0.591 for registrations and 0.215 for declarations; no structural phase
+existed at that base. The split file tasks measured 164.231 seconds for
+export, 247.940 for update and 4.863 for seeds, each within its own
+900-second deadline. The five closes after this order judge the design
+against 11 complete runs, 1.3 late structural-class failures and 545 gate
+task minutes per closed order. Any statistic not below its baseline reopens
+the decision; isolated check timings do not establish that outcome.
 
 ## Model-specific notes
 
