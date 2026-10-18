@@ -140,10 +140,17 @@ product statement.
    --check` clean; no new dependency; each re-mint and, where a judged
    source changed, the live feedback episode recorded.
 
-**Preflight:** `vertical`, `skeleton`, `console`, `wo107-schema`, `harness-probe` and the corpus lanes the rows name, each as `npm test -- --only <suite>` under
+**Preflight:** `npm test -- --only vertical` for the vertical and intake steps;
+`npm test -- --only skeleton` for the resident and audit steps;
+`npm test -- --only console` for the console steps;
+`npm test -- --only wo107-schema` for the schema steps;
+`npm test -- --only harness-probe` for the probe steps;
+the corpus lanes the rows name, each as its own `npm test -- --only <lane>`;
+`npm test -- --only configuration-root` for every script step;
+`npm run test:docs` when a document changes; each under
 `node scripts/harness.mjs bounded --` for the steps that edit their
-declared sources, and `npm run test:docs` when a document changes; then the
-handoff gate the executor's role text names at the base.
+declared sources; then the handoff gate the executor's role text names at
+the base (explicit tokens added by the 2026-10-18 pass, FUP-17266e5072d4a25a).
 
 **Execution plan (the executor follows these steps in order; observed at `7b8206f4`, 2026-10-17):**
 

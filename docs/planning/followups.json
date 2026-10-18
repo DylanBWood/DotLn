@@ -26514,6 +26514,16 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-18T05:06:58.789Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-18 fork-observations pass to WO-217 (the gate batch) after FINAL-001 returned it to open: docs-check's parse cost grows with closed history; fixed with a measured case or declined with the measured reason. Coverage: WO-217 step 14.",
+          "reopenWhen": "WO-217 closes without a measured disposition, or the document gate's median exceeds 120 s after it.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-18T16:14:45.516Z"
         }
       ]
     },
@@ -26638,6 +26648,16 @@
           "reopenWhen": "the first Claude auto-mode close after WO-178 records a denial of the admitted command",
           "targets": [],
           "at": "2026-09-30T15:30:45.630Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-18 fork-observations pass: the condition's spirit occurred when the operator's instance's first target push under Claude Code auto mode was denied (DotLn-Angular, WO-004, 2026-10-18); WO-221 admits the registered repository's publication from the registration alone, with a per-host qualification and a literal-rule fallback in the main checkout's untracked local settings, never user settings. Coverage: WO-221 Design A and criteria 1 to 4.",
+          "reopenWhen": "WO-221 closes without its qualification carrying a registered target's push under each host, or a registered target's push is denied after it closes.",
+          "targets": [
+            "WO-221"
+          ],
+          "at": "2026-10-18T16:14:45.171Z"
         }
       ]
     },
@@ -37830,6 +37850,16 @@
           "reopenWhen": "WO-192 closes, or an order's pull request receives feedback the record cannot route.",
           "targets": [],
           "at": "2026-10-17T19:34:06.817Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated for its platform share by the 2026-10-18 fork-observations pass: WO-221 adds the opt-in --draft form of worktree publish --target-worktree at verified, reused by the closed-phase publish, so an instance's own draft route costs one pull request; the route, its actor and its criterion placement stay the instance's (the operator's direction, 2026-10-18). Coverage: WO-221 Design B and criterion 5.",
+          "reopenWhen": "WO-221 closes without the --draft form, or the operator asks core to adopt the route itself, or an order's pull request receives feedback the record cannot route.",
+          "targets": [
+            "WO-221"
+          ],
+          "at": "2026-10-18T16:14:45.258Z"
         }
       ]
     },
@@ -39066,6 +39096,16 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-18T05:06:58.871Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-18 fork-observations pass to WO-217 (the gate batch) after FINAL-001 returned it to open: the document gate's run count per order. Coverage: WO-217 step 14.",
+          "reopenWhen": "WO-217 closes without a measured disposition, or a closed order records more than twenty document-gate runs after it.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-18T16:14:45.602Z"
         }
       ]
     },
@@ -39151,7 +39191,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-18 fork-observations pass: the Preflight fields of WO-217, WO-218, WO-219 and WO-220 are rewritten as explicit npm test -- --only <suite> tokens, resolving VER-001 F3 before WO-217 activates.",
+          "reopenWhen": "A batch order's Preflight field parses to no suite at activation.",
+          "targets": [],
+          "at": "2026-10-18T16:14:45.688Z"
+        }
+      ]
     },
     {
       "id": "FUP-e84d343a5544a7a4",
@@ -39190,7 +39239,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-18 fork-observations pass: receipt 046's criterion 4 and criterion 9 known issues for WO-216 occurred during the second repair, VER-003 and FINAL-002 passed after it, and the launchpad file lanes stay one at a time until measured; WO-216 closed as v0.84.0.",
+          "reopenWhen": "A launchpad file row fails while another runs after v0.84.0, or the host precondition refuses at warning with no sample.",
+          "targets": [],
+          "at": "2026-10-18T16:14:45.773Z"
+        }
+      ]
     },
     {
       "id": "FUP-cafb9c8eec9c00c6",
@@ -39274,7 +39332,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-18 fork-observations pass to WO-217 (the gate batch): the five hand-kept copy sites declared as copied-fixture closures. Coverage: WO-217 step 13.",
+          "reopenWhen": "WO-217 closes without the declarations, or a copy site drifts undetected.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-18T16:14:45.431Z"
+        }
+      ]
     },
     {
       "id": "FUP-851cba3a914ab359",
@@ -39286,6 +39355,137 @@
           "ref": "docs/evidence/WO-216/decisions.md#wo-216-d034--final-review-pass-final-002-at-the-integrated-subject-one-operator-packet-and-ten-follow-ups-two-corrected-in-this-review",
           "title": "WO-216-D034: Next order editing these surfaces, or the planning pass: (F2) add the transition and row-state cases FINAL-001 F17 listed to scripts/test-verifier-gate-claims.mjs: missing and…",
           "summary": "{ \"id\": \"WO-216-D034\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: final review; FINAL-002\", \"kind\": \"finding\", \"decision\": \"Pass FINAL-002. At the integrated subject, code identity 0859ff092e29c72adb8812a12ceecc8fed770cf5a63d6de979a5be5cdc7859a8 (integration took in nothing, D033), criteria 1 to 15 are met: criteria 1 to 14 on the executed fixtures, the eighteen rows VER-003 consumed at this identity and this review's bounded reproductions, and criterion 15 on the fresh complete review row recorded at 2026-10-18T15:08:12.533Z (gateSelection review, executionMode forced-fresh, 41 suites, 100 fresh tasks, reusedSuites 0, exit 0, 2,211.5 s, identity and build output unchanged), recorded after t",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-18 fork-observations pass to WO-217 (the gate batch): F1 as the finish-time strip (worktree finish applies failedOutputOnly to copied rows), F2's verifier-gate-claims cases and F3's sync writer rule; the operator's strip at WO-216's close is recorded as WO-216-D035. Coverage: WO-217 step 12.",
+          "reopenWhen": "WO-217 closes without the finish-time strip, or a close after it lands passing timeline output in main's live index.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-18T16:14:45.344Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a8cba0428eaf01a9",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-observations-pass-recorded-2026-10-18::13a1d539643a54d7090626df3526f089b45c3e5ee6056163eee5f8608dccdede",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "fa9b0c2d1479d14fa0ea6dda10b4b2fbfc0d51675d26043deb0369dc1a753283",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-observations-pass-recorded-2026-10-18",
+          "title": "A final-review packet never names an override as an option.",
+          "summary": "4. **A final-review packet never names an override as an option.** FINAL-002 F1 offered the operator three options, one under override, where accepting the growth was safe and the code fix belonged to a later order. Shape: a sentence in the reviewer profile that each option of an operator packet is safe without override, and the review records the safe default. Reopen: a second final-review packet offers an override.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-18 fork-observations pass as a NoOp: one occurrence (FINAL-002 F1), whose record fix goes to WO-219 and code fix to WO-217. NoOp evidence: the planning document section 9.",
+          "reopenWhen": "A second final-review packet offers an override as an option.",
+          "targets": [],
+          "at": "2026-10-18T16:14:46.114Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-edefd92233980b63",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-observations-pass-recorded-2026-10-18::193011fe72d70f526b9ccaac1631b0bc2894158797f1603fca63d97a228265dd",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "aa612e9803e12fb7feefb9bcf5e6f2652d0c68df993454efccf55c0437eeb4c3",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-observations-pass-recorded-2026-10-18",
+          "title": "Core-operator decisions marked in kit text for instance override.",
+          "summary": "2. **Core-operator decisions marked in kit text for instance override.** Product 07 cites \"operator direction\" eleven times and the compiled role text carries the model pins, the handoff rule and the order-sizing rule; an instance can decline one only by true-forking the file, since the build overlay switches compiled supports and the product overlay narrows claims. Shape: marked blocks in product 07 and the loadout that an instance overlay may replace, as `dotln-purpose` is declared. Reopen: a fork true-forks product 07 or a skill to decline a core-operator rule, or asks to; or WO-207 and WO-096 close.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-18 fork-observations pass as a NoOp: the fork's one need (its draft route) is met by instance files plus WO-221's opt-in form; marked overridable blocks in product 07 and the loadout are a design the queued WO-207 and WO-096 touch. NoOp evidence: the planning document section 9.",
+          "reopenWhen": "A fork true-forks product 07 or a skill to decline a core-operator rule, or asks to; or WO-207 and WO-096 close.",
+          "targets": [],
+          "at": "2026-10-18T16:14:45.944Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b0418fa8b09362be",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-observations-pass-recorded-2026-10-18::416eb0b9c3813f1fa4da27ba24b9742c5320974de4eacef6531d5d4de4400c36",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d4ce52eb64f02dba2808eaa3868cd26ce5d136165db40ef0220ed9878a10cd8f",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-observations-pass-recorded-2026-10-18",
+          "title": "Post-close records have a home a pull request carries.",
+          "summary": "1. **Post-close records have a home a pull request carries.** `override-record` admits only open phases (`scripts/resume.mjs` line 284), so the override at WO-216's release close (2026-10-18) has no event, and the hook's advisory sends the record to the order's tracked decisions file, which clean `main` cannot carry without a pull request; the 2026-10-18 pass wrote WO-216-D035 from the retained draft. Shape: an ignored pending lane under the control root, as the sibling receipt uses, that `override-record` writes at a closed order and the next `worktree start` carries into its reviewed change, regenerating the record there. Reopen: allocated to WO-219 by the 2026-10-18 pass.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-18 fork-observations pass to WO-219 (records, roles and the harness): override-record admitted at a closed order through an ignored pending lane the next worktree start carries, as the sibling receipt is. Coverage: WO-219 step 15.",
+          "reopenWhen": "WO-219 closes without the lane, or a second post-close record has no pull request to carry it.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-18T16:14:45.860Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a423f8bea5c0e9b2",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-observations-pass-recorded-2026-10-18::b66fb5221ee203b13fc337e2e3586bf0a940fb0abd904075097417adb52b531c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7ca027c8061da4dc4b89a7fabebd726f7eb4d9e46b94e6e8b5106f1ea33be5ba",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-observations-pass-recorded-2026-10-18",
+          "title": "Instance-declared lifecycle routes printed at transitions.",
+          "summary": "3. **Instance-declared lifecycle routes printed at transitions.** A fork's order text names the actor and phrase of its own route (the draft at verified), and the kit's admission makes the command legal. Shape: a `routes` section in the registration that the lifecycle prints at the named transition to the named actor. Reopen: a fork's actor misses a declared step twice, or a second instance declares a route.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-18 fork-observations pass as a NoOp: a fork's order text names its route's actor and phrase and the kit's admission makes the command legal; a printed step has no occurred failure. NoOp evidence: the planning document section 9.",
+          "reopenWhen": "A fork's actor misses a declared step twice, or a second instance declares a route.",
+          "targets": [],
+          "at": "2026-10-18T16:14:46.029Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ff2dbefe3e73a657",
+      "key": "decision:docs/evidence/WO-216/decisions.md#wo-216-d035",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "26c3c266205d9e5688ff59d794efe41e11756737e657711a25f472e913e26276",
+          "ref": "docs/evidence/WO-216/decisions.md#wo-216-d035--operator-override-at-release-close-passing-tasktimeline-output-stripped-from-the-worktree-gate-index-before-the-close-final-002-f1-recorded-by-the-2026-10-18-planning-pass",
+          "title": "WO-216-D035: The code fix (worktree finish applies failedOutputOnly to copied rows) is FINAL-002's packet row FUP-851cba3a914ab359, allocated to WO-217 by the 2026-10-18 pass; the record lane for…",
+          "summary": "{ \"id\": \"WO-216-D035\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: release close; operator override from 2026-10-18T15:36:45.443Z to 2026-10-18T15:37:46.767Z (hook timestamps); recorded by the 2026-10-18 planning pass from the retained draft, because override-record admits only open phases and the order was closed\", \"kind\": \"override\", \"decision\": \"Under operator override, before the release close, the session applied the runner's failedOutputOnly (WO-216-D031) to every taskTimeline entry of the WO-216 worktree's ignored gate index under its record lock: 211 rows, 146 changed, 65 byte-identical; no field outside taskTimeline changed and no timeline entry was added or removed; 55,064,368 bytes",
+          "missing": false
+        },
+        {
+          "hash": "1aebfdecf1fbd82eeef295e4f6d5a6a931610d4d1fdcd945e035169dcec80b9e",
+          "ref": "docs/evidence/WO-216/decisions.md#wo-216-d035--operator-override-at-release-close-passing-tasktimeline-output-stripped-from-the-worktree-gate-index-before-the-close-final-002-f1-recorded-by-the-2026-10-18-planning-pass",
+          "title": "WO-216-D035: The code fix (worktree finish applies failedOutputOnly to copied rows) is FINAL-002's packet row FUP-851cba3a914ab359, allocated to WO-217 by the 2026-10-18 pass; the record lane for…",
+          "summary": "{ \"id\": \"WO-216-D035\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: release close; operator override 2026-10-18T15:36:45Z to 15:37:46Z (hook timestamps), recorded by the 2026-10-18 planning pass because override-record admits only open phases\", \"kind\": \"override\", \"decision\": \"Under operator override, before the release close, the session applied the runner's failedOutputOnly (WO-216-D031) to every taskTimeline entry of the WO-216 worktree's ignored gate index under its record lock: 211 rows, 146 changed, 65 byte-identical; no field outside taskTimeline changed and no timeline entry was added or removed; 55,064,368 bytes to 8,301,035; passing timeline output 45,688,231 bytes to 0; failed timel",
           "missing": false
         }
       ],

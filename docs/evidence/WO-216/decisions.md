@@ -1080,3 +1080,33 @@ Affected checks: the three printed checks other than the review gate pass on the
   "reopenWhen": "The fresh complete review row is displaced at this identity before the branch is published; release close copies the pre-repair rows without the operator's decision on F1; or a planning pass disposes F1 to F9."
 }
 ```
+
+## WO-216-D035 — Operator override at release close: passing taskTimeline output stripped from the worktree gate index before the close (FINAL-002 F1), recorded by the 2026-10-18 planning pass
+
+```json
+{
+  "id": "WO-216-D035",
+  "date": "2026-10-18",
+  "dispatch": "resume: release close; operator override 2026-10-18T15:36:45Z to 15:37:46Z (hook timestamps), recorded by the 2026-10-18 planning pass because override-record admits only open phases",
+  "kind": "override",
+  "decision": "Under operator override, before the release close, the session applied the runner's failedOutputOnly (WO-216-D031) to every taskTimeline entry of the WO-216 worktree's ignored gate index under its record lock: 211 rows, 146 changed, 65 byte-identical; no field outside taskTimeline changed and no timeline entry was added or removed; 55,064,368 bytes to 8,301,035; passing timeline output 45,688,231 bytes to 0; failed timeline output 83,674 bytes unchanged; the final-review row (npm test, recorded 2026-10-18T15:08:12.533Z, gateSelection review, reusedSuites 0, exit 0) deep-equal before and after (sha256 before e974491f6b25330f6764e3d1ce43b56cd4d7ffb08fe1b710bc3824504dc91b42, after 1098db0ae9c3ecb1ecdd235baf651c3d6076c75b09890a3a4c85648948b0aaa5). The release close then ran inside the window: annotated tag v0.84.0 (c865764f) on 32f9653f and the GitHub Release DotLn v0.84.0; the declared starter sibling refreshed b84e0355 to 6cea5a25 (README.md seed); the worktree removed and branch wo-216 deleted; cleanup clean; main's live gate index 17,724,800 bytes to 13,221,007 after worktree finish copied the 211 rows. Bypassed: DotLn hook enforcement (all five refusals) for the window. Attestation: harness claude-code 2.1.302, model claude-opus-5-5, effort xhigh (CLAUDE_EFFORT, operator-attested). The operator chose the strip from the three options FINAL-002 F1 named; their words are in the retained ignored record docs/control/local/retained/WO-216/override-2026-10-18.md.",
+  "evidence": [
+    "docs/control/local/retained/WO-216/override-2026-10-18.md (ignored): the draft record the release-close session wrote when the hook could not append OperatorOverrideRecorded to a closed order; its counts, hashes and the close summary are restated above",
+    "docs/final-reviews/WO-216/FINAL-002.md F1 and WO-216-D034's operator packet: the choice among a strip under override, a finish-time strip in a separate order, and accepting about 50 MB in main's live index",
+    "scripts/resume.mjs line 284: override-record is admitted in openPhases only; the hook advisory for a closed order names the order's decisions as the landing place",
+    "gh release list --repo DylanBWood/DotLn (2026-10-18): DotLn v0.84.0 at 2026-10-18T15:37:23Z"
+  ],
+  "rejected": [
+    {
+      "option": "Write this record into main's tracked decisions file from the release-close session",
+      "reason": "Clean main has no pull request to carry it and worktree start refuses a dirty main; the planning pass's pull request carries it instead."
+    },
+    {
+      "option": "Leave the record in the ignored retained file only",
+      "reason": "The override's effects on the success record must be in the committed record the next pass reads."
+    }
+  ],
+  "followup": "The code fix (worktree finish applies failedOutputOnly to copied rows) is FINAL-002's packet row FUP-851cba3a914ab359, allocated to WO-217 by the 2026-10-18 pass; the record lane for post-close overrides is that pass's candidate 1, allocated to WO-219.",
+  "reopenWhen": "A gate lookup on main needs passing timeline output from a pre-D031 WO-216 row, or a later pass judges the strip differently."
+}
+```

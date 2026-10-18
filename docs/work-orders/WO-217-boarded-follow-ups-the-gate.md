@@ -1,4 +1,4 @@
-# WO-217 — Boarded follow-ups, batch 1: the gate, the runner, the host guard, gate evidence and the fixtures: every one of the 31 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (version assigned at activation)
+# WO-217 — Boarded follow-ups, batch 1: the gate, the runner, the host guard, gate evidence and the fixtures: every one of the 35 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -9,12 +9,12 @@ unless a fix changes a command, flag, schema or refusal, which the decisions
 name; then minor). A declined row changes no behavior.
 **Cost:** adds the fixes and fixture cases the listed rows need, across
 `scripts/test-runner.mjs`, `scripts/lib/gate-reuse.mjs`, `scripts/lib/host-guard-state.mjs`, `scripts/host-guard.mjs`, `scripts/lib/machinery-coverage.mjs`, `packages/skeleton/src/observed-facts.ts`, `packages/skeleton/src/gate-evidence.mjs`, `scripts/lib/product-read-guard.mjs` and the fixtures the rows name; unknown until each row is triaged, and the README records
-the per-row command and case. Removes 31 pending rows from the
+the per-row command and case. Removes 35 pending rows from the
 register, which at the base holds 281 pending rows, 130 of them decision
 rows boarded by closed orders across 53 orders (the oldest from WO-054,
 2026-09-18), 88 of them follow-ups boarded in the week of 2026-10-13 to
 2026-10-17 alone; the rule that "the next order that edits the surface"
-takes a row delivered none of these 31 (each still pending at
+takes a row delivered none of these 35 (each still pending at
 `7b8206f4`). Wall-clock: one triage per row plus the fixes; unknown until
 run. Context bytes: this order's row list is read once. Commands: none
 added. Tokens: unknown until run. Steps: 15. Re-mints: the
@@ -69,7 +69,7 @@ reviewer, recorded under product 07's boarded-defect rule, and deferred to
 "the next order that edits these surfaces", a planning pass or a repair
 that never came; the oldest listed below dates from 2026-09-18. In the week
 of 2026-10-13 to 2026-10-17, seven final reviews boarded 88 follow-ups and
-the pending count rose from 247 to 281. The 31 rows of this
+the pending count rose from 247 to 281. The 35 rows of this
 batch name the gate, the runner, the host guard, gate evidence and the fixtures:
 
 - FUP-04ec9fa011f39d93 (deferred): WO-144-D010: Planner: (1) Executor and verifier procedure runs npm test without --review, which omits the machinery suites whose declared sources an order changed; here process-debt declares harness-h ([source](../evidence/WO-144/decisions.md#wo-144-d010--pass-final-review-after-an-in-review-test-repair-board-the-unrun-suite-and-two-width-edges))
@@ -103,6 +103,10 @@ batch name the gate, the runner, the host guard, gate evidence and the fixtures:
 - FUP-e8f5399db33d0b5a (deferred): WO-185-D028: WO-185 residuals (guard and runner bookkeeping): in scripts/host-guard.mjs mark every revalidated-absent or protected member of a stopped candidate as handled, so one pass never writes a  ([source](../evidence/WO-185/decisions.md#wo-185-d028--ver-004-residual-low-severity-observations-in-the-repaired-guard-and-runner-left-with-a-follow-up))
 - FUP-eafff4f96686f67d (deferred): WO-213-D025: Planning: decide whether an instance's runtime rows should take a product read guard whose exclusion set is narrowed to the active order's record roots, so an instance's plain gate can… ([source](../evidence/WO-213/decisions.md#wo-213-d025))
 - FUP-f5f10101e717d59b (deferred): WO-198-D004: WO-198 resume: fix. (F1) sharedRefChanges must treat a snapshot that lacks originMain, main, a tags object with count and newest, or dotlnRefs as no baseline, the same as a legacy row wit ([source](../evidence/WO-198/decisions.md#wo-198-d004--verification-fail-on-a-regression-a-malformed-earlier-snapshot-shows-one-defect-outside-the-surfaces-boarded))
+- FUP-851cba3a914ab359 (untriaged): WO-216-D034: FINAL-002's packet, added by the 2026-10-18 pass: (F1) `worktree finish` applies the runner's `failedOutputOnly` to each copied row's `cases` and `taskTimeline` at every depth, so a close never lands passing output in main's live index (the operator's override of 2026-10-18 stripped 146 rows by hand); (F2) the transition and row-state cases FINAL-001 F17 listed for `scripts/test-verifier-gate-claims.mjs`; (F3) `scripts/sync.mjs` runs a writer only on a stale report and removes or names an orphan revision ([source](../evidence/WO-216/decisions.md#wo-216-d034--final-review-pass-final-002-at-the-integrated-subject-one-operator-packet-and-ten-follow-ups-two-corrected-in-this-review))
+- FUP-9de14a69403e2b32 (untriaged): WO-216-D032: declare the five hand-kept copy sites (`scripts/test-configuration-root.mjs` twice, `scripts/test-concurrent-control.mjs`, `scripts/test-harness.mjs` twice) as copied-fixture closures so the structural phase checks them; added by the 2026-10-18 pass ([source](../evidence/WO-216/decisions.md#wo-216-d032--bounded-follow-ups-taken-in-this-repair-and-the-two-left-with-a-follow-up))
+- FUP-fb8cbeabbddef397 (open): ER4-005: the cost of a recurring gate grows with closed history: docs-check parses every tracked Markdown file under the document roots on every run; returned to open by FINAL-001 (D027) when the resume suite passed 120 s in a fresh document gate; added by the 2026-10-18 pass ([source](../product/07-execution-guide.md#discipline))
+- FUP-211986cdaa9f8c4f (open): the document gate's run count (125 runs in four days over three orders); returned to open by FINAL-001 (D027) when the gate's median exceeded 120 s at WO-216's rows; added by the 2026-10-18 pass ([source](../planning/work-order-map.md#candidates--returns-from-the-standard-pass-with-the-operators-comments-recorded-2026-10-17))
 
 **Design (scope discipline):** one batch per subsystem, so verification
 judges one set of surfaces and one Preflight line, and each batch's
@@ -115,7 +119,7 @@ choice the operator reserved) leaves as an operator packet, deferred with a
 reopening condition naming this order's pull request. Rejected: one order
 for all 130 rows (axis: one subsystem per order; a verifier reading fifty
 surfaces); leaving the rows to the next order that edits each surface (axis:
-delivery; the record shows 31 rows that no later order took);
+delivery; the record shows 35 rows that no later order took);
 resolving by declining (axis: honesty of the triage; at most one third of
 the listed rows may be declined, and each decline carries its NoOp reason
 and reversal condition).
@@ -151,10 +155,16 @@ product statement.
    --check` clean; no new dependency; each re-mint and, where a judged
    source changed, the live feedback episode recorded.
 
-**Preflight:** `runner-fixtures`, `harness-fixtures`, `process-debt`, `configuration-root`, `resume` and `docs-check-fixtures`, each as `npm test -- --only <suite>` under
+**Preflight:** `npm test -- --only runner-fixtures` for steps 2, 6, 12, 13 and 14;
+`npm test -- --only harness-fixtures` for step 3;
+`npm test -- --only process-debt` for steps 9 and 11;
+`npm test -- --only configuration-root` for every script step;
+`npm test -- --only resume` for step 10;
+`npm test -- --only docs-check-fixtures` for step 14;
+`npm run test:docs` when a document changes; each under
 `node scripts/harness.mjs bounded --` for the steps that edit their
-declared sources, and `npm run test:docs` when a document changes; then the
-handoff gate the executor's role text names at the base.
+declared sources; then the handoff gate the executor's role text names at
+the base (explicit tokens added by the 2026-10-18 pass, FUP-17266e5072d4a25a).
 
 **Execution plan (the executor follows these steps in order; observed at `7b8206f4`, 2026-10-17):**
 
@@ -169,10 +179,13 @@ handoff gate the executor's role text names at the base.
 9. `scripts/lib/host-guard-state.mjs` (rows FUP-c1a89d52cc314af9): read each row's source decision in full, reproduce the recorded defect or restate the recorded question against the current source, then fix it with a fixture case that fails without the fix, or decline it with the recorded reason, and dispose the row with `npm run plan -- followups --apply` naming the case or the reason. Check: the suite that declares the file (`npm test -- --review --list` names it), under `node scripts/harness.mjs bounded --`.
 10. `scripts/test-off-ramps.mjs` (rows FUP-cde72b7860c03c18): read each row's source decision in full, reproduce the recorded defect or restate the recorded question against the current source, then fix it with a fixture case that fails without the fix, or decline it with the recorded reason, and dispose the row with `npm run plan -- followups --apply` naming the case or the reason. Check: the suite that declares the file (`npm test -- --review --list` names it), under `node scripts/harness.mjs bounded --`.
 11. `scripts/host-guard.mjs` (rows FUP-e8f5399db33d0b5a): read each row's source decision in full, reproduce the recorded defect or restate the recorded question against the current source, then fix it with a fixture case that fails without the fix, or decline it with the recorded reason, and dispose the row with `npm run plan -- followups --apply` naming the case or the reason. Check: the suite that declares the file (`npm test -- --review --list` names it), under `node scripts/harness.mjs bounded --`.
-12. `docs/evidence/WO-217/decisions.md`: one decision per disposed row or per cluster of rows fixed together, each naming the row ids, the chosen option, the rejected option, the fixture case or the decline reason, and the reversal condition; an operator packet for each row only the operator can decide, with its reopening condition naming this order's pull request. Then `npm run meta`. Check: `npm run meta -- --check`.
-13. `docs/evidence/WO-217/README.md`: the after table (each row's final status, the case or reason, the command) and the register's pending count before and after (`npm run plan -- followups`). Check: the README holds both tables.
-14. Write-backs, in place, only where a row's fix changes what a product document states (the row's source decision names the document and section; re-read the heading at the base). Check: `npm run test:docs`.
-15. Handoff: `npm run format`; `npm run test:docs`; the gate the executor's role text names at the base (the order's Preflight suites, then the handoff gate; `npm test -- --review` where a declared machinery source changed); complete `docs/evidence/WO-217/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+12. `scripts/worktree.mjs` (`finish`, the `recordGateChecks` copy; rows FUP-851cba3a914ab359): copy each row with `failedOutputOnly` applied to its `cases` and `taskTimeline` at every depth (WO-216-D031's rule at the copy), with a case that copies a passing row holding output and reads none in main's index; then the row's F2 cases in `scripts/test-verifier-gate-claims.mjs` and its F3 fix in `scripts/sync.mjs` (a writer only on a stale report; an orphan revision removed or named). Check: `npm test -- --only runner-fixtures` and the suites that declare the two files, under `node scripts/harness.mjs bounded --`.
+13. `scripts/test-runner.mjs` (the copied-fixture closure declarations; rows FUP-9de14a69403e2b32): declare the five hand-kept copy sites so the structural phase checks them, with the case that fails when a copy drifts. Check: `npm test -- --only runner-fixtures`.
+14. `scripts/docs-check.mjs` and the document selection in `scripts/test-runner.mjs` (rows FUP-fb8cbeabbddef397, FUP-211986cdaa9f8c4f): the parse cost that grows with closed history and the document gate's run count per order; fix each with a measured case (the three-gate medians before and after) or decline it with the measured reason. Check: `npm test -- --only docs-check-fixtures` and `npm run test:docs`.
+15. `docs/evidence/WO-217/decisions.md`: one decision per disposed row or per cluster of rows fixed together, each naming the row ids, the chosen option, the rejected option, the fixture case or the decline reason, and the reversal condition; an operator packet for each row only the operator can decide, with its reopening condition naming this order's pull request. Then `npm run meta`. Check: `npm run meta -- --check`.
+16. `docs/evidence/WO-217/README.md`: the after table (each row's final status, the case or reason, the command) and the register's pending count before and after (`npm run plan -- followups`). Check: the README holds both tables.
+17. Write-backs, in place, only where a row's fix changes what a product document states (the row's source decision names the document and section; re-read the heading at the base). Check: `npm run test:docs`.
+18. Handoff: `npm run format`; `npm run test:docs`; the gate the executor's role text names at the base (the order's Preflight suites, then the handoff gate; `npm test -- --review` where a declared machinery source changed); complete `docs/evidence/WO-217/handoff.md`; `npm run resume -- implementation-ready <flags>`.
 
 **Evidence gate:** the Preflight suites; the register dispositions
 (`followups --show` per row); `npm run test:docs`; the handoff gate.
