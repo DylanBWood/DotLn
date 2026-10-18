@@ -395,15 +395,44 @@ pass's own counters are recorded in the ignored receipts.
 
 ## 13. Validation and independent judgment
 
-Recorded after the refutation receipt is filed: the receipt id, scope,
-holds and dispositions, and the `npm run test:docs` result.
+Receipt `2026-10-18-planning-8f5454a47f272170-047`, filed and committed at
+`607a8248` against the committed subject
+`sha256:0f904628c80318c94c4ba81e40340a9fc9964fb50cb64c4f48c2306fa7682e02`
+(judged, committed and workspace subjects equal). Scope: the orders this
+pass created or changed (WO-221, WO-217, WO-219) and the sequence. One
+background `dotln-worker` refuter judged the canonical prompt directly
+(claude-opus-5-5 as its host stated; effort not read back; 43 tool uses,
+787 s), followed by one formatting restatement of its statement line to
+replace an absolute path with the repository-relative one (11 s); its
+judgment was not rerolled. Verdict: `aligned-with-findings` for each
+order and for the plan; no hold. Eighteen known issues, each with a
+reopening observation, are carried on the three catalog rows in the map
+until a later pass amends the orders (the orders stay as judged). The one
+correction of fact: `scripts/lib/evidence-sources.mjs` lines 260 and 264
+sit in the feedback edition's sources, so WO-221's executor re-mints the
+feedback edition deterministically beside the authority and harness
+editions; no live episode is owed, since `FEEDBACK_SOURCE_PATHS` (lines 15
+to 79, not the Cost line's 25 to 60) names none of its surfaces. The
+refuter's other readings the executor should carry: a `blocked`
+qualification row for an episode not run must not let the write-backs
+claim the outcome for that host; the printed Codex and Copilot launch
+lines are a per-order relaunch the qualification row records; a case
+must show that an edit to the registration, grant or `hostRules` in the
+order's own worktree yields no admission; disposable deletion is
+irreversible and the declaration must stay narrow; a moved draft head and
+a failed base fetch need a named refusal.
+
+`npm run test:docs` after the receipt, at the workspace this pull request
+publishes: 27 passed, 0 failed, 136.3 s, 27 fresh tasks (the structural
+phase first, then docs-check, the fixtures and `plan-refutation-current`
+with receipt 047 bound).
 
 ## Appendix A. The prompt for the fork's current planning pass
 
 Paste as one message into the fork's (`DotLn-Instance`) planning session:
 
 ```text
-planning: observations from WO-004, routed by core's 2026-10-18 pass (DylanBWood/DotLn docs/planning/fork-observations-2026-10-18.md; the core order is WO-221, which lands trust from the registration, an opt-in draft form of worktree publish that the final publish reuses, declared disposable output at close, a declared target release and release tags on the starter). Settle each item below as this instance's own decision, with its source and reopening condition, then run the instance's refutation and test:docs as usual.
+planning: observations from WO-004, routed by core's 2026-10-18 pass (DylanBWood/DotLn, docs/planning/fork-observations-2026-10-18.md, pull request pending; the core order is WO-221, filed and not yet landed: trust from the registration, an opt-in --draft form of worktree publish that the final publish reuses, declared disposable output at close, a declared target release, and release tags on the starter). Settle each item below as this instance's own decision, with its source and reopening condition, then run the instance's refutation and test:docs as usual.
 
 1. The draft at verified stays this instance's route; core ships no default. Amend D8 and every open target order (WO-005 to WO-008): name the actor and the phrase (the session that records `verification-result pass` is the natural one) and the command `npm run worktree -- publish WO-NNN --target-worktree --draft --branch <type>/<slug> --title "<title>" --body-file <reviewed path>`, available from the starter revision that carries core WO-221. Strike "the operator closes the draft": the final publish reuses the draft's branch and pull request. Strike the WIP commit on wo-NNN and the force-push by hand: the draft form commits from the tree without moving HEAD, and the final publish force-pushes with lease against the recorded draft head.
 2. Decide whether WO-005 waits for the upgrade order that takes that starter revision, or runs now under D8's hand route and the operator's interim user-settings entries. Record the cost of each; the operator chooses.
