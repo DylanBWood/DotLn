@@ -26506,6 +26506,14 @@
           "reopenWhen": "the document gate's thirty-day median of fresh passing rows passes 180 s, or the resume suite passes 120 s in a fresh passing document gate",
           "targets": [],
           "at": "2026-10-13T16:53:36.495Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Returned to open by WO-216's final review (FINAL-001, D027), applying FUP-4b70089b028849f0's rule: the condition 'the resume suite passes 120 s in a fresh passing document gate' occurred after the 2026-10-13 disposition, in main's fresh passing document gate of 2026-10-17T11:39:39.323Z (WO-213's subject; resume 125.5 s, gate 173.5 s, 35 fresh tasks), and no pass has re-disposed it since. The thirty-day median of main's fresh passing document rows is 42.0 s over 883 rows. At WO-216's subject the resume task reads 88 to 105 s in eight fresh passing document rows, and the document gate itself 142 to 161 s, with the roughly 30 s structural phase serial ahead of the suites.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-18T05:06:58.789Z"
         }
       ]
     },
@@ -36568,6 +36576,22 @@
           "reopenWhen": "An order edits the runner's task record, or the record rule stops refusing a copied record that holds the absolute path.",
           "targets": [],
           "at": "2026-10-17T17:14:23.972Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-recorded by WO-216's final review (FINAL-001, D027) because the condition 'an order edits the runner's task record' fired again: WO-216 adds stale, cases and sample to structural task results, unrunSuites, stale and failedFirst to gate rows, a structural companion row beside every run and a stopped row for an interrupted run, and its generated task's nested cases keep passing output (FINAL-001 F3, boarded for repair). productReadLog stays absolute and the record rule is unchanged, so an executor copying a record still writes a placeholder.",
+          "reopenWhen": "An order edits the runner's task record, or the record rule stops refusing a copied record that holds the absolute path.",
+          "targets": [],
+          "at": "2026-10-18T05:06:58.948Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-recorded by WO-216's second final review (FINAL-002, D034) because the condition 'an order edits the runner's task record' fired again in the second repair: failedOutputOnly and withoutOutput strip passing output from cases and taskTimeline at every depth of the gate, structural companion and stopped rows, and a structural task's parsed child cases are stripped when adopted (D031). productReadLog stays absolute and the record rule is unchanged; a copied record that holds the absolute path is still refused.",
+          "reopenWhen": "An order edits the runner's task record, or the record rule stops refusing a copied record that holds the absolute path.",
+          "targets": [],
+          "at": "2026-10-18T15:13:00.702Z"
         }
       ]
     },
@@ -39034,8 +39058,238 @@
           "reopenWhen": "A closed order records more than twenty document-gate runs after WO-216, or the document gate's median exceeds 120 s.",
           "targets": [],
           "at": "2026-10-17T19:34:15.675Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Returned to open by WO-216's final review (FINAL-001, D027), applying FUP-4b70089b028849f0's rule: the condition 'the document gate's median exceeds 120 s' occurred at WO-216's own rows, where the median of eight fresh passing document rows is 145.8 s (142 to 161 s; this review's run 141.7 s). Inference from their task timelines: the six structural tasks, about 30 s, now run serially before the document suites, and the document gate no longer runs separate copies of the generated checks. The order has recorded eleven document runs, under the twenty-run arm.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-18T05:06:58.871Z"
         }
       ]
+    },
+    {
+      "id": "FUP-5cfe1588ba891bfc",
+      "key": "decision:docs/evidence/WO-216/decisions.md#wo-216-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "48744ab13e0713b1d1b147d5dec0106684a6a131342d96503969ef0fb6266f06",
+          "ref": "docs/evidence/WO-216/decisions.md#wo-216-d017--preserve-the-legacy-tests-under-the-new-runner-contracts",
+          "title": "WO-216-D017: Update seven legacy runner and role assertions without changing production behavior: dependency-timeline and two-failure comparison fixtures explicitly request keep-going; the…",
+          "summary": "{ \"id\": \"WO-216-D017\", \"date\": \"2026-10-17\", \"dispatch\": \"resume: next\", \"decision\": \"Update seven legacy runner and role assertions without changing production behavior: dependency-timeline and two-failure comparison fixtures explicitly request keep-going; the exclusive-lane fixture counts expanded file tasks; signal cleanup fixtures retain the completed build in a stopped row and still require task termination, a non-passing result and no ordinary completed gate; the carried-pass refusal test matches its preserved diagnostic facts alongside the new handoff guidance; the usage/role fixture checks structural and Preflight consumption plus a fresh review run, its wait command and refusal of p",
+          "missing": false
+        },
+        {
+          "hash": "30c5286c9321c17844fbd5c423e8f6555f5c8c6c89604e3bd086331df0563878",
+          "ref": "docs/evidence/WO-216/decisions.md#wo-216-d017--preserve-the-legacy-tests-under-the-new-runner-contracts",
+          "title": "WO-216-D017: Update seven legacy runner and role assertions without changing production behavior: dependency-timeline and two-failure comparison fixtures explicitly request keep-going; the…",
+          "summary": "{ \"id\": \"WO-216-D017\", \"date\": \"2026-10-17\", \"dispatch\": \"resume: next\", \"decision\": \"Update seven legacy runner and role assertions without changing production behavior: dependency-timeline and two-failure comparison fixtures explicitly request keep-going; the exclusive-lane fixture counts expanded file tasks; signal cleanup fixtures retain the completed build in a stopped row and still require task termination, a non-passing result and no ordinary completed gate; the carried-pass refusal test matches its preserved diagnostic facts alongside the new handoff guidance; the usage/role fixture checks structural and Preflight consumption plus a fresh review run, its wait command and refusal of p",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "The two legacy cases D019 and D020 found outside D017's updates, the skeleton emitted-roles case and the harness WO-125 F3 runner case, are updated by D020 and pass in WO-216 FINAL-001's fresh complete review row of 2026-10-18T05:02:23.850Z (41 suites, 100 fresh tasks, exit 0). FINAL-001 F9 separately boards three removed stopped-row variants of WO-186 cases under D027.",
+          "reopenWhen": "An updated case no longer establishes its original timeline, cleanup or evidence guarantee.",
+          "targets": [],
+          "at": "2026-10-18T05:06:59.104Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1a93b119ecc57d54",
+      "key": "decision:docs/evidence/WO-216/decisions.md#wo-216-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "695a3f0eee0b2969fe452fd4c11c6d2de5f3449b5bdce1195ce5a40f0d2cdb12",
+          "ref": "docs/evidence/WO-216/decisions.md#wo-216-d019--verification-fail-criterion-15-is-unmet-because-two-suites-outside-the-preflight-field-fail-at-the-subject",
+          "title": "WO-216-D019: WO-216 resume: fix. (F1) In packages/skeleton/test/executor-supports.test.ts, the verifier branch of 'WO-179 and WO-195 emitted roles carry their assigned corrections across support…",
+          "summary": "{ \"id\": \"WO-216-D019\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001. At code identity bd4ef0fe2fc6bb6576395d17c7a9e64ba1b5b29ec179658972a1bf52ef265219, criteria 1 to 14 are met and criterion 15 is unmet. F1 (blocking, criterion 15): the skeleton suite fails on 'WO-179 and WO-195 emitted roles carry their assigned corrections across support settings' in packages/skeleton/test/executor-supports.test.ts, whose verifier branch still expects the sentence this order retired, 'Consume the executor's recorded passing npm test row when its code identity matches the subject'; 510 of 511 compiled skeleton tests pass. F2 (blocking, criterion 1",
+          "missing": false
+        },
+        {
+          "hash": "9bbda5df6073430da278d9fe59b5b7c5a2b6961b84db90e33609ed4a84427362",
+          "ref": "docs/evidence/WO-216/decisions.md#wo-216-d019--verification-fail-criterion-15-is-unmet-because-two-suites-outside-the-preflight-field-fail-at-the-subject",
+          "title": "WO-216-D019: WO-216 resume: fix. (F1) In packages/skeleton/test/executor-supports.test.ts, the verifier branch of 'WO-179 and WO-195 emitted roles carry their assigned corrections across support…",
+          "summary": "{ \"id\": \"WO-216-D019\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001. At code identity bd4ef0fe2fc6bb6576395d17c7a9e64ba1b5b29ec179658972a1bf52ef265219, criteria 1 to 14 are met and criterion 15 is unmet. F1 (blocking, criterion 15): the skeleton suite fails on 'WO-179 and WO-195 emitted roles carry their assigned corrections across support settings' in packages/skeleton/test/executor-supports.test.ts, whose verifier branch still expects the sentence this order retired, 'Consume the executor's recorded passing npm test row when its code identity matches the subject'; 510 of 511 compiled skeleton tests pass. F2 (blocking, criterion 1",
+          "missing": false
+        },
+        {
+          "hash": "6684635a52c85b4e5cfc9e48367f1ada20b0f14e7a1f071b3b4ab9a8002c4627",
+          "ref": "docs/evidence/WO-216/decisions.md#wo-216-d019--verification-fail-criterion-15-is-unmet-because-two-suites-outside-the-preflight-field-fail-at-the-subject",
+          "title": "WO-216-D019: WO-216 resume: fix. (F1) In packages/skeleton/test/executor-supports.test.ts, the verifier branch of 'WO-179 and WO-195 emitted roles carry their assigned corrections across support…",
+          "summary": "{ \"id\": \"WO-216-D019\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001. At code identity bd4ef0fe2fc6bb6576395d17c7a9e64ba1b5b29ec179658972a1bf52ef265219, criteria 1 to 14 are met and criterion 15 is unmet. F1 (blocking, criterion 15): the skeleton suite fails on 'WO-179 and WO-195 emitted roles carry their assigned corrections across support settings' in packages/skeleton/test/executor-supports.test.ts, whose verifier branch still expects the sentence this order retired, 'Consume the executor's recorded passing npm test row when its code identity matches the subject'; 510 of 511 compiled skeleton tests pass. F2 (blocking, criterion 1",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "D019's repair instruction is executed: F1 and F2 by D020 with D023's timing correction and F4 by D022, reproduced by VER-002 (D024) and confirmed by WO-216 FINAL-001's fresh complete review row of 2026-10-18T05:02:23.850Z, in which skeleton (275.1 s) and harness-fixtures (319.3 s) pass and the role-oracle check runs inside generated. F3 and F5 continue under D021's row FUP-17266e5072d4a25a.",
+          "reopenWhen": "A later repair changes the emitted-roles case, the WO-125 F3 runner case or the role-oracle checker, or skeleton or harness-fixtures fails in a later complete review row.",
+          "targets": [],
+          "at": "2026-10-18T05:06:59.026Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-17266e5072d4a25a",
+      "key": "decision:docs/evidence/WO-216/decisions.md#wo-216-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fe897f154135ef52e3569526ba95cb5322298202f4efa70773b96b12df150d54",
+          "ref": "docs/evidence/WO-216/decisions.md#wo-216-d021--retain-the-queued-order-and-handoff-policy-planning-obligations",
+          "title": "WO-216-D021: Planning before WO-217 activates: resolve VER-001 F3 by authorizing explicit --only suite tokens in the Preflight fields of WO-217, WO-218, WO-219 and WO-220, or choose and test a…",
+          "summary": "{ \"id\": \"WO-216-D021\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: fix; VER-001 follow-up dispositions\", \"decision\": \"Keep VER-001 F3 and F5 as planning work. F3 needs amendments to the four queued orders or an explicitly chosen stricter claim contract; F5 changes the standing handoff policy. Neither is necessary to repair this order's two blockers, and this repair does not silently rewrite judged work orders or broaden the declared handoff contract. F4 is taken as the bounded generated-artifact repair in adjacent-0001.\", \"evidence\": [ \"VER-001 and WO-216-D019 reproduce the empty Preflight parse in WO-217 through WO-220 and record the planning receipt's reopening condition for changed suites ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e84d343a5544a7a4",
+      "key": "decision:docs/evidence/WO-216/decisions.md#wo-216-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ac83901b86c1a7fa8d942736b2b0c37943c7fd809a7b8ee4b424582fee63fe39",
+          "ref": "docs/evidence/WO-216/decisions.md#wo-216-d020--repair-the-role-assertion-and-preserve-gate-lock-coverage",
+          "title": "WO-216-D020: Repair the two failing compatibility tests without reverting the structural phase or the focused handoff instructions. The emitted verifier test requires structural, Preflight and…",
+          "summary": "{ \"id\": \"WO-216-D020\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: fix; VER-001 F1 and F2\", \"decision\": \"Repair the two failing compatibility tests without reverting the structural phase or the focused handoff instructions. The emitted verifier test requires structural, Preflight and document rows across both economy settings and every harness profile, rejects the retired complete-row instruction, and requires focused probes. The gate-lock fixture supplies its own six structural tasks, a build and a held product task through the existing runGate table seam; all original write refusals and release assertions remain, and the product hold exercises the same hook protections after the structural ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "D020's repair, with D023's correction that keeps the gate-lock matrix once within its 21.2 s limit, is verified by VER-002 and passes in WO-216 FINAL-001's fresh complete review row of 2026-10-18T05:02:23.850Z (harness-fixtures 319.3 s, skeleton 275.1 s).",
+          "reopenWhen": "Either complete affected suite fails, a generated verifier again requires the retired complete-row handoff, or a gate input can be changed during either held phase.",
+          "targets": [],
+          "at": "2026-10-18T05:06:59.182Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-90ebeaae273ae404",
+      "key": "decision:docs/evidence/WO-216/decisions.md#wo-216-d025",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0e43ca04c172d59a39ec0a99a40b9a55a393d8e4c91c3f8e58d9b41f70c7f457",
+          "ref": "docs/evidence/WO-216/decisions.md#wo-216-d025--verification-planning-receipt-046s-criterion4-and-criterion9-reopening-conditions-for-wo-216-have-occurred",
+          "title": "WO-216-D025: Next planning pass: reopen receipt 046's criterion:4 and criterion:9 known issues for WO-216 as their conditions require. Decide whether two launchpad file lanes may run nested kit gates…",
+          "summary": "{ \"id\": \"WO-216-D025\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Record that two reopening conditions of planning receipt 2026-10-17-planning-69fa20e1554282a6-046's known issues for WO-216 occurred during the repair, independently of the criteria. Criterion 9's condition, a launchpad:file row failing while another launchpad:file row runs: at 2026-10-18T02:40:44.095Z the launchpad selection at f09d6ade recorded exit 1 with failedFirst launchpad:file:test-launchpad-export.mjs after 80.1 s, while launchpad:file:test-launchpad-update.mjs ran to a pass at 244.1 s and the seeds file was never started. Criterion 4's condition, a refusal at warning ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-cafb9c8eec9c00c6",
+      "key": "decision:docs/evidence/WO-216/decisions.md#wo-216-d024",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cb09fe08b096dfcd916e5934e44a286756793fd1bbfabf7bd23e8072e40aae73",
+          "ref": "docs/evidence/WO-216/decisions.md#wo-216-d024--verification-pass-ver-002-ver-001s-f1-f2-and-f4-are-repaired-and-reproduced-f3-and-f5-stay-boarded",
+          "title": "WO-216-D024: Pass VER-002: criteria 1 to 15 are met at code identity f09d6ade4b8facd8092da2b5e85c45dee825de2d7a7eb6d143a18709e7b14a5d, the identity the RepairCompleted event records. VER-001's F1…",
+          "summary": "{ \"id\": \"WO-216-D024\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002: criteria 1 to 15 are met at code identity f09d6ade4b8facd8092da2b5e85c45dee825de2d7a7eb6d143a18709e7b14a5d, the identity the RepairCompleted event records. VER-001's F1 (the emitted-roles case expecting the retired verifier sentence), F2 (the WO-125 F3 runner case's nested gate carrying the structural phase into a fixture without its inputs) and F4 (the role-oracle check passing when no test ran) are repaired and reproduced; F3 and F5 stay boarded under D021 (FUP-17266e5072d4a25a) as planning obligations before WO-217 activates, outside this order's criteria and s",
+          "missing": false
+        },
+        {
+          "hash": "d102b0e91861f993e3e7851967a27dacf5ecaf3319474bb1650cb0f63032635d",
+          "ref": "docs/evidence/WO-216/decisions.md#wo-216-d024--verification-pass-ver-002-ver-001s-f1-f2-and-f4-are-repaired-and-reproduced-f3-and-f5-stay-boarded",
+          "title": "WO-216-D024: Pass VER-002: criteria 1 to 15 are met at code identity f09d6ade4b8facd8092da2b5e85c45dee825de2d7a7eb6d143a18709e7b14a5d, the identity the RepairCompleted event records. VER-001's F1…",
+          "summary": "{ \"id\": \"WO-216-D024\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002: criteria 1 to 15 are met at code identity f09d6ade4b8facd8092da2b5e85c45dee825de2d7a7eb6d143a18709e7b14a5d, the identity the RepairCompleted event records. VER-001's F1 (the emitted-roles case expecting the retired verifier sentence), F2 (the WO-125 F3 runner case's nested gate carrying the structural phase into a fixture without its inputs) and F4 (the role-oracle check passing when no test ran) are repaired and reproduced; F3 and F5 stay boarded under D021 (FUP-17266e5072d4a25a) as planning obligations before WO-217 activates, outside this order's criteria and s",
+          "missing": false
+        },
+        {
+          "hash": "30c3944527347461bef0df8551b6514c83baab80986812ecb0ebf3d45ba2f13e",
+          "ref": "docs/evidence/WO-216/decisions.md#wo-216-d024--verification-pass-ver-002-ver-001s-f1-f2-and-f4-are-repaired-and-reproduced-f3-and-f5-stay-boarded",
+          "title": "WO-216-D024: Pass VER-002: criteria 1 to 15 are met at code identity f09d6ade4b8facd8092da2b5e85c45dee825de2d7a7eb6d143a18709e7b14a5d, the identity the RepairCompleted event records. VER-001's F1…",
+          "summary": "{ \"id\": \"WO-216-D024\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002: criteria 1 to 15 are met at code identity f09d6ade4b8facd8092da2b5e85c45dee825de2d7a7eb6d143a18709e7b14a5d, the identity the RepairCompleted event records. VER-001's F1 (the emitted-roles case expecting the retired verifier sentence), F2 (the WO-125 F3 runner case's nested gate carrying the structural phase into a fixture without its inputs) and F4 (the role-oracle check passing when no test ran) are repaired and reproduced; F3 and F5 stay boarded under D021 (FUP-17266e5072d4a25a) as planning obligations before WO-217 activates, outside this order's criteria and s",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "VER-002's pass was reopened by D027 and its condition occurred again when the second repair edited the repaired fixtures and the Preflight claim rule; VER-003 re-verified criteria 1 to 15 at 0859ff092e29c72adb8812a12ceecc8fed770cf5a63d6de979a5be5cdc7859a8 and FINAL-002's fresh complete review row passes there, so the pass stands at the new identity (WO-216-D034 reopens D024 with this observation).",
+          "reopenWhen": "A fresh complete review row fails at 0859ff09… before WO-216 is published, or a later change edits the repaired fixtures, scripts/check-role-oracle.mjs or the Preflight claim rule.",
+          "targets": [],
+          "at": "2026-10-18T15:11:54.387Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-65e6817f7cd32eae",
+      "key": "decision:docs/evidence/WO-216/decisions.md#wo-216-d027",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ed04ce42e04d7f0947f991706c6cd00bfb1bb0e5d6421c2a725c4f8da2d5f7c1",
+          "ref": "docs/evidence/WO-216/decisions.md#wo-216-d027--final-review-fail-final-001-the-await-misreports-criterion-11-refuses-a-standing-fresh-row-and-the-index-keeps-passing-output",
+          "title": "WO-216-D027: WO-216 resume: fix. (F1) Make node scripts/harness.mjs evidence --wait report the awaited gate's own row: record the structural companion before the gate row, exclude structural rows…",
+          "summary": "{ \"id\": \"WO-216-D027\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Fail FINAL-001. At the integrated subject, code identity f09d6ade4b8facd8092da2b5e85c45dee825de2d7a7eb6d143a18709e7b14a5d (integration took in nothing, D026), criteria 1 to 10 and 12 to 15 are met and criterion 11 is unmet. Three findings block. F1 (blocking; breaks a behavior main had, shown by a probe): every runner invocation records the gate row and then a structural companion row built from it with the same recordedAt and tree hash, the runner records no gate outcome, and node scripts/harness.mjs evidence --wait takes the last row at the tree as the run's verdict, ",
+          "missing": false
+        },
+        {
+          "hash": "1ee3934a8e5517d40cde07bbaecfee467c5c349b049768fe2197552842c07a47",
+          "ref": "docs/evidence/WO-216/decisions.md#wo-216-d027--final-review-fail-final-001-the-await-misreports-criterion-11-refuses-a-standing-fresh-row-and-the-index-keeps-passing-output",
+          "title": "WO-216-D027: WO-216 resume: fix. (F1) Make node scripts/harness.mjs evidence --wait report the awaited gate's own row: record the structural companion before the gate row, exclude structural rows…",
+          "summary": "{ \"id\": \"WO-216-D027\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Fail FINAL-001. At the integrated subject, code identity f09d6ade4b8facd8092da2b5e85c45dee825de2d7a7eb6d143a18709e7b14a5d (integration took in nothing, D026), criteria 1 to 10 and 12 to 15 are met and criterion 11 is unmet. Three findings block. F1 (blocking; breaks a behavior main had, shown by a probe): every runner invocation records the gate row and then a structural companion row built from it with the same recordedAt and tree hash, the runner records no gate outcome, and node scripts/harness.mjs evidence --wait takes the last row at the tree as the run's verdict, ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Executed by the second repair: F1, F2 and F3 are repaired with fixtures that fail without each fix (D029 to D031), the bounded follow-ups are taken or deferred with a row (D032) and the planning items stay under D027; reproduced by VER-003 and by FINAL-002's bounded reproductions, and FINAL-002's fresh complete review row at 0859ff092e29c72adb8812a12ceecc8fed770cf5a63d6de979a5be5cdc7859a8 passed all 41 suites (2026-10-18T15:08:12.533Z). The remaining F17 cases and the orphan half of F14 are boarded anew under WO-216-D034 (F2, F3).",
+          "reopenWhen": "A later change edits the wait's row choice, requireFinalReviewGate or the runner's output stripping without a case that fails without it, or WO-216-D034's F2 or F3 row is disposed without the named cases.",
+          "targets": [],
+          "at": "2026-10-18T15:11:54.306Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9de14a69403e2b32",
+      "key": "decision:docs/evidence/WO-216/decisions.md#wo-216-d032",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "975081df2879cf6f3fa90bffdde3b0c09848586a8f63fe26c65339e03bec6af8",
+          "ref": "docs/evidence/WO-216/decisions.md#wo-216-d032--bounded-follow-ups-taken-in-this-repair-and-the-two-left-with-a-follow-up",
+          "title": "WO-216-D032: Declare the five hand-kept copy sites (scripts/test-configuration-root.mjs twice, scripts/test-concurrent-control.mjs, scripts/test-harness.mjs twice) as copied-fixture closures so…",
+          "summary": "{ \"id\": \"WO-216-D032\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: fix; FINAL-001 follow-ups within the Boy Scout bound\", \"decision\": \"Taken: F5 (preflightRows reports displaced tasks and the completion and final-review refusals name npm run sync then a passing structural phase when a structural task was displaced), F7 (runner-fixtures declares the three launchpad files and scripts/fixtures/launchpad-cases.json), F9 (a task result marked stopped inside an unstopped row is never carried; the case is restored), F12 (the harness host's stop message names the stopped row the nested runner recorded, when one exists), F14 (npm run sync reports a timed-out check as unknown and refused without runnin",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-851cba3a914ab359",
+      "key": "decision:docs/evidence/WO-216/decisions.md#wo-216-d034",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "17f33adb38a0ead528ef30dc179332bc2b851a253e7534e496180bcef0f31935",
+          "ref": "docs/evidence/WO-216/decisions.md#wo-216-d034--final-review-pass-final-002-at-the-integrated-subject-one-operator-packet-and-ten-follow-ups-two-corrected-in-this-review",
+          "title": "WO-216-D034: Next order editing these surfaces, or the planning pass: (F2) add the transition and row-state cases FINAL-001 F17 listed to scripts/test-verifier-gate-claims.mjs: missing and…",
+          "summary": "{ \"id\": \"WO-216-D034\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: final review; FINAL-002\", \"kind\": \"finding\", \"decision\": \"Pass FINAL-002. At the integrated subject, code identity 0859ff092e29c72adb8812a12ceecc8fed770cf5a63d6de979a5be5cdc7859a8 (integration took in nothing, D033), criteria 1 to 15 are met: criteria 1 to 14 on the executed fixtures, the eighteen rows VER-003 consumed at this identity and this review's bounded reproductions, and criterion 15 on the fresh complete review row recorded at 2026-10-18T15:08:12.533Z (gateSelection review, executionMode forced-fresh, 41 suites, 100 fresh tasks, reusedSuites 0, exit 0, 2,211.5 s, identity and build output unchanged), recorded after t",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
