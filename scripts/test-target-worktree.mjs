@@ -1,3 +1,4 @@
+import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -183,21 +184,11 @@ const fixture = (base) => {
   );
   write(main, "package.json", '{"private":true}\n');
   mkdirSync(join(main, "scripts"));
-  for (const name of [
-    "worktree.mjs",
-    "resume.mjs",
-    "release.mjs",
-    "license-surfaces.mjs",
-    "siblings.mjs",
-    "outward-lint.mjs",
-    "target-gate.mjs",
-    "test-runner.mjs",
-    "refute-plan.mjs",
-    "work-orders.mjs",
-  ])
-    cpSync(join(TOOL_ROOT, "scripts", name), join(main, "scripts", name), {
-      recursive: false,
-    });
+  copyFixtureFiles(
+    TOOL_ROOT,
+    main,
+    "scripts/test-target-worktree.fixture-inputs.json",
+  );
   cpSync(join(TOOL_ROOT, "scripts/lib"), join(main, "scripts/lib"), {
     recursive: true,
   });
@@ -3408,6 +3399,54 @@ test("self start preserves a failed receipt carry and its printed retry complete
     assert.equal(
       git(f.main, "status", "--porcelain", "--untracked-files=all"),
       "",
+    );
+  }));
+
+test("worktree start carries the main checkout's local-terms list and a clone record accepts an id the order checkout declares", () =>
+  withFixture((f) => {
+    const terms = "FixturePrivateTerm\n";
+    write(f.main, "records/state/local/terms.txt", terms);
+    f.mapClone();
+    const started = f.start();
+    assert.match(started, /Carried the local-terms list into /u);
+    const carried = docPath(f.orderRoot, "control", "local/terms.txt");
+    assert.equal(readFileSync(carried, "utf8"), terms);
+    assert.equal(git(f.orderRoot, "check-ignore", "--quiet", carried), "");
+    // A registration lands on an order branch before main: the clone record
+    // validates its id against the running checkout as well as main.
+    const config = JSON.parse(
+      readFileSync(join(f.orderRoot, "dotln.config.json"), "utf8"),
+    );
+    config.repositories.second = config.repositories.target;
+    write(f.orderRoot, "dotln.config.json", JSON.stringify(config));
+    const fromOrder = (id) =>
+      f.call(f.orderRoot, f.orderRoot, "worktree", ["clone", id, f.clone]);
+    f.ok(fromOrder("second"));
+    assert.equal(
+      JSON.parse(readFileSync(cloneMapPath(f.main), "utf8")).second,
+      f.clone,
+    );
+    assert.equal(
+      existsSync(cloneMapPath(f.orderRoot)),
+      false,
+      "the record lives in the main checkout's map",
+    );
+    const undeclared = fromOrder("third");
+    assert.equal(undeclared.status, 1);
+    assert.match(undeclared.stderr, /unknown repository id "third"/u);
+  }));
+
+test("worktree start names the local-terms registration step when the main checkout has no list", () =>
+  withFixture((f) => {
+    f.mapClone();
+    const started = f.start();
+    assert.match(
+      started,
+      /No local-terms list at .*; register records\/state\/local\/terms\.txt in the new worktree/u,
+    );
+    assert.equal(
+      existsSync(docPath(f.orderRoot, "control", "local/terms.txt")),
+      false,
     );
   }));
 

@@ -245,10 +245,25 @@ const gitTopLevel = (clone) => {
   return clone;
 };
 
-export const recordRepositoryClone = (launchpad, id, clone) => {
+/** The clone record lives in the main checkout's ignored map, while the
+ * registration that declares the id may still be on an order branch: the id
+ * is accepted when the main checkout or the running checkout declares it. */
+export const recordRepositoryClone = (
+  launchpad,
+  id,
+  clone,
+  { declaredIn } = {},
+) => {
+  const declares = (root) =>
+    Object.hasOwn(loadConfig(root).repositories, id) ||
+    exportSiblings(readDeclaration(root)).some((entry) => entry.id === id);
   if (
-    !Object.hasOwn(loadConfig(launchpad).repositories, id) &&
-    !exportSiblings(readDeclaration(launchpad)).some((entry) => entry.id === id)
+    !declares(launchpad) &&
+    !(
+      declaredIn &&
+      realpathSync(declaredIn) !== realpathSync(launchpad) &&
+      declares(declaredIn)
+    )
   )
     throw new Error(`unknown repository id ${JSON.stringify(id)}`);
   gitTopLevel(clone);

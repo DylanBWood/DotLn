@@ -6,8 +6,15 @@ import {
 } from "./lib/siblings.mjs";
 import { refreshHarnessRuntime } from "./lib/harness-runtime.mjs";
 import { checksPath } from "./lib/gate-evidence.mjs";
-import { findLaunchpad, loadConfig } from "./lib/config.mjs";
-import { existsSync, lstatSync, readFileSync, realpathSync } from "node:fs";
+import { docPath, findLaunchpad, loadConfig } from "./lib/config.mjs";
+import {
+  copyFileSync,
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  readFileSync,
+  realpathSync,
+} from "node:fs";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 
 import { spawnSync } from "node:child_process";
@@ -391,6 +398,23 @@ const reconcileDerivedWorktrees = (
   }
   return lines;
 };
+// The private local-terms list is ignored by Git, so a new worktree starts
+// without one. The main checkout's list is carried into the order worktree
+// when it has one; otherwise the session registers its own.
+const carryLocalTerms = (mainPath, target) => {
+  const source = docPath(mainPath, "control", "local/terms.txt");
+  const destination = docPath(target, "control", "local/terms.txt");
+  if (existsSync(destination)) return;
+  if (!existsSync(source) || !lstatSync(source).isFile()) {
+    process.stdout.write(
+      `No local-terms list at ${mainPath}; register ${relative(target, destination)} in the new worktree before its first outward check.\n`,
+    );
+    return;
+  }
+  mkdirSync(dirname(destination), { recursive: true });
+  copyFileSync(source, destination);
+  process.stdout.write(`Carried the local-terms list into ${target}.\n`);
+};
 const carrySiblingReceipts = async (mainPath, target, pending) => {
   if (!pending.length) return;
   const { carryPendingReceipts } = await import("./siblings.mjs");
@@ -442,6 +466,7 @@ export async function completeSelfStart(
   )
     throw new Error("preserved start authority differs");
   await carrySiblingReceipts(mainPath, target, siblingReceipts);
+  carryLocalTerms(mainPath, target);
   const state = readControl(target).orders.get(workOrderId)?.state;
   let output = "";
   if (!state || ["closed", "withdrawn"].includes(state.phase)) {
@@ -539,6 +564,7 @@ const startTargetWorktree = async (mainPath, entry) => {
       launchpad,
       entry.siblingReceipts ?? capturePendingReceipts(mainPath),
     );
+    carryLocalTerms(mainPath, launchpad);
     const state = readControl(launchpad).orders.get(workOrderId)?.state;
     if (!state || ["closed", "withdrawn"].includes(state.phase)) {
       const activated = spawnSync(
@@ -755,7 +781,9 @@ const main = async () => {
   const mainPath = mainWorktree(toolRoot);
 
   if (action === "clone") {
-    recordRepositoryClone(mainPath, workOrderId, actionArgs[0]);
+    recordRepositoryClone(mainPath, workOrderId, actionArgs[0], {
+      declaredIn: toolRoot,
+    });
     process.stdout.write(`Recorded local clone for ${workOrderId}.\n`);
     return;
   }
