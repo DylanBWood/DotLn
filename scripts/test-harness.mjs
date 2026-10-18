@@ -268,17 +268,18 @@ function fixture() {
     "scripts/resume.mjs",
     'import {readFileSync} from "node:fs"; console.log(readFileSync("docs/control/fixture-status.json", "utf8"));\n',
   );
-  for (const path of [
-    "scripts/harness.mjs",
-    "scripts/lib/config.mjs",
-    "scripts/lib/validation.mjs",
-    "scripts/lib/harness.mjs",
-    "scripts/lib/terms.mjs",
-    "scripts/lib/paths.mjs",
-    "scripts/lib/helpers.mjs",
-    "scripts/lib/git.mjs",
-    "packages/skeleton/src/runtime-inputs.mjs",
-  ]) {
+  const copiedInputs = JSON.parse(
+    readFileSync(
+      new URL("./test-harness.fixture-inputs.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  // Optional CLI branches import helpers lazily; keep their containing
+  // library tree alongside the narrow command and runtime leaves.
+  cpSync(join(sourceRoot, "scripts/lib"), join(root, "scripts/lib"), {
+    recursive: true,
+  });
+  for (const path of copiedInputs.files) {
     mkdirSync(dirname(join(root, path)), { recursive: true });
     cpSync(join(sourceRoot, path), join(root, path));
   }
@@ -1238,6 +1239,29 @@ test("WO-166 evidence wait exits for pass, failure, timeout and absent row", asy
     const result = wait(root);
     assert.equal(result.status, 1, result.stderr);
     assert.equal(JSON.parse(result.stdout).checkId, "git diff --check");
+    // Every runner gate records a structural companion row after its own
+    // row at the same timestamp. The wait reports the run's own row and its
+    // verdict, never the companion's.
+    for (const [checkId, exitCode, status] of [
+      ["npm test", 1, 1],
+      ["npm test", 0, 0],
+      ["npm run test:docs", 1, 1],
+    ]) {
+      const at = new Date().toISOString();
+      const own = row(checkId, exitCode, at);
+      recordGateChecks(root, [
+        own,
+        {
+          ...own,
+          checkId: "structural",
+          exitCode: 0,
+          evidenceRef: `fixture:structural:${at}`,
+        },
+      ]);
+      const waited = wait(root);
+      assert.equal(waited.status, status, waited.stderr);
+      assert.equal(JSON.parse(waited.stdout).checkId, checkId);
+    }
     const missingRows = fixture();
     try {
       recordGateOutcome(missingRows, {
@@ -1248,6 +1272,18 @@ test("WO-166 evidence wait exits for pass, failure, timeout and absent row", asy
       const absent = wait(missingRows);
       assert.equal(absent.status, 2, absent.stderr);
       assert.deepEqual(JSON.parse(absent.stdout), { run: null });
+      // A tree whose only row is a companion has no run row.
+      const companionTree = gateTreeHash(missingRows);
+      recordGateChecks(missingRows, [
+        {
+          ...row("structural", 0, new Date().toISOString()),
+          treeHash: companionTree,
+          subject: companionTree,
+        },
+      ]);
+      const companionOnly = wait(missingRows);
+      assert.equal(companionOnly.status, 2, companionOnly.stderr);
+      assert.deepEqual(JSON.parse(companionOnly.stdout), { run: null });
     } finally {
       removeFixture(missingRows, { recursive: true });
     }
@@ -3094,7 +3130,7 @@ for (const mode of ["runner", "evidence", "entry"])
       let child;
       let finished;
       const release = () => {
-        for (const stage of ["build", "checks"])
+        for (const stage of ["build", "checks", "product"])
           write(root, `${local}/${stage}.go`, "go");
         if (child && child.exitCode === null) child.kill("SIGTERM");
       };
@@ -3171,7 +3207,16 @@ while (!existsSync("${local}/" + stage + ".go")) {
         }
         const program =
           mode === "runner"
-            ? `const {runGate} = await import(${JSON.stringify(new URL("./test-runner.mjs", import.meta.url).href)}); process.exitCode = (await runGate(["--only", "format"], process.cwd())).exitCode;`
+            ? `const {runGate, STRUCTURAL_TASKS} = await import(${JSON.stringify(new URL("./test-runner.mjs", import.meta.url).href)});
+const command = (stage) => [process.execPath, "hold-gate.mjs", stage];
+const table = [
+  {name: "build", build: true, command: [process.execPath, "-e", ""]},
+  ...STRUCTURAL_TASKS.map(name => ({name, structural: true, command: name === "format" ? command("checks") : [process.execPath, "-e", ""]})),
+  {name: "fixture-product", product: true, command: command("product")},
+];
+const result = await runGate(["--only", "fixture-product"], process.cwd(), {table});
+process.exitCode = result.exitCode;
+`
             : 'const {runHarnessEvidence} = await import("./packages/skeleton/dist/src/harness-host.js"); const checks = runHarnessEvidence(process.cwd()); if (checks.some(row => row.exitCode !== 0)) process.exitCode = 1;';
         const before = gateTreeHash(root);
         const hooks = [
@@ -3207,7 +3252,9 @@ while (!existsSync("${local}/" + stage + ".go")) {
         });
         for (const stage of mode === "entry"
           ? ["build", "checks"]
-          : ["checks"]) {
+          : mode === "runner"
+            ? ["checks", "product"]
+            : ["checks"]) {
           while (!existsSync(join(root, local, `${stage}.ready`))) {
             t.signal.throwIfAborted();
             assert.equal(child.exitCode, null, output);
@@ -3215,6 +3262,39 @@ while (!existsSync("${local}/" + stage + ".go")) {
           }
           const runs = activeGateRuns(root);
           assert.ok(runs.length > 0);
+          // The full mutation matrix runs in the structural hold. These
+          // generated-hook calls check that its guard survives into a
+          // product task without repeating the same matrix.
+          if (stage === "product") {
+            for (const hook of hooks)
+              for (const attempt of [
+                {
+                  tool_name: "Write",
+                  tool_input: {
+                    file_path: "fixture.ts",
+                    content: "changed\n",
+                  },
+                },
+                {
+                  tool_name: "exec_command",
+                  tool_input: { command: "printf changed > fixture.ts" },
+                },
+              ]) {
+                const verdict = invoke(
+                  root,
+                  hook,
+                  input(root, "PreToolUse", attempt),
+                );
+                assert.equal(allowed(verdict), false, `${hook} product hold`);
+                assert.match(
+                  verdict.hookSpecificOutput.permissionDecisionReason,
+                  /active gate/,
+                );
+              }
+            assert.equal(gateTreeHash(root), before);
+            write(root, `${local}/${stage}.go`, "go");
+            continue;
+          }
           const pathAttempts = [
             `${local}/hardlink.ts`,
             `${local}/dangling.md`,
@@ -3522,6 +3602,27 @@ while (!existsSync("${local}/" + stage + ".go")) {
           write(root, `${local}/${stage}.go`, "go");
         }
         assert.equal(await finished, 0, output);
+        if (mode === "runner") {
+          const structural = readGateChecks(root, before).find(
+            (row) => row.checkId === "structural",
+          );
+          assert.ok(structural, "the held gate records its structural phase");
+          assert.deepEqual(
+            structural.cases.map((row) => [
+              row.name,
+              row.exitCode,
+              row.executed,
+            ]),
+            [
+              "format",
+              "configuration-root",
+              "registrations",
+              "declarations",
+              "generated",
+              "host",
+            ].map((name) => [name, 0, true]),
+          );
+        }
         assert.deepEqual(activeGateRuns(root), []);
         assert.equal(gateTreeHash(root), before);
         assert.equal(

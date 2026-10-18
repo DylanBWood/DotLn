@@ -15,7 +15,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { decodeLog } from "@dotln/kernel";
 import {
@@ -64,16 +64,18 @@ test("WO-021 agent constellation CLI persists permission/refusal and one metadat
     "dir",
   );
   mkdirSync(join(root, "packages/skeleton/src"));
-  for (const name of [
-    "gate-deadlines.mjs",
-    "gate-evidence.mjs",
-    "runtime-inputs.mjs",
-    "writer-teardown.mjs",
-  ])
-    cpSync(
-      join(repository, "packages/skeleton/src", name),
-      join(root, "packages/skeleton/src", name),
-    );
+  for (const path of JSON.parse(
+    readFileSync(
+      join(
+        repository,
+        "packages/skeleton/test/control-beacon-cli.fixture-inputs.json",
+      ),
+      "utf8",
+    ),
+  ).files as string[]) {
+    mkdirSync(dirname(join(root, path)), { recursive: true });
+    cpSync(join(repository, path), join(root, path));
+  }
   mkdirSync(join(root, "docs/work-orders"), { recursive: true });
   writeFileSync(
     join(root, "docs/work-orders/WO-099-fixture.md"),

@@ -1,0 +1,38 @@
+{
+  "fixture": "target worktree control plane",
+  "entries": [
+    "scripts/worktree.mjs",
+    "scripts/resume.mjs",
+    "scripts/release.mjs",
+    "scripts/license-surfaces.mjs",
+    "scripts/siblings.mjs",
+    "scripts/outward-lint.mjs",
+    "scripts/target-gate.mjs",
+    "scripts/test-runner.mjs",
+    "scripts/refute-plan.mjs",
+    "scripts/work-orders.mjs"
+  ],
+  "files": [
+    "scripts/worktree.mjs",
+    "scripts/resume.mjs",
+    "scripts/release.mjs",
+    "scripts/license-surfaces.mjs",
+    "scripts/siblings.mjs",
+    "scripts/outward-lint.mjs",
+    "scripts/target-gate.mjs",
+    "scripts/test-runner.mjs",
+    "scripts/refute-plan.mjs",
+    "scripts/work-orders.mjs",
+    "packages/skeleton/src/evidence-editions.mjs"
+  ],
+  "directories": [
+    "scripts/lib",
+    "packages/compiler/dist",
+    "packages/kernel/dist",
+    "packages/skeleton/dist",
+    "packages/console/dist"
+  ],
+  "includes": [
+    "scripts/test-beacon-fixture.fixture-inputs.json"
+  ]
+}

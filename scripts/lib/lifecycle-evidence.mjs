@@ -17,7 +17,7 @@ export async function requireLifecycleEvidence(
   action,
   verdict,
   workOrder,
-  { targetGate } = {},
+  { targetGate, reviewGate } = {},
 ) {
   const started = Date.now();
   // Untracked files are read too: they join the diff as intent-to-add entries
@@ -123,13 +123,17 @@ export async function requireLifecycleEvidence(
       );
   }
   const gate =
-    action === "final-review-result" && verdict !== "fail" && !targetGate
+    action === "final-review-result" &&
+    verdict !== "fail" &&
+    !targetGate &&
+    !reviewGate
       ? findGateCheck(root, "npm test", treeHash)
       : null;
   if (
     action === "final-review-result" &&
     verdict !== "fail" &&
     !targetGate &&
+    !reviewGate &&
     !gate
   )
     advise(
@@ -235,20 +239,21 @@ export async function requireLifecycleEvidence(
     advise(`Session observations unavailable: ${error.message}`);
   }
   const productGate =
-    gate &&
-    Object.fromEntries(
-      [
-        "checkId",
-        "treeHash",
-        "codeIdentity",
-        "instanceInputDigest",
-        "durationMs",
-        "evidenceRef",
-        "recordedAt",
-        "executed",
-        "exitCode",
-      ].map((key) => [key, gate[key]]),
-    );
+    reviewGate ??
+    (gate &&
+      Object.fromEntries(
+        [
+          "checkId",
+          "treeHash",
+          "codeIdentity",
+          "instanceInputDigest",
+          "durationMs",
+          "evidenceRef",
+          "recordedAt",
+          "executed",
+          "exitCode",
+        ].map((key) => [key, gate[key]]),
+      ));
   // `gateIndexError` is for the gate claims and never reaches the event.
   return {
     treeHash,

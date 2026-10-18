@@ -1,0 +1,12 @@
+{
+  "fixture": "scripts/test-launchpad-planning repository copy",
+  "entries": [
+    "scripts/launchpad.mjs"
+  ],
+  "files": [],
+  "directories": [
+    "scripts",
+    "packages",
+    "corpus"
+  ]
+}

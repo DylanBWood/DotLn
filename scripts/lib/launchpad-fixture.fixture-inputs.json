@@ -1,0 +1,12 @@
+{
+  "fixture": "scripts/lib/launchpad-fixture repository copy",
+  "entries": [
+    "scripts/launchpad.mjs"
+  ],
+  "files": [],
+  "directories": [
+    "scripts",
+    "packages",
+    "corpus"
+  ]
+}

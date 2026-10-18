@@ -1,0 +1,11 @@
+{
+  "fixture": "control-beacon CLI",
+  "entries": ["packages/skeleton/src/gate-evidence.mjs"],
+  "files": [
+    "packages/skeleton/src/gate-deadlines.mjs",
+    "packages/skeleton/src/gate-evidence.mjs",
+    "packages/skeleton/src/runtime-inputs.mjs",
+    "packages/skeleton/src/writer-teardown.mjs"
+  ],
+  "directories": ["scripts", "packages/beacons", "packages/compiler/dist", "packages/kernel/dist", "packages/skeleton/dist"]
+}

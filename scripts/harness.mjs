@@ -190,7 +190,12 @@ try {
       process.exitCode = 2;
     } else {
       const treeHash = gateTreeHash(root);
-      const row = readGateChecks(root, treeHash).at(-1);
+      // Every runner gate records a structural companion row after its own
+      // row, at the same timestamp. The wait reports the run's own row; a
+      // tree whose only rows are companions has no run row.
+      const row = readGateChecks(root, treeHash).findLast(
+        (entry) => entry.checkId !== "structural",
+      );
       const outcome = latestGateOutcome(root, treeHash, runIds);
       const observedAfterStart =
         !runIds.length ||
@@ -218,7 +223,7 @@ try {
     // The session that started a gate ends it here, in Claude and Codex
     // alike, without an operator step: every live gate process in this
     // worktree reads the request at its next boundary, ends its running
-    // suites, records no check and releases its marker.
+    // suites, records completed tasks as a stopped row and releases its marker.
     if (args.length !== 1)
       throw new Error("harness evidence --stop accepts no other arguments");
     const outcome = requestGateStop(root);
@@ -228,12 +233,12 @@ try {
       console.log("No active gate in this worktree; nothing to stop.");
     else if (outcome.active.length) {
       console.log(
-        `Stop requested; still running: ${outcome.active.map(label).join("; ")}. Each stops at its next boundary and records no check; run this command again to keep waiting.`,
+        `Stop requested; still running: ${outcome.active.map(label).join("; ")}. Each stops at its next boundary and records completed tasks as stopped, supplying no pass; run this command again to keep waiting.`,
       );
       process.exitCode = 1;
     } else
       console.log(
-        `Stopped ${outcome.stopped.map(label).join("; ")}; no check was recorded.`,
+        `Stopped ${outcome.stopped.map(label).join("; ")}; completed tasks, if any, were recorded as stopped; no pass is supplied.`,
       );
   } else {
     if (action === "evidence") {

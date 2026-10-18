@@ -1,3 +1,4 @@
+import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 // Real lifecycle fixture, also executable against an older resume source.
 import assert from "node:assert/strict";
 import {
@@ -29,10 +30,12 @@ assert.ok(readFileSync(join(parent, ".dotln-test-root-owner")));
 const scripts = dirname(fileURLToPath(import.meta.url));
 const root = join(parent, "verification-review");
 mkdirSync(join(root, "scripts"), { recursive: true });
-cpSync(
-  subject ?? join(scripts, "resume.mjs"),
-  join(root, "scripts/resume.mjs"),
+copyFixtureFiles(
+  join(scripts, ".."),
+  root,
+  "scripts/test-verification-review.fixture-inputs.json",
 );
+if (subject) cpSync(subject, join(root, "scripts/resume.mjs"));
 cpSync(join(scripts, "lib"), join(root, "scripts/lib"), { recursive: true });
 cpSync(join(scripts, "../.gitignore"), join(root, ".gitignore"));
 installBeaconFixture(root);

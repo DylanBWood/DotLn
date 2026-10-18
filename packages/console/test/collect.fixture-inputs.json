@@ -1,0 +1,13 @@
+{
+  "fixture": "packages/console/test/collect copied scripts",
+  "entries": [
+    "scripts/release.mjs"
+  ],
+  "files": [],
+  "directories": [
+    "scripts"
+  ],
+  "includes": [
+    "scripts/test-beacon-fixture.fixture-inputs.json"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "fixture": "scripts/test-control-beacons copied scripts",
+  "entries": [
+    "scripts/resume.mjs"
+  ],
+  "files": [],
+  "directories": [
+    "scripts"
+  ],
+  "includes": [
+    "scripts/test-beacon-fixture.fixture-inputs.json"
+  ]
+}

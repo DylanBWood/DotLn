@@ -1,7 +1,7 @@
 // Sibling registry fixtures. A temporary launchpad with its own Git history
 // stands in for core, so the generator's reads of tags and committed control
 // records are judged without this checkout's state; the export that writes a
-// real receipt is judged in scripts/test-launchpad.mjs beside the other
+// real receipt is judged in scripts/test-launchpad-update.mjs beside the other
 // export cases. Every case starts from the same baseline state.
 import test from "node:test";
 import assert from "node:assert/strict";

@@ -1,0 +1,61 @@
+[
+  {
+    "fixture": "process-debt lifecycle CLI",
+    "entries": [
+      "scripts/resume.mjs",
+      "scripts/harness.mjs",
+      "scripts/harness-entry.mjs",
+      "scripts/work-orders.mjs",
+      "scripts/worktree.mjs",
+      "scripts/license-surfaces.mjs",
+      "scripts/siblings.mjs"
+    ],
+    "files": [
+      "scripts/resume.mjs",
+      "scripts/harness.mjs",
+      "scripts/harness-entry.mjs",
+      "scripts/work-orders.mjs",
+      "scripts/worktree.mjs",
+      "scripts/license-surfaces.mjs",
+      "scripts/siblings.mjs"
+    ],
+    "directories": [
+      "scripts/lib",
+      "packages/compiler/dist",
+      "packages/kernel/dist",
+      "packages/skeleton/dist"
+    ],
+    "includes": [
+      "scripts/test-beacon-fixture.fixture-inputs.json"
+    ],
+    "provided": [
+      "scripts/bootstrap.mjs"
+    ]
+  },
+  {
+    "fixture": "process-debt harness CLI",
+    "entries": [
+      "scripts/harness.mjs",
+      "scripts/harness-entry.mjs",
+      "scripts/work-orders.mjs"
+    ],
+    "files": [
+      "scripts/harness.mjs",
+      "scripts/harness-entry.mjs",
+      "scripts/work-orders.mjs"
+    ],
+    "directories": [
+      "scripts/lib",
+      "packages/compiler/dist",
+      "packages/kernel/dist",
+      "packages/skeleton/dist"
+    ],
+    "includes": [
+      "scripts/test-beacon-fixture.fixture-inputs.json"
+    ],
+    "provided": [
+      "scripts/bootstrap.mjs",
+      "scripts/resume.mjs"
+    ]
+  }
+]

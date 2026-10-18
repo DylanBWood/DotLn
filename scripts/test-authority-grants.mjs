@@ -15,6 +15,7 @@ import {
   projectAuthorityInspection,
   renderCompiledDiff,
   authorityGrantRegistryHash,
+  normalizeAuthorityGrants,
 } from "@dotln/compiler";
 import {
   authorityFixture,
@@ -37,8 +38,26 @@ import {
   compileRegisteredLoadout,
 } from "./lib/authority-grants.mjs";
 import { CONFIG_FILENAME, loadConfig } from "./lib/config.mjs";
+import { isKitRoot } from "../packages/skeleton/src/runtime-inputs.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
+
+/** What the committed registry may hold. Core adds no personal authority. An
+ * exported instance commits the operator grant its registration order writes
+ * (README § First steps, step 4), and every committed grant must still come
+ * from the operator or a registered repository. Returns the offending ids. */
+const committedGrantViolations = (checkout) =>
+  normalizeAuthorityGrants(
+    JSON.parse(
+      readFileSync(join(checkout, COMMITTED_AUTHORITY_GRANTS), "utf8"),
+    ),
+  )
+    .filter(
+      (grant) =>
+        !isKitRoot(checkout) ||
+        !["operator", "registered-repository"].includes(grant.grantedBy),
+    )
+    .map((grant) => grant.grantId);
 const write = (dir, path, grants) =>
   writeFixture(dir, path, JSON.stringify(grants) + "\n");
 const guard = (program, effect, evidence = []) =>
@@ -322,10 +341,51 @@ test("WO-042 AC5/6 Contributor projection and grant bundle carry the enforced en
     /compiled build envelope/u,
   );
   assert.deepEqual(
-    JSON.parse(readFileSync(join(root, COMMITTED_AUTHORITY_GRANTS), "utf8")),
+    committedGrantViolations(root),
     [],
-    "this order adds no personal authority",
+    "core adds no personal authority; an instance commits only operator or registered-repository grants",
   );
+});
+
+test("an exported instance may commit the operator grant its registration order writes", () => {
+  const instance = mkdtempSync(join(tmpdir(), "dotln-instance-grants-"));
+  try {
+    writeFixture(instance, "KIT-MANIFEST.json", "{}\n");
+    const registry = join(instance, COMMITTED_AUTHORITY_GRANTS);
+    writeFixture(instance, COMMITTED_AUTHORITY_GRANTS, "[]\n");
+    assert.ok(isKitRoot(instance));
+    assert.deepEqual(committedGrantViolations(instance), []);
+    writeFixture(
+      instance,
+      COMMITTED_AUTHORITY_GRANTS,
+      JSON.stringify([authorityGrant]),
+    );
+    assert.deepEqual(committedGrantViolations(instance), []);
+    writeFixture(
+      instance,
+      COMMITTED_AUTHORITY_GRANTS,
+      JSON.stringify([{ ...authorityGrant, grantedBy: "host-policy" }]),
+    );
+    assert.deepEqual(committedGrantViolations(instance), [
+      authorityGrant.grantId,
+    ]);
+    // Core keeps its empty registry whatever an instance commits.
+    rmSync(join(instance, "KIT-MANIFEST.json"));
+    writeFixture(instance, "packages/skeleton/tsconfig.json", "{}\n");
+    writeFixture(instance, COMMITTED_AUTHORITY_GRANTS, "[]\n");
+    assert.ok(!isKitRoot(instance));
+    writeFixture(
+      instance,
+      COMMITTED_AUTHORITY_GRANTS,
+      JSON.stringify([authorityGrant]),
+    );
+    assert.deepEqual(committedGrantViolations(instance), [
+      authorityGrant.grantId,
+    ]);
+    assert.ok(registry);
+  } finally {
+    rmSync(instance, { recursive: true, force: true });
+  }
 });
 
 test("WO-073 criterion 1: two repositories in one class", () => {

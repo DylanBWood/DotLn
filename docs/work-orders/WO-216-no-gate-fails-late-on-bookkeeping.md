@@ -1,4 +1,4 @@
-# WO-216 — No gate fails late on bookkeeping: every gate and every handoff runs a structural phase first, in seconds, that checks formatting, source declarations and copied-fixture closures, the freshness of every generated artifact and the host's memory state, and stops at its first failure naming the one command that regenerates what is stale; a run stops starting tasks at its first failure; the complete gate runs once per order, fresh, at final review, while handoffs require the order's own Preflight suites; the launchpad suite runs as file lanes under their own deadlines; a stopped run records what finished (version assigned at activation)
+# WO-216 — No gate fails late on bookkeeping: every gate and every handoff runs a structural phase first, in seconds, that checks formatting, source declarations and copied-fixture closures, the freshness of every generated artifact and the host's memory state, and stops at its first failure naming the one command that regenerates what is stale; a run stops starting tasks at its first failure; the complete gate runs once per order, fresh, at final review, while handoffs require the order's own Preflight suites; the launchpad suite runs as file lanes under their own deadlines; a stopped run records what finished (v0.84.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -317,14 +317,20 @@ files; the evidence README; decisions; write-backs.
     dependency; `gate-deadlines.mjs` and both `gate-evidence.mjs` files
     unchanged.
 
-**Preflight:** `npm test -- --only runner-fixtures` for steps 2 to 9,
-`configuration-root` for every script step, `sync-fixtures` for step 7,
-`resume` for steps 10 to 12, `harness`, `harness-context` and
-`launchpad-docs` for step 13, `process-debt` for steps 14 and 15,
-`launchpad` once after step 9 (its files change here), the four evidence
-suites for step 16, each as `npm test -- --only <suite>` under `node
-scripts/harness.mjs bounded --`, and `npm run test:docs` when a document
-changes; then the handoff of step 19.
+**Preflight:** `npm test -- --only runner-fixtures` for steps 2 to 9;
+`npm test -- --only configuration-root` for every script step;
+`npm test -- --only sync-fixtures` for step 7;
+`npm test -- --only resume` for steps 10 to 12;
+`npm test -- --only harness`, `npm test -- --only harness-context` and
+`npm test -- --only launchpad-docs` for step 13;
+`npm test -- --only process-debt` for steps 14 and 15;
+`npm test -- --only launchpad` once after the split (its files change here);
+`npm test -- --only authority-evidence`, `npm test -- --only feedback-evidence`,
+`npm test -- --only harness-evidence` and `npm test -- --only evidence-sources`
+for step 16, each under `node scripts/harness.mjs bounded --`, and
+`npm run test:docs` when a document changes; `npm test -- --only authority-grants`,
+`npm test -- --only target-worktree` and `npm test -- --only launchpad-planning`
+for the operator scope expansion (WO-216-D028); then the handoff of step 19.
 
 **Execution plan (the executor follows these steps in order; observed at `7b8206f4`, 2026-10-17):**
 
@@ -497,3 +503,23 @@ edition from the sync command.
 5. The launchpad suite is split into three files by the case groups the
    Design names; the executor may choose a different grouping that keeps
    every case and the deadline per file.
+
+**Operator scope expansion (2026-10-18, `resume: fix`, WO-216-D028):** the
+operator directed this repair to also fix three kit gaps a launchpad exported
+at v0.83.0 met while executing its repository registration order, and one
+recipe note. (1) `scripts/test-authority-grants.mjs` asserts an empty
+committed grant registry only in core; in an exported instance every
+committed grant is operator- or registered-repository-granted, with a
+synthetic kit case (`npm test -- --only authority-grants`). (2) `npm run
+worktree -- clone` accepts an id the running checkout's configuration or
+siblings declaration declares, so a registration order records its clone
+before its merge; the record stays in the main checkout's ignored map
+(`npm test -- --only target-worktree`). (3) `worktree start` carries the
+main checkout's ignored local-terms list into the new order worktree, or
+prints the registration step (`npm test -- --only target-worktree`). (4) The
+kit README's first steps, product 07 §Where the control plane finds its
+documents and §Operator resume phrases, and the playbook state these rules;
+the README tells an instance order's Preflight to name only suites the
+instance runs, never a core-only row such as `outward-lint`
+(`npm test -- --only launchpad-planning`, `npm run test:docs`). Criteria 1
+to 15 are unchanged; the three suites join the Preflight field above.

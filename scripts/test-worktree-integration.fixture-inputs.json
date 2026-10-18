@@ -1,0 +1,13 @@
+{
+  "fixture": "scripts/test-worktree-integration repository copy",
+  "entries": [
+    "scripts/worktree.mjs",
+    "scripts/launchpad.mjs"
+  ],
+  "files": [],
+  "directories": [
+    "scripts",
+    "packages",
+    "corpus"
+  ]
+}

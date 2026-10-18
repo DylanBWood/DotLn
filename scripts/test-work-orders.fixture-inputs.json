@@ -1,0 +1,17 @@
+{
+  "fixture": "test-work-orders",
+  "entries": [
+    "scripts/work-orders.mjs",
+    "scripts/resume.mjs"
+  ],
+  "files": [
+    "scripts/work-orders.mjs",
+    "scripts/resume.mjs"
+  ],
+  "directories": [
+    "scripts/lib"
+  ],
+  "includes": [
+    "scripts/test-beacon-fixture.fixture-inputs.json"
+  ]
+}

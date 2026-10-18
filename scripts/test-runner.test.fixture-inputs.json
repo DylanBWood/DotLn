@@ -1,0 +1,12 @@
+{
+  "fixture": "scripts/test-runner.test repository copy",
+  "entries": [
+    "scripts/check-registrations.mjs"
+  ],
+  "files": [],
+  "directories": [
+    "scripts",
+    "packages",
+    "corpus"
+  ]
+}

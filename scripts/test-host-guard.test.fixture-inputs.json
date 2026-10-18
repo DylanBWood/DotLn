@@ -1,0 +1,20 @@
+{
+  "fixture": "cadence corpus subprocesses",
+  "entries": [
+    "corpus/harness/wo102-generators.test.mjs",
+    "corpus/harness/wo102-properties.test.mjs",
+    "corpus/harness/wo102-replay.test.mjs"
+  ],
+  "files": [
+    "corpus/harness/bounded-findings.mjs",
+    "corpus/harness/generate-cadence-corpus.mjs",
+    "corpus/harness/wo102-cadence-lib.mjs",
+    "corpus/harness/wo102-reference.mjs",
+    "corpus/harness/wo102-generators.test.mjs",
+    "corpus/harness/wo102-properties.test.mjs",
+    "corpus/harness/wo102-replay.test.mjs"
+  ],
+  "directories": [
+    "packages/kernel/dist"
+  ]
+}

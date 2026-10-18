@@ -1,0 +1,6 @@
+{
+  "fixture": "evidence edition repository copy",
+  "entries": ["scripts/feedback-evidence.mjs"],
+  "files": [],
+  "directories": ["scripts", "packages", "corpus"]
+}

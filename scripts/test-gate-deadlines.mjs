@@ -299,6 +299,7 @@ test("a group member skipped for a failed dependency is never a timeline edge", 
     ],
     {
       concurrency: 1,
+      keepGoing: true,
       execute: async (row) => {
         await new Promise((done) => setTimeout(done, 5));
         return {

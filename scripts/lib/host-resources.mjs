@@ -372,6 +372,35 @@ export function readHostSnapshot({
   };
 }
 
+/** A light census exposes the same kernel pressure sample used by the guard,
+ * without collecting every process's expensive physical-footprint ledger. */
+export function pressureSample() {
+  const {
+    pressure,
+    swapBytes,
+    physicalBytes,
+    source,
+    unavailable,
+    observedAt,
+  } = readHostSnapshot({ footprint: false, directory: hostStateRoot() });
+  return {
+    pressure,
+    level:
+      pressure === 1
+        ? "normal"
+        : pressure === 2
+          ? "warning"
+          : pressure === 4
+            ? "critical"
+            : "unknown",
+    swapBytes,
+    physicalBytes,
+    source,
+    unavailable,
+    observedAt,
+  };
+}
+
 export function processAlive(owner, table) {
   return table.some(
     (row) => row.pid === owner.pid && row.birth === owner.birth,

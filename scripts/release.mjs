@@ -3311,6 +3311,30 @@ const main = async () => {
     }
     return;
   }
+  if (action === "sync-surfaces") {
+    if (args.length) throw new Error("usage: release sync-surfaces");
+    const state = parseControlState(toolRoot);
+    const written = [];
+    if (!state.repositoryId) {
+      // Regenerate only the owned claim from its assigned authority. The
+      // preparation planner still checks containment and protects authored
+      // prose, but no tag observation can assign or retime a target here.
+      const plan = planReleasePreparation(
+        toolRoot,
+        state,
+        undefined,
+        new Date().toISOString().slice(0, 10),
+        { repairClaim: true },
+      );
+      written.push(...applyReleasePreparation(plan));
+    }
+    const history = writeReleaseHistory(toolRoot);
+    if (history.changed) written.push(history.path);
+    writeOutput(
+      `Release surfaces synchronized from existing authority; ${written.length} file(s) changed.\n`,
+    );
+    return;
+  }
   if (action === "check-surfaces") {
     const localOnly = args.includes("--local");
     const selection = args.filter((arg) => arg !== "--local");
@@ -3398,7 +3422,7 @@ const main = async () => {
     return publishHistoricalNotes(tag);
   }
   throw new Error(
-    "usage: release prepare [--local] [--integration] | release check-surfaces [--local] [--committed [WO-NNN]] | release close WO-NNN [--publish] | release validate <manifest.json> | release manifest-from-tag vX.Y.Z | release notes vX.Y.Z | release list [--markdown [--write]] | release publish-notes vX.Y.Z",
+    "usage: release prepare [--local] [--integration] | release check-surfaces [--local] [--committed [WO-NNN]] | release sync-surfaces | release close WO-NNN [--publish] | release validate <manifest.json> | release manifest-from-tag vX.Y.Z | release notes vX.Y.Z | release list [--markdown [--write]] | release publish-notes vX.Y.Z",
   );
 };
 

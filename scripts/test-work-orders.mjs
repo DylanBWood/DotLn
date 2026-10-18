@@ -1,3 +1,4 @@
+import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import { write } from "./lib/helpers.mjs";
 import test from "node:test";
 import { installBeaconFixture } from "./test-beacon-fixture.mjs";
@@ -57,9 +58,10 @@ const makeRepo = (name) => {
   runGit(repo, ["config", "user.name", "DotLn Index Fixture"]);
   runGit(repo, ["config", "user.email", "test@example.invalid"]);
   mkdirSync(join(repo, "scripts"));
-  cpSync(
-    join(scriptRoot, "work-orders.mjs"),
-    join(repo, "scripts/work-orders.mjs"),
+  copyFixtureFiles(
+    join(scriptRoot, ".."),
+    repo,
+    "scripts/test-work-orders.fixture-inputs.json",
   );
   installBeaconFixture(repo);
   cpSync(join(scriptRoot, "lib"), join(repo, "scripts/lib"), {

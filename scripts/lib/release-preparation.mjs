@@ -103,7 +103,7 @@ export function planReleasePreparation(
   state,
   latest,
   date,
-  { integration = false, observation = "local tags" } = {},
+  { integration = false, observation = "local tags", repairClaim = false } = {},
 ) {
   if (
     realpathSync(runGit(root, ["rev-parse", "--show-toplevel"])) !==
@@ -146,6 +146,10 @@ export function planReleasePreparation(
       `release prepare requires exactly one strict version in the work-order heading, or the ${activationPlaceholder} placeholder`,
     );
   const previous = unassigned ? undefined : versions[0];
+  if (repairClaim && (unassigned || latest !== undefined))
+    throw new Error(
+      "release surface sync needs an already assigned target and never retimes it",
+    );
   const declarations = [
     ...authority.matchAll(/^\*\*Release classification:\*\*[^\n]*$/gm),
   ];
@@ -172,7 +176,10 @@ export function planReleasePreparation(
   const blockLines = lines.slice(start, finish).filter((line) => line.trim());
   const block = blockLines.join("\n");
   const claims = strictVersionsIn(block);
-  if (claims.length !== 1 || (!unassigned && claims[0] !== previous))
+  if (
+    claims.length !== 1 ||
+    (!unassigned && !repairClaim && claims[0] !== previous)
+  )
     throw new Error(
       unassigned
         ? "release prepare requires one README version claim to replace"

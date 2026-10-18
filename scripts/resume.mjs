@@ -49,6 +49,8 @@ import {
   describeHandoff,
   handoffLedgerPath,
   readHandoffLedger,
+  readPreflightSuites,
+  requireFinalReviewGate,
   readReportGateClaims,
   requireGateClaims,
 } from "./lib/handoff-ledger.mjs";
@@ -1168,9 +1170,19 @@ const repairBriefing = (state) =>
     state,
     `Repair ${state.workOrderPath} using ${state.failureSourcePath}; read both artifacts. ${repairSentence}${ledgerBriefing(state, "repair-complete")}${executorEntryBriefing(repoRoot, state.workOrderId)}${targetBriefing(state)}`,
   );
+const preflightBriefing = (state) => {
+  if (state.repositoryId) return "";
+  const names = readPreflightSuites(
+    readFileSync(
+      workOrderAuthorityPath(repoRoot, state.workOrderId, state.workOrderPath),
+      "utf8",
+    ),
+  );
+  return `\nHandoff evidence: the structural row, ${names.length ? names.map((name) => `suite:${name}`).join(", ") : "no declared --only suites"}, and the document row at the current code identity. Consume the recorded rows; probe with npm test -- --only <suite>.`;
+};
 // The order's own known-issues text is quoted as written, outside the rewrite.
 const verificationBriefing = (state, reportPath) =>
-  `${briefingCommands(state, `Verify ${state.workOrderPath}; write the immutable report to ${reportPath}. ${costLineBriefing}\n${verifySentence}${unmetBriefing(state)}`)}${verificationKnownIssues(repoRoot, state)}${briefingCommands(state, targetBriefing(state))}`;
+  `${briefingCommands(state, `Verify ${state.workOrderPath}; write the immutable report to ${reportPath}. ${costLineBriefing}\n${verifySentence}${unmetBriefing(state)}`)}${preflightBriefing(state)}${verificationKnownIssues(repoRoot, state)}${briefingCommands(state, targetBriefing(state))}`;
 const finalReviewBriefing = (state, reportPath) =>
   briefingCommands(
     state,
@@ -1725,12 +1737,25 @@ const run = async (argv) => {
         readFileSync(join(repoRoot, state.finalReviewPath), "utf8"),
         { verdict },
       );
+      const reviewGate =
+        verdict === "pass"
+          ? await requireFinalReviewGate(
+              repoRoot,
+              readReportGateClaims(repoRoot, state, state.finalReviewPath),
+              {
+                state,
+                since: orderEvents
+                  .filter((event) => event.type === "FinalReviewRequested")
+                  .at(-1)?.recordedAt,
+              },
+            )
+          : undefined;
       const evidence = await requireLifecycleEvidence(
         repoRoot,
         action,
         verdict,
         state.workOrderId,
-        { targetGate },
+        { targetGate, reviewGate },
       );
       // Only the report's findings block is read. A block that cannot give a
       // complete count records none, never a lower one; either way one

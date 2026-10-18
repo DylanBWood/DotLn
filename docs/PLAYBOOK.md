@@ -241,11 +241,17 @@ the ledger stays with ideation and planning.
 For a registered target or a declared export sibling, record its physical
 local clone with `worktree clone <repository-or-export-sibling-id> <absolute-path>`.
 An export sibling uses this mapping for release close’s starter refresh. The ignored clone map lives
-under the launchpad's control local directory. For a registered target,
+under the launchpad's control local directory; the id may be declared by the
+main checkout or by the running order checkout, so a registration order
+records its clone before its merge. For a registered target,
 `worktreeParent` resolves
 relative to the main launchpad and must already exist with its physical
 filesystem spelling. `worktree start` creates two `wo-NNN` branches: target
 code at the declared base and launchpad records in its usual order worktree.
+On both the self and the target route it carries the main checkout's ignored
+local-terms list into the new worktree when one is registered there, or
+prints the registration step; an exported instance's order names in its
+Preflight line only suites the instance runs, never a core-only row.
 The target receives the ignored target-worker bundle and no role skill. The
 handoff echoes the authority profile and the launchpad command to invoke from
 the target. Use that order launchpad's scripts, or set `DOTLN_LAUNCHPAD` to it;

@@ -101,6 +101,7 @@ export const TEST_FIXTURE_TREES = Object.freeze([
   "packages/skeleton/fixtures",
 ]);
 export const TEST_SUPPORT_FILES = Object.freeze([
+  "packages/skeleton/test/control-beacon-cli.fixture-inputs.json",
   ".prettierignore",
   ".prettierrc.json",
   "corpus/harness/id-corpus-lib.mjs",
@@ -128,6 +129,8 @@ export const BUILD_INPUTS = Object.freeze([
   "package.json",
   "package-lock.json",
   "scripts/build.mjs",
+  "scripts/lib/build-freshness.mjs",
+  "scripts/lib/gate-reuse.mjs",
 ]);
 // scripts/lib/harness.mjs and its static imports under scripts/, which the
 // prediction of the harness bundle runs from the work tree while the export's
@@ -197,6 +200,7 @@ export const KIT_FILES = Object.freeze({
     "scripts/test-runner.test.mjs",
     "scripts/test-gate-deadlines.mjs",
     "scripts/test-host-guard.test.mjs",
+    "scripts/test-host-guard.test.fixture-inputs.json",
   ]),
   licenses: LICENSE_FILES,
   // 08 travels because the emitted reviewer skill directs a read of its

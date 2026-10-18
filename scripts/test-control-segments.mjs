@@ -1,3 +1,4 @@
+import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import { spawnGit } from "./lib/git.mjs";
 import { write as writeFixture } from "./lib/helpers.mjs";
 import test from "node:test";
@@ -212,7 +213,11 @@ await test("test-control-segments", async (t) => {
       repo = join(root, "control-segments");
 
       mkdirSync(join(repo, "scripts"), { recursive: true });
-      cpSync(join(scriptRoot, "resume.mjs"), join(repo, "scripts/resume.mjs"));
+      copyFixtureFiles(
+        join(scriptRoot, ".."),
+        repo,
+        "scripts/test-control-segments.fixture-inputs.json",
+      );
       cpSync(join(scriptRoot, "lib"), join(repo, "scripts/lib"), {
         recursive: true,
       });

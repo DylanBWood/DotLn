@@ -1,3 +1,4 @@
+import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync, spawn } from "node:child_process";
@@ -24,6 +25,7 @@ import {
 import { join, resolve } from "node:path";
 import { once } from "node:events";
 import { executeSuite, runGate, suites } from "./test-runner.mjs";
+import { readGateChecks } from "./lib/gate-evidence.mjs";
 import { guardCensus, transferDuplicateOwnership } from "./host-guard.mjs";
 import { agentAncestor, ensureHostGuard } from "./lib/host-guard-state.mjs";
 import { acquireHostLanes, laneHolderAlive } from "./lib/host-lanes.mjs";
@@ -974,7 +976,7 @@ test("WO-185 runner cuts output to a tail and names and kills an escaped descend
   });
 });
 
-test("WO-185 interrupt, termination and hang-up end task groups without a gate row", async (t) => {
+test("WO-185 interrupt, termination and hang-up end task groups and retain only completed tasks", async (t) => {
   const f = await fixture(t);
   for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"]) {
     const pidFile = join(f.repo, `${signal}.pid`);
@@ -1012,10 +1014,15 @@ test("WO-185 interrupt, termination and hang-up end task groups without a gate r
         (row) => row.pid === pid,
       ),
     );
-    assert.ok(
-      !existsSync(join(f.repo, "docs/control/local/harness/checks.json")),
+    const stopped = readGateChecks(f.repo).at(-1);
+    assert.equal(stopped.stopped, true);
+    assert.equal(stopped.stoppedBy, signal);
+    assert.equal(stopped.exitCode, 1);
+    assert.deepEqual(
+      stopped.taskTimeline.map((row) => row.name),
+      ["build"],
     );
-    assert.match(output, /no check recorded/);
+    assert.match(output, /stopped row recorded/);
     transcript(signal, { taskPid: pid, output: output.slice(-1200) });
   }
 });
@@ -1918,7 +1925,7 @@ test("WO-185 a docs-shaped gate of concurrent tasks that start nothing records n
   transcript("docs-shaped-gate", { runs });
 });
 
-test("WO-185 a signal during completed-row aggregation cannot record a gate row", async (t) => {
+test("WO-185 a signal during completed-row aggregation records a stopped row without a normal gate result", async (t) => {
   const f = await fixture(t);
   for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"]) {
     let sent = false;
@@ -1937,7 +1944,7 @@ test("WO-185 a signal during completed-row aggregation cannot record a gate row"
           sent = true;
           process.emit(signal);
           // A later resource observation must not turn an operator interruption
-          // into a recorded failure, even in the final aggregation window.
+          // into an ordinary gate result, even in the final aggregation window.
           appendIncident(f.directory, {
             failureKind: "memory-budget",
             scope: "gate",
@@ -1955,14 +1962,19 @@ test("WO-185 a signal during completed-row aggregation cannot record a gate row"
         hostDirectory: f.directory,
         table: [build],
       }),
-      /no check recorded/,
+      /stopped row recorded/,
     );
     assert.equal(sent, true);
-    assert.equal(
-      existsSync(join(f.repo, "docs/control/local/harness/checks.json")),
-      false,
+    const stopped = readGateChecks(f.repo).at(-1);
+    assert.equal(stopped.stopped, true);
+    assert.equal(stopped.stoppedBy, signal);
+    assert.equal(stopped.exitCode, 1);
+    assert.deepEqual(
+      stopped.taskTimeline.map((row) => row.name),
+      ["build"],
     );
-    transcript("late-signal", { signal, noRow: true });
+    assert.ok(readGateChecks(f.repo).every((row) => row.stopped === true));
+    transcript("late-signal", { signal, stopped: true });
   }
 });
 
@@ -2410,17 +2422,11 @@ test("WO-185 a generated quarantine with nonfinite findings passes all three wo1
     "wo102-properties.test.mjs",
     "wo102-replay.test.mjs",
   ];
-  for (const name of [
-    "bounded-findings.mjs",
-    "generate-cadence-corpus.mjs",
-    "wo102-cadence-lib.mjs",
-    "wo102-reference.mjs",
-    ...files,
-  ])
-    cpSync(
-      join(root, "corpus/harness", name),
-      join(f.repo, "corpus/harness", name),
-    );
+  copyFixtureFiles(
+    root,
+    f.repo,
+    "scripts/test-host-guard.test.fixture-inputs.json",
+  );
   cpSync(
     join(root, "packages/kernel/dist"),
     join(f.repo, "packages/kernel/dist"),
