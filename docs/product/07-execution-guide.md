@@ -1432,9 +1432,16 @@ step 7 had moved onto receipts while the criterion still required the
 console to show them); and an order whose criteria need a live run names, at
 its base, each surface the run must show, write or traverse, and whether it
 exists and has been run (WO-118 needed three mid-run scope amendments for
-four such surfaces, and WO-083's publication step named a command that
-publishes only a source-change episode). Order size [2026-10-13 pass,
-operator direction]: the 2026-09-08 cut (one seam and one outcome per order,
+four such surfaces, and WO-083's publication step named a command that publishes only a
+source-change episode). One more [2026-10-19 pass]: a criterion names the
+behavior a host's configuration form must give (the admitted command, the
+removal at close) and cites the published host page it was read from; the
+form itself (a settings key, a marker, a rules file) is the executor's,
+read from that page at execution, so a host that documents a different
+form costs no failed verification (WO-221's criteria 2 and 3 fixed a
+marker and a `config.toml` form the hosts do not support; VER-001 failed
+them as written and D028's operator amendment replaced them). Order size
+[2026-10-13 pass, operator direction]: the 2026-09-08 cut (one seam and one outcome per order,
 split again above four hours) was a correction for its time and no longer
 binds. The binding cost is now the full gate run and the fixed cycle every
 order pays (activation, verification, final review and release close). A
@@ -1445,12 +1452,13 @@ owes one, against a larger first verification. Unrelated subsystems are not
 bundled to save runs. Each order names its Preflight line. Parallel orders stay the aim
 where they pay (operator direction, 2026-10-13): two orders run side by side
 when their surfaces are disjoint, no hard edge joins them, and the operator
-will run both at once. Every order pays the complete gate once, fresh, at
-final review, whether or not main moved (§Preflight before the full gate);
-a pair therefore costs two fresh final-review runs and no reuse-dependent
-extra (WO-078 had measured that extra at 22.9 minutes under the earlier
-reuse rule). That is less than the implementation a pair overlaps (median
-72.9 minutes).
+will run both at once. Final review reuses the passing complete row at the integrated code
+identity and pays a fresh run only when the identity changed (§Preflight
+before the full gate; WO-221 D017 restored this reading on 2026-10-18); a
+pair whose second member integrates a sibling that moved its identity
+therefore pays one fresh run at final review, which WO-078 measured at 22.9
+minutes. That is less than the implementation a pair overlaps (median 72.9
+minutes).
 Serial order is a pass's reading of its evidence, never a standing rule.
 Reopen the order-size rule when the full run's median falls to half its 24.9
 minutes, or when merged orders fail first verification more often than the
@@ -2970,8 +2978,14 @@ existed at that base. The split file tasks measured 164.231 seconds for
 export, 247.940 for update and 4.863 for seeds, each within its own
 900-second deadline. The five closes after this order judge the design
 against 11 complete runs, 1.3 late structural-class failures and 545 gate
-task minutes per closed order. Any statistic not below its baseline reopens
-the decision; isolated check timings do not establish that outcome.
+task minutes per closed order. Any statistic not below its baseline reopens the decision; isolated check
+timings do not establish that outcome. At the first of those closes
+(WO-221, 2026-10-19) the window held fifteen complete runs (four stopped,
+eight failed, three passed), no late structural-class failure and 691 gate
+task minutes, under three operator scope expansions that changed the gate
+process mid-order (WO-221 D016 to D020); the
+[2026-10-19 pass](../planning/standard-pass-2026-10-19.md) §3 reads them,
+and WO-222 takes the capacity levers D019 measured.
 
 ## Model-specific notes
 

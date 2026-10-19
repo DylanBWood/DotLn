@@ -45,10 +45,10 @@
       "decision": "docs/planning/standard-pass-2026-10-17.md#11-document-ceilings"
     },
     "07-execution-guide.md": {
-      "nonExemptBytesAtLanding": 213853,
-      "ceiling": 235238,
-      "date": "2026-10-18",
-      "decision": "docs/planning/fork-observations-2026-10-18.md#11-document-ceilings"
+      "nonExemptBytesAtLanding": 223848,
+      "ceiling": 246232,
+      "date": "2026-10-19",
+      "decision": "docs/planning/standard-pass-2026-10-19.md#12-document-ceilings"
     },
     "08-publication-compiler.md": {
       "nonExemptBytesAtLanding": 24867,
