@@ -39490,6 +39490,335 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-1dce3a6f7ac60eac",
+      "key": "decision:docs/evidence/WO-221/decisions.md#wo-221-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ef39aff20b3b2a11f3e337b9846abb7e89120f7eefaa0ae742f423ca377fd8f1",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d019--the-gates-cost-is-measured-its-capacity-levers-go-to-planning",
+          "title": "WO-221-D019: Plan a gate-cost order from the 2026-10-18 measurement: judge raising the host-lane capacity from four toward half the machine's parallelism with a memory budget per lane, letting light…",
+          "summary": "{ \"id\": \"WO-221-D019\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: next; operator scope expansion\", \"decision\": \"The complete run recorded at 23:05:43 on 2026-10-18 is the measurement for a gate-cost order: 27 s of structural phase and build; 526 s in which worktree-integration (155 s), harness-fixtures (275 s) and process-debt (95 s) ran alone on the four-lane scheduler; 514 s of mixed work bounded by target-worktree at 564 s; 866 s in which the four vertical files, each holding two lanes, ran two at a time (435, 282, 429 and 340 s); then launchpad's two files. About 5700 lane-seconds in all under a cap of four lanes, on a machine reporting sixteen logical processors and 48 GB of memory; the",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-75abb6c99ba1942c",
+      "key": "decision:docs/evidence/WO-221/decisions.md#wo-221-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9d0ddd0238ee06bcd0660745e1283e51eeed72b0b605754cf6a4b9049822ffcf",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d022--ver-001-judge-every-base-untracked-path-before-close",
+          "title": "WO-221-D022: WO-221 repair V1-F1: include already-ignored and newly-ignored base files in the fetched-tree judgment; refuse undeclared .env before base mutation, target removal or publication, and…",
+          "summary": "{ \"id\": \"WO-221-D022\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 V1-F1 fails criterion 6. A base checkout whose already-committed .gitignore ignores .env is allowed to close with that undeclared .env still present: the close moves the base, removes the target and creates the fixture Release. The verifier preserves the implementation and records the defect for repair.\", \"evidence\": [ \"docs/verifications/WO-221/VER-001.md V1-F1; docs/evidence/WO-221/verification-001/README.md.\", \"The close-preignored-env probe exits 1 because close exits 0; envRetained, targetRemoved and baseMoved are all true.\", \"scripts/lib/target-worktree-close.mjs:358-373 filters candidates t",
+          "missing": false
+        },
+        {
+          "hash": "2be7237a9f33694c3abc2d97e81bf2c1a7398837fc1fcb93f3d652c03e0baba1",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d022--ver-001-judge-every-base-untracked-path-before-close",
+          "title": "WO-221-D022: WO-221 repair V1-F1: include already-ignored and newly-ignored base files in the fetched-tree judgment; refuse undeclared .env before base mutation, target removal or publication, and…",
+          "summary": "{ \"id\": \"WO-221-D022\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 V1-F1 fails criterion 6. A base checkout whose already-committed .gitignore ignores .env is allowed to close with that undeclared .env still present: the close moves the base, removes the target and creates the fixture Release. The verifier preserves the implementation and records the defect for repair.\", \"evidence\": [ \"docs/verifications/WO-221/VER-001.md V1-F1; docs/evidence/WO-221/verification-001/README.md.\", \"The close-preignored-env probe exits 1 because close exits 0; envRetained, targetRemoved and baseMoved are all true.\", \"scripts/lib/target-worktree-close.mjs:358-373 filters candidates t",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "D030 repairs the complete base-file judgment; the expanded refusal cases passed in the 2026-10-19T07:55:04.693Z complete review run.",
+          "reopenWhen": "A base file escapes the fetched-tree or ordinary clean judgment.",
+          "targets": [],
+          "at": "2026-10-19T07:58:51.404Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b4372a81730aed8a",
+      "key": "decision:docs/evidence/WO-221/decisions.md#wo-221-d023",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fdb7f7d6fb884472099cfc920265de5f19f5ffa88759f3f23cf19f2720a4c51d",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d023--ver-001-bind-a-target-release-retry-to-its-recorded-commit",
+          "title": "WO-221-D023: WO-221 repair V1-F2: bind retry publication to the earlier recorded target commit and refuse a differing remote tag before Release creation or cleanup. Preserve equal-tag retries and…",
+          "summary": "{ \"id\": \"WO-221-D023\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 V1-F2 fails criterion 9. After the tag push succeeds but Release creation fails, moving the remote tag to another commit and retrying is accepted as current tag state; the retry creates a Release and finishes cleanup. The earlier attempt must bind both tag name and commit.\", \"evidence\": [ \"docs/verifications/WO-221/VER-001.md V1-F2; docs/evidence/WO-221/verification-001/README.md.\", \"The close-moved-release-tag probe observes firstExit 1, retryExit 0, tagStillExpected false and releaseCreated true.\", \"scripts/release.mjs:2534-2553 adopts existing as tagged whenever earlier.tag exists, so the follo",
+          "missing": false
+        },
+        {
+          "hash": "c54ba53075ac52f559dd640fbbdd19bf7903ea3e6a23293b3a25f2258b74421e",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d023--ver-001-bind-a-target-release-retry-to-its-recorded-commit",
+          "title": "WO-221-D023: WO-221 repair V1-F2: bind retry publication to the earlier recorded target commit and refuse a differing remote tag before Release creation or cleanup. Preserve equal-tag retries and…",
+          "summary": "{ \"id\": \"WO-221-D023\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 V1-F2 fails criterion 9. After the tag push succeeds but Release creation fails, moving the remote tag to another commit and retrying is accepted as current tag state; the retry creates a Release and finishes cleanup. The earlier attempt must bind both tag name and commit.\", \"evidence\": [ \"docs/verifications/WO-221/VER-001.md V1-F2; docs/evidence/WO-221/verification-001/README.md.\", \"The close-moved-release-tag probe observes firstExit 1, retryExit 0, tagStillExpected false and releaseCreated true.\", \"scripts/release.mjs:2534-2553 adopts existing as tagged whenever earlier.tag exists, so the follo",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "D031 binds retry publication to the recorded commit; moved-tag and base-advanced missing-tag recovery cases passed in the complete review run.",
+          "reopenWhen": "A retry adopts another commit or an unchanged retry fails.",
+          "targets": [],
+          "at": "2026-10-19T07:58:51.486Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5667659c364542a2",
+      "key": "decision:docs/evidence/WO-221/decisions.md#wo-221-d024",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f3a6c67c0835b7795cb0b4b4d5f0df4f8fc988c35d98cf0091c11f2b6246ff0e",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d024--ver-001-the-literal-fallback-does-not-satisfy-the-settings-marker-clause",
+          "title": "WO-221-D024: WO-221 repair V1-F3: resolve the settings-marker requirement through a supported implementation or an operator-authorized amendment or waiver that explicitly accepts the sidecar. Keep…",
+          "summary": "{ \"id\": \"WO-221-D024\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 V1-F3 judges criterion 2 unmet as written. D003 deliberately substitutes an ignored ownership sidecar for markers in .claude/settings.local.json. The sidecar provides ownership bookkeeping, but no captured operator waiver or amendment changes the original requirement. This is an acceptance mismatch, not a claim that JSON comments should be emitted.\", \"evidence\": [ \"docs/verifications/WO-221/VER-001.md V1-F3; WO-221 criterion 2; WO-221-D003.\", \"The fallback-original probe passes write/remove behavior; fallback-markers observes no markers in Claude settings and markers in the Codex rules file.\", \"Ca",
+          "missing": false
+        },
+        {
+          "hash": "e1418a060250bd0e9541050bbbe7576e9dae92c66168e9464258dce0adb2d372",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d024--ver-001-the-literal-fallback-does-not-satisfy-the-settings-marker-clause",
+          "title": "WO-221-D024: WO-221 repair V1-F3: resolve the settings-marker requirement through a supported implementation or an operator-authorized amendment or waiver that explicitly accepts the sidecar. Keep…",
+          "summary": "{ \"id\": \"WO-221-D024\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 V1-F3 judges criterion 2 unmet as written. D003 deliberately substitutes an ignored ownership sidecar for markers in .claude/settings.local.json. The sidecar provides ownership bookkeeping, but no captured operator waiver or amendment changes the original requirement. This is an acceptance mismatch, not a claim that JSON comments should be emitted.\", \"evidence\": [ \"docs/verifications/WO-221/VER-001.md V1-F3; WO-221 criterion 2; WO-221-D003.\", \"The fallback-original probe passes write/remove behavior; fallback-markers observes no markers in Claude settings and markers in the Codex rules file.\", \"Ca",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "D028 captures explicit operator approval and the canonical order amendment for sidecar ownership; preservation and removal cases passed in the complete review run.",
+          "reopenWhen": "Approved ownership/removal behavior regresses or the operator changes the requirement.",
+          "targets": [],
+          "at": "2026-10-19T07:58:51.564Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9e1e1e451f693376",
+      "key": "decision:docs/evidence/WO-221/decisions.md#wo-221-d025",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e67060a234683f883da1ef60c70792546aa1132ce1f870edd989171716d84cad",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d025--ver-001-retain-criterion-3-as-unmet-without-inventing-a-codex-configuration",
+          "title": "WO-221-D025: WO-221 repair V1-F4: resolve criterion 3 through documented supported behavior and an operator-authorized amendment or waiver if retaining per-order .rules output; do not manufacture an…",
+          "summary": "{ \"id\": \"WO-221-D025\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 V1-F4 confirms D010: the emitted .codex/config.toml has no generated per-repository prefix rules. The implementation instead writes per-order .rules files only under hostRules literal. Verification judges the original clause unmet and does not change host settings or infer an operator waiver.\", \"evidence\": [ \"docs/verifications/WO-221/VER-001.md V1-F4; WO-221 criterion 3; WO-221-D002 and WO-221-D010.\", \".codex/config.toml contains one project-layer comment; scripts/lib/target-worktrees.mjs emits prefix_rule into per-order .rules files.\", \"The fallback fixture asserts the target launch lines; those",
+          "missing": false
+        },
+        {
+          "hash": "7286dab6d16092c88c6b93213da088b40463703117fefc9c65a332e6c7236f21",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d025--ver-001-retain-criterion-3-as-unmet-without-inventing-a-codex-configuration",
+          "title": "WO-221-D025: WO-221 repair V1-F4: resolve criterion 3 through documented supported behavior and an operator-authorized amendment or waiver if retaining per-order .rules output; do not manufacture an…",
+          "summary": "{ \"id\": \"WO-221-D025\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 V1-F4 confirms D010: the emitted .codex/config.toml has no generated per-repository prefix rules. The implementation instead writes per-order .rules files only under hostRules literal. Verification judges the original clause unmet and does not change host settings or infer an operator waiver.\", \"evidence\": [ \"docs/verifications/WO-221/VER-001.md V1-F4; WO-221 criterion 3; WO-221-D002 and WO-221-D010.\", \".codex/config.toml contains one project-layer comment; scripts/lib/target-worktrees.mjs emits prefix_rule into per-order .rules files.\", \"The fallback fixture asserts the target launch lines; those",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "D028 and D029 capture the approved per-order .rules requirement and canonical amendment; opt-in, cleanup and launch-line cases passed in the complete review run.",
+          "reopenWhen": "Supported host rule behavior changes or the approved generation and cleanup cases fail.",
+          "targets": [],
+          "at": "2026-10-19T07:58:51.643Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a9522873f60c45d9",
+      "key": "decision:docs/evidence/WO-221/decisions.md#wo-221-d026",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0aa5a60282b9a82312c1d483e991c0819ed9f2eed9911b8bc245ba965cc417e2",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d026--ver-001-follow-up-host-rule-rewrite-bypasses-the-registration-opt-in",
+          "title": "WO-221-D026: Host-rule rewrite follow-up V1-N1: require the committed registration opt-in and the same registration and origin boundary as start before creating rules; refuse an opted-out…",
+          "summary": "{ \"id\": \"WO-221-D026\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 V1-N1 is a nonblocking follow-up: worktree start writes no rules without hostRules, but worktree host-rules --rewrite writes both Claude and Codex rules for that same registered order despite the absent opt-in. Criterion 2 names start and close, so this separate maintenance path is not an additional blocking claim.\", \"evidence\": [ \"docs/verifications/WO-221/VER-001.md V1-N1; docs/evidence/WO-221/verification-001/README.md.\", \"fallback-optout-rewrite confirms no settings at start, then rewrite exits 0 and creates both settings and rules.\", \"scripts/worktree.mjs host-rules rewrite branch calls write",
+          "missing": false
+        },
+        {
+          "hash": "93d282573f514f76ba0d30a4daf25b92a69914bb630b6ba1bfa4189fa351f2ef",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d026--ver-001-follow-up-host-rule-rewrite-bypasses-the-registration-opt-in",
+          "title": "WO-221-D026: Host-rule rewrite follow-up V1-N1: require the committed registration opt-in and the same registration and origin boundary as start before creating rules; refuse an opted-out…",
+          "summary": "{ \"id\": \"WO-221-D026\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 V1-N1 is a nonblocking follow-up: worktree start writes no rules without hostRules, but worktree host-rules --rewrite writes both Claude and Codex rules for that same registered order despite the absent opt-in. Criterion 2 names start and close, so this separate maintenance path is not an additional blocking claim.\", \"evidence\": [ \"docs/verifications/WO-221/VER-001.md V1-N1; docs/evidence/WO-221/verification-001/README.md.\", \"fallback-optout-rewrite confirms no settings at start, then rewrite exits 0 and creates both settings and rules.\", \"scripts/worktree.mjs host-rules rewrite branch calls write",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "D032 implements the operator-included adjacent repair; committed opt-in, target binding, no-mutation refusal and operator-rule preservation cases passed in the complete review run.",
+          "reopenWhen": "Rewrite creates unapproved rules or changes existing rules before refusal.",
+          "targets": [],
+          "at": "2026-10-19T07:58:51.722Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-26622fe976856ab8",
+      "key": "decision:docs/evidence/WO-221/decisions.md#wo-221-d027",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b757ab44880389237b7dad399125feb792486653419028f6a73b4a235c133b49",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d027--ver-001-follow-up-distinguish-a-prior-starter-refresh-tag-from-an-arbitrary-ancestor",
+          "title": "WO-221-D027: Starter-tag follow-up V1-N2: bind a retained ancestor tag to the recorded first refresh of the same core release; add a fixture with a pre-existing arbitrary ancestor tag and require…",
+          "summary": "{ \"id\": \"WO-221-D027\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 V1-N2 retains the first adversary's ancestor-tag concern as a nonblocking follow-up. The current starter-refresh guard permits any existing tag target that is an ancestor of the refresh commit. That is broader than preserving the first refresh of the same release. Criterion 10's fresh-publication, retry and preview fixtures pass; this report does not claim an independently executed ancestor-conflict reproduction.\", \"evidence\": [ \"docs/verifications/WO-221/VER-001.md V1-N2; the first adversary report and WO-221-D014.\", \"scripts/lib/starter-refresh.mjs:96-109 accepts an existing unequal commit when ",
+          "missing": false
+        },
+        {
+          "hash": "7c3575fda71ff1daec989e6cf7b2945899843f44cf0583a8255c45b4c9c99c4e",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d027--ver-001-follow-up-distinguish-a-prior-starter-refresh-tag-from-an-arbitrary-ancestor",
+          "title": "WO-221-D027: Starter-tag follow-up V1-N2: bind a retained ancestor tag to the recorded first refresh of the same core release; add a fixture with a pre-existing arbitrary ancestor tag and require…",
+          "summary": "{ \"id\": \"WO-221-D027\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 V1-N2 retains the first adversary's ancestor-tag concern as a nonblocking follow-up. The current starter-refresh guard permits any existing tag target that is an ancestor of the refresh commit. That is broader than preserving the first refresh of the same release. Criterion 10's fresh-publication, retry and preview fixtures pass; this report does not claim an independently executed ancestor-conflict reproduction.\", \"evidence\": [ \"docs/verifications/WO-221/VER-001.md V1-N2; the first adversary report and WO-221-D014.\", \"scripts/lib/starter-refresh.mjs:96-109 accepts an existing unequal commit when ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "D033 implements the operator-included adjacent repair; arbitrary and previous-release ancestors refuse while the same-release seed-only case passes in the complete review run.",
+          "reopenWhen": "A foreign ancestor is accepted or a proven same-release refresh fails.",
+          "targets": [],
+          "at": "2026-10-19T07:58:51.801Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-fb62261f3877a5cb",
+      "key": "decision:docs/evidence/WO-221/decisions.md#wo-221-d035",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ab1676afe780d9510555110c6ceead454a1e37b9abc870d4ac95737b88ea4939",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d035--ver-002-follow-up-a-literal-fallback-order-leaves-main-unclean-for-the-next-start",
+          "title": "WO-221-D035: Literal-fallback follow-up VER-002 F1: a per-order Codex rules file must not make main unclean for worktree start. Ignore or excuse only DotLn-owned per-order rules files, for example…",
+          "summary": "{ \"id\": \"WO-221-D035\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-002 F1 is a nonblocking follow-up. Under hostRules literal, worktree start writes .codex/rules/dotln-WO-NNN.rules into the main checkout, and neither core's .gitignore nor the kit's gitignore.template ignores that path. Main therefore shows the file as untracked, and the next worktree start of any order refuses with 'working tree is not clean' until the literal-fallback order closes. Release close tolerates untracked files, and criteria 2 and 3 judge the order's own start and close, which pass. The defect is reachable only under the new opt-in, so it breaks no criterion and no behavior main had. The v",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-309c72a92ff260ce",
+      "key": "decision:docs/evidence/WO-221/decisions.md#wo-221-d036",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "64e4f615ef4f3d2bda4ad638f89c50932dff744996456852e77f3f541daa094c",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d036--ver-002-follow-up-a-malformed-operator-settings-file-strands-start-and-close-after-their-irreversible-steps",
+          "title": "WO-221-D036: Literal-fallback follow-up VER-002 F2: validate .claude/settings.local.json and the order's sidecar before the first irreversible step of worktree start and release close, name the file…",
+          "summary": "{ \"id\": \"WO-221-D036\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-002 F2 is a nonblocking follow-up. The literal-rule writer and remover parse the operator's .claude/settings.local.json only after irreversible lifecycle steps. With a malformed file, release close reports a bare JSON parse error after it has removed the target worktree, deleted the order branch and forgotten the registry entry. After the file is repaired, the retry refuses with 'target worktree registry entry is missing', so the close cannot finish, and the order's rules, Codex rules file and sidecar outlive it. worktree start with a malformed file fails after the worktrees and registry entry exist. ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3a4c476e4e8099bd",
+      "key": "decision:docs/evidence/WO-221/decisions.md#wo-221-d038",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2c46015f913908b5e924ffcc0655db0c0f4766b00399247edb283a9a4c00f263",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d038--final-review-fail-final-001-at-the-integrated-subject-the-base-ignore-judgment-dies-on-a-populated-ignored-tree-and-nineteen-follow-ups-are-boarded",
+          "title": "WO-221-D038: FINAL-001 follow-ups for the WO-221 repair within the boy-scout bound, else for the next order that edits the named surface, each with a fixture that fails without the fix: withhold the…",
+          "summary": "{ \"id\": \"WO-221-D038\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: final review\", \"decision\": \"FINAL-001 fails WO-221 at the integrated subject, code identity 104d1bf29eb45e2b238c3d3b918d1c6f4d58efb608762adcb3dfed41f152310b, which integration left unchanged (D037). One finding blocks: the close's new base ignore judgment (scripts/lib/target-worktree-close.mjs ignoredByTree) runs git check-ignore --no-index --stdin through spawnSync with no maxBuffer, so Node's 1 MiB default applies to its output, while the candidate list it judges now comes from ls-files --others without --exclude-standard and is capped at 16 MiB; once the clone's base checkout holds a populated ignored tree, every installed ",
+          "missing": false
+        },
+        {
+          "hash": "e2d6efa1bd14cfd3030cc303922d0e11252d8b2a15b26dfc2a1590c7d6d939a3",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d038--final-review-fail-final-001-at-the-integrated-subject-the-base-ignore-judgment-dies-on-a-populated-ignored-tree-and-nineteen-follow-ups-are-boarded",
+          "title": "WO-221-D038: FINAL-001 follow-ups for the WO-221 repair within the boy-scout bound, else for the next order that edits the named surface, each with a fixture that fails without the fix: withhold the…",
+          "summary": "{ \"id\": \"WO-221-D038\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: final review\", \"decision\": \"FINAL-001 fails WO-221 at the integrated subject, code identity 104d1bf29eb45e2b238c3d3b918d1c6f4d58efb608762adcb3dfed41f152310b, which integration left unchanged (D037). One finding blocks: the close's new base ignore judgment (scripts/lib/target-worktree-close.mjs ignoredByTree) runs git check-ignore --no-index --stdin through spawnSync with no maxBuffer, so Node's 1 MiB default applies to its output, while the candidate list it judges now comes from ls-files --others without --exclude-standard and is capped at 16 MiB; once the clone's base checkout holds a populated ignored tree, every installed ",
+          "missing": false
+        },
+        {
+          "hash": "23e2bd74dfd721117376739fffd95d515abbce5613d974bae9566b20e6cffce3",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d038--final-review-fail-final-001-at-the-integrated-subject-the-base-ignore-judgment-dies-on-a-populated-ignored-tree-and-nineteen-follow-ups-are-boarded",
+          "title": "WO-221-D038: FINAL-001 follow-ups for the WO-221 repair within the boy-scout bound, else for the next order that edits the named surface, each with a fixture that fails without the fix: withhold the…",
+          "summary": "{ \"id\": \"WO-221-D038\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: final review\", \"decision\": \"FINAL-001 fails WO-221 at the integrated subject, code identity 104d1bf29eb45e2b238c3d3b918d1c6f4d58efb608762adcb3dfed41f152310b, which integration left unchanged (D037). One finding blocks: the close's new base ignore judgment (scripts/lib/target-worktree-close.mjs ignoredByTree) runs git check-ignore --no-index --stdin through spawnSync with no maxBuffer, so Node's 1 MiB default applies to its output, while the candidate list it judges now comes from ls-files --others without --exclude-standard and is capped at 16 MiB; once the clone's base checkout holds a populated ignored tree, every installed ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "D040 takes F10, F11, F19 and F20 alongside the blocking F1 repair. The remaining F2-F9 and F12-F18 concern the admission, draft recovery, release binding and shared rule ownership; preserve D038 repair rules for planning and the next order editing those surfaces. They exceed the bounded close repair and are not claimed fixed.",
+          "reopenWhen": "The next planning pass places these defects, or an order edits their admission, publication, release or host-rule ownership surfaces.",
+          "targets": [],
+          "at": "2026-10-19T09:51:45.015Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f32886b04703d3db",
+      "key": "decision:docs/evidence/WO-221/decisions.md#wo-221-d040",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "513ab0739835aad748435fab0e1d9c711ddbcfcdbf615cdf5157b78f80aacb57",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d040--bounded-close-safeguards-and-truthful-deadline-text-remaining-review-findings-stay-boarded",
+          "title": "WO-221-D040: Take FINAL-001 F10, F11, F19 and F20 as the single bounded adjacent-0002 item. The scratch ignore repository disables init templates and global excludes, so only fetched .gitignore blobs…",
+          "summary": "{ \"id\": \"WO-221-D040\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: fix\", \"decision\": \"Take FINAL-001 F10, F11, F19 and F20 as the single bounded adjacent-0002 item. The scratch ignore repository disables init templates and global excludes, so only fetched .gitignore blobs can authorize base deletion. Skipped unreadable base directories and skipped declared target directories refuse before deletion; undeclared target material keeps its existing remedy. An unreadable or malformed gate advisory yields baseCheckoutWrites null and an explicit unavailable summary, while checkout judgments still run. Correct product 07 and the stale source comment to the implemented six-hour complete-selection outer",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-cb738250f386b071",
+      "key": "decision:docs/evidence/WO-221/decisions.md#wo-221-d041",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "de0d91bf3a9f47bd2088d20dcd907fb86457964cc054de59cd19414bc44fc34c",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d041--ver-003-follow-up-past-the-16-mib-candidate-ceiling-the-base-refusal-echoes-the-captured-path-list",
+          "title": "WO-221-D041: Next order editing scripts/lib/target-worktree-close.mjs or scripts/lib/git.mjs: when a path-list read overflows its buffer, refuse with a bounded message naming the checkout by role,…",
+          "summary": "{ \"id\": \"WO-221-D041\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-003 boards a follow-up for the refusal a release close gives when the clone's base checkout holds more than the 16 MiB of untracked paths the candidate scan reads. The close refuses with the source retained, within D039's bound: the base does not move, and the target worktree and every file remain. Its text, however, is the truncated ls-files output. runGitPathList's spawn ends with ENOBUFS and no stderr, failureOf then quotes the captured stdout, and quoteGitFailure passes it on. The refusal on stderr is 16,843,069 bytes holding 100,254 NUL-separated paths before 'Fix what Git reports', and the recei",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4c9a576536de99ff",
+      "key": "decision:docs/evidence/WO-221/decisions.md#wo-221-d042",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2773e8e8615ddad96b66397fdadd1d8535809dc607840b17923665747887413f",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d042--ver-003-follow-up-an-unwritable-declared-directory-stops-the-close-with-a-raw-error-after-part-of-the-declared-output-is-gone",
+          "title": "WO-221-D042: Next order editing scripts/lib/target-worktree-close.mjs: before deleting declared output in either checkout, check write and search access on every directory that holds a listed file,…",
+          "summary": "{ \"id\": \"WO-221-D042\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-003 boards a follow-up for a sibling of FINAL-001 F11 that D040's repair does not name. In the target worktree, a declared disposable directory that can be listed and searched but not written (mode 0555 under node_modules) passes the readability guard. deleteDisposable then removes dist/out.js and node_modules/a.js, and stops at unlinkSync of the file inside that directory with Node's raw 'EACCES: permission denied, unlink' message. The message quotes the target's absolute path and names neither a remedy nor the rerun command. The target worktree, its bundle manifest and the base remain, and the base ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f64c4d8ab41f49d4",
+      "key": "decision:docs/evidence/WO-221/decisions.md#wo-221-d045",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0153de0c87e9d25b0e4fc5e348aacc3d39229af85bac582c3f237832b96e974b",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d045--final-review-pass-final-002-at-the-integrated-subject-the-base-refusals-nested-path-naming-leads-thirteen-boarded-follow-ups",
+          "title": "WO-221-D045: FINAL-002 follow-ups for the next order that edits the named surface, each with a fixture that fails without the fix: name each undeclared ignored base path by its full path, or by its…",
+          "summary": "{ \"id\": \"WO-221-D045\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: final review\", \"decision\": \"FINAL-002 passes WO-221 at the integrated subject, code identity 33c9b7104531cedcddf470ae10c94d6215c88665c371d46f02834407c8fd678d, which integration left unchanged (D044). All twelve criteria hold, criteria 2 and 3 on the operator-amended text (D028) and criterion 4 solely under its express blocked-row fallback. Criterion 12's product gate is the standing complete review row at that identity, npm test -- --review recorded 2026-10-19T10:58:31.828Z with 40 suites, 99 freshly executed tasks, zero failures and 2756.610 s, reused under D017; its document gate is the npm run test:docs row this review reco",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

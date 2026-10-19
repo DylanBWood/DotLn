@@ -1,23 +1,23 @@
 # Current control state
 
-## WO-216
+## WO-221
 
-- Work order: WO-216
-- Work-order path: docs/work-orders/WO-216-no-gate-fails-late-on-bookkeeping.md
+- Work order: WO-221
+- Work-order path: docs/work-orders/WO-221-target-order-without-an-operator-step.md
 - Phase: closed
 - Latest verification: VER-003
-- Verification path: docs/verifications/WO-216/VER-003.md
+- Verification path: docs/verifications/WO-221/VER-003.md
 - Latest verdict: pass
 - Final review: FINAL-002
-- Final-review path: docs/final-reviews/WO-216/FINAL-002.md
-- Latest attestation: harness claude-code; version 2.1.302; model claude-fable-5-1; effort xhigh; source claude-session-readback; account not-applicable
-- Effort drift: max -> xhigh
-- Latest recordedAt: 2026-10-18T15:23:19.818Z
-- Elapsed implementation: 6824006 ms
-- Elapsed verification: 561529 ms
-- Elapsed repair: 5108335 ms
-- Elapsed finalReview: 4770029 ms
-- Latest checkpoint: 4b2e45f4598dbe993af9a957eec327c67e3e9e26 (restore: `git checkout refs/dotln/checkpoint/WO-216/18 -- .`)
+- Final-review path: docs/final-reviews/WO-221/FINAL-002.md
+- Latest attestation: harness claude-code; version 2.1.303; model claude-opus-5-5; effort max; source claude-session-readback; account not-applicable
+- Effort drift: max -> xhigh (subagents) (raw: ultra)
+- Latest recordedAt: 2026-10-19T13:06:19.549Z
+- Elapsed implementation: 31382937 ms
+- Elapsed verification: 3127511 ms
+- Elapsed repair: 4896921 ms
+- Elapsed finalReview: 2812962 ms
+- Latest checkpoint: cd68ccc726747f2f6d974d0a38f05ea7c79ef2c8 (restore: `git checkout refs/dotln/checkpoint/WO-221/18 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct
 
