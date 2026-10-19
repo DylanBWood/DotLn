@@ -23689,6 +23689,16 @@
             "WO-216"
           ],
           "at": "2026-10-17T19:34:05.919Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-216 closed (v0.84.0) and this pass read the complete-run rows it recorded: WO-221's window held fifteen complete runs, the three passing ones at 2,538, 2,238 and 2,757 s on four lanes with 1.76 lanes busy on average, a 562 s exclusive convoy and target-worktree on one lane for 611 s; the 2026-10-13 reading that a cut needs more lanes or less task work now has D019's measurement, so the structural cuts go to WO-222 with the series as the acceptance. [2026-10-19 standard planning pass (docs/planning/standard-pass-2026-10-19.md)]",
+          "reopenWhen": "WO-222 closes and a passing complete run's median stays at or above the before series it records, or a gate task holds at a row whose order's decisions do not name the growth, or the plain gate's thirty-day median passes 360 s.",
+          "targets": [
+            "WO-222"
+          ],
+          "at": "2026-10-19T13:47:56.239Z"
         }
       ]
     },
@@ -37958,6 +37968,14 @@
             "WO-216"
           ],
           "at": "2026-10-17T19:34:06.098Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-216 closed (v0.84.0); its measured claim is read over the five closes after it, and this pass reads the first (WO-221): fifteen complete runs in its window against the baseline of eleven per closed order, no structural-class failure inside a run longer than two minutes against 1.3, and 691 gate task minutes against 545, under three operator scope expansions that changed the gate process mid-order (D016 to D020) and the fail-fast lead ordering that ended eight failed runs in 5 to 18 minutes. Two of three statistics are not below their baseline at close one of five; the reading continues. [2026-10-19 standard planning pass (docs/planning/standard-pass-2026-10-19.md)]",
+          "reopenWhen": "Each planning pass after a close reads the three statistics until the fifth close after WO-216 (WO-221 was the first); at the fifth, any statistic not below its baseline reopens WO-216's design.",
+          "targets": [],
+          "at": "2026-10-19T13:47:56.312Z"
         }
       ]
     },
@@ -39489,7 +39507,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-216 D035's override record stands as written by the 2026-10-18 pass; its two actions are carried by rows already allocated: the code fix (worktree finish applies failedOutputOnly to copied rows) by FUP-851cba3a914ab359 in WO-217 and the post-close record lane by FUP-b0418fa8b09362be in WO-219. Nothing further is owed by this row. [2026-10-19 standard planning pass (docs/planning/standard-pass-2026-10-19.md)]",
+          "reopenWhen": "FUP-851cba3a914ab359 or FUP-b0418fa8b09362be returns to pending without its fix landing, or a second override at a closed order leaves its record with no pull request to carry it.",
+          "targets": [],
+          "at": "2026-10-19T13:47:56.916Z"
+        }
+      ]
     },
     {
       "id": "FUP-1dce3a6f7ac60eac",
@@ -39504,7 +39531,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-221 D019's three levers (the lane cap, light suites beside the exclusive three, the vertical's share) and the target-worktree file split are WO-222, filed by this pass and placed first; each lever is kept only on before-and-after complete-run timelines (criterion 5). [2026-10-19 standard planning pass (docs/planning/standard-pass-2026-10-19.md)]",
+          "reopenWhen": "WO-222 closes without a before-and-after series for a lever it ships, or a complete run exceeds an hour after it.",
+          "targets": [
+            "WO-222"
+          ],
+          "at": "2026-10-19T13:47:56.159Z"
+        }
+      ]
     },
     {
       "id": "FUP-75abb6c99ba1942c",
@@ -39705,7 +39743,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-221 closed on 2026-10-19 (v0.85.0); allocated to WO-218, the batch that owns the target-order lifecycle, by the 2026-10-19 pass: VER-002 F1, the per-order Codex rules file excused from main's cleanliness check (step 14). [2026-10-19 standard planning pass (docs/planning/standard-pass-2026-10-19.md)]",
+          "reopenWhen": "WO-218 closes without a fixture that starts a second order while a literal-fallback target order is in flight with main staying clean, unless the literal fallback is retired.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-19T13:47:56.618Z"
+        }
+      ]
     },
     {
       "id": "FUP-309c72a92ff260ce",
@@ -39720,7 +39769,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-221 closed on 2026-10-19 (v0.85.0); allocated to WO-218, the batch that owns the target-order lifecycle, by the 2026-10-19 pass: VER-002 F2, the settings file validated before the first irreversible step of start and close and the close's removal made resumable (steps 14 and 15). [2026-10-19 standard planning pass (docs/planning/standard-pass-2026-10-19.md)]",
+          "reopenWhen": "WO-218 closes without fixtures showing a malformed or non-regular settings file refusing before any irreversible start or close step with a named remedy, and the same command finishing once the file is repaired.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-19T13:47:56.544Z"
+        }
+      ]
     },
     {
       "id": "FUP-3a4c476e4e8099bd",
@@ -39757,6 +39817,16 @@
           "reopenWhen": "The next planning pass places these defects, or an order edits their admission, publication, release or host-rule ownership surfaces.",
           "targets": [],
           "at": "2026-10-19T09:51:45.015Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "allocated",
+          "reason": "WO-221 closed on 2026-10-19 (v0.85.0); allocated to WO-218, the batch that owns the target-order lifecycle, by the 2026-10-19 pass: FINAL-001's F2 to F9 and F12 to F18, routed per finding to registeredTargetAdmission, scripts/release.mjs, scripts/lib/target-publish.mjs, the literal fallback and scripts/lib/starter-refresh.mjs in the order's steps 3, 14, 17, 18 and 19; settled when each finding has its case or its recorded decline. [2026-10-19 standard planning pass (docs/planning/standard-pass-2026-10-19.md)]",
+          "reopenWhen": "WO-218 closes with a listed finding neither fixed with a case nor declined with its reason, or a listed follow-up is shown producing an admission, a push, a deletion or a publication outside the registration, the order's worktree or the reviewed commit.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-19T13:47:56.389Z"
         }
       ]
     },
@@ -39773,7 +39843,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-221 closed on 2026-10-19 (v0.85.0); allocated to WO-218, the batch that owns the target-order lifecycle, by the 2026-10-19 pass: D043 reopened D040 with the null-advisory masquerade: a close whose matching gate rows record null reports baseCheckoutWrites null, or the observed writes plus the count of unavailable rows, and prints the unavailable advisory (steps 3 and 15). [2026-10-19 standard planning pass (docs/planning/standard-pass-2026-10-19.md)]",
+          "reopenWhen": "WO-218 closes without the fixture D043 names, or a close receipt reports an empty baseCheckoutWrites list while a matching gate row records null.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-19T13:47:56.842Z"
+        }
+      ]
     },
     {
       "id": "FUP-cb738250f386b071",
@@ -39788,7 +39869,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-221 closed on 2026-10-19 (v0.85.0); allocated to WO-218, the batch that owns the target-order lifecycle, by the 2026-10-19 pass: VER-003's over-ceiling refusal text, a bounded message naming the checkout, the 16 MiB limit and the remedy (step 15 with scripts/lib/git.mjs). [2026-10-19 standard planning pass (docs/planning/standard-pass-2026-10-19.md)]",
+          "reopenWhen": "WO-218 closes without fixtures past the ceiling for the base candidate scan and the target's ignored listing asserting a bounded refusal with the source retained.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-19T13:47:56.693Z"
+        }
+      ]
     },
     {
       "id": "FUP-4c9a576536de99ff",
@@ -39803,7 +39895,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-221 closed on 2026-10-19 (v0.85.0); allocated to WO-218, the batch that owns the target-order lifecycle, by the 2026-10-19 pass: VER-003's unwritable declared directory, write and search access checked before deletion or the failure caught before any further step, naming the directory relatively with the remedy and the rerun command (step 15). [2026-10-19 standard planning pass (docs/planning/standard-pass-2026-10-19.md)]",
+          "reopenWhen": "WO-218 closes without a fixture with an unwritable directory under a declared root in each checkout, or a close deletes part of a declared root and then fails.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-19T13:47:56.768Z"
+        }
+      ]
     },
     {
       "id": "FUP-f64c4d8ab41f49d4",
@@ -39818,7 +39921,244 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-221 closed on 2026-10-19 (v0.85.0); allocated to WO-218, the batch that owns the target-order lifecycle, by the 2026-10-19 pass: FINAL-002's F1 to F13, routed per finding to the close, the starter refresh, the admission, the literal fallback, the draft route, gate-reuse.mjs and test-verifier-gate-claims.mjs in the order's steps 14, 15, 17, 18, 19 and 20; settled when each finding has its case or its recorded decline. [2026-10-19 standard planning pass (docs/planning/standard-pass-2026-10-19.md)]",
+          "reopenWhen": "WO-218 closes with a listed finding neither fixed with a case nor declined with its reason, or a target close is shown refusing with a tracked or non-ignored directory named for undeclared material in a real instance, or an instance order closes as no-release because a starter tag above its version reached its origin.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-19T13:47:56.466Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-47eb4d9bdf4cbfa1",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19::03f6868286f3a28d9c51c541befd64f7fccb085762072daabfdb6347c04d31b5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "20879834617548759f53e0a3a13bd36f7a000c5a63d92fef099b741a6a6d445a",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19",
+          "title": "Core's historical order ids hard-coded in the kit.",
+          "summary": "3. **Core's historical order ids hard-coded in the kit.** `historicalDependencyIds` (`scripts/lib/dependencies.mjs` line 6) names core's WO-001 and WO-002, which an instance's index reads as its own. Shape: the set comes from the instance's configuration or its own closed orders. Allocated to WO-218.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The operator's instance recorded it (its 2026-10-18 planning document §10, C7a); scripts/lib/dependencies.mjs line 6 names core's WO-001 and WO-002 at f577979e; allocated to WO-218 (step 21) by the 2026-10-19 pass. [2026-10-19 standard planning pass (docs/planning/standard-pass-2026-10-19.md)]",
+          "reopenWhen": "WO-218 closes without a kit fixture whose instance holds neither WO-001 nor WO-002 and whose index reads its historical set from its own configuration or closed orders.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-19T13:47:57.069Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8259cdfb8c390498",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19::334f505c7df18d6aff05d818447d65dce6dfa48a1d5e8dc337c3f79f799bc920",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "69fd83901b4ddb665a73fb6e9d90ad5d62f4a1b36f3051ef5e62d1b3f88d7d94",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19",
+          "title": "plan start dates the branch in UTC.",
+          "summary": "9. **`plan start` dates the branch in UTC.** Declined: every record in the control plane is UTC and the branch date matches the receipts. Reopen: the operator's word.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The operator's instance recorded it (its 2026-10-18 planning document §10, C7f); declined by the 2026-10-19 pass: every record in the control plane is UTC and the branch date matches the receipts; no harm is recorded. [2026-10-19 standard planning pass (docs/planning/standard-pass-2026-10-19.md)]",
+          "reopenWhen": "The operator's word.",
+          "targets": [],
+          "at": "2026-10-19T13:47:57.619Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-280abd447f789958",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19::39c83a21361c57029c66367e7c86fcd37976905c8c09182a1623711dcdb89088",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "18fbd7a78c4465bea22e8d33bf7c60c9e713240b373d1fb90662f9dafe5c98f8",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19",
+          "title": "Session and order status for a console, with a direction channel.",
+          "summary": "8. **Session and order status for a console, with a direction channel.** The operator wants to check in on running sessions through the UI alone (the fork's D17); the platform half is core's console view model and WO-193's request channel. Reopen: WO-193 lands, or the fork files its console order.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The operator's instance recorded it (its 2026-10-18 planning document D17 and §10); the platform half is core's console view model and WO-193's request channel, both queued; deferred by the 2026-10-19 pass. [2026-10-19 standard planning pass (docs/planning/standard-pass-2026-10-19.md)]",
+          "reopenWhen": "WO-193 lands, or the fork files its console order.",
+          "targets": [],
+          "at": "2026-10-19T13:47:57.543Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-338bcbd293351a82",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19::5c5ca621169d119b20518555f6a413c03241f9669fead69c1c7820805495d99c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d8fe5ee865a09fd4d2ff8052f7e56452531bd5de243abc597a79dd9b56381c13",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19",
+          "title": "A repo.settings effect in the authority profile.",
+          "summary": "7. **A `repo.settings` effect in the authority profile.** A repository setting (branch rules, head-branch deletion) has no kit effect; the fork's WO-010 applies it with `gh api` under host permissions and records the readback. Shape: an effect the registration declares and the publish helper applies and reads back. Reopen: a second instance declares a repository setting, or the fork's readback shows a drift the registration should own.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The operator's instance recorded it (its 2026-10-18 planning document §10 and D1, D10); the fork's WO-010 applies the setting with gh api under host permissions and records the readback; deferred as a NoOp by the 2026-10-19 pass. [2026-10-19 standard planning pass (docs/planning/standard-pass-2026-10-19.md)]",
+          "reopenWhen": "A second instance declares a repository setting, or the fork's readback shows a drift the registration should own.",
+          "targets": [],
+          "at": "2026-10-19T13:47:57.466Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-98aeb43c543dfbaf",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19::979aaeec3cbdbbeae93365a758140cbf79c78349efe71a5ae84e9bdde3ef9ad4",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "fd583c0b4417ae118baa5629224ba3e89da31d76b944b97cba8bde095f964d1d",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19",
+          "title": "The outward lint's title shape and a leading gitmoji in an instance.",
+          "summary": "4. **The outward lint's title shape and a leading gitmoji in an instance.** The fork reports the outward lint refusing a title that opens with a gitmoji, while core's own titles open with one. Shape: reproduce in a kit fixture, then align the rule or correct the fork's reading. Allocated to WO-218.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The operator's instance recorded it (its 2026-10-18 planning document §10, C7d); reproduced or declined with the output in WO-218 (step 23) by the 2026-10-19 pass. [2026-10-19 standard planning pass (docs/planning/standard-pass-2026-10-19.md)]",
+          "reopenWhen": "WO-218 closes without a kit fixture that reproduces or refutes the fork's reading of the outward lint's title rule.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-19T13:47:57.150Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3c5f5a2bdbe06c07",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19::b07df79173e4e840bf46b2852c32ba33091861e06721e0e5c68342c251bc03bb",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e61cee970ae98237892a7f36335d2323b721c283d3b20852e0ebed04a549ae1f",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19",
+          "title": "A target order's moved records still named by the status projection.",
+          "summary": "2. **A target order's moved records still named by the status projection.** After `target-records` moves a target order's reports into the target, `npm run resume -- status --json` and `docs/control/current.md` name the launchpad paths that no longer exist. Shape: the projection resolves a moved report through the target record, or `target-records` rewrites the recorded paths. Allocated to WO-218, with the status projection in `scripts/resume.mjs` as the row's second surface.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The operator's instance recorded it in its 2026-10-18 planning document (§10, read on the operator's machine); a kit defect of the target-order lifecycle, allocated to WO-218 (step 22, with scripts/resume.mjs's status projection as the row's second surface) by the 2026-10-19 pass. [2026-10-19 standard planning pass (docs/planning/standard-pass-2026-10-19.md)]",
+          "reopenWhen": "WO-218 closes without a case that moves a fixture target order's reports and reads status --json and current.md resolving them, or an instance reports the projection naming a moved path after WO-218.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-19T13:47:56.992Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-dadc66e1f81f83a5",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19::b25138cc981ddad1a23caf8e41275e49d148d65f09a441235ef2b7ebe6ec20d8",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e15d863aa2c91ba3be8bd6e91e1f6afbae56b3da1189ce80b5156d5d31c417c4",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19",
+          "title": "followups --apply and the host scratchpad.",
+          "summary": "5. **`followups --apply` and the host scratchpad.** The command refuses the host scratchpad the role grants for other writes ([followups.md](followups.md) states the rule), and the fork's batch passed through the ignored control lane twice. Shape: accept a request file from the session's granted scratchpad when the session identity is known, or print the control-lane path in the refusal. Allocated to WO-219.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The operator's instance recorded it (its 2026-10-18 planning document §10, C7e); followups.md states the refusal; planning machinery, allocated to WO-219 (step 16) by the 2026-10-19 pass. [2026-10-19 standard planning pass (docs/planning/standard-pass-2026-10-19.md)]",
+          "reopenWhen": "WO-219 closes without a kit fixture in which --apply accepts a request file from the session's granted scratchpad or names the control-lane path in its refusal.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-19T13:47:57.311Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c779cf907c180c40",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19::bf1097d401442102fcc552be118d63aaaa9508e5eb8ad56baf2f32f91fc7b2c5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c5cb4e6149c863e997cce0547961489136bdbbcfa282d3066c49d6e2b8f0780d",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19",
+          "title": "A chain of target orders at one base.",
+          "summary": "6. **A chain of target orders at one base.** A target order's base is fixed at planning time while `worktree start` creates the worktree there, so a chain of target orders needs one pass per member. Shape: a base that resolves at start to the registered branch's tip and is recorded in the worktree record. Reopen: the fork's second target order waits on a pass only for its base, or WO-083's run meets it.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The operator's instance recorded it (its 2026-10-18 planning document §10, C7b); a feature of target orders, not a defect; deferred as a NoOp by the 2026-10-19 pass: one pass per chain member is the cost today, and no chain has run. [2026-10-19 standard planning pass (docs/planning/standard-pass-2026-10-19.md)]",
+          "reopenWhen": "The fork's second target order waits on a pass only for its base, or WO-083's run meets it.",
+          "targets": [],
+          "at": "2026-10-19T13:47:57.388Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-10996fedecfde047",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19::e3f4aa2ab08bbf3ef3000e91d057b8997c6825f62cd2aaea0ac14a445a8e688d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "be4f6907db8e1cd380b4028ab734e74992460fc1bd12aa287e8f44b56ad93985",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19",
+          "title": "plan conditions decidable in an exported instance.",
+          "summary": "1. **`plan conditions` decidable in an exported instance.** The fork's 2026-10-18 pass reports ten rows `unknown (core condition sources absent)` and one hold judged against a one-sample thirty-day median. Shape: instance-scoped condition sources or a kit flag that leaves out rows whose source is core-only, and a hold that needs at least three samples. Allocated to WO-219 (planning machinery).",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The operator's instance recorded it (its 2026-10-18 planning document §3 and §10): ten rows unknown for absent core sources and one hold judged against a one-sample median; planning machinery, allocated to WO-219 (step 16) by the 2026-10-19 pass. [2026-10-19 standard planning pass (docs/planning/standard-pass-2026-10-19.md)]",
+          "reopenWhen": "WO-219 closes without a kit fixture in which an exported instance's conditions table leaves out core-only rows or reads instance-scoped sources and a gate-task hold needs three samples, or an instance reports an unknown core-source row after WO-219.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-19T13:47:57.230Z"
+        }
+      ]
     }
   ]
 }
