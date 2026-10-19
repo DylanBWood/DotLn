@@ -556,4 +556,74 @@ end of drafting and the final counters are in §14 and the response.
 
 ## 14. Validation and independent judgment
 
-The checks and the refutation are recorded below once run.
+**Checks run on the working tree after the last write**, all passing:
+`npm run test:docs` (the document gate: format, the configuration root,
+registrations, declarations, the generated artifacts, the host screen,
+docs check, lineage and work-order index checks, the publication check,
+the metadata check and the planning checks; the first run before the
+receipt failed only on `plan-refutation-current`, which needs this pass's
+receipt, and on the stale publication lock `npm run sync` refreshed after
+the product 07 edit); `npm run plan -- check`; `git diff --check`. The
+counts of the final run are in the pull request.
+
+**The refutation.** One fresh background `dotln-worker` was given only the
+canonical prompt of `npm run plan -- refute` for commit `91b342f0`
+(claude-opus-5-5 as its host stated; effort not read back) and judged it in
+910 s over 46 tool uses and 224,151 tokens, with no formatting repair
+needed. Receipt `2026-10-19-planning-638b4f9f2a2e3afb-049`: scope pass,
+the three orders this pass changed (WO-218, WO-217, WO-219) and the
+sequence; verdict `aligned-with-findings` for each order and for the plan;
+no hold; 1,006 s from dispatch to file. Nineteen known issues (five on
+WO-218, seven on WO-217, seven on WO-219), each with a reopening
+observation, are carried on the three catalog rows in the map until a
+later pass amends the orders (the orders stay as judged). Five corrections
+of fact this pass accepts from the receipt, recorded on those rows:
+WO-217's criterion 4 keeps the form the morning pass rewrote for WO-218
+and WO-219, while five deferred candidate rows name its surfaces, so the
+activation amendment receipt 046 planned remains its route; WO-217's Cost
+line says each of its rows was pending at `7b8206f4`, which holds for 32
+of the 35 that are not WO-222's (three were minted later); the "88
+follow-ups boarded in the week of 2026-10-13 to 2026-10-17" figure the
+batch Cost lines carry from the 2026-10-17 pass was not reproduced from
+the register (45 rows minted and 58 disposed in that window), so it is
+unknown, not refuted; WO-217 and WO-219 name no blocked critical-path
+outcome, which their READMEs name at activation (the gate cost every
+later order pays; WO-192's router and WO-083's drive); and the
+pending-count measure of receipt 048 applies to all three batches, since
+every listed row is `allocated`. The refuter's observation that a stalled
+batch keeps its rows allocated and out of every `--touching` listing is
+recorded on each row as the reopening condition for a withdrawal or a
+re-sequencing.
+
+Process cost: `harness usage` at the end of drafting read 5,653,589 total
+tokens (5,146,375 cached, 358,622 cache-write, 147,628 output) over 111
+steps; at the receipt, 9,243,569 (8,705,468 cached, 379,982 cache-write,
+156,867 output; cutoff 2026-10-19T23:09:58Z) with one subagent observed
+(224,151 subagent tokens) and 19 remaining of 20. The final counters are
+in the ignored receipts and the response.
+
+## Appendix A. The answer for the fork's next planning pass
+
+The operator pastes the block below into the fork's planning session; it
+carries core's dispositions of the fork's 2026-10-19 requests and the
+answer to its question. Each item names the record it rests on.
+
+```text
+planning: answers from core's 2026-10-19 fork-requests pass (DotLn main once this pass's pull request merges; docs/planning/fork-requests-2026-10-19.md) to this fork's requests of 2026-10-19 (latest-upstream-2026-10-19.md §10). Read each against the named record and decide each in this pass.
+
+1. Display name for a declared target release: allocated to core's WO-218 (register row FUP-806a8fccc51377b7), which now runs first in core's sequence. Shape: repositories.<id>.release.displayName with the launchpad's validator and 64-character limit, default the registration id, used in the Release title and the tag message's first line, previewed by the dry run. D4 holds until a starter release carries it; reopen D4 at the first starter release whose kit admits the key (then the self order declares the policy and moves the effect).
+
+2. The starter's core-named tag: allocated to WO-218 (FUP-a9fdacb0bbcdb97a): the kit will stop counting a tag the starter refresh wrote as an instance's local baseline (check-surfaces --local, the document gate, release prepare --local), and the README's update route will fetch without tags and say to set remote.upstream.tagOpt. Until then: core's WO-222 closed on 2026-10-19 at 22:27Z as v0.86.0 and the starter now carries a v0.86.0 tag too; this clone's remote.upstream.tagOpt was unset at 22:40Z, so set it before the next fetch and delete any v0.86.0 tag that arrives. Core's product 07 §Workflow closeout now states the behavior and the interim route.
+
+3. Preflight tokens: allocated to WO-219 (FUP-2304d46e6feb711b): work-orders index --check will resolve each open order's --only tokens against the runner's declared suites (not against --list, which prints only the plain selection, 34 product suites in core), and --list --review will print the machinery names. Core's runner still declares a harness machinery suite (marked instance: runtime); whether the exported runner declares it is the fixture's question, and core's fifteen open orders name no undeclared token. Keep D7's grammar.
+
+4. The live qualification (answered, no row): the kit's hook journals every admission it carries as a registeredTargetAdmission row ({recordedAt, event: "PreToolUse", tool, workOrder, repositoryId, kind}) and every withholding as an advisory row in the session's host observation log, docs/control/local/harness/<sha256 hex of the Claude session id>.jsonl under the launchpad root; the session reads it as a file, with no host prompt. The hook does not observe what the host does after its allow: a prompt the operator answers leaves no hook row, while a host denial is journaled by the PermissionDenied hook and as a typed HostPermissionDenied row (tool, input digest, the bracketed rule). With the interim trust entries present only the hook's own decision is observed (D6 reads this right). Record for the row, in the shape of core's docs/evidence/WO-221/host-qualification.md: the Claude Code version and auto mode; each command line as run (the draft publish at verified, the closed-phase publish, the close); each journal row's recordedAt and kind, or the advisory text; the pull request URL, its draft state and its readiness after the second publish; the trust entries by pattern (never a secret) and that hostRules is absent; any HostPermissionDenied row and the rule it names; if a prompt appeared, which command and who answered. Also record whether the base checkout lost declared output at the close (item 5) and what was reinstalled. Carry the row to core's next pass; core rewrites WO-221's Claude Code row from it.
+
+5 (the pasted item). A redaction route for the register: declined as withdrawn by this fork's bc5c1ac; the register's history refusal is its contract; reopen if an instance records a quotation in committed register history that its operator directs removed.
+
+5 (the committed item). A judge-only base checkout at close: allocated to WO-218 (FUP-4c243998cedd4597): a registration option that keeps the judgment and the refusal and deletes nothing in the base checkout, default unchanged, stated by the dry run and the receipt. Until then WO-011's reading stands (npm ci after each close), recorded in WO-005's evidence as §8.2 (e) says.
+
+6. The carried items keep their dispositions by id: FUP-10996fedecfde047 and FUP-dadc66e1f81f83a5 in WO-219; FUP-3c5f5a2bdbe06c07, FUP-47eb4d9bdf4cbfa1 and FUP-98aeb43c543dfbaf in WO-218; FUP-c779cf907c180c40, FUP-338bcbd293351a82 and FUP-280abd447f789958 deferred with their conditions; FUP-8259cdfb8c390498 declined.
+
+One note for WO-011: the starter's v0.86.0 changes only the gate's scheduler (lanes from the host, light peers beside the exclusive suites, the target-worktree file split, and a structural host screen that refuses a host whose memory per lane is under the largest recorded task peak, which core's WO-217 rows will make name its lever); taking v0.85.0 as planned or v0.86.0 is this fork's decision.
+```
