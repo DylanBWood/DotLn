@@ -340,6 +340,25 @@ try {
         console.log(
           `harness ${action}: ${result.files} generated surfaces; local-terms list: ${result.localTerms.status}`,
         );
+        // The literal-rule fallback's sidecars live in the main checkout and
+        // name an order's rules; one whose order no longer has a registered
+        // target worktree is drift the operator sees here, with the remedy.
+        // Loaded on demand so the export's emit closure stays what emit needs.
+        if (action === "check") {
+          const { staleOrderHostRules } =
+            await import("./lib/target-worktrees.mjs");
+          const { mainWorktree } = await import("./lib/git.mjs");
+          let stale = [];
+          try {
+            stale = staleOrderHostRules(mainWorktree(realpathSync(out)));
+          } catch {
+            stale = [];
+          }
+          for (const entry of stale)
+            console.log(
+              `harness ${action}: stale host rules for ${entry.workOrderId}: ${entry.reason}; run ${entry.remedy}`,
+            );
+        }
       }
     }
   }

@@ -60,10 +60,12 @@ import {
   ensureGh,
   executeGh,
   parseGitHubTarget,
+  parsePullRequestUrl,
   HOST_GIT_READ,
   pushUrl,
   pushObservedCommit,
 } from "./github-repository.mjs";
+import { redactPaths } from "./git.mjs";
 
 export { pushUrl, pushObservedCommit } from "./github-repository.mjs";
 
@@ -739,7 +741,22 @@ export function authorizeRegisteredPublication(
   now,
   workstreamId,
 ) {
-  const effects = ["repo.push", "pr.open"];
+  return authorizeRegisteredEffects(repository, registry, now, workstreamId, [
+    "repo.push",
+    "pr.open",
+  ]);
+}
+
+/** Every listed effect needs one operator grant naming the repository with
+ * the effect among its effects and operations, and the kernel's judgment
+ * of the registered profile (expiry and revocation included). */
+export function authorizeRegisteredEffects(
+  repository,
+  registry,
+  now,
+  workstreamId,
+  effects,
+) {
   const grant = registry.find(
     (entry) =>
       entry.grantedBy === "operator" &&
@@ -751,7 +768,7 @@ export function authorizeRegisteredPublication(
   );
   if (!grant)
     throw refuse(
-      `repo.push and pr.open require an admitted operator grant naming ${repository.id} in repo and both effects and operations`,
+      `${effects.join(" and ")} require an admitted operator grant naming ${repository.id} in repo and ${effects.length > 1 ? "all" : "the"} effects and operations`,
     );
   for (const [intentIndex, effect] of effects.entries()) {
     const decision = authorize(
@@ -769,6 +786,285 @@ export function authorizeRegisteredPublication(
     );
     if (!decision.authorized)
       throw refuse(`${effect}: ${decision.refusal.payload.reason}`);
+  }
+}
+
+/** Session publication reads the registration and the grant registry from
+ * main's committed bytes, requiring the working files to match: the
+ * publishing branch cannot authorize itself. */
+function committedRegistration(main, repositoryId) {
+  for (const file of [CONFIG_FILENAME, COMMITTED_AUTHORITY_GRANTS]) {
+    const committed = runGit(main, [...HOST_GIT_READ, "show", `HEAD:${file}`], {
+      trim: false,
+      onFailure: () => null,
+    });
+    if (
+      committed === null ||
+      !containedRegularFile(join(main, file), main) ||
+      readFileSync(join(main, file), "utf8") !== committed ||
+      !/^100(?:644|755) blob /u.test(
+        runGit(main, [...HOST_GIT_READ, "ls-tree", "HEAD", "--", file]),
+      )
+    )
+      throw refuse(
+        `main's publication authority must match its committed ${file}; merge the authorized authority change into main before publication`,
+      );
+  }
+  const repository = loadConfig(main).repositories[repositoryId];
+  if (!repository)
+    throw refuse(
+      `repository ${repositoryId} is not registered in main's committed authority`,
+    );
+  return repository;
+}
+
+/** The tree of the target worktree's working copy, staged through a
+ * temporary index so HEAD and the real index stay untouched. */
+function workingTree(target) {
+  const scratch = mkdtempSync(join(tmpdir(), "dotln-target-draft-"));
+  try {
+    const env = { ...process.env, GIT_INDEX_FILE: join(scratch, "index") };
+    const inTarget = (args) => {
+      const result = spawnGit(["-C", target, ...HOST_GIT_READ, ...args], {
+        encoding: "utf8",
+        env,
+        maxBuffer: 16 * 1024 * 1024,
+      });
+      if (result.status !== 0)
+        throw refuse(
+          `git ${args[0]} failed while reading the target's working tree: ${String(result.stderr ?? "").trim()}`,
+        );
+      return result.stdout.trim();
+    };
+    inTarget(["read-tree", "HEAD"]);
+    inTarget(["add", "-A", "--", "."]);
+    return inTarget(["write-tree"]);
+  } finally {
+    rmSync(scratch, { recursive: true, force: true });
+  }
+}
+
+/** Update a pull request's title and body through gh; a failure after the
+ * push names the retry. */
+function editPullRequest(cwd, forge, number, title, body) {
+  const edited = withTemporaryBody(body, (bodyPath) =>
+    executeGh(cwd, [
+      "pr",
+      "edit",
+      String(number),
+      "--repo",
+      forge.selector,
+      "--title",
+      title,
+      "--body-file",
+      bodyPath,
+    ]),
+  );
+  if (edited.status !== 0)
+    throw refuse(
+      `branch pushed but pull request #${number} could not be updated (exit ${edited.status ?? "unavailable"}); rerun the same command`,
+    );
+}
+
+const draftRecord = (publication) =>
+  decodeLog(publication.read())
+    .filter(
+      (event) =>
+        event.type === "PullRequestOpened" && event.payload.draft === true,
+    )
+    .at(-1)?.payload;
+
+/** The opt-in draft form (WO-221): at verified with a passing verification,
+ * a commit object from the target worktree's tree is pushed to the declared
+ * branch under a draft pull request, with HEAD and the index untouched. The
+ * closed-phase publish of the same order reuses that branch and pull
+ * request. Core declares no draft step and no actor; the instance's order
+ * names both. */
+export function publishTargetDraft({
+  launchpad,
+  workOrderId,
+  branch,
+  title,
+  body,
+  now = Date.now(),
+  log = (line) => process.stdout.write(`${line}\n`),
+}) {
+  const control = readControl(launchpad);
+  const state = control.orders.get(workOrderId)?.state;
+  if (!state) throw refuse(`${workOrderId} is not an activated order`);
+  if (!state.repositoryId)
+    throw refuse(`${workOrderId} is not a registered target order`);
+  const verification = eventsForOrder(control, workOrderId)
+    .filter((event) => event.type === "VerificationCompleted")
+    .at(-1);
+  if (state.phase !== "verified" || verification?.verdict !== "pass")
+    throw refuse(
+      `the draft form is legal at verified with a passing verification; ${workOrderId} is ${state.phase}`,
+    );
+  const entry = targetWorktreeForOrder(launchpad, workOrderId);
+  if (
+    !entry ||
+    entry.repositoryId !== state.repositoryId ||
+    entry.baseCommit !== state.baseCommit
+  )
+    throw refuse("target worktree registry differs from the activated order");
+  const main = mainWorktree(launchpad);
+  const repository = committedRegistration(main, state.repositoryId);
+  authorizeRegisteredPublication(
+    repository,
+    readAuthorityGrantRegistry(main),
+    now,
+    workOrderId,
+  );
+  const boundUrl = pushUrl(entry.target);
+  const forge = parseGitHubTarget(boundUrl);
+  const read = (args) => runGit(entry.target, [...HOST_GIT_READ, ...args]);
+  const headBefore = read(["rev-parse", "HEAD"]);
+  const statusBefore = read(["status", "--porcelain"]);
+  if (read(["symbolic-ref", "--short", "HEAD"]) !== entry.branch)
+    throw refuse(`target worktree is not on ${entry.branch}`);
+  const tree = workingTree(entry.target);
+  if (tree === read(["rev-parse", `${state.baseCommit}^{tree}`]))
+    throw refuse(
+      "the target's working tree equals the base; no change to draft",
+    );
+  try {
+    checkTargetHarness(entry.target, { runtimeRoot: entry.runtimeRoot });
+  } catch (error) {
+    throw refuse(`target bundle ownership is not valid: ${error.message}`);
+  }
+  const publication = new WorkerStore(
+    docPath(main, "control", "local/target-publications", workOrderId),
+  );
+  const previous = draftRecord(publication);
+  if (previous && read(["rev-parse", `${previous.headSha}^{tree}`]) === tree) {
+    log(
+      `Already published draft at tree ${tree}: pull request #${previous.number} on ${previous.repositoryId} from ${previous.branch}; nothing pushed.`,
+    );
+    return previous;
+  }
+  if (previous && previous.branch !== branch)
+    throw refuse(
+      `one pull request per order: the draft is on ${previous.branch}; use --branch ${previous.branch}`,
+    );
+  const commit = spawnGit(
+    [
+      "-C",
+      entry.target,
+      ...HOST_GIT_READ,
+      "commit-tree",
+      tree,
+      "-p",
+      headBefore,
+      "-m",
+      title,
+    ],
+    { encoding: "utf8" },
+  );
+  if (commit.status !== 0)
+    throw refuse(
+      `git commit-tree failed: ${redactPaths(String(commit.stderr ?? "").trim(), [[entry.target, "<target>"]])}`,
+    );
+  const draftCommit = commit.stdout.trim();
+  const changes = targetChanges(entry.target, state.baseCommit, draftCommit);
+  const publishedBody = `${body.trimEnd()}\n\n${targetChangeSection({ baseCommit: state.baseCommit, headCommit: draftCommit, files: changes.files })}\n`;
+  lintArtifacts(main, [
+    { kind: "branch", text: branch },
+    { kind: "commit", text: title },
+    { kind: "pr-title", text: title },
+    { kind: "pr-body", text: publishedBody },
+  ]);
+  assertGitHubBodyProfile(publishedBody, "draft target body");
+  if (hasAiAttribution(title) || hasAiAttribution(publishedBody))
+    throw refuse("target publication contains AI attribution");
+  // The lane fetches a ref, so the draft commit gets one under refs/dotln;
+  // no branch moves and the index is untouched.
+  const sourceRef = `refs/dotln/draft/${workOrderId}`;
+  read(["update-ref", sourceRef, draftCommit]);
+  publication.acquire();
+  try {
+    const resolved = ensureGh(entry.target);
+    if (resolved.selector.toLowerCase() !== forge.identity)
+      throw refuse("origin differs from the bound target repository");
+    pushObservedCommit(
+      entry.target,
+      boundUrl,
+      entry.branch,
+      draftCommit,
+      branch,
+      {
+        sourceRef,
+        ...(previous ? { lease: previous.headSha } : {}),
+      },
+    );
+    let payload;
+    if (previous) {
+      editPullRequest(
+        entry.target,
+        forge,
+        previous.number,
+        title,
+        publishedBody,
+      );
+      payload = { ...previous, headSha: draftCommit };
+    } else {
+      const created = withTemporaryBody(publishedBody, (bodyPath) =>
+        executeGh(entry.target, [
+          "pr",
+          "create",
+          "--draft",
+          "--repo",
+          forge.selector,
+          "--head",
+          branch,
+          "--base",
+          repository.baseBranch,
+          "--title",
+          title,
+          "--body-file",
+          bodyPath,
+        ]),
+      );
+      if (created.status !== 0)
+        throw refuse(
+          `branch pushed but draft pull-request creation failed (exit ${created.status ?? "unavailable"})`,
+        );
+      const number = parsePullRequestUrl(created.stdout, forge);
+      if (number === null)
+        throw refuse(
+          "draft pull request created but its number could not be read; inspect the repository before retrying",
+        );
+      payload = {
+        repositoryId: forge.selector,
+        number,
+        headSha: draftCommit,
+        draft: true,
+        branch,
+      };
+    }
+    const { event } = appendEvent(publication.read(), {
+      schemaVersion: 1,
+      type: "PullRequestOpened",
+      occurredAt: now,
+      actorId: TARGET_PUBLISH_HOST,
+      workstreamId: workOrderId,
+      correlationId: workOrderId,
+      payload,
+    });
+    publication.append(event);
+    if (
+      read(["rev-parse", "HEAD"]) !== headBefore ||
+      read(["status", "--porcelain"]) !== statusBefore
+    )
+      throw refuse(
+        "the target worktree changed while the draft was published; inspect it before retrying",
+      );
+    log(
+      `Pushed draft ${branch} at ${draftCommit} and ${previous ? "updated" : "opened"} draft pull request #${payload.number} on ${forge.selector}; HEAD and the index are unchanged.`,
+    );
+    return payload;
+  } finally {
+    publication.release();
   }
 }
 
@@ -817,28 +1113,7 @@ export function publishTargetWorktree({
     );
   const entry = targetWorktreeForOrder(launchpad, workOrderId);
   const main = mainWorktree(launchpad);
-  for (const file of [CONFIG_FILENAME, COMMITTED_AUTHORITY_GRANTS]) {
-    const committed = runGit(main, [...HOST_GIT_READ, "show", `HEAD:${file}`], {
-      trim: false,
-      onFailure: () => null,
-    });
-    if (
-      committed === null ||
-      !containedRegularFile(join(main, file), main) ||
-      readFileSync(join(main, file), "utf8") !== committed ||
-      !/^100(?:644|755) blob /u.test(
-        runGit(main, [...HOST_GIT_READ, "ls-tree", "HEAD", "--", file]),
-      )
-    )
-      throw refuse(
-        `main's publication authority must match its committed ${file}; merge the authorized authority change into main before publication`,
-      );
-  }
-  const repository = loadConfig(main).repositories[subject.repositoryId];
-  if (!repository)
-    throw refuse(
-      `repository ${subject.repositoryId} is not registered in main's committed authority`,
-    );
+  const repository = committedRegistration(main, subject.repositoryId);
   validateTargetRecordsCommit(entry.target, subject, records, repository);
   authorizeRegisteredPublication(
     repository,
@@ -941,7 +1216,56 @@ export function publishBoundTargetCommit({
     const resolved = ensureGh(target);
     if (resolved.selector.toLowerCase() !== forge.identity)
       throw refuse("origin differs from the bound target repository");
-    pushObservedCommit(target, boundUrl, sourceBranch, commit, branch);
+    // A draft opened at verified is reused: the reviewed commit replaces the
+    // draft head under a lease, the title and body are updated and the pull
+    // request is marked ready. One pull request per order (WO-221).
+    const draft = draftRecord(publication);
+    if (draft && draft.branch !== branch)
+      throw refuse(
+        `one pull request per order: the draft is on ${draft.branch}; publish with --branch ${draft.branch}`,
+      );
+    pushObservedCommit(
+      target,
+      boundUrl,
+      sourceBranch,
+      commit,
+      branch,
+      draft ? { lease: draft.headSha } : {},
+    );
+    if (draft) {
+      editPullRequest(target, forge, draft.number, title, body);
+      const ready = executeGh(target, [
+        "pr",
+        "ready",
+        String(draft.number),
+        "--repo",
+        forge.selector,
+      ]);
+      if (ready.status !== 0)
+        throw refuse(
+          `branch pushed and pull request updated but not marked ready (exit ${ready.status ?? "unavailable"}); rerun the same command`,
+        );
+      const payload = {
+        repositoryId: forge.selector,
+        number: draft.number,
+        headSha: commit,
+        reusedDraft: draft.headSha,
+      };
+      const { event } = appendEvent(publication.read(), {
+        schemaVersion: 1,
+        type: "PullRequestOpened",
+        occurredAt: now,
+        actorId: TARGET_PUBLISH_HOST,
+        workstreamId,
+        correlationId: workstreamId,
+        payload,
+      });
+      publication.append(event);
+      log(
+        `Pushed ${branch} at ${commit} over draft ${draft.headSha} and marked pull request #${payload.number} on ${forge.selector} ready.`,
+      );
+      return payload;
+    }
     const created = withTemporaryBody(body, (bodyPath) =>
       executeGh(target, [
         "pr",
@@ -962,20 +1286,14 @@ export function publishBoundTargetCommit({
       throw refuse(
         `branch pushed but pull-request creation failed (exit ${created.status ?? "unavailable"})`,
       );
-    const url =
-      /^https:\/\/([^/\s]+)\/([^/\s]+)\/([^/\s]+)\/pull\/([1-9][0-9]*)$/u.exec(
-        created.stdout.trim().split("\n").at(-1) ?? "",
-      );
-    if (
-      !url ||
-      `${url[1]}/${url[2]}/${url[3]}`.toLowerCase() !== forge.identity
-    )
+    const number = parsePullRequestUrl(created.stdout, forge);
+    if (number === null)
       throw refuse(
         "pull request created but its number could not be read; inspect the repository before retrying",
       );
     const payload = {
       repositoryId: forge.selector,
-      number: Number(url[4]),
+      number,
       headSha: commit,
     };
     const { event } = appendEvent(publication.read(), {

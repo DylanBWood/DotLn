@@ -53,6 +53,8 @@ import {
   requireFinalReviewGate,
   readReportGateClaims,
   requireGateClaims,
+  gateFields,
+  requireDocumentRow,
 } from "./lib/handoff-ledger.mjs";
 import {
   executorWriterRelease,
@@ -1114,7 +1116,7 @@ const defectBoundarySentence =
 const operatorMessageSentence =
   "A question, complaint or stale operator message is not an instruction to stop, narrow or widen work; only an explicit pause, stop or scope prefix changes it.";
 const gateClaimSentence =
-  "A met criterion naming npm test or npm run test:docs stands on that gate's passing row at the subject or an inline run.";
+  "A met criterion naming npm test or npm run test:docs stands on that gate's passing row at the subject; completion consumes rows and runs no gate.";
 const verifySentence = `A finding names its class and the rule a repair must hold. ${defectBoundarySentence} ${offRampSentence} ${operatorMessageSentence} ${gateClaimSentence}`;
 // A target session works in the target worktree, where `npm run` reads the
 // target's own package.json. Texts are written in npm form, and each printed
@@ -1511,8 +1513,9 @@ const run = async (argv) => {
         undefined,
         state.workOrderId,
       );
-      // The gates a met criterion names, the document gate last and inline;
-      // a gate index the diff check could not write is reported there once.
+      // The gates a met criterion names, consumed from their rows and never
+      // run here; a gate index the diff check could not write is reported
+      // there once.
       const gates = await requireGateClaims(repoRoot, handoff, {
         state,
         gateIndexError,
@@ -1737,19 +1740,29 @@ const run = async (argv) => {
         readFileSync(join(repoRoot, state.finalReviewPath), "utf8"),
         { verdict },
       );
+      const finalLedger = readReportGateClaims(
+        repoRoot,
+        state,
+        state.finalReviewPath,
+      );
       const reviewGate =
         verdict === "pass"
-          ? await requireFinalReviewGate(
-              repoRoot,
-              readReportGateClaims(repoRoot, state, state.finalReviewPath),
-              {
-                state,
-                since: orderEvents
-                  .filter((event) => event.type === "FinalReviewRequested")
-                  .at(-1)?.recordedAt,
-              },
-            )
+          ? await requireFinalReviewGate(repoRoot, finalLedger, { state })
           : undefined;
+      // A met document claim consumes the row recorded for the working tree
+      // as it stands; final review runs no gate of its own here.
+      let documentRow;
+      if (
+        verdict === "pass" &&
+        finalLedger.checked &&
+        finalLedger.claims.document.length
+      ) {
+        const found = await requireDocumentRow(repoRoot, {
+          instead: "record the criterion unmet with the reason instead",
+        });
+        if (found.refusal) throw new Error(found.refusal);
+        documentRow = found.row;
+      }
       const evidence = await requireLifecycleEvidence(
         repoRoot,
         action,
@@ -1757,6 +1770,7 @@ const run = async (argv) => {
         state.workOrderId,
         { targetGate, reviewGate },
       );
+      if (documentRow) evidence.documentGate = gateFields(documentRow);
       // Only the report's findings block is read. A block that cannot give a
       // complete count records none, never a lower one; either way one
       // advisory says so and the result records.

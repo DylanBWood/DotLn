@@ -39,7 +39,14 @@ import {
   releaseNotesPathFor,
 } from "./lib/release-notes.mjs";
 import {
+  HOST_GIT_READ,
+  ensureGhFor,
+  ensureRelease,
   environmentWithoutGhRepo,
+  parseGitHubTarget,
+  pushAnnotatedTag,
+  pushUrl,
+  remoteTags as remoteTagsAt,
   resolveGitHubPushTarget,
 } from "./lib/github-repository.mjs";
 import {
@@ -86,7 +93,10 @@ import {
   retainedWorktreeRemovalSubjects,
 } from "./lib/worktree-removal.mjs";
 import { releaseListCache } from "./lib/release-list-cache.mjs";
-import { targetWorktreeForOrder } from "./lib/target-worktrees.mjs";
+import {
+  recordedRepositoryClone,
+  targetWorktreeForOrder,
+} from "./lib/target-worktrees.mjs";
 import {
   inventoryMaterial,
   materialCloseCommand,
@@ -238,10 +248,24 @@ export function releaseCloseSummary(record) {
       `Starter refresh ${row.sibling}: ${row.outcome}; ${line(row.reason ?? `${row.before} -> ${row.after}`)}${row.outcome === "refreshed" ? `; ${row.before} -> ${row.after}` : ""}${row.rewrittenSeeds?.length ? `; seeds published: ${row.rewrittenSeeds.join(", ")}` : ""}${row.seedChanges?.length ? `; seeds would change: ${row.seedChanges.join(", ")}` : ""}.`,
     );
   lines.push(`Cleanup: ${record.cleanup.outcome}.`);
-  if (record.targetCleanup)
+  if (publication.target?.policy === "declared")
     lines.push(
-      `Target worktree ${record.targetCleanup.path}; branch ${record.targetCleanup.branch}: ${record.targetCleanup.outcome}.`,
+      `Target release ${publication.target.repositoryId}: ${publication.target.outcome}; tag ${publication.target.tag ?? "unknown"}; GitHub Release ${publication.target.release ?? (record.dryRun ? "would create" : "not verified")}.`,
     );
+  if (record.targetCleanup) {
+    const cleanup = record.targetCleanup;
+    const deleted = [
+      ...(cleanup.disposable?.target?.map(
+        (row) => `${row.path} (${row.files})`,
+      ) ?? []),
+      ...(cleanup.disposable?.base?.map(
+        (row) => `base ${row.path} (${row.files})`,
+      ) ?? []),
+    ];
+    lines.push(
+      `Target worktree ${cleanup.path}; branch ${cleanup.branch}: ${cleanup.outcome}${deleted.length ? `; disposable output ${record.dryRun ? "would be deleted" : "deleted"}: ${deleted.join(", ")}` : ""}${cleanup.baseCheckoutWrites === null ? "; advisory: gate base-checkout writes unavailable" : cleanup.baseCheckoutWrites?.length ? `; advisory: gate commands wrote into the base checkout: ${cleanup.baseCheckoutWrites.join(", ")}` : ""}.`,
+    );
+  }
   for (const row of record.cleanup.worktrees)
     lines.push(`Worktree ${row.path}: ${row.outcome}.`);
   for (const row of record.removals ?? [])
@@ -2412,6 +2436,155 @@ const refreshPublishedStarters = async (
   }
 };
 
+// A target release is opt-in (WO-221): `repositories.<id>.release.policy:
+// declared` plus the order's `**Target release classification:**` header. The
+// next tag comes from the target's remote `v*` tags (none means v0.1.0), the
+// annotated tag lands on the merged base and the target's GitHub Release
+// follows; an equal tag on the same commit is an idempotent retry and a
+// differing one refuses. Absent policy keeps today's no-release.
+const targetReleaseClassification = (root, state, revision) => {
+  const markdown = repositoryFile(root, state.workOrderPath, revision);
+  const headers = [
+    ...markdown.matchAll(
+      /^\*\*Target release classification:\*\*\s*(patch|minor|major)\b/gmu,
+    ),
+  ];
+  if (headers.length !== 1)
+    throw new Error(
+      `repositories.${state.repositoryId}.release.policy is declared, but ${state.workOrderPath} carries ${headers.length ? `${headers.length} **Target release classification:** headers` : "no **Target release classification:** patch | minor | major header"}; exactly one is needed`,
+    );
+  return headers[0][1];
+};
+const nextTargetVersion = (latest, classification) => {
+  const parts = semver(latest);
+  const axis = { major: 0, minor: 1, patch: 2 }[classification];
+  parts[axis]++;
+  for (let index = axis + 1; index < parts.length; index++) parts[index] = 0;
+  return `v${parts.join(".")}`;
+};
+const publishTargetRelease = async (
+  root,
+  state,
+  revision,
+  { dryRun, publish, record },
+) => {
+  const repository = loadConfig(root).repositories[state.repositoryId];
+  const target = (record.publication.target = {
+    repositoryId: state.repositoryId,
+    policy: repository?.release?.policy ?? "no-release",
+    outcome: "no-release",
+    tag: null,
+    release: null,
+  });
+  if (target.policy !== "declared") return;
+  const classification = targetReleaseClassification(root, state, revision);
+  // The release is an effect of the registered repository: the operator
+  // grant must name it and the kernel judges the profile's expiry and
+  // revocation, as it does for the publication effects.
+  const { authorizeRegisteredEffects } =
+    await import("./lib/target-publish.mjs");
+  const { readAuthorityGrantRegistry } =
+    await import("./lib/authority-grants.mjs");
+  authorizeRegisteredEffects(
+    repository,
+    readAuthorityGrantRegistry(root),
+    Date.now(),
+    state.workOrderId,
+    ["release.close"],
+  );
+  const clone = recordedRepositoryClone(root, state.repositoryId);
+  if (typeof clone !== "string")
+    throw new Error(
+      `no recorded clone for ${state.repositoryId}; use worktree clone ${state.repositoryId} <absolute-path>`,
+    );
+  const merged = runGit(clone, [
+    ...HOST_GIT_READ,
+    "rev-parse",
+    `refs/remotes/origin/${repository.baseBranch}^{commit}`,
+  ]);
+  const url = pushUrl(clone);
+  const forge = parseGitHubTarget(url);
+  // A tag an earlier attempt of this close published is this close's tag,
+  // whatever the base has done since; otherwise only tags the merged base
+  // reaches set the baseline, the latest reachable tag already on the
+  // merged commit is an idempotent retry, and the candidate name held by a
+  // commit the base does not reach refuses by name.
+  const tags = remoteTagsAt(url);
+  const earlier = [...(record.previousAttempts ?? [])]
+    .reverse()
+    .find(
+      (attempt) =>
+        attempt.publication?.target?.tagOutcome === "published" ||
+        attempt.publication?.target?.outcome === "current",
+    )?.publication.target;
+  const reaches = (commit) =>
+    execute("git", [
+      "-C",
+      clone,
+      ...HOST_GIT_READ,
+      "merge-base",
+      "--is-ancestor",
+      commit,
+      merged,
+    ]).status === 0;
+  const versions = new Map(
+    [...tags].filter(([name, row]) => semver(name) && reaches(row.target)),
+  );
+  const latest = latestVersion(versions);
+  const tag = earlier?.tag
+    ? earlier.tag
+    : latest && tags.get(latest).target === merged
+      ? latest
+      : latest
+        ? nextTargetVersion(latest, classification)
+        : "v0.1.0";
+  const existing = tags.get(tag)?.target ?? null;
+  // The first publication attempt owns both the name and the commit. A
+  // retry must not adopt a moved remote tag or a subsequently advanced base.
+  const tagged = earlier?.tag ? earlier.commit : merged;
+  if (!/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/u.test(tagged ?? ""))
+    throw new Error(
+      `target release tag ${tag} has no valid recorded commit; source retained. Inspect the earlier release-close receipt before retrying`,
+    );
+  Object.assign(target, {
+    classification,
+    latest: latest ?? null,
+    tag,
+    commit: tagged,
+  });
+  if (existing && existing !== tagged)
+    throw new Error(
+      `target release tag ${tag} exists on ${forge.selector} at ${existing}, not the ${earlier?.tag ? "recorded release commit" : `merged ${repository.baseBranch}`} ${tagged}; source retained`,
+    );
+  if (dryRun) {
+    target.outcome = existing ? "current" : "preview";
+    return;
+  }
+  if (!publish) return;
+  const authority = readWorkOrderAuthority(root, state, revision, {
+    versioned: false,
+  });
+  ensureGhFor(clone, forge);
+  if (!existing) {
+    pushAnnotatedTag(clone, url, {
+      sourceRef: tagged,
+      commit: tagged,
+      tag,
+      message: `${authority.title}\n\nClosed by ${state.workOrderId}; merged ${repository.baseBranch} at ${tagged}.`,
+      tagger: runGit(clone, ["var", "GIT_COMMITTER_IDENT"]),
+    });
+    target.tagOutcome = "published";
+  } else target.tagOutcome = "already-published";
+  target.release = ensureRelease(
+    clone,
+    forge,
+    tag,
+    `${state.repositoryId} ${tag}`,
+    `${authority.title}\n\n${authority.objective}\n\nClosed by ${state.workOrderId}; merged ${repository.baseBranch} at ${tagged}.\n`,
+  );
+  target.outcome = target.release === "existing" ? "current" : "published";
+};
+
 const close = async (workOrderId, parsed, record) => {
   const { flags, material: overrides } = parsed;
   const publish = flags.includes("--publish");
@@ -2468,10 +2641,20 @@ const close = async (workOrderId, parsed, record) => {
         record.cleanup.outcome = "blocked";
         throw error;
       }
+      // The target branch is proven merged by the close; a declared target
+      // release tags that merged base and creates the target's Release.
+      await publishTargetRelease(root, state, sourceRevision, {
+        dryRun,
+        publish,
+        record,
+      });
       finishPublishedWorktree(root, workOrderId, dryRun, record, overrides);
     }
+    const target = record.publication.target;
     writeOutput(
-      `${workOrderId} closes a registered target; no release tag is due in either repository.\n`,
+      target && target.policy === "declared"
+        ? `${workOrderId} closes a registered target; target release ${target.tag}: ${target.outcome}${target.release ? ` (GitHub Release ${target.release})` : ""}; no launchpad tag is due.\n`
+        : `${workOrderId} closes a registered target; no release tag is due in either repository.\n`,
     );
     return;
   }

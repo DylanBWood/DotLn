@@ -32,6 +32,8 @@ import {
   expandSuiteTasks,
   aggregateSuiteRows,
   changedMachinery,
+  changedSinceLastGate,
+  lastFailedSuites,
   completeSharedRefs,
   sharedRefChanges,
   isKitRoot,
@@ -100,7 +102,7 @@ test("target runner claims do not change self-order handoff or verification clai
   });
 });
 
-test("target claims use only current target selection rows and still run the document gate", async (t) => {
+test("target claims use only current target selection rows and consume the document row", async (t) => {
   const base = realpathSync(
     mkdtempSync(join(tmpdir(), "dotln-target-claims-")),
   );
@@ -307,21 +309,50 @@ test("target claims use only current target selection rows and still run the doc
   assert.equal(readFileSync(archive, "utf8"), "{");
   rmSync(archive);
   assert.ok((await check()).targetGate);
+  // Completion consumes the launchpad's document row and runs no gate: the
+  // runner is present but never executed.
   ledger.claims.document = ["3"];
   const runner = join(base, "document-runner.mjs");
   writeFileSync(
     runner,
-    "console.error('FAIL document fixture'); process.exit(1);\n",
+    "console.error('the document gate must be consumed, not run'); process.exit(1);\n",
   );
+  const consume = () =>
+    requireGateClaims(repo, ledger, {
+      state,
+      runner,
+      log: { log() {}, warn() {} },
+    });
   await assert.rejects(
-    () =>
-      requireGateClaims(repo, ledger, {
-        state,
-        runner,
-        log: { log() {}, warn() {} },
-      }),
-    /document gate failed/u,
+    consume,
+    /Handoff document row missing or failed at the current code identity/u,
   );
+  const documentRow = {
+    checkId: "npm run test:docs",
+    codeIdentity: gateCodeIdentity(repo),
+    treeHash: gateTreeHash(repo),
+    subject: gateTreeHash(repo),
+    requiredSuites: ["docs-check"],
+    executed: true,
+    exitCode: 0,
+    durationMs: 1,
+    evidenceRef: "fixture:docs",
+    recordedAt: "2026-10-14T10:00:05.000Z",
+  };
+  recordGateChecks(repo, [
+    {
+      ...documentRow,
+      exitCode: 1,
+      evidenceRef: "fixture:docs-failed",
+      recordedAt: "2026-10-14T10:00:04.000Z",
+    },
+  ]);
+  await assert.rejects(
+    consume,
+    /Handoff document row missing or failed at the current code identity/u,
+  );
+  recordGateChecks(repo, [documentRow]);
+  assert.equal((await consume()).documentGate.evidenceRef, "fixture:docs");
 });
 
 test("records publication proves unchanged launchpad identity or requires the reviewer gate", async (t) => {
@@ -8083,4 +8114,142 @@ test("copied fixtures use the checked declaration and directory coverage never s
   row.provided = ["scripts/entry.mjs"];
   save();
   assert.deepEqual(uncoveredFixtureInputs(repo), []);
+});
+
+test("a complete selection leads with suites whose inputs changed since the newest gate row", () => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-changed-first-"));
+  const git = (...args) => {
+    const run = runGit(
+      repo,
+      [
+        "-c",
+        "user.name=fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        ...args,
+      ],
+      { raw: true, encoding: "utf8" },
+    );
+    assert.equal(run.status, 0, run.stderr);
+  };
+  git("init", "-q");
+  mkdirSync(join(repo, "scripts"), { recursive: true });
+  mkdirSync(join(repo, "packages/delta/src"), { recursive: true });
+  writeFileSync(join(repo, "scripts/alpha.mjs"), "export const alpha = 1;\n");
+  writeFileSync(join(repo, "scripts/test-epsilon.sh"), "exit 0\n");
+  writeFileSync(join(repo, "packages/delta/src/a.ts"), "export {};\n");
+  git("add", "-A");
+  git("commit", "-q", "-m", "fixture");
+  const table = [
+    { name: "alpha", sources: ["scripts/alpha"] },
+    { name: "beta", sources: ["scripts/beta.mjs"] },
+    { name: "gamma" },
+    // Product suites declare no sources: their script or package stands in.
+    {
+      name: "delta",
+      command: ["node", "--test", "packages/delta/dist/test/a.test.js"],
+    },
+    { name: "epsilon", command: ["bash", "scripts/test-epsilon.sh"] },
+    { name: "zeta", command: ["bash", "scripts/test-zeta.sh"] },
+  ];
+  const hourAgo = new Date(Date.now() - 3_600_000).toISOString();
+  const hourAhead = new Date(Date.now() + 3_600_000).toISOString();
+  assert.deepEqual(changedSinceLastGate(repo, table, []), {
+    since: undefined,
+    files: [],
+    suites: [],
+  });
+  assert.deepEqual(
+    changedSinceLastGate(repo, table, [{ recordedAt: hourAhead }]).suites,
+    [],
+  );
+  // An untracked file counts; an unparseable time does not decide.
+  writeFileSync(join(repo, "scripts/beta.mjs"), "export const beta = 1;\n");
+  const changed = changedSinceLastGate(repo, table, [
+    { recordedAt: hourAgo },
+    { recordedAt: "not a time" },
+  ]);
+  assert.equal(changed.since, hourAgo);
+  assert.deepEqual(changed.files.sort(), [
+    "packages/delta/src/a.ts",
+    "scripts/alpha.mjs",
+    "scripts/beta.mjs",
+    "scripts/test-epsilon.sh",
+  ]);
+  assert.deepEqual(changed.suites, ["alpha", "beta", "delta", "epsilon"]);
+  // The newest row decides, whichever order the rows arrive in.
+  assert.deepEqual(
+    changedSinceLastGate(repo, table, [
+      { recordedAt: hourAgo },
+      { recordedAt: hourAhead },
+    ]).suites,
+    [],
+  );
+  rmSync(repo, { recursive: true, force: true });
+});
+
+test("a suite whose latest recorded execution did not pass leads the next run", () => {
+  const execution = (name, exitCode, extra = {}) => ({
+    name,
+    executed: true,
+    exitCode,
+    ...extra,
+  });
+  assert.deepEqual(lastFailedSuites([]), []);
+  assert.deepEqual(
+    lastFailedSuites([
+      {
+        recordedAt: "2026-10-18T10:00:00.000Z",
+        taskTimeline: [
+          execution("alpha", 1),
+          execution("beta", 0),
+          execution("vertical:file:one", 0),
+          execution("vertical:file:two", 0, { timedOut: true }),
+          { name: "gamma", executed: false },
+          execution("delta", 0, { reused: true }),
+        ],
+      },
+      // An older row's failure is superseded by the newer row's pass, and a
+      // newer failure supersedes an older pass, whatever order rows arrive in.
+      {
+        recordedAt: "2026-10-18T11:00:00.000Z",
+        cases: [execution("alpha", 0), execution("beta", 0, { stopped: true })],
+      },
+      {
+        recordedAt: "2026-10-18T09:00:00.000Z",
+        taskTimeline: [execution("beta", 1), execution("epsilon", 1)],
+      },
+    ]),
+    ["beta", "epsilon", "vertical"],
+  );
+});
+
+test("a lead raises a suite's tasks above every other priority while their own order holds", () => {
+  const selected = suites.filter((row) =>
+    ["build", "release", "skeleton", "harness-fixtures", "console"].includes(
+      row.name,
+    ),
+  );
+  const first = new Map([
+    ["release", 1000],
+    ["harness-fixtures", 2000],
+  ]);
+  const tasks = expandSuiteTasks(selected, root, "<gate-template>", { first });
+  const priority = (name) => tasks.find((row) => row.name === name).priority;
+  assert.equal(priority("harness-fixtures"), 2200);
+  assert.equal(priority("release:prepare"), 1100);
+  const cases = tasks.filter((row) => row.name.startsWith("release:case:"));
+  assert.ok(cases.length > 0);
+  assert.ok(cases.every((row) => row.priority === 1060));
+  assert.equal(priority("skeleton"), 80);
+  assert.equal(priority("console"), 0);
+  const plain = expandSuiteTasks(selected, root, "<gate-template>");
+  assert.equal(
+    plain.find((row) => row.name === "release:prepare").priority,
+    100,
+  );
+  assert.equal(
+    plain.find((row) => row.name === "harness-fixtures").priority,
+    200,
+  );
 });

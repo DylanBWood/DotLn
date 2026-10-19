@@ -63,3 +63,23 @@ relative POSIX path with no empty, dot or parent segment. It uses the launchpad'
 default work-orders, evidence, verifications, final-reviews, product and
 planning segments. The target order's briefings name that repo-native authority
 and `node scripts/target-gate.mjs WO-NNN [--review]`.
+
+`disposable` on a class or a registration lists relative contained paths of
+regenerable output (`node_modules`, `dist`, a build cache); the registration
+composes the class's entries with its own into one sorted set and nothing
+removes a class entry. Release close
+deletes ignored files under them in the target worktree and in the clone's base
+checkout, judged by the fetched base's ignore rules, and refuses undeclared
+ignored material naming each path and this remedy; it never moves output to
+scratch. `release: { "policy": "declared" }` with `release.close` in the
+authority profile and the order's `**Target release classification:** patch |
+minor | major` header tags the merged base and creates the target's GitHub
+Release at release close; absent, the close is no-release. `hostRules:
+"literal"` turns on the literal-rule fallback for a host whose classifier
+still runs after the generated hook's admission: `worktree start` writes the
+order's exact rules and release close removes them. Claude ownership is
+recorded in an ignored per-order sidecar under the configured control root's
+`local/host-rules/`, preserving pre-existing operator rules. Codex rules live
+in `.codex/rules/dotln-WO-NNN.rules`, not a TOML rule table. A rewrite checks
+the committed opt-in and target binding before changing either host's rules;
+removal remains available after opting out.

@@ -6,7 +6,12 @@ import {
 } from "./lib/siblings.mjs";
 import { refreshHarnessRuntime } from "./lib/harness-runtime.mjs";
 import { checksPath } from "./lib/gate-evidence.mjs";
-import { docPath, findLaunchpad, loadConfig } from "./lib/config.mjs";
+import {
+  CONFIG_FILENAME,
+  docPath,
+  findLaunchpad,
+  loadConfig,
+} from "./lib/config.mjs";
 import {
   copyFileSync,
   existsSync,
@@ -31,6 +36,8 @@ import {
 import {
   ensureGh,
   executeGh,
+  parseGitHubTarget,
+  pushUrl,
   resolveGitHubPushTarget,
   HOST_GIT_READ,
 } from "./lib/github-repository.mjs";
@@ -81,6 +88,10 @@ import {
   recordTargetStart,
   forgetTargetStart,
   launchpadInvocation,
+  orderHostRules,
+  removeOrderHostRules,
+  targetWorktreeForOrder,
+  writeOrderHostRules,
 } from "./lib/target-worktrees.mjs";
 
 // Scratch repositories leave once every preserved byte is proven and just
@@ -503,6 +514,36 @@ export async function completeSelfStart(
   return output;
 }
 
+// Each host's default restrictive mode needs to know the target worktree
+// (WO-221): Codex takes the directory, Copilot takes the publication tools
+// for the session, and Claude Code's hook admits the registered commands.
+// Under the registration's literal fallback the order's exact rules are also
+// written to the main checkout's local settings and its Codex rules file;
+// release close removes them.
+const hostLaunchLines = (mainPath, entry, repository) => {
+  let selector;
+  try {
+    selector = parseGitHubTarget(pushUrl(entry.target)).selector;
+  } catch {
+    return `Host launch lines: unavailable; the target's origin is not one GitHub push URL.\n`;
+  }
+  const lines = [
+    "Host launch lines for this target order:",
+    `  Codex workspace-write session: codex --add-dir ${shellQuote(entry.target)}`,
+    `  Copilot default mode: copilot ${orderHostRules(mainPath, entry, selector)
+      .copilot.map((rule) => `--allow-tool ${shellQuote(rule)}`)
+      .join(" ")}`,
+    "  Claude Code: the kit's hook admits the registered commands for this order at verified and closed; host deny rules still apply.",
+  ];
+  if (repository.hostRules === "literal") {
+    const written = writeOrderHostRules(mainPath, entry, selector);
+    lines.push(
+      `  Literal rules written for ${entry.workOrderId}: ${written.settings} (Claude Code local settings) and ${written.codex} (Codex rules); release close removes them.`,
+    );
+  }
+  return `${lines.join("\n")}\n`;
+};
+
 // A retained start receipt owns only the exact pair it preflighted. Retrying
 // resumes preparation; it never adopts a different directory or resets a branch.
 const startTargetWorktree = async (mainPath, entry) => {
@@ -610,8 +651,9 @@ const startTargetWorktree = async (mainPath, entry) => {
     recordTargetWorktree(mainPath, entry);
     recordTargetWorktree(launchpad, entry);
     forgetTargetStart(mainPath, workOrderId);
+    const repository = loadConfig(mainPath).repositories[entry.repositoryId];
     process.stdout.write(
-      `Target worktree ${target} on ${branch}.\nAuthority profile: ${JSON.stringify(loadConfig(mainPath).repositories[entry.repositoryId].authorityProfile)}\nTarget status: ${launchpadInvocation(launchpad, "resume")} status\nCreated ${launchpad} on ${branch}.\nActivated ${workOrderId}.\nPhase: active.\nNext (run manually):\n  cd ${shellQuote(target)}\n  codex\n  enter: resume: next\n`,
+      `Target worktree ${target} on ${branch}.\nAuthority profile: ${JSON.stringify(repository.authorityProfile)}\nTarget status: ${launchpadInvocation(launchpad, "resume")} status\nCreated ${launchpad} on ${branch}.\nActivated ${workOrderId}.\nPhase: active.\n${hostLaunchLines(mainPath, entry, repository)}Next (run manually):\n  cd ${shellQuote(target)}\n  codex\n  enter: resume: next\n`,
     );
   } catch (error) {
     throw new Error(
@@ -636,6 +678,75 @@ const main = async () => {
   const repoRoot = ["finish", "settle"].includes(action)
     ? resolve(process.cwd())
     : toolRoot;
+  if (action === "host-rules") {
+    // The drift remedies `harness check` prints: remove the rules of an order
+    // that no longer has a target worktree, or rewrite an order's rules from
+    // its committed registration after a hand edit. Validate the rewrite
+    // before removing any existing rule; removal remains a recovery route.
+    const [mode, order] = [workOrderId, actionArgs[0]];
+    const main = mainWorktree(toolRoot);
+    if (
+      !["--remove", "--rewrite"].includes(mode) ||
+      !/^WO-\d{3}$/u.test(order ?? "") ||
+      actionArgs.length !== 1
+    )
+      throw new Error(
+        "usage: worktree host-rules --remove WO-NNN | worktree host-rules --rewrite WO-NNN",
+      );
+    if (mode === "--remove") {
+      const removed = removeOrderHostRules(main, order);
+      process.stdout.write(
+        removed
+          ? `Removed the literal host rules of ${order}.\n`
+          : `No literal host rules are recorded for ${order}.\n`,
+      );
+      return;
+    }
+    const entry = targetWorktreeForOrder(main, order);
+    if (!entry) throw new Error(`${order} has no registered target worktree`);
+    const committed = readTrackedTextAtHead(
+      main,
+      CONFIG_FILENAME,
+      CONFIG_FILENAME,
+    );
+    if (
+      !containedRegularFile(join(main, CONFIG_FILENAME), main) ||
+      readFileSync(join(main, CONFIG_FILENAME), "utf8") !== committed
+    )
+      throw new Error(
+        `host-rule rewrite requires main's committed ${CONFIG_FILENAME}; merge the intended registration before rewriting`,
+      );
+    const repository = loadConfig(main).repositories[entry.repositoryId];
+    if (repository?.hostRules !== "literal")
+      throw new Error(
+        `repository ${entry.repositoryId} has not opted into hostRules literal; no host rules changed`,
+      );
+    const planned = targetStartPlan(
+      main,
+      { id: entry.repositoryId, baseCommit: entry.baseCommit },
+      order,
+      { recovery: true },
+    );
+    if (
+      Object.keys(planned).some((key) => planned[key] !== entry[key]) ||
+      !parseWorktrees(entry.clone).some(
+        (worktree) =>
+          worktree.worktree === entry.target &&
+          worktree.branch === `refs/heads/${entry.branch}`,
+      )
+    )
+      throw new Error(
+        "host-rule rewrite target differs from its registration; no host rules changed",
+      );
+    const selector = parseGitHubTarget(pushUrl(entry.clone)).selector;
+    pushUrl(entry.target, { selector });
+    removeOrderHostRules(main, order);
+    const written = writeOrderHostRules(main, entry, selector);
+    process.stdout.write(
+      `Rewrote the literal host rules of ${order}: ${written.settings} and ${written.codex}.\n`,
+    );
+    return;
+  }
   if (action === "constellation") {
     if (!workOrderId && !actionArgs.length)
       process.stdout.write(`${constellation(repoRoot)}\n`);
@@ -751,19 +862,21 @@ const main = async () => {
           "usage: worktree publish WO-NNN --target <target-publish-request.json> [--require-deliverable-ready]",
         );
     } else if (actionArgs[0] === "--target-worktree") {
-      const flags = actionArgs.filter((_, index) => index % 2 === 1);
+      // `--draft`, the opt-in form at verified, comes right after
+      // `--target-worktree`; the three valued flags are the same either way.
+      const draftForm = actionArgs[1] === "--draft";
+      const pairs = actionArgs.slice(draftForm ? 2 : 1);
+      const flags = pairs.filter((_, index) => index % 2 === 0);
       if (
-        actionArgs.length !== 7 ||
+        pairs.length !== 6 ||
         new Set(flags).size !== 3 ||
         flags.some(
           (flag) => !["--branch", "--title", "--body-file"].includes(flag),
         ) ||
-        actionArgs.some(
-          (value, index) => index > 0 && index % 2 === 0 && !value,
-        )
+        pairs.some((value, index) => index % 2 === 1 && !value)
       )
         throw new Error(
-          'usage: worktree publish WO-NNN --target-worktree --branch <type>/<slug> --title "<title>" --body-file <contained reviewed path>',
+          'usage: worktree publish WO-NNN --target-worktree [--draft] --branch <type>/<slug> --title "<title>" --body-file <contained reviewed path>',
         );
     } else if (
       actionArgs.length !== 4 ||
@@ -849,8 +962,18 @@ const main = async () => {
     const targetPlan = readStartAuthority();
     const siblingReceipts = capturePendingReceipts(mainPath);
     if (targetPlan) {
+      // The clone's forge identity at start binds the hook's admission to
+      // this origin for the order's lifetime; a non-GitHub origin records
+      // null and the admission then binds nothing extra.
+      let origin = null;
+      try {
+        origin = parseGitHubTarget(pushUrl(targetPlan.clone)).identity;
+      } catch {
+        origin = null;
+      }
       const entry = {
         ...targetPlan,
+        origin,
         siblingReceipts,
         launchpad: target,
         runtimeRoot: mainPath,
@@ -913,7 +1036,11 @@ const main = async () => {
     );
     if (!item?.worktree) throw new Error(`no worktree found for ${branch}`);
     const subject = resolve(item.worktree);
-    ensureClean(subject);
+    // The draft form runs at verified, before the order worktree's records
+    // are committed, so it reads the body's working bytes and needs no clean
+    // launchpad; the final publish keeps both requirements (WO-221).
+    const draft = actionArgs[1] === "--draft";
+    if (!draft) ensureClean(subject);
     const flag = (name) => actionArgs[actionArgs.indexOf(name) + 1];
     const bodyFile = flag("--body-file");
     const bodyPath = resolve(subject, bodyFile);
@@ -924,13 +1051,12 @@ const main = async () => {
       throw new Error(
         `${bodyFile}: body must be a contained regular file of the order worktree`,
       );
-    const body = readTrackedTextAtHead(
-      subject,
-      relative(subject, bodyPath),
-      bodyFile,
-    );
-    const { publishTargetWorktree } = await import("./lib/target-publish.mjs");
-    publishTargetWorktree({
+    const body = draft
+      ? readFileSync(bodyPath, "utf8")
+      : readTrackedTextAtHead(subject, relative(subject, bodyPath), bodyFile);
+    const { publishTargetWorktree, publishTargetDraft } =
+      await import("./lib/target-publish.mjs");
+    (draft ? publishTargetDraft : publishTargetWorktree)({
       launchpad: subject,
       workOrderId,
       branch: flag("--branch"),

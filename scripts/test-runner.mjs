@@ -22,6 +22,7 @@ import { availableParallelism, tmpdir } from "node:os";
 import { randomUUID } from "node:crypto";
 import {
   existsSync,
+  lstatSync,
   mkdirSync,
   mkdtempSync,
   readdirSync,
@@ -64,7 +65,10 @@ import {
 
 import { classifyDocumentFailures } from "./lib/document-failures.mjs";
 import { evidenceSources } from "./lib/evidence-sources.mjs";
-import { STRUCTURAL_TASKS } from "./lib/generated-artifacts.mjs";
+import {
+  STRUCTURAL_TASKS,
+  compileStaleRuntime,
+} from "./lib/generated-artifacts.mjs";
 export { STRUCTURAL_TASKS };
 import { findLaunchpad } from "./lib/config.mjs";
 import {
@@ -202,6 +206,7 @@ export const machinerySources = {
   ],
   "harness-fixtures": [
     // Direct entry imports and literal first-party script inputs (WO-174).
+    "scripts/lib/bounded-command.mjs",
     "packages/kernel/src/index.ts",
     "packages/compiler/src/artifact-identity.ts",
     "packages/compiler/src/index.ts",
@@ -258,6 +263,8 @@ export const machinerySources = {
   ],
   harness: [
     "scripts/lib/bounded-command.mjs",
+    // The check action's stale host-rule report (WO-221), loaded on demand.
+    "scripts/lib/target-worktrees.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/skeleton/src/usage-observation.mjs",
     "scripts/lib/evidence-preparation.mjs",
@@ -722,6 +729,110 @@ export function changedMachinery(repo, table = suites, base = "origin/main") {
         files.some((file) => file === source || file.startsWith(source)),
       ),
   );
+}
+
+/** A suite's inputs for change detection: its declared sources and the
+ * repository paths in its own command, a built package path standing for
+ * the package. Product suites declare no sources, so their scripts and
+ * packages are what the detection can see. */
+const detectionSources = (row) => [
+  ...(row.sources ?? []),
+  ...[...(row.command ?? []), ...(row.args ?? [])]
+    .filter(
+      (word) =>
+        typeof word === "string" &&
+        /^(?:scripts|packages|corpus)\//u.test(word),
+    )
+    .map((word) => word.replace(/dist\/.*$/u, "")),
+];
+
+/** Suites whose latest recorded execution of any task did not pass, at any
+ * identity: a failure not yet shown fixed leads the next run. Carried and
+ * unstarted results are not executions. */
+export function lastFailedSuites(rows) {
+  const latest = new Map();
+  const recordedAt = (row) =>
+    typeof row?.recordedAt === "string" ? row.recordedAt : "";
+  for (const row of [...rows].sort((a, b) =>
+    recordedAt(a).localeCompare(recordedAt(b)),
+  )) {
+    const observed = row?.taskTimeline ?? row?.cases;
+    if (!Array.isArray(observed)) continue;
+    for (const result of observed)
+      if (
+        typeof result?.name === "string" &&
+        result.executed === true &&
+        !result.reused
+      )
+        latest.set(
+          result.name,
+          result.exitCode === 0 && !result.stopped && !result.timedOut,
+        );
+  }
+  return [
+    ...new Set(
+      [...latest]
+        .filter(([, passed]) => !passed)
+        .map(([name]) => name.split(":")[0]),
+    ),
+  ].sort();
+}
+
+/** Suites whose inputs changed after the newest gate row was recorded,
+ * judged by file modification time: the row's tree hash is a content digest
+ * rather than a Git object, so the row's time is the only comparison point.
+ * A touch without a content change costs nothing but an earlier place in
+ * the queue; without a row every suite is unchanged. */
+export function changedSinceLastGate(
+  repo,
+  table = suites,
+  rows = readGateChecks(repo),
+) {
+  const since = rows
+    // Document runs exercise no product suite, so they do not move the mark.
+    .map((row) =>
+      typeof row?.recordedAt === "string" && row.checkId !== "npm run test:docs"
+        ? Date.parse(row.recordedAt)
+        : NaN,
+    )
+    .filter(Number.isFinite)
+    .reduce((latest, at) => Math.max(latest, at), -Infinity);
+  if (!Number.isFinite(since))
+    return { since: undefined, files: [], suites: [] };
+  const options = { cwd: repo, encoding: "utf8" };
+  const tracked = spawnGit(["ls-files", "-z"], options);
+  const untracked = spawnGit(
+    ["ls-files", "--others", "--exclude-standard", "-z"],
+    options,
+  );
+  const at = new Date(since).toISOString();
+  if (tracked.status !== 0 || untracked.status !== 0)
+    return { since: at, files: [], suites: [] };
+  const files = [
+    ...new Set([
+      ...tracked.stdout.split("\0"),
+      ...untracked.stdout.split("\0"),
+    ]),
+  ]
+    .filter(Boolean)
+    .filter((file) => {
+      try {
+        return lstatSync(join(repo, file)).mtimeMs > since;
+      } catch {
+        return false;
+      }
+    });
+  return {
+    since: at,
+    files,
+    suites: table
+      .filter((row) =>
+        detectionSources(row).some((source) =>
+          files.some((file) => file === source || file.startsWith(source)),
+        ),
+      )
+      .map((row) => row.name),
+  };
 }
 
 const buildSuite = (repo) =>
@@ -2093,6 +2204,22 @@ export async function scheduleSuites(
         .map((lane, index) => ({ lane, index }))
         .filter(({ lane }) => lane.active === null)
         .map(({ index }) => index);
+      // An exclusive row at the head of the queue waits for the lanes to
+      // drain rather than being passed by lower rows, so a led exclusive
+      // suite follows the led shared ones, not every shared suite.
+      const head = pending[0];
+      if (
+        head &&
+        explicitlyIsolated(head) &&
+        active.size > 0 &&
+        (!head.group || !groups.has(head.group)) &&
+        (head.after ?? []).every((name) =>
+          results.some(
+            (result) => result.name === name && result.exitCode === 0,
+          ),
+        )
+      )
+        break;
       const index = pending.findIndex(
         (row) =>
           reservedSlots(row, concurrency) <= freeLanes.length &&
@@ -2157,7 +2284,17 @@ export async function scheduleSuites(
   return results;
 }
 
-export function expandSuiteTasks(selected, repo, template) {
+export function expandSuiteTasks(
+  selected,
+  repo,
+  template,
+  { first = new Map() } = {},
+) {
+  // A suite named in `first` leads the queue by the lead it maps to; its
+  // expanded tasks (`release:prepare` before `release:case:*`) keep their
+  // order among themselves because the lead is added to their own priority.
+  const leadOf = (row) =>
+    first.get(row.name) ?? first.get(row.name.split(":")[0]) ?? 0;
   const structural = selected
     .filter((row) => row.structural)
     .map((row) => row.name);
@@ -2247,12 +2384,12 @@ export function expandSuiteTasks(selected, repo, template) {
     .map((row) => ({
       ...row,
       priority:
-        row.priority ??
-        (row.exclusive
-          ? 200
-          : ["skeleton", "worktree", "resume"].includes(row.name)
-            ? 80
-            : 0),
+        (row.priority ??
+          (row.exclusive
+            ? 200
+            : ["skeleton", "worktree", "resume"].includes(row.name)
+              ? 80
+              : 0)) + leadOf(row),
       ...(!row.structural &&
       (structural.length || (!row.build && !row.preflight && preflight.length))
         ? {
@@ -2535,6 +2672,32 @@ async function runGateChecks(
     ...structural,
     ...selected.filter((row) => !structural.includes(row)),
   ];
+  // A focused product selection judges only the generated artifacts its
+  // build phase makes current; publication and bookkeeping artifacts are
+  // inputs of the complete and document selections, not of one suite. Its
+  // structural companion row is partial, so it never stands in for a
+  // complete or document selection's structural pass.
+  const focusedRow = only ? table.find((row) => row.name === only) : undefined;
+  // Only the real structural check reads the flag; a fixture that stands a
+  // stub in for the generated row keeps its own command and a whole row.
+  const buildPhaseOnly = Boolean(
+    focusedRow &&
+    !focusedRow.document &&
+    !focusedRow.machinery &&
+    !focusedRow.structural &&
+    selected.some(
+      (row) =>
+        row.name === "generated" &&
+        Array.isArray(row.args) &&
+        row.args.includes("generated"),
+    ),
+  );
+  if (buildPhaseOnly)
+    selected = selected.map((row) =>
+      row.name === "generated"
+        ? { ...row, args: [...(row.args ?? []), "--build-phase-only"] }
+        : row,
+    );
   if (list) {
     for (const row of confinedPartial
       ? selected.filter((row) => !row.needs)
@@ -2544,6 +2707,17 @@ async function runGateChecks(
       );
     return { exitCode: 0 };
   }
+  // Compile once when needed: a stale runtime is rebuilt before the reuse
+  // lookup and the subject capture, so an ordinary package edit reaches the
+  // suites instead of a refusal to run npm run sync first. The compiled
+  // output lies outside the code identity. A stale installed harness is
+  // reported, never installed here: live hooks change only through the
+  // explicit sync step.
+  if (!confinedPartial)
+    for (const { exitCode } of compileStaleRuntime(repo))
+      console.log(
+        `compiled the stale runtime before the subject was captured${exitCode ? ` (the build exited ${exitCode}; the structural check judges it)` : ""}`,
+      );
   const sharedRefsStart = readSharedRefs(repo);
   const instanceInputDigest = gateInstanceInputDigest(repo);
   const refsStartedAt = Date.now();
@@ -2693,10 +2867,50 @@ async function runGateChecks(
           Math.floor(availableParallelism() / 2),
         ),
       );
+  // A complete selection leads with the suites most likely to fail: those
+  // whose sources changed after the newest gate row, then those this branch
+  // changed. A stale assertion then fails within minutes, not at the end of
+  // the run, and a focused rerun of the same suites is never needed first.
+  // The order is an optimization: a failure to compute it never fails the
+  // selection, and its line never carries the summary's "npm test:" prefix.
+  const first = new Map();
+  if (!instance && !only && !document && !machinery && !confinedPartial)
+    try {
+      let rows = [];
+      try {
+        rows = readGateChecks(repo);
+      } catch {
+        rows = [];
+      }
+      for (const row of changedMachinery(repo, table))
+        first.set(row.name, 1000);
+      for (const name of changedSinceLastGate(repo, table, rows).suites)
+        first.set(name, 2000);
+      for (const name of lastFailedSuites(rows)) first.set(name, 3000);
+      const selectedNames = new Set(selected.map((row) => row.name));
+      for (const name of [...first.keys()])
+        if (!selectedNames.has(name)) first.delete(name);
+      const reason = {
+        3000: "last execution failed",
+        2000: "changed since the last gate row",
+        1000: "changed on this branch",
+      };
+      if (first.size)
+        console.log(
+          `scheduled first: ${[...first]
+            .sort(([a, x], [b, y]) => y - x || a.localeCompare(b))
+            .map(([name, lead]) => `${name} (${reason[lead]})`)
+            .join(", ")}`,
+        );
+    } catch (error) {
+      first.clear();
+      console.log(`scheduled in declared order: ${error.message}`);
+    }
   const tasks = expandSuiteTasks(
     selected,
     repo,
     fixture?.template ?? "<gate-template>",
+    { first },
   ).map((row) =>
     standaloneRelease && row.name.startsWith("release:case:")
       ? { ...row, args: ["--case", row.name.slice("release:case:".length)] }
@@ -3142,6 +3356,13 @@ async function runGateChecks(
           evidenceRef: `host-gate:${codeIdentity}:structural:${check.recordedAt}`,
           gateSelection: "structural",
           requiredSuites: structural.map((row) => row.name),
+          ...(buildPhaseOnly
+            ? {
+                partial: true,
+                partialReason:
+                  "generated judged the build-phase artifacts only; a complete or document selection supplies the structural pass",
+              }
+            : {}),
           exitCode:
             unchanged &&
             completeCoverage(structural, structuralRows, codeIdentity)

@@ -10,7 +10,8 @@ export function installTargetPublicationFixture(base, env, repositories) {
     encoding: "utf8",
   }).stdout.trim();
   const log = join(base, "forge-calls.jsonl"),
-    body = join(base, "forge-body.md");
+    body = join(base, "forge-body.md"),
+    state = join(base, "forge-state.json");
   const global = join(base, "forge-gitconfig");
   writeFileSync(
     global,
@@ -38,14 +39,46 @@ const result = spawnSync(${JSON.stringify(realGit)}, original, { stdio: 'inherit
   writeFileSync(
     join(bin, "gh"),
     `#!${process.execPath}
-import { appendFileSync, copyFileSync } from 'node:fs';
+import { appendFileSync, copyFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 const args = process.argv.slice(2);
 appendFileSync(${JSON.stringify(log)}, JSON.stringify(args) + '\\n');
 if (process.env.GH_REPO || process.env.GH_HOST) process.exit(65);
 if (args[0] === '--version' || args[0] === 'auth') process.exit(0);
+// The forge's state: one pull request and the releases, as the kit's draft,
+// reuse and target-release routes read them back (WO-221).
+const statePath = ${JSON.stringify(state)};
+const read = () => existsSync(statePath) ? JSON.parse(readFileSync(statePath, 'utf8')) : { pulls: {}, releases: {} };
+const save = (value) => writeFileSync(statePath, JSON.stringify(value));
+const flag = (name) => args.includes(name) ? args[args.indexOf(name) + 1] : undefined;
 if (args[0] === 'pr' && args[1] === 'create') {
-  copyFileSync(args[args.indexOf('--body-file') + 1], ${JSON.stringify(body)});
-  console.log('https://' + args[args.indexOf('--repo') + 1] + '/pull/7'); process.exit(0);
+  copyFileSync(flag('--body-file'), ${JSON.stringify(body)});
+  const forge = read();
+  const number = 7 + Object.keys(forge.pulls).length;
+  forge.pulls[number] = { number, draft: args.includes('--draft'), head: flag('--head'), base: flag('--base'), title: flag('--title'), body: readFileSync(flag('--body-file'), 'utf8'), ready: !args.includes('--draft') };
+  save(forge);
+  console.log('https://' + flag('--repo') + '/pull/' + number); process.exit(0);
+}
+if (args[0] === 'pr' && (args[1] === 'edit' || args[1] === 'ready')) {
+  const forge = read();
+  const pull = forge.pulls[args[2]];
+  if (!pull) { console.error('no pull request ' + args[2]); process.exit(1); }
+  if (args[1] === 'edit') {
+    if (flag('--title') !== undefined) pull.title = flag('--title');
+    if (flag('--body-file') !== undefined) { pull.body = readFileSync(flag('--body-file'), 'utf8'); copyFileSync(flag('--body-file'), ${JSON.stringify(body)}); }
+  } else { pull.draft = false; pull.ready = true; }
+  save(forge);
+  console.log('https://' + flag('--repo') + '/pull/' + pull.number); process.exit(0);
+}
+if (args[0] === 'release' && args[1] === 'view') {
+  const release = read().releases[args[2]];
+  if (!release) { console.error('release not found'); process.exit(1); }
+  console.log(JSON.stringify({ body: release.body, name: release.name, isDraft: false, isPrerelease: false, assets: [] })); process.exit(0);
+}
+if (args[0] === 'release' && args[1] === 'create') {
+  const forge = read();
+  forge.releases[args[2]] = { name: flag('--title'), body: readFileSync(flag('--notes-file'), 'utf8'), repo: flag('--repo') };
+  save(forge);
+  console.log('https://' + flag('--repo') + '/releases/tag/' + args[2]); process.exit(0);
 }
 process.exit(64);
 `,
@@ -56,7 +89,7 @@ process.exit(64);
     GIT_CONFIG_GLOBAL: global,
     GIT_CONFIG_NOSYSTEM: "1",
   });
-  return { log, body, bin };
+  return { log, body, bin, state };
 }
 
 export const publicationVocabulary = {

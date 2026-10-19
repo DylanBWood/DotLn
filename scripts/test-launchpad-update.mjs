@@ -1554,8 +1554,43 @@ test("starter refresh publishes one verified commit and preserves every refusal 
     global,
     `[url "${remote.slice(0, -4)}"]\n insteadOf = ${starterUrl.slice(0, -4)}\n[url "${source}"]\n insteadOf = ${coreUrl}\n[user]\n name = DotLn Fixture\n email = fixture@example.invalid\n[commit]\n gpgSign = false\n`,
   );
+  // The sibling's Release goes through gh; this double records what the
+  // refresh creates and answers a later view with it (WO-221).
+  const bin = join(root, "bin");
+  mkdirSync(bin);
+  const ghState = join(root, "gh-state.json");
+  writeFileSync(
+    join(bin, "gh"),
+    `#!${process.execPath}
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+const args = process.argv.slice(2);
+const state = ${JSON.stringify(ghState)};
+const read = () => (existsSync(state) ? JSON.parse(readFileSync(state, "utf8")) : {});
+const flag = (name) => args[args.indexOf(name) + 1];
+if (process.env.GH_REPO || process.env.GH_HOST) process.exit(65);
+if (args[0] === "--version" || args[0] === "auth") process.exit(0);
+if (args[0] === "release" && args[1] === "view") {
+  const release = read()[args[2]];
+  if (!release) { console.error("release not found"); process.exit(1); }
+  console.log(JSON.stringify({ body: release.body, name: release.name, isDraft: false, isPrerelease: false, assets: [] }));
+  process.exit(0);
+}
+if (args[0] === "release" && args[1] === "create") {
+  const releases = read();
+  releases[args[2]] = { name: flag("--title"), body: readFileSync(flag("--notes-file"), "utf8"), repo: flag("--repo") };
+  writeFileSync(state, JSON.stringify(releases));
+  console.log("https://" + flag("--repo") + "/releases/tag/" + args[2]);
+  process.exit(0);
+}
+process.exit(64);
+`,
+  );
+  chmodSync(join(bin, "gh"), 0o755);
+  const releases = () =>
+    existsSync(ghState) ? JSON.parse(readFileSync(ghState, "utf8")) : {};
   const fixtureEnv = {
     ...env,
+    PATH: `${bin}:${env.PATH}`,
     GIT_CONFIG_GLOBAL: global,
     GIT_CONFIG_NOSYSTEM: "1",
     GIT_TERMINAL_PROMPT: "0",
@@ -1610,6 +1645,25 @@ test("starter refresh publishes one verified commit and preserves every refusal 
   };
   const refs = () =>
     git(remote, ["for-each-ref", "--format=%(refname) %(objectname)"]).stdout;
+  // A scenario that rewinds the starter's main also drops the release tags
+  // the rewound main no longer reaches, as a rewound starter would; a tag
+  // left on an unreachable commit refuses the next refresh by name (WO-221).
+  const rewindRemoteMain = () => {
+    git(checkout, ["push", "--force", remote, "main"]);
+    for (const name of git(remote, ["tag", "-l"])
+      .stdout.split("\n")
+      .filter(Boolean))
+      if (
+        run(
+          "git",
+          ["merge-base", "--is-ancestor", `${name}^{commit}`, "main"],
+          {
+            cwd: remote,
+          },
+        ).status !== 0
+      )
+        git(remote, ["tag", "-d", name]);
+  };
   const remoteHead = () =>
     git(remote, ["rev-parse", "refs/heads/main"]).stdout.trim();
   const state = () =>
@@ -1684,7 +1738,25 @@ test("starter refresh publishes one verified commit and preserves every refusal 
   );
   assert.equal(git(remote, ["rev-parse", "main^"]).stdout.trim(), initial);
   assert.equal(git(remote, ["rev-list", "--count", "main"]).stdout.trim(), "2");
-  assert.equal(refs().split("\n").filter(Boolean).length, 1);
+  // Core's tag name lands on the refresh commit and the sibling's Release
+  // points at it, so a fork can name the release it takes (WO-221).
+  assert.deepEqual(first.siblingTag, { tag, outcome: "published" });
+  assert.equal(first.siblingRelease, "created");
+  assert.equal(
+    git(remote, ["rev-parse", `${tag}^{commit}`]).stdout.trim(),
+    remoteHead(),
+  );
+  assert.equal(git(remote, ["cat-file", "-t", tag]).stdout.trim(), "tag");
+  assert.equal(releases()[tag].name, `Initial Starter ${tag}`);
+  assert.equal(
+    releases()[tag].repo,
+    "github.com/refresh-fixture/starter-fixture",
+  );
+  assert.match(
+    releases()[tag].body,
+    /core's Release v10\.0\.0 \(github\.com\/refresh-fixture\/core\); core commit [0-9a-f]{40}/u,
+  );
+  assert.equal(refs().split("\n").filter(Boolean).length, 2);
   assert.equal(git(checkout, ["status", "--porcelain"]).stdout, "");
   assert.equal(
     git(checkout, ["rev-parse", "HEAD"]).stdout.trim(),
@@ -1741,6 +1813,29 @@ test("starter refresh publishes one verified commit and preserves every refusal 
     );
   };
   verifyFresh("first-fresh");
+  // A fork names the release it takes: the preview resolves the starter's tag.
+  {
+    const fork = join(root, "preview-from-tag");
+    git(root, ["clone", "--quiet", remote, fork]);
+    const preview = ok(
+      run(
+        process.execPath,
+        ["scripts/launchpad.mjs", "preview", "--from", tag],
+        {
+          cwd: fork,
+          env: fixtureEnv,
+        },
+      ),
+      "preview from the starter tag",
+    );
+    assert.match(
+      preview.stdout,
+      new RegExp(
+        `^incoming: ${head} \\(${tag.replaceAll(".", "\\.")}\\)$`,
+        "mu",
+      ),
+    );
+  }
   t.diagnostic(`starter first-export phases: ${JSON.stringify(first.timings)}`);
   // Initial-commit refusals share a second local remote and perform no kit preparation.
   const other = join(root, "initial-checkout"),
@@ -1950,7 +2045,7 @@ test("starter refresh publishes one verified commit and preserves every refusal 
       assert.deepEqual(refusal.rewrittenSeeds, []);
     }
     git(checkout, ["reset", "--hard", prior]);
-    git(checkout, ["push", "--force", remote, "main"]);
+    rewindRemoteMain();
   }
   // Fail cleanup before removal, then after Git unregisters the worktree.
   // Both retries reuse this update's one kit preparation and published commit.
@@ -2132,7 +2227,13 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   );
   assert.equal(update.firstExport, false);
   assert.equal(git(remote, ["rev-parse", "main^"]).stdout.trim(), prior);
-  assert.equal(refs().split("\n").filter(Boolean).length, 1);
+  // main and the two starter tags the refreshes pushed.
+  assert.equal(refs().split("\n").filter(Boolean).length, 3);
+  assert.equal(
+    git(remote, ["rev-parse", `${tag}^{commit}`]).stdout.trim(),
+    remoteHead(),
+  );
+  assert.equal(releases()[tag].name, `Initial Starter ${tag}`);
   assert.equal(manifestOf(checkout).commit, head);
   assert.equal(manifestOf(checkout).tag, tag);
   assert.equal(
@@ -2170,10 +2271,11 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   verifyFresh("update-fresh");
   t.diagnostic(`starter update phases: ${JSON.stringify(update.timings)}`);
   const stableRefs = refs();
-  assert.equal(
-    measured("b current", () => refresh(tag, head)[0]).outcome,
-    "current",
-  );
+  const current = measured("b current", () => refresh(tag, head)[0]);
+  assert.equal(current.outcome, "current", JSON.stringify(current));
+  // The retry finds the tag and the Release and reports both current.
+  assert.deepEqual(current.siblingTag, { tag, outcome: "current" });
+  assert.equal(current.siblingRelease, "current");
   assert.equal(pending().length, 2);
   assert.equal(refs(), stableRefs);
   const unreadableCache = join(checkout, ".runtime/finder-unreadable");
@@ -2209,6 +2311,52 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   rmSync(join(pendingDirectory, readdirSync(pendingDirectory).sort().at(-1)));
   assert.equal(refresh(tag, head)[0].outcome, "current");
   assert.equal(pending().length, 2);
+  // A tag with the release's name on a commit the starter's main does not
+  // reach refuses the next refresh by name; the tag restored, it is current.
+  const taggedObject = git(remote, [
+    "rev-parse",
+    `refs/tags/${tag}`,
+  ]).stdout.trim();
+  // Neither an initial ancestor without a manifest nor a prior release's
+  // refresh proves this tag belongs to the current core release.
+  for (const candidate of [initial, first.after]) {
+    git(remote, ["merge-base", "--is-ancestor", candidate, "main"]);
+    const releasesBefore = releases();
+    git(remote, ["update-ref", `refs/tags/${tag}`, candidate]);
+    const before = refs();
+    const refusedAncestor = refresh(tag, head)[0];
+    assert.equal(
+      refusedAncestor.outcome,
+      "refused",
+      JSON.stringify(refusedAncestor),
+    );
+    assert.match(
+      refusedAncestor.reason,
+      /not the refresh commit.*proven prior refresh of the same core release/u,
+    );
+    assert.equal(refs(), before);
+    assert.deepEqual(releases(), releasesBefore);
+  }
+  git(remote, ["update-ref", `refs/tags/${tag}`, taggedObject]);
+  git(checkout, ["switch", "-q", "--detach"]);
+  git(checkout, ["commit", "-q", "--allow-empty", "-m", "stray side commit"]);
+  const strayCommit = git(checkout, ["rev-parse", "HEAD"]).stdout.trim();
+  git(checkout, ["push", "-q", remote, `${strayCommit}:refs/heads/stray`]);
+  git(checkout, ["switch", "-q", "main"]);
+  git(remote, ["update-ref", `refs/tags/${tag}`, strayCommit]);
+  const strayTag = refresh(tag, head)[0];
+  assert.equal(strayTag.outcome, "refused", JSON.stringify(strayTag));
+  assert.match(
+    strayTag.reason,
+    new RegExp(
+      `starter tag ${tag.replaceAll(".", "\\.")} exists at ${strayCommit}, not the refresh commit`,
+      "u",
+    ),
+  );
+  // The original annotated tag object goes back and the stray branch goes.
+  git(remote, ["update-ref", `refs/tags/${tag}`, taggedObject]);
+  git(remote, ["update-ref", "-d", "refs/heads/stray"]);
+  assert.equal(refresh(tag, head)[0].outcome, "current");
   assert.equal(refs(), stableRefs);
   git(checkout, ["reset", "--hard", prior]);
   assert.equal(
@@ -2365,7 +2513,7 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
     assert.equal(refresh(tag, head)[0].outcome, "current");
   }
   git(checkout, ["reset", "--hard", identityHead]);
-  git(checkout, ["push", "--force", remote, "main"]);
+  rewindRemoteMain();
   // A seed whose incoming template did not change can remain customized or
   // absent without obstructing unrelated kit updates. The planner keeps it.
   const seedHead = git(checkout, ["rev-parse", "HEAD"]).stdout.trim();
@@ -2493,7 +2641,7 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
         );
     }
     git(checkout, ["reset", "--hard", seedHead]);
-    git(checkout, ["push", "--force", remote, "main"]);
+    rewindRemoteMain();
   }
   // Remove the floor on the remote while the next release changes the
   // contract template: the planner refuses the customized copy by path.
@@ -2531,7 +2679,7 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   // written. The refusal names those paths and nothing reports a seed as
   // published.
   git(checkout, ["reset", "--hard", seedHead]);
-  git(checkout, ["push", "--force", remote, "main"]);
+  rewindRemoteMain();
   const ignoreRules = readFileSync(join(checkout, ".gitignore"), "utf8");
   assert.match(ignoreRules, /^node_modules\/$/mu);
   writeFileSync(
@@ -2576,7 +2724,7 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   // cannot cause. Neither publishes or reports a seed.
   const refusedAfterWrite = (name, setup) => {
     git(checkout, ["reset", "--hard", seedHead]);
-    git(checkout, ["push", "--force", remote, "main"]);
+    rewindRemoteMain();
     setup();
     const before = refs(),
       beforeHead = git(checkout, ["rev-parse", "HEAD"]).stdout,

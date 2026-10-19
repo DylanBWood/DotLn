@@ -2,7 +2,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { loadConfig, docPath } from "./config.mjs";
-import { runGit } from "./git.mjs";
+import { parseWorktrees, runGit, runGitPathList } from "./git.mjs";
 import { HOST_GIT_READ } from "./github-repository.mjs";
 import {
   targetGateCommand,
@@ -35,6 +35,48 @@ export function targetGateDeclaration(root, state) {
 
 const head = (target) =>
   runGit(target, [...HOST_GIT_READ, "rev-parse", "HEAD"]);
+// A build tool can resolve a linked worktree's cache to the clone's base
+// checkout through the common directory. The gate lists the base's untracked
+// files before and after each command and records what appeared; with no
+// base checkout or an unreadable one it records null, never an invented
+// empty list, and a long list is cut at the limit with its count kept.
+const BASE_CHECKOUT_WRITES_LIMIT = 100;
+const baseCheckoutUntracked = (entry) => {
+  const base = parseWorktrees(entry.clone).find(
+    (item) => item.branch === `refs/heads/${entry.baseBranch}`,
+  )?.worktree;
+  if (!base) return null;
+  return runGitPathList(base, [
+    ...HOST_GIT_READ,
+    "ls-files",
+    "-z",
+    "--others",
+    "--exclude-standard",
+  ]);
+};
+const observeBaseCheckoutWrites = (entry) => {
+  let before;
+  try {
+    const initial = baseCheckoutUntracked(entry);
+    if (initial === null) return () => ({ writes: null, count: null });
+    before = new Set(initial);
+  } catch {
+    return () => ({ writes: null, count: null });
+  }
+  return () => {
+    try {
+      const writes = baseCheckoutUntracked(entry).filter(
+        (file) => !before.has(file),
+      );
+      return {
+        writes: writes.slice(0, BASE_CHECKOUT_WRITES_LIMIT),
+        count: writes.length,
+      };
+    } catch {
+      return { writes: null, count: null };
+    }
+  };
+};
 export const gateCommandsHash = (gate, names) =>
   createHash("sha256")
     .update(JSON.stringify(names.map((name) => [name, gate.commands[name]])))
@@ -135,6 +177,7 @@ export async function runTargetGate(
     const command = gate.commands[name];
     const commandTree = gateTreeHash(entry.target),
       commandCommit = head(entry.target);
+    const baseCheckoutWrites = observeBaseCheckoutWrites(entry);
     const result = await boundedCommand(["--", ...command.argv], root, {
       cwd: entry.target,
       timeoutMs: command.timeoutMs,
@@ -157,6 +200,13 @@ export async function runTargetGate(
       durationMs: result.durationMs,
       evidenceRef: `target-gate:${runId}:${name}`,
       recordedAt: new Date().toISOString(),
+      ...(() => {
+        const observed = baseCheckoutWrites();
+        return {
+          baseCheckoutWrites: observed.writes,
+          baseCheckoutWriteCount: observed.count,
+        };
+      })(),
     };
     if (result.output) {
       const hash = createHash("sha256").update(result.output).digest("hex");

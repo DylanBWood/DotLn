@@ -1,4 +1,6 @@
 import { spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { isKitRoot } from "../../packages/skeleton/src/runtime-inputs.mjs";
 import { buildFreshness } from "./build-freshness.mjs";
 
@@ -10,6 +12,12 @@ export const STRUCTURAL_TASKS = [
   "generated",
   "host",
 ];
+
+/** The generated artifacts a selection's own build phase makes current: the
+ * compiled runtime and the installed harness. A focused selection judges
+ * only these; publication and bookkeeping artifacts are inputs of the
+ * complete and document selections, not of one suite. */
+export const BUILD_PHASE_ARTIFACTS = Object.freeze(["runtime", "harness"]);
 const node = (file, ...args) => [process.execPath, file, ...args];
 const artifact = (name, file, checkArgs, writeArgs, extra = {}) => ({
   name,
@@ -19,7 +27,9 @@ const artifact = (name, file, checkArgs, writeArgs, extra = {}) => ({
   ...extra,
 });
 
-/** The gate and sync share this inventory. Only sync uses its writers. */
+/** The gate and sync share this inventory: sync uses its writers, and a
+ * selection compiles a stale runtime with the runtime writer before
+ * capturing its subject. */
 export function generatedArtifacts(root) {
   const core = !isKitRoot(root);
   return [
@@ -189,6 +199,24 @@ export function checkArtifact(row, root, run = runArtifactCommand) {
     startedAt,
     finishedAt: new Date().toISOString(),
   };
+}
+
+/** Compile a stale runtime with its own writer before a selection captures
+ * its subject, so an ordinary package edit reaches the suites instead of a
+ * refusal to run npm run sync first. A root without package sources carries
+ * its runtime and has nothing to compile. The build's exit code is reported,
+ * never thrown; the structural check still judges the artifact. The
+ * installed harness is judged but never written here: live hooks change only
+ * through the explicit sync step. Returns one row when it compiled. */
+export function compileStaleRuntime(root, { run = runArtifactCommand } = {}) {
+  if (isKitRoot(root) || !existsSync(join(root, "packages/skeleton/src")))
+    return [];
+  const runtime = generatedArtifacts(root).find(
+    (row) => row.name === "runtime" && Array.isArray(row.write),
+  );
+  if (!runtime || checkArtifact(runtime, root, run).exitCode === 0) return [];
+  const built = run(runtime.write, root, runtime.timeoutMs ?? 120_000);
+  return [{ name: "runtime", exitCode: built.exitCode }];
 }
 
 export function checkGenerated(

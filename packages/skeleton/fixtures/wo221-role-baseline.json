@@ -1,0 +1,37 @@
+{
+  "workOrder": "WO-221",
+  "historicalBaseline": "wo216-role-baseline.json",
+  "historicalSha256": "c14876ca813de2d296c121484be0fa3baf77f6055e8c41a17f116088589db19e",
+  "upstreamBaseline": "wo185-role-baseline.json",
+  "upstreamSha256": "f67e48b79873202b56c069902f2338d54b1fef42d3c9eb29706d3d2cd7a72ef9",
+  "method": "The release-close profile gains the disposable-output sentence; the shared completion sentence and the reviewer steps reuse the passing complete review row at an unchanged code identity (D017); the executor starts one complete run that leads with failed and changed suites (D018); completion consumes the document row and runs no gate, the reviewer rejects known-bad candidates before the complete run, and each role writes its report before the single document validation (operator recovery contract, D020); both harness roots. Pin both support settings and preserve the prior oracle byte-exact.",
+  "decision": "docs/evidence/WO-221/decisions.md#wo-221-d020",
+  "roles": {
+    ".agents/skills/dotln-executor/SKILL.md": "0f21552937acec0f4f70efc2378aa76c334a4ca34738245f72f56d79b0120742",
+    ".agents/skills/dotln-planner/SKILL.md": "fa479740befef1d1b9d0ad0388af68e24b8bf7eae4c67278ffa8c42bdd7c26db",
+    ".agents/skills/dotln-refuter/SKILL.md": "06aead3e320a5799d92f980a1cb2b13aa6728601dac1b652d3985c95bca7db23",
+    ".agents/skills/dotln-release-close/SKILL.md": "cf9f3ecdfb8daf56f5b03a53a0c700e7a36b09e251d3aeb733cf19bc0c4212e5",
+    ".agents/skills/dotln-reviewer/SKILL.md": "f43c144b219700051ef086e751074dabee8b494ae2cb25172f8c49b1b4819875",
+    ".agents/skills/dotln-verifier/SKILL.md": "820af4cd368447b6d0442e763bf1bbc7b1dd36657ef5f2669aa98a390d085648",
+    ".claude/skills/dotln-executor/SKILL.md": "0f21552937acec0f4f70efc2378aa76c334a4ca34738245f72f56d79b0120742",
+    ".claude/skills/dotln-planner/SKILL.md": "fa479740befef1d1b9d0ad0388af68e24b8bf7eae4c67278ffa8c42bdd7c26db",
+    ".claude/skills/dotln-refuter/SKILL.md": "06aead3e320a5799d92f980a1cb2b13aa6728601dac1b652d3985c95bca7db23",
+    ".claude/skills/dotln-release-close/SKILL.md": "cf9f3ecdfb8daf56f5b03a53a0c700e7a36b09e251d3aeb733cf19bc0c4212e5",
+    ".claude/skills/dotln-reviewer/SKILL.md": "f43c144b219700051ef086e751074dabee8b494ae2cb25172f8c49b1b4819875",
+    ".claude/skills/dotln-verifier/SKILL.md": "820af4cd368447b6d0442e763bf1bbc7b1dd36657ef5f2669aa98a390d085648"
+  },
+  "optOutRoles": {
+    ".agents/skills/dotln-executor/SKILL.md": "90406804d1e8f940e7dfb371cf73db0e20e3f5c09bc1c57d0d13137b7acfe7f3",
+    ".agents/skills/dotln-planner/SKILL.md": "ab6c6935e0478d9cac96dc81d71e6a349b203d544e83e69f5cb172155a0e1a57",
+    ".agents/skills/dotln-refuter/SKILL.md": "16108e2c42c9d9fe24115285e98d258a357cbe0ab3a33d6a3170ef0226d9e222",
+    ".agents/skills/dotln-release-close/SKILL.md": "2164606267bfa65029eeac37064d729ea3fa3f12a23d7765c9a21c76afbc8dcc",
+    ".agents/skills/dotln-reviewer/SKILL.md": "30dfa1b3e6e414ad7d6fabfc9393ebc2460e383ec771222472a2e9a8a7c9c1dd",
+    ".agents/skills/dotln-verifier/SKILL.md": "58b42cdc284f5e6be4954dc77169b0ab72ec4dacca1521a0d026432dc72c085c",
+    ".claude/skills/dotln-executor/SKILL.md": "90406804d1e8f940e7dfb371cf73db0e20e3f5c09bc1c57d0d13137b7acfe7f3",
+    ".claude/skills/dotln-planner/SKILL.md": "ab6c6935e0478d9cac96dc81d71e6a349b203d544e83e69f5cb172155a0e1a57",
+    ".claude/skills/dotln-refuter/SKILL.md": "16108e2c42c9d9fe24115285e98d258a357cbe0ab3a33d6a3170ef0226d9e222",
+    ".claude/skills/dotln-release-close/SKILL.md": "2164606267bfa65029eeac37064d729ea3fa3f12a23d7765c9a21c76afbc8dcc",
+    ".claude/skills/dotln-reviewer/SKILL.md": "30dfa1b3e6e414ad7d6fabfc9393ebc2460e383ec771222472a2e9a8a7c9c1dd",
+    ".claude/skills/dotln-verifier/SKILL.md": "58b42cdc284f5e6be4954dc77169b0ab72ec4dacca1521a0d026432dc72c085c"
+  }
+}

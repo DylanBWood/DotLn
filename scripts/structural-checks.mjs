@@ -6,7 +6,11 @@ import {
   uncoveredMachinerySources,
 } from "./lib/machinery-coverage.mjs";
 import { pressureSample } from "./lib/host-resources.mjs";
-import { checkGenerated } from "./lib/generated-artifacts.mjs";
+import {
+  BUILD_PHASE_ARTIFACTS,
+  checkGenerated,
+  generatedArtifacts,
+} from "./lib/generated-artifacts.mjs";
 
 export function checkHost(sample = pressureSample()) {
   return {
@@ -38,9 +42,16 @@ if (isMainModule(import.meta.url)) {
   try {
     const root = findLaunchpad();
     const [mode, ...rest] = process.argv.slice(2);
-    if (rest.length || !["declarations", "generated", "host"].includes(mode))
+    const buildPhaseOnly =
+      mode === "generated" &&
+      rest.length === 1 &&
+      rest[0] === "--build-phase-only";
+    if (
+      (rest.length && !buildPhaseOnly) ||
+      !["declarations", "generated", "host"].includes(mode)
+    )
       throw new Error(
-        "usage: structural-checks.mjs declarations|generated|host",
+        "usage: structural-checks.mjs declarations|generated [--build-phase-only]|host",
       );
     let result;
     if (mode === "declarations") {
@@ -52,7 +63,18 @@ if (isMainModule(import.meta.url)) {
           root,
         ),
       );
-    } else if (mode === "generated") result = checkGenerated(root);
+    } else if (mode === "generated")
+      // A focused selection judges only what its build phase makes current.
+      result = checkGenerated(
+        root,
+        buildPhaseOnly
+          ? {
+              artifacts: generatedArtifacts(root).filter((row) =>
+                BUILD_PHASE_ARTIFACTS.includes(row.name),
+              ),
+            }
+          : {},
+      );
     else result = checkHost();
     if (result.output) console.log(result.output);
     for (const row of result.cases ?? []) {
