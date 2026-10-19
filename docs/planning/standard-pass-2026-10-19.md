@@ -486,5 +486,44 @@ final counters are in the ignored receipts and the response.
 
 ## 14. Validation and independent judgment
 
-Written after the refutation receipt is filed (see the end of this
-document).
+**Checks run on the working tree after the last write**, all passing:
+`node scripts/docs-check.mjs` (0 failures; the operator-word advisories are
+historical and none is in this pass's files); `node scripts/lineage.mjs
+index --check` (177 sections); `node scripts/work-orders.mjs index --check`;
+`npm run publication:check` (the software-engineer edition's lock refreshed
+by `npm run sync`); `npm run meta -- --check`; `npm run format:check`;
+`git diff --check`.
+
+**The refutation.** One fresh background `dotln-worker` was given only the
+canonical prompt of `npm run plan -- refute` for commit `b9940d4d`
+(claude-opus-5-5 as its host stated; effort not read back) and judged it
+in 1,083 s over 72 tool uses and 280,302 tokens, followed by one
+formatting restatement of its statement line to replace two private
+absolute paths with a repository-relative path and a placeholder
+(8 s); its judgment was not rerolled. Receipt
+`2026-10-19-planning-12151725d1073489-048`: scope, the three orders this pass created or changed
+(WO-222, WO-218, WO-219) and the sequence; verdict
+`aligned-with-findings` for each order and for the plan; no hold. Sixteen
+known issues, each with a reopening observation, are carried on the three
+catalog rows in the map until a later pass amends the orders (the orders
+stay as judged). Four corrections of fact this pass accepts from the
+receipt, recorded on those rows: `scripts/measure-gates.mjs --run` records
+five fresh runs and selects gate rows by a checkId the runner stopped
+writing on 2026-09-15, so WO-222's step 9 repairs the instrument before
+the after series and its cost is five runs; WO-222's Cost line counts
+sixteen queued orders where fifteen follow it; the batch orders' objective
+and Cost lines, written by the 2026-10-17 pass and carried here, say the
+register's pending count falls by rows settled and declined, while the
+register counts an allocated row as closed, so the measure the executor
+records is allocated rows reaching settled or declined plus the deferred
+count; and WO-219's Cost line says each of its rows was pending at
+`7b8206f4`, which does not hold for the row the 2026-10-18 pass minted.
+The receipt's other readings the executors carry are on the rows: WO-222's
+per-lane budget degrades to fewer lanes rather than refusing, its registry
+capacity record needs a home outside the lane sweep, and its light
+classification is a declared row property; WO-218's and WO-219's listed
+candidate rows are in scope; WO-219's planner-addressed rows are declined
+to planning, never designed by the executor.
+
+`npm run test:docs` after the receipt, at the workspace this pull request
+publishes: 27 passed, 0 failed, 136.2 s, 27 fresh tasks on the first run after the closeout edits; the run was repeated at the final bytes of this document after that figure was written, and the pull request body records its result.
