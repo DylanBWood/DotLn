@@ -1,0 +1,619 @@
+{
+  "source": "docs/evidence/WO-222/before.json; latest task samples and maximum task RSS of each of its three passing complete rows",
+  "taskPeaks": [
+    {
+      "recordedAt": "2026-10-19T03:15:23.923Z",
+      "codeIdentity": "cf32f5c67881960695f718f5dc99982b731fbbe9e61f0fb8ce977aa0ada2cd1f",
+      "name": "runner-fixtures",
+      "peakRssBytes": 1509638144
+    },
+    {
+      "recordedAt": "2026-10-19T07:55:04.693Z",
+      "codeIdentity": "104d1bf29eb45e2b238c3d3b918d1c6f4d58efb608762adcb3dfed41f152310b",
+      "name": "runner-fixtures",
+      "peakRssBytes": 1496842240
+    },
+    {
+      "recordedAt": "2026-10-19T10:58:31.828Z",
+      "codeIdentity": "33c9b7104531cedcddf470ae10c94d6215c88665c371d46f02834407c8fd678d",
+      "name": "runner-fixtures",
+      "peakRssBytes": 1497989120
+    }
+  ],
+  "taskSamples": [
+    {
+      "name": "adjacent-queue",
+      "loadClass": "shared",
+      "durationMs": 962,
+      "peakRssBytes": 210534400
+    },
+    {
+      "name": "authority-grants",
+      "loadClass": "shared",
+      "durationMs": 222,
+      "peakRssBytes": 140378112
+    },
+    {
+      "name": "backup-intake",
+      "loadClass": "shared",
+      "durationMs": 330,
+      "peakRssBytes": 12402688
+    },
+    {
+      "name": "beacon-portability",
+      "loadClass": "shared",
+      "durationMs": 1338,
+      "peakRssBytes": 222625792
+    },
+    {
+      "name": "browser-evidence",
+      "loadClass": "shared",
+      "durationMs": 18585,
+      "peakRssBytes": 599900160
+    },
+    {
+      "name": "build",
+      "loadClass": "isolated",
+      "durationMs": 650,
+      "peakRssBytes": 62603264
+    },
+    {
+      "name": "checkpoint",
+      "loadClass": "shared",
+      "durationMs": 10121,
+      "peakRssBytes": 92930048
+    },
+    {
+      "name": "codex-continuation",
+      "loadClass": "shared",
+      "durationMs": 6369,
+      "peakRssBytes": 188268544
+    },
+    {
+      "name": "compiler",
+      "loadClass": "shared",
+      "durationMs": 1033,
+      "peakRssBytes": 237109248
+    },
+    {
+      "name": "configuration-root",
+      "loadClass": "shared",
+      "durationMs": 5170,
+      "peakRssBytes": 224395264
+    },
+    {
+      "name": "console",
+      "loadClass": "shared",
+      "durationMs": 18989,
+      "peakRssBytes": 443957248
+    },
+    {
+      "name": "declarations",
+      "loadClass": "shared",
+      "durationMs": 251,
+      "peakRssBytes": 117424128
+    },
+    {
+      "name": "derived-orders",
+      "loadClass": "shared",
+      "durationMs": 9368,
+      "peakRssBytes": 250314752
+    },
+    {
+      "name": "format",
+      "loadClass": "shared",
+      "durationMs": 6687,
+      "peakRssBytes": 602734592
+    },
+    {
+      "name": "generated",
+      "loadClass": "shared",
+      "durationMs": 15184,
+      "peakRssBytes": 374341632
+    },
+    {
+      "name": "github-body",
+      "loadClass": "shared",
+      "durationMs": 221,
+      "peakRssBytes": 135774208
+    },
+    {
+      "name": "harness-fixtures",
+      "loadClass": "isolated",
+      "durationMs": 292279,
+      "peakRssBytes": 745078784
+    },
+    {
+      "name": "harness-probe",
+      "loadClass": "shared",
+      "durationMs": 60275,
+      "peakRssBytes": 273661952
+    },
+    {
+      "name": "host",
+      "loadClass": "shared",
+      "durationMs": 61,
+      "peakRssBytes": 1802240
+    },
+    {
+      "name": "kernel",
+      "loadClass": "shared",
+      "durationMs": 530,
+      "peakRssBytes": 146538496
+    },
+    {
+      "name": "launchpad-planning",
+      "loadClass": "shared",
+      "durationMs": 220449,
+      "peakRssBytes": 809320448
+    },
+    {
+      "name": "launchpad:file:test-launchpad-export.mjs",
+      "loadClass": "shared",
+      "durationMs": 154232,
+      "peakRssBytes": 967933952
+    },
+    {
+      "name": "launchpad:file:test-launchpad-seeds.mjs",
+      "loadClass": "shared",
+      "durationMs": 4820,
+      "peakRssBytes": 467156992
+    },
+    {
+      "name": "launchpad:file:test-launchpad-update.mjs",
+      "loadClass": "shared",
+      "durationMs": 239326,
+      "peakRssBytes": 799031296
+    },
+    {
+      "name": "license-fixtures",
+      "loadClass": "shared",
+      "durationMs": 15840,
+      "peakRssBytes": 246562816
+    },
+    {
+      "name": "outward-lint",
+      "loadClass": "shared",
+      "durationMs": 645,
+      "peakRssBytes": 148340736
+    },
+    {
+      "name": "portfolio",
+      "loadClass": "shared",
+      "durationMs": 21635,
+      "peakRssBytes": 273809408
+    },
+    {
+      "name": "process-debt",
+      "loadClass": "isolated",
+      "durationMs": 102758,
+      "peakRssBytes": 732397568
+    },
+    {
+      "name": "publication-fixtures",
+      "loadClass": "shared",
+      "durationMs": 1131,
+      "peakRssBytes": 67076096
+    },
+    {
+      "name": "registrations",
+      "loadClass": "shared",
+      "durationMs": 560,
+      "peakRssBytes": 91439104
+    },
+    {
+      "name": "release-preparation",
+      "loadClass": "shared",
+      "durationMs": 3595,
+      "peakRssBytes": 146030592
+    },
+    {
+      "name": "release:case:bodyclose",
+      "loadClass": "shared",
+      "durationMs": 1617,
+      "peakRssBytes": 96157696
+    },
+    {
+      "name": "release:case:cached_evidence",
+      "loadClass": "shared",
+      "durationMs": 11098,
+      "peakRssBytes": 109969408
+    },
+    {
+      "name": "release:case:cadence_inconsistent",
+      "loadClass": "shared",
+      "durationMs": 4984,
+      "peakRssBytes": 108806144
+    },
+    {
+      "name": "release:case:cadence_missing",
+      "loadClass": "shared",
+      "durationMs": 2164,
+      "peakRssBytes": 111919104
+    },
+    {
+      "name": "release:case:close_completion",
+      "loadClass": "shared",
+      "durationMs": 11372,
+      "peakRssBytes": 176455680
+    },
+    {
+      "name": "release:case:close_leftover",
+      "loadClass": "shared",
+      "durationMs": 51581,
+      "peakRssBytes": 187039744
+    },
+    {
+      "name": "release:case:close_receipt_recovery",
+      "loadClass": "shared",
+      "durationMs": 33246,
+      "peakRssBytes": 130318336
+    },
+    {
+      "name": "release:case:close_retry_paths",
+      "loadClass": "shared",
+      "durationMs": 5761,
+      "peakRssBytes": 101892096
+    },
+    {
+      "name": "release:case:close_sealed",
+      "loadClass": "shared",
+      "durationMs": 9098,
+      "peakRssBytes": 101908480
+    },
+    {
+      "name": "release:case:composed_evidence",
+      "loadClass": "shared",
+      "durationMs": 11125,
+      "peakRssBytes": 180584448
+    },
+    {
+      "name": "release:case:concurrent",
+      "loadClass": "shared",
+      "durationMs": 21941,
+      "peakRssBytes": 236650496
+    },
+    {
+      "name": "release:case:conflict",
+      "loadClass": "shared",
+      "durationMs": 1847,
+      "peakRssBytes": 90030080
+    },
+    {
+      "name": "release:case:createrecovery",
+      "loadClass": "shared",
+      "durationMs": 16193,
+      "peakRssBytes": 156434432
+    },
+    {
+      "name": "release:case:custom_identity",
+      "loadClass": "shared",
+      "durationMs": 8500,
+      "peakRssBytes": 101629952
+    },
+    {
+      "name": "release:case:derived",
+      "loadClass": "shared",
+      "durationMs": 5438,
+      "peakRssBytes": 94175232
+    },
+    {
+      "name": "release:case:dirty",
+      "loadClass": "shared",
+      "durationMs": 3572,
+      "peakRssBytes": 110854144
+    },
+    {
+      "name": "release:case:divergence",
+      "loadClass": "shared",
+      "durationMs": 1073,
+      "peakRssBytes": 87556096
+    },
+    {
+      "name": "release:case:edition",
+      "loadClass": "shared",
+      "durationMs": 10991,
+      "peakRssBytes": 106037248
+    },
+    {
+      "name": "release:case:failures",
+      "loadClass": "shared",
+      "durationMs": 2953,
+      "peakRssBytes": 87998464
+    },
+    {
+      "name": "release:case:firstrelease",
+      "loadClass": "shared",
+      "durationMs": 6023,
+      "peakRssBytes": 104333312
+    },
+    {
+      "name": "release:case:license_surfaces",
+      "loadClass": "shared",
+      "durationMs": 4851,
+      "peakRssBytes": 229654528
+    },
+    {
+      "name": "release:case:localconflict",
+      "loadClass": "shared",
+      "durationMs": 2430,
+      "peakRssBytes": 76021760
+    },
+    {
+      "name": "release:case:lower",
+      "loadClass": "shared",
+      "durationMs": 2115,
+      "peakRssBytes": 93978624
+    },
+    {
+      "name": "release:case:malformed",
+      "loadClass": "shared",
+      "durationMs": 1070,
+      "peakRssBytes": 90439680
+    },
+    {
+      "name": "release:case:malformed_material",
+      "loadClass": "shared",
+      "durationMs": 1814,
+      "peakRssBytes": 77316096
+    },
+    {
+      "name": "release:case:material",
+      "loadClass": "shared",
+      "durationMs": 59869,
+      "peakRssBytes": 188760064
+    },
+    {
+      "name": "release:case:missinggh",
+      "loadClass": "shared",
+      "durationMs": 2659,
+      "peakRssBytes": 160301056
+    },
+    {
+      "name": "release:case:missinglocalprevious",
+      "loadClass": "shared",
+      "durationMs": 3213,
+      "peakRssBytes": 141197312
+    },
+    {
+      "name": "release:case:nestedtag",
+      "loadClass": "shared",
+      "durationMs": 1738,
+      "peakRssBytes": 80576512
+    },
+    {
+      "name": "release:case:nonmain",
+      "loadClass": "shared",
+      "durationMs": 1090,
+      "peakRssBytes": 84197376
+    },
+    {
+      "name": "release:case:preflight",
+      "loadClass": "shared",
+      "durationMs": 225,
+      "peakRssBytes": 64880640
+    },
+    {
+      "name": "release:case:prepare",
+      "loadClass": "shared",
+      "durationMs": 3497,
+      "peakRssBytes": 102842368
+    },
+    {
+      "name": "release:case:prepare_independent",
+      "loadClass": "shared",
+      "durationMs": 3414,
+      "peakRssBytes": 159793152
+    },
+    {
+      "name": "release:case:pushfail",
+      "loadClass": "shared",
+      "durationMs": 4385,
+      "peakRssBytes": 103628800
+    },
+    {
+      "name": "release:case:refrecovery",
+      "loadClass": "shared",
+      "durationMs": 6438,
+      "peakRssBytes": 124174336
+    },
+    {
+      "name": "release:case:runtime_refresh",
+      "loadClass": "shared",
+      "durationMs": 42317,
+      "peakRssBytes": 197394432
+    },
+    {
+      "name": "release:case:settings_scope",
+      "loadClass": "shared",
+      "durationMs": 4067,
+      "peakRssBytes": 110673920
+    },
+    {
+      "name": "release:case:splitorigin",
+      "loadClass": "shared",
+      "durationMs": 1300,
+      "peakRssBytes": 78626816
+    },
+    {
+      "name": "release:case:stale_helpers",
+      "loadClass": "shared",
+      "durationMs": 11782,
+      "peakRssBytes": 182829056
+    },
+    {
+      "name": "release:case:starter_refresh",
+      "loadClass": "shared",
+      "durationMs": 28089,
+      "peakRssBytes": 137707520
+    },
+    {
+      "name": "release:case:submodule_force",
+      "loadClass": "shared",
+      "durationMs": 6649,
+      "peakRssBytes": 96862208
+    },
+    {
+      "name": "release:case:success",
+      "loadClass": "shared",
+      "durationMs": 25419,
+      "peakRssBytes": 112852992
+    },
+    {
+      "name": "release:case:surfaceclose",
+      "loadClass": "shared",
+      "durationMs": 2916,
+      "peakRssBytes": 103268352
+    },
+    {
+      "name": "release:case:surfaceclose_linked",
+      "loadClass": "shared",
+      "durationMs": 1976,
+      "peakRssBytes": 92241920
+    },
+    {
+      "name": "release:case:surfaces",
+      "loadClass": "shared",
+      "durationMs": 6368,
+      "peakRssBytes": 156680192
+    },
+    {
+      "name": "release:case:surfaces_committed_readme",
+      "loadClass": "shared",
+      "durationMs": 1594,
+      "peakRssBytes": 93405184
+    },
+    {
+      "name": "release:case:surfaces_component",
+      "loadClass": "shared",
+      "durationMs": 2286,
+      "peakRssBytes": 155516928
+    },
+    {
+      "name": "release:case:surfaces_first",
+      "loadClass": "shared",
+      "durationMs": 1008,
+      "peakRssBytes": 68714496
+    },
+    {
+      "name": "release:case:surfaces_local_snapshot",
+      "loadClass": "shared",
+      "durationMs": 1161,
+      "peakRssBytes": 86458368
+    },
+    {
+      "name": "release:case:surfaces_lower",
+      "loadClass": "shared",
+      "durationMs": 1256,
+      "peakRssBytes": 83034112
+    },
+    {
+      "name": "release:case:surfaces_new_component",
+      "loadClass": "shared",
+      "durationMs": 1056,
+      "peakRssBytes": 97419264
+    },
+    {
+      "name": "release:case:surfaces_non_source",
+      "loadClass": "shared",
+      "durationMs": 1078,
+      "peakRssBytes": 46071808
+    },
+    {
+      "name": "release:case:unauthenticated",
+      "loadClass": "shared",
+      "durationMs": 2049,
+      "peakRssBytes": 92749824
+    },
+    {
+      "name": "release:case:unreachable",
+      "loadClass": "shared",
+      "durationMs": 3450,
+      "peakRssBytes": 103366656
+    },
+    {
+      "name": "release:prepare",
+      "loadClass": "shared",
+      "durationMs": 1102,
+      "peakRssBytes": 65470464
+    },
+    {
+      "name": "runner-fixtures",
+      "loadClass": "shared",
+      "durationMs": 112736,
+      "peakRssBytes": 1497989120
+    },
+    {
+      "name": "siblings-fixtures",
+      "loadClass": "shared",
+      "durationMs": 13449,
+      "peakRssBytes": 207437824
+    },
+    {
+      "name": "skeleton",
+      "loadClass": "shared",
+      "durationMs": 253047,
+      "peakRssBytes": 910934016
+    },
+    {
+      "name": "sync-fixtures",
+      "loadClass": "shared",
+      "durationMs": 161760,
+      "peakRssBytes": 1021689856
+    },
+    {
+      "name": "target-publish",
+      "loadClass": "shared",
+      "durationMs": 121354,
+      "peakRssBytes": 393347072
+    },
+    {
+      "name": "target-worktree",
+      "loadClass": "shared",
+      "durationMs": 611319,
+      "peakRssBytes": 406290432
+    },
+    {
+      "name": "vertical:file:test-vertical-judgment.mjs",
+      "loadClass": "shared",
+      "durationMs": 446092,
+      "peakRssBytes": 418332672
+    },
+    {
+      "name": "vertical:file:test-vertical.mjs:statements",
+      "loadClass": "shared",
+      "durationMs": 465273,
+      "peakRssBytes": 403161088
+    },
+    {
+      "name": "vertical:file:test-vertical.mjs:workflow",
+      "loadClass": "shared",
+      "durationMs": 298900,
+      "peakRssBytes": 397017088
+    },
+    {
+      "name": "vertical:file:test-vertical.recovery.mjs",
+      "loadClass": "shared",
+      "durationMs": 354606,
+      "peakRssBytes": 506757120
+    },
+    {
+      "name": "work-orders-fixtures",
+      "loadClass": "shared",
+      "durationMs": 28423,
+      "peakRssBytes": 172851200
+    },
+    {
+      "name": "worktree",
+      "loadClass": "shared",
+      "durationMs": 126089,
+      "peakRssBytes": 307462144
+    },
+    {
+      "name": "worktree-integration",
+      "loadClass": "isolated",
+      "durationMs": 167345,
+      "peakRssBytes": 973258752
+    }
+  ]
+}

@@ -49,8 +49,9 @@ const commonSources = [
   "packages/skeleton/src/source-change-command.ts",
   "packages/skeleton/src/source-change-host.ts",
   "packages/skeleton/src/host-interruption.ts",
-  // WO-199: the source host dynamically loads native launch and ownership tools.
+  // The source host dynamically loads native launch and ownership tools.
   "scripts/lib/host-resources.mjs",
+  "scripts/lib/gate-scheduling-baseline.json",
   "scripts/lib/host-lock.c",
   "scripts/lib/host-footprint.c",
   "scripts/lib/gate-evidence.mjs",

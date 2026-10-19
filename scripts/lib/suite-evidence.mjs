@@ -56,6 +56,9 @@ export function suiteEnvironment(env = process.env, gateContext) {
     child.DOTLN_GATE_LOAD_CLASS = gateContext.loadClass;
     child.DOTLN_GATE_CONCURRENCY = String(gateContext.concurrency);
     child.DOTLN_GATE_LOAD_FACTOR = String(gateContext.loadFactor);
+    child.DOTLN_GATE_CAPACITY = String(
+      gateContext.hostCapacity ?? gateContext.slotCapacity ?? 4,
+    );
     child.DOTLN_GATE_TASK = gateContext.task;
     if (gateContext.peerFile) child.DOTLN_GATE_PEER_FILE = gateContext.peerFile;
     if (gateContext.deadlineLog)

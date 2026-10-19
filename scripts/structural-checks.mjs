@@ -5,18 +5,32 @@ import {
   uncoveredFixtureInputs,
   uncoveredMachinerySources,
 } from "./lib/machinery-coverage.mjs";
-import { pressureSample } from "./lib/host-resources.mjs";
+import {
+  largestTaskPeakRss,
+  memoryBudgets,
+  pressureSample,
+} from "./lib/host-resources.mjs";
 import {
   BUILD_PHASE_ARTIFACTS,
   checkGenerated,
   generatedArtifacts,
 } from "./lib/generated-artifacts.mjs";
 
-export function checkHost(sample = pressureSample()) {
+export function checkHost(
+  sample = pressureSample(),
+  {
+    limits = memoryBudgets(findLaunchpad()),
+    requiredPeakBytes = largestTaskPeakRss(),
+  } = {},
+) {
+  const underBudget = limits.taskBytes < requiredPeakBytes;
   return {
-    exitCode: ["warning", "critical"].includes(sample.level) ? 1 : 0,
+    exitCode:
+      ["warning", "critical"].includes(sample.level) || underBudget ? 1 : 0,
     sample,
-    output: `Host memory: ${sample.level}; pressure=${sample.pressure}; swapBytes=${sample.swapBytes}; physicalBytes=${sample.physicalBytes}; source=${sample.source}`,
+    taskBudgetBytes: limits.taskBytes,
+    requiredPeakBytes,
+    output: `Host memory: ${sample.level}; pressure=${sample.pressure}; swapBytes=${sample.swapBytes}; physicalBytes=${sample.physicalBytes}; source=${sample.source}\nPer-lane memory budget ${limits.taskBytes} bytes ${underBudget ? "is below" : "covers"} measured task peak RSS ${requiredPeakBytes} bytes (${limits.hostLanes} host lanes)`,
   };
 }
 

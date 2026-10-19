@@ -21,6 +21,7 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { measurementGateForRun } from "./measure-gates.mjs";
 import {
   suites,
   STRUCTURAL_TASKS,
@@ -34,6 +35,7 @@ import {
   changedMachinery,
   changedSinceLastGate,
   lastFailedSuites,
+  lightSuiteNames,
   completeSharedRefs,
   sharedRefChanges,
   isKitRoot,
@@ -1806,6 +1808,7 @@ test("build is a barrier, independent suites overlap, shared groups cannot overl
     { name: "c", command: ["c"] },
   ];
   const results = await scheduleSuites(table, {
+    parallelism: 16,
     concurrency: 3,
     execute: async (row) => {
       events.push(`start:${row.name}`);
@@ -1938,6 +1941,7 @@ test("package tests and fixtures wait for preflights and never start after a fai
     );
     const events = [];
     const rows = await scheduleSuites(expandSuiteTasks(selected, root), {
+      parallelism: 16,
       concurrency: 4,
       execute: async (row) => {
         events.push(`start:${row.name}`);
@@ -2004,7 +2008,7 @@ test("failed split-case diagnostics survive aggregate evidence as addressed logs
       .every((row) => !row.outputRef),
   );
 });
-test("product suites describe protection, machinery is separate and only release, vertical and launchpad expand", () => {
+test("product suites describe protection and only declared file and case suites expand", () => {
   for (const row of suites) {
     assert.ok(row.protects?.length > 10, row.name);
     assert.ok(
@@ -2023,7 +2027,10 @@ test("product suites describe protection, machinery is separate and only release
   for (const row of suites.filter((row) => row.machinery))
     assert.ok(row.sources.length, row.name);
   const selected = suites.filter(
-    (row) => !["release", "vertical", "launchpad"].includes(row.name),
+    (row) =>
+      !["release", "vertical", "launchpad", "target-worktree"].includes(
+        row.name,
+      ),
   );
   assert.deepEqual(
     expandSuiteTasks(selected, root).map((row) => row.name),
@@ -2075,6 +2082,7 @@ test("vertical tasks preserve complementary coverage, guards and the two-task co
   let active = 0,
     peak = 0;
   const rows = await scheduleSuites([barrier, ...tasks], {
+    parallelism: 16,
     concurrency: 4,
     execute: async (row) => {
       if (!row.build) {
@@ -2171,7 +2179,7 @@ test("vertical task dispatch executes every declared case exactly once across pa
     ].sort(),
   );
 });
-test("exclusive suites run alone and shared suites use remaining lane capacity", async () => {
+test("exclusive suites without an overlap declaration run alone and shared suites use remaining lanes", async () => {
   const isolatedNames = new Set([
     "harness-fixtures",
     "process-debt",
@@ -2191,9 +2199,17 @@ test("exclusive suites run alone and shared suites use remaining lane capacity",
   );
   const active = new Map(),
     overlap = new Set();
-  const tasks = expandSuiteTasks(selected, root);
+  const tasks = expandSuiteTasks(
+    selected.map((row) => ({
+      ...row,
+      overlap: row.exclusive ? 0 : row.overlap,
+    })),
+    root,
+  );
   const rows = await scheduleSuites(tasks, {
+    parallelism: 16,
     concurrency: 4,
+    lightTasks: new Set(),
     execute: async (row) => {
       assert.equal(
         row.gateContext.loadClass,
@@ -2251,6 +2267,7 @@ test("exclusive suites run alone and shared suites use remaining lane capacity",
         { name: "later", command: ["fixture"] },
       ],
       {
+        parallelism: 16,
         concurrency,
         execute: async (row) => {
           if (row.exclusive) assert.equal(active.size, 0);
@@ -2901,6 +2918,7 @@ test("release cases use concurrent lanes, wait for preparation and require compl
     peak = 0,
     prepared = false;
   const rows = await scheduleSuites(tasks, {
+    parallelism: 16,
     concurrency: 4,
     execute: async (row) => {
       if (row.name.startsWith("release:case:")) {
@@ -4885,6 +4903,68 @@ function gateInAnotherSession(repo, table, session) {
       .slice(4),
   );
 }
+
+test("measurement mode records successful task deadlines with the gate row", async (t) => {
+  const { repo, table } = taskReuseFixture(t);
+  const saved = process.env.DOTLN_GATE_MEASURE_DEADLINES;
+  t.after(() => {
+    if (saved === undefined) delete process.env.DOTLN_GATE_MEASURE_DEADLINES;
+    else process.env.DOTLN_GATE_MEASURE_DEADLINES = saved;
+  });
+  delete process.env.DOTLN_GATE_MEASURE_DEADLINES;
+  const ordinary = await runGate(["--serial", "--again"], repo, { table });
+  assert.equal(ordinary.exitCode, 0);
+  assert.deepEqual(ordinary.deadlineDiagnostics, []);
+  process.env.DOTLN_GATE_MEASURE_DEADLINES = "1";
+  const startedAt = new Date().toISOString();
+  const measured = await runGate(["--serial", "--review", "--fresh"], repo, {
+    table,
+  });
+  const finishedAt = new Date().toISOString();
+  assert.equal(measured.exitCode, 0);
+  const checks = readGateChecks(repo);
+  const selected = measurementGateForRun(checks, startedAt, finishedAt);
+  assert.equal(selected?.evidenceRef, measured.evidenceRef);
+  assert.equal(selected?.checkId, "npm test");
+  assert.equal(selected?.gateSelection, "review");
+  assert.equal(selected?.executionMode, "forced-fresh");
+  assert.equal(
+    measurementGateForRun(
+      [
+        ...checks,
+        { ...measured, checkId: "npm run test:full" },
+        { ...measured, gateSelection: "plain" },
+        {
+          ...measured,
+          recordedAt: new Date(Date.parse(startedAt) - 1).toISOString(),
+        },
+        {
+          ...measured,
+          recordedAt: new Date(Date.parse(finishedAt) + 1).toISOString(),
+        },
+      ],
+      startedAt,
+      finishedAt,
+    ),
+    selected,
+  );
+  assert.deepEqual(
+    measured.deadlineDiagnostics.map((row) => row.task).sort(),
+    measured.taskTimeline.map((row) => row.name).sort(),
+  );
+  for (const task of measured.taskTimeline) {
+    const deadline = measured.deadlineDiagnostics.find(
+      (row) => row.site === `suite:${task.name}`,
+    );
+    assert.equal(deadline.timeoutMs, task.timeoutMs);
+    assert.equal(deadline.hit, false);
+    assert.ok(deadline.durationMs < deadline.timeoutMs);
+  }
+  assert.deepEqual(
+    readGateChecks(repo).at(-1).deadlineDiagnostics,
+    measured.deadlineDiagnostics,
+  );
+});
 
 test("reused task evidence never carries historical host-wait observations", async (t) => {
   const { repo, table } = taskReuseFixture(t);
@@ -7609,6 +7689,7 @@ test("fail-fast keeps running tasks, starts no later task, and keep-going restor
       { name: "later", command: ["later"], after: ["slow"] },
     ];
     const rows = await scheduleSuites(table, {
+      parallelism: 16,
       concurrency: 2,
       keepGoing,
       execute: async (row) => {
@@ -7920,6 +8001,7 @@ test("launchpad files retain all 29 cases and run at most two independent deadli
   let active = 0,
     peak = 0;
   await scheduleSuites([barrier, ...tasks], {
+    parallelism: 16,
     concurrency: 4,
     execute: async (row) => {
       if (!row.build) {
@@ -7988,6 +8070,7 @@ test("fail-fast cancels a pending host lane without discarding completed results
       { name: "later", command: ["later"] },
     ],
     {
+      parallelism: 16,
       concurrency: 2,
       hostLanes: { parentLease: null, directory: "fixture" },
       acquireLanes: async ({ task, signal }) => {
@@ -8033,6 +8116,7 @@ test("fail-fast retains a running peer's execution exception as a completed fail
       { name: "later", command: ["later"] },
     ],
     {
+      parallelism: 16,
       concurrency: 2,
       onResult: (row) => {
         if (row.name === "fail") failFinished();
@@ -8252,4 +8336,236 @@ test("a lead raises a suite's tasks above every other priority while their own o
     plain.find((row) => row.name === "harness-fixtures").priority,
     200,
   );
+});
+
+test("host parallelism derives scheduler defaults and bounds explicit concurrency", async () => {
+  const { hostLaneCapacity } = await import("./lib/host-resources.mjs");
+  for (const [parallelism, expected] of [
+    [2, 1],
+    [4, 2],
+    [8, 4],
+    [16, 8],
+    [32, 8],
+  ]) {
+    assert.equal(hostLaneCapacity(parallelism), expected);
+    const rows = await scheduleSuites([barrier], {
+      parallelism,
+      execute: async (row) => {
+        assert.equal(row.gateContext.slotCapacity, expected);
+        assert.equal(row.gateContext.hostCapacity, expected);
+        assert.equal(row.gateContext.reservedSlots, expected);
+        return { name: row.name, executed: true, exitCode: 0 };
+      },
+    });
+    assert.equal(rows[0].slotCapacity, expected);
+    await assert.rejects(
+      scheduleSuites([barrier], { parallelism, concurrency: expected + 1 }),
+      new RegExp(
+        `concurrency ${expected + 1} exceeds host capacity ${expected}`,
+      ),
+    );
+  }
+});
+
+test("per-lane host admission compares the divided gate share with measured task RSS", async (t) => {
+  const { hostLaneCapacity, largestTaskPeakRss, memoryBudgets } =
+    await import("./lib/host-resources.mjs");
+  const { checkHost } = await import("./structural-checks.mjs");
+  const repo = mkdtempSync(join(tmpdir(), "dotln-host-budget-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  const sample = {
+    level: "normal",
+    pressure: 1,
+    swapBytes: 0,
+    physicalBytes: 1600,
+    source: "fixture",
+  };
+  const requiredPeakBytes = largestTaskPeakRss([
+    { peakRssBytes: 90 },
+    { peakRssBytes: 110 },
+    { peakRssBytes: 100 },
+  ]);
+  for (const parallelism of [2, 4, 8, 16, 32]) {
+    const capacity = hostLaneCapacity(parallelism);
+    const limits = memoryBudgets(repo, { capacity, physicalBytes: 1600 });
+    assert.equal(limits.taskBytes, Math.floor(limits.gateBytes / capacity));
+    const result = checkHost(sample, { limits, requiredPeakBytes });
+    assert.equal(result.exitCode, limits.taskBytes < requiredPeakBytes ? 1 : 0);
+    assert.ok(result.output.includes(`budget ${limits.taskBytes} bytes`));
+    assert.ok(result.output.includes("peak RSS 110 bytes"));
+  }
+  assert.throws(
+    () => largestTaskPeakRss([{ peakRssBytes: null }]),
+    /Invalid measured/,
+  );
+});
+
+test("exclusive overlap uses only measured light peers and preserves its nested lease", async (t) => {
+  const { acquireHostLaneCapacity, acquireHostLanes } =
+    await import("./lib/host-lanes.mjs");
+  const dir = mkdtempSync(join(tmpdir(), "dotln-overlap-"));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  await acquireHostLaneCapacity({ directory: dir, capacity: 8 });
+  const samples = [
+    {
+      name: "light-a",
+      loadClass: "shared",
+      durationMs: 59_999,
+      peakRssBytes: 512 * 2 ** 20 - 1,
+    },
+    { name: "light-b", loadClass: "shared", durationMs: 1, peakRssBytes: 1 },
+    { name: "heavy", loadClass: "shared", durationMs: 60_000, peakRssBytes: 1 },
+    {
+      name: "memory-heavy",
+      loadClass: "shared",
+      durationMs: 1,
+      peakRssBytes: 512 * 2 ** 20,
+    },
+    { name: "isolated", loadClass: "isolated", durationMs: 1, peakRssBytes: 1 },
+    { name: "unknown", loadClass: "shared", durationMs: 1, peakRssBytes: null },
+  ];
+  const lightTasks = lightSuiteNames(samples);
+  assert.deepEqual([...lightTasks], ["light-a", "light-b"]);
+  const active = new Set(),
+    events = [];
+  let peakPeers = 0;
+  const rows = await scheduleSuites(
+    [
+      barrier,
+      {
+        name: "exclusive",
+        command: ["fixture"],
+        exclusive: true,
+        overlap: 2,
+        priority: 200,
+      },
+      { name: "heavy", command: ["fixture"], priority: 100 },
+      { name: "light-a", command: ["fixture"] },
+      { name: "light-b", command: ["fixture"] },
+    ],
+    {
+      parallelism: 16,
+      lightTasks,
+      hostLanes: { directory: dir, capacity: 8, parentLease: null },
+      execute: async (row) => {
+        events.push(`start:${row.name}`);
+        active.add(row.name);
+        if (row.name === "exclusive") {
+          assert.equal(row.gateContext.reservedSlots, 6);
+          assert.equal(row.gateContext.concurrency, 3);
+          assert.equal(row.gateContext.loadFactor, 6);
+          const nested = await acquireHostLanes({
+            directory: dir,
+            parentLease: row.hostLease,
+            slots: 6,
+            task: "nested",
+            worktree: root,
+          });
+          try {
+            assert.equal(nested.record.parent, row.hostLease.file);
+            assert.equal(nested.record.slots, 6);
+            await assert.rejects(
+              acquireHostLanes({
+                directory: dir,
+                parentLease: row.hostLease,
+                slots: 7,
+              }),
+              /inherited lane reservation/,
+            );
+            await new Promise((done) => setTimeout(done, 80));
+          } finally {
+            await nested.release();
+          }
+        } else if (!row.build) {
+          if (active.has("exclusive")) {
+            assert.ok(lightTasks.has(row.name));
+            peakPeers = Math.max(peakPeers, active.size - 1);
+          }
+          await new Promise((done) => setTimeout(done, 25));
+        }
+        active.delete(row.name);
+        events.push(`end:${row.name}`);
+        return { name: row.name, executed: true, exitCode: 0 };
+      },
+    },
+  );
+  assert.ok(rows.every((row) => row.exitCode === 0));
+  assert.equal(peakPeers, 2);
+  assert.ok(events.indexOf("start:heavy") > events.indexOf("end:exclusive"));
+  assert.equal(rows.find((row) => row.name === "exclusive").hostLaneSlots, 6);
+});
+
+test("target-worktree file tasks keep all declared cases and two independent deadlines at eight lanes", async () => {
+  const suite = suites.find((row) => row.name === "target-worktree");
+  const tasks = expandSuiteTasks([suite], root);
+  assert.deepEqual(
+    tasks.map((row) => row.name),
+    ["start", "publish", "close", "release"].map(
+      (group) => `target-worktree:file:test-target-worktree-${group}.mjs`,
+    ),
+  );
+  const declarations = tasks.flatMap((row) =>
+    [
+      ...readFileSync(join(root, row.command.at(-1)), "utf8").matchAll(
+        /^\s*test\(\s*("(?:[^"\\]|\\.)*"|`[^`]*`)/gm,
+      ),
+    ].map((match) => match[1]),
+  );
+  const expected = JSON.parse(
+    readFileSync(
+      join(root, "scripts/fixtures/target-worktree-cases.json"),
+      "utf8",
+    ),
+  );
+  assert.equal(declarations.length, 39);
+  assert.deepEqual(declarations.sort(), expected.declarations.sort());
+  const names = [];
+  for (const task of tasks) {
+    const file = join(root, task.command.at(-1));
+    // Collect registrations without running the expensive case bodies. This
+    // also witnesses names generated by loops, beyond their declarations.
+    const source = readFileSync(file, "utf8")
+      .replace(
+        'import test from "node:test";',
+        "export const registeredNames = []; const test = (name) => registeredNames.push(name);",
+      )
+      .replace(
+        /from "(\.\.?\/[^"]+)"/gu,
+        (_, specifier) =>
+          `from ${JSON.stringify(pathToFileURL(resolve(dirname(file), specifier)).href)}`,
+      );
+    const collected = await import(
+      `data:text/javascript;base64,${Buffer.from(source).toString("base64")}`
+    );
+    names.push(...collected.registeredNames);
+  }
+  assert.equal(names.length, 60);
+  assert.equal(new Set(names).size, 60);
+  assert.deepEqual(names.sort(), expected.names.sort());
+  let active = 0,
+    peak = 0;
+  const observed = await scheduleSuites([barrier, ...tasks], {
+    parallelism: 16,
+    execute: async (row) => {
+      if (!row.build) {
+        assert.equal(row.timeoutMs, 900_000);
+        peak = Math.max(peak, ++active);
+        await new Promise((done) => setTimeout(done, 10));
+        active--;
+      }
+      return { name: row.name, executed: true, exitCode: 0, durationMs: 1 };
+    },
+  });
+  assert.equal(peak, 2);
+  const cases = observed.filter((row) => !row.name.startsWith("build"));
+  assert.equal(aggregateSuiteRows([suite], tasks, cases)[0].exitCode, 0);
+  for (const task of tasks)
+    assert.equal(
+      aggregateSuiteRows(
+        [suite],
+        tasks,
+        cases.filter((row) => row.name !== task.name),
+      )[0].exitCode,
+      1,
+    );
 });

@@ -13,21 +13,63 @@ import {
   writeFileSync,
 } from "node:fs";
 import { join } from "node:path";
-import { totalmem } from "node:os";
+import { availableParallelism, totalmem } from "node:os";
 import { performance } from "node:perf_hooks";
 import { docPath } from "./config.mjs";
 import { checksPath } from "./gate-evidence.mjs";
 import { dirname } from "node:path";
 
+export function hostLaneCapacity(parallelism = availableParallelism()) {
+  if (!Number.isSafeInteger(parallelism) || parallelism < 1)
+    throw new Error("Host parallelism must be a positive integer");
+  return Math.max(1, Math.min(8, Math.floor(parallelism / 2)));
+}
+
 export const DEFAULT_MEMORY = Object.freeze({
-  taskShare: 1 / 4,
+  taskShare: 1 / 2 / hostLaneCapacity(),
   gateShare: 1 / 2,
   hostShare: 2 / 3,
   signalIntervalMs: 1000,
   footprintIntervalMs: 4000,
   outputTailBytes: 1024 * 1024,
-  hostLanes: 4,
+  hostLanes: hostLaneCapacity(),
 });
+
+// These fixed measurements are inputs, separate from the live order's records.
+export const schedulingBaseline = JSON.parse(
+  readFileSync(
+    new URL("./gate-scheduling-baseline.json", import.meta.url),
+    "utf8",
+  ),
+);
+
+export function largestTaskPeakRss(rows = schedulingBaseline.taskPeaks) {
+  return Math.max(
+    0,
+    ...rows.map((row) => {
+      if (!Number.isFinite(row.peakRssBytes) || row.peakRssBytes < 0)
+        throw new Error("Invalid measured task peak RSS");
+      return row.peakRssBytes;
+    }),
+  );
+}
+
+export function recordedHostLaneCapacity(
+  directory = hostStateRoot(),
+  fallback = hostLaneCapacity(),
+) {
+  try {
+    const { capacity } = JSON.parse(
+      readFileSync(join(directory, "lane-capacity.json"), "utf8"),
+    );
+    if (!Number.isSafeInteger(capacity) || capacity < 1 || capacity > 8)
+      throw new Error("Invalid recorded host lane capacity");
+    return capacity;
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+    return fallback;
+  }
+}
 
 // Compare growth since the last footprint census, rather than a guard's
 // lifetime start. A completed census or reclaimed swap starts a new window.
@@ -66,7 +108,10 @@ export function ensureHostRoot(directory = hostStateRoot()) {
   return directory;
 }
 
-export function memoryBudgets(repo) {
+export function memoryBudgets(
+  repo,
+  { capacity = recordedHostLaneCapacity(), physicalBytes = totalmem() } = {},
+) {
   let configured = {};
   try {
     configured =
@@ -75,8 +120,8 @@ export function memoryBudgets(repo) {
   } catch (error) {
     if (error.code !== "ENOENT") throw error;
   }
-  const limits = { ...DEFAULT_MEMORY, ...configured };
-  for (const key of ["taskShare", "gateShare", "hostShare"])
+  const limits = { ...DEFAULT_MEMORY, ...configured, hostLanes: capacity };
+  for (const key of ["gateShare", "hostShare"])
     if (!(limits[key] > 0 && limits[key] <= 1))
       throw new Error(`Invalid memory budget ${key}`);
   for (const key of [
@@ -87,18 +132,20 @@ export function memoryBudgets(repo) {
   ])
     if (!Number.isSafeInteger(limits[key]) || limits[key] < 1)
       throw new Error(`Invalid resource budget ${key}`);
-  // Every clone and exported instance takes from one count of host lanes, so
-  // no checkout can configure its own (acquireHostLanes refuses any other).
-  if (limits.hostLanes !== DEFAULT_MEMORY.hostLanes)
+  // Legacy budget files may still carry hostLanes/taskShare. Neither can
+  // override the host registry or allocate the gate's memory twice.
+  if (capacity > 8)
     throw new Error(
-      `Invalid resource budget hostLanes: every clone on the host shares ${DEFAULT_MEMORY.hostLanes} lanes`,
+      `Invalid resource budget hostLanes: recorded capacity ${capacity} exceeds eight`,
     );
+  const gateBytes = Math.floor(physicalBytes * limits.gateShare);
   return {
     ...limits,
-    physicalBytes: totalmem(),
-    taskBytes: Math.floor(totalmem() * limits.taskShare),
-    gateBytes: Math.floor(totalmem() * limits.gateShare),
-    hostBytes: Math.floor(totalmem() * limits.hostShare),
+    taskShare: limits.gateShare / capacity,
+    physicalBytes,
+    taskBytes: Math.floor(gateBytes / capacity),
+    gateBytes,
+    hostBytes: Math.floor(physicalBytes * limits.hostShare),
   };
 }
 
