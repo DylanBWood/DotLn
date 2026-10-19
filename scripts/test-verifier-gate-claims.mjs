@@ -145,18 +145,22 @@ for (const extra of [
   refuse(noRow);
 }
 recordGateChecks(root, [row]);
-mkdirSync(dirname(join(root, control)), { recursive: true });
-writeFileSync(join(root, control), JSON.stringify({ exit: 1 }));
-refuse(
-  /criterion 2 recorded met names npm run test:docs, and the document gate failed/u,
-);
-writeFileSync(join(root, control), JSON.stringify({ exit: 0 }));
+// Completion consumes the document row and never runs the document gate.
+const documentRow = {
+  ...row,
+  checkId: "npm run test:docs",
+  evidenceRef: "synthetic-wo179-document-gate",
+};
+refuse(/Handoff document row missing or failed at the current code identity/u);
+recordGateChecks(root, [{ ...documentRow, exitCode: 1 }]);
+refuse(/Handoff document row missing or failed at the current code identity/u);
+recordGateChecks(root, [documentRow]);
 const completion = pass(["verification-result", "pass", ...flags]);
-assert.match(
-  completion.stdout,
-  /Running npm run test:docs, which criterion 2 recorded met names/u,
+assert.doesNotMatch(completion.stdout, /Running npm run test:docs/u);
+assert.ok(
+  !existsSync(join(root, runs)),
+  "the stub runner never ran the document gate",
 );
-assert.equal(readFileSync(join(root, runs), "utf8"), "run\nrun\n");
 const event = readFileSync(log, "utf8")
   .trim()
   .split("\n")
@@ -175,7 +179,7 @@ const finalReview = pass(["final-review"]).stdout;
 const expected = [
   "A question, complaint or stale operator message is not an instruction to stop, narrow or widen work; only an explicit pause, stop or scope prefix changes it.",
   "A repairable defect within the order's declared surfaces is repaired in the order through Adjacent Repair and may fail a criterion it breaks; a defect outside both its declared criteria and surfaces is boarded with its reproduction.",
-  "A met criterion naming npm test or npm run test:docs stands on that gate's passing row at the subject or an inline run.",
+  "A met criterion naming npm test or npm run test:docs stands on that gate's passing row at the subject; completion consumes rows and runs no gate.",
 ];
 for (const briefing of [verify, finalReview])
   for (const sentence of expected)
@@ -198,7 +202,7 @@ writeFileSync(
   join(root, "scripts/test-runner.mjs"),
   `
 if (!process.argv.includes("--list")) throw new Error("focused handoff consumes document evidence instead of running a gate");
-for (const name of ["format", "configuration-root", "registrations", "declarations", "generated", "host", "alpha", "beta"]) console.log(name + " — protects: fixture");
+for (const name of ["format", "configuration-root", "registrations", "declarations", "generated", "host", "alpha", "beta", "gamma"]) console.log(name + " — protects: fixture");
 `,
 );
 const structural = [
@@ -249,13 +253,19 @@ const reviewBefore = readFileSync(log);
 const refuseReview = () => {
   const run = call(["final-review-result", "pass", ...flags]);
   assert.notEqual(run.status, 0, run.stdout);
-  assert.match(run.stderr, /npm test -- --review --again/u);
+  assert.match(
+    run.stderr,
+    /passing complete review row at the integrated code identity/u,
+  );
   assert.deepEqual(readFileSync(log), reviewBefore);
 };
 refuseReview();
 const requested = JSON.parse(
   readFileSync(log, "utf8").trim().split("\n").at(-1),
 ).recordedAt;
+// A row with no executed task, a focused row and a row at another identity
+// supply nothing; the row's time against the dispatch and its reused suites
+// no longer matter, since the identity says what was tested.
 for (const extra of [
   {
     recordedAt: new Date(Date.parse(requested) - 1).toISOString(),
@@ -264,7 +274,6 @@ for (const extra of [
     reusedSuites: 0,
   },
   { gateSelection: "plain", reusedSuites: 0 },
-  { gateSelection: "review", reusedSuites: 1 },
   { gateSelection: "review", reusedSuites: 0, codeIdentity: "wrong-identity" },
 ]) {
   recordGateChecks(root, [
@@ -272,12 +281,21 @@ for (const extra of [
   ]);
   refuseReview();
 }
-const freshReview = (extra = {}) =>
-  gateRow("npm test", [...structural, "alpha", "beta"], {
+// A review row names every listed suite; gamma's tasks carry its name as a
+// prefix, as release, launchpad and vertical tasks do in a real row.
+const freshReview = (extra = {}) => {
+  const row = gateRow("npm test", [...structural, "alpha", "beta", "gamma"], {
     gateSelection: "review",
     reusedSuites: 0,
     ...extra,
   });
+  row.taskTimeline = row.taskTimeline.flatMap((entry) =>
+    entry.name === "gamma"
+      ? ["gamma:file:one", "gamma:file:two"].map((name) => ({ ...entry, name }))
+      : [entry],
+  );
+  return row;
+};
 // A later failed fresh run displaces the standing fresh row through the
 // shared lookup, so nothing supplies the claim.
 recordGateChecks(root, [freshReview()]);
@@ -287,10 +305,13 @@ failedFresh.taskTimeline = failedFresh.taskTimeline.map((entry) =>
 );
 recordGateChecks(root, [failedFresh]);
 refuseReview();
-// The newest standing fresh row records, not an older one, and a later
-// composed review row (reused results) neither displaces nor supplies it.
+// The newest standing passing row at the identity records, whichever role
+// recorded it and whether or not the runner reused passing suites there: a
+// later composed review row (reused results) is that row.
 const olderFresh = freshReview();
-const newestFresh = freshReview();
+const newestFresh = freshReview({
+  recordedAt: new Date(Date.parse(requested) - 1).toISOString(),
+});
 const composed = freshReview({ reusedSuites: 2, executionMode: "composed" });
 composed.taskTimeline = composed.taskTimeline.map((entry) =>
   ["alpha", "beta"].includes(entry.name)
@@ -308,12 +329,16 @@ composed.taskTimeline = composed.taskTimeline.map((entry) =>
       }
     : entry,
 );
+// The FINAL report is written, so a document row judging this tree exists.
+recordGateChecks(root, [
+  gateRow("npm run test:docs", [...structural, "docs-check"]),
+]);
 recordGateChecks(root, [olderFresh, newestFresh, composed]);
 pass(["final-review-result", "pass", ...flags]);
 assert.equal(
   JSON.parse(readFileSync(log, "utf8").trim().split("\n").at(-1)).evidence
     .productGate.evidenceRef,
-  newestFresh.evidenceRef,
+  composed.evidenceRef,
 );
 
 assert.equal(
@@ -379,6 +404,17 @@ for (const name of ["structural", "alpha", "beta", "document"]) {
   refuseFocused("implementation-ready", name);
   recordFocused(name);
 }
+// A focused row satisfies the handoff claim and supplies nothing to a
+// complete run: that run composes only from rows of its own check at the
+// identity, so a focused sequence followed by a complete run executes every
+// suite twice. The runner leads a complete run with changed suites instead
+// (changedSinceLastGate in scripts/test-runner.mjs).
+const { coveringTaskResults } = await import("./lib/gate-reuse.mjs");
+const composedFromFocused = await coveringTaskResults(root, "npm test", [
+  { name: "alpha" },
+  { name: "beta" },
+]);
+assert.equal(composedFromFocused.results.size, 0);
 const assertFocusedEvent = (type) => {
   const event = JSON.parse(
     readFileSync(focusedLog, "utf8").trim().split("\n").at(-1),

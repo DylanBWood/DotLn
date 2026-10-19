@@ -3,13 +3,14 @@ import {
   existsSync,
   lstatSync,
   mkdirSync,
+  readdirSync,
   readFileSync,
   realpathSync,
   renameSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
-import { basename, dirname, join, resolve, sep } from "node:path";
+import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import {
   docPath,
   docRelative,
@@ -481,4 +482,181 @@ export const reviewedTargetSubject = (
     baseCommit: state.baseCommit,
     commit,
   };
+};
+
+// The literal-rule fallback (WO-221): where a host's classifier still runs
+// after the hook's admission, `worktree start` writes exactly one order's
+// rules for its recorded target worktree, registered origin and branch, and
+// `release close` removes them. The rules live in the main checkout's
+// untracked local settings (Claude Code) and one Starlark rules file (Codex);
+// an ignored sidecar under the control root records what was written, so the
+// removal and the drift check judge the exact strings. Nothing names another
+// repository and nothing enters user settings.
+const hostRulesDirectory = (main) =>
+  docPath(main, "control", "local/host-rules");
+const hostRulesPath = (main, workOrderId) =>
+  join(hostRulesDirectory(main), `${workOrderId}.json`);
+const localSettingsPath = (main) => join(main, ".claude/settings.local.json");
+const codexRulesPath = (main, workOrderId) =>
+  join(main, ".codex/rules", `dotln-${workOrderId}.rules`);
+const readLocalSettings = (main) => {
+  const file = localSettingsPath(main);
+  const stat = lstatSync(file, { throwIfNoEntry: false });
+  if (!stat) return {};
+  if (!stat.isFile())
+    throw new Error(".claude/settings.local.json is not a regular file");
+  const parsed = JSON.parse(readFileSync(file, "utf8"));
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed))
+    throw new Error(".claude/settings.local.json is not a JSON object");
+  return parsed;
+};
+const writeLocalSettings = (main, settings) => {
+  mkdirSync(dirname(localSettingsPath(main)), { recursive: true });
+  writeFileSync(
+    localSettingsPath(main),
+    `${JSON.stringify(settings, null, 2)}\n`,
+  );
+};
+// One argv table renders every host's rule set, so the three never diverge:
+// a row's `exact` form admits that spelling alone, and a `prefix` row admits
+// what follows (the host rule languages are prefix-only, so a prefix row
+// admits any later flag; the hook admission judges those flags). The helper
+// is spelled through npm from the launchpad root, so no rule names a path
+// outside the order's target worktree.
+const hostRuleTable = (entry, selector) => [
+  { argv: ["git", "-C", entry.target, "push", "-u", "origin", entry.branch] },
+  { argv: ["git", "-C", entry.target, "push", "origin", entry.branch] },
+  { argv: ["gh", "pr", "create", "--draft", "--repo", selector], prefix: true },
+  { argv: ["gh", "pr", "create", "--repo", selector], prefix: true },
+  { argv: ["gh", "pr", "view", "--repo", selector], prefix: true },
+  { argv: ["gh", "pr", "ready", "--repo", selector], prefix: true },
+  { argv: ["gh", "pr", "edit", "--repo", selector], prefix: true },
+  {
+    argv: [
+      "npm",
+      "run",
+      "worktree",
+      "--",
+      "publish",
+      entry.workOrderId,
+      "--target-worktree",
+    ],
+    prefix: true,
+  },
+];
+export const orderHostRules = (main, entry, selector) => {
+  const rows = hostRuleTable(entry, selector);
+  const spelled = (row) => row.argv.join(" ");
+  return {
+    claude: rows.map((row) => `Bash(${spelled(row)}${row.prefix ? " *" : ""})`),
+    codex: rows.map((row) => row.argv),
+    copilot: rows.map(
+      (row) => `shell(${spelled(row)}${row.prefix ? ":*" : ""})`,
+    ),
+  };
+};
+const codexRulesText = (workOrderId, repositoryId, patterns) =>
+  `# dotln:${workOrderId}:start\n${patterns
+    .map(
+      (pattern) =>
+        `prefix_rule(\n    pattern = ${JSON.stringify(pattern)},\n    decision = "allow",\n    justification = ${JSON.stringify(`DotLn ${workOrderId}: registered repository ${repositoryId}`)},\n)\n`,
+    )
+    .join("")}# dotln:${workOrderId}:end\n`;
+export const writeOrderHostRules = (main, entry, selector) => {
+  const rules = orderHostRules(main, entry, selector);
+  const settings = readLocalSettings(main);
+  const permissions =
+    settings.permissions && typeof settings.permissions === "object"
+      ? settings.permissions
+      : {};
+  const allow = Array.isArray(permissions.allow) ? permissions.allow : [];
+  // Only the rules this write adds are the order's; one the operator already
+  // held stays theirs when the order's rules are removed.
+  const added = rules.claude.filter((rule) => !allow.includes(rule));
+  settings.permissions = { ...permissions, allow: [...allow, ...added] };
+  writeLocalSettings(main, settings);
+  const codexFile = codexRulesPath(main, entry.workOrderId);
+  mkdirSync(dirname(codexFile), { recursive: true });
+  writeFileSync(
+    codexFile,
+    codexRulesText(entry.workOrderId, entry.repositoryId, rules.codex),
+  );
+  const sidecar = hostRulesPath(main, entry.workOrderId);
+  mkdirSync(dirname(sidecar), { recursive: true });
+  writeFileSync(
+    sidecar,
+    `${JSON.stringify(
+      {
+        schemaVersion: 1,
+        workOrderId: entry.workOrderId,
+        repositoryId: entry.repositoryId,
+        target: entry.target,
+        claude: added,
+        codex: relative(main, codexFile),
+      },
+      null,
+      2,
+    )}\n`,
+  );
+  return { settings: localSettingsPath(main), codex: codexFile };
+};
+export const readOrderHostRules = (main, workOrderId) => {
+  const sidecar = hostRulesPath(main, workOrderId);
+  const stat = lstatSync(sidecar, { throwIfNoEntry: false });
+  if (!stat) return undefined;
+  if (!stat.isFile())
+    throw new Error(`${relative(main, sidecar)} is not a regular file`);
+  return JSON.parse(readFileSync(sidecar, "utf8"));
+};
+export const removeOrderHostRules = (main, workOrderId) => {
+  const record = readOrderHostRules(main, workOrderId);
+  if (!record) return undefined;
+  const settings = readLocalSettings(main);
+  if (Array.isArray(settings.permissions?.allow)) {
+    settings.permissions.allow = settings.permissions.allow.filter(
+      (rule) => !record.claude.includes(rule),
+    );
+    writeLocalSettings(main, settings);
+  }
+  rmSync(join(main, record.codex), { force: true });
+  rmSync(hostRulesPath(main, workOrderId));
+  return record;
+};
+/** Every sidecar whose order has no registered target worktree, or whose
+ * rules are no longer all present, named with the remedy (WO-221). */
+export const staleOrderHostRules = (main) => {
+  const directory = hostRulesDirectory(main);
+  if (!existsSync(directory)) return [];
+  const registered = new Set(
+    Object.values(readMap(targetRegistryPath(main))).map(
+      (entry) => entry.workOrderId,
+    ),
+  );
+  const allow = (() => {
+    try {
+      return readLocalSettings(main).permissions?.allow ?? [];
+    } catch {
+      return [];
+    }
+  })();
+  const stale = [];
+  for (const name of readdirSync(directory).sort()) {
+    const workOrderId = name.replace(/\.json$/u, "");
+    if (!/^WO-\d{3}$/u.test(workOrderId)) continue;
+    const record = readOrderHostRules(main, workOrderId);
+    const missing = record.claude.filter((rule) => !allow.includes(rule));
+    if (!registered.has(workOrderId))
+      stale.push({
+        workOrderId,
+        reason: "no registered target worktree holds this order",
+        remedy: `node ${shellQuote(join(main, "scripts/worktree.mjs"))} host-rules --remove ${workOrderId}`,
+      });
+    else if (missing.length || !existsSync(join(main, record.codex)))
+      stale.push({
+        workOrderId,
+        reason: `rules were edited by hand (${missing.length} of ${record.claude.length} Claude Code rules missing${existsSync(join(main, record.codex)) ? "" : `; ${record.codex} missing`})`,
+        remedy: `node ${shellQuote(join(main, "scripts/worktree.mjs"))} host-rules --rewrite ${workOrderId}`,
+      });
+  }
+  return stale;
 };

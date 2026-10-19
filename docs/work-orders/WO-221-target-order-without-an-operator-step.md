@@ -1,4 +1,4 @@
-# WO-221 — A registered target order runs under each host's default restrictive mode and closes without an operator step: trust admitted from the registration alone, an opt-in draft form of the target publish that the final publish reuses, declared regenerable output deleted at close, a declared target release, and release tags on the starter (version assigned at activation)
+# WO-221 — A registered target order runs under each host's default restrictive mode and closes without an operator step: trust admitted from the registration alone, an opt-in draft form of the target publish that the final publish reuses, declared regenerable output deleted at close, a declared target release, and release tags on the starter (v0.85.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -15,8 +15,8 @@ Assigned at activation under the standing opt-out default.
 `packages/skeleton/src/harness-host.ts` and the suite that declares it;
 the literal-rule writer and remover in `scripts/worktree.mjs` and
 `scripts/release.mjs` with a `harness check` row in
-`scripts/lib/harness.mjs`; the Codex rule generator in the `.codex`
-emit path of `scripts/lib/harness.mjs`; the `--draft` branch of
+`scripts/lib/harness.mjs`; the per-order Codex rule generator in
+`scripts/lib/target-worktrees.mjs`; the `--draft` branch of
 `publishTargetWorktree` and the reuse branch of `publishBoundTargetCommit`
 in `scripts/lib/target-publish.mjs`; the `disposable` and `release`
 validators in `scripts/lib/config.mjs`; the disposable deletion, the
@@ -159,8 +159,8 @@ request:
   under the committed grant. Where the live qualification shows a host's
   classifier still runs, `worktree start` writes that order's literal
   rules into the main checkout's untracked local settings and the close
-  removes them. Codex takes generated prefix rules in the emitted project
-  configuration and a printed `--add-dir`; Copilot takes the shared hook
+  removes them. Codex takes per-order prefix rules in `.codex/rules/`
+  under the same literal opt-in and a printed `--add-dir`; Copilot takes the shared hook
   and printed `--allow-tool` lines. Nothing names a repository that is not
   registered; nothing touches user settings; nothing outlives the order.
 - **The draft is the instance's route; the kit only makes it possible.**
@@ -324,16 +324,21 @@ setting is in force there.
   classifier still runs after the hook's `allow`, `worktree start` of a
   target order appends the exact literal rules for that order (its
   worktree path, registered remote, `wo-NNN` and the declared branch) to
-  the main checkout's untracked `.claude/settings.local.json` between
-  DotLn-owned markers, and `release close` removes them; `harness check`
+  the main checkout's untracked `.claude/settings.local.json`, with ownership
+  in an ignored per-order sidecar under the configured control root's
+  `local/host-rules/`; `release close` removes only the rules it added,
+  preserving pre-existing operator rules; `harness check`
   names a stale rule. Off by default until the qualification turns it on
   in the registration (`hostRules: "literal"`); the rules never name
   another repository, never enter user settings and never outlive the
   order.
-- Codex: the `.codex/config.toml` emit carries one `prefix_rule` allow
-  per registered repository for the same commands, generated from the
-  registration; `worktree start` prints `--add-dir <target worktree>` for
-  a workspace-write session; `harness check` reports the generated rows.
+- Codex: under `hostRules: "literal"`, `worktree start` writes the order's
+  `prefix_rule` allow entries to `.codex/rules/dotln-WO-NNN.rules` from the
+  registration and recorded target worktree, with no rule for an
+  unregistered target. The rules are removed at close. `.codex/config.toml`
+  stays valid TOML and contains no prefix-rule table. `worktree start`
+  prints `--add-dir <target worktree>` for a workspace-write session;
+  `harness check` reports stale per-order rules.
 - Copilot: the hook admission through the shared registration;
   `worktree start` prints `--allow-tool 'shell(git -C <target worktree>
   push:*)'` and the gh forms for a default-mode launch.
@@ -432,7 +437,13 @@ the Codex rule generator and the printed lines; the `--draft` form and
 the reuse; the `disposable` and `release` keys with their close and
 release behavior; the gate advisory; the sibling tag and Release; the role
 and refusal text; the fixture cases; the qualification record;
-`docs/evidence/WO-221/`; the kit README and product 07 write-backs.
+`docs/evidence/WO-221/`; the kit README and product 07 write-backs; under
+the operator's scope expansion of 2026-10-18 (decision D016), the probe
+wrapper applying no deadline of its own to a complete test selection, so
+no complete gate ends at its 900-second deadline; under the operator's second scope expansion
+of the same day (decision D017), every phase reuses the passing complete
+review row at the current code identity and a complete run is owed only
+when that identity has none.
 
 **Acceptance criteria (all required)**
 
@@ -447,13 +458,18 @@ and refusal text; the fixture cases; the qualification record;
    the suite that declares `harness-host.ts`.
 2. Fallback: with `hostRules: "literal"` in the registration, `worktree
    start` of a target order writes exactly that order's literal rules
-   between the markers in the main checkout's `.claude/settings.local.json`
-   and `release close` removes them; without the key it writes nothing;
+   into the main checkout's `.claude/settings.local.json` and records its
+   additions in the ignored per-order ownership sidecar under the configured
+   control root's `local/host-rules/`; `release close` removes those additions
+   and the sidecar while preserving pre-existing operator rules; without the key it writes nothing;
    `harness check` reports a stale rule; no rule names a path outside the
    order's worktree or a remote other than the registered one.
-3. Codex and Copilot: the emitted `.codex/config.toml` carries one
-   generated prefix rule per registered repository and none for an
-   unregistered one; `worktree start` prints the `--add-dir` and
+3. Codex and Copilot: under `hostRules: "literal"`, `worktree start`
+   generates the order's prefix rules in `.codex/rules/dotln-WO-NNN.rules`
+   from the registration and recorded target worktree, and `release close`
+   removes that file; without the key or for an unregistered target it
+   writes no rules. `.codex/config.toml` contains no prefix-rule table.
+   `worktree start` prints the `--add-dir` and
    `--allow-tool` lines for a target order and nothing for a launchpad
    order.
 4. Qualification: `docs/evidence/WO-221/host-qualification.md` records,
@@ -532,9 +548,10 @@ executor's role text names at the base.
    under `node scripts/harness.mjs bounded --`.
 2. The fixture file that suite declares: the admission cases of criterion
    1, one per clause, plus the deny case. Check: the same suite.
-3. `scripts/lib/harness.mjs` (`checkHarness`, the `.claude/settings.json`
-   and `.codex` emit paths): the Codex prefix-rule generator from the
-   registration, the stale-rule report for the literal fallback, and the
+3. `scripts/lib/target-worktrees.mjs` (the per-order Codex prefix-rule
+   generator) and `scripts/lib/harness.mjs` (`checkHarness`): the rules from
+   the registration and recorded target worktree under the literal opt-in,
+   the stale-rule report for the literal fallback, and the
    emitted settings unchanged otherwise. Check: `npm test -- --only
    harness`.
 4. `scripts/lib/config.mjs` (`validateClasses`, `validateRepositories`,
@@ -637,7 +654,11 @@ override (a candidate in the map); rewriting any filed report.
    WO-146's were; the order names the launch commands and records
    `blocked` otherwise.
 2. The fallback's literal rules live only in the main checkout's untracked
-   local settings, between markers, for the order's lifetime.
+   local settings and per-order Codex rules file for the order's lifetime;
+   Claude ownership lives in the ignored per-order sidecar. This and
+   criterion 3's supported Codex artifact/scope replace the original marker
+   and config-table clauses under the operator's 2026-10-19 approval
+   recorded in WO-221-D028.
 3. The starter's tag carries core's name (`v0.85.0` on both), which the
    operator confirmed as the way a fork names a release.
 4. Position 1 of the serial queue, before WO-217, on the 2026-10-18

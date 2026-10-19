@@ -1306,6 +1306,564 @@ function releaseCloseAdmission(
     );
   }
 }
+// The registered-target admission: a registered repository's own publication
+// commands for the dispatched order's recorded target worktree. Trust comes
+// from main's committed registration and operator grant; the lifecycle phase
+// says which form is legal. Nothing here names a repository the registration
+// does not, and a command outside every clause gets no admission.
+interface RegisteredTargetEntry {
+  readonly target: string;
+  readonly clone: string;
+  readonly branch: string;
+  readonly baseBranch: string;
+  readonly repositoryId: string;
+  readonly workOrderId: string;
+  /** The forge identity of the clone's origin when the worktree started. */
+  readonly origin?: string | null;
+}
+type RegisteredTargetCommand =
+  | {
+      kind: "push";
+      path?: string;
+      branch: string;
+      lease?: { branch: string; head: string };
+    }
+  | {
+      kind: "pr-create";
+      draft: boolean;
+      repo?: string;
+      head?: string;
+      base?: string;
+      bodyFile?: string;
+    }
+  | {
+      kind: "pr-ready" | "pr-edit" | "pr-view";
+      repo?: string;
+      selector?: string;
+      base?: string;
+      bodyFile?: string;
+    }
+  | { kind: "helper"; workOrder: string; draft: boolean; branch?: string };
+/** Split one plain command into words: single and double quotes group, no
+ * expansion, operator or redirect is admitted, and anything else is `null`. */
+function plainShellWords(command: string): string[] | null {
+  const words: string[] = [];
+  let current = "";
+  let quoted = false;
+  let index = 0;
+  while (index < command.length) {
+    const char = command[index]!;
+    if (char === "'" || char === '"') {
+      const end = command.indexOf(char, index + 1);
+      if (end < 0) return null;
+      const body = command.slice(index + 1, end);
+      if (char === '"' && /[$`\\!]/.test(body)) return null;
+      current += body;
+      quoted = true;
+      index = end + 1;
+      continue;
+    }
+    if (char === " " || char === "\t") {
+      if (current || quoted) words.push(current);
+      current = "";
+      quoted = false;
+      index += 1;
+      continue;
+    }
+    if (/[;&|<>()`$\\*?[\]{}~#!\n\r]/.test(char)) return null;
+    current += char;
+    index += 1;
+  }
+  if (current || quoted) words.push(current);
+  return words.length && !words[0]!.includes("=") ? words : null;
+}
+const BRANCH_NAME = /^[A-Za-z0-9][A-Za-z0-9._/-]*$/;
+const COMMIT_SHA = /^[0-9a-f]{40}$/;
+function registeredTargetCommand(
+  words: readonly string[],
+  root: string,
+): RegisteredTargetCommand | null {
+  const [first] = words;
+  if (first === "git") {
+    let at = 1;
+    let path: string | undefined;
+    if (words[at] === "-C") {
+      path = words[at + 1];
+      if (!path) return null;
+      at += 2;
+    }
+    if (words[at] !== "push") return null;
+    at += 1;
+    let lease: { branch: string; head: string } | undefined;
+    while (at < words.length && words[at]!.startsWith("-")) {
+      const flag = words[at]!;
+      if (flag === "-u" || flag === "--set-upstream") {
+        at += 1;
+        continue;
+      }
+      const withLease = /^--force-with-lease=([^:]+):([0-9a-f]{40})$/.exec(
+        flag,
+      );
+      if (!withLease || lease) return null;
+      lease = { branch: withLease[1]!, head: withLease[2]! };
+      at += 1;
+    }
+    const [remote, branch, extra] = words.slice(at);
+    if (remote !== "origin" || !branch || extra !== undefined) return null;
+    if (!BRANCH_NAME.test(branch) || (lease && lease.branch !== branch))
+      return null;
+    return {
+      kind: "push",
+      ...(path ? { path } : {}),
+      branch,
+      ...(lease ? { lease } : {}),
+    };
+  }
+  if (first === "gh") {
+    if (words[1] !== "pr") return null;
+    const verb = words[2];
+    if (!["create", "ready", "edit", "view"].includes(verb ?? "")) return null;
+    const valued = new Set([
+      "--repo",
+      "-R",
+      "--head",
+      "--base",
+      "--title",
+      "--body",
+      "--body-file",
+      "--json",
+    ]);
+    let repo: string | undefined;
+    let head: string | undefined;
+    let base: string | undefined;
+    let bodyFile: string | undefined;
+    let selector: string | undefined;
+    let draft = false;
+    for (let at = 3; at < words.length; at += 1) {
+      const word = words[at]!;
+      if (word === "--draft" && verb === "create") {
+        draft = true;
+        continue;
+      }
+      if (valued.has(word)) {
+        const value = words[at + 1];
+        if (value === undefined) return null;
+        if (word === "--repo" || word === "-R") repo = value;
+        if (word === "--head") head = value;
+        if (word === "--base") base = value;
+        if (word === "--body-file") bodyFile = value;
+        at += 1;
+        continue;
+      }
+      if (word.startsWith("-")) return null;
+      // One pull-request selector for ready, edit and view; create takes none.
+      if (verb === "create" || selector !== undefined) return null;
+      selector = word;
+    }
+    if (verb === "create")
+      return {
+        kind: "pr-create",
+        draft,
+        ...(repo ? { repo } : {}),
+        ...(head ? { head } : {}),
+        ...(base ? { base } : {}),
+        ...(bodyFile ? { bodyFile } : {}),
+      };
+    return {
+      kind: `pr-${verb}` as "pr-ready" | "pr-edit" | "pr-view",
+      ...(repo ? { repo } : {}),
+      ...(selector !== undefined ? { selector } : {}),
+      ...(base ? { base } : {}),
+      ...(bodyFile ? { bodyFile } : {}),
+    };
+  }
+  // The lifecycle's own helper, spelled from the launchpad root.
+  let rest: readonly string[];
+  if (first === "npm") {
+    if (words[1] !== "run" || words[2] !== "worktree" || words[3] !== "--")
+      return null;
+    rest = words.slice(4);
+  } else {
+    // Only the bare `node` the PATH resolves or the hook's own executable
+    // spells the helper; a path to another executable admits nothing.
+    const script = words[1];
+    if (
+      !script ||
+      (first !== process.execPath && first !== "node") ||
+      resolve(root, script) !== join(root, "scripts/worktree.mjs")
+    )
+      return null;
+    rest = words.slice(2);
+  }
+  if (rest[0] !== "publish" || rest[2] !== "--target-worktree") return null;
+  const workOrder = rest[1];
+  if (!workOrder || !/^WO-\d{3}$/.test(workOrder)) return null;
+  let draft = false;
+  let branch: string | undefined;
+  for (let at = 3; at < rest.length; at += 1) {
+    const word = rest[at]!;
+    if (word === "--draft") {
+      draft = true;
+      continue;
+    }
+    if (!["--branch", "--title", "--body-file"].includes(word)) return null;
+    const value = rest[at + 1];
+    if (value === undefined) return null;
+    if (word === "--branch") branch = value;
+    at += 1;
+  }
+  return { kind: "helper", workOrder, draft, ...(branch ? { branch } : {}) };
+}
+/** host/owner/repo of a GitHub remote, as the publish helpers parse it. */
+function gitHubIdentity(remote: string): string | null {
+  let host: string;
+  let pathname: string;
+  const scp = /^(?:([^@/:]+)@)?([^/:]+):(.+)$/.exec(remote);
+  if (scp && !remote.includes("://")) {
+    if (scp[1] && scp[1] !== "git") return null;
+    host = scp[2]!.toLowerCase();
+    pathname = scp[3]!;
+  } else {
+    try {
+      const parsed = new URL(remote);
+      if (!["https:", "ssh:"].includes(parsed.protocol) || parsed.port)
+        return null;
+      host = parsed.hostname.toLowerCase();
+      pathname = parsed.pathname.replace(/^\//, "");
+    } catch {
+      return null;
+    }
+  }
+  const parts = pathname.replace(/\.git$/, "").split("/");
+  if (
+    !/^[A-Za-z0-9.-]+$/.test(host) ||
+    parts.length !== 2 ||
+    parts.some((part) => !/^[A-Za-z0-9_.-]+$/.test(part))
+  )
+    return null;
+  return `${host}/${parts[0]}/${parts[1]}`.toLowerCase();
+}
+/** A host deny rule the emitted settings carry wins over any admission. */
+function emittedDenyMatches(
+  root: string,
+  command: string,
+  words: readonly string[],
+): boolean {
+  const settings = readJson<{
+    permissions?: { deny?: readonly string[] };
+  }>(join(root, ".claude/settings.json"), {});
+  // Judge the raw spelling and the quote-free one-space form, so a quoted or
+  // double-spaced spelling of a denied command admits nothing.
+  const spellings = [command, words.join(" ")];
+  return (settings.permissions?.deny ?? []).some((rule) => {
+    const body = /^Bash\((.*)\)$/.exec(rule)?.[1];
+    if (body === undefined) return false;
+    return spellings.some((spelling) =>
+      body.endsWith(" *")
+        ? spelling === body.slice(0, -2) ||
+          spelling.startsWith(body.slice(0, -1))
+        : spelling === body,
+    );
+  });
+}
+function registeredTargetAdmission(
+  root: string,
+  input: HarnessInput,
+  session: HarnessSession,
+): {
+  response?: Record<string, unknown>;
+  advisory?: string;
+  journal?: Record<string, unknown>;
+} | null {
+  if (input.tool_name !== "Bash") return null;
+  const command = input.tool_input?.command;
+  if (typeof command !== "string") return null;
+  const words = plainShellWords(command);
+  if (!words) return null;
+  const shape = registeredTargetCommand(words, root);
+  if (!shape) return null;
+  if (emittedDenyMatches(root, command, words)) return null;
+  const withheld = (fact: string) => ({
+    advisory: `Registered-target admission withheld: ${fact}; host permissions decide.`,
+  });
+  if (session.correction)
+    return withheld("typed correction freezes destructive effects");
+  try {
+    const control = harnessControl(root);
+    const order = control.workOrder;
+    if (!order || !/^WO-\d{3}$/.test(order))
+      return withheld("no dispatched order in canonical status");
+    if (shape.kind === "helper" && shape.workOrder !== order)
+      return withheld("helper names an order other than the dispatched one");
+    const registry = readJson<Record<string, RegisteredTargetEntry>>(
+      join(root, "docs/control/local/target-worktrees.json"),
+      {},
+    );
+    const entries = Object.values(registry).filter(
+      (entry) => entry?.workOrderId === order,
+    );
+    if (entries.length !== 1)
+      return withheld(`no single recorded target worktree for ${order}`);
+    const entry = entries[0]!;
+    if (entry.branch !== `wo-${order.slice(3)}`)
+      return withheld("recorded target worktree is not on the order's branch");
+    const mainRef = "refs/heads/main";
+    const committed = (file: string) =>
+      git(root, ["show", `${mainRef}:${file}`]);
+    const configuration = JSON.parse(committed("dotln.config.json")) as {
+      repositories?: Record<string, { baseBranch?: string }>;
+    };
+    const registration = configuration.repositories?.[entry.repositoryId];
+    if (!registration)
+      return withheld(
+        `main's committed configuration does not register ${entry.repositoryId}`,
+      );
+    const grants = JSON.parse(
+      committed("packages/skeleton/loadouts/grants.json"),
+    ) as readonly {
+      grantedBy?: string;
+      repo?: string;
+      effects?: readonly string[];
+      operations?: readonly string[];
+    }[];
+    const effects = ["repo.push", "pr.open"];
+    if (
+      !Array.isArray(grants) ||
+      !grants.some(
+        (grant) =>
+          grant.grantedBy === "operator" &&
+          grant.repo === entry.repositoryId &&
+          effects.every(
+            (effect) =>
+              grant.effects?.includes(effect) &&
+              grant.operations?.includes(effect),
+          ),
+      )
+    )
+      return withheld(
+        `main's committed grants admit no operator repo.push and pr.open for ${entry.repositoryId}`,
+      );
+    const target = realpathSync(entry.target);
+    if (
+      realpathSync(
+        git(entry.target, ["rev-parse", "--show-toplevel"]).trim(),
+      ) !== target ||
+      git(entry.target, ["symbolic-ref", "--short", "HEAD"]).trim() !==
+        entry.branch
+    )
+      return withheld("recorded target worktree is not on its order branch");
+    const commonDirectory = realpathSync(
+      resolve(
+        entry.target,
+        git(entry.target, ["rev-parse", "--git-common-dir"]).trim(),
+      ),
+    );
+    const cloneDirectory = realpathSync(
+      resolve(
+        entry.clone,
+        git(entry.clone, ["rev-parse", "--git-common-dir"]).trim(),
+      ),
+    );
+    if (commonDirectory !== cloneDirectory)
+      return withheld("recorded target worktree is not the registered clone's");
+    const urls = (key: string) =>
+      git(entry.target, ["config", "--get-all", key], true)
+        .split("\n")
+        .filter(Boolean);
+    const pushed = urls("remote.origin.pushurl");
+    const remotes = pushed.length ? pushed : urls("remote.origin.url");
+    const identity = remotes.length === 1 ? gitHubIdentity(remotes[0]!) : null;
+    if (!identity) return withheld("target origin is not one GitHub push URL");
+    if (entry.origin && identity !== entry.origin)
+      return withheld(
+        `target origin ${identity} is not the origin recorded at start, ${entry.origin}`,
+      );
+    // The helper spellings run the kit's scripts: they are admitted only
+    // while the launchpad's scripts equal main's committed scripts, as the
+    // first admission binds its helper byte-exact.
+    if (
+      shape.kind === "helper" &&
+      spawnSync("git", ["diff", "--quiet", mainRef, "--", "scripts/"], {
+        cwd: root,
+        encoding: "utf8",
+        timeout: 10_000,
+      }).status !== 0
+    )
+      return withheld(
+        "the launchpad's scripts differ from main's committed scripts",
+      );
+    const toolCwd = input.tool_input?.cwd ?? input.tool_input?.workdir;
+    const cwd = realpathSync(
+      typeof toolCwd === "string" ? resolve(root, toolCwd) : input.cwd,
+    );
+    let draft: { head: string; branch: string; number: number } | undefined;
+    const main = git(root, ["worktree", "list", "--porcelain"])
+      .split("\n\n")
+      .find((row) => row.split("\n").includes(`branch ${mainRef}`))
+      ?.split("\n")[0]
+      ?.replace(/^worktree /, "");
+    if (main) {
+      const log = join(
+        main,
+        "docs/control/local/target-publications",
+        order,
+        "events.jsonl",
+      );
+      if (existsSync(log))
+        for (const line of readFileSync(log, "utf8").split("\n")) {
+          if (!line.trim()) continue;
+          const event = JSON.parse(line) as {
+            type?: string;
+            payload?: {
+              draft?: boolean;
+              headSha?: string;
+              branch?: string;
+              number?: number;
+            };
+          };
+          if (
+            event.type === "PullRequestOpened" &&
+            event.payload?.draft === true &&
+            COMMIT_SHA.test(event.payload.headSha ?? "") &&
+            BRANCH_NAME.test(event.payload.branch ?? "") &&
+            Number.isInteger(event.payload.number) &&
+            event.payload.branch !== registration.baseBranch
+          )
+            draft = {
+              head: event.payload.headSha!,
+              branch: event.payload.branch!,
+              number: event.payload.number!,
+            };
+        }
+    }
+    // The base branch is never an admitted push target.
+    const branches = new Set(
+      [entry.branch, ...(draft ? [draft.branch] : [])].filter(
+        (name) => name !== registration.baseBranch,
+      ),
+    );
+    const within = (file: string) => {
+      const path = resolve(cwd, file);
+      return [realpathSync(root), target].some(
+        (parent) => path === parent || path.startsWith(`${parent}/`),
+      );
+    };
+    const verified = control.phase === "verified";
+    const closed =
+      control.phase === "closed" && control.latestVerdict === "pass";
+    const anyPhase = verified
+      ? "verified"
+      : closed
+        ? "closed with a passing final review"
+        : null;
+    const phaseFor = (draftForm: boolean) =>
+      draftForm
+        ? verified
+          ? "verified"
+          : null
+        : closed
+          ? "closed with a passing final review"
+          : null;
+    let legal: string | null;
+    let described: string;
+    if (shape.kind === "push") {
+      const at = shape.path ? realpathSync(resolve(cwd, shape.path)) : cwd;
+      if (at !== target)
+        return withheld("push is not bound to the recorded target worktree");
+      if (!branches.has(shape.branch))
+        return withheld(
+          `branch ${shape.branch} is neither ${entry.branch} nor the recorded draft branch`,
+        );
+      if (
+        shape.lease &&
+        !(
+          draft &&
+          shape.lease.branch === draft.branch &&
+          shape.lease.head === draft.head
+        )
+      )
+        return withheld(
+          "force-with-lease does not name the recorded draft branch and head",
+        );
+      // A lease is the closed-phase publish's form; a plain push is legal
+      // at either phase.
+      legal = shape.lease ? phaseFor(false) : anyPhase;
+      described = `push of ${shape.branch} to the registered origin`;
+    } else if (shape.kind === "helper") {
+      if (cwd !== realpathSync(root))
+        return withheld("helper runs outside the launchpad root");
+      legal = phaseFor(shape.draft);
+      described = shape.draft
+        ? "the draft form of worktree publish"
+        : "the closed-phase worktree publish";
+    } else {
+      if (shape.repo) {
+        if (shape.repo.toLowerCase() !== identity)
+          return withheld(
+            `--repo ${shape.repo} is not the registered origin ${identity}`,
+          );
+      } else if (cwd !== target)
+        return withheld("gh runs outside the recorded target worktree");
+      if (shape.kind === "pr-create") {
+        if (shape.head !== undefined && !branches.has(shape.head))
+          return withheld(`--head ${shape.head} is not an admitted branch`);
+        if (shape.base !== undefined && shape.base !== registration.baseBranch)
+          return withheld(`--base ${shape.base} is not the registered base`);
+        if (shape.bodyFile !== undefined && !within(shape.bodyFile))
+          return withheld(
+            "--body-file is outside the launchpad and the target",
+          );
+        legal = phaseFor(shape.draft);
+        described = shape.draft
+          ? "draft pull-request creation"
+          : "pull-request creation";
+      } else if (shape.kind === "pr-view") {
+        legal = anyPhase;
+        described = "pull-request inspection";
+      } else {
+        // Ready and edit name the pull request the order's draft record
+        // holds, keep the registered base and a body inside the checkouts.
+        if (draft === undefined || shape.selector !== String(draft.number))
+          return withheld(
+            "the pull request is not the one the order's draft record names",
+          );
+        if (shape.base !== undefined && shape.base !== registration.baseBranch)
+          return withheld(`--base ${shape.base} is not the registered base`);
+        if (shape.bodyFile !== undefined && !within(shape.bodyFile))
+          return withheld(
+            "--body-file is outside the launchpad and the target",
+          );
+        legal = phaseFor(false);
+        described =
+          shape.kind === "pr-ready"
+            ? "marking the pull request ready"
+            : "pull-request edit";
+      }
+    }
+    if (!legal)
+      return withheld(
+        `${control.phase} does not make ${described} legal for ${order}`,
+      );
+    return {
+      journal: {
+        workOrder: order,
+        repositoryId: entry.repositoryId,
+        kind: shape.kind,
+      },
+      response: {
+        hookSpecificOutput: {
+          hookEventName: "PreToolUse",
+          permissionDecision: "allow",
+          permissionDecisionReason: `DotLn's registered-target admission: repository ${entry.repositoryId} (${identity}); recorded target worktree of ${order} on ${entry.branch}; main's committed operator grant admits repo.push and pr.open; ${legal} makes ${described} legal. Host deny and ask rules still apply.`,
+        },
+      },
+    };
+  } catch (error) {
+    return withheld(
+      `registration, target or canonical status fact unreadable (${error instanceof Error ? error.message : String(error)})`,
+    );
+  }
+}
 interface ProcessRow {
   readonly pid: number;
   readonly ppid: number;
@@ -4832,6 +5390,12 @@ async function evaluateExistingHarnessHook(
       });
       return close.response!;
     }
+    const target = registeredTargetAdmission(root, input, session);
+    if (target?.response) {
+      record(root, input, { registeredTargetAdmission: target.journal });
+      return target.response;
+    }
+    if (target?.advisory) record(root, input, { advisory: target.advisory });
     const effect = permissionEffect(input, root, config.tools, outsideEffect);
     const decision = harnessAuthorization(
       session.correction

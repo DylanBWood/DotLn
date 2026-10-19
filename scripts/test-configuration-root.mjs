@@ -592,6 +592,84 @@ await test("configuration root", async (t) => {
         { version: 1, repositories: { target: {} } },
         /baseBranch must be a non-empty valid string/,
       );
+      // The WO-221 keys: disposable paths stay inside the checkout, a target
+      // release is declared or absent, and the host-rule fallback is literal.
+      refuses(
+        {
+          version: 1,
+          classes: {
+            "fixture-class": { checks: [], supports: [], disposable: ["/abs"] },
+          },
+        },
+        /classes\.fixture-class\.disposable entries must be contained relative normalized POSIX paths: \/abs/,
+      );
+      refuses(
+        {
+          version: 1,
+          repositories: {
+            target: registeredRepository({ disposable: ["../out"] }),
+          },
+        },
+        /repositories\.target\.disposable entries must be contained/,
+      );
+      refuses(
+        {
+          version: 1,
+          repositories: {
+            target: registeredRepository({ disposable: "dist" }),
+          },
+        },
+        /repositories\.target\.disposable must be an array/,
+      );
+      refuses(
+        {
+          version: 1,
+          repositories: {
+            target: registeredRepository({ release: { policy: "always" } }),
+          },
+        },
+        /repositories\.target\.release\.policy must be "declared"/,
+      );
+      refuses(
+        {
+          version: 1,
+          repositories: {
+            target: registeredRepository({ hostRules: "prose" }),
+          },
+        },
+        /repositories\.target\.hostRules must be "literal"/,
+      );
+      writeFileSync(
+        path,
+        `${JSON.stringify({
+          version: 1,
+          classes: {
+            "fixture-class": { checks: [], supports: [], disposable: ["dist"] },
+          },
+          repositories: {
+            target: registeredRepository({
+              disposable: ["node_modules/", "dist", ".angular"],
+              release: { policy: "declared" },
+              hostRules: "literal",
+            }),
+            plain: registeredRepository(),
+          },
+        })}\n`,
+      );
+      const declared = loadConfig(root);
+      assert.deepEqual(declared.classes["fixture-class"].disposable, ["dist"]);
+      assert.deepEqual(declared.repositories.target.disposable, [
+        ".angular",
+        "dist",
+        "node_modules",
+      ]);
+      assert.deepEqual(declared.repositories.target.release, {
+        policy: "declared",
+      });
+      assert.equal(declared.repositories.target.hostRules, "literal");
+      assert.deepEqual(declared.repositories.plain.disposable, ["dist"]);
+      assert.equal(declared.repositories.plain.release, undefined);
+      assert.equal(declared.repositories.plain.hostRules, undefined);
       refuses(
         {
           version: 1,

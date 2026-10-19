@@ -276,7 +276,7 @@ table includes the shared goal card and the refuter's separate subject boundary.
    | `resume: fix`           | `npm run resume -- fix`                                                                                                                                                                                                    | repair, reading BOTH the original work order and named failure source; if a repair was prematurely marked complete, the phrase may reopen it only while that unresolved source remains                                                                                   |
    | `resume: verify`        | `npm run resume -- verify`                                                                                                                                                                                                 | verify, writing the exact `VER-NNN` path it allocates                                                                                                                                                                                                                    |
    | `resume: final review`  | `npm run resume -- final-review`                                                                                                                                                                                           | review into the allocated `FINAL-NNN`; on pass, record it, commit the reviewed state, push only the WO branch, and open its PR                                                                                                                                           |
-   | `resume: release close` | in a main-checkout session, dispatch `npm run resume -- release-close --work-order WO-NNN`, then run its printed `node <main>/scripts/release.mjs close WO-NNN --publish` helper there (`worktree publish` prints it too); a subject dispatch prints this route; use main's copy after subject removal | update main, consume reviewer gate, publish validated tag and Release, attempt cleanup, refresh each declared export sibling through its recorded checkout with one fast-forward commit to that sibling's main, and write `docs/control/local/retained/WO-NNN/release-close.json`; rerun from updated main if Release creation fails or a starter refresh refuses |
+   | `resume: release close` | in a main-checkout session, dispatch `npm run resume -- release-close --work-order WO-NNN`, then run its printed `node <main>/scripts/release.mjs close WO-NNN --publish` helper there (`worktree publish` prints it too); a subject dispatch prints this route; use main's copy after subject removal | update main, consume reviewer gate, publish validated tag and Release, attempt cleanup, refresh each declared export sibling through its recorded checkout with one fast-forward commit to that sibling's main carrying core's tag name and the sibling's Release, and write `docs/control/local/retained/WO-NNN/release-close.json`; for a registered target order, fetch and fast-forward the clone's base, delete declared disposable output, remove the order's literal host rules, and tag and release the target only under `release.policy: declared`; rerun from updated main if Release creation fails or a starter refresh refuses |
    | the operator accepts criterion N unmet (words captured) | `npm run resume -- waive N --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` from the operator's terminal, a verifier or a reviewer session (WO-158) | the report records `**Criterion N:** unmet, waived by <ordinal>`; the order's executor never records a waiver |
    | the operator withdraws the order (words captured) | `npm run resume -- withdraw --disposition failed\|superseded\|abandoned --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` (WO-158) | stop: `withdrawn` is terminal, and only `npm run resume -- activate` of a changed revision with a new dated `**Reactivation (YYYY-MM-DD):**` note leaves it |
    | a recorded attestation, report path or checkpoint is wrong, or a recorded passing final review carries no product gate | `npm run resume -- correct <ordinal\|report-path> --set <field>=<value> --reason <text> <actor-flags>` (WO-158); `--set productGate=<evidenceRef>` binds a complete passing `npm test` row whose code identity is the one the pass recorded in its checkpoint and still the working tree's, once, and is the only correction legal in `closed` (WO-115) | never correct a verdict or edit a filed report; a wrong verdict takes a later report; a changed subject takes a fresh final review; publication and release close read the bound gate from the committed correction |
@@ -458,7 +458,11 @@ records the order's records in the target's documentation root as one
 records-only commit after it, and may push that commit to one conventional
 branch on the target's origin and open its pull request with `worktree publish
 WO-NNN --target-worktree` under an admitted operator grant; it never merges
-either. Release close of a target order fetches the target's base branch and
+either. An instance order may name an actor and the phrase for the opt-in
+`--draft` form at `verified`, which pushes the target worktree's working tree
+to that branch under a draft pull request the closed-phase publish reuses;
+core declares no draft step and no actor (WO-221). Release close of a target
+order fetches the target's base branch and
 fast-forwards the clone's base branch before it judges containment. Release
 close may create and push only the validated annotated tag, create the
 matching GitHub Release as a projection of that tag's reviewed human layer, and
@@ -1610,7 +1614,14 @@ clone map. The helper checks the published head, checkout identity, branch,
 cleanliness, remote binding and ancestry, then updates a disposable worktree
 (or exports the kit for the first time). The export’s own emit, predicted
 bundle comparison, harness check, kit verify and exact staged-file check run
-before the hookless push. Direct template seeds are refreshed only when each
+before the hookless push. After the push, core's release tag name is pushed
+as an annotated tag onto the refresh commit through the same isolated lane
+and the sibling's GitHub Release is created pointing at it, with a one-line
+body naming core's Release, so a fork previews `--from vX.Y.Z`; a retry
+finds both and reports current. A tag at another commit refuses unless it is
+an ancestor whose committed kit manifest names this exact core commit and
+release tag, preserving the first tag through a seed-only refresh; ancestry
+alone does not establish that provenance (WO-221). Direct template seeds are refreshed only when each
 changed copy exactly matches a prior exported template, including its regular
 file mode. Historical starter manifests and ancestor core templates prove the
 baseline, including seeds left behind by kit-only updates. A custom edit,
@@ -1698,7 +1709,39 @@ receipt or shared-exclude registry member remains, close retains the source
 even if the target directory is absent, and names restoring the installed
 manifest and bundle files before the exact
 retry command. It cannot report a clean close with that ownership residue.
-Neither repository gets a tag.
+A class or registration declares `disposable` paths (relative and contained;
+the class's entries and the registration's compose into one sorted set and
+nothing removes a class entry). At close, every
+ignored path under a declared path is deleted from the target worktree before
+the ignored-material judgment, and the base checkout's untracked files are
+judged by the fetched base's `.gitignore` blobs, never the pre-merge working
+copy's rules, global excludes or init templates. The ignore judgment supports
+the same 16 MiB path list as its candidate scan. Unreadable ignored base
+directories and unreadable declared target output refuse before deletion,
+naming the directory and the read/search-access remedy. The scan includes already-ignored files and files the fetched
+tree stops ignoring: one the fetched tree ignores under a declared path is deleted,
+one it ignores outside every declaration refuses naming the path and the
+registration remedy, and one it does not ignore keeps the ordinary refusal.
+Regenerable output is deleted, never moved to scratch or offered back;
+preservation is for operator material, evidence and intake. The receipt lists
+the deleted roots with their file counts and repeats the gate's
+`baseCheckoutWrites` advisory, the untracked files a gate command left in the
+clone's base checkout; an unreadable advisory record is reported as unavailable
+and does not replace or block the checkout judgments. Under the registration's literal host-rule fallback the
+close removes the order's rules. The launchpad gets no tag. The target gets
+one only under `release: { "policy": "declared" }` with the order's
+`**Target release classification:** patch | minor | major` header and
+`release.close` in the registered authority profile: after containment is
+proven, the next `v*` tag above the tags the merged base reaches (none means
+`v0.1.0`; a tag an earlier attempt of the same close published is reused
+with that attempt's recorded commit, even if the base later advances) is
+created as an annotated tag on the merged base through the
+isolated lane and the target's GitHub Release is created from the order's
+title and objective; `--dry-run` previews the tag, an equal tag on the merged
+commit is an idempotent retry, and a tag at another commit refuses by name.
+A retry never adopts a moved tag; if the remote tag disappeared, it can only
+recreate the tag at the recorded commit
+(WO-221).
 
 A target order's records branch is versionless and requires one well-formed
 README release claim at least as new as the latest release. It needs no
@@ -1788,7 +1831,34 @@ messages, titles, bodies and replies; event payload references remain intact.
 
 For a session order, `worktree publish WO-NNN --target-worktree --branch
 <type>/<slug> --title <title> --body-file <path>` reads a committed contained
-regular body file from the clean order launchpad. Its latest passing final
+regular body file from the clean order launchpad. Its opt-in `--draft` form
+is legal at `verified` with a passing verification: it reads the body's
+working bytes, writes a commit object from the target worktree's working tree
+through a temporary index (HEAD and the index unchanged), pushes it to the
+declared branch from the isolated lane, opens a draft pull request and records
+`PullRequestOpened` with `draft`, `branch` and `headSha`; a draft at `active`
+or `ready-to-verify` refuses naming the phase, a second draft at the same tree
+reports already published, and one at a new tree updates the same pull
+request. The closed-phase publish of the same order reuses that branch and
+pull request: it pushes the reviewed commit with `--force-with-lease` against
+the recorded draft head, updates the title and body, marks the pull request
+ready and records the reuse; another `--branch` refuses. One pull request per
+order; core names no draft step and no actor, the instance's order does
+(WO-221). Trust for these commands comes from the registration and the kit:
+the emitted hook admits the recorded target worktree's push, `gh pr` and
+helper forms at the phases the lifecycle makes them legal, under main's
+committed registration and operator grant, with host deny rules still
+applying; `worktree start` prints the Codex `--add-dir` and Copilot
+`--allow-tool` lines; and a registration's `hostRules: "literal"` writes that
+order's exact rules to the main checkout's untracked local settings and
+`.codex/rules/dotln-WO-NNN.rules` until the close removes them, `harness check`
+naming a stale one. Claude ownership is held in an ignored per-order sidecar
+under the configured control root's `local/host-rules/`, preserving rules the
+operator already held; JSON settings contain no comment markers and Codex's
+TOML configuration contains no prefix-rule table. A `host-rules --rewrite`
+requires the committed literal opt-in and matching target registration before
+changing any rules; `--remove` remains available after opt-out for recovery.
+Its latest passing final
 review must bind `targetSubject` and `targetGate`, and `TargetRecordsCommitted`
 must bind the target's current clean HEAD as a records-only child of the
 reviewed commit. It validates installed bundle ownership before reading its
@@ -2009,19 +2079,27 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
 
 ## Discipline
 
-- **The handoff sequence (2026-10-07 pass).** Finish source edits, run
-  `npm run format`, use `npm run sync` for stale generated artifacts, then
-  `npm run test:docs`. The executor and every repair run the structural
-  phase and the order's Preflight suites with `npm test -- --only <suite>`;
-  verification consumes those current-identity rows and uses focused probes.
-  Final review integrates main and runs `npm test -- --review --again` once
-  in the background after the last source edit and formatting, awaiting it
-  with `node scripts/harness.mjs evidence --wait` while reading the subject.
-  No role writes gate inputs or starts agents during that run. Complete the
-  records that cite the passing rows, then record the role's completion.
-  A source edit changes code identity, so every required handoff row must
-  run at the new identity, as must the final review; report, control and
-  generated-document edits keep code identity.
+- **The handoff sequence (2026-10-07 pass, revised 2026-10-19).** Finish
+  source edits, run `npm run format`, use `npm run sync` for stale
+  publication, bookkeeping and installed-harness artifacts (a gate compiles a
+  stale runtime itself). The executor and every repair start one complete
+  run, `npm test -- --review`, in the background and never under the bounded
+  probe wrapper; it leads with failed and changed suites. After it passes
+  they write the report with its evidence, run `npm run test:docs` once
+  after the last document edit, and record. Verification consumes the
+  executor's complete row at the current identity and uses focused probes.
+  Final review integrates main, reproduces each blocking claim first and
+  fails without a complete run when one reproduces; otherwise it reuses the
+  passing complete review row at the integrated code identity when one
+  exists, and only when none exists runs `npm test -- --review` once in the
+  background after the last source edit and formatting, awaiting it with
+  `node scripts/harness.mjs evidence --wait` while reading the subject. No
+  role writes gate inputs or starts agents during a run, and a review gate
+  admits no record writes. Completion consumes the rows and runs no gate. A
+  source edit changes code identity, so the complete row must run at the new
+  identity, as must the final review; report, control and
+  generated-document edits keep code identity, and the document row stands
+  only while the working tree is the one it judged.
 - **Scratch repositories (WO-188).** A nested repository outside the intake
   lane that the tracked tree does not declare as a submodule is scratch. An
   executor removes each before `implementation-ready` or `repair-complete`
@@ -2574,13 +2652,16 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   root checkout. See [behavior, proof and activation](../evidence/WO-054/codex-continuation.md)
   and [D005](../evidence/WO-054/decisions.md#wo-054-d005). The original native
   probes did not exercise interruption; no native interruption proof is claimed.
-- **Write once, run once (WO-132).** Handoffs stand on the structural phase,
-  the declared Preflight suites and the document row at the current identity.
-  `npm run sync` refreshes stale generated artifacts before those checks.
+- **Write once, run once (WO-132).** Handoffs stand on the passing complete row, or on the structural phase and
+  the declared Preflight suites, and on the document row recorded for the
+  working tree as it stands, all at the current identity. `npm run sync`
+  refreshes stale publication and bookkeeping artifacts before those checks;
+  a selection compiles a stale runtime itself.
   The reviewer stages intended new source files, integrates main, formats and
-  starts `npm test -- --review --again` once in the background after the last
-  source edit. The completion consumes its fresh complete row recorded after
-  that review's dispatch, with no reused suites. The runner records `npm test` by tracked and non-ignored untracked code paths
+  reuses the passing complete review row at the integrated code identity
+  when one exists; only when none exists it starts `npm test -- --review`
+  once in the background after the last source edit. The completion consumes
+  the newest complete row at that identity, whichever role recorded it. The runner records `npm test` by tracked and non-ignored untracked code paths
   and bytes, independent of staging. Symbolic source aliases refuse the key
   rather than silently omitting their target bytes. The identity excludes `docs/` except
   `docs/control/outward-vocabulary.json`, `.claude/`, `.agents/`, root Markdown
@@ -2804,33 +2885,72 @@ Every selection begins with six structural tasks, in order: `format`,
 check machinery inputs and declared copied-fixture closures. Generated
 checks retain their own short deadlines and name all stale artifacts in the
 row; `npm run sync` regenerates them in dependency order and changes nothing
-on a second current run. It refuses a role oracle without its authorizing
+on a second current run. A selection first compiles a stale runtime with
+the build, whose output lies outside the code identity, so an ordinary
+package edit reaches the suites; a stale installed harness is reported and
+never installed by a gate, since live hooks change only through the explicit
+`npm run sync` step. A focused product selection judges only those two
+generated artifacts, publication and bookkeeping being inputs of the
+complete and document selections, and its structural row is partial: it
+never stands in for a complete or document selection's structural pass.
+Sync refuses a role oracle without its authorizing
 update, a feedback edition whose judged sources require a live episode,
 and manual baseline fingerprints. Host admission refuses measured warning
 or critical memory pressure and records its sampled values.
 
-Each order's **Preflight:** field spells every required suite as
-`npm test -- --only <suite>`, under `node scripts/harness.mjs bounded --`.
-The executor and each repair finish formatting and regeneration, run those
-suites and `npm run test:docs` when documents change, then complete handoff.
-The completion consumes passing structural, focused and document rows at
-the current code identity and records their evidence references; a passing
-complete row can also cover the claim. The verifier consumes the same rows
-and reproduces a finding with `--only`. A queued order's older instruction
-to follow Preflight with a complete run is read under this handoff rule.
+Each order's **Preflight:** field names the suites its change touches, each
+as `npm test -- --only <suite>`, the spelling the handoff reads. The
+executor and each repair finish formatting and regeneration, then start one
+complete run, `npm test -- --review`, in the background and never under the
+bounded probe wrapper. The complete run schedules first the suites whose
+latest execution failed, then those whose inputs changed after the newest
+gate row, then the suites this branch changed, so a stale assertion fails
+within minutes rather than at the end of the run. A complete run composes
+nothing from `--only` rows: a focused pass of every Preflight suite followed
+by a complete run executes each suite twice, so `npm test -- --only <suite>`
+serves to reproduce one failure, not to precede the complete run. After the
+complete run passes the role writes its report, since a review gate admits
+no record writes while it runs and a judgment is written with its evidence;
+`npm run test:docs` runs once after the last document edit; then the result
+is recorded. Completion consumes the passing complete row at the current
+code identity, or the passing structural and focused rows there, together
+with the newest passing document row recorded for the working tree as it
+stands (the row's tree hash), records their evidence references and runs no
+gate itself: a document edited after its document run is refused by name,
+and the recording itself changes nothing the row judged. The verifier consumes
+the same rows and reproduces a finding with `--only`. A queued order's older
+instruction to follow Preflight with a complete run is read under this
+handoff rule.
 
-Final review integrates main, finishes source edits and formatting, then
-starts `npm test -- --review --again` in the background. It awaits the run
-with `node scripts/harness.mjs evidence --wait` and reads the subject in the
-meantime. A met `npm test` claim at final review needs a passing complete
-review row recorded after that review's `FinalReviewRequested` event with
-`reusedSuites: 0`. No pass crosses a code identity. Source changes require
-all required handoff rows at the new identity and a new final review run;
-report and generated-document edits do not. Target orders retain their repository's declared target gate
-and the launchpad document gate.
+Final review integrates main and rejects a known-bad candidate before the
+expensive validation: each blocking claim of the verification sequence is
+reproduced with `--only` or the bounded probe route, and a reproduced
+blocker goes straight to a truthful failing review and its repair, without
+a complete run. Otherwise it finishes source edits and formatting, then
+reuses the passing complete review row at the integrated code identity when
+one exists, whichever role recorded it: the identity, not the dispatch time,
+says what was tested, so under serial orders an integration that brought no
+change costs no second run. Only when that identity has no passing complete
+row does it start `npm test -- --review` in the background, never under the
+bounded probe wrapper (which applies a six-hour outer bound to a complete
+selection instead of its 900-second probe deadline),
+awaiting it with `node scripts/harness.mjs evidence --wait`. The FINAL
+report, PR.md and RELEASE-NOTES.md are written after it passes, since a
+review gate admits no record writes while it runs and a judgment is written
+with its evidence;
+`npm run test:docs` runs once after the last document edit; then the
+result is recorded. Completion consumes the newest passing complete review
+row at that identity and the newest passing document row recorded for the
+working tree as it stands, and runs no gate itself; a newer failed run at the same identity displaces an older pass. No
+pass crosses a code identity. Source changes require a complete row at the
+new identity; report and generated-document edits do not. Target orders
+retain their repository's declared target gate and the launchpad document
+gate.
 
-Scheduling stops starting tasks after the first failure, lets running tasks
-finish, and records the first failure and unrun tasks. `--keep-going`
+Scheduling orders the queue by priority: changed suites lead, exclusive
+suites follow, then the rest. It stops starting tasks after the first
+failure, lets running tasks finish, and records the first failure and unrun
+tasks. `--keep-going`
 continues independent work without bypassing failed prerequisites. A stop
 request or SIGINT, SIGTERM or SIGHUP records only tasks already finished,
 with `stopped: true`; a stop before any completion records nothing. A stopped

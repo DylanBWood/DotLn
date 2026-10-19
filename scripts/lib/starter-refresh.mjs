@@ -19,9 +19,13 @@ import { basename, dirname, join } from "node:path";
 import { parseWorktrees, redactPaths, runGit } from "./git.mjs";
 import {
   HOST_GIT_READ,
+  ensureGhFor,
+  ensureRelease,
   parseGitHubTarget,
+  pushAnnotatedTag,
   pushUrl,
   pushObservedCommit,
+  remoteTagTarget,
 } from "./github-repository.mjs";
 import {
   physicalDirectory,
@@ -76,6 +80,71 @@ const assertCommittedConfiguration = (root) => {
     throw new Error(
       `local ${CONFIG_FILENAME} is untracked or ignored; commit the intended configuration before refreshing the starter`,
     );
+};
+// A seed-only refresh may follow the first refresh of the same core release.
+// Its existing tag must name an ancestor with a committed manifest for that
+// exact core commit and tag; ancestry alone would accept an unrelated tag.
+const priorReleaseRefresh = (checkout, existing, commit, tag, head) => {
+  if (!ancestor(checkout, existing, commit)) return false;
+  try {
+    if (
+      !/^100(?:644|755) blob /u.test(
+        git(checkout, ["ls-tree", existing, "--", manifestFile]),
+      )
+    )
+      return false;
+    const manifest = JSON.parse(
+      git(checkout, ["show", `${existing}:${manifestFile}`]),
+    );
+    return manifest.commit === head && manifest.tag === tag;
+  } catch {
+    return false;
+  }
+};
+// Core's release tag name lands on the sibling's refresh commit. A retry
+// finds its tag and Release, while a tag without matching release provenance
+// refuses. The Release body names core's Release, not its changes.
+const ensureSiblingRelease = ({
+  checkout,
+  url,
+  commit,
+  tag,
+  head,
+  origin,
+  row,
+}) => {
+  const existing = remoteTagTarget(url, tag);
+  if (
+    existing &&
+    existing !== commit &&
+    !priorReleaseRefresh(checkout, existing, commit, tag, head)
+  )
+    throw new Error(
+      `starter tag ${tag} exists at ${existing}, not the refresh commit ${commit} or a proven prior refresh of the same core release; move nothing and inspect the starter's tags`,
+    );
+  if (!existing)
+    pushAnnotatedTag(checkout, url, {
+      sourceRef: "refs/remotes/origin/main",
+      commit,
+      tag,
+      message: `Starter ${tag}\n\nCore commit: ${head}`,
+      tagger: git(checkout, ["var", "GIT_COMMITTER_IDENT"]),
+    });
+  const forge = parseGitHubTarget(url);
+  ensureGhFor(checkout, forge);
+  const displayName = loadConfig(checkout).release.displayName;
+  const release = ensureRelease(
+    checkout,
+    forge,
+    tag,
+    `${displayName} ${tag}`,
+    `Starter refresh to core's Release ${tag} (${origin.selector}); core commit ${head}.\n`,
+    // The title carries the instance's display name, which it may rename
+    // later; the body binds core's Release and commit and must match.
+    { matchTitle: false },
+  );
+  row.siblingTag = { tag, outcome: existing ? "current" : "published" };
+  row.siblingRelease = release === "existing" ? "current" : "created";
 };
 const redact = (error, privatePaths) =>
   redactPaths(
@@ -552,6 +621,15 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
         harnessFile,
       );
       receipt();
+      ensureSiblingRelease({
+        checkout,
+        url,
+        commit: remote,
+        tag,
+        head,
+        origin,
+        row,
+      });
       row.outcome = "current";
       row.reason = "starter already carries the released commit";
       return row;
@@ -779,6 +857,9 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
     git(checkout, ["merge", "--ff-only", commit]);
     git(checkout, ["update-ref", "refs/remotes/origin/main", commit, remote]);
     receipt();
+    await timed("tag", () =>
+      ensureSiblingRelease({ checkout, url, commit, tag, head, origin, row }),
+    );
     row.outcome = "refreshed";
     row.reason = "verified starter commit published";
   } catch (error) {

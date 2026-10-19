@@ -2038,6 +2038,339 @@ test("WO-178 exact close helper admission requires the recorded dispatch, main a
   }
 });
 
+test("WO-221 registered-target admission admits the recorded worktree's publication commands at verified and closed and nothing outside the registration", () => {
+  const root = fixture();
+  const base = realpathSync(mkdtempSync(join(tmpdir(), "dotln-wo221-target-")));
+  const identity = [
+    "-c",
+    "user.name=Fixture",
+    "-c",
+    "user.email=fixture@example.invalid",
+    "-c",
+    "commit.gpgsign=false",
+  ];
+  const commitAll = (cwd, message) => {
+    runGit(cwd, ["add", "."], fixtureGitOptions);
+    runGit(cwd, [...identity, "commit", "-qm", message], fixtureGitOptions);
+  };
+  try {
+    // Main's committed registration, first without the operator grant; the
+    // session itself stays on wo-999 with main checked out beside it.
+    write(
+      root,
+      "dotln.config.json",
+      json({
+        version: 1,
+        classes: { fixture: { checks: [], supports: [] } },
+        repositories: {
+          target: {
+            baseBranch: "main",
+            worktreeParent: "../Targets",
+            repositoryClass: "fixture",
+            authorityProfile: {
+              authorityEnvelopeId: "fixture.target",
+              allowedEffects: [
+                "repo.read",
+                "repo.write",
+                "repo.push",
+                "pr.open",
+              ],
+              deniedEffects: [],
+              resourceLimits: {},
+              requiredEvidence: [],
+              expiresAt: Number.MAX_SAFE_INTEGER,
+              revocationEventTypes: [],
+            },
+          },
+        },
+      }),
+    );
+    write(root, "packages/skeleton/loadouts/grants.json", json([]));
+    commitAll(root, "Register the target without a grant");
+    runGit(root, ["branch", "main"], fixtureGitOptions);
+    const mainCheckout = join(base, "main-checkout");
+    runGit(root, ["worktree", "add", mainCheckout, "main"], fixtureGitOptions);
+    const origin = join(base, "target.git");
+    runGit(
+      base,
+      ["init", "--bare", "-q", "-b", "main", origin],
+      fixtureGitOptions,
+    );
+    const clone = join(base, "clone");
+    runGit(base, ["clone", "-q", origin, clone], fixtureGitOptions);
+    write(clone, "source.txt", "base\n");
+    commitAll(clone, "Target base");
+    runGit(clone, ["push", "-q", "origin", "main"], fixtureGitOptions);
+    const selector = "github.com/dotln-fixture/target";
+    runGit(
+      clone,
+      ["remote", "set-url", "origin", `https://${selector}.git`],
+      fixtureGitOptions,
+    );
+    const target = join(base, "Targets", "clone-wo999");
+    mkdirSync(join(base, "Targets"));
+    runGit(
+      clone,
+      ["worktree", "add", "-q", "-b", "wo-999", target, "main"],
+      fixtureGitOptions,
+    );
+    const baseCommit = runGit(clone, ["rev-parse", "HEAD"], fixtureGitOptions);
+    write(
+      root,
+      "docs/control/local/target-worktrees.json",
+      json({
+        [target]: {
+          target,
+          clone,
+          branch: "wo-999",
+          baseBranch: "main",
+          baseCommit,
+          repositoryId: "target",
+          workOrderId: "WO-999",
+          launchpad: root,
+          runtimeRoot: root,
+          origin: selector,
+        },
+      }),
+    );
+    const status = (phase, latestVerdict = null) =>
+      write(
+        root,
+        "docs/control/fixture-status.json",
+        json({ ...control, phase, latestVerdict }),
+      );
+    const permission = (command, extra = {}, environment = {}) =>
+      invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          tool_name: "Bash",
+          tool_input: { command },
+          ...extra,
+        }),
+        false,
+        environment,
+      ).hookSpecificOutput;
+    const allowed = (command, extra, environment) => {
+      const response = permission(command, extra, environment);
+      assert.equal(response?.permissionDecision, "allow", command);
+      assert.match(
+        response.permissionDecisionReason,
+        /registered-target admission: repository target \(github\.com\/dotln-fixture\/target\); recorded target worktree of WO-999 on wo-999.*Host deny and ask rules still apply/u,
+      );
+    };
+    const withheld = (command, extra) =>
+      assert.notEqual(
+        permission(command, extra)?.permissionDecision,
+        "allow",
+        command,
+      );
+    const push = `git -C ${target} push -u origin wo-999`;
+    const draftCreate = `gh pr create --draft --repo ${selector} --head wo-999 --base main --title "feat: draft" --body-file body.md`;
+    status("verified", "pass");
+    withheld(push);
+    write(
+      mainCheckout,
+      "packages/skeleton/loadouts/grants.json",
+      json([
+        {
+          grantId: "operator.target-publish",
+          version: 1,
+          grantedBy: "operator",
+          repo: "target",
+          effects: ["repo.push", "pr.open"],
+          operations: ["repo.push", "pr.open"],
+          reason: "Operator grant for the fixture target",
+        },
+      ]),
+    );
+    commitAll(mainCheckout, "Grant repo.push and pr.open for the target");
+    allowed(push);
+    allowed(`git -C ${target} push origin wo-999`);
+    allowed(draftCreate);
+    allowed(`gh pr view 7 --repo ${selector}`);
+    allowed(push, {}, { COPILOT_PROJECT_DIR: root });
+    for (const command of [
+      `git -C ${join(base, "elsewhere")} push -u origin wo-999`,
+      `git -C ${target} push -u origin feature`,
+      `git -C ${target} push --force origin wo-999`,
+      `git -C ${target} push -f origin wo-999`,
+      `git -C ${target} push -u origin wo-999; true`,
+      `git -C ${target} push -u origin wo-999 && echo done`,
+      `git -C "$(pwd)" push -u origin wo-999`,
+      `gh pr create --draft --repo github.com/dotln-fixture/other --head wo-999`,
+      `gh pr create --draft --repo ${selector} --head feature`,
+      `gh pr create --draft --repo ${selector} --base develop`,
+      `gh pr create --repo ${selector} --head wo-999 --title "feat: final"`,
+      `gh pr ready 7 --repo ${selector}`,
+      `gh pr edit 7 --repo ${selector} --title "feat: final"`,
+      `gh pr view 7 --repo ${selector} --web`,
+      `node ${join(root, "scripts/worktree.mjs")} publish WO-998 --target-worktree --draft --branch feat/x --title t --body-file b.md`,
+    ])
+      withheld(command);
+    allowed(
+      `node ${join(root, "scripts/worktree.mjs")} publish WO-999 --target-worktree --draft --branch feat/x --title "feat: x" --body-file b.md`,
+    );
+    withheld(
+      `node ${join(root, "scripts/worktree.mjs")} publish WO-999 --target-worktree --branch feat/x --title "feat: x" --body-file b.md`,
+    );
+    // The registration binds through the recorded clone: an origin that is
+    // not one GitHub push URL admits nothing, and a --repo that no longer
+    // names the clone's origin admits nothing either.
+    runGit(
+      clone,
+      ["remote", "set-url", "origin", join(base, "elsewhere.git")],
+      fixtureGitOptions,
+    );
+    withheld(push);
+    runGit(
+      clone,
+      [
+        "remote",
+        "set-url",
+        "origin",
+        "https://github.com/dotln-fixture/elsewhere.git",
+      ],
+      fixtureGitOptions,
+    );
+    withheld(draftCreate);
+    withheld(push);
+    runGit(
+      clone,
+      ["remote", "set-url", "origin", `https://${selector}.git`],
+      fixtureGitOptions,
+    );
+    status("active");
+    withheld(push);
+    withheld(draftCreate);
+    status("closed", "pass");
+    allowed(push);
+    // Without a draft record no pull request is the order's to ready or edit,
+    // and a body outside the launchpad and the target admits nothing.
+    withheld(`gh pr ready 7 --repo ${selector}`);
+    allowed(
+      `gh pr create --repo ${selector} --head wo-999 --base main --title "feat: final" --body-file b.md`,
+    );
+    withheld(
+      `gh pr create --repo ${selector} --head wo-999 --base main --title "feat: final" --body-file /etc/hosts`,
+    );
+    withheld(draftCreate);
+    status("closed", "fail");
+    withheld(push);
+    status("closed", "pass");
+    // The recorded draft admits its branch and a lease against its head only.
+    const draftHead = baseCommit;
+    write(
+      mainCheckout,
+      "docs/control/local/target-publications/WO-999/events.jsonl",
+      `${JSON.stringify({ type: "PullRequestOpened", payload: { repositoryId: selector, number: 7, headSha: draftHead, draft: true, branch: "feat/draft" } })}\n`,
+    );
+    allowed(
+      `git -C ${target} push --force-with-lease=feat/draft:${draftHead} origin feat/draft`,
+    );
+    allowed(`git -C ${target} push origin feat/draft`);
+    withheld(
+      `git -C ${target} push --force-with-lease=feat/draft:${"0".repeat(40)} origin feat/draft`,
+    );
+    withheld(
+      `git -C ${target} push --force-with-lease=wo-999:${draftHead} origin wo-999`,
+    );
+    withheld(`git -C ${target} push origin feat/other`);
+    // Ready and edit name the recorded pull request, keep the registered base
+    // and a body inside the checkouts; the base branch is never a push target;
+    // another executable spelled as the helper's node admits nothing.
+    allowed(`gh pr ready 7 --repo ${selector}`);
+    allowed(
+      `gh pr edit 7 --repo ${selector} --title "feat: final" --body-file b.md`,
+    );
+    withheld(`gh pr ready 1 --repo ${selector}`);
+    withheld(`gh pr edit 7 --repo ${selector} --base develop`);
+    withheld(`gh pr edit 7 --repo ${selector} --body-file /etc/hosts`);
+    withheld(`git -C ${target} push origin main`);
+    withheld(
+      `${join(base, "evil-node")} ${join(root, "scripts/worktree.mjs")} publish WO-999 --target-worktree --branch feat/x --title "feat: x" --body-file b.md`,
+    );
+    // A lease is the closed-phase publish's form; at verified it admits
+    // nothing while a plain push of the draft branch does.
+    status("verified", "pass");
+    withheld(
+      `git -C ${target} push --force-with-lease=feat/draft:${draftHead} origin feat/draft`,
+    );
+    allowed(`git -C ${target} push origin feat/draft`);
+    status("closed", "pass");
+    // A host deny rule in the emitted settings wins over the admission, in
+    // the raw spelling and in a quoted or double-spaced one.
+    const settingsPath = join(root, ".claude/settings.json");
+    const settings = JSON.parse(readFileSync(settingsPath, "utf8"));
+    settings.permissions.deny.push(`Bash(git -C ${target} push *)`);
+    writeFileSync(settingsPath, json(settings));
+    withheld(push);
+    withheld(`git -C "${target}" push -u origin wo-999`);
+    withheld(`git  -C ${target} push -u origin wo-999`);
+    const journal = join(
+      root,
+      "docs/control/local/harness",
+      createHash("sha256").update("synthetic-session").digest("hex") + ".jsonl",
+    );
+    const rows = readFileSync(journal, "utf8")
+      .trim()
+      .split("\n")
+      .map(JSON.parse);
+    assert.ok(
+      rows.some(
+        (row) =>
+          row.registeredTargetAdmission?.workOrder === "WO-999" &&
+          row.registeredTargetAdmission.kind === "push",
+      ),
+    );
+    assert.ok(
+      rows.some((row) =>
+        /Registered-target admission withheld/u.test(row.advisory ?? ""),
+      ),
+    );
+  } finally {
+    rmSync(base, { recursive: true, force: true });
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("the probe wrapper gives a complete test selection a six-hour outer bound and keeps the probe deadline for focused, document, machinery and listing ones", async () => {
+  const { completeTestSelection } = await import("./lib/bounded-command.mjs");
+  for (const command of [
+    ["npm", "test", "--", "--review"],
+    ["npm", "test"],
+    ["npm", "run", "test:full"],
+    ["node", "scripts/test-runner.mjs", "--review"],
+    [process.execPath, join(sourceRoot, "scripts/test-runner.mjs")],
+  ])
+    assert.equal(completeTestSelection(command), true, command.join(" "));
+  for (const command of [
+    ["npm", "test", "--", "--only", "format"],
+    ["npm", "test", "--", "--list"],
+    ["npm", "run", "test:docs"],
+    ["node", "scripts/test-runner.mjs", "--document"],
+    ["npm", "run", "test:machinery"],
+    ["node", "scripts/test-runner.mjs", "--machinery"],
+    ["npm", "test", "--", "--confined-partial"],
+    ["node", "-e", "0"],
+    ["npm", "run", "build"],
+  ])
+    assert.equal(completeTestSelection(command), false, command.join(" "));
+  // The wrapper says when it applies no deadline, before the run starts.
+  const listed = spawnSync(
+    process.execPath,
+    ["scripts/harness.mjs", "bounded", "--", "npm", "test", "--", "--list"],
+    {
+      cwd: sourceRoot,
+      encoding: "utf8",
+      timeout: deadlineLimit(5_000, 60_000),
+    },
+  );
+  assert.equal(listed.status, 0, listed.stderr);
+  assert.match(listed.stdout, /^format — protects:/mu);
+  assert.doesNotMatch(listed.stderr, /completeTestSelection/u);
+});
+
 test("WO-195 stale main prepares the runtime then records the normal release-close dispatch", () => {
   const root = fixture();
   try {

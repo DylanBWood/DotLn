@@ -142,7 +142,23 @@ operator sandbox settings.
    outward body themselves.
    The session form is `npm run worktree -- publish
    WO-NNN --target-worktree --branch <type>/<slug> --title <title> --body-file
-   <committed-reviewed-body-path>`.
+   <committed-reviewed-body-path>`; its opt-in `--draft` form at `verified`
+   pushes the target's working tree under a draft pull request that the final
+   publish reuses, and this instance's order names the actor and the phrase
+   for it (core declares neither). Trust for the target's publication commands
+   comes from the registration and the kit: the generated hook admits them for
+   the recorded target worktree under the merged registration and grant at the
+   phases the lifecycle makes them legal, `worktree start` prints the Codex
+   `--add-dir` and Copilot `--allow-tool` lines, and a registration's
+   `hostRules: "literal"` writes that order's exact rules to the main
+   checkout's untracked `.claude/settings.local.json` and `.codex/rules/`
+   until release close removes them (`node scripts/harness.mjs check` names a
+   stale one). Declare the class's or registration's `disposable` paths for the
+   regenerable build output the close deletes, never moves to scratch, and
+   `release: { "policy": "declared" }` with the order's `**Target release
+   classification:**` header for a tagged target release; turn on the forge's
+   delete-branch-on-merge setting for the target, since the kit deletes no
+   remote branch.
 5. Copy `dotln.config.example.json` to `dotln.config.json` only when this
    instance moves a document root; an absent file means the default layout
    under `docs/`. The example declares only the `docs` base, from which every
@@ -517,7 +533,13 @@ export seeded once, the workstream and repository-profile conventions
 included; their upstream sources stay under `scripts/kit/` for a later
 revision to refresh. The generated `.claude/settings.json`, hooks, skills and
 Codex files are kit files a re-emit rewrites; operator-owned Claude Code
-settings belong in the ignored `.claude/settings.local.json`. The work-order
+settings belong in the ignored `.claude/settings.local.json`, where the
+literal host-rule fallback also writes and removes one target order's rules
+(`.codex/rules/dotln-WO-NNN.rules` is its Codex counterpart). An ignored
+per-order sidecar under the configured control root's `local/host-rules/`
+records Claude rule ownership so removal preserves your pre-existing rules.
+Rewriting rules requires the committed literal opt-in and matching target
+registration; removal remains available after opting out. The work-order
 README is generated rather than seeded: `docs/work-orders/` gets the index at
 the first lifecycle transition (`activate`). The export seeds the lineage
 index at `docs/lineage/README.md`; `node scripts/lineage.mjs index`
@@ -593,6 +615,16 @@ ships. This example names the starter remote `upstream`:
 git fetch upstream
 git worktree add --detach .runtime/upstream-preview upstream/main
 node .runtime/upstream-preview/scripts/launchpad.mjs preview --from upstream/main
+git worktree remove .runtime/upstream-preview
+```
+
+To preview a named starter release, fetch its tag and use it for both the
+detached worktree and the preview revision:
+
+```sh
+git fetch upstream tag v0.85.0
+git worktree add --detach .runtime/upstream-preview v0.85.0
+node .runtime/upstream-preview/scripts/launchpad.mjs preview --from v0.85.0
 git worktree remove .runtime/upstream-preview
 ```
 

@@ -81,6 +81,9 @@ const REPOSITORY_KEYS = [
   "linkHosts",
   "gate",
   "documentationRoot",
+  "disposable",
+  "release",
+  "hostRules",
 ];
 const AUTHORITY_PROFILE_KEYS = [
   "authorityEnvelopeId",
@@ -381,6 +384,38 @@ const validateKit = (path, declared) => {
   return { applyInstanceActions: declared.applyInstanceActions ?? false };
 };
 
+// Regenerable output a close deletes: relative normalized POSIX paths inside
+// the checkout, never absolute, never climbing out (WO-221). A class entry and
+// a registration entry compose; nothing removes a class entry.
+const validateDisposablePaths = (path, value, label) => {
+  if (value === undefined) return [];
+  if (!Array.isArray(value) || !value.every(isText))
+    throw refuse(path, `${label} must be an array of non-empty strings`);
+  // A declared directory may carry a trailing slash; the path is the root.
+  const entries = value.map((entry) => entry.replace(/\/+$/u, ""));
+  for (const entry of entries)
+    if (
+      !entry ||
+      entry.startsWith("/") ||
+      entry.includes("\\") ||
+      posix.normalize(entry) !== entry ||
+      entry
+        .split("/")
+        .some(
+          (segment) =>
+            !segment ||
+            segment === "." ||
+            segment === ".." ||
+            segment === ".git",
+        )
+    )
+      throw refuse(
+        path,
+        `${label} entries must be contained relative normalized POSIX paths: ${entry}`,
+      );
+  return [...new Set(entries)].sort();
+};
+
 const validateClasses = (path, declared) => {
   requireObject(path, declared, "classes");
   return Object.fromEntries(
@@ -388,7 +423,12 @@ const validateClasses = (path, declared) => {
       requireText(path, id, "class id", /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/u);
       const label = `classes.${id}`;
       requireObject(path, value, label);
-      requireKnownKeys(path, value, ["checks", "supports"], label);
+      requireKnownKeys(
+        path,
+        value,
+        ["checks", "supports", "disposable"],
+        label,
+      );
       return [
         id,
         {
@@ -398,10 +438,39 @@ const validateClasses = (path, declared) => {
             value.supports,
             `${label}.supports`,
           ),
+          // Present only when it names a path, so an absent and an empty
+          // declaration read the same.
+          ...(() => {
+            const disposable = validateDisposablePaths(
+              path,
+              value.disposable,
+              `${label}.disposable`,
+            );
+            return disposable.length ? { disposable } : {};
+          })(),
         },
       ];
     }),
   );
+};
+
+// A target release is opt-in: `release.policy: declared` with the order's
+// classification header; absent means today's no-release (WO-221).
+const validateRepositoryRelease = (path, value, label) => {
+  if (value === undefined) return undefined;
+  requireObject(path, value, label);
+  requireKnownKeys(path, value, ["policy"], label);
+  if (value.policy !== "declared")
+    throw refuse(path, `${label}.policy must be "declared" when supplied`);
+  return { policy: "declared" };
+};
+// The literal-rule fallback for a host whose classifier still runs after the
+// hook's admission; off until a qualification turns it on (WO-221).
+const validateHostRules = (path, value, label) => {
+  if (value === undefined) return undefined;
+  if (value !== "literal")
+    throw refuse(path, `${label} must be "literal" when supplied`);
+  return value;
 };
 
 const validateTargetGate = (path, value, label) => {
@@ -564,6 +633,40 @@ const validateRepositories = (path, declared, classes) => {
         id,
         value.authorityProfile,
       ),
+      // The class's disposable paths and the registration's compose into one
+      // sorted set that nothing removes a class entry from; the key is present
+      // only when either layer names a path.
+      ...(() => {
+        const disposable = [
+          ...new Set([
+            ...(classes[repositoryClass].disposable ?? []),
+            ...validateDisposablePaths(
+              path,
+              value.disposable,
+              `repositories.${id}.disposable`,
+            ),
+          ]),
+        ].sort();
+        return disposable.length ? { disposable } : {};
+      })(),
+      ...(value.release === undefined
+        ? {}
+        : {
+            release: validateRepositoryRelease(
+              path,
+              value.release,
+              `repositories.${id}.release`,
+            ),
+          }),
+      ...(value.hostRules === undefined
+        ? {}
+        : {
+            hostRules: validateHostRules(
+              path,
+              value.hostRules,
+              `repositories.${id}.hostRules`,
+            ),
+          }),
     };
   }
   return repositories;

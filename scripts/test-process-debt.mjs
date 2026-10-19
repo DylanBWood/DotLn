@@ -6485,13 +6485,14 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // WO-187's review duties and worker pin preserve WO-186 in turn.
   // WO-196's ordered procedures and conditional economy preserve WO-187.
   // Publication guidance and conditional reader scoring preserve the prior role oracle and all its history.
+  // WO-221's release-close deletion sentence preserves WO-216's snapshot.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo216-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo221-role-baseline.json"),
       "utf8",
     ),
   );
-  assert.equal(baseline.historicalBaseline, "wo215-role-baseline.json");
+  assert.equal(baseline.historicalBaseline, "wo216-role-baseline.json");
   assert.equal(baseline.upstreamBaseline, "wo185-role-baseline.json");
   const chains = [
     baseline,
@@ -10895,7 +10896,7 @@ test("WO-140 the briefing names the session and the exact usage command the usag
       } else {
         assert.match(
           skill,
-          /start `npm test -- --review --again` in the background/,
+          /reuse the passing complete review row at the integrated code identity when one exists; only when none exists start `npm test -- --review` in the background, never under the bounded probe wrapper/,
         );
         assert.match(
           skill,

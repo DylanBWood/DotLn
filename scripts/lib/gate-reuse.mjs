@@ -117,9 +117,9 @@ const consultableMain = (root) => {
   }
 };
 
-/** The document gate follows document bytes the code identity excludes. It is
- * never reused and every completion judges it fresh, so its rows neither
- * supply a pass here nor displace one. */
+/** The document gate follows document bytes the code identity excludes.
+ * Completion consumes its newest passing row recorded for the working tree as
+ * it stands; its rows neither supply a product pass here nor displace one. */
 const DOCUMENT_GATE = "npm run test:docs";
 
 /** Rows at one identity: those of the check a claim names, which alone can

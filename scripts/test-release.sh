@@ -327,12 +327,15 @@ make_repo() {
     '  while (( "$#" )); do if [[ "$1" == "--body-file" ]]; then cp "$2" "$DOTLN_GH_STATE/pr.body"; shift 2; else shift; fi; done' \
     '  printf "https://example.invalid/pr/99\\n"; exit 0' \
     'fi' \
+    'state_dir="$DOTLN_GH_STATE"' \
     'if [[ "${1:-}" == "release" ]]; then' \
     '  tag="${3:-}"' \
-    '  if ! git --git-dir="$DOTLN_GH_ORIGIN" show-ref --verify --quiet "refs/tags/$tag"; then printf "release-before-tag %s\\n" "$tag" >>"$DOTLN_GH_LOG"; exit 70; fi' \
+    '  repo=""; scan=("$@"); for ((i = 0; i < ${#scan[@]}; i++)); do if [[ "${scan[$i]}" == "--repo" ]]; then repo="${scan[$((i + 1))]:-}"; fi; done' \
+    '  if [[ -n "$repo" && "$repo" != "${DOTLN_GH_CORE_REPO:-$repo}" ]]; then state_dir="$DOTLN_GH_STATE/${repo//\//_}"; mkdir -p "$state_dir"' \
+    '  elif ! git --git-dir="$DOTLN_GH_ORIGIN" show-ref --verify --quiet "refs/tags/$tag"; then printf "release-before-tag %s\\n" "$tag" >>"$DOTLN_GH_LOG"; exit 70; fi' \
     'fi' \
     'if [[ "${1:-} ${2:-}" == "release view" ]]; then' \
-    '  body="$DOTLN_GH_STATE/${3}.body"' \
+    '  body="$state_dir/${3}.body"' \
     '  if [[ "${DOTLN_FIXTURE_GH_FAIL:-}" == "view" ]]; then printf "network unavailable\\n" >&2; exit 6; fi' \
     '  if [[ "${DOTLN_FIXTURE_GH_FAIL:-}" == "view404" ]]; then printf "HTTP 404: Not Found\\n" >&2; exit 1; fi' \
     '  if [[ "${DOTLN_FIXTURE_GH_FAIL:-}" == "invalidjson" ]]; then printf "{\\n"; exit 0; fi' \
@@ -345,8 +348,8 @@ make_repo() {
     '  tag="$3"; shift 3; notes_file=""; release_title=""' \
     '  while (( "$#" )); do if [[ "$1" == "--notes-file" ]]; then notes_file="$2"; shift 2; elif [[ "$1" == "--title" ]]; then release_title="$2"; shift 2; else shift; fi; done' \
     '  if [[ -z "$notes_file" || ! -f "$notes_file" ]]; then printf "missing notes file\\n" >&2; exit 64; fi' \
-    '  cp "$notes_file" "$DOTLN_GH_STATE/$tag.body"' \
-    '  printf "%s" "$release_title" >"$DOTLN_GH_STATE/$tag.body.title"' \
+    '  cp "$notes_file" "$state_dir/$tag.body"' \
+    '  printf "%s" "$release_title" >"$state_dir/$tag.body.title"' \
     '  printf "https://example.invalid/releases/%s\\n" "$tag"' \
     '  exit 0' \
     'fi' \
@@ -459,7 +462,7 @@ assert_no_candidate_tag() {
 }
 
 release_close_summary() {
-  (cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$main/scripts/release.mjs" close "$@")
+  (cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" DOTLN_GH_CORE_REPO="github.com/$github_repo" "$node_bin" "$main/scripts/release.mjs" close "$@")
 }
 
 retained_close_output() {

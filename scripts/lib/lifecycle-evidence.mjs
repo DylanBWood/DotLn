@@ -139,9 +139,8 @@ export async function requireLifecycleEvidence(
     advise(
       "No passing product gate at this code identity; the reviewer runs npm test before publication.",
     );
-  // The document gate is no longer looked up by tree hash here, which every
-  // report write changed; a criterion recorded met that names it makes the
-  // completion run it inline (scripts/lib/handoff-ledger.mjs; WO-173).
+  // The document row is consumed by the completion's claim check
+  // (scripts/lib/handoff-ledger.mjs requireDocumentRow), never run here.
   if (executor) {
     try {
       const { requirePlanningHandoffs } =
