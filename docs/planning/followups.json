@@ -40159,6 +40159,88 @@
           "at": "2026-10-19T13:47:57.230Z"
         }
       ]
+    },
+    {
+      "id": "FUP-464d273fa299e979",
+      "key": "decision:docs/evidence/WO-222/decisions.md#wo-222-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7102e3279bd67971dd8fd23426245ba59f182c5680debf6aa587f64750106ae9",
+          "ref": "docs/evidence/WO-222/decisions.md#wo-222-d009",
+          "title": "WO-222-D009: Add fair host admission across independent gates, with an explicit compatibility path for fixed-four clients, preserved nested reservations, and a regression that bounds a short document…",
+          "summary": "{ \"id\": \"WO-222-D009\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: next; operator reports a blocked planner document gate and directs continued gate execution\", \"decision\": \"Continue the required complete review and measured series with an operational guard that checks the named planner instance's active gate registrations every two seconds and requests this worktree's canonical gate stop when that instance needs the host. Preserve interrupted attempts and restart only after the planner's gate clears. The operator's contention report warranted an immediate stop, but the executor overcorrected by leaving the required gate work on an indefinite hold. The planner document gate has now passed. Re",
+          "missing": false
+        },
+        {
+          "hash": "2a51f3404ffeb3039f88e657a364be15b084fe7e02ace7daa6eb7f5d76a66375",
+          "ref": "docs/evidence/WO-222/decisions.md#wo-222-d009",
+          "title": "WO-222-D009: Add fair host admission across independent gates, with an explicit compatibility path for fixed-four clients, preserved nested reservations, and a regression that bounds a short document…",
+          "summary": "{ \"id\": \"WO-222-D009\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: next; operator reports planner contention, then prioritizes uninterrupted gate completion\", \"decision\": \"Continue the required complete review and measured series uninterrupted under the operator's latest direction. A temporary operational guard stopped this worktree twice when the named planner instance requested the host; that made the planner responsive but discarded complete-run progress. The operator then explicitly directed that other work may wait and that stopping and starting was not improving overall progress. The guard is stopped. Record fair cross-gate admission as a separate follow-up; this order's measurements st",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-66085a13c95d0f34",
+      "key": "decision:docs/evidence/WO-222/decisions.md#wo-222-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9f7a2dcfa911a1d9822702e4f224580818685865f465d2df6caf6a709a07c733",
+          "ref": "docs/evidence/WO-222/decisions.md#wo-222-d018",
+          "title": "WO-222-D018: Next order editing scripts/lib/host-resources.mjs or scripts/lib/host-lanes.mjs: an unreadable or invalid host lane capacity record refuses with one message naming the record by label…",
+          "summary": "{ \"id\": \"WO-222-D018\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 boards a follow-up for the host lane capacity record's refusal text. The record (lane-capacity.json in the per-user host registry) fails closed, which is right. A record holding 0, 9, the string \\\"8\\\" or no capacity refuses with 'Invalid recorded host lane capacity'. A record that is not JSON, or is empty, refuses with the bare parser message ('Unexpected token ...' or 'Unexpected end of JSON input'). Neither text names the record or a remedy. By the code, every reader then refuses on every clone of the host until the record is removed by hand: the gate entry (registerGuardTree, then acquireHostLa",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-86d6b525c49adce8",
+      "key": "decision:docs/evidence/WO-222/decisions.md#wo-222-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0e968021e177391e95e0930c7be75d85ca2479370dce08d8ff5b5448adea721e",
+          "ref": "docs/evidence/WO-222/decisions.md#wo-222-d019",
+          "title": "WO-222-D019: Next order editing the light classification (scripts/test-runner.mjs lightSuiteNames and scripts/lib/gate-scheduling-baseline.json): classify a task light only when every sample the…",
+          "summary": "{ \"id\": \"WO-222-D019\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 boards a follow-up on the light-peer classification and records that planning receipt 048's criterion 3 reopen condition fired in the after series. The classification follows the order's Design, the latest baseline sample of each task. launchpad:file:test-launchpad-seeds.mjs is therefore light on its 10:58:31Z sample (4.820 s, 467,156,992 bytes), although its two earlier before samples peaked at 526,663,680 and 572,801,024 bytes. In each after run it started while harness-fixtures ran, with harness-fixtures as its only active peer, and peaked at 623,509,504, 593,985,536 and 629,784,576 bytes: abov",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-7870c0378fa69818",
+      "key": "decision:docs/evidence/WO-150/decisions.md#wo-150-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6ed48892b346cbb61c60273ca9de8989fc6aaa54b264afa900ec62944ebaee8c",
+          "ref": "docs/evidence/WO-150/decisions.md#wo-150-d003",
+          "title": "WO-150-D003: Record the equipped cold start as measured and move no ceiling: the executor reads 24,327 bytes in both generated skill roots against the 24,576-byte ceiling, within by 249 bytes, so no…",
+          "summary": "{ \"id\": \"WO-150-D003\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: next; WO-150 criterion 2\", \"decision\": \"Record the equipped cold start as measured and move no ceiling: the executor reads 24,327 bytes in both generated skill roots against the 24,576-byte ceiling, within by 249 bytes, so no 4 KB step and no dated acceptance is due in this order.\", \"evidence\": [ \"docs/evidence/WO-150/cold-start.json: per-role bytes for both roots, before and after, with each verdict\", \"Measured before the flip: executor 23,154 bytes, matching WO-090's after-measurement that the order's Cost paragraph cites\", \"Measured after the flip: installed CLAUDE.md 6,113 bytes unchanged plus executor SKILL.md 18,214 byte",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-16ba63c02aa91dfa",
+      "key": "decision:docs/evidence/WO-222/decisions.md#wo-222-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "73a41b42871974d2b62ccc15760bc3f7249ad39a1778e5e7c80ad631f03da453",
+          "ref": "docs/evidence/WO-222/decisions.md#wo-222-d021--final-review-pass-final-001-at-the-integrated-subject-the-cross-gate-overlap-lease-leads-three-boarded-follow-ups",
+          "title": "WO-222-D021: Three repairs for the next order editing the scheduler or the host guard. F1, next order editing scripts/test-runner.mjs or scripts/lib/host-lanes.mjs: keep an exclusive row's host lease…",
+          "summary": "{ \"id\": \"WO-222-D021\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: final review\", \"decision\": \"FINAL-001 passes WO-222 at the integrated subject, code identity 0473e667e09a0a65bd923cfd23faa1c719d0e4f059ff50142aac99080eff1543, which integration left unchanged (D020). All nine criteria hold, criterion 9 on the text the operator's D011 amendment added. Criterion 8's product gate is the standing complete review row at that identity, npm test -- --review recorded 2026-10-19T20:03:32.850Z, forced fresh, 102 freshly executed tasks, zero failures, 1664.190 s, the newest of four passing complete rows there, reused under WO-221 D017; its document gate is the npm run test:docs row this review records af",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

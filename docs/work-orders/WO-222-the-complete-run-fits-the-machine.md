@@ -1,4 +1,4 @@
-# WO-222 — The complete run fits the machine: the scheduler takes its lanes from the host's parallelism under a memory budget per lane, light suites run beside the three exclusive suites, and the target-worktree suite runs as file lanes, each lever kept only on before-and-after complete-run timelines (version assigned at activation)
+# WO-222 — The complete run fits the machine: the scheduler takes its lanes from the host's parallelism under a memory budget per lane, light suites run beside the three exclusive suites, and the target-worktree suite runs as file lanes, each lever kept only on before-and-after complete-run timelines (v0.86.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -218,7 +218,10 @@ named.
 **Deliverables:** the derivation, registry record, budget and deadline
 changes with their fixtures; the overlap declaration; the split suite and
 its helpers; the series files and README comparison; decisions; the
-re-mints and the live episode; the write-back paragraph.
+re-mints and the live episode; the write-back paragraph. The operator
+subsequently added the maintained gate-execution architecture record
+(D011 and criterion 9), with research and prior decisions linked for later
+work orders.
 
 **Acceptance criteria (all required)**
 
@@ -265,6 +268,13 @@ re-mints and the live episode; the write-back paragraph.
 8. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
    clean; no new dependency; `scripts/lib/gate-evidence.mjs` and
    `packages/skeleton/src/gate-evidence.mjs` unchanged.
+9. `docs/architecture/gate-execution.md` is a standalone, maintained
+   architecture decision record. It traces prior gate work and decisions,
+   cites research from books, primary sources and public implementations,
+   compares alternatives and tradeoffs, distinguishes implemented behavior
+   from proposals, and gives an evidence-based migration and validation plan.
+   Product 07 links to it; future work orders can cite and extend it while
+   retaining their ordinary decision records (operator scope expansion, D011).
 
 **Preflight:** `npm test -- --only runner-fixtures` for steps 2, 4, 5, 6, 8 and 9;
 `npm test -- --only skeleton` for step 3;
