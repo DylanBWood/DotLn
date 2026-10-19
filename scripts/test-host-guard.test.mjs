@@ -28,7 +28,11 @@ import { executeSuite, runGate, suites } from "./test-runner.mjs";
 import { readGateChecks } from "./lib/gate-evidence.mjs";
 import { guardCensus, transferDuplicateOwnership } from "./host-guard.mjs";
 import { agentAncestor, ensureHostGuard } from "./lib/host-guard-state.mjs";
-import { acquireHostLanes, laneHolderAlive } from "./lib/host-lanes.mjs";
+import {
+  acquireHostLaneCapacity,
+  acquireHostLanes,
+  laneHolderAlive,
+} from "./lib/host-lanes.mjs";
 import {
   atomicJson,
   appendIncident,
@@ -74,12 +78,15 @@ async function fixture(t) {
     join(repo, "docs/control/budgets.json"),
     JSON.stringify({
       memory: {
-        taskShare: (64 * 2 ** 20) / totalmem(),
+        gateShare: (4 * 64 * 2 ** 20) / totalmem(),
         signalIntervalMs: 50,
         footprintIntervalMs: 100,
       },
     }),
   );
+  // These containment fixtures retain a four-slot host independent of the
+  // machine running them. Capacity inheritance is exercised separately.
+  await acquireHostLaneCapacity({ directory, capacity: 4 });
   execGit(["init", "-q", repo]);
   execGit(["-C", repo, "add", "."]);
   execGit([
@@ -141,7 +148,7 @@ async function fixture(t) {
     binary,
     hostDirectories,
     cleanups,
-    limits: memoryBudgets(repo),
+    limits: memoryBudgets(repo, { capacity: 4 }),
   };
 }
 
@@ -167,6 +174,7 @@ syncBuiltinESMExports();
     `dotln-host-v1-${process.getuid?.() ?? "user"}`,
   );
   f.hostDirectories.add(directory);
+  await acquireHostLaneCapacity({ directory, capacity: 4 });
   const session = registerProcess(
     "sessions",
     process.pid,
@@ -240,6 +248,7 @@ test(
   { skip: !native },
   async (t) => {
     const f = await fixture(t);
+    assert.equal(f.limits.taskBytes, Math.floor(f.limits.gateBytes / 4));
     for (const mode of ["zero", "nonresident"]) {
       const table = [
         {
@@ -404,8 +413,7 @@ test(
       join(f.repo, "docs/control/budgets.json"),
       JSON.stringify({
         memory: {
-          taskShare: (256 * 2 ** 20) / totalmem(),
-          gateShare: (100 * 2 ** 20) / totalmem(),
+          gateShare: (512 * 2 ** 20) / totalmem(),
           signalIntervalMs: 50,
           footprintIntervalMs: 100,
         },
@@ -415,9 +423,11 @@ test(
     writeFileSync(
       entry,
       `import {runGate} from ${JSON.stringify(join(root, "scripts/test-runner.mjs"))};
+    const allocation=setTimeout(()=>{globalThis.retained=Buffer.alloc(512*2**20,1)},500);
     const result=await runGate(['--again'],${JSON.stringify(f.repo)},{hostDirectory:${JSON.stringify(f.directory)},table:[
       {name:'build',build:true,product:true,command:[process.execPath,'-e',"console.log('built')"]},
-      {name:'allocation',product:true,command:[${JSON.stringify(f.binary)},'zero']} ]});
+      {name:'allocation',product:true,command:[process.execPath,'-e',"setTimeout(()=>{},10000)"]} ]});
+    clearTimeout(allocation);
     console.log('gate-budget-result '+JSON.stringify(result));`,
     );
     const row = await executeSuite(
@@ -847,7 +857,7 @@ test("WO-185 document base comparisons pass their four-lane lease to nested gate
   const f = await fixture(t);
   writeFileSync(
     join(f.repo, "docs/control/budgets.json"),
-    JSON.stringify({ memory: { taskShare: 2 ** 30 / totalmem() } }),
+    JSON.stringify({ memory: { gateShare: (4 * 2 ** 30) / totalmem() } }),
   );
   const entry = join(f.repo, "nested-base.mjs");
   writeFileSync(
@@ -1036,22 +1046,9 @@ test("WO-185 independent worktrees and separate clones share lanes, wait, reclai
   for (const [other, cpuCount] of [worktree, clone].flatMap((repo) =>
     [availableParallelism(), 4, 2].map((count) => [repo, count]),
   )) {
-    const slots = Math.max(1, Math.min(4, Math.floor(cpuCount / 2)));
-    // Leave one gate's actual reservation available on smaller machines too.
-    const blocker =
-      slots < 4
-        ? await acquireHostLanes({
-            directory: f.directory,
-            slots: 4 - slots,
-            parentLease: null,
-            worktree: f.repo,
-            task: "fixture-unused-capacity",
-          })
-        : null;
-    let blockerReleased = false;
-    f.cleanups.push(async () => {
-      if (!blockerReleased) await blocker?.release();
-    });
+    // Every clone inherits the fixture's first recorded capacity, even when
+    // its local parallelism observation would derive fewer lanes.
+    const slots = 4;
     const entry = join(f.base, "lanes.mjs"),
       events = join(f.base, "lane-events.jsonl");
     writeFileSync(events, "");
@@ -1084,8 +1081,6 @@ test("WO-185 independent worktrees and separate clones share lanes, wait, reclai
       });
     }
     const codes = await Promise.all(exits);
-    await blocker?.release();
-    blockerReleased = true;
     assert.ok(
       codes.every(([code]) => code === 0),
       output,
@@ -1103,7 +1098,6 @@ test("WO-185 independent worktrees and separate clones share lanes, wait, reclai
       peak = Math.max(peak, active);
     }
     assert.equal(peak, slots);
-    assert.ok(peak + (4 - slots) <= 4);
     assert.equal(active, 0);
     const guard = await ensureHostGuard(f.directory),
       secondGuard = await ensureHostGuard(f.directory);
@@ -1677,7 +1671,12 @@ test(
       f.repo,
     );
     assert.equal(row.exitCode, 1, row.output);
+    assert.equal(row.memoryBudgetBytes, f.limits.taskBytes);
     assert.match(row.output, /bounded-result.*surviving-process/);
+    const start = row.output
+      .split("\n")
+      .find((line) => line.startsWith("bounded-start "));
+    assert.equal(JSON.parse(start.slice(14)).budgetBytes, f.limits.taskBytes);
     const pid = Number(readFileSync(pidFile));
     await delay(50);
     assert.ok(
@@ -1692,24 +1691,27 @@ test(
   },
 );
 
-test("WO-185 budgets refuse a lane count the shared host lanes cannot honor", (t) => {
+test("legacy budget settings cannot override the host capacity or the gate share per lane", (t) => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-wo185-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   mkdirSync(join(repo, "docs/control"), { recursive: true });
   const budgets = (hostLanes) =>
     writeFileSync(
       join(repo, "docs/control/budgets.json"),
-      JSON.stringify({ memory: { hostLanes } }),
+      JSON.stringify({ memory: { hostLanes, taskShare: 1 } }),
     );
   for (const hostLanes of [2, 6]) {
     budgets(hostLanes);
-    assert.throws(
-      () => memoryBudgets(repo),
-      /hostLanes: every clone on the host shares 4 lanes/,
-    );
+    const limits = memoryBudgets(repo, {
+      capacity: 8,
+      physicalBytes: 16 * 2 ** 30,
+    });
+    assert.equal(limits.hostLanes, 8);
+    assert.equal(limits.taskBytes, limits.gateBytes / 8);
+    assert.equal(limits.taskBytes, 2 ** 30);
   }
   budgets(4);
-  assert.equal(memoryBudgets(repo).hostLanes, 4);
+  assert.equal(memoryBudgets(repo, { capacity: 2 }).hostLanes, 2);
 });
 
 test("WO-185 a guard census that straddles a runner's withdrawal keeps no tag from the withdrawn watch", (t) => {
@@ -2498,4 +2500,60 @@ test("WO-185 a generated quarantine with nonfinite findings passes all three wo1
     peakFootprintBytes: result.peakFootprintBytes,
     output: result.output,
   });
+});
+
+test("the first host acquirer records capacity and later derivations inherit it", async (t) => {
+  const base = mkdtempSync(join(tmpdir(), "dotln-host-capacity-"));
+  t.after(() => rmSync(base, { recursive: true, force: true }));
+  const directory = join(base, "host");
+  const first = await acquireHostLanes({
+    directory,
+    capacity: 8,
+    slots: 1,
+    parentLease: null,
+    task: "first",
+    worktree: base,
+  });
+  try {
+    assert.equal(first.record.capacity, 8);
+    assert.deepEqual(
+      JSON.parse(readFileSync(join(directory, "lane-capacity.json"), "utf8")),
+      { capacity: 8 },
+    );
+    const later = await acquireHostLanes({
+      directory,
+      capacity: 2,
+      slots: 7,
+      parentLease: null,
+      task: "later",
+      worktree: base,
+    });
+    try {
+      assert.equal(later.record.capacity, 8);
+      assert.equal(later.record.slots, 7);
+    } finally {
+      await later.release();
+    }
+    await assert.rejects(
+      acquireHostLanes({ directory, capacity: 8, slots: 9, parentLease: null }),
+      /request 9 exceeds recorded capacity 8/,
+    );
+  } finally {
+    await first.release();
+  }
+  assert.equal(await acquireHostLaneCapacity({ directory, capacity: 1 }), 8);
+  const small = join(base, "small");
+  assert.equal(
+    await acquireHostLaneCapacity({ directory: small, capacity: 2 }),
+    2,
+  );
+  await assert.rejects(
+    acquireHostLanes({
+      directory: small,
+      capacity: 8,
+      slots: 3,
+      parentLease: null,
+    }),
+    /request 3 exceeds recorded capacity 2/,
+  );
 });

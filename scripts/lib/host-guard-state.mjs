@@ -8,6 +8,7 @@ import {
   ensureHostRoot,
   hostStateRoot,
   memoryBudgets,
+  recordedHostLaneCapacity,
   processAlive,
   readHostSnapshot,
   readRecords,
@@ -110,7 +111,9 @@ export async function registerAgentSession(
     uniqueId: owner.uniqueId,
     repo,
     protected: true,
-    limits: memoryBudgets(repo),
+    limits: memoryBudgets(repo, {
+      capacity: recordedHostLaneCapacity(directory),
+    }),
     registeredAt: new Date().toISOString(),
   });
   const guard = await ensureHostGuard(directory);
@@ -131,7 +134,13 @@ export async function registerGuardTree(
   const registration = registerProcess(
     "trees",
     pid,
-    { repo, limits: memoryBudgets(repo), ...details },
+    {
+      repo,
+      limits: memoryBudgets(repo, {
+        capacity: recordedHostLaneCapacity(directory),
+      }),
+      ...details,
+    },
     directory,
   );
   try {

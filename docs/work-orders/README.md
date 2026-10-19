@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-222] — The complete run fits the machine · **queued**
+- [x] [WO-222] — The complete run fits the machine · **final-reviewed**
 - [ ] [WO-217] — Boarded follow-ups, batch 1: the gate · **queued**
 - [ ] [WO-218] — Boarded follow-ups, batch 2: the instance and publication · **queued**
 - [ ] [WO-219] — Boarded follow-ups, batch 3: records, roles and the harness · **queued**
@@ -36,23 +36,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-222
-
-[WO-222 — The complete run fits the machine: the scheduler takes its lanes from the host's parallelism under a memory budget per lane, light suites run beside the three exclusive suites, and the target-worktree suite runs as file lanes, each lever kept only on before-and-after complete-run timelines (version assigned at activation)](WO-222-the-complete-run-fits-the-machine.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-221: satisfied-by-close (met) — the lead ordering, the identity reuse rule and the D019 measurement this order builds on; WO-217: reference-only (non-blocking) — queued after; its runner rows rebase on the scheduler this order leaves.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: machinery
-- Cost: adds the lane derivation and its registry capacity record, the per-lane memory budget, the overlap declaration on the three exclusive rows, the file split of &#96;scripts/test-target-worktree.mjs&#96;, the fixtures of criteria 1 to 4, the after series and its README comparison, decisions and one write-back paragraph. Removes, measured at the latest passing complete row at the base (&#96;npm test -- --review&#96;, recorded 2026-10-19T10:58:31Z at code identity &#96;33c9b710…&#96;, read with &#96;readGateChecks&#96; and &#96;gateCriticalPath&#96;): 2,757 s of wall-clock for 4,840 s of task work, so 1.76 of the four lanes were busy on average; 562 s in which &#96;harness-fixtures&#96; (292 s), &#96;process-debt&#96; (103 s) and &#96;worktree-integration&#96; (167 s) each held all four lanes alone; 611 s in which &#96;target-worktree&#96; ran on one lane from second 29 while the first exclusive suite waited for the lanes to drain; the four vertical files at two slots each (465, 299, 446 and 355 s); peak gate RSS 2.85 GB and peak footprint 1.97 GB against a 25.8 GB gate share, the largest single task &#96;runner-fixtures&#96; at 1.43 GB. WO-221 D019's row of 2026-10-18T23:05:43Z read the same shape: about 5,700 lane-seconds under four lanes on sixteen logical processors, 328 ms of scheduler idle, a 526 s exclusive convoy and 514 s of mixed work bounded by &#96;target-worktree&#96;. The removal this order claims is bounded by the series it records: criterion 5 keeps each lever only when the after median is at least one fifth below the before median, and the inference from the timeline (the mixed phases packing onto eight lanes and the convoy no longer idling three) is that a passing run falls from about 46 to about 30 minutes; the series decides, not this estimate. Every later order pays this run at least once (WO-216's baseline: eleven complete runs per closed order; WO-221's window: fifteen), so the saving repeats at each of the sixteen queued orders. Wall-clock: the after series is three fresh complete runs (about 1.5 to 2.3 hours at today's durations) plus the implementation; unknown until run. Context bytes: the scheduler region of &#96;scripts/test-runner.mjs&#96; (about lines 1320 to 1330 and 1922 to 2250), &#96;scripts/lib/host-lanes.mjs&#96;, &#96;scripts/lib/host-resources.mjs&#96;, &#96;packages/skeleton/src/gate-deadlines.mjs&#96;, &#96;scripts/measure-gates.mjs&#96; and the split suite, about 300 KB. Commands: none added. Tokens: unknown until run. Steps: 14. Re-mints and the live episode: &#96;packages/skeleton/src/gate-deadlines.mjs&#96; and &#96;scripts/lib/host-resources.mjs&#96; are in &#96;FEEDBACK_SOURCE_PATHS&#96; (&#96;packages/skeleton/src/feedback-audit.ts&#96; lines 26 and 67), so this order owes one live feedback self-host episode on Codex &#96;gpt-6.1-sol&#96; at &#96;max&#96; or Claude Code &#96;claude-opus-5-5&#96; at &#96;xhigh&#96;, run in the executor's session with no authorization needed and its cost accepted; both files are registered evidence sources (&#96;scripts/lib/evidence-sources.mjs&#96;: &#96;gate-deadlines.mjs&#96; at lines 82, 159, 226, 257 and 328; &#96;host-resources.mjs&#96; at line 53), so each staled edition is re-minted deterministically; &#96;scripts/test-runner.mjs&#96;, &#96;scripts/lib/host-lanes.mjs&#96;, &#96;scripts/lib/host-resources.mjs&#96;, &#96;scripts/measure-gates.mjs&#96; and &#96;scripts/lib/gate-timeline.mjs&#96; are declared machinery sources of &#96;runner-fixtures&#96; (lines 323 to 372), so &#96;npm test -- --review&#96; is in the final criterion.
-- Authority: [docs/work-orders/WO-222-the-complete-run-fits-the-machine.md](WO-222-the-complete-run-fits-the-machine.md)
 
 ### WO-217
 

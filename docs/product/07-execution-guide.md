@@ -2138,8 +2138,9 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   with one detached guard per user, shared across clones and exported instances
   through the operating system's per-user temporary root. The runner, guard and
   `node scripts/harness.mjs bounded -- <command>` use physical footprint budgets
-  from `docs/control/budgets.json`: a task gets one quarter of physical RAM, a
-  gate one half, and all attributed DotLn trees two thirds. Breaches kill the
+  from `docs/control/budgets.json`: a gate gets one half of physical RAM,
+  each task gets that gate share divided by the recorded host lane capacity,
+  and all attributed DotLn trees get two thirds. Breaches kill the
   offending process groups before writing typed `memory-budget` incidents.
   Ledger and membership-publication failures are reported without preventing
   the stop or its task/gate result. Bare stops name the largest member and retain
@@ -2150,9 +2151,12 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   signals are named and readable signals remain active. The runner records
   sampled task and gate peaks, bounds output, retains failure diagnostics and
   stops its task groups on interrupt, termination and hang-up without recording
-  a gate row. Every gate shares four weighted host lanes; nested gates
-  suballocate the parent reservation validated at gate entry and waits name the
-  holders. A wait-notification failure rejects acquisition after cancelling and
+  a gate row. Every gate shares the host registry's weighted lanes: the first
+  acquirer records the lesser of eight and half the logical processors, at
+  least one, and later acquirers inherit that capacity. Nested gates
+  suballocate the parent reservation validated at gate entry and waits name
+  the holders. The structural host check refuses a per-lane budget below the
+  largest measured task RSS of the baseline passing runs. A wait-notification failure rejects acquisition after cancelling and
   draining its lock helper; it leaves no reservation or heartbeat behind.
   Swap growth triggers a footprint census relative to the last such
   census, so past growth alone does not force a lifetime of fast sampling.
@@ -2860,24 +2864,26 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   sibling's bytes; a starter runtime pass cannot satisfy them. Carried
   platform fixtures remain explicit `--only` or `--machinery` diagnostics,
   with order-specific evidence required for intentional machinery changes.
-  The scheduler retains load-derived deadlines, peer observations, a four-lane
-  cap and bounded live progress. Harness fixtures and process-debt fixtures use
-  exclusive scheduling, restoring the faster measured WO-128 D010 choice
-  (462 seconds exclusive versus 666 shared). Skeleton remains shared: WO-115's
+  The scheduler retains load-derived deadlines, peer observations, host-derived
+  lane capacity and bounded live progress. Harness fixtures, process-debt and
+  worktree-integration keep an exclusive reservation with up to two measured
+  light peers. The older WO-128 D010 comparison (462 seconds exclusive versus
+  666 shared) remains historical evidence for retaining their reservation. Skeleton remains shared: WO-115's
   [same-source comparison](../evidence/WO-115/scheduling-comparison.json) passed
   all 28 suites in 312.441 seconds shared and 430.952 seconds exclusive, with
   only its isolation declaration changed. Isolation shortened skeleton itself
   from 309.511 to 286.508 seconds but added 118.511 seconds to the complete
-  gate. Shared skeleton has priority 80, reserves one of four lanes and uses
-  deadline load factor 8; exclusive skeleton would take priority 200 before
-  shared suites, reserve all four lanes and use factor 2. Each lock-matrix
+  gate. Shared skeleton has priority 80, reserves one host lane and uses
+  twice the scheduler concurrency as its deadline load factor; exclusive
+  skeleton without overlap would take priority 200 before shared suites,
+  reserve every scheduler lane and use factor 2. Each lock-matrix
   cell now has its own 120 s deadline (WO-173). This single ordered pair
   supports retaining shared scheduling; it does not establish the historical
   timeout cause or reliability under all host loads. Future scheduling changes
-  require a same-source comparison. The acceptance target is three consecutive
-  fresh
-  product gates below 360 seconds on the operator's host; their rows belong in
-  WO-132 evidence. No product test is deleted; product-test removal still goes
+  require a same-source comparison. WO-132's acceptance target was three consecutive
+  fresh product gates below 360 seconds on the operator's host; its evidence
+  records 254.908, 250.500 and 246.160 seconds. That historical product
+  selection is not the later complete-review selection. No product test is deleted; product-test removal still goes
   through the mutation corpus. The immutable WO-129–WO-131 records describe
   the former implementation, not current reuse behavior.
 
@@ -2965,6 +2971,33 @@ with `stopped: true`; a stop before any completion records nothing. A stopped
 row supplies no passing claim. An execution finishing after its row was
 recorded also supplies no pass. Launchpad's export/verify, update/refresh and
 seeds/staging files run two at a time, each with its own 900-second deadline.
+
+The host-lane registry records the first acquirer's capacity, the lesser of
+eight and half the logical processors, at least one; later clones inherit
+it. A task's budget is the gate share divided by that capacity, and the host
+structural task compares it with the maximum task RSS in the three baseline
+passing rows. The three exclusive suites reserve every scheduler lane but
+at most two. Only shared tasks whose latest baseline sample is below 60
+seconds and 512 MiB RSS may use those spare lanes. The exclusive task's
+shared deadline declaration has at most three concurrent tasks and a factor
+twice that declaration, up to six; nested gates remain inside its inherited
+reservation. Target-worktree's
+start, publication, close and release files run two at a time, each under
+its own 900-second deadline, preserving the base's complete case inventory.
+The [WO-222 measurement](../evidence/WO-222/README.md) compares these levers
+with a before median of 2,538.373 seconds and a three-fresh-run after median
+of 1,668.518 seconds, 34.2682% lower, with no outer task deadline hit. The
+combined comparison retains all three levers; it does not isolate their
+individual contributions. Summed task duration increased, and the target-worktree
+group span improved by 9.24%; the evidence keeps those tradeoffs and the
+reversal condition alongside the complete-run gain.
+
+The maintained [gate-execution architecture record](../architecture/gate-execution.md)
+connects earlier scheduling and reuse decisions, their measured reversals and
+research from books and public implementations. Orders changing these surfaces
+cite and update that record alongside their ordinary decision files. It separates
+the implemented capacity and file lanes from proposed fair host admission, its
+mixed-version boundary and optional future host resource profiles.
 
 The [WO-216 measurements](../evidence/WO-216/README.md) retain the base's
 seven complete and seventeen document failures with their task timelines,

@@ -2,22 +2,38 @@
   "schemaVersion": 1,
   "subagentCap": 20,
   "memory": {
-    "taskShare": 0.25,
     "gateShare": 0.5,
     "hostShare": 0.6666666666666666,
     "signalIntervalMs": 1000,
     "footprintIntervalMs": 4000,
-    "outputTailBytes": 1048576,
-    "hostLanes": 4
+    "outputTailBytes": 1048576
   },
   "source": "Kit defaults. This instance owns its budgets and records its own acceptances.",
   "dispatches": {
-    "executor": { "tokens": null, "costUsd": null },
-    "verifier": { "tokens": null, "costUsd": null },
-    "reviewer": { "tokens": null, "costUsd": null },
-    "release-close": { "tokens": null, "costUsd": null },
-    "planner": { "tokens": null, "costUsd": null },
-    "refuter": { "tokens": null, "costUsd": null }
+    "executor": {
+      "tokens": null,
+      "costUsd": null
+    },
+    "verifier": {
+      "tokens": null,
+      "costUsd": null
+    },
+    "reviewer": {
+      "tokens": null,
+      "costUsd": null
+    },
+    "release-close": {
+      "tokens": null,
+      "costUsd": null
+    },
+    "planner": {
+      "tokens": null,
+      "costUsd": null
+    },
+    "refuter": {
+      "tokens": null,
+      "costUsd": null
+    }
   },
   "limits": {
     "coldStartBytes": {

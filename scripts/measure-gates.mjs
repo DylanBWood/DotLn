@@ -10,18 +10,53 @@ import {
   mkdirSync,
   openSync,
   readFileSync,
-  readdirSync,
   realpathSync,
   writeFileSync,
 } from "node:fs";
-import { availableParallelism } from "node:os";
+import { availableParallelism, totalmem } from "node:os";
 import { dirname, join, resolve } from "node:path";
 
 import { readGateChecks } from "./lib/gate-evidence.mjs";
 import { gateCriticalPath } from "./lib/gate-timeline.mjs";
 import { suites } from "./test-runner.mjs";
+import { recordedHostLaneCapacity } from "./lib/host-resources.mjs";
 
 const root = findLaunchpad();
+
+// The package command is an alias; the runner records complete reviews under
+// the canonical npm test id. Bound the lookup to this attempt's time window.
+export function measurementGateForRun(checks, startedAt, finishedAt) {
+  return checks
+    .filter(
+      (row) =>
+        row.checkId === "npm test" &&
+        row.gateSelection === "review" &&
+        row.recordedAt >= startedAt &&
+        row.recordedAt <= finishedAt,
+    )
+    .at(-1);
+}
+
+// Published measurements retain task observations, not temporary diagnostic
+// paths or duplicate raw output. The original gate row and logs remain local.
+export function measurementGate(gate) {
+  if (!gate) return null;
+  const omit = (row, keys) =>
+    Object.fromEntries(
+      Object.entries(row).filter(([key]) => !keys.includes(key)),
+    );
+  return {
+    ...omit(gate, ["cases", "deadlineDiagnostics"]),
+    taskTimeline: gate.taskTimeline.map((task) =>
+      omit(task, [
+        "productReadLog",
+        "hostLaneWaitObservations",
+        "output",
+        "outputRef",
+      ]),
+    ),
+  };
+}
 
 export function summarizeDeadlines(records) {
   const groups = new Map();
@@ -73,10 +108,30 @@ export function summarizeDeadlines(records) {
 }
 
 export function checkMeasurementSeries(series) {
-  assert.equal(series.schemaVersion, 1);
+  assert.ok([1, 2].includes(series.schemaVersion));
+  const current = series.schemaVersion === 2;
   assert.equal(series.command, "npm run test:full -- --fresh");
-  assert.ok(["shared", "isolated"].includes(series.configuration));
-  assert.equal(series.runs.length, 5, "five attempts are required");
+  assert.ok(
+    ["shared", "isolated", ...(current ? ["overlap"] : [])].includes(
+      series.configuration,
+    ),
+  );
+  assert.equal(
+    series.runs.length,
+    current ? 3 : 5,
+    current ? "three attempts are required" : "five attempts are required",
+  );
+  if (current) {
+    assert.ok(
+      Number.isInteger(series.host.laneCapacity) &&
+        series.host.laneCapacity >= 1 &&
+        series.host.laneCapacity <= 8,
+    );
+    assert.ok(
+      Number.isFinite(series.host.physicalBytes) &&
+        series.host.physicalBytes > 0,
+    );
+  }
   for (const [index, run] of series.runs.entries()) {
     assert.equal(run.ordinal, index + 1);
     assert.equal(run.processExitCode, 0);
@@ -97,20 +152,82 @@ export function checkMeasurementSeries(series) {
       series.runs[0].gate.treeHash,
       "measurement source must remain fixed",
     );
+    if (current) {
+      assert.equal(
+        run.gate.codeIdentity,
+        series.runs[0].gate.codeIdentity,
+        "measurement code identity must remain fixed",
+      );
+      assert.equal(run.gate.loadClass.hostCapacity, series.host.laneCapacity);
+      assert.equal(
+        run.gate.memory.budgets.physicalBytes,
+        series.host.physicalBytes,
+      );
+      assert.deepEqual(
+        run.host,
+        series.host,
+        "measurement host must remain fixed",
+      );
+    }
     assert.deepEqual(
       run.gate.taskTimeline.map((task) => task.name).sort(),
       series.runs[0].gate.taskTimeline.map((task) => task.name).sort(),
     );
-    for (const name of ["harness-fixtures", "process-debt"]) {
+    for (const name of [
+      "harness-fixtures",
+      "process-debt",
+      ...(current ? ["worktree-integration"] : []),
+    ]) {
       const task = run.gate.taskTimeline.find((task) => task.name === name);
-      assert.equal(task?.loadClass, series.configuration);
-      if (series.configuration === "shared") assert.ok(task.peerCap > 0);
+      const overlap =
+        series.configuration === "overlap"
+          ? Math.min(2, series.host.laneCapacity - 1)
+          : 0;
+      assert.equal(
+        task?.loadClass,
+        series.configuration === "overlap"
+          ? overlap
+            ? "shared"
+            : "isolated"
+          : series.configuration,
+      );
+      if (series.configuration === "overlap")
+        assert.equal(task.peerCap, overlap);
+      else if (series.configuration === "shared") assert.ok(task.peerCap > 0);
       else assert.equal(task.peerCap, 0);
     }
     if (index) assert.ok(run.startedAt >= series.runs[index - 1].finishedAt);
     for (const task of run.gate.taskTimeline) {
       assert.ok(task.concurrentAtStart.length <= task.peerCap);
       assert.ok(Date.parse(task.finishedAt) >= Date.parse(task.startedAt));
+      if (current) {
+        assert.ok(
+          Number.isFinite(task.peakRssBytes) && task.peakRssBytes >= 0,
+          `${task.name}: missing peak RSS`,
+        );
+        assert.equal(task.hostCapacity, series.host.laneCapacity);
+        assert.ok(
+          Number.isSafeInteger(task.slotCapacity) &&
+            task.slotCapacity >= 1 &&
+            task.slotCapacity <= series.host.laneCapacity,
+        );
+        assert.ok(Number.isFinite(task.timeoutMs) && task.timeoutMs > 0);
+        assert.ok(
+          !task.timedOut && task.failureKind !== "timeout",
+          `${task.name}: task ended at its deadline`,
+        );
+        assert.ok(
+          task.durationMs < task.timeoutMs,
+          `${task.name}: task reached its deadline`,
+        );
+        const deadline = run.deadlines.find(
+          (row) => row.site === `suite:${task.name}` && row.task === task.name,
+        );
+        assert.ok(
+          deadline && deadline.samples >= 1 && deadline.hits === 0,
+          `${task.name}: missing or hit task deadline`,
+        );
+      }
     }
   }
   return {
@@ -135,32 +252,40 @@ function measure(output) {
     "retain previous attempts; choose a new series file",
   );
   const series = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     command: "npm run test:full -- --fresh",
     host: {
       platform: process.platform,
       arch: process.arch,
       cpus: availableParallelism(),
+      physicalBytes: totalmem(),
+      laneCapacity: recordedHostLaneCapacity(),
       node: process.version,
     },
     execution: "unknown",
     configuration: suites
-      .filter((row) => ["harness-fixtures", "process-debt"].includes(row.name))
-      .every((row) => row.exclusive || row.loadClass === "isolated")
-      ? "isolated"
-      : "shared",
+      .filter((row) =>
+        ["harness-fixtures", "process-debt", "worktree-integration"].includes(
+          row.name,
+        ),
+      )
+      .every((row) => row.exclusive && row.overlap === 2)
+      ? "overlap"
+      : suites
+            .filter((row) =>
+              ["harness-fixtures", "process-debt"].includes(row.name),
+            )
+            .every((row) => row.exclusive || row.loadClass === "isolated")
+        ? "isolated"
+        : "shared",
     runs: [],
   };
-  const local = docPath(root, "control", "local/wo128-series", `${Date.now()}`);
+  const local = docPath(root, "control", "local/gate-series", `${Date.now()}`);
   mkdirSync(local, { recursive: true });
   mkdirSync(dirname(output), { recursive: true });
-  const diagnosticRoot = docPath(root, "control", "local/harness/deadlines");
-  for (let ordinal = 1; ordinal <= 5; ordinal++) {
-    const previousLogs = new Set(
-      existsSync(diagnosticRoot) ? readdirSync(diagnosticRoot) : [],
-    );
+  for (let ordinal = 1; ordinal <= 3; ordinal++) {
     const startedAt = new Date().toISOString();
-    console.log(`Fresh full gate ${ordinal}/5 started at ${startedAt}`);
+    console.log(`Fresh full gate ${ordinal}/3 started at ${startedAt}`);
     const log = join(local, `${ordinal}.log`);
     const fd = openSync(log, "wx", 0o600);
     let processExitCode;
@@ -175,38 +300,32 @@ function measure(output) {
       closeSync(fd);
     }
     const finishedAt = new Date().toISOString();
-    const gate = readGateChecks(root)
-      .filter(
-        (row) =>
-          row.checkId === "npm run test:full" && row.recordedAt >= startedAt,
-      )
-      .at(-1);
-    const records = (
-      existsSync(diagnosticRoot) ? readdirSync(diagnosticRoot) : []
-    )
-      .filter((name) => !previousLogs.has(name))
-      .flatMap((name) => {
-        const path = join(diagnosticRoot, name, "deadlines.jsonl");
-        return existsSync(path)
-          ? readFileSync(path, "utf8")
-              .trim()
-              .split("\n")
-              .filter(Boolean)
-              .map(JSON.parse)
-          : [];
-      });
+    const gate = measurementGateForRun(
+      readGateChecks(root),
+      startedAt,
+      finishedAt,
+    );
+    const records = gate?.deadlineDiagnostics ?? [];
     series.runs.push({
       ordinal,
       startedAt,
       finishedAt,
       processExitCode,
-      gate: gate ?? null,
+      host: {
+        platform: process.platform,
+        arch: process.arch,
+        cpus: availableParallelism(),
+        physicalBytes: totalmem(),
+        laneCapacity: recordedHostLaneCapacity(),
+        node: process.version,
+      },
+      gate: measurementGate(gate),
       deadlines: summarizeDeadlines(records),
     });
     // Preserve every attempt locally without changing gate inputs between runs.
     writeFileSync(join(local, "series.json"), prettyJson(series));
     console.log(
-      `Fresh full gate ${ordinal}/5: exit ${processExitCode}; ${gate?.durationMs ?? "unknown"} ms; ${gate?.freshSuites ?? 0} fresh / ${gate?.reusedSuites ?? 0} reused tasks`,
+      `Fresh full gate ${ordinal}/3: exit ${processExitCode}; ${gate?.durationMs ?? "unknown"} ms; ${gate?.freshSuites ?? 0} fresh / ${gate?.reusedSuites ?? 0} reused tasks`,
     );
     if (processExitCode !== 0 || gate?.exitCode !== 0) {
       console.error(

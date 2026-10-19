@@ -2,13 +2,11 @@
   "schemaVersion": 1,
   "subagentCap": 20,
   "memory": {
-    "taskShare": 0.25,
     "gateShare": 0.5,
     "hostShare": 0.6666666666666666,
     "signalIntervalMs": 1000,
     "footprintIntervalMs": 4000,
     "outputTailBytes": 1048576,
-    "hostLanes": 4,
     "basis": {
       "workOrder": "WO-185",
       "source": "docs/evidence/WO-185/repair-final001-gate-initial-measurements.json; full npm test -- --review at 2026-10-03T19:17:49.624Z; above-threshold runner sampling directs D026 interval correction and current-identity recheck",

@@ -1328,6 +1328,16 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
   );
   // This case's forge double never reaches the other case's environment.
   const local = { ...env };
+  // The README runs these commands from a standalone shell. Archived code
+  // cannot parse this release's wider scheduler declaration; retain its
+  // finite standalone deadlines and the inherited host reservation.
+  for (const key of [
+    "DOTLN_GATE_LOAD_CLASS",
+    "DOTLN_GATE_CONCURRENCY",
+    "DOTLN_GATE_LOAD_FACTOR",
+    "DOTLN_GATE_CAPACITY",
+  ])
+    delete local[key];
   try {
     const forgeBase = join(scratch, "forge");
     mkdirSync(forgeBase);
@@ -1482,6 +1492,7 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
     )[0];
     assert.equal(refreshRow.outcome, "refreshed", JSON.stringify(refreshRow));
     assert.deepEqual(refreshRow.rewrittenSeeds, [
+      "docs/control/budgets.json",
       "docs/work-orders/WO-001-environment-truth.md",
       "README.md",
     ]);

@@ -4,17 +4,23 @@ import { availableParallelism, loadavg } from "node:os";
 
 // A scheduler declaration, not a host-speed detector. The factor includes two
 // times the measured solo baseline per scheduler slot. Ordinary host commands
-// retain their existing finite bounds. See WO-128's deadline inventory.
+// retain their existing finite bounds.
 /** @param {NodeJS.ProcessEnv} [env] */
 export function gateLoad(env = process.env) {
   const name = env.DOTLN_GATE_LOAD_CLASS;
   if (!name) return { name: "standalone", concurrency: 1, factor: 1 };
   const concurrency = Number(env.DOTLN_GATE_CONCURRENCY);
+  // A legacy declaration had at most four slots. New schedulers carry the
+  // shared registry's capacity, including when a nested gate has fewer lanes.
+  const capacity = Number(env.DOTLN_GATE_CAPACITY ?? 4);
   if (
     !["shared", "isolated"].includes(name) ||
+    !Number.isInteger(capacity) ||
+    capacity < 1 ||
+    capacity > 8 ||
     !Number.isInteger(concurrency) ||
     concurrency < 1 ||
-    concurrency > 4 ||
+    concurrency > capacity ||
     (name === "isolated" && concurrency !== 1) ||
     Number(env.DOTLN_GATE_LOAD_FACTOR) !== concurrency * 2
   )

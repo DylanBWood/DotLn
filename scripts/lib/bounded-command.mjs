@@ -1,5 +1,9 @@
 import { executeSuite } from "../test-runner.mjs";
-import { hostStateRoot, memoryBudgets } from "./host-resources.mjs";
+import {
+  hostStateRoot,
+  memoryBudgets,
+  recordedHostLaneCapacity,
+} from "./host-resources.mjs";
 import { ensureHostGuard } from "./host-guard-state.mjs";
 
 /** Whether a wrapped command is a complete test selection: `npm test`,
@@ -53,7 +57,9 @@ export async function boundedCommand(
     output = (text) => process.stdout.write(text),
   } = {},
 ) {
-  const limits = memoryBudgets(repo);
+  const limits = memoryBudgets(repo, {
+    capacity: recordedHostLaneCapacity(directory),
+  });
   let index = 0;
   if (args[index] === "--budget-bytes") {
     const reduced = Number(args[++index]);

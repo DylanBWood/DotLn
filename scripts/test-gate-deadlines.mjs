@@ -14,7 +14,7 @@ import {
 import { executeSuite, scheduleSuites } from "./test-runner.mjs";
 import { suiteEnvironment } from "./lib/suite-evidence.mjs";
 import { gateCriticalPath } from "./lib/gate-timeline.mjs";
-import { checkMeasurementSeries } from "./measure-gates.mjs";
+import { checkMeasurementSeries, measurementGate } from "./measure-gates.mjs";
 
 const shared = {
   DOTLN_GATE_LOAD_CLASS: "shared",
@@ -256,6 +256,7 @@ test("one recorded timeline carries peers and computes its observed scheduling c
       },
     ],
     {
+      parallelism: 16,
       concurrency: 2,
       execute: async (row) => {
         await new Promise((done) =>
@@ -324,4 +325,175 @@ test("a group member skipped for a failed dependency is never a timeline edge", 
     "b",
     "d",
   ]);
+});
+
+test("declared overlap keeps the factor of two per peer and the recorded capacity ceiling", () => {
+  const overlap = {
+    ...shared,
+    DOTLN_GATE_CAPACITY: "8",
+    DOTLN_GATE_CONCURRENCY: "3",
+    DOTLN_GATE_LOAD_FACTOR: "6",
+  };
+  assert.deepEqual(gateLoad(overlap), {
+    name: "shared",
+    concurrency: 3,
+    factor: 6,
+  });
+  assert.equal(deadlineLimit(100, 100, overlap), 600);
+  assert.deepEqual(
+    gateLoad({
+      ...overlap,
+      DOTLN_GATE_CONCURRENCY: "8",
+      DOTLN_GATE_LOAD_FACTOR: "16",
+    }),
+    { name: "shared", concurrency: 8, factor: 16 },
+  );
+  assert.throws(
+    () => gateLoad({ ...overlap, DOTLN_GATE_CAPACITY: "2" }),
+    /Invalid scheduler/,
+  );
+  assert.throws(
+    () =>
+      gateLoad({
+        ...overlap,
+        DOTLN_GATE_CONCURRENCY: "9",
+        DOTLN_GATE_LOAD_FACTOR: "18",
+      }),
+    /Invalid scheduler/,
+  );
+  assert.throws(
+    () => gateLoad({ ...overlap, DOTLN_GATE_LOAD_CLASS: "isolated" }),
+    /Invalid scheduler/,
+  );
+  const env = suiteEnvironment(
+    {},
+    {
+      task: "exclusive",
+      loadClass: "shared",
+      concurrency: 3,
+      loadFactor: 6,
+      slotCapacity: 6,
+      hostCapacity: 8,
+    },
+  );
+  assert.equal(env.DOTLN_GATE_CAPACITY, "8");
+  assert.deepEqual(gateLoad(env), {
+    name: "shared",
+    concurrency: 3,
+    factor: 6,
+  });
+});
+
+test("three-run measurement requires capacity, task RSS, peers and successful task deadlines", () => {
+  const host = {
+    platform: "fixture",
+    arch: "fixture",
+    cpus: 16,
+    physicalBytes: 16 * 2 ** 30,
+    laneCapacity: 8,
+    node: "fixture",
+  };
+  const names = [
+    "build",
+    "harness-fixtures",
+    "process-debt",
+    "worktree-integration",
+  ];
+  const timeline = names.map((name, index) => ({
+    name,
+    startedAt: new Date(index * 10).toISOString(),
+    finishedAt: new Date((index + 1) * 10).toISOString(),
+    durationMs: 10,
+    timeoutMs: 900_000,
+    executed: true,
+    reused: false,
+    predecessors: index ? [names[index - 1]] : [],
+    concurrentAtStart: [],
+    loadClass: index ? "shared" : "isolated",
+    peerCap: index ? 2 : 0,
+    hostCapacity: 8,
+    slotCapacity: 8,
+    peakRssBytes: 1234,
+  }));
+  const gate = {
+    exitCode: 0,
+    executionMode: "forced-fresh",
+    reusedSuites: 0,
+    freshSuites: 4,
+    treeHash: "fixture",
+    codeIdentity: "fixture",
+    durationMs: 40,
+    taskTimeline: timeline,
+    criticalPath: gateCriticalPath(timeline),
+    loadClass: { hostCapacity: 8 },
+    memory: { budgets: { physicalBytes: host.physicalBytes } },
+  };
+  assert.deepEqual(
+    measurementGate({
+      ...gate,
+      cases: [{ productReadLog: "/synthetic-private/case" }],
+      deadlineDiagnostics: [{ site: "fixture" }],
+      taskTimeline: timeline.map((task) => ({
+        ...task,
+        productReadLog: "/synthetic-private/task",
+        hostLaneWaitObservations: [{ holders: ["/synthetic-private/clone"] }],
+        output: "fixture diagnostic text",
+        outputRef: "/synthetic-private/log",
+      })),
+    }),
+    gate,
+  );
+  assert.equal(measurementGate(undefined), null);
+  const series = {
+    schemaVersion: 2,
+    command: "npm run test:full -- --fresh",
+    configuration: "overlap",
+    host,
+    runs: Array.from({ length: 3 }, (_, index) => ({
+      ordinal: index + 1,
+      startedAt: new Date(index * 100).toISOString(),
+      finishedAt: new Date(index * 100 + 40).toISOString(),
+      processExitCode: 0,
+      host: structuredClone(host),
+      gate: structuredClone(gate),
+      deadlines: names.map((task) => ({
+        task,
+        site: `suite:${task}`,
+        hits: 0,
+        samples: 1,
+      })),
+    })),
+  };
+  assert.equal(checkMeasurementSeries(series).runs, 3);
+  for (const mutate of [
+    (copy) => {
+      delete copy.runs[0].gate.taskTimeline[1].peakRssBytes;
+    },
+    (copy) => {
+      copy.runs[1].gate.taskTimeline[1].hostCapacity = 4;
+    },
+    (copy) => {
+      copy.runs[1].gate.taskTimeline[1].concurrentAtStart = ["a", "b", "c"];
+    },
+    (copy) => {
+      copy.runs[2].deadlines[1].hits = 1;
+    },
+    (copy) => {
+      copy.runs[2].gate.taskTimeline[1].timedOut = true;
+    },
+    (copy) => {
+      copy.runs[2].host.cpus = 8;
+    },
+    (copy) => {
+      copy.runs[2].gate.codeIdentity = "changed";
+    },
+  ]) {
+    const copy = structuredClone(series);
+    mutate(copy);
+    assert.throws(() => checkMeasurementSeries(copy));
+  }
+  assert.throws(
+    () => checkMeasurementSeries({ ...series, runs: series.runs.slice(1) }),
+    /three attempts/,
+  );
 });

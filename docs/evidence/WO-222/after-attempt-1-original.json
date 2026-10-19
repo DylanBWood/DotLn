@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "command": "npm run test:full -- --fresh",
+  "host": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "cpus": 16,
+    "physicalBytes": 51539607552,
+    "laneCapacity": 8,
+    "node": "v26.9.0"
+  },
+  "execution": "unknown",
+  "configuration": "overlap",
+  "runs": [
+    {
+      "ordinal": 1,
+      "startedAt": "2026-10-19T17:39:20.616Z",
+      "finishedAt": "2026-10-19T18:01:53.877Z",
+      "processExitCode": 1,
+      "host": {
+        "platform": "darwin",
+        "arch": "arm64",
+        "cpus": 16,
+        "physicalBytes": 51539607552,
+        "laneCapacity": 8,
+        "node": "v26.9.0"
+      },
+      "gate": null,
+      "deadlines": []
+    }
+  ]
+}

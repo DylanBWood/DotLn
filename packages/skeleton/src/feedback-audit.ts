@@ -65,6 +65,7 @@ export const FEEDBACK_SOURCE_PATHS = [
   "packages/skeleton/src/host-interruption.ts",
   // Native launch/ownership behavior is dynamically imported by the source host.
   "scripts/lib/host-resources.mjs",
+  "scripts/lib/gate-scheduling-baseline.json",
   "scripts/lib/host-lock.c",
   "scripts/lib/host-footprint.c",
   "packages/skeleton/src/source-change-state.ts",

@@ -1,16 +1,41 @@
-import { readFileSync, rmSync } from "node:fs";
+import { existsSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
 import {
   atomicJson,
   delay,
+  hostLaneCapacity,
   hostStateRoot,
   ownedProcesses,
   processAlive,
   readHostSnapshot,
   readRecords,
+  recordedHostLaneCapacity,
   withHostLock,
 } from "./host-resources.mjs";
+
+function capacityUnderLock(directory, derived) {
+  const file = join(directory, "lane-capacity.json");
+  if (!existsSync(file)) {
+    if (!Number.isSafeInteger(derived) || derived < 1 || derived > 8)
+      throw new Error("Derived host lane capacity must be one through eight");
+    atomicJson(file, { capacity: derived });
+  }
+  return recordedHostLaneCapacity(directory);
+}
+
+export async function acquireHostLaneCapacity({
+  directory = hostStateRoot(),
+  capacity = hostLaneCapacity(),
+  signal,
+} = {}) {
+  return withHostLock(
+    directory,
+    "lanes",
+    () => capacityUnderLock(directory, capacity),
+    { signal },
+  );
+}
 
 export function laneHolderAlive(record, table) {
   if (!record.released && processAlive(record, table)) return true;
@@ -88,7 +113,7 @@ function liveHolders(directory) {
 
 export async function acquireHostLanes({
   slots = 1,
-  capacity = 4,
+  capacity = hostLaneCapacity(),
   worktree,
   task,
   directory = hostStateRoot(),
@@ -100,15 +125,8 @@ export async function acquireHostLanes({
       `WAIT host lanes for ${task}: ${observation.waitedMs} ms; ${observation.phase === "lock" ? "waiting for the lane registry lock" : `held by ${observation.holders.map((row) => `${row.task} (${row.slots} slots, ${row.ageMs ?? "unknown"} ms old, owner ${row.ownerAlive ? "alive" : "exited"}, ${row.survivingTasks} task processes, ${row.retainedSubleases} retained subleases${row.nested ? ", nested" : ""}${row.released ? ", released" : ""})`).join("; ")}`}`,
     ),
 } = {}) {
-  if (
-    !Number.isInteger(slots) ||
-    slots < 1 ||
-    slots > capacity ||
-    capacity !== 4
-  )
-    throw new Error(
-      "Host lanes require one through four slots of the shared four",
-    );
+  if (!Number.isSafeInteger(slots) || slots < 1)
+    throw new Error("Host lanes require a positive integer slot request");
   if (parentLease && slots > parentLease.record.slots)
     throw new Error("Nested gate exceeds its inherited lane reservation");
   if (!Number.isFinite(waitHeartbeatMs) || waitHeartbeatMs <= 0)
@@ -154,6 +172,11 @@ export async function acquireHostLanes({
           clearInterval(heartbeat);
           if (notificationFailed) throw notificationError;
           if (signal?.aborted) throw new Error("Host lane wait stopped");
+          const recordedCapacity = capacityUnderLock(directory, capacity);
+          if (slots > recordedCapacity)
+            throw new Error(
+              `Host lane request ${slots} exceeds recorded capacity ${recordedCapacity}`,
+            );
           const { table, holders } = liveHolders(directory);
           const parent =
             parentLease && holders.find((row) => row.file === parentLease.file);
@@ -164,7 +187,7 @@ export async function acquireHostLanes({
           );
           if (
             siblings.reduce((sum, row) => sum + row.slots, 0) + slots >
-            (parent?.slots ?? capacity)
+            (parent?.slots ?? recordedCapacity)
           )
             return { holders: siblings, allHolders: holders, table };
           const owner = table.find((row) => row.pid === process.pid);
@@ -173,6 +196,7 @@ export async function acquireHostLanes({
             pid: owner.pid,
             birth: owner.birth,
             slots,
+            capacity: recordedCapacity,
             worktree,
             task,
             ...(parent ? { parent: parent.file } : {}),

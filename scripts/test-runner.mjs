@@ -4,11 +4,18 @@ import { isMainModule } from "./lib/paths.mjs";
 import { spawn } from "node:child_process";
 import { performance } from "node:perf_hooks";
 import { createProcessMonitor } from "./lib/process-monitor.mjs";
-import { acquireHostLanes, inheritedHostLease } from "./lib/host-lanes.mjs";
+import {
+  acquireHostLaneCapacity,
+  acquireHostLanes,
+  inheritedHostLease,
+} from "./lib/host-lanes.mjs";
 import {
   atomicJson,
+  hostLaneCapacity,
   hostStateRoot,
   memoryBudgets,
+  recordedHostLaneCapacity,
+  schedulingBaseline,
   registerProcess,
   taskLauncher,
   holdTaskDescriptors,
@@ -125,6 +132,7 @@ export const machinerySources = {
     "scripts/test-runner.mjs",
     "scripts/structural-checks.mjs",
     "scripts/lib/host-resources.mjs",
+    "scripts/lib/gate-scheduling-baseline.json",
     "packages/skeleton/src/evidence-editions.mjs",
     "scripts/lib/evidence-fixture.mjs",
     "scripts/test-sync.mjs",
@@ -334,6 +342,7 @@ export const machinerySources = {
     "scripts/test-host-guard.test.mjs",
     "scripts/host-guard.mjs",
     "scripts/lib/host-resources.mjs",
+    "scripts/lib/gate-scheduling-baseline.json",
     "scripts/lib/host-footprint.c",
     "scripts/lib/host-lock.c",
     "scripts/lib/host-guard-state.mjs",
@@ -402,6 +411,9 @@ export const machinerySources = {
     "scripts/test-launchpad-update.mjs",
     "scripts/test-launchpad-seeds.mjs",
     "scripts/fixtures/launchpad-cases.json",
+    "scripts/fixtures/target-worktree-cases.json",
+    "scripts/test-target-worktree-",
+    "scripts/lib/target-worktree-fixture.mjs",
   ],
   "process-debt": [
     "scripts/lib/fixture-inputs.mjs",
@@ -906,7 +918,20 @@ export const suites = [
   nodeTests("target-publish", "scripts/test-target-publish.mjs", {
     kit: "core-only: core outward-vocabulary control data",
   }),
-  nodeTests("target-worktree", "scripts/test-target-worktree.mjs"),
+  nodeTests("target-worktree", "scripts/test-target-worktree-start.mjs", {
+    args: [
+      "scripts/test-target-worktree-publish.mjs",
+      "scripts/test-target-worktree-close.mjs",
+      "scripts/test-target-worktree-release.mjs",
+    ],
+    fileConcurrency: 1,
+    group: "target-worktree",
+    groupLimit: 2,
+    sources: [
+      "scripts/test-target-worktree-",
+      "scripts/lib/target-worktree-fixture.mjs",
+    ],
+  }),
   nodeTests("vertical", "scripts/test-vertical.mjs", {
     kit: "core-only: core outward-vocabulary control data",
     // Files expand into bounded tasks, partitioning the large statement matrix.
@@ -944,6 +969,8 @@ export const suites = [
     ],
     fileConcurrency: 2,
     loadSlots: 2,
+    group: "launchpad-files",
+    groupLimit: 2,
     sources: [
       "scripts/test-launchpad-",
       "scripts/lib/launchpad-fixture.mjs",
@@ -988,8 +1015,9 @@ export const suites = [
   },
   nodeTests("worktree-integration", "scripts/test-worktree-integration.mjs", {
     kit: "core-only: core source and publication inputs",
-    // Its duration bounds were measured with the suite running alone.
+    // Its reservation admits only the measured light peers.
     exclusive: true,
+    overlap: 2,
   }),
   {
     ...shell("release", "scripts/test-release.sh"),
@@ -1176,6 +1204,7 @@ export const suites = [
     kit: "core-only: Entropy Reducer baseline history and package sources",
     group: "hook-heavy",
     exclusive: true,
+    overlap: 2,
   }),
   node("harness", "scripts/harness.mjs", {
     instance: "runtime",
@@ -1245,6 +1274,7 @@ export const suites = [
     kit: "core-only: historical Git trees, package sources, core budgets and work orders",
     group: "hook-heavy",
     exclusive: true,
+    overlap: 2,
   }),
   node("meta", "scripts/meta.mjs", {
     instance: "document",
@@ -1298,9 +1328,26 @@ export function validateSuites(table) {
       row.loadSlots !== undefined &&
       (!Number.isInteger(row.loadSlots) ||
         row.loadSlots < 1 ||
-        row.loadSlots > 4)
+        row.loadSlots > 8)
     )
       throw new Error(`Invalid scheduler lane reservation: ${row.name}`);
+  for (const row of table) {
+    if (
+      row.overlap !== undefined &&
+      (!row.exclusive ||
+        !Number.isSafeInteger(row.overlap) ||
+        row.overlap < 0 ||
+        row.overlap > 2)
+    )
+      throw new Error(`Invalid exclusive overlap: ${row.name}`);
+    if (
+      row.groupLimit !== undefined &&
+      (!row.group ||
+        !Number.isSafeInteger(row.groupLimit) ||
+        row.groupLimit < 1)
+    )
+      throw new Error(`Invalid scheduler group limit: ${row.name}`);
+  }
   for (const row of table)
     if (row.needs !== undefined && row.needs !== OUTSIDE_CONFINEMENT)
       throw new Error(`Unknown suite need: ${row.name} needs ${row.needs}`);
@@ -1321,10 +1368,29 @@ export function validateSuites(table) {
 
 const explicitlyIsolated = (row) =>
   Boolean(row.build || row.exclusive || row.loadClass === "isolated");
+const overlapSlots = (row, concurrency) =>
+  row.exclusive ? Math.min(row.overlap ?? 0, concurrency - 1) : 0;
 const reservedSlots = (row, concurrency) =>
   explicitlyIsolated(row)
-    ? concurrency
+    ? concurrency - overlapSlots(row, concurrency)
     : Math.min(row.loadSlots ?? 1, concurrency);
+
+export function lightSuiteNames(samples = schedulingBaseline.taskSamples) {
+  return new Set(
+    samples
+      .filter(
+        (row) =>
+          row.loadClass === "shared" &&
+          Number.isFinite(row.durationMs) &&
+          row.durationMs >= 0 &&
+          row.durationMs < 60_000 &&
+          Number.isFinite(row.peakRssBytes) &&
+          row.peakRssBytes >= 0 &&
+          row.peakRssBytes < 512 * 2 ** 20,
+      )
+      .map((row) => row.name),
+  );
+}
 
 export function expand(command, repo) {
   return command.flatMap((part) => {
@@ -1351,8 +1417,12 @@ export function executeSuite(
   signal = undefined,
 ) {
   const started = Date.now();
-  const limits = row.memoryLimits ?? memoryBudgets(repo);
   const hostDirectory = row.hostDirectory ?? hostStateRoot();
+  const limits =
+    row.memoryLimits ??
+    memoryBudgets(repo, {
+      capacity: recordedHostLaneCapacity(hostDirectory),
+    });
   let env = row.probe
     ? { ...(row.executionEnvironment ?? process.env) }
     : suiteEnvironment(
@@ -1924,10 +1994,8 @@ export async function scheduleSuites(
   table,
   {
     repo = root,
-    concurrency = Math.max(
-      1,
-      Math.min(4, Math.floor(availableParallelism() / 2)),
-    ),
+    concurrency,
+    parallelism = availableParallelism(),
     execute = executeSuite,
     onResult = () => {},
     onActiveChange = () => {},
@@ -1937,13 +2005,18 @@ export async function scheduleSuites(
     acquireLanes = acquireHostLanes,
     reused = new Map(),
     keepGoing = false,
+    lightTasks = lightSuiteNames(),
   } = {},
 ) {
   validateSuites(table);
+  const capacity = hostLanes?.capacity ?? hostLaneCapacity(parallelism);
+  concurrency ??= capacity;
   if (!Number.isInteger(concurrency) || concurrency < 1)
     throw new Error("Concurrency must be a positive integer");
-  if (concurrency > 4)
-    throw new Error("Declared gate load caps concurrency at four");
+  if (concurrency > capacity)
+    throw new Error(
+      `Declared gate concurrency ${concurrency} exceeds host capacity ${capacity}`,
+    );
   const build = table.find((row) => row.build);
   const results = [];
   const active = new Map();
@@ -1971,16 +2044,17 @@ export async function scheduleSuites(
     const isolated = explicitlyIsolated(row);
     const occupiedSlots = laneIndexes.length;
     const peerConcurrency = isolated
-      ? 1
+      ? overlapSlots(row, concurrency) + 1
       : Math.max(1, concurrency - occupiedSlots + 1);
     const gateContext = {
       ...diagnosticContext,
       task: row.name,
-      loadClass: isolated ? "isolated" : "shared",
+      loadClass: isolated && peerConcurrency === 1 ? "isolated" : "shared",
       concurrency: peerConcurrency,
       loadFactor: peerConcurrency * 2,
       reservedSlots: occupiedSlots,
       slotCapacity: concurrency,
+      hostCapacity: capacity,
     };
     let lease,
       executionStarted = false;
@@ -1997,6 +2071,9 @@ export async function scheduleSuites(
         loadFactor: gateContext.loadFactor,
         peerCap: gateContext.concurrency - 1,
         reservedSlots: occupiedSlots,
+        slotCapacity: concurrency,
+        hostCapacity: capacity,
+        timeoutMs: row.timeoutMs ?? 900_000,
         lanes: laneIndexes,
         ...(lease
           ? {
@@ -2164,8 +2241,20 @@ export async function scheduleSuites(
         throw new Error(`Missing dependency: ${dependency}`);
   if (concurrency > 1)
     pending.sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0));
-  const groups = new Set();
-  let exclusive = false;
+  const groups = new Map();
+  let exclusive = null;
+  const groupAvailable = (row) =>
+    !row.group || (groups.get(row.group) ?? 0) < (row.groupLimit ?? 1);
+  const isLight = (row) => !explicitlyIsolated(row) && lightTasks.has(row.name);
+  const canJoin = (row) => {
+    if (exclusive) return isLight(row);
+    if (!explicitlyIsolated(row)) return true;
+    return (
+      [...active.keys()].every((name) =>
+        isLight(table.find((task) => task.name === name)),
+      ) && active.size <= overlapSlots(row, concurrency)
+    );
+  };
   while (pending.length || active.size) {
     // A stop request ends scheduling at this boundary; the suites already
     // running are ended by their execute adapter and settle below.
@@ -2199,20 +2288,21 @@ export async function scheduleSuites(
           output: `Required preflight or fixture preparation failed for ${row.name}: ${(row.after ?? []).filter((name) => results.some((result) => result.name === name && result.exitCode !== 0)).join(", ")}`,
         });
       }
-    while (!exclusive && lanes.some((lane) => lane.active === null)) {
+    while (lanes.some((lane) => lane.active === null)) {
       const freeLanes = lanes
         .map((lane, index) => ({ lane, index }))
         .filter(({ lane }) => lane.active === null)
         .map(({ index }) => index);
-      // An exclusive row at the head of the queue waits for the lanes to
-      // drain rather than being passed by lower rows, so a led exclusive
-      // suite follows the led shared ones, not every shared suite.
+      // A waiting exclusive row drains heavy peers before lower-priority work.
+      // Once it starts, only measured light tasks may fill its overlap lanes.
       const head = pending[0];
       if (
         head &&
         explicitlyIsolated(head) &&
-        active.size > 0 &&
-        (!head.group || !groups.has(head.group)) &&
+        !exclusive &&
+        (!canJoin(head) ||
+          reservedSlots(head, concurrency) > freeLanes.length) &&
+        groupAvailable(head) &&
         (head.after ?? []).every((name) =>
           results.some(
             (result) => result.name === name && result.exitCode === 0,
@@ -2223,8 +2313,8 @@ export async function scheduleSuites(
       const index = pending.findIndex(
         (row) =>
           reservedSlots(row, concurrency) <= freeLanes.length &&
-          (!row.group || !groups.has(row.group)) &&
-          (!explicitlyIsolated(row) || active.size === 0) &&
+          groupAvailable(row) &&
+          canJoin(row) &&
           (row.after ?? []).every((name) =>
             results.some(
               (result) => result.name === name && result.exitCode === 0,
@@ -2234,8 +2324,8 @@ export async function scheduleSuites(
       if (index < 0) break;
       const [row] = pending.splice(index, 1);
       const isolated = explicitlyIsolated(row);
-      if (isolated) exclusive = true;
-      if (row.group) groups.add(row.group);
+      if (isolated) exclusive = row;
+      if (row.group) groups.set(row.group, (groups.get(row.group) ?? 0) + 1);
       const laneIndexes = freeLanes.slice(0, reservedSlots(row, concurrency));
       const predecessors = [
         build.name,
@@ -2271,8 +2361,8 @@ export async function scheduleSuites(
             lanes[index].previous = row.name;
           }
           onActiveChange([...active.keys()]);
-          if (isolated) exclusive = false;
-          if (row.group) groups.delete(row.group);
+          if (isolated) exclusive = null;
+          if (row.group) groups.set(row.group, groups.get(row.group) - 1);
         });
       active.set(row.name, task);
       onActiveChange([...active.keys()]);
@@ -2303,11 +2393,11 @@ export function expandSuiteTasks(
     .map((row) => row.name);
   return selected
     .flatMap((row) => {
-      if (row.name === "launchpad") {
+      if (["launchpad", "target-worktree"].includes(row.name)) {
         const prefix = row.command.slice(0, -1);
         return [row.command.at(-1), ...(row.args ?? [])].map((file) => ({
           ...row,
-          name: `launchpad:file:${basename(file)}`,
+          name: `${row.name}:file:${basename(file)}`,
           command: [...prefix, file],
           args: [],
           timeoutMs: 900_000,
@@ -2315,7 +2405,7 @@ export function expandSuiteTasks(
       }
       if (row.name === "vertical") {
         // Separate clocks keep queued files and large matrices from spending
-        // another task's deadline. Two reserved slots cap parallel tasks at two.
+        // another task's deadline. Each file owns two host slots.
         const prefix = row.command.slice(0, -1);
         return [row.command.at(-1), ...(row.args ?? [])].flatMap((file) => {
           const task = {
@@ -2858,14 +2948,14 @@ async function runGateChecks(
   // (WO-157 item 15, WO-063 D005).
   const fixtureTag = randomUUID().slice(0, 8);
   const inheritedLease = inheritedHostLease(hostDirectory);
+  const hostCapacity = await acquireHostLaneCapacity({
+    directory: hostDirectory,
+  });
   const concurrency = serial
     ? 1
     : Math.max(
         1,
-        Math.min(
-          inheritedLease?.record.slots ?? 4,
-          Math.floor(availableParallelism() / 2),
-        ),
+        Math.min(inheritedLease?.record.slots ?? hostCapacity, hostCapacity),
       );
   // A complete selection leads with the suites most likely to fail: those
   // whose sources changed after the newest gate row, then those this branch
@@ -2932,7 +3022,7 @@ async function runGateChecks(
     /* Standalone fixture without lifecycle authority. */
   }
   const stop = new AbortController();
-  const limits = memoryBudgets(repo);
+  const limits = memoryBudgets(repo, { capacity: hostCapacity });
   const completedRows = [];
   let stoppedCheck;
   const recordStopped = (stoppedBy) => {
@@ -3278,9 +3368,10 @@ async function runGateChecks(
       ...(document ? { failureComparisons } : {}),
       loadClass: {
         sharedCap: concurrency,
+        hostCapacity,
         factorPerSlot: 2,
         maxHostLoadPerCpu: 2,
-        scheduler: "exclusive-machinery-v1",
+        scheduler: "light-overlap-v2",
       },
       taskTimeline: taskRows.map(withoutOutput),
       memory: {
@@ -3301,7 +3392,10 @@ async function runGateChecks(
             .split("\n")
             .filter(Boolean)
             .map(JSON.parse)
-            .filter((row) => row.hit)
+            .filter(
+              (row) =>
+                row.hit || process.env.DOTLN_GATE_MEASURE_DEADLINES === "1",
+            )
         : [],
     };
     check.criticalPath = gateCriticalPath(check);
