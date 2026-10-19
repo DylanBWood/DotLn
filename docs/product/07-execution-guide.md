@@ -1626,7 +1626,12 @@ before the hookless push. After the push, core's release tag name is pushed
 as an annotated tag onto the refresh commit through the same isolated lane
 and the sibling's GitHub Release is created pointing at it, with a one-line
 body naming core's Release, so a fork previews `--from vX.Y.Z`; a retry
-finds both and reports current. A tag at another commit refuses unless it is
+finds both and reports current. The tag's name is core's, so a fork whose
+`git fetch upstream` follows tags takes it into its clone, where
+`check-surfaces --local` and `release prepare --local` read every tag
+merged into HEAD as the instance's own baseline; until WO-218's row lands,
+a fork sets `remote.upstream.tagOpt` to `--no-tags` and removes the tag
+(the fork's observation, the 2026-10-19 fork-requests pass §5). A tag at another commit refuses unless it is
 an ancestor whose committed kit manifest names this exact core commit and
 release tag, preserving the first tag through a seed-only refresh; ancestry
 alone does not establish that provenance (WO-221). Direct template seeds are refreshed only when each
@@ -1860,7 +1865,14 @@ applying; `worktree start` prints the Codex `--add-dir` and Copilot
 `--allow-tool` lines; and a registration's `hostRules: "literal"` writes that
 order's exact rules to the main checkout's untracked local settings and
 `.codex/rules/dotln-WO-NNN.rules` until the close removes them, `harness check`
-naming a stale one. Claude ownership is held in an ignored per-order sidecar
+naming a stale one. The hook journals each admission it carries as a
+`registeredTargetAdmission` row (the order, the registration and the
+command's kind) and each withholding as an `advisory` row in the session's
+host observation log, `docs/control/local/harness/<session digest>.jsonl`
+under the launchpad root (the digest is the SHA-256 of the session id),
+which a session reads as a file; a host denial after the hook's allow is
+journaled as a `HostPermissionDenied` row, and a prompt the operator
+answers leaves no row (the 2026-10-19 fork-requests pass §6). Claude ownership is held in an ignored per-order sidecar
 under the configured control root's `local/host-rules/`, preserving rules the
 operator already held; JSON settings contain no comment markers and Codex's
 TOML configuration contains no prefix-rule table. A `host-rules --rewrite`
