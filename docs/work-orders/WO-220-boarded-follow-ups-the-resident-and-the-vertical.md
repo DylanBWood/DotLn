@@ -36,7 +36,7 @@ one of four cut by subsystem from the register's 130 pending decision rows
 the register's own excerpts. Planner-synthesized. Opaque identifier, not a
 priority. Clean-room screen: repository records only.
 **Depends on:** WO-219 placed before it (reference only; no hard edge).
-**Recommended placement:** position 5 of the serial queue, after WO-219; the operator may interleave the four batches with the focus orders by one sequence edit.
+**Recommended placement:** position 3 of the serial queue, after WO-217 and WO-219 (the 2026-10-20 entropy pass §7); the operator may interleave the three remaining batches with the focus orders by one sequence edit.
 
 <!-- dotln-dependencies:start -->
 [
@@ -59,8 +59,11 @@ disposition recorded by this order: `settled` with a fixture case that
 fails without the fix, or `declined` with the recorded reason, or, only for
 a choice the operator alone can make, `deferred` with an operator packet
 in the handoff and a reopening condition naming this order's pull request.
-No row is left `untriaged`, `open` or `allocated`. The register's pending
-count falls by the number of rows settled and declined.
+No row is left `untriaged`, `open` or `allocated`. The listed rows were
+`allocated` to this order when it was filed, and the register counts an
+allocated row as closed, so the pending count does not fall by them; the
+README records the count before and after and claims no fall (WO-218
+D056: 158 before and after its application).
 
 **Observed gap (dated 2026-10-17, main at `7b8206f4`):** the register
 holds 281 pending rows, 130 of them decision rows boarded by closed orders
@@ -123,9 +126,17 @@ product statement.
    no listed row is `untriaged`, `open` or `allocated`.
 2. Every `settled` row's disposition reason names a decision in
    `docs/evidence/WO-220/decisions.md` whose `evidence` names the
-   fixture file and case name that fails without the fix, and that case
-   runs under a suite the Preflight line names; or, for a row the current
-   source already meets, names the command run and its output.
+   fixture file, the case name and the control that shows the case
+   failing with only that row's fix reverted and passing with it, recorded
+   in `docs/evidence/WO-220/repair-controls.json` in the shape WO-218's
+   repair filed (per control: the rows, the suite and command, the
+   reversion by path, both arms' exit codes and the verdict), that case
+   running under a suite the Preflight line names; or, for a row the
+   current source already meets, names the command run at the base and
+   its output. A case that also passes at the base, or with the row's fix
+   reverted, settles nothing (WO-218 VER-001 F1: three of five named cases
+   passed at the base; D055's 91 paired controls were the repair, which
+   VER-002 replayed whole).
 3. Every `declined` row's disposition reason records what harm exists now,
    the evidence read and the reversal condition; the declined rows are at
    most one third of the rows listed.
@@ -158,7 +169,7 @@ the base (explicit tokens added by the 2026-10-18 pass, FUP-17266e5072d4a25a).
 2. the surfaces the row's decision names (rows FUP-06abc143a1c52367, FUP-165f9860f8f32a67, FUP-2341c85c58331f3e, FUP-2b9a8e696b38fb97, FUP-349058ac0342247d, FUP-3d4b39cd4b2c4a08, FUP-49c4a5f7176252e7, FUP-4f8cd7989607ad3f, FUP-5d48c4f3c2a3730d, FUP-7c269a184f75e742, FUP-88c339c51cfc1933, FUP-89e29438bd71c524, FUP-8f0561e50754114f, FUP-b8440605da5a4eb2, FUP-bcd4724fca7bff7a, FUP-d093f77bd927f9dc, FUP-d22dc57e754ba35c, FUP-e62d0d2771185a38, FUP-eeb25ea9315438ad): read each row's source decision in full, reproduce the recorded defect or restate the recorded question against the current source, then fix it with a fixture case that fails without the fix, or decline it with the recorded reason, and dispose the row with `npm run plan -- followups --apply` naming the case or the reason. Check: the suite that declares the file (`npm test -- --review --list` names it), under `node scripts/harness.mjs bounded --`.
 3. `packages/kernel/src/core.ts` (rows FUP-c1d4be019802be0d): read each row's source decision in full, reproduce the recorded defect or restate the recorded question against the current source, then fix it with a fixture case that fails without the fix, or decline it with the recorded reason, and dispose the row with `npm run plan -- followups --apply` naming the case or the reason. Check: the suite that declares the file (`npm test -- --review --list` names it), under `node scripts/harness.mjs bounded --`.
 4. `docs/evidence/WO-220/decisions.md`: one decision per disposed row or per cluster of rows fixed together, each naming the row ids, the chosen option, the rejected option, the fixture case or the decline reason, and the reversal condition; an operator packet for each row only the operator can decide, with its reopening condition naming this order's pull request. Then `npm run meta`. Check: `npm run meta -- --check`.
-5. `docs/evidence/WO-220/README.md`: the after table (each row's final status, the case or reason, the command) and the register's pending count before and after (`npm run plan -- followups`). Check: the README holds both tables.
+5. `docs/evidence/WO-220/README.md`: the after table (each row's final status, the case or reason, the command, the control) and the register's pending count before and after (`npm run plan -- followups`), with `docs/evidence/WO-220/repair-controls.json` written as each row is settled (criterion 2). Check: the README holds both tables and every settled row has a control.
 6. Write-backs, in place, only where a row's fix changes what a product document states (the row's source decision names the document and section; re-read the heading at the base). Check: `npm run test:docs`.
 7. Handoff: `npm run format`; `npm run test:docs`; the gate the executor's role text names at the base (the order's Preflight suites, then the handoff gate; `npm test -- --review` where a declared machinery source changed); complete `docs/evidence/WO-220/handoff.md`; `npm run resume -- implementation-ready <flags>`.
 
@@ -187,5 +198,5 @@ report.
 1. At most one third of a batch's rows may be declined.
 2. A row only the operator can decide leaves as an operator packet rather
    than blocking the batch.
-3. The four batches sit after WO-216 and before WO-080; the operator may
-   interleave them with the focus orders.
+3. The three remaining batches sit after WO-218's close and before WO-080,
+   WO-217 first; the operator may interleave them with the focus orders.

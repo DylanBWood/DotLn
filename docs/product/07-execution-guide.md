@@ -1151,7 +1151,10 @@ any other way may still consume an earlier review's surviving findings as one
 input among others. Consumptions: [[REVIEW-002 pass](../planning/entropy-review-002-2026-09-22.md),
 2026-09-22]; [[off-ramps pass](../planning/off-ramps-5s-entropy-2026-09-25.md)
 §9, 2026-09-25]; [[REVIEW-006 pass](../planning/entropy-review-006-2026-10-10.md),
-2026-10-10: one order from one finding, one product sentence from the other].
+2026-10-10: one order from one finding, one product sentence from the other];
+[[REVIEW-007 pass](../planning/entropy-review-007-2026-10-20.md),
+2026-10-20: no new order, both findings to WO-219 as steps, one of them a
+guard on the review machinery itself].
 
 Preconditions and inputs:
 
@@ -1455,7 +1458,13 @@ form itself (a settings key, a marker, a rules file) is the executor's,
 read from that page at execution, so a host that documents a different
 form costs no failed verification (WO-221's criteria 2 and 3 fixed a
 marker and a `config.toml` form the hosts do not support; VER-001 failed
-them as written and D028's operator amendment replaced them). Order size
+them as written and D028's operator amendment replaced them). One more
+[2026-10-20 pass]: a criterion that settles a boarded row by a case that
+fails without the fix names the control, the case run with only that
+row's fix reverted and recorded with both arms' exit codes in a replayable
+file, as WO-218's repair recorded its 91 controls after VER-001 found three
+named cases passing at the base; a case that also passes at the base, or
+with the fix reverted, settles nothing. Order size
 [2026-10-13 pass, operator direction]: the 2026-09-08 cut (one seam and one outcome per order,
 split again above four hours) was a correction for its time and no longer
 binds. The binding cost is now the full gate run and the fixed cycle every

@@ -5,92 +5,92 @@
     "00-vision.md": {
       "nonExemptBytesAtLanding": 28275,
       "ceiling": 31103,
-      "date": "2026-10-17",
-      "decision": "docs/planning/standard-pass-2026-10-17.md#11-document-ceilings"
+      "date": "2026-10-20",
+      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     },
     "01-principles.md": {
       "nonExemptBytesAtLanding": 9462,
       "ceiling": 10409,
-      "date": "2026-10-17",
-      "decision": "docs/planning/standard-pass-2026-10-17.md#11-document-ceilings"
+      "date": "2026-10-20",
+      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     },
     "02-domain-model.md": {
       "nonExemptBytesAtLanding": 149912,
       "ceiling": 164904,
-      "date": "2026-10-17",
-      "decision": "docs/planning/standard-pass-2026-10-17.md#11-document-ceilings"
+      "date": "2026-10-20",
+      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     },
     "03-architecture.md": {
       "nonExemptBytesAtLanding": 184022,
       "ceiling": 202425,
-      "date": "2026-10-17",
-      "decision": "docs/planning/standard-pass-2026-10-17.md#11-document-ceilings"
+      "date": "2026-10-20",
+      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     },
     "04-interfaces.md": {
-      "nonExemptBytesAtLanding": 60516,
-      "ceiling": 66568,
-      "date": "2026-10-17",
-      "decision": "docs/planning/standard-pass-2026-10-17.md#11-document-ceilings"
+      "nonExemptBytesAtLanding": 60705,
+      "ceiling": 66776,
+      "date": "2026-10-20",
+      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     },
     "05-pattern-library.md": {
       "nonExemptBytesAtLanding": 135946,
       "ceiling": 149541,
-      "date": "2026-10-17",
-      "decision": "docs/planning/standard-pass-2026-10-17.md#11-document-ceilings"
+      "date": "2026-10-20",
+      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     },
     "06-roadmap.md": {
       "nonExemptBytesAtLanding": 41953,
       "ceiling": 46149,
-      "date": "2026-10-17",
-      "decision": "docs/planning/standard-pass-2026-10-17.md#11-document-ceilings"
+      "date": "2026-10-20",
+      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     },
     "07-execution-guide.md": {
-      "nonExemptBytesAtLanding": 227222,
-      "ceiling": 249944,
-      "date": "2026-10-19",
-      "decision": "docs/planning/fork-requests-2026-10-19.md#12-document-ceilings"
+      "nonExemptBytesAtLanding": 232739,
+      "ceiling": 256013,
+      "date": "2026-10-20",
+      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     },
     "08-publication-compiler.md": {
       "nonExemptBytesAtLanding": 24867,
       "ceiling": 27354,
-      "date": "2026-10-17",
-      "decision": "docs/planning/standard-pass-2026-10-17.md#11-document-ceilings"
+      "date": "2026-10-20",
+      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     },
     "09-audit-resilience-privacy.md": {
       "nonExemptBytesAtLanding": 52735,
       "ceiling": 58009,
-      "date": "2026-10-17",
-      "decision": "docs/planning/standard-pass-2026-10-17.md#11-document-ceilings"
+      "date": "2026-10-20",
+      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     },
     "10-ir-compatibility.md": {
       "nonExemptBytesAtLanding": 25787,
       "ceiling": 28366,
-      "date": "2026-10-17",
-      "decision": "docs/planning/standard-pass-2026-10-17.md#11-document-ceilings"
+      "date": "2026-10-20",
+      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     },
     "11-proteino.md": {
       "nonExemptBytesAtLanding": 2058,
       "ceiling": 2264,
-      "date": "2026-10-17",
-      "decision": "docs/planning/standard-pass-2026-10-17.md#11-document-ceilings"
+      "date": "2026-10-20",
+      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     },
     "11-protino.md": {
       "nonExemptBytesAtLanding": 30626,
       "ceiling": 33689,
-      "date": "2026-10-17",
-      "decision": "docs/planning/standard-pass-2026-10-17.md#11-document-ceilings"
+      "date": "2026-10-20",
+      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     },
     "12-workstream-application.md": {
       "nonExemptBytesAtLanding": 23572,
       "ceiling": 25930,
-      "date": "2026-10-17",
-      "decision": "docs/planning/standard-pass-2026-10-17.md#11-document-ceilings"
+      "date": "2026-10-20",
+      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     },
     "13-uifa-roles.md": {
       "nonExemptBytesAtLanding": 27015,
       "ceiling": 29717,
-      "date": "2026-10-17",
-      "decision": "docs/planning/standard-pass-2026-10-17.md#11-document-ceilings"
+      "date": "2026-10-20",
+      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     }
   }
 }

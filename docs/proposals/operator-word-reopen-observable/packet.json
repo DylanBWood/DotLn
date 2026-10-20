@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "kind": "FiledProductSuggestionPacket",
+  "filedAt": "2026-10-20T20:06:35.009Z",
+  "sourceReceiptId": "REVIEW-007",
+  "sourceReceiptPath": "docs/instance/entropy-reducer/runs/REVIEW-007.md",
+  "operatorReason": "Accepted and filed; this pass re-disposes WO-188-D015 naming the qualifying records, and WO-219 takes the negative-control fixtures and the count by class so the advisory means attributed speech; the typed operatorQuote refusal is unchanged, the advisory stays advisory as D015 decided, and the named records are not rewritten.",
+  "promotion": "Filing records the packet. Promotion to a work order remains an operator-authorized planning act.",
+  "packet": {
+    "schemaVersion": 1,
+    "kind": "ProductSuggestionPacket",
+    "proposedPath": "docs/proposals/operator-word-reopen-observable/",
+    "sourceEpisodeId": "ep_entropy_857f9b21a78c43f9",
+    "provenance": [
+      "Entropy Reducer (entropy-reducer@1) episode ep_entropy_857f9b21a78c43f9",
+      "Work order wo_entropy_review_1",
+      "Subject e4c46109d19c98b37c6cd4c4f0923b8282f09c18",
+      "Finding ER7-002"
+    ],
+    "corroboratingEvidenceRefs": [
+      "docs/evidence/WO-188/decisions.md:357",
+      "scripts/docs-check.mjs:376-377",
+      "docs/planning/standard-pass-2026-10-19.md:490",
+      "docs/planning/standard-pass-2026-10-13.md:1059-1064",
+      "Episode probe: 24 current advisories at 899eeec1, 28 at e4c46109"
+    ],
+    "dissentingEvidenceRefs": [
+      "docs/evidence/WO-188/decisions.md:349-353 (rejected alternative: the regex cannot tell a paraphrase from a quotation, so a precise lexical rule may not exist)"
+    ],
+    "suggestion": {
+      "suggestionId": "operator-word-reopen-observable",
+      "submittedBy": "Entropy Reducer (entropy-reducer@1), claude-opus-5-5",
+      "problemOrOpportunity": "WO-188-D015's reopening condition has occurred in at least five records since 2026-10-08, yet no pass has re-disposed it. The advisory that should surface it lists 28 rows, about 22 of which are quote characters in JSON, program output or quoted document terms, and the latest pass recorded the rows as historical.",
+      "scope": "Planning re-disposes WO-188-D015, naming the qualifying records. scripts/docs-check.mjs gets negative-control fixtures and a narrower operator-word match, and the advisory stays advisory as D015 decided. The rows could optionally be listed in the planning entry's reopening table. No change to the typed operatorQuote refusal.",
+      "evidenceRefs": [
+        "docs/evidence/WO-188/decisions.md:340-358",
+        "scripts/docs-check.mjs:376-377",
+        "scripts/test-docs-check.mjs:48-141",
+        "docs/evidence/WO-221/decisions.md:7"
+      ],
+      "affectedUsers": [
+        "operator",
+        "planning passes",
+        "executors and reviewers writing decision records"
+      ],
+      "affectedSystems": [
+        "docs-check operator-word advisory",
+        "the planning entry's reopening observations",
+        "the follow-up register"
+      ],
+      "expectedValue": "The reopening condition becomes observable at planning entry without classifying rows by hand, and the advisory count tracks attributed speech, so a rising number means something.",
+      "altitude": 8,
+      "uncertainty": "The split of 28 rows into about 5 true quotations and 22 incidental quote characters is this reviewer's reading of the matched spans, and WO-189-D023 is ambiguous. Whether verbatim in-session replies need a capture digest at all is the operator's call (WO-085-D004 boarded that concern).",
+      "risks": [
+        "A narrower match could miss a real quotation written inside JSON or a code span",
+        "Re-fingerprinting the baseline churns its 334 keys"
+      ],
+      "alternatives": [
+        "Re-dispose D015 only and change no tool",
+        "Write operator replies through the typed operatorQuote field with captureSha256, which refuses when the digest is missing",
+        "Paraphrase the five qualifying records",
+        "Report advisory counts by class in plan conditions"
+      ],
+      "duplicationHints": [
+        "reopen-conditions-evaluated-at-planning-entry (ER4-004)",
+        "order-lifecycle-reopen-triggers-listed (ER5-002)",
+        "ER3-002 and ER4-003 reopening precedents",
+        "FUP-71fc2efc208f597a (WO-085-D004 settled onto D015)",
+        "FUP-f927210831623001 (WO-178-D021 per-record keys)"
+      ],
+      "urgencyRationale": "Low. The count grows by about two to three rows a day, and every pass that reads it pays for hand classification. Deciding before the next standard pass avoids another overstated validation line."
+    }
+  }
+}

@@ -134,7 +134,11 @@ the untracked, non-ignored listing hash on either side of their episode, the
 frozen copy's inventory before and after with its added, removed and resized
 paths (WO-157), and the observed count of denied tool calls, and on the default
 `HEAD` route `receipt` refuses a return whose subject moved. The receipt names
-which of the two confinements applied. REVIEW-002 measured the difference this profile
+which of the two confinements applied. One channel is instruction-only
+until WO-219 lands: the frozen copy is a clone whose `origin` is the source
+checkout, so a push from the copy would move the source's refs without
+moving either witness (REVIEW-007 ER7-001, 2026-10-20); WO-219 removes
+the remote at freeze and adds a refs digest to the record. REVIEW-002 measured the difference this profile
 buys: 0 denied tool calls and 4 of 4 findings measured, against REVIEW-001's
 7 denials and 1 measured of 7.
 

@@ -1,0 +1,397 @@
+{
+  "schemaVersion": "entropy-review-receipt-v1",
+  "receiptId": "REVIEW-007",
+  "ordinal": 12,
+  "previousReceiptHash": "sha256:c1839c6efe958598ba9d294206140075bcbdcf9d93c61a65e3a33837555ff557",
+  "kind": "EntropyReducerReviewRun",
+  "episodeId": "ep_entropy_857f9b21a78c43f9",
+  "startedAt": "2026-10-20T19:38:52.860Z",
+  "endedAt": "2026-10-20T20:00:55.112Z",
+  "subject": {
+    "schemaVersion": "entropy-review-v1",
+    "baseCommit": "e4c46109d19c98b37c6cd4c4f0923b8282f09c18",
+    "repository": ".",
+    "scratchRepository": "/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/cff9570ebfdf6d3e/review-IGUqnr/repo",
+    "trackedStatusSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "scratchInventorySha256": "581cb3a9aa5451b2428833f8536426db84415cebd9ca43a42b9ebd3b82d88149",
+    "scratchInventoryCount": 6871,
+    "hash": "857f9b21a78c43f94a4fd76cbbdb90d7a58c1e7c1b74c66c59403d4b09826253"
+  },
+  "workingTreeDirtyAtDispatch": false,
+  "namedRevision": "HEAD",
+  "actorAttestation": {
+    "route": "launched",
+    "transport": "claude-cli-print",
+    "harness": "claude-code",
+    "harnessVersion": "2.1.304",
+    "model": "claude-opus-5-5",
+    "effort": "xhigh",
+    "source": "command-line-readback-and-invocation",
+    "accountLabel": null,
+    "tools": [
+      "Bash",
+      "Read",
+      "Glob",
+      "Grep"
+    ],
+    "effectiveModel": "unknown",
+    "effectiveEffort": "unknown",
+    "identity": "entropy-reducer@1",
+    "substitutionReason": null,
+    "substitutionPolicy": "different-reviewer-and-must-be-attested"
+  },
+  "compilation": {
+    "semanticHash": "fnv1a64:6f486a98c87b32ab",
+    "compileInputs": {
+      "route": "claude-cli-print",
+      "repo": "/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/cff9570ebfdf6d3e/review-IGUqnr/repo",
+      "baseCommit": "e4c46109d19c98b37c6cd4c4f0923b8282f09c18",
+      "episodeId": "ep_entropy_857f9b21a78c43f9",
+      "dispatchedAt": 1792525132831,
+      "episodeEndsAt": 1792611532831
+    },
+    "workOrderId": "wo_entropy_review_1",
+    "authorityEnvelopeId": "auth_entropy_reducer",
+    "reviewerRequirement": {
+      "harness": "claude-code",
+      "model": "claude-opus-5-5",
+      "displayModel": "Claude Opus 5.5",
+      "effort": "xhigh",
+      "substitutionPolicy": "different-reviewer-and-must-be-attested"
+    },
+    "executionBoundary": {
+      "mode": "operator-mediated-manual",
+      "deferredProgramKind": null,
+      "commandIds": "symbolic-manual-plan",
+      "resultBinding": "host-validator",
+      "resourceEnforcement": "authorize-each-operation-and-thread-envelope"
+    }
+  },
+  "concern": null,
+  "reviewerOutput": {
+    "schemaVersion": 1,
+    "findings": [
+      {
+        "findingId": "ER7-001",
+        "criterion": "An effect the reviewer's compiled envelope denies (remote.*, git.mutate*; packages/skeleton/src/loadouts/entropy-reducer.ts:38-44) either cannot happen from the frozen copy or is visible in the receipt. docs/instance/entropy-reducer/README.md:130-131 says Claude shell confinement 'is instructed and then checked'.",
+        "severity": "major",
+        "observed": "freezeSubject (scripts/lib/entropy-review.mjs:334-345) makes the copy with `git clone --no-hardlinks --no-checkout <root>` and leaves `origin` in place. In this episode the copy's origin, for both fetch and push, is the operator's own checkout (<home>/Projects/DotLn). The review (:1111) and the refutation (:1490) both use freezeSubject. The claude-cli-print launch (packages/skeleton/src/worker-transport.ts:817-847) passes --safe-mode, so the project's hooks and deny list do not load, and it pre-approves Bash. The receipt watches the source through two things only: `git status --porcelain --untracked-files=no` and the untracked listing (entropy-review.mjs:125-126, 210-231). Nothing records the source's refs or remotes. I built a clone the same way in the episode temp directory. From it, `git push origin HEAD:refs/heads/escaped` created a branch in the source, and `--force` rewrote an existing branch that was not checked out (a66981ac -> e4c46109). Both pushes exited 0, and both witness digests stayed byte-identical (e3b0c442..., empty) before and after. I made no push to the operator's repository.",
+        "expected": "The frozen copy has no route back to its source: origin is removed, or its push URL refuses, right after the clone. Alternatively, or as well, the confinement record digests the source's refs (`git for-each-ref`) on both sides of the episode and flags or refuses a change, so the README's 'checked' claim covers ref writes. The README credits the Codex route's workspace-write sandbox, rooted at the copy, with confining its writes; I did not exercise that here.",
+        "evidenceRefs": [
+          "scripts/lib/entropy-review.mjs:334-345 (freezeSubject clones the source and keeps origin)",
+          "scripts/lib/entropy-review.mjs:1111 and :1490 (the review and the refutation both freeze through it)",
+          "scripts/lib/entropy-review.mjs:125-126 and :210-231 (the only witnesses on the source: tracked status and untracked listing)",
+          "packages/skeleton/src/worker-transport.ts:817-847 (claude-cli-print: --safe-mode, Bash in --allowedTools)",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:38-44 (denied effects include git.mutate* and remote.*)",
+          "docs/instance/entropy-reducer/README.md:130-131 (confinement 'instructed and then checked')",
+          "Episode observation: `git remote -v` in the frozen copy lists origin (fetch and push) at <home>/Projects/DotLn",
+          "Episode drill in TMPDIR: branch created and an existing branch force-rewritten through origin, tracked and untracked digests unchanged, probe branches deleted afterwards"
+        ],
+        "surface": "scripts/lib/entropy-review.mjs (freezeSubject, confinement record); packages/skeleton/src/worker-transport.ts (entropyArgs, claude-cli-print route)",
+        "altitude": 6,
+        "standardization": {
+          "kind": "recurring",
+          "rung": "guard",
+          "rationale": "Every review, every refutation, and any later route that freezes a subject inherits this channel. A precondition in freezeSubject that refuses to hand off a copy with a configured remote, plus a refs digest in the confinement record, runs on every dispatch. That costs less than relying on instruction and holds where tests cannot reach a live episode."
+        },
+        "evidenceLabel": "measured",
+        "reproduction": {
+          "kind": "command",
+          "command": "S=$(mktemp -d) && git -C \"$S\" init -q && git -C \"$S\" -c user.name=probe -c user.email=probe@example.invalid commit -q --allow-empty -m s && git clone -q --no-hardlinks --no-checkout \"$S\" \"$S.copy\" && git -C \"$S.copy\" checkout -q --detach HEAD && echo \"copy origin == source: $([ \"$(git -C \"$S.copy\" remote get-url origin)\" = \"$S\" ] && echo yes)\" && echo \"tracked before $(git -C \"$S\" status --porcelain --untracked-files=no | shasum -a 256 | cut -c1-12) untracked before $(git -C \"$S\" ls-files --others --exclude-standard -z | shasum -a 256 | cut -c1-12)\" && git -C \"$S.copy\" push -q origin HEAD:refs/heads/escaped && echo \"tracked after  $(git -C \"$S\" status --porcelain --untracked-files=no | shasum -a 256 | cut -c1-12) untracked after  $(git -C \"$S\" ls-files --others --exclude-standard -z | shasum -a 256 | cut -c1-12)\" && echo \"source branches: $(git -C \"$S\" branch --list | tr -d ' *' | tr '\\n' ' ')\"; echo \"frozen copy origin: $(git remote get-url origin | sed 's|^/Users/[^/]*|<home>|')\"; rm -rf \"$S\" \"$S.copy\""
+        }
+      },
+      {
+        "findingId": "ER7-002",
+        "criterion": "A deferred decision's reopening condition is re-disposed once it has occurred (the accepted ER3-002, ER4-003 and ER5-002 precedents). The advisory a planning pass reads to observe it must be able to separate the condition from noise. WO-188-D015 (docs/evidence/WO-188/decisions.md:357) reopens when 'A new record quotes operator words without a capture digest and the check admits it.'",
+        "severity": "minor",
+        "observed": "At e4c46109, `node scripts/docs-check.mjs` exits 0 and reports 28 current operator-word advisories against 332 historical. WO-188-D015 recorded 0 current on 2026-10-08. To see what each row matched, I instrumented docs-check in a scratch copy. About 5 of the 28 are verbatim operator replies with no capture digest, all in records dated after D015: WO-200-D002 (2026-10-12), WO-210-D024/evidence-1 (2026-10-14), WO-221-D028 and its evidence-1 (2026-10-19), and docs/verifications/WO-203/VER-001.md:149. The other ~22 are quote characters near the word 'operator' that are not operator speech: JSON finding arrays in final reviews, program output, or a quoted document phrase. So the condition has occurred and the check admits it. No planning document cites WO-188-D015 (0 files), and no register row tracks its reopening; FUP-71fc2efc208f597a was settled onto it but reopens only on a typed quotation. The 2026-10-19 pass's validation (docs/planning/standard-pass-2026-10-19.md:490) calls the advisories 'historical'. Run at that pass's own commit (899eeec1), the same function reports 24 current and 332 historical. A mutation drill on a synthetic root showed the advisory cannot separate these cases: a JSON finding array, a quoted product phrase and a quoted reply each yield one indistinguishable row, and a paraphrase yields none.",
+        "expected": "A planning pass re-disposes WO-188-D015, naming the qualifying records. The advisory, which stays advisory as D015 decided, separates attributed speech from incidental quote characters (inside JSON or code, or a quoted document term), so the reopening condition can be read without classifying every row by hand.",
+        "evidenceRefs": [
+          "scripts/docs-check.mjs:376-377 (attributedWords: any quote character after 'operator' in the same sentence)",
+          "scripts/docs-check.mjs:570-579 and :1679-1684 (current versus historical rows; advisories never change the exit code)",
+          "docs/evidence/WO-188/decisions.md:340-358 (WO-188-D015, its rejected alternative and its reopenWhen)",
+          "docs/evidence/WO-200/decisions.md:34; docs/evidence/WO-210/decisions.md:393; docs/evidence/WO-221/decisions.md:7; docs/verifications/WO-203/VER-001.md:149 (records quoting operator replies without a digest)",
+          "docs/evidence/WO-188/close-register.md:25 (FUP-71fc2efc208f597a settled onto D015 with a narrower reopening)",
+          "docs/planning/standard-pass-2026-10-13.md:1059-1064 (two incidental rows classified by hand)",
+          "docs/planning/standard-pass-2026-10-19.md:490 ('historical')",
+          "scripts/test-docs-check.mjs:48-141 (no negative control for quote characters that are not operator speech)",
+          "Episode probe: operatorWordAdvisories at 899eeec1 returned 24 current and 332 historical; synthetic-root drill: three indistinguishable rows, none for the paraphrase"
+        ],
+        "surface": "scripts/docs-check.mjs operator-word advisory; the planning entry's reopening observations; WO-188-D015",
+        "altitude": 8,
+        "standardization": {
+          "kind": "recurring",
+          "rung": "test",
+          "rationale": "The count grew from 0 to 24 to 28 in twelve days, and the 2026-10-13 and 2026-10-19 passes each judged the rows by hand. The cheapest executable standard is a set of negative-control fixtures in scripts/test-docs-check.mjs for quote characters in JSON or code spans and for quoted document terms, so that the remaining current rows mean attributed speech."
+        },
+        "evidenceLabel": "measured",
+        "reproduction": {
+          "kind": "command",
+          "command": "node scripts/docs-check.mjs | grep -E '^(ADVISORY docs/(evidence/WO-2(00|10|21)|verifications/WO-203)|Operator-word advisories)'; sed -n 357p docs/evidence/WO-188/decisions.md | cut -c1-110; git grep -l 'WO-188-D015' -- 'docs/planning/*.md' | wc -l; sed -n 490,491p docs/planning/standard-pass-2026-10-19.md"
+        }
+      }
+    ],
+    "proposalPackets": [
+      {
+        "schemaVersion": 1,
+        "kind": "ProductSuggestionPacket",
+        "proposedPath": "docs/proposals/frozen-subject-has-no-route-home/",
+        "sourceEpisodeId": "ep_entropy_857f9b21a78c43f9",
+        "provenance": [
+          "Entropy Reducer (entropy-reducer@1) episode ep_entropy_857f9b21a78c43f9",
+          "Work order wo_entropy_review_1",
+          "Subject e4c46109d19c98b37c6cd4c4f0923b8282f09c18",
+          "Finding ER7-001"
+        ],
+        "corroboratingEvidenceRefs": [
+          "scripts/lib/entropy-review.mjs:334-345",
+          "scripts/lib/entropy-review.mjs:125-126",
+          "scripts/lib/entropy-review.mjs:210-231",
+          "packages/skeleton/src/worker-transport.ts:817-847",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:38-44",
+          "Episode drill: push through origin from a frozen-style clone changed the source's refs while both witnesses stayed byte-identical"
+        ],
+        "dissentingEvidenceRefs": [
+          "docs/instance/entropy-reducer/README.md:130-131 and the dispatch instructions: remotes are declared read-only, and no reviewer is recorded as having pushed",
+          "Operator user-level Claude settings were not read (out of scope) and might deny git push"
+        ],
+        "suggestion": {
+          "suggestionId": "frozen-subject-has-no-route-home",
+          "submittedBy": "Entropy Reducer (entropy-reducer@1), claude-opus-5-5",
+          "problemOrOpportunity": "The entropy review and refutation subject is a clone whose origin is the operator's own checkout. On the Claude route (--safe-mode, Bash pre-approved), a push from the copy writes refs into the operator's repository. That is an effect the compiled envelope denies (remote.*, git.mutate*), and the receipt's tracked-status and untracked-listing witnesses cannot see it.",
+          "scope": "scripts/lib/entropy-review.mjs freezeSubject and the confinement record, their fixtures in scripts/test-entropy-review.mjs, and the README's 'What the reviewer may run'. No change to routes, models, budgets or the Codex sandbox.",
+          "evidenceRefs": [
+            "scripts/lib/entropy-review.mjs:334-345",
+            "scripts/lib/entropy-review.mjs:1111",
+            "scripts/lib/entropy-review.mjs:1490",
+            "packages/skeleton/src/worker-transport.ts:817-847",
+            "docs/instance/entropy-reducer/README.md:130-131"
+          ],
+          "affectedUsers": [
+            "operator",
+            "entropy reviewer and refuter workers",
+            "planning passes that rely on review receipts"
+          ],
+          "affectedSystems": [
+            "npm run entropy -- review | refute",
+            "entropy receipt confinement record",
+            "the operator's repository refs"
+          ],
+          "expectedValue": "The compiled denial of remote and git mutation holds structurally for the frozen copy, and the receipt's 'checked' claim covers ref writes. The cost is one git command and one digest per dispatch.",
+          "altitude": 6,
+          "uncertainty": "Not known: whether a user-level setting outside the project denies `git push` (settings were not read), and whether the Codex workspace-write sandbox blocks writes to the source's .git (not exercised here).",
+          "risks": [
+            "Removing origin breaks any probe that legitimately fetches from the source (none observed)",
+            "A refs digest of a busy source can flag the operator's own concurrent ref changes; on the explicit-commit route, record the change rather than refuse"
+          ],
+          "alternatives": [
+            "Set remote.origin.pushurl to a refusing value instead of removing origin",
+            "Record a refs digest only, without closing the channel",
+            "Keep the instruction-only confinement and state the gap in the README"
+          ],
+          "duplicationHints": [
+            "isolated-codex-launch-home (ER3-001, host-side effects of launches)",
+            "ER4-007 accepted into WO-175 (TMPDIR beside the copy)",
+            "WO-157 confinement record (inventory set delta)"
+          ],
+          "urgencyRationale": "Every pending and future review and refutation episode carries this channel, and the receipts already claim the confinement is checked. Closing it before the next dispatch costs little."
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "kind": "ProductSuggestionPacket",
+        "proposedPath": "docs/proposals/operator-word-reopen-observable/",
+        "sourceEpisodeId": "ep_entropy_857f9b21a78c43f9",
+        "provenance": [
+          "Entropy Reducer (entropy-reducer@1) episode ep_entropy_857f9b21a78c43f9",
+          "Work order wo_entropy_review_1",
+          "Subject e4c46109d19c98b37c6cd4c4f0923b8282f09c18",
+          "Finding ER7-002"
+        ],
+        "corroboratingEvidenceRefs": [
+          "docs/evidence/WO-188/decisions.md:357",
+          "scripts/docs-check.mjs:376-377",
+          "docs/planning/standard-pass-2026-10-19.md:490",
+          "docs/planning/standard-pass-2026-10-13.md:1059-1064",
+          "Episode probe: 24 current advisories at 899eeec1, 28 at e4c46109"
+        ],
+        "dissentingEvidenceRefs": [
+          "docs/evidence/WO-188/decisions.md:349-353 (rejected alternative: the regex cannot tell a paraphrase from a quotation, so a precise lexical rule may not exist)"
+        ],
+        "suggestion": {
+          "suggestionId": "operator-word-reopen-observable",
+          "submittedBy": "Entropy Reducer (entropy-reducer@1), claude-opus-5-5",
+          "problemOrOpportunity": "WO-188-D015's reopening condition has occurred in at least five records since 2026-10-08, yet no pass has re-disposed it. The advisory that should surface it lists 28 rows, about 22 of which are quote characters in JSON, program output or quoted document terms, and the latest pass recorded the rows as historical.",
+          "scope": "Planning re-disposes WO-188-D015, naming the qualifying records. scripts/docs-check.mjs gets negative-control fixtures and a narrower operator-word match, and the advisory stays advisory as D015 decided. The rows could optionally be listed in the planning entry's reopening table. No change to the typed operatorQuote refusal.",
+          "evidenceRefs": [
+            "docs/evidence/WO-188/decisions.md:340-358",
+            "scripts/docs-check.mjs:376-377",
+            "scripts/test-docs-check.mjs:48-141",
+            "docs/evidence/WO-221/decisions.md:7"
+          ],
+          "affectedUsers": [
+            "operator",
+            "planning passes",
+            "executors and reviewers writing decision records"
+          ],
+          "affectedSystems": [
+            "docs-check operator-word advisory",
+            "the planning entry's reopening observations",
+            "the follow-up register"
+          ],
+          "expectedValue": "The reopening condition becomes observable at planning entry without classifying rows by hand, and the advisory count tracks attributed speech, so a rising number means something.",
+          "altitude": 8,
+          "uncertainty": "The split of 28 rows into about 5 true quotations and 22 incidental quote characters is this reviewer's reading of the matched spans, and WO-189-D023 is ambiguous. Whether verbatim in-session replies need a capture digest at all is the operator's call (WO-085-D004 boarded that concern).",
+          "risks": [
+            "A narrower match could miss a real quotation written inside JSON or a code span",
+            "Re-fingerprinting the baseline churns its 334 keys"
+          ],
+          "alternatives": [
+            "Re-dispose D015 only and change no tool",
+            "Write operator replies through the typed operatorQuote field with captureSha256, which refuses when the digest is missing",
+            "Paraphrase the five qualifying records",
+            "Report advisory counts by class in plan conditions"
+          ],
+          "duplicationHints": [
+            "reopen-conditions-evaluated-at-planning-entry (ER4-004)",
+            "order-lifecycle-reopen-triggers-listed (ER5-002)",
+            "ER3-002 and ER4-003 reopening precedents",
+            "FUP-71fc2efc208f597a (WO-085-D004 settled onto D015)",
+            "FUP-f927210831623001 (WO-178-D021 per-record keys)"
+          ],
+          "urgencyRationale": "Low. The count grows by about two to three rows a day, and every pass that reads it pays for hand classification. Deciding before the next standard pass avoids another overstated validation line."
+        }
+      }
+    ],
+    "resultEnvelope": {
+      "workOrderId": "wo_entropy_review_1",
+      "episodeId": "ep_entropy_857f9b21a78c43f9",
+      "status": "completed",
+      "resultId": "result_ep_entropy_857f9b21a78c43f9",
+      "summary": "Review of e4c46109: census of 6,871 tracked paths, four lenses worked serially, two measured findings and two proposal packets. ER7-001 (major): the frozen copy is a clone whose origin is the operator's checkout. On the Claude route (--safe-mode, Bash pre-approved), a push from the copy writes refs into the source while both receipt witnesses stay byte-identical. Reproduced on throwaway repositories in TMPDIR only. ER7-002 (minor): WO-188-D015's reopening condition has occurred (operator replies quoted without a capture digest, 2026-10-12 to 2026-10-19), but no pass re-disposed it. docs-check reports 28 current advisories, about 22 of them incidental quote characters, and the 2026-10-19 pass called the advisories historical when its own commit showed 24 current. Checked, not filed: kernel wildcard and resource semantics, skill-root parity, cited commands, index freshness, publish refusals, the WO-105 lane failure (known, allocated to WO-220), executor cold-start headroom of 33 bytes (operator-reserved). Notes: one deliberately denied Read tested --restricted; one incidental ls of a scratch extraction listed two tracked docs/intake directory names, no contents read. Scratch trees removed; subject unchanged. Awaiting operator disposition.",
+      "requiresHuman": true
+    },
+    "cleanRoom": {
+      "status": "passed",
+      "stopConditionsFound": false,
+      "evidenceRefs": [
+        "No employer material, credentials or internal service details were found in any path read",
+        "No docs/intake/** contents were read; one incidental ls of a scratch git-archive extraction listed two tracked intake directory names (.gitkeep structure only)",
+        "The operator's absolute home path in the frozen copy's origin is written as <home>; the operator email in dotln.config.json is not reproduced",
+        "Operator-attributed words are cited by record id only, never quoted",
+        "Tracked status of the frozen copy is empty (e3b0c442...) and no untracked files were added; all probes ran in the episode TMPDIR"
+      ]
+    }
+  },
+  "selection": {
+    "measuredDenominator": 2,
+    "measuredStatus": "selected",
+    "inspectionDenominator": 0,
+    "inspectionStatus": "not-applicable",
+    "inspectionSampleSize": 0,
+    "selectionRule": "every measured finding and every by-inspection finding",
+    "measuredSubjects": [
+      {
+        "findingId": "ER7-002",
+        "command": "node scripts/docs-check.mjs | grep -E '^(ADVISORY docs/(evidence/WO-2(00|10|21)|verifications/WO-203)|Operator-word advisories)'; sed -n 357p docs/evidence/WO-188/decisions.md | cut -c1-110; git grep -l 'WO-188-D015' -- 'docs/planning/*.md' | wc -l; sed -n 490,491p docs/planning/standard-pass-2026-10-19.md"
+      },
+      {
+        "findingId": "ER7-001",
+        "command": "S=$(mktemp -d) && git -C \"$S\" init -q && git -C \"$S\" -c user.name=probe -c user.email=probe@example.invalid commit -q --allow-empty -m s && git clone -q --no-hardlinks --no-checkout \"$S\" \"$S.copy\" && git -C \"$S.copy\" checkout -q --detach HEAD && echo \"copy origin == source: $([ \"$(git -C \"$S.copy\" remote get-url origin)\" = \"$S\" ] && echo yes)\" && echo \"tracked before $(git -C \"$S\" status --porcelain --untracked-files=no | shasum -a 256 | cut -c1-12) untracked before $(git -C \"$S\" ls-files --others --exclude-standard -z | shasum -a 256 | cut -c1-12)\" && git -C \"$S.copy\" push -q origin HEAD:refs/heads/escaped && echo \"tracked after  $(git -C \"$S\" status --porcelain --untracked-files=no | shasum -a 256 | cut -c1-12) untracked after  $(git -C \"$S\" ls-files --others --exclude-standard -z | shasum -a 256 | cut -c1-12)\" && echo \"source branches: $(git -C \"$S\" branch --list | tr -d ' *' | tr '\\n' ' ')\"; echo \"frozen copy origin: $(git remote get-url origin | sed 's|^/Users/[^/]*|<home>|')\"; rm -rf \"$S\" \"$S.copy\""
+      }
+    ],
+    "inspectionSubjects": [],
+    "selectedFindingIds": [
+      "ER7-002",
+      "ER7-001"
+    ]
+  },
+  "findingSummary": {
+    "total": 2,
+    "measured": 2,
+    "byInspection": 0,
+    "blocking": 0,
+    "major": 1,
+    "minor": 1,
+    "proposalPackets": 2
+  },
+  "confinement": {
+    "subjectBinding": "HEAD of a clean tree; any tracked change refuses the receipt",
+    "temporaryDirectory": {
+      "path": "/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/cff9570ebfdf6d3e/review-IGUqnr/tmp",
+      "observed": true,
+      "count": 31,
+      "bytes": 605713,
+      "sha256": "b8468ca56bbffbf1527292e134043f13848a4abfbdd54e685509dfc8a29a94ff"
+    },
+    "trackedStatusBeforeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trackedStatusAfterSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trackedStatusByteIdentical": true,
+    "scratchInventoryBefore": {
+      "count": 6871,
+      "sha256": "581cb3a9aa5451b2428833f8536426db84415cebd9ca43a42b9ebd3b82d88149"
+    },
+    "scratchInventoryAfter": {
+      "count": 6871,
+      "sha256": "581cb3a9aa5451b2428833f8536426db84415cebd9ca43a42b9ebd3b82d88149"
+    },
+    "untrackedListing": {
+      "before": {
+        "count": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "after": {
+        "count": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "identical": true
+    },
+    "scratchDelta": {
+      "observed": true,
+      "added": [],
+      "removed": [],
+      "resized": [],
+      "counts": {
+        "added": 0,
+        "removed": 0,
+        "resized": 0
+      },
+      "sha256": {
+        "added": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "removed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "resized": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "listedPerSet": 100
+    },
+    "excludedFromManifest": [
+      ".git/**",
+      "**/node_modules/**"
+    ],
+    "dependencies": "copied",
+    "commandExecution": "file tools confined to the frozen copy by --restricted; shell writes instructed to stay inside the copy or episode temporary directory, witnessed by copy and temporary inventories",
+    "permissionDenials": 1,
+    "deniedTools": [
+      "Read"
+    ]
+  },
+  "cost": {
+    "line": "tokens unknown; cause harness-no-readback; observed episode wall clock 1322 s, 112 turns, USD 6.454762400000001; source claude-result-envelope",
+    "tokens": null,
+    "costUsd": 6.454762400000001,
+    "durationMs": 1322252,
+    "turns": 112,
+    "source": "claude-result-envelope"
+  },
+  "statement": "{\"schemaVersion\":1,\"findings\":[{\"findingId\":\"ER7-001\",\"criterion\":\"An effect the reviewer's compiled envelope denies (remote.*, git.mutate*; packages/skeleton/src/loadouts/entropy-reducer.ts:38-44) either cannot happen from the frozen copy or is visible in the receipt. docs/instance/entropy-reducer/README.md:130-131 says Claude shell confinement 'is instructed and then checked'.\",\"severity\":\"major\",\"evidenceLabel\":\"measured\",\"observed\":\"freezeSubject (scripts/lib/entropy-review.mjs:334-345) makes the copy with `git clone --no-hardlinks --no-checkout <root>` and leaves `origin` in place. In this episode the copy's origin, for both fetch and push, is the operator's own checkout (<home>/Projects/DotLn). The review (:1111) and the refutation (:1490) both use freezeSubject. The claude-cli-print launch (packages/skeleton/src/worker-transport.ts:817-847) passes --safe-mode, so the project's hooks and deny list do not load, and it pre-approves Bash. The receipt watches the source through two things only: `git status --porcelain --untracked-files=no` and the untracked listing (entropy-review.mjs:125-126, 210-231). Nothing records the source's refs or remotes. I built a clone the same way in the episode temp directory. From it, `git push origin HEAD:refs/heads/escaped` created a branch in the source, and `--force` rewrote an existing branch that was not checked out (a66981ac -> e4c46109). Both pushes exited 0, and both witness digests stayed byte-identical (e3b0c442..., empty) before and after. I made no push to the operator's repository.\",\"expected\":\"The frozen copy has no route back to its source: origin is removed, or its push URL refuses, right after the clone. Alternatively, or as well, the confinement record digests the source's refs (`git for-each-ref`) on both sides of the episode and flags or refuses a change, so the README's 'checked' claim covers ref writes. The README credits the Codex route's workspace-write sandbox, rooted at the copy, with confining its writes; I did not exercise that here.\",\"reproduction\":{\"kind\":\"command\",\"command\":\"S=$(mktemp -d) && git -C \\\"$S\\\" init -q && git -C \\\"$S\\\" -c user.name=probe -c user.email=probe@example.invalid commit -q --allow-empty -m s && git clone -q --no-hardlinks --no-checkout \\\"$S\\\" \\\"$S.copy\\\" && git -C \\\"$S.copy\\\" checkout -q --detach HEAD && echo \\\"copy origin == source: $([ \\\"$(git -C \\\"$S.copy\\\" remote get-url origin)\\\" = \\\"$S\\\" ] && echo yes)\\\" && echo \\\"tracked before $(git -C \\\"$S\\\" status --porcelain --untracked-files=no | shasum -a 256 | cut -c1-12) untracked before $(git -C \\\"$S\\\" ls-files --others --exclude-standard -z | shasum -a 256 | cut -c1-12)\\\" && git -C \\\"$S.copy\\\" push -q origin HEAD:refs/heads/escaped && echo \\\"tracked after  $(git -C \\\"$S\\\" status --porcelain --untracked-files=no | shasum -a 256 | cut -c1-12) untracked after  $(git -C \\\"$S\\\" ls-files --others --exclude-standard -z | shasum -a 256 | cut -c1-12)\\\" && echo \\\"source branches: $(git -C \\\"$S\\\" branch --list | tr -d ' *' | tr '\\\\n' ' ')\\\"; echo \\\"frozen copy origin: $(git remote get-url origin | sed 's|^/Users/[^/]*|<home>|')\\\"; rm -rf \\\"$S\\\" \\\"$S.copy\\\"\"},\"evidenceRefs\":[\"scripts/lib/entropy-review.mjs:334-345 (freezeSubject clones the source and keeps origin)\",\"scripts/lib/entropy-review.mjs:1111 and :1490 (the review and the refutation both freeze through it)\",\"scripts/lib/entropy-review.mjs:125-126 and :210-231 (the only witnesses on the source: tracked status and untracked listing)\",\"packages/skeleton/src/worker-transport.ts:817-847 (claude-cli-print: --safe-mode, Bash in --allowedTools)\",\"packages/skeleton/src/loadouts/entropy-reducer.ts:38-44 (denied effects include git.mutate* and remote.*)\",\"docs/instance/entropy-reducer/README.md:130-131 (confinement 'instructed and then checked')\",\"Episode observation: `git remote -v` in the frozen copy lists origin (fetch and push) at <home>/Projects/DotLn\",\"Episode drill in TMPDIR: branch created and an existing branch force-rewritten through origin, tracked and untracked digests unchanged, probe branches deleted afterwards\"],\"surface\":\"scripts/lib/entropy-review.mjs (freezeSubject, confinement record); packages/skeleton/src/worker-transport.ts (entropyArgs, claude-cli-print route)\",\"altitude\":6,\"standardization\":{\"kind\":\"recurring\",\"rung\":\"guard\",\"rationale\":\"Every review, every refutation, and any later route that freezes a subject inherits this channel. A precondition in freezeSubject that refuses to hand off a copy with a configured remote, plus a refs digest in the confinement record, runs on every dispatch. That costs less than relying on instruction and holds where tests cannot reach a live episode.\"}},{\"findingId\":\"ER7-002\",\"criterion\":\"A deferred decision's reopening condition is re-disposed once it has occurred (the accepted ER3-002, ER4-003 and ER5-002 precedents). The advisory a planning pass reads to observe it must be able to separate the condition from noise. WO-188-D015 (docs/evidence/WO-188/decisions.md:357) reopens when 'A new record quotes operator words without a capture digest and the check admits it.'\",\"severity\":\"minor\",\"evidenceLabel\":\"measured\",\"observed\":\"At e4c46109, `node scripts/docs-check.mjs` exits 0 and reports 28 current operator-word advisories against 332 historical. WO-188-D015 recorded 0 current on 2026-10-08. To see what each row matched, I instrumented docs-check in a scratch copy. About 5 of the 28 are verbatim operator replies with no capture digest, all in records dated after D015: WO-200-D002 (2026-10-12), WO-210-D024/evidence-1 (2026-10-14), WO-221-D028 and its evidence-1 (2026-10-19), and docs/verifications/WO-203/VER-001.md:149. The other ~22 are quote characters near the word 'operator' that are not operator speech: JSON finding arrays in final reviews, program output, or a quoted document phrase. So the condition has occurred and the check admits it. No planning document cites WO-188-D015 (0 files), and no register row tracks its reopening; FUP-71fc2efc208f597a was settled onto it but reopens only on a typed quotation. The 2026-10-19 pass's validation (docs/planning/standard-pass-2026-10-19.md:490) calls the advisories 'historical'. Run at that pass's own commit (899eeec1), the same function reports 24 current and 332 historical. A mutation drill on a synthetic root showed the advisory cannot separate these cases: a JSON finding array, a quoted product phrase and a quoted reply each yield one indistinguishable row, and a paraphrase yields none.\",\"expected\":\"A planning pass re-disposes WO-188-D015, naming the qualifying records. The advisory, which stays advisory as D015 decided, separates attributed speech from incidental quote characters (inside JSON or code, or a quoted document term), so the reopening condition can be read without classifying every row by hand.\",\"reproduction\":{\"kind\":\"command\",\"command\":\"node scripts/docs-check.mjs | grep -E '^(ADVISORY docs/(evidence/WO-2(00|10|21)|verifications/WO-203)|Operator-word advisories)'; sed -n 357p docs/evidence/WO-188/decisions.md | cut -c1-110; git grep -l 'WO-188-D015' -- 'docs/planning/*.md' | wc -l; sed -n 490,491p docs/planning/standard-pass-2026-10-19.md\"},\"evidenceRefs\":[\"scripts/docs-check.mjs:376-377 (attributedWords: any quote character after 'operator' in the same sentence)\",\"scripts/docs-check.mjs:570-579 and :1679-1684 (current versus historical rows; advisories never change the exit code)\",\"docs/evidence/WO-188/decisions.md:340-358 (WO-188-D015, its rejected alternative and its reopenWhen)\",\"docs/evidence/WO-200/decisions.md:34; docs/evidence/WO-210/decisions.md:393; docs/evidence/WO-221/decisions.md:7; docs/verifications/WO-203/VER-001.md:149 (records quoting operator replies without a digest)\",\"docs/evidence/WO-188/close-register.md:25 (FUP-71fc2efc208f597a settled onto D015 with a narrower reopening)\",\"docs/planning/standard-pass-2026-10-13.md:1059-1064 (two incidental rows classified by hand)\",\"docs/planning/standard-pass-2026-10-19.md:490 ('historical')\",\"scripts/test-docs-check.mjs:48-141 (no negative control for quote characters that are not operator speech)\",\"Episode probe: operatorWordAdvisories at 899eeec1 returned 24 current and 332 historical; synthetic-root drill: three indistinguishable rows, none for the paraphrase\"],\"surface\":\"scripts/docs-check.mjs operator-word advisory; the planning entry's reopening observations; WO-188-D015\",\"altitude\":8,\"standardization\":{\"kind\":\"recurring\",\"rung\":\"test\",\"rationale\":\"The count grew from 0 to 24 to 28 in twelve days, and the 2026-10-13 and 2026-10-19 passes each judged the rows by hand. The cheapest executable standard is a set of negative-control fixtures in scripts/test-docs-check.mjs for quote characters in JSON or code spans and for quoted document terms, so that the remaining current rows mean attributed speech.\"}}],\"proposalPackets\":[{\"schemaVersion\":1,\"kind\":\"ProductSuggestionPacket\",\"proposedPath\":\"docs/proposals/frozen-subject-has-no-route-home/\",\"sourceEpisodeId\":\"ep_entropy_857f9b21a78c43f9\",\"provenance\":[\"Entropy Reducer (entropy-reducer@1) episode ep_entropy_857f9b21a78c43f9\",\"Work order wo_entropy_review_1\",\"Subject e4c46109d19c98b37c6cd4c4f0923b8282f09c18\",\"Finding ER7-001\"],\"corroboratingEvidenceRefs\":[\"scripts/lib/entropy-review.mjs:334-345\",\"scripts/lib/entropy-review.mjs:125-126\",\"scripts/lib/entropy-review.mjs:210-231\",\"packages/skeleton/src/worker-transport.ts:817-847\",\"packages/skeleton/src/loadouts/entropy-reducer.ts:38-44\",\"Episode drill: push through origin from a frozen-style clone changed the source's refs while both witnesses stayed byte-identical\"],\"dissentingEvidenceRefs\":[\"docs/instance/entropy-reducer/README.md:130-131 and the dispatch instructions: remotes are declared read-only, and no reviewer is recorded as having pushed\",\"Operator user-level Claude settings were not read (out of scope) and might deny git push\"],\"suggestion\":{\"suggestionId\":\"frozen-subject-has-no-route-home\",\"submittedBy\":\"Entropy Reducer (entropy-reducer@1), claude-opus-5-5\",\"problemOrOpportunity\":\"The entropy review and refutation subject is a clone whose origin is the operator's own checkout. On the Claude route (--safe-mode, Bash pre-approved), a push from the copy writes refs into the operator's repository. That is an effect the compiled envelope denies (remote.*, git.mutate*), and the receipt's tracked-status and untracked-listing witnesses cannot see it.\",\"scope\":\"scripts/lib/entropy-review.mjs freezeSubject and the confinement record, their fixtures in scripts/test-entropy-review.mjs, and the README's 'What the reviewer may run'. No change to routes, models, budgets or the Codex sandbox.\",\"evidenceRefs\":[\"scripts/lib/entropy-review.mjs:334-345\",\"scripts/lib/entropy-review.mjs:1111\",\"scripts/lib/entropy-review.mjs:1490\",\"packages/skeleton/src/worker-transport.ts:817-847\",\"docs/instance/entropy-reducer/README.md:130-131\"],\"affectedUsers\":[\"operator\",\"entropy reviewer and refuter workers\",\"planning passes that rely on review receipts\"],\"affectedSystems\":[\"npm run entropy -- review | refute\",\"entropy receipt confinement record\",\"the operator's repository refs\"],\"expectedValue\":\"The compiled denial of remote and git mutation holds structurally for the frozen copy, and the receipt's 'checked' claim covers ref writes. The cost is one git command and one digest per dispatch.\",\"altitude\":6,\"uncertainty\":\"Not known: whether a user-level setting outside the project denies `git push` (settings were not read), and whether the Codex workspace-write sandbox blocks writes to the source's .git (not exercised here).\",\"risks\":[\"Removing origin breaks any probe that legitimately fetches from the source (none observed)\",\"A refs digest of a busy source can flag the operator's own concurrent ref changes; on the explicit-commit route, record the change rather than refuse\"],\"alternatives\":[\"Set remote.origin.pushurl to a refusing value instead of removing origin\",\"Record a refs digest only, without closing the channel\",\"Keep the instruction-only confinement and state the gap in the README\"],\"duplicationHints\":[\"isolated-codex-launch-home (ER3-001, host-side effects of launches)\",\"ER4-007 accepted into WO-175 (TMPDIR beside the copy)\",\"WO-157 confinement record (inventory set delta)\"],\"urgencyRationale\":\"Every pending and future review and refutation episode carries this channel, and the receipts already claim the confinement is checked. Closing it before the next dispatch costs little.\"}},{\"schemaVersion\":1,\"kind\":\"ProductSuggestionPacket\",\"proposedPath\":\"docs/proposals/operator-word-reopen-observable/\",\"sourceEpisodeId\":\"ep_entropy_857f9b21a78c43f9\",\"provenance\":[\"Entropy Reducer (entropy-reducer@1) episode ep_entropy_857f9b21a78c43f9\",\"Work order wo_entropy_review_1\",\"Subject e4c46109d19c98b37c6cd4c4f0923b8282f09c18\",\"Finding ER7-002\"],\"corroboratingEvidenceRefs\":[\"docs/evidence/WO-188/decisions.md:357\",\"scripts/docs-check.mjs:376-377\",\"docs/planning/standard-pass-2026-10-19.md:490\",\"docs/planning/standard-pass-2026-10-13.md:1059-1064\",\"Episode probe: 24 current advisories at 899eeec1, 28 at e4c46109\"],\"dissentingEvidenceRefs\":[\"docs/evidence/WO-188/decisions.md:349-353 (rejected alternative: the regex cannot tell a paraphrase from a quotation, so a precise lexical rule may not exist)\"],\"suggestion\":{\"suggestionId\":\"operator-word-reopen-observable\",\"submittedBy\":\"Entropy Reducer (entropy-reducer@1), claude-opus-5-5\",\"problemOrOpportunity\":\"WO-188-D015's reopening condition has occurred in at least five records since 2026-10-08, yet no pass has re-disposed it. The advisory that should surface it lists 28 rows, about 22 of which are quote characters in JSON, program output or quoted document terms, and the latest pass recorded the rows as historical.\",\"scope\":\"Planning re-disposes WO-188-D015, naming the qualifying records. scripts/docs-check.mjs gets negative-control fixtures and a narrower operator-word match, and the advisory stays advisory as D015 decided. The rows could optionally be listed in the planning entry's reopening table. No change to the typed operatorQuote refusal.\",\"evidenceRefs\":[\"docs/evidence/WO-188/decisions.md:340-358\",\"scripts/docs-check.mjs:376-377\",\"scripts/test-docs-check.mjs:48-141\",\"docs/evidence/WO-221/decisions.md:7\"],\"affectedUsers\":[\"operator\",\"planning passes\",\"executors and reviewers writing decision records\"],\"affectedSystems\":[\"docs-check operator-word advisory\",\"the planning entry's reopening observations\",\"the follow-up register\"],\"expectedValue\":\"The reopening condition becomes observable at planning entry without classifying rows by hand, and the advisory count tracks attributed speech, so a rising number means something.\",\"altitude\":8,\"uncertainty\":\"The split of 28 rows into about 5 true quotations and 22 incidental quote characters is this reviewer's reading of the matched spans, and WO-189-D023 is ambiguous. Whether verbatim in-session replies need a capture digest at all is the operator's call (WO-085-D004 boarded that concern).\",\"risks\":[\"A narrower match could miss a real quotation written inside JSON or a code span\",\"Re-fingerprinting the baseline churns its 334 keys\"],\"alternatives\":[\"Re-dispose D015 only and change no tool\",\"Write operator replies through the typed operatorQuote field with captureSha256, which refuses when the digest is missing\",\"Paraphrase the five qualifying records\",\"Report advisory counts by class in plan conditions\"],\"duplicationHints\":[\"reopen-conditions-evaluated-at-planning-entry (ER4-004)\",\"order-lifecycle-reopen-triggers-listed (ER5-002)\",\"ER3-002 and ER4-003 reopening precedents\",\"FUP-71fc2efc208f597a (WO-085-D004 settled onto D015)\",\"FUP-f927210831623001 (WO-178-D021 per-record keys)\"],\"urgencyRationale\":\"Low. The count grows by about two to three rows a day, and every pass that reads it pays for hand classification. Deciding before the next standard pass avoids another overstated validation line.\"}}],\"resultEnvelope\":{\"workOrderId\":\"wo_entropy_review_1\",\"episodeId\":\"ep_entropy_857f9b21a78c43f9\",\"status\":\"completed\",\"resultId\":\"result_ep_entropy_857f9b21a78c43f9\",\"summary\":\"Review of e4c46109: census of 6,871 tracked paths, four lenses worked serially, two measured findings and two proposal packets. ER7-001 (major): the frozen copy is a clone whose origin is the operator's checkout. On the Claude route (--safe-mode, Bash pre-approved), a push from the copy writes refs into the source while both receipt witnesses stay byte-identical. Reproduced on throwaway repositories in TMPDIR only. ER7-002 (minor): WO-188-D015's reopening condition has occurred (operator replies quoted without a capture digest, 2026-10-12 to 2026-10-19), but no pass re-disposed it. docs-check reports 28 current advisories, about 22 of them incidental quote characters, and the 2026-10-19 pass called the advisories historical when its own commit showed 24 current. Checked, not filed: kernel wildcard and resource semantics, skill-root parity, cited commands, index freshness, publish refusals, the WO-105 lane failure (known, allocated to WO-220), executor cold-start headroom of 33 bytes (operator-reserved). Notes: one deliberately denied Read tested --restricted; one incidental ls of a scratch extraction listed two tracked docs/intake directory names, no contents read. Scratch trees removed; subject unchanged. Awaiting operator disposition.\",\"requiresHuman\":true},\"cleanRoom\":{\"status\":\"passed\",\"stopConditionsFound\":false,\"evidenceRefs\":[\"No employer material, credentials or internal service details were found in any path read\",\"No docs/intake/** contents were read; one incidental ls of a scratch git-archive extraction listed two tracked intake directory names (.gitkeep structure only)\",\"The operator's absolute home path in the frozen copy's origin is written as <home>; the operator email in dotln.config.json is not reproduced\",\"Operator-attributed words are cited by record id only, never quoted\",\"Tracked status of the frozen copy is empty (e3b0c442...) and no untracked files were added; all probes ran in the episode TMPDIR\"]}}",
+  "disposition": {
+    "findingCount": 2,
+    "proposalPacketCount": 2,
+    "proposalFiling": "awaiting operator disposition; not filed",
+    "nextStep": "Fresh blinded refutation before any disposition."
+  },
+  "liveness": "live",
+  "localTerms": {
+    "status": "present"
+  },
+  "receiptHash": "sha256:77e844d7934a5ac959f6e952cc7b5cf78135eb2fff22706fd4bb59f6298564c5"
+}
