@@ -19408,6 +19408,13 @@
           "title": "WO-158-D005: Next order that touches worktree lifecycle (WO-160 is the nearest): give a withdrawn order a publication and teardown route; worktree finish and publish require a closed order today, so a",
           "summary": "{ \"id\": \"WO-158-D005\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; WO-158 criteria 1 and 3, operator-review assumption 2\", \"decision\": \"`withdraw` is legal from every phase except closed and withdrawn, and from `none` only for an order the log already knows (an allocated derived order never activated). `withdrawn` is settled like `closed` wherever a consumer asks 'is this order in flight': openOrders, meta's selected and active sets and budget rows, the test runner's gate attribution, resident binding, and the session hook's expected completion event and Stop completion/evidence obligations (reading your own output still applies). The index lists a withdrawn order in its Closed section ",
           "missing": false
+        },
+        {
+          "hash": "cf2b3f656d0380a230191c6f0906dbf8fcb5e73afc36a2bc1c9b2a15f4fed91e",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d005",
+          "title": "WO-158-D005: Next order that touches worktree lifecycle (WO-160 is the nearest): give a withdrawn order a publication and teardown route; worktree finish and publish require a closed order today, so…",
+          "summary": "{ \"id\": \"WO-158-D005\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; WO-158 criteria 1 and 3, operator-review assumption 2\", \"decision\": \"`withdraw` is legal from every phase except closed and withdrawn, and from `none` only for an order the log already knows (an allocated derived order never activated). `withdrawn` is settled like `closed` wherever a consumer asks 'is this order in flight': openOrders, meta's selected and active sets and budget rows, the test runner's gate attribution, resident binding, and the session hook's expected completion event and Stop completion/evidence obligations (reading your own output still applies). The index lists a withdrawn order in its Closed section ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -19444,6 +19451,14 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:09.642Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "declined",
+          "reason": "WO-218-D005 (docs/evidence/WO-218/decisions.md#wo-218-d005): Declined. Current harm is manual recovery for withdrawn worktrees. Withdrawal supplies neither a passing review nor a release/publication contract; treating it as closure would grant publication or deletion without those facts. Evidence read: Source read in full: docs/evidence/WO-158/decisions.md#wo-158-d005; docs/evidence/WO-158/decisions.md WO-158-D005; scripts/worktree.mjs closed-order publication and finish preconditions; scripts/test-off-ramps.mjs withdrawal behavior.. Reopen when: The operator authorizes a withdrawal disposition with an explicit publication and preservation contract.",
+          "reopenWhen": "The operator authorizes a withdrawal disposition with an explicit publication and preservation contract.",
+          "targets": [],
+          "at": "2026-10-20T05:26:16.930Z"
         }
       ]
     },
@@ -19454,6 +19469,20 @@
       "revisions": [
         {
           "hash": "273f318fb7a5e8eb9b648237d0dfab7cbe71ff34c7616a13c5c56fdd16103aa3",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d006",
+          "title": "WO-158-D006: Next beacon codebook revision: add a withdrawn phase (or an explicit settled state) so a withdrawn order's beacon is current rather than stale.",
+          "summary": "{ \"id\": \"WO-158-D006\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; WO-158 criterion 3\", \"decision\": \"Do not project a control beacon for a withdrawn order: the v2 codebook encodes exactly eight phases in its file-size code, so the previous beacon remains and ages to stale after BEACON_STALE_AFTER_MS (20 minutes). resume skips the projection for phase withdrawn instead of printing the projection-unavailable warning.\", \"evidence\": [ \"packages/skeleton/src/control-codebook.mjs: phases active..closed, phaseRadix 8, MAX_V2_CODE and MAX_GROUP_CODE derived from them\", \"The codebook, beacon-v3-codebook and control-beacon.ts are registered in every evidence edition's commonSources\" ], \"rejected\"",
+          "missing": false
+        },
+        {
+          "hash": "65ef9234a804280a5098d58c8414576e0c2c5d484bb5736cc033ffe9820a937d",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d006",
+          "title": "WO-158-D006: Next beacon codebook revision: add a withdrawn phase (or an explicit settled state) so a withdrawn order's beacon is current rather than stale.",
+          "summary": "{ \"id\": \"WO-158-D006\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; WO-158 criterion 3\", \"decision\": \"Do not project a control beacon for a withdrawn order: the v2 codebook encodes exactly eight phases in its file-size code, so the previous beacon remains and ages to stale after BEACON_STALE_AFTER_MS (20 minutes). resume skips the projection for phase withdrawn instead of printing the projection-unavailable warning.\", \"evidence\": [ \"packages/skeleton/src/control-codebook.mjs: phases active..closed, phaseRadix 8, MAX_V2_CODE and MAX_GROUP_CODE derived from them\", \"The codebook, beacon-v3-codebook and control-beacon.ts are registered in every evidence edition's commonSources\" ], \"rejected\"",
+          "missing": false
+        },
+        {
+          "hash": "bd6a0e20b83877cdbd66f7ddf241548f41d4fdb0f3188d4a6c7232f688ba71da",
           "ref": "docs/evidence/WO-158/decisions.md#wo-158-d006",
           "title": "WO-158-D006: Next beacon codebook revision: add a withdrawn phase (or an explicit settled state) so a withdrawn order's beacon is current rather than stale.",
           "summary": "{ \"id\": \"WO-158-D006\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; WO-158 criterion 3\", \"decision\": \"Do not project a control beacon for a withdrawn order: the v2 codebook encodes exactly eight phases in its file-size code, so the previous beacon remains and ages to stale after BEACON_STALE_AFTER_MS (20 minutes). resume skips the projection for phase withdrawn instead of printing the projection-unavailable warning.\", \"evidence\": [ \"packages/skeleton/src/control-codebook.mjs: phases active..closed, phaseRadix 8, MAX_V2_CODE and MAX_GROUP_CODE derived from them\", \"The codebook, beacon-v3-codebook and control-beacon.ts are registered in every evidence edition's commonSources\" ], \"rejected\"",
@@ -19478,6 +19507,14 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:09.579Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "declined",
+          "reason": "WO-218-D004 (docs/evidence/WO-218/decisions.md#wo-218-d004): Declined. Current harm is a misleading fresh previous phase for the remainder of the 20-minute freshness window, followed by a stale decoration. Canonical status records withdrawal. Extending the fixed radix changes the wire contract and requires a versioned codebook decision; this order declines that protocol expansion while retaining the stated beacon limitation. Evidence read: Source read in full: docs/evidence/WO-158/decisions.md#wo-158-d006; packages/beacons/src/control-codebook.mjs: the current phase alphabet has eight values; docs/evidence/WO-158/decisions.md WO-158-D006 records the stale-beacon observation.. Reopen when: A versioned beacon revision is authorized or an observed consumer relies on the misleading fresh previous phase or cannot handle the later stale result.",
+          "reopenWhen": "A versioned beacon revision is authorized or an observed consumer relies on the misleading fresh previous phase or cannot handle the later stale result.",
+          "targets": [],
+          "at": "2026-10-20T05:26:16.826Z"
         }
       ]
     },
@@ -21256,6 +21293,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:10.160Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D013 (docs/evidence/WO-218/decisions.md#wo-218-d013): Drive release-close publication and retry against the real harness-host writer-directory protocol in linked fixture checkouts. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "The writer storage protocol or close ownership contract changes.",
+          "targets": [],
+          "at": "2026-10-20T05:26:17.770Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D013 (docs/evidence/WO-218/decisions.md#wo-218-d013): Record the real writer-directory publication and retry protocol as already met. The current fixture exercises that retained protocol with the baseline release module; no new writer protocol fix is claimed. The later-main retry is separately repaired and proved under D024. VER-001 repair evidence: am-real-writer 0/0. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "The writer storage protocol or close ownership contract changes.",
+          "targets": [],
+          "at": "2026-10-20T15:11:35.651Z"
         }
       ]
     },
@@ -21750,6 +21803,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:09.706Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "WO-218-D006 (docs/evidence/WO-218/decisions.md#wo-218-d006): Keep the existing delayed collision-stub write, and add an explicit --continue --stash-applied recovery attestation after failed or interrupted stash application, preserving stash and checkpoint refs. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "A stopped application can advance without preserved data or the collision stub loses the successful retime.",
+          "targets": [],
+          "at": "2026-10-20T05:26:17.035Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "WO-218-D006 (docs/evidence/WO-218/decisions.md#wo-218-d006): Keep the existing delayed collision-stub write, and add an explicit --continue --stash-applied recovery attestation after failed or interrupted stash application, preserving stash and checkpoint refs. The delayed integration-stub defect was already met in the baseline implementation; am-delayed-stub records that observation. The explicit stash continuation is the change proved here. VER-001 repair evidence: r05-stash-continuation 0/1, am-delayed-stub 0/0. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "A stopped application can advance without preserved data or the collision stub loses the successful retime.",
+          "targets": [],
+          "at": "2026-10-20T15:11:34.935Z"
         }
       ]
     },
@@ -21988,6 +22057,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:09.515Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D003 (docs/evidence/WO-218/decisions.md#wo-218-d003): Inspect every session-root ancestor below its trusted temporary prefix, refusing symlinks and non-directories before granting writes. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "The host changes the granted directory layout or ownership model.",
+          "targets": [],
+          "at": "2026-10-20T05:26:16.721Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D003 (docs/evidence/WO-218/decisions.md#wo-218-d003): Inspect every session-root ancestor below its trusted temporary prefix, refusing symlinks and non-directories before granting writes. VER-001 repair evidence: r02-ancestors 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "The host changes the granted directory layout or ownership model.",
+          "targets": [],
+          "at": "2026-10-20T15:11:34.830Z"
         }
       ]
     },
@@ -22022,6 +22107,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:10.095Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D012 (docs/evidence/WO-218/decisions.md#wo-218-d012): Preserve current ampersand redirect and equals-word fixes; refuse network input pseudo-files and configured Git programs in live-gate metadata reads, and parse the silent npm resume spelling. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "A new shell spelling bypasses the parsed effect or destination checks.",
+          "targets": [],
+          "at": "2026-10-20T05:26:17.665Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D012 (docs/evidence/WO-218/decisions.md#wo-218-d012): Preserve current ampersand redirect and equals-word fixes; refuse network input pseudo-files and configured Git programs in live-gate metadata reads, and parse the silent npm resume spelling. VER-001 repair evidence: r11-configured-git 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "A new shell spelling bypasses the parsed effect or destination checks.",
+          "targets": [],
+          "at": "2026-10-20T15:11:35.550Z"
         }
       ]
     },
@@ -22404,6 +22505,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:11.027Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D026 (docs/evidence/WO-218/decisions.md#wo-218-d026): Publish complete stash-drop recovery snapshots atomically, retain whole proofs when reflogs change, and name exact stale-lock recovery after an interrupted owner. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "An interruption point lacks a whole retained proof or a truthful explicit remedy.",
+          "targets": [],
+          "at": "2026-10-20T05:26:19.076Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D026 (docs/evidence/WO-218/decisions.md#wo-218-d026): Publish complete stash-drop recovery snapshots atomically, retain whole proofs when reflogs change, and name exact stale-lock recovery after an interrupted owner. VER-001 repair evidence: r25-stash-proof 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "An interruption point lacks a whole retained proof or a truthful explicit remedy.",
+          "targets": [],
+          "at": "2026-10-20T15:11:36.771Z"
         }
       ]
     },
@@ -27463,6 +27580,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:10.893Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D024 (docs/evidence/WO-218/decisions.md#wo-218-d024): Bind cleanup retry to the original published tag even when main advances, serialize close attempts, and keep eight inline attempts plus hash-verified archived recovery history. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "A retry loses its original publication identity or an archive cannot be verified.",
+          "targets": [],
+          "at": "2026-10-20T05:26:18.877Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D024 (docs/evidence/WO-218/decisions.md#wo-218-d024): Bind cleanup retry to the original published tag even when main advances, serialize close attempts, and keep eight inline attempts plus hash-verified archived recovery history. VER-001 repair evidence: r23-moved-main 0/1, r23-foreign-tag 0/1, r23-serialized-close 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "A retry loses its original publication identity or an archive cannot be verified.",
+          "targets": [],
+          "at": "2026-10-20T15:11:36.667Z"
         }
       ]
     },
@@ -32957,6 +33090,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:09.451Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "settled",
+          "reason": "WO-218-D002 (docs/evidence/WO-218/decisions.md#wo-218-d002): Read the operator contribution exemption from instance configuration. Core declares its existing public identity; fresh kits declare none. Mutable Git identity never creates an exemption. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "An instance needs multiple declared operator identities or the contribution policy changes.",
+          "targets": [],
+          "at": "2026-10-20T05:26:16.615Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "settled",
+          "reason": "WO-218-D002 (docs/evidence/WO-218/decisions.md#wo-218-d002): Read the operator contribution exemption from instance configuration. Core declares its existing public identity; fresh kits declare none. Mutable Git identity never creates an exemption. VER-001 repair evidence: r01-identity 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "An instance needs multiple declared operator identities or the contribution policy changes.",
+          "targets": [],
+          "at": "2026-10-20T15:11:34.726Z"
         }
       ]
     },
@@ -33075,6 +33224,20 @@
           "title": "WO-188-D003: A bare repository, or an unreadable nested repository outside the control and intake lanes whose directory holds no other file, is invisible to the ls-files inventory and leaves with the ",
           "summary": "{ \"id\": \"WO-188-D003\", \"date\": \"2026-10-08\", \"dispatch\": \"resume: next (2026-10-08, executor claude-fable-5-1 at xhigh); item 1\", \"decision\": \"A scratch repository is a nested repository inside an order's worktree that is neither under the intake lane nor declared by the tracked tree as a submodule (a gitlink entry or a .gitmodules path); a repository under the control lane is scratch too. The executor removes each before implementation-ready or repair-complete and declares none; a completion with one present prints one advisory naming it; the reviewer removes any still present; release close removes any left after the preservation check verifies and records, per repository, its worktree, pa",
           "missing": false
+        },
+        {
+          "hash": "8c2f34da971e41add1cb3b5c104233702eeeba48b48f7d346dd13a2cf34ff275",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d003--item-1-a-nested-repository-outside-intake-is-scratch-unless-the-tracked-tree-declares-it-the-close-removes-it-and-records-its-head",
+          "title": "WO-188-D003: A bare repository, or an unreadable nested repository outside the control and intake lanes whose directory holds no other file, is invisible to the ls-files inventory and leaves with the…",
+          "summary": "{ \"id\": \"WO-188-D003\", \"date\": \"2026-10-08\", \"dispatch\": \"resume: next (2026-10-08, executor claude-fable-5-1 at xhigh); item 1\", \"decision\": \"A scratch repository is a nested repository inside an order's worktree that is neither under the intake lane nor declared by the tracked tree as a submodule (a gitlink entry or a .gitmodules path); a repository under the control lane is scratch too. The executor removes each before implementation-ready or repair-complete and declares none; a completion with one present prints one advisory naming it; the reviewer removes any still present; release close removes any left after the preservation check verifies and records, per repository, its worktree, pa",
+          "missing": false
+        },
+        {
+          "hash": "f405216bc278721f47fc8a8d69641d38c7914c8f3dee2ba8ffee57c7defbf90a",
+          "ref": "docs/evidence/WO-188/decisions.md#wo-188-d003--item-1-a-nested-repository-outside-intake-is-scratch-unless-the-tracked-tree-declares-it-the-close-removes-it-and-records-its-head",
+          "title": "WO-188-D003: A bare repository, or an unreadable nested repository outside the control and intake lanes whose directory holds no other file, is invisible to the ls-files inventory and leaves with the…",
+          "summary": "{ \"id\": \"WO-188-D003\", \"date\": \"2026-10-08\", \"dispatch\": \"resume: next (2026-10-08, executor claude-fable-5-1 at xhigh); item 1\", \"decision\": \"A scratch repository is a nested repository inside an order's worktree that is neither under the intake lane nor declared by the tracked tree as a submodule (a gitlink entry or a .gitmodules path); a repository under the control lane is scratch too. The executor removes each before implementation-ready or repair-complete and declares none; a completion with one present prints one advisory naming it; the reviewer removes any still present; release close removes any left after the preservation check verifies and records, per repository, its worktree, pa",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -33095,6 +33258,14 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:11.229Z"
+        },
+        {
+          "sourceRevision": 5,
+          "status": "declined",
+          "reason": "WO-218-D029 (docs/evidence/WO-218/decisions.md#wo-218-d029): Declined. Current harm is a missing per-repository removal record: a bare or unreadable metadata-only directory outside the preserved lanes can leave with its enclosing worktree unrecorded. The cited source records that limitation, and inventoryMaterial still derives candidates from Git directory entries while inspectNestedRepository requires readable .git metadata. NoOp retains this known discovery boundary. A general recursive walk must first define how to distinguish bare repositories from loose Git-object archives and handle unreadable or symlinked boundaries; inferring ownership or a HEAD from those shapes would add unsupported deletion records. Evidence read: Source read in full: docs/evidence/WO-188/decisions.md#wo-188-d003--item-1-a-nested-repository-outside-intake-is-scratch-unless-the-tracked-tree-declares-it-the-close-removes-it-and-records-its-head; docs/evidence/WO-188/decisions.md WO-188-D003; scripts/lib/paths.mjs inspectNestedRepository; scripts/lib/worktree-material.mjs inventoryMaterial; scripts/test-process-debt.mjs nested repository classification cases.. Reopen when: A bounded discovery and ownership contract identifies bare or unreadable material, defines permission and symlink boundaries, and supplies a truthful removal-record or preservation rule.",
+          "reopenWhen": "A bounded discovery and ownership contract identifies bare or unreadable material, defines permission and symlink boundaries, and supplies a truthful removal-record or preservation rule.",
+          "targets": [],
+          "at": "2026-10-20T05:26:19.373Z"
         }
       ]
     },
@@ -33396,6 +33567,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:10.355Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D016 (docs/evidence/WO-218/decisions.md#wo-218-d016): Decode escaped publication paths once before containment and encode each resulting path segment once, preserving query strings and fragments. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "A destination grammar or renderer exposes another escaped-path ambiguity.",
+          "targets": [],
+          "at": "2026-10-20T05:26:18.076Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D016 (docs/evidence/WO-218/decisions.md#wo-218-d016): Decode escaped publication paths once before containment and encode each resulting path segment once, preserving query strings and fragments. VER-001 repair evidence: r15-encoded-links 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "A destination grammar or renderer exposes another escaped-path ambiguity.",
+          "targets": [],
+          "at": "2026-10-20T15:11:35.953Z"
         }
       ]
     },
@@ -33471,6 +33658,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:11.093Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-218-D027 (docs/evidence/WO-218/decisions.md#wo-218-d027): Normalize innermost rendered links repeatedly until exposed outer links are resolved, preserving nested rendered image structure and line endings. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "A renderer-visible nested destination remains unresolved or normalization ceases to be idempotent.",
+          "targets": [],
+          "at": "2026-10-20T05:26:19.175Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-218-D027 (docs/evidence/WO-218/decisions.md#wo-218-d027): Normalize innermost rendered links repeatedly until exposed outer links are resolved, preserving nested rendered image structure and line endings. VER-001 repair evidence: r26-nested-links 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "A renderer-visible nested destination remains unresolved or normalization ceases to be idempotent.",
+          "targets": [],
+          "at": "2026-10-20T15:11:36.873Z"
         }
       ]
     },
@@ -33539,6 +33742,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:10.623Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D020 (docs/evidence/WO-218/decisions.md#wo-218-d020): Restrict disposable retry words to disposable material, case-fold reserved planning lane names, name linked-worktree preservation remedies, emit scratch advice before tree hashing, shell-quote subjects, share safe nested Git and gitlink parsing, and retain nested repositories during whitespace evidence. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "A protected path appears in a disposable remedy, linked worktree identity is lost, or lifecycle evidence skips a nested repository.",
+          "targets": [],
+          "at": "2026-10-20T05:26:18.478Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D020 (docs/evidence/WO-218/decisions.md#wo-218-d020): Restrict disposable retry words to disposable material, case-fold reserved planning lane names, name linked-worktree preservation remedies, emit scratch advice before tree hashing, shell-quote subjects, share safe nested Git and gitlink parsing, and retain nested repositories during whitespace evidence. The nested-repository whitespace exclusion already existed; am-nested-whitespace runs that baseline logic while the nested repository remains present. The other six items have isolated negative controls. VER-001 repair evidence: r19-protected-retry 0/1, r19-reserved-case 0/1, r19-linked-remedy 0/1, r19-advisory-first 0/1, r19-submodule-quote 0/1, r19-shared-git-primitives 0/1, am-nested-whitespace 0/0. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "A protected path appears in a disposable remedy, linked worktree identity is lost, or lifecycle evidence skips a nested repository.",
+          "targets": [],
+          "at": "2026-10-20T15:11:36.258Z"
         }
       ]
     },
@@ -33796,6 +34015,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:09.770Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "settled",
+          "reason": "WO-218-D007 (docs/evidence/WO-218/decisions.md#wo-218-d007): Emit the five role navigation directives from the compiled Contributor instruction block and migrate only their exact known historical floor lines. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "A new role or a different historical spelling needs an explicit migration.",
+          "targets": [],
+          "at": "2026-10-20T05:26:17.138Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "settled",
+          "reason": "WO-218-D007 (docs/evidence/WO-218/decisions.md#wo-218-d007): Emit the five role navigation directives from the compiled Contributor instruction block and migrate only their exact known historical floor lines. VER-001 repair evidence: r06-navigation 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "A new role or a different historical spelling needs an explicit migration.",
+          "targets": [],
+          "at": "2026-10-20T15:11:35.038Z"
         }
       ]
     },
@@ -33861,6 +34096,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:09.835Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D008 (docs/evidence/WO-218/decisions.md#wo-218-d008): Ignore Git replacement objects for export provenance and batch object reads, including pinned build and emit inputs. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "Another provenance read can be redirected by replacement refs.",
+          "targets": [],
+          "at": "2026-10-20T05:26:17.241Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D008 (docs/evidence/WO-218/decisions.md#wo-218-d008): Ignore Git replacement objects for export provenance and batch object reads, including pinned build and emit inputs. VER-001 repair evidence: r07-original-objects 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "Another provenance read can be redirected by replacement refs.",
+          "targets": [],
+          "at": "2026-10-20T15:11:35.142Z"
         }
       ]
     },
@@ -33895,6 +34146,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:10.030Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D011 (docs/evidence/WO-218/decisions.md#wo-218-d011): Apply the source-bundle hostname shape to registration linkHosts during configuration loading. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "The observer host grammar changes.",
+          "targets": [],
+          "at": "2026-10-20T05:26:17.561Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D011 (docs/evidence/WO-218/decisions.md#wo-218-d011): Apply the source-bundle hostname shape to registration linkHosts during configuration loading. VER-001 repair evidence: r10-link-hosts 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "The observer host grammar changes.",
+          "targets": [],
+          "at": "2026-10-20T15:11:35.448Z"
         }
       ]
     },
@@ -33936,6 +34203,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:09.965Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-218-D010 (docs/evidence/WO-218/decisions.md#wo-218-d010): Keep the public seed executable and declare its scratch class explicitly. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "The seed no longer represents a supported fixture setup.",
+          "targets": [],
+          "at": "2026-10-20T05:26:17.449Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-218-D010 (docs/evidence/WO-218/decisions.md#wo-218-d010): Keep the public seed executable and declare its scratch class explicitly. VER-001 repair evidence: r09-seed-class 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "The seed no longer represents a supported fixture setup.",
+          "targets": [],
+          "at": "2026-10-20T15:11:35.345Z"
         }
       ]
     },
@@ -35356,6 +35639,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:11.162Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D028 (docs/evidence/WO-218/decisions.md#wo-218-d028): Name the owning launchpad when a target registration resolves there but no order is selected from the current launchpad. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "Cross-launchpad selection semantics change.",
+          "targets": [],
+          "at": "2026-10-20T05:26:19.274Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D028 (docs/evidence/WO-218/decisions.md#wo-218-d028): Name the owning launchpad when a target registration resolves there but no order is selected from the current launchpad. VER-001 repair evidence: r27-other-launchpad 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "Cross-launchpad selection semantics change.",
+          "targets": [],
+          "at": "2026-10-20T15:11:36.975Z"
         }
       ]
     },
@@ -35442,6 +35741,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:10.826Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D023 (docs/evidence/WO-218/decisions.md#wo-218-d023): For build none, remove compiled navigation and owned generated surfaces while preserving the handwritten floor and an explicit disabled-build disclosure. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "A disabled contract retains a removed compiled role pointer.",
+          "targets": [],
+          "at": "2026-10-20T05:26:18.777Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D023 (docs/evidence/WO-218/decisions.md#wo-218-d023): For build none, remove compiled navigation and owned generated surfaces while preserving the handwritten floor and an explicit disabled-build disclosure. VER-001 repair evidence: r06-navigation 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "A disabled contract retains a removed compiled role pointer.",
+          "targets": [],
+          "at": "2026-10-20T15:11:36.564Z"
         }
       ]
     },
@@ -35476,6 +35791,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:10.758Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D022 (docs/evidence/WO-218/decisions.md#wo-218-d022): Refuse an overlay narrowing that would be undone by a Contributor outside-write grant, naming both declarations. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "A new grant effect can undo narrowing without a pre-write refusal.",
+          "targets": [],
+          "at": "2026-10-20T05:26:18.678Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D022 (docs/evidence/WO-218/decisions.md#wo-218-d022): Refuse an overlay narrowing that would be undone by a Contributor outside-write grant, naming both declarations. VER-001 repair evidence: r21-narrowing-grants 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "A new grant effect can undo narrowing without a pre-write refusal.",
+          "targets": [],
+          "at": "2026-10-20T15:11:36.462Z"
         }
       ]
     },
@@ -35510,6 +35841,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:09.900Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D009 (docs/evidence/WO-218/decisions.md#wo-218-d009): Refuse harness marker text anywhere in an overlay string before composition or writes, naming the overlay and field. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "A new overlay field reaches emitted text without the marker screen.",
+          "targets": [],
+          "at": "2026-10-20T05:26:17.345Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D009 (docs/evidence/WO-218/decisions.md#wo-218-d009): Refuse harness marker text anywhere in an overlay string before composition or writes, naming the overlay and field. VER-001 repair evidence: r08-markers 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "A new overlay field reaches emitted text without the marker screen.",
+          "targets": [],
+          "at": "2026-10-20T15:11:35.244Z"
         }
       ]
     },
@@ -35552,6 +35899,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:10.290Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D015 (docs/evidence/WO-218/decisions.md#wo-218-d015): Treat a manifest explicitly declaring build none as intentionally disabled, without runtime-unavailable warnings; malformed empty profiles still refuse. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "Another runtime consumer treats an explicit disabled build as a missing runtime.",
+          "targets": [],
+          "at": "2026-10-20T05:26:17.976Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D015 (docs/evidence/WO-218/decisions.md#wo-218-d015): Treat a manifest explicitly declaring build none as intentionally disabled, without runtime-unavailable warnings; malformed empty profiles still refuse. VER-001 repair evidence: r14-build-none 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "Another runtime consumer treats an explicit disabled build as a missing runtime.",
+          "targets": [],
+          "at": "2026-10-20T15:11:35.852Z"
         }
       ]
     },
@@ -35853,6 +36216,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:10.486Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D018 (docs/evidence/WO-218/decisions.md#wo-218-d018): Distinguish wholly undeclared publication from a partially declared publication missing its editions; --expect-stale never passes on an undeclared corpus. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "A new publication declaration surface is added.",
+          "targets": [],
+          "at": "2026-10-20T05:26:18.279Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D018 (docs/evidence/WO-218/decisions.md#wo-218-d018): Distinguish wholly undeclared publication from a partially declared publication missing its editions; --expect-stale never passes on an undeclared corpus. VER-001 repair evidence: r17-publication-declaration 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "A new publication declaration surface is added.",
+          "targets": [],
+          "at": "2026-10-20T15:11:36.055Z"
         }
       ]
     },
@@ -35925,6 +36304,13 @@
           "title": "WO-203-D004: If a future compiler or harness change exposes an authoritative incoming generated-path inventory before atomicBuild, use it in the update preflight to reject absent still-carried compile",
           "summary": "{ \"id\": \"WO-203-D004\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: next\", \"decision\": \"Address FUP-584d6021928bdfdb's three allocated items. First, preparation calls an update preflight after reading the pinned commit's sources and before building: absent still-carried source paths and determinable derived paths refuse there, preserving the interrupted-update dropped-path exception. Generated compiled and emitted paths still receive their full check after building because their incoming set is not yet known; that optimization remainder is left. Second, post-manifest receipt/registry failures carry the completed update plan into the CLI summary and retain exit 1 with distinct destination/recei",
           "missing": false
+        },
+        {
+          "hash": "cc83d72bf7163d6cfcda60502cdadde3b9e39d96f1451badd0e96647b442e449",
+          "ref": "docs/evidence/WO-203/decisions.md#wo-203-d004--carry-in-dispositions-and-the-remaining-pre-build-bound",
+          "title": "WO-203-D004: If a future compiler or harness change exposes an authoritative incoming generated-path inventory before atomicBuild, use it in the update preflight to reject absent still-carried…",
+          "summary": "{ \"id\": \"WO-203-D004\", \"date\": \"2026-10-12\", \"dispatch\": \"resume: next\", \"decision\": \"Address FUP-584d6021928bdfdb's three allocated items. First, preparation calls an update preflight after reading the pinned commit's sources and before building: absent still-carried source paths and determinable derived paths refuse there, preserving the interrupted-update dropped-path exception. Generated compiled and emitted paths still receive their full check after building because their incoming set is not yet known; that optimization remainder is left. Second, post-manifest receipt/registry failures carry the completed update plan into the CLI summary and retain exit 1 with distinct destination/recei",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -35945,6 +36331,14 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:10.959Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "WO-218-D025 (docs/evidence/WO-218/decisions.md#wo-218-d025): Declined. Current harm is wasted build time before an absent carried generated path is refused. The incoming compiler still supplies no authoritative prebuild generated inventory; inferring one can falsely authorize deletion. Destination writes remain withheld. Evidence read: Source read in full: docs/evidence/WO-203/decisions.md#wo-203-d004--carry-in-dispositions-and-the-remaining-pre-build-bound; docs/evidence/WO-203/decisions.md WO-203-D004; scripts/launchpad.mjs atomicBuild and update staged validation.. Reopen when: The compiler exposes an authoritative incoming generated-path inventory before atomicBuild.",
+          "reopenWhen": "The compiler exposes an authoritative incoming generated-path inventory before atomicBuild.",
+          "targets": [],
+          "at": "2026-10-20T05:26:18.976Z"
         }
       ]
     },
@@ -36929,6 +37323,30 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:06.697Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D032 (docs/evidence/WO-218/decisions.md#wo-218-d032): Keep current pending-preview, cleanup-remapping and receipt-provenance behavior; cover changed temporary roots and public-path redaction with the real refresh driver. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "A preview mutates cleanup or an applied retry loses receipt provenance.",
+          "targets": [],
+          "at": "2026-10-20T05:26:19.672Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D032 (docs/evidence/WO-218/decisions.md#wo-218-d032): Keep current pending-preview, cleanup-remapping and receipt-provenance behavior; cover changed temporary roots and public-path redaction with the real refresh driver. VER-001 repair evidence: r31-temporary-retry 0/1, r31-cleanup-privacy 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "A preview mutates cleanup or an applied retry loses receipt provenance.",
+          "targets": [],
+          "at": "2026-10-20T15:11:37.288Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-218-D031 (docs/evidence/WO-218/decisions.md#wo-218-d031) and the final review correction WO-218-D061 (docs/evidence/WO-218/decisions.md#wo-218-d061): Declined. This row is WO-215-D013 as reopened by WO-215-D018 FU1: a retained starter-refresh cleanup record that names a checkout which no longer exists or is no longer a Git top level has no route an operator can complete without restoring that checkout. WO-218-D031 declines the automatic disposal that route needs, because a moved checkout can still own the worktree registry, so absence does not prove ownership ended and automatic disposal risks unrelated Git state. Current harm is manual recovery: restore the physical checkout at its recorded path or recover ownership by hand, and every close preview and retry refuses until then. WO-218-D032 recorded this row settled on the coverage of the retained remapping refusal, the temporary-base recovery (r31-temporary-retry, which is WO-215-D020 F8 and row 13 and row 30 material) and the redaction guard (r31-cleanup-privacy, an adequacy control); those controls stay in force and the final review re-disposes the row to the status its reopening leaves. Evidence read: Source read in full: docs/evidence/WO-215/decisions.md#wo-215-d013, #wo-215-d018 (FU1 and its reopens observation) and #wo-215-d020; scripts/lib/starter-refresh.mjs removeOwnedCleanup validates the clone map, the recorded temporary base and the physical checkout; docs/evidence/WO-218/repair-controls.json r31-temporary-retry (isolated-reversion) and r31-cleanup-privacy (adequacy-control-of-existing-guard). Reopen when: The operator supplies a replacement ownership proof for a moved or deleted physical checkout, or the cleanup receipt can verifiably follow its Git common directory without discarding retained work.",
+          "reopenWhen": "The operator supplies a replacement ownership proof for a moved or deleted physical checkout, or the cleanup receipt can verifiably follow its Git common directory without discarding retained work.",
+          "targets": [],
+          "at": "2026-10-20T16:55:38.923Z"
         }
       ]
     },
@@ -36950,6 +37368,27 @@
           "title": "WO-215-D018: WO-215 next repair, or the planning pass that disposes of these rows. (FU1, reopening D013) When a retained starter-refresh cleanup record names a checkout that no longer exists or is no ",
           "summary": "{ \"id\": \"WO-215-D018\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002. At code identity b9a1a58aaaf7ca03929669bc490d1d3f7a4f63ce019797e2e9b6b15b1a592ddc, criteria 1 to 12 are met. VER-001's two blocking findings are repaired. F1: product 07's `resume: release close` row now names the starter refresh. F2: a publishing dry run taken before main's fast-forward now judges the merged head and runs the checkout, branch, cleanliness, binding, fetch, ancestry and manifest checks. The real close keeps its main-HEAD and tag guards. The F3 to F5 follow-ups are resolved. Two new follow-ups are boarded; neither breaks a criterion or a behavior ma",
           "missing": false
+        },
+        {
+          "hash": "c2ac1bef6b820ddd4a6ddfe06f97cfaa96a01154afb3fd850a1956d4e8d6bb29",
+          "ref": "docs/evidence/WO-215/decisions.md#wo-215-d018--verification-pass-ver-001s-findings-are-repaired-and-two-follow-ups-are-boarded",
+          "title": "WO-215-D018: WO-215 next repair, or the planning pass that disposes of these rows. (FU1, reopening D013) When a retained starter-refresh cleanup record names a checkout that no longer exists or is no…",
+          "summary": "{ \"id\": \"WO-215-D018\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002. At code identity b9a1a58aaaf7ca03929669bc490d1d3f7a4f63ce019797e2e9b6b15b1a592ddc, criteria 1 to 12 are met. VER-001's two blocking findings are repaired. F1: product 07's `resume: release close` row now names the starter refresh. F2: a publishing dry run taken before main's fast-forward now judges the merged head and runs the checkout, branch, cleanliness, binding, fetch, ancestry and manifest checks. The real close keeps its main-HEAD and tag guards. The F3 to F5 follow-ups are resolved. Two new follow-ups are boarded; neither breaks a criterion or a behavior ma",
+          "missing": false
+        },
+        {
+          "hash": "a914bd6a36b5eafb2942804fa4b64c5c8de5f7b5b7adeb46ac9910f5b098e0f2",
+          "ref": "docs/evidence/WO-215/decisions.md#wo-215-d018--verification-pass-ver-001s-findings-are-repaired-and-two-follow-ups-are-boarded",
+          "title": "WO-215-D018: WO-215 next repair, or the planning pass that disposes of these rows. (FU1, reopening D013) When a retained starter-refresh cleanup record names a checkout that no longer exists or is no…",
+          "summary": "{ \"id\": \"WO-215-D018\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002. At code identity b9a1a58aaaf7ca03929669bc490d1d3f7a4f63ce019797e2e9b6b15b1a592ddc, criteria 1 to 12 are met. VER-001's two blocking findings are repaired. F1: product 07's `resume: release close` row now names the starter refresh. F2: a publishing dry run taken before main's fast-forward now judges the merged head and runs the checkout, branch, cleanliness, binding, fetch, ancestry and manifest checks. The real close keeps its main-HEAD and tag guards. The F3 to F5 follow-ups are resolved. Two new follow-ups are boarded; neither breaks a criterion or a behavior ma",
+          "missing": false
+        },
+        {
+          "hash": "f00408c522cd5490c68bafdc70154f19aa5496135a9d374b17a8cfc5a563cd24",
+          "ref": "docs/evidence/WO-215/decisions.md#wo-215-d018--verification-pass-ver-001s-findings-are-repaired-and-two-follow-ups-are-boarded",
+          "title": "WO-215-D018: WO-215 next repair, or the planning pass that disposes of these rows. (FU1, reopening D013) When a retained starter-refresh cleanup record names a checkout that no longer exists or is no…",
+          "summary": "{ \"id\": \"WO-215-D018\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002. At code identity b9a1a58aaaf7ca03929669bc490d1d3f7a4f63ce019797e2e9b6b15b1a592ddc, criteria 1 to 12 are met. VER-001's two blocking findings are repaired. F1: product 07's `resume: release close` row now names the starter refresh. F2: a publishing dry run taken before main's fast-forward now judges the merged head and runs the checkout, branch, cleanliness, binding, fetch, ancestry and manifest checks. The real close keeps its main-HEAD and tag guards. The F3 to F5 follow-ups are resolved. Two new follow-ups are boarded; neither breaks a criterion or a behavior ma",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -36962,6 +37401,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:06.636Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "settled",
+          "reason": "WO-218-D031 (docs/evidence/WO-218/decisions.md#wo-218-d031): Contain the starter refresh fixture's temporary worktrees under its own root. Decline automatic disposal of cleanup ownership after a mapped checkout moves or disappears. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "The operator supplies a replacement ownership proof for a moved or deleted physical checkout, or the cleanup receipt can verifiably follow its Git common directory without discarding retained work.",
+          "targets": [],
+          "at": "2026-10-20T05:26:19.572Z"
+        },
+        {
+          "sourceRevision": 5,
+          "status": "settled",
+          "reason": "WO-218-D031 (docs/evidence/WO-218/decisions.md#wo-218-d031): Contain the starter refresh fixture's temporary worktrees under its own root. Decline automatic disposal of cleanup ownership after a mapped checkout moves or disappears. VER-001 repair evidence: r30-temp-containment 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "The operator supplies a replacement ownership proof for a moved or deleted physical checkout, or the cleanup receipt can verifiably follow its Git common directory without discarding retained work.",
+          "targets": [],
+          "at": "2026-10-20T15:11:37.183Z"
         }
       ]
     },
@@ -36996,6 +37451,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:10.224Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D014 (docs/evidence/WO-218/decisions.md#wo-218-d014): Settle the twelve starter integration findings: correct product and role text, redact paths, use the runner adapter, recognize landed pushes and modes, recover cleanup across temporary roots, prove carried receipt ownership, preserve self-start retry, skip empty undeclared receipt lanes, and collapse identical manifest receipts. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "Any of the twelve source findings recurs under the current starter contract.",
+          "targets": [],
+          "at": "2026-10-20T05:26:17.873Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D014 (docs/evidence/WO-218/decisions.md#wo-218-d014): Settle the twelve starter integration findings: correct product and role text, redact paths, use the runner adapter, recognize landed pushes and modes, recover cleanup across temporary roots, prove carried receipt ownership, preserve self-start retry, skip empty undeclared receipt lanes, and collapse identical manifest receipts. VER-001 repair evidence: r13-carried-receipt 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "Any of the twelve source findings recurs under the current starter contract.",
+          "targets": [],
+          "at": "2026-10-20T15:11:35.752Z"
         }
       ]
     },
@@ -37270,6 +37741,13 @@
           "title": "WO-210-D025: Planning: each manifest reader judges every entry against its own release's kit list (scripts/launchpad.mjs kitPath), with no list of retired paths. The README's update now always uses…",
           "summary": "{ \"id\": \"WO-210-D025\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: fix; VER-002 F1 to F3 under WO-210-D024; adjacent-0004\", \"decision\": \"Repair the update path for existing instances in the client README, and bind it with a fixture that runs v0.81.0's own scripts and runtime. The repaired subject holds this rule. An instance previews a starter revision with that revision's own launchpad, run from a temporary detached worktree under the ignored .runtime/ directory, so the reader always knows every kit path the incoming manifest lists. The starter update reaches the fork's main through its own update pull request, merged with a merge commit, before wo-001 is cut from that main. wo-001's pull re",
           "missing": false
+        },
+        {
+          "hash": "78717355ddaf7e7521b401259bc920dd8c7050f747cc04d3447057a1e1494d0b",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d025--take-this-release-in-an-older-instance-through-the-incoming-launchpad-and-an-update-pull-request",
+          "title": "WO-210-D025: Planning: each manifest reader judges every entry against its own release's kit list (scripts/launchpad.mjs kitPath), with no list of retired paths. The README's update now always uses…",
+          "summary": "{ \"id\": \"WO-210-D025\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: fix; VER-002 F1 to F3 under WO-210-D024; adjacent-0004\", \"decision\": \"Repair the update path for existing instances in the client README, and bind it with a fixture that runs v0.81.0's own scripts and runtime. The repaired subject holds this rule. An instance previews a starter revision with that revision's own launchpad, run from a temporary detached worktree under the ignored .runtime/ directory, so the reader always knows every kit path the incoming manifest lists. The starter update reaches the fork's main through its own update pull request, merged with a merge commit, before wo-001 is cut from that main. wo-001's pull re",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -37298,6 +37776,14 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:10.420Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "declined",
+          "reason": "WO-218-D017 (docs/evidence/WO-218/decisions.md#wo-218-d017): Declined. Current harm is a future older-manifest rejection if the kit removes a path. No removed carried path or authoritative retirement set is identified at this subject. Broad historical acceptance would weaken the owned-path boundary. Evidence read: Source read in full: docs/evidence/WO-210/decisions.md#wo-210-d025--take-this-release-in-an-older-instance-through-the-incoming-launchpad-and-an-update-pull-request; docs/evidence/WO-210/decisions.md WO-210-D025; scripts/launchpad.mjs kitPath and historical manifest admission; scripts/kit/README.client.md incoming-reader update procedure.. Reopen when: A planned kit removal identifies the old path, owning releases and migration semantics.",
+          "reopenWhen": "A planned kit removal identifies the old path, owning releases and migration semantics.",
+          "targets": [],
+          "at": "2026-10-20T05:26:18.178Z"
         }
       ]
     },
@@ -37388,6 +37874,27 @@
           "title": "WO-210-D029: Planning remainder from FINAL-001 and D027, six findings. F8: add a contained immutable record reader for targetRecords-bound repository/commit/path/hash, use it in scripts/lib/meta.mjs…",
           "summary": "{ \"id\": \"WO-210-D029\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: fix; FINAL-001; adjacent-0005; operator delegates the review's defaults and recommended options\", \"decision\": \"Repair FINAL-001 F1 to F3 at their causes and the bounded findings F4 to F7, F9 to F10, F13 to F14, F16 to F22 and F25. D028 resolves F27 and F28. Retain the containment-proven branch deletion for F26 under D009. Defer F8, F11, F12, F15, F23 and F24 to the follow-up below, with their known limitations explicit. The order's older seed-remedy prose is aligned with the already authorized update-first recovery procedure; this changes no acceptance obligation.\", \"evidence\": [ \"F1. scripts/discover.mjs parses parenthesized ",
           "missing": false
+        },
+        {
+          "hash": "051477da33e76792ed4174ec26ca58f730172db17a5e95fd44e5bd70da6b5af7",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d029--repair-the-final-review-regressions-and-bounded-findings-retain-six-planning-follow-ups",
+          "title": "WO-210-D029: Planning remainder from FINAL-001 and D027, six findings. F8: add a contained immutable record reader for targetRecords-bound repository/commit/path/hash, use it in scripts/lib/meta.mjs…",
+          "summary": "{ \"id\": \"WO-210-D029\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: fix; FINAL-001; adjacent-0005; operator delegates the review's defaults and recommended options\", \"decision\": \"Repair FINAL-001 F1 to F3 at their causes and the bounded findings F4 to F7, F9 to F10, F13 to F14, F16 to F22 and F25. D028 resolves F27 and F28. Retain the containment-proven branch deletion for F26 under D009. Defer F8, F11, F12, F15, F23 and F24 to the follow-up below, with their known limitations explicit. The order's older seed-remedy prose is aligned with the already authorized update-first recovery procedure; this changes no acceptance obligation.\", \"evidence\": [ \"F1. scripts/discover.mjs parses parenthesized ",
+          "missing": false
+        },
+        {
+          "hash": "19abf71100c320962fbde7c21b020e01906cffcf6161edf68e556a51cbffacfd",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d029--repair-the-final-review-regressions-and-bounded-findings-retain-six-planning-follow-ups",
+          "title": "WO-210-D029: Planning remainder from FINAL-001 and D027, six findings. F8: add a contained immutable record reader for targetRecords-bound repository/commit/path/hash, use it in scripts/lib/meta.mjs…",
+          "summary": "{ \"id\": \"WO-210-D029\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: fix; FINAL-001; adjacent-0005; operator delegates the review's defaults and recommended options\", \"decision\": \"Repair FINAL-001 F1 to F3 at their causes and the bounded findings F4 to F7, F9 to F10, F13 to F14, F16 to F22 and F25. D028 resolves F27 and F28. Retain the containment-proven branch deletion for F26 under D009. Defer F8, F11, F12, F15, F23 and F24 to the follow-up below, with their known limitations explicit. The order's older seed-remedy prose is aligned with the already authorized update-first recovery procedure; this changes no acceptance obligation.\", \"evidence\": [ \"F1. scripts/discover.mjs parses parenthesized ",
+          "missing": false
+        },
+        {
+          "hash": "a354cd3e36281799aab867ae075416a50df225bda6b13acc9cde88581420f4ab",
+          "ref": "docs/evidence/WO-210/decisions.md#wo-210-d029--repair-the-final-review-regressions-and-bounded-findings-retain-six-planning-follow-ups",
+          "title": "WO-210-D029: Planning remainder from FINAL-001 and D027, six findings. F8: add a contained immutable record reader for targetRecords-bound repository/commit/path/hash, use it in scripts/lib/meta.mjs…",
+          "summary": "{ \"id\": \"WO-210-D029\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: fix; FINAL-001; adjacent-0005; operator delegates the review's defaults and recommended options\", \"decision\": \"Repair FINAL-001 F1 to F3 at their causes and the bounded findings F4 to F7, F9 to F10, F13 to F14, F16 to F22 and F25. D028 resolves F27 and F28. Retain the containment-proven branch deletion for F26 under D009. Defer F8, F11, F12, F15, F23 and F24 to the follow-up below, with their known limitations explicit. The order's older seed-remedy prose is aligned with the already authorized update-first recovery procedure; this changes no acceptance obligation.\", \"evidence\": [ \"F1. scripts/discover.mjs parses parenthesized ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -37416,6 +37923,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:10.555Z"
+        },
+        {
+          "sourceRevision": 5,
+          "status": "settled",
+          "reason": "WO-218-D019 (docs/evidence/WO-218/decisions.md#wo-218-d019): Resolve moved decisions through immutable repository/commit/path/hash bindings; lint target commits before final review; isolate target-close fetches from clone configuration; restrict planning publication to intended document forms. Decline automated records-phase and planning-publication recovery redesigns, preserving pending receipts and absent-target bundle ownership for explicit recovery. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "An authorized preserve/abandon design binds interrupted records and planning operations to their original subjects and proves recovery of absent target directories or bundles before changing retained ownership.",
+          "targets": [],
+          "at": "2026-10-20T05:26:18.378Z"
+        },
+        {
+          "sourceRevision": 6,
+          "status": "settled",
+          "reason": "WO-218-D019 (docs/evidence/WO-218/decisions.md#wo-218-d019): Resolve moved decisions through immutable repository/commit/path/hash bindings; lint target commits before final review; isolate target-close fetches from clone configuration; restrict planning publication to intended document forms. Decline automated records-phase and planning-publication recovery redesigns, preserving pending receipts and absent-target bundle ownership for explicit recovery. VER-001 repair evidence: r18-moved-decisions 0/1, r18-commit-lint 0/1, r18-planning-body 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "An authorized preserve/abandon design binds interrupted records and planning operations to their original subjects and proves recovery of absent target directories or bundles before changing retained ownership.",
+          "targets": [],
+          "at": "2026-10-20T15:11:36.156Z"
         }
       ]
     },
@@ -37450,6 +37973,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:10.692Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D021 (docs/evidence/WO-218/decisions.md#wo-218-d021): Share dependency-free harness marker parsing, floor migration and composition between runtime emit and starter seed preflight. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "Shared composition gains a compiled dependency or no longer recognizes historical seed provenance.",
+          "targets": [],
+          "at": "2026-10-20T05:26:18.578Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D021 (docs/evidence/WO-218/decisions.md#wo-218-d021): Share dependency-free harness marker parsing, floor migration and composition between runtime emit and starter seed preflight. VER-001 repair evidence: r20-shared-composition 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "Shared composition gains a compiled dependency or no longer recognizes historical seed provenance.",
+          "targets": [],
+          "at": "2026-10-20T15:11:36.359Z"
         }
       ]
     },
@@ -37626,6 +38165,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:06.513Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D033 (docs/evidence/WO-218/decisions.md#wo-218-d033): Move the README's status instruction after restoring the captured first-order records in the recovered worktree. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "The recovery sequence changes which step restores the control log.",
+          "targets": [],
+          "at": "2026-10-20T05:26:19.775Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D033 (docs/evidence/WO-218/decisions.md#wo-218-d033): Move the README's status instruction after restoring the captured first-order records in the recovered worktree. VER-001 repair evidence: r32-recovery-instructions 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "The recovery sequence changes which step restores the control log.",
+          "targets": [],
+          "at": "2026-10-20T15:11:37.395Z"
         }
       ]
     },
@@ -37652,6 +38207,22 @@
             "WO-218"
           ],
           "at": "2026-10-17T19:34:06.757Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D030 (docs/evidence/WO-218/decisions.md#wo-218-d030): Settle the target-close follow-ups: preserve current synchronized stale-worktree closure, handle unreadable/dirty/broken checkouts by role, tolerate absent targets through committed ignore proofs, neutralize clone hooks and URL rewrites, and recover a missing base without deleting unjudged material. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "Any close-state recovery changes authority or deletes before both checkouts are judged.",
+          "targets": [],
+          "at": "2026-10-20T05:26:19.473Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D030 (docs/evidence/WO-218/decisions.md#wo-218-d030): Retain synchronized stale-holder closure and preserve Git’s refusal to move an unchecked-out base during its rebase. Name the affected role and recovery for a stale writer lock, mask file-URL and colon-prefixed local paths, retain the merge-and-retry remedy for an unmerged target, and render large fenced bodies without spreading their units into an argument list. VER-001 repair evidence: r29-rebase-guard 0/1, r29-stale-lock 0/1, r29-local-paths 0/1, r29-large-fence 0/1, am-stale-holder 0/0, r29-unmerged-remedy 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "Any close-state recovery changes authority or deletes before both checkouts are judged.",
+          "targets": [],
+          "at": "2026-10-20T15:11:37.076Z"
         }
       ]
     },
@@ -39769,6 +40340,22 @@
             "WO-218"
           ],
           "at": "2026-10-19T13:47:56.618Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D037 (docs/evidence/WO-218/decisions.md#wo-218-d037): Keep generated per-order literal rules and ownership sidecars in the common Git ignore/exclude contract so a second start sees a clean main. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "A generated host-rule path appears as untracked product input at a subsequent start.",
+          "targets": [],
+          "at": "2026-10-20T05:26:20.173Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D037 (docs/evidence/WO-218/decisions.md#wo-218-d037): Keep generated per-order literal rules and ownership sidecars in the common Git ignore/exclude contract so a second start sees a clean main. VER-001 repair evidence: r36-rules-cleanliness 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "A generated host-rule path appears as untracked product input at a subsequent start.",
+          "targets": [],
+          "at": "2026-10-20T15:11:37.819Z"
         }
       ]
     },
@@ -39795,6 +40382,22 @@
             "WO-218"
           ],
           "at": "2026-10-19T13:47:56.544Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D036 (docs/evidence/WO-218/decisions.md#wo-218-d036): Validate literal host-rule settings and ownership before start creates a worktree or close deletes one; malformed input retains the existing checkouts. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "A host-rule precondition first executes after worktree creation or deletion.",
+          "targets": [],
+          "at": "2026-10-20T05:26:20.074Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D036 (docs/evidence/WO-218/decisions.md#wo-218-d036): Validate literal host-rule settings and ownership before start creates a worktree or close deletes one; malformed input retains the existing checkouts. VER-001 repair evidence: r35-settings-preflight 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "A host-rule precondition first executes after worktree creation or deletion.",
+          "targets": [],
+          "at": "2026-10-20T15:11:37.714Z"
         }
       ]
     },
@@ -39823,6 +40426,27 @@
           "title": "WO-221-D038: FINAL-001 follow-ups for the WO-221 repair within the boy-scout bound, else for the next order that edits the named surface, each with a fixture that fails without the fix: withhold the…",
           "summary": "{ \"id\": \"WO-221-D038\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: final review\", \"decision\": \"FINAL-001 fails WO-221 at the integrated subject, code identity 104d1bf29eb45e2b238c3d3b918d1c6f4d58efb608762adcb3dfed41f152310b, which integration left unchanged (D037). One finding blocks: the close's new base ignore judgment (scripts/lib/target-worktree-close.mjs ignoredByTree) runs git check-ignore --no-index --stdin through spawnSync with no maxBuffer, so Node's 1 MiB default applies to its output, while the candidate list it judges now comes from ls-files --others without --exclude-standard and is capped at 16 MiB; once the clone's base checkout holds a populated ignored tree, every installed ",
           "missing": false
+        },
+        {
+          "hash": "b9ad2d576ebc8d96cd7fd12808cddf5c2a91a61eee300994844772c253865f21",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d038--final-review-fail-final-001-at-the-integrated-subject-the-base-ignore-judgment-dies-on-a-populated-ignored-tree-and-nineteen-follow-ups-are-boarded",
+          "title": "WO-221-D038: FINAL-001 follow-ups for the WO-221 repair within the boy-scout bound, else for the next order that edits the named surface, each with a fixture that fails without the fix: withhold the…",
+          "summary": "{ \"id\": \"WO-221-D038\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: final review\", \"decision\": \"FINAL-001 fails WO-221 at the integrated subject, code identity 104d1bf29eb45e2b238c3d3b918d1c6f4d58efb608762adcb3dfed41f152310b, which integration left unchanged (D037). One finding blocks: the close's new base ignore judgment (scripts/lib/target-worktree-close.mjs ignoredByTree) runs git check-ignore --no-index --stdin through spawnSync with no maxBuffer, so Node's 1 MiB default applies to its output, while the candidate list it judges now comes from ls-files --others without --exclude-standard and is capped at 16 MiB; once the clone's base checkout holds a populated ignored tree, every installed ",
+          "missing": false
+        },
+        {
+          "hash": "f996e0bb26abcc0c3ceb8177498cf1fe5642b470b01f8c2c98ecfd3f0e780950",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d038--final-review-fail-final-001-at-the-integrated-subject-the-base-ignore-judgment-dies-on-a-populated-ignored-tree-and-nineteen-follow-ups-are-boarded",
+          "title": "WO-221-D038: FINAL-001 follow-ups for the WO-221 repair within the boy-scout bound, else for the next order that edits the named surface, each with a fixture that fails without the fix: withhold the…",
+          "summary": "{ \"id\": \"WO-221-D038\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: final review\", \"decision\": \"FINAL-001 fails WO-221 at the integrated subject, code identity 104d1bf29eb45e2b238c3d3b918d1c6f4d58efb608762adcb3dfed41f152310b, which integration left unchanged (D037). One finding blocks: the close's new base ignore judgment (scripts/lib/target-worktree-close.mjs ignoredByTree) runs git check-ignore --no-index --stdin through spawnSync with no maxBuffer, so Node's 1 MiB default applies to its output, while the candidate list it judges now comes from ls-files --others without --exclude-standard and is capped at 16 MiB; once the clone's base checkout holds a populated ignored tree, every installed ",
+          "missing": false
+        },
+        {
+          "hash": "4ef67234588464d9b96449c8ce4ca1f21654df2db9f3fa195e6d4b8faf045816",
+          "ref": "docs/evidence/WO-221/decisions.md#wo-221-d038--final-review-fail-final-001-at-the-integrated-subject-the-base-ignore-judgment-dies-on-a-populated-ignored-tree-and-nineteen-follow-ups-are-boarded",
+          "title": "WO-221-D038: FINAL-001 follow-ups for the WO-221 repair within the boy-scout bound, else for the next order that edits the named surface, each with a fixture that fails without the fix: withhold the…",
+          "summary": "{ \"id\": \"WO-221-D038\", \"date\": \"2026-10-19\", \"dispatch\": \"resume: final review\", \"decision\": \"FINAL-001 fails WO-221 at the integrated subject, code identity 104d1bf29eb45e2b238c3d3b918d1c6f4d58efb608762adcb3dfed41f152310b, which integration left unchanged (D037). One finding blocks: the close's new base ignore judgment (scripts/lib/target-worktree-close.mjs ignoredByTree) runs git check-ignore --no-index --stdin through spawnSync with no maxBuffer, so Node's 1 MiB default applies to its output, while the candidate list it judges now comes from ls-files --others without --exclude-standard and is capped at 16 MiB; once the clone's base checkout holds a populated ignored tree, every installed ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -39843,6 +40467,22 @@
             "WO-218"
           ],
           "at": "2026-10-19T13:47:56.389Z"
+        },
+        {
+          "sourceRevision": 5,
+          "status": "settled",
+          "reason": "WO-218-D034 (docs/evidence/WO-218/decisions.md#wo-218-d034): Dispose every FINAL-001 finding as the accompanying twenty-row table records: repair admission, target publication/release, literal-rule ownership and starter sequencing; retain the earlier base-ignore, unreadable-output and deadline repairs. For F16, decline inference of a sole identical operator rule removed and re-added between observations; preserve explicit duplicates across interrupted removal and validate recorded ownership artifacts. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "Host settings expose stable rule identities or an observable ownership case bypasses validation.",
+          "targets": [],
+          "at": "2026-10-20T05:26:19.875Z"
+        },
+        {
+          "sourceRevision": 6,
+          "status": "settled",
+          "reason": "WO-218-D034 (docs/evidence/WO-218/decisions.md#wo-218-d034): Dispose every FINAL-001 finding as the accompanying twenty-row table records: repair admission, target publication/release, literal-rule ownership and starter sequencing; retain the earlier base-ignore, unreadable-output and deadline repairs. For F16, decline inference of a sole identical operator rule removed and re-added between observations; preserve explicit duplicates across interrupted removal and validate recorded ownership artifacts. FINAL-001 F1, F10, F11, F19 and F20 are already-met behaviors, with explicit passing baseline-module commands. Other fixes have individual isolated controls; the unobservable F16 boundary remains declined. VER-001 repair evidence: am-close-refusals 0/0, am-large-ignore 0/0, am-complete-bound 0/0, f1-02-origin 0/1, f1-03-package-closure 0/1, f1-04-profile 0/1, raw-git 0/1, raw-npm 0/1, f1-06-next-version 0/1, f1-07-ambiguous-push 0/1, f1-08-recorded-origin 0/1, f1-09-draft-commit 0/1, f1-12-body 0/1, f1-13-literal-rules 0/1, f1-15-order-rules 0/1, f1-14-rewrite-origin 0/1, f1-16-sidecar-path 0/1, f1-16-removal-journal 0/1, f1-17-receipt 0/1, f1-18-gh-preflight 0/1, f1-18-preview 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "Host settings expose stable rule identities or an observable ownership case bypasses validation.",
+          "targets": [],
+          "at": "2026-10-20T15:11:37.498Z"
         }
       ]
     },
@@ -39869,6 +40509,22 @@
             "WO-218"
           ],
           "at": "2026-10-19T13:47:56.842Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D040 (docs/evidence/WO-218/decisions.md#wo-218-d040): Aggregate known gate advisories while preserving null for unavailable observations; retain the already-current fetched-ignore and six-hour deadline behavior. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "Advisory aggregation turns unavailable evidence into a known empty count.",
+          "targets": [],
+          "at": "2026-10-20T05:26:20.469Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D040 (docs/evidence/WO-218/decisions.md#wo-218-d040): Aggregate known gate advisories while preserving null for unavailable observations; retain the already-current fetched-ignore and six-hour deadline behavior. VER-001 repair evidence: r39-null-observation 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "Advisory aggregation turns unavailable evidence into a known empty count.",
+          "targets": [],
+          "at": "2026-10-20T15:11:38.142Z"
         }
       ]
     },
@@ -39895,6 +40551,22 @@
             "WO-218"
           ],
           "at": "2026-10-19T13:47:56.693Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D038 (docs/evidence/WO-218/decisions.md#wo-218-d038): Bound path-list overflow diagnostics and stream the fetched tree to retain only relevant paths instead of capturing the whole tree under the candidate ceiling. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "A large tracked tree or candidate list is emitted in full or bypasses the bounded refusal.",
+          "targets": [],
+          "at": "2026-10-20T05:26:20.272Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D038 (docs/evidence/WO-218/decisions.md#wo-218-d038): Bound path-list overflow diagnostics and stream the fetched tree to retain only relevant paths instead of capturing the whole tree under the candidate ceiling. VER-001 repair evidence: r37-path-overflow 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "A large tracked tree or candidate list is emitted in full or bypasses the bounded refusal.",
+          "targets": [],
+          "at": "2026-10-20T15:11:37.924Z"
         }
       ]
     },
@@ -39921,6 +40593,22 @@
             "WO-218"
           ],
           "at": "2026-10-19T13:47:56.768Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D039 (docs/evidence/WO-218/decisions.md#wo-218-d039): Preflight write/search access and every intermediate component of declared disposable roots in both checkouts before deleting either one. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "Filesystem permission or symlink state can cause partial cleanup before refusal.",
+          "targets": [],
+          "at": "2026-10-20T05:26:20.370Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D039 (docs/evidence/WO-218/decisions.md#wo-218-d039): Preflight write/search access and every intermediate component of declared disposable roots in both checkouts before deleting either one. VER-001 repair evidence: r38-write-access 0/1, f2-05-git-case 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "Filesystem permission or symlink state can cause partial cleanup before refusal.",
+          "targets": [],
+          "at": "2026-10-20T15:11:38.029Z"
         }
       ]
     },
@@ -39947,6 +40635,22 @@
             "WO-218"
           ],
           "at": "2026-10-19T13:47:56.466Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D035 (docs/evidence/WO-218/decisions.md#wo-218-d035): Dispose every FINAL-002 finding with full relative paths, bounded streamed tree reads, pre-push sibling tag checks, safe disposable roots, main-bound helper admission, repository-bound draft reuse, partial-row gate composition and moved-head diagnostics. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "Any of the thirteen source findings recurs.",
+          "targets": [],
+          "at": "2026-10-20T05:26:19.974Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D035 (docs/evidence/WO-218/decisions.md#wo-218-d035): Dispose every FINAL-002 finding with full relative paths, bounded streamed tree reads, pre-push sibling tag checks, safe disposable roots, main-bound helper admission, repository-bound draft reuse, partial-row gate composition and moved-head diagnostics. FINAL-002 F12 changes fixture adequacy: both runtime guards already existed, and separate removals now cause the intended negative cases to fail. VER-001 repair evidence: raw-gh 0/1, f2-08-gh-prefix 0/1, f2-01-path-names 0/1, f2-02-planned 0/1, f2-03-streaming 0/1, f2-04-tag-preflight 0/1, f2-05-symlink 0/1, f2-05-git-case 0/1, f2-06-registry 0/1, f2-09-control-root 0/1, f2-10-draft-origin 0/1, f2-11-partial-row 0/1, f2-12-selection 0/1, f2-12-executed 0/1, f2-13-moved-head 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "Any of the thirteen source findings recurs.",
+          "targets": [],
+          "at": "2026-10-20T15:11:37.609Z"
         }
       ]
     },
@@ -39973,6 +40677,22 @@
             "WO-218"
           ],
           "at": "2026-10-19T13:47:57.069Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D042 (docs/evidence/WO-218/decisions.md#wo-218-d042): Read historical dependency IDs from this instance's historicalWorkOrders configuration; core explicitly declares its two pre-control cases and fresh exports default to none. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "An instance needs a richer historical-evidence schema than a list of order IDs.",
+          "targets": [],
+          "at": "2026-10-20T05:26:20.665Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D042 (docs/evidence/WO-218/decisions.md#wo-218-d042): Read historical dependency IDs from this instance's historicalWorkOrders configuration; core explicitly declares its two pre-control cases and fresh exports default to none. VER-001 repair evidence: r41-instance-history 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "An instance needs a richer historical-evidence schema than a list of order IDs.",
+          "targets": [],
+          "at": "2026-10-20T15:11:38.353Z"
         }
       ]
     },
@@ -40071,6 +40791,22 @@
             "WO-218"
           ],
           "at": "2026-10-19T13:47:57.150Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D043 (docs/evidence/WO-218/decisions.md#wo-218-d043): Admit an optional gitmoji prefix before the existing conventional commit type, preserving all existing type and subject refusals. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "Conventional subject grammar or supported gitmoji notation changes.",
+          "targets": [],
+          "at": "2026-10-20T05:26:20.762Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D043 (docs/evidence/WO-218/decisions.md#wo-218-d043): Admit an optional gitmoji prefix before the existing conventional commit type, preserving all existing type and subject refusals. VER-001 repair evidence: r42-gitmoji 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "Conventional subject grammar or supported gitmoji notation changes.",
+          "targets": [],
+          "at": "2026-10-20T15:11:38.461Z"
         }
       ]
     },
@@ -40097,6 +40833,22 @@
             "WO-218"
           ],
           "at": "2026-10-19T13:47:56.992Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D041 (docs/evidence/WO-218/decisions.md#wo-218-d041): Resolve moved verification/final-review paths through their recorded immutable target binding in JSON status and the current Markdown projection. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "A moved report stops resolving or a replacement ref/current registration changes historical bytes.",
+          "targets": [],
+          "at": "2026-10-20T05:26:20.568Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D041 (docs/evidence/WO-218/decisions.md#wo-218-d041): Resolve moved verification/final-review paths through their recorded immutable target binding in JSON status and the current Markdown projection. VER-001 repair evidence: r40-moved-status 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "A moved report stops resolving or a replacement ref/current registration changes historical bytes.",
+          "targets": [],
+          "at": "2026-10-20T15:11:38.247Z"
         }
       ]
     },
@@ -40336,6 +41088,22 @@
             "WO-218"
           ],
           "at": "2026-10-19T22:59:39.549Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D044 (docs/evidence/WO-218/decisions.md#wo-218-d044): Admit registration release.displayName using the launchpad's shape and 64-character limit, default to the registration ID, and print the title in preview, tag annotation and receipt without renaming old Releases. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "A new naming requirement affects tag identity or a previously published Release.",
+          "targets": [],
+          "at": "2026-10-20T05:26:20.859Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D044 (docs/evidence/WO-218/decisions.md#wo-218-d044): Admit registration release.displayName using the launchpad's shape and 64-character limit, default to the registration ID, and print the title in preview, tag annotation and receipt without renaming old Releases. VER-001 repair evidence: r43-release-display 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "A new naming requirement affects tag identity or a previously published Release.",
+          "targets": [],
+          "at": "2026-10-20T15:11:38.569Z"
         }
       ]
     },
@@ -40388,6 +41156,22 @@
             "WO-218"
           ],
           "at": "2026-10-19T22:59:39.627Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D045 (docs/evidence/WO-218/decisions.md#wo-218-d045): Exclude annotated Starter tags carrying Core commit provenance from instance local release baselines; retain ordinary tags, and teach no-tags upstream fetch plus named non-tag preview refs. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "Starter tag provenance changes or an ordinary release is wrongly excluded.",
+          "targets": [],
+          "at": "2026-10-20T05:26:20.958Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D045 (docs/evidence/WO-218/decisions.md#wo-218-d045): Exclude annotated Starter tags carrying Core commit provenance from instance local release baselines; retain reachable ordinary tags, and teach no-tags upstream fetch plus named non-tag preview refs. Local preparation excludes ordinary tags outside the subject’s ancestry as well as starter tags. Worktrees share tags; an unintegrated sibling release is not this subject’s baseline. This matches local surface checking; publication continues to observe origin. The separate r44-ancestral-local control proves the ordinary-tag boundary. VER-001 repair evidence: r44-starter-baseline 0/1, r44-ancestral-local 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "Starter tag provenance changes or an ordinary release is wrongly excluded.",
+          "targets": [],
+          "at": "2026-10-20T15:11:38.674Z"
         }
       ]
     },
@@ -40414,6 +41198,22 @@
             "WO-218"
           ],
           "at": "2026-10-19T22:59:39.783Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D046 (docs/evidence/WO-218/decisions.md#wo-218-d046): Add baseDisposablePolicy judge-only while keeping delete as the default. Both policies judge all base material; only target output is deleted in judge-only, and tracked incoming collisions with retained ignored files refuse before either checkout changes. The decision names the fixture cases and current-source checks; complete execution is recorded in docs/evidence/WO-218/handoff.md.",
+          "reopenWhen": "Another update step can modify judge-only retained base output.",
+          "targets": [],
+          "at": "2026-10-20T05:26:21.056Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D046 (docs/evidence/WO-218/decisions.md#wo-218-d046): Add baseDisposablePolicy judge-only while keeping delete as the default. Both policies judge all base material; only target output is deleted in judge-only, and tracked incoming collisions with retained ignored files refuse before either checkout changes. VER-001 repair evidence: r45-base-policy 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+          "reopenWhen": "Another update step can modify judge-only retained base output.",
+          "targets": [],
+          "at": "2026-10-20T15:11:38.777Z"
         }
       ]
     },
@@ -40440,6 +41240,133 @@
           "at": "2026-10-19T22:59:39.860Z"
         }
       ]
+    },
+    {
+      "id": "FUP-25c618b1c965f92d",
+      "key": "decision:docs/evidence/WO-218/decisions.md#wo-218-d055",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6d1025013c0b139c45b39412a64c0f3ac047ef5d72ce735ad432d78cc332ad66",
+          "ref": "docs/evidence/WO-218/decisions.md#wo-218-d055--ver-001-fail-criterion-2-is-unmet-because-five-settled-rows-name-no-case-that-fails-without-their-fix-under-a-preflight-suite",
+          "title": "WO-218-D055: WO-218's repair, inside its declared surfaces. F1 (blocking): give FUP-f32886b04703d3db a fixture whose matching gate rows record baseCheckoutWrites null (WO-221-D043's…",
+          "summary": "{ \"id\": \"WO-218-D055\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 at code identity 6ff9b8345d5f47059d28d30a9ae07ca93150b5bc234c0a9935f29e24251cb890. Criteria 1 and 3 to 7 are met; criterion 2 is unmet. F1 (blocking, criterion 2): five settled rows name no case that fails without their fix under a suite the Preflight line names. FUP-f32886b04703d3db (D040): the null-row aggregation is implemented in closeTargetWorktree, but no fixture records a gate row whose baseCheckoutWrites is null, and the named case 'target close isolates fetched ignore rules, retains unreadable output and tolerates unavailable gate advisories' is unchanged ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-218-D057 and WO-218-D058 (docs/evidence/WO-218/decisions.md): VER-001 F1 to F4 repaired. Every selected settled row and all 33 WO-221 findings have an isolated control or an explicit already-met command/output. The configured publication-root fixture belongs to declared Preflight; null observations, planned deletion, shared composition and the omitted low-item/retry cases now have direct assertions. CONTRIBUTING names instance configuration; product 07 and D045 state the local ancestry boundary. docs/evidence/WO-218/repair-controls.json records all 91 paired controls; handoff.md records complete-review and document evidence. D056 remains a separate planning follow-up.",
+          "reopenWhen": "A named control passes after its relevant fix is removed, the baseline classification lacks its recorded command/output, or either corrected document misstates the implemented contract.",
+          "targets": [],
+          "at": "2026-10-20T15:11:38.880Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e700292da312f361",
+      "key": "decision:docs/evidence/WO-218/decisions.md#wo-218-d056",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e9924ccbe69c3cfc719c41f43dc1ae919ff8c0f89785fede652cf96145d964ac",
+          "ref": "docs/evidence/WO-218/decisions.md#wo-218-d056--ver-001-planning-receipt-049s-criterion2-and-criterion5-reopening-conditions-for-wo-218-have-occurred",
+          "title": "WO-218-D056: Next planning pass: reopen receipt 049's criterion:2 and criterion:5 known issues for WO-218. Decide whether a batch order's settled rows must record their named case run with the fix…",
+          "summary": "{ \"id\": \"WO-218-D056\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Record that two reopening conditions of planning receipt 2026-10-19-planning-638b4f9f2a2e3afb-049's known issues for WO-218 have occurred, independently of the verdict. criterion:2's condition, a verification of WO-218 running a settled row's named case at the order's base with the fix reverted and seeing it pass: the cases D020, D021 and D040 name pass at a66981ac (D055). criterion:5's condition, the objective's pending-count sentence still unamended when the before-and-after counts show no fall: the README records global pending 158 at entry and 158 after application, and the",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-27e0c0fff9cedb75",
+      "key": "decision:docs/evidence/WO-218/decisions.md#wo-218-d059",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9d98d400dd69c64103153087cf5e479a1f4c84a071eba8336f5ee74ddb4512b0",
+          "ref": "docs/evidence/WO-218/decisions.md#wo-218-d059--ver-002-pass-the-repair-holds-and-the-historical-id-dependency-refusal-no-longer-reaches-the-index-or-the-planning-readers",
+          "title": "WO-218-D059: The next order that edits scripts/lib/dependencies.mjs or scripts/work-orders.mjs, or a WO-218 repair if one happens; low priority. Rule a repair must hold: every reader main's parser…",
+          "summary": "{ \"id\": \"WO-218-D059\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002 at code identity 6b809fff4a6b533c8fe347d184f0a155f6557e4375af712666206ed5da1ee7b0; all seven criteria are met. VER-001's blocking F1 is repaired: all 91 paired controls of docs/evidence/WO-218/repair-controls.json reproduce in a disposable copy of the subject. In 84 the named case fails on its recorded assertion with only that fix reverted; in seven, main's module passes the current case, as recorded for an already-met item. VER-001's F2 to F4 are repaired. F1 (follow-up, refusal reach, breaks no criterion): D042 moved the historical-id check ('historical id cannot",
+          "missing": false
+        },
+        {
+          "hash": "948638670a6762b734e562f6c6a83a13de1376efbb969a1bd6ffc7dc2aa131c7",
+          "ref": "docs/evidence/WO-218/decisions.md#wo-218-d059--ver-002-pass-the-repair-holds-and-the-historical-id-dependency-refusal-no-longer-reaches-the-index-or-the-planning-readers",
+          "title": "WO-218-D059: The next order that edits scripts/lib/dependencies.mjs or scripts/work-orders.mjs, or a WO-218 repair if one happens; low priority. Rule a repair must hold: every reader main's parser…",
+          "summary": "{ \"id\": \"WO-218-D059\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002 at code identity 6b809fff4a6b533c8fe347d184f0a155f6557e4375af712666206ed5da1ee7b0; all seven criteria are met. VER-001's blocking F1 is repaired: all 91 paired controls of docs/evidence/WO-218/repair-controls.json reproduce in a disposable copy of the subject. In 84 the named case fails on its recorded assertion with only that fix reverted; in seven, main's module passes the current case, as recorded for an already-met item. VER-001's F2 to F4 are repaired. F1 (follow-up, refusal reach, breaks no criterion): D042 moved the historical-id check ('historical id cannot",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-eacf4e6eb0b39fbe",
+      "key": "decision:docs/evidence/WO-218/decisions.md#wo-218-d062",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6f07f8cdbb1c17d33b16f92c0511d5abbae8eab93d0c4289ee188f3762078056",
+          "ref": "docs/evidence/WO-218/decisions.md#wo-218-d062--final-review-the-target-order-lifecycles-boarded-follow-ups",
+          "title": "WO-218-D062: WO-219, which edits packages/skeleton/src/harness-host.ts next, or the next order that edits registeredTargetAdmission, scripts/lib/target-publish.mjs,…",
+          "summary": "{ \"id\": \"WO-218-D062\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Board four follow-ups in the target-order lifecycle, each reproduced by worker B in a disposable clone under the bounded wrapper and none breaking a criterion or a behavior main had. F13: the registered-target admission binds the helper's committed scripts, packages and lockfile but not the modules the helper loads: @dotln/compiler and @dotln/kernel resolve through ignored node_modules and the publish helper imports packages/skeleton/dist, ignored in core and committed in instances; and the closure is judged against refs/heads/main, a ref the session can move with git u",
+          "missing": false
+        },
+        {
+          "hash": "6f07f8cdbb1c17d33b16f92c0511d5abbae8eab93d0c4289ee188f3762078056",
+          "ref": "docs/evidence/WO-218/decisions.md#wo-218-d062",
+          "title": "WO-218-D062: WO-219, which edits packages/skeleton/src/harness-host.ts next, or the next order that edits registeredTargetAdmission, scripts/lib/target-publish.mjs,…",
+          "summary": "{ \"id\": \"WO-218-D062\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Board four follow-ups in the target-order lifecycle, each reproduced by worker B in a disposable clone under the bounded wrapper and none breaking a criterion or a behavior main had. F13: the registered-target admission binds the helper's committed scripts, packages and lockfile but not the modules the helper loads: @dotln/compiler and @dotln/kernel resolve through ignored node_modules and the publish helper imports packages/skeleton/dist, ignored in core and committed in instances; and the closure is judged against refs/heads/main, a ref the session can move with git u",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4018cf3118ea113e",
+      "key": "decision:docs/evidence/WO-218/decisions.md#wo-218-d063",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "088b6a08c8c4910fd5b97ba5f45f296d649eaec00e2cc72da9e6eac24cb80578",
+          "ref": "docs/evidence/WO-218/decisions.md#wo-218-d063--final-review-release-close-and-the-starters-boarded-follow-ups",
+          "title": "WO-218-D063: The next order that edits scripts/lib/starter-refresh.mjs or scripts/release.mjs. Rules a repair must hold: (F16) in the already-current branch the tag lands on the starter commit that…",
+          "summary": "{ \"id\": \"WO-218-D063\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Board four follow-ups in release close and the starter, each reproduced by worker A in a disposable clone under the bounded wrapper and none breaking a criterion or a behavior main had. F16: in the already-current branch of scripts/lib/starter-refresh.mjs refreshOne the sibling tag lands on the starter's tip (commit: remote), so an operator commit above the refresh commit is tagged; FINAL-001 F18's second defect is neither fixed nor declined and the README's F18 row said fixed, which this review corrects to boarded. F17: the close-history archives of scripts/release.mjs",
+          "missing": false
+        },
+        {
+          "hash": "088b6a08c8c4910fd5b97ba5f45f296d649eaec00e2cc72da9e6eac24cb80578",
+          "ref": "docs/evidence/WO-218/decisions.md#wo-218-d063",
+          "title": "WO-218-D063: The next order that edits scripts/lib/starter-refresh.mjs or scripts/release.mjs. Rules a repair must hold: (F16) in the already-current branch the tag lands on the starter commit that…",
+          "summary": "{ \"id\": \"WO-218-D063\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Board four follow-ups in release close and the starter, each reproduced by worker A in a disposable clone under the bounded wrapper and none breaking a criterion or a behavior main had. F16: in the already-current branch of scripts/lib/starter-refresh.mjs refreshOne the sibling tag lands on the starter's tip (commit: remote), so an operator commit above the refresh commit is tagged; FINAL-001 F18's second defect is neither fixed nor declined and the README's F18 row said fixed, which this review corrects to boarded. F17: the close-history archives of scripts/release.mjs",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4fe22d2e0c8d843d",
+      "key": "decision:docs/evidence/WO-218/decisions.md#wo-218-d064",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4d85db9870a6f7a0d5a61d0f0e225aad15d5861844d848404ebd2c4d4c0a7a1d",
+          "ref": "docs/evidence/WO-218/decisions.md#wo-218-d064--final-review-the-harness-kit-and-worktree-integration-follow-ups-and-d059s-corrected-record",
+          "title": "WO-218-D064: The next order that edits scripts/lib/worktree-integration.mjs or scripts/lib/harness.mjs. Rules a repair must hold: (F21) --stash-applied lists or refuses stash paths with no trace in…",
+          "summary": "{ \"id\": \"WO-218-D064\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Board two follow-ups in worktree integration and the harness floor, each reproduced by worker C in a disposable clone under the bounded wrapper and none breaking a criterion or a behavior main had, and correct D059's record. F21: --continue --stash-applied checks conflicts, unrestored untracked files and upstream ancestry but never the stash's tracked content against the tree, so an interrupted integration whose work was reverted to HEAD completes with the receipt at stage applied, and an upstream-added collision left unresolved completes with the tree holding upstream ",
+          "missing": false
+        },
+        {
+          "hash": "4d85db9870a6f7a0d5a61d0f0e225aad15d5861844d848404ebd2c4d4c0a7a1d",
+          "ref": "docs/evidence/WO-218/decisions.md#wo-218-d064",
+          "title": "WO-218-D064: The next order that edits scripts/lib/worktree-integration.mjs or scripts/lib/harness.mjs. Rules a repair must hold: (F21) --stash-applied lists or refuses stash paths with no trace in…",
+          "summary": "{ \"id\": \"WO-218-D064\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Board two follow-ups in worktree integration and the harness floor, each reproduced by worker C in a disposable clone under the bounded wrapper and none breaking a criterion or a behavior main had, and correct D059's record. F21: --continue --stash-applied checks conflicts, unrestored untracked files and upstream ancestry but never the stash's tracked content against the tree, so an interrupted integration whose work was reverted to HEAD completes with the receipt at stage applied, and an upstream-added collision left unresolved completes with the tree holding upstream ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

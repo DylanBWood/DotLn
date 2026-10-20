@@ -1,12 +1,13 @@
-# WO-218 — Boarded follow-ups, batch 2: the instance lifecycle, export and kit, publication, release close, the starter, worktrees and the target-order lifecycle: every one of the 45 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (version assigned at activation)
+# WO-218 — Boarded follow-ups, batch 2: the instance lifecycle, export and kit, publication, release close, the starter, worktrees and the target-order lifecycle: every one of the 45 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (v0.87.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer xhigh.
 **Track:** delivery
-**Release classification:** assigned at activation from the fixes made (patch
-unless a fix changes a command, flag, schema or refusal, which the decisions
-name; then minor). A declined row changes no behavior.
+**Release classification:** minor. Adds the explicit stash-application recovery
+flag, instance contribution identity, target display name and base cleanup policy,
+and strengthens declaration, admission, publication and cleanup refusals.
+
 **Cost:** adds the fixes and fixture cases the listed rows need, across
 `scripts/launchpad.mjs`, `scripts/lib/target-worktree-close.mjs`, `scripts/lib/target-worktrees.mjs`, `scripts/lib/starter-refresh.mjs`, `scripts/release.mjs`, `scripts/check-publication.mjs`, `scripts/lib/harness.mjs`, `scripts/lib/harness-runtime.mjs`, `scripts/lib/config.mjs`, `scripts/lib/stash-drop.mjs`, `scripts/worktree.mjs`, `scripts/kit/README.client.md`, and for the rows the 2026-10-19 pass added `packages/skeleton/src/harness-host.ts` (`registeredTargetAdmission` only), `scripts/lib/target-publish.mjs`, `scripts/lib/git.mjs`, `scripts/lib/gate-reuse.mjs`, `scripts/test-verifier-gate-claims.mjs`, `scripts/lib/dependencies.mjs`, `scripts/resume.mjs` (the status projection) and `scripts/lib/outward-lint.mjs`, for the rows the 2026-10-19 fork-requests pass added `scripts/lib/release-preparation.mjs` (`planReleasePreparation`'s local observation) beside `scripts/release.mjs` (`ancestralLocalTags`, `releaseBlockRule`, `publishTargetRelease`), `scripts/lib/config.mjs` (`validateRepositoryRelease`, the disposable declaration) and the base judgment of `scripts/lib/target-worktree-close.mjs`, and the fixtures the rows name; unknown until each row is triaged, and the README records
 the per-row command and case. Removes 45 pending rows from the
