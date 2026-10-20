@@ -38,7 +38,8 @@ it filed or placed first that have since closed: WO-215 (v0.81.0), WO-210
 [2026-10-18 pass](fork-observations-2026-10-18.md) retires WO-216 (v0.84.0);
 the [2026-10-19 pass](standard-pass-2026-10-19.md) retires WO-221 (v0.85.0);
 the [2026-10-19 fork-requests pass](fork-requests-2026-10-19.md) retires
-WO-222 (v0.86.0).
+WO-222 (v0.86.0); the [2026-10-20 entropy pass](entropy-review-007-2026-10-20.md)
+retires WO-218 (v0.87.0).
 
 **One focus: the starter, the operator's fork of it and DotLn-Angular,
 with a DotLn UI** (operator direction, 2026-10-13). The win condition is
@@ -60,15 +61,18 @@ merge, has not run yet: the fork's 2026-10-19 pass sequences WO-010 and
 WO-011 (the starter at v0.85.0 into its registration) before WO-005, and
 the count is reread when WO-005 runs.
 
-**The fork's blocker first** (the 2026-10-19 fork-requests pass, §8). The
-fork keeps DotLn-Angular's releases undeclared until the kit can title a
-target Release with a display name (its D4), and its requests of
-2026-10-19 all land on the surfaces WO-218 owns (the target release, the
-starter refresh and the close); WO-218 therefore runs before WO-217,
-whose gate rows no longer carry the gate's cost after WO-222. The operator
-may move it back by one sequence edit.
+**The fork's blocker landed** (the 2026-10-20 entropy pass, §6). WO-218
+closed on 2026-10-20 as v0.87.0: 39 of its 45 rows settled, each with a
+paired control its second verification replayed, and 6 declined; the
+fork's three requests are among the settled (a declared target release
+titled by its display name, the starter's core-named tag kept out of an
+instance's baseline, a judge-only base checkout at close). Its
+verification and final review boarded four rows, which WO-219 takes, and
+its first verification's finding on criterion 2 (three named cases passed
+at the base) is written into the three remaining batches' criterion 2 as
+the paired-control evidence class.
 
-**Then the boarded follow-ups, in four batches** (the 2026-10-17 pass, on
+**Then the boarded follow-ups, in the three remaining batches** (the 2026-10-17 pass, on
 the operator's direction that every boarded, follow-up and reopened row is
 resolved by a work order). The register held 130 pending decision rows
 boarded by closed orders across 53 orders, the oldest from 2026-09-18, 88
@@ -79,18 +83,17 @@ resident and the vertical), each row fixed with a case or declined with its
 reason, the register showing it; the 2026-10-18 pass added five rows, the
 2026-10-19 pass twelve (WO-221's seven boarded rows and five of the
 fork's requests) and the 2026-10-19 fork-requests pass eight (WO-222's
-four boarded rows and four of the fork's requests). The operator may
+four boarded rows and four of the fork's requests); the 2026-10-20 entropy
+pass adds WO-218's own four boarded rows to WO-219. The operator may
 interleave them with the focus orders by one sequence edit.
 
 The order, serial:
-- WO-218: boarded follow-ups, batch 2: the instance lifecycle, export and
-  kit, publication, release close, the starter, worktrees and the
-  target-order lifecycle (45 rows, three of them the fork's requests of
-  2026-10-19).
 - WO-217: boarded follow-ups, batch 1: the gate, the runner, the host guard,
   gate evidence and the fixtures (39 rows, four of them WO-222's).
 - WO-219: boarded follow-ups, batch 3: lifecycle records, attestation, role
-  text, hooks, the harness and planning machinery (44 rows).
+  text, hooks, the harness and planning machinery (50 rows, four of them
+  boarded by WO-218's own verification and final review and two the
+  2026-10-20 entropy pass's accepted REVIEW-007 findings).
 - WO-220: boarded follow-ups, batch 4: the resident, the vertical, the
   console, intake and triage, audit, the corpus lanes and the kernel's
   admission (20 rows).
@@ -122,7 +125,6 @@ The period below `v1.0.0` is early access (operator direction, 2026-09-30).
 The order of everything the operator did not place is the planner's.
 
 <!-- dotln-work-order-sequence:start -->
-- WO-218 — Boarded follow-ups, batch 2: the instance and publication
 - WO-217 — Boarded follow-ups, batch 1: the gate
 - WO-219 — Boarded follow-ups, batch 3: records, roles and the harness
 - WO-220 — Boarded follow-ups, batch 4: the resident and the vertical

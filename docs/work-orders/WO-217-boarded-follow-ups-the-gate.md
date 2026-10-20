@@ -39,8 +39,8 @@ the register's own excerpts. Amended by the 2026-10-19 fork-requests pass
 four rows WO-222's close boarded on the scheduler, the host guard and the
 light classification. Planner-synthesized. Opaque identifier, not a
 priority. Clean-room screen: repository records only.
-**Depends on:** WO-216 merged (reference only: its structural phase and handoff rule are the gate this order's own handoff runs under; no hard edge); WO-218 placed before it (reference only; no hard edge).
-**Recommended placement:** position 2 of the serial queue, after WO-218 (the 2026-10-19 fork-requests pass §8); the operator may interleave the four batches with the focus orders by one sequence edit.
+**Depends on:** WO-216 merged (reference only: its structural phase and handoff rule are the gate this order's own handoff runs under; no hard edge); WO-218 closed on 2026-10-20 as v0.87.0 (reference only; no hard edge).
+**Recommended placement:** position 1 of the serial queue (WO-218 closed on 2026-10-20 as v0.87.0; the 2026-10-20 entropy pass §7); the operator may interleave the three remaining batches with the focus orders by one sequence edit.
 
 <!-- dotln-dependencies:start -->
 [
@@ -52,7 +52,7 @@ priority. Clean-room screen: repository records only.
   {
     "workOrderId": "WO-218",
     "relation": "reference-only",
-    "reason": "placed before this batch in the serial queue by the 2026-10-19 fork-requests pass; no hard edge"
+    "reason": "closed before this batch (v0.87.0, 2026-10-20); no hard edge"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -68,8 +68,11 @@ disposition recorded by this order: `settled` with a fixture case that
 fails without the fix, or `declined` with the recorded reason, or, only for
 a choice the operator alone can make, `deferred` with an operator packet
 in the handoff and a reopening condition naming this order's pull request.
-No row is left `untriaged`, `open` or `allocated`. The register's pending
-count falls by the number of rows settled and declined.
+No row is left `untriaged`, `open` or `allocated`. The listed rows were
+`allocated` to this order when it was filed, and the register counts an
+allocated row as closed, so the pending count does not fall by them; the
+README records the count before and after and claims no fall (WO-218
+D056: 158 before and after its application).
 
 **Observed gap (dated 2026-10-17, main at `7b8206f4`):** the register
 holds 281 pending rows, 130 of them decision rows boarded by closed orders
@@ -159,9 +162,17 @@ product statement.
    no listed row is `untriaged`, `open` or `allocated`.
 2. Every `settled` row's disposition reason names a decision in
    `docs/evidence/WO-217/decisions.md` whose `evidence` names the
-   fixture file and case name that fails without the fix, and that case
-   runs under a suite the Preflight line names; or, for a row the current
-   source already meets, names the command run and its output.
+   fixture file, the case name and the control that shows the case
+   failing with only that row's fix reverted and passing with it, recorded
+   in `docs/evidence/WO-217/repair-controls.json` in the shape WO-218's
+   repair filed (per control: the rows, the suite and command, the
+   reversion by path, both arms' exit codes and the verdict), that case
+   running under a suite the Preflight line names; or, for a row the
+   current source already meets, names the command run at the base and
+   its output. A case that also passes at the base, or with the row's fix
+   reverted, settles nothing (WO-218 VER-001 F1: three of five named cases
+   passed at the base; D055's 91 paired controls were the repair, which
+   VER-002 replayed whole).
 3. Every `declined` row's disposition reason records what harm exists now,
    the evidence read and the reversal condition; the declined rows are at
    most one third of the rows listed.
@@ -205,7 +216,7 @@ the base (explicit tokens added by the 2026-10-18 pass, FUP-17266e5072d4a25a).
 14. `scripts/docs-check.mjs` and the document selection in `scripts/test-runner.mjs` (rows FUP-fb8cbeabbddef397, FUP-211986cdaa9f8c4f): the parse cost that grows with closed history and the document gate's run count per order; fix each with a measured case (the three-gate medians before and after) or decline it with the measured reason. Check: `npm test -- --only docs-check-fixtures` and `npm run test:docs`.
 15. `scripts/lib/host-lanes.mjs` (`acquireHostLanes`), `scripts/test-runner.mjs` (`reservedSlots`, `executeTask`, `lightSuiteNames`), `scripts/lib/gate-scheduling-baseline.json`, `scripts/lib/host-resources.mjs` (`recordedHostLaneCapacity`, `DEFAULT_MEMORY`), `scripts/host-guard.mjs` (the bare-group budget) and `scripts/structural-checks.mjs` (`checkHost`; rows FUP-16ba63c02aa91dfa, FUP-464d273fa299e979, FUP-66085a13c95d0f34, FUP-86d6b525c49adce8): read each row's source decision in full and take its repair rule as written there (the exclusive lease kept at full capacity with the overlap lanes lent as nested leases, or a light-only marker the registry honors for other gates' requests; the bare-group and session budget tied to the host or gate share, or product 07 stating the per-lane figure and why; the per-lane refusal naming `memory.gateShare` and the value that would admit, in the message and in product 07 §Preflight before the full gate; fair admission across gates with the fixed-four compatibility path; the capacity record's one message naming the record and the remedy; the light rule over every baseline sample or a declared row property), each with a fixture case that fails without the fix, or decline it with the recorded reason, and dispose the row with `npm run plan -- followups --apply`. A change to the overlap lease, the light rule or the lane derivation is kept only when a fresh complete run's median stays at or below WO-222's after median of 1,668.518 s (its D015 reversal rule), recorded in the decision. `host-resources.mjs` is a feedback source path (`FEEDBACK_SOURCE_PATHS`), so its edit owes the live feedback episode the Cost line names. Check: `npm test -- --only runner-fixtures` and `npm test -- --only process-debt`, under `node scripts/harness.mjs bounded --`.
 16. `docs/evidence/WO-217/decisions.md`: one decision per disposed row or per cluster of rows fixed together, each naming the row ids, the chosen option, the rejected option, the fixture case or the decline reason, and the reversal condition; an operator packet for each row only the operator can decide, with its reopening condition naming this order's pull request. Then `npm run meta`. Check: `npm run meta -- --check`.
-17. `docs/evidence/WO-217/README.md`: the after table (each row's final status, the case or reason, the command) and the register's pending count before and after (`npm run plan -- followups`). Check: the README holds both tables.
+17. `docs/evidence/WO-217/README.md`: the after table (each row's final status, the case or reason, the command, the control) and the register's pending count before and after (`npm run plan -- followups`), with `docs/evidence/WO-217/repair-controls.json` written as each row is settled (criterion 2). Check: the README holds both tables and every settled row has a control.
 18. Write-backs, in place, only where a row's fix changes what a product document states (the row's source decision names the document and section; re-read the heading at the base). Check: `npm run test:docs`.
 19. Handoff: `npm run format`; `npm run test:docs`; the gate the executor's role text names at the base (the order's Preflight suites, then the handoff gate; `npm test -- --review` where a declared machinery source changed); complete `docs/evidence/WO-217/handoff.md`; `npm run resume -- implementation-ready <flags>`.
 
@@ -246,5 +257,5 @@ report.
 1. At most one third of a batch's rows may be declined.
 2. A row only the operator can decide leaves as an operator packet rather
    than blocking the batch.
-3. The four batches sit after WO-222 and before WO-080, WO-218 first; the
-   operator may interleave them with the focus orders.
+3. The three remaining batches sit after WO-218's close and before WO-080,
+   this order first; the operator may interleave them with the focus orders.

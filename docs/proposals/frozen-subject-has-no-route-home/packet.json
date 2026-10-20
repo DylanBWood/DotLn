@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "kind": "FiledProductSuggestionPacket",
+  "filedAt": "2026-10-20T20:06:34.863Z",
+  "sourceReceiptId": "REVIEW-007",
+  "sourceReceiptPath": "docs/instance/entropy-reducer/runs/REVIEW-007.md",
+  "operatorReason": "Accepted and filed; WO-219 takes the expected shape as a step: origin removed or a refusing push URL after the clone, and a refs digest on both sides of the episode that refuses on the HEAD route and records on the explicit-commit route, which answers the packet busy-source risk; the Codex workspace sandbox is neither relied on nor changed, and no route, model or budget changes.",
+  "promotion": "Filing records the packet. Promotion to a work order remains an operator-authorized planning act.",
+  "packet": {
+    "schemaVersion": 1,
+    "kind": "ProductSuggestionPacket",
+    "proposedPath": "docs/proposals/frozen-subject-has-no-route-home/",
+    "sourceEpisodeId": "ep_entropy_857f9b21a78c43f9",
+    "provenance": [
+      "Entropy Reducer (entropy-reducer@1) episode ep_entropy_857f9b21a78c43f9",
+      "Work order wo_entropy_review_1",
+      "Subject e4c46109d19c98b37c6cd4c4f0923b8282f09c18",
+      "Finding ER7-001"
+    ],
+    "corroboratingEvidenceRefs": [
+      "scripts/lib/entropy-review.mjs:334-345",
+      "scripts/lib/entropy-review.mjs:125-126",
+      "scripts/lib/entropy-review.mjs:210-231",
+      "packages/skeleton/src/worker-transport.ts:817-847",
+      "packages/skeleton/src/loadouts/entropy-reducer.ts:38-44",
+      "Episode drill: push through origin from a frozen-style clone changed the source's refs while both witnesses stayed byte-identical"
+    ],
+    "dissentingEvidenceRefs": [
+      "docs/instance/entropy-reducer/README.md:130-131 and the dispatch instructions: remotes are declared read-only, and no reviewer is recorded as having pushed",
+      "Operator user-level Claude settings were not read (out of scope) and might deny git push"
+    ],
+    "suggestion": {
+      "suggestionId": "frozen-subject-has-no-route-home",
+      "submittedBy": "Entropy Reducer (entropy-reducer@1), claude-opus-5-5",
+      "problemOrOpportunity": "The entropy review and refutation subject is a clone whose origin is the operator's own checkout. On the Claude route (--safe-mode, Bash pre-approved), a push from the copy writes refs into the operator's repository. That is an effect the compiled envelope denies (remote.*, git.mutate*), and the receipt's tracked-status and untracked-listing witnesses cannot see it.",
+      "scope": "scripts/lib/entropy-review.mjs freezeSubject and the confinement record, their fixtures in scripts/test-entropy-review.mjs, and the README's 'What the reviewer may run'. No change to routes, models, budgets or the Codex sandbox.",
+      "evidenceRefs": [
+        "scripts/lib/entropy-review.mjs:334-345",
+        "scripts/lib/entropy-review.mjs:1111",
+        "scripts/lib/entropy-review.mjs:1490",
+        "packages/skeleton/src/worker-transport.ts:817-847",
+        "docs/instance/entropy-reducer/README.md:130-131"
+      ],
+      "affectedUsers": [
+        "operator",
+        "entropy reviewer and refuter workers",
+        "planning passes that rely on review receipts"
+      ],
+      "affectedSystems": [
+        "npm run entropy -- review | refute",
+        "entropy receipt confinement record",
+        "the operator's repository refs"
+      ],
+      "expectedValue": "The compiled denial of remote and git mutation holds structurally for the frozen copy, and the receipt's 'checked' claim covers ref writes. The cost is one git command and one digest per dispatch.",
+      "altitude": 6,
+      "uncertainty": "Not known: whether a user-level setting outside the project denies `git push` (settings were not read), and whether the Codex workspace-write sandbox blocks writes to the source's .git (not exercised here).",
+      "risks": [
+        "Removing origin breaks any probe that legitimately fetches from the source (none observed)",
+        "A refs digest of a busy source can flag the operator's own concurrent ref changes; on the explicit-commit route, record the change rather than refuse"
+      ],
+      "alternatives": [
+        "Set remote.origin.pushurl to a refusing value instead of removing origin",
+        "Record a refs digest only, without closing the channel",
+        "Keep the instruction-only confinement and state the gap in the README"
+      ],
+      "duplicationHints": [
+        "isolated-codex-launch-home (ER3-001, host-side effects of launches)",
+        "ER4-007 accepted into WO-175 (TMPDIR beside the copy)",
+        "WO-157 confinement record (inventory set delta)"
+      ],
+      "urgencyRationale": "Every pending and future review and refutation episode carries this channel, and the receipts already claim the confinement is checked. Closing it before the next dispatch costs little."
+    }
+  }
+}

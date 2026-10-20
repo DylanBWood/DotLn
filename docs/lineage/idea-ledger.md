@@ -40,6 +40,15 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-20 — Planning pass: Entropy Reducer review REVIEW-007 consumed; registration only; the record is the planning document
+
+Dispatch: `planning: entropy reducer` with no further operator text,
+captured in `docs/intake/notes/planning-entropy-reducer-2026-10-20.md`
+(ignored; the planning document §1 records its SHA-256). The record is
+[the planning document](../planning/entropy-review-007-2026-10-20.md); this
+heading registers the pass for the plan tooling (WO-088 moves registration
+out of the ledger).
+
 ## 2026-10-19 — Planning pass on the fork's requests: registration only; the record is the planning document
 
 Dispatch: `planning: standard planning pass + got this message from
