@@ -62,6 +62,17 @@ const annotationFromObject = (object, tag) => {
 };
 export const tagAnnotation = (root, tag) =>
   annotationFromObject(tagContents(root, tag), tag);
+// A starter refresh tag describes core's export, not an instance release.
+// Judge the annotation the refresh writes; a lightweight or retagged object
+// remains an ordinary tag and cannot silently disappear from the baseline.
+export const isStarterTag = (root, name, tag) => {
+  if (tag.objectType !== "tag") return false;
+  const annotation = tagAnnotation(root, name);
+  return (
+    annotation.startsWith(`Starter ${name}\n\n`) &&
+    /^Core commit: (?:[a-f0-9]{40}|[a-f0-9]{64})$/mu.test(annotation)
+  );
+};
 export const humanLayerFromAnnotation = (annotation) => {
   const marker = annotation.lastIndexOf("\n\nDOTLN-MANIFEST-BEGIN\n");
   if (marker >= 0 && /\nDOTLN-MANIFEST-END\n?$/.test(annotation.slice(marker)))

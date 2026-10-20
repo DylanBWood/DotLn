@@ -38,7 +38,20 @@
     "\"worktree start carries the main checkout's local-terms list and a clone record accepts an id the order checkout declares\"",
     "\"worktree start names the local-terms registration step when the main checkout has no list\"",
     "`target close protects ownership and disables hooks: ${kind}`",
-    "\"target publication retains installation ownership when its live manifest disappears\""
+    "\"target publication retains installation ownership when its live manifest disappears\"",
+    "\"target final review refuses a nonconventional commit before binding the subject\"",
+    "\"a target registered to another launchpad names that launchpad without selecting it\"",
+    "\"malformed literal settings refuse target start before either worktree is created\"",
+    "\"moved decisions and reports resolve from the bound immutable target commit\"",
+    "\"target publication normalizes nested links and preserves encoded paths and queries\"",
+    "`target close keeps the base judgment and applies ${policy} only to base output`",
+    "`target close judges ${side} disposable directory write access before deleting either checkout`",
+    "\"path-list overflow is bounded while the tree selector streams beyond the same ceiling\"",
+    "\"judge-only refuses fetched tracked paths that would overwrite retained ignored output\"",
+    "\"target close preserves unavailable gate-write observations in mixed valid rows\"",
+    "\"target close names a stale writer transition by role and gives its recovery\"",
+    "\"target close keeps Git's guard for an unchecked-out base being rebased\"",
+    "\"literal host rules keep main clean and preserve another in-flight order\""
   ],
   "names": [
     "target release preparation is a read-only no-release outcome",
@@ -100,6 +113,22 @@
     "target close protects ownership and disables hooks: clone-hook",
     "target close protects ownership and disables hooks: clone-writer",
     "target close protects ownership and disables hooks: missing-base",
-    "target publication retains installation ownership when its live manifest disappears"
+    "target publication retains installation ownership when its live manifest disappears",
+    "target final review refuses a nonconventional commit before binding the subject",
+    "a target registered to another launchpad names that launchpad without selecting it",
+    "malformed literal settings refuse target start before either worktree is created",
+    "moved decisions and reports resolve from the bound immutable target commit",
+    "target publication normalizes nested links and preserves encoded paths and queries",
+    "target close protects ownership and disables hooks: clone-urlrewrite",
+    "target close keeps the base judgment and applies delete only to base output",
+    "target close keeps the base judgment and applies judge-only only to base output",
+    "target close judges base disposable directory write access before deleting either checkout",
+    "target close judges target disposable directory write access before deleting either checkout",
+    "path-list overflow is bounded while the tree selector streams beyond the same ceiling",
+    "judge-only refuses fetched tracked paths that would overwrite retained ignored output",
+    "target close preserves unavailable gate-write observations in mixed valid rows",
+    "target close names a stale writer transition by role and gives its recovery",
+    "target close keeps Git's guard for an unchecked-out base being rebased",
+    "literal host rules keep main clean and preserve another in-flight order"
   ]
 }

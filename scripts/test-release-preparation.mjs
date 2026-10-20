@@ -187,7 +187,7 @@ test("release preparation records a collision once, as the order's decision, and
       /^Retime unpublished application target v0\.13\.2 to v0\.13\.3, the next patch above the observed release baseline v0\.13\.2,/,
     );
     assert.deepEqual(decision.evidence, [
-      "release baseline v0.13.2 (local tags)",
+      "release baseline v0.13.2 (ancestral local release tags, excluding annotated starter refresh tags)",
       "superseded target v0.13.2",
       "new target v0.13.3",
     ]);
@@ -315,7 +315,7 @@ test("a placeholder heading is assigned the next version and its decision keeps 
       /^Assign application target v0\.13\.3, the next patch above the observed release baseline v0\.13\.2,/,
     );
     assert.deepEqual(decision.evidence, [
-      "release baseline v0.13.2 (local tags)",
+      "release baseline v0.13.2 (ancestral local release tags, excluding annotated starter refresh tags)",
       "patch classification declared in docs/work-orders/WO-099-fixture.md",
     ]);
     for (const path of Object.keys(f.sources).slice(2))

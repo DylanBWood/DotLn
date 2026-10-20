@@ -27,6 +27,60 @@ import { currentEvidence } from "../packages/skeleton/src/evidence-editions.mjs"
 
 import { editionCopy } from "./lib/evidence-fixture.mjs";
 
+test("synthetic evidence generators select immutable editions explicitly", (t) => {
+  const { copy, env } = editionCopy(t);
+  const manifest = readFileSync(join(copy, "docs/evidence/current.json"));
+  for (const [script, kind] of [
+    ["artifact-identity-evidence", "artifact-identity"],
+    ["verification-evidence", "verification"],
+  ]) {
+    const historical = join(copy, currentEvidence(copy, kind).directory);
+    const original = new Map(
+      readdirSync(historical).map((name) => [
+        name,
+        readFileSync(join(historical, name)),
+      ]),
+    );
+    const run = (mode) =>
+      spawnSync(
+        process.execPath,
+        [
+          `scripts/${script}.mjs`,
+          mode,
+          "--edition",
+          "WO-999",
+          "--revision",
+          "001",
+        ],
+        { cwd: copy, encoding: "utf8", env },
+      );
+    for (const mode of ["--write", "--check", "--write"]) {
+      const result = run(mode);
+      assert.equal(result.status, 0, result.stdout + result.stderr);
+    }
+    const destination = join(
+      copy,
+      currentEvidence(copy, kind, { workOrder: "WO-999", revision: "001" })
+        .directory,
+    );
+    const first = join(destination, readdirSync(destination)[0]);
+    writeFileSync(first, "an existing edition must not be replaced\n");
+    const refused = run("--write");
+    assert.notEqual(refused.status, 0);
+    assert.match(refused.stderr, /evidence edition is immutable/u);
+    assert.equal(
+      readFileSync(first, "utf8"),
+      "an existing edition must not be replaced\n",
+    );
+    for (const [name, bytes] of original)
+      assert.deepEqual(readFileSync(join(historical, name)), bytes);
+    assert.deepEqual(
+      readFileSync(join(copy, "docs/evidence/current.json")),
+      manifest,
+    );
+  }
+});
+
 test("WO-157 a moved entropy review protocol stales the feedback edition; an excluded import does not", (t) => {
   const { copy, check, restore } = editionCopy(t);
   const base = check();

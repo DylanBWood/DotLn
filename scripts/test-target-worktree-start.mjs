@@ -18,6 +18,7 @@ import { write } from "./lib/helpers.mjs";
 import { checkTargetHarness } from "./lib/harness.mjs";
 import {
   cloneMapPath,
+  orderHostRules,
   readTargetStart,
   reviewedTargetSubject,
   staleOrderHostRules,
@@ -685,7 +686,7 @@ test("WO-072 criterion 1: declared target base, governed ignored bundle and conv
     ]) {
       write(f.target, file, "target code\n");
       git(f.target, ...args);
-      git(f.target, "commit", "-qm", "Target source change");
+      git(f.target, "commit", "-qm", "test: target source change");
       assert.doesNotMatch(
         git(f.target, "ls-tree", "-r", "--name-only", "HEAD"),
         /(?:CLAUDE|AGENTS|\.claude|\.codex|\.dotln|docs\/|records\/)/,
@@ -853,6 +854,69 @@ test("host-rule rewrite requires a committed opt-in and preserves operator rules
     assert.deepEqual(staleOrderHostRules(f.main), []);
     const owned = JSON.parse(readFileSync(sidecar, "utf8"));
     assert.ok(owned.claude.every((rule) => !operatorRules.includes(rule)));
+    const originalSidecar = readFileSync(sidecar, "utf8");
+    for (const invalid of [
+      "{malformed\n",
+      JSON.stringify({ ...owned, codex: "../outside.rules" }),
+    ]) {
+      const before = [settings, codex].map((file) => readFileSync(file));
+      writeFileSync(sidecar, invalid);
+      assert.throws(
+        () => staleOrderHostRules(f.main),
+        /repair the host-rule record/,
+      );
+      const refused = f.worktree("host-rules", "--remove", "WO-999");
+      assert.notEqual(refused.status, 0);
+      assert.match(refused.stderr, /repair the host-rule record/);
+      assert.deepEqual(
+        [settings, codex].map((file) => readFileSync(file)),
+        before,
+      );
+    }
+    writeFileSync(sidecar, originalSidecar);
+    const originalOrigin = git(f.clone, "config", "--get", "remote.origin.url");
+    git(
+      f.clone,
+      "remote",
+      "set-url",
+      "origin",
+      "https://github.com/dotln-fixture/another.git",
+    );
+    const reboundOrigin = rewrite();
+    assert.notEqual(reboundOrigin.status, 0);
+    assert.match(
+      reboundOrigin.stderr,
+      /origin differs from the origin recorded/,
+    );
+    assert.equal(readFileSync(sidecar, "utf8"), originalSidecar);
+    git(f.clone, "remote", "set-url", "origin", originalOrigin);
+    const ownedCodex = readFileSync(codex, "utf8");
+    writeFileSync(codex, ownedCodex + "# hand edit\n");
+    assert.equal(staleOrderHostRules(f.main).length, 1);
+    assert.notEqual(rewrite().status, 0);
+    writeFileSync(codex, ownedCodex);
+    const retired = "Bash(git -C fixture push *)";
+    const legacy = JSON.parse(readFileSync(settings, "utf8"));
+    legacy.permissions.allow.push(retired, retired);
+    writeFileSync(settings, JSON.stringify(legacy));
+    writeFileSync(
+      sidecar,
+      JSON.stringify({ ...owned, claude: [...owned.claude, retired] }),
+    );
+    f.ok(rewrite());
+    assert.equal(
+      JSON.parse(readFileSync(settings, "utf8")).permissions.allow.filter(
+        (rule) => rule === retired,
+      ).length,
+      1,
+    );
+    // Remove the fixture's independent operator duplicate for the later ownership assertion.
+    const migrated = JSON.parse(readFileSync(settings, "utf8"));
+    migrated.permissions.allow = migrated.permissions.allow.filter(
+      (rule) => rule !== retired,
+    );
+    writeFileSync(settings, JSON.stringify(migrated));
+
     const local = JSON.parse(readFileSync(settings, "utf8"));
     local.permissions.allow = local.permissions.allow.filter(
       (rule) => rule !== owned.claude[0],
@@ -861,6 +925,71 @@ test("host-rule rewrite requires a committed opt-in and preserves operator rules
     assert.equal(staleOrderHostRules(f.main).length, 1);
     f.ok(rewrite());
     assert.deepEqual(staleOrderHostRules(f.main), []);
+
+    for (const phase of ["before-settings", "after-settings"]) {
+      const duplicate = JSON.parse(readFileSync(settings, "utf8"));
+      duplicate.permissions.allow.push(...owned.claude);
+      writeFileSync(settings, JSON.stringify(duplicate));
+      const injection = join(f.base, `stop-rule-removal-${phase}.mjs`);
+      writeFileSync(
+        injection,
+        `import fs from "node:fs";
+import { syncBuiltinESMExports } from "node:module";
+const rename = fs.renameSync;
+fs.renameSync = (from, to, ...args) => {
+  if (to === ${JSON.stringify(settings)}) {
+    if (${JSON.stringify(phase)} === "after-settings") rename(from, to, ...args);
+    throw new Error("fixture interrupted host-rule removal");
+  }
+  return rename(from, to, ...args);
+};
+syncBuiltinESMExports();\n`,
+      );
+      const stopped = spawnSync(
+        process.execPath,
+        [
+          "--import",
+          injection,
+          join(f.main, "scripts/worktree.mjs"),
+          "host-rules",
+          "--remove",
+          "WO-999",
+        ],
+        { cwd: f.main, env: f.env, encoding: "utf8" },
+      );
+      assert.notEqual(stopped.status, 0);
+      assert.match(stopped.stderr, /fixture interrupted host-rule removal/u);
+      assert.ok(JSON.parse(readFileSync(sidecar, "utf8")).removal);
+      assert.match(
+        staleOrderHostRules(f.main)[0].reason,
+        /removal is incomplete/u,
+      );
+      assert.match(rewrite().stderr, /removal is incomplete/u);
+      const interruptedSettings = readFileSync(settings, "utf8");
+      const intervened = JSON.parse(interruptedSettings);
+      intervened.permissions.allow.push("Bash(operator-added-command)");
+      writeFileSync(settings, JSON.stringify(intervened));
+      const changed = f.worktree("host-rules", "--remove", "WO-999");
+      assert.notEqual(changed.status, 0);
+      assert.match(changed.stderr, /allow rules changed during removal/u);
+      assert.deepEqual(JSON.parse(readFileSync(settings, "utf8")), intervened);
+      assert.ok(existsSync(sidecar));
+      assert.ok(existsSync(codex));
+      writeFileSync(settings, interruptedSettings);
+      f.ok(f.worktree("host-rules", "--remove", "WO-999"));
+      assert.deepEqual(
+        JSON.parse(readFileSync(settings, "utf8")).permissions.allow,
+        [...operatorRules, ...owned.claude],
+      );
+      assert.equal(existsSync(codex), false);
+      assert.equal(existsSync(sidecar), false);
+      // Reset only this fixture's operator addition before the next scenario.
+      writeFileSync(
+        settings,
+        JSON.stringify({ permissions: { allow: operatorRules } }),
+      );
+      f.ok(rewrite());
+    }
 
     const before = [settings, codex, sidecar].map((file) =>
       readFileSync(file, "utf8"),
@@ -890,6 +1019,78 @@ test("host-rule rewrite requires a committed opt-in and preserves operator rules
     );
     assert.equal(existsSync(codex), false);
     assert.equal(existsSync(sidecar), false);
+  }));
+
+test("literal host rules keep main clean and preserve another in-flight order", () =>
+  withFixture((f) => {
+    publicationSetup(f);
+    f.config.repositories.target.hostRules = "literal";
+    write(f.main, "dotln.config.json", JSON.stringify(f.config));
+    const secondOrder = "records/work-orders/WO-998-fixture.md";
+    write(
+      f.main,
+      secondOrder,
+      readFileSync(join(f.main, f.order), "utf8").replaceAll(
+        "WO-999",
+        "WO-998",
+      ),
+    );
+    write(
+      f.main,
+      ".gitignore",
+      readFileSync(join(f.main, ".gitignore"), "utf8") +
+        "/.claude/settings.local.json\n",
+    );
+    git(f.main, "add", "-A");
+    git(f.main, "commit", "-qm", "test: prepare concurrent literal orders");
+    git(f.main, "push", "-q", "origin", "main");
+    f.mapClone();
+    f.start();
+    const clean = () =>
+      git(f.main, "status", "--porcelain", "--untracked-files=all");
+    assert.equal(clean(), "", "the first order's owned rules leave main clean");
+    f.ok(f.worktree("start", "WO-998", secondOrder));
+    assert.equal(clean(), "");
+    const settings = join(f.main, ".claude/settings.local.json");
+    const rules = () =>
+      JSON.parse(readFileSync(settings, "utf8")).permissions.allow;
+    const secondEntry = Object.values(
+      JSON.parse(readFileSync(targetRegistryPath(f.main), "utf8")),
+    ).find((entry) => entry.workOrderId === "WO-998");
+    const expectedSecond = orderHostRules(
+      f.main,
+      secondEntry,
+      "github.com/dotln-fixture/target",
+    ).claude;
+    assert.equal(
+      rules().filter((rule) => rule.includes("publish WO-999")).length,
+      1,
+    );
+    assert.equal(
+      rules().filter((rule) => rule.includes("publish WO-998")).length,
+      1,
+    );
+    assert.ok(rules().every((rule) => !/^Bash\((?:git|gh|npm) /u.test(rule)));
+    f.ok(f.worktree("host-rules", "--remove", "WO-999"));
+    assert.equal(
+      rules().some((rule) => rule.includes("publish WO-999")),
+      false,
+    );
+    assert.equal(
+      rules().filter((rule) => rule.includes("publish WO-998")).length,
+      1,
+    );
+    assert.ok(existsSync(join(f.main, ".codex/rules/dotln-WO-998.rules")));
+    assert.deepEqual(
+      [...rules()].sort(),
+      [...expectedSecond].sort(),
+      "closing the first order preserves every rule needed by the second",
+    );
+    assert.equal(clean(), "");
+    assert.deepEqual(staleOrderHostRules(f.main), []);
+    f.ok(f.worktree("host-rules", "--remove", "WO-998"));
+    assert.deepEqual(rules(), []);
+    assert.equal(clean(), "");
   }));
 
 test("umbrella start refuses before creating the launchpad or target worktree", () =>
@@ -971,7 +1172,7 @@ test("preparation retry resumes the recorded pair after bootstrap or harness fai
       const launchpadHead = git(f.orderRoot, "rev-parse", "HEAD");
       write(f.target, "preserved.txt", "work after interruption\n");
       git(f.target, "add", "-A");
-      git(f.target, "commit", "-qm", "Preserved target work");
+      git(f.target, "commit", "-qm", "test: preserved target work");
       const targetHead = git(f.target, "rev-parse", "HEAD");
       if (phase === "harness") renameSync(retainedRuntime, runtime);
       f.start();
@@ -1175,4 +1376,59 @@ test("worktree start names the local-terms registration step when the main check
       existsSync(docPath(f.orderRoot, "control", "local/terms.txt")),
       false,
     );
+  }));
+
+test("target final review refuses a nonconventional commit before binding the subject", () =>
+  withFixture((f) => {
+    f.mapClone();
+    f.start();
+    write(f.target, "reviewed.txt", "reviewed\n");
+    git(f.target, "add", "reviewed.txt");
+    git(f.target, "commit", "-qm", "A nonconventional target message");
+    prepareFinalReview(f);
+    const segment = docPath(f.orderRoot, "orders", "WO-999.jsonl"),
+      before = readFileSync(segment);
+    const refused = f.resume(["final-review-result", "pass", ...actorArgs]);
+    assert.notEqual(refused.status, 0);
+    assert.match(
+      refused.stderr,
+      /commit message format refused before final review: subject.shape/u,
+    );
+    assert.deepEqual(readFileSync(segment), before);
+  }));
+
+test("a target registered to another launchpad names that launchpad without selecting it", () =>
+  withFixture((f) => {
+    f.mapClone();
+    f.start();
+    const before = readFileSync(docPath(f.orderRoot, "orders", "WO-999.jsonl"));
+    const result = f.call(f.target, f.main, "resume", ["status", "--json"]);
+    assert.notEqual(result.status, 0);
+    assert.match(
+      result.stderr,
+      /registered to launchpad.*no order selected.*DOTLN_LAUNCHPAD=/u,
+    );
+    assert.ok(result.stderr.includes(`${f.orderRoot}/scripts/resume.mjs`));
+    assert.deepEqual(
+      readFileSync(docPath(f.orderRoot, "orders", "WO-999.jsonl")),
+      before,
+    );
+  }));
+
+test("malformed literal settings refuse target start before either worktree is created", () =>
+  withFixture((f) => {
+    publicationSetup(f);
+    f.config.repositories.target.hostRules = "literal";
+    write(f.main, "dotln.config.json", JSON.stringify(f.config));
+    git(f.main, "add", "-A");
+    git(f.main, "commit", "-qm", "test: literal rules");
+    git(f.main, "push", "-q", "origin", "main");
+    f.mapClone();
+    write(f.main, ".claude/settings.local.json", "{broken");
+    const result = f.worktree("start", "WO-999", f.order);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /settings.local.json/u);
+    assert.equal(existsSync(f.orderRoot), false);
+    assert.equal(existsSync(f.target), false);
+    assert.equal(existsSync(targetRegistryPath(f.main)), false);
   }));

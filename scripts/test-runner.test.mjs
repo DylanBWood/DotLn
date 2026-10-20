@@ -7971,7 +7971,7 @@ finally { clearInterval(poll); }
     }
 });
 
-test("launchpad files retain all 29 cases and run at most two independent deadline tasks", async () => {
+test("launchpad files retain all 34 cases and run at most two independent deadline tasks", async () => {
   const suite = suites.find((row) => row.name === "launchpad");
   const tasks = expandSuiteTasks([suite], root);
   assert.deepEqual(
@@ -7992,7 +7992,7 @@ test("launchpad files retain all 29 cases and run at most two independent deadli
   const baseline = JSON.parse(
     readFileSync(join(root, "scripts/fixtures/launchpad-cases.json"), "utf8"),
   );
-  assert.equal(names.length, 29);
+  assert.equal(names.length, 34);
   assert.deepEqual(names.sort(), baseline.sort());
   for (const task of tasks) {
     assert.equal(task.timeoutMs, 900_000);
@@ -8517,7 +8517,7 @@ test("target-worktree file tasks keep all declared cases and two independent dea
       "utf8",
     ),
   );
-  assert.equal(declarations.length, 39);
+  assert.equal(declarations.length, 52);
   assert.deepEqual(declarations.sort(), expected.declarations.sort());
   const names = [];
   for (const task of tasks) {
@@ -8539,8 +8539,8 @@ test("target-worktree file tasks keep all declared cases and two independent dea
     );
     names.push(...collected.registeredNames);
   }
-  assert.equal(names.length, 60);
-  assert.equal(new Set(names).size, 60);
+  assert.equal(names.length, 76);
+  assert.equal(new Set(names).size, 76);
   assert.deepEqual(names.sort(), expected.names.sort());
   let active = 0,
     peak = 0;

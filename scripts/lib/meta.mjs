@@ -24,6 +24,11 @@ import { pathToFileURL } from "node:url";
 import { usageRecordIdentity } from "../../packages/skeleton/src/usage-observation.mjs";
 import { correctionCounts } from "../../packages/skeleton/src/correction-observation.mjs";
 import { readControl, eventsForOrder } from "./control-store.mjs";
+import {
+  movedDecisions,
+  readTargetRecord,
+  formatTargetRecord,
+} from "./target-record-reader.mjs";
 import { completedPhaseAttempts, orderJudgments } from "./control-time.mjs";
 import { readGateChecks } from "./gate-evidence.mjs";
 import {
@@ -291,15 +296,30 @@ export function evaluateDecisionConditions(decisions, orders, budgetRows) {
 export function readDecisions(root, { workOrder } = {}) {
   const directory = docRelative(root, "evidence");
   const decisions = [];
-  if (!documentEntry(root, directory)) return decisions;
-  for (const name of readDocumentDirectory(root, directory)
+  const moved = new Map(
+    movedDecisions(root, workOrder).map((row) => [row.name, row]),
+  );
+  const names = documentEntry(root, directory)
+    ? readDocumentDirectory(root, directory)
+    : [];
+  for (const name of [...new Set([...names, ...moved.keys()])]
     .sort()
     .filter(
       (name) => /^WO-\d{3}$/.test(name) && (!workOrder || name === workOrder),
     )) {
     const path = docRelative(root, "evidence", `${name}/decisions.md`);
-    if (!documentEntry(root, path)) continue;
-    const source = readDocumentInput(root, path);
+    const local = documentEntry(root, path);
+    if (!local && !moved.has(name)) continue;
+    const remote = moved.get(name);
+    const source = local
+      ? readDocumentInput(root, path)
+      : readTargetRecord(root, remote.state, remote.record);
+    if (
+      local &&
+      remote &&
+      source !== readTargetRecord(root, remote.state, remote.record)
+    )
+      throw new Error(`${path}: retained source differs from its moved record`);
     const headings = markdownHeadings(source);
     const entries = [...source.matchAll(/^```json\n([\s\S]*?)^```/gm)];
     if (!entries.length)
@@ -400,6 +420,9 @@ export function readDecisions(root, { workOrder } = {}) {
         value: headings.findLast((heading) => heading.index < match.index)
           ?.anchor,
       });
+      Object.defineProperty(row, "recordSource", { value: source });
+      if (remote)
+        Object.defineProperty(row, "targetRecord", { value: remote.record });
       decisions.push(row);
     }
   }
@@ -417,7 +440,7 @@ export function renderDecisionsIndex(decisions) {
     "| --- | --- | --- | --- |",
     ...decisions.map(
       (row) =>
-        `| [${row.id}](../evidence/${row.workOrder}/decisions.md#${row.anchor ?? row.id.toLowerCase()}) | ${safeCell(row.dispatch)} | ${safeCell(row.decision)} | ${safeCell(typeof row.reopenWhen === "string" ? row.reopenWhen : JSON.stringify(row.reopenWhen))} |`,
+        `| ${row.targetRecord ? `${row.id} (\`${formatTargetRecord(row.targetRecord)}#${row.anchor ?? row.id.toLowerCase()}\`)` : `[${row.id}](../evidence/${row.workOrder}/decisions.md#${row.anchor ?? row.id.toLowerCase()})`} | ${safeCell(row.dispatch)} | ${safeCell(row.decision)} | ${safeCell(typeof row.reopenWhen === "string" ? row.reopenWhen : JSON.stringify(row.reopenWhen))} |`,
     ),
     "",
   ].join("\n");
@@ -428,7 +451,7 @@ export function writeDecisionsIndex(root, { check = false } = {}) {
   const expected = renderDecisionsIndex(decisions);
   if (check) {
     for (const row of decisions) {
-      const anchors = markdownHeadings(readDocumentInput(root, row.path));
+      const anchors = markdownHeadings(row.recordSource);
       if (
         !row.anchor ||
         !anchors.some((heading) => heading.anchor === row.anchor)

@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "kind": "executor-adversarial-probes",
+  "dispatch": "operator-requested third worker",
+  "actor": {
+    "harness": "codex",
+    "model": "gpt-6.1-sol",
+    "effort": "max",
+    "source": "launcher selection; independent effective readback unavailable"
+  },
+  "command": "node scripts/harness.mjs bounded -- node <assigned temporary probe root>/target-boundaries.mjs",
+  "startedAt": "2026-10-20T02:54:37.148Z",
+  "finishedAt": "2026-10-20T02:55:04.645Z",
+  "durationMs": 27496,
+  "exitCode": 0,
+  "findings": [
+    {
+      "id": "P1",
+      "summary": "Optional historical-order configuration rejected omitted and empty values",
+      "before": "configuration load refused",
+      "after": "omitted, empty and valid nonempty forms passed the worker recheck",
+      "decision": "WO-218-D048"
+    },
+    {
+      "id": "P2",
+      "summary": "Same-tree draft retry reported success after remote movement",
+      "before": "retry exited 0 and claimed already published",
+      "after": "retry refuses with remote head and recovery instruction",
+      "decision": "WO-218-D048"
+    },
+    {
+      "id": "P3",
+      "summary": "Immutable record reader ignored the supplied repository identity",
+      "before": "foreign repository reference returned bytes",
+      "after": "foreign repository reference refuses",
+      "decision": "WO-218-D048"
+    }
+  ],
+  "cases": [
+    {
+      "name": "same-tree draft retry refuses a remotely moved draft head",
+      "result": "pass",
+      "commandExitCode": 1
+    },
+    {
+      "name": "draft update recovers a push followed by gh edit failure",
+      "result": "pass",
+      "commandExitCode": 0
+    },
+    {
+      "name": "immutable target record accepts its complete bound identity",
+      "result": "pass"
+    },
+    {
+      "name": "immutable target record rejects a foreign repository identity",
+      "result": "pass"
+    },
+    {
+      "name": "immutable target record rejects a valid sibling blob with an unbound hash",
+      "result": "pass"
+    },
+    {
+      "name": "target cleanup retains an undeclared nested bare repository",
+      "result": "pass",
+      "commandExitCode": 1
+    },
+    {
+      "name": "target cleanup removes declared nested output after the blocker is gone",
+      "result": "pass",
+      "commandExitCode": 0
+    }
+  ],
+  "limits": [
+    "Synthetic local Git repositories and fake forge only; no real publication or external-service evidence.",
+    "The stash interruption attempt was inconclusive because its fixture used the wrong reflog subject and then had a setup error.",
+    "Marker keys were observed admitted by the decoder; generated-output corruption was not established. The no-marker validation now covers keys as well as values.",
+    "The broader probing turn ended with a provider safeguard. The worker supplied its existing report and reran only the already established target-boundary correctness checks. Starter sequencing and additional host-admission probes were not executed."
+  ],
+  "retention": "Original scripts, failing results and synthetic fixtures remain in the executor session temporary probe directory; their machine-local paths are omitted from this committed record. Permanent regression cases are named in WO-218-D048."
+}

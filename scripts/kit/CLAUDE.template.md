@@ -34,12 +34,6 @@ Whole `resume:` phrases select their skill through canonical status
 (`npm run resume -- status --json` is the record). `@skills`: `.claude/skills`
 in Claude, `.agents/skills` in Codex. `AGENTS.md` symlinks here.
 
-Read[executor]: `@skills/dotln-executor/SKILL.md` — next, fix, status, times.
-Read[verifier]: `@skills/dotln-verifier/SKILL.md` — verify.
-Read[reviewer]: `@skills/dotln-reviewer/SKILL.md` — final review.
-Read[release-close]: `@skills/dotln-release-close/SKILL.md` — release close.
-Read[planner]: `@skills/dotln-planner/SKILL.md` — planning or ideation.
-
 Expand skill read/review selectors from order/report paths. Read cited sections;
 name new inputs. A session that cannot load skills runs the
 `npm run resume -- <action>` commands itself.

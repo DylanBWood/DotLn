@@ -1,9 +1,11 @@
 import { readFileSync } from "node:fs";
 import { runGit } from "./git.mjs";
 import { workOrderAuthorityPath } from "./paths.mjs";
+import { loadConfig } from "./config.mjs";
 import { localReleaseTags, semver } from "./release-tags.mjs";
 
-export const historicalDependencyIds = new Set(["WO-001", "WO-002"]);
+export const historicalDependencyIds = (root) =>
+  new Set(loadConfig(root).historicalWorkOrders);
 const startMarker = "<!-- dotln-dependencies:start -->";
 const endMarker = "<!-- dotln-dependencies:end -->";
 const idPattern = /^WO-\d{3}$/;
@@ -135,11 +137,6 @@ export function parseDependencies(markdown, path, workOrderId) {
     if (id === workOrderId) refuse("self-reference", entry);
     if (seen.has(id)) refuse(`duplicate id ${id}`, entry);
     seen.add(id);
-    if (
-      historicalDependencyIds.has(id) &&
-      ["hard", "satisfied-by-release", "satisfied-by-close"].includes(relation)
-    )
-      refuse("historical id cannot be a hard or satisfied dependency", entry);
     const expected = [
       "workOrderId",
       "relation",
@@ -253,6 +250,17 @@ export function readDependencies(
     state.workOrderPath,
     state.workOrderId,
   );
+  const historical = historicalDependencyIds(root);
+  for (const entry of order.entries)
+    if (
+      historical.has(entry.workOrderId) &&
+      ["hard", "satisfied-by-release", "satisfied-by-close"].includes(
+        entry.relation,
+      )
+    )
+      throw new Error(
+        `${state.workOrderPath}: historical id cannot be a hard or satisfied dependency; offending entry ${JSON.stringify(entry)}`,
+      );
   return projectDependencies(
     order,
     closedDependencySet(control),

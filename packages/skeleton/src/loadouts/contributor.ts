@@ -73,11 +73,11 @@ const sharedCorrections = [
   "After a second consecutive provider safeguard refusal, stop retrying, record the stop as a decision naming phase and model, and resume in a fresh session.",
 ];
 const releaseCloseRemedy =
-  "Run the printed helper command exactly as printed, with no redirect, prefix, cd or pipe. The close is done when the tag and Release exist, git worktree list shows no worktree for the order, its directory is gone and git branch --list wo-NNN is empty. Diagnose and finish a cleanup blocker in this session; retry by re-running the same command, which re-checks an existing Release and never publishes twice. A retry after main moves can refuse and remains a blocker. Retry a host denial of the exact command once through the host permission flow before handing the operator the printed command for !. The close removes any scratch repository still present and records its path, head commit and whether a remote held it; intake and declared submodules stay, and an operator word through --material preserves a scratch repository; never force teardown.";
+  "Run the printed helper command exactly as printed, with no redirect, prefix, cd or pipe. The close is done when the tag and Release exist, git worktree list shows no worktree for the order, its directory is gone, git branch --list wo-NNN is empty and no starter-refresh blocker remains. Diagnose and finish a cleanup blocker in this session; retry by re-running the same command, which re-checks an existing Release and never publishes twice. A retry validates the original immutable tag even after main advances; a foreign tag remains a blocker. Retry a host denial of the exact command once through the host permission flow before handing the operator the printed command for !. The close removes any scratch repository still present and records its path, head commit and whether a remote held it; intake and declared submodules stay, and an operator word through --material preserves a scratch repository; never force teardown.";
 // Preservation at a target close is for operator material, evidence and
 // intake; build output is regenerable (operator direction, 2026-10-18, WO-221).
 const disposableOutput =
-  "At a target close, preservation is for operator material, evidence and intake. Regenerable output under a path the class or registration declares disposable is deleted by the close, never moved to scratch or offered back; an undeclared ignored path is declared disposable in the registration or removed, and a stray `.env` or operator note is neither.";
+  "At a target close, preservation is for operator material, evidence and intake. Regenerable output under a path the class or registration declares disposable is deleted by the close, never moved to scratch or offered back; the registration may select baseDisposablePolicy judge-only to retain all base-checkout output after the same judgment, with delete as the default; the target worktree output is still deleted; an undeclared ignored path is declared disposable in the registration or removed, and a stray `.env` or operator note is neither.";
 // Every role in both harnesses carries this line (operator direction,
 // 2026-09-14, WO-044): a guess presented as a finding is a defect.
 const noGuessing =
@@ -706,6 +706,21 @@ const overlayContributor = (
   const narrow = overlay.narrow ?? {};
   const grants = [...contributorOutsideAuthority, ...(overlay.grants ?? [])];
   const additions = grants.flatMap((grant) => grant.effects);
+  const matches = (pattern: string, effect: string) =>
+    pattern === effect ||
+    (pattern.endsWith("*") && effect.startsWith(pattern.slice(0, -1)));
+  // Compilation applies these grants after narrowing. Refuse a contradictory
+  // overlay rather than silently restoring an effect the instance excluded.
+  for (const grant of grants)
+    for (const effect of grant.effects)
+      if (
+        (narrow.allowedEffects !== undefined &&
+          !narrow.allowedEffects.some((pattern) => matches(pattern, effect))) ||
+        narrow.deniedEffects?.some((pattern) => matches(pattern, effect))
+      )
+        throw new Error(
+          `build overlay narrowing excludes ${effect}, restored by grant ${grant.grantId}; remove the conflicting narrowing or grant`,
+        );
   const widening = (field: string): never => {
     throw new Error(`AUTHORITY WIDENING: build overlay narrow.${field}`);
   };

@@ -7,7 +7,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import {
-  currentEvidence,
+  evidenceArgs,
   sameEvidenceSourceContent,
   writeEvidenceFile,
 } from "../packages/skeleton/src/evidence-editions.mjs";
@@ -24,14 +24,17 @@ import {
 } from "../packages/skeleton/dist/src/worker-status.js";
 import { projectAcceptanceEvidenceMatrices } from "../packages/skeleton/dist/src/verification.js";
 
-const mode = process.argv.slice(2);
+const repository = pathToFileURL(`${findLaunchpad()}/`);
+const { args: mode, selection } = evidenceArgs(
+  fileURLToPath(repository),
+  "verification",
+  process.argv.slice(2),
+);
 if (mode.length !== 1 || !["--write", "--check"].includes(mode[0]))
   throw new Error(
-    "usage: verification-evidence.mjs --write|--check (build first)",
+    "usage: verification-evidence.mjs --write|--check [--edition WO-NNN] [--revision NNN] (build first)",
   );
-const repository = pathToFileURL(`${findLaunchpad()}/`);
 checkEvidenceImports(fileURLToPath(repository), "verification");
-const selection = currentEvidence(fileURLToPath(repository), "verification");
 const root = new URL(`${selection.directory}/`, repository);
 const directory = realpathSync(
   mkdtempSync(join(tmpdir(), "dotln-verification-evidence-")),

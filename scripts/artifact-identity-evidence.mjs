@@ -6,7 +6,7 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import {
-  currentEvidence,
+  evidenceArgs,
   sameEvidenceSourceContent,
   writeEvidenceFile,
 } from "../packages/skeleton/src/evidence-editions.mjs";
@@ -39,19 +39,20 @@ import {
 } from "../packages/skeleton/dist/src/reactor.js";
 import { entropyReducerLoadout } from "../packages/skeleton/dist/src/loadouts/entropy-reducer.js";
 
-const mode = process.argv.slice(2);
+const root = pathToFileURL(`${findLaunchpad()}/`);
+const { args: mode, selection } = evidenceArgs(
+  fileURLToPath(root),
+  "artifact-identity",
+  process.argv.slice(2),
+);
 if (mode.length !== 1 || !["--write", "--check"].includes(mode[0])) {
   console.error(
-    "usage: artifact-identity-evidence.mjs --write|--check (run npm run build first)",
+    "usage: artifact-identity-evidence.mjs --write|--check [--edition WO-NNN] [--revision NNN] (run npm run build first)",
   );
   process.exit(2);
 }
-const root = pathToFileURL(`${findLaunchpad()}/`);
 checkEvidenceImports(fileURLToPath(root), "artifact-identity");
-const evidenceDirectory = currentEvidence(
-  fileURLToPath(root),
-  "artifact-identity",
-).directory;
+const evidenceDirectory = selection.directory;
 const read = (path) => readFileSync(new URL(path, root), "utf8");
 const baseline = JSON.parse(
   read(docRelative(fileURLToPath(root), "evidence", "WO-029/baseline.json")),

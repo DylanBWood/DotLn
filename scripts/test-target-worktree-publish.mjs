@@ -1,3 +1,7 @@
+import { absoluteBodyLinks, relativeLinkFailures } from "./lib/github-body.mjs";
+import { readDecisions, writeDecisionsIndex } from "./lib/meta.mjs";
+import { syncFollowups } from "./lib/planning-followups.mjs";
+import { readTargetRecord } from "./lib/target-record-reader.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -17,6 +21,7 @@ import { write } from "./lib/helpers.mjs";
 import { readControl } from "./lib/control-store.mjs";
 import { publicationGrant } from "./test-target-publication-fixture.mjs";
 import { createHash } from "node:crypto";
+import { appendEvent } from "../packages/kernel/dist/src/index.js";
 import {
   git,
   recordTreeSnapshot,
@@ -403,7 +408,7 @@ test("target records preserve reviewed reports, refuse changed inputs and publis
       "remote.origin.pushurl",
       "https://example.invalid/owner/repo.git",
     );
-    noPublish(/GitHub/u);
+    noPublish(/origin differs from the registered target repository/u);
     git(f.target, "config", "--unset-all", "remote.origin.pushurl");
     noPublish(/identifier.runtime/u, { branch: "fix/evt_123" });
     noPublish(/identifier.runtime/u, { title: "fix: preserve evt_123" });
@@ -1057,7 +1062,6 @@ test("target planning publishes only product and planning documents under the re
       ["planning/next.md", "/Users/fixture-user/x"],
       ["product/purpose.md", "/private/var/folders/fixture-user/T/x"],
       ["planning/record.json", "/home/fixture-user/x"],
-      ["planning/.jsonl", "/home/fixture-user/x"],
       ["product/record.JSON", "/home/fixture-user/x"],
     ]) {
       const original = existsSync(join(from, path))
@@ -1071,6 +1075,19 @@ test("target planning publishes only product and planning documents under the re
       assert.match(result.stderr, /<home>/u);
       if (original) writeFileSync(join(from, path), original);
       else rmSync(join(from, path));
+    }
+    for (const name of [
+      "planning/.DS_Store",
+      "planning/.jsonl",
+      "planning/note.md~",
+      "product/editor.swp",
+      "product/program.js",
+    ]) {
+      write(from, name, "editor residue\n");
+      refuse(
+        /file type|hidden|editor|unsupported|admitted planning files are/u,
+      );
+      rmSync(join(from, name));
     }
     // The title and body reach the commit and the forge; both take the
     // Markdown rule before any write, commit or forge call.
@@ -1287,7 +1304,49 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
       `# Verification fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n`,
     );
     f.ok(f.resume(["verification-result", "pass", ...actorArgs]));
+    write(
+      f.orderRoot,
+      "records/intake/private-body.md",
+      "## Draft\n\nPrivate fixture body.\n",
+    );
+    const intakeDraft = f.worktree(
+      ...draftArgs.map((arg) =>
+        arg === "draft-body.md" ? "records/intake/private-body.md" : arg,
+      ),
+    );
+    assert.notEqual(intakeDraft.status, 0);
+    assert.match(intakeDraft.stderr, /ignored or intake/u);
+    const ghFile = join(forge.bin, "gh"),
+      originalGh = readFileSync(ghFile);
+    writeFileSync(ghFile, "#!/bin/sh\nexit 71\n");
+    const beforePushFailure = f.worktree(...draftArgs);
+    assert.notEqual(beforePushFailure.status, 0);
+    assert.match(beforePushFailure.stderr, /gh is required/u);
+    assert.equal(
+      git(
+        join(f.base, "target.git"),
+        "branch",
+        "--list",
+        "feat/reviewed-behavior",
+      ),
+      "",
+    );
+    writeFileSync(
+      ghFile,
+      `#!/bin/sh\nif [ "$1" = pr ] && [ "$2" = create ]; then exit 72; fi\nexec '${ghFile}.original.mjs' "$@"\n`,
+    );
+    writeFileSync(`${ghFile}.original.mjs`, originalGh);
+    chmodSync(`${ghFile}.original.mjs`, 0o755);
+    const failedDraft = f.worktree(...draftArgs);
+    assert.notEqual(failedDraft.status, 0);
+    assert.match(failedDraft.stderr, /prepared commit is retained/u);
+    const preparedHead = git(f.target, "rev-parse", "refs/dotln/draft/WO-999");
+    writeFileSync(ghFile, originalGh);
     const drafted = f.ok(f.worktree(...draftArgs));
+    assert.equal(
+      git(f.target, "rev-parse", "refs/dotln/draft/WO-999"),
+      preparedHead,
+    );
     assert.match(
       drafted,
       /Pushed draft feat\/reviewed-behavior at [0-9a-f]{40} and opened draft pull request #7 on github\.com\/dotln-fixture\/target; HEAD and the index are unchanged/u,
@@ -1306,7 +1365,11 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
       "Reviewed change.",
     );
     const calls = () =>
-      readFileSync(forge.log, "utf8").trim().split("\n").map(JSON.parse);
+      readFileSync(forge.log, "utf8")
+        .trim()
+        .split("\n")
+        .map(JSON.parse)
+        .filter((args) => !(args[0] === "pr" && args[1] === "view"));
     assert.ok(
       calls().some(
         (args) =>
@@ -1319,6 +1382,32 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
     );
     const events = () =>
       readFileSync(store, "utf8").trim().split("\n").map(JSON.parse);
+    const refuseForeignDraft = (args) => {
+      const original = readFileSync(store, "utf8");
+      const prior = events().findLast(
+        (event) => event.type === "PullRequestOpened" && event.payload.draft,
+      );
+      writeFileSync(
+        store,
+        appendEvent(original, {
+          ...prior,
+          payload: {
+            ...prior.payload,
+            repositoryId: "github.com/dotln-fixture/another",
+          },
+        }).log,
+      );
+      try {
+        const refused = f.worktree(...args);
+        assert.notEqual(refused.status, 0);
+        assert.match(
+          refused.stderr,
+          /origin differs from the recorded draft repository/u,
+        );
+      } finally {
+        writeFileSync(store, original);
+      }
+    };
     assert.deepEqual(
       events().map((event) => [
         event.type,
@@ -1326,10 +1415,49 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
         event.payload.headSha,
         event.payload.branch,
       ]),
-      [["PullRequestOpened", true, draftHead, "feat/reviewed-behavior"]],
+      [
+        ["DraftPrepared", undefined, draftHead, "feat/reviewed-behavior"],
+        ["PullRequestOpened", true, draftHead, "feat/reviewed-behavior"],
+      ],
     );
+    const originalUrl = git(f.target, "config", "--get", "remote.origin.url");
+    refuseForeignDraft(draftArgs);
+    git(
+      f.target,
+      "config",
+      "remote.origin.url",
+      "https://github.com/dotln-fixture/another",
+    );
+    const wrongOrigin = f.worktree(...draftArgs);
+    assert.notEqual(wrongOrigin.status, 0);
+    assert.match(wrongOrigin.stderr, /origin differs/u);
+    git(f.target, "config", "remote.origin.url", originalUrl);
     // A second draft at the same tree reports already published; nothing is pushed.
     assert.match(f.ok(f.worktree(...draftArgs)), /Already published draft/u);
+    for (const replacement of [f.baseCommit, null]) {
+      git(
+        remote,
+        "update-ref",
+        ...(replacement
+          ? ["refs/heads/feat/reviewed-behavior", replacement]
+          : ["-d", "refs/heads/feat/reviewed-behavior"]),
+      );
+      const changedRemote = f.worktree(...draftArgs);
+      assert.notEqual(changedRemote.status, 0);
+      assert.match(
+        changedRemote.stderr,
+        /remote draft branch feat\/reviewed-behavior for pull request #7 moved from the recorded head/u,
+      );
+      assert.ok(
+        changedRemote.stderr.includes(
+          `moved from the recorded head ${draftHead} to ${replacement ?? "absent"}; preserve the remote change, integrate and review it, then explicitly rebind publication before retrying`,
+        ),
+        changedRemote.stderr,
+      );
+      assert.equal(git(f.target, "rev-parse", "HEAD"), headBefore);
+      assert.equal(git(f.target, "status", "--porcelain"), statusBefore);
+      git(remote, "update-ref", "refs/heads/feat/reviewed-behavior", draftHead);
+    }
     assert.equal(calls().filter((args) => args[0] === "pr").length, 1);
     // The reviewed commit on wo-999, the final review and the records.
     git(f.target, "add", "reviewed.txt");
@@ -1374,6 +1502,26 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
       wrongBranch.stderr,
       /one pull request per order: the draft is on feat\/reviewed-behavior/u,
     );
+    refuseForeignDraft(publishArgs("feat/reviewed-behavior"));
+    git(
+      remote,
+      "update-ref",
+      "refs/heads/feat/reviewed-behavior",
+      f.baseCommit,
+    );
+    const movedDraft = f.worktree(...publishArgs("feat/reviewed-behavior"));
+    assert.notEqual(movedDraft.status, 0);
+    assert.match(
+      movedDraft.stderr,
+      /remote draft branch feat\/reviewed-behavior for pull request #7 moved from the recorded head/u,
+    );
+    assert.ok(
+      movedDraft.stderr.includes(
+        `moved from the recorded head ${draftHead} to ${f.baseCommit}; preserve the remote change, integrate and review it, then explicitly rebind publication before retrying`,
+      ),
+      movedDraft.stderr,
+    );
+    git(remote, "update-ref", "refs/heads/feat/reviewed-behavior", draftHead);
     const published = f.ok(
       f.worktree(...publishArgs("feat/reviewed-behavior")),
     );
@@ -1458,3 +1606,111 @@ test("target publication retains installation ownership when its live manifest d
     }
     writeFileSync(manifest, bytes);
   }));
+
+test("moved decisions and reports resolve from the bound immutable target commit", () =>
+  withFixture((f) => {
+    publicationSetup(f);
+    f.mapClone();
+    f.start();
+    closeOrder(f);
+    const decision = {
+      id: "WO-999-D001",
+      date: "2026-10-19",
+      dispatch: "resume: next",
+      decision: "Keep the fixture behavior.",
+      evidence: ["Fixture commit."],
+      rejected: [],
+      followup: "Recheck the fixture when its contract changes.",
+      reopenWhen: "The fixture contract changes.",
+    };
+    write(
+      f.orderRoot,
+      "records/evidence/WO-999/decisions.md",
+      `# Decisions\n\n## WO-999-D001\n\n\`\`\`json\n${JSON.stringify(decision)}\n\`\`\`\n`,
+    );
+    f.ok(f.resume(["target-records", ...actorArgs]));
+    const state = readControl(f.orderRoot).orders.get("WO-999").state;
+    assert.equal(
+      readDecisions(f.orderRoot).find((row) => row.id === decision.id)
+        .targetRecord.commit,
+      state.targetRecords.commit,
+    );
+    writeDecisionsIndex(f.orderRoot);
+    writeDecisionsIndex(f.orderRoot, { check: true });
+    write(
+      f.orderRoot,
+      "records/evidence/WO-998/decisions.md",
+      `# Decisions\n\n## WO-998-D001\n\n\`\`\`json\n${JSON.stringify({ ...decision, id: "WO-998-D001", followup: undefined, reopens: { decisionId: decision.id, observation: "The fixture contract changed." } })}\n\`\`\`\n`,
+    );
+    syncFollowups(f.orderRoot);
+    syncFollowups(f.orderRoot, { check: true });
+    const projection = JSON.parse(f.ok(f.resume(["status", "--json"])));
+    assert.equal(
+      projection.verificationRecord.commit,
+      state.targetRecords.commit,
+    );
+    assert.equal(
+      projection.finalReviewRecord.commit,
+      state.targetRecords.commit,
+    );
+    assert.match(
+      readFileSync(docPath(f.orderRoot, "control", "current.md"), "utf8"),
+      /target@[a-f0-9]{40}:docs\/verifications/u,
+    );
+    const record = readDecisions(f.orderRoot).find(
+      (row) => row.id === decision.id,
+    ).targetRecord;
+    assert.throws(
+      () =>
+        readTargetRecord(f.orderRoot, state, {
+          ...record,
+          sha256: "0".repeat(64),
+        }),
+      /binding differs/u,
+    );
+    assert.throws(
+      () =>
+        readTargetRecord(f.orderRoot, state, {
+          ...record,
+          repositoryId: "other-fixture",
+        }),
+      /binding differs/u,
+    );
+    write(f.target, record.path, "working copy is irrelevant\n");
+    assert.ok(
+      readTargetRecord(f.orderRoot, state, record).includes(decision.id),
+    );
+    const blob = git(f.target, "rev-parse", `${record.commit}:${record.path}`);
+    const replacement = git(f.target, "hash-object", "-w", record.path);
+    git(f.target, "replace", blob, replacement);
+    assert.ok(
+      readTargetRecord(f.orderRoot, state, record).includes(decision.id),
+    );
+    git(f.target, "replace", "-d", blob);
+    const config = JSON.parse(
+      readFileSync(join(f.orderRoot, "dotln.config.json"), "utf8"),
+    );
+    config.repositories.target.documentationRoot = "changed-documents";
+    write(f.orderRoot, "dotln.config.json", JSON.stringify(config));
+    assert.equal(
+      readDecisions(f.orderRoot).find((row) => row.id === decision.id)
+        .targetRecord.path,
+      record.path,
+    );
+  }));
+
+test("target publication normalizes nested links and preserves encoded paths and queries", () => {
+  const options = {
+    from: "docs/PR.md",
+    repository: { selector: "github.com/fixture/target" },
+    revision: "reviewed",
+  };
+  const body = absoluteBodyLinks(
+    "[outer [inner]()](file%281%29.md?plain=1#here) ![image](pic.png?size=2)\n",
+    options,
+  );
+  assert.ok(body.includes("file%281%29.md?plain=1#here"));
+  assert.ok(body.includes("pic.png?size=2&raw=true"));
+  assert.deepEqual(relativeLinkFailures(body), []);
+  assert.equal(absoluteBodyLinks(body, options), body);
+});

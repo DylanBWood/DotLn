@@ -4,6 +4,7 @@ import {
   fchmodSync,
   fsyncSync,
   lstatSync,
+  linkSync,
   mkdirSync,
   openSync,
   readFileSync,
@@ -36,7 +37,16 @@ export function dropInventoriedStash(root, stash, subject, recoveryPath) {
     throw new Error("stash prune requires regular stash ref and reflog");
   const locks = [];
   const lock = (path) => {
-    const fd = openSync(`${path}.lock`, "wx", 0o600);
+    let fd;
+    try {
+      fd = openSync(`${path}.lock`, "wx", 0o600);
+    } catch (error) {
+      if (error.code === "EEXIST")
+        throw new Error(
+          `stash drop lock remains: ${relative(root, `${path}.lock`)}; after checking no Git process holds it, remove this named lock and retry; stash retained`,
+        );
+      throw error;
+    }
     locks.push({ path: `${path}.lock`, fd, owned: true });
     return fd;
   };
@@ -106,7 +116,9 @@ export function dropInventoriedStash(root, stash, subject, recoveryPath) {
         };
       });
     if (entries.at(-1)?.sha !== (refBefore?.trim() ?? packedSha))
-      throw new Error("stash ref and reflog disagree; retained");
+      throw new Error(
+        `stash ref and reflog disagree; retained. After checking no Git process holds the stash locks, restore refs/stash and its reflog together from ${relative(root, recoveryPath)} (including its saved packedRefs when present), then retry`,
+      );
     const selected = entries.filter(
       (entry) => entry.sha === stash && entry.subject === subject,
     );
@@ -121,14 +133,21 @@ export function dropInventoriedStash(root, stash, subject, recoveryPath) {
         reflog: logBefore,
         ...(packedBefore === null ? {} : { packedRefs: packedBefore }),
       }) + "\n";
-    if (!existsSync(recoveryPath))
-      writeFileSync(recoveryPath, recovery, {
-        flag: "wx",
-        mode: 0o600,
-        flush: true,
-      });
+    if (!existsSync(recoveryPath)) {
+      const partial = `${recoveryPath}.partial`;
+      // The stash locks exclude another writer of this snapshot. A signal
+      // may leave the partial, but a published snapshot is always whole.
+      writeFileSync(partial, recovery, { mode: 0o600, flush: true });
+      try {
+        linkSync(partial, recoveryPath);
+      } finally {
+        unlinkSync(partial);
+      }
+    }
     if (readFileSync(recoveryPath, "utf8") !== recovery)
-      throw new Error("stash recovery snapshot changed; retained");
+      throw new Error(
+        `stash recovery snapshot changed; retained. Preserve the current refs/stash and reflog, then restore both from ${relative(root, recoveryPath)} (including its saved packedRefs when present), or preserve that snapshot under a new name after inspecting the intervening stash changes and retry`,
+      );
     let previous = "0".repeat(entries[0].old.length);
     const nextLog = kept
       .map((entry) => {

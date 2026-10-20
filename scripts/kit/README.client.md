@@ -54,7 +54,11 @@ Overlay version 1 has only these keys:
   define new units or remove the locked floor.
 - `narrow`: optional `allowedEffects` replaces the kit's pre-grant allow
   list; `deniedEffects`, `requiredEvidence`, `revocationEventTypes` and
-  `revocationConditions` add restrictions. A revocation condition has
+  `revocationConditions` add restrictions. A narrowing that excludes an
+  effect a grant restores, including the kit's own temporary-write grants,
+  refuses naming the effect and the grant, so a narrowing keeps those
+  effects (an empty `allowedEffects` refuses) and only an overlay grant can
+  be removed to resolve it. A revocation condition has
   `registryId`, positive integer `version`, and optional object `params`.
   `resourceLimits` lowers named nonnegative integer ceilings; `expiresAt`
   shortens expiry. The inherited presence phase is narrowed with the build.
@@ -146,8 +150,9 @@ operator sandbox settings.
    pushes the target's working tree under a draft pull request that the final
    publish reuses, and this instance's order names the actor and the phrase
    for it (core declares neither). Trust for the target's publication commands
-   comes from the registration and the kit: the generated hook admits them for
-   the recorded target worktree under the merged registration and grant at the
+   comes from the registration and the kit: the generated hook admits only
+   the node spelling of the publish helper for the recorded target worktree,
+   under the merged registration, clone map and authority grant at the
    phases the lifecycle makes them legal, `worktree start` prints the Codex
    `--add-dir` and Copilot `--allow-tool` lines, and a registration's
    `hostRules: "literal"` writes that order's exact rules to the main
@@ -155,8 +160,12 @@ operator sandbox settings.
    until release close removes them (`node scripts/harness.mjs check` names a
    stale one). Declare the class's or registration's `disposable` paths for the
    regenerable build output the close deletes, never moves to scratch, and
-   `release: { "policy": "declared" }` with the order's `**Target release
-   classification:**` header for a tagged target release; turn on the forge's
+   `baseDisposablePolicy: "judge-only"` when the base checkout must retain that
+   output while keeping its material checks (the default is `"delete"`). Use
+   `release: { "policy": "declared", "displayName": "My product" }` with the
+   order's `**Target release classification:**` header for a tagged target
+   release. The optional name defaults to the registration id and changes the
+   Release title and tag message, never the tag name or an existing Release; turn on the forge's
    delete-branch-on-merge setting for the target, since the kit deletes no
    remote branch.
 5. Copy `dotln.config.example.json` to `dotln.config.json` only when this
@@ -217,11 +226,11 @@ work in a named `git stash push
 and keeps that ref throughout recovery. A clean original checkout creates no
 stash. It takes the update through the update pull request that section
 describes. Once the operator has merged it, the session fast-forwards `main`
-(`git fetch origin` and `git merge --ff-only origin/main`), confirms the
-order's recorded phase with `npm run resume -- status`, creates a sibling
+(`git fetch origin` and `git merge --ff-only origin/main`), creates a sibling
 `wo-001` worktree from that `main` (`git worktree add -b wo-001 <sibling
 path> main`) and applies the saved stash there (`git -C <worktree> stash
-apply <stash hash>`); it writes nothing else in that worktree. Existing
+apply <stash hash>`), then reads `npm run resume -- status` in that restored
+worktree to confirm the preserved phase. Existing
 branches, directories, divergence or
 conflicts require inspection and preservation, never overwrite or a forced
 update.
@@ -328,6 +337,11 @@ grant. It prints repository, commit and path links to keep in the instance's
 planning document; refutation still judges the instance's subject.
 
 ## Releases in this instance
+
+An instance with orders completed before its control log can declare their
+IDs in `historicalWorkOrders` in `dotln.config.json`. The default is an empty
+list. This affects the historical index and dependency validation; it does
+not invent control closure or inherit core's order IDs.
 
 For an operator-authorized scope change, `npm run plan -- amend-order`
 binds only an order in the latest judged planning horizon. The never-judged
@@ -537,7 +551,11 @@ settings belong in the ignored `.claude/settings.local.json`, where the
 literal host-rule fallback also writes and removes one target order's rules
 (`.codex/rules/dotln-WO-NNN.rules` is its Codex counterpart). An ignored
 per-order sidecar under the configured control root's `local/host-rules/`
-records Claude rule ownership so removal preserves your pre-existing rules.
+records Claude rule ownership and the Codex file hash so removal preserves
+pre-existing rules and refuses an edited owned Codex file. The single rule
+prefix names the absolute node helper and order; raw Git, gh and npm receive
+no generated prefix. A later identical operator occurrence is preserved;
+removing and re-adding an indistinguishable sole occurrence cannot be inferred.
 Rewriting rules requires the committed literal opt-in and matching target
 registration; removal remains available after opting out. The work-order
 README is generated rather than seeded: `docs/work-orders/` gets the index at
@@ -545,6 +563,13 @@ the first lifecycle transition (`activate`). The export seeds the lineage
 index at `docs/lineage/README.md`; `node scripts/lineage.mjs index`
 regenerates it after ledger edits and generates it for an older export, in
 step 1 or on the update branch, and bootstrap never writes it.
+
+The optional committed `contributions.operatorAuthor` is one public
+`Name <email>` author identity exempt from contributor sign-off. Omission gives
+no author an exemption. The kit supplies no identity, and local Git identity
+configuration never grants one; changing this declaration is a reviewed instance
+decision. Historical order IDs come from this instance's `historicalWorkOrders`
+declaration.
 
 **Your orders live here.** `docs/work-orders/` holds the orders this
 instance cuts, `docs/evidence/`, `docs/verifications/` and
@@ -612,19 +637,23 @@ manifest naming a later one; the incoming launchpad knows every path it
 ships. This example names the starter remote `upstream`:
 
 ```sh
-git fetch upstream
+git config remote.upstream.tagOpt --no-tags
+git fetch --no-tags upstream
 git worktree add --detach .runtime/upstream-preview upstream/main
 node .runtime/upstream-preview/scripts/launchpad.mjs preview --from upstream/main
 git worktree remove .runtime/upstream-preview
 ```
 
-To preview a named starter release, fetch its tag and use it for both the
-detached worktree and the preview revision:
+Set `remote.upstream.tagOpt` once so later ordinary fetches also omit tags.
+Starter tags identify the starter's export, not this instance's release baseline;
+the local release commands exclude annotated tags with the starter's recorded
+message. To preview a named starter release, fetch it into a non-tag ref and
+use that ref for both the detached worktree and the preview revision:
 
 ```sh
-git fetch upstream tag v0.85.0
-git worktree add --detach .runtime/upstream-preview v0.85.0
-node .runtime/upstream-preview/scripts/launchpad.mjs preview --from v0.85.0
+git fetch --no-tags upstream refs/tags/v0.85.0:refs/upstream-releases/v0.85.0
+git worktree add --detach .runtime/upstream-preview refs/upstream-releases/v0.85.0
+node .runtime/upstream-preview/scripts/launchpad.mjs preview --from refs/upstream-releases/v0.85.0
 git worktree remove .runtime/upstream-preview
 ```
 

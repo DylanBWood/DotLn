@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import {
   existsSync,
   lstatSync,
@@ -125,8 +126,14 @@ export const forgetTargetOperation = (root, kind, key) => {
  * recorded correction moved it to. It lives here, not in target-records.mjs,
  * so resume can judge an unfinished removal without loading that module and
  * the outward lint it imports. */
-export const targetRecordSources = (root, state, events) => {
-  const repository = loadConfig(root).repositories[state.repositoryId];
+export const targetRecordSources = (
+  root,
+  state,
+  events,
+  recordedRepository,
+) => {
+  const repository =
+    recordedRepository ?? loadConfig(root).repositories[state.repositoryId];
   const reports = events
     .map((event) => ({
       ...event,
@@ -388,8 +395,11 @@ export const registeredOrder = (launchpad, cwd) => {
   });
   if (!top) return undefined;
   const entry = readMap(targetRegistryPath(launchpad))[physicalDirectory(top)];
-  if (!entry || entry.launchpad !== directoryIdentity(launchpad))
-    return undefined;
+  if (!entry) return undefined;
+  if (entry.launchpad !== directoryIdentity(launchpad))
+    throw new Error(
+      `target worktree is registered to launchpad ${entry.launchpad}; no order selected. Use DOTLN_LAUNCHPAD=${shellQuote(entry.launchpad)} node ${shellQuote(join(entry.launchpad, "scripts/resume.mjs"))} status`,
+    );
   const branch = runGit(top, ["symbolic-ref", "--quiet", "--short", "HEAD"], {
     onFailure: () => undefined,
   });
@@ -505,38 +515,39 @@ const readLocalSettings = (main) => {
   if (!stat) return {};
   if (!stat.isFile())
     throw new Error(".claude/settings.local.json is not a regular file");
-  const parsed = JSON.parse(readFileSync(file, "utf8"));
+  let parsed;
+  try {
+    parsed = JSON.parse(readFileSync(file, "utf8"));
+  } catch {
+    throw new Error(
+      ".claude/settings.local.json is malformed JSON; repair the file, then retry the same command",
+    );
+  }
   if (!parsed || typeof parsed !== "object" || Array.isArray(parsed))
     throw new Error(".claude/settings.local.json is not a JSON object");
   return parsed;
 };
 const writeLocalSettings = (main, settings) => {
-  mkdirSync(dirname(localSettingsPath(main)), { recursive: true });
-  writeFileSync(
-    localSettingsPath(main),
-    `${JSON.stringify(settings, null, 2)}\n`,
-  );
+  const file = localSettingsPath(main);
+  mkdirSync(dirname(file), { recursive: true });
+  const temporary = `${file}.${process.pid}.tmp`;
+  try {
+    writeFileSync(temporary, `${JSON.stringify(settings, null, 2)}\n`, {
+      flag: "wx",
+      mode: 0o600,
+    });
+    renameSync(temporary, file);
+  } finally {
+    rmSync(temporary, { force: true });
+  }
 };
-// One argv table renders every host's rule set, so the three never diverge:
-// a row's `exact` form admits that spelling alone, and a `prefix` row admits
-// what follows (the host rule languages are prefix-only, so a prefix row
-// admits any later flag; the hook admission judges those flags). The helper
-// is spelled through npm from the launchpad root, so no rule names a path
-// outside the order's target worktree.
-const hostRuleTable = (entry, selector) => [
-  { argv: ["git", "-C", entry.target, "push", "-u", "origin", entry.branch] },
-  { argv: ["git", "-C", entry.target, "push", "origin", entry.branch] },
-  { argv: ["gh", "pr", "create", "--draft", "--repo", selector], prefix: true },
-  { argv: ["gh", "pr", "create", "--repo", selector], prefix: true },
-  { argv: ["gh", "pr", "view", "--repo", selector], prefix: true },
-  { argv: ["gh", "pr", "ready", "--repo", selector], prefix: true },
-  { argv: ["gh", "pr", "edit", "--repo", selector], prefix: true },
+// Only the absolute node helper gets a prefix rule. Its own parser and
+// committed registration bound the effect; raw git/gh and npm prefixes do not.
+const hostRuleTable = (entry) => [
   {
     argv: [
-      "npm",
-      "run",
-      "worktree",
-      "--",
+      process.execPath,
+      join(entry.launchpad, "scripts/worktree.mjs"),
       "publish",
       entry.workOrderId,
       "--target-worktree",
@@ -545,8 +556,11 @@ const hostRuleTable = (entry, selector) => [
   },
 ];
 export const orderHostRules = (main, entry, selector) => {
-  const rows = hostRuleTable(entry, selector);
-  const spelled = (row) => row.argv.join(" ");
+  const rows = hostRuleTable(entry);
+  const spelled = (row) =>
+    row.argv
+      .map((word) => (/[\s'"]/u.test(word) ? shellQuote(word) : word))
+      .join(" ");
   return {
     claude: rows.map((row) => `Bash(${spelled(row)}${row.prefix ? " *" : ""})`),
     codex: rows.map((row) => row.argv),
@@ -562,27 +576,107 @@ const codexRulesText = (workOrderId, repositoryId, patterns) =>
         `prefix_rule(\n    pattern = ${JSON.stringify(pattern)},\n    decision = "allow",\n    justification = ${JSON.stringify(`DotLn ${workOrderId}: registered repository ${repositoryId}`)},\n)\n`,
     )
     .join("")}# dotln:${workOrderId}:end\n`;
+const ruleHash = (text) => createHash("sha256").update(text).digest("hex");
+const ruleExclusion = (workOrderId) =>
+  `/.codex/rules/dotln-${workOrderId}.rules`;
+const excludePath = (main) =>
+  resolve(main, runGit(main, ["rev-parse", "--git-path", "info/exclude"]));
+export const readOrderHostRules = (main, workOrderId) => {
+  const sidecar = hostRulesPath(main, workOrderId);
+  const stat = lstatSync(sidecar, { throwIfNoEntry: false });
+  if (!stat) return undefined;
+  let record;
+  try {
+    if (!stat.isFile()) throw new Error("not a regular file");
+    record = JSON.parse(readFileSync(sidecar, "utf8"));
+    if (
+      record.schemaVersion !== 1 ||
+      record.workOrderId !== workOrderId ||
+      !Array.isArray(record.claude) ||
+      !record.claude.every((rule) => typeof rule === "string") ||
+      record.codex !== relative(main, codexRulesPath(main, workOrderId)) ||
+      (record.removal !== undefined &&
+        (!record.removal ||
+          !/^[a-f0-9]{64}$/u.test(record.removal.before ?? "") ||
+          !/^[a-f0-9]{64}$/u.test(record.removal.after ?? "")))
+    )
+      throw new Error("invalid rule ownership record");
+  } catch (error) {
+    throw new Error(
+      `${relative(main, sidecar)}: ${error.message}; repair the host-rule record, then retry the same command`,
+    );
+  }
+  return record;
+};
+export const validateOrderHostRules = (
+  main,
+  workOrderId,
+  { creating = false } = {},
+) => {
+  const record = readOrderHostRules(main, workOrderId);
+  if (!record && !creating) return undefined;
+  readLocalSettings(main);
+  for (const file of [codexRulesPath(main, workOrderId), excludePath(main)]) {
+    const stat = lstatSync(file, { throwIfNoEntry: false });
+    if (stat && !stat.isFile())
+      throw new Error(
+        `${relative(main, file)} is not a regular file; repair it before retrying`,
+      );
+  }
+  const codex = codexRulesPath(main, workOrderId);
+  if (
+    existsSync(codex) &&
+    (!record ||
+      (record.codexHash && ruleHash(readFileSync(codex)) !== record.codexHash))
+  )
+    throw new Error(
+      `${relative(main, codex)} has no matching ownership record; preserve the operator's file and repair the sidecar before retrying`,
+    );
+  return record;
+};
 export const writeOrderHostRules = (main, entry, selector) => {
+  const previous = validateOrderHostRules(main, entry.workOrderId, {
+    creating: true,
+  });
+  if (previous?.removal)
+    throw new Error(
+      `host-rule removal is incomplete; run node ${shellQuote(join(main, "scripts/worktree.mjs"))} host-rules --remove ${entry.workOrderId}, then retry the rewrite`,
+    );
   const rules = orderHostRules(main, entry, selector);
   const settings = readLocalSettings(main);
   const permissions =
     settings.permissions && typeof settings.permissions === "object"
       ? settings.permissions
       : {};
-  const allow = Array.isArray(permissions.allow) ? permissions.allow : [];
-  // Only the rules this write adds are the order's; one the operator already
-  // held stays theirs when the order's rules are removed.
-  const added = rules.claude.filter((rule) => !allow.includes(rule));
-  settings.permissions = { ...permissions, allow: [...allow, ...added] };
-  writeLocalSettings(main, settings);
+  const allow = [
+    ...(Array.isArray(permissions.allow) ? permissions.allow : []),
+  ];
+  for (const retired of previous?.claude ?? []) {
+    if (rules.claude.includes(retired)) continue;
+    const at = allow.indexOf(retired);
+    if (at >= 0) allow.splice(at, 1);
+  }
+  const added = [
+    ...new Set([
+      ...(previous?.claude ?? []).filter((rule) => rules.claude.includes(rule)),
+      ...rules.claude.filter((rule) => !allow.includes(rule)),
+    ]),
+  ];
   const codexFile = codexRulesPath(main, entry.workOrderId);
-  mkdirSync(dirname(codexFile), { recursive: true });
-  writeFileSync(
-    codexFile,
-    codexRulesText(entry.workOrderId, entry.repositoryId, rules.codex),
+  const codexText = codexRulesText(
+    entry.workOrderId,
+    entry.repositoryId,
+    rules.codex,
   );
+  const exclusion = ruleExclusion(entry.workOrderId);
+  const exclude = excludePath(main);
+  const oldExclude = existsSync(exclude) ? readFileSync(exclude, "utf8") : "";
+  const excludeOwned =
+    previous?.excludeOwned || !oldExclude.split("\n").includes(exclusion);
   const sidecar = hostRulesPath(main, entry.workOrderId);
   mkdirSync(dirname(sidecar), { recursive: true });
+  // Ownership is durable before the first settings/rules write. A stopped
+  // write can be removed or rewritten from this same record.
   writeFileSync(
     sidecar,
     `${JSON.stringify(
@@ -593,32 +687,68 @@ export const writeOrderHostRules = (main, entry, selector) => {
         target: entry.target,
         claude: added,
         codex: relative(main, codexFile),
+        codexHash: ruleHash(codexText),
+        excludeOwned,
       },
       null,
       2,
     )}\n`,
   );
+  if (excludeOwned && !oldExclude.split("\n").includes(exclusion)) {
+    mkdirSync(dirname(exclude), { recursive: true });
+    writeFileSync(
+      exclude,
+      `${oldExclude}${oldExclude && !oldExclude.endsWith("\n") ? "\n" : ""}${exclusion}\n`,
+    );
+  }
+  settings.permissions = {
+    ...permissions,
+    allow: [...allow, ...added.filter((rule) => !allow.includes(rule))],
+  };
+  writeLocalSettings(main, settings);
+  mkdirSync(dirname(codexFile), { recursive: true });
+  writeFileSync(codexFile, codexText);
   return { settings: localSettingsPath(main), codex: codexFile };
 };
-export const readOrderHostRules = (main, workOrderId) => {
-  const sidecar = hostRulesPath(main, workOrderId);
-  const stat = lstatSync(sidecar, { throwIfNoEntry: false });
-  if (!stat) return undefined;
-  if (!stat.isFile())
-    throw new Error(`${relative(main, sidecar)} is not a regular file`);
-  return JSON.parse(readFileSync(sidecar, "utf8"));
-};
 export const removeOrderHostRules = (main, workOrderId) => {
-  const record = readOrderHostRules(main, workOrderId);
+  const record = validateOrderHostRules(main, workOrderId);
   if (!record) return undefined;
   const settings = readLocalSettings(main);
-  if (Array.isArray(settings.permissions?.allow)) {
-    settings.permissions.allow = settings.permissions.allow.filter(
-      (rule) => !record.claude.includes(rule),
-    );
+  const allow = Array.isArray(settings.permissions?.allow)
+    ? [...settings.permissions.allow]
+    : [];
+  const before = ruleHash(JSON.stringify(allow));
+  // Journal both sides before changing settings. A retry after that atomic
+  // replacement must not remove the operator's surviving identical rule.
+  for (const rule of record.claude) {
+    const index = allow.indexOf(rule);
+    if (index >= 0) allow.splice(index, 1);
+  }
+  const after = ruleHash(JSON.stringify(allow));
+  if (!record.removal) {
+    record.removal = { before, after };
+    writeMap(main, hostRulesPath(main, workOrderId), record);
+  }
+  if (before !== record.removal.after) {
+    if (before !== record.removal.before || after !== record.removal.after)
+      throw new Error(
+        `.claude/settings.local.json allow rules changed during removal; preserve the current settings and inspect ${relative(main, hostRulesPath(main, workOrderId))} before retrying host-rules --remove ${workOrderId}`,
+      );
+    settings.permissions.allow = allow;
     writeLocalSettings(main, settings);
   }
-  rmSync(join(main, record.codex), { force: true });
+  rmSync(codexRulesPath(main, workOrderId), { force: true });
+  if (record.excludeOwned) {
+    const exclude = excludePath(main);
+    if (existsSync(exclude))
+      writeFileSync(
+        exclude,
+        readFileSync(exclude, "utf8")
+          .split("\n")
+          .filter((line) => line !== ruleExclusion(workOrderId))
+          .join("\n"),
+      );
+  }
   rmSync(hostRulesPath(main, workOrderId));
   return record;
 };
@@ -644,8 +774,24 @@ export const staleOrderHostRules = (main) => {
     const workOrderId = name.replace(/\.json$/u, "");
     if (!/^WO-\d{3}$/u.test(workOrderId)) continue;
     const record = readOrderHostRules(main, workOrderId);
+    try {
+      validateOrderHostRules(main, workOrderId);
+    } catch (error) {
+      stale.push({
+        workOrderId,
+        reason: error.message,
+        remedy: `Preserve the edited file, restore its owned bytes and sidecar, then run node ${shellQuote(join(main, "scripts/worktree.mjs"))} host-rules --rewrite ${workOrderId}`,
+      });
+      continue;
+    }
     const missing = record.claude.filter((rule) => !allow.includes(rule));
-    if (!registered.has(workOrderId))
+    if (record.removal)
+      stale.push({
+        workOrderId,
+        reason: "host-rule removal is incomplete",
+        remedy: `node ${shellQuote(join(main, "scripts/worktree.mjs"))} host-rules --remove ${workOrderId}`,
+      });
+    else if (!registered.has(workOrderId))
       stale.push({
         workOrderId,
         reason: "no registered target worktree holds this order",

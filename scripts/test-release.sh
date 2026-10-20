@@ -508,6 +508,23 @@ exports.harnessWriterView = (root) => {
 JS
 }
 
+seed_real_release_close_writer() {
+  "$node_bin" --input-type=module - "$main" "$script_dir/../packages/skeleton/dist/src/harness-host.js" <<'JS'
+import { createHash } from 'node:crypto';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
+const [root, runtime] = process.argv.slice(2);
+const url = pathToFileURL(runtime).href;
+const { seedHarnessWriter } = await import(url);
+const directory = join(root, 'packages/skeleton/dist/src');
+mkdirSync(directory, { recursive: true });
+writeFileSync(join(directory, 'package.json'), '{"type":"module"}\n');
+writeFileSync(join(directory, 'harness-host.js'), `export { releaseHarnessWriter, harnessWriterView } from ${JSON.stringify(url)};\n`);
+seedHarnessWriter(root, { actorId: createHash('sha256').update('fixture-close-session').digest('hex'), reservedAt: new Date().toISOString() });
+JS
+}
+
 release_command() {
   (cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$main/scripts/release.mjs" "$@")
 }
@@ -668,6 +685,10 @@ printf 'local release surfaces ignored an unrelated sibling tag and passed witho
 release_case_prepare_independent() {
 make_repo prepare_independent
 "$node_bin" "$script_dir/test-reader-fixture.mjs" "$main"
+git -C "$main" switch -qc unrelated-preparation
+git -C "$main" commit --allow-empty -qm 'Unintegrated ordinary release'
+git -C "$main" tag -a v9.0.0 -m 'Ordinary unrelated release'
+git -C "$main" switch -q main
 git -C "$main" switch -c wo-099 >/dev/null 2>&1
 mkdir -p "$main/docs/control/orders" "$main/docs/product"
 printf '# WO-099 — fixture (v0.2.0)\n\n**Release classification:** patch. Existing scope.\n\n**Objective:** Fixture retiming.\n' >"$main/docs/work-orders/WO-099-fixture.md"
@@ -848,6 +869,19 @@ grep -Fq 'PASS component-version @dotln/new-component: src changed; observed 0.1
 printf 'release surface version and component fixtures passed\n'
 }
 
+normalize_close_surface_report() {
+  "$node_bin" -e '
+const fs = require("node:fs"), lines = fs.readFileSync(0, "utf8").split("\n");
+const prefix = "Advisory: retained ignored material: ";
+if (lines[0].startsWith(prefix)) {
+  const retained = lines[0].slice(prefix.length).split(", ").filter(file =>
+    !/^docs\/control\/local\/(?:release-close-locks\/(?:WO-099\.flock|host-lock-[a-f0-9]+)|retained\/WO-099\/(?:attempts\/[a-f0-9]{64}\.json|release-close-[0-9T-]+Z\.txt))$/.test(file));
+  if (retained.length) lines[0] = prefix + retained.join(", ");
+  else lines.shift();
+}
+process.stdout.write(lines.join("\n"));'
+}
+
 release_case_surfaceclose() {
 make_repo surfaceclose
 git clone -c maintenance.auto=false "$origin" "$fixture/integrator" >/dev/null 2>&1
@@ -889,9 +923,9 @@ assert.match(record.publication.refusal, /FAIL release-block/);
 assert.equal(record.cleanup.outcome, "not-attempted");
 JS
 # Closing reports the deliberately retained writer; check-surfaces does not.
-# Preserve equality for the whole report, including that one known advisory.
+# Preserve equality after removing only the close's own locks and archives.
 expected_close_output="$(printf 'Advisory: retained ignored material: docs/control/local/harness/writer.json, docs/control/local/retained/WO-099/release-close.json\n%s' "$surface_failure_output")"
-close_surface_normalized="$(printf '%s' "$close_surface_output" | "$node_bin" -e 'process.stdout.write(require("node:fs").readFileSync(0,"utf8").replace(/, docs\/control\/local\/retained\/WO-099\/release-close-[0-9T-]+Z\.txt/g,""))')"
+close_surface_normalized="$(printf '%s' "$close_surface_output" | normalize_close_surface_report)"
 if [[ "$close_surface_normalized" != "$expected_close_output" ]]; then
   diff -u <(printf '%s\n' "$expected_close_output") <(printf '%s\n' "$close_surface_normalized") >&2
   exit 1
@@ -924,7 +958,7 @@ test -d "$linked_subject" # publication failed, so cleanup must not run
 test ! -e "$npm_log"
 assert_no_candidate_tag "$main" "$origin"
 assert_surface_failure 'FAIL release-block: observed v0.2.0; expected exactly one v0.2.1'
-test "$linked_close_surface_output" = "$surface_failure_output"
+test "$(printf '%s' "$linked_close_surface_output" | normalize_close_surface_report)" = "$surface_failure_output"
 }
 
 release_case_bodyclose() {
@@ -1387,7 +1421,7 @@ git -C "$derived/.runtime/scratch-tool" -c user.name=Fixture -c user.email=fixtu
 seed_release_close_writer
 output="$(CODEX_THREAD_ID=fixture-close-session release_close WO-099 --publish)"
 grep -Fq 'Published annotated v0.2.1' <<<"$output"
-grep -Fq "Derived worktree $derived: kept (Worktree holds a submodule (vendor/sub); Git removes it only with --force, which would discard its unpushed commits; source retained. Push the submodule's commits, then remove this worktree from an operator terminal with git worktree remove --force \"$derived\" and retry" <<<"$output"
+grep -Fq "Derived worktree $derived: kept (Worktree holds a submodule (vendor/sub); Git removes it only with --force, which would discard its unpushed commits; source retained. Push the submodule's commits, then remove this worktree from an operator terminal with git worktree remove --force '$derived' and retry" <<<"$output"
 test -d "$derived/.runtime/scratch-tool/.git"
 test -f "$derived/docs/intake/x/raw.txt"
 test -d "$derived"
@@ -2012,9 +2046,10 @@ printf 'reviewer evidence notes are truthful; both historical note formats recon
 release_case_composed_evidence() {
 make_repo composed_evidence
 "$node_bin" "$script_dir/test-reader-fixture.mjs" "$main"
-git -C "$main" config user.email dylanwoodconsulting@gmail.com
-git -C "$main" config user.name 'Dylan Wood'
-git -C "$main" add docs/control/reader-profiles.json docs/publication/examples
+git -C "$main" config user.email operator@example.invalid
+git -C "$main" config user.name 'Fixture Operator'
+printf '%s\n' '{"version":1,"contributions":{"operatorAuthor":"Fixture Operator <operator@example.invalid>"}}' >"$main/dotln.config.json"
+git -C "$main" add dotln.config.json docs/control/reader-profiles.json docs/publication/examples
 git -C "$main" commit -m 'Fixture publication profiles' >/dev/null
 subject="$fixture/project-wo099"
 git -C "$main" worktree add -b wo-099 "$subject" main >/dev/null 2>&1
@@ -2050,6 +2085,73 @@ unset DOTLN_ONE_GATE_LOG
 release_case_concurrent() {
 make_repo concurrent
 PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$script_dir/test-concurrent-control.mjs" "$fixture"
+}
+
+release_case_close_foreign_tag() {
+make_repo close_foreign_tag
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push -q origin main
+release_close_summary WO-099 --publish >/dev/null
+published_tag="$(git -C "$main" rev-parse 'v0.2.1^{tag}')"
+commit_candidate "$main" WO-100 v0.2.1
+git -C "$main" push -q origin main
+if foreign="$(release_close_summary WO-100 --publish 2>&1)"; then
+  printf 'foreign release tag accepted\n' >&2; return 1
+fi
+grep -Fq 'v0.2.1 belongs to another order or commit' <<<"$foreign"
+test "$(git --git-dir="$origin" rev-parse 'v0.2.1^{tag}')" = "$published_tag"
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
+}
+
+release_case_close_overlap() {
+make_repo close_overlap
+"$node_bin" --input-type=module - "$main/scripts/release.mjs" <<'JS'
+import assert from "node:assert/strict";
+import { readFileSync, writeFileSync } from "node:fs";
+const script = process.argv[2], original = readFileSync(script, "utf8");
+const point = "const result = await close(workOrderId, parsed, record);";
+assert.equal(original.split(point).length, 2);
+writeFileSync(script, original.replace(point,
+  `if (process.env.DOTLN_FIXTURE_CLOSE_FIRST === "1") { writeFileSync(process.env.DOTLN_FIXTURE_CLOSE_MARKER, "ready"); await new Promise(resolve => setTimeout(resolve, 1500)); }\n${point}`));
+JS
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push -q origin main
+# Hold the first attempt after it reads history. A second close started in
+# that window must read the first receipt only after the order lock releases.
+PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" --input-type=module - "$main" "$fixture" <<'JS'
+import assert from "node:assert/strict";
+import { spawn } from "node:child_process";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+const [main, fixture] = process.argv.slice(2);
+const script = join(main, "scripts/release.mjs");
+const marker = join(fixture, "first-close-ready");
+const start = (first) => {
+  const child = spawn(process.execPath, [script, "close", "WO-099", "--dry-run"], {
+    cwd: main, env: { ...process.env, CODEX_THREAD_ID: "", COPILOT_AGENT_SESSION_ID: "", DOTLN_FIXTURE_CLOSE_FIRST: first ? "1" : "", DOTLN_FIXTURE_CLOSE_MARKER: marker },
+  });
+  let output = "";
+  child.stdout.on("data", chunk => output += chunk);
+  child.stderr.on("data", chunk => output += chunk);
+  return new Promise((resolve, reject) => {
+    child.on("error", reject);
+    child.on("close", code => resolve({ code, output }));
+  });
+};
+const first = start(true);
+const deadline = Date.now() + 30000;
+while (!existsSync(marker)) {
+  assert.ok(Date.now() < deadline, "first close reached its history barrier");
+  await new Promise(resolve => setTimeout(resolve, 10));
+}
+const results = await Promise.all([first, start(false)]);
+for (const result of results) assert.equal(result.code, 0, result.output);
+const record = JSON.parse(readFileSync(join(main, "docs/control/local/retained/WO-099/release-close.json")));
+assert.equal(record.previousAttempts.length, 1, "both overlapping attempts remain recorded");
+assert.ok(record.previousAttempts[0].recordedAt <= record.startedAt, "second attempt begins after the first receipt is written");
+assert.equal(record.previousAttempts[0].publication.outcome, "preview");
+assert.equal(record.publication.outcome, "preview");
+JS
 }
 
 release_case_material() {
@@ -2261,6 +2363,11 @@ for derived in "$misnamed" "$listed"; do
   git -C "$derived/scratch-material/x" add saved.txt
   git -C "$derived/scratch-material/x" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'derived scratch'
 done
+mkdir -p "$misnamed/docs/intake/protected"
+git -C "$misnamed/docs/intake/protected" init -q
+printf 'synthetic intake\n' >"$misnamed/docs/intake/protected/source.txt"
+git -C "$misnamed/docs/intake/protected" add source.txt
+git -C "$misnamed/docs/intake/protected" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'synthetic intake'
 printf 'SECRET=fixture-only\n' >"$listed/.env"
 git -C "$subject" push origin HEAD:main >/dev/null 2>&1
 # The operator's word names a repository the worktree does not hold.
@@ -2285,6 +2392,8 @@ assert.match(misnamedBlocker.reason, /Material word names no nested repository o
 assert.ok(misnamedBlocker.command.includes(`--material '${misnamed}::scratch-material/x=preserve'`), misnamedBlocker.command);
 assert.ok(misnamedBlocker.command.includes(`--material '${listed}::scratch-material/x=preserve'`), "every kept worktree is named");
 assert.ok(misnamedBlocker.disposableCommand.includes(`--material '${misnamed}::scratch-material/x=disposable'`));
+assert.ok(misnamedBlocker.command.includes(`--material '${misnamed}::docs/intake/protected=preserve'`));
+assert.ok(!misnamedBlocker.disposableCommand.includes("docs/intake/protected"), "disposable retry excludes protected intake");
 assert.ok(record.cleanup.worktrees.find((row) => row.path === misnamed).material.some((row) => row.path === "scratch-material/x"));
 JS
 printf '%s\n' "$output" >"$fixture/settle-output.txt"
@@ -2347,6 +2456,11 @@ printf 'sealed disposable snapshot\n' >"$subject/.runtime/snapshots/deep/snapsho
 ln -s "$fixture/outside" "$subject/.runtime/outside-link"
 DOTLN_FIXTURE_MATERIAL_SOURCE="$subject" commit_candidate "$subject" WO-099 v0.2.1
 git -C "$subject" push origin HEAD:main >/dev/null 2>&1
+if [[ "${1:-}" == close_real_writer ]]; then
+  local CODEX_THREAD_ID=fixture-close-session
+  export CODEX_THREAD_ID
+  seed_real_release_close_writer
+fi
 chmod 500 "$subject/.runtime/snapshots/deep" "$fixture/outside"
 preview="$(release_close_summary WO-099 --dry-run --material .runtime/kept=preserve)"
 if [[ "$selected_case" != close_sealed ]] && ! grep -Fq 'Branch wo-099: would-delete' <<<"$preview"; then
@@ -2359,7 +2473,19 @@ prepared="$(release_close_summary WO-099 --material .runtime/kept=preserve)"
 printf '%s\n' "$prepared" >"$fixture/prepared-output.txt"
 CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" "$script_dir/test-close-admission.mjs" "$main" WO-099 "$fixture/prepared-output.txt"
 fi
+if [[ "${1:-}" == close_real_writer ]]; then
+  test -d "$main/docs/control/local/harness/writer"
+  if failed="$(DOTLN_FIXTURE_GH_FAIL=create release_close_summary WO-099 --publish --material .runtime/kept=preserve 2>&1)"; then
+    printf 'real writer fixture expected Release failure\n' >&2; return 1
+  fi
+  test -d "$main/docs/control/local/harness/writer"
+  test -d "$subject"
+  grep -Fq 'tag published; GitHub Release not created' <<<"$failed"
+  git -C "$main" -c user.name=Fixture -c user.email=fixture@example.invalid commit --allow-empty -qm 'Unrelated later main commit'
+  git -C "$main" push -q origin main
+fi
 output="$(release_close_summary WO-099 --publish --material .runtime/kept=preserve)"
+if [[ "${1:-}" == close_real_writer ]]; then test ! -d "$main/docs/control/local/harness/writer"; fi
 # Undo the fixture's external seal only after measuring the no-follow result.
 external_mode="$($node_bin -e 'console.log((require("node:fs").statSync(process.argv[1]).mode & 511).toString(8))' "$fixture/outside")"
 chmod 700 "$fixture/outside"
@@ -2391,6 +2517,10 @@ CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" "$script_dir/test-clo
 
 release_case_close_sealed() {
 release_case_close_completion close_sealed
+}
+
+release_case_close_real_writer() {
+release_case_close_completion close_real_writer
 }
 
 release_case_close_leftover() {
@@ -2531,6 +2661,7 @@ for(const subject of [first,second]) {
 }
 fs.writeFileSync(p.join(second,'changed.txt'),'unpreserved new bytes\n');
 fs.writeFileSync(p.join(main,'docs/control/local/retained/WO-099/release-close.json'),JSON.stringify({
+ schemaVersion:1, workOrderId:'WO-099',
  previousAttempts:[{cleanup:{worktrees:[{path:completed,outcome:'retained'}]}}],
  cleanup:{worktrees:[{path:completed,outcome:'removed'},{path:first,outcome:'retained'},{path:second,outcome:'retained'}]}
 }));

@@ -1559,15 +1559,18 @@ test("starter refresh publishes one verified commit and preserves every refusal 
   const bin = join(root, "bin");
   mkdirSync(bin);
   const ghState = join(root, "gh-state.json");
+  const ghAuthRefusal = join(root, "gh-auth-refusal");
   writeFileSync(
     join(bin, "gh"),
     `#!${process.execPath}
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 const args = process.argv.slice(2);
 const state = ${JSON.stringify(ghState)};
+const authRefusal = ${JSON.stringify(ghAuthRefusal)};
 const read = () => (existsSync(state) ? JSON.parse(readFileSync(state, "utf8")) : {});
 const flag = (name) => args[args.indexOf(name) + 1];
 if (process.env.GH_REPO || process.env.GH_HOST) process.exit(65);
+if (args[0] === "auth" && existsSync(authRefusal)) process.exit(1);
 if (args[0] === "--version" || args[0] === "auth") process.exit(0);
 if (args[0] === "release" && args[1] === "view") {
   const release = read()[args[2]];
@@ -1588,8 +1591,13 @@ process.exit(64);
   chmodSync(join(bin, "gh"), 0o755);
   const releases = () =>
     existsSync(ghState) ? JSON.parse(readFileSync(ghState, "utf8")) : {};
+  const refreshTemp = join(root, "refresh-temporary");
+  mkdirSync(refreshTemp);
   const fixtureEnv = {
     ...env,
+    TMPDIR: refreshTemp,
+    TMP: refreshTemp,
+    TEMP: refreshTemp,
     PATH: `${bin}:${env.PATH}`,
     GIT_CONFIG_GLOBAL: global,
     GIT_CONFIG_NOSYSTEM: "1",
@@ -1712,8 +1720,48 @@ process.exit(64);
   git(checkout, [
     "config",
     `url.${wrongPath}.insteadOf`,
-    realpathSync(tmpdir()),
+    realpathSync(refreshTemp),
   ]);
+  const beforeAuthenticationRefusal = refs();
+  writeFileSync(ghAuthRefusal, "fixture authentication unavailable\n");
+  try {
+    const refused = measured(
+      "j authentication refusal",
+      () => refresh(tag, head)[0],
+    );
+    assert.equal(
+      refs(),
+      beforeAuthenticationRefusal,
+      "authentication failure must precede every remote write",
+    );
+    assert.equal(refused.outcome, "refused", JSON.stringify(refused));
+    assert.match(refused.reason, /gh authentication is required/u);
+    assert.equal(git(checkout, ["rev-parse", "HEAD"]).stdout.trim(), initial);
+    assert.deepEqual(releases(), {});
+    assert.deepEqual(pending(), []);
+  } finally {
+    rmSync(ghAuthRefusal);
+  }
+  git(remote, ["tag", tag, initial]);
+  const beforeTagRefusal = refs();
+  try {
+    const refused = measured(
+      "j conflicting tag refusal",
+      () => refresh(tag, head)[0],
+    );
+    assert.equal(
+      refs(),
+      beforeTagRefusal,
+      "a conflicting release tag must refuse before the refresh push",
+    );
+    assert.equal(refused.outcome, "refused", JSON.stringify(refused));
+    assert.match(refused.reason, /starter tag .*not the refresh commit/u);
+    assert.equal(git(checkout, ["rev-parse", "HEAD"]).stdout.trim(), initial);
+    assert.deepEqual(releases(), {});
+    assert.deepEqual(pending(), []);
+  } finally {
+    git(remote, ["tag", "-d", tag]);
+  }
   const first = measured("j first export", () => refresh(tag, head)[0]);
   assert.equal(first.outcome, "refreshed", JSON.stringify(first));
   assert.equal(first.firstExport, true);
@@ -1934,6 +1982,9 @@ process.exit(64);
       "\nFixture contract revision.\n",
   );
   git(core, ["add", "."]);
+  chmodSync(join(core, "scripts/lib/github-body.mjs"), 0o755);
+  git(core, ["add", "scripts/lib/github-body.mjs"]);
+  git(core, ["add", "scripts/kit/README.client.md"]);
   git(core, ["commit", "-qm", "advance kit"]);
   tag = "v10.1.0";
   head = git(core, ["rev-parse", "HEAD"]).stdout.trim();
@@ -1956,6 +2007,9 @@ process.exit(64);
     () => refresh(tag, head, true)[0],
   );
   assert.equal(behindPreview.outcome, "preview");
+  assert.deepEqual(behindPreview.siblingTag, { tag, outcome: "preview" });
+  assert.equal(behindPreview.siblingRelease, "preview");
+  assert.equal(behindPreview.siblingReleaseTitle, `Initial Starter ${tag}`);
   assert.match(behindPreview.reason, /would refresh/);
   assert.equal(behindPreview.coreCommit, head);
   assert.equal(
@@ -2076,6 +2130,13 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   );
   assert.equal(update.outcome, "refused", JSON.stringify(update));
   assert.match(update.reason, /disposable refresh cleanup failed/);
+  assert.doesNotMatch(update.reason, /\bundefined\b/u);
+  assert.match(update.reason, /push landed/u);
+  assert.notEqual(update.before, update.after);
+  assert.match(
+    git(remote, ["ls-tree", "main", "scripts/lib/github-body.mjs"]).stdout,
+    /^100755 /u,
+  );
   const cleanupRecord = join(
     core,
     "docs/control/local/starter-refresh",
@@ -2083,6 +2144,11 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   );
   assert.ok(existsSync(cleanupRecord));
   const owned = JSON.parse(readFileSync(cleanupRecord, "utf8"));
+  assert.equal(
+    dirname(owned.scratch),
+    realpathSync(refreshTemp),
+    "refresh scratch remains inside the fixture's declared temporary parent",
+  );
   assert.ok(existsSync(owned.worktree));
   assert.equal(worktrees().match(/^worktree /gm).length, 2);
   const publishedRefs = refs();
@@ -2117,12 +2183,6 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
       record: savedCleanup,
       map: privateMapValue,
       reason: /invalid local registry/,
-    },
-    {
-      record: savedCleanup,
-      map: savedMap,
-      temporaryBase: "/dotln-fixture-missing-temporary-base",
-      reason: /ENOENT.*'<checkout>'/,
     },
   ];
   const privacyTrees = worktrees();
@@ -2215,7 +2275,11 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   assert.ok(existsSync(cleanupRecord));
   assert.equal(readFileSync(cleanupRecord, "utf8"), partialRecord);
   fixtureEnv.PATH = priorPath;
+  const retryTemp = join(root, "different-temporary-base");
+  mkdirSync(retryTemp);
+  fixtureEnv.TMPDIR = retryTemp;
   const recovered = measured("cleanup recovery", () => refresh(tag, head)[0]);
+  fixtureEnv.TMPDIR = refreshTemp;
   assert.equal(recovered.outcome, "current", JSON.stringify(recovered));
   assert.deepEqual(recovered.timings, {});
   assert.equal(refs(), publishedRefs);
@@ -2317,6 +2381,23 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
     "rev-parse",
     `refs/tags/${tag}`,
   ]).stdout.trim();
+  const ghBytes = readFileSync(join(bin, "gh"));
+  git(remote, ["update-ref", "-d", `refs/tags/${tag}`]);
+  writeFileSync(join(bin, "gh"), `#!${process.execPath}\nprocess.exit(1);\n`);
+  const beforeAuthFailure = refs();
+  const noAuthentication = refresh(tag, head)[0];
+  assert.equal(
+    noAuthentication.outcome,
+    "refused",
+    JSON.stringify(noAuthentication),
+  );
+  assert.equal(
+    refs(),
+    beforeAuthFailure,
+    "gh preflight precedes a missing tag push",
+  );
+  writeFileSync(join(bin, "gh"), ghBytes);
+  git(remote, ["update-ref", `refs/tags/${tag}`, taggedObject]);
   // Neither an initial ancestor without a manifest nor a prior release's
   // refresh proves this tag belongs to the current core release.
   for (const candidate of [initial, first.after]) {
@@ -2465,7 +2546,8 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   const seedPreview = refresh(tag, head, true)[0];
   assert.equal(seedPreview.outcome, "preview", JSON.stringify(seedPreview));
   assert.deepEqual(seedPreview.seedChanges, ["README.md"]);
-  assert.match(printed(seedPreview), /; seeds would change: README\.md\.$/u);
+  assert.match(printed(seedPreview), /; seeds would change: README\.md; tag /u);
+  assert.match(printed(seedPreview), /GitHub Release preview \([^)]+\)\.$/u);
   assert.doesNotMatch(printed(seedPreview), /seeds published/u);
   assert.equal(refs(), seedOnlyRefs);
   const seedOnly = refresh(tag, head)[0];
@@ -2473,7 +2555,7 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   assert.deepEqual(seedOnly.rewrittenSeeds, ["README.md"]);
   assert.match(
     printed(seedOnly),
-    new RegExp(`-> ${seedOnly.after}; seeds published: README\\.md\\.$`, "u"),
+    new RegExp(`-> ${seedOnly.after}; seeds published: README\\.md; tag `, "u"),
   );
   const seedOnlyPublished = refs();
   assert.equal(refresh(tag, head)[0].outcome, "current");
@@ -2695,7 +2777,8 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   const wouldWrite = refresh(tag, head, true)[0];
   assert.equal(wouldWrite.outcome, "preview", JSON.stringify(wouldWrite));
   assert.deepEqual(wouldWrite.seedChanges, ["CLAUDE.md"]);
-  assert.match(printed(wouldWrite), /; seeds would change: CLAUDE\.md\.$/u);
+  assert.match(printed(wouldWrite), /; seeds would change: CLAUDE\.md; tag /u);
+  assert.match(printed(wouldWrite), /GitHub Release preview \([^)]+\)\.$/u);
   const afterWrite = measured(
     "g refused after seed write",
     () => refresh(tag, head)[0],
@@ -2719,9 +2802,8 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   assert.equal(git(checkout, ["status", "--porcelain"]).stdout, "");
   assert.equal(JSON.stringify(pending()), writtenReceipts);
   assert.equal(worktrees().match(/^worktree /gm).length, 1);
-  // Two more refusals after the contract seed is written, from the intact
-  // starter: verification itself, and a staged difference ignore rules
-  // cannot cause. Neither publishes or reports a seed.
+  // Verification can still refuse after writing the contract seed. Such a
+  // refusal neither publishes nor reports a seed.
   const refusedAfterWrite = (name, setup) => {
     git(checkout, ["reset", "--hard", seedHead]);
     rewindRemoteMain();
@@ -2761,19 +2843,24 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
     printed(unowned),
     /^Starter refresh starter-fixture: refused; the export's own harness emit failed/u,
   );
-  // A kit file whose only change is its mode is staged outside the byte-only
-  // plan; the refusal names that difference and does not blame ignore rules.
-  const modeOnly = refusedAfterWrite("g mode-only kit change", () => {
-    chmodSync(join(core, "scripts/lineage.mjs"), 0o755);
-    git(core, ["add", "scripts/lineage.mjs"]);
-    git(core, ["commit", "-qm", "mode-only kit change"]);
-    head = git(core, ["rev-parse", "HEAD"]).stdout.trim();
-    tag = "v10.2.1";
-    git(core, ["tag", tag]);
-  });
-  assert.match(
-    modeOnly.reason,
-    /staged outside the plan: scripts\/lineage\.mjs \(mode 100644 to 100755\)\. Inspect each named difference against the update plan; no commit was made or pushed/u,
+  // A managed kit file's executable bit is part of the applied plan even
+  // when its bytes match. Kept instance seeds retain their own modes above.
+  git(checkout, ["reset", "--hard", seedHead]);
+  rewindRemoteMain();
+  chmodSync(join(core, "scripts/lineage.mjs"), 0o755);
+  git(core, ["add", "scripts/lineage.mjs"]);
+  git(core, ["commit", "-qm", "test: mode-only kit change"]);
+  head = git(core, ["rev-parse", "HEAD"]).stdout.trim();
+  tag = "v10.2.1";
+  git(core, ["tag", tag]);
+  const modeOnly = measured(
+    "g mode-only kit change",
+    () => refresh(tag, head)[0],
   );
-  assert.doesNotMatch(modeOnly.reason, /ignore rules|planned but not staged/u);
+  assert.equal(modeOnly.outcome, "refreshed", JSON.stringify(modeOnly));
+  assert.match(
+    git(checkout, ["ls-files", "--stage", "scripts/lineage.mjs"]).stdout,
+    /^100755 /u,
+  );
+  assert.equal(manifestOf(checkout).commit, head);
 });

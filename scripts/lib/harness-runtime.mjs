@@ -17,7 +17,14 @@ export function harnessRuntimeCause(root) {
   // A fixture or consumer that has never installed hooks has no pins to compare.
   if (!existsSync(manifest)) return null;
   try {
-    const profiles = JSON.parse(readFileSync(manifest, "utf8")).profiles;
+    const installation = JSON.parse(readFileSync(manifest, "utf8"));
+    if (
+      installation.build === "none" &&
+      Array.isArray(installation.profiles) &&
+      installation.profiles.length === 0
+    )
+      return null;
+    const profiles = installation.profiles;
     if (!Array.isArray(profiles) || !profiles.length)
       return "runtime-unavailable";
     for (const entry of profiles) {

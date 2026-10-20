@@ -1,0 +1,651 @@
+{
+  "schemaVersion": 1,
+  "activationAt": "2026-10-20T01:19:37.234Z",
+  "observedAt": "2026-10-20T15:12:25.512322+00:00",
+  "registerRevision": "76c0cd3a81eb16e8c06e7e5447f435ebe68cbed0675428a2fd191bec0c8316e7",
+  "counts": {
+    "settled": 40,
+    "declined": 5
+  },
+  "selectedUnresolved": 0,
+  "priorObservation": {
+    "observedAt": "2026-10-20T05:32:18.874Z",
+    "registerRevision": "7b5099124610320012bea26b0bf046f0e39c69e1100247f5be8721e858703e9e",
+    "counts": {
+      "settled": 40,
+      "declined": 5
+    }
+  },
+  "rows": [
+    {
+      "id": "FUP-06de60fa5d19fe5a",
+      "command": "npm run plan --silent -- followups --show FUP-06de60fa5d19fe5a",
+      "sourceRevision": 4,
+      "decision": "WO-218-D002",
+      "latestDisposition": {
+        "sourceRevision": 4,
+        "status": "settled",
+        "reason": "WO-218-D002 (docs/evidence/WO-218/decisions.md#wo-218-d002): Read the operator contribution exemption from instance configuration. Core declares its existing public identity; fresh kits declare none. Mutable Git identity never creates an exemption. VER-001 repair evidence: r01-identity 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "An instance needs multiple declared operator identities or the contribution policy changes.",
+        "targets": [],
+        "at": "2026-10-20T15:11:34.726Z"
+      }
+    },
+    {
+      "id": "FUP-0804477ea9d640a7",
+      "command": "npm run plan --silent -- followups --show FUP-0804477ea9d640a7",
+      "sourceRevision": 1,
+      "decision": "WO-218-D003",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D003 (docs/evidence/WO-218/decisions.md#wo-218-d003): Inspect every session-root ancestor below its trusted temporary prefix, refusing symlinks and non-directories before granting writes. VER-001 repair evidence: r02-ancestors 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "The host changes the granted directory layout or ownership model.",
+        "targets": [],
+        "at": "2026-10-20T15:11:34.830Z"
+      }
+    },
+    {
+      "id": "FUP-09a2fb517f0ffbc4",
+      "command": "npm run plan --silent -- followups --show FUP-09a2fb517f0ffbc4",
+      "sourceRevision": 3,
+      "decision": "WO-218-D004",
+      "latestDisposition": {
+        "sourceRevision": 3,
+        "status": "declined",
+        "reason": "WO-218-D004 (docs/evidence/WO-218/decisions.md#wo-218-d004): Declined. Current harm is a misleading fresh previous phase for the remainder of the 20-minute freshness window, followed by a stale decoration. Canonical status records withdrawal. Extending the fixed radix changes the wire contract and requires a versioned codebook decision; this order declines that protocol expansion while retaining the stated beacon limitation. Evidence read: Source read in full: docs/evidence/WO-158/decisions.md#wo-158-d006; packages/beacons/src/control-codebook.mjs: the current phase alphabet has eight values; docs/evidence/WO-158/decisions.md WO-158-D006 records the stale-beacon observation.. Reopen when: A versioned beacon revision is authorized or an observed consumer relies on the misleading fresh previous phase or cannot handle the later stale result.",
+        "reopenWhen": "A versioned beacon revision is authorized or an observed consumer relies on the misleading fresh previous phase or cannot handle the later stale result.",
+        "targets": [],
+        "at": "2026-10-20T05:26:16.826Z"
+      }
+    },
+    {
+      "id": "FUP-3a0c4ea52f8d6d08",
+      "command": "npm run plan --silent -- followups --show FUP-3a0c4ea52f8d6d08",
+      "sourceRevision": 3,
+      "decision": "WO-218-D005",
+      "latestDisposition": {
+        "sourceRevision": 3,
+        "status": "declined",
+        "reason": "WO-218-D005 (docs/evidence/WO-218/decisions.md#wo-218-d005): Declined. Current harm is manual recovery for withdrawn worktrees. Withdrawal supplies neither a passing review nor a release/publication contract; treating it as closure would grant publication or deletion without those facts. Evidence read: Source read in full: docs/evidence/WO-158/decisions.md#wo-158-d005; docs/evidence/WO-158/decisions.md WO-158-D005; scripts/worktree.mjs closed-order publication and finish preconditions; scripts/test-off-ramps.mjs withdrawal behavior.. Reopen when: The operator authorizes a withdrawal disposition with an explicit publication and preservation contract.",
+        "reopenWhen": "The operator authorizes a withdrawal disposition with an explicit publication and preservation contract.",
+        "targets": [],
+        "at": "2026-10-20T05:26:16.930Z"
+      }
+    },
+    {
+      "id": "FUP-406744f5e9966250",
+      "command": "npm run plan --silent -- followups --show FUP-406744f5e9966250",
+      "sourceRevision": 3,
+      "decision": "WO-218-D006",
+      "latestDisposition": {
+        "sourceRevision": 3,
+        "status": "settled",
+        "reason": "WO-218-D006 (docs/evidence/WO-218/decisions.md#wo-218-d006): Keep the existing delayed collision-stub write, and add an explicit --continue --stash-applied recovery attestation after failed or interrupted stash application, preserving stash and checkpoint refs. The delayed integration-stub defect was already met in the baseline implementation; am-delayed-stub records that observation. The explicit stash continuation is the change proved here. VER-001 repair evidence: r05-stash-continuation 0/1, am-delayed-stub 0/0. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "A stopped application can advance without preserved data or the collision stub loses the successful retime.",
+        "targets": [],
+        "at": "2026-10-20T15:11:34.935Z"
+      }
+    },
+    {
+      "id": "FUP-44639ec9a751d8d1",
+      "command": "npm run plan --silent -- followups --show FUP-44639ec9a751d8d1",
+      "sourceRevision": 4,
+      "decision": "WO-218-D007",
+      "latestDisposition": {
+        "sourceRevision": 4,
+        "status": "settled",
+        "reason": "WO-218-D007 (docs/evidence/WO-218/decisions.md#wo-218-d007): Emit the five role navigation directives from the compiled Contributor instruction block and migrate only their exact known historical floor lines. VER-001 repair evidence: r06-navigation 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "A new role or a different historical spelling needs an explicit migration.",
+        "targets": [],
+        "at": "2026-10-20T15:11:35.038Z"
+      }
+    },
+    {
+      "id": "FUP-5c2082d9fc28dbbf",
+      "command": "npm run plan --silent -- followups --show FUP-5c2082d9fc28dbbf",
+      "sourceRevision": 1,
+      "decision": "WO-218-D008",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D008 (docs/evidence/WO-218/decisions.md#wo-218-d008): Ignore Git replacement objects for export provenance and batch object reads, including pinned build and emit inputs. VER-001 repair evidence: r07-original-objects 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "Another provenance read can be redirected by replacement refs.",
+        "targets": [],
+        "at": "2026-10-20T15:11:35.142Z"
+      }
+    },
+    {
+      "id": "FUP-620f25409f65f4aa",
+      "command": "npm run plan --silent -- followups --show FUP-620f25409f65f4aa",
+      "sourceRevision": 1,
+      "decision": "WO-218-D009",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D009 (docs/evidence/WO-218/decisions.md#wo-218-d009): Refuse harness marker text anywhere in an overlay string before composition or writes, naming the overlay and field. VER-001 repair evidence: r08-markers 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "A new overlay field reaches emitted text without the marker screen.",
+        "targets": [],
+        "at": "2026-10-20T15:11:35.244Z"
+      }
+    },
+    {
+      "id": "FUP-785f679912b2f36c",
+      "command": "npm run plan --silent -- followups --show FUP-785f679912b2f36c",
+      "sourceRevision": 2,
+      "decision": "WO-218-D010",
+      "latestDisposition": {
+        "sourceRevision": 2,
+        "status": "settled",
+        "reason": "WO-218-D010 (docs/evidence/WO-218/decisions.md#wo-218-d010): Keep the public seed executable and declare its scratch class explicitly. VER-001 repair evidence: r09-seed-class 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "The seed no longer represents a supported fixture setup.",
+        "targets": [],
+        "at": "2026-10-20T15:11:35.345Z"
+      }
+    },
+    {
+      "id": "FUP-815e8662408881f1",
+      "command": "npm run plan --silent -- followups --show FUP-815e8662408881f1",
+      "sourceRevision": 1,
+      "decision": "WO-218-D011",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D011 (docs/evidence/WO-218/decisions.md#wo-218-d011): Apply the source-bundle hostname shape to registration linkHosts during configuration loading. VER-001 repair evidence: r10-link-hosts 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "The observer host grammar changes.",
+        "targets": [],
+        "at": "2026-10-20T15:11:35.448Z"
+      }
+    },
+    {
+      "id": "FUP-847826d3542ff249",
+      "command": "npm run plan --silent -- followups --show FUP-847826d3542ff249",
+      "sourceRevision": 1,
+      "decision": "WO-218-D012",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D012 (docs/evidence/WO-218/decisions.md#wo-218-d012): Preserve current ampersand redirect and equals-word fixes; refuse network input pseudo-files and configured Git programs in live-gate metadata reads, and parse the silent npm resume spelling. VER-001 repair evidence: r11-configured-git 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "A new shell spelling bypasses the parsed effect or destination checks.",
+        "targets": [],
+        "at": "2026-10-20T15:11:35.550Z"
+      }
+    },
+    {
+      "id": "FUP-8cfd3ff52146a016",
+      "command": "npm run plan --silent -- followups --show FUP-8cfd3ff52146a016",
+      "sourceRevision": 1,
+      "decision": "WO-218-D013",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D013 (docs/evidence/WO-218/decisions.md#wo-218-d013): Record the real writer-directory publication and retry protocol as already met. The current fixture exercises that retained protocol with the baseline release module; no new writer protocol fix is claimed. The later-main retry is separately repaired and proved under D024. VER-001 repair evidence: am-real-writer 0/0. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "The writer storage protocol or close ownership contract changes.",
+        "targets": [],
+        "at": "2026-10-20T15:11:35.651Z"
+      }
+    },
+    {
+      "id": "FUP-94f789b2dcdd30e7",
+      "command": "npm run plan --silent -- followups --show FUP-94f789b2dcdd30e7",
+      "sourceRevision": 1,
+      "decision": "WO-218-D014",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D014 (docs/evidence/WO-218/decisions.md#wo-218-d014): Settle the twelve starter integration findings: correct product and role text, redact paths, use the runner adapter, recognize landed pushes and modes, recover cleanup across temporary roots, prove carried receipt ownership, preserve self-start retry, skip empty undeclared receipt lanes, and collapse identical manifest receipts. VER-001 repair evidence: r13-carried-receipt 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "Any of the twelve source findings recurs under the current starter contract.",
+        "targets": [],
+        "at": "2026-10-20T15:11:35.752Z"
+      }
+    },
+    {
+      "id": "FUP-9d397b57910ae6ed",
+      "command": "npm run plan --silent -- followups --show FUP-9d397b57910ae6ed",
+      "sourceRevision": 1,
+      "decision": "WO-218-D015",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D015 (docs/evidence/WO-218/decisions.md#wo-218-d015): Treat a manifest explicitly declaring build none as intentionally disabled, without runtime-unavailable warnings; malformed empty profiles still refuse. VER-001 repair evidence: r14-build-none 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "Another runtime consumer treats an explicit disabled build as a missing runtime.",
+        "targets": [],
+        "at": "2026-10-20T15:11:35.852Z"
+      }
+    },
+    {
+      "id": "FUP-a859aa6cad8f9c6c",
+      "command": "npm run plan --silent -- followups --show FUP-a859aa6cad8f9c6c",
+      "sourceRevision": 1,
+      "decision": "WO-218-D016",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D016 (docs/evidence/WO-218/decisions.md#wo-218-d016): Decode escaped publication paths once before containment and encode each resulting path segment once, preserving query strings and fragments. VER-001 repair evidence: r15-encoded-links 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "A destination grammar or renderer exposes another escaped-path ambiguity.",
+        "targets": [],
+        "at": "2026-10-20T15:11:35.953Z"
+      }
+    },
+    {
+      "id": "FUP-aa129ef63aeef2b1",
+      "command": "npm run plan --silent -- followups --show FUP-aa129ef63aeef2b1",
+      "sourceRevision": 3,
+      "decision": "WO-218-D017",
+      "latestDisposition": {
+        "sourceRevision": 3,
+        "status": "declined",
+        "reason": "WO-218-D017 (docs/evidence/WO-218/decisions.md#wo-218-d017): Declined. Current harm is a future older-manifest rejection if the kit removes a path. No removed carried path or authoritative retirement set is identified at this subject. Broad historical acceptance would weaken the owned-path boundary. Evidence read: Source read in full: docs/evidence/WO-210/decisions.md#wo-210-d025--take-this-release-in-an-older-instance-through-the-incoming-launchpad-and-an-update-pull-request; docs/evidence/WO-210/decisions.md WO-210-D025; scripts/launchpad.mjs kitPath and historical manifest admission; scripts/kit/README.client.md incoming-reader update procedure.. Reopen when: A planned kit removal identifies the old path, owning releases and migration semantics.",
+        "reopenWhen": "A planned kit removal identifies the old path, owning releases and migration semantics.",
+        "targets": [],
+        "at": "2026-10-20T05:26:18.178Z"
+      }
+    },
+    {
+      "id": "FUP-acdc329e47638889",
+      "command": "npm run plan --silent -- followups --show FUP-acdc329e47638889",
+      "sourceRevision": 1,
+      "decision": "WO-218-D018",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D018 (docs/evidence/WO-218/decisions.md#wo-218-d018): Distinguish wholly undeclared publication from a partially declared publication missing its editions; --expect-stale never passes on an undeclared corpus. VER-001 repair evidence: r17-publication-declaration 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "A new publication declaration surface is added.",
+        "targets": [],
+        "at": "2026-10-20T15:11:36.055Z"
+      }
+    },
+    {
+      "id": "FUP-c9dc1abccd1f1a9d",
+      "command": "npm run plan --silent -- followups --show FUP-c9dc1abccd1f1a9d",
+      "sourceRevision": 6,
+      "decision": "WO-218-D019",
+      "latestDisposition": {
+        "sourceRevision": 6,
+        "status": "settled",
+        "reason": "WO-218-D019 (docs/evidence/WO-218/decisions.md#wo-218-d019): Resolve moved decisions through immutable repository/commit/path/hash bindings; lint target commits before final review; isolate target-close fetches from clone configuration; restrict planning publication to intended document forms. Decline automated records-phase and planning-publication recovery redesigns, preserving pending receipts and absent-target bundle ownership for explicit recovery. VER-001 repair evidence: r18-moved-decisions 0/1, r18-commit-lint 0/1, r18-planning-body 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "An authorized preserve/abandon design binds interrupted records and planning operations to their original subjects and proves recovery of absent target directories or bundles before changing retained ownership.",
+        "targets": [],
+        "at": "2026-10-20T15:11:36.156Z"
+      }
+    },
+    {
+      "id": "FUP-cc27c2c1a82fed2c",
+      "command": "npm run plan --silent -- followups --show FUP-cc27c2c1a82fed2c",
+      "sourceRevision": 1,
+      "decision": "WO-218-D020",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D020 (docs/evidence/WO-218/decisions.md#wo-218-d020): Restrict disposable retry words to disposable material, case-fold reserved planning lane names, name linked-worktree preservation remedies, emit scratch advice before tree hashing, shell-quote subjects, share safe nested Git and gitlink parsing, and retain nested repositories during whitespace evidence. The nested-repository whitespace exclusion already existed; am-nested-whitespace runs that baseline logic while the nested repository remains present. The other six items have isolated negative controls. VER-001 repair evidence: r19-protected-retry 0/1, r19-reserved-case 0/1, r19-linked-remedy 0/1, r19-advisory-first 0/1, r19-submodule-quote 0/1, r19-shared-git-primitives 0/1, am-nested-whitespace 0/0. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "A protected path appears in a disposable remedy, linked worktree identity is lost, or lifecycle evidence skips a nested repository.",
+        "targets": [],
+        "at": "2026-10-20T15:11:36.258Z"
+      }
+    },
+    {
+      "id": "FUP-cf950d70e66c50bf",
+      "command": "npm run plan --silent -- followups --show FUP-cf950d70e66c50bf",
+      "sourceRevision": 1,
+      "decision": "WO-218-D021",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D021 (docs/evidence/WO-218/decisions.md#wo-218-d021): Share dependency-free harness marker parsing, floor migration and composition between runtime emit and starter seed preflight. VER-001 repair evidence: r20-shared-composition 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "Shared composition gains a compiled dependency or no longer recognizes historical seed provenance.",
+        "targets": [],
+        "at": "2026-10-20T15:11:36.359Z"
+      }
+    },
+    {
+      "id": "FUP-d5d0ef5cf034102e",
+      "command": "npm run plan --silent -- followups --show FUP-d5d0ef5cf034102e",
+      "sourceRevision": 1,
+      "decision": "WO-218-D022",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D022 (docs/evidence/WO-218/decisions.md#wo-218-d022): Refuse an overlay narrowing that would be undone by a Contributor outside-write grant, naming both declarations. VER-001 repair evidence: r21-narrowing-grants 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "A new grant effect can undo narrowing without a pre-write refusal.",
+        "targets": [],
+        "at": "2026-10-20T15:11:36.462Z"
+      }
+    },
+    {
+      "id": "FUP-d72bf62d3c82ca3f",
+      "command": "npm run plan --silent -- followups --show FUP-d72bf62d3c82ca3f",
+      "sourceRevision": 1,
+      "decision": "WO-218-D023",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D023 (docs/evidence/WO-218/decisions.md#wo-218-d023): For build none, remove compiled navigation and owned generated surfaces while preserving the handwritten floor and an explicit disabled-build disclosure. VER-001 repair evidence: r06-navigation 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "A disabled contract retains a removed compiled role pointer.",
+        "targets": [],
+        "at": "2026-10-20T15:11:36.564Z"
+      }
+    },
+    {
+      "id": "FUP-da471832071118c7",
+      "command": "npm run plan --silent -- followups --show FUP-da471832071118c7",
+      "sourceRevision": 1,
+      "decision": "WO-218-D024",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D024 (docs/evidence/WO-218/decisions.md#wo-218-d024): Bind cleanup retry to the original published tag even when main advances, serialize close attempts, and keep eight inline attempts plus hash-verified archived recovery history. VER-001 repair evidence: r23-moved-main 0/1, r23-foreign-tag 0/1, r23-serialized-close 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "A retry loses its original publication identity or an archive cannot be verified.",
+        "targets": [],
+        "at": "2026-10-20T15:11:36.667Z"
+      }
+    },
+    {
+      "id": "FUP-dc79b4b1065bf66e",
+      "command": "npm run plan --silent -- followups --show FUP-dc79b4b1065bf66e",
+      "sourceRevision": 2,
+      "decision": "WO-218-D025",
+      "latestDisposition": {
+        "sourceRevision": 2,
+        "status": "declined",
+        "reason": "WO-218-D025 (docs/evidence/WO-218/decisions.md#wo-218-d025): Declined. Current harm is wasted build time before an absent carried generated path is refused. The incoming compiler still supplies no authoritative prebuild generated inventory; inferring one can falsely authorize deletion. Destination writes remain withheld. Evidence read: Source read in full: docs/evidence/WO-203/decisions.md#wo-203-d004--carry-in-dispositions-and-the-remaining-pre-build-bound; docs/evidence/WO-203/decisions.md WO-203-D004; scripts/launchpad.mjs atomicBuild and update staged validation.. Reopen when: The compiler exposes an authoritative incoming generated-path inventory before atomicBuild.",
+        "reopenWhen": "The compiler exposes an authoritative incoming generated-path inventory before atomicBuild.",
+        "targets": [],
+        "at": "2026-10-20T05:26:18.976Z"
+      }
+    },
+    {
+      "id": "FUP-e62c63344f52405f",
+      "command": "npm run plan --silent -- followups --show FUP-e62c63344f52405f",
+      "sourceRevision": 1,
+      "decision": "WO-218-D026",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D026 (docs/evidence/WO-218/decisions.md#wo-218-d026): Publish complete stash-drop recovery snapshots atomically, retain whole proofs when reflogs change, and name exact stale-lock recovery after an interrupted owner. VER-001 repair evidence: r25-stash-proof 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "An interruption point lacks a whole retained proof or a truthful explicit remedy.",
+        "targets": [],
+        "at": "2026-10-20T15:11:36.771Z"
+      }
+    },
+    {
+      "id": "FUP-f2d7c420e0778cbe",
+      "command": "npm run plan --silent -- followups --show FUP-f2d7c420e0778cbe",
+      "sourceRevision": 2,
+      "decision": "WO-218-D027",
+      "latestDisposition": {
+        "sourceRevision": 2,
+        "status": "settled",
+        "reason": "WO-218-D027 (docs/evidence/WO-218/decisions.md#wo-218-d027): Normalize innermost rendered links repeatedly until exposed outer links are resolved, preserving nested rendered image structure and line endings. VER-001 repair evidence: r26-nested-links 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "A renderer-visible nested destination remains unresolved or normalization ceases to be idempotent.",
+        "targets": [],
+        "at": "2026-10-20T15:11:36.873Z"
+      }
+    },
+    {
+      "id": "FUP-f82660a8edb23a4d",
+      "command": "npm run plan --silent -- followups --show FUP-f82660a8edb23a4d",
+      "sourceRevision": 1,
+      "decision": "WO-218-D028",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D028 (docs/evidence/WO-218/decisions.md#wo-218-d028): Name the owning launchpad when a target registration resolves there but no order is selected from the current launchpad. VER-001 repair evidence: r27-other-launchpad 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "Cross-launchpad selection semantics change.",
+        "targets": [],
+        "at": "2026-10-20T15:11:36.975Z"
+      }
+    },
+    {
+      "id": "FUP-fb2a080cc9b597d0",
+      "command": "npm run plan --silent -- followups --show FUP-fb2a080cc9b597d0",
+      "sourceRevision": 5,
+      "decision": "WO-218-D029",
+      "latestDisposition": {
+        "sourceRevision": 5,
+        "status": "declined",
+        "reason": "WO-218-D029 (docs/evidence/WO-218/decisions.md#wo-218-d029): Declined. Current harm is a missing per-repository removal record: a bare or unreadable metadata-only directory outside the preserved lanes can leave with its enclosing worktree unrecorded. The cited source records that limitation, and inventoryMaterial still derives candidates from Git directory entries while inspectNestedRepository requires readable .git metadata. NoOp retains this known discovery boundary. A general recursive walk must first define how to distinguish bare repositories from loose Git-object archives and handle unreadable or symlinked boundaries; inferring ownership or a HEAD from those shapes would add unsupported deletion records. Evidence read: Source read in full: docs/evidence/WO-188/decisions.md#wo-188-d003--item-1-a-nested-repository-outside-intake-is-scratch-unless-the-tracked-tree-declares-it-the-close-removes-it-and-records-its-head; docs/evidence/WO-188/decisions.md WO-188-D003; scripts/lib/paths.mjs inspectNestedRepository; scripts/lib/worktree-material.mjs inventoryMaterial; scripts/test-process-debt.mjs nested repository classification cases.. Reopen when: A bounded discovery and ownership contract identifies bare or unreadable material, defines permission and symlink boundaries, and supplies a truthful removal-record or preservation rule.",
+        "reopenWhen": "A bounded discovery and ownership contract identifies bare or unreadable material, defines permission and symlink boundaries, and supplies a truthful removal-record or preservation rule.",
+        "targets": [],
+        "at": "2026-10-20T05:26:19.373Z"
+      }
+    },
+    {
+      "id": "FUP-0674090dc3c1e64d",
+      "command": "npm run plan --silent -- followups --show FUP-0674090dc3c1e64d",
+      "sourceRevision": 1,
+      "decision": "WO-218-D030",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D030 (docs/evidence/WO-218/decisions.md#wo-218-d030): Retain synchronized stale-holder closure and preserve Git’s refusal to move an unchecked-out base during its rebase. Name the affected role and recovery for a stale writer lock, mask file-URL and colon-prefixed local paths, retain the merge-and-retry remedy for an unmerged target, and render large fenced bodies without spreading their units into an argument list. VER-001 repair evidence: r29-rebase-guard 0/1, r29-stale-lock 0/1, r29-local-paths 0/1, r29-large-fence 0/1, am-stale-holder 0/0, r29-unmerged-remedy 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "Any close-state recovery changes authority or deletes before both checkouts are judged.",
+        "targets": [],
+        "at": "2026-10-20T15:11:37.076Z"
+      }
+    },
+    {
+      "id": "FUP-d8297b92b32c8304",
+      "command": "npm run plan --silent -- followups --show FUP-d8297b92b32c8304",
+      "sourceRevision": 5,
+      "decision": "WO-218-D031",
+      "latestDisposition": {
+        "sourceRevision": 5,
+        "status": "settled",
+        "reason": "WO-218-D031 (docs/evidence/WO-218/decisions.md#wo-218-d031): Contain the starter refresh fixture's temporary worktrees under its own root. Decline automatic disposal of cleanup ownership after a mapped checkout moves or disappears. VER-001 repair evidence: r30-temp-containment 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "The operator supplies a replacement ownership proof for a moved or deleted physical checkout, or the cleanup receipt can verifiably follow its Git common directory without discarding retained work.",
+        "targets": [],
+        "at": "2026-10-20T15:11:37.183Z"
+      }
+    },
+    {
+      "id": "FUP-eee6c2fa1ef76215",
+      "command": "npm run plan --silent -- followups --show FUP-eee6c2fa1ef76215",
+      "sourceRevision": 1,
+      "decision": "WO-218-D032",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D032 (docs/evidence/WO-218/decisions.md#wo-218-d032): Keep current pending-preview, cleanup-remapping and receipt-provenance behavior; cover changed temporary roots and public-path redaction with the real refresh driver. VER-001 repair evidence: r31-temporary-retry 0/1, r31-cleanup-privacy 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "A preview mutates cleanup or an applied retry loses receipt provenance.",
+        "targets": [],
+        "at": "2026-10-20T15:11:37.288Z"
+      }
+    },
+    {
+      "id": "FUP-fd6bb22a13e561e4",
+      "command": "npm run plan --silent -- followups --show FUP-fd6bb22a13e561e4",
+      "sourceRevision": 1,
+      "decision": "WO-218-D033",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D033 (docs/evidence/WO-218/decisions.md#wo-218-d033): Move the README's status instruction after restoring the captured first-order records in the recovered worktree. VER-001 repair evidence: r32-recovery-instructions 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "The recovery sequence changes which step restores the control log.",
+        "targets": [],
+        "at": "2026-10-20T15:11:37.395Z"
+      }
+    },
+    {
+      "id": "FUP-3a4c476e4e8099bd",
+      "command": "npm run plan --silent -- followups --show FUP-3a4c476e4e8099bd",
+      "sourceRevision": 6,
+      "decision": "WO-218-D034",
+      "latestDisposition": {
+        "sourceRevision": 6,
+        "status": "settled",
+        "reason": "WO-218-D034 (docs/evidence/WO-218/decisions.md#wo-218-d034): Dispose every FINAL-001 finding as the accompanying twenty-row table records: repair admission, target publication/release, literal-rule ownership and starter sequencing; retain the earlier base-ignore, unreadable-output and deadline repairs. For F16, decline inference of a sole identical operator rule removed and re-added between observations; preserve explicit duplicates across interrupted removal and validate recorded ownership artifacts. FINAL-001 F1, F10, F11, F19 and F20 are already-met behaviors, with explicit passing baseline-module commands. Other fixes have individual isolated controls; the unobservable F16 boundary remains declined. VER-001 repair evidence: am-close-refusals 0/0, am-large-ignore 0/0, am-complete-bound 0/0, f1-02-origin 0/1, f1-03-package-closure 0/1, f1-04-profile 0/1, raw-git 0/1, raw-npm 0/1, f1-06-next-version 0/1, f1-07-ambiguous-push 0/1, f1-08-recorded-origin 0/1, f1-09-draft-commit 0/1, f1-12-body 0/1, f1-13-literal-rules 0/1, f1-15-order-rules 0/1, f1-14-rewrite-origin 0/1, f1-16-sidecar-path 0/1, f1-16-removal-journal 0/1, f1-17-receipt 0/1, f1-18-gh-preflight 0/1, f1-18-preview 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "Host settings expose stable rule identities or an observable ownership case bypasses validation.",
+        "targets": [],
+        "at": "2026-10-20T15:11:37.498Z"
+      }
+    },
+    {
+      "id": "FUP-f64c4d8ab41f49d4",
+      "command": "npm run plan --silent -- followups --show FUP-f64c4d8ab41f49d4",
+      "sourceRevision": 1,
+      "decision": "WO-218-D035",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D035 (docs/evidence/WO-218/decisions.md#wo-218-d035): Dispose every FINAL-002 finding with full relative paths, bounded streamed tree reads, pre-push sibling tag checks, safe disposable roots, main-bound helper admission, repository-bound draft reuse, partial-row gate composition and moved-head diagnostics. FINAL-002 F12 changes fixture adequacy: both runtime guards already existed, and separate removals now cause the intended negative cases to fail. VER-001 repair evidence: raw-gh 0/1, f2-08-gh-prefix 0/1, f2-01-path-names 0/1, f2-02-planned 0/1, f2-03-streaming 0/1, f2-04-tag-preflight 0/1, f2-05-symlink 0/1, f2-05-git-case 0/1, f2-06-registry 0/1, f2-09-control-root 0/1, f2-10-draft-origin 0/1, f2-11-partial-row 0/1, f2-12-selection 0/1, f2-12-executed 0/1, f2-13-moved-head 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "Any of the thirteen source findings recurs.",
+        "targets": [],
+        "at": "2026-10-20T15:11:37.609Z"
+      }
+    },
+    {
+      "id": "FUP-309c72a92ff260ce",
+      "command": "npm run plan --silent -- followups --show FUP-309c72a92ff260ce",
+      "sourceRevision": 1,
+      "decision": "WO-218-D036",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D036 (docs/evidence/WO-218/decisions.md#wo-218-d036): Validate literal host-rule settings and ownership before start creates a worktree or close deletes one; malformed input retains the existing checkouts. VER-001 repair evidence: r35-settings-preflight 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "A host-rule precondition first executes after worktree creation or deletion.",
+        "targets": [],
+        "at": "2026-10-20T15:11:37.714Z"
+      }
+    },
+    {
+      "id": "FUP-fb62261f3877a5cb",
+      "command": "npm run plan --silent -- followups --show FUP-fb62261f3877a5cb",
+      "sourceRevision": 1,
+      "decision": "WO-218-D037",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D037 (docs/evidence/WO-218/decisions.md#wo-218-d037): Keep generated per-order literal rules and ownership sidecars in the common Git ignore/exclude contract so a second start sees a clean main. VER-001 repair evidence: r36-rules-cleanliness 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "A generated host-rule path appears as untracked product input at a subsequent start.",
+        "targets": [],
+        "at": "2026-10-20T15:11:37.819Z"
+      }
+    },
+    {
+      "id": "FUP-cb738250f386b071",
+      "command": "npm run plan --silent -- followups --show FUP-cb738250f386b071",
+      "sourceRevision": 1,
+      "decision": "WO-218-D038",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D038 (docs/evidence/WO-218/decisions.md#wo-218-d038): Bound path-list overflow diagnostics and stream the fetched tree to retain only relevant paths instead of capturing the whole tree under the candidate ceiling. VER-001 repair evidence: r37-path-overflow 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "A large tracked tree or candidate list is emitted in full or bypasses the bounded refusal.",
+        "targets": [],
+        "at": "2026-10-20T15:11:37.924Z"
+      }
+    },
+    {
+      "id": "FUP-4c9a576536de99ff",
+      "command": "npm run plan --silent -- followups --show FUP-4c9a576536de99ff",
+      "sourceRevision": 1,
+      "decision": "WO-218-D039",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D039 (docs/evidence/WO-218/decisions.md#wo-218-d039): Preflight write/search access and every intermediate component of declared disposable roots in both checkouts before deleting either one. VER-001 repair evidence: r38-write-access 0/1, f2-05-git-case 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "Filesystem permission or symlink state can cause partial cleanup before refusal.",
+        "targets": [],
+        "at": "2026-10-20T15:11:38.029Z"
+      }
+    },
+    {
+      "id": "FUP-f32886b04703d3db",
+      "command": "npm run plan --silent -- followups --show FUP-f32886b04703d3db",
+      "sourceRevision": 1,
+      "decision": "WO-218-D040",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D040 (docs/evidence/WO-218/decisions.md#wo-218-d040): Aggregate known gate advisories while preserving null for unavailable observations; retain the already-current fetched-ignore and six-hour deadline behavior. VER-001 repair evidence: r39-null-observation 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "Advisory aggregation turns unavailable evidence into a known empty count.",
+        "targets": [],
+        "at": "2026-10-20T15:11:38.142Z"
+      }
+    },
+    {
+      "id": "FUP-3c5f5a2bdbe06c07",
+      "command": "npm run plan --silent -- followups --show FUP-3c5f5a2bdbe06c07",
+      "sourceRevision": 1,
+      "decision": "WO-218-D041",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D041 (docs/evidence/WO-218/decisions.md#wo-218-d041): Resolve moved verification/final-review paths through their recorded immutable target binding in JSON status and the current Markdown projection. VER-001 repair evidence: r40-moved-status 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "A moved report stops resolving or a replacement ref/current registration changes historical bytes.",
+        "targets": [],
+        "at": "2026-10-20T15:11:38.247Z"
+      }
+    },
+    {
+      "id": "FUP-47eb4d9bdf4cbfa1",
+      "command": "npm run plan --silent -- followups --show FUP-47eb4d9bdf4cbfa1",
+      "sourceRevision": 1,
+      "decision": "WO-218-D042",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D042 (docs/evidence/WO-218/decisions.md#wo-218-d042): Read historical dependency IDs from this instance's historicalWorkOrders configuration; core explicitly declares its two pre-control cases and fresh exports default to none. VER-001 repair evidence: r41-instance-history 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "An instance needs a richer historical-evidence schema than a list of order IDs.",
+        "targets": [],
+        "at": "2026-10-20T15:11:38.353Z"
+      }
+    },
+    {
+      "id": "FUP-98aeb43c543dfbaf",
+      "command": "npm run plan --silent -- followups --show FUP-98aeb43c543dfbaf",
+      "sourceRevision": 1,
+      "decision": "WO-218-D043",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D043 (docs/evidence/WO-218/decisions.md#wo-218-d043): Admit an optional gitmoji prefix before the existing conventional commit type, preserving all existing type and subject refusals. VER-001 repair evidence: r42-gitmoji 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "Conventional subject grammar or supported gitmoji notation changes.",
+        "targets": [],
+        "at": "2026-10-20T15:11:38.461Z"
+      }
+    },
+    {
+      "id": "FUP-806a8fccc51377b7",
+      "command": "npm run plan --silent -- followups --show FUP-806a8fccc51377b7",
+      "sourceRevision": 1,
+      "decision": "WO-218-D044",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D044 (docs/evidence/WO-218/decisions.md#wo-218-d044): Admit registration release.displayName using the launchpad's shape and 64-character limit, default to the registration ID, and print the title in preview, tag annotation and receipt without renaming old Releases. VER-001 repair evidence: r43-release-display 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "A new naming requirement affects tag identity or a previously published Release.",
+        "targets": [],
+        "at": "2026-10-20T15:11:38.569Z"
+      }
+    },
+    {
+      "id": "FUP-a9fdacb0bbcdb97a",
+      "command": "npm run plan --silent -- followups --show FUP-a9fdacb0bbcdb97a",
+      "sourceRevision": 1,
+      "decision": "WO-218-D045",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D045 (docs/evidence/WO-218/decisions.md#wo-218-d045): Exclude annotated Starter tags carrying Core commit provenance from instance local release baselines; retain reachable ordinary tags, and teach no-tags upstream fetch plus named non-tag preview refs. Local preparation excludes ordinary tags outside the subject’s ancestry as well as starter tags. Worktrees share tags; an unintegrated sibling release is not this subject’s baseline. This matches local surface checking; publication continues to observe origin. The separate r44-ancestral-local control proves the ordinary-tag boundary. VER-001 repair evidence: r44-starter-baseline 0/1, r44-ancestral-local 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "Starter tag provenance changes or an ordinary release is wrongly excluded.",
+        "targets": [],
+        "at": "2026-10-20T15:11:38.674Z"
+      }
+    },
+    {
+      "id": "FUP-4c243998cedd4597",
+      "command": "npm run plan --silent -- followups --show FUP-4c243998cedd4597",
+      "sourceRevision": 1,
+      "decision": "WO-218-D046",
+      "latestDisposition": {
+        "sourceRevision": 1,
+        "status": "settled",
+        "reason": "WO-218-D046 (docs/evidence/WO-218/decisions.md#wo-218-d046): Add baseDisposablePolicy judge-only while keeping delete as the default. Both policies judge all base material; only target output is deleted in judge-only, and tracked incoming collisions with retained ignored files refuse before either checkout changes. VER-001 repair evidence: r45-base-policy 0/1. Pairs are current implementation / isolated reversion; 0/0 is explicitly already met. Exact Preflight fixture commands, scope, results and source/output hashes are in docs/evidence/WO-218/repair-controls.json and repair-controls.md. The final gate evidence is in handoff.md.",
+        "reopenWhen": "Another update step can modify judge-only retained base output.",
+        "targets": [],
+        "at": "2026-10-20T15:11:38.777Z"
+      }
+    }
+  ]
+}

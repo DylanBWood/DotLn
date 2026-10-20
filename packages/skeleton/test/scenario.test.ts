@@ -332,6 +332,7 @@ test("WO-016 AC1 one typed reactor and its pure helpers own kernel decisions", a
     "verification.ts",
     "verification-fold.ts",
     "resident-state.ts",
+    "target-publication-policy.ts",
     "source-change-state.ts",
     "repair.ts",
     "review.ts",
@@ -355,7 +356,10 @@ test("WO-016 AC1 one typed reactor and its pure helpers own kernel decisions", a
       if (
         file !== "reactor.ts" &&
         !(decider === "evaluateCadence" && file === "presence-machine.ts") &&
-        !(decider === "authorize" && file === "resident-state.ts")
+        !(
+          decider === "authorize" &&
+          ["resident-state.ts", "target-publication-policy.ts"].includes(file)
+        )
       )
         assert.doesNotMatch(
           source,

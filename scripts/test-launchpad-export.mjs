@@ -30,6 +30,7 @@ import { tmpdir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { defaultRoots, loadConfig } from "./lib/config.mjs";
+import { describeTag, spawnGit } from "./lib/git.mjs";
 import { measureColdStarts } from "./lib/process-budget.mjs";
 import {
   BUILD_INPUTS,
@@ -1546,6 +1547,68 @@ test("WO-075 VER-001-F1: tracked build and emit bytes hidden by index flags refu
         git(source, ["update-index", `--no-${flag}`, "--", path]);
       }
     }
+});
+
+test("export refuses a replaced blob hidden by assume-unchanged before destination creation", () => {
+  const path = "packages/kernel/src/index.ts";
+  const touched = join(source, path);
+  const original = readFileSync(touched);
+  const object = git(source, ["rev-parse", `HEAD:${path}`]).stdout.trim();
+  git(source, ["update-index", "--assume-unchanged", "--", path]);
+  try {
+    writeFileSync(
+      touched,
+      Buffer.concat([
+        original,
+        Buffer.from("\nexport const replacementProbe = 1;\n"),
+      ]),
+    );
+    const replacement = git(source, ["hash-object", "-w", path]).stdout.trim();
+    git(source, ["replace", object, replacement]);
+    assert.equal(git(source, ["status", "--porcelain", "--", path]).stdout, "");
+    const target = join(scratch, "kit-replaced-blob");
+    const refused = runExport(target);
+    assert.equal(refused.status, 1, refused.stdout);
+    assert.match(refused.stderr, /work tree differs from HEAD/);
+    assert.ok(!existsSync(target));
+  } finally {
+    git(source, ["replace", "-d", object]);
+    writeFileSync(touched, original);
+    git(source, ["update-index", "--no-assume-unchanged", "--", path]);
+  }
+});
+
+test("describeTag names original objects: a replacement ref cannot redirect the exact or nearest tag", () => {
+  const repo = join(scratch, "describe-replace");
+  mkdirSync(repo, { recursive: true });
+  const identity = [
+    "-c",
+    "user.name=fixture",
+    "-c",
+    "user.email=fixture@example.invalid",
+  ];
+  const run = (args) => {
+    const result = git(repo, args);
+    assert.equal(result.status, 0, result.stderr);
+    return result.stdout.trim();
+  };
+  run(["init", "-q", "-b", "main"]);
+  run([...identity, "commit", "-q", "--allow-empty", "-m", "one"]);
+  run([...identity, "tag", "-a", "-m", "v1.0.0", "v1.0.0"]);
+  run([...identity, "commit", "-q", "--allow-empty", "-m", "two"]);
+  const two = run(["rev-parse", "HEAD"]);
+  run([...identity, "commit", "-q", "--allow-empty", "-m", "three"]);
+  run([...identity, "tag", "-a", "-m", "v2.0.0", "v2.0.0"]);
+  const three = run(["rev-parse", "HEAD"]);
+  run(["replace", two, three]);
+  // With the replacement in force Git's own answer for the commit changes;
+  // the provenance reader keeps naming the original object's nearest tag.
+  const grafted = spawnGit(
+    ["-C", repo, "describe", "--tags", "--abbrev=0", two],
+    { encoding: "utf8" },
+  );
+  assert.notEqual(String(grafted.stdout ?? "").trim(), "v1.0.0");
+  assert.deepEqual(describeTag(repo, two), { tag: null, nearest: "v1.0.0" });
 });
 
 test("WO-075 VER-001-F1: a missing tracked source hidden by skip-worktree refuses before any write", () => {

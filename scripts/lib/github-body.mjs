@@ -228,7 +228,6 @@ function* inlineLinks(masked, line, rendered) {
       destination: node.url ?? "",
       title,
     };
-    at = cursor;
   }
 }
 /** The installed Markdown parser is the oracle for what renders as a link and
@@ -334,7 +333,21 @@ export const absoluteBodyLinks = (markdown, { from, repository, revision }) => {
   const resolved = (destination, image) => {
     if (!repository?.selector || !revision) return null;
     const at = destination.indexOf("#");
-    const path = at >= 0 ? destination.slice(0, at) : destination;
+    const beforeFragment = at >= 0 ? destination.slice(0, at) : destination;
+    const queryAt = beforeFragment.indexOf("?");
+    const encodedPath =
+      queryAt >= 0 ? beforeFragment.slice(0, queryAt) : beforeFragment;
+    const query = queryAt >= 0 ? beforeFragment.slice(queryAt + 1) : "";
+    // Resolve encoded separators and dot segments before containment. Decode
+    // once, then encode each segment so an existing escape is not doubled.
+    let path;
+    try {
+      path = decodeURIComponent(
+        encodedPath.replace(/%(?![\da-f]{2})/giu, "%25"),
+      );
+    } catch {
+      return null;
+    }
     const fragment = at >= 0 ? destination.slice(at) : "";
     if (!path || path.startsWith("/")) return null;
     const parts = [];
@@ -345,36 +358,68 @@ export const absoluteBodyLinks = (markdown, { from, repository, revision }) => {
         parts.pop();
       } else parts.push(part);
     }
-    const encoded = encodeURI(parts.join("/")).replace(
-      /[()]/gu,
-      (character) => `%${character.charCodeAt(0).toString(16).toUpperCase()}`,
-    );
-    return `https://${repository.selector}/blob/${revision}/${encoded}${image ? "?raw=true" : ""}${fragment}`;
+    const encoded = parts
+      .map((part) => encodeURIComponent(part))
+      .join("/")
+      .replace(
+        /[()]/gu,
+        (character) => `%${character.charCodeAt(0).toString(16).toUpperCase()}`,
+      );
+    const parameters = image ? new URLSearchParams(query) : null;
+    if (parameters) parameters.set("raw", "true");
+    const renderedQuery = parameters ? parameters.toString() : query;
+    return `https://${repository.selector}/blob/${revision}/${encoded}${renderedQuery ? `?${renderedQuery}` : ""}${fragment}`;
   };
-  return proseLines(markdown, (line, masked, rendered) => {
-    const definition = rendered.definition && definitionPattern.exec(masked);
-    if (definition) {
-      const destination = rendered.definition.url ?? "";
-      if (!schemeless(destination)) return line;
-      const target = resolved(destination, false);
-      return target === null ? "" : `${definition[1]}${target}${definition[3]}`;
-    }
-    let output = "";
-    let cursor = 0;
-    for (const link of inlineLinks(masked, line, rendered.links)) {
-      output += line.slice(cursor, link.index);
-      const { image, text, destination, title } = link;
-      const original = line.slice(link.index, link.index + link.length);
-      if (!schemeless(destination)) output += original;
-      else {
-        const target = resolved(destination, image === "!");
-        output +=
-          target === null ? text : `${image}[${text}](${target}${title})`;
+  const pass = (source) =>
+    proseLines(source, (line, masked, rendered) => {
+      const definition = rendered.definition && definitionPattern.exec(masked);
+      if (definition) {
+        const destination = rendered.definition.url ?? "";
+        if (!schemeless(destination)) return line;
+        const target = resolved(destination, false);
+        return target === null
+          ? ""
+          : `${definition[1]}${target}${definition[3]}`;
       }
-      cursor = link.index + link.length;
-    }
-    return output + line.slice(cursor);
-  });
+      let output = "";
+      let cursor = 0;
+      const relative = [...inlineLinks(masked, line, rendered.links)].filter(
+        (link) => schemeless(link.destination),
+      );
+      // Rewrite inner rendered links first. Reparse after removal because an
+      // outer pair that was literal text can become a rendered link.
+      const leaves = relative.filter(
+        (link) =>
+          !relative.some(
+            (inner) =>
+              inner.index > link.index &&
+              inner.index < link.index + link.length,
+          ),
+      );
+      for (const link of leaves) {
+        output += line.slice(cursor, link.index);
+        const { image, text, destination, title } = link;
+        const original = line.slice(link.index, link.index + link.length);
+        if (!schemeless(destination)) output += original;
+        else {
+          const target = resolved(destination, image === "!");
+          output +=
+            target === null ? text : `${image}[${text}](${target}${title})`;
+        }
+        cursor = link.index + link.length;
+      }
+      return output + line.slice(cursor);
+    });
+  // A changing pass resolves or removes at least one original bracket pair.
+  // Unsupported multiline forms remain for the publication profile to refuse.
+  const limit = (markdown.match(/\[/gu) ?? []).length + 1;
+  let output = markdown;
+  for (let count = 0; count < limit; count++) {
+    const next = pass(output);
+    if (next === output) return output;
+    output = next;
+  }
+  return output;
 };
 export const githubBodyProfileFailures = (markdown, { links = false } = {}) => {
   const failures = [];

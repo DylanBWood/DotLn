@@ -1,0 +1,1355 @@
+{
+  "subject": "6b809fff4a6b533c8fe347d184f0a155f6557e4375af712666206ed5da1ee7b0",
+  "controls": [
+    {
+      "id": "r01-identity",
+      "rows": [
+        1
+      ],
+      "findings": [],
+      "suite": "configuration-root",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "reproduced": true
+    },
+    {
+      "id": "r02-ancestors",
+      "rows": [
+        2
+      ],
+      "findings": [],
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: The \"string\" argument must be of type string. Received type undefined (undefined)",
+      "reproduced": true
+    },
+    {
+      "id": "r05-stash-continuation",
+      "rows": [
+        5
+      ],
+      "findings": [],
+      "suite": "worktree-integration",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: error: usage: worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue [--stash-applied]]",
+      "reproduced": true
+    },
+    {
+      "id": "r06-navigation",
+      "rows": [
+        6,
+        22
+      ],
+      "findings": [],
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: The input was expected to not match the regular expression /Read\\[(?:executor\\|verifier\\|reviewer\\|release-close\\|plan",
+      "reproduced": true
+    },
+    {
+      "id": "r07-original-objects",
+      "rows": [
+        7
+      ],
+      "findings": [],
+      "suite": "launchpad",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Exported the DotLn kit of 99f43cb24408db36fd8e88c89d3e26cd559ba991 (tag v9.9.9-fixture) to <tmp>/dotln-launchpad-ooUA8",
+      "reproduced": true
+    },
+    {
+      "id": "r08-markers",
+      "rows": [
+        8
+      ],
+      "findings": [],
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "reproduced": true
+    },
+    {
+      "id": "r09-seed-class",
+      "rows": [
+        9
+      ],
+      "findings": [],
+      "suite": "configuration-root",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: file://<copy>/scripts/lib/config.mjs:157",
+      "reproduced": true
+    },
+    {
+      "id": "r10-link-hosts",
+      "rows": [
+        10
+      ],
+      "findings": [],
+      "suite": "configuration-root",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Missing expected exception.",
+      "reproduced": true
+    },
+    {
+      "id": "r11-configured-git",
+      "rows": [
+        11
+      ],
+      "findings": [],
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: permissions: git status --short",
+      "reproduced": true
+    },
+    {
+      "id": "r13-carried-receipt",
+      "rows": [
+        13
+      ],
+      "findings": [],
+      "suite": "siblings-fixtures",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "Error: captured pending receipt is missing from source and destination: docs/control/local/sibling-receipts/starter-fixture/2026-10-13T13-00-00-000Z.j",
+      "reproduced": true
+    },
+    {
+      "id": "r14-build-none",
+      "rows": [
+        14
+      ],
+      "findings": [],
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "reproduced": true
+    },
+    {
+      "id": "r15-encoded-links",
+      "rows": [
+        15
+      ],
+      "findings": [],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:",
+      "reproduced": true
+    },
+    {
+      "id": "r17-publication-declaration",
+      "rows": [
+        17
+      ],
+      "findings": [],
+      "suite": "configuration-root",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": 0,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: audience-status-index.md",
+      "reproduced": true
+    },
+    {
+      "id": "r18-moved-decisions",
+      "rows": [
+        18
+      ],
+      "findings": [],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "TypeError [Error]: Cannot read properties of undefined (reading 'targetRecord')",
+      "reproduced": true
+    },
+    {
+      "id": "r19-protected-retry",
+      "rows": [
+        19
+      ],
+      "findings": [],
+      "suite": "release",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": 0,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: disposable retry excludes protected intake",
+      "reproduced": true
+    },
+    {
+      "id": "r19-reserved-case",
+      "rows": [
+        19
+      ],
+      "findings": [],
+      "suite": "launchpad",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": 0,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Terms.txt",
+      "reproduced": true
+    },
+    {
+      "id": "r19-linked-remedy",
+      "rows": [
+        19
+      ],
+      "findings": [],
+      "suite": "worktree-integration",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": 0,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "reproduced": true
+    },
+    {
+      "id": "r19-advisory-first",
+      "rows": [
+        19
+      ],
+      "findings": [],
+      "suite": "worktree-integration",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": 0,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:",
+      "reproduced": true
+    },
+    {
+      "id": "r19-submodule-quote",
+      "rows": [
+        19
+      ],
+      "findings": [],
+      "suite": "release",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": 0,
+      "negative": 1,
+      "failure": "FAIL expected shell-quoted submodule remedy:",
+      "reproduced": true
+    },
+    {
+      "id": "r19-shared-git-primitives",
+      "rows": [
+        19
+      ],
+      "findings": [],
+      "suite": "worktree-integration",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": 0,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /import \\{[^}]*\\bnestedGitArgs\\b[^}]*\\} from \"(?:\\.\\/lib\\|\\.)\\/git\\.mjs",
+      "reproduced": true
+    },
+    {
+      "id": "r20-shared-composition",
+      "rows": [
+        20
+      ],
+      "findings": [],
+      "suite": "launchpad",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": 0,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: harnessInstructionBlock must retain its shared export",
+      "reproduced": true
+    },
+    {
+      "id": "r21-narrowing-grants",
+      "rows": [
+        21
+      ],
+      "findings": [],
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "reproduced": true
+    },
+    {
+      "id": "r23-moved-main",
+      "rows": [
+        23
+      ],
+      "findings": [],
+      "suite": "release",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "error: v0.2.1 already exists remotely for a different or non-annotated object",
+      "reproduced": true
+    },
+    {
+      "id": "r23-foreign-tag",
+      "rows": [
+        23
+      ],
+      "findings": [],
+      "suite": "release",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "foreign release tag accepted",
+      "reproduced": true
+    },
+    {
+      "id": "r23-serialized-close",
+      "rows": [
+        23
+      ],
+      "findings": [],
+      "suite": "release",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: both overlapping attempts remain recorded",
+      "reproduced": true
+    },
+    {
+      "id": "r25-stash-proof",
+      "rows": [
+        25
+      ],
+      "findings": [],
+      "suite": "worktree-integration",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "reproduced": true
+    },
+    {
+      "id": "r26-nested-links",
+      "rows": [
+        26
+      ],
+      "findings": [],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
+      "reproduced": true
+    },
+    {
+      "id": "r27-other-launchpad",
+      "rows": [
+        27
+      ],
+      "findings": [],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /registered to launchpad.*no order selected.*DOTLN_LAUNCHPAD=/u. Input:",
+      "reproduced": true
+    },
+    {
+      "id": "r29-rebase-guard",
+      "rows": [
+        29
+      ],
+      "findings": [],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected \"actual\" to be strictly unequal to: 0",
+      "reproduced": true
+    },
+    {
+      "id": "r29-stale-lock",
+      "rows": [
+        29
+      ],
+      "findings": [],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /target clone base main: writer transition lock requires inspection; so",
+      "reproduced": true
+    },
+    {
+      "id": "r29-local-paths",
+      "rows": [
+        29
+      ],
+      "findings": [],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "reproduced": true
+    },
+    {
+      "id": "r29-large-fence",
+      "rows": [
+        29
+      ],
+      "findings": [],
+      "suite": "outward-lint",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "RangeError [Error]: Maximum call stack size exceeded",
+      "reproduced": true
+    },
+    {
+      "id": "r32-recovery-instructions",
+      "rows": [
+        32
+      ],
+      "findings": [],
+      "suite": "launchpad-planning",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: the recorded phase is checked after restoring the saved stash",
+      "reproduced": true
+    },
+    {
+      "id": "r35-settings-preflight",
+      "rows": [
+        35
+      ],
+      "findings": [],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "reproduced": true
+    },
+    {
+      "id": "r36-rules-cleanliness",
+      "rows": [
+        36
+      ],
+      "findings": [],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: the first order's owned rules leave main clean",
+      "reproduced": true
+    },
+    {
+      "id": "r37-path-overflow",
+      "rows": [
+        37
+      ],
+      "findings": [],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: file://<copy>/scripts/lib/git.mjs:145",
+      "reproduced": true
+    },
+    {
+      "id": "r38-write-access",
+      "rows": [
+        38
+      ],
+      "findings": [],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /node_modules\\/deep needs write, read and search access/u. Input:",
+      "reproduced": true
+    },
+    {
+      "id": "r39-null-observation",
+      "rows": [
+        39
+      ],
+      "findings": [],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": 0,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
+      "reproduced": true
+    },
+    {
+      "id": "r40-moved-status",
+      "rows": [
+        40
+      ],
+      "findings": [],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "TypeError [Error]: Cannot read properties of undefined (reading 'commit')",
+      "reproduced": true
+    },
+    {
+      "id": "r41-instance-history",
+      "rows": [
+        41
+      ],
+      "findings": [],
+      "suite": "work-orders-fixtures",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "reproduced": true
+    },
+    {
+      "id": "r42-gitmoji",
+      "rows": [
+        42
+      ],
+      "findings": [],
+      "suite": "outward-lint",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
+      "reproduced": true
+    },
+    {
+      "id": "r43-release-display",
+      "rows": [
+        43
+      ],
+      "findings": [],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /title Fixture Product v0\\.1\\.0/u. Input:",
+      "reproduced": true
+    },
+    {
+      "id": "r44-starter-baseline",
+      "rows": [
+        44
+      ],
+      "findings": [],
+      "suite": "launchpad-planning",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": 0,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: a Starter provenance tag does not retime the instance release",
+      "reproduced": true
+    },
+    {
+      "id": "r45-base-policy",
+      "rows": [
+        45
+      ],
+      "findings": [],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "reproduced": true
+    },
+    {
+      "id": "am-close-refusals",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F10",
+        "FINAL-001 F11",
+        "FINAL-001 F19"
+      ],
+      "suite": "target-worktree",
+      "mode": "already-met-at-base",
+      "recordedNegative": 0,
+      "positive": 0,
+      "negative": 0,
+      "failure": "",
+      "reproduced": true
+    },
+    {
+      "id": "am-large-ignore",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F1"
+      ],
+      "suite": "target-worktree",
+      "mode": "already-met-at-base",
+      "recordedNegative": 0,
+      "positive": 0,
+      "negative": 0,
+      "failure": "",
+      "reproduced": true
+    },
+    {
+      "id": "am-complete-bound",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F20"
+      ],
+      "suite": "harness-fixtures",
+      "mode": "already-met-at-base",
+      "recordedNegative": 0,
+      "positive": 0,
+      "negative": 0,
+      "failure": "",
+      "reproduced": true
+    },
+    {
+      "id": "f1-02-origin",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F2"
+      ],
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: node <tmp>/dotln-fixture-temporary-oiCjiq/dotln-harness-test-wdsIvZ/scripts/worktree.mjs publish WO-999 --target-workt",
+      "reproduced": true
+    },
+    {
+      "id": "f1-03-package-closure",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F3"
+      ],
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: node <tmp>/dotln-fixture-temporary-538y6x/dotln-harness-test-YvACUC/scripts/worktree.mjs publish WO-999 --target-workt",
+      "reproduced": true
+    },
+    {
+      "id": "f1-04-profile",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F4"
+      ],
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: node <tmp>/dotln-fixture-temporary-hWOrWm/dotln-harness-test-U9bCoK/scripts/worktree.mjs publish WO-999 --target-workt",
+      "reproduced": true
+    },
+    {
+      "id": "raw-git",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F5"
+      ],
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: git -C <tmp>/dotln-fixture-temporary-tTRY00/dotln-wo221-target-AcOtMG/Targets/clone-wo999 push -u origin wo-999",
+      "reproduced": true
+    },
+    {
+      "id": "raw-gh",
+      "rows": [
+        34
+      ],
+      "findings": [
+        "FINAL-002 F7"
+      ],
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: gh pr view 7",
+      "reproduced": true
+    },
+    {
+      "id": "raw-npm",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F3"
+      ],
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: npm run worktree -- publish WO-999 --target-worktree --draft --branch feat/x --title \"feat: x\" --body-file b.md",
+      "reproduced": true
+    },
+    {
+      "id": "f1-06-next-version",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F6"
+      ],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Target release target: preview; tag v0\\.1\\.0/u. Input:",
+      "reproduced": true
+    },
+    {
+      "id": "f1-07-ambiguous-push",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F7"
+      ],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "reproduced": true
+    },
+    {
+      "id": "f1-08-recorded-origin",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F8"
+      ],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected \"actual\" to be strictly unequal to: 0",
+      "reproduced": true
+    },
+    {
+      "id": "f1-09-draft-commit",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F9"
+      ],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "reproduced": true
+    },
+    {
+      "id": "f1-12-body",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F12"
+      ],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected \"actual\" to be strictly unequal to: 0",
+      "reproduced": true
+    },
+    {
+      "id": "f1-13-literal-rules",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F13"
+      ],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:",
+      "reproduced": true
+    },
+    {
+      "id": "f1-15-order-rules",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F15"
+      ],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: closing the first order preserves every rule needed by the second",
+      "reproduced": true
+    },
+    {
+      "id": "f2-08-gh-prefix",
+      "rows": [
+        34
+      ],
+      "findings": [
+        "FINAL-002 F8"
+      ],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:",
+      "reproduced": true
+    },
+    {
+      "id": "f1-14-rewrite-origin",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F14"
+      ],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected \"actual\" to be strictly unequal to: 0",
+      "reproduced": true
+    },
+    {
+      "id": "f1-16-sidecar-path",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F16"
+      ],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Missing expected exception.",
+      "reproduced": true
+    },
+    {
+      "id": "f1-16-removal-journal",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F16"
+      ],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: error: .claude/settings.local.json allow rules changed during removal; preserve the current settings and inspect recor",
+      "reproduced": true
+    },
+    {
+      "id": "f1-17-receipt",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F17"
+      ],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Target release target: partially-published/u. Input:",
+      "reproduced": true
+    },
+    {
+      "id": "f1-18-gh-preflight",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F18"
+      ],
+      "suite": "launchpad",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: authentication failure must precede every remote write",
+      "reproduced": true
+    },
+    {
+      "id": "f1-18-preview",
+      "rows": [
+        33
+      ],
+      "findings": [
+        "FINAL-001 F18"
+      ],
+      "suite": "launchpad",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
+      "reproduced": true
+    },
+    {
+      "id": "f2-01-path-names",
+      "rows": [
+        34
+      ],
+      "findings": [
+        "FINAL-002 F1"
+      ],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /nested\\/\\.env/u. Input:",
+      "reproduced": true
+    },
+    {
+      "id": "f2-02-planned",
+      "rows": [
+        34
+      ],
+      "findings": [
+        "FINAL-002 F2"
+      ],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": 0,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /disposable output planned for deletion:[^\\n]*base \\.angular \\(1\\)/u. I",
+      "reproduced": true
+    },
+    {
+      "id": "f2-03-streaming",
+      "rows": [
+        34
+      ],
+      "findings": [
+        "FINAL-002 F3"
+      ],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: file://<copy>/scripts/lib/git.mjs:145",
+      "reproduced": true
+    },
+    {
+      "id": "f2-04-tag-preflight",
+      "rows": [
+        34
+      ],
+      "findings": [
+        "FINAL-002 F4"
+      ],
+      "suite": "launchpad",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: a conflicting release tag must refuse before the refresh push",
+      "reproduced": true
+    },
+    {
+      "id": "f2-05-symlink",
+      "rows": [
+        34
+      ],
+      "findings": [
+        "FINAL-002 F5"
+      ],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected \"actual\" to be strictly unequal to: 0",
+      "reproduced": true
+    },
+    {
+      "id": "f2-05-git-case",
+      "rows": [
+        34,
+        38
+      ],
+      "findings": [
+        "FINAL-002 F5"
+      ],
+      "suite": "configuration-root",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Missing expected exception.",
+      "reproduced": true
+    },
+    {
+      "id": "f2-06-registry",
+      "rows": [
+        34
+      ],
+      "findings": [
+        "FINAL-002 F6"
+      ],
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: node <tmp>/dotln-fixture-temporary-b3I7yK/dotln-harness-test-66twy5/scripts/worktree.mjs publish WO-999 --target-workt",
+      "reproduced": true
+    },
+    {
+      "id": "f2-09-control-root",
+      "rows": [
+        34
+      ],
+      "findings": [
+        "FINAL-002 F9"
+      ],
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: node <tmp>/dotln-fixture-temporary-HJs5Un/dotln-harness-test-CBhcB0/scripts/worktree.mjs publish WO-999 --target-workt",
+      "reproduced": true
+    },
+    {
+      "id": "f2-10-draft-origin",
+      "rows": [
+        34
+      ],
+      "findings": [
+        "FINAL-002 F10"
+      ],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected \"actual\" to be strictly unequal to: 0",
+      "reproduced": true
+    },
+    {
+      "id": "f2-11-partial-row",
+      "rows": [
+        34
+      ],
+      "findings": [
+        "FINAL-002 F11"
+      ],
+      "suite": "resume",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: final-review-result pass --harness human --harness-version not-applicable --model human --effort unknown --source oper",
+      "reproduced": true
+    },
+    {
+      "id": "f2-12-selection",
+      "rows": [
+        34
+      ],
+      "findings": [
+        "FINAL-002 F12"
+      ],
+      "suite": "resume",
+      "mode": "adequacy-control-of-existing-guard",
+      "recordedNegative": 1,
+      "positive": 0,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Recorded final review pass; commit the reviewed state, then run npm run worktree -- publish WO-179 --title \"<title>\" -",
+      "reproduced": true
+    },
+    {
+      "id": "f2-12-executed",
+      "rows": [
+        34
+      ],
+      "findings": [
+        "FINAL-002 F12"
+      ],
+      "suite": "resume",
+      "mode": "adequacy-control-of-existing-guard",
+      "recordedNegative": 1,
+      "positive": 0,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Recorded final review pass; commit the reviewed state, then run npm run worktree -- publish WO-179 --title \"<title>\" -",
+      "reproduced": true
+    },
+    {
+      "id": "f2-13-moved-head",
+      "rows": [
+        34
+      ],
+      "findings": [
+        "FINAL-002 F13"
+      ],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: error: target publish refused: remote draft branch feat/reviewed-behavior for pull request #7 moved from the recorded ",
+      "reproduced": true
+    },
+    {
+      "id": "am-delayed-stub",
+      "rows": [
+        5
+      ],
+      "findings": [],
+      "suite": "worktree-integration",
+      "mode": "already-met-at-base",
+      "recordedNegative": 0,
+      "positive": 0,
+      "negative": 0,
+      "failure": "",
+      "reproduced": true
+    },
+    {
+      "id": "am-real-writer",
+      "rows": [
+        12
+      ],
+      "findings": [],
+      "suite": "release",
+      "mode": "already-met-at-base",
+      "recordedNegative": 0,
+      "positive": 0,
+      "negative": 0,
+      "failure": "",
+      "reproduced": true
+    },
+    {
+      "id": "am-stale-holder",
+      "rows": [
+        29
+      ],
+      "findings": [],
+      "suite": "target-worktree",
+      "mode": "already-met-at-base",
+      "recordedNegative": 0,
+      "positive": 0,
+      "negative": 0,
+      "failure": "",
+      "reproduced": true
+    },
+    {
+      "id": "r29-unmerged-remedy",
+      "rows": [
+        29
+      ],
+      "findings": [],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /target branch wo-999 is not merged into origin\\/main; source retained/",
+      "reproduced": true
+    },
+    {
+      "id": "am-nested-whitespace",
+      "rows": [
+        19
+      ],
+      "findings": [],
+      "suite": "worktree-integration",
+      "mode": "already-met-at-base",
+      "recordedNegative": 0,
+      "positive": 0,
+      "negative": 0,
+      "failure": "",
+      "reproduced": true
+    },
+    {
+      "id": "r18-commit-lint",
+      "rows": [
+        18
+      ],
+      "findings": [],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected \"actual\" to be strictly unequal to: 0",
+      "reproduced": true
+    },
+    {
+      "id": "r18-planning-body",
+      "rows": [
+        18
+      ],
+      "findings": [],
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: Expected \"actual\" to be strictly unequal to: 0",
+      "reproduced": true
+    },
+    {
+      "id": "r30-temp-containment",
+      "rows": [
+        30
+      ],
+      "findings": [],
+      "suite": "launchpad",
+      "mode": "fixture-containment-control",
+      "recordedNegative": 1,
+      "positive": 0,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: refresh scratch remains inside the fixture's declared temporary parent",
+      "reproduced": true
+    },
+    {
+      "id": "r31-temporary-retry",
+      "rows": [
+        31
+      ],
+      "findings": [],
+      "suite": "launchpad",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: {\"sibling\":\"starter-fixture\",\"outcome\":\"refused\",\"firstExport\":false,\"before\":null,\"after\":null,\"tag\":\"v10.1.0\",\"coreC",
+      "reproduced": true
+    },
+    {
+      "id": "r31-cleanup-privacy",
+      "rows": [
+        31
+      ],
+      "findings": [],
+      "suite": "launchpad",
+      "mode": "adequacy-control-of-existing-guard",
+      "recordedNegative": 1,
+      "positive": 0,
+      "negative": 1,
+      "failure": "AssertionError [ERR_ASSERTION]: no private path or source excerpt in refusal",
+      "reproduced": true
+    },
+    {
+      "id": "r44-ancestral-local",
+      "rows": [
+        44
+      ],
+      "findings": [],
+      "suite": "release",
+      "mode": "isolated-reversion",
+      "recordedNegative": 1,
+      "positive": null,
+      "negative": 1,
+      "failure": "FAIL unintegrated ordinary tag changed the release baseline:",
+      "reproduced": true
+    }
+  ]
+}

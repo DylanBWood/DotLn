@@ -313,6 +313,11 @@ function reconcile(
   // The inventory names every nested repository and its disposition; a caller
   // that passes none gets the worktree's own.
   material ??= source === main ? [] : inventoryMaterial(source);
+  const linked = material.filter((row) => row.linked);
+  if (linked.length)
+    throw new Error(
+      `Nested linked worktree material is preserved: ${linked.map((row) => `${row.path}: ${row.remedy}`).join("; ")}`,
+    );
   const planned =
     source === main
       ? { files: [], directories: [], nestedRepositories: [] }

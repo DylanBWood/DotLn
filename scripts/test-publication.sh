@@ -60,6 +60,20 @@ git -C "$fixture_repo" add docs/product/00-fixture.md
 git -C "$fixture_repo" commit -qm 'fixture source'
 revision="$(git -C "$fixture_repo" rev-parse HEAD)"
 
+(cd "$fixture_repo" && "$node_bin" scripts/check-publication.mjs) >"$test_root/undeclared.txt"
+grep -Fq 'no editions declared' "$test_root/undeclared.txt"
+if (cd "$fixture_repo" && "$node_bin" scripts/check-publication.mjs --expect-stale) >"$test_root/no-stale.txt" 2>&1; then
+  printf 'undeclared publication claimed stale\n' >&2; exit 1
+fi
+for declaration in audience-status-index.md base-outline.md dual-voice-sample.md everyday-ai-user-toc.md software-engineer-toc.md; do
+  printf 'declared\n' >"$fixture_repo/docs/publication/$declaration"
+  if (cd "$fixture_repo" && "$node_bin" scripts/check-publication.mjs) >"$test_root/missing-editions.txt" 2>&1; then
+    printf 'missing declared editions passed\n' >&2; exit 1
+  fi
+  grep -Fq 'declared editions missing:' "$test_root/missing-editions.txt"
+  rm -- "$fixture_repo/docs/publication/$declaration"
+done
+
 {
   printf '%s\n' \
     '# Audience and status index' \
@@ -177,6 +191,10 @@ cp -- "$test_root/index.backup" "$index_path"
 ' "$index_path"
 expect_failure 'label does not match source heading'
 cp -- "$test_root/index.backup" "$index_path"
+
+mv -- "$index_path" "$test_root/index.moved"
+expect_failure 'declared publication missing: docs/publication/audience-status-index.md'
+mv -- "$test_root/index.moved" "$index_path"
 
 expect_failure 'expected every edition to be stale' --expect-stale
 product_path="$fixture_repo/docs/product/00-fixture.md"

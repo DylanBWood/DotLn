@@ -513,16 +513,23 @@ export async function integrationTestCommand(root, before) {
 
 export async function integrateWorktree(root, workOrder, args = []) {
   let backup,
-    continuation = false;
+    continuation = false,
+    stashApplied = false;
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--continue" && !continuation) continuation = true;
+    else if (args[i] === "--stash-applied" && !stashApplied)
+      stashApplied = true;
     else if (args[i] === "--intake-backup" && !backup && args[i + 1])
       backup = resolve(root, args[++i]);
     else
       throw new Error(
-        "usage: worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue]",
+        "usage: worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue [--stash-applied]]",
       );
   }
+  if (stashApplied && !continuation)
+    throw new Error(
+      "--stash-applied requires --continue after inspecting the retained stash and resolving its application",
+    );
   root = realpathSync(root);
   if (
     !/^WO-\d{3}$/.test(workOrder ?? "") ||
@@ -545,6 +552,10 @@ export async function integrateWorktree(root, workOrder, args = []) {
     (!previous || previous.complete || previous.workOrder !== workOrder)
   )
     throw new Error("no pending integration for this worktree");
+  if (stashApplied && previous.stage !== "applying")
+    throw new Error(
+      "--stash-applied requires an interrupted stash application",
+    );
   const { activeGateRuns } = await import("./gate-evidence.mjs");
   if (activeGateRuns(root).length)
     throw new Error("integration refuses during a live test gate");
@@ -677,6 +688,35 @@ export async function integrateWorktree(root, workOrder, args = []) {
     // Stash application meets the same entry the push cannot save.
     refuseIntentToAdd();
     receipt = previous;
+    if (stashApplied) {
+      const unresolved = receipt.stash
+        ? unrestoredUntracked(root, receipt.stash).filter(
+            (path) =>
+              gitResult(root, ["diff", "--exit-code", "--", path]).status !==
+                0 ||
+              gitResult(root, ["ls-files", "--error-unmatch", "--", path])
+                .status !== 0,
+          )
+        : [];
+      if (conflicts(root).length || unresolved.length)
+        throw new Error(
+          "resolve and stage the retained stash's conflicts and restore its untracked files before --stash-applied",
+        );
+      if (
+        gitResult(root, [
+          "merge-base",
+          "--is-ancestor",
+          receipt.upstream,
+          "HEAD",
+        ]).status !== 0
+      )
+        throw new Error(
+          "recorded upstream is not integrated; recovery retained",
+        );
+      receipt.stage = "applied";
+      receipt.stashApplication = "actor-attested after interrupted application";
+      save();
+    }
     // --continue is the actor's explicit resolution boundary for a collision
     // that Git cannot express as unmerged stages (untracked stash content).
     if (receipt.untrackedConflicts?.length) {
@@ -820,7 +860,7 @@ export async function integrateWorktree(root, workOrder, args = []) {
         !receipt.untrackedConflicts.length
       )
         throw new Error(
-          `stash apply failed; retained ${receipt.stash}; inspect recovery before continuing: ${applied.stderr || applied.stdout}`,
+          `stash apply failed; retained ${receipt.stash}; inspect git stash show --include-untracked ${receipt.stash}, finish its application and stage resolutions, then run npm run worktree -- integrate ${workOrder} --continue --stash-applied: ${applied.stderr || applied.stdout}`,
         );
     }
     receipt.stage = "applied";
@@ -829,7 +869,7 @@ export async function integrateWorktree(root, workOrder, args = []) {
   }
   if (receipt.stage === "applying")
     throw new Error(
-      "interrupted stash application; inspect retained recovery before continuing",
+      `interrupted stash application; inspect git stash show --include-untracked ${receipt.stash}, finish its application and stage resolutions, then run npm run worktree -- integrate ${workOrder} --continue --stash-applied; the checkpoint and stash stay retained`,
     );
   receipt.authored = [
     ...new Set([

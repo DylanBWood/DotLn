@@ -226,9 +226,14 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
         assert.deepEqual(releases(), {});
         rmSync(join(f.clone, file.split("/")[0]), { recursive: true });
       }
+      // Another order's tag on this merged tip is a baseline, never a tag
+      // owned by this close. A preview must not reserve its proposed name.
+      git(merger, "tag", "-a", "v0.0.0", "-m", "Earlier target order");
+      git(merger, "push", "-q", "origin", "refs/tags/v0.0.0");
       const dry = f.ok(close("--dry-run"));
       assert.match(dry, /would-remove/u);
       assert.match(dry, /Target release target: preview; tag v0\.1\.0/u);
+      assert.match(dry, /title target v0\.1\.0/u);
       assert.match(
         dry,
         /disposable output would be deleted: \.angular \(1\), \.nx \(1\), dist \(1\), node_modules \(1\), base \.angular \(1\)/u,
@@ -236,6 +241,12 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
       assert.ok(existsSync(join(f.target, "dist/out.js")));
       assert.ok(existsSync(strayCache));
       assert.equal(git(f.clone, "rev-parse", "HEAD"), baseBefore);
+      f.config.repositories.target.release.displayName = "Fixture Product";
+      write(f.main, "dotln.config.json", JSON.stringify(f.config));
+      git(f.main, "add", "dotln.config.json");
+      git(f.main, "commit", "-qm", "Name the registered target release");
+      git(f.main, "push", "-q", "origin", "main");
+      assert.match(f.ok(close("--dry-run")), /title Fixture Product v0\.1\.0/u);
       // A stray .env in the target refuses once before either checkout's
       // output is deleted or the base moves.
       write(f.target, ".env", "SECRET=1\n");
@@ -246,6 +257,11 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
         /target has undeclared ignored material; source retained: \.env\. Declare it disposable in the registration or remove it; regenerable build output is deleted at close, never moved to scratch\. Then rerun/u,
       );
       assert.equal((refusedTarget.stderr.match(/\.env/gu) ?? []).length, 1);
+      assert.match(
+        refusedTarget.stdout,
+        /disposable output planned for deletion:[^\n]*base \.angular \(1\)/u,
+      );
+      assert.doesNotMatch(refusedTarget.stdout, /disposable output deleted:/u);
       assert.ok(existsSync(join(f.target, "node_modules/pkg/index.js")));
       assert.ok(existsSync(strayCache));
       assert.equal(git(f.clone, "rev-parse", "HEAD"), baseBefore);
@@ -267,7 +283,45 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
         taken.stderr,
         /target release tag v0\.1\.0 exists on github\.com\/dotln-fixture\/target at [0-9a-f]{40}, not the merged main/u,
       );
+      assert.ok(
+        existsSync(f.target),
+        "release preconditions precede target deletion",
+      );
+      assert.ok(existsSync(join(f.target, "dist/out.js")));
+      assert.match(taken.stdout, /disposable output planned for deletion:/u);
+      assert.doesNotMatch(taken.stdout, /disposable output deleted:/u);
       git(merger, "push", "-q", "origin", ":refs/tags/v0.1.0");
+      // A transport can report failure after the remote has accepted the tag.
+      // The retained attempt must still own that name and commit.
+      const gitFile = join(forge.bin, "git");
+      const gitOriginal = readFileSync(gitFile, "utf8");
+      writeFileSync(
+        gitFile,
+        gitOriginal.replaceAll(
+          "process.exit(result.status ?? 1);",
+          "if (result.status === 0 && original.includes('push') && original.some(word => word.includes('refs/tags/'))) { console.error('fixture tag push accepted then disconnected'); process.exit(78); } process.exit(result.status ?? 1);",
+        ),
+      );
+      const disconnected = close("--publish");
+      writeFileSync(gitFile, gitOriginal);
+      assert.notEqual(disconnected.status, 0);
+      assert.match(
+        disconnected.stderr,
+        /fixture tag push accepted then disconnected/u,
+      );
+      const attemptFile = docPath(
+        f.main,
+        "control",
+        "local/retained/WO-999/release-close.json",
+      );
+      const attempted = JSON.parse(readFileSync(attemptFile, "utf8"));
+      assert.equal(attempted.publication.target.tagOutcome, "published");
+      assert.equal(attempted.publication.target.tag, "v0.1.0");
+      assert.equal(
+        git(join(f.base, "target.git"), "rev-parse", "v0.1.0^{commit}"),
+        attempted.publication.target.commit,
+      );
+      assert.deepEqual(releases(), {});
       // A Release failure after tag publication retains the tag's commit for
       // retries. Moving that tag must not create a Release or finish cleanup.
       const ghFile = join(forge.bin, "gh");
@@ -285,9 +339,31 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
         interrupted.stderr,
         /tag published; GitHub Release not created/u,
       );
+      assert.match(
+        interrupted.stdout,
+        /Target release target: partially-published/u,
+      );
+      assert.match(interrupted.stdout, /blocker \(publication\)/u);
       writeFileSync(ghFile, ghOriginal);
       const remote = join(f.base, "target.git");
       const merged = git(remote, "rev-parse", "main");
+      const originConfig = readFileSync(f.env.GIT_CONFIG_GLOBAL, "utf8");
+      const foreignUrl = "https://github.com/dotln-fixture/another.git";
+      writeFileSync(
+        f.env.GIT_CONFIG_GLOBAL,
+        `${originConfig}\n[url "${remote}"]\n\tinsteadOf = ${foreignUrl}\n`,
+      );
+      git(f.clone, "config", "remote.origin.pushurl", foreignUrl);
+      const foreignOrigin = close("--publish");
+      assert.notEqual(foreignOrigin.status, 0);
+      assert.match(
+        foreignOrigin.stderr,
+        /target release origin differs from the recorded origin/u,
+      );
+      assert.deepEqual(releases(), {});
+      assert.equal(git(remote, "rev-parse", "v0.1.0^{commit}"), merged);
+      git(f.clone, "config", "--unset", "remote.origin.pushurl");
+      writeFileSync(f.env.GIT_CONFIG_GLOBAL, originConfig);
       git(remote, "update-ref", "refs/tags/v0.1.0", baseBefore);
       const moved = close("--publish");
       assert.notEqual(moved.status, 0);
@@ -295,6 +371,11 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
       assert.equal(git(remote, "rev-parse", "v0.1.0^{commit}"), baseBefore);
       assert.deepEqual(releases(), {});
       assert.ok(existsSync(f.orderRoot));
+      for (let attempt = 0; attempt < 9; attempt++) {
+        const preview = close("--dry-run");
+        assert.notEqual(preview.status, 0);
+        assert.match(preview.stderr, /not the recorded release commit/u);
+      }
       // Advancing the base and removing the tag cannot retarget the retry:
       // restore the recorded commit, then finish the one pending Release.
       git(merger, "switch", "-q", "main");
@@ -336,7 +417,14 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
       assert.equal(git(remote, "rev-parse", "v0.1.0^{commit}"), merged);
       assert.equal(git(remote, "cat-file", "-t", "v0.1.0"), "tag");
       const forgeState = JSON.parse(readFileSync(forge.state, "utf8"));
-      assert.equal(forgeState.releases["v0.1.0"].name, "target v0.1.0");
+      assert.equal(
+        forgeState.releases["v0.1.0"].name,
+        "Fixture Product v0.1.0",
+      );
+      assert.match(
+        git(remote, "for-each-ref", "--format=%(contents)", "refs/tags/v0.1.0"),
+        /^Fixture Product v0\.1\.0\n/u,
+      );
       assert.equal(
         forgeState.releases["v0.1.0"].repo,
         "github.com/dotln-fixture/target",
@@ -362,9 +450,11 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
         tag: "v0.1.0",
         release: "created",
         classification: "minor",
-        latest: null,
+        latest: "v0.0.0",
         commit: merged,
         tagOutcome: "published",
+        title: "Fixture Product v0.1.0",
+        origin: "github.com/dotln-fixture/target",
       });
       assert.deepEqual(record.targetCleanup.disposable, {
         target: [
@@ -412,56 +502,40 @@ test("WO-221 a registration without a release policy closes with no-release and 
     f.mapClone();
     const started = f.start();
     assert.match(started, /Codex workspace-write session: codex --add-dir/u);
-    assert.match(
-      started,
-      new RegExp(
-        `copilot --allow-tool 'shell\\(git -C ${f.target.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&")} push -u origin wo-999\\)'`,
-        "u",
-      ),
-    );
-    assert.match(
-      started,
-      /--allow-tool 'shell\(gh pr create --draft --repo github\.com\/dotln-fixture\/target:\*\)'/u,
-    );
-    assert.match(
-      started,
-      /--allow-tool 'shell\(npm run worktree -- publish WO-999 --target-worktree:\*\)'/u,
-    );
-    assert.doesNotMatch(started, /push:\*/u);
+    assert.match(started, /copilot --allow-tool 'shell\(/u);
+    assert.ok(started.includes(`${f.orderRoot}/scripts/worktree.mjs`));
+    assert.doesNotMatch(started, /shell\(git|shell\(gh|shell\(npm/u);
     assert.match(started, /Literal rules written for WO-999/u);
     const local = JSON.parse(
       readFileSync(join(f.main, ".claude/settings.local.json"), "utf8"),
     );
     const rules = local.permissions.allow;
-    assert.ok(rules.includes(`Bash(git -C ${f.target} push -u origin wo-999)`));
     assert.ok(
       rules.includes(
-        "Bash(gh pr create --draft --repo github.com/dotln-fixture/target *)",
+        `Bash(${process.execPath} ${f.orderRoot}/scripts/worktree.mjs publish WO-999 --target-worktree *)`,
       ),
     );
-    assert.ok(rules.every((rule) => !/elsewhere|other/u.test(rule)));
-    assert.ok(
-      rules.every((rule) => !rule.includes("push") || rule.includes(f.target)),
+    assert.deepEqual(
+      rules.filter((rule) => rule.startsWith("Bash(gh")),
+      operatorRules.filter((rule) => rule.startsWith("Bash(gh")),
     );
     const codex = readFileSync(
       join(f.main, ".codex/rules/dotln-WO-999.rules"),
       "utf8",
     );
     assert.match(codex, /^# dotln:WO-999:start$/mu);
-    assert.match(
-      codex,
-      new RegExp(
-        `pattern = \\["git","-C",${JSON.stringify(f.target).replace(/[.*+?^${}()|[\]\\]/gu, "\\$&")},"push","-u","origin","wo-999"\\]`,
-        "u",
-      ),
+    assert.ok(codex.includes(JSON.stringify(process.execPath)));
+    assert.ok(
+      codex.includes(JSON.stringify(`${f.orderRoot}/scripts/worktree.mjs`)),
     );
+    assert.doesNotMatch(codex, /"git"|"gh"|"npm"/u);
     assert.match(codex, /decision = "allow"/u);
     assert.doesNotMatch(codex, /elsewhere/u);
     // The sidecar's rules are current while the order's worktree is registered.
     assert.deepEqual(staleOrderHostRules(f.main), []);
     write(f.target, "change.txt", "changed\n");
     git(f.target, "add", "-A");
-    git(f.target, "commit", "-qm", "Target change");
+    git(f.target, "commit", "-qm", "test: target change");
     closeOrder(f);
     git(f.orderRoot, "add", "-A");
     git(f.orderRoot, "commit", "-qm", "Closed target order");

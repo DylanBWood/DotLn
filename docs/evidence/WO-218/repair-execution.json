@@ -1,0 +1,1214 @@
+{
+  "schemaVersion": 1,
+  "review": {
+    "checkId": "npm test",
+    "codeIdentity": "6b809fff4a6b533c8fe347d184f0a155f6557e4375af712666206ed5da1ee7b0",
+    "subject": "3d94e56500e98370a1f0c028e5bc8146aa4e6129",
+    "durationMs": 1748416,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:6b809fff4a6b533c8fe347d184f0a155f6557e4375af712666206ed5da1ee7b0:npm test",
+    "recordedAt": "2026-10-20T15:02:05.054Z",
+    "executionMode": "fresh",
+    "gateSelection": "review",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "freshSuites": 108,
+    "reusedSuites": 0,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "launchpad",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "launchpad-planning",
+      "evidence-sources",
+      "harness-probe",
+      "harness-fixtures",
+      "harness-context",
+      "plan-refutation",
+      "runner-fixtures",
+      "sync-fixtures",
+      "process-debt"
+    ],
+    "unrunSuites": [],
+    "stale": [],
+    "cases": [
+      {
+        "name": "build",
+        "durationMs": 708,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "format",
+        "durationMs": 7328,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "configuration-root",
+        "durationMs": 6276,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "registrations",
+        "durationMs": 573,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "declarations",
+        "durationMs": 259,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "generated",
+        "durationMs": 17697,
+        "exitCode": 0,
+        "executed": true,
+        "stale": [],
+        "cases": [
+          {
+            "exitCode": 0,
+            "durationMs": 28,
+            "name": "runtime",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 4056,
+            "name": "meta",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 44,
+            "name": "lineage",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 2274,
+            "name": "index",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 2998,
+            "name": "release-surfaces",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 564,
+            "name": "siblings",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 207,
+            "name": "harness",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 366,
+            "name": "role-oracle",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 686,
+            "name": "authority-evidence",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 240,
+            "name": "artifact-evidence",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 1317,
+            "name": "verification-evidence",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 2556,
+            "name": "feedback-evidence",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 451,
+            "name": "harness-evidence",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 442,
+            "name": "console-fixtures",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 1264,
+            "name": "baseline-fingerprints",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 143,
+            "name": "publication",
+            "executed": true
+          }
+        ]
+      },
+      {
+        "name": "host",
+        "durationMs": 69,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "release-preparation",
+        "durationMs": 3219,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "github-body",
+        "durationMs": 224,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "outward-lint",
+        "durationMs": 668,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "target-publish",
+        "durationMs": 127370,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "target-worktree",
+        "exitCode": 0,
+        "durationMs": 565988,
+        "executed": true,
+        "cases": [
+          {
+            "name": "target-worktree:file:test-target-worktree-start.mjs",
+            "durationMs": 117175,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "target-worktree:file:test-target-worktree-publish.mjs",
+            "durationMs": 302379,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "target-worktree:file:test-target-worktree-release.mjs",
+            "durationMs": 118587,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "target-worktree:file:test-target-worktree-close.mjs",
+            "durationMs": 448708,
+            "exitCode": 0,
+            "executed": true
+          }
+        ]
+      },
+      {
+        "name": "vertical",
+        "exitCode": 0,
+        "durationMs": 520292,
+        "executed": true,
+        "cases": [
+          {
+            "name": "vertical:file:test-vertical.mjs:workflow",
+            "durationMs": 334564,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "vertical:file:test-vertical-judgment.mjs",
+            "durationMs": 501765,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "vertical:file:test-vertical.recovery.mjs",
+            "durationMs": 390159,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "vertical:file:test-vertical.mjs:statements",
+            "durationMs": 520032,
+            "exitCode": 0,
+            "executed": true
+          }
+        ]
+      },
+      {
+        "name": "license-fixtures",
+        "durationMs": 14898,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "publication-fixtures",
+        "durationMs": 1358,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "backup-intake",
+        "durationMs": 299,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "launchpad",
+        "exitCode": 0,
+        "durationMs": 359644,
+        "executed": true,
+        "cases": [
+          {
+            "name": "launchpad:file:test-launchpad-export.mjs",
+            "durationMs": 184774,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "launchpad:file:test-launchpad-seeds.mjs",
+            "durationMs": 10734,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "launchpad:file:test-launchpad-update.mjs",
+            "durationMs": 359455,
+            "exitCode": 0,
+            "executed": true
+          }
+        ]
+      },
+      {
+        "name": "beacon-portability",
+        "durationMs": 927,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "checkpoint",
+        "durationMs": 8047,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "worktree",
+        "durationMs": 134158,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "worktree-integration",
+        "durationMs": 206237,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "release",
+        "exitCode": 0,
+        "durationMs": 958384,
+        "executed": true,
+        "cases": [
+          {
+            "name": "release:prepare",
+            "durationMs": 1114,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:preflight",
+            "durationMs": 233,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:surfaces",
+            "durationMs": 6865,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:surfaces_local_snapshot",
+            "durationMs": 1519,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:prepare_independent",
+            "durationMs": 4054,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:license_surfaces",
+            "durationMs": 5873,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:surfaces_committed_readme",
+            "durationMs": 2508,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:surfaces_lower",
+            "durationMs": 1928,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:surfaces_first",
+            "durationMs": 1171,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:surfaces_component",
+            "durationMs": 2618,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:surfaces_non_source",
+            "durationMs": 1592,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:surfaces_new_component",
+            "durationMs": 1533,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:surfaceclose",
+            "durationMs": 3791,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:surfaceclose_linked",
+            "durationMs": 3487,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:bodyclose",
+            "durationMs": 2845,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:unreachable",
+            "durationMs": 2853,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:dirty",
+            "durationMs": 3243,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:settings_scope",
+            "durationMs": 2947,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:derived",
+            "durationMs": 3784,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:nonmain",
+            "durationMs": 957,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:divergence",
+            "durationMs": 1130,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:malformed",
+            "durationMs": 1186,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:unauthenticated",
+            "durationMs": 1634,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:missinggh",
+            "durationMs": 2376,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:splitorigin",
+            "durationMs": 945,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:lower",
+            "durationMs": 1729,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:failures",
+            "durationMs": 2495,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:cadence_missing",
+            "durationMs": 1822,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:conflict",
+            "durationMs": 1636,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:localconflict",
+            "durationMs": 1553,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:cadence_inconsistent",
+            "durationMs": 3905,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:nestedtag",
+            "durationMs": 1621,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:prepare",
+            "durationMs": 2789,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:missinglocalprevious",
+            "durationMs": 2686,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:pushfail",
+            "durationMs": 2888,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:refrecovery",
+            "durationMs": 4611,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:submodule_force",
+            "durationMs": 4561,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:malformed_material",
+            "durationMs": 980,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:createrecovery",
+            "durationMs": 13324,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:stale_helpers",
+            "durationMs": 8352,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:runtime_refresh",
+            "durationMs": 20053,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:success",
+            "durationMs": 20062,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:custom_identity",
+            "durationMs": 6088,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:firstrelease",
+            "durationMs": 3919,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:edition",
+            "durationMs": 7767,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:cached_evidence",
+            "durationMs": 8462,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:composed_evidence",
+            "durationMs": 7320,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:concurrent",
+            "durationMs": 19452,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:close_completion",
+            "durationMs": 10537,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:close_sealed",
+            "durationMs": 8676,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:material",
+            "durationMs": 58671,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:close_retry_paths",
+            "durationMs": 5542,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:close_leftover",
+            "durationMs": 50080,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:close_receipt_recovery",
+            "durationMs": 32603,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:starter_refresh",
+            "durationMs": 26463,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:close_foreign_tag",
+            "durationMs": 4993,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:close_overlap",
+            "durationMs": 6166,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release:case:close_real_writer",
+            "durationMs": 13308,
+            "exitCode": 0,
+            "executed": true
+          }
+        ]
+      },
+      {
+        "name": "work-orders-fixtures",
+        "durationMs": 23926,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "siblings-fixtures",
+        "durationMs": 12126,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "kernel",
+        "durationMs": 511,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "compiler",
+        "durationMs": 970,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "skeleton",
+        "durationMs": 256246,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "console",
+        "durationMs": 17886,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "browser-evidence",
+        "durationMs": 19814,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "adjacent-queue",
+        "durationMs": 858,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "derived-orders",
+        "durationMs": 8092,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "portfolio",
+        "durationMs": 20944,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "codex-continuation",
+        "durationMs": 6248,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "authority-grants",
+        "durationMs": 201,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "launchpad-planning",
+        "durationMs": 248273,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "evidence-sources",
+        "durationMs": 69849,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "harness-probe",
+        "durationMs": 62673,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "harness-fixtures",
+        "durationMs": 314215,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "harness-context",
+        "durationMs": 158,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "plan-refutation",
+        "durationMs": 67674,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "runner-fixtures",
+        "durationMs": 124778,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "sync-fixtures",
+        "durationMs": 191948,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "process-debt",
+        "durationMs": 106994,
+        "exitCode": 0,
+        "executed": true
+      }
+    ]
+  },
+  "command": "npm test -- --review",
+  "controls": {
+    "record": "repair-controls.json",
+    "count": 91,
+    "baselineModulePasses": 7,
+    "isolatedFailures": 84
+  },
+  "preflightCoverage": {
+    "harness": "generated nested check",
+    "publication": "generated nested check",
+    "resume": "document selection"
+  },
+  "documentRowRequiredAtCompletion": true,
+  "publicationCheck": {
+    "step": "publication",
+    "command": [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "npm",
+      "run",
+      "publication:check"
+    ],
+    "exitCode": 0,
+    "observedOutput": [
+      "PASS index coverage: 255/255 product headings indexed",
+      "PASS dual-voice links: 3 identical claim links per voice",
+      "CURRENT everyday-ai-user-toc.md: 29 linked source sections match",
+      "CURRENT software-engineer-toc.md: 45 linked source sections match",
+      "PASS publication bootstrap checks"
+    ]
+  },
+  "preDispositionDocument": {
+    "checkId": "npm run test:docs",
+    "codeIdentity": "6b809fff4a6b533c8fe347d184f0a155f6557e4375af712666206ed5da1ee7b0",
+    "subject": "198700077e97c39cf4e19f63eb6cfabd2110794d",
+    "durationMs": 160555,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:6b809fff4a6b533c8fe347d184f0a155f6557e4375af712666206ed5da1ee7b0:npm run test:docs",
+    "recordedAt": "2026-10-20T15:08:16.329Z",
+    "executionMode": "fresh",
+    "gateSelection": "document",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "freshSuites": 27,
+    "reusedSuites": 0,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "license-surfaces",
+      "resume",
+      "launchpad-docs",
+      "docs-check",
+      "docs-check-fixtures",
+      "comment-labels",
+      "comment-labels-fixtures",
+      "lineage-fixtures",
+      "kernel-docs",
+      "skeleton-docs",
+      "console-docs",
+      "resident-bind",
+      "local-runner-double",
+      "harness-context",
+      "plan-refutation-current",
+      "artifact-corpus",
+      "plan",
+      "reader-profiles",
+      "reader-fixtures",
+      "entropy"
+    ],
+    "unrunSuites": [],
+    "stale": [],
+    "cases": [
+      {
+        "name": "build",
+        "durationMs": 799,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "format",
+        "durationMs": 7176,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "configuration-root",
+        "durationMs": 6303,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "registrations",
+        "durationMs": 570,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "declarations",
+        "durationMs": 261,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "generated",
+        "durationMs": 16940,
+        "exitCode": 0,
+        "executed": true,
+        "stale": [],
+        "cases": [
+          {
+            "exitCode": 0,
+            "durationMs": 28,
+            "name": "runtime",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 4072,
+            "name": "meta",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 44,
+            "name": "lineage",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 2101,
+            "name": "index",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 2833,
+            "name": "release-surfaces",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 564,
+            "name": "siblings",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 201,
+            "name": "harness",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 352,
+            "name": "role-oracle",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 617,
+            "name": "authority-evidence",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 221,
+            "name": "artifact-evidence",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 1148,
+            "name": "verification-evidence",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 2427,
+            "name": "feedback-evidence",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 439,
+            "name": "harness-evidence",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 425,
+            "name": "console-fixtures",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 1263,
+            "name": "baseline-fingerprints",
+            "executed": true
+          },
+          {
+            "exitCode": 0,
+            "durationMs": 144,
+            "name": "publication",
+            "executed": true
+          }
+        ]
+      },
+      {
+        "name": "host",
+        "durationMs": 72,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "license-surfaces",
+        "durationMs": 1864,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "resume",
+        "durationMs": 93990,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "launchpad-docs",
+        "durationMs": 6110,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "docs-check",
+        "durationMs": 25019,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "docs-check-fixtures",
+        "durationMs": 25436,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "comment-labels",
+        "durationMs": 1444,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "comment-labels-fixtures",
+        "durationMs": 886,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "lineage-fixtures",
+        "durationMs": 808,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "kernel-docs",
+        "durationMs": 1047,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "skeleton-docs",
+        "durationMs": 24274,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "console-docs",
+        "durationMs": 30777,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "resident-bind",
+        "durationMs": 11990,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "local-runner-double",
+        "durationMs": 4012,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "harness-context",
+        "durationMs": 187,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "plan-refutation-current",
+        "durationMs": 6374,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "artifact-corpus",
+        "durationMs": 246,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "plan",
+        "durationMs": 6712,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "reader-profiles",
+        "durationMs": 758,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "reader-fixtures",
+        "durationMs": 10087,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "entropy",
+        "durationMs": 381,
+        "exitCode": 0,
+        "executed": true
+      }
+    ]
+  },
+  "register": {
+    "pendingBefore": 163,
+    "pendingAfter": 159,
+    "selected": {
+      "settled": 40,
+      "declined": 5
+    },
+    "selectedUnresolved": 0,
+    "otherPendingMatches": 11,
+    "touchingPages": 2,
+    "revision": "76c0cd3a81eb16e8c06e7e5447f435ebe68cbed0675428a2fd191bec0c8316e7",
+    "repairFollowups": [
+      {
+        "id": "FUP-25c618b1c965f92d",
+        "status": "settled",
+        "sourceRevision": 1
+      },
+      {
+        "id": "FUP-e700292da312f361",
+        "status": "untriaged",
+        "sourceRevision": 1
+      }
+    ]
+  }
+}

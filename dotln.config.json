@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "historicalWorkOrders": ["WO-001", "WO-002"],
+  "contributions": {
+    "operatorAuthor": "Dylan Wood <dylanwoodconsulting@gmail.com>"
+  }
+}

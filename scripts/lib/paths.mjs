@@ -1,4 +1,4 @@
-import { runGit } from "./git.mjs";
+import { runGit, nestedGitArgs, gitlinkPaths } from "./git.mjs";
 import { defaultDocRelative, docPath, docRelative } from "./config.mjs";
 
 import {
@@ -181,9 +181,7 @@ const declaredSubmodules = (root) => {
   const staged = runGit(root, ["ls-files", "-s", "-z"], {
     onFailure: () => "",
   });
-  for (const entry of staged.split("\0"))
-    if (entry.startsWith("160000 "))
-      declared.add(entry.slice(entry.indexOf("\t") + 1));
+  for (const path of gitlinkPaths(staged.split("\0"))) declared.add(path);
   const modules = runGit(
     root,
     [
@@ -261,16 +259,7 @@ export function inspectNestedRepository(root, candidate) {
     if (!lstatSync(gitDirectory).isDirectory())
       return { repository: true, commits: null, empty: false, linked: true };
     // The nested repository's own hooks and file monitor never run here.
-    const inspectionGitFlags = [
-      "-c",
-      "core.hooksPath=/dev/null",
-      "-c",
-      "core.fsmonitor=false",
-      "--git-dir",
-      gitDirectory,
-      "--work-tree",
-      directory,
-    ];
+    const inspectionGitFlags = nestedGitArgs(directory);
     const inspectionGitOptions = {
       cwd: directory,
       timeout: 5000,
@@ -398,7 +387,7 @@ export function describeIgnoredMaterial(root, candidate) {
       releaseEvidenceAllowed: base.releaseEvidenceAllowed,
       classification: `${lane} lane: linked worktree of another repository`,
       remedy:
-        "its commits live in the owning repository; remove it there with git worktree remove --force from an operator terminal, then retry",
+        "its commits live in the owning repository; preserve it with git worktree move to a directory outside this closing worktree, then retry",
     };
   // Any other nested repository is scratch: built to test, verify or help
   // build, removed with the worktree, and recorded with its head commit.

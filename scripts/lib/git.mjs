@@ -1,11 +1,35 @@
 import { execFileSync, spawnSync } from "node:child_process";
-import { realpathSync, statSync } from "node:fs";
+import {
+  realpathSync,
+  statSync,
+  mkdtempSync,
+  openSync,
+  closeSync,
+  readSync,
+  rmSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+
+export const nestedGitArgs = (directory) => [
+  "-c",
+  "core.hooksPath=/dev/null",
+  "-c",
+  "core.fsmonitor=false",
+  "--git-dir",
+  join(directory, ".git"),
+  "--work-tree",
+  directory,
+];
+export const gitlinkPaths = (entries) =>
+  entries
+    .filter((entry) => entry.startsWith("160000 "))
+    .map((entry) => entry.slice(entry.indexOf("\t") + 1));
 
 export const shellQuote = (value) => `'${value.replaceAll("'", `'\\''`)}'`;
 
 export const failureOf = (result, fallback) =>
-  [result.stderr, result.stdout, result.error?.message, fallback]
+  [result.error?.message, result.stderr, result.stdout, fallback]
     .map((value) => (value == null ? "" : String(value).trim()))
     .find(Boolean) ?? "";
 
@@ -15,9 +39,11 @@ export const failureOf = (result, fallback) =>
 // a slash or a label it continues something else (`src/tmp/x`, `https://`,
 // `<label>/index`) and is kept.
 export const redactPaths = (text, pairs) => {
-  let out = String(text);
+  let out = String(text)
+    .replace(/file:\/\/\/[^\s'";]+/gu, "file://<local>")
+    .replace(/(?<!https?|ssh):\/(?!\/)[^\s'";]+/gu, ":<local>");
   for (const [path, label] of pairs
-    .filter(([path]) => path)
+    .filter(([path]) => typeof path === "string" && path)
     .sort((a, b) => b[0].length - a[0].length))
     out = out.replaceAll(path, label);
   return out.replace(/(?<![\w.~:/>-])\/[^\s'";]+/gu, "<local>");
@@ -56,8 +82,11 @@ export const runGit = (cwd, args, options = {}) => {
 /** The tag at `commit`, highest version first, and the nearest tag below it,
  * or null for each. The kit manifest's tag and the sibling registry's kit
  * version come from these same two lookups. */
+// Provenance names original objects: a replacement ref must not redirect the
+// exact or nearest tag (WO-218 FINAL-001).
 export const describeTag = (root, commit) => {
   const exact = runGit(root, [
+    "--no-replace-objects",
     "tag",
     "--points-at",
     commit,
@@ -65,9 +94,11 @@ export const describeTag = (root, commit) => {
   ])
     .split("\n")
     .filter(Boolean);
-  const nearest = runGit(root, ["describe", "--tags", "--abbrev=0", commit], {
-    onFailure: () => null,
-  });
+  const nearest = runGit(
+    root,
+    ["--no-replace-objects", "describe", "--tags", "--abbrev=0", commit],
+    { onFailure: () => null },
+  );
   return { tag: exact[0] ?? null, nearest: nearest || null };
 };
 
@@ -76,7 +107,7 @@ export const describeTag = (root, commit) => {
 export const readGitObjects = (root, objectIds, type) => {
   const objects = [...new Set(objectIds)];
   if (!objects.length) return new Map();
-  const wire = runGit(root, ["cat-file", "--batch"], {
+  const wire = runGit(root, ["--no-replace-objects", "cat-file", "--batch"], {
     trim: false,
     encoding: null,
     input: objects.join("\n") + "\n",
@@ -115,6 +146,10 @@ export const runGitPathList = (cwd, args, options = {}) => {
     maxBuffer: 16 * 1024 * 1024,
     ...options,
   });
+  if (result.error?.code === "ENOBUFS")
+    throw new Error(
+      "Git path-list read exceeded the 16 MiB limit; remove or reduce the listed tree, then rerun the same command",
+    );
   if (result.status !== 0)
     throw new Error(failureOf(result, `git ${args.join(" ")} failed`));
   if (result.stdout === "") return [];
@@ -222,3 +257,52 @@ export const releaseCloseCommand = (main, workOrder, mode = "--publish") => {
     throw new Error("Invalid release-close command");
   return `${shellQuote(process.execPath)} ${shellQuote(join(main, "scripts/release.mjs"))} close ${workOrder} ${mode}`;
 };
+
+/** Stream a large tree's NUL-framed names and retain only the selected paths.
+ * The child's stdout goes to an owned temporary file, never a captured buffer. */
+export function selectGitPaths(root, args, select) {
+  const scratch = mkdtempSync(join(tmpdir(), "dotln-git-paths-"));
+  let descriptor;
+  try {
+    descriptor = openSync(join(scratch, "paths"), "w+");
+    const result = spawnGit(["-C", root, ...args], {
+      stdio: ["ignore", descriptor, "pipe"],
+      encoding: "utf8",
+      maxBuffer: 1024 * 1024,
+    });
+    if (result.status !== 0)
+      throw new Error(failureOf(result, "Git tree path read failed"));
+    const rows = [],
+      chunk = Buffer.alloc(65536);
+    let pending = Buffer.alloc(0),
+      offset = 0,
+      retained = 0;
+    for (;;) {
+      const length = readSync(descriptor, chunk, 0, chunk.length, offset);
+      if (!length) break;
+      offset += length;
+      const bytes = Buffer.concat([pending, chunk.subarray(0, length)]);
+      let start = 0,
+        end;
+      while ((end = bytes.indexOf(0, start)) >= 0) {
+        const name = bytes.subarray(start, end).toString("utf8");
+        if (select(name)) {
+          retained += end - start + 1;
+          if (retained > 16 * 1024 * 1024)
+            throw new Error(
+              "Selected Git paths exceed the 16 MiB limit; reduce the selected tree, then rerun",
+            );
+          rows.push(name);
+        }
+        start = end + 1;
+      }
+      pending = Buffer.from(bytes.subarray(start));
+    }
+    if (pending.length)
+      throw new Error("Git tree returned a non-NUL-terminated path list");
+    return rows;
+  } finally {
+    if (descriptor !== undefined) closeSync(descriptor);
+    rmSync(scratch, { recursive: true, force: true });
+  }
+}

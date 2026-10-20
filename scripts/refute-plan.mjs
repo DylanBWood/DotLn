@@ -146,7 +146,7 @@ function exportDestination(root, name, kind = followupExport) {
     );
   if (!existsSync(path)) {
     const local = within(lane) ? relative(lane, path).split(sep) : [];
-    if (local.length && RESERVED_LANE_NAMES.includes(local[0]))
+    if (local.length && RESERVED_LANE_NAMES.includes(local[0].toLowerCase()))
       throw new Error(
         `${kind.label} destination ${local.join("/")} is a name the local control lane reserves; name another file`,
       );

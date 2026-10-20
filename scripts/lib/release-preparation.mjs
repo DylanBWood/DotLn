@@ -103,7 +103,11 @@ export function planReleasePreparation(
   state,
   latest,
   date,
-  { integration = false, observation = "local tags", repairClaim = false } = {},
+  {
+    integration = false,
+    observation = "ancestral local release tags, excluding annotated starter refresh tags",
+    repairClaim = false,
+  } = {},
 ) {
   if (
     realpathSync(runGit(root, ["rev-parse", "--show-toplevel"])) !==

@@ -24,9 +24,14 @@ import {
   describeTag,
   failureOf,
   readGitObjects,
-  runGit,
-  runGitPathList,
+  runGit as ordinaryRunGit,
+  runGitPathList as ordinaryRunGitPathList,
 } from "./lib/git.mjs";
+// Export provenance names original objects, independent of local replacements.
+const runGit = (root, args, options) =>
+  ordinaryRunGit(root, ["--no-replace-objects", ...args], options);
+const runGitPathList = (root, args, options) =>
+  ordinaryRunGitPathList(root, ["--no-replace-objects", ...args], options);
 import { parseGitHubTarget } from "./lib/github-repository.mjs";
 import { json, sha256Hex } from "./lib/helpers.mjs";
 import { isMainModule } from "./lib/paths.mjs";
@@ -142,6 +147,7 @@ export const EMIT_CLOSURE = Object.freeze([
   "scripts/harness.mjs",
   "scripts/lib/config.mjs",
   "scripts/lib/git.mjs",
+  "scripts/lib/harness-instruction.mjs",
   "scripts/lib/harness.mjs",
   "scripts/lib/helpers.mjs",
   "scripts/lib/paths.mjs",

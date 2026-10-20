@@ -103,11 +103,19 @@ export function publishTargetPlanning({
         refuse(`${path}: source is not a regular file or directory`);
       if (!["planning", "product"].includes(path.split("/")[0]))
         refuse(`${path}: only planning and product documents are admitted`);
+      if (name.startsWith(".") || /(?:~|\.(?:swp|swo|bak))$/iu.test(name))
+        refuse(
+          `${path}: Finder metadata, hidden files and editor residue are not planning documents`,
+        );
       if (stat.isDirectory()) visit(file, path);
       else {
         if (!path.includes("/") || path.includes("\\"))
           refuse(
             `${path}: document must be a normalized path under planning or product`,
+          );
+        if (!/\.(?:md|json|svg|png|jpe?g|webp|pdf)$/iu.test(name))
+          refuse(
+            `${path}: admitted planning files are Markdown, JSON, SVG, PNG, JPEG, WebP and PDF`,
           );
         const destination = targetDocRelative(repository, "docs", path);
         // Validate the base tree's ancestors before fetching or creating a worktree.

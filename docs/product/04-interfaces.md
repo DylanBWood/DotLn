@@ -814,8 +814,10 @@ DevEx phrases are also skill selectors. Entering `resume: verify` (or status,
 next, fix, final-review, or release-close) resolves the durable control state,
 validates the intent, and loads the smallest native role skill on demand. The UI
 previews what will load and why. Release close remains a separate guarded
-post-merge operation with narrow authority for the annotated tag and its
-matching GitHub Release. Every intent remains usable through the CLI, so
+post-merge operation with narrow authority for the annotated tag, its
+matching GitHub Release, declared starter refreshes and their tag/Release,
+and cleanup. Its summary names any remaining blocker and the same retry
+command; target orders follow the registered target's release policy. Every intent remains usable through the CLI, so
 skill-capable hosts gain lower context cost rather than a different workflow.
 
 When the candidate Additional Opinion support is equipped, the interface can

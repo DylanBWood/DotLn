@@ -4305,6 +4305,14 @@ else {
         assert.notDeepEqual(grouped(added), grouped(corrected));
         assert.doesNotThrow(() => checkSequenceTopology(readIndex(root, [])));
         const repo = makeRepo(parent, "historical-topology");
+        write(
+          repo,
+          "dotln.config.json",
+          JSON.stringify({
+            version: 1,
+            historicalWorkOrders: ["WO-001", "WO-002"],
+          }),
+        );
         // Every open order needs a place in the sequence (WO-190). The frozen
         // tree's five unsequenced drafts and the fixture's own two take a final
         // group of the written copy; `corrected` itself stays the receipt

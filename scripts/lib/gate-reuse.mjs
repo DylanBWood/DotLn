@@ -245,6 +245,16 @@ function latestExecution(rows, other, name, identity) {
       continue;
     }
     if (result && result.executed !== true) continue;
+    // A passing partial observation neither supplies nor revokes a complete
+    // pass. A failing partial still displaces it and names the failed task.
+    if (
+      partialRow(row) &&
+      row.exitCode === 0 &&
+      intactExecutionRow(row) &&
+      result &&
+      passingResult(result)
+    )
+      continue;
     if (!supplies && !result) continue;
     const recorded = Date.parse(row.recordedAt);
     const finished = Date.parse(result?.finishedAt);

@@ -1,4 +1,4 @@
-import { spawnGit } from "./git.mjs";
+import { spawnGit, runGit } from "./git.mjs";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -172,7 +172,12 @@ export function pushObservedCommit(
   branch,
   commit,
   destination = branch,
-  { sourceRef = `refs/heads/${branch}`, lease } = {},
+  {
+    sourceRef = `refs/heads/${branch}`,
+    lease,
+    allowAbsent = false,
+    pullRequest,
+  } = {},
 ) {
   withPublishLane((inLane) => {
     inLane([
@@ -189,12 +194,31 @@ export function pushObservedCommit(
       throw publishRefusal(
         `branch ${branch} no longer names the observed commit`,
       );
+    if (lease) {
+      const remote =
+        inLane([
+          "ls-remote",
+          "--heads",
+          url,
+          `refs/heads/${destination}`,
+        ]).split(/\s+/u)[0] || null;
+      if (
+        remote !== lease &&
+        remote !== commit &&
+        !(allowAbsent && remote === null)
+      )
+        throw publishRefusal(
+          `remote draft branch ${destination}${pullRequest ? ` for pull request #${pullRequest}` : ""} moved from the recorded head ${lease} to ${remote ?? "absent"}; preserve the remote change, integrate and review it, then explicitly rebind publication before retrying`,
+        );
+      if (remote === commit) return;
+      if (remote === null && allowAbsent) lease = "";
+    }
     // A reuse of a draft branch moves it only from the recorded draft head;
     // any other remote state refuses the push (WO-221).
     inLane([
       "push",
       "--no-follow-tags",
-      ...(lease
+      ...(lease !== undefined
         ? [`--force-with-lease=refs/heads/${destination}:${lease}`]
         : []),
       url,
@@ -207,7 +231,7 @@ export function pushObservedCommit(
 function withPublishLane(run) {
   const lane = mkdtempSync(join(tmpdir(), "dotln-target-push-"));
   try {
-    const init = spawnGit(["init", "--quiet", "--bare", lane], {
+    const init = spawnGit(["init", "--quiet", "--bare", "--template=", lane], {
       encoding: "utf8",
     });
     if (init.status !== 0)
@@ -230,6 +254,29 @@ function withPublishLane(run) {
   } finally {
     rmSync(lane, { recursive: true, force: true });
   }
+}
+/** Fetch through a host-owned lane, then import its bundle without consulting
+ * the clone's transport configuration or moving any branch in the clone. */
+export function fetchRemoteBranch(repo, url, branch) {
+  return withPublishLane((inLane) => {
+    inLane([
+      "fetch",
+      "--quiet",
+      "--no-tags",
+      url,
+      `refs/heads/${branch}:refs/heads/fetched`,
+    ]);
+    const commit = inLane(["rev-parse", "refs/heads/fetched^{commit}"]);
+    const scratch = mkdtempSync(join(tmpdir(), "dotln-target-fetch-"));
+    try {
+      const bundle = join(scratch, "fetched.bundle");
+      inLane(["bundle", "create", bundle, "refs/heads/fetched"]);
+      runGit(repo, [...HOST_GIT_READ, "bundle", "unbundle", bundle]);
+    } finally {
+      rmSync(scratch, { recursive: true, force: true });
+    }
+    return commit;
+  });
 }
 /** The commit a remote tag names, peeled, or null when the tag is absent;
  * read through the lane so the checkout's transport configuration stays out. */
@@ -280,7 +327,7 @@ export function ensureRelease(
   tag,
   title,
   body,
-  { matchTitle = true } = {},
+  { matchTitle = true, admittedTitles = [title] } = {},
 ) {
   const viewed = executeGh(cwd, [
     "release",
@@ -306,7 +353,10 @@ export function ensureRelease(
       throw publishRefusal(
         `${tag} GitHub Release on ${repository.selector} is a draft, a prerelease or carries assets; the kit never edits a published Release`,
       );
-    if ((matchTitle && release.name !== title) || release.body !== body)
+    if (
+      (matchTitle && !admittedTitles.includes(release.name)) ||
+      release.body !== body
+    )
       throw publishRefusal(
         `${tag} GitHub Release on ${repository.selector} differs from the expected ${matchTitle ? "title and body" : "body"}`,
       );

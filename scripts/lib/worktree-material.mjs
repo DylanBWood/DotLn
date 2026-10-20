@@ -9,6 +9,7 @@ import {
 } from "node:fs";
 import { isAbsolute, join, resolve } from "node:path";
 import {
+  nestedGitArgs,
   releaseCloseCommand,
   runGit,
   runGitPathList,
@@ -128,6 +129,7 @@ export function inventoryMaterial(
         source: explicit?.source ?? "lane",
         reason: explicit?.reason ?? row.classification,
         ...(row.submodule ? { submodule: true } : {}),
+        ...(row.linked ? { linked: true, remedy: row.remedy } : {}),
       };
     });
   for (const path of words.keys())
@@ -202,27 +204,13 @@ export const materialFlagValue = (row) =>
 // Git inside a nested repository runs with that repository's hooks and file
 // monitor off: a scratch repository's own configuration never executes during
 // a close. A failed read records null, never a guess.
-const NESTED_GIT = [
-  "-c",
-  "core.hooksPath=/dev/null",
-  "-c",
-  "core.fsmonitor=false",
-];
 // The repository is named explicitly: with an unreadable HEAD, discovery
 // would otherwise fall through to the worktree that holds it.
 const readNested = (directory, args) =>
-  runGit(
-    directory,
-    [
-      ...NESTED_GIT,
-      "--git-dir",
-      join(directory, ".git"),
-      "--work-tree",
-      directory,
-      ...args,
-    ],
-    { timeout: 5000, onFailure: () => null },
-  );
+  runGit(directory, [...nestedGitArgs(directory), ...args], {
+    timeout: 5000,
+    onFailure: () => null,
+  });
 
 /** What a removal record keeps about a scratch repository: its head commit
  * and whether a remote of that repository held it, as its remote-tracking

@@ -143,6 +143,121 @@ const fixtureGitOptions = {
       `git ${args.join(" ")}\n${result.stdout}${result.stderr}`,
     ),
 };
+
+test("nested material keeps linked-worktree remedies and shares Git inspection primitives", async (t) => {
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-nested-material-")),
+  );
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const main = join(root, "main");
+  mkdirSync(main);
+  const git = (cwd, ...args) =>
+    runGit(
+      cwd,
+      [
+        "-c",
+        "user.name=Fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        ...args,
+      ],
+      fixtureGitOptions,
+    );
+  git(main, "init", "-q", "-b", "main");
+  put(main, ".gitignore", ".runtime/\ndocs/control/local/\n");
+  git(main, "add", ".");
+  git(main, "commit", "-qm", "test: fixture");
+  const subject = join(root, "subject");
+  git(main, "worktree", "add", "-q", "-b", "wo-999", subject);
+  const linked = join(subject, ".runtime/probe");
+  git(main, "worktree", "add", "-q", "--detach", linked);
+  const { inventoryMaterial } = await import("./lib/worktree-material.mjs");
+  const { reconcileWorktreeMaterial } =
+    await import("./lib/intake-reconciliation.mjs");
+  const material = inventoryMaterial(subject);
+  assert.equal(material[0].linked, true);
+  assert.equal(material[0].disposition, "preserve");
+  assert.match(material[0].remedy, /git worktree move/);
+  assert.throws(
+    () =>
+      reconcileWorktreeMaterial(subject, main, "WO-999", {
+        dryRun: true,
+        material,
+      }),
+    /Nested linked worktree material is preserved: \.runtime\/probe: .*git worktree move/,
+  );
+  assert.ok(existsSync(join(linked, ".git")));
+  // These helpers are shared to keep the safety flags and NUL entry parser
+  // consistent across inventory, inspection and teardown.
+  for (const [file, helper] of [
+    ["scripts/lib/worktree-material.mjs", "nestedGitArgs"],
+    ["scripts/lib/paths.mjs", "nestedGitArgs"],
+    ["scripts/lib/paths.mjs", "gitlinkPaths"],
+    ["scripts/worktree.mjs", "gitlinkPaths"],
+  ]) {
+    const contents = text(source, file);
+    assert.match(
+      contents,
+      new RegExp(
+        `import \\{[^}]*\\b${helper}\\b[^}]*\\} from "(?:\\./lib|\\.)/git\\.mjs"`,
+        "su",
+      ),
+    );
+  }
+});
+
+test("completion names unignored scratch before tree refusal and checks whitespace with it present", async (t) => {
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-completion-scratch-")),
+  );
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const git = (cwd, ...args) =>
+    runGit(
+      cwd,
+      [
+        "-c",
+        "user.name=Fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        ...args,
+      ],
+      fixtureGitOptions,
+    );
+  git(root, "init", "-q");
+  put(root, "tracked.txt", "fixture\n");
+  git(root, "add", ".");
+  git(root, "commit", "-qm", "test: fixture");
+  const nested = join(root, "unignored/scratch");
+  mkdirSync(nested, { recursive: true });
+  git(nested, "init", "-q");
+  put(nested, "inner.txt", "inner whitespace \n");
+  git(nested, "add", ".");
+  git(nested, "commit", "-qm", "test: nested fixture");
+  const { checkLifecycleWhitespace, requireLifecycleEvidence } =
+    await import("./lib/lifecycle-evidence.mjs");
+  checkLifecycleWhitespace(root);
+  assert.ok(existsSync(join(nested, ".git")));
+  const warnings = [];
+  const warning = t.mock.method(console, "warn", (message) =>
+    warnings.push(message),
+  );
+  await assert.rejects(
+    requireLifecycleEvidence(root, "implementation-ready", undefined, "WO-999"),
+    /candidate|regular|nested/u,
+  );
+  warning.mock.restore();
+  assert.ok(
+    warnings.some((message) =>
+      /Scratch repositories present: "unignored\/scratch"/u.test(message),
+    ),
+  );
+  put(root, "fresh.txt", "outer whitespace \n");
+  assert.throws(
+    () => checkLifecycleWhitespace(root),
+    /fresh\.txt:1: trailing whitespace/u,
+  );
+  assert.equal(git(root, "ls-files", "--", "fresh.txt"), "");
+});
 const entry = (name) => {
   const key = `decision:docs/evidence/WO-998/decisions.md#${name}`;
   return {
@@ -266,6 +381,8 @@ function focusedGenerators(root) {
 
 function overlayImplementation(root) {
   for (const path of [
+    "dotln.config.json",
+    "scripts/work-orders.mjs",
     "scripts/worktree.mjs",
     "scripts/resume.mjs",
     "scripts/release.mjs",
@@ -711,8 +828,9 @@ function fixture(
     upstream,
     control,
     invoke,
-    continueWithStub: () =>
-      invokeStages(stages, ["--continue"], ["prepare", "--local"]),
+    invokeStages,
+    continueWithStub: (...args) =>
+      invokeStages(stages, ["--continue", ...args], ["prepare", "--local"]),
     invokeWithoutRelease: (...args) =>
       invokeStages(
         generatorStages.filter((stage) => stage !== "release"),
@@ -1429,56 +1547,66 @@ test("follow-up union preserves compatible histories and refuses divergent same-
   );
 });
 
-test("untracked stash collision remains explicit and recoverable until continuation", (t) => {
-  const f = fixture(t);
-  put(f.main, "untracked-fixture.md", "upstream authored addition\n");
-  runGit(f.main, ["add", "untracked-fixture.md"], fixtureGitOptions);
-  runGit(
-    f.main,
-    ["commit", "-qm", "upstream untracked collision"],
-    fixtureGitOptions,
-  );
-  runGit(f.main, ["push", "-q", "origin", "main"], fixtureGitOptions);
-  const first = f.invoke();
-  assert.equal(first.status, 1, first.stdout + first.stderr);
-  assert.match(
-    first.stdout,
-    /Untracked stash collisions require explicit resolution/,
-  );
-  const receipt = JSON.parse(
-    text(f.subject, "docs/control/local/integration.json"),
-  );
-  assert.deepEqual(receipt.untrackedConflicts, ["untracked-fixture.md"]);
-  assert.equal(
+for (const interrupted of [false, true])
+  test(`untracked stash collision remains explicit and recoverable until continuation (interrupted=${interrupted})`, (t) => {
+    const f = fixture(t);
+    put(f.main, "untracked-fixture.md", "upstream authored addition\n");
+    runGit(f.main, ["add", "untracked-fixture.md"], fixtureGitOptions);
+    runGit(
+      f.main,
+      ["commit", "-qm", "upstream untracked collision"],
+      fixtureGitOptions,
+    );
+    runGit(f.main, ["push", "-q", "origin", "main"], fixtureGitOptions);
+    const first = f.invoke();
+    assert.equal(first.status, 1, first.stdout + first.stderr);
+    assert.match(
+      first.stdout,
+      /Untracked stash collisions require explicit resolution/,
+    );
+    const receipt = JSON.parse(
+      text(f.subject, "docs/control/local/integration.json"),
+    );
+    assert.deepEqual(receipt.untrackedConflicts, ["untracked-fixture.md"]);
+    assert.equal(
+      runGit(
+        f.subject,
+        ["show", `${receipt.stash}^3:untracked-fixture.md`],
+        fixtureGitOptions,
+      ),
+      "retained untracked bytes",
+    );
+    put(
+      f.subject,
+      "untracked-fixture.md",
+      "explicitly combined upstream and local addition\n",
+    );
+    put(f.subject, "authored-fixture.md", "explicitly combined intent\n");
     runGit(
       f.subject,
-      ["show", `${receipt.stash}^3:untracked-fixture.md`],
+      ["add", "untracked-fixture.md", "authored-fixture.md"],
       fixtureGitOptions,
-    ),
-    "retained untracked bytes",
-  );
-  put(
-    f.subject,
-    "untracked-fixture.md",
-    "explicitly combined upstream and local addition\n",
-  );
-  put(f.subject, "authored-fixture.md", "explicitly combined intent\n");
-  runGit(
-    f.subject,
-    ["add", "untracked-fixture.md", "authored-fixture.md"],
-    fixtureGitOptions,
-  );
-  const continued = f.invoke("--continue");
-  assert.equal(continued.status, 0, continued.stdout + continued.stderr);
-  assert.equal(
-    text(f.subject, "untracked-fixture.md"),
-    "explicitly combined upstream and local addition\n",
-  );
-  assert.equal(
-    runGit(f.subject, ["rev-parse", "refs/stash"], fixtureGitOptions),
-    receipt.stash,
-  );
-});
+    );
+    if (interrupted)
+      put(
+        f.subject,
+        "docs/control/local/integration.json",
+        JSON.stringify({ ...receipt, stage: "applying" }),
+      );
+    const continued = f.invoke(
+      "--continue",
+      ...(interrupted ? ["--stash-applied"] : []),
+    );
+    assert.equal(continued.status, 0, continued.stdout + continued.stderr);
+    assert.equal(
+      text(f.subject, "untracked-fixture.md"),
+      "explicitly combined upstream and local addition\n",
+    );
+    assert.equal(
+      runGit(f.subject, ["rev-parse", "refs/stash"], fixtureGitOptions),
+      receipt.stash,
+    );
+  });
 
 test("WO-167 --continue judges the recorded phase while the uncommitted control log travels in the stash", (t) => {
   const f = fixture(t, { reviewed: true });
@@ -1533,6 +1661,29 @@ test("WO-169 a first invocation with no authored conflict generates at once", (t
     /^Authored conflicts observed: none\.$/m,
   );
   assert.equal(text(f.subject, "authored-fixture.md"), "upstream intent\n");
+});
+
+test("interrupted stash application has an explicit resolution continuation that retains recovery", (t) => {
+  const f = fixture(t, { authored: false, generators: "focused" });
+  const first = f.invoke();
+  assert.equal(first.status, 0, first.stdout + first.stderr);
+  const file = "docs/control/local/integration.json";
+  const receipt = JSON.parse(text(f.subject, file));
+  put(
+    f.subject,
+    file,
+    JSON.stringify({ ...receipt, stage: "applying", complete: false }),
+  );
+  const stalled = f.invokeStages([], ["--continue"]);
+  assert.equal(stalled.status, 1);
+  assert.match(stalled.stderr, /--continue --stash-applied/);
+  const recovered = f.continueWithStub("--stash-applied");
+  assert.equal(recovered.status, 0, recovered.stdout + recovered.stderr);
+  const after = JSON.parse(text(f.subject, file));
+  assert.equal(after.complete, true);
+  assert.equal(after.stash, receipt.stash);
+  assert.equal(after.checkpointRef, receipt.checkpointRef);
+  assert.match(after.stashApplication, /actor-attested/);
 });
 
 test("WO-169 a pass whose generator fails keeps its checks and names the pending step, not a conflict", (t) => {
@@ -2116,3 +2267,88 @@ test("the one-line release block reconciles across a merge where main and the su
     "exactly the generated line, carrying the integrated heading's version",
   );
 });
+
+for (const stop of [
+  "locks",
+  "partial-snapshot",
+  "published-snapshot",
+  "reflog-installed",
+])
+  test(`stash drop stopped at ${stop} keeps a whole proof or names recovery`, (t) => {
+    const root = mkdtempSync(join(tmpdir(), "dotln-stash-stop-"));
+    t.after(() => rmSync(root, { recursive: true, force: true }));
+    const git = (args) => runGit(root, args, fixtureGitOptions);
+    git(["init", "-q"]);
+    git(["config", "user.name", "Fixture"]);
+    git(["config", "user.email", "fixture@example.invalid"]);
+    put(root, "file.txt", "base\n");
+    git(["add", "."]);
+    git(["commit", "-qm", "test: base"]);
+    for (const value of ["first", "second"]) {
+      put(root, "file.txt", `${value}\n`);
+      git(["stash", "push", "-m", value]);
+    }
+    const stash = git(["rev-parse", "refs/stash"]),
+      subject = git(["log", "-g", "-1", "--format=%gs", "refs/stash"]);
+    const recovery = join(root, "snapshot.json");
+    const module = new URL("./lib/stash-drop.mjs", import.meta.url).href;
+    const invoke = (interrupt = false) =>
+      spawnSync(
+        process.execPath,
+        [
+          "--input-type=module",
+          "-e",
+          `
+      import fs from 'node:fs'; import {syncBuiltinESMExports} from 'node:module';
+      const stop=${JSON.stringify(stop)}, recovery=${JSON.stringify(recovery)};
+      if (${interrupt}) {
+        let opens=0; const open=fs.openSync, write=fs.writeFileSync, link=fs.linkSync, rename=fs.renameSync;
+        fs.openSync=(...args)=>{const fd=open(...args);if(stop==='locks'&&String(args[0]).endsWith('.lock')&&++opens===3)process.kill(process.pid,'SIGKILL');return fd;};
+        fs.writeFileSync=(file,bytes,...args)=>{if(stop==='partial-snapshot'&&(file===recovery+'.partial'||file===recovery)){write(file,String(bytes).slice(0,8),...args);process.kill(process.pid,'SIGKILL');}return write(file,bytes,...args);};
+        fs.linkSync=(...args)=>{const result=link(...args);if(stop==='published-snapshot'&&args[1]===recovery)process.kill(process.pid,'SIGKILL');return result;};
+        fs.renameSync=(...args)=>{const result=rename(...args);if(stop==='reflog-installed'&&String(args[0]).endsWith('/logs/refs/stash.lock'))process.kill(process.pid,'SIGKILL');return result;};
+        syncBuiltinESMExports();
+      }
+      const {dropInventoriedStash}=await import(${JSON.stringify(module)});
+      dropInventoriedStash(${JSON.stringify(root)},${JSON.stringify(stash)},${JSON.stringify(subject)},recovery);
+    `,
+        ],
+        { encoding: "utf8", env: fixtureGitOptions.env },
+      );
+    assert.equal(invoke(true).signal, "SIGKILL");
+    const held = invoke();
+    assert.notEqual(held.status, 0);
+    assert.match(
+      held.stderr,
+      /stash drop lock remains:.*after checking no Git process/u,
+    );
+    for (const file of ["refs/stash", "logs/refs/stash", "packed-refs"])
+      rmSync(
+        `${git(["rev-parse", "--path-format=absolute", "--git-path", file])}.lock`,
+        { force: true },
+      );
+    if (stop === "partial-snapshot") assert.equal(existsSync(recovery), false);
+    if (["published-snapshot", "reflog-installed"].includes(stop))
+      assert.equal(JSON.parse(readFileSync(recovery, "utf8")).stash, stash);
+    if (stop === "reflog-installed") {
+      const result = invoke();
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /restore refs\/stash and its reflog together from snapshot.json/u,
+      );
+    } else if (stop === "published-snapshot") {
+      put(root, "file.txt", "newer\n");
+      git(["stash", "push", "-m", "newer"]);
+      const result = invoke();
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /stash recovery snapshot changed.*Preserve the current/u,
+      );
+    } else {
+      const result = invoke();
+      assert.equal(result.status, 0, result.stderr);
+      assert.equal(JSON.parse(readFileSync(recovery, "utf8")).stash, stash);
+    }
+  });

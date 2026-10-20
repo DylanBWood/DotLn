@@ -41,6 +41,8 @@ import {
   validReleaseDisplayName,
 } from "./lib/config.mjs";
 
+import { isKitRoot } from "../packages/skeleton/src/runtime-inputs.mjs";
+
 const scriptRoot = dirname(fileURLToPath(import.meta.url));
 const sourceRoot = join(scriptRoot, "..");
 // These disposable lifecycle fixtures are not live host sessions.
@@ -108,6 +110,51 @@ const documents = (root, directory = "") => {
     return entry.isDirectory() ? documents(root, path) : [path];
   });
 };
+
+test("publication declarations under a configured root require both editions", () =>
+  temporary("publication-declarations", (root) => {
+    cpSync(join(scriptRoot, "lib"), join(root, "scripts/lib"), {
+      recursive: true,
+    });
+    cpSync(
+      join(scriptRoot, "check-publication.mjs"),
+      join(root, "scripts/check-publication.mjs"),
+    );
+    installBeaconFixture(root);
+    declared({
+      root,
+      body: { version: 1, roots: { publication: "records/editions" } },
+    });
+    const check = (...args) =>
+      spawnSync(process.execPath, ["scripts/check-publication.mjs", ...args], {
+        cwd: root,
+        env: { ...fixtureEnvironment, DOTLN_LAUNCHPAD: "" },
+        encoding: "utf8",
+      });
+    assert.equal(check().status, 0);
+    assert.match(check().stdout, /no editions declared/);
+    assert.equal(check("--expect-stale").status, 1);
+    for (const name of [
+      "audience-status-index.md",
+      "base-outline.md",
+      "dual-voice-sample.md",
+      "everyday-ai-user-toc.md",
+      "software-engineer-toc.md",
+    ]) {
+      const file = `records/editions/${name}`;
+      write(root, file, "Declared publication\n");
+      for (const args of [[], ["--expect-stale"]]) {
+        const result = check(...args);
+        assert.equal(result.status, 1, name);
+        assert.match(
+          result.stderr,
+          /declared editions missing: records\/editions\//,
+        );
+        assert.doesNotMatch(result.stdout, /no editions declared/);
+      }
+      rmSync(join(root, file));
+    }
+  }));
 
 await test("configuration root", async (t) => {
   await t.test(
@@ -1067,6 +1114,10 @@ await test("configuration root", async (t) => {
           join(scriptRoot, "resume.mjs"),
           join(root, "scripts/resume.mjs"),
         );
+        cpSync(
+          join(scriptRoot, "outward-lint.mjs"),
+          join(root, "scripts/outward-lint.mjs"),
+        );
         cpSync(join(scriptRoot, "lib"), join(root, "scripts/lib"), {
           recursive: true,
         });
@@ -1481,3 +1532,172 @@ await test("configuration root", async (t) => {
     });
   });
 });
+
+test("registration hosts and target release names refuse invalid instance data at load", () => {
+  temporary("registration-fields", (root) => {
+    const body = {
+      version: 1,
+      classes: { "fixture-class": { checks: [], supports: [] } },
+      repositories: { target: registeredRepository() },
+    };
+    for (const host of [
+      "localhost",
+      "https://example.com",
+      "127.0.0.1",
+      "-bad.example",
+      "a..example",
+      "é.example",
+      "a." + "x".repeat(64),
+    ]) {
+      body.repositories.target.linkHosts = [host];
+      declared({ root, body });
+      assert.throws(
+        () => loadConfig(root),
+        /repositories.target.linkHosts\[0\].*DNS host/,
+      );
+    }
+    body.repositories.target.linkHosts = ["EXAMPLE.COM", "review.example"];
+    body.repositories.target.release = {
+      policy: "declared",
+      displayName: "A".repeat(64),
+    };
+    declared({ root, body });
+    assert.equal(
+      loadConfig(root).repositories.target.release.displayName.length,
+      64,
+    );
+    for (const policy of ["delete", "judge-only"]) {
+      body.repositories.target.baseDisposablePolicy = policy;
+      declared({ root, body });
+      assert.equal(
+        loadConfig(root).repositories.target.baseDisposablePolicy,
+        policy,
+      );
+    }
+    for (const disposable of [[".GIT"], ["cache/.GiT/objects"]]) {
+      body.repositories.target.disposable = disposable;
+      declared({ root, body });
+      assert.throws(() => loadConfig(root), /disposable/u);
+    }
+    delete body.repositories.target.disposable;
+    for (const displayName of [
+      "A".repeat(65),
+      " Name",
+      "Name\n",
+      "Name v1.2.3",
+      "`name`",
+      "Name\u200b",
+    ]) {
+      body.repositories.target.release.displayName = displayName;
+      declared({ root, body });
+      assert.throws(
+        () => loadConfig(root),
+        /repositories.target.release.displayName.*at most 64/,
+      );
+    }
+  });
+});
+
+test("instance contribution identity controls sign-off independently of Git identity", async () => {
+  const { contributionSignoffRules } = await import("./lib/contributions.mjs");
+  temporary("contribution-identity", (root) => {
+    const git = (args) =>
+      runGit(root, [
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "commit.gpgsign=false",
+        "-c",
+        "user.name=Fixture Operator",
+        "-c",
+        "user.email=operator@example.invalid",
+        ...args,
+      ]);
+    git(["init", "-q", "-b", "main"]);
+    git(["commit", "--allow-empty", "-qm", "test: base"]);
+    git(["update-ref", "refs/remotes/origin/main", git(["rev-parse", "HEAD"])]);
+    git(["commit", "--allow-empty", "-qm", "test: instance operator"]);
+    git(["config", "user.name", "Fixture Operator"]);
+    git(["config", "user.email", "operator@example.invalid"]);
+    assert.equal(contributionSignoffRules(root)[0].pass, false);
+    write(
+      root,
+      CONFIG_FILENAME,
+      prettyJson({
+        version: 1,
+        contributions: {
+          operatorAuthor: "Fixture Operator <operator@example.invalid>",
+        },
+      }),
+    );
+    assert.equal(contributionSignoffRules(root)[0].pass, true);
+  });
+});
+
+test("historical order configuration admits no history and rejects malformed history", () => {
+  temporary("historical-orders", (root) => {
+    for (const historicalWorkOrders of [undefined, [], ["WO-020", "WO-010"]]) {
+      declared({ root, body: { version: 1, historicalWorkOrders } });
+      assert.deepEqual(
+        loadConfig(root).historicalWorkOrders,
+        historicalWorkOrders?.slice().sort() ?? [],
+      );
+    }
+    for (const historicalWorkOrders of [
+      null,
+      "WO-001",
+      ["WO-1"],
+      [1],
+      ["WO-001", "WO-001"],
+    ]) {
+      declared({ root, body: { version: 1, historicalWorkOrders } });
+      assert.throws(() => loadConfig(root), /historicalWorkOrders/);
+    }
+  });
+});
+
+test(
+  "the public WO-111 seed emits a registration with a declared scratch class",
+  { skip: isKitRoot(sourceRoot) },
+  () => {
+    temporary("legacy-seed", (root) => {
+      runGit(root, ["init", "-q", "-b", "main"]);
+      for (const name of [
+        "packages/skeleton/fixtures/wo119-discovery/repository.json",
+        "packages/skeleton/fixtures/wo100-portfolio.json",
+      ]) {
+        mkdirSync(dirname(join(root, name)), { recursive: true });
+        cpSync(join(sourceRoot, name), join(root, name));
+      }
+      const source = readFileSync(
+        join(sourceRoot, "docs/evidence/WO-111/seed.mjs"),
+        "utf8",
+      ).replace(
+        'import { TOOL_ROOT, docRelative } from "../../../scripts/lib/config.mjs";',
+        `import { docRelative } from ${JSON.stringify(pathToFileURL(join(scriptRoot, "lib/config.mjs")).href)}; const TOOL_ROOT = ${JSON.stringify(root)};`,
+      );
+      write(root, "seed.mjs", source);
+      mkdirSync(join(root, "temporary"));
+      const result = spawnSync(process.execPath, ["seed.mjs", "prepare"], {
+        cwd: root,
+        encoding: "utf8",
+        env: { ...fixtureEnvironment, TMPDIR: join(root, "temporary") },
+      });
+      assert.equal(result.status, 0, result.stderr);
+      const location = JSON.parse(
+        readFileSync(
+          join(root, "docs/control/local/wo111/location.json"),
+          "utf8",
+        ),
+      );
+      assert.equal(
+        loadConfig(location.launchpad).repositories.scratch.repositoryClass,
+        "scratch",
+      );
+      assert.deepEqual(loadConfig(location.launchpad).classes.scratch, {
+        checks: [],
+        supports: [],
+      });
+    });
+  },
+);

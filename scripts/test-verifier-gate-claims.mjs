@@ -263,6 +263,9 @@ refuseReview();
 const requested = JSON.parse(
   readFileSync(log, "utf8").trim().split("\n").at(-1),
 ).recordedAt;
+recordGateChecks(root, [
+  gateRow("npm run test:docs", [...structural, "docs-check"]),
+]);
 // A row with no executed task, a focused row and a row at another identity
 // supply nothing; the row's time against the dispatch and its reused suites
 // no longer matter, since the identity says what was tested.
@@ -277,7 +280,7 @@ for (const extra of [
   { gateSelection: "review", reusedSuites: 0, codeIdentity: "wrong-identity" },
 ]) {
   recordGateChecks(root, [
-    gateRow("npm test", [...structural, "alpha", "beta"], extra),
+    gateRow("npm test", [...structural, "alpha", "beta", "gamma"], extra),
   ]);
   refuseReview();
 }
@@ -334,6 +337,13 @@ recordGateChecks(root, [
   gateRow("npm run test:docs", [...structural, "docs-check"]),
 ]);
 recordGateChecks(root, [olderFresh, newestFresh, composed]);
+recordGateChecks(root, [
+  gateRow("npm test", structural, {
+    partial: true,
+    gateSelection: "review",
+    excludedSuites: ["alpha", "beta", "gamma"],
+  }),
+]);
 pass(["final-review-result", "pass", ...flags]);
 assert.equal(
   JSON.parse(readFileSync(log, "utf8").trim().split("\n").at(-1)).evidence

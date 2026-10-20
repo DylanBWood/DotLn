@@ -14,7 +14,7 @@ Signed-off-by: Example Contributor <contributor@example.invalid>
 
 Use `git commit -s` to add your own sign-off when creating a commit. Certify only work you are entitled to submit; a sign-off is your attestation, not a substitute for provenance review.
 
-The operator, Dylan Wood, does not need to sign off his own commits. The exemption uses the exact public Git author identity from the commit that landed the license decision, pinned in [the contribution check](scripts/lib/contributions.mjs). The committer identity or the publisher's Git settings do not confer an exemption. The check compares raw author fields without mailmap substitution; a different author identity requires its own matching sign-off.
+The operator, Dylan Wood, does not need to sign off his own commits. The exemption uses the exact public Git author identity from the commit that landed the license decision, declared as `contributions.operatorAuthor` in [the instance configuration](dotln.config.json) and read by [the contribution check](scripts/lib/contributions.mjs). The committer identity or the publisher's Git settings do not confer an exemption. The check compares raw author fields without mailmap substitution; a different author identity requires its own matching sign-off.
 
 `worktree publish` checks every commit on the branch that is not already reachable from the local `origin/main` ref, including commits brought in by a merge. An outside commit without the author's matching trailer refuses publication before the branch push or GitHub call. Historical commits already on the base are not rechecked. This is a provenance-attestation check, not identity authentication. Enforcement belongs to the publication command; no Git hook is installed.
 

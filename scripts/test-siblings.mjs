@@ -1064,6 +1064,7 @@ test("pending receipts keep the registry unchanged and validate the complete lan
     /sibling the declaration does not name/,
   );
   rmSync(join(launchpad, result.path));
+  assert.equal(readPendingReceipts(launchpad, { siblings: [] }).size, 0);
 });
 
 test("captured pending receipts survive registry failure and resume only their bound cohort", async () => {
@@ -1141,6 +1142,19 @@ test("captured pending receipts survive registry failure and resume only their b
       () => carryPendingReceipts(launchpad, target, cohort),
       /missing/,
     );
+    const otherStart = join(scratch, "other-start-with-receipt");
+    git(["worktree", "add", "--detach", otherStart, "HEAD"]);
+    try {
+      const carried = join(
+        otherStart,
+        carriedReceiptPath(otherStart, fields.sibling, fields.date),
+      );
+      mkdirSync(dirname(carried), { recursive: true });
+      writeFileSync(carried, before);
+      assert.deepEqual(carryPendingReceipts(launchpad, target, cohort), []);
+    } finally {
+      git(["worktree", "remove", "--force", otherStart]);
+    }
     rmSync(join(launchpad, newer.path));
     const lane = dirname(source);
     rmSync(lane, { recursive: true });
