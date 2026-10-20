@@ -45,10 +45,10 @@
       "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     },
     "07-execution-guide.md": {
-      "nonExemptBytesAtLanding": 232739,
-      "ceiling": 256013,
+      "nonExemptBytesAtLanding": 233673,
+      "ceiling": 257041,
       "date": "2026-10-20",
-      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
+      "decision": "docs/planning/fork-answers-and-entropy-targets-2026-10-20.md#11-document-ceilings"
     },
     "08-publication-compiler.md": {
       "nonExemptBytesAtLanding": 24867,

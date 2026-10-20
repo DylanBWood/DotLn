@@ -4,10 +4,12 @@
 
 ## Proposed order
 
+- [ ] [WO-223] — An instance takes starter v0.87.0 · **queued**
 - [ ] [WO-217] — Boarded follow-ups, batch 1: the gate · **queued**
 - [ ] [WO-219] — Boarded follow-ups, batch 3: records, roles and the harness · **queued**
 - [ ] [WO-220] — Boarded follow-ups, batch 4: the resident and the vertical · **queued**
 - [ ] [WO-080] — Workstreams: document, index, board section and synthetic pilot · **queued**
+- [ ] [WO-224] — The Entropy Reducer on a registered target or a workstream · **queued**
 - [ ] [WO-204] — The source writer cannot damage the operator's repository · **queued**
 - [ ] [WO-192] — A router drives an order through its lifecycle · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
@@ -34,6 +36,23 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
+
+### WO-223
+
+[WO-223 — An instance takes starter v0.87.0 and publishes under it: docs-check reads a moved decisions record through its binding, the moved-record reader finds the clone mapping from any worktree of the launchpad, the sign-off rule names its declaration before the first commit, the two admission advisories and the kit README spell the admitted helpers, and the commit lint names its limit (version assigned at activation)](WO-223-an-instance-takes-v0.87.0.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-218: satisfied-by-close (met) — the moved-record readers, the helper-only admission, the sign-off declaration and the pre-review commit lint this order repairs or names; WO-221: satisfied-by-close (met) — the two hook admission classes whose advisories this order makes name the expected spelling.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds the moved-row read in &#96;scripts/docs-check.mjs&#96; (&#96;checkDocs&#96;, the decisions loop) and &#96;scripts/lib/meta.mjs&#96; (&#96;readDecisions&#96;); the primary-checkout lookup in &#96;scripts/lib/target-record-reader.mjs&#96; (&#96;readTargetRecord&#96;) and the arrangement named by &#96;mainWorktree&#96;'s refusal in &#96;scripts/lib/git.mjs&#96;; the advisory in &#96;scripts/worktree.mjs&#96; (&#96;start&#96;) and the declaration named in &#96;scripts/lib/contributions.mjs&#96; (&#96;contributionSignoffRules&#96;); the expected spelling in &#96;packages/skeleton/src/harness-host.ts&#96; (&#96;releaseCloseAdmission&#96;); the limit in &#96;scripts/lib/target-commit-lint.mjs&#96; (&#96;lintReviewedTargetCommits&#96;) and the publish-time refusal in &#96;scripts/lib/target-publish.mjs&#96;; cases in the fixtures of the Preflight suites; the kit README and product 07 sentences the write-backs step names. Removes the states the gap records: an instance with moved target records whose document gate fails at v0.87.0 before any instance change (the operator's fork holds its update as a draft pull request for this reason); an instance whose gates run only from a worktree with &#96;main&#96; checked out that also holds the clone mapping; a launchpad publish refused on a sign-off rule no earlier surface named; a release-close helper withheld with no expected spelling (50 of 88 release-close attempts in this checkout's host observation logs, read by kind only); a commit-lint refusal that names a rule and not its limit; a kit README whose session form is the spelling the hook withholds. Re-mints: &#96;packages/skeleton/src/harness-host.ts&#96; is a registered source of the authority, harness and feedback editions (&#96;scripts/lib/evidence-sources.mjs&#96; lines 165, 263 and 334), re-minted deterministically; no path of this order is in &#96;FEEDBACK_SOURCE_PATHS&#96; (&#96;packages/skeleton/src/feedback-audit.ts&#96; lines 15 to 79), so no live feedback episode is owed. &#96;scripts/docs-check.mjs&#96;, &#96;scripts/lib/meta.mjs&#96;, &#96;scripts/worktree.mjs&#96;, &#96;scripts/launchpad.mjs&#96;, &#96;scripts/kit/&#96; and &#96;packages/skeleton/src/harness-host.ts&#96; are declared machinery sources (&#96;machinerySources&#96; in &#96;scripts/test-runner.mjs&#96;), so &#96;npm test -- --review&#96; runs before handoff. Live episodes: none; the host's behavior after a hook admission is the fork's WO-006 episode, outside this order. Wall-clock: the document gate gains one blob read per moved decisions row; the reader gains one &#96;git rev-parse --git-common-dir&#96; per miss; &#96;worktree start&#96; gains one configuration read. Commands: none added; one advisory line at &#96;worktree start&#96;. Context bytes: this file, about 28,000. Tokens: unknown until run. Steps: 10.
+- Authority: [docs/work-orders/WO-223-an-instance-takes-v0.87.0.md](WO-223-an-instance-takes-v0.87.0.md)
 
 ### WO-217
 
@@ -103,6 +122,23 @@ None.
 - Track: delivery
 - Cost: adds the workstream convention and template under the configured &#96;workstreams&#96; root (and the kit seed's final text), the &#96;**Workstream:**&#96; field, the index grouping with a stale mark and its record of target facts, the board's Workstreams section with one fixture case and the console's minor release, one real-Git fixture suite with four demonstrations and its runner row, fixtures, and the product 12, 07 and 04 and console README write-backs (no byte figure binds them; ceilings are planning's). Removes nothing that runs today: no workstream document, field, grouping, board section or demonstration fixture exists. Removes, against running the three merged orders, two order cycles (two activations, verifications, final reviews and release closes), each with the full gate runs a cycle pays: since receipt 044, 2.29 full runs and 61 minutes of full gate per closed order (planning document §12). No live feedback episode or re-mint collapses; none was owed. Wall-clock: one implementation activation longer than any of the three alone, unknown until run; the new suite joins every later fresh gate, so the executor records its wall-clock. Measurement exception: beyond the one full &#96;npm test -- --review&#96; the Preflight allows, step 19 pays one fresh plain &#96;npm test -- --fresh&#96;, timed, to read the stand-down reversal condition (a fresh &#96;npm test&#96; above six minutes on the operator's host) with the new suite included. It is a measurement, run once after the last code edit and repeated only under product 07's rule for a full run (a relevant change or a diagnosed invalidation, the reason recorded), never to look again. Its cost is one fresh run of the product rows, unmeasured at this base; the planning map's reading of thirteen final-review product gates from 2026-09-19 to 2026-09-21 found 256 to 536 s, median 483 s (§Candidate — cold-gate structural cuts). Context bytes: one executor session reads the union of three orders' citations instead of three sessions each reading its own; unknown until run. Commands: none new for the operator; &#96;npm run work-orders -- index&#96; gains the grouping, &#96;npm run evidence:console -- --write&#96; regenerates six cases and &#96;npm test&#96; gains the &#96;workstream-pilot&#96; row. Tokens: unknown until run. Steps: 21 in place of 27 (11, 10 and 6): one write-back step and one handoff in place of three each. Re-mints: none; &#96;scripts/work-orders.mjs&#96;, its fixtures, the template, the new suite, &#96;scripts/test-runner.mjs&#96; and every path under &#96;packages/console&#96; are not registered evidence sources (&#96;scripts/lib/evidence-sources.mjs&#96;); &#96;scripts/lib/config.mjs&#96; is a reasoned import exclusion of every edition (same file, line 369); the release label the console's minor writes into &#96;package-lock.json&#96; is normalized out of every edition's projection (&#96;evidenceSourceContent&#96; in &#96;packages/skeleton/src/evidence-editions.mjs&#96;; &#96;feedbackSourceFile&#96; in &#96;packages/skeleton/src/feedback-audit.ts&#96;). An edit to &#96;scripts/lib/git.mjs&#96;, &#96;helpers.mjs&#96; or &#96;paths.mjs&#96;, which every edition registers, would owe a deterministic re-mint of each edition it stales. WO-083 depends on this order.
 - Authority: [docs/work-orders/WO-080-workstream-document-and-index.md](WO-080-workstream-document-and-index.md)
+
+### WO-224
+
+[WO-224 — The Entropy Reducer reviews a registered target repository or a workstream's repositories: &#96;npm run entropy -- review --repository &lt;id&gt; &#91;&lt;commit&gt;&#93;&#96; and &#96;--workstream WS-NNN&#96; freeze the registered clone at a recorded commit the way the launchpad is frozen, run the pinned reviewer, the blinded refutation and the immutable receipts in the launchpad, dispose into its register with rows a pass allocates to the workstream's orders, and ship in the kit (version assigned at activation)](WO-224-entropy-reducer-on-a-registered-target.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-151: satisfied-by-close (met) — the entropy command family this order extends; WO-165: satisfied-by-close (met) — the pinned route and its receipts; WO-071: satisfied-by-close (met) — the registered target repository and its recorded clone this order freezes; WO-219: reference-only (non-blocking) — step 22's frozen-copy confinement; whichever runs second rebases; WO-080: reference-only (non-blocking) — the workstream document convention the --workstream form reads.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds the repository and workstream subjects in &#96;scripts/lib/entropy-review.mjs&#96; (&#96;resolveSubject&#96;, &#96;freezeSubject&#96;, &#96;subjectRecord&#96;, &#96;beginEntropyReview&#96;, &#96;fileEntropyReview&#96;, &#96;beginEntropyRefutation&#96;, &#96;fileEntropyRefutation&#96;, &#96;disposeEntropyFinding&#96;, &#96;entropySubject&#96;) and their flags in &#96;scripts/entropy.mjs&#96;; the workstream block reader (the &#96;dotln-workstream&#96; JSON block of &#96;docs/workstreams/WS-NNN-*.md&#96;); fixture cases in &#96;scripts/test-entropy-review.mjs&#96; over a fixture launchpad with a registered fixture target; the review guide and the product 07, 05 and 12 sentences the write-backs step names. Removes the state the gap records: an instance that can review its launchpad and not the repositories where its product code lives, so the discipline the launchpad has (a frozen subject, a pinned reviewer, a blinded refutation, immutable receipts, operator disposition into the register) stops at the control plane. Per-episode cost at the pinned actor: about 993 s and USD 9.50 by the REVIEW-002 observation (product 07 §Operator-opened planning pass), USD 9.32, 5.03 and 7.21 per review-and-refutation pair for REVIEW-005 to REVIEW-007 (the 2026-10-20 entropy pass §5.3), paid once per member repository of a workstream; the fixtures run the &#96;fake&#96; transport. Re-mints: &#96;packages/skeleton/src/entropy-review-protocol.ts&#96; and &#96;packages/skeleton/src/loadouts/entropy-reducer.ts&#96; are registered sources (&#96;scripts/lib/evidence-sources.mjs&#96; lines 77, 85, 170 and 209) and the protocol file is in &#96;FEEDBACK_SOURCE_PATHS&#96; (&#96;packages/skeleton/src/feedback-audit.ts&#96;); the design keeps both files unchanged (the subject schema already admits any string &#96;repository&#96;, and the loadout compiles against the &#96;repo&#96; path it is given), so no re-mint and no live feedback episode is owed unless a step must edit one of them, in which case the executor records the deterministic re-mint and runs one live feedback self-host episode on Codex &#96;gpt-6.1-sol&#96; at &#96;max&#96; or Claude Code &#96;claude-opus-5-5&#96; at &#96;xhigh&#96;, no authorization needed, cost accepted. &#96;scripts/entropy.mjs&#96; and &#96;scripts/lib/entropy-review.mjs&#96; are declared machinery sources of &#96;launchpad-planning&#96; (&#96;machinerySources&#96; in &#96;scripts/test-runner.mjs&#96;), so &#96;npm test -- --review&#96; runs before handoff. Wall-clock: a target review adds one clone of the registered clone and one checkout at the named commit, as the launchpad review does today; a workstream review runs its episodes in sequence. Commands: &#96;--repository &lt;id&gt; &#91;&lt;commit&gt;&#93;&#96; and &#96;--workstream WS-NNN&#96; on &#96;review&#96; and &#96;subject&#96;. Context bytes: this file, about 26,000. Tokens: unknown until run. Steps: 11.
+- Authority: [docs/work-orders/WO-224-entropy-reducer-on-a-registered-target.md](WO-224-entropy-reducer-on-a-registered-target.md)
 
 ### WO-204
 
@@ -290,3 +326,5 @@ None.
 [WO-217]: WO-217-boarded-follow-ups-the-gate.md
 [WO-219]: WO-219-boarded-follow-ups-records-roles-and-the-harness.md
 [WO-220]: WO-220-boarded-follow-ups-the-resident-and-the-vertical.md
+[WO-223]: WO-223-an-instance-takes-v0.87.0.md
+[WO-224]: WO-224-entropy-reducer-on-a-registered-target.md
